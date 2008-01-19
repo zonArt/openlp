@@ -21,8 +21,8 @@ class MainPanel(wx.Panel):
         oospanel = oos.OrderOfService(self)
 
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(oospanel, 0, wx.ALL, 10)
-        sizer.Add(controlbook, 1, wx.TOP|wx.BOTTOM|wx.LEFT, 10)
+        sizer.Add(oospanel, 0, wx.TOP|wx.BOTTOM|wx.LEFT, 10)
+        sizer.Add(controlbook, 1, wx.ALL, 10)
 
         self.SetSizerAndFit(sizer)
 
