@@ -19,12 +19,13 @@ class OrderOfService(wx.Panel):
 
         sizer = wx.BoxSizer(wx.VERTICAL)
 
-        self.list = wx.ListBox(self, size=wx.Size(140, 250))
+        self.list = wx.ListBox(self, size=wx.Size(180, 250))
 
         self.list.Append("foo")
 
-        sizer.Add(self.list, 1, wx.BOTTOM, 10)
+        sizer.Add(self.list, 1)
+        #sizer.Add(self.list, 1, wx.GROW)
 
-        self.SetSizerAndFit(sizer)
+        self.SetSizer(sizer)
 
 # vim: autoindent shiftwidth=4 expandtab textwidth=80

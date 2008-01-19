@@ -7,7 +7,7 @@ wx.Panel for operator interface
 import wx
 
 import controller
-import oos
+import leftpanel
 
 class MainPanel(wx.Panel):
     "Operator interface"
@@ -17,13 +17,14 @@ class MainPanel(wx.Panel):
 
         wx.Panel.__init__(self, parent, *args, **kwargs)
 
-        controlbook = controller.Controller(self)
-        oospanel = oos.OrderOfService(self)
+        controlbook = controller.Controller(self, size=wx.Size(400,300))
+        leftside = leftpanel.LeftPanel(self)
 
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(oospanel, 0, wx.TOP|wx.BOTTOM|wx.LEFT, 10)
-        sizer.Add(controlbook, 1, wx.ALL, 10)
+        sizer.Add(leftside, 0, wx.GROW|wx.TOP|wx.BOTTOM|wx.LEFT, 15)
+        sizer.Add(controlbook, 1, wx.GROW|wx.ALL, 15)
 
         self.SetSizerAndFit(sizer)
+        sizer.SetSizeHints(parent)
 
 # vim: autoindent shiftwidth=4 expandtab textwidth=80
