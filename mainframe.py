@@ -30,7 +30,7 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnPrefs, item)
 
         MenuBar.Append(FileMenu, "&File")
-        
+
         HelpMenu = wx.Menu()
 
         item = HelpMenu.Append(wx.ID_HELP, "OpenLP.org &Help")
@@ -52,7 +52,7 @@ class MainFrame(wx.Frame):
     def OnQuit(self,Event):
         self.Destroy()
 
-        
+
     def OnAbout(self, event):
         dlg = wx.MessageDialog(self, "This is a small program to test\n"
                 "the use of menus on Mac, etc.\n",
