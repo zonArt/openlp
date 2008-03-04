@@ -5,8 +5,9 @@ wx.Frame for the main OpenLP.org window
 """
 
 import wx
-import controlpanel
-import canvas
+from openlp.controls import controlpanel
+from openlp.controls import canvas
+from openlp.controls import mediamanager
 
 class MainFrame(wx.Frame):
     "Main OpenLP.org frame"
@@ -40,19 +41,14 @@ class MainFrame(wx.Frame):
         self.LiveSplitter.SetMinimumPaneSize(200)
         self.PreviewSplitter.SetMinimumPaneSize(200)
 
-        self.MainSplitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.MainSplitterOnChanged)
-        self.LiveSplitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.LiveSplitterOnChanged)
-        self.PreviewSplitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.PreviewSplitterOnChanged)
-        self.Bind(wx.EVT_SIZE, self.OnSize)
-        
         MainSizer = wx.BoxSizer(wx.HORIZONTAL)
         
-        MediaManagerFrame = wx.Panel(self, size=wx.Size(200,200))
+        MediaManager = mediamanager.MediaManager(self, size=wx.Size(200,200))
         OrderOfServiceFrame = wx.Panel(self, size=wx.Size(200,200))
         
         self.SetSizer(MainSizer)
         
-        MainSizer.Add(MediaManagerFrame, flag=wx.EXPAND)
+        MainSizer.Add(MediaManager, flag=wx.EXPAND)
         MainSizer.Add(self.MainSplitter, proportion=1, flag=wx.EXPAND)
         MainSizer.Add(OrderOfServiceFrame, flag=wx.EXPAND)
         
@@ -64,7 +60,12 @@ class MainFrame(wx.Frame):
         self.SetAutoLayout(True)
         
         self.Layout()
-       
+        
+        self.MainSplitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.MainSplitterOnChanged)
+        self.LiveSplitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.LiveSplitterOnChanged)
+        self.PreviewSplitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.PreviewSplitterOnChanged)
+        self.Bind(wx.EVT_SIZE, self.OnSize)
+               
     def MainSplitterOnChanged(self,event):
         self.MainSplitter.SetSashPosition(self.MainSplitter.GetClientSize().GetWidth()/2,True)
     

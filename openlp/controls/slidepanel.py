@@ -1,6 +1,6 @@
 ﻿import wx
 
-import slide
+from openlp.controls import slide
 
 class SlidePanel(wx.Window):
     

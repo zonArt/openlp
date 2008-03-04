@@ -6,7 +6,7 @@ The openlp.org Control Panel
 
 import wx
 
-import slidepanel
+from openlp.controls import slidepanel
 
 class ControlPanel(wx.Window):
     
