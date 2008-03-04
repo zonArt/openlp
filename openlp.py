@@ -13,7 +13,7 @@ import mainframe
 
 class OpenLP(wx.PySimpleApp):
     def OnInit(self):
-        frame = mainframe.MainFrame(None, title="OpenLP.org")
+        frame = mainframe.MainFrame(None, title="openlp.org")
         frame.Show()
 
         import sys
@@ -31,10 +31,6 @@ class OpenLP(wx.PySimpleApp):
         dlg = wx.MessageDialog(None,
                     "This app was just asked to open:\n%s\n"%filename,
                     "File Opened", wx.OK|wx.ICON_INFORMATION)
-
-
-    def MacOpenFile(self, filename):
-        self.OpenFileMessage(filename)
 
 
 if __name__ == '__main__':
