@@ -1,5 +1,12 @@
-from elementtree.ElementTree import ElementTree, XML
-import wx
+import platform
+ver = platform.python_version()
+if ver >= '2.5':
+	from xml.etree.ElementTree import ElementTree, XML
+else:
+	from elementtree import ElementTree, XML
+
+from PyQt4 import QtGui
+
 DelphiColors={"clRed":0xFF0000,
                "clBlack":0x000000,
                "clWhite":0xFFFFFF}
@@ -19,7 +26,7 @@ blankstylexml=\
   <Outline>0</Outline>
   <HorizontalAlign>0</HorizontalAlign>
   <VerticalAlign>0</VerticalAlign>
-  
+  <WrapStyle>0</WrapStyle>
 </Theme>
 '''
 
@@ -108,7 +115,7 @@ class Theme:
                 if (element.tag.find("Color") > 0 or
                     (element.tag.find("BackgroundParameter") == 0 and type(val) == type(0))):
                     # convert to a wx.Colour
-                    val= wx.Colour((val>>16) & 0xFF, (val>>8)&0xFF, val&0xFF)
+                    val= QtGui.QColor((val>>16) & 0xFF, (val>>8)&0xFF, val&0xFF)
  #               print [val]
                 setattr(self,element.tag, val)
         
@@ -120,5 +127,3 @@ class Theme:
                 s+= "%30s : %s\n" %(k,getattr(self,k))
         return s
 
-if __name__=="__main__":
-    test_theme.test_read_theme()
