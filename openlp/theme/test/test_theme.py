@@ -1,10 +1,17 @@
-from theme import Theme
+import os
+import sys
+mypath=os.path.split(os.path.abspath(__file__))[0]
+
+sys.path.insert(0,(os.path.join(mypath, '..' ,'..', '..')))
+print sys.path
+
+from openlp.theme import Theme
 import os.path
 from PyQt4 import QtGui
 def test_read_theme():
     dir=os.path.split(__file__)[0]
     # test we can read a theme
-    t=Theme(os.path.join(dir, "testtheme.xml"))
+    t=Theme(os.path.join(dir, "test_theme.xml"))
     print t
     assert(t.BackgroundParameter1 == "sunset1.jpg")
     assert(t.BackgroundParameter2 == None)
@@ -39,5 +46,8 @@ def test_read_theme():
  
     print "Tests passed"
 
+def test_theme():
+    test_read_theme()
+    
 if __name__=="__main__":
     test_read_theme()

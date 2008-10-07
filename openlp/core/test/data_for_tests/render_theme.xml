@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Theme>
+  <Name>openlp.org Packaged Theme</Name>
+  <BackgroundType>0</BackgroundType>
+  <BackgroundParameter1>clWhite</BackgroundParameter1>
+  <BackgroundParameter2/>
+  <BackgroundParameter3/>
+  <FontName>Tahoma</FontName>
+  <FontColor>$00007F</FontColor>
+  <FontProportion>32</FontProportion>
+  <Shadow>0</Shadow>
+  <ShadowColor>$000000</ShadowColor>
+  <Outline>0</Outline>
+  <OutlineColor>$000000</OutlineColor>
+  <HorizontalAlign>0</HorizontalAlign>
+  <VerticalAlign>0</VerticalAlign>
+  <WrapStyle>1</WrapStyle>
+</Theme>

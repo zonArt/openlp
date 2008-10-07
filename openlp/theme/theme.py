@@ -75,7 +75,7 @@ class Theme:
             t=''.join(file.readlines()) # read the file and change list to a string
             self._set_from_XML(t)
 
-    def get_as_string(self):
+    def _get_as_string(self):
         s=""
         keys=dir(self)
         keys.sort()
