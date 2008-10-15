@@ -1,0 +1,462 @@
+<ui version="4.0" >
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle" >
+   <string>openlp.org 2.0</string>
+  </property>
+  <widget class="QWidget" name="centralwidget" >
+   <property name="sizePolicy" >
+    <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+  </widget>
+  <widget class="QMenuBar" name="menubar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_File" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <widget class="QMenu" name="menu_Import" >
+     <property name="title" >
+      <string>&amp;Import</string>
+     </property>
+     <addaction name="action_Song" />
+     <addaction name="action_Bible" />
+     <addaction name="action_Theme" />
+     <addaction name="action_Language" />
+    </widget>
+    <widget class="QMenu" name="menu_Export" >
+     <property name="title" >
+      <string>&amp;Export</string>
+     </property>
+     <addaction name="action_Song_2" />
+     <addaction name="action_Bible_2" />
+     <addaction name="action_Theme_2" />
+     <addaction name="action_Language_2" />
+    </widget>
+    <addaction name="action_New" />
+    <addaction name="action_Open" />
+    <addaction name="action_Save" />
+    <addaction name="actionSave_As" />
+    <addaction name="separator" />
+    <addaction name="menu_Import" />
+    <addaction name="menu_Export" />
+    <addaction name="separator" />
+    <addaction name="actionE_xit" />
+   </widget>
+   <widget class="QMenu" name="menu_Options" >
+    <property name="title" >
+     <string>&amp;Options</string>
+    </property>
+    <widget class="QMenu" name="menu_View" >
+     <property name="title" >
+      <string>&amp;View</string>
+     </property>
+     <addaction name="action_Media_Manager" />
+     <addaction name="action_Theme_Manager" />
+     <addaction name="action_Order_of_Service" />
+    </widget>
+    <addaction name="action_Language_3" />
+    <addaction name="menu_View" />
+    <addaction name="separator" />
+    <addaction name="action_Settings" />
+   </widget>
+   <widget class="QMenu" name="menu_Help" >
+    <property name="title" >
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="action_Alert" />
+   </widget>
+   <widget class="QMenu" name="menu_Help_2" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="action_Documentation" />
+    <addaction name="action_Online_Help" />
+    <addaction name="separator" />
+    <addaction name="action_Web_Site" />
+    <addaction name="action_About" />
+   </widget>
+   <addaction name="menu_File" />
+   <addaction name="menu_Options" />
+   <addaction name="menu_Help" />
+   <addaction name="menu_Help_2" />
+  </widget>
+  <widget class="QStatusBar" name="statusbar" />
+  <widget class="QDockWidget" name="MediaManagerDock" >
+   <property name="sizePolicy" >
+    <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="floating" >
+    <bool>false</bool>
+   </property>
+   <property name="windowTitle" >
+    <string>Media Manager</string>
+   </property>
+   <attribute name="dockWidgetArea" >
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="MediaManagerContents" >
+    <property name="sizePolicy" >
+     <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QToolBox" name="MediaToolBox" >
+       <property name="currentIndex" >
+        <number>0</number>
+       </property>
+       <property name="tabSpacing" >
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="SongPage" >
+        <property name="geometry" >
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>311</width>
+          <height>445</height>
+         </rect>
+        </property>
+        <attribute name="label" >
+         <string>Songs</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="SongsLayout" >
+         <property name="spacing" >
+          <number>0</number>
+         </property>
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QFrame" name="frame" >
+           <property name="frameShape" >
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow" >
+            <enum>QFrame::Raised</enum>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_3" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QToolButton" name="toolButton_2" >
+              <property name="text" >
+               <string>New Song</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/songs/songs/song_new.png</normaloff>:/songs/songs/song_new.png</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>22</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="toolButton_3" >
+              <property name="text" >
+               <string>Edit Song</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/songs/songs/song_edit.png</normaloff>:/songs/songs/song_edit.png</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>22</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="toolButton" >
+              <property name="text" >
+               <string>Export Song</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/songs/songs/song_export.png</normaloff>:/songs/songs/song_export.png</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>22</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0" >
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTableWidget" name="SongsList" />
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="VersePage" >
+        <property name="geometry" >
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>311</width>
+          <height>445</height>
+         </rect>
+        </property>
+        <attribute name="label" >
+         <string>Bible Verses</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="VersesLayout" >
+         <property name="spacing" >
+          <number>0</number>
+         </property>
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QTableWidget" name="tableWidget" />
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="PresentationPage" >
+        <property name="geometry" >
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>311</width>
+          <height>445</height>
+         </rect>
+        </property>
+        <attribute name="label" >
+         <string>Presentations</string>
+        </attribute>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="OrderOfServiceDock" >
+   <property name="windowTitle" >
+    <string>Service Manager</string>
+   </property>
+   <attribute name="dockWidgetArea" >
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="OrderOfServiceContents" >
+    <layout class="QHBoxLayout" name="horizontalLayout_2" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QListView" name="OrderOfServiceListView" />
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="ThemeManagerDock" >
+   <property name="floating" >
+    <bool>false</bool>
+   </property>
+   <property name="windowTitle" >
+    <string>Theme Manager</string>
+   </property>
+   <attribute name="dockWidgetArea" >
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="ThemeManagerContents" >
+    <layout class="QVBoxLayout" name="verticalLayout_2" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QListView" name="ThemeManagerListView" />
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <action name="action_New" >
+   <property name="text" >
+    <string>&amp;New</string>
+   </property>
+  </action>
+  <action name="action_Open" >
+   <property name="text" >
+    <string>&amp;Open</string>
+   </property>
+  </action>
+  <action name="action_Save" >
+   <property name="text" >
+    <string>&amp;Save</string>
+   </property>
+  </action>
+  <action name="actionSave_As" >
+   <property name="text" >
+    <string>Save &amp;As...</string>
+   </property>
+  </action>
+  <action name="actionE_xit" >
+   <property name="text" >
+    <string>E&amp;xit</string>
+   </property>
+  </action>
+  <action name="action_Song" >
+   <property name="text" >
+    <string>&amp;Song</string>
+   </property>
+  </action>
+  <action name="action_Bible" >
+   <property name="text" >
+    <string>&amp;Bible</string>
+   </property>
+  </action>
+  <action name="action_Theme" >
+   <property name="text" >
+    <string>&amp;Theme</string>
+   </property>
+  </action>
+  <action name="action_Language" >
+   <property name="text" >
+    <string>&amp;Language</string>
+   </property>
+  </action>
+  <action name="action_Song_2" >
+   <property name="text" >
+    <string>&amp;Song</string>
+   </property>
+  </action>
+  <action name="action_Bible_2" >
+   <property name="text" >
+    <string>&amp;Bible</string>
+   </property>
+  </action>
+  <action name="action_Theme_2" >
+   <property name="text" >
+    <string>&amp;Theme</string>
+   </property>
+  </action>
+  <action name="action_Language_2" >
+   <property name="text" >
+    <string>&amp;Language</string>
+   </property>
+  </action>
+  <action name="action_Language_3" >
+   <property name="text" >
+    <string>&amp;Language</string>
+   </property>
+  </action>
+  <action name="actionLook_Feel" >
+   <property name="text" >
+    <string>Look &amp;&amp; &amp;Feel</string>
+   </property>
+  </action>
+  <action name="action_Settings" >
+   <property name="text" >
+    <string>&amp;Settings</string>
+   </property>
+  </action>
+  <action name="action_Media_Manager" >
+   <property name="text" >
+    <string>&amp;Media Manager</string>
+   </property>
+  </action>
+  <action name="action_Theme_Manager" >
+   <property name="text" >
+    <string>&amp;Theme Manager</string>
+   </property>
+  </action>
+  <action name="action_Order_of_Service" >
+   <property name="text" >
+    <string>&amp;Order of Service</string>
+   </property>
+  </action>
+  <action name="action_Alert" >
+   <property name="text" >
+    <string>&amp;Alert</string>
+   </property>
+  </action>
+  <action name="action_Documentation" >
+   <property name="text" >
+    <string>&amp;User Guide</string>
+   </property>
+  </action>
+  <action name="action_About" >
+   <property name="text" >
+    <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="action_Online_Help" >
+   <property name="text" >
+    <string>&amp;Online Help</string>
+   </property>
+  </action>
+  <action name="action_Web_Site" >
+   <property name="text" >
+    <string>&amp;Web Site</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../images/openlp-2.qrc" />
+ </resources>
+ <connections/>
+</ui>

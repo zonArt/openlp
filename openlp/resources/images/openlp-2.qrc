@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="songs" >
+    <file>songs/song_edit.png</file>
+    <file>songs/song_export.png</file>
+    <file>songs/song_new.png</file>
+  </qresource>
+</RCC>
