@@ -4,4 +4,9 @@
     <file>songs/song_export.png</file>
     <file>songs/song_new.png</file>
   </qresource>
+  <qresource prefix="services" >
+    <file>services/service_new.png</file>
+    <file>services/service_open.png</file>
+    <file>services/service_save.png</file>
+  </qresource>
 </RCC>
