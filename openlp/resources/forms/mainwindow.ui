@@ -25,7 +25,7 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_4" >
+   <layout class="QHBoxLayout" name="MainContentLayout" >
     <property name="spacing" >
      <number>0</number>
     </property>
@@ -38,7 +38,7 @@
        <enum>Qt::Horizontal</enum>
       </property>
       <widget class="QWidget" native="1" name="PreviewPane" >
-       <layout class="QVBoxLayout" name="verticalLayout" >
+       <layout class="QVBoxLayout" name="PreviewPaneLayout" >
         <property name="spacing" >
          <number>0</number>
         </property>
@@ -59,7 +59,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>257</width>
+              <width>256</width>
               <height>536</height>
              </rect>
             </property>
@@ -78,7 +78,7 @@
        </layout>
       </widget>
       <widget class="QWidget" native="1" name="LivePane" >
-       <layout class="QVBoxLayout" name="verticalLayout_3" >
+       <layout class="QVBoxLayout" name="LivePaneLayout" >
         <property name="spacing" >
          <number>0</number>
         </property>
@@ -99,7 +99,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>257</width>
+              <width>256</width>
               <height>536</height>
              </rect>
             </property>
@@ -138,19 +138,35 @@
      <property name="title" >
       <string>&amp;Import</string>
      </property>
-     <addaction name="ImportSongItem" />
+     <widget class="QMenu" name="ImportSongMenu" >
+      <property name="title" >
+       <string>&amp;Song</string>
+      </property>
+      <addaction name="ImportOpenlp1Item" />
+      <addaction name="ImportOpenlp2Item" />
+      <addaction name="ImportOpenSongItem" />
+     </widget>
+     <addaction name="ImportSongMenu" />
      <addaction name="ImportBibleItem" />
      <addaction name="ImportThemeItem" />
      <addaction name="ImportLanguageItem" />
     </widget>
-    <widget class="QMenu" name="menu_Export" >
+    <widget class="QMenu" name="FileExportMenu" >
      <property name="title" >
       <string>&amp;Export</string>
      </property>
-     <addaction name="action_Song_2" />
-     <addaction name="action_Bible_2" />
-     <addaction name="action_Theme_2" />
-     <addaction name="action_Language_2" />
+     <widget class="QMenu" name="ExportSongMenu" >
+      <property name="title" >
+       <string>&amp;Song</string>
+      </property>
+      <addaction name="ExportOpenlp1Item" />
+      <addaction name="ExportOpenlp2Item" />
+      <addaction name="ExportOpenSongItem" />
+     </widget>
+     <addaction name="ExportSongMenu" />
+     <addaction name="ExportBibleItem" />
+     <addaction name="ExportThemeItem" />
+     <addaction name="ExportLanguageItem" />
     </widget>
     <addaction name="FileNewItem" />
     <addaction name="FileOpenItem" />
@@ -158,55 +174,69 @@
     <addaction name="FileSaveAsItem" />
     <addaction name="separator" />
     <addaction name="FileImportMenu" />
-    <addaction name="menu_Export" />
+    <addaction name="FileExportMenu" />
     <addaction name="separator" />
-    <addaction name="actionE_xit" />
+    <addaction name="FileExitItem" />
    </widget>
-   <widget class="QMenu" name="menu_Options" >
+   <widget class="QMenu" name="OptionsMenu" >
     <property name="title" >
      <string>&amp;Options</string>
     </property>
-    <widget class="QMenu" name="menu_View" >
+    <widget class="QMenu" name="OptionsViewMenu" >
      <property name="title" >
       <string>&amp;View</string>
      </property>
-     <addaction name="action_Media_Manager" />
-     <addaction name="action_Theme_Manager" />
-     <addaction name="action_Order_of_Service" />
+     <addaction name="ViewMediaManagerItem" />
+     <addaction name="ViewServiceManagerItem" />
+     <addaction name="ViewThemeManagerItem" />
     </widget>
-    <addaction name="action_Language_3" />
-    <addaction name="menu_View" />
+    <widget class="QMenu" name="OptionsLanguageMenu" >
+     <property name="title" >
+      <string>&amp;Language</string>
+     </property>
+     <addaction name="LanguageEnglishItem" />
+     <addaction name="separator" />
+     <addaction name="LanguageTranslateItem" />
+    </widget>
+    <addaction name="OptionsLanguageMenu" />
+    <addaction name="OptionsViewMenu" />
     <addaction name="separator" />
-    <addaction name="action_Settings" />
+    <addaction name="OptionsSettingsItem" />
    </widget>
-   <widget class="QMenu" name="menu_Help" >
+   <widget class="QMenu" name="ToolsMenu" >
     <property name="title" >
      <string>&amp;Tools</string>
     </property>
-    <addaction name="action_Alert" />
+    <addaction name="ToolsAlertItem" />
+    <addaction name="separator" />
+    <addaction name="ToolsAddToolItem" />
    </widget>
-   <widget class="QMenu" name="menu_Help_2" >
+   <widget class="QMenu" name="HelpMenu" >
     <property name="title" >
      <string>&amp;Help</string>
     </property>
-    <addaction name="action_Documentation" />
-    <addaction name="action_Online_Help" />
+    <addaction name="HelpDocumentationItem" />
+    <addaction name="HelpOnlineHelpItem" />
     <addaction name="separator" />
-    <addaction name="action_Web_Site" />
-    <addaction name="action_About" />
+    <addaction name="HelpWebSiteItem" />
+    <addaction name="HelpAboutItem" />
    </widget>
    <addaction name="FileMenu" />
-   <addaction name="menu_Options" />
-   <addaction name="menu_Help" />
-   <addaction name="menu_Help_2" />
+   <addaction name="OptionsMenu" />
+   <addaction name="ToolsMenu" />
+   <addaction name="HelpMenu" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" />
+  <widget class="QStatusBar" name="StatusBar" />
   <widget class="QDockWidget" name="MediaManagerDock" >
    <property name="sizePolicy" >
     <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
+   </property>
+   <property name="windowIcon" >
+    <iconset resource="../images/openlp-2.qrc" >
+     <normaloff>:/system/system_mediamanager.png</normaloff>:/system/system_mediamanager.png</iconset>
    </property>
    <property name="floating" >
     <bool>false</bool>
@@ -224,7 +254,7 @@
       <verstretch>0</verstretch>
      </sizepolicy>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout" >
+    <layout class="QHBoxLayout" name="MediaManagerLayout" >
      <property name="margin" >
       <number>0</number>
      </property>
@@ -236,19 +266,23 @@
        <property name="tabSpacing" >
         <number>0</number>
        </property>
-       <widget class="QWidget" name="SongPage" >
+       <widget class="QWidget" name="SongsPage" >
         <property name="geometry" >
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>291</width>
-          <height>692</height>
+          <width>256</width>
+          <height>638</height>
          </rect>
         </property>
         <attribute name="label" >
          <string>Songs</string>
         </attribute>
-        <layout class="QVBoxLayout" name="SongsLayout" >
+        <attribute name="icon" >
+         <iconset resource="../images/openlp-2.qrc" >
+          <normaloff>:/media/media_song.png</normaloff>:/media/media_song.png</iconset>
+        </attribute>
+        <layout class="QVBoxLayout" name="SongsPageLayout" >
          <property name="spacing" >
           <number>0</number>
          </property>
@@ -256,8 +290,8 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QWidget" native="1" name="widget_2" >
-           <layout class="QHBoxLayout" name="horizontalLayout_5" >
+          <widget class="QWidget" native="1" name="SongsToolbar" >
+           <layout class="QHBoxLayout" name="SongsToolbarLayout" >
             <property name="spacing" >
              <number>0</number>
             </property>
@@ -265,13 +299,115 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QToolButton" name="toolButton_2" >
+             <widget class="QToolButton" name="SongsNewItem" >
               <property name="text" >
                <string>New Song</string>
               </property>
               <property name="icon" >
                <iconset resource="../images/openlp-2.qrc" >
-                <normaloff>:/songs/songs/song_new.png</normaloff>:/songs/songs/song_new.png</iconset>
+                <normaloff>:/songs/song_new.png</normaloff>:/songs/song_new.png</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>22</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="SongsEditItem" >
+              <property name="text" >
+               <string>Edit Song</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/songs/song_edit.png</normaloff>:/songs/song_edit.png</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>22</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="SongsDeleteItem" >
+              <property name="text" >
+               <string>Delete Song</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/songs/song_delete.png</normaloff>:/songs/song_delete.png</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>22</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="Line" name="SongsLine" >
+              <property name="minimumSize" >
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="frameShadow" >
+               <enum>QFrame::Sunken</enum>
+              </property>
+              <property name="lineWidth" >
+               <number>1</number>
+              </property>
+              <property name="midLineWidth" >
+               <number>0</number>
+              </property>
+              <property name="orientation" >
+               <enum>Qt::Vertical</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="toolButton" >
+              <property name="text" >
+               <string>Send to Preview</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/system/system_preview.png</normaloff>:/system/system_preview.png</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>22</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="toolButton_2" >
+              <property name="text" >
+               <string>Send to Live</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/system/system_live.png</normaloff>:/system/system_live.png</iconset>
               </property>
               <property name="iconSize" >
                <size>
@@ -287,11 +423,11 @@
             <item>
              <widget class="QToolButton" name="toolButton_3" >
               <property name="text" >
-               <string>Edit Song</string>
+               <string>Add to Service</string>
               </property>
               <property name="icon" >
                <iconset resource="../images/openlp-2.qrc" >
-                <normaloff>:/songs/songs/song_edit.png</normaloff>:/songs/songs/song_edit.png</iconset>
+                <normaloff>:/system/system_add.png</normaloff>:/system/system_add.png</iconset>
               </property>
               <property name="iconSize" >
                <size>
@@ -305,27 +441,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="toolButton" >
-              <property name="text" >
-               <string>Export Song</string>
-              </property>
-              <property name="icon" >
-               <iconset resource="../images/openlp-2.qrc" >
-                <normaloff>:/songs/songs/song_export.png</normaloff>:/songs/songs/song_export.png</iconset>
-              </property>
-              <property name="iconSize" >
-               <size>
-                <width>22</width>
-                <height>22</height>
-               </size>
-              </property>
-              <property name="autoRaise" >
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer" >
+             <spacer name="SongsSpacer" >
               <property name="orientation" >
                <enum>Qt::Horizontal</enum>
               </property>
@@ -345,19 +461,23 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="VersePage" >
+       <widget class="QWidget" name="VersesPage" >
         <property name="geometry" >
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>291</width>
-          <height>692</height>
+          <width>256</width>
+          <height>638</height>
          </rect>
         </property>
         <attribute name="label" >
          <string>Bible Verses</string>
         </attribute>
-        <layout class="QVBoxLayout" name="VersesLayout" >
+        <attribute name="icon" >
+         <iconset resource="../images/openlp-2.qrc" >
+          <normaloff>:/media/media_verse.png</normaloff>:/media/media_verse.png</iconset>
+        </attribute>
+        <layout class="QVBoxLayout" name="VersesPageLayout" >
          <property name="spacing" >
           <number>0</number>
          </property>
@@ -365,21 +485,224 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QTableWidget" name="tableWidget" />
+          <widget class="QWidget" native="1" name="VerseToolbar" >
+           <layout class="QHBoxLayout" name="VerseToolbarLayout" >
+            <property name="spacing" >
+             <number>0</number>
+            </property>
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QToolButton" name="toolButton_4" >
+              <property name="text" >
+               <string>Send to Preview</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/system/system_preview.png</normaloff>:/system/system_preview.png</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>22</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="toolButton_6" >
+              <property name="text" >
+               <string>Send to Live</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/system/system_live.png</normaloff>:/system/system_live.png</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>22</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="toolButton_5" >
+              <property name="text" >
+               <string>Add to Service</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/system/system_add.png</normaloff>:/system/system_add.png</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>22</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="SongsSpacer_2" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0" >
+               <size>
+                <width>166</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTableWidget" name="VersesList" />
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="PresentationPage" >
+       <widget class="QWidget" name="PresentationsPage" >
         <property name="geometry" >
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>291</width>
-          <height>692</height>
+          <width>256</width>
+          <height>638</height>
          </rect>
         </property>
         <attribute name="label" >
          <string>Presentations</string>
+        </attribute>
+        <attribute name="icon" >
+         <iconset resource="../images/openlp-2.qrc" >
+          <normaloff>:/media/media_presentation.png</normaloff>:/media/media_presentation.png</iconset>
+        </attribute>
+        <layout class="QVBoxLayout" name="PresentationsLayout" >
+         <property name="spacing" >
+          <number>0</number>
+         </property>
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QWidget" native="1" name="PresentationsToolbar" >
+           <layout class="QHBoxLayout" name="PresentationsToolbarLayout" >
+            <property name="spacing" >
+             <number>0</number>
+            </property>
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QToolButton" name="PresentationPreviewItem" >
+              <property name="text" >
+               <string>Send to Preview</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/system/system_preview.png</normaloff>:/system/system_preview.png</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>22</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="PresentationLiveItem" >
+              <property name="text" >
+               <string>Send to Live</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/system/system_live.png</normaloff>:/system/system_live.png</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>22</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="PresentationAddItem" >
+              <property name="text" >
+               <string>Add to Service</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/system/system_add.png</normaloff>:/system/system_add.png</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>22</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="PresentationSpacer" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0" >
+               <size>
+                <width>166</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTableWidget" name="PresentationsList" />
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="VideosPage" >
+        <attribute name="label" >
+         <string>Videos</string>
+        </attribute>
+        <attribute name="icon" >
+         <iconset resource="../images/openlp-2.qrc" >
+          <normaloff>:/media/media_video.png</normaloff>:/media/media_video.png</iconset>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="ImagesPage" >
+        <attribute name="label" >
+         <string>Images</string>
+        </attribute>
+        <attribute name="icon" >
+         <iconset resource="../images/openlp-2.qrc" >
+          <normaloff>:/media/media_image.png</normaloff>:/media/media_image.png</iconset>
         </attribute>
        </widget>
       </widget>
@@ -387,15 +710,22 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="OrderOfServiceDock" >
+  <widget class="QDockWidget" name="ServiceManagerDock" >
+   <property name="windowIcon" >
+    <iconset resource="../images/openlp-2.qrc" >
+     <normaloff>:/system/system_servicemanager.png</normaloff>:/system/system_servicemanager.png</iconset>
+   </property>
+   <property name="features" >
+    <set>QDockWidget::AllDockWidgetFeatures</set>
+   </property>
    <property name="windowTitle" >
     <string>Service Manager</string>
    </property>
    <attribute name="dockWidgetArea" >
     <number>2</number>
    </attribute>
-   <widget class="QWidget" name="OrderOfServiceContents" >
-    <layout class="QVBoxLayout" name="verticalLayout_4" >
+   <widget class="QWidget" name="ServiceManagerContents" >
+    <layout class="QVBoxLayout" name="ServiceManagerLayout" >
      <property name="spacing" >
       <number>0</number>
      </property>
@@ -404,7 +734,7 @@
      </property>
      <item>
       <widget class="QWidget" native="1" name="ServiceToolbar" >
-       <layout class="QHBoxLayout" name="horizontalLayout_2" >
+       <layout class="QHBoxLayout" name="ServiceToolbarLayout" >
         <property name="spacing" >
          <number>0</number>
         </property>
@@ -427,7 +757,7 @@
           </property>
           <property name="icon" >
            <iconset resource="../images/openlp-2.qrc" >
-            <normaloff>:/services/services/service_new.png</normaloff>:/services/services/service_new.png</iconset>
+            <normaloff>:/services/service_new.png</normaloff>:/services/service_new.png</iconset>
           </property>
           <property name="iconSize" >
            <size>
@@ -447,7 +777,7 @@
           </property>
           <property name="icon" >
            <iconset resource="../images/openlp-2.qrc" >
-            <normaloff>:/services/services/service_open.png</normaloff>:/services/services/service_open.png</iconset>
+            <normaloff>:/services/service_open.png</normaloff>:/services/service_open.png</iconset>
           </property>
           <property name="iconSize" >
            <size>
@@ -461,13 +791,13 @@
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="ServiceSaveToolbar" >
+         <widget class="QToolButton" name="ServiceSaveItem" >
           <property name="text" >
            <string>Save Service</string>
           </property>
           <property name="icon" >
            <iconset resource="../images/openlp-2.qrc" >
-            <normaloff>:/services/services/service_save.png</normaloff>:/services/services/service_save.png</iconset>
+            <normaloff>:/services/service_save.png</normaloff>:/services/service_save.png</iconset>
           </property>
           <property name="iconSize" >
            <size>
@@ -481,7 +811,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="comboBox" >
+         <widget class="QComboBox" name="ServiceThemeComboBox" >
           <property name="sizeAdjustPolicy" >
            <enum>QComboBox::AdjustToContents</enum>
           </property>
@@ -519,12 +849,16 @@
       </widget>
      </item>
      <item>
-      <widget class="QListView" name="OrderOfServiceListView" />
+      <widget class="QListView" name="ServiceListView" />
      </item>
     </layout>
    </widget>
   </widget>
   <widget class="QDockWidget" name="ThemeManagerDock" >
+   <property name="windowIcon" >
+    <iconset resource="../images/openlp-2.qrc" >
+     <normaloff>:/system/system_thememanager.png</normaloff>:/system/system_thememanager.png</iconset>
+   </property>
    <property name="floating" >
     <bool>false</bool>
    </property>
@@ -535,10 +869,87 @@
     <number>2</number>
    </attribute>
    <widget class="QWidget" name="ThemeManagerContents" >
-    <layout class="QVBoxLayout" name="verticalLayout_2" >
+    <layout class="QVBoxLayout" name="ThemeManagerLayout" >
+     <property name="spacing" >
+      <number>0</number>
+     </property>
      <property name="margin" >
       <number>0</number>
      </property>
+     <item>
+      <widget class="QWidget" native="1" name="ThemeManagerToolbar" >
+       <layout class="QHBoxLayout" name="ThemeManagerToolbarLayout" >
+        <property name="spacing" >
+         <number>0</number>
+        </property>
+        <property name="leftMargin" >
+         <number>0</number>
+        </property>
+        <property name="topMargin" >
+         <number>2</number>
+        </property>
+        <property name="rightMargin" >
+         <number>0</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QToolButton" name="ThemeNewItem" >
+          <property name="text" >
+           <string>New Theme</string>
+          </property>
+          <property name="icon" >
+           <iconset resource="../images/openlp-2.qrc" >
+            <normaloff>:/themes/theme_new.png</normaloff>:/themes/theme_new.png</iconset>
+          </property>
+          <property name="iconSize" >
+           <size>
+            <width>22</width>
+            <height>22</height>
+           </size>
+          </property>
+          <property name="autoRaise" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="ThemeEditItem" >
+          <property name="text" >
+           <string>Edit Theme</string>
+          </property>
+          <property name="icon" >
+           <iconset resource="../images/openlp-2.qrc" >
+            <normaloff>:/themes/theme_edit.png</normaloff>:/themes/theme_edit.png</iconset>
+          </property>
+          <property name="iconSize" >
+           <size>
+            <width>22</width>
+            <height>22</height>
+           </size>
+          </property>
+          <property name="autoRaise" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer" >
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>201</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+     </item>
      <item>
       <widget class="QListView" name="ThemeManagerListView" />
      </item>
@@ -546,33 +957,86 @@
    </widget>
   </widget>
   <action name="FileNewItem" >
+   <property name="icon" >
+    <iconset resource="../images/openlp-2.qrc" >
+     <normaloff>:/services/service_new.png</normaloff>:/services/service_new.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;New</string>
    </property>
+   <property name="toolTip" >
+    <string>New Service</string>
+   </property>
+   <property name="statusTip" >
+    <string>Create a new Service</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+N</string>
+   </property>
   </action>
   <action name="FileOpenItem" >
+   <property name="icon" >
+    <iconset resource="../images/openlp-2.qrc" >
+     <normaloff>:/services/service_open.png</normaloff>:/services/service_open.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Open</string>
    </property>
+   <property name="toolTip" >
+    <string>Open Service</string>
+   </property>
+   <property name="statusTip" >
+    <string>Open an existing service</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+O</string>
+   </property>
   </action>
   <action name="FileSaveItem" >
+   <property name="icon" >
+    <iconset resource="../images/openlp-2.qrc" >
+     <normaloff>:/services/service_save.png</normaloff>:/services/service_save.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Save</string>
+   </property>
+   <property name="toolTip" >
+    <string>Save Service</string>
+   </property>
+   <property name="statusTip" >
+    <string>Save the current service to disk</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+S</string>
    </property>
   </action>
   <action name="FileSaveAsItem" >
    <property name="text" >
     <string>Save &amp;As...</string>
    </property>
+   <property name="toolTip" >
+    <string>Save Service As</string>
+   </property>
+   <property name="statusTip" >
+    <string>Save the current service under a new name</string>
+   </property>
+   <property name="shortcut" >
+    <string>F12</string>
+   </property>
   </action>
-  <action name="actionE_xit" >
+  <action name="FileExitItem" >
+   <property name="icon" >
+    <iconset resource="../images/openlp-2.qrc" >
+     <normaloff>:/system/system_exit.png</normaloff>:/system/system_exit.png</iconset>
+   </property>
    <property name="text" >
     <string>E&amp;xit</string>
    </property>
-  </action>
-  <action name="ImportSongItem" >
-   <property name="text" >
-    <string>&amp;Song</string>
+   <property name="statusTip" >
+    <string>Quit OpenLP 2.0</string>
+   </property>
+   <property name="shortcut" >
+    <string>Alt+F4</string>
    </property>
   </action>
   <action name="ImportBibleItem" >
@@ -590,27 +1054,17 @@
     <string>&amp;Language</string>
    </property>
   </action>
-  <action name="action_Song_2" >
-   <property name="text" >
-    <string>&amp;Song</string>
-   </property>
-  </action>
-  <action name="action_Bible_2" >
+  <action name="ExportBibleItem" >
    <property name="text" >
     <string>&amp;Bible</string>
    </property>
   </action>
-  <action name="action_Theme_2" >
+  <action name="ExportThemeItem" >
    <property name="text" >
     <string>&amp;Theme</string>
    </property>
   </action>
-  <action name="action_Language_2" >
-   <property name="text" >
-    <string>&amp;Language</string>
-   </property>
-  </action>
-  <action name="action_Language_3" >
+  <action name="ExportLanguageItem" >
    <property name="text" >
     <string>&amp;Language</string>
    </property>
@@ -620,54 +1074,266 @@
     <string>Look &amp;&amp; &amp;Feel</string>
    </property>
   </action>
-  <action name="action_Settings" >
+  <action name="OptionsSettingsItem" >
+   <property name="icon" >
+    <iconset resource="../images/openlp-2.qrc" >
+     <normaloff>:/system/system_settings.png</normaloff>:/system/system_settings.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Settings</string>
    </property>
   </action>
-  <action name="action_Media_Manager" >
+  <action name="ViewMediaManagerItem" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../images/openlp-2.qrc" >
+     <normaloff>:/system/system_mediamanager.png</normaloff>:/system/system_mediamanager.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Media Manager</string>
    </property>
+   <property name="toolTip" >
+    <string>Toggle Media Manager</string>
+   </property>
+   <property name="statusTip" >
+    <string>Toggle the visibility of the Media Manager</string>
+   </property>
+   <property name="shortcut" >
+    <string>F8</string>
+   </property>
   </action>
-  <action name="action_Theme_Manager" >
+  <action name="ViewThemeManagerItem" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../images/openlp-2.qrc" >
+     <normaloff>:/system/system_thememanager.png</normaloff>:/system/system_thememanager.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Theme Manager</string>
    </property>
-  </action>
-  <action name="action_Order_of_Service" >
-   <property name="text" >
-    <string>&amp;Order of Service</string>
+   <property name="toolTip" >
+    <string>Toggle Theme Manager</string>
+   </property>
+   <property name="statusTip" >
+    <string>Toggle the visibility of the Theme Manager</string>
+   </property>
+   <property name="shortcut" >
+    <string>F10</string>
    </property>
   </action>
-  <action name="action_Alert" >
+  <action name="ViewServiceManagerItem" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../images/openlp-2.qrc" >
+     <normaloff>:/system/system_servicemanager.png</normaloff>:/system/system_servicemanager.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Service Manager</string>
+   </property>
+   <property name="toolTip" >
+    <string>Toggle Service Manager</string>
+   </property>
+   <property name="statusTip" >
+    <string>Toggle the visibility of the Service Manager</string>
+   </property>
+   <property name="shortcut" >
+    <string>F9</string>
+   </property>
+  </action>
+  <action name="ToolsAlertItem" >
+   <property name="icon" >
+    <iconset resource="../images/openlp-2.qrc" >
+     <normaloff>:/tools/tools_alert.png</normaloff>:/tools/tools_alert.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Alert</string>
    </property>
+   <property name="statusTip" >
+    <string>Show an alert message</string>
+   </property>
+   <property name="shortcut" >
+    <string>F7</string>
+   </property>
   </action>
-  <action name="action_Documentation" >
+  <action name="HelpDocumentationItem" >
    <property name="text" >
     <string>&amp;User Guide</string>
    </property>
   </action>
-  <action name="action_About" >
+  <action name="HelpAboutItem" >
    <property name="text" >
     <string>&amp;About</string>
    </property>
+   <property name="statusTip" >
+    <string>More information about OpenLP</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+F1</string>
+   </property>
   </action>
-  <action name="action_Online_Help" >
+  <action name="HelpOnlineHelpItem" >
    <property name="text" >
     <string>&amp;Online Help</string>
    </property>
   </action>
-  <action name="action_Web_Site" >
+  <action name="HelpWebSiteItem" >
    <property name="text" >
     <string>&amp;Web Site</string>
+   </property>
+  </action>
+  <action name="ImportOpenSongItem" >
+   <property name="text" >
+    <string>OpenSong</string>
+   </property>
+  </action>
+  <action name="ImportOpenlp1Item" >
+   <property name="text" >
+    <string>openlp.org 1.0</string>
+   </property>
+   <property name="toolTip" >
+    <string>Export songs in openlp.org 1.0 format</string>
+   </property>
+   <property name="statusTip" >
+    <string>Export songs in openlp.org 1.0 format</string>
+   </property>
+  </action>
+  <action name="ImportOpenlp2Item" >
+   <property name="text" >
+    <string>OpenLP 2.0</string>
+   </property>
+   <property name="toolTip" >
+    <string>Export songs in OpenLP 2.0 format</string>
+   </property>
+   <property name="statusTip" >
+    <string>Export songs in OpenLP 2.0 format</string>
+   </property>
+  </action>
+  <action name="ExportOpenSongItem" >
+   <property name="text" >
+    <string>OpenSong</string>
+   </property>
+  </action>
+  <action name="ExportOpenlp1Item" >
+   <property name="text" >
+    <string>openlp.org 1.0</string>
+   </property>
+  </action>
+  <action name="ExportOpenlp2Item" >
+   <property name="text" >
+    <string>OpenLP 2.0</string>
+   </property>
+  </action>
+  <action name="LanguageTranslateItem" >
+   <property name="text" >
+    <string>&amp;Translate</string>
+   </property>
+   <property name="statusTip" >
+    <string>Translate the interface to your language</string>
+   </property>
+  </action>
+  <action name="LanguageEnglishItem" >
+   <property name="text" >
+    <string>English</string>
+   </property>
+   <property name="statusTip" >
+    <string>Set the interface language to English</string>
+   </property>
+  </action>
+  <action name="ToolsAddToolItem" >
+   <property name="icon" >
+    <iconset resource="../images/openlp-2.qrc" >
+     <normaloff>:/tools/tools_add.png</normaloff>:/tools/tools_add.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Add Tool...</string>
+   </property>
+   <property name="statusTip" >
+    <string>Add an application to the list of tools</string>
    </property>
   </action>
  </widget>
  <resources>
   <include location="../images/openlp-2.qrc" />
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>FileExitItem</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>543</x>
+     <y>423</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ViewMediaManagerItem</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>MediaManagerDock</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>127</x>
+     <y>424</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ViewServiceManagerItem</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>ServiceManagerDock</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>940</x>
+     <y>224</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ViewThemeManagerItem</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>ThemeManagerDock</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>940</x>
+     <y>625</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

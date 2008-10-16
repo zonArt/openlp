@@ -1,12 +1,50 @@
 <RCC>
   <qresource prefix="songs" >
-    <file>songs/song_edit.png</file>
-    <file>songs/song_export.png</file>
-    <file>songs/song_new.png</file>
+    <file>song_delete.png</file>
+    <file>song_edit.png</file>
+    <file>song_export.png</file>
+    <file>song_new.png</file>
   </qresource>
   <qresource prefix="services" >
-    <file>services/service_new.png</file>
-    <file>services/service_open.png</file>
-    <file>services/service_save.png</file>
+    <file>service_bottom.png</file>
+    <file>service_down.png</file>
+    <file>service_top.png</file>
+    <file>service_up.png</file>
+    <file>service_delete.png</file>
+    <file>service_new.png</file>
+    <file>service_open.png</file>
+    <file>service_save.png</file>
+  </qresource>
+  <qresource prefix="system" >
+    <file>system_add.png</file>
+    <file>system_live.png</file>
+    <file>system_preview.png</file>
+    <file>system_mediamanager.png</file>
+    <file>system_servicemanager.png</file>
+    <file>system_thememanager.png</file>
+    <file>system_exit.png</file>
+    <file>system_settings.png</file>
+  </qresource>
+  <qresource prefix="media" >
+    <file>media_presentation.png</file>
+    <file>media_image.png</file>
+    <file>media_song.png</file>
+    <file>media_verse.png</file>
+    <file>media_video.png</file>
+  </qresource>
+  <qresource prefix="messagebox" >
+    <file>messagebox_critical.png</file>
+    <file>messagebox_info.png</file>
+    <file>messagebox_warning.png</file>
+  </qresource>
+  <qresource prefix="tools" >
+    <file>tools_add.png</file>
+    <file>tools_alert.png</file>
+  </qresource>
+  <qresource prefix="themes" >
+    <file>theme_new.png</file>
+    <file>theme_edit.png</file>
+    <file>theme_export.png</file>
+    <file>theme_import.png</file>
   </qresource>
 </RCC>
