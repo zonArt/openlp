@@ -59,8 +59,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>268</width>
-              <height>542</height>
+              <width>275</width>
+              <height>536</height>
              </rect>
             </property>
            </widget>
@@ -99,8 +99,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>268</width>
-              <height>542</height>
+              <width>275</width>
+              <height>536</height>
              </rect>
             </property>
            </widget>
@@ -127,7 +127,7 @@
      <x>0</x>
      <y>0</y>
      <width>1087</width>
-     <height>22</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="FileMenu" >
@@ -255,24 +255,33 @@
      </sizepolicy>
     </property>
     <layout class="QHBoxLayout" name="MediaManagerLayout" >
-     <property name="margin" >
+     <property name="leftMargin" >
+      <number>0</number>
+     </property>
+     <property name="topMargin" >
+      <number>2</number>
+     </property>
+     <property name="rightMargin" >
+      <number>0</number>
+     </property>
+     <property name="bottomMargin" >
       <number>0</number>
      </property>
      <item>
       <widget class="QToolBox" name="MediaToolBox" >
        <property name="currentIndex" >
-        <number>4</number>
+        <number>0</number>
        </property>
        <property name="tabSpacing" >
         <number>0</number>
        </property>
-       <widget class="QWidget" name="SongsPage" >
+       <widget class="QWidget" name="SongPage" >
         <property name="geometry" >
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>237</width>
-          <height>652</height>
+          <width>236</width>
+          <height>609</height>
          </rect>
         </property>
         <attribute name="label" >
@@ -290,8 +299,8 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QWidget" native="1" name="SongsToolbar" >
-           <layout class="QHBoxLayout" name="SongsToolbarLayout" >
+          <widget class="QWidget" native="1" name="SongToolbar" >
+           <layout class="QHBoxLayout" name="SongToolbarLayout" >
             <property name="spacing" >
              <number>0</number>
             </property>
@@ -299,7 +308,7 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QToolButton" name="SongsNewItem" >
+             <widget class="QToolButton" name="SongNewItem" >
               <property name="text" >
                <string>New Song</string>
               </property>
@@ -319,7 +328,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="SongsEditItem" >
+             <widget class="QToolButton" name="SongEditItem" >
               <property name="text" >
                <string>Edit Song</string>
               </property>
@@ -339,7 +348,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="SongsDeleteItem" >
+             <widget class="QToolButton" name="SongDeleteItem" >
               <property name="text" >
                <string>Delete Song</string>
               </property>
@@ -359,7 +368,7 @@
              </widget>
             </item>
             <item>
-             <widget class="Line" name="SongsLine" >
+             <widget class="Line" name="SongLine" >
               <property name="minimumSize" >
                <size>
                 <width>0</width>
@@ -381,7 +390,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="SongsPreviewItem" >
+             <widget class="QToolButton" name="SongPreviewItem" >
               <property name="text" >
                <string>Send to Preview</string>
               </property>
@@ -401,7 +410,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="SongsLiveItem" >
+             <widget class="QToolButton" name="SongLiveItem" >
               <property name="text" >
                <string>Send to Live</string>
               </property>
@@ -421,7 +430,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="SongsAddItem" >
+             <widget class="QToolButton" name="SongAddItem" >
               <property name="text" >
                <string>Add to Service</string>
               </property>
@@ -441,7 +450,7 @@
              </widget>
             </item>
             <item>
-             <spacer name="SongsSpacer" >
+             <spacer name="SongSpacer" >
               <property name="orientation" >
                <enum>Qt::Horizontal</enum>
               </property>
@@ -457,17 +466,17 @@
           </widget>
          </item>
          <item>
-          <widget class="QTableWidget" name="SongsList" />
+          <widget class="QTableWidget" name="SongList" />
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="VersesPage" >
+       <widget class="QWidget" name="VersePage" >
         <property name="geometry" >
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>237</width>
-          <height>652</height>
+          <width>236</width>
+          <height>609</height>
          </rect>
         </property>
         <attribute name="label" >
@@ -570,17 +579,26 @@
           </widget>
          </item>
          <item>
-          <widget class="QTableWidget" name="VersesList" />
+          <widget class="QTableWidget" name="VerseList" />
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="PresentationsPage" >
+       <widget class="QWidget" name="CustomSlidePage" >
+        <attribute name="label" >
+         <string>Custom Slides</string>
+        </attribute>
+        <attribute name="icon" >
+         <iconset resource="../images/openlp-2.qrc" >
+          <normaloff>:/media/media_custom.png</normaloff>:/media/media_custom.png</iconset>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="PresentationPage" >
         <property name="geometry" >
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>237</width>
-          <height>652</height>
+          <width>236</width>
+          <height>609</height>
          </rect>
         </property>
         <attribute name="label" >
@@ -598,8 +616,8 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QWidget" native="1" name="PresentationsToolbar" >
-           <layout class="QHBoxLayout" name="PresentationsToolbarLayout" >
+          <widget class="QWidget" native="1" name="PresentationToolbar" >
+           <layout class="QHBoxLayout" name="PresentationToolbarLayout" >
             <property name="spacing" >
              <number>0</number>
             </property>
@@ -607,13 +625,19 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QToolButton" name="PresentationPreviewItem" >
+             <widget class="QToolButton" name="PresentationLoadItem" >
+              <property name="toolTip" >
+               <string>Load Video</string>
+              </property>
+              <property name="statusTip" >
+               <string>Load a video</string>
+              </property>
               <property name="text" >
-               <string>Send to Preview</string>
+               <string>Load Video</string>
               </property>
               <property name="icon" >
                <iconset resource="../images/openlp-2.qrc" >
-                <normaloff>:/system/system_preview.png</normaloff>:/system/system_preview.png</iconset>
+                <normaloff>:/videos/video_load.png</normaloff>:/videos/video_load.png</iconset>
               </property>
               <property name="iconSize" >
                <size>
@@ -623,6 +647,36 @@
               </property>
               <property name="autoRaise" >
                <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="PresentationDeleteItem" >
+              <property name="toolTip" >
+               <string>Remove Video</string>
+              </property>
+              <property name="text" >
+               <string>RI</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/videos/video_delete.png</normaloff>:/videos/video_delete.png</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>22</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="Line" name="PresentationLine" >
+              <property name="orientation" >
+               <enum>Qt::Vertical</enum>
               </property>
              </widget>
             </item>
@@ -683,17 +737,17 @@
           </widget>
          </item>
          <item>
-          <widget class="QTableWidget" name="PresentationsList" />
+          <widget class="QTableWidget" name="PresentationList" />
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="VideosPage" >
+       <widget class="QWidget" name="VideoPage" >
         <property name="geometry" >
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>237</width>
-          <height>652</height>
+          <width>236</width>
+          <height>609</height>
          </rect>
         </property>
         <attribute name="label" >
@@ -711,8 +765,8 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QWidget" native="1" name="VideosToolbar" >
-           <layout class="QHBoxLayout" name="VideosToolbarLayout" >
+          <widget class="QWidget" native="1" name="VideoToolbar" >
+           <layout class="QHBoxLayout" name="VideoToolbarLayout" >
             <property name="spacing" >
              <number>0</number>
             </property>
@@ -720,7 +774,7 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QToolButton" name="VideosLoadItem" >
+             <widget class="QToolButton" name="VideoLoadItem" >
               <property name="toolTip" >
                <string>Load Video</string>
               </property>
@@ -740,10 +794,13 @@
                 <height>22</height>
                </size>
               </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="VideosDeleteItem" >
+             <widget class="QToolButton" name="VideoDeleteItem" >
               <property name="toolTip" >
                <string>Remove Video</string>
               </property>
@@ -766,14 +823,14 @@
              </widget>
             </item>
             <item>
-             <widget class="Line" name="VideosLine" >
+             <widget class="Line" name="VideoLine" >
               <property name="orientation" >
                <enum>Qt::Vertical</enum>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="VideosLiveItem" >
+             <widget class="QToolButton" name="VideoLiveItem" >
               <property name="toolTip" >
                <string>Go Live!</string>
               </property>
@@ -796,7 +853,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="VideosAddItem" >
+             <widget class="QToolButton" name="VideoAddItem" >
               <property name="toolTip" >
                <string>Add to Order of Service</string>
               </property>
@@ -819,7 +876,7 @@
              </widget>
             </item>
             <item>
-             <spacer name="VideosSpacer" >
+             <spacer name="VideoSpacer" >
               <property name="orientation" >
                <enum>Qt::Horizontal</enum>
               </property>
@@ -835,17 +892,17 @@
           </widget>
          </item>
          <item>
-          <widget class="QTableWidget" name="VideosList" />
+          <widget class="QTableWidget" name="VideoList" />
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="ImagesPage" >
+       <widget class="QWidget" name="ImagePage" >
         <property name="geometry" >
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>237</width>
-          <height>652</height>
+          <width>236</width>
+          <height>609</height>
          </rect>
         </property>
         <attribute name="label" >
@@ -863,8 +920,8 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QWidget" native="1" name="ImagesToolbar" >
-           <layout class="QHBoxLayout" name="ImagesToolbarLayout" >
+          <widget class="QWidget" native="1" name="ImageToolbar" >
+           <layout class="QHBoxLayout" name="ImageToolbarLayout" >
             <property name="spacing" >
              <number>0</number>
             </property>
@@ -872,7 +929,7 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QToolButton" name="ImagesLoadItem" >
+             <widget class="QToolButton" name="ImageLoadItem" >
               <property name="toolTip" >
                <string>Load Video</string>
               </property>
@@ -892,10 +949,13 @@
                 <height>22</height>
                </size>
               </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="ImagesDeleteItem" >
+             <widget class="QToolButton" name="ImageDeleteItem" >
               <property name="toolTip" >
                <string>Remove Video</string>
               </property>
@@ -918,14 +978,14 @@
              </widget>
             </item>
             <item>
-             <widget class="Line" name="ImagesLine" >
+             <widget class="Line" name="ImageLine" >
               <property name="orientation" >
                <enum>Qt::Vertical</enum>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="ImagesLiveItem" >
+             <widget class="QToolButton" name="ImageLiveItem" >
               <property name="toolTip" >
                <string>Go Live!</string>
               </property>
@@ -948,7 +1008,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="ImagesAddItem" >
+             <widget class="QToolButton" name="ImageAddItem" >
               <property name="toolTip" >
                <string>Add to Order of Service</string>
               </property>
@@ -971,7 +1031,7 @@
              </widget>
             </item>
             <item>
-             <spacer name="ImagesToolbarSpacer" >
+             <spacer name="ImageToolbarSpacer" >
               <property name="orientation" >
                <enum>Qt::Horizontal</enum>
               </property>
@@ -987,7 +1047,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QTableWidget" name="ImagesList" />
+          <widget class="QTableWidget" name="ImageList" />
          </item>
         </layout>
        </widget>
@@ -1221,7 +1281,7 @@
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer" >
+         <spacer name="ThemeSpacer" >
           <property name="orientation" >
            <enum>Qt::Horizontal</enum>
           </property>

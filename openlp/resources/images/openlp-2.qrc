@@ -41,6 +41,7 @@
     <file>system_settings.png</file>
   </qresource>
   <qresource prefix="media" >
+    <file>media_custom.png</file>
     <file>media_presentation.png</file>
     <file>media_image.png</file>
     <file>media_song.png</file>
