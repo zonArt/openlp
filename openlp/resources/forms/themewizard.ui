@@ -1,0 +1,95 @@
+<ui version="4.0" >
+ <class>ThemeWizard</class>
+ <widget class="QWizard" name="ThemeWizard" >
+  <property name="windowModality" >
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>576</width>
+    <height>397</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Theme Wizard</string>
+  </property>
+  <property name="modal" >
+   <bool>true</bool>
+  </property>
+  <property name="wizardStyle" >
+   <enum>QWizard::ModernStyle</enum>
+  </property>
+  <property name="options" >
+   <set>QWizard::DisabledBackButtonOnLastPage|QWizard::IndependentPages|QWizard::NoBackButtonOnStartPage|QWizard::NoCancelButton</set>
+  </property>
+  <widget class="QWizardPage" name="WelcomePage" >
+   <property name="title" >
+    <string>Welcome</string>
+   </property>
+   <property name="subTitle" >
+    <string/>
+   </property>
+   <widget class="QLabel" name="WelcomeLabel" >
+    <property name="geometry" >
+     <rect>
+      <x>20</x>
+      <y>100</y>
+      <width>341</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Welcome to the Theme Wizard. This wizard will guide you through the process of creating a new theme.</string>
+    </property>
+    <property name="wordWrap" >
+     <bool>true</bool>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QWizardPage" name="NamePage" >
+   <property name="title" >
+    <string>Theme Name</string>
+   </property>
+   <property name="subTitle" >
+    <string>Choose a name for your theme</string>
+   </property>
+   <widget class="QLabel" name="NameLabel" >
+    <property name="geometry" >
+     <rect>
+      <x>100</x>
+      <y>130</y>
+      <width>91</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Theme Name:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="NameEdit" >
+    <property name="geometry" >
+     <rect>
+      <x>200</x>
+      <y>127</y>
+      <width>261</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QWizardPage" name="BackgroundPage" >
+   <property name="title" >
+    <string>Select Background</string>
+   </property>
+   <property name="subTitle" >
+    <string>Select a background type and configure your background</string>
+   </property>
+  </widget>
+ </widget>
+ <resources>
+  <include location="../images/openlp-2.qrc" />
+ </resources>
+ <connections/>
+</ui>

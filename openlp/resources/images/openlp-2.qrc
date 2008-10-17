@@ -5,6 +5,21 @@
     <file>song_export.png</file>
     <file>song_new.png</file>
   </qresource>
+  <qresource prefix="wizards" >
+    <file>wizard_importbible.bmp</file>
+  </qresource>
+  <qresource prefix="presentations" >
+    <file>presentation_delete.png</file>
+    <file>presentation_load.png</file>
+  </qresource>
+  <qresource prefix="videos" >
+    <file>video_delete.png</file>
+    <file>video_load.png</file>
+  </qresource>
+  <qresource prefix="images" >
+    <file>image_delete.png</file>
+    <file>image_load.png</file>
+  </qresource>
   <qresource prefix="services" >
     <file>service_bottom.png</file>
     <file>service_down.png</file>
