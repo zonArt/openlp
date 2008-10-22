@@ -6,7 +6,7 @@ sys.path.insert(0,(os.path.join(mypath, '..', '..')))
 from openlp.utils import ConfigHelper
 
 class BibleManager:
-    def __init__(self): # bible, type, path, user, password): # , type='sqlite'
+    def __init__(self): 
         """
         Finds all the bibles defined for the system
         Creates an Interface Object for each bible containing connection information
