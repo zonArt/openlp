@@ -28,5 +28,5 @@ def getSongsFile():
     print songfile
 
 def getBiblePath():
-    return os.path.join(getConfigPath(), 'Bibles')
+    return os.path.join(getConfigPath(), "Data","Bibles")
    
