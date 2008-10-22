@@ -46,12 +46,12 @@ verses = Table('Verses', metadata,
 )
 Index('idx_chapter_verse_book', verses.c.chapter, verses.c.verse, verses.c.book_id, verses.c.id)
 
-class bible_impl:
-    def __init__(self, filename):   
+class BibleImpl:
+    def __init__(self, biblename):   
         # Connect to database 
         path = ConfigHelper.getBiblePath()
         print path
-        biblefile = os.path.join(path, filename+".bible")
+        biblefile = os.path.join(path, biblename+".bible")
         print biblefile
         self.db = create_engine("sqlite:///"+biblefile)
         self.db.echo = False

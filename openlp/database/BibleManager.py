@@ -4,6 +4,7 @@ mypath=os.path.split(os.path.abspath(__file__))[0]
 sys.path.insert(0,(os.path.join(mypath, '..', '..')))
 
 from openlp.utils import ConfigHelper
+from openlp.database.BibleImpl import *
 
 class BibleManager:
     def __init__(self): 
@@ -16,17 +17,26 @@ class BibleManager:
         """
         #if bible != "niv" and bible !="message":
         #    raise Exception('Unsupported bible requested ' + bible)
+        self.biblelist = {}
         self.biblePath = ConfigHelper.getBiblePath()
         print self.biblePath
+        files = os.listdir(self.biblePath)
+        for f in files:
+            b = f.split('.')[0]
+            self.biblelist[b] = BibleImpl(b)
+        print self.biblelist
+    
         
         
     def getBibles(self):
         """
         Returns a list of Books of the bible
         """
-        print "get Bibles"
-        return ["NIV","The_Message"]
-
+        r=[]
+        for b ,  o in self.biblelist.iteritems():
+            r.append(b)
+        return r
+        
     def getBibleBooks(self,bible):
         """
         Returns a list of the books of the bible
