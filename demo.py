@@ -1,3 +1,21 @@
+"""
+OpenLP - Open Source Lyrics Projection
+Copyright (c) 2008 Raoul Snyman
+Portions copyright (c) 2008 Martin Thompson, Tim Bentley
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; version 2 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place, Suite 330, Boston, MA 02111-1307 USA
+"""
+
 from openlp.core import Renderer
 from openlp.theme import Theme
 import sys
@@ -20,7 +38,7 @@ class TstFrame(QtGui.QMainWindow):
         QtGui.QMainWindow.__init__(self)
         self.resize(1024,768)
         self.size=(1024,768)
-        
+
         self.v=0
         self._font=QtGui.QFont('Decorative', 32)
         self.framecount=0
@@ -32,7 +50,7 @@ class TstFrame(QtGui.QMainWindow):
         self.setCentralWidget(self.frame)
         self.r=Renderer()
         self.r.set_theme(Theme('demo_theme.xml'))
-        
+
         self.r.set_text_rectangle(self.frame.frameRect())
         self.r.set_paint_dest(self)
         self.r.set_words_openlp(words)
@@ -48,7 +66,7 @@ class TstFrame(QtGui.QMainWindow):
         self.totaltime += deltat
         self.framecount+=1
         print "Timing result: %5.3ffps" %(self.framecount/float(self.totaltime))
-        
+
     # }}}
 
 class Demo:
