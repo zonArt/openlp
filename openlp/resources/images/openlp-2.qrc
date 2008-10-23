@@ -5,6 +5,11 @@
     <file>song_export.png</file>
     <file>song_new.png</file>
   </qresource>
+  <qresource prefix="custom" >
+    <file>custom_new.png</file>
+    <file>custom_edit.png</file>
+    <file>custom_delete.png</file>
+  </qresource>
   <qresource prefix="wizards" >
     <file>wizard_importbible.bmp</file>
   </qresource>
@@ -58,6 +63,7 @@
     <file>tools_alert.png</file>
   </qresource>
   <qresource prefix="themes" >
+    <file>theme_delete.png</file>
     <file>theme_new.png</file>
     <file>theme_edit.png</file>
     <file>theme_export.png</file>
