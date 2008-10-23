@@ -59,7 +59,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>275</width>
+              <width>254</width>
               <height>536</height>
              </rect>
             </property>
@@ -99,7 +99,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>275</width>
+              <width>254</width>
               <height>536</height>
              </rect>
             </property>
@@ -186,9 +186,19 @@
      <property name="title" >
       <string>&amp;View</string>
      </property>
+     <widget class="QMenu" name="ViewModeMenu" >
+      <property name="title" >
+       <string>M&amp;ode</string>
+      </property>
+      <addaction name="ModeLiveItem" />
+     </widget>
+     <addaction name="ViewModeMenu" />
+     <addaction name="separator" />
      <addaction name="ViewMediaManagerItem" />
      <addaction name="ViewServiceManagerItem" />
      <addaction name="ViewThemeManagerItem" />
+     <addaction name="separator" />
+     <addaction name="action_Preview_Pane" />
     </widget>
     <widget class="QMenu" name="OptionsLanguageMenu" >
      <property name="title" >
@@ -280,7 +290,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>236</width>
+          <width>263</width>
           <height>609</height>
          </rect>
         </property>
@@ -318,8 +328,8 @@
               </property>
               <property name="iconSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="autoRaise" >
@@ -338,8 +348,8 @@
               </property>
               <property name="iconSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="autoRaise" >
@@ -358,8 +368,8 @@
               </property>
               <property name="iconSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="autoRaise" >
@@ -400,8 +410,8 @@
               </property>
               <property name="iconSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="autoRaise" >
@@ -420,8 +430,8 @@
               </property>
               <property name="iconSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="autoRaise" >
@@ -440,8 +450,8 @@
               </property>
               <property name="iconSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="autoRaise" >
@@ -475,7 +485,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>236</width>
+          <width>263</width>
           <height>609</height>
          </rect>
         </property>
@@ -513,8 +523,8 @@
               </property>
               <property name="iconSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="autoRaise" >
@@ -533,8 +543,8 @@
               </property>
               <property name="iconSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="autoRaise" >
@@ -553,8 +563,8 @@
               </property>
               <property name="iconSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="autoRaise" >
@@ -579,11 +589,90 @@
           </widget>
          </item>
          <item>
+          <widget class="Line" name="line" >
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QWidget" native="1" name="VerseSearchWidget" >
+           <layout class="QGridLayout" name="VerseSearchLayout" >
+            <property name="margin" >
+             <number>8</number>
+            </property>
+            <property name="spacing" >
+             <number>8</number>
+            </property>
+            <item row="0" column="0" >
+             <widget class="QLabel" name="label" >
+              <property name="text" >
+               <string>TextLabel</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" >
+             <widget class="QComboBox" name="comboBox" />
+            </item>
+            <item row="1" column="0" >
+             <widget class="QLabel" name="label_2" >
+              <property name="text" >
+               <string>TextLabel</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1" >
+             <widget class="QLineEdit" name="lineEdit" />
+            </item>
+            <item row="2" column="1" >
+             <widget class="QWidget" native="1" name="widget" >
+              <layout class="QHBoxLayout" name="horizontalLayout" >
+               <property name="spacing" >
+                <number>0</number>
+               </property>
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <item>
+                <spacer name="horizontalSpacer" >
+                 <property name="orientation" >
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0" >
+                  <size>
+                   <width>83</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton" >
+                 <property name="text" >
+                  <string>Search</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
           <widget class="QTableWidget" name="VerseList" />
          </item>
         </layout>
        </widget>
        <widget class="QWidget" name="CustomSlidePage" >
+        <property name="geometry" >
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>263</width>
+          <height>609</height>
+         </rect>
+        </property>
         <attribute name="label" >
          <string>Custom Slides</string>
         </attribute>
@@ -591,13 +680,185 @@
          <iconset resource="../images/openlp-2.qrc" >
           <normaloff>:/media/media_custom.png</normaloff>:/media/media_custom.png</iconset>
         </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout" >
+         <property name="spacing" >
+          <number>0</number>
+         </property>
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QWidget" native="1" name="CustomSlideToolbar" >
+           <layout class="QHBoxLayout" name="horizontalLayout_2" >
+            <property name="spacing" >
+             <number>0</number>
+            </property>
+            <property name="leftMargin" >
+             <number>0</number>
+            </property>
+            <property name="topMargin" >
+             <number>2</number>
+            </property>
+            <property name="rightMargin" >
+             <number>0</number>
+            </property>
+            <property name="bottomMargin" >
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QToolButton" name="CustomNewButton" >
+              <property name="text" >
+               <string>New Custom Slide</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/custom/custom_new.png</normaloff>:/custom/custom_new.png</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="CustomEditButton" >
+              <property name="text" >
+               <string>Edit Custom Slide</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/custom/custom_edit.png</normaloff>:/custom/custom_edit.png</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="CustomDeleteButton" >
+              <property name="text" >
+               <string>Delete Custom Slide</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/custom/custom_delete.png</normaloff>:/custom/custom_delete.png</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="Line" name="CustomToolbarLine" >
+              <property name="orientation" >
+               <enum>Qt::Vertical</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="CustomPreviewButton" >
+              <property name="text" >
+               <string>Preview Custom Slide</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/system/system_preview.png</normaloff>:/system/system_preview.png</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="CustomLiveButton" >
+              <property name="text" >
+               <string>Send Live</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/system/system_live.png</normaloff>:/system/system_live.png</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="CustomAddButton" >
+              <property name="text" >
+               <string>Add To Service</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/system/system_add.png</normaloff>:/system/system_add.png</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="autoRaise" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="CustomToolbarSpacer" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0" >
+               <size>
+                <width>84</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QListWidget" name="CustomSlideList" />
+         </item>
+        </layout>
        </widget>
        <widget class="QWidget" name="PresentationPage" >
         <property name="geometry" >
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>236</width>
+          <width>263</width>
           <height>609</height>
          </rect>
         </property>
@@ -641,8 +902,8 @@
               </property>
               <property name="iconSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="autoRaise" >
@@ -664,8 +925,8 @@
               </property>
               <property name="iconSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="autoRaise" >
@@ -691,8 +952,8 @@
               </property>
               <property name="iconSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="autoRaise" >
@@ -711,8 +972,8 @@
               </property>
               <property name="iconSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="autoRaise" >
@@ -737,7 +998,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QTableWidget" name="PresentationList" />
+          <widget class="QListWidget" name="listWidget_2" />
          </item>
         </layout>
        </widget>
@@ -746,7 +1007,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>236</width>
+          <width>263</width>
           <height>609</height>
          </rect>
         </property>
@@ -790,8 +1051,8 @@
               </property>
               <property name="iconSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="autoRaise" >
@@ -813,8 +1074,8 @@
               </property>
               <property name="iconSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="autoRaise" >
@@ -843,8 +1104,8 @@
               </property>
               <property name="iconSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="autoRaise" >
@@ -866,8 +1127,8 @@
               </property>
               <property name="iconSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="autoRaise" >
@@ -892,7 +1153,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QTableWidget" name="VideoList" />
+          <widget class="QListWidget" name="listWidget" />
          </item>
         </layout>
        </widget>
@@ -901,7 +1162,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>236</width>
+          <width>263</width>
           <height>609</height>
          </rect>
         </property>
@@ -945,8 +1206,8 @@
               </property>
               <property name="iconSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="autoRaise" >
@@ -968,8 +1229,8 @@
               </property>
               <property name="iconSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="autoRaise" >
@@ -998,8 +1259,8 @@
               </property>
               <property name="iconSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="autoRaise" >
@@ -1021,8 +1282,8 @@
               </property>
               <property name="iconSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="autoRaise" >
@@ -1047,7 +1308,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QTableWidget" name="ImageList" />
+          <widget class="QListWidget" name="ImageListView" />
          </item>
         </layout>
        </widget>
@@ -1107,8 +1368,8 @@
           </property>
           <property name="iconSize" >
            <size>
-            <width>22</width>
-            <height>22</height>
+            <width>20</width>
+            <height>20</height>
            </size>
           </property>
           <property name="autoRaise" >
@@ -1127,8 +1388,8 @@
           </property>
           <property name="iconSize" >
            <size>
-            <width>22</width>
-            <height>22</height>
+            <width>20</width>
+            <height>20</height>
            </size>
           </property>
           <property name="autoRaise" >
@@ -1147,8 +1408,8 @@
           </property>
           <property name="iconSize" >
            <size>
-            <width>22</width>
-            <height>22</height>
+            <width>20</width>
+            <height>20</height>
            </size>
           </property>
           <property name="autoRaise" >
@@ -1251,8 +1512,8 @@
           </property>
           <property name="iconSize" >
            <size>
-            <width>22</width>
-            <height>22</height>
+            <width>20</width>
+            <height>20</height>
            </size>
           </property>
           <property name="autoRaise" >
@@ -1271,8 +1532,75 @@
           </property>
           <property name="iconSize" >
            <size>
-            <width>22</width>
-            <height>22</height>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="autoRaise" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="ThemeDeleteButton" >
+          <property name="text" >
+           <string>Delete Theme</string>
+          </property>
+          <property name="icon" >
+           <iconset resource="../images/openlp-2.qrc" >
+            <normaloff>:/themes/theme_delete.png</normaloff>:/themes/theme_delete.png</iconset>
+          </property>
+          <property name="iconSize" >
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="autoRaise" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="ThemeToolbarLine" >
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="ThemeImportButton" >
+          <property name="text" >
+           <string>Import Theme</string>
+          </property>
+          <property name="icon" >
+           <iconset resource="../images/openlp-2.qrc" >
+            <normaloff>:/themes/theme_import.png</normaloff>:/themes/theme_import.png</iconset>
+          </property>
+          <property name="iconSize" >
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="autoRaise" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="ThemeExportButton" >
+          <property name="text" >
+           <string>Export Theme</string>
+          </property>
+          <property name="icon" >
+           <iconset resource="../images/openlp-2.qrc" >
+            <normaloff>:/themes/theme_export.png</normaloff>:/themes/theme_export.png</iconset>
+          </property>
+          <property name="iconSize" >
+           <size>
+            <width>20</width>
+            <height>20</height>
            </size>
           </property>
           <property name="autoRaise" >
@@ -1612,6 +1940,22 @@
     <string>Add an application to the list of tools</string>
    </property>
   </action>
+  <action name="action_Preview_Pane" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;Preview Pane</string>
+   </property>
+  </action>
+  <action name="ModeLiveItem" >
+   <property name="text" >
+    <string>&amp;Live</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../images/openlp-2.qrc" />
@@ -1678,6 +2022,70 @@
     <hint type="destinationlabel" >
      <x>940</x>
      <y>625</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Preview_Pane</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>PreviewPane</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>398</x>
+     <y>424</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MediaManagerDock</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>ViewMediaManagerItem</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>127</x>
+     <y>424</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ServiceManagerDock</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>ViewServiceManagerItem</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>953</x>
+     <y>224</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ThemeManagerDock</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>ViewThemeManagerItem</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>953</x>
+     <y>625</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>-1</x>
+     <y>-1</y>
     </hint>
    </hints>
   </connection>
