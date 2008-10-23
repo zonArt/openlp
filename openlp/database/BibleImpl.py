@@ -50,21 +50,23 @@ class BibleImpl:
     def __init__(self, biblename):   
         # Connect to database 
         path = ConfigHelper.getBiblePath()
-        print path
-        biblefile = os.path.join(path, biblename+".bible")
-        print biblefile
-        self.db = create_engine("sqlite:///"+biblefile)
+        #print path
+        self.biblefile = os.path.join(path, biblename+".bible")
+        #print self.biblefile
+        self.db = create_engine("sqlite:///"+self.biblefile)
         self.db.echo = False
         metadata.bind = self.db
         metadata.bind.echo = False
         
-    def create_tables(self):
+    def createTables(self):
+        if os.path.exists(self.biblefile):   # delete bible file and set it up again
+            os.remove(self.biblefile)
         meta.create()
         testament.create()
         books.create()
         verses.create()
 
-    def Load_Data(self, booksfile, versesfile):
+    def loadData(self, booksfile, versesfile):
 
         metai =meta.insert()
         metai.execute(key="dbversion", value="1")

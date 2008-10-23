@@ -17,14 +17,15 @@ class BibleManager:
         """
         #if bible != "niv" and bible !="message":
         #    raise Exception('Unsupported bible requested ' + bible)
+        
         self.biblelist = {}
         self.biblePath = ConfigHelper.getBiblePath()
-        print self.biblePath
+        #print self.biblePath
         files = os.listdir(self.biblePath)
         for f in files:
             b = f.split('.')[0]
             self.biblelist[b] = BibleImpl(b)
-        print self.biblelist
+        #print self.biblelist
     
         
         
@@ -61,6 +62,3 @@ class BibleManager:
             print "adjusted end verse"
             everse = sverse
         return ["In the Beginning was the Word","God made the world as saw it was good"]
-
-
-bm = BibleManager()
