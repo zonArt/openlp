@@ -1,3 +1,21 @@
+"""
+OpenLP - Open Source Lyrics Projection
+Copyright (c) 2008 Raoul Snyman
+Portions copyright (c) 2008 Martin Thompson, Tim Bentley
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; version 2 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place, Suite 330, Boston, MA 02111-1307 USA
+"""
+
 from test_render import TestRender_base, whoami
 import sys
 import os
@@ -32,7 +50,7 @@ And drives away his fear.
 
     def teardown_method(self, method):
         print "============ teardown =============", method, self.bmpname
-        if self.bmpname != None:        
+        if self.bmpname != None:
             assert (self.compare_DC_to_file(self.bmpname))
         if self.expected_answer != None: # result=None => No result to check
             assert self.expected_answer==self.answer
@@ -58,7 +76,7 @@ And drives away his fear.
         else:
             print name, goldenfilename, "Images don't match"
             return False
-        
+
     def test_theme_basic(self):
         self.answer=self.r.render_screen(0)
         self.bmpname=whoami()
@@ -236,7 +254,7 @@ And drives away his fear.
         self.answer=self.r.render_screen(0)
         hoffset=self.r._shadow_offset+2*(self.r._outline_offset)
         voffset=hoffset * (len(self.r.words[0])+1)
-        
+
         self.expected_answer= QtCore.QRect(0, 0, 559+hoffset, 342+voffset)
         self.bmpname=whoami()
     # }}}
@@ -250,7 +268,7 @@ And drives away his fear.
         self.answer=self.r.render_screen(0)
         self.expected_answer= QtCore.QRect(0, 0, 499, 336)
         self.bmpname=whoami()
-    
+
 
 if __name__=="__main__":
     t=TestRenderTheme()

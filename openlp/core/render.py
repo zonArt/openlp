@@ -1,3 +1,21 @@
+"""
+OpenLP - Open Source Lyrics Projection
+Copyright (c) 2008 Raoul Snyman
+Portions copyright (c) 2008 Martin Thompson, Tim Bentley
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; version 2 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place, Suite 330, Boston, MA 02111-1307 USA
+"""
+
 import sys
 from PyQt4 import QtGui, QtCore, Qt
 
@@ -37,7 +55,7 @@ class Renderer:
         if self._paint is not None:
             self.scale_bg_image()
     def scale_bg_image(self):
-        assert self._paint    
+        assert self._paint
         i=QtGui.QImage(self._bg_image_filename)
         # rescale and offset
         imw=i.width();imh=i.height()
@@ -56,7 +74,7 @@ class Renderer:
         self.background_offsetx=(dcw-neww)/2
         self.background_offsety=(dch-newh)/2
         self.img=QtGui.QPixmap.fromImage(i.scaled(QtCore.QSize(neww, newh), Qt.Qt.KeepAspectRatio))
-        
+
     def set_paint_dest(self, p):
         self._paint=p
         if self._bg_image_filename is not None:
@@ -73,7 +91,7 @@ class Renderer:
         verses_text=[]
         for v in verses:
             verses_text.append('\n'.join(v).lstrip()) # remove first \n
-        
+
         return verses_text
     def render_screen(self, screennum):
         print "render screen\n", screennum, self.words[screennum]
@@ -82,7 +100,7 @@ class Renderer:
         words=self.words[screennum]
         retval=self._render_lines(words)
         return retval
-    
+
     def set_text_rectangle(self, rect):
         """ Sets the rectangle within which text should be rendered"""
         self._rect=rect
@@ -190,14 +208,14 @@ class Renderer:
                 endline+=1
 
         return retval
-                
-                          
+
+
     def _render_lines(self, lines):
         """render a set of lines according to the theme, return bounding box"""
         print "_render_lines", lines
 
         bbox=self._render_lines_unaligned(lines)
-        
+
         t=self._theme
         x=self._rect.left()
         if t.VerticalAlign==0: # top align
@@ -279,7 +297,7 @@ class Renderer:
             else:
                 lastword-=1
                 thisline=' '.join(words[:lastword])
-                
+
 #         print "This is how they split", lines
 #         print "Now render them"
         startx=x
@@ -288,7 +306,7 @@ class Renderer:
         t=self._theme
         align=t.HorizontalAlign
         wrapstyle=t.WrapStyle
-        
+
         for linenum in range(len(lines)):
             line=lines[linenum]
             #find out how wide line is
@@ -327,7 +345,7 @@ class Renderer:
                     self._get_extent_and_render(line, (x-self._outline_offset,y+self._outline_offset), dodraw=True, color = t.OutlineColor)
                     self._get_extent_and_render(line, (x+self._outline_offset,y-self._outline_offset), dodraw=True, color = t.OutlineColor)
                     self._get_extent_and_render(line, (x-self._outline_offset,y-self._outline_offset), dodraw=True, color = t.OutlineColor)
-                
+
             self._get_extent_and_render(line, tlcorner=(x,y), dodraw=True)
 #             print "Line %2d: Render '%s' at (%d, %d) wh=(%d,%d)"%( linenum, line, x, y,w,h)
             y += h
@@ -340,7 +358,7 @@ class Renderer:
             p.setPen(QtGui.QPen(QtGui.QColor(0,255,0)))
             p.drawRect(startx,starty,rightextent-startx,y-starty)
             p.end()
-            
+
         brcorner=(rightextent,y)
         return brcorner
 
@@ -378,6 +396,6 @@ class Renderer:
         return (w, h)
 
 
-    
-        
-    
+
+
+

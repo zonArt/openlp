@@ -1,5 +1,23 @@
 # -*- coding: utf-8 -*-
 
+"""
+OpenLP - Open Source Lyrics Projection
+Copyright (c) 2008 Raoul Snyman
+Portions copyright (c) 2008 Martin Thompson, Tim Bentley
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; version 2 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place, Suite 330, Boston, MA 02111-1307 USA
+"""
+
 # Form implementation generated from reading ui file 'about.ui'
 #
 # Created: Tue Oct 14 23:22:13 2008
@@ -5056,31 +5074,31 @@ class Ui_About(object):
         import webbrowser
         url = "http://www.openlp.org/en/documentation/introduction/contributing.html"
         webbrowser.open_new(url)
-    
+
     def setupUi(self, About):
         About.setObjectName("About")
         About.resize(393, 379)
-        
+
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/Logo/favicon.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         About.setWindowIcon(icon)
-        
+
         #Divider line at the base of the window above the buttons
         self.DividerLine = QtGui.QFrame(About)
         self.DividerLine.setGeometry(QtCore.QRect(8, 344, 377, 2))
         self.DividerLine.setFrameShape(QtGui.QFrame.HLine)
         self.DividerLine.setFrameShadow(QtGui.QFrame.Sunken)
         self.DividerLine.setObjectName("DividerLine")
-        
+
         #Tab control to house the License and Credits
         self.AboutNotebook = QtGui.QTabWidget(About)
         self.AboutNotebook.setGeometry(QtCore.QRect(8, 83, 378, 259))
         self.AboutNotebook.setObjectName("AboutNotebook")
-        
+
         #License Tab
         self.License = QtGui.QWidget()
         self.License.setObjectName("License")
-        
+
         #Copyright Label on License Tab
         self.CopyrightLabel = QtGui.QLabel(self.License)
         self.CopyrightLabel.setGeometry(QtCore.QRect(8, 3, 227, 13))
@@ -5105,14 +5123,14 @@ class Ui_About(object):
         self.License3Label.setGeometry(QtCore.QRect(8, 176, 369, 55))
         self.License3Label.setWordWrap(True)
         self.License3Label.setObjectName("License3Label")
-        
+
         #Add the newly created tab to the tab control
         self.AboutNotebook.addTab(self.License, "")
-        
+
         #Credits Tab
         self.Credits = QtGui.QWidget()
         self.Credits.setObjectName("Credits")
-        
+
         #ScrollArea control to scroll the credits
         self.scrollArea = QtGui.QScrollArea(self.Credits)
         self.scrollArea.setGeometry(QtCore.QRect(0, 0, 372, 232))
@@ -5151,10 +5169,10 @@ class Ui_About(object):
         self.CreditsLabel.setBaseSize(QtCore.QSize(369, 760))
         self.CreditsLabel.setObjectName("CreditsLabel")
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
-        
+
         #Add the newly created tab to the tab control
         self.AboutNotebook.addTab(self.Credits, "")
-        
+
         #Logo in the header
         self.Logo = QtGui.QLabel(About)
         self.Logo.setGeometry(QtCore.QRect(8, 8, 377, 73))
@@ -5165,13 +5183,13 @@ class Ui_About(object):
         self.Logo.setScaledContents(False)
         self.Logo.setAlignment(QtCore.Qt.AlignCenter)
         self.Logo.setObjectName("Logo")
-        
+
         #Version Label on top of the Logo
         self.VersionLabel = QtGui.QLabel(About)
         self.VersionLabel.setGeometry(QtCore.QRect(307, 12, 64, 13))
         self.VersionLabel.setAlignment(QtCore.Qt.AlignJustify|QtCore.Qt.AlignVCenter)
         self.VersionLabel.setObjectName("VersionLabel")
-        
+
         #Button Objects for Control Actions
         self.CloseButton = QtGui.QPushButton(About)
         self.CloseButton.setGeometry(QtCore.QRect(312, 349, 73, 25))
@@ -5179,15 +5197,15 @@ class Ui_About(object):
         self.ContributeButton = QtGui.QPushButton(About)
         self.ContributeButton.setGeometry(QtCore.QRect(232, 349, 73, 25))
         self.ContributeButton.setObjectName("ContributeButton")
-        
+
         self.retranslateUi(About)
         self.AboutNotebook.setCurrentIndex(0)
-        
+
         #Button Actions
         QtCore.QObject.connect(self.CloseButton, QtCore.SIGNAL("clicked()"), About.close)
         QtCore.QObject.connect(self.ContributeButton, QtCore.SIGNAL("clicked()"), self.contribute)
         QtCore.QMetaObject.connectSlotsByName(About)
-        
+
         About.setTabOrder(self.AboutNotebook, self.scrollArea)
         About.setTabOrder(self.scrollArea, self.ContributeButton)
 

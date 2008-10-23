@@ -1,3 +1,21 @@
+"""
+OpenLP - Open Source Lyrics Projection
+Copyright (c) 2008 Raoul Snyman
+Portions copyright (c) 2008 Martin Thompson, Tim Bentley
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; version 2 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place, Suite 330, Boston, MA 02111-1307 USA
+"""
+
 import time
 import sys
 import os, os.path
@@ -42,7 +60,7 @@ class TestRender_base:
     # though This means that the py.test runs both test modules in
     # sequence and the second one tries to create another application
     # which gives us errors :(
-    
+
     def setup_class(self):
         print "class setup", self
         try:
@@ -51,7 +69,7 @@ class TestRender_base:
         except AttributeError: # didn't have one
             print "No app"
             self.app = None
-            
+
         print "Test app (should be None)"
         if self.app is None:
             print "App is None"
@@ -59,7 +77,7 @@ class TestRender_base:
         else:
             print "class setup, app is", app
 #             self.app = QtGui.QApplication([])
-            
+
     def teardown_class(self):
         print "class quit", self, self.app
         self.app.quit()
@@ -94,7 +112,7 @@ class TestRender_base:
         self.expected_answer="Don't know yet"
         self.answer=None
         print "--------------- Setup Done -------------"
-        
+
     def teardown_method(self, method):
         self.write_to_file(self.frame.GetPixmap(), "test_render")
 
@@ -181,7 +199,7 @@ Line 3"""
             print answer
             self.write_to_file(self.frame.GetPixmap(), "split_test_%03d"% i)
             print number, i, answer.x(), answer.y(), answer.width(), answer.height()
-            
+
             e=expected_answers[i]
             assert(answer==QtCore.QRect(e[0],e[1],e[2],e[3]))
 
@@ -197,7 +215,7 @@ Line 3"""
         self.split_test(6, 1, [(0,0,180,378)])
         self.split_test(8, 1, [(0,0,180,504)])
 if __name__=="__main__":
-    
+
     t=TestRender()
     t.setup_class()
     t.setup_method(None)

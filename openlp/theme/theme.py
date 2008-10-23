@@ -1,9 +1,27 @@
+"""
+OpenLP - Open Source Lyrics Projection
+Copyright (c) 2008 Raoul Snyman
+Portions copyright (c) 2008 Martin Thompson, Tim Bentley
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; version 2 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place, Suite 330, Boston, MA 02111-1307 USA
+"""
+
 import platform
 ver = platform.python_version()
 if ver >= '2.5':
-	from xml.etree.ElementTree import ElementTree, XML
+    from xml.etree.ElementTree import ElementTree, XML
 else:
-	from elementtree import ElementTree, XML
+    from elementtree import ElementTree, XML
 
 from PyQt4 import QtGui
 
@@ -35,7 +53,7 @@ class Theme:
         """ stores the info about a theme
         attributes:
           name : theme name
-          
+
           BackgroundType   : 0 - solid color
                              1 - gradient color
                              2 - image
@@ -48,7 +66,7 @@ class Theme:
                                  for solid - N/A
           BackgroundParameter3 : for image - N/A
                                  for gradient - 0 -> vertical, 1 -> horizontal
-                             
+
           FontName       : name of font to use
           FontColor      : color for main font
           FontProportion : point size of font
@@ -102,13 +120,13 @@ class Theme:
 #                            print "nope",
                             pass
                     elif DelphiColors.has_key(t):
-#                        print "colour", 
+#                        print "colour",
                         val=DelphiColors[t]
                     else:
 #                        print "last chance",
                         try:
                             val=int(t)
-#                            print "int", 
+#                            print "int",
                         except ValueError:
 #                            print "give up",
                             val=t
@@ -118,7 +136,7 @@ class Theme:
                     val= QtGui.QColor((val>>16) & 0xFF, (val>>8)&0xFF, val&0xFF)
  #               print [val]
                 setattr(self,element.tag, val)
-        
+
 
     def __str__(self):
         s=""

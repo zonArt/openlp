@@ -1,3 +1,21 @@
+"""
+OpenLP - Open Source Lyrics Projection
+Copyright (c) 2008 Raoul Snyman
+Portions copyright (c) 2008 Martin Thompson, Tim Bentley
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; version 2 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place, Suite 330, Boston, MA 02111-1307 USA
+"""
+
 import random
 import unittest
 
@@ -9,7 +27,7 @@ sys.path.insert(0,(os.path.join(mypath, '..', '..','..')))
 from openlp.database.BibleManager import *
 
 class TestBibleManager(unittest.TestCase):
-    
+
     def setUp(self):
         self.bm = BibleManager()
 
@@ -25,15 +43,15 @@ class TestBibleManager(unittest.TestCase):
         for c1 in c:
             print c1
             self.assert_(c1 in c)
-            
+
     def testGetBooks(self):
         self.failUnless(self.bm.getBookVerseCount("NIV", "GEN", 1) == 28, "Wrong Book Count")
 
     def testGetVerseText(self):
         c = self.bm.getVerseText("NIV","GEN",1,2,1)
         for c1 in c:
-            print c1 
+            print c1
             self.assert_(c1 in c)
-            
+
 if __name__ == '__main__':
     unittest.main()
