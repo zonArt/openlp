@@ -1,0 +1,127 @@
+<ui version="4.0" >
+ <class>AlertForm</class>
+ <widget class="QWidget" name="AlertForm" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>370</width>
+    <height>105</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Alert Message</string>
+  </property>
+  <layout class="QVBoxLayout" name="AlertFormLayout" >
+   <property name="spacing" >
+    <number>8</number>
+   </property>
+   <property name="margin" >
+    <number>8</number>
+   </property>
+   <item>
+    <widget class="QWidget" native="1" name="AlertEntryWidget" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <widget class="QLabel" name="AlertEntryLabel" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>353</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="sizePolicy" >
+       <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text" >
+       <string>Alert Text:</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="AlertEntryEditItem" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>20</y>
+        <width>353</width>
+        <height>21</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" native="1" name="ButtonBoxWidget" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout" >
+      <property name="spacing" >
+       <number>8</number>
+      </property>
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <item>
+       <spacer name="ButtonBoxWidgetSpacer" >
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>267</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="DisplayButton" >
+        <property name="text" >
+         <string>Display</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="CancelButton" >
+        <property name="text" >
+         <string>Cancel</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>CancelButton</sender>
+   <signal>clicked()</signal>
+   <receiver>AlertForm</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>294</x>
+     <y>66</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>257</x>
+     <y>3</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

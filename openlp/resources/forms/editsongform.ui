@@ -190,7 +190,7 @@
              <number>0</number>
             </property>
             <item>
-             <spacer name="horizontalSpacer" >
+             <spacer name="RemoveAuthorHSpacer" >
               <property name="orientation" >
                <enum>Qt::Horizontal</enum>
               </property>
