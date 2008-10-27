@@ -22,7 +22,8 @@ mypath=os.path.split(os.path.abspath(__file__))[0]
 sys.path.insert(0,(os.path.join(mypath, '..', '..')))
 
 from openlp.utils import ConfigHelper
-from openlp.database.BibleImpl import *
+from openlp.database.BibleDBImpl import *
+from openlp.database.BibleHTTPImpl import *
 
 class BibleManager:
     def __init__(self):
@@ -42,11 +43,32 @@ class BibleManager:
         files = os.listdir(self.biblePath)
         for f in files:
             b = f.split('.')[0]
-            self.biblelist[b] = BibleImpl(b)
+            self.biblelist[b] = BibleDBImpl(b)
         #print self.biblelist
 
-
-
+    def registerBible(self, name, biblesource, proxy, proxyport, proxyid, proxypass):
+        """
+        Return a list of bibles from a given URL.  
+        The selected Bible can then be registered and LazyLoaded into a database
+        """
+    def registerBible(self, name, booksfile, versefile):
+        """
+        Method to load a bible from a set of files into a database.
+        If the database exists it is deleted and the database is reloaded 
+        from scratch.
+        """
+        newbible = True
+        for b ,  o in self.biblelist.iteritems():
+            print b 
+            if b == name : 
+                newbible = False
+                print "bible already registered"
+        if newbible == True :
+            nbible = BibleDBImpl(name) # Create new Bible
+            nbible.createTables() # Create Database
+            nbible.loadData(booksfile, versefile)
+            self.biblelist[name] = nbible 
+    
     def getBibles(self):
         """
         Returns a list of Books of the bible
@@ -75,8 +97,6 @@ class BibleManager:
         If the end verse(everse) is less then the start verse(sverse)
         then only one verse is returned
         """
-
         if everse < sverse:
-            print "adjusted end verse"
-            everse = sverse
-        return ["In the Beginning was the Word","God made the world as saw it was good"]
+            text = self.biblelist[bible].getBibleText(book, chapter, sverse)
+        return text

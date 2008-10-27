@@ -24,9 +24,7 @@ import string
 
 from sqlalchemy import  *
 from sqlalchemy.sql import select
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-
+from sqlalchemy.orm import sessionmaker, mapper
 mypath=os.path.split(os.path.abspath(__file__))[0]
 sys.path.insert(0,(os.path.join(mypath, '..', '..')))
 
@@ -34,12 +32,37 @@ from openlp.utils import ConfigHelper
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
 
-Base = declarative_base()
+metadata = MetaData()
 #Define the tables and indexes
-class BibleMeta(Base):
-    __tablename__ = "meta"
-    key = Column(String(255), primary_key=True)
-    value = Column(String(255))
+meta_table = Table('meta', metadata, 
+    Column('key', String(255), primary_key=True), 
+    Column('value', String(255)), 
+)
+
+testament_table = Table('testament', metadata, 
+    Column('id', Integer, primary_key=True), 
+    Column('name', String(30)), 
+)
+   
+book_table = Table('book', metadata, 
+    Column('id', Integer, primary_key=True), 
+    Column('testament_id', None , ForeignKey('testament.id')), 
+    Column('name', String(30)), 
+    Column('abbrev', String(30)), 
+)
+Index('idx_name', book_table.c.name, book_table.c.id)
+Index('idx_abbrev', book_table.c.abbrev, book_table.c.id)
+    
+verse_table = Table('verse', metadata, 
+   Column('id', Integer, primary_key=True), 
+    Column('book_id', None, ForeignKey('book.id')), 
+    Column('chapter', Integer), 
+    Column('verse', Integer), 
+    Column('text', Text), 
+)
+Index('idx_chapter_verse_book', verse_table.c.chapter, verse_table.c.verse, verse_table.c.book_id, verse_table.c.id)
+
+class BibleMeta(object):
     def __init__(self, key, value):
         self.key = key
         self.value =value
@@ -47,38 +70,23 @@ class BibleMeta(Base):
     def __repr__(self):
         return "<biblemeta('%s','%s')>" %(self.key, self.value)
         
-class Testament(Base):
-    __tablename__ = "testament"
-    id = Column(Integer, primary_key=True)
-    name = Column(String(30))
+class Testament(object):
     def __init__(self, name):
         self.name = name
         
     def __repr__(self):
         return "<testament('%s')>" %(self.name)
       
-class Books(Base):
-    __tablename__ = "books"
-    id = Column(Integer, primary_key=True)
-    testament_id = Column(Integer)
-    name = Column(String(30))
-    abbrev = Column(String(30))    
+class Book(object):
     def __init__(self, testament_id, name, abbrev):
         self.testament_id = testament_id
         self.name = name
         self.abbrev = abbrev        
         
     def __repr__(self):
-        return "<books('%s','%s','%s')>" %(self.testament_id, self.name, self.abbrev)
+        return "<book('%s','%s','%s','%s')>" %(self.id, self.testament_id, self.name, self.abbrev)
       
-class Verses(Base):
-    __tablename__ = "verses"
-    id = Column(Integer, primary_key=True)
-    book_id = Column(Integer)
-    chapter = Column(Integer) 
-    verse = Column(Integer)        
-    text = Column(Text)    
-
+class Verse(object):
     def __init__(self, book_id, chapter, verse, text):
         self.book_id = book_id
         self.chapter = chapter
@@ -86,8 +94,12 @@ class Verses(Base):
         self.text = text                
         
     def __repr__(self):
-        return "<verses('%s','%s','%s','%s')>" %(self.book_id, self.chapter, self.verse, self.text)
+        return "<verse('%s','%s','%s','%s')>" %(self.book_id, self.chapter, self.verse, self.text)
       
+mapper(BibleMeta,  meta_table)
+mapper(Testament,  testament_table)
+mapper(Book,  book_table)
+mapper(Verse,  verse_table)
 
 class BibleDBImpl:
     def __init__(self, biblename):   
@@ -99,17 +111,23 @@ class BibleDBImpl:
         #print self.biblefile
         self.db = create_engine("sqlite:///"+self.biblefile)
         self.db.echo = False
-        self.metadata = MetaData()
-        self.metadata = Base.metadata
-        self.metadata.bind = self.db
-        self.metadata.bind.echo = False
+        #self.metadata = metaData()
+        metadata.bind = self.db
+        metadata.bind.echo = False
         
     def createTables(self):
         if os.path.exists(self.biblefile):   # delete bible file and set it up again
             os.remove(self.biblefile)
-        self.metadata.create_all(self.db)
+        meta_table.create()
+        testament_table.create()
+        book_table.create()
+        verse_table.create()
         self.Session = sessionmaker()
         self.Session.configure(bind=self.db)
+#        i1 = Index('idx_name', Books.c.name, Books.c.id)
+#        i1.create(bind=self.db)
+#        i2 = Index('idx_abbrev', Books.c.abbrev, Books.c.id)
+#        i2.create(bind=self.db)
 
     def loadData(self, booksfile, versesfile):
         session = self.Session()
@@ -134,9 +152,9 @@ class BibleDBImpl:
         fverse=open(versesfile, 'r')
 
         for line in fbooks:
-            print line
+            #print line
             p = line.split(",")
-            bookmeta = Books(int(p[1]), p[2], p[3])
+            bookmeta = Book(int(p[1]), p[2], p[3])
             session.add(bookmeta)
         session.commit()
         
@@ -146,24 +164,39 @@ class BibleDBImpl:
         book_ptr = ""
 
         for line in fverse:
-            print line
+            #print line
             p = line.split(",", 3) # split into 3 units and leave the rest as a single field
             if book_ptr is not p[0]:
-                query =  session.query(Books).filter(Books.name==p[0])
-                print query.first().id
+                query =  session.query(Book).filter(Book.name==p[0])
+                #print query.first().id
                 book_ptr = p[0]
-            print p[3]
-            versemeta = Verses(book_id=query.first().id,  chapter=int(p[1]), verse=int(p[2]), text=p[3])
+            #print p[3]
+            versemeta = Verse(book_id=query.first().id,  chapter=int(p[1]), verse=int(p[2]), text=p[3])
             session.add(versemeta)
         session.commit()
             
 
+    def getBibleText(self, bookname, chapter, verse):
+        s = text (""" select text FROM verse,book where verse.book_id == book.id AND verse.chapter == :c and verse.verse == :v and book.name == :b """)
+        return self.db.execute(s, c=chapter, v=verse , b=bookname).fetchone()
+        
     def Run_Tests(self):
+        metadata.bind.echo = True
         print "test print"
         session = self.Session()
-        print session.query(Books).filter(Books.name=='"John"').all()
-        print session.query(Verses).filter(Verses.book_id==9).all()
-        #print b
-        #v = self.db.execute(verses.select(verses.c.chapter==1 and verses.c.verse==1 and verses.c.book_id == b[0])).fetchone()
-        #print v
+        print session.query(Book).filter(Book.name=='"John"').all()
+        q = session.query(Verse).filter(Verse.book_id==8)
+        print q.first().text
+        
+        q = session.query(Verse, Book).filter(Verse.chapter==1).filter(Verse.verse==1).filter(Book.name=='"Genesis"')
+        print "--"
+        print q.first()[0].text
+        print q.first()[1].name
+        print "----"
+        ch =1 
+        vs = 1
+        bk = '"Genesis"'
+        s = text (""" select text FROM verse,book where verse.book_id == book.id AND verse.chapter == :c and verse.verse == :v and book.name == :b """)
+        print self.db.execute(s, c=ch, v=vs , b=bk).fetchall()
+
    

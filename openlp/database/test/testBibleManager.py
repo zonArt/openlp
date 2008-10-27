@@ -31,7 +31,18 @@ class TestBibleManager(unittest.TestCase):
     def setUp(self):
         self.bm = BibleManager()
 
+    def testRegisterBibleFiles(self):
+        # make sure the shuffled sequence does not lose any elements
+        print "testRegisterBibleFiles"
+        self.bm.registerBible("TheMessage",'biblebooks_msg_short.csv','bibleverses_msg_short.csv')
+        self.bm.registerBible("NIV",'biblebooks_niv_short.csv','bibleverses_niv_short.csv')        
+        b = self.bm.getBibles()
+        for b1 in b:
+            print b1
+            self.assert_(b1 in b)
+
     def testGetBibles(self):
+        print "testGetBibles"
         # make sure the shuffled sequence does not lose any elements
         b = self.bm.getBibles()
         for b1 in b:
@@ -39,19 +50,22 @@ class TestBibleManager(unittest.TestCase):
             self.assert_(b1 in b)
 
     def testGetBooks(self):
+        print "testGetBooks"
         c = self.bm.getBibleBooks("NIV")
         for c1 in c:
             print c1
             self.assert_(c1 in c)
 
-    def testGetBooks(self):
+    def testGetVerseCount(self):
+        print "testGetVerseCount"        
         self.failUnless(self.bm.getBookVerseCount("NIV", "GEN", 1) == 28, "Wrong Book Count")
 
     def testGetVerseText(self):
-        c = self.bm.getVerseText("NIV","GEN",1,2,1)
-        for c1 in c:
-            print c1
-            self.assert_(c1 in c)
+        print "testGetVerseText"          
+        c = self.bm.getVerseText("TheMessage",'"Genesis"',1,2,1)
+        print c
+        c = self.bm.getVerseText("NIV",'"Genesis"',1,2,1)
+        print c
 
 if __name__ == '__main__':
     unittest.main()
