@@ -19,13 +19,10 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
-class OpenLP(object):
-    def __init__(self):
-        pass
+class OpenLP(QtGui.QApplication):
+    pass
 
-    def run(self):
-        pass
 
 if __name__ == '__main__':
-    app = OpenLP()
-    app.run()
+    app = OpenLP(sys.argv)
+    sys.exit(app.exec_())
