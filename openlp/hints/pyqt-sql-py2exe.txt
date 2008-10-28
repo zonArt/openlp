@@ -1,0 +1,58 @@
+This content can be found at this URL:
+http://netsuperbrain.com/Postmodern%20PostgreSQL%20Application%20Development.pdf
+
+Page 11-15: QtDesigner
+Page 18-20: SQLAlchemy
+Page 21-23: PyQt - widget
+Page 24   : main
+Page 28   : py2exe and release
+
+
+==============================
+This is the destilled content.
+==============================
+
+----------------
+** sqlalchemy **
+----------------
+from sqlalchemy import create_engine, MetaData, Table
+from sqlalchemy.orm import sessionmaker, mapper
+engine = create_engine( 'postgres://postgres@localhost/customers' )
+metadata = MetaData( bind=engine, reflect=True)
+Session = sessionmaker(bind=engine, autoflush=True,
+    transactional=True)
+
+class Customer(object): pass
+mapper( Customer, Table('customers', metadata ) )
+
+session = Session()
+customer = Customer( businessName=“Jamb Safety”,
+    website=“www.jamb.com” )
+session.save( customer )
+for customer in Session.query(Customer).filter(
+    Customer.businessName.like(“Jamb%”)):
+    print customer.businessName
+session.commit()
+
+------------------------
+** release and py2exe **
+------------------------
+
+from distutils.core import setup
+import py2exe
+import glob
+setup(
+    name="Customers",
+    author="Sankel Software",
+    author_email="david@sankelsoftware.com",
+    url="http://sankelsoftware.com",
+    license=“GPL",
+    version=“1.0.0",
+    windows=[ { "script":"main.py“,}],
+    options={"py2exe":{"includes":["sip”]}},
+    data_files=[
+       ("forms",glob.glob("forms/*.ui")),
+    ] )
+
+release:
+python setup.py py2exe --quiet --dist-dir=dist
