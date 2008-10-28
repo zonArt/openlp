@@ -18,10 +18,10 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 import os, os.path
 import sys
-mypath=os.path.split(os.path.abspath(__file__))[0]
-sys.path.insert(0,(os.path.join(mypath, '..', '..')))
+from urllib import FancyURLopener
 
-from openlp.utils import ConfigHelper
+class MyOpener(FancyURLopener):
+    version = "Googlebot/2.x (+http://www.googlebot.com/bot.html)"
 
 class BibleHTTPImpl:
     def __init__(self):
@@ -32,3 +32,54 @@ class BibleHTTPImpl:
 
         Init confirms the bible exists and stores the database path.
         """
+        bible = {}
+    def getBibleChapter(self, version, book, chapter):
+        myopener = MyOpener()
+        urlstring = "http://bible.crosswalk.com/OnlineStudyBible/bible.cgi?word="+book+"+"+str(chapter)+"&version=niv"
+        page = myopener.open(urlstring)
+        #page = myopener.open("http://bible.crosswalk.com/OnlineStudyBible/bible.cgi?word=ge+1&version=niv")
+        xml_string = page.read()
+        #print xml_string
+
+        i= xml_string.find("NavCurrentChapter")
+        xml_string = xml_string[i:len(xml_string)]
+        i= xml_string.find("<TABLE")
+        xml_string = xml_string[i:len(xml_string)]
+        i= xml_string.find("<B>")
+        xml_string = xml_string[i + 3 :len(xml_string)] #remove the <B> at the front
+        i= xml_string.find("<B>") # Remove the heading for the book
+        xml_string = xml_string[i + 3 :len(xml_string)] #remove the <B> at the front
+        versePos = xml_string.find("<BLOCKQUOTE>") 
+        #print versePos
+        bible = {}
+        cleanbible = {}
+        while versePos > 0:
+            versePos = xml_string.find("<B><I>", versePos) + 6
+            i = xml_string.find("</I></B>", versePos) 
+            #print versePos, i
+            verse= xml_string[versePos:i] # Got the Chapter
+            #verse = int(temp)
+            #print "Chapter = " + str(temp)
+            versePos = i + 8     # move the starting position to negining of the text
+            i = xml_string.find("<B><I>", versePos) # fine the start of the next verse
+            if i == -1:
+                i = xml_string.find("</BLOCKQUOTE>",versePos)
+                verseText = xml_string[versePos: i]
+                versePos = 0
+            else:
+                #print i,  versePos
+                verseText = xml_string[versePos: i]
+                versePos = i
+            bible[verse] = self._cleanVerse(verseText)
+            
+        #print bible
+        return bible
+
+    def _cleanVerse(self, text):
+        text = text.replace('\n', '')
+        text = text.replace('\r', '')
+        text = text.replace('&nbsp;', '')
+        text = text.replace('<P>', '')
+        text = text.replace('"', '')
+
+        return text.rstrip()
