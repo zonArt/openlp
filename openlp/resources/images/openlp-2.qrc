@@ -5,6 +5,9 @@
     <file>song_export.png</file>
     <file>song_new.png</file>
   </qresource>
+  <qresource prefix="graphics" >
+    <file>about-new.bmp</file>
+  </qresource>
   <qresource prefix="imports" >
     <file>import_remove.png</file>
     <file>import_load.png</file>
