@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.2.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2008-10-27, 22:19:28 -->
+<!-- Saved: 2008-10-29, 21:35:04 -->
 <!-- Copyright (C) 2008 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.2">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -129,6 +129,22 @@
       <Dir>core</Dir>
       <Name>settingsmanager.py</Name>
     </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>resources</Dir>
+      <Name>openlp_rc.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>resources</Dir>
+      <Name>__init__.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>resources</Dir>
+      <Dir>forms</Dir>
+      <Name>Ui_about.py</Name>
+    </Source>
   </Sources>
   <Forms>
     <Form>
@@ -187,6 +203,9 @@
   <Interfaces>
   </Interfaces>
   <Others>
+    <Other>
+      <Name>copyright.txt</Name>
+    </Other>
   </Others>
   <MainScript>
     <Name>openlp.pyw</Name>
