@@ -124,10 +124,6 @@ class BibleDBImpl:
         verse_table.create()
         self.Session = sessionmaker()
         self.Session.configure(bind=self.db)
-#        i1 = Index('idx_name', Books.c.name, Books.c.id)
-#        i1.create(bind=self.db)
-#        i2 = Index('idx_abbrev', Books.c.abbrev, Books.c.id)
-#        i2.create(bind=self.db)
 
     def loadData(self, booksfile, versesfile):
         session = self.Session()
@@ -154,6 +150,8 @@ class BibleDBImpl:
         for line in fbooks:
             #print line
             p = line.split(",")
+            p[2] = self._cleanText(p[2])
+            p[3] = self._cleanText(p[3])
             bookmeta = Book(int(p[1]), p[2], p[3])
             session.add(bookmeta)
         session.commit()
@@ -166,12 +164,13 @@ class BibleDBImpl:
         for line in fverse:
             #print line
             p = line.split(",", 3) # split into 3 units and leave the rest as a single field
+            p[0] = self._cleanText(p[0])
             if book_ptr is not p[0]:
                 query =  session.query(Book).filter(Book.name==p[0])
                 #print query.first().id
                 book_ptr = p[0]
             #print p[3]
-            versemeta = Verse(book_id=query.first().id,  chapter=int(p[1]), verse=int(p[2]), text=p[3])
+            versemeta = Verse(book_id=query.first().id,  chapter=int(p[1]), verse=int(p[2]), text=self._cleanText(p[3]))
             session.add(versemeta)
         session.commit()
             
@@ -180,22 +179,29 @@ class BibleDBImpl:
         s = text (""" select text FROM verse,book where verse.book_id == book.id AND verse.chapter == :c and verse.verse == :v and book.name == :b """)
         return self.db.execute(s, c=chapter, v=verse , b=bookname).fetchone()
         
+    def _cleanText(self, text):
+        text = text.replace('\n', '')
+        text = text.replace('\r', '')
+        text = text.replace('"', '')
+        return text
+
+
     def Run_Tests(self):
         metadata.bind.echo = True
         print "test print"
         session = self.Session()
-        print session.query(Book).filter(Book.name=='"John"').all()
+        print session.query(Book).filter(Book.name=='John').all()
         q = session.query(Verse).filter(Verse.book_id==8)
-        print q.first().text
+        print q.first()
         
-        q = session.query(Verse, Book).filter(Verse.chapter==1).filter(Verse.verse==1).filter(Book.name=='"Genesis"')
+        q = session.query(Verse, Book).filter(Verse.chapter==1).filter(Verse.verse==1).filter(Book.name=='Genesis')
         print "--"
-        print q.first()[0].text
-        print q.first()[1].name
-        print "----"
+        #print q.first()[0].text
+        #print q.first()[1].name
+        #print "----"
         ch =1 
         vs = 1
-        bk = '"Genesis"'
+        bk = 'Genesis'
         s = text (""" select text FROM verse,book where verse.book_id == book.id AND verse.chapter == :c and verse.verse == :v and book.name == :b """)
         print self.db.execute(s, c=ch, v=vs , b=bk).fetchall()
 

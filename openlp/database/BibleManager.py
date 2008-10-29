@@ -91,12 +91,14 @@ class BibleManager:
         """
         return 28
 
-    def getVerseText(self, bible,book,  chapter, sverse, everse):
+    def getVerseText(self, bible, book,  chapter, sverse, everse = 0 ):
         """
         Returns a list of verses for a given Book, Chapter and ranges of verses.
         If the end verse(everse) is less then the start verse(sverse)
         then only one verse is returned
         """
         if everse < sverse:
-            text = self.biblelist[bible].getBibleText(book, chapter, sverse)
+            everse = sverse  # make sure end after we start.  Also optional
+        text = self.biblelist[bible].getBibleText(book, chapter, sverse)
+        print text
         return text
