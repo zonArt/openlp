@@ -46,7 +46,7 @@ verses = Table('Verses', metadata,
 )
 Index('idx_chapter_verse_book', verses.c.chapter, verses.c.verse, verses.c.book_id, verses.c.id)
 
-class BibleImpl:
+class BibleDBImpl:
     def __init__(self, biblename):   
         # Connect to database 
         path = ConfigHelper.getBiblePath()
