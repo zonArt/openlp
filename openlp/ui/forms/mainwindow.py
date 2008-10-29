@@ -27,11 +27,13 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from PyQt4 import QtCore, QtGui
 from openlp.resources import *
+from openlp.ui.forms.about import AboutForm
 
 class MainWindow(object):
     def __init__(self):
         self.main_window = QtGui.QMainWindow()
         self.setupUi()
+        self.about_form = AboutForm()
 
     def setupUi(self):
         self.main_window.setObjectName("main_window")
@@ -860,6 +862,8 @@ class MainWindow(object):
         QtCore.QObject.connect(self.ThemeManagerDock, QtCore.SIGNAL("visibilityChanged(bool)"), self.ViewThemeManagerItem.setChecked)
         QtCore.QMetaObject.connectSlotsByName(self.main_window)
 
+        QtCore.QObject.connect(self.HelpAboutItem, QtCore.SIGNAL("triggered()"), self.onHelpAboutItemClicked)
+
     def retranslateUi(self):
         self.main_window.setWindowTitle(QtGui.QApplication.translate("main_window", "openlp.org 2.0", None, QtGui.QApplication.UnicodeUTF8))
         self.FileMenu.setTitle(QtGui.QApplication.translate("main_window", "&File", None, QtGui.QApplication.UnicodeUTF8))
@@ -1005,3 +1009,6 @@ class MainWindow(object):
 
     def show(self):
         self.main_window.showMaximized()
+
+    def onHelpAboutItemClicked(self):
+        self.about_form.show()

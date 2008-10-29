@@ -18,3 +18,5 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from mainwindow import MainWindow
 from about import AboutForm
+
+__all__ = ['MainWindow', 'AboutForm']

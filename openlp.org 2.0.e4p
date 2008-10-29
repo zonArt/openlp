@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.2.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2008-10-29, 21:35:04 -->
+<!-- Saved: 2008-10-29, 22:39:51 -->
 <!-- Copyright (C) 2008 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.2">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -71,19 +71,7 @@
       <Dir>openlp</Dir>
       <Dir>ui</Dir>
       <Dir>forms</Dir>
-      <Name>Ui_mainwindow.py</Name>
-    </Source>
-    <Source>
-      <Dir>openlp</Dir>
-      <Dir>ui</Dir>
-      <Dir>forms</Dir>
       <Name>__init__.py</Name>
-    </Source>
-    <Source>
-      <Dir>openlp</Dir>
-      <Dir>ui</Dir>
-      <Dir>forms</Dir>
-      <Name>Ui_about.py</Name>
     </Source>
     <Source>
       <Dir>openlp</Dir>
@@ -141,9 +129,15 @@
     </Source>
     <Source>
       <Dir>openlp</Dir>
-      <Dir>resources</Dir>
+      <Dir>ui</Dir>
       <Dir>forms</Dir>
-      <Name>Ui_about.py</Name>
+      <Name>about.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>ui</Dir>
+      <Dir>forms</Dir>
+      <Name>mainwindow.py</Name>
     </Source>
   </Sources>
   <Forms>
