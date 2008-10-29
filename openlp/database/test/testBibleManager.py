@@ -62,9 +62,9 @@ class TestBibleManager(unittest.TestCase):
 
     def testGetVerseText(self):
         print "testGetVerseText"          
-        c = self.bm.getVerseText("TheMessage",'"Genesis"',1,2,1)
+        c = self.bm.getVerseText("TheMessage",'Genesis',1,1,1)
         print c
-        c = self.bm.getVerseText("NIV",'"Genesis"',1,2,1)
+        c = self.bm.getVerseText("NIV",'Genesis',1,1,3)
         print c
 
 if __name__ == '__main__':

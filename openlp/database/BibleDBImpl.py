@@ -179,6 +179,11 @@ class BibleDBImpl:
         s = text (""" select text FROM verse,book where verse.book_id == book.id AND verse.chapter == :c and verse.verse == :v and book.name == :b """)
         return self.db.execute(s, c=chapter, v=verse , b=bookname).fetchone()
         
+    def getBibleText(self, bookname, chapter, sverse, everse):
+        metadata.bind.echo = True
+        s = text (""" select text FROM verse,book where verse.book_id == book.id AND verse.chapter == :c AND (verse.verse between :v1 and :v2) and book.name == :b """)
+        return self.db.execute(s, c=chapter, v1=sverse , v2=everse, b=bookname).fetchall()
+
     def _cleanText(self, text):
         text = text.replace('\n', '')
         text = text.replace('\r', '')

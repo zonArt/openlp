@@ -98,7 +98,8 @@ class BibleManager:
         then only one verse is returned
         """
         if everse < sverse:
-            everse = sverse  # make sure end after we start.  Also optional
-        text = self.biblelist[bible].getBibleText(book, chapter, sverse)
+            text = self.biblelist[bible].getBibleText(book, chapter, sverse)
+        else:
+            text = self.biblelist[bible].getBibleText(book, chapter, sverse, everse)
         print text
         return text
