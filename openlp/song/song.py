@@ -16,88 +16,18 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
-import platform
-ver = platform.python_version()
-if ver >= '2.5':
-    from xml.etree.ElementTree import ElementTree, XML
-else:
-    from elementtree import ElementTree, XML
+import sys
+import os
+sys.path.append(os.path.abspath("./../.."))
 
+from openlp.core.xmlrootclass import XmlRootClass
 
-# borrowed from theme - can be common
-DelphiColors={"clRed":0xFF0000,
-               "clBlack":0x000000,
-               "clWhite":0xFFFFFF}
+class SongException(Exception):
+    pass
 
-class RootClass(object):
-    """Root class for themes, songs etc
+class SongTitleError(SongException):
+    pass
     
-    provides interface for parsing xml files into object attributes
-    """
-    def _setFromXml(self, xml, rootTag):
-        """Set song properties from given xml content
-        
-        xml (string) -- formatted as xml tags and values
-        rootTag -- main tag of the xml
-        """
-        root=ElementTree(element=XML(xml))
-        iter=root.getiterator()
-        for element in iter:
-            if element.tag != rootTag:
-                t=element.text
-                #print element.tag, t, type(t)
-                if type(t) == type(None): # easy!
-                    val=t
-                if type(t) == type(" "): # strings need special handling to sort the colours out
-                    #print "str",
-                    if t[0] == "$": # might be a hex number
-                        #print "hex",
-                        try:
-                            val=int(t[1:], 16)
-                        except ValueError: # nope
-                            #print "nope",
-                            pass
-                    elif DelphiColors.has_key(t):
-                        #print "colour",
-                        val=DelphiColors[t]
-                    else:
-                        #print "last chance",
-                        try:
-                            val=int(t)
-                            #print "int",
-                        except ValueError:
-                            #print "give up",
-                            val=t
-                if (element.tag.find("Color") > 0 or
-                    (element.tag.find("BackgroundParameter") == 0 and type(val) == type(0))):
-                    # convert to a QtGui.Color
-                    val= QtGui.QColor((val>>16) & 0xFF, (val>>8)&0xFF, val&0xFF)
-                #print [val]
-                setattr(self,element.tag, val)
-        pass
-    
-    def __str__(self):
-        """Return string with all public attributes
-        
-        The string is formatted with one attribute per line
-        If the string is split on newline then the length of the
-        list is equal to the number of attributes
-        """
-        l = []
-        for k in dir(self):
-            if not k.startswith("_"):
-                l.append("%30s : %s" %(k,getattr(self,k)))
-        return "\n".join(l)
-
-    def _get_as_string(self):
-        """Return one string with all public attributes"""
-        s=""
-        for k in dir(self):
-            if not k.startswith("_"):
-                s+= "_%s_" %(getattr(self,k))
-        return s
-            
-
 blankSongXml = \
 '''<?xml version="1.0" encoding="iso-8859-1"?>
 <Song>
@@ -120,7 +50,7 @@ blankSongXml = \
 </Song>
 '''
 
-class Song(RootClass) :
+class Song(XmlRootClass) :
     """Class for handling song properties"""
     
     def __init__(self, xmlContent = None):
@@ -144,9 +74,65 @@ class Song(RootClass) :
             songNumber -- number of the song, related to a songbook
             comments -- free comment
             verseOrder -- presentation order of the slides
-            lyrics -- simple or xml formatted (tbd)
+            lyrics -- simple or formatted (tbd)
         """
         super(Song, self).__init__()
+        self._reset()
+        
+    def _reset(self):
+        """Reset all song attributes"""
         global blankSongXml
         self._setFromXml(blankSongXml, "Song")
         
+    def _RemovePunctuation(self,  title):
+        """Remove the puntuation chars from title
+        
+        chars are: .,:;!?&%#/\@`$'|"^~*
+        """
+        punctuation = ".,:;!?&%#'\"/\\@`$|^~*"
+        s = title
+        for c in punctuation :
+            s = s.replace(c,  '')
+        return s
+        
+    def SetTitle(self, title):
+        """Set the song title
+        
+        title (string)
+        """
+        self.title = title.strip()
+        self.searchableTitle = self._RemovePunctuation(title).strip()
+        if len(self.title) < 1 :
+            raise SongTitleError("The title is empty")
+        if len(self.searchableTitle) < 1 :
+            raise SongTitleError("The searchable title is empty")
+        
+    def GetTitle(self):
+        """Return title value"""
+        return self.title
+    
+    def GetSearchableTitle(self):
+        """Return searchableTitle"""
+        return self.searchableTitle
+    
+    def FromTextList(self, textList):
+        """Create song from a list of texts (strings) - CCLI text format expected
+        
+        textList (list of strings) -- the song
+        """
+        self._reset()
+        # TODO: Implement CCLI text parse
+        
+    def FromTextFile(self,  textFileName):
+        """Create song from a list of texts read from given file
+        
+        textFileName -- path to text file
+        """
+        textList = []
+        f = open(textFileName,  'r')
+        for line in f :
+            textList.append(line)
+        f.close()
+        self.FromText(textList)
+        
+    
