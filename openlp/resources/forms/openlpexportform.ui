@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>OpenLPImportForm</class>
- <widget class="QWidget" name="OpenLPImportForm" >
+ <class>OpenLPExportForm</class>
+ <widget class="QWidget" name="OpenLPExportForm" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -10,14 +10,14 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>openlp.org Song Importer</string>
+   <string>openlp.org Song Exporter</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_5" >
    <property name="margin" >
     <number>8</number>
    </property>
    <item>
-    <widget class="QWidget" native="1" name="ImportFileWidget" >
+    <widget class="QWidget" native="1" name="ExportFileWidget" >
      <property name="sizePolicy" >
       <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
        <horstretch>0</horstretch>
@@ -32,23 +32,23 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QLabel" name="ImportFileLabel" >
+       <widget class="QLabel" name="ExportFileLabel" >
         <property name="text" >
-         <string>Select openlp.org songfile to import:</string>
+         <string>Select openlp.org export filename:</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="ImportFileLineEdit" />
+       <widget class="QLineEdit" name="ExportFileLineEdit" />
       </item>
       <item>
-       <widget class="QPushButton" name="ImportFileSelectPushButton" >
+       <widget class="QPushButton" name="ExportFileSelectPushButton" >
         <property name="text" >
          <string/>
         </property>
         <property name="icon" >
          <iconset resource="../images/openlp-2.qrc" >
-          <normaloff>:/imports/import_load.png</normaloff>:/imports/import_load.png</iconset>
+          <normaloff>:/exports/export_load.png</normaloff>:/exports/export_load.png</iconset>
         </property>
        </widget>
       </item>
@@ -77,7 +77,7 @@
        <number>8</number>
       </property>
       <item>
-       <widget class="QWidget" native="1" name="ImportFileSongListWidget" >
+       <widget class="QWidget" native="1" name="ExportFileSongListWidget" >
         <property name="sizePolicy" >
          <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
           <horstretch>0</horstretch>
@@ -92,14 +92,14 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QLabel" name="ImportListLabel" >
+          <widget class="QLabel" name="ExportListLabel" >
            <property name="text" >
-            <string>Import File Song List</string>
+            <string>Full Song List</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QTableWidget" name="ImportListTable" >
+          <widget class="QTableWidget" name="ExportListTable" >
            <property name="selectionMode" >
             <enum>QAbstractItemView::MultiSelection</enum>
            </property>
@@ -125,7 +125,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QWidget" native="1" name="ImportSelectAllWidget" >
+          <widget class="QWidget" native="1" name="ExportSelectAllWidget" >
            <layout class="QHBoxLayout" name="horizontalLayout_2" >
             <property name="spacing" >
              <number>6</number>
@@ -134,7 +134,7 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QPushButton" name="ImportSelectAllPushButton" >
+             <widget class="QPushButton" name="ExportSelectAllPushButton" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
                 <horstretch>0</horstretch>
@@ -152,12 +152,12 @@
               </property>
               <property name="icon" >
                <iconset resource="../images/openlp-2.qrc" >
-                <normaloff>:/imports/import_selectall.png</normaloff>:/imports/import_selectall.png</iconset>
+                <normaloff>:/exports/export_selectall.png</normaloff>:/exports/export_selectall.png</iconset>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="ImportSelectAllHSpacer" >
+             <spacer name="ExportSelectAllHSpacer" >
               <property name="orientation" >
                <enum>Qt::Horizontal</enum>
               </property>
@@ -176,7 +176,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QWidget" native="1" name="importFilterWidget" >
+          <widget class="QWidget" native="1" name="exportFilterWidget" >
            <property name="sizePolicy" >
             <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
              <horstretch>0</horstretch>
@@ -194,7 +194,7 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QComboBox" name="ImportFilterComboBox" >
+             <widget class="QComboBox" name="ExportFilterComboBox" >
               <property name="minimumSize" >
                <size>
                 <width>70</width>
@@ -219,16 +219,16 @@
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="importFilterLineEdit" />
+             <widget class="QLineEdit" name="ExportFilterLineEdit" />
             </item>
            </layout>
           </widget>
          </item>
         </layout>
-        <zorder>ImportListTable</zorder>
-        <zorder>ImportListLabel</zorder>
-        <zorder>importFilterWidget</zorder>
-        <zorder>ImportSelectAllWidget</zorder>
+        <zorder>exportFilterWidget</zorder>
+        <zorder>ExportListTable</zorder>
+        <zorder>ExportListLabel</zorder>
+        <zorder>ExportSelectAllWidget</zorder>
        </widget>
       </item>
       <item>
@@ -275,7 +275,7 @@
            </property>
            <property name="icon" >
             <iconset resource="../images/openlp-2.qrc" >
-             <normaloff>:/imports/import_move_to_list.png</normaloff>:/imports/import_move_to_list.png</iconset>
+             <normaloff>:/exports/export_move_to_list.png</normaloff>:/exports/export_move_to_list.png</iconset>
            </property>
           </widget>
          </item>
@@ -310,7 +310,7 @@
          <item>
           <widget class="QLabel" name="SelectedListLabel" >
            <property name="text" >
-            <string>Song Import List</string>
+            <string>Song Export List</string>
            </property>
           </widget>
          </item>
@@ -368,7 +368,7 @@
               </property>
               <property name="icon" >
                <iconset resource="../images/openlp-2.qrc" >
-                <normaloff>:/imports/import_selectall.png</normaloff>:/imports/import_selectall.png</iconset>
+                <normaloff>:/exports/export_selectall.png</normaloff>:/exports/export_selectall.png</iconset>
               </property>
              </widget>
             </item>
@@ -422,7 +422,7 @@
               </property>
               <property name="icon" >
                <iconset resource="../images/openlp-2.qrc" >
-                <normaloff>:/imports/import_remove.png</normaloff>:/imports/import_remove.png</iconset>
+                <normaloff>:/exports/export_remove.png</normaloff>:/exports/export_remove.png</iconset>
               </property>
              </widget>
             </item>
@@ -446,7 +446,7 @@
        </widget>
       </item>
      </layout>
-     <zorder>ImportFileSongListWidget</zorder>
+     <zorder>ExportFileSongListWidget</zorder>
      <zorder>SelectedFileListWidget</zorder>
      <zorder>AddSelectedWidget</zorder>
     </widget>
@@ -481,7 +481,7 @@
       <item>
        <widget class="QLabel" name="ProgressLabel" >
         <property name="text" >
-         <string>Ready to import</string>
+         <string>Ready to export</string>
         </property>
        </widget>
       </item>
@@ -518,9 +518,9 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="ImportPushButton" >
+       <widget class="QPushButton" name="ExportPushButton" >
         <property name="text" >
-         <string>Import</string>
+         <string>Export</string>
         </property>
        </widget>
       </item>
@@ -543,7 +543,7 @@
   <connection>
    <sender>ClosePushButton</sender>
    <signal>clicked()</signal>
-   <receiver>OpenLPImportForm</receiver>
+   <receiver>OpenLPExportForm</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -557,9 +557,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>ImportSelectAllPushButton</sender>
+   <sender>ExportSelectAllPushButton</sender>
    <signal>clicked()</signal>
-   <receiver>ImportListTable</receiver>
+   <receiver>ExportListTable</receiver>
    <slot>selectAll()</slot>
    <hints>
     <hint type="sourcelabel" >

@@ -26,16 +26,13 @@
    <item>
     <widget class="QLabel" name="Logo" >
      <property name="autoFillBackground" >
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="styleSheet" >
       <string notr="true" >background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="frameShape" >
-      <enum>QFrame::WinPanel</enum>
-     </property>
-     <property name="frameShadow" >
-      <enum>QFrame::Sunken</enum>
+      <enum>QFrame::StyledPanel</enum>
      </property>
      <property name="lineWidth" >
       <number>1</number>
@@ -57,7 +54,7 @@
    <item>
     <widget class="QTabWidget" name="AboutNotebook" >
      <property name="currentIndex" >
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="LicenseTab" >
       <attribute name="title" >
@@ -171,9 +168,9 @@
          <widget class="QWidget" name="CreditsScrollContent" >
           <property name="geometry" >
            <rect>
-            <x>30</x>
+            <x>6</x>
             <y>0</y>
-            <width>353</width>
+            <width>400</width>
             <height>760</height>
            </rect>
           </property>
@@ -185,7 +182,7 @@
           </property>
           <property name="baseSize" >
            <size>
-            <width>353</width>
+            <width>400</width>
             <height>760</height>
            </size>
           </property>
@@ -347,6 +344,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>ContributeButton</tabstop>
  </tabstops>
  <resources>
+  <include location="../images/openlp-2.qrc" />
   <include location="../images/openlp-2.qrc" />
  </resources>
  <connections>
