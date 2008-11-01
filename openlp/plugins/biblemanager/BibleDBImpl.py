@@ -216,8 +216,6 @@ class BibleDBImpl:
         print "getBibleChapter ", bookname, chapter                
         metadata.bind.echo = False
         s = text (""" select book.name FROM verse,book where verse.book_id == book.id AND verse.chapter == :c and book.name == :b """)
-        print s
-        print self.db.execute(s, c=chapter, b=bookname).fetchone()        
         return self.db.execute(s, c=chapter, b=bookname).fetchone()
         
     def getBibleText(self, bookname, chapter, sverse, everse):

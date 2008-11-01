@@ -36,9 +36,17 @@ class BibleManager:
         """ 
         self.bibleDBCache = {}
         self.bibleHTTPCache = {}
+        self.booksOfBible = {}
+        self.listOfBooks = []
+        self.booksChapters = {}
+        self.CWids = {}
+        self.verses = {}
+        self.verseData = {}
         self.biblePath = ConfigHelper.getBiblePath()
         #print self.biblePath
         files = os.listdir(self.biblePath)
+        fbibles=open("../resources/bibles_en.txt", 'r')
+        fbibledata=open("../resources/bible_books.txt", 'r')
         for f in files:
             b = f.split('.')[0]
             self.bibleDBCache[b] = BibleDBImpl(b)
@@ -48,6 +56,20 @@ class BibleManager:
                nhttp.setBibleSource(biblesource)
                self.bibleHTTPCache[b] = nhttp
             #   
+            for line in fbibles:
+                p = line.split(",")
+                self.booksOfBible[p[0]] = p[1].replace('\n', '')
+                self.listOfBooks.insert(int(p[1].replace('\n', '')),  p[0])                
+            for line in fbibledata:
+                p = line.split(",")
+                self.booksChapters[p[0]]=p[1]
+                self.CWids[p[0]]=p[2].replace('\n', '')    
+                v = p[3].replace('\n', '')  
+                self.verseData[p[0]] = v
+            #print "\n", self.booksOfBible
+            #print "\n", self.booksChapters
+            #print "\n", self.CWids
+            #print "\n", self.verseData
 
         #print self.bibleDBCache
         #print self.bibleHTTPCache        
@@ -91,15 +113,28 @@ class BibleManager:
     def getBibleBooks(self,bible):
         """
         Returns a list of the books of the bible
+        """        
+        return self.listOfBooks
+        
+    def getBookChapterCount(self, book):
+        print "getBookChapterCount ", book
         """
-        return ["Gen","Exd","Matt","Mark"]
+        Returns all the number of Chapters for a given
+        book
+        """
+        i = self.booksOfBible[book]
+        return self.booksChapters[i]
 
-    def getBookVerseCount(self, bible, book, chapter):
+    def getBookVerseCount(self, book, chapter):
+        print "getBookVerseCount ", book,  chapter
         """
         Returns all the number of verses for a given
         book and chapter
         """
-        return 28
+        i = self.booksOfBible[book]
+        v = self.verseData[i].split(":")
+        print v
+        return v[chapter-1] # sup 1 for zero indexing
 
     def getVerseText(self, bible, book,  chapter, sverse, everse = 0 ):
         """
