@@ -30,6 +30,11 @@ class BibleHTTPImpl:
         Init confirms the bible exists and stores the database path.
         """
         bible = {}
+        biblesoure = ""
+        
+    def setBibleSource(self,biblesource):
+        self.biblesource = biblesource
+
     def getBibleChapter(self, version, book, chapter):
         urlstring = "http://bible.crosswalk.com/OnlineStudyBible/bible.cgi?word="+book+"+"+str(chapter)+"&version="+version
         print urlstring

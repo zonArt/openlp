@@ -81,3 +81,5 @@ class TestBibleManager:
         print c
         c = self.bm.getVerseText('asv','re',1,1,2)
         print c
+        c = self.bm.getVerseText('asv','re',1,5,9)
+        print c        

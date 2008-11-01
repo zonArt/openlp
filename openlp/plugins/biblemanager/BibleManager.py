@@ -22,8 +22,8 @@ mypath=os.path.split(os.path.abspath(__file__))[0]
 sys.path.insert(0,(os.path.join(mypath, '..', '..', '..')))
 
 from openlp.utils import ConfigHelper
-from openlp.plugins.biblemanager.BibleDBImpl import *
-from openlp.plugins.biblemanager.BibleHTTPImpl import *
+from openlp.plugins.biblemanager.BibleDBImpl import BibleDBImpl
+from openlp.plugins.biblemanager.BibleHTTPImpl import BibleHTTPImpl
 
 class BibleManager:
     def __init__(self):
@@ -33,7 +33,7 @@ class BibleManager:
         Throws Exception if no Bibles are found.
 
         Init confirms the bible exists and stores the database path.
-        """
+        """ 
         self.bibleDBCache = {}
         self.bibleHTTPCache = {}
         self.biblePath = ConfigHelper.getBiblePath()
@@ -42,8 +42,15 @@ class BibleManager:
         for f in files:
             b = f.split('.')[0]
             self.bibleDBCache[b] = BibleDBImpl(b)
-        print self.bibleDBCache
-        print self.bibleHTTPCache        
+            biblesource = self.bibleDBCache[b].getMeta("WEB") # look to see if lazy load bible and get create getter.
+            if biblesource:
+               nhttp = BibleHTTPImpl()
+               nhttp.setBibleSource(biblesource)
+               self.bibleHTTPCache[b] = nhttp
+            #   
+
+        #print self.bibleDBCache
+        #print self.bibleHTTPCache        
 
     def registerHTTPBible(self, name, biblesource, proxy, proxyport, proxyid, proxypass):
         """
@@ -54,7 +61,9 @@ class BibleManager:
             nbible = BibleDBImpl(name) # Create new Bible
             nbible.createTables() # Create Database
             self.bibleDBCache[name] = nbible 
+
             nhttp = BibleHTTPImpl()
+            nhttp.setBibleSource(biblesource)
             self.bibleHTTPCache[name] = nhttp
             nbible.loadMeta("WEB", biblesource)
             
@@ -98,22 +107,32 @@ class BibleManager:
         If the end verse(everse) is less then the start verse(sverse)
         then only one verse is returned
         """
-        print self.bibleDBCache
-        print self.bibleHTTPCache        
+        #print self.bibleDBCache
+        #print self.bibleHTTPCache
+        print "getchapter ",  bible, book,  chapter, sverse, everse 
         c = self.bibleDBCache[bible].getBibleChapter(book, chapter) # check to see if book/chapter exists
+        print c
         if not c:
+            self._loadBook(bible,book)
             self._loadChapter(bible, book, chapter)
         if everse < sverse:
             everse = sverse
         text = self.bibleDBCache[bible].getBibleText(book, chapter, sverse, everse)
-        print text
+        #print text
+        #self.bibleDBCache[bible].dumpBible()
         return text
-
+        
+    def _loadBook(self, bible, book):
+        print "loadbook ", bible, book
+        cl = self.bibleDBCache[bible].getBibleBook(book)
+        #print cl
+        if not cl :
+            self.bibleDBCache[bible].createBook(book)
+        
     def _loadChapter(self, bible, book, chapter):
-        cl = self.bibleHTTPCache[bible].getBibleChapter(bible, book, chapter)
-        for v ,  t in cl.iteritems():
-            #self.bibleDBCache[bible].loadVerse(book, chapter, v, t)
-            print v , t
+        print "loadChapter ", bible, book, chapter        
+        chaptlist = self.bibleHTTPCache[bible].getBibleChapter(bible, book, chapter)
+        self.bibleDBCache[bible].createChapter(book, chapter, chaptlist)
         
     def _isNewBible(self, name):
         """
