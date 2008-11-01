@@ -1,0 +1,608 @@
+<ui version="4.0" >
+ <class>OpenLPExportForm</class>
+ <widget class="QWidget" name="OpenLPExportForm" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>473</width>
+    <height>459</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>OpenSong Song Exporter</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_5" >
+   <property name="margin" >
+    <number>8</number>
+   </property>
+   <item>
+    <widget class="QWidget" native="1" name="ExportFileWidget" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout" >
+      <property name="spacing" >
+       <number>3</number>
+      </property>
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="ExportFileLabel" >
+        <property name="text" >
+         <string>Select OpenSong song folder:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="ExportFileLineEdit" />
+      </item>
+      <item>
+       <widget class="QPushButton" name="ExportFileSelectPushButton" >
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="icon" >
+         <iconset resource="../images/openlp-2.qrc" >
+          <normaloff>:/exports/export_load.png</normaloff>:/exports/export_load.png</iconset>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="SongListFrame" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="frameShape" >
+      <enum>QFrame::Box</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_6" >
+      <property name="spacing" >
+       <number>8</number>
+      </property>
+      <property name="margin" >
+       <number>8</number>
+      </property>
+      <item>
+       <widget class="QWidget" native="1" name="ExportFileSongListWidget" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout" >
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="ExportListLabel" >
+           <property name="text" >
+            <string>Full Song List</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTableWidget" name="ExportListTable" >
+           <property name="selectionMode" >
+            <enum>QAbstractItemView::MultiSelection</enum>
+           </property>
+           <property name="showGrid" >
+            <bool>false</bool>
+           </property>
+           <property name="wordWrap" >
+            <bool>false</bool>
+           </property>
+           <property name="cornerButtonEnabled" >
+            <bool>false</bool>
+           </property>
+           <column>
+            <property name="text" >
+             <string>Song Title</string>
+            </property>
+           </column>
+           <column>
+            <property name="text" >
+             <string>Author</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+         <item>
+          <widget class="QWidget" native="1" name="ExportSelectAllWidget" >
+           <layout class="QHBoxLayout" name="horizontalLayout_2" >
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="ExportSelectAllPushButton" >
+              <property name="sizePolicy" >
+               <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize" >
+               <size>
+                <width>100</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text" >
+               <string>Select All</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/exports/export_selectall.png</normaloff>:/exports/export_selectall.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="ExportSelectAllHSpacer" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType" >
+               <enum>QSizePolicy::Expanding</enum>
+              </property>
+              <property name="sizeHint" stdset="0" >
+               <size>
+                <width>89</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QWidget" native="1" name="exportFilterWidget" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize" >
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_3" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QComboBox" name="ExportFilterComboBox" >
+              <property name="minimumSize" >
+               <size>
+                <width>70</width>
+                <height>0</height>
+               </size>
+              </property>
+              <item>
+               <property name="text" >
+                <string>Lyrics</string>
+               </property>
+              </item>
+              <item>
+               <property name="text" >
+                <string>Title</string>
+               </property>
+              </item>
+              <item>
+               <property name="text" >
+                <string>Author</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="ExportFilterLineEdit" />
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+        <zorder>exportFilterWidget</zorder>
+        <zorder>ExportListTable</zorder>
+        <zorder>ExportListLabel</zorder>
+        <zorder>ExportSelectAllWidget</zorder>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" native="1" name="AddSelectedWidget" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <item>
+          <spacer name="AddSelectedTopVSpacer" >
+           <property name="orientation" >
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0" >
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="AddSelectedPushButton" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Minimum" hsizetype="Minimum" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize" >
+            <size>
+             <width>25</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="text" >
+            <string/>
+           </property>
+           <property name="icon" >
+            <iconset resource="../images/openlp-2.qrc" >
+             <normaloff>:/exports/export_move_to_list.png</normaloff>:/exports/export_move_to_list.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="AddSelectedBottomVSpacer" >
+           <property name="orientation" >
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0" >
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" native="1" name="SelectedFileListWidget" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="SelectedListLabel" >
+           <property name="text" >
+            <string>Song Export List</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTableWidget" name="SelectedListTable" >
+           <property name="selectionMode" >
+            <enum>QAbstractItemView::MultiSelection</enum>
+           </property>
+           <property name="showGrid" >
+            <bool>false</bool>
+           </property>
+           <property name="wordWrap" >
+            <bool>false</bool>
+           </property>
+           <property name="cornerButtonEnabled" >
+            <bool>false</bool>
+           </property>
+           <column>
+            <property name="text" >
+             <string>Song Title</string>
+            </property>
+           </column>
+           <column>
+            <property name="text" >
+             <string>Author</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+         <item>
+          <widget class="QWidget" native="1" name="SelectedSelectAllWidget" >
+           <layout class="QHBoxLayout" name="horizontalLayout_4" >
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="SelectedSelectAllPushButton" >
+              <property name="sizePolicy" >
+               <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize" >
+               <size>
+                <width>100</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text" >
+               <string>Select All</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/exports/export_selectall.png</normaloff>:/exports/export_selectall.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="SelectedSelectAllHSpacer" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType" >
+               <enum>QSizePolicy::Expanding</enum>
+              </property>
+              <property name="sizeHint" stdset="0" >
+               <size>
+                <width>92</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QWidget" native="1" name="SelectedRemoveSelectedWidget" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_5" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="SelectedRemoveSelectedButton" >
+              <property name="sizePolicy" >
+               <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize" >
+               <size>
+                <width>140</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text" >
+               <string>Remove Selected</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="../images/openlp-2.qrc" >
+                <normaloff>:/exports/export_remove.png</normaloff>:/exports/export_remove.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="SelectedRemoveSelectedHSpacer" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0" >
+               <size>
+                <width>49</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+     <zorder>ExportFileSongListWidget</zorder>
+     <zorder>SelectedFileListWidget</zorder>
+     <zorder>AddSelectedWidget</zorder>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="ProgressGroupBox" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title" >
+      <string>Progress:</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4" >
+      <property name="spacing" >
+       <number>8</number>
+      </property>
+      <property name="leftMargin" >
+       <number>8</number>
+      </property>
+      <property name="topMargin" >
+       <number>0</number>
+      </property>
+      <property name="rightMargin" >
+       <number>8</number>
+      </property>
+      <property name="bottomMargin" >
+       <number>8</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="ProgressLabel" >
+        <property name="text" >
+         <string>Ready to export</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QProgressBar" name="ProgressBar" >
+        <property name="value" >
+         <number>24</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" native="1" name="ButtonBarWidget" >
+     <layout class="QHBoxLayout" name="horizontalLayout_7" >
+      <property name="spacing" >
+       <number>8</number>
+      </property>
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <item>
+       <spacer name="ButtonBarHSpacer" >
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>288</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="ExportPushButton" >
+        <property name="text" >
+         <string>Export</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="ClosePushButton" >
+        <property name="text" >
+         <string>Close</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../images/openlp-2.qrc" />
+ </resources>
+ <connections>
+  <connection>
+   <sender>ClosePushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>OpenLPExportForm</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>436</x>
+     <y>436</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>462</x>
+     <y>455</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ExportSelectAllPushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>ExportListTable</receiver>
+   <slot>selectAll()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>75</x>
+     <y>281</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>88</x>
+     <y>176</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SelectedSelectAllPushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>SelectedListTable</receiver>
+   <slot>selectAll()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>311</x>
+     <y>277</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>339</x>
+     <y>190</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SelectedRemoveSelectedButton</sender>
+   <signal>clicked()</signal>
+   <receiver>SelectedListTable</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>379</x>
+     <y>308</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>389</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
