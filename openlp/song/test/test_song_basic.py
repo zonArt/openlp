@@ -38,8 +38,7 @@ class Test_Basic(object):
         s = Song()
         r = s.__str__()
         l = r.split("\n")
-        #print r
-        assert(len(l) == 21)
+        assert(len(l) == 52)
         
     def test_asString(self):
         """Init: Empty asString - initial values"""
@@ -84,3 +83,97 @@ class Test_Basic(object):
         s = Song()
         py.test.raises(SongTitleError, s.SetTitle, ",*")
         
+    def test_Copyright(self):
+        """Set a copyright string"""
+        s = Song()
+        assert(s.GetCopyright() == "")
+        s.SetCopyright("A B Car")
+        assert(s.GetCopyright() == "A B Car")
+        
+    def test_SongCclino(self):
+        """Set a SongCcliNo"""
+        s = Song()
+        assert(s.GetSongCcliNo() == "")
+        s.SetSongCcliNo(12345)
+        assert(s.GetSongCcliNo() == "12345")
+        
+    def test_SongBook(self):
+        """Set a songbook value"""
+        s = Song()
+        assert(s.GetSongBook() == "")
+        s.SetSongBook("Hymns")
+        assert(s.GetSongBook() == "Hymns")
+        
+    def test_SongNumber(self):
+        """Set a song number"""
+        s = Song()
+        assert(s.GetSongNumber() == "")
+        s.SetSongNumber(278)
+        assert(s.GetSongNumber() == "278")
+        
+    def test_Theme(self):
+        """Set a theme name"""
+        s = Song()
+        assert(s.GetTheme() == "")
+        s.SetTheme("Red")
+        assert(s.GetTheme() == "Red")
+        
+    def test_VerseOrder(self):
+        """Set a verse order"""
+        s = Song()
+        assert(s.GetVerseOrder() == "")
+        s.SetVerseOrder("V1 C V2")
+        assert(s.GetVerseOrder() == "V1 C V2")
+        
+    def test_Comments(self):
+        """Set a comment"""
+        s = Song()
+        assert(s.GetComments() == "")
+        s.SetComments("a comment")
+        assert(s.GetComments() == "a comment")
+        
+    def test_AuthorList(self):
+        """Set author lists"""
+        s = Song()
+        assert(s.GetAuthorList(True) == "")
+        assert(s.GetAuthorList(False) == [])
+        t1 = "John Newton"
+        s.SetAuthorList(t1)
+        assert(s.GetAuthorList(True) == t1)
+        assert(s.GetAuthorList(False) == [t1])
+        s.SetAuthorList("  Peter Done  , John Newton")
+        assert(s.GetAuthorList(True)== "Peter Done, John Newton")
+        assert(s.GetAuthorList(False) == ["Peter Done", "John Newton"])
+        s.SetAuthorList(None)
+        assert(s.GetAuthorList(True) == "")
+        assert(s.GetAuthorList(False) == [])
+        s.SetAuthorList("")
+        assert(s.GetAuthorList(True) == "")
+        assert(s.GetAuthorList(False) == [""])
+        s.SetAuthorList([])
+        assert(s.GetAuthorList(True) == "")
+        assert(s.GetAuthorList(False) == [""])
+        
+    def test_CategoryArray(self):
+        """Set categories"""
+        s = Song()
+        assert(s.GetCategoryArray(True) == "")
+        assert(s.GetCategoryArray(False) == [])
+        t1 = "Gospel"
+        s.SetCategoryArray(t1)
+        assert(s.GetCategoryArray(True) == t1)
+        assert(s.GetCategoryArray(False) == [t1])
+        s.SetCategoryArray(" Gospel,  Hymns  ")
+        assert(s.GetCategoryArray(True) == "Gospel, Hymns")
+        assert(s.GetCategoryArray(False) == ["Gospel", "Hymns"])
+        s.SetCategoryArray(None)
+        assert(s.GetCategoryArray(True) == "")
+        assert(s.GetCategoryArray(False) == [])
+        s.SetCategoryArray("")
+        assert(s.GetCategoryArray(True) == "")
+        assert(s.GetCategoryArray(False) == [""])
+        s.SetCategoryArray([])
+        assert(s.GetCategoryArray(True) == "")
+        assert(s.GetCategoryArray(False) == [""])
+        
+    
