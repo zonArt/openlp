@@ -2,7 +2,7 @@ Genesis,1
 Exodus,2
 Leviticus,3
 Numbers,4
-Deutoronomy,5
+Deuteronomy,5
 Psalms,23
 Matthew,47
 Mark,48

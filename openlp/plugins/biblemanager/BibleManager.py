@@ -87,7 +87,7 @@ class BibleManager:
             nhttp = BibleHTTPImpl()
             nhttp.setBibleSource(biblesource)
             self.bibleHTTPCache[name] = nhttp
-            nbible.loadMeta("WEB", biblesource)
+            nbible.loadMeta("WEB", biblesource) # register a lazy loading interest
             
     def registerBible(self, name, booksfile, versefile):
         """
@@ -100,6 +100,24 @@ class BibleManager:
             nbible.createTables() # Create Database
             nbible.loadData(booksfile, versefile)
             self.bibleDBCache[name] = nbible 
+            
+    def loadBible(self,bible):
+        print "loadBible ", bible        
+        """
+        Downloads all the books of the bible 
+        and loads it into the database
+        """        
+        for bk in self.listOfBooks:
+            cptrs = self.booksChapters[ self.booksOfBible[bk]] 
+            print bk , self.booksChapters[ self.booksOfBible[bk]] 
+            for chptr in range(1 , int(cptrs)):  # loop through all the chapters in book
+                c = self.bibleDBCache[bible].getBibleChapter(bk, chptr) # check to see if book/chapter exists
+                print c
+                if not c:
+                    print "missing ", bk, chptr
+                    self._loadBook(bible,bk)
+                    self._loadChapter(bible, bk, chptr)
+
     
     def getBibles(self):
         """
