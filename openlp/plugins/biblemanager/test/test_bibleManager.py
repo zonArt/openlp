@@ -35,7 +35,7 @@ class TestBibleManager:
 
     def testRegisterBibleFiles(self):
         # Register a bible from files
-        print "testRegisterBibleFiles"
+        print "\ntestRegisterBibleFiles"
         self.bm.registerBible("TheMessage",'biblebooks_msg_short.csv','bibleverses_msg_short.csv')
         self.bm.registerBible("NIV",'biblebooks_niv_short.csv','bibleverses_niv_short.csv')        
         b = self.bm.getBibles()
@@ -45,7 +45,7 @@ class TestBibleManager:
             
     def testRegisterBibleHTTP(self):
         # Register a bible from files
-        print "testRegisterBibleHTTP"
+        print "\ntestRegisterBibleHTTP"
         self.bm.registerHTTPBible("asv","Crosswalk", "", "", "", "")
         #self.bm.registerBible("NIV", "ge", 1)
         b = self.bm.getBibles()
@@ -55,7 +55,7 @@ class TestBibleManager:
 
             
     def testGetBibles(self):
-        print "testGetBibles"
+        print "\ntestGetBibles"
         # make sure the shuffled sequence does not lose any elements
         b = self.bm.getBibles()
         for b1 in b:
@@ -63,18 +63,25 @@ class TestBibleManager:
             assert(b1 in b)
 
     def testGetBooks(self):
-        print "testGetBooks"
+        print "\ntestGetBooks"
         c = self.bm.getBibleBooks("NIV")
         for c1 in c:
             print c1
             assert(c1 in c)
+            
+    def testGetChapterCount(self):
+        print "\ntestGetChapterCount"        
+        assert(self.bm.getBookChapterCount("Matthew") == '28')
 
     def testGetVerseCount(self):
-        print "testGetVerseCount"        
-        assert(self.bm.getBookVerseCount("NIV", "GEN", 1) == 28, "Wrong Book Count")
+        print "\ntestGetVerseCount\n"        
+        assert(self.bm.getBookVerseCount("Genesis", 1) == '31')
+        assert(self.bm.getBookVerseCount("Genesis", 2) == '25')
+        assert(self.bm.getBookVerseCount("Matthew", 1) == '25')
+        assert(self.bm.getBookVerseCount("Revelation", 1) == '20')        
 
     def testGetVerseText(self):
-        print "testGetVerseText"          
+        print "\ntestGetVerseText"
         c = self.bm.getVerseText("TheMessage",'Genesis',1,2, 1)
         print c
         c = self.bm.getVerseText('NIV','Genesis',1,1,2)
@@ -82,4 +89,8 @@ class TestBibleManager:
         c = self.bm.getVerseText('asv','re',1,1,2)
         print c
         c = self.bm.getVerseText('asv','re',1,5,9)
-        print c        
+        print c
+        
+    def testLoadBible(self):
+        print "\ntestLoadBible"
+        self.bm.loadBible('asv')
