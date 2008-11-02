@@ -5,7 +5,12 @@
     <file>song_export.png</file>
     <file>song_new.png</file>
   </qresource>
+  <qresource prefix="icon" >
+    <file>openlp.org-icon-32.bmp</file>
+    <file>openlp.org.ico</file>
+  </qresource>
   <qresource prefix="graphics" >
+    <file>splash-screen-new.bmp</file>
     <file>about-new.bmp</file>
   </qresource>
   <qresource prefix="imports" >
