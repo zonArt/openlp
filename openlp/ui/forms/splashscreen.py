@@ -27,7 +27,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from PyQt4 import QtCore, QtGui
 
-#from openlp.resources import *
+from openlp.resources import *
 
 class SplashScreen(object):
     def __init__(self):
@@ -48,14 +48,15 @@ class SplashScreen(object):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icon/openlp.org-icon-32.bmp"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.splash_screen.setWindowIcon(icon)
-        self.verticalLayout = QtGui.QVBoxLayout(self.splash_screen)
-        self.verticalLayout.setSpacing(0)
-        self.verticalLayout.setMargin(0)
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.SplashImage = QtGui.QLabel(self.splash_screen)
-        self.SplashImage.setPixmap(QtGui.QPixmap(":/graphics/splash-screen-new.bmp"))
-        self.SplashImage.setObjectName("SplashImage")
-        self.verticalLayout.addWidget(self.SplashImage)
+        #self.verticalLayout = QtGui.QVBoxLayout(self.splash_screen)
+        #self.verticalLayout.setSpacing(0)
+        #self.verticalLayout.setMargin(0)
+        #self.verticalLayout.setObjectName("verticalLayout")
+        #self.SplashImage = QtGui.QLabel(self.splash_screen)
+        #self.SplashImage.setPixmap(QtGui.QPixmap(":/graphics/splash-screen-new.bmp"))
+        #self.SplashImage.setObjectName("SplashImage")
+        #self.verticalLayout.addWidget(self.SplashImage)
+        self.splash_screen.setPixmap(QtGui.QPixmap(":/graphics/splash-screen-new.bmp"))
         self.splash_screen.setWindowFlags(QtCore.Qt.SplashScreen | QtCore.Qt.WindowStaysOnTopHint)
 
         self.retranslateUi()
@@ -66,6 +67,7 @@ class SplashScreen(object):
 
     def show(self):
         self.splash_screen.show()
+        self.splash_screen.showMessage(u'Starting...', QtCore.Qt.AlignLeft | QtCore.Qt.AlignBottom,  QtCore.Qt.black)
         self.splash_screen.repaint()
 
     def finish(self, widget):

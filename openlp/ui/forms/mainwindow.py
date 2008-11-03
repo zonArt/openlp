@@ -29,6 +29,7 @@ from time import sleep
 
 from PyQt4 import QtCore, QtGui
 from openlp.ui.forms.about import AboutForm
+from openlp.resources import *
 
 class MainWindow(object):
     def __init__(self):
@@ -44,6 +45,9 @@ class MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.main_window.sizePolicy().hasHeightForWidth())
         self.main_window.setSizePolicy(sizePolicy)
+        main_icon = QtGui.QIcon()
+        main_icon.addPixmap(QtGui.QPixmap(":/icon/openlp.org-icon-32.bmp"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.main_window.setWindowIcon(main_icon)
         self.MainContent = QtGui.QWidget(self.main_window)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -1009,7 +1013,7 @@ class MainWindow(object):
         self.ModeLiveItem.setText(QtGui.QApplication.translate("main_window", "&Live", None, QtGui.QApplication.UnicodeUTF8))
 
     def show(self):
-        sleep(5)
+        sleep(2)
         self.main_window.showMaximized()
 
     def onHelpAboutItemClicked(self):

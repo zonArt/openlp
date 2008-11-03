@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.2.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2008-11-03, 19:55:02 -->
+<!-- Saved: 2008-11-03, 22:59:32 -->
 <!-- Copyright (C) 2008 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.2">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -236,6 +236,12 @@
       <Dir>plugins</Dir>
       <Dir>test</Dir>
       <Name>test_plugin_manager.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>ui</Dir>
+      <Dir>forms</Dir>
+      <Name>splashscreen.py</Name>
     </Source>
   </Sources>
   <Forms>
