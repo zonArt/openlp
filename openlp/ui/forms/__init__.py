@@ -18,5 +18,6 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from mainwindow import MainWindow
 from about import AboutForm
+from splashscreen import SplashScreen
 
-__all__ = ['MainWindow', 'AboutForm']
+__all__ = ['MainWindow', 'AboutForm', 'SplashScreen']

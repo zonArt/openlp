@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.2.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2008-10-29, 22:39:51 -->
+<!-- Saved: 2008-11-03, 19:55:02 -->
 <!-- Copyright (C) 2008 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.2">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -88,28 +88,6 @@
       <Name>__init__.py</Name>
     </Source>
     <Source>
-      <Dir>openlp</Dir>
-      <Dir>database</Dir>
-      <Dir>test</Dir>
-      <Name>testBibleManager.py</Name>
-    </Source>
-    <Source>
-      <Dir>openlp</Dir>
-      <Dir>database</Dir>
-      <Dir>test</Dir>
-      <Name>__init__.py</Name>
-    </Source>
-    <Source>
-      <Dir>openlp</Dir>
-      <Dir>database</Dir>
-      <Name>BibleManager.py</Name>
-    </Source>
-    <Source>
-      <Dir>openlp</Dir>
-      <Dir>database</Dir>
-      <Name>__init__.py</Name>
-    </Source>
-    <Source>
       <Name>demo.py</Name>
     </Source>
     <Source>
@@ -138,6 +116,126 @@
       <Dir>ui</Dir>
       <Dir>forms</Dir>
       <Name>mainwindow.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>core</Dir>
+      <Name>plugin.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>core</Dir>
+      <Name>xmlrootclass.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>song</Dir>
+      <Name>__init__.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>song</Dir>
+      <Name>song.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>song</Dir>
+      <Dir>test</Dir>
+      <Name>test_song_opensong.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>song</Dir>
+      <Dir>test</Dir>
+      <Name>test_song_basic.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>song</Dir>
+      <Dir>test</Dir>
+      <Name>test_song_text.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>plugins</Dir>
+      <Dir>biblemanager</Dir>
+      <Name>__init__.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>plugins</Dir>
+      <Dir>biblemanager</Dir>
+      <Name>BibleDBImpl.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>plugins</Dir>
+      <Dir>biblemanager</Dir>
+      <Name>BibleManager.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>plugins</Dir>
+      <Dir>biblemanager</Dir>
+      <Name>BibleHTTPImpl.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>plugins</Dir>
+      <Dir>biblemanager</Dir>
+      <Dir>test</Dir>
+      <Name>__init__.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>plugins</Dir>
+      <Dir>biblemanager</Dir>
+      <Dir>test</Dir>
+      <Name>test_bibleManager.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>song</Dir>
+      <Dir>test</Dir>
+      <Name>test_song_verse.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>plugins</Dir>
+      <Name>__init__.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>plugins</Dir>
+      <Name>testplugin1.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>plugins</Dir>
+      <Name>plugin.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>plugins</Dir>
+      <Name>plugin_manager.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>plugins</Dir>
+      <Dir>testplugin2</Dir>
+      <Name>__init__.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>plugins</Dir>
+      <Dir>testplugin2</Dir>
+      <Name>testplugin2.py</Name>
+    </Source>
+    <Source>
+      <Dir>openlp</Dir>
+      <Dir>plugins</Dir>
+      <Dir>test</Dir>
+      <Name>test_plugin_manager.py</Name>
     </Source>
   </Sources>
   <Forms>
@@ -182,6 +280,30 @@
       <Dir>resources</Dir>
       <Dir>forms</Dir>
       <Name>openlpimportform.ui</Name>
+    </Form>
+    <Form>
+      <Dir>openlp</Dir>
+      <Dir>resources</Dir>
+      <Dir>forms</Dir>
+      <Name>openlpexportform.ui</Name>
+    </Form>
+    <Form>
+      <Dir>openlp</Dir>
+      <Dir>resources</Dir>
+      <Dir>forms</Dir>
+      <Name>opensongimportform.ui</Name>
+    </Form>
+    <Form>
+      <Dir>openlp</Dir>
+      <Dir>resources</Dir>
+      <Dir>forms</Dir>
+      <Name>opensongexportform.ui</Name>
+    </Form>
+    <Form>
+      <Dir>openlp</Dir>
+      <Dir>resources</Dir>
+      <Dir>forms</Dir>
+      <Name>splashscreen.ui</Name>
     </Form>
   </Forms>
   <Translations>

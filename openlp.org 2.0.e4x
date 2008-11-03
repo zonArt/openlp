@@ -1,0 +1,45 @@
+SOURCES = openlp/theme/test/test_theme.py \
+	openlp/theme/__init__.py \
+	openlp/theme/theme.py \
+	openlp/controls/__init__.py \
+	openlp/core/test/test_render_theme.py \
+	openlp/core/test/test_render.py \
+	openlp/core/interpolate.py \
+	openlp/core/__init__.py \
+	openlp/core/render.py \
+	openlp/ui/__init__.py \
+	openlp/ui/forms/__init__.py \
+	openlp/__init__.py \
+	openlp/utils/ConfigHelper.py \
+	openlp/utils/__init__.py \
+	demo.py \
+	openlp/core/settingsmanager.py \
+	openlp/resources/openlp_rc.py \
+	openlp/resources/__init__.py \
+	openlp/ui/forms/about.py \
+	openlp/ui/forms/mainwindow.py \
+	openlp/core/plugin.py \
+	openlp/core/xmlrootclass.py \
+	openlp/song/__init__.py \
+	openlp/song/song.py \
+	openlp/song/test/test_song_opensong.py \
+	openlp/song/test/test_song_basic.py \
+	openlp/song/test/test_song_text.py \
+	openlp/plugins/biblemanager/__init__.py \
+	openlp/plugins/biblemanager/BibleDBImpl.py \
+	openlp/plugins/biblemanager/BibleManager.py \
+	openlp/plugins/biblemanager/BibleHTTPImpl.py \
+	openlp/plugins/biblemanager/test/__init__.py \
+	openlp/plugins/biblemanager/test/test_bibleManager.py 
+
+FORMS = openlp/resources/forms/mainwindow.ui \
+	openlp/resources/forms/settings.ui \
+	openlp/resources/forms/themewizard.ui \
+	openlp/resources/forms/about.ui \
+	openlp/resources/forms/editsongform.ui \
+	openlp/resources/forms/alertform.ui \
+	openlp/resources/forms/openlpimportform.ui \
+	openlp/resources/forms/openlpexportform.ui 
+
+TRANSLATIONS = openlp_en.ts 
+

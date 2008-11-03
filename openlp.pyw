@@ -22,13 +22,21 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import sys
 from PyQt4 import QtCore, QtGui
 
-from openlp.ui.forms import MainWindow
+from openlp.resources import *
+from openlp.ui.forms import MainWindow, SplashScreen
 
 class OpenLP(QtGui.QApplication):
 
     def run(self):
+        self.splash = SplashScreen()
+        self.splash.show()
+        # make sure Qt really display the splash screen
+        self.processEvents()
+        # start tha main app window
         self.main_window = MainWindow()
         self.main_window.show()
+        # now kill the splashscreen
+        self.splash.finish(self.main_window.main_window)
         sys.exit(app.exec_())
 
 if __name__ == '__main__':

@@ -25,8 +25,9 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 #
 # WARNING! All changes made in this file will be lost!
 
+from time import sleep
+
 from PyQt4 import QtCore, QtGui
-from openlp.resources import *
 from openlp.ui.forms.about import AboutForm
 
 class MainWindow(object):
@@ -1008,6 +1009,7 @@ class MainWindow(object):
         self.ModeLiveItem.setText(QtGui.QApplication.translate("main_window", "&Live", None, QtGui.QApplication.UnicodeUTF8))
 
     def show(self):
+        sleep(5)
         self.main_window.showMaximized()
 
     def onHelpAboutItemClicked(self):
