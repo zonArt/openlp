@@ -24,8 +24,9 @@ sys.path.insert(0,(os.path.join(mypath, '..', '..', '..')))
 from openlp.utils import ConfigHelper
 from openlp.plugins.biblemanager.BibleDBImpl import BibleDBImpl
 from openlp.plugins.biblemanager.BibleHTTPImpl import BibleHTTPImpl
+from openlp.plugins.plugin import Plugin
 
-class BibleManager:
+class BibleManager(Plugin):
     def __init__(self):
         """
         Finds all the bibles defined for the system

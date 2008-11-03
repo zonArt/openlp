@@ -31,6 +31,11 @@ sys.path.insert(0,(os.path.join(mypath, '..', '..', '..')))
 from openlp.utils import ConfigHelper
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
+class BibleDBException(Exception):
+    pass
+class BibleInvalidDatabaseError(Exception):
+    pass
+    
 
 metadata = MetaData()
 #Define the tables and indexes
@@ -102,14 +107,20 @@ mapper(Book,  book_table)
 mapper(Verse,  verse_table)
 
 class BibleDBImpl:
-    def __init__(self, biblename):   
+    def __init__(self, biblename, btype = 'sqlite'):   
         # Connect to database 
         path = ConfigHelper.getBiblePath()
         #print path
         #print biblename
         self.biblefile = os.path.join(path, biblename+".bible")
         #print self.biblefile
-        self.db = create_engine("sqlite:///"+self.biblefile)
+        #print btype
+        if btype == 'sqlite': 
+            self.db = create_engine("sqlite:///"+self.biblefile)
+        elif btype == 'mysql': 
+            self.db = create_engine("mysql://tim:@192.168.0.100:3306/openlp_rsv_bible")
+        else:
+            raise BibleInvalidDatabaseError("Database not mysql or sqlite")
         self.db.echo = False
         #self.metadata = metaData()
         metadata.bind = self.db
