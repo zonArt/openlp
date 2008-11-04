@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env pythonw
 # vim: autoindent shiftwidth=4 expandtab textwidth=80
 
 """
