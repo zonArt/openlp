@@ -63,48 +63,84 @@ class Test_Verse(object):
     def test_title_show_noshow(self):
         """Test the show title flag"""
         s = self.stdSong()
-        r = s.GetRenderVerse(1)
+        r = s.GetRenderSlide(1)
         self.check_allfields(r)
         s.SetShowTitle(False)
-        r = s.GetRenderVerse(1)
+        r = s.GetRenderSlide(1)
         self.check_allfields(r, 1)
         s.SetShowTitle(True)
-        r = s.GetRenderVerse(1)
+        r = s.GetRenderSlide(1)
         self.check_allfields(r)
     
     def test_author_show_noshow(self):
         """Test the show author flag"""
         s = self.stdSong()
-        r = s.GetRenderVerse(1)
+        r = s.GetRenderSlide(1)
         self.check_allfields(r)
         s.SetShowAuthorList(False)
-        r = s.GetRenderVerse(1)
+        r = s.GetRenderSlide(1)
         self.check_allfields(r, 2)
         s.SetShowAuthorList(True)
-        r = s.GetRenderVerse(1)
+        r = s.GetRenderSlide(1)
         self.check_allfields(r)
     
     def test_copyright_show_noshow(self):
         """Test the show copyright flag"""
         s = self.stdSong()
-        r = s.GetRenderVerse(1)
+        r = s.GetRenderSlide(1)
         self.check_allfields(r)
         s.SetShowCopyright(False)
-        r = s.GetRenderVerse(1)
+        r = s.GetRenderSlide(1)
         self.check_allfields(r, 3)
         s.SetShowCopyright(True)
-        r = s.GetRenderVerse(1)
+        r = s.GetRenderSlide(1)
         self.check_allfields(r)
     
     def test_ccli_show_noshow(self):
         """Test the show copyright flag"""
         s = self.stdSong()
-        r = s.GetRenderVerse(1)
+        r = s.GetRenderSlide(1)
         self.check_allfields(r)
         s.SetShowSongCcliNo(False)
-        r = s.GetRenderVerse(1)
+        r = s.GetRenderSlide(1)
         self.check_allfields(r, 4)
         s.SetShowSongCcliNo(True)
-        r = s.GetRenderVerse(1)
+        r = s.GetRenderSlide(1)
         self.check_allfields(r)
+        
+    def test_verse1(self):
+        """Test an empty verse list"""
+        s = Song()
+        s.SetLyrics([])
+        assert(s.GetNumberOfSlides() == 0)
+        
+    def test_verse2(self):
+        """Test a list with an empty string"""
+        s = Song()
+        s.SetLyrics([""])
+        assert(s.GetNumberOfSlides() == 0)
+        
+    def test_verse3a(self):
+        """Test a one liner song"""
+        s = Song()
+        s.SetLyrics(["Single verse"])
+        assert(s.GetNumberOfSlides() == 1)
+        
+    def test_verse3b(self):
+        """Test a one liner song"""
+        s = Song()
+        s.SetLyrics(["", "Single verse"])
+        assert(s.GetNumberOfSlides() == 1)
+        
+    def test_verse3c(self):
+        """Test a one liner song"""
+        s = Song()
+        s.SetLyrics(["", "Single verse", "", ""])
+        assert(s.GetNumberOfSlides() == 1)
+
+    def test_verse3d(self):
+        """Test a one liner song"""
+        s = Song()
+        s.SetLyrics(["", "# Verse", "", ""])
+        assert(s.GetNumberOfSlides() == 1)
         

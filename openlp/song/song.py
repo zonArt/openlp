@@ -56,6 +56,122 @@ _blankSongXml = \
 </Song>
 '''
 
+_blankOpenSongXml = \
+'''<?xml version="1.0" encoding="UTF-8"?>
+<song>
+  <title></title>
+  <author></author>
+  <copyright></copyright>
+  <presentation></presentation>
+  <ccli></ccli>
+  <lyrics></lyrics>
+  <theme></theme>
+  <alttheme></alttheme>
+</song>
+'''
+
+class _OpenSong(XmlRootClass):
+    """Class for import of OpenSogn"""
+    
+    def __init__(self,  xmlContent = None):
+        """Initialize from given xml content"""
+        super(_OpenSong, self).__init__()
+        self.FromBuffer(xmlContent)
+        
+    def _reset(self):
+        """Reset all song attributes"""
+        global _blankOpenSongXml
+        self._setFromXml(_blankOpenSongXml, "song")
+    
+    def FromBuffer(self,  xmlContent):
+        """Initialize from buffer(string) with xml content"""
+        self._reset()
+        if xmlContent != None :
+            self._setFromXml(xmlContent, "song")
+        
+    def GetAuthorList(self):
+        """Convert author field to an authorlist
+        
+        in OpenSong an author list may be separated by '/'
+        return as a string
+        """
+        res = []
+        if self.author != None :
+            lst = self.author.split(' and ')
+            for l in lst :
+                res.append(l.strip())
+        s = ", ".join(res)
+        return s
+        
+    def GetCategoryArray(self):
+        """Convert theme and alttheme into categoryArray
+        
+        return as a string
+        """
+        res = []
+        if self.theme != None :
+            res.append(self.theme)
+        if self.alttheme != None :
+            res.append(self.alttheme)
+        s = ", ".join(res)
+        return s
+        
+    def _reorderVerse(self, tag, tmpVerse):
+        """Reorder the verse in case of first char is a number
+        
+        tag -- the tag of this verse / verse group
+        tmpVerse -- list of strings
+        """
+        res = []
+        for c in '1234567890 ':
+            tagPending = True
+            for l in tmpVerse :
+                if l.startswith(c) :
+                    if tagPending :
+                        tagPending = False
+                        t = tag.strip("[]").lower()
+                        if 'v' == t :
+                            newtag = "Verse"
+                        elif 'c' == t :
+                            newtag = "Chorus"
+                        else :
+                            #TODO: what is the tags for bridge, pre-chorus?
+                            newtag = t
+                        s = ("# %s %s"%(newtag, c)).rstrip()
+                        res.append(s)
+                    res.append(l[1:])
+                if (len(l) == 0) and (not tagPending) :
+                    res.append(l)
+        return res
+
+    def GetLyrics(self):
+        """Convert the lyrics to openlp lyrics format
+        
+        return as list of strings
+        """
+        lyrics = self.lyrics.split("\n")
+        tmpVerse = []
+        finalLyrics = []
+        tag = ""
+        for l in lyrics:
+            line = l.rstrip()
+            if not line.startswith('.') :
+                # drop all chords
+                tmpVerse.append(line)
+                if len(line) > 0 :
+                    if line.startswith('['):
+                        tag = line
+                else :
+                    r = self._reorderVerse(tag, tmpVerse)
+                    finalLyrics.extend(r)
+                    tag = ""
+                    tmpVerse = []
+        # catch up final verse
+        r = self._reorderVerse(tag, tmpVerse)
+        finalLyrics.extend(r)
+        return finalLyrics
+        
+        
 class Song(XmlRootClass) :
     """Class for handling song properties"""
     
@@ -85,11 +201,42 @@ class Song(XmlRootClass) :
         self._reset()
         if xmlContent != None :
             self._setFromXml(xmlContent, "Song")
+            self._parseLyrics()
         
     def _reset(self):
         """Reset all song attributes"""
         global _blankSongXml
+        self.slideList = []
         self._setFromXml(_blankSongXml, "Song")
+        
+    def FromOpenSongBuffer(self,  xmlcontent):
+        """Initialize from buffer(string) of xml lines in opensong format"""
+        self._reset()
+        opensong = _OpenSong(xmlcontent)
+        if opensong.title != None:
+            self.SetTitle(opensong.title)
+        if opensong.copyright != None :
+            self.SetCopyright(opensong.copyright)
+        if opensong.presentation != None:
+            self.SetVerseOrder(opensong.presentation)
+        if opensong.ccli != None:
+            self.SetSongCcliNo(opensong.ccli)
+        self.SetAuthorList(opensong.GetAuthorList())
+        self.SetCategoryArray(opensong.GetCategoryArray())
+        self.SetLyrics(opensong.GetLyrics())
+        
+    def FromOpenSongFile(self,  xmlfilename):
+        """Initialize from file containing xml
+        
+        xmlfilename -- path to xml file
+        """
+        lst = []
+        f = open(xmlfilename,  'r')
+        for line in f :
+            lst.append(line)
+        f.close()
+        xml = "".join(lst)
+        self.FromOpenSongBuffer(xml)
         
     def _RemovePunctuation(self,  title):
         """Remove the puntuation chars from title
@@ -320,25 +467,43 @@ class Song(XmlRootClass) :
         
     def SetLyrics(self,  lyrics):
         """Set the lyrics as a list of strings"""
-        # TODO: check font formatting
         self.lyrics = lyrics
+        self._parseLyrics()
         
-    def GetNumberOfVerses(self):
-        """Return the number of verses in the song (int)"""
-        numOfVerses = 0
+    def _parseLyrics(self):
+        """Parse lyrics into the slidelist"""
+        # TODO: check font formatting
+        self.slideList = []
+        tmpSlide = []
+        metContent = False
+        for l in self.lyrics :
+            if len(l) > 0 :
+                metContent = True
+                tmpSlide.append(l)
+            else :
+                if metContent :
+                    metContent = False
+                    self.slideList.append(tmpSlide)
+                    tmpSlide = []
         #
-        return numOfVerses
+        if len(tmpSlide) > 0:
+            self.slideList.append(tmpSlide)
+            
+    def GetNumberOfSlides(self):
+        """Return the number of slides in the song (int)"""
+        numOfSlides = len(self.slideList)
+        return numOfSlides
     
-    def GetPreviewVerse(self,  verseNumber):
-        """Return the preview text for specified verse number
+    def GetPreviewSlide(self,  slideNumber):
+        """Return the preview text for specified slide number
         
-        verseNumber -- 0: all verses, 1..n : specific verse
+        slideNumber -- 0: all slides, 1..n : specific slide
         a list of strings are returned
         """
         return []
         
-    def GetRenderVerse(self,  verseNumber):
-        """Return the verse to be rendered including the additional
+    def GetRenderSlide(self,  slideNumber):
+        """Return the slide to be rendered including the additional
         properties
         
         Returns a list as:
@@ -347,29 +512,31 @@ class Song(XmlRootClass) :
          authorlist (string),
          copyright (string),
          cclino (string),
-         lyric-verse as a list of strings]
+         lyric-part as a list of strings]
         """
         res = []
-        res.append(self.GetTheme())
         if self.showTitle :
             title = self.GetTitle()
         else :
             title = ""
-        res.append(title)
         if self.showAuthorList :
             author = self.GetAuthorList(True)
         else :
             author = ""
-        res.append(author)
         if self.showCopyright :
             cpright = self.GetCopyright()
         else :
             cpright = ""
-        res.append(cpright)
         if self.showSongCcliNo :
             ccli = self.GetSongCcliNo()
         else :
             ccli = ""
+        # examine the slide for a theme
+        res.append(self.GetTheme())
+        res.append(title)
+        res.append(author)
+        res.append(cpright)
         res.append(ccli)
+        # append the correct slide
         return res
     

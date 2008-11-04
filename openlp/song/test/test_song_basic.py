@@ -38,13 +38,14 @@ class Test_Basic(object):
         s = Song()
         r = s.__str__()
         l = r.split("\n")
-        assert(len(l) == 52)
+        assert(len(l) == 55)
         
     def test_asString(self):
         """Init: Empty asString - initial values"""
         s = Song()
         r = s._get_as_string()
-        flag = r.endswith("__None__None__None__None__None__None__1__1__1__1__None__None__None__None__BlankSong__None_")
+        #print r
+        flag = r.endswith("__None__None__None__None__None__None__1__1__1__1__[]__None__None__None__None__BlankSong__None_")
         assert(flag)
         
     def test_Title1(self):
@@ -60,7 +61,7 @@ class Test_Basic(object):
         assert(s.GetTitle() ==  t)
         assert(s.GetSearchableTitle() ==  t)
         
-    def test_Title2(self):
+    def test_Title3(self):
         """Set a titel with punctuation 1"""
         s = Song()
         t1 = "Hey! Come on, ya programmers*"
@@ -69,7 +70,7 @@ class Test_Basic(object):
         assert(s.GetTitle() ==  t1)
         assert(s.GetSearchableTitle() ==  t2)
         
-    def test_Title3(self):
+    def test_Title4(self):
         """Set a titel with punctuation 2"""
         s = Song()
         t1 = "??#Hey! Come on, ya programmers*"
@@ -78,7 +79,7 @@ class Test_Basic(object):
         assert(s.GetTitle() ==  t1)
         assert(s.GetSearchableTitle() ==  t2)
         
-    def test_Title4(self):
+    def test_Title5(self):
         """Set a title, where searchable title becomes empty - raises an exception"""
         s = Song()
         py.test.raises(SongTitleError, s.SetTitle, ",*")
@@ -176,4 +177,6 @@ class Test_Basic(object):
         assert(s.GetCategoryArray(True) == "")
         assert(s.GetCategoryArray(False) == [""])
         
-    
+if '__main__' == __name__:
+    r = Test_Basic()
+    r.test_asString()
