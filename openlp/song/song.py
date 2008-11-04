@@ -275,19 +275,67 @@ class Song(XmlRootClass) :
         textList (list of strings) -- the song
         """
         self._reset()
-        # TODO: Implement CCLI text parse
+        # extract the following fields
+        # - name
+        # - author
+        # - CCLI no
+        sName = ""
+        sAuthor = ""
+        sCopyright = ""
+        sCcli = ""
+        lastpart = 0
+        n = 0
+        metMisc = False
+        lyrics = []
+        for l in textList :
+            n += 1
+            if lastpart > 0 :
+                lastpart += 1
+                if lastpart == 2 :
+                    sCopyright = l[1:].strip()
+                if lastpart == 3 :
+                    sAuthor = l
+            elif l.startswith('CCLI Song') :
+                sCcli = l[13:].strip()
+                lastpart = 1
+            else :
+                if metMisc :
+                    metMisc = False
+                    if l.upper().startswith("(BRIDGE)") :
+                        lyrics.append("# Bridge")
+                    # otherwise unknown misc keyword
+                elif l.startswith("Misc") :
+                    metMisc = True
+                elif l.startswith("Verse") or l.startswith("Chorus"):
+                    lyrics.append("# %s"%l)
+                else :
+                    # should we remove multiple blank lines?
+                    if n == 1 :
+                        sName = l
+                    else :
+                        lyrics.append(l)
+        # split on known separators
+        lst = sAuthor.split('/')
+        if len(lst) < 2:
+            lst = sAuthor.split('|')
+        authorList = ", ".join(lst)
+        self.SetTitle(sName)
+        self.SetAuthorList(authorList)
+        self.SetCopyright(sCopyright)
+        self.SetSongCcliNo(sCcli)
+        self.SetLyrics(lyrics)
         
     def FromTextFile(self,  textFileName):
         """Create song from a list of texts read from given file
         
         textFileName -- path to text file
         """
-        textList = []
+        lines = []
         f = open(textFileName,  'r')
-        for line in f :
-            textList.append(line)
+        for orgline in f:
+            lines.append(orgline.rstrip())
         f.close()
-        self.FromText(textList)
+        self.FromTextList(lines)
         
     def _assureString(self, s):
         """Force a string is returned"""
