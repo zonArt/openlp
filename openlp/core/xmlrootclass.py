@@ -19,6 +19,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import platform
 import sys
 import os
+from types import StringType, NoneType, UnicodeType
 sys.path.append(os.path.abspath("./../.."))
 
 ver = platform.python_version()
@@ -50,9 +51,11 @@ class XmlRootClass(object):
             if element.tag != rootTag:
                 t=element.text
                 #print element.tag, t, type(t)
-                if type(t) == type(None): # easy!
+                if type(t) == NoneType: # easy!
                     val=t
-                if type(t) == type(" "): # strings need special handling to sort the colours out
+                elif type(t) == UnicodeType :
+                    val=t
+                elif type(t) == StringType: # strings need special handling to sort the colours out
                     #print "str",
                     if t[0] == "$": # might be a hex number
                         #print "hex",

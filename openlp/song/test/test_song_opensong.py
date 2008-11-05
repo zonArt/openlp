@@ -122,7 +122,7 @@ class Test_OpenSong(object):
         assert(s.GetVerseOrder() == "V1 C V2 C V3 C V4 C")
         assert(s.GetNumberOfSlides() == 5)
         
-    def atest_file3(self):
+    def test_file3(self):
         """OpenSong: parse 'På en fjern ensom høj' (danish)"""
         #FIXME: problem with XML convert and danish characters
         s = Song()
@@ -137,5 +137,5 @@ class Test_OpenSong(object):
         
 if '__main__' == __name__:
     r = Test_OpenSong()
-    r.atest_file3()
+    r.test_file3()
 
