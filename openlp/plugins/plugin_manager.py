@@ -1,7 +1,9 @@
 # import openlp.plugins
-from openlp.plugins import Plugin
 import os, sys
 import logging
+mypath=os.path.split(os.path.abspath(__file__))[0]
+sys.path.insert(0,(os.path.join(mypath, '..' ,'..')))
+from openlp.plugins.plugin import Plugin
 class PluginManager:
     global log
     log=logging.getLogger("PluginMgr")
