@@ -27,70 +27,87 @@ sys.path.insert(0,(os.path.join(mypath, '..', '..','..','..')))
 from openlp.plugins.biblemanager.BibleManager import BibleManager
 from openlp.utils import ConfigHelper
 
+import logging
+logging.basicConfig(level=logging.DEBUG,
+                format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                datefmt='%m-%d %H:%M',
+                filename='plugins.log',
+                filemode='w')
+
+console=logging.StreamHandler()
+# set a format which is simpler for console use
+formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+# tell the handler to use this format
+console.setFormatter(formatter)
+logging.getLogger('').addHandler(console)
+log=logging.getLogger('')
+
+logging.info("\nLogging started")
+
 class TestBibleManager:
-      
+    log=logging.getLogger("testBibleMgr")
     def setup_class(self):
-        print "\nRegister BM"
+        log.debug("\n.......Register BM")
         self.bm = BibleManager()
 
     def testRegisterBibleFiles(self):
         # Register a bible from files
-        print "\ntestRegisterBibleFiles"
-        self.bm.registerBible("TheMessage",'biblebooks_msg_short.csv','bibleverses_msg_short.csv')
-        self.bm.registerBible("NIV",'biblebooks_niv_short.csv','bibleverses_niv_short.csv')        
+        log.debug("\n.......testRegisterBibleFiles")
+        self.bm.registerFileBible("TheMessage",'biblebooks_msg_short.csv','bibleverses_msg_short.csv')
+        self.bm.registerFileBible("NIV",'biblebooks_niv_short.csv','bibleverses_niv_short.csv')        
         b = self.bm.getBibles()
         for b1 in b:
-            print b1
+            log.debug( b1)
             assert(b1 in b)    
             
     def testRegisterBibleHTTP(self):
         # Register a bible from files
-        print "\ntestRegisterBibleHTTP"
+        log.debug( "\n.......testRegisterBibleHTTP")
         self.bm.registerHTTPBible("asv","Crosswalk", "", "", "", "")
         #self.bm.registerBible("NIV", "ge", 1)
         b = self.bm.getBibles()
         for b1 in b:
-            print b1
+            log.debug( b1)
             assert(b1 in b)    
 
             
     def testGetBibles(self):
-        print "\ntestGetBibles"
+        log.debug( "\n.......testGetBibles")
         # make sure the shuffled sequence does not lose any elements
         b = self.bm.getBibles()
         for b1 in b:
-            print b1
+            log.debug( b1)
             assert(b1 in b)
 
-    def testGetBooks(self):
-        print "\ntestGetBooks"
+    def testGetBibleBooks(self):
+        log.debug( "\n.......testGetBibleBooks")
         c = self.bm.getBibleBooks("NIV")
         for c1 in c:
-            print c1
+            log.debug( c1)
             assert(c1 in c)
             
-    def testGetChapterCount(self):
-        print "\ntestGetChapterCount"        
+    def testGetBookChapterCount(self):
+        log.debug( "\n.......testGetBookChapterCount")       
         assert(self.bm.getBookChapterCount("Matthew") == '28')
 
-    def testGetVerseCount(self):
-        print "\ntestGetVerseCount\n"        
+    def testGetBookVerseCount(self):
+        log.debug( "\n.......testGetBookVerseCount")    
         assert(self.bm.getBookVerseCount("Genesis", 1) == '31')
         assert(self.bm.getBookVerseCount("Genesis", 2) == '25')
         assert(self.bm.getBookVerseCount("Matthew", 1) == '25')
         assert(self.bm.getBookVerseCount("Revelation", 1) == '20')        
 
     def testGetVerseText(self):
-        print "\ntestGetVerseText"
-        c = self.bm.getVerseText("TheMessage",'Genesis',1,2, 1)
-        print c
+        log.debug( "\n.......testGetVerseText")
+        c = self.bm.getVerseText("TheMessage",'Genesis',1,2,1)
+        log.debug( c )
         c = self.bm.getVerseText('NIV','Genesis',1,1,2)
-        print c
-        c = self.bm.getVerseText('asv','re',1,1,2)
-        print c
-        c = self.bm.getVerseText('asv','re',1,5,9)
-        print c
+        log.debug( c ) 
+        c = self.bm.getVerseText('asv','Revelation',1,1,2)
+        log.debug( c )
+        c = self.bm.getVerseText('asv','Revelation',1,5,9)
+        log.debug( c )
         
     def testLoadBible(self):
-        print "\ntestLoadBible"
-        self.bm.loadBible('asv')
+        log.debug( "\n.......testLoadBible")
+        #self.bm.loadBible('asv')

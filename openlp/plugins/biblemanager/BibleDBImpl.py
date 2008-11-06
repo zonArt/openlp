@@ -30,7 +30,12 @@ sys.path.insert(0,(os.path.join(mypath, '..', '..', '..')))
 
 from openlp.utils import ConfigHelper
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
+import logging
+logging.basicConfig(level=logging.DEBUG,
+                format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                datefmt='%m-%d %H:%M',
+                filename='plugins.log',
+                filemode='w')
 class BibleDBException(Exception):
     pass
 class BibleInvalidDatabaseError(Exception):
@@ -107,14 +112,17 @@ mapper(Book,  book_table)
 mapper(Verse,  verse_table)
 
 class BibleDBImpl:
+    global log     
+    log=logging.getLogger("BibleDBMgr")
+    log.info("BibleDB manager loaded")   
     def __init__(self, biblename, btype = 'sqlite'):   
         # Connect to database 
         path = ConfigHelper.getBiblePath()
-        #print path
-        #print biblename
+        #log.debug( path
+        #log.debug( biblename
         self.biblefile = os.path.join(path, biblename+".bible")
-        #print self.biblefile
-        #print btype
+        #log.debug( self.biblefile
+        #log.debug( btype
         if btype == 'sqlite': 
             self.db = create_engine("sqlite:///"+self.biblefile)
         elif btype == 'mysql': 
@@ -137,24 +145,24 @@ class BibleDBImpl:
         verse_table.create()
         self.loadMeta("dbversion", "0.1")
 
-    def createChapter(self, bk, chap, textlist):
-        print "createChapter ", bk, chap, textlist
+    def createChapter(self, bookname, chap, textlist):
+        log.debug( "createChapter %s,%s,%s", bookname, chap, textlist)
         metadata.bind.echo = False
         session = self.Session()
         s = text (""" select id FROM book where book.name == :b """)
-        data = self.db.execute(s, b=bk).fetchone()
+        data = self.db.execute(s, b=bookname).fetchone()
         id = data[0]    # id is first record in list.
-        #print "id = " , id
+        #log.debug( "id = " , id
         for v ,  t in textlist.iteritems():
             versemeta = Verse(book_id=id,  chapter=int(chap), verse=int(v), text=(t))
             session.add(versemeta)
         session.commit()
         
-    def createBook(self, bk):
-        print "createBook ", bk
+    def createBook(self, bookid, bookname, bookabbrev):
+        log.debug( "createBook %s,%s,%s", bookid, bookname, bookabbrev)
         metadata.bind.echo = False       
         session = self.Session()
-        bookmeta = Book(int(5), bk, bk)
+        bookmeta = Book(int(5), bookname, bookabbrev)
         session.add(bookmeta)
         session.commit()
         
@@ -168,6 +176,11 @@ class BibleDBImpl:
     def getMeta(self, key):
         s = text (""" select value FROM meta where key == :k """)
         return self.db.execute(s, k=key).fetchone()
+
+    def deleteMeta(self, key):
+        metadata.bind.echo = False
+        s = text (""" delete FROM meta where key == :k """)
+        self.db.execute(s, k=key)
 
     def _loadTestaments(self):
         metadata.bind.echo = False                
@@ -192,7 +205,7 @@ class BibleDBImpl:
         fverse=open(versesfile, 'r')
 
         for line in fbooks:
-            #print line
+            #log.debug( line)
             p = line.split(",")
             p[2] = self._cleanText(p[2])
             p[3] = self._cleanText(p[3])
@@ -202,47 +215,47 @@ class BibleDBImpl:
 
         book_ptr = ""
         for line in fverse:
-            #print line
+            #log.debug( line)
             p = line.split(",", 3) # split into 3 units and leave the rest as a single field
             p[0] = self._cleanText(p[0])
             p[3] = self._cleanText(p[3])
             if book_ptr is not p[0]:
                 query =  session.query(Book).filter(Book.name==p[0])
-                #print query
-                #print query.first()
-                #print query.first().id
+                #log.debug( query)
+                #log.debug( query.first())
+                #log.debug( query.first().id)
                 book_ptr = p[0]
-                #print text
+                #log.debug( text)
             versemeta = Verse(book_id=query.first().id,  chapter=int(p[1]), verse=int(p[2]), text=(p[3]))
             session.add(versemeta)
         session.commit()
             
     def getBibleBook(self, bookname):
-        print "getBibleBook ", bookname        
+        log.debug( "getBibleBook %s", bookname) 
         metadata.bind.echo = False        
         s = text (""" select name FROM book where book.name == :b """)
         return self.db.execute(s, b=bookname).fetchone()
         
     def getBibleChapter(self, bookname, chapter):
-        print "getBibleChapter ", bookname, chapter                
+        log.debug( "getBibleChapter %s,%s", bookname, chapter )               
         metadata.bind.echo = False
         s = text (""" select book.name FROM verse,book where verse.book_id == book.id AND verse.chapter == :c and book.name == :b """)
         return self.db.execute(s, c=chapter, b=bookname).fetchone()
         
     def getBibleText(self, bookname, chapter, sverse, everse):
-        print "getBibleText ", bookname, chapter, sverse, everse
+        log.debug( "getBibleText %s,%s,%s,%s", bookname, chapter, sverse, everse)
         metadata.bind.echo = False
         s = text (""" select verse.verse, verse.text FROM verse,book where verse.book_id == book.id AND verse.chapter == :c AND (verse.verse between :v1 and :v2) and book.name == :b """)
         return self.db.execute(s, c=chapter, v1=sverse , v2=everse, b=bookname).fetchall()
         
     def dumpBible(self):
-        print ".........Dumping Bible Database"
-        print "...............................Books "        
+        log.debug( ".........Dumping Bible Database")
+        log.debug( "...............................Books ")     
         s = text (""" select * FROM book """)
-        print self.db.execute(s).fetchall()
-        print "...............................Verses "                
+        log.debug( self.db.execute(s).fetchall())
+        log.debug( "...............................Verses ")            
         s = text (""" select * FROM verse """)
-        print self.db.execute(s).fetchall()         
+        log.debug( self.db.execute(s).fetchall())     
 
     def _cleanText(self, text):
         text = text.replace('\n', '')
