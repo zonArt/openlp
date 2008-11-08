@@ -18,6 +18,15 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from mainwindow import MainWindow
 from about import AboutForm
+from alertform import AlertForm
+from editsongform import EditSongForm
+from openlpexportform import OpenLPExportForm
+from openlpimportform import OpenLPImportForm
+from opensongexportform import OpenSongExportForm
+from opensongimportform import OpenSongImportForm
+from settings import SettingsDialog
 from splashscreen import SplashScreen
 
-__all__ = ['MainWindow', 'AboutForm', 'SplashScreen']
+__all__ = ['SplashScreen', 'MainWindow', 'AboutForm', 'AlertForm', 
+'EditSongForm', 'OpenLPExportForm', 'OpenLPImportForm', 'OpenSongExportForm', 
+'OpenSongImportForm', 'SettingsDialog']

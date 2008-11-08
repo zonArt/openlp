@@ -28,14 +28,31 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from time import sleep
 
 from PyQt4 import QtCore, QtGui
+
 from openlp.ui.forms.about import AboutForm
+from openlp.ui.forms.alertform import AlertForm
+from openlp.ui.forms.editsongform import EditSongForm
+from openlp.ui.forms.openlpexportform import OpenLPExportForm
+from openlp.ui.forms.openlpimportform import OpenLPImportForm
+from openlp.ui.forms.opensongexportform import OpenSongExportForm
+from openlp.ui.forms.opensongimportform import OpenSongImportForm
+from openlp.ui.forms.settings import SettingsDialog
+
 from openlp.resources import *
 
 class MainWindow(object):
+    
     def __init__(self):
         self.main_window = QtGui.QMainWindow()
         self.setupUi()
         self.about_form = AboutForm()
+        self.alert_form = AlertForm()
+        self.edit_song_form = EditSongForm()
+        self.openlpexportform = OpenLPExportForm()
+        self.openlpimportform = OpenLPImportForm()
+        self.opensongexportform = OpenSongExportForm()
+        self.opensongimportform = OpenSongImportForm()
+        self.settings_form = SettingsDialog()
 
     def setupUi(self):
         self.main_window.setObjectName("main_window")
@@ -868,7 +885,14 @@ class MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(self.main_window)
 
         QtCore.QObject.connect(self.HelpAboutItem, QtCore.SIGNAL("triggered()"), self.onHelpAboutItemClicked)
-
+        QtCore.QObject.connect(self.ToolsAlertItem, QtCore.SIGNAL("triggered()"), self.onToolsAlertItemClicked)
+        QtCore.QObject.connect(self.OptionsSettingsItem, QtCore.SIGNAL("triggered()"), self.onOptionsSettingsItemClicked)
+        QtCore.QObject.connect(self.SongEditItem, QtCore.SIGNAL("clicked()"), self.onSongEditItemClicked)
+        QtCore.QObject.connect(self.ImportOpenlp1Item, QtCore.SIGNAL("triggered()"), self.onImportOpenlp1ItemClicked)
+        QtCore.QObject.connect(self.ExportOpenlp1Item, QtCore.SIGNAL("triggered()"), self.onExportOpenlp1ItemClicked)
+        QtCore.QObject.connect(self.ImportOpenSongItem, QtCore.SIGNAL("triggered()"), self.onImportOpenSongItemClicked)
+        QtCore.QObject.connect(self.ExportOpenSongItem, QtCore.SIGNAL("triggered()"), self.onExportOpenSongItemClicked)
+        
     def retranslateUi(self):
         self.main_window.setWindowTitle(QtGui.QApplication.translate("main_window", "openlp.org 2.0", None, QtGui.QApplication.UnicodeUTF8))
         self.FileMenu.setTitle(QtGui.QApplication.translate("main_window", "&File", None, QtGui.QApplication.UnicodeUTF8))
@@ -1018,3 +1042,24 @@ class MainWindow(object):
 
     def onHelpAboutItemClicked(self):
         self.about_form.show()
+
+    def onToolsAlertItemClicked(self):
+        self.alert_form.show()
+        
+    def onSongEditItemClicked(self):
+        self.edit_song_form.show()
+        
+    def onExportOpenlp1ItemClicked(self):
+        self.openlpexportform.show()
+        
+    def onImportOpenlp1ItemClicked(self):
+        self.openlpimportform.show()
+        
+    def onExportOpenSongItemClicked(self):
+        self.opensongexportform.show()
+        
+    def onImportOpenSongItemClicked(self):
+        self.opensongimportform.show()
+        
+    def onOptionsSettingsItemClicked(self):
+        self.settings_form.show()

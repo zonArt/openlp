@@ -12,6 +12,10 @@
   <property name="windowTitle" >
    <string>openlp.org Song Importer</string>
   </property>
+  <property name="windowIcon" >
+   <iconset resource="../images/openlp-2.qrc" >
+    <normaloff>:/icon/openlp.org-icon-32.bmp</normaloff>:/icon/openlp.org-icon-32.bmp</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout_5" >
    <property name="margin" >
     <number>8</number>
