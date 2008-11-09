@@ -28,6 +28,7 @@ from sqlalchemy.orm import sessionmaker, mapper
 mypath=os.path.split(os.path.abspath(__file__))[0]
 sys.path.insert(0,(os.path.join(mypath, '..', '..', '..')))
 
+from openlp.plugins.biblemanager.BibleCommon import BibleCommon
 from openlp.utils import ConfigHelper
 
 import logging
@@ -111,7 +112,7 @@ mapper(ONTestament,  testament_table)
 mapper(Book,  book_table)
 mapper(Verse,  verse_table)
 
-class BibleDBImpl:
+class BibleDBImpl(BibleCommon):
     global log     
     log=logging.getLogger("BibleDBMgr")
     log.info("BibleDB manager loaded")   
@@ -137,6 +138,7 @@ class BibleDBImpl:
         self.Session.configure(bind=self.db)
         
     def createTables(self):
+        log.debug( "createTables")        
         if os.path.exists(self.biblefile):   # delete bible file and set it up again
             os.remove(self.biblefile)
         meta_table.create()
@@ -144,6 +146,7 @@ class BibleDBImpl:
         book_table.create()
         verse_table.create()
         self.loadMeta("dbversion", "0.1")
+        self._loadTestaments
 
     def createChapter(self, bookname, chap, textlist):
         log.debug( "createChapter %s,%s,%s", bookname, chap, textlist)
@@ -165,6 +168,7 @@ class BibleDBImpl:
         bookmeta = Book(int(5), bookname, bookabbrev)
         session.add(bookmeta)
         session.commit()
+        self._loadTestaments()
         
     def loadMeta(self, key, value):
         metadata.bind.echo = False                
@@ -183,12 +187,15 @@ class BibleDBImpl:
         self.db.execute(s, k=key)
 
     def _loadTestaments(self):
-        metadata.bind.echo = False                
+        log.debug("loadTestaments")
+        metadata.bind.echo = False               
         session = self.Session()    
         testmeta = ONTestament(name="Old Testament")
         session.add(testmeta)
         testmeta = ONTestament(name="New Testament")
         session.add(testmeta)
+        testmeta = ONTestament(name="Apocrypha")
+        session.add(testmeta)        
         session.commit()
     
 
@@ -255,10 +262,4 @@ class BibleDBImpl:
         log.debug( self.db.execute(s).fetchall())
         log.debug( "...............................Verses ")            
         s = text (""" select * FROM verse """)
-        log.debug( self.db.execute(s).fetchall())     
-
-    def _cleanText(self, text):
-        text = text.replace('\n', '')
-        text = text.replace('\r', '')
-        text = text.replace('"', '')
-        return text
+        log.debug( self.db.execute(s).fetchall())

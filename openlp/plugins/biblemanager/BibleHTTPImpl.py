@@ -20,6 +20,10 @@ import os, os.path
 import sys
 import urllib2
 
+mypath=os.path.split(os.path.abspath(__file__))[0]
+sys.path.insert(0,(os.path.join(mypath, '..', '..', '..')))
+from openlp.plugins.biblemanager.BibleCommon import BibleCommon
+
 import logging
 logging.basicConfig(level=logging.DEBUG,
                 format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
@@ -27,7 +31,7 @@ logging.basicConfig(level=logging.DEBUG,
                 filename='plugins.log',
                 filemode='w')
                 
-class BibleHTTPImpl:
+class BibleHTTPImpl(BibleCommon):
     global log 
     log=logging.getLogger("BibleHTTPMgr")
     log.info("BibleHTTP manager loaded") 
@@ -40,14 +44,96 @@ class BibleHTTPImpl:
         Init confirms the bible exists and stores the database path.
         """
         bible = {}
-        biblesoure = ""
+        biblesource = ""
         
     def setBibleSource(self,biblesource):
+        """
+        Set the source of where the bible text is comming from
+        """
+        log.debug("setBibleSource %s", biblesource)        
         self.biblesource = biblesource
 
-    def getBibleChapter(self, version, bookid,bookname,  chapter):
+    def getBibleChapter(self, version, bookid, bookname,  chapter):
+        """
+        Recieve the request and call the relevent handler methods
+        """
+        log.debug( "getBibleChapter %s,%s,%s,%s", version, bookid, bookname,  chapter) 
+        log.debug("biblesource = %s", self.biblesource)
+        if self.biblesource == 'Crosswalk':
+            return self.getBibleCWChapter(version, bookid, bookname,  chapter)
+        else:
+            try:
+                return self.getBibleBGChapter(version, bookid, bookname,  chapter)
+            except:
+                log.error("Error thrown = %s", sys.exc_info()[1])
+            
+    def getBibleBGChapter(self, version, bookid, bookname,  chapter):
+        """
+        Access and decode bibles via the BibleGateway website
+            Version - the version of the bible like 31 for New International version
+            bookid - Book id for the book of the bible - eg 1 for Genesis
+            bookname - not used
+            chapter - chapter number 
+        
+        """
+        version = 49
+        log.debug( "getBibleBGChapter %s,%s,%s,%s", version, bookid, bookname,  chapter)     
+        urlstring = "http://www.biblegateway.com/passage/?book_id="+str(bookid)+"&chapter"+str(chapter)+"&version="+str(version)
+        log.debug( "Url String %s", urlstring)
+        xml_string = ""
+        req = urllib2.Request(urlstring)
+        req.add_header('User-Agent', 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)')
+        try:
+            handle = urllib2.urlopen(req)
+            xml_string = handle.read()
+        except IOError, e:
+            if hasattr(e, 'reason'):
+                log.error( 'Reason : ')
+                log.error( e.reason)
+                
+        VerseSearch = "class="+'"'+"sup"+'"'+">"
+        verse = 1
+        i= xml_string.find("result-text-style-normal")
+        xml_string = xml_string[i:len(xml_string)]
+        versePos = xml_string.find(VerseSearch)
+        #print versePos
+        bible = {}
+        while versePos > 0:
+            verseText = "" # clear out string
+            versePos = xml_string.find("</span", versePos)
+            i = xml_string.find(VerseSearch, versePos+1)
+            #print i ,  versePos
+            if i == -1:
+                i = xml_string.find("</div", versePos+1)
+                j = xml_string.find("<strong", versePos+1)                
+                #print i ,  j
+                if j > 0 and j < i:
+                    i = j
+                verseText = xml_string[versePos + 7 : i ] 
+                #print xml_string
+                print "VerseText = " + str(verse) +" "+ verseText
+                bible[verse] = self._cleanText(verseText) # store the verse                
+                versePos = 0 
+            else:
+                i = xml_string[:i].rfind("<span")+1
+                verseText = xml_string[versePos + 7 : i ] # Loose the </span>
+                xml_string = xml_string[i:len(xml_string)] # chop off verse 1
+                versePos = xml_string.find(VerseSearch) #look for the next verse
+                bible[verse] = self._cleanText(verseText) # store the verse
+                verse += 1
+        return bible
+        
+    def getBibleCWChapter(self, version, bookid, bookname,  chapter):
+        """
+        Access and decode bibles via the Crosswaly website
+            Version - the version of the bible like niv for New International version
+            bookid - not used
+            bookname - text name of in english eg 'gen' for Genesis
+            chapter - chapter number 
+        """        
+        log.debug( "getBibleCWChapter %s,%s,%s,%s", version, bookid, bookname,  chapter)         
         urlstring = "http://bible.crosswalk.com/OnlineStudyBible/bible.cgi?word="+bookname+"+"+str(chapter)+"&version="+version
-        log.debug( urlstring)
+        log.debug( "Url String %s", urlstring)
         xml_string = ""
         req = urllib2.Request(urlstring)
         req.add_header('User-Agent', 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)')
@@ -70,8 +156,8 @@ class BibleHTTPImpl:
         versePos = xml_string.find("<BLOCKQUOTE>") 
         #log.debug( versePos)
         bible = {}
-        cleanbible = {}
         while versePos > 0:
+            verseText = "" # clear out string
             versePos = xml_string.find("<B><I>", versePos) + 6
             i = xml_string.find("</I></B>", versePos) 
             #log.debug( versePos, i)
@@ -88,16 +174,9 @@ class BibleHTTPImpl:
                 #log.debug( i,  versePos)
                 verseText = xml_string[versePos: i]
                 versePos = i
-            bible[verse] = self._cleanVerse(verseText)
+            bible[verse] = self._cleanText(verseText)
+            #bible[verse] = verseText
             
         #log.debug( bible)
         return bible
 
-    def _cleanVerse(self, text):
-        text = text.replace('\n', '')
-        text = text.replace('\r', '')
-        text = text.replace('&nbsp;', '')
-        text = text.replace('<P>', '')
-        text = text.replace('"', '')
-
-        return text.rstrip()
