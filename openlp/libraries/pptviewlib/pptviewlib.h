@@ -19,6 +19,7 @@ DllExport void SetDebug(BOOL onoff);
 
 LRESULT CALLBACK CbtProc(int nCode, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK CwpProc(int nCode, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam);
 BOOL GetPPTViewerPath(char *pptviewerpath, int strsize);
 HBITMAP CaptureWindow (HWND hWnd);
 VOID SaveBitmap (CHAR* filename, HBITMAP hBmp) ;
@@ -34,6 +35,7 @@ void Unhook(int id);
 struct PPTVIEWOBJ 
 {
 	HHOOK hook;
+	HHOOK mhook;
 	HWND hWnd;
 	HWND hWnd2;
 	HWND hParentWnd;
@@ -45,6 +47,7 @@ struct PPTVIEWOBJ
 	int slideCount;
 	int currentSlide;
 	int firstSlideSteps;
+	int steps;
 	char filename[MAX_PATH];
 	char previewpath[MAX_PATH];
 	PPTVIEWSTATE state;

@@ -70,9 +70,9 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 }
 DllExport void SetDebug(BOOL onoff)
 {
-	printf("SetDebug");
+	printf("SetDebug\n");
 	debug = onoff;
-	DEBUG("enabled");
+	DEBUG("enabled\n");
 }
 
 // Open the PointPoint, count the slides and take a snapshot of each slide
@@ -169,27 +169,48 @@ DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect, char *previewp
 		ClosePPT(id);
 		return -1;
 	}
+	while(pptviewobj[id].state==PPT_STARTED)
+		Sleep(10);
 	if(gotinfo)
+	{
+		DEBUG("OpenPPT: Info loaded, no refresh\n");
 		pptviewobj[id].state = PPT_LOADED;
+		Resume(id);
+	}
 	else
 	{
+		//Resume(id);
+		DEBUG("OpenPPT: Get info\n");
+		pptviewobj[id].steps = 0;
+		int steps = 0;
 		while(pptviewobj[id].state!=PPT_LOADED&&pptviewobj[id].state!=PPT_CLOSED)
 		{
-			NextStep(id);
-			Sleep(100); // need to be careful not to be too quick, otherwise step to far and close show
+			if(steps<=pptviewobj[id].steps)
+			{
+				Sleep(100);
+				DEBUG("OpenPPT: Step %d/%d\n",steps,pptviewobj[id].steps);
+				steps++;
+				NextStep(id);
+			} 
+			Sleep(10);
 		}
+		DEBUG("OpenPPT: Steps %d, first slide steps %d\n",pptviewobj[id].steps,pptviewobj[id].firstSlideSteps);
 		SavePPTInfo(id);
 		RestartShow(id);
 	}
-	//InvalidateRect(pptviewobj[id].hWnd, NULL, TRUE);
+	if(pptviewobj[id].mhook!=NULL)	
+		UnhookWindowsHookEx(pptviewobj[id].mhook);
+	pptviewobj[id].mhook = NULL;
 	DEBUG("OpenPPT: Exit: id=%i\n", id);
 	return id;
 }
 // Load information about the ppt from an info.txt file.
 // Format:
+// version
 // filedate
 // filesize
 // slidecount
+// first slide steps
 BOOL GetPPTInfo(int id)
 {
 	struct _stat filestats;
@@ -203,7 +224,11 @@ BOOL GetPPTInfo(int id)
 	sprintf_s(info, MAX_PATH, "%sinfo.txt", pptviewobj[id].previewpath);
 	int err = fopen_s(&pFile, info, "r");
 	if(err!=0)
+	{
+		DEBUG("GetPPTInfo: file open failed - %d\n", err);
 		return FALSE;
+	}
+	fgets(buf, 100, pFile); // version == 1
 	fgets(buf, 100, pFile); 
 	if(filestats.st_mtime!=atoi(buf))
 	{
@@ -218,6 +243,8 @@ BOOL GetPPTInfo(int id)
 	}
 	fgets(buf, 100, pFile); // slidecount
 	int slidecount = atoi(buf);
+	fgets(buf, 100, pFile); // first slide steps
+	int firstslidesteps = atoi(buf);
 	// check all the preview images still exist
 	for(int i = 1; i<=slidecount; i++)
 	{
@@ -225,7 +252,9 @@ BOOL GetPPTInfo(int id)
 		if(GetFileAttributes(info)==INVALID_FILE_ATTRIBUTES)
 			return FALSE;
 	}
+	fclose(pFile);
 	pptviewobj[id].slideCount = slidecount;
+	pptviewobj[id].firstSlideSteps = firstslidesteps;
 	DEBUG("GetPPTInfo: exit ok\n");
 	return TRUE;
 }
@@ -249,8 +278,11 @@ BOOL SavePPTInfo(int id)
 		DEBUG("SavePPTInfo: fopen of %s failed%i\n", info, err);
 		return FALSE;
 	}
-	DEBUG("%u\n%u\n%u\n", filestats.st_mtime, filestats.st_size, pptviewobj[id].slideCount);
-	fprintf(pFile, "%u\n%u\n%u\n", filestats.st_mtime, filestats.st_size, pptviewobj[id].slideCount);
+	fprintf(pFile, "1\n");
+	fprintf(pFile, "%u\n", filestats.st_mtime);
+	fprintf(pFile, "%u\n", filestats.st_size);
+	fprintf(pFile, "%u\n", pptviewobj[id].slideCount);
+	fprintf(pFile, "%u\n", pptviewobj[id].firstSlideSteps);
 	fclose (pFile);
 	DEBUG("SavePPTInfo: exit ok\n");
 	return TRUE;
@@ -283,7 +315,10 @@ void Unhook(int id)
 	DEBUG("Unhook: start\n");
 	if(pptviewobj[id].hook!=NULL)	
 		UnhookWindowsHookEx(pptviewobj[id].hook);
+	if(pptviewobj[id].mhook!=NULL)	
+		UnhookWindowsHookEx(pptviewobj[id].mhook);
 	pptviewobj[id].hook = NULL;
+	pptviewobj[id].mhook = NULL;
 	DEBUG("Unhook: exit ok\n");
 }
 
@@ -345,14 +380,16 @@ DllExport int GetCurrentSlide(int id)
 DllExport void NextStep(int id)
 {
 	DEBUG("NextStep:\n");
-	PostMessage(pptviewobj[id].hWnd, WM_MOUSEWHEEL, MAKEWPARAM(0, -WHEEL_DELTA), 0);
+	if(pptviewobj[id].currentSlide>pptviewobj[id].slideCount)
+		return;
+	PostMessage(pptviewobj[id].hWnd2, WM_MOUSEWHEEL, MAKEWPARAM(0, -WHEEL_DELTA), 0);
 }
 
 // Take a step backwards through the show 
 DllExport void PrevStep(int id)
 {
 	DEBUG("PrevStep:\n");
-	PostMessage(pptviewobj[id].hWnd, WM_MOUSEWHEEL, MAKEWPARAM(0, WHEEL_DELTA), 0);
+	PostMessage(pptviewobj[id].hWnd2, WM_MOUSEWHEEL, MAKEWPARAM(0, WHEEL_DELTA), 0);
 }
 
 // Blank the show (black screen)
@@ -365,29 +402,31 @@ DllExport void Blank(int id)
 	DEBUG("Blank:\n");
 	HWND h1 = GetForegroundWindow();
 	HWND h2 = GetFocus();
-	SetForegroundWindow(pptviewobj[id].hWnd2);
-	SetFocus(pptviewobj[id].hWnd2);
+	SetForegroundWindow(pptviewobj[id].hWnd);
+	SetFocus(pptviewobj[id].hWnd);
+	Sleep(50);	// slight pause, otherwise event triggering this call may grab focus back!
 	keybd_event((int)'A', 0, 0, 0);
+	keybd_event((int)'A', 0, KEYEVENTF_KEYUP, 0);
 	keybd_event((int)'B', 0, 0, 0);
+	keybd_event((int)'B', 0, KEYEVENTF_KEYUP, 0);
 	SetForegroundWindow(h1);
 	SetFocus(h2);
-	//SendMessage(pptviewobj[id].hWnd2, WM_KEYDOWN, 'A', 0);
-	//SendMessage(pptviewobj[id].hWnd2, WM_CHAR, 'A', 0);
-	//SendMessage(pptviewobj[id].hWnd2, WM_KEYUP, 'A', 0);
-	//SendMessage(pptviewobj[id].hWnd2, WM_KEYDOWN, 'B', 0);
-	//SendMessage(pptviewobj[id].hWnd2, WM_CHAR, 'B', 0);
-	//SendMessage(pptviewobj[id].hWnd2, WM_KEYUP, 'B', 0);
+	//PostMessage(pptviewobj[id].hWnd2, WM_KEYDOWN, 'B', 0x00300001);
+	//PostMessage(pptviewobj[id].hWnd2, WM_CHAR, 'b', 0x00300001);
+	//PostMessage(pptviewobj[id].hWnd2, WM_KEYUP, 'B', 0xC0300001);
 }
 // Unblank the show 
 DllExport void Unblank(int id)
 {	
 	DEBUG("Unblank:\n");
-	// Pressing any key resumes.
-	SendMessage(pptviewobj[id].hWnd2, WM_KEYDOWN, 'A', 0);
+	// Pressing any key resumes. 
+	// For some reason SendMessage works for unblanking, but not blanking.
+//	SendMessage(pptviewobj[id].hWnd2, WM_KEYDOWN, 'A', 0);
 	SendMessage(pptviewobj[id].hWnd2, WM_CHAR, 'A', 0);
-	SendMessage(pptviewobj[id].hWnd2, WM_KEYUP, 'A', 0);
+//	SendMessage(pptviewobj[id].hWnd2, WM_KEYUP, 'A', 0);
 //	HWND h1 = GetForegroundWindow();
 //	HWND h2 = GetFocus();
+//	Sleep(50);	// slight pause, otherwise event triggering this call may grab focus back!
 //	SetForegroundWindow(pptviewobj[id].hWnd);
 //	SetFocus(pptviewobj[id].hWnd);
 //	keybd_event((int)'A', 0, 0, 0);
@@ -411,12 +450,15 @@ DllExport void GotoSlide(int id, int slideno)
 	HWND h2 = GetFocus();
 	SetForegroundWindow(pptviewobj[id].hWnd);
 	SetFocus(pptviewobj[id].hWnd);
+	Sleep(50);	// slight pause, otherwise event triggering this call may grab focus back!
 	for(int i=0;i<10;i++)
 	{
 		if(ch[i]=='\0') break;
 		keybd_event((BYTE)ch[i], 0, 0, 0);
+		keybd_event((BYTE)ch[i], 0, KEYEVENTF_KEYUP, 0);
 	}
 	keybd_event(VK_RETURN, 0, 0, 0);
+	keybd_event(VK_RETURN, 0, KEYEVENTF_KEYUP, 0);
 	SetForegroundWindow(h1);
 	SetFocus(h2);
 
@@ -452,6 +494,7 @@ DllExport void RestartShow(int id)
 	for(int i=0;i<=pptviewobj[id].firstSlideSteps;i++)
 	{
 		PrevStep(id);
+		Sleep(10);
 	}
 	Resume(id);
 }
@@ -501,8 +544,10 @@ LRESULT CALLBACK CbtProc(int nCode, WPARAM wParam, LPARAM lParam)
 				{
 					UnhookWindowsHookEx(globalhook);
 					globalhook=NULL;
-					pptviewobj[id].state = PPT_OPENED;
 					pptviewobj[id].hook = SetWindowsHookEx(WH_CALLWNDPROC,CwpProc,hInstance,pptviewobj[id].dwThreadId);
+					pptviewobj[id].mhook = SetWindowsHookEx(WH_GETMESSAGE,GetMsgProc,hInstance,pptviewobj[id].dwThreadId);
+					Sleep(10);
+					pptviewobj[id].state = PPT_OPENED;
 				}
 			}
 		}
@@ -510,6 +555,34 @@ LRESULT CALLBACK CbtProc(int nCode, WPARAM wParam, LPARAM lParam)
 	return CallNextHookEx(hook,nCode,wParam,lParam); 
 }
 
+// This hook exists whilst the slideshow is loading but only listens on the
+// slideshows thread. It listens out for mousewheel events
+LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam) 
+{
+	HHOOK hook = NULL;
+	MSG *pMSG = (MSG *)lParam;
+	DWORD windowthread = GetWindowThreadProcessId(pMSG->hwnd,NULL);
+	int id=-1;
+	for(int i=0; i<MAX_PPTOBJS; i++)
+	{
+		if(pptviewobj[i].dwThreadId==windowthread)
+		{
+			id=i;
+			hook = pptviewobj[id].mhook;
+			break;
+		}
+	}
+	if(id>=0&&nCode==HC_ACTION&&wParam==PM_REMOVE&&pMSG->message==WM_MOUSEWHEEL)
+    {
+		if(pptviewobj[id].state!=PPT_LOADED)
+		{
+			if(pptviewobj[id].currentSlide==1)
+				pptviewobj[id].firstSlideSteps++;
+			pptviewobj[id].steps++;
+		}
+    }
+    return CallNextHookEx(hook, nCode, wParam, lParam);
+}
 // This hook exists whilst the slideshow is running but only listens on the
 // slideshows thread. It listens out for slide changes, message WM_USER+22.
 LRESULT CALLBACK CwpProc(int nCode, WPARAM wParam, LPARAM lParam){
@@ -533,12 +606,14 @@ LRESULT CALLBACK CwpProc(int nCode, WPARAM wParam, LPARAM lParam){
 	{
 		if(cwp->message==WM_USER+22)
 		{
-			if((pptviewobj[id].state != PPT_LOADED)
-				&& (pptviewobj[id].currentSlide>0)
-				&& (pptviewobj[id].previewpath!=NULL&&strlen(pptviewobj[id].previewpath)>0))
+			if(pptviewobj[id].state != PPT_LOADED)
 			{
-				sprintf_s(filename, MAX_PATH, "%s%i.bmp", pptviewobj[id].previewpath, pptviewobj[id].currentSlide);
-				CaptureAndSaveWindow(cwp->hwnd, filename);
+				if((pptviewobj[id].currentSlide>0)
+				&& (pptviewobj[id].previewpath!=NULL&&strlen(pptviewobj[id].previewpath)>0))
+				{
+					sprintf_s(filename, MAX_PATH, "%s%i.bmp", pptviewobj[id].previewpath, pptviewobj[id].currentSlide);
+					CaptureAndSaveWindow(cwp->hwnd, filename);
+				}
 			}
 			if(cwp->wParam==0)
 			{
@@ -550,8 +625,6 @@ LRESULT CALLBACK CwpProc(int nCode, WPARAM wParam, LPARAM lParam){
 			} 
 			else
 			{
-				if((pptviewobj[id].state != PPT_LOADED)&&cwp->wParam==256)
-					pptviewobj[id].firstSlideSteps++;
 				pptviewobj[id].currentSlide = cwp->wParam - 255;
 				if(pptviewobj[id].currentSlide>pptviewobj[id].slideCount)
 					pptviewobj[id].slideCount = pptviewobj[id].currentSlide;
@@ -634,6 +707,9 @@ HBITMAP CaptureWindow (HWND hWnd) {
 		{
 			hDCBmp = (HBITMAP) SelectObject (hMemDC, hImage);
 			HMODULE hLib = LoadLibrary("User32");
+			// PrintWindow works for windows outside displayable area
+			// but was only introduced in WinXP. BitBlt requires the window to be topmost 
+			// and within the viewable area of the display
 			if(GetProcAddress(hLib, "PrintWindow")==NULL)
 			{
 				SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE); 
