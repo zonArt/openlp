@@ -98,7 +98,7 @@ class BibleHTTPImpl(BibleCommon):
         versePos = xml_string.find(VerseSearch)
         #print versePos
         bible = {}
-        while versePos > 0:
+        while versePos > -1:
             verseText = "" # clear out string
             versePos = xml_string.find("</span", versePos)
             i = xml_string.find(VerseSearch, versePos+1)
@@ -111,13 +111,13 @@ class BibleHTTPImpl(BibleCommon):
                     i = j
                 verseText = xml_string[versePos + 7 : i ] 
                 #print xml_string
-                print "VerseText = " + str(verse) +" "+ verseText
+                #print "VerseText = " + str(verse) +" "+ verseText
                 bible[verse] = self._cleanText(verseText) # store the verse                
-                versePos = 0 
+                versePos = -1
             else:
                 i = xml_string[:i].rfind("<span")+1
-                verseText = xml_string[versePos + 7 : i ] # Loose the </span>
-                xml_string = xml_string[i:len(xml_string)] # chop off verse 1
+                verseText = xml_string[versePos + 7 : i - 1 ] # Loose the </span>
+                xml_string = xml_string[i - 1 :len(xml_string)] # chop off verse 1
                 versePos = xml_string.find(VerseSearch) #look for the next verse
                 bible[verse] = self._cleanText(verseText) # store the verse
                 verse += 1

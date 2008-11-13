@@ -34,22 +34,23 @@ class BibleCommon:
     def _cleanText(self, text):
         """
         Clean up text and remove extra characters
+        after been downloaded from web
         """
-#        text = text.replace('\n', '')
-#        text = text.replace('\r', '')
-#        text = text.replace('&nbsp;', '')
-#        text = text.replace('<P>', '')
-#        text = text.replace('"', '')
+        # Remove Headings from the Text
+        i = text.find("<h")
+        while i > -1:
+            j=text.find("</h", i)            
+            text = text[ : (i - 1)]+text[(j+4)]
+            i = text.find("<h")
+            
+        # Remove Support References from the Text
         x = text.find("<sup>")
         while x > -1:
             y = text.find("</sup>")            
-            #print x, y
-            #print verseText[:x]
-            #print verseText[y + 6:len(verseText)]
             text= text[:x] + text[y + 6:len(text)]
             x = text.find("<sup>")
-            #print "text= " + text
 
+        # Static Clean ups
         text= text.replace('\n', '')
         text= text.replace('\r', '')
         text= text.replace('&nbsp;', '')
@@ -64,14 +65,11 @@ class BibleCommon:
         text= text.replace(chr(189), '1/2')
         text= text.replace("&quot;", '"')
         text= text.replace("&apos;", "'")
-        x = text.find("<")
-        #print verseText
-#        while x > -1:
-#            y = text.find(">")
-#            #print x ,  y
-#            #print verseText[:x-1]
-#            #print verseText[y : y-1]
-#            text= text[:x] + text[y+1 : len(text)]            
-#            x = text.find("<")            
+        i = text.find("<")
+        while i > -1 :
+            j = text.find(">", i)
+            text= text[:i] + text[j+1:]            
+            i = text.find("<")
+      
         text= text.replace('>', '')
         return text.rstrip()
