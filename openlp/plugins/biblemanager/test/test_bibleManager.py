@@ -105,12 +105,12 @@ class TestBibleManager:
         #log.debug( c ) 
         c = self.bm.getVerseText('asv','Revelation',1,1,2)
         log.debug( c )
-        #c = self.bm.getVerseText('asv','Revelation',1,5,9)
-        #log.debug( c )
-        c = self.bm.getVerseText('nasb','Revelation',1,5,9)
+        c = self.bm.getVerseText('asv','Revelation',1,5,9)
+        log.debug( c )
+        c = self.bm.getVerseText('nasb','Revelation',10,5,9)
         log.debug( c )        
         
     def testLoadBible(self):
         log.debug( "\n.......testLoadBible")
-        #self.bm.loadBible('asv')
+        self.bm.loadBible('asv')
         self.bm.loadBible('nasb')        
