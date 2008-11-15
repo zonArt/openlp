@@ -64,9 +64,11 @@ class BibleManager(Plugin):
             self.bibleDBCache[b] = BibleDBImpl(b)
             biblesource = self.bibleDBCache[b].getMeta("WEB") # look to see if lazy load bible exists and get create getter.
             if biblesource:
-               nhttp = BibleHTTPImpl()
-               nhttp.setBibleSource(biblesource)  # tell The Server where to get the verses from.
-               self.bibleHTTPCache[b] = nhttp
+                nhttp = BibleHTTPImpl()
+                nhttp.setBibleSource(biblesource)  # tell The Server where to get the verses from.
+                self.bibleHTTPCache[b] = nhttp
+                proxy = self.bibleDBCache[b].getMeta("proxy") # look to see if lazy load bible exists and get create getter.
+                nhttp.setProxy(proxy)  # tell The Server where to get the verses from.
             #   
         #Load in memory objects
         for line in fbibles:
@@ -88,12 +90,12 @@ class BibleManager(Plugin):
         #log.debug( self.bibleHTTPCache   )
         log.debug( "Bible Initialised")     
 
-    def registerHTTPBible(self, biblename, biblesource, proxy, proxyport, proxyid, proxypass):
+    def registerHTTPBible(self, biblename, biblesource, proxyurl=None, proxyid=None, proxypass=None):
         """
         Return a list of bibles from a given URL.  
         The selected Bible can then be registered and LazyLoaded into a database
         """
-        log.debug( "registerHTTPBible %s,%s,%s,%s,%s,%s", biblename, biblesource, proxy, proxyport, proxyid, proxypass)        
+        log.debug( "registerHTTPBible %s,%s,%s,%s,%s", biblename, biblesource, proxyurl,  proxyid, proxypass)        
         if self._isNewBible(biblename):
             nbible = BibleDBImpl(biblename) # Create new Bible
             nbible.createTables() # Create Database
@@ -103,6 +105,14 @@ class BibleManager(Plugin):
             nhttp.setBibleSource(biblesource)
             self.bibleHTTPCache[biblename] = nhttp
             nbible.loadMeta("WEB", biblesource) # register a lazy loading interest
+            if proxyurl != None:
+                nbible.loadMeta("proxy", proxyurl) # store the proxy URL
+                nhttp.setProxy(proxyurl) 
+            if proxyid != None:
+                nbible.loadMeta("proxyid", proxyid) # store the proxy userid 
+            if proxypass != None:
+                nbible.loadMeta("proxypass", proxypass) # store the proxy password
+                
             
     def registerFileBible(self, biblename, booksfile, versefile):
         """

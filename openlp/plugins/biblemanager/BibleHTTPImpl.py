@@ -45,7 +45,15 @@ class BibleHTTPImpl(BibleCommon):
         """
         bible = {}
         biblesource = ""
+        proxyurl = None
         
+    def setProxy(self,proxyurl):
+        """
+        Set the Proxy Url
+        """
+        log.debug("setProxy %s", proxyurl)        
+        self.proxyurl = proxyurl 
+ 
     def setBibleSource(self,biblesource):
         """
         Set the source of where the bible text is comming from
@@ -77,7 +85,13 @@ class BibleHTTPImpl(BibleCommon):
         
         """
         version = 49
-        log.debug( "getBibleBGChapter %s,%s,%s,%s", version, bookid, bookname,  chapter)     
+        log.debug( "getBibleBGChapter %s,%s,%s,%s", version, bookid, bookname,  chapter) 
+        if self.proxyurl != None:
+            proxy_support = urllib2.ProxyHandler({'http':  self.proxyurl})
+            http_support = urllib2.HTTPHandler()
+            opener= urllib2.build_opener(proxy_support, http_support)
+            urllib2.install_opener(opener)
+
         urlstring = "http://www.biblegateway.com/passage/?book_id="+str(bookid)+"&chapter"+str(chapter)+"&version="+str(version)
         log.debug( "Url String %s", urlstring)
         xml_string = ""

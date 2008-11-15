@@ -63,8 +63,9 @@ class TestBibleManager:
     def testRegisterBibleHTTP(self):
         # Register a bible from files
         log.debug( "\n.......testRegisterBibleHTTP")
-        self.bm.registerHTTPBible("asv","Crosswalk", "", "", "", "")
-        self.bm.registerHTTPBible("nasb","Biblegateway", "", "", "", "")        
+        self.bm.registerHTTPBible("asv","Crosswalk", "", "", "")
+        self.bm.registerHTTPBible("nasb","Biblegateway", "", "", "")
+        self.bm.registerHTTPBible("nkj","Biblegateway", "http://tigger2:3128/", "", "")                
         b = self.bm.getBibles()
         for b1 in b:
             log.debug( b1)
@@ -99,18 +100,21 @@ class TestBibleManager:
 
     def testGetVerseText(self):
         log.debug( "\n.......testGetVerseText")
-        #c = self.bm.getVerseText("TheMessage",'Genesis',1,2,1)
-        #log.debug( c )
-        #c = self.bm.getVerseText('NIV','Genesis',1,1,2)
-        #log.debug( c ) 
+        c = self.bm.getVerseText("TheMessage",'Genesis',1,2,1)
+        log.debug( c )
+        c = self.bm.getVerseText('NIV','Genesis',1,1,2)
+        log.debug( c ) 
         c = self.bm.getVerseText('asv','Revelation',1,1,2)
         log.debug( c )
         c = self.bm.getVerseText('asv','Revelation',1,5,9)
         log.debug( c )
         c = self.bm.getVerseText('nasb','Revelation',10,5,9)
-        log.debug( c )        
+        log.debug( c )       
+        c = self.bm.getVerseText('nkj','Revelation',10,5,9)
+        log.debug( c ) 
         
     def testLoadBible(self):
         log.debug( "\n.......testLoadBible")
-        self.bm.loadBible('asv')
-        self.bm.loadBible('nasb')        
+        #self.bm.loadBible('asv')
+        #self.bm.loadBible('nasb')        
+        #self.bm.loadBible('nkj') 
