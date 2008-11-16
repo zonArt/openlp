@@ -31,51 +31,14 @@ logging.basicConfig(level=logging.DEBUG,
                 filename='plugins.log',
                 filemode='w')
                 
-class BibleHTTPImpl(BibleCommon):
+class BGExtract(BibleCommon):
     global log 
-    log=logging.getLogger("BibleHTTPMgr")
-    log.info("BibleHTTP manager loaded") 
-    def __init__(self):
-        """
-        Finds all the bibles defined for the system
-        Creates an Interface Object for each bible containing connection information
-        Throws Exception if no Bibles are found.
-
-        Init confirms the bible exists and stores the database path.
-        """
-        bible = {}
-        biblesource = ""
-        proxyurl = None
-        
-    def setProxy(self,proxyurl):
-        """
-        Set the Proxy Url
-        """
-        log.debug("setProxy %s", proxyurl)        
-        self.proxyurl = proxyurl 
- 
-    def setBibleSource(self,biblesource):
-        """
-        Set the source of where the bible text is comming from
-        """
-        log.debug("setBibleSource %s", biblesource)        
-        self.biblesource = biblesource
-
-    def getBibleChapter(self, version, bookid, bookname,  chapter):
-        """
-        Recieve the request and call the relevent handler methods
-        """
-        log.debug( "getBibleChapter %s,%s,%s,%s", version, bookid, bookname,  chapter) 
-        log.debug("biblesource = %s", self.biblesource)
-        if self.biblesource == 'Crosswalk':
-            return self.getBibleCWChapter(version, bookid, bookname,  chapter)
-        else:
-            try:
-                return self.getBibleBGChapter(version, bookid, bookname,  chapter)
-            except:
-                log.error("Error thrown = %s", sys.exc_info()[1])
-            
-    def getBibleBGChapter(self, version, bookid, bookname,  chapter):
+    log=logging.getLogger("BibleHTTPMgr(BGExtract)")
+    log.info("BGExtract loaded") 
+    def __init__(self, proxyurl= None):
+        log.debug("init %s", proxyurl)  
+        self.proxyurl = proxyurl
+    def getBibleChapter(self, version, bookid, bookname,  chapter) :
         """
         Access and decode bibles via the BibleGateway website
             Version - the version of the bible like 31 for New International version
@@ -85,26 +48,10 @@ class BibleHTTPImpl(BibleCommon):
         
         """
         version = 49
-        log.debug( "getBibleBGChapter %s,%s,%s,%s", version, bookid, bookname,  chapter) 
-        if self.proxyurl != None:
-            proxy_support = urllib2.ProxyHandler({'http':  self.proxyurl})
-            http_support = urllib2.HTTPHandler()
-            opener= urllib2.build_opener(proxy_support, http_support)
-            urllib2.install_opener(opener)
-
+        log.debug( "getBibleChapter %s,%s,%s,%s", version, bookid, bookname,  chapter) 
         urlstring = "http://www.biblegateway.com/passage/?book_id="+str(bookid)+"&chapter"+str(chapter)+"&version="+str(version)
-        log.debug( "Url String %s", urlstring)
-        xml_string = ""
-        req = urllib2.Request(urlstring)
-        req.add_header('User-Agent', 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)')
-        try:
-            handle = urllib2.urlopen(req)
-            xml_string = handle.read()
-        except IOError, e:
-            if hasattr(e, 'reason'):
-                log.error( 'Reason : ')
-                log.error( e.reason)
-                
+        xml_string = self._getWebText(urlstring, self.proxyurl)
+        
         VerseSearch = "class="+'"'+"sup"+'"'+">"
         verse = 1
         i= xml_string.find("result-text-style-normal")
@@ -135,9 +82,17 @@ class BibleHTTPImpl(BibleCommon):
                 versePos = xml_string.find(VerseSearch) #look for the next verse
                 bible[verse] = self._cleanText(verseText) # store the verse
                 verse += 1
-        return bible
+        return bible        
         
-    def getBibleCWChapter(self, version, bookid, bookname,  chapter):
+class CWExtract(BibleCommon):
+    global log 
+    log=logging.getLogger("BibleHTTPMgr(CWExtract)")
+    log.info("CWExtract loaded") 
+    def __init__(self, proxyurl=None):
+        log.debug("init %s", proxyurl)  
+        self.proxyurl = proxyurl
+    def getBibleChapter(self, version, bookid, bookname,  chapter) :
+        log.debug( "getBibleChapter %s,%s,%s,%s", version, bookid, bookname,  chapter) 
         """
         Access and decode bibles via the Crosswaly website
             Version - the version of the bible like niv for New International version
@@ -145,19 +100,9 @@ class BibleHTTPImpl(BibleCommon):
             bookname - text name of in english eg 'gen' for Genesis
             chapter - chapter number 
         """        
-        log.debug( "getBibleCWChapter %s,%s,%s,%s", version, bookid, bookname,  chapter)         
+        log.debug( "getBibleChapter %s,%s,%s,%s", version, bookid, bookname,  chapter)         
         urlstring = "http://bible.crosswalk.com/OnlineStudyBible/bible.cgi?word="+bookname+"+"+str(chapter)+"&version="+version
-        log.debug( "Url String %s", urlstring)
-        xml_string = ""
-        req = urllib2.Request(urlstring)
-        req.add_header('User-Agent', 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)')
-        try:
-            handle = urllib2.urlopen(req)
-            xml_string = handle.read()
-        except IOError, e:
-            if hasattr(e, 'reason'):
-                log.error( 'Reason : ')
-                log.error( e.reason)
+        xml_string = self._getWebText(urlstring, self.proxyurl)
         
         i= xml_string.find("NavCurrentChapter")
         xml_string = xml_string[i:len(xml_string)]
@@ -193,4 +138,51 @@ class BibleHTTPImpl(BibleCommon):
             
         #log.debug( bible)
         return bible
+        
+class BibleHTTPImpl():
+    global log 
+    log=logging.getLogger("BibleHTTPMgr")
+    log.info("BibleHTTP manager loaded") 
+    def __init__(self):
+        """
+        Finds all the bibles defined for the system
+        Creates an Interface Object for each bible containing connection information
+        Throws Exception if no Bibles are found.
+
+        Init confirms the bible exists and stores the database path.
+        """
+        bible = {}
+        biblesource = ""
+        proxyurl = None
+        
+    def setProxy(self,proxyurl):
+        """
+        Set the Proxy Url
+        """
+        log.debug("setProxy %s", proxyurl)        
+        self.proxyurl = proxyurl 
+ 
+    def setBibleSource(self,biblesource):
+        """
+        Set the source of where the bible text is comming from
+        """
+        log.debug("setBibleSource %s", biblesource)        
+        self.biblesource = biblesource
+
+    def getBibleChapter(self, version, bookid, bookname,  chapter):
+        """
+        Recieve the request and call the relevent handler methods
+        """
+        log.debug( "getBibleChapter %s,%s,%s,%s", version, bookid, bookname,  chapter) 
+        log.debug("biblesource = %s", self.biblesource)
+        try:
+            if self.biblesource == 'Crosswalk':
+                ev = CWExtract(self.proxyurl)
+            else:
+                ev = CWExtract(self.proxyurl)
+                
+            return ev.getBibleChapter(version, bookid, bookname,  chapter)
+        except:
+            log.error("Error thrown = %s", sys.exc_info()[1])
+
 

@@ -28,14 +28,40 @@ logging.basicConfig(level=logging.DEBUG,
                 filemode='w')
                 
 class BibleCommon:
+    global log 
+    log=logging.getLogger("BibleCommon")
+    log.info("BibleCommon")     
     def __init__(self):
         """
         """
+    def _getWebText(self, urlstring, proxyurl):
+        log.debug( "getWebText %s %s", proxyurl, urlstring)
+        
+        if  proxyurl != "" or len(proxyurl) > 0 :
+            print "ProxyUrl " ,  proxyurl + " " + str(len(proxyurl))
+            proxy_support = urllib2.ProxyHandler({'http':  self.proxyurl})
+            http_support = urllib2.HTTPHandler()
+            opener= urllib2.build_opener(proxy_support, http_support)
+            urllib2.install_opener(opener)
+
+        xml_string = ""
+        req = urllib2.Request(urlstring)
+        req.add_header('User-Agent', 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)')
+        try:
+            handle = urllib2.urlopen(req)
+            xml_string = handle.read()
+        except IOError, e:
+            if hasattr(e, 'reason'):
+                log.error( 'Reason : ')
+                log.error( e.reason)
+        return xml_string
+        
     def _cleanText(self, text):
         """
         Clean up text and remove extra characters
         after been downloaded from web
         """
+        #return text.rstrip()        
         # Remove Headings from the Text
         i = text.find("<h")
         while i > -1:
