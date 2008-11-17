@@ -25,7 +25,7 @@ class TestMediaManager:
         self.app = QtGui.QApplication([])
         logging.info ("App is " + str(self.app))
         self.main_window = QtGui.QMainWindow()
-        self.main_window.resize(800, 600)
+        self.main_window.resize(200, 600)
 #         self.StatusBar = QtGui.QStatusBar(self.main_window)
 #         self.StatusBar.setObjectName("StatusBar")
 #         self.main_window.setStatusBar(self.StatusBar)
@@ -60,6 +60,7 @@ class TestMediaManager:
         log.info("Start")
         i1=MediaManagerItem()
         i2=MediaManagerItem()
+        i2.choose_area.text="More Stuff"
         log.info("i1"+str(i1))
         log.info("i2"+str(i2))
         self.MediaToolBox.addItem(i1, i1.icon, "Test1")

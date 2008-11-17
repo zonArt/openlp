@@ -21,6 +21,7 @@ class ToolbarButton(QtGui.QToolButton):
         self.setToolTip(QtGui.QApplication.translate("main_window", tooltiptext, None, QtGui.QApplication.UnicodeUTF8))
         self.setText(QtGui.QApplication.translate("main_window", tooltiptext, None, QtGui.QApplication.UnicodeUTF8))
         self.setStatusTip(QtGui.QApplication.translate("main_window", statustip, None, QtGui.QApplication.UnicodeUTF8))
+        # xxx button events
         
 class MediaManagerItem(QtGui.QWidget):
     log=logging.getLogger("MediaMgrItem")
@@ -30,29 +31,38 @@ class MediaManagerItem(QtGui.QWidget):
     def __init__(self):
         QtGui.QWidget.__init__(self)
         self.log.info("init")
-        self.setGeometry(QtCore.QRect(0, 0, 267, 609))
-#         self.setObjectName("%sPage"%self.name)
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(self.iconname), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.setGeometry(QtCore.QRect(0,0,267,609))
         
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
         self.Layout.setMargin(0)
-#         self.Layout.setObjectName("Layout")
 
         # setup toolbar
         self.Toolbar = QtGui.QWidget(self)
-#         self.Toolbar.setObjectName("%sToolbar"%self.name)
         self.ToolbarLayout = QtGui.QHBoxLayout(self.Toolbar)
         self.ToolbarLayout.setSpacing(0)
         self.ToolbarLayout.setMargin(0)
-#         self.ToolbarLayout.setObjectName("%sToolbarLayout"%self.name)
 
         self.log.info("Adding toolbar item")
         self.ToolbarButtons=[]
         self.ToolbarButtons.append(ToolbarButton(self, "LoadItem", ":/images/image_load.png", "Load something", "Load something in"))
         self.ToolbarButtons.append(ToolbarButton(self, "DeleteItem", ":/images/image_delete.png", "Delete something", "Delete something from"))
+
+        # add somewhere for "choosing" to happen
+        self.choose_area=QtGui.QWidget(self)
+        self.Layout.addWidget(self.choose_area)
+        self.choose_area.text="Stuff and Nonsense"
+
+    def paintEvent(self, evt):
+        paint = QtGui.QPainter()#self.choose_area)
+        paint.begin(self)
+        paint.setPen(QtGui.QColor(168, 34, 3))
+        paint.setFont(QtGui.QFont('Decorative', 10))
+        paint.drawText(evt.rect(), QtCore.Qt.AlignCenter, self.choose_area.text)
+        paint.end()
+
+
 
          # add items
 #         self.LoadItem = QtGui.QToolButton(self.Toolbar)
