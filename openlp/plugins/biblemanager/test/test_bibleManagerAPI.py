@@ -49,29 +49,7 @@ class TestBibleManager:
     def setup_class(self):
         log.debug("\n.......Register BM")
         self.bm = BibleManager()
-
-    def testRegisterCSVBibleFiles(self):
-        # Register a bible from files
-        log.debug("\n.......testRegisterBibleFiles")
-        self.bm.registerFileBible("TheMessage",'biblebooks_msg_short.csv','bibleverses_msg_short.csv')
-        self.bm.registerFileBible("NIV",'biblebooks_niv_short.csv','bibleverses_niv_short.csv')        
-        b = self.bm.getBibles()
-        for b1 in b:
-            log.debug( b1)
-            assert(b1 in b)    
-            
-    def testRegisterHTTPBible(self):
-        # Register a bible from files
-        log.debug( "\n.......testRegisterBibleHTTP")
-        self.bm.registerHTTPBible("asv","Crosswalk", "", "", "")
-        self.bm.registerHTTPBible("nasb","Biblegateway", "", "", "")
-        self.bm.registerHTTPBible("nkj","Biblegateway", "http://tigger2:3128/", "", "")                
-        b = self.bm.getBibles()
-        for b1 in b:
-            log.debug( b1)
-            assert(b1 in b)    
-
-            
+           
     def testGetBibles(self):
         log.debug( "\n.......testGetBibles")
         # make sure the shuffled sequence does not lose any elements
@@ -111,8 +89,3 @@ class TestBibleManager:
         c = self.bm.getVerseText('nkj','Revelation',10,1,20)
         log.debug( c ) 
         
-    def testLoadBible(self):
-        log.debug( "\n.......testLoadBible")
-        #self.bm.loadBible('asv')
-        #self.bm.loadBible('nasb')        
-        #self.bm.loadBible('nkj') 

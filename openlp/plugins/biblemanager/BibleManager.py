@@ -24,6 +24,7 @@ sys.path.insert(0,(os.path.join(mypath, '..', '..', '..')))
 from openlp.utils import ConfigHelper
 from openlp.plugins.biblemanager.BibleDBImpl import BibleDBImpl
 from openlp.plugins.biblemanager.BibleHTTPImpl import BibleHTTPImpl
+from openlp.plugins.biblemanager.BibleCSVImpl import BibleCSVImpl
 from openlp.plugins.plugin import Plugin
 
 import logging
@@ -104,17 +105,17 @@ class BibleManager(Plugin):
             nhttp = BibleHTTPImpl()
             nhttp.setBibleSource(biblesource)
             self.bibleHTTPCache[biblename] = nhttp
-            nbible.loadMeta("WEB", biblesource) # register a lazy loading interest
+            nbible.saveMeta("WEB", biblesource) # register a lazy loading interest
             if proxyurl != None:
-                nbible.loadMeta("proxy", proxyurl) # store the proxy URL
+                nbible.saveMeta("proxy", proxyurl) # store the proxy URL
                 nhttp.setProxy(proxyurl) 
             if proxyid != None:
-                nbible.loadMeta("proxyid", proxyid) # store the proxy userid 
+                nbible.saveMeta("proxyid", proxyid) # store the proxy userid 
             if proxypass != None:
-                nbible.loadMeta("proxypass", proxypass) # store the proxy password
+                nbible.saveMeta("proxypass", proxypass) # store the proxy password
                 
             
-    def registerFileBible(self, biblename, booksfile, versefile):
+    def registerFileBible(self, biblename, booksfile, versefile, filetype):
         """
         Method to load a bible from a set of files into a database.
         If the database exists it is deleted and the database is reloaded 
@@ -123,8 +124,11 @@ class BibleManager(Plugin):
         if self._isNewBible(biblename):
             nbible = BibleDBImpl(biblename) # Create new Bible
             nbible.createTables() # Create Database
-            nbible.loadData(booksfile, versefile)
-            self.bibleDBCache[biblename] = nbible 
+            self.bibleDBCache[biblename] = nbible # cache the database for use later            
+            bcsv = BibleCSVImpl(nbible) # create the loader and pass in the database
+            if filetype == "csv":
+                bcsv.loadData(booksfile, versefile)
+
             
     def loadBible(self,biblename):
         """

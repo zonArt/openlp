@@ -145,8 +145,16 @@ class BibleDBImpl(BibleCommon):
         testament_table.create()
         book_table.create()
         verse_table.create()
-        self.loadMeta("dbversion", "0.1")
-        self._loadTestaments
+        self.saveMeta("dbversion", "0.1")
+        self._loadTestaments()
+        
+    def addVerse(self, bookid, chap,  verse, text):
+        log.debug( "addVerse %s,%s,%s,%s", bookid, chap, verse, text)
+        metadata.bind.echo = False
+        session = self.Session()
+        versemeta = Verse(book_id=int(bookid),  chapter=int(chap), verse=int(verse), text=(text))
+        session.add(versemeta)
+        session.commit()
 
     def createChapter(self, bookname, chap, textlist):
         log.debug( "createChapter %s,%s,%s", bookname, chap, textlist)
@@ -168,9 +176,8 @@ class BibleDBImpl(BibleCommon):
         bookmeta = Book(int(5), bookname, bookabbrev)
         session.add(bookmeta)
         session.commit()
-        self._loadTestaments()
         
-    def loadMeta(self, key, value):
+    def saveMeta(self, key, value):
         metadata.bind.echo = False                
         session = self.Session()
         bmeta= BibleMeta(key, value)
@@ -197,51 +204,18 @@ class BibleDBImpl(BibleCommon):
         testmeta = ONTestament(name="Apocrypha")
         session.add(testmeta)        
         session.commit()
-    
-
-    def loadData(self, booksfile, versesfile):
-        self.loadMeta("version", "Bible Version")
-        self.loadMeta("Copyright", "(c) Some Bible company")
-        self.loadMeta("Permission", "You Have Some")
-        
-        self._loadTestaments()
-        session = self.Session()
-
-        #Populate the Tables
-        fbooks=open(booksfile, 'r')
-        fverse=open(versesfile, 'r')
-
-        for line in fbooks:
-            #log.debug( line)
-            p = line.split(",")
-            p[2] = self._cleanText(p[2])
-            p[3] = self._cleanText(p[3])
-            bookmeta = Book(int(p[1]), p[2], p[3])
-            session.add(bookmeta)
-        session.commit()
-
-        book_ptr = ""
-        for line in fverse:
-            #log.debug( line)
-            p = line.split(",", 3) # split into 3 units and leave the rest as a single field
-            p[0] = self._cleanText(p[0])
-            p[3] = self._cleanText(p[3])
-            if book_ptr is not p[0]:
-                query =  session.query(Book).filter(Book.name==p[0])
-                #log.debug( query)
-                #log.debug( query.first())
-                #log.debug( query.first().id)
-                book_ptr = p[0]
-                #log.debug( text)
-            versemeta = Verse(book_id=query.first().id,  chapter=int(p[1]), verse=int(p[2]), text=(p[3]))
-            session.add(versemeta)
-        session.commit()
-            
+           
     def getBibleBook(self, bookname):
         log.debug( "getBibleBook %s", bookname) 
         metadata.bind.echo = False        
         s = text (""" select name FROM book where book.name == :b """)
         return self.db.execute(s, b=bookname).fetchone()
+        
+    def getBibleBookId(self, bookname):
+        log.debug( "getBibleBook %s", bookname) 
+        metadata.bind.echo = False        
+        s = text (""" select id FROM book where book.name == :b """)
+        return self.db.execute(s, b=bookname).fetchone()        
         
     def getBibleChapter(self, bookname, chapter):
         log.debug( "getBibleChapter %s,%s", bookname, chapter )               

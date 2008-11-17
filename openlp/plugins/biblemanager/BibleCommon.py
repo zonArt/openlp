@@ -68,7 +68,7 @@ class BibleCommon:
             j=text.find("</h", i)            
             text = text[ : (i - 1)]+text[(j+4)]
             i = text.find("<h")
-            
+
         # Remove Support References from the Text
         x = text.find("<sup>")
         while x > -1:
@@ -91,6 +91,7 @@ class BibleCommon:
         text= text.replace(chr(189), '1/2')
         text= text.replace("&quot;", '"')
         text= text.replace("&apos;", "'")
+   
         i = text.find("<")
         while i > -1 :
             j = text.find(">", i)
@@ -99,3 +100,5 @@ class BibleCommon:
       
         text= text.replace('>', '')
         return text.rstrip()
+   
+        
