@@ -1,14 +1,14 @@
 from PyQt4 import QtCore, QtGui
 import logging
 logging.basicConfig(level=logging.DEBUG,
-                format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                format='%(asctime)s %(name)-30s %(levelname)-8s %(message)s',
                 datefmt='%m-%d %H:%M',
                 filename='plugins.log',
                 filemode='w')
 
 console=logging.StreamHandler()
 # set a format which is simpler for console use
-formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+formatter = logging.Formatter('%(name)24s: %(levelname)-8s %(message)s')
 # tell the handler to use this format
 console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
