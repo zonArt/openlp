@@ -58,9 +58,10 @@ class TestMediaManager:
     def test1(self):
         log=logging.getLogger("test1")
         log.info("Start")
+
         i1=MediaManagerItem()
         i2=MediaManagerItem()
-        i2.choose_area.text="More Stuff"
+        #i2.choose_area.text="More Stuff"
         log.info("i1"+str(i1))
         log.info("i2"+str(i2))
         self.MediaToolBox.addItem(i1, i1.icon, "Test1")
@@ -72,10 +73,10 @@ class TestMediaManager:
 #         self.app.exec_()
         log.info("End")
         return 1
-    
+
 if __name__=="__main__":
     t=TestMediaManager()
     t.setup_class()
     t.test1()
     log.info("exec")
-    t.app.exec_()
+    sys.exit(t.app.exec_())
