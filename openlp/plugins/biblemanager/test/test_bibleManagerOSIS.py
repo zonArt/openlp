@@ -50,11 +50,10 @@ class TestBibleManager:
         log.debug("\n.......Register BM")
         self.bm = BibleManager()
 
-    def testRegisterCSVBibleFiles(self):
+    def testRegisterOSISBibleFiles(self):
         # Register a bible from files
-        log.debug("\n.......testRegisterBibleFiles")
-        self.bm.registerCSVFileBible("TheMessage",'biblebooks_msg_short.csv','bibleverses_msg_short.csv')
-        self.bm.registerCSVFileBible("NIV",'biblebooks_niv_short.csv','bibleverses_niv_short.csv')        
+        log.debug("\n.......testRegisterOSISBibleFiles")
+        self.bm.registerOSISFileBible("asv",'asv.osis')
         b = self.bm.getBibles()
         for b1 in b:
             log.debug( b1)

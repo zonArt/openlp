@@ -60,7 +60,7 @@ class TestBibleManager:
 
     def testGetBibleBooks(self):
         log.debug( "\n.......testGetBibleBooks")
-        c = self.bm.getBibleBooks("NIV")
+        c = self.bm.getBibleBooks("asv")
         for c1 in c:
             log.debug( c1)
             assert(c1 in c)
@@ -84,8 +84,8 @@ class TestBibleManager:
         #log.debug( c ) 
         c = self.bm.getVerseText('asv','Genesis',10,1,20)
         log.debug( c )
-        c = self.bm.getVerseText('nasb','Genesis',10,1,20)
+        c = self.bm.getVerseText('asv','Genesis',10,1,20)
         log.debug( c )       
-        c = self.bm.getVerseText('nkj','Revelation',10,1,20)
+        c = self.bm.getVerseText('asv','Revelation',10,1,20)
         log.debug( c ) 
         
