@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.4.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2008-11-05, 22:20:39 -->
+<!-- Saved: 2008-11-20, 22:11:22 -->
 <!-- Copyright (C) 2008 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.4">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -61,6 +61,15 @@
     <Source>openlp/ui/forms/openlpimportform.py</Source>
     <Source>openlp/ui/forms/opensongexportform.py</Source>
     <Source>openlp/ui/forms/opensongimportform.py</Source>
+    <Source>openlp/plugins/biblemanager/BibleCommon.py</Source>
+    <Source>openlp/libraries/pptviewlib/ppttest.py</Source>
+    <Source>openlp/plugins/biblemanager/BibleCSVImpl.py</Source>
+    <Source>openlp/plugins/biblemanager/test/test_bibleManagerAPI.py</Source>
+    <Source>openlp/plugins/biblemanager/test/test_bibleManagerCSV.py</Source>
+    <Source>openlp/plugins/mediamanageritem.py</Source>
+    <Source>openlp/plugins/test/test_mediamanageritem.py</Source>
+    <Source>openlp/plugins/biblemanager/BibleOSISImpl.py</Source>
+    <Source>openlp/plugins/biblemanager/test/test_bibleManagerOSIS.py</Source>
   </Sources>
   <Forms>
     <Form>openlp/resources/forms/mainwindow.ui</Form>
@@ -74,6 +83,8 @@
     <Form>openlp/resources/forms/opensongimportform.ui</Form>
     <Form>openlp/resources/forms/opensongexportform.ui</Form>
     <Form>openlp/resources/forms/splashscreen.ui</Form>
+    <Form>openlp/resources/forms/BibleCSVImportWizard.ui</Form>
+    <Form>openlp/resources/forms/bibleimportform.ui</Form>
   </Forms>
   <Translations>
   </Translations>
@@ -87,7 +98,7 @@
   </Others>
   <MainScript>openlp.pyw</MainScript>
   <Vcs>
-    <VcsType>None</VcsType>
+    <VcsType>Subversion</VcsType>
     <VcsOptions>
       <dict>
         <key>

@@ -41,7 +41,7 @@ from openlp.ui.forms.settings import SettingsDialog
 from openlp.resources import *
 
 class MainWindow(object):
-    
+
     def __init__(self):
         self.main_window = QtGui.QMainWindow()
         self.setupUi()
@@ -892,7 +892,7 @@ class MainWindow(object):
         QtCore.QObject.connect(self.ExportOpenlp1Item, QtCore.SIGNAL("triggered()"), self.onExportOpenlp1ItemClicked)
         QtCore.QObject.connect(self.ImportOpenSongItem, QtCore.SIGNAL("triggered()"), self.onImportOpenSongItemClicked)
         QtCore.QObject.connect(self.ExportOpenSongItem, QtCore.SIGNAL("triggered()"), self.onExportOpenSongItemClicked)
-        
+
     def retranslateUi(self):
         self.main_window.setWindowTitle(QtGui.QApplication.translate("main_window", "openlp.org 2.0", None, QtGui.QApplication.UnicodeUTF8))
         self.FileMenu.setTitle(QtGui.QApplication.translate("main_window", "&File", None, QtGui.QApplication.UnicodeUTF8))
@@ -1045,21 +1045,21 @@ class MainWindow(object):
 
     def onToolsAlertItemClicked(self):
         self.alert_form.show()
-        
+
     def onSongEditItemClicked(self):
         self.edit_song_form.show()
-        
+
     def onExportOpenlp1ItemClicked(self):
         self.openlpexportform.show()
-        
+
     def onImportOpenlp1ItemClicked(self):
         self.openlpimportform.show()
-        
+
     def onExportOpenSongItemClicked(self):
         self.opensongexportform.show()
-        
+
     def onImportOpenSongItemClicked(self):
         self.opensongimportform.show()
-        
+
     def onOptionsSettingsItemClicked(self):
         self.settings_form.show()

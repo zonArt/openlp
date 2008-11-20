@@ -59,8 +59,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>228</width>
-              <height>536</height>
+              <width>252</width>
+              <height>539</height>
              </rect>
             </property>
            </widget>
@@ -99,8 +99,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>227</width>
-              <height>536</height>
+              <width>252</width>
+              <height>539</height>
              </rect>
             </property>
            </widget>
@@ -127,7 +127,7 @@
      <x>0</x>
      <y>0</y>
      <width>1087</width>
-     <height>27</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="FileMenu" >
@@ -290,8 +290,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>267</width>
-          <height>609</height>
+          <width>257</width>
+          <height>603</height>
          </rect>
         </property>
         <attribute name="label" >
@@ -319,6 +319,12 @@
             </property>
             <item>
              <widget class="QToolButton" name="SongNewItem" >
+              <property name="toolTip" >
+               <string>Add a new song</string>
+              </property>
+              <property name="statusTip" >
+               <string>Add a new song</string>
+              </property>
               <property name="text" >
                <string>New Song</string>
               </property>
@@ -339,6 +345,12 @@
             </item>
             <item>
              <widget class="QToolButton" name="SongEditItem" >
+              <property name="toolTip" >
+               <string>Edit the current song</string>
+              </property>
+              <property name="statusTip" >
+               <string>Edit the current song</string>
+              </property>
               <property name="text" >
                <string>Edit Song</string>
               </property>
@@ -359,6 +371,12 @@
             </item>
             <item>
              <widget class="QToolButton" name="SongDeleteItem" >
+              <property name="toolTip" >
+               <string>Delete the currently selected song(s)</string>
+              </property>
+              <property name="statusTip" >
+               <string>Delete the currently selected song(s)</string>
+              </property>
               <property name="text" >
                <string>Delete Song</string>
               </property>
@@ -401,6 +419,12 @@
             </item>
             <item>
              <widget class="QToolButton" name="SongPreviewItem" >
+              <property name="toolTip" >
+               <string>Preview the selected song</string>
+              </property>
+              <property name="statusTip" >
+               <string>Preview the selected song</string>
+              </property>
               <property name="text" >
                <string>Send to Preview</string>
               </property>
@@ -421,6 +445,12 @@
             </item>
             <item>
              <widget class="QToolButton" name="SongLiveItem" >
+              <property name="toolTip" >
+               <string>Send the selected song to live</string>
+              </property>
+              <property name="statusTip" >
+               <string>Send the selected song to live</string>
+              </property>
               <property name="text" >
                <string>Send to Live</string>
               </property>
@@ -441,6 +471,12 @@
             </item>
             <item>
              <widget class="QToolButton" name="SongAddItem" >
+              <property name="toolTip" >
+               <string>Add the currently selected song(s) to the service</string>
+              </property>
+              <property name="statusTip" >
+               <string>Add the currently selected song(s) to the service</string>
+              </property>
               <property name="text" >
                <string>Add to Service</string>
               </property>
@@ -485,8 +521,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>267</width>
-          <height>609</height>
+          <width>257</width>
+          <height>603</height>
          </rect>
         </property>
         <attribute name="label" >
@@ -514,6 +550,12 @@
             </property>
             <item>
              <widget class="QToolButton" name="VersePreviewItem" >
+              <property name="toolTip" >
+               <string>Preview selected verse(s)</string>
+              </property>
+              <property name="statusTip" >
+               <string>Preview selected verse(s)</string>
+              </property>
               <property name="text" >
                <string>Send to Preview</string>
               </property>
@@ -534,6 +576,12 @@
             </item>
             <item>
              <widget class="QToolButton" name="VerseLiveItem" >
+              <property name="toolTip" >
+               <string>Send selected verse(s) to live</string>
+              </property>
+              <property name="statusTip" >
+               <string>Send selected verse(s) to live</string>
+              </property>
               <property name="text" >
                <string>Send to Live</string>
               </property>
@@ -554,6 +602,12 @@
             </item>
             <item>
              <widget class="QToolButton" name="VerseAddItem" >
+              <property name="toolTip" >
+               <string>Add selected verse(s) to service</string>
+              </property>
+              <property name="statusTip" >
+               <string>Add selected verse(s) to service</string>
+              </property>
               <property name="text" >
                <string>Add to Service</string>
               </property>
@@ -605,27 +659,27 @@
              <number>8</number>
             </property>
             <item row="0" column="0" >
-             <widget class="QLabel" name="label" >
+             <widget class="QLabel" name="VerseVersionLabel" >
               <property name="text" >
-               <string>TextLabel</string>
+               <string>Version:</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1" >
-             <widget class="QComboBox" name="comboBox" />
+             <widget class="QComboBox" name="VerseVersionComboBox" />
             </item>
             <item row="1" column="0" >
-             <widget class="QLabel" name="label_2" >
+             <widget class="QLabel" name="VerseReferenceLabel" >
               <property name="text" >
-               <string>TextLabel</string>
+               <string>Reference:</string>
               </property>
              </widget>
             </item>
             <item row="1" column="1" >
-             <widget class="QLineEdit" name="lineEdit" />
+             <widget class="QLineEdit" name="VerseReferenceEdit" />
             </item>
             <item row="2" column="1" >
-             <widget class="QWidget" native="1" name="widget" >
+             <widget class="QWidget" native="1" name="VerseSearchButtonWidget" >
               <layout class="QHBoxLayout" name="horizontalLayout" >
                <property name="spacing" >
                 <number>0</number>
@@ -634,7 +688,7 @@
                 <number>0</number>
                </property>
                <item>
-                <spacer name="horizontalSpacer" >
+                <spacer name="VerseSearchSpacer" >
                  <property name="orientation" >
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -647,7 +701,7 @@
                 </spacer>
                </item>
                <item>
-                <widget class="QPushButton" name="pushButton" >
+                <widget class="QPushButton" name="VerseSearchButton" >
                  <property name="text" >
                   <string>Search</string>
                  </property>
@@ -669,8 +723,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>267</width>
-          <height>609</height>
+          <width>257</width>
+          <height>603</height>
          </rect>
         </property>
         <attribute name="label" >
@@ -707,6 +761,12 @@
             </property>
             <item>
              <widget class="QToolButton" name="CustomNewButton" >
+              <property name="toolTip" >
+               <string>Add a new custom slide</string>
+              </property>
+              <property name="statusTip" >
+               <string>Add a new custom slide</string>
+              </property>
               <property name="text" >
                <string>New Custom Slide</string>
               </property>
@@ -727,6 +787,12 @@
             </item>
             <item>
              <widget class="QToolButton" name="CustomEditButton" >
+              <property name="toolTip" >
+               <string>Edit selected slide</string>
+              </property>
+              <property name="statusTip" >
+               <string>Edit selected slide</string>
+              </property>
               <property name="text" >
                <string>Edit Custom Slide</string>
               </property>
@@ -747,6 +813,12 @@
             </item>
             <item>
              <widget class="QToolButton" name="CustomDeleteButton" >
+              <property name="toolTip" >
+               <string>Delete selected slide(s)</string>
+              </property>
+              <property name="statusTip" >
+               <string>Delete selected slide(s)</string>
+              </property>
               <property name="text" >
                <string>Delete Custom Slide</string>
               </property>
@@ -774,6 +846,12 @@
             </item>
             <item>
              <widget class="QToolButton" name="CustomPreviewButton" >
+              <property name="toolTip" >
+               <string>Preview selected slide</string>
+              </property>
+              <property name="statusTip" >
+               <string>Preview selected slide</string>
+              </property>
               <property name="text" >
                <string>Preview Custom Slide</string>
               </property>
@@ -794,6 +872,12 @@
             </item>
             <item>
              <widget class="QToolButton" name="CustomLiveButton" >
+              <property name="toolTip" >
+               <string>Send selected slide to live</string>
+              </property>
+              <property name="statusTip" >
+               <string>Send selected slide to live</string>
+              </property>
               <property name="text" >
                <string>Send Live</string>
               </property>
@@ -814,6 +898,12 @@
             </item>
             <item>
              <widget class="QToolButton" name="CustomAddButton" >
+              <property name="toolTip" >
+               <string>Add selected slide(s) to service</string>
+              </property>
+              <property name="statusTip" >
+               <string>Add selected slide(s) to service</string>
+              </property>
               <property name="text" >
                <string>Add To Service</string>
               </property>
@@ -858,8 +948,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>267</width>
-          <height>609</height>
+          <width>257</width>
+          <height>603</height>
          </rect>
         </property>
         <attribute name="label" >
@@ -888,10 +978,13 @@
             <item>
              <widget class="QToolButton" name="PresentationLoadItem" >
               <property name="toolTip" >
-               <string>Load Video</string>
+               <string>Load a presentation</string>
               </property>
               <property name="statusTip" >
-               <string>Load a video</string>
+               <string>Load a presentation</string>
+              </property>
+              <property name="whatsThis" >
+               <string/>
               </property>
               <property name="text" >
                <string>Load Video</string>
@@ -914,7 +1007,10 @@
             <item>
              <widget class="QToolButton" name="PresentationDeleteItem" >
               <property name="toolTip" >
-               <string>Remove Video</string>
+               <string>Remove selected presentation(s)</string>
+              </property>
+              <property name="statusTip" >
+               <string>Remove selected presentation(s)</string>
               </property>
               <property name="text" >
                <string>RI</string>
@@ -943,6 +1039,15 @@
             </item>
             <item>
              <widget class="QToolButton" name="PresentationLiveItem" >
+              <property name="toolTip" >
+               <string>Send selected presentation to live</string>
+              </property>
+              <property name="statusTip" >
+               <string>Send selected presentation to live</string>
+              </property>
+              <property name="whatsThis" >
+               <string/>
+              </property>
               <property name="text" >
                <string>Send to Live</string>
               </property>
@@ -963,6 +1068,12 @@
             </item>
             <item>
              <widget class="QToolButton" name="PresentationAddItem" >
+              <property name="toolTip" >
+               <string>Add selected presentation(s) to service</string>
+              </property>
+              <property name="statusTip" >
+               <string>Add selected presentation(s) to service</string>
+              </property>
               <property name="text" >
                <string>Add to Service</string>
               </property>
@@ -998,7 +1109,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QListWidget" name="listWidget_2" />
+          <widget class="QListWidget" name="PresentationList" />
          </item>
         </layout>
        </widget>
@@ -1007,8 +1118,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>267</width>
-          <height>609</height>
+          <width>257</width>
+          <height>603</height>
          </rect>
         </property>
         <attribute name="label" >
@@ -1037,7 +1148,7 @@
             <item>
              <widget class="QToolButton" name="VideoLoadItem" >
               <property name="toolTip" >
-               <string>Load Video</string>
+               <string>Load a video</string>
               </property>
               <property name="statusTip" >
                <string>Load a video</string>
@@ -1063,7 +1174,10 @@
             <item>
              <widget class="QToolButton" name="VideoDeleteItem" >
               <property name="toolTip" >
-               <string>Remove Video</string>
+               <string>Delete the selected video(s)</string>
+              </property>
+              <property name="statusTip" >
+               <string>Delete the selected video(s)</string>
               </property>
               <property name="text" >
                <string>RI</string>
@@ -1093,7 +1207,10 @@
             <item>
              <widget class="QToolButton" name="VideoLiveItem" >
               <property name="toolTip" >
-               <string>Go Live!</string>
+               <string>Send the selected video to live</string>
+              </property>
+              <property name="statusTip" >
+               <string>Send the selected video to live</string>
               </property>
               <property name="text" >
                <string/>
@@ -1116,7 +1233,10 @@
             <item>
              <widget class="QToolButton" name="VideoAddItem" >
               <property name="toolTip" >
-               <string>Add to Order of Service</string>
+               <string>Add selected video(s) to service</string>
+              </property>
+              <property name="statusTip" >
+               <string>Add selected video(s) to service</string>
               </property>
               <property name="text" >
                <string/>
@@ -1153,7 +1273,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QListWidget" name="listWidget" />
+          <widget class="QListWidget" name="VideoList" />
          </item>
         </layout>
        </widget>
@@ -1162,8 +1282,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>267</width>
-          <height>609</height>
+          <width>257</width>
+          <height>603</height>
          </rect>
         </property>
         <attribute name="label" >
@@ -1192,10 +1312,10 @@
             <item>
              <widget class="QToolButton" name="ImageLoadItem" >
               <property name="toolTip" >
-               <string>Load Video</string>
+               <string>Load image(s)</string>
               </property>
               <property name="statusTip" >
-               <string>Load a video</string>
+               <string>Load image(s)</string>
               </property>
               <property name="text" >
                <string>Load Image</string>
@@ -1218,7 +1338,10 @@
             <item>
              <widget class="QToolButton" name="ImageDeleteItem" >
               <property name="toolTip" >
-               <string>Remove Video</string>
+               <string>Remove selected image(s)</string>
+              </property>
+              <property name="statusTip" >
+               <string>Remove selected image(s)</string>
               </property>
               <property name="text" >
                <string>Delete Image</string>
@@ -1248,7 +1371,10 @@
             <item>
              <widget class="QToolButton" name="ImageLiveItem" >
               <property name="toolTip" >
-               <string>Go Live!</string>
+               <string>Send selected image to live</string>
+              </property>
+              <property name="statusTip" >
+               <string>Send selected image to live</string>
               </property>
               <property name="text" >
                <string/>
@@ -1271,7 +1397,10 @@
             <item>
              <widget class="QToolButton" name="ImageAddItem" >
               <property name="toolTip" >
-               <string>Add to Order of Service</string>
+               <string>Add selected image(s) to service</string>
+              </property>
+              <property name="statusTip" >
+               <string>Add selected image(s) to service</string>
               </property>
               <property name="text" >
                <string/>
@@ -1359,6 +1488,12 @@
         </property>
         <item>
          <widget class="QToolButton" name="MoveTopButton" >
+          <property name="toolTip" >
+           <string>Move selected item(s) to the top</string>
+          </property>
+          <property name="statusTip" >
+           <string>Move selected item(s) to the top</string>
+          </property>
           <property name="text" >
            <string>Move To Top</string>
           </property>
@@ -1379,6 +1514,15 @@
         </item>
         <item>
          <widget class="QToolButton" name="MoveUpButton" >
+          <property name="toolTip" >
+           <string>Move selected item(s) up one position</string>
+          </property>
+          <property name="statusTip" >
+           <string>Move selected item(s) up one position</string>
+          </property>
+          <property name="whatsThis" >
+           <string/>
+          </property>
           <property name="text" >
            <string>Move Up</string>
           </property>
@@ -1399,6 +1543,12 @@
         </item>
         <item>
          <widget class="QToolButton" name="MoveDownButton" >
+          <property name="toolTip" >
+           <string>Move selected item(s) down one position</string>
+          </property>
+          <property name="statusTip" >
+           <string>Move selected item(s) down one position</string>
+          </property>
           <property name="text" >
            <string>Move Down</string>
           </property>
@@ -1419,6 +1569,12 @@
         </item>
         <item>
          <widget class="QToolButton" name="MoveBottomButton" >
+          <property name="toolTip" >
+           <string>Move selected item(s) to the bottom</string>
+          </property>
+          <property name="statusTip" >
+           <string>Move selected item(s) to the bottom</string>
+          </property>
           <property name="text" >
            <string>Move To Bottom</string>
           </property>
@@ -1446,6 +1602,12 @@
         </item>
         <item>
          <widget class="QToolButton" name="ServiceNewItem" >
+          <property name="toolTip" >
+           <string>Create new service</string>
+          </property>
+          <property name="statusTip" >
+           <string>Create new service</string>
+          </property>
           <property name="text" >
            <string>New Service</string>
           </property>
@@ -1466,6 +1628,12 @@
         </item>
         <item>
          <widget class="QToolButton" name="ServiceOpenItem" >
+          <property name="toolTip" >
+           <string>Open an existing service</string>
+          </property>
+          <property name="statusTip" >
+           <string>Open an existing service</string>
+          </property>
           <property name="text" >
            <string>Open Service</string>
           </property>
@@ -1486,6 +1654,12 @@
         </item>
         <item>
          <widget class="QToolButton" name="ServiceSaveItem" >
+          <property name="toolTip" >
+           <string>Save current service</string>
+          </property>
+          <property name="statusTip" >
+           <string>Save current service</string>
+          </property>
           <property name="text" >
            <string>Save Service</string>
           </property>
@@ -1509,21 +1683,6 @@
           <property name="sizeAdjustPolicy" >
            <enum>QComboBox::AdjustToContents</enum>
           </property>
-          <item>
-           <property name="text" >
-            <string>African Sunset</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>Snowy Mountains</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>Wilderness</string>
-           </property>
-          </item>
          </widget>
         </item>
         <item>
@@ -1590,6 +1749,12 @@
         </property>
         <item>
          <widget class="QToolButton" name="ThemeNewItem" >
+          <property name="toolTip" >
+           <string>Create a new theme</string>
+          </property>
+          <property name="statusTip" >
+           <string>Create a new theme</string>
+          </property>
           <property name="text" >
            <string>New Theme</string>
           </property>
@@ -1610,6 +1775,12 @@
         </item>
         <item>
          <widget class="QToolButton" name="ThemeEditItem" >
+          <property name="toolTip" >
+           <string>Edit selected theme</string>
+          </property>
+          <property name="statusTip" >
+           <string>Edit selected theme</string>
+          </property>
           <property name="text" >
            <string>Edit Theme</string>
           </property>
@@ -1630,6 +1801,12 @@
         </item>
         <item>
          <widget class="QToolButton" name="ThemeDeleteButton" >
+          <property name="toolTip" >
+           <string>Delete selected theme(s)</string>
+          </property>
+          <property name="statusTip" >
+           <string>Delete selected theme(s)</string>
+          </property>
           <property name="text" >
            <string>Delete Theme</string>
           </property>
@@ -1657,6 +1834,12 @@
         </item>
         <item>
          <widget class="QToolButton" name="ThemeImportButton" >
+          <property name="toolTip" >
+           <string>Import theme(s)</string>
+          </property>
+          <property name="statusTip" >
+           <string>Import theme(s)</string>
+          </property>
           <property name="text" >
            <string>Import Theme</string>
           </property>
@@ -1677,6 +1860,12 @@
         </item>
         <item>
          <widget class="QToolButton" name="ThemeExportButton" >
+          <property name="toolTip" >
+           <string>Export selected theme(s)</string>
+          </property>
+          <property name="statusTip" >
+           <string>Export selected theme(s)</string>
+          </property>
           <property name="text" >
            <string>Export Theme</string>
           </property>
