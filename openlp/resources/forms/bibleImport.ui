@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>450</width>
+    <height>494</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Bible Registration</string>
+  </property>
+  <widget class="QDialogButtonBox" name="buttonBox">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>450</y>
+     <width>341</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QToolBox" name="toolBox">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>20</y>
+     <width>361</width>
+     <height>391</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>2</number>
+   </property>
+   <widget class="QWidget" name="CSVFileBibles">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>361</width>
+      <height>298</height>
+     </rect>
+    </property>
+    <property name="accessibleName">
+     <string/>
+    </property>
+    <attribute name="label">
+     <string>CVS File Import</string>
+    </attribute>
+   </widget>
+   <widget class="QWidget" name="page">
+    <attribute name="label">
+     <string>OSIS XML Bible Import</string>
+    </attribute>
+   </widget>
+   <widget class="QWidget" name="WebBibles">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>361</width>
+      <height>298</height>
+     </rect>
+    </property>
+    <attribute name="label">
+     <string>Web Bible Download</string>
+    </attribute>
+    <widget class="QComboBox" name="comboBox">
+     <property name="geometry">
+      <rect>
+       <x>123</x>
+       <y>20</y>
+       <width>221</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>140</y>
+       <width>271</width>
+       <height>121</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Web Access (Optional)</string>
+     </property>
+     <widget class="QLabel" name="label_3">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>50</y>
+        <width>79</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>User Id</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_2">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>30</y>
+        <width>91</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Proxy Address</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_4">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>80</y>
+        <width>54</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Passord</string>
+      </property>
+     </widget>
+     <widget class="QWidget" name="">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>20</y>
+        <width>112</width>
+        <height>83</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QLineEdit" name="lineEdit"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEdit_2"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEdit_3"/>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QCheckBox" name="checkBox">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>0</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Download Now</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>91</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Avaliable Bibles</string>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>Dialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
