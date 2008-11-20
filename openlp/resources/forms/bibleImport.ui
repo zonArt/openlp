@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
-  <property name="geometry">
+<ui version="4.0" >
+ <class>BibleImportDialog</class>
+ <widget class="QDialog" name="BibleImportDialog" >
+  <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
@@ -10,211 +9,249 @@
     <height>494</height>
    </rect>
   </property>
-  <property name="windowTitle">
+  <property name="windowTitle" >
    <string>Bible Registration</string>
   </property>
-  <widget class="QDialogButtonBox" name="buttonBox">
-   <property name="geometry">
-    <rect>
-     <x>110</x>
-     <y>450</y>
-     <width>341</width>
-     <height>32</height>
-    </rect>
+  <layout class="QVBoxLayout" name="BibleImportLayout" >
+   <property name="spacing" >
+    <number>8</number>
    </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
+   <property name="margin" >
+    <number>8</number>
    </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
-  <widget class="QToolBox" name="toolBox">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>20</y>
-     <width>361</width>
-     <height>391</height>
-    </rect>
-   </property>
-   <property name="currentIndex">
-    <number>2</number>
-   </property>
-   <widget class="QWidget" name="CSVFileBibles">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>361</width>
-      <height>298</height>
-     </rect>
-    </property>
-    <property name="accessibleName">
-     <string/>
-    </property>
-    <attribute name="label">
-     <string>CVS File Import</string>
-    </attribute>
-   </widget>
-   <widget class="QWidget" name="page">
-    <attribute name="label">
-     <string>OSIS XML Bible Import</string>
-    </attribute>
-   </widget>
-   <widget class="QWidget" name="WebBibles">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>361</width>
-      <height>298</height>
-     </rect>
-    </property>
-    <attribute name="label">
-     <string>Web Bible Download</string>
-    </attribute>
-    <widget class="QComboBox" name="comboBox">
-     <property name="geometry">
-      <rect>
-       <x>123</x>
-       <y>20</y>
-       <width>221</width>
-       <height>22</height>
-      </rect>
+   <item>
+    <widget class="QToolBox" name="ImportToolBox" >
+     <property name="currentIndex" >
+      <number>2</number>
      </property>
-    </widget>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="geometry">
-      <rect>
-       <x>50</x>
-       <y>140</y>
-       <width>271</width>
-       <height>121</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>Web Access (Optional)</string>
-     </property>
-     <widget class="QLabel" name="label_3">
-      <property name="geometry">
+     <widget class="QWidget" name="CSVImportPage" >
+      <property name="geometry" >
        <rect>
-        <x>40</x>
-        <y>50</y>
-        <width>79</width>
-        <height>17</height>
+        <x>0</x>
+        <y>0</y>
+        <width>424</width>
+        <height>343</height>
        </rect>
       </property>
-      <property name="text">
-       <string>User Id</string>
+      <property name="accessibleName" >
+       <string/>
       </property>
+      <attribute name="label" >
+       <string>CVS File Import</string>
+      </attribute>
      </widget>
-     <widget class="QLabel" name="label_2">
-      <property name="geometry">
+     <widget class="QWidget" name="OSISImportPage" >
+      <property name="geometry" >
        <rect>
-        <x>40</x>
-        <y>30</y>
-        <width>91</width>
-        <height>20</height>
+        <x>0</x>
+        <y>0</y>
+        <width>424</width>
+        <height>343</height>
        </rect>
       </property>
-      <property name="text">
-       <string>Proxy Address</string>
-      </property>
+      <attribute name="label" >
+       <string>OSIS XML Bible Import</string>
+      </attribute>
      </widget>
-     <widget class="QLabel" name="label_4">
-      <property name="geometry">
+     <widget class="QWidget" name="WebBiblePage" >
+      <property name="geometry" >
        <rect>
-        <x>40</x>
-        <y>80</y>
-        <width>54</width>
-        <height>17</height>
+        <x>0</x>
+        <y>0</y>
+        <width>424</width>
+        <height>343</height>
        </rect>
       </property>
-      <property name="text">
-       <string>Passord</string>
-      </property>
-     </widget>
-     <widget class="QWidget" name="">
-      <property name="geometry">
-       <rect>
-        <x>150</x>
-        <y>20</y>
-        <width>112</width>
-        <height>83</height>
-       </rect>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <attribute name="label" >
+       <string>Web Bible Download</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="WebBibleLayout" >
+       <property name="spacing" >
+        <number>8</number>
+       </property>
+       <property name="margin" >
+        <number>8</number>
+       </property>
        <item>
-        <widget class="QLineEdit" name="lineEdit"/>
+        <widget class="QGroupBox" name="OptionsGroupBox" >
+         <property name="title" >
+          <string>Download Options</string>
+         </property>
+         <layout class="QFormLayout" name="OptionsLayout" >
+          <property name="labelAlignment" >
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+          <property name="formAlignment" >
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+          <property name="horizontalSpacing" >
+           <number>8</number>
+          </property>
+          <property name="verticalSpacing" >
+           <number>8</number>
+          </property>
+          <property name="margin" >
+           <number>8</number>
+          </property>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="LocationLabel" >
+            <property name="text" >
+             <string>Location:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
+           <widget class="QComboBox" name="LocationComboBox" >
+            <item>
+             <property name="text" >
+              <string>BibleGateway</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>CrossWire</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QLabel" name="TypeLabel" >
+            <property name="text" >
+             <string>Type:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" >
+           <widget class="QComboBox" name="TypeComboBox" >
+            <item>
+             <property name="text" >
+              <string>Download As Needed</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>Download All</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QLabel" name="BibleLabel" >
+            <property name="text" >
+             <string>Bible:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" >
+           <widget class="QComboBox" name="BibleComboBox" >
+            <item>
+             <property name="text" >
+              <string>NIV</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>KJV</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="lineEdit_2"/>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="lineEdit_3"/>
+        <widget class="QGroupBox" name="ProxyGroupBox" >
+         <property name="title" >
+          <string>Proxy Settings (Optional)</string>
+         </property>
+         <layout class="QFormLayout" name="ProxySettingsLayout" >
+          <property name="horizontalSpacing" >
+           <number>8</number>
+          </property>
+          <property name="verticalSpacing" >
+           <number>8</number>
+          </property>
+          <property name="margin" >
+           <number>8</number>
+          </property>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="AddressLabel" >
+            <property name="text" >
+             <string>Proxy Address:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
+           <widget class="QLineEdit" name="AddressEdit" />
+          </item>
+          <item row="1" column="0" >
+           <widget class="QLabel" name="UsernameLabel" >
+            <property name="text" >
+             <string>Username:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" >
+           <widget class="QLineEdit" name="UsernameEdit" />
+          </item>
+          <item row="2" column="0" >
+           <widget class="QLabel" name="PasswordLabel" >
+            <property name="text" >
+             <string>Password:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" >
+           <widget class="QLineEdit" name="PasswordEdit" />
+          </item>
+         </layout>
+        </widget>
        </item>
       </layout>
      </widget>
     </widget>
-    <widget class="QCheckBox" name="checkBox">
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>0</y>
-       <width>111</width>
-       <height>21</height>
-      </rect>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="BibleImportButtonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
      </property>
-     <property name="text">
-      <string>Download Now</string>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>91</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Avaliable Bibles</string>
-     </property>
-    </widget>
-   </widget>
-  </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>BibleImportButtonBox</sender>
    <signal>accepted()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>BibleImportDialog</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>248</x>
      <y>254</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>157</x>
      <y>274</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>BibleImportButtonBox</sender>
    <signal>rejected()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>BibleImportDialog</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>316</x>
      <y>260</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>286</x>
      <y>274</y>
     </hint>
