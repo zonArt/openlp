@@ -58,10 +58,11 @@ class TestMediaManager:
     def test1(self):
         log=logging.getLogger("test1")
         log.info("Start")
-
-        i1=MediaManagerItem()
-        i2=MediaManagerItem()
-        #i2.choose_area.text="More Stuff"
+#         i1=MediaManagerItem()
+#         i2=MediaManagerItem()
+        i1=MediaManagerItem(self.app)
+        i2=MediaManagerItem(self.app)
+#         i2.choose_area.text="More Stuff"
         log.info("i1"+str(i1))
         log.info("i2"+str(i2))
         self.MediaToolBox.addItem(i1, i1.icon, "Test1")
@@ -70,7 +71,6 @@ class TestMediaManager:
         self.MediaToolBox.setItemText(self.MediaToolBox.indexOf(i2), QtGui.QApplication.translate("main_window", "Item2", None, QtGui.QApplication.UnicodeUTF8))
         log.info("Show window")
         self.main_window.show()
-#         self.app.exec_()
         log.info("End")
         return 1
 
