@@ -52,9 +52,17 @@ class MediaManagerItem(QtGui.QWidget):
         # setup toolbar
 
         self.log.info("Adding toolbar item")
-        self.ToolbarButtons=[]
-        self.ToolbarButtons.append(ToolbarButton(self, "LoadItem", ":/images/image_load.png", "Load something", "Load something in"))
-        self.ToolbarButtons.append(ToolbarButton(self, "DeleteItem", ":/images/image_delete.png", "Delete something", "Delete something from"))
+#         self.ToolbarButtons=[]
+#         self.ToolbarButtons.append(ToolbarButton(self, "LoadItem", ":/images/image_load.png", "Load something", "Load something in"))
+#         self.ToolbarButtons.append(ToolbarButton(self, "DeleteItem", ":/images/image_delete.png", "Delete something", "Delete something from"))
+        b=QtGui.QToolButton.__init__(self, self.Toolbar)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/images/image_load.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        b.setIcon(icon)
+        b.setIconSize(QtCore.QSize(20, 20))
+        b.setAutoRaise(True)
+#         self.setObjectName("%sItem"%name)
+        self.ToolbarLayout.addWidget(b)
 
         # Connect the dots! I mean, slots...
 #         QtCore.QObject.connect(self.SongNewItem, QtCore.SIGNAL("clicked()"), self.onSongNewItemClick)
