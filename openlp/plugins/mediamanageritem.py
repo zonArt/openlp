@@ -24,6 +24,20 @@ class ToolbarButton(QtGui.QToolButton):
 #         self.setText(QtGui.QApplication.translate("main_window", tooltiptext, None, QtGui.QApplication.UnicodeUTF8))
 #         self.setStatusTip(QtGui.QApplication.translate("main_window", statustip, None, QtGui.QApplication.UnicodeUTF8))
 
+class Chooser(QtGui.QWidget):
+    def __init__(self, parent):
+        QtGui.QWidget.__init__(self, parent)
+        self.text="Stuff"
+
+    def paintEvent(self, evt):
+        paint = QtGui.QPainter()#self.choose_area)
+        paint.begin(self)
+        paint.setPen(QtGui.QColor(168, 34, 3))
+        paint.setFont(QtGui.QFont('Decorative', 10))
+        paint.drawText(evt.rect(), QtCore.Qt.AlignCenter, self.text)
+        paint.end()
+#         self.log.info("done paint")
+
 class MediaManagerItem(QtGui.QWidget):
     name="Default_Item"
 #     iconname=":/media/media_video.png" # xxx change this to some default bare icon
@@ -53,50 +67,26 @@ class MediaManagerItem(QtGui.QWidget):
         # setup toolbar
 
         self.log.info("Adding toolbar item")
-#         self.ToolbarButtons=[]
-#         self.ToolbarButtons.append(ToolbarButton(self, "LoadItem", ":/images/image_load.png", "Load something", "Load something in"))
-#         self.ToolbarButtons.append(ToolbarButton(self, "DeleteItem", ":/images/image_delete.png", "Delete something", "Delete something from"))
-        b=QtGui.QToolButton(self.Toolbar)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/images/image_load.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        b.setIcon(icon)
-        b.setIconSize(QtCore.QSize(20, 20))
-        b.setAutoRaise(True)
-#         self.setObjectName("%sItem"%name)
-        self.ToolbarLayout.addWidget(b)
+        self.ToolbarButtons=[]
+        self.ToolbarButtons.append(ToolbarButton(self, "LoadItem", ":/images/image_load.png", "Load something", "Load something in"))
+        self.ToolbarButtons.append(ToolbarButton(self, "DeleteItem", ":/images/image_delete.png", "Delete something", "Delete something from"))
 
         # Connect the dots! I mean, slots...
-#         QtCore.QObject.connect(self.SongNewItem, QtCore.SIGNAL("clicked()"), self.onSongNewItemClick)
         QtCore.QObject.connect(self.ToolbarButtons[0], QtCore.SIGNAL("clicked()"), self.LoadItemclicked)
         QtCore.QObject.connect(self.ToolbarButtons[1], QtCore.SIGNAL("clicked()"), self.DeleteItemclicked)
 
         # add somewhere for "choosing" to happen
-#         self.choose_area=QtGui.QWidget(self)
-#         self.Layout.addWidget(self.choose_area)
-#         self.choose_area.text="Stuff and Nonsense"
+        self.choose_area=Chooser(self)
+        self.Layout.addWidget(self.choose_area)
+#         self.choose_area_text="Stuff and Nonsense"
 
-#     def onSongNewItemClick(self):
-#         self.log.info("onSongNewItemClick")
-        # xxx button events
-#         app.connect(self.ToolbarButtons[0], QtCore.SIGNAL("triggered()"), self.LoadItemclicked)
-#         QtCore.QObject.connect(self.ToolbarButtons[1], QtCore.SIGNAL("triggered()"), self.DeleteItemclicked)
-        # add somewhere for "choosing" to happen
-#         self.choose_area=QtGui.QWidget(self)
-#         self.Layout.addWidget(self.choose_area)
-#         self.choose_area.text="Stuff and Nonsense"
 
     def LoadItemclicked(self):
         self.log.info("LoadItemClicked")
-        #self.choose_area.text+="+"
+        self.choose_area.text+="+"
     def DeleteItemclicked(self):
         self.log.info("DeleteItemClicked")
-        #self.choose_area.text+="-"
+        self.choose_area.text+="-"
     def paintEvent(self, evt):
         pass
-        #paint = QtGui.QPainter()#self.choose_area)
-        #paint.begin(self)
-        #paint.setPen(QtGui.QColor(168, 34, 3))
-        #paint.setFont(QtGui.QFont('Decorative', 10))
-        #paint.drawText(evt.rect(), QtCore.Qt.AlignCenter, self.choose_area.text)
-        #paint.end()
-        self.log.info("done paint")
+
