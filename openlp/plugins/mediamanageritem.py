@@ -26,17 +26,18 @@ class ToolbarButton(QtGui.QToolButton):
 
 class Chooser(QtGui.QWidget):
     def __init__(self, parent):
-        QtGui.QWidget.__init__(self, parent)
-        self.text="Stuff"
-
+        QtGui.QWidget.__init__(self)
+        self.text="Default text"
+        self.log=logging.getLogger("Chooser")
     def paintEvent(self, evt):
+        self.log.info("Paint")
         paint = QtGui.QPainter()#self.choose_area)
         paint.begin(self)
         paint.setPen(QtGui.QColor(168, 34, 3))
         paint.setFont(QtGui.QFont('Decorative', 10))
         paint.drawText(evt.rect(), QtCore.Qt.AlignCenter, self.text)
         paint.end()
-#         self.log.info("done paint")
+        self.log.info("Paint done")
 
 class MediaManagerItem(QtGui.QWidget):
     name="Default_Item"
@@ -44,7 +45,7 @@ class MediaManagerItem(QtGui.QWidget):
     # can either use an iconname from the resources, or a real image file.
     iconname=None
     iconfile=os.path.join(mypath, "red-x.png")
-    def __init__(self, app):
+    def __init__(self, parent):
         self.log=logging.getLogger("MediaMgrItem_%s"%self.name)
         self.log.info("loaded")
         QtGui.QWidget.__init__(self)
@@ -70,23 +71,22 @@ class MediaManagerItem(QtGui.QWidget):
         self.ToolbarButtons=[]
         self.ToolbarButtons.append(ToolbarButton(self, "LoadItem", ":/images/image_load.png", "Load something", "Load something in"))
         self.ToolbarButtons.append(ToolbarButton(self, "DeleteItem", ":/images/image_delete.png", "Delete something", "Delete something from"))
-
         # Connect the dots! I mean, slots...
         QtCore.QObject.connect(self.ToolbarButtons[0], QtCore.SIGNAL("clicked()"), self.LoadItemclicked)
         QtCore.QObject.connect(self.ToolbarButtons[1], QtCore.SIGNAL("clicked()"), self.DeleteItemclicked)
 
         # add somewhere for "choosing" to happen
-        self.choose_area=Chooser(self)
-        self.Layout.addWidget(self.choose_area)
-#         self.choose_area_text="Stuff and Nonsense"
-
-
+        self.choose_area=Chooser(parent)
+        self.choose_area.text="Some Stuff"
+        # xxx uncomment this line and the buttons stop working!
+#         self.Layout.addWidget(self.choose_area)
+        
     def LoadItemclicked(self):
         self.log.info("LoadItemClicked")
-        self.choose_area.text+="+"
+#         self.choose_area.text+="+"
     def DeleteItemclicked(self):
         self.log.info("DeleteItemClicked")
-        self.choose_area.text+="-"
+#         self.choose_area.text+="-"
     def paintEvent(self, evt):
         pass
-
+        self.log.info("done paint")

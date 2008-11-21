@@ -60,8 +60,8 @@ class TestMediaManager:
         log.info("Start")
 #         i1=MediaManagerItem()
 #         i2=MediaManagerItem()
-        i1=MediaManagerItem(self.app)
-        i2=MediaManagerItem(self.app)
+        i1=MediaManagerItem(self.MediaToolBox)
+        i2=MediaManagerItem(self.MediaToolBox)
         i2.choose_area.text="More Stuff"
         log.info("i1"+str(i1))
         log.info("i2"+str(i2))
