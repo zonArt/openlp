@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.4.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2008-11-20, 22:11:22 -->
+<!-- Saved: 2008-11-21, 20:51:04 -->
 <!-- Copyright (C) 2008 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.4">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -83,8 +83,8 @@
     <Form>openlp/resources/forms/opensongimportform.ui</Form>
     <Form>openlp/resources/forms/opensongexportform.ui</Form>
     <Form>openlp/resources/forms/splashscreen.ui</Form>
-    <Form>openlp/resources/forms/BibleCSVImportWizard.ui</Form>
-    <Form>openlp/resources/forms/bibleimportform.ui</Form>
+    <Form>openlp/resources/forms/bibleImport.ui</Form>
+    <Form>openlp/resources/forms/songexport.ui</Form>
   </Forms>
   <Translations>
   </Translations>
