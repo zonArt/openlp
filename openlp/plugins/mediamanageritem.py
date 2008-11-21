@@ -27,6 +27,7 @@ class ToolbarButton(QtGui.QToolButton):
 class MediaManagerItem(QtGui.QWidget):
     name="Default_Item"
 #     iconname=":/media/media_video.png" # xxx change this to some default bare icon
+    # can either use an iconname from the resources, or a real image file.
     iconname=None
     iconfile=os.path.join(mypath, "red-x.png")
     def __init__(self, app):
@@ -55,7 +56,7 @@ class MediaManagerItem(QtGui.QWidget):
 #         self.ToolbarButtons=[]
 #         self.ToolbarButtons.append(ToolbarButton(self, "LoadItem", ":/images/image_load.png", "Load something", "Load something in"))
 #         self.ToolbarButtons.append(ToolbarButton(self, "DeleteItem", ":/images/image_delete.png", "Delete something", "Delete something from"))
-        b=QtGui.QToolButton.__init__(self, self.Toolbar)
+        b=QtGui.QToolButton(self.Toolbar)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/images/image_load.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         b.setIcon(icon)
@@ -98,5 +99,4 @@ class MediaManagerItem(QtGui.QWidget):
         #paint.setFont(QtGui.QFont('Decorative', 10))
         #paint.drawText(evt.rect(), QtCore.Qt.AlignCenter, self.choose_area.text)
         #paint.end()
-
         self.log.info("done paint")
