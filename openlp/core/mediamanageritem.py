@@ -39,3 +39,26 @@ class MediaManagerItem(QtGui.QWidget):
             self.Title = title
         else:
             self.Title = ''
+        self.Toolbar = None
+
+    def addToolbar(self):
+        """
+        A method to help developers easily add a toolbar to the media manager
+        item.
+        """
+        if self.Toolbar is None:
+            self.PageLayout = QtGui.QVBoxLayout(self)
+            self.PageLayout.setSpacing(0)
+            self.PageLayout.setMargin(0)
+            self.PageLayout.setObjectName('PageLayout')
+            self.Toolbar = QtGui.QWidget(self)
+            self.Toolbar.setObjectName('Toolbar')
+            self.ToolbarLayout = QtGui.QHBoxLayout(self.Toolbar)
+            self.ToolbarLayout.setSpacing(0)
+            self.ToolbarLayout.setMargin(0)
+            self.ToolbarLayout.setObjectName('ToolbarLayout')
+
+    def addToolbarItem(self, item):
+        if self.Toolbar is None:
+            self.addToolbar()
+        self.ToolbarLayout.addWidget(item)

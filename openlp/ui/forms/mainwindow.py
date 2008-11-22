@@ -174,6 +174,8 @@ class MainWindow(object):
         self.MediaToolBox = QtGui.QToolBox(self.MediaManagerContents)
         #self.MediaToolBox.setTabSpacing(0)
         self.MediaToolBox.setObjectName("MediaToolBox")
+        # This is where we will eventually get the Plugin Manager to pull in
+        # the media manager items.
         self.SongPage = QtGui.QWidget()
         self.SongPage.setGeometry(QtCore.QRect(0, 0, 267, 609))
         self.SongPage.setObjectName("SongPage")
