@@ -18,3 +18,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from openlp.core.render import Renderer
 from openlp.core.settingsmanager import SettingsManager
+from openlp.core.plugin import Plugin
+from openlp.core.pluginmanager import PluginManager
+
+__all__ = ['Renderer', 'SettingsManager', 'Plugin']

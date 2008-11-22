@@ -1,10 +1,10 @@
 #!/usr/bin/env pythonw
+# -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80
-
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley
+Portions copyright (c) 2008 Martin Thompson, Tim Bentley,
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
