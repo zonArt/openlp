@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
@@ -16,9 +18,24 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
-from openlp.core.render import Renderer
-from openlp.core.settingsmanager import SettingsManager
-from openlp.core.plugin import Plugin
-from openlp.core.pluginmanager import PluginManager
+from PyQt4 import QtCore, QtGui
+from openlp.resources import *
 
-__all__ = ['Renderer', 'SettingsManager', 'Plugin', 'PluginManager']
+class MediaManagerItem(QtGui.QWidget):
+    """
+    MediaManagerItem is a helper widget for plugins.
+    """
+    def __init__(self, icon=None, title=None):
+        """
+        Constructor to create the media manager item.
+        """
+        QtGui.QWidget.__init__(self)
+        self.Icon = QtGui.QIcon()
+        if icon is not None:
+            self.Icon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        else:
+            self.Icon = None
+        if title is not None:
+            self.Title = title
+        else:
+            self.Title = ''
