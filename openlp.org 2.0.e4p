@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.4.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2008-11-22, 17:14:47 -->
+<!-- Saved: 2008-11-23, 23:21:19 -->
 <!-- Copyright (C) 2008 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.4">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -70,6 +70,8 @@
     <Source>openlp/plugins/biblemanager/test/test_bibleManagerOSIS.py</Source>
     <Source>openlp/core/pluginmanager.py</Source>
     <Source>openlp/core/mediamanageritem.py</Source>
+    <Source>openlp/core/settingstab.py</Source>
+    <Source>openlp/plugins/song/songplugin.py</Source>
   </Sources>
   <Forms>
     <Form>openlp/resources/forms/mainwindow.ui</Form>

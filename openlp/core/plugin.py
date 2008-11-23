@@ -51,6 +51,7 @@ class Plugin(object):
         string which can be written to the service file
         """
         pass
+
     def load(self, str):
         """
         A string from the service file is passed in. This function parses and
