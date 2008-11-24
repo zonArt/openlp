@@ -27,7 +27,6 @@ from openlp.plugins.biblemanager.BibleCSVImpl import BibleCSVImpl
 from openlp.plugins.biblemanager.BibleDBImpl import BibleDBImpl
 from openlp.plugins.biblemanager.BibleHTTPImpl import BibleHTTPImpl
 from openlp.plugins.biblemanager.BibleLibrary import BibleLibrary
-from openlp.plugins.plugin import Plugin
 
 import logging
 logging.basicConfig(level=logging.DEBUG,
@@ -36,7 +35,7 @@ logging.basicConfig(level=logging.DEBUG,
                 filename='plugins.log',
                 filemode='w')
 
-class BibleManager(Plugin):
+class BibleManager():
     global log     
     log=logging.getLogger("BibleMgr")
     log.info("Bible manager loaded")

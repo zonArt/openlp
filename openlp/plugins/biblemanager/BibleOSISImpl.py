@@ -36,6 +36,14 @@ class BibleOSISImpl():
     log.info("BibleOSISImpl loaded")   
     def __init__(self, bibledb):
         self.bibledb = bibledb
+        self.booksOfBible = {} # books of the bible linked to bibleid  {osis , name}
+        self.abbrevOfBible = {} # books of the bible linked to bibleid  {osis ,Abbrev }  
+        fbibles=open("../resources/osisbooks_en.txt", 'r')
+        for line in fbibles:
+            p = line.split(",")
+            self.booksOfBible[p[0]] = p[1].replace('\n', '')
+            self.abbrevOfBible[p[0]] = p[2].replace('\n', '')            
+                
         
     def loadData(self, osisfile):
         self.bibledb.saveMeta("version", "Bible Version")
@@ -80,9 +88,8 @@ class BibleOSISImpl():
                 p = ref.split(".", 3)  # split u[ the reference
                 if book_ptr != p[0]:
                     book_ptr = p[0]
-                    print p
-                    self.bibledb.createBook(int(p[1]), p[0], p[0])
-                    id = self.bibledb.getBibleBookId(p[0])
+                    self.bibledb.createBook(int(p[1]), self.booksOfBible[p[0]] , self.abbrevOfBible[p[0]])
+                    id = self.bibledb.getBibleBookId(self.booksOfBible[p[0]])
                 self.bibledb.addVerse(id[0], p[1], p[2], t)
 
 
