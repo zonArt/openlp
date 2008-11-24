@@ -67,7 +67,7 @@ Index('idx_abbrev', book_table.c.abbrev, book_table.c.id)
 #Column('book_id', None, ForeignKey('book.id')), 
 verse_table = Table('verse', metadata, 
    Column('id', Integer, primary_key=True), 
-    Column('book_id' ), 
+    Column('book_id', Integer ), 
     Column('chapter', Integer), 
     Column('verse', Integer), 
     Column('text', Text), 
@@ -171,13 +171,13 @@ class BibleDBImpl(BibleCommon):
             session.add(versemeta)
         session.commit()
         
-#    def createBook(self, bookid, bookname, bookabbrev):
-#        log.debug( "createBook %s,%s,%s", bookid, bookname, bookabbrev)
-#        metadata.bind.echo = False       
-#        session = self.Session()
-#        bookmeta = Book(int(5), bookname, bookabbrev)
-#        session.add(bookmeta)
-#        session.commit()
+    def createBook(self, bookid, bookname, bookabbrev):
+        log.debug( "createBook %s,%s,%s", bookid, bookname, bookabbrev)
+        metadata.bind.echo = False       
+        session = self.Session()
+        bookmeta = Book(int(5), bookname, bookabbrev)
+        session.add(bookmeta)
+        session.commit()
         
     def saveMeta(self, key, value):
         metadata.bind.echo = False                
@@ -195,17 +195,18 @@ class BibleDBImpl(BibleCommon):
         s = text (""" delete FROM meta where key == :k """)
         self.db.execute(s, k=key)
 
-#    def _loadTestaments(self):
-#        log.debug("loadTestaments")
-#        metadata.bind.echo = False               
-#        session = self.Session()    
-#        testmeta = ONTestament(name="Old Testament")
-#        session.add(testmeta)
-#        testmeta = ONTestament(name="New Testament")
-#        session.add(testmeta)
-#        testmeta = ONTestament(name="Apocrypha")
-#        session.add(testmeta)        
-#        session.commit()
+    def _loadTestaments(self):
+        log.debug("loadTestaments")
+        metadata.bind.echo = False               
+        session = self.Session()    
+        testmeta = ONTestament(name="Old Testament")
+        session.add(testmeta)
+        testmeta = ONTestament(name="New Testament")
+        session.add(testmeta)
+        testmeta = ONTestament(name="Apocrypha")
+        session.add(testmeta)        
+        session.commit()
+        
     def getBibleBooks(self):
         log.debug( "getBibleBook ") 
         metadata.bind.echo = False        
