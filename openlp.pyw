@@ -23,7 +23,7 @@ import sys
 from PyQt4 import QtCore, QtGui
 
 from openlp.resources import *
-from openlp.ui.forms import MainWindow, SplashScreen
+from openlp.core.ui import MainWindow, SplashScreen
 
 class OpenLP(QtGui.QApplication):
 
