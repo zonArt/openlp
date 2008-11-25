@@ -41,6 +41,7 @@ class MediaManagerItem(QtGui.QWidget):
         if title is not None:
             self.Title = title
         self.Toolbar = None
+        #self.ToolbarButtons = []
 
     def addToolbar(self):
         """
@@ -60,6 +61,46 @@ class MediaManagerItem(QtGui.QWidget):
             self.ToolbarLayout.setObjectName('ToolbarLayout')
 
     def addToolbarItem(self, item):
+        """
+        A method to help developers easily add any control to the toolbar.
+        """
         if self.Toolbar is None:
             self.addToolbar()
         self.ToolbarLayout.addWidget(item)
+
+    def addToolbarButton(self, title, tooltip, icon, slot=None, objectname=None):
+        """
+        A method to help developers easily add a button to the toolbar.
+        """
+        ToolbarButton = QtGui.QToolButton(self.Toolbar)
+        ToolbarButton.setText(QtCore.QObject.trUtf8(title))
+        ToolbarButton.setToolTip(QtCore.QObject.trUtf8(tooltip))
+        if type(icon) is QtGui.QIcon:
+            ButtonIcon = icon
+        elif type(icon) is types.StringType:
+            ButtonIcon = QtGui.QIcon()
+            if icon.startswith(':/'):
+                ButtonIcon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
+                    QtGui.QIcon.Off)
+            else:
+                ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
+                    QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        ToolbarButton.setIcon(ButtonIcon)
+        ToolbarButton.setIconSize(QtCore.QSize(20, 20))
+        ToolbarButton.setAutoRaise(True)
+        if objectname is not None:
+            ToolbarButton.setObjectName(objectname)
+        if slot is not None:
+            QtCore.QObject.connect(ToolbarButton, QtCore.SIGNAL("clicked()"), slot)
+        self.addToolbarItem(ToolbarButton)
+
+    def addToolbarLine(self):
+        ToolbarLine = QtGui.QFrame(self.Toolbar)
+        ToolbarLine.setMinimumSize(QtCore.QSize(0, 0))
+        ToolbarLine.setFrameShadow(QtGui.QFrame.Sunken)
+        ToolbarLine.setLineWidth(1)
+        ToolbarLine.setMidLineWidth(0)
+        ToolbarLine.setFrameShape(QtGui.QFrame.VLine)
+        ToolbarLine.setFrameShadow(QtGui.QFrame.Sunken)
+        ToolbarLine.setObjectName('ToolbarLine')
+        self.addToolbarItem(ToolbarLine)
