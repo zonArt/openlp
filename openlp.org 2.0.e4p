@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.4.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2008-11-25, 22:44:31 -->
+<!-- Saved: 2008-11-25, 23:00:20 -->
 <!-- Copyright (C) 2008 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.4">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -51,7 +51,6 @@
     <Source>openlp/plugins/testplugin2/__init__.py</Source>
     <Source>openlp/plugins/testplugin2/testplugin2.py</Source>
     <Source>openlp/plugins/test/test_plugin_manager.py</Source>
-    <Source>openlp/ui/forms/splashscreen.py</Source>
     <Source>openlp/ui/forms/settings.py</Source>
     <Source>openlp/ui/forms/alertform.py</Source>
     <Source>openlp/ui/forms/editsongform.py</Source>
@@ -74,6 +73,7 @@
     <Source>openlp/plugins/song/songplugin.py</Source>
     <Source>openlp/core/ui/__init__.py</Source>
     <Source>openlp/core/ui/mainwindow.py</Source>
+    <Source>openlp/core/ui/splashscreen.py</Source>
   </Sources>
   <Forms>
     <Form>openlp/resources/forms/mainwindow.ui</Form>
@@ -87,8 +87,8 @@
     <Form>openlp/resources/forms/opensongimportform.ui</Form>
     <Form>openlp/resources/forms/opensongexportform.ui</Form>
     <Form>openlp/resources/forms/splashscreen.ui</Form>
-    <Form>openlp/resources/forms/bibleImport.ui</Form>
     <Form>openlp/resources/forms/songexport.ui</Form>
+    <Form>openlp/resources/forms/bibleimport.ui</Form>
   </Forms>
   <Translations>
   </Translations>

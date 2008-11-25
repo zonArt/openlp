@@ -1,4 +1,3 @@
-#!/usr/bin/env pythonw
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80
 """
@@ -20,3 +19,6 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 from openlp.core.ui.mainwindow import MainWindow
+from openlp.core.ui.splashscreen import SplashScreen
+
+__all__ = ['MainWindow', 'SplashScreen']
