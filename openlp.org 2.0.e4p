@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.4.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2008-11-25, 23:00:20 -->
+<!-- Saved: 2008-11-26, 21:12:37 -->
 <!-- Copyright (C) 2008 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.4">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -30,8 +30,6 @@
     <Source>openlp/core/settingsmanager.py</Source>
     <Source>openlp/resources/openlp_rc.py</Source>
     <Source>openlp/resources/__init__.py</Source>
-    <Source>openlp/ui/forms/about.py</Source>
-    <Source>openlp/ui/forms/mainwindow.py</Source>
     <Source>openlp/core/plugin.py</Source>
     <Source>openlp/core/xmlrootclass.py</Source>
     <Source>openlp/song/__init__.py</Source>
@@ -51,8 +49,6 @@
     <Source>openlp/plugins/testplugin2/__init__.py</Source>
     <Source>openlp/plugins/testplugin2/testplugin2.py</Source>
     <Source>openlp/plugins/test/test_plugin_manager.py</Source>
-    <Source>openlp/ui/forms/settings.py</Source>
-    <Source>openlp/ui/forms/alertform.py</Source>
     <Source>openlp/ui/forms/editsongform.py</Source>
     <Source>openlp/ui/forms/openlpexportform.py</Source>
     <Source>openlp/ui/forms/openlpimportform.py</Source>
@@ -74,6 +70,11 @@
     <Source>openlp/core/ui/__init__.py</Source>
     <Source>openlp/core/ui/mainwindow.py</Source>
     <Source>openlp/core/ui/splashscreen.py</Source>
+    <Source>openlp/core/ui/settings.py</Source>
+    <Source>openlp/core/ui/alertform.py</Source>
+    <Source>openlp/core/ui/about.py</Source>
+    <Source>openlp/plugins/song/__init__.py</Source>
+    <Source>openlp/plugins/song/forms/__init__.py</Source>
   </Sources>
   <Forms>
     <Form>openlp/resources/forms/mainwindow.ui</Form>
