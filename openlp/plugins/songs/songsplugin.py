@@ -22,7 +22,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.resources import *
 from openlp.core import Plugin, MediaManagerItem
 
-class SongPlugin(Plugin):
+class SongsPlugin(Plugin):
     def __init__(self):
         # Call the parent constructor
         Plugin.__init__('Song', '1.9.0')

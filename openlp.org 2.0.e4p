@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.4.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2008-11-26, 21:40:00 -->
+<!-- Saved: 2008-11-26, 21:42:18 -->
 <!-- Copyright (C) 2008 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.4">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -33,7 +33,6 @@
     <Source>openlp/core/plugin.py</Source>
     <Source>openlp/core/xmlrootclass.py</Source>
     <Source>openlp/song/__init__.py</Source>
-    <Source>openlp/song/song.py</Source>
     <Source>openlp/song/test/test_song_opensong.py</Source>
     <Source>openlp/song/test/test_song_basic.py</Source>
     <Source>openlp/song/test/test_song_text.py</Source>
@@ -73,6 +72,7 @@
     <Source>openlp/core/ui/alertform.py</Source>
     <Source>openlp/core/ui/about.py</Source>
     <Source>openlp/plugins/songs/songplugin.py</Source>
+    <Source>openlp/song/songxml.py</Source>
   </Sources>
   <Forms>
     <Form>openlp/resources/forms/mainwindow.ui</Form>
