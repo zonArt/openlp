@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.4.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2008-11-26, 21:51:46 -->
+<!-- Saved: 2008-11-27, 22:05:01 -->
 <!-- Copyright (C) 2008 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.4">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -12,47 +12,30 @@
   <Email>raoulsnyman@openlp.org</Email>
   <Sources>
     <Source>openlp.pyw</Source>
-    <Source>openlp/theme/test/test_theme.py</Source>
-    <Source>openlp/theme/__init__.py</Source>
-    <Source>openlp/theme/theme.py</Source>
     <Source>openlp/controls/__init__.py</Source>
     <Source>openlp/core/test/test_render_theme.py</Source>
     <Source>openlp/core/test/test_render.py</Source>
     <Source>openlp/core/interpolate.py</Source>
     <Source>openlp/core/__init__.py</Source>
     <Source>openlp/core/render.py</Source>
-    <Source>openlp/ui/__init__.py</Source>
-    <Source>openlp/ui/forms/__init__.py</Source>
     <Source>openlp/__init__.py</Source>
-    <Source>openlp/utils/ConfigHelper.py</Source>
-    <Source>openlp/utils/__init__.py</Source>
     <Source>demo.py</Source>
     <Source>openlp/core/settingsmanager.py</Source>
     <Source>openlp/resources/openlp_rc.py</Source>
     <Source>openlp/resources/__init__.py</Source>
     <Source>openlp/core/plugin.py</Source>
     <Source>openlp/core/xmlrootclass.py</Source>
-    <Source>openlp/song/__init__.py</Source>
-    <Source>openlp/song/test/test_song_opensong.py</Source>
-    <Source>openlp/song/test/test_song_basic.py</Source>
-    <Source>openlp/song/test/test_song_text.py</Source>
     <Source>openlp/plugins/biblemanager/__init__.py</Source>
     <Source>openlp/plugins/biblemanager/BibleDBImpl.py</Source>
     <Source>openlp/plugins/biblemanager/BibleManager.py</Source>
     <Source>openlp/plugins/biblemanager/BibleHTTPImpl.py</Source>
     <Source>openlp/plugins/biblemanager/test/__init__.py</Source>
     <Source>openlp/plugins/biblemanager/test/test_bibleManager.py</Source>
-    <Source>openlp/song/test/test_song_verse.py</Source>
     <Source>openlp/plugins/__init__.py</Source>
     <Source>openlp/plugins/testplugin1.py</Source>
     <Source>openlp/plugins/testplugin2/__init__.py</Source>
     <Source>openlp/plugins/testplugin2/testplugin2.py</Source>
     <Source>openlp/plugins/test/test_plugin_manager.py</Source>
-    <Source>openlp/ui/forms/editsongform.py</Source>
-    <Source>openlp/ui/forms/openlpexportform.py</Source>
-    <Source>openlp/ui/forms/openlpimportform.py</Source>
-    <Source>openlp/ui/forms/opensongexportform.py</Source>
-    <Source>openlp/ui/forms/opensongimportform.py</Source>
     <Source>openlp/plugins/biblemanager/BibleCommon.py</Source>
     <Source>openlp/libraries/pptviewlib/ppttest.py</Source>
     <Source>openlp/plugins/biblemanager/BibleCSVImpl.py</Source>
@@ -71,10 +54,25 @@
     <Source>openlp/core/ui/settings.py</Source>
     <Source>openlp/core/ui/alertform.py</Source>
     <Source>openlp/core/ui/about.py</Source>
-    <Source>openlp/song/songxml.py</Source>
     <Source>openlp/plugins/songs/songsplugin.py</Source>
     <Source>openlp/plugins/songs/__init__.py</Source>
     <Source>openlp/plugins/songs/forms/__init__.py</Source>
+    <Source>openlp/plugins/songs/songxml.py</Source>
+    <Source>openlp/plugins/songs/forms/openlpimportform.py</Source>
+    <Source>openlp/plugins/songs/forms/editsongform.py</Source>
+    <Source>openlp/plugins/songs/forms/opensongexportform.py</Source>
+    <Source>openlp/plugins/songs/forms/openlpexportform.py</Source>
+    <Source>openlp/plugins/songs/forms/opensongimportform.py</Source>
+    <Source>openlp/core/utils/__init__.py</Source>
+    <Source>openlp/core/utils/ConfigHelper.py</Source>
+    <Source>openlp/core/theme/__init__.py</Source>
+    <Source>openlp/core/theme/theme.py</Source>
+    <Source>openlp/plugins/songs/test/test_song_opensong.py</Source>
+    <Source>openlp/plugins/songs/test/test_song_basic.py</Source>
+    <Source>openlp/plugins/songs/test/test_song_verse.py</Source>
+    <Source>openlp/plugins/songs/test/test_song_text.py</Source>
+    <Source>openlp/core/theme/test/test_theme.py</Source>
+    <Source>openlp/core/event.py</Source>
   </Sources>
   <Forms>
     <Form>openlp/resources/forms/mainwindow.ui</Form>
