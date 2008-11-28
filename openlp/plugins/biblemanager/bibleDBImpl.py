@@ -28,8 +28,8 @@ from sqlalchemy.orm import sessionmaker, mapper
 mypath=os.path.split(os.path.abspath(__file__))[0]
 sys.path.insert(0,(os.path.join(mypath, '..', '..', '..')))
 
-from openlp.plugins.biblemanager.BibleCommon import BibleCommon
-from openlp.utils import ConfigHelper
+from openlp.plugins.biblemanager.bibleCommon import BibleCommon
+from openlp.core.utils import ConfigHelper
 
 import logging
 logging.basicConfig(level=logging.DEBUG,
