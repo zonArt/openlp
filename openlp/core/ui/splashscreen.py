@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
@@ -18,16 +18,9 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
-# Form implementation generated from reading ui file 'openlp/resources/forms/self.splash_screen.ui'
-#
-# Created: Mon Nov  3 20:17:05 2008
-#      by: PyQt4 UI code generator 4.4.3
-#
-# WARNING! All changes made in this file will be lost!
-
 from PyQt4 import QtCore, QtGui
 
-from openlp.resources import *
+from openlp.core.resources import *
 
 class SplashScreen(object):
     def __init__(self):

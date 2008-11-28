@@ -1,22 +1,33 @@
 # -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+"""
+OpenLP - Open Source Lyrics Projection
+Copyright (c) 2008 Raoul Snyman
+Portions copyright (c) 2008 Martin Thompson, Tim Bentley,
 
-# Form implementation generated from reading ui file 'C:\Project Folders\Personal Projects\openlp-2\trunk\openlp\resources\forms\settings.ui'
-#
-# Created: Wed Nov 05 20:57:21 2008
-#      by: PyQt4 UI code generator 4.4.4-snapshot-20080918
-#
-# WARNING! All changes made in this file will be lost!
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; version 2 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place, Suite 330, Boston, MA 02111-1307 USA
+"""
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.resources import *
+from openlp.core.resources import *
 
 class SettingsDialog(object):
-    
+
     def __init__(self):
         self.SettingsDialog = QtGui.QDialog()
         self.setupUi()
-    
+
     def setupUi(self):
         self.SettingsDialog.setObjectName("SettingsDialog")
         self.SettingsDialog.resize(721, 441)
@@ -511,6 +522,6 @@ class SettingsDialog(object):
         self.SearchGroupBox.setTitle(QtGui.QApplication.translate("SettingsDialog", "Search", None, QtGui.QApplication.UnicodeUTF8))
         self.SearchCheckBox.setText(QtGui.QApplication.translate("SettingsDialog", "Enabled search-as-you-type", None, QtGui.QApplication.UnicodeUTF8))
         self.SettingsTabWidget.setTabText(self.SettingsTabWidget.indexOf(self.GeneralTab), QtGui.QApplication.translate("SettingsDialog", "General", None, QtGui.QApplication.UnicodeUTF8))
-    
+
     def show(self):
         self.SettingsDialog.show()

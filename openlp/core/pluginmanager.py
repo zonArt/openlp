@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
@@ -15,13 +17,10 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-# vim: autoindent shiftwidth=4 expandtab textwidth=80
 
-# import openlp.plugins
 import os, sys
 import logging
 
-# Shouldn't this be a core class? i.e. from openlp.core import Plugin
 from openlp.core import Plugin
 
 # Not sure what this is for. I prefer keeping as much code in the class as possible.

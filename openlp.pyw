@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
@@ -22,7 +21,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import sys
 from PyQt4 import QtCore, QtGui
 
-from openlp.resources import *
+from openlp.core.resources import *
 from openlp.core.ui import MainWindow, SplashScreen
 
 class OpenLP(QtGui.QApplication):

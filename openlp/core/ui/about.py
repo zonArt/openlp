@@ -1,22 +1,33 @@
 # -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+"""
+OpenLP - Open Source Lyrics Projection
+Copyright (c) 2008 Raoul Snyman
+Portions copyright (c) 2008 Martin Thompson, Tim Bentley,
 
-# Form implementation generated from reading ui file 'C:\Project Folders\Personal Projects\openlp-2\trunk\openlp\resources\forms\about.ui'
-#
-# Created: Wed Nov 05 20:52:55 2008
-#      by: PyQt4 UI code generator 4.4.4-snapshot-20080918
-#
-# WARNING! All changes made in this file will be lost!
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; version 2 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place, Suite 330, Boston, MA 02111-1307 USA
+"""
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.resources import *
+from openlp.core.resources import *
 
 class AboutForm(object):
-    
+
     def __init__(self):
         self.AboutDialog = QtGui.QDialog()
         self.setupUi()
-        
+
     def setupUi(self):
         self.AboutDialog.setObjectName("AboutDialog")
         self.AboutDialog.resize(470, 481)
@@ -140,7 +151,7 @@ class AboutForm(object):
         QtCore.QObject.connect(self.CloseButton, QtCore.SIGNAL("clicked()"), self.AboutDialog.close)
         QtCore.QMetaObject.connectSlotsByName(self.AboutDialog)
         self.AboutDialog.setTabOrder(self.CreditsScrollArea, self.ContributeButton)
-        
+
         QtCore.QObject.connect(self.ContributeButton, QtCore.SIGNAL("clicked()"), self.onContributeButtonClicked)
 
     def retranslateUi(self):
@@ -212,10 +223,10 @@ class AboutForm(object):
         self.ContributeButton.setText(QtGui.QApplication.translate("AboutDialog", "Contribute", None, QtGui.QApplication.UnicodeUTF8))
         self.CloseButton.setText(QtGui.QApplication.translate("AboutDialog", "Close", None, QtGui.QApplication.UnicodeUTF8))
         self.extContributeItem.setText(QtGui.QApplication.translate("AboutDialog", "&Contribute", None, QtGui.QApplication.UnicodeUTF8))
-        
+
     def show(self):
         self.AboutDialog.show()
-        
+
     def onContributeButtonClicked(self):
         ''' This routine will open the default
             web-browser to the contribute page

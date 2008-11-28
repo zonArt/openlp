@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.4.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2008-11-27, 22:05:01 -->
+<!-- Saved: 2008-11-28, 16:03:20 -->
 <!-- Copyright (C) 2008 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.4">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -21,8 +21,6 @@
     <Source>openlp/__init__.py</Source>
     <Source>demo.py</Source>
     <Source>openlp/core/settingsmanager.py</Source>
-    <Source>openlp/resources/openlp_rc.py</Source>
-    <Source>openlp/resources/__init__.py</Source>
     <Source>openlp/core/plugin.py</Source>
     <Source>openlp/core/xmlrootclass.py</Source>
     <Source>openlp/plugins/biblemanager/__init__.py</Source>
@@ -75,24 +73,10 @@
     <Source>openlp/core/event.py</Source>
   </Sources>
   <Forms>
-    <Form>openlp/resources/forms/mainwindow.ui</Form>
-    <Form>openlp/resources/forms/settings.ui</Form>
-    <Form>openlp/resources/forms/themewizard.ui</Form>
-    <Form>openlp/resources/forms/about.ui</Form>
-    <Form>openlp/resources/forms/editsongform.ui</Form>
-    <Form>openlp/resources/forms/alertform.ui</Form>
-    <Form>openlp/resources/forms/openlpimportform.ui</Form>
-    <Form>openlp/resources/forms/openlpexportform.ui</Form>
-    <Form>openlp/resources/forms/opensongimportform.ui</Form>
-    <Form>openlp/resources/forms/opensongexportform.ui</Form>
-    <Form>openlp/resources/forms/splashscreen.ui</Form>
-    <Form>openlp/resources/forms/songexport.ui</Form>
-    <Form>openlp/resources/forms/bibleimport.ui</Form>
   </Forms>
   <Translations>
   </Translations>
   <Resources>
-    <Resource>openlp/resources/images/openlp-2.qrc</Resource>
   </Resources>
   <Interfaces>
   </Interfaces>
