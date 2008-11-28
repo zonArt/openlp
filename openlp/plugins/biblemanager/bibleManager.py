@@ -26,7 +26,6 @@ from openlp.plugins.biblemanager.bibleOSISImpl import BibleOSISImpl
 from openlp.plugins.biblemanager.bibleCSVImpl import BibleCSVImpl
 from openlp.plugins.biblemanager.bibleDBImpl import BibleDBImpl
 from openlp.plugins.biblemanager.bibleHTTPImpl import BibleHTTPImpl
-#from openlp.plugins.biblemanager.bibleLibrary import BibleLibrary
 
 import logging
 logging.basicConfig(level=logging.DEBUG,
@@ -51,7 +50,6 @@ class BibleManager():
         self.bibleDBCache = {}   # dict of bible database classes
         self.bibleHTTPCache = {} # dict of bible http readers
         self.biblePath = ConfigHelper.getBiblePath()
-        #self.bibleLibrary = BibleLibrary()
         #log.debug( self.biblePath )
         files = os.listdir(self.biblePath)
         for f in files:
