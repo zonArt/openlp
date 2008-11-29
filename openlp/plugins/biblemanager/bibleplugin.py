@@ -22,10 +22,16 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.resources import *
 from openlp.core import Plugin
 
+from openlp.plugins.biblemanager.biblemanager import BibleManager
+from openlp.plugins.biblemanager.bibleimportform import BibleImportForm
+
 class BiblePlugin(Plugin):
     def __init__(self):
         # Call the parent constructor
         Plugin.__init__(self, 'Bible', '1.9.0')
+        #Register the bible Manager
+        self.biblemanager = BibleManager()
+
         # Create the plugin icon
         self.Icon = QtGui.QIcon()
         self.Icon.addPixmap(QtGui.QPixmap(':/media/media_Bible.png'),
@@ -36,7 +42,7 @@ class BiblePlugin(Plugin):
         self.MediaManagerItem.addToolbar()
         # Create buttons for the toolbar
         ## New Bible Button ##
-        self.MediaManagerItem.addToolbarButton('New Bible', 'Add a new Bible',
+        self.MediaManagerItem.addToolbarButton('New Bible', 'Register a new Bible',
             ':/Bibles/Bible_new.png', self.onBibleNewClick, 'BibleNewItem')
       ## Separator Line ##
         self.MediaManagerItem.addToolbarLine()
@@ -62,7 +68,7 @@ class BiblePlugin(Plugin):
         self.MediaManagerItem.PageLayout.addWidget(self.BibleList)
 
     def onBibleNewClick(self):
-        pass
+        self.bibleimportform(self.biblemanager)
 
     def onBiblePreviewClick(self):
         pass
@@ -73,15 +79,4 @@ class BiblePlugin(Plugin):
     def onBibleAddClick(self):
         pass
 
-
-class runner(QtGui.QApplication):
-    def run(self):
-        values = ["Genesis","Matthew","Revelation"]
-        self.bim = BibleImportDialog()
-        self.bim.show()
-        self.processEvents()
-        sys.exit(app.exec_())
-
-if __name__ == '__main__':
-    app = runner(sys.argv)
-    app.run()
+s
