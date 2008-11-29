@@ -24,8 +24,8 @@ import sys
 mypath=os.path.split(os.path.abspath(__file__))[0]
 sys.path.insert(0,(os.path.join(mypath, '..', '..','..','..')))
 
-from openlp.plugins.biblemanager.BibleManager import BibleManager
-from openlp.utils import ConfigHelper
+from openlp.plugins.biblemanager.bibleManager import BibleManager
+from openlp.core.utils import ConfigHelper
 
 import logging
 logging.basicConfig(level=logging.DEBUG,
@@ -67,14 +67,14 @@ class TestBibleManager:
             
     def testGetBookChapterCount(self):
         log.debug( "\n.......testGetBookChapterCount")       
-        assert(self.bm.getBookChapterCount("Matthew") == '28')
+        assert(self.bm.getBookChapterCount("asv","Matthew")[0] == 28)
 
     def testGetBookVerseCount(self):
         log.debug( "\n.......testGetBookVerseCount")    
-        assert(self.bm.getBookVerseCount("Genesis", 1) == '31')
-        assert(self.bm.getBookVerseCount("Genesis", 2) == '25')
-        assert(self.bm.getBookVerseCount("Matthew", 1) == '25')
-        assert(self.bm.getBookVerseCount("Revelation", 1) == '20')        
+        assert(self.bm.getBookVerseCount("asv","Genesis", 1)[0] == 31)
+        assert(self.bm.getBookVerseCount("TheMessage","Genesis", 2)[0] == 25)
+        assert(self.bm.getBookVerseCount("asv","Matthew", 1)[0] == 25)
+        assert(self.bm.getBookVerseCount("TheMessage","Revelation", 1)[0] == 20)        
 
     def testGetVerseText(self):
         log.debug( "\n.......testGetVerseText")
@@ -84,8 +84,12 @@ class TestBibleManager:
         #log.debug( c ) 
         c = self.bm.getVerseText('asv','Genesis',10,1,20)
         log.debug( c )
-        c = self.bm.getVerseText('asv','Genesis',10,1,20)
+        c = self.bm.getVerseText('TheMessage','Genesis',10,1,20)
         log.debug( c )       
         c = self.bm.getVerseText('asv','Revelation',10,1,20)
         log.debug( c ) 
-        
+        c = self.bm.getVersesFromText("asv", "Jesus wept")
+        log.debug( c )   
+        c = self.bm.getVersesFromText("TheMessage", "Jesus wept")
+        log.debug( c )          
+
