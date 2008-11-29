@@ -40,7 +40,7 @@ class MainWindow(object):
         #self.opensongexportform = OpenSongExportForm()
         #self.opensongimportform = OpenSongImportForm()
         self.settings_form = SettingsDialog()
-        self.plugin_manager = PluginManager()
+        self.plugin_manager = PluginManager('/home/raoul/Projects/openlp-2/openlp/plugins')
 
     def setupUi(self):
         self.main_window.setObjectName("main_window")

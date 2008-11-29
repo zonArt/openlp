@@ -61,7 +61,7 @@ class Plugin(object):
         be overridden, like so:
         class MyPlugin(Plugin):
             def __init__(self):
-                Plugin.__init('MyPlugin', '0.1')
+                Plugin.__init(self, 'MyPlugin', '0.1')
                 ...
         """
         if name is not None:

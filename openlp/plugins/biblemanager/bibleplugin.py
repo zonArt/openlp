@@ -19,13 +19,13 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 from PyQt4 import QtCore, QtGui
-#from openlp.resources import *
+from openlp.core.resources import *
 from openlp.core import Plugin
 
 class BiblePlugin(Plugin):
     def __init__(self):
         # Call the parent constructor
-        Plugin.__init__('Bible', '1.9.0')
+        Plugin.__init__(self, 'Bible', '1.9.0')
         # Create the plugin icon
         self.Icon = QtGui.QIcon()
         self.Icon.addPixmap(QtGui.QPixmap(':/media/media_Bible.png'),
@@ -75,14 +75,13 @@ class BiblePlugin(Plugin):
 
 
 class runner(QtGui.QApplication):
-
     def run(self):
         values = ["Genesis","Matthew","Revelation"]
         self.bim = BibleImportDialog()
         self.bim.show()
         self.processEvents()
         sys.exit(app.exec_())
-        
+
 if __name__ == '__main__':
     app = runner(sys.argv)
     app.run()

@@ -19,13 +19,13 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 from PyQt4 import QtCore, QtGui
-from openlp.resources import *
+from openlp.core.resources import *
 from openlp.core import Plugin, MediaManagerItem
 
 class SongsPlugin(Plugin):
     def __init__(self):
         # Call the parent constructor
-        Plugin.__init__('Song', '1.9.0')
+        Plugin.__init__(self, 'Song', '1.9.0')
         # Create the plugin icon
         self.Icon = QtGui.QIcon()
         self.Icon.addPixmap(QtGui.QPixmap(':/media/media_song.png'),

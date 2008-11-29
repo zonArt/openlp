@@ -27,7 +27,7 @@ from openlp.core import Plugin
 mypath=os.path.split(os.path.abspath(__file__))[0]
 sys.path.insert(0,(os.path.join(mypath, '..' ,'..')))
 
-class PluginManager:
+class PluginManager(object):
     """
     This is the Plugin manager, which loads all the plugins,
     and executes all the hooks, as and when necessary.
@@ -72,7 +72,7 @@ class PluginManager:
         self.plugins = Plugin.__subclasses__()
         self.plugin_by_name = {}
         for p in self.plugins:
-            self.plugin_by_name[p.name] = p;
+            self.plugin_by_name[p.Name] = p;
 
     def hook_media_manager(self, MediaToolBox):
         """
@@ -81,6 +81,6 @@ class PluginManager:
         """
         for plugin in self.plugins:
             if plugin.MediaManagerItem is not None:
-                log.debug('Inserting media manager item from %s' % plugin.name)
+                log.debug('Inserting media manager item from %s' % plugin.Name)
                 MediaToolBox.addItem(plugin.MediaManagerItem,  plugin.Icon,  plugin.Name)
 
