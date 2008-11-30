@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>494</width>
-    <height>734</height>
+    <height>658</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>690</y>
+     <y>620</y>
      <width>481</width>
      <height>33</height>
     </rect>
@@ -26,7 +26,7 @@
     <enum>Qt::Horizontal</enum>
    </property>
    <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel</set>
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
    </property>
   </widget>
   <widget class="QToolBox" name="ImportToolBox">
@@ -41,26 +41,76 @@
    <property name="currentIndex">
     <number>0</number>
    </property>
-   <widget class="QWidget" name="CSVImportPage">
+   <widget class="QWidget" name="FileImportPage">
     <property name="geometry">
      <rect>
       <x>0</x>
       <y>0</y>
       <width>481</width>
-      <height>338</height>
+      <height>369</height>
      </rect>
     </property>
-    <property name="accessibleName">
-     <string/>
-    </property>
     <attribute name="label">
-     <string>CVS File Import</string>
+     <string>File Import Page</string>
     </attribute>
-    <widget class="QGroupBox" name="groupBox_2">
+    <widget class="QGroupBox" name="OSISGroupBox">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>10</y>
+       <x>8</x>
+       <y>74</y>
+       <width>451</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>OSIS Bible</string>
+     </property>
+     <widget class="QLineEdit" name="OSISLocationEdit">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>29</y>
+        <width>271</width>
+        <height>28</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="OsisFileButton">
+      <property name="geometry">
+       <rect>
+        <x>400</x>
+        <y>30</y>
+        <width>41</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../images/import_load.png</normaloff>../images/import_load.png</iconset>
+      </property>
+     </widget>
+     <widget class="QLabel" name="LocatioLabel">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>29</y>
+        <width>73</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>File Location:</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="CVSGroupBox">
+     <property name="geometry">
+      <rect>
+       <x>8</x>
+       <y>150</y>
        <width>451</width>
        <height>161</height>
       </rect>
@@ -68,29 +118,6 @@
      <property name="title">
       <string>CVS Bible</string>
      </property>
-     <widget class="QLabel" name="BibleNameLabel">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>30</y>
-        <width>71</width>
-        <height>17</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Bible Name:</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="BibleNameEdit">
-      <property name="geometry">
-       <rect>
-        <x>110</x>
-        <y>30</y>
-        <width>271</width>
-        <height>28</height>
-       </rect>
-      </property>
-     </widget>
      <widget class="QLabel" name="BooksLocationLabel">
       <property name="geometry">
        <rect>
@@ -117,7 +144,7 @@
      <widget class="QPushButton" name="BooksFileButton">
       <property name="geometry">
        <rect>
-        <x>390</x>
+        <x>400</x>
         <y>70</y>
         <width>41</width>
         <height>31</height>
@@ -157,7 +184,7 @@
      <widget class="QPushButton" name="VersesFileButton">
       <property name="geometry">
        <rect>
-        <x>390</x>
+        <x>400</x>
         <y>110</y>
         <width>41</width>
         <height>31</height>
@@ -172,94 +199,28 @@
       </property>
      </widget>
     </widget>
-   </widget>
-   <widget class="QWidget" name="OSISImportPage">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>481</width>
-      <height>338</height>
-     </rect>
-    </property>
-    <attribute name="label">
-     <string>OSIS XML Bible Import</string>
-    </attribute>
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QLineEdit" name="BibleNameEdit">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>451</width>
-       <height>135</height>
+       <x>120</x>
+       <y>20</y>
+       <width>271</width>
+       <height>28</height>
       </rect>
      </property>
-     <property name="title">
-      <string>OSIS Bible</string>
+    </widget>
+    <widget class="QLabel" name="BibleNameLabel">
+     <property name="geometry">
+      <rect>
+       <x>18</x>
+       <y>20</y>
+       <width>98</width>
+       <height>22</height>
+      </rect>
      </property>
-     <widget class="QLineEdit" name="OSISBibleNameEdit">
-      <property name="geometry">
-       <rect>
-        <x>119</x>
-        <y>39</y>
-        <width>271</width>
-        <height>28</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="OSISLocationEdit">
-      <property name="geometry">
-       <rect>
-        <x>119</x>
-        <y>69</y>
-        <width>271</width>
-        <height>28</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="OsisFileButton">
-      <property name="geometry">
-       <rect>
-        <x>400</x>
-        <y>70</y>
-        <width>41</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>../images/import_load.png</normaloff>../images/import_load.png</iconset>
-      </property>
-     </widget>
-     <widget class="QLabel" name="LocatioLabel">
-      <property name="geometry">
-       <rect>
-        <x>13</x>
-        <y>69</y>
-        <width>73</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>File Location:</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="OSISNameLabel">
-      <property name="geometry">
-       <rect>
-        <x>13</x>
-        <y>39</y>
-        <width>98</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>OSIS Bible Name:</string>
-      </property>
-     </widget>
+     <property name="text">
+      <string>Bible Name:</string>
+     </property>
     </widget>
    </widget>
    <widget class="QWidget" name="WebBiblePage">
@@ -267,12 +228,12 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>481</width>
-      <height>338</height>
+      <width>246</width>
+      <height>265</height>
      </rect>
     </property>
     <attribute name="label">
-     <string>Web Bible Download</string>
+     <string>Web Bible Import page</string>
     </attribute>
     <layout class="QVBoxLayout" name="WebBibleLayout">
      <property name="spacing">
@@ -434,7 +395,7 @@
   <widget class="QGroupBox" name="LicenceDetailsGroupBox">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>8</x>
      <y>450</y>
      <width>481</width>
      <height>136</height>
@@ -488,43 +449,18 @@
     </item>
    </layout>
   </widget>
-  <widget class="QGroupBox" name="ProgressGroupBox">
+  <widget class="QLabel" name="StatusLabel">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>590</y>
-     <width>481</width>
-     <height>92</height>
+     <width>54</width>
+     <height>17</height>
     </rect>
    </property>
-   <property name="title">
-    <string>Progress</string>
+   <property name="text">
+    <string>TextLabel</string>
    </property>
-   <layout class="QFormLayout" name="ProgressLayout">
-    <property name="horizontalSpacing">
-     <number>8</number>
-    </property>
-    <property name="verticalSpacing">
-     <number>8</number>
-    </property>
-    <property name="margin">
-     <number>8</number>
-    </property>
-    <item row="0" column="0">
-     <widget class="QLabel" name="ProgressStatusLabel">
-      <property name="text">
-       <string>TextLabel</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QProgressBar" name="progressBar">
-      <property name="value">
-       <number>24</number>
-      </property>
-     </widget>
-    </item>
-   </layout>
   </widget>
  </widget>
  <resources/>
@@ -558,6 +494,38 @@
     <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>BibleImportButtonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>BibleImportDialog</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>429</x>
+     <y>711</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>522</x>
+     <y>689</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>BibleImportButtonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>BibleImportDialog</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>370</x>
+     <y>705</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>554</x>
+     <y>615</y>
     </hint>
    </hints>
   </connection>

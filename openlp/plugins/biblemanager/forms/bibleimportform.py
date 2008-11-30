@@ -6,6 +6,8 @@ Module implementing BibleImportDialog.
 import sys
 import os, os.path
 import sys
+import time
+
 mypath=os.path.split(os.path.abspath(__file__))[0]
 sys.path.insert(0,(os.path.join(mypath, '..', '..', '..', '..')))
 
@@ -14,6 +16,8 @@ from PyQt4.QtGui import QDialog
 from PyQt4.QtCore import pyqtSignature
 
 from bibleimportdialog import Ui_BibleImportDialog
+from bibleimportprogressform import BibleImportProgressForm
+
 from openlp.plugins.biblemanager.bibleManager import BibleManager
 
 class BibleImportForm(QDialog, Ui_BibleImportDialog):
@@ -27,8 +31,9 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.biblemanager = biblemanager
-        self.ProgressGroupBox.hide()  # not wanted until we do some processing
-        #self.CSVImportPage.SetEt
+        self.savebutton = self.BibleImportButtonBox.button(QtGui.QDialogButtonBox.Save)
+        self.BibleImportButtonBox.removeButton(self.savebutton) # hide the save button tile screen is valid
+        
    
     @pyqtSignature("")
     def on_VersesFileButton_clicked(self):
@@ -44,6 +49,44 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
     def on_OsisFileButton_clicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file','/home')
         self.OSISLocationEdit.setText(filename)
+    def on_OSISLocationEdit_lostFocus(self):
+        self.validate()
+    def on_BooksLocationEdit_lostFocus(self):
+        self.validate()
+    def on_CopyrightEdit_lostFocus(self):
+        self.validate() 
+    def on_VersionNameEdit_lostFocus(self):
+        self.validate()  
+    def on_PermisionEdit_lostFocus(self):
+        self.validate()  
+    def on_BibleNameEdit_lostFocus(self):
+        self.validate()        
+    def on_BibleImportButtonBox_clicked(self,button):
+        print button.text()
+        if button.text() == "Save":
+            bipf = BibleImportProgressForm()
+            bipf.show()
+            self.biblemanager.processDialog(bipf)
+            self.biblemanager.registerOSISFileBible(str(self.BibleNameEdit.displayText()), self.OSISLocationEdit.displayText())
+
+
+
+    def validate(self):
+        valid = False
+        validcount = 0
+        if len(self.BibleNameEdit.displayText()) > 0:
+            validcount += 1        
+        if len(self.OSISLocationEdit.displayText()) > 0:
+            validcount += 1
+        if len(self.BooksLocationEdit.displayText()) > 0:
+            validcount += 1
+        if len(self.VersionNameEdit.displayText()) > 0 and len(self.CopyrightEdit.displayText()) > 0 and len(self.PermisionEdit.displayText()) > 0:
+            valid = True
+        if validcount == 2  and valid:
+            self.BibleImportButtonBox.addButton(self.savebutton, QtGui.QDialogButtonBox.AcceptRole) # hide the save button tile screen is valid
+        else:
+            self.BibleImportButtonBox.removeButton(self.savebutton) # hide the save button tile screen is valid
+
 
 
 class runner(QtGui.QApplication):

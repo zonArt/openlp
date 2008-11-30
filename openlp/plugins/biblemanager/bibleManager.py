@@ -50,6 +50,7 @@ class BibleManager():
         self.bibleDBCache = {}   # dict of bible database classes
         self.bibleHTTPCache = {} # dict of bible http readers
         self.biblePath = ConfigHelper.getBiblePath()
+        self.dialogobject = None
         #log.debug( self.biblePath )
         files = os.listdir(self.biblePath)
         for f in files:
@@ -66,6 +67,9 @@ class BibleManager():
 
         log.debug( "Bible Initialised")     
 
+    def processDialog(self, dialogobject):
+        self.dialogobject = dialogobject
+        
     def registerHTTPBible(self, biblename, biblesource, proxyurl=None, proxyid=None, proxypass=None):
         """
         Return a list of bibles from a given URL.  
@@ -114,7 +118,7 @@ class BibleManager():
             nbible.createTables() # Create Database
             self.bibleDBCache[biblename] = nbible # cache the database for use later            
             bcsv = BibleOSISImpl(nbible) # create the loader and pass in the database
-            bcsv.loadData(osisfile)            
+            bcsv.loadData(osisfile, self.dialogobject)            
 
             
     def loadBible(self,biblename):

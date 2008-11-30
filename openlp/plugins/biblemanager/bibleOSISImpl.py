@@ -45,11 +45,12 @@ class BibleOSISImpl():
             self.abbrevOfBible[p[0]] = p[2].replace('\n', '')            
                 
         
-    def loadData(self, osisfile):
-        self.bibledb.saveMeta("version", "Bible Version")
+    def loadData(self, osisfile, dialogobject=None):
+        self.bibledb.saveMeta("Version", "Bible Version")
         self.bibledb.saveMeta("Copyright", "(c) Some Bible company")
         self.bibledb.saveMeta("Permission", "You Have Some")
-
+        dialogobject.setMax(66)
+        
         osis=open(osisfile, 'r')
 
         book_ptr = ""
@@ -90,6 +91,7 @@ class BibleOSISImpl():
                     book_ptr = p[0]
                     self.bibledb.createBook(int(p[1]), self.booksOfBible[p[0]] , self.abbrevOfBible[p[0]])
                     id = self.bibledb.getBibleBookId(self.booksOfBible[p[0]])
+                    dialogobject.incrementBar()
                 self.bibledb.addVerse(id[0], p[1], p[2], t)
 
 
