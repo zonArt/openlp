@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.4.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2008-11-28, 23:40:29 -->
+<!-- Saved: 2008-11-30, 20:32:44 -->
 <!-- Copyright (C) 2008 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.4">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -73,7 +73,9 @@
     <Source>openlp/plugins/biblemanager/bibleCSVImpl.py</Source>
     <Source>openlp/plugins/biblemanager/bibleCommon.py</Source>
     <Source>openlp/plugins/biblemanager/bibleManager.py</Source>
-    <Source>resources/__init__.py</Source>
+    <Source>openlp/plugins/biblemanager/forms/__init__.py</Source>
+    <Source>openlp/plugins/biblemanager/forms/bibleimportdialog.py</Source>
+    <Source>openlp/plugins/biblemanager/forms/bibleimportform.py</Source>
   </Sources>
   <Forms>
     <Form>resources/forms/bibleimport.ui</Form>

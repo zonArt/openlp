@@ -22,25 +22,18 @@ from time import sleep
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
-from openlp.core.ui.about import AboutForm
-from openlp.core.ui.alertform import AlertForm
-from openlp.core.ui.settings import SettingsDialog
+from openlp.core.ui import AboutForm, AlertForm, SettingsDialog
 from openlp.core import Plugin, PluginManager, MediaManagerItem, SettingsTab
 
 class MainWindow(object):
 
     def __init__(self):
         self.main_window = QtGui.QMainWindow()
-        self.setupUi()
         self.about_form = AboutForm()
         self.alert_form = AlertForm()
-        #self.edit_song_form = EditSongForm()
-        #self.openlpexportform = OpenLPExportForm()
-        #self.openlpimportform = OpenLPImportForm()
-        #self.opensongexportform = OpenSongExportForm()
-        #self.opensongimportform = OpenSongImportForm()
         self.settings_form = SettingsDialog()
         self.plugin_manager = PluginManager('/home/raoul/Projects/openlp-2/openlp/plugins')
+        self.setupUi()
 
     def setupUi(self):
         self.main_window.setObjectName("main_window")
@@ -149,6 +142,7 @@ class MainWindow(object):
         self.MediaManagerDock.setWindowIcon(icon)
         self.MediaManagerDock.setFloating(False)
         self.MediaManagerDock.setObjectName("MediaManagerDock")
+        self.MediaManagerDock.setMinimumWidth(250)
         self.MediaManagerContents = QtGui.QWidget()
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -164,6 +158,8 @@ class MainWindow(object):
         self.MediaToolBox.setObjectName("MediaToolBox")
         # This is where we will eventually get the Plugin Manager to pull in
         # the media manager items.
+        self.plugin_manager.hook_media_manager(self.MediaToolBox)
+        # End adding media manager items.
         self.MediaManagerLayout.addWidget(self.MediaToolBox)
         self.MediaManagerDock.setWidget(self.MediaManagerContents)
         self.main_window.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.MediaManagerDock)

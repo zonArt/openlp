@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
@@ -22,8 +22,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.resources import *
 from openlp.core import Plugin
 
-from openlp.plugins.biblemanager.biblemanager import BibleManager
-from openlp.plugins.biblemanager.bibleimportform import BibleImportForm
+from biblemanager import BibleManager
+from bibleimportform import BibleImportForm
 
 class BiblePlugin(Plugin):
     def __init__(self):
@@ -78,5 +78,3 @@ class BiblePlugin(Plugin):
 
     def onBibleAddClick(self):
         pass
-
-s

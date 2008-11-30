@@ -72,14 +72,16 @@ class PluginManager(object):
         self.plugins = Plugin.__subclasses__()
         self.plugin_by_name = {}
         for p in self.plugins:
-            self.plugin_by_name[p.Name] = p;
+            plugin = p()
+            self.plugin_by_name[plugin.Name] = plugin;
 
     def hook_media_manager(self, MediaToolBox):
         """
         Loop through all the plugins. If a plugin has a valid media manager item,
         add it to the media manager.
         """
-        for plugin in self.plugins:
+        for pname in self.plugin_by_name:
+            plugin = self.plugin_by_name[pname]
             if plugin.MediaManagerItem is not None:
                 log.debug('Inserting media manager item from %s' % plugin.Name)
                 MediaToolBox.addItem(plugin.MediaManagerItem,  plugin.Icon,  plugin.Name)

@@ -18,7 +18,10 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
-from openlp.core.ui.mainwindow import MainWindow
-from openlp.core.ui.splashscreen import SplashScreen
+from splashscreen import SplashScreen
+from about import AboutForm
+from alertform import AlertForm
+from settings import SettingsDialog
+from mainwindow import MainWindow
 
-__all__ = ['MainWindow', 'SplashScreen']
+__all__ = ['SplashScreen', 'AboutForm', 'AlertForm', 'SettingsDialog', 'MainWindow']

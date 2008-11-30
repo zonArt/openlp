@@ -25,7 +25,7 @@ from openlp.core import Plugin, MediaManagerItem
 class SongsPlugin(Plugin):
     def __init__(self):
         # Call the parent constructor
-        Plugin.__init__(self, 'Song', '1.9.0')
+        Plugin.__init__(self, 'Songs', '1.9.0')
         # Create the plugin icon
         self.Icon = QtGui.QIcon()
         self.Icon.addPixmap(QtGui.QPixmap(':/media/media_song.png'),
@@ -61,11 +61,11 @@ class SongsPlugin(Plugin):
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.MediaManagerItem.addToolbarItem(self.SongSpacerItem)
         # Add the songlist widget
-        self.SongList = QtGui.QTableWidget(self.MediaManagerItem)
-        self.SongList.setObjectName("SongList")
-        self.SongList.setColumnCount(0)
-        self.SongList.setRowCount(0)
-        self.MediaManagerItem.PageLayout.addWidget(self.SongList)
+        #self.SongList = QtGui.QTableWidget(self.MediaManagerItem)
+        #self.SongList.setObjectName("SongList")
+        #self.SongList.setColumnCount(0)
+        #self.SongList.setRowCount(0)
+        #self.MediaManagerItem.PageLayout.addWidget(self.SongList)
 
     def onSongNewClick(self):
         pass

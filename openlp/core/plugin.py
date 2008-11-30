@@ -69,7 +69,7 @@ class Plugin(object):
         else:
             self.Name = 'Plugin'
         if version is not None:
-            self.__version__ = version
+            self.Version = version
         self.MediaManagerItem = None
         self.SettingsTab = None
         self.ImportMenuItem = None
@@ -113,3 +113,6 @@ class Plugin(object):
         Handle the event contained in the event object.
         """
         pass
+
+    def getName(self):
+        return self.Name

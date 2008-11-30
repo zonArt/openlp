@@ -66,15 +66,19 @@ class MediaManagerItem(QtGui.QWidget):
         """
         if self.Toolbar is None:
             self.addToolbar()
-        self.ToolbarLayout.addWidget(item)
+        if item.__class__.__name__ == 'QSpacerItem':
+            self.ToolbarLayout.addSpacerItem(item)
+        else:
+            self.ToolbarLayout.addWidget(item)
 
     def addToolbarButton(self, title, tooltip, icon, slot=None, objectname=None):
         """
         A method to help developers easily add a button to the toolbar.
         """
         ToolbarButton = QtGui.QToolButton(self.Toolbar)
-        ToolbarButton.setText(QtCore.QObject.trUtf8(title))
-        ToolbarButton.setToolTip(QtCore.QObject.trUtf8(tooltip))
+        ToolbarButton.setText(QtCore.QObject.trUtf8(ToolbarButton, title))
+        ToolbarButton.setToolTip(QtCore.QObject.trUtf8(ToolbarButton, tooltip))
+        self.addToolbarItem(ToolbarButton)
         if type(icon) is QtGui.QIcon:
             ButtonIcon = icon
         elif type(icon) is types.StringType:
@@ -88,11 +92,11 @@ class MediaManagerItem(QtGui.QWidget):
         ToolbarButton.setIcon(ButtonIcon)
         ToolbarButton.setIconSize(QtCore.QSize(20, 20))
         ToolbarButton.setAutoRaise(True)
+        ToolbarButton.setMinimumSize(QtCore.QSize(20, 20))
         if objectname is not None:
             ToolbarButton.setObjectName(objectname)
         if slot is not None:
             QtCore.QObject.connect(ToolbarButton, QtCore.SIGNAL("clicked()"), slot)
-        self.addToolbarItem(ToolbarButton)
 
     def addToolbarLine(self):
         ToolbarLine = QtGui.QFrame(self.Toolbar)
