@@ -26,6 +26,8 @@ class SongsPlugin(Plugin):
     def __init__(self):
         # Call the parent constructor
         Plugin.__init__(self, 'Songs', '1.9.0')
+
+    def getMediaManagerItem(self):
         # Create the plugin icon
         self.Icon = QtGui.QIcon()
         self.Icon.addPixmap(QtGui.QPixmap(':/media/media_song.png'),
@@ -45,7 +47,7 @@ class SongsPlugin(Plugin):
         self.MediaManagerItem.addToolbarButton('Delete Song', 'Delete the selected song',
             ':/songs/song_delete.png', self.onSongDeleteClick, 'SongDeleteItem')
         ## Separator Line ##
-        self.MediaManagerItem.addToolbarLine()
+        self.MediaManagerItem.addToolbarSeparator()
         ## Preview Song Button ##
         self.MediaManagerItem.addToolbarButton('Preview Song', 'Preview the selected song',
             ':/system/system_preview.png', self.onSongPreviewClick, 'SongPreviewItem')
@@ -56,16 +58,13 @@ class SongsPlugin(Plugin):
         self.MediaManagerItem.addToolbarButton('Add Song To Service',
             'Add the selected song(s) to the service', ':/system/system_add.png',
             self.onSongAddClick, 'SongAddItem')
-        ## Spacer ##
-        self.SongSpacerItem = QtGui.QSpacerItem(40, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.MediaManagerItem.addToolbarItem(self.SongSpacerItem)
-        # Add the songlist widget
-        #self.SongList = QtGui.QTableWidget(self.MediaManagerItem)
-        #self.SongList.setObjectName("SongList")
-        #self.SongList.setColumnCount(0)
-        #self.SongList.setRowCount(0)
-        #self.MediaManagerItem.PageLayout.addWidget(self.SongList)
+        ## Add the songlist widget ##
+        self.SongList = QtGui.QTableWidget(self.MediaManagerItem)
+        self.SongList.setObjectName("SongList")
+        self.SongList.setColumnCount(0)
+        self.SongList.setRowCount(0)
+        self.MediaManagerItem.PageLayout.addWidget(self.SongList)
+        return self.MediaManagerItem
 
     def onSongNewClick(self):
         pass

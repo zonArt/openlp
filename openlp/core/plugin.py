@@ -70,7 +70,7 @@ class Plugin(object):
             self.Name = 'Plugin'
         if version is not None:
             self.Version = version
-        self.MediaManagerItem = None
+        #self.MediaManagerItem = None
         self.SettingsTab = None
         self.ImportMenuItem = None
         self.ExportMenuItem = None
@@ -99,6 +99,13 @@ class Plugin(object):
     def render(self, theme, screen=None):
         """
         Render the screenth screenful of data using theme settings in theme.
+        """
+        pass
+
+    def getMediaManagerItem(self):
+        """
+        Construct a MediaManagerItem object with all the buttons and things you
+        need, and return it for integration into openlp.org.
         """
         pass
 

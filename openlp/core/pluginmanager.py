@@ -82,7 +82,8 @@ class PluginManager(object):
         """
         for pname in self.plugin_by_name:
             plugin = self.plugin_by_name[pname]
-            if plugin.MediaManagerItem is not None:
+            media_manager_item = plugin.getMediaManagerItem()
+            if media_manager_item is not None:
                 log.debug('Inserting media manager item from %s' % plugin.Name)
-                MediaToolBox.addItem(plugin.MediaManagerItem,  plugin.Icon,  plugin.Name)
+                MediaToolBox.addItem(media_manager_item, plugin.Icon, plugin.Name)
 
