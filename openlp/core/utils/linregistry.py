@@ -20,10 +20,10 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from openlp.core.utils import Registry
 
-class WinRegistry(Registry):
+class LinRegistry(Registry):
     """
-    The WinRegistry class is a high-level wrapper class for the Windows registry
-    functions in Python.
+    The LinRegistry class is a high-level class for working with Linux and
+    Unix configurations.
     """
     def __init__(self):
-        import _winreg
+        pass

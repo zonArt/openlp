@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.4.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2008-12-01, 20:35:01 -->
+<!-- Saved: 2008-12-01, 21:42:45 -->
 <!-- Copyright (C) 2008 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.4">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -80,6 +80,8 @@
     <Source>openlp/core/lib/event.py</Source>
     <Source>openlp/core/utils/confighelper.py</Source>
     <Source>openlp/core/utils/winregistry.py</Source>
+    <Source>openlp/core/utils/registry.py</Source>
+    <Source>openlp/core/utils/linregistry.py</Source>
   </Sources>
   <Forms>
     <Form>resources/forms/bibleimport.ui</Form>

@@ -65,8 +65,8 @@ class PluginManager(object):
                     log.debug("Importing %s from %s." % (modulename, path))
                     try:
                         __import__(modulename, globals(), locals(), [])
-                    except ImportError:
-                        pass
+                    except ImportError, e:
+                        print e.message
         self.plugin_classes = Plugin.__subclasses__()
         self.plugins = []
         plugin_objects = []
