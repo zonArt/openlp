@@ -26,7 +26,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG,
                 format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
                 datefmt='%m-%d %H:%M',
-                filename='plugins.log',
+                filename='openlp.log',
                 filemode='w')
 
 from openlp.core.resources import *

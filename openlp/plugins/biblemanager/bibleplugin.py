@@ -31,7 +31,8 @@ class BiblePlugin(Plugin):
         Plugin.__init__(self, 'Bible', '1.9.0')
         self.Weight = -9
         #Register the bible Manager
-        #self.biblemanager = BibleManager()
+        self.biblemanager = BibleManager()
+
 
     def getMediaManagerItem(self):
         # Create the plugin icon
@@ -67,7 +68,9 @@ class BiblePlugin(Plugin):
         return self.MediaManagerItem
 
     def onBibleNewClick(self):
-        #self.bibleimportform = BibleImportForm(self.biblemanager)
+        self.bibleimportform = BibleImportForm(self.biblemanager)
+        self.bibleimportform.show()
+
         pass
 
     def onBiblePreviewClick(self):
