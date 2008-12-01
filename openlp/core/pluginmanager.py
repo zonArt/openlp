@@ -71,7 +71,6 @@ class PluginManager(object):
                     except ImportError:
                         pass
         self.plugins = Plugin.__subclasses__()
-        print self.plugins
         self.plugin_by_name = {}
         for p in self.plugins:
             plugin = p()
