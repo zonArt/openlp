@@ -74,6 +74,7 @@ class Plugin(object):
         self.SettingsTab = None
         self.ImportMenuItem = None
         self.ExportMenuItem = None
+        self.Weight = 0
 
     def about(self):
         """

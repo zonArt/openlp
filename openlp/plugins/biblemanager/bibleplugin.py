@@ -20,32 +20,34 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.resources import *
-from openlp.core import Plugin
+from openlp.core.lib import Plugin, MediaManagerItem
 
-from biblemanager import BibleManager
-from bibleimportform import BibleImportForm
+#from bibleManager import BibleManager
+#from forms.bibleimportform import BibleImportForm
 
 class BiblePlugin(Plugin):
     def __init__(self):
         # Call the parent constructor
         Plugin.__init__(self, 'Bible', '1.9.0')
+        self.Weight = -9
         #Register the bible Manager
-        self.biblemanager = BibleManager()
+        #self.biblemanager = BibleManager()
 
+    def getMediaManagerItem(self):
         # Create the plugin icon
         self.Icon = QtGui.QIcon()
-        self.Icon.addPixmap(QtGui.QPixmap(':/media/media_Bible.png'),
+        self.Icon.addPixmap(QtGui.QPixmap(':/media/media_verse.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         # Create the MediaManagerItem object
-        self.MediaManagerItem = MediaManagerItem(self.Icon, 'Bibles')
+        self.MediaManagerItem = MediaManagerItem(self.Icon, 'Bible Verses')
         # Add a toolbar
         self.MediaManagerItem.addToolbar()
         # Create buttons for the toolbar
         ## New Bible Button ##
-        self.MediaManagerItem.addToolbarButton('New Bible', 'Register a new Bible',
-            ':/Bibles/Bible_new.png', self.onBibleNewClick, 'BibleNewItem')
-      ## Separator Line ##
-        self.MediaManagerItem.addToolbarSeparator()
+        #self.MediaManagerItem.addToolbarButton('New Bible', 'Register a new Bible',
+        #    ':/bibles/bible_new.png', self.onBibleNewClick, 'BibleNewItem')
+        ## Separator Line ##
+        #self.MediaManagerItem.addToolbarSeparator()
         ## Preview Bible Button ##
         self.MediaManagerItem.addToolbarButton('Preview Bible', 'Preview the selected Bible Verse',
             ':/system/system_preview.png', self.onBiblePreviewClick, 'BiblePreviewItem')
@@ -62,12 +64,11 @@ class BiblePlugin(Plugin):
         self.BibleList.setColumnCount(0)
         self.BibleList.setRowCount(0)
         self.MediaManagerItem.PageLayout.addWidget(self.BibleList)
-
-    def getMediaManagerItem(self):
         return self.MediaManagerItem
 
     def onBibleNewClick(self):
-        self.bibleimportform(self.biblemanager)
+        #self.bibleimportform(self.biblemanager)
+        pass
 
     def onBiblePreviewClick(self):
         pass

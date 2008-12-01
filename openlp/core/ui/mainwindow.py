@@ -22,9 +22,9 @@ from time import sleep
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
-from openlp.core import PluginManager
 from openlp.core.ui import AboutForm, AlertForm, SettingsDialog
 from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab
+from openlp.core import PluginManager
 
 class MainWindow(object):
 

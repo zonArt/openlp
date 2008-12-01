@@ -20,13 +20,14 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.resources import *
-from openlp.core import Plugin, MediaManagerItem
+from openlp.core.lib import Plugin, MediaManagerItem
 from forms import EditSongForm
 
 class SongsPlugin(Plugin):
     def __init__(self):
         # Call the parent constructor
         Plugin.__init__(self, 'Songs', '1.9.0')
+        self.Weight = -10
         self.edit_song_form = EditSongForm()
 
     def getMediaManagerItem(self):
