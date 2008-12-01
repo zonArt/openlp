@@ -59,18 +59,61 @@ class BiblePlugin(Plugin):
         self.MediaManagerItem.addToolbarButton('Add Bible Verse(s) To Service',
             'Add the selected Bible(s) to the service', ':/system/system_add.png',
             self.onBibleAddClick, 'BibleAddItem')
-        # Add the Biblelist widget
-        self.BibleList = QtGui.QTableWidget(self.MediaManagerItem)
-        self.BibleList.setObjectName("BibleList")
-        self.BibleList.setColumnCount(0)
-        self.BibleList.setRowCount(0)
-        self.MediaManagerItem.PageLayout.addWidget(self.BibleList)
+        # Add the Biblelist Tables
+        self.groupBox = QtGui.QGroupBox(self.MediaManagerItem)
+        self.groupBox.setGeometry(QtCore.QRect(5, 5, 271, 391))
+        self.groupBox.setObjectName("groupBox")
+        self.lineEdit = QtGui.QLineEdit(self.groupBox)
+        self.lineEdit.setGeometry(QtCore.QRect(70, 50, 161, 23))
+        self.lineEdit.setObjectName("lineEdit")
+        self.label = QtGui.QLabel(self.groupBox)
+        self.label.setGeometry(QtCore.QRect(20, 20, 54, 17))
+        self.label.setObjectName("label")
+        self.comboBox = QtGui.QComboBox(self.groupBox)
+        self.comboBox.setGeometry(QtCore.QRect(100, 20, 74, 22))
+        self.comboBox.setObjectName("comboBox")
+        self.comboBox_2 = QtGui.QComboBox(self.groupBox)
+        self.comboBox_2.setGeometry(QtCore.QRect(70, 80, 74, 22))
+        self.comboBox_2.setObjectName("comboBox_2")
+        self.comboBox_3 = QtGui.QComboBox(self.groupBox)
+        self.comboBox_3.setGeometry(QtCore.QRect(160, 80, 74, 22))
+        self.comboBox_3.setObjectName("comboBox_3")
+        self.comboBox_4 = QtGui.QComboBox(self.groupBox)
+        self.comboBox_4.setGeometry(QtCore.QRect(70, 110, 74, 22))
+        self.comboBox_4.setObjectName("comboBox_4")
+        self.comboBox_5 = QtGui.QComboBox(self.groupBox)
+        self.comboBox_5.setGeometry(QtCore.QRect(160, 110, 74, 22))
+        self.comboBox_5.setObjectName("comboBox_5")
+        self.listView = QtGui.QListView(self.groupBox)
+        self.listView.setGeometry(QtCore.QRect(10, 180, 256, 192))
+        self.listView.setObjectName("listView")
+        
+#        self.groupBox = QtGui.QGroupBox(self.MediaManagerItem)
+#        self.groupBox.setGeometry(QtCore.QRect(10, 10, 251, 341))
+#        self.groupBox.setObjectName("groupBox")
+#        self.lineEdit = QtGui.QLineEdit(self.groupBox)
+#        self.lineEdit.setGeometry(QtCore.QRect(120, 30, 113, 23))
+#        self.lineEdit.setObjectName("lineEdit")
+#        self.label = QtGui.QLabel(self.groupBox)
+#        self.label.setGeometry(QtCore.QRect(30, 30, 54, 17))
+#        self.label.setObjectName("label")
+#        self.comboBox = QtGui.QComboBox(self.groupBox)
+#        self.comboBox.setGeometry(QtCore.QRect(70, 80, 74, 22))
+#        self.comboBox.setObjectName("comboBox")
+        self.MediaManagerItem.PageLayout.addWidget(self.groupBox)
+#
+#        # Add the Biblelist widget
+#        #self.BibleList = QtGui.QTableWidget(self.MediaManagerItem)
+#        self.BibleList = QtGui.QTableWidget(self.groupBox)
+#        self.BibleList.setObjectName("BibleList")
+#        self.BibleList.setColumnCount(0)
+#        self.BibleList.setRowCount(0)
+        #self.MediaManagerItem.PageLayout.addWidget(self.BibleList)
         return self.MediaManagerItem
 
     def onBibleNewClick(self):
         self.bibleimportform = BibleImportForm(self.biblemanager)
         self.bibleimportform.show()
-
         pass
 
     def onBiblePreviewClick(self):
