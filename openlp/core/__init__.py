@@ -18,12 +18,8 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
-from openlp.core.render import Renderer
-from openlp.core.settingsmanager import SettingsManager
-from openlp.core.plugin import Plugin
-from openlp.core.pluginmanager import PluginManager
-from openlp.core.settingstab import SettingsTab
-from openlp.core.mediamanageritem import MediaManagerItem
+from render import Renderer
+from settingsmanager import SettingsManager
+from pluginmanager import PluginManager
 
-__all__ = ['Renderer', 'SettingsManager', 'Plugin', 'PluginManager',
-           'SettingsTab', 'MediaManagerItem']
+__all__ = ['Renderer', 'SettingsManager', 'PluginManager']

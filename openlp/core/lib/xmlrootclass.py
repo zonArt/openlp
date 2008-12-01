@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
@@ -36,12 +38,12 @@ DelphiColors={"clRed":0xFF0000,
 
 class XmlRootClass(object):
     """Root class for themes, songs etc
-    
+
     provides interface for parsing xml files into object attributes
     """
     def _setFromXml(self, xml, rootTag):
         """Set song properties from given xml content
-        
+
         xml (string) -- formatted as xml tags and values
         rootTag -- main tag of the xml
         """
@@ -82,10 +84,10 @@ class XmlRootClass(object):
                 #print [val]
                 setattr(self,element.tag, val)
         pass
-    
+
     def __str__(self):
         """Return string with all public attributes
-        
+
         The string is formatted with one attribute per line
         If the string is split on newline then the length of the
         list is equal to the number of attributes
@@ -103,4 +105,4 @@ class XmlRootClass(object):
             if not k.startswith("_"):
                 s+= "_%s_" %(getattr(self,k))
         return s
-            
+

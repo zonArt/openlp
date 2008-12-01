@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
@@ -22,7 +24,7 @@ import os
 from PyQt4 import QtGui
 sys.path.append(os.path.abspath("./../.."))
 
-from openlp.core.xmlrootclass import XmlRootClass
+from openlp.core.lib import XmlRootClass
 
 blankstylexml=\
 '''<?xml version="1.0" encoding="iso-8859-1"?>

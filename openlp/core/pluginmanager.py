@@ -21,7 +21,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import os, sys
 import logging
 
-from openlp.core import Plugin
+from openlp.core.lib import Plugin, Event
 
 # Not sure what this is for. I prefer keeping as much code in the class as possible.
 mypath=os.path.split(os.path.abspath(__file__))[0]
@@ -76,7 +76,7 @@ class PluginManager(object):
             plugin = p()
             self.plugin_by_name[plugin.Name] = plugin;
 
-    def hook_media_manager(self, MediaToolBox):
+    def hookMediaManager(self, mediatoolbox):
         """
         Loop through all the plugins. If a plugin has a valid media manager item,
         add it to the media manager.
@@ -86,5 +86,7 @@ class PluginManager(object):
             media_manager_item = plugin.getMediaManagerItem()
             if media_manager_item is not None:
                 log.debug('Inserting media manager item from %s' % plugin.Name)
-                MediaToolBox.addItem(media_manager_item, plugin.Icon, plugin.Name)
+                mediatoolbox.addItem(media_manager_item, plugin.Icon, plugin.Name)
 
+    def hookHandleEvent(self, event):
+        pass
