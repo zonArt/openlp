@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.4.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2008-12-01, 15:10:04 -->
+<!-- Saved: 2008-12-01, 16:24:53 -->
 <!-- Copyright (C) 2008 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.4">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -52,7 +52,6 @@
     <Source>openlp/plugins/songs/forms/openlpexportform.py</Source>
     <Source>openlp/plugins/songs/forms/opensongimportform.py</Source>
     <Source>openlp/core/utils/__init__.py</Source>
-    <Source>openlp/core/utils/ConfigHelper.py</Source>
     <Source>openlp/core/theme/__init__.py</Source>
     <Source>openlp/core/theme/theme.py</Source>
     <Source>openlp/plugins/songs/test/test_song_opensong.py</Source>
@@ -79,7 +78,10 @@
     <Source>openlp/core/lib/plugin.py</Source>
     <Source>openlp/core/lib/mediamanageritem.py</Source>
     <Source>openlp/core/lib/event.py</Source>
-    <Source>openlp/core/lib/winregistry.py</Source>
+    <Source>openlp/core/utils/confighelper.py</Source>
+    <Source>openlp/core/utils/winregistry.py</Source>
+    <Source>openlp/core/utils/linregistry.py</Source>
+    <Source>openlp/core/utils/registry.py</Source>
   </Sources>
   <Forms>
     <Form>resources/forms/bibleimport.ui</Form>
