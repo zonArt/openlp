@@ -22,8 +22,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.resources import *
 from openlp.core.lib import Plugin, MediaManagerItem
 
-#from bibleManager import BibleManager
-#from forms.bibleimportform import BibleImportForm
+from bibleManager import BibleManager
+from forms.bibleimportform import BibleImportForm
 
 class BiblePlugin(Plugin):
     def __init__(self):
@@ -44,10 +44,10 @@ class BiblePlugin(Plugin):
         self.MediaManagerItem.addToolbar()
         # Create buttons for the toolbar
         ## New Bible Button ##
-        #self.MediaManagerItem.addToolbarButton('New Bible', 'Register a new Bible',
-        #    ':/bibles/bible_new.png', self.onBibleNewClick, 'BibleNewItem')
+        self.MediaManagerItem.addToolbarButton('New Bible', 'Register a new Bible',
+            ':/bibles/bible_new.png', self.onBibleNewClick, 'BibleNewItem')
         ## Separator Line ##
-        #self.MediaManagerItem.addToolbarSeparator()
+        self.MediaManagerItem.addToolbarSeparator()
         ## Preview Bible Button ##
         self.MediaManagerItem.addToolbarButton('Preview Bible', 'Preview the selected Bible Verse',
             ':/system/system_preview.png', self.onBiblePreviewClick, 'BiblePreviewItem')
@@ -67,7 +67,7 @@ class BiblePlugin(Plugin):
         return self.MediaManagerItem
 
     def onBibleNewClick(self):
-        #self.bibleimportform(self.biblemanager)
+        #self.bibleimportform = BibleImportForm(self.biblemanager)
         pass
 
     def onBiblePreviewClick(self):
