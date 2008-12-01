@@ -45,7 +45,7 @@ class BiblePlugin(Plugin):
         self.MediaManagerItem.addToolbarButton('New Bible', 'Register a new Bible',
             ':/Bibles/Bible_new.png', self.onBibleNewClick, 'BibleNewItem')
       ## Separator Line ##
-        self.MediaManagerItem.addToolbarLine()
+        self.MediaManagerItem.addToolbarSeparator()
         ## Preview Bible Button ##
         self.MediaManagerItem.addToolbarButton('Preview Bible', 'Preview the selected Bible Verse',
             ':/system/system_preview.png', self.onBiblePreviewClick, 'BiblePreviewItem')
@@ -56,16 +56,15 @@ class BiblePlugin(Plugin):
         self.MediaManagerItem.addToolbarButton('Add Bible Verse(s) To Service',
             'Add the selected Bible(s) to the service', ':/system/system_add.png',
             self.onBibleAddClick, 'BibleAddItem')
-        ## Spacer ##
-        self.BibleSpacerItem = QtGui.QSpacerItem(40, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.MediaManagerItem.addToolbarItem(self.BibleSpacerItem)
         # Add the Biblelist widget
         self.BibleList = QtGui.QTableWidget(self.MediaManagerItem)
         self.BibleList.setObjectName("BibleList")
         self.BibleList.setColumnCount(0)
         self.BibleList.setRowCount(0)
         self.MediaManagerItem.PageLayout.addWidget(self.BibleList)
+
+    def getMediaManagerItem(self):
+        return self.MediaManagerItem
 
     def onBibleNewClick(self):
         self.bibleimportform(self.biblemanager)

@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-import os, os.path
+import os
 from time import sleep
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
+from openlp.core import PluginManager
 from openlp.core.ui import AboutForm, AlertForm, SettingsDialog
-from openlp.core import Plugin, PluginManager, MediaManagerItem, SettingsTab
+from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab
 
 class MainWindow(object):
 

@@ -24,10 +24,10 @@ mypath=os.path.split(os.path.abspath(__file__))[0]
 sys.path.insert(0,(os.path.join(mypath, '..', '..', '..')))
 
 from openlp.core.utils import ConfigHelper
-from openlp.plugins.biblemanager.bibleOSISImpl import BibleOSISImpl
-from openlp.plugins.biblemanager.bibleCSVImpl import BibleCSVImpl
-from openlp.plugins.biblemanager.bibleDBImpl import BibleDBImpl
-from openlp.plugins.biblemanager.bibleHTTPImpl import BibleHTTPImpl
+from bibleOSISImpl import BibleOSISImpl
+from bibleCSVImpl import BibleCSVImpl
+from bibleDBImpl import BibleDBImpl
+from bibleHTTPImpl import BibleHTTPImpl
 
 import logging
 logging.basicConfig(level=logging.DEBUG,

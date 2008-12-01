@@ -20,7 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 import _winreg
 
-class WinRegistry(object):
+class WinRegistry(Registry):
     """
     The WinRegistry class is a high-level wrapper class for the Windows registry
     functions in Python.

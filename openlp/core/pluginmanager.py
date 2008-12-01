@@ -21,7 +21,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import os, sys
 import logging
 
-from openlp.core.lib import Plugin, Event
+from openlp.core.lib import Plugin
 
 # Not sure what this is for. I prefer keeping as much code in the class as possible.
 mypath=os.path.split(os.path.abspath(__file__))[0]

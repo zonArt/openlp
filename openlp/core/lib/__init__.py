@@ -23,7 +23,5 @@ from settingstab import SettingsTab
 from mediamanageritem import MediaManagerItem
 from event import Event
 from xmlrootclass import XmlRootClass
-from winregistry import WinRegistry
 
-__all__ = ['Plugin', 'SettingsTab', 'MediaManagerItem', 'Event', 'XmlRootClass',
-           'WinRegistry']
+__all__ = ['Plugin', 'SettingsTab', 'MediaManagerItem', 'Event', 'XmlRootClass']
