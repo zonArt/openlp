@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-
+import os, os.path
 from time import sleep
 from PyQt4 import QtCore, QtGui
 
@@ -32,7 +32,9 @@ class MainWindow(object):
         self.about_form = AboutForm()
         self.alert_form = AlertForm()
         self.settings_form = SettingsDialog()
-        self.plugin_manager = PluginManager('/home/raoul/Projects/openlp-2/openlp/plugins')
+        pluginpath=os.path.split(os.path.abspath(__file__))[0]
+        pluginpath = os.path.join(pluginpath, '..', '..','plugins')
+        self.plugin_manager = PluginManager(pluginpath)
         self.setupUi()
 
     def setupUi(self):

@@ -45,6 +45,7 @@ class PluginManager(object):
             log.debug("Inserting %s into sys.path", dir)
             sys.path.insert(0, dir)
         self.basepath=os.path.abspath(dir)
+        log.debug("Base path %s ", self.basepath)
         self.plugins = []
         self.find_plugins(dir)
         log.info("Plugin manager done init")
@@ -53,7 +54,7 @@ class PluginManager(object):
         """
         Scan the directory dir for objects inheriting from openlp.plugin
         """
-        log.debug("find plugins" + str(dir))
+        log.debug("find plugins " + str(dir))
         for root, dirs, files in os.walk(dir):
             for name in files:
                 if name.endswith(".py") and not name.startswith("__"):
@@ -70,6 +71,7 @@ class PluginManager(object):
                     except ImportError:
                         pass
         self.plugins = Plugin.__subclasses__()
+        print self.plugins
         self.plugin_by_name = {}
         for p in self.plugins:
             plugin = p()
