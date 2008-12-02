@@ -26,8 +26,6 @@ class WinRegistry(Registry):
     """
     The WinRegistry class is a high-level wrapper class for the Windows registry
     functions in Python.
-
-    Notes:
     """
     def __init__(self, base_key):
         """
@@ -40,15 +38,19 @@ class WinRegistry(Registry):
 
     def has_value(self, section, key):
         """
-        Check if a key exists.
+        Check if a key/value exists.
         """
-        return False
-
-    def create_value(self, section, key):
-        """
-        Create a new key in the Windows registry.
-        """
-        pass
+        key_handle = _winreg.OpenKey(self.reg_handle, self.base_key + section)
+        value, reg_type = _winreg.QueryValueEx(key_handle, key)[0]
+        _winreg.CloseKey(key_handle)
+        if reg_type == _winreg.REG_NONE:
+            return False
+        elif reg_type == _winreg.REG_SZ and value == '':
+            return False
+        elif reg_type == _winreg.REG_DWORD and value == 0:
+            return False
+        else:
+            return True
 
     def get_value(self, section, key):
         """
@@ -84,7 +86,13 @@ class WinRegistry(Registry):
         """
         Check if a section exists.
         """
-        return False
+        try:
+            key_handle = _winreg.OpenKey(self.reg_handle, self.base_key + section)
+        except EnvironmentError:
+            return False
+        finally:
+            _winreg.CloseKey(key_handle)
+            return True
 
     def create_section(self, section):
         """
@@ -97,4 +105,11 @@ class WinRegistry(Registry):
             return False
 
     def delete_section(self, section):
-        pass
+        try:
+            key_handle = _winreg.OpenKey(self.reg_handle, self.base_key)
+            _winreg.DeleteKey(key_handle, section)
+        except EnvironmentError:
+            return False
+        finally:
+            _winreg.CloseKey(key_handle)
+            return True

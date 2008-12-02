@@ -25,13 +25,6 @@ class ConfigHelper(object):
     Utility Helper to allow classes to find directories in a standard manner.
     """
     @staticmethod
-    def get_registry_value(reg, key, value_name):
-        k = _winreg.OpenKey(reg, key)
-        value = _winreg.QueryValueEx(k, value_name)[0]
-        _winreg.CloseKey(k)
-        return value
-
-    @staticmethod
     def getConfigPath():
         if os.name == 'nt':
             import _winreg
@@ -45,9 +38,14 @@ class ConfigHelper(object):
         return path
 
     @staticmethod
+    def get_data_path():
+        reg = ConfigHelper.get_registry()
+        return reg.get_value('main', 'data_path')
+
+    @staticmethod
     def getSongsFile():
-        path = ConfigHelper.getConfigPath()
-        songfile = os.path.join(path, ".openlp.org", "Data", "songs.olp")
+        path = ConfigHelper.get_data_path()
+        songfile = os.path.join(path, "songs", "songs.olp")
         if os.path.exists(songfile):
             filename.set_filename(songfile)
         print songfile
@@ -57,7 +55,7 @@ class ConfigHelper(object):
         return os.path.join(ConfigHelper.getConfigPath(), "Data","Bibles")
 
     @staticmethod
-    def getRegistry():
+    def get_registry():
         """
         This static method loads the appropriate registry class based on the
         current operating system, and returns an instantiation of that class.
@@ -65,7 +63,7 @@ class ConfigHelper(object):
         reg = None
         if os.name == 'nt':
             from winregistry import WinRegistry
-            reg = WinRegistry()
+            reg = WinRegistry(r'\Software\openlp')
         else:
             from linregistry import LinRegistry
             reg = LinRegistry()
