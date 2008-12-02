@@ -35,6 +35,8 @@ from openlp.core.ui import MainWindow, SplashScreen
 class OpenLP(QtGui.QApplication):
 
     def run(self):
+        self.setApplicationName('openlp.org')
+        self.setApplicationVersion('1.9.0')
         self.splash = SplashScreen()
         self.splash.show()
         # make sure Qt really display the splash screen

@@ -33,8 +33,8 @@ class MainWindow(object):
         self.about_form = AboutForm()
         self.alert_form = AlertForm()
         self.settings_form = SettingsDialog()
-        pluginpath=os.path.split(os.path.abspath(__file__))[0]
-        pluginpath = os.path.join(pluginpath, '..', '..','plugins')
+        pluginpath = os.path.split(os.path.abspath(__file__))[0]
+        pluginpath = os.path.abspath(os.path.join(pluginpath, '..', '..','plugins'))
         self.plugin_manager = PluginManager(pluginpath)
         self.setupUi()
 

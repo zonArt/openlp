@@ -41,7 +41,7 @@ class PluginManager(object):
         if not dir in sys.path:
             log.debug("Inserting %s into sys.path", dir)
             sys.path.insert(0, dir)
-        self.basepath=os.path.abspath(dir)
+        self.basepath = os.path.abspath(dir)
         log.debug("Base path %s ", self.basepath)
         self.plugins = []
         self.find_plugins(dir)
