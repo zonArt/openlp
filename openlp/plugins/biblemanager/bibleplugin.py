@@ -31,7 +31,7 @@ class BiblePlugin(Plugin):
         Plugin.__init__(self, 'Bible', '1.9.0')
         self.Weight = -9
         #Register the bible Manager
-        self.biblemanager = BibleManager()
+        #self.biblemanager = BibleManager()
 
 
     def getMediaManagerItem(self):
@@ -87,7 +87,7 @@ class BiblePlugin(Plugin):
         self.listView = QtGui.QListView(self.groupBox)
         self.listView.setGeometry(QtCore.QRect(10, 180, 256, 192))
         self.listView.setObjectName("listView")
-        
+
 #        self.groupBox = QtGui.QGroupBox(self.MediaManagerItem)
 #        self.groupBox.setGeometry(QtCore.QRect(10, 10, 251, 341))
 #        self.groupBox.setObjectName("groupBox")
@@ -112,8 +112,8 @@ class BiblePlugin(Plugin):
         return self.MediaManagerItem
 
     def onBibleNewClick(self):
-        self.bibleimportform = BibleImportForm(self.biblemanager)
-        self.bibleimportform.show()
+        #self.bibleimportform = BibleImportForm(self.biblemanager)
+        #self.bibleimportform.show()
         pass
 
     def onBiblePreviewClick(self):

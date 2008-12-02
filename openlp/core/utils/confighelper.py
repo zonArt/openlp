@@ -56,3 +56,17 @@ class ConfigHelper(object):
     def getBiblePath():
         return os.path.join(ConfigHelper.getConfigPath(), "Data","Bibles")
 
+    @staticmethod
+    def getRegistry():
+        """
+        This static method loads the appropriate registry class based on the
+        current operating system, and returns an instantiation of that class.
+        """
+        reg = None
+        if os.name == 'nt':
+            from winregistry import WinRegistry
+            reg = WinRegistry()
+        else:
+            from linregistry import LinRegistry
+            reg = LinRegistry()
+        return reg

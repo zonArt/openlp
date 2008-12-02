@@ -23,4 +23,55 @@ class Registry(object):
     The Registry class is a generic class for the accessing configurations.
     """
     def __init__(self):
+        """
+        Initialise the Registry object. Override this to add custom initialisation.
+        """
+        pass
+
+    def has_value(self, section, key):
+        """
+        Check if a value exists.
+        """
+        pass
+
+    def create_value(self, section, key):
+        """
+        Create a new value in the registry.
+        """
+        pass
+
+    def get_value(self, section, key):
+        """
+        Get a single value from the registry.
+        """
+        pass
+
+    def set_value(self, section, key, value):
+        """
+        Set a single value in the registry.
+        """
+        pass
+
+    def delete_value(self, section, key):
+        """
+        Delete a single value from the registry.
+        """
+        pass
+
+    def has_section(self, section):
+        """
+        Check if a section exists.
+        """
+        return False
+
+    def create_section(self, section):
+        """
+        Create a new section in the registry.
+        """
+        pass
+
+    def delete_section(self, section):
+        """
+        Delete a section (including all values).
+        """
         pass
