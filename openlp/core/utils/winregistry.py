@@ -41,8 +41,12 @@ class WinRegistry(Registry):
         Check if a key/value exists.
         """
         key_handle = _winreg.OpenKey(self.reg_handle, self.base_key + section)
-        value, reg_type = _winreg.QueryValueEx(key_handle, key)[0]
-        _winreg.CloseKey(key_handle)
+        try:
+            value, reg_type = _winreg.QueryValueEx(key_handle, key)
+        except EnvironmentError:
+            return False
+        finally:
+            _winreg.CloseKey(key_handle)
         if reg_type == _winreg.REG_NONE:
             return False
         elif reg_type == _winreg.REG_SZ and value == '':
@@ -52,14 +56,21 @@ class WinRegistry(Registry):
         else:
             return True
 
-    def get_value(self, section, key):
+    def get_value(self, section, key, default=None):
         """
         Get a single value from the Windows registry.
         """
-        key_handle = _winreg.OpenKey(self.reg_handle, self.base_key + section)
-        value = _winreg.QueryValueEx(key_handle, key)[0]
-        _winreg.CloseKey(key_handle)
-        return value
+        if not self.has_value(section, key):
+            return default
+        else:
+            key_handle = _winreg.OpenKey(self.reg_handle, self.base_key + section)
+            try:
+                value = _winreg.QueryValueEx(key_handle, key)[0]
+            except EnvironmentError:
+                value = default
+            finally:
+                _winreg.CloseKey(key_handle)
+            return value
 
     def set_value(self, section, key, value):
         """

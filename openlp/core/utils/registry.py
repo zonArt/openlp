@@ -40,7 +40,7 @@ class Registry(object):
         """
         pass
 
-    def get_value(self, section, key):
+    def get_value(self, section, key, default=None):
         """
         Get a single value from the registry.
         """

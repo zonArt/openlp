@@ -25,17 +25,9 @@ class ConfigHelper(object):
     Utility Helper to allow classes to find directories in a standard manner.
     """
     @staticmethod
-    def getConfigPath():
-        if os.name == 'nt':
-            import _winreg
-            reg = _winreg.ConnectRegistry(None, _winreg.HKEY_LOCAL_MACHINE)
-            key = r"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders"
-            path = get_registry_value(reg, key, "Common AppData")
-        elif os.name == 'posix':
-            path = os.path.join(os.getenv('HOME'), ".openlp.org")
-            #if os.path.exists(path) == False :
-            #    raise Exception ('Configuration Directory does not Exist ')
-        return path
+    def get_data_path():
+        reg = ConfigHelper.get_registry()
+        return reg.get_value('main', 'data_path')
 
     @staticmethod
     def get_data_path():
@@ -43,7 +35,7 @@ class ConfigHelper(object):
         return reg.get_value('main', 'data_path')
 
     @staticmethod
-    def getSongsFile():
+    def get_songs_file():
         path = ConfigHelper.get_data_path()
         songfile = os.path.join(path, "songs", "songs.olp")
         if os.path.exists(songfile):
@@ -66,5 +58,5 @@ class ConfigHelper(object):
             reg = WinRegistry(r'\Software\openlp')
         else:
             from linregistry import LinRegistry
-            reg = LinRegistry()
+            reg = LinRegistry(os.path.join(os.getenv('HOME'), '.openlp'))
         return reg
