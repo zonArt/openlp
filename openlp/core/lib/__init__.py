@@ -18,10 +18,12 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
+from pluginconfig import PluginConfig
 from plugin import Plugin
 from settingstab import SettingsTab
 from mediamanageritem import MediaManagerItem
 from event import Event
 from xmlrootclass import XmlRootClass
 
-__all__ = ['Plugin', 'SettingsTab', 'MediaManagerItem', 'Event', 'XmlRootClass']
+__all__ = ['PluginConfig', 'Plugin', 'SettingsTab', 'MediaManagerItem', 'Event',
+           'XmlRootClass']

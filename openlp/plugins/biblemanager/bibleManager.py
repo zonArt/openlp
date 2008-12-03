@@ -40,7 +40,7 @@ class BibleManager():
     global log
     log=logging.getLogger("BibleMgr")
     log.info("Bible manager loaded")
-    def __init__(self):
+    def __init__(self, path):
         """
         Finds all the bibles defined for the system
         Creates an Interface Object for each bible containing connection information
@@ -51,7 +51,7 @@ class BibleManager():
         log.debug( "Bible Initialising")
         self.bibleDBCache = {}   # dict of bible database classes
         self.bibleHTTPCache = {} # dict of bible http readers
-        self.biblePath = ConfigHelper.getBiblePath()
+        self.biblePath = path #ConfigHelper.getBiblePath()
         self.dialogobject = None
         #log.debug( self.biblePath )
         files = os.listdir(self.biblePath)

@@ -31,7 +31,7 @@ class BiblePlugin(Plugin):
         Plugin.__init__(self, 'Bible', '1.9.0')
         self.Weight = -9
         #Register the bible Manager
-        #self.biblemanager = BibleManager()
+        #self.biblemanager = BibleManager(self.config.get_data_path())
         self.textsearch = True
 
     def getMediaManagerItem(self):
@@ -64,12 +64,12 @@ class BiblePlugin(Plugin):
         ## Add Bible Button ##
         self.MediaManagerItem.addToolbarButton('Change Search Style',
             'Swap between the Bible search styles', ':/system/system_add.png',
-            self.onBibleSearchChangeClick, 'BibleSearchChange')        
+            self.onBibleSearchChangeClick, 'BibleSearchChange')
         # Add the Biblelist Tables
         self.groupBox = QtGui.QGroupBox(self.MediaManagerItem)
         self.groupBox.setGeometry(QtCore.QRect(5, 5, 271, 391))
         self.groupBox.setObjectName("groupBox")
-        
+
         self.biblelabel = QtGui.QLabel(self.groupBox)
         self.biblelabel.setGeometry(QtCore.QRect(10, 20, 80, 25))
         self.biblelabel.setObjectName("biblelabel")
@@ -98,8 +98,8 @@ class BiblePlugin(Plugin):
         self.bookcomboBox.setObjectName("bookcomboBox")
         self.bookcomboBox.addItem("Genesis")
         self.bookcomboBox.addItem("Matthew")
-        self.bookcomboBox.addItem("Revelation")        
-        
+        self.bookcomboBox.addItem("Revelation")
+
         self.chapterlabel = QtGui.QLabel(self.groupBox)
         self.chapterlabel.setGeometry(QtCore.QRect(10, 110, 50, 25))
         self.chapterlabel.setObjectName("chapterlabel")
@@ -107,7 +107,7 @@ class BiblePlugin(Plugin):
         self.verselabel = QtGui.QLabel(self.groupBox)
         self.verselabel.setGeometry(QtCore.QRect(10, 140, 50, 25))
         self.verselabel.setObjectName("verselabel")
-        self.verselabel.setText("Verse:")   
+        self.verselabel.setText("Verse:")
         self.fromlabel = QtGui.QLabel(self.groupBox)
         self.fromlabel.setGeometry(QtCore.QRect(120, 80, 50, 25))
         self.fromlabel.setObjectName("fromlabel")
@@ -115,7 +115,7 @@ class BiblePlugin(Plugin):
         self.tolabel = QtGui.QLabel(self.groupBox)
         self.tolabel.setGeometry(QtCore.QRect(210, 80, 50, 25))
         self.tolabel.setObjectName("tolabel")
-        self.tolabel.setText("To:")             
+        self.tolabel.setText("To:")
         self.fromcomboBox_c = QtGui.QComboBox(self.groupBox)
         self.fromcomboBox_c.setGeometry(QtCore.QRect(120, 110, 45, 25))
         self.fromcomboBox_c.setObjectName("fromcomboBox_c")
@@ -130,18 +130,18 @@ class BiblePlugin(Plugin):
         self.tocomboBox_v.setObjectName("tocomboBox_v")
         for i in range(1, 20):
             self.fromcomboBox_c.addItem(str(i))
-            self.tocomboBox_c.addItem(str(i))           
+            self.tocomboBox_c.addItem(str(i))
         for i in range(1, 10):
             self.fromcomboBox_v.addItem(str(i))
-            self.tocomboBox_v.addItem(str(i))                
+            self.tocomboBox_v.addItem(str(i))
 
         self.searchButton = QtGui.QPushButton(self.groupBox)
         self.searchButton.setGeometry(QtCore.QRect(170, 170, 75, 27))
         self.searchButton.setObjectName("searchButton")
         self.searchButton.setText("Search")
-        QtCore.QObject.connect(self.searchButton, QtCore.SIGNAL("pressed()"), self.onBibleSearchClick)        
+        QtCore.QObject.connect(self.searchButton, QtCore.SIGNAL("pressed()"), self.onBibleSearchClick)
 
-        
+
         self.listView = QtGui.QListView(self.groupBox)
         self.listView.setGeometry(QtCore.QRect(10, 200, 256, 192))
         self.listView.setObjectName("listView")
@@ -183,44 +183,44 @@ class BiblePlugin(Plugin):
 
     def onBibleAddClick(self):
         pass
-        
+
     def onBibleSearchClick(self):
         if self.textsearch == True:
             print "Text / Verse Search"
         else:
-            print "Combo Search"            
+            print "Combo Search"
 
-    
+
     def onBibleSearchChangeClick(self):
         self.textsearchmode()
-        
+
     def  textsearchmode(self):
         if self.textsearch == True:
             self.textsearch = False
             self.searchcomboBox.hide()
             self.searchEdit.hide()
-            self.booklabel.show()            
+            self.booklabel.show()
             self.bookcomboBox.show()
             self.fromcomboBox_c.show()
-            self.fromcomboBox_v.show()              
-            self.tocomboBox_c.show()              
+            self.fromcomboBox_v.show()
+            self.tocomboBox_c.show()
             self.tocomboBox_v.show()
             self.chapterlabel.show()
-            self.verselabel.show()             
+            self.verselabel.show()
             self.fromlabel.show()
-            self.tolabel.show()            
+            self.tolabel.show()
         else:
             self.textsearch = True
             self.searchcomboBox.show()
             self.searchEdit.show()
-            self.booklabel.hide()                        
-            self.bookcomboBox.hide()            
+            self.booklabel.hide()
+            self.bookcomboBox.hide()
             self.fromcomboBox_c.hide()
-            self.fromcomboBox_v.hide()              
-            self.tocomboBox_c.hide()              
+            self.fromcomboBox_v.hide()
+            self.tocomboBox_c.hide()
             self.tocomboBox_v.hide()
             self.chapterlabel.hide()
-            self.verselabel.hide()             
+            self.verselabel.hide()
             self.fromlabel.hide()
-            self.tolabel.hide()                  
+            self.tolabel.hide()
 

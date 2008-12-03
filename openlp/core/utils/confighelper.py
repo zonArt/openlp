@@ -27,24 +27,22 @@ class ConfigHelper(object):
     @staticmethod
     def get_data_path():
         reg = ConfigHelper.get_registry()
-        return reg.get_value('main', 'data_path')
+        return reg.get_value('main', 'data path')
 
     @staticmethod
-    def get_data_path():
+    def get_config(section, key, default=None):
         reg = ConfigHelper.get_registry()
-        return reg.get_value('main', 'data_path')
+        if reg.has_value(section, key):
+            return reg.get_value(section, key, default)
+        else:
+            return default
 
     @staticmethod
-    def get_songs_file():
-        path = ConfigHelper.get_data_path()
-        songfile = os.path.join(path, "songs", "songs.olp")
-        if os.path.exists(songfile):
-            filename.set_filename(songfile)
-        print songfile
-
-    @staticmethod
-    def getBiblePath():
-        return os.path.join(ConfigHelper.getConfigPath(), "Data","Bibles")
+    def set_config(section, key, value):
+        reg = ConfigHelper.get_registry()
+        if not reg.has_section(section):
+            reg.create_section(section)
+        return reg.set_value(section, key, value)
 
     @staticmethod
     def get_registry():

@@ -18,6 +18,8 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
+from lib import PluginConfig
+
 class Plugin(object):
     """
     Base class for openlp plugins to inherit from.
@@ -70,6 +72,7 @@ class Plugin(object):
             self.Name = 'Plugin'
         if version is not None:
             self.Version = version
+        self.config = PluginConfig(self.Name)
         #self.MediaManagerItem = None
         self.SettingsTab = None
         self.ImportMenuItem = None
