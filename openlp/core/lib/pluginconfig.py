@@ -19,7 +19,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 import os
-from core.utils import ConfigHelper
+from openlp.core.utils import ConfigHelper
 
 class PluginConfig(object):
     """

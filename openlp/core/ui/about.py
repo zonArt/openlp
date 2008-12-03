@@ -86,10 +86,10 @@ class AboutForm(object):
         self.CreditsTabLayout.setSpacing(0) #
         self.CreditsTabLayout.setMargin(8) #
         self.CreditsTabLayout.setObjectName("CreditsTabLayout")
-        self.CreditsLabel = QtGui.QLabel(self.CreditsTab)
-        self.CreditsLabel.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
-        self.CreditsLabel.setObjectName("CreditsLabel")
-        self.CreditsTabLayout.addWidget(self.CreditsLabel)
+        self.CreditsTextEdit = QtGui.QPlainTextEdit(self.CreditsTab)
+        self.CreditsTextEdit.setReadOnly(True)
+        self.CreditsTextEdit.setObjectName("CreditsTextEdit")
+        self.CreditsTabLayout.addWidget(self.CreditsTextEdit)
         self.AboutNotebook.addTab(self.CreditsTab, "Credits")
         self.AboutDialogLayout.addWidget(self.AboutNotebook)
         self.ButtonWidget = QtGui.QWidget(self.AboutDialog)
@@ -125,19 +125,16 @@ class AboutForm(object):
         self.License2Label.setText(QtGui.QApplication.translate("AboutDialog", "You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.", None, QtGui.QApplication.UnicodeUTF8))
         self.License3Label.setText(QtGui.QApplication.translate("AboutDialog", "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.", None, QtGui.QApplication.UnicodeUTF8))
         self.AboutNotebook.setTabText(self.AboutNotebook.indexOf(self.LicenseTab), QtGui.QApplication.translate("AboutDialog", "License", None, QtGui.QApplication.UnicodeUTF8))
-        self.CreditsLabel.setText(QtGui.QApplication.translate("AboutDialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Project Lead</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Raoul Snyman</p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Developers</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Tim Bentley</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Jonathan Corwin</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Raoul Snyman</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Martin Thompson</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Carsten Tingaard</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.CreditsTextEdit.setPlainText(QtGui.QApplication.translate("AboutDialog", "Project Lead\n"
+"    Raoul \"superfly\" Snyman\n"
+"\n"
+"Developers\n"
+"    Tim \"TRB143\" Bentley\n"
+"    Jonathan \"gushie\" Corwin\n"
+"    Scott \"sguerrieri\" Guerrieri\n"
+"    Raoul \"superfly\" Snyman\n"
+"    Martin \"mijiti\" Thompson\n"
+"    Carsten \"catini\" Tingaard", None, QtGui.QApplication.UnicodeUTF8))
         self.AboutNotebook.setTabText(self.AboutNotebook.indexOf(self.CreditsTab), QtGui.QApplication.translate("AboutDialog", "Credits", None, QtGui.QApplication.UnicodeUTF8))
         self.ContributeButton.setText(QtGui.QApplication.translate("AboutDialog", "Contribute", None, QtGui.QApplication.UnicodeUTF8))
         self.CloseButton.setText(QtGui.QApplication.translate("AboutDialog", "Close", None, QtGui.QApplication.UnicodeUTF8))

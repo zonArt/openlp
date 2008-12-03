@@ -18,7 +18,7 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
-from lib import PluginConfig
+from openlp.core.lib import PluginConfig
 
 class Plugin(object):
     """
