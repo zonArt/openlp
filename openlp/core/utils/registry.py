@@ -34,12 +34,6 @@ class Registry(object):
         """
         pass
 
-    def create_value(self, section, key):
-        """
-        Create a new value in the registry.
-        """
-        pass
-
     def get_value(self, section, key, default=None):
         """
         Get a single value from the registry.
