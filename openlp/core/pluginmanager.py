@@ -60,7 +60,7 @@ class PluginManager(object):
                     prefix = os.path.commonprefix([self.basepath, path])
                     # hack off the plugin base path
                     modulename = modulename[len(prefix) + 1:]
-                    modulename = modulename.replace('/', '.')
+                    modulename = modulename.replace(os.path.sep, '.')
                     # import the modules
                     log.debug("Importing %s from %s." % (modulename, path))
                     try:
