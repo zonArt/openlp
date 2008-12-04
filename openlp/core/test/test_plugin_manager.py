@@ -18,22 +18,25 @@ import os, sys
 mypath=os.path.split(os.path.abspath(__file__))[0]
 
 sys.path.insert(0,(os.path.join(mypath, '..' ,'..', '..')))
-from openlp.plugins.plugin_manager import PluginManager
+from openlp.core.pluginmanager import PluginManager
 
+# test the plugin manager with some plugins in the test_plugins directory
 class TestPluginManager:
     def test_init(self):
-        p=PluginManager("..")
+        p=PluginManager("./testplugins")
         assert (len(p.plugins)==2);
         # get list of the names of the plugins
         names=[plugin.name for plugin in p.plugins]
+        # see which ones we've got
         assert ("testplugin1" in names)
         assert ("testplugin2" in names)
+        # and not got!
         assert ("testplugin3" not in names)
-        assert (p.plugin_by_name["testplugin1"].version==0)
-        assert (p.plugin_by_name["testplugin2"].version==1)
-            
+        # test that the weighting is done right
+        assert p.plugins[0].name=="testplugin2"
+        assert p.plugins[1].name=="testplugin1"
 if __name__=="__main__":
     log.debug("Starting")
-    p=PluginManager("..")
+    p=PluginManager("./testplugins")
     for plugin in p.plugins:
         log.debug("Plugin %s, name=%s (version=%d)"%(str(plugin), plugin.name, plugin.version))
