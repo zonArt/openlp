@@ -1,0 +1,60 @@
+This file documents the OpenLP2 song format.
+
+All fields are strings to ease reading and writing of SQLITE files.
+
+A Song has the following fields
+  title
+  searchableTitle - no hyphens, commas, punctuation etc
+  authorList - like "A. Williams, B C Dee"
+  songCcliNo
+  copyright - like authorList
+  showTitle - 0: dont show, 1: do show
+  showAuthorList - 0: dont show, 1: do show
+  showSongCcli - 0: dont show, 1: do show
+  showCopyright - 0: dont show, 1: do show
+  theme - name of theme or blank
+  categoryArray - list of categories "Hymn, Traditional ..."
+  songBook -
+  songNumber -
+  comments - any comment you may have
+  verseOrder - like "V1 C V2 C V3 B V4 C"
+  lyrics - formatted as XML - see below
+  searchableLyrics -- the lyrics without any xml formatting; the raw song text
+
+
+
+The lyrics definition (more or less similar to interformat to/from ChangingSong
+The tags <i></i><b></b><u></u> can also be used within the lyrics test.
+
+! Please note that this format has been checked at http://validator.w3.org/#validate_by_upload
+
+<lyrics lang="en_US">
+  <title>Amazing Grace</title>
+  <verse name="v1">
+    <theme>name of verse specific theme (optional)</theme>
+    <comment>any text (optional)</comment>
+    <part name="men">
+	Amazing grace, how ...
+    </part>
+    <part name="women">
+	A b c
+	D e f
+    </part>
+    ...
+  </verse>
+  <verse name="c">
+    <theme>name of verse specific theme (optional)</theme>
+    <comment>any text (optional)</comment>
+    ...
+  </verse>
+</lyrics>
+<lyrics lang="de_DE">
+  <title>Erstaunliche Anmut</title>
+  <verse name="v1">
+    Erstaunliche Anmut, wie
+    ...
+  </verse>
+  <verse name="c">
+    ...
+  </verse>
+</lyrics>
