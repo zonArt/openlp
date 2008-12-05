@@ -1,26 +1,90 @@
-This file documents the OpenLP2 song format.
+openlp.org 2.x Song Database Structure
+========================================================================
 
-All fields are strings to ease reading and writing of SQLITE files.
+Introduction
+------------
+The song database in openlp.org 2.x is similar to the 1.x format. The
+biggest differences are the addition of extra tables, and the use of
+SQLite version 3.
 
-A Song has the following fields
-  title
-  searchableTitle - no hyphens, commas, punctuation etc
-  authorList - like "A. Williams, B C Dee"
-  songCcliNo
-  copyright - like authorList
-  showTitle - 0: dont show, 1: do show
-  showAuthorList - 0: dont show, 1: do show
-  showSongCcli - 0: dont show, 1: do show
-  showCopyright - 0: dont show, 1: do show
-  theme - name of theme or blank
-  categoryArray - list of categories "Hymn, Traditional ..."
-  songBook -
-  songNumber -
-  comments - any comment you may have
-  verseOrder - like "V1 C V2 C V3 B V4 C"
-  lyrics - formatted as XML - see below
-  searchableLyrics -- the lyrics without any xml formatting; the raw song text
+The song database contains the following tables:
+- authors
+- authors_songs
+- song_books
+- songs
+- songs_topics
+- topics
 
+
+"authors" Table
+---------------
+This table holds the names of all the authors. It has the following
+columns:
+
+* id
+* first_name
+* last_name
+* display_name
+
+
+"authors_songs" Table
+---------------------
+This is a bridging table between the "authors" and "songs" tables, which
+serves to create a many-to-many relationship between the two tables. It
+has the following columns:
+
+* author_id
+* song_id
+
+
+"song_books" Table
+------------------
+The "song_books" table holds a list of books that a congregation gets
+their songs from, or old hymnals now no longer used. This table has the
+following columns:
+
+* id
+* name
+* publisher
+
+
+"songs" Table
+-------------
+This table contains the songs, and each song has a list of attributes.
+The "songs" table has the following columns:
+
+* id
+* song_book_id
+* title
+* lyrics
+* verse_order
+* copyright
+* comments
+* ccli_number
+* song_number
+* theme
+* search_title
+* search_lyrics
+
+
+"songs_topics" Table
+--------------------
+This is a bridging table between the "songs" and "topics" tables, which
+serves to create a many-to-many relationship between the two tables. It
+has the following columns:
+
+* song_id
+* topic_id
+
+
+"topics" Table
+--------------
+The topics table holds a selection of topics that songs can cover. This
+is useful when a worship leader wants to select songs with a certain
+theme. This table has the following columns:
+
+* id
+* name
 
 
 The lyrics definition (more or less similar to interformat to/from ChangingSong

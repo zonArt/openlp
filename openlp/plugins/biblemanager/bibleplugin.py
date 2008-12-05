@@ -31,8 +31,7 @@ class BiblePlugin(Plugin):
         Plugin.__init__(self, 'Bible', '1.9.0')
         self.Weight = -9
         #Register the bible Manager
-        print self.config.get_data_path()
-        # self.biblemanager = BibleManager(self.config.get_data_path())
+        self.biblemanager = BibleManager(self.config.get_data_path())
         self.textsearch = True
 
     def getMediaManagerItem(self):
@@ -60,16 +59,110 @@ class BiblePlugin(Plugin):
         self.MediaManagerItem.addToolbarButton('Add Bible Verse(s) To Service',
             'Add the selected Bible(s) to the service', ':/system/system_add.png',
             self.onBibleAddClick, 'BibleAddItem')
-       ## Separator Line ##
-        self.MediaManagerItem.addToolbarSeparator()
+        ## Separator Line ##
+        #self.MediaManagerItem.addToolbarSeparator()
         ## Add Bible Button ##
-        self.MediaManagerItem.addToolbarButton('Change Search Style',
-            'Swap between the Bible search styles', ':/system/system_add.png',
-            self.onBibleSearchChangeClick, 'BibleSearchChange')
+        #self.MediaManagerItem.addToolbarButton('Change Search Style',
+        #    'Swap between the Bible search styles', ':/system/system_add.png',
+        #    self.onBibleSearchChangeClick, 'BibleSearchChange')
         # Add the Biblelist Tables
-        self.groupBox = QtGui.QGroupBox(self.MediaManagerItem)
-        self.groupBox.setGeometry(QtCore.QRect(5, 5, 271, 391))
+
+        # Create the tab widget
+        self.SearchTabWidget = QtGui.QTabWidget(self.MediaManagerItem)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.SearchTabWidget.sizePolicy().hasHeightForWidth())
+        self.SearchTabWidget.setSizePolicy(sizePolicy)
+        self.SearchTabWidget.setObjectName('SearchTabWidget')
+        # Add the Quick Search tab
+        self.QuickTab = QtGui.QWidget()
+        self.QuickTab.setObjectName('QuickTab')
+        self.QuickLayout = QtGui.QGridLayout(self.QuickTab)
+        self.QuickLayout.setObjectName('QuickLayout')
+        self.QuickVersionComboBox = QtGui.QComboBox(self.QuickTab)
+        self.QuickVersionComboBox.setObjectName('VersionComboBox')
+        self.QuickLayout.addWidget(self.QuickVersionComboBox, 0, 1, 1, 2)
+        self.QuickVersionLabel = QtGui.QLabel(self.QuickTab)
+        self.QuickVersionLabel.setObjectName('QuickVersionLabel')
+        self.QuickVersionLabel.setText('Version:')
+        self.QuickLayout.addWidget(self.QuickVersionLabel, 0, 0, 1, 1)
+        self.QuickSearchLabel = QtGui.QLabel(self.QuickTab)
+        self.QuickSearchLabel.setObjectName('QuickSearchLabel')
+        self.QuickSearchLabel.setText('Find:')
+        self.QuickLayout.addWidget(self.QuickSearchLabel, 2, 0, 1, 1)
+        self.QuickSearchEdit = QtGui.QLineEdit(self.QuickTab)
+        self.QuickSearchEdit.setObjectName('QuickSearchEdit')
+        self.QuickLayout.addWidget(self.QuickSearchEdit, 2, 1, 1, 2)
+        self.QuickSearchButton = QtGui.QPushButton(self.QuickTab)
+        self.QuickSearchButton.setObjectName('QuickSearchButton')
+        self.QuickSearchButton.setText('Search')
+        self.QuickLayout.addWidget(self.QuickSearchButton, 3, 2, 1, 1)
+        QuickSpacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.QuickLayout.addItem(QuickSpacerItem, 4, 2, 1, 1)
+        self.SearchTabWidget.addTab(self.QuickTab, 'Quick Search')
+        # Add the Advanced Search tab
+        self.AdvancedTab = QtGui.QWidget()
+        self.AdvancedTab.setObjectName('AdvancedTab')
+        self.AdvancedLayout = QtGui.QGridLayout(self.AdvancedTab)
+        self.AdvancedLayout.setObjectName('AdvancedLayout')
+        self.AdvancedVersionLabel = QtGui.QLabel(self.AdvancedTab)
+        self.AdvancedVersionLabel.setObjectName('AdvancedVersionLabel')
+        self.AdvancedVersionLabel.setText('Version:')
+        self.AdvancedLayout.addWidget(self.AdvancedVersionLabel, 0, 0, 1, 1)
+        self.AdvancedVersionComboBox = QtGui.QComboBox(self.AdvancedTab)
+        self.AdvancedVersionComboBox.setObjectName('AdvancedVersionComboBox')
+        self.AdvancedLayout.addWidget(self.AdvancedVersionComboBox, 0, 2, 1, 2)
+        self.AdvancedBookLabel = QtGui.QLabel(self.AdvancedTab)
+        self.AdvancedBookLabel.setObjectName('AdvancedBookLabel')
+        self.AdvancedBookLabel.setText('Book:')
+        self.AdvancedLayout.addWidget(self.AdvancedBookLabel, 1, 0, 1, 1)
+        self.AdvancedBookComboBox = QtGui.QComboBox(self.AdvancedTab)
+        self.AdvancedBookComboBox.setObjectName('AdvancedBookComboBox')
+        self.AdvancedLayout.addWidget(self.AdvancedBookComboBox, 1, 2, 1, 2)
+        self.AdvancedChapterLabel = QtGui.QLabel(self.AdvancedTab)
+        self.AdvancedChapterLabel.setObjectName('AdvancedChapterLabel')
+        self.AdvancedChapterLabel.setText('Chapter:')
+        self.AdvancedLayout.addWidget(self.AdvancedChapterLabel, 2, 2, 1, 1)
+        self.AdvancedVerseLabel = QtGui.QLabel(self.AdvancedTab)
+        self.AdvancedVerseLabel.setObjectName('AdvancedVerseLabel')
+        self.AdvancedVerseLabel.setText('Verse:')
+        self.AdvancedLayout.addWidget(self.AdvancedVerseLabel, 2, 3, 1, 1)
+        self.AdvancedFromLabel = QtGui.QLabel(self.AdvancedTab)
+        self.AdvancedFromLabel.setObjectName('AdvancedFromLabel')
+        self.AdvancedFromLabel.setText('From:')
+        self.AdvancedLayout.addWidget(self.AdvancedFromLabel, 3, 0, 1, 1)
+        self.AdvancedToLabel = QtGui.QLabel(self.AdvancedTab)
+        self.AdvancedToLabel.setObjectName('AdvancedToLabel')
+        self.AdvancedToLabel.setText('To:')
+        self.AdvancedLayout.addWidget(self.AdvancedToLabel, 4, 0, 1, 1)
+        self.AdvancedFromChapter = QtGui.QComboBox(self.AdvancedTab)
+        self.AdvancedFromChapter.setObjectName('AdvancedFromChapter')
+        self.AdvancedLayout.addWidget(self.AdvancedFromChapter, 3, 3, 1, 1)
+        self.AdvancedFromVerse = QtGui.QComboBox(self.AdvancedTab)
+        self.AdvancedFromVerse.setObjectName('AdvancedFromVerse')
+        self.AdvancedLayout.addWidget(self.AdvancedFromVerse, 3, 2, 1, 1)
+        self.AdvancedToChapter = QtGui.QComboBox(self.AdvancedTab)
+        self.AdvancedToChapter.setObjectName('AdvancedToChapter')
+        self.AdvancedLayout.addWidget(self.AdvancedToChapter, 4, 2, 1, 1)
+        self.AdvancedToVerse = QtGui.QComboBox(self.AdvancedTab)
+        self.AdvancedToVerse.setObjectName('AdvancedToVerse')
+        self.AdvancedLayout.addWidget(self.AdvancedToVerse, 4, 3, 1, 1)
+        self.AdvancedSearchButton = QtGui.QPushButton(self.AdvancedTab)
+        self.AdvancedSearchButton.setObjectName('AdvancedSearchButton')
+        self.AdvancedSearchButton.setText('Search')
+        self.AdvancedLayout.addWidget(self.AdvancedSearchButton, 5, 3, 1, 1)
+        self.SearchTabWidget.addTab(self.AdvancedTab, 'Advanced Search')
+
+        # Add the search tab widget to the page layout
+        self.MediaManagerItem.PageLayout.addWidget(self.SearchTabWidget)
+
+        """self.groupBox = QtGui.QGroupBox(self.MediaManagerItem)
+        self.groupBox.setGeometry(QtCore.QRect(0, 0, 271, 391))
+        self.groupBox.setMinimumSize(QtCore.QSize(0, 271))
+        self.groupBox.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,  QtGui.QSizePolicy.Minimum))
         self.groupBox.setObjectName("groupBox")
+        self.MediaManagerItem.PageLayout.addWidget(self.groupBox)
 
         self.biblelabel = QtGui.QLabel(self.groupBox)
         self.biblelabel.setGeometry(QtCore.QRect(10, 20, 80, 25))
@@ -140,15 +233,14 @@ class BiblePlugin(Plugin):
         self.searchButton.setGeometry(QtCore.QRect(170, 170, 75, 27))
         self.searchButton.setObjectName("searchButton")
         self.searchButton.setText("Search")
-        QtCore.QObject.connect(self.searchButton, QtCore.SIGNAL("pressed()"), self.onBibleSearchClick)
+        QtCore.QObject.connect(self.searchButton, QtCore.SIGNAL("pressed()"), self.onBibleSearchClick)"""
 
-
-        self.listView = QtGui.QListView(self.groupBox)
+        self.listView = QtGui.QListView()
         self.listView.setGeometry(QtCore.QRect(10, 200, 256, 391))
         self.listView.setObjectName("listView")
-        
-        self.MediaManagerItem.PageLayout.addWidget(self.groupBox)
-        self.textsearchmode()
+        self.MediaManagerItem.PageLayout.addWidget(self.listView)
+
+        #self.textsearchmode()
         return self.MediaManagerItem
 
     def onBibleNewClick(self):
@@ -166,17 +258,19 @@ class BiblePlugin(Plugin):
         pass
 
     def onBibleSearchClick(self):
-        if self.textsearch == True:
-            print "Text / Verse Search"
-        else:
-            print "Combo Search"
+        #if self.textsearch == True:
+        #    print "Text / Verse Search"
+        #else:
+        #    print "Combo Search"
+        pass
 
 
     def onBibleSearchChangeClick(self):
-        self.textsearchmode()
+        #self.textsearchmode()
+        pass
 
     def  textsearchmode(self):
-        if self.textsearch == True:
+        """if self.textsearch == True:
             self.textsearch = False
             self.searchcomboBox.hide()
             self.searchEdit.hide()
@@ -203,5 +297,6 @@ class BiblePlugin(Plugin):
             self.chapterlabel.hide()
             self.verselabel.hide()
             self.fromlabel.hide()
-            self.tolabel.hide()
+            self.tolabel.hide()"""
+        pass
 

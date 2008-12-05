@@ -50,7 +50,7 @@ class BibleManager():
         log.debug( "Bible Initialising")
         self.bibleDBCache = {}   # dict of bible database classes
         self.bibleHTTPCache = {} # dict of bible http readers
-        self.biblePath = path +"/Data/Bibles" #ConfigHelper.getBiblePath()
+        self.biblePath = path #+"/Data/Bibles" #ConfigHelper.getBiblePath()
         print self.biblePath
         self.dialogobject = None
         #log.debug( self.biblePath )
