@@ -41,16 +41,19 @@ class LinRegistry(Registry):
         """
         Get a single value from the registry.
         """
-        if self.config.has_value(section, key):
-            return self.config.get(section, key)
-        else:
+        try:
+            if self.config.get(section, key):
+                return self.config.get(section, key)
+            else:
+                return default
+        except:
             return default
 
     def set_value(self, section, key, value):
         """
         Set a single value in the registry.
         """
-        try:
+        try :
             self.config.set(section, key, value)
             return self._save()
         except:
