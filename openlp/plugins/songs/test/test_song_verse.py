@@ -15,13 +15,12 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-
 import py.test
 import os
 import sys
-sys.path.append(os.path.abspath("./../../.."))
+sys.path.append(os.path.abspath("./../../../.."))
 
-from openlp.song import *
+from openlp.plugins.songs.songxml import *
 
 class Test_Verse(object):
     """Class for testing verses for preview and review"""
