@@ -31,7 +31,8 @@ class BiblePlugin(Plugin):
         Plugin.__init__(self, 'Bible', '1.9.0')
         self.Weight = -9
         #Register the bible Manager
-        #self.biblemanager = BibleManager(self.config.get_data_path())
+        print self.config.get_data_path()
+        # self.biblemanager = BibleManager(self.config.get_data_path())
         self.textsearch = True
 
     def getMediaManagerItem(self):
@@ -143,36 +144,16 @@ class BiblePlugin(Plugin):
 
 
         self.listView = QtGui.QListView(self.groupBox)
-        self.listView.setGeometry(QtCore.QRect(10, 200, 256, 192))
+        self.listView.setGeometry(QtCore.QRect(10, 200, 256, 391))
         self.listView.setObjectName("listView")
-
-#        self.groupBox = QtGui.QGroupBox(self.MediaManagerItem)
-#        self.groupBox.setGeometry(QtCore.QRect(10, 10, 251, 341))
-#        self.groupBox.setObjectName("groupBox")
-#        self.lineEdit = QtGui.QLineEdit(self.groupBox)
-#        self.lineEdit.setGeometry(QtCore.QRect(120, 30, 113, 23))
-#        self.lineEdit.setObjectName("lineEdit")
-#        self.label = QtGui.QLabel(self.groupBox)
-#        self.label.setGeometry(QtCore.QRect(30, 30, 54, 17))
-#        self.label.setObjectName("label")
-#        self.comboBox = QtGui.QComboBox(self.groupBox)
-#        self.comboBox.setGeometry(QtCore.QRect(70, 80, 74, 22))
-#        self.comboBox.setObjectName("comboBox")
+        
         self.MediaManagerItem.PageLayout.addWidget(self.groupBox)
-#
-#        # Add the Biblelist widget
-#        #self.BibleList = QtGui.QTableWidget(self.MediaManagerItem)
-#        self.BibleList = QtGui.QTableWidget(self.groupBox)
-#        self.BibleList.setObjectName("BibleList")
-#        self.BibleList.setColumnCount(0)
-#        self.BibleList.setRowCount(0)
-        #self.MediaManagerItem.PageLayout.addWidget(self.BibleList)
         self.textsearchmode()
         return self.MediaManagerItem
 
     def onBibleNewClick(self):
-        #self.bibleimportform = BibleImportForm(self.biblemanager)
-        #self.bibleimportform.show()
+        self.bibleimportform = BibleImportForm(self.biblemanager)
+        self.bibleimportform.show()
         pass
 
     def onBiblePreviewClick(self):
