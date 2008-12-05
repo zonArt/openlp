@@ -20,9 +20,9 @@ import sys
 import os
 from types import StringType, ListType, NoneType
 
-sys.path.append(os.path.abspath("./../.."))
+sys.path.append(os.path.abspath("./../../.."))
 
-from openlp.core.xmlrootclass import XmlRootClass
+from openlp.core.lib.xmlrootclass import XmlRootClass
 
 class SongException(Exception):
     pass
@@ -33,6 +33,17 @@ class SongTitleError(SongException):
 class SongTypeError(SongException):
     pass
 
+class SongSlideError(SongException):
+    pass
+
+# TODO: Song: Logging - not all, but enough
+# TODO: Song: Handle OpenLP2 format
+# TODO: Song: Import OpenLP1
+# TODO: Song: Export OpenLP1
+# TODO: Song: Export Song to CCLI
+# TODO: Song: Export Song to OpenSong
+# TODO: Song: Import ChangingSong
+# TODO: Song: Export ChangingSong
 
 _blankSongXml = \
 '''<?xml version="1.0" encoding="iso-8859-1"?>
@@ -548,12 +559,29 @@ class Song(XmlRootClass) :
         slideNumber -- 0: all slides, 1..n : specific slide
         a list of strings are returned
         """
-        return []
-
+        num = len(self.slideList)
+        if num < 1 :
+            raise SongSlideError("No slides in this song")
+        elif slideNumber > num :
+            raise SongSlideError("Slide number too high")
+        if slideNumber > 0 :
+            # return this slide
+            res = self.slideList[slideNumber-1]
+            # find theme in this slide
+        else :
+            res = []
+            for i in range(num):
+                if i > 0 :
+                    res.append("")
+                res.extend()
+        # remove formattingincluding themes
+        return res
+        
     def GetRenderSlide(self,  slideNumber):
         """Return the slide to be rendered including the additional
         properties
-
+        
+        slideNumber -- 1 .. numberOfSlides
         Returns a list as:
         [theme (string),
          title (string),
@@ -562,6 +590,11 @@ class Song(XmlRootClass) :
          cclino (string),
          lyric-part as a list of strings]
         """
+        num = len(self.slideList)
+        if num < 1 :
+            raise SongSlideError("No slides in this song")
+        elif slideNumber > num :
+            raise SongSlideError("Slide number too high")
         res = []
         if self.showTitle :
             title = self.GetTitle()
@@ -579,8 +612,9 @@ class Song(XmlRootClass) :
             ccli = self.GetSongCcliNo()
         else :
             ccli = ""
+        theme = self.GetTheme()
         # examine the slide for a theme
-        res.append(self.GetTheme())
+        res.append(theme)
         res.append(title)
         res.append(author)
         res.append(cpright)
