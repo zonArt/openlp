@@ -82,6 +82,7 @@
     <Source>openlp/core/utils/winregistry.py</Source>
     <Source>openlp/core/utils/registry.py</Source>
     <Source>openlp/core/utils/linregistry.py</Source>
+    <Source>setup.py</Source>
     <Source>openlp/core/lib/pluginconfig.py</Source>
   </Sources>
   <Forms>
