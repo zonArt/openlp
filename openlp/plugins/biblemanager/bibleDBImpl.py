@@ -120,7 +120,7 @@ class BibleDBImpl(BibleCommon):
     log.info("BibleDB manager loaded")   
     def __init__(self, biblename, btype = 'sqlite'):   
         # Connect to database 
-        path = ConfigHelper.getBiblePath()
+        path = "/home/timali/.openlp.org/Data/Bibles"
         #log.debug( path
         #log.debug( biblename
         self.biblefile = os.path.join(path, biblename+".bible3")
