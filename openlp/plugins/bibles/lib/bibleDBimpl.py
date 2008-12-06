@@ -28,7 +28,7 @@ from sqlalchemy.orm import sessionmaker, mapper
 mypath=os.path.split(os.path.abspath(__file__))[0]
 sys.path.insert(0,(os.path.join(mypath, '..', '..', '..')))
 
-from openlp.plugins.biblemanager.bibleCommon import BibleCommon
+from openlp.plugins.bibles.lib.biblecommon import BibleCommon
 from openlp.core.utils import ConfigHelper
 
 import logging
@@ -42,7 +42,6 @@ class BibleDBException(Exception):
 class BibleInvalidDatabaseError(Exception):
     pass
     
-
 metadata = MetaData()
 #Define the tables and indexes
 meta_table = Table('metadata', metadata, 
@@ -118,14 +117,10 @@ class BibleDBImpl(BibleCommon):
     global log     
     log=logging.getLogger("BibleDBMgr")
     log.info("BibleDB manager loaded")   
-    def __init__(self, biblename, btype = 'sqlite'):   
+    def __init__(self, biblepath , biblename, suffix, btype = 'sqlite'):   
         # Connect to database 
-        path = "/home/timali/.openlp.org/Data/Bibles"
-        #log.debug( path
-        #log.debug( biblename
-        self.biblefile = os.path.join(path, biblename+".bible3")
-        #log.debug( self.biblefile
-        #log.debug( btype
+        self.biblefile = os.path.join(biblepath, biblename+"."+suffix)
+        log.debug( "Load bible %s on path %s", biblename, self.biblefile)
         if btype == 'sqlite': 
             self.db = create_engine("sqlite:///"+self.biblefile)
         elif btype == 'mysql': 

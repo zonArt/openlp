@@ -50,23 +50,25 @@ class BibleManager():
         log.debug( "Bible Initialising")
         self.bibleDBCache = {}   # dict of bible database classes
         self.bibleHTTPCache = {} # dict of bible http readers
-
-        self.biblePath = path #+"/Data/Bibles" #ConfigHelper.getBiblePath()
-
-        print self.biblePath
+        self.biblePath = path
+        self.bibleSuffix = "bible3a"
         self.dialogobject = None
-        #log.debug( self.biblePath )
+
+        log.debug("Bible Path %s",  self.biblePath )
         files = os.listdir(self.biblePath)
         for f in files:
-            b = f.split('.')[0]
-            self.bibleDBCache[b] = BibleDBImpl(b)
-            biblesource = self.bibleDBCache[b].getMeta("WEB") # look to see if lazy load bible exists and get create getter.
-            if biblesource:
-                nhttp = BibleHTTPImpl()
-                nhttp.setBibleSource(biblesource)  # tell The Server where to get the verses from.
-                self.bibleHTTPCache[b] = nhttp
-                proxy = self.bibleDBCache[b].getMeta("proxy") # look to see if lazy load bible exists and get create getter.
-                nhttp.setProxy(proxy)  # tell The Server where to get the verses from.
+            nme = f.split('.')
+            bname = nme[0]
+            sfx = nme[1]
+            if sfx == self.bibleSuffix: # only load files with the correct suffix
+                self.bibleDBCache[bname] = BibleDBImpl(self.biblePath, bname, self.bibleSuffix)
+                biblesource = self.bibleDBCache[bname].getMeta("WEB") # look to see if lazy load bible exists and get create getter.
+                if biblesource:
+                    nhttp = BibleHTTPImpl()
+                    nhttp.setBibleSource(biblesource)  # tell The Server where to get the verses from.
+                    self.bibleHTTPCache[bname] = nhttp
+                    proxy = self.bibleDBCache[bname].getMeta("proxy") # look to see if lazy load bible exists and get create getter.
+                    nhttp.setProxy(proxy)  # tell The Server where to get the verses from.
             #
 
         log.debug( "Bible Initialised")

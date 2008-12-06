@@ -18,7 +18,7 @@ from PyQt4.QtCore import pyqtSignature
 from bibleimportdialog import Ui_BibleImportDialog
 from bibleimportprogressform import BibleImportProgressForm
 
-from openlp.plugins.biblemanager.bibleManager import BibleManager
+from openlp.plugins.bibles.lib.biblemanager import BibleManager
 
 class BibleImportForm(QDialog, Ui_BibleImportDialog):
     """
@@ -30,7 +30,7 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
         """
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.biblemanager = biblemanager
+        #self.biblemanager = biblemanager
 #        self.savebutton = self.BibleImportButtonBox.button(QtGui.QDialogButtonBox.Save)
 #        self.BibleImportButtonBox.removeButton(self.savebutton) # hide the save button tile screen is valid
         

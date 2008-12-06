@@ -16,7 +16,7 @@ from PyQt4.QtGui import QDialog
 from PyQt4.QtCore import pyqtSignature
 
 from bibleimportprogressdialog import Ui_BibleImportProgressDialog
-from openlp.plugins.biblemanager.bibleManager import BibleManager
+from openlp.plugins.bibles.lib.biblemanager import BibleManager
 
 class BibleImportProgressForm(QDialog, Ui_BibleImportProgressDialog):
     """

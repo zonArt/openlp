@@ -24,7 +24,7 @@ import sys
 mypath=os.path.split(os.path.abspath(__file__))[0]
 sys.path.insert(0,(os.path.join(mypath, '..', '..','..','..')))
 
-from openlp.plugins.biblemanager.BibleManager import BibleManager
+from openlp.plugins.bibles.lib.biblemanager import BibleManager
 from openlp.utils import ConfigHelper
 
 import logging

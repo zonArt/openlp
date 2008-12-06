@@ -22,8 +22,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.resources import *
 from openlp.core.lib import Plugin, MediaManagerItem
 
-from lib.biblemanager import BibleManager
-from forms.bibleimportform import BibleImportForm
+from openlp.plugins.bibles.lib.biblemanager import BibleManager
+from openlp.plugins.bibles.forms.bibleimportform import BibleImportForm
 
 class BiblePlugin(Plugin):
     def __init__(self):
@@ -156,30 +156,13 @@ class BiblePlugin(Plugin):
         # Add the search tab widget to the page layout
         self.MediaManagerItem.PageLayout.addWidget(self.SearchTabWidget)
 
-        self.QuickVersionComboBox.addItem("NIV")
-        self.QuickVersionComboBox.addItem("KJC")        
-        self.AdvancedVersionComboBox.addItem("NIV")
-        self.AdvancedVersionComboBox.addItem("KJC")
-        self.AdvancedBookComboBox.addItem("Genesis")
-        self.AdvancedBookComboBox.addItem("Matthew")        
-        self.AdvancedBookComboBox.addItem("Revelation")        
- 
-        for i in range(1, 10):
-            self.AdvancedFromChapter.addItem(str(i))
-        for i in range(1, 20):            
-            self.AdvancedToChapter.addItem(str(i))
-        for i in range(1, 30):
-            self.AdvancedFromVerse.addItem(str(i))
-        for i in range(1, 40):            
-            self.AdvancedToVerse.addItem(str(i))
-
-
         self.listView = QtGui.QListView()
         self.listView.setGeometry(QtCore.QRect(10, 200, 256, 391))
         self.listView.setObjectName("listView")
         self.MediaManagerItem.PageLayout.addWidget(self.listView)
 
-        #self.textsearchmode()
+        self._initialiseform()
+        
         return self.MediaManagerItem
 
     def onBibleNewClick(self):
@@ -196,46 +179,22 @@ class BiblePlugin(Plugin):
     def onBibleAddClick(self):
         pass
 
-    def onBibleSearchClick(self):
-        #if self.textsearch == True:
-        #    print "Text / Verse Search"
-        #else:
-        #    print "Combo Search"
-        pass
+    def _initialiseform(self):
+        bibles = self.biblemanager.getBibles()
+        for b in bibles:
+            self.QuickVersionComboBox.addItem(b)
+            self.AdvancedVersionComboBox.addItem(b)
 
+        self.AdvancedBookComboBox.addItem("Genesis")
+        self.AdvancedBookComboBox.addItem("Matthew")        
+        self.AdvancedBookComboBox.addItem("Revelation")        
 
-    def onBibleSearchChangeClick(self):
-        #self.textsearchmode()
-        pass
-
-    def  textsearchmode(self):
-        """if self.textsearch == True:
-            self.textsearch = False
-            self.searchcomboBox.hide()
-            self.searchEdit.hide()
-            self.booklabel.show()
-            self.bookcomboBox.show()
-            self.fromcomboBox_c.show()
-            self.fromcomboBox_v.show()
-            self.tocomboBox_c.show()
-            self.tocomboBox_v.show()
-            self.chapterlabel.show()
-            self.verselabel.show()
-            self.fromlabel.show()
-            self.tolabel.show()
-        else:
-            self.textsearch = True
-            self.searchcomboBox.show()
-            self.searchEdit.show()
-            self.booklabel.hide()
-            self.bookcomboBox.hide()
-            self.fromcomboBox_c.hide()
-            self.fromcomboBox_v.hide()
-            self.tocomboBox_c.hide()
-            self.tocomboBox_v.hide()
-            self.chapterlabel.hide()
-            self.verselabel.hide()
-            self.fromlabel.hide()
-            self.tolabel.hide()"""
-        pass
+        for i in range(1, 10):
+            self.AdvancedFromChapter.addItem(str(i))
+        for i in range(1, 20):            
+            self.AdvancedToChapter.addItem(str(i))
+        for i in range(1, 30):
+            self.AdvancedFromVerse.addItem(str(i))
+        for i in range(1, 40):            
+            self.AdvancedToVerse.addItem(str(i))
 
