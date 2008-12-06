@@ -23,10 +23,10 @@ import sys
 mypath=os.path.split(os.path.abspath(__file__))[0]
 sys.path.insert(0,(os.path.join(mypath, '..', '..', '..')))
 
-from bibleOSISImpl import BibleOSISImpl
-from bibleCSVImpl import BibleCSVImpl
-from bibleDBImpl import BibleDBImpl
-from bibleHTTPImpl import BibleHTTPImpl
+from bibleOSISimpl import BibleOSISImpl
+from bibleCSVimpl import BibleCSVImpl
+from bibleDBimpl import BibleDBImpl
+from bibleHTTPimpl import BibleHTTPImpl
 
 import logging
 logging.basicConfig(level=logging.DEBUG,
@@ -50,7 +50,9 @@ class BibleManager():
         log.debug( "Bible Initialising")
         self.bibleDBCache = {}   # dict of bible database classes
         self.bibleHTTPCache = {} # dict of bible http readers
+
         self.biblePath = path #+"/Data/Bibles" #ConfigHelper.getBiblePath()
+
         print self.biblePath
         self.dialogobject = None
         #log.debug( self.biblePath )

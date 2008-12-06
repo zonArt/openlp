@@ -31,8 +31,8 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.biblemanager = biblemanager
-        self.savebutton = self.BibleImportButtonBox.button(QtGui.QDialogButtonBox.Save)
-        self.BibleImportButtonBox.removeButton(self.savebutton) # hide the save button tile screen is valid
+#        self.savebutton = self.BibleImportButtonBox.button(QtGui.QDialogButtonBox.Save)
+#        self.BibleImportButtonBox.removeButton(self.savebutton) # hide the save button tile screen is valid
         
    
     @pyqtSignature("")
@@ -66,8 +66,11 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
         if button.text() == "Save":
             bipf = BibleImportProgressForm()
             bipf.show()
-            self.biblemanager.processDialog(bipf)
-            self.biblemanager.registerOSISFileBible(str(self.BibleNameEdit.displayText()), self.OSISLocationEdit.displayText())
+            if self.biblemanager != None:
+                self.biblemanager.processDialog(bipf)
+                self.biblemanager.registerOSISFileBible(str(self.BibleNameEdit.displayText()), self.OSISLocationEdit.displayText())
+        elif button.text() == "Cancel":
+            self.close()            
 
 
 
@@ -82,10 +85,10 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
             validcount += 1
         if len(self.VersionNameEdit.displayText()) > 0 and len(self.CopyrightEdit.displayText()) > 0 and len(self.PermisionEdit.displayText()) > 0:
             valid = True
-        if validcount == 2  and valid:
-            self.BibleImportButtonBox.addButton(self.savebutton, QtGui.QDialogButtonBox.AcceptRole) # hide the save button tile screen is valid
-        else:
-            self.BibleImportButtonBox.removeButton(self.savebutton) # hide the save button tile screen is valid
+#        if validcount == 2  and valid:
+#            self.BibleImportButtonBox.addButton(self.savebutton, QtGui.QDialogButtonBox.AcceptRole) # hide the save button tile screen is valid
+#        else:
+#            self.BibleImportButtonBox.removeButton(self.savebutton) # hide the save button tile screen is valid
 
 
 
@@ -93,8 +96,8 @@ class runner(QtGui.QApplication):
 
     def run(self):
         values = ["Genesis","Matthew","Revelation"]
-        self.bm = BibleManager()
-        self.bim = BibleImportForm(self.bm)
+        self.bm = BibleManager("/home/timali/.openlp")
+        self.bim = BibleImportForm()
         self.bim.show()
         self.processEvents()
         sys.exit(app.exec_())

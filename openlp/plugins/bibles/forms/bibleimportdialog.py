@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'bibleimport.ui'
 #
-# Created: Sun Nov 30 14:32:39 2008
+# Created: Thu Dec  4 20:52:10 2008
 #      by: PyQt4 UI code generator 4.4.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -22,7 +22,7 @@ class Ui_BibleImportDialog(object):
         self.ImportToolBox.setGeometry(QtCore.QRect(0, 0, 481, 431))
         self.ImportToolBox.setObjectName("ImportToolBox")
         self.FileImportPage = QtGui.QWidget()
-        self.FileImportPage.setGeometry(QtCore.QRect(0, 0, 481, 369))
+        self.FileImportPage.setGeometry(QtCore.QRect(0, 0, 471, 361))
         self.FileImportPage.setObjectName("FileImportPage")
         self.OSISGroupBox = QtGui.QGroupBox(self.FileImportPage)
         self.OSISGroupBox.setGeometry(QtCore.QRect(8, 74, 451, 71))
@@ -70,7 +70,7 @@ class Ui_BibleImportDialog(object):
         self.BibleNameLabel.setObjectName("BibleNameLabel")
         self.ImportToolBox.addItem(self.FileImportPage, "")
         self.WebBiblePage = QtGui.QWidget()
-        self.WebBiblePage.setGeometry(QtCore.QRect(0, 0, 246, 265))
+        self.WebBiblePage.setGeometry(QtCore.QRect(0, 0, 471, 361))
         self.WebBiblePage.setObjectName("WebBiblePage")
         self.WebBibleLayout = QtGui.QVBoxLayout(self.WebBiblePage)
         self.WebBibleLayout.setSpacing(8)
@@ -169,10 +169,6 @@ class Ui_BibleImportDialog(object):
 
         self.retranslateUi(BibleImportDialog)
         self.ImportToolBox.setCurrentIndex(0)
-        QtCore.QObject.connect(self.BibleImportButtonBox, QtCore.SIGNAL("accepted()"), BibleImportDialog.accept)
-        QtCore.QObject.connect(self.BibleImportButtonBox, QtCore.SIGNAL("rejected()"), BibleImportDialog.reject)
-        QtCore.QObject.connect(self.BibleImportButtonBox, QtCore.SIGNAL("rejected()"), BibleImportDialog.close)
-        QtCore.QObject.connect(self.BibleImportButtonBox, QtCore.SIGNAL("accepted()"), BibleImportDialog.close)
         QtCore.QMetaObject.connectSlotsByName(BibleImportDialog)
 
     def retranslateUi(self, BibleImportDialog):
