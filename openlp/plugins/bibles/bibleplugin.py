@@ -160,10 +160,28 @@ class BiblePlugin(Plugin):
         self.listView.setGeometry(QtCore.QRect(10, 200, 256, 391))
         self.listView.setObjectName("listView")
         self.MediaManagerItem.PageLayout.addWidget(self.listView)
+         
+        #QtCore.QObject.connect(self.QuickTab, QtCore.SIGNAL("triggered()"), self.onQuickTabClick)
+        QtCore.QObject.connect( self.SearchTabWidget, QtCore.SIGNAL("currentChanged ( QWidget * )" ), self.onQuickTabClick)
+        QtCore.QObject.connect(self.AdvancedVersionComboBox, QtCore.SIGNAL("activated(int)"), self.onAdvancedVersionComboBox)
+
 
         self._initialiseform()
         
         return self.MediaManagerItem
+
+    def onAdvancedVersionComboBox(self):
+        print self.AdvancedVersionComboBox.currentText()
+        books = self.biblemanager.getBibleBooks(str(self.AdvancedVersionComboBox.currentText()))
+        self.AdvancedBookComboBox.clear()
+        for b in books:
+            self.AdvancedBookComboBox.addItem(b[0])
+        
+    def onQuickTabClick(self):
+        print "onQuickTabClick"
+        print self.SearchTabWidget.currentIndex()
+        print self.SearchTabWidget.tabText(self.SearchTabWidget.currentIndex())
+        pass
 
     def onBibleNewClick(self):
         self.bibleimportform = BibleImportForm(self.biblemanager)
@@ -185,9 +203,7 @@ class BiblePlugin(Plugin):
             self.QuickVersionComboBox.addItem(b)
             self.AdvancedVersionComboBox.addItem(b)
 
-        self.AdvancedBookComboBox.addItem("Genesis")
-        self.AdvancedBookComboBox.addItem("Matthew")        
-        self.AdvancedBookComboBox.addItem("Revelation")        
+   
 
         for i in range(1, 10):
             self.AdvancedFromChapter.addItem(str(i))

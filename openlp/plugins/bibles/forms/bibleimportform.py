@@ -30,9 +30,7 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
         """
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        #self.biblemanager = biblemanager
-#        self.savebutton = self.BibleImportButtonBox.button(QtGui.QDialogButtonBox.Save)
-#        self.BibleImportButtonBox.removeButton(self.savebutton) # hide the save button tile screen is valid
+        self.biblemanager = biblemanager
         
    
     @pyqtSignature("")
@@ -64,8 +62,8 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
     def on_BibleImportButtonBox_clicked(self,button):
         print button.text()
         if button.text() == "Save":
-            bipf = BibleImportProgressForm()
-            bipf.show()
+            #bipf = BibleImportProgressForm()
+            #bipf.show()
             if self.biblemanager != None:
                 self.biblemanager.processDialog(bipf)
                 self.biblemanager.registerOSISFileBible(str(self.BibleNameEdit.displayText()), self.OSISLocationEdit.displayText())

@@ -94,7 +94,7 @@ class CWExtract(BibleCommon):
     def getBibleChapter(self, version, bookid, bookname,  chapter) :
         log.debug( "getBibleChapter %s,%s,%s,%s", version, bookid, bookname,  chapter) 
         """
-        Access and decode bibles via the Crosswaly website
+        Access and decode bibles via the Crosswalk website
             Version - the version of the bible like niv for New International version
             bookid - not used
             bookname - text name of in english eg 'gen' for Genesis

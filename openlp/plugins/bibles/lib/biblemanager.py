@@ -51,7 +51,7 @@ class BibleManager():
         self.bibleDBCache = {}   # dict of bible database classes
         self.bibleHTTPCache = {} # dict of bible http readers
         self.biblePath = path
-        self.bibleSuffix = "bible3a"
+        self.bibleSuffix = "bible3"
         self.dialogobject = None
 
         log.debug("Bible Path %s",  self.biblePath )
@@ -76,12 +76,12 @@ class BibleManager():
     def processDialog(self, dialogobject):
         self.dialogobject = dialogobject
 
-    def registerHTTPBible(self, biblename, biblesource, proxyurl=None, proxyid=None, proxypass=None):
+    def registerHTTPBible(self, biblename, biblesource, mode="lazy", proxyurl=None, proxyid=None, proxypass=None):
         """
         Return a list of bibles from a given URL.
         The selected Bible can then be registered and LazyLoaded into a database
         """
-        log.debug( "registerHTTPBible %s,%s,%s,%s,%s", biblename, biblesource, proxyurl,  proxyid, proxypass)
+        log.debug( "registerHTTPBible %s,%s,%s,%s,%s", biblename, biblesource, proxyurl,  proxyid, proxypass, mode)
         if self._isNewBible(biblename):
             nbible = BibleDBImpl(biblename) # Create new Bible
             nbible.createTables() # Create Database
