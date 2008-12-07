@@ -22,7 +22,7 @@ from types import StringType, ListType, NoneType
 
 sys.path.append(os.path.abspath("./../../.."))
 
-from openlp.core.lib.xmlrootclass import XmlRootClass
+from openlp.core.lib import XmlRootClass
 
 class SongException(Exception):
     pass
@@ -576,11 +576,11 @@ class Song(XmlRootClass) :
                 res.extend()
         # remove formattingincluding themes
         return res
-        
+
     def GetRenderSlide(self,  slideNumber):
         """Return the slide to be rendered including the additional
         properties
-        
+
         slideNumber -- 1 .. numberOfSlides
         Returns a list as:
         [theme (string),
@@ -622,3 +622,5 @@ class Song(XmlRootClass) :
         # append the correct slide
         return res
 
+__all__ = ['SongException', 'SongTitleError', 'SongSlideError', 'SongTypeError',
+           'Song']
