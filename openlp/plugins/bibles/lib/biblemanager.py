@@ -20,8 +20,6 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 import os, os.path
 import sys
-mypath=os.path.split(os.path.abspath(__file__))[0]
-sys.path.insert(0,(os.path.join(mypath, '..', '..', '..')))
 
 from bibleOSISimpl import BibleOSISImpl
 from bibleCSVimpl import BibleCSVImpl
@@ -29,17 +27,12 @@ from bibleDBimpl import BibleDBImpl
 from bibleHTTPimpl import BibleHTTPImpl
 
 import logging
-logging.basicConfig(level=logging.DEBUG,
-                format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                datefmt='%m-%d %H:%M',
-                filename='plugins.log',
-                filemode='w')
 
 class BibleManager():
     global log
     log=logging.getLogger("BibleMgr")
     log.info("Bible manager loaded")
-    def __init__(self, path):
+    def __init__(self, config):
         """
         Finds all the bibles defined for the system
         Creates an Interface Object for each bible containing connection information
@@ -47,11 +40,13 @@ class BibleManager():
 
         Init confirms the bible exists and stores the database path.
         """
+        self.config = config
         log.debug( "Bible Initialising")
         self.bibleDBCache = {}   # dict of bible database classes
         self.bibleHTTPCache = {} # dict of bible http readers
-        self.biblePath = path
-        self.bibleSuffix = "bible3"
+        self.biblePath = self.config.get_data_path()
+        self.proxyname = self.config.get_config("proxy name") #get proxy name for screen
+        self.bibleSuffix = self.config.get_config("suffix name")
         self.dialogobject = None
 
         log.debug("Bible Path %s",  self.biblePath )
@@ -159,9 +154,10 @@ class BibleManager():
         """
         Returns a list of the books of the bible from the database
         """
+        log.debug("getbibleBooks %s", bible)
         return self.bibleDBCache[bible].getBibleBooks()
 
-    def getBookChapterCount(self,bible,  book):
+    def getBookChapterCount(self, bible,  book):
         """
         Returns the number of Chapters for a given book
         """

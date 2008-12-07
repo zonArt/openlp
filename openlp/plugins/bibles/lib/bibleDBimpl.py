@@ -25,18 +25,12 @@ import string
 from sqlalchemy import  *
 from sqlalchemy.sql import select
 from sqlalchemy.orm import sessionmaker, mapper
-mypath=os.path.split(os.path.abspath(__file__))[0]
-sys.path.insert(0,(os.path.join(mypath, '..', '..', '..')))
 
 from openlp.plugins.bibles.lib.biblecommon import BibleCommon
 from openlp.core.utils import ConfigHelper
 
 import logging
-logging.basicConfig(level=logging.DEBUG,
-                format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                datefmt='%m-%d %H:%M',
-                filename='plugins.log',
-                filemode='w')
+
 class BibleDBException(Exception):
     pass
 class BibleInvalidDatabaseError(Exception):

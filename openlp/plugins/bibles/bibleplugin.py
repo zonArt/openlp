@@ -25,14 +25,18 @@ from openlp.core.lib import Plugin, MediaManagerItem
 from openlp.plugins.bibles.lib.biblemanager import BibleManager
 from openlp.plugins.bibles.forms.bibleimportform import BibleImportForm
 
+import logging
+
 class BiblePlugin(Plugin):
+    global log
+    log=logging.getLogger("BiblePlugin")
+    log.info("Bible Plugin loaded")    
     def __init__(self):
         # Call the parent constructor
         Plugin.__init__(self, 'Bible', '1.9.0')
         self.Weight = -9
         #Register the bible Manager
-        self.biblemanager = BibleManager(self.config.get_data_path())
-        self.textsearch = True
+        self.biblemanager = BibleManager(self.config)
 
     def getMediaManagerItem(self):
         # Create the plugin icon
@@ -164,18 +168,21 @@ class BiblePlugin(Plugin):
         #QtCore.QObject.connect(self.QuickTab, QtCore.SIGNAL("triggered()"), self.onQuickTabClick)
         QtCore.QObject.connect( self.SearchTabWidget, QtCore.SIGNAL("currentChanged ( QWidget * )" ), self.onQuickTabClick)
         QtCore.QObject.connect(self.AdvancedVersionComboBox, QtCore.SIGNAL("activated(int)"), self.onAdvancedVersionComboBox)
-
-
-        self._initialiseform()
+        QtCore.QObject.connect(self.AdvancedBookComboBox, QtCore.SIGNAL("activated(int)"), self.onAdvancedBookComboBox)      
+        QtCore.QObject.connect(self.AdvancedFromChapter, QtCore.SIGNAL("activated(int)"), self.onAdvancedFromChapter)
+        QtCore.QObject.connect(self.AdvancedFromVerse, QtCore.SIGNAL("activated(int)"), self.onAdvancedFromVerse)
+        QtCore.QObject.connect(self.AdvancedToChapter, QtCore.SIGNAL("activated(int)"), self.onAdvancedToChapter)
+        
+        self._initialiseForm()
         
         return self.MediaManagerItem
 
     def onAdvancedVersionComboBox(self):
+        self._initialiseBibleAdvanced(str(self.AdvancedVersionComboBox.currentText())) # restet the bible info
+
+    def onAdvancedBookComboBox(self):
         print self.AdvancedVersionComboBox.currentText()
-        books = self.biblemanager.getBibleBooks(str(self.AdvancedVersionComboBox.currentText()))
-        self.AdvancedBookComboBox.clear()
-        for b in books:
-            self.AdvancedBookComboBox.addItem(b[0])
+        self._initialiseBibleAdvanced(str(self.AdvancedVersionComboBox.currentText())) # restet the bible info
         
     def onQuickTabClick(self):
         print "onQuickTabClick"
@@ -197,20 +204,75 @@ class BiblePlugin(Plugin):
     def onBibleAddClick(self):
         pass
 
-    def _initialiseform(self):
+    def _initialiseForm(self):
         bibles = self.biblemanager.getBibles()
-        for b in bibles:
+        first = True
+        for b in bibles:  # load bibles into the combo boxes
             self.QuickVersionComboBox.addItem(b)
-            self.AdvancedVersionComboBox.addItem(b)
+            self.AdvancedVersionComboBox.addItem(b)            
+            if first:
+                first = False
+                self._initialiseBible(b) # use the fist bible as the trigger
 
-   
 
-        for i in range(1, 10):
-            self.AdvancedFromChapter.addItem(str(i))
-        for i in range(1, 20):            
-            self.AdvancedToChapter.addItem(str(i))
-        for i in range(1, 30):
-            self.AdvancedFromVerse.addItem(str(i))
-        for i in range(1, 40):            
-            self.AdvancedToVerse.addItem(str(i))
+    def _initialiseBible(self, bible):
+        log.debug("_initialiseBible %s ", bible)                
+        self._initialiseBibleQuick(bible)
+        self._initialiseBibleAdvanced(bible)
 
+    def _initialiseBibleAdvanced(self, bible):
+        log.debug("_initialiseBibleAdvanced %s ", bible)
+        currentBook = str(self.AdvancedBookComboBox.currentText())
+        cf = self.biblemanager.getBookChapterCount(bible, currentBook)[0]
+        log.debug("Book change bible %s book %s ChapterCount %s", bible, currentBook, cf)
+        if cf == None: # Only change the search details if the book is missing from the new bible
+            books = self.biblemanager.getBibleBooks(str(self.AdvancedVersionComboBox.currentText())) 
+            self.AdvancedBookComboBox.clear()
+            first = True
+            for b in books:
+                self.AdvancedBookComboBox.addItem(b[0])            
+                if first:
+                    book = b
+                    first = False
+                    self._initialiseChapterVerse(bible, b[0])
+
+    def _initialiseChapterVerse(self, bible, book):
+        log.debug("_initialiseChapterVerse %s , %s", bible, book)
+        self.chaptersfrom = self.biblemanager.getBookChapterCount(bible, book)[0]
+        self.verses = self.biblemanager.getBookVerseCount(bible, book, 1)[0]
+        self._adjustComboBox(1, self.chaptersfrom, self.AdvancedFromChapter)
+        self._adjustComboBox(1, self.chaptersfrom, self.AdvancedToChapter) 
+        self._adjustComboBox(1, self.verses, self.AdvancedFromVerse)
+        self._adjustComboBox(1, self.verses, self.AdvancedToVerse) 
+        
+    def onAdvancedFromChapter(self):
+        bible = str(self.AdvancedVersionComboBox.currentText())
+        book = str(self.AdvancedBookComboBox.currentText())
+        cf = self.AdvancedFromChapter.currentText()
+        self._adjustComboBox(cf, self.chaptersfrom, self.AdvancedToChapter)
+        vse = self.biblemanager.getBookVerseCount(bible, book, int(cf))[0] # get the verse count for new chapter
+        self._adjustComboBox(1, vse, self.AdvancedFromVerse)        
+        self._adjustComboBox(1, vse, self.AdvancedToVerse)        
+        
+    def _adjustComboBox(self, frm, to , combo):
+        log.debug("_adjustComboBox %s , %s , %s", combo, frm,  to)        
+        combo.clear()
+        for i in range(int(frm), int(to) + 1):            
+            combo.addItem(str(i))
+        
+    def onAdvancedFromVerse(self):
+        frm = self.AdvancedFromVerse.currentText()
+        self._adjustComboBox(frm, self.verses, self.AdvancedToVerse)
+        
+    def onAdvancedToChapter(self): 
+        t1 =  self.AdvancedFromChapter.currentText()        
+        t2 =  self.AdvancedToChapter.currentText()
+        if t1 != t2:
+            bible = str(self.AdvancedVersionComboBox.currentText())
+            book = str(self.AdvancedBookComboBox.currentText())            
+            vse = self.biblemanager.getBookVerseCount(bible, book, int(t2))[0] # get the verse count for new chapter
+            self._adjustComboBox(1, vse, self.AdvancedToVerse)             
+            
+        
+    def _initialiseBibleQuick(self, bible): # not sure if needed yet!
+        a=1

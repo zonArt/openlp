@@ -20,6 +20,8 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from openlp.core.lib import PluginConfig
 
+import logging
+
 class Plugin(object):
     """
     Base class for openlp plugins to inherit from.
@@ -55,7 +57,7 @@ class Plugin(object):
     * handleEvent(event)
         A method use to handle events, given an Event object.
     """
-
+    global log
     def __init__(self, name=None, version=None):
         """
         This is the constructor for the plugin object. This provides an easy
