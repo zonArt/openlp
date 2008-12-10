@@ -1,0 +1,10 @@
+[bible]
+suffix name = bible3
+
+[main]
+themes path = themes
+data path = c:\\Documents and Settings\\<username>\\Application Data\\.openlp\\data
+
+[songs]
+file name = songs.sqlite
+data path = songs 
