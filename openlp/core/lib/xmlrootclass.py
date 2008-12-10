@@ -31,15 +31,15 @@ else:
     from elementtree import ElementTree, XML
 
 
-# borrowed from theme - can be common
-DelphiColors={"clRed":0xFF0000,
-               "clBlack":0x000000,
-               "clWhite":0xFFFFFF}
-
 class XmlRootClass(object):
     """Root class for themes, songs etc
 
     provides interface for parsing xml files into object attributes
+
+    if you overload this class and provide a function called
+    post_tag_hook, it will be called thusly for each tag,value pair:
+
+    (element.tag, val) = self.post_tag_hook(element.tag, val)
     """
     def _setFromXml(self, xml, rootTag):
         """Set song properties from given xml content
@@ -66,9 +66,6 @@ class XmlRootClass(object):
                         except ValueError: # nope
                             #print "nope",
                             pass
-                    elif DelphiColors.has_key(t):
-                        #print "colour",
-                        val=DelphiColors[t]
                     else:
                         #print "last chance",
                         try:
@@ -77,11 +74,8 @@ class XmlRootClass(object):
                         except ValueError:
                             #print "give up",
                             val=t
-                if (element.tag.find("Color") > 0 or
-                    (element.tag.find("BackgroundParameter") == 0 and type(val) == type(0))):
-                    # convert to a QtGui.Color
-                    val= QtGui.QColor((val>>16) & 0xFF, (val>>8)&0xFF, val&0xFF)
-                #print [val]
+                    if hasattr(self, "post_tag_hook"):
+                        (element.tag, val) = self.post_tag_hook(element.tag, val)
                 setattr(self,element.tag, val)
         pass
 

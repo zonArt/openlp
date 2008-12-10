@@ -20,10 +20,10 @@ import os
 import sys
 mypath=os.path.split(os.path.abspath(__file__))[0]
 
-sys.path.insert(0,(os.path.join(mypath, '..' ,'..', '..')))
+sys.path.insert(0,(os.path.join(mypath, '..' ,'..', '..','..')))
 print sys.path
 
-from openlp.theme import Theme
+from openlp.core.theme import Theme
 import os.path
 from PyQt4 import QtGui
 def test_read_theme():

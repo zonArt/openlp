@@ -45,6 +45,10 @@ blankstylexml=\
 </Theme>
 '''
 
+DelphiColors={"clRed":0xFF0000,
+               "clBlack":0x000000,
+               "clWhite":0xFFFFFF}
+
 class Theme(XmlRootClass):
     def __init__(self, xmlfile=None):
         """ stores the info about a theme
@@ -83,10 +87,19 @@ class Theme(XmlRootClass):
                             1 - lyrics
         """
         # init to defaults
-        self._set_from_XML(blankstylexml)
+        self._setFromXml(blankstylexml, 'Theme')
         if xmlfile != None:
             # init from xmlfile
             file=open(xmlfile)
             t=''.join(file.readlines()) # read the file and change list to a string
-            self._set_from_XML(t)
+            self._setFromXml(t, 'Theme')
 
+    def post_tag_hook(self, tag, val):
+        if DelphiColors.has_key(val):
+            val=DelphiColors[val]
+        if (tag.find("Color") > 0 or
+            (tag.find("BackgroundParameter") == 0 and type(val) == type(0))):
+            # convert to a QtGui.Color
+            val= QtGui.QColor((val>>16) & 0xFF, (val>>8)&0xFF, val&0xFF)
+
+        return (tag, val)
