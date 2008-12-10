@@ -23,7 +23,7 @@ from PyQt4 import QtGui, QtCore
 
 mypath=os.path.split(os.path.abspath(__file__))[0]
 sys.path.insert(0,(os.path.join(mypath, '..', '..','..')))
-from openlp.theme import Theme
+from openlp.core.theme import Theme
 from openlp.core import Renderer
 # from http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66062
 def whoami(depth=1):
