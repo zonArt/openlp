@@ -37,6 +37,7 @@ class BiblePlugin(Plugin):
         self.Weight = -9
         #Register the bible Manager
         self.biblemanager = BibleManager(self.config)
+        self.searchresults = {} # place to store the search results
 
     def getMediaManagerItem(self):
         # Create the plugin icon
@@ -160,7 +161,7 @@ class BiblePlugin(Plugin):
         # Add the search tab widget to the page layout
         self.MediaManagerItem.PageLayout.addWidget(self.SearchTabWidget)
 
-        self.listView = QtGui.QListView()
+        self.listView = QtGui.QListWidget()
         self.listView.setGeometry(QtCore.QRect(10, 200, 256, 391))
         self.listView.setObjectName("listView")
         self.MediaManagerItem.PageLayout.addWidget(self.listView)
@@ -172,6 +173,7 @@ class BiblePlugin(Plugin):
         QtCore.QObject.connect(self.AdvancedFromChapter, QtCore.SIGNAL("activated(int)"), self.onAdvancedFromChapter)
         QtCore.QObject.connect(self.AdvancedFromVerse, QtCore.SIGNAL("activated(int)"), self.onAdvancedFromVerse)
         QtCore.QObject.connect(self.AdvancedToChapter, QtCore.SIGNAL("activated(int)"), self.onAdvancedToChapter)
+        QtCore.QObject.connect(self.AdvancedSearchButton, QtCore.SIGNAL("pressed()"), self.onAdvancedSearchButton)        
         
         self._initialiseForm()
         
@@ -272,7 +274,18 @@ class BiblePlugin(Plugin):
             book = str(self.AdvancedBookComboBox.currentText())            
             vse = self.biblemanager.getBookVerseCount(bible, book, int(t2))[0] # get the verse count for new chapter
             self._adjustComboBox(1, vse, self.AdvancedToVerse)             
-            
+        
+    def onAdvancedSearchButton(self):
+        self.listView.clear() # clear the results
+        bible = str(self.AdvancedVersionComboBox.currentText())
+        book = str(self.AdvancedBookComboBox.currentText()) 
+        chapfrom =  int(self.AdvancedFromChapter.currentText())
+        chapto =  int(self.AdvancedToChapter.currentText())
+        versefrom =  int(self.AdvancedFromVerse.currentText())
+        verseto =  int(self.AdvancedToVerse.currentText())
+        self.searchresults = self.biblemanager.getVerseText(bible, book, chapfrom, versefrom, verseto) 
+        for sv , st in self.searchresults:
+            self.listView.addItem(book + " " +str(chapfrom) + ":"+ str(sv))
         
     def _initialiseBibleQuick(self, bible): # not sure if needed yet!
         a=1
