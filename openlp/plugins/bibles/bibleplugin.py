@@ -87,7 +87,16 @@ class BiblePlugin(Plugin):
         self.QuickVersionLabel = QtGui.QLabel(self.QuickTab)
         self.QuickVersionLabel.setObjectName('QuickVersionLabel')
         self.QuickVersionLabel.setText('Version:')
-        self.QuickLayout.addWidget(self.QuickVersionLabel, 0, 0, 1, 1)
+        self.QuickLayout.addWidget(self.QuickVersionLabel, 0, 0, 1, 1)        
+        
+        self.QuickSearchComboBox = QtGui.QComboBox(self.QuickTab)
+        self.QuickSearchComboBox.setObjectName('SearchComboBox')
+        self.QuickLayout.addWidget(self.QuickSearchComboBox, 1, 1, 1, 2)
+        self.QuickSearchLabel = QtGui.QLabel(self.QuickTab)
+        self.QuickSearchLabel .setObjectName('QuickSearchLabel')
+        self.QuickSearchLabel .setText('Search Type:')
+        self.QuickLayout.addWidget(self.QuickSearchLabel, 1, 0, 1, 1)         
+
         self.QuickSearchLabel = QtGui.QLabel(self.QuickTab)
         self.QuickSearchLabel.setObjectName('QuickSearchLabel')
         self.QuickSearchLabel.setText('Find:')
@@ -208,6 +217,8 @@ class BiblePlugin(Plugin):
 
     def _initialiseForm(self):
         bibles = self.biblemanager.getBibles()
+        self.QuickSearchComboBox.addItem("Text Search")
+        self.QuickSearchComboBox.addItem("Verse Search")        
         first = True
         for b in bibles:  # load bibles into the combo boxes
             self.QuickVersionComboBox.addItem(b)

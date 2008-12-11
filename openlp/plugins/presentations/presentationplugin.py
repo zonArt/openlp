@@ -21,14 +21,14 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from PyQt4 import QtCore, QtGui
 from openlp.core.resources import *
 from openlp.core.lib import Plugin, MediaManagerItem
-from forms import EditSongForm
+#from forms import EditSongForm
 
 class SongsPlugin(Plugin):
     def __init__(self):
         # Call the parent constructor
-        Plugin.__init__(self, 'Songs', '1.9.0')
-        self.Weight = -10
-        self.edit_song_form = EditSongForm()
+        Plugin.__init__(self, 'Presentations', '1.9.0')
+        self.Weight = -8
+        #self.edit_song_form = EditSongForm()
 
     def getMediaManagerItem(self):
         # Create the plugin icon
@@ -36,7 +36,7 @@ class SongsPlugin(Plugin):
         self.Icon.addPixmap(QtGui.QPixmap(':/media/media_song.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         # Create the MediaManagerItem object
-        self.MediaManagerItem = MediaManagerItem(self.Icon, 'Songs')
+        self.MediaManagerItem = MediaManagerItem(self.Icon, 'Presentations')
         # Add a toolbar
         self.MediaManagerItem.addToolbar()
         # Create buttons for the toolbar
@@ -62,52 +62,11 @@ class SongsPlugin(Plugin):
             'Add the selected song(s) to the service', ':/system/system_add.png',
             self.onSongAddClick, 'SongAddItem')
         ## Add the songlist widget ##
-   
-        # Create the tab widget
-        self.SongGroupBox = QtGui.QGroupBox(self.MediaManagerItem)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.SongGroupBox.sizePolicy().hasHeightForWidth())
-        self.SongGroupBox.setSizePolicy(sizePolicy)
-        self.SongGroupBox.setObjectName('SearchTabWidget')
-
-        self.QuickLayout = QtGui.QGridLayout(self.SongGroupBox)
-        self.QuickLayout.setObjectName('QuickLayout')
-        self.SearchTypeComboBox = QtGui.QComboBox(self.SongGroupBox)
-        self.SearchTypeComboBox.setObjectName('VersionComboBox')
-        self.QuickLayout.addWidget(self.SearchTypeComboBox, 0, 1, 1, 2)
-        self.SearchTypeLabel = QtGui.QLabel(self.SongGroupBox)
-        self.SearchTypeLabel.setObjectName('SearchTypeLabel')
-        self.SearchTypeLabel.setText('Search Type:')
-        self.QuickLayout.addWidget(self.SearchTypeLabel, 0, 0, 1, 1)        
-      
-
-        self.SearchTextLabel = QtGui.QLabel(self.SongGroupBox)
-        self.SearchTextLabel.setObjectName('SearchTextLabel')
-        self.SearchTextLabel.setText('Search Text:')
-        self.QuickLayout.addWidget(self.SearchTextLabel, 2, 0, 1, 1)
-        self.SearchTextEdit = QtGui.QLineEdit(self.SongGroupBox)
-        self.SearchTextEdit.setObjectName('SearchTextEdit')
-        self.QuickLayout.addWidget(self.SearchTextEdit, 2, 1, 1, 2)
-        self.SearchTextButton = QtGui.QPushButton(self.SongGroupBox)
-        self.SearchTextButton.setObjectName('SearchTextButton')
-        self.SearchTextButton.setText('Search')
-        self.QuickLayout.addWidget(self.SearchTextButton, 3, 2, 1, 1)
-        QuickSpacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.QuickLayout.addItem(QuickSpacerItem, 4, 2, 1, 1)
-
-        # Add the search tab widget to the page layout
-        self.MediaManagerItem.PageLayout.addWidget(self.SongGroupBox)
 
         self.listView = QtGui.QListWidget()
         self.listView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.listView.setObjectName("listView")
         self.MediaManagerItem.PageLayout.addWidget(self.listView)     
-        
-        self.SearchTypeComboBox.addItem("Lyrics")
-        self.SearchTypeComboBox.addItem("Authors")
-        self.SearchTypeComboBox.addItem("Titles")
         
         return self.MediaManagerItem
 

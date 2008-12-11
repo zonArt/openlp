@@ -31,21 +31,21 @@
   <widget class="QToolBox" name="ImportToolBox" >
    <property name="geometry" >
     <rect>
-     <x>0</x>
+     <x>10</x>
      <y>0</y>
-     <width>481</width>
+     <width>471</width>
      <height>431</height>
     </rect>
    </property>
    <property name="currentIndex" >
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="FileImportPage" >
     <property name="geometry" >
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>471</width>
+      <width>461</width>
       <height>361</height>
      </rect>
     </property>
@@ -186,7 +186,7 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>471</width>
+      <width>461</width>
       <height>361</height>
      </rect>
     </property>
@@ -434,7 +434,7 @@
    </property>
    <layout class="QGridLayout" name="gridLayout_3" >
     <item row="0" column="0" >
-     <widget class="QProgressBar" name="progressBar" >
+     <widget class="QProgressBar" name="ProgressBar" >
       <property name="value" >
        <number>0</number>
       </property>
@@ -449,6 +449,25 @@
    </layout>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>BibleNameEdit</tabstop>
+  <tabstop>OSISLocationEdit</tabstop>
+  <tabstop>OsisFileButton</tabstop>
+  <tabstop>BooksLocationEdit</tabstop>
+  <tabstop>BooksFileButton</tabstop>
+  <tabstop>VerseLocationEdit</tabstop>
+  <tabstop>VersesFileButton</tabstop>
+  <tabstop>LocationComboBox</tabstop>
+  <tabstop>TypeComboBox</tabstop>
+  <tabstop>BibleComboBox</tabstop>
+  <tabstop>AddressEdit</tabstop>
+  <tabstop>UsernameEdit</tabstop>
+  <tabstop>PasswordEdit</tabstop>
+  <tabstop>VersionNameEdit</tabstop>
+  <tabstop>CopyrightEdit</tabstop>
+  <tabstop>PermisionEdit</tabstop>
+  <tabstop>BibleImportButtonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
