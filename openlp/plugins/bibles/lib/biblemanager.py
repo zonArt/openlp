@@ -48,23 +48,22 @@ class BibleManager():
         self.proxyname = self.config.get_config("proxy name") #get proxy name for screen
         self.bibleSuffix = self.config.get_config("suffix name")
         self.dialogobject = None
+        
+        files = self.config.get_files()
+        log.debug("Bible Files %s",  files )
 
-        log.debug("Bible Path %s",  self.biblePath )
-        files = os.listdir(self.biblePath)
         for f in files:
             nme = f.split('.')
             bname = nme[0]
-            sfx = nme[1]
-            if sfx == self.bibleSuffix: # only load files with the correct suffix
-                self.bibleDBCache[bname] = BibleDBImpl(self.biblePath, bname, self.bibleSuffix)
-                biblesource = self.bibleDBCache[bname].getMeta("WEB") # look to see if lazy load bible exists and get create getter.
-                if biblesource:
-                    nhttp = BibleHTTPImpl()
-                    nhttp.setBibleSource(biblesource)  # tell The Server where to get the verses from.
-                    self.bibleHTTPCache[bname] = nhttp
-                    proxy = self.bibleDBCache[bname].getMeta("proxy") # look to see if lazy load bible exists and get create getter.
-                    nhttp.setProxy(proxy)  # tell The Server where to get the verses from.
-            #
+            self.bibleDBCache[bname] = BibleDBImpl(self.biblePath, bname, self.bibleSuffix)
+            biblesource = self.bibleDBCache[bname].getMeta("WEB") # look to see if lazy load bible exists and get create getter.
+            if biblesource:
+                nhttp = BibleHTTPImpl()
+                nhttp.setBibleSource(biblesource)  # tell The Server where to get the verses from.
+                self.bibleHTTPCache[bname] = nhttp
+                proxy = self.bibleDBCache[bname].getMeta("proxy") # look to see if lazy load bible exists and get create getter.
+                nhttp.setProxy(proxy)  # tell The Server where to get the verses from.
+        #
 
         log.debug( "Bible Initialised")
 

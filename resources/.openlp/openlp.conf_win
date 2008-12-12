@@ -8,3 +8,6 @@ data path = c:\\Documents and Settings\\<username>\\Application Data\\.openlp\\d
 [songs]
 file name = songs.sqlite
 data path = songs 
+
+[presentations]
+suffix name = ppt,pps,odi

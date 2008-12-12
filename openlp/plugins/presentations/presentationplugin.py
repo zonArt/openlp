@@ -23,12 +23,12 @@ from openlp.core.resources import *
 from openlp.core.lib import Plugin, MediaManagerItem
 #from forms import EditSongForm
 
-class SongsPlugin(Plugin):
+class PresentationPlugin(Plugin):
     def __init__(self):
         # Call the parent constructor
         Plugin.__init__(self, 'Presentations', '1.9.0')
         self.Weight = -8
-        #self.edit_song_form = EditSongForm()
+       
 
     def getMediaManagerItem(self):
         # Create the plugin icon
@@ -41,11 +41,11 @@ class SongsPlugin(Plugin):
         self.MediaManagerItem.addToolbar()
         # Create buttons for the toolbar
         ## New Song Button ##
-        self.MediaManagerItem.addToolbarButton('New Song', 'Add a new song',
-            ':/songs/song_new.png', self.onSongNewClick, 'SongNewItem')
+        self.MediaManagerItem.addToolbarButton('Update', 'Update Presentations',
+            ':/songs/song_new.png', self.onPresentationNewClick, 'PresentationNewItem')
         ## Edit Song Button ##
         self.MediaManagerItem.addToolbarButton('Edit Song', 'Edit the selected song',
-            ':/songs/song_edit.png', self.onSongEditClick, 'SongEditItem')
+            ':/songs/song_edit.png', self.onSongEditClick, 'PresentationEditItem')
         ## Delete Song Button ##
         self.MediaManagerItem.addToolbarButton('Delete Song', 'Delete the selected song',
             ':/songs/song_delete.png', self.onSongDeleteClick, 'SongDeleteItem')
@@ -67,11 +67,16 @@ class SongsPlugin(Plugin):
         self.listView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.listView.setObjectName("listView")
         self.MediaManagerItem.PageLayout.addWidget(self.listView)     
+
+        self.onPresentationNewClick()
         
         return self.MediaManagerItem
 
-    def onSongNewClick(self):
-        pass
+    def onPresentationNewClick(self):
+        files =  self.config.get_files()
+        self.listView.clear()
+        for f in files:
+            self.listView.addItem(f)
 
     def onSongEditClick(self):
         self.edit_song_form.show()
