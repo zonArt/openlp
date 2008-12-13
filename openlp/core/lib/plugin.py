@@ -129,3 +129,6 @@ class Plugin(object):
 
     def getName(self):
         return self.Name
+        
+    def initalise_ui(self):
+        return self.Name        

@@ -88,6 +88,7 @@ class PluginManager(object):
             if media_manager_item is not None:
                 log.debug('Inserting media manager item from %s' % plugin.Name)
                 mediatoolbox.addItem(media_manager_item, plugin.Icon, media_manager_item.Title)
+                plugin.initalise_ui()
 
     def hookHandleEvent(self, event):
         pass

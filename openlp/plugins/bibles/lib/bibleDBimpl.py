@@ -235,7 +235,7 @@ class BibleDBImpl(BibleCommon):
     def getBibleText(self, bookname, chapter, sverse, everse):
         log.debug( "getBibleText %s,%s,%s,%s ", bookname, chapter, sverse, everse)
         metadata.bind.echo = False
-        s = text (""" select verse.verse, verse.text FROM verse , book where verse.book_id == book.id AND verse.chapter == :c AND (verse.verse between :v1 and :v2) and book.name == :b """)
+        s = text (""" select name,chapter,verse.verse, verse.text FROM verse , book where verse.book_id == book.id AND verse.chapter == :c AND (verse.verse between :v1 and :v2) and book.name == :b """)
         return self.db.execute(s, c=chapter, v1=sverse , v2=everse, b=bookname).fetchall()
         
     def getVersesFromText(self,versetext):

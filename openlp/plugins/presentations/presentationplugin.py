@@ -68,9 +68,10 @@ class PresentationPlugin(Plugin):
         self.listView.setObjectName("listView")
         self.MediaManagerItem.PageLayout.addWidget(self.listView)     
 
-        self.onPresentationNewClick()
-        
         return self.MediaManagerItem
+
+    def initalise_ui(self):
+        self.onPresentationNewClick()
 
     def onPresentationNewClick(self):
         files =  self.config.get_files()

@@ -182,11 +182,13 @@ class BiblePlugin(Plugin):
         QtCore.QObject.connect(self.AdvancedFromChapter, QtCore.SIGNAL("activated(int)"), self.onAdvancedFromChapter)
         QtCore.QObject.connect(self.AdvancedFromVerse, QtCore.SIGNAL("activated(int)"), self.onAdvancedFromVerse)
         QtCore.QObject.connect(self.AdvancedToChapter, QtCore.SIGNAL("activated(int)"), self.onAdvancedToChapter)
-        QtCore.QObject.connect(self.AdvancedSearchButton, QtCore.SIGNAL("pressed()"), self.onAdvancedSearchButton)        
-        
-        self._initialiseForm()
-        
+        QtCore.QObject.connect(self.AdvancedSearchButton, QtCore.SIGNAL("pressed()"), self.onAdvancedSearchButton)
+        QtCore.QObject.connect(self.QuickSearchButton, QtCore.SIGNAL("pressed()"), self.onQuickSearchButton) 
+       
         return self.MediaManagerItem
+
+    def initalise_ui(self):
+        self._initialiseForm()
 
     def onAdvancedVersionComboBox(self):
         self._initialiseBibleAdvanced(str(self.AdvancedVersionComboBox.currentText())) # restet the bible info
@@ -287,7 +289,6 @@ class BiblePlugin(Plugin):
             self._adjustComboBox(1, vse, self.AdvancedToVerse)             
         
     def onAdvancedSearchButton(self):
-        self.listView.clear() # clear the results
         bible = str(self.AdvancedVersionComboBox.currentText())
         book = str(self.AdvancedBookComboBox.currentText()) 
         chapfrom =  int(self.AdvancedFromChapter.currentText())
@@ -295,8 +296,29 @@ class BiblePlugin(Plugin):
         versefrom =  int(self.AdvancedFromVerse.currentText())
         verseto =  int(self.AdvancedToVerse.currentText())
         self.searchresults = self.biblemanager.getVerseText(bible, book, chapfrom, versefrom, verseto) 
-        for sv , st in self.searchresults:
-            self.listView.addItem(book + " " +str(chapfrom) + ":"+ str(sv))
+        self._displayResults()
+                
+    def onQuickSearchButton(self):
+        bible = str(self.QuickVersionComboBox.currentText())
+        text = str(self.QuickSearchEdit.displayText())
+        
+        if self.QuickSearchComboBox.currentText() == "Text Search":
+            self._searchText(bible, text)
+        else:
+            self._verseSearch()
+            
+    def _searchText(self, bible, text):
+        self.searchresults = self.biblemanager.getVersesFromText(bible,text) 
+        self._displayResults()        
+
+    def _verseSearch(self):
+        self._displayResults()        
+    
+    def _displayResults(self):
+        self.listView.clear() # clear the results
+        print self.searchresults
+        for book, chap, vse , txt in self.searchresults:
+            self.listView.addItem(book + " " +str(chap) + ":"+ str(vse))
         
     def _initialiseBibleQuick(self, bible): # not sure if needed yet!
         a=1

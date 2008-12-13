@@ -105,11 +105,12 @@ class SongsPlugin(Plugin):
         self.listView.setObjectName("listView")
         self.MediaManagerItem.PageLayout.addWidget(self.listView)     
         
-        self.SearchTypeComboBox.addItem("Lyrics")
-        self.SearchTypeComboBox.addItem("Authors")
-        self.SearchTypeComboBox.addItem("Titles")
-        
         return self.MediaManagerItem
+
+    def initalise_ui(self):
+        self.SearchTypeComboBox.addItem("Lyrics")
+        self.SearchTypeComboBox.addItem("Titles")
+        self.SearchTypeComboBox.addItem("Authors")        
 
     def onSongNewClick(self):
         pass
