@@ -47,8 +47,16 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
     def on_OsisFileButton_clicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file','/home')
         self.OSISLocationEdit.setText(filename)
+        
     def on_OSISLocationEdit_lostFocus(self):
+        if len(self.OSISLocationEdit.displayText() ) > 1:
+            self.BooksLocationEdit.setReadOnly(True)
+            self.VerseLocationEdit.setReadOnly(True)
+        else:
+            self.BooksLocationEdit.setReadOnly(False)
+            self.VerseLocationEdit.setReadOnly(False)
         self.validate()
+        
     def on_BooksLocationEdit_lostFocus(self):
         self.validate()
     def on_CopyrightEdit_lostFocus(self):
@@ -73,6 +81,7 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
 
 
     def validate(self):
+        print "validate"
         valid = False
         validcount = 0
         if len(self.BibleNameEdit.displayText()) > 0:

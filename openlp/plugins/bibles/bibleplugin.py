@@ -205,6 +205,7 @@ class BiblePlugin(Plugin):
 
     def onBibleNewClick(self):
         self.bibleimportform = BibleImportForm(self.biblemanager)
+        self.bibleimportform.setModal(True)
         self.bibleimportform.show()
         pass
 
@@ -316,7 +317,6 @@ class BiblePlugin(Plugin):
     
     def _displayResults(self):
         self.listView.clear() # clear the results
-        print self.searchresults
         for book, chap, vse , txt in self.searchresults:
             self.listView.addItem(book + " " +str(chap) + ":"+ str(vse))
         
