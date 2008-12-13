@@ -31,7 +31,7 @@ class WinRegistry(Registry):
         """
         Connection to the Windows registry, and save the handle.
         """
-        self.reg_handle = _winreg.CreateConnection(None, _winreg.HKEY_CURRENT_USER)
+        self.reg_handle = _winreg.ConnectRegistry(None, _winreg.HKEY_CURRENT_USER)
         self.base_key = base_key
         if not self.base_key.endswith('\\'):
             self.base_key = self.base_key + '\\'
@@ -40,6 +40,8 @@ class WinRegistry(Registry):
         """
         Check if a key/value exists.
         """
+        if not self.has_section(section):
+            return False
         key_handle = _winreg.OpenKey(self.reg_handle, self.base_key + section)
         try:
             value, reg_type = _winreg.QueryValueEx(key_handle, key)
@@ -97,11 +99,14 @@ class WinRegistry(Registry):
         """
         Check if a section exists.
         """
+        key_handle = None
         try:
             key_handle = _winreg.OpenKey(self.reg_handle, self.base_key + section)
         except EnvironmentError:
             return False
         finally:
+            if key_handle is None:
+                return False
             _winreg.CloseKey(key_handle)
             return True
 
@@ -116,11 +121,14 @@ class WinRegistry(Registry):
             return False
 
     def delete_section(self, section):
+        key_handle = None
         try:
             key_handle = _winreg.OpenKey(self.reg_handle, self.base_key)
             _winreg.DeleteKey(key_handle, section)
         except EnvironmentError:
             return False
         finally:
+            if key_handle is None:
+                return False
             _winreg.CloseKey(key_handle)
             return True
