@@ -131,4 +131,7 @@ class Plugin(object):
         return self.Name
         
     def initalise_ui(self):
-        return self.Name        
+        """
+        Called by the plugin Manager to setup any UI features on creation after the UI has been created,
+        """        
+        pass        

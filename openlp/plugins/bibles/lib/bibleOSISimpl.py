@@ -34,13 +34,11 @@ class BibleOSISImpl():
     global log     
     log=logging.getLogger("BibleOSISImpl")
     log.info("BibleOSISImpl loaded")   
-    def __init__(self, bibledb):
+    def __init__(self, biblepath, bibledb):
         self.bibledb = bibledb
         self.booksOfBible = {} # books of the bible linked to bibleid  {osis , name}
         self.abbrevOfBible = {} # books of the bible linked to bibleid  {osis ,Abbrev }  
-        resourcepath=os.path.split(os.path.abspath(__file__))[0]
-        resourcepath = os.path.join(resourcepath, 'resources')
-        fbibles=open(resourcepath+"/osisbooks_en.txt", 'r')
+        fbibles=open(biblepath+"/osisbooks_en.txt", 'r')
         for line in fbibles:
             p = line.split(",")
             self.booksOfBible[p[0]] = p[1].replace('\n', '')
@@ -53,7 +51,7 @@ class BibleOSISImpl():
         self.bibledb.saveMeta("Permission", "You Have Some")
         
         #TODO: need to see if new / old or both testaments
-        dialogobject.setMax(66)
+        dialogobject.setMax(65)
  
         osis=open(osisfile, 'r')
 

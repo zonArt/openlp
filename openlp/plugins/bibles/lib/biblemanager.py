@@ -77,7 +77,7 @@ class BibleManager():
         """
         log.debug( "registerHTTPBible %s,%s,%s,%s,%s", biblename, biblesource, proxyurl,  proxyid, proxypass, mode)
         if self._isNewBible(biblename):
-            nbible = BibleDBImpl(biblename) # Create new Bible
+            nbible = BibleDBImpl(self.biblePath, biblename, self.bibleSuffix) # Create new Bible
             nbible.createTables() # Create Database
             self.bibleDBCache[biblename] = nbible
 
@@ -101,7 +101,7 @@ class BibleManager():
         from scratch.
         """
         if self._isNewBible(biblename):
-            nbible = BibleDBImpl(biblename) # Create new Bible
+            nbible = BibleDBImpl(self.biblePath, biblename, self.bibleSuffix) # Create new Bible
             nbible.createTables() # Create Database
             self.bibleDBCache[biblename] = nbible # cache the database for use later
             bcsv = BibleCSVImpl(nbible) # create the loader and pass in the database
@@ -113,11 +113,12 @@ class BibleManager():
         If the database exists it is deleted and the database is reloaded
         from scratch.
         """
+        log.debug( "registerOSISFileBible %s , %s", biblename, osisfile)        
         if self._isNewBible(biblename):
-            nbible = BibleDBImpl(biblename) # Create new Bible
+            nbible = BibleDBImpl(self.biblePath, biblename, self.bibleSuffix) # Create new Bible
             nbible.createTables() # Create Database
             self.bibleDBCache[biblename] = nbible # cache the database for use later
-            bcsv = BibleOSISImpl(nbible) # create the loader and pass in the database
+            bcsv = BibleOSISImpl(self.biblePath, nbible) # create the loader and pass in the database
             bcsv.loadData(osisfile, self.dialogobject)
 
 

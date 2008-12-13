@@ -55,10 +55,19 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
         else:
             self.BooksLocationEdit.setReadOnly(False)
             self.VerseLocationEdit.setReadOnly(False)
-        self.validate()
         
     def on_BooksLocationEdit_lostFocus(self):
-        self.validate()
+        if len(self.BooksLocationEdit.displayText()) > 1 or len(self.VerseLocationEdit.displayText()) > 1:
+            self.OSISLocationEdit.setReadOnly(True)
+        else:
+            self.OSISLocationEdit.setReadOnly(False)
+            
+    def on_VerseLocationEdit_lostFocus(self):
+        if len(self.BooksLocationEdit.displayText()) > 1 or len(self.VerseLocationEdit.displayText()) > 1:
+            self.OSISLocationEdit.setReadOnly(True)
+        else:
+            self.OSISLocationEdit.setReadOnly(False)
+            
     def on_CopyrightEdit_lostFocus(self):
         self.validate() 
     def on_VersionNameEdit_lostFocus(self):
@@ -73,12 +82,22 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
             #bipf = BibleImportProgressForm()
             #bipf.show()
             if self.biblemanager != None:
-                self.biblemanager.processDialog(bipf)
+                self.MessageLabel.setText("Import Started")
+                self.ProgressBar.setValue(0)
+                self.progress = 0
+                self.biblemanager.processDialog(self)
                 self.biblemanager.registerOSISFileBible(str(self.BibleNameEdit.displayText()), self.OSISLocationEdit.displayText())
+                self.MessageLabel.setText("Import Complete")
         elif button.text() == "Cancel":
             self.close()            
+        
+    def setMax(self, max):
+        self.ProgressBar.setMaximum(max)        
 
-
+    def incrementBar(self):
+        self.progress +=1
+        self.ProgressBar.setValue(self.progress)  
+        self.update() 
 
     def validate(self):
         print "validate"
@@ -98,17 +117,3 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
 #            self.BibleImportButtonBox.removeButton(self.savebutton) # hide the save button tile screen is valid
 
 
-
-class runner(QtGui.QApplication):
-
-    def run(self):
-        values = ["Genesis","Matthew","Revelation"]
-        self.bm = BibleManager("/home/timali/.openlp")
-        self.bim = BibleImportForm()
-        self.bim.show()
-        self.processEvents()
-        sys.exit(app.exec_())
-        
-if __name__ == '__main__':
-    app = runner(sys.argv)
-    app.run()
