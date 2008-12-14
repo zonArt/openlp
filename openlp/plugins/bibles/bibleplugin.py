@@ -183,21 +183,21 @@ class BiblePlugin(Plugin):
         QtCore.QObject.connect(self.AdvancedFromVerse, QtCore.SIGNAL("activated(int)"), self.onAdvancedFromVerse)
         QtCore.QObject.connect(self.AdvancedToChapter, QtCore.SIGNAL("activated(int)"), self.onAdvancedToChapter)
 
-        self._initialiseForm()
+        self._initialise_form()
         QtCore.QObject.connect(self.AdvancedSearchButton, QtCore.SIGNAL("pressed()"), self.onAdvancedSearchButton)
         QtCore.QObject.connect(self.QuickSearchButton, QtCore.SIGNAL("pressed()"), self.onQuickSearchButton)
 
         return self.MediaManagerItem
 
-    def initalise(self):
-        self._initialiseForm()
+    def initialise(self):
+        self._initialise_form()
 
     def onAdvancedVersionComboBox(self):
-        self._initialiseBibleAdvanced(str(self.AdvancedVersionComboBox.currentText())) # restet the bible info
+        self._initialise_bible_advanced(str(self.AdvancedVersionComboBox.currentText())) # restet the bible info
 
     def onAdvancedBookComboBox(self):
         print self.AdvancedVersionComboBox.currentText()
-        self._initialiseBibleAdvanced(str(self.AdvancedVersionComboBox.currentText())) # restet the bible info
+        self._initialise_bible_advanced(str(self.AdvancedVersionComboBox.currentText())) # restet the bible info
 
     def onQuickTabClick(self):
         print "onQuickTabClick"
@@ -220,7 +220,7 @@ class BiblePlugin(Plugin):
     def onBibleAddClick(self):
         pass
 
-    def _initialiseForm(self):
+    def _initialise_form(self):
         bibles = self.biblemanager.getBibles()
         self.QuickSearchComboBox.addItem("Text Search")
         self.QuickSearchComboBox.addItem("Verse Search")
@@ -230,15 +230,15 @@ class BiblePlugin(Plugin):
             self.AdvancedVersionComboBox.addItem(b)
             if first:
                 first = False
-                self._initialiseBible(b) # use the fist bible as the trigger
+                self._initialise_bible(b) # use the fist bible as the trigger
 
-    def _initialiseBible(self, bible):
-        log.debug("_initialiseBible %s ", bible)
-        self._initialiseBibleQuick(bible)
-        self._initialiseBibleAdvanced(bible)
+    def _initialise_bible(self, bible):
+        log.debug("_initialise_bible %s ", bible)
+        self._initialise_bible_quick(bible)
+        self._initialise_bible_advanced(bible)
 
-    def _initialiseBibleAdvanced(self, bible):
-        log.debug("_initialiseBibleAdvanced %s ", bible)
+    def _initialise_bible_advanced(self, bible):
+        log.debug("_initialise_bible_advanced %s ", bible)
         currentBook = str(self.AdvancedBookComboBox.currentText())
         cf = self.biblemanager.getBookChapterCount(bible, currentBook)[0]
         log.debug("Book change bible %s book %s ChapterCount %s", bible, currentBook, cf)
@@ -251,35 +251,35 @@ class BiblePlugin(Plugin):
                 if first:
                     book = b
                     first = False
-                    self._initialiseChapterVerse(bible, b[0])
+                    self._initialise_chapter_verse(bible, b[0])
 
-    def _initialiseChapterVerse(self, bible, book):
-        log.debug("_initialiseChapterVerse %s , %s", bible, book)
+    def _initialise_chapter_verse(self, bible, book):
+        log.debug("_initialise_chapter_verse %s , %s", bible, book)
         self.chaptersfrom = self.biblemanager.getBookChapterCount(bible, book)[0]
         self.verses = self.biblemanager.getBookVerseCount(bible, book, 1)[0]
-        self._adjustComboBox(1, self.chaptersfrom, self.AdvancedFromChapter)
-        self._adjustComboBox(1, self.chaptersfrom, self.AdvancedToChapter)
-        self._adjustComboBox(1, self.verses, self.AdvancedFromVerse)
-        self._adjustComboBox(1, self.verses, self.AdvancedToVerse)
+        self._adjust_combobox(1, self.chaptersfrom, self.AdvancedFromChapter)
+        self._adjust_combobox(1, self.chaptersfrom, self.AdvancedToChapter)
+        self._adjust_combobox(1, self.verses, self.AdvancedFromVerse)
+        self._adjust_combobox(1, self.verses, self.AdvancedToVerse)
 
     def onAdvancedFromChapter(self):
         bible = str(self.AdvancedVersionComboBox.currentText())
         book = str(self.AdvancedBookComboBox.currentText())
         cf = self.AdvancedFromChapter.currentText()
-        self._adjustComboBox(cf, self.chaptersfrom, self.AdvancedToChapter)
+        self._adjust_combobox(cf, self.chaptersfrom, self.AdvancedToChapter)
         vse = self.biblemanager.getBookVerseCount(bible, book, int(cf))[0] # get the verse count for new chapter
-        self._adjustComboBox(1, vse, self.AdvancedFromVerse)
-        self._adjustComboBox(1, vse, self.AdvancedToVerse)
+        self._adjust_combobox(1, vse, self.AdvancedFromVerse)
+        self._adjust_combobox(1, vse, self.AdvancedToVerse)
 
-    def _adjustComboBox(self, frm, to , combo):
-        log.debug("_adjustComboBox %s , %s , %s", combo, frm,  to)
+    def _adjust_combobox(self, frm, to , combo):
+        log.debug("_adjust_combobox %s , %s , %s", combo, frm,  to)
         combo.clear()
         for i in range(int(frm), int(to) + 1):
             combo.addItem(str(i))
 
     def onAdvancedFromVerse(self):
         frm = self.AdvancedFromVerse.currentText()
-        self._adjustComboBox(frm, self.verses, self.AdvancedToVerse)
+        self._adjust_combobox(frm, self.verses, self.AdvancedToVerse)
 
     def onAdvancedToChapter(self):
         t1 =  self.AdvancedFromChapter.currentText()
@@ -288,7 +288,7 @@ class BiblePlugin(Plugin):
             bible = str(self.AdvancedVersionComboBox.currentText())
             book = str(self.AdvancedBookComboBox.currentText())
             vse = self.biblemanager.getBookVerseCount(bible, book, int(t2))[0] # get the verse count for new chapter
-            self._adjustComboBox(1, vse, self.AdvancedToVerse)
+            self._adjust_combobox(1, vse, self.AdvancedToVerse)
 
     def onAdvancedSearchButton(self):
         bible = str(self.AdvancedVersionComboBox.currentText())
@@ -309,17 +309,17 @@ class BiblePlugin(Plugin):
         else:
             self._verseSearch()
 
-    def _searchText(self, bible, text):
+    def _search_text(self, bible, text):
         self.searchresults = self.biblemanager.getVersesFromText(bible,text)
         self._displayResults()
 
-    def _verseSearch(self):
+    def _verse_search(self):
         self._displayResults()
 
-    def _displayResults(self):
+    def _display_results(self):
         self.listView.clear() # clear the results
         for book, chap, vse , txt in self.searchresults:
             self.listView.addItem(book + " " +str(chap) + ":"+ str(vse))
 
-    def _initialiseBibleQuick(self, bible): # not sure if needed yet!
+    def _initialise_bible_quick(self, bible): # not sure if needed yet!
         a=1

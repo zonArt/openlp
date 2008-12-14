@@ -67,7 +67,7 @@ class PresentationPlugin(Plugin):
 
         return self.MediaManagerItem
 
-    def initalise(self):
+    def initialise(self):
         self.onPresentationLoadClick()
 
     def onPresentationLoadClick(self):

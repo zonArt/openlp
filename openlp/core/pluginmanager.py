@@ -72,7 +72,7 @@ class PluginManager(object):
         plugin_objects = []
         for p in self.plugin_classes:
             plugin = p()
-            if plugin.checkPreConditions() == True:
+            if plugin.check_pre_conditions():
                 plugin_objects.append(plugin)
         self.plugins = sorted(plugin_objects, self.order_by_weight)
 
@@ -89,7 +89,7 @@ class PluginManager(object):
             if media_manager_item is not None:
                 log.debug('Inserting media manager item from %s' % plugin.name)
                 mediatoolbox.addItem(media_manager_item, plugin.icon, media_manager_item.title)
-                plugin.initalise()
+                plugin.initialise()
 
     def hook_handle_event(self, event):
         pass

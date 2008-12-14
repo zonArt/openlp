@@ -105,7 +105,7 @@ class SongsPlugin(Plugin):
 
         return self.MediaManagerItem
 
-    def initalise(self):
+    def initialise(self):
         self.SearchTypeComboBox.addItem("Lyrics")
         self.SearchTypeComboBox.addItem("Titles")
         self.SearchTypeComboBox.addItem("Authors")

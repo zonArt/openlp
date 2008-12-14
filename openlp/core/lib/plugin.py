@@ -40,6 +40,8 @@ class Plugin(object):
         A log object used to log debugging messages. This is pre-instantiated.
 
     Hook functions:
+    * check_pre_conditions()
+        Provides the Plugin with a handle to check if it can be loaded.
     * get_media_manager_item()
         Returns an instance of MediaManagerItem to be used in the Media Manager.
     * get_import_menu_item()
@@ -86,6 +88,13 @@ class Plugin(object):
         self.weight = 0
         # Set up logging
         self.log = logging.getLogger(self.name)
+
+    def check_pre_conditions(self):
+        """
+        Provides the Plugin with a handle to check if it can be loaded.
+        Returns True or False.
+        """
+        return True
 
     def get_media_manager_item(self):
         """
@@ -151,31 +160,9 @@ class Plugin(object):
         """
         pass
 
-    def initalise(self):
+    def initialise(self):
         """
         Called by the plugin Manager to initialise anything it needs.
         """
         pass
-
-    def addToMenu(self, menubar):
-        """
-        Add menu items to the menu, given the menubar.
-        """
-        pass
-
-    def handleEvent(self, event):
-        """
-        Handle the event contained in the event object.
-        """
-        pass
-
-    def getName(self):
-        return self.Name
-        
-    def checkPreConditions(self):
-        """
-        Provides the Plugin with a handle to check if it can be loaded.
-        Returns True or False.
-        """        
-        return True
 
