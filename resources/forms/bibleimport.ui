@@ -38,7 +38,7 @@
     </rect>
    </property>
    <property name="currentIndex" >
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="FileImportPage" >
     <property name="geometry" >
@@ -160,9 +160,9 @@
     <widget class="QLineEdit" name="BibleNameEdit" >
      <property name="geometry" >
       <rect>
-       <x>120</x>
+       <x>100</x>
        <y>20</y>
-       <width>271</width>
+       <width>280</width>
        <height>28</height>
       </rect>
      </property>
@@ -235,6 +235,11 @@
          <widget class="QComboBox" name="LocationComboBox" >
           <item>
            <property name="text" >
+            <string/>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
             <string>BibleGateway</string>
            </property>
           </item>
@@ -254,6 +259,11 @@
         </item>
         <item row="1" column="1" >
          <widget class="QComboBox" name="TypeComboBox" >
+          <item>
+           <property name="text" >
+            <string/>
+           </property>
+          </item>
           <item>
            <property name="text" >
             <string>Download As Needed</string>

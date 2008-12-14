@@ -11,3 +11,10 @@ data path = songs
 
 [presentations]
 suffix name = ppt,pps,odi
+
+
+[images]
+suffix name = jpg,gif,png,bmp
+
+[videos]
+suffix name = avi,mpeg

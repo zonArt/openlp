@@ -65,8 +65,8 @@ class PluginConfig(object):
                 if f.find('.') != -1:
                     nme = f.split('.')
                     bname = nme[0]
-                    sfx = nme[1]
-                    sfx.lower()
+                    sfx = nme[1].lower()
+                    sfx = sfx.lower()
                     if suffix.find(sfx) > -1 : # only load files with the correct suffix
                         returnfiles.append(f)
             return returnfiles

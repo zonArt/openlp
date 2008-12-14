@@ -58,6 +58,7 @@ class BibleManager():
             self.bibleDBCache[bname] = BibleDBImpl(self.biblePath, bname, self.bibleSuffix)
             biblesource = self.bibleDBCache[bname].getMeta("WEB") # look to see if lazy load bible exists and get create getter.
             if biblesource:
+                print biblesource
                 nhttp = BibleHTTPImpl()
                 nhttp.setBibleSource(biblesource)  # tell The Server where to get the verses from.
                 self.bibleHTTPCache[bname] = nhttp
@@ -141,7 +142,7 @@ class BibleManager():
                     self._loadBook(biblename,bookid, bookname, bookabbrev)
                     self._loadChapter(biblename,bookid,  bookname, chptr)
 
-    def getBibles(self):
+    def getBibles(self, mode="full"):
         """
         Returns a list of Books of the bible
         """
@@ -179,6 +180,22 @@ class BibleManager():
         """
         log.debug( "getVersesFromText %s,%s", bible, versetext)
         return self.bibleDBCache[bible].getVersesFromText(versetext)
+
+    def saveMetaData(self, bible, version, copyright, permissions):
+        """
+        Saves the bibles meta data
+        """
+        log.debug( "saveMetaData %s,%s, %s,%s", bible,  version, copyright, permissions)
+        self.bibleDBCache[bible].saveMeta("Version", version)
+        self.bibleDBCache[bible].saveMeta("Copyright", copyright)
+        self.bibleDBCache[bible].saveMeta("Permissins", permissions)
+
+    def getMetaData(self, bible, key):
+        """
+        Returns the meta data for a given key
+        """
+        log.debug( "getMetaData %s,%s", bible,  key)
+        self.bibleDBCache[bible].getMeta(key)
 
     def getVerseText(self, bible, bookname, chapter, sverse, everse = 0 ):
         """

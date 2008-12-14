@@ -83,10 +83,11 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
             #bipf.show()
             if self.biblemanager != None:
                 self.MessageLabel.setText("Import Started")
-                self.ProgressBar.setValue(0)
+                self.ProgressBar.setValue(1)
                 self.progress = 0
                 self.biblemanager.processDialog(self)
                 self.biblemanager.registerOSISFileBible(str(self.BibleNameEdit.displayText()), self.OSISLocationEdit.displayText())
+                self.biblemanager.saveMetaData(str(self.BibleNameEdit.displayText()), str(self.VersionNameEdit.displayText()), str(self.CopyrightEdit.displayText()), str(self.PermisionEdit.displayText()))
                 self.MessageLabel.setText("Import Complete")
         elif button.text() == "Cancel":
             self.close()            
@@ -94,7 +95,11 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
     def setMax(self, max):
         self.ProgressBar.setMaximum(max)        
 
-    def incrementBar(self):
+    def incrementBar(self, text = None):
+        if text != None:
+            self.MessageLabel.setText("Import progressing with " + text)
+        else:
+            self.MessageLabel.setText("Import progressing")            
         self.progress +=1
         self.ProgressBar.setValue(self.progress)  
         self.update() 

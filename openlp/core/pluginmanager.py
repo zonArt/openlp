@@ -72,7 +72,8 @@ class PluginManager(object):
         plugin_objects = []
         for p in self.plugin_classes:
             plugin = p()
-            plugin_objects.append(plugin)
+            if plugin.checkPreConditions() == True:
+                plugin_objects.append(plugin)
         self.plugins = sorted(plugin_objects, self.order_by_weight)
 
     def order_by_weight(self, x, y):

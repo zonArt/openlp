@@ -158,3 +158,26 @@ class Plugin(object):
         Called by the plugin Manager to initialise anything it needs.
         """
         pass
+
+    def addToMenu(self, menubar):
+        """
+        Add menu items to the menu, given the menubar.
+        """
+        pass
+
+    def handleEvent(self, event):
+        """
+        Handle the event contained in the event object.
+        """
+        pass
+
+    def getName(self):
+        return self.Name
+        
+    def checkPreConditions(self):
+        """
+        Provides the Plugin with a handle to check if it can be loaded.
+        Returns True or False.
+        """        
+        return True
+
