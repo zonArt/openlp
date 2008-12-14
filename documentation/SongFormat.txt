@@ -62,7 +62,7 @@ The "songs" table has the following columns:
 * comments
 * ccli_number
 * song_number
-* theme
+* theme_name
 * search_title
 * search_lyrics
 

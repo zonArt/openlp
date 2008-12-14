@@ -73,22 +73,22 @@ class PluginManager(object):
         for p in self.plugin_classes:
             plugin = p()
             plugin_objects.append(plugin)
-        self.plugins = sorted(plugin_objects, self.orderByWeight)
+        self.plugins = sorted(plugin_objects, self.order_by_weight)
 
-    def orderByWeight(self, x, y):
-        return cmp(x.Weight, y.Weight)
+    def order_by_weight(self, x, y):
+        return cmp(x.weight, y.weight)
 
-    def hookMediaManager(self, mediatoolbox):
+    def hook_media_manager(self, mediatoolbox):
         """
         Loop through all the plugins. If a plugin has a valid media manager item,
         add it to the media manager.
         """
         for plugin in self.plugins:
-            media_manager_item = plugin.getMediaManagerItem()
+            media_manager_item = plugin.get_media_manager_item()
             if media_manager_item is not None:
-                log.debug('Inserting media manager item from %s' % plugin.Name)
-                mediatoolbox.addItem(media_manager_item, plugin.Icon, media_manager_item.Title)
-                plugin.initalise_ui()
+                log.debug('Inserting media manager item from %s' % plugin.name)
+                mediatoolbox.addItem(media_manager_item, plugin.icon, media_manager_item.title)
+                plugin.initalise()
 
-    def hookHandleEvent(self, event):
+    def hook_handle_event(self, event):
         pass

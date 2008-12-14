@@ -16,7 +16,8 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
-import os, os.path
+import os
+import os.path
 import sys
 import urllib2
 
@@ -26,17 +27,17 @@ logging.basicConfig(level=logging.DEBUG,
                 datefmt='%m-%d %H:%M',
                 filename='plugins.log',
                 filemode='w')
-                
+
 class BibleCommon:
-    global log 
+    global log
     log=logging.getLogger("BibleCommon")
-    log.info("BibleCommon")     
+    log.info("BibleCommon")
     def __init__(self):
         """
         """
     def _getWebText(self, urlstring, proxyurl):
         log.debug( "getWebText %s %s", proxyurl, urlstring)
-        
+
         if  proxyurl != "" or len(proxyurl) > 0 :
             print "ProxyUrl " ,  proxyurl + " " + str(len(proxyurl))
             proxy_support = urllib2.ProxyHandler({'http':  self.proxyurl})
@@ -55,24 +56,24 @@ class BibleCommon:
                 log.error( 'Reason : ')
                 log.error( e.reason)
         return xml_string
-        
+
     def _cleanText(self, text):
         """
         Clean up text and remove extra characters
         after been downloaded from web
         """
-        #return text.rstrip()        
+        #return text.rstrip()
         # Remove Headings from the Text
         i = text.find("<h")
         while i > -1:
-            j=text.find("</h", i)            
+            j=text.find("</h", i)
             text = text[ : (i - 1)]+text[(j+4)]
             i = text.find("<h")
 
         # Remove Support References from the Text
         x = text.find("<sup>")
         while x > -1:
-            y = text.find("</sup>")            
+            y = text.find("</sup>")
             text= text[:x] + text[y + 6:len(text)]
             x = text.find("<sup>")
 
@@ -82,23 +83,23 @@ class BibleCommon:
         text= text.replace('&nbsp;', '')
         text= text.replace('<P>', '')
         text= text.replace('<I>', '')
-        text= text.replace('</I>', '')        
+        text= text.replace('</I>', '')
         text= text.replace('<P />', '')
-        text= text.replace('<p />', '')        
+        text= text.replace('<p />', '')
         text= text.replace('</P>', '')
-        text= text.replace('<BR>', '')            
-        text= text.replace('<BR />', '')                    
+        text= text.replace('<BR>', '')
+        text= text.replace('<BR />', '')
         text= text.replace(chr(189), '1/2')
         text= text.replace("&quot;", '"')
         text= text.replace("&apos;", "'")
-   
+
         i = text.find("<")
         while i > -1 :
             j = text.find(">", i)
-            text= text[:i] + text[j+1:]            
+            text= text[:i] + text[j+1:]
             i = text.find("<")
-      
+
         text= text.replace('>', '')
         return text.rstrip()
-   
-        
+
+

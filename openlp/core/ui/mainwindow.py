@@ -161,7 +161,7 @@ class MainWindow(object):
         self.MediaToolBox.setObjectName("MediaToolBox")
         # This is where we will eventually get the Plugin Manager to pull in
         # the media manager items.
-        self.plugin_manager.hookMediaManager(self.MediaToolBox)
+        self.plugin_manager.hook_media_manager(self.MediaToolBox)
         # End adding media manager items.
         self.MediaManagerLayout.addWidget(self.MediaToolBox)
         self.MediaManagerDock.setWidget(self.MediaManagerContents)

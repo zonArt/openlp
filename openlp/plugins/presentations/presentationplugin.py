@@ -19,24 +19,24 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 from PyQt4 import QtCore, QtGui
+
 from openlp.core.resources import *
 from openlp.core.lib import Plugin, MediaManagerItem
-#from forms import EditSongForm
 
 class PresentationPlugin(Plugin):
     def __init__(self):
         # Call the parent constructor
         Plugin.__init__(self, 'Presentations', '1.9.0')
-        self.Weight = -8
-       
-
-    def getMediaManagerItem(self):
+        self.weight = -8
         # Create the plugin icon
-        self.Icon = QtGui.QIcon()
-        self.Icon.addPixmap(QtGui.QPixmap(':/media/media_song.png'),
+        self.icon = QtGui.QIcon()
+        self.icon.addPixmap(QtGui.QPixmap(':/media/media_song.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
+
+
+    def get_media_manager_item(self):
         # Create the MediaManagerItem object
-        self.MediaManagerItem = MediaManagerItem(self.Icon, 'Presentations')
+        self.MediaManagerItem = MediaManagerItem(self.icon, 'Presentations')
         # Add a toolbar
         self.MediaManagerItem.addToolbar()
         # Create buttons for the toolbar
@@ -66,11 +66,11 @@ class PresentationPlugin(Plugin):
         self.listView = QtGui.QListWidget()
         self.listView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.listView.setObjectName("listView")
-        self.MediaManagerItem.PageLayout.addWidget(self.listView)     
+        self.MediaManagerItem.PageLayout.addWidget(self.listView)
 
         return self.MediaManagerItem
 
-    def initalise_ui(self):
+    def initalise(self):
         self.onPresentationNewClick()
 
     def onPresentationNewClick(self):

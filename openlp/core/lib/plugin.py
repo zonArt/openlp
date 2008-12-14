@@ -17,30 +17,43 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-
-from openlp.core.lib import PluginConfig
+__version__ = "$Revision:  $"
+# $Source$
 
 import logging
+
+from openlp.core.lib import PluginConfig
 
 class Plugin(object):
     """
     Base class for openlp plugins to inherit from.
 
     Basic attributes are:
-    * Name
+    * name
         The name that should appear in the plugins list.
-    * Version
+    * version
         The version number of this iteration of the plugin.
-    * MediaManagerItem
-        An instance of the MediaManagerItem class, used in the Media Manager.
-    * SettingsTab
-        An instance of the SettingsTab class, used in the Settings dialog.
-    * ImportMenuItem
-        A menu item to be placed in the Import menu.
-    * ExportMenuItem
-        A menu item to be placed in the Export menu.
+    * icon
+        An instance of QIcon, which holds an icon for this plugin.
+    * config
+        An instance of PluginConfig, which allows plugins to read and write to
+        openlp.org's configuration. This is pre-instantiated.
+    * log
+        A log object used to log debugging messages. This is pre-instantiated.
 
     Hook functions:
+    * get_media_manager_item()
+        Returns an instance of MediaManagerItem to be used in the Media Manager.
+    * get_import_menu_item()
+        Returns an item for the Import menu.
+    * get_export_menu_item()
+        Returns an item for the Export menu.
+    * get_settings_tab()
+        Returns an instance of SettingsTab to be used in the Settings dialog.
+    * add_to_menu(menubar)
+        A method to add a menu item to anywhere in the menu, given the menu bar.
+    * handle_event(event)
+        A method use to handle events, given an Event object.
     * about()
         Used in the plugin manager, when a person clicks on the 'About' button.
     * save(data)
@@ -52,12 +65,8 @@ class Plugin(object):
     * render(theme, screen_number)
         A method used to render something to the screen, given the current theme
         and screen number.
-    * addToMenu(menubar)
-        A method to add a menu item to anywhere in the menu, given the menu bar.
-    * handleEvent(event)
-        A method use to handle events, given an Event object.
     """
-    global log
+
     def __init__(self, name=None, version=None):
         """
         This is the constructor for the plugin object. This provides an easy
@@ -69,17 +78,53 @@ class Plugin(object):
                 ...
         """
         if name is not None:
-            self.Name = name
+            self.name = name
         else:
-            self.Name = 'Plugin'
+            self.name = 'Plugin'
         if version is not None:
-            self.Version = version
-        self.config = PluginConfig(self.Name)
-        #self.MediaManagerItem = None
-        self.SettingsTab = None
-        self.ImportMenuItem = None
-        self.ExportMenuItem = None
-        self.Weight = 0
+            self.version = version
+        self.icon = None
+        self.config = PluginConfig(self.name)
+        self.weight = 0
+        # Set up logging
+        self.log = logging.getLogger(self.name)
+
+    def get_media_manager_item(self):
+        """
+        Construct a MediaManagerItem object with all the buttons and things you
+        need, and return it for integration into openlp.org.
+        """
+        pass
+
+    def get_import_menu_item(self):
+        """
+        Create a menu item and add it to the "Import" menu.
+        """
+        pass
+
+    def get_export_menu_item(self):
+        """
+        Create a menu item and add it to the "Export" menu.
+        """
+        pass
+
+    def get_settings_tab(self):
+        """
+        Create a menu item and add it to the "Import" menu.
+        """
+        pass
+
+    def add_to_menu(self, menubar):
+        """
+        Add menu items to the menu, given the menubar.
+        """
+        pass
+
+    def handle_event(self, event):
+        """
+        Handle the event contained in the event object.
+        """
+        pass
 
     def about(self):
         """
@@ -108,30 +153,8 @@ class Plugin(object):
         """
         pass
 
-    def getMediaManagerItem(self):
+    def initalise(self):
         """
-        Construct a MediaManagerItem object with all the buttons and things you
-        need, and return it for integration into openlp.org.
-        """
-        pass
-
-    def addToMenu(self, menubar):
-        """
-        Add menu items to the menu, given the menubar.
+        Called by the plugin Manager to initialise anything it needs.
         """
         pass
-
-    def handleEvent(self, event):
-        """
-        Handle the event contained in the event object.
-        """
-        pass
-
-    def getName(self):
-        return self.Name
-        
-    def initalise_ui(self):
-        """
-        Called by the plugin Manager to setup any UI features on creation after the UI has been created,
-        """        
-        pass        

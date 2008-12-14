@@ -32,14 +32,14 @@ class MediaManagerItem(QtGui.QWidget):
         """
         QtGui.QWidget.__init__(self)
         if type(icon) is QtGui.QIcon:
-            self.Icon = icon
+            self.icon = icon
         elif type(icon) is types.StringType:
-            self.Icon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
+            self.icon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
                 QtGui.QIcon.Normal, QtGui.QIcon.Off)
         else:
-            self.Icon = None
+            self.icon = None
         if title is not None:
-            self.Title = title
+            self.title = title
         self.Toolbar = None
         #self.ToolbarButtons = []
 
