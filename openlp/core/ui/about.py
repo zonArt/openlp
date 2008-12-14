@@ -86,7 +86,7 @@ class AboutForm(object):
         self.CreditsTabLayout.setSpacing(0) #
         self.CreditsTabLayout.setMargin(8) #
         self.CreditsTabLayout.setObjectName("CreditsTabLayout")
-        self.CreditsTextEdit = QtGui.QPlainTextEdit(self.CreditsTab)
+        self.CreditsTextEdit = QtGui.QTextEdit(self.CreditsTab)
         self.CreditsTextEdit.setReadOnly(True)
         self.CreditsTextEdit.setObjectName("CreditsTextEdit")
         self.CreditsTabLayout.addWidget(self.CreditsTextEdit)

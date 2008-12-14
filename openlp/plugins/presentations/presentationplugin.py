@@ -30,7 +30,7 @@ class PresentationPlugin(Plugin):
         self.weight = -8
         # Create the plugin icon
         self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(':/media/media_song.png'),
+        self.icon.addPixmap(QtGui.QPixmap(':/media/media_presentation.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
 
@@ -40,27 +40,24 @@ class PresentationPlugin(Plugin):
         # Add a toolbar
         self.MediaManagerItem.addToolbar()
         # Create buttons for the toolbar
-        ## New Song Button ##
-        self.MediaManagerItem.addToolbarButton('Update', 'Update Presentations',
-            ':/songs/song_new.png', self.onPresentationNewClick, 'PresentationNewItem')
-        ## Edit Song Button ##
-        self.MediaManagerItem.addToolbarButton('Edit Song', 'Edit the selected song',
-            ':/songs/song_edit.png', self.onSongEditClick, 'PresentationEditItem')
-        ## Delete Song Button ##
-        self.MediaManagerItem.addToolbarButton('Delete Song', 'Delete the selected song',
-            ':/songs/song_delete.png', self.onSongDeleteClick, 'SongDeleteItem')
+        ## Load Presentation Button ##
+        self.MediaManagerItem.addToolbarButton('Load', 'Load presentations into openlp.org',
+            ':/presentations/presentation_load.png', self.onPresentationLoadClick, 'PresentationLoadItem')
+        ## Delete Presentation Button ##
+        self.MediaManagerItem.addToolbarButton('Delete Presentation', 'Delete the selected presentation',
+            ':/presentations/presentation_delete.png', self.onPresentationDeleteClick, 'PresentationDeleteItem')
         ## Separator Line ##
         self.MediaManagerItem.addToolbarSeparator()
         ## Preview Song Button ##
-        self.MediaManagerItem.addToolbarButton('Preview Song', 'Preview the selected song',
-            ':/system/system_preview.png', self.onSongPreviewClick, 'SongPreviewItem')
+        self.MediaManagerItem.addToolbarButton('Preview Song', 'Preview the selected presentation',
+            ':/system/system_preview.png', self.onPresentationPreviewClick, 'PresentationPreviewItem')
         ## Live Song Button ##
-        self.MediaManagerItem.addToolbarButton('Go Live', 'Send the selected song live',
-            ':/system/system_live.png', self.onSongLiveClick, 'SongLiveItem')
+        self.MediaManagerItem.addToolbarButton('Go Live', 'Send the selected presentation live',
+            ':/system/system_live.png', self.onPresentationLiveClick, 'PresentationLiveItem')
         ## Add Song Button ##
-        self.MediaManagerItem.addToolbarButton('Add Song To Service',
-            'Add the selected song(s) to the service', ':/system/system_add.png',
-            self.onSongAddClick, 'SongAddItem')
+        self.MediaManagerItem.addToolbarButton('Add Presentation To Service',
+            'Add the selected presentation(s) to the service', ':/system/system_add.png',
+            self.onPresentationAddClick, 'PresentationAddItem')
         ## Add the songlist widget ##
 
         self.listView = QtGui.QListWidget()
@@ -71,25 +68,22 @@ class PresentationPlugin(Plugin):
         return self.MediaManagerItem
 
     def initalise(self):
-        self.onPresentationNewClick()
+        self.onPresentationLoadClick()
 
-    def onPresentationNewClick(self):
+    def onPresentationLoadClick(self):
         files =  self.config.get_files()
         self.listView.clear()
         for f in files:
             self.listView.addItem(f)
 
-    def onSongEditClick(self):
-        self.edit_song_form.show()
-
-    def onSongDeleteClick(self):
+    def onPresentationDeleteClick(self):
         pass
 
-    def onSongPreviewClick(self):
+    def onPresentationPreviewClick(self):
         pass
 
-    def onSongLiveClick(self):
+    def onPresentationLiveClick(self):
         pass
 
-    def onSongAddClick(self):
+    def onPresentationAddClick(self):
         pass

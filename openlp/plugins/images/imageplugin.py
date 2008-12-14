@@ -27,50 +27,47 @@ class ImagePlugin(Plugin):
     def __init__(self):
         # Call the parent constructor
         Plugin.__init__(self, 'Images', '1.9.0')
-        self.Weight = -7
-       
-
-    def getMediaManagerItem(self):
+        self.weight = -7
         # Create the plugin icon
-        self.Icon = QtGui.QIcon()
-        self.Icon.addPixmap(QtGui.QPixmap(':/media/media_song.png'),
+        self.icon = QtGui.QIcon()
+        self.icon.addPixmap(QtGui.QPixmap(':/media/media_image.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
+
+
+    def get_media_manager_item(self):
         # Create the MediaManagerItem object
-        self.MediaManagerItem = MediaManagerItem(self.Icon, 'Images')
+        self.MediaManagerItem = MediaManagerItem(self.icon, 'Images')
         # Add a toolbar
         self.MediaManagerItem.addToolbar()
         # Create buttons for the toolbar
         ## New Song Button ##
-        self.MediaManagerItem.addToolbarButton('Update', 'Update Images',
-            ':/songs/song_new.png', self.onImagesNewClick, 'ImageNewItem')
-        ## Edit Song Button ##
-        self.MediaManagerItem.addToolbarButton('Edit Song', 'Edit the selected song',
-            ':/songs/song_edit.png', self.onSongEditClick, 'PresentationEditItem')
+        self.MediaManagerItem.addToolbarButton('Load Image', 'Load images into openlp.org',
+            ':/images/image_load.png', self.onImagesNewClick, 'ImageNewItem')
         ## Delete Song Button ##
-        self.MediaManagerItem.addToolbarButton('Delete Song', 'Delete the selected song',
-            ':/songs/song_delete.png', self.onSongDeleteClick, 'SongDeleteItem')
+        self.MediaManagerItem.addToolbarButton('Delete Image', 'Delete the selected image',
+            ':/images/image_delete.png', self.onImageDeleteClick, 'ImageDeleteItem')
         ## Separator Line ##
         self.MediaManagerItem.addToolbarSeparator()
         ## Preview Song Button ##
-        self.MediaManagerItem.addToolbarButton('Preview Song', 'Preview the selected song',
-            ':/system/system_preview.png', self.onSongPreviewClick, 'SongPreviewItem')
+        self.MediaManagerItem.addToolbarButton('Preview Song', 'Preview the selected image',
+            ':/system/system_preview.png', self.onImagePreviewClick, 'ImagePreviewItem')
         ## Live Song Button ##
-        self.MediaManagerItem.addToolbarButton('Go Live', 'Send the selected song live',
-            ':/system/system_live.png', self.onSongLiveClick, 'SongLiveItem')
+        self.MediaManagerItem.addToolbarButton('Go Live', 'Send the selected image live',
+            ':/system/system_live.png', self.onImageLiveClick, 'ImageLiveItem')
         ## Add Song Button ##
-        self.MediaManagerItem.addToolbarButton('Add Song To Service',
-            'Add the selected song(s) to the service', ':/system/system_add.png',
-            self.onSongAddClick, 'SongAddItem')
+        self.MediaManagerItem.addToolbarButton('Add Image To Service',
+            'Add the selected image(s) to the service', ':/system/system_add.png',
+            self.onImageAddClick, 'ImageAddItem')
         ## Add the songlist widget ##
 
         self.listView = QtGui.QListWidget()
         self.listView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.listView.setObjectName("listView")
-        self.MediaManagerItem.PageLayout.addWidget(self.listView)     
+        self.MediaManagerItem.PageLayout.addWidget(self.listView)
 
         return self.MediaManagerItem
 
-    def initalise_ui(self):
+    def initialise(self):
         self.onImagesNewClick()
 
     def onImagesNewClick(self):
@@ -79,17 +76,14 @@ class ImagePlugin(Plugin):
         for f in files:
             self.listView.addItem(f)
 
-    def onSongEditClick(self):
-        self.edit_song_form.show()
-
-    def onSongDeleteClick(self):
+    def onImageDeleteClick(self):
         pass
 
-    def onSongPreviewClick(self):
+    def onImagePreviewClick(self):
         pass
 
-    def onSongLiveClick(self):
+    def onImageLiveClick(self):
         pass
 
-    def onSongAddClick(self):
+    def onImageAddClick(self):
         pass

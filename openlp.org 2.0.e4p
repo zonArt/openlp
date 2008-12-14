@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.4.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2008-12-13, 19:19:42 -->
+<!-- Saved: 2008-12-14, 21:47:18 -->
 <!-- Copyright (C) 2008 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.4">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -91,6 +91,10 @@
     <Source>openlp/plugins/presentations/lib/pptviewlib/ppttest.py</Source>
     <Source>openlp/plugins/presentations/__init__.py</Source>
     <Source>openlp/plugins/presentations/presentationplugin.py</Source>
+    <Source>openlp/plugins/videos/__init__.py</Source>
+    <Source>openlp/plugins/videos/videoplugin.py</Source>
+    <Source>openlp/plugins/images/__init__.py</Source>
+    <Source>openlp/plugins/images/imageplugin.py</Source>
   </Sources>
   <Forms>
     <Form>resources/forms/bibleimport.ui</Form>
