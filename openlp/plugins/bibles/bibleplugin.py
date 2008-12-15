@@ -221,7 +221,7 @@ class BiblePlugin(Plugin):
         pass
 
     def _initialise_form(self):
-        bibles = self.biblemanager.getBibles()
+        bibles = self.biblemanager.get_bibles()
         self.QuickSearchComboBox.addItem("Text Search")
         self.QuickSearchComboBox.addItem("Verse Search")
         first = True
@@ -240,10 +240,10 @@ class BiblePlugin(Plugin):
     def _initialise_bible_advanced(self, bible):
         log.debug("_initialise_bible_advanced %s ", bible)
         currentBook = str(self.AdvancedBookComboBox.currentText())
-        cf = self.biblemanager.getBookChapterCount(bible, currentBook)[0]
+        cf = self.biblemanager.get_book_chapter_count(bible, currentBook)[0]
         log.debug("Book change bible %s book %s ChapterCount %s", bible, currentBook, cf)
         if cf == None: # Only change the search details if the book is missing from the new bible
-            books = self.biblemanager.getBibleBooks(str(self.AdvancedVersionComboBox.currentText()))
+            books = self.biblemanager.get_bible_books_full(str(self.AdvancedVersionComboBox.currentText()))
             self.AdvancedBookComboBox.clear()
             first = True
             for b in books:
@@ -255,8 +255,8 @@ class BiblePlugin(Plugin):
 
     def _initialise_chapter_verse(self, bible, book):
         log.debug("_initialise_chapter_verse %s , %s", bible, book)
-        self.chaptersfrom = self.biblemanager.getBookChapterCount(bible, book)[0]
-        self.verses = self.biblemanager.getBookVerseCount(bible, book, 1)[0]
+        self.chaptersfrom = self.biblemanager.get_book_chapter_count(bible, book)[0]
+        self.verses = self.biblemanager.get_book_verse_count(bible, book, 1)[0]
         self._adjust_combobox(1, self.chaptersfrom, self.AdvancedFromChapter)
         self._adjust_combobox(1, self.chaptersfrom, self.AdvancedToChapter)
         self._adjust_combobox(1, self.verses, self.AdvancedFromVerse)
@@ -267,7 +267,7 @@ class BiblePlugin(Plugin):
         book = str(self.AdvancedBookComboBox.currentText())
         cf = self.AdvancedFromChapter.currentText()
         self._adjust_combobox(cf, self.chaptersfrom, self.AdvancedToChapter)
-        vse = self.biblemanager.getBookVerseCount(bible, book, int(cf))[0] # get the verse count for new chapter
+        vse = self.biblemanager.get_book_verse_count(bible, book, int(cf))[0] # get the verse count for new chapter
         self._adjust_combobox(1, vse, self.AdvancedFromVerse)
         self._adjust_combobox(1, vse, self.AdvancedToVerse)
 
@@ -287,7 +287,7 @@ class BiblePlugin(Plugin):
         if t1 != t2:
             bible = str(self.AdvancedVersionComboBox.currentText())
             book = str(self.AdvancedBookComboBox.currentText())
-            vse = self.biblemanager.getBookVerseCount(bible, book, int(t2))[0] # get the verse count for new chapter
+            vse = self.biblemanager.get_book_verse_count(bible, book, int(t2))[0] # get the verse count for new chapter
             self._adjust_combobox(1, vse, self.AdvancedToVerse)
 
     def onAdvancedSearchButton(self):
@@ -297,24 +297,24 @@ class BiblePlugin(Plugin):
         chapto =  int(self.AdvancedToChapter.currentText())
         versefrom =  int(self.AdvancedFromVerse.currentText())
         verseto =  int(self.AdvancedToVerse.currentText())
-        self.searchresults = self.biblemanager.getVerseText(bible, book, chapfrom, versefrom, verseto)
-        self._displayResults()
+        self.searchresults = self.biblemanager.get_verse_text(bible, book, chapfrom, versefrom, verseto)
+        self._display_results()
 
     def onQuickSearchButton(self):
         bible = str(self.QuickVersionComboBox.currentText())
         text = str(self.QuickSearchEdit.displayText())
 
         if self.QuickSearchComboBox.currentText() == "Text Search":
-            self._searchText(bible, text)
+            self._search_text(bible, text)
         else:
-            self._verseSearch()
+            self._verse_search()
 
     def _search_text(self, bible, text):
-        self.searchresults = self.biblemanager.getVersesFromText(bible,text)
-        self._displayResults()
+        self.searchresults = self.biblemanager.get_verse_from_text(bible,text)
+        self._display_results()
 
     def _verse_search(self):
-        self._displayResults()
+        self._display_results()
 
     def _display_results(self):
         self.listView.clear() # clear the results

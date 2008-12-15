@@ -55,7 +55,7 @@ class TestBibleManager:
         log.debug("\n.......testRegisterBibleFiles")
         self.bm.registerFileBible("TheMessage",'biblebooks_msg_short.csv','bibleverses_msg_short.csv')
         self.bm.registerFileBible("NIV",'biblebooks_niv_short.csv','bibleverses_niv_short.csv')        
-        b = self.bm.getBibles()
+        b = self.bm.get_bibles()
         for b1 in b:
             log.debug( b1)
             assert(b1 in b)    
@@ -66,7 +66,7 @@ class TestBibleManager:
         self.bm.registerHTTPBible("asv","Crosswalk", "", "", "")
         self.bm.registerHTTPBible("nasb","Biblegateway", "", "", "")
         self.bm.registerHTTPBible("nkj","Biblegateway", "http://tigger2:3128/", "", "")                
-        b = self.bm.getBibles()
+        b = self.bm.get_bibles()
         for b1 in b:
             log.debug( b1)
             assert(b1 in b)    
@@ -75,40 +75,40 @@ class TestBibleManager:
     def testGetBibles(self):
         log.debug( "\n.......testGetBibles")
         # make sure the shuffled sequence does not lose any elements
-        b = self.bm.getBibles()
+        b = self.bm.get_bibles()
         for b1 in b:
             log.debug( b1)
             assert(b1 in b)
 
     def testGetBibleBooks(self):
         log.debug( "\n.......testGetBibleBooks")
-        c = self.bm.getBibleBooks("NIV")
+        c = self.bm.get_bible_books_full("NIV")
         for c1 in c:
             log.debug( c1)
             assert(c1 in c)
             
     def testGetBookChapterCount(self):
         log.debug( "\n.......testGetBookChapterCount")       
-        assert(self.bm.getBookChapterCount("Matthew") == '28')
+        assert(self.bm.get_book_chapter_count("Matthew") == '28')
 
     def testGetBookVerseCount(self):
         log.debug( "\n.......testGetBookVerseCount")    
-        assert(self.bm.getBookVerseCount("Genesis", 1) == '31')
-        assert(self.bm.getBookVerseCount("Genesis", 2) == '25')
-        assert(self.bm.getBookVerseCount("Matthew", 1) == '25')
-        assert(self.bm.getBookVerseCount("Revelation", 1) == '20')        
+        assert(self.bm.get_book_verse_count("Genesis", 1) == '31')
+        assert(self.bm.get_book_verse_count("Genesis", 2) == '25')
+        assert(self.bm.get_book_verse_count("Matthew", 1) == '25')
+        assert(self.bm.get_book_verse_count("Revelation", 1) == '20')        
 
     def testGetVerseText(self):
         log.debug( "\n.......testGetVerseText")
-        #c = self.bm.getVerseText("TheMessage",'Genesis',1,2,1)
+        #c = self.bm.get_verse_text("TheMessage",'Genesis',1,2,1)
         #log.debug( c )
-        #c = self.bm.getVerseText('NIV','Genesis',1,1,2)
+        #c = self.bm.get_verse_text('NIV','Genesis',1,1,2)
         #log.debug( c ) 
-        c = self.bm.getVerseText('asv','Genesis',10,1,20)
+        c = self.bm.get_verse_text('asv','Genesis',10,1,20)
         log.debug( c )
-        c = self.bm.getVerseText('nasb','Genesis',10,1,20)
+        c = self.bm.get_verse_text('nasb','Genesis',10,1,20)
         log.debug( c )       
-        c = self.bm.getVerseText('nkj','Revelation',10,1,20)
+        c = self.bm.get_verse_text('nkj','Revelation',10,1,20)
         log.debug( c ) 
         
     def testLoadBible(self):

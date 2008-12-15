@@ -55,7 +55,7 @@ class TestBibleManager:
         log.debug("\n.......testRegisterBibleFiles")
         self.bm.registerCSVFileBible("TheMessage",'biblebooks_msg_short.csv','bibleverses_msg_short.csv')
         self.bm.registerCSVFileBible("NIV",'biblebooks_niv_short.csv','bibleverses_niv_short.csv')        
-        b = self.bm.getBibles()
+        b = self.bm.get_bibles()
         for b1 in b:
             log.debug( b1)
             assert(b1 in b)    

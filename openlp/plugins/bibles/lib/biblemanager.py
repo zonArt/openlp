@@ -68,7 +68,7 @@ class BibleManager():
 
         log.debug( "Bible Initialised")
 
-    def processDialog(self, dialogobject):
+    def process_dialog(self, dialogobject):
         self.dialogobject = dialogobject
 
     def registerHTTPBible(self, biblename, biblesource, mode="lazy", proxyurl=None, proxyid=None, proxypass=None):
@@ -108,7 +108,7 @@ class BibleManager():
             bcsv = BibleCSVImpl(nbible) # create the loader and pass in the database
             bcsv.loadData(booksfile, versefile)
 
-    def registerOSISFileBible(self, biblename, osisfile):
+    def register_OSIS_file_bible(self, biblename, osisfile):
         """
         Method to load a bible from a osis xml file extracted from Sword bible viewer.
         If the database exists it is deleted and the database is reloaded
@@ -142,7 +142,7 @@ class BibleManager():
                     self._loadBook(biblename,bookid, bookname, bookabbrev)
                     self._loadChapter(biblename,bookid,  bookname, chptr)
 
-    def getBibles(self, mode="full"):
+    def get_bibles(self, mode="full"):
         """
         Returns a list of Books of the bible
         """
@@ -151,21 +151,21 @@ class BibleManager():
             r.append(b)
         return r
 
-    def getBibleBooks(self,bible):
+    def get_bible_books_full(self,bible):
         """
         Returns a list of the books of the bible from the database
         """
         log.debug("getbibleBooks %s", bible)
         return self.bibleDBCache[bible].getBibleBooks()
 
-    def getBookChapterCount(self, bible,  book):
+    def get_book_chapter_count(self, bible,  book):
         """
         Returns the number of Chapters for a given book
         """
         log.debug( "getBookChapterCount %s,%s", bible, book)
         return self.bibleDBCache[bible].getMaxBibleBookChapters(book)
 
-    def getBookVerseCount(self, bible, book, chapter):
+    def get_book_verse_count(self, bible, book, chapter):
         """
         Returns all the number of verses for a given
         book and chapterMaxBibleBookVerses
@@ -173,7 +173,7 @@ class BibleManager():
         log.debug( "getBookVerseCount %s,%s,%s", bible, book,  chapter)
         return self.bibleDBCache[bible].getMaxBibleBookVerses(book, chapter)
 
-    def getVersesFromText(self, bible, versetext):
+    def get_verse_from_text(self, bible, versetext):
         """
         Returns all the number of verses for a given
         book and chapterMaxBibleBookVerses
@@ -181,7 +181,7 @@ class BibleManager():
         log.debug( "getVersesFromText %s,%s", bible, versetext)
         return self.bibleDBCache[bible].getVersesFromText(versetext)
 
-    def saveMetaData(self, bible, version, copyright, permissions):
+    def save_meta_data(self, bible, version, copyright, permissions):
         """
         Saves the bibles meta data
         """
@@ -197,7 +197,7 @@ class BibleManager():
         log.debug( "getMetaData %s,%s", bible,  key)
         self.bibleDBCache[bible].getMeta(key)
 
-    def getVerseText(self, bible, bookname, chapter, sverse, everse = 0 ):
+    def get_verse_text(self, bible, bookname, chapter, sverse, everse = 0 ):
         """
         Returns a list of verses for a given Book, Chapter and ranges of verses.
         If the end verse(everse) is less then the start verse(sverse)

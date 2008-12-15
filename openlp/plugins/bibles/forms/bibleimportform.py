@@ -85,9 +85,9 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
                 self.MessageLabel.setText("Import Started")
                 self.ProgressBar.setValue(1)
                 self.progress = 0
-                self.biblemanager.processDialog(self)
-                self.biblemanager.registerOSISFileBible(str(self.BibleNameEdit.displayText()), self.OSISLocationEdit.displayText())
-                self.biblemanager.saveMetaData(str(self.BibleNameEdit.displayText()), str(self.VersionNameEdit.displayText()), str(self.CopyrightEdit.displayText()), str(self.PermisionEdit.displayText()))
+                self.biblemanager.process_dialog(self)
+                self.biblemanager.register_OSIS_file_bible(str(self.BibleNameEdit.displayText()), self.OSISLocationEdit.displayText())
+                self.biblemanager.save_meta_data(str(self.BibleNameEdit.displayText()), str(self.VersionNameEdit.displayText()), str(self.CopyrightEdit.displayText()), str(self.PermisionEdit.displayText()))
                 self.MessageLabel.setText("Import Complete")
         elif button.text() == "Cancel":
             self.close()            
