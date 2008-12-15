@@ -42,10 +42,13 @@ class ConfigHelper(object):
 
     @staticmethod
     def get_config(section, key, default=None):
+        print "Requesting %s/%s default %s" % (section, key, default)
         reg = ConfigHelper.get_registry()
         if reg.has_value(section, key):
             return reg.get_value(section, key, default)
         else:
+            if default is not None:
+                ConfigHelper.set_config(section, key, default)
             return default
 
     @staticmethod

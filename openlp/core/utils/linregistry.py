@@ -97,6 +97,9 @@ class LinRegistry(Registry):
 
     def _save(self):
         try:
+            if not os.path.exists(os.path.dirname(self.file_name)):
+                os.makedirs(os.path.dirname(self.file_name))
+
             file_handle = open(self.file_name, 'w')
             self.config.write(file_handle)
             close(file_handle)
