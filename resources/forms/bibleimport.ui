@@ -240,11 +240,6 @@
           </item>
           <item>
            <property name="text" >
-            <string>BibleGateway</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
             <string>CrossWire</string>
            </property>
           </item>
@@ -269,11 +264,6 @@
             <string>Download As Needed</string>
            </property>
           </item>
-          <item>
-           <property name="text" >
-            <string>Download All</string>
-           </property>
-          </item>
          </widget>
         </item>
         <item row="2" column="0" >
@@ -285,6 +275,11 @@
         </item>
         <item row="2" column="1" >
          <widget class="QComboBox" name="BibleComboBox" >
+          <item>
+           <property name="text" >
+            <string/>
+           </property>
+          </item>
           <item>
            <property name="text" >
             <string>NIV</string>

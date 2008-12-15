@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'bibleimport.ui'
 #
-# Created: Sun Dec 14 08:57:40 2008
+# Created: Mon Dec 15 18:34:25 2008
 #      by: PyQt4 UI code generator 4.4.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -101,7 +101,6 @@ class Ui_BibleImportDialog(object):
         self.LocationComboBox.addItem(QtCore.QString())
         self.LocationComboBox.setItemText(0, "")
         self.LocationComboBox.addItem(QtCore.QString())
-        self.LocationComboBox.addItem(QtCore.QString())
         self.OptionsLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.LocationComboBox)
         self.TypeLabel = QtGui.QLabel(self.OptionsGroupBox)
         self.TypeLabel.setObjectName("TypeLabel")
@@ -111,13 +110,14 @@ class Ui_BibleImportDialog(object):
         self.TypeComboBox.addItem(QtCore.QString())
         self.TypeComboBox.setItemText(0, "")
         self.TypeComboBox.addItem(QtCore.QString())
-        self.TypeComboBox.addItem(QtCore.QString())
         self.OptionsLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.TypeComboBox)
         self.BibleLabel = QtGui.QLabel(self.OptionsGroupBox)
         self.BibleLabel.setObjectName("BibleLabel")
         self.OptionsLayout.setWidget(2, QtGui.QFormLayout.LabelRole, self.BibleLabel)
         self.BibleComboBox = QtGui.QComboBox(self.OptionsGroupBox)
         self.BibleComboBox.setObjectName("BibleComboBox")
+        self.BibleComboBox.addItem(QtCore.QString())
+        self.BibleComboBox.setItemText(0, "")
         self.BibleComboBox.addItem(QtCore.QString())
         self.BibleComboBox.addItem(QtCore.QString())
         self.OptionsLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.BibleComboBox)
@@ -220,14 +220,12 @@ class Ui_BibleImportDialog(object):
         self.ImportToolBox.setItemText(self.ImportToolBox.indexOf(self.FileImportPage), QtGui.QApplication.translate("BibleImportDialog", "File Import Page", None, QtGui.QApplication.UnicodeUTF8))
         self.OptionsGroupBox.setTitle(QtGui.QApplication.translate("BibleImportDialog", "Download Options", None, QtGui.QApplication.UnicodeUTF8))
         self.LocationLabel.setText(QtGui.QApplication.translate("BibleImportDialog", "Location:", None, QtGui.QApplication.UnicodeUTF8))
-        self.LocationComboBox.setItemText(1, QtGui.QApplication.translate("BibleImportDialog", "BibleGateway", None, QtGui.QApplication.UnicodeUTF8))
-        self.LocationComboBox.setItemText(2, QtGui.QApplication.translate("BibleImportDialog", "CrossWire", None, QtGui.QApplication.UnicodeUTF8))
+        self.LocationComboBox.setItemText(1, QtGui.QApplication.translate("BibleImportDialog", "CrossWire", None, QtGui.QApplication.UnicodeUTF8))
         self.TypeLabel.setText(QtGui.QApplication.translate("BibleImportDialog", "Type:", None, QtGui.QApplication.UnicodeUTF8))
         self.TypeComboBox.setItemText(1, QtGui.QApplication.translate("BibleImportDialog", "Download As Needed", None, QtGui.QApplication.UnicodeUTF8))
-        self.TypeComboBox.setItemText(2, QtGui.QApplication.translate("BibleImportDialog", "Download All", None, QtGui.QApplication.UnicodeUTF8))
         self.BibleLabel.setText(QtGui.QApplication.translate("BibleImportDialog", "Bible:", None, QtGui.QApplication.UnicodeUTF8))
-        self.BibleComboBox.setItemText(0, QtGui.QApplication.translate("BibleImportDialog", "NIV", None, QtGui.QApplication.UnicodeUTF8))
-        self.BibleComboBox.setItemText(1, QtGui.QApplication.translate("BibleImportDialog", "KJV", None, QtGui.QApplication.UnicodeUTF8))
+        self.BibleComboBox.setItemText(1, QtGui.QApplication.translate("BibleImportDialog", "NIV", None, QtGui.QApplication.UnicodeUTF8))
+        self.BibleComboBox.setItemText(2, QtGui.QApplication.translate("BibleImportDialog", "KJV", None, QtGui.QApplication.UnicodeUTF8))
         self.ProxyGroupBox.setTitle(QtGui.QApplication.translate("BibleImportDialog", "Proxy Settings (Optional)", None, QtGui.QApplication.UnicodeUTF8))
         self.AddressLabel.setText(QtGui.QApplication.translate("BibleImportDialog", "Proxy Address:", None, QtGui.QApplication.UnicodeUTF8))
         self.UsernameLabel.setText(QtGui.QApplication.translate("BibleImportDialog", "Username:", None, QtGui.QApplication.UnicodeUTF8))
