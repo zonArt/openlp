@@ -26,8 +26,19 @@ class ConfigHelper(object):
     """
     @staticmethod
     def get_data_path():
+        if os.name == 'nt':
+            default = os.path.join(os.path.expanduser(u'~'),
+                u'Application Data', u'.openlp', u'data')
+        else:
+            default = os.path.expanduser(u'~/.openlp/data')
+
         reg = ConfigHelper.get_registry()
-        return reg.get_value('main', 'data path')
+        path = reg.get_value('main', 'data path', default)
+
+        if not os.path.exists(path):
+            os.makedirs(path)
+ 
+        return path
 
     @staticmethod
     def get_config(section, key, default=None):

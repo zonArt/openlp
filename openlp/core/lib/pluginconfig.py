@@ -48,7 +48,12 @@ class PluginConfig(object):
         app_data = ConfigHelper.get_data_path()
         safe_name = self.section.replace(' ', '-')
         plugin_data = self.get_config('data path', safe_name)
-        return os.path.join(app_data, plugin_data)
+        path = os.path.join(app_data, plugin_data)
+
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+        return path
 
     def set_data_path(self, path):
         return self.set_config('data path', os.path.basename(path))
