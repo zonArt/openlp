@@ -33,7 +33,7 @@ class ConfigHelper(object):
             default = os.path.expanduser(u'~/.openlp/data')
 
         reg = ConfigHelper.get_registry()
-        path = reg.get_value('main', 'data path', default)
+        path = ConfigHelper.get_config('main', 'data path', default)
 
         if not os.path.exists(path):
             os.makedirs(path)
@@ -42,7 +42,6 @@ class ConfigHelper(object):
 
     @staticmethod
     def get_config(section, key, default=None):
-        print "Requesting %s/%s default %s" % (section, key, default)
         reg = ConfigHelper.get_registry()
         if reg.has_value(section, key):
             return reg.get_value(section, key, default)

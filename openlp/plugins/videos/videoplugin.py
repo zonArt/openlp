@@ -70,7 +70,7 @@ class VideoPlugin(Plugin):
         self.onVideoLoadClick()
 
     def onVideoLoadClick(self):
-        files =  self.config.get_files()
+        files =  self.config.get_files(u'avi,mpeg')
         self.listView.clear()
         for f in files:
             self.listView.addItem(f)

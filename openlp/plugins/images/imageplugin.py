@@ -71,7 +71,7 @@ class ImagePlugin(Plugin):
         self.onImagesNewClick()
 
     def onImagesNewClick(self):
-        files =  self.config.get_files()
+        files =  self.config.get_files(u'jpg,gif,png,bmp')
         self.listView.clear()
         for f in files:
             self.listView.addItem(f)

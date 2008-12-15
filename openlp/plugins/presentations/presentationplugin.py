@@ -71,7 +71,7 @@ class PresentationPlugin(Plugin):
         self.onPresentationLoadClick()
 
     def onPresentationLoadClick(self):
-        files =  self.config.get_files()
+        files =  self.config.get_files(u'ppt,pps,odi')
         self.listView.clear()
         for f in files:
             self.listView.addItem(f)
