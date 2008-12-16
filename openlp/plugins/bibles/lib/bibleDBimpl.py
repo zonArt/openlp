@@ -128,7 +128,7 @@ class BibleDBImpl(BibleCommon):
         self.Session = sessionmaker()
         self.Session.configure(bind=self.db)
         
-    def createTables(self):
+    def create_tables(self):
         log.debug( "createTables")        
         if os.path.exists(self.biblefile):   # delete bible file and set it up again
             os.remove(self.biblefile)
@@ -139,8 +139,8 @@ class BibleDBImpl(BibleCommon):
         self.save_meta("dbversion", "2")
         self._loadTestaments()
         
-    def addVerse(self, bookid, chap,  verse, text):
-        log.debug( "addVerse %s,%s,%s,%s", bookid, chap, verse, text)
+    def add_verse(self, bookid, chap,  verse, text):
+        log.debug( "add_verse %s,%s,%s,%s", bookid, chap, verse, text)
         metadata.bind.echo = False
         session = self.Session()
         versemeta = Verse(book_id=int(bookid),  chapter=int(chap), verse=int(verse), text=(text))
@@ -148,7 +148,7 @@ class BibleDBImpl(BibleCommon):
         session.commit()
 
     def create_chapter(self, bookid, chap, textlist):
-        log.debug( "createChapter %s,%s,%s", bookid, chap, textlist)
+        log.debug( "create_chapter %s,%s,%s", bookid, chap, textlist)
         metadata.bind.echo = False
         session = self.Session()
         #s = text (""" select id FROM book where book.name == :b """)
@@ -161,7 +161,7 @@ class BibleDBImpl(BibleCommon):
         session.commit()
         
     def create_book(self, bookid, bookname, bookabbrev):
-        log.debug( "createBook %s,%s,%s", bookid, bookname, bookabbrev)
+        log.debug( "create_book %s,%s,%s", bookid, bookname, bookabbrev)
         metadata.bind.echo = False       
         session = self.Session()
         bookmeta = Book(int(5), bookname, bookabbrev)
@@ -179,13 +179,13 @@ class BibleDBImpl(BibleCommon):
         s = text (""" select value FROM metadata where key == :k """)
         return self.db.execute(s, k=key).fetchone()
 
-    def deleteMeta(self, key):
+    def delete_meta(self, key):
         metadata.bind.echo = False
         s = text (""" delete FROM meta where key == :k """)
         self.db.execute(s, k=key)
 
-    def _loadTestaments(self):
-        log.debug("loadTestaments")
+    def _load_testaments(self):
+        log.debug("load_testaments")
         metadata.bind.echo = False               
         session = self.Session()    
         testmeta = ONTestament(name="Old Testament")

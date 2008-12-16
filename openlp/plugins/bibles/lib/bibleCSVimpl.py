@@ -71,8 +71,8 @@ class BibleCSVImpl(BibleCommon):
             p3 =  p[3].replace('"', '')
             if book_ptr is not p0:
                 cl = self.bibledb.get_bible_book(p0)
-                id = self.bibledb.getBibleBookId(p0)
+                id = self.bibledb.get_bible_book_Id(p0)
                 book_ptr = cl
                 log.debug( id )
-            self.bibledb.addVerse(id[0], p[1], p[2], p3)
+            self.bibledb.add_verse(id[0], p[1], p[2], p3)
  

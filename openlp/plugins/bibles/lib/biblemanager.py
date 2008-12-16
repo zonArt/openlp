@@ -148,6 +148,8 @@ class BibleManager():
         """
         r=[]
         for b ,  o in self.bibleDBCache.iteritems():
+            if mode != "full":
+                print self.bibleHTTPCache[b]
             r.append(b)
         return r
 
