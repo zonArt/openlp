@@ -56,13 +56,13 @@ class BibleManager():
             nme = f.split('.')
             bname = nme[0]
             self.bibleDBCache[bname] = BibleDBImpl(self.biblePath, bname, self.bibleSuffix)
-            biblesource = self.bibleDBCache[bname].getMeta("WEB") # look to see if lazy load bible exists and get create getter.
+            biblesource = self.bibleDBCache[bname].get_meta("WEB") # look to see if lazy load bible exists and get create getter.
             if biblesource:
                 print biblesource
                 nhttp = BibleHTTPImpl()
                 nhttp.setBibleSource(biblesource)  # tell The Server where to get the verses from.
                 self.bibleHTTPCache[bname] = nhttp
-                proxy = self.bibleDBCache[bname].getMeta("proxy") # look to see if lazy load bible exists and get create getter.
+                proxy = self.bibleDBCache[bname].get_meta("proxy") # look to see if lazy load bible exists and get create getter.
                 nhttp.setProxy(proxy)  # tell The Server where to get the verses from.
         #
 
@@ -195,9 +195,9 @@ class BibleManager():
         Returns the meta data for a given key
         """
         log.debug( "get_meta %s,%s", bible,  key)
-        self.bibleDBCache[bible].getMeta(key)
+        self.bibleDBCache[bible].get_meta(key)
 
-    def get_verse_text(self, bible, bookname, chapter, sverse, everse = 0 ):
+    def get_verse_text(self, bible, bookname, schapter, echapter, sverse, everse = 0 ):
         """
         Returns a list of verses for a given Book, Chapter and ranges of verses.
         If the end verse(everse) is less then the start verse(sverse)
@@ -205,9 +205,10 @@ class BibleManager():
         bible        - Which bible to use.
         Rest can be guessed at !
         """
+        text  = []
         #log.debug( self.bibleDBCache)
         #log.debug( self.bibleHTTPCache)
-        log.debug( "getVerseText %s,%s,%s,%s,%s",  bible,bookname,  chapter, sverse, everse)
+        log.debug( "get_verse_text %s,%s,%s,%s,%s,%s",  bible,bookname,  schapter,echapter, sverse, everse)
 #        bookid = self.booksOfBible[bookname] # convert to id  ie Genesis --> 1  Revelation --> 73
 #        # SORT OUT BOOKNAME BOOK ID.
 #        # NAME COMES IN TO ID AND BACK TO NAME ?
@@ -217,25 +218,36 @@ class BibleManager():
 #        if not c:
 #            self._loadBook(bible,bookid, bookname, bookabbrev)
 #            self._loadChapter(bible, bookid,bookname, chapter)
-        if everse < sverse:
-            everse = sverse
-        text = self.bibleDBCache[bible].getBibleText(bookname, chapter, sverse, everse)
-        #log.debug( text)
-        #self.bibleDBCache[bible].dumpBible()
+        if schapter == echapter:
+            text = self.bibleDBCache[bible].get_bible_text(bookname, schapter, sverse, everse)
+        else:
+            for i in range (schapter, echapter + 1):
+                if i == schapter:
+                    start = sverse
+                    end = self.get_book_verse_count(bible, bookname,i )[0]
+                elif i == echapter:
+                    start = 1
+                    end = everse
+                else:
+                    start = 1
+                    end = self.get_book_verse_count(bible, bookname,i )[0]
+
+                txt = self.bibleDBCache[bible].get_bible_text(bookname, i, start, end)
+                text.extend(txt)
         return text
 
     def _load_book(self, bible, bookid, bookname, bookabbrev):
         log.debug( "load_book %s,%s,%s,%s", bible, bookid, bookname, bookabbrev)
-        cl = self.bibleDBCache[bible].getBibleBook(bookname)
+        cl = self.bibleDBCache[bible].get_bible_book(bookname)
         log.debug( "get bible book %s" , cl)
         if not cl :
-            self.bibleDBCache[bible].createBook(bookid, bookname, bookabbrev)
+            self.bibleDBCache[bible].create_book(bookid, bookname, bookabbrev)
 
     def _loadChapter(self, bible, bookid, bookname, chapter):
         log.debug( "load_chapter %s,%s,%s,%s", bible, bookid,bookname, chapter)
         try :
-            chaptlist = self.bibleHTTPCache[bible].getBibleChapter(bible, bookid,bookname, chapter)
-            self.bibleDBCache[bible].createChapter(bookname, chapter, chaptlist)
+            chaptlist = self.bibleHTTPCache[bible].get_bible_chapter(bible, bookid,bookname, chapter)
+            self.bibleDBCache[bible].create_chapter(bookname, chapter, chaptlist)
         except :
             log.error("Errow thrown %s", sys.exc_info()[1])
 

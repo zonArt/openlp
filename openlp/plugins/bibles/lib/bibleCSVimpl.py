@@ -59,7 +59,7 @@ class BibleCSVImpl(BibleCommon):
             p = line.split(",")
             p2 = p[2].replace('"', '')
             p3 = p[3].replace('"', '')            
-            self.bibledb.createBook(int(p[1]), p2, p3)
+            self.bibledb.create_book(int(p[1]), p2, p3)
 
 
         book_ptr = ""
@@ -70,7 +70,7 @@ class BibleCSVImpl(BibleCommon):
             p0 = p[0].replace('"', '')
             p3 =  p[3].replace('"', '')
             if book_ptr is not p0:
-                cl = self.bibledb.getBibleBook(p0)
+                cl = self.bibledb.get_bible_book(p0)
                 id = self.bibledb.getBibleBookId(p0)
                 book_ptr = cl
                 log.debug( id )

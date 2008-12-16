@@ -297,10 +297,11 @@ class BiblePlugin(Plugin):
         chapto =  int(self.AdvancedToChapter.currentText())
         versefrom =  int(self.AdvancedFromVerse.currentText())
         verseto =  int(self.AdvancedToVerse.currentText())
-        self.searchresults = self.biblemanager.get_verse_text(bible, book, chapfrom, versefrom, verseto)
+        self.searchresults = self.biblemanager.get_verse_text(bible, book, chapfrom, chapto, versefrom, verseto)
         self._display_results()
 
     def onQuickSearchButton(self):
+        self.log.debug("onQuickSearchButton")
         bible = str(self.QuickVersionComboBox.currentText())
         text = str(self.QuickSearchEdit.displayText())
 
@@ -310,6 +311,7 @@ class BiblePlugin(Plugin):
             self._verse_search()
 
     def _search_text(self, bible, text):
+        self.log.debug("_search Text %s,%s", bible, text)        
         self.searchresults = self.biblemanager.get_verse_from_text(bible,text)
         self._display_results()
 
