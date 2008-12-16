@@ -43,10 +43,10 @@ class BibleCSVImpl(BibleCommon):
         """         
         self.bibledb = bibledb
         
-    def loadData(self, booksfile, versesfile):
-        self.bibledb.saveMeta("version", "Bible Version")
-        self.bibledb.saveMeta("Copyright", "(c) Some Bible company")
-        self.bibledb.saveMeta("Permission", "You Have Some")
+    def load_data(self, booksfile, versesfile):
+        self.bibledb.save_meta("version", "Bible Version")
+        self.bibledb.save_meta("Copyright", "(c) Some Bible company")
+        self.bibledb.save_meta("Permission", "You Have Some")
 
         #session = self.Session()
 

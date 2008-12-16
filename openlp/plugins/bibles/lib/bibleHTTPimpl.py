@@ -33,12 +33,12 @@ logging.basicConfig(level=logging.DEBUG,
                 
 class BGExtract(BibleCommon):
     global log 
-    log=logging.getLogger("BibleHTTPMgr(BGExtract)")
-    log.info("BGExtract loaded") 
+    log=logging.getLogger("BibleHTTPMgr(BG_extract)")
+    log.info("BG_extract loaded") 
     def __init__(self, proxyurl= None):
         log.debug("init %s", proxyurl)  
         self.proxyurl = proxyurl
-    def getBibleChapter(self, version, bookid, bookname,  chapter) :
+    def get_bible_chapter(self, version, bookid, bookname,  chapter) :
         """
         Access and decode bibles via the BibleGateway website
             Version - the version of the bible like 31 for New International version
@@ -48,9 +48,9 @@ class BGExtract(BibleCommon):
         
         """
         version = 49
-        log.debug( "getBibleChapter %s,%s,%s,%s", version, bookid, bookname,  chapter) 
+        log.debug( "get_bible_chapter %s,%s,%s,%s", version, bookid, bookname,  chapter) 
         urlstring = "http://www.biblegateway.com/passage/?book_id="+str(bookid)+"&chapter"+str(chapter)+"&version="+str(version)
-        xml_string = self._getWebText(urlstring, self.proxyurl)
+        xml_string = self._get_web_text(urlstring, self.proxyurl)
         
         VerseSearch = "class="+'"'+"sup"+'"'+">"
         verse = 1
@@ -73,14 +73,14 @@ class BGExtract(BibleCommon):
                 verseText = xml_string[versePos + 7 : i ] 
                 #print xml_string
                 #print "VerseText = " + str(verse) +" "+ verseText
-                bible[verse] = self._cleanText(verseText) # store the verse                
+                bible[verse] = self._clean_text(verseText) # store the verse                
                 versePos = -1
             else:
                 i = xml_string[:i].rfind("<span")+1
                 verseText = xml_string[versePos + 7 : i - 1 ] # Loose the </span>
                 xml_string = xml_string[i - 1 :len(xml_string)] # chop off verse 1
                 versePos = xml_string.find(VerseSearch) #look for the next verse
-                bible[verse] = self._cleanText(verseText) # store the verse
+                bible[verse] = self._clean_text(verseText) # store the verse
                 verse += 1
         return bible        
         
@@ -91,7 +91,7 @@ class CWExtract(BibleCommon):
     def __init__(self, proxyurl=None):
         log.debug("init %s", proxyurl)  
         self.proxyurl = proxyurl
-    def getBibleChapter(self, version, bookid, bookname,  chapter) :
+    def get_bible_chapter(self, version, bookid, bookname,  chapter) :
         log.debug( "getBibleChapter %s,%s,%s,%s", version, bookid, bookname,  chapter) 
         """
         Access and decode bibles via the Crosswalk website
@@ -100,9 +100,9 @@ class CWExtract(BibleCommon):
             bookname - text name of in english eg 'gen' for Genesis
             chapter - chapter number 
         """        
-        log.debug( "getBibleChapter %s,%s,%s,%s", version, bookid, bookname,  chapter)         
+        log.debug( "get_bible_chapter %s,%s,%s,%s", version, bookid, bookname,  chapter)         
         urlstring = "http://bible.crosswalk.com/OnlineStudyBible/bible.cgi?word="+bookname+"+"+str(chapter)+"&version="+version
-        xml_string = self._getWebText(urlstring, self.proxyurl)
+        xml_string = self._get_web_text(urlstring, self.proxyurl)
         
         i= xml_string.find("NavCurrentChapter")
         xml_string = xml_string[i:len(xml_string)]
@@ -133,7 +133,7 @@ class CWExtract(BibleCommon):
                 #log.debug( i,  versePos)
                 verseText = xml_string[versePos: i]
                 versePos = i
-            bible[verse] = self._cleanText(verseText)
+            bible[verse] = self._clean_text(verseText)
             #bible[verse] = verseText
             
         #log.debug( bible)
@@ -155,33 +155,33 @@ class BibleHTTPImpl():
         biblesource = ""
         proxyurl = None
         
-    def setProxy(self,proxyurl):
+    def set_proxy(self,proxyurl):
         """
         Set the Proxy Url
         """
-        log.debug("setProxy %s", proxyurl)        
+        log.debug("set_proxy %s", proxyurl)        
         self.proxyurl = proxyurl 
  
-    def setBibleSource(self,biblesource):
+    def set_bible_source(self,biblesource):
         """
         Set the source of where the bible text is comming from
         """
-        log.debug("setBibleSource %s", biblesource)        
+        log.debug("set_bible_source %s", biblesource)        
         self.biblesource = biblesource
 
-    def getBibleChapter(self, version, bookid, bookname,  chapter):
+    def get_bible_chapter(self, version, bookid, bookname,  chapter):
         """
         Recieve the request and call the relevent handler methods
         """
-        log.debug( "getBibleChapter %s,%s,%s,%s", version, bookid, bookname,  chapter) 
+        log.debug( "get_bible_chapter %s,%s,%s,%s", version, bookid, bookname,  chapter) 
         log.debug("biblesource = %s", self.biblesource)
         try:
             if self.biblesource == 'Crosswalk':
                 ev = CWExtract(self.proxyurl)
             else:
-                ev = CWExtract(self.proxyurl)
+                ev = BGExtract(self.proxyurl)
                 
-            return ev.getBibleChapter(version, bookid, bookname,  chapter)
+            return ev.get_bible_chapter(version, bookid, bookname,  chapter)
         except:
             log.error("Error thrown = %s", sys.exc_info()[1])
 

@@ -35,8 +35,8 @@ class BibleCommon:
     def __init__(self):
         """
         """
-    def _getWebText(self, urlstring, proxyurl):
-        log.debug( "getWebText %s %s", proxyurl, urlstring)
+    def _get_web_text(self, urlstring, proxyurl):
+        log.debug( "get_web_text %s %s", proxyurl, urlstring)
 
         if  proxyurl != "" or len(proxyurl) > 0 :
             print "ProxyUrl " ,  proxyurl + " " + str(len(proxyurl))
@@ -57,7 +57,7 @@ class BibleCommon:
                 log.error( e.reason)
         return xml_string
 
-    def _cleanText(self, text):
+    def _clean_text(self, text):
         """
         Clean up text and remove extra characters
         after been downloaded from web

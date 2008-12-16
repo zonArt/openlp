@@ -71,13 +71,13 @@ class BibleManager():
     def process_dialog(self, dialogobject):
         self.dialogobject = dialogobject
 
-    def registerHTTPBible(self, biblename, biblesource, mode="lazy", proxyurl=None, proxyid=None, proxypass=None):
+    def register_HTTP_bible(self, biblename, biblesource, mode="lazy", proxyurl=None, proxyid=None, proxypass=None):
         """
         Return a list of bibles from a given URL.
         The selected Bible can then be registered and LazyLoaded into a database
         """
-        log.debug( "registerHTTPBible %s,%s,%s,%s,%s", biblename, biblesource, proxyurl,  proxyid, proxypass, mode)
-        if self._isNewBible(biblename):
+        log.debug( "register_HTTP_bible %s,%s,%s,%s,%s", biblename, biblesource, proxyurl,  proxyid, proxypass, mode)
+        if self._is_new_bible(biblename):
             nbible = BibleDBImpl(self.biblePath, biblename, self.bibleSuffix) # Create new Bible
             nbible.createTables() # Create Database
             self.bibleDBCache[biblename] = nbible
@@ -85,28 +85,28 @@ class BibleManager():
             nhttp = BibleHTTPImpl()
             nhttp.setBibleSource(biblesource)
             self.bibleHTTPCache[biblename] = nhttp
-            nbible.saveMeta("WEB", biblesource) # register a lazy loading interest
+            nbible.save_meta("WEB", biblesource) # register a lazy loading interest
             if proxyurl != None:
-                nbible.saveMeta("proxy", proxyurl) # store the proxy URL
+                nbible.save_meta("proxy", proxyurl) # store the proxy URL
                 nhttp.setProxy(proxyurl)
             if proxyid != None:
-                nbible.saveMeta("proxyid", proxyid) # store the proxy userid
+                nbible.save_meta("proxyid", proxyid) # store the proxy userid
             if proxypass != None:
-                nbible.saveMeta("proxypass", proxypass) # store the proxy password
+                nbible.save_meta("proxypass", proxypass) # store the proxy password
 
 
-    def registerCVSFileBible(self, biblename, booksfile, versefile):
+    def register_CVS_file_bible(self, biblename, booksfile, versefile):
         """
         Method to load a bible from a set of files into a database.
         If the database exists it is deleted and the database is reloaded
         from scratch.
         """
-        if self._isNewBible(biblename):
+        if self._is_new_bible(biblename):
             nbible = BibleDBImpl(self.biblePath, biblename, self.bibleSuffix) # Create new Bible
             nbible.createTables() # Create Database
             self.bibleDBCache[biblename] = nbible # cache the database for use later
             bcsv = BibleCSVImpl(nbible) # create the loader and pass in the database
-            bcsv.loadData(booksfile, versefile)
+            bcsv.load_data(booksfile, versefile)
 
     def register_OSIS_file_bible(self, biblename, osisfile):
         """
@@ -114,8 +114,8 @@ class BibleManager():
         If the database exists it is deleted and the database is reloaded
         from scratch.
         """
-        log.debug( "registerOSISFileBible %s , %s", biblename, osisfile)        
-        if self._isNewBible(biblename):
+        log.debug( "register_OSIS_file_bible %s , %s", biblename, osisfile)        
+        if self._is_new_bible(biblename):
             nbible = BibleDBImpl(self.biblePath, biblename, self.bibleSuffix) # Create new Bible
             nbible.createTables() # Create Database
             self.bibleDBCache[biblename] = nbible # cache the database for use later
@@ -123,24 +123,24 @@ class BibleManager():
             bcsv.loadData(osisfile, self.dialogobject)
 
 
-    def loadBible(self,biblename):
-        """
-        Downloads all the books of the bible
-        and loads it into the database
-        """
-        log.debug( "loadBible %s", biblename)
-        bookabbrev = ""
-        for bookname in self.listOfBooks:
-            cptrs = self.booksChapters[ self.booksOfBible[bookname]]
-            log.debug( "book and chapter %s %s", bookname , self.booksChapters[ self.booksOfBible[bookname]] )
-            for chptr in range(1 , int(cptrs)):  # loop through all the chapters in book
-                c = self.bibleDBCache[biblename].getBibleChapter(bookname, chptr) # check to see if book/chapter exists
-                log.debug( "got chapter %s", c)
-                if not c:
-                    bookid = self.booksOfBible[bookname] # convert to id  ie Genesis --> 1  Revelation --> 73
-                    log.debug( "missing %s,%s", bookname, chptr)
-                    self._loadBook(biblename,bookid, bookname, bookabbrev)
-                    self._loadChapter(biblename,bookid,  bookname, chptr)
+#    def loadBible(self,biblename):
+#        """
+#        Downloads all the books of the bible
+#        and loads it into the database
+#        """
+#        log.debug( "loadBible %s", biblename)
+#        bookabbrev = ""
+#        for bookname in self.listOfBooks:
+#            cptrs = self.booksChapters[ self.booksOfBible[bookname]]
+#            log.debug( "book and chapter %s %s", bookname , self.booksChapters[ self.booksOfBible[bookname]] )
+#            for chptr in range(1 , int(cptrs)):  # loop through all the chapters in book
+#                c = self.bibleDBCache[biblename].getBibleChapter(bookname, chptr) # check to see if book/chapter exists
+#                log.debug( "got chapter %s", c)
+#                if not c:
+#                    bookid = self.booksOfBible[bookname] # convert to id  ie Genesis --> 1  Revelation --> 73
+#                    log.debug( "missing %s,%s", bookname, chptr)
+#                    self._loadBook(biblename,bookid, bookname, bookabbrev)
+#                    self._loadChapter(biblename,bookid,  bookname, chptr)
 
     def get_bibles(self, mode="full"):
         """
@@ -151,50 +151,50 @@ class BibleManager():
             r.append(b)
         return r
 
-    def get_bible_books_full(self,bible):
+    def get_bible_books(self,bible):
         """
         Returns a list of the books of the bible from the database
         """
-        log.debug("getbibleBooks %s", bible)
-        return self.bibleDBCache[bible].getBibleBooks()
+        log.debug("get_bible_books %s", bible)
+        return self.bibleDBCache[bible].get_bible_books()
 
     def get_book_chapter_count(self, bible,  book):
         """
         Returns the number of Chapters for a given book
         """
-        log.debug( "getBookChapterCount %s,%s", bible, book)
-        return self.bibleDBCache[bible].getMaxBibleBookChapters(book)
+        log.debug( "get_book_chapter_count %s,%s", bible, book)
+        return self.bibleDBCache[bible].get_max_bible_book_chapter(book)
 
     def get_book_verse_count(self, bible, book, chapter):
         """
         Returns all the number of verses for a given
         book and chapterMaxBibleBookVerses
         """
-        log.debug( "getBookVerseCount %s,%s,%s", bible, book,  chapter)
-        return self.bibleDBCache[bible].getMaxBibleBookVerses(book, chapter)
+        log.debug( "get_book_verse_count %s,%s,%s", bible, book,  chapter)
+        return self.bibleDBCache[bible].get_max_bible_book_verses(book, chapter)
 
     def get_verse_from_text(self, bible, versetext):
         """
         Returns all the number of verses for a given
         book and chapterMaxBibleBookVerses
         """
-        log.debug( "getVersesFromText %s,%s", bible, versetext)
-        return self.bibleDBCache[bible].getVersesFromText(versetext)
+        log.debug( "get_verses_from_text %s,%s", bible, versetext)
+        return self.bibleDBCache[bible].get_verses_from_text(versetext)
 
     def save_meta_data(self, bible, version, copyright, permissions):
         """
         Saves the bibles meta data
         """
-        log.debug( "saveMetaData %s,%s, %s,%s", bible,  version, copyright, permissions)
-        self.bibleDBCache[bible].saveMeta("Version", version)
-        self.bibleDBCache[bible].saveMeta("Copyright", copyright)
-        self.bibleDBCache[bible].saveMeta("Permissins", permissions)
+        log.debug( "save_meta %s,%s, %s,%s", bible,  version, copyright, permissions)
+        self.bibleDBCache[bible].save_meta("Version", version)
+        self.bibleDBCache[bible].save_meta("Copyright", copyright)
+        self.bibleDBCache[bible].save_meta("Permissins", permissions)
 
-    def getMetaData(self, bible, key):
+    def get_meta_data(self, bible, key):
         """
         Returns the meta data for a given key
         """
-        log.debug( "getMetaData %s,%s", bible,  key)
+        log.debug( "get_meta %s,%s", bible,  key)
         self.bibleDBCache[bible].getMeta(key)
 
     def get_verse_text(self, bible, bookname, chapter, sverse, everse = 0 ):
@@ -224,22 +224,22 @@ class BibleManager():
         #self.bibleDBCache[bible].dumpBible()
         return text
 
-    def _loadBook(self, bible, bookid, bookname, bookabbrev):
-        log.debug( "loadbook %s,%s,%s,%s", bible, bookid, bookname, bookabbrev)
+    def _load_book(self, bible, bookid, bookname, bookabbrev):
+        log.debug( "load_book %s,%s,%s,%s", bible, bookid, bookname, bookabbrev)
         cl = self.bibleDBCache[bible].getBibleBook(bookname)
         log.debug( "get bible book %s" , cl)
         if not cl :
             self.bibleDBCache[bible].createBook(bookid, bookname, bookabbrev)
 
     def _loadChapter(self, bible, bookid, bookname, chapter):
-        log.debug( "loadChapter %s,%s,%s,%s", bible, bookid,bookname, chapter)
+        log.debug( "load_chapter %s,%s,%s,%s", bible, bookid,bookname, chapter)
         try :
             chaptlist = self.bibleHTTPCache[bible].getBibleChapter(bible, bookid,bookname, chapter)
             self.bibleDBCache[bible].createChapter(bookname, chapter, chaptlist)
         except :
             log.error("Errow thrown %s", sys.exc_info()[1])
 
-    def _isNewBible(self, name):
+    def _is_new_bible(self, name):
         """
         Check cache to see if new bible
         """

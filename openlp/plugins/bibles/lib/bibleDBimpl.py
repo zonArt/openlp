@@ -136,7 +136,7 @@ class BibleDBImpl(BibleCommon):
         testament_table.create()
         book_table.create()
         verse_table.create()
-        self.saveMeta("dbversion", "2")
+        self.save_meta("dbversion", "2")
         self._loadTestaments()
         
     def addVerse(self, bookid, chap,  verse, text):
@@ -168,7 +168,7 @@ class BibleDBImpl(BibleCommon):
         session.add(bookmeta)
         session.commit()
         
-    def saveMeta(self, key, value):
+    def save_meta(self, key, value):
         metadata.bind.echo = False                
         session = self.Session()
         bmeta= BibleMeta(key, value)
@@ -196,19 +196,19 @@ class BibleDBImpl(BibleCommon):
         session.add(testmeta)        
         session.commit()
         
-    def getBibleBooks(self):
+    def get_bible_books(self):
         log.debug( "getBibleBook ") 
         metadata.bind.echo = False        
         s = text (""" select name FROM book order by id """)
         return self.db.execute(s).fetchall()
  
-    def getMaxBibleBookVerses(self, bookname, chapter):
+    def get_max_bible_book_verses(self, bookname, chapter):
         log.debug( "getMaxBibleBookVerses %s,%s ", bookname ,  chapter) 
         metadata.bind.echo = False        
         s = text (""" select max(verse.verse) from verse,book where chapter = :c and book_id = book.id and book.name = :b """)
         return self.db.execute(s, c=chapter, b=bookname).fetchone()
         
-    def getMaxBibleBookChapters(self, bookname):
+    def get_max_bible_book_chapter(self, bookname):
         log.debug( "getMaxBibleBookChapters %s ", bookname ) 
         metadata.bind.echo = False        
         s = text (""" select max(verse.chapter) from verse,book where book_id = book.id and book.name = :b """)
@@ -238,7 +238,7 @@ class BibleDBImpl(BibleCommon):
         s = text (""" select name,chapter,verse.verse, verse.text FROM verse , book where verse.book_id == book.id AND verse.chapter == :c AND (verse.verse between :v1 and :v2) and book.name == :b """)
         return self.db.execute(s, c=chapter, v1=sverse , v2=everse, b=bookname).fetchall()
         
-    def getVersesFromText(self,versetext):
+    def get_verses_from_text(self,versetext):
         log.debug( "getBibleText %s",versetext)
         metadata.bind.echo = False
         versetext = "%"+versetext+"%"

@@ -243,7 +243,7 @@ class BiblePlugin(Plugin):
         cf = self.biblemanager.get_book_chapter_count(bible, currentBook)[0]
         log.debug("Book change bible %s book %s ChapterCount %s", bible, currentBook, cf)
         if cf == None: # Only change the search details if the book is missing from the new bible
-            books = self.biblemanager.get_bible_books_full(str(self.AdvancedVersionComboBox.currentText()))
+            books = self.biblemanager.get_bible_books(str(self.AdvancedVersionComboBox.currentText()))
             self.AdvancedBookComboBox.clear()
             first = True
             for b in books:

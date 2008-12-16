@@ -45,10 +45,10 @@ class BibleOSISImpl():
             self.abbrevOfBible[p[0]] = p[2].replace('\n', '')            
                 
         
-    def loadData(self, osisfile, dialogobject=None):
-        self.bibledb.saveMeta("Version", "Bible Version")
-        self.bibledb.saveMeta("Copyright", "(c) Some Bible company")
-        self.bibledb.saveMeta("Permission", "You Have Some")
+    def load_data(self, osisfile, dialogobject=None):
+        self.bibledb.save_meta("Version", "Bible Version")
+        self.bibledb.save_meta("Copyright", "(c) Some Bible company")
+        self.bibledb.save_meta("Permission", "You Have Some")
         
         #TODO: need to see if new / old or both testaments
         dialogobject.setMax(65)
