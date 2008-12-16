@@ -44,10 +44,10 @@ class Plugin(object):
         Provides the Plugin with a handle to check if it can be loaded.
     * get_media_manager_item()
         Returns an instance of MediaManagerItem to be used in the Media Manager.
-    * get_import_menu_item()
-        Returns an item for the Import menu.
-    * get_export_menu_item()
-        Returns an item for the Export menu.
+    * add_import_menu_item(import_menu)
+        Add an item to the Import menu.
+    * add_export_menu_item(export_menu)
+        Add an item to the Export menu.
     * get_settings_tab()
         Returns an instance of SettingsTab to be used in the Settings dialog.
     * add_to_menu(menubar)
@@ -103,13 +103,13 @@ class Plugin(object):
         """
         pass
 
-    def get_import_menu_item(self):
+    def add_import_menu_item(self, import_menu):
         """
         Create a menu item and add it to the "Import" menu.
         """
         pass
 
-    def get_export_menu_item(self):
+    def add_export_menu_item(self, export_menu):
         """
         Create a menu item and add it to the "Export" menu.
         """

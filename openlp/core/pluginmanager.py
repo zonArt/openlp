@@ -91,5 +91,9 @@ class PluginManager(object):
                 mediatoolbox.addItem(media_manager_item, plugin.icon, media_manager_item.title)
                 plugin.initialise()
 
+    def hook_import_menu(self, import_menu):
+        for plugin in self.plugins:
+            plugin.add_import_menu_item(import_menu)
+
     def hook_handle_event(self, event):
         pass

@@ -22,7 +22,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
 from openlp.core.lib import Plugin, MediaManagerItem
-from forms import EditSongForm
+from forms import EditSongForm, OpenLPImportForm
 
 class SongsPlugin(Plugin):
     def __init__(self):
@@ -30,6 +30,7 @@ class SongsPlugin(Plugin):
         Plugin.__init__(self, 'Songs', '1.9.0')
         self.weight = -10
         self.edit_song_form = EditSongForm()
+        self.openlp_import_form = OpenLPImportForm()
         # Create the plugin icon
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(':/media/media_song.png'),
@@ -63,7 +64,6 @@ class SongsPlugin(Plugin):
             'Add the selected song(s) to the service', ':/system/system_add.png',
             self.onSongAddClick, 'SongAddItem')
         ## Add the songlist widget ##
-
         # Create the tab widget
         self.SongWidget = QtGui.QWidget(self.MediaManagerItem)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
@@ -72,7 +72,6 @@ class SongsPlugin(Plugin):
         sizePolicy.setHeightForWidth(self.SongWidget.sizePolicy().hasHeightForWidth())
         self.SongWidget.setSizePolicy(sizePolicy)
         self.SongWidget.setObjectName('SongWidget')
-
         self.SearchLayout = QtGui.QGridLayout(self.SongWidget)
         self.SearchLayout.setObjectName('SearchLayout')
         self.SearchTypeComboBox = QtGui.QComboBox(self.SongWidget)
@@ -82,7 +81,6 @@ class SongsPlugin(Plugin):
         self.SearchTypeLabel.setObjectName('SearchTypeLabel')
         self.SearchTypeLabel.setText('Search Type:')
         self.SearchLayout.addWidget(self.SearchTypeLabel, 0, 0, 1, 1)
-
         self.SearchTextLabel = QtGui.QLabel(self.SongWidget)
         self.SearchTextLabel.setObjectName('SearchTextLabel')
         self.SearchTextLabel.setText('Search Text:')
@@ -94,16 +92,38 @@ class SongsPlugin(Plugin):
         self.SearchTextButton.setObjectName('SearchTextButton')
         self.SearchTextButton.setText('Search')
         self.SearchLayout.addWidget(self.SearchTextButton, 3, 2, 1, 1)
-
         # Add the song widget to the page layout
         self.MediaManagerItem.PageLayout.addWidget(self.SongWidget)
-
-        self.listView = QtGui.QListWidget()
-        self.listView.setGeometry(QtCore.QRect(10, 100, 256, 591))
-        self.listView.setObjectName("listView")
-        self.MediaManagerItem.PageLayout.addWidget(self.listView)
-
+        self.SongListView = QtGui.QListWidget()
+        self.SongListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
+        self.SongListView.setObjectName("listView")
+        self.MediaManagerItem.PageLayout.addWidget(self.SongListView)
         return self.MediaManagerItem
+
+    def add_import_menu_item(self, import_menu):
+        self.ImportSongMenu = QtGui.QMenu(import_menu)
+        self.ImportSongMenu.setObjectName("ImportSongMenu")
+        self.ImportOpenSongItem = QtGui.QAction(import_menu)
+        self.ImportOpenSongItem.setObjectName("ImportOpenSongItem")
+        self.ImportOpenlp1Item = QtGui.QAction(import_menu)
+        self.ImportOpenlp1Item.setObjectName("ImportOpenlp1Item")
+        self.ImportOpenlp2Item = QtGui.QAction(import_menu)
+        self.ImportOpenlp2Item.setObjectName("ImportOpenlp2Item")
+        self.ImportSongMenu.addAction(self.ImportOpenlp1Item)
+        self.ImportSongMenu.addAction(self.ImportOpenlp2Item)
+        self.ImportSongMenu.addAction(self.ImportOpenSongItem)
+        import_menu.addAction(self.ImportSongMenu.menuAction())
+        # Translations...
+        self.ImportSongMenu.setTitle(QtGui.QApplication.translate("main_window", "&Song", None, QtGui.QApplication.UnicodeUTF8))
+        self.ImportOpenSongItem.setText(QtGui.QApplication.translate("main_window", "OpenSong", None, QtGui.QApplication.UnicodeUTF8))
+        self.ImportOpenlp1Item.setText(QtGui.QApplication.translate("main_window", "openlp.org 1.0", None, QtGui.QApplication.UnicodeUTF8))
+        self.ImportOpenlp1Item.setToolTip(QtGui.QApplication.translate("main_window", "Export songs in openlp.org 1.0 format", None, QtGui.QApplication.UnicodeUTF8))
+        self.ImportOpenlp1Item.setStatusTip(QtGui.QApplication.translate("main_window", "Export songs in openlp.org 1.0 format", None, QtGui.QApplication.UnicodeUTF8))
+        self.ImportOpenlp2Item.setText(QtGui.QApplication.translate("main_window", "OpenLP 2.0", None, QtGui.QApplication.UnicodeUTF8))
+        self.ImportOpenlp2Item.setToolTip(QtGui.QApplication.translate("main_window", "Export songs in OpenLP 2.0 format", None, QtGui.QApplication.UnicodeUTF8))
+        self.ImportOpenlp2Item.setStatusTip(QtGui.QApplication.translate("main_window", "Export songs in OpenLP 2.0 format", None, QtGui.QApplication.UnicodeUTF8))
+        # Signals and slots
+        QtCore.QObject.connect(self.ImportOpenlp1Item, QtCore.SIGNAL("triggered()"), self.onImportOpenlp1ItemClick)
 
     def initialise(self):
         self.SearchTypeComboBox.addItem("Lyrics")
@@ -127,3 +147,6 @@ class SongsPlugin(Plugin):
 
     def onSongAddClick(self):
         pass
+
+    def onImportOpenlp1ItemClick(self):
+        self.openlp_import_form.show()
