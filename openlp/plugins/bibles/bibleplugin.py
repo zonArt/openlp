@@ -183,7 +183,6 @@ class BiblePlugin(Plugin):
         QtCore.QObject.connect(self.AdvancedFromVerse, QtCore.SIGNAL("activated(int)"), self.onAdvancedFromVerse)
         QtCore.QObject.connect(self.AdvancedToChapter, QtCore.SIGNAL("activated(int)"), self.onAdvancedToChapter)
 
-        self._initialise_form()
         QtCore.QObject.connect(self.AdvancedSearchButton, QtCore.SIGNAL("pressed()"), self.onAdvancedSearchButton)
         QtCore.QObject.connect(self.QuickSearchButton, QtCore.SIGNAL("pressed()"), self.onQuickSearchButton)
 
@@ -194,7 +193,9 @@ class BiblePlugin(Plugin):
         self.ImportBibleItem.setObjectName("ImportBibleItem")
         import_menu.addAction(self.ImportBibleItem)
         self.ImportBibleItem.setText(QtGui.QApplication.translate("main_window", "&Bible", None, QtGui.QApplication.UnicodeUTF8))
-
+        # Signals and slots
+        QtCore.QObject.connect(self.ImportBibleItem, QtCore.SIGNAL("triggered()"),  self.onBibleNewClick)
+        
     def add_export_menu_item(self, export_menu):
         self.ExportBibleItem = QtGui.QAction(export_menu)
         self.ExportBibleItem.setObjectName("ExportBibleItem")
@@ -320,7 +321,7 @@ class BiblePlugin(Plugin):
         if self.QuickSearchComboBox.currentText() == "Text Search":
             self._search_text(bible, text)
         else:
-            self._verse_search()
+            self.translate(bible, text)
 
     def _search_text(self, bible, text):
         self.log.debug("_search Text %s,%s", bible, text)
@@ -337,3 +338,49 @@ class BiblePlugin(Plugin):
 
     def _initialise_bible_quick(self, bible): # not sure if needed yet!
         a=1
+        
+    def translate(self, bible,  search):
+        print "------"
+        print search
+        book, rest = self._split_book_from_verses(search)
+        book = book.rstrip()
+        chapters, verses = self._split_chapters_and_verses(rest)
+        print verses
+        chapters = self._split_chapters(chapters)
+        #v = self._split_verses(verses)
+        print "book = " + book
+        print "chapters =" + str(chapters)
+        #print "from =" + str(v)
+        print "to ="
+        self.searchresults = self.biblemanager.get_verse_text(bible, book,int(chapters[0]), int(chapters[1]), 1, 99)
+        self._display_results()    
+            
+    def _split_chapters(self, text):
+        txt = text.split("-")  # split in to parts
+        print  txt  ,  len(txt)
+        if len(txt) == 1:
+            return  [text, text]
+        return txt
+        
+    def _split_verses(self, text):
+        print text
+        txt = text.split("-")  # split in to parts
+        print  txt  ,  len(txt)
+        if len(txt) == 1:
+            return [text, text]
+        return txt        
+
+    def _split_book_from_verses(self, search):
+        v = search.split(" ")  # split in to parts
+        book = ""
+        for i in range (0, len(v) - 1 ): # Join the books back together except last word
+            book += v[i] + " "
+        verse = v[len(v)-1]
+        return book, verse
+
+    def _split_chapters_and_verses(self, verse):
+        verse = verse.lower().replace("v", ":")  # allow V or v for verse instead of :
+        c = verse.split(":")
+        if len(c) == 1:
+            return c[0], []
+        return c[0], c[1]
