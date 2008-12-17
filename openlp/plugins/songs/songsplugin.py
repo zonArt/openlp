@@ -125,6 +125,7 @@ class SongsPlugin(Plugin):
         self.ImportOpenlp2Item.setStatusTip(QtGui.QApplication.translate("main_window", "Export songs in OpenLP 2.0 format", None, QtGui.QApplication.UnicodeUTF8))
         # Signals and slots
         QtCore.QObject.connect(self.ImportOpenlp1Item, QtCore.SIGNAL("triggered()"), self.onImportOpenlp1ItemClick)
+        QtCore.QObject.connect(self.ImportOpenlp2Item, QtCore.SIGNAL("triggered()"), self.onImportOpenlp1ItemClick)
         QtCore.QObject.connect(self.ImportOpenSongItem, QtCore.SIGNAL("triggered()"), self.onImportOpenSongItemClick)
 
     def initialise(self):
