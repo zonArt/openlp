@@ -1,7 +1,9 @@
+# -*- coding:iso-8859-1 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Carsten Tinggaard
+Portions copyright (c) 2008 Martin Thompson, Tim Bentley, Carsten Tinggaard
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -20,7 +22,7 @@ import sys
 import os
 from types import StringType, ListType, NoneType
 
-sys.path.append(os.path.abspath("./../../.."))
+sys.path.append(os.path.abspath("./../../../.."))
 
 from openlp.core.lib import XmlRootClass
 
@@ -145,8 +147,11 @@ class _OpenSong(XmlRootClass):
                             newtag = "Verse"
                         elif 'c' == t :
                             newtag = "Chorus"
+                        elif 'b' == t :
+                            newtag = "Bridge"
+                        elif 'p' == t :
+                            newtag = "Pre-chorus"
                         else :
-                            #TODO: what is the tags for bridge, pre-chorus?
                             newtag = t
                         s = ("# %s %s"%(newtag, c)).rstrip()
                         res.append(s)
