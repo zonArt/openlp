@@ -189,6 +189,12 @@ class BiblePlugin(Plugin):
 
         return self.MediaManagerItem
 
+    def add_import_menu_item(self, import_menu):
+        self.ImportBibleItem = QtGui.QAction(import_menu)
+        self.ImportBibleItem.setObjectName("ImportBibleItem")
+        import_menu.addAction(self.ImportBibleItem)
+        self.ImportBibleItem.setText(QtGui.QApplication.translate("main_window", "&Bible", None, QtGui.QApplication.UnicodeUTF8))
+
     def initialise(self):
         self._initialise_form()
 
@@ -311,7 +317,7 @@ class BiblePlugin(Plugin):
             self._verse_search()
 
     def _search_text(self, bible, text):
-        self.log.debug("_search Text %s,%s", bible, text)        
+        self.log.debug("_search Text %s,%s", bible, text)
         self.searchresults = self.biblemanager.get_verse_from_text(bible,text)
         self._display_results()
 
