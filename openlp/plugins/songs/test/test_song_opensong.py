@@ -1,8 +1,9 @@
 # -*- coding:iso-8859-1 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Carsten Tinggaard
+Portions copyright (c) 2008 Martin Thompson, Tim Bentley, Carsten Tinggaard
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -18,11 +19,14 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import os
 import sys
-sys.path.append(os.path.abspath("./../../../.."))
 
-from openlp.plugins.songs.songxml import *
+__ThisDir__ = os.path.dirname(__file__)
+if "" == __ThisDir__ :
+    __ThisDir__ = os.path.abspath(".")
 
-__ThisDir__ = os.path.abspath(".")
+sys.path.append(os.path.abspath("%s/../../../.."%__ThisDir__))
+
+from openlp.plugins.songs.lib.songxml import *
 
 
 _sample1 = \
@@ -79,6 +83,39 @@ _sample2 = \
 </song>
 '''
 
+_sample3 = \
+'''<?xml version="1.0" encoding="UTF-8"?>
+<song>
+  <title></title>
+  <author></author>
+  <copyright></copyright>
+  <presentation></presentation>
+  <ccli></ccli>
+  <theme></theme>
+  <lyrics>[V]
+1verse 1 line 1
+2verse 2 line 1
+3verse 3 line 1
+1verse 1 line 2
+2verse 2 line 2
+3verse 3 line 2
+
+[C]
+ chorus line 1
+ chorus line 2
+
+[P]
+ pre-chorus line 1
+ pre-chorus line 2
+ pre-chorus line 3
+ 
+[B]
+ bridge line 1
+ bridge line 2
+</lyrics>
+</song>
+'''
+
 class Test_OpenSong(object):
     """Test cases for converting from OpenSong xml format to Song"""
     
@@ -91,12 +128,20 @@ class Test_OpenSong(object):
         assert(s.GetNumberOfSlides() == 4)
         
     def test_sample2(self):
-        """OpenSong: handwritten sample2"""
+        """OpenSong: handwritten sample2 - with verses and chorus"""
         s = Song()
         s.FromOpenSongBuffer(_sample2)
         l = s.GetLyrics()
         assert(len(l) == (4*3+3))
         assert(s.GetNumberOfSlides() == 4)
+        
+    def test_sample3(self):
+        """OpenSong: handwritten sample3 - with verses, chorus, bridge and pre-chorus"""
+        s = Song()
+        s.FromOpenSongBuffer(_sample3)
+        l = s.GetLyrics()
+        assert(len(l) == (4*3+4+5+4))
+        assert(s.GetNumberOfSlides() == 6)
         
     def test_file1(self):
         """OpenSong: parse Amazing Grace"""
@@ -123,12 +168,12 @@ class Test_OpenSong(object):
         assert(s.GetVerseOrder() == "V1 C V2 C V3 C V4 C")
         assert(s.GetNumberOfSlides() == 5)
         
-    def Etest_file3(self):
+    def test_file3(self):
         """OpenSong: parse 'På en fjern ensom høj' (danish)"""
         #FIXME: problem with XML convert and danish characters
         s = Song()
         s.FromOpenSongFile("%s/data_opensong/På en fjern ensom høj"%(__ThisDir__))
-        assert(s.GetTitle() == "På en fjern ensom høj")
+        assert(s.GetTitle() == u"På en fjern ensom høj")
         assert(s.GetCopyright() == "")
         assert(s.GetSongCcliNo() == "")
         assert(s.GetCategoryArray(True) == "")

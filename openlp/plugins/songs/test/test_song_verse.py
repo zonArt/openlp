@@ -1,7 +1,9 @@
+# -*- coding:iso-8859-1 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Carsten Tinggaard
+Portions copyright (c) 2008 Martin Thompson, Tim Bentley, Carsten Tinggaard
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -18,9 +20,14 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import py.test
 import os
 import sys
-sys.path.append(os.path.abspath("./../../../.."))
 
-from openlp.plugins.songs.songxml import *
+__ThisDir__ = os.path.dirname(__file__)
+if "" == __ThisDir__ :
+    __ThisDir__ = os.path.abspath(".")
+
+sys.path.append(os.path.abspath("%s/../../../.."%__ThisDir__))
+
+from openlp.plugins.songs.lib.songxml import *
 
 class Test_Verse(object):
     """Class for testing verses for preview and review"""
