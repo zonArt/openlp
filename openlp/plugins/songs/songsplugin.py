@@ -22,7 +22,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
 from openlp.core.lib import Plugin, MediaManagerItem
-from forms import EditSongForm, OpenLPImportForm
+from forms import EditSongForm, OpenLPImportForm, OpenSongImportForm
 
 class SongsPlugin(Plugin):
     def __init__(self):
@@ -31,6 +31,7 @@ class SongsPlugin(Plugin):
         self.weight = -10
         self.edit_song_form = EditSongForm()
         self.openlp_import_form = OpenLPImportForm()
+        self.opensong_import_form = OpenSongImportForm()
         # Create the plugin icon
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(':/media/media_song.png'),
@@ -124,6 +125,7 @@ class SongsPlugin(Plugin):
         self.ImportOpenlp2Item.setStatusTip(QtGui.QApplication.translate("main_window", "Export songs in OpenLP 2.0 format", None, QtGui.QApplication.UnicodeUTF8))
         # Signals and slots
         QtCore.QObject.connect(self.ImportOpenlp1Item, QtCore.SIGNAL("triggered()"), self.onImportOpenlp1ItemClick)
+        QtCore.QObject.connect(self.ImportOpenSongItem, QtCore.SIGNAL("triggered()"), self.onImportOpenSongItemClick)
 
     def initialise(self):
         self.SearchTypeComboBox.addItem("Lyrics")
@@ -150,3 +152,6 @@ class SongsPlugin(Plugin):
 
     def onImportOpenlp1ItemClick(self):
         self.openlp_import_form.show()
+
+    def onImportOpenSongItemClick(self):
+        self.opensong_import_form.show()
