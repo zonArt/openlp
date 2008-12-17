@@ -290,8 +290,6 @@ class MainWindow(object):
         self.ImportThemeItem.setObjectName("ImportThemeItem")
         self.ImportLanguageItem = QtGui.QAction(self.main_window)
         self.ImportLanguageItem.setObjectName("ImportLanguageItem")
-        self.ExportBibleItem = QtGui.QAction(self.main_window)
-        self.ExportBibleItem.setObjectName("ExportBibleItem")
         self.ExportThemeItem = QtGui.QAction(self.main_window)
         self.ExportThemeItem.setObjectName("ExportThemeItem")
         self.ExportLanguageItem = QtGui.QAction(self.main_window)
@@ -348,7 +346,6 @@ class MainWindow(object):
         self.ModeLiveItem.setObjectName("ModeLiveItem")
         self.FileImportMenu.addAction(self.ImportThemeItem)
         self.FileImportMenu.addAction(self.ImportLanguageItem)
-        self.FileExportMenu.addAction(self.ExportBibleItem)
         self.FileExportMenu.addAction(self.ExportThemeItem)
         self.FileExportMenu.addAction(self.ExportLanguageItem)
         self.FileMenu.addAction(self.FileNewItem)
@@ -453,7 +450,6 @@ class MainWindow(object):
         self.FileExitItem.setShortcut(QtGui.QApplication.translate("main_window", "Alt+F4", None, QtGui.QApplication.UnicodeUTF8))
         self.ImportThemeItem.setText(QtGui.QApplication.translate("main_window", "&Theme", None, QtGui.QApplication.UnicodeUTF8))
         self.ImportLanguageItem.setText(QtGui.QApplication.translate("main_window", "&Language", None, QtGui.QApplication.UnicodeUTF8))
-        self.ExportBibleItem.setText(QtGui.QApplication.translate("main_window", "&Bible", None, QtGui.QApplication.UnicodeUTF8))
         self.ExportThemeItem.setText(QtGui.QApplication.translate("main_window", "&Theme", None, QtGui.QApplication.UnicodeUTF8))
         self.ExportLanguageItem.setText(QtGui.QApplication.translate("main_window", "&Language", None, QtGui.QApplication.UnicodeUTF8))
         self.actionLook_Feel.setText(QtGui.QApplication.translate("main_window", "Look && &Feel", None, QtGui.QApplication.UnicodeUTF8))
@@ -497,21 +493,6 @@ class MainWindow(object):
 
     def onToolsAlertItemClicked(self):
         self.alert_form.show()
-
-    #def onSongEditItemClicked(self):
-    #    self.edit_song_form.show()
-
-    #def onExportOpenlp1ItemClicked(self):
-    #    self.openlpexportform.show()
-
-    #def onImportOpenlp1ItemClicked(self):
-    #    self.openlpimportform.show()
-
-    #def onExportOpenSongItemClicked(self):
-    #    self.opensongexportform.show()
-
-    #def onImportOpenSongItemClicked(self):
-    #    self.opensongimportform.show()
 
     def onOptionsSettingsItemClicked(self):
         self.settings_form.show()

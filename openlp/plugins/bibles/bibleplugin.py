@@ -195,6 +195,12 @@ class BiblePlugin(Plugin):
         import_menu.addAction(self.ImportBibleItem)
         self.ImportBibleItem.setText(QtGui.QApplication.translate("main_window", "&Bible", None, QtGui.QApplication.UnicodeUTF8))
 
+    def add_export_menu_item(self, export_menu):
+        self.ExportBibleItem = QtGui.QAction(export_menu)
+        self.ExportBibleItem.setObjectName("ExportBibleItem")
+        export_menu.addAction(self.ExportBibleItem)
+        self.ExportBibleItem.setText(QtGui.QApplication.translate("main_window", "&Bible", None, QtGui.QApplication.UnicodeUTF8))
+
     def initialise(self):
         self._initialise_form()
 
