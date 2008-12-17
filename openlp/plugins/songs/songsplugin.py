@@ -22,7 +22,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
 from openlp.core.lib import Plugin, MediaManagerItem
-from forms import EditSongForm, OpenLPImportForm, OpenSongImportForm
+from forms import EditSongForm, OpenLPImportForm, OpenSongImportForm, \
+                  OpenLPExportForm, OpenSongExportForm
 
 class SongsPlugin(Plugin):
     def __init__(self):
@@ -32,6 +33,8 @@ class SongsPlugin(Plugin):
         self.edit_song_form = EditSongForm()
         self.openlp_import_form = OpenLPImportForm()
         self.opensong_import_form = OpenSongImportForm()
+        self.openlp_export_form = OpenLPExportForm()
+        self.opensong_export_form = OpenSongExportForm()
         # Create the plugin icon
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(':/media/media_song.png'),
@@ -110,6 +113,7 @@ class SongsPlugin(Plugin):
         self.ImportOpenlp1Item.setObjectName("ImportOpenlp1Item")
         self.ImportOpenlp2Item = QtGui.QAction(import_menu)
         self.ImportOpenlp2Item.setObjectName("ImportOpenlp2Item")
+        # Add to menus
         self.ImportSongMenu.addAction(self.ImportOpenlp1Item)
         self.ImportSongMenu.addAction(self.ImportOpenlp2Item)
         self.ImportSongMenu.addAction(self.ImportOpenSongItem)
@@ -127,6 +131,29 @@ class SongsPlugin(Plugin):
         QtCore.QObject.connect(self.ImportOpenlp1Item, QtCore.SIGNAL("triggered()"), self.onImportOpenlp1ItemClick)
         QtCore.QObject.connect(self.ImportOpenlp2Item, QtCore.SIGNAL("triggered()"), self.onImportOpenlp1ItemClick)
         QtCore.QObject.connect(self.ImportOpenSongItem, QtCore.SIGNAL("triggered()"), self.onImportOpenSongItemClick)
+
+    def add_export_menu_item(self, export_menu):
+        self.ExportSongMenu = QtGui.QMenu(export_menu)
+        self.ExportSongMenu.setObjectName("ExportSongMenu")
+        self.ExportOpenSongItem = QtGui.QAction(export_menu)
+        self.ExportOpenSongItem.setObjectName("ExportOpenSongItem")
+        self.ExportOpenlp1Item = QtGui.QAction(export_menu)
+        self.ExportOpenlp1Item.setObjectName("ExportOpenlp1Item")
+        self.ExportOpenlp2Item = QtGui.QAction(export_menu)
+        self.ExportOpenlp2Item.setObjectName("ExportOpenlp2Item")
+        # Add to menus
+        self.ExportSongMenu.addAction(self.ExportOpenlp1Item)
+        self.ExportSongMenu.addAction(self.ExportOpenlp2Item)
+        self.ExportSongMenu.addAction(self.ExportOpenSongItem)
+        export_menu.addAction(self.ExportSongMenu.menuAction())
+        # Translations...
+        self.ExportSongMenu.setTitle(QtGui.QApplication.translate("main_window", "&Song", None, QtGui.QApplication.UnicodeUTF8))
+        self.ExportOpenSongItem.setText(QtGui.QApplication.translate("main_window", "OpenSong", None, QtGui.QApplication.UnicodeUTF8))
+        self.ExportOpenlp1Item.setText(QtGui.QApplication.translate("main_window", "openlp.org 1.0", None, QtGui.QApplication.UnicodeUTF8))
+        self.ExportOpenlp2Item.setText(QtGui.QApplication.translate("main_window", "OpenLP 2.0", None, QtGui.QApplication.UnicodeUTF8))
+        # Signals and slots
+        QtCore.QObject.connect(self.ExportOpenlp1Item, QtCore.SIGNAL("triggered()"), self.onExportOpenlp1ItemClicked)
+        QtCore.QObject.connect(self.ExportOpenSongItem, QtCore.SIGNAL("triggered()"), self.onExportOpenSongItemClicked)
 
     def initialise(self):
         self.SearchTypeComboBox.addItem("Lyrics")
@@ -156,3 +183,9 @@ class SongsPlugin(Plugin):
 
     def onImportOpenSongItemClick(self):
         self.opensong_import_form.show()
+
+    def onExportOpenlp1ItemClicked(self):
+        self.openlp_export_form.show()
+
+    def onExportOpenSongItemClicked(self):
+        self.opensong_export_form.show()

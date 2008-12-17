@@ -92,8 +92,20 @@ class PluginManager(object):
                 plugin.initialise()
 
     def hook_import_menu(self, import_menu):
+        """
+        Loop through all the plugins and give them an opportunity to add an item
+        to the import menu.
+        """
         for plugin in self.plugins:
             plugin.add_import_menu_item(import_menu)
+
+    def hook_export_menu(self, export_menu):
+        """
+        Loop through all the plugins and give them an opportunity to add an item
+        to the export menu.
+        """
+        for plugin in self.plugins:
+            plugin.add_export_menu_item(export_menu)
 
     def hook_handle_event(self, event):
         pass
