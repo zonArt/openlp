@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Song>
+<lyrics lang="en_US">
+  <title>Amazing Grace</title>
+  <verse name="v1">
+    <theme>name of verse specific theme</theme>
+    <comment>any text</comment>
+    <part name="men">
+	Amazing grace, how ...
+    </part>
+    <part name="women">
+	A b c
+	D e f
+    </part>
+    ...
+  </verse>
+  <verse name="c">
+    <comment>any text</comment>
+    ...
+  </verse>
+</lyrics>
+<lyrics lang="de_DE">
+  <title>Erstaunliche Anmut</title>
+  <verse name="v1">
+    Erstaunliche Anmut, wie
+    ...
+  </verse>
+  <verse name="c">
+    ...
+  </verse>
+</lyrics>
+</Song>
