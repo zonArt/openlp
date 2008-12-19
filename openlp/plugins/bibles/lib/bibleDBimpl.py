@@ -109,8 +109,8 @@ mapper(Verse,  verse_table)
 
 class BibleDBImpl(BibleCommon):
     global log     
-    log=logging.getLogger("BibleDBMgr")
-    log.info("BibleDB manager loaded")   
+    log=logging.getLogger("BibleDBImpl")
+    log.info("BibleDBimpl loaded")   
     def __init__(self, biblepath , biblename, suffix, btype = 'sqlite'):   
         # Connect to database 
         self.biblefile = os.path.join(biblepath, biblename+"."+suffix)

@@ -24,6 +24,7 @@ from openlp.core.resources import *
 from openlp.core.lib import Plugin, MediaManagerItem
 from forms import EditSongForm, OpenLPImportForm, OpenSongImportForm, \
                   OpenLPExportForm, OpenSongExportForm
+from openlp.plugins.songs.lib import SongManager                  
 
 class SongsPlugin(Plugin):
     def __init__(self):
@@ -39,6 +40,8 @@ class SongsPlugin(Plugin):
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(':/media/media_song.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.songmanager = SongManager(self.config)
+        self.searchresults = {} # place to store the search results            
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
@@ -92,6 +95,10 @@ class SongsPlugin(Plugin):
         self.SearchTextEdit = QtGui.QLineEdit(self.SongWidget)
         self.SearchTextEdit.setObjectName('SearchTextEdit')
         self.SearchLayout.addWidget(self.SearchTextEdit, 2, 1, 1, 2)
+        self.ClearTextButton = QtGui.QPushButton(self.SongWidget)
+        self.ClearTextButton.setObjectName('ClearTextButton')
+        self.ClearTextButton.setText('Clear')
+        self.SearchLayout.addWidget(self.ClearTextButton, 3, 1, 1, 1)        
         self.SearchTextButton = QtGui.QPushButton(self.SongWidget)
         self.SearchTextButton.setObjectName('SearchTextButton')
         self.SearchTextButton.setText('Search')
@@ -102,6 +109,10 @@ class SongsPlugin(Plugin):
         self.SongListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.SongListView.setObjectName("listView")
         self.MediaManagerItem.PageLayout.addWidget(self.SongListView)
+        
+        QtCore.QObject.connect(self.SearchTextButton, QtCore.SIGNAL("pressed()"), self.onSearchTextButton)
+        QtCore.QObject.connect(self.ClearTextButton, QtCore.SIGNAL("pressed()"), self.onClearTextButton)
+        QtCore.QObject.connect(self.SearchTextEdit, QtCore.SIGNAL("textChanged(const QString&)"), self.onSearchTextEdit)        
         return self.MediaManagerItem
 
     def add_import_menu_item(self, import_menu):
@@ -132,6 +143,7 @@ class SongsPlugin(Plugin):
         QtCore.QObject.connect(self.ImportOpenlp2Item, QtCore.SIGNAL("triggered()"), self.onImportOpenlp1ItemClick)
         QtCore.QObject.connect(self.ImportOpenSongItem, QtCore.SIGNAL("triggered()"), self.onImportOpenSongItemClick)
 
+
     def add_export_menu_item(self, export_menu):
         self.ExportSongMenu = QtGui.QMenu(export_menu)
         self.ExportSongMenu.setObjectName("ExportSongMenu")
@@ -159,6 +171,21 @@ class SongsPlugin(Plugin):
         self.SearchTypeComboBox.addItem("Lyrics")
         self.SearchTypeComboBox.addItem("Titles")
         self.SearchTypeComboBox.addItem("Authors")
+
+    def onClearTextButton(self):
+        print self.SearchTextEdit.clear()
+
+    def onSearchTextEdit(self):
+        if len(self.SearchTextEdit.displayText()) > 3:  # only search if > 3 characters
+            self.onSearchTextButton() 
+
+    def onSearchTextButton(self):
+        searchtext = str(self.SearchTextEdit.displayText() )
+        if str(self.SearchTypeComboBox.currentText=="Titles"):
+            self.searchresults = self.songmanager.get_song_from_title(searchtext)
+        elif str(self.SearchTypeComboBox.currentText=="Lyrics"):
+            self.searchresults = self.songmanager.get_song_from_lyrics(searchtext)            
+        self._display_results()
 
     def onSongNewClick(self):
         pass
@@ -189,3 +216,9 @@ class SongsPlugin(Plugin):
 
     def onExportOpenSongItemClicked(self):
         self.opensong_export_form.show()
+        
+    def _display_results(self):
+        self.SongListView.clear() # clear the results
+        print self.searchresults
+        for id,  txt in self.searchresults:
+            self.SongListView.addItem(str(txt))        

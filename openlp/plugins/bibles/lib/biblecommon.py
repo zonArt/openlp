@@ -22,11 +22,6 @@ import sys
 import urllib2
 
 import logging
-logging.basicConfig(level=logging.DEBUG,
-                format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                datefmt='%m-%d %H:%M',
-                filename='plugins.log',
-                filemode='w')
 
 class BibleCommon:
     global log

@@ -30,7 +30,7 @@ import logging
 
 class BibleManager():
     global log
-    log=logging.getLogger("BibleMgr")
+    log=logging.getLogger("BibleManager")
     log.info("Bible manager loaded")
     def __init__(self, config):
         """
