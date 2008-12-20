@@ -107,6 +107,7 @@ class SongsPlugin(Plugin):
         self.MediaManagerItem.PageLayout.addWidget(self.SongWidget)
         self.SongListView = QtGui.QTableWidget()
         self.SongListView.setColumnCount(2)
+        self.SongListView.setShowGrid(False)
         self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(["Song Name","Author"]))        
         self.SongListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.SongListView.setObjectName("listView")
@@ -115,6 +116,23 @@ class SongsPlugin(Plugin):
         QtCore.QObject.connect(self.SearchTextButton, QtCore.SIGNAL("pressed()"), self.onSearchTextButton)
         QtCore.QObject.connect(self.ClearTextButton, QtCore.SIGNAL("pressed()"), self.onClearTextButton)
         QtCore.QObject.connect(self.SearchTextEdit, QtCore.SIGNAL("textChanged(const QString&)"), self.onSearchTextEdit)        
+        
+        editAct = QtGui.QAction("&Edit", self.SongListView)
+        QtCore.QObject.connect(editAct, QtCore.SIGNAL("triggered()"), self.onSongEditClick)
+        prevAct = QtGui.QAction("&Preview", self.SongListView)
+        QtCore.QObject.connect(prevAct, QtCore.SIGNAL("triggered()"), self.onSongPreviewClick)        
+        liveAct = QtGui.QAction("&Live", self.SongListView)
+        QtCore.QObject.connect(liveAct, QtCore.SIGNAL("triggered()"), self.onSongLiveClick)        
+        serviceAct = QtGui.QAction("&Service", self.SongListView)
+        QtCore.QObject.connect(serviceAct, QtCore.SIGNAL("triggered()"), self.onSongAddClick)        
+        
+
+        self.SongListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.SongListView.addAction(editAct)
+        #self.SongListView.addSeparator()
+        self.SongListView.addAction(prevAct)
+        self.SongListView.addAction(liveAct)
+        self.SongListView.addAction(serviceAct)        
         return self.MediaManagerItem
 
     def add_import_menu_item(self, import_menu):
@@ -199,7 +217,7 @@ class SongsPlugin(Plugin):
         self._display_results()
 
     def onSongNewClick(self):
-        pass
+        self.edit_song_form.show()
 
     def onSongEditClick(self):
         self.edit_song_form.show()
