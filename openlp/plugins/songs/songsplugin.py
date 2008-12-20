@@ -41,7 +41,7 @@ class SongsPlugin(Plugin):
         self.icon.addPixmap(QtGui.QPixmap(':/media/media_song.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.songmanager = SongManager(self.config)
-        self.searchresults = {} # place to store the search results            
+        self.searchresults = {} # place to store the search results 
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
@@ -105,7 +105,8 @@ class SongsPlugin(Plugin):
         self.SearchLayout.addWidget(self.SearchTextButton, 3, 2, 1, 1)
         # Add the song widget to the page layout
         self.MediaManagerItem.PageLayout.addWidget(self.SongWidget)
-        self.SongListView = QtGui.QListWidget()
+        self.SongListView = QtGui.QTableWidget()
+        self.SongListView.setColumnCount(2)
         self.SongListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.SongListView.setObjectName("listView")
         self.MediaManagerItem.PageLayout.addWidget(self.SongListView)
@@ -219,6 +220,9 @@ class SongsPlugin(Plugin):
         
     def _display_results(self):
         self.SongListView.clear() # clear the results
-        print self.searchresults
+        self.SongListView.setRowCount(0)
         for id,  txt in self.searchresults:
-            self.SongListView.addItem(str(txt))        
+            c = self.SongListView.rowCount()
+            self.SongListView.setRowCount(c+1)
+            twi = QtGui.QTableWidgetItem(str(txt))
+            self.SongListView.setItem(c , 0, twi)        
