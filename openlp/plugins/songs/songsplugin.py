@@ -107,6 +107,7 @@ class SongsPlugin(Plugin):
         self.MediaManagerItem.PageLayout.addWidget(self.SongWidget)
         self.SongListView = QtGui.QTableWidget()
         self.SongListView.setColumnCount(2)
+        self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(["Song Name","Author"]))        
         self.SongListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.SongListView.setObjectName("listView")
         self.MediaManagerItem.PageLayout.addWidget(self.SongListView)
@@ -182,10 +183,19 @@ class SongsPlugin(Plugin):
 
     def onSearchTextButton(self):
         searchtext = str(self.SearchTextEdit.displayText() )
-        if str(self.SearchTypeComboBox.currentText=="Titles"):
+        ct = self.SearchTypeComboBox.currentText()
+        print ct , str(ct)
+        if self.SearchTypeComboBox.currentText()=="Titles":
+            print "Titles"
             self.searchresults = self.songmanager.get_song_from_title(searchtext)
-        elif str(self.SearchTypeComboBox.currentText=="Lyrics"):
-            self.searchresults = self.songmanager.get_song_from_lyrics(searchtext)            
+        elif self.SearchTypeComboBox.currentText()=="Lyrics":
+            print "Lyrics"            
+            self.searchresults = self.songmanager.get_song_from_lyrics(searchtext)
+        elif self.SearchTypeComboBox.currentText()=="Authors":
+            print "Authors"            
+            self.searchresults = self.songmanager.get_song_from_author(searchtext)    
+        else:
+            print "missed ", ct 
         self._display_results()
 
     def onSongNewClick(self):
@@ -220,9 +230,13 @@ class SongsPlugin(Plugin):
         
     def _display_results(self):
         self.SongListView.clear() # clear the results
+        self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(["Song Name","Author"]))        
         self.SongListView.setRowCount(0)
-        for id,  txt in self.searchresults:
+        for id,  txt, name in self.searchresults:
             c = self.SongListView.rowCount()
             self.SongListView.setRowCount(c+1)
             twi = QtGui.QTableWidgetItem(str(txt))
-            self.SongListView.setItem(c , 0, twi)        
+            self.SongListView.setItem(c , 0, twi)  
+            twi = QtGui.QTableWidgetItem(str(name))
+            self.SongListView.setItem(c , 1, twi)
+            
