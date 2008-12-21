@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-
+from pluginutils import PluginUtils
 from pluginconfig import PluginConfig
 from plugin import Plugin
 from settingstab import SettingsTab
@@ -25,5 +25,5 @@ from mediamanageritem import MediaManagerItem
 from event import Event
 from xmlrootclass import XmlRootClass
 
-__all__ = ['PluginConfig', 'Plugin', 'SettingsTab', 'MediaManagerItem', 'Event',
+__all__ = ['PluginConfig', 'Plugin', 'PluginUtils', 'SettingsTab', 'MediaManagerItem', 'Event',
            'XmlRootClass']
