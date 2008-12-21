@@ -173,6 +173,7 @@ class BiblePlugin(Plugin):
         self.listView = QtGui.QListWidget()
         self.listView.setGeometry(QtCore.QRect(10, 200, 256, 391))
         self.listView.setObjectName("listView")
+        self.listView.setAlternatingRowColors(True)        
         self.MediaManagerItem.PageLayout.addWidget(self.listView)
 
         #QtCore.QObject.connect(self.QuickTab, QtCore.SIGNAL("triggered()"), self.onQuickTabClick)
@@ -185,7 +186,13 @@ class BiblePlugin(Plugin):
 
         QtCore.QObject.connect(self.AdvancedSearchButton, QtCore.SIGNAL("pressed()"), self.onAdvancedSearchButton)
         QtCore.QObject.connect(self.QuickSearchButton, QtCore.SIGNAL("pressed()"), self.onQuickSearchButton)
+        
+        #define and add the context menu
+        self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
+        self.listView.addAction(self.pluginutils.add_to_context_menu(self.listView, ':/system/system_preview.png', "&Preview Verse", self.onBiblePreviewClick))      
+        self.listView.addAction(self.pluginutils.add_to_context_menu(self.listView, ':/system/system_live.png', "&Show Live", self.onBibleLiveClick))        
+        self.listView.addAction(self.pluginutils.add_to_context_menu(self.listView, ':/system/system_add.png', "&Add to Service", self.onBibleAddClick))
         return self.MediaManagerItem
 
     def add_import_menu_item(self, import_menu):

@@ -108,6 +108,8 @@ class SongsPlugin(Plugin):
         self.SongListView = QtGui.QTableWidget()
         self.SongListView.setColumnCount(2)
         self.SongListView.setShowGrid(False)
+        self.SongListView.setSortingEnabled(False)        
+        self.SongListView.setAlternatingRowColors(True)
         self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(["Song Name","Author"]))        
         self.SongListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.SongListView.setObjectName("listView")
@@ -116,23 +118,16 @@ class SongsPlugin(Plugin):
         QtCore.QObject.connect(self.SearchTextButton, QtCore.SIGNAL("pressed()"), self.onSearchTextButton)
         QtCore.QObject.connect(self.ClearTextButton, QtCore.SIGNAL("pressed()"), self.onClearTextButton)
         QtCore.QObject.connect(self.SearchTextEdit, QtCore.SIGNAL("textChanged(const QString&)"), self.onSearchTextEdit)        
-        
-        editAct = QtGui.QAction("&Edit", self.SongListView)
-        QtCore.QObject.connect(editAct, QtCore.SIGNAL("triggered()"), self.onSongEditClick)
-        prevAct = QtGui.QAction("&Preview", self.SongListView)
-        QtCore.QObject.connect(prevAct, QtCore.SIGNAL("triggered()"), self.onSongPreviewClick)        
-        liveAct = QtGui.QAction("&Live", self.SongListView)
-        QtCore.QObject.connect(liveAct, QtCore.SIGNAL("triggered()"), self.onSongLiveClick)        
-        serviceAct = QtGui.QAction("&Service", self.SongListView)
-        QtCore.QObject.connect(serviceAct, QtCore.SIGNAL("triggered()"), self.onSongAddClick)        
-        
 
+        #define and add the context menu
         self.SongListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.SongListView.addAction(editAct)
-        #self.SongListView.addSeparator()
-        self.SongListView.addAction(prevAct)
-        self.SongListView.addAction(liveAct)
-        self.SongListView.addAction(serviceAct)        
+
+        self.SongListView.addAction(self.pluginutils.add_to_context_menu(self.SongListView, ':/songs/song_new.png', "&Edit Song", self.onSongEditClick))  
+        self.SongListView.addAction(self.pluginutils.add_separator(self.SongListView))
+        self.SongListView.addAction(self.pluginutils.add_to_context_menu(self.SongListView, ':/system/system_preview.png', "&Preview Song", self.onSongPreviewClick))      
+        self.SongListView.addAction(self.pluginutils.add_to_context_menu(self.SongListView, ':/system/system_live.png', "&Show Live", self.onSongLiveClick))        
+        self.SongListView.addAction(self.pluginutils.add_to_context_menu(self.SongListView, ':/system/system_add.png', "&Add to Service", self.onSongEditClick))
+        
         return self.MediaManagerItem
 
     def add_import_menu_item(self, import_menu):
@@ -188,8 +183,8 @@ class SongsPlugin(Plugin):
         QtCore.QObject.connect(self.ExportOpenSongItem, QtCore.SIGNAL("triggered()"), self.onExportOpenSongItemClicked)
 
     def initialise(self):
-        self.SearchTypeComboBox.addItem("Lyrics")
         self.SearchTypeComboBox.addItem("Titles")
+        self.SearchTypeComboBox.addItem("Lyrics")
         self.SearchTypeComboBox.addItem("Authors")
 
     def onClearTextButton(self):
@@ -248,7 +243,8 @@ class SongsPlugin(Plugin):
         
     def _display_results(self):
         self.SongListView.clear() # clear the results
-        self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(["Song Name","Author"]))        
+        self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(["Song Name","Author"]))  
+        self.SongListView.setVerticalHeaderLabels(QtCore.QStringList([""]))          
         self.SongListView.setRowCount(0)
         for id,  txt, name in self.searchresults:
             c = self.SongListView.rowCount()
@@ -257,4 +253,5 @@ class SongsPlugin(Plugin):
             self.SongListView.setItem(c , 0, twi)  
             twi = QtGui.QTableWidgetItem(str(name))
             self.SongListView.setItem(c , 1, twi)
+            self.SongListView.setRowHeight(c, 20)
             
