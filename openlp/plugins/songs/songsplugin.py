@@ -197,18 +197,13 @@ class SongsPlugin(Plugin):
     def onSearchTextButton(self):
         searchtext = str(self.SearchTextEdit.displayText() )
         ct = self.SearchTypeComboBox.currentText()
-        print ct , str(ct)
         if self.SearchTypeComboBox.currentText()=="Titles":
-            print "Titles"
             self.searchresults = self.songmanager.get_song_from_title(searchtext)
         elif self.SearchTypeComboBox.currentText()=="Lyrics":
-            print "Lyrics"            
             self.searchresults = self.songmanager.get_song_from_lyrics(searchtext)
         elif self.SearchTypeComboBox.currentText()=="Authors":
-            print "Authors"            
             self.searchresults = self.songmanager.get_song_from_author(searchtext)    
-        else:
-            print "missed ", ct 
+
         self._display_results()
 
     def onSongNewClick(self):
