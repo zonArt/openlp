@@ -133,6 +133,18 @@ class SongManager():
         Returns the details of a song
         """
         return self.songDBCache.get_song(songid)
+    
+    def get_authors(self):
+        """
+        Returns a list of all the authos
+        """
+        return self.songDBCache.get_authors()
+        
+    def get_song_authors(self, songid):
+        """
+        Returns the details of a song
+        """
+        return self.songDBCache.get_song_authors(songid)        
 
     def get_bible_books(self,bible):
         """

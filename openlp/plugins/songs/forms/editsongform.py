@@ -37,11 +37,16 @@ class EditSongForm(QWidget, Ui_EditSongDialog):
         self.initialise()
     
     def initialise(self):
-        a=1
+        list = self.songmanager.get_authors()
+        self.AuthorsSelectionComboItem.clear()
+        #print list
+        for l in list:
+            self.AuthorsSelectionComboItem.addItem(str(l[1]))
+
     def load_song(self, songid):
         self.songid = songid
         song = self.songmanager.get_song(songid)
-        print song
+        #print song
         self.TitleEditItem.setText(song[1])        
         self.LyricsTextEdit.setText(song[2])
         self.CopyrightEditItem.setText(song[3])
