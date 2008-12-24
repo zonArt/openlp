@@ -31,7 +31,8 @@ class SongsPlugin(Plugin):
         # Call the parent constructor
         Plugin.__init__(self, 'Songs', '1.9.0')
         self.weight = -10
-        self.edit_song_form = EditSongForm()
+        self.songmanager = SongManager(self.config)
+        self.edit_song_form = EditSongForm(self.songmanager)
         self.openlp_import_form = OpenLPImportForm()
         self.opensong_import_form = OpenSongImportForm()
         self.openlp_export_form = OpenLPExportForm()
@@ -106,18 +107,22 @@ class SongsPlugin(Plugin):
         # Add the song widget to the page layout
         self.MediaManagerItem.PageLayout.addWidget(self.SongWidget)
         self.SongListView = QtGui.QTableWidget()
-        self.SongListView.setColumnCount(2)
+        self.SongListView.setColumnCount(3)
+        self.SongListView.setColumnHidden(0, True)        
         self.SongListView.setShowGrid(False)
         self.SongListView.setSortingEnabled(False)        
         self.SongListView.setAlternatingRowColors(True)
-        self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(["Song Name","Author"]))        
+        self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Song Name","Author"]))        
         self.SongListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.SongListView.setObjectName("listView")
         self.MediaManagerItem.PageLayout.addWidget(self.SongListView)
         
         QtCore.QObject.connect(self.SearchTextButton, QtCore.SIGNAL("pressed()"), self.onSearchTextButton)
         QtCore.QObject.connect(self.ClearTextButton, QtCore.SIGNAL("pressed()"), self.onClearTextButton)
-        QtCore.QObject.connect(self.SearchTextEdit, QtCore.SIGNAL("textChanged(const QString&)"), self.onSearchTextEdit)        
+        QtCore.QObject.connect(self.SearchTextEdit, QtCore.SIGNAL("textChanged(const QString&)"), self.onSearchTextEdit)
+        
+        QtCore.QObject.connect(self.SongListView, QtCore.SIGNAL("itemPressed(QTableWidgetItem * item)"), self.onSongSelected)          
+        
 
         #define and add the context menu
         self.SongListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
@@ -191,7 +196,10 @@ class SongsPlugin(Plugin):
         print self.SearchTextEdit.clear()
 
     def onSearchTextEdit(self):
-        if len(self.SearchTextEdit.displayText()) > 3:  # only search if > 3 characters
+        sl = 3
+        if self.SearchTypeComboBox.currentText()=="Lyrics":        
+            sl = 7
+        if len(self.SearchTextEdit.displayText()) > sl:  # only search if > 3 characters
             self.onSearchTextButton() 
 
     def onSearchTextButton(self):
@@ -206,10 +214,17 @@ class SongsPlugin(Plugin):
 
         self._display_results()
 
+    def onSongSelected(self, item):
+        print item
+
     def onSongNewClick(self):
         self.edit_song_form.show()
 
     def onSongEditClick(self):
+        print "SongEdit"
+        cr = self.SongListView.currentRow()
+        id = int(self.SongListView.item(cr, 0).text())
+        self.edit_song_form.load_song(id)
         self.edit_song_form.show()
 
     def onSongDeleteClick(self):
@@ -238,15 +253,17 @@ class SongsPlugin(Plugin):
         
     def _display_results(self):
         self.SongListView.clear() # clear the results
-        self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(["Song Name","Author"]))  
+        self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Song Name","Author"]))  
         self.SongListView.setVerticalHeaderLabels(QtCore.QStringList([""]))          
         self.SongListView.setRowCount(0)
         for id,  txt, name in self.searchresults:
             c = self.SongListView.rowCount()
             self.SongListView.setRowCount(c+1)
-            twi = QtGui.QTableWidgetItem(str(txt))
+            twi = QtGui.QTableWidgetItem(str(id))
             self.SongListView.setItem(c , 0, twi)  
+            twi = QtGui.QTableWidgetItem(str(txt))
+            self.SongListView.setItem(c , 1, twi)  
             twi = QtGui.QTableWidgetItem(str(name))
-            self.SongListView.setItem(c , 1, twi)
+            self.SongListView.setItem(c , 2, twi)
             self.SongListView.setRowHeight(c, 20)
             

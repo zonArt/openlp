@@ -128,16 +128,11 @@ class SongManager():
 #                    self._loadBook(biblename,bookid, bookname, bookabbrev)
 #                    self._loadChapter(biblename,bookid,  bookname, chptr)
 
-    def get_bibles(self, mode="full"):
+    def get_song(self, songid):
         """
-        Returns a list of Books of the bible
+        Returns the details of a song
         """
-        r=[]
-        for b ,  o in self.bibleDBCache.iteritems():
-            if mode != "full":
-                print self.bibleHTTPCache[b]
-            r.append(b)
-        return r
+        return self.songDBCache.get_song(songid)
 
     def get_bible_books(self,bible):
         """

@@ -59,10 +59,10 @@ class SongDBImpl(BibleCommon):
         metadata.bind.echo = False
         self.Session = sessionmaker()
         self.Session.configure(bind=self.db)
-        authors = Table('authors', metadata, autoload=True)
-        settings = Table('settings', metadata, autoload=True)
-        songauthors = Table('songauthors', metadata, autoload=True)
-        songs = Table('songs', metadata, autoload=True)        
+        self.authors = Table('authors', metadata, autoload=True)
+        self.settings = Table('settings', metadata, autoload=True)
+        self.songauthors = Table('songauthors', metadata, autoload=True)
+        self.songs = Table('songs', metadata, autoload=True)        
         
     def create_tables(self):
         log.debug( "createTables")        
@@ -132,11 +132,11 @@ class SongDBImpl(BibleCommon):
         session.add(testmeta)        
         session.commit()
         
-    def get_bible_books(self):
-        log.debug( "get_bible_book ") 
+    def get_song(self, songid):
+        log.debug( "get_song ") 
         metadata.bind.echo = False        
-        s = text (""" select name FROM book order by id """)
-        return self.db.execute(s).fetchall()
+        s = text (""" select * FROM songs where songid = :c """)
+        return self.db.execute(s,c=songid ).fetchone()
  
     def get_max_bible_book_verses(self, bookname, chapter):
         log.debug( "get_max_bible_book_verses %s,%s ", bookname ,  chapter) 
