@@ -21,12 +21,12 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
-from openlp.core.lib import Plugin, MediaManagerItem
+from openlp.core.lib import Plugin,PluginUtils,  MediaManagerItem
 from forms import EditSongForm, OpenLPImportForm, OpenSongImportForm, \
                   OpenLPExportForm, OpenSongExportForm
 from openlp.plugins.songs.lib import SongManager                  
 
-class SongsPlugin(Plugin):
+class SongsPlugin(Plugin, PluginUtils):
     def __init__(self):
         # Call the parent constructor
         Plugin.__init__(self, 'Songs', '1.9.0')
@@ -108,7 +108,9 @@ class SongsPlugin(Plugin):
         self.MediaManagerItem.PageLayout.addWidget(self.SongWidget)
         self.SongListView = QtGui.QTableWidget()
         self.SongListView.setColumnCount(3)
-        self.SongListView.setColumnHidden(0, True)        
+        self.SongListView.setColumnHidden(0, True)
+        self.SongListView.setColumnWidth(1, 200)
+        self.SongListView.setColumnWidth(2, 80)                
         self.SongListView.setShowGrid(False)
         self.SongListView.setSortingEnabled(False)        
         self.SongListView.setAlternatingRowColors(True)
@@ -127,11 +129,11 @@ class SongsPlugin(Plugin):
         #define and add the context menu
         self.SongListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
-        self.SongListView.addAction(self.pluginutils.add_to_context_menu(self.SongListView, ':/songs/song_new.png', "&Edit Song", self.onSongEditClick))  
-        self.SongListView.addAction(self.pluginutils.add_separator(self.SongListView))
-        self.SongListView.addAction(self.pluginutils.add_to_context_menu(self.SongListView, ':/system/system_preview.png', "&Preview Song", self.onSongPreviewClick))      
-        self.SongListView.addAction(self.pluginutils.add_to_context_menu(self.SongListView, ':/system/system_live.png', "&Show Live", self.onSongLiveClick))        
-        self.SongListView.addAction(self.pluginutils.add_to_context_menu(self.SongListView, ':/system/system_add.png', "&Add to Service", self.onSongEditClick))
+        self.SongListView.addAction(self.add_to_context_menu(self.SongListView, ':/songs/song_new.png', "&Edit Song", self.onSongEditClick))  
+        self.SongListView.addAction(self.add_to_context_separator(self.SongListView))
+        self.SongListView.addAction(self.add_to_context_menu(self.SongListView, ':/system/system_preview.png', "&Preview Song", self.onSongPreviewClick))      
+        self.SongListView.addAction(self.add_to_context_menu(self.SongListView, ':/system/system_live.png', "&Show Live", self.onSongLiveClick))        
+        self.SongListView.addAction(self.add_to_context_menu(self.SongListView, ':/system/system_add.png', "&Add to Service", self.onSongEditClick))
         
         return self.MediaManagerItem
 
@@ -253,7 +255,7 @@ class SongsPlugin(Plugin):
         
     def _display_results(self):
         self.SongListView.clear() # clear the results
-        self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Song Name","Author"]))  
+        self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Song Name","Author"]))
         self.SongListView.setVerticalHeaderLabels(QtCore.QStringList([""]))          
         self.SongListView.setRowCount(0)
         for id,  txt, name in self.searchresults:

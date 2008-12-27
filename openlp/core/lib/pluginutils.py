@@ -17,18 +17,15 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-
+import os
 import types
 from PyQt4 import QtCore, QtGui
 
 class PluginUtils(object):
-    def __init__(self):
-        """
-        IClass for plugin helpers so the Plugin class is just a simple interface
-        """
-        pass
-
-    def add_separator(self, base):
+    """
+    Extension class for plugin helpers so the Plugin class is just a simple interface
+    """
+    def add_to_context_separator(self, base):
         action = QtGui.QAction("", base)
         action.setSeparator(True)
         return action
@@ -52,3 +49,40 @@ class PluginUtils(object):
         action .setIcon(ButtonIcon)
         QtCore.QObject.connect(action, QtCore.SIGNAL("triggered()"), slot)
         return action
+        
+    def _load_display_list(self):
+        """
+        Load a display list from the config files
+        """
+        listcount = self.config.get_config("List Count")
+        list = []
+        if listcount != None:
+            for i in range(0 ,  int(listcount)):
+                x = self.config.get_config("List Item "+str(i))
+                list.append(x)
+        return list
+            
+    def _save_display_list(self, displaylist):
+        """
+        Save display list from the config files
+        """
+        c = displaylist.rowCount()
+        self.config.set_config("List Count", str(c))
+        for i in range (0, int(c)):
+            self.config.set_config("List Item "+str(i), str(displaylist.item(i, 0).text()))            
+
+    def _get_last_dir(self):
+        """
+        Read the last directory used for plugin
+        """
+        lastdir = self.config.get_config("Last Dir")
+        if lastdir==None:
+            lastdir = ""
+        return lastdir
+        
+    def _save_last_directory(self, list):
+        """
+        Save the last directory used for plugin
+        """        
+        path ,  nm = os.path.split(str(list)) 
+        self.config.set_config("Last Dir", path)

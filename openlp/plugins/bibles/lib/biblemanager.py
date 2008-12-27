@@ -58,12 +58,13 @@ class BibleManager():
             self.bibleDBCache[bname] = BibleDBImpl(self.biblePath, bname, self.bibleSuffix)
             biblesource = self.bibleDBCache[bname].get_meta("WEB") # look to see if lazy load bible exists and get create getter.
             if biblesource:
-                print biblesource
                 nhttp = BibleHTTPImpl()
                 nhttp.setBibleSource(biblesource)  # tell The Server where to get the verses from.
                 self.bibleHTTPCache[bname] = nhttp
                 proxy = self.bibleDBCache[bname].get_meta("proxy") # look to see if lazy load bible exists and get create getter.
                 nhttp.setProxy(proxy)  # tell The Server where to get the verses from.
+            else:
+                self.bibleHTTPCache[bname] = None # makes the Full / partial code easier.
         #
 
         log.debug( "Bible Initialised")
@@ -145,12 +146,16 @@ class BibleManager():
     def get_bibles(self, mode="full"):
         """
         Returns a list of Books of the bible
+        Mode "Full" - Returns all the bibles for the Queck seearch
+        Mode "Partial" - Returns CSV and OSIS bbles for the Advanced Search
         """
         r=[]
         for b ,  o in self.bibleDBCache.iteritems():
-            if mode != "full":
-                print self.bibleHTTPCache[b]
-            r.append(b)
+            if mode == "full":
+                r.append(b)
+            else:
+                if self.bibleHTTPCache[b] == None:  # we do not have an http bible 
+                    r.append(b)
         return r
 
     def get_bible_books(self,bible):

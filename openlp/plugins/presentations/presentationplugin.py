@@ -18,12 +18,14 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
+import os
+
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
-from openlp.core.lib import Plugin, MediaManagerItem
+from openlp.core.lib import Plugin, PluginUtils,  MediaManagerItem
 
-class PresentationPlugin(Plugin):
+class PresentationPlugin(Plugin, PluginUtils):
     def __init__(self):
         # Call the parent constructor
         Plugin.__init__(self, 'Presentations', '1.9.0')
@@ -48,36 +50,66 @@ class PresentationPlugin(Plugin):
             ':/presentations/presentation_delete.png', self.onPresentationDeleteClick, 'PresentationDeleteItem')
         ## Separator Line ##
         self.MediaManagerItem.addToolbarSeparator()
-        ## Preview Song Button ##
-        self.MediaManagerItem.addToolbarButton('Preview Song', 'Preview the selected presentation',
+        ## Preview Presentation Button ##
+        self.MediaManagerItem.addToolbarButton('Preview Presentation', 'Preview the selected presentation',
             ':/system/system_preview.png', self.onPresentationPreviewClick, 'PresentationPreviewItem')
-        ## Live Song Button ##
+        ## Live Presentation Button ##
         self.MediaManagerItem.addToolbarButton('Go Live', 'Send the selected presentation live',
             ':/system/system_live.png', self.onPresentationLiveClick, 'PresentationLiveItem')
-        ## Add Song Button ##
+        ## Add Presentation Button ##
         self.MediaManagerItem.addToolbarButton('Add Presentation To Service',
             'Add the selected presentation(s) to the service', ':/system/system_add.png',
             self.onPresentationAddClick, 'PresentationAddItem')
-        ## Add the songlist widget ##
+        ## Add the Presentation widget ##
+        self.PresentationListView = QtGui.QTableWidget()
+        self.PresentationListView.setColumnCount(2)
+        self.PresentationListView.setColumnHidden(0, True)
+        self.PresentationListView.setColumnWidth(1, 275)
+        self.PresentationListView.setShowGrid(False)
+        self.PresentationListView.setSortingEnabled(False)        
+        self.PresentationListView.setAlternatingRowColors(True)
+        self.PresentationListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Name"]))        
 
-        self.listView = QtGui.QListWidget()
-        self.listView.setGeometry(QtCore.QRect(10, 100, 256, 591))
-        self.listView.setObjectName("listView")
-        self.MediaManagerItem.PageLayout.addWidget(self.listView)
+        self.PresentationListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
+        self.PresentationListView.setObjectName("PresentationListView")
+        self.PresentationListView.setAlternatingRowColors(True)           
+        self.MediaManagerItem.PageLayout.addWidget(self.PresentationListView)
+        
+        #define and add the context menu
+        self.PresentationListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+
+        self.PresentationListView.addAction(self.add_to_context_menu(self.PresentationListView, ':/system/system_preview.png', "&Preview Presentation", self.onPresentationPreviewClick))      
+        self.PresentationListView.addAction(self.add_to_context_menu(self.PresentationListView, ':/system/system_live.png', "&Show Live", self.onPresentationLiveClick))        
+        self.PresentationListView.addAction(self.pluginutils.add_to_context_menu(self.PresentationListView, ':/system/system_add.png', "&Add to Service", self.onPresentationAddClick))        
 
         return self.MediaManagerItem
 
     def initialise(self):
-        self.onPresentationLoadClick()
+        list = self._load_display_list()
+        self._load_presentation_list(list)        
 
     def onPresentationLoadClick(self):
-        files =  self.config.get_files(u'ppt,pps,odi')
-        self.listView.clear()
-        for f in files:
-            self.listView.addItem(f)
+        files = self.MediaManagerItem.getInputFiles("Select Presentation(s)", self._get_last_dir(), "Images (*.ppt *.pps *.odi)")
+        if len(files) > 0:
+            self._load_presentation_list(files)
+            self._save_last_directory(files[0])
+            self._save_display_list(self.PresentationListView)            
+
+    def _load_presentation_list(self, list):
+        for f in list:
+            fl ,  nm = os.path.split(str(f))            
+            c = self.PresentationListView.rowCount()
+            self.PresentationListView.setRowCount(c+1)
+            twi = QtGui.QTableWidgetItem(str(f))
+            self.PresentationListView.setItem(c , 0, twi)
+            twi = QtGui.QTableWidgetItem(str(nm))
+            self.PresentationListView.setItem(c , 1, twi)
+            self.PresentationListView.setRowHeight(c, 20)           
 
     def onPresentationDeleteClick(self):
-        pass
+        cr = self.PresentationListView.currentRow()
+        self.PresentationListView.removeRow(int(cr))
+        self._save_display_list(self.PresentationListView)         
 
     def onPresentationPreviewClick(self):
         pass
