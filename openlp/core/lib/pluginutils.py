@@ -64,13 +64,17 @@ class PluginUtils(object):
             
     def _save_display_list(self, displaylist):
         """
-        Save display list from the config files
+        Save display list from the config files tidy up the list
         """
-        c = displaylist.rowCount()
-        self.config.set_config("List Count", str(c))
-        for i in range (0, int(c)):
-            self.config.set_config("List Item "+str(i), str(displaylist.item(i, 0).text()))            
-
+        oldcount = self.config.get_config("List Count")        
+        newcount = displaylist.rowCount()
+        self.config.set_config("List Count", str(newcount))
+        for i in range (0, int(newcount)):
+            self.config.set_config("List Item "+str(i), str(displaylist.item(i, 0).text()))
+        if oldcount > newcount: # Tidy up any old list itrms if list is smaller now
+            for i in range(int(newcount) ,  int(oldcount)):
+                self.config.delete_config("List Item "+str(i))
+            
     def _get_last_dir(self):
         """
         Read the last directory used for plugin
@@ -80,9 +84,9 @@ class PluginUtils(object):
             lastdir = ""
         return lastdir
         
-    def _save_last_directory(self, list):
+    def _save_last_directory(self, filename):
         """
         Save the last directory used for plugin
         """        
-        path ,  nm = os.path.split(str(list)) 
+        path ,  nm = os.path.split(str(filename)) 
         self.config.set_config("Last Dir", path)

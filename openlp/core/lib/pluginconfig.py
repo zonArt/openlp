@@ -37,6 +37,12 @@ class PluginConfig(object):
         Get a configuration value from the configuration registry.
         """
         return ConfigHelper.get_config(self.section, key, default)
+        
+    def delete_config(self, key):
+        """
+        Delete a configuration value from the configuration registry.
+        """
+        return ConfigHelper.delete_config(self.section, key)        
 
     def set_config(self, key, value):
         """

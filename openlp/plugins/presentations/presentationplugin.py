@@ -80,7 +80,7 @@ class PresentationPlugin(Plugin, PluginUtils):
 
         self.PresentationListView.addAction(self.add_to_context_menu(self.PresentationListView, ':/system/system_preview.png', "&Preview Presentation", self.onPresentationPreviewClick))      
         self.PresentationListView.addAction(self.add_to_context_menu(self.PresentationListView, ':/system/system_live.png', "&Show Live", self.onPresentationLiveClick))        
-        self.PresentationListView.addAction(self.pluginutils.add_to_context_menu(self.PresentationListView, ':/system/system_add.png', "&Add to Service", self.onPresentationAddClick))        
+        self.PresentationListView.addAction(self.add_to_context_menu(self.PresentationListView, ':/system/system_add.png', "&Add to Service", self.onPresentationAddClick))        
 
         return self.MediaManagerItem
 

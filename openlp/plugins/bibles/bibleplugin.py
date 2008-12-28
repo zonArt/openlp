@@ -23,11 +23,11 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
-from openlp.core.lib import Plugin, MediaManagerItem
+from openlp.core.lib import Plugin,PluginUtils,  MediaManagerItem
 from openlp.plugins.bibles.lib import BibleManager
 from openlp.plugins.bibles.forms import BibleImportForm
 
-class BiblePlugin(Plugin):
+class BiblePlugin(Plugin, PluginUtils):
     global log
     log=logging.getLogger("BiblePlugin")
     log.info("Bible Plugin loaded")
@@ -170,11 +170,19 @@ class BiblePlugin(Plugin):
         # Add the search tab widget to the page layout
         self.MediaManagerItem.PageLayout.addWidget(self.SearchTabWidget)
 
-        self.listView = QtGui.QListWidget()
-        self.listView.setGeometry(QtCore.QRect(10, 200, 256, 391))
-        self.listView.setObjectName("listView")
-        self.listView.setAlternatingRowColors(True)        
-        self.MediaManagerItem.PageLayout.addWidget(self.listView)
+        self.BibleListView = QtGui.QTableWidget()
+        self.BibleListView.setColumnCount(2)
+        self.BibleListView.setColumnHidden(0, True)
+        self.BibleListView.setColumnWidth(1, 275)
+        self.BibleListView.setShowGrid(False)
+        self.BibleListView.setSortingEnabled(False)        
+        self.BibleListView.setAlternatingRowColors(True)
+        self.BibleListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Bible Verses"]))        
+
+        self.BibleListView.setGeometry(QtCore.QRect(10, 200, 256, 391))
+        self.BibleListView.setObjectName("listView")
+        self.BibleListView.setAlternatingRowColors(True)        
+        self.MediaManagerItem.PageLayout.addWidget(self.BibleListView)
 
         #QtCore.QObject.connect(self.QuickTab, QtCore.SIGNAL("triggered()"), self.onQuickTabClick)
         QtCore.QObject.connect( self.SearchTabWidget, QtCore.SIGNAL("currentChanged ( QWidget * )" ), self.onQuickTabClick)
@@ -188,11 +196,11 @@ class BiblePlugin(Plugin):
         QtCore.QObject.connect(self.QuickSearchButton, QtCore.SIGNAL("pressed()"), self.onQuickSearchButton)
         
         #define and add the context menu
-        self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.BibleListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
-        self.listView.addAction(self.pluginutils.add_to_context_menu(self.listView, ':/system/system_preview.png', "&Preview Verse", self.onBiblePreviewClick))      
-        self.listView.addAction(self.pluginutils.add_to_context_menu(self.listView, ':/system/system_live.png', "&Show Live", self.onBibleLiveClick))        
-        self.listView.addAction(self.pluginutils.add_to_context_menu(self.listView, ':/system/system_add.png', "&Add to Service", self.onBibleAddClick))
+        self.BibleListView.addAction(self.add_to_context_menu(self.BibleListView, ':/system/system_preview.png', "&Preview Verse", self.onBiblePreviewClick))      
+        self.BibleListView.addAction(self.add_to_context_menu(self.BibleListView, ':/system/system_live.png', "&Show Live", self.onBibleLiveClick))        
+        self.BibleListView.addAction(self.add_to_context_menu(self.BibleListView, ':/system/system_add.png', "&Add to Service", self.onBibleAddClick))
         return self.MediaManagerItem
 
     def add_import_menu_item(self, import_menu):
@@ -241,21 +249,19 @@ class BiblePlugin(Plugin):
         pass
 
     def _initialise_form(self):
-        bibles = self.biblemanager.get_bibles()
+        bibles = self.biblemanager.get_bibles("full")
         self.QuickSearchComboBox.addItem("Text Search")
         self.QuickSearchComboBox.addItem("Verse Search")
-        first = True
         for b in bibles:  # load bibles into the combo boxes
             self.QuickVersionComboBox.addItem(b)
+                
+        bibles = self.biblemanager.get_bibles("partial") # Without HTTP
+        first = True
+        for b in bibles:  # load bibles into the combo boxes
             self.AdvancedVersionComboBox.addItem(b)
             if first:
                 first = False
-                self._initialise_bible(b) # use the fist bible as the trigger
-
-    def _initialise_bible(self, bible):
-        log.debug("_initialise_bible %s ", bible)
-        self._initialise_bible_quick(bible)
-        self._initialise_bible_advanced(bible)
+                self._initialise_bible_advanced(b) # use the first bible as the trigger                
 
     def _initialise_bible_advanced(self, bible):
         log.debug("_initialise_bible_advanced %s ", bible)
@@ -318,7 +324,7 @@ class BiblePlugin(Plugin):
         versefrom =  int(self.AdvancedFromVerse.currentText())
         verseto =  int(self.AdvancedToVerse.currentText())
         self.searchresults = self.biblemanager.get_verse_text(bible, book, chapfrom, chapto, versefrom, verseto)
-        self._display_results()
+        self._display_results(bible)
 
     def onQuickSearchButton(self):
         self.log.debug("onQuickSearchButton")
@@ -333,15 +339,24 @@ class BiblePlugin(Plugin):
     def _search_text(self, bible, text):
         self.log.debug("_search Text %s,%s", bible, text)
         self.searchresults = self.biblemanager.get_verse_from_text(bible,text)
-        self._display_results()
+        self._display_results(bible)
 
-    def _verse_search(self):
-        self._display_results()
+#    def _verse_search(self):
+#        self._display_results()
 
-    def _display_results(self):
-        self.listView.clear() # clear the results
+    def _display_results(self, bible):
+        self.BibleListView.clear() # clear the results
+        self.BibleListView.setRowCount(0)        
+        self.BibleListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Bible Verses"]))          
         for book, chap, vse , txt in self.searchresults:
-            self.listView.addItem(book + " " +str(chap) + ":"+ str(vse))
+            c = self.BibleListView.rowCount()
+            self.BibleListView.setRowCount(c+1)
+            twi = QtGui.QTableWidgetItem(str(bible))
+            self.BibleListView.setItem(c , 0, twi)
+            twi = QtGui.QTableWidgetItem(str(book + " " +str(chap) + ":"+ str(vse)))
+            self.BibleListView.setItem(c , 1, twi)
+            self.BibleListView.setRowHeight(c, 20)             
+
 
     def _initialise_bible_quick(self, bible): # not sure if needed yet!
         a=1

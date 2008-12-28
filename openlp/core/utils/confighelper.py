@@ -58,6 +58,11 @@ class ConfigHelper(object):
         return reg.set_value(section, key, value)
 
     @staticmethod
+    def delete_config(section, key):
+        reg = ConfigHelper.get_registry()
+        reg.delete_value(section, key)
+
+    @staticmethod
     def get_registry():
         """
         This static method loads the appropriate registry class based on the

@@ -21,7 +21,6 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import logging
 
 from openlp.core.lib import PluginConfig
-from openlp.core.lib import PluginUtils
 
 class Plugin(object):
     """
@@ -86,7 +85,6 @@ class Plugin(object):
             self.version = version
         self.icon = None
         self.config = PluginConfig(self.name)
-        self.pluginutils = PluginUtils()        
         self.weight = 0
         # Set up logging
         self.log = logging.getLogger(self.name)
