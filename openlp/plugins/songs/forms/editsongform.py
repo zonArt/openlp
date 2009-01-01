@@ -21,6 +21,10 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from PyQt4.QtGui import QWidget
 from PyQt4.QtCore import pyqtSignature
 
+from authorsform import AuthorsForm
+from topicsform import TopicsForm
+from songbookform import SongBookForm
+
 from editsongdialog import Ui_EditSongDialog
 
 class EditSongForm(QWidget, Ui_EditSongDialog):
@@ -34,6 +38,9 @@ class EditSongForm(QWidget, Ui_EditSongDialog):
         QWidget.__init__(self, parent)
         self.setupUi(self)
         self.songmanager = songmanager
+        self.authors_form = AuthorsForm(self.songmanager)
+        self.topics_form = TopicsForm(self.songmanager)
+        self.song_book_form = SongBookForm(self.songmanager)           
         self.initialise()
     
     def initialise(self):
@@ -46,8 +53,43 @@ class EditSongForm(QWidget, Ui_EditSongDialog):
     def load_song(self, songid):
         self.songid = songid
         song = self.songmanager.get_song(songid)
+        print song
+        #print song[2].encode('hex')
         #print song
+        lyrics = song[2]
+        if lyrics.find("\x0a0d0a0d"):
+            print "new line"
+            lyrics = lyrics.replace("\x0a0d0a0d","\x23200a0d")        
+        if lyrics.find("\xa0"):
+            print "Alt"
+            lyrics = lyrics.replace("\xa0","\x20")        
+            
+        print lyrics
+            
         self.TitleEditItem.setText(song[1])        
-        self.LyricsTextEdit.setText(song[2])
+        self.LyricsTextEdit.setText(lyrics)
         self.CopyrightEditItem.setText(song[3])
 
+    @pyqtSignature("")
+    def on_AddAuthorsButton_clicked(self):
+        """
+        Slot documentation goes here.
+        """
+        self.authors_form.load_form()
+        self.authors_form.show()   
+
+    @pyqtSignature("")
+    def on_AddTopicButton_clicked(self):
+        """
+        Slot documentation goes here.
+        """
+        self.topics_form.load_form()
+        self.topics_form.show()
+    @pyqtSignature("")
+    
+    def on_AddSongBookButton_clicked(self):
+        """
+        Slot documentation goes here.
+        """
+        self.song_book_form.load_form()
+        self.song_book_form.show()          

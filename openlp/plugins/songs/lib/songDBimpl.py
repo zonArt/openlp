@@ -49,8 +49,6 @@ class SongDBImpl(BibleCommon):
         self.songfile = os.path.join(songpath, "songs."+suffix)
         log.debug( "Load Song on path %s", self.songfile)
 
-
-
         #c = conn.cursor()        
         if btype == 'sqlite': 
             self.db = sqlite3.connect(self.songfile)

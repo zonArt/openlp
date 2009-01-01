@@ -19,6 +19,10 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 from editsongform import EditSongForm
+from authorsform import AuthorsForm
+from topicsform import TopicsForm
+from songbookform import SongBookForm
+
 from openlpexportform import OpenLPExportForm
 from openlpimportform import OpenLPImportForm
 from opensongexportform import OpenSongExportForm
