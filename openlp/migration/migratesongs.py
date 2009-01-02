@@ -74,7 +74,26 @@ class MigrateSongs():
         self.display.sub_output("index author2 created")
         cmd = "sqlite3 -echo "+ self.data_path+"/"+database + ' "create index if not exists author3 on authors (first_name ASC,authorid ASC);"'
         self.run_cmd(cmd)        
-        self.display.sub_output("index author3 created")           
+        self.display.sub_output("index author3 created") 
+        self.display.sub_output("Author Data Migration started")         
+        conn = sqlite3.connect(self.data_path+"/"+database)
+        conn.text_factory = str        
+        c = conn.cursor()
+        text = c.execute("""select * from authors """) .fetchall()
+        for author in text:
+            dispname = author[1]
+            if author[2] == None:
+                dispname = dispname.replace("'", "") # remove quotes.
+                pos = dispname.rfind(" ")
+                afn = dispname[:pos]
+                aln = dispname[pos + 1:len(dispname)]
+        #txt = text[2]
+                s = "update authors set first_name = '" + afn + "' ,last_name = '" + aln + "' where authorid = " +str(author[0])
+                text1 = c.execute(s)
+
+        conn.commit()
+        conn.close()
+        self.display.sub_output("Author Data Migration Completed")         
         self.display.sub_output("Authors Completed");
         
     def _v1_9_0_topics(self, database):
