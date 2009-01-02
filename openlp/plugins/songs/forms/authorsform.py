@@ -1,9 +1,21 @@
 # -*- coding: utf-8 -*-
-
 """
-Module implementing AuthorsForm.
-"""
+OpenLP - Open Source Lyrics Projection
+Copyright (c) 2008 Raoul Snyman
+Portions copyright (c) 2008 Martin Thompson, Tim Bentley, Carsten Tinggaard
 
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; version 2 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place, Suite 330, Boston, MA 02111-1307 USA
+"""
 from openlp.core.resources import *
 
 from PyQt4 import QtGui, QtCore
@@ -25,7 +37,8 @@ class AuthorsForm(QDialog, Ui_AuthorsDialog):
         self.AuthorListView.setColumnCount(2)
         self.AuthorListView.setColumnHidden(0, True)
         self.AuthorListView.setColumnWidth(1, 300)
-        self.AuthorListView.setHorizontalHeaderLabels(QtCore.QStringList([" ","Author"]))        
+        self.AuthorListView.setHorizontalHeaderLabels(QtCore.QStringList([" ","Author"])) 
+        self.authorid = 0 # this is the selected authorid for updates and deletes
         
         self.songmanager = songmanager
         
@@ -90,4 +103,13 @@ class AuthorsForm(QDialog, Ui_AuthorsDialog):
         """
         Slot documentation goes here.
         """
-        print "alv ic " + str(item)
+        cr = self.AuthorListView.currentRow()
+        id = int(self.AuthorListView.item(cr, 0).text())
+        author = self.songmanager.get_author(id)
+        print author
+        self.authorid = author[0]
+        self.DisplayEdit.setText(author[1])
+        self.FirstNameEdit.setText(author[2])
+        self.LastNameEdit.setText(author[3])
+
+

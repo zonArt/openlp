@@ -53,21 +53,9 @@ class EditSongForm(QWidget, Ui_EditSongDialog):
     def load_song(self, songid):
         self.songid = songid
         song = self.songmanager.get_song(songid)
-        print song
-        #print song[2].encode('hex')
-        #print song
-        lyrics = song[2]
-        if lyrics.find("\x0a0d0a0d"):
-            print "new line"
-            lyrics = lyrics.replace("\x0a0d0a0d","\x23200a0d")        
-        if lyrics.find("\xa0"):
-            print "Alt"
-            lyrics = lyrics.replace("\xa0","\x20")        
-            
-        print lyrics
-            
+           
         self.TitleEditItem.setText(song[1])        
-        self.LyricsTextEdit.setText(lyrics)
+        self.LyricsTextEdit.setText(song[2])
         self.CopyrightEditItem.setText(song[3])
 
     @pyqtSignature("")

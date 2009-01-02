@@ -57,77 +57,6 @@ class SongManager():
     def process_dialog(self, dialogobject):
         self.dialogobject = dialogobject
 
-    def register_HTTP_bible(self, biblename, biblesource, mode="lazy", proxyurl=None, proxyid=None, proxypass=None):
-        """
-        Return a list of bibles from a given URL.
-        The selected Bible can then be registered and LazyLoaded into a database
-        """
-        log.debug( "register_HTTP_bible %s,%s,%s,%s,%s", biblename, biblesource, proxyurl,  proxyid, proxypass, mode)
-        if self._is_new_bible(biblename):
-            nbible = BibleDBImpl(self.biblePath, biblename, self.bibleSuffix) # Create new Bible
-            nbible.createTables() # Create Database
-            self.bibleDBCache[biblename] = nbible
-
-            nhttp = BibleHTTPImpl()
-            nhttp.setBibleSource(biblesource)
-            self.bibleHTTPCache[biblename] = nhttp
-            nbible.save_meta("WEB", biblesource) # register a lazy loading interest
-            if proxyurl != None:
-                nbible.save_meta("proxy", proxyurl) # store the proxy URL
-                nhttp.setProxy(proxyurl)
-            if proxyid != None:
-                nbible.save_meta("proxyid", proxyid) # store the proxy userid
-            if proxypass != None:
-                nbible.save_meta("proxypass", proxypass) # store the proxy password
-
-
-    def register_CVS_file_bible(self, biblename, booksfile, versefile):
-        """
-        Method to load a bible from a set of files into a database.
-        If the database exists it is deleted and the database is reloaded
-        from scratch.
-        """
-        if self._is_new_bible(biblename):
-            nbible = BibleDBImpl(self.biblePath, biblename, self.bibleSuffix) # Create new Bible
-            nbible.createTables() # Create Database
-            self.bibleDBCache[biblename] = nbible # cache the database for use later
-            bcsv = BibleCSVImpl(nbible) # create the loader and pass in the database
-            bcsv.load_data(booksfile, versefile)
-
-    def register_OSIS_file_bible(self, biblename, osisfile):
-        """
-        Method to load a bible from a osis xml file extracted from Sword bible viewer.
-        If the database exists it is deleted and the database is reloaded
-        from scratch.
-        """
-        log.debug( "register_OSIS_file_bible %s , %s", biblename, osisfile)        
-        if self._is_new_bible(biblename):
-            nbible = BibleDBImpl(self.biblePath, biblename, self.bibleSuffix) # Create new Bible
-            nbible.createTables() # Create Database
-            self.bibleDBCache[biblename] = nbible # cache the database for use later
-            bcsv = BibleOSISImpl(self.biblePath, nbible) # create the loader and pass in the database
-            bcsv.loadData(osisfile, self.dialogobject)
-
-
-#    def loadBible(self,biblename):
-#        """
-#        Downloads all the books of the bible
-#        and loads it into the database
-#        """
-#        log.debug( "loadBible %s", biblename)
-#        bookabbrev = ""
-#        for bookname in self.listOfBooks:
-#            cptrs = self.booksChapters[ self.booksOfBible[bookname]]
-#            log.debug( "book and chapter %s %s", bookname , self.booksChapters[ self.booksOfBible[bookname]] )
-#            for chptr in range(1 , int(cptrs)):  # loop through all the chapters in book
-#                c = self.bibleDBCache[biblename].getBibleChapter(bookname, chptr) # check to see if book/chapter exists
-#                log.debug( "got chapter %s", c)
-#                if not c:
-#                    bookid = self.booksOfBible[bookname] # convert to id  ie Genesis --> 1  Revelation --> 73
-#                    log.debug( "missing %s,%s", bookname, chptr)
-#                    self._loadBook(biblename,bookid, bookname, bookabbrev)
-#                    self._loadChapter(biblename,bookid,  bookname, chptr)
-
     def get_song(self, songid):
         """
         Returns the details of a song
@@ -136,9 +65,28 @@ class SongManager():
     
     def get_authors(self):
         """
-        Returns a list of all the authos
+        Returns a list of all the authors
         """
         return self.songDBCache.get_authors()
+        
+    def get_author(self, authorid):
+        """
+        Details of the Author
+        """
+        return self.songDBCache.get_author(authorid)
+
+    def save_author(self, author_name, first_name, last_name):
+        """
+        Details of the Author
+        """
+        return self.songDBCache.get_author(authorid)
+        
+    def delete_author(self, authorid):
+        """
+        Details of the Author
+        """
+        return self.songDBCache.get_author(authorid)        
+        
         
     def get_song_authors(self, songid):
         """
