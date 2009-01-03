@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'authorsdialog.ui'
 #
-# Created: Thu Jan  1 09:41:26 2009
+# Created: Sat Jan  3 11:48:36 2009
 #      by: PyQt4 UI code generator 4.4.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -28,19 +28,19 @@ class Ui_AuthorsDialog(object):
         self.gridLayout.addWidget(self.DisplayLabel, 0, 0, 1, 1)
         self.DisplayEdit = QtGui.QLineEdit(self.AuthorDetails)
         self.DisplayEdit.setObjectName("DisplayEdit")
-        self.gridLayout.addWidget(self.DisplayEdit, 0, 1, 1, 3)
+        self.gridLayout.addWidget(self.DisplayEdit, 0, 1, 1, 4)
         self.FirstNameLabel = QtGui.QLabel(self.AuthorDetails)
         self.FirstNameLabel.setObjectName("FirstNameLabel")
         self.gridLayout.addWidget(self.FirstNameLabel, 1, 0, 1, 1)
         self.FirstNameEdit = QtGui.QLineEdit(self.AuthorDetails)
         self.FirstNameEdit.setObjectName("FirstNameEdit")
-        self.gridLayout.addWidget(self.FirstNameEdit, 1, 1, 1, 3)
+        self.gridLayout.addWidget(self.FirstNameEdit, 1, 1, 1, 4)
         self.LastNameLabel = QtGui.QLabel(self.AuthorDetails)
         self.LastNameLabel.setObjectName("LastNameLabel")
         self.gridLayout.addWidget(self.LastNameLabel, 2, 0, 1, 1)
         self.LastNameEdit = QtGui.QLineEdit(self.AuthorDetails)
         self.LastNameEdit.setObjectName("LastNameEdit")
-        self.gridLayout.addWidget(self.LastNameEdit, 2, 1, 1, 3)
+        self.gridLayout.addWidget(self.LastNameEdit, 2, 1, 1, 4)
         spacerItem = QtGui.QSpacerItem(198, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem, 3, 0, 1, 2)
         self.DeleteButton = QtGui.QPushButton(self.AuthorDetails)
@@ -48,22 +48,29 @@ class Ui_AuthorsDialog(object):
         icon.addPixmap(QtGui.QPixmap(":/services/service_delete.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.DeleteButton.setIcon(icon)
         self.DeleteButton.setObjectName("DeleteButton")
-        self.gridLayout.addWidget(self.DeleteButton, 3, 2, 1, 1)
+        self.gridLayout.addWidget(self.DeleteButton, 3, 3, 1, 1)
         self.AddUpdateButton = QtGui.QPushButton(self.AuthorDetails)
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap(":/system/system_settings.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.AddUpdateButton.setIcon(icon1)
         self.AddUpdateButton.setObjectName("AddUpdateButton")
-        self.gridLayout.addWidget(self.AddUpdateButton, 3, 3, 1, 1)
+        self.gridLayout.addWidget(self.AddUpdateButton, 3, 4, 1, 1)
+        self.ClearButton = QtGui.QPushButton(self.AuthorDetails)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(":/songs/song_edit.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.ClearButton.setIcon(icon2)
+        self.ClearButton.setObjectName("ClearButton")
+        self.gridLayout.addWidget(self.ClearButton, 3, 2, 1, 1)
         self.MessageLabel = QtGui.QLabel(AuthorsDialog)
         self.MessageLabel.setGeometry(QtCore.QRect(20, 500, 261, 17))
         self.MessageLabel.setObjectName("MessageLabel")
         self.AuthorListView = QtGui.QTableWidget(AuthorsDialog)
         self.AuthorListView.setGeometry(QtCore.QRect(20, 20, 341, 301))
+        self.AuthorListView.setDragEnabled(True)
         self.AuthorListView.setAlternatingRowColors(True)
-        self.AuthorListView.setColumnCount(2)
+        self.AuthorListView.setColumnCount(0)
         self.AuthorListView.setObjectName("AuthorListView")
-        self.AuthorListView.setColumnCount(2)
+        self.AuthorListView.setColumnCount(0)
         self.AuthorListView.setRowCount(0)
 
         self.retranslateUi(AuthorsDialog)
@@ -80,4 +87,4 @@ class Ui_AuthorsDialog(object):
         self.LastNameLabel.setText(QtGui.QApplication.translate("AuthorsDialog", "Last Name:", None, QtGui.QApplication.UnicodeUTF8))
         self.DeleteButton.setToolTip(QtGui.QApplication.translate("AuthorsDialog", "Delete Author", None, QtGui.QApplication.UnicodeUTF8))
         self.AddUpdateButton.setToolTip(QtGui.QApplication.translate("AuthorsDialog", "Add Update Author", None, QtGui.QApplication.UnicodeUTF8))
-
+        self.ClearButton.setToolTip(QtGui.QApplication.translate("AuthorsDialog", "Clear Selection", None, QtGui.QApplication.UnicodeUTF8))

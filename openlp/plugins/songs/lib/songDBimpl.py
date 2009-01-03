@@ -31,14 +31,32 @@ from openlp.core.utils import ConfigHelper
 
 import logging
 
-class BibleDBException(Exception):
+class SongDBException(Exception):
     pass
-class BibleInvalidDatabaseError(Exception):
+class SongInvalidDatabaseError(Exception):
     pass
     
 metadata = MetaData()
-#authors = Table('authors', metadata, autoload=True)
 
+author_table = Table('authors', metadata, 
+    Column('authorid', Integer, primary_key=True), 
+    Column('authorname', String(40)), 
+    Column('first_name', String(40)), 
+    Column('last_name', String(40)),     
+)
+
+class Author(object):
+    def __init__(self, authorname, first_name, last_name):
+        #self.authorid = authorid
+        self.authorname =authorname
+        self.first_name =first_name
+        self.last_name =last_name                
+        
+    def __repr__(self):
+        return "<authormeta(%s,%s,%s)>" , self.authorname, self.first_name, self.last_name
+     
+mapper(Author,author_table)
+  
 class SongDBImpl(BibleCommon):
     global log     
     log=logging.getLogger("SongDBImpl")
@@ -58,12 +76,12 @@ class SongDBImpl(BibleCommon):
         self.db.convert_unicode=False
         metadata.bind = self.db
         metadata.bind.echo = False
-        self.Session = sessionmaker()
+        self.Session = sessionmaker(autoflush=True, autocommit=False)
         self.Session.configure(bind=self.db)
-        self.authors = Table('authors', metadata, autoload=True)
-        self.settings = Table('settings', metadata, autoload=True)
-        self.songauthors = Table('songauthors', metadata, autoload=True)
-        self.songs = Table('songs', metadata, autoload=True)        
+        #self.authors_table = Table('authors', metadata, autoload=True)
+        #self.settings = Table('settings', metadata, autoload=True)
+        #self.songauthors = Table('songauthors', metadata, autoload=True)
+        #self.songs = Table('songs', metadata, autoload=True)        
         
     def create_tables(self):
         log.debug( "createTables")        
@@ -76,12 +94,12 @@ class SongDBImpl(BibleCommon):
         self.save_meta("dbversion", "2")
         self._loadTestaments()
         
-    def add_verse(self, bookid, chap,  verse, text):
-        log.debug( "add_verse %s,%s,%s,%s", bookid, chap, verse, text)
-        metadata.bind.echo = False
+    def add_author(self, author_name, first_name,  last_name):
+        log.debug( "add_author %s,%s,%s", author_name, first_name, last_name)
+        metadata.bind.echo = True
         session = self.Session()
-        versemeta = Verse(book_id=int(bookid),  chapter=int(chap), verse=int(verse), text=(text))
-        session.add(versemeta)
+        authorsmeta = Author(authorname=author_name, first_name=first_name,last_name=last_name)
+        session.add(authorsmeta)
         session.commit()
       
     def save_meta(self, key, value):
@@ -117,13 +135,30 @@ class SongDBImpl(BibleCommon):
         metadata.bind.echo = True
         s = text (""" select * FROM authors where authorid = :i """)
         return self.db.execute(s, i=authorid).fetchone()
+        
+    def delete_author(self, authorid):
+        log.debug( "delete_author %s" ,  authorid) 
+        metadata.bind.echo = True
+        s = text (""" delete FROM authors where authorid = :i """)
+        return self.db.execute(s, i=authorid)
+        
+    def update_author(self, authorid, author_name, first_name, last_name):
+        log.debug( "update_author %s,%s,%s,%s" ,  authorid, author_name, first_name, last_name) 
+        metadata.bind.echo = True
+        s = text (""" update authors set authorname= :an ,first_name = :fn,last_name = :ln where authorid = :i """)
+        return self.db.execute(s, an=author_name, fn=first_name, ln=last_name,  i=authorid)        
 
-    def get_song_authors(self, song):
-        log.debug( "get_song_authors ") 
+    def get_song_authors_for_author(self, authorid):
+        log.debug( "get_song_authors for author %s ", authorid) 
         metadata.bind.echo = False        
-        s = text (""" select * FROM songauthors where songid = ;c """)
-        return self.db.execute(s, c=songid).fetchall()
+        s = text (""" select * FROM songauthors where authorid = :c """)
+        return self.db.execute(s, c=authorid).fetchall()
 
+    def get_song_authors_for_song(self, songid):
+        log.debug( "get_song_authors for song %s ", songid) 
+        metadata.bind.echo = False        
+        s = text (""" select * FROM songauthors where songid = :c """)
+        return self.db.execute(s, c=songid).fetchall()
  
     def get_max_bible_book_verses(self, bookname, chapter):
         log.debug( "get_max_bible_book_verses %s,%s ", bookname ,  chapter) 
@@ -170,11 +205,10 @@ class SongDBImpl(BibleCommon):
         
     def get_song_from_title(self,searchtext):
         log.debug( "get_song_from_title %s",searchtext)
-        #metadata.bind.echo = False
-        #s = text (""" SELECT s.songid AS songid, s.songtitle AS songtitle, a.authorname AS authorname FROM songs s OUTER JOIN songauthors sa ON s.songid = sa.songid OUTER JOIN authors a ON sa.authorid = a.authorid WHERE s.songtitle LIKE :t ORDER BY s.songtitle ASC """)
-        s = ' SELECT s.songid AS songid, s.songtitle AS songtitle, a.authorname AS authorname FROM songs s OUTER JOIN songauthors sa ON s.songid = sa.songid OUTER JOIN authors a ON sa.authorid = a.authorid WHERE s.songtitle LIKE '+"'" +'%'+ searchtext +  '%'+ "'"+' ORDER BY s.songtitle ASC'
-        print s
-        return self.db.execute(s).fetchall()
+        metadata.bind.echo = False
+        searchtext = "%"+searchtext+"%"        
+        s = text (""" SELECT s.songid AS songid, s.songtitle AS songtitle, a.authorname AS authorname FROM songs s OUTER JOIN songauthors sa ON s.songid = sa.songid OUTER JOIN authors a ON sa.authorid = a.authorid WHERE s.songtitle LIKE :t ORDER BY s.songtitle ASC """)
+        return self.db.execute(s, t=searchtext).fetchall()
     
     def get_song_from_author(self,searchtext):
         log.debug( "get_song_from_author %s",searchtext)

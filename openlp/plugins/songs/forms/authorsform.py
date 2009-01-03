@@ -39,7 +39,8 @@ class AuthorsForm(QDialog, Ui_AuthorsDialog):
         self.AuthorListView.setColumnWidth(1, 300)
         self.AuthorListView.setHorizontalHeaderLabels(QtCore.QStringList([" ","Author"])) 
         self.authorid = 0 # this is the selected authorid for updates and deletes
-        
+        self.candelete = False
+        self.currentrow = 0
         self.songmanager = songmanager
         
     def load_form(self):
@@ -53,8 +54,14 @@ class AuthorsForm(QDialog, Ui_AuthorsDialog):
             twi = QtGui.QTableWidgetItem(str(id))
             self.AuthorListView.setItem(c , 0, twi)  
             twi = QtGui.QTableWidgetItem(str(txt))
+            #twi.setFlags(Not QtCore.Qt.ItemIsSelectable & QtCore.Qt.ItemIsEnabled) 
+            twi.setFlags(QtCore.Qt.ItemIsSelectable)
             self.AuthorListView.setItem(c , 1, twi)              
             self.AuthorListView.setRowHeight(c, 20)
+        c = self.AuthorListView.rowCount()
+        if self.currentrow > c: # incase we have delete the last row of the table
+           self.currentrow = c 
+        self.AuthorListView.selectRow(self.currentrow)
     
     @pyqtSignature("")
     def on_buttonBox_accepted(self):
@@ -71,45 +78,53 @@ class AuthorsForm(QDialog, Ui_AuthorsDialog):
         print "bb rej" 
         
     @pyqtSignature("")
-    def on_FirstNameEdit_lostFocus(self):
-        """
-        Slot documentation goes here.
-        """
-        print "fm lf"    
-        
-    @pyqtSignature("")
-    def on_LastNameEdit_lostFocus(self):
-        """
-        Slot documentation goes here.
-        """
-        print "ln lf"
-    
-    @pyqtSignature("")
     def on_DeleteButton_clicked(self):
         """
         Slot documentation goes here.
         """
-        print "db clicked"
+        if self.candelete == True:
+            self.songmanager.delete_author(self.authorid)
+            self.on_ClearButton_clicked()
+            self.load_form()            
     
     @pyqtSignature("")
     def on_AddUpdateButton_clicked(self):
         """
         Slot documentation goes here.
         """
-        print "au cli"
+        self.songmanager.save_author(str(self.DisplayEdit.displayText()),str(self.FirstNameEdit.displayText()) ,str(self.LastNameEdit.displayText()) , self.authorid)
+        self.on_ClearButton_clicked()
+        self.load_form()
+        
+        
+    @pyqtSignature("")
+    def on_ClearButton_clicked(self):
+        """
+        Slot documentation goes here.
+        """
+        self.authorid = 0
+        self.DisplayEdit.setText("")
+        self.FirstNameEdit.setText("")
+        self.LastNameEdit.setText("")
+        self.candelete = True
     
     @pyqtSignature("QTableWidgetItem*")
     def on_AuthorListView_itemClicked(self, item):
         """
         Slot documentation goes here.
         """
-        cr = self.AuthorListView.currentRow()
-        id = int(self.AuthorListView.item(cr, 0).text())
+        self.currentrow = self.AuthorListView.currentRow()
+        id = int(self.AuthorListView.item(self.currentrow, 0).text())
         author = self.songmanager.get_author(id)
-        print author
         self.authorid = author[0]
         self.DisplayEdit.setText(author[1])
         self.FirstNameEdit.setText(author[2])
         self.LastNameEdit.setText(author[3])
-
+        songs = self.songmanager.get_song_authors_for_author(id)
+        if len(songs) > 0:
+            self.MessageLabel.setText("Author is attached to Songs")
+            self.candelete = False
+        else:
+            self.MessageLabel.setText("Author is not used")
+            self.candelete = True
 

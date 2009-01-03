@@ -195,7 +195,7 @@ class SongsPlugin(Plugin, PluginUtils):
         self.SearchTypeComboBox.addItem("Authors")
 
     def onClearTextButton(self):
-        print self.SearchTextEdit.clear()
+        self.SearchTextEdit.clear()
 
     def onSearchTextEdit(self):
         sl = 3
@@ -223,7 +223,6 @@ class SongsPlugin(Plugin, PluginUtils):
         self.edit_song_form.show()
 
     def onSongEditClick(self):
-        print "SongEdit"
         cr = self.SongListView.currentRow()
         id = int(self.SongListView.item(cr, 0).text())
         self.edit_song_form.load_song(id)

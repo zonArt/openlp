@@ -40,8 +40,7 @@ class SongManager():
         """
         self.config = config
         log.debug( "Song Initialising")
-        self.bibleDBCache = None   
-        #self.bibleHTTPCache = {} # dict of bible http readers
+        self.authorcache = None
         self.songPath = self.config.get_data_path()
         self.songSuffix = self.config.get_config("suffix name", u'olp3')
         log.debug("Song Path %s and suffix %s",  self.songPath, self.songSuffix )
@@ -63,11 +62,13 @@ class SongManager():
         """
         return self.songDBCache.get_song(songid)
     
-    def get_authors(self):
+    def get_authors(self, reload=False):
         """
         Returns a list of all the authors
         """
-        return self.songDBCache.get_authors()
+        if self.authorcache == None or reload == True:
+            self.authorcache = self.songDBCache.get_authors()
+        return self.authorcache
         
     def get_author(self, authorid):
         """
@@ -75,24 +76,36 @@ class SongManager():
         """
         return self.songDBCache.get_author(authorid)
 
-    def save_author(self, author_name, first_name, last_name):
+    def save_author(self, author_name, first_name, last_name, id = 0):
         """
-        Details of the Author
+        Save the Author and refresh the cache
         """
-        return self.songDBCache.get_author(authorid)
+        if id == 0:
+            self.songDBCache.add_author(author_name, first_name,  last_name)
+        else: 
+            self.songDBCache.update_author(id, author_name, first_name,  last_name)
+        self.get_authors(True) # Updates occured refresh the cache
+        return True
         
     def delete_author(self, authorid):
         """
-        Details of the Author
+        Delete the author and refresh the author cache
         """
-        return self.songDBCache.get_author(authorid)        
-        
-        
-    def get_song_authors(self, songid):
+        self.songDBCache.delete_author(authorid)        
+        self.get_authors(True) # Updates occured refresh the cache
+        return True
+
+    def get_song_authors_for_author(self, authorid):
         """
         Returns the details of a song
         """
-        return self.songDBCache.get_song_authors(songid)        
+        return self.songDBCache.get_song_authors_for_author(authorid)        
+        
+    def get_song_authors_for_song(self, songid):
+        """
+        Returns the details of a song
+        """
+        return self.songDBCache.get_song_authors_for_song(songid)        
 
     def get_bible_books(self,bible):
         """
