@@ -27,8 +27,9 @@ class ConfigHelper(object):
     @staticmethod
     def get_data_path():
         if os.name == 'nt':
-            default = os.path.join(os.path.expanduser(u'~'),
-                u'Application Data', u'.openlp', u'data')
+            # ask OS for path to application data, set on Windows XP and Vista
+            appdata = os.getenv('APPDATA')
+            default = os.path.join(appdata, u'.openlp', u'data')
         else:
             default = os.path.expanduser(u'~/.openlp/data')
 
@@ -70,8 +71,10 @@ class ConfigHelper(object):
         """
         reg = None
         if os.name == 'nt':
-            from winregistry import WinRegistry
-            reg = WinRegistry(r'\Software\openlp')
+            #from winregistry import WinRegistry
+            #reg = WinRegistry(r'\Software\openlp')
+            from linregistry import LinRegistry
+            reg = LinRegistry(os.path.join(os.getenv('APPDATA'), '.openlp'))
         else:
             from linregistry import LinRegistry
             reg = LinRegistry(os.path.join(os.getenv('HOME'), '.openlp'))
