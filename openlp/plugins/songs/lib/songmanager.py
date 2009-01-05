@@ -42,7 +42,7 @@ class SongManager():
         log.debug( "Song Initialising")
         self.authorcache = None
         self.songPath = self.config.get_data_path()
-        self.songSuffix = self.config.get_config("suffix name", u'olp3')
+        self.songSuffix = self.config.get_config("suffix name", u'olp3,sqlite')
         log.debug("Song Path %s and suffix %s",  self.songPath, self.songSuffix )
         self.dialogobject = None
         
@@ -218,12 +218,15 @@ class SongManager():
         return True
         
     def get_song_from_title(self,searchtext):
+        log.debug("get song from title %s", searchtext)
         return self.songDBCache.get_song_from_title(searchtext)
         
     def get_song_from_lyrics(self,searchtext):
+        log.debug("get song from lyrics %s", searchtext)        
         return self.songDBCache.get_song_from_lyrics(searchtext) 
                 
     def get_song_from_author(self,searchtext):
+        log.debug("get song from author %s", searchtext)        
         return self.songDBCache.get_song_from_author(searchtext)        
         
     def dump_songs(self):

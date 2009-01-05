@@ -201,6 +201,7 @@ class SongDBImpl(BibleCommon):
         metadata.bind.echo = False
         searchtext = "%"+searchtext+"%"
         s = text (""" SELECT s.songid AS songid, s.songtitle AS songtitle, a.authorname AS authorname FROM songs s OUTER JOIN songauthors sa ON s.songid = sa.songid OUTER JOIN authors a ON sa.authorid = a.authorid WHERE s.lyrics LIKE :t ORDER BY s.songtitle ASC """)
+        log.debug("Records returned from search %s", len(self.db.execute(s, t=searchtext).fetchall()))        
         return self.db.execute(s, t=searchtext).fetchall()
         
     def get_song_from_title(self,searchtext):
@@ -208,6 +209,7 @@ class SongDBImpl(BibleCommon):
         metadata.bind.echo = False
         searchtext = "%"+searchtext+"%"        
         s = text (""" SELECT s.songid AS songid, s.songtitle AS songtitle, a.authorname AS authorname FROM songs s OUTER JOIN songauthors sa ON s.songid = sa.songid OUTER JOIN authors a ON sa.authorid = a.authorid WHERE s.songtitle LIKE :t ORDER BY s.songtitle ASC """)
+        log.debug("Records returned from search %s", len(self.db.execute(s, t=searchtext).fetchall()))        
         return self.db.execute(s, t=searchtext).fetchall()
     
     def get_song_from_author(self,searchtext):
@@ -215,6 +217,7 @@ class SongDBImpl(BibleCommon):
         metadata.bind.echo = False
         searchtext = "%"+searchtext+"%"
         s = text (""" SELECT s.songid AS songid, s.songtitle AS songtitle, a.authorname AS authorname FROM songs s OUTER JOIN songauthors sa ON s.songid = sa.songid OUTER JOIN authors a ON sa.authorid = a.authorid WHERE a.authorname LIKE :t ORDER BY s.songtitle ASC """)
+        log.debug("Records returned from search %s", len(self.db.execute(s, t=searchtext).fetchall()))
         return self.db.execute(s, t=searchtext).fetchall()         
         
         

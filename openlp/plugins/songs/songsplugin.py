@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
+import logging
 
 from PyQt4 import QtCore, QtGui
 
@@ -27,6 +28,9 @@ from forms import EditSongForm, OpenLPImportForm, OpenSongImportForm, \
 from openlp.plugins.songs.lib import SongManager                  
 
 class SongsPlugin(Plugin, PluginUtils):
+    global log
+    log=logging.getLogger("SongsPlugin")
+    log.info("Song Plugin loaded")    
     def __init__(self):
         # Call the parent constructor
         Plugin.__init__(self, 'Songs', '1.9.0')
@@ -208,10 +212,13 @@ class SongsPlugin(Plugin, PluginUtils):
         searchtext = str(self.SearchTextEdit.displayText() )
         ct = self.SearchTypeComboBox.currentText()
         if self.SearchTypeComboBox.currentText()=="Titles":
+            log.debug("Titles Search")
             self.searchresults = self.songmanager.get_song_from_title(searchtext)
         elif self.SearchTypeComboBox.currentText()=="Lyrics":
+            log.debug("Lyrics Search")            
             self.searchresults = self.songmanager.get_song_from_lyrics(searchtext)
         elif self.SearchTypeComboBox.currentText()=="Authors":
+            log.debug("Authors Search")            
             self.searchresults = self.songmanager.get_song_from_author(searchtext)    
 
         self._display_results()
@@ -253,10 +260,12 @@ class SongsPlugin(Plugin, PluginUtils):
         self.opensong_export_form.show()
         
     def _display_results(self):
+        log.debug("_search results")
         self.SongListView.clear() # clear the results
         self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Song Name","Author"]))
         self.SongListView.setVerticalHeaderLabels(QtCore.QStringList([""]))          
         self.SongListView.setRowCount(0)
+        log.debug("Records returned from search %s", len(self.searchresults))
         for id,  txt, name in self.searchresults:
             c = self.SongListView.rowCount()
             self.SongListView.setRowCount(c+1)
