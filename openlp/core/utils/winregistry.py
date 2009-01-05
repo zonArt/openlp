@@ -79,9 +79,9 @@ class WinRegistry(Registry):
         Set a single value in the Windows registry.
         """
         reg_type = _winreg.REG_BINARY
-        if type(value) is types.String:
+        if type(value) is types.StringType:
             reg_type = _winreg.REG_SZ
-        elif type(value) is types.Integer:
+        elif type(value) is types.IntType:
             reg_type = _winreg.REG_DWORD
         key_handle = _winreg.OpenKey(self.reg_handle, self.base_key + section)
         _winreg.SetValueEx(key_handle, key, 0, reg_type, value)
