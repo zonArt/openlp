@@ -39,45 +39,35 @@ class MigrateSongs():
         self._v1_9_0_topics(database)      
         self._v1_9_0_songbook(database) 
         
-        conn = sqlite3.connect(self.data_path+"/"+database)
+        conn = sqlite3.connect(self.data_path+os.sep+database)
         conn.text_factory = str        
         c = conn.cursor()
-        #cmd = "sqlite3 -echo "+ self.data_path+"/"+database + ' "create index if not exists sa1121 on songauthors (authorid ASC,songid ASC) ;"'
-        #print cmd
-        #f_i, f_o  = os.popen4(cmd)
-        #out = f_o.readlines()
-        #print out
-        #self.display.output(f_o.readlines())
         c.execute("""select * from songs where songtitle like '%Come now%'""")        
 
-        conn.commit()
-        #self.display.sub_output("Index SA1 created " + database);          
-        #c.execute("""create index if not exists sa2 on songauthors (songid ASC,authorid ASC) """)        
-        #conn.commit()
-        #self.display.sub_output("Index SA2 created " + database);          
+        conn.commit()        
         conn.close()
         self.display.output("Migration 1.9.0 Finished for " + database);            
 
     def _v1_9_0_authors(self, database):
-        self.display.sub_output("Authors Started for "+database); 
-        cmd = "sqlite3 -echo "+ self.data_path+"/"+database + ' "alter table authors add column first_name varchar(40);"'
-        self.run_cmd(cmd)
+        self.display.sub_output("Authors Started for "+database);
+        conn = sqlite3.connect(self.data_path+os.sep+database)
+        conn.text_factory = str
+        conn.execute("""alter table authors add column first_name varchar(40);""")
+        conn.commit()
         self.display.sub_output("first name created")
-        cmd = "sqlite3 -echo "+ self.data_path+"/"+database + ' "alter table authors add column last_name varchar(40);"'
-        self.run_cmd(cmd)        
+        conn.execute("""alter table authors add column last_name varchar(40);""")
+        conn.commit()
         self.display.sub_output("last name created")
-        cmd = "sqlite3 -echo "+ self.data_path+"/"+database + ' "create index if not exists author1 on authors (authorname ASC,authorid ASC);"'
-        self.run_cmd(cmd)        
+        conn.execute("""create index if not exists author1 on authors (authorname ASC,authorid ASC);""")
+        conn.commit()    
         self.display.sub_output("index author1 created")
-        cmd = "sqlite3 -echo "+ self.data_path+"/"+database + ' "create index if not exists author2 on authors (last_name ASC,authorid ASC);"'
-        self.run_cmd(cmd)        
+        conn.execute("""create index if not exists author2 on authors (last_name ASC,authorid ASC);""")
+        conn.commit()     
         self.display.sub_output("index author2 created")
-        cmd = "sqlite3 -echo "+ self.data_path+"/"+database + ' "create index if not exists author3 on authors (first_name ASC,authorid ASC);"'
-        self.run_cmd(cmd)        
+        conn.execute("""create index if not exists author3 on authors (first_name ASC,authorid ASC);""")
+        conn.commit()      
         self.display.sub_output("index author3 created") 
-        self.display.sub_output("Author Data Migration started")         
-        conn = sqlite3.connect(self.data_path+"/"+database)
-        conn.text_factory = str        
+        self.display.sub_output("Author Data Migration started")    
         c = conn.cursor()
         text = c.execute("""select * from authors """) .fetchall()
         for author in text:
@@ -97,35 +87,41 @@ class MigrateSongs():
         self.display.sub_output("Authors Completed");
         
     def _v1_9_0_topics(self, database):
-        self.display.sub_output("Topics Started for "+database); 
-        cmd = "sqlite3 -echo "+ self.data_path+"/"+database + ' "create table if not exists topics (topic_id integer Primary Key ASC AUTOINCREMENT);"'
-        self.run_cmd(cmd)
+        self.display.sub_output("Topics Started for "+database);
+        conn = sqlite3.connect(self.data_path+os.sep+database)
+        conn.text_factory = str
+        conn.execute("""create table if not exists topics (topic_id integer Primary Key ASC AUTOINCREMENT);""")
+        conn.commit()
         self.display.sub_output("Topic table created")
-        cmd = "sqlite3 -echo "+ self.data_path+"/"+database + ' "alter table topics add column topic_name varchar(40);"'
-        self.run_cmd(cmd) 
-        self.display.sub_output("topicname added")        
-        cmd = "sqlite3 -echo "+ self.data_path+"/"+database + ' "create index if not exists topic1 on topics (topic_name ASC,topic_id ASC);"'
-        self.run_cmd(cmd)        
+        conn.execute("""alter table topics add column topic_name varchar(40);""")
+        conn.commit()
+        self.display.sub_output("topicname added")
+        conn.execute("""create index if not exists topic1 on topics (topic_name ASC,topic_id ASC);""")
+        conn.commit()
+        conn.close()      
         self.display.sub_output("index topic1 created")           
         
         self.display.sub_output("Topics Completed");
         
     def _v1_9_0_songbook(self, database):
-        self.display.sub_output("SongBook Started for "+database); 
-        cmd = "sqlite3 -echo "+ self.data_path+"/"+database + ' "create table if not exists songbook (songbook_id integer Primary Key ASC AUTOINCREMENT);"'
-        self.run_cmd(cmd)
+        self.display.sub_output("SongBook Started for "+database);
+        conn = sqlite3.connect(self.data_path+os.sep+database)
+        conn.text_factory = str
+        conn.execute("""create table if not exists songbook (songbook_id integer Primary Key ASC AUTOINCREMENT);""")
+        conn.commit()
         self.display.sub_output("SongBook table created")
-        cmd = "sqlite3 -echo "+ self.data_path+"/"+database + ' "alter table songbook add column songbook_name varchar(40);"'
-        self.run_cmd(cmd) 
+        conn.execute("""alter table songbook add column songbook_name varchar(40);""")
+        conn.commit()
         self.display.sub_output("songbook_name added")
-        cmd = "sqlite3 -echo "+ self.data_path+"/"+database + ' "alter table songbook add column songbook_publisher varchar(40);"'
-        self.run_cmd(cmd) 
-        self.display.sub_output("songbook_publisher added")  
-        cmd = "sqlite3 -echo "+ self.data_path+"/"+database + ' "create index if not exists songbook1 on songbook (songbook_name ASC,songbook_id ASC);"'
-        self.run_cmd(cmd)        
-        self.display.sub_output("index songbook1 created")         
-        cmd = "sqlite3 -echo "+ self.data_path+"/"+database + ' "create index if not exists songbook2 on songbook (songbook_publisher ASC,songbook_id ASC);"'
-        self.run_cmd(cmd)        
+        conn.execute("""alter table songbook add column songbook_publisher varchar(40);""")
+        conn.commit()
+        self.display.sub_output("songbook_publisher added")
+        conn.execute("""create index if not exists songbook1 on songbook (songbook_name ASC,songbook_id ASC);""")
+        conn.commit()       
+        self.display.sub_output("index songbook1 created")
+        conn.execute("""create index if not exists songbook2 on songbook (songbook_publisher ASC,songbook_id ASC);""")
+        conn.commit()
+        conn.close()      
         self.display.sub_output("index songbook2 created")            
         self.display.sub_output("SongBook Completed");
         
