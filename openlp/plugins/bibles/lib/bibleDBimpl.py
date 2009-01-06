@@ -137,7 +137,7 @@ class BibleDBImpl(BibleCommon):
         book_table.create()
         verse_table.create()
         self.save_meta("dbversion", "2")
-        self._loadTestaments()
+        self._load_testaments()
         
     def add_verse(self, bookid, chap,  verse, text):
         log.debug( "add_verse %s,%s,%s,%s", bookid, chap, verse, text)

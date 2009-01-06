@@ -87,9 +87,9 @@ class BibleOSISImpl():
                 if book_ptr != p[0]:
                     book_ptr = p[0]
                     self.bibledb.create_book(int(p[1]), self.booksOfBible[p[0]] , self.abbrevOfBible[p[0]])
-                    id = self.bibledb.getBibleBookId(self.booksOfBible[p[0]])
+                    id = self.bibledb.get_bible_book_id(self.booksOfBible[p[0]])
                     dialogobject.incrementBar()
-                self.bibledb.addVerse(id[0], p[1], p[2], t)
+                self.bibledb.add_verse(id[0], p[1], p[2], t)
 
 
 

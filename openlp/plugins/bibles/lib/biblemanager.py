@@ -46,7 +46,7 @@ class BibleManager():
         self.bibleHTTPCache = {} # dict of bible http readers
         self.biblePath = self.config.get_data_path()
         self.proxyname = self.config.get_config("proxy name") #get proxy name for screen
-        self.bibleSuffix = self.config.get_config("suffix name", u'bible3')
+        self.bibleSuffix = self.config.get_config("suffix name", u'bible3,sqlite')
         self.dialogobject = None
         
         files = self.config.get_files()
@@ -59,10 +59,10 @@ class BibleManager():
             biblesource = self.bibleDBCache[bname].get_meta("WEB") # look to see if lazy load bible exists and get create getter.
             if biblesource:
                 nhttp = BibleHTTPImpl()
-                nhttp.setBibleSource(biblesource)  # tell The Server where to get the verses from.
+                nhttp.set_bible_source(biblesource)  # tell The Server where to get the verses from.
                 self.bibleHTTPCache[bname] = nhttp
                 proxy = self.bibleDBCache[bname].get_meta("proxy") # look to see if lazy load bible exists and get create getter.
-                nhttp.setProxy(proxy)  # tell The Server where to get the verses from.
+                nhttp.set_proxy(proxy)  # tell The Server where to get the verses from.
             else:
                 self.bibleHTTPCache[bname] = None # makes the Full / partial code easier.
         #
@@ -72,7 +72,7 @@ class BibleManager():
     def process_dialog(self, dialogobject):
         self.dialogobject = dialogobject
 
-    def register_HTTP_bible(self, biblename, biblesource, mode="lazy", proxyurl=None, proxyid=None, proxypass=None):
+    def register_http_bible(self, biblename, biblesource, mode="lazy", proxyurl=None, proxyid=None, proxypass=None):
         """
         Return a list of bibles from a given URL.
         The selected Bible can then be registered and LazyLoaded into a database
@@ -80,23 +80,23 @@ class BibleManager():
         log.debug( "register_HTTP_bible %s,%s,%s,%s,%s", biblename, biblesource, proxyurl,  proxyid, proxypass, mode)
         if self._is_new_bible(biblename):
             nbible = BibleDBImpl(self.biblePath, biblename, self.bibleSuffix) # Create new Bible
-            nbible.createTables() # Create Database
+            nbible.create_tables() # Create Database
             self.bibleDBCache[biblename] = nbible
 
             nhttp = BibleHTTPImpl()
-            nhttp.setBibleSource(biblesource)
+            nhttp.set_bible_source(biblesource)
             self.bibleHTTPCache[biblename] = nhttp
             nbible.save_meta("WEB", biblesource) # register a lazy loading interest
             if proxyurl != None:
                 nbible.save_meta("proxy", proxyurl) # store the proxy URL
-                nhttp.setProxy(proxyurl)
+                nhttp.set_proxy(proxyurl)
             if proxyid != None:
                 nbible.save_meta("proxyid", proxyid) # store the proxy userid
             if proxypass != None:
                 nbible.save_meta("proxypass", proxypass) # store the proxy password
 
 
-    def register_CVS_file_bible(self, biblename, booksfile, versefile):
+    def register_cvs_file_bible(self, biblename, booksfile, versefile):
         """
         Method to load a bible from a set of files into a database.
         If the database exists it is deleted and the database is reloaded
@@ -104,12 +104,12 @@ class BibleManager():
         """
         if self._is_new_bible(biblename):
             nbible = BibleDBImpl(self.biblePath, biblename, self.bibleSuffix) # Create new Bible
-            nbible.createTables() # Create Database
+            nbible.create_tables() # Create Database
             self.bibleDBCache[biblename] = nbible # cache the database for use later
             bcsv = BibleCSVImpl(nbible) # create the loader and pass in the database
             bcsv.load_data(booksfile, versefile)
 
-    def register_OSIS_file_bible(self, biblename, osisfile):
+    def register_osis_file_bible(self, biblename, osisfile):
         """
         Method to load a bible from a osis xml file extracted from Sword bible viewer.
         If the database exists it is deleted and the database is reloaded
@@ -118,10 +118,10 @@ class BibleManager():
         log.debug( "register_OSIS_file_bible %s , %s", biblename, osisfile)        
         if self._is_new_bible(biblename):
             nbible = BibleDBImpl(self.biblePath, biblename, self.bibleSuffix) # Create new Bible
-            nbible.createTables() # Create Database
+            nbible.create_tables() # Create Database
             self.bibleDBCache[biblename] = nbible # cache the database for use later
             bcsv = BibleOSISImpl(self.biblePath, nbible) # create the loader and pass in the database
-            bcsv.loadData(osisfile, self.dialogobject)
+            bcsv.load_data(osisfile, self.dialogobject)
 
 
 #    def loadBible(self,biblename):
@@ -263,7 +263,7 @@ class BibleManager():
         Check cache to see if new bible
         """
         for b ,  o in self.bibleDBCache.iteritems():
-            log.debug( b )
+            log.debug( "Bible from cache in is_new_bible %s", b )
             if b == name :
                 return False
         return True

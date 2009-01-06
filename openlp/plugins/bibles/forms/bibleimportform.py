@@ -8,17 +8,13 @@ import os, os.path
 import sys
 import time
 
-mypath=os.path.split(os.path.abspath(__file__))[0]
-sys.path.insert(0,(os.path.join(mypath, '..', '..', '..', '..')))
+from openlp.core.resources import *
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QDialog
 from PyQt4.QtCore import pyqtSignature
 
 from bibleimportdialog import Ui_BibleImportDialog
-from bibleimportprogressform import BibleImportProgressForm
-
-from openlp.plugins.bibles.lib.biblemanager import BibleManager
 
 class BibleImportForm(QDialog, Ui_BibleImportDialog):
     """
@@ -70,23 +66,25 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
             
     def on_CopyrightEdit_lostFocus(self):
         self.validate() 
+        
     def on_VersionNameEdit_lostFocus(self):
         self.validate()  
+        
     def on_PermisionEdit_lostFocus(self):
         self.validate()  
+        
     def on_BibleNameEdit_lostFocus(self):
         self.validate()        
+        
     def on_BibleImportButtonBox_clicked(self,button):
         print button.text()
         if button.text() == "Save":
-            #bipf = BibleImportProgressForm()
-            #bipf.show()
             if self.biblemanager != None:
                 self.MessageLabel.setText("Import Started")
                 self.ProgressBar.setValue(1)
                 self.progress = 0
                 self.biblemanager.process_dialog(self)
-                self.biblemanager.register_OSIS_file_bible(str(self.BibleNameEdit.displayText()), self.OSISLocationEdit.displayText())
+                self.biblemanager.register_osis_file_bible(str(self.BibleNameEdit.displayText()), self.OSISLocationEdit.displayText())
                 self.biblemanager.save_meta_data(str(self.BibleNameEdit.displayText()), str(self.VersionNameEdit.displayText()), str(self.CopyrightEdit.displayText()), str(self.PermisionEdit.displayText()))
                 self.MessageLabel.setText("Import Complete")
         elif button.text() == "Cancel":
