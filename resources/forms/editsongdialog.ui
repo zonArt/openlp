@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>734</width>
-    <height>602</height>
+    <height>761</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,7 +23,7 @@
      <x>8</x>
      <y>8</y>
      <width>711</width>
-     <height>461</height>
+     <height>721</height>
     </rect>
    </property>
    <widget class="QWidget" name="TextWidget" native="true">
@@ -31,8 +31,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>321</width>
-      <height>461</height>
+      <width>331</width>
+      <height>531</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
@@ -64,13 +64,23 @@
       <widget class="QLineEdit" name="AlternativeEdit"/>
      </item>
      <item row="4" column="0">
+      <widget class="QLabel" name="VerseOrderLabel">
+       <property name="text">
+        <string>Verse Order:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLineEdit" name="VerseOrderEdit"/>
+     </item>
+     <item row="6" column="0">
       <widget class="QLabel" name="LyricsLabel">
        <property name="text">
         <string>Lyrics:</string>
        </property>
       </widget>
      </item>
-     <item row="5" column="0">
+     <item row="7" column="0">
       <widget class="QTextEdit" name="LyricsTextEdit">
        <property name="lineWrapMode">
         <enum>QTextEdit::NoWrap</enum>
@@ -81,6 +91,14 @@
       </widget>
      </item>
     </layout>
+    <zorder>TitleLabel</zorder>
+    <zorder>TitleEditItem</zorder>
+    <zorder>AlternativeTitleLabel</zorder>
+    <zorder>AlternativeEdit</zorder>
+    <zorder>LyricsLabel</zorder>
+    <zorder>LyricsTextEdit</zorder>
+    <zorder>VerseOrderEdit</zorder>
+    <zorder>VerseOrderLabel</zorder>
    </widget>
    <widget class="QWidget" name="Selectedroup" native="true">
     <property name="geometry">
@@ -88,7 +106,7 @@
       <x>329</x>
       <y>0</y>
       <width>381</width>
-      <height>431</height>
+      <height>531</height>
      </rect>
     </property>
     <widget class="QGroupBox" name="AuthorsGroupBox">
@@ -293,56 +311,89 @@
       </item>
      </layout>
     </widget>
+    <widget class="QGroupBox" name="CopyrightgroupBox">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>430</y>
+       <width>371</width>
+       <height>95</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Copyright Infomaton</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0">
+       <widget class="QLineEdit" name="CopyrightEditItem"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="CCLLabel">
+        <property name="text">
+         <string>CCL Number:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="CCLNumberEdit"/>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="CopyrightInsertItem">
+        <property name="maximumSize">
+         <size>
+          <width>29</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>©</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+     <zorder>CopyrightEditItem</zorder>
+     <zorder>CCLLabel</zorder>
+     <zorder>CCLNumberEdit</zorder>
+     <zorder>CopyrightInsertItem</zorder>
+    </widget>
    </widget>
-   <zorder>Selectedroup</zorder>
-   <zorder>TextWidget</zorder>
-  </widget>
-  <widget class="QWidget" name="ThemeWidget" native="true">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>520</y>
-     <width>641</width>
-     <height>45</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_5">
-    <item>
-     <widget class="QLabel" name="ThemeLabel">
-      <property name="maximumSize">
-       <size>
-        <width>70</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Theme</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QComboBox" name="ThemeSelectionComboItem"/>
-    </item>
-    <item>
-     <widget class="QPushButton" name="ThemeAddItem">
-      <property name="maximumSize">
-       <size>
-        <width>110</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Add a Theme</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
+   <widget class="QGroupBox" name="ThemeGroupBox">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>540</y>
+      <width>711</width>
+      <height>66</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Theme</string>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QComboBox" name="ThemeSelectionComboItem"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="ThemeAddItem">
+       <property name="maximumSize">
+        <size>
+         <width>110</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Add a Theme</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <widget class="QDialogButtonBox" name="ButtonBox">
    <property name="geometry">
     <rect>
-     <x>500</x>
-     <y>570</y>
+     <x>570</x>
+     <y>720</y>
      <width>156</width>
      <height>27</height>
     </rect>
@@ -350,76 +401,6 @@
    <property name="standardButtons">
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
    </property>
-  </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>490</y>
-     <width>311</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="VerseOrderLayout">
-    <item>
-     <widget class="QLabel" name="VerseOrderLabel">
-      <property name="text">
-       <string>Verse Order:</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLineEdit" name="VerseOrderEdit"/>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>340</x>
-     <y>440</y>
-     <width>381</width>
-     <height>110</height>
-    </rect>
-   </property>
-   <layout class="QFormLayout" name="CopyrightLayout">
-    <property name="fieldGrowthPolicy">
-     <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-    </property>
-    <item row="0" column="0">
-     <widget class="QLabel" name="CopyrightInfoLabel">
-      <property name="text">
-       <string>Copyright Info:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLineEdit" name="CopyrightEditItem"/>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="CCLLabel">
-      <property name="text">
-       <string>CCL Number:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLineEdit" name="CCLNumberEdit"/>
-    </item>
-    <item row="1" column="1">
-     <widget class="QPushButton" name="CopyrightInsertItem">
-      <property name="maximumSize">
-       <size>
-        <width>29</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>©</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
   </widget>
  </widget>
  <resources>
