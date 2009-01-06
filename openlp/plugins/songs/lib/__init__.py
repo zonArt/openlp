@@ -19,6 +19,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 from songmanager import SongManager
+from songtable import Author
 
-__all__ = ['SongManager']
+__all__ = ['SongManager', 'Author']
 

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'songbookdialog.ui'
 #
-# Created: Thu Jan  1 09:44:21 2009
+# Created: Sun Jan  4 08:43:12 2009
 #      by: PyQt4 UI code generator 4.4.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -29,13 +29,13 @@ class Ui_SongBookDialog(object):
         self.gridLayout.addWidget(self.NameLabel, 0, 0, 1, 1)
         self.NameEdit = QtGui.QLineEdit(self.SongBookGroup)
         self.NameEdit.setObjectName("NameEdit")
-        self.gridLayout.addWidget(self.NameEdit, 0, 1, 1, 3)
+        self.gridLayout.addWidget(self.NameEdit, 0, 1, 1, 4)
         self.PublisherLabel = QtGui.QLabel(self.SongBookGroup)
         self.PublisherLabel.setObjectName("PublisherLabel")
         self.gridLayout.addWidget(self.PublisherLabel, 1, 0, 1, 1)
         self.PublisherEdit = QtGui.QLineEdit(self.SongBookGroup)
         self.PublisherEdit.setObjectName("PublisherEdit")
-        self.gridLayout.addWidget(self.PublisherEdit, 1, 1, 1, 3)
+        self.gridLayout.addWidget(self.PublisherEdit, 1, 1, 1, 4)
         spacerItem = QtGui.QSpacerItem(198, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem, 2, 0, 1, 2)
         self.DeleteButton = QtGui.QPushButton(self.SongBookGroup)
@@ -43,13 +43,19 @@ class Ui_SongBookDialog(object):
         icon.addPixmap(QtGui.QPixmap(":/services/service_delete.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.DeleteButton.setIcon(icon)
         self.DeleteButton.setObjectName("DeleteButton")
-        self.gridLayout.addWidget(self.DeleteButton, 2, 2, 1, 1)
+        self.gridLayout.addWidget(self.DeleteButton, 2, 3, 1, 1)
         self.AddUpdateButton = QtGui.QPushButton(self.SongBookGroup)
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap(":/system/system_settings.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.AddUpdateButton.setIcon(icon1)
         self.AddUpdateButton.setObjectName("AddUpdateButton")
-        self.gridLayout.addWidget(self.AddUpdateButton, 2, 3, 1, 1)
+        self.gridLayout.addWidget(self.AddUpdateButton, 2, 4, 1, 1)
+        self.ClearButton = QtGui.QPushButton(self.SongBookGroup)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(":/songs/song_edit.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.ClearButton.setIcon(icon2)
+        self.ClearButton.setObjectName("ClearButton")
+        self.gridLayout.addWidget(self.ClearButton, 2, 2, 1, 1)
         self.gridLayout_2.addWidget(self.SongBookGroup, 1, 0, 1, 2)
         self.MessageLabel = QtGui.QLabel(SongBookDialog)
         self.MessageLabel.setObjectName("MessageLabel")
@@ -72,4 +78,4 @@ class Ui_SongBookDialog(object):
         self.PublisherLabel.setText(QtGui.QApplication.translate("SongBookDialog", "Publisher:", None, QtGui.QApplication.UnicodeUTF8))
         self.DeleteButton.setToolTip(QtGui.QApplication.translate("SongBookDialog", "Delete Author", None, QtGui.QApplication.UnicodeUTF8))
         self.AddUpdateButton.setToolTip(QtGui.QApplication.translate("SongBookDialog", "Add Update Author", None, QtGui.QApplication.UnicodeUTF8))
-
+        self.ClearButton.setToolTip(QtGui.QApplication.translate("SongBookDialog", "Clear Selection", None, QtGui.QApplication.UnicodeUTF8))
