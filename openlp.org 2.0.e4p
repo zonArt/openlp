@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.4.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2008-12-14, 21:47:18 -->
-<!-- Copyright (C) 2008 Raoul Snyman, raoulsnyman@openlp.org -->
+<!-- Saved: 2009-01-03, 01:14:22 -->
+<!-- Copyright (C) 2009 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.4">
   <ProgLanguage mixed="0">Python</ProgLanguage>
   <ProjectType>Qt4</ProjectType>
@@ -95,11 +95,27 @@
     <Source>openlp/plugins/videos/videoplugin.py</Source>
     <Source>openlp/plugins/images/__init__.py</Source>
     <Source>openlp/plugins/images/imageplugin.py</Source>
+    <Source>openlp/plugins/songs/lib/songinterface.py</Source>
+    <Source>openlp/plugins/songs/lib/songfile.py</Source>
+    <Source>openlp/plugins/songs/forms/editsongdialog.py</Source>
+    <Source>openlp/core/lib/pluginutils.py</Source>
+    <Source>openlp/plugins/songs/lib/songmanager.py</Source>
+    <Source>openlp/plugins/songs/lib/songDBimpl.py</Source>
+    <Source>openlpcnv.pyw</Source>
+    <Source>openlp/plugins/songs/forms/songbookdialog.py</Source>
+    <Source>openlp/plugins/songs/forms/topicsdialog.py</Source>
+    <Source>openlp/plugins/songs/forms/authorsdialog.py</Source>
+    <Source>openlp/plugins/songs/forms/topicsform.py</Source>
+    <Source>openlp/plugins/songs/forms/authorsform.py</Source>
+    <Source>openlp/plugins/songs/forms/songbookform.py</Source>
+    <Source>openlp/migration/__init__.py</Source>
+    <Source>openlp/migration/migratefiles.py</Source>
+    <Source>openlp/migration/migratesongs.py</Source>
+    <Source>openlp/migration/display.py</Source>
+    <Source>openlp/migration/migratebibles.py</Source>
   </Sources>
   <Forms>
-    <Form>resources/forms/bibleimport.ui</Form>
     <Form>resources/forms/openlpexportform.ui</Form>
-    <Form>resources/forms/editsongform.ui</Form>
     <Form>resources/forms/opensongexportform.ui</Form>
     <Form>resources/forms/about.ui</Form>
     <Form>resources/forms/settings.ui</Form>
@@ -111,6 +127,11 @@
     <Form>resources/forms/openlpimportform.ui</Form>
     <Form>resources/forms/splashscreen.ui</Form>
     <Form>resources/forms/bibleimportprogress.ui</Form>
+    <Form>resources/forms/authorsdialog.ui</Form>
+    <Form>resources/forms/bibleimportdialog.ui</Form>
+    <Form>resources/forms/songbookdialog.ui</Form>
+    <Form>resources/forms/topicsdialog.ui</Form>
+    <Form>resources/forms/editsongdialog.ui</Form>
   </Forms>
   <Translations>
   </Translations>
