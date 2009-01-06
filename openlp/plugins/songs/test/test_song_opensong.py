@@ -122,64 +122,64 @@ class Test_OpenSong(object):
     def test_sample1(self):
         """OpenSong: handwritten sample1"""
         s = Song()
-        s.FromOpenSongBuffer(_sample1)
-        l = s.GetLyrics()
+        s.from_opensong_buffer(_sample1)
+        l = s.get_lyrics()
         assert(len(l) == (4*3+3))
-        assert(s.GetNumberOfSlides() == 4)
+        assert(s.get_number_of_slides() == 4)
         
     def test_sample2(self):
         """OpenSong: handwritten sample2 - with verses and chorus"""
         s = Song()
-        s.FromOpenSongBuffer(_sample2)
-        l = s.GetLyrics()
+        s.from_opensong_buffer(_sample2)
+        l = s.get_lyrics()
         assert(len(l) == (4*3+3))
-        assert(s.GetNumberOfSlides() == 4)
+        assert(s.get_number_of_slides() == 4)
         
     def test_sample3(self):
         """OpenSong: handwritten sample3 - with verses, chorus, bridge and pre-chorus"""
         s = Song()
-        s.FromOpenSongBuffer(_sample3)
-        l = s.GetLyrics()
+        s.from_opensong_buffer(_sample3)
+        l = s.get_lyrics()
         assert(len(l) == (4*3+4+5+4))
-        assert(s.GetNumberOfSlides() == 6)
+        assert(s.get_number_of_slides() == 6)
         
     def test_file1(self):
         """OpenSong: parse Amazing Grace"""
         global __ThisDir__
         s = Song()
-        s.FromOpenSongFile("%s/data_opensong/Amazing Grace"%(__ThisDir__))
-        assert(s.GetTitle() == "Amazing Grace")
-        assert(s.GetCopyright() == "1982 Jubilate Hymns Limited")
-        assert(s.GetSongCcliNo() == "1037882")
-        assert(s.GetCategoryArray(True) == "God: Attributes")
-        assert(s.GetAuthorList(True) == "John Newton")
-        assert(s.GetVerseOrder() == "")
-        assert(s.GetNumberOfSlides() == 4)
+        s.from_opensong_file("%s/data_opensong/Amazing Grace"%(__ThisDir__))
+        assert(s.get_title() == "Amazing Grace")
+        assert(s.get_copyright() == "1982 Jubilate Hymns Limited")
+        assert(s.get_song_cclino() == "1037882")
+        assert(s.get_category_array(True) == "God: Attributes")
+        assert(s.get_author_list(True) == "John Newton")
+        assert(s.get_verse_order() == "")
+        assert(s.get_number_of_slides() == 4)
         
     def test_file2(self):
         """OpenSong: parse The Solid Rock"""
         s = Song()
-        s.FromOpenSongFile("%s/data_opensong/The Solid Rock"%(__ThisDir__))
-        assert(s.GetTitle() == "The Solid Rock")
-        assert(s.GetCopyright() == "Public Domain")
-        assert(s.GetSongCcliNo() == "101740")
-        assert(s.GetCategoryArray(True) == "Christ: Victory, Fruit: Peace/Comfort")
-        assert(s.GetAuthorList(True) == "Edward Mote, John B. Dykes")
-        assert(s.GetVerseOrder() == "V1 C V2 C V3 C V4 C")
-        assert(s.GetNumberOfSlides() == 5)
+        s.from_opensong_file("%s/data_opensong/The Solid Rock"%(__ThisDir__))
+        assert(s.get_title() == "The Solid Rock")
+        assert(s.get_copyright() == "Public Domain")
+        assert(s.get_song_cclino() == "101740")
+        assert(s.get_category_array(True) == "Christ: Victory, Fruit: Peace/Comfort")
+        assert(s.get_author_list(True) == "Edward Mote, John B. Dykes")
+        assert(s.get_verse_order() == "V1 C V2 C V3 C V4 C")
+        assert(s.get_number_of_slides() == 5)
         
     def test_file3(self):
         """OpenSong: parse 'På en fjern ensom høj' (danish)"""
         #FIXME: problem with XML convert and danish characters
         s = Song()
-        s.FromOpenSongFile("%s/data_opensong/På en fjern ensom høj"%(__ThisDir__))
-        assert(s.GetTitle() == u"På en fjern ensom høj")
-        assert(s.GetCopyright() == "")
-        assert(s.GetSongCcliNo() == "")
-        assert(s.GetCategoryArray(True) == "")
-        assert(s.GetAuthorList(True) == "")
-        assert(s.GetVerseOrder() == "V1 C1 V2 C2 V3 C3 V4 C4")
-        assert(s.GetNumberOfSlides() == 8)
+        s.from_opensong_file("%s/data_opensong/På en fjern ensom høj"%(__ThisDir__))
+        assert(s.get_title() == u"På en fjern ensom høj")
+        assert(s.get_copyright() == "")
+        assert(s.get_song_cclino() == "")
+        assert(s.get_category_array(True) == "")
+        assert(s.get_author_list(True) == "")
+        assert(s.get_verse_order() == "V1 C1 V2 C2 V3 C3 V4 C4")
+        assert(s.get_number_of_slides() == 8)
         
 if '__main__' == __name__:
     r = Test_OpenSong()

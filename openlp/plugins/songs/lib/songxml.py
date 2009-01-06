@@ -38,6 +38,9 @@ class SongTypeError(SongException):
 class SongSlideError(SongException):
     pass
 
+class SongFeatureError(SongException):
+    pass
+
 # TODO: Song: Logging - not all, but enough
 # TODO: Song: Handle OpenLP2 format
 # TODO: Song: Import OpenLP1
@@ -46,28 +49,6 @@ class SongSlideError(SongException):
 # TODO: Song: Export Song to OpenSong
 # TODO: Song: Import ChangingSong
 # TODO: Song: Export ChangingSong
-
-_blankSongXml = \
-'''<?xml version="1.0" encoding="iso-8859-1"?>
-<Song>
-  <title>BlankSong</title>
-  <searchableTitle></searchableTitle>
-  <authorList></authorList>
-  <songCcliNo></songCcliNo>
-  <copyright></copyright>
-  <showTitle>1</showTitle>
-  <showAuthorList>1</showAuthorList>
-  <showSongCcliNo>1</showSongCcliNo>
-  <showCopyright>1</showCopyright>
-  <theme></theme>
-  <categoryArray></categoryArray>
-  <songBook></songBook>
-  <songNumber></songNumber>
-  <comments></comments>
-  <verseOrder></verseOrder>
-  <lyrics></lyrics>
-</Song>
-'''
 
 _blankOpenSongXml = \
 '''<?xml version="1.0" encoding="UTF-8"?>
@@ -89,20 +70,20 @@ class _OpenSong(XmlRootClass):
     def __init__(self,  xmlContent = None):
         """Initialize from given xml content"""
         super(_OpenSong, self).__init__()
-        self.FromBuffer(xmlContent)
+        self.from_buffer(xmlContent)
 
     def _reset(self):
         """Reset all song attributes"""
         global _blankOpenSongXml
         self._setFromXml(_blankOpenSongXml, "song")
 
-    def FromBuffer(self,  xmlContent):
+    def from_buffer(self,  xmlContent):
         """Initialize from buffer(string) with xml content"""
         self._reset()
         if xmlContent != None :
             self._setFromXml(xmlContent, "song")
 
-    def GetAuthorList(self):
+    def get_author_list(self):
         """Convert author field to an authorlist
 
         in OpenSong an author list may be separated by '/'
@@ -116,8 +97,8 @@ class _OpenSong(XmlRootClass):
         s = ", ".join(res)
         return s
 
-    def GetCategoryArray(self):
-        """Convert theme and alttheme into categoryArray
+    def get_category_array(self):
+        """Convert theme and alttheme into category_array
 
         return as a string
         """
@@ -129,7 +110,7 @@ class _OpenSong(XmlRootClass):
         s = ", ".join(res)
         return s
 
-    def _reorderVerse(self, tag, tmpVerse):
+    def _reorder_verse(self, tag, tmpVerse):
         """Reorder the verse in case of first char is a number
 
         tag -- the tag of this verse / verse group
@@ -160,7 +141,7 @@ class _OpenSong(XmlRootClass):
                     res.append(l)
         return res
 
-    def GetLyrics(self):
+    def get_lyrics(self):
         """Convert the lyrics to openlp lyrics format
 
         return as list of strings
@@ -178,70 +159,119 @@ class _OpenSong(XmlRootClass):
                     if line.startswith('['):
                         tag = line
                 else :
-                    r = self._reorderVerse(tag, tmpVerse)
+                    r = self._reorder_verse(tag, tmpVerse)
                     finalLyrics.extend(r)
                     tag = ""
                     tmpVerse = []
         # catch up final verse
-        r = self._reorderVerse(tag, tmpVerse)
+        r = self._reorder_verse(tag, tmpVerse)
         finalLyrics.extend(r)
         return finalLyrics
 
 
-class Song(XmlRootClass) :
-    """Class for handling song properties"""
+class Song(object) :
+    """Handling song properties and methods 
+    
+    handles all conversions between various input and output formats
+    
+    CCLI :
+        from_ccli_text_file
+        to_ccli_text_file
+        from_ccli_text_buffer
+        to_ccli_text_buffer
+        
+    OpenSong:
+        from_opensong_file
+        to_opensong_file
+        from_opensong_buffer
+        to_opensong_buffer
+        
+    presentation (screen):
+        get_number_of_slides
+        get_preview_slide
+        get_render_slide
+        
+    openlp1 :
+        from_openlp1_lyrics_buffer
+        to_openlp1_lyrics_buffer
+        set_author_list
+        get_author_list
+        
+    editing and openlp2 :
+        set_*
+        get_*
+    """
 
-    def __init__(self, xmlContent = None):
-        """Initialize from given xml content
+    def __init__(self, songid = 0):
+        """Initialize song object
 
-        xmlContent (string) -- xml formatted string
-
+        songid -- database id for this song
         title -- title of the song
-        searchableTitle -- title without punctuation chars
-        authorList -- list of authors
-        songCcliNo -- CCLI number for this song
+        search_title -- title without punctuation chars
+        author_list -- list of authors
+        song_cclino -- CCLI number for this song
         copyright -- copyright string
-        showTitle -- 0: no show, 1: show
-        showAuthorList -- 0: no show, 1: show
-        showCopyright -- 0: no show, 1: show
-        showSongCcliNo -- 0: no show, 1: show
+        show_title -- 0: no show, 1: show
+        show_author_list -- 0: no show, 1: show
+        show_copyright -- 0: no show, 1: show
+        show_song_cclino -- 0: no show, 1: show
         theme -- name of theme or blank
-        categoryArray -- list of user defined properties (hymn, gospel)
-        songBook -- name of originating book
-        songNumber -- number of the song, related to a songbook
+        category_array -- list of user defined properties (hymn, gospel)
+        song_book -- name of originating book
+        song_number -- number of the song, related to a songbook
         comments -- free comment
-        verseOrder -- presentation order of the slides
-        lyrics -- simple or formatted (tbd)
+        verse_order -- presentation order of the slides
+        lyrics -- text format
+        search_lyrics -- lowercase lyrics without punctuation
         """
-        super(Song, self).__init__()
+        self.songid = songid
         self._reset()
-        if xmlContent != None :
-            self._setFromXml(xmlContent, "Song")
-            self._parseLyrics()
 
     def _reset(self):
         """Reset all song attributes"""
-        global _blankSongXml
         self.slideList = []
-        self._setFromXml(_blankSongXml, "Song")
+        self.set_title("BlankSong")
+        self.author_list = None
+        self.song_cclino = ""
+        self.copyright = ""
+        self.show_author_list = 1
+        self.show_copyright = 1
+        self.show_song_cclino = 1
+        self.show_title = 1
+        self.theme = ""
+        self.category_array = None
+        self.song_book = ""
+        self.song_number = ""
+        self.comments = ""
+        self.verse_order = ""
+        self.set_lyrics("")
+        return
 
-    def FromOpenSongBuffer(self,  xmlcontent):
+    def set_songid(self, songid):
+        """Set the songid for the database"""
+        self.songid = songid
+        
+    def get_songid(self):
+        """Return the songid for the database"""
+        return self.songid
+    
+    def from_opensong_buffer(self,  xmlcontent):
         """Initialize from buffer(string) of xml lines in opensong format"""
         self._reset()
         opensong = _OpenSong(xmlcontent)
         if opensong.title != None:
-            self.SetTitle(opensong.title)
+            self.set_title(opensong.title)
         if opensong.copyright != None :
-            self.SetCopyright(opensong.copyright)
+            self.set_copyright(opensong.copyright)
         if opensong.presentation != None:
-            self.SetVerseOrder(opensong.presentation)
+            self.set_verse_order(opensong.presentation)
         if opensong.ccli != None:
-            self.SetSongCcliNo(opensong.ccli)
-        self.SetAuthorList(opensong.GetAuthorList())
-        self.SetCategoryArray(opensong.GetCategoryArray())
-        self.SetLyrics(opensong.GetLyrics())
+            self.set_song_cclino(opensong.ccli)
+        self.set_author_list(opensong.get_author_list())
+        self.set_category_array(opensong.get_category_array())
+        self.set_lyrics(opensong.get_lyrics())
 
-    def FromOpenSongFile(self,  xmlfilename):
+    def from_opensong_file(self,  xmlfilename):
         """Initialize from file containing xml
 
         xmlfilename -- path to xml file
@@ -252,40 +282,42 @@ class Song(XmlRootClass) :
             lst.append(line)
         f.close()
         xml = "".join(lst)
-        self.FromOpenSongBuffer(xml)
+        self.from_opensong_buffer(xml)
 
-    def _RemovePunctuation(self,  title):
+    def _remove_punctuation(self,  title):
         """Remove the puntuation chars from title
 
-        chars are: .,:;!?&%#/\@`$'|"^~*
+        chars are: .,:;!?&%#/\@`$'|"^~*-
         """
-        punctuation = ".,:;!?&%#'\"/\\@`$|^~*"
+        punctuation = ".,:;!?&%#'\"/\\@`$|^~*-"
         s = title
         for c in punctuation :
             s = s.replace(c,  '')
         return s
 
-    def SetTitle(self, title):
+    def set_title(self, title):
         """Set the song title
 
         title (string)
+        raises SongTitleError if the title is empty
+        raises SongTitleError if the seach_title is empty
         """
         self.title = title.strip()
-        self.searchableTitle = self._RemovePunctuation(title).strip()
+        self.search_title = self._remove_punctuation(title).strip()
         if len(self.title) < 1 :
             raise SongTitleError("The title is empty")
-        if len(self.searchableTitle) < 1 :
+        if len(self.search_title) < 1 :
             raise SongTitleError("The searchable title is empty")
 
-    def GetTitle(self):
+    def get_title(self):
         """Return title value"""
         return self.title
 
-    def GetSearchableTitle(self):
-        """Return searchableTitle"""
-        return self.searchableTitle
+    def get_search_title(self):
+        """Return search_title"""
+        return self.search_title
 
-    def FromTextList(self, textList):
+    def from_ccli_text_buffer(self, textList):
         """Create song from a list of texts (strings) - CCLI text format expected
 
         textList (list of strings) -- the song
@@ -334,14 +366,14 @@ class Song(XmlRootClass) :
         lst = sAuthor.split('/')
         if len(lst) < 2:
             lst = sAuthor.split('|')
-        authorList = ", ".join(lst)
-        self.SetTitle(sName)
-        self.SetAuthorList(authorList)
-        self.SetCopyright(sCopyright)
-        self.SetSongCcliNo(sCcli)
-        self.SetLyrics(lyrics)
+        author_list = ", ".join(lst)
+        self.set_title(sName)
+        self.set_author_list(author_list)
+        self.set_copyright(sCopyright)
+        self.set_song_cclino(sCcli)
+        self.set_lyrics(lyrics)
 
-    def FromTextFile(self,  textFileName):
+    def from_ccli_text_file(self,  textFileName):
         """Create song from a list of texts read from given file
 
         textFileName -- path to text file
@@ -351,9 +383,9 @@ class Song(XmlRootClass) :
         for orgline in f:
             lines.append(orgline.rstrip())
         f.close()
-        self.FromTextList(lines)
+        self.from_ccli_text_buffer(lines)
 
-    def _assureString(self, s):
+    def _assure_string(self, s):
         """Force a string is returned"""
         if s == None :
             r = ""
@@ -361,7 +393,7 @@ class Song(XmlRootClass) :
             r = str(s)
         return r
 
-    def _splitToList(self, aString):
+    def _split_to_list(self, aString):
         """Split a string into a list - comma separated"""
         res = []
         if aString != None :
@@ -371,10 +403,10 @@ class Song(XmlRootClass) :
                 res.append(l.strip())
         return res
 
-    def _listToString(self, strOrList):
+    def _list_to_string(self, strOrList):
         """Force a possibly list into a string"""
         if type(strOrList) == StringType :
-            lst = self._splitToList(strOrList)
+            lst = self._split_to_list(strOrList)
         elif type(strOrList) == ListType :
             lst = strOrList
         elif type(strOrList) == NoneType :
@@ -384,63 +416,63 @@ class Song(XmlRootClass) :
         s = ", ".join(lst)
         return s
 
-    def GetCopyright(self):
+    def get_copyright(self):
         """Return copyright info string"""
-        return self._assureString(self.copyright)
+        return self._assure_string(self.copyright)
 
-    def SetCopyright(self,  copyright):
+    def set_copyright(self,  copyright):
         """Set the copyright string"""
         self.copyright = copyright
 
-    def GetSongCcliNo(self):
+    def get_song_cclino(self):
         """Return the songCclino"""
-        return self._assureString(self.songCcliNo)
+        return self._assure_string(self.song_cclino)
 
-    def SetSongCcliNo(self,  songCcliNo):
-        """Set the songCcliNo"""
-        self.songCcliNo = songCcliNo
+    def set_song_cclino(self,  song_cclino):
+        """Set the song_cclino"""
+        self.song_cclino = song_cclino
 
-    def GetTheme(self):
+    def get_theme(self):
         """Return the theme name for the song"""
-        return self._assureString(self.theme)
+        return self._assure_string(self.theme)
 
-    def SetTheme(self,  theme):
+    def set_theme(self,  theme):
         """Set the theme name (string)"""
         self.theme = theme
 
-    def GetSongBook(self):
-        """Return the songBook (string)"""
-        return self._assureString(self.songBook)
+    def get_song_book(self):
+        """Return the song_book (string)"""
+        return self._assure_string(self.song_book)
 
-    def SetSongBook(self,  songBook):
-        """Set the songBook (string)"""
-        self.songBook = songBook
+    def set_song_book(self,  song_book):
+        """Set the song_book (string)"""
+        self.song_book = song_book
 
-    def GetSongNumber(self):
-        """Return the songNumber (string)"""
-        return self._assureString(self.songNumber)
+    def get_song_number(self):
+        """Return the song_number (string)"""
+        return self._assure_string(self.song_number)
 
-    def SetSongNumber(self,  songNumber):
-        """Set the songNumber (string)"""
-        self.songNumber = songNumber
+    def set_song_number(self,  song_number):
+        """Set the song_number (string)"""
+        self.song_number = song_number
 
-    def GetComments(self):
+    def get_comments(self):
         """Return the comments (string)"""
-        return self._assureString(self.comments)
+        return self._assure_string(self.comments)
 
-    def SetComments(self,  comments):
+    def set_comments(self,  comments):
         """Set the comments (string)"""
         self.comments = comments
 
-    def GetVerseOrder(self):
+    def get_verse_order(self):
         """Get the verseOrder (string) - preferably space delimited"""
-        return self._assureString(self.verseOrder)
+        return self._assure_string(self.verse_order)
 
-    def SetVerseOrder(self,  verseOrder):
-        """Set the verseOrder (string) - space delimited"""
-        self.verseOrder = verseOrder
+    def set_verse_order(self,  verse_order):
+        """Set the verse order (string) - space delimited"""
+        self.verse_order = verse_order
 
-    def GetAuthorList(self,  asOneString = True):
+    def get_author_list(self,  asOneString = True):
         """Return the list of authors as a string
 
         asOneString
@@ -450,22 +482,22 @@ class Song(XmlRootClass) :
           ["John Newton", "A Parker"]
         """
         if asOneString :
-            res = self._assureString(self.authorList)
+            res = self._assure_string(self.author_list)
         else :
-            res = self._splitToList(self.authorList)
+            res = self._split_to_list(self.author_list)
         return res
 
-    def SetAuthorList(self,  authorList):
-        """Set the authorList
+    def set_author_list(self,  author_list):
+        """Set the author_list
 
-        authorList -- a string or list of strings
+        author_list -- a string or list of strings
         """
-        if authorList == None :
-            self.authorList = None
+        if author_list == None :
+            self.author_list = None
         else :
-            self.authorList = self._listToString(authorList)
+            self.author_list = self._list_to_string(author_list)
 
-    def GetCategoryArray(self,  asOneString = True):
+    def get_category_array(self,  asOneString = True):
         """Return the list of categories as a string
 
         asOneString
@@ -475,66 +507,66 @@ class Song(XmlRootClass) :
           ["Hymn", "Gospel"]
         """
         if asOneString :
-            res = self._assureString(self.categoryArray)
+            res = self._assure_string(self.category_array)
         else :
-            res = self._splitToList(self.categoryArray)
+            res = self._split_to_list(self.category_array)
         return res
 
-    def SetCategoryArray(self,  categoryArray):
-        """Set the categoryArray
+    def set_category_array(self,  category_array):
+        """Set the category_array
 
-        categoryArray -- a string or list of strings
+        category_array -- a string or list of strings
         """
-        if categoryArray == None :
-            self.categoryArray = None
+        if category_array == None :
+            self.category_array = None
         else :
-            self.categoryArray = self._listToString(categoryArray)
+            self.category_array = self._list_to_string(category_array)
 
-    def GetShowTitle(self):
-        """Return the showTitle flag (bool)"""
-        return self.showTitle
+    def get_show_title(self):
+        """Return the show_title flag (bool)"""
+        return self.show_title
 
-    def SetShowTitle(self,  showTitle):
-        """Set the showTitle flag (bool)"""
-        self.showTitle = showTitle
+    def set_show_title(self,  show_title):
+        """Set the show_title flag (bool)"""
+        self.show_title = show_title
 
-    def GetShowAuthorList(self):
-        """Return the showAuthorList flag"""
-        return self.showAuthorList
+    def get_show_author_list(self):
+        """Return the show_author_list flag"""
+        return self.show_author_list
 
-    def SetShowAuthorList(self,  showAuthorList):
-        """Set the showAuthorList flag (bool)"""
-        self.showAuthorList = showAuthorList
+    def set_show_author_list(self,  show_author_list):
+        """Set the show_author_list flag (bool)"""
+        self.show_author_list = show_author_list
 
-    def GetShowCopyright(self):
-        """Return the showCopyright flag"""
-        return self.showCopyright
+    def get_show_copyright(self):
+        """Return the show_copyright flag"""
+        return self.show_copyright
 
-    def SetShowCopyright(self, showCopyright):
-        """Set the showCopyright flag (bool)"""
-        self.showCopyright = showCopyright
+    def set_show_copyright(self, show_copyright):
+        """Set the show_copyright flag (bool)"""
+        self.show_copyright = show_copyright
 
-    def GetShowSongCcliNo(self):
+    def get_show_song_cclino(self):
         """Return the showSongCclino (string)"""
-        return self.showSongCcliNo
+        return self.show_song_cclino
 
-    def SetShowSongCcliNo(self,  showSongCcliNo):
-        """Set the showSongCcliNo flag (bool)"""
-        self.showSongCcliNo = showSongCcliNo
+    def set_show_song_cclino(self,  show_song_cclino):
+        """Set the show_song_cclino flag (bool)"""
+        self.show_song_cclino = show_song_cclino
 
-    def GetLyrics(self):
+    def get_lyrics(self):
         """Return the lyrics as a list of strings
 
         this will return all the strings in the song
         """
         return self.lyrics
 
-    def SetLyrics(self,  lyrics):
+    def set_lyrics(self,  lyrics):
         """Set the lyrics as a list of strings"""
         self.lyrics = lyrics
-        self._parseLyrics()
+        self._parse_lyrics()
 
-    def _parseLyrics(self):
+    def _parse_lyrics(self):
         """Parse lyrics into the slidelist"""
         # TODO: check font formatting
         self.slideList = []
@@ -553,12 +585,12 @@ class Song(XmlRootClass) :
         if len(tmpSlide) > 0:
             self.slideList.append(tmpSlide)
 
-    def GetNumberOfSlides(self):
+    def get_number_of_slides(self):
         """Return the number of slides in the song (int)"""
         numOfSlides = len(self.slideList)
         return numOfSlides
 
-    def GetPreviewSlide(self,  slideNumber):
+    def get_preview_slide(self,  slideNumber):
         """Return the preview text for specified slide number
 
         slideNumber -- 0: all slides, 1..n : specific slide
@@ -582,7 +614,7 @@ class Song(XmlRootClass) :
         # remove formattingincluding themes
         return res
 
-    def GetRenderSlide(self,  slideNumber):
+    def get_render_slide(self,  slideNumber):
         """Return the slide to be rendered including the additional
         properties
 
@@ -601,23 +633,23 @@ class Song(XmlRootClass) :
         elif slideNumber > num :
             raise SongSlideError("Slide number too high")
         res = []
-        if self.showTitle :
-            title = self.GetTitle()
+        if self.show_title :
+            title = self.get_title()
         else :
             title = ""
-        if self.showAuthorList :
-            author = self.GetAuthorList(True)
+        if self.show_author_list :
+            author = self.get_author_list(True)
         else :
             author = ""
-        if self.showCopyright :
-            cpright = self.GetCopyright()
+        if self.show_copyright :
+            cpright = self.get_copyright()
         else :
             cpright = ""
-        if self.showSongCcliNo :
-            ccli = self.GetSongCcliNo()
+        if self.show_song_cclino :
+            ccli = self.get_song_cclino()
         else :
             ccli = ""
-        theme = self.GetTheme()
+        theme = self.get_theme()
         # examine the slide for a theme
         res.append(theme)
         res.append(title)
@@ -628,4 +660,4 @@ class Song(XmlRootClass) :
         return res
 
 __all__ = ['SongException', 'SongTitleError', 'SongSlideError', 'SongTypeError',
-           'Song']
+           'SongFeatureError', 'Song']

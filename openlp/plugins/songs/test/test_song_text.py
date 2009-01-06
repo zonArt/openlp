@@ -35,23 +35,23 @@ class Test_Text(object):
         """OpenSong: parse CCLI example"""
         global __ThisDir__
         s = Song()
-        s.FromTextFile("%s/data_text/CCLI example.txt"%(__ThisDir__))
-        assert(s.GetTitle() == "Song Title Here")
-        assert(s.GetAuthorList(True) == "Author, artist name")
-        assert(s.GetCopyright() == "1996 Publisher Info")
-        assert(s.GetSongCcliNo() == "1234567")
-        assert(s.GetNumberOfSlides() == 4)
+        s.from_ccli_text_file("%s/data_text/CCLI example.txt"%(__ThisDir__))
+        assert(s.get_title() == "Song Title Here")
+        assert(s.get_author_list(True) == "Author, artist name")
+        assert(s.get_copyright() == "1996 Publisher Info")
+        assert(s.get_song_cclino() == "1234567")
+        assert(s.get_number_of_slides() == 4)
         
     def test_file2(self):
         """OpenSong: parse PåEnFjern (danish)"""
         global __ThisDir__
         s = Song()
-        s.FromTextFile("%s/data_text/PåEnFjern.txt"%(__ThisDir__))
-        assert(s.GetTitle() == "På en fjern ensom høj")
-        assert(s.GetAuthorList(True) == "Georg Bennard")
-        assert(s.GetCopyright() == "")
-        assert(s.GetSongCcliNo() == "")
-        assert(s.GetNumberOfSlides() == 8)
+        s.from_ccli_text_file("%s/data_text/PåEnFjern.txt"%(__ThisDir__))
+        assert(s.get_title() == "På en fjern ensom høj")
+        assert(s.get_author_list(True) == "Georg Bennard")
+        assert(s.get_copyright() == "")
+        assert(s.get_song_cclino() == "")
+        assert(s.get_number_of_slides() == 8)
 
 if '__main__' == __name__:
     # for local debugging
