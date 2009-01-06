@@ -27,6 +27,8 @@ from songbookform import SongBookForm
 
 from editsongdialog import Ui_EditSongDialog
 
+from openlp.plugins.songs.lib.songtable import Author
+
 class EditSongForm(QWidget, Ui_EditSongDialog):
     """
     Class documentation goes here.
@@ -46,9 +48,8 @@ class EditSongForm(QWidget, Ui_EditSongDialog):
     def initialise(self):
         list = self.songmanager.get_authors()
         self.AuthorsSelectionComboItem.clear()
-        #print list
-        for l in list:
-            self.AuthorsSelectionComboItem.addItem(str(l[1]))
+        for i in list:
+            self.AuthorsSelectionComboItem.addItem( i.get_author_name())
 
     def load_song(self, songid):
         self.songid = songid

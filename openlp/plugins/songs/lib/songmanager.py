@@ -23,7 +23,6 @@ import sys
 
 from songDBimpl import SongDBImpl
 
-
 import logging
 
 class SongManager():
@@ -40,6 +39,7 @@ class SongManager():
         """
         self.config = config
         log.debug( "Song Initialising")
+        self.songDBCache = None
         self.authorcache = None
         self.songPath = self.config.get_data_path()
         self.songSuffix = self.config.get_config("suffix name", u'olp3,sqlite')
@@ -49,9 +49,14 @@ class SongManager():
         files = self.config.get_files()
         if len(files) > 0:
             log.debug("Song File %s",  files )
-            self.songDBCache = SongDBImpl(self.songPath, self.songSuffix)
+            self.songDBCache = SongDBImpl(self.songPath,files[0],  self.songSuffix)
 
         log.debug( "Song Initialised")
+        
+    def have_song_database(self):
+        if self.songDBCache == None:
+            return False
+        return True
 
     def process_dialog(self, dialogobject):
         self.dialogobject = dialogobject
