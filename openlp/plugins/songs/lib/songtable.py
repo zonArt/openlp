@@ -17,7 +17,6 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 class Author(object):
     def __init__(self, authorname, first_name, last_name):
-        #self.authorid = authorid
         self.authorname =authorname
         self.first_name =first_name
         self.last_name =last_name                

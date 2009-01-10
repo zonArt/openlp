@@ -82,7 +82,7 @@ class TestBibleManager:
 
     def testGetBibleBooks(self):
         log.debug( "\n.......testGetBibleBooks")
-        c = self.bm.get_bible_books_full("NIV")
+        c = self.bm.get_bible_books("NIV")
         for c1 in c:
             log.debug( c1)
             assert(c1 in c)

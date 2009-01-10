@@ -25,7 +25,8 @@ from openlp.core.resources import *
 from openlp.core.lib import Plugin,PluginUtils,  MediaManagerItem
 from forms import EditSongForm, OpenLPImportForm, OpenSongImportForm, \
                   OpenLPExportForm, OpenSongExportForm
-from openlp.plugins.songs.lib import SongManager                  
+from openlp.plugins.songs.lib import SongManager
+from openlp.plugins.songs.lib.classes import *
 
 class SongsPlugin(Plugin, PluginUtils):
     global log
@@ -46,7 +47,6 @@ class SongsPlugin(Plugin, PluginUtils):
         self.icon.addPixmap(QtGui.QPixmap(':/media/media_song.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.songmanager = SongManager(self.config)
-        self.searchresults = {} # place to store the search results 
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
@@ -210,18 +210,19 @@ class SongsPlugin(Plugin, PluginUtils):
 
     def onSearchTextButton(self):
         searchtext = str(self.SearchTextEdit.displayText() )
+        searchresults  = []
         ct = self.SearchTypeComboBox.currentText()
         if self.SearchTypeComboBox.currentText()=="Titles":
             log.debug("Titles Search")
-            self.searchresults = self.songmanager.get_song_from_title(searchtext)
+            searchresults = self.songmanager.get_song_from_title(searchtext)
         elif self.SearchTypeComboBox.currentText()=="Lyrics":
             log.debug("Lyrics Search")            
-            self.searchresults = self.songmanager.get_song_from_lyrics(searchtext)
+            searchresults = self.songmanager.get_song_from_lyrics(searchtext)
         elif self.SearchTypeComboBox.currentText()=="Authors":
             log.debug("Authors Search")            
-            self.searchresults = self.songmanager.get_song_from_author(searchtext)    
+            searchresults = self.songmanager.get_song_from_author(searchtext)    
 
-        self._display_results()
+        self._display_results(searchresults)
 
     def onSongSelected(self, item):
         print item
@@ -259,21 +260,22 @@ class SongsPlugin(Plugin, PluginUtils):
     def onExportOpenSongItemClicked(self):
         self.opensong_export_form.show()
         
-    def _display_results(self):
+    def _display_results(self, searchresults):
         log.debug("_search results")
         self.SongListView.clear() # clear the results
         self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Song Name","Author"]))
         self.SongListView.setVerticalHeaderLabels(QtCore.QStringList([""]))          
         self.SongListView.setRowCount(0)
-        log.debug("Records returned from search %s", len(self.searchresults))
-        for id,  txt, name in self.searchresults:
-            c = self.SongListView.rowCount()
-            self.SongListView.setRowCount(c+1)
-            twi = QtGui.QTableWidgetItem(str(id))
-            self.SongListView.setItem(c , 0, twi)  
-            twi = QtGui.QTableWidgetItem(str(txt))
-            self.SongListView.setItem(c , 1, twi)  
-            twi = QtGui.QTableWidgetItem(str(name))
-            self.SongListView.setItem(c , 2, twi)
-            self.SongListView.setRowHeight(c, 20)
+        log.debug("Records returned from search %s", len(searchresults))
+        for song in searchresults:
+            for author in song.authors:
+                c = self.SongListView.rowCount()
+                self.SongListView.setRowCount(c+1)
+                twi = QtGui.QTableWidgetItem(str(song.id))
+                self.SongListView.setItem(c , 0, twi)  
+                twi = QtGui.QTableWidgetItem(str(song.title))
+                self.SongListView.setItem(c , 1, twi)  
+                twi = QtGui.QTableWidgetItem(str(author.display_name))
+                self.SongListView.setItem(c , 2, twi)
+                self.SongListView.setRowHeight(c, 20)
             

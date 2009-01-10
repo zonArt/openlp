@@ -46,10 +46,10 @@ class BibleManager():
         self.bibleHTTPCache = {} # dict of bible http readers
         self.biblePath = self.config.get_data_path()
         self.proxyname = self.config.get_config("proxy name") #get proxy name for screen
-        self.bibleSuffix = self.config.get_config("suffix name", u'bible3,sqlite')
+        self.bibleSuffix = "sqlite"
         self.dialogobject = None
         
-        files = self.config.get_files()
+        files = self.config.get_files(self.bibleSuffix)
         log.debug("Bible Files %s",  files )
 
         for f in files:

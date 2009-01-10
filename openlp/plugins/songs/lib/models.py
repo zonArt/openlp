@@ -30,12 +30,12 @@ def init_models(url):
                                           bind=create_engine(url)))
 
 
-mapper(Author, authors_table)
-mapper(Book, song_books_table)
-mapper(Song, songs_table,
-       properties={'authors': relation(Author, backref='songs',
-                                       secondary=authors_songs_table),
-                   'book': relation(Book, backref='songs'),
-                   'topics': relation(Topic, backref='songs',
-                                      secondary=songs_topics_table)})
-mapper(Topic, topics_table)
+#mapper(Author, authors_table)
+#mapper(Book, song_books_table)
+#mapper(Song, songs_table,
+#       properties={'authors': relation(Author, backref='songs',
+#                                       secondary=authors_songs_table),
+#                   'book': relation(Book, backref='songs'),
+#                   'topics': relation(Topic, backref='songs',
+#                                      secondary=songs_topics_table)})
+#mapper(Topic, topics_table)

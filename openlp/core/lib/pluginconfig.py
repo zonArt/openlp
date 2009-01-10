@@ -64,9 +64,9 @@ class PluginConfig(object):
     def set_data_path(self, path):
         return self.set_config('data path', os.path.basename(path))
         
-    def get_files(self, default_suffixes=None):
+    def get_files(self, suffix=None):
         returnfiles = []        
-        suffix = self.get_config("suffix name", default_suffixes)
+        #suffix = self.get_config("suffix name", default_suffixes)
         try:
             files = os.listdir(self.get_data_path()) 
         except:

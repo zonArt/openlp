@@ -53,7 +53,7 @@ class TestBibleManager:
     def testRegisterOSISBibleFiles(self):
         # Register a bible from files
         log.debug("\n.......testRegisterOSISBibleFiles")
-        self.bm.register_OSIS_file_bible("asv",'asv.osis')
+        self.bm.register_osis_file_bible("asv",'asv.osis')
         b = self.bm.get_bibles()
         for b1 in b:
             log.debug( b1)

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>734</width>
-    <height>761</height>
+    <height>756</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -63,16 +63,6 @@
      <item row="3" column="0">
       <widget class="QLineEdit" name="AlternativeEdit"/>
      </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="VerseOrderLabel">
-       <property name="text">
-        <string>Verse Order:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLineEdit" name="VerseOrderEdit"/>
-     </item>
      <item row="6" column="0">
       <widget class="QLabel" name="LyricsLabel">
        <property name="text">
@@ -87,6 +77,16 @@
        </property>
        <property name="acceptRichText">
         <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLineEdit" name="VerseOrderEdit"/>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="VerseOrderLabel">
+       <property name="text">
+        <string>Verse Order:</string>
        </property>
       </widget>
      </item>
@@ -351,17 +351,13 @@
        </widget>
       </item>
      </layout>
-     <zorder>CopyrightEditItem</zorder>
-     <zorder>CCLLabel</zorder>
-     <zorder>CCLNumberEdit</zorder>
-     <zorder>CopyrightInsertItem</zorder>
     </widget>
    </widget>
    <widget class="QGroupBox" name="ThemeGroupBox">
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>540</y>
+      <y>630</y>
       <width>711</width>
       <height>66</height>
      </rect>
@@ -385,6 +381,24 @@
         <string>Add a Theme</string>
        </property>
       </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QGroupBox" name="CommentGroup">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>530</y>
+      <width>701</width>
+      <height>111</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Comments</string>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_5">
+     <item row="0" column="0">
+      <widget class="QTextEdit" name="CommentsEdit"/>
      </item>
     </layout>
    </widget>

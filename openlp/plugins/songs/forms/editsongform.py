@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-
+from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QWidget
 from PyQt4.QtCore import pyqtSignature
 
@@ -44,20 +44,42 @@ class EditSongForm(QWidget, Ui_EditSongDialog):
         self.topics_form = TopicsForm(self.songmanager)
         self.song_book_form = SongBookForm(self.songmanager)           
         self.initialise()
+
+        self.AuthorsListView.setColumnCount(2)
+        self.AuthorsListView.setColumnHidden(0, True)
+        self.AuthorsListView.setColumnWidth(1, 200)
+        self.AuthorsListView.setShowGrid(False)
+        self.AuthorsListView.setSortingEnabled(False)        
+        self.AuthorsListView.setAlternatingRowColors(True)
+        
     
     def initialise(self):
         list = self.songmanager.get_authors()
         self.AuthorsSelectionComboItem.clear()
         for i in list:
-            self.AuthorsSelectionComboItem.addItem( i.get_author_name())
+            self.AuthorsSelectionComboItem.addItem( i.display_name)
 
     def load_song(self, songid):
         self.songid = songid
         song = self.songmanager.get_song(songid)
-           
-        self.TitleEditItem.setText(song[1])        
-        self.LyricsTextEdit.setText(song[2])
-        self.CopyrightEditItem.setText(song[3])
+        self.TitleEditItem.setText(song.title)        
+        self.LyricsTextEdit.setText(song.lyrics)
+        self.CopyrightEditItem.setText(song.copyright)
+
+        self.AuthorsListView.clear() # clear the results
+        self.AuthorsListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Author"]))
+        self.AuthorsListView.setVerticalHeaderLabels(QtCore.QStringList([""]))          
+        self.AuthorsListView.setRowCount(0)
+
+        for author in song.authors:
+            c = self.AuthorsListView.rowCount()
+            self.AuthorsListView.setRowCount(c+1)
+            twi = QtGui.QTableWidgetItem(str(author.id))
+            self.AuthorsListView.setItem(c , 0, twi)  
+            twi = QtGui.QTableWidgetItem(str(author.display_name))
+            self.AuthorsListView.setItem(c , 1, twi)  
+            self.AuthorsListView.setRowHeight(c, 20)
+                        
 
     @pyqtSignature("")
     def on_AddAuthorsButton_clicked(self):

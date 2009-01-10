@@ -25,31 +25,29 @@ import string
 
 from sqlalchemy import  *
 from sqlalchemy.sql import select
-from sqlalchemy.orm import sessionmaker, mapper
-from sqlalchemy.types import Text, Unicode
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation, clear_mappers
 
+from openlp.plugins.songs.lib.tables import *
+from openlp.plugins.songs.lib.classes import *
 from openlp.core.utils import ConfigHelper
-
-from songtable import Author
-
-import logging
 
 class SongDBException(Exception):
     pass
 class SongInvalidDatabaseError(Exception):
     pass
     
-metadata = MetaData()
+clear_mappers()  # some reason we need this
+mapper(Author, authors_table)
+mapper(Book, song_books_table)
+mapper(Song, songs_table,
+       properties={'authors': relation(Author, backref='songs',
+                                       secondary=authors_songs_table),
+                   'book': relation(Book, backref='songs'),
+                   'topics': relation(Topic, backref='songs',
+                                      secondary=songs_topics_table)})
+mapper(Topic, topics_table)        
 
-author_table = Table('authors', metadata, 
-    Column('authorid', Integer, primary_key=True), 
-    Column('authorname', Unicode(length=40)), 
-    Column('first_name', Unicode(length=40)), 
-    Column('last_name',Unicode(length=40)),     
-)
-    
-mapper(Author,author_table)
-  
 class SongDBImpl():
     global log     
     log=logging.getLogger("SongDBImpl")
@@ -66,22 +64,16 @@ class SongDBImpl():
         else:
             raise SongInvalidDatabaseError("Database not mysql or sqlite")
         self.db.echo = True
-        #self.db.convert_unicode=False
         metadata.bind = self.db
         metadata.bind.echo = False
-        self.Session = sessionmaker(autoflush=True, autocommit=False)
+        self.Session = scoped_session(sessionmaker(autoflush=True, autocommit=False))
         self.Session.configure(bind=self.db)
-        #self.authors_table = Table('authors', metadata, autoload=True)
-        #self.settings = Table('settings', metadata, autoload=True)
-        #self.songauthors = Table('songauthors', metadata, autoload=True)
-        #self.songs = Table('songs', metadata, autoload=True)        
         
-    def add_author(self, author_name, first_name,  last_name):
-        log.debug( "add_author %s,%s,%s", author_name, first_name, last_name)
+    def save_author(self, author):
+        log.debug( "add_author %s,%s,%s", author.display_name, author.first_name, author.last_name)
         metadata.bind.echo = True
         session = self.Session()
-        authorsmeta = Author(authorname=author_name, first_name=first_name,last_name=last_name)
-        session.add(authorsmeta)
+        session.save_or_update(author)
         session.commit()
       
     def save_meta(self, key, value):
@@ -102,27 +94,37 @@ class SongDBImpl():
 
     def get_song(self, songid):
         log.debug( "get_song ") 
-        metadata.bind.echo = True
-        s = text (""" select * FROM songs where songid = :c """)
-        return self.db.execute(s, c=songid).fetchone()
+#        metadata.bind.echo = True
+#        s = text (""" select * FROM songs where songid = :c """)
+#        return self.db.execute(s, c=songid).fetchone()
+        metadata.bind.echo = False
+        session = self.Session()
+        return session.query(Song).get(songid)
         
     def get_authors(self):
         log.debug( "get_authors ") 
         metadata.bind.echo = False
         session = self.Session()
-        return session.query(Author).order_by(Author.authorname).all()
+        return session.query(Author).order_by(Author.display_name).all()
         
     def get_author(self, authorid):
         log.debug( "get_author %s" ,  authorid) 
-        metadata.bind.echo = True
-        s = text (""" select * FROM authors where authorid = :i """)
-        return self.db.execute(s, i=authorid).fetchone()
+#        metadata.bind.echo = True
+#        s = text (""" select * FROM authors where authorid = :i """)
+#        return self.db.execute(s, i=authorid).fetchone()
+        session = self.Session()
+        return session.query(Author).get(authorid)
+
         
     def delete_author(self, authorid):
         log.debug( "delete_author %s" ,  authorid) 
-        metadata.bind.echo = True
-        s = text (""" delete FROM authors where authorid = :i """)
-        return self.db.execute(s, i=authorid)
+#        metadata.bind.echo = True
+#        s = text (""" delete FROM authors where authorid = :i """)
+#        return self.db.execute(s, i=authorid)
+        session = self.Session()
+        author = session.query(Author).get(authorid)
+        session.delete(author)
+        session.commit()
         
     def update_author(self, authorid, author_name, first_name, last_name):
         log.debug( "update_author %s,%s,%s,%s" ,  authorid, author_name, first_name, last_name) 
@@ -133,7 +135,7 @@ class SongDBImpl():
     def get_song_authors_for_author(self, authorid):
         log.debug( "get_song_authors for author %s ", authorid) 
         metadata.bind.echo = False        
-        s = text (""" select * FROM songauthors where authorid = :c """)
+        s = text (""" select * FROM authors_songs where author_id = :c """)
         return self.db.execute(s, c=authorid).fetchall()
 
     def get_song_authors_for_song(self, songid):
@@ -145,18 +147,24 @@ class SongDBImpl():
     def get_song_from_lyrics(self,searchtext):
         log.debug( "get_song_from_lyrics %s",searchtext)
         metadata.bind.echo = False
-        searchtext = "%"+searchtext+"%"
-        s = text (""" SELECT s.songid AS songid, s.songtitle AS songtitle, a.authorname AS authorname FROM songs s OUTER JOIN songauthors sa ON s.songid = sa.songid OUTER JOIN authors a ON sa.authorid = a.authorid WHERE s.lyrics LIKE :t ORDER BY s.songtitle ASC """)
-        log.debug("Records returned from search %s", len(self.db.execute(s, t=searchtext).fetchall()))        
-        return self.db.execute(s, t=searchtext).fetchall()
+        searchtext = unicode("%"+searchtext+"%")
+#        s = text (""" SELECT s.songid AS songid, s.songtitle AS songtitle, a.authorname AS authorname FROM songs s OUTER JOIN songauthors sa ON s.songid = sa.songid OUTER JOIN authors a ON sa.authorid = a.authorid WHERE s.lyrics LIKE :t ORDER BY s.songtitle ASC """)
+#        log.debug("Records returned from search %s", len(self.db.execute(s, t=searchtext).fetchall()))        
+#        return self.db.execute(s, t=searchtext).fetchall()
+        metadata.bind.echo = False
+        session = self.Session()
+        return session.query(Song).filter(Song.search_lyrics.like(searchtext)).order_by(Song.title).all()
         
     def get_song_from_title(self,searchtext):
         log.debug( "get_song_from_title %s",searchtext)
+#        metadata.bind.echo = False
+        searchtext = unicode("%"+searchtext+"%")
+#        s = text (""" SELECT s.songid AS songid, s.songtitle AS songtitle, a.authorname AS authorname FROM songs s OUTER JOIN songauthors sa ON s.songid = sa.songid OUTER JOIN authors a ON sa.authorid = a.authorid WHERE s.songtitle LIKE :t ORDER BY s.songtitle ASC """)
+#        log.debug("Records returned from search %s", len(self.db.execute(s, t=searchtext).fetchall()))        
+#        return self.db.execute(s, t=searchtext).fetchall()
         metadata.bind.echo = False
-        searchtext = "%"+searchtext+"%"        
-        s = text (""" SELECT s.songid AS songid, s.songtitle AS songtitle, a.authorname AS authorname FROM songs s OUTER JOIN songauthors sa ON s.songid = sa.songid OUTER JOIN authors a ON sa.authorid = a.authorid WHERE s.songtitle LIKE :t ORDER BY s.songtitle ASC """)
-        log.debug("Records returned from search %s", len(self.db.execute(s, t=searchtext).fetchall()))        
-        return self.db.execute(s, t=searchtext).fetchall()
+        session = self.Session()
+        return session.query(Song).filter(Song.search_title.like(searchtext)).order_by(Song.title).all()
     
     def get_song_from_author(self,searchtext):
         log.debug( "get_song_from_author %s",searchtext)

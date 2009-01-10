@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'editsongdialog.ui'
 #
-# Created: Tue Jan  6 19:54:19 2009
+# Created: Fri Jan  9 18:44:05 2009
 #      by: PyQt4 UI code generator 4.4.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PyQt4 import QtCore, QtGui
 class Ui_EditSongDialog(object):
     def setupUi(self, EditSongDialog):
         EditSongDialog.setObjectName("EditSongDialog")
-        EditSongDialog.resize(734, 761)
+        EditSongDialog.resize(734, 756)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icon/openlp.org-icon-32.bmp"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         EditSongDialog.setWindowIcon(icon)
@@ -41,12 +41,6 @@ class Ui_EditSongDialog(object):
         self.AlternativeEdit = QtGui.QLineEdit(self.TextWidget)
         self.AlternativeEdit.setObjectName("AlternativeEdit")
         self.gridLayout.addWidget(self.AlternativeEdit, 3, 0, 1, 1)
-        self.VerseOrderLabel = QtGui.QLabel(self.TextWidget)
-        self.VerseOrderLabel.setObjectName("VerseOrderLabel")
-        self.gridLayout.addWidget(self.VerseOrderLabel, 4, 0, 1, 1)
-        self.VerseOrderEdit = QtGui.QLineEdit(self.TextWidget)
-        self.VerseOrderEdit.setObjectName("VerseOrderEdit")
-        self.gridLayout.addWidget(self.VerseOrderEdit, 5, 0, 1, 1)
         self.LyricsLabel = QtGui.QLabel(self.TextWidget)
         self.LyricsLabel.setObjectName("LyricsLabel")
         self.gridLayout.addWidget(self.LyricsLabel, 6, 0, 1, 1)
@@ -55,6 +49,12 @@ class Ui_EditSongDialog(object):
         self.LyricsTextEdit.setAcceptRichText(False)
         self.LyricsTextEdit.setObjectName("LyricsTextEdit")
         self.gridLayout.addWidget(self.LyricsTextEdit, 7, 0, 1, 1)
+        self.VerseOrderEdit = QtGui.QLineEdit(self.TextWidget)
+        self.VerseOrderEdit.setObjectName("VerseOrderEdit")
+        self.gridLayout.addWidget(self.VerseOrderEdit, 5, 0, 1, 1)
+        self.VerseOrderLabel = QtGui.QLabel(self.TextWidget)
+        self.VerseOrderLabel.setObjectName("VerseOrderLabel")
+        self.gridLayout.addWidget(self.VerseOrderLabel, 4, 0, 1, 1)
         self.Selectedroup = QtGui.QWidget(self.TopWidget)
         self.Selectedroup.setGeometry(QtCore.QRect(329, 0, 381, 531))
         self.Selectedroup.setObjectName("Selectedroup")
@@ -164,7 +164,7 @@ class Ui_EditSongDialog(object):
         self.CopyrightInsertItem.setObjectName("CopyrightInsertItem")
         self.gridLayout_4.addWidget(self.CopyrightInsertItem, 0, 1, 1, 1)
         self.ThemeGroupBox = QtGui.QGroupBox(self.TopWidget)
-        self.ThemeGroupBox.setGeometry(QtCore.QRect(0, 540, 711, 66))
+        self.ThemeGroupBox.setGeometry(QtCore.QRect(0, 630, 711, 66))
         self.ThemeGroupBox.setObjectName("ThemeGroupBox")
         self.horizontalLayout_2 = QtGui.QHBoxLayout(self.ThemeGroupBox)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
@@ -175,6 +175,14 @@ class Ui_EditSongDialog(object):
         self.ThemeAddItem.setMaximumSize(QtCore.QSize(110, 16777215))
         self.ThemeAddItem.setObjectName("ThemeAddItem")
         self.horizontalLayout_2.addWidget(self.ThemeAddItem)
+        self.CommentGroup = QtGui.QGroupBox(self.TopWidget)
+        self.CommentGroup.setGeometry(QtCore.QRect(10, 530, 701, 111))
+        self.CommentGroup.setObjectName("CommentGroup")
+        self.gridLayout_5 = QtGui.QGridLayout(self.CommentGroup)
+        self.gridLayout_5.setObjectName("gridLayout_5")
+        self.CommentsEdit = QtGui.QTextEdit(self.CommentGroup)
+        self.CommentsEdit.setObjectName("CommentsEdit")
+        self.gridLayout_5.addWidget(self.CommentsEdit, 0, 0, 1, 1)
         self.ButtonBox = QtGui.QDialogButtonBox(EditSongDialog)
         self.ButtonBox.setGeometry(QtCore.QRect(570, 720, 156, 27))
         self.ButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Save)
@@ -189,8 +197,8 @@ class Ui_EditSongDialog(object):
         EditSongDialog.setWindowTitle(QtGui.QApplication.translate("EditSongDialog", "Song Editor", None, QtGui.QApplication.UnicodeUTF8))
         self.TitleLabel.setText(QtGui.QApplication.translate("EditSongDialog", "Title:", None, QtGui.QApplication.UnicodeUTF8))
         self.AlternativeTitleLabel.setText(QtGui.QApplication.translate("EditSongDialog", "Alternative Title:", None, QtGui.QApplication.UnicodeUTF8))
-        self.VerseOrderLabel.setText(QtGui.QApplication.translate("EditSongDialog", "Verse Order:", None, QtGui.QApplication.UnicodeUTF8))
         self.LyricsLabel.setText(QtGui.QApplication.translate("EditSongDialog", "Lyrics:", None, QtGui.QApplication.UnicodeUTF8))
+        self.VerseOrderLabel.setText(QtGui.QApplication.translate("EditSongDialog", "Verse Order:", None, QtGui.QApplication.UnicodeUTF8))
         self.AuthorsGroupBox.setTitle(QtGui.QApplication.translate("EditSongDialog", "Authors", None, QtGui.QApplication.UnicodeUTF8))
         self.AuthorAddtoSongItem.setText(QtGui.QApplication.translate("EditSongDialog", "Add to Song", None, QtGui.QApplication.UnicodeUTF8))
         self.AddAuthorsButton.setText(QtGui.QApplication.translate("EditSongDialog", "Add Authors", None, QtGui.QApplication.UnicodeUTF8))
@@ -208,5 +216,5 @@ class Ui_EditSongDialog(object):
         self.CopyrightInsertItem.setText(QtGui.QApplication.translate("EditSongDialog", "©", None, QtGui.QApplication.UnicodeUTF8))
         self.ThemeGroupBox.setTitle(QtGui.QApplication.translate("EditSongDialog", "Theme", None, QtGui.QApplication.UnicodeUTF8))
         self.ThemeAddItem.setText(QtGui.QApplication.translate("EditSongDialog", "Add a Theme", None, QtGui.QApplication.UnicodeUTF8))
-
+        self.CommentGroup.setTitle(QtGui.QApplication.translate("EditSongDialog", "Comments", None, QtGui.QApplication.UnicodeUTF8))
 

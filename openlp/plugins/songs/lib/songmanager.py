@@ -42,11 +42,11 @@ class SongManager():
         self.songDBCache = None
         self.authorcache = None
         self.songPath = self.config.get_data_path()
-        self.songSuffix = self.config.get_config("suffix name", u'olp3,sqlite')
+        self.songSuffix = "sqlite"
         log.debug("Song Path %s and suffix %s",  self.songPath, self.songSuffix )
         self.dialogobject = None
         
-        files = self.config.get_files()
+        files = self.config.get_files(self.songSuffix)
         if len(files) > 0:
             log.debug("Song File %s",  files )
             self.songDBCache = SongDBImpl(self.songPath,files[0],  self.songSuffix)
@@ -81,14 +81,11 @@ class SongManager():
         """
         return self.songDBCache.get_author(authorid)
 
-    def save_author(self, author_name, first_name, last_name, id = 0):
+    def save_author(self, author):
         """
         Save the Author and refresh the cache
         """
-        if id == 0:
-            self.songDBCache.add_author(author_name, first_name,  last_name)
-        else: 
-            self.songDBCache.update_author(id, author_name, first_name,  last_name)
+        self.songDBCache.save_author(author)
         self.get_authors(True) # Updates occured refresh the cache
         return True
         
