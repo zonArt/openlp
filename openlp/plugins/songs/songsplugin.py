@@ -26,7 +26,7 @@ from openlp.core.lib import Plugin,PluginUtils,  MediaManagerItem
 from forms import EditSongForm, OpenLPImportForm, OpenSongImportForm, \
                   OpenLPExportForm, OpenSongExportForm
 from openlp.plugins.songs.lib import SongManager
-from openlp.plugins.songs.lib.classes import *
+from openlp.plugins.songs.lib.songclasses import *
 
 class SongsPlugin(Plugin, PluginUtils):
     global log

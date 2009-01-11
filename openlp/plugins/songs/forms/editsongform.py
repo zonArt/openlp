@@ -27,7 +27,7 @@ from songbookform import SongBookForm
 
 from editsongdialog import Ui_EditSongDialog
 
-from openlp.plugins.songs.lib.songtable import Author
+from openlp.plugins.songs.lib.songtable import *
 
 class EditSongForm(QWidget, Ui_EditSongDialog):
     """

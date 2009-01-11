@@ -26,10 +26,11 @@ import string
 from sqlalchemy import  *
 from sqlalchemy.sql import select
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation, clear_mappers
+from sqlalchemy.orm import scoped_session, sessionmaker
 
-from openlp.plugins.songs.lib.tables import *
-from openlp.plugins.songs.lib.classes import *
+from openlp.plugins.songs.lib.songtables import *
+from openlp.plugins.songs.lib.songclasses import *
+
 from openlp.core.utils import ConfigHelper
 
 class SongDBException(Exception):
@@ -37,17 +38,6 @@ class SongDBException(Exception):
 class SongInvalidDatabaseError(Exception):
     pass
     
-clear_mappers()  # some reason we need this
-mapper(Author, authors_table)
-mapper(Book, song_books_table)
-mapper(Song, songs_table,
-       properties={'authors': relation(Author, backref='songs',
-                                       secondary=authors_songs_table),
-                   'book': relation(Book, backref='songs'),
-                   'topics': relation(Topic, backref='songs',
-                                      secondary=songs_topics_table)})
-mapper(Topic, topics_table)        
-
 class SongDBImpl():
     global log     
     log=logging.getLogger("SongDBImpl")
@@ -118,13 +108,14 @@ class SongDBImpl():
         
     def delete_author(self, authorid):
         log.debug( "delete_author %s" ,  authorid) 
-#        metadata.bind.echo = True
+        metadata.bind.echo = True
 #        s = text (""" delete FROM authors where authorid = :i """)
 #        return self.db.execute(s, i=authorid)
         session = self.Session()
         author = session.query(Author).get(authorid)
         session.delete(author)
         session.commit()
+ 
         
     def update_author(self, authorid, author_name, first_name, last_name):
         log.debug( "update_author %s,%s,%s,%s" ,  authorid, author_name, first_name, last_name) 

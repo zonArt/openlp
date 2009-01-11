@@ -40,7 +40,6 @@ class AuthorsForm(QDialog, Ui_AuthorsDialog):
         self.AuthorListView.setColumnHidden(0, True)
         self.AuthorListView.setColumnWidth(1, 300)
         self.AuthorListView.setHorizontalHeaderLabels(QtCore.QStringList([" ","Author"])) 
-        self.candelete = False
         self.currentrow = 0
         self.author = None
         
@@ -72,10 +71,9 @@ class AuthorsForm(QDialog, Ui_AuthorsDialog):
         """
         Delete the author is the Author is not attached to any songs
         """
-        if self.candelete == True:
-            self.songmanager.delete_author(self.author.id)
-            self.on_ClearButton_clicked()
-            self.load_form()            
+        self.songmanager.delete_author(self.author.id)
+        self.on_ClearButton_clicked()
+        self.load_form()            
     
     @pyqtSignature("")
     def on_AddUpdateButton_clicked(self):
@@ -100,14 +98,15 @@ class AuthorsForm(QDialog, Ui_AuthorsDialog):
         self.DisplayEdit.setText("")
         self.FirstNameEdit.setText("")
         self.LastNameEdit.setText("")
-        self.MessageLabel.setText("")        
-        self.candelete = True
+        self.MessageLabel.setText("")
+        self.DeleteButton.setEnabled(True)                    
         self.author = None
     
     @pyqtSignature("QTableWidgetItem*")
     def on_AuthorListView_itemClicked(self, item):
         """
-        Slot documentation goes here.
+        An Author has been selected display it
+        If the author is attached to a Song prevent delete
         """
         self.currentrow = self.AuthorListView.currentRow()
         id = int(self.AuthorListView.item(self.currentrow, 0).text())
@@ -119,8 +118,7 @@ class AuthorsForm(QDialog, Ui_AuthorsDialog):
         songs = self.songmanager.get_song_authors_for_author(id)
         if len(songs) > 0:
             self.MessageLabel.setText("Author in use 'Delete' is disabled")
-            self.candelete = False
+            self.DeleteButton.setEnabled(False)
         else:
             self.MessageLabel.setText("Author is not used")
-            self.candelete = True
-
+            self.DeleteButton.setEnabled(True) 
