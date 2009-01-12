@@ -65,6 +65,7 @@ class AuthorsForm(QDialog, Ui_AuthorsDialog):
         if self.currentrow > c: # incase we have delete the last row of the table
            self.currentrow = c 
         self.AuthorListView.selectRow(self.currentrow) # set selected row to previous selected row
+        self._validate_form()
 
     @pyqtSignature("")
     def on_DeleteButton_clicked(self):
@@ -73,8 +74,12 @@ class AuthorsForm(QDialog, Ui_AuthorsDialog):
         """
         self.songmanager.delete_author(self.author.id)
         self.on_ClearButton_clicked()
-        self.load_form()            
-    
+        self.load_form()
+        
+    @pyqtSignature("")
+    def on_DisplayEdit_lostFocus(self): 
+        self._validate_form()
+ 
     @pyqtSignature("")
     def on_AddUpdateButton_clicked(self):
         """
@@ -88,6 +93,7 @@ class AuthorsForm(QDialog, Ui_AuthorsDialog):
         self.songmanager.save_author(self.author)
         self.on_ClearButton_clicked()
         self.load_form()
+        self._validate_form()        
         
         
     @pyqtSignature("")
@@ -99,8 +105,9 @@ class AuthorsForm(QDialog, Ui_AuthorsDialog):
         self.FirstNameEdit.setText("")
         self.LastNameEdit.setText("")
         self.MessageLabel.setText("")
-        self.DeleteButton.setEnabled(True)                    
+        self.DeleteButton.setEnabled(False)
         self.author = None
+        self._validate_form()        
     
     @pyqtSignature("QTableWidgetItem*")
     def on_AuthorListView_itemClicked(self, item):
@@ -122,3 +129,10 @@ class AuthorsForm(QDialog, Ui_AuthorsDialog):
         else:
             self.MessageLabel.setText("Author is not used")
             self.DeleteButton.setEnabled(True) 
+        self._validate_form()            
+            
+    def _validate_form(self):
+        if len(self.DisplayEdit.displayText()) == 0: # We need at lease a display name
+            self.AddUpdateButton.setEnabled(False)
+        else:
+            self.AddUpdateButton.setEnabled(True)
