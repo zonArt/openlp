@@ -21,7 +21,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import os, os.path
 import sys
 
-from sqlalchemy.orm import asc, desc, like
+from sqlalchemy import asc, desc
 from openlp.plugins.songs.lib.models import init_models, metadata, session, \
     songs_table, Song, Author, Topic
 
@@ -45,17 +45,17 @@ class SongManager():
         self.config = config
         log.debug( "Song Initialising")
         self.db_url = u''
-        db_type = self.config.get_db_type()
+        db_type = self.config.get_config(u'db type')
         if db_type == u'sqlite':
             self.db_url = u'sqlite://' + self.config.get_data_path() + \
-                u'songs.sqlite'
+                u'/songs.sqlite'
         else:
-            self.db_url = self.config.get_db_type + 'u://' + \
-                self.config.get_db_username + u':' + \
-                self.config.get_db_password + u'@' + \
-                self.config.get_db_hostname + u'/' + \
-                self.config.get_db_database
-        ini_models(self.db_url)
+            self.db_url = db_type + 'u://' + \
+                self.config.get_config(u'db username') + u':' + \
+                self.config.get_config(u'db password') + u'@' + \
+                self.config.get_config(u'db hostname') + u'/' + \
+                self.config.get_config(u'db database')
+        init_models(self.db_url)
         if not songs_table.exists():
             metadata.create_all()
         log.debug( "Song Initialised")
@@ -81,11 +81,14 @@ class SongManager():
         """
         return session.query(Song).filter(search_lyrics.like(u'%' + keywords + u'%'))
 
-    def get_song(self, id):
+    def get_song(self, id=None):
         """
         Returns the details of a song
         """
-        return session.query(Song).get(id)
+        if id is None:
+            return Song()
+        else:
+            return session.query(Song).get(id)
 
     def save_song(self, song):
         """
