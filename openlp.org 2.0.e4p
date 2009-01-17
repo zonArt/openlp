@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.4.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2009-01-03, 01:14:22 -->
+<!-- Saved: 2009-01-17, 13:05:58 -->
 <!-- Copyright (C) 2009 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.4">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -65,9 +65,7 @@
     <Source>openlp/core/test/testplugins/testplugin2/testplugin2.py</Source>
     <Source>openlp/plugins/bibles/bibleplugin.py</Source>
     <Source>openlp/plugins/bibles/forms/bibleimportdialog.py</Source>
-    <Source>openlp/plugins/bibles/forms/bibleimportprogressform.py</Source>
     <Source>openlp/plugins/bibles/forms/bibleimportform.py</Source>
-    <Source>openlp/plugins/bibles/forms/bibleimportprogressdialog.py</Source>
     <Source>openlp/plugins/bibles/lib/biblemanager.py</Source>
     <Source>openlp/plugins/bibles/lib/bibleDBimpl.py</Source>
     <Source>openlp/plugins/bibles/lib/bibleOSISimpl.py</Source>
@@ -113,6 +111,8 @@
     <Source>openlp/migration/migratesongs.py</Source>
     <Source>openlp/migration/display.py</Source>
     <Source>openlp/migration/migratebibles.py</Source>
+    <Source>openlp/plugins/songs/lib/songclasses.py</Source>
+    <Source>openlp/plugins/songs/lib/songtables.py</Source>
   </Sources>
   <Forms>
     <Form>resources/forms/openlpexportform.ui</Form>

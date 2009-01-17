@@ -21,215 +21,121 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import os, os.path
 import sys
 
-from songDBimpl import SongDBImpl
+from sqlalchemy.orm import asc, desc, like
+from openlp.plugins.songs.lib.models import init_models, metadata, session, \
+    songs_table, Song, Author, Topic
 
 import logging
 
 class SongManager():
+    """
+    The Song Manager provides a central location for all database code. This
+    class takes care of connecting to the database and running all the queries.
+    """
+
     global log
     log=logging.getLogger("SongManager")
     log.info("Song manager loaded")
+
     def __init__(self, config):
         """
-        Finds all the bibles defined for the system
-        Creates an Interface Object for each bible containing connection information
-        Throws Exception if no Bibles are found.
-
-        Init confirms the bible exists and stores the database path.
+        Creates the connection to the database, and creates the tables if they
+        don't exist.
         """
         self.config = config
         log.debug( "Song Initialising")
-        self.songDBCache = None
-        self.authorcache = None
-        self.songPath = self.config.get_data_path()
-        self.songSuffix = "sqlite"
-        log.debug("Song Path %s and suffix %s",  self.songPath, self.songSuffix )
-        self.dialogobject = None
-        
-        files = self.config.get_files(self.songSuffix)
-        if len(files) > 0:
-            log.debug("Song File %s",  files )
-            self.songDBCache = SongDBImpl(self.songPath,files[0],  self.songSuffix)
-
+        self.db_url = u''
+        db_type = self.config.get_db_type()
+        if db_type == u'sqlite':
+            self.db_url = u'sqlite://' + self.config.get_data_path() + \
+                u'songs.sqlite'
+        else:
+            self.db_url = self.config.get_db_type + 'u://' + \
+                self.config.get_db_username + u':' + \
+                self.config.get_db_password + u'@' + \
+                self.config.get_db_hostname + u'/' + \
+                self.config.get_db_database
+        ini_models(self.db_url)
+        if not songs_table.exists():
+            metadata.create_all()
         log.debug( "Song Initialised")
-        
-    def have_song_database(self):
-        if self.songDBCache == None:
-            return False
-        return True
 
     def process_dialog(self, dialogobject):
         self.dialogobject = dialogobject
 
-    def get_song(self, songid):
+    def get_songs(self):
         """
         Returns the details of a song
         """
-        return self.songDBCache.get_song(songid)
-    
-    def get_authors(self, reload=False):
+        return session.query(Song).order_by(title).all()
+
+    def search_song_title(self, keywords):
+        """
+        Searches the song title for keywords.
+        """
+        return session.query(Song).filter(search_title.like(u'%' + keywords + u'%'))
+
+    def search_song_lyrics(self, keywords):
+        """
+        Searches the song lyrics for keywords.
+        """
+        return session.query(Song).filter(search_lyrics.like(u'%' + keywords + u'%'))
+
+    def get_song(self, id):
+        """
+        Returns the details of a song
+        """
+        return session.query(Song).get(id)
+
+    def save_song(self, song):
+        """
+        Saves a song to the database
+        """
+        try:
+            session.add(song)
+            session.commit()
+            return True
+        except:
+            return False
+
+    def delete_song(self, song):
+        try:
+            session.delete(song)
+            session.commit()
+            return True
+        except:
+            return False
+
+    def get_authors(self):
         """
         Returns a list of all the authors
         """
-        if self.authorcache == None or reload == True:
-            self.authorcache = self.songDBCache.get_authors()
-        return self.authorcache
-        
-    def get_author(self, authorid):
+        return session.query(Author).order_by(display_name).all()
+
+    def get_author(self, id):
         """
         Details of the Author
         """
-        return self.songDBCache.get_author(authorid)
+        return session.query(Author).get(id)
 
     def save_author(self, author):
         """
         Save the Author and refresh the cache
         """
-        self.songDBCache.save_author(author)
-        self.get_authors(True) # Updates occured refresh the cache
-        return True
-        
+        try:
+            session.add(author)
+            session.commit()
+            return True
+        except:
+            return False
+
     def delete_author(self, authorid):
         """
         Delete the author and refresh the author cache
         """
-        self.songDBCache.delete_author(authorid)        
-        self.get_authors(True) # Updates occured refresh the cache
-        return True
-
-    def get_song_authors_for_author(self, authorid):
-        """
-        Returns the details of a song
-        """
-        return self.songDBCache.get_song_authors_for_author(authorid)        
-        
-    def get_song_authors_for_song(self, songid):
-        """
-        Returns the details of a song
-        """
-        return self.songDBCache.get_song_authors_for_song(songid)        
-
-    def get_bible_books(self,bible):
-        """
-        Returns a list of the books of the bible from the database
-        """
-        log.debug("get_bible_books %s", bible)
-        return self.bibleDBCache[bible].get_bible_books()
-
-    def get_book_chapter_count(self, bible,  book):
-        """
-        Returns the number of Chapters for a given book
-        """
-        log.debug( "get_book_chapter_count %s,%s", bible, book)
-        return self.bibleDBCache[bible].get_max_bible_book_chapter(book)
-
-    def get_book_verse_count(self, bible, book, chapter):
-        """
-        Returns all the number of verses for a given
-        book and chapterMaxBibleBookVerses
-        """
-        log.debug( "get_book_verse_count %s,%s,%s", bible, book,  chapter)
-        return self.bibleDBCache[bible].get_max_bible_book_verses(book, chapter)
-
-    def get_verse_from_text(self, bible, versetext):
-        """
-        Returns all the number of verses for a given
-        book and chapterMaxBibleBookVerses
-        """
-        log.debug( "get_verses_from_text %s,%s", bible, versetext)
-        return self.bibleDBCache[bible].get_verses_from_text(versetext)
-
-    def save_meta_data(self, bible, version, copyright, permissions):
-        """
-        Saves the bibles meta data
-        """
-        log.debug( "save_meta %s,%s, %s,%s", bible,  version, copyright, permissions)
-        self.bibleDBCache[bible].save_meta("Version", version)
-        self.bibleDBCache[bible].save_meta("Copyright", copyright)
-        self.bibleDBCache[bible].save_meta("Permissins", permissions)
-
-    def get_meta_data(self, bible, key):
-        """
-        Returns the meta data for a given key
-        """
-        log.debug( "get_meta %s,%s", bible,  key)
-        self.bibleDBCache[bible].get_meta(key)
-
-    def get_verse_text(self, bible, bookname, schapter, echapter, sverse, everse = 0 ):
-        """
-        Returns a list of verses for a given Book, Chapter and ranges of verses.
-        If the end verse(everse) is less then the start verse(sverse)
-        then only one verse is returned
-        bible        - Which bible to use.
-        Rest can be guessed at !
-        """
-        text  = []
-        #log.debug( self.bibleDBCache)
-        #log.debug( self.bibleHTTPCache)
-        log.debug( "get_verse_text %s,%s,%s,%s,%s,%s",  bible,bookname,  schapter,echapter, sverse, everse)
-#        bookid = self.booksOfBible[bookname] # convert to id  ie Genesis --> 1  Revelation --> 73
-#        # SORT OUT BOOKNAME BOOK ID.
-#        # NAME COMES IN TO ID AND BACK TO NAME ?
-#        c = self.bibleDBCache[bible].getBibleChapter(bookname, chapter) # check to see if book/chapter exists
-#        bookabbrev = ""
-#        log.debug( "Bible Chapter %s", c )
-#        if not c:
-#            self._loadBook(bible,bookid, bookname, bookabbrev)
-#            self._loadChapter(bible, bookid,bookname, chapter)
-        if schapter == echapter:
-            text = self.bibleDBCache[bible].get_bible_text(bookname, schapter, sverse, everse)
-        else:
-            for i in range (schapter, echapter + 1):
-                if i == schapter:
-                    start = sverse
-                    end = self.get_book_verse_count(bible, bookname,i )[0]
-                elif i == echapter:
-                    start = 1
-                    end = everse
-                else:
-                    start = 1
-                    end = self.get_book_verse_count(bible, bookname,i )[0]
-
-                txt = self.bibleDBCache[bible].get_bible_text(bookname, i, start, end)
-                text.extend(txt)
-        return text
-
-    def _load_book(self, bible, bookid, bookname, bookabbrev):
-        log.debug( "load_book %s,%s,%s,%s", bible, bookid, bookname, bookabbrev)
-        cl = self.bibleDBCache[bible].get_bible_book(bookname)
-        log.debug( "get bible book %s" , cl)
-        if not cl :
-            self.bibleDBCache[bible].create_book(bookid, bookname, bookabbrev)
-
-    def _loadChapter(self, bible, bookid, bookname, chapter):
-        log.debug( "load_chapter %s,%s,%s,%s", bible, bookid,bookname, chapter)
-        try :
-            chaptlist = self.bibleHTTPCache[bible].get_bible_chapter(bible, bookid,bookname, chapter)
-            self.bibleDBCache[bible].create_chapter(bookname, chapter, chaptlist)
-        except :
-            log.error("Errow thrown %s", sys.exc_info()[1])
-
-    def _is_new_bible(self, name):
-        """
-        Check cache to see if new bible
-        """
-        for b ,  o in self.bibleDBCache.iteritems():
-            log.debug( b )
-            if b == name :
-                return False
-        return True
-        
-    def get_song_from_title(self,searchtext):
-        log.debug("get song from title %s", searchtext)
-        return self.songDBCache.get_song_from_title(searchtext)
-        
-    def get_song_from_lyrics(self,searchtext):
-        log.debug("get song from lyrics %s", searchtext)        
-        return self.songDBCache.get_song_from_lyrics(searchtext) 
-                
-    def get_song_from_author(self,searchtext):
-        log.debug("get song from author %s", searchtext)        
-        return self.songDBCache.get_song_from_author(searchtext)        
-        
-    def dump_songs(self):
-        self.songDBCache.dump_songs()
+        try:
+            session.delete(author)
+            session.commit()
+            return True
+        except:
+            return False

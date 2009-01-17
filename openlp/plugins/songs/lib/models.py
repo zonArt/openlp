@@ -23,10 +23,10 @@ from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation
 from openlp.plugins.songs.lib.tables import *
 from openlp.plugins.songs.lib.classes import *
 
-Session = None
+session = None
 
 def init_models(url):
-    Session = scoped_session(sessionmaker(autoflush=True, autocommit=False,
+    session = scoped_session(sessionmaker(autoflush=True, autocommit=False,
                                           bind=create_engine(url)))
 
 

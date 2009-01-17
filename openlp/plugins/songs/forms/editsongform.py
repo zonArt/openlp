@@ -27,7 +27,7 @@ from songbookform import SongBookForm
 
 from editsongdialog import Ui_EditSongDialog
 
-from openlp.plugins.songs.lib.songtable import *
+from openlp.plugins.songs.lib.models import Session, Song, Author, Topic
 
 class EditSongForm(QWidget, Ui_EditSongDialog):
     """
@@ -42,18 +42,18 @@ class EditSongForm(QWidget, Ui_EditSongDialog):
         self.songmanager = songmanager
         self.authors_form = AuthorsForm(self.songmanager)
         self.topics_form = TopicsForm(self.songmanager)
-        self.song_book_form = SongBookForm(self.songmanager)           
+        self.song_book_form = SongBookForm(self.songmanager)
         self.initialise()
 
         self.AuthorsListView.setColumnCount(2)
         self.AuthorsListView.setColumnHidden(0, True)
         self.AuthorsListView.setColumnWidth(1, 200)
         self.AuthorsListView.setShowGrid(False)
-        self.AuthorsListView.setSortingEnabled(False)        
+        self.AuthorsListView.setSortingEnabled(False)
         self.AuthorsListView.setAlternatingRowColors(True)
-        self.savebutton = self.ButtonBox.button(QtGui.QDialogButtonBox.Save)        
-        
-    
+        self.savebutton = self.ButtonBox.button(QtGui.QDialogButtonBox.Save)
+
+
     def initialise(self):
         list = self.songmanager.get_authors()
         self.AuthorsSelectionComboItem.clear()
@@ -66,23 +66,23 @@ class EditSongForm(QWidget, Ui_EditSongDialog):
         else:
             self.songid = songid
             self.song = self.songmanager.get_song(songid)
-        self.TitleEditItem.setText(self.song.title)        
+        self.TitleEditItem.setText(self.song.title)
         self.LyricsTextEdit.setText(self.song.lyrics)
         self.CopyrightEditItem.setText(self.song.copyright)
 
         self.AuthorsListView.clear() # clear the results
         self.AuthorsListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Author"]))
-        self.AuthorsListView.setVerticalHeaderLabels(QtCore.QStringList([""]))          
+        self.AuthorsListView.setVerticalHeaderLabels(QtCore.QStringList([""]))
         self.AuthorsListView.setRowCount(0)
         for author in self.song.authors:
             c = self.AuthorsListView.rowCount()
             self.AuthorsListView.setRowCount(c+1)
             twi = QtGui.QTableWidgetItem(str(author.id))
-            self.AuthorsListView.setItem(c , 0, twi)  
+            self.AuthorsListView.setItem(c , 0, twi)
             twi = QtGui.QTableWidgetItem(str(author.display_name))
-            self.AuthorsListView.setItem(c , 1, twi)  
+            self.AuthorsListView.setItem(c , 1, twi)
             self.AuthorsListView.setRowHeight(c, 20)
-        self._validate_song()                        
+        self._validate_song()
 
     @pyqtSignature("")
     def on_AddAuthorsButton_clicked(self):
@@ -90,7 +90,7 @@ class EditSongForm(QWidget, Ui_EditSongDialog):
         Slot documentation goes here.
         """
         self.authors_form.load_form()
-        self.authors_form.show()   
+        self.authors_form.show()
 
     @pyqtSignature("")
     def on_AddTopicButton_clicked(self):
@@ -100,18 +100,18 @@ class EditSongForm(QWidget, Ui_EditSongDialog):
         self.topics_form.load_form()
         self.topics_form.show()
     @pyqtSignature("")
-    
+
     def on_AddSongBookButton_clicked(self):
         """
         Slot documentation goes here.
         """
         self.song_book_form.load_form()
-        self.song_book_form.show() 
-    
+        self.song_book_form.show()
+
     def _validate_song(self):
         """
         Check the validity of the form. Only display the 'save' if the data can be saved.
-        """        
+        """
         valid = True   # Lets be nice and assume the data is correct.
         if len(self.TitleEditItem.displayText()) == 0: #Song title missing
             valid = False
@@ -122,23 +122,23 @@ class EditSongForm(QWidget, Ui_EditSongDialog):
             valid = False
             self._color_widget(self.CopyrightEditItem, True)
         else:
-            self._color_widget(self.CopyrightEditItem, False)               
-        
+            self._color_widget(self.CopyrightEditItem, False)
+
         if valid:
             self.ButtonBox.addButton(self.savebutton, QtGui.QDialogButtonBox.AcceptRole) # hide the save button tile screen is valid
         else:
             self.ButtonBox.removeButton(self.savebutton) # hide the save button tile screen is valid
-            
+
     def _color_widget(self, slot, invalid):
         r = Qt.QPalette(slot.palette())
         if invalid == True:
             r.setColor(Qt.QPalette.Base, Qt.QColor('darkRed'))
         else:
-            r.setColor(Qt.QPalette.Base, Qt.QColor('white'))        
+            r.setColor(Qt.QPalette.Base, Qt.QColor('white'))
         slot.setPalette(r)
-        slot.setAutoFillBackground(True)         
-        
+        slot.setAutoFillBackground(True)
+
     def on_TitleEditItem_lostFocus(self):
         self._validate_song()
     def on_CopyrightEditItem_lostFocus(self):
-        self._validate_song()        
+        self._validate_song()
