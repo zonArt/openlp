@@ -15,34 +15,38 @@ from PyQt4.QtGui import QDialog
 from PyQt4.QtCore import pyqtSignature
 
 from bibleimportdialog import Ui_BibleImportDialog
+from openlp.core.lib import PluginUtils
 
-class BibleImportForm(QDialog, Ui_BibleImportDialog):
+class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
     """
     Class documentation goes here.
     """
-    def __init__(self, biblemanager = None, parent = None):
+    def __init__(self, config, biblemanager , parent = None):
         """
         Constructor
         """
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.biblemanager = biblemanager
-        
+        self.config = config
    
     @pyqtSignature("")
     def on_VersesFileButton_clicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file','/home')
-        self.VerseLocationEdit.setText(filename) 
+        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir())
+        self.VerseLocationEdit.setText(filename)
+        self._save_last_directory(filename)
         
     @pyqtSignature("")
     def on_BooksFileButton_clicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file','/home')
+        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir())
         self.BooksLocationEdit.setText(filename)
+        self._save_last_directory(filename)        
     
     @pyqtSignature("")
     def on_OsisFileButton_clicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file','/home')
+        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir())
         self.OSISLocationEdit.setText(filename)
+        self._save_last_directory(filename)        
         
     def on_OSISLocationEdit_lostFocus(self):
         if len(self.OSISLocationEdit.displayText() ) > 1:
@@ -77,7 +81,6 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
         self.validate()        
         
     def on_BibleImportButtonBox_clicked(self,button):
-        print button.text()
         if button.text() == "Save":
             if self.biblemanager != None:
                 self.MessageLabel.setText("Import Started")
@@ -89,7 +92,7 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
                 self.MessageLabel.setText("Import Complete")
         elif button.text() == "Cancel":
             self.close()            
-        
+
     def setMax(self, max):
         self.ProgressBar.setMaximum(max)        
 
@@ -100,10 +103,9 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
             self.MessageLabel.setText("Import progressing")            
         self.progress +=1
         self.ProgressBar.setValue(self.progress)  
-        self.update() 
+        self.update()
 
     def validate(self):
-        print "validate"
         valid = False
         validcount = 0
         if len(self.BibleNameEdit.displayText()) > 0:
