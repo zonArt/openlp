@@ -30,7 +30,7 @@ class TestPluginManager:
         # see which ones we've got
         assert ("testplugin1" in names)
         assert ("testplugin2" in names)
-        # and not got!
+        # and not got - it's too deep in the hierarchy!
         assert ("testplugin3" not in names)
         # test that the weighting is done right
         assert p.plugins[0].name=="testplugin2"

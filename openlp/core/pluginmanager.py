@@ -51,18 +51,23 @@ class PluginManager(object):
         """
         Scan the directory dir for objects inheriting from openlp.plugin
         """
-        log.debug("find plugins " + str(dir))
+        startdepth=len(os.path.abspath(dir).split(os.sep))
+        log.debug("find plugins %s at depth %d" %( str(dir), startdepth))
+        
         for root, dirs, files in os.walk(dir):
             for name in files:
                 if name.endswith(".py") and not name.startswith("__"):
                     path = os.path.abspath(os.path.join(root, name))
+                    thisdepth=len(path.split(os.sep))
+                    if thisdepth-startdepth > 2: # skip anything lower down
+                        continue
                     modulename, pyext = os.path.splitext(path)
                     prefix = os.path.commonprefix([self.basepath, path])
                     # hack off the plugin base path
                     modulename = modulename[len(prefix) + 1:]
                     modulename = modulename.replace(os.path.sep, '.')
                     # import the modules
-                    log.debug("Importing %s from %s." % (modulename, path))
+                    log.debug("Importing %s from %s. Depth %d" % (modulename, path, thisdepth))
                     try:
                         __import__(modulename, globals(), locals(), [])
                     except ImportError, e:

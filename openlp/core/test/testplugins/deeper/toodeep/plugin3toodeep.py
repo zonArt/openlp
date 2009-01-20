@@ -1,8 +1,8 @@
 from openlp.core.lib import Plugin
 import logging
 
-class testplugin1(Plugin):
-    name="testplugin1"
+class testplugin3toodeep(Plugin):
+    name="testplugin3"
     version=0
     global log
     log=logging.getLogger("testplugin1")
