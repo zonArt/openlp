@@ -19,8 +19,6 @@ import os, os.path
 import sys
 import urllib2
 
-#mypath=os.path.split(os.path.abspath(__file__))[0]
-#sys.path.insert(0,(os.path.join(mypath, '..', '..', '..')))
 from openlp.plugins.bibles.lib.bibleDBimpl import BibleDBImpl
 
 import logging
@@ -86,10 +84,9 @@ class BibleOSISImpl():
                 p = ref.split(".", 3)  # split u[ the reference
                 if book_ptr != p[0]:
                     book_ptr = p[0]
-                    self.bibledb.create_book(int(p[1]), self.booksOfBible[p[0]] , self.abbrevOfBible[p[0]])
-                    id = self.bibledb.get_bible_book_id(self.booksOfBible[p[0]])
+                    id = self.bibledb.create_book(int(p[1]), self.booksOfBible[p[0]] , self.abbrevOfBible[p[0]])
                     dialogobject.incrementBar()
-                self.bibledb.add_verse(id[0], p[1], p[2], t)
+                self.bibledb.add_verse(id, p[1], p[2], t)
 
 
 

@@ -20,7 +20,7 @@ import os, os.path
 import sys
 import urllib2
 
-from biblecommon import BibleCommon
+from common import BibleCommon
 
 import logging
                 

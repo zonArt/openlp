@@ -18,7 +18,7 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
-from biblecommon import BibleCommon
-from biblemanager import BibleManager
+from common import BibleCommon
+from manager import BibleManager
 
 __all__ = ['BibleCommon', 'BibleManager']

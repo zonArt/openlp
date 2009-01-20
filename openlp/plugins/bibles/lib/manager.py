@@ -25,6 +25,8 @@ from bibleOSISimpl import BibleOSISImpl
 from bibleCSVimpl import BibleCSVImpl
 from bibleDBimpl import BibleDBImpl
 from bibleHTTPimpl import BibleHTTPImpl
+from openlp.plugins.bibles.lib.tables import *
+from openlp.plugins.bibles.lib.classes import *
 
 import logging
 
@@ -55,7 +57,7 @@ class BibleManager():
         for f in files:
             nme = f.split('.')
             bname = nme[0]
-            self.bibleDBCache[bname] = BibleDBImpl(self.biblePath, bname, self.bibleSuffix)
+            self.bibleDBCache[bname] = BibleDBImpl(self.biblePath, bname, self.config)
             biblesource = self.bibleDBCache[bname].get_meta("WEB") # look to see if lazy load bible exists and get create getter.
             if biblesource:
                 nhttp = BibleHTTPImpl()
@@ -79,7 +81,7 @@ class BibleManager():
         """
         log.debug( "register_HTTP_bible %s,%s,%s,%s,%s", biblename, biblesource, proxyurl,  proxyid, proxypass, mode)
         if self._is_new_bible(biblename):
-            nbible = BibleDBImpl(self.biblePath, biblename, self.bibleSuffix) # Create new Bible
+            nbible = BibleDBImpl(self.biblePath, biblename, self.config) # Create new Bible
             nbible.create_tables() # Create Database
             self.bibleDBCache[biblename] = nbible
 
@@ -103,7 +105,7 @@ class BibleManager():
         from scratch.
         """
         if self._is_new_bible(biblename):
-            nbible = BibleDBImpl(self.biblePath, biblename, self.bibleSuffix) # Create new Bible
+            nbible = BibleDBImpl(self.biblePath, biblename, self.config) # Create new Bible
             nbible.create_tables() # Create Database
             self.bibleDBCache[biblename] = nbible # cache the database for use later
             bcsv = BibleCSVImpl(nbible) # create the loader and pass in the database
@@ -117,31 +119,11 @@ class BibleManager():
         """
         log.debug( "register_OSIS_file_bible %s , %s", biblename, osisfile)        
         if self._is_new_bible(biblename):
-            nbible = BibleDBImpl(self.biblePath, biblename, self.bibleSuffix) # Create new Bible
+            nbible = BibleDBImpl(self.biblePath, biblename, self.config) # Create new Bible
             nbible.create_tables() # Create Database
             self.bibleDBCache[biblename] = nbible # cache the database for use later
             bcsv = BibleOSISImpl(self.biblePath, nbible) # create the loader and pass in the database
             bcsv.load_data(osisfile, self.dialogobject)
-
-
-#    def loadBible(self,biblename):
-#        """
-#        Downloads all the books of the bible
-#        and loads it into the database
-#        """
-#        log.debug( "loadBible %s", biblename)
-#        bookabbrev = ""
-#        for bookname in self.listOfBooks:
-#            cptrs = self.booksChapters[ self.booksOfBible[bookname]]
-#            log.debug( "book and chapter %s %s", bookname , self.booksChapters[ self.booksOfBible[bookname]] )
-#            for chptr in range(1 , int(cptrs)):  # loop through all the chapters in book
-#                c = self.bibleDBCache[biblename].getBibleChapter(bookname, chptr) # check to see if book/chapter exists
-#                log.debug( "got chapter %s", c)
-#                if not c:
-#                    bookid = self.booksOfBible[bookname] # convert to id  ie Genesis --> 1  Revelation --> 73
-#                    log.debug( "missing %s,%s", bookname, chptr)
-#                    self._loadBook(biblename,bookid, bookname, bookabbrev)
-#                    self._loadChapter(biblename,bookid,  bookname, chptr)
 
     def get_bibles(self, mode="full"):
         """

@@ -24,8 +24,12 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
 from openlp.core.lib import Plugin,PluginUtils,  MediaManagerItem
+
 from openlp.plugins.bibles.lib import BibleManager
 from openlp.plugins.bibles.forms import BibleImportForm
+
+from openlp.plugins.bibles.lib.tables import *
+from openlp.plugins.bibles.lib.classes import *
 
 class BiblePlugin(Plugin, PluginUtils):
     global log
@@ -234,7 +238,7 @@ class BiblePlugin(Plugin, PluginUtils):
         pass
 
     def onBibleNewClick(self):
-        self.bibleimportform = BibleImportForm(self.biblemanager)
+        self.bibleimportform = BibleImportForm(self.config, self.biblemanager)
         self.bibleimportform.setModal(True)
         self.bibleimportform.show()
         pass
@@ -258,7 +262,7 @@ class BiblePlugin(Plugin, PluginUtils):
         bibles = self.biblemanager.get_bibles("partial") # Without HTTP
         first = True
         for b in bibles:  # load bibles into the combo boxes
-            self.AdvancedVersionComboBox.addItem(b)
+            self.AdvancedVersionComboBox.addItem(b) 
             if first:
                 first = False
                 self._initialise_bible_advanced(b) # use the first bible as the trigger                
@@ -272,12 +276,11 @@ class BiblePlugin(Plugin, PluginUtils):
             books = self.biblemanager.get_bible_books(str(self.AdvancedVersionComboBox.currentText()))
             self.AdvancedBookComboBox.clear()
             first = True
-            for b in books:
-                self.AdvancedBookComboBox.addItem(b[0])
+            for book in books:
+                self.AdvancedBookComboBox.addItem(book.name)
                 if first:
-                    book = b
                     first = False
-                    self._initialise_chapter_verse(bible, b[0])
+                    self._initialise_chapter_verse(bible, book.name)
 
     def _initialise_chapter_verse(self, bible, book):
         log.debug("_initialise_chapter_verse %s , %s", bible, book)

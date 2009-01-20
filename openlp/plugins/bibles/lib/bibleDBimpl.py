@@ -24,183 +24,129 @@ import string
 
 from sqlalchemy import  *
 from sqlalchemy.sql import select
-from sqlalchemy.orm import sessionmaker, mapper
+from sqlalchemy.orm import sessionmaker, mapper,  scoped_session
 
-from openlp.plugins.bibles.lib.biblecommon import BibleCommon
+from openlp.plugins.bibles.lib.tables import *
+from openlp.plugins.bibles.lib.classes import *
+
+from common import BibleCommon
 from openlp.core.utils import ConfigHelper
 
 import logging
 
-class BibleDBException(Exception):
-    pass
-class BibleInvalidDatabaseError(Exception):
-    pass
-    
-metadata = MetaData()
-#Define the tables and indexes
-meta_table = Table('metadata', metadata, 
-    Column('key', String(255), primary_key=True), 
-    Column('value', String(255)), 
-)
-
-testament_table = Table('testament', metadata, 
-    Column('id', Integer, primary_key=True), 
-    Column('name', String(30)), 
-)
-   
-book_table = Table('book', metadata, 
-    Column('id', Integer, primary_key=True), 
-    Column('testament_id', Integer), 
-    Column('name', String(30)), 
-    Column('abbrev', String(5)), 
-)
-Index('idx_name', book_table.c.name, book_table.c.id)
-Index('idx_abbrev', book_table.c.abbrev, book_table.c.id)
-
-#Column('book_id', None, ForeignKey('book.id')), 
-verse_table = Table('verse', metadata, 
-   Column('id', Integer, primary_key=True), 
-    Column('book_id', Integer ), 
-    Column('chapter', Integer), 
-    Column('verse', Integer), 
-    Column('text', Text), 
-)
-Index('idx_chapter_verse_book', verse_table.c.chapter, verse_table.c.verse, verse_table.c.book_id, verse_table.c.id)
-Index('idx_chapter_verse_text', verse_table.c.text, verse_table.c.verse, verse_table.c.book_id, verse_table.c.id)
-
-class BibleMeta(object):
-    def __init__(self, key, value):
-        self.key = key
-        self.value =value
-        
-    def __repr__(self):
-        return "<biblemeta('%s','%s')>" %(self.key, self.value)
-        
-class ONTestament(object):
-    def __init__(self, name):
-        self.name = name
-        
-    def __repr__(self):
-        return "<testament('%s')>" %(self.name)
-      
-class Book(object):
-    def __init__(self, testament_id, name, abbrev):
-        self.testament_id = testament_id
-        self.name = name
-        self.abbrev = abbrev        
-        
-    def __repr__(self):
-        return "<book('%s','%s','%s','%s')>" %(self.id, self.testament_id, self.name, self.abbrev)
-      
-class Verse(object):
-    def __init__(self, book_id, chapter, verse, text):
-        self.book_id = book_id
-        self.chapter = chapter
-        self.verse = verse
-        self.text = text                
-        
-    def __repr__(self):
-        return "<verse('%s','%s','%s','%s')>" %(self.book_id, self.chapter, self.verse, self.text)
-      
-mapper(BibleMeta,  meta_table)
-mapper(ONTestament,  testament_table)
-mapper(Book,  book_table)
-mapper(Verse,  verse_table)
-
 class BibleDBImpl(BibleCommon):
     global log     
     log=logging.getLogger("BibleDBImpl")
-    log.info("BibleDBimpl loaded")   
-    def __init__(self, biblepath , biblename, suffix, btype = 'sqlite'):   
-        # Connect to database 
-        self.biblefile = os.path.join(biblepath, biblename+"."+suffix)
+    log.info("BibleDBimpl loaded")
+    
+    def __init__(self, biblepath , biblename, config):   
+        # Connect to database
+        self.config = config
+        self.biblefile = os.path.join(biblepath, biblename+u'.sqlite')
         log.debug( "Load bible %s on path %s", biblename, self.biblefile)
-        if btype == 'sqlite': 
+        db_type = self.config.get_config(u'db type') 
+        db_type = u'sqlite'
+        if db_type  == u'sqlite': 
             self.db = create_engine("sqlite:///"+self.biblefile)
-        elif btype == 'mysql': 
-            self.db = create_engine("mysql://tim:@192.168.0.100:3306/openlp_rsv_bible")
         else:
-            raise BibleInvalidDatabaseError("Database not mysql or sqlite")
+            self.db_url = db_type + 'u://' + \
+                self.config.get_config(u'db username') + u':' + \
+                self.config.get_config(u'db password') + u'@' + \
+                self.config.get_config(u'db hostname') + u'/' + \
+                self.config.get_config(u'db database')
         self.db.echo = False
-        #self.metadata = metaData()
         metadata.bind = self.db
         metadata.bind.echo = False
-        self.Session = sessionmaker()
-        self.Session.configure(bind=self.db)
+        self.session = scoped_session(sessionmaker(autoflush=True, autocommit=False))
+        self.session.configure(bind=self.db)
+        metadata.create_all(self.db)
         
     def create_tables(self):
         log.debug( "createTables")        
         if os.path.exists(self.biblefile):   # delete bible file and set it up again
             os.remove(self.biblefile)
-        meta_table.create()
-        testament_table.create()
-        book_table.create()
-        verse_table.create()
+        #meta_table.create()
+        #testament_table.create()
+        #book_table.create()
+        #verse_table.create()
         self.save_meta("dbversion", "2")
         self._load_testaments()
         
-    def add_verse(self, bookid, chap,  verse, text):
-        log.debug( "add_verse %s,%s,%s,%s", bookid, chap, verse, text)
+    def add_verse(self, bookid, chap,  vse, text):
+        log.debug( "add_verse %s,%s,%s,%s", bookid, chap, vse, text)
         metadata.bind.echo = False
-        session = self.Session()
-        versemeta = Verse(book_id=int(bookid),  chapter=int(chap), verse=int(verse), text=(text))
-        session.add(versemeta)
+        session = self.session()
+        verse = Verse()
+        verse.book_id = bookid
+        verse.chapter = chap
+        verse.verse = vse
+        verse.text = text
+        session.add(verse)        
         session.commit()
 
     def create_chapter(self, bookid, chap, textlist):
         log.debug( "create_chapter %s,%s,%s", bookid, chap, textlist)
         metadata.bind.echo = False
-        session = self.Session()
-        #s = text (""" select id FROM book where book.name == :b """)
-        #data = self.db.execute(s, b=bookname).fetchone()
-        #id = data[0]    # id is first record in list.
-        #log.debug( "id = " , id
+        session = self.session()
         for v ,  t in textlist.iteritems():
-            versemeta = Verse(book_id=bookid,  chapter=int(chap), verse=int(v), text=(t))
-            session.add(versemeta)
+            verse = Verse()
+            verse.book_id = bookid
+            verse.chapter = chap
+            verse.verse = v
+            verse.text = t
+            session.add(verse)
         session.commit()
         
     def create_book(self, bookid, bookname, bookabbrev):
         log.debug( "create_book %s,%s,%s", bookid, bookname, bookabbrev)
         metadata.bind.echo = False       
-        session = self.Session()
-        bookmeta = Book(int(5), bookname, bookabbrev)
-        session.add(bookmeta)
+        session = self.session()
+        book = Book()
+        book.tetsament_id = 1
+        book.name = bookname
+        book.abbreviation = bookabbrev
+        session.add(book)
         session.commit()
+        return book.id        
         
     def save_meta(self, key, value):
         metadata.bind.echo = False                
-        session = self.Session()
-        bmeta= BibleMeta(key, value)
+        session = self.session()
+        bmeta= BibleMeta()
+        bmeta.key = key
+        bmeta.value = value
         session.add(bmeta)
         session.commit()
 
-    def get_meta(self, key):
-        s = text (""" select value FROM metadata where key == :k """)
-        return self.db.execute(s, k=key).fetchone()
+    def get_meta(self, metakey):
+        log.debug( "get meta %s", metakey)        
+        return self.session.query(BibleMeta).filter_by(key = metakey).first()
 
-    def delete_meta(self, key):
-        metadata.bind.echo = False
-        s = text (""" delete FROM meta where key == :k """)
-        self.db.execute(s, k=key)
+    def delete_meta(self, metakey):
+        biblemeta = self.get_meta(metakey)
+        try:
+            session.delete(biblemeta)
+            session.commit()
+            return True
+        except:
+            return False
 
     def _load_testaments(self):
         log.debug("load_testaments")
         metadata.bind.echo = False               
-        session = self.Session()    
-        testmeta = ONTestament(name="Old Testament")
-        session.add(testmeta)
-        testmeta = ONTestament(name="New Testament")
-        session.add(testmeta)
-        testmeta = ONTestament(name="Apocrypha")
-        session.add(testmeta)        
+        session = self.session()    
+        test = ONTestament()
+        test.name = "Old Testament"
+        session.add(test)
+        test.name = "New Testament"        
+        session.add(test)
+        test.name = "Apocrypha"
+        session.add(test)        
         session.commit()
         
     def get_bible_books(self):
-        log.debug( "get_bible_book ") 
-        metadata.bind.echo = False        
-        s = text (""" select name FROM book order by id """)
-        return self.db.execute(s).fetchall()
+        log.debug( "get_bible_books ") 
+        return self.session.query(Book).order_by(Book.id).all()        
  
     def get_max_bible_book_verses(self, bookname, chapter):
         log.debug( "get_max_bible_book_verses %s,%s ", bookname ,  chapter) 
@@ -216,15 +162,7 @@ class BibleDBImpl(BibleCommon):
 
     def get_bible_book(self, bookname):
         log.debug( "get_bible_book %s", bookname) 
-        metadata.bind.echo = False        
-        s = text (""" select name FROM book where book.name == :b """)
-        return self.db.execute(s, b=bookname).fetchone()
-        
-    def get_bible_book_Id(self, bookname):
-        log.debug( "get_bible_book_id %s", bookname) 
-        metadata.bind.echo = False        
-        s = text (""" select id FROM book where book.name == :b """)
-        return self.db.execute(s, b=bookname).fetchone()        
+        return self.session.query(Book).filter_by(name = bookname).first()
         
     def get_bible_chapter(self, bookname, chapter):
         log.debug( "get_bible_chapter %s,%s", bookname, chapter )               

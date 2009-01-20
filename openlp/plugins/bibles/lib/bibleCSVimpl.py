@@ -19,10 +19,9 @@ import os, os.path
 import sys
 import urllib2
 
-#mypath=os.path.split(os.path.abspath(__file__))[0]
-#sys.path.insert(0,(os.path.join(mypath, '..', '..', '..')))
+
 from openlp.plugins.bibles.lib.bibleDBimpl import BibleDBImpl
-from openlp.plugins.bibles.lib.biblecommon import BibleCommon
+from openlp.plugins.bibles.lib.common import BibleCommon
 
 import logging
                
