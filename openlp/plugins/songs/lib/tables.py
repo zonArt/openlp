@@ -14,12 +14,12 @@ PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-Place, Suite 330, Boston, MA 02111-1307 USA 
+Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
-from sqlalchemy import Column, Table, MetaData, ForeignKey, types
+from sqlalchemy import Column, Table, ForeignKey, types
 
-metadata = MetaData()
+from openlp.plugins.songs.lib.meta import metadata
 
 # Definition of the "authors" table
 authors_table = Table('authors', metadata,

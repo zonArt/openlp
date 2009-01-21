@@ -148,7 +148,7 @@
   </Others>
   <MainScript>openlp.pyw</MainScript>
   <Vcs>
-    <VcsType>Subversion</VcsType>
+    <VcsType>PySvn</VcsType>
     <VcsOptions>
       <dict>
         <key>
@@ -220,7 +220,7 @@
         </key>
         <value>
           <list>
-            <string></string>
+            <string></string>
           </list>
         </value>
         <key>

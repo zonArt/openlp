@@ -20,22 +20,22 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation
 
+from openlp.plugins.songs.lib.meta import session, metadata, engine
 from openlp.plugins.songs.lib.tables import *
 from openlp.plugins.songs.lib.classes import *
 
-session = None
-
 def init_models(url):
+    engine = create_engine(url)
     session = scoped_session(sessionmaker(autoflush=True, autocommit=False,
-                                          bind=create_engine(url)))
+                                          bind=engine))
+    metadata.bind = engine
 
-
-#mapper(Author, authors_table)
-#mapper(Book, song_books_table)
-#mapper(Song, songs_table,
-#       properties={'authors': relation(Author, backref='songs',
-#                                       secondary=authors_songs_table),
-#                   'book': relation(Book, backref='songs'),
-#                   'topics': relation(Topic, backref='songs',
-#                                      secondary=songs_topics_table)})
-#mapper(Topic, topics_table)
+mapper(Author, authors_table)
+mapper(Book, song_books_table)
+mapper(Song, songs_table,
+       properties={'authors': relation(Author, backref='songs',
+                                       secondary=authors_songs_table),
+                   'book': relation(Book, backref='songs'),
+                   'topics': relation(Topic, backref='songs',
+                                      secondary=songs_topics_table)})
+mapper(Topic, topics_table)
