@@ -226,15 +226,12 @@ class BiblePlugin(Plugin, PluginUtils):
 
     def onAdvancedVersionComboBox(self):
         self._initialise_bible_advanced(str(self.AdvancedVersionComboBox.currentText())) # restet the bible info
+        pass
 
     def onAdvancedBookComboBox(self):
-        print self.AdvancedVersionComboBox.currentText()
         self._initialise_bible_advanced(str(self.AdvancedVersionComboBox.currentText())) # restet the bible info
 
     def onQuickTabClick(self):
-        print "onQuickTabClick"
-        print self.SearchTabWidget.currentIndex()
-        print self.SearchTabWidget.tabText(self.SearchTabWidget.currentIndex())
         pass
 
     def onBibleNewClick(self):
@@ -253,6 +250,10 @@ class BiblePlugin(Plugin, PluginUtils):
         pass
 
     def _initialise_form(self):
+        log.debug("_initialise_form")
+        self.QuickSearchComboBox.clear()
+        self.QuickVersionComboBox.clear()
+        self.AdvancedVersionComboBox.clear()                
         bibles = self.biblemanager.get_bibles("full")
         self.QuickSearchComboBox.addItem("Text Search")
         self.QuickSearchComboBox.addItem("Verse Search")
@@ -378,7 +379,7 @@ class BiblePlugin(Plugin, PluginUtils):
         #print "from =" + str(v)
         print "to ="
         self.searchresults = self.biblemanager.get_verse_text(bible, book,int(chapters[0]), int(chapters[1]), 1, 99)
-        self._display_results()    
+        self._display_results(bible)    
             
     def _split_chapters(self, text):
         txt = text.split("-")  # split in to parts

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'bibleimport.ui'
+# Form implementation generated from reading ui file 'bibleimportdialog.ui'
 #
-# Created: Mon Dec 15 18:34:25 2008
-#      by: PyQt4 UI code generator 4.4.3
+# Created: Sat Jan 24 07:46:38 2009
+#      by: PyQt4 UI code generator 4.4.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -13,6 +13,9 @@ class Ui_BibleImportDialog(object):
     def setupUi(self, BibleImportDialog):
         BibleImportDialog.setObjectName("BibleImportDialog")
         BibleImportDialog.resize(494, 725)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/icon/openlp.org-icon-32.bmp"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        BibleImportDialog.setWindowIcon(icon)
         self.BibleImportButtonBox = QtGui.QDialogButtonBox(BibleImportDialog)
         self.BibleImportButtonBox.setGeometry(QtCore.QRect(10, 690, 481, 33))
         self.BibleImportButtonBox.setOrientation(QtCore.Qt.Horizontal)
@@ -22,7 +25,7 @@ class Ui_BibleImportDialog(object):
         self.ImportToolBox.setGeometry(QtCore.QRect(10, 0, 471, 431))
         self.ImportToolBox.setObjectName("ImportToolBox")
         self.FileImportPage = QtGui.QWidget()
-        self.FileImportPage.setGeometry(QtCore.QRect(0, 0, 461, 361))
+        self.FileImportPage.setGeometry(QtCore.QRect(0, 0, 96, 26))
         self.FileImportPage.setObjectName("FileImportPage")
         self.OSISGroupBox = QtGui.QGroupBox(self.FileImportPage)
         self.OSISGroupBox.setGeometry(QtCore.QRect(8, 65, 451, 81))
@@ -38,9 +41,9 @@ class Ui_BibleImportDialog(object):
         self.OSISLocationEdit.setObjectName("OSISLocationEdit")
         self.gridLayout_2.addWidget(self.OSISLocationEdit, 0, 1, 1, 1)
         self.OsisFileButton = QtGui.QPushButton(self.OSISGroupBox)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../images/import_load.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.OsisFileButton.setIcon(icon)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(":/imports/import_load.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.OsisFileButton.setIcon(icon1)
         self.OsisFileButton.setObjectName("OsisFileButton")
         self.gridLayout_2.addWidget(self.OsisFileButton, 0, 2, 1, 1)
         self.CVSGroupBox = QtGui.QGroupBox(self.FileImportPage)
@@ -63,11 +66,11 @@ class Ui_BibleImportDialog(object):
         self.BooksLocationEdit.setObjectName("BooksLocationEdit")
         self.gridLayout.addWidget(self.BooksLocationEdit, 0, 1, 1, 1)
         self.BooksFileButton = QtGui.QPushButton(self.CVSGroupBox)
-        self.BooksFileButton.setIcon(icon)
+        self.BooksFileButton.setIcon(icon1)
         self.BooksFileButton.setObjectName("BooksFileButton")
         self.gridLayout.addWidget(self.BooksFileButton, 0, 2, 1, 1)
         self.VersesFileButton = QtGui.QPushButton(self.CVSGroupBox)
-        self.VersesFileButton.setIcon(icon)
+        self.VersesFileButton.setIcon(icon1)
         self.VersesFileButton.setObjectName("VersesFileButton")
         self.gridLayout.addWidget(self.VersesFileButton, 4, 2, 1, 1)
         self.BibleNameEdit = QtGui.QLineEdit(self.FileImportPage)
@@ -78,7 +81,7 @@ class Ui_BibleImportDialog(object):
         self.BibleNameLabel.setObjectName("BibleNameLabel")
         self.ImportToolBox.addItem(self.FileImportPage, "")
         self.WebBiblePage = QtGui.QWidget()
-        self.WebBiblePage.setGeometry(QtCore.QRect(0, 0, 461, 361))
+        self.WebBiblePage.setGeometry(QtCore.QRect(0, 0, 471, 371))
         self.WebBiblePage.setObjectName("WebBiblePage")
         self.WebBibleLayout = QtGui.QVBoxLayout(self.WebBiblePage)
         self.WebBibleLayout.setSpacing(8)
@@ -190,7 +193,7 @@ class Ui_BibleImportDialog(object):
         self.gridLayout_3.addWidget(self.ProgressBar, 0, 0, 1, 1)
 
         self.retranslateUi(BibleImportDialog)
-        self.ImportToolBox.setCurrentIndex(0)
+        self.ImportToolBox.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(BibleImportDialog)
         BibleImportDialog.setTabOrder(self.BibleNameEdit, self.OSISLocationEdit)
         BibleImportDialog.setTabOrder(self.OSISLocationEdit, self.OsisFileButton)
@@ -220,7 +223,7 @@ class Ui_BibleImportDialog(object):
         self.ImportToolBox.setItemText(self.ImportToolBox.indexOf(self.FileImportPage), QtGui.QApplication.translate("BibleImportDialog", "File Import Page", None, QtGui.QApplication.UnicodeUTF8))
         self.OptionsGroupBox.setTitle(QtGui.QApplication.translate("BibleImportDialog", "Download Options", None, QtGui.QApplication.UnicodeUTF8))
         self.LocationLabel.setText(QtGui.QApplication.translate("BibleImportDialog", "Location:", None, QtGui.QApplication.UnicodeUTF8))
-        self.LocationComboBox.setItemText(1, QtGui.QApplication.translate("BibleImportDialog", "CrossWire", None, QtGui.QApplication.UnicodeUTF8))
+        self.LocationComboBox.setItemText(1, QtGui.QApplication.translate("BibleImportDialog", "Crosswalk", None, QtGui.QApplication.UnicodeUTF8))
         self.TypeLabel.setText(QtGui.QApplication.translate("BibleImportDialog", "Type:", None, QtGui.QApplication.UnicodeUTF8))
         self.TypeComboBox.setItemText(1, QtGui.QApplication.translate("BibleImportDialog", "Download As Needed", None, QtGui.QApplication.UnicodeUTF8))
         self.BibleLabel.setText(QtGui.QApplication.translate("BibleImportDialog", "Bible:", None, QtGui.QApplication.UnicodeUTF8))
@@ -237,4 +240,3 @@ class Ui_BibleImportDialog(object):
         self.PermisionLabel.setText(QtGui.QApplication.translate("BibleImportDialog", "Permission:", None, QtGui.QApplication.UnicodeUTF8))
         self.ProgressGroupBox.setTitle(QtGui.QApplication.translate("BibleImportDialog", "Import Progress", None, QtGui.QApplication.UnicodeUTF8))
         self.ProgressBar.setFormat(QtGui.QApplication.translate("BibleImportDialog", "%p", None, QtGui.QApplication.UnicodeUTF8))
-

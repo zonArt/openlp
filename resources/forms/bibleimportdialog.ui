@@ -50,8 +50,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>471</width>
-      <height>369</height>
+      <width>96</width>
+      <height>26</height>
      </rect>
     </property>
     <attribute name="label">
@@ -192,7 +192,7 @@
       <x>0</x>
       <y>0</y>
       <width>471</width>
-      <height>369</height>
+      <height>371</height>
      </rect>
     </property>
     <attribute name="label">
@@ -245,7 +245,7 @@
           </item>
           <item>
            <property name="text">
-            <string>CrossWire</string>
+            <string>Crosswalk</string>
            </property>
           </item>
          </widget>

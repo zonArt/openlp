@@ -32,14 +32,12 @@ class BibleCommon:
         """
     def _get_web_text(self, urlstring, proxyurl):
         log.debug( "get_web_text %s %s", proxyurl, urlstring)
-
-        if  proxyurl != "" or len(proxyurl) > 0 :
+        if  not proxyurl == None:
             print "ProxyUrl " ,  proxyurl + " " + str(len(proxyurl))
             proxy_support = urllib2.ProxyHandler({'http':  self.proxyurl})
             http_support = urllib2.HTTPHandler()
             opener= urllib2.build_opener(proxy_support, http_support)
             urllib2.install_opener(opener)
-
         xml_string = ""
         req = urllib2.Request(urlstring)
         req.add_header('User-Agent', 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)')

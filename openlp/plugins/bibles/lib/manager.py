@@ -61,7 +61,7 @@ class BibleManager():
             biblesource = self.bibleDBCache[bname].get_meta("WEB") # look to see if lazy load bible exists and get create getter.
             if biblesource:
                 nhttp = BibleHTTPImpl()
-                nhttp.set_bible_source(biblesource)  # tell The Server where to get the verses from.
+                nhttp.set_bible_source(biblesource.value)  # tell The Server where to get the verses from.
                 self.bibleHTTPCache[bname] = nhttp
                 proxy = self.bibleDBCache[bname].get_meta("proxy") # look to see if lazy load bible exists and get create getter.
                 nhttp.set_proxy(proxy)  # tell The Server where to get the verses from.
@@ -79,7 +79,7 @@ class BibleManager():
         Return a list of bibles from a given URL.
         The selected Bible can then be registered and LazyLoaded into a database
         """
-        log.debug( "register_HTTP_bible %s,%s,%s,%s,%s", biblename, biblesource, proxyurl,  proxyid, proxypass, mode)
+        log.debug( "register_HTTP_bible %s,%s,%s,%s,%s,%s", biblename, biblesource, proxyurl,  proxyid, proxypass, mode)
         if self._is_new_bible(biblename):
             nbible = BibleDBImpl(self.biblePath, biblename, self.config) # Create new Bible
             nbible.create_tables() # Create Database
@@ -96,6 +96,7 @@ class BibleManager():
                 nbible.save_meta("proxyid", proxyid) # store the proxy userid
             if proxypass != None:
                 nbible.save_meta("proxypass", proxypass) # store the proxy password
+        return biblename
 
 
     def register_cvs_file_bible(self, biblename, booksfile, versefile):
@@ -126,6 +127,7 @@ class BibleManager():
             bcsv.load_data(osisfile, self.dialogobject)
 
     def get_bibles(self, mode="full"):
+        log.debug("get_bibles")
         """
         Returns a list of Books of the bible
         Mode "Full" - Returns all the bibles for the Queck seearch
@@ -195,18 +197,24 @@ class BibleManager():
         Rest can be guessed at !
         """
         text  = []
-        #log.debug( self.bibleDBCache)
-        #log.debug( self.bibleHTTPCache)
-        log.debug( "get_verse_text %s,%s,%s,%s,%s,%s",  bible,bookname,  schapter,echapter, sverse, everse)
-#        bookid = self.booksOfBible[bookname] # convert to id  ie Genesis --> 1  Revelation --> 73
-#        # SORT OUT BOOKNAME BOOK ID.
-#        # NAME COMES IN TO ID AND BACK TO NAME ?
-#        c = self.bibleDBCache[bible].getBibleChapter(bookname, chapter) # check to see if book/chapter exists
-#        bookabbrev = ""
-#        log.debug( "Bible Chapter %s", c )
+        bookabbrev = ""        
+        log.debug( "get_verse_text %s,%s,%s,%s,%s,%s",  bible, bookname,  schapter, echapter, sverse, everse)
+        if not self.bibleHTTPCache[bible] == None:
+            book= self.bibleDBCache[bible].get_bible_book(bookname) # check to see if book/chapter exists
+            if book == None:
+                book = self.bibleDBCache[bible].create_book(bookname, bookabbrev)
+            for chapter in range(schapter, echapter+1):
+                print chapter
+                v = self.bibleDBCache[bible].get_bible_chapter(book.id, chapter)
+                if v == None:
+                    chaptlist = self.bibleHTTPCache[bible].get_bible_chapter(bible, book.id, bookname, chapter)
+                    self.bibleDBCache[bible].create_chapter(book.id, chapter, chaptlist)
+
+
+        #log.debug( "Bible Chapter %s", c )
 #        if not c:
 #            self._loadBook(bible,bookid, bookname, bookabbrev)
-#            self._loadChapter(bible, bookid,bookname, chapter)
+#            self._loadChapter(bible, bookid,bookname, schapter)
         if schapter == echapter:
             text = self.bibleDBCache[bible].get_bible_text(bookname, schapter, sverse, everse)
         else:
@@ -223,6 +231,7 @@ class BibleManager():
 
                 txt = self.bibleDBCache[bible].get_bible_text(bookname, i, start, end)
                 text.extend(txt)
+        print text
         return text
 
     def _load_book(self, bible, bookid, bookname, bookabbrev):

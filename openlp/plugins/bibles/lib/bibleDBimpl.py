@@ -63,14 +63,10 @@ class BibleDBImpl(BibleCommon):
         
     def create_tables(self):
         log.debug( "createTables")        
-        if os.path.exists(self.biblefile):   # delete bible file and set it up again
-            os.remove(self.biblefile)
-        #meta_table.create()
-        #testament_table.create()
-        #book_table.create()
-        #verse_table.create()
         self.save_meta("dbversion", "2")
-        self._load_testaments()
+        self._load_testament("Old Testament")
+        self._load_testament("Apocrypha")
+        self._load_testament("New Testament")                
         
     def add_verse(self, bookid, chap,  vse, text):
         log.debug( "add_verse %s,%s,%s,%s", bookid, chap, vse, text)
@@ -97,17 +93,17 @@ class BibleDBImpl(BibleCommon):
             session.add(verse)
         session.commit()
         
-    def create_book(self, bookid, bookname, bookabbrev):
-        log.debug( "create_book %s,%s,%s", bookid, bookname, bookabbrev)
+    def create_book(self, bookname, bookabbrev):
+        log.debug( "create_book %s,%s", bookname, bookabbrev)
         metadata.bind.echo = False       
         session = self.session()
         book = Book()
-        book.tetsament_id = 1
+        book.testament_id = 1
         book.name = bookname
         book.abbreviation = bookabbrev
         session.add(book)
         session.commit()
-        return book.id        
+        return book.id
         
     def save_meta(self, key, value):
         metadata.bind.echo = False                
@@ -131,18 +127,14 @@ class BibleDBImpl(BibleCommon):
         except:
             return False
 
-    def _load_testaments(self):
-        log.debug("load_testaments")
+    def _load_testament(self, testament):
+        log.debug("load_testaments %s",  testament)
         metadata.bind.echo = False               
         session = self.session()    
         test = ONTestament()
-        test.name = "Old Testament"
+        test.name = testament
         session.add(test)
-        test.name = "New Testament"        
-        session.add(test)
-        test.name = "Apocrypha"
-        session.add(test)        
-        session.commit()
+        session.commit()        
         
     def get_bible_books(self):
         log.debug( "get_bible_books ") 
@@ -164,11 +156,12 @@ class BibleDBImpl(BibleCommon):
         log.debug( "get_bible_book %s", bookname) 
         return self.session.query(Book).filter_by(name = bookname).first()
         
-    def get_bible_chapter(self, bookname, chapter):
-        log.debug( "get_bible_chapter %s,%s", bookname, chapter )               
+    def get_bible_chapter(self, id, chapter):
+        log.debug( "get_bible_chapter %s,%s", id, chapter )               
         metadata.bind.echo = False
-        s = text (""" select book.name FROM verse,book where verse.book_id == book.id AND verse.chapter == :c and book.name == :b """)
-        return self.db.execute(s, c=chapter, b=bookname).fetchone()
+        #s = text (""" select book.name FROM verse,book where verse.book_id == book.id AND verse.chapter == :c and book.name == :b """)
+        return self.session.query(Verse).filter_by(chapter = chapter ).filter_by(book_id = id).first()
+        #return self.db.execute(s, c=chapter, b=bookname).fetchone()
         
     def get_bible_text(self, bookname, chapter, sverse, everse):
         log.debug( "get_bible_text %s,%s,%s,%s ", bookname, chapter, sverse, everse)

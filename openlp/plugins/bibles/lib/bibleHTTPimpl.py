@@ -169,7 +169,7 @@ class BibleHTTPImpl():
         log.debug( "get_bible_chapter %s,%s,%s,%s", version, bookid, bookname,  chapter) 
         log.debug("biblesource = %s", self.biblesource)
         try:
-            if self.biblesource == 'Crosswalk':
+            if self.biblesource.lower() == 'crosswalk':
                 ev = CWExtract(self.proxyurl)
             else:
                 ev = BGExtract(self.proxyurl)
