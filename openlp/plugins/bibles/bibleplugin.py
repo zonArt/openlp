@@ -366,47 +366,57 @@ class BiblePlugin(Plugin, PluginUtils):
         a=1
         
     def translate(self, bible,  search):
-        print "------"
-        print search
-        book, rest = self._split_book_from_verses(search)
-        book = book.rstrip()
-        chapters, verses = self._split_chapters_and_verses(rest)
-        print verses
-        chapters = self._split_chapters(chapters)
-        #v = self._split_verses(verses)
-        print "book = " + book
-        print "chapters =" + str(chapters)
-        #print "from =" + str(v)
-        print "to ="
-        self.searchresults = self.biblemanager.get_verse_text(bible, book,int(chapters[0]), int(chapters[1]), 1, 99)
+        book = ""
+        schapter = ""
+        echapter = ""
+        sverse=""
+        everse=""
+        search.replace("  ", " ")
+        #search = search.replace("v", ":")  # allow V or v for verse instead of :
+        #search = search.replace("V", ":")  # allow V or v for verse instead of :        
+        co = search.find(":")
+        if co == -1: # no : found
+            i = search.rfind(" ")
+            book = search[:i]
+            chapter = search[i:len(search)]
+            hi = chapter.find("-")
+            if hi != -1:
+                schapter= chapter[:hi]
+                echapter= chapter[hi+1:len(chapter)]
+            else:
+                schapter = chapter
+        else: # more complex
+            i = search.find(" ") # find first space (after book name)
+            book = search[:i]  # extract book
+            search = search[i:] # remove book from string
+            co = search.find(":") #find first 
+            schapter = search[:co]  #first chapter is before colon
+            search = search [co+1:] #remove first chapter and colon
+            hi = search.find("-")
+            if hi != -1:
+                sverse= search[:hi]
+                search = search[hi+1:]
+                co = search.find(":")
+                if co != -1:
+                    echapter= search[:co]
+                    everse = search[co+1:]
+                else:
+                    everse = search
+                print search
+            else:
+                everse = search
+        if echapter == "":
+            echapter = schapter
+        if sverse == "":
+            sverse = 1
+        if everse == "":
+            everse = 99  
+#        print "book = " + book
+#        print "chapter s =" + str(schapter)
+#        print "chapter e =" + str(echapter)        
+#        print "verse s =" + str(sverse)
+#        print "verse e =" + str(everse) 
+        self.searchresults = self.biblemanager.get_verse_text(bible, book,int(schapter), int(echapter), int(sverse), int(everse))
         self._display_results(bible)    
             
-    def _split_chapters(self, text):
-        txt = text.split("-")  # split in to parts
-        print  txt  ,  len(txt)
-        if len(txt) == 1:
-            return  [text, text]
-        return txt
-        
-    def _split_verses(self, text):
-        print text
-        txt = text.split("-")  # split in to parts
-        print  txt  ,  len(txt)
-        if len(txt) == 1:
-            return [text, text]
-        return txt        
 
-    def _split_book_from_verses(self, search):
-        v = search.split(" ")  # split in to parts
-        book = ""
-        for i in range (0, len(v) - 1 ): # Join the books back together except last word
-            book += v[i] + " "
-        verse = v[len(v)-1]
-        return book, verse
-
-    def _split_chapters_and_verses(self, verse):
-        verse = verse.lower().replace("v", ":")  # allow V or v for verse instead of :
-        c = verse.split(":")
-        if len(c) == 1:
-            return c[0], []
-        return c[0], c[1]

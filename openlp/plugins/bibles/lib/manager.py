@@ -186,7 +186,7 @@ class BibleManager():
         Returns the meta data for a given key
         """
         log.debug( "get_meta %s,%s", bible,  key)
-        self.bibleDBCache[bible].get_meta(key)
+        return self.bibleDBCache[bible].get_meta(key)
 
     def get_verse_text(self, bible, bookname, schapter, echapter, sverse, everse = 0 ):
         """
@@ -204,17 +204,14 @@ class BibleManager():
             if book == None:
                 book = self.bibleDBCache[bible].create_book(bookname, bookabbrev)
             for chapter in range(schapter, echapter+1):
-                print chapter
                 v = self.bibleDBCache[bible].get_bible_chapter(book.id, chapter)
                 if v == None:
-                    chaptlist = self.bibleHTTPCache[bible].get_bible_chapter(bible, book.id, bookname, chapter)
-                    self.bibleDBCache[bible].create_chapter(book.id, chapter, chaptlist)
+                    try:
+                        chaptlist = self.bibleHTTPCache[bible].get_bible_chapter(bible, book.id, bookname, chapter)
+                        self.bibleDBCache[bible].create_chapter(book.id, chapter, chaptlist)
+                    except :
+                        log.error("Errow thrown %s", sys.exc_info()[1])                        
 
-
-        #log.debug( "Bible Chapter %s", c )
-#        if not c:
-#            self._loadBook(bible,bookid, bookname, bookabbrev)
-#            self._loadChapter(bible, bookid,bookname, schapter)
         if schapter == echapter:
             text = self.bibleDBCache[bible].get_bible_text(bookname, schapter, sverse, everse)
         else:
@@ -231,23 +228,7 @@ class BibleManager():
 
                 txt = self.bibleDBCache[bible].get_bible_text(bookname, i, start, end)
                 text.extend(txt)
-        print text
         return text
-
-    def _load_book(self, bible, bookid, bookname, bookabbrev):
-        log.debug( "load_book %s,%s,%s,%s", bible, bookid, bookname, bookabbrev)
-        cl = self.bibleDBCache[bible].get_bible_book(bookname)
-        log.debug( "get bible book %s" , cl)
-        if not cl :
-            self.bibleDBCache[bible].create_book(bookid, bookname, bookabbrev)
-
-    def _loadChapter(self, bible, bookid, bookname, chapter):
-        log.debug( "load_chapter %s,%s,%s,%s", bible, bookid,bookname, chapter)
-        try :
-            chaptlist = self.bibleHTTPCache[bible].get_bible_chapter(bible, bookid,bookname, chapter)
-            self.bibleDBCache[bible].create_chapter(bookname, chapter, chaptlist)
-        except :
-            log.error("Errow thrown %s", sys.exc_info()[1])
 
     def _is_new_bible(self, name):
         """

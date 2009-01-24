@@ -103,7 +103,7 @@ class BibleDBImpl(BibleCommon):
         book.abbreviation = bookabbrev
         session.add(book)
         session.commit()
-        return book.id
+        return book
         
     def save_meta(self, key, value):
         metadata.bind.echo = False                
