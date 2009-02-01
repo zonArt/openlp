@@ -26,16 +26,16 @@ from openlp.plugins.songs.lib.classes import *
 
 def init_models(url):
     engine = create_engine(url)
+    metadata.bind = engine
     session = scoped_session(sessionmaker(autoflush=True, autocommit=False,
                                           bind=engine))
-    metadata.bind = engine
-
-mapper(Author, authors_table)
-mapper(Book, song_books_table)
-mapper(Song, songs_table,
+    mapper(Author, authors_table)
+    mapper(Book, song_books_table)
+    mapper(Song, songs_table,
        properties={'authors': relation(Author, backref='songs',
                                        secondary=authors_songs_table),
                    'book': relation(Book, backref='songs'),
                    'topics': relation(Topic, backref='songs',
                                       secondary=songs_topics_table)})
-mapper(Topic, topics_table)
+    mapper(Topic, topics_table)
+    return session

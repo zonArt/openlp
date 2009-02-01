@@ -22,16 +22,15 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
-from openlp.core.lib import Plugin,PluginUtils,  MediaManagerItem
+from openlp.core.lib import Plugin, PluginUtils, MediaManagerItem
 from forms import EditSongForm, OpenLPImportForm, OpenSongImportForm, \
                   OpenLPExportForm, OpenSongExportForm
 from openlp.plugins.songs.lib import SongManager
-from openlp.plugins.songs.lib.songclasses import *
 
 class SongsPlugin(Plugin, PluginUtils):
     global log
     log=logging.getLogger("SongsPlugin")
-    log.info("Song Plugin loaded")    
+    log.info("Song Plugin loaded")
     def __init__(self):
         # Call the parent constructor
         Plugin.__init__(self, 'Songs', '1.9.0')
@@ -103,7 +102,7 @@ class SongsPlugin(Plugin, PluginUtils):
         self.ClearTextButton = QtGui.QPushButton(self.SongWidget)
         self.ClearTextButton.setObjectName('ClearTextButton')
         self.ClearTextButton.setText('Clear')
-        self.SearchLayout.addWidget(self.ClearTextButton, 3, 1, 1, 1)        
+        self.SearchLayout.addWidget(self.ClearTextButton, 3, 1, 1, 1)
         self.SearchTextButton = QtGui.QPushButton(self.SongWidget)
         self.SearchTextButton.setObjectName('SearchTextButton')
         self.SearchTextButton.setText('Search')
@@ -114,31 +113,31 @@ class SongsPlugin(Plugin, PluginUtils):
         self.SongListView.setColumnCount(3)
         self.SongListView.setColumnHidden(0, True)
         self.SongListView.setColumnWidth(1, 200)
-        self.SongListView.setColumnWidth(2, 80)                
+        self.SongListView.setColumnWidth(2, 80)
         self.SongListView.setShowGrid(False)
-        self.SongListView.setSortingEnabled(False)        
+        self.SongListView.setSortingEnabled(False)
         self.SongListView.setAlternatingRowColors(True)
-        self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Song Name","Author"]))        
+        self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Song Name","Author"]))
         self.SongListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.SongListView.setObjectName("listView")
         self.MediaManagerItem.PageLayout.addWidget(self.SongListView)
-        
-        QtCore.QObject.connect(self.SearchTextButton, QtCore.SIGNAL("pressed()"), self.onSearchTextButton)
-        QtCore.QObject.connect(self.ClearTextButton, QtCore.SIGNAL("pressed()"), self.onClearTextButton)
-        QtCore.QObject.connect(self.SearchTextEdit, QtCore.SIGNAL("textChanged(const QString&)"), self.onSearchTextEdit)
-        
-        QtCore.QObject.connect(self.SongListView, QtCore.SIGNAL("itemPressed(QTableWidgetItem * item)"), self.onSongSelected)          
-        
+
+        QtCore.QObject.connect(self.SearchTextButton, QtCore.SIGNAL("pressed()"), self.onSearchTextButtonClick)
+        QtCore.QObject.connect(self.ClearTextButton, QtCore.SIGNAL("pressed()"), self.onClearTextButtonClick)
+        QtCore.QObject.connect(self.SearchTextEdit, QtCore.SIGNAL("textChanged(const QString&)"), self.onSearchTextEditChanged)
+
+        QtCore.QObject.connect(self.SongListView, QtCore.SIGNAL("itemPressed(QTableWidgetItem * item)"), self.onSongSelected)
+
 
         #define and add the context menu
         self.SongListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
-        self.SongListView.addAction(self.add_to_context_menu(self.SongListView, ':/songs/song_new.png', "&Edit Song", self.onSongEditClick))  
+        self.SongListView.addAction(self.add_to_context_menu(self.SongListView, ':/songs/song_new.png', "&Edit Song", self.onSongEditClick))
         self.SongListView.addAction(self.add_to_context_separator(self.SongListView))
-        self.SongListView.addAction(self.add_to_context_menu(self.SongListView, ':/system/system_preview.png', "&Preview Song", self.onSongPreviewClick))      
-        self.SongListView.addAction(self.add_to_context_menu(self.SongListView, ':/system/system_live.png', "&Show Live", self.onSongLiveClick))        
+        self.SongListView.addAction(self.add_to_context_menu(self.SongListView, ':/system/system_preview.png', "&Preview Song", self.onSongPreviewClick))
+        self.SongListView.addAction(self.add_to_context_menu(self.SongListView, ':/system/system_live.png', "&Show Live", self.onSongLiveClick))
         self.SongListView.addAction(self.add_to_context_menu(self.SongListView, ':/system/system_add.png', "&Add to Service", self.onSongEditClick))
-        
+
         return self.MediaManagerItem
 
     def add_import_menu_item(self, import_menu):
@@ -194,35 +193,37 @@ class SongsPlugin(Plugin, PluginUtils):
         QtCore.QObject.connect(self.ExportOpenSongItem, QtCore.SIGNAL("triggered()"), self.onExportOpenSongItemClicked)
 
     def initialise(self):
-        self.SearchTypeComboBox.addItem("Titles")
-        self.SearchTypeComboBox.addItem("Lyrics")
-        self.SearchTypeComboBox.addItem("Authors")
+        self.SearchTypeComboBox.addItem(u'Titles')
+        self.SearchTypeComboBox.addItem(u'Lyrics')
+        self.SearchTypeComboBox.addItem(u'Authors')
 
-    def onClearTextButton(self):
+    def onClearTextButtonClick(self):
+        """
+        Clear the search text.
+        """
         self.SearchTextEdit.clear()
 
-    def onSearchTextEdit(self):
-        sl = 3
-        if self.SearchTypeComboBox.currentText()=="Lyrics":        
-            sl = 7
-        if len(self.SearchTextEdit.displayText()) > sl:  # only search if > 3 characters
-            self.onSearchTextButton() 
+    def onSearchTextEditChanged(self, text):
+        #sl = 3
+        #if self.SearchTypeComboBox.currentText() == u'Lyrics':
+        #    sl = 7
+        #if len(text) > sl:  # only search if > 3 characters
+        self.onSearchTextButtonClick()
 
-    def onSearchTextButton(self):
-        searchtext = str(self.SearchTextEdit.displayText() )
-        searchresults  = []
-        ct = self.SearchTypeComboBox.currentText()
-        if self.SearchTypeComboBox.currentText()=="Titles":
+    def onSearchTextButtonClick(self):
+        search_keywords = str(self.SearchTextEdit.displayText())
+        search_results  = []
+        search_type = self.SearchTypeComboBox.currentText()
+        if search_type == u'Titles':
             log.debug("Titles Search")
-            searchresults = self.songmanager.get_song_from_title(searchtext)
-        elif self.SearchTypeComboBox.currentText()=="Lyrics":
-            log.debug("Lyrics Search")            
-            searchresults = self.songmanager.get_song_from_lyrics(searchtext)
-        elif self.SearchTypeComboBox.currentText()=="Authors":
-            log.debug("Authors Search")            
-            searchresults = self.songmanager.get_song_from_author(searchtext)    
-
-        self._display_results(searchresults)
+            search_results = self.songmanager.search_song_title(search_keywords)
+        elif search_type == u'Lyrics':
+            log.debug("Lyrics Search")
+            searchresults = self.songmanager.search_song_lyrics(search_keywords)
+        elif search_type == u'Authors':
+            log.debug("Authors Search")
+            #searchresults = self.songmanager.get_song_from_author(searchtext)
+        self._display_results(search_results)
 
     def onSongSelected(self, item):
         print item
@@ -259,12 +260,12 @@ class SongsPlugin(Plugin, PluginUtils):
 
     def onExportOpenSongItemClicked(self):
         self.opensong_export_form.show()
-        
+
     def _display_results(self, searchresults):
         log.debug("_search results")
         self.SongListView.clear() # clear the results
         self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Song Name","Author"]))
-        self.SongListView.setVerticalHeaderLabels(QtCore.QStringList([""]))          
+        self.SongListView.setVerticalHeaderLabels(QtCore.QStringList([""]))
         self.SongListView.setRowCount(0)
         log.debug("Records returned from search %s", len(searchresults))
         for song in searchresults:
@@ -272,10 +273,10 @@ class SongsPlugin(Plugin, PluginUtils):
                 c = self.SongListView.rowCount()
                 self.SongListView.setRowCount(c+1)
                 twi = QtGui.QTableWidgetItem(str(song.id))
-                self.SongListView.setItem(c , 0, twi)  
+                self.SongListView.setItem(c , 0, twi)
                 twi = QtGui.QTableWidgetItem(str(song.title))
-                self.SongListView.setItem(c , 1, twi)  
+                self.SongListView.setItem(c , 1, twi)
                 twi = QtGui.QTableWidgetItem(str(author.display_name))
                 self.SongListView.setItem(c , 2, twi)
                 self.SongListView.setRowHeight(c, 20)
-            
+

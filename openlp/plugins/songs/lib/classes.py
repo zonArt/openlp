@@ -16,8 +16,6 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-from sqlalchemy.orm import mapper, relation
-from openlp.plugins.songs.lib.tables import *
 
 class BaseModel(object):
     """
@@ -58,14 +56,3 @@ class Topic(BaseModel):
     Topic model
     """
     pass
-
-
-mapper(Author, authors_table)
-mapper(Book, song_books_table)
-mapper(Song, songs_table,
-       properties={'authors': relation(Author, backref='songs',
-                                       secondary=authors_songs_table),
-                   'book': relation(Book, backref='songs'),
-                   'topics': relation(Topic, backref='songs',
-                                      secondary=songs_topics_table)})
-mapper(Topic, topics_table)   

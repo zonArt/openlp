@@ -23,7 +23,7 @@ import sys
 
 from sqlalchemy import asc, desc
 from openlp.plugins.songs.lib.models import init_models, metadata, session, \
-    songs_table, Song, Author, Topic
+    engine, songs_table, Song, Author, Topic
 
 import logging
 
@@ -47,15 +47,17 @@ class SongManager():
         self.db_url = u''
         db_type = self.config.get_config(u'db type')
         if db_type == u'sqlite':
-            self.db_url = u'sqlite://' + self.config.get_data_path() + \
+            self.db_url = u'sqlite:///' + self.config.get_data_path() + \
                 u'/songs.sqlite'
+            print self.db_url
         else:
             self.db_url = db_type + 'u://' + \
                 self.config.get_config(u'db username') + u':' + \
                 self.config.get_config(u'db password') + u'@' + \
                 self.config.get_config(u'db hostname') + u'/' + \
                 self.config.get_config(u'db database')
-        init_models(self.db_url)
+            #print self.db_url
+        self.session = init_models(self.db_url)
         if not songs_table.exists():
             metadata.create_all()
         log.debug( "Song Initialised")
@@ -67,19 +69,19 @@ class SongManager():
         """
         Returns the details of a song
         """
-        return session.query(Song).order_by(title).all()
+        return self.session.query(Song).order_by(title).all()
 
     def search_song_title(self, keywords):
         """
         Searches the song title for keywords.
         """
-        return session.query(Song).filter(search_title.like(u'%' + keywords + u'%'))
+        return self.session.query(Song).filter(search_title.like(u'%' + keywords + u'%'))
 
     def search_song_lyrics(self, keywords):
         """
         Searches the song lyrics for keywords.
         """
-        return session.query(Song).filter(search_lyrics.like(u'%' + keywords + u'%'))
+        return self.session.query(Song).filter(search_lyrics.like(u'%' + keywords + u'%'))
 
     def get_song(self, id=None):
         """
@@ -88,23 +90,23 @@ class SongManager():
         if id is None:
             return Song()
         else:
-            return session.query(Song).get(id)
+            return self.session.query(Song).get(id)
 
     def save_song(self, song):
         """
         Saves a song to the database
         """
         try:
-            session.add(song)
-            session.commit()
+            self.session.add(song)
+            self.session.commit()
             return True
         except:
             return False
 
     def delete_song(self, song):
         try:
-            session.delete(song)
-            session.commit()
+            self.session.delete(song)
+            self.session.commit()
             return True
         except:
             return False
@@ -113,21 +115,21 @@ class SongManager():
         """
         Returns a list of all the authors
         """
-        return session.query(Author).order_by(display_name).all()
+        return self.session.query(Author).order_by(Author.display_name).all()
 
     def get_author(self, id):
         """
         Details of the Author
         """
-        return session.query(Author).get(id)
+        return self.session.query(Author).get(id)
 
     def save_author(self, author):
         """
         Save the Author and refresh the cache
         """
         try:
-            session.add(author)
-            session.commit()
+            self.session.add(author)
+            self.session.commit()
             return True
         except:
             return False
@@ -137,8 +139,8 @@ class SongManager():
         Delete the author and refresh the author cache
         """
         try:
-            session.delete(author)
-            session.commit()
+            self.session.delete(author)
+            self.session.commit()
             return True
         except:
             return False
