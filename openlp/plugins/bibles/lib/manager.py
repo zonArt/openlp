@@ -44,16 +44,23 @@ class BibleManager():
         """
         self.config = config
         log.debug( "Bible Initialising")
-        self.bibleDBCache = {}   # dict of bible database classes
-        self.bibleHTTPCache = {} # dict of bible http readers
+        self.bibleDBCache = None   # dict of bible database classes
+        self.bibleHTTPCache = None # dict of bible http readers
         self.biblePath = self.config.get_data_path()
         self.proxyname = self.config.get_config("proxy name") #get proxy name for screen
         self.bibleSuffix = "sqlite"
         self.dialogobject = None
+        self.reload_bibles()
+    
+    def reload_bibles(self):
+        log.debug("Reload bibles")
         
         files = self.config.get_files(self.bibleSuffix)
         log.debug("Bible Files %s",  files )
-
+        
+        self.bibleDBCache = {}   
+        self.bibleHTTPCache = {}
+        
         for f in files:
             nme = f.split('.')
             bname = nme[0]
@@ -96,21 +103,21 @@ class BibleManager():
                 nbible.save_meta("proxyid", proxyid) # store the proxy userid
             if proxypass != None:
                 nbible.save_meta("proxypass", proxypass) # store the proxy password
-        return biblename
 
 
-    def register_cvs_file_bible(self, biblename, booksfile, versefile):
+    def register_csv_file_bible(self, biblename, booksfile, versefile):
         """
         Method to load a bible from a set of files into a database.
         If the database exists it is deleted and the database is reloaded
         from scratch.
         """
+        log.debug( "register_CSV_file_bible %s,%s,%s", biblename, booksfile, versefile)          
         if self._is_new_bible(biblename):
             nbible = BibleDBImpl(self.biblePath, biblename, self.config) # Create new Bible
             nbible.create_tables() # Create Database
             self.bibleDBCache[biblename] = nbible # cache the database for use later
             bcsv = BibleCSVImpl(nbible) # create the loader and pass in the database
-            bcsv.load_data(booksfile, versefile)
+            bcsv.load_data(booksfile, versefile, self.dialogobject)
 
     def register_osis_file_bible(self, biblename, osisfile):
         """
@@ -176,10 +183,10 @@ class BibleManager():
         """
         Saves the bibles meta data
         """
-        log.debug( "save_meta %s,%s, %s,%s", bible,  version, copyright, permissions)
+        log.debug( "save_meta data %s,%s, %s,%s", bible,  version, copyright, permissions)
         self.bibleDBCache[bible].save_meta("Version", version)
         self.bibleDBCache[bible].save_meta("Copyright", copyright)
-        self.bibleDBCache[bible].save_meta("Permissins", permissions)
+        self.bibleDBCache[bible].save_meta("Permissions", permissions)
 
     def get_meta_data(self, bible, key):
         """

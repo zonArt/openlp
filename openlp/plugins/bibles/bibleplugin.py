@@ -21,6 +21,8 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import logging
 
 from PyQt4 import QtCore, QtGui
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
 from openlp.core.resources import *
 from openlp.core.lib import Plugin,PluginUtils,  MediaManagerItem
@@ -235,7 +237,7 @@ class BiblePlugin(Plugin, PluginUtils):
         pass
 
     def onBibleNewClick(self):
-        self.bibleimportform = BibleImportForm(self.config, self.biblemanager)
+        self.bibleimportform = BibleImportForm(self.config, self.biblemanager, self)
         self.bibleimportform.setModal(True)
         self.bibleimportform.show()
         pass
@@ -248,7 +250,14 @@ class BiblePlugin(Plugin, PluginUtils):
 
     def onBibleAddClick(self):
         pass
-
+  
+    def refresh(self):
+        self.MediaManagerItem.refresh()
+       
+    def reload_bibles(self):
+        self.biblemanager.reload_bibles()
+        self._initialise_form()
+    
     def _initialise_form(self):
         log.debug("_initialise_form")
         self.QuickSearchComboBox.clear()
@@ -377,8 +386,12 @@ class BiblePlugin(Plugin, PluginUtils):
         co = search.find(":")
         if co == -1: # no : found
             i = search.rfind(" ")
-            book = search[:i]
-            chapter = search[i:len(search)]
+            if i == -1:
+                book = search
+                chapter = ""
+            else:
+                book = search[:i]
+                chapter = search[i:len(search)]
             hi = chapter.find("-")
             if hi != -1:
                 schapter= chapter[:hi]
@@ -402,7 +415,6 @@ class BiblePlugin(Plugin, PluginUtils):
                     everse = search[co+1:]
                 else:
                     everse = search
-                print search
             else:
                 everse = search
         if echapter == "":
@@ -411,12 +423,16 @@ class BiblePlugin(Plugin, PluginUtils):
             sverse = 1
         if everse == "":
             everse = 99  
-#        print "book = " + book
-#        print "chapter s =" + str(schapter)
-#        print "chapter e =" + str(echapter)        
-#        print "verse s =" + str(sverse)
-#        print "verse e =" + str(everse) 
-        self.searchresults = self.biblemanager.get_verse_text(bible, book,int(schapter), int(echapter), int(sverse), int(everse))
-        self._display_results(bible)    
+        print "book = " + book
+        print "chapter s =" + str(schapter)
+        print "chapter e =" + str(echapter)        
+        print "verse s =" + str(sverse)
+        print "verse e =" + str(everse) 
+        if not schapter  == "":
+            self.searchresults = self.biblemanager.get_verse_text(bible, book,int(schapter), int(echapter), int(sverse), int(everse))
+            self._display_results(bible)
+        else:
+            QMessageBox.information(self,"Information","A plain, informational message")
+
             
 

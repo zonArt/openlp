@@ -15,24 +15,18 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-import os, os.path
-import sys
-import time
-import datetime
+import os
+import os.path
 import logging
-import string
 
 from sqlalchemy import  *
 from sqlalchemy.sql import select
 from sqlalchemy.orm import sessionmaker, mapper,  scoped_session
 
-from openlp.plugins.bibles.lib.tables import *
-from openlp.plugins.bibles.lib.classes import *
-
 from common import BibleCommon
 from openlp.core.utils import ConfigHelper
-
-import logging
+from openlp.plugins.bibles.lib.tables import *
+from openlp.plugins.bibles.lib.classes import *
 
 class BibleDBImpl(BibleCommon):
     global log     
@@ -65,11 +59,11 @@ class BibleDBImpl(BibleCommon):
         log.debug( "createTables")        
         self.save_meta("dbversion", "2")
         self._load_testament("Old Testament")
-        self._load_testament("Apocrypha")
-        self._load_testament("New Testament")                
+        self._load_testament("New Testament")
+        self._load_testament("Apocrypha")        
         
     def add_verse(self, bookid, chap,  vse, text):
-        log.debug( "add_verse %s,%s,%s,%s", bookid, chap, vse, text)
+        log.debug( "add_verse %s,%s,%s", bookid, chap, vse)
         metadata.bind.echo = False
         session = self.session()
         verse = Verse()
@@ -81,7 +75,7 @@ class BibleDBImpl(BibleCommon):
         session.commit()
 
     def create_chapter(self, bookid, chap, textlist):
-        log.debug( "create_chapter %s,%s,%s", bookid, chap, textlist)
+        log.debug( "create_chapter %s,%s", bookid, chap)        
         metadata.bind.echo = False
         session = self.session()
         for v ,  t in textlist.iteritems():
@@ -93,12 +87,12 @@ class BibleDBImpl(BibleCommon):
             session.add(verse)
         session.commit()
         
-    def create_book(self, bookname, bookabbrev):
+    def create_book(self, bookname, bookabbrev, testament = 1):
         log.debug( "create_book %s,%s", bookname, bookabbrev)
         metadata.bind.echo = False       
         session = self.session()
         book = Book()
-        book.testament_id = 1
+        book.testament_id = testament
         book.name = bookname
         book.abbreviation = bookabbrev
         session.add(book)
@@ -159,9 +153,7 @@ class BibleDBImpl(BibleCommon):
     def get_bible_chapter(self, id, chapter):
         log.debug( "get_bible_chapter %s,%s", id, chapter )               
         metadata.bind.echo = False
-        #s = text (""" select book.name FROM verse,book where verse.book_id == book.id AND verse.chapter == :c and book.name == :b """)
         return self.session.query(Verse).filter_by(chapter = chapter ).filter_by(book_id = id).first()
-        #return self.db.execute(s, c=chapter, b=bookname).fetchone()
         
     def get_bible_text(self, bookname, chapter, sverse, everse):
         log.debug( "get_bible_text %s,%s,%s,%s ", bookname, chapter, sverse, everse)

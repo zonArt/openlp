@@ -157,14 +157,14 @@ class BibleHTTPImpl():
  
     def set_bible_source(self,biblesource):
         """
-        Set the source of where the bible text is comming from
+        Set the source of where the bible text is coming from
         """
         log.debug("set_bible_source %s", biblesource)        
         self.biblesource = biblesource
 
     def get_bible_chapter(self, version, bookid, bookname,  chapter):
         """
-        Recieve the request and call the relevent handler methods
+        Receive the request and call the relevant handler methods
         """
         log.debug( "get_bible_chapter %s,%s,%s,%s", version, bookid, bookname,  chapter) 
         log.debug("biblesource = %s", self.biblesource)

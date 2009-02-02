@@ -15,16 +15,12 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-import os, os.path
-import sys
-import urllib2
-
+import logging
 
 from openlp.plugins.bibles.lib.bibleDBimpl import BibleDBImpl
 from openlp.plugins.bibles.lib.common import BibleCommon
 
-import logging
-               
+
 class BibleCSVImpl(BibleCommon):
     global log     
     log=logging.getLogger("BibleCSVImpl")
@@ -37,13 +33,7 @@ class BibleCSVImpl(BibleCommon):
         """         
         self.bibledb = bibledb
         
-    def load_data(self, booksfile, versesfile):
-        self.bibledb.save_meta("version", "Bible Version")
-        self.bibledb.save_meta("Copyright", "(c) Some Bible company")
-        self.bibledb.save_meta("Permission", "You Have Some")
-
-        #session = self.Session()
-
+    def load_data(self, booksfile, versesfile, dialogobject=None):
         #Populate the Tables
         fbooks=open(booksfile, 'r')
         fverse=open(versesfile, 'r')
@@ -51,22 +41,19 @@ class BibleCSVImpl(BibleCommon):
         for line in fbooks:
             #log.debug( line)
             p = line.split(",")
+            p1 = p[1].replace('"', '')            
             p2 = p[2].replace('"', '')
             p3 = p[3].replace('"', '')            
-            self.bibledb.create_book(int(p[1]), p2, p3)
-
-
-        book_ptr = ""
-        id = 0
+            self.bibledb.create_book(p2, p3, int(p1))
+        book_ptr = None
         for line in fverse:
             #log.debug( line)
             p = line.split(",", 3) # split into 3 units and leave the rest as a single field
             p0 = p[0].replace('"', '')
             p3 =  p[3].replace('"', '')
             if book_ptr is not p0:
-                cl = self.bibledb.get_bible_book(p0)
-                id = self.bibledb.get_bible_book_Id(p0)
-                book_ptr = cl
-                log.debug( id )
-            self.bibledb.add_verse(id[0], p[1], p[2], p3)
+                book = self.bibledb.get_bible_book(p0)
+                book_ptr = book.name
+                dialogobject.incrementBar(book.name) # increament the progress bar
+            self.bibledb.add_verse(book.id, p[1], p[2], p3)
  

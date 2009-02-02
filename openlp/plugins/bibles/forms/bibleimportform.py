@@ -25,7 +25,7 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
     """
     Class documentation goes here.
     """
-    def __init__(self, config, biblemanager , parent = None):
+    def __init__(self, config, biblemanager , bibleplugin, parent = None):
         """
         Constructor
         """
@@ -33,6 +33,7 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         self.setupUi(self)
         self.biblemanager = biblemanager
         self.config = config
+        self.bibleplugin = bibleplugin
         self.bibletype = None
         self.barmax = 0
    
@@ -79,7 +80,7 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         if len(self.BooksLocationEdit.displayText()) > 0 or len(self.VerseLocationEdit.displayText()) > 0:
             self.setCSV()
         else:
-            if self.bibletype == "CVS": # Was CSV and is not any more stops lostFocus running mad
+            if self.bibletype == "CSV": # Was CSV and is not any more stops lostFocus running mad
                 self.bibletype = None        
                 self.freeAll()
                
@@ -103,30 +104,31 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
                 self.freeAll()
 
     def on_CopyrightEdit_lostFocus(self):
-        A =1       
+        pass      
         
     def on_VersionNameEdit_lostFocus(self):
-        A =1       
+        pass 
         
     def on_PermisionEdit_lostFocus(self):
-        A =1       
+        pass
         
     def on_BibleNameEdit_lostFocus(self):
-        A =1       
+        pass
         
     def on_BibleImportButtonBox_clicked(self,button):
         log.debug("BibleImportButtonBox %s , %s", button.text() , self.bibletype)
         if button.text() == "Save":
             if self.biblemanager != None:
-                if not self.bibletype == None:
+                if not self.bibletype == None or len(self.BibleNameEdit.displayText()) > 0:
                     self.MessageLabel.setText("Import Started")
-                    self.ProgressBar.setValue(1)
+                    self.ProgressBar.setValue(0)
                     self.progress = 0
                     self.biblemanager.process_dialog(self)
                     self._import_bible()
                     self.MessageLabel.setText("Import Complete")
                     self.ProgressBar.setValue(self.barmax)  
-                    self.update()                         
+                    self.update()
+                    self.bibleplugin.reload_bibles() # Update form as we have a new bible
         elif button.text() == "Cancel":
             self.close()            
 
@@ -142,16 +144,17 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         self.progress +=1
         self.ProgressBar.setValue(self.progress)  
         self.update()
+        self.bibleplugin.refresh()
         
     def _import_bible(self):
         if self.bibletype == "OSIS":
             self.biblemanager.register_osis_file_bible(str(self.BibleNameEdit.displayText()), self.OSISLocationEdit.displayText())
         elif self.bibletype == "CSV":
-            self.biblemanager.register_csv_file_bible(str(self.BibleNameEdit.displayText()), self.OSISLocationEdit.displayText())            
+            self.biblemanager.register_csv_file_bible(str(self.BibleNameEdit.displayText()), self.BooksLocationEdit.displayText(), self.VerseLocationEdit.displayText())            
         else:
             self.setMax(1) # set a value as it will not be needed
-            bname = self.biblemanager.register_http_bible(str(self.BibleComboBox.currentText()),str(self.LocationComboBox.currentText()) ) 
-            self.BibleNameEdit.setText(bname)
+            self.biblemanager.register_http_bible(str(self.BibleComboBox.currentText()),str(self.LocationComboBox.currentText()) ) 
+            self.BibleNameEdit.setText(str(self.BibleComboBox.currentText()))
             
         self.biblemanager.save_meta_data(str(self.BibleNameEdit.displayText()), str(self.VersionNameEdit.displayText()), str(self.CopyrightEdit.displayText()), str(self.PermisionEdit.displayText()))
         self.bibletype = None
@@ -165,7 +168,7 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         self.VersesFileButton.setEnabled(False)
         
     def setCSV(self):
-        self.bibletype = "CVS" 
+        self.bibletype = "CSV" 
         self.BooksLocationEdit.setReadOnly(False)
         self.VerseLocationEdit.setReadOnly(False) 
         self.BooksFileButton.setEnabled(True)

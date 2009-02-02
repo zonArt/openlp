@@ -83,9 +83,12 @@ class MediaManagerItem(QtGui.QWidget):
         """
         self.Toolbar.addSeparator()
         
-    def getInputFile(self, dialogname, dialoglocation, dialogfilter):        
+    def getInputFile(self, dialogname, dialoglocation, dialogfilter):
         return QtGui.QFileDialog.getOpenFileName(self, dialogname,dialoglocation, dialogfilter)
 
-    def getInputFiles(self, dialogname, dialoglocation, dialogfilter):        
+    def getInputFiles(self, dialogname, dialoglocation, dialogfilter):
         return QtGui.QFileDialog.getOpenFileNames(self, dialogname,dialoglocation, dialogfilter)
+        
+    def refresh(self):
+        self.update()
 

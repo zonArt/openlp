@@ -15,14 +15,9 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-import os, os.path
-import sys
-import urllib2
-
+import logging
 from openlp.plugins.bibles.lib.bibleDBimpl import BibleDBImpl
 
-import logging
-               
 class BibleOSISImpl():
     global log     
     log=logging.getLogger("BibleOSISImpl")
@@ -39,25 +34,19 @@ class BibleOSISImpl():
                 
         
     def load_data(self, osisfile, dialogobject=None):
-        self.bibledb.save_meta("Version", "Bible Version")
-        self.bibledb.save_meta("Copyright", "(c) Some Bible company")
-        self.bibledb.save_meta("Permission", "You Have Some")
-        
-        #TODO: need to see if new / old or both testaments
-        dialogobject.setMax(65)
- 
         osis=open(osisfile, 'r')
 
-        book_ptr = ""
+        book_ptr = None
         id = 0
         verseText = "<verse osisID="
+        testament = 1
         for f in osis.readlines():
             #print f
             s = f.find(verseText)
             if s > -1: # we have a verse
                 e= f.find(">", s)
                 ref =  f[s+15:e-1]  # Book Reference 
-                #lets find the bble text
+                #lets find the bible text
                 s = e + 1 # find start of text
                 e = f.find("</verse>", s) # end  of text
                 t = f[s:e] 
@@ -81,12 +70,19 @@ class BibleOSISImpl():
                     #print "X", s, e, t
                     s = t.find("<RF>")
   
-                p = ref.split(".", 3)  # split u[ the reference
+                p = ref.split(".", 3)  # split up the reference
                 if book_ptr != p[0]:
+                    if book_ptr == None:  # first time through
+                        if p[0]  == "Gen":  # set the max book size depending on the first book read
+                            dialogobject.setMax(66)
+                        else:
+                            dialogobject.setMax(27)
+                    if  p[0] == "Gen":
+                        testament += 1
                     book_ptr = p[0]
-                    id = self.bibledb.create_book(int(p[1]), self.booksOfBible[p[0]] , self.abbrevOfBible[p[0]])
-                    dialogobject.incrementBar()
-                self.bibledb.add_verse(id, p[1], p[2], t)
+                    book = self.bibledb.create_book(self.booksOfBible[p[0]] , self.abbrevOfBible[p[0]], testament)
+                    dialogobject.incrementBar(self.booksOfBible[p[0]] )
+                self.bibledb.add_verse(book.id, p[1], p[2], t)
 
 
 
