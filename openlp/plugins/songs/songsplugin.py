@@ -45,7 +45,7 @@ class SongsPlugin(Plugin, PluginUtils):
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(':/media/media_song.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.songmanager = SongManager(self.config)
+
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
