@@ -381,6 +381,7 @@ class BiblePlugin(Plugin, PluginUtils):
         sverse=""
         everse=""
         search.replace("  ", " ")
+        message = None
         #search = search.replace("v", ":")  # allow V or v for verse instead of :
         #search = search.replace("V", ":")  # allow V or v for verse instead of :        
         co = search.find(":")
@@ -422,17 +423,19 @@ class BiblePlugin(Plugin, PluginUtils):
         if sverse == "":
             sverse = 1
         if everse == "":
-            everse = 99  
-        print "book = " + book
-        print "chapter s =" + str(schapter)
-        print "chapter e =" + str(echapter)        
-        print "verse s =" + str(sverse)
-        print "verse e =" + str(everse) 
-        if not schapter  == "":
+            everse = 99
+        if schapter == "":
+            message = "No chapter found for search"
+#        print "book = " + book
+#        print "chapter s =" + str(schapter)
+#        print "chapter e =" + str(echapter)        
+#        print "verse s =" + str(sverse)
+#        print "verse e =" + str(everse) 
+        if message  == None:
             self.searchresults = self.biblemanager.get_verse_text(bible, book,int(schapter), int(echapter), int(sverse), int(everse))
             self._display_results(bible)
         else:
-            QMessageBox.information(self,"Information","A plain, informational message")
+            reply = QtGui.QMessageBox.information(self.MediaManagerItem,"Information",message)
 
             
 
