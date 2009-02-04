@@ -34,8 +34,8 @@ class SongManager():
     """
 
     global log
-    log=logging.getLogger("SongManager")
-    log.info("Song manager loaded")
+    log=logging.getLogger('SongManager')
+    log.info('Song manager loaded')
 
     def __init__(self, config):
         """
@@ -43,24 +43,22 @@ class SongManager():
         don't exist.
         """
         self.config = config
-        log.debug( "Song Initialising")
+        log.debug('Song Initialising')
         self.db_url = u''
         db_type = self.config.get_config(u'db type')
         if db_type == u'sqlite':
             self.db_url = u'sqlite:///' + self.config.get_data_path() + \
                 u'/songs.sqlite'
-            print self.db_url
         else:
             self.db_url = db_type + 'u://' + \
                 self.config.get_config(u'db username') + u':' + \
                 self.config.get_config(u'db password') + u'@' + \
                 self.config.get_config(u'db hostname') + u'/' + \
                 self.config.get_config(u'db database')
-            #print self.db_url
         self.session = init_models(self.db_url)
         if not songs_table.exists():
             metadata.create_all()
-        log.debug( "Song Initialised")
+        log.debug('Song Initialised')
 
     def process_dialog(self, dialogobject):
         self.dialogobject = dialogobject
@@ -75,13 +73,13 @@ class SongManager():
         """
         Searches the song title for keywords.
         """
-        return self.session.query(Song).filter(search_title.like(u'%' + keywords + u'%'))
+        return self.session.query(Song).filter(Song.search_title.like(u'%' + keywords + u'%'))
 
     def search_song_lyrics(self, keywords):
         """
         Searches the song lyrics for keywords.
         """
-        return self.session.query(Song).filter(search_lyrics.like(u'%' + keywords + u'%'))
+        return self.session.query(Song).filter(Song.search_lyrics.like(u'%' + keywords + u'%'))
 
     def get_song(self, id=None):
         """

@@ -3,7 +3,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley,
+Portions copyright (c) 2008 Martin Thompson, Tim Bentley
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -17,14 +17,23 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-from pluginutils import PluginUtils
-from pluginconfig import PluginConfig
-from plugin import Plugin
-from settingstab import SettingsTab
-from mediamanageritem import MediaManagerItem
-from event import Event
-from xmlrootclass import XmlRootClass
-from serviceitem import ServiceItem
 
-__all__ = ['PluginConfig', 'Plugin', 'PluginUtils', 'SettingsTab', 'MediaManagerItem', 'Event',
-           'XmlRootClass', 'ServiceItem']
+class ServiceItem():
+    """
+    The service item is a base class for the plugins to use to interact with
+    the service manager, the slide controller, and the renderer.
+    """
+
+    def render(self):
+        """
+        The render method is what the plugin uses to render it's meda to the
+        screen.
+        """
+        pass
+
+    def get_parent_node(self):
+        """
+        This method returns a parent node to be inserted into the Service
+        Manager.
+        """
+        pass

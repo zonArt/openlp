@@ -75,20 +75,22 @@ class MediaManagerItem(QtGui.QWidget):
         if tooltip is not None:
             ToolbarButton.setToolTip(tooltip)
         if slot is not None:
-            QtCore.QObject.connect(ToolbarButton, QtCore.SIGNAL("triggered()"), slot)
+            QtCore.QObject.connect(ToolbarButton, QtCore.SIGNAL('triggered()'), slot)
 
     def addToolbarSeparator(self):
         """
         A very simple method to add a separator to the toolbar.
         """
         self.Toolbar.addSeparator()
-        
+
     def getInputFile(self, dialogname, dialoglocation, dialogfilter):
-        return QtGui.QFileDialog.getOpenFileName(self, dialogname,dialoglocation, dialogfilter)
+        return QtGui.QFileDialog.getOpenFileName(self, dialogname,
+                                                 dialoglocation, dialogfilter)
 
     def getInputFiles(self, dialogname, dialoglocation, dialogfilter):
-        return QtGui.QFileDialog.getOpenFileNames(self, dialogname,dialoglocation, dialogfilter)
-        
+        return QtGui.QFileDialog.getOpenFileNames(self, dialogname,
+                                                  dialoglocation, dialogfilter)
+
     def refresh(self):
         self.update()
 

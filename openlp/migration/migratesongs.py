@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-import os 
+import os
 import logging
 import sqlite3
 from openlp.core.lib import PluginConfig
@@ -37,7 +37,7 @@ mapper(Song, songs_table,
                    'book': relation(Book, backref='songs'),
                    'topics': relation(Topic, backref='songs',
                                       secondary=songs_topics_table)})
-mapper(Topic, topics_table)  
+mapper(Topic, topics_table)
 
 class MigrateSongs():
     def __init__(self, display):
@@ -51,39 +51,45 @@ class MigrateSongs():
         self.display.output("Songs processing started");
         for f in self.database_files:
             self.v_1_9_0(f)
-        self.display.output("Songs processing finished");          
+        self.display.output("Songs processing finished");
 
     def v_1_9_0(self, database):
         self.display.output("Migration 1.9.0 Started for "+database);
         self._v1_9_0_authors(database)
-        self._v1_9_0_topics(database)      
-        self._v1_9_0_songbook(database) 
-        self._v1_9_0_songauthors(database) 
+        self._v1_9_0_topics(database)
+        self._v1_9_0_songbook(database)
+        self._v1_9_0_songauthors(database)
         self._v1_9_0_songtopics(database)
         self._v1_9_0_songs(database)
-        self._v1_9_0_songs_update(database)          
-        
-        self.display.output("Migration 1.9.0 Finished for " + database);            
+        self._v1_9_0_songs_update(database)
+
+        self.display.output("Migration 1.9.0 Finished for " + database);
 
     def _v1_9_0_authors(self, database):
         self.display.sub_output("Authors Started for "+database);
         conn = sqlite3.connect(self.data_path+os.sep+database)
+        conn.execute("""alter table authors rename to authors_temp;""")
+        conn.commit()
+
+        conn.execute("""create table authors add column display_name varchar(255);""")
+        conn.commit()
+        self.display.sub_output("first name created")
         conn.execute("""alter table authors add column first_name varchar(128);""")
         conn.commit()
         self.display.sub_output("first name created")
         conn.execute("""alter table authors add column last_name varchar(128);""")
         conn.commit()
         self.display.sub_output("last name created")
-        conn.execute("""create index if not exists author1 on authors (display_name ASC,id ASC);""")
-        conn.commit()    
+        conn.execute("""create index if not exists author_display_name on authors (display_name ASC,id ASC);""")
+        conn.commit()
         self.display.sub_output("index author1 created")
-        conn.execute("""create index if not exists author2 on authors (last_name ASC,id ASC);""")
-        conn.commit()     
+        conn.execute("""create index if not exists author_last_name on authors (last_name ASC,id ASC);""")
+        conn.commit()
         self.display.sub_output("index author2 created")
-        conn.execute("""create index if not exists author3 on authors (first_name ASC,id ASC);""")
-        conn.commit()      
-        self.display.sub_output("index author3 created") 
-        self.display.sub_output("Author Data Migration started")    
+        conn.execute("""create index if not exists author_first_name on authors (first_name ASC,id ASC);""")
+        conn.commit()
+        self.display.sub_output("index author3 created")
+        self.display.sub_output("Author Data Migration started")
         c = conn.cursor()
         text = c.execute("""select * from authors """) .fetchall()
         for author in text:
@@ -94,14 +100,15 @@ class MigrateSongs():
                 afn = dispname[:pos]
                 aln = dispname[pos + 1:len(dispname)]
         #txt = text[2]
-                s = "update authors set first_name = '" + afn + "' ,last_name = '" + aln + "' where id = " +str(author[0])
+                s = "update authors set display_name = '" + dispname + "', first_name = '" + afn + "', last_name = '" + aln + "' where id = " +str(author[0])
                 text1 = c.execute(s)
-
+        conn.commit()
+        conn.execute("""alter table authors drop column authorname;""")
         conn.commit()
         conn.close()
-        self.display.sub_output("Author Data Migration Completed")         
+        self.display.sub_output("Author Data Migration Completed")
         self.display.sub_output("Authors Completed");
-        
+
     def _v1_9_0_topics(self, database):
         self.display.sub_output("Topics Started for "+database);
         conn = sqlite3.connect(self.data_path+os.sep+database)
@@ -114,11 +121,11 @@ class MigrateSongs():
         self.display.sub_output("topicname added")
         conn.execute("""create index if not exists topic1 on topics (name ASC,id ASC);""")
         conn.commit()
-        conn.close()      
-        self.display.sub_output("index topic1 created")           
-        
+        conn.close()
+        self.display.sub_output("index topic1 created")
+
         self.display.sub_output("Topics Completed");
-        
+
     def _v1_9_0_songbook(self, database):
         self.display.sub_output("SongBook Started for "+database);
         conn = sqlite3.connect(self.data_path+os.sep+database)
@@ -132,14 +139,14 @@ class MigrateSongs():
         conn.commit()
         self.display.sub_output("songbook_publisher added")
         conn.execute("""create index if not exists songbook1 on song_books (name ASC,id ASC);""")
-        conn.commit()       
+        conn.commit()
         self.display.sub_output("index songbook1 created")
         conn.execute("""create index if not exists songbook2 on song_books (publisher ASC,id ASC);""")
         conn.commit()
-        conn.close()      
-        self.display.sub_output("index songbook2 created")            
+        conn.close()
+        self.display.sub_output("index songbook2 created")
         self.display.sub_output("SongBook Completed");
-    
+
     def _v1_9_0_songtopics(self, database):
         self.display.sub_output("Songtopics Started for "+database);
         conn = sqlite3.connect(self.data_path+os.sep+database)
@@ -150,24 +157,24 @@ class MigrateSongs():
         conn.commit()
         self.display.sub_output("songtopics_topic_id added")
         conn.execute("""create index if not exists songtopic1 on song_topics (topic_id ASC,song_id ASC);""")
-        conn.commit()       
+        conn.commit()
         self.display.sub_output("index songbook1 created")
         conn.execute("""create index if not exists songbook2 on song_topics (song_id ASC,topic_id ASC);""")
         conn.commit()
-        conn.close()      
-        self.display.sub_output("index songbook2 created")            
+        conn.close()
+        self.display.sub_output("index songbook2 created")
         self.display.sub_output("SongTopics Completed");
-        
+
     def _v1_9_0_songauthors(self, database):
         self.display.sub_output("SongAuthors Started for "+database);
         conn = sqlite3.connect(self.data_path+os.sep+database)
         conn.execute("""alter table songauthors rename to authors_songs;""")
         conn.commit()
-        conn.close()      
-        self.display.sub_output("Table Renamed")            
+        conn.close()
+        self.display.sub_output("Table Renamed")
         self.display.sub_output("SongAuthors Completed");
-                
-                
+
+
     def _v1_9_0_songs(self, database):
         self.display.sub_output("Songs Started for "+database);
         conn = sqlite3.connect(self.data_path+os.sep+database)
@@ -188,24 +195,24 @@ class MigrateSongs():
         self.display.sub_output("songs song_number added")
         conn.execute("""alter table songs add theme_name varchar(128);""")
         conn.commit()
-        self.display.sub_output("songs theme_name added")        
+        self.display.sub_output("songs theme_name added")
         conn.execute("""alter table songs add search_title varchar(255);""")
         conn.commit()
         self.display.sub_output("songs search_title added")
         conn.execute("""alter table songs add search_lyrics text;""")
         conn.commit()
         self.display.sub_output("songs search_lyrics added")
-        
+
         conn.execute("""create index if not exists songs1 on songs (search_lyrics ASC,id ASC);""")
-        conn.commit()       
+        conn.commit()
         self.display.sub_output("index songs1 created")
         conn.execute("""create index if not exists songs2 on songs (search_title ASC,id ASC);""")
         conn.commit()
-        conn.close()      
-        self.display.sub_output("index songs2 created")            
+        conn.close()
+        self.display.sub_output("index songs2 created")
         self.display.sub_output("Songs Completed");
-        
-         
+
+
 
     def _v1_9_0_songs_update(self, database):
         self.display.sub_output("Songs Started for "+database);
@@ -224,31 +231,31 @@ class MigrateSongs():
             t=t.replace("'", "")
             t=t.replace(",", "")
             t=t.replace(";", "")
-            t=t.replace(":", "")             
+            t=t.replace(":", "")
             t=t.replace("(", "")
             t=t.replace(")", "")
-            t=t.replace("{", "") 
+            t=t.replace("{", "")
             t=t.replace("}", "")
-            t=t.replace("?", "")            
+            t=t.replace("?", "")
             song.search_title = t
             t=song.lyrics.replace("&", "and")
             t=t.replace("'", "")
             t=t.replace(",", "")
             t=t.replace(";", "")
-            t=t.replace(":", "")             
+            t=t.replace(":", "")
             t=t.replace("(", "")
             t=t.replace(")", "")
-            t=t.replace("{", "") 
+            t=t.replace("{", "")
             t=t.replace("}", "")
-            t=t.replace("?", "")            
+            t=t.replace("?", "")
             song.search_lyrics = t
             song.song_book_id = 0
             Session.save_or_update(song)
             Session.commit()
-        
+
     def run_cmd(self, cmd):
         f_i, f_o  = os.popen4(cmd)
         out = f_o.readlines()
         if len(out) > 0:
               for o in range (0, len(out)):
-                self.display.sub_output(out[o])        
+                self.display.sub_output(out[o])
