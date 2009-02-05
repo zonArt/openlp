@@ -89,7 +89,7 @@ class PresentationPlugin(Plugin, PluginUtils):
         self._load_presentation_list(list)        
 
     def onPresentationLoadClick(self):
-        files = self.MediaManagerItem.getInputFiles("Select Presentation(s)", self._get_last_dir(), "Images (*.ppt *.pps *.odi)")
+        files = QtGui.QFileDialog.getOpenFileNames(None, "Select Presentation(s)", self._get_last_dir(), "Images (*.ppt *.pps *.odi)")
         if len(files) > 0:
             self._load_presentation_list(files)
             self._save_last_directory(files[0])

@@ -84,7 +84,7 @@ class VideoPlugin(Plugin, PluginUtils):
         self._load_video_list(list)     
 
     def onVideoNewClick(self):
-        files = self.MediaManagerItem.getInputFiles("Select Image(s)", self._get_last_dir(), "Images (*.avi *.mpeg)")
+        files = QtGui.QFileDialog.getOpenFileNames(None, "Select Image(s)", self._get_last_dir(), "Images (*.avi *.mpeg)")
         if len(files) > 0:
             self._load_video_list(files)
             self._save_last_directory(files[0])

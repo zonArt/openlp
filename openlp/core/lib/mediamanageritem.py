@@ -82,13 +82,3 @@ class MediaManagerItem(QtGui.QWidget):
         A very simple method to add a separator to the toolbar.
         """
         self.Toolbar.addSeparator()
-
-    def getInputFile(self, dialogname, dialoglocation, dialogfilter):
-        return QtGui.QFileDialog.getOpenFileName(self, dialogname,
-                                                 dialoglocation, dialogfilter)
-
-    def getInputFiles(self, dialogname, dialoglocation, dialogfilter):
-        return QtGui.QFileDialog.getOpenFileNames(self, dialogname,
-                                                  dialoglocation, dialogfilter)
-
-

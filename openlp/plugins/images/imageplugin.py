@@ -86,7 +86,7 @@ class ImagePlugin(Plugin, PluginUtils):
         self._load_image_list(list)     
 
     def onImagesNewClick(self):
-        files = self.MediaManagerItem.getInputFiles("Select Image(s)", self._get_last_dir(), "Images (*.jpg *.gif *.png *.bmp)")
+        files = QtGui.QFileDialog.getOpenFileNames(None, "Select Image(s)", self._get_last_dir(), "Images (*.jpg *.gif *.png *.bmp)")
         if len(files) > 0:
             self._load_image_list(files)
             self._save_last_directory(files[0])
