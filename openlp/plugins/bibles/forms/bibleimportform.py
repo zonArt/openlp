@@ -127,7 +127,6 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
                     self._import_bible()
                     self.MessageLabel.setText("Import Complete")
                     self.ProgressBar.setValue(self.barmax)  
-                    self.update()
                     self.bibleplugin.reload_bibles() # Update form as we have a new bible
         elif button.text() == "Cancel":
             self.close()            
@@ -137,13 +136,14 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         self.ProgressBar.setMaximum(max)        
 
     def incrementBar(self, text = None):
+        print self.progress, text, self.barmax
         if text != None:
-            self.MessageLabel.setText("Import progressing with " + text)
+            self.MessageLabel.setText("Import processed " + text)
         else:
             self.MessageLabel.setText("Import progressing")            
         self.progress +=1
         self.ProgressBar.setValue(self.progress)  
-        self.update()
+        #self.update()
         self.bibleplugin.refresh()
         
     def _import_bible(self):

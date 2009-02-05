@@ -91,6 +91,4 @@ class MediaManagerItem(QtGui.QWidget):
         return QtGui.QFileDialog.getOpenFileNames(self, dialogname,
                                                   dialoglocation, dialogfilter)
 
-    def refresh(self):
-        self.update()
 

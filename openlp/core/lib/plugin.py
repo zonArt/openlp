@@ -88,6 +88,7 @@ class Plugin(object):
         self.weight = 0
         # Set up logging
         self.log = logging.getLogger(self.name)
+        self.repaint_main_window = None
 
     def check_pre_conditions(self):
         """
@@ -114,6 +115,12 @@ class Plugin(object):
         Create a menu item and add it to the "Export" menu.
         """
         pass
+        
+    def add_repaint_main_window(self, repaint_main_window):
+        """
+        Create ability to repaint main window.
+        """
+        self.repaint_main_window = repaint_main_window        
 
     def get_settings_tab(self):
         """

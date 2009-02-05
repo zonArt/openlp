@@ -112,5 +112,10 @@ class PluginManager(object):
         for plugin in self.plugins:
             plugin.add_export_menu_item(export_menu)
 
-    def hook_handle_event(self, event):
+    def hook_handle_event(self, event):        
         pass
+        
+    def hook_repaint_main_window(self, repaint_main_window):
+        for plugin in self.plugins:
+            plugin.add_repaint_main_window(repaint_main_window)
+        

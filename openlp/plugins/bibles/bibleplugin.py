@@ -252,7 +252,7 @@ class BiblePlugin(Plugin, PluginUtils):
         pass
   
     def refresh(self):
-        self.MediaManagerItem.refresh()
+        self.repaint_main_window()
        
     def reload_bibles(self):
         self.biblemanager.reload_bibles()
@@ -372,7 +372,7 @@ class BiblePlugin(Plugin, PluginUtils):
 
 
     def _initialise_bible_quick(self, bible): # not sure if needed yet!
-        a=1
+        pass
         
     def translate(self, bible,  search):
         book = ""

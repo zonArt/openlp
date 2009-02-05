@@ -204,11 +204,11 @@ class SongsPlugin(Plugin, PluginUtils):
         self.SearchTextEdit.clear()
 
     def onSearchTextEditChanged(self, text):
-        #sl = 3
-        #if self.SearchTypeComboBox.currentText() == u'Lyrics':
-        #    sl = 7
-        #if len(text) > sl:  # only search if > 3 characters
-        self.onSearchTextButtonClick()
+        sl = 3
+        if self.SearchTypeComboBox.currentText() == u'Lyrics':
+            sl = 7
+        if len(text) > sl:  # only search if > 3 characters
+            self.onSearchTextButtonClick()
 
     def onSearchTextButtonClick(self):
         search_keywords = str(self.SearchTextEdit.displayText())
@@ -267,7 +267,7 @@ class SongsPlugin(Plugin, PluginUtils):
         self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Song Name","Author"]))
         self.SongListView.setVerticalHeaderLabels(QtCore.QStringList([""]))
         self.SongListView.setRowCount(0)
-        log.debug("Records returned from search %s", len(searchresults))
+        #log.debug("Records returned from search %s", len(searchresults))
         for song in searchresults:
             for author in song.authors:
                 c = self.SongListView.rowCount()

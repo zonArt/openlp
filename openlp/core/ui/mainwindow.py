@@ -37,7 +37,10 @@ class MainWindow(object):
         pluginpath = os.path.abspath(os.path.join(pluginpath, '..', '..','plugins'))
         self.plugin_manager = PluginManager(pluginpath)
         self.setupUi()
-
+        
+    def repaint_window(self):
+        self.main_window.update()
+        
     def setupUi(self):
         self.main_window.setObjectName("main_window")
         self.main_window.resize(1087, 847)
@@ -119,6 +122,8 @@ class MainWindow(object):
         self.FileExportMenu.setObjectName("FileExportMenu")
         # Call the hook method to pull in export menus.
         self.plugin_manager.hook_import_menu(self.FileExportMenu)
+        # Call the hook method to export refresh.
+        self.plugin_manager.hook_repaint_main_window(self.repaint_window)        
         #
         self.OptionsMenu = QtGui.QMenu(self.MenuBar)
         self.OptionsMenu.setObjectName("OptionsMenu")
