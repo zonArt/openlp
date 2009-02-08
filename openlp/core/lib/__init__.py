@@ -25,6 +25,7 @@ from mediamanageritem import MediaManagerItem
 from event import Event
 from xmlrootclass import XmlRootClass
 from serviceitem import ServiceItem
+from eventreceiver import Receiver
 
 __all__ = ['PluginConfig', 'Plugin', 'PluginUtils', 'SettingsTab', 'MediaManagerItem', 'Event',
-           'XmlRootClass', 'ServiceItem']
+           'XmlRootClass', 'ServiceItem', "Receiver"]

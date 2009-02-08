@@ -116,12 +116,6 @@ class Plugin(object):
         """
         pass
         
-    def add_repaint_main_window(self, repaint_main_window):
-        """
-        Create ability to repaint main window.
-        """
-        self.repaint_main_window = repaint_main_window        
-
     def get_settings_tab(self):
         """
         Create a menu item and add it to the "Import" menu.

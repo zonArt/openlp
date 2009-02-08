@@ -18,12 +18,14 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import os
+
 from time import sleep
+from PyQt4 import *
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
 from openlp.core.ui import AboutForm, AlertForm, SettingsDialog
-from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab
+from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab, Receiver
 from openlp.core import PluginManager
 
 class MainWindow(object):
@@ -37,10 +39,12 @@ class MainWindow(object):
         pluginpath = os.path.abspath(os.path.join(pluginpath, '..', '..','plugins'))
         self.plugin_manager = PluginManager(pluginpath)
         self.setupUi()
-        
-    def repaint_window(self):
-        self.main_window.update()
-        
+        self.receiver = Receiver()
+        QtCore.QObject.connect(self.receiver.get_receiver(),QtCore.SIGNAL("openlprepaint"),self.repaint)  
+    
+    def repaint(self):
+        self.main_window.repaint()
+
     def setupUi(self):
         self.main_window.setObjectName("main_window")
         self.main_window.resize(1087, 847)
@@ -122,8 +126,6 @@ class MainWindow(object):
         self.FileExportMenu.setObjectName("FileExportMenu")
         # Call the hook method to pull in export menus.
         self.plugin_manager.hook_import_menu(self.FileExportMenu)
-        # Call the hook method to export refresh.
-        self.plugin_manager.hook_repaint_main_window(self.repaint_window)        
         #
         self.OptionsMenu = QtGui.QMenu(self.MenuBar)
         self.OptionsMenu.setObjectName("OptionsMenu")
@@ -404,6 +406,7 @@ class MainWindow(object):
         QtCore.QObject.connect(self.HelpAboutItem, QtCore.SIGNAL("triggered()"), self.onHelpAboutItemClicked)
         QtCore.QObject.connect(self.ToolsAlertItem, QtCore.SIGNAL("triggered()"), self.onToolsAlertItemClicked)
         QtCore.QObject.connect(self.OptionsSettingsItem, QtCore.SIGNAL("triggered()"), self.onOptionsSettingsItemClicked)
+
 
     def retranslateUi(self):
         self.main_window.setWindowTitle(QtGui.QApplication.translate("main_window", "openlp.org 2.0", None, QtGui.QApplication.UnicodeUTF8))

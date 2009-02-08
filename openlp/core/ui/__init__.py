@@ -24,4 +24,5 @@ from alertform import AlertForm
 from settings import SettingsDialog
 from mainwindow import MainWindow
 
+
 __all__ = ['SplashScreen', 'AboutForm', 'AlertForm', 'SettingsDialog', 'MainWindow']

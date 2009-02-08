@@ -25,7 +25,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from openlp.core.resources import *
-from openlp.core.lib import Plugin,PluginUtils,  MediaManagerItem
+from openlp.core.lib import Plugin,PluginUtils,  MediaManagerItem, Receiver
 
 from openlp.plugins.bibles.lib import BibleManager
 from openlp.plugins.bibles.forms import BibleImportForm
@@ -48,7 +48,12 @@ class BiblePlugin(Plugin, PluginUtils):
         #Register the bible Manager
         self.biblemanager = BibleManager(self.config)
         self.searchresults = {} # place to store the search results
-
+        self.receiver = Receiver()        
+        QtCore.QObject.connect(self.receiver.get_receiver(),QtCore.SIGNAL("openlprepaint"),self.repaint)
+        
+    def repaint(self):
+        self.MediaManagerItem.repaint()
+        
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
         self.MediaManagerItem = MediaManagerItem(self.icon, 'Bible Verses')
@@ -251,9 +256,6 @@ class BiblePlugin(Plugin, PluginUtils):
     def onBibleAddClick(self):
         pass
   
-    def refresh(self):
-        self.repaint_main_window()
-       
     def reload_bibles(self):
         self.biblemanager.reload_bibles()
         self._initialise_form()

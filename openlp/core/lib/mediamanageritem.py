@@ -42,7 +42,7 @@ class MediaManagerItem(QtGui.QWidget):
             self.title = title
         self.Toolbar = None
         #self.ToolbarButtons = []
-
+        
     def addToolbar(self):
         """
         A method to help developers easily add a toolbar to the media manager

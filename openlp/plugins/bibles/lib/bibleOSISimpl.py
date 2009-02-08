@@ -17,6 +17,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import logging
 from openlp.plugins.bibles.lib.bibleDBimpl import BibleDBImpl
+from openlp.core.lib import Receiver
 
 class BibleOSISImpl():
     global log     
@@ -27,6 +28,7 @@ class BibleOSISImpl():
         self.booksOfBible = {} # books of the bible linked to bibleid  {osis , name}
         self.abbrevOfBible = {} # books of the bible linked to bibleid  {osis ,Abbrev }  
         fbibles=open(biblepath+"/osisbooks_en.txt", 'r')
+        self.receiver = Receiver()        
         for line in fbibles:
             p = line.split(",")
             self.booksOfBible[p[0]] = p[1].replace('\n', '')
@@ -38,6 +40,7 @@ class BibleOSISImpl():
 
         book_ptr = None
         id = 0
+        count = 0
         verseText = "<verse osisID="
         testament = 1
         for f in osis.readlines():
@@ -74,15 +77,21 @@ class BibleOSISImpl():
                 if book_ptr != p[0]:
                     if book_ptr == None:  # first time through
                         if p[0]  == "Gen":  # set the max book size depending on the first book read
-                            dialogobject.setMax(66)
+                            dialogobject.setMax(65)
                         else:
                             dialogobject.setMax(27)
-                    if  p[0] == "Gen":
+                    if  p[0] == "Matt": # First book of NT
                         testament += 1
                     book_ptr = p[0]
                     book = self.bibledb.create_book(self.booksOfBible[p[0]] , self.abbrevOfBible[p[0]], testament)
                     dialogobject.incrementBar(self.booksOfBible[p[0]] )
+                    self.receiver.send_repaint() # send repaint message to dialog as book changed
+                    count = 0
                 self.bibledb.add_verse(book.id, p[1], p[2], t)
+                count += 1
+                if count % 100 == 0:   #Every x verses repaint the screen
+                    self.receiver.send_repaint() # send repaint message to dialog
+                    count = 0
 
 
 

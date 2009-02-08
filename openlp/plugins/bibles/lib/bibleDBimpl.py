@@ -62,7 +62,7 @@ class BibleDBImpl(BibleCommon):
         self._load_testament("Apocrypha")        
         
     def add_verse(self, bookid, chap,  vse, text):
-        log.debug( "add_verse %s,%s,%s", bookid, chap, vse)
+        #log.debug( "add_verse %s,%s,%s", bookid, chap, vse)
         metadata.bind.echo = False
         session = self.session()
         verse = Verse()

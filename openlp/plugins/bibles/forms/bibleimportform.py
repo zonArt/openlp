@@ -16,7 +16,8 @@ from PyQt4.QtGui import QDialog
 from PyQt4.QtCore import pyqtSignature
 
 from bibleimportdialog import Ui_BibleImportDialog
-from openlp.core.lib import PluginUtils
+from openlp.core.lib import PluginUtils, Receiver
+
 
 class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
     global log
@@ -36,11 +37,17 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         self.bibleplugin = bibleplugin
         self.bibletype = None
         self.barmax = 0
+        self.receiver = Receiver()
    
         QtCore.QObject.connect(self.LocationComboBox, QtCore.SIGNAL("activated(int)"), self.onLocationComboBox)
         QtCore.QObject.connect(self.TypeComboBox, QtCore.SIGNAL("activated(int)"), self.onTypeComboBox)
         QtCore.QObject.connect(self.BibleComboBox, QtCore.SIGNAL("activated(int)"), self.onBibleComboBox)
+        QtCore.QObject.connect(self.ProgressBar, QtCore.SIGNAL("valueChanged(int)"), self.on_ProgressBar_changed)       
+        QtCore.QObject.connect(self.receiver.get_receiver(),QtCore.SIGNAL("openlprepaint"),self.on_ProgressBar_changed)
         
+    def on_ProgressBar_changed(self):
+        self.repaint()
+
     @pyqtSignature("")
     def on_VersesFileButton_clicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir())
@@ -121,6 +128,7 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
             if self.biblemanager != None:
                 if not self.bibletype == None or len(self.BibleNameEdit.displayText()) > 0:
                     self.MessageLabel.setText("Import Started")
+                    self.ProgressBar.setMinimum(0)                    
                     self.ProgressBar.setValue(0)
                     self.progress = 0
                     self.biblemanager.process_dialog(self)
@@ -132,21 +140,20 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
             self.close()            
 
     def setMax(self, max):
+        log.debug("set Max %s", max)        
         self.barmax = max
         self.ProgressBar.setMaximum(max)        
 
-    def incrementBar(self, text = None):
-        print self.progress, text, self.barmax
-        if text != None:
-            self.MessageLabel.setText("Import processed " + text)
-        else:
-            self.MessageLabel.setText("Import progressing")            
+    def incrementBar(self, text ):
+        log.debug("IncrementBar %s", text)
+        self.MessageLabel.setText("Import processing " + text)
         self.progress +=1
-        self.ProgressBar.setValue(self.progress)  
-        #self.update()
-        self.bibleplugin.refresh()
-        
+        self.ProgressBar.setValue(self.progress)
+        print self.ProgressBar.value()
+        print text + " " + str(self.progress)
+                
     def _import_bible(self):
+        log.debug("Import Bible ")        
         if self.bibletype == "OSIS":
             self.biblemanager.register_osis_file_bible(str(self.BibleNameEdit.displayText()), self.OSISLocationEdit.displayText())
         elif self.bibletype == "CSV":
