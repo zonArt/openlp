@@ -21,9 +21,16 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 class ServiceItem():
     """
     The service item is a base class for the plugins to use to interact with
-    the service manager, the slide controller, and the renderer.
+    the service manager, the slide controller, and the projection screen
+    compositor.
     """
 
+    def __init__(self):
+        """
+        Init Method
+        """
+        pass
+    
     def render(self):
         """
         The render method is what the plugin uses to render it's meda to the
@@ -37,3 +44,22 @@ class ServiceItem():
         Manager.
         """
         pass
+
+    def get_oos_repr(self):
+        """
+        This method returns some text which can be saved into the OOS
+        file to represent this item
+        """
+        pass
+
+    def set_from_oos(self, oostext):
+        """
+        This method takes some oostext (passed from the ServiceManager)
+        and parses it into the data actually required
+        """
+        pass
+
+    def set_from_plugin(self, data):
+        """
+        Takes data from the plugin media chooser
+        """

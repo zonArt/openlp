@@ -20,7 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import os 
 from PyQt4 import QtCore, QtGui
 from openlp.core.resources import *
-from openlp.core.lib import Plugin, PluginUtils, MediaManagerItem
+from openlp.core.lib import Plugin, PluginUtils, MediaManagerItem, ImageServiceItem
 #from forms import EditSongForm
 
 class ImagePlugin(Plugin, PluginUtils):
@@ -33,6 +33,8 @@ class ImagePlugin(Plugin, PluginUtils):
         self.icon.addPixmap(QtGui.QPixmap(':/media/media_image.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
+        self.preview_service_item=ImageServiceItem()
+        self.live_service_item=ImageServiceItem()
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
@@ -114,7 +116,8 @@ class ImagePlugin(Plugin, PluginUtils):
         self._save_display_list(self.ImageListView)     
 
     def onImagePreviewClick(self):
-        pass
+        self.preview_service_item.set_from_plugin(self.ImageListView.pathtofile)
+        self.preview_service_item.render()
 
     def onImageLiveClick(self):
         pass
