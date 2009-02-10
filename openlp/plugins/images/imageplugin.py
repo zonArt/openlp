@@ -77,7 +77,12 @@ class ImagePlugin(Plugin, PluginUtils):
 
         self.ImageListView.addAction(self.add_to_context_menu(self.ImageListView, ':/system/system_preview.png', "&Preview Image", self.onImagePreviewClick))      
         self.ImageListView.addAction(self.add_to_context_menu(self.ImageListView, ':/system/system_live.png', "&Show Live", self.onImageLiveClick))        
-        self.ImageListView.addAction(self.add_to_context_menu(self.ImageListView, ':/system/system_add.png', "&Add to Service", self.onImageAddClick))          
+        self.ImageListView.addAction(self.add_to_context_menu(self.ImageListView, ':/system/system_add.png', "&Add to Service", self.onImageAddClick))
+
+        self.ImageListPreview = QtGui.QWidget()
+        self.MediaManagerItem.PageLayout.addWidget(self.ImageListPreview)
+        self.ImageListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
+        
 
         return self.MediaManagerItem
 
