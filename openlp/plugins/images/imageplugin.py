@@ -116,7 +116,7 @@ class ImagePlugin(Plugin, PluginUtils):
         self._save_display_list(self.ImageListView)     
 
     def onImagePreviewClick(self):
-        self.preview_service_item.set_from_plugin(self.ImageListView.pathtofile)
+        self.preview_service_item.add(self.ImageListView.pathtofile)
         self.preview_service_item.render()
 
     def onImageLiveClick(self):
