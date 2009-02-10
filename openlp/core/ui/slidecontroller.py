@@ -21,25 +21,25 @@ import os
 from time import sleep
 from PyQt4 import QtCore, QtGui
 
-class SlideController(object):
+class SlideController(QtCore.QObject):
     def __init__(self, control_splitter):
         self.Pane = QtGui.QWidget(control_splitter)
-#         self.Pane.setObjectName("Pane")
-        self.PaneLayout = QtGui.QVBoxLayout(self.Pane)
-        self.PaneLayout.setSpacing(0)
-        self.PaneLayout.setMargin(0)
-#         self.PaneLayout.setObjectName("PaneLayout")
         self.Splitter = QtGui.QSplitter(self.Pane)
         self.Splitter.setOrientation(QtCore.Qt.Vertical)
-#         self.Splitter.setObjectName("Splitter")
+        
+        self.PaneLayout = QtGui.QVBoxLayout(self.Pane)
+        self.PaneLayout.addWidget(self.Splitter)
+        self.PaneLayout.setSpacing(50)
+        self.PaneLayout.setMargin(0)
+
+#         self.Controller = QtGui.QGraphicsView(self.Splitter)
         self.Controller = QtGui.QScrollArea(self.Splitter)
         self.Controller.setWidgetResizable(True)
-#         self.Controller.setObjectName("Controller")
         self.ControllerContents = QtGui.QWidget(self.Controller)
         self.ControllerContents.setGeometry(QtCore.QRect(0, 0, 228, 536))
-#         self.ControllerContents.setObjectName("ControllerContents")
+        self.Controller.setGeometry(QtCore.QRect(0, 0, 828, 536))
         self.Controller.setWidget(self.ControllerContents)
+
         self.Screen = QtGui.QGraphicsView(self.Splitter)
         self.Screen.setMaximumSize(QtCore.QSize(16777215, 250))
-#         self.Screen.setObjectName("Screen")
-        self.PaneLayout.addWidget(self.Splitter)
+
