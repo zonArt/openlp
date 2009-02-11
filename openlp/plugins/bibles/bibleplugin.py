@@ -119,9 +119,13 @@ class BiblePlugin(Plugin, PluginUtils):
         self.QuickSearchButton.setObjectName('QuickSearchButton')
         self.QuickSearchButton.setText('Search')
         self.QuickLayout.addWidget(self.QuickSearchButton, 3, 2, 1, 1)
+        self.SearchTabWidget.addTab(self.QuickTab, 'Quick Search')
+        self.ClearQuickSearchComboBox = QtGui.QComboBox(self.QuickTab)
+        self.ClearQuickSearchComboBox.setObjectName('ClearQuickSearchComboBox')
+        self.QuickLayout.addWidget(self.ClearQuickSearchComboBox, 3, 0, 1, 1)            
         QuickSpacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.QuickLayout.addItem(QuickSpacerItem, 4, 2, 1, 1)
-        self.SearchTabWidget.addTab(self.QuickTab, 'Quick Search')
+    
         # Add the Advanced Search tab
         self.AdvancedTab = QtGui.QWidget()
         self.AdvancedTab.setObjectName('AdvancedTab')
@@ -172,6 +176,9 @@ class BiblePlugin(Plugin, PluginUtils):
         self.AdvancedToVerse.setObjectName('AdvancedToVerse')
         self.AdvancedLayout.addWidget(self.AdvancedToVerse, 4, 3, 1, 1)
 
+        self.ClearAdvancedSearchComboBox = QtGui.QComboBox(self.QuickTab)
+        self.ClearAdvancedSearchComboBox.setObjectName('ClearAdvancedSearchComboBox')
+        self.AdvancedLayout.addWidget(self.ClearAdvancedSearchComboBox, 5, 0, 1, 1)
         self.AdvancedSearchButton = QtGui.QPushButton(self.AdvancedTab)
         self.AdvancedSearchButton.setObjectName('AdvancedSearchButton')
         self.AdvancedSearchButton.setText('Search')
@@ -266,8 +273,12 @@ class BiblePlugin(Plugin, PluginUtils):
         self.QuickVersionComboBox.clear()
         self.AdvancedVersionComboBox.clear()                
         bibles = self.biblemanager.get_bibles("full")
+        self.QuickSearchComboBox.addItem("Verse Search")        
         self.QuickSearchComboBox.addItem("Text Search")
-        self.QuickSearchComboBox.addItem("Verse Search")
+        self.ClearQuickSearchComboBox.addItem("Clear Results") 
+        self.ClearQuickSearchComboBox.addItem("Keep Results") 
+        self.ClearAdvancedSearchComboBox.addItem("Clear Results") 
+        self.ClearAdvancedSearchComboBox.addItem("Keep Results")  
         for b in bibles:  # load bibles into the combo boxes
             self.QuickVersionComboBox.addItem(b)
                 

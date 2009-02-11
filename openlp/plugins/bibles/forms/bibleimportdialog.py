@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'bibleimportdialog.ui'
 #
-# Created: Sat Jan 24 07:46:38 2009
+# Created: Wed Feb 11 16:48:24 2009
 #      by: PyQt4 UI code generator 4.4.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -16,11 +16,6 @@ class Ui_BibleImportDialog(object):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icon/openlp.org-icon-32.bmp"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         BibleImportDialog.setWindowIcon(icon)
-        self.BibleImportButtonBox = QtGui.QDialogButtonBox(BibleImportDialog)
-        self.BibleImportButtonBox.setGeometry(QtCore.QRect(10, 690, 481, 33))
-        self.BibleImportButtonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.BibleImportButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Save)
-        self.BibleImportButtonBox.setObjectName("BibleImportButtonBox")
         self.ImportToolBox = QtGui.QToolBox(BibleImportDialog)
         self.ImportToolBox.setGeometry(QtCore.QRect(10, 0, 471, 431))
         self.ImportToolBox.setObjectName("ImportToolBox")
@@ -191,6 +186,17 @@ class Ui_BibleImportDialog(object):
         self.ProgressBar.setInvertedAppearance(False)
         self.ProgressBar.setObjectName("ProgressBar")
         self.gridLayout_3.addWidget(self.ProgressBar, 0, 0, 1, 1)
+        self.widget = QtGui.QWidget(BibleImportDialog)
+        self.widget.setGeometry(QtCore.QRect(320, 680, 170, 28))
+        self.widget.setObjectName("widget")
+        self.horizontalLayout = QtGui.QHBoxLayout(self.widget)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.ImportButton = QtGui.QPushButton(self.widget)
+        self.ImportButton.setObjectName("ImportButton")
+        self.horizontalLayout.addWidget(self.ImportButton)
+        self.CancelButton = QtGui.QPushButton(self.widget)
+        self.CancelButton.setObjectName("CancelButton")
+        self.horizontalLayout.addWidget(self.CancelButton)
 
         self.retranslateUi(BibleImportDialog)
         self.ImportToolBox.setCurrentIndex(1)
@@ -210,7 +216,6 @@ class Ui_BibleImportDialog(object):
         BibleImportDialog.setTabOrder(self.PasswordEdit, self.VersionNameEdit)
         BibleImportDialog.setTabOrder(self.VersionNameEdit, self.CopyrightEdit)
         BibleImportDialog.setTabOrder(self.CopyrightEdit, self.PermisionEdit)
-        BibleImportDialog.setTabOrder(self.PermisionEdit, self.BibleImportButtonBox)
 
     def retranslateUi(self, BibleImportDialog):
         BibleImportDialog.setWindowTitle(QtGui.QApplication.translate("BibleImportDialog", "Bible Registration", None, QtGui.QApplication.UnicodeUTF8))
@@ -240,3 +245,6 @@ class Ui_BibleImportDialog(object):
         self.PermisionLabel.setText(QtGui.QApplication.translate("BibleImportDialog", "Permission:", None, QtGui.QApplication.UnicodeUTF8))
         self.ProgressGroupBox.setTitle(QtGui.QApplication.translate("BibleImportDialog", "Import Progress", None, QtGui.QApplication.UnicodeUTF8))
         self.ProgressBar.setFormat(QtGui.QApplication.translate("BibleImportDialog", "%p", None, QtGui.QApplication.UnicodeUTF8))
+        self.ImportButton.setText(QtGui.QApplication.translate("BibleImportDialog", "Import", None, QtGui.QApplication.UnicodeUTF8))
+        self.CancelButton.setText(QtGui.QApplication.translate("BibleImportDialog", "Cancel", None, QtGui.QApplication.UnicodeUTF8))
+

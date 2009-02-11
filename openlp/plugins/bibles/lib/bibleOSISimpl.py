@@ -28,7 +28,6 @@ class BibleOSISImpl():
         self.booksOfBible = {} # books of the bible linked to bibleid  {osis , name}
         self.abbrevOfBible = {} # books of the bible linked to bibleid  {osis ,Abbrev }  
         fbibles=open(biblepath+"/osisbooks_en.txt", 'r')
-        self.receiver = Receiver()        
         for line in fbibles:
             p = line.split(",")
             self.booksOfBible[p[0]] = p[1].replace('\n', '')
@@ -85,12 +84,12 @@ class BibleOSISImpl():
                     book_ptr = p[0]
                     book = self.bibledb.create_book(self.booksOfBible[p[0]] , self.abbrevOfBible[p[0]], testament)
                     dialogobject.incrementBar(self.booksOfBible[p[0]] )
-                    self.receiver.send_repaint() # send repaint message to dialog as book changed
+                    Receiver().send_message("openlprepaint") # send repaint message to dialog
                     count = 0
                 self.bibledb.add_verse(book.id, p[1], p[2], t)
                 count += 1
                 if count % 100 == 0:   #Every x verses repaint the screen
-                    self.receiver.send_repaint() # send repaint message to dialog
+                    Receiver().send_message("openlprepaint") # send repaint message to dialog
                     count = 0
 
 

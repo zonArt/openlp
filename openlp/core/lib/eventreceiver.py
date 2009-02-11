@@ -27,8 +27,8 @@ class EventReceiver(QObject):
     def __init__(self):
         QObject.__init__(self)        
         
-    def send_repaint(self):
-        self.emit(SIGNAL("openlprepaint"), None)
+    def send_message(self, event, msg=None):
+        self.emit(SIGNAL(event), msg)
         
     def received(self, msg=None):
         print msg
@@ -40,17 +40,15 @@ class Receiver():
     As there is only one instance of it in the systems the QT signal/slot architecture
     can send messages across the system
     Send message
-       receiver = Receiver()
-       receiver.send_repaint()   
+       Receiver().send_message("messageid",data)   
        
     Receive Message
-        self.receiver = Receiver()
-        QtCore.QObject.connect(self.receiver.get_receiver(),QtCore.SIGNAL("openlprepaint"),<<ACTION>>) 
+        QtCore.QObject.connect(Receiver().get_receiver(),QtCore.SIGNAL("openlprepaint"),<<ACTION>>) 
     """    
     eventreceiver=EventReceiver()    
     @staticmethod
-    def send_repaint():
-        Receiver.eventreceiver.send_repaint()
+    def send_message(event, msg=None):
+        Receiver.eventreceiver.send_message(event, msg)
     @staticmethod
     def receive():
         Receiver.eventreceiver.receive()

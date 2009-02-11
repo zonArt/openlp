@@ -17,22 +17,6 @@
    <iconset resource="../images/openlp-2.qrc">
     <normaloff>:/icon/openlp.org-icon-32.bmp</normaloff>:/icon/openlp.org-icon-32.bmp</iconset>
   </property>
-  <widget class="QDialogButtonBox" name="BibleImportButtonBox">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>690</y>
-     <width>481</width>
-     <height>33</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
-   </property>
-  </widget>
   <widget class="QToolBox" name="ImportToolBox">
    <property name="geometry">
     <rect>
@@ -458,6 +442,32 @@
     </item>
    </layout>
   </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>680</y>
+     <width>170</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QPushButton" name="ImportButton">
+      <property name="text">
+       <string>Import</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="CancelButton">
+      <property name="text">
+       <string>Cancel</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
  </widget>
  <tabstops>
   <tabstop>BibleNameEdit</tabstop>
@@ -476,7 +486,6 @@
   <tabstop>VersionNameEdit</tabstop>
   <tabstop>CopyrightEdit</tabstop>
   <tabstop>PermisionEdit</tabstop>
-  <tabstop>BibleImportButtonBox</tabstop>
  </tabstops>
  <resources>
   <include location="../images/openlp-2.qrc"/>
