@@ -346,12 +346,22 @@ class BiblePlugin(Plugin, PluginUtils):
         versefrom =  int(self.AdvancedFromVerse.currentText())
         verseto =  int(self.AdvancedToVerse.currentText())
         self.searchresults = self.biblemanager.get_verse_text(bible, book, chapfrom, chapto, versefrom, verseto)
+        if self.ClearAdvancedSearchComboBox.currentText() == "Clear Results":
+            self.BibleListView.clear() # clear the results
+            self.BibleListView.setRowCount(0)        
+            self.BibleListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Bible Verses"]))             
+        
         self._display_results(bible)
 
     def onQuickSearchButton(self):
         self.log.debug("onQuickSearchButton")
         bible = str(self.QuickVersionComboBox.currentText())
         text = str(self.QuickSearchEdit.displayText())
+        
+        if self.ClearQuickSearchComboBox.currentText() == "Clear Results":
+            self.BibleListView.clear() # clear the results
+            self.BibleListView.setRowCount(0)        
+            self.BibleListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Bible Verses"]))             
 
         if self.QuickSearchComboBox.currentText() == "Text Search":
             self._search_text(bible, text)
@@ -367,15 +377,12 @@ class BiblePlugin(Plugin, PluginUtils):
 #        self._display_results()
 
     def _display_results(self, bible):
-        self.BibleListView.clear() # clear the results
-        self.BibleListView.setRowCount(0)        
-        self.BibleListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Bible Verses"]))          
         for book, chap, vse , txt in self.searchresults:
             c = self.BibleListView.rowCount()
             self.BibleListView.setRowCount(c+1)
             twi = QtGui.QTableWidgetItem(str(bible))
             self.BibleListView.setItem(c , 0, twi)
-            twi = QtGui.QTableWidgetItem(str(book + " " +str(chap) + ":"+ str(vse)))
+            twi = QtGui.QTableWidgetItem(str(book + " " +str(chap) + ":"+ str(vse)) + " ("+str(bible)+")")
             self.BibleListView.setItem(c , 1, twi)
             self.BibleListView.setRowHeight(c, 20)             
 

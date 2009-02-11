@@ -91,13 +91,11 @@ class BibleOSISImpl():
                     book_ptr = p[0]
                     book = self.bibledb.create_book(self.booksOfBible[p[0]] , self.abbrevOfBible[p[0]], testament)
                     dialogobject.incrementBar(self.booksOfBible[p[0]] )
-                    #Receiver().send_message("openlprepaint") # send repaint message to dialog
                     Receiver().send_message("openlpprocessevents")                                        
                     count = 0
                 self.bibledb.add_verse(book.id, p[1], p[2], t)
                 count += 1
-                if count % 1 == 0:   #Every x verses repaint the screen
-                    #Receiver().send_message("openlprepaint") # send repaint message to dialog openlpprocessevents
+                if count % 3 == 0:   #Every x verses repaint the screen
                     Receiver().send_message("openlpprocessevents")                    
                     count = 0
 

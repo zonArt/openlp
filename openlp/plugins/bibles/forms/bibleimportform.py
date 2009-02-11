@@ -118,7 +118,6 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         
     @pyqtSignature("")
     def on_CancelButton_clicked(self):
-        print "Closed selected"
         Receiver().send_message("openlpstopimport") 
         self.close() 
         
@@ -162,7 +161,7 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
             
         self.biblemanager.save_meta_data(str(self.BibleNameEdit.displayText()), str(self.VersionNameEdit.displayText()), str(self.CopyrightEdit.displayText()), str(self.PermisionEdit.displayText()))
         self.bibletype = None
-        self.freeAll() # free the scree state restrictions
+        self.freeAll() # free the screen state restrictions
         self.resetAll() # reset all the screen fields
         
     def blockCSV(self):
@@ -220,6 +219,7 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         self.BooksLocationEdit.setText("")
         self.VerseLocationEdit.setText("")
         self.OSISLocationEdit.setText("")
+        self.BibleNameEdit.setText("")
         self.LocationComboBox.setCurrentIndex(0)
         self.BibleComboBox.setCurrentIndex(0)
         self.TypeComboBox.setCurrentIndex(0)
