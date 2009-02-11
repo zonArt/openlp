@@ -23,6 +23,7 @@ import sys
 import logging
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import Receiver
 
 logging.basicConfig(level=logging.DEBUG,
                 format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
@@ -36,6 +37,8 @@ from openlp.core.ui import MainWindow, SplashScreen
 class OpenLP(QtGui.QApplication):
 
     def run(self):
+        QtCore.QObject.connect(Receiver().get_receiver(),QtCore.SIGNAL("openlpprocessevents"),self.processEvents) 
+        
         self.setApplicationName('openlp.org')
         self.setApplicationVersion('1.9.0')
         self.splash = SplashScreen()

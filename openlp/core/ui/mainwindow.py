@@ -25,7 +25,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
 from openlp.core.ui import AboutForm, AlertForm, SettingsDialog, SlideController
-from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab, Receiver
+from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab
 
 from openlp.core import PluginManager
 
@@ -40,10 +40,6 @@ class MainWindow(object):
         pluginpath = os.path.abspath(os.path.join(pluginpath, '..', '..','plugins'))
         self.plugin_manager = PluginManager(pluginpath)
         self.setupUi()
-        QtCore.QObject.connect(Receiver().get_receiver(),QtCore.SIGNAL("openlprepaint"),self.repaint)  
-    
-    def repaint(self):
-        self.main_window.repaint()
 
     def setupUi(self):
         self.main_window.setObjectName("main_window")

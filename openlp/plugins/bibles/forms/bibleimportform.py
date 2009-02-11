@@ -41,11 +41,6 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         QtCore.QObject.connect(self.LocationComboBox, QtCore.SIGNAL("activated(int)"), self.onLocationComboBox)
         QtCore.QObject.connect(self.TypeComboBox, QtCore.SIGNAL("activated(int)"), self.onTypeComboBox)
         QtCore.QObject.connect(self.BibleComboBox, QtCore.SIGNAL("activated(int)"), self.onBibleComboBox)
-        QtCore.QObject.connect(self.ProgressBar, QtCore.SIGNAL("valueChanged(int)"), self.on_ProgressBar_changed)       
-        QtCore.QObject.connect(Receiver().get_receiver(),QtCore.SIGNAL("openlprepaint"),self.on_ProgressBar_changed)
-        
-    def on_ProgressBar_changed(self):
-        self.repaint()
 
     @pyqtSignature("")
     def on_VersesFileButton_clicked(self):
@@ -123,6 +118,8 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         
     @pyqtSignature("")
     def on_CancelButton_clicked(self):
+        print "Closed selected"
+        Receiver().send_message("openlpstopimport") 
         self.close() 
         
     @pyqtSignature("")        
@@ -136,8 +133,8 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
                 self.biblemanager.process_dialog(self)
                 self._import_bible()
                 self.MessageLabel.setText("Import Complete")
-                self.ProgressBar.setValue(self.barmax)  
-                self.bibleplugin.reload_bibles() # Update form as we have a new bible
+                self.ProgressBar.setValue(self.barmax) 
+                Receiver().send_message("openlpreloadbibles")
 
     def setMax(self, max):
         log.debug("set Max %s", max)        

@@ -48,11 +48,7 @@ class BiblePlugin(Plugin, PluginUtils):
         #Register the bible Manager
         self.biblemanager = BibleManager(self.config)
         self.searchresults = {} # place to store the search results
-        self.receiver = Receiver()        
-        QtCore.QObject.connect(self.receiver.get_receiver(),QtCore.SIGNAL("openlprepaint"),self.repaint)
-        
-    def repaint(self):
-        self.MediaManagerItem.repaint()
+        QtCore.QObject.connect(Receiver().get_receiver(),QtCore.SIGNAL("openlpreloadbibles"),self.reload_bibles)
         
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
