@@ -18,6 +18,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import logging
 from openlp.plugins.bibles.lib.bibleDBimpl import BibleDBImpl
 from openlp.core.lib import Receiver
+from PyQt4 import QtCore
 
 class BibleOSISImpl():
     global log     
@@ -31,8 +32,12 @@ class BibleOSISImpl():
         for line in fbibles:
             p = line.split(",")
             self.booksOfBible[p[0]] = p[1].replace('\n', '')
-            self.abbrevOfBible[p[0]] = p[2].replace('\n', '')            
+            self.abbrevOfBible[p[0]] = p[2].replace('\n', '') 
+        self.loadbible = True
+        QtCore.QObject.connect(Receiver().get_receiver(),QtCore.SIGNAL("openlpstopimport"),self.stop_import)
                 
+    def stop_import(self):
+        self.loadbible= False
         
     def load_data(self, osisfile, dialogobject=None):
         osis=open(osisfile, 'r')
@@ -43,6 +48,8 @@ class BibleOSISImpl():
         verseText = "<verse osisID="
         testament = 1
         for f in osis.readlines():
+            if self.loadbible == False:  # cancel pressed
+                break
             #print f
             s = f.find(verseText)
             if s > -1: # we have a verse
@@ -84,12 +91,14 @@ class BibleOSISImpl():
                     book_ptr = p[0]
                     book = self.bibledb.create_book(self.booksOfBible[p[0]] , self.abbrevOfBible[p[0]], testament)
                     dialogobject.incrementBar(self.booksOfBible[p[0]] )
-                    Receiver().send_message("openlprepaint") # send repaint message to dialog
+                    #Receiver().send_message("openlprepaint") # send repaint message to dialog
+                    Receiver().send_message("openlpprocessevents")                                        
                     count = 0
                 self.bibledb.add_verse(book.id, p[1], p[2], t)
                 count += 1
-                if count % 100 == 0:   #Every x verses repaint the screen
-                    Receiver().send_message("openlprepaint") # send repaint message to dialog
+                if count % 1 == 0:   #Every x verses repaint the screen
+                    #Receiver().send_message("openlprepaint") # send repaint message to dialog openlpprocessevents
+                    Receiver().send_message("openlpprocessevents")                    
                     count = 0
 
 
