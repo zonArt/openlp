@@ -189,13 +189,13 @@ class BiblePlugin(Plugin, PluginUtils):
         self.BibleListView.setColumnHidden(0, True)
         self.BibleListView.setColumnWidth(1, 275)
         self.BibleListView.setShowGrid(False)
-        self.BibleListView.setSortingEnabled(False)        
+        self.BibleListView.setSortingEnabled(False)
         self.BibleListView.setAlternatingRowColors(True)
-        self.BibleListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Bible Verses"]))        
+        self.BibleListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Bible Verses"]))
 
         self.BibleListView.setGeometry(QtCore.QRect(10, 200, 256, 391))
         self.BibleListView.setObjectName("listView")
-        self.BibleListView.setAlternatingRowColors(True)        
+        self.BibleListView.setAlternatingRowColors(True)
         self.MediaManagerItem.PageLayout.addWidget(self.BibleListView)
 
         #QtCore.QObject.connect(self.QuickTab, QtCore.SIGNAL("triggered()"), self.onQuickTabClick)
@@ -212,8 +212,8 @@ class BiblePlugin(Plugin, PluginUtils):
         #define and add the context menu
         self.BibleListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
-        self.BibleListView.addAction(self.add_to_context_menu(self.BibleListView, ':/system/system_preview.png', "&Preview Verse", self.onBiblePreviewClick))      
-        self.BibleListView.addAction(self.add_to_context_menu(self.BibleListView, ':/system/system_live.png', "&Show Live", self.onBibleLiveClick))        
+        self.BibleListView.addAction(self.add_to_context_menu(self.BibleListView, ':/system/system_preview.png', "&Preview Verse", self.onBiblePreviewClick))
+        self.BibleListView.addAction(self.add_to_context_menu(self.BibleListView, ':/system/system_live.png', "&Show Live", self.onBibleLiveClick))
         self.BibleListView.addAction(self.add_to_context_menu(self.BibleListView, ':/system/system_add.png', "&Add to Service", self.onBibleAddClick))
         return self.MediaManagerItem
 
