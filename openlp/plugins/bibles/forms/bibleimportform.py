@@ -37,6 +37,9 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         self.bibleplugin = bibleplugin
         self.bibletype = None
         self.barmax = 0
+        self.AddressEdit.setText(self.config.get_config("addressedit", ""))
+        self.UsernameEdit.setText(self.config.get_config("usernameedit", ""))
+        self.PasswordEdit.setText(self.config.get_config("passwordedit",""))
    
         QtCore.QObject.connect(self.LocationComboBox, QtCore.SIGNAL("activated(int)"), self.onLocationComboBox)
         QtCore.QObject.connect(self.TypeComboBox, QtCore.SIGNAL("activated(int)"), self.onTypeComboBox)
@@ -51,16 +54,16 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         
     @pyqtSignature("")
     def on_BooksFileButton_clicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir())
+        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir(1))
         self.BooksLocationEdit.setText(filename)
-        self._save_last_directory(filename)
+        self._save_last_directory(filename, 1)
         self.setCSV()                
     
     @pyqtSignature("")
     def on_OsisFileButton_clicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir())
+        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir(2))
         self.OSISLocationEdit.setText(filename)
-        self._save_last_directory(filename)
+        self._save_last_directory(filename, 2)
         self.setOSIS()
  
     def on_OSISLocationEdit_lostFocus(self):
@@ -84,7 +87,20 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
             if self.bibletype == "CSV": # Was CSV and is not any more stops lostFocus running mad
                 self.bibletype = None        
                 self.freeAll()
-               
+
+    @pyqtSignature("")
+    def on_AddressEdit_lostFocus(self):
+        self.config.set_config("addressedit", str(self.AddressEdit.displayText()))
+      
+
+    @pyqtSignature("")
+    def on_UsernameEdit_lostFocus(self):
+        self.config.set_config("usernameedit", str(self.UsernameEdit.displayText()))
+    
+    @pyqtSignature("")
+    def on_PasswordEdit_lostFocus(self):
+        self.config.set_config("passwordedit", str(self.PasswordEdit.displayText()))
+        
     def onLocationComboBox(self):
         self._checkhttp()        
         
@@ -156,7 +172,11 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
             self.biblemanager.register_csv_file_bible(str(self.BibleNameEdit.displayText()), self.BooksLocationEdit.displayText(), self.VerseLocationEdit.displayText())            
         else:
             self.setMax(1) # set a value as it will not be needed
-            self.biblemanager.register_http_bible(str(self.BibleComboBox.currentText()),str(self.LocationComboBox.currentText()) ) 
+            self.biblemanager.register_http_bible(str(self.BibleComboBox.currentText()), \
+                                                                                     str(self.LocationComboBox.currentText()),  \
+                                                                                     str(self.AddressEdit.displayText()),  \
+                                                                                     str(self.UsernameEdit .displayText()),  \
+                                                                                     str(self.PasswordEdit.displayText())) 
             self.BibleNameEdit.setText(str(self.BibleComboBox.currentText()))
             
         self.biblemanager.save_meta_data(str(self.BibleNameEdit.displayText()), str(self.VersionNameEdit.displayText()), str(self.CopyrightEdit.displayText()), str(self.PermisionEdit.displayText()))

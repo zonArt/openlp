@@ -19,6 +19,7 @@ import logging
 
 from openlp.plugins.bibles.lib.bibleDBimpl import BibleDBImpl
 from openlp.plugins.bibles.lib.common import BibleCommon
+from openlp.core.lib import Receiver
 
 
 class BibleCSVImpl(BibleCommon):
@@ -38,6 +39,7 @@ class BibleCSVImpl(BibleCommon):
         fbooks=open(booksfile, 'r')
         fverse=open(versesfile, 'r')
 
+        count = 0
         for line in fbooks:
             #log.debug( line)
             p = line.split(",")
@@ -45,6 +47,12 @@ class BibleCSVImpl(BibleCommon):
             p2 = p[2].replace('"', '')
             p3 = p[3].replace('"', '')            
             self.bibledb.create_book(p2, p3, int(p1))
+            count += 1
+            if count % 3 == 0:   #Every x verses repaint the screen
+                Receiver().send_message("openlpprocessevents")                    
+                count = 0
+        
+        count = 0
         book_ptr = None
         for line in fverse:
             #log.debug( line)
@@ -56,4 +64,7 @@ class BibleCSVImpl(BibleCommon):
                 book_ptr = book.name
                 dialogobject.incrementBar(book.name) # increament the progress bar
             self.bibledb.add_verse(book.id, p[1], p[2], p3)
- 
+            count += 1
+            if count % 3 == 0:   #Every x verses repaint the screen
+                Receiver().send_message("openlpprocessevents")                    
+                count = 0

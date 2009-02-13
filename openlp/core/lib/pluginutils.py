@@ -75,18 +75,24 @@ class PluginUtils(object):
             for i in range(int(newcount) ,  int(oldcount)):
                 self.config.delete_config("List Item "+str(i))
             
-    def _get_last_dir(self):
+    def _get_last_dir(self, num=None):
         """
         Read the last directory used for plugin
         """
-        lastdir = self.config.get_config("Last Dir")
+        fld = "Last Dir"
+        if not num  == None:
+            fld = fld+str(num)
+        lastdir = self.config.get_config(fld)
         if lastdir==None:
             lastdir = ""
         return lastdir
         
-    def _save_last_directory(self, filename):
+    def _save_last_directory(self, filename, num=None):
         """
         Save the last directory used for plugin
-        """        
+        """ 
+        fld = "Last Dir"
+        if not num  == None:
+            fld = fld+str(num)     
         path ,  nm = os.path.split(str(filename)) 
-        self.config.set_config("Last Dir", path)
+        self.config.set_config(fld, path)
