@@ -251,7 +251,15 @@ class BiblePlugin(Plugin, PluginUtils):
         pass
 
     def onBiblePreviewClick(self):
-        pass
+        items = self.BibleListView.selectedItems()
+        for item in items:
+            print item.text()
+            print item.isSelected()
+            text = str(item.text())
+            verse = text[:text.find("(")]
+            bible = text[text.find("(")+1:text.find(")")]
+            self.translate(bible,  verse)
+            print self.searchresults
 
     def onBibleLiveClick(self):
         pass
@@ -367,14 +375,13 @@ class BiblePlugin(Plugin, PluginUtils):
             self._search_text(bible, text)
         else:
             self.translate(bible, text)
+            if not self.searchresults == None:
+                self._display_results(bible)
 
     def _search_text(self, bible, text):
         self.log.debug("_search Text %s,%s", bible, text)
         self.searchresults = self.biblemanager.get_verse_from_text(bible,text)
         self._display_results(bible)
-
-#    def _verse_search(self):
-#        self._display_results()
 
     def _display_results(self, bible):
         for book, chap, vse , txt in self.searchresults:
@@ -437,7 +444,10 @@ class BiblePlugin(Plugin, PluginUtils):
         if echapter == "":
             echapter = schapter
         if sverse == "":
-            sverse = 1
+            if everse == "":
+                sverse = 1
+            else:
+                sverse = everse
         if everse == "":
             everse = 99
         if schapter == "":
@@ -448,8 +458,8 @@ class BiblePlugin(Plugin, PluginUtils):
 #        print "verse s =" + str(sverse)
 #        print "verse e =" + str(everse) 
         if message  == None:
+            self.searchresults = None
             self.searchresults = self.biblemanager.get_verse_text(bible, book,int(schapter), int(echapter), int(sverse), int(everse))
-            self._display_results(bible)
         else:
             reply = QtGui.QMessageBox.information(self.MediaManagerItem,"Information",message)
 
