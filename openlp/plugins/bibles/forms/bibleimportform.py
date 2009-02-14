@@ -137,7 +137,8 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         if self.biblemanager != None:
             if not self.bibletype == None or len(self.BibleNameEdit.displayText()) > 0:
                 self.MessageLabel.setText("Import Started")
-                self.ProgressBar.setMinimum(0)                    
+                self.ProgressBar.setMinimum(0) 
+                self.setMax(65)
                 self.ProgressBar.setValue(0)
                 self.progress = 0
                 self.biblemanager.process_dialog(self)
@@ -156,8 +157,6 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         self.MessageLabel.setText("Import processing " + text)
         self.progress +=1
         self.ProgressBar.setValue(self.progress)
-        print self.ProgressBar.value()
-        print text + " " + str(self.progress)
                 
     def _import_bible(self):
         log.debug("Import Bible ")        
