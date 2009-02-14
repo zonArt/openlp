@@ -135,7 +135,7 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
     @pyqtSignature("")        
     def on_ImportButton_clicked(self):
         if self.biblemanager != None:
-            if not self.bibletype == None or len(self.BibleNameEdit.displayText()) > 0:
+            if not self.bibletype == None and len(self.BibleNameEdit.displayText()) > 0:
                 self.MessageLabel.setText("Import Started")
                 self.ProgressBar.setMinimum(0) 
                 self.setMax(65)
@@ -145,7 +145,7 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
                 self._import_bible()
                 self.MessageLabel.setText("Import Complete")
                 self.ProgressBar.setValue(self.barmax) 
-                Receiver().send_message("openlpreloadbibles")
+                Receiver().send_message("openlpreloadbibles") # tell bibleplugin to reload the bibles
 
     def setMax(self, max):
         log.debug("set Max %s", max)        

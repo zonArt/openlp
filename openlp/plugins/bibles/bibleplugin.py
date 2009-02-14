@@ -115,7 +115,7 @@ class BiblePlugin(Plugin, PluginUtils):
         self.QuickSearchButton.setObjectName('QuickSearchButton')
         self.QuickSearchButton.setText('Search')
         self.QuickLayout.addWidget(self.QuickSearchButton, 3, 2, 1, 1)
-        self.SearchTabWidget.addTab(self.QuickTab, 'Quick Search')
+        self.SearchTabWidget.addTab(self.QuickTab, 'Quick')
         self.ClearQuickSearchComboBox = QtGui.QComboBox(self.QuickTab)
         self.ClearQuickSearchComboBox.setObjectName('ClearQuickSearchComboBox')
         self.QuickLayout.addWidget(self.ClearQuickSearchComboBox, 3, 0, 1, 1)            
@@ -179,8 +179,15 @@ class BiblePlugin(Plugin, PluginUtils):
         self.AdvancedSearchButton.setObjectName('AdvancedSearchButton')
         self.AdvancedSearchButton.setText('Search')
         self.AdvancedLayout.addWidget(self.AdvancedSearchButton, 5, 3, 1, 1)
-        self.SearchTabWidget.addTab(self.AdvancedTab, 'Advanced Search')
-
+        self.SearchTabWidget.addTab(self.AdvancedTab, 'Advanced')
+        
+        # Add the Settings tab
+        self.SettingsTab = QtGui.QWidget()
+        self.SettingsTab.setObjectName('SettingsTab')
+        self.SettingsLayout = QtGui.QGridLayout(self.SettingsTab)
+        
+        self.SearchTabWidget.addTab(self.SettingsTab, 'Settings')
+        
         # Add the search tab widget to the page layout
         self.MediaManagerItem.PageLayout.addWidget(self.SearchTabWidget)
 
