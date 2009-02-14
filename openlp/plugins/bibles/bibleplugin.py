@@ -461,7 +461,4 @@ class BiblePlugin(Plugin, PluginUtils):
             self.searchresults = None
             self.searchresults = self.biblemanager.get_verse_text(bible, book,int(schapter), int(echapter), int(sverse), int(everse))
         else:
-            reply = QtGui.QMessageBox.information(self.MediaManagerItem,"Information",message)
-
-            
-
+            reply = QtGui.QMessageBox.information(self.MediaManagerItem,"Information",message)      

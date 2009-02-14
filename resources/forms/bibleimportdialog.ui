@@ -34,8 +34,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>96</width>
-      <height>26</height>
+      <width>471</width>
+      <height>371</height>
      </rect>
     </property>
     <attribute name="label">
@@ -194,97 +194,73 @@
        <property name="title">
         <string>Download Options</string>
        </property>
-       <layout class="QFormLayout" name="OptionsLayout">
-        <property name="fieldGrowthPolicy">
-         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+       <widget class="QLabel" name="LocationLabel">
+        <property name="geometry">
+         <rect>
+          <x>11</x>
+          <y>27</y>
+          <width>54</width>
+          <height>16</height>
+         </rect>
         </property>
-        <property name="labelAlignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        <property name="text">
+         <string>Location:</string>
         </property>
-        <property name="formAlignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </widget>
+       <widget class="QComboBox" name="LocationComboBox">
+        <property name="geometry">
+         <rect>
+          <x>71</x>
+          <y>27</y>
+          <width>371</width>
+          <height>21</height>
+         </rect>
         </property>
-        <property name="horizontalSpacing">
-         <number>8</number>
+        <item>
+         <property name="text">
+          <string>Crosswalk</string>
+         </property>
+        </item>
+       </widget>
+       <widget class="QLabel" name="BibleLabel">
+        <property name="geometry">
+         <rect>
+          <x>11</x>
+          <y>54</y>
+          <width>34</width>
+          <height>16</height>
+         </rect>
         </property>
-        <property name="verticalSpacing">
-         <number>8</number>
+        <property name="text">
+         <string>Bible:</string>
         </property>
-        <property name="margin">
-         <number>8</number>
+       </widget>
+       <widget class="QComboBox" name="BibleComboBox">
+        <property name="geometry">
+         <rect>
+          <x>71</x>
+          <y>54</y>
+          <width>371</width>
+          <height>21</height>
+         </rect>
         </property>
-        <item row="0" column="0">
-         <widget class="QLabel" name="LocationLabel">
-          <property name="text">
-           <string>Location:</string>
-          </property>
-         </widget>
+        <item>
+         <property name="text">
+          <string/>
+         </property>
         </item>
-        <item row="0" column="1">
-         <widget class="QComboBox" name="LocationComboBox">
-          <item>
-           <property name="text">
-            <string/>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Crosswalk</string>
-           </property>
-          </item>
-         </widget>
+        <item>
+         <property name="text">
+          <string>NIV</string>
+         </property>
         </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="TypeLabel">
-          <property name="text">
-           <string>Type:</string>
-          </property>
-         </widget>
+        <item>
+         <property name="text">
+          <string>KJV</string>
+         </property>
         </item>
-        <item row="1" column="1">
-         <widget class="QComboBox" name="TypeComboBox">
-          <item>
-           <property name="text">
-            <string/>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Download As Needed</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="BibleLabel">
-          <property name="text">
-           <string>Bible:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QComboBox" name="BibleComboBox">
-          <item>
-           <property name="text">
-            <string/>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>NIV</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>KJV</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-       </layout>
+       </widget>
        <zorder>BibleComboBox</zorder>
-       <zorder>TypeComboBox</zorder>
-       <zorder>TypeLabel</zorder>
        <zorder>LocationLabel</zorder>
        <zorder>BibleLabel</zorder>
        <zorder>LocationComboBox</zorder>
@@ -442,16 +418,19 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>320</x>
+     <x>300</x>
      <y>680</y>
-     <width>170</width>
-     <height>28</height>
+     <width>180</width>
+     <height>38</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="margin">
+     <number>6</number>
+    </property>
     <item>
      <widget class="QPushButton" name="ImportButton">
       <property name="text">
@@ -478,7 +457,6 @@
   <tabstop>VerseLocationEdit</tabstop>
   <tabstop>VersesFileButton</tabstop>
   <tabstop>LocationComboBox</tabstop>
-  <tabstop>TypeComboBox</tabstop>
   <tabstop>BibleComboBox</tabstop>
   <tabstop>AddressEdit</tabstop>
   <tabstop>UsernameEdit</tabstop>

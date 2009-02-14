@@ -42,7 +42,6 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         self.PasswordEdit.setText(self.config.get_config("passwordedit",""))
    
         QtCore.QObject.connect(self.LocationComboBox, QtCore.SIGNAL("activated(int)"), self.onLocationComboBox)
-        QtCore.QObject.connect(self.TypeComboBox, QtCore.SIGNAL("activated(int)"), self.onTypeComboBox)
         QtCore.QObject.connect(self.BibleComboBox, QtCore.SIGNAL("activated(int)"), self.onBibleComboBox)
 
     @pyqtSignature("")
@@ -104,15 +103,11 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
     def onLocationComboBox(self):
         self._checkhttp()        
         
-    def onTypeComboBox(self):
-        self._checkhttp()
-        
     def onBibleComboBox(self):
         self._checkhttp()
         
     def _checkhttp(self):
         if len(self.LocationComboBox.currentText()) > 0 or \
-            len(self.TypeComboBox.currentText()) > 0 or \
             len(self.BibleComboBox.currentText()) >0 :
             self.setHTTP()
         else:
@@ -214,14 +209,12 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         self.bibletype = "HTTP"         
         self.LocationComboBox.setEnabled(True)
         self.BibleComboBox.setEnabled(True)        
-        self.TypeComboBox.setEnabled(True)        
         self.blockCSV()
         self.blockOSIS()        
  
     def blockHTTP(self):
         self.LocationComboBox.setEnabled(False)        
         self.BibleComboBox.setEnabled(False)                
-        self.TypeComboBox.setEnabled(False)
         
     def freeAll(self):
         if self.bibletype == None:  # only reset if no bible type set.  
@@ -233,7 +226,6 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
             self.OsisFileButton.setEnabled(True) 
             self.LocationComboBox.setEnabled(True)
             self.BibleComboBox.setEnabled(True)        
-            self.TypeComboBox.setEnabled(True)        
 
     def resetAll(self):
         self.BooksLocationEdit.setText("")
@@ -242,4 +234,3 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         self.BibleNameEdit.setText("")
         self.LocationComboBox.setCurrentIndex(0)
         self.BibleComboBox.setCurrentIndex(0)
-        self.TypeComboBox.setCurrentIndex(0)
