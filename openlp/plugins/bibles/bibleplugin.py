@@ -115,10 +115,15 @@ class BiblePlugin(Plugin, PluginUtils):
         self.QuickSearchButton.setObjectName('QuickSearchButton')
         self.QuickSearchButton.setText('Search')
         self.QuickLayout.addWidget(self.QuickSearchButton, 3, 2, 1, 1)
-        self.SearchTabWidget.addTab(self.QuickTab, 'Quick')
+
+        self.QuickClearLabel = QtGui.QLabel(self.QuickTab)
+        self.QuickClearLabel.setObjectName('QuickSearchLabel')
+        self.QuickClearLabel.setText('Results:')
+        self.QuickLayout.addWidget(self.QuickClearLabel, 3, 0, 1, 1)
         self.ClearQuickSearchComboBox = QtGui.QComboBox(self.QuickTab)
         self.ClearQuickSearchComboBox.setObjectName('ClearQuickSearchComboBox')
-        self.QuickLayout.addWidget(self.ClearQuickSearchComboBox, 3, 0, 1, 1)            
+        self.QuickLayout.addWidget(self.ClearQuickSearchComboBox, 3, 1, 1, 1)
+        self.SearchTabWidget.addTab(self.QuickTab, 'Quick')
         QuickSpacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.QuickLayout.addItem(QuickSpacerItem, 4, 2, 1, 1)
     
@@ -172,9 +177,14 @@ class BiblePlugin(Plugin, PluginUtils):
         self.AdvancedToVerse.setObjectName('AdvancedToVerse')
         self.AdvancedLayout.addWidget(self.AdvancedToVerse, 4, 3, 1, 1)
 
+        self.AdvancedClearLabel = QtGui.QLabel(self.QuickTab)
+        self.AdvancedClearLabel.setObjectName('QuickSearchLabel')
+        self.AdvancedClearLabel.setText('Results:')
+        self.AdvancedLayout.addWidget(self.AdvancedClearLabel, 5, 0, 1, 1)
         self.ClearAdvancedSearchComboBox = QtGui.QComboBox(self.QuickTab)
         self.ClearAdvancedSearchComboBox.setObjectName('ClearAdvancedSearchComboBox')
-        self.AdvancedLayout.addWidget(self.ClearAdvancedSearchComboBox, 5, 0, 1, 1)
+        self.AdvancedLayout.addWidget(self.ClearAdvancedSearchComboBox, 5, 2, 1, 1)
+        
         self.AdvancedSearchButton = QtGui.QPushButton(self.AdvancedTab)
         self.AdvancedSearchButton.setObjectName('AdvancedSearchButton')
         self.AdvancedSearchButton.setText('Search')
@@ -185,7 +195,41 @@ class BiblePlugin(Plugin, PluginUtils):
         self.SettingsTab = QtGui.QWidget()
         self.SettingsTab.setObjectName('SettingsTab')
         self.SettingsLayout = QtGui.QGridLayout(self.SettingsTab)
+        self.SettingsLayout.setObjectName('SettingsLayout')
         
+        self.SettingsOutputStyleLabel = QtGui.QLabel(self.SettingsTab)
+        self.SettingsOutputStyleLabel.setObjectName('SettingsOutputStyleLabel')
+        self.SettingsOutputStyleLabel.setText('Output Style:')
+        self.SettingsLayout.addWidget(self.SettingsOutputStyleLabel, 0, 0, 1, 1)
+        self.SettingsOutputStyleComboBox = QtGui.QComboBox(self.SettingsTab)
+        self.SettingsOutputStyleComboBox.setObjectName('SettingsOutputStyleComboBox')
+        self.SettingsLayout.addWidget(self.SettingsOutputStyleComboBox, 0, 1, 1, 2) 
+        
+        self.SettingsVerseStyleLabel = QtGui.QLabel(self.SettingsTab)
+        self.SettingsVerseStyleLabel.setObjectName('SettingsVerseStyleLabel')
+        self.SettingsVerseStyleLabel.setText('Verse Style:')
+        self.SettingsLayout.addWidget(self.SettingsVerseStyleLabel, 1, 0, 1, 1)
+        self.SettingsVerseStyleComboBox = QtGui.QComboBox(self.SettingsTab)
+        self.SettingsVerseStyleComboBox.setObjectName('SettingsVerseStyleComboBox')
+        self.SettingsLayout.addWidget(self.SettingsVerseStyleComboBox, 1, 1, 1, 2)
+        
+        self.SettingsNewChapterLabel = QtGui.QLabel(self.SettingsTab)
+        self.SettingsNewChapterLabel.setObjectName('SettingsNewChapterLabel')
+        self.SettingsNewChapterLabel.setText('Show new chapter Nos:')
+        self.SettingsLayout.addWidget(self.SettingsNewChapterLabel, 2, 0, 1, 2) 
+        self.SettingsNewChapterCheck= QtGui.QCheckBox(self.SettingsTab)
+        self.SettingsNewChapterCheck.setObjectName('SettingsNewChapterCheck')
+        self.SettingsLayout.addWidget(self.SettingsNewChapterCheck, 2, 2, 1, 1)        
+ 
+        self.SettingsResetButton = QtGui.QPushButton(self.SettingsTab)
+        self.SettingsResetButton.setObjectName('SettingsResetButton')
+        self.SettingsResetButton.setText('Reset')
+        self.SettingsLayout.addWidget(self.SettingsResetButton, 3, 1, 1, 1)  
+        self.SettingsSaveButton = QtGui.QPushButton(self.SettingsTab)
+        self.SettingsSaveButton.setObjectName('SettingsSaveButton')
+        self.SettingsSaveButton.setText('Save')
+        self.SettingsLayout.addWidget(self.SettingsSaveButton, 3, 2, 1, 1)        
+      
         self.SearchTabWidget.addTab(self.SettingsTab, 'Settings')
         
         # Add the search tab widget to the page layout
@@ -205,7 +249,6 @@ class BiblePlugin(Plugin, PluginUtils):
         self.BibleListView.setAlternatingRowColors(True)
         self.MediaManagerItem.PageLayout.addWidget(self.BibleListView)
 
-        #QtCore.QObject.connect(self.QuickTab, QtCore.SIGNAL("triggered()"), self.onQuickTabClick)
         QtCore.QObject.connect( self.SearchTabWidget, QtCore.SIGNAL("currentChanged ( QWidget * )" ), self.onQuickTabClick)
         QtCore.QObject.connect(self.AdvancedVersionComboBox, QtCore.SIGNAL("activated(int)"), self.onAdvancedVersionComboBox)
         QtCore.QObject.connect(self.AdvancedBookComboBox, QtCore.SIGNAL("activated(int)"), self.onAdvancedBookComboBox)
@@ -286,10 +329,16 @@ class BiblePlugin(Plugin, PluginUtils):
         bibles = self.biblemanager.get_bibles("full")
         self.QuickSearchComboBox.addItem("Verse Search")        
         self.QuickSearchComboBox.addItem("Text Search")
-        self.ClearQuickSearchComboBox.addItem("Clear Results") 
-        self.ClearQuickSearchComboBox.addItem("Keep Results") 
-        self.ClearAdvancedSearchComboBox.addItem("Clear Results") 
-        self.ClearAdvancedSearchComboBox.addItem("Keep Results")  
+        self.ClearQuickSearchComboBox.addItem("Clear") 
+        self.ClearQuickSearchComboBox.addItem("Keep") 
+        self.ClearAdvancedSearchComboBox.addItem("Clear") 
+        self.ClearAdvancedSearchComboBox.addItem("Keep")
+        self.SettingsOutputStyleComboBox.addItem("Verse")
+        self.SettingsOutputStyleComboBox.addItem("Paragraph") 
+        self.SettingsVerseStyleComboBox.addItem("No Brackets")
+        self.SettingsVerseStyleComboBox.addItem("( and )")
+        self.SettingsVerseStyleComboBox.addItem("{ and }")
+        self.SettingsVerseStyleComboBox.addItem("[ and ]")
         for b in bibles:  # load bibles into the combo boxes
             self.QuickVersionComboBox.addItem(b)
                 
@@ -361,7 +410,7 @@ class BiblePlugin(Plugin, PluginUtils):
         versefrom =  int(self.AdvancedFromVerse.currentText())
         verseto =  int(self.AdvancedToVerse.currentText())
         self.searchresults = self.biblemanager.get_verse_text(bible, book, chapfrom, chapto, versefrom, verseto)
-        if self.ClearAdvancedSearchComboBox.currentText() == "Clear Results":
+        if self.ClearAdvancedSearchComboBox.currentText() == "Clear":
             self.BibleListView.clear() # clear the results
             self.BibleListView.setRowCount(0)        
             self.BibleListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Bible Verses"]))             
@@ -373,7 +422,7 @@ class BiblePlugin(Plugin, PluginUtils):
         bible = str(self.QuickVersionComboBox.currentText())
         text = str(self.QuickSearchEdit.displayText())
         
-        if self.ClearQuickSearchComboBox.currentText() == "Clear Results":
+        if self.ClearQuickSearchComboBox.currentText() == "Clear":
             self.BibleListView.clear() # clear the results
             self.BibleListView.setRowCount(0)        
             self.BibleListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Bible Verses"]))             
