@@ -72,7 +72,11 @@ class BibleManager():
                 self.bibleHTTPCache[bname] = nhttp
                 proxy = self.bibleDBCache[bname].get_meta("proxy").value # look to see if lazy load bible exists and get create getter.
                 nhttp.set_proxy(proxy)  # tell The Server where to get the verses from.
+                bibleid = self.bibleDBCache[bname].get_meta("bibleid").value # look to see if lazy load bible exists and get create getter.
+                nhttp.set_bibleid(bibleid)  # tell The Server where to get the verses from.
+                
             else:
+
                 self.bibleHTTPCache[bname] = None # makes the Full / partial code easier.
         #
 
@@ -81,12 +85,12 @@ class BibleManager():
     def process_dialog(self, dialogobject):
         self.dialogobject = dialogobject
 
-    def register_http_bible(self, biblename, biblesource,  proxyurl=None, proxyid=None, proxypass=None):
+    def register_http_bible(self, biblename, biblesource,  bibleid, proxyurl=None, proxyid=None, proxypass=None):
         """
         Return a list of bibles from a given URL.
         The selected Bible can then be registered and LazyLoaded into a database
         """
-        log.debug( "register_HTTP_bible %s,%s,%s,%s,%s", biblename, biblesource, proxyurl,  proxyid, proxypass)
+        log.debug( "register_HTTP_bible %s,%s,%s,%s,%s,%s", biblename, biblesource, bibleid, proxyurl,  proxyid, proxypass)
         if self._is_new_bible(biblename):
             nbible = BibleDBImpl(self.biblePath, biblename, self.config) # Create new Bible
             nbible.create_tables() # Create Database
@@ -96,6 +100,7 @@ class BibleManager():
             nhttp.set_bible_source(biblesource)
             self.bibleHTTPCache[biblename] = nhttp
             nbible.save_meta("WEB", biblesource) # register a lazy loading interest
+            nbible.save_meta("bibleid", bibleid) # store the we id of the bible
             if proxyurl != None and proxyurl != "":
                 nbible.save_meta("proxy", proxyurl) # store the proxy URL
                 nhttp.set_proxy(proxyurl)

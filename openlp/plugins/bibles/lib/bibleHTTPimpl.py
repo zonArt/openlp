@@ -147,6 +147,7 @@ class BibleHTTPImpl():
         bible = {}
         biblesource = ""
         proxyurl = None
+        bibleid = None
         
     def set_proxy(self,proxyurl):
         """
@@ -154,6 +155,14 @@ class BibleHTTPImpl():
         """
         log.debug("set_proxy %s", proxyurl)        
         self.proxyurl = proxyurl 
+        
+    def set_bibleid(self,bibleid):
+        """
+        Set the bible id.
+        The shore identifier of the the bible.
+        """
+        log.debug("set_bibleid  %s", bibleid)        
+        self.bibleid = bibleid 
  
     def set_bible_source(self,biblesource):
         """
@@ -174,7 +183,7 @@ class BibleHTTPImpl():
             else:
                 ev = BGExtract(self.proxyurl)
                 
-            return ev.get_bible_chapter(version, bookid, bookname,  chapter)
+            return ev.get_bible_chapter(self.bibleid, bookid, bookname,  chapter)
         except:
             log.error("Error thrown = %s", sys.exc_info()[1])
 

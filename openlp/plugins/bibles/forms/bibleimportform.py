@@ -46,6 +46,7 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         fbibles=open(filepath, 'r')
         self.bible_versions = {}
         self.BibleComboBox.clear()
+        self.BibleComboBox.addItem("")
         for line in fbibles:
             p = line.split(",")
             self.bible_versions[p[0]] = p[1].replace('\n', '')
@@ -118,6 +119,7 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         
     def onBibleComboBox(self):
         self._checkhttp()
+        self.BibleNameEdit.setText(str(self.BibleComboBox.currentText()))
         
     def _checkhttp(self):
         if len(self.LocationComboBox.currentText()) > 0 or \
@@ -172,22 +174,20 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         self.ProgressBar.setValue(self.progress)
                 
     def _import_bible(self):
-        log.debug("Import Bible ")        
+        log.debug("Import Bible ")
         if self.bibletype == "OSIS":
             self.biblemanager.register_osis_file_bible(str(self.BibleNameEdit.displayText()), self.OSISLocationEdit.displayText())
         elif self.bibletype == "CSV":
-            self.biblemanager.register_csv_file_bible(str(self.BibleNameEdit.displayText()), self.BooksLocationEdit.displayText(), self.VerseLocationEdit.displayText())            
+            self.biblemanager.register_csv_file_bible(str(self.BibleNameEdit.displayText()), self.BooksLocationEdit.displayText(), self.VerseLocationEdit.displayText())
         else:
             self.setMax(1) # set a value as it will not be needed
             bible = self.bible_versions[str(self.BibleComboBox.currentText())]
-            print bible
             self.biblemanager.register_http_bible(str(self.BibleComboBox.currentText()), \
                                                                                      str(self.LocationComboBox.currentText()),  \
+                                                                                     str(bible), \
                                                                                      str(self.AddressEdit.displayText()),  \
                                                                                      str(self.UsernameEdit .displayText()),  \
                                                                                      str(self.PasswordEdit.displayText())) 
-            self.BibleNameEdit.setText(str(self.BibleComboBox.currentText()))
-            
         self.biblemanager.save_meta_data(str(self.BibleNameEdit.displayText()), str(self.VersionNameEdit.displayText()), str(self.CopyrightEdit.displayText()), str(self.PermisionEdit.displayText()))
         self.bibletype = None
         self.freeAll() # free the screen state restrictions

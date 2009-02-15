@@ -325,7 +325,11 @@ class BiblePlugin(Plugin, PluginUtils):
         self.QuickSearchComboBox.clear()
         self.QuickVersionComboBox.clear()
         self.AdvancedVersionComboBox.clear()
-
+        self.ClearQuickSearchComboBox.clear()
+        self.ClearAdvancedSearchComboBox.clear()        
+        self.SettingsOutputStyleComboBox.clear()
+        self.SettingsVerseStyleComboBox.clear()        
+        
         self.QuickSearchComboBox.addItem("Verse Search")        
         self.QuickSearchComboBox.addItem("Text Search")
         self.ClearQuickSearchComboBox.addItem("Clear") 
