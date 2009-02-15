@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-
 import logging
 
 from PyQt4 import QtCore, QtGui
@@ -325,20 +324,22 @@ class BiblePlugin(Plugin, PluginUtils):
         log.debug("_initialise_form")
         self.QuickSearchComboBox.clear()
         self.QuickVersionComboBox.clear()
-        self.AdvancedVersionComboBox.clear()                
-        bibles = self.biblemanager.get_bibles("full")
+        self.AdvancedVersionComboBox.clear()
+
         self.QuickSearchComboBox.addItem("Verse Search")        
         self.QuickSearchComboBox.addItem("Text Search")
         self.ClearQuickSearchComboBox.addItem("Clear") 
         self.ClearQuickSearchComboBox.addItem("Keep") 
         self.ClearAdvancedSearchComboBox.addItem("Clear") 
         self.ClearAdvancedSearchComboBox.addItem("Keep")
-        self.SettingsOutputStyleComboBox.addItem("Verse")
+        self.SettingsOutputStyleComboBox.addItem("Continuous")
         self.SettingsOutputStyleComboBox.addItem("Paragraph") 
         self.SettingsVerseStyleComboBox.addItem("No Brackets")
         self.SettingsVerseStyleComboBox.addItem("( and )")
         self.SettingsVerseStyleComboBox.addItem("{ and }")
         self.SettingsVerseStyleComboBox.addItem("[ and ]")
+
+        bibles = self.biblemanager.get_bibles("full")
         for b in bibles:  # load bibles into the combo boxes
             self.QuickVersionComboBox.addItem(b)
                 

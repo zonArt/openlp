@@ -15,6 +15,8 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
+import os 
+import os.path
 import logging
 from openlp.plugins.bibles.lib.bibleDBimpl import BibleDBImpl
 from openlp.core.lib import Receiver
@@ -27,8 +29,11 @@ class BibleOSISImpl():
     def __init__(self, biblepath, bibledb):
         self.bibledb = bibledb
         self.booksOfBible = {} # books of the bible linked to bibleid  {osis , name}
-        self.abbrevOfBible = {} # books of the bible linked to bibleid  {osis ,Abbrev }  
-        fbibles=open(biblepath+"/osisbooks_en.txt", 'r')
+        self.abbrevOfBible = {} # books of the bible linked to bibleid  {osis ,Abbrev }
+        
+        filepath = os.path.split(os.path.abspath(__file__))[0]
+        filepath = os.path.abspath(os.path.join(filepath, '..', 'resources','osisbooks.csv')) 
+        fbibles=open(filepath, 'r')
         for line in fbibles:
             p = line.split(",")
             self.booksOfBible[p[0]] = p[1].replace('\n', '')

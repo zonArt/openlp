@@ -40,29 +40,43 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         self.AddressEdit.setText(self.config.get_config("addressedit", ""))
         self.UsernameEdit.setText(self.config.get_config("usernameedit", ""))
         self.PasswordEdit.setText(self.config.get_config("passwordedit",""))
+        
+        filepath = os.path.split(os.path.abspath(__file__))[0]
+        filepath = os.path.abspath(os.path.join(filepath, '..', 'resources','crosswalkbooks.csv')) 
+        fbibles=open(filepath, 'r')
+        self.bible_versions = {}
+        self.BibleComboBox.clear()
+        for line in fbibles:
+            p = line.split(",")
+            self.bible_versions[p[0]] = p[1].replace('\n', '')
+            self.BibleComboBox.addItem(str(p[0]))
+
    
         QtCore.QObject.connect(self.LocationComboBox, QtCore.SIGNAL("activated(int)"), self.onLocationComboBox)
         QtCore.QObject.connect(self.BibleComboBox, QtCore.SIGNAL("activated(int)"), self.onBibleComboBox)
 
     @pyqtSignature("")
     def on_VersesFileButton_clicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir())
+        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir(1))
         self.VerseLocationEdit.setText(filename)
-        self._save_last_directory(filename)
+        if filename != "":
+            self._save_last_directory(filename, 1)
         self.setCSV()        
         
     @pyqtSignature("")
     def on_BooksFileButton_clicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir(1))
+        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir(2))
         self.BooksLocationEdit.setText(filename)
-        self._save_last_directory(filename, 1)
+        if filename != "":        
+            self._save_last_directory(filename, 2)
         self.setCSV()                
     
     @pyqtSignature("")
     def on_OsisFileButton_clicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir(2))
+        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir(3))
         self.OSISLocationEdit.setText(filename)
-        self._save_last_directory(filename, 2)
+        if filename != "":        
+            self._save_last_directory(filename, 3)
         self.setOSIS()
  
     def on_OSISLocationEdit_lostFocus(self):
@@ -90,7 +104,6 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
     @pyqtSignature("")
     def on_AddressEdit_lostFocus(self):
         self.config.set_config("addressedit", str(self.AddressEdit.displayText()))
-      
 
     @pyqtSignature("")
     def on_UsernameEdit_lostFocus(self):
@@ -166,6 +179,8 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
             self.biblemanager.register_csv_file_bible(str(self.BibleNameEdit.displayText()), self.BooksLocationEdit.displayText(), self.VerseLocationEdit.displayText())            
         else:
             self.setMax(1) # set a value as it will not be needed
+            bible = self.bible_versions[str(self.BibleComboBox.currentText())]
+            print bible
             self.biblemanager.register_http_bible(str(self.BibleComboBox.currentText()), \
                                                                                      str(self.LocationComboBox.currentText()),  \
                                                                                      str(self.AddressEdit.displayText()),  \
