@@ -34,7 +34,7 @@ class BibleCSVImpl(BibleCommon):
         """         
         self.bibledb = bibledb
         
-    def load_data(self, booksfile, versesfile, dialogobject=None):
+    def load_data(self, booksfile, versesfile, dialogobject):
         #Populate the Tables
         fbooks=open(booksfile, 'r')
         fverse=open(versesfile, 'r')

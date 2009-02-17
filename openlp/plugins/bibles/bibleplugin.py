@@ -302,13 +302,30 @@ class BiblePlugin(Plugin, PluginUtils):
     def onBiblePreviewClick(self):
         items = self.BibleListView.selectedItems()
         for item in items:
-            print item.text()
-            print item.isSelected()
             text = str(item.text())
             verse = text[:text.find("(")]
             bible = text[text.find("(")+1:text.find(")")]
-            self.translate(bible,  verse)
+            self._search_using_bible_reference(bible,  verse)
             print self.searchresults
+            book = self.searchresults[0][0]
+            chapter = str(self.searchresults[0][1])
+            verse = str(self.searchresults[0][2])
+            text = self.searchresults[0][3]
+            o = self.SettingsOutputStyleComboBox.currentIndex()
+            v = self.SettingsVerseStyleComboBox.currentIndex()
+            if o == 1: #Paragraph
+                text = text + "\n"
+            if v == 1: #Paragraph
+                loc = "("+book + " "+chapter+ ":"+verse+")"
+            elif v == 2: #Paragraph
+                loc = "{"+book + " "+chapter+ ":"+verse+"}"
+            elif v == 3: #Paragraph
+                loc = "["+book + " "+chapter+ ":"+verse+"]"
+            else:
+                loc = book + " "+chapter+ ":"+verse
+            print loc
+            print text
+
 
     def onBibleLiveClick(self):
         pass
@@ -419,7 +436,6 @@ class BiblePlugin(Plugin, PluginUtils):
             self.BibleListView.clear() # clear the results
             self.BibleListView.setRowCount(0)        
             self.BibleListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Bible Verses"]))             
-        
         self._display_results(bible)
 
     def onQuickSearchButton(self):
@@ -431,18 +447,13 @@ class BiblePlugin(Plugin, PluginUtils):
             self.BibleListView.clear() # clear the results
             self.BibleListView.setRowCount(0)        
             self.BibleListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Bible Verses"]))             
-
+            
         if self.QuickSearchComboBox.currentText() == "Text Search":
-            self._search_text(bible, text)
+            self.searchresults = self.biblemanager.get_verse_from_text(bible,text)
         else:
-            self.translate(bible, text)
-            if not self.searchresults == None:
-                self._display_results(bible)
-
-    def _search_text(self, bible, text):
-        self.log.debug("_search Text %s,%s", bible, text)
-        self.searchresults = self.biblemanager.get_verse_from_text(bible,text)
-        self._display_results(bible)
+            self._search_using_bible_reference(bible, text)
+        if not self.searchresults == None:
+            self._display_results(bible)
 
     def _display_results(self, bible):
         for book, chap, vse , txt in self.searchresults:
@@ -458,7 +469,7 @@ class BiblePlugin(Plugin, PluginUtils):
     def _initialise_bible_quick(self, bible): # not sure if needed yet!
         pass
         
-    def translate(self, bible,  search):
+    def _search_using_bible_reference(self, bible,  search):
         book = ""
         schapter = ""
         echapter = ""
