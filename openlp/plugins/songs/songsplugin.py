@@ -110,16 +110,19 @@ class SongsPlugin(Plugin, PluginUtils):
         # Add the song widget to the page layout
         self.MediaManagerItem.PageLayout.addWidget(self.SongWidget)
         self.SongListView = QtGui.QTableWidget()
-        self.SongListView.setColumnCount(3)
+        self.SongListView.setColumnCount(2)
         self.SongListView.setColumnHidden(0, True)
-        self.SongListView.setColumnWidth(1, 200)
-        self.SongListView.setColumnWidth(2, 80)
+        self.SongListView.setColumnWidth(1, 240)
+        #self.SongListView.setColumnWidth(2, 80)
         self.SongListView.setShowGrid(False)
         self.SongListView.setSortingEnabled(False)
         self.SongListView.setAlternatingRowColors(True)
-        self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Song Name","Author"]))
+        self.SongListView.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+        self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(['', u'Song Name']))
+        self.SongListView.horizontalHeader().setVisible(False)
+        self.SongListView.verticalHeader().setVisible(False)
         self.SongListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
-        self.SongListView.setObjectName("listView")
+        self.SongListView.setObjectName('listView')
         self.MediaManagerItem.PageLayout.addWidget(self.SongListView)
 
         QtCore.QObject.connect(self.SearchTextButton, QtCore.SIGNAL("pressed()"), self.onSearchTextButtonClick)
@@ -219,7 +222,7 @@ class SongsPlugin(Plugin, PluginUtils):
             search_results = self.songmanager.search_song_title(search_keywords)
         elif search_type == u'Lyrics':
             log.debug("Lyrics Search")
-            searchresults = self.songmanager.search_song_lyrics(search_keywords)
+            search_results = self.songmanager.search_song_lyrics(search_keywords)
         elif search_type == u'Authors':
             log.debug("Authors Search")
             #searchresults = self.songmanager.get_song_from_author(searchtext)
@@ -229,13 +232,13 @@ class SongsPlugin(Plugin, PluginUtils):
         print item
 
     def onSongNewClick(self):
-        self.edit_song_form.show()
+        self.edit_song_form.exec_()
 
     def onSongEditClick(self):
         cr = self.SongListView.currentRow()
         id = int(self.SongListView.item(cr, 0).text())
         self.edit_song_form.load_song(id)
-        self.edit_song_form.show()
+        self.edit_song_form.exec_()
 
     def onSongDeleteClick(self):
         pass
@@ -264,19 +267,20 @@ class SongsPlugin(Plugin, PluginUtils):
     def _display_results(self, searchresults):
         log.debug("_search results")
         self.SongListView.clear() # clear the results
-        self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Song Name","Author"]))
-        self.SongListView.setVerticalHeaderLabels(QtCore.QStringList([""]))
+        self.SongListView.setHorizontalHeaderLabels(QtCore.QStringList(['', u'Song Name']))
+        self.SongListView.horizontalHeader().setVisible(False)
+        self.SongListView.verticalHeader().setVisible(False)
         self.SongListView.setRowCount(0)
         #log.debug("Records returned from search %s", len(searchresults))
         for song in searchresults:
             for author in song.authors:
                 c = self.SongListView.rowCount()
-                self.SongListView.setRowCount(c+1)
-                twi = QtGui.QTableWidgetItem(str(song.id))
-                self.SongListView.setItem(c , 0, twi)
-                twi = QtGui.QTableWidgetItem(str(song.title))
-                self.SongListView.setItem(c , 1, twi)
-                twi = QtGui.QTableWidgetItem(str(author.display_name))
-                self.SongListView.setItem(c , 2, twi)
+                self.SongListView.setRowCount(c + 1)
+                song_index = QtGui.QTableWidgetItem(str(song.id))
+                self.SongListView.setItem(c , 0, song_index)
+                song_detail = QtGui.QTableWidgetItem(u'%s (%s)' % (str(song.title), str(author.display_name)))
+                self.SongListView.setItem(c , 1, song_detail)
+                #twi = QtGui.QTableWidgetItem()
+                #self.SongListView.setItem(c , 2, twi)
                 self.SongListView.setRowHeight(c, 20)
 

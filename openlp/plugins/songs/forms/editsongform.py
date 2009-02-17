@@ -18,7 +18,7 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 from PyQt4 import Qt, QtCore, QtGui
-from PyQt4.QtGui import QWidget
+from PyQt4.QtGui import QDialog
 from PyQt4.QtCore import pyqtSignature
 
 from authorsform import AuthorsForm
@@ -27,7 +27,7 @@ from songbookform import SongBookForm
 
 from editsongdialog import Ui_EditSongDialog
 
-class EditSongForm(QWidget, Ui_EditSongDialog):
+class EditSongForm(QDialog, Ui_EditSongDialog):
     """
     Class documentation goes here.
     """
@@ -35,7 +35,7 @@ class EditSongForm(QWidget, Ui_EditSongDialog):
         """
         Constructor
         """
-        QWidget.__init__(self, parent)
+        QDialog.__init__(self, parent)
         self.setupUi(self)
         self.songmanager = songmanager
         self.authors_form = AuthorsForm(self.songmanager)
@@ -51,7 +51,6 @@ class EditSongForm(QWidget, Ui_EditSongDialog):
         self.AuthorsListView.setAlternatingRowColors(True)
         self.savebutton = self.ButtonBox.button(QtGui.QDialogButtonBox.Save)
 
-
     def initialise(self):
         list = self.songmanager.get_authors()
         self.AuthorsSelectionComboItem.clear()
@@ -65,16 +64,18 @@ class EditSongForm(QWidget, Ui_EditSongDialog):
         self.CopyrightEditItem.setText(self.song.copyright)
 
         self.AuthorsListView.clear() # clear the results
-        self.AuthorsListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Author"]))
-        self.AuthorsListView.setVerticalHeaderLabels(QtCore.QStringList([""]))
+        self.AuthorsListView.setHorizontalHeaderLabels(QtCore.QStringList(['', u'Author']))
+        self.AuthorsListView.setVerticalHeaderLabels(QtCore.QStringList(['']))
+        self.AuthorsListView.horizontalHeader().setVisible(False)
+        self.AuthorsListView.verticalHeader().setVisible(False)
         self.AuthorsListView.setRowCount(0)
         for author in self.song.authors:
             c = self.AuthorsListView.rowCount()
             self.AuthorsListView.setRowCount(c+1)
-            twi = QtGui.QTableWidgetItem(str(author.id))
-            self.AuthorsListView.setItem(c , 0, twi)
-            twi = QtGui.QTableWidgetItem(str(author.display_name))
-            self.AuthorsListView.setItem(c , 1, twi)
+            author_id = QtGui.QTableWidgetItem(str(author.id))
+            self.AuthorsListView.setItem(c , 0, author_id)
+            author_name = QtGui.QTableWidgetItem(str(author.display_name))
+            self.AuthorsListView.setItem(c , 1, author_name)
             self.AuthorsListView.setRowHeight(c, 20)
         self._validate_song()
 
@@ -93,8 +94,8 @@ class EditSongForm(QWidget, Ui_EditSongDialog):
         """
         self.topics_form.load_form()
         self.topics_form.show()
-    @pyqtSignature("")
 
+    @pyqtSignature("")
     def on_AddSongBookButton_clicked(self):
         """
         Slot documentation goes here.
@@ -109,14 +110,14 @@ class EditSongForm(QWidget, Ui_EditSongDialog):
         valid = True   # Lets be nice and assume the data is correct.
         if len(self.TitleEditItem.displayText()) == 0: #Song title missing
             valid = False
-            self._color_widget(self.TitleEditItem, True)
-        else:
-            self._color_widget(self.TitleEditItem, False)
+            #self._color_widget(self.TitleEditItem, True)
+        #else:
+            #self._color_widget(self.TitleEditItem, False)
         if len(self.CopyrightEditItem.displayText()) == 0: #Song title missing
             valid = False
-            self._color_widget(self.CopyrightEditItem, True)
-        else:
-            self._color_widget(self.CopyrightEditItem, False)
+            #self._color_widget(self.CopyrightEditItem, True)
+        #else:
+            #self._color_widget(self.CopyrightEditItem, False)
 
         if valid:
             self.ButtonBox.addButton(self.savebutton, QtGui.QDialogButtonBox.AcceptRole) # hide the save button tile screen is valid
@@ -133,6 +134,9 @@ class EditSongForm(QWidget, Ui_EditSongDialog):
         slot.setAutoFillBackground(True)
 
     def on_TitleEditItem_lostFocus(self):
-        self._validate_song()
+        #self._validate_song()
+        pass
+
     def on_CopyrightEditItem_lostFocus(self):
-        self._validate_song()
+        #self._validate_song()
+        pass
