@@ -37,6 +37,11 @@ class EditSongForm(QDialog, Ui_EditSongDialog):
         """
         QDialog.__init__(self, parent)
         self.setupUi(self)
+        # Connecting signals and slots
+        QtCore.QObject.connect(self.AddAuthorsButton, QtCore.SIGNAL('clicked()'), self.onAddAuthorsButtonClicked)
+        QtCore.QObject.connect(self.AddTopicButton, QtCore.SIGNAL('clicked()'), self.onAddTopicButtonClicked)
+        QtCore.QObject.connect(self.CopyrightInsertItem, QtCore.SIGNAL('clicked()'), self.onCopyrightInsertItemTriggered)
+        # Create other objects and forms
         self.songmanager = songmanager
         self.authors_form = AuthorsForm(self.songmanager)
         self.topics_form = TopicsForm(self.songmanager)
@@ -57,8 +62,8 @@ class EditSongForm(QDialog, Ui_EditSongDialog):
         for i in list:
             self.AuthorsSelectionComboItem.addItem( i.display_name)
 
-    def load_song(self, songid):
-        self.song = self.songmanager.get_song(songid)
+    def loadSong(self, id):
+        self.song = self.songmanager.get_song(id)
         self.TitleEditItem.setText(self.song.title)
         self.LyricsTextEdit.setText(self.song.lyrics)
         self.CopyrightEditItem.setText(self.song.copyright)
@@ -70,30 +75,28 @@ class EditSongForm(QDialog, Ui_EditSongDialog):
         self.AuthorsListView.verticalHeader().setVisible(False)
         self.AuthorsListView.setRowCount(0)
         for author in self.song.authors:
-            c = self.AuthorsListView.rowCount()
-            self.AuthorsListView.setRowCount(c+1)
+            row_count = self.AuthorsListView.rowCount()
+            self.AuthorsListView.setRowCount(row_count + 1)
             author_id = QtGui.QTableWidgetItem(str(author.id))
-            self.AuthorsListView.setItem(c , 0, author_id)
+            self.AuthorsListView.setItem(row_count, 0, author_id)
             author_name = QtGui.QTableWidgetItem(str(author.display_name))
-            self.AuthorsListView.setItem(c , 1, author_name)
-            self.AuthorsListView.setRowHeight(c, 20)
+            self.AuthorsListView.setItem(row_count, 1, author_name)
+            self.AuthorsListView.setRowHeight(row_count, 20)
         self._validate_song()
 
-    @pyqtSignature("")
-    def on_AddAuthorsButton_clicked(self):
+    def onAddAuthorsButtonClicked(self):
         """
         Slot documentation goes here.
         """
         self.authors_form.load_form()
-        self.authors_form.show()
+        self.authors_form.exec_()
 
-    @pyqtSignature("")
-    def on_AddTopicButton_clicked(self):
+    def onAddTopicButtonClicked(self):
         """
         Slot documentation goes here.
         """
         self.topics_form.load_form()
-        self.topics_form.show()
+        self.topics_form.exec_()
 
     @pyqtSignature("")
     def on_AddSongBookButton_clicked(self):
@@ -101,7 +104,7 @@ class EditSongForm(QDialog, Ui_EditSongDialog):
         Slot documentation goes here.
         """
         self.song_book_form.load_form()
-        self.song_book_form.show()
+        self.song_book_form.exec_()
 
     def _validate_song(self):
         """
@@ -137,6 +140,10 @@ class EditSongForm(QDialog, Ui_EditSongDialog):
         #self._validate_song()
         pass
 
-    def on_CopyrightEditItem_lostFocus(self):
-        #self._validate_song()
-        pass
+    def onCopyrightInsertItemTriggered(self):
+        text = self.CopyrightEditItem.displayText()
+        pos = self.CopyrightEditItem.cursorPosition()
+        text = text[:pos] + u'©' + text[pos:]
+        self.CopyrightEditItem.setText(text)
+        self.CopyrightEditItem.setFocus()
+        self.CopyrightEditItem.setCursorPosition(pos + 1)

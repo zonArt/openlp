@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>786</width>
-    <height>634</height>
+    <height>669</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -77,6 +77,12 @@
          </item>
          <item>
           <widget class="QTextEdit" name="LyricsTextEdit" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="MinimumExpanding" hsizetype="Expanding" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="lineWrapMode" >
             <enum>QTextEdit::NoWrap</enum>
            </property>
@@ -103,7 +109,14 @@
           </widget>
          </item>
          <item>
-          <widget class="QTextEdit" name="CommentsEdit" />
+          <widget class="QTextEdit" name="CommentsEdit" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QGroupBox" name="ThemeGroupBox" >
@@ -141,6 +154,18 @@
       </item>
       <item>
        <widget class="QWidget" native="1" name="AdditionalWidget" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
         <layout class="QVBoxLayout" name="AdditionalLayout" >
          <property name="spacing" >
           <number>8</number>
@@ -192,13 +217,6 @@
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="AddAuthorsButton" >
-                 <property name="text" >
-                  <string>New Author</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
                 <widget class="QPushButton" name="AuthorAddtoSongItem" >
                  <property name="maximumSize" >
                   <size>
@@ -231,13 +249,13 @@
                 <number>0</number>
                </property>
                <item>
-                <spacer name="AuthorRemoveSpacer" >
+                <spacer name="AuthorsSpacer" >
                  <property name="orientation" >
                   <enum>Qt::Horizontal</enum>
                  </property>
                  <property name="sizeHint" stdset="0" >
                   <size>
-                   <width>263</width>
+                   <width>40</width>
                    <height>20</height>
                   </size>
                  </property>
@@ -247,6 +265,13 @@
                 <widget class="QPushButton" name="AuthorRemoveItem" >
                  <property name="text" >
                   <string>Remove</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="AddAuthorsButton" >
+                 <property name="text" >
+                  <string>Manage Authors</string>
                  </property>
                 </widget>
                </item>
@@ -269,7 +294,14 @@
              <number>8</number>
             </property>
             <item row="0" column="0" >
-             <widget class="QComboBox" name="SongbookCombo" />
+             <widget class="QComboBox" name="SongbookCombo" >
+              <property name="sizePolicy" >
+               <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
             </item>
             <item row="0" column="1" >
              <widget class="QPushButton" name="AddSongBookButton" >
@@ -280,7 +312,7 @@
                </sizepolicy>
               </property>
               <property name="text" >
-               <string>Add Song Book</string>
+               <string>Manage Song Books</string>
               </property>
              </widget>
             </item>
@@ -289,6 +321,12 @@
          </item>
          <item>
           <widget class="QGroupBox" name="TopicGroupBox" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="title" >
             <string>Topic</string>
            </property>
@@ -309,19 +347,25 @@
                 <number>0</number>
                </property>
                <item>
-                <widget class="QComboBox" name="SongTopicCombo" />
-               </item>
-               <item>
-                <widget class="QPushButton" name="AddTopicsToSongButton" >
-                 <property name="text" >
-                  <string>Add to Song</string>
+                <widget class="QComboBox" name="SongTopicCombo" >
+                 <property name="sizePolicy" >
+                  <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="AddTopicButton" >
+                <widget class="QPushButton" name="AddTopicsToSongButton" >
+                 <property name="sizePolicy" >
+                  <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="text" >
-                  <string>Add Topic</string>
+                  <string>Add to Song</string>
                  </property>
                 </widget>
                </item>
@@ -345,13 +389,13 @@
                 <number>0</number>
                </property>
                <item>
-                <spacer name="TopicRemoveSpacer" >
+                <spacer name="TopicsSpacer" >
                  <property name="orientation" >
                   <enum>Qt::Horizontal</enum>
                  </property>
                  <property name="sizeHint" stdset="0" >
                   <size>
-                   <width>263</width>
+                   <width>40</width>
                    <height>20</height>
                   </size>
                  </property>
@@ -361,6 +405,13 @@
                 <widget class="QPushButton" name="pushButton" >
                  <property name="text" >
                   <string>Remove</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="AddTopicButton" >
+                 <property name="text" >
+                  <string>Manage Topics</string>
                  </property>
                 </widget>
                </item>
@@ -458,16 +509,12 @@
   <tabstop>CommentsEdit</tabstop>
   <tabstop>ThemeSelectionComboItem</tabstop>
   <tabstop>ThemeAddItem</tabstop>
-  <tabstop>AuthorsSelectionComboItem</tabstop>
-  <tabstop>AddAuthorsButton</tabstop>
   <tabstop>AuthorAddtoSongItem</tabstop>
   <tabstop>AuthorsListView</tabstop>
   <tabstop>AuthorRemoveItem</tabstop>
   <tabstop>SongbookCombo</tabstop>
   <tabstop>AddSongBookButton</tabstop>
   <tabstop>SongTopicCombo</tabstop>
-  <tabstop>AddTopicsToSongButton</tabstop>
-  <tabstop>AddTopicButton</tabstop>
   <tabstop>ToticsListView</tabstop>
   <tabstop>pushButton</tabstop>
   <tabstop>CopyrightEditItem</tabstop>

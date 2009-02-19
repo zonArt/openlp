@@ -35,19 +35,20 @@ class TopicsForm(QDialog, Ui_TopicsDialog):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.songmanager = songmanager
-        
+        #self.connect()
+
     def load_form(self):
         A = 1
-    
-    @pyqtSignature("")
-    def on_DeleteButton_clicked(self):
+
+    #@pyqtSignature("")
+    def onDeleteButtonClicked(self):
         """
         Slot documentation goes here.
         """
         print "db clicked"
-    
-    @pyqtSignature("")
-    def on_AddUpdateButton_clicked(self):
+
+    #@pyqtSignature("")
+    def onAddUpdateButtonClicked(self):
         """
         Slot documentation goes here.
         """

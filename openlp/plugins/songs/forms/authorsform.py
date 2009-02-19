@@ -35,35 +35,40 @@ class AuthorsForm(QDialog, Ui_AuthorsDialog):
         """
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.songmanager = songmanager        
+        self.songmanager = songmanager
         self.AuthorListView.setColumnCount(2)
         self.AuthorListView.setColumnHidden(0, True)
         self.AuthorListView.setColumnWidth(1, 300)
-        self.AuthorListView.setHorizontalHeaderLabels(QtCore.QStringList([" ","Author"])) 
+        #self.AuthorListView.setHorizontalHeaderLabels(QtCore.QStringList([" ","Author"]))
+        self.AuthorListView.horizontalHeader().setVisible(False)
+        self.AuthorListView.verticalHeader().setVisible(False)
         self.currentrow = 0
         self.author = None
-        
+
     def load_form(self):
         """
         Refresh the screen and rest fields
-        """        
+        """
         self.on_ClearButton_clicked() # tidy up screen
         authors = self.songmanager.get_authors()
         self.AuthorListView.clear() # clear the results
-        self.AuthorListView.setHorizontalHeaderLabels(QtCore.QStringList([" ","Author"]))                
+        #self.AuthorListView.setHorizontalHeaderLabels(QtCore.QStringList([" ","Author"]))
+        self.AuthorListView.horizontalHeader().setVisible(False)
+        self.AuthorListView.verticalHeader().setVisible(False)
         self.AuthorListView.setRowCount(0)
         for author in authors:
-            c = self.AuthorListView.rowCount()
-            self.AuthorListView.setRowCount(c+1)
-            twi = QtGui.QTableWidgetItem(str(author.id))
-            self.AuthorListView.setItem(c , 0, twi)  
-            twi = QtGui.QTableWidgetItem(str(author.display_name))
-            twi.setFlags(QtCore.Qt.ItemIsSelectable)
-            self.AuthorListView.setItem(c , 1, twi)              
-            self.AuthorListView.setRowHeight(c, 20)
-        c = self.AuthorListView.rowCount()
-        if self.currentrow > c: # incase we have delete the last row of the table
-           self.currentrow = c 
+            row_count = self.AuthorListView.rowCount()
+            self.AuthorListView.setRowCount(row_count + 1)
+            author_id = QtGui.QTableWidgetItem(str(author.id))
+            self.AuthorListView.setItem(row_count, 0, author_id)
+            display_name = QtGui.QTableWidgetItem(author.display_name)
+            display_name.setFlags(QtCore.Qt.ItemIsSelectable)
+            self.AuthorListView.setItem(row_count, 1, display_name)
+            self.AuthorListView.setRowHeight(row_count, 20)
+        row_count = self.AuthorListView.rowCount()
+        if self.currentrow > row_count:
+            # in case we have delete the last row of the table
+            self.currentrow = row_count
         self.AuthorListView.selectRow(self.currentrow) # set selected row to previous selected row
         self._validate_form()
 
@@ -75,11 +80,11 @@ class AuthorsForm(QDialog, Ui_AuthorsDialog):
         self.songmanager.delete_author(self.author.id)
         self.on_ClearButton_clicked()
         self.load_form()
-        
+
     @pyqtSignature("")
-    def on_DisplayEdit_lostFocus(self): 
+    def on_DisplayEdit_lostFocus(self):
         self._validate_form()
- 
+
     @pyqtSignature("")
     def on_AddUpdateButton_clicked(self):
         """
@@ -93,9 +98,9 @@ class AuthorsForm(QDialog, Ui_AuthorsDialog):
         self.songmanager.save_author(self.author)
         self.on_ClearButton_clicked()
         self.load_form()
-        self._validate_form()        
-        
-        
+        self._validate_form()
+
+
     @pyqtSignature("")
     def on_ClearButton_clicked(self):
         """
@@ -107,8 +112,8 @@ class AuthorsForm(QDialog, Ui_AuthorsDialog):
         self.MessageLabel.setText("")
         self.DeleteButton.setEnabled(False)
         self.author = None
-        self._validate_form()        
-    
+        self._validate_form()
+
     @pyqtSignature("QTableWidgetItem*")
     def on_AuthorListView_itemClicked(self, item):
         """
@@ -122,15 +127,15 @@ class AuthorsForm(QDialog, Ui_AuthorsDialog):
         self.DisplayEdit.setText(self.author.display_name)
         self.FirstNameEdit.setText(self.author.first_name)
         self.LastNameEdit.setText(self.author.last_name)
-        songs = self.songmanager.get_song_authors_for_author(id)
-        if len(songs) > 0:
+        #songs = self.songmanager.get_song_authors_for_author(id)
+        if len(self.author.songs) > 0:
             self.MessageLabel.setText("Author in use 'Delete' is disabled")
             self.DeleteButton.setEnabled(False)
         else:
             self.MessageLabel.setText("Author is not used")
-            self.DeleteButton.setEnabled(True) 
-        self._validate_form()            
-            
+            self.DeleteButton.setEnabled(True)
+        self._validate_form()
+
     def _validate_form(self):
         if len(self.DisplayEdit.displayText()) == 0: # We need at lease a display name
             self.AddUpdateButton.setEnabled(False)

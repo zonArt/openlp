@@ -235,9 +235,9 @@ class SongsPlugin(Plugin, PluginUtils):
         self.edit_song_form.exec_()
 
     def onSongEditClick(self):
-        cr = self.SongListView.currentRow()
-        id = int(self.SongListView.item(cr, 0).text())
-        self.edit_song_form.load_song(id)
+        current_row = self.SongListView.currentRow()
+        id = int(self.SongListView.item(current_row, 0).text())
+        self.edit_song_form.loadSong(id)
         self.edit_song_form.exec_()
 
     def onSongDeleteClick(self):

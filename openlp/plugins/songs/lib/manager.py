@@ -73,13 +73,13 @@ class SongManager():
         """
         Searches the song title for keywords.
         """
-        return self.session.query(Song).filter(Song.search_title.like(u'%' + keywords + u'%'))
+        return self.session.query(Song).filter(Song.search_title.like(u'%' + keywords + u'%')).order_by(Song.search_title.asc()).all()
 
     def search_song_lyrics(self, keywords):
         """
         Searches the song lyrics for keywords.
         """
-        return self.session.query(Song).filter(Song.search_lyrics.like(u'%' + keywords + u'%'))
+        return self.session.query(Song).filter(Song.search_lyrics.like(u'%' + keywords + u'%')).order_by(Song.search_lyrics.asc()).all()
 
     def get_song(self, id=None):
         """
