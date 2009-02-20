@@ -74,24 +74,24 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
 
     def onVersesFileButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir(1))
-        self.VerseLocationEdit.setText(filename)
         if filename != "":
+            self.VerseLocationEdit.setText(filename)            
             self._save_last_directory(filename, 1)
-        self.set_cvs()        
+            self.set_cvs()        
         
     def onBooksFileButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir(2))
-        self.BooksLocationEdit.setText(filename)
-        if filename != "":        
+        if filename != "": 
+            self.BooksLocationEdit.setText(filename)            
             self._save_last_directory(filename, 2)
-        self.set_cvs()                
+            self.set_cvs()                
     
     def onOsisFileButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir(3))
-        self.OSISLocationEdit.setText(filename)
         if filename != "":        
+            self.OSISLocationEdit.setText(filename)
             self._save_last_directory(filename, 3)
-        self.set_osis()
+            self.set_osis()
  
     def onOSISLocationEditLostFocus(self):
         if len(self.OSISLocationEdit.displayText() ) > 0:
@@ -122,13 +122,11 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
     def onBibleComboBoxSelected(self):
         self.check_http()
         self.BibleNameEdit.setText(str(self.BibleComboBox.currentText()))
-
         
     def onCancelButtonClicked(self):
         Receiver().send_message("openlpstopimport") 
         self.close() 
         
-    @pyqtSignature("")        
     def onImportButtonClicked(self):
         if self.biblemanager != None:
             if not self.bible_type == None and len(self.BibleNameEdit.displayText()) > 0:
@@ -181,8 +179,7 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
                 self.free_all()
         
     def check_http(self):
-        if len(self.LocationComboBox.currentText()) > 0 or \
-            len(self.BibleComboBox.currentText()) >0 :
+        if self.BibleComboBox.currentIndex() != 0 :  # First slot is blank so no bible
             self.set_http()
         else:
             if self.bible_type == "HTTP": # Was HTTP and is not any more stops lostFocus running mad
