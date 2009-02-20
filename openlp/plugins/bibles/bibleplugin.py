@@ -241,7 +241,6 @@ class BiblePlugin(Plugin, PluginUtils):
         self.BibleListView.setShowGrid(False)
         self.BibleListView.setSortingEnabled(False)
         self.BibleListView.setAlternatingRowColors(True)
-        #self.BibleListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Bible Verses"]))
         self.BibleListView.verticalHeader().setVisible(False)
         self.BibleListView.horizontalHeader().setVisible(False)
 

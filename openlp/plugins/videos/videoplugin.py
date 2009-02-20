@@ -65,7 +65,8 @@ class VideoPlugin(Plugin, PluginUtils):
         self.VideoListView.setShowGrid(False)
         self.VideoListView.setSortingEnabled(False)        
         self.VideoListView.setAlternatingRowColors(True)
-        self.VideoListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Name"]))  
+        self.VideoListView.verticalHeader().setVisible(False)
+        self.VideoListView.horizontalHeader().setVisible(False) 
         self.VideoListView.setAlternatingRowColors(True)
         self.VideoListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.VideoListView.setObjectName("VideoListView")
@@ -92,14 +93,14 @@ class VideoPlugin(Plugin, PluginUtils):
 
     def _load_video_list(self, list):
         for f in list:
-            fl ,  nm = os.path.split(str(f))            
-            c = self.VideoListView.rowCount()
-            self.VideoListView.setRowCount(c+1)
-            twi = QtGui.QTableWidgetItem(str(f))
-            self.VideoListView.setItem(c , 0, twi)
-            twi = QtGui.QTableWidgetItem(str(nm))
-            self.VideoListView.setItem(c , 1, twi)
-            self.VideoListView.setRowHeight(c, 20)        
+            file_path ,  file_name = os.path.split(str(f))            
+            count = self.VideoListView.rowCount()
+            self.VideoListView.setRowCount(count+1)
+            row_item = QtGui.QTableWidgetItem(str(f))
+            self.VideoListView.setItem(count , 0, row_item)
+            row_item = QtGui.QTableWidgetItem(str(file_name))
+            self.VideoListView.setItem(count , 1, row_item)
+            self.VideoListView.setRowHeight(count, 20)        
             
     def onVideoDeleteClick(self):
         cr = self.VideoListView.currentRow()
