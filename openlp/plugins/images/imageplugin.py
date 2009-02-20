@@ -22,8 +22,12 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.resources import *
 from openlp.core.lib import Plugin, PluginUtils, MediaManagerItem, ImageServiceItem
 #from forms import EditSongForm
+import logging
 
 class ImagePlugin(Plugin, PluginUtils):
+    global log
+    log=logging.getLogger("ImagePlugin")
+    log.info("Image Plugin loaded")
     def __init__(self, preview_controller, live_controller):
         # Call the parent constructor
         Plugin.__init__(self, 'Images', '1.9.0', preview_controller, live_controller)
@@ -35,7 +39,6 @@ class ImagePlugin(Plugin, PluginUtils):
 
         self.preview_service_item=ImageServiceItem(preview_controller)
         self.live_service_item=ImageServiceItem(live_controller)
-
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
         self.MediaManagerItem = MediaManagerItem(self.icon, 'Images')
@@ -62,9 +65,10 @@ class ImagePlugin(Plugin, PluginUtils):
             self.onImageAddClick, 'ImageAddItem')
         ## Add the songlist widget ##
         self.ImageListView = QtGui.QTableWidget()
-        self.ImageListView.setColumnCount(2)
+        self.ImageListView.setColumnCount(3)
         self.ImageListView.setColumnHidden(0, True)
-        self.ImageListView.setColumnWidth(1, 275)
+#         self.ImageListView.setColumnWidth(1, 275)
+        self.ImageListView.setColumnWidth(2, 100)
         self.ImageListView.setShowGrid(False)
         self.ImageListView.setSortingEnabled(False)        
         self.ImageListView.setAlternatingRowColors(True)
@@ -89,8 +93,10 @@ class ImagePlugin(Plugin, PluginUtils):
         return self.MediaManagerItem
 
     def initialise(self):
+        log.info("Plugin Initialising")
         list = self._load_display_list()
         self._load_image_list(list)     
+        log.info("Done")
 
     def onImagesNewClick(self):
         files = QtGui.QFileDialog.getOpenFileNames(None, "Select Image(s)", self._get_last_dir(), "Images (*.jpg *.gif *.png *.bmp)")
@@ -100,6 +106,7 @@ class ImagePlugin(Plugin, PluginUtils):
             self._save_display_list(self.ImageListView) 
 
     def _load_image_list(self, list):
+        h=200
         for f in list:
             fl ,  nm = os.path.split(str(f))            
             c = self.ImageListView.rowCount()
@@ -108,7 +115,13 @@ class ImagePlugin(Plugin, PluginUtils):
             self.ImageListView.setItem(c , 0, twi)
             twi = QtGui.QTableWidgetItem(str(nm))
             self.ImageListView.setItem(c , 1, twi)
-            self.ImageListView.setRowHeight(c, 20)        
+            preview = QtGui.QPixmap(str(f))
+            twi = QtGui.QTableWidgetItem("")
+            twi.setBackground(QtGui.QBrush(QtGui.QPixmap(f).scaledToHeight(h)))
+#             twi.setIcon(QtGui.QIcon(preview.scaledToHeight(h)))
+            self.ImageListView.setItem(c , 2, twi)
+            self.ImageListView.setRowHeight(c, h)
+
             
     def onImageDeleteClick(self):
         cr = self.ImageListView.currentRow()
@@ -116,7 +129,10 @@ class ImagePlugin(Plugin, PluginUtils):
         self._save_display_list(self.ImageListView)     
 
     def onImagePreviewClick(self):
-        self.preview_service_item.add(self.ImageListView.pathtofile)
+        cr = self.ImageListView.currentRow()
+        filename = self.ImageListView.item(cr, 0).text()
+        log.info("Preview "+str(filename))
+        self.preview_service_item.add(filename)
         self.preview_service_item.render()
 
     def onImageLiveClick(self):
@@ -124,3 +140,4 @@ class ImagePlugin(Plugin, PluginUtils):
 
     def onImageAddClick(self):
         pass
+

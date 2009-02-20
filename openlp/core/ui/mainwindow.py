@@ -28,8 +28,11 @@ from openlp.core.ui import AboutForm, AlertForm, SettingsDialog, SlideController
 from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab
 
 from openlp.core import PluginManager
-
+import logging
 class MainWindow(object):
+    global log
+    log=logging.getLogger("MainWindow")
+    log.info("MainWindow loaded")
 
     def __init__(self):
         self.main_window = QtGui.QMainWindow()
@@ -41,6 +44,19 @@ class MainWindow(object):
         self.plugin_manager = PluginManager(pluginpath)
         self.setupUi()
         self.plugin_manager.find_plugins(pluginpath, self.PreviewController, self.LiveController)
+        # hook methods have to happen after find_plugins.  Find plugins needs the controllers
+        # hence the hooks have moved fromt srtupUI() to here
+        # Call the hook method to pull in import menus.
+#         self.plugin_manager.hook_import_menu(self.FileImportMenu)
+        #
+        # Call the hook method to pull in export menus.
+#         self.plugin_manager.hook_import_menu(self.FileExportMenu)
+        #
+        # This is where we will eventually get the Plugin Manager to pull in
+        # the media manager items.
+        log.info("hook media")
+        self.plugin_manager.hook_media_manager(self.MediaToolBox)
+        # End adding media manager items.
         self.receiver = Receiver()
         QtCore.QObject.connect(self.receiver.get_receiver(),QtCore.SIGNAL("openlprepaint"),self.repaint)  
     
@@ -84,14 +100,9 @@ class MainWindow(object):
         self.FileMenu.setObjectName("FileMenu")
         self.FileImportMenu = QtGui.QMenu(self.FileMenu)
         self.FileImportMenu.setObjectName("FileImportMenu")
-        # Call the hook method to pull in import menus.
-        self.plugin_manager.hook_import_menu(self.FileImportMenu)
-        #
+
         self.FileExportMenu = QtGui.QMenu(self.FileMenu)
         self.FileExportMenu.setObjectName("FileExportMenu")
-        # Call the hook method to pull in export menus.
-        self.plugin_manager.hook_import_menu(self.FileExportMenu)
-        #
         self.OptionsMenu = QtGui.QMenu(self.MenuBar)
         self.OptionsMenu.setObjectName("OptionsMenu")
         self.OptionsViewMenu = QtGui.QMenu(self.OptionsMenu)
@@ -133,10 +144,7 @@ class MainWindow(object):
         self.MediaToolBox = QtGui.QToolBox(self.MediaManagerContents)
         #self.MediaToolBox.setTabSpacing(0)
         self.MediaToolBox.setObjectName("MediaToolBox")
-        # This is where we will eventually get the Plugin Manager to pull in
-        # the media manager items.
-        self.plugin_manager.hook_media_manager(self.MediaToolBox)
-        # End adding media manager items.
+
         self.MediaManagerLayout.addWidget(self.MediaToolBox)
         self.MediaManagerDock.setWidget(self.MediaManagerContents)
         self.main_window.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.MediaManagerDock)

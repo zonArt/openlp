@@ -84,7 +84,9 @@ class PluginManager(object):
             except TypeError: # xxx need to get rid of this once all plugins are up to date
                 plugin = p()
                 log.debug('loaded plugin' + str(p) + ' with no controllers')
+            log.debug("Plugin="+str(p))
             if plugin.check_pre_conditions():
+                log.debug("Appending "+str(p))
                 plugin_objects.append(plugin)
         self.plugins = sorted(plugin_objects, self.order_by_weight)
 

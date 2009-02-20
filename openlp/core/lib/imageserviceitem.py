@@ -18,13 +18,16 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 from PyQt4 import QtCore, QtGui
+import logging
 
 class ImageServiceItem():
     """
     The service item is a base class for the plugins to use to interact with
     the service manager, the slide controller, and the renderer.
     """
-
+    global log
+    log=logging.getLogger("ImageServiceItem")
+    log.info("ImageServiceItem loaded")
     def __init__(self, controller):
         """
         Init Method
@@ -58,7 +61,9 @@ class ImageServiceItem():
             self.slide_controller.setItem(c , 0, twi)
             twi = QtGui.QTableWidgetItem(str(nm))
             self.slide_controller.setItem(c , 1, twi)
-            self.slide_controller.setRowHeight(c, 20)        
+            self.slide_controller.setRowHeight(c, 80)
+            
+        # render the preview screen here
 
     def get_parent_node(self):
         """
@@ -66,11 +71,12 @@ class ImageServiceItem():
         Manager.
         """
         pass
-    def add(self, img_filename):
+    def add(self, filename):
         """
         append an image to the list
         """
-        self.imgs.append(img_filename)
+        log.info("add:"+filename)
+        self.imgs.append(filename)
 
     def get_oos_text(self):
         """
@@ -82,5 +88,6 @@ class ImageServiceItem():
         """
         get text from the OOS file and setup the internal structure
         """
+        log.info("Set from OOS:"+text)
         self.imgs=eval(text)
         
