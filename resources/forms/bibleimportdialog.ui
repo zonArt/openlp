@@ -30,7 +30,7 @@
     <enum>QFrame::StyledPanel</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="FileImportPage">
     <property name="geometry">
@@ -178,8 +178,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>192</width>
-      <height>228</height>
+      <width>447</width>
+      <height>337</height>
      </rect>
     </property>
     <attribute name="label">
@@ -450,4 +450,19 @@
   <include location="../images/openlp-2.qrc"/>
  </resources>
  <connections/>
+ <slots>
+  <slot>OnImportButtonClicked()</slot>
+  <slot>OnCancelButtonClicked()</slot>
+  <slot>onOsisFileButtonClicked()</slot>
+  <slot>onBooksFileButtonClicked()</slot>
+  <slot>onVersesFileButtonClicked()</slot>
+  <slot>onLocationComboBoxSelected()</slot>
+  <slot>onBibleComboBoxSelected()</slot>
+  <slot>onOSISLocationEditLostFocus()</slot>
+  <slot>onBooksLocationEditLostFocus()</slot>
+  <slot>onVerseLocationEditLostFocus()</slot>
+  <slot>onProxyAddressEditLostFocus()</slot>
+  <slot>onProxyUsernameEditLostFocus()</slot>
+  <slot>onProxyPasswordEditLostFocus()</slot>
+ </slots>
 </ui>
