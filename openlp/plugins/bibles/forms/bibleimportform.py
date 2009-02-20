@@ -35,7 +35,7 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         self.biblemanager = biblemanager
         self.config = config
         self.bibleplugin = bibleplugin
-        self.bibletype = None
+        self.bible_type = None
         self.barmax = 0
         self.AddressEdit.setText(self.config.get_config("addressedit", ""))
         self.UsernameEdit.setText(self.config.get_config("usernameedit", ""))
@@ -51,133 +51,112 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
             p = line.split(",")
             self.bible_versions[p[0]] = p[1].replace('\n', '')
             self.BibleComboBox.addItem(str(p[0]))
-
    
-        QtCore.QObject.connect(self.LocationComboBox, QtCore.SIGNAL("activated(int)"), self.onLocationComboBox)
-        QtCore.QObject.connect(self.BibleComboBox, QtCore.SIGNAL("activated(int)"), self.onBibleComboBox)
+        ###############   Combo Boxes
+        QtCore.QObject.connect(self.LocationComboBox, QtCore.SIGNAL("activated(int)"), self.onLocationComboBoxSelected)
+        QtCore.QObject.connect(self.BibleComboBox, QtCore.SIGNAL("activated(int)"), self.onBibleComboBoxSelected)
 
-    @pyqtSignature("")
-    def on_VersesFileButton_clicked(self):
+        ###############   Buttons 
+        QtCore.QObject.connect(self.ImportButton, QtCore.SIGNAL("pressed()"), self.onImportButtonClicked)        
+        QtCore.QObject.connect(self.CancelButton, QtCore.SIGNAL("pressed()"), self.onCancelButtonClicked)
+        QtCore.QObject.connect(self.VersesFileButton, QtCore.SIGNAL("pressed()"), self.onVersesFileButtonClicked)
+        QtCore.QObject.connect(self.BooksFileButton, QtCore.SIGNAL("pressed()"), self.onBooksFileButtonClicked)
+        QtCore.QObject.connect(self.OsisFileButton, QtCore.SIGNAL("pressed()"), self.onOsisFileButtonClicked)        
+        
+        ###############   Lost Focus
+        QtCore.QObject.connect(self.OSISLocationEdit, QtCore.SIGNAL("lostFocus()"), self.onOSISLocationEditLostFocus)
+        QtCore.QObject.connect(self.BooksLocationEdit, QtCore.SIGNAL("lostFocus()"),self.onBooksLocationEditLostFocus)
+        QtCore.QObject.connect(self.VerseLocationEdit, QtCore.SIGNAL("lostFocus()"), self.onVerseLocationEditLostFocus)
+        QtCore.QObject.connect(self.AddressEdit, QtCore.SIGNAL("lostFocus()"), self.onProxyAddressEditLostFocus)
+        QtCore.QObject.connect(self.UsernameEdit, QtCore.SIGNAL("lostFocus()"), self.onProxyUsernameEditLostFocus)
+        QtCore.QObject.connect(self.PasswordEdit, QtCore.SIGNAL("lostFocus()"), self.onProxyPasswordEditLostFocus)        
+
+
+    def onVersesFileButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir(1))
         self.VerseLocationEdit.setText(filename)
         if filename != "":
             self._save_last_directory(filename, 1)
-        self.setCSV()        
+        self.set_cvs()        
         
-    @pyqtSignature("")
-    def on_BooksFileButton_clicked(self):
+    def onBooksFileButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir(2))
         self.BooksLocationEdit.setText(filename)
         if filename != "":        
             self._save_last_directory(filename, 2)
-        self.setCSV()                
+        self.set_cvs()                
     
-    @pyqtSignature("")
-    def on_OsisFileButton_clicked(self):
+    def onOsisFileButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir(3))
         self.OSISLocationEdit.setText(filename)
         if filename != "":        
             self._save_last_directory(filename, 3)
-        self.setOSIS()
+        self.set_osis()
  
-    def on_OSISLocationEdit_lostFocus(self):
+    def onOSISLocationEditLostFocus(self):
         if len(self.OSISLocationEdit.displayText() ) > 0:
-            self.setOSIS()
+            self.set_osis()
         else:
-            if self.bibletype == "OSIS": # Was OSIS and is not any more stops lostFocus running mad
-                self.bibletype = None        
-                self.freeAll()
+            if self.bible_type == "OSIS": # Was OSIS and is not any more stops lostFocus running mad
+                self.bible_type = None        
+                self.free_all()
             
-    def on_BooksLocationEdit_lostFocus(self):
-        self._checkcsv()
+    def onBooksLocationEditLostFocus(self):
+        self.check_osis()
         
-    def on_VerseLocationEdit_lostFocus(self):
-        self._checkcsv()
+    def onVerseLocationEditLostFocus(self):
+        self.check_osis()
         
-    def _checkcsv(self):
-        if len(self.BooksLocationEdit.displayText()) > 0 or len(self.VerseLocationEdit.displayText()) > 0:
-            self.setCSV()
-        else:
-            if self.bibletype == "CSV": # Was CSV and is not any more stops lostFocus running mad
-                self.bibletype = None        
-                self.freeAll()
-
-    @pyqtSignature("")
-    def on_AddressEdit_lostFocus(self):
+    def onProxyAddressEditLostFocus(self):
         self.config.set_config("addressedit", str(self.AddressEdit.displayText()))
 
-    @pyqtSignature("")
-    def on_UsernameEdit_lostFocus(self):
+    def onProxyUsernameEditLostFocus(self):
         self.config.set_config("usernameedit", str(self.UsernameEdit.displayText()))
     
-    @pyqtSignature("")
-    def on_PasswordEdit_lostFocus(self):
+    def onProxyPasswordEditLostFocus(self):
         self.config.set_config("passwordedit", str(self.PasswordEdit.displayText()))
         
-    def onLocationComboBox(self):
-        self._checkhttp()        
+    def onLocationComboBoxSelected(self):
+        self.check_http()        
         
-    def onBibleComboBox(self):
-        self._checkhttp()
+    def onBibleComboBoxSelected(self):
+        self.check_http()
         self.BibleNameEdit.setText(str(self.BibleComboBox.currentText()))
-        
-    def _checkhttp(self):
-        if len(self.LocationComboBox.currentText()) > 0 or \
-            len(self.BibleComboBox.currentText()) >0 :
-            self.setHTTP()
-        else:
-            if self.bibletype == "HTTP": # Was HTTP and is not any more stops lostFocus running mad
-                self.bibletype = None        
-                self.freeAll()
 
-    def on_CopyrightEdit_lostFocus(self):
-        pass      
         
-    def on_VersionNameEdit_lostFocus(self):
-        pass 
-        
-    def on_PermisionEdit_lostFocus(self):
-        pass
-        
-    def on_BibleNameEdit_lostFocus(self):
-        pass
-        
-    @pyqtSignature("")
-    def on_CancelButton_clicked(self):
+    def onCancelButtonClicked(self):
         Receiver().send_message("openlpstopimport") 
         self.close() 
         
     @pyqtSignature("")        
-    def on_ImportButton_clicked(self):
+    def onImportButtonClicked(self):
         if self.biblemanager != None:
-            if not self.bibletype == None and len(self.BibleNameEdit.displayText()) > 0:
+            if not self.bible_type == None and len(self.BibleNameEdit.displayText()) > 0:
                 self.MessageLabel.setText("Import Started")
                 self.ProgressBar.setMinimum(0) 
                 self.setMax(65)
                 self.ProgressBar.setValue(0)
-                self.progress = 0
                 self.biblemanager.process_dialog(self)
                 self._import_bible()
                 self.MessageLabel.setText("Import Complete")
                 self.ProgressBar.setValue(self.barmax) 
                 Receiver().send_message("openlpreloadbibles") # tell bibleplugin to reload the bibles
 
-    def setMax(self, max):
+    def set_max(self, max):
         log.debug("set Max %s", max)        
         self.barmax = max
         self.ProgressBar.setMaximum(max)        
 
-    def incrementBar(self, text ):
+    def increment_progress_bar(self, text ):
         log.debug("IncrementBar %s", text)
         self.MessageLabel.setText("Import processing " + text)
-        self.progress +=1
-        self.ProgressBar.setValue(self.progress)
+        self.ProgressBar.setValue(self.ProgressBar.value()+1)
                 
     def _import_bible(self):
         log.debug("Import Bible ")
-        if self.bibletype == "OSIS":
+        if self.bible_type == "OSIS":
             self.biblemanager.register_osis_file_bible(str(self.BibleNameEdit.displayText()), self.OSISLocationEdit.displayText())
-        elif self.bibletype == "CSV":
+        elif self.bible_type == "CSV":
             self.biblemanager.register_csv_file_bible(str(self.BibleNameEdit.displayText()), self.BooksLocationEdit.displayText(), self.VerseLocationEdit.displayText())
         else:
             self.setMax(1) # set a value as it will not be needed
@@ -189,49 +168,67 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
                                                                                      str(self.UsernameEdit .displayText()),  \
                                                                                      str(self.PasswordEdit.displayText())) 
         self.biblemanager.save_meta_data(str(self.BibleNameEdit.displayText()), str(self.VersionNameEdit.displayText()), str(self.CopyrightEdit.displayText()), str(self.PermisionEdit.displayText()))
-        self.bibletype = None
-        self.freeAll() # free the screen state restrictions
-        self.resetAll() # reset all the screen fields
+        self.bible_type = None
+        self.free_all() # free the screen state restrictions
+        self.reset_all() # reset all the screen fields
+
+    def check_osis(self):
+        if len(self.BooksLocationEdit.displayText()) > 0 or len(self.VerseLocationEdit.displayText()) > 0:
+            self.set_cvs()
+        else:
+            if self.bible_type == "CSV": # Was CSV and is not any more stops lostFocus running mad
+                self.bible_type = None        
+                self.free_all()
         
-    def blockCSV(self):
+    def check_http(self):
+        if len(self.LocationComboBox.currentText()) > 0 or \
+            len(self.BibleComboBox.currentText()) >0 :
+            self.set_http()
+        else:
+            if self.bible_type == "HTTP": # Was HTTP and is not any more stops lostFocus running mad
+                self.bible_type = None        
+                self.free_all()
+
+
+    def block_csv(self):
         self.BooksLocationEdit.setReadOnly(True)
         self.VerseLocationEdit.setReadOnly(True)
         self.BooksFileButton.setEnabled(False)
         self.VersesFileButton.setEnabled(False)
         
-    def setCSV(self):
-        self.bibletype = "CSV" 
+    def set_cvs(self):
+        self.bible_type = "CSV" 
         self.BooksLocationEdit.setReadOnly(False)
         self.VerseLocationEdit.setReadOnly(False) 
         self.BooksFileButton.setEnabled(True)
         self.VersesFileButton.setEnabled(True)
-        self.blockOSIS()
-        self.blockHTTP()        
+        self.block_osis()
+        self.block_http()        
         
-    def setOSIS(self):
-        self.bibletype = "OSIS"         
+    def set_osis(self):
+        self.bible_type = "OSIS"         
         self.OSISLocationEdit.setReadOnly(False)
         self.OsisFileButton.setEnabled(True)        
-        self.blockCSV()
-        self.blockHTTP()        
+        self.block_csv()
+        self.block_http()        
  
-    def blockOSIS(self):
+    def block_osis(self):
         self.OSISLocationEdit.setReadOnly(True)
         self.OsisFileButton.setEnabled(False)
         
-    def setHTTP(self):
-        self.bibletype = "HTTP"         
+    def set_http(self):
+        self.bible_type = "HTTP"         
         self.LocationComboBox.setEnabled(True)
         self.BibleComboBox.setEnabled(True)        
-        self.blockCSV()
-        self.blockOSIS()        
+        self.block_csv()
+        self.block_osis()        
  
-    def blockHTTP(self):
+    def block_http(self):
         self.LocationComboBox.setEnabled(False)        
         self.BibleComboBox.setEnabled(False)                
         
-    def freeAll(self):
-        if self.bibletype == None:  # only reset if no bible type set.  
+    def free_all(self):
+        if self.bible_type == None:  # only reset if no bible type set.  
             self.BooksLocationEdit.setReadOnly(False)
             self.VerseLocationEdit.setReadOnly(False) 
             self.BooksFileButton.setEnabled(True)
@@ -241,7 +238,7 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
             self.LocationComboBox.setEnabled(True)
             self.BibleComboBox.setEnabled(True)        
 
-    def resetAll(self):
+    def reset_all(self):
         self.BooksLocationEdit.setText("")
         self.VerseLocationEdit.setText("")
         self.OSISLocationEdit.setText("")

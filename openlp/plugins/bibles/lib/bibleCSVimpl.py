@@ -33,15 +33,23 @@ class BibleCSVImpl(BibleCommon):
         a clean bible is being loaded.
         """         
         self.bibledb = bibledb
+        self.loadbible = True
+        QtCore.QObject.connect(Receiver().get_receiver(),QtCore.SIGNAL("openlpstopimport"),self.stop_import)
+        
+    def stop_import(self):
+        self.loadbible= False
         
     def load_data(self, booksfile, versesfile, dialogobject):
         #Populate the Tables
         fbooks=open(booksfile, 'r')
         fverse=open(versesfile, 'r')
 
+        
         count = 0
         for line in fbooks:
             #log.debug( line)
+            if self.loadbible == False:  # cancel pressed
+                break            
             p = line.split(",")
             p1 = p[1].replace('"', '')            
             p2 = p[2].replace('"', '')
@@ -55,6 +63,8 @@ class BibleCSVImpl(BibleCommon):
         count = 0
         book_ptr = None
         for line in fverse:
+            if self.loadbible == False:  # cancel pressed
+                break            
             #log.debug( line)
             p = line.split(",", 3) # split into 3 units and leave the rest as a single field
             p0 = p[0].replace('"', '')
@@ -62,7 +72,7 @@ class BibleCSVImpl(BibleCommon):
             if book_ptr is not p0:
                 book = self.bibledb.get_bible_book(p0)
                 book_ptr = book.name
-                dialogobject.incrementBar(book.name) # increament the progress bar
+                dialogobject.increment_progress_bar(book.name) # increament the progress bar
             self.bibledb.add_verse(book.id, p[1], p[2], p3)
             count += 1
             if count % 3 == 0:   #Every x verses repaint the screen

@@ -300,8 +300,7 @@ class BiblePlugin(Plugin, PluginUtils):
 
     def onBibleNewClick(self):
         self.bibleimportform = BibleImportForm(self.config, self.biblemanager, self)
-        self.bibleimportform.setModal(True)
-        self.bibleimportform.show()
+        self.bibleimportform.exec_()
         pass
 
     def onBiblePreviewClick(self):
@@ -311,7 +310,6 @@ class BiblePlugin(Plugin, PluginUtils):
             verse = text[:text.find("(")]
             bible = text[text.find("(")+1:text.find(")")]
             self._search_using_bible_reference(bible,  verse)
-            print self.search_results
             book = self.search_results[0][0]
             chapter = str(self.search_results[0][1])
             verse = str(self.search_results[0][2])
@@ -321,13 +319,14 @@ class BiblePlugin(Plugin, PluginUtils):
             if o == 1: #Paragraph
                 text = text + "\n"
             if v == 1: #Paragraph
-                loc = "("+book + " "+chapter+ ":"+verse+")"
+                loc = "("+chapter+ ":"+verse+")"
             elif v == 2: #Paragraph
-                loc = "{"+book + " "+chapter+ ":"+verse+"}"
+                loc = "{"+chapter+ ":"+verse+"}"
             elif v == 3: #Paragraph
-                loc = "["+book + " "+chapter+ ":"+verse+"]"
+                loc = "["+chapter+ ":"+verse+"]"
             else:
-                loc = book + " "+chapter+ ":"+verse
+                loc = chapter+ ":"+verse
+            print book
             print loc
             print text
 
@@ -410,10 +409,10 @@ class BiblePlugin(Plugin, PluginUtils):
 
     def _initialise_chapter_verse(self, bible, book):
         log.debug("_initialise_chapter_verse %s , %s", bible, book)
-        self.chaptersfrom = self.biblemanager.get_book_chapter_count(bible, book)[0]
+        self.chapters_from = self.biblemanager.get_book_chapter_count(bible, book)[0]
         self.verses = self.biblemanager.get_book_verse_count(bible, book, 1)[0]
-        self._adjust_combobox(1, self.chaptersfrom, self.AdvancedFromChapter)
-        self._adjust_combobox(1, self.chaptersfrom, self.AdvancedToChapter)
+        self._adjust_combobox(1, self.chapters_from, self.AdvancedFromChapter)
+        self._adjust_combobox(1, self.chapters_from, self.AdvancedToChapter)
         self._adjust_combobox(1, self.verses, self.AdvancedFromVerse)
         self._adjust_combobox(1, self.verses, self.AdvancedToVerse)
 
@@ -421,7 +420,7 @@ class BiblePlugin(Plugin, PluginUtils):
         bible = str(self.AdvancedVersionComboBox.currentText())
         book = str(self.AdvancedBookComboBox.currentText())
         cf = self.AdvancedFromChapter.currentText()
-        self._adjust_combobox(cf, self.chaptersfrom, self.AdvancedToChapter)
+        self._adjust_combobox(cf, self.chapters_from, self.AdvancedToChapter)
         vse = self.biblemanager.get_book_verse_count(bible, book, int(cf))[0] # get the verse count for new chapter
         self._adjust_combobox(1, vse, self.AdvancedFromVerse)
         self._adjust_combobox(1, vse, self.AdvancedToVerse)
@@ -476,13 +475,13 @@ class BiblePlugin(Plugin, PluginUtils):
 
     def _display_results(self, bible):
         for book, chap, vse , txt in self.search_results:
-            c = self.BibleListView.rowCount()
-            self.BibleListView.setRowCount(c+1)
+            row_count = self.BibleListView.rowCount()
+            self.BibleListView.setRowCount(row_count+1)
             table_data = QtGui.QTableWidgetItem(str(bible))
-            self.BibleListView.setItem(c , 0, table_data)
+            self.BibleListView.setItem(row_count , 0, table_data)
             table_data = QtGui.QTableWidgetItem(str(book + " " +str(chap) + ":"+ str(vse)) + " ("+str(bible)+")")
-            self.BibleListView.setItem(c , 1, table_data)
-            self.BibleListView.setRowHeight(c, 20)             
+            self.BibleListView.setItem(row_count , 1, table_data)
+            self.BibleListView.setRowHeight(row_count, 20)             
 
 
     def _initialise_bible_quick(self, bible): # not sure if needed yet!

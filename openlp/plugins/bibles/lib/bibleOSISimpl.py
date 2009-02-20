@@ -95,7 +95,7 @@ class BibleOSISImpl():
                         testament += 1
                     book_ptr = p[0]
                     book = self.bibledb.create_book(self.booksOfBible[p[0]] , self.abbrevOfBible[p[0]], testament)
-                    dialogobject.incrementBar(self.booksOfBible[p[0]] )
+                    dialogobject.increment_progress_bar(self.booksOfBible[p[0]] )
                     Receiver().send_message("openlpprocessevents")                                        
                     count = 0
                 self.bibledb.add_verse(book.id, p[1], p[2], t)

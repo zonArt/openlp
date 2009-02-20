@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'bibleimportdialog.ui'
 #
-# Created: Thu Feb 19 16:01:11 2009
+# Created: Fri Feb 20 05:45:22 2009
 #      by: PyQt4 UI code generator 4.4.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -77,7 +77,7 @@ class Ui_BibleImportDialog(object):
         self.BibleNameLabel.setObjectName("BibleNameLabel")
         self.ImportToolBox.addItem(self.FileImportPage, "")
         self.WebBiblePage = QtGui.QWidget()
-        self.WebBiblePage.setGeometry(QtCore.QRect(0, 0, 192, 228))
+        self.WebBiblePage.setGeometry(QtCore.QRect(0, 0, 447, 337))
         self.WebBiblePage.setObjectName("WebBiblePage")
         self.WebBibleLayout = QtGui.QVBoxLayout(self.WebBiblePage)
         self.WebBibleLayout.setSpacing(8)
@@ -185,7 +185,8 @@ class Ui_BibleImportDialog(object):
         self.horizontalLayout.addWidget(self.CancelButton)
 
         self.retranslateUi(BibleImportDialog)
-        self.ImportToolBox.setCurrentIndex(0)
+        self.ImportToolBox.setCurrentIndex(1)
+
         QtCore.QMetaObject.connectSlotsByName(BibleImportDialog)
         BibleImportDialog.setTabOrder(self.BibleNameEdit, self.OSISLocationEdit)
         BibleImportDialog.setTabOrder(self.OSISLocationEdit, self.OsisFileButton)
