@@ -117,6 +117,7 @@ class Renderer:
         if self._theme.BackgroundType == 0:
             p.fillRect(self._paint.rect(), self._theme.BackgroundParameter1)
         elif self._theme.BackgroundType == 1: # gradient
+            # xxx Use a QGradient Brush!!!
             # get colours as tuples
             c1=self._theme.BackgroundParameter1.getRgb()
             c2=self._theme.BackgroundParameter2.getRgb()
