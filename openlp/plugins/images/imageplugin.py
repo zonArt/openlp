@@ -17,7 +17,9 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-import os 
+import os
+import os.path
+
 from PyQt4 import QtCore, QtGui
 from openlp.core.resources import *
 from openlp.core.lib import Plugin, PluginUtils, MediaManagerItem, ImageServiceItem
@@ -33,7 +35,6 @@ class ListWithPreviews(QtCore.QAbstractListModel):
     log=logging.getLogger("ListWithPreviews")
     log.info("started")
     def __init__(self):
-        
         QtCore.QAbstractListModel.__init__(self)
         self.items=[] # will be a list of (filename, QPixmap) tuples
         self.rowheight=50
@@ -41,23 +42,28 @@ class ListWithPreviews(QtCore.QAbstractListModel):
     def rowCount(self, parent):
         return len(self.items)
     def insertRow(self, row, filename):
+        self.beginInsertRows(QModelIndex(),row,row)
         log.info("insert row %d:%s"%(row,filename))
+        # get short filename to display next to image
+        (prefix, shortfilename) = os.path.split(str(filename))
+        log.info("shortfilename=%s"%(shortfilename))
+        # create a preview image
         preview = QtGui.QPixmap(str(filename))
         w=self.maximagewidth;h=self.rowheight
         preview = preview.scaled(w,h, Qt.KeepAspectRatio)
         realw=preview.width(); realh=preview.height()
+        # and move it to the centre of the preview space
         p=QPixmap(w,h)
         p.fill(Qt.transparent)
         painter=QPainter(p)
-#         gradient=QRadialGradient(w/2,h/2,min(w,h)/2, w/2, h/2)
-#         gradient.setColorAt(0, QColor.fromRgbF(0, 0, 0, 1));
-#         gradient.setColorAt(1, QColor.fromRgbF(0, 0, 0, 0));
-#         painter.fillRect(0,0,w,h,gradient)
         painter.drawPixmap((w-realw)/2,(h-realh)/2,preview)
-        (prefix, shortfilename) =os.path.split(filename)
+        # finally create the row
         self.items.insert(row, (filename, p, shortfilename))
+        self.endInsertRows()
     def removeRow(self, row):
+        self.beginRemoveRows(QModelIndex(), row,row)
         self.items.pop(row)
+        self.endRemoveRows()
     def addRow(self, filename):
         self.insertRow(len(self.items), filename)
         
@@ -70,6 +76,8 @@ class ListWithPreviews(QtCore.QAbstractListModel):
             retval= self.items[row][2]
         elif role == Qt.DecorationRole:
             retval= self.items[row][1]
+        elif role == Qt.ToolTipRole:
+            retval= self.items[row][0]
         else:
             retval= QVariant()
 
