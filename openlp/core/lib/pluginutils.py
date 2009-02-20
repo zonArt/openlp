@@ -67,10 +67,10 @@ class PluginUtils(object):
         Save display list from the config files tidy up the list
         """
         oldcount = self.config.get_config("List Count")        
-        newcount = displaylist.rowCount()
+        newcount = len(displaylist)
         self.config.set_config("List Count", str(newcount))
         for i in range (0, int(newcount)):
-            self.config.set_config("List Item "+str(i), str(displaylist.item(i, 0).text()))
+            self.config.set_config("List Item %d " % i, str(displaylist[i]))
         if oldcount > newcount: # Tidy up any old list itrms if list is smaller now
             for i in range(int(newcount) ,  int(oldcount)):
                 self.config.delete_config("List Item "+str(i))

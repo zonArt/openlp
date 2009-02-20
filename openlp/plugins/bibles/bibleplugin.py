@@ -439,7 +439,10 @@ class BiblePlugin(Plugin, PluginUtils):
     def _load_reset_settings(self):
         self.SettingsOutputStyleComboBox.setCurrentIndex(int(self.config.get_config("outputstylecombo", 0)))
         self.SettingsVerseStyleComboBox.setCurrentIndex(int(self.config.get_config("versestylecombo", 0)))
-        self.SettingsNewChapterCheck.setCheckState(int(self.config.get_config("newchaptercheck", 0)))        
+        try:
+            self.SettingsNewChapterCheck.setCheckState(int(self.config.get_config("newchaptercheck", 0)))
+        except:
+            pass
     
     def _save_settings(self):
         self.config.set_config("outputstylecombo", str(self.SettingsOutputStyleComboBox.currentIndex()))

@@ -21,9 +21,66 @@ import os
 from PyQt4 import QtCore, QtGui
 from openlp.core.resources import *
 from openlp.core.lib import Plugin, PluginUtils, MediaManagerItem, ImageServiceItem
-#from forms import EditSongForm
 import logging
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
+class ListWithPreviews(QtCore.QAbstractListModel):
+    """
+    An abstract list of strings and the preview icon to go with them
+    """
+    global log
+    log=logging.getLogger("ListWithPreviews")
+    log.info("started")
+    def __init__(self):
+        
+        QtCore.QAbstractListModel.__init__(self)
+        self.items=[] # will be a list of (filename, QPixmap) tuples
+        self.rowheight=50
+        self.maximagewidth=self.rowheight*16/9.0;
+    def rowCount(self, parent):
+        return len(self.items)
+    def insertRow(self, row, filename):
+        log.info("insert row %d:%s"%(row,filename))
+        preview = QtGui.QPixmap(str(filename))
+        w=self.maximagewidth;h=self.rowheight
+        preview = preview.scaled(w,h, Qt.KeepAspectRatio)
+        realw=preview.width(); realh=preview.height()
+        p=QPixmap(w,h)
+        p.fill(Qt.transparent)
+        painter=QPainter(p)
+#         gradient=QRadialGradient(w/2,h/2,min(w,h)/2, w/2, h/2)
+#         gradient.setColorAt(0, QColor.fromRgbF(0, 0, 0, 1));
+#         gradient.setColorAt(1, QColor.fromRgbF(0, 0, 0, 0));
+#         painter.fillRect(0,0,w,h,gradient)
+        painter.drawPixmap((w-realw)/2,(h-realh)/2,preview)
+        (prefix, shortfilename) =os.path.split(filename)
+        self.items.insert(row, (filename, p, shortfilename))
+    def removeRow(self, row):
+        self.items.pop(row)
+    def addRow(self, filename):
+        self.insertRow(len(self.items), filename)
+        
+    def data(self, index, role):
+        row=index.row()
+        if row > len(self.items): # if the last row is selected and deleted, we then get called with an empty row!
+            return QVariant()
+
+        if role==Qt.DisplayRole:
+            retval= self.items[row][2]
+        elif role == Qt.DecorationRole:
+            retval= self.items[row][1]
+        else:
+            retval= QVariant()
+
+#         log.info("Returning"+ str(retval))
+        if type(retval) is not type(QVariant):
+            return QVariant(retval)
+        else:
+            return retval
+    def get_file_list(self):
+        filelist=[i[0] for i in self.items];
+        return filelist
 class ImagePlugin(Plugin, PluginUtils):
     global log
     log=logging.getLogger("ImagePlugin")
@@ -64,19 +121,11 @@ class ImagePlugin(Plugin, PluginUtils):
             'Add the selected image(s) to the service', ':/system/system_add.png',
             self.onImageAddClick, 'ImageAddItem')
         ## Add the songlist widget ##
-#         self.layout=QtGui.QGridLayout()
-#         self.ImageListView=QtGui.QWidget()
-#         self.ImageListView.setLayout(self.layout)
         self.ImageListView=QtGui.QListView()
-#         self.ImageListView.setColumnCount(3)
-#         self.ImageListView.setColumnHidden(0, True)
-#         self.ImageListView.setColumnWidth(1, 275)
-#         self.ImageListView.setColumnWidth(2, 200)
-#         self.ImageListView.setShowGrid(False)
-#         self.ImageListView.setSortingEnabled(False)        
-#         self.ImageListView.setAlternatingRowColors(True)
-#         self.ImageListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Name", "Preview"]))  
-#         self.ImageListView.setAlternatingRowColors(True)                 
+        self.ImageListView.uniformItemSizes=True
+        self.ImageListData=ListWithPreviews()
+        self.ImageListView.setModel(self.ImageListData)
+        
         self.ImageListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.ImageListView.setObjectName("ImageListView")
         self.MediaManagerItem.PageLayout.addWidget(self.ImageListView)
@@ -103,57 +152,35 @@ class ImagePlugin(Plugin, PluginUtils):
 
     def onImagesNewClick(self):
         files = QtGui.QFileDialog.getOpenFileNames(None, "Select Image(s)", self._get_last_dir(), "Images (*.jpg *.gif *.png *.bmp)")
+        log.info("New image(s)", str(files))
         if len(files) > 0:
             self._load_image_list(files)
             self._save_last_directory(files[0])
-            self._save_display_list(self.ImageListView) 
+            self._save_display_list(self.ImageListData.get_file_list()) 
 
     def _load_image_list(self, list):
-        h=100
-        self.filenames=[]
-        r=0
         for f in list:
-            fl ,  nm = os.path.split(str(f))
-            self.filenames.append(f)
-#             self.layout.addWidget(QtGui.QLabel(nm), r, 0)
-            preview = QtGui.QPixmap(str(f))
-#             preview = preview.scaledToHeight(h)
-            label=QtGui.QLabel("")
-            label.setPixmap(preview)
-#             self.layout.addWidget(label, r, 1)
-#             self.layout.setRowMinimumHeight(r, h)
-            fl ,  nm = os.path.split(str(f))
-            w=QtGui.QListWidgetItem(QtGui.QIcon(preview), nm)
-#             w.setIconSize(h, h, Qt.KeepAspectRatio)
-            self.ImageListView.addItem(w)
-            xxx need to create an object which produces a list view of previews and use it for the controller and the selector
-#             c = self.ImageListView.rowCount()
-#             self.ImageListView.setRowCount(c+1)
-#             twi = QtGui.QTableWidgetItem(str(f))
-#             self.ImageListView.setItem(c , 0, twi)
-#             twi = QtGui.QTableWidgetItem(str(nm))
-#             self.ImageListView.setItem(c , 1, twi)
-#             twi = QtGui.QTableWidgetItem("")
-#             twi.setBackground(QtGui.QBrush(preview))
-#             twi.setIcon(QtGui.QIcon(preview.scaledToHeight(h)))
-#             self.ImageListView.setItem(c , 2, twi)
-#             self.ImageListView.setRowHeight(c, h)
-            r +=1
-
+            self.ImageListData.addRow(f)
+            
     def onImageDeleteClick(self):
+        indexes=self.ImageListView.selectedIndexes()
+        for i in indexes:
+            cr = i.row()
+            self.ImageListData.removeRow(int(cr))
+
+        self._save_display_list(self.ImageListData.get_file_list())     
+
+    def onImageClick(self, where):
         cr = self.ImageListView.currentRow()
-        self.ImageListView.removeRow(int(cr))
-        self._save_display_list(self.ImageListView)     
-
+        filename = self.ImageListView.item(cr, 0).text()
+        log.info("Click %s:%s"%(str(where), filename))
+        where.add(filename)
+        where.render()
+        
     def onImagePreviewClick(self):
-#         cr = self.ImageListView.currentRow()
-        filename = None#self.ImageListView.item(cr, 0).text()
-        log.info("Preview "+str(filename))
-        self.preview_service_item.add(filename)
-        self.preview_service_item.render()
-
+        self.onImageClick(self.preview_service_item)
     def onImageLiveClick(self):
-        pass
+        self.onImageClick(self.live_service_item)
 
     def onImageAddClick(self):
         pass

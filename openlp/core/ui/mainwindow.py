@@ -25,7 +25,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
 from openlp.core.ui import AboutForm, AlertForm, SettingsDialog, SlideController
-from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab
+from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab, Receiver
 
 from openlp.core import PluginManager
 import logging
@@ -47,13 +47,11 @@ class MainWindow(object):
         # hook methods have to happen after find_plugins.  Find plugins needs the controllers
         # hence the hooks have moved fromt srtupUI() to here
         # Call the hook method to pull in import menus.
-#         self.plugin_manager.hook_import_menu(self.FileImportMenu)
+        self.plugin_manager.hook_import_menu(self.FileImportMenu)
         #
         # Call the hook method to pull in export menus.
-#         self.plugin_manager.hook_import_menu(self.FileExportMenu)
+        self.plugin_manager.hook_import_menu(self.FileExportMenu)
         #
-        # This is where we will eventually get the Plugin Manager to pull in
-        # the media manager items.
         log.info("hook media")
         self.plugin_manager.hook_media_manager(self.MediaToolBox)
         # End adding media manager items.
