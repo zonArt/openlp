@@ -36,7 +36,7 @@ class EventReceiver(QObject):
 class Receiver():
     """
     Class to allow events to be passed from different parts of the system.
-    This is a static wrapper arounf the EventReceiver class.
+    This is a static wrapper around the EventReceiver class.
     As there is only one instance of it in the systems the QT signal/slot architecture
     can send messages across the system
     Send message
