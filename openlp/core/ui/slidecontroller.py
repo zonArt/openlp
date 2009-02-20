@@ -21,8 +21,9 @@ import os
 from time import sleep
 from PyQt4 import QtCore, QtGui
 
-class SlideController(QtCore.QObject):
+class SlideController(QtGui.QWidget):
     def __init__(self, control_splitter):
+        QtGui.QWidget.__init__(self)
         self.Pane = QtGui.QWidget(control_splitter)
         self.Splitter = QtGui.QSplitter(self.Pane)
         self.Splitter.setOrientation(QtCore.Qt.Vertical)

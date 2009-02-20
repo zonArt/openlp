@@ -40,6 +40,12 @@ class MainWindow(object):
         pluginpath = os.path.abspath(os.path.join(pluginpath, '..', '..','plugins'))
         self.plugin_manager = PluginManager(pluginpath)
         self.setupUi()
+        self.plugin_manager.find_plugins(pluginpath, self.PreviewController, self.LiveController)
+        self.receiver = Receiver()
+        QtCore.QObject.connect(self.receiver.get_receiver(),QtCore.SIGNAL("openlprepaint"),self.repaint)  
+    
+    def repaint(self):
+        self.main_window.repaint()
 
     def setupUi(self):
         self.main_window.setObjectName("main_window")

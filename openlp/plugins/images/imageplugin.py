@@ -24,17 +24,17 @@ from openlp.core.lib import Plugin, PluginUtils, MediaManagerItem, ImageServiceI
 #from forms import EditSongForm
 
 class ImagePlugin(Plugin, PluginUtils):
-    def __init__(self):
+    def __init__(self, preview_controller, live_controller):
         # Call the parent constructor
-        Plugin.__init__(self, 'Images', '1.9.0')
+        Plugin.__init__(self, 'Images', '1.9.0', preview_controller, live_controller)
         self.weight = -7
         # Create the plugin icon
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(':/media/media_image.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
-        self.preview_service_item=ImageServiceItem()
-        self.live_service_item=ImageServiceItem()
+        self.preview_service_item=ImageServiceItem(preview_controller)
+        self.live_service_item=ImageServiceItem(live_controller)
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object

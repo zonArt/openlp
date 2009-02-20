@@ -35,7 +35,8 @@ class PluginManager(object):
 
     def __init__(self, dir):
         """
-        The constructor for the plugin manager. This does a, b and c.
+        The constructor for the plugin manager.
+        Passes the controllers on to the plugins for them to interact with via their ServiceItems
         """
         log.info("Plugin manager initing")
         if not dir in sys.path:
@@ -44,13 +45,14 @@ class PluginManager(object):
         self.basepath = os.path.abspath(dir)
         log.debug("Base path %s ", self.basepath)
         self.plugins = []
-        self.find_plugins(dir)
+        # this has to happen after the UI is sroted self.find_plugins(dir)
         log.info("Plugin manager done init")
-
-    def find_plugins(self, dir):
+    def find_plugins(self, dir, preview_controller, live_controller): # xxx shouldn't dir come from self.basepath
         """
         Scan the directory dir for objects inheriting from openlp.plugin
         """
+        self.preview_controller=preview_controller
+        self.live_controller=live_controller
         startdepth=len(os.path.abspath(dir).split(os.sep))
         log.debug("find plugins %s at depth %d" %( str(dir), startdepth))
         
@@ -76,7 +78,12 @@ class PluginManager(object):
         self.plugins = []
         plugin_objects = []
         for p in self.plugin_classes:
-            plugin = p()
+            try:
+                plugin = p(self.preview_controller, self.live_controller)
+                log.debug('loaded plugin' + str(p) + ' with controllers'+str(self.preview_controller)+str(self.live_controller))
+            except TypeError: # xxx need to get rid of this once all plugins are up to date
+                plugin = p()
+                log.debug('loaded plugin' + str(p) + ' with no controllers')
             if plugin.check_pre_conditions():
                 plugin_objects.append(plugin)
         self.plugins = sorted(plugin_objects, self.order_by_weight)
