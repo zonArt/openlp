@@ -24,9 +24,10 @@ from PyQt4 import *
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
-from openlp.core.ui import AboutForm, AlertForm, SettingsDialog
+
 from openlp.core.ui import SlideController, ServiceManager
-from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab, Receiver
+from openlp.core.ui import AboutForm, AlertForm, SettingsDialog, SlideController
+from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab
 
 from openlp.core import PluginManager
 import logging
@@ -56,11 +57,6 @@ class MainWindow(object):
         log.info("hook media")
         self.plugin_manager.hook_media_manager(self.MediaToolBox)
         # End adding media manager items.
-        self.receiver = Receiver()
-        QtCore.QObject.connect(self.receiver.get_receiver(),QtCore.SIGNAL("openlprepaint"),self.repaint)  
-    
-    def repaint(self):
-        self.main_window.repaint()
 
     def setupUi(self):
         self.main_window.setObjectName("main_window")
