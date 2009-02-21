@@ -2,8 +2,8 @@
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 """
 OpenLP - Open Source Lyrics Projection
-Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley
+Copyright (c) 2008-2009 Raoul Snyman
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -21,6 +21,7 @@ import types
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.resources import *
+from openlp.core.lib.toolbar import *
 
 class MediaManagerItem(QtGui.QWidget):
     """
@@ -41,7 +42,9 @@ class MediaManagerItem(QtGui.QWidget):
         if title is not None:
             self.title = title
         self.Toolbar = None
-        #self.ToolbarButtons = []
+        self.PageLayout = QtGui.QVBoxLayout(self)
+        self.PageLayout.setSpacing(0)
+        self.PageLayout.setMargin(0)
         
     def addToolbar(self):
         """
@@ -49,33 +52,16 @@ class MediaManagerItem(QtGui.QWidget):
         item.
         """
         if self.Toolbar is None:
-            self.PageLayout = QtGui.QVBoxLayout(self)
-            self.PageLayout.setSpacing(0)
-            self.PageLayout.setMargin(0)
-            self.PageLayout.setObjectName('PageLayout')
-            self.Toolbar = QtGui.QToolBar(self)
-            self.Toolbar.setObjectName('Toolbar')
+            self.Toolbar=OpenLPToolbar(self)
             self.PageLayout.addWidget(self.Toolbar)
 
     def addToolbarButton(self, title, tooltip, icon, slot=None, objectname=None):
         """
         A method to help developers easily add a button to the toolbar.
         """
-        if type(icon) is QtGui.QIcon:
-            ButtonIcon = icon
-        elif type(icon) is types.StringType:
-            ButtonIcon = QtGui.QIcon()
-            if icon.startswith(':/'):
-                ButtonIcon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
-                    QtGui.QIcon.Off)
-            else:
-                ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
-                    QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        ToolbarButton = self.Toolbar.addAction(ButtonIcon, title)
-        if tooltip is not None:
-            ToolbarButton.setToolTip(tooltip)
-        if slot is not None:
-            QtCore.QObject.connect(ToolbarButton, QtCore.SIGNAL('triggered()'), slot)
+        # NB different order (when I broke this out, I wanted to not break compatability)
+        # but it makes sense for the icon to come before the tooltip (as you have to have an icon, but not neccesarily a tooltip)
+        self.Toolbar.addToolbarButton(title, icon, tooltip, slot, objectname)
 
     def addToolbarSeparator(self):
         """
