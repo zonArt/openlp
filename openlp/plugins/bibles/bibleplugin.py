@@ -287,6 +287,7 @@ class BiblePlugin(Plugin, PluginUtils):
     def initialise(self):
         self._initialise_form() # build the form
         self._load_reset_settings() # load the plugin settings
+        
     def _initialise_form(self):
         log.debug("_initialise_form")
         self.QuickSearchComboBox.clear()
@@ -437,17 +438,17 @@ class BiblePlugin(Plugin, PluginUtils):
         self._initialise_form()
     
     def _load_reset_settings(self):
-        self.SettingsOutputStyleComboBox.setCurrentIndex(int(self.config.get_config("outputstylecombo", 0)))
-        self.SettingsVerseStyleComboBox.setCurrentIndex(int(self.config.get_config("versestylecombo", 0)))
+        self.SettingsOutputStyleComboBox.setCurrentIndex(int(self.config.get_config("bible_output_style", 0)))
+        self.SettingsVerseStyleComboBox.setCurrentIndex(int(self.config.get_config("bible_verse_style", 0)))
         try:
-            self.SettingsNewChapterCheck.setCheckState(int(self.config.get_config("newchaptercheck", 0)))
+            self.SettingsNewChapterCheck.setCheckState(int(self.config.get_config("bible_new_chapter", 0)))
         except:
             pass
     
     def _save_settings(self):
-        self.config.set_config("outputstylecombo", str(self.SettingsOutputStyleComboBox.currentIndex()))
-        self.config.set_config("versestylecombo", str(self.SettingsVerseStyleComboBox.currentIndex()))
-        self.config.set_config("newchaptercheck", str(self.SettingsNewChapterCheck.checkState()))
+        self.config.set_config("bible_output_style", str(self.SettingsOutputStyleComboBox.currentIndex()))
+        self.config.set_config("bible_verse_style", str(self.SettingsVerseStyleComboBox.currentIndex()))
+        self.config.set_config("bible_new_chapter", str(self.SettingsNewChapterCheck.checkState()))
 
     def _initialise_bible_advanced(self, bible):
         log.debug("_initialise_bible_advanced %s ", bible)
