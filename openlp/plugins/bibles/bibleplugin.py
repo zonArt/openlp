@@ -545,11 +545,11 @@ class BiblePlugin(Plugin, PluginUtils):
             end_verse = 99
         if start_chapter == "":
             message = "No chapter found for search"
-#        print "book = " + book
-#        print "chapter s =" + str(schapter)
-#        print "chapter e =" + str(echapter)        
-#        print "verse s =" + str(sverse)
-#        print "verse e =" + str(everse) 
+        print "book = " + book
+        print "chapter s =" + str(start_chapter)
+        print "chapter e =" + str(end_chapter)        
+        print "verse s =" + str(start_verse)
+        print "verse e =" + str(end_verse) 
         if message  == None:
             self.search_results = None
             self.search_results = self.biblemanager.get_verse_text(bible, book,int(start_chapter), int(end_chapter), int(start_verse), int(end_verse))

@@ -44,7 +44,7 @@ class BGExtract(BibleCommon):
         log.debug( "get_bible_chapter %s,%s,%s,%s", version, bookid, bookname,  chapter) 
         urlstring = "http://www.biblegateway.com/passage/?book_id="+str(bookid)+"&chapter"+str(chapter)+"&version="+str(version)
         xml_string = self._get_web_text(urlstring, self.proxyurl)
-        
+        print xml_string
         VerseSearch = "class="+'"'+"sup"+'"'+">"
         verse = 1
         i= xml_string.find("result-text-style-normal")
@@ -96,7 +96,22 @@ class CWExtract(BibleCommon):
         log.debug( "get_bible_chapter %s,%s,%s,%s", version, bookid, bookname,  chapter)         
         urlstring = "http://bible.crosswalk.com/OnlineStudyBible/bible.cgi?word="+bookname+"+"+str(chapter)+"&version="+version
         xml_string = self._get_web_text(urlstring, self.proxyurl)
-        
+        #log.debug("Return data %s", xml_string)
+        ## Strip Book Title from Heading to return it to system
+        ##
+        i= xml_string.find("<title>")
+        j= xml_string.find("-", i)
+        book_title = xml_string[i + 7:j]
+        book_title = book_title.rstrip()
+        log.debug("Book Title %s", book_title)
+        i = book_title.rfind(" ")
+        book_chapter = book_title[i+1:len(book_title)].rstrip()
+        book_title = book_title[:i].rstrip()
+        log.debug("Book Title %s", book_title)
+        log.debug("Book Chapter %s", book_chapter)
+
+        ## Strip Verse Data from Page and build an array
+        ##
         i= xml_string.find("NavCurrentChapter")
         xml_string = xml_string[i:len(xml_string)]
         i= xml_string.find("<TABLE")
@@ -130,7 +145,7 @@ class CWExtract(BibleCommon):
             #bible[verse] = verseText
             
         #log.debug( bible)
-        return bible
+        return book_title ,  book_chapter , bible
         
 class BibleHTTPImpl():
     global log 

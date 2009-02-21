@@ -33,7 +33,6 @@ class BibleCommon:
     def _get_web_text(self, urlstring, proxyurl):
         log.debug( "get_web_text %s %s", proxyurl, urlstring)
         if  not proxyurl == None:
-            print "ProxyUrl " ,  proxyurl + " " + str(len(proxyurl))
             proxy_support = urllib2.ProxyHandler({'http':  self.proxyurl})
             http_support = urllib2.HTTPHandler()
             opener= urllib2.build_opener(proxy_support, http_support)
