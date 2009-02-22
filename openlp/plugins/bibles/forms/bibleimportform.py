@@ -1,7 +1,21 @@
 # -*- coding: utf-8 -*-
-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 """
-Module implementing BibleImportDialog.
+OpenLP - Open Source Lyrics Projection
+Copyright (c) 2008 Raoul Snyman
+Portions copyright (c) 2008 - 2009 Martin Thompson, Tim Bentley
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; version 2 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import sys
 import os, os.path
@@ -37,9 +51,9 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         self.bibleplugin = bibleplugin
         self.bible_type = None
         self.barmax = 0
-        self.AddressEdit.setText(self.config.get_config("addressedit", ""))
-        self.UsernameEdit.setText(self.config.get_config("usernameedit", ""))
-        self.PasswordEdit.setText(self.config.get_config("passwordedit",""))
+        self.AddressEdit.setText(self.config.get_config("proxy_address", ""))
+        self.UsernameEdit.setText(self.config.get_config("proxy_username", ""))
+        self.PasswordEdit.setText(self.config.get_config("proxy_password",""))
         
         filepath = os.path.split(os.path.abspath(__file__))[0]
         filepath = os.path.abspath(os.path.join(filepath, '..', 'resources','crosswalkbooks.csv')) 
@@ -108,13 +122,13 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         self.check_osis()
         
     def onProxyAddressEditLostFocus(self):
-        self.config.set_config("addressedit", str(self.AddressEdit.displayText()))
+        self.config.set_config("proxy_address", str(self.AddressEdit.displayText()))
 
     def onProxyUsernameEditLostFocus(self):
-        self.config.set_config("usernameedit", str(self.UsernameEdit.displayText()))
+        self.config.set_config("proxy_username", str(self.UsernameEdit.displayText()))
     
     def onProxyPasswordEditLostFocus(self):
-        self.config.set_config("passwordedit", str(self.PasswordEdit.displayText()))
+        self.config.set_config("proxy_password", str(self.PasswordEdit.displayText()))
         
     def onLocationComboBoxSelected(self):
         self.check_http()        
