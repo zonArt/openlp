@@ -497,7 +497,6 @@ class BiblePlugin(Plugin, PluginUtils):
         start_verse=""
         end_verse=""
         search.replace("  ", " ")
-        search = search.rstrip()
         original = search
         message = None
         # Remove book
@@ -508,6 +507,7 @@ class BiblePlugin(Plugin, PluginUtils):
                 break
         search = search.replace("v", ":")  # allow V or v for verse instead of :
         search = search.replace("V", ":")  # allow V or v for verse instead of :
+        search = search.strip()
         co = search.find(":")
         if co == -1: # no : found
             i = search.rfind(" ")
@@ -522,21 +522,29 @@ class BiblePlugin(Plugin, PluginUtils):
             else:
                 start_chapter = chapter
         else: # more complex
-            co = search.find(":") #find first 
-            start_chapter = search[:co]  #first chapter is before colon
-            search = search [co+1:] #remove first chapter and colon
-            hi = search.find("-")
-            if hi != -1:
-                start_verse= search[:hi]
-                search = search[hi+1:]
-                co = search.find(":")
-                if co != -1:
-                    end_chapter= search[:co].rstrip()
-                    end_verse = search[co+1:].rstrip()
-                else:
-                    end_verse = search.rstrip()
+            print search
+            sp = search.split("-") #find first
+            print sp, len(sp)
+            sp1 = sp[0].split(":")
+            print sp1, len(sp1)                
+            if len(sp1) == 1:
+                start_chapter = sp1[0]
+                start_verse = 1
             else:
-                end_verse = search.rstrip()
+                start_chapter = sp1[0]
+                start_verse = sp1[1]
+            if len(sp)== 1:
+                end_chapter = start_chapter
+                end_verse = start_verse
+            else:
+                sp1 = sp[1].split(":")
+                print sp1, len(sp1)                
+                if len(sp1) == 1:
+                    end_chapter = sp1[0]
+                    end_verse = 1
+                else:
+                    end_chapter = sp1[0]
+                    end_verse = sp1[1]
         if end_chapter == "":
             end_chapter = start_chapter.rstrip()
         if start_verse == "":
@@ -548,9 +556,9 @@ class BiblePlugin(Plugin, PluginUtils):
             end_verse = 99
         if start_chapter == "":
             message = "No chapter found for search"
-        #print "message = " + str(message)
-        #print "search = " + str(original)
-        #print "results = " + str(book) + " @ "+ str(start_chapter)+" @ "+ str(end_chapter)+" @ "+ str(start_verse)+ " @ "+ str(end_verse)
+        print "message = " + str(message)
+        print "search = " + str(original)
+        print "results = " + str(book) + " @ "+ str(start_chapter)+" @ "+ str(end_chapter)+" @ "+ str(start_verse)+ " @ "+ str(end_verse)
         
         if message  == None:
             self.search_results = None
