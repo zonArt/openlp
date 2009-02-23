@@ -77,7 +77,10 @@ class BibleManager():
                 nhttp = BibleHTTPImpl()
                 nhttp.set_bible_source(biblesource.value)  # tell The Server where to get the verses from.
                 self.bible_http_cache [bname] = nhttp
-                proxy = self.bible_db_cache[bname].get_meta("proxy").value # look to see if lazy load bible exists and get create getter.
+                meta = self.bible_db_cache[bname].get_meta("proxy") # look to see if lazy load bible exists and get create getter.
+                proxy = None
+                if meta != None:
+                    proxy = meta.value
                 nhttp.set_proxy(proxy)  # tell The Server where to get the verses from.
                 bibleid = self.bible_db_cache[bname].get_meta("bibleid").value # look to see if lazy load bible exists and get create getter.
                 nhttp.set_bibleid(bibleid)  # tell The Server where to get the verses from.
@@ -230,17 +233,22 @@ class BibleManager():
             if book == None:
                 log.debug("get_verse_text : new book")
                 for chapter in range(schapter, echapter+1):
-                    book_name,  book_chapter, chaptlist = self.bible_http_cache [bible].get_bible_chapter(bible, 0, bookname, chapter)
-                    if chaptlist != {}:
+                    chaptlist = self.bible_http_cache [bible].get_bible_chapter(bible, 0, bookname, chapter)
+                    ## chaplist contains 3 elements
+                    ## 0 - Book name
+                    ## 1 - Chapter Name
+                    ## 2 - Chapter list
+                    if chaptlist[2] != {}:
                         ## We have found a book of the bible lets check to see if it was there.
                         ## By reusing the returned book name we get a correct book.
                         ## For example it is possible to request ac and get Acts back.
-                        bookname = book_name
+                        bookname = chaptlist[0]
                         book= self.bible_db_cache[bible].get_bible_book(bookname) # check to see if book/chapter exists
                         if book == None:
                             ## Then create book, chapter and text
                             book = self.bible_db_cache[bible].create_book(bookname, self.book_abbreviations[bookname],  self.book_testaments[bookname])
-                            self.bible_db_cache[bible].create_chapter(book.id, book_chapter, chaptlist)                            
+                            log.debug("New http book %s , %s, %s",  book, book.id, book.name)
+                            self.bible_db_cache[bible].create_chapter(book.id, chaptlist[1], chaptlist)                            
                         else:
                             ## Book exists check chapter and texts only.
                             v = self.bible_db_cache[bible].get_bible_chapter(book.id, chapter)

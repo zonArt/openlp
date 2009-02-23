@@ -497,6 +497,7 @@ class BiblePlugin(Plugin, PluginUtils):
         start_verse=""
         end_verse=""
         search.replace("  ", " ")
+        search = search.strip()
         original = search
         message = None
         # Remove book

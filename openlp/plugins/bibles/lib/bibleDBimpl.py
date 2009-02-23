@@ -74,10 +74,12 @@ class BibleDBImpl(BibleCommon):
         session.commit()
 
     def create_chapter(self, bookid, chap, textlist):
-        log.debug( "create_chapter %s,%s", bookid, chap)        
+        log.debug( "create_chapter %s,%s", bookid, chap)
+        #log.debug("Text %s ", textlist)
         metadata.bind.echo = False
         session = self.session()
-        for v ,  t in textlist.iteritems():
+        #text list has book and chapter as first to elements of the array
+        for v ,  t in textlist[2].iteritems():
             verse = Verse()
             verse.book_id = bookid
             verse.chapter = chap

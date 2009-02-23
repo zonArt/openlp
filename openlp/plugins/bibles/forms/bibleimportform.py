@@ -146,7 +146,7 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
             if not self.bible_type == None and len(self.BibleNameEdit.displayText()) > 0:
                 self.MessageLabel.setText("Import Started")
                 self.ProgressBar.setMinimum(0) 
-                self.setMax(65)
+                self.set_max(65)
                 self.ProgressBar.setValue(0)
                 self.biblemanager.process_dialog(self)
                 self._import_bible()
@@ -171,7 +171,7 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
         elif self.bible_type == "CSV":
             self.biblemanager.register_csv_file_bible(str(self.BibleNameEdit.displayText()), self.BooksLocationEdit.displayText(), self.VerseLocationEdit.displayText())
         else:
-            self.setMax(1) # set a value as it will not be needed
+            self.set_max(1) # set a value as it will not be needed
             bible = self.bible_versions[str(self.BibleComboBox.currentText())]
             self.biblemanager.register_http_bible(str(self.BibleComboBox.currentText()), \
                                                                                      str(self.LocationComboBox.currentText()),  \
