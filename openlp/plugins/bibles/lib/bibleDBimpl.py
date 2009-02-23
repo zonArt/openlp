@@ -147,7 +147,10 @@ class BibleDBImpl(BibleCommon):
 
     def get_bible_book(self, bookname):
         log.debug( "get_bible_book %s", bookname) 
-        return self.session.query(Book).filter_by(name = bookname).first()
+        bk = self.session.query(Book).filter(Book.name.like(bookname+u"%")).first()
+        if bk == None:
+            bk = self.session.query(Book).filter(Book.abbreviation.like(bookname+u"%")).first()            
+        return bk
         
     def get_bible_chapter(self, id, chapter):
         log.debug( "get_bible_chapter %s,%s", id, chapter )               
@@ -157,7 +160,8 @@ class BibleDBImpl(BibleCommon):
     def get_bible_text(self, bookname, chapter, sverse, everse):
         log.debug( "get_bible_text %s,%s,%s,%s ", bookname, chapter, sverse, everse)
         metadata.bind.echo = False
-        s = text (""" select name,chapter,verse.verse, verse.text FROM verse , book where verse.book_id == book.id AND verse.chapter == :c AND (verse.verse between :v1 and :v2) and book.name == :b """)
+        bookname = bookname + u"%"
+        s = text (""" select name,chapter,verse.verse, verse.text FROM verse , book where verse.book_id == book.id AND verse.chapter == :c AND (verse.verse between :v1 and :v2) and (book.name like :b) """)
         return self.db.execute(s, c=chapter, v1=sverse , v2=everse, b=bookname).fetchall()
         
     def get_verses_from_text(self,versetext):
