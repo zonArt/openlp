@@ -20,7 +20,7 @@ import os, os.path
 import sys
 import urllib2
 
-from common import BibleCommon
+from common import BibleCommon, SearchResults
 
 import logging
                 
@@ -145,7 +145,7 @@ class CWExtract(BibleCommon):
             #bible[verse] = verseText
             
         #log.debug( bible)
-        return book_title ,  book_chapter , bible
+        return SearchResults(book_title, book_chapter, bible)
         
 class BibleHTTPImpl():
     global log 

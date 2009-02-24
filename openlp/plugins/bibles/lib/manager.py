@@ -21,12 +21,14 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import os, os.path
 import sys
 
+from common import SearchResults
 from bibleOSISimpl import BibleOSISImpl
 from bibleCSVimpl import BibleCSVImpl
 from bibleDBimpl import BibleDBImpl
 from bibleHTTPimpl import BibleHTTPImpl
 from openlp.plugins.bibles.lib.tables import *
 from openlp.plugins.bibles.lib.classes import *
+
 
 import logging
 
@@ -233,35 +235,39 @@ class BibleManager():
             if book == None:
                 log.debug("get_verse_text : new book")
                 for chapter in range(schapter, echapter+1):
-                    chaptlist = self.bible_http_cache [bible].get_bible_chapter(bible, 0, bookname, chapter)
-                    ## chaplist contains 3 elements
-                    ## 0 - Book name
-                    ## 1 - Chapter Name
-                    ## 2 - Chapter list
-                    if chaptlist[2] != {}:
+                    search_results = self.bible_http_cache [bible].get_bible_chapter(bible, 0, bookname, chapter)
+                    if search_results.has_verselist() :
                         ## We have found a book of the bible lets check to see if it was there.
                         ## By reusing the returned book name we get a correct book.
                         ## For example it is possible to request ac and get Acts back.
-                        bookname = chaptlist[0]
+                        bookname = search_results.get_book()
                         book= self.bible_db_cache[bible].get_bible_book(bookname) # check to see if book/chapter exists
                         if book == None:
                             ## Then create book, chapter and text
-                            book = self.bible_db_cache[bible].create_book(bookname, self.book_abbreviations[bookname],  self.book_testaments[bookname])
+                            book = self.bible_db_cache[bible].create_book(bookname, \
+                                                                          self.book_abbreviations[bookname],  \
+                                                                          self.book_testaments[bookname])
                             log.debug("New http book %s , %s, %s",  book, book.id, book.name)
-                            self.bible_db_cache[bible].create_chapter(book.id, chaptlist[1], chaptlist)                            
+                            self.bible_db_cache[bible].create_chapter(book.id, \
+                                                                      search_results.get_chapter(),\
+                                                                      search_results.get_verselist())                            
                         else:
                             ## Book exists check chapter and texts only.
                             v = self.bible_db_cache[bible].get_bible_chapter(book.id, chapter)
                             if v == None:
-                                self.bible_db_cache[bible].create_chapter(book.id, book_chapter, chaptlist)
+                                self.bible_db_cache[bible].create_chapter(book.id, \
+                                                                          book_chapter, \
+                                                                          search_results.get_verselist())
             else:
                 log.debug("get_verse_text : old book")                
                 for chapter in range(schapter, echapter+1):
                     v = self.bible_db_cache[bible].get_bible_chapter(book.id, chapter)
                     if v == None:
                         try:
-                            chaptlist = self.bible_http_cache [bible].get_bible_chapter(bible, book.id, bookname, chapter)
-                            self.bible_db_cache[bible].create_chapter(book.id, chapter, chaptlist)
+                            search_results = self.bible_http_cache [bible].get_bible_chapter(bible, book.id, bookname, chapter)
+                            self.bible_db_cache[bible].create_chapter(book.id, \
+                                                                      search_results.get_chapter(),\
+                                                                      search_results.get_verselist())     
                         except :
                             log.error("Errow thrown %s", sys.exc_info()[1])                        
 

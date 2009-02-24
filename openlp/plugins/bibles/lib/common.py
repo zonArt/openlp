@@ -23,6 +23,23 @@ import urllib2
 
 import logging
 
+class SearchResults:
+    def __init__(self, book, chapter, verselist):
+        self.book = book
+        self.chapter = chapter
+        self.verselist = verselist
+    def get_verselist(self):
+        return self.verselist
+    def get_book(self):
+        return self.book
+    def get_chapter(self):
+        return self.chapter
+    def has_verselist(self):
+        if self.verselist == {}:
+            return False
+        else:
+            return True
+
 class BibleCommon:
     global log
     log=logging.getLogger("BibleCommon")

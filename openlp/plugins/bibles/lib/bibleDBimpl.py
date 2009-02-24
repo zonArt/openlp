@@ -79,7 +79,7 @@ class BibleDBImpl(BibleCommon):
         metadata.bind.echo = False
         session = self.session()
         #text list has book and chapter as first to elements of the array
-        for v ,  t in textlist[2].iteritems():
+        for v ,  t in textlist.iteritems():
             verse = Verse()
             verse.book_id = bookid
             verse.chapter = chap
