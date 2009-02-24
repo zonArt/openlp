@@ -93,7 +93,8 @@ class CWExtract(BibleCommon):
             bookname - text name of in english eg 'gen' for Genesis
             chapter - chapter number 
         """        
-        log.debug( "get_bible_chapter %s,%s,%s,%s", version, bookid, bookname,  chapter)         
+        log.debug( "get_bible_chapter %s,%s,%s,%s", version, bookid, bookname,  chapter)
+        bookname = bookname.replace(" ", "")
         urlstring = "http://bible.crosswalk.com/OnlineStudyBible/bible.cgi?word="+bookname+"+"+str(chapter)+"&version="+version
         xml_string = self._get_web_text(urlstring, self.proxyurl)
         #log.debug("Return data %s", xml_string)

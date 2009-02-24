@@ -559,7 +559,7 @@ class BiblePlugin(Plugin, PluginUtils):
             message = "No chapter found for search"
         #print "message = " + str(message)
         #print "search = " + str(original)
-        print "results = " + str(book) + " @ "+ str(start_chapter)+" @ "+ str(end_chapter)+" @ "+ str(start_verse)+ " @ "+ str(end_verse)
+        #print "results = " + str(book) + " @ "+ str(start_chapter)+" @ "+ str(end_chapter)+" @ "+ str(start_verse)+ " @ "+ str(end_verse)
         
         if message  == None:
             self.search_results = None
