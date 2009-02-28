@@ -21,7 +21,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
-from openlp.core.lib import SettingsTab
+from openlp.core.lib import SettingsTabItem
 
 class AlertForm(object):
 
@@ -94,7 +94,7 @@ class AlertForm(object):
         
     def get_settings_tab_item(self):
         
-        self.SettingsTabItem= SettingsTab()
+        self.SettingsTabItem= SettingsTabItem()
         
         self.Alerts = QtGui.QWidget()
         self.Alerts.setObjectName("Alerts")

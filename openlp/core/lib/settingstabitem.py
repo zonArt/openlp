@@ -21,9 +21,9 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from PyQt4 import QtCore, QtGui
 from openlp.core.resources import *
 
-class SettingsTab(QtGui.QWidget):
+class SettingsTabItem(QtGui.QWidget):
     """
-    SettingsTab is a helper widget for plugins to define Tabs for the settings dialog.
+    SettingsTabItem is a helper widget for plugins to define Tabs for the settings dialog.
     """
     def __init__(self):
         """

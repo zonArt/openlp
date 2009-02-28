@@ -49,7 +49,7 @@ class Plugin(object):
     * add_export_menu_item(export_menu)
         Add an item to the Export menu.
     * get_settings_tab()
-        Returns an instance of SettingsTab to be used in the Settings dialog.
+        Returns an instance of SettingsTabItem to be used in the Settings dialog.
     * add_to_menu(menubar)
         A method to add a menu item to anywhere in the menu, given the menu bar.
     * handle_event(event)

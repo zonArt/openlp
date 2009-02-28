@@ -24,7 +24,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from openlp.core.resources import *
-from openlp.core.lib import Plugin,PluginUtils,  MediaManagerItem, Receiver, SettingsTab
+from openlp.core.lib import Plugin,PluginUtils,  MediaManagerItem, Receiver, SettingsTabItem
 
 from openlp.plugins.bibles.lib import BibleManager
 from openlp.plugins.bibles.forms import BibleImportForm
@@ -54,7 +54,7 @@ class BiblePlugin(Plugin, PluginUtils):
 
     def get_settings_tab_item(self):
         
-        self.SettingsTabItem= SettingsTab()
+        self.SettingsTabItem= SettingsTabItem()
         
         self.Bibles = QtGui.QWidget()
         self.Bibles.setObjectName("Bibles")

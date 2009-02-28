@@ -20,7 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from pluginutils import PluginUtils
 from pluginconfig import PluginConfig
 from plugin import Plugin
-from settingstab import SettingsTab
+from settingstabitem import SettingsTabItem
 from mediamanageritem import MediaManagerItem
 from event import Event
 from xmlrootclass import XmlRootClass
@@ -29,5 +29,5 @@ from eventreceiver import Receiver
 from imageserviceitem import ImageServiceItem
 from toolbar import OpenLPToolbar
 
-__all__ = ['PluginConfig', 'Plugin', 'PluginUtils', 'SettingsTab', 'MediaManagerItem', 'Event',
+__all__ = ['PluginConfig', 'Plugin', 'PluginUtils', 'SettingsTabItem', 'MediaManagerItem', 'Event',
            'XmlRootClass', 'ServiceItem', 'Receiver', 'ImageServiceItem', 'OpenLPToolbar']

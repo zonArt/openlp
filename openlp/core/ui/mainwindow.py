@@ -27,7 +27,7 @@ from openlp.core.resources import *
 
 from openlp.core.ui import SlideController, ServiceManager
 from openlp.core.ui import AboutForm, AlertForm, SettingsForm, SlideController, GeneralForm
-from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab
+from openlp.core.lib import Plugin, MediaManagerItem, SettingsTabItem
 
 from openlp.core import PluginManager
 import logging

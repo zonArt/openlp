@@ -21,7 +21,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QDialog
 
-from openlp.core.lib import SettingsTab
+from openlp.core.lib import SettingsTabItem
 from openlp.core.resources import *
 from openlp.core.ui import AlertForm
 

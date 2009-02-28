@@ -21,7 +21,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
-from openlp.core.lib import Plugin,PluginUtils,  MediaManagerItem, SettingsTab
+from openlp.core.lib import Plugin,PluginUtils,  MediaManagerItem, SettingsTabItem
 
 class VideoPlugin(Plugin, PluginUtils):
     def __init__(self):
@@ -38,7 +38,7 @@ class VideoPlugin(Plugin, PluginUtils):
 
     def get_settings_tab_item(self):
         
-        self.SettingsTabItem= SettingsTab()
+        self.SettingsTabItem= SettingsTabItem()
         
         self.Videos = QtGui.QWidget()
         self.Videos.setObjectName("Videos")
