@@ -90,3 +90,12 @@ class AlertForm(object):
 
     def show(self):
         self.AlertForm.show()
+        
+    def get_settings_tab_item(self):
+        pass
+        
+    def load_settings(self):
+        pass
+        
+    def save_settings(self):
+        pass

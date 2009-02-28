@@ -47,6 +47,7 @@ class PluginManager(object):
         self.plugins = []
         # this has to happen after the UI is sroted self.find_plugins(dir)
         log.info("Plugin manager done init")
+        
     def find_plugins(self, dir, preview_controller, live_controller): # xxx shouldn't dir come from self.basepath
         """
         Scan the directory dir for objects inheriting from openlp.plugin
@@ -81,7 +82,7 @@ class PluginManager(object):
             try:
                 plugin = p(self.preview_controller, self.live_controller)
                 log.debug('loaded plugin' + str(p) + ' with controllers'+str(self.preview_controller)+str(self.live_controller))
-            except TypeError: # xxx need to get rid of this once all plugins are up to date
+            except TypeError: # TODO: need to get rid of this once all plugins are up to date
                 plugin = p()
                 log.debug('loaded plugin' + str(p) + ' with no controllers')
             log.debug("Plugin="+str(p))
@@ -104,6 +105,22 @@ class PluginManager(object):
                 log.debug('Inserting media manager item from %s' % plugin.name)
                 mediatoolbox.addItem(media_manager_item, plugin.icon, media_manager_item.title)
                 plugin.initialise()
+                plugin.load_settings()
+                
+    def hook_settings_tabs(self, mediatoolbox=None):
+        """
+        Loop through all the plugins. If a plugin has a valid settings tab item,
+        add it to the settings tab.
+        """
+        want_settings = []
+        for plugin in self.plugins:
+            settings_tab_item = plugin.has_settings_tab_item()
+            #print plugin , settings_tab_item
+            if settings_tab_item:
+                log.debug('Inserting settings tab item from %s' % plugin.name)
+                want_settings.append(plugin)
+                #mediatoolbox.addItem(media_manager_item, plugin.icon, media_manager_item.title)
+        return want_settings
 
     def hook_import_menu(self, import_menu):
         """

@@ -22,4 +22,25 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.resources import *
 
 class SettingsTab(QtGui.QWidget):
-    pass
+    """
+    SettingsTab is a helper widget for plugins to define Tabs for the settings dialog.
+    """
+    def __init__(self):
+        """
+        Constructor to create the Steetings tab item.
+        """
+        QtGui.QWidget.__init__(self)
+        self.TabLayout = QtGui.QVBoxLayout(self)
+        self.TabLayout.setSpacing(0)
+        self.TabLayout.setMargin(0)
+        self.tabText = None
+
+    def setTabText(self, text):
+        self.tabText = text
+        
+    def add_items(self, items):
+        if type(items).__name__ == "QWidget":
+            self.TabLayout.addWidget(items)
+        else:
+            for item in items:
+                self.TabLayout.addWidget(item)

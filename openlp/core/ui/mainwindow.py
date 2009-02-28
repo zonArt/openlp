@@ -45,10 +45,17 @@ class MainWindow(object):
         pluginpath = os.path.abspath(os.path.join(pluginpath, '..', '..','plugins'))
         self.plugin_manager = PluginManager(pluginpath)
         self.setupUi()
+        
         self.plugin_manager.find_plugins(pluginpath, self.PreviewController, self.LiveController)
+        log.info("hook Settings")
+        #Call hook method to see which plugins have setting tabs.
+        self.settings_form.receive_plugins(self.plugin_manager.hook_settings_tabs())
+        self.settings_form.generateUi()
+        
         # hook methods have to happen after find_plugins.  Find plugins needs the controllers
-        # hence the hooks have moved fromt srtupUI() to here
+        # hence the hooks have moved front setupUI() to here
         # Call the hook method to pull in import menus.
+        log.info("hook menus")        
         self.plugin_manager.hook_import_menu(self.FileImportMenu)
         #
         # Call the hook method to pull in export menus.
@@ -84,7 +91,7 @@ class MainWindow(object):
         self.ControlSplitter = QtGui.QSplitter(self.MainContent)
         self.ControlSplitter.setOrientation(QtCore.Qt.Horizontal)
         self.ControlSplitter.setObjectName("ControlSplitter")
-        # xxx need some way to make this geometry work properly!
+        # TODO: need some way to make this geometry work properly!
         self.ControlSplitter.setGeometry(self.main_window.geometry())
         self.PreviewController = SlideController(self.ControlSplitter)
         self.LiveController = SlideController(self.ControlSplitter)
@@ -122,6 +129,7 @@ class MainWindow(object):
         self.MediaManagerDock.setSizePolicy(sizePolicy)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/system/system_mediamanager.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        
         self.MediaManagerDock.setWindowIcon(icon)
         self.MediaManagerDock.setFloating(False)
         self.MediaManagerDock.setObjectName("MediaManagerDock")
@@ -143,6 +151,7 @@ class MainWindow(object):
         self.MediaManagerLayout.addWidget(self.MediaToolBox)
         self.MediaManagerDock.setWidget(self.MediaManagerContents)
         self.main_window.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.MediaManagerDock)
+        
         self.ServiceManagerDock = QtGui.QDockWidget(self.main_window)
         ServiceManagerIcon = QtGui.QIcon()
         ServiceManagerIcon.addPixmap(QtGui.QPixmap(":/system/system_servicemanager.png"),
@@ -421,4 +430,4 @@ class MainWindow(object):
         self.alert_form.show()
 
     def onOptionsSettingsItemClicked(self):
-        self.settings_form.show()
+        self.settings_form.exec_()

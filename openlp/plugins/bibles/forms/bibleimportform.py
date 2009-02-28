@@ -27,7 +27,6 @@ from openlp.core.resources import *
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QDialog
-from PyQt4.QtCore import pyqtSignature
 
 from bibleimportdialog import Ui_BibleImportDialog
 from openlp.core.lib import PluginUtils, Receiver

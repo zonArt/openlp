@@ -48,7 +48,14 @@ class BiblePlugin(Plugin, PluginUtils):
         self.biblemanager = BibleManager(self.config)
         self.search_results = {} # place to store the search results
         QtCore.QObject.connect(Receiver().get_receiver(),QtCore.SIGNAL("openlpreloadbibles"),self.reload_bibles)
-        
+
+    def has_settings_tab_item(self):
+        return False
+
+    def get_settings_tab_item(self):
+        a = 1
+        return a
+
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
         self.MediaManagerItem = MediaManagerItem(self.icon, 'Bible Verses')
@@ -190,47 +197,6 @@ class BiblePlugin(Plugin, PluginUtils):
         self.AdvancedLayout.addWidget(self.AdvancedSearchButton, 5, 3, 1, 1)
         self.SearchTabWidget.addTab(self.AdvancedTab, 'Advanced')
         
-        # Add the Settings tab
-        self.SettingsTab = QtGui.QWidget()
-        self.SettingsTab.setObjectName('SettingsTab')
-        self.SettingsLayout = QtGui.QGridLayout(self.SettingsTab)
-        self.SettingsLayout.setObjectName('SettingsLayout')
-        
-        self.SettingsOutputStyleLabel = QtGui.QLabel(self.SettingsTab)
-        self.SettingsOutputStyleLabel.setObjectName('SettingsOutputStyleLabel')
-        self.SettingsOutputStyleLabel.setText('Output Style:')
-        self.SettingsLayout.addWidget(self.SettingsOutputStyleLabel, 0, 0, 1, 1)
-        self.SettingsOutputStyleComboBox = QtGui.QComboBox(self.SettingsTab)
-        self.SettingsOutputStyleComboBox.setObjectName('SettingsOutputStyleComboBox')
-        self.SettingsLayout.addWidget(self.SettingsOutputStyleComboBox, 0, 1, 1, 2) 
-        
-        self.SettingsVerseStyleLabel = QtGui.QLabel(self.SettingsTab)
-        self.SettingsVerseStyleLabel.setObjectName('SettingsVerseStyleLabel')
-        self.SettingsVerseStyleLabel.setText('Verse Style:')
-        self.SettingsLayout.addWidget(self.SettingsVerseStyleLabel, 1, 0, 1, 1)
-        self.SettingsVerseStyleComboBox = QtGui.QComboBox(self.SettingsTab)
-        self.SettingsVerseStyleComboBox.setObjectName('SettingsVerseStyleComboBox')
-        self.SettingsLayout.addWidget(self.SettingsVerseStyleComboBox, 1, 1, 1, 2)
-        
-        self.SettingsNewChapterLabel = QtGui.QLabel(self.SettingsTab)
-        self.SettingsNewChapterLabel.setObjectName('SettingsNewChapterLabel')
-        self.SettingsNewChapterLabel.setText('Show new chapter Nos:')
-        self.SettingsLayout.addWidget(self.SettingsNewChapterLabel, 2, 0, 1, 2) 
-        self.SettingsNewChapterCheck= QtGui.QCheckBox(self.SettingsTab)
-        self.SettingsNewChapterCheck.setObjectName('SettingsNewChapterCheck')
-        self.SettingsLayout.addWidget(self.SettingsNewChapterCheck, 2, 2, 1, 1)        
- 
-        self.SettingsResetButton = QtGui.QPushButton(self.SettingsTab)
-        self.SettingsResetButton.setObjectName('SettingsResetButton')
-        self.SettingsResetButton.setText('Reset')
-        self.SettingsLayout.addWidget(self.SettingsResetButton, 3, 1, 1, 1)  
-        self.SettingsSaveButton = QtGui.QPushButton(self.SettingsTab)
-        self.SettingsSaveButton.setObjectName('SettingsSaveButton')
-        self.SettingsSaveButton.setText('Save')
-        self.SettingsLayout.addWidget(self.SettingsSaveButton, 3, 2, 1, 1)        
-      
-        self.SearchTabWidget.addTab(self.SettingsTab, 'Settings')
-        
         # Add the search tab widget to the page layout
         self.MediaManagerItem.PageLayout.addWidget(self.SearchTabWidget)
 
@@ -259,9 +225,7 @@ class BiblePlugin(Plugin, PluginUtils):
         ##############Buttons
         QtCore.QObject.connect(self.AdvancedSearchButton, QtCore.SIGNAL("pressed()"), self.onAdvancedSearchButton)
         QtCore.QObject.connect(self.QuickSearchButton, QtCore.SIGNAL("pressed()"), self.onQuickSearchButton)
-        QtCore.QObject.connect(self.SettingsResetButton, QtCore.SIGNAL("pressed()"), self.onSettingsResetButton)
-        QtCore.QObject.connect(self.SettingsSaveButton, QtCore.SIGNAL("pressed()"), self.onSettingsSaveButton)
-        
+       
         ##############Context Menus
         self.BibleListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
@@ -286,7 +250,6 @@ class BiblePlugin(Plugin, PluginUtils):
 
     def initialise(self):
         self._initialise_form() # build the form
-        self._load_reset_settings() # load the plugin settings
         
     def _initialise_form(self):
         log.debug("_initialise_form")
@@ -295,8 +258,6 @@ class BiblePlugin(Plugin, PluginUtils):
         self.AdvancedVersionComboBox.clear()
         self.ClearQuickSearchComboBox.clear()
         self.ClearAdvancedSearchComboBox.clear()        
-        self.SettingsOutputStyleComboBox.clear()
-        self.SettingsVerseStyleComboBox.clear()        
         
         self.QuickSearchComboBox.addItem(u"Verse Search")        
         self.QuickSearchComboBox.addItem(u"Text Search")
@@ -304,12 +265,7 @@ class BiblePlugin(Plugin, PluginUtils):
         self.ClearQuickSearchComboBox.addItem(u"Keep") 
         self.ClearAdvancedSearchComboBox.addItem(u"Clear") 
         self.ClearAdvancedSearchComboBox.addItem(u"Keep")
-        self.SettingsOutputStyleComboBox.addItem(u"Continuous")
-        self.SettingsOutputStyleComboBox.addItem(u"Paragraph") 
-        self.SettingsVerseStyleComboBox.addItem(u"No Brackets")
-        self.SettingsVerseStyleComboBox.addItem(u"( and )")
-        self.SettingsVerseStyleComboBox.addItem(u"{ and }")
-        self.SettingsVerseStyleComboBox.addItem(u"[ and ]")
+
 
         bibles = self.biblemanager.get_bibles("full")
         for b in bibles:  # load bibles into the combo boxes
@@ -437,19 +393,6 @@ class BiblePlugin(Plugin, PluginUtils):
         self.biblemanager.reload_bibles()
         self._initialise_form()
     
-    def _load_reset_settings(self):
-        self.SettingsOutputStyleComboBox.setCurrentIndex(int(self.config.get_config("bible_output_style", 0)))
-        self.SettingsVerseStyleComboBox.setCurrentIndex(int(self.config.get_config("bible_verse_style", 0)))
-        try:
-            self.SettingsNewChapterCheck.setCheckState(int(self.config.get_config("bible_new_chapter", 0)))
-        except:
-            pass
-    
-    def _save_settings(self):
-        self.config.set_config("bible_output_style", str(self.SettingsOutputStyleComboBox.currentIndex()))
-        self.config.set_config("bible_verse_style", str(self.SettingsVerseStyleComboBox.currentIndex()))
-        self.config.set_config("bible_new_chapter", str(self.SettingsNewChapterCheck.checkState()))
-
     def _initialise_bible_advanced(self, bible):
         log.debug("_initialise_bible_advanced %s ", bible)
         currentBook = str(self.AdvancedBookComboBox.currentText())
@@ -566,3 +509,34 @@ class BiblePlugin(Plugin, PluginUtils):
             self.search_results = self.biblemanager.get_verse_text(bible, book,int(start_chapter), int(end_chapter), int(start_verse), int(end_verse))
         else:
             reply = QtGui.QMessageBox.information(self.MediaManagerItem,"Information",message)
+            
+    def load_settings(self):
+        pass
+#        self.SettingsOutputStyleComboBox.setCurrentIndex(int(self.config.get_config("bible_output_style", 0)))
+#        self.SettingsVerseStyleComboBox.setCurrentIndex(int(self.config.get_config("bible_verse_style", 0)))
+#        try:
+#            self.SettingsNewChapterCheck.setCheckState(int(self.config.get_config("bible_new_chapter", 0)))
+#        except:
+#            pass
+    
+    def save_settings(self):
+        pass
+#        self.config.set_config("bible_output_style", str(self.SettingsOutputStyleComboBox.currentIndex()))
+#        self.config.set_config("bible_verse_style", str(self.SettingsVerseStyleComboBox.currentIndex()))
+#        self.config.set_config("bible_new_chapter", str(self.SettingsNewChapterCheck.checkState()))
+
+#        self.SettingsOutputStyleComboBox.clear()
+#       self.SettingsVerseStyleComboBox.clear()        
+
+#        self.SettingsOutputStyleComboBox.addItem(u"Continuous")
+#        self.SettingsOutputStyleComboBox.addItem(u"Paragraph") 
+#        self.SettingsVerseStyleComboBox.addItem(u"No Brackets")
+#        self.SettingsVerseStyleComboBox.addItem(u"( and )")
+#        self.SettingsVerseStyleComboBox.addItem(u"{ and }")
+#        self.SettingsVerseStyleComboBox.addItem(u"[ and ]")
+
+
+    def define_tab(self):
+        pass
+#        QtCore.QObject.connect(self.SettingsResetButton, QtCore.SIGNAL("pressed()"), self.onSettingsResetButton)
+#        QtCore.QObject.connect(self.SettingsSaveButton, QtCore.SIGNAL("pressed()"), self.onSettingsSaveButton)            

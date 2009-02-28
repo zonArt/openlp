@@ -21,7 +21,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
-from openlp.core.lib import Plugin,PluginUtils,  MediaManagerItem
+from openlp.core.lib import Plugin,PluginUtils,  MediaManagerItem, SettingsTab
 
 class VideoPlugin(Plugin, PluginUtils):
     def __init__(self):
@@ -32,7 +32,49 @@ class VideoPlugin(Plugin, PluginUtils):
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(':/media/media_video.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            
+    def has_settings_tab_item(self):
+        return True
 
+    def get_settings_tab_item(self):
+        
+        self.SettingsTabItem= SettingsTab()
+        
+        self.Videos = QtGui.QWidget()
+        self.Videos.setObjectName("Videos")
+
+        self.VideoLayout = QtGui.QFormLayout(self.Videos)
+        self.VideoLayout.setObjectName("VideoLayout")
+
+        self.VideoModeGroupBox = QtGui.QGroupBox(self.SettingsTabItem)
+        self.VideoModeGroupBox.setObjectName("VideoModeGroupBox")
+        self.VideoModeLayout = QtGui.QVBoxLayout(self.VideoModeGroupBox)
+        self.VideoModeLayout.setSpacing(8)
+        self.VideoModeLayout.setMargin(8)
+        self.VideoModeLayout.setObjectName("VideoModeLayout")
+        self.UseVMRCheckBox = QtGui.QCheckBox(self.VideoModeGroupBox)
+        self.UseVMRCheckBox.setObjectName("UseVMRCheckBox")
+        self.VideoModeLayout.addWidget(self.UseVMRCheckBox)
+        self.UseVMRLabel = QtGui.QLabel(self.VideoModeGroupBox)
+        self.UseVMRLabel.setObjectName("UseVMRLabel")
+        self.VideoModeLayout.addWidget(self.UseVMRLabel)
+        
+        self.VideoLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.VideoModeGroupBox)
+        
+        self.SettingsTabItem.add_items(self.Videos)
+        
+        self.SettingsTabItem.setTabText(QtGui.QApplication.translate("SettingsDialog", "Videos", None, QtGui.QApplication.UnicodeUTF8))
+        
+        self.VideoModeGroupBox.setTitle(QtGui.QApplication.translate("SettingsDialog", "Video Mode", None, QtGui.QApplication.UnicodeUTF8))
+        self.UseVMRCheckBox.setText(QtGui.QApplication.translate("SettingsDialog", "Use Video Mode Rendering", None, QtGui.QApplication.UnicodeUTF8))
+        self.UseVMRLabel.setText(QtGui.QApplication.translate("SettingsDialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'DejaVu Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic;\">No video preview available with VMR enabled</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        
+        return self.SettingsTabItem
+        
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
         self.MediaManagerItem = MediaManagerItem(self.icon, 'Videos')

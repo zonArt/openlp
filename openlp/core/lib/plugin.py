@@ -88,9 +88,9 @@ class Plugin(object):
         self.weight = 0
         # Set up logging
         self.log = logging.getLogger(self.name)
-        self.repaint_main_window = None
         self.preview_controller=preview_controller
         self.live_controller=live_controller
+        
     def check_pre_conditions(self):
         """
         Provides the Plugin with a handle to check if it can be loaded.
@@ -98,6 +98,30 @@ class Plugin(object):
         """
         return True
 
+    def has_settings_tab_item(self):
+        """
+        Tells the PluginManager if the plugin wants to play with settings Tab
+        """
+        return False
+        
+    def get_settings_tab_item(self):
+        """
+        Allows the Settings Tab to construct one or more tabs..
+        """
+        pass
+        
+    def load_settings(self):
+        """
+        Hook to allow settings tab and plugin to load settings values from configuration
+        """
+        pass
+        
+    def save_settings(self):
+        """
+        Hook to allow settings tab to save settings values from configuration
+        """
+        pass          
+        
     def get_media_manager_item(self):
         """
         Construct a MediaManagerItem object with all the buttons and things you
