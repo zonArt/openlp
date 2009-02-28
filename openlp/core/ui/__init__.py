@@ -22,9 +22,10 @@ from slidecontroller import SlideController
 from splashscreen import SplashScreen
 from about import AboutForm
 from alertform import AlertForm
+from generalform import GeneralForm
 from settings import SettingsDialog
 from servicemanager import ServiceManager
 from mainwindow import MainWindow
 
 __all__ = ['SplashScreen', 'AboutForm', 'AlertForm', 'SettingsDialog',
-           'MainWindow', 'SlideController', 'ServiceManager']
+           'MainWindow', 'SlideController', 'ServiceManager,GeneralForm']

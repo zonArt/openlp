@@ -26,7 +26,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.resources import *
 
 from openlp.core.ui import SlideController, ServiceManager
-from openlp.core.ui import AboutForm, AlertForm, SettingsDialog, SlideController
+from openlp.core.ui import AboutForm, AlertForm, SettingsDialog, SlideController, GeneralForm
 from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab
 
 from openlp.core import PluginManager
@@ -41,6 +41,7 @@ class MainWindow(object):
         self.about_form = AboutForm()
         self.alert_form = AlertForm()
         self.settings_form = SettingsDialog()
+        self.general_form = GeneralForm()        
         pluginpath = os.path.split(os.path.abspath(__file__))[0]
         pluginpath = os.path.abspath(os.path.join(pluginpath, '..', '..','plugins'))
         self.plugin_manager = PluginManager(pluginpath)
@@ -48,6 +49,9 @@ class MainWindow(object):
         
         self.plugin_manager.find_plugins(pluginpath, self.PreviewController, self.LiveController)
         log.info("hook Settings")
+        #Add Core Componets who provide Settings tabs
+        self.settings_form.add_virtual_plugin(self.general_form)        
+        self.settings_form.add_virtual_plugin(self.alert_form)
         #Call hook method to see which plugins have setting tabs.
         self.settings_form.receive_plugins(self.plugin_manager.hook_settings_tabs())
         self.settings_form.generateUi()
