@@ -25,7 +25,7 @@ from openlp.core.resources import *
 from openlp.core.lib import Plugin, PluginUtils, MediaManagerItem
 from forms import EditSongForm, OpenLPImportForm, OpenSongImportForm, \
                   OpenLPExportForm, OpenSongExportForm
-from openlp.plugins.songs.lib import SongManager
+from openlp.plugins.songs.lib import SongManager, SongsTab
 
 class SongsPlugin(Plugin, PluginUtils):
     global log
@@ -194,6 +194,10 @@ class SongsPlugin(Plugin, PluginUtils):
         # Signals and slots
         QtCore.QObject.connect(self.ExportOpenlp1Item, QtCore.SIGNAL("triggered()"), self.onExportOpenlp1ItemClicked)
         QtCore.QObject.connect(self.ExportOpenSongItem, QtCore.SIGNAL("triggered()"), self.onExportOpenSongItemClicked)
+
+    def get_settings_tab(self):
+        self.SongsTab = SongsTab()
+        return self.SongsTab
 
     def initialise(self):
         self.SearchTypeComboBox.addItem(u'Titles')

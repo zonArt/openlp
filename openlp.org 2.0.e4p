@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.4.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2009-03-01, 01:17:00 -->
+<!-- Saved: 2009-03-01, 01:29:05 -->
 <!-- Copyright (C) 2009 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.4">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -125,12 +125,14 @@
     <Source>resources/forms/bibleimportdialog.py</Source>
     <Source>openlp/core/ui/settingsform.py</Source>
     <Source>openlp/core/ui/generalform.py</Source>
-    <Source>openlp/core/lib/settingstabitem.py</Source>
     <Source>openlp/core/ui/generaltab.py</Source>
     <Source>openlp/core/ui/themestab.py</Source>
     <Source>openlp/core/ui/alertstab.py</Source>
     <Source>resources/forms/Ui_settings.py</Source>
     <Source>openlp/core/ui/settingsdialog.py</Source>
+    <Source>openlp/core/lib/settingstab.py</Source>
+    <Source>openlp/plugins/bibles/lib/biblestab.py</Source>
+    <Source>openlp/plugins/songs/lib/songstab.py</Source>
   </Sources>
   <Forms>
     <Form>resources/forms/openlpexportform.ui</Form>
