@@ -63,11 +63,11 @@ class VideoPlugin(Plugin, PluginUtils):
         
         self.SettingsTabItem.add_items(self.Videos)
         
-        self.SettingsTabItem.setTabText(QtGui.QApplication.translate("SettingsDialog", "Videos", None, QtGui.QApplication.UnicodeUTF8))
+        self.SettingsTabItem.setTabText(QtGui.QApplication.translate("SettingsForm", "Videos", None, QtGui.QApplication.UnicodeUTF8))
         
-        self.VideoModeGroupBox.setTitle(QtGui.QApplication.translate("SettingsDialog", "Video Mode", None, QtGui.QApplication.UnicodeUTF8))
-        self.UseVMRCheckBox.setText(QtGui.QApplication.translate("SettingsDialog", "Use Video Mode Rendering", None, QtGui.QApplication.UnicodeUTF8))
-        self.UseVMRLabel.setText(QtGui.QApplication.translate("SettingsDialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.VideoModeGroupBox.setTitle(QtGui.QApplication.translate("SettingsForm", "Video Mode", None, QtGui.QApplication.UnicodeUTF8))
+        self.UseVMRCheckBox.setText(QtGui.QApplication.translate("SettingsForm", "Use Video Mode Rendering", None, QtGui.QApplication.UnicodeUTF8))
+        self.UseVMRLabel.setText(QtGui.QApplication.translate("SettingsForm", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'DejaVu Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"

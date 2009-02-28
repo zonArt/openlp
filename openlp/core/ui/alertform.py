@@ -159,13 +159,13 @@ class AlertForm(object):
         self.gridLayout.addWidget(self.LengthWidget, 4, 0, 1, 1)
         self.formLayout_2.setWidget(0, QtGui.QFormLayout.LabelRole, self.AlertGroupBox)
         
-        self.AlertGroupBox.setTitle(QtGui.QApplication.translate("SettingsDialog", "Alerts", None, QtGui.QApplication.UnicodeUTF8))
-        self.FontLabel.setText(QtGui.QApplication.translate("SettingsDialog", "Font Name:", None, QtGui.QApplication.UnicodeUTF8))
-        self.FontColorLabel.setText(QtGui.QApplication.translate("SettingsDialog", "Font Color:", None, QtGui.QApplication.UnicodeUTF8))
-        self.BackgroundColorLabel.setText(QtGui.QApplication.translate("SettingsDialog", "Background Color:", None, QtGui.QApplication.UnicodeUTF8))
-        self.LengthLabel.setText(QtGui.QApplication.translate("SettingsDialog", "Display length:", None, QtGui.QApplication.UnicodeUTF8))
-        self.LengthSpinBox.setSuffix(QtGui.QApplication.translate("SettingsDialog", "s", None, QtGui.QApplication.UnicodeUTF8))
-        self.SettingsTabItem.setTabText(QtGui.QApplication.translate("SettingsDialog", "Alerts", None, QtGui.QApplication.UnicodeUTF8))        
+        self.AlertGroupBox.setTitle(QtGui.QApplication.translate("SettingsForm", "Alerts", None, QtGui.QApplication.UnicodeUTF8))
+        self.FontLabel.setText(QtGui.QApplication.translate("SettingsForm", "Font Name:", None, QtGui.QApplication.UnicodeUTF8))
+        self.FontColorLabel.setText(QtGui.QApplication.translate("SettingsForm", "Font Color:", None, QtGui.QApplication.UnicodeUTF8))
+        self.BackgroundColorLabel.setText(QtGui.QApplication.translate("SettingsForm", "Background Color:", None, QtGui.QApplication.UnicodeUTF8))
+        self.LengthLabel.setText(QtGui.QApplication.translate("SettingsForm", "Display length:", None, QtGui.QApplication.UnicodeUTF8))
+        self.LengthSpinBox.setSuffix(QtGui.QApplication.translate("SettingsForm", "s", None, QtGui.QApplication.UnicodeUTF8))
+        self.SettingsTabItem.setTabText(QtGui.QApplication.translate("SettingsForm", "Alerts", None, QtGui.QApplication.UnicodeUTF8))        
         self.SettingsTabItem.add_items(self.Alerts)
         
         return self.SettingsTabItem

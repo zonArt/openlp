@@ -26,7 +26,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.resources import *
 
 from openlp.core.ui import SlideController, ServiceManager
-from openlp.core.ui import AboutForm, AlertForm, SettingsDialog, SlideController, GeneralForm
+from openlp.core.ui import AboutForm, AlertForm, SettingsForm, SlideController, GeneralForm
 from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab
 
 from openlp.core import PluginManager
@@ -40,7 +40,7 @@ class MainWindow(object):
         self.main_window = QtGui.QMainWindow()
         self.about_form = AboutForm()
         self.alert_form = AlertForm()
-        self.settings_form = SettingsDialog()
+        self.settings_form = SettingsForm()
         self.general_form = GeneralForm()        
         pluginpath = os.path.split(os.path.abspath(__file__))[0]
         pluginpath = os.path.abspath(os.path.join(pluginpath, '..', '..','plugins'))

@@ -23,9 +23,9 @@ from splashscreen import SplashScreen
 from about import AboutForm
 from alertform import AlertForm
 from generalform import GeneralForm
-from settings import SettingsDialog
+from settingsform import SettingsForm
 from servicemanager import ServiceManager
 from mainwindow import MainWindow
 
-__all__ = ['SplashScreen', 'AboutForm', 'AlertForm', 'SettingsDialog',
+__all__ = ['SplashScreen', 'AboutForm', 'AlertForm', 'SettingsForm',
            'MainWindow', 'SlideController', 'ServiceManager,GeneralForm']

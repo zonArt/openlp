@@ -24,7 +24,7 @@ from PyQt4 import *
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import *
 # from openlp.core.resources import *
-# from openlp.core.ui import AboutForm, AlertForm, SettingsDialog, SlideController
+# from openlp.core.ui import AboutForm, AlertForm, SettingsForm, SlideController
 from openlp.core.lib import OpenLPToolbar
 
 # from openlp.core import PluginManager
