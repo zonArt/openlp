@@ -25,9 +25,9 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
 
-from openlp.core.ui import SlideController, ServiceManager
-from openlp.core.ui import AboutForm, AlertForm, SettingsForm, SlideController, GeneralForm
-from openlp.core.lib import Plugin, MediaManagerItem, SettingsTabItem
+from openlp.core.ui import AboutForm, SettingsForm, \
+                           SlideController, ServiceManager, GeneralForm
+from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab
 
 from openlp.core import PluginManager
 import logging
@@ -39,35 +39,33 @@ class MainWindow(object):
     def __init__(self):
         self.main_window = QtGui.QMainWindow()
         self.about_form = AboutForm()
-        self.alert_form = AlertForm()
+        #self.alert_form = AlertForm()
         self.settings_form = SettingsForm()
-        self.general_form = GeneralForm()        
+        #self.general_form = GeneralForm()
         pluginpath = os.path.split(os.path.abspath(__file__))[0]
         pluginpath = os.path.abspath(os.path.join(pluginpath, '..', '..','plugins'))
         self.plugin_manager = PluginManager(pluginpath)
         self.setupUi()
-        
+
+        log.info('')
         self.plugin_manager.find_plugins(pluginpath, self.PreviewController, self.LiveController)
-        log.info("hook Settings")
-        #Add Core Componets who provide Settings tabs
-        self.settings_form.add_virtual_plugin(self.general_form)        
-        self.settings_form.add_virtual_plugin(self.alert_form)
-        #Call hook method to see which plugins have setting tabs.
-        self.settings_form.receive_plugins(self.plugin_manager.hook_settings_tabs())
-        self.settings_form.generateUi()
-        
         # hook methods have to happen after find_plugins.  Find plugins needs the controllers
-        # hence the hooks have moved front setupUI() to here
-        # Call the hook method to pull in import menus.
-        log.info("hook menus")        
-        self.plugin_manager.hook_import_menu(self.FileImportMenu)
-        #
-        # Call the hook method to pull in export menus.
-        self.plugin_manager.hook_import_menu(self.FileExportMenu)
-        #
+        # hence the hooks have moved from setupUI() to here
+
+        # Find and insert media manager items
         log.info("hook media")
         self.plugin_manager.hook_media_manager(self.MediaToolBox)
-        # End adding media manager items.
+
+        # Find and insert settings tabs
+        log.info("hook settings")
+        self.plugin_manager.hook_settings_tabs(self.settings_form)
+
+        # Call the hook method to pull in import menus.
+        log.info("hook menus")
+        self.plugin_manager.hook_import_menu(self.FileImportMenu)
+
+        # Call the hook method to pull in export menus.
+        self.plugin_manager.hook_import_menu(self.FileExportMenu)
 
     def setupUi(self):
         self.main_window.setObjectName("main_window")
@@ -133,7 +131,7 @@ class MainWindow(object):
         self.MediaManagerDock.setSizePolicy(sizePolicy)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/system/system_mediamanager.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        
+
         self.MediaManagerDock.setWindowIcon(icon)
         self.MediaManagerDock.setFloating(False)
         self.MediaManagerDock.setObjectName("MediaManagerDock")
@@ -155,7 +153,7 @@ class MainWindow(object):
         self.MediaManagerLayout.addWidget(self.MediaToolBox)
         self.MediaManagerDock.setWidget(self.MediaManagerContents)
         self.main_window.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.MediaManagerDock)
-        
+
         self.ServiceManagerDock = QtGui.QDockWidget(self.main_window)
         ServiceManagerIcon = QtGui.QIcon()
         ServiceManagerIcon.addPixmap(QtGui.QPixmap(":/system/system_servicemanager.png"),
@@ -428,10 +426,10 @@ class MainWindow(object):
         self.main_window.showMaximized()
 
     def onHelpAboutItemClicked(self):
-        self.about_form.show()
+        self.about_form.exec_()
 
     def onToolsAlertItemClicked(self):
-        self.alert_form.show()
+        self.alert_form.exec_()
 
     def onOptionsSettingsItemClicked(self):
         self.settings_form.exec_()

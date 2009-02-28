@@ -17,62 +17,53 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
+import logging
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import QDialog
 
-from openlp.core.lib import SettingsTabItem
+from openlp.core.lib import SettingsTab
 from openlp.core.resources import *
-from openlp.core.ui import AlertForm
+from openlp.core.ui import GeneralTab, ThemesTab, AlertsTab
 
-class SettingsForm(QDialog):
+from settingsdialog import Ui_SettingsDialog
+
+log = logging.getLogger('SettingsForm')
+
+class SettingsForm(QtGui.QDialog,  Ui_SettingsDialog):
 
     def __init__(self, parent=None):
-        QDialog.__init__(self, parent)
-        self.first_time = True
-        self.plugin_list = []
-        
-    def add_virtual_plugin(self, plugin):
-        """
-        Method to allow Core to register screens to behave like plugins
-        """
-        self.plugin_list.append(plugin)
-        
-    def receive_plugins(self, plugins):
-        """
-        Method to allow Plugin Manager to add plugins which want settings
-        """
-        print "got plugins ", plugins
-        for plugin in plugins:
-            self.plugin_list.append(plugin)
-        print plugins
-        
-    def generateUi(self):
-        """
-        Method build UI. 
-        Called by mainmenu AFTER all plugins have been installed.
-        """
-        if self.first_time:
-            self.setupUi(self) 
-            self.first_time = False
+        QtGui.QDialog.__init__(self, parent)
+        self.setupUi(self)
+        # General tab
+        self.GeneralTab = GeneralTab()
+        self.addTab(self.GeneralTab)
+        # Themes tab
+        self.ThemesTab = ThemesTab()
+        self.addTab(self.ThemesTab)
+        # Alerts tab
+        self.AlertsTab = AlertsTab()
+        self.addTab(self.AlertsTab)
 
-    def onSaveButton(self):
-        pass
-    def onResetButton(self):
+    def addTab(self, tab):
+        log.info(u'Inserting %s' % tab.title())
+        self.SettingsTabWidget.addTab(tab, tab.title())
+
+    def onSaveButtonClick(self):
         pass
 
+    def onResetButtonClick(self):
+        pass
+
+    """
     def setupUi(self, SettingsDialog):
         SettingsDialog.setObjectName("SettingsDialog")
         SettingsDialog.resize(602, 502)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icon/openlp.org-icon-32.bmp"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         SettingsDialog.setWindowIcon(icon)
-        
         self.SettingsTabWidget = QtGui.QTabWidget(SettingsDialog)
         self.SettingsTabWidget.setGeometry(QtCore.QRect(0, 0, 669, 500))
         self.SettingsTabWidget.setObjectName("SettingsTabWidget")
-        
-       
         self.ThemesTab = QtGui.QWidget()
         self.ThemesTab.setObjectName("ThemesTab")
         self.ThemesTabLayout = QtGui.QHBoxLayout(self.ThemesTab)
@@ -127,7 +118,7 @@ class SettingsForm(QDialog):
         self.formLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.GlobalLevelLabel)
         self.ThemesTabLayout.addWidget(self.LevelGroupBox)
         self.SettingsTabWidget.addTab(self.ThemesTab, "")
-        
+
         self.SlideTab = QtGui.QWidget()
         self.SlideTab.setObjectName("SlideTab")
         self.SlideLayout = QtGui.QHBoxLayout(self.SlideTab)
@@ -236,14 +227,14 @@ class SettingsForm(QDialog):
         self.SlideRightLayout.addItem(spacerItem5)
         self.SlideLayout.addWidget(self.widget)
         self.SettingsTabWidget.addTab(self.SlideTab, "")
-        
+
         #### Core Code below here
-        
+
         for plugin in self.plugin_list:
             settings_tab_item = plugin.get_settings_tab_item()
             if settings_tab_item is not None:
                 self.SettingsTabWidget.addTab(settings_tab_item, settings_tab_item.tabText)
- 
+
         self.SaveButton = QtGui.QPushButton(SettingsDialog)
         self.SaveButton.setGeometry(QtCore.QRect(490, 470, 81, 26))
         self.SaveButton.setObjectName("SaveButton")
@@ -253,15 +244,15 @@ class SettingsForm(QDialog):
         self.ResetButton = QtGui.QPushButton(SettingsDialog)
         self.ResetButton.setGeometry(QtCore.QRect(310, 470, 81, 26))
         self.ResetButton.setObjectName("ResetButton")
-        
-        QtCore.QObject.connect(self.CancelButton, QtCore.SIGNAL("clicked()"), self.close)        
+
+        QtCore.QObject.connect(self.CancelButton, QtCore.SIGNAL("clicked()"), self.close)
 
         self.retranslateUi(SettingsDialog)
         self.SettingsTabWidget.setCurrentIndex(5)
         QtCore.QMetaObject.connectSlotsByName(SettingsDialog)
 
     def retranslateUi(self, SettingsDialog):
-        SettingsDialog.setWindowTitle(QtGui.QApplication.translate("SettingsDialog", "Settings", None, QtGui.QApplication.UnicodeUTF8))        
+        SettingsDialog.setWindowTitle(QtGui.QApplication.translate("SettingsDialog", "Settings", None, QtGui.QApplication.UnicodeUTF8))
 
         self.GlobalGroupBox.setTitle(QtGui.QApplication.translate("SettingsDialog", "Global theme", None, QtGui.QApplication.UnicodeUTF8))
         self.DefaultComboBox.setItemText(0, QtGui.QApplication.translate("SettingsDialog", "African Sunset", None, QtGui.QApplication.UnicodeUTF8))
@@ -290,8 +281,8 @@ class SettingsForm(QDialog):
         self.SearchGroupBox_3.setTitle(QtGui.QApplication.translate("SettingsDialog", "Search", None, QtGui.QApplication.UnicodeUTF8))
         self.SearchCheckBox_3.setText(QtGui.QApplication.translate("SettingsDialog", "Enabled search-as-you-type", None, QtGui.QApplication.UnicodeUTF8))
         self.SettingsTabWidget.setTabText(self.SettingsTabWidget.indexOf(self.SlideTab), QtGui.QApplication.translate("SettingsDialog", "Songs", None, QtGui.QApplication.UnicodeUTF8))
-        
+
         self.SaveButton.setText(QtGui.QApplication.translate("SettingsDialog", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.CancelButton.setText(QtGui.QApplication.translate("SettingsDialog", "Cancel", None, QtGui.QApplication.UnicodeUTF8))
         self.ResetButton.setText(QtGui.QApplication.translate("SettingsDialog", "Reset", None, QtGui.QApplication.UnicodeUTF8))
-
+    """

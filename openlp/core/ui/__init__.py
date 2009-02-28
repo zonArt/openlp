@@ -20,12 +20,15 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from slidecontroller import SlideController
 from splashscreen import SplashScreen
+from alertstab import AlertsTab
+from generaltab import GeneralTab
+from themestab import ThemesTab
 from about import AboutForm
-from alertform import AlertForm
+#from alertform import AlertForm
 from generalform import GeneralForm
 from settingsform import SettingsForm
 from servicemanager import ServiceManager
 from mainwindow import MainWindow
 
-__all__ = ['SplashScreen', 'AboutForm', 'AlertForm', 'SettingsForm',
+__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm',
            'MainWindow', 'SlideController', 'ServiceManager,GeneralForm']

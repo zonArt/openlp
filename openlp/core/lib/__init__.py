@@ -20,7 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from pluginutils import PluginUtils
 from pluginconfig import PluginConfig
 from plugin import Plugin
-from settingstabitem import SettingsTabItem
+from settingstab import SettingsTab
 from mediamanageritem import MediaManagerItem
 from event import Event
 from xmlrootclass import XmlRootClass

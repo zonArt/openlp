@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.4.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2009-02-20, 00:23:11 -->
+<!-- Saved: 2009-03-01, 01:17:00 -->
 <!-- Copyright (C) 2009 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.4">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -26,7 +26,6 @@
     <Source>openlp/core/ui/__init__.py</Source>
     <Source>openlp/core/ui/mainwindow.py</Source>
     <Source>openlp/core/ui/splashscreen.py</Source>
-    <Source>openlp/core/ui/settings.py</Source>
     <Source>openlp/core/ui/alertform.py</Source>
     <Source>openlp/core/ui/about.py</Source>
     <Source>openlp/plugins/songs/songsplugin.py</Source>
@@ -48,7 +47,6 @@
     <Source>openlp/core/resources.py</Source>
     <Source>openlp/core/lib/__init__.py</Source>
     <Source>openlp/core/lib/xmlrootclass.py</Source>
-    <Source>openlp/core/lib/settingstab.py</Source>
     <Source>openlp/core/lib/plugin.py</Source>
     <Source>openlp/core/lib/mediamanageritem.py</Source>
     <Source>openlp/core/lib/event.py</Source>
@@ -122,6 +120,17 @@
     <Source>openlp/core/lib/imageserviceitem.py</Source>
     <Source>openlp/plugins/bibles/forms/bibleeditdialog.py</Source>
     <Source>resources/forms/Ui_editsongdialog.py</Source>
+    <Source>openlp/core/ui/servicemanager.py</Source>
+    <Source>openlp/core/lib/toolbar.py</Source>
+    <Source>resources/forms/bibleimportdialog.py</Source>
+    <Source>openlp/core/ui/settingsform.py</Source>
+    <Source>openlp/core/ui/generalform.py</Source>
+    <Source>openlp/core/lib/settingstabitem.py</Source>
+    <Source>openlp/core/ui/generaltab.py</Source>
+    <Source>openlp/core/ui/themestab.py</Source>
+    <Source>openlp/core/ui/alertstab.py</Source>
+    <Source>resources/forms/Ui_settings.py</Source>
+    <Source>openlp/core/ui/settingsdialog.py</Source>
   </Sources>
   <Forms>
     <Form>resources/forms/openlpexportform.ui</Form>
@@ -140,7 +149,8 @@
     <Form>resources/forms/songbookdialog.ui</Form>
     <Form>resources/forms/topicsdialog.ui</Form>
     <Form>resources/forms/editsongdialog.ui</Form>
-    <Form>resources/forms/bibleeditdialog.ui</Form>
+    <Form>openlp/plugins/bibles/forms/bibleeditdialog.ui</Form>
+    <Form>resources/forms/settings2.ui</Form>
   </Forms>
   <Translations>
   </Translations>

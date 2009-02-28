@@ -18,8 +18,6 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 from PyQt4 import Qt, QtCore, QtGui
-from PyQt4.QtGui import QDialog
-from PyQt4.QtCore import pyqtSignature
 
 from authorsform import AuthorsForm
 from topicsform import TopicsForm
@@ -27,7 +25,7 @@ from songbookform import SongBookForm
 
 from editsongdialog import Ui_EditSongDialog
 
-class EditSongForm(QDialog, Ui_EditSongDialog):
+class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     """
     Class documentation goes here.
     """
@@ -35,11 +33,12 @@ class EditSongForm(QDialog, Ui_EditSongDialog):
         """
         Constructor
         """
-        QDialog.__init__(self, parent)
+        QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # Connecting signals and slots
         QtCore.QObject.connect(self.AddAuthorsButton, QtCore.SIGNAL('clicked()'), self.onAddAuthorsButtonClicked)
         QtCore.QObject.connect(self.AddTopicButton, QtCore.SIGNAL('clicked()'), self.onAddTopicButtonClicked)
+        QtCore.QObject.connect(self.AddSongBookButton, QtCore.SIGNAL('clicked()'), self.onAddSongBookButtonClicked)
         QtCore.QObject.connect(self.CopyrightInsertItem, QtCore.SIGNAL('clicked()'), self.onCopyrightInsertItemTriggered)
         # Create other objects and forms
         self.songmanager = songmanager
@@ -98,8 +97,7 @@ class EditSongForm(QDialog, Ui_EditSongDialog):
         self.topics_form.load_form()
         self.topics_form.exec_()
 
-    @pyqtSignature("")
-    def on_AddSongBookButton_clicked(self):
+    def onAddSongBookButtonClicked(self):
         """
         Slot documentation goes here.
         """

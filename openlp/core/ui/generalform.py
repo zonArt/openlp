@@ -21,7 +21,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
-from openlp.core.lib import SettingsTabItem
+from openlp.core.lib import SettingsTab
 
 class GeneralForm(object):
     """
@@ -32,9 +32,9 @@ class GeneralForm(object):
     def __init__(self):
         pass
     def get_settings_tab_item(self):
-        
+
         self.SettingsTabItem= SettingsTabItem()
-        
+
         self.DisplayTab = QtGui.QWidget()
         self.DisplayTab.setObjectName("DisplayTab")
         self.DisplayTabLayout = QtGui.QHBoxLayout(self.DisplayTab)
@@ -122,22 +122,22 @@ class GeneralForm(object):
         self.MonitorComboBox.setItemText(1, QtGui.QApplication.translate("SettingsForm", "Monitor 2 on X11 Windowing System", None, QtGui.QApplication.UnicodeUTF8))
         self.FontSizeGroupBox.setTitle(QtGui.QApplication.translate("SettingsForm", "Font Size", None, QtGui.QApplication.UnicodeUTF8))
         self.AutoResizeRadioButton.setText(QtGui.QApplication.translate("SettingsForm", "Automatically resize font to fit text to slide", None, QtGui.QApplication.UnicodeUTF8))
-        self.WrapLinesRadioButton.setText(QtGui.QApplication.translate("SettingsForm", "Wrap long lines to keep desired font", None, QtGui.QApplication.UnicodeUTF8))        
+        self.WrapLinesRadioButton.setText(QtGui.QApplication.translate("SettingsForm", "Wrap long lines to keep desired font", None, QtGui.QApplication.UnicodeUTF8))
         self.SongDisplayGroupBox.setTitle(QtGui.QApplication.translate("SettingsForm", "Song Display", None, QtGui.QApplication.UnicodeUTF8))
         self.EnableCreditsCheckBox.setText(QtGui.QApplication.translate("SettingsForm", "Enable displaying of song credits", None, QtGui.QApplication.UnicodeUTF8))
         self.BlankScreenGroupBox.setTitle(QtGui.QApplication.translate("SettingsForm", "Blank Screen", None, QtGui.QApplication.UnicodeUTF8))
         self.WarningCheckBox.setText(QtGui.QApplication.translate("SettingsForm", "Show warning on startup", None, QtGui.QApplication.UnicodeUTF8))
         self.AutoOpenGroupBox.setTitle(QtGui.QApplication.translate("SettingsForm", "Auto Open Last Service", None, QtGui.QApplication.UnicodeUTF8))
         self.AutoOpenCheckBox.setText(QtGui.QApplication.translate("SettingsForm", "Automatically open the last service at startup", None, QtGui.QApplication.UnicodeUTF8))
-        
+
         self.SettingsTabItem.setTabText(QtGui.QApplication.translate("SettingsForm", "General", None, QtGui.QApplication.UnicodeUTF8))
 
         self.SettingsTabItem.add_items(self.DisplayTab)
         return self.SettingsTabItem
 
-        
+
     def load_settings(self):
         pass
-        
+
     def save_settings(self):
         pass

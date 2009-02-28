@@ -17,9 +17,13 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
+from PyQt4 import QtCore, QtGui
 
 from render import Renderer
 from settingsmanager import SettingsManager
 from pluginmanager import PluginManager
 
-__all__ = ['Renderer', 'SettingsManager', 'PluginManager']
+__all__ = ['Renderer', 'SettingsManager', 'PluginManager', 'translate']
+
+def translate(context, text):
+    return QtGui.QApplication.translate(context, text, None, QtGui.QApplication.UnicodeUTF8)

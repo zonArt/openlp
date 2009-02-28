@@ -24,9 +24,9 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from openlp.core.resources import *
-from openlp.core.lib import Plugin,PluginUtils,  MediaManagerItem, Receiver, SettingsTabItem
+from openlp.core.lib import Plugin,PluginUtils,  MediaManagerItem, Receiver
 
-from openlp.plugins.bibles.lib import BibleManager
+from openlp.plugins.bibles.lib import BibleManager, BiblesTab
 from openlp.plugins.bibles.forms import BibleImportForm
 
 from openlp.plugins.bibles.lib.tables import *
@@ -47,15 +47,12 @@ class BiblePlugin(Plugin, PluginUtils):
         #Register the bible Manager
         self.biblemanager = BibleManager(self.config)
         self.search_results = {} # place to store the search results
-        QtCore.QObject.connect(Receiver().get_receiver(),QtCore.SIGNAL("openlpreloadbibles"),self.reload_bibles)
+        QtCore.QObject.connect(Receiver().get_receiver(),
+            QtCore.SIGNAL("openlpreloadbibles"), self.reload_bibles)
 
-    def has_settings_tab_item(self):
-        return True
-
-    def get_settings_tab_item(self):
-        
-        self.SettingsTabItem= SettingsTabItem()
-        
+    def get_settings_tab(self):
+        self.BiblesTab = BiblesTab()
+        """
         self.Bibles = QtGui.QWidget()
         self.Bibles.setObjectName("Bibles")
         self.formLayout_3 = QtGui.QFormLayout(self.Bibles)
@@ -131,11 +128,11 @@ class BiblePlugin(Plugin, PluginUtils):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic;\">Changes don\'t affect verses already in the service</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.SearchGroupBox_2.setTitle(QtGui.QApplication.translate("SettingsForm", "Search", None, QtGui.QApplication.UnicodeUTF8))
         self.SearchCheckBox_2.setText(QtGui.QApplication.translate("SettingsForm", "Enabled search-as-you-type", None, QtGui.QApplication.UnicodeUTF8))
-        
+
         self.SettingsTabItem.add_items(self.Bibles)
         self.SettingsTabItem.setTabText(QtGui.QApplication.translate("SettingsForm", "Bibles", None, QtGui.QApplication.UnicodeUTF8))
-        
-        return self.SettingsTabItem
+        """
+        return self.BiblesTab
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
@@ -213,7 +210,7 @@ class BiblePlugin(Plugin, PluginUtils):
         self.SearchTabWidget.addTab(self.QuickTab, 'Quick')
         QuickSpacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.QuickLayout.addItem(QuickSpacerItem, 4, 2, 1, 1)
-    
+
         # Add the Advanced Search tab
         self.AdvancedTab = QtGui.QWidget()
         self.AdvancedTab.setObjectName('AdvancedTab')
@@ -271,13 +268,13 @@ class BiblePlugin(Plugin, PluginUtils):
         self.ClearAdvancedSearchComboBox = QtGui.QComboBox(self.QuickTab)
         self.ClearAdvancedSearchComboBox.setObjectName('ClearAdvancedSearchComboBox')
         self.AdvancedLayout.addWidget(self.ClearAdvancedSearchComboBox, 5, 2, 1, 1)
-        
+
         self.AdvancedSearchButton = QtGui.QPushButton(self.AdvancedTab)
         self.AdvancedSearchButton.setObjectName('AdvancedSearchButton')
         self.AdvancedSearchButton.setText('Search')
         self.AdvancedLayout.addWidget(self.AdvancedSearchButton, 5, 3, 1, 1)
         self.SearchTabWidget.addTab(self.AdvancedTab, 'Advanced')
-        
+
         # Add the search tab widget to the page layout
         self.MediaManagerItem.PageLayout.addWidget(self.SearchTabWidget)
 
@@ -306,7 +303,7 @@ class BiblePlugin(Plugin, PluginUtils):
         ##############Buttons
         QtCore.QObject.connect(self.AdvancedSearchButton, QtCore.SIGNAL("pressed()"), self.onAdvancedSearchButton)
         QtCore.QObject.connect(self.QuickSearchButton, QtCore.SIGNAL("pressed()"), self.onQuickSearchButton)
-       
+
         ##############Context Menus
         self.BibleListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
@@ -322,7 +319,7 @@ class BiblePlugin(Plugin, PluginUtils):
         self.ImportBibleItem.setText(QtGui.QApplication.translate("main_window", "&Bible", None, QtGui.QApplication.UnicodeUTF8))
         # Signals and slots
         QtCore.QObject.connect(self.ImportBibleItem, QtCore.SIGNAL("triggered()"),  self.onBibleNewClick)
-        
+
     def add_export_menu_item(self, export_menu):
         self.ExportBibleItem = QtGui.QAction(export_menu)
         self.ExportBibleItem.setObjectName("ExportBibleItem")
@@ -331,35 +328,35 @@ class BiblePlugin(Plugin, PluginUtils):
 
     def initialise(self):
         self._initialise_form() # build the form
-        
+
     def _initialise_form(self):
         log.debug("_initialise_form")
         self.QuickSearchComboBox.clear()
         self.QuickVersionComboBox.clear()
         self.AdvancedVersionComboBox.clear()
         self.ClearQuickSearchComboBox.clear()
-        self.ClearAdvancedSearchComboBox.clear()        
-        
-        self.QuickSearchComboBox.addItem(u"Verse Search")        
+        self.ClearAdvancedSearchComboBox.clear()
+
+        self.QuickSearchComboBox.addItem(u"Verse Search")
         self.QuickSearchComboBox.addItem(u"Text Search")
-        self.ClearQuickSearchComboBox.addItem(u"Clear") 
-        self.ClearQuickSearchComboBox.addItem(u"Keep") 
-        self.ClearAdvancedSearchComboBox.addItem(u"Clear") 
+        self.ClearQuickSearchComboBox.addItem(u"Clear")
+        self.ClearQuickSearchComboBox.addItem(u"Keep")
+        self.ClearAdvancedSearchComboBox.addItem(u"Clear")
         self.ClearAdvancedSearchComboBox.addItem(u"Keep")
 
 
         bibles = self.biblemanager.get_bibles("full")
         for b in bibles:  # load bibles into the combo boxes
             self.QuickVersionComboBox.addItem(b)
-                
+
         bibles = self.biblemanager.get_bibles("partial") # Without HTTP
         first = True
         for b in bibles:  # load bibles into the combo boxes
-            self.AdvancedVersionComboBox.addItem(b) 
+            self.AdvancedVersionComboBox.addItem(b)
             if first:
                 first = False
-                self._initialise_bible_advanced(b) # use the first bible as the trigger 
-    
+                self._initialise_bible_advanced(b) # use the first bible as the trigger
+
     def onAdvancedVersionComboBox(self):
         self._initialise_bible_advanced(str(self.AdvancedVersionComboBox.currentText())) # restet the bible info
         pass
@@ -374,7 +371,7 @@ class BiblePlugin(Plugin, PluginUtils):
 
     def onBibleLiveClick(self):
         pass
-        
+
     def onBibleAddClick(self):
         pass
 
@@ -382,7 +379,7 @@ class BiblePlugin(Plugin, PluginUtils):
         self._save_settings()
 
     def onSettingsResetButton(self):
-        self._load_reset_settings()        
+        self._load_reset_settings()
 
     def onAdvancedFromVerse(self):
         frm = self.AdvancedFromVerse.currentText()
@@ -407,7 +404,7 @@ class BiblePlugin(Plugin, PluginUtils):
         self.search_results = self.biblemanager.get_verse_text(bible, book, chapter_from, chapter_to, verse_from, verse_to)
         if self.ClearAdvancedSearchComboBox.currentText() == u"Clear":
             self.BibleListView.clear() # clear the results
-            self.BibleListView.setRowCount(0)        
+            self.BibleListView.setRowCount(0)
         self._display_results(bible)
 
     def onAdvancedFromChapter(self):
@@ -423,11 +420,11 @@ class BiblePlugin(Plugin, PluginUtils):
         self.log.debug("onQuickSearchButton")
         bible = str(self.QuickVersionComboBox.currentText())
         text = str(self.QuickSearchEdit.displayText())
-        
+
         if self.ClearQuickSearchComboBox.currentText() == u"Clear":
             self.BibleListView.clear() # clear the results
-            self.BibleListView.setRowCount(0)        
-            
+            self.BibleListView.setRowCount(0)
+
         if self.QuickSearchComboBox.currentText() == u"Text Search":
             self.search_results = self.biblemanager.get_verse_from_text(bible,text)
         else:
@@ -469,11 +466,11 @@ class BiblePlugin(Plugin, PluginUtils):
         loc += verse
         loc += closing
         return loc
- 
+
     def reload_bibles(self):
         self.biblemanager.reload_bibles()
         self._initialise_form()
-    
+
     def _initialise_bible_advanced(self, bible):
         log.debug("_initialise_bible_advanced %s ", bible)
         currentBook = str(self.AdvancedBookComboBox.currentText())
@@ -512,7 +509,7 @@ class BiblePlugin(Plugin, PluginUtils):
             self.BibleListView.setItem(row_count , 0, table_data)
             table_data = QtGui.QTableWidgetItem(str(book + " " +str(chap) + ":"+ str(vse)) + " ("+str(bible)+")")
             self.BibleListView.setItem(row_count , 1, table_data)
-            self.BibleListView.setRowHeight(row_count, 20)             
+            self.BibleListView.setRowHeight(row_count, 20)
 
     def _search_using_bible_reference(self, bible,  search):
         book = ""
@@ -528,7 +525,7 @@ class BiblePlugin(Plugin, PluginUtils):
         for i in range (len(search)-1, 0, -1):   # 0 index arrays
             if search[i] == " ":
                 book = search[:i]
-                search = search[i:] # remove book from string                
+                search = search[i:] # remove book from string
                 break
         search = search.replace("v", ":")  # allow V or v for verse instead of :
         search = search.replace("V", ":")  # allow V or v for verse instead of :
@@ -551,7 +548,7 @@ class BiblePlugin(Plugin, PluginUtils):
             sp = search.split("-") #find first
             #print sp, len(sp)
             sp1 = sp[0].split(":")
-            #print sp1, len(sp1)                
+            #print sp1, len(sp1)
             if len(sp1) == 1:
                 start_chapter = sp1[0]
                 start_verse = 1
@@ -563,7 +560,7 @@ class BiblePlugin(Plugin, PluginUtils):
                 end_verse = start_verse
             else:
                 sp1 = sp[1].split(":")
-                #print sp1, len(sp1)                
+                #print sp1, len(sp1)
                 if len(sp1) == 1:
                     end_chapter = sp1[0]
                     end_verse = 1
@@ -584,13 +581,13 @@ class BiblePlugin(Plugin, PluginUtils):
         #print "message = " + str(message)
         #print "search = " + str(original)
         #print "results = " + str(book) + " @ "+ str(start_chapter)+" @ "+ str(end_chapter)+" @ "+ str(start_verse)+ " @ "+ str(end_verse)
-        
+
         if message  == None:
             self.search_results = None
             self.search_results = self.biblemanager.get_verse_text(bible, book,int(start_chapter), int(end_chapter), int(start_verse), int(end_verse))
         else:
             reply = QtGui.QMessageBox.information(self.MediaManagerItem,"Information",message)
-            
+
     def load_settings(self):
         pass
 #        self.SettingsOutputStyleComboBox.setCurrentIndex(int(self.config.get_config("bible_output_style", 0)))
@@ -599,7 +596,7 @@ class BiblePlugin(Plugin, PluginUtils):
 #            self.SettingsNewChapterCheck.setCheckState(int(self.config.get_config("bible_new_chapter", 0)))
 #        except:
 #            pass
-    
+
     def save_settings(self):
         pass
 #        self.config.set_config("bible_output_style", str(self.SettingsOutputStyleComboBox.currentIndex()))
@@ -607,10 +604,10 @@ class BiblePlugin(Plugin, PluginUtils):
 #        self.config.set_config("bible_new_chapter", str(self.SettingsNewChapterCheck.checkState()))
 
 #        self.SettingsOutputStyleComboBox.clear()
-#       self.SettingsVerseStyleComboBox.clear()        
+#       self.SettingsVerseStyleComboBox.clear()
 
 #        self.SettingsOutputStyleComboBox.addItem(u"Continuous")
-#        self.SettingsOutputStyleComboBox.addItem(u"Paragraph") 
+#        self.SettingsOutputStyleComboBox.addItem(u"Paragraph")
 #        self.SettingsVerseStyleComboBox.addItem(u"No Brackets")
 #        self.SettingsVerseStyleComboBox.addItem(u"( and )")
 #        self.SettingsVerseStyleComboBox.addItem(u"{ and }")
@@ -620,4 +617,4 @@ class BiblePlugin(Plugin, PluginUtils):
     def define_tab(self):
         pass
 #        QtCore.QObject.connect(self.SettingsResetButton, QtCore.SIGNAL("pressed()"), self.onSettingsResetButton)
-#        QtCore.QObject.connect(self.SettingsSaveButton, QtCore.SIGNAL("pressed()"), self.onSettingsSaveButton)            
+#        QtCore.QObject.connect(self.SettingsSaveButton, QtCore.SIGNAL("pressed()"), self.onSettingsSaveButton)
