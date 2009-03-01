@@ -107,7 +107,7 @@ class PluginManager(object):
                 mediatoolbox.addItem(media_manager_item, plugin.icon, media_manager_item.title)
                 # TODO: These shouldn't be called here...
                 plugin.initialise()
-                plugin.load_settings()
+#                plugin.load_settings()
 
     def hook_settings_tabs(self, settingsform=None):
         """

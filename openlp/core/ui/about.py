@@ -19,26 +19,28 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 from PyQt4 import QtCore, QtGui
+from PyQt4.QtGui import QDialog
 
+from openlp.core import translate
 from openlp.core.resources import *
 
-class AboutForm(object):
+class AboutForm(QDialog):
 
-    def __init__(self):
-        self.AboutDialog = QtGui.QDialog()
-        self.setupUi()
+    def __init__(self, parent=None):
+        QDialog.__init__(self, parent)
+        self.setupUi(self)
 
-    def setupUi(self):
-        self.AboutDialog.setObjectName("AboutDialog")
-        self.AboutDialog.resize(470, 481)
+    def setupUi(self, AboutForm):
+        AboutForm.setObjectName("AboutForm")
+        AboutForm.resize(470, 481)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icon/openlp.org-icon-32.bmp"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.AboutDialog.setWindowIcon(icon)
-        self.AboutDialogLayout = QtGui.QVBoxLayout(self.AboutDialog)
-        self.AboutDialogLayout.setSpacing(8)
-        self.AboutDialogLayout.setMargin(8)
-        self.AboutDialogLayout.setObjectName("AboutDialogLayout")
-        self.Logo = QtGui.QLabel(self.AboutDialog)
+        AboutForm.setWindowIcon(icon)
+        AboutFormLayout = QtGui.QVBoxLayout(AboutForm)
+        AboutFormLayout.setSpacing(8)
+        AboutFormLayout.setMargin(8)
+        AboutFormLayout.setObjectName("AboutDialogLayout")
+        self.Logo = QtGui.QLabel(AboutForm)
         self.Logo.setAutoFillBackground(False)
         self.Logo.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.Logo.setFrameShape(QtGui.QFrame.StyledPanel)
@@ -47,8 +49,8 @@ class AboutForm(object):
         self.Logo.setScaledContents(False)
         self.Logo.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.Logo.setObjectName("Logo")
-        self.AboutDialogLayout.addWidget(self.Logo)
-        self.AboutNotebook = QtGui.QTabWidget(self.AboutDialog)
+        AboutFormLayout.addWidget(self.Logo)
+        self.AboutNotebook = QtGui.QTabWidget(AboutForm)
         self.AboutNotebook.setObjectName("AboutNotebook")
         self.LicenseTab = QtGui.QWidget()
         self.LicenseTab.setObjectName("LicenseTab")
@@ -91,8 +93,8 @@ class AboutForm(object):
         self.CreditsTextEdit.setObjectName("CreditsTextEdit")
         self.CreditsTabLayout.addWidget(self.CreditsTextEdit)
         self.AboutNotebook.addTab(self.CreditsTab, "Credits")
-        self.AboutDialogLayout.addWidget(self.AboutNotebook)
-        self.ButtonWidget = QtGui.QWidget(self.AboutDialog)
+        AboutFormLayout.addWidget(self.AboutNotebook)
+        self.ButtonWidget = QtGui.QWidget(AboutForm)
         self.ButtonWidget.setObjectName("ButtonWidget")
         self.ButtonWidgetLayout = QtGui.QHBoxLayout(self.ButtonWidget)
         self.ButtonWidgetLayout.setSpacing(8)
@@ -106,26 +108,26 @@ class AboutForm(object):
         self.CloseButton = QtGui.QPushButton(self.ButtonWidget)
         self.CloseButton.setObjectName("CloseButton")
         self.ButtonWidgetLayout.addWidget(self.CloseButton)
-        self.AboutDialogLayout.addWidget(self.ButtonWidget)
-        self.extContributeItem = QtGui.QAction(self.AboutDialog)
+        AboutFormLayout.addWidget(self.ButtonWidget)
+        self.extContributeItem = QtGui.QAction(AboutForm)
         self.extContributeItem.setObjectName("extContributeItem")
 
-        self.retranslateUi()
+        self.retranslateUi(AboutForm)
         self.AboutNotebook.setCurrentIndex(0)
-        QtCore.QObject.connect(self.CloseButton, QtCore.SIGNAL("clicked()"), self.AboutDialog.close)
-        QtCore.QMetaObject.connectSlotsByName(self.AboutDialog)
+        QtCore.QObject.connect(self.CloseButton, QtCore.SIGNAL("clicked()"), AboutForm.close)
+        QtCore.QMetaObject.connectSlotsByName(AboutForm)
 
         QtCore.QObject.connect(self.ContributeButton, QtCore.SIGNAL("clicked()"), self.onContributeButtonClicked)
 
-    def retranslateUi(self):
-        self.AboutDialog.setWindowTitle(QtGui.QApplication.translate("AboutDialog", "About openlp.org", None, QtGui.QApplication.UnicodeUTF8))
-        self.CopyrightLabel.setText(QtGui.QApplication.translate("AboutDialog", "Copyright © 2004-2008 openlp.org Foundation", None, QtGui.QApplication.UnicodeUTF8))
-        self.AboutAuthors.setText(QtGui.QApplication.translate("AboutDialog", "openlp.org is written and maintained by volunteers. If you would like to see more free Christian software being written, please consider contributing by using the button below.", None, QtGui.QApplication.UnicodeUTF8))
-        self.License1Label.setText(QtGui.QApplication.translate("AboutDialog", "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.", None, QtGui.QApplication.UnicodeUTF8))
-        self.License2Label.setText(QtGui.QApplication.translate("AboutDialog", "You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.", None, QtGui.QApplication.UnicodeUTF8))
-        self.License3Label.setText(QtGui.QApplication.translate("AboutDialog", "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.", None, QtGui.QApplication.UnicodeUTF8))
+    def retranslateUi(self, AboutForm):
+        AboutForm.setWindowTitle(translate("AboutDialog", "About openlp.org",))
+        self.CopyrightLabel.setText(translate("AboutDialog", "Copyright © 2004-2009 openlp.org Foundation"))
+        self.AboutAuthors.setText(translate("AboutDialog", "openlp.org is written and maintained by volunteers. If you would like to see more free Christian software being written, please consider contributing by using the button below."))
+        self.License1Label.setText(translate("AboutDialog", "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."))
+        self.License2Label.setText(translate("AboutDialog", "You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA."))
+        self.License3Label.setText(translate("AboutDialog", "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."))
         self.AboutNotebook.setTabText(self.AboutNotebook.indexOf(self.LicenseTab), QtGui.QApplication.translate("AboutDialog", "License", None, QtGui.QApplication.UnicodeUTF8))
-        self.CreditsTextEdit.setPlainText(QtGui.QApplication.translate("AboutDialog", "Project Lead\n"
+        self.CreditsTextEdit.setPlainText(translate("AboutDialog", "Project Lead\n"
 "    Raoul \"superfly\" Snyman\n"
 "\n"
 "Developers\n"
@@ -134,14 +136,11 @@ class AboutForm(object):
 "    Scott \"sguerrieri\" Guerrieri\n"
 "    Raoul \"superfly\" Snyman\n"
 "    Martin \"mijiti\" Thompson\n"
-"    Carsten \"catini\" Tingaard", None, QtGui.QApplication.UnicodeUTF8))
-        self.AboutNotebook.setTabText(self.AboutNotebook.indexOf(self.CreditsTab), QtGui.QApplication.translate("AboutDialog", "Credits", None, QtGui.QApplication.UnicodeUTF8))
-        self.ContributeButton.setText(QtGui.QApplication.translate("AboutDialog", "Contribute", None, QtGui.QApplication.UnicodeUTF8))
-        self.CloseButton.setText(QtGui.QApplication.translate("AboutDialog", "Close", None, QtGui.QApplication.UnicodeUTF8))
-        self.extContributeItem.setText(QtGui.QApplication.translate("AboutDialog", "&Contribute", None, QtGui.QApplication.UnicodeUTF8))
-
-    def show(self):
-        self.AboutDialog.show()
+"    Carsten \"catini\" Tingaard"))
+        self.AboutNotebook.setTabText(self.AboutNotebook.indexOf(self.CreditsTab), translate("AboutDialog", "Credits"))
+        self.ContributeButton.setText(translate("AboutDialog", "Contribute"))
+        self.CloseButton.setText(translate("AboutDialog", "Close"))
+        self.extContributeItem.setText(translate("AboutDialog", "&Contribute"))
 
     def onContributeButtonClicked(self):
         ''' This routine will open the default
