@@ -104,13 +104,13 @@ class AlertsTab(SettingsTab):
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.SlideLeftLayout.addItem(self.SlideLeftSpacer)
         self.AlertsLayout.addWidget(self.AlertLeftColumn)
-        self.SlideRightColumn = QtGui.QWidget(self)
-        self.SlideRightColumn.setObjectName(u'SlideRightColumn')
-        self.SlideRightLayout = QtGui.QVBoxLayout(self.SlideRightColumn)
+        self.AlertRightColumn = QtGui.QWidget(self)
+        self.AlertRightColumn.setObjectName(u'AlertRightColumn')
+        self.SlideRightLayout = QtGui.QVBoxLayout(self.AlertRightColumn)
         self.SlideRightLayout.setSpacing(8)
         self.SlideRightLayout.setMargin(0)
         self.SlideRightLayout.setObjectName(u'SlideRightLayout')
-        self.PreviewGroupBox = QtGui.QGroupBox(self.SlideRightColumn)
+        self.PreviewGroupBox = QtGui.QGroupBox(self.AlertRightColumn)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -129,6 +129,7 @@ class AlertsTab(SettingsTab):
         self.SlideRightSpacer = QtGui.QSpacerItem(20, 40,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.SlideRightLayout.addItem(self.SlideRightSpacer)
+        self.AlertsLayout.addWidget(self.AlertRightColumn)
 
     def retranslateUi(self):
         self.FontGroupBox.setTitle(translate(u'AlertsTab', u'Font'))

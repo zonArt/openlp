@@ -41,6 +41,8 @@ class GeneralTab(SettingsTab):
         self.GeneralLeftWidget.setObjectName(u'GeneralLeftWidget')
         self.GeneralLeftLayout = QtGui.QVBoxLayout(self.GeneralLeftWidget)
         self.GeneralLeftLayout.setObjectName(u'GeneralLeftLayout')
+        self.GeneralLeftLayout.setSpacing(8)
+        self.GeneralLeftLayout.setMargin(0)
         self.MonitorGroupBox = QtGui.QGroupBox(self.GeneralLeftWidget)
         self.MonitorGroupBox.setObjectName(u'MonitorGroupBox')
         self.MonitorLayout = QtGui.QVBoxLayout(self.MonitorGroupBox)
