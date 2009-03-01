@@ -34,6 +34,7 @@ class SettingsForm(QtGui.QDialog,  Ui_SettingsDialog):
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
+        self.tab_list = []
         # General tab
         self.GeneralTab = GeneralTab()
         self.addTab(self.GeneralTab)
@@ -47,10 +48,12 @@ class SettingsForm(QtGui.QDialog,  Ui_SettingsDialog):
     def addTab(self, tab):
         log.info(u'Inserting %s' % tab.title())
         self.SettingsTabWidget.addTab(tab, tab.title())
+        self.tab_list.append(tab)
 
-    def onSaveButtonClick(self):
-        pass
+    def accept(self):
+        for plugin in self.tab_list:
+            plugin.save()
 
-    def onResetButtonClick(self):
-        pass
+#    def reject(self):
+ #       self.close()
 

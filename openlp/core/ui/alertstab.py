@@ -130,6 +130,8 @@ class AlertsTab(SettingsTab):
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.SlideRightLayout.addItem(self.SlideRightSpacer)
         self.AlertsLayout.addWidget(self.AlertRightColumn)
+        
+        QtCore.QObject.connect(self.BackgroundColorPanel, QtCore.SIGNAL("pressed()"), self.onBackgroundColorPanelclicked)    
 
     def retranslateUi(self):
         self.FontGroupBox.setTitle(translate(u'AlertsTab', u'Font'))
@@ -139,3 +141,6 @@ class AlertsTab(SettingsTab):
         self.LengthLabel.setText(translate(u'AlertsTab', u'Display length:'))
         self.LengthSpinBox.setSuffix(translate(u'AlertsTab', u's'))
         self.PreviewGroupBox.setTitle(translate(u'AlertsTab', u'Preview'))
+    
+    def onBackgroundColorPanelclicked(self):
+        print "pressed background"

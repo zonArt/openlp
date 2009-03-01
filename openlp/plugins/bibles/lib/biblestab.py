@@ -130,3 +130,30 @@ class BiblesTab(SettingsTab):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic;\">Changes don\'t affect verses already in the service</span></p></body></html>"))
         self.BibleSearchGroupBox.setTitle(translate("SettingsForm", "Search"))
         self.BibleSearchCheckBox.setText(translate("SettingsForm", "Search-as-you-type"))
+        
+    def load(self):
+        bible_output_style = self.config.get_config("bible_output_style", "Paragraph")
+        if bible_output_style == "Paragraph":
+            self.ParagraphRadioButton.setChecked()
+        else:
+            self.VerseRadioButton.setChecked()
+ #       self.SettingsOutputStyleComboBox.setCurrentIndex(int(self.config.get_config("bible_output_style", 0)))
+     #   self.SettingsVerseStyleComboBox.setCurrentIndex(int(self.config.get_config("bible_verse_style", 0)))
+   #     try:
+       #     self.SettingsNewChapterCheck.setCheckState(int(self.config.get_config("bible_new_chapter", 0)))
+        #except:
+          #  pass
+
+    def save(self):
+        print "VRB =- ", self.VerseRadioButton.isChecked()
+        print "PRB =- ", self.ParagraphRadioButton.isChecked()
+        if self.ParagraphRadioButton.isChecked():
+            self.config.set_config("bible_output_style", "Paragraph")
+        else:
+            self.config.set_config("bible_output_style", "Verse")                    
+        print "NCCB =- ", self.NewChaptersCheckBox.checkState()
+        print "DSCB =- ", self.DisplayStyleComboBox.currentIndex()
+        print "BSCB =- ",self.BibleSearchCheckBox.checkState()
+        #self.config.set_config("bible_output_style", str(self.SettingsOutputStyleComboBox.currentIndex()))
+        #self.config.set_config("bible_verse_style", str(self.SettingsVerseStyleComboBox.currentIndex()))
+        #self.config.set_config("bible_new_chapter", str(self.SettingsNewChapterCheck.checkState()))

@@ -20,6 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.resources import *
+from openlp.core.lib import PluginConfig
 
 class SettingsTab(QtGui.QWidget):
     """
@@ -33,7 +34,11 @@ class SettingsTab(QtGui.QWidget):
         self.tabTitle = title
         self.setupUi()
         self.retranslateUi()
-
+        if title == None:
+            self.config = PluginConfig(u"Main")
+        else:
+            self.config = PluginConfig(str(title))
+                        
     def setTitle(self, title):
         self.tabTitle = title
 
@@ -44,4 +49,10 @@ class SettingsTab(QtGui.QWidget):
         pass
 
     def retranslateUi(self):
+        pass
+        
+    def load(self):
+        pass
+    
+    def save(self):
         pass
