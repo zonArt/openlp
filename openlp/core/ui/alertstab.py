@@ -159,10 +159,13 @@ class AlertsTab(SettingsTab):
         self.PreviewGroupBox.setTitle(translate(u'AlertsTab', u'Preview'))
     
     def onBackgroundColourButtonclicked(self):
-        print "pressed background"
+        old_name = 0
+        colour = QtGui.QColorDialog.getColor(QColor(old_name), self).name()
+        print colour
+        self.BackgroundColourButton.setStyleSheet('background-color: %s' % colour)        
+
 
     def onFontColourButtonclicked(self):
-        print "pressed font"
         old_name = 0
         colour = QtGui.QColorDialog.getColor(QColor(old_name), self).name()
         print colour
