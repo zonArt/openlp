@@ -37,7 +37,7 @@ class BiblePlugin(Plugin, PluginUtils):
 
     def __init__(self):
         # Call the parent constructor
-        Plugin.__init__(self, 'Bible', '1.9.0')
+        Plugin.__init__(self, 'Bibles', '1.9.0')
         self.weight = -9
         # Create the plugin icon
         self.icon = QtGui.QIcon()
