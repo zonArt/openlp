@@ -19,6 +19,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 from PyQt4 import QtCore, QtGui
+from PyQt4.QtGui import QColor
 
 from openlp.core import translate
 from openlp.core.lib import SettingsTab
@@ -30,6 +31,7 @@ class AlertsTab(SettingsTab):
     """
     def __init__(self):
         SettingsTab.__init__(self, u'Alerts')
+        self.load()
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
@@ -64,22 +66,35 @@ class AlertsTab(SettingsTab):
         self.FontColorLabel = QtGui.QLabel(self.ColorWidget)
         self.FontColorLabel.setObjectName(u'FontColorLabel')
         self.ColorLayout.addWidget(self.FontColorLabel)
-        self.FontColorPanel = QtGui.QGraphicsView(self.ColorWidget)
-        self.FontColorPanel.setMinimumSize(QtCore.QSize(24, 24))
-        self.FontColorPanel.setMaximumSize(QtCore.QSize(24, 24))
-        self.FontColorPanel.setObjectName(u'FontColorPanel')
-        self.ColorLayout.addWidget(self.FontColorPanel)
+
+        self.FontColourButton = QtGui.QPushButton(self.ColorWidget)
+        self.FontColourButton.setObjectName("FontColourButton")
+        self.ColorLayout.addWidget(self.FontColourButton)
+
+#        self.FontColorPanel = QtGui.QGraphicsView(self.ColorWidget)
+#        self.FontColorPanel.setMinimumSize(QtCore.QSize(24, 24))
+#        self.FontColorPanel.setMaximumSize(QtCore.QSize(24, 24))
+#        self.FontColorPanel.setObjectName(u'FontColorPanel')
+#        self.ColorLayout.addWidget(self.FontColorPanel)
+
         self.ColorSpacerItem = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.ColorLayout.addItem(self.ColorSpacerItem)
         self.BackgroundColorLabel = QtGui.QLabel(self.ColorWidget)
         self.BackgroundColorLabel.setObjectName(u'BackgroundColorLabel')
         self.ColorLayout.addWidget(self.BackgroundColorLabel)
-        self.BackgroundColorPanel = QtGui.QGraphicsView(self.ColorWidget)
-        self.BackgroundColorPanel.setMinimumSize(QtCore.QSize(24, 24))
-        self.BackgroundColorPanel.setMaximumSize(QtCore.QSize(24, 24))
-        self.BackgroundColorPanel.setObjectName(u'BackgroundColorPanel')
-        self.ColorLayout.addWidget(self.BackgroundColorPanel)
+        
+        self.BackgroundColourButton = QtGui.QPushButton(self.ColorWidget)
+        self.BackgroundColourButton.setObjectName("BackgroundColourButton")
+        self.ColorLayout.addWidget(self.BackgroundColourButton)
+        
+#        self.BackgroundColorPanel = QtGui.QGraphicsView(self.ColorWidget)
+#        self.BackgroundColorPanel.setMinimumSize(QtCore.QSize(24, 24))
+#        self.BackgroundColorPanel.setMaximumSize(QtCore.QSize(24, 24))
+#        self.BackgroundColorPanel.setObjectName(u'BackgroundColorPanel')
+#        self.ColorLayout.addWidget(self.BackgroundColorPanel)
+        
+        
         self.FontLayout.addWidget(self.ColorWidget)
         self.LengthWidget = QtGui.QWidget(self.FontGroupBox)
         self.LengthWidget.setObjectName(u'LengthWidget')
@@ -131,7 +146,8 @@ class AlertsTab(SettingsTab):
         self.SlideRightLayout.addItem(self.SlideRightSpacer)
         self.AlertsLayout.addWidget(self.AlertRightColumn)
         
-        QtCore.QObject.connect(self.BackgroundColorPanel, QtCore.SIGNAL("pressed()"), self.onBackgroundColorPanelclicked)    
+        QtCore.QObject.connect(self.BackgroundColourButton, QtCore.SIGNAL("pressed()"), self.onBackgroundColourButtonclicked)
+        QtCore.QObject.connect(self.FontColourButton, QtCore.SIGNAL("pressed()"), self.onFontColourButtonclicked)
 
     def retranslateUi(self):
         self.FontGroupBox.setTitle(translate(u'AlertsTab', u'Font'))
@@ -142,5 +158,18 @@ class AlertsTab(SettingsTab):
         self.LengthSpinBox.setSuffix(translate(u'AlertsTab', u's'))
         self.PreviewGroupBox.setTitle(translate(u'AlertsTab', u'Preview'))
     
-    def onBackgroundColorPanelclicked(self):
+    def onBackgroundColourButtonclicked(self):
         print "pressed background"
+
+    def onFontColourButtonclicked(self):
+        print "pressed font"
+        old_name = 0
+        colour = QtGui.QColorDialog.getColor(QColor(old_name), self).name()
+        print colour
+        self.FontColourButton.setStyleSheet('background-color: %s' % colour)        
+
+    def load(self):
+        pass
+        
+    def save(self):
+        pass
