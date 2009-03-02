@@ -26,6 +26,7 @@ from openlp.core.resources import *
 from openlp.core.lib import Plugin, PluginUtils,  MediaManagerItem
 
 class PresentationPlugin(Plugin, PluginUtils):
+
     def __init__(self):
         # Call the parent constructor
         Plugin.__init__(self, 'Presentations', '1.9.0')
@@ -35,10 +36,9 @@ class PresentationPlugin(Plugin, PluginUtils):
         self.icon.addPixmap(QtGui.QPixmap(':/media/media_presentation.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
-
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
-        self.MediaManagerItem = MediaManagerItem(self.icon, 'Presentations')
+        self.MediaManagerItem = MediaManagerItem(self, self.icon, 'Presentations')
         # Add a toolbar
         self.MediaManagerItem.addToolbar()
         # Create buttons for the toolbar
@@ -66,50 +66,50 @@ class PresentationPlugin(Plugin, PluginUtils):
         self.PresentationListView.setColumnHidden(0, True)
         self.PresentationListView.setColumnWidth(1, 275)
         self.PresentationListView.setShowGrid(False)
-        self.PresentationListView.setSortingEnabled(False)        
+        self.PresentationListView.setSortingEnabled(False)
         self.PresentationListView.setAlternatingRowColors(True)
-        self.PresentationListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Name"]))        
+        self.PresentationListView.setHorizontalHeaderLabels(QtCore.QStringList(["","Name"]))
 
         self.PresentationListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.PresentationListView.setObjectName("PresentationListView")
-        self.PresentationListView.setAlternatingRowColors(True)           
+        self.PresentationListView.setAlternatingRowColors(True)
         self.MediaManagerItem.PageLayout.addWidget(self.PresentationListView)
-        
+
         #define and add the context menu
         self.PresentationListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
-        self.PresentationListView.addAction(self.add_to_context_menu(self.PresentationListView, ':/system/system_preview.png', "&Preview Presentation", self.onPresentationPreviewClick))      
-        self.PresentationListView.addAction(self.add_to_context_menu(self.PresentationListView, ':/system/system_live.png', "&Show Live", self.onPresentationLiveClick))        
-        self.PresentationListView.addAction(self.add_to_context_menu(self.PresentationListView, ':/system/system_add.png', "&Add to Service", self.onPresentationAddClick))        
+        self.PresentationListView.addAction(self.add_to_context_menu(self.PresentationListView, ':/system/system_preview.png', "&Preview Presentation", self.onPresentationPreviewClick))
+        self.PresentationListView.addAction(self.add_to_context_menu(self.PresentationListView, ':/system/system_live.png', "&Show Live", self.onPresentationLiveClick))
+        self.PresentationListView.addAction(self.add_to_context_menu(self.PresentationListView, ':/system/system_add.png', "&Add to Service", self.onPresentationAddClick))
 
         return self.MediaManagerItem
 
     def initialise(self):
         list = self._load_display_list()
-        self._load_presentation_list(list)        
+        self._load_presentation_list(list)
 
     def onPresentationLoadClick(self):
         files = QtGui.QFileDialog.getOpenFileNames(None, "Select Presentation(s)", self._get_last_dir(), "Images (*.ppt *.pps *.odi)")
         if len(files) > 0:
             self._load_presentation_list(files)
             self._save_last_directory(files[0])
-            self._save_display_list(self.PresentationListView)            
+            self._save_display_list(self.PresentationListView)
 
     def _load_presentation_list(self, list):
         for f in list:
-            fl ,  nm = os.path.split(str(f))            
+            fl ,  nm = os.path.split(str(f))
             c = self.PresentationListView.rowCount()
             self.PresentationListView.setRowCount(c+1)
             twi = QtGui.QTableWidgetItem(str(f))
             self.PresentationListView.setItem(c , 0, twi)
             twi = QtGui.QTableWidgetItem(str(nm))
             self.PresentationListView.setItem(c , 1, twi)
-            self.PresentationListView.setRowHeight(c, 20)           
+            self.PresentationListView.setRowHeight(c, 20)
 
     def onPresentationDeleteClick(self):
         cr = self.PresentationListView.currentRow()
         self.PresentationListView.removeRow(int(cr))
-        self._save_display_list(self.PresentationListView)         
+        self._save_display_list(self.PresentationListView)
 
     def onPresentationPreviewClick(self):
         pass

@@ -28,9 +28,11 @@ from forms import EditSongForm, OpenLPImportForm, OpenSongImportForm, \
 from openlp.plugins.songs.lib import SongManager, SongsTab
 
 class SongsPlugin(Plugin, PluginUtils):
+
     global log
     log=logging.getLogger("SongsPlugin")
     log.info("Song Plugin loaded")
+
     def __init__(self):
         # Call the parent constructor
         Plugin.__init__(self, 'Songs', '1.9.0')
@@ -49,7 +51,7 @@ class SongsPlugin(Plugin, PluginUtils):
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
-        self.MediaManagerItem = MediaManagerItem(self.icon, 'Songs')
+        self.MediaManagerItem = MediaManagerItem(self, self.icon, 'Songs')
         # Add a toolbar
         self.MediaManagerItem.addToolbar()
         # Create buttons for the toolbar

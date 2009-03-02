@@ -27,11 +27,12 @@ class MediaManagerItem(QtGui.QWidget):
     """
     MediaManagerItem is a helper widget for plugins.
     """
-    def __init__(self, icon=None, title=None):
+    def __init__(self, parent=None, icon=None, title=None):
         """
         Constructor to create the media manager item.
         """
         QtGui.QWidget.__init__(self)
+        self.parent = parent
         if type(icon) is QtGui.QIcon:
             self.icon = icon
         elif type(icon) is types.StringType:

@@ -34,13 +34,16 @@ class ListWithPreviews(QtCore.QAbstractListModel):
     global log
     log=logging.getLogger("ListWithPreviews")
     log.info("started")
+
     def __init__(self):
         QtCore.QAbstractListModel.__init__(self)
         self.items=[] # will be a list of (filename, QPixmap) tuples
         self.rowheight=50
         self.maximagewidth=self.rowheight*16/9.0;
+
     def rowCount(self, parent):
         return len(self.items)
+
     def insertRow(self, row, filename):
         self.beginInsertRows(QModelIndex(),row,row)
         log.info("insert row %d:%s"%(row,filename))
@@ -60,18 +63,19 @@ class ListWithPreviews(QtCore.QAbstractListModel):
         # finally create the row
         self.items.insert(row, (filename, p, shortfilename))
         self.endInsertRows()
+
     def removeRow(self, row):
         self.beginRemoveRows(QModelIndex(), row,row)
         self.items.pop(row)
         self.endRemoveRows()
+
     def addRow(self, filename):
         self.insertRow(len(self.items), filename)
-        
+
     def data(self, index, role):
         row=index.row()
         if row > len(self.items): # if the last row is selected and deleted, we then get called with an empty row!
             return QVariant()
-
         if role==Qt.DisplayRole:
             retval= self.items[row][2]
         elif role == Qt.DecorationRole:
@@ -80,19 +84,21 @@ class ListWithPreviews(QtCore.QAbstractListModel):
             retval= self.items[row][0]
         else:
             retval= QVariant()
-
 #         log.info("Returning"+ str(retval))
         if type(retval) is not type(QVariant):
             return QVariant(retval)
         else:
             return retval
+
     def get_file_list(self):
         filelist=[i[0] for i in self.items];
         return filelist
+
 class ImagePlugin(Plugin, PluginUtils):
     global log
     log=logging.getLogger("ImagePlugin")
     log.info("Image Plugin loaded")
+
     def __init__(self, preview_controller, live_controller):
         # Call the parent constructor
         Plugin.__init__(self, 'Images', '1.9.0', preview_controller, live_controller)
@@ -104,9 +110,10 @@ class ImagePlugin(Plugin, PluginUtils):
 
         self.preview_service_item=ImageServiceItem(preview_controller)
         self.live_service_item=ImageServiceItem(live_controller)
+
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
-        self.MediaManagerItem = MediaManagerItem(self.icon, 'Images')
+        self.MediaManagerItem = MediaManagerItem(self, self.icon, 'Images')
         # Add a toolbar
         self.MediaManagerItem.addToolbar()
         # Create buttons for the toolbar
@@ -133,29 +140,29 @@ class ImagePlugin(Plugin, PluginUtils):
         self.ImageListView.uniformItemSizes=True
         self.ImageListData=ListWithPreviews()
         self.ImageListView.setModel(self.ImageListData)
-        
+
         self.ImageListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.ImageListView.setObjectName("ImageListView")
         self.MediaManagerItem.PageLayout.addWidget(self.ImageListView)
-        
+
         #define and add the context menu
         self.ImageListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
-        self.ImageListView.addAction(self.add_to_context_menu(self.ImageListView, ':/system/system_preview.png', "&Preview Image", self.onImagePreviewClick))      
-        self.ImageListView.addAction(self.add_to_context_menu(self.ImageListView, ':/system/system_live.png', "&Show Live", self.onImageLiveClick))        
+        self.ImageListView.addAction(self.add_to_context_menu(self.ImageListView, ':/system/system_preview.png', "&Preview Image", self.onImagePreviewClick))
+        self.ImageListView.addAction(self.add_to_context_menu(self.ImageListView, ':/system/system_live.png', "&Show Live", self.onImageLiveClick))
         self.ImageListView.addAction(self.add_to_context_menu(self.ImageListView, ':/system/system_add.png', "&Add to Service", self.onImageAddClick))
 
         self.ImageListPreview = QtGui.QWidget()
         self.MediaManagerItem.PageLayout.addWidget(self.ImageListPreview)
         self.ImageListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
-        
+
 
         return self.MediaManagerItem
 
     def initialise(self):
         log.info("Plugin Initialising")
         list = self._load_display_list()
-        self._load_image_list(list)     
+        self._load_image_list(list)
         log.info("Done")
 
     def onImagesNewClick(self):
@@ -164,19 +171,19 @@ class ImagePlugin(Plugin, PluginUtils):
         if len(files) > 0:
             self._load_image_list(files)
             self._save_last_directory(files[0])
-            self._save_display_list(self.ImageListData.get_file_list()) 
+            self._save_display_list(self.ImageListData.get_file_list())
 
     def _load_image_list(self, list):
         for f in list:
             self.ImageListData.addRow(f)
-            
+
     def onImageDeleteClick(self):
         indexes=self.ImageListView.selectedIndexes()
         for i in indexes:
             cr = i.row()
             self.ImageListData.removeRow(int(cr))
 
-        self._save_display_list(self.ImageListData.get_file_list())     
+        self._save_display_list(self.ImageListData.get_file_list())
 
     def onImageClick(self, where):
         cr = self.ImageListView.currentRow()
@@ -184,9 +191,10 @@ class ImagePlugin(Plugin, PluginUtils):
         log.info("Click %s:%s"%(str(where), filename))
         where.add(filename)
         where.render()
-        
+
     def onImagePreviewClick(self):
         self.onImageClick(self.preview_service_item)
+
     def onImageLiveClick(self):
         self.onImageClick(self.live_service_item)
 

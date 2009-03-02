@@ -25,6 +25,7 @@ from openlp.core.lib import Plugin, PluginUtils, MediaManagerItem, SettingsTab
 from openlp.plugins.videos.lib import VideoTab
 
 class VideoPlugin(Plugin, PluginUtils):
+
     def __init__(self):
         # Call the parent constructor
         Plugin.__init__(self, 'Videos', '1.9.0')
@@ -36,12 +37,11 @@ class VideoPlugin(Plugin, PluginUtils):
 
     def get_settings_tab(self):
         self.VideosTab = VideoTab()
-
         return self.VideosTab
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
-        self.MediaManagerItem = MediaManagerItem(self.icon, 'Videos')
+        self.MediaManagerItem = MediaManagerItem(self, self.icon, 'Videos')
         # Add a toolbar
         self.MediaManagerItem.addToolbar()
         # Create buttons for the toolbar

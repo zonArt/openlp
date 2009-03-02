@@ -35,12 +35,11 @@ class BibleMediaItem(MediaManagerItem):
     log=logging.getLogger("BibleMediaItem")
     log.info("Bible Media Item loaded")
 
-    def __init__(self, icon, title, biblemanager):
-        self.biblemanager = biblemanager
+    def __init__(self, parent, icon, title):
+        MediaManagerItem.__init__(self, parent, icon, title)
         self.search_results = {} # place to store the search results
         QtCore.QObject.connect(Receiver().get_receiver(),
             QtCore.SIGNAL("openlpreloadbibles"), self.reloadBibles)
-        MediaManagerItem.__init__(self, icon, title)
 
     def setupUi(self):
         # Add a toolbar
@@ -183,14 +182,21 @@ class BibleMediaItem(MediaManagerItem):
         self.BibleListView.setAlternatingRowColors(True)
         self.PageLayout.addWidget(self.BibleListView)
         # Combo Boxes
-        QtCore.QObject.connect(self.AdvancedVersionComboBox, QtCore.SIGNAL("activated(int)"), self.onAdvancedVersionComboBox)
-        QtCore.QObject.connect(self.AdvancedBookComboBox, QtCore.SIGNAL("activated(int)"), self.onAdvancedBookComboBox)
-        QtCore.QObject.connect(self.AdvancedFromChapter, QtCore.SIGNAL("activated(int)"), self.onAdvancedFromChapter)
-        QtCore.QObject.connect(self.AdvancedFromVerse, QtCore.SIGNAL("activated(int)"), self.onAdvancedFromVerse)
-        QtCore.QObject.connect(self.AdvancedToChapter, QtCore.SIGNAL("activated(int)"), self.onAdvancedToChapter)
+        QtCore.QObject.connect(self.AdvancedVersionComboBox,
+            QtCore.SIGNAL("activated(int)"), self.onAdvancedVersionComboBox)
+        QtCore.QObject.connect(self.AdvancedBookComboBox,
+            QtCore.SIGNAL("activated(int)"), self.onAdvancedBookComboBox)
+        QtCore.QObject.connect(self.AdvancedFromChapter,
+            QtCore.SIGNAL("activated(int)"), self.onAdvancedFromChapter)
+        QtCore.QObject.connect(self.AdvancedFromVerse,
+            QtCore.SIGNAL("activated(int)"), self.onAdvancedFromVerse)
+        QtCore.QObject.connect(self.AdvancedToChapter,
+            QtCore.SIGNAL("activated(int)"), self.onAdvancedToChapter)
         # Buttons
-        QtCore.QObject.connect(self.AdvancedSearchButton, QtCore.SIGNAL("pressed()"), self.onAdvancedSearchButton)
-        QtCore.QObject.connect(self.QuickSearchButton, QtCore.SIGNAL("pressed()"), self.onQuickSearchButton)
+        QtCore.QObject.connect(self.AdvancedSearchButton,
+            QtCore.SIGNAL("pressed()"), self.onAdvancedSearchButton)
+        QtCore.QObject.connect(self.QuickSearchButton,
+            QtCore.SIGNAL("pressed()"), self.onQuickSearchButton)
         # Context Menus
         self.BibleListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.BibleListView.addAction(self.contextMenuAction(
@@ -226,6 +232,8 @@ class BibleMediaItem(MediaManagerItem):
 
     def initialise(self):
         self.loadBibles()
+
+    def initialiseForm(self):
         self.QuickSearchComboBox.clear()
         self.QuickVersionComboBox.clear()
         self.AdvancedVersionComboBox.clear()
@@ -233,10 +241,10 @@ class BibleMediaItem(MediaManagerItem):
         self.ClearAdvancedSearchComboBox.clear()
 
     def loadBibles(self):
-        bibles = self.biblemanager.get_bibles('full')
+        bibles = self.parent.biblemanager.get_bibles('full')
         for bible in bibles:  # load bibles into the combo boxes
             self.QuickVersionComboBox.addItem(bible)
-        bibles = self.biblemanager.get_bibles('partial') # Without HTTP
+        bibles = self.parent.biblemanager.get_bibles('partial') # Without HTTP
         first = True
         for bible in bibles:  # load bibles into the combo boxes
             self.AdvancedVersionComboBox.addItem(bible)
@@ -252,7 +260,7 @@ class BibleMediaItem(MediaManagerItem):
         self.initialiseBible(str(self.AdvancedVersionComboBox.currentText())) # restet the bible info
 
     def onBibleNewClick(self):
-        self.bibleimportform = BibleImportForm(self.config, self.biblemanager, self)
+        self.bibleimportform = BibleImportForm(self.config, self.parent.biblemanager, self)
         self.bibleimportform.exec_()
         pass
 
@@ -278,7 +286,7 @@ class BibleMediaItem(MediaManagerItem):
         if t1 != t2:
             bible = str(self.AdvancedVersionComboBox.currentText())
             book = str(self.AdvancedBookComboBox.currentText())
-            vse = self.biblemanager.get_book_verse_count(bible, book, int(t2))[0] # get the verse count for new chapter
+            vse = self.parent.biblemanager.get_book_verse_count(bible, book, int(t2))[0] # get the verse count for new chapter
             self.adjustComboBox(1, vse, self.AdvancedToVerse)
 
     def onAdvancedSearchButton(self):
@@ -288,7 +296,7 @@ class BibleMediaItem(MediaManagerItem):
         chapter_to =  int(self.AdvancedToChapter.currentText())
         verse_from =  int(self.AdvancedFromVerse.currentText())
         verse_to =  int(self.AdvancedToVerse.currentText())
-        self.search_results = self.biblemanager.get_verse_text(bible, book,
+        self.search_results = self.parent.biblemanager.get_verse_text(bible, book,
             chapter_from, chapter_to, verse_from, verse_to)
         if self.ClearAdvancedSearchComboBox.currentIndex() == 0:
             self.BibleListView.clear() # clear the results
@@ -300,7 +308,7 @@ class BibleMediaItem(MediaManagerItem):
         book = str(self.AdvancedBookComboBox.currentText())
         cf = self.AdvancedFromChapter.currentText()
         self._adjust_combobox(cf, self.chapters_from, self.AdvancedToChapter)
-        vse = self.biblemanager.get_book_verse_count(bible, book, int(cf))[0] # get the verse count for new chapter
+        vse = self.parent.biblemanager.get_book_verse_count(bible, book, int(cf))[0] # get the verse count for new chapter
         self._adjust_combobox(1, vse, self.AdvancedFromVerse)
         self._adjust_combobox(1, vse, self.AdvancedToVerse)
 
@@ -312,7 +320,7 @@ class BibleMediaItem(MediaManagerItem):
             self.BibleListView.clear() # clear the results
             self.BibleListView.setRowCount(0)
         elif self.QuickSearchComboBox.currentIndex() == 1:
-            self.search_results = self.biblemanager.get_verse_from_text(bible, text)
+            self.search_results = self.parent.biblemanager.get_verse_from_text(bible, text)
         else:
             self.searchByReference(bible, text)
         if not self.search_results == None:
@@ -354,19 +362,19 @@ class BibleMediaItem(MediaManagerItem):
         return loc
 
     def reloadBibles(self):
-        self.biblemanager.reload_bibles()
-        self._initialise_form()
+        self.parent.biblemanager.reload_bibles()
+        self.initialiseForm()
 
     def initialiseBible(self, bible):
         log.debug('initialiseBible %s', bible)
         current_book = str(self.AdvancedBookComboBox.currentText())
-        chapter_count = self.biblemanager.get_book_chapter_count(bible,
+        chapter_count = self.parent.biblemanager.get_book_chapter_count(bible,
             current_book)[0]
         log.debug('Book change bible %s book %s ChapterCount %s', bible,
             current_book, chapter_count)
         if chapter_count == None:
             # Only change the search details if the book is missing from the new bible
-            books = self.biblemanager.get_bible_books(str(
+            books = self.parent.biblemanager.get_bible_books(str(
                 self.AdvancedVersionComboBox.currentText()))
             self.AdvancedBookComboBox.clear()
             first = True
@@ -378,8 +386,8 @@ class BibleMediaItem(MediaManagerItem):
 
     def initialiseChapterVerse(self, bible, book):
         log.debug("initialiseChapterVerse %s , %s", bible, book)
-        self.chapters_from = self.biblemanager.get_book_chapter_count(bible, book)[0]
-        self.verses = self.biblemanager.get_book_verse_count(bible, book, 1)[0]
+        self.chapters_from = self.parent.biblemanager.get_book_chapter_count(bible, book)[0]
+        self.verses = self.parent.biblemanager.get_book_verse_count(bible, book, 1)[0]
         self.adjustComboBox(1, self.chapters_from, self.AdvancedFromChapter)
         self.adjustComboBox(1, self.chapters_from, self.AdvancedToChapter)
         self.adjustComboBox(1, self.verses, self.AdvancedFromVerse)
@@ -475,7 +483,7 @@ class BibleMediaItem(MediaManagerItem):
 
         if message == None:
             self.search_results = None
-            self.search_results = self.biblemanager.get_verse_text(bible, book,
+            self.search_results = self.parent.biblemanager.get_verse_text(bible, book,
                 int(start_chapter), int(end_chapter), int(start_verse),
                 int(end_verse))
         else:

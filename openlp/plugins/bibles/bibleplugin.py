@@ -52,8 +52,7 @@ class BiblePlugin(Plugin, PluginUtils):
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
-        self.media_item = BibleMediaItem(self.icon, 'Bible Verses',
-            self.biblemanager)
+        self.media_item = BibleMediaItem(self, self.icon, 'Bible Verses')
         return self.media_item
 
     def add_import_menu_item(self, import_menu):
