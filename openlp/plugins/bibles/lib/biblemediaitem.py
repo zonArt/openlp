@@ -270,12 +270,6 @@ class BibleMediaItem(MediaManagerItem):
     def onBibleAddClick(self):
         pass
 
-    def onSettingsSaveButton(self):
-        pass
-
-    def onSettingsResetButton(self):
-        pass
-
     def onAdvancedFromVerse(self):
         frm = self.AdvancedFromVerse.currentText()
         self.adjustComboBox(frm, self.verses, self.AdvancedToVerse)
