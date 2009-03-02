@@ -45,7 +45,19 @@ class MediaManagerItem(QtGui.QWidget):
         self.PageLayout = QtGui.QVBoxLayout(self)
         self.PageLayout.setSpacing(0)
         self.PageLayout.setMargin(0)
-        
+        self.setupUi()
+        self.retranslateUi()
+        self.initialise()
+
+    def setupUi(self):
+        pass
+
+    def retranslateUi(self):
+        pass
+
+    def initialise(self):
+        pass
+
     def addToolbar(self):
         """
         A method to help developers easily add a toolbar to the media manager
@@ -68,3 +80,29 @@ class MediaManagerItem(QtGui.QWidget):
         A very simple method to add a separator to the toolbar.
         """
         self.Toolbar.addSeparator()
+
+    def contextMenuSeparator(self, base):
+        action = QtGui.QAction("", base)
+        action.setSeparator(True)
+        return action
+
+    def contextMenuAction(self, base, icon, text, slot):
+        """
+        Utility method to help build context menus for plugins
+        """
+        if type(icon) is QtGui.QIcon:
+            ButtonIcon = icon
+        elif type(icon) is types.StringType:
+            ButtonIcon = QtGui.QIcon()
+            if icon.startswith(':/'):
+                ButtonIcon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
+                    QtGui.QIcon.Off)
+            else:
+                ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
+                    QtGui.QIcon.Normal, QtGui.QIcon.Off)
+
+        action = QtGui.QAction(text, base)
+        action .setIcon(ButtonIcon)
+        QtCore.QObject.connect(action, QtCore.SIGNAL("triggered()"), slot)
+        return action
+

@@ -29,11 +29,11 @@ class PluginUtils(object):
         action = QtGui.QAction("", base)
         action.setSeparator(True)
         return action
-        
+
     def add_to_context_menu(self, base, icon, text, slot):
         """
         Utility method to help build context menus for plugins
-        """        
+        """
         if type(icon) is QtGui.QIcon:
             ButtonIcon = icon
         elif type(icon) is types.StringType:
@@ -44,12 +44,12 @@ class PluginUtils(object):
             else:
                 ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
                     QtGui.QIcon.Normal, QtGui.QIcon.Off)
-                    
+
         action = QtGui.QAction(text, base)
         action .setIcon(ButtonIcon)
         QtCore.QObject.connect(action, QtCore.SIGNAL("triggered()"), slot)
         return action
-        
+
     def _load_display_list(self):
         """
         Load a display list from the config files
@@ -61,12 +61,12 @@ class PluginUtils(object):
                 x = self.config.get_config("List Item "+str(i))
                 list.append(x)
         return list
-            
+
     def _save_display_list(self, displaylist):
         """
         Save display list from the config files tidy up the list
         """
-        oldcount = self.config.get_config("List Count")        
+        oldcount = self.config.get_config("List Count")
         newcount = len(displaylist)
         self.config.set_config("List Count", str(newcount))
         for i in range (0, int(newcount)):
@@ -74,7 +74,7 @@ class PluginUtils(object):
         if oldcount > newcount: # Tidy up any old list itrms if list is smaller now
             for i in range(int(newcount) ,  int(oldcount)):
                 self.config.delete_config("List Item "+str(i))
-            
+
     def _get_last_dir(self, num=None):
         """
         Read the last directory used for plugin
@@ -86,13 +86,13 @@ class PluginUtils(object):
         if lastdir==None:
             lastdir = ""
         return lastdir
-        
+
     def _save_last_directory(self, filename, num=None):
         """
         Save the last directory used for plugin
-        """ 
+        """
         fld = "Last Dir"
         if not num  == None:
-            fld = fld+str(num)     
-        path ,  nm = os.path.split(str(filename)) 
+            fld = fld+str(num)
+        path ,  nm = os.path.split(str(filename))
         self.config.set_config(fld, path)

@@ -21,5 +21,6 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from common import BibleCommon
 from manager import BibleManager
 from biblestab import BiblesTab
+from biblemediaitem import BibleMediaItem
 
 __all__ = ['BibleCommon', 'BibleManager', 'BiblesTab']

@@ -123,14 +123,10 @@ class BiblesTab(SettingsTab):
         self.DisplayStyleComboBox.setItemText(1, translate("SettingsForm", "( and )"))
         self.DisplayStyleComboBox.setItemText(2, translate("SettingsForm", "{ and }"))
         self.DisplayStyleComboBox.setItemText(3, translate("SettingsForm", "[ and ]"))
-        self.ChangeNoteLabel.setText(translate("SettingsForm", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'DejaVu Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic;\">Changes don\'t affect verses already in the service</span></p></body></html>"))
+        self.ChangeNoteLabel.setText(translate("SettingsForm", "Note:\nChanges don\'t affect verses already in the service"))
         self.BibleSearchGroupBox.setTitle(translate("SettingsForm", "Search"))
         self.BibleSearchCheckBox.setText(translate("SettingsForm", "Search-as-you-type"))
-        
+
     def load(self):
         bible_output_style = self.config.get_config("bible_output_style", "Paragraph")
         if bible_output_style == "Paragraph":
@@ -150,7 +146,7 @@ class BiblesTab(SettingsTab):
         if self.ParagraphRadioButton.isChecked():
             self.config.set_config("bible_output_style", "Paragraph")
         else:
-            self.config.set_config("bible_output_style", "Verse")                    
+            self.config.set_config("bible_output_style", "Verse")
         print "NCCB =- ", self.NewChaptersCheckBox.checkState()
         print "DSCB =- ", self.DisplayStyleComboBox.currentIndex()
         print "BSCB =- ",self.BibleSearchCheckBox.checkState()

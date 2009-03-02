@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE Project SYSTEM "Project-4.4.dtd">
+<!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2009-03-01, 01:29:05 -->
+<!-- Saved: 2009-03-02, 23:55:18 -->
 <!-- Copyright (C) 2009 Raoul Snyman, raoulsnyman@openlp.org -->
-<Project version="4.4">
+<Project version="4.6">
+  <Language>en</Language>
   <ProgLanguage mixed="0">Python</ProgLanguage>
   <ProjectType>Qt4</ProjectType>
   <Description></Description>
@@ -118,13 +119,10 @@
     <Source>openlp/core/ui/slidecontroller.py</Source>
     <Source>openlp/core/lib/eventreceiver.py</Source>
     <Source>openlp/core/lib/imageserviceitem.py</Source>
-    <Source>openlp/plugins/bibles/forms/bibleeditdialog.py</Source>
     <Source>resources/forms/Ui_editsongdialog.py</Source>
     <Source>openlp/core/ui/servicemanager.py</Source>
     <Source>openlp/core/lib/toolbar.py</Source>
-    <Source>resources/forms/bibleimportdialog.py</Source>
     <Source>openlp/core/ui/settingsform.py</Source>
-    <Source>openlp/core/ui/generalform.py</Source>
     <Source>openlp/core/ui/generaltab.py</Source>
     <Source>openlp/core/ui/themestab.py</Source>
     <Source>openlp/core/ui/alertstab.py</Source>
@@ -133,6 +131,9 @@
     <Source>openlp/core/lib/settingstab.py</Source>
     <Source>openlp/plugins/bibles/lib/biblestab.py</Source>
     <Source>openlp/plugins/songs/lib/songstab.py</Source>
+    <Source>openlp/plugins/videos/lib/__init__.py</Source>
+    <Source>openlp/plugins/videos/lib/videotab.py</Source>
+    <Source>openlp/plugins/bibles/lib/biblemediaitem.py</Source>
   </Sources>
   <Forms>
     <Form>resources/forms/openlpexportform.ui</Form>
@@ -151,8 +152,6 @@
     <Form>resources/forms/songbookdialog.ui</Form>
     <Form>resources/forms/topicsdialog.ui</Form>
     <Form>resources/forms/editsongdialog.ui</Form>
-    <Form>openlp/plugins/bibles/forms/bibleeditdialog.ui</Form>
-    <Form>resources/forms/settings2.ui</Form>
   </Forms>
   <Translations>
   </Translations>
@@ -284,9 +283,11 @@
   <FiletypeAssociations>
     <FiletypeAssociation pattern="*.ui" type="FORMS" />
     <FiletypeAssociation pattern="*.idl" type="INTERFACES" />
+    <FiletypeAssociation pattern="*.qm" type="TRANSLATIONS" />
     <FiletypeAssociation pattern="*.ptl" type="SOURCES" />
     <FiletypeAssociation pattern="*.pyw" type="SOURCES" />
     <FiletypeAssociation pattern="*.ui.h" type="FORMS" />
+    <FiletypeAssociation pattern="*.ts" type="TRANSLATIONS" />
     <FiletypeAssociation pattern="*.py" type="SOURCES" />
     <FiletypeAssociation pattern="*.qrc" type="RESOURCES" />
   </FiletypeAssociations>
