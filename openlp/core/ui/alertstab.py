@@ -159,20 +159,20 @@ class AlertsTab(SettingsTab):
         self.PreviewGroupBox.setTitle(translate(u'AlertsTab', u'Preview'))
     
     def onBackgroundColourButtonclicked(self):
-        old_name = 0
-        colour = QtGui.QColorDialog.getColor(QColor(old_name), self).name()
-        print colour
-        self.BackgroundColourButton.setStyleSheet('background-color: %s' % colour)        
-
+        self.bg_color = QtGui.QColorDialog.getColor(QColor(self.bg_color), self).name()
+        self.BackgroundColourButton.setStyleSheet('background-color: %s' % self.bg_color)
 
     def onFontColourButtonclicked(self):
-        old_name = 0
-        colour = QtGui.QColorDialog.getColor(QColor(old_name), self).name()
-        print colour
-        self.FontColourButton.setStyleSheet('background-color: %s' % colour)        
+        self.font_color = QtGui.QColorDialog.getColor(QColor(self.font_color), self).name()
+        self.FontColourButton.setStyleSheet('background-color: %s' % self.font_color)
 
     def load(self):
-        pass
+        self.font_color = self.config.get_config("font color",u"#ffffff" )
+        self.FontColourButton.setStyleSheet('background-color: %s' % self.font_color)        
+        self.bg_color = self.config.get_config("background color",u"#00007f" )
+        self.BackgroundColourButton.setStyleSheet('background-color: %s' % self.bg_color)        
+        
         
     def save(self):
-        pass
+        self.config.set_config("background color", str(self.bg_color))
+        self.config.set_config("font color", str(self.font_color))
