@@ -157,8 +157,10 @@ class ImagePlugin(Plugin, PluginUtils):
         self.ImageListPreview = QtGui.QWidget()
         self.MediaManagerItem.PageLayout.addWidget(self.ImageListPreview)
         self.ImageListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
-
+        self.ImageListView.setSpacing(1)
+        self.ImageListView.setAlternatingRowColors(True)
 #         return self.MediaManagerItem
+        
 
     def initialise(self):
         log.info("Plugin Initialising")

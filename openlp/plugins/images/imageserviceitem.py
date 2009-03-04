@@ -32,7 +32,11 @@ class ImageServiceItem(ServiceItem):
           the preview preview and
           the live preview
 
-
+    The image plugin passes one of these to the preview/live when requested
+      The preview/live controllers keep hold of it
+    The service manager has one in its service structure for each Image item in the OOS
+    When something goes live/previews -
+      it simply tells the slide controller to use it???
           
     """
     global log
