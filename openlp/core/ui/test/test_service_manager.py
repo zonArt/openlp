@@ -77,6 +77,67 @@ class TestServiceManager_base:
         assert lines[1] == "test.gif"
         log.info("done")
         
+    def test_2items_as_separate_items(self):
+        # If nothing is selected when item is added, a new base service item is added
+        log.info("test_2items_as_separate_items")
+        item=ImageServiceItem(None)
+        item.add("test.gif")
+        self.s.addServiceItem(item)
+        item=ImageServiceItem(None)
+        item.add("test2.gif")
+        item.add("test3.gif")
+        self.s.addServiceItem(item)
+        answer = self.s.oos_as_text()
+        log.info("Answer = " + str(answer))
+        lines=answer.split("\n")
+        log.info("lines = " + str(lines))
+        assert lines[0].startswith("# <openlp.plugins.images.imageserviceitem.ImageServiceItem object")
+        assert lines[1] == "test.gif"
+        assert lines[2].startswith("# <openlp.plugins.images.imageserviceitem.ImageServiceItem object")
+        assert lines[3] == "test2.gif"
+        assert lines[4] == "test3.gif"
+        log.info("done")
+        
+    def test_2items_merged(self):
+        # If the first object is selected when item is added it should be extended
+        log.info("test_2items_merged")
+        item=ImageServiceItem(None)
+        item.add("test.gif")
+        # now select the line
+        self.s.addServiceItem(item)
+        item=ImageServiceItem(None)
+        item.add("test2.gif")
+        item.add("test3.gif")
+        self.s.addServiceItem(item)
+        answer = self.s.oos_as_text()
+        log.info("Answer = " + str(answer))
+        lines=answer.split("\n")
+        log.info("lines = " + str(lines))
+        assert lines[0].startswith("# <openlp.plugins.images.imageserviceitem.ImageServiceItem object")
+        assert lines[1] == "test.gif"
+        assert lines[2] == "test2.gif"
+        assert lines[3] == "test3.gif"
+        log.info("done")
+        
+#     def test_moving_selection(self):
+#         log.info("test_easy")
+#         item=ImageServiceItem(None)
+#         item.add("test1.gif")
+#         item.add("test2.gif")
+#         item.add("test3.gif")
+#         item.add("test2a.gif")
+#         self.s.addServiceItem(item)
+#         answer = self.s.oos_as_text()
+#         log.info("Answer = " + str(answer))
+#         lines=answer.split("\n")
+#         log.info("lines = " + str(lines))
+#         assert lines[0].startswith("# <openlp.plugins.images.imageserviceitem.ImageServiceItem object")
+#         assert lines[1] == "test1.gif"
+#         assert lines[2] == "test2.gif"
+#         assert lines[3] == "test2a.gif"
+#         assert lines[4] == "test3.gif"
+#         log.info("done")
+        
 if __name__=="__main__":
 
     t=TestServiceManager_base()

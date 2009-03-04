@@ -150,7 +150,7 @@ class ServiceManager(QWidget):
 #             i=deepcopy(item)
 #             print i
 #             print i.imgs
-            self.service_data.insertRow(row, item)
+            self.service_data.insertRow(row+1, item)
 #             for i in self.service_data:
 #                 print item.imgs
 #                 print i.imgs
