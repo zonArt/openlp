@@ -37,7 +37,7 @@ class ListWithPreviews(QtCore.QAbstractListModel):
 
     def __init__(self):
         QtCore.QAbstractListModel.__init__(self)
-        self.items=[] # will be a list of (filename, QPixmap) tuples
+        self.items=[] # will be a list of (full filename, QPixmap, shortname) tuples
         self.rowheight=50
         self.maximagewidth=self.rowheight*16/9.0;
 
@@ -156,8 +156,7 @@ class ImagePlugin(Plugin, PluginUtils):
         self.MediaManagerItem.PageLayout.addWidget(self.ImageListPreview)
         self.ImageListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
 
-
-        return self.MediaManagerItem
+#         return self.MediaManagerItem
 
     def initialise(self):
         log.info("Plugin Initialising")

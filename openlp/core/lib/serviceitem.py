@@ -41,7 +41,7 @@ class ServiceItem():
     def get_parent_node(self):
         """
         This method returns a parent node to be inserted into the Service
-        Manager.
+        Manager. At the moment this has to be a QAbstractListModel based class
         """
         pass
 

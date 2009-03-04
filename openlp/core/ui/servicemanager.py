@@ -22,13 +22,22 @@ import os
 from time import sleep
 from PyQt4 import *
 from PyQt4 import QtCore, QtGui
+from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 # from openlp.core.resources import *
 # from openlp.core.ui import AboutForm, AlertForm, SettingsForm, SlideController
 from openlp.core.lib import OpenLPToolbar
+from openlp.core.lib import ServiceItem
 
 # from openlp.core import PluginManager
 import logging
+
+class ServiceData(QAbstractListModel):
+    """
+    Tree of items for an order of service.
+    Includes methods for reading and writing the contents to an OOS file
+    Root contains a list of ServiceItems
+    """
 
 class ServiceManager(QWidget):
 
@@ -63,3 +72,11 @@ class ServiceManager(QWidget):
         self.Layout.addWidget(self.Toolbar)
         self.ListView = QtGui.QListView(self)
         self.Layout.addWidget(self.ListView)
+
+
+    def addServiceItem(self, item):
+        """Adds service item"""
+
+    def removeServiceItem(self):
+        """Remove currently selected item"""
+        
