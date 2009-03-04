@@ -19,7 +19,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import QColor
+from PyQt4.QtGui import QColor, QFont
 
 from openlp.core import translate
 from openlp.core.lib import SettingsTab
@@ -136,18 +136,25 @@ class AlertsTab(SettingsTab):
         self.PreviewLayout.setSpacing(8)
         self.PreviewLayout.setMargin(8)
         self.PreviewLayout.setObjectName(u'PreviewLayout')
-        self.FontPreview = QtGui.QGraphicsView(self.PreviewGroupBox)
+        
+        #self.FontPreview = QtGui.QGraphicsView(self.PreviewGroupBox)        
+        self.FontPreview = QtGui.QTextEdit(self.PreviewGroupBox)
         self.FontPreview.setMaximumSize(QtCore.QSize(16777215, 64))
         self.FontPreview.setObjectName(u'FontPreview')
         self.PreviewLayout.addWidget(self.FontPreview)
+        
         self.SlideRightLayout.addWidget(self.PreviewGroupBox)
         self.SlideRightSpacer = QtGui.QSpacerItem(20, 40,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.SlideRightLayout.addItem(self.SlideRightSpacer)
         self.AlertsLayout.addWidget(self.AlertRightColumn)
         
-        QtCore.QObject.connect(self.BackgroundColourButton, QtCore.SIGNAL("pressed()"), self.onBackgroundColourButtonclicked)
-        QtCore.QObject.connect(self.FontColourButton, QtCore.SIGNAL("pressed()"), self.onFontColourButtonclicked)
+        QtCore.QObject.connect(self.BackgroundColourButton, \
+                               QtCore.SIGNAL("pressed()"), self.onBackgroundColourButtonclicked)
+        QtCore.QObject.connect(self.FontColourButton, \
+                               QtCore.SIGNAL("pressed()"), self.onFontColourButtonclicked)
+        QtCore.QObject.connect(self.FontComboBox,\
+                               QtCore.SIGNAL("activated(int)"), self.onFontComboBoxclicked)        
 
     def retranslateUi(self):
         self.FontGroupBox.setTitle(translate(u'AlertsTab', u'Font'))
@@ -161,18 +168,38 @@ class AlertsTab(SettingsTab):
     def onBackgroundColourButtonclicked(self):
         self.bg_color = QtGui.QColorDialog.getColor(QColor(self.bg_color), self).name()
         self.BackgroundColourButton.setStyleSheet('background-color: %s' % self.bg_color)
+        self._update_display()        
+
+    def onFontComboBoxclicked(self):
+        self._update_display()
 
     def onFontColourButtonclicked(self):
         self.font_color = QtGui.QColorDialog.getColor(QColor(self.font_color), self).name()
         self.FontColourButton.setStyleSheet('background-color: %s' % self.font_color)
+        self._update_display()        
 
     def load(self):
         self.font_color = self.config.get_config("font color",u"#ffffff" )
         self.FontColourButton.setStyleSheet('background-color: %s' % self.font_color)        
         self.bg_color = self.config.get_config("background color",u"#00007f" )
-        self.BackgroundColourButton.setStyleSheet('background-color: %s' % self.bg_color)        
-        
+        self.BackgroundColourButton.setStyleSheet('background-color: %s' % self.bg_color)
+        self.font_text = self.config.get_config("text font",u"Century Schoolbook L,12,-1,5,50,0,0,0,0,0" )
+        font = QFont()
+        font.fromString(self.font_text)
+        self.FontComboBox.setCurrentFont(font)
+        self.FontPreview.setReadOnly(True)
+        self.FontPreview.setText("Openlp-2 is cool")
+        self._update_display()
         
     def save(self):
         self.config.set_config("background color", str(self.bg_color))
         self.config.set_config("font color", str(self.font_color))
+        font = self.FontComboBox.currentFont().toString()
+        self.config.set_config("text font", str(font))        
+        
+    def _update_display(self):
+        font =self.FontComboBox.currentFont()
+        font.setBold(True)
+        font.setPointSize(20)
+        self.FontPreview.setFont(font)
+        self.FontPreview.setStyleSheet("alignment : centre; background-color: "+ self.bg_color+ "; color: " + self.font_color)
