@@ -39,9 +39,6 @@ log=logging.getLogger("TestServiceManager")
 class TestServiceManager_base:
     def __init__(self):
         pass
-#         if not os.path.exists("test_results"):
-#             os.mkdir("test_results")
-
 
     def setup_class(self):
         log.info( "class setup"+str(self))
@@ -60,8 +57,6 @@ class TestServiceManager_base:
         self.expected_answer="Don't know yet"
         self.answer=None
         self.s=ServiceManager(None)
-        # get a selection model so we can pretend to be a user and click different items
-#         self.sm_selection_model=self.s.service_data.selectionModel()
         log.info("--------------- Setup Done -------------")
 
     def teardown_method(self, method):
@@ -133,11 +128,12 @@ class TestServiceManager_base:
         assert lines[3] == "test3.gif"
         log.info("done")
 
-    # add different types of service item
-    # move up, down
-    # move to top, bottom
-    # new and save as
-    # deleting items
+    # more tests to do:
+    #  add different types of service item
+    #  move up, down
+    #  move to top, bottom
+    #  new and save as
+    #  deleting items
     
 if __name__=="__main__":
 
