@@ -20,6 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import os
 
 from time import sleep
+from copy import deepcopy
 from PyQt4 import *
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
@@ -46,16 +47,16 @@ class ServiceData(QAbstractItemModel):
     def rowCount(self, parent):
         return len(self.items)
     def insertRow(self, row, service_item):
-        self.beginInsertRows(QModelIndex(),row,row)
-        log.info("insert row %d:%s"%(row,filename))
+#         self.beginInsertRows(QModelIndex(),row,row)
+        log.info("insert row %d:%s"%(row,service_item))
         self.items.insert(row, service_item)
-        self.endInsertRows()
+#         self.endInsertRows()
     def removeRow(self, row):
         self.beginRemoveRows(QModelIndex(), row,row)
         self.items.pop(row)
         self.endRemoveRows()
-    def addRow(self, filename):
-        self.insertRow(len(self.items), filename)
+    def addRow(self, item):
+        self.insertRow(len(self.items), item)
         
     
     def data(self, index, role):
@@ -82,7 +83,9 @@ class ServiceData(QAbstractItemModel):
         else:
             return retval
         
-        
+    def __iter__(self):
+        for i in self.items:
+            yield i
 
 class ServiceManager(QWidget):
 
@@ -124,8 +127,53 @@ class ServiceManager(QWidget):
         
     def addServiceItem(self, item):
         """Adds service item"""
-        pass
-
+        log.info("addServiceItem")
+        indexes=self.TreeView.selectedIndexes()
+        assert len(indexes) <= 1 # can only have one selected index in this view
+        if indexes == []:
+            log.info("No row")
+            row = 0
+            selected_item = None
+        else:
+            row=index.row()
+            # if currently selected is of correct type, add it to it
+            selected_item=self.service_data(row)
+            log.info("row:%d"%row)
+        if type(selected_item) == type(item):
+            log.info("Add to existing item")
+            selected_item.add(item)
+        else:
+            log.info("Create new item")
+            # otherwise create a new one
+#             print item
+#             print item.imgs
+#             i=deepcopy(item)
+#             print i
+#             print i.imgs
+            self.service_data.insertRow(row, item)
+#             for i in self.service_data:
+#                 print item.imgs
+#                 print i.imgs
     def removeServiceItem(self):
         """Remove currently selected item"""
         pass
+
+    def oos_as_text(self):
+        text=[]
+        log.info( "oos as text")
+        log.info("Data:"+str(self.service_data))
+        for i in self.service_data:
+            text.append("# " + str(i))
+            text.append(i.get_oos_text())
+        return '\n'.join(text)
+
+    def write_oos(self, filename):
+        """
+        Write a full OOS file out - iterate over plugins and call their respective methods
+        This format is totally arbitrary testing purposes - something sensible needs to go in here!
+        """
+        oosfile=open(filename, "w")
+        oosfile.write("# BEGIN OOS\n")
+        oosfile.write(self.oos_as_text)
+        oosfile.write("# END OOS\n")
+        oosfile.close()

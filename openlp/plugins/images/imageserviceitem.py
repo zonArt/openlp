@@ -37,6 +37,8 @@ class ImageServiceItem(ServiceItem):
     The service manager has one in its service structure for each Image item in the OOS
     When something goes live/previews -
       it simply tells the slide controller to use it???
+
+    It contains 1 or more images
           
     """
     global log
@@ -46,13 +48,14 @@ class ImageServiceItem(ServiceItem):
         """
         Init Method
         """
+        log.info("init")
         self.imgs=ListWithPreviews()
-        self.slide_controller=controller
-        self.slide_controller.ControllerContents=QtGui.QListView()
-        c=self.slide_controller.ControllerContents
-        c.uniformItemSizes=True
-        c.setModel(self.imgs)
-        c.setGeometry(0,0,200,200)
+#         self.slide_controller=controller
+#         self.slide_controller.ControllerContents=QtGui.QListView()
+#         c=self.slide_controller.ControllerContents
+#         c.uniformItemSizes=True
+#         c.setModel(self.imgs)
+#         c.setGeometry(0,0,200,200)
     
     def render(self):
         """
@@ -78,17 +81,26 @@ class ImageServiceItem(ServiceItem):
         Manager.
         """
         pass
-    def add(self, filename):
+    def add(self, data):
         """
         append an image to the list
         """
-        log.info("add:"+filename)
-        self.imgs.addRow(filename)
+        if type(data)==type("string"):
+            log.info("add filename:"+data)
+            self.imgs.addRow(data)
+        else: # it's another service item to be merged in
+            log.info("add Item..."+str(data))
+            for filename in data.get_file_list():
+                self.add(filename)
+            
 
     def get_oos_text(self):
         """
         Turn the image list into a set of filenames for storage in the oos file
         """
+        log.info("Get oos text")
+        log.info(str(self.imgs))
+        log.info(str(self.imgs.get_file_list()))
         return '\n'.join(self.imgs.get_file_list())
 
     def set_from_oos(self, text):

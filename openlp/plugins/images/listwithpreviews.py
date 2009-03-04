@@ -23,15 +23,20 @@ class ListWithPreviews(QAbstractListModel):
         (prefix, shortfilename) = os.path.split(str(filename))
         log.info("shortfilename=%s"%(shortfilename))
         # create a preview image
-        preview = QPixmap(str(filename))
-        w=self.maximagewidth;h=self.rowheight
-        preview = preview.scaled(w,h, Qt.KeepAspectRatio)
-        realw=preview.width(); realh=preview.height()
-        # and move it to the centre of the preview space
-        p=QPixmap(w,h)
-        p.fill(Qt.transparent)
-        painter=QPainter(p)
-        painter.drawPixmap((w-realw)/2,(h-realh)/2,preview)
+        if os.path.exists(filename):
+            preview = QPixmap(str(filename))
+            w=self.maximagewidth;h=self.rowheight
+            preview = preview.scaled(w,h, Qt.KeepAspectRatio)
+            realw=preview.width(); realh=preview.height()
+            # and move it to the centre of the preview space
+            p=QPixmap(w,h)
+            p.fill(Qt.transparent)
+            painter=QPainter(p)
+            painter.drawPixmap((w-realw)/2,(h-realh)/2,preview)
+        else:
+            w=self.maximagewidth;h=self.rowheight
+            p=QPixmap(w,h)
+            p.fill(Qt.transparent)
         # finally create the row
         self.items.insert(row, (filename, p, shortfilename))
         self.endInsertRows()
