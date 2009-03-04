@@ -20,7 +20,8 @@ import time
 import sys
 import os, os.path
 from PyQt4 import QtGui, QtCore
-
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 mypath=os.path.split(os.path.abspath(__file__))[0]
 sys.path.insert(0,(os.path.join(mypath, '..','..', '..','..')))
 from openlp.core.ui import ServiceManager
@@ -59,6 +60,8 @@ class TestServiceManager_base:
         self.expected_answer="Don't know yet"
         self.answer=None
         self.s=ServiceManager(None)
+        # get a selection model so we can pretend to be a user and click different items
+#         self.sm_selection_model=self.s.service_data.selectionModel()
         log.info("--------------- Setup Done -------------")
 
     def teardown_method(self, method):
@@ -103,8 +106,18 @@ class TestServiceManager_base:
         log.info("test_2items_merged")
         item=ImageServiceItem(None)
         item.add("test.gif")
-        # now select the line
         self.s.addServiceItem(item)
+        # now select the line we just added
+        # first get the index
+        i=self.s.service_data.index(0,0)
+        # make a selection of it
+        sm=QItemSelectionModel(self.s.service_data)
+#         selection=QItemSelection(i,i)
+        sm.select(i, QItemSelectionModel.ClearAndSelect)
+        log.info(str(sm.selectedIndexes()))
+        self.s.TreeView.setSelectionModel(sm)
+        log.info("Slected indexes = " + str(self.s.TreeView.selectedIndexes()))
+        
         item=ImageServiceItem(None)
         item.add("test2.gif")
         item.add("test3.gif")
@@ -118,26 +131,13 @@ class TestServiceManager_base:
         assert lines[2] == "test2.gif"
         assert lines[3] == "test3.gif"
         log.info("done")
-        
-#     def test_moving_selection(self):
-#         log.info("test_easy")
-#         item=ImageServiceItem(None)
-#         item.add("test1.gif")
-#         item.add("test2.gif")
-#         item.add("test3.gif")
-#         item.add("test2a.gif")
-#         self.s.addServiceItem(item)
-#         answer = self.s.oos_as_text()
-#         log.info("Answer = " + str(answer))
-#         lines=answer.split("\n")
-#         log.info("lines = " + str(lines))
-#         assert lines[0].startswith("# <openlp.plugins.images.imageserviceitem.ImageServiceItem object")
-#         assert lines[1] == "test1.gif"
-#         assert lines[2] == "test2.gif"
-#         assert lines[3] == "test2a.gif"
-#         assert lines[4] == "test3.gif"
-#         log.info("done")
-        
+
+    # add different types of service item
+    # move up, down
+    # move to top, bottom
+    # new and save as
+    # deleting items
+    
 if __name__=="__main__":
 
     t=TestServiceManager_base()

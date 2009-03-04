@@ -42,14 +42,18 @@ class ServiceData(QAbstractItemModel):
     global log
     log=logging.getLogger("ServiceData")
     def __init__(self):
+        QAbstractItemModel.__init__(self)
         self.items=[]
         log.info("Starting")
+    def columnCount(self, parent):
+        return 1; # always only a single column (for now)
     def rowCount(self, parent):
         return len(self.items)
     def insertRow(self, row, service_item):
 #         self.beginInsertRows(QModelIndex(),row,row)
         log.info("insert row %d:%s"%(row,service_item))
         self.items.insert(row, service_item)
+        log.info("Items: %s" % self.items)
 #         self.endInsertRows()
     def removeRow(self, row):
         self.beginRemoveRows(QModelIndex(), row,row)
@@ -58,7 +62,11 @@ class ServiceData(QAbstractItemModel):
     def addRow(self, item):
         self.insertRow(len(self.items), item)
         
-    
+    def index(self, row, col, parent = QModelIndex()):
+        return self.createIndex(row,col)
+
+    def parent(self, index=QModelIndex()):
+        return QModelIndex() # no children as yet
     def data(self, index, role):
         """
         Called by the service manager to draw us in the service window
@@ -87,12 +95,19 @@ class ServiceData(QAbstractItemModel):
         for i in self.items:
             yield i
 
+    def item(self, row):
+        log.info("Get Item:%d -> %s" %(row, str(self.items)))
+        return self.items[row]
+
+    
 class ServiceManager(QWidget):
 
     """Manages the orders of service.  Currently this involves taking
     text strings from plugins and adding them to an OOS file. In
     future, it will also handle zipping up all the resources used into
-    one lump"""
+    one lump.
+    Also handles the UI tasks of moving things up and down etc.
+    """
 
     def __init__(self, parent):
         QWidget.__init__(self)
@@ -122,7 +137,7 @@ class ServiceManager(QWidget):
 
         self.TreeView = QtGui.QTreeView(self)
         self.service_data=ServiceData()
-#         self.TreeView.setModel(self.service_data)
+        self.TreeView.setModel(self.service_data)
         self.Layout.addWidget(self.TreeView)
         
     def addServiceItem(self, item):
@@ -132,28 +147,22 @@ class ServiceManager(QWidget):
         assert len(indexes) <= 1 # can only have one selected index in this view
         if indexes == []:
             log.info("No row")
-            row = 0
+            row = None
             selected_item = None
         else:
-            row=index.row()
+            row=indexes[0].row()
             # if currently selected is of correct type, add it to it
-            selected_item=self.service_data(row)
             log.info("row:%d"%row)
+            selected_item=self.service_data.item(row)
         if type(selected_item) == type(item):
             log.info("Add to existing item")
             selected_item.add(item)
         else:
             log.info("Create new item")
-            # otherwise create a new one
-#             print item
-#             print item.imgs
-#             i=deepcopy(item)
-#             print i
-#             print i.imgs
-            self.service_data.insertRow(row+1, item)
-#             for i in self.service_data:
-#                 print item.imgs
-#                 print i.imgs
+            if row is None:
+                self.service_data.addRow(item)
+            else:
+                self.service_data.insertRow(row+1, item)
     def removeServiceItem(self):
         """Remove currently selected item"""
         pass

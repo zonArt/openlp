@@ -90,7 +90,7 @@ class ImageServiceItem(ServiceItem):
             self.imgs.addRow(data)
         else: # it's another service item to be merged in
             log.info("add Item..."+str(data))
-            for filename in data.get_file_list():
+            for filename in data.imgs.get_file_list():
                 self.add(filename)
             
 
