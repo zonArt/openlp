@@ -22,10 +22,12 @@ import os.path
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.resources import *
-from openlp.core.lib import Plugin, PluginUtils, MediaManagerItem, ImageServiceItem
+from openlp.core.lib import Plugin, PluginUtils, MediaManagerItem
 import logging
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from listwithpreviews import ListWithPreviews
+from imageserviceitem import ImageServiceItem
 
 class ListWithPreviews(QtCore.QAbstractListModel):
     """
@@ -185,10 +187,12 @@ class ImagePlugin(Plugin, PluginUtils):
         self._save_display_list(self.ImageListData.get_file_list())
 
     def onImageClick(self, where):
-        cr = self.ImageListView.currentRow()
-        filename = self.ImageListView.item(cr, 0).text()
-        log.info("Click %s:%s"%(str(where), filename))
-        where.add(filename)
+        indexes=self.ImageListView.selectedIndexes()
+        for i in indexes:
+            filename = self.ImageListData.get_filename(i)
+            log.info("Click %s:%s"%(str(where), filename))
+            where.add(filename)
+            
         where.render()
 
     def onImagePreviewClick(self):
@@ -198,5 +202,6 @@ class ImagePlugin(Plugin, PluginUtils):
         self.onImageClick(self.live_service_item)
 
     def onImageAddClick(self):
+        """Add this item to the OOS"""
         pass
 

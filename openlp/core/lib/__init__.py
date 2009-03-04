@@ -26,8 +26,8 @@ from event import Event
 from xmlrootclass import XmlRootClass
 from serviceitem import ServiceItem
 from eventreceiver import Receiver
-from imageserviceitem import ImageServiceItem
+from serviceitem import ServiceItem
 from toolbar import OpenLPToolbar
 
-__all__ = ['PluginConfig', 'Plugin', 'PluginUtils', 'SettingsTabItem', 'MediaManagerItem', 'Event',
-           'XmlRootClass', 'ServiceItem', 'Receiver', 'ImageServiceItem', 'OpenLPToolbar']
+__all__ = ['PluginConfig', 'Plugin', 'PluginUtils', 'SettingsTab', 'MediaManagerItem', 'Event',
+           'XmlRootClass', 'ServiceItem', 'Receiver', 'OpenLPToolbar']

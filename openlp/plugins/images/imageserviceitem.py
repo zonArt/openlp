@@ -19,8 +19,10 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 from PyQt4 import QtCore, QtGui
 import logging
+from openlp.core.lib import ServiceItem
+from listwithpreviews import ListWithPreviews
 
-class ImageServiceItem():
+class ImageServiceItem(ServiceItem):
     """
     The service item is a base class for the plugins to use to interact with
     the service manager, the slide controller, and the renderer.
@@ -32,20 +34,13 @@ class ImageServiceItem():
         """
         Init Method
         """
-        self.imgs=[]
+        self.imgs=ListWithPreviews()
         self.slide_controller=controller
-        self.slide_controller.ControllerContents=QtGui.QTableWidget()
+        self.slide_controller.ControllerContents=QtGui.QListView()
         c=self.slide_controller.ControllerContents
-        c.setColumnCount(2)
-        c.setColumnHidden(0, True)
-        c.setColumnWidth(1, 275)
-        c.setShowGrid(False)
-        c.setSortingEnabled(False)        
-        c.setAlternatingRowColors(True)
-        c.setHorizontalHeaderLabels(QtCore.QStringList(["","Name"]))  
-        c.setAlternatingRowColors(True)                 
-        c.setGeometry(QtCore.QRect(10, 100, 256, 591))
-        pass
+        c.uniformItemSizes=True
+        c.setModel(self.imgs)
+        c.setGeometry(0,0,200,200)
     
     def render(self):
         """
@@ -53,15 +48,15 @@ class ImageServiceItem():
         screen.
         """
         # render the "image chooser first"
-        for f in self.imgs:
-            fl ,  nm = os.path.split(str(f))            
-            c = self.slide_controller.rowCount()
-            self.slide_controller.setRowCount(c+1)
-            twi = QtGui.QTableWidgetItem(str(f))
-            self.slide_controller.setItem(c , 0, twi)
-            twi = QtGui.QTableWidgetItem(str(nm))
-            self.slide_controller.setItem(c , 1, twi)
-            self.slide_controller.setRowHeight(c, 80)
+#         for f in self.imgs:
+#             fl ,  nm = os.path.split(str(f))            
+#             c = self.slide_controller.rowCount()
+#             self.slide_controller.setRowCount(c+1)
+#             twi = QtGui.QTableWidgetItem(str(f))
+#             self.slide_controller.setItem(c , 0, twi)
+#             twi = QtGui.QTableWidgetItem(str(nm))
+#             self.slide_controller.setItem(c , 1, twi)
+#             self.slide_controller.setRowHeight(c, 80)
             
         # render the preview screen here
 
@@ -76,18 +71,20 @@ class ImageServiceItem():
         append an image to the list
         """
         log.info("add:"+filename)
-        self.imgs.append(filename)
+        self.imgs.addRow(filename)
 
     def get_oos_text(self):
         """
         Turn the image list into a set of filenames for storage in the oos file
         """
-        return str(self.imgs)
+        return '\n'.join(self.imgs.get_file_list())
 
     def set_from_oos(self, text):
         """
         get text from the OOS file and setup the internal structure
         """
         log.info("Set from OOS:"+text)
-        self.imgs=eval(text)
+        files=text.split('\n')
+        for f in files:
+            self.imgs.addRow(f)
         

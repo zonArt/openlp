@@ -32,12 +32,57 @@ from openlp.core.lib import ServiceItem
 # from openlp.core import PluginManager
 import logging
 
-class ServiceData(QAbstractListModel):
+class ServiceData(QAbstractItemModel):
     """
     Tree of items for an order of service.
     Includes methods for reading and writing the contents to an OOS file
     Root contains a list of ServiceItems
     """
+    global log
+    log=logging.getLogger("ServiceData")
+    def __init__(self):
+        self.items=[]
+        log.info("Starting")
+    def rowCount(self, parent):
+        return len(self.items)
+    def insertRow(self, row, service_item):
+        self.beginInsertRows(QModelIndex(),row,row)
+        log.info("insert row %d:%s"%(row,filename))
+        self.items.insert(row, service_item)
+        self.endInsertRows()
+    def removeRow(self, row):
+        self.beginRemoveRows(QModelIndex(), row,row)
+        self.items.pop(row)
+        self.endRemoveRows()
+    def addRow(self, filename):
+        self.insertRow(len(self.items), filename)
+        
+    
+    def data(self, index, role):
+        """
+        Called by the service manager to draw us in the service window
+        """
+        row=index.row()
+        if row > len(self.items): # if the last row is selected and deleted, we then get called with an empty row!
+            return QVariant()
+        item=self.items[row]
+        if role==Qt.DisplayRole:
+            retval= item.pluginname + ":" + item.shortname
+        elif role == Qt.DecorationRole:
+            retval = item.iconic_representation
+        elif role == Qt.ToolTipRole:
+            retval= None
+        else:
+            retval= None
+        if retval == None:
+            retval=QVariant()
+#         log.info("Returning"+ str(retval))
+        if type(retval) is not type(QVariant):
+            return QVariant(retval)
+        else:
+            return retval
+        
+        
 
 class ServiceManager(QWidget):
 
@@ -69,14 +114,18 @@ class ServiceManager(QWidget):
         self.ThemeWidget = QtGui.QWidgetAction(self.Toolbar)
         self.ThemeWidget.setDefaultWidget(self.ThemeComboBox)
         self.Toolbar.addAction(self.ThemeWidget)
+
         self.Layout.addWidget(self.Toolbar)
-        self.ListView = QtGui.QListView(self)
-        self.Layout.addWidget(self.ListView)
 
-
+        self.TreeView = QtGui.QTreeView(self)
+        self.service_data=ServiceData()
+#         self.TreeView.setModel(self.service_data)
+        self.Layout.addWidget(self.TreeView)
+        
     def addServiceItem(self, item):
         """Adds service item"""
+        pass
 
     def removeServiceItem(self):
         """Remove currently selected item"""
-        
+        pass
