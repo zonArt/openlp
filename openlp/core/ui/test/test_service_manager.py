@@ -67,6 +67,16 @@ class TestServiceManager_base:
     def teardown_method(self, method):
         self.s=None
 
+    def select_row(self, row):
+        # now select the line we just added
+        # first get the index
+        i=QModelIndex(self.s.service_data.index(0,0))
+        # make a selection of it
+        self.sm=QItemSelectionModel(self.s.service_data)
+        self.sm.select(i, QItemSelectionModel.ClearAndSelect)
+        log.info(str(self.sm.selectedIndexes()))
+        self.s.TreeView.setSelectionModel(self.sm)
+        log.info("Selected indexes = " + str(self.s.TreeView.selectedIndexes()))
     def test_easy(self):
         log.info("test_easy")
         item=ImageServiceItem(None)
@@ -107,17 +117,8 @@ class TestServiceManager_base:
         item=ImageServiceItem(None)
         item.add("test.gif")
         self.s.addServiceItem(item)
-        # now select the line we just added
-        # first get the index
-        i=self.s.service_data.index(0,0)
-        # make a selection of it
-        sm=QItemSelectionModel(self.s.service_data)
-#         selection=QItemSelection(i,i)
-        sm.select(i, QItemSelectionModel.ClearAndSelect)
-        log.info(str(sm.selectedIndexes()))
-        self.s.TreeView.setSelectionModel(sm)
-        log.info("Slected indexes = " + str(self.s.TreeView.selectedIndexes()))
-        
+        self.select_row(0)
+        log.info("Selected indexes = " + str(self.s.TreeView.selectedIndexes()))
         item=ImageServiceItem(None)
         item.add("test2.gif")
         item.add("test3.gif")
