@@ -25,7 +25,15 @@ from listwithpreviews import ListWithPreviews
 class ImageServiceItem(ServiceItem):
     """
     The service item is a base class for the plugins to use to interact with
-    the service manager, the slide controller, and the renderer.
+    * the service manager (and hence the OOS disk files),
+    * the slide controller(s - both preview and live)
+    * and the renderer - which produces the
+          main screen
+          the preview preview and
+          the live preview
+
+
+          
     """
     global log
     log=logging.getLogger("ImageServiceItem")
