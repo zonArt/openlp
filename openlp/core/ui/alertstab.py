@@ -107,7 +107,7 @@ class AlertsTab(SettingsTab):
         self.LengthLayout.addWidget(self.LengthLabel)
         self.LengthSpinBox = QtGui.QSpinBox(self.LengthWidget)
         self.LengthSpinBox.setMaximum(180)
-        self.LengthSpinBox.setProperty(u'value', QtCore.QVariant(5))
+        #self.LengthSpinBox.setProperty(u'value', QtCore.QVariant(5))
         self.LengthSpinBox.setObjectName(u'LengthSpinBox')
         self.LengthLayout.addWidget(self.LengthSpinBox)
         self.LengthSpacer = QtGui.QSpacerItem(147, 20,
@@ -154,7 +154,9 @@ class AlertsTab(SettingsTab):
         QtCore.QObject.connect(self.FontColourButton, \
                                QtCore.SIGNAL("pressed()"), self.onFontColourButtonclicked)
         QtCore.QObject.connect(self.FontComboBox,\
-                               QtCore.SIGNAL("activated(int)"), self.onFontComboBoxclicked)        
+                               QtCore.SIGNAL("activated(int)"), self.onFontComboBoxclicked)
+        QtCore.QObject.connect(self.LengthSpinBox,\
+                               QtCore.SIGNAL("valueChanged(int)"), self.onLengthSpinBoxclicked)                                   
 
     def retranslateUi(self):
         self.FontGroupBox.setTitle(translate(u'AlertsTab', u'Font'))
@@ -178,7 +180,12 @@ class AlertsTab(SettingsTab):
         self.FontColourButton.setStyleSheet('background-color: %s' % self.font_color)
         self._update_display()        
 
+    def onLengthSpinBoxclicked(self):
+        self.spin_length = self.LengthSpinBox.value()
+
     def load(self):
+        self.spin_length = self.config.get_config("spin length",u"5" )
+        self.LengthSpinBox.setValue(int(self.spin_length))
         self.font_color = self.config.get_config("font color",u"#ffffff" )
         self.FontColourButton.setStyleSheet('background-color: %s' % self.font_color)        
         self.bg_color = self.config.get_config("background color",u"#00007f" )
@@ -195,8 +202,10 @@ class AlertsTab(SettingsTab):
         self.config.set_config("background color", str(self.bg_color))
         self.config.set_config("font color", str(self.font_color))
         font = self.FontComboBox.currentFont().toString()
-        self.config.set_config("text font", str(font))        
-        
+        self.config.set_config("text font", str(font))
+        self.config.set_config("spin length", str(self.spin_length))
+ 
+ 
     def _update_display(self):
         font =self.FontComboBox.currentFont()
         font.setBold(True)
