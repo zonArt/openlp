@@ -17,19 +17,24 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
-class ServiceItem():
+class ServiceItem(QAbstractItemModel):
     """
     The service item is a base class for the plugins to use to interact with
     the service manager, the slide controller, and the projection screen
     compositor.
     """
 
-    def __init__(self):
+    def __init__(self, hostplugin):
         """
         Init Method
         """
-        pass
+        self.plugin=hostplugin
+        self.shortname=hostplugin.name
+        self.items=[]
+        self.iconic_representation=None
     
     def render(self):
         """
@@ -63,3 +68,4 @@ class ServiceItem():
         """
         Takes data from the plugin media chooser
         """
+        pass
