@@ -30,7 +30,6 @@ class BiblesTab(SettingsTab):
     """
     def __init__(self):
         SettingsTab.__init__(self, u'Bibles')
-        self.load()
 
     def setupUi(self):
         self.setObjectName(u'BiblesTab')

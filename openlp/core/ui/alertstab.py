@@ -31,7 +31,6 @@ class AlertsTab(SettingsTab):
     """
     def __init__(self):
         SettingsTab.__init__(self, u'Alerts')
-        self.load()
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
@@ -156,7 +155,7 @@ class AlertsTab(SettingsTab):
         QtCore.QObject.connect(self.FontComboBox,\
                                QtCore.SIGNAL("activated(int)"), self.onFontComboBoxclicked)
         QtCore.QObject.connect(self.LengthSpinBox,\
-                               QtCore.SIGNAL("valueChanged(int)"), self.onLengthSpinBoxclicked)                                   
+                               QtCore.SIGNAL("valueChanged(int)"), self.onLengthSpinBoxchanged)                                   
 
     def retranslateUi(self):
         self.FontGroupBox.setTitle(translate(u'AlertsTab', u'Font'))
@@ -180,7 +179,7 @@ class AlertsTab(SettingsTab):
         self.FontColourButton.setStyleSheet('background-color: %s' % self.font_color)
         self._update_display()        
 
-    def onLengthSpinBoxclicked(self):
+    def onLengthSpinBoxchanged(self):
         self.spin_length = self.LengthSpinBox.value()
 
     def load(self):
@@ -212,3 +211,9 @@ class AlertsTab(SettingsTab):
         font.setPointSize(20)
         self.FontPreview.setFont(font)
         self.FontPreview.setStyleSheet("alignment : centre; background-color: "+ self.bg_color+ "; color: " + self.font_color)
+        
+    def load(self):
+        pass
+        
+    def save(self):
+        pass

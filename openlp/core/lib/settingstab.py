@@ -38,6 +38,7 @@ class SettingsTab(QtGui.QWidget):
             self.config = PluginConfig(u"Main")
         else:
             self.config = PluginConfig(str(title))
+        self.load()
                         
     def setTitle(self, title):
         self.tabTitle = title

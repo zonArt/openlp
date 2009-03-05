@@ -52,6 +52,9 @@ class VideoTab(SettingsTab):
         
         self.VideoLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.VideoModeGroupBox)
         
+        QtCore.QObject.connect(self.UseVMRCheckBox,\
+                               QtCore.SIGNAL("stateChanged(int)"), self.onVMRCheckBoxchanged)             
+        
     def retranslateUi(self):
         self.VideoModeGroupBox.setTitle(translate("SettingsForm", "Video Mode"))
         self.UseVMRCheckBox.setText(translate("SettingsForm", "Use Video Mode Rendering"))
@@ -60,3 +63,22 @@ class VideoTab(SettingsTab):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'DejaVu Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic;\">No video preview available with VMR enabled</span></p></body></html>"))
+
+    def onVMRCheckBoxchanged(self):
+        mode_layout = self.UseVMRCheckBox.checkState()
+        self.mode_layout = False
+        if mode_layout == 2: # we have a set value convert to True/False
+            self.mode_layout = True
+    
+    def load(self):
+        mode_layout = self.config.get_config("use mode layout",u"0" )
+        self.mode_layout = True
+        # used for first time initialisation
+        # mode_layout will be a string with True/False so need to fix and make boolean
+        if mode_layout == '0'or mode_layout == "False":   
+            self.mode_layout = False
+        else:
+            self.UseVMRCheckBox.setChecked(True)
+        
+    def save(self):
+        self.config.set_config("use mode layout", str(self.mode_layout))        
