@@ -92,8 +92,7 @@ class MainWindow(object):
         self.ControlSplitter = QtGui.QSplitter(self.MainContent)
         self.ControlSplitter.setOrientation(QtCore.Qt.Horizontal)
         self.ControlSplitter.setObjectName("ControlSplitter")
-        # TODO: need some way to make this geometry work properly!
-        self.ControlSplitter.setGeometry(self.main_window.geometry())
+        self.MainContentLayout.addWidget(self.ControlSplitter)
         self.PreviewController = SlideController(self.ControlSplitter)
         self.LiveController = SlideController(self.ControlSplitter)
         self.MenuBar = QtGui.QMenuBar(self.main_window)
