@@ -30,6 +30,8 @@ class AlertsTab(SettingsTab):
     AlertsTab is the alerts settings tab in the settings dialog.
     """
     def __init__(self):
+        self.font_color = '#ffffff'
+        self.bg_color = '#660000'
         SettingsTab.__init__(self, u'Alerts')
 
     def setupUi(self):
@@ -65,54 +67,36 @@ class AlertsTab(SettingsTab):
         self.FontColorLabel = QtGui.QLabel(self.ColorWidget)
         self.FontColorLabel.setObjectName(u'FontColorLabel')
         self.ColorLayout.addWidget(self.FontColorLabel)
-
-        self.FontColourButton = QtGui.QPushButton(self.ColorWidget)
-        self.FontColourButton.setObjectName("FontColourButton")
-        self.ColorLayout.addWidget(self.FontColourButton)
-
-#        self.FontColorPanel = QtGui.QGraphicsView(self.ColorWidget)
-#        self.FontColorPanel.setMinimumSize(QtCore.QSize(24, 24))
-#        self.FontColorPanel.setMaximumSize(QtCore.QSize(24, 24))
-#        self.FontColorPanel.setObjectName(u'FontColorPanel')
-#        self.ColorLayout.addWidget(self.FontColorPanel)
-
+        self.FontColorButton = QtGui.QPushButton(self.ColorWidget)
+        self.FontColorButton.setObjectName("FontColorButton")
+        self.ColorLayout.addWidget(self.FontColorButton)
         self.ColorSpacerItem = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.ColorLayout.addItem(self.ColorSpacerItem)
         self.BackgroundColorLabel = QtGui.QLabel(self.ColorWidget)
         self.BackgroundColorLabel.setObjectName(u'BackgroundColorLabel')
         self.ColorLayout.addWidget(self.BackgroundColorLabel)
-        
-        self.BackgroundColourButton = QtGui.QPushButton(self.ColorWidget)
-        self.BackgroundColourButton.setObjectName("BackgroundColourButton")
-        self.ColorLayout.addWidget(self.BackgroundColourButton)
-        
-#        self.BackgroundColorPanel = QtGui.QGraphicsView(self.ColorWidget)
-#        self.BackgroundColorPanel.setMinimumSize(QtCore.QSize(24, 24))
-#        self.BackgroundColorPanel.setMaximumSize(QtCore.QSize(24, 24))
-#        self.BackgroundColorPanel.setObjectName(u'BackgroundColorPanel')
-#        self.ColorLayout.addWidget(self.BackgroundColorPanel)
-        
-        
+        self.BackgroundColorButton = QtGui.QPushButton(self.ColorWidget)
+        self.BackgroundColorButton.setObjectName("BackgroundColorButton")
+        self.ColorLayout.addWidget(self.BackgroundColorButton)
         self.FontLayout.addWidget(self.ColorWidget)
-        self.LengthWidget = QtGui.QWidget(self.FontGroupBox)
-        self.LengthWidget.setObjectName(u'LengthWidget')
-        self.LengthLayout = QtGui.QHBoxLayout(self.LengthWidget)
-        self.LengthLayout.setSpacing(8)
-        self.LengthLayout.setMargin(0)
-        self.LengthLayout.setObjectName(u'LengthLayout')
-        self.LengthLabel = QtGui.QLabel(self.LengthWidget)
-        self.LengthLabel.setObjectName(u'LengthLabel')
-        self.LengthLayout.addWidget(self.LengthLabel)
-        self.LengthSpinBox = QtGui.QSpinBox(self.LengthWidget)
-        self.LengthSpinBox.setMaximum(180)
-        #self.LengthSpinBox.setProperty(u'value', QtCore.QVariant(5))
-        self.LengthSpinBox.setObjectName(u'LengthSpinBox')
-        self.LengthLayout.addWidget(self.LengthSpinBox)
-        self.LengthSpacer = QtGui.QSpacerItem(147, 20,
+        self.TimeoutWidget = QtGui.QWidget(self.FontGroupBox)
+        self.TimeoutWidget.setObjectName(u'TimeoutWidget')
+        self.TimeoutLayout = QtGui.QHBoxLayout(self.TimeoutWidget)
+        self.TimeoutLayout.setSpacing(8)
+        self.TimeoutLayout.setMargin(0)
+        self.TimeoutLayout.setObjectName(u'TimeoutLayout')
+        self.TimeoutLabel = QtGui.QLabel(self.TimeoutWidget)
+        self.TimeoutLabel.setObjectName(u'TimeoutLabel')
+        self.TimeoutLayout.addWidget(self.TimeoutLabel)
+        self.TimeoutSpinBox = QtGui.QSpinBox(self.TimeoutWidget)
+        self.TimeoutSpinBox.setMaximum(180)
+        self.TimeoutSpinBox.setObjectName(u'TimeoutSpinBox')
+        self.TimeoutLayout.addWidget(self.TimeoutSpinBox)
+        self.TimeoutSpacer = QtGui.QSpacerItem(147, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.LengthLayout.addItem(self.LengthSpacer)
-        self.FontLayout.addWidget(self.LengthWidget)
+        self.TimeoutLayout.addItem(self.TimeoutSpacer)
+        self.FontLayout.addWidget(self.TimeoutWidget)
         self.SlideLeftLayout.addWidget(self.FontGroupBox)
         self.SlideLeftSpacer = QtGui.QSpacerItem(20, 94,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
@@ -135,85 +119,83 @@ class AlertsTab(SettingsTab):
         self.PreviewLayout.setSpacing(8)
         self.PreviewLayout.setMargin(8)
         self.PreviewLayout.setObjectName(u'PreviewLayout')
-        
-        #self.FontPreview = QtGui.QGraphicsView(self.PreviewGroupBox)        
-        self.FontPreview = QtGui.QTextEdit(self.PreviewGroupBox)
-        self.FontPreview.setMaximumSize(QtCore.QSize(16777215, 64))
+        self.FontPreview = QtGui.QLineEdit(self.PreviewGroupBox)
+        self.FontPreview.setMinimumSize(QtCore.QSize(280, 100))
+        self.FontPreview.setReadOnly(True)
+        self.FontPreview.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.FontPreview.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
         self.FontPreview.setObjectName(u'FontPreview')
         self.PreviewLayout.addWidget(self.FontPreview)
-        
         self.SlideRightLayout.addWidget(self.PreviewGroupBox)
         self.SlideRightSpacer = QtGui.QSpacerItem(20, 40,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.SlideRightLayout.addItem(self.SlideRightSpacer)
         self.AlertsLayout.addWidget(self.AlertRightColumn)
-        
-        QtCore.QObject.connect(self.BackgroundColourButton, \
-                               QtCore.SIGNAL("pressed()"), self.onBackgroundColourButtonclicked)
-        QtCore.QObject.connect(self.FontColourButton, \
-                               QtCore.SIGNAL("pressed()"), self.onFontColourButtonclicked)
-        QtCore.QObject.connect(self.FontComboBox,\
-                               QtCore.SIGNAL("activated(int)"), self.onFontComboBoxclicked)
-        QtCore.QObject.connect(self.LengthSpinBox,\
-                               QtCore.SIGNAL("valueChanged(int)"), self.onLengthSpinBoxchanged)                                   
+        # Signals and slots
+        QtCore.QObject.connect(self.BackgroundColorButton,
+            QtCore.SIGNAL("pressed()"), self.onBackgroundColorButtonClicked)
+        QtCore.QObject.connect(self.FontColorButton,
+            QtCore.SIGNAL("pressed()"), self.onFontColorButtonClicked)
+        QtCore.QObject.connect(self.FontComboBox,
+            QtCore.SIGNAL("activated(int)"), self.onFontComboBoxClicked)
+        QtCore.QObject.connect(self.TimeoutSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onTimeoutSpinBoxChanged)
 
     def retranslateUi(self):
         self.FontGroupBox.setTitle(translate(u'AlertsTab', u'Font'))
         self.FontLabel.setText(translate(u'AlertsTab', u'Font Name:'))
         self.FontColorLabel.setText(translate(u'AlertsTab', u'Font Color:'))
         self.BackgroundColorLabel.setText(translate(u'AlertsTab', u'Background Color:'))
-        self.LengthLabel.setText(translate(u'AlertsTab', u'Display length:'))
-        self.LengthSpinBox.setSuffix(translate(u'AlertsTab', u's'))
+        self.TimeoutLabel.setText(translate(u'AlertsTab', u'Alert timeout:'))
+        self.TimeoutSpinBox.setSuffix(translate(u'AlertsTab', u's'))
         self.PreviewGroupBox.setTitle(translate(u'AlertsTab', u'Preview'))
-    
-    def onBackgroundColourButtonclicked(self):
-        self.bg_color = QtGui.QColorDialog.getColor(QColor(self.bg_color), self).name()
-        self.BackgroundColourButton.setStyleSheet('background-color: %s' % self.bg_color)
-        self._update_display()        
+        self.FontPreview.setText(translate(u'AlertsTab', 'openlp.org 2.0 rocks!'))
 
-    def onFontComboBoxclicked(self):
-        self._update_display()
+    def onBackgroundColorButtonClicked(self):
+        self.bg_color = QtGui.QColorDialog.getColor(
+            QColor(self.bg_color), self).name()
+        self.BackgroundColorButton.setStyleSheet(
+            'background-color: %s' % self.bg_color)
+        self.updateDisplay()
 
-    def onFontColourButtonclicked(self):
-        self.font_color = QtGui.QColorDialog.getColor(QColor(self.font_color), self).name()
-        self.FontColourButton.setStyleSheet('background-color: %s' % self.font_color)
-        self._update_display()        
+    def onFontComboBoxClicked(self):
+        self.updateDisplay()
 
-    def onLengthSpinBoxchanged(self):
-        self.spin_length = self.LengthSpinBox.value()
+    def onFontColorButtonClicked(self):
+        self.font_color = QtGui.QColorDialog.getColor(
+            QColor(self.font_color), self).name()
+        self.FontColorButton.setStyleSheet(
+            'background-color: %s' % self.font_color)
+        self.updateDisplay()
+
+    def onTimeoutSpinBoxChanged(self):
+        self.timeout = self.TimeoutSpinBox.value()
 
     def load(self):
-        self.spin_length = self.config.get_config("spin length",u"5" )
-        self.LengthSpinBox.setValue(int(self.spin_length))
-        self.font_color = self.config.get_config("font color",u"#ffffff" )
-        self.FontColourButton.setStyleSheet('background-color: %s' % self.font_color)        
-        self.bg_color = self.config.get_config("background color",u"#00007f" )
-        self.BackgroundColourButton.setStyleSheet('background-color: %s' % self.bg_color)
-        self.font_text = self.config.get_config("text font",u"Century Schoolbook L,12,-1,5,50,0,0,0,0,0" )
-        font = QFont()
-        font.fromString(self.font_text)
+        self.timeout = int(self.config.get_config('timeout', 5))
+        self.font_color = str(self.config.get_config('font color', u'#ffffff'))
+        self.bg_color = str(self.config.get_config('background color', u'#660000'))
+        self.font_face = str(self.config.get_config('font face', QFont().family()))
+        self.TimeoutSpinBox.setValue(self.timeout)
+        self.FontColorButton.setStyleSheet('background-color: %s' % self.font_color)
+        self.BackgroundColorButton.setStyleSheet('background-color: %s' % self.bg_color)
+        font = QtGui.QFont()
+        font.setFamily(self.font_face)
         self.FontComboBox.setCurrentFont(font)
-        self.FontPreview.setReadOnly(True)
-        self.FontPreview.setText("Openlp-2 is cool")
-        self._update_display()
-        
+        self.updateDisplay()
+
     def save(self):
-        self.config.set_config("background color", str(self.bg_color))
-        self.config.set_config("font color", str(self.font_color))
-        font = self.FontComboBox.currentFont().toString()
-        self.config.set_config("text font", str(font))
-        self.config.set_config("spin length", str(self.spin_length))
- 
- 
-    def _update_display(self):
-        font =self.FontComboBox.currentFont()
+        self.font_face = self.FontComboBox.currentFont().family()
+        self.config.set_config('background color', str(self.bg_color))
+        self.config.set_config('font color', str(self.font_color))
+        self.config.set_config('font face', str(self.font_face))
+        self.config.set_config('timeout', str(self.timeout))
+
+    def updateDisplay(self):
+        font = QFont()
+        font.setFamily(self.FontComboBox.currentFont().family())
         font.setBold(True)
-        font.setPointSize(20)
+        font.setPointSize(16)
         self.FontPreview.setFont(font)
-        self.FontPreview.setStyleSheet("alignment : centre; background-color: "+ self.bg_color+ "; color: " + self.font_color)
-        
-    def load(self):
-        pass
-        
-    def save(self):
-        pass
+        self.FontPreview.setStyleSheet(
+            'background-color: %s; color: %s' % (self.bg_color, self.font_color))

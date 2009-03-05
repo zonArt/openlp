@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2009-03-02, 23:55:18 -->
+<!-- Saved: 2009-03-05, 22:27:52 -->
 <!-- Copyright (C) 2009 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.6">
   <Language>en</Language>
@@ -118,7 +118,6 @@
     <Source>openlp/core/lib/serviceitem.py</Source>
     <Source>openlp/core/ui/slidecontroller.py</Source>
     <Source>openlp/core/lib/eventreceiver.py</Source>
-    <Source>openlp/core/lib/imageserviceitem.py</Source>
     <Source>resources/forms/Ui_editsongdialog.py</Source>
     <Source>openlp/core/ui/servicemanager.py</Source>
     <Source>openlp/core/lib/toolbar.py</Source>
@@ -134,6 +133,9 @@
     <Source>openlp/plugins/videos/lib/__init__.py</Source>
     <Source>openlp/plugins/videos/lib/videotab.py</Source>
     <Source>openlp/plugins/bibles/lib/biblemediaitem.py</Source>
+    <Source>openlp/plugins/images/imageserviceitem.py</Source>
+    <Source>openlp/plugins/images/listwithpreviews.py</Source>
+    <Source>openlp/core/ui/test/test_service_manager.py</Source>
   </Sources>
   <Forms>
     <Form>resources/forms/openlpexportform.ui</Form>
