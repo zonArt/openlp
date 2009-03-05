@@ -75,35 +75,4 @@ class BiblePlugin(Plugin, PluginUtils):
     def onBibleNewClick(self):
         self.bibleimportform = BibleImportForm(self.config, self.biblemanager, self)
         self.bibleimportform.exec_()
-        pass
-
-    def load_settings(self):
-        pass
-#        self.SettingsOutputStyleComboBox.setCurrentIndex(int(self.config.get_config("bible_output_style", 0)))
-#        self.SettingsVerseStyleComboBox.setCurrentIndex(int(self.config.get_config("bible_verse_style", 0)))
-#        try:
-#            self.SettingsNewChapterCheck.setCheckState(int(self.config.get_config("bible_new_chapter", 0)))
-#        except:
-#            pass
-
-    def save_settings(self):
-        pass
-#        self.config.set_config("bible_output_style", str(self.SettingsOutputStyleComboBox.currentIndex()))
-#        self.config.set_config("bible_verse_style", str(self.SettingsVerseStyleComboBox.currentIndex()))
-#        self.config.set_config("bible_new_chapter", str(self.SettingsNewChapterCheck.checkState()))
-
-#        self.SettingsOutputStyleComboBox.clear()
-#       self.SettingsVerseStyleComboBox.clear()
-
-#        self.SettingsOutputStyleComboBox.addItem(u"Continuous")
-#        self.SettingsOutputStyleComboBox.addItem(u"Paragraph")
-#        self.SettingsVerseStyleComboBox.addItem(u"No Brackets")
-#        self.SettingsVerseStyleComboBox.addItem(u"( and )")
-#        self.SettingsVerseStyleComboBox.addItem(u"{ and }")
-#        self.SettingsVerseStyleComboBox.addItem(u"[ and ]")
-
-
-    def define_tab(self):
-        pass
-#        QtCore.QObject.connect(self.SettingsResetButton, QtCore.SIGNAL("pressed()"), self.onSettingsResetButton)
-#        QtCore.QObject.connect(self.SettingsSaveButton, QtCore.SIGNAL("pressed()"), self.onSettingsSaveButton)
+        pass  

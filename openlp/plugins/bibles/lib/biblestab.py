@@ -58,7 +58,6 @@ class BiblesTab(SettingsTab):
         self.VerseRadioButton.setObjectName(u'VerseRadioButton')
         self.VerseTypeLayout.addWidget(self.VerseRadioButton)
         self.ParagraphRadioButton = QtGui.QRadioButton(self.VerseTypeWidget)
-        self.ParagraphRadioButton.setChecked(True)
         self.ParagraphRadioButton.setObjectName(u'ParagraphRadioButton')
         self.VerseTypeLayout.addWidget(self.ParagraphRadioButton)
         self.VerseDisplayLayout.addWidget(self.VerseTypeWidget, 0, 0, 1, 1)
@@ -104,7 +103,6 @@ class BiblesTab(SettingsTab):
         self.BibleSearchLayout.setSpacing(8)
         self.BibleSearchLayout.setMargin(8)
         self.BibleSearchCheckBox = QtGui.QCheckBox(self.BibleSearchGroupBox)
-        self.BibleSearchCheckBox.setChecked(True)
         self.BibleSearchCheckBox.setObjectName(u'BibleSearchCheckBox')
         self.BibleSearchLayout.addWidget(self.BibleSearchCheckBox)
         self.BibleRightLayout.addWidget(self.BibleSearchGroupBox)
@@ -112,6 +110,11 @@ class BiblesTab(SettingsTab):
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.BibleRightLayout.addItem(self.BibleRightSpacer)
         self.BibleLayout.addWidget(self.BibleRightWidget)
+        
+        QtCore.QObject.connect(self.NewChaptersCheckBox,\
+                        QtCore.SIGNAL("stateChanged(int)"), self.onNewChaptersCheckBoxchanged)
+        QtCore.QObject.connect(self.BibleSearchCheckBox,\
+                        QtCore.SIGNAL("stateChanged(int)"), self.onBibleSearchCheckBoxchanged)                         
 
     def retranslateUi(self):
         self.VerseDisplayGroupBox.setTitle(translate("SettingsForm", "Verse Display"))
@@ -127,6 +130,18 @@ class BiblesTab(SettingsTab):
         self.BibleSearchGroupBox.setTitle(translate("SettingsForm", "Search"))
         self.BibleSearchCheckBox.setText(translate("SettingsForm", "Search-as-you-type"))
 
+    def onNewChaptersCheckBoxchanged(self):
+        check_box = self.NewChaptersCheckBox.checkState()
+        self.new_chapter_check = False
+        if check_box == 2: # we have a set value convert to True/False
+            self.new_chapter_check = True
+            
+    def onBibleSearchCheckBoxchanged(self):
+        bible_search = self.BibleSearchCheckBox.checkState()
+        self.bible_search_check = False
+        if bible_search == 2: # we have a set value convert to True/False
+            self.bible_search_check = True            
+
     def load(self):
         bible_output_style = self.config.get_config("output style", "P")
         if bible_output_style == "P":
@@ -135,18 +150,31 @@ class BiblesTab(SettingsTab):
         else:
             self.VerseRadioButton.setChecked(True)
             self.paragraph_format = False
-        display_new_chapters = self.config.get_config("display new chapters", "0")
-        #self.NewChaptersCheckBox.setState(display_new_chapters)
-        if display_new_chapters == 0:
-            self.display_new_chapters = True
-
+        check_box = self.config.get_config("display new chapter", "0")
+        self.new_chapter_check = True
+        # used for first time initialisation
+        # mode_layout will be a string with True/False so need to fix and make boolean
+        if check_box == '0'or check_box == "False":   
+            self.new_chapter_check  = False
+        else:
+            self.NewChaptersCheckBox.setChecked(True)
+        self.display_style = int(self.config.get_config("display brackets", "0"))
+        self.DisplayStyleComboBox.setCurrentIndex(self.display_style)
+        search_type = self.config.get_config("search as type", "2")
+        self.bible_search_check = True
+        # used for first time initialisation
+        # mode_layout will be a string with True/False so need to fix and make boolean
+        if search_type == '0'or search_type == "False":   
+           self.bible_search_check  = False
+        else:
+            self.BibleSearchCheckBox.setChecked(True)
 
     def save(self):
         if self.ParagraphRadioButton.isChecked():
             self.config.set_config("output style", "P")
         else:
             self.config.set_config("output style", "V")
-        self.config.set_config("display new chapter", str(self.NewChaptersCheckBox.checkState()))
+        self.config.set_config("display new chapter", str(self.new_chapter_check))
         self.config.set_config("display brackets", str(self.DisplayStyleComboBox.currentIndex()))
-        self.config.set_config("search as type", str(self.BibleSearchCheckBox.checkState()))
+        self.config.set_config("search as type", str(self.bible_search_check))
 
