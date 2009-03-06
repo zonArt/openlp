@@ -26,8 +26,8 @@ from openlp.core.lib import Plugin, PluginUtils, MediaManagerItem
 import logging
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from listwithpreviews import ListWithPreviews
-from imageserviceitem import ImageServiceItem
+from openlp.plugins.images.lib import ListWithPreviews
+from openlp.plugins.images.lib import ImageServiceItem
 
 class ImagePlugin(Plugin, PluginUtils):
     global log
@@ -126,7 +126,7 @@ class ImagePlugin(Plugin, PluginUtils):
             filename = self.ImageListData.get_filename(i)
             log.info("Click %s:%s"%(str(where), filename))
             where.add(filename)
-            
+
         where.render()
 
     def onImagePreviewClick(self):
