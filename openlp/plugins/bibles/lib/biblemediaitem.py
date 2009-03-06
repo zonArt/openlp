@@ -26,6 +26,7 @@ from openlp.core.lib import MediaManagerItem, Receiver
 from openlp.core.resources import *
 
 from openlp.plugins.bibles.forms import BibleImportForm
+from openlp.plugins.bibles.lib import BiblesTab
 
 class BibleMediaItem(MediaManagerItem):
     """
@@ -242,6 +243,7 @@ class BibleMediaItem(MediaManagerItem):
         self.ClearAdvancedSearchComboBox.clear()
 
     def loadBibles(self):
+        log.debug("Loading Bibles")        
         bibles = self.parent.biblemanager.get_bibles('full')
         for bible in bibles:  # load bibles into the combo boxes
             self.QuickVersionComboBox.addItem(bible)
@@ -285,6 +287,7 @@ class BibleMediaItem(MediaManagerItem):
             self.adjustComboBox(1, vse, self.AdvancedToVerse)
 
     def onAdvancedSearchButton(self):
+        log.debug("Advanced Search Button pressed")
         bible = str(self.AdvancedVersionComboBox.currentText())
         book = str(self.AdvancedBookComboBox.currentText())
         chapter_from =  int(self.AdvancedFromChapter.currentText())
@@ -308,13 +311,13 @@ class BibleMediaItem(MediaManagerItem):
         self._adjust_combobox(1, vse, self.AdvancedToVerse)
 
     def onQuickSearchButton(self):
-        self.log.debug("onQuickSearchButton")
+        log.debug("Quick Search Button pressed")
         bible = str(self.QuickVersionComboBox.currentText())
         text = str(self.QuickSearchEdit.displayText())
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
             self.BibleListView.clear() # clear the results
             self.BibleListView.setRowCount(0)
-        elif self.QuickSearchComboBox.currentIndex() == 1:
+        if self.QuickSearchComboBox.currentIndex() == 1:
             self.search_results = self.parent.biblemanager.get_verse_from_text(bible, text)
         else:
             self.searchByReference(bible, text)
@@ -322,7 +325,9 @@ class BibleMediaItem(MediaManagerItem):
             self.displayResults(bible)
 
     def onBiblePreviewClick(self):
+        log.debug("Bible Preview Button pressed")        
         items = self.BibleListView.selectedItems()
+        old_chapter = ''
         for item in items:
             text = str(item.text())
             verse = text[:text.find("(")]
@@ -332,31 +337,32 @@ class BibleMediaItem(MediaManagerItem):
             chapter = str(self.search_results[0][1])
             verse = str(self.search_results[0][2])
             text = self.search_results[0][3]
-            o = self.SettingsOutputStyleComboBox.currentIndex()
-            v = self.SettingsVerseStyleComboBox.currentIndex()
-            if o == 1: #Paragraph
-                text = text + u"\n"
-            if v == 1: #Paragraph
-                loc = self._format_verse(chapter, verse, u"(", u")")
-            elif v == 2: #Paragraph
-                loc = self._format_verse(chapter, verse, u"{", u"}")
-            elif v == 3: #Paragraph
-                loc = self._format_verse(chapter, verse, u"[", u"]")
+            if self.parent.bibles_tab.paragraph_style: #Paragraph
+                text = text + u'\n'
+            if self.parent.bibles_tab.display_style == 1:
+                loc = self.formatVerse(old_chapter, chapter, verse, u'(', u')')
+            elif  self.parent.bibles_tab.display_style == 2:
+                loc = self.formatVerse(old_chapter, chapter, verse, u'{', u'}')
+            elif  self.parent.bibles_tab.display_style == 3: 
+                loc = self.formatVerse(old_chapter, chapter, verse, u'[', u']')
             else:
-                loc = self._format_verse(chapter, verse, u"", u"")
+                loc = self.formatVerse(old_chapter, chapter, verse, u'', u'')
+            old_chapter = chapter
             print book
             print loc
             print text
 
-    def formatVerse(self, chapter, verse, opening, closing):
+    def formatVerse(self, old_chapter, chapter, verse, opening, closing):
         loc = opening
-        if self.SettingsNewChapterCheck.checkState() == 2:
-            loc += chapter + u':'
+        if self.parent.bibles_tab.new_chapter_check:
+            if old_chapter != chapter:
+                loc += chapter + u':'
         loc += verse
         loc += closing
         return loc
 
     def reloadBibles(self):
+        log.debug("Reloading Bibles")        
         self.parent.biblemanager.reload_bibles()
         self.initialiseForm()
 
@@ -405,6 +411,7 @@ class BibleMediaItem(MediaManagerItem):
             self.BibleListView.setRowHeight(row_count, 20)
 
     def searchByReference(self, bible,  search):
+        log.debug("searchByReference %s ,%s", bible, search)        
         book = ''
         start_chapter = ''
         end_chapter = ''
@@ -482,6 +489,6 @@ class BibleMediaItem(MediaManagerItem):
                 int(start_chapter), int(end_chapter), int(start_verse),
                 int(end_verse))
         else:
-            reply = QtGui.QMessageBox.information(self.MediaManagerItem,
+            reply = QtGui.QMessageBox.information(self,
                 translate(u'BibleMediaItem', u'Information'),
                 translate(u'BibleMediaItem', message))

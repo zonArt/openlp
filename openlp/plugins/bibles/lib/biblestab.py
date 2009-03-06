@@ -118,7 +118,9 @@ class BiblesTab(SettingsTab):
         QtCore.QObject.connect(self.VerseRadioButton,
             QtCore.SIGNAL("pressed()"), self.onVerseRadioButtonPressed)
         QtCore.QObject.connect(self.ParagraphRadioButton,
-            QtCore.SIGNAL("pressed()"), self.onParagraphRadioButtonPressed)             
+            QtCore.SIGNAL("pressed()"), self.onParagraphRadioButtonPressed)
+        QtCore.QObject.connect(self.DisplayStyleComboBox,
+            QtCore.SIGNAL("activated(int)"), self.onDisplayStyleComboBoxChanged)            
 
     def retranslateUi(self):
         self.VerseDisplayGroupBox.setTitle(translate('SettingsForm', 'Verse Display'))
@@ -134,6 +136,9 @@ class BiblesTab(SettingsTab):
         self.BibleSearchGroupBox.setTitle(translate('SettingsForm', 'Search'))
         self.BibleSearchCheckBox.setText(translate('SettingsForm', 'Search-as-you-type'))
 
+    def onDisplayStyleComboBoxChanged(self):
+        self.display_style = self.DisplayStyleComboBox.currentIndex()
+        
     def onVerseRadioButtonPressed(self):
         self.paragraph_style = False
 
@@ -170,6 +175,6 @@ class BiblesTab(SettingsTab):
     def save(self):
         self.config.set_config("paragraph style", str(self.paragraph_style))
         self.config.set_config("display new chapter", str(self.new_chapter_check))
-        self.config.set_config("display brackets", str(self.DisplayStyleComboBox.currentIndex()))
+        self.config.set_config("display brackets", str(self.display_style))
         self.config.set_config("search as type", str(self.bible_search_check))
 
