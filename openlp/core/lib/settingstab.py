@@ -57,3 +57,9 @@ class SettingsTab(QtGui.QWidget):
     
     def save(self):
         pass
+        
+    def convertStringToBoolean(self, stringvalue):
+        if stringvalue.lower() == 'true':
+            return True
+        else:
+            return False

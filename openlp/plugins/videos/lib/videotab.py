@@ -29,7 +29,7 @@ class VideoTab(SettingsTab):
     VideoTab is the video settings tab in the settings dialog.
     """
     def __init__(self):
-        SettingsTab.__init__(self, u'Video')
+        SettingsTab.__init__(self, u'Videos')
 
     def setupUi(self):
         self.setObjectName(u'VideoTab')
@@ -51,9 +51,9 @@ class VideoTab(SettingsTab):
         self.VideoModeLayout.addWidget(self.UseVMRLabel)
         
         self.VideoLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.VideoModeGroupBox)
-        
-        QtCore.QObject.connect(self.UseVMRCheckBox,\
-                               QtCore.SIGNAL("stateChanged(int)"), self.onVMRCheckBoxchanged)             
+        # Signals and slots        
+        QtCore.QObject.connect(self.UseVMRCheckBox,
+            QtCore.SIGNAL("stateChanged(int)"), self.onVMRCheckBoxChanged)             
         
     def retranslateUi(self):
         self.VideoModeGroupBox.setTitle(translate("SettingsForm", "Video Mode"))
@@ -64,21 +64,16 @@ class VideoTab(SettingsTab):
 "</style></head><body style=\" font-family:\'DejaVu Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic;\">No video preview available with VMR enabled</span></p></body></html>"))
 
-    def onVMRCheckBoxchanged(self):
-        mode_layout = self.UseVMRCheckBox.checkState()
-        self.mode_layout = False
-        if mode_layout == 2: # we have a set value convert to True/False
-            self.mode_layout = True
+    def onVMRCheckBoxChanged(self):
+        use_vmr_mode = self.UseVMRCheckBox.checkState()
+        self.use_vmr_mode = False
+        if use_vmr_mode == 2: # we have a set value convert to True/False
+            self.use_vmr_mode = True
     
     def load(self):
-        mode_layout = self.config.get_config("use mode layout",u"0" )
-        self.mode_layout = True
-        # used for first time initialisation
-        # mode_layout will be a string with True/False so need to fix and make boolean
-        if mode_layout == '0'or mode_layout == "False":   
-            self.mode_layout = False
-        else:
+        self.use_vmr_mode = self.convertStringToBoolean(self.config.get_config('use mode layout', u'False'))
+        if self.use_vmr_mode :
             self.UseVMRCheckBox.setChecked(True)
         
     def save(self):
-        self.config.set_config("use mode layout", str(self.mode_layout))        
+        self.config.set_config('use mode layout', str(self.use_vmr_mode))        
