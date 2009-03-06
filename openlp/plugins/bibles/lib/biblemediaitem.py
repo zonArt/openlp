@@ -354,9 +354,10 @@ class BibleMediaItem(MediaManagerItem):
 
     def formatVerse(self, old_chapter, chapter, verse, opening, closing):
         loc = opening
-        if self.parent.bibles_tab.new_chapter_check:
-            if old_chapter != chapter:
-                loc += chapter + u':'
+        if old_chapter != chapter:
+            loc += chapter + u':'
+        elif not self.parent.bibles_tab.new_chapter_check:
+            loc += chapter + u':'            
         loc += verse
         loc += closing
         return loc
