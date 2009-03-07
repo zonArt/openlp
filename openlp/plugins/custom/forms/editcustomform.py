@@ -40,7 +40,8 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         QtCore.QObject.connect(self.DeleteButton, QtCore.SIGNAL("pressed()"), self.onDeleteButtonPressed)
         QtCore.QObject.connect(self.ClearButton, QtCore.SIGNAL("pressed()"), self.onClearButtonPressed)
         QtCore.QObject.connect(self.TitleEdit, QtCore.SIGNAL("lostFocus()"), self.validate)                
-        QtCore.QObject.connect(self.VerseListView, QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem*)"), self.onVerseListViewSelected)        
+        QtCore.QObject.connect(self.VerseListView, QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem*)"), self.onVerseListViewSelected)
+        QtCore.QObject.connect(self.VerseListView, QtCore.SIGNAL("itemPressed(QListWidgetItem*)"), self.onVerseListViewPressed)
         # Create other objects and forms
         self.custommanager = custommanager
         self.initialise()
@@ -49,6 +50,8 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
 
     def accept(self):
         self.validate()
+        for i in range (0, self.VerseListView.count()):
+            print self.VerseListView.item(i).text()
         if self.valid:
             self.close()  
             
@@ -57,22 +60,41 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         
     def onClearButtonPressed(self):
         self.VerseTextEdit_3.clear()
-        
+
+    def onVerseListViewPressed(self, item):
+        self.DeleteButton.setEnabled(True)
+        self.EditButton_3.setEnabled(True)
+        self.selectedRow = self.VerseListView.currentRow()        
+ 
     def onVerseListViewSelected(self, item):
         self.VerseTextEdit_3.setPlainText(item.text())
+        self.DeleteButton.setEnabled(False)
+        self.EditButton_3.setEnabled(False)        
+        self.SaveButton_3.setEnabled(True)
         
     def onAddButtonPressed(self):
-        print self.VerseTextEdit_3
         self.VerseListView.addItem(self.VerseTextEdit_3.toPlainText())
+        self.DeleteButton.setEnabled(False)
+        self.VerseTextEdit_3.clear()        
         
     def onEditButtonPressed(self):
-        pass
+        self.VerseTextEdit_3.setPlainText(self.VerseListView.currentItem().text())
+        self.DeleteButton.setEnabled(False)
+        self.EditButton_3.setEnabled(False)        
+        self.SaveButton_3.setEnabled(True)
         
     def onSaveButtonPressed(self):
-        pass
+        print "save pressed"
+        print self.VerseListView.currentItem().text()
+        qlv = QtGui.QListWidgetItem(self.VerseTextEdit_3.toPlainText())
+        print qlv, qlv.text()
+        print self.VerseListView.currentRow()
+        self.VerseListView.setCurrentItem(qlv)
+        print "---"
+        self.SaveButton_3.setEnabled(False)
         
     def onDeleteButtonPressed(self):
-        pass
+        self.VerseListView.takeItem(self.VerseListView.currentRow())
     
     def validate(self):
         invalid = 0
@@ -87,6 +109,9 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
     
     def initialise(self):
         self.valid = True
+        self.DeleteButton.setEnabled(False)
+        self.EditButton_3.setEnabled(False)
+        self.SaveButton_3.setEnabled(False)        
         pass
 #        list = self.songmanager.get_authors()
 #        self.AuthorsSelectionComboItem.clear()
