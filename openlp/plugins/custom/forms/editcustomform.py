@@ -38,20 +38,32 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         QtCore.QObject.connect(self.EditButton_3, QtCore.SIGNAL("pressed()"), self.onEditButtonPressed)
         QtCore.QObject.connect(self.SaveButton_3, QtCore.SIGNAL("pressed()"), self.onSaveButtonPressed)
         QtCore.QObject.connect(self.DeleteButton, QtCore.SIGNAL("pressed()"), self.onDeleteButtonPressed)
+        QtCore.QObject.connect(self.ClearButton, QtCore.SIGNAL("pressed()"), self.onClearButtonPressed)
+        QtCore.QObject.connect(self.TitleEdit, QtCore.SIGNAL("lostFocus()"), self.validate)                
+        QtCore.QObject.connect(self.VerseListView, QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem*)"), self.onVerseListViewSelected)        
         # Create other objects and forms
         self.custommanager = custommanager
         self.initialise()
-
+        self.VerseListView.setAlternatingRowColors(True)
         #self.savebutton = self.ButtonBox.button(QtGui.QDialogButtonBox.Save)
 
     def accept(self):
-        pass
-        
+        self.validate()
+        if self.valid:
+            self.close()  
+            
     def rejected(self):
         self.close()
         
+    def onClearButtonPressed(self):
+        self.VerseTextEdit_3.clear()
+        
+    def onVerseListViewSelected(self, item):
+        self.VerseTextEdit_3.setPlainText(item.text())
+        
     def onAddButtonPressed(self):
-        pass
+        print self.VerseTextEdit_3
+        self.VerseListView.addItem(self.VerseTextEdit_3.toPlainText())
         
     def onEditButtonPressed(self):
         pass
@@ -62,16 +74,28 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
     def onDeleteButtonPressed(self):
         pass
     
+    def validate(self):
+        invalid = 0
+        self.valid = True
+        if len(self.TitleEdit.displayText()) == 0:
+            invalid += 1
+            self.TitleLabel.setStyleSheet('color: red')
+        else:
+            self.TitleLabel.setStyleSheet('color: black')
+        if invalid == 1:
+            self.valid = False
+    
     def initialise(self):
+        self.valid = True
         pass
 #        list = self.songmanager.get_authors()
 #        self.AuthorsSelectionComboItem.clear()
 #        for i in list:
 #            self.AuthorsSelectionComboItem.addItem( i.display_name)
 
-    def loadSong(self, id):
+    def loadCustomItem(self, id):
         pass
-#        self.song = self.songmanager.get_song(id)
+        #self.item = self.songmanager.get_song(id)
 #        self.TitleEditItem.setText(self.song.title)
 #        self.LyricsTextEdit.setText(self.song.lyrics)
 #        self.CopyrightEditItem.setText(self.song.copyright)
