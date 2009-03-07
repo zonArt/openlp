@@ -72,7 +72,7 @@ class BibleCSVImpl(BibleCommon):
             if book_ptr is not p0:
                 book = self.bibledb.get_bible_book(p0)
                 book_ptr = book.name
-                dialogobject.increment_progress_bar(book.name) # increament the progress bar
+                dialogobject.incrementProgressBar(book.name) # increament the progress bar
             self.bibledb.add_verse(book.id, p[1], p[2], p3)
             count += 1
             if count % 3 == 0:   #Every x verses repaint the screen

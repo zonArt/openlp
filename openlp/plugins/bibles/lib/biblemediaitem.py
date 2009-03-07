@@ -263,7 +263,7 @@ class BibleMediaItem(MediaManagerItem):
         self.initialiseBible(str(self.AdvancedVersionComboBox.currentText())) # restet the bible info
 
     def onBibleNewClick(self):
-        self.bibleimportform = BibleImportForm(self.config, self.parent.biblemanager, self)
+        self.bibleimportform = BibleImportForm(self.parent.config, self.parent.biblemanager, self)
         self.bibleimportform.exec_()
         pass
 
@@ -365,7 +365,8 @@ class BibleMediaItem(MediaManagerItem):
     def reloadBibles(self):
         log.debug("Reloading Bibles")        
         self.parent.biblemanager.reload_bibles()
-        self.initialiseForm()
+        #self.initialiseForm()
+        self.loadBibles()
 
     def initialiseBible(self, bible):
         log.debug('initialiseBible %s', bible)

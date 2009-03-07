@@ -52,39 +52,95 @@ class BibleOSISImpl():
         count = 0
         verseText = "<verse osisID="
         testament = 1
-        for f in osis.readlines():
+        for file in osis.readlines():
             if self.loadbible == False:  # cancel pressed
                 break
-            #print f
-            s = f.find(verseText)
-            if s > -1: # we have a verse
-                e= f.find(">", s)
-                ref =  f[s+15:e-1]  # Book Reference 
+#            print file
+            pos = file.find(verseText)
+            if pos > -1: # we have a verse
+                epos= file.find(">", pos)
+                ref =  file[pos+15:epos-1]  # Book Reference 
                 #lets find the bible text
-                s = e + 1 # find start of text
-                e = f.find("</verse>", s) # end  of text
-                t = f[s:e] 
-                #print s, e, f[s:e] # Found Basic Text
+                pos = epos + 1 # find start of text
+                epos = file.find("</verse>", pos) # end  of text
+                text = file[pos : epos] 
+                #print pos, e, f[pos:e] # Found Basic Text
                 #remove tags of extra information
-
-                s = t.find("<FI>")
-                while s > -1:
-                    e = t.find("<Fi>", s)
-                    if e == -1: # TODO
-                        #print "Y", s, e
-                        s = -1
+                
+                pos = text.find("<title")
+                while pos > -1:
+                    epos = text.find("</title>", pos)
+                    if epos == -1: # TODO
+                        #print "Y", pos, epos
+                        pos = -1
                     else:
-                        t =  t[:s] + t[e + 4: ]
-                        s = t.find("<FI>") 
+                        text =  text[:pos] + text[epos + 8: ]
+                        pos = text.find("<title") 
+                        
+                pos = text.find("<divineName")
+                while pos > -1:
+                    epos = text.find("</divineName>", pos)
+                    if epos == -1: # TODO
+                        #print "Y", pos, epos
+                        pos = -1
+                    else:
+                        text =  text[:pos] + text[epos + 13: ]
+                        pos = text.find("<divineName")                         
 
-                s = t.find("<RF>")
-                while s > -1:
-                    e = t.find("<Rf>", s)
-                    t =  t[:s] + t[e + 4: ]
-                    #print "X", s, e, t
-                    s = t.find("<RF>")
+                pos = text.find("<note")
+                while pos > -1:
+                    epos = text.find("</note>", pos)
+                    if epos == -1: # TODO
+                        #print "Y", pos, epos
+                        pos = -1
+                    else:
+                        text =  text[:pos] + text[epos + 7: ]
+                        pos = text.find("<note")
+                        
+                pos = text.find("<lb")
+                while pos > -1:
+                    epos = text.find("/>", pos)
+                    text =  text[:pos] + text[epos + 2: ]
+                    pos = text.find("<lb")                         
+
+                pos = text.find("<q")
+                while pos > -1:
+                    epos = text.find("/>", pos)
+                    text =  text[:pos] + text[epos + 2: ]
+                    pos = text.find("<q")
+                    
+                pos = text.find("<l")
+                while pos > -1:
+                    epos = text.find("/>", pos)
+                    text =  text[:pos] + text[epos + 2: ]
+                    pos = text.find("<l")
+                    
+                pos = text.find("<lg")
+                while pos > -1:
+                    epos = text.find("/>", pos)
+                    text =  text[:pos] + text[epos + 2: ]
+                    pos = text.find("<lg") 
+
+                pos = text.find("<FI>")
+                while pos > -1:
+                    epos = text.find("<Fi>", pos)
+                    if epos == -1: # TODO
+                        #print "Y", search_text, e
+                        pos = -1
+                    else:
+                        text =  text[:pos] + text[epos + 4: ]
+                        pos = text.find("<FI>") 
+
+                pos = text.find("<RF>")
+                while pos > -1:
+                    epos = text.find("<Rf>", pos)
+                    text =  text[:pos] + text[epos + 4: ]
+                    #print "X", pos, epos, text
+                    pos = text.find("<RF>")
   
                 p = ref.split(".", 3)  # split up the reference
+                #print p, ">>>", text  
+
                 if book_ptr != p[0]:
                     if book_ptr == None:  # first time through
                         if p[0]  == "Gen":  # set the max book size depending on the first book read
@@ -95,10 +151,10 @@ class BibleOSISImpl():
                         testament += 1
                     book_ptr = p[0]
                     book = self.bibledb.create_book(self.booksOfBible[p[0]] , self.abbrevOfBible[p[0]], testament)
-                    dialogobject.increment_progress_bar(self.booksOfBible[p[0]] )
+                    dialogobject.incrementProgressBar(self.booksOfBible[p[0]] )
                     Receiver().send_message("openlpprocessevents")                                        
                     count = 0
-                self.bibledb.add_verse(book.id, p[1], p[2], t)
+                self.bibledb.add_verse(book.id, p[1], p[2], text)
                 count += 1
                 if count % 3 == 0:   #Every x verses repaint the screen
                     Receiver().send_message("openlpprocessevents")                    
