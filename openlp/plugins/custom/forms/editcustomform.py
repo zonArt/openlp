@@ -41,7 +41,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         QtCore.QObject.connect(self.ClearButton, QtCore.SIGNAL("pressed()"), self.onClearButtonPressed)
         QtCore.QObject.connect(self.TitleEdit, QtCore.SIGNAL("lostFocus()"), self.validate)                
         QtCore.QObject.connect(self.VerseListView, QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem*)"), self.onVerseListViewSelected)
-        QtCore.QObject.connect(self.VerseListView, QtCore.SIGNAL("itemPressed(QListWidgetItem*)"), self.onVerseListViewPressed)
+        QtCore.QObject.connect(self.VerseListView, QtCore.SIGNAL("itemClicked(QListWidgetItem*)"), self.onVerseListViewPressed)
         # Create other objects and forms
         self.custommanager = custommanager
         self.initialise()
@@ -84,13 +84,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.SaveButton_3.setEnabled(True)
         
     def onSaveButtonPressed(self):
-        print "save pressed"
-        print self.VerseListView.currentItem().text()
-        qlv = QtGui.QListWidgetItem(self.VerseTextEdit_3.toPlainText())
-        print qlv, qlv.text()
-        print self.VerseListView.currentRow()
-        self.VerseListView.setCurrentItem(qlv)
-        print "---"
+        self.VerseListView.currentItem().setText(self.VerseTextEdit_3.toPlainText())
         self.SaveButton_3.setEnabled(False)
         
     def onDeleteButtonPressed(self):
