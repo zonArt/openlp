@@ -22,6 +22,7 @@ from PyQt4 import Qt, QtCore, QtGui
 from authorsform import AuthorsForm
 from topicsform import TopicsForm
 from songbookform import SongBookForm
+from editverseform import EditVerseForm
 
 from editsongdialog import Ui_EditSongDialog
 
@@ -29,22 +30,33 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     """
     Class documentation goes here.
     """
-    def __init__(self, songmanager, parent = None):
+    def __init__(self, songmanager, parent=None):
         """
         Constructor
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # Connecting signals and slots
-        QtCore.QObject.connect(self.AddAuthorsButton, QtCore.SIGNAL('clicked()'), self.onAddAuthorsButtonClicked)
-        QtCore.QObject.connect(self.AddTopicButton, QtCore.SIGNAL('clicked()'), self.onAddTopicButtonClicked)
-        QtCore.QObject.connect(self.AddSongBookButton, QtCore.SIGNAL('clicked()'), self.onAddSongBookButtonClicked)
-        QtCore.QObject.connect(self.CopyrightInsertItem, QtCore.SIGNAL('clicked()'), self.onCopyrightInsertItemTriggered)
+        QtCore.QObject.connect(self.AddAuthorsButton,
+            QtCore.SIGNAL('clicked()'), self.onAddAuthorsButtonClicked)
+        QtCore.QObject.connect(self.AddTopicButton,
+            QtCore.SIGNAL('clicked()'), self.onAddTopicButtonClicked)
+        QtCore.QObject.connect(self.AddSongBookButton,
+            QtCore.SIGNAL('clicked()'), self.onAddSongBookButtonClicked)
+        QtCore.QObject.connect(self.CopyrightInsertItem,
+            QtCore.SIGNAL('clicked()'), self.onCopyrightInsertItemTriggered)
+        QtCore.QObject.connect(self.AddButton,
+            QtCore.SIGNAL('clicked()'), self.onAddVerseButtonClicked)
+        QtCore.QObject.connect(self.EditButton,
+            QtCore.SIGNAL('clicked()'), self.onEditVerseButtonClicked)
+        QtCore.QObject.connect(self.DeleteButton,
+            QtCore.SIGNAL('clicked()'), self.onDeleteVerseButtonClicked)
         # Create other objects and forms
         self.songmanager = songmanager
         self.authors_form = AuthorsForm(self.songmanager)
         self.topics_form = TopicsForm(self.songmanager)
         self.song_book_form = SongBookForm(self.songmanager)
+        self.verse_form = EditVerseForm()
         self.initialise()
 
         self.AuthorsListView.setColumnCount(2)
@@ -64,8 +76,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def loadSong(self, id):
         self.song = self.songmanager.get_song(id)
         self.TitleEditItem.setText(self.song.title)
-        self.LyricsTextEdit.setText(self.song.lyrics)
         self.CopyrightEditItem.setText(self.song.copyright)
+        #self.LyricsTextEdit.setText(self.song.lyrics)
+        verses = self.song.lyrics.split('\n\n')
+        for verse in verses:
+            self.VerseListWidget.addItem(verse)
 
         self.AuthorsListView.clear() # clear the results
         self.AuthorsListView.setHorizontalHeaderLabels(QtCore.QStringList(['', u'Author']))
@@ -103,6 +118,21 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         self.song_book_form.load_form()
         self.song_book_form.exec_()
+
+    def onAddVerseButtonClicked(self):
+        self.verse_form.setVerse('')
+        self.verse_form.exec_()
+        self.VerseListWidget.addItem(self.verse_form.getVerse())
+
+    def onEditVerseButtonClicked(self):
+        item = self.VerseListWidget.currentItem()
+        self.verse_form.setVerse(item.text())
+        self.verse_form.exec_()
+        item.setText(self.verse_form.getVerse())
+
+    def onDeleteVerseButtonClicked(self):
+        item = self.VerseListWidget.takeItem(self.VerseListWidget.currentRow())
+        item = None
 
     def _validate_song(self):
         """

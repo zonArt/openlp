@@ -17,14 +17,24 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
+from PyQt4 import Qt, QtCore, QtGui
 
-from editsongform import EditSongForm
-from authorsform import AuthorsForm
-from topicsform import TopicsForm
-from songbookform import SongBookForm
-from editverseform import EditVerseForm
+from editversedialog import Ui_EditVerseDialog
 
-from openlpexportform import OpenLPExportForm
-from openlpimportform import OpenLPImportForm
-from opensongexportform import OpenSongExportForm
-from opensongimportform import OpenSongImportForm
+class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
+    """
+    This is the form that is used to edit the verses of the song.
+    """
+
+    def __init__(self, parent=None):
+        """
+        Constructor
+        """
+        QtGui.QDialog.__init__(self, parent)
+        self.setupUi(self)
+
+    def setVerse(self, verse):
+        self.VerseTextEdit.setPlainText(verse)
+
+    def getVerse(self):
+        return self.VerseTextEdit.toPlainText()

@@ -1,12 +1,12 @@
 <ui version="4.0" >
  <class>EditSongDialog</class>
- <widget class="QWidget" name="EditSongDialog" >
+ <widget class="QDialog" name="EditSongDialog" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
     <width>786</width>
-    <height>669</height>
+    <height>704</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -15,6 +15,9 @@
   <property name="windowIcon" >
    <iconset resource="../images/openlp-2.qrc" >
     <normaloff>:/icon/openlp.org-icon-32.bmp</normaloff>:/icon/openlp.org-icon-32.bmp</iconset>
+  </property>
+  <property name="modal" >
+   <bool>true</bool>
   </property>
   <layout class="QVBoxLayout" name="EditSongLayout" >
    <property name="spacing" >
@@ -76,19 +79,64 @@
           </widget>
          </item>
          <item>
-          <widget class="QTextEdit" name="LyricsTextEdit" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="MinimumExpanding" hsizetype="Expanding" >
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="lineWrapMode" >
-            <enum>QTextEdit::NoWrap</enum>
-           </property>
-           <property name="acceptRichText" >
-            <bool>false</bool>
-           </property>
+          <widget class="QWidget" native="1" name="VerseEditWidget" >
+           <layout class="QVBoxLayout" name="VerseEditLayout" >
+            <property name="spacing" >
+             <number>8</number>
+            </property>
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QListWidget" name="VerseListWidget" />
+            </item>
+            <item>
+             <widget class="QWidget" native="1" name="VerseButtonWidget" >
+              <layout class="QHBoxLayout" name="VerseButtonLayout" >
+               <property name="spacing" >
+                <number>8</number>
+               </property>
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <item>
+                <spacer name="ButtonSpacer" >
+                 <property name="orientation" >
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0" >
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="AddButton" >
+                 <property name="text" >
+                  <string>Add</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="EditButton" >
+                 <property name="text" >
+                  <string>Edit</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="DeleteButton" >
+                 <property name="text" >
+                  <string>Delete</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
          <item>
@@ -111,10 +159,16 @@
          <item>
           <widget class="QTextEdit" name="CommentsEdit" >
            <property name="sizePolicy" >
-            <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+            <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="maximumSize" >
+            <size>
+             <width>16777215</width>
+             <height>84</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -504,7 +558,6 @@
  <tabstops>
   <tabstop>TitleEditItem</tabstop>
   <tabstop>AlternativeEdit</tabstop>
-  <tabstop>LyricsTextEdit</tabstop>
   <tabstop>VerseOrderEdit</tabstop>
   <tabstop>CommentsEdit</tabstop>
   <tabstop>ThemeSelectionComboItem</tabstop>

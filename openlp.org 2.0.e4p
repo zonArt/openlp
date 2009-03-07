@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2009-03-07, 01:40:29 -->
+<!-- Saved: 2009-03-07, 19:39:48 -->
 <!-- Copyright (C) 2009 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.6">
   <Language>en</Language>
@@ -133,11 +133,26 @@
     <Source>openlp/plugins/videos/lib/__init__.py</Source>
     <Source>openlp/plugins/videos/lib/videotab.py</Source>
     <Source>openlp/plugins/bibles/lib/biblemediaitem.py</Source>
-    <Source>openlp/plugins/images/imageserviceitem.py</Source>
     <Source>openlp/core/ui/test/test_service_manager.py</Source>
     <Source>openlp/plugins/images/lib/__init__.py</Source>
     <Source>openlp/plugins/images/lib/imageserviceitem.py</Source>
     <Source>openlp/plugins/images/lib/listwithpreviews.py</Source>
+    <Source>resources/forms/Ui_editversedialog.py</Source>
+    <Source>openlp/plugins/songs/forms/editverseform.py</Source>
+    <Source>openlp/plugins/songs/forms/editversedialog.py</Source>
+    <Source>openlp/plugins/custom/__init__.py</Source>
+    <Source>openlp/plugins/custom/customplugin.py</Source>
+    <Source>openlp/plugins/custom/forms/__init__.py</Source>
+    <Source>openlp/plugins/custom/forms/editcustomform.py</Source>
+    <Source>openlp/plugins/custom/forms/editcustomdialog.py</Source>
+    <Source>openlp/plugins/custom/lib/__init__.py</Source>
+    <Source>openlp/plugins/custom/lib/customtab.py</Source>
+    <Source>openlp/plugins/custom/lib/classes.py</Source>
+    <Source>openlp/plugins/custom/lib/tables.py</Source>
+    <Source>openlp/plugins/custom/lib/custommediaitem.py</Source>
+    <Source>openlp/plugins/custom/lib/meta.py</Source>
+    <Source>openlp/plugins/custom/lib/models.py</Source>
+    <Source>openlp/plugins/custom/lib/manager.py</Source>
   </Sources>
   <Forms>
     <Form>resources/forms/openlpexportform.ui</Form>
@@ -156,6 +171,8 @@
     <Form>resources/forms/songbookdialog.ui</Form>
     <Form>resources/forms/topicsdialog.ui</Form>
     <Form>resources/forms/editsongdialog.ui</Form>
+    <Form>resources/forms/editversedialog.ui</Form>
+    <Form>resources/forms/editcustomdialog.ui</Form>
   </Forms>
   <Translations>
   </Translations>
