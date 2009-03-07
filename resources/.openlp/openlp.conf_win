@@ -1,5 +1,7 @@
+[custom]
+db type = sqlite
+
 [bibles]
-suffix name = bible3
 db type = sqlite 
 
 [main]
