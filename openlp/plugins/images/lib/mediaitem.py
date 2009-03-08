@@ -1,0 +1,148 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+"""
+OpenLP - Open Source Lyrics Projection
+Copyright (c) 2008 Raoul Snyman
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; version 2 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place, Suite 330, Boston, MA 02111-1307 USA
+"""
+import logging
+import os
+
+from PyQt4 import QtCore, QtGui
+
+from openlp.core import translate
+from openlp.core.lib import MediaManagerItem
+from openlp.core.resources import *
+
+from openlp.plugins.images.lib import ListWithPreviews
+
+class ImageMediaItem(MediaManagerItem):
+    """
+    This is the custom media manager item for images.
+    """
+    global log
+    log=logging.getLogger("ImageMediaItem")
+    log.info("Image Media Item loaded")
+
+    def __init__(self, parent, icon, title):
+        MediaManagerItem.__init__(self, parent, icon, title)
+
+    def setupUi(self):
+        # Add a toolbar
+        self.addToolbar()
+        # Create buttons for the toolbar
+        ## New Song Button ##
+        self.addToolbarButton(
+            translate('ImageMediaItem', u'Load Image'),
+            translate('ImageMediaItem', u'Load images into openlp.org'),
+            ':/images/image_load.png', self.onImagesNewClick, 'ImageNewItem')
+        ## Delete Song Button ##
+        self.addToolbarButton(
+            translate('ImageMediaItem', u'Delete Image'),
+            translate('ImageMediaItem', u'Delete the selected image'),
+            ':/images/image_delete.png', self.onImageDeleteClick, 'ImageDeleteItem')
+        ## Separator Line ##
+        self.addToolbarSeparator()
+        ## Preview Song Button ##
+        self.addToolbarButton(
+            translate('ImageMediaItem', u'Preview Song'),
+            translate('ImageMediaItem', u'Preview the selected image'),
+            ':/system/system_preview.png', self.onImagePreviewClick, 'ImagePreviewItem')
+        ## Live Song Button ##
+        self.addToolbarButton(
+            translate('ImageMediaItem', u'Go Live'),
+            translate('ImageMediaItem', u'Send the selected image live'),
+            ':/system/system_live.png', self.onImageLiveClick, 'ImageLiveItem')
+        ## Add Song Button ##
+        self.addToolbarButton(
+            translate('ImageMediaItem', u'Add Image To Service'),
+            translate('ImageMediaItem', u'Add the selected image(s) to the service'),
+            ':/system/system_add.png', self.onImageAddClick, 'ImageAddItem')
+        ## Add the songlist widget ##
+        self.ImageListView = QtGui.QListView()
+        self.ImageListView.uniformItemSizes = True
+        self.ImageListData = ListWithPreviews()
+        self.ImageListView.setModel(self.ImageListData)
+
+        self.ImageListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
+        self.ImageListView.setObjectName('ImageListView')
+        self.PageLayout.addWidget(self.ImageListView)
+
+        #define and add the context menu
+        self.ImageListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+
+        self.ImageListView.addAction(self.contextMenuAction(
+            self.ImageListView, ':/system/system_preview.png',
+            translate('ImageMediaItem', u'&Preview Image'),
+            self.onImagePreviewClick))
+        self.ImageListView.addAction(self.contextMenuAction(
+            self.ImageListView, ':/system/system_live.png',
+            translate('ImageMediaItem', u'&Show Live'),
+            self.onImageLiveClick))
+        self.ImageListView.addAction(self.contextMenuAction(
+            self.ImageListView, ':/system/system_add.png',
+            translate('ImageMediaItem', u'&Add to Service'),
+            self.onImageAddClick))
+
+        self.ImageListPreview = QtGui.QWidget()
+        self.PageLayout.addWidget(self.ImageListPreview)
+        self.ImageListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
+        self.ImageListView.setSpacing(1)
+        self.ImageListView.setAlternatingRowColors(True)
+
+    def initialise(self):
+        self.loadImageList(self.parent.config.load_list('image'))
+
+    def onImagesNewClick(self):
+        files = QtGui.QFileDialog.getOpenFileNames(None,
+            translate('ImageMediaItem', u'Select Image(s)'),
+            self.parent.config.get_last_dir(),
+            "Images (*.jpg *.gif *.png *.bmp)")
+        log.info("New image(s)", str(files))
+        if len(files) > 0:
+            self.loadImageList(files)
+            dir, filename = os.path.split(files[0])
+            self.parent.config.set_last_dir(dir)
+            self.parent.config.set_list('images', self.ImageListData.getFileList())
+
+    def loadImageList(self, list):
+        for image in list:
+            self.ImageListData.addRow(image)
+
+    def onImageDeleteClick(self):
+        indexes = self.ImageListView.selectedIndexes()
+        for index in indexes:
+            current_row = int(index.row())
+            self.ImageListData.removeRow(current_row)
+
+        self._save_display_list(self.ImageListData.get_file_list())
+
+    def onImageClick(self, where):
+        indexes = self.ImageListView.selectedIndexes()
+        for index in indexes:
+            filename = self.ImageListData.getFilename(index)
+            log.info("Click %s:%s"%(str(where), filename))
+            where.add(filename)
+        where.render()
+
+    def onImagePreviewClick(self):
+        self.onImageClick(self.preview_service_item)
+
+    def onImageLiveClick(self):
+        self.onImageClick(self.live_service_item)
+
+    def onImageAddClick(self):
+        """Add this item to the OOS"""
+        pass
