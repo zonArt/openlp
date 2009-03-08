@@ -39,9 +39,14 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         QtCore.QObject.connect(self.SaveButton, QtCore.SIGNAL("pressed()"), self.onSaveButtonPressed)
         QtCore.QObject.connect(self.DeleteButton, QtCore.SIGNAL("pressed()"), self.onDeleteButtonPressed)
         QtCore.QObject.connect(self.ClearButton, QtCore.SIGNAL("pressed()"), self.onClearButtonPressed)
-        QtCore.QObject.connect(self.TitleEdit, QtCore.SIGNAL("lostFocus()"), self.validate)
-        QtCore.QObject.connect(self.VerseListView, QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem*)"), self.onVerseListViewSelected)
-        QtCore.QObject.connect(self.VerseListView, QtCore.SIGNAL("itemClicked(QListWidgetItem*)"), self.onVerseListViewPressed)
+        QtCore.QObject.connect(self.UpButton, QtCore.SIGNAL("pressed()"), self.onUpButtonPressed)
+        QtCore.QObject.connect(self.DownButton, QtCore.SIGNAL("pressed()"), self.onDownButtonPressed)        
+        QtCore.QObject.connect(self.TitleEdit, QtCore.SIGNAL("lostFocus()"), self.validate)                
+
+        QtCore.QObject.connect(self.VerseListView, 
+            QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem*)"), self.onVerseListViewSelected)
+        QtCore.QObject.connect(self.VerseListView, 
+            QtCore.SIGNAL("itemClicked(QListWidgetItem*)"), self.onVerseListViewPressed)
         # Create other objects and forms
         self.custommanager = custommanager
         self.initialise()
@@ -58,14 +63,28 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
     def rejected(self):
         self.close()
 
+    def onUpButtonPressed(self):
+        selectedRow = self.VerseListView.currentRow()
+        if selectedRow != 0:
+            qw = self.VerseListView.takeItem(selectedRow)
+            self.VerseListView.insertItem(selectedRow - 1, qw)
+            self.VerseListView.setCurrentRow(selectedRow - 1)
+
+    def onDownButtonPressed(self):
+        print "Down"
+        selectedRow = self.VerseListView.currentRow()
+        if self.selectedRow != self.VerseListView.count() - 1: # zero base arrays
+            qw = self.VerseListView.takeItem(selectedRow)
+            self.VerseListView.insertItem(selectedRow + 1, qw)
+            self.VerseListView.setCurrentRow(selectedRow + 1)            
+
     def onClearButtonPressed(self):
         self.VerseTextEdit.clear()
 
     def onVerseListViewPressed(self, item):
         self.DeleteButton.setEnabled(True)
         self.EditButton.setEnabled(True)
-        self.selectedRow = self.VerseListView.currentRow()
-
+ 
     def onVerseListViewSelected(self, item):
         self.VerseTextEdit.setPlainText(item.text())
         self.DeleteButton.setEnabled(False)

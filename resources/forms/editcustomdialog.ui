@@ -17,8 +17,8 @@
    <iconset resource="../images/openlp-2.qrc">
     <normaloff>:/icon/openlp.org-icon-32.bmp</normaloff>:/icon/openlp.org-icon-32.bmp</iconset>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="TitleLabel">
@@ -32,10 +32,53 @@
      </item>
     </layout>
    </item>
-   <item>
-    <widget class="QListWidget" name="VerseListView"/>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QListWidget" name="VerseListView"/>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QPushButton" name="UpButton">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../images/openlp-2.qrc">
+           <normaloff>:/services/service_up.png</normaloff>:/services/service_up.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>128</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="DownButton">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../images/openlp-2.qrc">
+           <normaloff>:/services/service_down.png</normaloff>:/services/service_down.png</iconset>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
    </item>
-   <item>
+   <item row="2" column="0">
     <widget class="QWidget" name="EditWidget" native="true">
      <layout class="QHBoxLayout" name="EditLayout_3">
       <property name="spacing">
@@ -103,7 +146,7 @@
      </layout>
     </widget>
    </item>
-   <item>
+   <item row="3" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QLabel" name="ThemeLabel">
@@ -117,7 +160,7 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="4" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QLabel" name="CreditLabel">
@@ -131,7 +174,7 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="5" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>

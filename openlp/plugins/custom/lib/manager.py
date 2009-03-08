@@ -91,16 +91,16 @@ class CustomManager():
 #        else:
 #            return self.session.query(Song).get(id)
 #
-#    def save_song(self, song):
-#        """
-#        Saves a song to the database
-#        """
-#        try:
-#            self.session.add(song)
-#            self.session.commit()
-#            return True
-#        except:
-#            return False
+    def save_slides(self, customslide):
+        """
+        Saves a song to the database
+        """
+        try:
+            self.session.add(customslide)
+            self.session.commit()
+            return True
+        except:
+            return False
 #
 #    def delete_song(self, song):
 #        try:

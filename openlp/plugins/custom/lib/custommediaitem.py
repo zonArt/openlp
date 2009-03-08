@@ -75,13 +75,7 @@ class CustomMediaItem(MediaManagerItem):
         self.CustomWidget.setObjectName('CustomWidget')
         self.SearchLayout = QtGui.QGridLayout(self.CustomWidget)
         self.SearchLayout.setObjectName('SearchLayout')
-        self.SearchTypeComboBox = QtGui.QComboBox(self.CustomWidget)
-        self.SearchTypeComboBox.setObjectName('SearchTypeComboBox')
-        self.SearchLayout.addWidget(self.SearchTypeComboBox, 0, 1, 1, 2)
-        self.SearchTypeLabel = QtGui.QLabel(self.CustomWidget)
-        self.SearchTypeLabel.setObjectName('SearchTypeLabel')
-        self.SearchTypeLabel.setText('Search Type:')
-        self.SearchLayout.addWidget(self.SearchTypeLabel, 0, 0, 1, 1)
+
         self.SearchTextLabel = QtGui.QLabel(self.CustomWidget)
         self.SearchTextLabel.setObjectName('SearchTextLabel')
         self.SearchTextLabel.setText('Search Text:')
@@ -103,34 +97,39 @@ class CustomMediaItem(MediaManagerItem):
         self.CustomListView.setColumnCount(2)
         self.CustomListView.setColumnHidden(0, True)
         self.CustomListView.setColumnWidth(1, 240)
-        #self.CustomListView.setColumnWidth(2, 80)
         self.CustomListView.setShowGrid(False)
         self.CustomListView.setSortingEnabled(False)
         self.CustomListView.setAlternatingRowColors(True)
         self.CustomListView.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
-        self.CustomListView.setHorizontalHeaderLabels(QtCore.QStringList(['', u'Custom Name']))
+
         self.CustomListView.horizontalHeader().setVisible(False)
         self.CustomListView.verticalHeader().setVisible(False)
         self.CustomListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.CustomListView.setObjectName('listView')
         self.PageLayout.addWidget(self.CustomListView)
 
-        QtCore.QObject.connect(self.SearchTextButton, QtCore.SIGNAL("pressed()"), self.onSearchTextButtonClick)
-        QtCore.QObject.connect(self.ClearTextButton, QtCore.SIGNAL("pressed()"), self.onClearTextButtonClick)
-        QtCore.QObject.connect(self.SearchTextEdit, QtCore.SIGNAL("textChanged(const QString&)"), self.onSearchTextEditChanged)
-
-        QtCore.QObject.connect(self.CustomListView, QtCore.SIGNAL("itemPressed(QTableWidgetItem * item)"), self.onCustomSelected)
-
+        # Signals
+        QtCore.QObject.connect(self.SearchTextButton, 
+            QtCore.SIGNAL("pressed()"), self.onSearchTextButtonClick)
+        QtCore.QObject.connect(self.ClearTextButton, 
+            QtCore.SIGNAL("pressed()"), self.onClearTextButtonClick)
+        QtCore.QObject.connect(self.SearchTextEdit, 
+            QtCore.SIGNAL("textChanged(const QString&)"), self.onSearchTextEditChanged)
+        QtCore.QObject.connect(self.CustomListView, 
+            QtCore.SIGNAL("itemPressed(QTableWidgetItem * item)"), self.onCustomSelected)
 
 #        #define and add the context menu
-#        self.CustomListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.CustomListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 #
-#        self.CustomListView.addAction(self.add_to_context_menu(self.CustomListView, ':/Customs/Custom_new.png', "&Edit Custom", self.onCustomEditClick))
-#        self.CustomListView.addAction(self.add_to_context_separator(self.CustomListView))
-#        self.CustomListView.addAction(self.add_to_context_menu(self.CustomListView, ':/system/system_preview.png', "&Preview Custom", self.onCustomPreviewClick))
-#        self.CustomListView.addAction(self.add_to_context_menu(self.CustomListView, ':/system/system_live.png', "&Show Live", self.onCustomLiveClick))
-#        self.CustomListView.addAction(self.add_to_context_menu(self.CustomListView, ':/system/system_add.png', "&Add to Service", self.onCustomEditClick))
-
+        self.CustomListView.addAction(self.contextMenuAction(
+            self.CustomListView, ':/system/system_preview.png',
+            "&Preview Custom", self.onCustomPreviewClick))
+        self.CustomListView.addAction(self.contextMenuAction(
+            self.CustomListView, ':/system/system_live.png',
+            "&Show Live", self.onCustomLiveClick))
+        self.CustomListView.addAction(self.contextMenuAction(
+            self.CustomListView, ':/system/system_add.png',
+            "&Add to Service", self.onCustomEditClick))            
         
     def onClearTextButtonClick(self):
         """
@@ -139,25 +138,14 @@ class CustomMediaItem(MediaManagerItem):
         self.SearchTextEdit.clear()
 
     def onSearchTextEditChanged(self, text):
-        sl = 3
-        if self.SearchTypeComboBox.currentText() == u'Lyrics':
-            sl = 7
-        if len(text) > sl:  # only search if > 3 characters
+        if len(text) > 3:  # only search if > 3 characters
             self.onSearchTextButtonClick()
 
     def onSearchTextButtonClick(self):
         search_keywords = str(self.SearchTextEdit.displayText())
         search_results  = []
         search_type = self.SearchTypeComboBox.currentText()
-        if search_type == u'Titles':
-            log.debug("Titles Search")
-            search_results = self.Custommanager.search_Custom_title(search_keywords)
-        elif search_type == u'Lyrics':
-            log.debug("Lyrics Search")
-            search_results = self.Custommanager.search_Custom_lyrics(search_keywords)
-        elif search_type == u'Authors':
-            log.debug("Authors Search")
-            #searchresults = self.Custommanager.get_Custom_from_author(searchtext)
+        search_results = self.Custommanager.search_Custom_lyrics(search_keywords)
         self._display_results(search_results)
 
     def onCustomSelected(self, item):
