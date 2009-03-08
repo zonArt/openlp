@@ -83,3 +83,56 @@ class PluginConfig(object):
             return returnfiles
         else:
             return files  # no filtering required
+
+    def load_list(self, name):
+        """
+        Load a list from the config file
+        """
+        list_count = self.get_config('%s count' % name)
+        if list_count is not None:
+            list_count = int(list_count)
+        else:
+            list_count = 0
+        list = []
+        if list_count > 0:
+            for counter in range(0 , list_count):
+                item = str(self.get_config('%s %d' % (name, counter)))
+                list.append(item)
+        return list
+
+    def set_list(self, name, list):
+        """
+        Save a list to the config file
+        """
+        old_count = int(self.get_config('%s count' % name))
+        new_count = len(list)
+        self.set_config('%s count' % new_count)
+        for counter in range (0, new_count):
+            self.set_config('%s %d' % (name, counter), list[counter])
+        if old_count > new_count:
+            # Tidy up any old list itrms if list is smaller now
+            for counter in range(new_count, old_count):
+                self.delete_config('%s %d' % (name, counter))
+
+    def get_last_dir(self, num=None):
+        """
+        Read the last directory used for plugin
+        """
+        if num is not None:
+            name = 'last directory %d' % num
+        else:
+            name = 'last directory'
+        last_dir = self.get_config(name)
+        if last_dir is None:
+            last_dir = ''
+        return last_dir
+
+    def set_last_dir(self, directory, num=None):
+        """
+        Save the last directory used for plugin
+        """
+        if num is not None:
+            name = 'last directory %d' % num
+        else:
+            name = 'last directory'
+        self.config.set_config(name, directory)

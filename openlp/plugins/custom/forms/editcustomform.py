@@ -71,7 +71,6 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             self.VerseListView.setCurrentRow(selectedRow - 1)
 
     def onDownButtonPressed(self):
-        print "Down"
         selectedRow = self.VerseListView.currentRow()
         if self.selectedRow != self.VerseListView.count() - 1: # zero base arrays
             qw = self.VerseListView.takeItem(selectedRow)

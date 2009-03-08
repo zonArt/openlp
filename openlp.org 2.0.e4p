@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2009-03-07, 19:39:48 -->
+<!-- Saved: 2009-03-08, 15:39:49 -->
 <!-- Copyright (C) 2009 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.6">
   <Language>en</Language>
@@ -118,14 +118,12 @@
     <Source>openlp/core/lib/serviceitem.py</Source>
     <Source>openlp/core/ui/slidecontroller.py</Source>
     <Source>openlp/core/lib/eventreceiver.py</Source>
-    <Source>resources/forms/Ui_editsongdialog.py</Source>
     <Source>openlp/core/ui/servicemanager.py</Source>
     <Source>openlp/core/lib/toolbar.py</Source>
     <Source>openlp/core/ui/settingsform.py</Source>
     <Source>openlp/core/ui/generaltab.py</Source>
     <Source>openlp/core/ui/themestab.py</Source>
     <Source>openlp/core/ui/alertstab.py</Source>
-    <Source>resources/forms/Ui_settings.py</Source>
     <Source>openlp/core/ui/settingsdialog.py</Source>
     <Source>openlp/core/lib/settingstab.py</Source>
     <Source>openlp/plugins/bibles/lib/biblestab.py</Source>
@@ -137,7 +135,6 @@
     <Source>openlp/plugins/images/lib/__init__.py</Source>
     <Source>openlp/plugins/images/lib/imageserviceitem.py</Source>
     <Source>openlp/plugins/images/lib/listwithpreviews.py</Source>
-    <Source>resources/forms/Ui_editversedialog.py</Source>
     <Source>openlp/plugins/songs/forms/editverseform.py</Source>
     <Source>openlp/plugins/songs/forms/editversedialog.py</Source>
     <Source>openlp/plugins/custom/__init__.py</Source>
@@ -153,6 +150,7 @@
     <Source>openlp/plugins/custom/lib/meta.py</Source>
     <Source>openlp/plugins/custom/lib/models.py</Source>
     <Source>openlp/plugins/custom/lib/manager.py</Source>
+    <Source>openlp/plugins/images/lib/mediaitem.py</Source>
   </Sources>
   <Forms>
     <Form>resources/forms/openlpexportform.ui</Form>
@@ -189,7 +187,7 @@
   </Others>
   <MainScript>openlp.pyw</MainScript>
   <Vcs>
-    <VcsType>Subversion</VcsType>
+    <VcsType>None</VcsType>
     <VcsOptions>
       <dict>
         <key>

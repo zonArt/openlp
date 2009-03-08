@@ -106,7 +106,8 @@ class BibleMediaItem(MediaManagerItem):
         self.ClearQuickSearchComboBox.setObjectName('ClearQuickSearchComboBox')
         self.QuickLayout.addWidget(self.ClearQuickSearchComboBox, 3, 1, 1, 1)
         self.SearchTabWidget.addTab(self.QuickTab, 'Quick')
-        QuickSpacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        QuickSpacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Expanding)
         self.QuickLayout.addItem(QuickSpacerItem, 4, 2, 1, 1)
 
         # Add the Advanced Search tab
