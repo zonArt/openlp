@@ -63,13 +63,18 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.AuthorsListView.setShowGrid(False)
         self.AuthorsListView.setSortingEnabled(False)
         self.AuthorsListView.setAlternatingRowColors(True)
+        self.AuthorsListView.horizontalHeader().setVisible(False)
+        self.AuthorsListView.verticalHeader().setVisible(False)
         self.savebutton = self.ButtonBox.button(QtGui.QDialogButtonBox.Save)
 
     def initialise(self):
-        list = self.songmanager.get_authors()
+        self.loadAuthors()
+
+    def loadAuthors(self):
+        authors = self.songmanager.get_authors()
         self.AuthorsSelectionComboItem.clear()
-        for i in list:
-            self.AuthorsSelectionComboItem.addItem( i.display_name)
+        for author in authors:
+            self.AuthorsSelectionComboItem.addItem(author.display_name)
 
     def loadSong(self, id):
         self.song = self.songmanager.get_song(id)
@@ -81,10 +86,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.VerseListWidget.addItem(verse)
 
         self.AuthorsListView.clear() # clear the results
-        self.AuthorsListView.setHorizontalHeaderLabels(QtCore.QStringList(['', u'Author']))
-        self.AuthorsListView.setVerticalHeaderLabels(QtCore.QStringList(['']))
-        self.AuthorsListView.horizontalHeader().setVisible(False)
-        self.AuthorsListView.verticalHeader().setVisible(False)
         self.AuthorsListView.setRowCount(0)
         for author in self.song.authors:
             row_count = self.AuthorsListView.rowCount()
@@ -102,6 +103,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         self.authors_form.load_form()
         self.authors_form.exec_()
+        self.loadAuthors()
 
     def onAddTopicButtonClicked(self):
         """
