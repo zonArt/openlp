@@ -72,7 +72,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
 
     def onDownButtonPressed(self):
         selectedRow = self.VerseListView.currentRow()
-        if self.selectedRow != self.VerseListView.count() - 1: # zero base arrays
+        if selectedRow != self.VerseListView.count() - 1: # zero base arrays
             qw = self.VerseListView.takeItem(selectedRow)
             self.VerseListView.insertItem(selectedRow + 1, qw)
             self.VerseListView.setCurrentRow(selectedRow + 1)            
