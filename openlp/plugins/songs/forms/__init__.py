@@ -18,11 +18,11 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
-from editsongform import EditSongForm
 from authorsform import AuthorsForm
 from topicsform import TopicsForm
 from songbookform import SongBookForm
 from editverseform import EditVerseForm
+from editsongform import EditSongForm
 
 from openlpexportform import OpenLPExportForm
 from openlpimportform import OpenLPImportForm

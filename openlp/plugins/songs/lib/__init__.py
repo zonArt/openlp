@@ -20,7 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from manager import SongManager
 from songstab import SongsTab
+from mediaitem import SongMediaItem
 #from xml import SongOpenXml
 
-__all__ = ['SongManager', SongsTab]
-
+#__all__ = ['SongManager', 'SongsTab', 'SongMediaItem']

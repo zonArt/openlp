@@ -19,10 +19,8 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 from PyQt4 import Qt, QtCore, QtGui
 
-from authorsform import AuthorsForm
-from topicsform import TopicsForm
-from songbookform import SongBookForm
-from editverseform import EditVerseForm
+from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm, \
+    EditVerseForm
 
 from editsongdialog import Ui_EditSongDialog
 

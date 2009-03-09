@@ -16,16 +16,15 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-from openlp.core.resources import *
-
 from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import QDialog
 from PyQt4.QtCore import pyqtSignature
 
-from authorsdialog import Ui_AuthorsDialog
+from openlp.core.resources import *
 from openlp.plugins.songs.lib.classes import *
 
-class AuthorsForm(QDialog, Ui_AuthorsDialog):
+from openlp.plugins.songs.forms.authorsdialog import Ui_AuthorsDialog
+
+class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
     """
     Class to control the Maintenance of Authors Dialog
     """
@@ -33,7 +32,7 @@ class AuthorsForm(QDialog, Ui_AuthorsDialog):
         """
         Set up the screen and common data
         """
-        QDialog.__init__(self, parent)
+        QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self.songmanager = songmanager
         self.AuthorListView.setColumnCount(2)

@@ -26,7 +26,7 @@ from openlp.core.lib import MediaManagerItem, Receiver
 from openlp.core.resources import *
 
 from openlp.plugins.bibles.forms import BibleImportForm
-from openlp.plugins.bibles.lib import BiblesTab
+#from openlp.plugins.bibles.lib import BiblesTab
 
 class BibleMediaItem(MediaManagerItem):
     """
@@ -244,7 +244,7 @@ class BibleMediaItem(MediaManagerItem):
         self.ClearAdvancedSearchComboBox.clear()
 
     def loadBibles(self):
-        log.debug("Loading Bibles")        
+        log.debug("Loading Bibles")
         bibles = self.parent.biblemanager.get_bibles('full')
         for bible in bibles:  # load bibles into the combo boxes
             self.QuickVersionComboBox.addItem(bible)
@@ -326,7 +326,7 @@ class BibleMediaItem(MediaManagerItem):
             self.displayResults(bible)
 
     def onBiblePreviewClick(self):
-        log.debug("Bible Preview Button pressed")        
+        log.debug("Bible Preview Button pressed")
         items = self.BibleListView.selectedItems()
         old_chapter = ''
         for item in items:
@@ -344,7 +344,7 @@ class BibleMediaItem(MediaManagerItem):
                 loc = self.formatVerse(old_chapter, chapter, verse, u'(', u')')
             elif  self.parent.bibles_tab.display_style == 2:
                 loc = self.formatVerse(old_chapter, chapter, verse, u'{', u'}')
-            elif  self.parent.bibles_tab.display_style == 3: 
+            elif  self.parent.bibles_tab.display_style == 3:
                 loc = self.formatVerse(old_chapter, chapter, verse, u'[', u']')
             else:
                 loc = self.formatVerse(old_chapter, chapter, verse, u'', u'')
@@ -364,7 +364,7 @@ class BibleMediaItem(MediaManagerItem):
         return loc
 
     def reloadBibles(self):
-        log.debug("Reloading Bibles")        
+        log.debug("Reloading Bibles")
         self.parent.biblemanager.reload_bibles()
         #self.initialiseForm()
         self.loadBibles()
@@ -414,7 +414,7 @@ class BibleMediaItem(MediaManagerItem):
             self.BibleListView.setRowHeight(row_count, 20)
 
     def searchByReference(self, bible,  search):
-        log.debug("searchByReference %s ,%s", bible, search)        
+        log.debug("searchByReference %s ,%s", bible, search)
         book = ''
         start_chapter = ''
         end_chapter = ''
