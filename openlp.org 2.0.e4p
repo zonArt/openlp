@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2009-03-08, 15:39:49 -->
+<!-- Saved: 2009-03-09, 22:34:51 -->
 <!-- Copyright (C) 2009 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.6">
   <Language>en</Language>
@@ -151,6 +151,12 @@
     <Source>openlp/plugins/custom/lib/models.py</Source>
     <Source>openlp/plugins/custom/lib/manager.py</Source>
     <Source>openlp/plugins/images/lib/mediaitem.py</Source>
+    <Source>openlp/plugins/songs/lib/mediaitem.py</Source>
+    <Source>resources/forms/Ui_editsongdialog.py</Source>
+    <Source>resources/forms/Ui_editversedialog.py</Source>
+    <Source>resources/forms/Ui_settings.py</Source>
+    <Source>resources/forms/Ui_authorsdialog.py</Source>
+    <Source>resources/forms/Ui_songbookdialog.py</Source>
   </Sources>
   <Forms>
     <Form>resources/forms/openlpexportform.ui</Form>
@@ -187,7 +193,7 @@
   </Others>
   <MainScript>openlp.pyw</MainScript>
   <Vcs>
-    <VcsType>None</VcsType>
+    <VcsType>Subversion</VcsType>
     <VcsOptions>
       <dict>
         <key>

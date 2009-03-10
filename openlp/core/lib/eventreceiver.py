@@ -25,14 +25,15 @@ class EventReceiver(QObject):
     This is a private class and should not be used directly but via the Receiver class
     """
     def __init__(self):
-        QObject.__init__(self)        
-        
+        QObject.__init__(self)
+
     def send_message(self, event, msg=None):
         self.emit(SIGNAL(event), msg)
-        
+
     def received(self, msg=None):
         print msg
-        
+
+
 class Receiver():
     """
     Class to allow events to be passed from different parts of the system.
@@ -40,19 +41,21 @@ class Receiver():
     As there is only one instance of it in the systems the QT signal/slot architecture
     can send messages across the system
     Send message
-       Receiver().send_message("messageid",data)   
-       
+       Receiver().send_message("messageid",data)
+
     Receive Message
-        QtCore.QObject.connect(Receiver().get_receiver(),QtCore.SIGNAL("openlprepaint"),<<ACTION>>) 
-    """    
-    eventreceiver=EventReceiver()    
+        QtCore.QObject.connect(Receiver().get_receiver(),QtCore.SIGNAL("openlprepaint"),<<ACTION>>)
+    """
+    eventreceiver = EventReceiver()
+
     @staticmethod
     def send_message(event, msg=None):
         Receiver.eventreceiver.send_message(event, msg)
+
     @staticmethod
     def receive():
         Receiver.eventreceiver.receive()
-    @staticmethod        
+
+    @staticmethod
     def get_receiver():
         return Receiver.eventreceiver
-        

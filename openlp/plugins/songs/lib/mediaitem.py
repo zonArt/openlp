@@ -111,17 +111,17 @@ class SongMediaItem(MediaManagerItem):
         self.SongListView.horizontalHeader().setVisible(False)
         self.SongListView.verticalHeader().setVisible(False)
         self.SongListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
-        self.SongListView.setObjectName('listView')
+        self.SongListView.setObjectName('SongListView')
         self.PageLayout.addWidget(self.SongListView)
         # Signals and slots
         QtCore.QObject.connect(self.SearchTextButton,
-            QtCore.SIGNAL("pressed()"), self.onSearchTextButtonClick)
+            QtCore.SIGNAL('pressed()'), self.onSearchTextButtonClick)
         QtCore.QObject.connect(self.ClearTextButton,
-            QtCore.SIGNAL("pressed()"), self.onClearTextButtonClick)
+            QtCore.SIGNAL('pressed()'), self.onClearTextButtonClick)
         QtCore.QObject.connect(self.SearchTextEdit,
-            QtCore.SIGNAL("textChanged(const QString&)"), self.onSearchTextEditChanged)
+            QtCore.SIGNAL('textChanged(const QString&)'), self.onSearchTextEditChanged)
         QtCore.QObject.connect(self.SongListView,
-            QtCore.SIGNAL("itemPressed(QTableWidgetItem * item)"), self.onSongSelected)
+            QtCore.SIGNAL('itemPressed(QTableWidgetItem * item)'), self.onSongSelected)
         #define and add the context menu
         self.SongListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.SongListView.addAction(self.contextMenuAction(self.SongListView,
@@ -157,15 +157,19 @@ class SongMediaItem(MediaManagerItem):
         self.SongListView.setRowCount(0)
         #log.debug("Records returned from search %s", len(searchresults))
         for song in searchresults:
+            row_count = self.SongListView.rowCount()
+            self.SongListView.setRowCount(row_count + 1)
+            song_index = QtGui.QTableWidgetItem(str(song.id))
+            self.SongListView.setItem(row_count, 0, song_index)
+            author_list = u''
             for author in song.authors:
-                c = self.SongListView.rowCount()
-                self.SongListView.setRowCount(c + 1)
-                song_index = QtGui.QTableWidgetItem(str(song.id))
-                self.SongListView.setItem(c , 0, song_index)
-                song_detail = QtGui.QTableWidgetItem(
-                    u'%s (%s)' % (str(song.title), str(author.display_name)))
-                self.SongListView.setItem(c , 1, song_detail)
-                self.SongListView.setRowHeight(c, 20)
+                if author_list != u'':
+                    author_list = author_list + u', '
+                author_list = author_list + author.display_name
+            song_detail = QtGui.QTableWidgetItem(
+                u'%s (%s)' % (str(song.title), str(author_list)))
+            self.SongListView.setItem(row_count, 1, song_detail)
+            self.SongListView.setRowHeight(row_count, 20)
 
     def onClearTextButtonClick(self):
         """

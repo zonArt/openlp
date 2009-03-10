@@ -38,10 +38,10 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1" colspan="5" >
+      <item row="0" column="1" colspan="6" >
        <widget class="QLineEdit" name="TopicNameEdit" />
       </item>
-      <item row="1" column="0" colspan="2" >
+      <item row="1" column="0" colspan="3" >
        <spacer name="ButtonsSpacer" >
         <property name="orientation" >
          <enum>Qt::Horizontal</enum>
@@ -54,7 +54,7 @@
         </property>
        </spacer>
       </item>
-      <item row="1" column="4" >
+      <item row="1" column="5" >
        <widget class="QPushButton" name="DeleteButton" >
         <property name="toolTip" >
          <string>Delete Author</string>
@@ -68,31 +68,31 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="2" >
+      <item row="1" column="4" >
        <widget class="QPushButton" name="AddUpdateButton" >
         <property name="toolTip" >
          <string>Add Update Author</string>
         </property>
         <property name="text" >
-         <string>Add/Update</string>
+         <string>Save</string>
         </property>
         <property name="icon" >
          <iconset resource="../images/openlp-2.qrc" >
-          <normaloff>:/system/system_settings.png</normaloff>:/system/system_settings.png</iconset>
+          <normaloff>:/services/service_save.png</normaloff>:/services/service_save.png</iconset>
         </property>
        </widget>
       </item>
-      <item row="1" column="5" >
+      <item row="1" column="3" >
        <widget class="QPushButton" name="ClearButton" >
         <property name="toolTip" >
          <string>Clear Selection</string>
         </property>
         <property name="text" >
-         <string>Clear</string>
+         <string>New</string>
         </property>
         <property name="icon" >
          <iconset resource="../images/openlp-2.qrc" >
-          <normaloff>:/songs/song_edit.png</normaloff>:/songs/song_edit.png</iconset>
+          <normaloff>:/services/service_new.png</normaloff>:/services/service_new.png</iconset>
         </property>
        </widget>
       </item>
