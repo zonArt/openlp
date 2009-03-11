@@ -43,7 +43,6 @@ class BibleCSVImpl(BibleCommon):
         #Populate the Tables
         fbooks=open(booksfile, 'r')
         fverse=open(versesfile, 'r')
-
         
         count = 0
         for line in fbooks:
