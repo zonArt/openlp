@@ -45,19 +45,19 @@ class CustomManager():
         self.config = config
         log.debug('Custom Initialising')
         self.db_url = u''
-        db_type = self.config.get_config(u'db type')
-        if db_type == u'sqlite':
-            self.db_url = u'sqlite:///' + self.config.get_data_path() + \
-                u'/custom.sqlite'
-        else:
-            self.db_url = u'%s://%s:%s@%s/%s' % \
-                (db_type, self.config.get_config(u'db username'),
-                    self.config.get_config(u'db password'),
-                    self.config.get_config(u'db hostname'),
-                    self.config.get_config(u'db database'))
-        self.session = init_models(self.db_url)
-        if not custom_slide_table.exists():
-            metadata.create_all()
+#        db_type = self.config.get_config(u'db type')
+#        if db_type == u'sqlite':
+#            self.db_url = u'sqlite:///' + self.config.get_data_path() + \
+#                u'/custom.sqlite'
+#        else:
+#            self.db_url = u'%s://%s:%s@%s/%s' % \
+#                (db_type, self.config.get_config(u'db username'),
+#                    self.config.get_config(u'db password'),
+#                    self.config.get_config(u'db hostname'),
+#                    self.config.get_config(u'db database'))
+#        self.session = init_models(self.db_url)
+#        if not custom_slide_table.exists():
+#            metadata.create_all()
         
         log.debug('Custom Initialised')
 #
