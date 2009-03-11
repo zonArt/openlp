@@ -44,7 +44,7 @@ class CustomManager():
         """
         self.config = config
         log.debug('Custom Initialising')
-        """self.db_url = u''
+        self.db_url = u''
         db_type = self.config.get_config(u'db type')
         if db_type == u'sqlite':
             self.db_url = u'sqlite:///' + self.config.get_data_path() + \
@@ -58,7 +58,7 @@ class CustomManager():
         self.session = init_models(self.db_url)
         if not custom_slide_table.exists():
             metadata.create_all()
-        """
+        
         log.debug('Custom Initialised')
 #
 #    def process_dialog(self, dialogobject):
