@@ -135,4 +135,4 @@ class PluginConfig(object):
             name = 'last directory %d' % num
         else:
             name = 'last directory'
-        self.config.set_config(name, directory)
+        self.set_config(name, directory)

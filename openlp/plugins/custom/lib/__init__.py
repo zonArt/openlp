@@ -20,7 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from manager import CustomManager
 from customtab import CustomTab
-from custommediaitem import CustomMediaItem
+from mediaitem import CustomMediaItem
 
 __all__ = ['CustomManager', 'CustomTab', 'CustomMediaItem']
 

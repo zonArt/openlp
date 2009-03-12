@@ -53,74 +53,34 @@ class BibleOSISImpl():
         verseText = "<verse osisID="
         testament = 1
         for file in osis.readlines():
-            if self.loadbible == False:  # cancel pressed
+            # cancel pressed on UI
+            if self.loadbible == False:
                 break
 #            print file
             pos = file.find(verseText)
             if pos > -1: # we have a verse
                 epos= file.find(">", pos)
                 ref =  file[pos+15:epos-1]  # Book Reference 
-                #lets find the bible text
+                
+                #lets find the bible text only
                 pos = epos + 1 # find start of text
                 epos = file.find("</verse>", pos) # end  of text
                 text = file[pos : epos] 
                 #print pos, e, f[pos:e] # Found Basic Text
+
                 #remove tags of extra information
-                
-                pos = text.find("<title")
-                while pos > -1:
-                    epos = text.find("</title>", pos)
-                    if epos == -1: # TODO
-                        #print "Y", pos, epos
-                        pos = -1
-                    else:
-                        text =  text[:pos] + text[epos + 8: ]
-                        pos = text.find("<title") 
+                text = self.remove_block('<title','</title>', text)
+                text = self.remove_block('<note','</note>', text)                
+                text = self.remove_block('<divineName','</divineName>', text)                
                         
-                pos = text.find("<divineName")
-                while pos > -1:
-                    epos = text.find("</divineName>", pos)
-                    if epos == -1: # TODO
-                        #print "Y", pos, epos
-                        pos = -1
-                    else:
-                        text =  text[:pos] + text[epos + 13: ]
-                        pos = text.find("<divineName")                         
+                text = self.remove_tag('<lb',  text) 
+                text = self.remove_tag('<q',  text)  
+                text = self.remove_tag('<l',  text)                          
+                text = self.remove_tag('<lg',  text)  
 
-                pos = text.find("<note")
-                while pos > -1:
-                    epos = text.find("</note>", pos)
-                    if epos == -1: # TODO
-                        #print "Y", pos, epos
-                        pos = -1
-                    else:
-                        text =  text[:pos] + text[epos + 7: ]
-                        pos = text.find("<note")
-                        
-                pos = text.find("<lb")
-                while pos > -1:
-                    epos = text.find("/>", pos)
-                    text =  text[:pos] + text[epos + 2: ]
-                    pos = text.find("<lb")                         
-
-                pos = text.find("<q")
-                while pos > -1:
-                    epos = text.find("/>", pos)
-                    text =  text[:pos] + text[epos + 2: ]
-                    pos = text.find("<q")
-                    
-                pos = text.find("<l")
-                while pos > -1:
-                    epos = text.find("/>", pos)
-                    text =  text[:pos] + text[epos + 2: ]
-                    pos = text.find("<l")
-                    
-                pos = text.find("<lg")
-                while pos > -1:
-                    epos = text.find("/>", pos)
-                    text =  text[:pos] + text[epos + 2: ]
-                    pos = text.find("<lg") 
-
+                # Strange tags where the end is not the same as the start
+                # The must be in this order as at least one bible has them
+                # crossing and the removal does not work. 
                 pos = text.find("<FI>")
                 while pos > -1:
                     epos = text.find("<Fi>", pos)
@@ -156,10 +116,37 @@ class BibleOSISImpl():
                     count = 0
                 self.bibledb.add_verse(book.id, p[1], p[2], text)
                 count += 1
-                if count % 3 == 0:   #Every x verses repaint the screen
+                if count % 3 == 0:   #Every 3 verses repaint the screen
                     Receiver().send_message("openlpprocessevents")                    
                     count = 0
-
+                    
+    def remove_block(self, start_tag, end_tag,  text):
+        """
+        removes a block of text between two tags
+        <tag attrib=xvf > Some not wanted text  </tag>
+        """
+        pos = text.find(start_tag)
+        while pos > -1:
+            epos = text.find(end_tag, pos)
+            if epos == -1: # TODO
+                #print "Y", pos, epos
+                pos = -1
+            else:
+                text =  text[:pos] + text[epos + len(end_tag): ]
+                pos = text.find(start_tag) 
+        return text
+        
+    def remove_tag(self, start_tag,  text):
+        """
+        removes a single tag
+        <tag  attrib1=fajkdf attrib2=fajkdf attrib2=fajkdf  />
+        """
+        pos = text.find(start_tag)
+        while pos > -1:
+            epos = text.find('/>', pos)
+            text =  text[:pos] + text[epos + 2: ]
+            pos = text.find(start_tag)         
+        return text
 
 
 

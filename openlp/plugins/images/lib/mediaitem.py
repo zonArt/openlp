@@ -113,7 +113,7 @@ class ImageMediaItem(MediaManagerItem):
         log.info("New image(s)", str(files))
         if len(files) > 0:
             self.loadImageList(files)
-            dir, filename = os.path.split(files[0])
+            dir, filename = os.path.split(str(files[0]))
             self.parent.config.set_last_dir(dir)
             self.parent.config.set_list('images', self.ImageListData.getFileList())
 

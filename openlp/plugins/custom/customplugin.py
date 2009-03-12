@@ -22,11 +22,11 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
-from openlp.core.lib import Plugin, PluginUtils, MediaManagerItem
+from openlp.core.lib import Plugin, MediaManagerItem
 from forms import EditCustomForm
 from openlp.plugins.custom.lib import CustomManager, CustomTab, CustomMediaItem
 
-class CustomPlugin(Plugin, PluginUtils):
+class CustomPlugin(Plugin):
 
     global log
     log=logging.getLogger("CustomPlugin")

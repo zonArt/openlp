@@ -21,10 +21,10 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
-from openlp.core.lib import Plugin, PluginUtils, MediaManagerItem, SettingsTab
-from openlp.plugins.videos.lib import VideoTab
+from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab
+from openlp.plugins.videos.lib import VideoTab, VideoMediaItem
 
-class VideoPlugin(Plugin, PluginUtils):
+class VideoPlugin(Plugin):
 
     def __init__(self):
         # Call the parent constructor
@@ -41,83 +41,6 @@ class VideoPlugin(Plugin, PluginUtils):
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
-        self.MediaManagerItem = MediaManagerItem(self, self.icon, 'Videos')
-        # Add a toolbar
-        self.MediaManagerItem.addToolbar()
-        # Create buttons for the toolbar
-        ## New Song Button ##
-        self.MediaManagerItem.addToolbarButton('New Video', 'Load videos into openlp.org',
-            ':/videos/video_load.png', self.onVideoNewClick, 'VideoNewItem')
-        ## Delete Song Button ##
-        self.MediaManagerItem.addToolbarButton('Delete Video', 'Delete the selected video',
-            ':/videos/video_delete.png', self.onVideoDeleteClick, 'VideoDeleteItem')
-        ## Separator Line ##
-        self.MediaManagerItem.addToolbarSeparator()
-        ## Preview Song Button ##
-        self.MediaManagerItem.addToolbarButton('Preview Video', 'Preview the selected video',
-            ':/system/system_preview.png', self.onVideoPreviewClick, 'VideoPreviewItem')
-        ## Live Song Button ##
-        self.MediaManagerItem.addToolbarButton('Go Live', 'Send the selected video live',
-            ':/system/system_live.png', self.onVideoLiveClick, 'VideoLiveItem')
-        ## Add Song Button ##
-        self.MediaManagerItem.addToolbarButton('Add Video To Service',
-            'Add the selected video(s) to the service', ':/system/system_add.png',
-            self.onVideoAddClick, 'VideoAddItem')
-        ## Add the videolist widget ##
-        self.VideoListView = QtGui.QTableWidget()
-        self.VideoListView.setColumnCount(2)
-        self.VideoListView.setColumnHidden(0, True)
-        self.VideoListView.setColumnWidth(1, 275)
-        self.VideoListView.setShowGrid(False)
-        self.VideoListView.setSortingEnabled(False)
-        self.VideoListView.setAlternatingRowColors(True)
-        self.VideoListView.verticalHeader().setVisible(False)
-        self.VideoListView.horizontalHeader().setVisible(False)
-        self.VideoListView.setAlternatingRowColors(True)
-        self.VideoListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
-        self.VideoListView.setObjectName("VideoListView")
-        self.MediaManagerItem.PageLayout.addWidget(self.VideoListView)
-
-        #define and add the context menu
-        self.VideoListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-
-        self.VideoListView.addAction(self.add_to_context_menu(self.VideoListView, ':/system/system_preview.png', "&Preview Video", self.onVideoPreviewClick))
-        self.VideoListView.addAction(self.add_to_context_menu(self.VideoListView, ':/system/system_live.png', "&Show Live", self.onVideoLiveClick))
-        self.VideoListView.addAction(self.add_to_context_menu(self.VideoListView, ':/system/system_add.png', "&Add to Service", self.onVideoAddClick))
-        return self.MediaManagerItem
-
-    def initialise(self):
-        list = self._load_display_list()
-        self._load_video_list(list)
-
-    def onVideoNewClick(self):
-        files = QtGui.QFileDialog.getOpenFileNames(None, "Select Image(s)", self._get_last_dir(), "Images (*.avi *.mpeg)")
-        if len(files) > 0:
-            self._load_video_list(files)
-            self._save_last_directory(files[0])
-            self._save_display_list(self.VideoListView)
-
-    def _load_video_list(self, list):
-        for f in list:
-            file_path ,  file_name = os.path.split(str(f))
-            count = self.VideoListView.rowCount()
-            self.VideoListView.setRowCount(count+1)
-            row_item = QtGui.QTableWidgetItem(str(f))
-            self.VideoListView.setItem(count , 0, row_item)
-            row_item = QtGui.QTableWidgetItem(str(file_name))
-            self.VideoListView.setItem(count , 1, row_item)
-            self.VideoListView.setRowHeight(count, 20)
-
-    def onVideoDeleteClick(self):
-        cr = self.VideoListView.currentRow()
-        self.VideoListView.removeRow(int(cr))
-        self._save_display_list(self.VideoListView)
-
-    def onVideoPreviewClick(self):
-        pass
-
-    def onVideoLiveClick(self):
-        pass
-
-    def onVideoAddClick(self):
-        pass
+        self.media_item = VideoMediaItem(self, self.icon, 'Videos')
+        return self.media_item        
+ 
