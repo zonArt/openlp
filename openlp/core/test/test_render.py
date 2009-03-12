@@ -81,12 +81,6 @@ class TestRender_base:
     def teardown_class(self):
         print "class quit", self, self.app
         self.app.quit()
-#     def setup_module(self):
-#         print "Module setup"
-#         self.app = QtGui.QApplication([])
-#     def teardown_module(self):
-#         print "Module quit"
-#         self.app.quit()
     def setup_method(self, method):
         print "SSsetup", method
         if not hasattr(self, "app"):
