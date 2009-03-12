@@ -213,6 +213,7 @@ if __name__=="__main__":
     t=TestRender()
     t.setup_class()
     t.setup_method(None)
+    t.test_easy()
     t.test_splits()
     t.teardown_method(None)
 

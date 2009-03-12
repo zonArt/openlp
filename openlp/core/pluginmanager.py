@@ -45,7 +45,7 @@ class PluginManager(object):
         self.basepath = os.path.abspath(dir)
         log.debug("Base path %s ", self.basepath)
         self.plugins = []
-        # this has to happen after the UI is sroted self.find_plugins(dir)
+        # this has to happen after the UI is sorted self.find_plugins(dir)
         log.info("Plugin manager done init")
 
     def find_plugins(self, dir, preview_controller, live_controller): # xxx shouldn't dir come from self.basepath

@@ -375,14 +375,19 @@ class Renderer:
         print "_get_extent_and_render", [line], tlcorner, dodraw
         p=QtGui.QPainter()
         p.begin(self._paint)
-        # use this to scale for rendering in "operators view" xxx
-#         p.SetUserScale(0.5,0.5)
         # 'twould be more efficient to set this once when theme changes
         # or p changes
         font=QtGui.QFont(self._theme.FontName,
                      self._theme.FontProportion, # size
                      QtGui.QFont.Normal, # weight
                      0)# italic
+        # to make the unit tests monitor independent, we have to be able to
+        # specify whether a font proportion is in pixels or points
+        if self._theme.FontUnits.lower() == "pixels":
+            print "pixels"
+            font.setPixelSize(self._theme.FontProportion)
+        print self._theme.FontName, self._theme.FontProportion
+        print font.family(), font.pointSize()
         p.setFont(font)
         if color == None:
             p.setPen(self._theme.FontColor)

@@ -23,7 +23,9 @@ from openlp.core.pluginmanager import PluginManager
 # test the plugin manager with some plugins in the test_plugins directory
 class TestPluginManager:
     def test_init(self):
-        p=PluginManager("./testplugins")
+        self.p=PluginManager("./testplugins")
+        p=self.p
+        p.find_plugins('./testplugins', None, None)
         assert (len(p.plugins)==2);
         # get list of the names of the plugins
         names=[plugin.name for plugin in p.plugins]
@@ -37,6 +39,8 @@ class TestPluginManager:
         assert p.plugins[1].name=="testplugin1"
 if __name__=="__main__":
     log.debug("Starting")
-    p=PluginManager("./testplugins")
-    for plugin in p.plugins:
+    t=TestPluginManager()
+    t.test_init()
+    log.debug("List of plugins found:")
+    for plugin in t.p.plugins:
         log.debug("Plugin %s, name=%s (version=%d)"%(str(plugin), plugin.name, plugin.version))

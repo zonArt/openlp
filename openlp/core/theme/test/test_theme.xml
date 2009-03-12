@@ -8,6 +8,7 @@
   <FontName>Tahoma</FontName>
   <FontColor>clWhite</FontColor>
   <FontProportion>16</FontProportion>
+  <FontUnits>pixels</FontUnits>
   <Shadow>-1</Shadow>
   <ShadowColor>$00000001</ShadowColor>
   <Outline>-1</Outline>

@@ -21,10 +21,33 @@ import sys
 import os
 mypath=os.path.split(os.path.abspath(__file__))[0]
 sys.path.insert(0,(os.path.join(mypath, '..', '..','..')))
-from openlp.theme import Theme 
+from openlp.core.theme import Theme
 from openlp.core import Renderer
 
 from PyQt4 import QtGui, QtCore
+
+def compare_images(goldenim, testim, threshold=0.01):
+    # easy test first
+    if goldenim == testim:
+        return 1
+    # how close are they?  Calculated the sum of absolute differences in
+    # each channel of each pixel and divide by the number of pixels in the image
+    # if this sum is < threshold, the images are deemed to be "close enough"
+    sad=0;
+    for x in range(goldenim.width()):
+        for y in range(goldenim.height()):
+            p1=goldenim.pixel(x,y)
+            p2=testim.pixel(x,y)
+            sad += abs((p1&0xFF)-(p2&0xFF))
+            sad += abs((p1>>8&0xFF)-(p2>>8&0xFF))
+            sad += abs((p1>>16&0xFF)-(p2>>16&0xFF))
+    sad /= float(goldenim.width()*goldenim.height())
+    if (sad < threshold):
+        return 1
+
+    return 0
+    
+
 class TestRenderTheme(TestRender_base):
     # {{{ Basics
 
@@ -34,7 +57,7 @@ class TestRenderTheme(TestRender_base):
         TestRender_base.setup_method(self, method)
         print "Theme setup", method
 #         print "setup theme"
-        self.r.set_theme(Theme()) # set "blank" theme
+        self.r.set_theme(Theme('blank_theme.xml')) # set "blank" theme
         self.r.set_text_rectangle(QtCore.QRect(0,0, self.size.width(), self.size.height()))
         words="""How sweet the name of Jesus sounds
 In a believer's ear!
@@ -70,7 +93,7 @@ And drives away his fear.
         else:
             print "File", goldenfilename, "not found"
             return False
-        if (goldenim == im):
+        if (compare_images(goldenim, im)):
             print name, "Images match"
             return True
         else:
@@ -80,6 +103,7 @@ And drives away his fear.
     def test_theme_basic(self):
         self.answer=self.r.render_screen(0)
         self.bmpname=whoami()
+        print self.r._theme.FontProportion
         print self.answer, self.expected_answer, self.answer==self.expected_answer
 #         self.msg=self.bmpname
 
@@ -105,14 +129,12 @@ And drives away his fear.
     # }}}
     # {{{ backgrounds
     def test_bg_stretch_y(self):
-        t=Theme()
+        t=Theme('blank_theme.xml')
         t.BackgroundType = 2
         t.BackgroundParameter1 = os.path.join('data_for_tests', "snowsmall.jpg");
         t.BackgroundParameter2 = QtGui.QColor(0,0,64);
         t.BackgroundParameter3 = 0
         t.Name="stretch y"
-        print t
-        print "set theme"
         self.r.set_theme(t)
         print "render"
         self.answer=self.r.render_screen(0)
@@ -120,7 +142,7 @@ And drives away his fear.
         self.bmpname=whoami()
         print "fone"
     def test_bg_shrink_y(self):
-        t=Theme()
+        t=Theme('blank_theme.xml')
         t.BackgroundType = 2
         t.BackgroundParameter1 = os.path.join('data_for_tests', "snowbig.jpg");
         t.BackgroundParameter2 = QtGui.QColor(0,0,64);
@@ -131,7 +153,7 @@ And drives away his fear.
         self.bmpname=whoami()
 
     def test_bg_stretch_x(self):
-        t=Theme()
+        t=Theme('blank_theme.xml')
         t.BackgroundType = 2
         t.BackgroundParameter1 = os.path.join('data_for_tests', "treessmall.jpg");
         t.BackgroundParameter2 = QtGui.QColor(0,0,64);
@@ -144,7 +166,7 @@ And drives away his fear.
         self.bmpname=whoami()
 
     def test_bg_shrink_x(self):
-        t=Theme()
+        t=Theme('blank_theme.xml')
         t.BackgroundType = 2
         t.BackgroundParameter1 = os.path.join('data_for_tests', "treesbig.jpg");
         t.BackgroundParameter2 = QtGui.QColor(0,0,64);
@@ -158,7 +180,7 @@ And drives away his fear.
     # }}}
     # {{{ Vertical alignment
     def test_theme_vertical_align_top(self):
-        t=Theme()
+        t=Theme('blank_theme.xml')
         t.BackgroundType = 0
         t.BackgroundParameter1 = QtGui.QColor(0,0,64);
         t.VerticalAlign = 0
@@ -168,7 +190,7 @@ And drives away his fear.
         self.bmpname=whoami()
 
     def test_theme_vertical_align_bot(self):
-        t=Theme()
+        t=Theme('blank_theme.xml')
         t.BackgroundType = 0
         t.BackgroundParameter1 = QtGui.QColor(0,0,64);
         t.VerticalAlign = 1
@@ -179,7 +201,7 @@ And drives away his fear.
         self.bmpname=whoami()
 
     def test_theme_vertical_align_cen(self):
-        t=Theme()
+        t=Theme('blank_theme.xml')
         t.BackgroundType = 0
         t.BackgroundParameter1 = QtGui.QColor(0,0,64);
         t.VerticalAlign = 2
@@ -191,7 +213,7 @@ And drives away his fear.
     # }}}
     # {{{ Horzontal alignment
     def test_theme_horizontal_align_left(self):
-        t=Theme()
+        t=Theme('blank_theme.xml')
         t.BackgroundType = 0
         t.BackgroundParameter1 = QtGui.QColor(0,0,64);
         t.VerticalAlign = 0
@@ -202,7 +224,7 @@ And drives away his fear.
         self.bmpname=whoami()
 
     def test_theme_horizontal_align_right(self):
-        t=Theme()
+        t=Theme('blank_theme.xml')
         t.BackgroundType = 0
         t.BackgroundParameter1 = QtGui.QColor(0,0,64);
         t.VerticalAlign = 0
@@ -214,7 +236,7 @@ And drives away his fear.
         self.bmpname=whoami()
 
     def test_theme_horizontal_align_centre(self):
-        t=Theme()
+        t=Theme('blank_theme.xml')
         t.BackgroundType = 0
         t.BackgroundParameter1 = QtGui.QColor(0,0,64);
         t.VerticalAlign = 0
@@ -226,7 +248,7 @@ And drives away his fear.
         self.bmpname=whoami()
 
     def test_theme_horizontal_align_left_lyric(self):
-        t=Theme()
+        t=Theme('blank_theme.xml')
         t.BackgroundType = 0
         t.BackgroundParameter1 = QtGui.QColor(0,0,64);
         t.VerticalAlign = 0
@@ -241,7 +263,8 @@ And drives away his fear.
     # }}}
     # {{{ Shadows and outlines
     def test_theme_shadow_outline(self):
-        t=Theme()
+        t=Theme('blank_theme.xml')
+
         t.BackgroundType = 0
         t.BackgroundParameter1 = QtGui.QColor(0,0,0);
         t.Name="shadow/outline"
@@ -259,7 +282,7 @@ And drives away his fear.
         self.bmpname=whoami()
     # }}}
     def test_theme_font(self):
-        t=Theme()
+        t=Theme('blank_theme.xml')
         t.BackgroundType = 0
         t.BackgroundParameter1 = QtGui.QColor(0,0,64);
         t.Name="font"
@@ -274,5 +297,5 @@ if __name__=="__main__":
     t=TestRenderTheme()
     t.setup_class()
     t.setup_method(None)
-    t.test_theme_font()
+    t.test_bg_stretch_y()
     t.teardown_method(None)

@@ -1,26 +1,8 @@
-"""
-OpenLP - Open Source Lyrics Projection
-Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley
-
-This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation; version 2 of the License.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-Place, Suite 330, Boston, MA 02111-1307 USA
-"""
-
 import os
 import sys
 mypath=os.path.split(os.path.abspath(__file__))[0]
 
-sys.path.insert(0,(os.path.join(mypath, '..' ,'..', '..','..')))
+sys.path.insert(0,(os.path.join(mypath, '..' ,'..', '..', '..')))
 print sys.path
 
 from openlp.core.theme import Theme
@@ -38,6 +20,7 @@ def test_read_theme():
     assert(t.FontColor == QtGui.QColor(255,255,255))
     assert(t.FontName == "Tahoma")
     assert(t.FontProportion == 16)
+    assert(t.FontUnits == "pixels")
     assert(t.HorizontalAlign == 2)
     assert(t.Name == "openlp.org Packaged Theme")
     assert(t.Outline == -1)
@@ -45,6 +28,7 @@ def test_read_theme():
     assert(t.Shadow == -1)
     assert(t.ShadowColor == QtGui.QColor(0,0,1))
     assert(t.VerticalAlign == 0)
+def test_theme():
     # test we create a "blank" theme correctly
     t=Theme()
     print t
@@ -56,16 +40,16 @@ def test_read_theme():
     assert(t.FontName == "Arial")
     assert(t.FontProportion == 30)
     assert(t.HorizontalAlign == 0)
+    assert(t.FontUnits == "pixels")
     assert(t.Name == "BlankStyle")
     assert(t.Outline == 0)
     assert(t.Shadow == 0)
     assert(t.VerticalAlign == 0)
 
-
+ 
     print "Tests passed"
 
-def test_theme():
-    test_read_theme()
-
+    
 if __name__=="__main__":
     test_read_theme()
+    test_theme()

@@ -7,7 +7,8 @@
   <BackgroundParameter3/>
   <FontName>Tahoma</FontName>
   <FontColor>$00007F</FontColor>
-  <FontProportion>32</FontProportion>
+  <FontProportion>53</FontProportion>
+  <FontUnits>pixels</FontUnits>
   <Shadow>0</Shadow>
   <ShadowColor>$000000</ShadowColor>
   <Outline>0</Outline>

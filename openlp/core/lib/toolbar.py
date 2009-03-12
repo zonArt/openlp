@@ -36,6 +36,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         """
         A method to help developers easily add a button to the toolbar.
         """
+        ButtonIcon = None
         if type(icon) is QtGui.QIcon:
             ButtonIcon = icon
         elif type(icon) is types.StringType:
@@ -46,9 +47,10 @@ class OpenLPToolbar(QtGui.QToolBar):
             else:
                 ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
                     QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        ToolbarButton = self.addAction(ButtonIcon, title)
-        if tooltip is not None:
-            ToolbarButton.setToolTip(tooltip)
+        if ButtonIcon is not None:
+            ToolbarButton = self.addAction(ButtonIcon, title)
+            if tooltip is not None:
+                ToolbarButton.setToolTip(tooltip)
         if slot is not None:
             QtCore.QObject.connect(ToolbarButton, QtCore.SIGNAL('triggered()'), slot)
         self.icons[title]=ButtonIcon
