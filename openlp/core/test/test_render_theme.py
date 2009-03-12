@@ -21,7 +21,7 @@ import sys
 import os
 mypath=os.path.split(os.path.abspath(__file__))[0]
 sys.path.insert(0,(os.path.join(mypath, '..', '..','..')))
-from openlp.theme import Theme
+from openlp.theme import Theme 
 from openlp.core import Renderer
 
 from PyQt4 import QtGui, QtCore
