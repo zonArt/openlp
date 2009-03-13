@@ -20,6 +20,8 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from PyQt4 import Qt, QtCore, QtGui
 
 from editcustomdialog import Ui_customEditDialog
+from openlp.core.lib import SongXMLBuilder
+from openlp.plugins.custom.lib.models import CustomSlide
 
 class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
     """
@@ -55,9 +57,20 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
 
     def accept(self):
         self.validate()
-        for i in range (0, self.VerseListView.count()):
-            print self.VerseListView.item(i).text()
         if self.valid:
+            sxml=SongXMLBuilder()
+            sxml.new_document()
+            sxml.add_lyrics_to_song()
+            count = 1
+            for i in range (0, self.VerseListView.count()):
+                sxml.add_verse_to_lyrics(u'custom', str(count),  str(self.VerseListView.item(i).text()))
+                count += 1
+            sxml.dump_xml()
+            customSlide = CustomSlide()
+            customSlide.title = str(self.TitleEdit.displayText())
+            customSlide.text = str(sxml.extract_xml())
+            customSlide.credits = str(self.CreditEdit.displayText())
+            self.custommanager.save_slide(customSlide)
             self.close()
 
     def rejected(self):

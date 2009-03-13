@@ -3,7 +3,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley
+Portions copyright (c) 2008 - 2009 Martin Thompson, Tim Bentley
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -64,42 +64,33 @@ class CustomManager():
 #    def process_dialog(self, dialogobject):
 #        self.dialogobject = dialogobject
 #
-#    def get_songs(self):
-#        """
-#        Returns the details of a song
-#        """
-#        return self.session.query(Song).order_by(title).all()
-#
-#    def search_song_title(self, keywords):
-#        """
-#        Searches the song title for keywords.
-#        """
-#        return self.session.query(Song).filter(Song.search_title.like(u'%' + keywords + u'%')).order_by(Song.search_title.asc()).all()
-#
-#    def search_song_lyrics(self, keywords):
-#        """
-#        Searches the song lyrics for keywords.
-#        """
-#        return self.session.query(Song).filter(Song.search_lyrics.like(u'%' + keywords + u'%')).order_by(Song.search_lyrics.asc()).all()
-#
-#    def get_song(self, id=None):
-#        """
-#        Returns the details of a song
-#        """
-#        if id is None:
-#            return Song()
-#        else:
-#            return self.session.query(Song).get(id)
-#
-    def save_slides(self, customslide):
+    def get_all_slides(self):
+        """
+        Returns the details of a song
+        """
+        return self.session.query(CustomSlide).order_by(CustomSlide.title).all()
+
+    def get_custom(self, id=None):
+        """
+        Returns the details of a song
+        """
+        if id is None:
+            return CustomeSlide()
+        else:
+            return self.session.query(CustomSlide).get(id)
+
+    def save_slide(self, customslide):
         """
         Saves a song to the database
         """
+        log.debug('Custom Slide added')
         try:
             self.session.add(customslide)
             self.session.commit()
+            log.debug('Custom Slide saved')
             return True
         except:
+            log.debug('Custom Slide failed')            
             return False
 #
 #    def delete_song(self, song):
