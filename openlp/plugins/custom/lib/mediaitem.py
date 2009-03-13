@@ -24,7 +24,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem
 from openlp.core.resources import *
 
-#from openlp.plugins.custom.lib import TextListData
+#from openlp.plugins.custom.lib import TextItemData
+ 
 
 class CustomMediaItem(MediaManagerItem):
     """
@@ -129,7 +130,7 @@ class CustomMediaItem(MediaManagerItem):
         for CustomSlide in list:
             print CustomSlide.title        
 #        for CustomSlide in list:
- #           self.TextListData.addRow(CustomSlide.id,CustomSlide.title)
+#            self.CustomListData.addRow(CustomSlide.id,CustomSlide.title)
 
     def onClearTextButtonClick(self):
         """

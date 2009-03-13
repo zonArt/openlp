@@ -67,9 +67,9 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
                 count += 1
             sxml.dump_xml()
             customSlide = CustomSlide()
-            customSlide.title = str(self.TitleEdit.displayText())
-            customSlide.text = str(sxml.extract_xml())
-            customSlide.credits = str(self.CreditEdit.displayText())
+            customSlide.title = unicode(self.TitleEdit.displayText())
+            customSlide.text = unicode(sxml.extract_xml())
+            customSlide.credits = unicode(self.CreditEdit.displayText())
             self.custommanager.save_slide(customSlide)
             self.close()
 

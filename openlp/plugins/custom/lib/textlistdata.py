@@ -9,7 +9,7 @@ class TextListData(QAbstractListModel):
     An abstract list of strings 
     """
     global log
-    log=logging.getLogger("ListData")
+    log=logging.getLogger("TextListData")
     log.info("started")
 
     def __init__(self):
