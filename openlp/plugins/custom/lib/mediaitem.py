@@ -84,23 +84,23 @@ class CustomMediaItem(MediaManagerItem):
         self.CustomWidget.setSizePolicy(sizePolicy)
         self.CustomWidget.setObjectName('CustomWidget')
         
-        self.SearchLayout = QtGui.QGridLayout(self.CustomWidget)
-        self.SearchLayout.setObjectName('SearchLayout')
-        self.SearchTextLabel = QtGui.QLabel(self.CustomWidget)
-        self.SearchTextLabel.setObjectName('SearchTextLabel')
-        self.SearchTextLabel.setText('Search Text:')
-        self.SearchLayout.addWidget(self.SearchTextLabel, 2, 0, 1, 1)
-        self.SearchTextEdit = QtGui.QLineEdit(self.CustomWidget)
-        self.SearchTextEdit.setObjectName('SearchTextEdit')
-        self.SearchLayout.addWidget(self.SearchTextEdit, 2, 1, 1, 2)
-        
-        self.ClearTextButton = QtGui.QPushButton(self.CustomWidget)
-        self.ClearTextButton.setObjectName('ClearTextButton')
-
-        self.SearchLayout.addWidget(self.ClearTextButton, 3, 1, 1, 1)
-        self.SearchTextButton = QtGui.QPushButton(self.CustomWidget)
-        self.SearchTextButton.setObjectName('SearchTextButton')
-        self.SearchLayout.addWidget(self.SearchTextButton, 3, 2, 1, 1)
+#        self.SearchLayout = QtGui.QGridLayout(self.CustomWidget)
+#        self.SearchLayout.setObjectName('SearchLayout')
+#        self.SearchTextLabel = QtGui.QLabel(self.CustomWidget)
+#        self.SearchTextLabel.setObjectName('SearchTextLabel')
+#        self.SearchTextLabel.setText('Search Text:')
+#        self.SearchLayout.addWidget(self.SearchTextLabel, 2, 0, 1, 1)
+#        self.SearchTextEdit = QtGui.QLineEdit(self.CustomWidget)
+#        self.SearchTextEdit.setObjectName('SearchTextEdit')
+#        self.SearchLayout.addWidget(self.SearchTextEdit, 2, 1, 1, 2)
+#        
+#        self.ClearTextButton = QtGui.QPushButton(self.CustomWidget)
+#        self.ClearTextButton.setObjectName('ClearTextButton')
+#
+#        self.SearchLayout.addWidget(self.ClearTextButton, 3, 1, 1, 1)
+#        self.SearchTextButton = QtGui.QPushButton(self.CustomWidget)
+#        self.SearchTextButton.setObjectName('SearchTextButton')
+#        self.SearchLayout.addWidget(self.SearchTextButton, 3, 2, 1, 1)
         # Add the Custom widget to the page layout
         self.PageLayout.addWidget(self.CustomWidget)
         
@@ -112,14 +112,14 @@ class CustomMediaItem(MediaManagerItem):
         self.PageLayout.addWidget(self.CustomListView)
 
         # Signals
-        QtCore.QObject.connect(self.SearchTextButton, 
-            QtCore.SIGNAL("pressed()"), self.onSearchTextButtonClick)
-        QtCore.QObject.connect(self.ClearTextButton, 
-            QtCore.SIGNAL("pressed()"), self.onClearTextButtonClick)
-        QtCore.QObject.connect(self.SearchTextEdit, 
-            QtCore.SIGNAL("textChanged(const QString&)"), self.onSearchTextEditChanged)
-        QtCore.QObject.connect(self.CustomListView, 
-            QtCore.SIGNAL("itemPressed(QTableWidgetItem * item)"), self.onCustomSelected)
+#        QtCore.QObject.connect(self.SearchTextButton, 
+#            QtCore.SIGNAL("pressed()"), self.onSearchTextButtonClick)
+#        QtCore.QObject.connect(self.ClearTextButton, 
+#            QtCore.SIGNAL("pressed()"), self.onClearTextButtonClick)
+#        QtCore.QObject.connect(self.SearchTextEdit, 
+#            QtCore.SIGNAL("textChanged(const QString&)"), self.onSearchTextEditChanged)
+#        QtCore.QObject.connect(self.CustomListView, 
+#            QtCore.SIGNAL("itemPressed(QTableWidgetItem * item)"), self.onCustomSelected)
 
         #define and add the context menu
         self.CustomListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
@@ -137,14 +137,15 @@ class CustomMediaItem(MediaManagerItem):
             self.CustomListView, ':/system/system_add.png',
             "&Add to Service", self.onCustomEditClick))
             
-    def retranslateUi(self):
-        self.ClearTextButton.setText(translate('CustomMediaItem', u'Clear'))
-        self.SearchTextButton.setText(translate('CustomMediaItem', u'Search'))        
+#    def retranslateUi(self):
+#        self.ClearTextButton.setText(translate('CustomMediaItem', u'Clear'))
+#        self.SearchTextButton.setText(translate('CustomMediaItem', u'Search'))        
         
     def initialise(self):
         self.loadCustomList(self.parent.custommanager.get_all_slides())
         
     def loadCustomList(self, list):
+        self.CustomListData.resetStore()
         for CustomSlide in list:
             self.CustomListData.addRow(CustomSlide.id,CustomSlide.title)
 
@@ -169,6 +170,7 @@ class CustomMediaItem(MediaManagerItem):
         print item
 
     def onCustomNewClick(self):
+        self.parent.edit_custom_form.loadCustom(0)        
         self.parent.edit_custom_form.exec_()
         self.initialise()        
 

@@ -60,19 +60,26 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.DeleteButton.setEnabled(False)
         self.EditButton.setEnabled(False)
         self.SaveButton.setEnabled(False)
+        self.TitleEdit.setText('')
+        self.CreditEdit.setText('')
         self.VerseTextEdit.clear()
-        self.VerseListView.clear()        
+        self.VerseListView.clear()
+        #make sure we have a new item 
+        self.customSlide = CustomSlide()        
 
     def loadCustom(self, id):
-        self.customSlide = self.custommanager.get_custom(id)
-        self.TitleEdit.setText(self.customSlide.title)
-        self.CreditEdit.setText(self.customSlide.title)
-        
-        songXML=SongXMLParser(self.customSlide.text)
-        verseList = songXML.get_verses()
-        for verse in verseList:
-            self.VerseListView.addItem(verse[1])
-        self.validate()
+        if id == 0:
+            self.initialise()
+        else:
+            self.customSlide = self.custommanager.get_custom(id)
+            self.TitleEdit.setText(self.customSlide.title)
+            self.CreditEdit.setText(self.customSlide.title)
+            
+            songXML=SongXMLParser(self.customSlide.text)
+            verseList = songXML.get_verses()
+            for verse in verseList:
+                self.VerseListView.addItem(verse[1])
+            self.validate()
 
     def accept(self):
         self.validate()
@@ -84,9 +91,6 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             for i in range (0, self.VerseListView.count()):
                 sxml.add_verse_to_lyrics(u'custom', str(count),  str(self.VerseListView.item(i).text()))
                 count += 1
-            sxml.dump_xml()
-            if self.customSlide == None:
-                self.customSlide = CustomSlide()            
             self.customSlide.title = unicode(self.TitleEdit.displayText())
             self.customSlide.text = unicode(sxml.extract_xml())
             self.customSlide.credits = unicode(self.CreditEdit.displayText())

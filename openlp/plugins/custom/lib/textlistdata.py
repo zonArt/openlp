@@ -9,13 +9,17 @@ class TextListData(QAbstractListModel):
     An abstract list of strings 
     """
     global log
-    log=logging.getLogger("TextListData")
-    log.info("started")
+    log=logging.getLogger(u'TextListData')
+    log.info(u'started')
 
     def __init__(self):
         QAbstractListModel.__init__(self)
         self.items=[] # will be a list of (database id , title) tuples
 
+    def resetStore(self):
+        #reset list so can be reloaded
+        self.items=[] 
+                
     def rowCount(self, parent):
         return len(self.items)
 
@@ -32,15 +36,15 @@ class TextListData(QAbstractListModel):
 
     def addRow(self, id, title):
         self.insertRow(len(self.items), id, title)
-
+            
     def data(self, index, role):
         row=index.row()
         if row > len(self.items): # if the last row is selected and deleted, we then get called with an empty row!
             return QVariant()
         if role==Qt.DisplayRole:
             retval= self.items[row][1]
-        elif role == Qt.ToolTipRole:
-            retval= self.items[row][0]
+#        elif role == Qt.ToolTipRole:   #not sure if need as it shows the database row number
+#            retval= self.items[row][0]
         else:
             retval= QVariant()
 #         log.info("Returning"+ str(retval))
