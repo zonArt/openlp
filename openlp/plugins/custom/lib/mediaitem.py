@@ -26,7 +26,6 @@ from openlp.core.lib import MediaManagerItem
 from openlp.core.resources import *
 
 from openlp.plugins.custom.lib import TextListData
- 
 
 class CustomMediaItem(MediaManagerItem):
     """
@@ -44,26 +43,37 @@ class CustomMediaItem(MediaManagerItem):
         self.addToolbar()
         # Create buttons for the toolbar
         ## New Custom Button ##
-        self.addToolbarButton('New Custom', 'Add a new Custom Item',
+        self.addToolbarButton(
+            translate('CustomMediaItem','New Custom Item'), 
+            translate('CustomMediaItem','Add a new Custom Item'),
             ':/custom/custom_new.png', self.onCustomNewClick, 'CustomNewItem')
         ## Edit Custom Button ##
-        self.addToolbarButton('Edit Custom', 'Edit the selected Custom Item',
+        self.addToolbarButton(
+            translate('CustomMediaItem','Edit Custom Item'),
+            translate('CustomMediaItem','Edit the selected Custom Item'),
             ':/custom/custom_edit.png', self.onCustomEditClick, 'CustomEditItem')
         ## Delete Custom Button ##
-        self.addToolbarButton('Delete Custom', 'Delete the selected Custom Item',
+        self.addToolbarButton(
+            translate('CustomMediaItem','Delete Custom Item'),
+            translate('CustomMediaItem','Delete the selected Custom Item'),
             ':/custom/custom_delete.png', self.onCustomDeleteClick, 'CustomDeleteItem')
         ## Separator Line ##
         self.addToolbarSeparator()
         ## Preview Custom Button ##
-        self.addToolbarButton('Preview Custom', 'Preview the selected Custom',
+        self.addToolbarButton(
+            translate('CustomMediaItem','Preview Custom Item'),
+            translate('CustomMediaItem','Preview the selected Custom Item'),
             ':/system/system_preview.png', self.onCustomPreviewClick, 'CustomPreviewItem')
         ## Live Custom Button ##
-        self.addToolbarButton('Go Live', 'Send the selected Custom live',
+        self.addToolbarButton(
+            translate('CustomMediaItem','Go Live'),
+            translate('CustomMediaItem', 'Send the selected Custom live'),
             ':/system/system_live.png', self.onCustomLiveClick, 'CustomLiveItem')
         ## Add Custom Button ##
-        self.addToolbarButton('Add Custom To Service',
-            'Add the selected Custom(s) to the service', ':/system/system_add.png',
-            self.onCustomAddClick, 'CustomAddItem')
+        self.addToolbarButton(
+            translate('CustomMediaItem','Add Custom To Service'),
+            translate('CustomMediaItem','Add the selected Custom(s) to the service'), 
+            ':/system/system_add.png', self.onCustomAddClick, 'CustomAddItem')
         ## Add the Customlist widget ##
         # Create the tab widget
         self.CustomWidget = QtGui.QWidget(self)
@@ -73,9 +83,9 @@ class CustomMediaItem(MediaManagerItem):
         sizePolicy.setHeightForWidth(self.CustomWidget.sizePolicy().hasHeightForWidth())
         self.CustomWidget.setSizePolicy(sizePolicy)
         self.CustomWidget.setObjectName('CustomWidget')
+        
         self.SearchLayout = QtGui.QGridLayout(self.CustomWidget)
         self.SearchLayout.setObjectName('SearchLayout')
-
         self.SearchTextLabel = QtGui.QLabel(self.CustomWidget)
         self.SearchTextLabel.setObjectName('SearchTextLabel')
         self.SearchTextLabel.setText('Search Text:')
@@ -83,13 +93,13 @@ class CustomMediaItem(MediaManagerItem):
         self.SearchTextEdit = QtGui.QLineEdit(self.CustomWidget)
         self.SearchTextEdit.setObjectName('SearchTextEdit')
         self.SearchLayout.addWidget(self.SearchTextEdit, 2, 1, 1, 2)
+        
         self.ClearTextButton = QtGui.QPushButton(self.CustomWidget)
         self.ClearTextButton.setObjectName('ClearTextButton')
-        self.ClearTextButton.setText('Clear')
+
         self.SearchLayout.addWidget(self.ClearTextButton, 3, 1, 1, 1)
         self.SearchTextButton = QtGui.QPushButton(self.CustomWidget)
         self.SearchTextButton.setObjectName('SearchTextButton')
-        self.SearchTextButton.setText('Search')
         self.SearchLayout.addWidget(self.SearchTextButton, 3, 2, 1, 1)
         # Add the Custom widget to the page layout
         self.PageLayout.addWidget(self.CustomWidget)
@@ -125,8 +135,12 @@ class CustomMediaItem(MediaManagerItem):
             "&Show Live", self.onCustomLiveClick))
         self.CustomListView.addAction(self.contextMenuAction(
             self.CustomListView, ':/system/system_add.png',
-            "&Add to Service", self.onCustomEditClick))            
-
+            "&Add to Service", self.onCustomEditClick))
+            
+    def retranslateUi(self):
+        self.ClearTextButton.setText(translate('CustomMediaItem', u'Clear'))
+        self.SearchTextButton.setText(translate('CustomMediaItem', u'Search'))        
+        
     def initialise(self):
         self.loadCustomList(self.parent.custommanager.get_all_slides())
         
