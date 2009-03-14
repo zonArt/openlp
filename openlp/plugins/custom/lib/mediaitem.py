@@ -21,10 +21,11 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
+from openlp.core import translate
 from openlp.core.lib import MediaManagerItem
 from openlp.core.resources import *
 
-#from openlp.plugins.custom.lib import TextItemData
+from openlp.plugins.custom.lib import TextListData
  
 
 class CustomMediaItem(MediaManagerItem):
@@ -95,8 +96,8 @@ class CustomMediaItem(MediaManagerItem):
         
         self.CustomListView = QtGui.QListView()
         self.CustomListView.setAlternatingRowColors(True)
-#        self.CustomListData = TextListData()
-#        self.CustomListView.setModel(self.CustomListData)
+        self.CustomListData = TextListData()
+        self.CustomListView.setModel(self.CustomListData)
         
         self.PageLayout.addWidget(self.CustomListView)
 
@@ -110,9 +111,12 @@ class CustomMediaItem(MediaManagerItem):
         QtCore.QObject.connect(self.CustomListView, 
             QtCore.SIGNAL("itemPressed(QTableWidgetItem * item)"), self.onCustomSelected)
 
-#        #define and add the context menu
+        #define and add the context menu
         self.CustomListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-#
+        self.CustomListView.addAction(self.contextMenuAction(self.CustomListView,
+            ':/custom/custom_edit.png', translate('CustomMediaItem', u'&Edit Custom'),
+            self.onCustomEditClick))
+        self.CustomListView.addAction(self.contextMenuSeparator(self.CustomListView))
         self.CustomListView.addAction(self.contextMenuAction(
             self.CustomListView, ':/system/system_preview.png',
             "&Preview Custom", self.onCustomPreviewClick))
@@ -128,9 +132,7 @@ class CustomMediaItem(MediaManagerItem):
         
     def loadCustomList(self, list):
         for CustomSlide in list:
-            print CustomSlide.title        
-#        for CustomSlide in list:
-#            self.CustomListData.addRow(CustomSlide.id,CustomSlide.title)
+            self.CustomListData.addRow(CustomSlide.id,CustomSlide.title)
 
     def onClearTextButtonClick(self):
         """
@@ -154,12 +156,14 @@ class CustomMediaItem(MediaManagerItem):
 
     def onCustomNewClick(self):
         self.parent.edit_custom_form.exec_()
+        self.initialise()        
 
     def onCustomEditClick(self):
-        current_row = self.CustomListView.currentRow()
-        id = int(self.CustomListView.item(current_row, 0).text())
-        self.edit_Custom_form.loadCustom(id)
-        self.edit_Custom_form.exec_()
+        indexes = self.CustomListView.selectedIndexes()
+        for index in indexes:
+            self.parent.edit_custom_form.loadCustom(self.CustomListData.getId(index))
+            self.parent.edit_custom_form.exec_()
+        self.initialise()
 
     def onCustomDeleteClick(self):
         pass

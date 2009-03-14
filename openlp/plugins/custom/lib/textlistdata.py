@@ -38,8 +38,6 @@ class TextListData(QAbstractListModel):
         if row > len(self.items): # if the last row is selected and deleted, we then get called with an empty row!
             return QVariant()
         if role==Qt.DisplayRole:
-            retval= self.items[row][2]
-        elif role == Qt.DecorationRole:
             retval= self.items[row][1]
         elif role == Qt.ToolTipRole:
             retval= self.items[row][0]
@@ -57,7 +55,7 @@ class TextListData(QAbstractListModel):
 
     def getId(self, index):
         row = index.row()
-        return self.item[row][0]
+        return self.items[row][0]
         
 if __name__=="__main__":
     sxml=TextListData()        

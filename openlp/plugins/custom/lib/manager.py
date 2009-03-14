@@ -75,7 +75,7 @@ class CustomManager():
         Returns the details of a song
         """
         if id is None:
-            return CustomeSlide()
+            return CustomSlide()
         else:
             return self.session.query(CustomSlide).get(id)
 
@@ -92,6 +92,15 @@ class CustomManager():
         except:
             log.debug('Custom Slide failed')            
             return False
+            
+    def get_custom(self, id=None):
+        """
+        Returns the details of a Custom Slide
+        """
+        if id is None:
+            return CustomSlide()
+        else:
+            return self.session.query(CustomSlide).get(id)            
 #
 #    def delete_song(self, song):
 #        try:

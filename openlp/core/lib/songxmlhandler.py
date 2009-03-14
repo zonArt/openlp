@@ -18,14 +18,14 @@ class SongXMLBuilder():
         
     def new_document(self):
         # Create the <song> base element
-        self.song = self.song_xml.createElement("song")
+        self.song = self.song_xml.createElement(u'song')
         self.song_xml.appendChild(self.song)
-        self.song.setAttribute("version", "1.0")
+        self.song.setAttribute(u'version', u'1.0')
         
     def add_lyrics_to_song(self):
         # Create the main <lyrics> element
-        self.lyrics = self.song_xml.createElement("lyrics")
-        self.lyrics.setAttribute("language", "en")
+        self.lyrics = self.song_xml.createElement(u'lyrics')
+        self.lyrics.setAttribute(u'language', u'en')
         self.song.appendChild(self.lyrics)
         
     def add_verse_to_lyrics(self, type, number, content): 
@@ -34,9 +34,9 @@ class SongXMLBuilder():
         number - number of item eg verse 1
         content - the text to be stored
         """
-        verse = self.song_xml.createElement("verse")
-        verse.setAttribute("type", type)
-        verse.setAttribute('label', number)        
+        verse = self.song_xml.createElement(u'verse')
+        verse.setAttribute(u'type', type)
+        verse.setAttribute(u'label', number)        
         self.lyrics.appendChild(verse)
         
         # add data as a CDATA section
@@ -60,7 +60,7 @@ class SongXMLParser():
         iter=self.song_xml.getiterator()
         verse_list = []
         for element in iter: 
-            if element.tag == 'verse':
+            if element.tag == u'verse':
                 verse_list.append([element.attrib, element.text])
         return verse_list
         

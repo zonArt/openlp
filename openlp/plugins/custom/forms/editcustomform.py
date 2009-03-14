@@ -20,7 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from PyQt4 import Qt, QtCore, QtGui
 
 from editcustomdialog import Ui_customEditDialog
-from openlp.core.lib import SongXMLBuilder
+from openlp.core.lib import SongXMLBuilder, SongXMLParser
 from openlp.plugins.custom.lib.models import CustomSlide
 
 class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
@@ -54,6 +54,25 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.initialise()
         self.VerseListView.setAlternatingRowColors(True)
         #self.savebutton = self.ButtonBox.button(QtGui.QDialogButtonBox.Save)
+        
+    def initialise(self):
+        self.valid = True
+        self.DeleteButton.setEnabled(False)
+        self.EditButton.setEnabled(False)
+        self.SaveButton.setEnabled(False)
+        self.VerseTextEdit.clear()
+        self.VerseListView.clear()        
+
+    def loadCustom(self, id):
+        self.customSlide = self.custommanager.get_custom(id)
+        self.TitleEdit.setText(self.customSlide.title)
+        self.CreditEdit.setText(self.customSlide.title)
+        
+        songXML=SongXMLParser(self.customSlide.text)
+        verseList = songXML.get_verses()
+        for verse in verseList:
+            self.VerseListView.addItem(verse[1])
+        self.validate()
 
     def accept(self):
         self.validate()
@@ -66,11 +85,12 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
                 sxml.add_verse_to_lyrics(u'custom', str(count),  str(self.VerseListView.item(i).text()))
                 count += 1
             sxml.dump_xml()
-            customSlide = CustomSlide()
-            customSlide.title = unicode(self.TitleEdit.displayText())
-            customSlide.text = unicode(sxml.extract_xml())
-            customSlide.credits = unicode(self.CreditEdit.displayText())
-            self.custommanager.save_slide(customSlide)
+            if self.customSlide == None:
+                self.customSlide = CustomSlide()            
+            self.customSlide.title = unicode(self.TitleEdit.displayText())
+            self.customSlide.text = unicode(sxml.extract_xml())
+            self.customSlide.credits = unicode(self.CreditEdit.displayText())
+            self.custommanager.save_slide(self.customSlide)
             self.close()
 
     def rejected(self):
@@ -133,16 +153,6 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             self.TitleLabel.setStyleSheet('color: black')
         if invalid == 1:
             self.valid = False
-
-    def initialise(self):
-        self.valid = True
-        self.DeleteButton.setEnabled(False)
-        self.EditButton.setEnabled(False)
-        self.SaveButton.setEnabled(False)
-#        list = self.songmanager.get_authors()
-#        self.AuthorsSelectionComboItem.clear()
-#        for i in list:
-#            self.AuthorsSelectionComboItem.addItem( i.display_name)
 
     def loadCustomItem(self, id):
         pass
