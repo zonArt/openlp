@@ -70,15 +70,6 @@ class CustomManager():
         """
         return self.session.query(CustomSlide).order_by(CustomSlide.title).all()
 
-    def get_custom(self, id=None):
-        """
-        Returns the details of a song
-        """
-        if id is None:
-            return CustomSlide()
-        else:
-            return self.session.query(CustomSlide).get(id)
-
     def save_slide(self, customslide):
         """
         Saves a song to the database
@@ -101,45 +92,15 @@ class CustomManager():
             return CustomSlide()
         else:
             return self.session.query(CustomSlide).get(id)            
-#
-#    def delete_song(self, song):
-#        try:
-#            self.session.delete(song)
-#            self.session.commit()
-#            return True
-#        except:
-#            return False
-#
-#    def get_authors(self):
-#        """
-#        Returns a list of all the authors
-#        """
-#        return self.session.query(Author).order_by(Author.display_name).all()
-#
-#    def get_author(self, id):
-#        """
-#        Details of the Author
-#        """
-#        return self.session.query(Author).get(id)
-#
-#    def save_author(self, author):
-#        """
-#        Save the Author and refresh the cache
-#        """
-#        try:
-#            self.session.add(author)
-#            self.session.commit()
-#            return True
-#        except:
-#            return False
-#
-#    def delete_author(self, authorid):
-#        """
-#        Delete the author and refresh the author cache
-#        """
-#        try:
-#            self.session.delete(author)
-#            self.session.commit()
-#            return True
-#        except:
-#            return False
+
+    def delete_custom(self, id):
+        if id !=0:
+            customslide = self.get_custom(id)
+            try:
+                self.session.delete(customslide)
+                self.session.commit()
+                return True
+            except:
+                return False
+        else:
+            return True

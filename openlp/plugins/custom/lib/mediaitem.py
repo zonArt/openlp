@@ -182,7 +182,12 @@ class CustomMediaItem(MediaManagerItem):
         self.initialise()
 
     def onCustomDeleteClick(self):
-        pass
+        print 'delete pressed'
+        indexes = self.CustomListView.selectedIndexes()
+        for index in indexes:
+            id = self.CustomListData.getId(index)
+            self.parent.custommanager.delete_custom(id)
+            self.CustomListData.deleteRow(index)
 
     def onCustomPreviewClick(self):
         pass

@@ -61,5 +61,9 @@ class TextListData(QAbstractListModel):
         row = index.row()
         return self.items[row][0]
         
+    def deleteRow(self, index):
+        row = index.row()
+        self.removeRow(row)
+        
 if __name__=="__main__":
     sxml=TextListData()        
