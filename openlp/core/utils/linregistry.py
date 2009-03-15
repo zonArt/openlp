@@ -18,6 +18,7 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import os
+import sys
 from ConfigParser import SafeConfigParser
 from openlp.core.utils import Registry
 
@@ -54,7 +55,7 @@ class LinRegistry(Registry):
         Set a single value in the registry.
         """
         try :
-            self.config.set(section, key, value)
+            self.config.set(section, key, str(value))
             return self._save()
         except:
             return False

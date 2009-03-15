@@ -22,19 +22,19 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
-from openlp.core.lib import Plugin, MediaManagerItem
+from openlp.core.lib import Plugin
 from forms import EditCustomForm
 from openlp.plugins.custom.lib import CustomManager, CustomTab, CustomMediaItem
 
 class CustomPlugin(Plugin):
 
     global log
-    log=logging.getLogger("CustomPlugin")
-    log.info("Custom Plugin loaded")
+    log=logging.getLogger(u'CustomPlugin')
+    log.info(u'Custom Plugin loaded')
 
     def __init__(self):
         # Call the parent constructor
-        Plugin.__init__(self, 'Custom', '1.9.0')
+        Plugin.__init__(self, u'Custom', u'1.9.0')
         self.weight = -5
         self.custommanager = CustomManager(self.config)
         self.edit_custom_form = EditCustomForm(self.custommanager)
@@ -44,8 +44,8 @@ class CustomPlugin(Plugin):
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
     def get_media_manager_item(self):
-        # Create the MediaManagerItem object
-        self.media_item = CustomMediaItem(self, self.icon, 'Custom Slides')
+        # Create the CustomManagerItem object
+        self.media_item = CustomMediaItem(self, self.icon, u'Custom Slides')
         return self.media_item
        
     def get_settings_tab(self):

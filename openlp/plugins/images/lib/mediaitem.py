@@ -33,8 +33,8 @@ class ImageMediaItem(MediaManagerItem):
     This is the custom media manager item for images.
     """
     global log
-    log=logging.getLogger("ImageMediaItem")
-    log.info("Image Media Item loaded")
+    log=logging.getLogger(u'ImageMediaItem')
+    log.info(u'Image Media Item loaded')
 
     def __init__(self, parent, icon, title):
         MediaManagerItem.__init__(self, parent, icon, title)
@@ -109,13 +109,13 @@ class ImageMediaItem(MediaManagerItem):
         files = QtGui.QFileDialog.getOpenFileNames(None,
             translate('ImageMediaItem', u'Select Image(s)'),
             self.parent.config.get_last_dir(),
-            "Images (*.jpg *.gif *.png *.bmp)")
-        log.info("New image(s)", str(files))
+            u'Images (*.jpg *.gif *.png *.bmp)')
+        log.info(u'New image(s)', str(files))
         if len(files) > 0:
             self.loadImageList(files)
             dir, filename = os.path.split(str(files[0]))
             self.parent.config.set_last_dir(dir)
-            self.parent.config.set_list('images', self.ImageListData.getFileList())
+            self.parent.config.set_list(u'images', self.ImageListData.getFileList())
 
     def loadImageList(self, list):
         for image in list:
@@ -126,14 +126,13 @@ class ImageMediaItem(MediaManagerItem):
         for index in indexes:
             current_row = int(index.row())
             self.ImageListData.removeRow(current_row)
-
-        self._save_display_list(self.ImageListData.get_file_list())
+        self.parent.config.set_list(u'images', self.ImageListData.getFileList())            
 
     def onImageClick(self, where):
         indexes = self.ImageListView.selectedIndexes()
         for index in indexes:
             filename = self.ImageListData.getFilename(index)
-            log.info("Click %s:%s"%(str(where), filename))
+            log.info(u'Click %s:%s'%(str(where), filename))
             where.add(filename)
         where.render()
 

@@ -71,9 +71,9 @@ class VideoTab(SettingsTab):
             self.use_vmr_mode = True
     
     def load(self):
-        self.use_vmr_mode = self.convertStringToBoolean(self.config.get_config('use mode layout', u'False'))
+        self.use_vmr_mode = self.convertStringToBoolean(self.config.get_config(u'use mode layout', u'False'))
         if self.use_vmr_mode :
             self.UseVMRCheckBox.setChecked(True)
         
     def save(self):
-        self.config.set_config('use mode layout', str(self.use_vmr_mode))        
+        self.config.set_config(u'use mode layout', str(self.use_vmr_mode))        

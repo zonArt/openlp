@@ -32,8 +32,8 @@ class CustomMediaItem(MediaManagerItem):
     This is the custom media manager item for Custom Slides.
     """
     global log
-    log=logging.getLogger("CustomMediaItem")
-    log.info("Custom Media Item loaded")
+    log=logging.getLogger(u'CustomMediaItem')
+    log.info(u'Custom Media Item loaded')
 
     def __init__(self, parent, icon, title):
         MediaManagerItem.__init__(self, parent, icon, title)
@@ -44,45 +44,44 @@ class CustomMediaItem(MediaManagerItem):
         # Create buttons for the toolbar
         ## New Custom Button ##
         self.addToolbarButton(
-            translate('CustomMediaItem','New Custom Item'), 
-            translate('CustomMediaItem','Add a new Custom Item'),
+            translate('CustomMediaItem',u'New Custom Item'), 
+            translate('CustomMediaItem',u'Add a new Custom Item'),
             ':/custom/custom_new.png', self.onCustomNewClick, 'CustomNewItem')
         ## Edit Custom Button ##
         self.addToolbarButton(
-            translate('CustomMediaItem','Edit Custom Item'),
-            translate('CustomMediaItem','Edit the selected Custom Item'),
+            translate('CustomMediaItem',u'Edit Custom Item'),
+            translate('CustomMediaItem',u'Edit the selected Custom Item'),
             ':/custom/custom_edit.png', self.onCustomEditClick, 'CustomEditItem')
         ## Delete Custom Button ##
         self.addToolbarButton(
-            translate('CustomMediaItem','Delete Custom Item'),
-            translate('CustomMediaItem','Delete the selected Custom Item'),
+            translate('CustomMediaItem',u'Delete Custom Item'),
+            translate('CustomMediaItem',u'Delete the selected Custom Item'),
             ':/custom/custom_delete.png', self.onCustomDeleteClick, 'CustomDeleteItem')
         ## Separator Line ##
         self.addToolbarSeparator()
         ## Preview Custom Button ##
         self.addToolbarButton(
-            translate('CustomMediaItem','Preview Custom Item'),
-            translate('CustomMediaItem','Preview the selected Custom Item'),
+            translate('CustomMediaItem',u'Preview Custom Item'),
+            translate('CustomMediaItem',u'Preview the selected Custom Item'),
             ':/system/system_preview.png', self.onCustomPreviewClick, 'CustomPreviewItem')
         ## Live Custom Button ##
         self.addToolbarButton(
-            translate('CustomMediaItem','Go Live'),
-            translate('CustomMediaItem', 'Send the selected Custom live'),
+            translate('CustomMediaItem',u'Go Live'),
+            translate('CustomMediaItem', u'Send the selected Custom live'),
             ':/system/system_live.png', self.onCustomLiveClick, 'CustomLiveItem')
         ## Add Custom Button ##
         self.addToolbarButton(
-            translate('CustomMediaItem','Add Custom To Service'),
-            translate('CustomMediaItem','Add the selected Custom(s) to the service'), 
+            translate('CustomMediaItem',u'Add Custom To Service'),
+            translate('CustomMediaItem',u'Add the selected Custom(s) to the service'), 
             ':/system/system_add.png', self.onCustomAddClick, 'CustomAddItem')
-        ## Add the Customlist widget ##
-        # Create the tab widget
+        # Add the Customlist widget
         self.CustomWidget = QtGui.QWidget(self)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.CustomWidget.sizePolicy().hasHeightForWidth())
         self.CustomWidget.setSizePolicy(sizePolicy)
-        self.CustomWidget.setObjectName('CustomWidget')
+        self.CustomWidget.setObjectName(u'CustomWidget')
         
 #        self.SearchLayout = QtGui.QGridLayout(self.CustomWidget)
 #        self.SearchLayout.setObjectName('SearchLayout')
@@ -129,13 +128,13 @@ class CustomMediaItem(MediaManagerItem):
         self.CustomListView.addAction(self.contextMenuSeparator(self.CustomListView))
         self.CustomListView.addAction(self.contextMenuAction(
             self.CustomListView, ':/system/system_preview.png',
-            "&Preview Custom", self.onCustomPreviewClick))
+            translate('CustomMediaItem',u'&Preview Custom'), self.onCustomPreviewClick))
         self.CustomListView.addAction(self.contextMenuAction(
             self.CustomListView, ':/system/system_live.png',
-            "&Show Live", self.onCustomLiveClick))
+            translate('CustomMediaItem',u'&Show Live'), self.onCustomLiveClick))
         self.CustomListView.addAction(self.contextMenuAction(
             self.CustomListView, ':/system/system_add.png',
-            "&Add to Service", self.onCustomEditClick))
+            translate('CustomMediaItem',u'&Add to Service'), self.onCustomEditClick))
             
 #    def retranslateUi(self):
 #        self.ClearTextButton.setText(translate('CustomMediaItem', u'Clear'))
@@ -166,9 +165,6 @@ class CustomMediaItem(MediaManagerItem):
         search_results = self.Custommanager.search_Custom_lyrics(search_keywords)
         self._display_results(search_results)
 
-    def onCustomSelected(self, item):
-        print item
-
     def onCustomNewClick(self):
         self.parent.edit_custom_form.loadCustom(0)        
         self.parent.edit_custom_form.exec_()
@@ -182,7 +178,6 @@ class CustomMediaItem(MediaManagerItem):
         self.initialise()
 
     def onCustomDeleteClick(self):
-        print 'delete pressed'
         indexes = self.CustomListView.selectedIndexes()
         for index in indexes:
             id = self.CustomListData.getId(index)
@@ -197,24 +192,3 @@ class CustomMediaItem(MediaManagerItem):
 
     def onCustomAddClick(self):
         pass
-
-    def _display_results(self, searchresults):
-        log.debug("_search results")
-        self.CustomListView.clear() # clear the results
-        self.CustomListView.setHorizontalHeaderLabels(QtCore.QStringList(['', u'Custom Name']))
-        self.CustomListView.horizontalHeader().setVisible(False)
-        self.CustomListView.verticalHeader().setVisible(False)
-        self.CustomListView.setRowCount(0)
-        #log.debug("Records returned from search %s", len(searchresults))
-        for Custom in searchresults:
-            for author in Custom.authors:
-                c = self.CustomListView.rowCount()
-                self.CustomListView.setRowCount(c + 1)
-                Custom_index = QtGui.QTableWidgetItem(str(Custom.id))
-                self.CustomListView.setItem(c , 0, Custom_index)
-                Custom_detail = QtGui.QTableWidgetItem(u'%s (%s)' % (str(Custom.title), str(author.display_name)))
-                self.CustomListView.setItem(c , 1, Custom_detail)
-                #twi = QtGui.QTableWidgetItem()
-                #self.CustomListView.setItem(c , 2, twi)
-                self.CustomListView.setRowHeight(c, 20)
-

@@ -34,8 +34,8 @@ class CustomManager():
     """
 
     global log
-    log=logging.getLogger('CustomManager')
-    log.info('Custom manager loaded')
+    log=logging.getLogger(u'CustomManager')
+    log.info(u'Custom manager loaded')
 
     def __init__(self, config):
         """
@@ -43,7 +43,7 @@ class CustomManager():
         don't exist.
         """
         self.config = config
-        log.debug('Custom Initialising')
+        log.debug(u'Custom Initialising')
         self.db_url = u''
         db_type = self.config.get_config(u'db type', u'sqlite')
         if db_type == u'sqlite':
@@ -59,7 +59,7 @@ class CustomManager():
         if not custom_slide_table.exists():
             metadata.create_all()
         
-        log.debug('Custom Initialised')
+        log.debug(u'Custom Initialised')
 #
 #    def process_dialog(self, dialogobject):
 #        self.dialogobject = dialogobject
@@ -74,14 +74,14 @@ class CustomManager():
         """
         Saves a song to the database
         """
-        log.debug('Custom Slide added')
+        log.debug(u'Custom Slide added')
         try:
             self.session.add(customslide)
             self.session.commit()
-            log.debug('Custom Slide saved')
+            log.debug(u'Custom Slide saved')
             return True
         except:
-            log.debug('Custom Slide failed')            
+            log.debug(u'Custom Slide failed')            
             return False
             
     def get_custom(self, id=None):

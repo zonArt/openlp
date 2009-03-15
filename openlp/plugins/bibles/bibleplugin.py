@@ -51,7 +51,7 @@ class BiblePlugin(Plugin, PluginUtils):
         return self.bibles_tab
 
     def get_media_manager_item(self):
-        # Create the MediaManagerItem object
+        # Create the BibleManagerItem object
         self.media_item = BibleMediaItem(self, self.icon, 'Bible Verses')
         return self.media_item
 

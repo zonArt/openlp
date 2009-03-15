@@ -3,7 +3,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley
+Portions copyright (c) 2008 -2009 Martin Thompson, Tim Bentley
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -52,8 +52,9 @@ class PluginConfig(object):
 
     def get_data_path(self):
         app_data = ConfigHelper.get_data_path()
-        safe_name = self.section.replace(' ', '-')
-        plugin_data = self.get_config('data path', safe_name)
+        app_data = ConfigHelper.get_data_path()
+        safe_name = self.section.replace(u' ',u'-')
+        plugin_data = self.get_config(u'data path', safe_name)
         path = os.path.join(app_data, plugin_data)
 
         if not os.path.exists(path):
@@ -62,7 +63,7 @@ class PluginConfig(object):
         return path
 
     def set_data_path(self, path):
-        return self.set_config('data path', os.path.basename(path))
+        return self.set_config(u'data path', os.path.basename(path))
         
     def get_files(self, suffix=None):
         returnfiles = []        
@@ -88,7 +89,7 @@ class PluginConfig(object):
         """
         Load a list from the config file
         """
-        list_count = self.get_config('%s count' % name)
+        list_count = self.get_config(u'%s count' % name)
         if list_count is not None:
             list_count = int(list_count)
         else:
@@ -96,7 +97,7 @@ class PluginConfig(object):
         list = []
         if list_count > 0:
             for counter in range(0 , list_count):
-                item = str(self.get_config('%s %d' % (name, counter)))
+                item = str(self.get_config(u'%s %d' % (name, counter)))
                 list.append(item)
         return list
 
@@ -104,24 +105,24 @@ class PluginConfig(object):
         """
         Save a list to the config file
         """
-        old_count = int(self.get_config('%s count' % name))
+        old_count = int(self.get_config(u'%s count' % name, int(0)))
         new_count = len(list)
-        self.set_config('%s count' % new_count)
+        self.set_config(u'%s count' % name, new_count)
         for counter in range (0, new_count):
-            self.set_config('%s %d' % (name, counter), list[counter])
+            self.set_config(u'%s %d' % (name, counter), list[counter-1])
         if old_count > new_count:
             # Tidy up any old list itrms if list is smaller now
             for counter in range(new_count, old_count):
-                self.delete_config('%s %d' % (name, counter))
+                self.delete_config(u'%s %d' % (name, counter))
 
     def get_last_dir(self, num=None):
         """
         Read the last directory used for plugin
         """
         if num is not None:
-            name = 'last directory %d' % num
+            name = u'last directory %d' % num
         else:
-            name = 'last directory'
+            name = u'last directory'
         last_dir = self.get_config(name)
         if last_dir is None:
             last_dir = ''
@@ -132,7 +133,7 @@ class PluginConfig(object):
         Save the last directory used for plugin
         """
         if num is not None:
-            name = 'last directory %d' % num
+            name = u'last directory %d' % num
         else:
-            name = 'last directory'
+            name = u'last directory'
         self.set_config(name, directory)
