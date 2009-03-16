@@ -30,8 +30,8 @@ from openlp.plugins.bibles.lib.classes import *
 
 class BibleDBImpl(BibleCommon):
     global log     
-    log=logging.getLogger("BibleDBImpl")
-    log.info("BibleDBimpl loaded")
+    log=logging.getLogger(u'BibleDBImpl')
+    log.info(u'BibleDBimpl loaded')
     
     def __init__(self, biblepath , biblename, config):   
         # Connect to database
@@ -42,11 +42,11 @@ class BibleDBImpl(BibleCommon):
         if db_type  == u'sqlite': 
             self.db = create_engine("sqlite:///"+self.biblefile)
         else:
-            self.db_url = db_type + 'u://' + \
-                self.config.get_config(u'db username') + u':' + \
-                self.config.get_config(u'db password') + u'@' + \
-                self.config.get_config(u'db hostname') + u'/' + \
-                self.config.get_config(u'db database')
+            self.db_url = u'%s://%s:%s@%s/%s' % \
+                (db_type, self.config.get_config(u'db username'),
+                    self.config.get_config(u'db password'),
+                    self.config.get_config(u'db hostname'),
+                    self.config.get_config(u'db database'))
         self.db.echo = False
         metadata.bind = self.db
         metadata.bind.echo = False
@@ -55,8 +55,8 @@ class BibleDBImpl(BibleCommon):
         metadata.create_all(self.db)
         
     def create_tables(self):
-        log.debug( "createTables")        
-        self.save_meta("dbversion", "2")
+        log.debug( u'createTables')        
+        self.save_meta(u'dbversion', u'2')
         self._load_testament("Old Testament")
         self._load_testament("New Testament")
         self._load_testament("Apocrypha")        
@@ -174,10 +174,10 @@ class BibleDBImpl(BibleCommon):
         return self.db.execute(s, t=versetext).fetchall()        
         
     def dump_bible(self):
-        log.debug( ".........Dumping Bible Database")
-        log.debug( "...............................Books ")     
+        log.debug( u'.........Dumping Bible Database')
+        log.debug( '...............................Books ')     
         s = text (""" select * FROM book """)
         log.debug( self.db.execute(s).fetchall())
-        log.debug( "...............................Verses ")            
+        log.debug( u'...............................Verses ')
         s = text (""" select * FROM verse """)
         log.debug( self.db.execute(s).fetchall())

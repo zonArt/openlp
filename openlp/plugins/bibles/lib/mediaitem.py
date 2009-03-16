@@ -26,15 +26,15 @@ from openlp.core.lib import MediaManagerItem, Receiver
 from openlp.core.resources import *
 
 from openlp.plugins.bibles.forms import BibleImportForm
-#from openlp.plugins.bibles.lib import BiblesTab
+from openlp.plugins.bibles.lib import TextListData
 
 class BibleMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Bibles.
     """
     global log
-    log=logging.getLogger("BibleMediaItem")
-    log.info("Bible Media Item loaded")
+    log=logging.getLogger(u'BibleMediaItem')
+    log.info(u'Bible Media Item loaded')
 
     def __init__(self, parent, icon, title):
         MediaManagerItem.__init__(self, parent, icon, title)
@@ -47,19 +47,27 @@ class BibleMediaItem(MediaManagerItem):
         self.addToolbar()
         # Create buttons for the toolbar
         ## New Bible Button ##
-        self.addToolbarButton('New Bible', 'Register a new Bible',
+        self.addToolbarButton(
+            translate(u'BibleMediaItem','New Bible'), 
+            translate(u'BibleMediaItem','Register a new Bible'),
             ':/themes/theme_import.png', self.onBibleNewClick, 'BibleNewItem')
         ## Separator Line ##
         self.addToolbarSeparator()
         ## Preview Bible Button ##
-        self.addToolbarButton('Preview Bible', 'Preview the selected Bible Verse',
+        self.addToolbarButton(
+            translate(u'BibleMediaItem','Preview Bible'), 
+            translate(u'BibleMediaItem','Preview the selected Bible Verse'),
             ':/system/system_preview.png', self.onBiblePreviewClick, 'BiblePreviewItem')
         ## Live Bible Button ##
-        self.addToolbarButton('Go Live', 'Send the selected Bible Verse(s) live',
+        self.addToolbarButton(
+            translate(u'BibleMediaItem','Go Live'), 
+            translate(u'BibleMediaItem','Send the selected Bible Verse(s) live'),
             ':/system/system_live.png', self.onBibleLiveClick, 'BibleLiveItem')
         ## Add Bible Button ##
-        self.addToolbarButton('Add Bible Verse(s) To Service',
-            'Add the selected Bible(s) to the service', ':/system/system_add.png',
+        self.addToolbarButton(
+            translate(u'BibleMediaItem','Add Bible Verse(s) To Service'),
+            translate(u'BibleMediaItem','Add the selected Bible(s) to the service'),
+            ':/system/system_add.png',
             self.onBibleAddClick, 'BibleAddItem')
 
         # Create the tab widget
@@ -171,19 +179,27 @@ class BibleMediaItem(MediaManagerItem):
         # Add the search tab widget to the page layout
         self.PageLayout.addWidget(self.SearchTabWidget)
 
-        self.BibleListView = QtGui.QTableWidget()
-        self.BibleListView.setColumnCount(2)
-        self.BibleListView.setColumnHidden(0, True)
-        self.BibleListView.setColumnWidth(1, 275)
-        self.BibleListView.setShowGrid(False)
-        self.BibleListView.setSortingEnabled(False)
+#        self.BibleListView = QtGui.QTableWidget()
+#        self.BibleListView.setColumnCount(2)
+#        self.BibleListView.setColumnHidden(0, True)
+#        self.BibleListView.setColumnWidth(1, 275)
+#        self.BibleListView.setShowGrid(False)
+#        self.BibleListView.setSortingEnabled(False)
+#        self.BibleListView.setAlternatingRowColors(True)
+#        self.BibleListView.verticalHeader().setVisible(False)
+#        self.BibleListView.horizontalHeader().setVisible(False)
+#        self.BibleListView.setGeometry(QtCore.QRect(10, 200, 256, 391))
+#        self.BibleListView.setObjectName(u'BibleListView')
+#        self.BibleListView.setAlternatingRowColors(True)
+#        self.PageLayout.addWidget(self.BibleListView)
+        
+        self.BibleListView = QtGui.QListView()
         self.BibleListView.setAlternatingRowColors(True)
-        self.BibleListView.verticalHeader().setVisible(False)
-        self.BibleListView.horizontalHeader().setVisible(False)
-        self.BibleListView.setGeometry(QtCore.QRect(10, 200, 256, 391))
-        self.BibleListView.setObjectName(u'BibleListView')
-        self.BibleListView.setAlternatingRowColors(True)
+        self.BibleListData = TextListData()
+        self.BibleListView.setModel(self.BibleListData)
+        
         self.PageLayout.addWidget(self.BibleListView)
+        
         # Combo Boxes
         QtCore.QObject.connect(self.AdvancedVersionComboBox,
             QtCore.SIGNAL("activated(int)"), self.onAdvancedVersionComboBox)
@@ -204,15 +220,16 @@ class BibleMediaItem(MediaManagerItem):
         self.BibleListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.BibleListView.addAction(self.contextMenuAction(
             self.BibleListView, ':/system/system_preview.png',
-            "&Preview Verse", self.onBiblePreviewClick))
+            translate(u'BibleMediaItem',u'&Preview Verse'), self.onBiblePreviewClick))
         self.BibleListView.addAction(self.contextMenuAction(
             self.BibleListView, ':/system/system_live.png',
-            "&Show Live", self.onBibleLiveClick))
+            translate(u'BibleMediaItem',u'&Show Live'), self.onBibleLiveClick))
         self.BibleListView.addAction(self.contextMenuAction(
             self.BibleListView, ':/system/system_add.png',
-            "&Add to Service", self.onBibleAddClick))
+            translate(u'BibleMediaItem',u'&Add to Service'), self.onBibleAddClick))
 
     def retranslateUi(self):
+        log.debug(u'retranslateUi')        
         self.QuickVersionLabel.setText(translate(u'BibleMediaItem', u'Version:'))
         self.QuickSearchLabel.setText(translate(u'BibleMediaItem', u'Search Type:'))
         self.QuickSearchLabel.setText(translate(u'BibleMediaItem', u'Find:'))
@@ -234,21 +251,20 @@ class BibleMediaItem(MediaManagerItem):
         self.ClearAdvancedSearchComboBox.addItem(translate(u'BibleMediaItem', u'Keep'))
 
     def initialise(self):
+        log.debug(u'initialise')
         self.loadBibles()
 
-    def initialiseForm(self):
-        self.QuickSearchComboBox.clear()
+    def loadBibles(self):
+        log.debug(u'Loading Bibles')  
         self.QuickVersionComboBox.clear()
         self.AdvancedVersionComboBox.clear()
-        self.ClearQuickSearchComboBox.clear()
-        self.ClearAdvancedSearchComboBox.clear()
-
-    def loadBibles(self):
-        log.debug("Loading Bibles")
-        bibles = self.parent.biblemanager.get_bibles('full')
+        
+        bibles = self.parent.biblemanager.get_bibles(u'full')
+        
         for bible in bibles:  # load bibles into the combo boxes
             self.QuickVersionComboBox.addItem(bible)
-        bibles = self.parent.biblemanager.get_bibles('partial') # Without HTTP
+            
+        bibles = self.parent.biblemanager.get_bibles(u'partial') # Without HTTP
         first = True
         for bible in bibles:  # load bibles into the combo boxes
             self.AdvancedVersionComboBox.addItem(bible)
@@ -258,10 +274,9 @@ class BibleMediaItem(MediaManagerItem):
 
     def onAdvancedVersionComboBox(self):
         self.initialiseBible(str(self.AdvancedVersionComboBox.currentText())) # restet the bible info
-        pass
 
     def onAdvancedBookComboBox(self):
-        self.initialiseBible(str(self.AdvancedVersionComboBox.currentText())) # restet the bible info
+        self.initialiseBible(str(self.AdvancedVersionComboBox.currentText())) # reset the bible info
 
     def onBibleNewClick(self):
         self.bibleimportform = BibleImportForm(self.parent.config, self.parent.biblemanager, self)
@@ -288,7 +303,7 @@ class BibleMediaItem(MediaManagerItem):
             self.adjustComboBox(1, vse, self.AdvancedToVerse)
 
     def onAdvancedSearchButton(self):
-        log.debug("Advanced Search Button pressed")
+        log.debug(u'Advanced Search Button pressed')
         bible = str(self.AdvancedVersionComboBox.currentText())
         book = str(self.AdvancedBookComboBox.currentText())
         chapter_from =  int(self.AdvancedFromChapter.currentText())
@@ -298,9 +313,8 @@ class BibleMediaItem(MediaManagerItem):
         self.search_results = self.parent.biblemanager.get_verse_text(bible, book,
             chapter_from, chapter_to, verse_from, verse_to)
         if self.ClearAdvancedSearchComboBox.currentIndex() == 0:
-            self.BibleListView.clear() # clear the results
-            self.BibleListView.setRowCount(0)
-        self.displayResults(bible)
+            self.BibleListData.resetStore()
+            self.displayResults(bible)
 
     def onAdvancedFromChapter(self):
         bible = str(self.AdvancedVersionComboBox.currentText())
@@ -312,12 +326,11 @@ class BibleMediaItem(MediaManagerItem):
         self._adjust_combobox(1, vse, self.AdvancedToVerse)
 
     def onQuickSearchButton(self):
-        log.debug("Quick Search Button pressed")
+        log.debug(u'Quick Search Button pressed')
         bible = str(self.QuickVersionComboBox.currentText())
         text = str(self.QuickSearchEdit.displayText())
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
-            self.BibleListView.clear() # clear the results
-            self.BibleListView.setRowCount(0)
+            self.BibleListData.resetStore()
         if self.QuickSearchComboBox.currentIndex() == 1:
             self.search_results = self.parent.biblemanager.get_verse_from_text(bible, text)
         else:
@@ -326,11 +339,11 @@ class BibleMediaItem(MediaManagerItem):
             self.displayResults(bible)
 
     def onBiblePreviewClick(self):
-        log.debug("Bible Preview Button pressed")
-        items = self.BibleListView.selectedItems()
+        log.debug(u'Bible Preview Button pressed')
+        items = self.BibleListView.selectedIndexes()
         old_chapter = ''
         for item in items:
-            text = str(item.text())
+            text = self.BibleListData.getValue(item)
             verse = text[:text.find("(")]
             bible = text[text.find("(") + 1:text.find(")")]
             self.searchByReference(bible, verse)
@@ -364,17 +377,16 @@ class BibleMediaItem(MediaManagerItem):
         return loc
 
     def reloadBibles(self):
-        log.debug("Reloading Bibles")
+        log.debug(u'Reloading Bibles')
         self.parent.biblemanager.reload_bibles()
-        #self.initialiseForm()
         self.loadBibles()
 
     def initialiseBible(self, bible):
-        log.debug('initialiseBible %s', bible)
+        log.debug(u"initialiseBible %s", bible)
         current_book = str(self.AdvancedBookComboBox.currentText())
         chapter_count = self.parent.biblemanager.get_book_chapter_count(bible,
             current_book)[0]
-        log.debug('Book change bible %s book %s ChapterCount %s', bible,
+        log.debug(u'Book change bible %s book %s ChapterCount %s', bible,
             current_book, chapter_count)
         if chapter_count == None:
             # Only change the search details if the book is missing from the new bible
@@ -389,7 +401,7 @@ class BibleMediaItem(MediaManagerItem):
                     self.initialiseChapterVerse(bible, book.name)
 
     def initialiseChapterVerse(self, bible, book):
-        log.debug("initialiseChapterVerse %s , %s", bible, book)
+        log.debug(u"initialiseChapterVerse %s , %s", bible, book)
         self.chapters_from = self.parent.biblemanager.get_book_chapter_count(bible, book)[0]
         self.verses = self.parent.biblemanager.get_book_verse_count(bible, book, 1)[0]
         self.adjustComboBox(1, self.chapters_from, self.AdvancedFromChapter)
@@ -398,23 +410,18 @@ class BibleMediaItem(MediaManagerItem):
         self.adjustComboBox(1, self.verses, self.AdvancedToVerse)
 
     def adjustComboBox(self, frm, to , combo):
-        log.debug("adjustComboBox %s , %s , %s", combo, frm,  to)
+        log.debug(u"adjustComboBox %s , %s , %s", combo, frm,  to)
         combo.clear()
         for i in range(int(frm), int(to) + 1):
             combo.addItem(str(i))
 
     def displayResults(self, bible):
         for book, chap, vse , txt in self.search_results:
-            row_count = self.BibleListView.rowCount()
-            self.BibleListView.setRowCount(row_count+1)
-            table_data = QtGui.QTableWidgetItem(str(bible))
-            self.BibleListView.setItem(row_count , 0, table_data)
-            table_data = QtGui.QTableWidgetItem(str(book + " " +str(chap) + ":"+ str(vse)) + " ("+str(bible)+")")
-            self.BibleListView.setItem(row_count , 1, table_data)
-            self.BibleListView.setRowHeight(row_count, 20)
+            text = str(u" %s %d:%d (%s)"%(book , chap,vse, bible))
+            self.BibleListData.addRow(0,text)
 
     def searchByReference(self, bible,  search):
-        log.debug("searchByReference %s ,%s", bible, search)
+        log.debug(u"searchByReference %s ,%s", bible, search)
         book = ''
         start_chapter = ''
         end_chapter = ''

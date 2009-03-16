@@ -32,12 +32,12 @@ from openlp.plugins.bibles.lib.classes import *
 
 class BiblePlugin(Plugin, PluginUtils):
     global log
-    log=logging.getLogger("BiblePlugin")
-    log.info("Bible Plugin loaded")
+    log=logging.getLogger(u'BiblePlugin')
+    log.info(u'Bible Plugin loaded')
 
     def __init__(self):
         # Call the parent constructor
-        Plugin.__init__(self, 'Bibles', '1.9.0')
+        Plugin.__init__(self, u'Bibles', u'1.9.0')
         self.weight = -9
         # Create the plugin icon
         self.icon = QtGui.QIcon()
@@ -52,7 +52,7 @@ class BiblePlugin(Plugin, PluginUtils):
 
     def get_media_manager_item(self):
         # Create the BibleManagerItem object
-        self.media_item = BibleMediaItem(self, self.icon, 'Bible Verses')
+        self.media_item = BibleMediaItem(self, self.icon, u'Bible Verses')
         return self.media_item
 
     def add_import_menu_item(self, import_menu):
@@ -67,7 +67,8 @@ class BiblePlugin(Plugin, PluginUtils):
         self.ExportBibleItem = QtGui.QAction(export_menu)
         self.ExportBibleItem.setObjectName("ExportBibleItem")
         export_menu.addAction(self.ExportBibleItem)
-        self.ExportBibleItem.setText(QtGui.QApplication.translate("main_window", "&Bible", None, QtGui.QApplication.UnicodeUTF8))
+        self.ExportBibleItem.setText(
+            QtGui.QApplication.translate("main_window", u'&Bible', None, QtGui.QApplication.UnicodeUTF8))
 
     def initialise(self):
         pass

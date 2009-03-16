@@ -24,8 +24,9 @@ from PyQt4 import QtCore
 
 class BibleOSISImpl():
     global log     
-    log=logging.getLogger("BibleOSISImpl")
-    log.info("BibleOSISImpl loaded")   
+    log=logging.getLogger(u'BibleOSISImpl')
+    log.info(u'BibleOSISImpl loaded')
+    
     def __init__(self, biblepath, bibledb):
         self.bibledb = bibledb
         self.booksOfBible = {} # books of the bible linked to bibleid  {osis , name}
@@ -50,7 +51,7 @@ class BibleOSISImpl():
         book_ptr = None
         id = 0
         count = 0
-        verseText = "<verse osisID="
+        verseText = u'<verse osisID='
         testament = 1
         for file in osis.readlines():
             # cancel pressed on UI
@@ -69,45 +70,45 @@ class BibleOSISImpl():
                 #print pos, e, f[pos:e] # Found Basic Text
 
                 #remove tags of extra information
-                text = self.remove_block('<title','</title>', text)
-                text = self.remove_block('<note','</note>', text)                
-                text = self.remove_block('<divineName','</divineName>', text)                
+                text = self.remove_block(u'<title',u'</title>', text)
+                text = self.remove_block(u'<note',u'</note>', text)                
+                text = self.remove_block(u'<divineName',u'</divineName>', text)                
                         
-                text = self.remove_tag('<lb',  text) 
-                text = self.remove_tag('<q',  text)  
-                text = self.remove_tag('<l',  text)                          
-                text = self.remove_tag('<lg',  text)  
+                text = self.remove_tag(u'<lb',  text) 
+                text = self.remove_tag(u'<q',  text)  
+                text = self.remove_tag(u'<l',  text)                          
+                text = self.remove_tag(u'<lg',  text)  
 
                 # Strange tags where the end is not the same as the start
                 # The must be in this order as at least one bible has them
                 # crossing and the removal does not work. 
-                pos = text.find("<FI>")
+                pos = text.find(u'<FI>')
                 while pos > -1:
-                    epos = text.find("<Fi>", pos)
+                    epos = text.find(u'<Fi>', pos)
                     if epos == -1: # TODO
                         #print "Y", search_text, e
                         pos = -1
                     else:
                         text =  text[:pos] + text[epos + 4: ]
-                        pos = text.find("<FI>") 
+                        pos = text.find(u'<FI>') 
 
-                pos = text.find("<RF>")
+                pos = text.find(u'<RF>')
                 while pos > -1:
-                    epos = text.find("<Rf>", pos)
+                    epos = text.find(u'<Rf>', pos)
                     text =  text[:pos] + text[epos + 4: ]
                     #print "X", pos, epos, text
-                    pos = text.find("<RF>")
+                    pos = text.find(u'<RF>')
   
-                p = ref.split(".", 3)  # split up the reference
+                p = ref.split(u'.', 3)  # split up the reference
                 #print p, ">>>", text  
 
                 if book_ptr != p[0]:
                     if book_ptr == None:  # first time through
-                        if p[0]  == "Gen":  # set the max book size depending on the first book read
+                        if p[0]  == u'Gen':  # set the max book size depending on the first book read
                             dialogobject.setMax(65)
                         else:
                             dialogobject.setMax(27)
-                    if  p[0] == "Matt": # First book of NT
+                    if  p[0] == u'Matt': # First book of NT
                         testament += 1
                     book_ptr = p[0]
                     book = self.bibledb.create_book(self.booksOfBible[p[0]] , self.abbrevOfBible[p[0]], testament)
@@ -143,12 +144,7 @@ class BibleOSISImpl():
         """
         pos = text.find(start_tag)
         while pos > -1:
-            epos = text.find('/>', pos)
+            epos = text.find(u'/>', pos)
             text =  text[:pos] + text[epos + 2: ]
             pos = text.find(start_tag)         
         return text
-
-
-
-
- 

@@ -24,8 +24,8 @@ from openlp.core.lib import Receiver
 
 class BibleCSVImpl(BibleCommon):
     global log     
-    log=logging.getLogger("BibleCSVImpl")
-    log.info("BibleCVSImpl loaded")   
+    log=logging.getLogger(u'BibleCSVImpl')
+    log.info(u'BibleCVSImpl loaded')   
     def __init__(self, bibledb):
         """
         Loads a Bible from a pair of CVS files passed in
@@ -49,10 +49,10 @@ class BibleCSVImpl(BibleCommon):
             #log.debug( line)
             if self.loadbible == False:  # cancel pressed
                 break            
-            p = line.split(",")
-            p1 = p[1].replace('"', '')            
-            p2 = p[2].replace('"', '')
-            p3 = p[3].replace('"', '')            
+            p = line.split(u',')
+            p1 = p[1].replace(u'"', u'')            
+            p2 = p[2].replace(u'"', u'')
+            p3 = p[3].replace(u'"', u'')            
             self.bibledb.create_book(p2, p3, int(p1))
             count += 1
             if count % 3 == 0:   #Every x verses repaint the screen
@@ -65,9 +65,9 @@ class BibleCSVImpl(BibleCommon):
             if self.loadbible == False:  # cancel pressed
                 break            
             #log.debug( line)
-            p = line.split(",", 3) # split into 3 units and leave the rest as a single field
-            p0 = p[0].replace('"', '')
-            p3 =  p[3].replace('"', '')
+            p = line.split(u',', 3) # split into 3 units and leave the rest as a single field
+            p0 = p[0].replace(u'"', u'')
+            p3 =  p[3].replace(u'"',u'')
             if book_ptr is not p0:
                 book = self.bibledb.get_bible_book(p0)
                 book_ptr = book.name
