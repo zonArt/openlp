@@ -24,7 +24,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.resources import *
 from openlp.core.lib import Plugin
 from forms import EditCustomForm
-from openlp.plugins.custom.lib import CustomManager, CustomTab, CustomMediaItem
+from openlp.plugins.custom.lib import CustomManager, CustomTab, CustomMediaItem, CustomServiceItem
 
 class CustomPlugin(Plugin):
 
@@ -32,9 +32,9 @@ class CustomPlugin(Plugin):
     log=logging.getLogger(u'CustomPlugin')
     log.info(u'Custom Plugin loaded')
 
-    def __init__(self):
+    def __init__(self, preview_controller, live_controller):
         # Call the parent constructor
-        Plugin.__init__(self, u'Custom', u'1.9.0')
+        Plugin.__init__(self, u'Custom', u'1.9.0',  preview_controller, live_controller)
         self.weight = -5
         self.custommanager = CustomManager(self.config)
         self.edit_custom_form = EditCustomForm(self.custommanager)
@@ -42,6 +42,9 @@ class CustomPlugin(Plugin):
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(':/media/media_custom.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            
+        self.preview_service_item = CustomServiceItem(preview_controller)
+        self.live_service_item = CustomServiceItem(live_controller)            
 
     def get_media_manager_item(self):
         # Create the CustomManagerItem object

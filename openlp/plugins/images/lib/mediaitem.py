@@ -103,7 +103,7 @@ class ImageMediaItem(MediaManagerItem):
         self.ImageListView.setAlternatingRowColors(True)
 
     def initialise(self):
-        self.loadImageList(self.parent.config.load_list('image'))
+        self.loadImageList(self.parent.config.load_list(u'images'))
 
     def onImagesNewClick(self):
         files = QtGui.QFileDialog.getOpenFileNames(None,
@@ -132,15 +132,15 @@ class ImageMediaItem(MediaManagerItem):
         indexes = self.ImageListView.selectedIndexes()
         for index in indexes:
             filename = self.ImageListData.getFilename(index)
-            log.info(u'Click %s:%s'%(str(where), filename))
+            log.info(u"Click %s:%s"%(str(where), filename))
             where.add(filename)
         where.render()
 
     def onImagePreviewClick(self):
-        self.onImageClick(self.preview_service_item)
+        self.onImageClick(self.parent.preview_service_item)
 
     def onImageLiveClick(self):
-        self.onImageClick(self.live_service_item)
+        self.onImageClick(self.parent.live_service_item)
 
     def onImageAddClick(self):
         """Add this item to the OOS"""

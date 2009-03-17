@@ -20,9 +20,10 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from PyQt4 import QtCore, QtGui
 import logging
 from openlp.core.lib import ServiceItem
-from listwithpreviews import ListWithPreviews
 
-class ImageServiceItem(ServiceItem):
+from openlp.plugins.custom.lib import TextListData
+
+class CustomServiceItem(ServiceItem):
     """
     The service item is a base class for the plugins to use to interact with
     * the service manager (and hence the OOS disk files),
@@ -42,14 +43,15 @@ class ImageServiceItem(ServiceItem):
           
     """
     global log
-    log=logging.getLogger("ImageServiceItem")
-    log.info("ImageServiceItem loaded")
+    log=logging.getLogger(u'CustomServiceItem')
+    log.info(u'CustomServiceItem loaded')
+    
     def __init__(self, controller):
         """
         Init Method
         """
         log.info("init")
-        self.imgs=ListWithPreviews()
+        self.imgs=TextListData()
 #         self.slide_controller=controller
 #         self.slide_controller.ControllerContents=QtGui.QListView()
 #         c=self.slide_controller.ControllerContents
@@ -81,6 +83,7 @@ class ImageServiceItem(ServiceItem):
         Manager.
         """
         pass
+        
     def add(self, data):
         """
         append an image to the list
@@ -90,7 +93,7 @@ class ImageServiceItem(ServiceItem):
             self.imgs.addRow(data)
         else: # it's another service item to be merged in
             log.info("add Item..."+str(data))
-            for filename in data.get_file_list():
+            for filename in data.imgs.get_file_list():
                 self.add(filename)
             
 

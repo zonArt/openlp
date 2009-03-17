@@ -19,9 +19,10 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 from textlistdata import TextListData
+from customserviceitem import CustomServiceItem
 from manager import CustomManager
 from customtab import CustomTab
 from mediaitem import CustomMediaItem
 
-__all__ = ['CustomManager', 'CustomTab', 'CustomMediaItem', 'TextListData']
+__all__ = ['CustomManager', 'CustomTab', 'CustomMediaItem', 'CustomServiceItem','TextListData']
 
