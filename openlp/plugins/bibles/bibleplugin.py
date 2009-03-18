@@ -24,13 +24,13 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from openlp.core.resources import *
-from openlp.core.lib import Plugin, PluginUtils
+from openlp.core.lib import Plugin
 
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 from openlp.plugins.bibles.lib.tables import *
 from openlp.plugins.bibles.lib.classes import *
 
-class BiblePlugin(Plugin, PluginUtils):
+class BiblePlugin(Plugin):
     global log
     log=logging.getLogger(u'BiblePlugin')
     log.info(u'Bible Plugin loaded')

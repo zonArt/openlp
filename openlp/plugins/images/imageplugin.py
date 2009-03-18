@@ -21,19 +21,19 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, PluginUtils
+from openlp.core.lib import Plugin
 from openlp.core.resources import *
 
 from openlp.plugins.images.lib import ImageMediaItem, ImageServiceItem
 
-class ImagePlugin(Plugin, PluginUtils):
+class ImagePlugin(Plugin):
     global log
-    log=logging.getLogger("ImagePlugin")
-    log.info("Image Plugin loaded")
+    log=logging.getLogger(u'ImagePlugin')
+    log.info(u'Image Plugin loaded')
 
     def __init__(self, preview_controller, live_controller):
         # Call the parent constructor
-        Plugin.__init__(self, 'Images', '1.9.0', preview_controller, live_controller)
+        Plugin.__init__(self, u'Images', u'1.9.0', preview_controller, live_controller)
         self.weight = -7
         # Create the plugin icon
         self.icon = QtGui.QIcon()
@@ -45,11 +45,11 @@ class ImagePlugin(Plugin, PluginUtils):
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
-        self.MediaManagerItem = ImageMediaItem(self, self.icon, 'Images')
+        self.MediaManagerItem = ImageMediaItem(self, self.icon, u'Images')
         return self.MediaManagerItem
 
     def initialise(self):
-        log.info("Plugin Initialising")
-        log.info("Done")
+        log.info(u'Plugin Initialising')
+        log.info(u'Done')
 
 

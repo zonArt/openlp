@@ -3,7 +3,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley,
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley,
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -22,20 +22,20 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
-from openlp.core.lib import Plugin, PluginUtils
+from openlp.core.lib import Plugin
 from openlp.plugins.songs.lib import SongManager, SongsTab, SongMediaItem
 from openlp.plugins.songs.forms import OpenLPImportForm, OpenSongExportForm, \
     OpenSongImportForm, OpenLPExportForm
 
-class SongsPlugin(Plugin, PluginUtils):
+class SongsPlugin(Plugin):
 
     global log
-    log=logging.getLogger("SongsPlugin")
-    log.info("Song Plugin loaded")
+    log=logging.getLogger(u'SongsPlugin')
+    log.info(u'Song Plugin loaded')
 
     def __init__(self):
         # Call the parent constructor
-        Plugin.__init__(self, 'Songs', '1.9.0')
+        Plugin.__init__(self, u'Songs', u'1.9.0')
         self.weight = -10
         self.songmanager = SongManager(self.config)
         self.openlp_import_form = OpenLPImportForm()
