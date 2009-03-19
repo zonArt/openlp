@@ -29,10 +29,10 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QDialog
 
 from bibleimportdialog import Ui_BibleImportDialog
-from openlp.core.lib import PluginUtils, Receiver
+from openlp.core.lib import Receiver
 
 
-class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
+class BibleImportForm(QDialog, Ui_BibleImportDialog):
     global log
     log=logging.getLogger("BibleImportForm")
     log.info("BibleImportForm loaded")    
@@ -86,24 +86,24 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog, PluginUtils):
 
 
     def onVersesFileButtonClicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir(1))
+        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self.config.get_last_dir(1))
         if filename != "":
             self.VerseLocationEdit.setText(filename)            
-            self._save_last_directory(filename, 1)
+            self.config.set_last_dir(filename, 1)
             self.setCsv()        
         
     def onBooksFileButtonClicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir(2))
+        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self.config.get_last_dir(2))
         if filename != "": 
             self.BooksLocationEdit.setText(filename)            
-            self._save_last_directory(filename, 2)
+            self.config.set_last_dir(filename, 2)
             self.setCsv()                
     
     def onOsisFileButtonClicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self._get_last_dir(3))
+        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self.config.get_last_dir(3))
         if filename != "":        
             self.OSISLocationEdit.setText(filename)
-            self._save_last_directory(filename, 3)
+            self.config.set_last_dir(filename, 3)
             self.setOsis()
  
     def onOSISLocationEditLostFocus(self):

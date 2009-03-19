@@ -44,29 +44,29 @@ class VideoMediaItem(MediaManagerItem):
                 # Add a toolbar
         self.addToolbar()
         # Create buttons for the toolbar
-        ## New Song Button ##
+        ## New Video Button ##
         self.addToolbarButton(
             translate('VideoMediaItem',u'New Video'), 
             translate('VideoMediaItem',u'Load videos into openlp.org'),
             ':/videos/video_load.png', self.onVideoNewClick, 'VideoNewItem')
-        ## Delete Song Button ##
+        ## Delete Video Button ##
         self.addToolbarButton(
             translate('VideoMediaItem',u'Delete Video'), 
             translate('VideoMediaItem',u'Delete the selected video'),
             ':/videos/video_delete.png', self.onVideoDeleteClick, 'VideoDeleteItem')
         ## Separator Line ##
         self.addToolbarSeparator()
-        ## Preview Song Button ##
+        ## Preview Video Button ##
         self.addToolbarButton(
             translate('VideoMediaItem',u'Preview Video'), 
             translate('VideoMediaItem',u'Preview the selected video'),
             ':/system/system_preview.png', self.onVideoPreviewClick, 'VideoPreviewItem')
-        ## Live Song Button ##
+        ## Live Video Button ##
         self.addToolbarButton(
             translate('VideoMediaItem',u'Go Live'), 
             translate('VideoMediaItem',u'Send the selected video live'),
             ':/system/system_live.png', self.onVideoLiveClick, 'VideoLiveItem')
-        ## Add Song Button ##
+        ## Add Video Button ##
         self.addToolbarButton(
             translate('VideoMediaItem',u'Add Video To Service'),
             translate('VideoMediaItem',u'Add the selected video(s) to the service'), 
@@ -80,20 +80,6 @@ class VideoMediaItem(MediaManagerItem):
         
         self.PageLayout.addWidget(self.VideoListView)
         
-#        self.VideoListView = QtGui.QTableWidget()
-#        self.VideoListView.setColumnCount(2)
-#        self.VideoListView.setColumnHidden(0, True)
-#        self.VideoListView.setColumnWidth(1, 275)
-#        self.VideoListView.setShowGrid(False)
-#        self.VideoListView.setSortingEnabled(False)
-#        self.VideoListView.setAlternatingRowColors(True)
-#        self.VideoListView.verticalHeader().setVisible(False)
-#        self.VideoListView.horizontalHeader().setVisible(False)
-#        self.VideoListView.setAlternatingRowColors(True)
-#        self.VideoListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
-#        self.VideoListView.setObjectName("VideoListView")
-#        self.PageLayout.addWidget(self.VideoListView)
-
         #define and add the context menu
         self.VideoListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 

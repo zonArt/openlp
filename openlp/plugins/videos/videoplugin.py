@@ -28,7 +28,7 @@ class VideoPlugin(Plugin):
 
     def __init__(self):
         # Call the parent constructor
-        Plugin.__init__(self, 'Videos', '1.9.0')
+        Plugin.__init__(self, u'Videos', u'1.9.0')
         self.weight = -6
         # Create the plugin icon
         self.icon = QtGui.QIcon()
@@ -41,6 +41,6 @@ class VideoPlugin(Plugin):
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
-        self.media_item = VideoMediaItem(self, self.icon, 'Videos')
+        self.media_item = VideoMediaItem(self, self.icon, u'Videos')
         return self.media_item        
  

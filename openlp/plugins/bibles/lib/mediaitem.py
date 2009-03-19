@@ -179,20 +179,6 @@ class BibleMediaItem(MediaManagerItem):
         # Add the search tab widget to the page layout
         self.PageLayout.addWidget(self.SearchTabWidget)
 
-#        self.BibleListView = QtGui.QTableWidget()
-#        self.BibleListView.setColumnCount(2)
-#        self.BibleListView.setColumnHidden(0, True)
-#        self.BibleListView.setColumnWidth(1, 275)
-#        self.BibleListView.setShowGrid(False)
-#        self.BibleListView.setSortingEnabled(False)
-#        self.BibleListView.setAlternatingRowColors(True)
-#        self.BibleListView.verticalHeader().setVisible(False)
-#        self.BibleListView.horizontalHeader().setVisible(False)
-#        self.BibleListView.setGeometry(QtCore.QRect(10, 200, 256, 391))
-#        self.BibleListView.setObjectName(u'BibleListView')
-#        self.BibleListView.setAlternatingRowColors(True)
-#        self.PageLayout.addWidget(self.BibleListView)
-        
         self.BibleListView = QtGui.QListView()
         self.BibleListView.setAlternatingRowColors(True)
         self.BibleListData = TextListData()
