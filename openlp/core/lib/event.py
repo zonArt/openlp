@@ -3,7 +3,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley, Scott Guerreri,
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Scott Guerreri,
     Carsten Tingaard, Jonathan Corwin
 
 This program is free software; you can redistribute it and/or modify it under
@@ -46,6 +46,15 @@ class Event(object):
     """
     Provides an Event class to encapsulate events within openlp.org.
     """
-
     def __init__(self, event_type=EventType.Default):
         self.type = event_type
+        self.payload = None
+        
+    def get_payload(self):
+        return self.payload
+        
+    def set_payload(self, payload):
+        self.payload = payload
+        
+    def get_type(self):
+        return self.type

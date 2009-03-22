@@ -40,9 +40,6 @@ class SettingsForm(QtGui.QDialog,  Ui_SettingsDialog):
         # Themes tab
         self.ThemesTab = ThemesTab()
         self.addTab(self.ThemesTab)
-        # Alerts tab
-        self.AlertsTab = AlertsTab()
-        self.addTab(self.AlertsTab)
 
     def addTab(self, tab):
         log.info(u'Inserting %s' % tab.title())

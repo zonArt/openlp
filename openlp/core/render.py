@@ -44,8 +44,10 @@ class Renderer:
         self._theme=None
         self._bg_image_filename=None
         self._paint=None
+        
     def set_debug(self, debug):
         self._debug=debug
+        
     def set_theme(self, theme):
         self._theme=theme
         if theme.BackgroundType == 2:
@@ -56,6 +58,7 @@ class Renderer:
         self._bg_image_filename=filename
         if self._paint is not None:
             self.scale_bg_image()
+            
     def scale_bg_image(self):
         assert self._paint
         i=QtGui.QImage(self._bg_image_filename)
@@ -81,6 +84,7 @@ class Renderer:
         self._paint=p
         if self._bg_image_filename is not None:
             self.scale_bg_image()
+            
     def set_words_openlp(self, words):
 #         print "set words openlp", words
         verses=[]
@@ -95,6 +99,7 @@ class Renderer:
             verses_text.append('\n'.join(v).lstrip()) # remove first \n
 
         return verses_text
+        
     def render_screen(self, screennum):
         print "render screen\n", screennum, self.words[screennum]
         import time
@@ -106,6 +111,7 @@ class Renderer:
     def set_text_rectangle(self, rect):
         """ Sets the rectangle within which text should be rendered"""
         self._rect=rect
+        
     def _render_background(self):
         # xxx may have to prerender to a memdc when set theme is called for use on slow machines
         # takes 26ms on mijiti's machine!
@@ -149,6 +155,7 @@ class Renderer:
             p.drawPixmap(self.background_offsetx,self.background_offsety, self.img)
         p.end()
         print "render background done"
+        
     def split_set_of_lines(self, lines):
 
         """Given a list of lines, decide how to split them best if they don't all fit on the screen
@@ -212,7 +219,6 @@ class Renderer:
 
         return retval
 
-
     def _render_lines(self, lines):
         """render a set of lines according to the theme, return bounding box"""
         print "_render_lines", lines
@@ -234,6 +240,7 @@ class Renderer:
         print "render lines DONE"
 
         return bbox
+        
     def _render_lines_unaligned(self, lines, tlcorner=(0,0)):
 
         """Given a list of lines to render, render each one in turn
@@ -264,7 +271,6 @@ class Renderer:
         print "render unaligned DONE"
 
         return  retval
-
 
     def _render_single_line(self, line, tlcorner=(0,0)):
 
@@ -402,8 +408,3 @@ class Renderer:
             p.drawText(x,y+metrics.height()-metrics.descent()-1, line)
         p.end()
         return (w, h)
-
-
-
-
-

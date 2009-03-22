@@ -40,7 +40,7 @@ class ServiceData(QAbstractItemModel):
     Root contains a list of ServiceItems
     """
     global log
-    log=logging.getLogger("ServiceData")
+    log=logging.getLogger(u'ServiceData')
     def __init__(self):
         QAbstractItemModel.__init__(self)
         self.items=[]
@@ -108,6 +108,8 @@ class ServiceManager(QWidget):
     one lump.
     Also handles the UI tasks of moving things up and down etc.
     """
+    global log
+    log=logging.getLogger(u'ServiceManager')    
 
     def __init__(self, parent):
         QWidget.__init__(self)
@@ -163,6 +165,7 @@ class ServiceManager(QWidget):
                 self.service_data.addRow(item)
             else:
                 self.service_data.insertRow(row+1, item)
+                
     def removeServiceItem(self):
         """Remove currently selected item"""
         pass
@@ -186,3 +189,10 @@ class ServiceManager(QWidget):
         oosfile.write(self.oos_as_text)
         oosfile.write("# END OOS\n")
         oosfile.close()
+        
+    def handle_event(self, event):
+        """
+        Handle the event contained in the event object.
+        """
+        log.debug(u'Handle event called with event %s' %event.get_type())
+

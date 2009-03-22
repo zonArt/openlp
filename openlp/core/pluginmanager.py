@@ -3,7 +3,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley,
+Portions copyright (c) 2008 - 2009 Martin Thompson, Tim Bentley,
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -22,7 +22,7 @@ import os
 import sys
 import logging
 
-from openlp.core.lib import Plugin
+from openlp.core.lib import Plugin, EventManager
 
 class PluginManager(object):
     """
@@ -30,15 +30,15 @@ class PluginManager(object):
     and executes all the hooks, as and when necessary.
     """
     global log
-    log=logging.getLogger("PluginMgr")
-    log.info("Plugin manager loaded")
+    log=logging.getLogger(u'PluginMgr')
+    log.info(u'"Plugin manager loaded')
 
     def __init__(self, dir):
         """
         The constructor for the plugin manager.
         Passes the controllers on to the plugins for them to interact with via their ServiceItems
         """
-        log.info("Plugin manager initing")
+        log.info(u'Plugin manager initing')
         if not dir in sys.path:
             log.debug("Inserting %s into sys.path", dir)
             sys.path.insert(0, dir)
@@ -48,12 +48,11 @@ class PluginManager(object):
         # this has to happen after the UI is sorted self.find_plugins(dir)
         log.info("Plugin manager done init")
 
-    def find_plugins(self, dir, preview_controller, live_controller): # xxx shouldn't dir come from self.basepath
+    def find_plugins(self, dir, plugin_helpers, eventmanager): # TODO shouldn't dir come from self.basepath
         """
         Scan the directory dir for objects inheriting from openlp.plugin
         """
-        self.preview_controller=preview_controller
-        self.live_controller=live_controller
+        self.plugin_helpers = plugin_helpers
         startdepth=len(os.path.abspath(dir).split(os.sep))
         log.debug("find plugins %s at depth %d" %( str(dir), startdepth))
 
@@ -80,16 +79,15 @@ class PluginManager(object):
         plugin_objects = []
         for p in self.plugin_classes:
             try:
-                plugin = p(self.preview_controller, self.live_controller)
-                log.debug('loaded plugin' + str(p) + ' with controllers'+str(self.preview_controller)+str(self.live_controller))
+                plugin = p(self.plugin_helpers)
+                log.debug(u'loaded plugin %s with helpers'%str(p))
             except TypeError:
-                # TODO: need to get rid of this once all plugins are up to date
-                plugin = p()
-                log.debug('loaded plugin' + str(p) + ' with no controllers')
+                log.error(u'loaded plugin %s has no helpers'%str(p))
             log.debug("Plugin="+str(p))
             if plugin.check_pre_conditions():
                 log.debug("Appending "+str(p))
                 plugin_objects.append(plugin)
+                eventmanager.register(plugin)
         self.plugins = sorted(plugin_objects, self.order_by_weight)
 
     def order_by_weight(self, x, y):
@@ -106,7 +104,7 @@ class PluginManager(object):
                 log.debug('Inserting media manager item from %s' % plugin.name)
                 mediatoolbox.addItem(media_manager_item, plugin.icon, media_manager_item.title)
                 # TODO: These shouldn't be called here...
-                plugin.initialise()
+                #plugin.initialise()
 
     def hook_settings_tabs(self, settingsform=None):
         """
@@ -137,5 +135,19 @@ class PluginManager(object):
         for plugin in self.plugins:
             plugin.add_export_menu_item(export_menu)
 
-    def hook_handle_event(self, event):
-        pass
+    def hook_handle_event(self, eventmanager):
+        for plugin in self.plugins:
+            handle_event = plugin.handle_event(None)
+            print plugin, handle_event
+#            if settings_tab is not None:
+#                log.debug('Inserting settings tab item from %s' % plugin.name)
+#                settingsform.addTab(settings_tab)
+#            else:
+#                log.debug('No settings in %s' % plugin.name)
+    def initialise_plugins(self):
+        """
+        Loop through all the plugins and give them an opportunity to add an item
+        to the export menu.
+        """
+        for plugin in self.plugins:
+            plugin.initialise()

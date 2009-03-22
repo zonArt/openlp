@@ -26,9 +26,9 @@ from openlp.plugins.videos.lib import VideoTab, VideoMediaItem
 
 class VideoPlugin(Plugin):
 
-    def __init__(self):
+    def __init__(self, plugin_helpers):
         # Call the parent constructor
-        Plugin.__init__(self, u'Videos', u'1.9.0')
+        Plugin.__init__(self, u'Videos', u'1.9.0', plugin_helpers)
         self.weight = -6
         # Create the plugin icon
         self.icon = QtGui.QIcon()

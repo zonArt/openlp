@@ -31,17 +31,17 @@ class ImagePlugin(Plugin):
     log=logging.getLogger(u'ImagePlugin')
     log.info(u'Image Plugin loaded')
 
-    def __init__(self, preview_controller, live_controller):
+    def __init__(self, plugin_helpers):
         # Call the parent constructor
-        Plugin.__init__(self, u'Images', u'1.9.0', preview_controller, live_controller)
+        Plugin.__init__(self, u'Images', u'1.9.0', plugin_helpers)
         self.weight = -7
         # Create the plugin icon
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(':/media/media_image.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
-        self.preview_service_item = ImageServiceItem(preview_controller)
-        self.live_service_item = ImageServiceItem(live_controller)
+        self.preview_service_item = ImageServiceItem(self.preview_controller)
+        self.live_service_item = ImageServiceItem(self.live_controller)
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object

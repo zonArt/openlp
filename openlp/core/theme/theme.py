@@ -15,7 +15,8 @@ blankstylexml=\
 '''<?xml version="1.0" encoding="iso-8859-1"?>
 <Theme>
   <Name>BlankStyle</Name>
-  <BackgroundType>0</BackgroundType>
+  <BackgroundMode>1</BackgroundMode>
+  <BackgroundType>0</BackgroundType>  
   <BackgroundParameter1>$000000</BackgroundParameter1>
   <BackgroundParameter2/>
   <BackgroundParameter3/>
@@ -37,6 +38,9 @@ class Theme:
         attributes:
           name : theme name
           
+           BackgroundMode   : 1 - Transparent
+                             1 - Opaque
+                             
           BackgroundType   : 0 - solid color
                              1 - gradient color
                              2 - image

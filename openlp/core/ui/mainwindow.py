@@ -3,7 +3,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley,
+Portions copyright (c) 2008 - 2009 Martin Thompson, Tim Bentley,
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -18,54 +18,74 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import os
-
+import logging
 from time import sleep
+
 from PyQt4 import *
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
 
 from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
-                           SlideController, ServiceManager
-from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab
+                           SlideController, ServiceManager, ThemeManager
+from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab, EventManager
 
 from openlp.core import PluginManager
-import logging
+
 class MainWindow(object):
     global log
-    log=logging.getLogger("MainWindow")
-    log.info("MainWindow loaded")
+    log=logging.getLogger(u'MainWindow')
+    log.info(u'MainWindow loaded')
 
     def __init__(self):
         self.main_window = QtGui.QMainWindow()
-        self.alert_form = AlertForm()
+        self.EventManager = EventManager()        
+        self.alert_form = AlertForm(self.EventManager)
         self.about_form = AboutForm()
         self.settings_form = SettingsForm()
+        self.settings_form.addTab(self.alert_form.get_settings_tab())
+        
         pluginpath = os.path.split(os.path.abspath(__file__))[0]
         pluginpath = os.path.abspath(os.path.join(pluginpath, '..', '..','plugins'))
         self.plugin_manager = PluginManager(pluginpath)
+        self.plugin_helpers = {}
+        
         self.setupUi()
 
-        log.info('')
-        self.plugin_manager.find_plugins(pluginpath, self.PreviewController, self.LiveController)
+        log.info(u'Load Plugins')
+        self.plugin_helpers[u'preview'] = self.PreviewController
+        self.plugin_helpers[u'live'] = self.LiveController
+        self.plugin_helpers[u'event'] = self.EventManager
+        self.plugin_helpers[u'theme'] = self.ThemeManagerContents  # Theme manger
+        
+        self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers, self.EventManager)
         # hook methods have to happen after find_plugins.  Find plugins needs the controllers
         # hence the hooks have moved from setupUI() to here
 
         # Find and insert media manager items
-        log.info("hook media")
+        log.info(u'hook media')
         self.plugin_manager.hook_media_manager(self.MediaToolBox)
 
         # Find and insert settings tabs
-        log.info("hook settings")
+        log.info(u'hook settings')
         self.plugin_manager.hook_settings_tabs(self.settings_form)
 
         # Call the hook method to pull in import menus.
-        log.info("hook menus")
+        log.info(u'hook menus')
         self.plugin_manager.hook_import_menu(self.FileImportMenu)
 
         # Call the hook method to pull in export menus.
-        self.plugin_manager.hook_import_menu(self.FileExportMenu)
+        self.plugin_manager.hook_export_menu(self.FileExportMenu)
 
+        # Call the initialise method to setup plugins.
+        log.info(u'initialise plugins')        
+        self.plugin_manager.initialise_plugins()
+
+        # Register the different UI components with Event Manager
+        self.EventManager.register(self.ServiceManagerContents)
+        self.EventManager.register(self.ThemeManagerContents)        
+        self.EventManager.register(self.alert_form)        
+        
     def setupUi(self):
         self.main_window.setObjectName("main_window")
         self.main_window.resize(1087, 847)
@@ -151,7 +171,7 @@ class MainWindow(object):
         self.MediaManagerLayout.addWidget(self.MediaToolBox)
         self.MediaManagerDock.setWidget(self.MediaManagerContents)
         self.main_window.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.MediaManagerDock)
-
+        #Sevice Manager Defined
         self.ServiceManagerDock = QtGui.QDockWidget(self.main_window)
         ServiceManagerIcon = QtGui.QIcon()
         ServiceManagerIcon.addPixmap(QtGui.QPixmap(":/system/system_servicemanager.png"),
@@ -162,6 +182,7 @@ class MainWindow(object):
         self.ServiceManagerContents = ServiceManager(self)
         self.ServiceManagerDock.setWidget(self.ServiceManagerContents)
         self.main_window.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.ServiceManagerDock)
+        #Theme Manager Defined        
         self.ThemeManagerDock = QtGui.QDockWidget(self.main_window)
         ThemeManagerIcon = QtGui.QIcon()
         ThemeManagerIcon.addPixmap(QtGui.QPixmap(":/system/system_thememanager.png"),
@@ -169,41 +190,46 @@ class MainWindow(object):
         self.ThemeManagerDock.setWindowIcon(ThemeManagerIcon)
         self.ThemeManagerDock.setFloating(False)
         self.ThemeManagerDock.setObjectName("ThemeManagerDock")
-        self.ThemeManagerContents = QtGui.QWidget()
-        self.ThemeManagerContents.setObjectName("ThemeManagerContents")
-        self.ThemeManagerLayout = QtGui.QVBoxLayout(self.ThemeManagerContents)
-        self.ThemeManagerLayout.setSpacing(0)
-        self.ThemeManagerLayout.setMargin(0)
-        self.ThemeManagerLayout.setObjectName("ThemeManagerLayout")
-        self.ThemeManagerToolbar = QtGui.QToolBar(self.ThemeManagerContents)
-        self.ThemeManagerToolbar.setObjectName("ThemeManagerToolbar")
-        NewThemeIcon = QtGui.QIcon()
-        NewThemeIcon.addPixmap(QtGui.QPixmap(":/themes/theme_new.png"),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.ThemeNewItem = self.ThemeManagerToolbar.addAction(NewThemeIcon, 'New theme')
-        EditThemeIcon = QtGui.QIcon()
-        EditThemeIcon.addPixmap(QtGui.QPixmap(":/themes/theme_edit.png"),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.ThemeEditItem = self.ThemeManagerToolbar.addAction(EditThemeIcon, 'Edit theme')
-        DeleteThemeIcon = QtGui.QIcon()
-        DeleteThemeIcon.addPixmap(QtGui.QPixmap(":/themes/theme_delete.png"),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.ThemeDeleteButton = self.ThemeManagerToolbar.addAction(DeleteThemeIcon, 'Delete theme')
-        self.ThemeManagerToolbar.addSeparator()
-        ImportThemeIcon = QtGui.QIcon()
-        ImportThemeIcon.addPixmap(QtGui.QPixmap(":/themes/theme_import.png"),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.ThemeImportButton = self.ThemeManagerToolbar.addAction(ImportThemeIcon, 'Import theme')
-        ExportThemeIcon = QtGui.QIcon()
-        ExportThemeIcon.addPixmap(QtGui.QPixmap(":/themes/theme_export.png"),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.ThemeExportButton = self.ThemeManagerToolbar.addAction(ExportThemeIcon, 'Export theme')
-        self.ThemeManagerLayout.addWidget(self.ThemeManagerToolbar)
-        self.ThemeManagerListView = QtGui.QListView(self.ThemeManagerContents)
-        self.ThemeManagerListView.setObjectName("ThemeManagerListView")
-        self.ThemeManagerLayout.addWidget(self.ThemeManagerListView)
+        
+        self.ThemeManagerContents = ThemeManager(self)        
+        
+#        self.ThemeManagerContents = QtGui.QWidget()
+#        self.ThemeManagerContents.setObjectName("ThemeManagerContents")
+#        self.ThemeManagerLayout = QtGui.QVBoxLayout(self.ThemeManagerContents)
+#        self.ThemeManagerLayout.setSpacing(0)
+#        self.ThemeManagerLayout.setMargin(0)
+#        self.ThemeManagerLayout.setObjectName("ThemeManagerLayout")
+#        self.ThemeManagerToolbar = QtGui.QToolBar(self.ThemeManagerContents)
+#        self.ThemeManagerToolbar.setObjectName("ThemeManagerToolbar")
+#        NewThemeIcon = QtGui.QIcon()
+#        NewThemeIcon.addPixmap(QtGui.QPixmap(":/themes/theme_new.png"),
+#            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+#        self.ThemeNewItem = self.ThemeManagerToolbar.addAction(NewThemeIcon, 'New theme')
+#        EditThemeIcon = QtGui.QIcon()
+#        EditThemeIcon.addPixmap(QtGui.QPixmap(":/themes/theme_edit.png"),
+#            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+#        self.ThemeEditItem = self.ThemeManagerToolbar.addAction(EditThemeIcon, 'Edit theme')
+#        DeleteThemeIcon = QtGui.QIcon()
+#        DeleteThemeIcon.addPixmap(QtGui.QPixmap(":/themes/theme_delete.png"),
+#            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+#        self.ThemeDeleteButton = self.ThemeManagerToolbar.addAction(DeleteThemeIcon, 'Delete theme')
+#        self.ThemeManagerToolbar.addSeparator()
+#        ImportThemeIcon = QtGui.QIcon()
+#        ImportThemeIcon.addPixmap(QtGui.QPixmap(":/themes/theme_import.png"),
+#            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+#        self.ThemeImportButton = self.ThemeManagerToolbar.addAction(ImportThemeIcon, 'Import theme')
+#        ExportThemeIcon = QtGui.QIcon()
+#        ExportThemeIcon.addPixmap(QtGui.QPixmap(":/themes/theme_export.png"),
+#            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+#        self.ThemeExportButton = self.ThemeManagerToolbar.addAction(ExportThemeIcon, 'Export theme')
+#        self.ThemeManagerLayout.addWidget(self.ThemeManagerToolbar)
+#        self.ThemeManagerListView = QtGui.QListView(self.ThemeManagerContents)
+#        self.ThemeManagerListView.setObjectName("ThemeManagerListView")
+#        self.ThemeManagerLayout.addWidget(self.ThemeManagerListView)
+
         self.ThemeManagerDock.setWidget(self.ThemeManagerContents)
         self.main_window.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.ThemeManagerDock)
+        
         self.FileNewItem = QtGui.QAction(self.main_window)
         self.FileNewItem.setIcon(self.ServiceManagerContents.Toolbar.getIconFromTitle("New Service"))
         self.FileNewItem.setObjectName("FileNewItem")
@@ -359,11 +385,11 @@ class MainWindow(object):
 #         self.ServiceManagerContents.ThemeComboBox.setItemText(1, QtGui.QApplication.translate("main_window", "Snowy Mountains", None, QtGui.QApplication.UnicodeUTF8))
 #         self.ServiceManagerContents.ThemeComboBox.setItemText(2, QtGui.QApplication.translate("main_window", "Wilderness", None, QtGui.QApplication.UnicodeUTF8))
         self.ThemeManagerDock.setWindowTitle(QtGui.QApplication.translate("main_window", "Theme Manager", None, QtGui.QApplication.UnicodeUTF8))
-        self.ThemeNewItem.setText(QtGui.QApplication.translate("main_window", "New Theme", None, QtGui.QApplication.UnicodeUTF8))
-        self.ThemeEditItem.setText(QtGui.QApplication.translate("main_window", "Edit Theme", None, QtGui.QApplication.UnicodeUTF8))
-        self.ThemeDeleteButton.setText(QtGui.QApplication.translate("main_window", "Delete Theme", None, QtGui.QApplication.UnicodeUTF8))
-        self.ThemeImportButton.setText(QtGui.QApplication.translate("main_window", "Import Theme", None, QtGui.QApplication.UnicodeUTF8))
-        self.ThemeExportButton.setText(QtGui.QApplication.translate("main_window", "Export Theme", None, QtGui.QApplication.UnicodeUTF8))
+#        self.ThemeNewItem.setText(QtGui.QApplication.translate("main_window", "New Theme", None, QtGui.QApplication.UnicodeUTF8))
+#        self.ThemeEditItem.setText(QtGui.QApplication.translate("main_window", "Edit Theme", None, QtGui.QApplication.UnicodeUTF8))
+#        self.ThemeDeleteButton.setText(QtGui.QApplication.translate("main_window", "Delete Theme", None, QtGui.QApplication.UnicodeUTF8))
+#        self.ThemeImportButton.setText(QtGui.QApplication.translate("main_window", "Import Theme", None, QtGui.QApplication.UnicodeUTF8))
+#        self.ThemeExportButton.setText(QtGui.QApplication.translate("main_window", "Export Theme", None, QtGui.QApplication.UnicodeUTF8))
         self.FileNewItem.setText(QtGui.QApplication.translate("main_window", "&New", None, QtGui.QApplication.UnicodeUTF8))
         self.FileNewItem.setToolTip(QtGui.QApplication.translate("main_window", "New Service", None, QtGui.QApplication.UnicodeUTF8))
         self.FileNewItem.setStatusTip(QtGui.QApplication.translate("main_window", "Create a new Service", None, QtGui.QApplication.UnicodeUTF8))
