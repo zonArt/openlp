@@ -40,21 +40,17 @@ class EventType(object):
     PreviewAfterLoad   = 12
     PreviewBeforeShow  = 13
     PreviewAfterShow   = 14
+    ThemeData = 15
+    LoadThemeData = 16    
 
 
 class Event(object):
     """
     Provides an Event class to encapsulate events within openlp.org.
     """
-    def __init__(self, event_type=EventType.Default):
-        self.type = event_type
-        self.payload = None
-        
-    def get_payload(self):
-        return self.payload
-        
-    def set_payload(self, payload):
+    def __init__(self, event_type=EventType.Default, payload=None):
+        self.event_type = event_type
         self.payload = payload
-        
+       
     def get_type(self):
-        return self.type
+        return self.event_type

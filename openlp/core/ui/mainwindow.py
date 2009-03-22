@@ -28,7 +28,7 @@ from openlp.core.resources import *
 
 from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
                            SlideController, ServiceManager, ThemeManager
-from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab, EventManager
+from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab, EventManager, Event, EventType
 
 from openlp.core import PluginManager
 
@@ -43,7 +43,6 @@ class MainWindow(object):
         self.alert_form = AlertForm(self.EventManager)
         self.about_form = AboutForm()
         self.settings_form = SettingsForm()
-        self.settings_form.addTab(self.alert_form.get_settings_tab())
         
         pluginpath = os.path.split(os.path.abspath(__file__))[0]
         pluginpath = os.path.abspath(os.path.join(pluginpath, '..', '..','plugins'))
@@ -51,6 +50,10 @@ class MainWindow(object):
         self.plugin_helpers = {}
         
         self.setupUi()
+
+        # Add the core components which have settings tabs
+        self.settings_form.addTab(self.ThemeManagerContents.get_settings_tab())        
+        self.settings_form.addTab(self.alert_form.get_settings_tab())
 
         log.info(u'Load Plugins')
         self.plugin_helpers[u'preview'] = self.PreviewController
@@ -84,7 +87,11 @@ class MainWindow(object):
         # Register the different UI components with Event Manager
         self.EventManager.register(self.ServiceManagerContents)
         self.EventManager.register(self.ThemeManagerContents)        
-        self.EventManager.register(self.alert_form)        
+        self.EventManager.register(self.alert_form)
+        
+        # Now all windows are defiened and initialised Update the theme data
+        event = Event(EventType.LoadThemeData)
+        self.EventManager.post_event(event)
         
     def setupUi(self):
         self.main_window.setObjectName("main_window")
@@ -113,8 +120,10 @@ class MainWindow(object):
         self.ControlSplitter.setOrientation(QtCore.Qt.Horizontal)
         self.ControlSplitter.setObjectName("ControlSplitter")
         self.MainContentLayout.addWidget(self.ControlSplitter)
+        
         self.PreviewController = SlideController(self.ControlSplitter)
         self.LiveController = SlideController(self.ControlSplitter)
+        
         self.MenuBar = QtGui.QMenuBar(self.main_window)
         self.MenuBar.setGeometry(QtCore.QRect(0, 0, 1087, 27))
         self.MenuBar.setObjectName("MenuBar")
@@ -171,6 +180,7 @@ class MainWindow(object):
         self.MediaManagerLayout.addWidget(self.MediaToolBox)
         self.MediaManagerDock.setWidget(self.MediaManagerContents)
         self.main_window.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.MediaManagerDock)
+        
         #Sevice Manager Defined
         self.ServiceManagerDock = QtGui.QDockWidget(self.main_window)
         ServiceManagerIcon = QtGui.QIcon()
@@ -179,9 +189,10 @@ class MainWindow(object):
         self.ServiceManagerDock.setWindowIcon(ServiceManagerIcon)
         self.ServiceManagerDock.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
         self.ServiceManagerDock.setObjectName("ServiceManagerDock")
-        self.ServiceManagerContents = ServiceManager(self)
+        self.ServiceManagerContents = ServiceManager(self, self.EventManager)
         self.ServiceManagerDock.setWidget(self.ServiceManagerContents)
         self.main_window.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.ServiceManagerDock)
+        
         #Theme Manager Defined        
         self.ThemeManagerDock = QtGui.QDockWidget(self.main_window)
         ThemeManagerIcon = QtGui.QIcon()
@@ -191,7 +202,7 @@ class MainWindow(object):
         self.ThemeManagerDock.setFloating(False)
         self.ThemeManagerDock.setObjectName("ThemeManagerDock")
         
-        self.ThemeManagerContents = ThemeManager(self)        
+        self.ThemeManagerContents = ThemeManager(self, self.EventManager)        
         
 #        self.ThemeManagerContents = QtGui.QWidget()
 #        self.ThemeManagerContents.setObjectName("ThemeManagerContents")

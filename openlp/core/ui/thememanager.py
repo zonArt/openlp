@@ -18,6 +18,7 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import os
+import logging
 
 from time import sleep
 from copy import deepcopy
@@ -27,11 +28,11 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 # from openlp.core.resources import *
 # from openlp.core.ui import AboutForm, AlertForm, SettingsForm, SlideController
-from openlp.core.lib import OpenLPToolbar
+from openlp.core.lib import OpenLPToolbar, Event, EventType
+from openlp.core.ui import ThemesTab
 #from openlp.core.lib import ThemeItem
 
 # from openlp.core import PluginManager
-import logging
 
 class ThemeData(QAbstractItemModel):
     """
@@ -41,24 +42,30 @@ class ThemeData(QAbstractItemModel):
     """
     global log
     log=logging.getLogger(u'ThemeData')
+    
     def __init__(self):
         QAbstractItemModel.__init__(self)
         self.items=[]
-        log.info("Starting")
+        log.info(u'Starting')
+        
     def columnCount(self, parent):
         return 1; # always only a single column (for now)
+        
     def rowCount(self, parent):
         return len(self.items)
+        
     def insertRow(self, row, Theme_item):
 #         self.beginInsertRows(QModelIndex(),row,row)
         log.info("insert row %d:%s"%(row,Theme_item))
         self.items.insert(row, Theme_item)
         log.info("Items: %s" % self.items)
 #         self.endInsertRows()
+
     def removeRow(self, row):
         self.beginRemoveRows(QModelIndex(), row,row)
         self.items.pop(row)
         self.endRemoveRows()
+        
     def addRow(self, item):
         self.insertRow(len(self.items), item)
         
@@ -67,6 +74,7 @@ class ThemeData(QAbstractItemModel):
 
     def parent(self, index=QModelIndex()):
         return QModelIndex() # no children as yet
+        
     def data(self, index, role):
         """
         Called by the Theme manager to draw us in the Theme window
@@ -98,7 +106,6 @@ class ThemeData(QAbstractItemModel):
     def item(self, row):
         log.info("Get Item:%d -> %s" %(row, str(self.items)))
         return self.items[row]
-
     
 class ThemeManager(QWidget):
 
@@ -111,9 +118,10 @@ class ThemeManager(QWidget):
     global log
     log=logging.getLogger(u'ThemeManager')
 
-    def __init__(self, parent):
+    def __init__(self, parent, eventmanager):
         QWidget.__init__(self)
         self.parent=parent
+        self.EventManager = eventmanager
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
         self.Layout.setMargin(0)
@@ -133,6 +141,8 @@ class ThemeManager(QWidget):
         self.Theme_data=ThemeData()
         self.TreeView.setModel(self.Theme_data)
         self.Layout.addWidget(self.TreeView)
+        
+        self.themeTab = ThemesTab(self.EventManager)
         
 #    def addThemeItem(self, item):
 #        """Adds Theme item"""
@@ -181,13 +191,21 @@ class ThemeManager(QWidget):
 #        oosfile.write(self.oos_as_text)
 #        oosfile.write("# END OOS\n")
 #        oosfile.close()
-        
+
+    def addEventManager(self, eventmanager):
+        self.eventManager = eventmanager
+
+    def get_settings_tab(self):
+        return self.themeTab
+
     def handle_event(self, event):
         """
         Handle the event contained in the event object.
         """
         log.debug(u'Handle event called with event %s' %event.get_type())
+        if event.get_type() == EventType.LoadThemeData:
+            event = Event(EventType.ThemeData, self.themeTab.themelist)
+            self.EventManager.post_event(event)
         
-    def get_themes(self):
-        return [u'Theme A', u'Theme B']
-
+    def getThemes(self):
+        return self.themeTab.themelist
