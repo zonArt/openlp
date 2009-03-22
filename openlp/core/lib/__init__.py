@@ -22,6 +22,7 @@ from plugin import Plugin
 from settingstab import SettingsTab
 from mediamanageritem import MediaManagerItem
 from event import Event
+from eventmanager import EventManager
 from xmlrootclass import XmlRootClass
 from serviceitem import ServiceItem
 from eventreceiver import Receiver
@@ -32,4 +33,4 @@ from songxmlhandler import SongXMLParser
 
 __all__ = ['PluginConfig', 'Plugin', 'SettingsTab', 'MediaManagerItem', 'Event',
            'XmlRootClass', 'ServiceItem', 'Receiver', 'OpenLPToolbar', 'SongXMLBuilder', 
-           'SongXMLParser']
+           'SongXMLParser', 'EventManager']
