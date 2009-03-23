@@ -23,22 +23,15 @@ from PyQt4.QtGui import QDialog
 
 from openlp.core import translate
 from openlp.core.resources import *
-from openlp.core.ui import AlertsTab
-from openlp.core.lib import EventManager, Event
 
 class AlertForm(QDialog):
     global log
     log=logging.getLogger(u'AlertForm')
     
-    def __init__(self, eventmanager, parent=None):
+    def __init__(self, parent=None):
         QDialog.__init__(self, parent)
-        self.alertsTab = AlertsTab()
-        self.eventmanager = eventmanager
         self.setupUi(self)
         log.info(u'Defined')        
-        
-    def get_settings_tab(self):
-        return self.alertsTab       
 
     def setupUi(self, AlertForm):
         AlertForm.setObjectName("AlertForm")
@@ -102,14 +95,6 @@ class AlertForm(QDialog):
         self.DisplayButton.setText(translate("AlertForm", u'Display'))
         self.CancelButton.setText(translate("AlertForm", u'Cancel'))
 
-#    def show(self):
-#        self.AlertForm.show()
-
-    def handle_event(self, event):
-        """
-        Handle the event contained in the event object.
-        """
-        log.debug(u'Handle event called with event %s' %event.get_type())
         
     def load_settings(self):
         pass
@@ -118,4 +103,4 @@ class AlertForm(QDialog):
         pass
 
     def onDisplayClicked(self):
-        self.eventmanager.post_event(Event())
+        pass

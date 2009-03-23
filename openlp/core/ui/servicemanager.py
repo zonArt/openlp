@@ -29,7 +29,6 @@ from PyQt4.QtGui import *
 # from openlp.core.ui import AboutForm, AlertForm, SettingsForm, SlideController
 from openlp.core.lib import OpenLPToolbar
 from openlp.core.lib import ServiceItem
-from openlp.core.lib import Event, EventType
 
 # from openlp.core import PluginManager
 import logging
@@ -42,30 +41,24 @@ class ServiceData(QAbstractItemModel):
     """
     global log
     log=logging.getLogger(u'ServiceData')
-    
     def __init__(self):
         QAbstractItemModel.__init__(self)
         self.items=[]
-        log.info(u'Starting')
-        
+        log.info("Starting")
     def columnCount(self, parent):
         return 1; # always only a single column (for now)
-        
     def rowCount(self, parent):
         return len(self.items)
-        
     def insertRow(self, row, service_item):
 #         self.beginInsertRows(QModelIndex(),row,row)
         log.info("insert row %d:%s"%(row,service_item))
         self.items.insert(row, service_item)
         log.info("Items: %s" % self.items)
 #         self.endInsertRows()
-
     def removeRow(self, row):
         self.beginRemoveRows(QModelIndex(), row,row)
         self.items.pop(row)
         self.endRemoveRows()
-        
     def addRow(self, item):
         self.insertRow(len(self.items), item)
         
@@ -74,7 +67,6 @@ class ServiceData(QAbstractItemModel):
 
     def parent(self, index=QModelIndex()):
         return QModelIndex() # no children as yet
-        
     def data(self, index, role):
         """
         Called by the service manager to draw us in the service window
@@ -119,10 +111,9 @@ class ServiceManager(QWidget):
     global log
     log=logging.getLogger(u'ServiceManager')    
 
-    def __init__(self, parent, eventManager):
+    def __init__(self, parent):
         QWidget.__init__(self)
         self.parent=parent
-        self.EventManager = eventManager
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
         self.Layout.setMargin(0)
@@ -198,12 +189,3 @@ class ServiceManager(QWidget):
         oosfile.write(self.oos_as_text)
         oosfile.write("# END OOS\n")
         oosfile.close()
-        
-    def handle_event(self, event):
-        """
-        Handle the event contained in the event object.
-        """
-        log.debug(u'Handle event called with event %s' %event.get_type())
-        if event.get_type() == EventType.ThemeData:
-            print event.payload
-

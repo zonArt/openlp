@@ -31,7 +31,7 @@ class PluginManager(object):
     """
     global log
     log=logging.getLogger(u'PluginMgr')
-    log.info(u'"Plugin manager loaded')
+    log.info(u'Plugin manager loaded')
 
     def __init__(self, dir):
         """
