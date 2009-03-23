@@ -133,6 +133,7 @@ class ThemeManager(QWidget):
         self.Theme_data=ThemeData()
         self.TreeView.setModel(self.Theme_data)
         self.Layout.addWidget(self.TreeView)
+        self.themelist= []
         
 #    def addThemeItem(self, item):
 #        """Adds Theme item"""
@@ -182,6 +183,9 @@ class ThemeManager(QWidget):
 #        oosfile.write("# END OOS\n")
 #        oosfile.close()
         
-    def get_themes(self):
-        return [u'Theme A', u'Theme B']
-
+    def load(self):
+        log.debug(u'Load')        
+        self.themelist = [u'African Sunset', u'Snowy Mountains', u'Wilderness', u'Wet and Windy London']
+        
+    def getThemes(self):
+        return self.themelist
