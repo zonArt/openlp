@@ -37,7 +37,7 @@ class CustomPlugin(Plugin):
         Plugin.__init__(self, u'Custom', u'1.9.0',  plugin_helpers)
         self.weight = -5
         self.custommanager = CustomManager(self.config)
-        self.edit_custom_form = EditCustomForm(self.custommanager)
+        self.edit_custom_form = EditCustomForm(self.custommanager, self)
         # Create the plugin icon
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(':/media/media_custom.png'),

@@ -32,6 +32,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         Constructor
         """
         QtGui.QDialog.__init__(self, parent)
+        #self.parent = parent
         self.setupUi(self)
         # Connecting signals and slots
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.rejected)
@@ -52,8 +53,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         # Create other objects and forms
         self.custommanager = custommanager
         self.initialise()
-        self.VerseListView.setAlternatingRowColors(True)
-        #self.savebutton = self.ButtonBox.button(QtGui.QDialogButtonBox.Save)
+        self.VerseListView.setAlternatingRowColors(True)        
         
     def initialise(self):
         self.valid = True
@@ -65,7 +65,9 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.VerseTextEdit.clear()
         self.VerseListView.clear()
         #make sure we have a new item 
-        self.customSlide = CustomSlide()    
+        self.customSlide = CustomSlide()
+        self.ThemecomboBox.addItem(u'')
+        #self.theme_manager.getThemes()
 
     def loadCustom(self, id):
         self.customSlide = CustomSlide()

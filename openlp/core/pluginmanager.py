@@ -103,8 +103,6 @@ class PluginManager(object):
             if media_manager_item is not None:
                 log.debug('Inserting media manager item from %s' % plugin.name)
                 mediatoolbox.addItem(media_manager_item, plugin.icon, media_manager_item.title)
-                # TODO: These shouldn't be called here...
-                #plugin.initialise()
 
     def hook_settings_tabs(self, settingsform=None):
         """
