@@ -32,7 +32,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         Constructor
         """
         QtGui.QDialog.__init__(self, parent)
-        #self.parent = parent
+        #self.parent = parent 
         self.setupUi(self)
         # Connecting signals and slots
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.rejected)

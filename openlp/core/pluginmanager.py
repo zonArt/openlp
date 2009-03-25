@@ -81,13 +81,13 @@ class PluginManager(object):
             try:
                 plugin = p(self.plugin_helpers)
                 log.debug(u'loaded plugin %s with helpers'%str(p))
+                log.debug("Plugin="+str(p))
+                if plugin.check_pre_conditions():
+                    log.debug("Appending "+str(p))
+                    plugin_objects.append(plugin)
+                    eventmanager.register(plugin)
             except TypeError:
                 log.error(u'loaded plugin %s has no helpers'%str(p))
-            log.debug("Plugin="+str(p))
-            if plugin.check_pre_conditions():
-                log.debug("Appending "+str(p))
-                plugin_objects.append(plugin)
-                eventmanager.register(plugin)
         self.plugins = sorted(plugin_objects, self.order_by_weight)
 
     def order_by_weight(self, x, y):

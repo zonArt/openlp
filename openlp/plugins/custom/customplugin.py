@@ -31,20 +31,19 @@ class CustomPlugin(Plugin):
     global log
     log=logging.getLogger(u'CustomPlugin')
     log.info(u'Custom Plugin loaded')
-
+    
     def __init__(self, plugin_helpers):
         # Call the parent constructor
-        Plugin.__init__(self, u'Custom', u'1.9.0',  plugin_helpers)
+        Plugin.__init__(self, u'Custom', u'1.9.0', plugin_helpers)
         self.weight = -5
         self.custommanager = CustomManager(self.config)
-        self.edit_custom_form = EditCustomForm(self.custommanager, self)
+        self.edit_custom_form = EditCustomForm(self.custommanager)
         # Create the plugin icon
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(':/media/media_custom.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
-            
         self.preview_service_item = CustomServiceItem(self.preview_controller)
-        self.live_service_item = CustomServiceItem(self.live_controller)            
+        self.live_service_item = CustomServiceItem(self.live_controller)
 
     def get_media_manager_item(self):
         # Create the CustomManagerItem object

@@ -33,7 +33,7 @@ class EventManager(object):
     
     def __init__(self):
         self.endpoints=[]
-        log.info(u'Starting')
+        log.info(u'Initialising')
         
     def register(self, plugin):
         log.debug(u'plugin %s registered with EventManager'%plugin)        
