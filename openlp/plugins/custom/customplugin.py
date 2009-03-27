@@ -22,7 +22,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
-from openlp.core.lib import Plugin
+from openlp.core.lib import Plugin, Event
 from forms import EditCustomForm
 from openlp.plugins.custom.lib import CustomManager, CustomTab, CustomMediaItem, CustomServiceItem
 
@@ -31,10 +31,10 @@ class CustomPlugin(Plugin):
     global log
     log=logging.getLogger(u'CustomPlugin')
     log.info(u'Custom Plugin loaded')
-
-    def __init__(self, preview_controller, live_controller):
+    
+    def __init__(self, plugin_helpers):
         # Call the parent constructor
-        Plugin.__init__(self, u'Custom', u'1.9.0',  preview_controller, live_controller)
+        Plugin.__init__(self, u'Custom', u'1.9.0', plugin_helpers)
         self.weight = -5
         self.custommanager = CustomManager(self.config)
         self.edit_custom_form = EditCustomForm(self.custommanager)
@@ -42,18 +42,16 @@ class CustomPlugin(Plugin):
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(':/media/media_custom.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
-            
-        self.preview_service_item = CustomServiceItem(preview_controller)
-        self.live_service_item = CustomServiceItem(live_controller)            
+        self.preview_service_item = CustomServiceItem(self.preview_controller)
+        self.live_service_item = CustomServiceItem(self.live_controller)
 
     def get_media_manager_item(self):
         # Create the CustomManagerItem object
         self.media_item = CustomMediaItem(self, self.icon, u'Custom Slides')
         return self.media_item
        
-    def get_settings_tab(self):
-        pass
-
-    def initialise(self):
-        pass
-
+    def handle_event(self, event):
+        """
+        Handle the event contained in the event object.
+        """
+        log.debug(u'Handle event called with event %s' %event.get_type())

@@ -33,9 +33,9 @@ class SongsPlugin(Plugin):
     log=logging.getLogger(u'SongsPlugin')
     log.info(u'Song Plugin loaded')
 
-    def __init__(self):
+    def __init__(self, plugin_helpers):
         # Call the parent constructor
-        Plugin.__init__(self, u'Songs', u'1.9.0')
+        Plugin.__init__(self, u'Songs', u'1.9.0', plugin_helpers)
         self.weight = -10
         self.songmanager = SongManager(self.config)
         self.openlp_import_form = OpenLPImportForm()

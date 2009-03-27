@@ -28,19 +28,19 @@ from PyQt4.QtGui import *
 # from openlp.core.resources import *
 # from openlp.core.ui import AboutForm, AlertForm, SettingsForm, SlideController
 from openlp.core.lib import OpenLPToolbar
-from openlp.core.lib import ServiceItem
+#from openlp.core.lib import ThemeItem
 
 # from openlp.core import PluginManager
 import logging
 
-class ServiceData(QAbstractItemModel):
+class ThemeData(QAbstractItemModel):
     """
-    Tree of items for an order of service.
+    Tree of items for an order of Theme.
     Includes methods for reading and writing the contents to an OOS file
-    Root contains a list of ServiceItems
+    Root contains a list of ThemeItems
     """
     global log
-    log=logging.getLogger(u'ServiceData')
+    log=logging.getLogger(u'ThemeData')
     def __init__(self):
         QAbstractItemModel.__init__(self)
         self.items=[]
@@ -49,10 +49,10 @@ class ServiceData(QAbstractItemModel):
         return 1; # always only a single column (for now)
     def rowCount(self, parent):
         return len(self.items)
-    def insertRow(self, row, service_item):
+    def insertRow(self, row, Theme_item):
 #         self.beginInsertRows(QModelIndex(),row,row)
-        log.info("insert row %d:%s"%(row,service_item))
-        self.items.insert(row, service_item)
+        log.info("insert row %d:%s"%(row,Theme_item))
+        self.items.insert(row, Theme_item)
         log.info("Items: %s" % self.items)
 #         self.endInsertRows()
     def removeRow(self, row):
@@ -69,7 +69,7 @@ class ServiceData(QAbstractItemModel):
         return QModelIndex() # no children as yet
     def data(self, index, role):
         """
-        Called by the service manager to draw us in the service window
+        Called by the Theme manager to draw us in the Theme window
         """
         row=index.row()
         if row > len(self.items): # if the last row is selected and deleted, we then get called with an empty row!
@@ -100,16 +100,16 @@ class ServiceData(QAbstractItemModel):
         return self.items[row]
 
     
-class ServiceManager(QWidget):
+class ThemeManager(QWidget):
 
-    """Manages the orders of service.  Currently this involves taking
+    """Manages the orders of Theme.  Currently this involves taking
     text strings from plugins and adding them to an OOS file. In
     future, it will also handle zipping up all the resources used into
     one lump.
     Also handles the UI tasks of moving things up and down etc.
     """
     global log
-    log=logging.getLogger(u'ServiceManager')    
+    log=logging.getLogger(u'ThemeManager')
 
     def __init__(self, parent):
         QWidget.__init__(self)
@@ -118,74 +118,74 @@ class ServiceManager(QWidget):
         self.Layout.setSpacing(0)
         self.Layout.setMargin(0)
         self.Toolbar = OpenLPToolbar(self)
-        self.Toolbar.addToolbarButton("Move to top", ":/services/service_top.png")
-        self.Toolbar.addToolbarButton("Move up", ":/services/service_up.png")
-        self.Toolbar.addToolbarButton("Move down", ":/services/service_down.png")
-        self.Toolbar.addToolbarButton("Move to bottom", ":/services/service_bottom.png")
+        self.Toolbar.addToolbarButton("New Theme", ":/themes/theme_new.png")
+        self.Toolbar.addToolbarButton("Edit Theme", ":/themes/theme_edit.png")
+        self.Toolbar.addToolbarButton("Delete Theme", ":/themes/theme_delete.png")
         self.Toolbar.addSeparator()
-        self.Toolbar.addToolbarButton("New Service", ":/services/service_new.png")
-        self.Toolbar.addToolbarButton("Save Service", ":/services/service_save.png")
-        self.Toolbar.addSeparator()
-        self.ThemeComboBox = QtGui.QComboBox(self.Toolbar)
-        self.ThemeComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
-        self.ThemeComboBox.addItem(QtCore.QString())
-        self.ThemeComboBox.addItem(QtCore.QString())
-        self.ThemeComboBox.addItem(QtCore.QString())
+        self.Toolbar.addToolbarButton("Import Theme", ":/themes/theme_import.png")
+        self.Toolbar.addToolbarButton("Export Theme", ":/themes/theme_export.png")        
         self.ThemeWidget = QtGui.QWidgetAction(self.Toolbar)
-        self.ThemeWidget.setDefaultWidget(self.ThemeComboBox)
         self.Toolbar.addAction(self.ThemeWidget)
 
         self.Layout.addWidget(self.Toolbar)
 
         self.TreeView = QtGui.QTreeView(self)
-        self.service_data=ServiceData()
-        self.TreeView.setModel(self.service_data)
+        self.Theme_data=ThemeData()
+        self.TreeView.setModel(self.Theme_data)
         self.Layout.addWidget(self.TreeView)
+        self.themelist= []
         
-    def addServiceItem(self, item):
-        """Adds service item"""
-        log.info("addServiceItem")
-        indexes=self.TreeView.selectedIndexes()
-        assert len(indexes) <= 1 # can only have one selected index in this view
-        if indexes == []:
-            log.info("No row")
-            row = None
-            selected_item = None
-        else:
-            row=indexes[0].row()
-            # if currently selected is of correct type, add it to it
-            log.info("row:%d"%row)
-            selected_item=self.service_data.item(row)
-        if type(selected_item) == type(item):
-            log.info("Add to existing item")
-            selected_item.add(item)
-        else:
-            log.info("Create new item")
-            if row is None:
-                self.service_data.addRow(item)
-            else:
-                self.service_data.insertRow(row+1, item)
-                
-    def removeServiceItem(self):
-        """Remove currently selected item"""
-        pass
-
-    def oos_as_text(self):
-        text=[]
-        log.info( "oos as text")
-        log.info("Data:"+str(self.service_data))
-        for i in self.service_data:
-            text.append("# " + str(i))
-            text.append(i.get_oos_text())
-        return '\n'.join(text)
-
-    def write_oos(self, filename):
-        """
-        Write a full OOS file out - iterate over plugins and call their respective methods
-        This format is totally arbitrary testing purposes - something sensible needs to go in here!
-        """
-        oosfile=open(filename, "w")
-        oosfile.write("# BEGIN OOS\n")
-        oosfile.write(self.oos_as_text)
-        oosfile.write("# END OOS\n")
-        oosfile.close()
+#    def addThemeItem(self, item):
+#        """Adds Theme item"""
+#        log.info("addThemeItem")
+#        indexes=self.TreeView.selectedIndexes()
+#        assert len(indexes) <= 1 # can only have one selected index in this view
+#        if indexes == []:
+#            log.info("No row")
+#            row = None
+#            selected_item = None
+#        else:
+#            row=indexes[0].row()
+#            # if currently selected is of correct type, add it to it
+#            log.info("row:%d"%row)
+#            selected_item=self.Theme_data.item(row)
+#        if type(selected_item) == type(item):
+#            log.info("Add to existing item")
+#            selected_item.add(item)
+#        else:
+#            log.info("Create new item")
+#            if row is None:
+#                self.Theme_data.addRow(item)
+#            else:
+#                self.Theme_data.insertRow(row+1, item)
+#                
+#    def removeThemeItem(self):
+#        """Remove currently selected item"""
+#        pass
+#
+#    def oos_as_text(self):
+#        text=[]
+#        log.info( "oos as text")
+#        log.info("Data:"+str(self.Theme_data))
+#        for i in self.Theme_data:
+#            text.append("# " + str(i))
+#            text.append(i.get_oos_text())
+#        return '\n'.join(text)
+#
+#    def write_oos(self, filename):
+#        """
+#        Write a full OOS file out - iterate over plugins and call their respective methods
+#        This format is totally arbitrary testing purposes - something sensible needs to go in here!
+#        """
+#        oosfile=open(filename, "w")
+#        oosfile.write("# BEGIN OOS\n")
+#        oosfile.write(self.oos_as_text)
+#        oosfile.write("# END OOS\n")
+#        oosfile.close()
+        
+    def load(self):
+        log.debug(u'Load')        
+        self.themelist = [u'African Sunset', u'Snowy Mountains', u'Wilderness', u'Wet and Windy London']
+        
+    def getThemes(self):
+        return self.themelist

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-
+import logging
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QDialog
 
@@ -25,14 +25,17 @@ from openlp.core import translate
 from openlp.core.resources import *
 
 class AlertForm(QDialog):
-
+    global log
+    log=logging.getLogger(u'AlertForm')
+    
     def __init__(self, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
+        log.info(u'Defined')        
 
     def setupUi(self, AlertForm):
         AlertForm.setObjectName("AlertForm")
-        AlertForm.resize(370, 105)
+        AlertForm.resize(370, 110)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icon/openlp.org-icon-32.bmp"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         AlertForm.setWindowIcon(icon)
@@ -56,7 +59,7 @@ class AlertForm(QDialog):
         self.AlertEntryLabel.setSizePolicy(sizePolicy)
         self.AlertEntryLabel.setObjectName("AlertEntryLabel")
         self.AlertEntryEditItem = QtGui.QLineEdit(self.AlertEntryWidget)
-        self.AlertEntryEditItem.setGeometry(QtCore.QRect(0, 20, 353, 21))
+        self.AlertEntryEditItem.setGeometry(QtCore.QRect(0, 20, 353, 26))
         self.AlertEntryEditItem.setObjectName("AlertEntryEditItem")
         self.AlertFormLayout.addWidget(self.AlertEntryWidget)
         self.ButtonBoxWidget = QtGui.QWidget(AlertForm)
@@ -83,20 +86,21 @@ class AlertForm(QDialog):
         self.retranslateUi(AlertForm)
         
         QtCore.QObject.connect(self.CancelButton, QtCore.SIGNAL("clicked()"), AlertForm.close)
+        QtCore.QObject.connect(self.DisplayButton, QtCore.SIGNAL("clicked()"), self.onDisplayClicked)
         QtCore.QMetaObject.connectSlotsByName(AlertForm)
 
     def retranslateUi(self, AlertForm):
-        AlertForm.setWindowTitle(translate("AlertForm", "Alert Message"))
-        self.AlertEntryLabel.setText(translate("AlertForm", "Alert Text:"))
-        self.DisplayButton.setText(translate("AlertForm", "Display"))
-        self.CancelButton.setText(translate("AlertForm", "Cancel"))
+        AlertForm.setWindowTitle(translate("AlertForm", u'Alert Message'))
+        self.AlertEntryLabel.setText(translate("AlertForm", u'Alert Text:'))
+        self.DisplayButton.setText(translate("AlertForm", u'Display'))
+        self.CancelButton.setText(translate("AlertForm", u'Cancel'))
 
-#    def show(self):
-#        self.AlertForm.show()
-        
         
     def load_settings(self):
         pass
         
     def save_settings(self):
+        pass
+
+    def onDisplayClicked(self):
         pass

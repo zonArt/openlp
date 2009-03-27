@@ -18,37 +18,29 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
+import os
+import logging
 
-class EventType(object):
+class EventManager(object):
     """
-    Types of events are stored in this class.
+    A mechanism to send events to all registered endpoints
+    the endpoints are registered and listen with a handle_event method
+    the endpoint will decide whether to do somthing with the event or ignore it
+    
     """
-    # "Default" event - a non-event
-    Default            = 0
-    # General application events
-    InitApplication    = -1
-    ShowApplication    = -2
-    BeforeAppClose     = -3
-    ApplicationClose   = -4
-    # Service events
-    BeforeLoadService  = 1
-    AfterLoadService   = 2
-    BeforeSaveService  = 3
-    AfterSaveService   = 4
-    # Preview events
-    PreviewBeforeLoad  = 11
-    PreviewAfterLoad   = 12
-    PreviewBeforeShow  = 13
-    PreviewAfterShow   = 14
-
-
-class Event(object):
-    """
-    Provides an Event class to encapsulate events within openlp.org.
-    """
-    def __init__(self, event_type=EventType.Default, payload=None):
-        self.event_type = event_type
-        self.payload = payload
+    global log
+    log=logging.getLogger(u'EventManager')
+    
+    def __init__(self):
+        self.endpoints=[]
+        log.info(u'Initialising')
         
-    def get_type(self):
-        return self.event_type
+    def register(self, plugin):
+        log.debug(u'plugin %s registered with EventManager'%plugin)        
+        self.endpoints.append(plugin)
+        
+    def post_event(self, event):
+        log.debug(u'post event called for event %s'%event.get_type)
+        for point in self.endpoints:
+            point.handle_event(event)
+

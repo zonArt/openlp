@@ -67,7 +67,7 @@ class Plugin(object):
         and screen number.
     """
 
-    def __init__(self, name=None, version=None, preview_controller=None, live_controller=None):
+    def __init__(self, name=None, version=None, plugin_helpers=None):
         """
         This is the constructor for the plugin object. This provides an easy
         way for descendent plugins to populate common data. This method *must*
@@ -88,8 +88,10 @@ class Plugin(object):
         self.weight = 0
         # Set up logging
         self.log = logging.getLogger(self.name)
-        self.preview_controller=preview_controller
-        self.live_controller=live_controller
+        self.preview_controller=plugin_helpers[u'preview']
+        self.live_controller=plugin_helpers[u'live']
+        self.theme_manager=plugin_helpers[u'theme']
+        self.event_manager=plugin_helpers[u'event']        
         
     def check_pre_conditions(self):
         """

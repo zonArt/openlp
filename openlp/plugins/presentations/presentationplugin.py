@@ -28,9 +28,9 @@ from openlp.plugins.presentations.lib import PresentationMediaItem
 
 class PresentationPlugin(Plugin):
 
-    def __init__(self):
+    def __init__(self, plugin_helpers):
         # Call the parent constructor
-        Plugin.__init__(self, u'Presentations', u'1.9.0')
+        Plugin.__init__(self, u'Presentations', u'1.9.0', plugin_helpers)
         self.weight = -8
         # Create the plugin icon
         self.icon = QtGui.QIcon()
