@@ -48,7 +48,12 @@ class ThemeData(QAbstractItemModel):
     def __init__(self):
         QAbstractItemModel.__init__(self)
         self.items=[]
+        self.rowheight=50
+        self.maximagewidth=self.rowheight*16/9.0;        
         log.info("Starting")
+        
+    def clearItems(self):
+        self.items=[]
         
     def columnCount(self, parent):
         return 1; # always only a single column (for now)
@@ -56,12 +61,30 @@ class ThemeData(QAbstractItemModel):
     def rowCount(self, parent):
         return len(self.items)
         
-    def insertRow(self, row, Theme_item):
-#         self.beginInsertRows(QModelIndex(),row,row)
-        log.info("insert row %d:%s"%(row,Theme_item))
-        self.items.insert(row, Theme_item)
+    def insertRow(self, row, filename):
+        self.beginInsertRows(QModelIndex(),row,row)
+        log.info("insert row %d:%s"%(row,filename))
+        (prefix, shortfilename) = os.path.split(str(filename))
+        log.info("shortfilename=%s"%(shortfilename))
+        # create a preview image
+        if os.path.exists(filename):
+            preview = QPixmap(str(filename))
+            w=self.maximagewidth;h=self.rowheight
+            preview = preview.scaled(w,h, Qt.KeepAspectRatio)
+            realw=preview.width(); realh=preview.height()
+            # and move it to the centre of the preview space
+            p=QPixmap(w,h)
+            p.fill(Qt.transparent)
+            painter=QPainter(p)
+            painter.drawPixmap((w-realw)/2,(h-realh)/2,preview)
+        else:
+            w=self.maximagewidth;h=self.rowheight
+            p=QPixmap(w,h)
+            p.fill(Qt.transparent)
+        # finally create the row        
+        self.items.insert(row,(filename, p, shortfilename))
         log.info("Items: %s" % self.items)
-#         self.endInsertRows()
+        self.endInsertRows()
 
     def removeRow(self, row):
         self.beginRemoveRows(QModelIndex(), row,row)
@@ -78,28 +101,21 @@ class ThemeData(QAbstractItemModel):
         return QModelIndex() # no children as yet
         
     def data(self, index, role):
-        """
-        Called by the Theme manager to draw us in the Theme window
-        """
         row=index.row()
         if row > len(self.items): # if the last row is selected and deleted, we then get called with an empty row!
             return QVariant()
-        item=self.items[row]
         if role==Qt.DisplayRole:
-            retval= item.pluginname + ":" + item.shortname
+            retval= self.items[row][2]
         elif role == Qt.DecorationRole:
-            retval = item.iconic_representation
-        elif role == Qt.ToolTipRole:
-            retval= None
+            retval= self.items[row][1]
         else:
-            retval= None
-        if retval == None:
-            retval=QVariant()
+            retval= QVariant()
 #         log.info("Returning"+ str(retval))
         if type(retval) is not type(QVariant):
             return QVariant(retval)
         else:
             return retval
+
         
     def __iter__(self):
         for i in self.items:
@@ -139,14 +155,17 @@ class ThemeManager(QWidget):
 
         self.Layout.addWidget(self.Toolbar)
 
-        self.TreeView = QtGui.QTreeView(self)
+        self.ThemeListView = QtGui.QListView(self)
         self.Theme_data=ThemeData()
-        self.TreeView.setModel(self.Theme_data)
-        self.Layout.addWidget(self.TreeView)
+        self.ThemeListView.setModel(self.Theme_data)
+        self.ThemeListView.setAlternatingRowColors(True)        
+        self.Layout.addWidget(self.ThemeListView)
+        self.ThemeListView.setAlternatingRowColors(True)
+        
         self.themelist= []
         self.path = os.path.join(ConfigHelper.get_data_path(), u'themes')
         self.check_themes_exists(self.path)
-        self.load() # load the themes
+        self.load(self.path) # load the themes
         
 #    def addThemeItem(self, item):
 #        """Adds Theme item"""
@@ -205,16 +224,24 @@ class ThemeManager(QWidget):
         if len(files) > 0:
             for file in files:
                 self.unzip_theme(file, self.path)
+        self.Theme_data.clearItems()
+        self.load()
+                
 
     
-    def load(self):
-        log.debug(u'Load')        
-        self.themelist = [u'African Sunset', u'Snowy Mountains', u'Wilderness', u'Wet and Windy London']
+    def load(self, dir):
+        log.debug(u'Load themes from dir')
+#        self.themelist = [u'African Sunset', u'Snowy Mountains', u'Wilderness', u'Wet and Windy London']
+        for root, dirs, files in os.walk(dir):
+            for name in files:
+                if name.endswith(".bmp"):
+                    self.Theme_data.addRow(os.path.join(dir, name))
         
     def getThemes(self):
         return self.themelist
         
     def check_themes_exists(self, dir):
+        log.debug(u'check themes')        
         if os.path.exists(dir) == False:
             os.mkdir(dir)
 
