@@ -23,6 +23,7 @@ import zipfile
 
 from time import sleep
 from copy import deepcopy
+from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import *
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
@@ -49,18 +50,18 @@ class ThemeData(QAbstractItemModel):
         QAbstractItemModel.__init__(self)
         self.items=[]
         self.rowheight=50
-        self.maximagewidth=self.rowheight*16/9.0;        
+        self.maximagewidth=self.rowheight*16/9.0;
         log.info("Starting")
-        
+
     def clearItems(self):
         self.items=[]
-        
+
     def columnCount(self, parent):
         return 1; # always only a single column (for now)
-        
+
     def rowCount(self, parent):
         return len(self.items)
-        
+
     def insertRow(self, row, filename):
         self.beginInsertRows(QModelIndex(),row,row)
         log.info("insert row %d:%s"%(row,filename))
@@ -81,7 +82,7 @@ class ThemeData(QAbstractItemModel):
             w=self.maximagewidth;h=self.rowheight
             p=QPixmap(w,h)
             p.fill(Qt.transparent)
-        # finally create the row        
+        # finally create the row
         self.items.insert(row,(filename, p, shortfilename))
         log.info("Items: %s" % self.items)
         self.endInsertRows()
@@ -90,16 +91,16 @@ class ThemeData(QAbstractItemModel):
         self.beginRemoveRows(QModelIndex(), row,row)
         self.items.pop(row)
         self.endRemoveRows()
-        
+
     def addRow(self, item):
         self.insertRow(len(self.items), item)
-        
+
     def index(self, row, col, parent = QModelIndex()):
         return self.createIndex(row,col)
 
     def parent(self, index=QModelIndex()):
         return QModelIndex() # no children as yet
-        
+
     def data(self, index, role):
         row=index.row()
         if row > len(self.items): # if the last row is selected and deleted, we then get called with an empty row!
@@ -116,7 +117,6 @@ class ThemeData(QAbstractItemModel):
         else:
             return retval
 
-        
     def __iter__(self):
         for i in self.items:
             yield i
@@ -124,14 +124,10 @@ class ThemeData(QAbstractItemModel):
     def item(self, row):
         log.info("Get Item:%d -> %s" %(row, str(self.items)))
         return self.items[row]
-    
-class ThemeManager(QWidget):
 
-    """Manages the orders of Theme.  Currently this involves taking
-    text strings from plugins and adding them to an OOS file. In
-    future, it will also handle zipping up all the resources used into
-    one lump.
-    Also handles the UI tasks of moving things up and down etc.
+class ThemeManager(QWidget):
+    """
+    Manages the orders of Theme.  C
     """
     global log
     log=logging.getLogger(u'ThemeManager')
@@ -149,7 +145,7 @@ class ThemeManager(QWidget):
         self.Toolbar.addSeparator()
         self.Toolbar.addToolbarButton("Import Theme", ":/themes/theme_import.png",
             u'Allows Themes to be imported', self.onImportTheme)
-        self.Toolbar.addToolbarButton("Export Theme", ":/themes/theme_export.png")        
+        self.Toolbar.addToolbarButton("Export Theme", ":/themes/theme_export.png")
         self.ThemeWidget = QtGui.QWidgetAction(self.Toolbar)
         self.Toolbar.addAction(self.ThemeWidget)
 
@@ -158,15 +154,15 @@ class ThemeManager(QWidget):
         self.ThemeListView = QtGui.QListView(self)
         self.Theme_data=ThemeData()
         self.ThemeListView.setModel(self.Theme_data)
-        self.ThemeListView.setAlternatingRowColors(True)        
+        self.ThemeListView.setAlternatingRowColors(True)
         self.Layout.addWidget(self.ThemeListView)
         self.ThemeListView.setAlternatingRowColors(True)
-        
+
         self.themelist= []
         self.path = os.path.join(ConfigHelper.get_data_path(), u'themes')
-        self.check_themes_exists(self.path)
-        self.load(self.path) # load the themes
-        
+        self.checkThemesExists(self.path)
+        self.loadThemes() # load the themes
+
 #    def addThemeItem(self, item):
 #        """Adds Theme item"""
 #        log.info("addThemeItem")
@@ -190,7 +186,7 @@ class ThemeManager(QWidget):
 #                self.Theme_data.addRow(item)
 #            else:
 #                self.Theme_data.insertRow(row+1, item)
-#                
+#
 #    def removeThemeItem(self):
 #        """Remove currently selected item"""
 #        pass
@@ -223,29 +219,27 @@ class ThemeManager(QWidget):
         log.info(u'New Themes) %s', str(files))
         if len(files) > 0:
             for file in files:
-                self.unzip_theme(file, self.path)
+                self.unzipTheme(file, self.path)
         self.Theme_data.clearItems()
-        self.load()
-                
+        self.loadThemes()
 
-    
-    def load(self, dir):
+    def loadThemes(self):
         log.debug(u'Load themes from dir')
 #        self.themelist = [u'African Sunset', u'Snowy Mountains', u'Wilderness', u'Wet and Windy London']
-        for root, dirs, files in os.walk(dir):
+        for root, dirs, files in os.walk(self.path):
             for name in files:
-                if name.endswith(".bmp"):
-                    self.Theme_data.addRow(os.path.join(dir, name))
-        
+                if name.endswith(u'.bmp'):
+                    self.Theme_data.addRow(os.path.join(self.path, name))
+
     def getThemes(self):
         return self.themelist
-        
-    def check_themes_exists(self, dir):
-        log.debug(u'check themes')        
+
+    def checkThemesExists(self, dir):
+        log.debug(u'check themes')
         if os.path.exists(dir) == False:
             os.mkdir(dir)
 
-    def unzip_theme(self, filename, dir):
+    def unzipTheme(self, filename, dir):
         log.debug(u'Unzipping theme %s', filename)
         zip = zipfile.ZipFile(str(filename))
         for file in zip.namelist():
@@ -254,6 +248,17 @@ class ThemeManager(QWidget):
                 if os.path.exists(theme_dir) == False:
                     os.mkdir(os.path.join(dir, file))
             else:
-                outfile = open(os.path.join(dir, file), 'w')
+                fullpath = os.path.join(dir, file)
+                if file.endswith(u'.xml'):
+                    self.checkVersion1(fullpath)
+                outfile = open(fullpath, 'w')
                 outfile.write(zip.read(file))
                 outfile.close()
+
+    def checkVersion1(self, xmlfile):
+        file=open(xmlfile)
+        t=''.join(file.readlines()) # read the file and change list to a string
+        tree = ElementTree(element=XML(t)).getroot()
+        print "AA"
+        print tree.find('BackgroundType')
+        print "AAA"
