@@ -17,7 +17,9 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-import os
+import os,os.path
+import sys
+import zipfile
 
 from time import sleep
 from copy import deepcopy
@@ -27,7 +29,9 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 # from openlp.core.resources import *
 # from openlp.core.ui import AboutForm, AlertForm, SettingsForm, SlideController
+from openlp.core import translate
 from openlp.core.lib import OpenLPToolbar
+from openlp.core.utils import ConfigHelper
 #from openlp.core.lib import ThemeItem
 
 # from openlp.core import PluginManager
@@ -45,20 +49,25 @@ class ThemeData(QAbstractItemModel):
         QAbstractItemModel.__init__(self)
         self.items=[]
         log.info("Starting")
+        
     def columnCount(self, parent):
         return 1; # always only a single column (for now)
+        
     def rowCount(self, parent):
         return len(self.items)
+        
     def insertRow(self, row, Theme_item):
 #         self.beginInsertRows(QModelIndex(),row,row)
         log.info("insert row %d:%s"%(row,Theme_item))
         self.items.insert(row, Theme_item)
         log.info("Items: %s" % self.items)
 #         self.endInsertRows()
+
     def removeRow(self, row):
         self.beginRemoveRows(QModelIndex(), row,row)
         self.items.pop(row)
         self.endRemoveRows()
+        
     def addRow(self, item):
         self.insertRow(len(self.items), item)
         
@@ -67,6 +76,7 @@ class ThemeData(QAbstractItemModel):
 
     def parent(self, index=QModelIndex()):
         return QModelIndex() # no children as yet
+        
     def data(self, index, role):
         """
         Called by the Theme manager to draw us in the Theme window
@@ -98,7 +108,6 @@ class ThemeData(QAbstractItemModel):
     def item(self, row):
         log.info("Get Item:%d -> %s" %(row, str(self.items)))
         return self.items[row]
-
     
 class ThemeManager(QWidget):
 
@@ -122,7 +131,8 @@ class ThemeManager(QWidget):
         self.Toolbar.addToolbarButton("Edit Theme", ":/themes/theme_edit.png")
         self.Toolbar.addToolbarButton("Delete Theme", ":/themes/theme_delete.png")
         self.Toolbar.addSeparator()
-        self.Toolbar.addToolbarButton("Import Theme", ":/themes/theme_import.png")
+        self.Toolbar.addToolbarButton("Import Theme", ":/themes/theme_import.png",
+            u'Allows Themes to be imported', self.onImportTheme)
         self.Toolbar.addToolbarButton("Export Theme", ":/themes/theme_export.png")        
         self.ThemeWidget = QtGui.QWidgetAction(self.Toolbar)
         self.Toolbar.addAction(self.ThemeWidget)
@@ -134,6 +144,9 @@ class ThemeManager(QWidget):
         self.TreeView.setModel(self.Theme_data)
         self.Layout.addWidget(self.TreeView)
         self.themelist= []
+        self.path = os.path.join(ConfigHelper.get_data_path(), u'themes')
+        self.check_themes_exists(self.path)
+        self.load() # load the themes
         
 #    def addThemeItem(self, item):
 #        """Adds Theme item"""
@@ -182,10 +195,38 @@ class ThemeManager(QWidget):
 #        oosfile.write(self.oos_as_text)
 #        oosfile.write("# END OOS\n")
 #        oosfile.close()
-        
+
+    def onImportTheme(self):
+        files = QtGui.QFileDialog.getOpenFileNames(None,
+            translate('ThemeManager', u'Select Import File'),
+            self.path,
+            u'Theme (*.theme)')
+        log.info(u'New Themes) %s', str(files))
+        if len(files) > 0:
+            for file in files:
+                self.unzip_theme(file, self.path)
+
+    
     def load(self):
         log.debug(u'Load')        
         self.themelist = [u'African Sunset', u'Snowy Mountains', u'Wilderness', u'Wet and Windy London']
         
     def getThemes(self):
         return self.themelist
+        
+    def check_themes_exists(self, dir):
+        if os.path.exists(dir) == False:
+            os.mkdir(dir)
+
+    def unzip_theme(self, filename, dir):
+        log.debug(u'Unzipping theme %s', filename)
+        zip = zipfile.ZipFile(str(filename))
+        for file in zip.namelist():
+            if file.endswith('/'):
+                theme_dir = os.path.join(dir, file)
+                if os.path.exists(theme_dir) == False:
+                    os.mkdir(os.path.join(dir, file))
+            else:
+                outfile = open(os.path.join(dir, file), 'w')
+                outfile.write(zip.read(file))
+                outfile.close()
