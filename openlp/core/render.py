@@ -373,7 +373,7 @@ class Renderer:
         return brcorner
 
     # xxx this is what to override for an SDL version
-    def _get_extent_and_render(self, line, tlcorner=(0,0), dodraw=False, color=None):
+    def _get_extent_and_render(self, line, tlcorner=(0,0), dodraw=False, color=None, footer = False):
         """Find bounding box of text  - as render_single_line.
         If dodraw is set, actually draw the text to the current DC as well
 
@@ -384,17 +384,25 @@ class Renderer:
         p.begin(self._paint)
         # 'twould be more efficient to set this once when theme changes
         # or p changes
-        font=QtGui.QFont(self._theme.FontName,
-                     self._theme.FontProportion, # size
-                     QtGui.QFont.Normal, # weight
-                     0)# italic
+        if footer :
+           font=QtGui.QFont(self._theme.FontName,
+                         12, # size
+                         QtGui.QFont.Normal, # weight
+                         0)# italic
+        else:
+            font=QtGui.QFont(self._theme.FontName,
+                         self._theme.FontProportion, # size
+                         QtGui.QFont.Normal, # weight
+                         0)# italic
         # to make the unit tests monitor independent, we have to be able to
         # specify whether a font proportion is in pixels or points
         if self._theme.FontUnits.lower() == "pixels":
             log.debug(u"pixels")
-            font.setPixelSize(self._theme.FontProportion)
-        log.debug(self._theme.FontName, self._theme.FontProportion)
-        log.debug(font.family(), font.pointSize())
+            if footer:
+                font.setPixelSize(12)
+            else:
+                font.setPixelSize(self._theme.FontProportion)
+        log.debug(u'Font details %s %s %s %s', self._theme.FontName, self._theme.FontProportion,  font.family(), font.pointSize())
         p.setFont(font)
         if color == None:
             p.setPen(self._theme.FontColor)
