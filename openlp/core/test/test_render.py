@@ -81,6 +81,7 @@ class TestRender_base:
     def teardown_class(self):
         print "class quit", self, self.app
         self.app.quit()
+
     def setup_method(self, method):
         print "SSsetup", method
         if not hasattr(self, "app"):
@@ -157,6 +158,7 @@ Line 3"""
         expected_answer=["Verse 1: Line 1\nLine 2","Verse 2: Line 1\nLine 2","Verse 3: Line 1\nLine 2\nLine 3"]
         answer=self.r.set_words_openlp(words)
         assert (answer==expected_answer)
+
     def test_render_screens(self):
         words="""
 Verse 1: Line 1
@@ -177,6 +179,7 @@ Line 3"""
             answer=self.r.render_screen(v)
 #             print v, answer.x(), answer.y(), answer.width(), answer.height()
             assert(answer==expected_answer[v])
+
     def split_test(self, number, answer, expected_answers):
         lines=[]
         print "Split test", number, answer
