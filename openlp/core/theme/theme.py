@@ -8,6 +8,8 @@ else:
 from PyQt4 import QtGui
 
 DelphiColors={"clRed":0xFF0000,
+                "clBlue":0x0000FF,
+                "clYellow":0x0FFFF00,
                "clBlack":0x000000,
                "clWhite":0xFFFFFF}
 
@@ -16,7 +18,7 @@ blankstylexml=\
 <Theme>
   <Name>BlankStyle</Name>
   <BackgroundMode>1</BackgroundMode>
-  <BackgroundType>0</BackgroundType>  
+  <BackgroundType>0</BackgroundType>
   <BackgroundParameter1>$000000</BackgroundParameter1>
   <BackgroundParameter2/>
   <BackgroundParameter3/>
@@ -37,10 +39,10 @@ class Theme:
         """ stores the info about a theme
         attributes:
           name : theme name
-          
+
            BackgroundMode   : 1 - Transparent
                              1 - Opaque
-                             
+
           BackgroundType   : 0 - solid color
                              1 - gradient color
                              2 - image
@@ -53,7 +55,7 @@ class Theme:
                                  for solid - N/A
           BackgroundParameter3 : for image - N/A
                                  for gradient - 0 -> vertical, 1 -> horizontal
-                             
+
           FontName       : name of font to use
           FontColor      : color for main font
           FontProportion : size of font
@@ -108,7 +110,7 @@ class Theme:
 #                            print "nope",
                             pass
                     elif DelphiColors.has_key(t):
-#                        print "colour", 
+#                        print "colour",
                         val=DelphiColors[t]
                     else:
                         try:
@@ -121,7 +123,7 @@ class Theme:
                     val= QtGui.QColor((val>>16) & 0xFF, (val>>8)&0xFF, val&0xFF)
  #               print [val]
                 setattr(self,element.tag, val)
-        
+
 
     def __str__(self):
         s=""

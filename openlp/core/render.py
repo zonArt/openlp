@@ -17,13 +17,19 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
+import logging
 
 import sys
 from PyQt4 import QtGui, QtCore, Qt
 
 from copy import copy
 from interpolate import interpolate
+
 class Renderer:
+
+    global log
+    log=logging.getLogger(u'Renderer')
+    log.info(u'Renderer Loaded')
     """All the functions for rendering a set of words onto a Device Context
 
     How to use:
@@ -44,21 +50,21 @@ class Renderer:
         self._theme=None
         self._bg_image_filename=None
         self._paint=None
-        
+
     def set_debug(self, debug):
         self._debug=debug
-        
+
     def set_theme(self, theme):
         self._theme=theme
         if theme.BackgroundType == 2:
             self.set_bg_image(theme.BackgroundParameter1)
 
     def set_bg_image(self, filename):
-        print "set bg image", filename
+        log.debug(u"set bg image %s", filename)
         self._bg_image_filename=filename
         if self._paint is not None:
             self.scale_bg_image()
-            
+
     def scale_bg_image(self):
         assert self._paint
         i=QtGui.QImage(self._bg_image_filename)
@@ -67,7 +73,7 @@ class Renderer:
         dcw=self._paint.width()+1;dch=self._paint.height()
         imratio=imw/float(imh)
         dcratio=dcw/float(dch)
-        print "Image scaling params", imw, imh, imratio, dcw, dch, dcratio
+        log.debug(u"Image scaling params %s %s %s %s %s %s", imw, imh, imratio, dcw, dch, dcratio)
         if imratio > dcratio:
             scale=dcw/float(imw)
         elif imratio < dcratio:
@@ -84,9 +90,9 @@ class Renderer:
         self._paint=p
         if self._bg_image_filename is not None:
             self.scale_bg_image()
-            
+
     def set_words_openlp(self, words):
-#         print "set words openlp", words
+#         log.debug(u" "set words openlp", words
         verses=[]
         words=words.replace("\r\n", "\n")
         verses_text=words.split('\n\n')
@@ -99,9 +105,9 @@ class Renderer:
             verses_text.append('\n'.join(v).lstrip()) # remove first \n
 
         return verses_text
-        
+
     def render_screen(self, screennum):
-        print "render screen\n", screennum, self.words[screennum]
+        log.debug(u"render screen\n %s %s ", screennum, self.words[screennum])
         import time
         t=0.0
         words=self.words[screennum]
@@ -111,51 +117,45 @@ class Renderer:
     def set_text_rectangle(self, rect):
         """ Sets the rectangle within which text should be rendered"""
         self._rect=rect
-        
+
     def _render_background(self):
-        # xxx may have to prerender to a memdc when set theme is called for use on slow machines
-        # takes 26ms on mijiti's machine!
         assert(self._theme)
         assert(self._paint)
-        print "render background", self._theme.BackgroundType
+        log.debug(u"render background %s %s", self._theme.BackgroundType)
         p=QtGui.QPainter()
         p.begin(self._paint)
         if self._theme.BackgroundType == 0:
             p.fillRect(self._paint.rect(), self._theme.BackgroundParameter1)
         elif self._theme.BackgroundType == 1: # gradient
-            # xxx Use a QGradient Brush!!!
-            # get colours as tuples
-            c1=self._theme.BackgroundParameter1.getRgb()
-            c2=self._theme.BackgroundParameter2.getRgb()
-            dir=self._theme.BackgroundParameter3
-            w=self._paint.width();h=self._paint.height()
-            lines=[]
-            pens=[]
-            if dir == 0: # vertical
-                for y in range (h):
-                    c=interpolate(c1, c2, y/float(h))
-                    lines.append((0,y,w,y))
-                    pens.append(QtGui.QPen(QtGui.QColor(c[0],c[1],c[2]))) # bleagh
-            else:
-                for x in range (w):
-                    c=interpolate(c1, c2, x/float(w))
-                    lines.append((x,0,x,h))
-                    pens.append(QtGui.QPen(QtGui.QColor(c[0],c[1],c[2]))) # bleagh
-            for i in range(len(pens)):
-                p.setPen(pens[i])
-                l=lines[i]
-                p.drawLine(l[0],l[1],l[2],l[3]) # must be a better way!
+            #TODO Add Theme code and fix direction
+
+            gradient = QtGui.QLinearGradient(0, 0, self._paint.width(), self._paint.height())
+            gradient.setColorAt(0, QtGui.QColor(255, 0, 0))
+            gradient.setColorAt(0.5, QtGui.QColor(0, 255, 0))
+            gradient.setColorAt(1, QtGui.QColor(0, 0, 255))
+            p.setBrush(QtGui.QBrush(gradient))
+            rectPath = QtGui.QPainterPath()
+
+            MAX_X = self._paint.width()
+            MAX_Y = self._paint.height()
+
+            rectPath.moveTo(0, 0)
+            rectPath.lineTo(0, MAX_Y)
+            rectPath.lineTo(MAX_X, MAX_Y)
+            rectPath.lineTo(MAX_X, 0)
+            rectPath.closeSubpath()
+            p.drawPath(rectPath)
 
         elif self._theme.BackgroundType == 2: # image
             r=self._paint.rect()
-            print r.x(), r.y(), r.width(),r.height()
-            print self._theme.BackgroundParameter2
+            log.debug(r.x(), r.y(), r.width(),r.height())
+            log.debug(self._theme.BackgroundParameter2)
             if self._theme.BackgroundParameter2 is not None:
                 p.fillRect(self._paint.rect(), self._theme.BackgroundParameter2)
             p.drawPixmap(self.background_offsetx,self.background_offsety, self.img)
         p.end()
-        print "render background done"
-        
+        log.debug(u"render background done")
+
     def split_set_of_lines(self, lines):
 
         """Given a list of lines, decide how to split them best if they don't all fit on the screen
@@ -166,7 +166,7 @@ class Renderer:
 
          Returns a list of [lists of lines], one set for each screenful
          """
-#         print "Split set of lines"
+#         log.debug(u" "Split set of lines"
         # Probably ought to save the rendering results to a pseudoDC for redrawing efficiency.  But let's not optimse prematurely!
 
         bboxes = []
@@ -202,7 +202,7 @@ class Renderer:
                     retval.append(thislines)
                     thislines=[]
         else:
-#             print "Just split where you can"
+#             log.debug(u" "Just split where you can"
             retval=[]
             startline=0
             endline=startline+1
@@ -221,9 +221,10 @@ class Renderer:
 
     def _render_lines(self, lines):
         """render a set of lines according to the theme, return bounding box"""
-        print "_render_lines", lines
+        log.debug(u"_render_lines %s", lines)
 
         bbox=self._render_lines_unaligned(lines)
+        print bbox
 
         t=self._theme
         x=self._rect.left()
@@ -237,10 +238,10 @@ class Renderer:
             assert(0, "Invalid value for theme.VerticalAlign:%d" % t.VerticalAlign)
         self._render_background()
         bbox=self._render_lines_unaligned(lines, (x,y))
-        print "render lines DONE"
+        log.debug(u"render lines DONE")
 
         return bbox
-        
+
     def _render_lines_unaligned(self, lines, tlcorner=(0,0)):
 
         """Given a list of lines to render, render each one in turn
@@ -249,7 +250,7 @@ class Renderer:
         than a screenful (eg. by using split_set_of_lines)
 
         Returns the bounding box of the text as QRect"""
-        print "render unaligned", lines
+        log.debug(u"render unaligned %s", lines)
         x,y=tlcorner
         brx=x
         bry=y
@@ -268,7 +269,7 @@ class Renderer:
             p.setPen(QtGui.QPen(QtGui.QColor(0,0,255)))
             p.drawRect(retval)
             p.end()
-        print "render unaligned DONE"
+        log.debug(u"render unaligned DONE")
 
         return  retval
 
@@ -282,14 +283,14 @@ class Renderer:
 
         Returns the bottom-right corner (of what was rendered) as a tuple(x,y).
         """
-        print "Render single line '%s' @ %s "%( line, tlcorner)
+        log.debug(u"Render single line '%s' @ %s "%( line, tlcorner))
         x,y=tlcorner
         # We draw the text to see how big it is and then iterate to make it fit
         # when we line wrap we do in in the "lyrics" style, so the second line is
         # right aligned with a "hanging indent"
 
         # get the words
-#         print "Getting the words split right"
+#         log.debug(u" "Getting the words split right"
         words=line.split(" ")
         thisline=' '.join(words)
         lastword=len(words)
@@ -307,8 +308,8 @@ class Renderer:
                 lastword-=1
                 thisline=' '.join(words[:lastword])
 
-#         print "This is how they split", lines
-#         print "Now render them"
+#         log.debug(u" "This is how they split", lines
+#         log.debug(u" "Now render them"
         startx=x
         starty=y
         rightextent=None
@@ -356,7 +357,7 @@ class Renderer:
                     self._get_extent_and_render(line, (x-self._outline_offset,y-self._outline_offset), dodraw=True, color = t.OutlineColor)
 
             self._get_extent_and_render(line, tlcorner=(x,y), dodraw=True)
-#             print "Line %2d: Render '%s' at (%d, %d) wh=(%d,%d)"%( linenum, line, x, y,w,h)
+#             log.debug(u" "Line %2d: Render '%s' at (%d, %d) wh=(%d,%d)"%( linenum, line, x, y,w,h)
             y += h
             if linenum == 0:
                 self._first_line_right_extent=rightextent
@@ -372,28 +373,36 @@ class Renderer:
         return brcorner
 
     # xxx this is what to override for an SDL version
-    def _get_extent_and_render(self, line, tlcorner=(0,0), dodraw=False, color=None):
+    def _get_extent_and_render(self, line, tlcorner=(0,0), dodraw=False, color=None, footer = False):
         """Find bounding box of text  - as render_single_line.
         If dodraw is set, actually draw the text to the current DC as well
 
         return width and height of text as a tuple (w,h)"""
         # setup defaults
-        print "_get_extent_and_render", [line], tlcorner, dodraw
+        log.debug(u"_get_extent_and_render %s %s %s ", [line], tlcorner, dodraw)
         p=QtGui.QPainter()
         p.begin(self._paint)
         # 'twould be more efficient to set this once when theme changes
         # or p changes
-        font=QtGui.QFont(self._theme.FontName,
-                     self._theme.FontProportion, # size
-                     QtGui.QFont.Normal, # weight
-                     0)# italic
+        if footer :
+           font=QtGui.QFont(self._theme.FontName,
+                         12, # size
+                         QtGui.QFont.Normal, # weight
+                         0)# italic
+        else:
+            font=QtGui.QFont(self._theme.FontName,
+                         self._theme.FontProportion, # size
+                         QtGui.QFont.Normal, # weight
+                         0)# italic
         # to make the unit tests monitor independent, we have to be able to
         # specify whether a font proportion is in pixels or points
         if self._theme.FontUnits.lower() == "pixels":
-            print "pixels"
-            font.setPixelSize(self._theme.FontProportion)
-        print self._theme.FontName, self._theme.FontProportion
-        print font.family(), font.pointSize()
+            log.debug(u"pixels")
+            if footer:
+                font.setPixelSize(12)
+            else:
+                font.setPixelSize(self._theme.FontProportion)
+        log.debug(u'Font details %s %s %s %s', self._theme.FontName, self._theme.FontProportion,  font.family(), font.pointSize())
         p.setFont(font)
         if color == None:
             p.setPen(self._theme.FontColor)
