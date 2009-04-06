@@ -68,12 +68,14 @@ class BiblesTab(SettingsTab):
         self.NewChaptersCheckBox = QtGui.QCheckBox(self.VerseDisplayGroupBox)
         self.NewChaptersCheckBox.setObjectName("NewChaptersCheckBox")
         self.VerseDisplayLayout.addWidget(self.NewChaptersCheckBox, 1, 0, 1, 1)
+
         self.DisplayStyleWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
         self.DisplayStyleWidget.setObjectName(u'DisplayStyleWidget')
         self.DisplayStyleLayout = QtGui.QHBoxLayout(self.DisplayStyleWidget)
         self.DisplayStyleLayout.setSpacing(8)
         self.DisplayStyleLayout.setMargin(0)
         self.DisplayStyleLayout.setObjectName(u'DisplayStyleLayout')
+
         self.DisplayStyleLabel = QtGui.QLabel(self.DisplayStyleWidget)
         self.DisplayStyleLabel.setObjectName(u'DisplayStyleLabel')
         self.DisplayStyleLayout.addWidget(self.DisplayStyleLabel)
@@ -85,9 +87,26 @@ class BiblesTab(SettingsTab):
         self.DisplayStyleComboBox.addItem(QtCore.QString())
         self.DisplayStyleLayout.addWidget(self.DisplayStyleComboBox)
         self.VerseDisplayLayout.addWidget(self.DisplayStyleWidget, 2, 0, 1, 1)
+
+        self.BibleThemeWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
+        self.BibleThemeWidget.setObjectName(u'BibleThemeWidget')
+        self.BibleThemeLayout = QtGui.QHBoxLayout(self.BibleThemeWidget)
+        self.BibleThemeLayout.setSpacing(8)
+        self.BibleThemeLayout.setMargin(0)
+        self.BibleThemeLayout.setObjectName(u'BibleThemeLayout')
+
+        self.BibleThemeLabel = QtGui.QLabel(self.BibleThemeWidget)
+        self.BibleThemeLabel.setObjectName(u'BibleThemeLabel')
+        self.BibleThemeLayout.addWidget(self.BibleThemeLabel)
+        self.BibleThemeComboBox = QtGui.QComboBox(self.BibleThemeWidget)
+        self.BibleThemeComboBox.setObjectName(u'BibleThemeComboBox')
+        self.BibleThemeComboBox.addItem(QtCore.QString())
+        self.BibleThemeLayout.addWidget(self.BibleThemeComboBox)
+        self.VerseDisplayLayout.addWidget(self.BibleThemeWidget, 3, 0, 1, 1)
+
         self.ChangeNoteLabel = QtGui.QLabel(self.VerseDisplayGroupBox)
         self.ChangeNoteLabel.setObjectName(u'ChangeNoteLabel')
-        self.VerseDisplayLayout.addWidget(self.ChangeNoteLabel, 3, 0, 1, 1)
+        self.VerseDisplayLayout.addWidget(self.ChangeNoteLabel, 4, 0, 1, 1)
         self.BibleLeftLayout.addWidget(self.VerseDisplayGroupBox)
         self.BibleLeftSpacer = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
@@ -132,6 +151,7 @@ class BiblesTab(SettingsTab):
         self.ParagraphRadioButton.setText(translate('SettingsForm','Paragraph style'))
         self.NewChaptersCheckBox.setText(translate('SettingsForm', 'Only show new chapter numbers'))
         self.DisplayStyleLabel.setText(translate('SettingsForm', 'Display Style:'))
+        self.BibleThemeLabel.setText(translate('SettingsForm', 'Bible Theme:'))
         self.DisplayStyleComboBox.setItemText(0, translate('SettingsForm', 'No brackets'))
         self.DisplayStyleComboBox.setItemText(1, translate('SettingsForm', '( and )'))
         self.DisplayStyleComboBox.setItemText(2, translate('SettingsForm', '{ and }'))
@@ -165,6 +185,7 @@ class BiblesTab(SettingsTab):
         self.paragraph_style = self.convertStringToBoolean(self.config.get_config('paragraph style', u'True'))
         self.show_new_chapters = self.convertStringToBoolean(self.config.get_config('display new chapter', u"False"))
         self.display_style = int(self.config.get_config('display brackets', '0'))
+        self.bible_theme = int(self.config.get_config('bible theme', '0'))
         self.bible_search = self.convertStringToBoolean(self.config.get_config('search as type', u'True'))
         if self.paragraph_style:
             self.ParagraphRadioButton.setChecked(True)
@@ -173,9 +194,14 @@ class BiblesTab(SettingsTab):
         self.NewChaptersCheckBox.setChecked(self.show_new_chapters)
         self.DisplayStyleComboBox.setCurrentIndex(self.display_style)
         self.BibleSearchCheckBox.setChecked(self.bible_search)
+        if self.bible_theme == 0:  # must be new set to first
+            self.BibleThemeComboBox.setCurrentIndex(self.bible_theme)
+        else:
+            pass # TODO need to code
 
     def save(self):
         self.config.set_config("paragraph style", str(self.paragraph_style))
         self.config.set_config("display new chapter", str(self.show_new_chapters))
         self.config.set_config("display brackets", str(self.display_style))
         self.config.set_config("search as type", str(self.bible_search))
+        self.config.set_config("bible theme", str(self.bible_theme))

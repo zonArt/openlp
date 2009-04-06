@@ -1,16 +1,29 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+"""
+OpenLP - Open Source Lyrics Projection
+Copyright (c) 2008 Raoul Snyman
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten Tinggaard
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; version 2 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place, Suite 330, Boston, MA 02111-1307 USA
 from xml.dom.minidom import  Document
 from xml.etree.ElementTree import ElementTree, XML, dump
-"""
-<?xml version="1.0" encoding="UTF-8"?>
-<song version="1.0">
-   <lyrics language="en">
-       <verse type="chorus" label="1">
-           <![CDATA[ ... ]]>
-       </verse>
-   </lyrics>
-</song>
 
+For XML Schema see wiki.openlp.org
 """
+from xml.dom.minidom import  Document
+from xml.etree.ElementTree import ElementTree, XML, dump
+
 class ThemeXMLBuilder():
     def __init__(self):
         # Create the minidom document
@@ -29,12 +42,12 @@ class ThemeXMLBuilder():
 
     def add_background_transparent(self):
         # Create the main <lyrics> element
-        background = self.theme_xml.createElement(u'Background')
+        background = self.theme_xml.createElement(u'background')
         background.setAttribute(u'mode', u'transparent')
         self.theme.appendChild(background)
 
     def add_background_solid(self, bkcolor):
-        background = self.theme_xml.createElement(u'Background')
+        background = self.theme_xml.createElement(u'background')
         background.setAttribute(u'mode', u'opaque')
         background.setAttribute(u'type', u'solid')
         self.theme.appendChild(background)
@@ -44,24 +57,29 @@ class ThemeXMLBuilder():
         color.appendChild(bkc)
         background.appendChild(color)
 
-    def add_background_gradient(self, startcolor, endcolor):
-        background = self.theme_xml.createElement(u'Background')
+    def add_background_gradient(self, startcolor, endcolor, direction):
+        background = self.theme_xml.createElement(u'background')
         background.setAttribute(u'mode', u'opaque')
-        background.setAttribute(u'type', u'gradient')
+        background.setAttribute(u'type', u'Gradient')
         self.theme.appendChild(background)
 
-        color = self.theme_xml.createElement(u'startcolor')
+        color = self.theme_xml.createElement(u'startColor')
         bkc = self.theme_xml.createTextNode(startcolor)
         color.appendChild(bkc)
         background.appendChild(color)
 
-        color = self.theme_xml.createElement(u'endcolor')
+        color = self.theme_xml.createElement(u'endColor')
         bkc = self.theme_xml.createTextNode(endcolor)
         color.appendChild(bkc)
         background.appendChild(color)
 
-    def add_background_image(self, filename, bordercolor):
-        background = self.theme_xml.createElement(u'Background')
+        color = self.theme_xml.createElement(u'direction')
+        bkc = self.theme_xml.createTextNode(direction)
+        color.appendChild(bkc)
+        background.appendChild(color)
+
+    def add_background_image(self, filename):
+        background = self.theme_xml.createElement(u'background')
         background.setAttribute(u'mode', u'opaque')
         background.setAttribute(u'type', u'image')
         self.theme.appendChild(background)
@@ -71,26 +89,62 @@ class ThemeXMLBuilder():
         color.appendChild(bkc)
         background.appendChild(color)
 
-        color = self.theme_xml.createElement(u'bordercolor')
-        bkc = self.theme_xml.createTextNode(bordercolor)
-        color.appendChild(bkc)
-        background.appendChild(color)
+    def add_font(self, fontname, fontcolor, fontproportion, fonttype=u'main'):
+        background = self.theme_xml.createElement(u'font')
+        background.setAttribute(u'type',fonttype)
+        self.theme.appendChild(background)
 
+        name = self.theme_xml.createElement(u'name')
+        fn = self.theme_xml.createTextNode(fontname)
+        name.appendChild(fn)
+        background.appendChild(name)
 
-    def add_verse_to_lyrics(self, type, number, content):
-        """
-        type - type of verse (Chorus, Verse , Bridge, Custom etc
-        number - number of item eg verse 1
-        content - the text to be stored
-        """
-        verse = self.theme_xml.createElement(u'verse')
-        verse.setAttribute(u'type', type)
-        verse.setAttribute(u'label', number)
-        self.lyrics.appendChild(verse)
+        name = self.theme_xml.createElement(u'color')
+        fn = self.theme_xml.createTextNode(fontcolor)
+        name.appendChild(fn)
+        background.appendChild(name)
 
-        # add data as a CDATA section
-        cds = self.theme_xml.createCDATASection(content)
-        verse.appendChild(cds)
+        name = self.theme_xml.createElement(u'proportion')
+        fn = self.theme_xml.createTextNode(fontproportion)
+        name.appendChild(fn)
+        background.appendChild(name)
+
+    def add_display(self, shadow, shadowColor, outline, outlineColor, horizontal, vertical, wrap):
+        background = self.theme_xml.createElement(u'display')
+        self.theme.appendChild(background)
+
+        tagElement = self.theme_xml.createElement(u'shadow')
+        tagElement.setAttribute(u'color',shadowColor)
+        tagValue = self.theme_xml.createTextNode(shadow)
+        tagElement.appendChild(tagValue)
+        background.appendChild(tagElement)
+
+        tagElement = self.theme_xml.createElement(u'outline')
+        tagElement.setAttribute(u'color',outlineColor)
+        tagValue = self.theme_xml.createTextNode(outline)
+        tagElement.appendChild(tagValue)
+        background.appendChild(tagElement)
+
+        tagElement = self.theme_xml.createElement(u'horizontalAlign')
+        tagValue = self.theme_xml.createTextNode(horizontal)
+        tagElement.appendChild(tagValue)
+        background.appendChild(tagElement)
+
+        tagElement = self.theme_xml.createElement(u'verticalAlign')
+        tagValue = self.theme_xml.createTextNode(vertical)
+        tagElement.appendChild(tagValue)
+        background.appendChild(tagElement)
+
+        tagElement = self.theme_xml.createElement(u'wrapStyle')
+        tagValue = self.theme_xml.createTextNode(wrap)
+        tagElement.appendChild(tagValue)
+        background.appendChild(tagElement)
+
+    def child_element(self, tag, value):
+        tagElement = self.theme_xml.createElement(tag)
+        tagValue = self.theme_xml.createTextNode(value)
+        tagElement.appendChild(ftagValue)
+        self.background.appendChild(tagElement)
 
     def dump_xml(self):
         # Debugging aid to see what we have
@@ -102,17 +156,35 @@ class ThemeXMLBuilder():
 
 class ThemeXMLParser():
     def __init__(self, xml):
-        self.theme_xml = ElementTree(element=XML(xml))
-
-    def get_verses(self):
-        #return a list of verse's and attributes
-        iter=self.theme_xml.getiterator()
-        verse_list = []
+        theme_xml = ElementTree(element=XML(xml))
+        iter=theme_xml.getiterator()
+        master = u''
         for element in iter:
-            if element.tag == u'verse':
-                verse_list.append([element.attrib, element.text])
-        return verse_list
+            #print  element.tag, element.text
+            if len(element.getchildren()) > 0:
+                master= element.tag + u'_'
+            if len(element.attrib) > 0:
+                #print "D", element.tag , element.attrib
+                for e in element.attrib.iteritems():
+                    #print "A", master,  e[0], e[1]
+                    if master == u'font_' and e[0] == u'type':
+                        master += e[1] + u'_'
+                    elif master == u'display_' and (element.tag == u'shadow' or element.tag == u'outline'):
+                        #print "b", master, element.tag, element.text, e[0], e[1]
+                        setattr(self, master + element.tag , element.text)
+                        setattr(self, master + element.tag +u'_'+ e[0], e[1])
+                    else:
+                        field = master + e[0]
+                        setattr(self, field, e[1])
+            else:
+                #print "c", element.tag
+                if element.tag is not None :
+                    field = master + element.tag
+                    setattr(self, field, element.text)
 
-    def dump_xml(self):
-        # Debugging aid to see what we have
-        print dump(self.theme_xml)
+    def __str__(self):
+        s = u''
+        for k in dir(self):
+            if k[0:1] != u'_':
+                s+= u'%30s : %s\n' %(k,getattr(self,k))
+        return s

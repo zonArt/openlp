@@ -56,11 +56,11 @@ class Renderer:
 
     def set_theme(self, theme):
         self._theme=theme
-        if theme.BackgroundType == 2:
-            self.set_bg_image(theme.BackgroundParameter1)
+        if theme.background_type == u'image':
+            self.set_bg_image(theme.background_filename)
 
     def set_bg_image(self, filename):
-        log.debug(u"set bg image %s", filename)
+        log.debug(u'set bg image %s', filename)
         self._bg_image_filename=filename
         if self._paint is not None:
             self.scale_bg_image()
@@ -69,11 +69,13 @@ class Renderer:
         assert self._paint
         i=QtGui.QImage(self._bg_image_filename)
         # rescale and offset
-        imw=i.width();imh=i.height()
-        dcw=self._paint.width()+1;dch=self._paint.height()
+        imw=i.width()
+        imh=i.height()
+        dcw=self._paint.width()+1
+        dch=self._paint.height()
         imratio=imw/float(imh)
         dcratio=dcw/float(dch)
-        log.debug(u"Image scaling params %s %s %s %s %s %s", imw, imh, imratio, dcw, dch, dcratio)
+        log.debug(u'Image scaling params %s %s %s %s %s %s', imw, imh, imratio, dcw, dch, dcratio)
         if imratio > dcratio:
             scale=dcw/float(imw)
         elif imratio < dcratio:
@@ -94,20 +96,20 @@ class Renderer:
     def set_words_openlp(self, words):
 #         log.debug(u" "set words openlp", words
         verses=[]
-        words=words.replace("\r\n", "\n")
-        verses_text=words.split('\n\n')
+        words=words.replace(u'\r\n', u'\n')
+        verses_text=words.split(u'\n\n')
         for v in verses_text:
-            lines=v.split('\n')
+            lines=v.split(u'\n')
             verses.append(self.split_set_of_lines(lines)[0])
         self.words=verses
         verses_text=[]
         for v in verses:
-            verses_text.append('\n'.join(v).lstrip()) # remove first \n
+            verses_text.append(u'\n'.join(v).lstrip()) # remove first \n
 
         return verses_text
 
     def render_screen(self, screennum):
-        log.debug(u"render screen\n %s %s ", screennum, self.words[screennum])
+        log.debug(u'render screen\n %s %s ', screennum, self.words[screennum])
         import time
         t=0.0
         words=self.words[screennum]
@@ -121,40 +123,49 @@ class Renderer:
     def _render_background(self):
         assert(self._theme)
         assert(self._paint)
-        log.debug(u"render background %s %s", self._theme.BackgroundType)
+        log.debug(u'render background %s ', self._theme.background_type)
         p=QtGui.QPainter()
         p.begin(self._paint)
-        if self._theme.BackgroundType == 0:
-            p.fillRect(self._paint.rect(), self._theme.BackgroundParameter1)
-        elif self._theme.BackgroundType == 1: # gradient
-            #TODO Add Theme code and fix direction
+        if self._theme.background_type == u'solid':
+            p.fillRect(self._paint.rect(), QtGui.QColor(self._theme.background_color))
+        elif self._theme.background_type == u'Gradient' : # gradient
+            gradient = None
+            if self._theme.background_direction == u'vertical':
+                w = int(self._paint.width())/2
+                gradient = QtGui.QLinearGradient(w, 0, w, self._paint.height()) # vertical
+            elif self._theme.background_direction == u'horizontal':
+                h = int(self._paint.height())/2
+                gradient = QtGui.QLinearGradient(0, h, self._paint.width(), h)   # Horizontal
+            else:
+                w = int(self._paint.width())/2
+                h = int(self._paint.height())/2
+                gradient = QtGui.QRadialGradient(w, h, w) # Circular
 
-            gradient = QtGui.QLinearGradient(0, 0, self._paint.width(), self._paint.height())
-            gradient.setColorAt(0, QtGui.QColor(255, 0, 0))
-            gradient.setColorAt(0.5, QtGui.QColor(0, 255, 0))
-            gradient.setColorAt(1, QtGui.QColor(0, 0, 255))
+            gradient.setColorAt(0, QtGui.QColor(self._theme.background_startColor))
+            gradient.setColorAt(1, QtGui.QColor(self._theme.background_endColor))
+
             p.setBrush(QtGui.QBrush(gradient))
             rectPath = QtGui.QPainterPath()
 
-            MAX_X = self._paint.width()
-            MAX_Y = self._paint.height()
-
+            max_x = self._paint.width()
+            max_y = self._paint.height()
             rectPath.moveTo(0, 0)
-            rectPath.lineTo(0, MAX_Y)
-            rectPath.lineTo(MAX_X, MAX_Y)
-            rectPath.lineTo(MAX_X, 0)
+            rectPath.lineTo(0, max_y)
+            rectPath.lineTo(max_x, max_y)
+            rectPath.lineTo(max_x, 0)
+
             rectPath.closeSubpath()
             p.drawPath(rectPath)
 
-        elif self._theme.BackgroundType == 2: # image
+        elif self._theme.background_type== u'image': # image
             r=self._paint.rect()
-            log.debug(r.x(), r.y(), r.width(),r.height())
-            log.debug(self._theme.BackgroundParameter2)
-            if self._theme.BackgroundParameter2 is not None:
-                p.fillRect(self._paint.rect(), self._theme.BackgroundParameter2)
+            log.debug(u'Image size details %d %d %d %d ', r.x(), r.y(), r.width(),r.height())
+            log.debug(u' Background Parameter %d ', self._theme.background_borderColor)
+            if self._theme.Bbackground_borderColor is not None:
+                p.fillRect(self._paint.rect(), self._theme.background_borderColor)
             p.drawPixmap(self.background_offsetx,self.background_offsety, self.img)
         p.end()
-        log.debug(u"render background done")
+        log.debug(u'render background done')
 
     def split_set_of_lines(self, lines):
 
@@ -221,24 +232,23 @@ class Renderer:
 
     def _render_lines(self, lines):
         """render a set of lines according to the theme, return bounding box"""
-        log.debug(u"_render_lines %s", lines)
+        #log.debug(u'_render_lines %s', lines)
 
         bbox=self._render_lines_unaligned(lines)
-        print bbox
 
         t=self._theme
         x=self._rect.left()
-        if t.VerticalAlign==0: # top align
+        if int(t.display_verticalAlign) == 0: # top align
             y = self._rect.top()
-        elif t.VerticalAlign==1: # bottom align
+        elif int(t.display_verticalAlign) == 1: # bottom align
             y=self._rect.bottom()-bbox.height()
-        elif t.VerticalAlign==2: # centre align
+        elif int(t.display_verticalAlign) == 2: # centre align
             y=self._rect.top()+(self._rect.height()-bbox.height())/2
         else:
-            assert(0, "Invalid value for theme.VerticalAlign:%d" % t.VerticalAlign)
+            assert(0, u'Invalid value for theme.VerticalAlign:%s' % t.display_verticalAlign)
         self._render_background()
         bbox=self._render_lines_unaligned(lines, (x,y))
-        log.debug(u"render lines DONE")
+        log.debug(u'render lines DONE')
 
         return bbox
 
@@ -250,7 +260,7 @@ class Renderer:
         than a screenful (eg. by using split_set_of_lines)
 
         Returns the bounding box of the text as QRect"""
-        log.debug(u"render unaligned %s", lines)
+        log.debug(u'render unaligned %s', lines)
         x,y=tlcorner
         brx=x
         bry=y
@@ -269,7 +279,7 @@ class Renderer:
             p.setPen(QtGui.QPen(QtGui.QColor(0,0,255)))
             p.drawRect(retval)
             p.end()
-        log.debug(u"render unaligned DONE")
+        log.debug(u'render unaligned DONE')
 
         return  retval
 
@@ -283,7 +293,7 @@ class Renderer:
 
         Returns the bottom-right corner (of what was rendered) as a tuple(x,y).
         """
-        log.debug(u"Render single line '%s' @ %s "%( line, tlcorner))
+        #log.debug(u'Render single line %s @ %s '%( line, tlcorner))
         x,y=tlcorner
         # We draw the text to see how big it is and then iterate to make it fit
         # when we line wrap we do in in the "lyrics" style, so the second line is
@@ -291,8 +301,8 @@ class Renderer:
 
         # get the words
 #         log.debug(u" "Getting the words split right"
-        words=line.split(" ")
-        thisline=' '.join(words)
+        words=line.split(u' ')
+        thisline=u' '.join(words)
         lastword=len(words)
         lines=[]
         maxx=self._rect.width(); maxy=self._rect.height();
@@ -307,25 +317,22 @@ class Renderer:
             else:
                 lastword-=1
                 thisline=' '.join(words[:lastword])
-
-#         log.debug(u" "This is how they split", lines
-#         log.debug(u" "Now render them"
         startx=x
         starty=y
         rightextent=None
         t=self._theme
-        align=t.HorizontalAlign
-        wrapstyle=t.WrapStyle
+        align=t.display_horizontalAlign
+        wrapstyle=t.display_wrapStyle
 
         for linenum in range(len(lines)):
             line=lines[linenum]
             #find out how wide line is
-            w,h=self._get_extent_and_render(line, tlcorner=(x,y), dodraw=False)
+            w,h=self._get_extent_and_render(line, tlcorner=(x,y), draw=False)
 
-            if t.Shadow:
+            if t.display_shadow:
                 w+=self._shadow_offset
                 h+=self._shadow_offset
-            if t.Outline:
+            if t.display_outline:
                 w+=2*self._outline_offset # pixels either side
                 h+=2*self._outline_offset #  pixels top/bottom
             if align==0: # left align
@@ -343,21 +350,22 @@ class Renderer:
                 x=(maxx-w)/2;
                 rightextent=x+w
             # now draw the text, and any outlines/shadows
-            if t.Shadow:
-                self._get_extent_and_render(line, tlcorner=(x+self._shadow_offset,y+self._shadow_offset), dodraw=True, color = t.ShadowColor)
-            if t.Outline:
-                self._get_extent_and_render(line, (x+self._outline_offset,y), dodraw=True, color = t.OutlineColor)
-                self._get_extent_and_render(line, (x,y+self._outline_offset), dodraw=True, color = t.OutlineColor)
-                self._get_extent_and_render(line, (x,y-self._outline_offset), dodraw=True, color = t.OutlineColor)
-                self._get_extent_and_render(line, (x-self._outline_offset,y), dodraw=True, color = t.OutlineColor)
+            if t.display_shadow:
+                self._get_extent_and_render(line, tlcorner=(x+self._shadow_offset,y+self._shadow_offset),
+                    draw=True, color = t.display_shadow_color)
+            if t.display_outline:
+                self._get_extent_and_render(line, (x+self._outline_offset,y), draw=True, color = t.display_outline_color)
+                self._get_extent_and_render(line, (x,y+self._outline_offset), draw=True, color = t.display_outline_color)
+                self._get_extent_and_render(line, (x,y-self._outline_offset), draw=True, color = t.display_outline_color)
+                self._get_extent_and_render(line, (x-self._outline_offset,y), draw=True, color = t.display_outline_color)
                 if self._outline_offset > 1:
-                    self._get_extent_and_render(line, (x+self._outline_offset,y+self._outline_offset), dodraw=True, color = t.OutlineColor)
-                    self._get_extent_and_render(line, (x-self._outline_offset,y+self._outline_offset), dodraw=True, color = t.OutlineColor)
-                    self._get_extent_and_render(line, (x+self._outline_offset,y-self._outline_offset), dodraw=True, color = t.OutlineColor)
-                    self._get_extent_and_render(line, (x-self._outline_offset,y-self._outline_offset), dodraw=True, color = t.OutlineColor)
+                    self._get_extent_and_render(line, (x+self._outline_offset,y+self._outline_offset), draw=True, color = t.display_outline_color)
+                    self._get_extent_and_render(line, (x-self._outline_offset,y+self._outline_offset), draw=True, color = t.display_outline_color)
+                    self._get_extent_and_render(line, (x+self._outline_offset,y-self._outline_offset), draw=True, color = t.display_outline_color)
+                    self._get_extent_and_render(line, (x-self._outline_offset,y-self._outline_offset), draw=True, color = t.display_outline_color)
 
-            self._get_extent_and_render(line, tlcorner=(x,y), dodraw=True)
-#             log.debug(u" "Line %2d: Render '%s' at (%d, %d) wh=(%d,%d)"%( linenum, line, x, y,w,h)
+            self._get_extent_and_render(line, tlcorner=(x,y), draw=True)
+#             log.debug(u'Line %2d: Render '%s' at (%d, %d) wh=(%d,%d)' % ( linenum, line, x, y,w,h)
             y += h
             if linenum == 0:
                 self._first_line_right_extent=rightextent
@@ -373,47 +381,48 @@ class Renderer:
         return brcorner
 
     # xxx this is what to override for an SDL version
-    def _get_extent_and_render(self, line, tlcorner=(0,0), dodraw=False, color=None, footer = False):
+    def _get_extent_and_render(self, line, tlcorner=(0,0), draw=False, color=None, footer=False):
         """Find bounding box of text  - as render_single_line.
-        If dodraw is set, actually draw the text to the current DC as well
+        If draw is set, actually draw the text to the current DC as well
 
         return width and height of text as a tuple (w,h)"""
         # setup defaults
-        log.debug(u"_get_extent_and_render %s %s %s ", [line], tlcorner, dodraw)
+        #log.debug(u"_get_extent_and_render %s %s %s ", [line], tlcorner, draw)
         p=QtGui.QPainter()
         p.begin(self._paint)
         # 'twould be more efficient to set this once when theme changes
         # or p changes
         if footer :
-           font=QtGui.QFont(self._theme.FontName,
-                         12, # size
+           font=QtGui.QFont(self._theme.font_footer_name,
+                         int(self._theme.font_footer_proportion), # size
                          QtGui.QFont.Normal, # weight
                          0)# italic
         else:
-            font=QtGui.QFont(self._theme.FontName,
-                         self._theme.FontProportion, # size
+            font=QtGui.QFont(self._theme.font_main_name,
+                         int(self._theme.font_main_proportion), # size
                          QtGui.QFont.Normal, # weight
                          0)# italic
         # to make the unit tests monitor independent, we have to be able to
         # specify whether a font proportion is in pixels or points
-        if self._theme.FontUnits.lower() == "pixels":
-            log.debug(u"pixels")
-            if footer:
-                font.setPixelSize(12)
-            else:
-                font.setPixelSize(self._theme.FontProportion)
-        log.debug(u'Font details %s %s %s %s', self._theme.FontName, self._theme.FontProportion,  font.family(), font.pointSize())
+        if footer:
+            font.setPixelSize(int(self._theme.font_footer_proportion))
+        else:
+            font.setPixelSize(int(self._theme.font_main_proportion))
+        #log.debug(u'Font details %s %s %s %d', self._theme.font_main_name, self._theme.font_main_proportion,  font.family(), font.pointSize())
         p.setFont(font)
         if color == None:
-            p.setPen(self._theme.FontColor)
+            if footer:
+                p.setPen(QtGui.QColor(self._theme.font_footer_color))
+            else:
+                p.setPen(QtGui.QColor(self._theme.font_main_color))
         else:
-            p.setPen(color)
+            p.setPen(QtGui.QColor(color))
         x,y=tlcorner
         metrics=QtGui.QFontMetrics(font)
         # xxx some fudges to make it exactly like wx!  Take 'em out later
         w=metrics.width(line)
         h=metrics.height()-2
-        if dodraw:
+        if draw:
             p.drawText(x,y+metrics.height()-metrics.descent()-1, line)
         p.end()
         return (w, h)

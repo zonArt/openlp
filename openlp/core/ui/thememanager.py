@@ -28,14 +28,20 @@ from PyQt4 import *
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-# from openlp.core.resources import *
-# from openlp.core.ui import AboutForm, AlertForm, SettingsForm, SlideController
-from openlp.core import translate
-from openlp.core.lib import OpenLPToolbar
-from openlp.core.utils import ConfigHelper
-#from openlp.core.lib import ThemeItem
 
-# from openlp.core import PluginManager
+from openlp.core.ui import AmendThemeForm
+from openlp.core import translate
+from openlp.core import Renderer
+from openlp.core.theme import Theme
+from openlp.core.lib import Event
+from openlp.core.lib import EventType
+from openlp.core.lib import EventManager
+from openlp.core.lib import OpenLPToolbar
+from openlp.core.lib import ThemeXMLBuilder
+from openlp.core.lib import ThemeXMLParser
+from openlp.core.utils import ConfigHelper
+
+
 import logging
 
 class ThemeData(QAbstractItemModel):
@@ -51,7 +57,7 @@ class ThemeData(QAbstractItemModel):
         self.items=[]
         self.rowheight=50
         self.maximagewidth=self.rowheight*16/9.0;
-        log.info("Starting")
+        log.info(u'Starting')
 
     def clearItems(self):
         self.items=[]
@@ -64,9 +70,10 @@ class ThemeData(QAbstractItemModel):
 
     def insertRow(self, row, filename):
         self.beginInsertRows(QModelIndex(),row,row)
-        log.info("insert row %d:%s"%(row,filename))
+        log.info(u'insert row %d:%s'%(row,filename))
         (prefix, shortfilename) = os.path.split(str(filename))
-        log.info("shortfilename=%s"%(shortfilename))
+        log.info(u'shortfilename=%s'%(shortfilename))
+        theme = shortfilename.split(u'.')
         # create a preview image
         if os.path.exists(filename):
             preview = QPixmap(str(filename))
@@ -83,8 +90,8 @@ class ThemeData(QAbstractItemModel):
             p=QPixmap(w,h)
             p.fill(Qt.transparent)
         # finally create the row
-        self.items.insert(row,(filename, p, shortfilename))
-        log.info("Items: %s" % self.items)
+        self.items.insert(row,(filename, p, shortfilename, theme[0]))
+        log.info(u'Items: %s' % self.items)
         self.endInsertRows()
 
     def removeRow(self, row):
@@ -106,7 +113,7 @@ class ThemeData(QAbstractItemModel):
         if row > len(self.items): # if the last row is selected and deleted, we then get called with an empty row!
             return QVariant()
         if role==Qt.DisplayRole:
-            retval= self.items[row][2]
+            retval= self.items[row][3]
         elif role == Qt.DecorationRole:
             retval= self.items[row][1]
         else:
@@ -122,7 +129,7 @@ class ThemeData(QAbstractItemModel):
             yield i
 
     def item(self, row):
-        log.info("Get Item:%d -> %s" %(row, str(self.items)))
+        log.info(u'Get Item:%d -> %s' %(row, str(self.items)))
         return self.items[row]
 
 class ThemeManager(QWidget):
@@ -138,14 +145,19 @@ class ThemeManager(QWidget):
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
         self.Layout.setMargin(0)
+        self.amendThemeForm = AmendThemeForm()
         self.Toolbar = OpenLPToolbar(self)
-        self.Toolbar.addToolbarButton("New Theme", ":/themes/theme_new.png")
-        self.Toolbar.addToolbarButton("Edit Theme", ":/themes/theme_edit.png")
-        self.Toolbar.addToolbarButton("Delete Theme", ":/themes/theme_delete.png")
+        self.Toolbar.addToolbarButton(translate('ThemeManager',u'New Theme'), ":/themes/theme_new.png",
+            translate('ThemeManager',u'Allows a Theme to be created'), self.onAddTheme)
+        self.Toolbar.addToolbarButton(translate('ThemeManager',u'Edit Theme'), ":/themes/theme_edit.png",
+            translate('ThemeManager',u'Allows a Theme to be amended'), self.onEditTheme)
+        self.Toolbar.addToolbarButton(translate('ThemeManager',u'Delete Theme'), ":/themes/theme_delete.png",
+            translate('ThemeManager',u'Allows a Theme to be deleted'), self.onDeleteTheme)
         self.Toolbar.addSeparator()
-        self.Toolbar.addToolbarButton("Import Theme", ":/themes/theme_import.png",
-            u'Allows Themes to be imported', self.onImportTheme)
-        self.Toolbar.addToolbarButton("Export Theme", ":/themes/theme_export.png")
+        self.Toolbar.addToolbarButton(translate('ThemeManager',u'Import Theme'), ":/themes/theme_import.png",
+            translate('ThemeManager',u'Allows Themes to be imported'), self.onImportTheme)
+        self.Toolbar.addToolbarButton(translate('ThemeManager',u'Export Theme'), ":/themes/theme_export.png",
+            translate('ThemeManager',u'Allows Themes to be exported'), self.onExportTheme)
         self.ThemeWidget = QtGui.QWidgetAction(self.Toolbar)
         self.Toolbar.addAction(self.ThemeWidget)
 
@@ -161,62 +173,29 @@ class ThemeManager(QWidget):
         self.themelist= []
         self.path = os.path.join(ConfigHelper.get_data_path(), u'themes')
         self.checkThemesExists(self.path)
-        self.loadThemes() # load the themes
 
-#    def addThemeItem(self, item):
-#        """Adds Theme item"""
-#        log.info("addThemeItem")
-#        indexes=self.TreeView.selectedIndexes()
-#        assert len(indexes) <= 1 # can only have one selected index in this view
-#        if indexes == []:
-#            log.info("No row")
-#            row = None
-#            selected_item = None
-#        else:
-#            row=indexes[0].row()
-#            # if currently selected is of correct type, add it to it
-#            log.info("row:%d"%row)
-#            selected_item=self.Theme_data.item(row)
-#        if type(selected_item) == type(item):
-#            log.info("Add to existing item")
-#            selected_item.add(item)
-#        else:
-#            log.info("Create new item")
-#            if row is None:
-#                self.Theme_data.addRow(item)
-#            else:
-#                self.Theme_data.insertRow(row+1, item)
-#
-#    def removeThemeItem(self):
-#        """Remove currently selected item"""
-#        pass
-#
-#    def oos_as_text(self):
-#        text=[]
-#        log.info( "oos as text")
-#        log.info("Data:"+str(self.Theme_data))
-#        for i in self.Theme_data:
-#            text.append("# " + str(i))
-#            text.append(i.get_oos_text())
-#        return '\n'.join(text)
-#
-#    def write_oos(self, filename):
-#        """
-#        Write a full OOS file out - iterate over plugins and call their respective methods
-#        This format is totally arbitrary testing purposes - something sensible needs to go in here!
-#        """
-#        oosfile=open(filename, "w")
-#        oosfile.write("# BEGIN OOS\n")
-#        oosfile.write(self.oos_as_text)
-#        oosfile.write("# END OOS\n")
-#        oosfile.close()
+    def setEventManager(self, eventManager):
+        self.eventManager = eventManager
+
+    def onAddTheme(self):
+        self.amendThemeForm.exec_()
+
+    def onEditTheme(self):
+        self.amendThemeForm.loadTheme(theme)
+        self.amendThemeForm.exec_()
+
+    def onDeleteTheme(self):
+        pass
+
+    def onExportTheme(self):
+        pass
 
     def onImportTheme(self):
         files = QtGui.QFileDialog.getOpenFileNames(None,
             translate('ThemeManager', u'Select Import File'),
             self.path,
             u'Theme (*.theme)')
-        log.info(u'New Themes) %s', str(files))
+        log.info(u'New Themes %s', str(files))
         if len(files) > 0:
             for file in files:
                 self.unzipTheme(file, self.path)
@@ -228,8 +207,10 @@ class ThemeManager(QWidget):
 #        self.themelist = [u'African Sunset', u'Snowy Mountains', u'Wilderness', u'Wet and Windy London']
         for root, dirs, files in os.walk(self.path):
             for name in files:
-                if name.endswith(u'.bmp'):
+                if name.endswith(u'.png'):
                     self.Theme_data.addRow(os.path.join(self.path, name))
+
+        self.eventManager.post_event(Event(EventType.ThemeListChanged))
 
     def getThemes(self):
         return self.themelist
@@ -249,16 +230,99 @@ class ThemeManager(QWidget):
                     os.mkdir(os.path.join(dir, file))
             else:
                 fullpath = os.path.join(dir, file)
+                names = file.split(u'/')
+                xml_data = zip.read(file)
                 if file.endswith(u'.xml'):
-                    self.checkVersion1(fullpath)
-                outfile = open(fullpath, 'w')
-                outfile.write(zip.read(file))
-                outfile.close()
+                    if self.checkVersion1(xml_data):
+                        filexml = self.migrateVersion122(filename, fullpath, xml_data)
+                        outfile = open(fullpath, 'w')
+                        outfile.write(filexml)
+                        outfile.close()
+                        self.generateImage(dir,names[0], filexml)
+                else:
+                    if file.endswith(u'.bmp'):
+                        if fullpath is not os.path.join(dir, file):
+                            outfile = open(fullpath, 'w')
+                            outfile.write(zip.read(file))
+                            outfile.close()
 
     def checkVersion1(self, xmlfile):
-        file=open(xmlfile)
-        t=''.join(file.readlines()) # read the file and change list to a string
+        log.debug(u'checkVersion1 ')
+        t = xmlfile
         tree = ElementTree(element=XML(t)).getroot()
-        print "AA"
-        print tree.find('BackgroundType')
-        print "AAA"
+        if tree.find(u'BackgroundType') is None :
+            return False
+        else:
+            return True
+
+    def migrateVersion122(self, filename , fullpath, xml_data):
+        log.debug(u'migrateVersion122 %s %s', filename , fullpath)
+        t=Theme(xml_data)
+
+        newtheme = ThemeXMLBuilder()
+        newtheme.new_document(t.Name)
+        if t.BackgroundType == 0:
+            newtheme.add_background_solid(str(t.BackgroundParameter1.name()))
+        elif t.BackgroundType == 1:
+            direction = "vertical"
+            if t.BackgroundParameter1.name() == 1:
+                direction = "horizontal"
+            newtheme.add_background_gradient(str(t.BackgroundParameter1.name()), str(t.BackgroundParameter2.name()), direction)
+        else:
+            newtheme.add_background_image(str(t.BackgroundParameter1))
+
+        newtheme.add_font(str(t.FontName), str(t.FontColor.name()), str(t.FontProportion * 2))
+        newtheme.add_font(str(t.FontName), str(t.FontColor.name()), str(12), u'footer')
+        outline = False
+        shadow = False
+        if t.Shadow == 1:
+            shadow = True
+        if t.Outline == 1:
+            outline = True
+        newtheme.add_display(str(shadow), str(t.ShadowColor.name()), str(outline), str(t.OutlineColor.name()),
+            str(t.HorizontalAlign), str(t.VerticalAlign), str(t.WrapStyle))
+        return newtheme.extract_xml()
+
+    def generateImage(self, dir, name, theme_xml):
+        log.debug(u'generateImage %s %s ', dir, theme_xml)
+        theme = ThemeXMLParser(theme_xml)
+        #print theme
+        size=QtCore.QSize(800,600)
+        frame=TstFrame(size)
+        frame=frame
+        paintdest=frame.GetPixmap()
+        r=Renderer()
+        r.set_paint_dest(paintdest)
+
+        r.set_theme(theme) # set default theme
+        r._render_background()
+        r.set_text_rectangle(QtCore.QRect(0,0, size.width()-1, size.height()-1))
+
+        lines=[]
+        lines.append(u'Amazing Grace!')
+        lines.append(u'How sweet the sound')
+        lines.append(u'To save a wretch like me;')
+        lines.append(u'I once was lost but now am found,')
+        lines.append(u'Was blind, but now I see.')
+
+        answer=r._render_lines(lines)
+        r._get_extent_and_render(u'Amazing Grace (John Newton) ', (10, 560), True, None, True)
+        r._get_extent_and_render(u'CCLI xxx (c)Openlp.org', (10, 580), True, None, True)
+
+        im=frame.GetPixmap().toImage()
+        testpathname=os.path.join(dir, name+u'.png')
+        if os.path.exists(testpathname):
+            os.unlink(testpathname)
+        im.save(testpathname, u'png')
+        log.debug(u'Theme image written to %s',testpathname)
+
+
+class TstFrame:
+    def __init__(self, size):
+        """Create the DemoPanel."""
+        self.width=size.width();
+        self.height=size.height();
+        # create something to be painted into
+        self._Buffer = QtGui.QPixmap(self.width, self.height)
+    def GetPixmap(self):
+        return self._Buffer

@@ -23,7 +23,14 @@ from render import Renderer
 from settingsmanager import SettingsManager
 from pluginmanager import PluginManager
 
-__all__ = ['Renderer', 'SettingsManager', 'PluginManager', 'translate']
+__all__ = ['Renderer', 'SettingsManager', 'PluginManager', 'translate', 'fileToXML']
 
 def translate(context, text):
     return QtGui.QApplication.translate(context, text, None, QtGui.QApplication.UnicodeUTF8)
+
+def fileToXML(xmlfile):
+    file=open(xmlfile)
+    xml =''.join(file.readlines()) # read the file and change list to a string
+    file.close()
+    return xml
+

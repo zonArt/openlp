@@ -35,7 +35,7 @@ blankstylexml=\
 '''
 
 class Theme:
-    def __init__(self, xmlfile=None):
+    def __init__(self, xml):
         """ stores the info about a theme
         attributes:
           name : theme name
@@ -77,11 +77,7 @@ class Theme:
         """
         # init to defaults
         self._set_from_XML(blankstylexml)
-        if xmlfile != None:
-            # init from xmlfile
-            file=open(xmlfile)
-            t=''.join(file.readlines()) # read the file and change list to a string
-            self._set_from_XML(t)
+        self._set_from_XML(xml)
 
     def _get_as_string(self):
         s=""
