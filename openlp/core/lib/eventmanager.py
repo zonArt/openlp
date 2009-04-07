@@ -26,21 +26,21 @@ class EventManager(object):
     A mechanism to send events to all registered endpoints
     the endpoints are registered and listen with a handle_event method
     the endpoint will decide whether to do somthing with the event or ignore it
-    
+
     """
     global log
     log=logging.getLogger(u'EventManager')
-    
+
     def __init__(self):
         self.endpoints=[]
         log.info(u'Initialising')
-        
+
     def register(self, plugin):
-        log.debug(u'plugin %s registered with EventManager'%plugin)        
+        log.debug(u'plugin %s registered with EventManager', plugin)
         self.endpoints.append(plugin)
-        
+
     def post_event(self, event):
-        log.debug(u'post event called for event %s'%event.get_type)
+        log.debug(u'post event called for event %s', event.get_type)
         for point in self.endpoints:
             point.handle_event(event)
 

@@ -39,16 +39,16 @@ class MainWindow(object):
 
     def __init__(self):
         self.main_window = QtGui.QMainWindow()
-        self.EventManager = EventManager()        
+        self.EventManager = EventManager()
         self.alert_form = AlertForm()
         self.about_form = AboutForm()
         self.settings_form = SettingsForm()
-        
+
         pluginpath = os.path.split(os.path.abspath(__file__))[0]
         pluginpath = os.path.abspath(os.path.join(pluginpath, '..', '..','plugins'))
         self.plugin_manager = PluginManager(pluginpath)
         self.plugin_helpers = {}
-        
+
         self.setupUi()
 
         log.info(u'Load Plugins')
@@ -56,7 +56,7 @@ class MainWindow(object):
         self.plugin_helpers[u'live'] = self.LiveController
         self.plugin_helpers[u'event'] = self.EventManager
         self.plugin_helpers[u'theme'] = self.ThemeManagerContents  # Theme manger
-        
+
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers, self.EventManager)
         # hook methods have to happen after find_plugins.  Find plugins needs the controllers
         # hence the hooks have moved from setupUI() to here
@@ -77,9 +77,14 @@ class MainWindow(object):
         self.plugin_manager.hook_export_menu(self.FileExportMenu)
 
         # Call the initialise method to setup plugins.
-        log.info(u'initialise plugins')        
+        log.info(u'initialise plugins')
         self.plugin_manager.initialise_plugins()
-        
+
+        # Once all components are initialised load the Themes
+        log.info(u'Load Themes')
+        self.ThemeManagerContents.setEventManager(self.EventManager)
+        self.ThemeManagerContents.loadThemes()
+
     def setupUi(self):
         self.main_window.setObjectName("main_window")
         self.main_window.resize(1087, 847)
@@ -176,7 +181,7 @@ class MainWindow(object):
         self.ServiceManagerContents = ServiceManager(self)
         self.ServiceManagerDock.setWidget(self.ServiceManagerContents)
         self.main_window.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.ServiceManagerDock)
-        #Theme Manager Defined        
+        #Theme Manager Defined
         self.ThemeManagerDock = QtGui.QDockWidget(self.main_window)
         ThemeManagerIcon = QtGui.QIcon()
         ThemeManagerIcon.addPixmap(QtGui.QPixmap(":/system/system_thememanager.png"),
@@ -184,46 +189,12 @@ class MainWindow(object):
         self.ThemeManagerDock.setWindowIcon(ThemeManagerIcon)
         self.ThemeManagerDock.setFloating(False)
         self.ThemeManagerDock.setObjectName("ThemeManagerDock")
-        
-        self.ThemeManagerContents = ThemeManager(self)        
-        
-#        self.ThemeManagerContents = QtGui.QWidget()
-#        self.ThemeManagerContents.setObjectName("ThemeManagerContents")
-#        self.ThemeManagerLayout = QtGui.QVBoxLayout(self.ThemeManagerContents)
-#        self.ThemeManagerLayout.setSpacing(0)
-#        self.ThemeManagerLayout.setMargin(0)
-#        self.ThemeManagerLayout.setObjectName("ThemeManagerLayout")
-#        self.ThemeManagerToolbar = QtGui.QToolBar(self.ThemeManagerContents)
-#        self.ThemeManagerToolbar.setObjectName("ThemeManagerToolbar")
-#        NewThemeIcon = QtGui.QIcon()
-#        NewThemeIcon.addPixmap(QtGui.QPixmap(":/themes/theme_new.png"),
-#            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-#        self.ThemeNewItem = self.ThemeManagerToolbar.addAction(NewThemeIcon, 'New theme')
-#        EditThemeIcon = QtGui.QIcon()
-#        EditThemeIcon.addPixmap(QtGui.QPixmap(":/themes/theme_edit.png"),
-#            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-#        self.ThemeEditItem = self.ThemeManagerToolbar.addAction(EditThemeIcon, 'Edit theme')
-#        DeleteThemeIcon = QtGui.QIcon()
-#        DeleteThemeIcon.addPixmap(QtGui.QPixmap(":/themes/theme_delete.png"),
-#            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-#        self.ThemeDeleteButton = self.ThemeManagerToolbar.addAction(DeleteThemeIcon, 'Delete theme')
-#        self.ThemeManagerToolbar.addSeparator()
-#        ImportThemeIcon = QtGui.QIcon()
-#        ImportThemeIcon.addPixmap(QtGui.QPixmap(":/themes/theme_import.png"),
-#            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-#        self.ThemeImportButton = self.ThemeManagerToolbar.addAction(ImportThemeIcon, 'Import theme')
-#        ExportThemeIcon = QtGui.QIcon()
-#        ExportThemeIcon.addPixmap(QtGui.QPixmap(":/themes/theme_export.png"),
-#            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-#        self.ThemeExportButton = self.ThemeManagerToolbar.addAction(ExportThemeIcon, 'Export theme')
-#        self.ThemeManagerLayout.addWidget(self.ThemeManagerToolbar)
-#        self.ThemeManagerListView = QtGui.QListView(self.ThemeManagerContents)
-#        self.ThemeManagerListView.setObjectName("ThemeManagerListView")
-#        self.ThemeManagerLayout.addWidget(self.ThemeManagerListView)
+
+        self.ThemeManagerContents = ThemeManager(self)
 
         self.ThemeManagerDock.setWidget(self.ThemeManagerContents)
         self.main_window.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.ThemeManagerDock)
-        
+
         self.FileNewItem = QtGui.QAction(self.main_window)
         self.FileNewItem.setIcon(self.ServiceManagerContents.Toolbar.getIconFromTitle("New Service"))
         self.FileNewItem.setObjectName("FileNewItem")
