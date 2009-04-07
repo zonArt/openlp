@@ -37,8 +37,7 @@ from openlp.core.lib import Event
 from openlp.core.lib import EventType
 from openlp.core.lib import EventManager
 from openlp.core.lib import OpenLPToolbar
-from openlp.core.lib import ThemeXMLBuilder
-from openlp.core.lib import ThemeXMLParser
+from openlp.core.lib import ThemeXML
 from openlp.core.utils import ConfigHelper
 
 
@@ -265,7 +264,7 @@ class ThemeManager(QWidget):
         log.debug(u'migrateVersion122 %s %s', filename , fullpath)
         t=Theme(xml_data)
 
-        newtheme = ThemeXMLBuilder()
+        newtheme = ThemeXML()
         newtheme.new_document(t.Name)
         if t.BackgroundType == 0:
             newtheme.add_background_solid(str(t.BackgroundParameter1.name()))
@@ -291,7 +290,8 @@ class ThemeManager(QWidget):
 
     def generateImage(self, dir, name, theme_xml):
         log.debug(u'generateImage %s %s ', dir, theme_xml)
-        theme = ThemeXMLParser(theme_xml)
+        theme = ThemeXML()
+        theme.parse(theme_xml)
         #print theme
         size=QtCore.QSize(800,600)
         frame=TstFrame(size)

@@ -24,7 +24,7 @@ For XML Schema see wiki.openlp.org
 from xml.dom.minidom import  Document
 from xml.etree.ElementTree import ElementTree, XML, dump
 
-class ThemeXMLBuilder():
+class ThemeXML():
     def __init__(self):
         # Create the minidom document
         self.theme_xml = Document()
@@ -154,8 +154,7 @@ class ThemeXMLBuilder():
         # Print our newly created XML
         return self.theme_xml.toxml()
 
-class ThemeXMLParser():
-    def __init__(self, xml):
+    def parse(self, xml):
         theme_xml = ElementTree(element=XML(xml))
         iter=theme_xml.getiterator()
         master = u''
