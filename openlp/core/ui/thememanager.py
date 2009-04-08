@@ -37,8 +37,7 @@ from openlp.core.lib import Event
 from openlp.core.lib import EventType
 from openlp.core.lib import EventManager
 from openlp.core.lib import OpenLPToolbar
-from openlp.core.lib import ThemeXMLBuilder
-from openlp.core.lib import ThemeXMLParser
+from openlp.core.lib import ThemeXML
 from openlp.core.utils import ConfigHelper
 
 
@@ -52,6 +51,7 @@ class ThemeData(QAbstractItemModel):
     """
     global log
     log=logging.getLogger(u'ThemeData')
+
     def __init__(self):
         QAbstractItemModel.__init__(self)
         self.items=[]
@@ -132,9 +132,13 @@ class ThemeData(QAbstractItemModel):
         log.info(u'Get Item:%d -> %s' %(row, str(self.items)))
         return self.items[row]
 
+    def getList(self):
+        filelist = [item[3] for item in self.items];
+        return filelist
+
 class ThemeManager(QWidget):
     """
-    Manages the orders of Theme.  C
+    Manages the orders of Theme.
     """
     global log
     log=logging.getLogger(u'ThemeManager')
@@ -178,6 +182,7 @@ class ThemeManager(QWidget):
         self.eventManager = eventManager
 
     def onAddTheme(self):
+        self.amendThemeForm.loadTheme(None)
         self.amendThemeForm.exec_()
 
     def onEditTheme(self):
@@ -213,7 +218,7 @@ class ThemeManager(QWidget):
         self.eventManager.post_event(Event(EventType.ThemeListChanged))
 
     def getThemes(self):
-        return self.themelist
+        return self.Theme_data.getList()
 
     def checkThemesExists(self, dir):
         log.debug(u'check themes')
@@ -232,7 +237,7 @@ class ThemeManager(QWidget):
                 fullpath = os.path.join(dir, file)
                 names = file.split(u'/')
                 xml_data = zip.read(file)
-                if file.endswith(u'.xml'):
+                if os.path.splitext (file) [1].lower ()  in [u'.xml']:
                     if self.checkVersion1(xml_data):
                         filexml = self.migrateVersion122(filename, fullpath, xml_data)
                         outfile = open(fullpath, 'w')
@@ -240,7 +245,7 @@ class ThemeManager(QWidget):
                         outfile.close()
                         self.generateImage(dir,names[0], filexml)
                 else:
-                    if file.endswith(u'.bmp'):
+                    if os.path.splitext (file) [1].lower ()  in [u'.bmp']:
                         if fullpath is not os.path.join(dir, file):
                             outfile = open(fullpath, 'w')
                             outfile.write(zip.read(file))
@@ -259,7 +264,7 @@ class ThemeManager(QWidget):
         log.debug(u'migrateVersion122 %s %s', filename , fullpath)
         t=Theme(xml_data)
 
-        newtheme = ThemeXMLBuilder()
+        newtheme = ThemeXML()
         newtheme.new_document(t.Name)
         if t.BackgroundType == 0:
             newtheme.add_background_solid(str(t.BackgroundParameter1.name()))
@@ -285,7 +290,8 @@ class ThemeManager(QWidget):
 
     def generateImage(self, dir, name, theme_xml):
         log.debug(u'generateImage %s %s ', dir, theme_xml)
-        theme = ThemeXMLParser(theme_xml)
+        theme = ThemeXML()
+        theme.parse(theme_xml)
         #print theme
         size=QtCore.QSize(800,600)
         frame=TstFrame(size)

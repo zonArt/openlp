@@ -29,8 +29,5 @@ def translate(context, text):
     return QtGui.QApplication.translate(context, text, None, QtGui.QApplication.UnicodeUTF8)
 
 def fileToXML(xmlfile):
-    file=open(xmlfile)
-    xml =''.join(file.readlines()) # read the file and change list to a string
-    file.close()
-    return xml
+    return open(xmlfile).read()
 

@@ -32,7 +32,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         Constructor
         """
         QtGui.QDialog.__init__(self, parent)
-        #self.parent = parent 
+        #self.parent = parent
         self.setupUi(self)
         # Connecting signals and slots
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.rejected)
@@ -43,18 +43,18 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         QtCore.QObject.connect(self.DeleteButton, QtCore.SIGNAL("pressed()"), self.onDeleteButtonPressed)
         QtCore.QObject.connect(self.ClearButton, QtCore.SIGNAL("pressed()"), self.onClearButtonPressed)
         QtCore.QObject.connect(self.UpButton, QtCore.SIGNAL("pressed()"), self.onUpButtonPressed)
-        QtCore.QObject.connect(self.DownButton, QtCore.SIGNAL("pressed()"), self.onDownButtonPressed)        
-        QtCore.QObject.connect(self.TitleEdit, QtCore.SIGNAL("lostFocus()"), self.validate)                
+        QtCore.QObject.connect(self.DownButton, QtCore.SIGNAL("pressed()"), self.onDownButtonPressed)
+        QtCore.QObject.connect(self.TitleEdit, QtCore.SIGNAL("lostFocus()"), self.validate)
 
-        QtCore.QObject.connect(self.VerseListView, 
+        QtCore.QObject.connect(self.VerseListView,
             QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem*)"), self.onVerseListViewSelected)
-        QtCore.QObject.connect(self.VerseListView, 
+        QtCore.QObject.connect(self.VerseListView,
             QtCore.SIGNAL("itemClicked(QListWidgetItem*)"), self.onVerseListViewPressed)
         # Create other objects and forms
         self.custommanager = custommanager
         self.initialise()
-        self.VerseListView.setAlternatingRowColors(True)        
-        
+        self.VerseListView.setAlternatingRowColors(True)
+
     def initialise(self):
         self.valid = True
         self.DeleteButton.setEnabled(False)
@@ -64,10 +64,15 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.CreditEdit.setText('')
         self.VerseTextEdit.clear()
         self.VerseListView.clear()
-        #make sure we have a new item 
+        #make sure we have a new item
         self.customSlide = CustomSlide()
         self.ThemecomboBox.addItem(u'')
-        #self.theme_manager.getThemes()
+
+    def loadThemes(self, themelist):
+        self.ThemecomboBox.clear()
+        self.ThemecomboBox.addItem(u'')
+        for themename in themelist:
+            self.ThemecomboBox.addItem(themename)
 
     def loadCustom(self, id):
         self.customSlide = CustomSlide()
@@ -76,12 +81,19 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             self.customSlide = self.custommanager.get_custom(id)
             self.TitleEdit.setText(self.customSlide.title)
             self.CreditEdit.setText(self.customSlide.title)
-            
+
             songXML=SongXMLParser(self.customSlide.text)
             verseList = songXML.get_verses()
             for verse in verseList:
                 self.VerseListView.addItem(verse[1])
+            theme = str(self.customSlide.theme_name)
+            id = self.ThemecomboBox.findText(theme, QtCore.Qt.MatchExactly)
+            if id == -1:
+                id = 0 # Not Found
+            self.ThemecomboBox.setCurrentIndex(id)
             self.validate()
+        else:
+            self.ThemecomboBox.setCurrentIndex(0)
 
     def accept(self):
         self.validate()
@@ -96,6 +108,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             self.customSlide.title = unicode(self.TitleEdit.displayText())
             self.customSlide.text = unicode(sxml.extract_xml())
             self.customSlide.credits = unicode(self.CreditEdit.displayText())
+            self.customSlide.theme_name = unicode(self.ThemecomboBox.currentText())
             self.custommanager.save_slide(self.customSlide)
             self.close()
 
@@ -114,7 +127,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         if selectedRow != self.VerseListView.count() - 1: # zero base arrays
             qw = self.VerseListView.takeItem(selectedRow)
             self.VerseListView.insertItem(selectedRow + 1, qw)
-            self.VerseListView.setCurrentRow(selectedRow + 1)            
+            self.VerseListView.setCurrentRow(selectedRow + 1)
 
     def onClearButtonPressed(self):
         self.VerseTextEdit.clear()
@@ -122,7 +135,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
     def onVerseListViewPressed(self, item):
         self.DeleteButton.setEnabled(True)
         self.EditButton.setEnabled(True)
- 
+
     def onVerseListViewSelected(self, item):
         self.VerseTextEdit.setPlainText(item.text())
         self.DeleteButton.setEnabled(False)

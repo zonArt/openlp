@@ -31,9 +31,8 @@ from serviceitem import ServiceItem
 from toolbar import OpenLPToolbar
 from songxmlhandler import SongXMLBuilder
 from songxmlhandler import SongXMLParser
-from themexmlhandler import ThemeXMLBuilder
-from themexmlhandler import ThemeXMLParser
+from themexmlhandler import ThemeXML
 
 __all__ = ['PluginConfig', 'Plugin', 'SettingsTab', 'MediaManagerItem', 'Event', 'EventType'
            'XmlRootClass', 'ServiceItem', 'Receiver', 'OpenLPToolbar', 'SongXMLBuilder',
-           'SongXMLParser', 'EventManager', 'ThemeXMLBuilder', 'ThemeXMLParser']
+           'SongXMLParser', 'EventManager', 'ThemeXML']
