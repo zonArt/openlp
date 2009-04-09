@@ -28,8 +28,9 @@ class GeneralTab(SettingsTab):
     """
     GeneralTab is the general settings tab in the settings dialog.
     """
-    def __init__(self):
+    def __init__(self, screen_list):
         SettingsTab.__init__(self, translate(u'GeneralTab', u'General'))
+        self.screen_list = screen_list
 
     def setupUi(self):
         self.setObjectName(u'GeneralTab')

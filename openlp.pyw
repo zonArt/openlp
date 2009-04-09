@@ -47,8 +47,12 @@ class OpenLP(QtGui.QApplication):
         self.splash.show()
         # make sure Qt really display the splash screen
         self.processEvents()
-        # start tha main app window
-        self.main_window = MainWindow()
+        screens = []
+        # Decide how many screens we have and their size
+        for i in range (0 ,  self.desktop().numScreens()):
+            screens.insert(i, (i+1, self.desktop().availableGeometry(i+1)))
+        # start the main app window
+        self.main_window = MainWindow(screens)
         self.main_window.show()
         # now kill the splashscreen
         self.splash.finish(self.main_window.main_window)
