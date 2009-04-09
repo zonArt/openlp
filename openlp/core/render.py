@@ -23,7 +23,7 @@ import sys
 from PyQt4 import QtGui, QtCore, Qt
 
 from copy import copy
-from interpolate import interpolate
+#from interpolate import interpolate
 
 class Renderer:
 
@@ -116,9 +116,10 @@ class Renderer:
         retval=self._render_lines(words)
         return retval
 
-    def set_text_rectangle(self, rect):
+    def set_text_rectangle(self, rect_main, rect_footer):
         """ Sets the rectangle within which text should be rendered"""
-        self._rect=rect
+        self._rect=rect_main
+        self._rect_footer=rect_footer
 
     def _render_background(self):
         assert(self._theme)
@@ -230,29 +231,38 @@ class Renderer:
 
         return retval
 
-    def _render_lines(self, lines):
+    def _correctAlignment(self, rect, bbox):
+        x=rect.left()
+        if int(self._theme.display_verticalAlign) == 0: # top align
+            y = rect.top()
+        elif int(self._theme.display_verticalAlign) == 1: # bottom align
+            y=rect.bottom()-bbox.height()
+        elif int(t.display_verticalAlign) == 2: # centre align
+            y=rect.top()+(rect.height()-bbox.height())/2
+        else:
+            assert(0, u'Invalid value for theme.VerticalAlign:%s' % self._theme.display_verticalAlign)
+        return x, y
+
+    def _render_lines(self, lines, lines1=None):
         """render a set of lines according to the theme, return bounding box"""
         #log.debug(u'_render_lines %s', lines)
 
-        bbox=self._render_lines_unaligned(lines)
+        bbox=self._render_lines_unaligned(lines, False) # Main font
+        bbox1=self._render_lines_unaligned(lines, True) # Footer Font
 
-        t=self._theme
-        x=self._rect.left()
-        if int(t.display_verticalAlign) == 0: # top align
-            y = self._rect.top()
-        elif int(t.display_verticalAlign) == 1: # bottom align
-            y=self._rect.bottom()-bbox.height()
-        elif int(t.display_verticalAlign) == 2: # centre align
-            y=self._rect.top()+(self._rect.height()-bbox.height())/2
-        else:
-            assert(0, u'Invalid value for theme.VerticalAlign:%s' % t.display_verticalAlign)
+        # put stuff on background so need to reset before doing the job properly.
         self._render_background()
-        bbox=self._render_lines_unaligned(lines, (x,y))
+        x, y = self._correctAlignment(self._rect, bbox)
+        bbox=self._render_lines_unaligned(lines, False,  (x,y))
+
+        x, y = self._correctAlignment(self._rect_footer, bbox1)
+        bbox=self._render_lines_unaligned(lines1, True, (x,y) )
+
         log.debug(u'render lines DONE')
 
         return bbox
 
-    def _render_lines_unaligned(self, lines, tlcorner=(0,0)):
+    def _render_lines_unaligned(self, lines,  footer,  tlcorner=(0,0)):
 
         """Given a list of lines to render, render each one in turn
         (using the _render_single_line fn - which may result in going
@@ -269,7 +279,7 @@ class Renderer:
                 continue
             # render after current bottom, but at original left edge
             # keep track of right edge to see which is biggest
-            (thisx, bry) = self._render_single_line(line, (x,bry))
+            (thisx, bry) = self._render_single_line(line, footer, (x,bry))
             if (thisx > brx):
                 brx=thisx
         retval=QtCore.QRect(x,y,brx-x, bry-y)
@@ -283,7 +293,7 @@ class Renderer:
 
         return  retval
 
-    def _render_single_line(self, line, tlcorner=(0,0)):
+    def _render_single_line(self, line, footer, tlcorner=(0,0)):
 
         """render a single line of words onto the DC, top left corner
         specified.
@@ -307,7 +317,7 @@ class Renderer:
         lines=[]
         maxx=self._rect.width(); maxy=self._rect.height();
         while (len(words)>0):
-            w,h=self._get_extent_and_render(thisline)
+            w,h=self._get_extent_and_render(thisline, footer)
             rhs=w+x
             if rhs < maxx-self._right_margin:
                 lines.append(thisline)
@@ -327,7 +337,7 @@ class Renderer:
         for linenum in range(len(lines)):
             line=lines[linenum]
             #find out how wide line is
-            w,h=self._get_extent_and_render(line, tlcorner=(x,y), draw=False)
+            w,h=self._get_extent_and_render(line, footer,  tlcorner=(x,y), draw=False)
 
             if t.display_shadow:
                 w+=self._shadow_offset
@@ -351,20 +361,20 @@ class Renderer:
                 rightextent=x+w
             # now draw the text, and any outlines/shadows
             if t.display_shadow:
-                self._get_extent_and_render(line, tlcorner=(x+self._shadow_offset,y+self._shadow_offset),
+                self._get_extent_and_render(line, footer,tlcorner=(x+self._shadow_offset,y+self._shadow_offset),
                     draw=True, color = t.display_shadow_color)
             if t.display_outline:
-                self._get_extent_and_render(line, (x+self._outline_offset,y), draw=True, color = t.display_outline_color)
-                self._get_extent_and_render(line, (x,y+self._outline_offset), draw=True, color = t.display_outline_color)
-                self._get_extent_and_render(line, (x,y-self._outline_offset), draw=True, color = t.display_outline_color)
-                self._get_extent_and_render(line, (x-self._outline_offset,y), draw=True, color = t.display_outline_color)
+                self._get_extent_and_render(line, footer,(x+self._outline_offset,y), draw=True, color = t.display_outline_color)
+                self._get_extent_and_render(line, footer,(x,y+self._outline_offset), draw=True, color = t.display_outline_color)
+                self._get_extent_and_render(line, footer,(x,y-self._outline_offset), draw=True, color = t.display_outline_color)
+                self._get_extent_and_render(line, footer,(x-self._outline_offset,y), draw=True, color = t.display_outline_color)
                 if self._outline_offset > 1:
-                    self._get_extent_and_render(line, (x+self._outline_offset,y+self._outline_offset), draw=True, color = t.display_outline_color)
-                    self._get_extent_and_render(line, (x-self._outline_offset,y+self._outline_offset), draw=True, color = t.display_outline_color)
-                    self._get_extent_and_render(line, (x+self._outline_offset,y-self._outline_offset), draw=True, color = t.display_outline_color)
-                    self._get_extent_and_render(line, (x-self._outline_offset,y-self._outline_offset), draw=True, color = t.display_outline_color)
+                    self._get_extent_and_render(line, footer,(x+self._outline_offset,y+self._outline_offset), draw=True, color = t.display_outline_color)
+                    self._get_extent_and_render(line, footer,(x-self._outline_offset,y+self._outline_offset), draw=True, color = t.display_outline_color)
+                    self._get_extent_and_render(line, footer,(x+self._outline_offset,y-self._outline_offset), draw=True, color = t.display_outline_color)
+                    self._get_extent_and_render(line, footer,(x-self._outline_offset,y-self._outline_offset), draw=True, color = t.display_outline_color)
 
-            self._get_extent_and_render(line, tlcorner=(x,y), draw=True)
+            self._get_extent_and_render(line, footer,tlcorner=(x,y), draw=True)
 #             log.debug(u'Line %2d: Render '%s' at (%d, %d) wh=(%d,%d)' % ( linenum, line, x, y,w,h)
             y += h
             if linenum == 0:
@@ -381,7 +391,7 @@ class Renderer:
         return brcorner
 
     # xxx this is what to override for an SDL version
-    def _get_extent_and_render(self, line, tlcorner=(0,0), draw=False, color=None, footer=False):
+    def _get_extent_and_render(self, line, footer,  tlcorner=(0,0), draw=False, color=None):
         """Find bounding box of text  - as render_single_line.
         If draw is set, actually draw the text to the current DC as well
 
