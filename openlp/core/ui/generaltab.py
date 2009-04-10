@@ -31,7 +31,6 @@ class GeneralTab(SettingsTab):
     def __init__(self, screen_list):
         SettingsTab.__init__(self, translate(u'GeneralTab', u'General'))
         self.screen_list = screen_list
-	print screen_list
 
     def setupUi(self):
         self.setObjectName(u'GeneralTab')

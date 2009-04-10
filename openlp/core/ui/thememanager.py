@@ -276,8 +276,8 @@ class ThemeManager(QWidget):
         else:
             newtheme.add_background_image(str(t.BackgroundParameter1))
 
-        newtheme.add_font(str(t.FontName), str(t.FontColor.name()), str(t.FontProportion * 2))
-        newtheme.add_font(str(t.FontName), str(t.FontColor.name()), str(12), u'footer')
+        newtheme.add_font(str(t.FontName), str(t.FontColor.name()), str(t.FontProportion * 2), u'False')
+        newtheme.add_font(str(t.FontName), str(t.FontColor.name()), str(12), u'False', u'footer')
         outline = False
         shadow = False
         if t.Shadow == 1:
@@ -302,7 +302,7 @@ class ThemeManager(QWidget):
 
         r.set_theme(theme) # set default theme
         r._render_background()
-        r.set_text_rectangle(QtCore.QRect(0,0, size.width()-1, size.height()-1))
+        r.set_text_rectangle(QtCore.QRect(0,0, size.width()-1, size.height()-1), QtCore.QRect(10,560, size.width()-1, size.height()-1))
 
         lines=[]
         lines.append(u'Amazing Grace!')
@@ -310,17 +310,18 @@ class ThemeManager(QWidget):
         lines.append(u'To save a wretch like me;')
         lines.append(u'I once was lost but now am found,')
         lines.append(u'Was blind, but now I see.')
+        lines1=[]
+        lines1.append(u'Amazing Grace (John Newton)' )
+        lines1.append(u'CCLI xxx (c)Openlp.org')
 
-        answer=r._render_lines(lines)
-        r._get_extent_and_render(u'Amazing Grace (John Newton) ', (10, 560), True, None, True)
-        r._get_extent_and_render(u'CCLI xxx (c)Openlp.org', (10, 580), True, None, True)
+        answer=r._render_lines(lines, lines1)
 
         im=frame.GetPixmap().toImage()
-        testpathname=os.path.join(dir, name+u'.png')
-        if os.path.exists(testpathname):
-            os.unlink(testpathname)
-        im.save(testpathname, u'png')
-        log.debug(u'Theme image written to %s',testpathname)
+        samplepathname=os.path.join(dir, name+u'.png')
+        if os.path.exists(samplepathname):
+            os.unlink(samplepathname)
+        im.save(samplepathname, u'png')
+        log.debug(u'Theme image written to %s',samplepathname)
 
 
 class TstFrame:
