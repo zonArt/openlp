@@ -56,7 +56,7 @@ class CustomPlugin(Plugin):
         """
         Handle the event contained in the event object.
         """
-        log.debug(u'Handle event called with event %s' %event.event_type)
+        log.debug(u'Handle event called with event %s'%event.event_type)
         if event.event_type == EventType.ThemeListChanged:
             log.debug(u'New Theme request received')
             self.edit_custom_form.loadThemes(self.theme_manager.getThemes())

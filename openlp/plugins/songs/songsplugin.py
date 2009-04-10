@@ -22,7 +22,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
-from openlp.core.lib import Plugin
+from openlp.core.lib import Plugin, Event
+from openlp.core.lib import EventType
 from openlp.plugins.songs.lib import SongManager, SongsTab, SongMediaItem
 from openlp.plugins.songs.forms import OpenLPImportForm, OpenSongExportForm, \
     OpenSongImportForm, OpenLPExportForm
@@ -122,3 +123,12 @@ class SongsPlugin(Plugin):
 
     def onExportOpenSongItemClicked(self):
         self.opensong_export_form.show()
+
+    def handle_event(self, event):
+        """
+        Handle the event contained in the event object.
+        """
+        log.debug(u'Handle event called with event %s'%event.event_type)
+        if event.event_type == EventType.ThemeListChanged:
+            log.debug(u'New Theme request received')
+            #self.edit_custom_form.loadThemes(self.theme_manager.getThemes())
