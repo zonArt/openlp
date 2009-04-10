@@ -248,15 +248,17 @@ class Renderer:
         #log.debug(u'_render_lines %s', lines)
 
         bbox=self._render_lines_unaligned(lines, False) # Main font
-        bbox1=self._render_lines_unaligned(lines, True) # Footer Font
+        if lines1 is not None:
+            bbox1=self._render_lines_unaligned(lines1, True) # Footer Font
 
         # put stuff on background so need to reset before doing the job properly.
         self._render_background()
         x, y = self._correctAlignment(self._rect, bbox)
         bbox=self._render_lines_unaligned(lines, False,  (x,y))
 
-        x, y = self._correctAlignment(self._rect_footer, bbox1)
-        bbox=self._render_lines_unaligned(lines1, True, (x,y) )
+        if lines1 is not None:
+            x, y = self._correctAlignment(self._rect_footer, bbox1)
+            bbox=self._render_lines_unaligned(lines1, True, (x,y) )
 
         log.debug(u'render lines DONE')
 

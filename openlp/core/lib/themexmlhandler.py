@@ -89,7 +89,7 @@ class ThemeXML():
         color.appendChild(bkc)
         background.appendChild(color)
 
-    def add_font(self, fontname, fontcolor, fontproportion, fonttype=u'main'):
+    def add_font(self, fontname, fontcolor, fontproportion, override, fonttype=u'main', xpos=0, ypos=0 ,width=0, height=0):
         background = self.theme_xml.createElement(u'font')
         background.setAttribute(u'type',fonttype)
         self.theme.appendChild(background)
@@ -107,6 +107,15 @@ class ThemeXML():
         name = self.theme_xml.createElement(u'proportion')
         fn = self.theme_xml.createTextNode(fontproportion)
         name.appendChild(fn)
+        background.appendChild(name)
+
+        name = self.theme_xml.createElement(u'location')
+        name.setAttribute(u'override',override)
+        if override == u'True':
+            name.setAttribute(u'x',str(xpos))
+            name.setAttribute(u'y',str(ypos))
+            name.setAttribute(u'width',str(width))
+            name.setAttribute(u'height',str(height))
         background.appendChild(name)
 
     def add_display(self, shadow, shadowColor, outline, outlineColor, horizontal, vertical, wrap):
