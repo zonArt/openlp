@@ -128,8 +128,8 @@ class Renderer:
         p=QtGui.QPainter()
         p.begin(self._paint)
         if self._theme.background_type == u'solid':
-            p.fillRect(self._paint.rect(), QtGui.QColor(self._theme.background_color))
-        elif self._theme.background_type == u'Gradient' : # gradient
+            p.fillRect(self._paint.rect(), QtGui.QColor(self._theme.background_color1))
+        elif self._theme.background_type == u'gradient' : # gradient
             gradient = None
             if self._theme.background_direction == u'vertical':
                 w = int(self._paint.width())/2
@@ -142,8 +142,8 @@ class Renderer:
                 h = int(self._paint.height())/2
                 gradient = QtGui.QRadialGradient(w, h, w) # Circular
 
-            gradient.setColorAt(0, QtGui.QColor(self._theme.background_startColor))
-            gradient.setColorAt(1, QtGui.QColor(self._theme.background_endColor))
+            gradient.setColorAt(0, QtGui.QColor(self._theme.background_color1))
+            gradient.setColorAt(1, QtGui.QColor(self._theme.background_color2))
 
             p.setBrush(QtGui.QBrush(gradient))
             rectPath = QtGui.QPainterPath()

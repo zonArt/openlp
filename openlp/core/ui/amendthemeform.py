@@ -23,6 +23,7 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QColor, QFont
 from openlp.core.lib import ThemeXML
 from openlp.core import Renderer
+from openlp.core import translate
 
 from amendthemedialog import Ui_AmendThemeDialog
 
@@ -34,12 +35,102 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
 
+        #define signals
+        #Exits
+        QtCore.QObject.connect(self.ThemeButtonBox, QtCore.SIGNAL("accepted()"), self.accept)
+        QtCore.QObject.connect(self.ThemeButtonBox, QtCore.SIGNAL("rejected()"), self.close)
+        #Buttons
+        QtCore.QObject.connect(self.Color1PushButton ,
+            QtCore.SIGNAL("pressed()"), self.onColor1PushButtonClicked)
+        QtCore.QObject.connect(self.Color2PushButton ,
+            QtCore.SIGNAL("pressed()"), self.onColor2PushButtonClicked)
+        QtCore.QObject.connect(self.MainFontColorPushButton,
+            QtCore.SIGNAL("pressed()"), self.onMainFontColorPushButtonClicked)
+        QtCore.QObject.connect(self.FontFooterColorPushButton,
+            QtCore.SIGNAL("pressed()"), self.onFontFooterColorPushButtonClicked)
+        #Combo boxes
+        QtCore.QObject.connect(self.BackgroundComboBox,
+            QtCore.SIGNAL("activated(int)"), self.onBackgroundComboBoxSelected)
+        QtCore.QObject.connect(self.BackgroundTypeComboBox,
+            QtCore.SIGNAL("activated(int)"), self.onBackgroundTypeComboBoxSelected)
+        QtCore.QObject.connect(self.GradientComboBox,
+            QtCore.SIGNAL("activated(int)"), self.onGradientComboBoxSelected)
+
+
+    def accept(self):
+        return QtGui.QDialog.accept(self)
+
     def loadTheme(self, theme):
         if theme == None:
-            theme = self.baseTheme()
+            self.theme = ThemeXML()
+            self.theme.parse(self.baseTheme())
         else:
             pass
-        self.generateImage(theme)
+        self.paintUi(self.theme)
+        self.generateImage(self.theme)
+
+    def onGradientComboBoxSelected(self):
+        if self.GradientComboBox.currentIndex() == 0: # Horizontal
+            self.theme.background_direction = u'horizontal'
+        elif self.GradientComboBox.currentIndex() == 1: # vertical
+            self.theme.background_direction = u'vertical'
+        else:
+            self.theme.background_direction = u'circular'
+        self.stateChanging(self.theme)
+        self.generateImage(self.theme)
+
+    def onBackgroundComboBoxSelected(self):
+        if self.BackgroundComboBox.currentIndex() == 0: # Opaque
+            self.theme.background_mode = u'opaque'
+        else:
+            self.theme.background_mode = u'transparent'
+        self.stateChanging(self.theme)
+        self.generateImage(self.theme)
+
+    def onBackgroundTypeComboBoxSelected(self):
+        if self.BackgroundTypeComboBox.currentIndex() == 0: # Solid
+            self.theme.background_type = u'solid'
+        elif self.BackgroundTypeComboBox.currentIndex() == 1: # Gradient
+            self.theme.background_type = u'gradient'
+            if self.theme.background_direction == None: # never defined
+                self.theme.background_direction = u'horizontal'
+                self.theme.background_color2 = u'#000000'
+        else:
+            self.theme.background_type = u'image'
+        self.stateChanging(self.theme)
+        self.generateImage(self.theme)
+
+    def onColor1PushButtonClicked(self):
+        self.theme.background_color1 = QtGui.QColorDialog.getColor(
+            QColor(self.theme.background_color1), self).name()
+        self.Color1PushButton.setStyleSheet(
+            'background-color: %s' % str(self.theme.background_color1))
+
+        self.generateImage(self.theme)
+
+    def onColor2PushButtonClicked(self):
+        self.theme.background_color2 = QtGui.QColorDialog.getColor(
+            QColor(self.theme.background_color2), self).name()
+        self.Color2PushButton.setStyleSheet(
+            'background-color: %s' % str(self.theme.background_color2))
+
+        self.generateImage(self.theme)
+
+    def onMainFontColorPushButtonClicked(self):
+        self.theme.font_main_color = QtGui.QColorDialog.getColor(
+            QColor(self.theme.font_main_color), self).name()
+
+        self.MainFontColorPushButton.setStyleSheet(
+            'background-color: %s' % str(self.theme.font_main_color))
+        self.generateImage(self.theme)
+
+    def onFontFooterColorPushButtonClicked(self):
+        self.theme.font_footer_color = QtGui.QColorDialog.getColor(
+            QColor(self.theme.font_footer_color), self).name()
+
+        self.FontFooterColorPushButton.setStyleSheet(
+            'background-color: %s' % str(self.theme.font_footer_color))
+        self.generateImage(self.theme)
 
     def baseTheme(self):
         log.debug(u'base Theme')
@@ -50,12 +141,50 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         newtheme.add_font(str(QFont().family()), str(u'#FFFFFF'), str(12), u'False', u'footer')
         newtheme.add_display(str(False), str(u'#FFFFFF'), str(False), str(u'#FFFFFF'),
             str(0), str(0), str(0))
+
         return newtheme.extract_xml()
 
-    def generateImage(self, theme_xml):
-        log.debug(u'generateImage %s ',  theme_xml)
-        theme = ThemeXML()
-        theme.parse(theme_xml)
+    def paintUi(self, theme):
+        print theme  # leave as helpful for initial development
+        self.stateChanging(theme)
+        self.BackgroundTypeComboBox.setCurrentIndex(0)
+        self.BackgroundComboBox.setCurrentIndex(0)
+        self.GradientComboBox.setCurrentIndex(0)
+        self.MainFontColorPushButton.setStyleSheet(
+            'background-color: %s' % str(theme.font_main_color))
+        self.FontFooterColorPushButton.setStyleSheet(
+            'background-color: %s' % str(theme.font_footer_color))
+
+    def stateChanging(self, theme):
+        if theme.background_type == u'solid':
+            self.Color1PushButton.setStyleSheet(
+                'background-color: %s' % str(theme.background_color1))
+            self.Color1Label.setText(translate(u'ThemeManager', u'Background Font:'))
+            self.Color1Label.setVisible(True)
+            self.Color1PushButton.setVisible(True)
+            self.Color2Label.setVisible(False)
+            self.Color2PushButton.setVisible(False)
+        elif theme.background_type == u'gradient':
+            self.Color1PushButton.setStyleSheet(
+                'background-color: %s' % str(theme.background_color1))
+            self.Color2PushButton.setStyleSheet(
+                'background-color: %s' % str(theme.background_color2))
+            self.Color1Label.setText(translate(u'ThemeManager', u'First  Color:'))
+            self.Color2Label.setText(translate(u'ThemeManager', u'Second Color:'))
+            self.Color1Label.setVisible(True)
+            self.Color1PushButton.setVisible(True)
+            self.Color2Label.setVisible(True)
+            self.Color2PushButton.setVisible(True)
+        else: # must be image
+            self.Color1Label.setVisible(False)
+            self.Color1PushButton.setVisible(False)
+            self.Color2Label.setVisible(False)
+            self.Color2PushButton.setVisible(False)
+
+    def generateImage(self, theme):
+        log.debug(u'generateImage %s ',  theme)
+        #theme = ThemeXML()
+        #theme.parse(theme_xml)
         #print theme
         size=QtCore.QSize(800,600)
         frame=TstFrame(size)
