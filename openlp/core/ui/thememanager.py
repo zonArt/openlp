@@ -128,7 +128,11 @@ class ThemeData(QAbstractItemModel):
         for i in self.items:
             yield i
 
-    def item(self, row):
+    def getValue(self, index):
+        row = index.row()
+        return self.items[row]
+
+    def getItem(self, row):
         log.info(u'Get Item:%d -> %s' %(row, str(self.items)))
         return self.items[row]
 
@@ -177,6 +181,7 @@ class ThemeManager(QWidget):
         self.themelist= []
         self.path = os.path.join(ConfigHelper.get_data_path(), u'themes')
         self.checkThemesExists(self.path)
+        self.amendThemeForm.themePath(self.path)
 
     def setEventManager(self, eventManager):
         self.eventManager = eventManager
@@ -186,7 +191,10 @@ class ThemeManager(QWidget):
         self.amendThemeForm.exec_()
 
     def onEditTheme(self):
-        self.amendThemeForm.loadTheme(theme)
+        items = self.ThemeListView.selectedIndexes()
+        for item in items:
+            data = self.Theme_data.getValue(item)
+            self.amendThemeForm.loadTheme(data[3])
         self.amendThemeForm.exec_()
 
     def onDeleteTheme(self):

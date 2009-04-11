@@ -18,10 +18,12 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import logging
+import os, os.path
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QColor, QFont
 from openlp.core.lib import ThemeXML
+from openlp.core import fileToXML
 from openlp.core import Renderer
 from openlp.core import translate
 
@@ -60,12 +62,17 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     def accept(self):
         return QtGui.QDialog.accept(self)
 
+    def themePath(self, path):
+        self.path = path
+
     def loadTheme(self, theme):
+        self.theme = ThemeXML()
         if theme == None:
-            self.theme = ThemeXML()
             self.theme.parse(self.baseTheme())
         else:
-            pass
+            xml_file = os.path.join(self.path, theme, theme+u'.xml')
+            xml = fileToXML(xml_file)
+            self.theme.parse(xml)
         self.paintUi(self.theme)
         self.generateImage(self.theme)
 
