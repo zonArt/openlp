@@ -37,12 +37,13 @@ class MainWindow(object):
     log=logging.getLogger(u'MainWindow')
     log.info(u'MainWindow loaded')
 
-    def __init__(self):
+    def __init__(self, screens):
         self.main_window = QtGui.QMainWindow()
+        self.screen_list = screens
         self.EventManager = EventManager()
         self.alert_form = AlertForm()
         self.about_form = AboutForm()
-        self.settings_form = SettingsForm()
+        self.settings_form = SettingsForm(self.screen_list)
 
         pluginpath = os.path.split(os.path.abspath(__file__))[0]
         pluginpath = os.path.abspath(os.path.join(pluginpath, '..', '..','plugins'))

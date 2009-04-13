@@ -52,23 +52,30 @@ class ThemeXML():
         background.setAttribute(u'type', u'solid')
         self.theme.appendChild(background)
 
-        color = self.theme_xml.createElement(u'color')
+        color = self.theme_xml.createElement(u'color1')
         bkc = self.theme_xml.createTextNode(bkcolor)
         color.appendChild(bkc)
         background.appendChild(color)
 
+        color = self.theme_xml.createElement(u'color2')
+        background.appendChild(color)
+
+        color = self.theme_xml.createElement(u'direction')
+        background.appendChild(color)
+
+
     def add_background_gradient(self, startcolor, endcolor, direction):
         background = self.theme_xml.createElement(u'background')
         background.setAttribute(u'mode', u'opaque')
-        background.setAttribute(u'type', u'Gradient')
+        background.setAttribute(u'type', u'gradient')
         self.theme.appendChild(background)
 
-        color = self.theme_xml.createElement(u'startColor')
+        color = self.theme_xml.createElement(u'color1')
         bkc = self.theme_xml.createTextNode(startcolor)
         color.appendChild(bkc)
         background.appendChild(color)
 
-        color = self.theme_xml.createElement(u'endColor')
+        color = self.theme_xml.createElement(u'color2')
         bkc = self.theme_xml.createTextNode(endcolor)
         color.appendChild(bkc)
         background.appendChild(color)
@@ -89,7 +96,7 @@ class ThemeXML():
         color.appendChild(bkc)
         background.appendChild(color)
 
-    def add_font(self, fontname, fontcolor, fontproportion, fonttype=u'main'):
+    def add_font(self, fontname, fontcolor, fontproportion, override, fonttype=u'main', xpos=0, ypos=0 ,width=0, height=0):
         background = self.theme_xml.createElement(u'font')
         background.setAttribute(u'type',fonttype)
         self.theme.appendChild(background)
@@ -107,6 +114,14 @@ class ThemeXML():
         name = self.theme_xml.createElement(u'proportion')
         fn = self.theme_xml.createTextNode(fontproportion)
         name.appendChild(fn)
+        background.appendChild(name)
+
+        name = self.theme_xml.createElement(u'location')
+        name.setAttribute(u'override',override)
+        name.setAttribute(u'x',str(xpos))
+        name.setAttribute(u'y',str(ypos))
+        name.setAttribute(u'width',str(width))
+        name.setAttribute(u'height',str(height))
         background.appendChild(name)
 
     def add_display(self, shadow, shadowColor, outline, outlineColor, horizontal, vertical, wrap):

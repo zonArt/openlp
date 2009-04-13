@@ -26,29 +26,37 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver
 
 logging.basicConfig(level=logging.DEBUG,
-                format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                datefmt='%m-%d %H:%M',
-                filename='openlp.log',
-                filemode='w')
+                format=u'%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                datefmt=u'%m-%d %H:%M',
+                filename=u'openlp.log',
+                filemode=u'w')
 
 from openlp.core.resources import *
 from openlp.core.ui import MainWindow, SplashScreen
 
 class OpenLP(QtGui.QApplication):
+    global log
+    log=logging.getLogger(u'OpenLP Application')
+    log.info(u'Application Loaded')
 
     def run(self):
         #provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL('openlpprocessevents'), self.processEvents)
+            QtCore.SIGNAL(u'openlpprocessevents'), self.processEvents)
 
-        self.setApplicationName('openlp.org')
-        self.setApplicationVersion('1.9.0')
+        self.setApplicationName(u'openlp.org')
+        self.setApplicationVersion(u'1.9.0')
         self.splash = SplashScreen()
         self.splash.show()
         # make sure Qt really display the splash screen
         self.processEvents()
-        # start tha main app window
-        self.main_window = MainWindow()
+        screens = []
+        # Decide how many screens we have and their size
+        for i in range (0 ,  self.desktop().numScreens()):
+            screens.insert(i, (i+1, self.desktop().availableGeometry(i+1)))
+            log.info(u'Screen %d found with resolution %s', i+1, self.desktop().availableGeometry(i+1))
+        # start the main app window
+        self.main_window = MainWindow(screens)
         self.main_window.show()
         # now kill the splashscreen
         self.splash.finish(self.main_window.main_window)

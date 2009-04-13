@@ -24,7 +24,8 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from openlp.core.resources import *
-from openlp.core.lib import Plugin
+from openlp.core.lib import Plugin, Event
+from openlp.core.lib import EventType
 
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 from openlp.plugins.bibles.lib.tables import *
@@ -76,4 +77,13 @@ class BiblePlugin(Plugin):
     def onBibleNewClick(self):
         self.bibleimportform = BibleImportForm(self.config, self.biblemanager, self)
         self.bibleimportform.exec_()
-        pass  
+        pass
+
+    def handle_event(self, event):
+        """
+        Handle the event contained in the event object.
+        """
+        log.debug(u'Handle event called with event %s'%event.event_type)
+        if event.event_type == EventType.ThemeListChanged:
+            log.debug(u'New Theme request received')
+            #self.edit_custom_form.loadThemes(self.theme_manager.getThemes())
