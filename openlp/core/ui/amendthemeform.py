@@ -97,29 +97,44 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     def onBackgroundTypeComboBoxSelected(self):
         if self.BackgroundTypeComboBox.currentIndex() == 0: # Solid
             self.theme.background_type = u'solid'
+            if self.theme.background_direction == None: # never defined
+                self.theme.background_direction = u'horizontal'
+            if self.theme.background_startColor is None :
+                self.theme.background_startColor = u'#000000'
+            if self.theme.background_endColor is None :
+                self.theme.background_endColor = u'#000000'
         elif self.BackgroundTypeComboBox.currentIndex() == 1: # Gradient
             self.theme.background_type = u'gradient'
             if self.theme.background_direction == None: # never defined
                 self.theme.background_direction = u'horizontal'
-                self.theme.background_color2 = u'#000000'
+            if self.theme.background_startColor is None :
+                self.theme.background_startColor = u'#000000'
+            if self.theme.background_endColor is None :
+                self.theme.background_endColor = u'#000000'
         else:
             self.theme.background_type = u'image'
         self.stateChanging(self.theme)
         self.generateImage(self.theme)
 
     def onColor1PushButtonClicked(self):
-        self.theme.background_color1 = QtGui.QColorDialog.getColor(
-            QColor(self.theme.background_color1), self).name()
-        self.Color1PushButton.setStyleSheet(
-            'background-color: %s' % str(self.theme.background_color1))
+        if self.theme.background_type == u'solid':
+            self.theme.background_color = QtGui.QColorDialog.getColor(
+                QColor(self.theme.background_color), self).name()
+            self.Color1PushButton.setStyleSheet(
+                'background-color: %s' % str(self.theme.background_color))
+        else:
+            self.theme.background_startColor = QtGui.QColorDialog.getColor(
+                QColor(self.theme.background_startColor), self).name()
+            self.Color1PushButton.setStyleSheet(
+                'background-color: %s' % str(self.theme.background_startColor))
 
         self.generateImage(self.theme)
 
     def onColor2PushButtonClicked(self):
-        self.theme.background_color2 = QtGui.QColorDialog.getColor(
-            QColor(self.theme.background_color2), self).name()
+        self.theme.background_endColor = QtGui.QColorDialog.getColor(
+            QColor(self.theme.background_endColor), self).name()
         self.Color2PushButton.setStyleSheet(
-            'background-color: %s' % str(self.theme.background_color2))
+            'background-color: %s' % str(self.theme.background_endColor))
 
         self.generateImage(self.theme)
 
@@ -165,7 +180,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     def stateChanging(self, theme):
         if theme.background_type == u'solid':
             self.Color1PushButton.setStyleSheet(
-                'background-color: %s' % str(theme.background_color1))
+                'background-color: %s' % str(theme.background_color))
             self.Color1Label.setText(translate(u'ThemeManager', u'Background Font:'))
             self.Color1Label.setVisible(True)
             self.Color1PushButton.setVisible(True)
@@ -173,9 +188,9 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             self.Color2PushButton.setVisible(False)
         elif theme.background_type == u'gradient':
             self.Color1PushButton.setStyleSheet(
-                'background-color: %s' % str(theme.background_color1))
+                'background-color: %s' % str(theme.background_startColor))
             self.Color2PushButton.setStyleSheet(
-                'background-color: %s' % str(theme.background_color2))
+                'background-color: %s' % str(theme.background_endColor))
             self.Color1Label.setText(translate(u'ThemeManager', u'First  Color:'))
             self.Color2Label.setText(translate(u'ThemeManager', u'Second Color:'))
             self.Color1Label.setVisible(True)
@@ -197,7 +212,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         frame=TstFrame(size)
         frame=frame
         paintdest=frame.GetPixmap()
-        r=Renderer()
+        r=Renderer(self.path)
         r.set_paint_dest(paintdest)
 
         r.set_theme(theme) # set default theme

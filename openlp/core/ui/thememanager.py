@@ -236,6 +236,8 @@ class ThemeManager(QWidget):
     def unzipTheme(self, filename, dir):
         log.debug(u'Unzipping theme %s', filename)
         zip = zipfile.ZipFile(str(filename))
+        filexml = None
+        themename = None
         for file in zip.namelist():
             if file.endswith('/'):
                 theme_dir = os.path.join(dir, file)
@@ -243,21 +245,25 @@ class ThemeManager(QWidget):
                     os.mkdir(os.path.join(dir, file))
             else:
                 fullpath = os.path.join(dir, file)
-                names = file.split(u'/')
+                if themename is None:
+                    names = file.split(u'/')
+                    themename = names[0]
                 xml_data = zip.read(file)
                 if os.path.splitext (file) [1].lower ()  in [u'.xml']:
                     if self.checkVersion1(xml_data):
                         filexml = self.migrateVersion122(filename, fullpath, xml_data)
-                        outfile = open(fullpath, 'w')
-                        outfile.write(filexml)
-                        outfile.close()
-                        self.generateImage(dir,names[0], filexml)
+                    else:
+                        file_xml = xml_data
+                    outfile = open(fullpath, 'w')
+                    outfile.write(filexml)
+                    outfile.close()
+                if os.path.splitext (file) [1].lower ()  in [u'.bmp']:
+                    print os.path.splitext (file)
                 else:
-                    if os.path.splitext (file) [1].lower ()  in [u'.bmp']:
-                        if fullpath is not os.path.join(dir, file):
-                            outfile = open(fullpath, 'w')
-                            outfile.write(zip.read(file))
-                            outfile.close()
+                    outfile = open(fullpath, 'w')
+                    outfile.write(zip.read(file))
+                    outfile.close()
+        self.generateImage(dir,themename, filexml)
 
     def checkVersion1(self, xmlfile):
         log.debug(u'checkVersion1 ')
@@ -297,7 +303,7 @@ class ThemeManager(QWidget):
         return newtheme.extract_xml()
 
     def generateImage(self, dir, name, theme_xml):
-        log.debug(u'generateImage %s %s ', dir, theme_xml)
+        log.debug(u'generateImage %s %s %s', dir, name, theme_xml)
         theme = ThemeXML()
         theme.parse(theme_xml)
         #print theme
@@ -305,11 +311,10 @@ class ThemeManager(QWidget):
         frame=TstFrame(size)
         frame=frame
         paintdest=frame.GetPixmap()
-        r=Renderer()
+        r=Renderer(dir)
         r.set_paint_dest(paintdest)
 
         r.set_theme(theme) # set default theme
-        r._render_background()
         r.set_text_rectangle(QtCore.QRect(0,0, size.width()-1, size.height()-1), QtCore.QRect(10,560, size.width()-1, size.height()-1))
 
         lines=[]

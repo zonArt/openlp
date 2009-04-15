@@ -21,8 +21,49 @@ from xml.etree.ElementTree import ElementTree, XML, dump
 
 For XML Schema see wiki.openlp.org
 """
+
+from openlp import convertStringToBoolean
 from xml.dom.minidom import  Document
 from xml.etree.ElementTree import ElementTree, XML, dump
+
+blankthemexml=\
+'''<?xml version="1.0" encoding="iso-8859-1"?>
+ <theme version="1.0">
+   <name>BlankStyle</name>
+   <background mode="transparent"/>
+   <background type="solid" mode="opaque">
+      <color>#000000</color>
+   </background>
+   <background type="gradient" mode="opaque">
+      <startColor>#000000</startColor>
+      <endColor>#000000</endColor>
+      <direction>vertical</direction>
+   </background>
+   <background type="image" mode="opaque">
+      <filename>fred.bmp</filename>
+   </background>
+   <font type="main">
+      <name>Arial</name>
+      <color>#000000</color>
+      <proportion>30</proportion>
+      <location overide="False">
+      </location>
+   </font>
+   <font type="footer">
+      <name>Arial</name>
+      <color>#000000</color>
+      <proportion>12</proportion>
+      <location overide="True" x="10" y="10" width="100" height="150"/>
+   </font>
+   <display>
+      <shadow color="#000000">True</shadow>
+      <outline color="#000000">False</outline>
+       <horizontalAlign>0</horizontalAlign>
+       <verticalAlign>0</verticalAlign>
+       <wrapStyle>0</wrapStyle>
+   </display>
+ </theme>
+'''
 
 class ThemeXML():
     def __init__(self):
@@ -31,11 +72,11 @@ class ThemeXML():
 
     def new_document(self, name):
         # Create the <song> base element
-        self.theme = self.theme_xml.createElement(u'Theme')
+        self.theme = self.theme_xml.createElement(u'theme')
         self.theme_xml.appendChild(self.theme)
         self.theme.setAttribute(u'version', u'1.0')
 
-        self.name = self.theme_xml.createElement(u'Name')
+        self.name = self.theme_xml.createElement(u'name')
         ctn = self.theme_xml.createTextNode(name)
         self.name.appendChild(ctn)
         self.theme.appendChild(self.name)
@@ -52,17 +93,10 @@ class ThemeXML():
         background.setAttribute(u'type', u'solid')
         self.theme.appendChild(background)
 
-        color = self.theme_xml.createElement(u'color1')
+        color = self.theme_xml.createElement(u'color')
         bkc = self.theme_xml.createTextNode(bkcolor)
         color.appendChild(bkc)
         background.appendChild(color)
-
-        color = self.theme_xml.createElement(u'color2')
-        background.appendChild(color)
-
-        color = self.theme_xml.createElement(u'direction')
-        background.appendChild(color)
-
 
     def add_background_gradient(self, startcolor, endcolor, direction):
         background = self.theme_xml.createElement(u'background')
@@ -70,12 +104,12 @@ class ThemeXML():
         background.setAttribute(u'type', u'gradient')
         self.theme.appendChild(background)
 
-        color = self.theme_xml.createElement(u'color1')
+        color = self.theme_xml.createElement(u'startcolor')
         bkc = self.theme_xml.createTextNode(startcolor)
         color.appendChild(bkc)
         background.appendChild(color)
 
-        color = self.theme_xml.createElement(u'color2')
+        color = self.theme_xml.createElement(u'endcolor')
         bkc = self.theme_xml.createTextNode(endcolor)
         color.appendChild(bkc)
         background.appendChild(color)
@@ -96,33 +130,34 @@ class ThemeXML():
         color.appendChild(bkc)
         background.appendChild(color)
 
-    def add_font(self, fontname, fontcolor, fontproportion, override, fonttype=u'main', xpos=0, ypos=0 ,width=0, height=0):
+    def add_font(self, name, color, proportion, override, fonttype=u'main', xpos=0, ypos=0 ,width=0, height=0):
         background = self.theme_xml.createElement(u'font')
         background.setAttribute(u'type',fonttype)
         self.theme.appendChild(background)
 
-        name = self.theme_xml.createElement(u'name')
-        fn = self.theme_xml.createTextNode(fontname)
-        name.appendChild(fn)
-        background.appendChild(name)
+        element = self.theme_xml.createElement(u'name')
+        fn = self.theme_xml.createTextNode(name)
+        element.appendChild(fn)
+        background.appendChild(element)
 
-        name = self.theme_xml.createElement(u'color')
-        fn = self.theme_xml.createTextNode(fontcolor)
-        name.appendChild(fn)
-        background.appendChild(name)
+        element = self.theme_xml.createElement(u'color')
+        fn = self.theme_xml.createTextNode(color)
+        element.appendChild(fn)
+        background.appendChild(element)
 
-        name = self.theme_xml.createElement(u'proportion')
-        fn = self.theme_xml.createTextNode(fontproportion)
-        name.appendChild(fn)
-        background.appendChild(name)
+        element = self.theme_xml.createElement(u'proportion')
+        fn = self.theme_xml.createTextNode(proportion)
+        element.appendChild(fn)
+        background.appendChild(element)
 
-        name = self.theme_xml.createElement(u'location')
-        name.setAttribute(u'override',override)
-        name.setAttribute(u'x',str(xpos))
-        name.setAttribute(u'y',str(ypos))
-        name.setAttribute(u'width',str(width))
-        name.setAttribute(u'height',str(height))
-        background.appendChild(name)
+        element = self.theme_xml.createElement(u'location')
+        element.setAttribute(u'override',override)
+        if override == True:
+            element.setAttribute(u'x',str(xpos))
+            element.setAttribute(u'y',str(ypos))
+            element.setAttribute(u'width',str(width))
+            element.setAttribute(u'height',str(height))
+        background.appendChild(element)
 
     def add_display(self, shadow, shadowColor, outline, outlineColor, horizontal, vertical, wrap):
         background = self.theme_xml.createElement(u'display')
@@ -170,6 +205,13 @@ class ThemeXML():
         return self.theme_xml.toxml()
 
     def parse(self, xml):
+        self.baseParseXml()
+        self.parse_xml(xml)
+
+    def baseParseXml(self):
+        self.parse_xml(blankthemexml)
+
+    def parse_xml(self, xml):
         theme_xml = ElementTree(element=XML(xml))
         iter=theme_xml.getiterator()
         master = u''
@@ -185,13 +227,14 @@ class ThemeXML():
                         master += e[1] + u'_'
                     elif master == u'display_' and (element.tag == u'shadow' or element.tag == u'outline'):
                         #print "b", master, element.tag, element.text, e[0], e[1]
-                        setattr(self, master + element.tag , element.text)
+                        et = convertStringToBoolean(element.text)
+                        setattr(self, master + element.tag , et)
                         setattr(self, master + element.tag +u'_'+ e[0], e[1])
                     else:
                         field = master + e[0]
                         setattr(self, field, e[1])
             else:
-                #print "c", element.tag
+                #print "c", element.tag, element.text
                 if element.tag is not None :
                     field = master + element.tag
                     setattr(self, field, element.text)

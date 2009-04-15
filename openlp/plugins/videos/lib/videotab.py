@@ -21,8 +21,8 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from PyQt4 import QtCore, QtGui
 
 from openlp.core import translate
+from openlp import convertStringToBoolean
 from openlp.core.lib import SettingsTab
-from openlp.core.resources import *
 
 class VideoTab(SettingsTab):
     """
@@ -49,12 +49,12 @@ class VideoTab(SettingsTab):
         self.UseVMRLabel = QtGui.QLabel(self.VideoModeGroupBox)
         self.UseVMRLabel.setObjectName("UseVMRLabel")
         self.VideoModeLayout.addWidget(self.UseVMRLabel)
-        
+
         self.VideoLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.VideoModeGroupBox)
-        # Signals and slots        
+        # Signals and slots
         QtCore.QObject.connect(self.UseVMRCheckBox,
-            QtCore.SIGNAL("stateChanged(int)"), self.onVMRCheckBoxChanged)             
-        
+            QtCore.SIGNAL("stateChanged(int)"), self.onVMRCheckBoxChanged)
+
     def retranslateUi(self):
         self.VideoModeGroupBox.setTitle(translate("SettingsForm", "Video Mode"))
         self.UseVMRCheckBox.setText(translate("SettingsForm", "Use Video Mode Rendering"))
@@ -69,11 +69,11 @@ class VideoTab(SettingsTab):
         self.use_vmr_mode = False
         if use_vmr_mode == 2: # we have a set value convert to True/False
             self.use_vmr_mode = True
-    
+
     def load(self):
-        self.use_vmr_mode = self.convertStringToBoolean(self.config.get_config(u'use mode layout', u'False'))
+        self.use_vmr_mode = convertStringToBoolean(self.config.get_config(u'use mode layout', u'False'))
         if self.use_vmr_mode :
             self.UseVMRCheckBox.setChecked(True)
-        
+
     def save(self):
-        self.config.set_config(u'use mode layout', str(self.use_vmr_mode))        
+        self.config.set_config(u'use mode layout', str(self.use_vmr_mode))
