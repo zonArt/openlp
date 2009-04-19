@@ -247,7 +247,7 @@ class Renderer:
             assert(0, u'Invalid value for theme.VerticalAlign:%s' % self._theme.display_verticalAlign)
         return x, y
 
-    def _render_lines(self, lines, lines1=None):
+    def render_lines(self, lines, lines1=None):
         """render a set of lines according to the theme, return bounding box"""
         #log.debug(u'_render_lines %s', lines)
 

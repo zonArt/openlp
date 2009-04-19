@@ -33,8 +33,9 @@ log = logging.getLogger(u'AmendThemeForm')
 
 class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
 
-    def __init__(self, parent=None):
+    def __init__(self, thememanager, parent=None):
         QtGui.QDialog.__init__(self, parent)
+        self.thememanager = thememanager
         self.setupUi(self)
 
         #define signals
@@ -71,28 +72,28 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             xml = fileToXML(xml_file)
             self.theme.parse(xml)
         self.paintUi(self.theme)
-        self.generateImage(self.theme)
+        self.previewTheme(self.theme)
 
-    def onGradientComboBoxSelected(self):
-        if self.GradientComboBox.currentIndex() == 0: # Horizontal
+    def onGradientComboBoxSelected(self, currentIndex):
+        if currentIndex == 0: # Horizontal
             self.theme.background_direction = u'horizontal'
-        elif self.GradientComboBox.currentIndex() == 1: # vertical
+        elif currentIndex == 1: # vertical
             self.theme.background_direction = u'vertical'
         else:
             self.theme.background_direction = u'circular'
         self.stateChanging(self.theme)
-        self.generateImage(self.theme)
+        self.previewTheme(self.theme)
 
-    def onBackgroundComboBoxSelected(self):
-        if self.BackgroundComboBox.currentIndex() == 0: # Opaque
+    def onBackgroundComboBoxSelected(self, currentIndex):
+        if currentIndex == 0: # Opaque
             self.theme.background_mode = u'opaque'
         else:
             self.theme.background_mode = u'transparent'
         self.stateChanging(self.theme)
-        self.generateImage(self.theme)
+        self.previewTheme(self.theme)
 
-    def onBackgroundTypeComboBoxSelected(self):
-        if self.BackgroundTypeComboBox.currentIndex() == 0: # Solid
+    def onBackgroundTypeComboBoxSelected(self, currentIndex):
+        if currentIndex == 0: # Solid
             self.theme.background_type = u'solid'
             if self.theme.background_direction == None: # never defined
                 self.theme.background_direction = u'horizontal'
@@ -100,7 +101,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
                 self.theme.background_startColor = u'#000000'
             if self.theme.background_endColor is None :
                 self.theme.background_endColor = u'#000000'
-        elif self.BackgroundTypeComboBox.currentIndex() == 1: # Gradient
+        elif currentIndex == 1: # Gradient
             self.theme.background_type = u'gradient'
             if self.theme.background_direction == None: # never defined
                 self.theme.background_direction = u'horizontal'
@@ -111,7 +112,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         else:
             self.theme.background_type = u'image'
         self.stateChanging(self.theme)
-        self.generateImage(self.theme)
+        self.previewTheme(self.theme)
 
     def onColor1PushButtonClicked(self):
         if self.theme.background_type == u'solid':
@@ -125,7 +126,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             self.Color1PushButton.setStyleSheet(
                 'background-color: %s' % str(self.theme.background_startColor))
 
-        self.generateImage(self.theme)
+        self.previewTheme(self.theme)
 
     def onColor2PushButtonClicked(self):
         self.theme.background_endColor = QtGui.QColorDialog.getColor(
@@ -133,7 +134,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.Color2PushButton.setStyleSheet(
             'background-color: %s' % str(self.theme.background_endColor))
 
-        self.generateImage(self.theme)
+        self.previewTheme(self.theme)
 
     def onMainFontColorPushButtonClicked(self):
         self.theme.font_main_color = QtGui.QColorDialog.getColor(
@@ -141,7 +142,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
 
         self.MainFontColorPushButton.setStyleSheet(
             'background-color: %s' % str(self.theme.font_main_color))
-        self.generateImage(self.theme)
+        self.previewTheme(self.theme)
 
     def onFontFooterColorPushButtonClicked(self):
         self.theme.font_footer_color = QtGui.QColorDialog.getColor(
@@ -149,7 +150,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
 
         self.FontFooterColorPushButton.setStyleSheet(
             'background-color: %s' % str(self.theme.font_footer_color))
-        self.generateImage(self.theme)
+        self.previewTheme(self.theme)
 
     def baseTheme(self):
         log.debug(u'base Theme')
@@ -200,42 +201,6 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             self.Color2Label.setVisible(False)
             self.Color2PushButton.setVisible(False)
 
-    def generateImage(self, theme):
-        log.debug(u'generateImage %s ',  theme)
-        #theme = ThemeXML()
-        #theme.parse(theme_xml)
-        #print theme
-        size=QtCore.QSize(800,600)
-        frame=TstFrame(size)
-        frame=frame
-        paintdest=frame.GetPixmap()
-        r=Renderer(self.path)
-        r.set_paint_dest(paintdest)
-
-        r.set_theme(theme) # set default theme
-        r._render_background()
-        r.set_text_rectangle(QtCore.QRect(0,0, size.width()-1, size.height()-1), QtCore.QRect(10,560, size.width()-1, size.height()-1))
-
-        lines=[]
-        lines.append(u'Amazing Grace!')
-        lines.append(u'How sweet the sound')
-        lines.append(u'To save a wretch like me;')
-        lines.append(u'I once was lost but now am found,')
-        lines.append(u'Was blind, but now I see.')
-        lines1=[]
-        lines1.append(u'Amazing Grace (John Newton)' )
-        lines1.append(u'CCLI xxx (c)Openlp.org')
-
-        answer=r._render_lines(lines, lines1)
-
-        self.ThemePreview.setPixmap(frame.GetPixmap())
-
-class TstFrame:
-    def __init__(self, size):
-        """Create the DemoPanel."""
-        self.width=size.width();
-        self.height=size.height();
-        # create something to be painted into
-        self._Buffer = QtGui.QPixmap(self.width, self.height)
-    def GetPixmap(self):
-        return self._Buffer
+    def previewTheme(self, theme):
+        frame = self.thememanager.generateImage(theme)
+        self.ThemePreview.setPixmap(frame)

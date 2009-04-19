@@ -154,7 +154,7 @@ class ThemeManager(QWidget):
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
         self.Layout.setMargin(0)
-        self.amendThemeForm = AmendThemeForm()
+        self.amendThemeForm = AmendThemeForm(self)
         self.Toolbar = OpenLPToolbar(self)
         self.Toolbar.addToolbarButton(translate('ThemeManager',u'New Theme'), ":/themes/theme_new.png",
             translate('ThemeManager',u'Allows a Theme to be created'), self.onAddTheme)
@@ -247,6 +247,11 @@ class ThemeManager(QWidget):
             os.mkdir(dir)
 
     def unzipTheme(self, filename, dir):
+        """
+        Unzip the theme , remove the preview file if stored
+        Generate a new preview fileCheck the XML theme version and upgrade if
+        necessary.
+        """
         log.debug(u'Unzipping theme %s', filename)
         zip = zipfile.ZipFile(str(filename))
         filexml = None
@@ -265,7 +270,7 @@ class ThemeManager(QWidget):
                     xml_data = zip.read(file)
                     if os.path.splitext (file) [1].lower ()  in [u'.xml']:
                         if self.checkVersion1(xml_data):
-                            filexml = self.migrateVersion122(filename, fullpath, xml_data)
+                            filexml = self.migrateVersion122(filename, fullpath, xml_data) # upgrade theme xml
                         else:
                             file_xml = xml_data
                         outfile = open(fullpath, 'w')
@@ -275,7 +280,7 @@ class ThemeManager(QWidget):
                         outfile = open(fullpath, 'w')
                         outfile.write(zip.read(file))
                         outfile.close()
-        self.generateImage(dir,themename, filexml)
+        self.generateAndSaveImage(dir,themename, filexml)
 
     def checkVersion1(self, xmlfile):
         log.debug(u'checkVersion1 ')
@@ -314,20 +319,30 @@ class ThemeManager(QWidget):
             str(t.HorizontalAlign), str(t.VerticalAlign), str(t.WrapStyle))
         return newtheme.extract_xml()
 
-    def generateImage(self, dir, name, theme_xml):
+    def generateAndSaveImage(self, dir, name, theme_xml):
         log.debug(u'generateImage %s %s %s', dir, name, theme_xml)
         theme = ThemeXML()
         theme.parse(theme_xml)
-        #print theme
-        size=QtCore.QSize(800,600)
-        frame=TstFrame(size)
-        frame=frame
-        paintdest=frame.GetPixmap()
-        r=Renderer(dir)
-        r.set_paint_dest(paintdest)
 
-        r.set_theme(theme) # set default theme
-        r.set_text_rectangle(QtCore.QRect(0,0, size.width()-1, size.height()-1), QtCore.QRect(10,560, size.width()-1, size.height()-1))
+        frame = self.generateImage(theme)
+
+        im=frame.toImage()
+        samplepathname=os.path.join(dir, name+u'.png')
+        if os.path.exists(samplepathname):
+            os.unlink(samplepathname)
+        im.save(samplepathname, u'png')
+        log.debug(u'Theme image written to %s',samplepathname)
+
+    def generateImage(self, theme):
+        log.debug(u'generateImage %s ',  theme)
+        size=QtCore.QSize(800,600)
+        frame = QtGui.QPixmap(size.width(), size.height())
+        renderer=Renderer(self.path)
+        renderer.set_paint_dest(frame)
+
+        renderer.set_theme(theme) # set default theme
+        #renderer._render_background()
+        renderer.set_text_rectangle(QtCore.QRect(0,0, size.width()-1, size.height()-1), QtCore.QRect(10,560, size.width()-1, size.height()-1))
 
         lines=[]
         lines.append(u'Amazing Grace!')
@@ -338,23 +353,6 @@ class ThemeManager(QWidget):
         lines1=[]
         lines1.append(u'Amazing Grace (John Newton)' )
         lines1.append(u'CCLI xxx (c)Openlp.org')
+        answer=renderer.render_lines(lines, lines1)
+        return frame
 
-        answer=r._render_lines(lines, lines1)
-
-        im=frame.GetPixmap().toImage()
-        samplepathname=os.path.join(dir, name+u'.png')
-        if os.path.exists(samplepathname):
-            os.unlink(samplepathname)
-        im.save(samplepathname, u'png')
-        log.debug(u'Theme image written to %s',samplepathname)
-
-
-class TstFrame:
-    def __init__(self, size):
-        """Create the DemoPanel."""
-        self.width=size.width();
-        self.height=size.height();
-        # create something to be painted into
-        self._Buffer = QtGui.QPixmap(self.width, self.height)
-    def GetPixmap(self):
-        return self._Buffer
