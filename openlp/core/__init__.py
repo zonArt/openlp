@@ -19,7 +19,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 from PyQt4 import QtCore, QtGui
 
-from render import Renderer
+from openlp.core.lib.render import Renderer
 from settingsmanager import SettingsManager
 from pluginmanager import PluginManager
 
