@@ -32,13 +32,13 @@ from PyQt4.QtGui import *
 
 from openlp.core.ui import AmendThemeForm
 from openlp.core import translate
-from openlp.core import Renderer
 from openlp.core.theme import Theme
 from openlp.core.lib import Event
 from openlp.core.lib import EventType
 from openlp.core.lib import EventManager
 from openlp.core.lib import OpenLPToolbar
 from openlp.core.lib import ThemeXML
+from openlp.core.lib import Renderer
 from openlp.core.utils import ConfigHelper
 
 
@@ -301,7 +301,7 @@ class ThemeManager(QWidget):
             newtheme.add_background_solid(str(t.BackgroundParameter1.name()))
         elif t.BackgroundType == 1:
             direction = "vertical"
-            if t.BackgroundParameter1.name() == 1:
+            if t.BackgroundParameter3.name() == 1:
                 direction = "horizontal"
             newtheme.add_background_gradient(str(t.BackgroundParameter1.name()), str(t.BackgroundParameter2.name()), direction)
         else:

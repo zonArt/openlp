@@ -23,8 +23,8 @@ import os, os.path
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QColor, QFont
 from openlp.core.lib import ThemeXML
+from openlp.core.lib import Renderer
 from openlp.core import fileToXML
-from openlp.core import Renderer
 from openlp.core import translate
 
 from amendthemedialog import Ui_AmendThemeDialog
@@ -75,6 +75,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.previewTheme(self.theme)
 
     def onGradientComboBoxSelected(self, currentIndex):
+        print "Changed ", currentIndex
         if currentIndex == 0: # Horizontal
             self.theme.background_direction = u'horizontal'
         elif currentIndex == 1: # vertical
@@ -95,20 +96,16 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     def onBackgroundTypeComboBoxSelected(self, currentIndex):
         if currentIndex == 0: # Solid
             self.theme.background_type = u'solid'
-            if self.theme.background_direction == None: # never defined
-                self.theme.background_direction = u'horizontal'
-            if self.theme.background_startColor is None :
-                self.theme.background_startColor = u'#000000'
-            if self.theme.background_endColor is None :
-                self.theme.background_endColor = u'#000000'
+            if self.theme.background_color is None :
+                self.theme.background_color = u'#000000'
         elif currentIndex == 1: # Gradient
             self.theme.background_type = u'gradient'
             if self.theme.background_direction == None: # never defined
-                self.theme.background_direction = u'horizontal'
+                self.onGradientComboBoxSelected(self.GradientComboBox.currentIndex())
             if self.theme.background_startColor is None :
                 self.theme.background_startColor = u'#000000'
             if self.theme.background_endColor is None :
-                self.theme.background_endColor = u'#000000'
+                self.theme.background_endColor = u'#ff0000'
         else:
             self.theme.background_type = u'image'
         self.stateChanging(self.theme)
@@ -167,7 +164,13 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     def paintUi(self, theme):
         print theme  # leave as helpful for initial development
         self.stateChanging(theme)
-        self.BackgroundTypeComboBox.setCurrentIndex(0)
+        if theme.background_type == u'solid':
+            self.BackgroundTypeComboBox.setCurrentIndex(0)
+        elif theme.background_type == u'gradient':
+            self.BackgroundTypeComboBox.setCurrentIndex(1)
+        else:
+            self.BackgroundTypeComboBox.setCurrentIndex(2)
+
         self.BackgroundComboBox.setCurrentIndex(0)
         self.GradientComboBox.setCurrentIndex(0)
         self.MainFontColorPushButton.setStyleSheet(
@@ -179,11 +182,16 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         if theme.background_type == u'solid':
             self.Color1PushButton.setStyleSheet(
                 'background-color: %s' % str(theme.background_color))
-            self.Color1Label.setText(translate(u'ThemeManager', u'Background Font:'))
+            self.Color1Label.setText(translate(u'ThemeManager', u'Background Color:'))
             self.Color1Label.setVisible(True)
             self.Color1PushButton.setVisible(True)
             self.Color2Label.setVisible(False)
             self.Color2PushButton.setVisible(False)
+            self.ImageLabel.setVisible(False)
+            self.ImageLineEdit.setVisible(False)
+            self.ImageFilenameWidget.setVisible(False)
+            self.GradientLabel.setVisible(False)
+            self.GradientComboBox.setVisible(False)
         elif theme.background_type == u'gradient':
             self.Color1PushButton.setStyleSheet(
                 'background-color: %s' % str(theme.background_startColor))
@@ -195,11 +203,21 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             self.Color1PushButton.setVisible(True)
             self.Color2Label.setVisible(True)
             self.Color2PushButton.setVisible(True)
+            self.ImageLabel.setVisible(False)
+            self.ImageLineEdit.setVisible(False)
+            self.ImageFilenameWidget.setVisible(False)
+            self.GradientLabel.setVisible(True)
+            self.GradientComboBox.setVisible(True)
         else: # must be image
             self.Color1Label.setVisible(False)
             self.Color1PushButton.setVisible(False)
             self.Color2Label.setVisible(False)
             self.Color2PushButton.setVisible(False)
+            self.ImageLabel.setVisible(True)
+            self.ImageLineEdit.setVisible(True)
+            self.ImageFilenameWidget.setVisible(True)
+            self.GradientLabel.setVisible(False)
+            self.GradientComboBox.setVisible(False)
 
     def previewTheme(self, theme):
         frame = self.thememanager.generateImage(theme)

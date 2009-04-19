@@ -104,12 +104,12 @@ class ThemeXML():
         background.setAttribute(u'type', u'gradient')
         self.theme.appendChild(background)
 
-        color = self.theme_xml.createElement(u'startcolor')
+        color = self.theme_xml.createElement(u'startColor')
         bkc = self.theme_xml.createTextNode(startcolor)
         color.appendChild(bkc)
         background.appendChild(color)
 
-        color = self.theme_xml.createElement(u'endcolor')
+        color = self.theme_xml.createElement(u'endColor')
         bkc = self.theme_xml.createTextNode(endcolor)
         color.appendChild(bkc)
         background.appendChild(color)

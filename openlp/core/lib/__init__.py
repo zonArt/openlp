@@ -3,7 +3,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley,
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley,
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -32,7 +32,8 @@ from toolbar import OpenLPToolbar
 from songxmlhandler import SongXMLBuilder
 from songxmlhandler import SongXMLParser
 from themexmlhandler import ThemeXML
+from openlp.core.lib.render import Renderer
 
-__all__ = ['PluginConfig', 'Plugin', 'SettingsTab', 'MediaManagerItem', 'Event', 'EventType'
+__all__ = ['Renderer','PluginConfig', 'Plugin', 'SettingsTab', 'MediaManagerItem', 'Event', 'EventType'
            'XmlRootClass', 'ServiceItem', 'Receiver', 'OpenLPToolbar', 'SongXMLBuilder',
            'SongXMLParser', 'EventManager', 'ThemeXML']

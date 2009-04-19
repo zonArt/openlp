@@ -135,10 +135,10 @@ class Renderer:
             p.fillRect(self._paint.rect(), QtGui.QColor(self._theme.background_color))
         elif self._theme.background_type == u'gradient' : # gradient
             gradient = None
-            if self._theme.background_direction == u'vertical':
+            if self._theme.background_direction == u'horizontal':
                 w = int(self._paint.width())/2
                 gradient = QtGui.QLinearGradient(w, 0, w, self._paint.height()) # vertical
-            elif self._theme.background_direction == u'horizontal':
+            elif self._theme.background_direction == u'vertical':
                 h = int(self._paint.height())/2
                 gradient = QtGui.QLinearGradient(0, h, self._paint.width(), h)   # Horizontal
             else:

@@ -19,11 +19,10 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib.render import Renderer
 from settingsmanager import SettingsManager
 from pluginmanager import PluginManager
 
-__all__ = ['Renderer', 'SettingsManager', 'PluginManager', 'translate',
+__all__ = ['SettingsManager', 'PluginManager', 'translate',
             'fileToXML' ]
 
 def translate(context, text):
