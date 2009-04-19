@@ -20,6 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import os,os.path
 import sys
 import zipfile
+import shutil
 
 from time import sleep
 from copy import deepcopy
@@ -198,7 +199,19 @@ class ThemeManager(QWidget):
         self.amendThemeForm.exec_()
 
     def onDeleteTheme(self):
-        pass
+        items = self.ThemeListView.selectedIndexes()
+        theme = ''
+        for item in items:
+            data = self.Theme_data.getValue(item)
+            theme = data[3]
+        th = theme +  u'.png'
+        try:
+            os.remove(os.path.join(self.path, th))
+        except:
+            pass #if not present do not worry
+        shutil.rmtree(os.path.join(self.path, theme))
+        self.Theme_data.clearItems()
+        self.loadThemes()
 
     def onExportTheme(self):
         pass
