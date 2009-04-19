@@ -38,9 +38,6 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.setupUi(self)
 
         #define signals
-        #Exits
-        QtCore.QObject.connect(self.ThemeButtonBox, QtCore.SIGNAL("accepted()"), self.accept)
-        QtCore.QObject.connect(self.ThemeButtonBox, QtCore.SIGNAL("rejected()"), self.close)
         #Buttons
         QtCore.QObject.connect(self.Color1PushButton ,
             QtCore.SIGNAL("pressed()"), self.onColor1PushButtonClicked)

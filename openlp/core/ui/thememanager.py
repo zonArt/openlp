@@ -245,24 +245,23 @@ class ThemeManager(QWidget):
                     os.mkdir(os.path.join(dir, file))
             else:
                 fullpath = os.path.join(dir, file)
-                if themename is None:
-                    names = file.split(u'/')
-                    themename = names[0]
-                xml_data = zip.read(file)
-                if os.path.splitext (file) [1].lower ()  in [u'.xml']:
-                    if self.checkVersion1(xml_data):
-                        filexml = self.migrateVersion122(filename, fullpath, xml_data)
+                names = file.split(u'/')
+                if len(names) > 1: # not preview file
+                    if themename is None:
+                        themename = names[0]
+                    xml_data = zip.read(file)
+                    if os.path.splitext (file) [1].lower ()  in [u'.xml']:
+                        if self.checkVersion1(xml_data):
+                            filexml = self.migrateVersion122(filename, fullpath, xml_data)
+                        else:
+                            file_xml = xml_data
+                        outfile = open(fullpath, 'w')
+                        outfile.write(filexml)
+                        outfile.close()
                     else:
-                        file_xml = xml_data
-                    outfile = open(fullpath, 'w')
-                    outfile.write(filexml)
-                    outfile.close()
-                if os.path.splitext (file) [1].lower ()  in [u'.bmp']:
-                    print os.path.splitext (file)
-                else:
-                    outfile = open(fullpath, 'w')
-                    outfile.write(zip.read(file))
-                    outfile.close()
+                        outfile = open(fullpath, 'w')
+                        outfile.write(zip.read(file))
+                        outfile.close()
         self.generateImage(dir,themename, filexml)
 
     def checkVersion1(self, xmlfile):
