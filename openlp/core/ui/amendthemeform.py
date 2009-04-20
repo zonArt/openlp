@@ -55,7 +55,14 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             QtCore.SIGNAL("activated(int)"), self.onBackgroundTypeComboBoxSelected)
         QtCore.QObject.connect(self.GradientComboBox,
             QtCore.SIGNAL("activated(int)"), self.onGradientComboBoxSelected)
-
+        QtCore.QObject.connect(self.MainFontComboBox,
+            QtCore.SIGNAL("activated(int)"), self.onMainFontComboBoxSelected)
+        QtCore.QObject.connect(self.FontFooterComboBox,
+            QtCore.SIGNAL("activated(int)"), self.onFontFooterComboBoxSelected)
+        QtCore.QObject.connect(self.MainFontSizeSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onMainFontSizeSpinBoxChanged)
+        QtCore.QObject.connect(self.FontFooterSizeSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onFontFooterSizeSpinBoxChanged)
 
     def accept(self):
         return QtGui.QDialog.accept(self)
@@ -74,16 +81,33 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.paintUi(self.theme)
         self.previewTheme(self.theme)
 
-    def onGradientComboBoxSelected(self, currentIndex):
-        print "Changed ", currentIndex
-        if currentIndex == 0: # Horizontal
-            self.theme.background_direction = u'horizontal'
-        elif currentIndex == 1: # vertical
-            self.theme.background_direction = u'vertical'
-        else:
-            self.theme.background_direction = u'circular'
-        self.stateChanging(self.theme)
+    #
+    #Main Font Tab
+    #
+    def onMainFontComboBoxSelected(self):
+        self.theme.font_main_name = self.MainFontComboBox.currentFont().family()
         self.previewTheme(self.theme)
+
+    def onMainFontSizeSpinBoxChanged(self, value):
+        self.theme.font_main_proportion = value
+        self.previewTheme(self.theme)
+
+    #
+    #Footer Font Tab
+    #
+    def onFontFooterComboBoxSelected(self):
+        self.theme.font_footer_name = self.FontFooterComboBox.currentFont().family()
+        self.previewTheme(self.theme)
+
+    def onFontFooterSizeSpinBoxChanged(self, value):
+        self.theme.font_footer_proportion = value
+        self.previewTheme(self.theme)
+
+    #
+    #Background Tab
+    #
+    def onGradientComboBoxSelected(self, currentIndex):
+        self.setBackground(self.BackgroundTypeComboBox.currentIndex(), currentIndex)
 
     def onBackgroundComboBoxSelected(self, currentIndex):
         if currentIndex == 0: # Opaque
@@ -94,14 +118,21 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.previewTheme(self.theme)
 
     def onBackgroundTypeComboBoxSelected(self, currentIndex):
-        if currentIndex == 0: # Solid
+        self.setBackground(currentIndex, self.GradientComboBox.currentIndex())
+
+    def setBackground(self, background, gradient):
+        if background == 0: # Solid
             self.theme.background_type = u'solid'
             if self.theme.background_color is None :
                 self.theme.background_color = u'#000000'
-        elif currentIndex == 1: # Gradient
+        elif background == 1: # Gradient
             self.theme.background_type = u'gradient'
-            if self.theme.background_direction == None: # never defined
-                self.onGradientComboBoxSelected(self.GradientComboBox.currentIndex())
+            if gradient == 0: # Horizontal
+                self.theme.background_direction = u'horizontal'
+            elif gradient == 1: # vertical
+                self.theme.background_direction = u'vertical'
+            else:
+                self.theme.background_direction = u'circular'
             if self.theme.background_startColor is None :
                 self.theme.background_startColor = u'#000000'
             if self.theme.background_endColor is None :
@@ -149,6 +180,9 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             'background-color: %s' % str(self.theme.font_footer_color))
         self.previewTheme(self.theme)
 
+    #
+    #Local Methods
+    #
     def baseTheme(self):
         log.debug(u'base Theme')
         newtheme = ThemeXML()
@@ -164,19 +198,48 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     def paintUi(self, theme):
         print theme  # leave as helpful for initial development
         self.stateChanging(theme)
+        if self.theme.background_mode == u'opaque':
+            self.BackgroundComboBox.setCurrentIndex(0)
+        else:
+            self.BackgroundComboBox.setCurrentIndex(1)
         if theme.background_type == u'solid':
             self.BackgroundTypeComboBox.setCurrentIndex(0)
         elif theme.background_type == u'gradient':
             self.BackgroundTypeComboBox.setCurrentIndex(1)
         else:
             self.BackgroundTypeComboBox.setCurrentIndex(2)
+        if self.theme.background_direction == u'horizontal':
+            self.GradientComboBox.setCurrentIndex(0)
+        elif self.theme.background_direction == u'vertical':
+            self.GradientComboBox.setCurrentIndex(1)
+        else:
+            self.GradientComboBox.setCurrentIndex(2)
 
-        self.BackgroundComboBox.setCurrentIndex(0)
-        self.GradientComboBox.setCurrentIndex(0)
+        self.MainFontSizeSpinBox.setValue(int(self.theme.font_main_proportion))
+        self.FontMainXSpinBox.setValue(int(self.theme.font_main_x))
+        self.FontMainYSpinBox.setValue(int(self.theme.font_main_y))
+        self.FontMainWidthSpinBox.setValue(int(self.theme.font_main_width))
+        self.FontMainHeightSpinBox.setValue(int(self.theme.font_main_height))
+        self.FontFooterSizeSpinBox.setValue(int(self.theme.font_footer_proportion))
+        self.FontFooterXSpinBox.setValue(int(self.theme.font_footer_x))
+        self.FontFooterYSpinBox.setValue(int(self.theme.font_footer_y))
+        self.FontFooterWidthspinBox.setValue(int(self.theme.font_footer_width))
+        self.FontFooterHeightSpinBox.setValue(int(self.theme.font_footer_height))
         self.MainFontColorPushButton.setStyleSheet(
             'background-color: %s' % str(theme.font_main_color))
         self.FontFooterColorPushButton.setStyleSheet(
             'background-color: %s' % str(theme.font_footer_color))
+
+        if self.theme.font_main_override == u'True':
+            self.FontMainUseDefault.setChecked(True)
+        else:
+            self.FontMainUseDefault.setChecked(False)
+        if self.theme.font_footer_override == u'True':
+            self.FontFooterDefaultCheckBox.setChecked(True)
+        else:
+            self.FontFooterDefaultCheckBox.setChecked(False)
+
+
 
     def stateChanging(self, theme):
         if theme.background_type == u'solid':
@@ -218,6 +281,29 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             self.ImageFilenameWidget.setVisible(True)
             self.GradientLabel.setVisible(False)
             self.GradientComboBox.setVisible(False)
+
+        if theme.font_main_override == u'True':
+            self.FontMainXSpinBox.setEnabled(False)
+            self.FontMainYSpinBox.setEnabled(False)
+            self.FontMainWidthSpinBox.setEnabled(False)
+            self.FontMainHeightSpinBox.setEnabled(False)
+        else:
+            self.FontMainXSpinBox.setEnabled(True)
+            self.FontMainYSpinBox.setEnabled(True)
+            self.FontMainWidthSpinBox.setEnabled(True)
+            self.FontMainHeightSpinBox.setEnabled(True)
+
+        if theme.font_footer_override == u'True':
+            self.FontFooterXSpinBox.setEnabled(False)
+            self.FontFooterYSpinBox.setEnabled(False)
+            self.FontFooterWidthspinBox.setEnabled(False)
+            self.FontFooterHeightSpinBox.setEnabled(False)
+        else:
+            self.FontFooterXSpinBox.setEnabled(True)
+            self.FontFooterYSpinBox.setEnabled(True)
+            self.FontFooterWidthspinBox.setEnabled(True)
+            self.FontFooterHeightSpinBox.setEnabled(True)
+
 
     def previewTheme(self, theme):
         frame = self.thememanager.generateImage(theme)
