@@ -36,6 +36,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     def __init__(self, thememanager, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.thememanager = thememanager
+        self.theme = ThemeXML() # Needed here as UI setup generates Events
         self.setupUi(self)
 
         #define signals
@@ -44,8 +45,8 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             QtCore.SIGNAL("pressed()"), self.onColor1PushButtonClicked)
         QtCore.QObject.connect(self.Color2PushButton ,
             QtCore.SIGNAL("pressed()"), self.onColor2PushButtonClicked)
-        QtCore.QObject.connect(self.MainFontColorPushButton,
-            QtCore.SIGNAL("pressed()"), self.onMainFontColorPushButtonClicked)
+        QtCore.QObject.connect(self.FontMainColorPushButton,
+            QtCore.SIGNAL("pressed()"), self.onFontMainColorPushButtonClicked)
         QtCore.QObject.connect(self.FontFooterColorPushButton,
             QtCore.SIGNAL("pressed()"), self.onFontFooterColorPushButtonClicked)
         #Combo boxes
@@ -55,14 +56,35 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             QtCore.SIGNAL("activated(int)"), self.onBackgroundTypeComboBoxSelected)
         QtCore.QObject.connect(self.GradientComboBox,
             QtCore.SIGNAL("activated(int)"), self.onGradientComboBoxSelected)
-        QtCore.QObject.connect(self.MainFontComboBox,
-            QtCore.SIGNAL("activated(int)"), self.onMainFontComboBoxSelected)
+        QtCore.QObject.connect(self.FontMainComboBox,
+            QtCore.SIGNAL("activated(int)"), self.onFontMainComboBoxSelected)
         QtCore.QObject.connect(self.FontFooterComboBox,
             QtCore.SIGNAL("activated(int)"), self.onFontFooterComboBoxSelected)
-        QtCore.QObject.connect(self.MainFontSizeSpinBox,
-            QtCore.SIGNAL("valueChanged(int)"), self.onMainFontSizeSpinBoxChanged)
+        QtCore.QObject.connect(self.FontMainSizeSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onFontMainSizeSpinBoxChanged)
         QtCore.QObject.connect(self.FontFooterSizeSpinBox,
             QtCore.SIGNAL("valueChanged(int)"), self.onFontFooterSizeSpinBoxChanged)
+        QtCore.QObject.connect(self.FontMainDefaultCheckBox,
+            QtCore.SIGNAL("stateChanged(int)"), self.onFontMainDefaultCheckBoxChanged)
+        QtCore.QObject.connect(self.FontMainXSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onFontMainXSpinBoxChanged)
+        QtCore.QObject.connect(self.FontMainYSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onFontMainYSpinBoxChanged)
+        QtCore.QObject.connect(self.FontMainWidthSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onFontMainWidthSpinBoxChanged)
+        QtCore.QObject.connect(self.FontMainHeightSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onFontMainHeightSpinBoxChanged)
+        QtCore.QObject.connect(self.FontFooterDefaultCheckBox,
+            QtCore.SIGNAL("stateChanged(int)"), self.onFontFooterDefaultCheckBoxChanged)
+        QtCore.QObject.connect(self.FontFooterXSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onFontFooterXSpinBoxChanged)
+        QtCore.QObject.connect(self.FontFooterYSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onFontFooterYSpinBoxChanged)
+        QtCore.QObject.connect(self.FontFooterWidthSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onFontFooterWidthSpinBoxChanged)
+        QtCore.QObject.connect(self.FontFooterHeightSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onFontFooterHeightSpinBoxChanged)
+
 
     def accept(self):
         return QtGui.QDialog.accept(self)
@@ -71,7 +93,6 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.path = path
 
     def loadTheme(self, theme):
-        self.theme = ThemeXML()
         if theme == None:
             self.theme.parse(self.baseTheme())
         else:
@@ -84,13 +105,38 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     #
     #Main Font Tab
     #
-    def onMainFontComboBoxSelected(self):
-        self.theme.font_main_name = self.MainFontComboBox.currentFont().family()
+    def onFontMainComboBoxSelected(self):
+        self.theme.font_main_name = self.FontMainComboBox.currentFont().family()
         self.previewTheme(self.theme)
 
-    def onMainFontSizeSpinBoxChanged(self, value):
+    def onFontMainSizeSpinBoxChanged(self, value):
         self.theme.font_main_proportion = value
         self.previewTheme(self.theme)
+
+    def onFontMainDefaultCheckBoxChanged(self, value):
+        if value == 2:  # checked
+            self.theme.font_main_override = False
+        else:
+            self.theme.font_main_override = True
+        self.stateChanging(self.theme)
+        self.previewTheme(self.theme)
+
+    def onFontMainXSpinBoxChanged(self, value):
+        self.theme.font_main_x = value
+        self.previewTheme(self.theme)
+
+    def onFontMainYSpinBoxChanged(self, value):
+        self.theme.font_main_y = value
+        self.previewTheme(self.theme)
+
+    def onFontMainWidthSpinBoxChanged(self, value):
+        self.theme.font_main_width = value
+        self.previewTheme(self.theme)
+
+    def onFontMainHeightSpinBoxChanged(self, value):
+        self.theme.font_main_height = value
+        self.previewTheme(self.theme)
+
 
     #
     #Footer Font Tab
@@ -101,6 +147,34 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
 
     def onFontFooterSizeSpinBoxChanged(self, value):
         self.theme.font_footer_proportion = value
+        self.previewTheme(self.theme)
+
+    def onFontFooterDefaultCheckBoxChanged(self):
+        self.stateChanging(self.theme)
+        self.previewTheme(self.theme)
+
+    def onFontFooterDefaultCheckBoxChanged(self, value):
+        if value == 2:  # checked
+            self.theme.font_footer_override = False
+        else:
+            self.theme.font_footer_override = True
+        self.stateChanging(self.theme)
+        self.previewTheme(self.theme)
+
+    def onFontFooterXSpinBoxChanged(self, value):
+        self.theme.font_footer_x = value
+        self.previewTheme(self.theme)
+
+    def onFontFooterYSpinBoxChanged(self, value):
+        self.theme.font_footer_y = value
+        self.previewTheme(self.theme)
+
+    def onFontFooterWidthSpinBoxChanged(self, value):
+        self.theme.font_footer_width = value
+        self.previewTheme(self.theme)
+
+    def onFontFooterHeightSpinBoxChanged(self, value):
+        self.theme.font_footer_height = value
         self.previewTheme(self.theme)
 
     #
@@ -164,11 +238,11 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
 
         self.previewTheme(self.theme)
 
-    def onMainFontColorPushButtonClicked(self):
+    def onFontMainColorPushButtonClicked(self):
         self.theme.font_main_color = QtGui.QColorDialog.getColor(
             QColor(self.theme.font_main_color), self).name()
 
-        self.MainFontColorPushButton.setStyleSheet(
+        self.FontMainColorPushButton.setStyleSheet(
             'background-color: %s' % str(self.theme.font_main_color))
         self.previewTheme(self.theme)
 
@@ -188,8 +262,8 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         newtheme = ThemeXML()
         newtheme.new_document(u'New Theme')
         newtheme.add_background_solid(str(u'#000000'))
-        newtheme.add_font(str(QFont().family()), str(u'#FFFFFF'), str(30), u'False')
-        newtheme.add_font(str(QFont().family()), str(u'#FFFFFF'), str(12), u'False', u'footer')
+        newtheme.add_font(str(QFont().family()), str(u'#FFFFFF'), str(30), False)
+        newtheme.add_font(str(QFont().family()), str(u'#FFFFFF'), str(12), False, u'footer')
         newtheme.add_display(str(False), str(u'#FFFFFF'), str(False), str(u'#FFFFFF'),
             str(0), str(0), str(0))
 
@@ -215,7 +289,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         else:
             self.GradientComboBox.setCurrentIndex(2)
 
-        self.MainFontSizeSpinBox.setValue(int(self.theme.font_main_proportion))
+        self.FontMainSizeSpinBox.setValue(int(self.theme.font_main_proportion))
         self.FontMainXSpinBox.setValue(int(self.theme.font_main_x))
         self.FontMainYSpinBox.setValue(int(self.theme.font_main_y))
         self.FontMainWidthSpinBox.setValue(int(self.theme.font_main_width))
@@ -223,23 +297,21 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.FontFooterSizeSpinBox.setValue(int(self.theme.font_footer_proportion))
         self.FontFooterXSpinBox.setValue(int(self.theme.font_footer_x))
         self.FontFooterYSpinBox.setValue(int(self.theme.font_footer_y))
-        self.FontFooterWidthspinBox.setValue(int(self.theme.font_footer_width))
+        self.FontFooterWidthSpinBox.setValue(int(self.theme.font_footer_width))
         self.FontFooterHeightSpinBox.setValue(int(self.theme.font_footer_height))
-        self.MainFontColorPushButton.setStyleSheet(
+        self.FontMainColorPushButton.setStyleSheet(
             'background-color: %s' % str(theme.font_main_color))
         self.FontFooterColorPushButton.setStyleSheet(
             'background-color: %s' % str(theme.font_footer_color))
 
-        if self.theme.font_main_override == u'True':
-            self.FontMainUseDefault.setChecked(True)
+        if self.theme.font_main_override == False:
+            self.FontMainDefaultCheckBox.setChecked(True)
         else:
-            self.FontMainUseDefault.setChecked(False)
-        if self.theme.font_footer_override == u'True':
+            self.FontMainDefaultCheckBox.setChecked(False)
+        if self.theme.font_footer_override == False:
             self.FontFooterDefaultCheckBox.setChecked(True)
         else:
             self.FontFooterDefaultCheckBox.setChecked(False)
-
-
 
     def stateChanging(self, theme):
         if theme.background_type == u'solid':
@@ -282,7 +354,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             self.GradientLabel.setVisible(False)
             self.GradientComboBox.setVisible(False)
 
-        if theme.font_main_override == u'True':
+        if theme.font_main_override == False:
             self.FontMainXSpinBox.setEnabled(False)
             self.FontMainYSpinBox.setEnabled(False)
             self.FontMainWidthSpinBox.setEnabled(False)
@@ -293,17 +365,16 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             self.FontMainWidthSpinBox.setEnabled(True)
             self.FontMainHeightSpinBox.setEnabled(True)
 
-        if theme.font_footer_override == u'True':
+        if theme.font_footer_override == False:
             self.FontFooterXSpinBox.setEnabled(False)
             self.FontFooterYSpinBox.setEnabled(False)
-            self.FontFooterWidthspinBox.setEnabled(False)
+            self.FontFooterWidthSpinBox.setEnabled(False)
             self.FontFooterHeightSpinBox.setEnabled(False)
         else:
             self.FontFooterXSpinBox.setEnabled(True)
             self.FontFooterYSpinBox.setEnabled(True)
-            self.FontFooterWidthspinBox.setEnabled(True)
+            self.FontFooterWidthSpinBox.setEnabled(True)
             self.FontFooterHeightSpinBox.setEnabled(True)
-
 
     def previewTheme(self, theme):
         frame = self.thememanager.generateImage(theme)

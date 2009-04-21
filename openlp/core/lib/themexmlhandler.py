@@ -231,7 +231,10 @@ class ThemeXML():
                         setattr(self, master + element.tag +u'_'+ e[0], e[1])
                     else:
                         field = master + e[0]
-                        setattr(self, field, e[1])
+                        e1 = e[1]
+                        if e[1] == u'True' or e[1] == u'False':
+                            e1 = convertStringToBoolean(e[1])
+                        setattr(self, field, e1)
             else:
                 #print "c", element.tag, element.text
                 if element.tag is not None :

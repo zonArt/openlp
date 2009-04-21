@@ -307,8 +307,8 @@ class ThemeManager(QWidget):
         else:
             newtheme.add_background_image(str(t.BackgroundParameter1))
 
-        newtheme.add_font(str(t.FontName), str(t.FontColor.name()), str(t.FontProportion * 2), u'True')
-        newtheme.add_font(str(t.FontName), str(t.FontColor.name()), str(12), u'True', u'footer')
+        newtheme.add_font(str(t.FontName), str(t.FontColor.name()), str(t.FontProportion * 2), u'False')
+        newtheme.add_font(str(t.FontName), str(t.FontColor.name()), str(12), u'False', u'footer')
         outline = False
         shadow = False
         if t.Shadow == 1:
