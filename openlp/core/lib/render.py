@@ -239,9 +239,9 @@ class Renderer:
         x=rect.left()
         if int(self._theme.display_verticalAlign) == 0: # top align
             y = rect.top()
-        elif int(self._theme.display_verticalAlign) == 1: # bottom align
+        elif int(self._theme.display_verticalAlign) == 2: # bottom align
             y=rect.bottom()-bbox.height()
-        elif int(self._theme.display_verticalAlign) == 2: # centre align
+        elif int(self._theme.display_verticalAlign) == 1: # centre align
             y=rect.top()+(rect.height()-bbox.height())/2
         else:
             assert(0, u'Invalid value for theme.VerticalAlign:%s' % self._theme.display_verticalAlign)

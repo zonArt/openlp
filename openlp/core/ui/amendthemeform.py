@@ -49,6 +49,11 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             QtCore.SIGNAL("pressed()"), self.onFontMainColorPushButtonClicked)
         QtCore.QObject.connect(self.FontFooterColorPushButton,
             QtCore.SIGNAL("pressed()"), self.onFontFooterColorPushButtonClicked)
+        QtCore.QObject.connect(self.OutlineColorPushButton,
+            QtCore.SIGNAL("pressed()"), self.onOutlineColorPushButtonClicked)
+        QtCore.QObject.connect(self.ShadowColorPushButton,
+            QtCore.SIGNAL("pressed()"), self.onShadowColorPushButtonClicked)
+
         #Combo boxes
         QtCore.QObject.connect(self.BackgroundComboBox,
             QtCore.SIGNAL("activated(int)"), self.onBackgroundComboBoxSelected)
@@ -60,6 +65,11 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             QtCore.SIGNAL("activated(int)"), self.onFontMainComboBoxSelected)
         QtCore.QObject.connect(self.FontFooterComboBox,
             QtCore.SIGNAL("activated(int)"), self.onFontFooterComboBoxSelected)
+        QtCore.QObject.connect(self.HorizontalComboBox,
+            QtCore.SIGNAL("activated(int)"), self.onHorizontalComboBoxSelected)
+        QtCore.QObject.connect(self.VerticalComboBox,
+            QtCore.SIGNAL("activated(int)"), self.onVerticalComboBoxSelected)
+
         QtCore.QObject.connect(self.FontMainSizeSpinBox,
             QtCore.SIGNAL("valueChanged(int)"), self.onFontMainSizeSpinBoxChanged)
         QtCore.QObject.connect(self.FontFooterSizeSpinBox,
@@ -84,6 +94,10 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             QtCore.SIGNAL("valueChanged(int)"), self.onFontFooterWidthSpinBoxChanged)
         QtCore.QObject.connect(self.FontFooterHeightSpinBox,
             QtCore.SIGNAL("valueChanged(int)"), self.onFontFooterHeightSpinBoxChanged)
+        QtCore.QObject.connect(self.OutlineCheckBox,
+            QtCore.SIGNAL("stateChanged(int)"), self.onOutlineCheckBoxChanged)
+        QtCore.QObject.connect(self.ShadowCheckBox,
+            QtCore.SIGNAL("stateChanged(int)"), self.onShadowCheckBoxChanged)
 
 
     def accept(self):
@@ -255,6 +269,50 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.previewTheme(self.theme)
 
     #
+    #Other Tab
+    #
+    def onOutlineCheckBoxChanged(self, value):
+        if value == 2:  # checked
+            self.theme.display_outline = True
+        else:
+            self.theme.display_outline = False
+        self.stateChanging(self.theme)
+        self.previewTheme(self.theme)
+
+    def onOutlineColorPushButtonClicked(self):
+        self.theme.display_outline_color = QtGui.QColorDialog.getColor(
+            QColor(self.theme.display_outline_color), self).name()
+        self.OutlineColorPushButton.setStyleSheet(
+            'background-color: %s' % str(self.theme.display_outline_color))
+        self.previewTheme(self.theme)
+
+    def onShadowCheckBoxChanged(self, value):
+        if value == 2:  # checked
+            self.theme.display_shadow = True
+        else:
+            self.theme.display_shadow = False
+        self.stateChanging(self.theme)
+        self.previewTheme(self.theme)
+
+    def onShadowColorPushButtonClicked(self):
+        self.theme.display_shadow_color = QtGui.QColorDialog.getColor(
+            QColor(self.theme.display_shadow_color), self).name()
+        self.ShadowColorPushButton.setStyleSheet(
+            'background-color: %s' % str(self.theme.display_shadow_color))
+        self.previewTheme(self.theme)
+
+    def onHorizontalComboBoxSelected(self, currentIndex):
+        self.theme.display_horizontalAlign = currentIndex
+        self.stateChanging(self.theme)
+        self.previewTheme(self.theme)
+
+    def onVerticalComboBoxSelected(self, currentIndex):
+        self.theme.display_verticalAlign = currentIndex
+        self.stateChanging(self.theme)
+        self.previewTheme(self.theme)
+
+
+    #
     #Local Methods
     #
     def baseTheme(self):
@@ -272,16 +330,19 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     def paintUi(self, theme):
         print theme  # leave as helpful for initial development
         self.stateChanging(theme)
+        self.ThemeNameEdit.setText(self.theme.theme_name)
         if self.theme.background_mode == u'opaque':
             self.BackgroundComboBox.setCurrentIndex(0)
         else:
             self.BackgroundComboBox.setCurrentIndex(1)
+
         if theme.background_type == u'solid':
             self.BackgroundTypeComboBox.setCurrentIndex(0)
         elif theme.background_type == u'gradient':
             self.BackgroundTypeComboBox.setCurrentIndex(1)
         else:
             self.BackgroundTypeComboBox.setCurrentIndex(2)
+
         if self.theme.background_direction == u'horizontal':
             self.GradientComboBox.setCurrentIndex(0)
         elif self.theme.background_direction == u'vertical':
@@ -308,10 +369,33 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             self.FontMainDefaultCheckBox.setChecked(True)
         else:
             self.FontMainDefaultCheckBox.setChecked(False)
+
         if self.theme.font_footer_override == False:
             self.FontFooterDefaultCheckBox.setChecked(True)
         else:
             self.FontFooterDefaultCheckBox.setChecked(False)
+
+        self.OutlineColorPushButton.setStyleSheet(
+            'background-color: %s' % str(theme.display_outline_color))
+        self.ShadowColorPushButton.setStyleSheet(
+            'background-color: %s' % str(theme.display_shadow_color))
+
+        if self.theme.display_outline:
+            self.OutlineCheckBox.setChecked(True)
+            self.OutlineColorPushButton.setEnabled(True)
+        else:
+            self.OutlineCheckBox.setChecked(False)
+            self.OutlineColorPushButton.setEnabled(False)
+
+        if self.theme.display_shadow:
+            self.ShadowCheckBox.setChecked(True)
+            self.ShadowColorPushButton.setEnabled(True)
+        else:
+            self.ShadowCheckBox.setChecked(False)
+            self.ShadowColorPushButton.setEnabled(False)
+
+        self.HorizontalComboBox.setCurrentIndex(int(self.theme.display_horizontalAlign))
+        self.VerticalComboBox.setCurrentIndex(int(self.theme.display_verticalAlign))
 
     def stateChanging(self, theme):
         if theme.background_type == u'solid':
@@ -375,6 +459,17 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             self.FontFooterYSpinBox.setEnabled(True)
             self.FontFooterWidthSpinBox.setEnabled(True)
             self.FontFooterHeightSpinBox.setEnabled(True)
+
+        if self.theme.display_outline:
+            self.OutlineColorPushButton.setEnabled(True)
+        else:
+            self.OutlineColorPushButton.setEnabled(False)
+
+        if self.theme.display_shadow:
+            self.ShadowColorPushButton.setEnabled(True)
+        else:
+            self.ShadowColorPushButton.setEnabled(False)
+
 
     def previewTheme(self, theme):
         frame = self.thememanager.generateImage(theme)
