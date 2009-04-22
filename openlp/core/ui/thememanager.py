@@ -187,6 +187,9 @@ class ThemeManager(QWidget):
     def setEventManager(self, eventManager):
         self.eventManager = eventManager
 
+    def setRenderManager(self, renderManager):
+        self.renderManager = renderManager
+
     def onAddTheme(self):
         self.amendThemeForm.loadTheme(None)
         self.amendThemeForm.exec_()
@@ -335,24 +338,7 @@ class ThemeManager(QWidget):
 
     def generateImage(self, theme):
         log.debug(u'generateImage %s ',  theme)
-        size=QtCore.QSize(800,600)
-        frame = QtGui.QPixmap(size.width(), size.height())
-        renderer=Renderer(self.path)
-        renderer.set_paint_dest(frame)
-
-        renderer.set_theme(theme) # set default theme
-        #renderer._render_background()
-        renderer.set_text_rectangle(QtCore.QRect(0,0, size.width()-1, size.height()-1), QtCore.QRect(10,560, size.width()-1, size.height()-1))
-
-        lines=[]
-        lines.append(u'Amazing Grace!')
-        lines.append(u'How sweet the sound')
-        lines.append(u'To save a wretch like me;')
-        lines.append(u'I once was lost but now am found,')
-        lines.append(u'Was blind, but now I see.')
-        lines1=[]
-        lines1.append(u'Amazing Grace (John Newton)' )
-        lines1.append(u'CCLI xxx (c)Openlp.org')
-        answer=renderer.render_lines(lines, lines1)
+        self.renderManager.set_theme(theme)
+        frame = self.renderManager.generate_preview()
         return frame
 

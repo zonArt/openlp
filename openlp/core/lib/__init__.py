@@ -32,8 +32,9 @@ from toolbar import OpenLPToolbar
 from songxmlhandler import SongXMLBuilder
 from songxmlhandler import SongXMLParser
 from themexmlhandler import ThemeXML
-from openlp.core.lib.render import Renderer
+from renderer import Renderer
+from rendermanager import RenderManager
 
 __all__ = ['Renderer','PluginConfig', 'Plugin', 'SettingsTab', 'MediaManagerItem', 'Event', 'EventType'
            'XmlRootClass', 'ServiceItem', 'Receiver', 'OpenLPToolbar', 'SongXMLBuilder',
-           'SongXMLParser', 'EventManager', 'ThemeXML']
+           'SongXMLParser', 'EventManager', 'ThemeXML', 'RenderManager']

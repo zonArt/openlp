@@ -28,7 +28,7 @@ from openlp.core.resources import *
 
 from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
                            SlideController, ServiceManager, ThemeManager
-from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab, EventManager
+from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab, EventManager, RenderManager
 
 from openlp.core import PluginManager
 
@@ -44,6 +44,7 @@ class MainWindow(object):
         self.alert_form = AlertForm()
         self.about_form = AboutForm()
         self.settings_form = SettingsForm(self.screen_list)
+        self.RenderManager = RenderManager(self.screen_list)
 
         pluginpath = os.path.split(os.path.abspath(__file__))[0]
         pluginpath = os.path.abspath(os.path.join(pluginpath, '..', '..','plugins'))
@@ -57,6 +58,7 @@ class MainWindow(object):
         self.plugin_helpers[u'live'] = self.LiveController
         self.plugin_helpers[u'event'] = self.EventManager
         self.plugin_helpers[u'theme'] = self.ThemeManagerContents  # Theme manger
+        self.plugin_helpers[u'render'] = self.RenderManager
 
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers, self.EventManager)
         # hook methods have to happen after find_plugins.  Find plugins needs the controllers
@@ -84,6 +86,7 @@ class MainWindow(object):
         # Once all components are initialised load the Themes
         log.info(u'Load Themes')
         self.ThemeManagerContents.setEventManager(self.EventManager)
+        self.ThemeManagerContents.setRenderManager(self.RenderManager)
         self.ThemeManagerContents.loadThemes()
 
     def setupUi(self):

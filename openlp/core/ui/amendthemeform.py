@@ -123,6 +123,14 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.theme.font_main_name = self.FontMainComboBox.currentFont().family()
         self.previewTheme(self.theme)
 
+    def onFontMainColorPushButtonClicked(self):
+        self.theme.font_main_color = QtGui.QColorDialog.getColor(
+            QColor(self.theme.font_main_color), self).name()
+
+        self.FontMainColorPushButton.setStyleSheet(
+            'background-color: %s' % str(self.theme.font_main_color))
+        self.previewTheme(self.theme)
+
     def onFontMainSizeSpinBoxChanged(self, value):
         self.theme.font_main_proportion = value
         self.previewTheme(self.theme)
@@ -157,6 +165,14 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     #
     def onFontFooterComboBoxSelected(self):
         self.theme.font_footer_name = self.FontFooterComboBox.currentFont().family()
+        self.previewTheme(self.theme)
+
+    def onFontFooterColorPushButtonClicked(self):
+        self.theme.font_footer_color = QtGui.QColorDialog.getColor(
+            QColor(self.theme.font_footer_color), self).name()
+
+        self.FontFooterColorPushButton.setStyleSheet(
+            'background-color: %s' % str(self.theme.font_footer_color))
         self.previewTheme(self.theme)
 
     def onFontFooterSizeSpinBoxChanged(self, value):
@@ -251,23 +267,6 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             'background-color: %s' % str(self.theme.background_endColor))
 
         self.previewTheme(self.theme)
-
-    def onFontMainColorPushButtonClicked(self):
-        self.theme.font_main_color = QtGui.QColorDialog.getColor(
-            QColor(self.theme.font_main_color), self).name()
-
-        self.FontMainColorPushButton.setStyleSheet(
-            'background-color: %s' % str(self.theme.font_main_color))
-        self.previewTheme(self.theme)
-
-    def onFontFooterColorPushButtonClicked(self):
-        self.theme.font_footer_color = QtGui.QColorDialog.getColor(
-            QColor(self.theme.font_footer_color), self).name()
-
-        self.FontFooterColorPushButton.setStyleSheet(
-            'background-color: %s' % str(self.theme.font_footer_color))
-        self.previewTheme(self.theme)
-
     #
     #Other Tab
     #
@@ -310,8 +309,6 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.theme.display_verticalAlign = currentIndex
         self.stateChanging(self.theme)
         self.previewTheme(self.theme)
-
-
     #
     #Local Methods
     #
