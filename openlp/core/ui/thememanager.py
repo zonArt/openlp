@@ -275,7 +275,7 @@ class ThemeManager(QWidget):
                         if self.checkVersion1(xml_data):
                             filexml = self.migrateVersion122(filename, fullpath, xml_data) # upgrade theme xml
                         else:
-                            file_xml = xml_data
+                            filexml = xml_data
                         outfile = open(fullpath, 'w')
                         outfile.write(filexml)
                         outfile.close()
@@ -322,6 +322,19 @@ class ThemeManager(QWidget):
             str(t.HorizontalAlign), str(t.VerticalAlign), str(t.WrapStyle))
         return newtheme.extract_xml()
 
+    def saveTheme(self, name, theme_xml) :
+        self.generateAndSaveImage(self.path, name, theme_xml)
+        theme_dir = os.path.join(self.path, name)
+        if os.path.exists(theme_dir) == False:
+            os.mkdir(os.path.join(self.path, name))
+
+        theme_file = os.path.join(theme_dir, name+u'.xml')
+        outfile = open(theme_file, 'w')
+        outfile.write(theme_xml)
+        outfile.close()
+        self.Theme_data.clearItems()
+        self.loadThemes()
+
     def generateAndSaveImage(self, dir, name, theme_xml):
         log.debug(u'generateImage %s %s %s', dir, name, theme_xml)
         theme = ThemeXML()
@@ -330,7 +343,7 @@ class ThemeManager(QWidget):
         frame = self.generateImage(theme)
 
         im=frame.toImage()
-        samplepathname=os.path.join(dir, name+u'.png')
+        samplepathname=os.path.join(self.path, name+u'.png')
         if os.path.exists(samplepathname):
             os.unlink(samplepathname)
         im.save(samplepathname, u'png')

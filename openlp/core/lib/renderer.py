@@ -261,8 +261,8 @@ class Renderer:
         bbox=self._render_lines_unaligned(lines, False,  (x, y))
 
         if lines1 is not None:
-            x, y = self._correctAlignment(self._rect_footer, bbox1)
-            bbox=self._render_lines_unaligned(lines1, True, (x, y) )
+            #x, y = self._correctAlignment(self._rect_footer, bbox1)
+            bbox=self._render_lines_unaligned(lines1, True, (self._rect_footer.left(), self._rect_footer.top()) )
 
         log.debug(u'render lines DONE')
 
@@ -337,7 +337,10 @@ class Renderer:
         starty=y
         rightextent=None
         t=self._theme
-        align=t.display_horizontalAlign
+        if footer: # dont allow alignment messing with footers
+            align = 0
+        else:
+            align=t.display_horizontalAlign
 
         wrapstyle=t.display_wrapStyle
 
