@@ -61,7 +61,7 @@ class ServiceData(QAbstractItemModel):
         self.endRemoveRows()
     def addRow(self, item):
         self.insertRow(len(self.items), item)
-        
+
     def index(self, row, col, parent = QModelIndex()):
         return self.createIndex(row,col)
 
@@ -90,7 +90,7 @@ class ServiceData(QAbstractItemModel):
             return QVariant(retval)
         else:
             return retval
-        
+
     def __iter__(self):
         for i in self.items:
             yield i
@@ -99,7 +99,7 @@ class ServiceData(QAbstractItemModel):
         log.info("Get Item:%d -> %s" %(row, str(self.items)))
         return self.items[row]
 
-    
+
 class ServiceManager(QWidget):
 
     """Manages the orders of service.  Currently this involves taking
@@ -109,7 +109,7 @@ class ServiceManager(QWidget):
     Also handles the UI tasks of moving things up and down etc.
     """
     global log
-    log=logging.getLogger(u'ServiceManager')    
+    log=logging.getLogger(u'ServiceManager')
 
     def __init__(self, parent):
         QWidget.__init__(self)
@@ -128,9 +128,6 @@ class ServiceManager(QWidget):
         self.Toolbar.addSeparator()
         self.ThemeComboBox = QtGui.QComboBox(self.Toolbar)
         self.ThemeComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
-        self.ThemeComboBox.addItem(QtCore.QString())
-        self.ThemeComboBox.addItem(QtCore.QString())
-        self.ThemeComboBox.addItem(QtCore.QString())
         self.ThemeWidget = QtGui.QWidgetAction(self.Toolbar)
         self.ThemeWidget.setDefaultWidget(self.ThemeComboBox)
         self.Toolbar.addAction(self.ThemeWidget)
@@ -141,7 +138,7 @@ class ServiceManager(QWidget):
         self.service_data=ServiceData()
         self.TreeView.setModel(self.service_data)
         self.Layout.addWidget(self.TreeView)
-        
+
     def addServiceItem(self, item):
         """Adds service item"""
         log.info("addServiceItem")
@@ -165,7 +162,7 @@ class ServiceManager(QWidget):
                 self.service_data.addRow(item)
             else:
                 self.service_data.insertRow(row+1, item)
-                
+
     def removeServiceItem(self):
         """Remove currently selected item"""
         pass
@@ -189,3 +186,8 @@ class ServiceManager(QWidget):
         oosfile.write(self.oos_as_text)
         oosfile.write("# END OOS\n")
         oosfile.close()
+
+    def updateThemeList(self, theme_list):
+        self.ThemeComboBox.clear()
+        for theme in theme_list:
+            self.ThemeComboBox.addItem(theme)

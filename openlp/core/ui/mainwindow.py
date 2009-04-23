@@ -87,6 +87,7 @@ class MainWindow(object):
         log.info(u'Load Themes')
         self.ThemeManagerContents.setEventManager(self.EventManager)
         self.ThemeManagerContents.setRenderManager(self.RenderManager)
+        self.ThemeManagerContents.setServiceManager(self.ServiceManagerContents)
         self.ThemeManagerContents.loadThemes()
 
     def setupUi(self):

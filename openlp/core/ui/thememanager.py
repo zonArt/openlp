@@ -31,6 +31,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from openlp.core.ui import AmendThemeForm
+from openlp.core.ui import ServiceManager
 from openlp.core import translate
 from openlp.core.theme import Theme
 from openlp.core.lib import Event
@@ -40,7 +41,6 @@ from openlp.core.lib import OpenLPToolbar
 from openlp.core.lib import ThemeXML
 from openlp.core.lib import Renderer
 from openlp.core.utils import ConfigHelper
-
 
 import logging
 
@@ -190,6 +190,9 @@ class ThemeManager(QWidget):
     def setRenderManager(self, renderManager):
         self.renderManager = renderManager
 
+    def setServiceManager(self, serviceManager):
+        self.serviceManager = serviceManager
+
     def onAddTheme(self):
         self.amendThemeForm.loadTheme(None)
         self.amendThemeForm.exec_()
@@ -240,6 +243,7 @@ class ThemeManager(QWidget):
                     self.Theme_data.addRow(os.path.join(self.path, name))
 
         self.eventManager.post_event(Event(EventType.ThemeListChanged))
+        self.serviceManager.updateThemeList(self.getThemes())
 
     def getThemes(self):
         return self.Theme_data.getList()
@@ -323,6 +327,7 @@ class ThemeManager(QWidget):
         return newtheme.extract_xml()
 
     def saveTheme(self, name, theme_xml) :
+        log.debug(u'saveTheme %s %s', name, theme_xml)
         self.generateAndSaveImage(self.path, name, theme_xml)
         theme_dir = os.path.join(self.path, name)
         if os.path.exists(theme_dir) == False:
