@@ -3,7 +3,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley,
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley,
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -27,7 +27,7 @@ class SlideController(QtGui.QWidget):
         self.Pane = QtGui.QWidget(control_splitter)
         self.Splitter = QtGui.QSplitter(self.Pane)
         self.Splitter.setOrientation(QtCore.Qt.Vertical)
-        
+
         self.PaneLayout = QtGui.QVBoxLayout(self.Pane)
         self.PaneLayout.addWidget(self.Splitter)
         self.PaneLayout.setSpacing(50)
@@ -41,6 +41,23 @@ class SlideController(QtGui.QWidget):
         self.Controller.setGeometry(QtCore.QRect(0, 0, 828, 536))
         self.Controller.setWidget(self.ControllerContents)
 
-        self.Screen = QtGui.QGraphicsView(self.Splitter)
-        self.Screen.setMaximumSize(QtCore.QSize(16777215, 250))
+        #self.Screen = QtGui.QGraphicsView(self.Splitter)
+        #self.Screen.setMaximumSize(QtCore.QSize(16777215, 250))
 
+
+        self.ThemePreview = QtGui.QLabel(self.Splitter)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.ThemePreview.sizePolicy().hasHeightForWidth())
+        self.ThemePreview.setSizePolicy(sizePolicy)
+        self.ThemePreview.setMinimumSize(QtCore.QSize(250, 190))
+        self.ThemePreview.setFrameShape(QtGui.QFrame.WinPanel)
+        self.ThemePreview.setFrameShadow(QtGui.QFrame.Sunken)
+        self.ThemePreview.setLineWidth(1)
+        self.ThemePreview.setScaledContents(True)
+        self.ThemePreview.setObjectName("ThemePreview")
+
+
+    def previewFrame(self, frame):
+        self.ThemePreview.setPixmap(frame)

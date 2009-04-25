@@ -97,19 +97,18 @@ class Renderer:
         if self._bg_image_filename is not None:
             self.scale_bg_image()
 
-    def set_words_openlp(self, words):
-#         log.debug(u" "set words openlp", words
+    def format_slide(self, words, footer):
+        log.debug(u'format_slide %s', words)
         verses=[]
         words=words.replace(u'\r\n', u'\n')
-        verses_text=words.split(u'\n\n')
+        verses_text = words.split(u'\n')
         for v in verses_text:
             lines=v.split(u'\n')
-            verses.append(self.split_set_of_lines(lines)[0])
-        self.words=verses
+            verses.append(self.split_set_of_lines(lines, footer)[0])
+        self.words = verses
         verses_text=[]
         for v in verses:
             verses_text.append(u'\n'.join(v).lstrip()) # remove first \n
-
         return verses_text
 
     def render_screen(self, screennum):
@@ -172,22 +171,22 @@ class Renderer:
         p.end()
         log.debug(u'render background done')
 
-    def split_set_of_lines(self, lines):
+    def split_set_of_lines(self, lines, footer):
 
         """Given a list of lines, decide how to split them best if they don't all fit on the screen
          - this is done by splitting at 1/2, 1/3 or 1/4 of the set
          If it doesn't fit, even at this size, just split at each opportunity
 
-         We'll do this by getting the bounding box of each line, and then summing them appropriately
+         We'll do this by getting the bounding box of each lline, and then summing them appropriately
 
          Returns a list of [lists of lines], one set for each screenful
          """
-#         log.debug(u" "Split set of lines"
+        log.debug(u'Split set of lines')
         # Probably ought to save the rendering results to a pseudoDC for redrawing efficiency.  But let's not optimse prematurely!
 
         bboxes = []
         for line in lines:
-            bboxes.append(self._render_single_line(line))
+            bboxes.append(self._render_single_line(line, footer))
         numlines=len(lines)
         bottom=self._rect.bottom()
         for ratio in (numlines, numlines/2, numlines/3, numlines/4):
@@ -281,8 +280,8 @@ class Renderer:
         brx=x
         bry=y
         for line in lines:
-            if (line == ''):
-                continue
+            #if (line == ''):
+            #   continue
             # render after current bottom, but at original left edge
             # keep track of right edge to see which is biggest
             (thisx, bry) = self._render_single_line(line, footer, (x,bry))
@@ -309,7 +308,7 @@ class Renderer:
 
         Returns the bottom-right corner (of what was rendered) as a tuple(x, y).
         """
-        #log.debug(u'Render single line %s @ %s '%( line, tlcorner))
+        log.debug(u'Render single line %s @ %s '%( line, tlcorner))
         x, y=tlcorner
         # We draw the text to see how big it is and then iterate to make it fit
         # when we line wrap we do in in the "lyrics" style, so the second line is

@@ -33,6 +33,7 @@ from PyQt4.QtGui import *
 from openlp.core.ui import AmendThemeForm
 from openlp.core.ui import ServiceManager
 from openlp.core import translate
+from openlp.core import fileToXML
 from openlp.core.theme import Theme
 from openlp.core.lib import Event
 from openlp.core.lib import EventType
@@ -247,6 +248,13 @@ class ThemeManager(QWidget):
 
     def getThemes(self):
         return self.Theme_data.getList()
+
+    def getThemeData(self, themename):
+        xml_file = os.path.join(self.path, str(themename), str(themename)+u'.xml')
+        xml = fileToXML(xml_file)
+        theme = ThemeXML()
+        theme.parse(xml)
+        return theme
 
     def checkThemesExists(self, dir):
         log.debug(u'check themes')

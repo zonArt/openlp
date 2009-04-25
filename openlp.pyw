@@ -46,7 +46,7 @@ class OpenLP(QtGui.QApplication):
 
         self.setApplicationName(u'openlp.org')
         self.setApplicationVersion(u'1.9.0')
-        self.splash = SplashScreen()
+        self.splash = SplashScreen(self.applicationVersion())
         self.splash.show()
         # make sure Qt really display the splash screen
         self.processEvents()

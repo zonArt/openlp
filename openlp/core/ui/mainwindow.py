@@ -44,7 +44,6 @@ class MainWindow(object):
         self.alert_form = AlertForm()
         self.about_form = AboutForm()
         self.settings_form = SettingsForm(self.screen_list)
-        self.RenderManager = RenderManager(self.screen_list)
 
         pluginpath = os.path.split(os.path.abspath(__file__))[0]
         pluginpath = os.path.abspath(os.path.join(pluginpath, '..', '..','plugins'))
@@ -52,6 +51,11 @@ class MainWindow(object):
         self.plugin_helpers = {}
 
         self.setupUi()
+
+        #warning cyclic dependency
+        #RenderManager needs to call ThemeManager and
+        #ThemeManager needs to call RenderManager
+        self.RenderManager = RenderManager(self.ThemeManagerContents, self.screen_list)
 
         log.info(u'Load Plugins')
         self.plugin_helpers[u'preview'] = self.PreviewController
@@ -87,6 +91,7 @@ class MainWindow(object):
         log.info(u'Load Themes')
         self.ThemeManagerContents.setEventManager(self.EventManager)
         self.ThemeManagerContents.setRenderManager(self.RenderManager)
+        self.ServiceManagerContents.setRenderManager(self.RenderManager)
         self.ThemeManagerContents.setServiceManager(self.ServiceManagerContents)
         self.ThemeManagerContents.loadThemes()
 

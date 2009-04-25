@@ -33,32 +33,41 @@ class RenderManager:
     log=logging.getLogger(u'RenderManager')
     log.info(u'RenderManager Loaded')
 
-    def __init__(self, screen_list):
+    def __init__(self, theme_manager, screen_list):
         log.debug(u'Initilisation started')
         self.screen_list = screen_list
+        self.theme_manager = theme_manager
         self.displays = len(screen_list)
         self.current_display = 1
-        self.renderer = Renderer()
+        self.renderer = Renderer(None)
         self.calculate_default(self.screen_list[self.current_display-1][1])
+        self.frame = None
+
+    def set_default_theme(self, theme):
+        log.debug("default theme set to %s",  theme)
+        self.default_theme = self.theme_manager.getThemeData(theme)
+        self.renderer.set_theme(self.default_theme)
+
+        self.renderer.set_text_rectangle(QtCore.QRect(10,0, self.width-1, self.height-1),
+            QtCore.QRect(10,self.footer_start, self.width-1, self.height-self.footer_start))
+
 
     def set_theme(self, theme):
+        log.debug("theme set to %s",  theme)
         self.theme = theme
         if theme.font_main_override == False:
             pass
         if theme.font_footer_override == False:
             pass
 
-
     def generate_preview(self):
         self.calculate_default(QtCore.QSize(800,600))
 
-        frame = QtGui.QPixmap(self.width, self.height)
-        renderer=Renderer(None)
-        renderer.set_paint_dest(frame)
-
-        renderer.set_theme(self.theme)
-        renderer.set_text_rectangle(QtCore.QRect(10,0, self.width-1, self.height-1),
+        self.renderer.set_text_rectangle(QtCore.QRect(10,0, self.width-1, self.height-1),
             QtCore.QRect(10,self.footer_start, self.width-1, self.height-self.footer_start))
+
+        frame = QtGui.QPixmap(self.width, self.height)
+        self.renderer.set_paint_dest(frame)
 
         lines=[]
         lines.append(u'Amazing Grace!')
@@ -69,13 +78,34 @@ class RenderManager:
         lines1=[]
         lines1.append(u'Amazing Grace (John Newton)' )
         lines1.append(u'CCLI xxx (c)Openlp.org')
-        answer=renderer.render_lines(lines, lines1)
+        answer=self.renderer.render_lines(lines, lines1)
         return frame
 
-    def generate_bible(self):
-        pass
+    def format_slide(self, words, footer):
+        self.calculate_default(QtCore.QSize(800,600))
+
+        self.renderer.set_text_rectangle(QtCore.QRect(10,0, self.width-1, self.height-1),
+            QtCore.QRect(10,self.footer_start, self.width-1, self.height-self.footer_start))
+
+        return self.renderer.format_slide(words, footer)
+
+    def generate_slide(self,main_text, footer_text, preview=True):
+        if preview == True:
+            self.calculate_default(QtCore.QSize(800,600))
+
+        self.renderer.set_text_rectangle(QtCore.QRect(10,0, self.width-1, self.height-1),
+            QtCore.QRect(10,self.footer_start, self.width-1, self.height-self.footer_start))
+
+        #frame = QtGui.QPixmap(self.width, self.height)
+        #self.renderer.set_paint_dest(frame)
+        print main_text
+        answer=self.renderer.render_lines(main_text, footer_text)
+        return self.frame
 
     def calculate_default(self, screen):
         self.width = screen.width()
         self.height = screen.height()
         self.footer_start = int(self.height*0.95) # 95% is start of footer
+        #update the rederer frame
+        self.frame = QtGui.QPixmap(self.width, self.height)
+        self.renderer.set_paint_dest(self.frame)

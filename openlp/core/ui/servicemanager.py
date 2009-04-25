@@ -29,6 +29,7 @@ from PyQt4.QtGui import *
 # from openlp.core.ui import AboutForm, AlertForm, SettingsForm, SlideController
 from openlp.core.lib import OpenLPToolbar
 from openlp.core.lib import ServiceItem
+from openlp.core.lib import RenderManager
 
 # from openlp.core import PluginManager
 import logging
@@ -138,6 +139,14 @@ class ServiceManager(QWidget):
         self.service_data=ServiceData()
         self.TreeView.setModel(self.service_data)
         self.Layout.addWidget(self.TreeView)
+        QtCore.QObject.connect(self.ThemeComboBox,
+            QtCore.SIGNAL("activated(int)"), self.onThemeComboBoxSelected)
+
+    def setRenderManager(self, renderManager):
+        self.renderManager = renderManager
+
+    def onThemeComboBoxSelected(self, currentIndex):
+        self.renderManager.set_default_theme(self.ThemeComboBox.currentText())
 
     def addServiceItem(self, item):
         """Adds service item"""
@@ -191,3 +200,5 @@ class ServiceManager(QWidget):
         self.ThemeComboBox.clear()
         for theme in theme_list:
             self.ThemeComboBox.addItem(theme)
+            self.renderManager.set_default_theme(self.ThemeComboBox.currentText())
+

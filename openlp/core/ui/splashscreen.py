@@ -20,12 +20,15 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.resources import *
+#from openlp.core.resources import *
+from openlp.core import translate
 
 class SplashScreen(object):
-    def __init__(self):
+    def __init__(self, version):
         self.splash_screen = QtGui.QSplashScreen()
         self.setupUi()
+        starting = translate('SplashScreen',u'Starting')
+        self.message=starting+u'..... '+version
 
     def setupUi(self):
         self.splash_screen.setObjectName("splash_screen")
@@ -60,7 +63,7 @@ class SplashScreen(object):
 
     def show(self):
         self.splash_screen.show()
-        self.splash_screen.showMessage(u'Starting...', QtCore.Qt.AlignLeft | QtCore.Qt.AlignBottom,  QtCore.Qt.black)
+        self.splash_screen.showMessage(self.message, QtCore.Qt.AlignLeft | QtCore.Qt.AlignBottom,  QtCore.Qt.black)
         self.splash_screen.repaint()
 
     def finish(self, widget):
