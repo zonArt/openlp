@@ -55,6 +55,10 @@ class RenderManager:
     def set_theme(self, theme):
         log.debug("theme set to %s",  theme)
         self.theme = theme
+        self.renderer.set_theme(self.theme)
+
+        self.renderer.set_text_rectangle(QtCore.QRect(10,0, self.width-1, self.height-1),
+            QtCore.QRect(10,self.footer_start, self.width-1, self.height-self.footer_start))
         if theme.font_main_override == False:
             pass
         if theme.font_footer_override == False:
@@ -98,7 +102,7 @@ class RenderManager:
 
         #frame = QtGui.QPixmap(self.width, self.height)
         #self.renderer.set_paint_dest(frame)
-        print main_text
+        #print main_text
         answer=self.renderer.render_lines(main_text, footer_text)
         return self.frame
 

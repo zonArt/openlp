@@ -349,7 +349,7 @@ class ThemeManager(QWidget):
         self.loadThemes()
 
     def generateAndSaveImage(self, dir, name, theme_xml):
-        log.debug(u'generateImage %s %s %s', dir, name, theme_xml)
+        log.debug(u'generateAndSaveImage %s %s %s', dir, name, theme_xml)
         theme = ThemeXML()
         theme.parse(theme_xml)
 
