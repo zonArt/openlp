@@ -3,7 +3,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -19,15 +19,14 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 from PyQt4 import QtCore, QtGui
 
-from render import Renderer
 from settingsmanager import SettingsManager
-from pluginmanager import PluginManager
+from openlp.core.lib.pluginmanager import PluginManager
 
-__all__ = ['Renderer', 'SettingsManager', 'PluginManager', 'translate', 'fileToXML']
+__all__ = ['SettingsManager', 'PluginManager', 'translate',
+            'fileToXML' ]
 
 def translate(context, text):
     return QtGui.QApplication.translate(context, text, None, QtGui.QApplication.UnicodeUTF8)
 
 def fileToXML(xmlfile):
     return open(xmlfile).read()
-

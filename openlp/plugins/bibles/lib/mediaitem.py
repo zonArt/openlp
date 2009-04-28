@@ -48,19 +48,19 @@ class BibleMediaItem(MediaManagerItem):
         # Create buttons for the toolbar
         ## New Bible Button ##
         self.addToolbarButton(
-            translate(u'BibleMediaItem','New Bible'), 
+            translate(u'BibleMediaItem','New Bible'),
             translate(u'BibleMediaItem','Register a new Bible'),
             ':/themes/theme_import.png', self.onBibleNewClick, 'BibleNewItem')
         ## Separator Line ##
         self.addToolbarSeparator()
         ## Preview Bible Button ##
         self.addToolbarButton(
-            translate(u'BibleMediaItem','Preview Bible'), 
+            translate(u'BibleMediaItem','Preview Bible'),
             translate(u'BibleMediaItem','Preview the selected Bible Verse'),
             ':/system/system_preview.png', self.onBiblePreviewClick, 'BiblePreviewItem')
         ## Live Bible Button ##
         self.addToolbarButton(
-            translate(u'BibleMediaItem','Go Live'), 
+            translate(u'BibleMediaItem','Go Live'),
             translate(u'BibleMediaItem','Send the selected Bible Verse(s) live'),
             ':/system/system_live.png', self.onBibleLiveClick, 'BibleLiveItem')
         ## Add Bible Button ##
@@ -183,9 +183,10 @@ class BibleMediaItem(MediaManagerItem):
         self.BibleListView.setAlternatingRowColors(True)
         self.BibleListData = TextListData()
         self.BibleListView.setModel(self.BibleListData)
-        
+        self.BibleListView.setSelectionMode(2)
+
         self.PageLayout.addWidget(self.BibleListView)
-        
+
         # Combo Boxes
         QtCore.QObject.connect(self.AdvancedVersionComboBox,
             QtCore.SIGNAL("activated(int)"), self.onAdvancedVersionComboBox)
@@ -215,7 +216,7 @@ class BibleMediaItem(MediaManagerItem):
             translate(u'BibleMediaItem',u'&Add to Service'), self.onBibleAddClick))
 
     def retranslateUi(self):
-        log.debug(u'retranslateUi')        
+        log.debug(u'retranslateUi')
         self.QuickVersionLabel.setText(translate(u'BibleMediaItem', u'Version:'))
         self.QuickSearchLabel.setText(translate(u'BibleMediaItem', u'Search Type:'))
         self.QuickSearchLabel.setText(translate(u'BibleMediaItem', u'Find:'))
@@ -241,15 +242,15 @@ class BibleMediaItem(MediaManagerItem):
         self.loadBibles()
 
     def loadBibles(self):
-        log.debug(u'Loading Bibles')  
+        log.debug(u'Loading Bibles')
         self.QuickVersionComboBox.clear()
         self.AdvancedVersionComboBox.clear()
-        
+
         bibles = self.parent.biblemanager.get_bibles(u'full')
-        
+
         for bible in bibles:  # load bibles into the combo boxes
             self.QuickVersionComboBox.addItem(bible)
-            
+
         bibles = self.parent.biblemanager.get_bibles(u'partial') # Without HTTP
         first = True
         for bible in bibles:  # load bibles into the combo boxes
@@ -328,6 +329,8 @@ class BibleMediaItem(MediaManagerItem):
         log.debug(u'Bible Preview Button pressed')
         items = self.BibleListView.selectedIndexes()
         old_chapter = ''
+        main_lines=[]
+        footer_lines = []
         for item in items:
             text = self.BibleListData.getValue(item)
             verse = text[:text.find("(")]
@@ -348,16 +351,19 @@ class BibleMediaItem(MediaManagerItem):
             else:
                 loc = self.formatVerse(old_chapter, chapter, verse, u'', u'')
             old_chapter = chapter
-            print book
-            print loc
-            print text
+            main_lines.append(loc + u' '+text)
+            if len(footer_lines) <= 1:
+                footer_lines.append(book)
+
+        frame=self.parent.render_manager.generate_slide(main_lines, footer_lines)
+        self.parent.preview_controller.previewFrame(frame)
 
     def formatVerse(self, old_chapter, chapter, verse, opening, closing):
         loc = opening
         if old_chapter != chapter:
             loc += chapter + u':'
-        elif not self.parent.bibles_tab.new_chapter_check:
-            loc += chapter + u':'            
+        elif not self.parent.bibles_tab.show_new_chapters:
+            loc += chapter + u':'
         loc += verse
         loc += closing
         return loc

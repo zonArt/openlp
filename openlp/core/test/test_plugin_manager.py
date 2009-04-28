@@ -1,4 +1,7 @@
 import logging
+import os, sys
+from openlp.core.lib.pluginmanager import PluginManager
+
 logging.basicConfig(level=logging.DEBUG,
                 format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
                 datefmt='%m-%d %H:%M',
@@ -14,11 +17,9 @@ logging.getLogger('').addHandler(console)
 log=logging.getLogger('')
 
 logging.info("Logging started")
-import os, sys
 mypath=os.path.split(os.path.abspath(__file__))[0]
 
 sys.path.insert(0,(os.path.join(mypath, '..' ,'..', '..')))
-from openlp.core.pluginmanager import PluginManager
 
 # test the plugin manager with some plugins in the test_plugins directory
 class TestPluginManager:

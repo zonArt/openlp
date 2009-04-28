@@ -80,3 +80,7 @@ class FileListData(QAbstractListModel):
     def getFilename(self, index):
         row = index.row()
         return self.items[row][0]
+
+    def getValue(self, index):
+        row = index.row()
+        return self.items[row][0]

@@ -46,15 +46,15 @@ class OpenLP(QtGui.QApplication):
 
         self.setApplicationName(u'openlp.org')
         self.setApplicationVersion(u'1.9.0')
-        self.splash = SplashScreen()
+        self.splash = SplashScreen(self.applicationVersion())
         self.splash.show()
         # make sure Qt really display the splash screen
         self.processEvents()
         screens = []
         # Decide how many screens we have and their size
-        for i in range (0 ,  self.desktop().numScreens()):
-            screens.insert(i, (i+1, self.desktop().availableGeometry(i+1)))
-            log.info(u'Screen %d found with resolution %s', i+1, self.desktop().availableGeometry(i+1))
+        for screen in xrange (0 ,  self.desktop().numScreens()):
+            screens.insert(screen, (screen+1, self.desktop().availableGeometry(screen+1)))
+            log.info(u'Screen %d found with resolution %s', screen+1, self.desktop().availableGeometry(screen+1))
         # start the main app window
         self.main_window = MainWindow(screens)
         self.main_window.show()

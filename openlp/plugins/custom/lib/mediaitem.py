@@ -23,7 +23,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core import translate
 from openlp.core.lib import MediaManagerItem
-from openlp.core.resources import *
+from openlp.core.lib import SongXMLParser
 
 from openlp.plugins.custom.lib import TextListData
 
@@ -44,7 +44,7 @@ class CustomMediaItem(MediaManagerItem):
         # Create buttons for the toolbar
         ## New Custom Button ##
         self.addToolbarButton(
-            translate('CustomMediaItem',u'New Custom Item'), 
+            translate('CustomMediaItem',u'New Custom Item'),
             translate('CustomMediaItem',u'Add a new Custom Item'),
             ':/custom/custom_new.png', self.onCustomNewClick, 'CustomNewItem')
         ## Edit Custom Button ##
@@ -72,7 +72,7 @@ class CustomMediaItem(MediaManagerItem):
         ## Add Custom Button ##
         self.addToolbarButton(
             translate('CustomMediaItem',u'Add Custom To Service'),
-            translate('CustomMediaItem',u'Add the selected Custom(s) to the service'), 
+            translate('CustomMediaItem',u'Add the selected Custom(s) to the service'),
             ':/system/system_add.png', self.onCustomAddClick, 'CustomAddItem')
         # Add the Customlist widget
         self.CustomWidget = QtGui.QWidget(self)
@@ -82,7 +82,7 @@ class CustomMediaItem(MediaManagerItem):
         sizePolicy.setHeightForWidth(self.CustomWidget.sizePolicy().hasHeightForWidth())
         self.CustomWidget.setSizePolicy(sizePolicy)
         self.CustomWidget.setObjectName(u'CustomWidget')
-        
+
 #        self.SearchLayout = QtGui.QGridLayout(self.CustomWidget)
 #        self.SearchLayout.setObjectName('SearchLayout')
 #        self.SearchTextLabel = QtGui.QLabel(self.CustomWidget)
@@ -92,7 +92,7 @@ class CustomMediaItem(MediaManagerItem):
 #        self.SearchTextEdit = QtGui.QLineEdit(self.CustomWidget)
 #        self.SearchTextEdit.setObjectName('SearchTextEdit')
 #        self.SearchLayout.addWidget(self.SearchTextEdit, 2, 1, 1, 2)
-#        
+#
 #        self.ClearTextButton = QtGui.QPushButton(self.CustomWidget)
 #        self.ClearTextButton.setObjectName('ClearTextButton')
 #
@@ -102,22 +102,22 @@ class CustomMediaItem(MediaManagerItem):
 #        self.SearchLayout.addWidget(self.SearchTextButton, 3, 2, 1, 1)
         # Add the Custom widget to the page layout
         self.PageLayout.addWidget(self.CustomWidget)
-        
+
         self.CustomListView = QtGui.QListView()
         self.CustomListView.setAlternatingRowColors(True)
         self.CustomListData = TextListData()
         self.CustomListView.setModel(self.CustomListData)
-        
+
         self.PageLayout.addWidget(self.CustomListView)
 
         # Signals
-#        QtCore.QObject.connect(self.SearchTextButton, 
+#        QtCore.QObject.connect(self.SearchTextButton,
 #            QtCore.SIGNAL("pressed()"), self.onSearchTextButtonClick)
-#        QtCore.QObject.connect(self.ClearTextButton, 
+#        QtCore.QObject.connect(self.ClearTextButton,
 #            QtCore.SIGNAL("pressed()"), self.onClearTextButtonClick)
-#        QtCore.QObject.connect(self.SearchTextEdit, 
+#        QtCore.QObject.connect(self.SearchTextEdit,
 #            QtCore.SIGNAL("textChanged(const QString&)"), self.onSearchTextEditChanged)
-#        QtCore.QObject.connect(self.CustomListView, 
+#        QtCore.QObject.connect(self.CustomListView,
 #            QtCore.SIGNAL("itemPressed(QTableWidgetItem * item)"), self.onCustomSelected)
 
         #define and add the context menu
@@ -135,14 +135,14 @@ class CustomMediaItem(MediaManagerItem):
         self.CustomListView.addAction(self.contextMenuAction(
             self.CustomListView, ':/system/system_add.png',
             translate('CustomMediaItem',u'&Add to Service'), self.onCustomEditClick))
-            
+
 #    def retranslateUi(self):
 #        self.ClearTextButton.setText(translate('CustomMediaItem', u'Clear'))
-#        self.SearchTextButton.setText(translate('CustomMediaItem', u'Search'))        
-        
+#        self.SearchTextButton.setText(translate('CustomMediaItem', u'Search'))
+
     def initialise(self):
         self.loadCustomList(self.parent.custommanager.get_all_slides())
-        
+
     def loadCustomList(self, list):
         self.CustomListData.resetStore()
         for CustomSlide in list:
@@ -166,9 +166,9 @@ class CustomMediaItem(MediaManagerItem):
         self._display_results(search_results)
 
     def onCustomNewClick(self):
-        self.parent.edit_custom_form.loadCustom(0)        
+        self.parent.edit_custom_form.loadCustom(0)
         self.parent.edit_custom_form.exec_()
-        self.initialise()        
+        self.initialise()
 
     def onCustomEditClick(self):
         indexes = self.CustomListView.selectedIndexes()
@@ -185,7 +185,25 @@ class CustomMediaItem(MediaManagerItem):
             self.CustomListData.deleteRow(index)
 
     def onCustomPreviewClick(self):
-        pass
+        indexes = self.CustomListView.selectedIndexes()
+        main_lines=[]
+        footer_lines = []
+        slide = None
+        for index in indexes:
+            id = self.CustomListData.getId(index)
+            customSlide = self.parent.custommanager.get_custom(id)
+            title = customSlide.title
+            credit = customSlide.title
+
+            songXML=SongXMLParser(customSlide.text)
+            verseList = songXML.get_verses()
+            for verse in verseList:
+                slide = self.parent.render_manager.format_slide(verse[1], False)
+
+            footer_lines.append(title + u' '+ credit)
+
+        frame=self.parent.render_manager.generate_slide(slide, footer_lines)
+        self.parent.preview_controller.previewFrame(frame)
 
     def onCustomLiveClick(self):
         pass

@@ -23,8 +23,8 @@ import os, os.path
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QColor, QFont
 from openlp.core.lib import ThemeXML
+from openlp.core.lib import Renderer
 from openlp.core import fileToXML
-from openlp.core import Renderer
 from openlp.core import translate
 
 from amendthemedialog import Ui_AmendThemeDialog
@@ -33,23 +33,27 @@ log = logging.getLogger(u'AmendThemeForm')
 
 class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
 
-    def __init__(self, parent=None):
+    def __init__(self, thememanager, parent=None):
         QtGui.QDialog.__init__(self, parent)
+        self.thememanager = thememanager
+        self.theme = ThemeXML() # Needed here as UI setup generates Events
         self.setupUi(self)
 
         #define signals
-        #Exits
-        QtCore.QObject.connect(self.ThemeButtonBox, QtCore.SIGNAL("accepted()"), self.accept)
-        QtCore.QObject.connect(self.ThemeButtonBox, QtCore.SIGNAL("rejected()"), self.close)
         #Buttons
         QtCore.QObject.connect(self.Color1PushButton ,
             QtCore.SIGNAL("pressed()"), self.onColor1PushButtonClicked)
         QtCore.QObject.connect(self.Color2PushButton ,
             QtCore.SIGNAL("pressed()"), self.onColor2PushButtonClicked)
-        QtCore.QObject.connect(self.MainFontColorPushButton,
-            QtCore.SIGNAL("pressed()"), self.onMainFontColorPushButtonClicked)
+        QtCore.QObject.connect(self.FontMainColorPushButton,
+            QtCore.SIGNAL("pressed()"), self.onFontMainColorPushButtonClicked)
         QtCore.QObject.connect(self.FontFooterColorPushButton,
             QtCore.SIGNAL("pressed()"), self.onFontFooterColorPushButtonClicked)
+        QtCore.QObject.connect(self.OutlineColorPushButton,
+            QtCore.SIGNAL("pressed()"), self.onOutlineColorPushButtonClicked)
+        QtCore.QObject.connect(self.ShadowColorPushButton,
+            QtCore.SIGNAL("pressed()"), self.onShadowColorPushButtonClicked)
+
         #Combo boxes
         QtCore.QObject.connect(self.BackgroundComboBox,
             QtCore.SIGNAL("activated(int)"), self.onBackgroundComboBoxSelected)
@@ -57,16 +61,69 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             QtCore.SIGNAL("activated(int)"), self.onBackgroundTypeComboBoxSelected)
         QtCore.QObject.connect(self.GradientComboBox,
             QtCore.SIGNAL("activated(int)"), self.onGradientComboBoxSelected)
+        QtCore.QObject.connect(self.FontMainComboBox,
+            QtCore.SIGNAL("activated(int)"), self.onFontMainComboBoxSelected)
+        QtCore.QObject.connect(self.FontFooterComboBox,
+            QtCore.SIGNAL("activated(int)"), self.onFontFooterComboBoxSelected)
+        QtCore.QObject.connect(self.HorizontalComboBox,
+            QtCore.SIGNAL("activated(int)"), self.onHorizontalComboBoxSelected)
+        QtCore.QObject.connect(self.VerticalComboBox,
+            QtCore.SIGNAL("activated(int)"), self.onVerticalComboBoxSelected)
+
+        QtCore.QObject.connect(self.FontMainSizeSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onFontMainSizeSpinBoxChanged)
+        QtCore.QObject.connect(self.FontFooterSizeSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onFontFooterSizeSpinBoxChanged)
+        QtCore.QObject.connect(self.FontMainDefaultCheckBox,
+            QtCore.SIGNAL("stateChanged(int)"), self.onFontMainDefaultCheckBoxChanged)
+        QtCore.QObject.connect(self.FontMainXSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onFontMainXSpinBoxChanged)
+        QtCore.QObject.connect(self.FontMainYSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onFontMainYSpinBoxChanged)
+        QtCore.QObject.connect(self.FontMainWidthSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onFontMainWidthSpinBoxChanged)
+        QtCore.QObject.connect(self.FontMainHeightSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onFontMainHeightSpinBoxChanged)
+        QtCore.QObject.connect(self.FontFooterDefaultCheckBox,
+            QtCore.SIGNAL("stateChanged(int)"), self.onFontFooterDefaultCheckBoxChanged)
+        QtCore.QObject.connect(self.FontFooterXSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onFontFooterXSpinBoxChanged)
+        QtCore.QObject.connect(self.FontFooterYSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onFontFooterYSpinBoxChanged)
+        QtCore.QObject.connect(self.FontFooterWidthSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onFontFooterWidthSpinBoxChanged)
+        QtCore.QObject.connect(self.FontFooterHeightSpinBox,
+            QtCore.SIGNAL("valueChanged(int)"), self.onFontFooterHeightSpinBoxChanged)
+        QtCore.QObject.connect(self.OutlineCheckBox,
+            QtCore.SIGNAL("stateChanged(int)"), self.onOutlineCheckBoxChanged)
+        QtCore.QObject.connect(self.ShadowCheckBox,
+            QtCore.SIGNAL("stateChanged(int)"), self.onShadowCheckBoxChanged)
 
 
     def accept(self):
+        new_theme = ThemeXML()
+        theme_name = str(self.ThemeNameEdit.displayText())
+        new_theme.new_document(theme_name)
+        if self.theme.background_type == u'solid':
+            new_theme.add_background_solid(str(self.theme.background_color))
+        elif self.theme.theme.background_type == u'gradient':
+            new_theme.add_background_gradient(str(self.theme.background_startColor), str(self.theme.background_endColor), self.theme.background_direction)
+        #else:
+            #newtheme.add_background_image(str(self.theme.))
+
+        new_theme.add_font(str(self.theme.font_main_name), str(self.theme.font_main_color), str(self.theme.font_main_proportion), u'False')
+        new_theme.add_font(str(self.theme.font_footer_name), str(self.theme.font_footer_color), str(self.theme.font_footer_proportion), u'False', u'footer')
+        new_theme.add_display(str(self.theme.display_shadow), str(self.theme.display_shadow_color), str(self.theme.display_outline), str(self.theme.display_outline_color),
+            str(self.theme.display_horizontalAlign), str(self.theme.display_verticalAlign), str(self.theme.display_wrapStyle))
+
+        theme = new_theme.extract_xml()
+        self.thememanager.saveTheme(theme_name, theme)
         return QtGui.QDialog.accept(self)
 
     def themePath(self, path):
         self.path = path
 
     def loadTheme(self, theme):
-        self.theme = ThemeXML()
         if theme == None:
             self.theme.parse(self.baseTheme())
         else:
@@ -74,62 +131,69 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             xml = fileToXML(xml_file)
             self.theme.parse(xml)
         self.paintUi(self.theme)
-        self.generateImage(self.theme)
+        self.previewTheme(self.theme)
 
-    def onGradientComboBoxSelected(self):
-        if self.GradientComboBox.currentIndex() == 0: # Horizontal
-            self.theme.background_direction = u'horizontal'
-        elif self.GradientComboBox.currentIndex() == 1: # vertical
-            self.theme.background_direction = u'vertical'
-        else:
-            self.theme.background_direction = u'circular'
-        self.stateChanging(self.theme)
-        self.generateImage(self.theme)
+    #
+    #Main Font Tab
+    #
+    def onFontMainComboBoxSelected(self):
+        self.theme.font_main_name = self.FontMainComboBox.currentFont().family()
+        self.previewTheme(self.theme)
 
-    def onBackgroundComboBoxSelected(self):
-        if self.BackgroundComboBox.currentIndex() == 0: # Opaque
-            self.theme.background_mode = u'opaque'
-        else:
-            self.theme.background_mode = u'transparent'
-        self.stateChanging(self.theme)
-        self.generateImage(self.theme)
-
-    def onBackgroundTypeComboBoxSelected(self):
-        if self.BackgroundTypeComboBox.currentIndex() == 0: # Solid
-            self.theme.background_type = u'solid'
-        elif self.BackgroundTypeComboBox.currentIndex() == 1: # Gradient
-            self.theme.background_type = u'gradient'
-            if self.theme.background_direction == None: # never defined
-                self.theme.background_direction = u'horizontal'
-                self.theme.background_color2 = u'#000000'
-        else:
-            self.theme.background_type = u'image'
-        self.stateChanging(self.theme)
-        self.generateImage(self.theme)
-
-    def onColor1PushButtonClicked(self):
-        self.theme.background_color1 = QtGui.QColorDialog.getColor(
-            QColor(self.theme.background_color1), self).name()
-        self.Color1PushButton.setStyleSheet(
-            'background-color: %s' % str(self.theme.background_color1))
-
-        self.generateImage(self.theme)
-
-    def onColor2PushButtonClicked(self):
-        self.theme.background_color2 = QtGui.QColorDialog.getColor(
-            QColor(self.theme.background_color2), self).name()
-        self.Color2PushButton.setStyleSheet(
-            'background-color: %s' % str(self.theme.background_color2))
-
-        self.generateImage(self.theme)
-
-    def onMainFontColorPushButtonClicked(self):
+    def onFontMainColorPushButtonClicked(self):
         self.theme.font_main_color = QtGui.QColorDialog.getColor(
             QColor(self.theme.font_main_color), self).name()
 
-        self.MainFontColorPushButton.setStyleSheet(
+        self.FontMainColorPushButton.setStyleSheet(
             'background-color: %s' % str(self.theme.font_main_color))
-        self.generateImage(self.theme)
+        self.previewTheme(self.theme)
+
+    def onFontMainSizeSpinBoxChanged(self, value):
+        self.theme.font_main_proportion = value
+        self.previewTheme(self.theme)
+
+    def onFontMainDefaultCheckBoxChanged(self, value):
+        if value == 2:  # checked
+            self.theme.font_main_override = False
+        else:
+            self.theme.font_main_override = True
+
+        if int(self.theme.font_main_x) == 0 and int(self.theme.font_main_y) == 0 and \
+                int(self.theme.font_main_width) == 0 and int(self.theme.font_main_height) == 0:
+            self.theme.font_main_x = u'10'
+            self.theme.font_main_y = u'10'
+            self.theme.font_main_width = u'1024'
+            self.theme.font_main_height = u'730'
+            self.FontMainXSpinBox.setValue(int(self.theme.font_main_x))
+            self.FontMainYSpinBox.setValue(int(self.theme.font_main_y))
+            self.FontMainWidthSpinBox.setValue(int(self.theme.font_main_width))
+            self.FontMainHeightSpinBox.setValue(int(self.theme.font_main_height))
+        self.stateChanging(self.theme)
+        self.previewTheme(self.theme)
+
+    def onFontMainXSpinBoxChanged(self, value):
+        self.theme.font_main_x = value
+        self.previewTheme(self.theme)
+
+    def onFontMainYSpinBoxChanged(self, value):
+        self.theme.font_main_y = value
+        self.previewTheme(self.theme)
+
+    def onFontMainWidthSpinBoxChanged(self, value):
+        self.theme.font_main_width = value
+        self.previewTheme(self.theme)
+
+    def onFontMainHeightSpinBoxChanged(self, value):
+        self.theme.font_main_height = value
+        self.previewTheme(self.theme)
+
+
+    #
+    #Footer Font Tab
+    #
+    def onFontFooterComboBoxSelected(self):
+        self.theme.font_footer_name = self.FontFooterComboBox.currentFont().family()
+        self.previewTheme(self.theme)
 
     def onFontFooterColorPushButtonClicked(self):
         self.theme.font_footer_color = QtGui.QColorDialog.getColor(
@@ -137,15 +201,165 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
 
         self.FontFooterColorPushButton.setStyleSheet(
             'background-color: %s' % str(self.theme.font_footer_color))
-        self.generateImage(self.theme)
+        self.previewTheme(self.theme)
 
+    def onFontFooterSizeSpinBoxChanged(self, value):
+        self.theme.font_footer_proportion = value
+        self.previewTheme(self.theme)
+
+    def onFontFooterDefaultCheckBoxChanged(self):
+        self.stateChanging(self.theme)
+        self.previewTheme(self.theme)
+
+    def onFontFooterDefaultCheckBoxChanged(self, value):
+        if value == 2:  # checked
+            self.theme.font_footer_override = False
+        else:
+            self.theme.font_footer_override = True
+            if int(self.theme.font_footer_x) == 0 and int(self.theme.font_footer_y) == 0 and \
+                    int(self.theme.font_footer_width) == 0 and int(self.theme.font_footer_height) == 0:
+                self.theme.font_footer_x = u'10'
+                self.theme.font_footer_y = u'730'
+                self.theme.font_footer_width = u'1024'
+                self.theme.font_footer_height = u'38'
+
+                self.FontFooterXSpinBox.setValue(int(self.theme.font_footer_x))
+                self.FontFooterYSpinBox.setValue(int(self.theme.font_footer_y))
+                self.FontFooterWidthSpinBox.setValue(int(self.theme.font_footer_width))
+                self.FontFooterHeightSpinBox.setValue(int(self.theme.font_footer_height))
+
+
+        self.stateChanging(self.theme)
+        self.previewTheme(self.theme)
+
+    def onFontFooterXSpinBoxChanged(self, value):
+        self.theme.font_footer_x = value
+        self.previewTheme(self.theme)
+
+    def onFontFooterYSpinBoxChanged(self, value):
+        self.theme.font_footer_y = value
+        self.previewTheme(self.theme)
+
+    def onFontFooterWidthSpinBoxChanged(self, value):
+        self.theme.font_footer_width = value
+        self.previewTheme(self.theme)
+
+    def onFontFooterHeightSpinBoxChanged(self, value):
+        self.theme.font_footer_height = value
+        self.previewTheme(self.theme)
+
+    #
+    #Background Tab
+    #
+    def onGradientComboBoxSelected(self, currentIndex):
+        self.setBackground(self.BackgroundTypeComboBox.currentIndex(), currentIndex)
+
+    def onBackgroundComboBoxSelected(self, currentIndex):
+        if currentIndex == 0: # Opaque
+            self.theme.background_mode = u'opaque'
+        else:
+            self.theme.background_mode = u'transparent'
+        self.stateChanging(self.theme)
+        self.previewTheme(self.theme)
+
+    def onBackgroundTypeComboBoxSelected(self, currentIndex):
+        self.setBackground(currentIndex, self.GradientComboBox.currentIndex())
+
+    def setBackground(self, background, gradient):
+        if background == 0: # Solid
+            self.theme.background_type = u'solid'
+            if self.theme.background_color is None :
+                self.theme.background_color = u'#000000'
+        elif background == 1: # Gradient
+            self.theme.background_type = u'gradient'
+            if gradient == 0: # Horizontal
+                self.theme.background_direction = u'horizontal'
+            elif gradient == 1: # vertical
+                self.theme.background_direction = u'vertical'
+            else:
+                self.theme.background_direction = u'circular'
+            if self.theme.background_startColor is None :
+                self.theme.background_startColor = u'#000000'
+            if self.theme.background_endColor is None :
+                self.theme.background_endColor = u'#ff0000'
+        else:
+            self.theme.background_type = u'image'
+        self.stateChanging(self.theme)
+        self.previewTheme(self.theme)
+
+    def onColor1PushButtonClicked(self):
+        if self.theme.background_type == u'solid':
+            self.theme.background_color = QtGui.QColorDialog.getColor(
+                QColor(self.theme.background_color), self).name()
+            self.Color1PushButton.setStyleSheet(
+                'background-color: %s' % str(self.theme.background_color))
+        else:
+            self.theme.background_startColor = QtGui.QColorDialog.getColor(
+                QColor(self.theme.background_startColor), self).name()
+            self.Color1PushButton.setStyleSheet(
+                'background-color: %s' % str(self.theme.background_startColor))
+
+        self.previewTheme(self.theme)
+
+    def onColor2PushButtonClicked(self):
+        self.theme.background_endColor = QtGui.QColorDialog.getColor(
+            QColor(self.theme.background_endColor), self).name()
+        self.Color2PushButton.setStyleSheet(
+            'background-color: %s' % str(self.theme.background_endColor))
+
+        self.previewTheme(self.theme)
+    #
+    #Other Tab
+    #
+    def onOutlineCheckBoxChanged(self, value):
+        if value == 2:  # checked
+            self.theme.display_outline = True
+        else:
+            self.theme.display_outline = False
+        self.stateChanging(self.theme)
+        self.previewTheme(self.theme)
+
+    def onOutlineColorPushButtonClicked(self):
+        self.theme.display_outline_color = QtGui.QColorDialog.getColor(
+            QColor(self.theme.display_outline_color), self).name()
+        self.OutlineColorPushButton.setStyleSheet(
+            'background-color: %s' % str(self.theme.display_outline_color))
+        self.previewTheme(self.theme)
+
+    def onShadowCheckBoxChanged(self, value):
+        if value == 2:  # checked
+            self.theme.display_shadow = True
+        else:
+            self.theme.display_shadow = False
+        self.stateChanging(self.theme)
+        self.previewTheme(self.theme)
+
+    def onShadowColorPushButtonClicked(self):
+        self.theme.display_shadow_color = QtGui.QColorDialog.getColor(
+            QColor(self.theme.display_shadow_color), self).name()
+        self.ShadowColorPushButton.setStyleSheet(
+            'background-color: %s' % str(self.theme.display_shadow_color))
+        self.previewTheme(self.theme)
+
+    def onHorizontalComboBoxSelected(self, currentIndex):
+        self.theme.display_horizontalAlign = currentIndex
+        self.stateChanging(self.theme)
+        self.previewTheme(self.theme)
+
+    def onVerticalComboBoxSelected(self, currentIndex):
+        self.theme.display_verticalAlign = currentIndex
+        self.stateChanging(self.theme)
+        self.previewTheme(self.theme)
+    #
+    #Local Methods
+    #
     def baseTheme(self):
         log.debug(u'base Theme')
         newtheme = ThemeXML()
         newtheme.new_document(u'New Theme')
         newtheme.add_background_solid(str(u'#000000'))
-        newtheme.add_font(str(QFont().family()), str(u'#FFFFFF'), str(30), u'False')
-        newtheme.add_font(str(QFont().family()), str(u'#FFFFFF'), str(12), u'False', u'footer')
+        newtheme.add_font(str(QFont().family()), str(u'#FFFFFF'), str(30), False)
+        newtheme.add_font(str(QFont().family()), str(u'#FFFFFF'), str(12), False, u'footer')
         newtheme.add_display(str(False), str(u'#FFFFFF'), str(False), str(u'#FFFFFF'),
             str(0), str(0), str(0))
 
@@ -154,76 +368,147 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     def paintUi(self, theme):
         print theme  # leave as helpful for initial development
         self.stateChanging(theme)
-        self.BackgroundTypeComboBox.setCurrentIndex(0)
-        self.BackgroundComboBox.setCurrentIndex(0)
-        self.GradientComboBox.setCurrentIndex(0)
-        self.MainFontColorPushButton.setStyleSheet(
+        self.ThemeNameEdit.setText(self.theme.theme_name)
+        if self.theme.background_mode == u'opaque':
+            self.BackgroundComboBox.setCurrentIndex(0)
+        else:
+            self.BackgroundComboBox.setCurrentIndex(1)
+
+        if theme.background_type == u'solid':
+            self.BackgroundTypeComboBox.setCurrentIndex(0)
+        elif theme.background_type == u'gradient':
+            self.BackgroundTypeComboBox.setCurrentIndex(1)
+        else:
+            self.BackgroundTypeComboBox.setCurrentIndex(2)
+
+        if self.theme.background_direction == u'horizontal':
+            self.GradientComboBox.setCurrentIndex(0)
+        elif self.theme.background_direction == u'vertical':
+            self.GradientComboBox.setCurrentIndex(1)
+        else:
+            self.GradientComboBox.setCurrentIndex(2)
+
+        self.FontMainSizeSpinBox.setValue(int(self.theme.font_main_proportion))
+        self.FontMainXSpinBox.setValue(int(self.theme.font_main_x))
+        self.FontMainYSpinBox.setValue(int(self.theme.font_main_y))
+        self.FontMainWidthSpinBox.setValue(int(self.theme.font_main_width))
+        self.FontMainHeightSpinBox.setValue(int(self.theme.font_main_height))
+        self.FontFooterSizeSpinBox.setValue(int(self.theme.font_footer_proportion))
+        self.FontFooterXSpinBox.setValue(int(self.theme.font_footer_x))
+        self.FontFooterYSpinBox.setValue(int(self.theme.font_footer_y))
+        self.FontFooterWidthSpinBox.setValue(int(self.theme.font_footer_width))
+        self.FontFooterHeightSpinBox.setValue(int(self.theme.font_footer_height))
+        self.FontMainColorPushButton.setStyleSheet(
             'background-color: %s' % str(theme.font_main_color))
         self.FontFooterColorPushButton.setStyleSheet(
             'background-color: %s' % str(theme.font_footer_color))
 
+        if self.theme.font_main_override == False:
+            self.FontMainDefaultCheckBox.setChecked(True)
+        else:
+            self.FontMainDefaultCheckBox.setChecked(False)
+
+        if self.theme.font_footer_override == False:
+            self.FontFooterDefaultCheckBox.setChecked(True)
+        else:
+            self.FontFooterDefaultCheckBox.setChecked(False)
+
+        self.OutlineColorPushButton.setStyleSheet(
+            'background-color: %s' % str(theme.display_outline_color))
+        self.ShadowColorPushButton.setStyleSheet(
+            'background-color: %s' % str(theme.display_shadow_color))
+
+        if self.theme.display_outline:
+            self.OutlineCheckBox.setChecked(True)
+            self.OutlineColorPushButton.setEnabled(True)
+        else:
+            self.OutlineCheckBox.setChecked(False)
+            self.OutlineColorPushButton.setEnabled(False)
+
+        if self.theme.display_shadow:
+            self.ShadowCheckBox.setChecked(True)
+            self.ShadowColorPushButton.setEnabled(True)
+        else:
+            self.ShadowCheckBox.setChecked(False)
+            self.ShadowColorPushButton.setEnabled(False)
+
+        self.HorizontalComboBox.setCurrentIndex(int(self.theme.display_horizontalAlign))
+        self.VerticalComboBox.setCurrentIndex(int(self.theme.display_verticalAlign))
+
     def stateChanging(self, theme):
         if theme.background_type == u'solid':
             self.Color1PushButton.setStyleSheet(
-                'background-color: %s' % str(theme.background_color1))
-            self.Color1Label.setText(translate(u'ThemeManager', u'Background Font:'))
+                'background-color: %s' % str(theme.background_color))
+            self.Color1Label.setText(translate(u'ThemeManager', u'Background Color:'))
             self.Color1Label.setVisible(True)
             self.Color1PushButton.setVisible(True)
             self.Color2Label.setVisible(False)
             self.Color2PushButton.setVisible(False)
+            self.ImageLabel.setVisible(False)
+            self.ImageLineEdit.setVisible(False)
+            self.ImageFilenameWidget.setVisible(False)
+            self.GradientLabel.setVisible(False)
+            self.GradientComboBox.setVisible(False)
         elif theme.background_type == u'gradient':
             self.Color1PushButton.setStyleSheet(
-                'background-color: %s' % str(theme.background_color1))
+                'background-color: %s' % str(theme.background_startColor))
             self.Color2PushButton.setStyleSheet(
-                'background-color: %s' % str(theme.background_color2))
+                'background-color: %s' % str(theme.background_endColor))
             self.Color1Label.setText(translate(u'ThemeManager', u'First  Color:'))
             self.Color2Label.setText(translate(u'ThemeManager', u'Second Color:'))
             self.Color1Label.setVisible(True)
             self.Color1PushButton.setVisible(True)
             self.Color2Label.setVisible(True)
             self.Color2PushButton.setVisible(True)
+            self.ImageLabel.setVisible(False)
+            self.ImageLineEdit.setVisible(False)
+            self.ImageFilenameWidget.setVisible(False)
+            self.GradientLabel.setVisible(True)
+            self.GradientComboBox.setVisible(True)
         else: # must be image
             self.Color1Label.setVisible(False)
             self.Color1PushButton.setVisible(False)
             self.Color2Label.setVisible(False)
             self.Color2PushButton.setVisible(False)
+            self.ImageLabel.setVisible(True)
+            self.ImageLineEdit.setVisible(True)
+            self.ImageFilenameWidget.setVisible(True)
+            self.GradientLabel.setVisible(False)
+            self.GradientComboBox.setVisible(False)
 
-    def generateImage(self, theme):
-        log.debug(u'generateImage %s ',  theme)
-        #theme = ThemeXML()
-        #theme.parse(theme_xml)
-        #print theme
-        size=QtCore.QSize(800,600)
-        frame=TstFrame(size)
-        frame=frame
-        paintdest=frame.GetPixmap()
-        r=Renderer()
-        r.set_paint_dest(paintdest)
+        if theme.font_main_override == False:
+            self.FontMainXSpinBox.setEnabled(False)
+            self.FontMainYSpinBox.setEnabled(False)
+            self.FontMainWidthSpinBox.setEnabled(False)
+            self.FontMainHeightSpinBox.setEnabled(False)
+        else:
+            self.FontMainXSpinBox.setEnabled(True)
+            self.FontMainYSpinBox.setEnabled(True)
+            self.FontMainWidthSpinBox.setEnabled(True)
+            self.FontMainHeightSpinBox.setEnabled(True)
 
-        r.set_theme(theme) # set default theme
-        r._render_background()
-        r.set_text_rectangle(QtCore.QRect(0,0, size.width()-1, size.height()-1), QtCore.QRect(10,560, size.width()-1, size.height()-1))
+        if theme.font_footer_override == False:
+            self.FontFooterXSpinBox.setEnabled(False)
+            self.FontFooterYSpinBox.setEnabled(False)
+            self.FontFooterWidthSpinBox.setEnabled(False)
+            self.FontFooterHeightSpinBox.setEnabled(False)
+        else:
+            self.FontFooterXSpinBox.setEnabled(True)
+            self.FontFooterYSpinBox.setEnabled(True)
+            self.FontFooterWidthSpinBox.setEnabled(True)
+            self.FontFooterHeightSpinBox.setEnabled(True)
 
-        lines=[]
-        lines.append(u'Amazing Grace!')
-        lines.append(u'How sweet the sound')
-        lines.append(u'To save a wretch like me;')
-        lines.append(u'I once was lost but now am found,')
-        lines.append(u'Was blind, but now I see.')
-        lines1=[]
-        lines1.append(u'Amazing Grace (John Newton)' )
-        lines1.append(u'CCLI xxx (c)Openlp.org')
+        if self.theme.display_outline:
+            self.OutlineColorPushButton.setEnabled(True)
+        else:
+            self.OutlineColorPushButton.setEnabled(False)
 
-        answer=r._render_lines(lines, lines1)
+        if self.theme.display_shadow:
+            self.ShadowColorPushButton.setEnabled(True)
+        else:
+            self.ShadowColorPushButton.setEnabled(False)
 
-        self.ThemePreview.setPixmap(frame.GetPixmap())
 
-class TstFrame:
-    def __init__(self, size):
-        """Create the DemoPanel."""
-        self.width=size.width();
-        self.height=size.height();
-        # create something to be painted into
-        self._Buffer = QtGui.QPixmap(self.width, self.height)
-    def GetPixmap(self):
-        return self._Buffer
+    def previewTheme(self, theme):
+        frame = self.thememanager.generateImage(theme)
+        self.ThemePreview.setPixmap(frame)

@@ -91,8 +91,9 @@ class Plugin(object):
         self.preview_controller=plugin_helpers[u'preview']
         self.live_controller=plugin_helpers[u'live']
         self.theme_manager=plugin_helpers[u'theme']
-        self.event_manager=plugin_helpers[u'event']        
-        
+        self.event_manager=plugin_helpers[u'event']
+        self.render_manager=plugin_helpers[u'render']
+
     def check_pre_conditions(self):
         """
         Provides the Plugin with a handle to check if it can be loaded.
@@ -118,7 +119,7 @@ class Plugin(object):
         Create a menu item and add it to the "Export" menu.
         """
         pass
-        
+
     def get_settings_tab(self):
         """
         Create a menu item and add it to the "Import" menu.
