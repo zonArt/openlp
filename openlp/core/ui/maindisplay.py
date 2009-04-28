@@ -40,8 +40,9 @@ class MainDisplay(QtGui.QWidget):
             print self.isEnabled()
             print self.isVisible()
             print self.geometry()
-            if len(self.screens) > 0:
-                self.showFullScreen()
+            #if len(self.screens) > 0:
+            self.showFullScreen()
+            self.show()
 
     def frameView(self, frame):
             self.display.setGeometry(0, 0, imagesize.width(), imagesize.height())
