@@ -24,10 +24,8 @@ from time import sleep
 from PyQt4 import *
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.resources import *
-
 from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
-                           SlideController, ServiceManager, ThemeManager
+                           SlideController, ServiceManager, ThemeManager, MainDisplay
 from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab, EventManager, RenderManager
 
 from openlp.core import PluginManager
@@ -39,6 +37,7 @@ class MainWindow(object):
 
     def __init__(self, screens):
         self.main_window = QtGui.QMainWindow()
+        self.main_display = MainDisplay(screens, self.main_window)
         self.screen_list = screens
         self.EventManager = EventManager()
         self.alert_form = AlertForm()
@@ -89,10 +88,10 @@ class MainWindow(object):
 
         # Once all components are initialised load the Themes
         log.info(u'Load Themes')
-        self.ThemeManagerContents.setEventManager(self.EventManager)
-        self.ThemeManagerContents.setRenderManager(self.RenderManager)
-        self.ServiceManagerContents.setRenderManager(self.RenderManager)
-        self.ThemeManagerContents.setServiceManager(self.ServiceManagerContents)
+        self.ThemeManagerContents.eventManager = self.EventManager
+        self.ThemeManagerContents.renderManager = self.RenderManager
+        self.ServiceManagerContents.renderManager = self.RenderManager
+        self.ThemeManagerContents.serviceManager = self.ServiceManagerContents
         self.ThemeManagerContents.loadThemes()
 
     def setupUi(self):
@@ -421,8 +420,9 @@ class MainWindow(object):
         self.ModeLiveItem.setText(QtGui.QApplication.translate("main_window", "&Live", None, QtGui.QApplication.UnicodeUTF8))
 
     def show(self):
-        sleep(2)
         self.main_window.showMaximized()
+        self.main_display.initialView()
+        self.main_display.show()
 
     def onHelpAboutItemClicked(self):
         self.about_form.exec_()

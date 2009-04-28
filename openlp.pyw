@@ -39,6 +39,9 @@ class OpenLP(QtGui.QApplication):
     log=logging.getLogger(u'OpenLP Application')
     log.info(u'Application Loaded')
 
+    def bye(self):
+        print "bye"
+
     def run(self):
         #provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -65,3 +68,4 @@ class OpenLP(QtGui.QApplication):
 if __name__ == '__main__':
     app = OpenLP(sys.argv)
     app.run()
+

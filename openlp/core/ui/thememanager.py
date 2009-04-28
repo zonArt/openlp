@@ -45,7 +45,7 @@ from openlp.core.utils import ConfigHelper
 
 import logging
 
-class ThemeData(QAbstractItemModel):
+class ThemeData(QAbstractListModel):
     """
     Tree of items for an order of Theme.
     Includes methods for reading and writing the contents to an OOS file
@@ -55,7 +55,7 @@ class ThemeData(QAbstractItemModel):
     log=logging.getLogger(u'ThemeData')
 
     def __init__(self):
-        QAbstractItemModel.__init__(self)
+        QAbstractListModel.__init__(self)
         self.items=[]
         self.rowheight=50
         self.maximagewidth=self.rowheight*16/9.0;
@@ -63,9 +63,6 @@ class ThemeData(QAbstractItemModel):
 
     def clearItems(self):
         self.items=[]
-
-    def columnCount(self, parent):
-        return 1; # always only a single column (for now)
 
     def rowCount(self, parent):
         return len(self.items)
@@ -103,12 +100,6 @@ class ThemeData(QAbstractItemModel):
 
     def addRow(self, item):
         self.insertRow(len(self.items), item)
-
-    def index(self, row, col, parent = QModelIndex()):
-        return self.createIndex(row,col)
-
-    def parent(self, index=QModelIndex()):
-        return QModelIndex() # no children as yet
 
     def data(self, index, role):
         row=index.row()
@@ -184,15 +175,6 @@ class ThemeManager(QWidget):
         self.path = os.path.join(ConfigHelper.get_data_path(), u'themes')
         self.checkThemesExists(self.path)
         self.amendThemeForm.themePath(self.path)
-
-    def setEventManager(self, eventManager):
-        self.eventManager = eventManager
-
-    def setRenderManager(self, renderManager):
-        self.renderManager = renderManager
-
-    def setServiceManager(self, serviceManager):
-        self.serviceManager = serviceManager
 
     def onAddTheme(self):
         self.amendThemeForm.loadTheme(None)

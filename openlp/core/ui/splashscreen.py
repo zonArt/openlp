@@ -3,7 +3,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley,
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley,
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -20,7 +20,6 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from PyQt4 import QtCore, QtGui
 
-#from openlp.core.resources import *
 from openlp.core import translate
 
 class SplashScreen(object):
@@ -44,15 +43,8 @@ class SplashScreen(object):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icon/openlp.org-icon-32.bmp"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.splash_screen.setWindowIcon(icon)
-        #self.verticalLayout = QtGui.QVBoxLayout(self.splash_screen)
-        #self.verticalLayout.setSpacing(0)
-        #self.verticalLayout.setMargin(0)
-        #self.verticalLayout.setObjectName("verticalLayout")
-        #self.SplashImage = QtGui.QLabel(self.splash_screen)
-        #self.SplashImage.setPixmap(QtGui.QPixmap(":/graphics/splash-screen-new.bmp"))
-        #self.SplashImage.setObjectName("SplashImage")
-        #self.verticalLayout.addWidget(self.SplashImage)
-        self.splash_screen.setPixmap(QtGui.QPixmap(":/graphics/splash-screen-new.bmp"))
+
+        self.splash_screen.setPixmap(QtGui.QPixmap(":/graphics/splash-screen-2.png"))
         self.splash_screen.setWindowFlags(QtCore.Qt.SplashScreen | QtCore.Qt.WindowStaysOnTopHint)
 
         self.retranslateUi()

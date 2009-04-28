@@ -142,9 +142,6 @@ class ServiceManager(QWidget):
         QtCore.QObject.connect(self.ThemeComboBox,
             QtCore.SIGNAL("activated(int)"), self.onThemeComboBoxSelected)
 
-    def setRenderManager(self, renderManager):
-        self.renderManager = renderManager
-
     def onThemeComboBoxSelected(self, currentIndex):
         self.renderManager.set_default_theme(self.ThemeComboBox.currentText())
 
