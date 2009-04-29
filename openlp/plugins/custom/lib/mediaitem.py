@@ -189,11 +189,18 @@ class CustomMediaItem(MediaManagerItem):
         main_lines=[]
         footer_lines = []
         slide = None
+        theme = None
         for index in indexes:
             id = self.CustomListData.getId(index)
             customSlide = self.parent.custommanager.get_custom(id)
             title = customSlide.title
             credit = customSlide.title
+            theme = customSlide.theme_name
+            print theme
+            if theme == u'' or theme == None:
+                self.parent.render_manager.set_override_theme(None)
+            else:
+                self.parent.render_manager.set_override_theme(theme)
 
             songXML=SongXMLParser(customSlide.text)
             verseList = songXML.get_verses()
