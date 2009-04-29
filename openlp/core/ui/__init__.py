@@ -18,6 +18,7 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
+from maindisplay import MainDisplay
 from amendthemeform import AmendThemeForm
 from slidecontroller import SlideController
 from splashscreen import SplashScreen
@@ -32,4 +33,4 @@ from thememanager import ThemeManager
 from mainwindow import MainWindow
 
 __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm',
-           'MainWindow', 'SlideController', 'ServiceManager', 'ThemeManager', 'AmendThemeForm']
+           'MainWindow', 'MainDisplay',  'SlideController', 'ServiceManager', 'ThemeManager', 'AmendThemeForm']

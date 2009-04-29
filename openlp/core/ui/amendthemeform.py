@@ -106,7 +106,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         new_theme.new_document(theme_name)
         if self.theme.background_type == u'solid':
             new_theme.add_background_solid(str(self.theme.background_color))
-        elif self.theme.theme.background_type == u'gradient':
+        elif self.theme.background_type == u'gradient':
             new_theme.add_background_gradient(str(self.theme.background_startColor), str(self.theme.background_endColor), self.theme.background_direction)
         #else:
             #newtheme.add_background_image(str(self.theme.))

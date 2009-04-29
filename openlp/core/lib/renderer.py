@@ -51,6 +51,7 @@ class Renderer:
         self._bg_image_filename=None
         self._paint=None
         self._path = path
+        self.img = None
 
     def set_debug(self, debug):
         self._debug=debug
@@ -58,7 +59,8 @@ class Renderer:
     def set_theme(self, theme):
         self._theme=theme
         if theme.background_type == u'image':
-            self.set_bg_image(theme.background_filename)
+            if self._path is not None:
+                self.set_bg_image(theme.background_filename)
 
     def set_bg_image(self, filename):
         log.debug(u'set bg image %s', filename)
@@ -167,7 +169,10 @@ class Renderer:
             #log.debug(u' Background Parameter %d ', self._theme.background_color1)
             #if self._theme.background_color1 is not None:
             #    p.fillRect(self._paint.rect(), self._theme.background_borderColor)
-            p.drawPixmap(self.background_offsetx,self.background_offsety, self.img)
+            if self.img is not None:
+                p.drawPixmap(self.background_offsetx,self.background_offsety, self.img)
+            else:
+                p.fillRect(self._paint.rect(), QtGui.QColor(u'#000000'))
         p.end()
         log.debug(u'render background done')
 
@@ -246,22 +251,22 @@ class Renderer:
             assert(0, u'Invalid value for theme.VerticalAlign:%s' % self._theme.display_verticalAlign)
         return x, y
 
-    def render_lines(self, lines, lines1=None):
+    def render_lines(self, lines, footer_lines=None):
         """render a set of lines according to the theme, return bounding box"""
         #log.debug(u'_render_lines %s', lines)
 
         bbox=self._render_lines_unaligned(lines, False) # Main font
-        if lines1 is not None:
-            bbox1=self._render_lines_unaligned(lines1, True) # Footer Font
+        if footer_lines is not None:
+            bbox1=self._render_lines_unaligned(footer_lines, True) # Footer Font
 
         # put stuff on background so need to reset before doing the job properly.
         self._render_background()
         x, y = self._correctAlignment(self._rect, bbox)
         bbox=self._render_lines_unaligned(lines, False,  (x, y))
 
-        if lines1 is not None:
+        if footer_lines is not None:
             #x, y = self._correctAlignment(self._rect_footer, bbox1)
-            bbox=self._render_lines_unaligned(lines1, True, (self._rect_footer.left(), self._rect_footer.top()) )
+            bbox=self._render_lines_unaligned(footer_lines, True, (self._rect_footer.left(), self._rect_footer.top()) )
 
         log.debug(u'render lines DONE')
 

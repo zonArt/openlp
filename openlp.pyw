@@ -65,3 +65,4 @@ class OpenLP(QtGui.QApplication):
 if __name__ == '__main__':
     app = OpenLP(sys.argv)
     app.run()
+

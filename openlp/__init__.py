@@ -18,7 +18,4 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 __all__ = ['convertStringToBoolean']
 
 def convertStringToBoolean(stringvalue):
-    if stringvalue.lower() == 'true':
-        return True
-    else:
-        return False
+    return stringvalue.strip().lower() in (u'true', u'yes', u'y')
