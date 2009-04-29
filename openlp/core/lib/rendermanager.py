@@ -43,29 +43,28 @@ class RenderManager:
         self.calculate_default(self.screen_list[self.current_display-1][1])
         self.frame = None
 
-    def set_default_theme(self, theme):
-        log.debug("default theme set to %s",  theme)
-        self.default_theme = self.theme_manager.getThemeData(theme)
-        self.renderer.set_theme(self.default_theme)
+    def set_override_theme(self, theme):
+        log.debug("set override theme to %s",  theme)
+        if theme is not None:
+            self.theme = theme
+        else:
+            self.theme = self.default_theme
+        log.debug("theme is now %s",  self.theme)
 
-        self.renderer.set_text_rectangle(QtCore.QRect(10,0, self.width-1, self.height-1),
-            QtCore.QRect(10,self.footer_start, self.width-1, self.height-self.footer_start))
-
-
-    def set_theme(self, theme):
-        log.debug("theme set to %s",  theme)
-        self.theme = theme
+        self.theme = self.theme_manager.getThemeData(self.theme)
         self.renderer.set_theme(self.theme)
 
         self.renderer.set_text_rectangle(QtCore.QRect(10,0, self.width-1, self.height-1),
             QtCore.QRect(10,self.footer_start, self.width-1, self.height-self.footer_start))
-        if theme.font_main_override == False:
+
+        if self.theme.font_main_override == False:
             pass
-        if theme.font_footer_override == False:
+        if self.theme.font_footer_override == False:
             pass
 
-    def generate_preview(self):
+    def generate_preview(self, themedata):
         self.calculate_default(QtCore.QSize(800,600))
+        self.renderer.set_theme(themedata)
 
         self.renderer.set_text_rectangle(QtCore.QRect(10,0, self.width-1, self.height-1),
             QtCore.QRect(10,self.footer_start, self.width-1, self.height-self.footer_start))

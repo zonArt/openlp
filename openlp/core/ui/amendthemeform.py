@@ -124,6 +124,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.path = path
 
     def loadTheme(self, theme):
+        log.debug(u'LoadTheme %s ', theme)
         if theme == None:
             self.theme.parse(self.baseTheme())
         else:
@@ -354,13 +355,13 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     #Local Methods
     #
     def baseTheme(self):
-        log.debug(u'base Theme')
+        log.debug(u'base theme created')
         newtheme = ThemeXML()
         newtheme.new_document(u'New Theme')
         newtheme.add_background_solid(str(u'#000000'))
-        newtheme.add_font(str(QFont().family()), str(u'#FFFFFF'), str(30), False)
-        newtheme.add_font(str(QFont().family()), str(u'#FFFFFF'), str(12), False, u'footer')
-        newtheme.add_display(str(False), str(u'#FFFFFF'), str(False), str(u'#FFFFFF'),
+        newtheme.add_font(str(QFont().family()), str(u'#FFFFFF'), str(30), u'False')
+        newtheme.add_font(str(QFont().family()), str(u'#FFFFFF'), str(12), u'False', u'footer')
+        newtheme.add_display(u'False', str(u'#FFFFFF'), u'False', str(u'#FFFFFF'),
             str(0), str(0), str(0))
 
         return newtheme.extract_xml()
