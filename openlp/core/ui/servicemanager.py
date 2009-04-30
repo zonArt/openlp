@@ -143,7 +143,7 @@ class ServiceManager(QWidget):
             QtCore.SIGNAL("activated(int)"), self.onThemeComboBoxSelected)
 
     def onThemeComboBoxSelected(self, currentIndex):
-        self.renderManager.default_theme =self.ThemeComboBox.currentText()
+        self.renderManager.default_theme = self.ThemeComboBox.currentText()
 
     def addServiceItem(self, item):
         """Adds service item"""

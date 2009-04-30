@@ -111,12 +111,21 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         #else:
             #newtheme.add_background_image(str(self.theme.))
 
-        new_theme.add_font(str(self.theme.font_main_name), str(self.theme.font_main_color), str(self.theme.font_main_proportion), u'False')
-        new_theme.add_font(str(self.theme.font_footer_name), str(self.theme.font_footer_color), str(self.theme.font_footer_proportion), u'False', u'footer')
-        new_theme.add_display(str(self.theme.display_shadow), str(self.theme.display_shadow_color), str(self.theme.display_outline), str(self.theme.display_outline_color),
-            str(self.theme.display_horizontalAlign), str(self.theme.display_verticalAlign), str(self.theme.display_wrapStyle))
+        new_theme.add_font(str(self.theme.font_main_name), str(self.theme.font_main_color),
+                str(self.theme.font_main_proportion), str(self.theme.font_main_override),u'main',
+                str(self.theme.font_main_x), str(self.theme.font_main_y), str(self.theme.font_main_width),
+                str(self.theme.font_main_height))
+        new_theme.add_font(str(self.theme.font_footer_name), str(self.theme.font_footer_color),
+                str(self.theme.font_footer_proportion), str(self.theme.font_footer_override),u'footer',
+                str(self.theme.font_footer_x), str(self.theme.font_footer_y), str(self.theme.font_footer_width),
+                str(self.theme.font_footer_height) )
+        new_theme.add_display(str(self.theme.display_shadow), str(self.theme.display_shadow_color),
+                str(self.theme.display_outline), str(self.theme.display_outline_color),
+                str(self.theme.display_horizontalAlign), str(self.theme.display_verticalAlign),
+                str(self.theme.display_wrapStyle))
 
         theme = new_theme.extract_xml()
+
         self.thememanager.saveTheme(theme_name, theme)
         return QtGui.QDialog.accept(self)
 
@@ -208,27 +217,24 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.theme.font_footer_proportion = value
         self.previewTheme(self.theme)
 
-    def onFontFooterDefaultCheckBoxChanged(self):
-        self.stateChanging(self.theme)
-        self.previewTheme(self.theme)
 
     def onFontFooterDefaultCheckBoxChanged(self, value):
         if value == 2:  # checked
             self.theme.font_footer_override = False
         else:
             self.theme.font_footer_override = True
-            if int(self.theme.font_footer_x) == 0 and int(self.theme.font_footer_y) == 0 and \
-                    int(self.theme.font_footer_width) == 0 and int(self.theme.font_footer_height) == 0:
-                self.theme.font_footer_x = u'10'
-                self.theme.font_footer_y = u'730'
-                self.theme.font_footer_width = u'1024'
-                self.theme.font_footer_height = u'38'
 
-                self.FontFooterXSpinBox.setValue(int(self.theme.font_footer_x))
-                self.FontFooterYSpinBox.setValue(int(self.theme.font_footer_y))
-                self.FontFooterWidthSpinBox.setValue(int(self.theme.font_footer_width))
-                self.FontFooterHeightSpinBox.setValue(int(self.theme.font_footer_height))
+        if int(self.theme.font_footer_x) == 0 and int(self.theme.font_footer_y) == 0 and \
+                int(self.theme.font_footer_width) == 0 and int(self.theme.font_footer_height) == 0:
+            self.theme.font_footer_x = u'10'
+            self.theme.font_footer_y = u'730'
+            self.theme.font_footer_width = u'1024'
+            self.theme.font_footer_height = u'38'
 
+            self.FontFooterXSpinBox.setValue(int(self.theme.font_footer_x))
+            self.FontFooterYSpinBox.setValue(int(self.theme.font_footer_y))
+            self.FontFooterWidthSpinBox.setValue(int(self.theme.font_footer_width))
+            self.FontFooterHeightSpinBox.setValue(int(self.theme.font_footer_height))
 
         self.stateChanging(self.theme)
         self.previewTheme(self.theme)
@@ -367,7 +373,6 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         return newtheme.extract_xml()
 
     def paintUi(self, theme):
-        print theme  # leave as helpful for initial development
         self.stateChanging(theme)
         self.ThemeNameEdit.setText(self.theme.theme_name)
         if self.theme.background_mode == u'opaque':

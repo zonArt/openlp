@@ -80,7 +80,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         if id != 0:
             self.customSlide = self.custommanager.get_custom(id)
             self.TitleEdit.setText(self.customSlide.title)
-            self.CreditEdit.setText(self.customSlide.title)
+            self.CreditEdit.setText(self.customSlide.credits)
 
             songXML=SongXMLParser(self.customSlide.text)
             verseList = songXML.get_verses()

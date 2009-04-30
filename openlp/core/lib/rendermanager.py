@@ -51,23 +51,36 @@ class RenderManager:
             self.theme = self.default_theme
         log.debug("theme is now %s",  self.theme)
 
-        self.theme = self.theme_manager.getThemeData(self.theme)
-        self.renderer.set_theme(self.theme)
+        self.themedata = self.theme_manager.getThemeData(self.theme)
 
-        self.renderer.set_text_rectangle(QtCore.QRect(10,0, self.width-1, self.height-1),
-            QtCore.QRect(10,self.footer_start, self.width-1, self.height-self.footer_start))
+        self.renderer.set_theme(self.themedata)
 
-        if self.theme.font_main_override == False:
-            pass
-        if self.theme.font_footer_override == False:
-            pass
+        self.build_text_rectangle(self.themedata)
+
+    def build_text_rectangle(self, theme):
+
+        main_rect = None
+        footer_rect = None
+
+        if theme.font_main_override == False:
+            main_rect = QtCore.QRect(10,0, self.width-1, self.height-1)
+        else:
+            main_rect = QtCore.QRect(int(theme.font_main_x) , int(theme.font_main_y),
+                int(theme.font_main_width)-1, int(theme.font_main_height)-1)
+
+        if theme.font_footer_override == False:
+            footer_rect = QtCore.QRect(10,self.footer_start, self.width-1, self.height-self.footer_start)
+        else:
+            footer_rect = QtCore.QRect(int(theme.font_footer_x),int(theme.font_footer_y),
+                int(theme.font_footer_width)-1, int(theme.font_footer_height)-1)
+
+        self.renderer.set_text_rectangle(main_rect,footer_rect)
 
     def generate_preview(self, themedata):
         self.calculate_default(QtCore.QSize(800,600))
         self.renderer.set_theme(themedata)
 
-        self.renderer.set_text_rectangle(QtCore.QRect(10,0, self.width-1, self.height-1),
-            QtCore.QRect(10,self.footer_start, self.width-1, self.height-self.footer_start))
+        self.build_text_rectangle(themedata)
 
         frame = QtGui.QPixmap(self.width, self.height)
         self.renderer.set_paint_dest(frame)
@@ -87,8 +100,8 @@ class RenderManager:
     def format_slide(self, words, footer):
         self.calculate_default(QtCore.QSize(800,600))
 
-        self.renderer.set_text_rectangle(QtCore.QRect(10,0, self.width-1, self.height-1),
-            QtCore.QRect(10,self.footer_start, self.width-1, self.height-self.footer_start))
+        #self.renderer.set_text_rectangle(QtCore.QRect(10,0, self.width-1, self.height-1),
+        #    QtCore.QRect(10,self.footer_start, self.width-1, self.height-self.footer_start))
 
         return self.renderer.format_slide(words, footer)
 
@@ -96,12 +109,6 @@ class RenderManager:
         if preview == True:
             self.calculate_default(QtCore.QSize(800,600))
 
-        self.renderer.set_text_rectangle(QtCore.QRect(10,0, self.width-1, self.height-1),
-            QtCore.QRect(10,self.footer_start, self.width-1, self.height-self.footer_start))
-
-        #frame = QtGui.QPixmap(self.width, self.height)
-        #self.renderer.set_paint_dest(frame)
-        #print main_text
         answer=self.renderer.render_lines(main_text, footer_text)
         return self.frame
 
