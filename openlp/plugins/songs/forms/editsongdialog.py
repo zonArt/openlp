@@ -14,7 +14,7 @@ class Ui_EditSongDialog(object):
         EditSongDialog.setObjectName("EditSongDialog")
         EditSongDialog.resize(786, 704)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/icon/openlp.org-icon-32.bmp"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/icon/openlp-logo-16x16.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         EditSongDialog.setWindowIcon(icon)
         EditSongDialog.setModal(True)
         self.EditSongLayout = QtGui.QVBoxLayout(EditSongDialog)

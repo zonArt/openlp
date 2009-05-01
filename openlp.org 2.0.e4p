@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project openlp.org 2.0 -->
-<!-- Saved: 2009-03-11, 21:25:53 -->
+<!-- Saved: 2009-05-02, 00:15:57 -->
 <!-- Copyright (C) 2009 Raoul Snyman, raoulsnyman@openlp.org -->
 <Project version="4.6">
   <Language>en</Language>
@@ -16,14 +16,11 @@
     <Source>openlp/controls/__init__.py</Source>
     <Source>openlp/core/test/test_render_theme.py</Source>
     <Source>openlp/core/test/test_render.py</Source>
-    <Source>openlp/core/interpolate.py</Source>
     <Source>openlp/core/__init__.py</Source>
-    <Source>openlp/core/render.py</Source>
     <Source>openlp/__init__.py</Source>
     <Source>demo.py</Source>
     <Source>openlp/core/settingsmanager.py</Source>
     <Source>openlp/plugins/__init__.py</Source>
-    <Source>openlp/core/pluginmanager.py</Source>
     <Source>openlp/core/ui/__init__.py</Source>
     <Source>openlp/core/ui/mainwindow.py</Source>
     <Source>openlp/core/ui/splashscreen.py</Source>
@@ -91,7 +88,6 @@
     <Source>openlp/plugins/images/__init__.py</Source>
     <Source>openlp/plugins/images/imageplugin.py</Source>
     <Source>openlp/plugins/songs/forms/editsongdialog.py</Source>
-    <Source>openlp/core/lib/pluginutils.py</Source>
     <Source>openlpcnv.pyw</Source>
     <Source>openlp/plugins/songs/forms/songbookdialog.py</Source>
     <Source>openlp/plugins/songs/forms/topicsdialog.py</Source>
@@ -130,7 +126,6 @@
     <Source>openlp/plugins/songs/lib/songstab.py</Source>
     <Source>openlp/plugins/videos/lib/__init__.py</Source>
     <Source>openlp/plugins/videos/lib/videotab.py</Source>
-    <Source>openlp/plugins/bibles/lib/biblemediaitem.py</Source>
     <Source>openlp/core/ui/test/test_service_manager.py</Source>
     <Source>openlp/plugins/images/lib/__init__.py</Source>
     <Source>openlp/plugins/images/lib/imageserviceitem.py</Source>
@@ -146,13 +141,32 @@
     <Source>openlp/plugins/custom/lib/customtab.py</Source>
     <Source>openlp/plugins/custom/lib/classes.py</Source>
     <Source>openlp/plugins/custom/lib/tables.py</Source>
-    <Source>openlp/plugins/custom/lib/custommediaitem.py</Source>
     <Source>openlp/plugins/custom/lib/meta.py</Source>
     <Source>openlp/plugins/custom/lib/models.py</Source>
     <Source>openlp/plugins/custom/lib/manager.py</Source>
     <Source>openlp/plugins/images/lib/mediaitem.py</Source>
     <Source>openlp/plugins/songs/lib/mediaitem.py</Source>
-    <Source>xml1.py</Source>
+    <Source>openlp/core/ui/maindisplay.py</Source>
+    <Source>openlp/core/ui/amendthemedialog.py</Source>
+    <Source>openlp/core/ui/thememanager.py</Source>
+    <Source>openlp/core/ui/amendthemeform.py</Source>
+    <Source>openlp/core/lib/eventmanager.py</Source>
+    <Source>openlp/core/lib/rendermanager.py</Source>
+    <Source>openlp/core/lib/renderer.py</Source>
+    <Source>openlp/core/lib/songxmlhandler.py</Source>
+    <Source>openlp/core/lib/pluginmanager.py</Source>
+    <Source>openlp/core/lib/themexmlhandler.py</Source>
+    <Source>openlp/plugins/bibles/lib/mediaitem.py</Source>
+    <Source>openlp/plugins/bibles/lib/textlistdata.py</Source>
+    <Source>openlp/plugins/presentations/lib/__init__.py</Source>
+    <Source>openlp/plugins/presentations/lib/mediaitem.py</Source>
+    <Source>openlp/plugins/presentations/lib/filelistdata.py</Source>
+    <Source>openlp/plugins/videos/lib/mediaitem.py</Source>
+    <Source>openlp/plugins/videos/lib/filelistdata.py</Source>
+    <Source>openlp/plugins/custom/lib/mediaitem.py</Source>
+    <Source>openlp/plugins/custom/lib/textlistdata.py</Source>
+    <Source>openlp/plugins/custom/lib/customserviceitem.py</Source>
+    <Source>resources/images/openlp-2_rc.py</Source>
   </Sources>
   <Forms>
     <Form>resources/forms/openlpexportform.ui</Form>
@@ -173,6 +187,7 @@
     <Form>resources/forms/editsongdialog.ui</Form>
     <Form>resources/forms/editversedialog.ui</Form>
     <Form>resources/forms/editcustomdialog.ui</Form>
+    <Form>resources/forms/amendthemedialog.ui</Form>
   </Forms>
   <Translations>
   </Translations>
@@ -189,7 +204,7 @@
   </Others>
   <MainScript>openlp.pyw</MainScript>
   <Vcs>
-    <VcsType>Subversion</VcsType>
+    <VcsType>None</VcsType>
     <VcsOptions>
       <dict>
         <key>

@@ -15,7 +15,7 @@ class Ui_customEditDialog(object):
         customEditDialog.setObjectName("customEditDialog")
         customEditDialog.resize(590, 541)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/icon/openlp.org-icon-32.bmp"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/icon/openlp-logo-16x16.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         customEditDialog.setWindowIcon(icon)
         self.gridLayout = QtGui.QGridLayout(customEditDialog)
         self.gridLayout.setObjectName("gridLayout")
@@ -80,7 +80,7 @@ class Ui_customEditDialog(object):
         self.ButtonLayout.addWidget(self.DeleteButton)
         self.ClearButton = QtGui.QPushButton(self.ButtonWidget)
         self.ClearButton.setObjectName("ClearButton")
-        self.ButtonLayout.addWidget(self.ClearButton)           
+        self.ButtonLayout.addWidget(self.ClearButton)
         spacerItem1 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.ButtonLayout.addItem(spacerItem1)
         self.EditLayout.addWidget(self.ButtonWidget)
@@ -118,7 +118,7 @@ class Ui_customEditDialog(object):
         customEditDialog.setTabOrder(self.VerseListView, self.AddButton)
         customEditDialog.setTabOrder(self.AddButton, self.DeleteButton)
         customEditDialog.setTabOrder(self.DeleteButton, self.buttonBox)
-    
+
     def retranslateUi(self, customEditDialog):
         customEditDialog.setWindowTitle(translate("customEditDialog", "Edit Custom Slides"))
         self.TitleLabel.setText(translate("customEditDialog", "Title:"))

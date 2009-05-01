@@ -33,7 +33,7 @@ class SplashScreen(object):
         self.splash_screen.setObjectName("splash_screen")
         self.splash_screen.setWindowModality(QtCore.Qt.NonModal)
         self.splash_screen.setEnabled(True)
-        self.splash_screen.resize(400, 300)
+        self.splash_screen.resize(370, 370)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -41,12 +41,12 @@ class SplashScreen(object):
         self.splash_screen.setSizePolicy(sizePolicy)
         self.splash_screen.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/icon/openlp.org-icon-32.bmp"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/icon/openlp-logo-16x16.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        splash_image = QtGui.QPixmap(":/graphics/openlp-splash-screen.png")
         self.splash_screen.setWindowIcon(icon)
-
-        self.splash_screen.setPixmap(QtGui.QPixmap(":/graphics/splash-screen-2.png"))
+        self.splash_screen.setPixmap(splash_image)
+        self.splash_screen.setMask(splash_image.mask())
         self.splash_screen.setWindowFlags(QtCore.Qt.SplashScreen | QtCore.Qt.WindowStaysOnTopHint)
-
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self.splash_screen)
 

@@ -15,7 +15,7 @@ class Ui_AmendThemeDialog(object):
         AmendThemeDialog.setWindowModality(QtCore.Qt.ApplicationModal)
         AmendThemeDialog.resize(586, 651)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/icon/openlp.org-icon-32.bmp"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/icon/openlp-logo-16x16.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         AmendThemeDialog.setWindowIcon(icon)
         AmendThemeDialog.setModal(True)
         self.AmendThemeLayout = QtGui.QVBoxLayout(AmendThemeDialog)

@@ -14,7 +14,7 @@ class Ui_BibleImportDialog(object):
         BibleImportDialog.setObjectName("BibleImportDialog")
         BibleImportDialog.resize(494, 725)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/icon/openlp.org-icon-32.bmp"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/icon/openlp-logo-16x16.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         BibleImportDialog.setWindowIcon(icon)
         self.ImportToolBox = QtGui.QToolBox(BibleImportDialog)
         self.ImportToolBox.setGeometry(QtCore.QRect(20, 20, 451, 401))

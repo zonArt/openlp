@@ -27,17 +27,17 @@ from openlp.core.resources import *
 class AlertForm(QDialog):
     global log
     log=logging.getLogger(u'AlertForm')
-    
+
     def __init__(self, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        log.info(u'Defined')        
+        log.info(u'Defined')
 
     def setupUi(self, AlertForm):
         AlertForm.setObjectName("AlertForm")
         AlertForm.resize(370, 110)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/icon/openlp.org-icon-32.bmp"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/icon/openlp-logo-16x16.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         AlertForm.setWindowIcon(icon)
         self.AlertFormLayout = QtGui.QVBoxLayout(AlertForm)
         self.AlertFormLayout.setSpacing(8)
@@ -84,7 +84,7 @@ class AlertForm(QDialog):
         self.AlertFormLayout.addWidget(self.ButtonBoxWidget)
 
         self.retranslateUi(AlertForm)
-        
+
         QtCore.QObject.connect(self.CancelButton, QtCore.SIGNAL("clicked()"), AlertForm.close)
         QtCore.QObject.connect(self.DisplayButton, QtCore.SIGNAL("clicked()"), self.onDisplayClicked)
         QtCore.QMetaObject.connectSlotsByName(AlertForm)
@@ -95,10 +95,10 @@ class AlertForm(QDialog):
         self.DisplayButton.setText(translate("AlertForm", u'Display'))
         self.CancelButton.setText(translate("AlertForm", u'Cancel'))
 
-        
+
     def load_settings(self):
         pass
-        
+
     def save_settings(self):
         pass
 
