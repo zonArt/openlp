@@ -33,26 +33,51 @@ class SettingsTab(QtGui.QWidget):
         self.tabTitle = title
         self.setupUi()
         self.retranslateUi()
+        self.initialise()
         if title == None:
-            self.config = PluginConfig(u"Main")
+            self.config = PluginConfig(u'Main')
         else:
             self.config = PluginConfig(str(title))
         self.load()
 
     def setTitle(self, title):
+        """
+        Set the title of the tab.
+        """
         self.tabTitle = title
 
     def title(self):
+        """
+        Get the title of the tab.
+        """
         return self.tabTitle
 
     def setupUi(self):
+        """
+        Setup the tab's interface.
+        """
         pass
 
     def retranslateUi(self):
+        """
+        Setup the interface translation strings.
+        """
+        pass
+
+    def initialise(self):
+        """
+        Do any extra initialisation here.
+        """
         pass
 
     def load(self):
+        """
+        Load settings from disk.
+        """
         pass
 
     def save(self):
+        """
+        Save settings to disk.
+        """
         pass

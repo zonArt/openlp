@@ -24,32 +24,35 @@ from openlp.core import translate
 
 class MainDisplay(QtGui.QWidget):
 
-    def __init__(self, screens, parent=None):
-            QtGui.QWidget.__init__(self, parent)
-            self.setWindowTitle(u'OpenLP Display')
-            self.screens = screens
-            self.imagesize = screens[0][1]
-            self.display = QtGui.QLabel(self)
-            #self.showMinimized()
+    def __init__(self, parent, screens):
+        QtGui.QWidget.__init__(self, parent)
+        self.setWindowTitle(u'OpenLP Display')
+        self.screens = screens
+        self.display = QtGui.QLabel(self)
 
-    def initialView(self):
-            self.display.setGeometry((self.imagesize.width()-429)/2, (self.imagesize.height()-429)/2, 429, 429)
-            self.display.setPixmap(QtGui.QPixmap("openlp2.png"))
-            self.showMaximized()
-            print len(self.screens)
-            print self.isEnabled()
-            print self.isVisible()
-            print self.geometry()
-            #if len(self.screens) > 0:
+    def setup(self, screenNumber):
+        """
+        Sets up the screen on a particular screen.
+        @param (integer) screen This is the screen number.
+        """
+        screen = self.screens[screenNumber]
+        if screen['number'] != screenNumber:
+            # We will most probably never actually hit this bit, but just in
+            # case the index in the list doesn't match the screen number, we
+            # search for it.
+            for scrn in self.screens:
+                if scrn['number'] == screenNumber:
+                    screen = scrn
+                    break
+        self.setGeometry(screen['size'])
+        if not screen['primary']:
             self.showFullScreen()
-            self.show()
+        else:
+            self.hide()
 
     def frameView(self, frame):
-            self.display.setGeometry(0, 0, imagesize.width(), imagesize.height())
-            self.display.setPixmap(QtGui.QPixmap(frame))
+        self.display.setGeometry(0, 0, imagesize.width(), imagesize.height())
+        self.display.setPixmap(QtGui.QPixmap(frame))
 
     def kill(self):
         pass
-
-
-

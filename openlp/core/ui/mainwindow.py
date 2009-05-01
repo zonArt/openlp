@@ -37,7 +37,7 @@ class MainWindow(object):
 
     def __init__(self, screens):
         self.main_window = QtGui.QMainWindow()
-        self.main_display = MainDisplay(screens, self.main_window)
+        self.main_display = MainDisplay(None, screens)
         self.screen_list = screens
         self.EventManager = EventManager()
         self.alert_form = AlertForm()
@@ -421,7 +421,7 @@ class MainWindow(object):
 
     def show(self):
         self.main_window.showMaximized()
-        self.main_display.initialView()
+        self.main_display.setup(0)
         self.main_display.show()
 
     def onHelpAboutItemClicked(self):

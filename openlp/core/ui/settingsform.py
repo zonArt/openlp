@@ -29,7 +29,7 @@ from settingsdialog import Ui_SettingsDialog
 
 log = logging.getLogger('SettingsForm')
 
-class SettingsForm(QtGui.QDialog,  Ui_SettingsDialog):
+class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
 
     def __init__(self, screen_list, parent=None):
         QtGui.QDialog.__init__(self, parent)
