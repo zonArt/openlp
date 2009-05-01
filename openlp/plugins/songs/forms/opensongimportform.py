@@ -32,7 +32,7 @@ class OpenSongImportForm(object):
         self.OpenSongImportForm.setObjectName("OpenSongImportForm")
         self.OpenSongImportForm.resize(481, 153)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/icon/openlp.org-icon-32.bmp"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/icon/openlp-logo-16x16.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.OpenSongImportForm.setWindowIcon(icon)
         self.verticalLayout = QtGui.QVBoxLayout(self.OpenSongImportForm)
         self.verticalLayout.setSpacing(6)

@@ -32,7 +32,7 @@ class OpenLPExportForm(object):
         self.OpenLPExportForm.setObjectName("OpenLPExportForm")
         self.OpenLPExportForm.resize(473, 459)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/icon/openlp.org-icon-32.bmp"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/icon/openlp-logo-16x16.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.OpenLPExportForm.setWindowIcon(icon)
         self.verticalLayout_5 = QtGui.QVBoxLayout(self.OpenLPExportForm)
         self.verticalLayout_5.setMargin(8)
