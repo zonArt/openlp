@@ -37,7 +37,7 @@ class MainWindow(object):
 
     def __init__(self, screens):
         self.main_window = QtGui.QMainWindow()
-        self.main_display = MainDisplay(self.main_window, screens)
+        self.main_display = MainDisplay(None, screens)
         self.screen_list = screens
         self.EventManager = EventManager()
         self.alert_form = AlertForm()
