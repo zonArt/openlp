@@ -81,6 +81,7 @@ class SongXMLParser():
         iter=self.song_xml.getiterator()
         verse_list = []
         for element in iter:
+            #print element.tag, element.attrib, element.text
             if element.tag == u'verse':
                 verse_list.append([element.attrib, element.text])
         return verse_list

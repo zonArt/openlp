@@ -219,7 +219,6 @@ class ThemeManager(QWidget):
 
     def loadThemes(self):
         log.debug(u'Load themes from dir')
-#        self.themelist = [u'African Sunset', u'Snowy Mountains', u'Wilderness', u'Wet and Windy London']
         for root, dirs, files in os.walk(self.path):
             for name in files:
                 if name.endswith(u'.png'):
@@ -232,6 +231,7 @@ class ThemeManager(QWidget):
         return self.Theme_data.getList()
 
     def getThemeData(self, themename):
+        log.debug(u'getthemedata for theme %s', themename)
         xml_file = os.path.join(self.path, str(themename), str(themename)+u'.xml')
         xml = fileToXML(xml_file)
         theme = ThemeXML()
@@ -344,9 +344,8 @@ class ThemeManager(QWidget):
         im.save(samplepathname, u'png')
         log.debug(u'Theme image written to %s',samplepathname)
 
-    def generateImage(self, theme):
-        log.debug(u'generateImage %s ',  theme)
-        self.renderManager.set_theme(theme)
-        frame = self.renderManager.generate_preview()
+    def generateImage(self, themedata):
+        log.debug(u'generateImage %s ',  themedata)
+        frame = self.renderManager.generate_preview(themedata)
         return frame
 

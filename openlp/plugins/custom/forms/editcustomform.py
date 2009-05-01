@@ -80,7 +80,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         if id != 0:
             self.customSlide = self.custommanager.get_custom(id)
             self.TitleEdit.setText(self.customSlide.title)
-            self.CreditEdit.setText(self.customSlide.title)
+            self.CreditEdit.setText(self.customSlide.credits)
 
             songXML=SongXMLParser(self.customSlide.text)
             verseList = songXML.get_verses()
@@ -170,5 +170,9 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             self.TitleLabel.setStyleSheet('color: red')
         else:
             self.TitleLabel.setStyleSheet('color: black')
+
+        if self.VerseListView.count() == 0:    # must have 1 slide
+            invalid += 1
+
         if invalid == 1:
             self.valid = False

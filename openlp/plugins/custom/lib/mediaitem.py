@@ -189,21 +189,29 @@ class CustomMediaItem(MediaManagerItem):
         main_lines=[]
         footer_lines = []
         slide = None
+        theme = None
         for index in indexes:
             id = self.CustomListData.getId(index)
             customSlide = self.parent.custommanager.get_custom(id)
             title = customSlide.title
-            credit = customSlide.title
+            credit = customSlide.credits
+            theme = customSlide.theme_name
+            if len(theme) == 0 or theme == None:
+                self.parent.render_manager.set_override_theme(None)
+            else:
+                self.parent.render_manager.set_override_theme(theme)
 
             songXML=SongXMLParser(customSlide.text)
             verseList = songXML.get_verses()
             for verse in verseList:
                 slide = self.parent.render_manager.format_slide(verse[1], False)
+                print verse
+                print slide
 
             footer_lines.append(title + u' '+ credit)
-
-        frame=self.parent.render_manager.generate_slide(slide, footer_lines)
-        self.parent.preview_controller.previewFrame(frame)
+        if slide is not None:
+            frame=self.parent.render_manager.generate_slide(slide, footer_lines, False)
+            self.parent.preview_controller.previewFrame(frame)
 
     def onCustomLiveClick(self):
         pass

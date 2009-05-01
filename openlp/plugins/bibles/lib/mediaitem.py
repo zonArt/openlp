@@ -355,6 +355,7 @@ class BibleMediaItem(MediaManagerItem):
             if len(footer_lines) <= 1:
                 footer_lines.append(book)
 
+        self.parent.render_manager.set_override_theme(None)
         frame=self.parent.render_manager.generate_slide(main_lines, footer_lines)
         self.parent.preview_controller.previewFrame(frame)
 

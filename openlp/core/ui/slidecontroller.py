@@ -33,31 +33,35 @@ class SlideController(QtGui.QWidget):
         self.PaneLayout.setSpacing(50)
         self.PaneLayout.setMargin(0)
 
-#         self.Controller = QtGui.QGraphicsView(self.Splitter)
+        #self.VerseListView = QtGui.QListWidget(customEditDialog)
+        #self.VerseListView.setObjectName("VerseListView")
+        #self.horizontalLayout_4.addWidget(self.VerseListView)
+
         self.Controller = QtGui.QScrollArea(self.Splitter)
         self.Controller.setWidgetResizable(True)
+
         self.ControllerContents = QtGui.QWidget(self.Controller)
         self.ControllerContents.setGeometry(QtCore.QRect(0, 0, 228, 536))
         self.Controller.setGeometry(QtCore.QRect(0, 0, 828, 536))
+
         self.Controller.setWidget(self.ControllerContents)
 
-        #self.Screen = QtGui.QGraphicsView(self.Splitter)
-        #self.Screen.setMaximumSize(QtCore.QSize(16777215, 250))
-
-
-        self.ThemePreview = QtGui.QLabel(self.Splitter)
+        self.SlidePreview = QtGui.QLabel(self.Splitter)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.ThemePreview.sizePolicy().hasHeightForWidth())
-        self.ThemePreview.setSizePolicy(sizePolicy)
-        self.ThemePreview.setMinimumSize(QtCore.QSize(250, 190))
-        self.ThemePreview.setFrameShape(QtGui.QFrame.WinPanel)
-        self.ThemePreview.setFrameShadow(QtGui.QFrame.Sunken)
-        self.ThemePreview.setLineWidth(1)
-        self.ThemePreview.setScaledContents(True)
-        self.ThemePreview.setObjectName("ThemePreview")
-
+        sizePolicy.setHeightForWidth(self.SlidePreview.sizePolicy().hasHeightForWidth())
+        self.SlidePreview.setSizePolicy(sizePolicy)
+        self.SlidePreview.setMinimumSize(QtCore.QSize(250, 190))
+        self.SlidePreview.setFrameShape(QtGui.QFrame.WinPanel)
+        self.SlidePreview.setFrameShadow(QtGui.QFrame.Sunken)
+        self.SlidePreview.setLineWidth(1)
+        self.SlidePreview.setScaledContents(True)
+        self.SlidePreview.setObjectName("SlidePreview")
 
     def previewFrame(self, frame):
-        self.ThemePreview.setPixmap(frame)
+        self.SlidePreview.setPixmap(frame)
+
+        imageLabel = QtGui.QLabel()
+        imageLabel.setPixmap(frame)
+        self.Controller.setWidget(imageLabel)

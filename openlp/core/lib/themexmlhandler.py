@@ -151,11 +151,12 @@ class ThemeXML():
 
         element = self.theme_xml.createElement(u'location')
         element.setAttribute(u'override',override)
-        if override == True:
-            element.setAttribute(u'x',str(xpos))
-            element.setAttribute(u'y',str(ypos))
-            element.setAttribute(u'width',str(width))
-            element.setAttribute(u'height',str(height))
+
+        if override == u'True':
+            element.setAttribute(u'x',xpos)
+            element.setAttribute(u'y',ypos)
+            element.setAttribute(u'width',width)
+            element.setAttribute(u'height',height)
         background.appendChild(element)
 
     def add_display(self, shadow, shadowColor, outline, outlineColor, horizontal, vertical, wrap):
