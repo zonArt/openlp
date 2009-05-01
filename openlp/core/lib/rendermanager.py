@@ -38,9 +38,9 @@ class RenderManager:
         self.screen_list = screen_list
         self.theme_manager = theme_manager
         self.displays = len(screen_list)
-        self.current_display = 1
+        self.current_display = 0
         self.renderer = Renderer(None)
-        self.calculate_default(self.screen_list[self.current_display-1][1])
+        self.calculate_default(self.screen_list[self.current_display]['size'])
         self.frame = None
 
     def set_default_theme(self, theme):

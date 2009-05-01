@@ -29,8 +29,8 @@ class GeneralTab(SettingsTab):
     GeneralTab is the general settings tab in the settings dialog.
     """
     def __init__(self, screen_list):
-        SettingsTab.__init__(self, translate(u'GeneralTab', u'General'))
         self.screen_list = screen_list
+        SettingsTab.__init__(self, translate(u'GeneralTab', u'General'))
 
     def setupUi(self):
         self.setObjectName(u'GeneralTab')
@@ -55,8 +55,6 @@ class GeneralTab(SettingsTab):
         self.MonitorLayout.addWidget(self.MonitorLabel)
         self.MonitorComboBox = QtGui.QComboBox(self.MonitorGroupBox)
         self.MonitorComboBox.setObjectName(u'MonitorComboBox')
-        self.MonitorComboBox.addItem(QtCore.QString())
-        self.MonitorComboBox.addItem(QtCore.QString())
         self.MonitorLayout.addWidget(self.MonitorComboBox)
         self.GeneralLeftLayout.addWidget(self.MonitorGroupBox)
         self.BlankScreenGroupBox = QtGui.QGroupBox(self.GeneralLeftWidget)
@@ -121,8 +119,6 @@ class GeneralTab(SettingsTab):
     def retranslateUi(self):
         self.MonitorGroupBox.setTitle(translate(u'GeneralTab', u'Monitors'))
         self.MonitorLabel.setText(translate(u'GeneralTab', u'Select monitor for output display:'))
-        self.MonitorComboBox.setItemText(0, translate(u'GeneralTab', u'Monitor 1 on X11 Windowing System'))
-        self.MonitorComboBox.setItemText(1, translate(u'GeneralTab', u'Monitor 2 on X11 Windowing System'))
         self.BlankScreenGroupBox.setTitle(translate(u'GeneralTab', u'Blank Screen'))
         self.WarningCheckBox.setText(translate(u'GeneralTab', u'Show warning on startup'))
         self.AutoOpenGroupBox.setTitle(translate(u'GeneralTab', u'Auto Open Last Service'))
@@ -132,3 +128,11 @@ class GeneralTab(SettingsTab):
         self.UsernameLabel.setText(translate(u'GeneralTab', u'SongSelect Username:'))
         self.PasswordLabel.setText(translate(u'GeneralTab', u'SongSelect Password:'))
 
+    def initialise(self):
+        for screen in self.screen_list:
+            screen_name = translate(u'GeneralTab', u'Screen') + u' ' + \
+                str(screen['number'] + 1)
+            if screen['primary']:
+                screen_name = screen_name + u' (' + \
+                    translate(u'GeneralTab', u'primary') + u')'
+            self.MonitorComboBox.addItem(screen_name)
