@@ -50,11 +50,8 @@ class RenderManager:
         else:
             self.theme = self.default_theme
         log.debug("theme is now %s",  self.theme)
-
         self.themedata = self.theme_manager.getThemeData(self.theme)
-
         self.renderer.set_theme(self.themedata)
-
         self.build_text_rectangle(self.themedata)
 
     def build_text_rectangle(self, theme):
@@ -99,10 +96,6 @@ class RenderManager:
 
     def format_slide(self, words, footer):
         self.calculate_default(QtCore.QSize(800,600))
-
-        #self.renderer.set_text_rectangle(QtCore.QRect(10,0, self.width-1, self.height-1),
-        #    QtCore.QRect(10,self.footer_start, self.width-1, self.height-self.footer_start))
-
         return self.renderer.format_slide(words, footer)
 
     def generate_slide(self,main_text, footer_text, preview=True):

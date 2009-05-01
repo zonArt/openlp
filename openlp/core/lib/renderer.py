@@ -33,7 +33,7 @@ class Renderer:
     """All the functions for rendering a set of words onto a Device Context
 
     How to use:
-    set the words to be displayed with a call to set_words_openlp() - this returns an array of screenfuls of data
+    set the words to be displayed with a call to format_slide() - this returns an array of screenfuls of data
     set a theme (if you need) with set_theme
     tell it which DC to render to with set_DC()
     set the borders of where you want the text (if not the whole DC) with set_text_rectangle()
@@ -102,8 +102,7 @@ class Renderer:
     def format_slide(self, words, footer):
         log.debug(u'format_slide %s', words)
         verses=[]
-        words=words.replace(u'\r\n', u'\n')
-        verses_text = words.split(u'\n')
+        verses_text = words.splitlines()
         for v in verses_text:
             lines=v.split(u'\n')
             verses.append(self.split_set_of_lines(lines, footer)[0])
