@@ -18,11 +18,11 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import logging
-
+import types
+from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-#was Qabstratctitemodel
 class ServiceItem():
     """
     The service item is a base class for the plugins to use to interact with
@@ -37,9 +37,9 @@ class ServiceItem():
         """
         Init Method
         """
-
         self.plugin = hostplugin
         self.shortname = hostplugin.name
+        self.title = u''
         self.items = []
         self.iconic_representation = None
         self.raw_slides = None
@@ -48,6 +48,20 @@ class ServiceItem():
         self.raw_footer = None
         self.theme = None
         log.debug(u'Service item created for %s', self.shortname)
+
+    def addIcon(self, icon):
+        ButtonIcon = None
+        if type(icon) is QtGui.QIcon:
+            ButtonIcon = icon
+        elif type(icon) is types.StringType or type(icon) is types.UnicodeType:
+            ButtonIcon = QtGui.QIcon()
+            if icon.startswith(u':/'):
+                ButtonIcon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
+                    QtGui.QIcon.Off)
+            else:
+                ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
+                    QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.iconic_representation = ButtonIcon
 
     def render(self):
         """
@@ -65,7 +79,6 @@ class ServiceItem():
         for slide in self.format_slides:
 
             self.frames.append(self.render_manager.generate_slide(slide, self.raw_footer, False))
-        print self.frames
 
     def get_parent_node(self):
         """

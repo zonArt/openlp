@@ -23,7 +23,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core import translate
 from openlp.core.lib import MediaManagerItem, Receiver
-from openlp.core.resources import *
+from openlp.core.lib import ServiceItem
 
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import TextListData
@@ -270,12 +270,6 @@ class BibleMediaItem(MediaManagerItem):
         self.bibleimportform.exec_()
         pass
 
-    def onBibleLiveClick(self):
-        pass
-
-    def onBibleAddClick(self):
-        pass
-
     def onAdvancedFromVerse(self):
         frm = self.AdvancedFromVerse.currentText()
         self.adjustComboBox(frm, self.verses, self.AdvancedToVerse)
@@ -325,12 +319,33 @@ class BibleMediaItem(MediaManagerItem):
         if not self.search_results == None:
             self.displayResults(bible)
 
+    def onBibleLiveClick(self):
+        service_item = ServiceItem(self.parent)
+        service_item.addIcon( ":/media/media_verse.png")
+        service_item.render_manager = self.parent.render_manager
+        self.generateSlideData(service_item)
+        self.parent.live_controller.addServiceItem(service_item)
+
+    def onBibleAddClick(self):
+        service_item = ServiceItem(self.parent)
+        service_item.addIcon( ":/media/media_verse.png")
+        service_item.render_manager = self.parent.render_manager
+        self.generateSlideData(service_item)
+        self.parent.service_manager.addServiceItem(service_item)
+
     def onBiblePreviewClick(self):
+        service_item = ServiceItem(self.parent)
+        service_item.addIcon( ":/media/media_verse.png")
+        service_item.render_manager = self.parent.render_manager
+        self.generateSlideData(service_item)
+        self.parent.preview_controller.addServiceItem(service_item)
+
+    def generateSlideData(self, service_item):
         log.debug(u'Bible Preview Button pressed')
         items = self.BibleListView.selectedIndexes()
         old_chapter = ''
-        main_lines=[]
-        footer_lines = []
+        raw_slides=[]
+        raw_footer = []
         for item in items:
             text = self.BibleListData.getValue(item)
             verse = text[:text.find("(")]
@@ -351,13 +366,15 @@ class BibleMediaItem(MediaManagerItem):
             else:
                 loc = self.formatVerse(old_chapter, chapter, verse, u'', u'')
             old_chapter = chapter
-            main_lines.append(loc + u' '+text)
-            if len(footer_lines) <= 1:
-                footer_lines.append(book)
+            raw_slides.append(loc + u' '+text)
+            service_item.title = book + u' ' + loc
+            if len(raw_footer) <= 1:
+                raw_footer.append(book)
 
-        self.parent.render_manager.set_override_theme(None)
-        frame=self.parent.render_manager.generate_slide(main_lines, footer_lines)
-        self.parent.preview_controller.previewFrame(frame)
+        service_item.theme = None
+
+        service_item.raw_slides = raw_slides
+        service_item.raw_footer = raw_footer
 
     def formatVerse(self, old_chapter, chapter, verse, opening, closing):
         loc = opening

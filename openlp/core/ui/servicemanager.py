@@ -46,20 +46,25 @@ class ServiceData(QAbstractItemModel):
         QAbstractItemModel.__init__(self)
         self.items=[]
         log.info("Starting")
+
     def columnCount(self, parent):
         return 1; # always only a single column (for now)
+
     def rowCount(self, parent):
         return len(self.items)
+
     def insertRow(self, row, service_item):
-#         self.beginInsertRows(QModelIndex(),row,row)
-        log.info("insert row %d:%s"%(row,service_item))
+        self.beginInsertRows(QModelIndex(),row,row)
+        log.info("insert row %s:%s" % (row,service_item))
         self.items.insert(row, service_item)
         log.info("Items: %s" % self.items)
-#         self.endInsertRows()
+        self.endInsertRows()
+
     def removeRow(self, row):
         self.beginRemoveRows(QModelIndex(), row,row)
         self.items.pop(row)
         self.endRemoveRows()
+
     def addRow(self, item):
         self.insertRow(len(self.items), item)
 
@@ -68,16 +73,18 @@ class ServiceData(QAbstractItemModel):
 
     def parent(self, index=QModelIndex()):
         return QModelIndex() # no children as yet
+
     def data(self, index, role):
         """
         Called by the service manager to draw us in the service window
         """
+        log.debug(u'data %s %d', index, role)
         row=index.row()
         if row > len(self.items): # if the last row is selected and deleted, we then get called with an empty row!
             return QVariant()
         item=self.items[row]
         if role==Qt.DisplayRole:
-            retval= item.pluginname + ":" + item.shortname
+            retval= item.title + u':' + item.shortname
         elif role == Qt.DecorationRole:
             retval = item.iconic_representation
         elif role == Qt.ToolTipRole:
@@ -139,6 +146,7 @@ class ServiceManager(QWidget):
         self.service_data=ServiceData()
         self.TreeView.setModel(self.service_data)
         self.Layout.addWidget(self.TreeView)
+
         QtCore.QObject.connect(self.ThemeComboBox,
             QtCore.SIGNAL("activated(int)"), self.onThemeComboBoxSelected)
 
@@ -159,6 +167,7 @@ class ServiceManager(QWidget):
             # if currently selected is of correct type, add it to it
             log.info("row:%d"%row)
             selected_item=self.service_data.item(row)
+
         if type(selected_item) == type(item):
             log.info("Add to existing item")
             selected_item.add(item)

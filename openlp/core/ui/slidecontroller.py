@@ -154,7 +154,7 @@ class SlideController(QtGui.QWidget):
     def addServiceItem(self, serviceitem):
         self.serviceitem = serviceitem
         self.serviceitem.render()
-        print self.serviceitem.frames
+        self.CustomListData.clearItems()
         for frame in self.serviceitem.frames:
             self.CustomListData.addRow(frame, u'some text')
 
