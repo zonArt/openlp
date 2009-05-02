@@ -55,7 +55,6 @@ class RenderManager:
         self.build_text_rectangle(self.themedata)
 
     def build_text_rectangle(self, theme):
-
         main_rect = None
         footer_rect = None
 
@@ -76,7 +75,6 @@ class RenderManager:
     def generate_preview(self, themedata):
         self.calculate_default(QtCore.QSize(800,600))
         self.renderer.set_theme(themedata)
-
         self.build_text_rectangle(themedata)
 
         frame = QtGui.QPixmap(self.width, self.height)
@@ -96,14 +94,19 @@ class RenderManager:
 
     def format_slide(self, words, footer):
         self.calculate_default(QtCore.QSize(800,600))
+        frame = QtGui.QPixmap(self.width, self.height)
+        self.renderer.set_paint_dest(frame)
         return self.renderer.format_slide(words, footer)
 
     def generate_slide(self,main_text, footer_text, preview=True):
         if preview == True:
             self.calculate_default(QtCore.QSize(800,600))
 
+        frame = QtGui.QPixmap(self.width, self.height)
+        self.renderer.set_paint_dest(frame)
+
         answer=self.renderer.render_lines(main_text, footer_text)
-        return self.frame
+        return frame
 
     def calculate_default(self, screen):
         self.width = screen.width()
