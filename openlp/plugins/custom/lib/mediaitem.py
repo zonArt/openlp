@@ -24,7 +24,6 @@ from PyQt4 import QtCore, QtGui
 from openlp.core import translate
 from openlp.core.lib import MediaManagerItem
 from openlp.core.lib import SongXMLParser
-from openlp.core.lib import ServiceItem
 
 from openlp.plugins.custom.lib import TextListData
 
@@ -38,7 +37,6 @@ class CustomMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         MediaManagerItem.__init__(self, parent, icon, title)
-        self.parent = parent
 
     def setupUi(self):
         # Add a toolbar
@@ -187,26 +185,9 @@ class CustomMediaItem(MediaManagerItem):
             self.CustomListData.deleteRow(index)
 
     def onCustomPreviewClick(self):
-        service_item = ServiceItem(self.parent)
-        service_item.render_manager = self.parent.render_manager
-        self.generateSlideData(service_item)
-        self.parent.preview_controller.addServiceItem(service_item)
-
-    def onCustomLiveClick(self):
-        service_item = ServiceItem(self.parent)
-        service_item.render_manager = self.parent.render_manager
-        self.generateSlideData(service_item)
-        self.parent.live_controller.addServiceItem(service_item)
-
-    def onCustomAddClick(self):
-        service_item = ServiceItem(self.parent)
-        service_item.render_manager = self.parent.render_manager
-        self.generateSlideData(service_item)
-
-    def generateSlideData(self, service_item):
         indexes = self.CustomListView.selectedIndexes()
-        raw_slides =[]
-        raw_footer = []
+        main_lines=[]
+        footer_lines = []
         slide = None
         theme = None
         for index in indexes:
@@ -219,16 +200,21 @@ class CustomMediaItem(MediaManagerItem):
                 self.parent.render_manager.set_override_theme(None)
             else:
                 self.parent.render_manager.set_override_theme(theme)
-                service_item.theme = theme
+
             songXML=SongXMLParser(customSlide.text)
             verseList = songXML.get_verses()
             for verse in verseList:
                 slide = self.parent.render_manager.format_slide(verse[1], False)
-                raw_slides.append(verse[1])
+                print verse
+                print slide
 
-            raw_footer.append(title + u' '+ credit)
+            footer_lines.append(title + u' '+ credit)
         if slide is not None:
-            frame=self.parent.render_manager.generate_slide(slide, raw_footer, False)
+            frame=self.parent.render_manager.generate_slide(slide, footer_lines, False)
             self.parent.preview_controller.previewFrame(frame)
-        service_item.raw_slides = raw_slides
-        service_item.raw_footer = raw_footer
+
+    def onCustomLiveClick(self):
+        pass
+
+    def onCustomAddClick(self):
+        pass
