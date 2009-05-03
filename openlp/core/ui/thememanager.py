@@ -230,7 +230,17 @@ class ThemeManager(QWidget):
     def getThemeData(self, themename):
         log.debug(u'getthemedata for theme %s', themename)
         xml_file = os.path.join(self.path, str(themename), str(themename) + u'.xml')
-        xml = fileToXML(xml_file)
+        try:
+            xml = fileToXML(xml_file)
+        except:
+            newtheme = ThemeXML()
+            newtheme.new_document(u'New Theme')
+            newtheme.add_background_solid(str(u'#000000'))
+            newtheme.add_font(str(QFont().family()), str(u'#FFFFFF'), str(30), u'False')
+            newtheme.add_font(str(QFont().family()), str(u'#FFFFFF'), str(12), u'False', u'footer')
+            newtheme.add_display(u'False', str(u'#FFFFFF'), u'False', str(u'#FFFFFF'),
+                str(0), str(0), str(0))
+            xml = newtheme.extract_xml()
         theme = ThemeXML()
         theme.parse(xml)
         return theme

@@ -60,8 +60,9 @@ class MainWindow(object):
         self.plugin_helpers[u'preview'] = self.PreviewController
         self.plugin_helpers[u'live'] = self.LiveController
         self.plugin_helpers[u'event'] = self.EventManager
-        self.plugin_helpers[u'theme'] = self.ThemeManagerContents  # Theme manger
+        self.plugin_helpers[u'theme'] = self.ThemeManagerContents
         self.plugin_helpers[u'render'] = self.RenderManager
+        self.plugin_helpers[u'service'] = self.ServiceManagerContents
 
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers, self.EventManager)
         # hook methods have to happen after find_plugins.  Find plugins needs the controllers
@@ -93,6 +94,12 @@ class MainWindow(object):
         self.ServiceManagerContents.renderManager = self.RenderManager
         self.ThemeManagerContents.serviceManager = self.ServiceManagerContents
         self.ThemeManagerContents.loadThemes()
+
+        # Initialise SlideControllers
+        log.info(u'Set Up SlideControllers')
+        self.PreviewController.isLive = False
+        self.LiveController.isLive = True
+        self.LiveController.mainDisplay = self.main_display
 
     def setupUi(self):
         self.main_window.setObjectName(u'main_window')

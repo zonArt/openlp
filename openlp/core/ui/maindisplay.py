@@ -45,14 +45,14 @@ class MainDisplay(QtGui.QWidget):
                     screen = scrn
                     break
         self.setGeometry(screen['size'])
+        self.display.setGeometry(screen['size'])
         if not screen['primary']:
             self.showFullScreen()
         else:
-            self.hide()
+            self.showMinimized()
 
     def frameView(self, frame):
-        self.display.setGeometry(0, 0, imagesize.width(), imagesize.height())
-        self.display.setPixmap(QtGui.QPixmap(frame))
+        self.display.setPixmap(frame)
 
     def kill(self):
         pass

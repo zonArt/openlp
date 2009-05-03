@@ -24,6 +24,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core import translate
 from openlp.core.lib import MediaManagerItem
 from openlp.core.lib import SongXMLParser
+from openlp.core.lib import ServiceItem
 
 from openlp.plugins.custom.lib import TextListData
 
@@ -37,6 +38,7 @@ class CustomMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         MediaManagerItem.__init__(self, parent, icon, title)
+        self.parent = parent
 
     def setupUi(self):
         # Add a toolbar
@@ -134,7 +136,7 @@ class CustomMediaItem(MediaManagerItem):
             translate('CustomMediaItem',u'&Show Live'), self.onCustomLiveClick))
         self.CustomListView.addAction(self.contextMenuAction(
             self.CustomListView, ':/system/system_add.png',
-            translate('CustomMediaItem',u'&Add to Service'), self.onCustomEditClick))
+            translate('CustomMediaItem',u'&Add to Service'), self.onCustomAddClick))
 
 #    def retranslateUi(self):
 #        self.ClearTextButton.setText(translate('CustomMediaItem', u'Clear'))
@@ -185,9 +187,30 @@ class CustomMediaItem(MediaManagerItem):
             self.CustomListData.deleteRow(index)
 
     def onCustomPreviewClick(self):
+        service_item = ServiceItem(self.parent)
+        service_item.addIcon( ":/media/media_song.png")
+        service_item.render_manager = self.parent.render_manager
+        self.generateSlideData(service_item)
+        self.parent.preview_controller.addServiceItem(service_item)
+
+    def onCustomLiveClick(self):
+        service_item = ServiceItem(self.parent)
+        service_item.addIcon( ":/media/media_song.png")
+        service_item.render_manager = self.parent.render_manager
+        self.generateSlideData(service_item)
+        self.parent.live_controller.addServiceItem(service_item)
+
+    def onCustomAddClick(self):
+        service_item = ServiceItem(self.parent)
+        service_item.addIcon( ":/media/media_song.png")
+        service_item.render_manager = self.parent.render_manager
+        self.generateSlideData(service_item)
+        self.parent.service_manager.addServiceItem(service_item)
+
+    def generateSlideData(self, service_item):
         indexes = self.CustomListView.selectedIndexes()
-        main_lines=[]
-        footer_lines = []
+        raw_slides =[]
+        raw_footer = []
         slide = None
         theme = None
         for index in indexes:
@@ -196,25 +219,13 @@ class CustomMediaItem(MediaManagerItem):
             title = customSlide.title
             credit = customSlide.credits
             theme = customSlide.theme_name
-            if len(theme) == 0 or theme == None:
-                self.parent.render_manager.set_override_theme(None)
-            else:
-                self.parent.render_manager.set_override_theme(theme)
-
+            if len(theme) is not 0 :
+                service_item.theme = theme
             songXML=SongXMLParser(customSlide.text)
             verseList = songXML.get_verses()
             for verse in verseList:
-                slide = self.parent.render_manager.format_slide(verse[1], False)
-                print verse
-                print slide
-
-            footer_lines.append(title + u' '+ credit)
-        if slide is not None:
-            frame=self.parent.render_manager.generate_slide(slide, footer_lines, False)
-            self.parent.preview_controller.previewFrame(frame)
-
-    def onCustomLiveClick(self):
-        pass
-
-    def onCustomAddClick(self):
-        pass
+                raw_slides.append(verse[1])
+            raw_footer.append(title + u' '+ credit)
+        service_item.title = title
+        service_item.raw_slides = raw_slides
+        service_item.raw_footer = raw_footer
