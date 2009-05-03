@@ -13,7 +13,7 @@
    <string>About openlp.org</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="../images/openlp-2.qrc" >
+   <iconset>
     <normaloff>:/icon/openlp.org-icon-32.bmp</normaloff>:/icon/openlp.org-icon-32.bmp</iconset>
   </property>
   <layout class="QVBoxLayout" name="AboutDialogLayout" >
@@ -33,9 +33,6 @@
      </property>
      <property name="frameShape" >
       <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow" >
-      <enum>QFrame::Sunken</enum>
      </property>
      <property name="lineWidth" >
       <number>1</number>
@@ -215,8 +212,6 @@ Developers
   <tabstop>ContributeButton</tabstop>
  </tabstops>
  <resources>
-  <include location="../images/openlp-2.qrc" />
-  <include location="../images/openlp-2.qrc" />
   <include location="../images/openlp-2.qrc" />
  </resources>
  <connections>

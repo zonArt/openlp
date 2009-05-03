@@ -5,6 +5,13 @@
     <file>song_export.png</file>
     <file>song_new.png</file>
   </qresource>
+  <qresource prefix="slides" >
+    <file>slide_close.png</file>
+    <file>slide_first.png</file>
+    <file>slide_last.png</file>
+    <file>slide_next.png</file>
+    <file>slide_previous.png</file>
+  </qresource>
   <qresource prefix="icon" >
     <file>openlp-logo-16x16.png</file>
     <file>openlp-logo-32x32.png</file>
