@@ -95,6 +95,12 @@ class MainWindow(object):
         self.ThemeManagerContents.serviceManager = self.ServiceManagerContents
         self.ThemeManagerContents.loadThemes()
 
+        # Initialise SlideControllers
+        log.info(u'Set Up SlideControllers')
+        self.PreviewController.isLive = False
+        self.LiveController.isLive = True
+        self.LiveController.mainDisplay = self.main_display
+
     def setupUi(self):
         self.main_window.setObjectName(u'main_window')
         self.main_window.resize(1087, 847)
