@@ -206,7 +206,7 @@ class SlideController(QWidget):
             self.onSlideSelected(row)
 
     def onBlankScreen(self):
-        pass
+        self.mainDisplay.blankDisplay()
 
     def onSlideSelected(self, index):
         frame = self.PreviewListData.getValue(index)
@@ -218,6 +218,7 @@ class SlideController(QWidget):
             self.mainDisplay.frameView(frame)
 
     def addServiceItem(self, serviceitem):
+        log.debug(u'addServiceItem')
         self.serviceitem = serviceitem
         self.serviceitem.render()
         self.PreviewListData.clearItems()

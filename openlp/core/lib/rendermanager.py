@@ -18,6 +18,7 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import logging
+import time
 import os,  os.path
 import sys
 from PyQt4 import QtGui, QtCore, Qt
@@ -41,21 +42,20 @@ class RenderManager:
         self.current_display = 0
         self.renderer = Renderer(None)
         self.calculate_default(self.screen_list[self.current_display]['size'])
-        self.frame = None
 
     def set_override_theme(self, theme):
-        log.debug("set override theme to %s",  theme)
+        log.debug(u'set override theme to %s',  theme)
         if theme is not None:
             self.theme = theme
         else:
             self.theme = self.default_theme
-        log.debug("theme is now %s",  self.theme)
+        log.debug(u'theme is now %s',  self.theme)
         self.themedata = self.theme_manager.getThemeData(self.theme)
         self.renderer.set_theme(self.themedata)
         self.build_text_rectangle(self.themedata)
 
     def build_text_rectangle(self, theme):
-
+        log.debug(u'build_text_rectangle ')
         main_rect = None
         footer_rect = None
 
@@ -74,6 +74,7 @@ class RenderManager:
         self.renderer.set_text_rectangle(main_rect,footer_rect)
 
     def generate_preview(self, themedata):
+        log.debug(u'generate preview ')
         self.calculate_default(QtCore.QSize(800,600))
         self.renderer.set_theme(themedata)
         self.build_text_rectangle(themedata)
@@ -94,25 +95,23 @@ class RenderManager:
         return frame
 
     def format_slide(self, words, footer):
-        self.calculate_default(QtCore.QSize(800,600))
-        frame = QtGui.QPixmap(self.width, self.height)
-        self.renderer.set_paint_dest(frame)
+        log.debug(u'format slide')
+        self.calculate_default(self.screen_list[self.current_display]['size'])
+        self.renderer.set_paint_dest(QtGui.QPixmap(self.width, self.height))
         return self.renderer.format_slide(words, footer)
 
-    def generate_slide(self,main_text, footer_text, preview=True):
-        if preview == True:
-            self.calculate_default(QtCore.QSize(800,600))
+    def generate_slide(self,main_text, footer_text):
+        log.debug(u'generate slide')
+        self.calculate_default(self.screen_list[self.current_display]['size'])
 
         frame = QtGui.QPixmap(self.width, self.height)
         self.renderer.set_paint_dest(frame)
-
         answer=self.renderer.render_lines(main_text, footer_text)
         return frame
 
     def calculate_default(self, screen):
+        log.debug(u'calculate default %s' , screen)
         self.width = screen.width()
         self.height = screen.height()
+        log.debug(u'calculate default %d,%d' , self.width, self.height)
         self.footer_start = int(self.height*0.95) # 95% is start of footer
-        #update the rederer frame
-        self.frame = QtGui.QPixmap(self.width, self.height)
-        self.renderer.set_paint_dest(self.frame)

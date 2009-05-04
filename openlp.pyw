@@ -27,7 +27,7 @@ from openlp.core.lib import Receiver
 
 logging.basicConfig(level=logging.DEBUG,
                 format=u'%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                datefmt=u'%m-%d %H:%M',
+                datefmt=u'%m-%d %H:%M:%S',
                 filename=u'openlp.log',
                 filemode=u'w')
 

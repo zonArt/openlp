@@ -114,7 +114,6 @@ class Renderer:
 
     def render_screen(self, screennum):
         log.debug(u'render screen\n %s %s ', screennum, self.words[screennum])
-        import time
         t=0.0
         words=self.words[screennum]
         retval=self._render_lines(words)
@@ -173,7 +172,6 @@ class Renderer:
             else:
                 p.fillRect(self._paint.rect(), QtGui.QColor(u'#000000'))
         p.end()
-        log.debug(u'render background done')
 
     def split_set_of_lines(self, lines, footer):
 
@@ -252,7 +250,7 @@ class Renderer:
 
     def render_lines(self, lines, footer_lines=None):
         """render a set of lines according to the theme, return bounding box"""
-        #log.debug(u'_render_lines %s', lines)
+        log.debug(u'_render_lines %s', lines)
 
         bbox=self._render_lines_unaligned(lines, False) # Main font
         if footer_lines is not None:
@@ -264,10 +262,7 @@ class Renderer:
         bbox=self._render_lines_unaligned(lines, False,  (x, y))
 
         if footer_lines is not None:
-            #x, y = self._correctAlignment(self._rect_footer, bbox1)
             bbox=self._render_lines_unaligned(footer_lines, True, (self._rect_footer.left(), self._rect_footer.top()) )
-
-        log.debug(u'render lines DONE')
 
         return bbox
 
@@ -279,7 +274,7 @@ class Renderer:
         than a screenful (eg. by using split_set_of_lines)
 
         Returns the bounding box of the text as QRect"""
-        log.debug(u'render unaligned %s', lines)
+        log.debug(u'render lines unaligned %s', lines)
         x, y=tlcorner
         brx=x
         bry=y
@@ -298,7 +293,7 @@ class Renderer:
             p.setPen(QtGui.QPen(QtGui.QColor(0,0,255)))
             p.drawRect(retval)
             p.end()
-        log.debug(u'render unaligned DONE')
+
 
         return  retval
 
@@ -410,7 +405,7 @@ class Renderer:
 
         return width and height of text as a tuple (w,h)"""
         # setup defaults
-        #log.debug(u"_get_extent_and_render %s %s %s ", [line], tlcorner, draw)
+        log.debug(u'_get_extent_and_render %s %s %s ', [line], tlcorner, draw)
         p=QtGui.QPainter()
         p.begin(self._paint)
         # 'twould be more efficient to set this once when theme changes
