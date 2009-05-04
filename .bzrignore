@@ -5,3 +5,6 @@
 *.eric4project
 *.ropeproject
 *.e4*
+.eric4project
+list
+openlp.org 2.0.e4*
