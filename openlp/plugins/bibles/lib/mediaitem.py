@@ -371,10 +371,10 @@ class BibleMediaItem(MediaManagerItem):
             if len(raw_footer) <= 1:
                 raw_footer.append(book)
 
-        service_item.theme = None
-
-        service_item.raw_slides = raw_slides
-        service_item.raw_footer = raw_footer
+        if len(raw_slides) > 0:
+            service_item.theme = None
+            service_item.raw_slides = raw_slides
+            service_item.raw_footer = raw_footer
 
     def formatVerse(self, old_chapter, chapter, verse, opening, closing):
         loc = opening

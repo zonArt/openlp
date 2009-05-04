@@ -164,12 +164,13 @@ class ThemeManager(QWidget):
             translate(u'ThemeManager', u'Export a theme'), self.onExportTheme)
         self.ThemeWidget = QtGui.QWidgetAction(self.Toolbar)
         self.Layout.addWidget(self.Toolbar)
+
         self.ThemeListView = QtGui.QListView(self)
         self.themeData = ThemeData()
         self.ThemeListView.setModel(self.themeData)
         self.ThemeListView.setAlternatingRowColors(True)
         self.Layout.addWidget(self.ThemeListView)
-        self.ThemeListView.setAlternatingRowColors(True)
+
         self.themelist = []
         self.path = os.path.join(ConfigHelper.get_data_path(), u'themes')
         self.checkThemesExists(self.path)

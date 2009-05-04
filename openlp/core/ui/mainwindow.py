@@ -97,8 +97,6 @@ class MainWindow(object):
 
         # Initialise SlideControllers
         log.info(u'Set Up SlideControllers')
-        self.PreviewController.isLive = False
-        self.LiveController.isLive = True
         self.LiveController.mainDisplay = self.main_display
 
     def setupUi(self):
@@ -130,8 +128,8 @@ class MainWindow(object):
         self.ControlSplitter.setOrientation(QtCore.Qt.Horizontal)
         self.ControlSplitter.setObjectName(u'ControlSplitter')
         self.MainContentLayout.addWidget(self.ControlSplitter)
-        self.PreviewController = SlideController(self.ControlSplitter)
-        self.LiveController = SlideController(self.ControlSplitter)
+        self.PreviewController = SlideController(self.ControlSplitter, False)
+        self.LiveController = SlideController(self.ControlSplitter, True)
         self.MenuBar = QtGui.QMenuBar(self.main_window)
         self.MenuBar.setGeometry(QtCore.QRect(0, 0, 1087, 27))
         self.MenuBar.setObjectName(u'MenuBar')
@@ -296,10 +294,10 @@ class MainWindow(object):
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.ToolsAddToolItem.setIcon(AddToolIcon)
         self.ToolsAddToolItem.setObjectName(u'ToolsAddToolItem')
-        self.action_Preview_Pane = QtGui.QAction(self.main_window)
-        self.action_Preview_Pane.setCheckable(True)
-        self.action_Preview_Pane.setChecked(True)
-        self.action_Preview_Pane.setObjectName(u'action_Preview_Pane')
+        self.action_Preview_Panel = QtGui.QAction(self.main_window)
+        self.action_Preview_Panel.setCheckable(True)
+        self.action_Preview_Panel.setChecked(True)
+        self.action_Preview_Panel.setObjectName(u'action_Preview_Panel')
         self.ModeLiveItem = QtGui.QAction(self.main_window)
         self.ModeLiveItem.setObjectName(u'ModeLiveItem')
         self.FileImportMenu.addAction(self.ImportThemeItem)
@@ -322,7 +320,7 @@ class MainWindow(object):
         self.OptionsViewMenu.addAction(self.ViewServiceManagerItem)
         self.OptionsViewMenu.addAction(self.ViewThemeManagerItem)
         self.OptionsViewMenu.addSeparator()
-        self.OptionsViewMenu.addAction(self.action_Preview_Pane)
+        self.OptionsViewMenu.addAction(self.action_Preview_Panel)
         self.OptionsLanguageMenu.addAction(self.LanguageEnglishItem)
         self.OptionsLanguageMenu.addSeparator()
         self.OptionsLanguageMenu.addAction(self.LanguageTranslateItem)
@@ -353,8 +351,8 @@ class MainWindow(object):
             QtCore.SIGNAL(u'triggered(bool)'), self.ServiceManagerDock.setVisible)
         QtCore.QObject.connect(self.ViewThemeManagerItem,
             QtCore.SIGNAL(u'triggered(bool)'), self.ThemeManagerDock.setVisible)
-        QtCore.QObject.connect(self.action_Preview_Pane,
-            QtCore.SIGNAL(u'toggled(bool)'), self.PreviewController.Pane.setVisible)
+        QtCore.QObject.connect(self.action_Preview_Panel,
+            QtCore.SIGNAL(u'toggled(bool)'), self.PreviewController.Panel.setVisible)
         QtCore.QObject.connect(self.MediaManagerDock,
             QtCore.SIGNAL(u'visibilityChanged(bool)'), self.ViewMediaManagerItem.setChecked)
         QtCore.QObject.connect(self.ServiceManagerDock,
@@ -451,7 +449,7 @@ class MainWindow(object):
         self.LanguageEnglishItem.setStatusTip(translate(u'main_window', u'Set the interface language to English'))
         self.ToolsAddToolItem.setText(translate(u'main_window', u'&Add Tool...'))
         self.ToolsAddToolItem.setStatusTip(translate(u'main_window', u'Add an application to the list of tools'))
-        self.action_Preview_Pane.setText(translate(u'main_window', u'&Preview Pane'))
+        self.action_Preview_Panel.setText(translate(u'main_window', u'&Preview Pane'))
         self.ModeLiveItem.setText(translate(u'main_window', u'&Live'))
 
     def show(self):

@@ -21,15 +21,16 @@ import os
 
 from time import sleep
 from copy import deepcopy
-from PyQt4 import *
-from PyQt4 import QtCore, QtGui
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
 # from openlp.core.resources import *
 # from openlp.core.ui import AboutForm, AlertForm, SettingsForm, SlideController
 from openlp.core.lib import OpenLPToolbar
 from openlp.core.lib import ServiceItem
 from openlp.core.lib import RenderManager
+from openlp.core import translate
 
 # from openlp.core import PluginManager
 import logging
@@ -46,6 +47,9 @@ class ServiceData(QAbstractItemModel):
         QAbstractItemModel.__init__(self)
         self.items=[]
         log.info("Starting")
+
+    def clearItems(self):
+        self.items = []
 
     def columnCount(self, parent):
         return 1; # always only a single column (for now)
@@ -122,33 +126,73 @@ class ServiceManager(QWidget):
     def __init__(self, parent):
         QWidget.__init__(self)
         self.parent=parent
-        self.Layout = QtGui.QVBoxLayout(self)
+        self.Layout = QVBoxLayout(self)
         self.Layout.setSpacing(0)
         self.Layout.setMargin(0)
         self.Toolbar = OpenLPToolbar(self)
-        self.Toolbar.addToolbarButton("Move to top", ":/services/service_top.png")
-        self.Toolbar.addToolbarButton("Move up", ":/services/service_up.png")
-        self.Toolbar.addToolbarButton("Move down", ":/services/service_down.png")
-        self.Toolbar.addToolbarButton("Move to bottom", ":/services/service_bottom.png")
+        self.Toolbar.addToolbarButton("Move to top", ":/services/service_top.png",
+            translate(u'ServiceManager', u'Move to start'), self.onServiceTop)
+        self.Toolbar.addToolbarButton("Move up", ":/services/service_up.png",
+            translate(u'ServiceManager', u'Move up order'), self.onServiceUp)
+        self.Toolbar.addToolbarButton("Move down", ":/services/service_down.png",
+            translate(u'ServiceManager', u'Move down order'), self.onServiceDown)
+        self.Toolbar.addToolbarButton("Move to bottom", ":/services/service_bottom.png",
+            translate(u'ServiceManager', u'Move to end'), self.onServiceEnd)
         self.Toolbar.addSeparator()
-        self.Toolbar.addToolbarButton("New Service", ":/services/service_new.png")
-        self.Toolbar.addToolbarButton("Save Service", ":/services/service_save.png")
+        self.Toolbar.addToolbarButton("New Service", ":/services/service_new.png",
+            translate(u'ServiceManager', u'Create a new Service'), self.onNewService)
+        self.Toolbar.addToolbarButton("Delete From Service", ":/services/service_delete.png",
+            translate(u'ServiceManager', u'Delete From Service'), self.onDeleteFromService)
         self.Toolbar.addSeparator()
-        self.ThemeComboBox = QtGui.QComboBox(self.Toolbar)
-        self.ThemeComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
-        self.ThemeWidget = QtGui.QWidgetAction(self.Toolbar)
+        self.Toolbar.addToolbarButton("Save Service", ":/services/service_save.png",
+            translate(u'ServiceManager', u'Save Service'), self.onSaveService)
+        self.Toolbar.addToolbarButton("Load Service", ":/services/service_open.png",
+            translate(u'ServiceManager', u'Load Existing'), self.onLoadService)
+
+        self.Toolbar.addSeparator()
+        self.ThemeComboBox = QComboBox(self.Toolbar)
+        self.ThemeComboBox.setSizeAdjustPolicy(QComboBox.AdjustToContents)
+        self.ThemeWidget = QWidgetAction(self.Toolbar)
         self.ThemeWidget.setDefaultWidget(self.ThemeComboBox)
         self.Toolbar.addAction(self.ThemeWidget)
 
         self.Layout.addWidget(self.Toolbar)
 
-        self.TreeView = QtGui.QTreeView(self)
+        self.TreeView = QTreeView(self)
         self.service_data=ServiceData()
         self.TreeView.setModel(self.service_data)
+        self.TreeView.setAlternatingRowColors(True)
         self.Layout.addWidget(self.TreeView)
 
-        QtCore.QObject.connect(self.ThemeComboBox,
-            QtCore.SIGNAL("activated(int)"), self.onThemeComboBoxSelected)
+        QObject.connect(self.ThemeComboBox,
+            SIGNAL("activated(int)"), self.onThemeComboBoxSelected)
+
+    def onServiceTop(self):
+        pass
+
+    def onServiceUp(self):
+        pass
+
+    def onServiceDown(self):
+        pass
+
+    def onServiceEnd(self):
+        pass
+
+    def onNewService(self):
+        self.service_data.clearItems()
+
+    def onDeleteFromService(self):
+        pass
+
+    def onSaveService(self):
+        Pass
+
+    def onLoadService(self):
+        Pass
+
+
+
 
     def onThemeComboBoxSelected(self, currentIndex):
         self.renderManager.default_theme = self.ThemeComboBox.currentText()

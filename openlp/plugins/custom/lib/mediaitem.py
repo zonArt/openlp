@@ -226,6 +226,7 @@ class CustomMediaItem(MediaManagerItem):
             for verse in verseList:
                 raw_slides.append(verse[1])
             raw_footer.append(title + u' '+ credit)
-        service_item.title = title
-        service_item.raw_slides = raw_slides
-        service_item.raw_footer = raw_footer
+        if theme is not None:
+            service_item.title = title
+            service_item.raw_slides = raw_slides
+            service_item.raw_footer = raw_footer
