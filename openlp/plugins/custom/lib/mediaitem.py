@@ -187,6 +187,7 @@ class CustomMediaItem(MediaManagerItem):
             self.CustomListData.deleteRow(index)
 
     def onCustomPreviewClick(self):
+        log.debug(u'Custom Preview Requested')
         service_item = ServiceItem(self.parent)
         service_item.addIcon( ":/media/media_song.png")
         service_item.render_manager = self.parent.render_manager
@@ -194,6 +195,7 @@ class CustomMediaItem(MediaManagerItem):
         self.parent.preview_controller.addServiceItem(service_item)
 
     def onCustomLiveClick(self):
+        log.debug(u'Custom Live Requested')
         service_item = ServiceItem(self.parent)
         service_item.addIcon( ":/media/media_song.png")
         service_item.render_manager = self.parent.render_manager
@@ -201,6 +203,7 @@ class CustomMediaItem(MediaManagerItem):
         self.parent.live_controller.addServiceItem(service_item)
 
     def onCustomAddClick(self):
+        log.debug(u'Custom Add Requested')
         service_item = ServiceItem(self.parent)
         service_item.addIcon( ":/media/media_song.png")
         service_item.render_manager = self.parent.render_manager
@@ -226,6 +229,7 @@ class CustomMediaItem(MediaManagerItem):
             for verse in verseList:
                 raw_slides.append(verse[1])
             raw_footer.append(title + u' '+ credit)
-        service_item.title = title
-        service_item.raw_slides = raw_slides
-        service_item.raw_footer = raw_footer
+        if theme is not None:
+            service_item.title = title
+            service_item.raw_slides = raw_slides
+            service_item.raw_footer = raw_footer

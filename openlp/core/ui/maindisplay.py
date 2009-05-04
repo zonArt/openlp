@@ -29,6 +29,9 @@ class MainDisplay(QtGui.QWidget):
         self.setWindowTitle(u'OpenLP Display')
         self.screens = screens
         self.display = QtGui.QLabel(self)
+        self.display.setScaledContents(True)
+        self.displayBlank = False
+        self.blankFrame= None
 
     def setup(self, screenNumber):
         """
@@ -51,8 +54,24 @@ class MainDisplay(QtGui.QWidget):
         else:
             self.showMinimized()
 
+        painter=QtGui.QPainter()
+        self.blankFrame = QtGui.QPixmap(800, 600)
+        painter.begin(self.blankFrame)
+        painter.fillRect(self.blankFrame.rect(), QtGui.QColor(u'#000000'))
+
     def frameView(self, frame):
-        self.display.setPixmap(frame)
+        if self.displayBlank == False:
+            self.display.setPixmap(frame)
+            self.frame = frame
+
+    def blankDisplay(self):
+        if self.displayBlank == False:
+            self.displayBlank = True
+            self.display.setPixmap(self.blankFrame)
+        else:
+            self.displayBlank = False
+            self.frameView(self.frame)
+
 
     def kill(self):
         pass
