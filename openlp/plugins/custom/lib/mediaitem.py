@@ -109,6 +109,8 @@ class CustomMediaItem(MediaManagerItem):
         self.CustomListView.setAlternatingRowColors(True)
         self.CustomListData = TextListData()
         self.CustomListView.setModel(self.CustomListData)
+        self.CustomListView.setDragEnabled(True)
+        self.CustomListView .__class__.mouseMoveEvent =self.onMouseMoveEvent
 
         self.PageLayout.addWidget(self.CustomListView)
 
@@ -233,3 +235,27 @@ class CustomMediaItem(MediaManagerItem):
             service_item.title = title
             service_item.raw_slides = raw_slides
             service_item.raw_footer = raw_footer
+
+    def onMouseMoveEvent(self, event):
+        """
+        Drag and drop eventDo not care what data is selected
+        as the recepient will use events to request the data move
+        just tell it what plugin to call
+        """
+        if event.buttons() != QtCore.Qt.LeftButton:
+            return
+
+        items = self.CustomListView.selectedIndexes()
+        if items == []:
+            return
+
+        drag = QtGui.QDrag(self)
+        mimeData = QtCore.QMimeData()
+        drag.setMimeData(mimeData)
+        for item in items:
+            mimeData.setText(u'Custom')
+
+        dropAction = drag.start(QtCore.Qt.CopyAction)
+
+        if dropAction == QtCore.Qt.CopyAction:
+            self.close()

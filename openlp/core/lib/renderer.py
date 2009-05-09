@@ -279,8 +279,6 @@ class Renderer:
         brx=x
         bry=y
         for line in lines:
-            #if (line == ''):
-            #   continue
             # render after current bottom, but at original left edge
             # keep track of right edge to see which is biggest
             (thisx, bry) = self._render_single_line(line, footer, (x,bry))
@@ -402,10 +400,9 @@ class Renderer:
     def _get_extent_and_render(self, line, footer,  tlcorner=(0,0), draw=False, color=None):
         """Find bounding box of text  - as render_single_line.
         If draw is set, actually draw the text to the current DC as well
-
         return width and height of text as a tuple (w,h)"""
         # setup defaults
-        log.debug(u'_get_extent_and_render %s %s %s ', [line], tlcorner, draw)
+        #log.debug(u'_get_extent_and_render %s %s %s ', [line], tlcorner, draw)
         p=QtGui.QPainter()
         p.begin(self._paint)
         # 'twould be more efficient to set this once when theme changes

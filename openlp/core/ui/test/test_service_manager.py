@@ -25,7 +25,7 @@ from PyQt4.QtGui import *
 mypath=os.path.split(os.path.abspath(__file__))[0]
 sys.path.insert(0,(os.path.join(mypath, '..','..', '..','..')))
 from openlp.core.ui import ServiceManager
-from openlp.plugins.images import ImageServiceItem
+from openlp.plugins.images.lib import ImageServiceItem
 
 import logging
 logging.basicConfig(filename="test_service_manager.log",level=logging.INFO, filemode="w")
@@ -47,7 +47,7 @@ class TestServiceManager_base:
                 app = QtGui.QApplication([])
         except UnboundLocalError:
             app = QtGui.QApplication([])
-            
+
 
     def teardown_class(self):
         pass
@@ -84,7 +84,7 @@ class TestServiceManager_base:
         assert lines[0].startswith("# <openlp.plugins.images.imageserviceitem.ImageServiceItem object")
         assert lines[1] == "test.gif"
         log.info("done")
-        
+
     def test_2items_as_separate_items(self):
         # If nothing is selected when item is added, a new base service item is added
         log.info("test_2items_as_separate_items")
@@ -105,7 +105,7 @@ class TestServiceManager_base:
         assert lines[3] == "test2.gif"
         assert lines[4] == "test3.gif"
         log.info("done")
-        
+
     def test_2items_merged(self):
         # If the first object is selected when item is added it should be extended
         log.info("test_2items_merged")
@@ -134,7 +134,7 @@ class TestServiceManager_base:
     #  move to top, bottom
     #  new and save as
     #  deleting items
-    
+
 if __name__=="__main__":
 
     t=TestServiceManager_base()

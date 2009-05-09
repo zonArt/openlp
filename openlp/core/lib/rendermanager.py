@@ -113,5 +113,9 @@ class RenderManager:
         log.debug(u'calculate default %s' , screen)
         self.width = screen.width()
         self.height = screen.height()
+        if self.width > 1024:
+            self.width = 1024
+        if self.height > 768:
+            self.height = 768
         log.debug(u'calculate default %d,%d' , self.width, self.height)
         self.footer_start = int(self.height*0.95) # 95% is start of footer

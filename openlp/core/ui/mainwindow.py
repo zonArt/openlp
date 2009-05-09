@@ -92,6 +92,7 @@ class MainWindow(object):
         self.ThemeManagerContents.eventManager = self.EventManager
         self.ThemeManagerContents.renderManager = self.RenderManager
         self.ServiceManagerContents.renderManager = self.RenderManager
+        self.ServiceManagerContents.eventManager = self.EventManager
         self.ThemeManagerContents.serviceManager = self.ServiceManagerContents
         self.ThemeManagerContents.loadThemes()
 

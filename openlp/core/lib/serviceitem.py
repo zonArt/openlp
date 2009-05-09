@@ -44,7 +44,6 @@ class ServiceItem():
         self.items = []
         self.iconic_representation = None
         self.raw_slides = None
-        self.format_slides = []
         self.frames = []
         self.raw_footer = None
         self.theme = None
@@ -74,11 +73,11 @@ class ServiceItem():
         else:
             self.render_manager.set_override_theme(self.theme)
         log.debug(u'Formatting slides')
-        for slide in self.raw_slides:
-            self.format_slides.append(self.render_manager.format_slide(slide, False))
-        log.debug(u'Rendering slides')
-        for slide in self.format_slides:
-            self.frames.append(self.render_manager.generate_slide(slide, self.raw_footer))
+        if len(self.frames) == 0 :
+            for slide in self.raw_slides:
+                formated = self.render_manager.format_slide(slide, False)
+                frame = self.render_manager.generate_slide(slide, self.raw_footer)
+                self.frames.append({u'formatted': formated, u'image': frame})
 
 
     def get_parent_node(self):

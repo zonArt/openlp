@@ -39,7 +39,7 @@ class ImageServiceItem(ServiceItem):
       it simply tells the slide controller to use it???
 
     It contains 1 or more images
-          
+
     """
     global log
     log=logging.getLogger("ImageServiceItem")
@@ -56,7 +56,7 @@ class ImageServiceItem(ServiceItem):
 #         c.uniformItemSizes=True
 #         c.setModel(self.imgs)
 #         c.setGeometry(0,0,200,200)
-    
+
     def render(self):
         """
         The render method is what the plugin uses to render its meda to the
@@ -64,7 +64,7 @@ class ImageServiceItem(ServiceItem):
         """
         # render the "image chooser first"
 #         for f in self.imgs:
-#             fl ,  nm = os.path.split(str(f))            
+#             fl ,  nm = os.path.split(str(f))
 #             c = self.slide_controller.rowCount()
 #             self.slide_controller.setRowCount(c+1)
 #             twi = QtGui.QTableWidgetItem(str(f))
@@ -72,7 +72,7 @@ class ImageServiceItem(ServiceItem):
 #             twi = QtGui.QTableWidgetItem(str(nm))
 #             self.slide_controller.setItem(c , 1, twi)
 #             self.slide_controller.setRowHeight(c, 80)
-            
+
         # render the preview screen here
 
     def get_parent_node(self):
@@ -92,7 +92,7 @@ class ImageServiceItem(ServiceItem):
             log.info("add Item..."+str(data))
             for filename in data.get_file_list():
                 self.add(filename)
-            
+
 
     def get_oos_text(self):
         """
@@ -100,7 +100,7 @@ class ImageServiceItem(ServiceItem):
         """
         log.info("Get oos text")
         log.info(str(self.imgs))
-        log.info(str(self.imgs.get_file_list()))
+#        log.info(str(self.imgs.get_file_list()))
         return '\n'.join(self.imgs.get_file_list())
 
     def set_from_oos(self, text):
@@ -111,4 +111,4 @@ class ImageServiceItem(ServiceItem):
         files=text.split('\n')
         for f in files:
             self.imgs.addRow(f)
-        
+

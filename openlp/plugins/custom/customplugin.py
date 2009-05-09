@@ -60,3 +60,6 @@ class CustomPlugin(Plugin):
         if event.event_type == EventType.ThemeListChanged:
             log.debug(u'New Theme request received')
             self.edit_custom_form.loadThemes(self.theme_manager.getThemes())
+        if event.event_type == EventType.LoadServiceItem and event.payload == 'Custom':
+            log.debug(u'Load Service Item received')
+            self.media_item.onCustomAddClick()
