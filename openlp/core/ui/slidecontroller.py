@@ -20,13 +20,12 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import logging
 import os
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar
 from openlp.core import translate
 
-class SlideData(QAbstractListModel):
+class SlideData(QtCore.QAbstractListModel):
     """
     Tree of items for an order of Theme.
     Includes methods for reading and writing the contents to an OOS file
@@ -36,13 +35,13 @@ class SlideData(QAbstractListModel):
     log=logging.getLogger(u'SlideData')
 
     def __init__(self):
-        QAbstractListModel.__init__(self)
+        QtCore.QAbstractListModel.__init__(self)
         self.items=[]
         self.rowheight=50
         self.maximagewidth=self.rowheight*16/9.0;
         log.info(u'Starting')
 
-    def clearItems(self):
+    def clear(self):
         self.items=[]
 
     def columnCount(self, parent):
@@ -51,36 +50,36 @@ class SlideData(QAbstractListModel):
     def rowCount(self, parent=None):
         return len(self.items)
 
-    def insertRow(self, row, frame):
-        self.beginInsertRows(QModelIndex(),row,row)
+    def insertRow(self, row, frame, framenumber):
+        self.beginInsertRows(QtCore.QModelIndex(),row,row)
         log.info(u'insert row %d' % row)
         # create a preview image
-        frame1 = frame.scaled(QSize(350,260))
-        self.items.insert(row,(frame1))
+        frame1 = frame.scaled(QtCore.QSize(350,260),  QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        self.items.insert(row,(frame1, framenumber))
         log.info(u'Items: %s' % self.items)
         self.endInsertRows()
 
     def removeRow(self, row):
-        self.beginRemoveRows(QModelIndex(), row,row)
+        self.beginRemoveRows(QtCore.QModelIndex(), row,row)
         self.items.pop(row)
         self.endRemoveRows()
 
-    def addRow(self, frame):
-        self.insertRow(len(self.items), frame)
+    def addRow(self, frame, framenumber):
+        self.insertRow(len(self.items), frame, framenumber)
 
     def data(self, index, role):
         row=index.row()
         if row > len(self.items): # if the last row is selected and deleted, we then get called with an empty row!
-            return QVariant()
+            return QtCore.QVariant()
 #        if role==Qt.DisplayRole:
 #            retval= self.items[row][1]
-        if role == Qt.DecorationRole:
-            retval= self.items[row]#[0]
+        if role == QtCore.Qt.DecorationRole:
+            retval= self.items[row][0]
         else:
-            retval= QVariant()
+            retval= QtCore.QVariant()
 #         log.info("Returning"+ str(retval))
-        if type(retval) is not type(QVariant):
-            return QVariant(retval)
+        if type(retval) is not type(QtCore.QVariant):
+            return QtCore.QVariant(retval)
         else:
             return retval
 
@@ -101,75 +100,84 @@ class SlideData(QAbstractListModel):
         return filelist
 
 
-class SlideController(QWidget):
+class SlideController(QtGui.QWidget):
     global log
     log=logging.getLogger(u'SlideController')
 
     def __init__(self, control_splitter, isLive):
-        QWidget.__init__(self)
+        QtGui.QWidget.__init__(self)
         self.isLive = isLive
-        self.Panel = QWidget(control_splitter)
-        self.Splitter = QSplitter(self.Panel)
-        self.Splitter.setOrientation(Qt.Vertical)
+        self.Panel = QtGui.QWidget(control_splitter)
+        self.Splitter = QtGui.QSplitter(self.Panel)
+        self.Splitter.setOrientation(QtCore.Qt.Vertical)
 
-        self.PanelLayout = QVBoxLayout(self.Panel)
+        self.PanelLayout = QtGui.QVBoxLayout(self.Panel)
         self.PanelLayout.addWidget(self.Splitter)
         self.PanelLayout.setSpacing(50)
         self.PanelLayout.setMargin(0)
 
-        self.Controller = QScrollArea(self.Splitter)
+        self.Controller = QtGui.QScrollArea(self.Splitter)
         self.Controller.setWidgetResizable(True)
 
-        self.PreviewListView = QListView(self.Splitter)
+        self.PreviewListView = QtGui.QListView(self.Splitter)
+        self.PreviewListView.setEditTriggers(QtGui.QAbstractItemView.CurrentChanged)
         self.PreviewListView.setAlternatingRowColors(True)
         self.PreviewListData = SlideData()
         self.PreviewListView.setModel(self.PreviewListData)
+        self.PreviewListView.setSelectionRectVisible(True)
 
-        self.Controller.setGeometry(QRect(0, 0, 828, 536))
+        self.Controller.setGeometry(QtCore.QRect(0, 0, 828, 536))
         self.Controller.setWidget(self.PreviewListView)
 
         self.Toolbar = OpenLPToolbar(self.Splitter)
-        sizeToolbarPolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        sizeToolbarPolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizeToolbarPolicy.setHorizontalStretch(0)
         sizeToolbarPolicy.setVerticalStretch(0)
         sizeToolbarPolicy.setHeightForWidth(self.Toolbar.sizePolicy().hasHeightForWidth())
 
         if self.isLive:
-            self.Toolbar.addToolbarButton("First Slide", ":/slides/slide_first.png",
+            self.Toolbar.addToolbarButton(u'First Slide', u':/slides/slide_first.png',
             translate(u'SlideController', u'Move to first'), self.onSlideSelectedFirst)
-        self.Toolbar.addToolbarButton("Last Slide", ":/slides/slide_previous.png",
+        self.Toolbar.addToolbarButton(u'Last Slide', u':/slides/slide_previous.png',
             translate(u'SlideController', u'Move to previous'), self.onSlideSelectedPrevious)
-        self.Toolbar.addToolbarButton("First Slide", ":/slides/slide_next.png",
+        self.Toolbar.addToolbarButton(u'First Slide', u':/slides/slide_next.png',
             translate(u'SlideController', u'Move to next'), self.onSlideSelectedNext)
         if self.isLive:
-            self.Toolbar.addToolbarButton("Last Slide", ":/slides/slide_last.png",
+            self.Toolbar.addToolbarButton(u'Last Slide', u':/slides/slide_last.png',
                 translate(u'SlideController', u'Move to last'), self.onSlideSelectedLast)
             self.Toolbar.addSeparator()
-            self.Toolbar.addToolbarButton("Close Sscreen", ":/slides/slide_close.png",
+            self.Toolbar.addToolbarButton(u'Close Screen', u':/slides/slide_close.png',
                 translate(u'SlideController', u'Close Screen'), self.onBlankScreen)
 
         self.Toolbar.setSizePolicy(sizeToolbarPolicy)
 
-        self.SlidePreview = QLabel(self.Splitter)
-        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.SlidePreview = QtGui.QLabel(self.Splitter)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.SlidePreview.sizePolicy().hasHeightForWidth())
         self.SlidePreview.setSizePolicy(sizePolicy)
-        self.SlidePreview.setMinimumSize(QSize(250, 190))
-        self.SlidePreview.setFrameShape(QFrame.WinPanel)
-        self.SlidePreview.setFrameShadow(QFrame.Sunken)
+        self.SlidePreview.setMinimumSize(QtCore.QSize(250, 190))
+        self.SlidePreview.setFrameShape(QtGui.QFrame.WinPanel)
+        self.SlidePreview.setFrameShadow(QtGui.QFrame.Sunken)
         self.SlidePreview.setLineWidth(1)
         self.SlidePreview.setScaledContents(True)
-        self.SlidePreview.setObjectName("SlidePreview")
+        self.SlidePreview.setObjectName(u'SlidePreview')
 
-        QObject.connect(self.PreviewListView,
-            SIGNAL("clicked(QModelIndex)"), self.onSlideSelected)
+        QtCore.QObject.connect(self.PreviewListView,
+            QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
+        QtCore.QObject.connect(self.PreviewListView,
+            QtCore.SIGNAL(u'clicked(QListViewItem)'), self.onCurrentItemChanged)
+
+
+
+    def onCurrentItemChanged(self, current, previous):
+        print u'Method slideControllerList currentItemChanged called', current, previous
 
     def onSlideSelectedFirst(self):
         row = self.PreviewListData.createIndex(0, 0)
         if row.isValid():
-            self.PreviewListView.selectionModel().setCurrentIndex(row, QItemSelectionModel.SelectCurrent)
+            self.PreviewListView.selectionModel().setCurrentIndex(row, QtGui.QItemSelectionModel.SelectCurrent)
             self.onSlideSelected(row)
 
     def onSlideSelectedNext(self):
@@ -182,9 +190,8 @@ class SlideController(QWidget):
                 rowNumber = index.row() + 1
         row = self.PreviewListData.createIndex(rowNumber , 0)
         if row.isValid():
-            self.PreviewListView.selectionModel().setCurrentIndex(row, QItemSelectionModel.SelectCurrent)
+            self.PreviewListView.selectionModel().setCurrentIndex(row, QtGui.QItemSelectionModel.SelectCurrent)
             self.onSlideSelected(row)
-
 
     def onSlideSelectedPrevious(self):
         indexes = self.PreviewListView.selectedIndexes()
@@ -196,13 +203,13 @@ class SlideController(QWidget):
                 rowNumber  = index.row() - 1
         row = self.PreviewListData.createIndex(rowNumber , 0)
         if row.isValid():
-            self.PreviewListView.selectionModel().setCurrentIndex(row, QItemSelectionModel.SelectCurrent)
+            self.PreviewListView.selectionModel().setCurrentIndex(row, QtGui.QItemSelectionModel.SelectCurrent)
             self.onSlideSelected(row)
 
     def onSlideSelectedLast(self):
         row = self.PreviewListData.createIndex(self.PreviewListData.rowCount() - 1 , 0)
         if row.isValid():
-            self.PreviewListView.selectionModel().setCurrentIndex(row, QItemSelectionModel.SelectCurrent)
+            self.PreviewListView.selectionModel().setCurrentIndex(row, QtGui.QItemSelectionModel.SelectCurrent)
             self.onSlideSelected(row)
 
     def onBlankScreen(self):
@@ -213,21 +220,25 @@ class SlideController(QWidget):
         self.previewFrame(frame)
 
     def previewFrame(self, frame):
-        self.SlidePreview.setPixmap(frame)
+        self.SlidePreview.setPixmap(frame[0])
         if self.isLive:
-            self.mainDisplay.frameView(frame)
+            no = frame[1]
+            LiveFrame = self.serviceitem.frames[no][u'image']
+            self.mainDisplay.frameView(LiveFrame)
 
     def addServiceItem(self, serviceitem):
         log.debug(u'addServiceItem')
         self.serviceitem = serviceitem
         self.serviceitem.render()
-        self.PreviewListData.clearItems()
+        self.PreviewListData.clear()
+        framenumber = 0
         for frame in self.serviceitem.frames:
-            self.PreviewListData.addRow(frame)
+            self.PreviewListData.addRow(frame[u'image'], framenumber)
+            framenumber += 1
 
         row = self.PreviewListData.createIndex(0, 0)
         if row.isValid():
-            self.PreviewListView.selectionModel().setCurrentIndex(row, QItemSelectionModel.SelectCurrent)
+            self.PreviewListView.selectionModel().setCurrentIndex(row, QtGui.QItemSelectionModel.SelectCurrent)
             self.onSlideSelected(row)
 
     def render(self):

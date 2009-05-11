@@ -19,8 +19,9 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import logging
 import os,  os.path
-
 import sys
+
+from datetime import *
 from PyQt4 import QtGui, QtCore, Qt
 
 from copy import copy
@@ -95,6 +96,7 @@ class Renderer:
         self.img=QtGui.QPixmap.fromImage(i.scaled(QtCore.QSize(neww, newh), Qt.Qt.KeepAspectRatio))
 
     def set_paint_dest(self, p):
+        log.debug(u'set paint dest (frame) w %d h %d',p.width(), p.height())
         self._paint=p
         if self._bg_image_filename is not None:
             self.scale_bg_image()
@@ -128,6 +130,7 @@ class Renderer:
         assert(self._theme)
         assert(self._paint)
         log.debug(u'render background %s ', self._theme.background_type)
+        bef = datetime.now()
         p=QtGui.QPainter()
         p.begin(self._paint)
         if self._theme.background_type == u'solid':
@@ -172,6 +175,10 @@ class Renderer:
             else:
                 p.fillRect(self._paint.rect(), QtGui.QColor(u'#000000'))
         p.end()
+        aft = datetime.now()
+        print "background time", bef, aft, aft-bef
+
+        log.debug(u'render background finish')
 
     def split_set_of_lines(self, lines, footer):
 
@@ -250,7 +257,7 @@ class Renderer:
 
     def render_lines(self, lines, footer_lines=None):
         """render a set of lines according to the theme, return bounding box"""
-        log.debug(u'_render_lines %s', lines)
+        log.debug(u'render_lines - Start')
 
         bbox=self._render_lines_unaligned(lines, False) # Main font
         if footer_lines is not None:
@@ -263,7 +270,7 @@ class Renderer:
 
         if footer_lines is not None:
             bbox=self._render_lines_unaligned(footer_lines, True, (self._rect_footer.left(), self._rect_footer.top()) )
-
+        log.debug(u'render_lines- Finish')
         return bbox
 
     def _render_lines_unaligned(self, lines,  footer,  tlcorner=(0,0)):
@@ -274,13 +281,11 @@ class Renderer:
         than a screenful (eg. by using split_set_of_lines)
 
         Returns the bounding box of the text as QRect"""
-        log.debug(u'render lines unaligned %s', lines)
+        log.debug(u'render lines unaligned Start')
         x, y=tlcorner
         brx=x
         bry=y
         for line in lines:
-            #if (line == ''):
-            #   continue
             # render after current bottom, but at original left edge
             # keep track of right edge to see which is biggest
             (thisx, bry) = self._render_single_line(line, footer, (x,bry))
@@ -293,8 +298,7 @@ class Renderer:
             p.setPen(QtGui.QPen(QtGui.QColor(0,0,255)))
             p.drawRect(retval)
             p.end()
-
-
+        log.debug(u'render lines unaligned Finish')
         return  retval
 
     def _render_single_line(self, line, footer, tlcorner=(0,0)):
@@ -396,16 +400,16 @@ class Renderer:
             p.end()
 
         brcorner=(rightextent,y)
+        log.debug(u'Render single line Finish')
         return brcorner
 
     # xxx this is what to override for an SDL version
     def _get_extent_and_render(self, line, footer,  tlcorner=(0,0), draw=False, color=None):
         """Find bounding box of text  - as render_single_line.
         If draw is set, actually draw the text to the current DC as well
-
         return width and height of text as a tuple (w,h)"""
         # setup defaults
-        log.debug(u'_get_extent_and_render %s %s %s ', [line], tlcorner, draw)
+        #log.debug(u'_get_extent_and_render %s %s %s ', [line], tlcorner, draw)
         p=QtGui.QPainter()
         p.begin(self._paint)
         # 'twould be more efficient to set this once when theme changes

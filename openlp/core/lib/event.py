@@ -35,6 +35,7 @@ class EventType(object):
     AfterLoadService   = 2
     BeforeSaveService  = 3
     AfterSaveService   = 4
+    LoadServiceItem   = 5
     # Preview events
     PreviewBeforeLoad  = 11
     PreviewAfterLoad   = 12
