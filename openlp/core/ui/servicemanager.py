@@ -31,81 +31,81 @@ from openlp.core.lib import RenderManager
 from openlp.core import translate
 from openlp.core.lib import Event, EventType, EventManager
 
-class ServiceData(QtCore.QAbstractItemModel):
-    """
-    Tree of items for an order of service.
-    Includes methods for reading and writing the contents to an OOS file
-    Root contains a list of ServiceItems
-    """
-    global log
-    log=logging.getLogger(u'ServiceData')
-    def __init__(self):
-        QtCore.QAbstractItemModel.__init__(self)
-        self.items=[]
-        log.info("Starting")
-
-    def clearItems(self):
-        self.items = []
-
-    def columnCount(self, parent=None):
-        return 1; # always only a single column (for now)
-
-    def rowCount(self, parent=None):
-        return len(self.items)
-
-    def insertRow(self, row, service_item):
-        self.beginInsertRows(QtCore.QModelIndex(),row,row)
-        log.info("insert row %s:%s" % (row,service_item))
-        self.items.insert(row, service_item)
-        log.info("Items: %s" % self.items)
-        self.endInsertRows()
-
-    def removeRow(self, row):
-        self.beginRemoveRows(QtCore.QModelIndex(), row,row)
-        self.items.pop(row)
-        self.endRemoveRows()
-
-    def addRow(self, service_item):
-        self.insertRow(len(self.items), service_item)
-
-    def index(self, row, col, parent = QtCore.QModelIndex()):
-        return self.createIndex(row,col)
-
-    def parent(self, index=QtCore.QModelIndex()):
-        return QtCore.QModelIndex() # no children as yet
-
-    def data(self, index, role):
-        """
-        Called by the service manager to draw us in the service window
-        """
-        log.debug(u'data %s %d', index, role)
-        row = index.row()
-        if row > len(self.items): # if the last row is selected and deleted, we then get called with an empty row!
-            return QtCore.QVariant()
-        item = self.items[row]
-        if role == QtCore.Qt.DisplayRole:
-            retval= item.title + u':' + item.shortname
-        elif role == QtCore.Qt.DecorationRole:
-            retval = item.iconic_representation
-        elif role == QtCore.Qt.ToolTipRole:
-            retval = None
-        else:
-            retval = None
-        if retval == None:
-            retval = QtCore.QVariant()
-#         log.info("Returning"+ str(retval))
-        if type(retval) is not type(QtCore.QVariant):
-            return QtCore.QVariant(retval)
-        else:
-            return retval
-
-    def __iter__(self):
-        for i in self.items:
-            yield i
-
-    def item(self, row):
-        log.info("Get Item:%d -> %s" %(row, str(self.items)))
-        return self.items[row]
+#class ServiceData(QtCore.QAbstractItemModel):
+#    """
+#    Tree of items for an order of service.
+#    Includes methods for reading and writing the contents to an OOS file
+#    Root contains a list of ServiceItems
+#    """
+#    global log
+#    log=logging.getLogger(u'ServiceData')
+#    def __init__(self):
+#        QtCore.QAbstractItemModel.__init__(self)
+#        self.items=[]
+#        log.info("Starting")
+#
+#    def clearItems(self):
+#        self.items = []
+#
+#    def columnCount(self, parent=None):
+#        return 1; # always only a single column (for now)
+#
+#    def rowCount(self, parent=None):
+#        return len(self.items)
+#
+#    def insertRow(self, row, service_item):
+#        self.beginInsertRows(QtCore.QModelIndex(),row,row)
+#        log.info("insert row %s:%s" % (row,service_item))
+#        self.items.insert(row, service_item)
+#        log.info("Items: %s" % self.items)
+#        self.endInsertRows()
+#
+#    def removeRow(self, row):
+#        self.beginRemoveRows(QtCore.QModelIndex(), row,row)
+#        self.items.pop(row)
+#        self.endRemoveRows()
+#
+#    def addRow(self, service_item):
+#        self.insertRow(len(self.items), service_item)
+#
+#    def index(self, row, col, parent = QtCore.QModelIndex()):
+#        return self.createIndex(row,col)
+#
+#    def parent(self, index=QtCore.QModelIndex()):
+#        return QtCore.QModelIndex() # no children as yet
+#
+#    def data(self, index, role):
+#        """
+#        Called by the service manager to draw us in the service window
+#        """
+#        log.debug(u'data %s %d', index, role)
+#        row = index.row()
+#        if row > len(self.items): # if the last row is selected and deleted, we then get called with an empty row!
+#            return QtCore.QVariant()
+#        item = self.items[row]
+#        if role == QtCore.Qt.DisplayRole:
+#            retval= item.title + u':' + item.shortname
+#        elif role == QtCore.Qt.DecorationRole:
+#            retval = item.iconic_representation
+#        elif role == QtCore.Qt.ToolTipRole:
+#            retval = None
+#        else:
+#            retval = None
+#        if retval == None:
+#            retval = QtCore.QVariant()
+##         log.info("Returning"+ str(retval))
+#        if type(retval) is not type(QtCore.QVariant):
+#            return QtCore.QVariant(retval)
+#        else:
+#            return retval
+#
+#    def __iter__(self):
+#        for i in self.items:
+#            yield i
+#
+#    def item(self, row):
+#        log.info("Get Item:%d -> %s" %(row, str(self.items)))
+#        return self.items[row]
 
 
 class ServiceManager(QtGui.QWidget):

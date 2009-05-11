@@ -72,7 +72,7 @@ class ThemeData(QAbstractListModel):
             preview = QPixmap(str(filename))
             width = self.maximagewidth
             height = self.rowheight
-            preview = preview.scaled(width, height, Qt.KeepAspectRatio)
+            preview = preview.scaled(width, height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             realwidth = preview.width()
             realheight = preview.height()
             # and move it to the centre of the preview space

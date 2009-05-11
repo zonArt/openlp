@@ -29,7 +29,7 @@ class ListWithPreviews(QAbstractListModel):
         if os.path.exists(filename):
             preview = QPixmap(str(filename))
             w=self.maximagewidth;h=self.rowheight
-            preview = preview.scaled(w,h, Qt.KeepAspectRatio)
+            preview = preview.scaled(w,h, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             realw=preview.width(); realh=preview.height()
             # and move it to the centre of the preview space
             p=QPixmap(w,h)

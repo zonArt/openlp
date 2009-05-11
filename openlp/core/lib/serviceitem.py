@@ -76,7 +76,7 @@ class ServiceItem():
         if len(self.frames) == 0 :
             for slide in self.raw_slides:
                 formated = self.render_manager.format_slide(slide, False)
-                frame = self.render_manager.generate_slide(slide, self.raw_footer)
+                frame = self.render_manager.generate_slide(formated, self.raw_footer)
                 self.frames.append({u'formatted': formated, u'image': frame})
 
 
