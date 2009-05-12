@@ -24,6 +24,65 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar
 from openlp.core import translate
+from openlp.core.lib import Event, EventType, EventManager
+
+class PreviewList(QtGui.QListView):
+
+    def __init__(self,parent=None):
+        QtGui.QListView.__init__(self,parent)
+        self.setAcceptDrops(True)
+
+    def dragEnterEvent(self, event):
+        """
+        Accept Drag events
+        """
+        event.accept()
+        self.dropEvent(event)
+
+    def dropEvent(self, event):
+        """
+        Handle the release of the event and trigger the plugin
+        to add the data
+        """
+        print "preview drop event"
+        link=event.mimeData()
+        if link.hasText():
+            plugin = event.mimeData().text()
+            if plugin == u'ServiceManager':
+                #Service Manager to Preview is not a sane
+                self.serviceManager.makeLive()
+            else:
+                print "preview fired ", plugin
+                self.eventManager.post_event(Event(EventType.PreviewShow, plugin))
+
+class LiveList(QtGui.QListView):
+    def __init__(self,parent=None):
+        QtGui.QListView.__init__(self,parent)
+        self.setAcceptDrops(True)
+
+    def dragEnterEvent(self, event):
+        """
+        Accept Drag events
+        """
+        event.accept()
+        self.dropEvent(event)
+
+    def dropEvent(self, event):
+        """
+        Handle the release of the event and trigger the plugin
+        to add the data
+        """
+        print "Live drop event"
+        link=event.mimeData()
+        if link.hasText():
+            plugin = event.mimeData().text()
+            if plugin == u'ServiceManager':
+                #Service Manager to Preview is not a sane
+                self.serviceManager.makeLive()
+            else:
+                print "live fired plugin ", plugin
+                self.eventManager.post_event(Event(EventType.LiveShow, plugin))
+
 
 class SlideData(QtCore.QAbstractListModel):
     """
@@ -54,7 +113,7 @@ class SlideData(QtCore.QAbstractListModel):
         self.beginInsertRows(QtCore.QModelIndex(),row,row)
         log.info(u'insert row %d' % row)
         # create a preview image
-        frame1 = frame.scaled(QtCore.QSize(350,260),  QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        frame1 = frame.scaled(QtCore.QSize(300,225),  QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
         self.items.insert(row,(frame1, framenumber))
         log.info(u'Items: %s' % self.items)
         self.endInsertRows()
@@ -71,13 +130,10 @@ class SlideData(QtCore.QAbstractListModel):
         row=index.row()
         if row > len(self.items): # if the last row is selected and deleted, we then get called with an empty row!
             return QtCore.QVariant()
-#        if role==Qt.DisplayRole:
-#            retval= self.items[row][1]
         if role == QtCore.Qt.DecorationRole:
             retval= self.items[row][0]
         else:
             retval= QtCore.QVariant()
-#         log.info("Returning"+ str(retval))
         if type(retval) is not type(QtCore.QVariant):
             return QtCore.QVariant(retval)
         else:
@@ -117,17 +173,34 @@ class SlideController(QtGui.QWidget):
         self.PanelLayout.setMargin(0)
 
         self.Controller = QtGui.QScrollArea(self.Splitter)
+        self.Controller.setGeometry(QtCore.QRect(0, 0, 700, 536))
         self.Controller.setWidgetResizable(True)
+        self.Controller.setObjectName("scrollArea")
 
-        self.PreviewListView = QtGui.QListView(self.Splitter)
-        self.PreviewListView.setEditTriggers(QtGui.QAbstractItemView.CurrentChanged)
-        self.PreviewListView.setAlternatingRowColors(True)
+        self.scrollAreaWidgetContents = QtGui.QWidget(self.Controller)
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 700, 536))
+        self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
+        self.gridLayout = QtGui.QGridLayout(self.scrollAreaWidgetContents)
+        self.gridLayout.setObjectName("gridLayout")
+
+        #load the correct class for drag and drop
+        if self.isLive:
+            self.PreviewListView = LiveList(self.scrollAreaWidgetContents)
+        else:
+            self.PreviewListView = PreviewList(self.scrollAreaWidgetContents)
+
+        self.PreviewListView.setDragEnabled(False)
+        self.PreviewListView.setDragDropMode(QtGui.QAbstractItemView.DropOnly)
+
         self.PreviewListData = SlideData()
+        self.PreviewListView.isLive = self.isLive
         self.PreviewListView.setModel(self.PreviewListData)
         self.PreviewListView.setSelectionRectVisible(True)
+        self.PreviewListView.setSpacing(5)
+        self.PreviewListView.setObjectName("PreviewListView")
 
-        self.Controller.setGeometry(QtCore.QRect(0, 0, 828, 536))
-        self.Controller.setWidget(self.PreviewListView)
+        self.gridLayout.addWidget(self.PreviewListView, 0, 0, 1, 1)
+        self.Controller.setWidget(self.scrollAreaWidgetContents)
 
         self.Toolbar = OpenLPToolbar(self.Splitter)
         sizeToolbarPolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
@@ -151,7 +224,17 @@ class SlideController(QtGui.QWidget):
 
         self.Toolbar.setSizePolicy(sizeToolbarPolicy)
 
-        self.SlidePreview = QtGui.QLabel(self.Splitter)
+        self.PreviewFrame = QtGui.QFrame(self.Splitter)
+        self.PreviewFrame.setGeometry(QtCore.QRect(50, 270, 250, 190))
+        self.PreviewFrame.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.PreviewFrame.setFrameShadow(QtGui.QFrame.Sunken)
+        self.PreviewFrame.setObjectName(u'PreviewFrame')
+
+        self.grid = QtGui.QGridLayout(self.PreviewFrame)
+        self.grid.setMargin(10)
+        self.grid.setObjectName(u'grid')
+
+        self.SlidePreview = QtGui.QLabel(self.PreviewFrame)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -163,16 +246,15 @@ class SlideController(QtGui.QWidget):
         self.SlidePreview.setLineWidth(1)
         self.SlidePreview.setScaledContents(True)
         self.SlidePreview.setObjectName(u'SlidePreview')
+        self.grid.addWidget(self.SlidePreview, 0, 0, 1, 1)
 
         QtCore.QObject.connect(self.PreviewListView,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
-        QtCore.QObject.connect(self.PreviewListView,
-            QtCore.SIGNAL(u'clicked(QListViewItem)'), self.onCurrentItemChanged)
 
+    def postInit(self):
+        self.PreviewListView.eventManager = self.eventManager
+        self.PreviewListView.serviceManager = self.serviceManager
 
-
-    def onCurrentItemChanged(self, current, previous):
-        print u'Method slideControllerList currentItemChanged called', current, previous
 
     def onSlideSelectedFirst(self):
         row = self.PreviewListData.createIndex(0, 0)
@@ -240,6 +322,9 @@ class SlideController(QtGui.QWidget):
         if row.isValid():
             self.PreviewListView.selectionModel().setCurrentIndex(row, QtGui.QItemSelectionModel.SelectCurrent)
             self.onSlideSelected(row)
+
+    def addServiceManagerItem(self, serviceitem, slideno):
+        print "addServiceManagerItem"
 
     def render(self):
         pass

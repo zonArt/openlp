@@ -28,6 +28,29 @@ from openlp.core.resources import *
 
 from openlp.plugins.images.lib import ListWithPreviews
 
+class ImageList(QtGui.QListView):
+
+    def __init__(self,parent=None,name=None):
+        QtGui.QListView.__init__(self,parent)
+
+    def mouseMoveEvent(self, event):
+        """
+        Drag and drop event does not care what data is selected
+        as the recepient will use events to request the data move
+        just tell it what plugin to call
+        """
+        if event.buttons() != QtCore.Qt.LeftButton:
+            return
+        drag = QtGui.QDrag(self)
+        mimeData = QtCore.QMimeData()
+        drag.setMimeData(mimeData)
+        mimeData.setText(u'Image')
+
+        dropAction = drag.start(QtCore.Qt.CopyAction)
+
+        if dropAction == QtCore.Qt.CopyAction:
+            self.close()
+
 class ImageMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for images.
@@ -70,14 +93,18 @@ class ImageMediaItem(MediaManagerItem):
             translate('ImageMediaItem', u'Add Image To Service'),
             translate('ImageMediaItem', u'Add the selected image(s) to the service'),
             ':/system/system_add.png', self.onImageAddClick, 'ImageAddItem')
-        ## Add the songlist widget ##
-        self.ImageListView = QtGui.QListView()
+
+        #Add the Image List widget
+        self.ImageListView = ImageList()
         self.ImageListView.uniformItemSizes = True
         self.ImageListData = ListWithPreviews()
         self.ImageListView.setModel(self.ImageListData)
-
         self.ImageListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
+        self.ImageListView.setSpacing(1)
+        self.ImageListView.setAlternatingRowColors(True)
+        self.ImageListView.setDragEnabled(True)
         self.ImageListView.setObjectName('ImageListView')
+
         self.PageLayout.addWidget(self.ImageListView)
 
         #define and add the context menu
@@ -96,11 +123,6 @@ class ImageMediaItem(MediaManagerItem):
             translate('ImageMediaItem', u'&Add to Service'),
             self.onImageAddClick))
 
-        self.ImageListPreview = QtGui.QWidget()
-        self.PageLayout.addWidget(self.ImageListPreview)
-        self.ImageListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
-        self.ImageListView.setSpacing(1)
-        self.ImageListView.setAlternatingRowColors(True)
 
     def initialise(self):
         self.loadImageList(self.parent.config.load_list(u'images'))
@@ -126,7 +148,7 @@ class ImageMediaItem(MediaManagerItem):
         for index in indexes:
             current_row = int(index.row())
             self.ImageListData.removeRow(current_row)
-        self.parent.config.set_list(u'images', self.ImageListData.getFileList())            
+        self.parent.config.set_list(u'images', self.ImageListData.getFileList())
 
     def onImageClick(self, where):
         indexes = self.ImageListView.selectedIndexes()

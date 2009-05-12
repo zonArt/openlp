@@ -20,9 +20,6 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import os
 import logging
 
-from time import sleep
-from copy import deepcopy
-
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar
@@ -30,83 +27,6 @@ from openlp.core.lib import ServiceItem
 from openlp.core.lib import RenderManager
 from openlp.core import translate
 from openlp.core.lib import Event, EventType, EventManager
-
-#class ServiceData(QtCore.QAbstractItemModel):
-#    """
-#    Tree of items for an order of service.
-#    Includes methods for reading and writing the contents to an OOS file
-#    Root contains a list of ServiceItems
-#    """
-#    global log
-#    log=logging.getLogger(u'ServiceData')
-#    def __init__(self):
-#        QtCore.QAbstractItemModel.__init__(self)
-#        self.items=[]
-#        log.info("Starting")
-#
-#    def clearItems(self):
-#        self.items = []
-#
-#    def columnCount(self, parent=None):
-#        return 1; # always only a single column (for now)
-#
-#    def rowCount(self, parent=None):
-#        return len(self.items)
-#
-#    def insertRow(self, row, service_item):
-#        self.beginInsertRows(QtCore.QModelIndex(),row,row)
-#        log.info("insert row %s:%s" % (row,service_item))
-#        self.items.insert(row, service_item)
-#        log.info("Items: %s" % self.items)
-#        self.endInsertRows()
-#
-#    def removeRow(self, row):
-#        self.beginRemoveRows(QtCore.QModelIndex(), row,row)
-#        self.items.pop(row)
-#        self.endRemoveRows()
-#
-#    def addRow(self, service_item):
-#        self.insertRow(len(self.items), service_item)
-#
-#    def index(self, row, col, parent = QtCore.QModelIndex()):
-#        return self.createIndex(row,col)
-#
-#    def parent(self, index=QtCore.QModelIndex()):
-#        return QtCore.QModelIndex() # no children as yet
-#
-#    def data(self, index, role):
-#        """
-#        Called by the service manager to draw us in the service window
-#        """
-#        log.debug(u'data %s %d', index, role)
-#        row = index.row()
-#        if row > len(self.items): # if the last row is selected and deleted, we then get called with an empty row!
-#            return QtCore.QVariant()
-#        item = self.items[row]
-#        if role == QtCore.Qt.DisplayRole:
-#            retval= item.title + u':' + item.shortname
-#        elif role == QtCore.Qt.DecorationRole:
-#            retval = item.iconic_representation
-#        elif role == QtCore.Qt.ToolTipRole:
-#            retval = None
-#        else:
-#            retval = None
-#        if retval == None:
-#            retval = QtCore.QVariant()
-##         log.info("Returning"+ str(retval))
-#        if type(retval) is not type(QtCore.QVariant):
-#            return QtCore.QVariant(retval)
-#        else:
-#            return retval
-#
-#    def __iter__(self):
-#        for i in self.items:
-#            yield i
-#
-#    def item(self, row):
-#        log.info("Get Item:%d -> %s" %(row, str(self.items)))
-#        return self.items[row]
-
 
 class ServiceManager(QtGui.QWidget):
 
@@ -153,16 +73,18 @@ class ServiceManager(QtGui.QWidget):
         self.Toolbar.addAction(self.ThemeWidget)
         self.Layout.addWidget(self.Toolbar)
 
-        self.serviceManagerList = QtGui.QTreeWidget(self)
-        self.serviceManagerList.setEditTriggers(QtGui.QAbstractItemView.CurrentChanged|QtGui.QAbstractItemView.DoubleClicked|QtGui.QAbstractItemView.EditKeyPressed)
-        self.serviceManagerList.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
-        self.serviceManagerList.setAlternatingRowColors(True)
-        self.serviceManagerList.setObjectName("serviceManagerList")
-        self.serviceManagerList .__class__.dragEnterEvent=self.dragEnterEvent
-        self.serviceManagerList .__class__.dragMoveEvent=self.dragEnterEvent
-        self.serviceManagerList .__class__.dropEvent =self.dropEvent
+        self.ServiceManagerList = QtGui.QTreeWidget(self)
+        self.ServiceManagerList.setEditTriggers(QtGui.QAbstractItemView.CurrentChanged|QtGui.QAbstractItemView.DoubleClicked|QtGui.QAbstractItemView.EditKeyPressed)
+        self.ServiceManagerList.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
+        self.ServiceManagerList.setAlternatingRowColors(True)
+        self.ServiceManagerList.setObjectName("ServiceManagerList")
+        self.ServiceManagerList .__class__.dragEnterEvent=self.dragEnterEvent
+        self.ServiceManagerList .__class__.dragMoveEvent=self.dragEnterEvent
+        self.ServiceManagerList .__class__.dropEvent =self.dropEvent
+        self.ServiceManagerList.setDragEnabled(True)
+        self.ServiceManagerList .__class__.mouseMoveEvent =self.onMouseMoveEvent
 
-        self.Layout.addWidget(self.serviceManagerList)
+        self.Layout.addWidget(self.ServiceManagerList)
 
         QtCore.QObject.connect(self.ThemeComboBox,
             QtCore.SIGNAL("activated(int)"), self.onThemeComboBoxSelected)
@@ -195,7 +117,7 @@ class ServiceManager(QtGui.QWidget):
         self.renderManager.default_theme = self.ThemeComboBox.currentText()
 
     def addServiceItem(self, item):
-        treewidgetitem = QtGui.QTreeWidgetItem(self.serviceManagerList)
+        treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
         treewidgetitem.setText(0,item.title + u':' + item.shortname)
         treewidgetitem.setIcon(0,item.iconic_representation)
         treewidgetitem.setExpanded(True)
@@ -203,8 +125,42 @@ class ServiceManager(QtGui.QWidget):
         for frame in item.frames:
             treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
             text = frame[u'formatted'][0]
-            treewidgetitem1.setText(0,text[:10])
+            treewidgetitem1.setText(0,text[:30])
             #treewidgetitem1.setIcon(0,frame[u'image'])
+
+    def makeLive(self):
+        print "make live"
+        self.liveController.addServiceManagerItem(None, 1)
+#        items = self.serviceManagerList.selectedItems()
+#        if items == []:
+#            return
+#
+#        for item in items:
+#            childCount = item.childCount()
+#            print childCount, item.text(0)
+#            if childCount >= 1: # is parent
+#                who = item.text(0)
+#                listwidgetitem = QListWidgetItem()
+#                listwidgetitem.setText(who)
+#                self.slideControllerList.insertItem(0, listwidgetitem)
+#                self.slideControllerList.setCurrentRow(0)
+#
+#                listwidgetitem1 = QListWidgetItem()
+#                listwidgetitem1.setText(u'Children inserted here')
+#                self.slideControllerList.insertItem(1, listwidgetitem1)
+#
+#            else:
+#                parentitem = item.parent()
+#                print parentitem
+#                who = parentitem.text(0)
+#                listwidgetitem = QListWidgetItem()
+#                listwidgetitem.setText(who)
+#                self.slideControllerList.insertItem(0, listwidgetitem)
+#
+#                listwidgetitem1 = QListWidgetItem()
+#                listwidgetitem1.setText(u'Children inserted here')
+#                self.slideControllerList.insertItem(1, listwidgetitem1)
+#                self.slideControllerList.setCurrentRow(1)
 
     def dragEnterEvent(self, event):
         """
@@ -220,7 +176,34 @@ class ServiceManager(QtGui.QWidget):
         link=event.mimeData()
         if link.hasText():
             plugin = event.mimeData().text()
+            print plugin
             self.eventManager.post_event(Event(EventType.LoadServiceItem, plugin))
+
+    def onMouseMoveEvent(self, event):
+        """
+        Drag and drop eventDo not care what data is selected
+        as the recepient will use events to request the data move
+        just tell it what plugin to call
+        """
+        print "ServiceManager"
+        if event.buttons() != QtCore.Qt.LeftButton:
+            return
+
+        items = self.ServiceManagerList.selectedIndexes()
+        if items == []:
+            return
+
+        drag = QtGui.QDrag(self)
+        mimeData = QtCore.QMimeData()
+        drag.setMimeData(mimeData)
+        for item in items:
+            mimeData.setText(u'ServiceManager')
+
+        dropAction = drag.start(QtCore.Qt.CopyAction)
+
+        if dropAction == QtCore.Qt.CopyAction:
+            self.close()
+
 
     def oos_as_text(self):
         text=[]

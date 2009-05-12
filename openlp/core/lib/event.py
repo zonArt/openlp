@@ -37,10 +37,12 @@ class EventType(object):
     AfterSaveService   = 4
     LoadServiceItem   = 5
     # Preview events
-    PreviewBeforeLoad  = 11
-    PreviewAfterLoad   = 12
-    PreviewBeforeShow  = 13
-    PreviewAfterShow   = 14
+    PreviewShow  = 10
+    LiveShow  = 11
+    #PreviewBeforeLoad  = 11
+    #PreviewAfterLoad   = 12
+    #PreviewBeforeShow  = 13
+    #PreviewAfterShow   = 14
 
     ThemeListChanged = 15
 
