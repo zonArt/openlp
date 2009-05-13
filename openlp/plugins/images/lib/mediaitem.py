@@ -101,6 +101,7 @@ class ImageMediaItem(MediaManagerItem):
         self.ImageListView.setModel(self.ImageListData)
         self.ImageListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.ImageListView.setSpacing(1)
+        self.ImageListView.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
         self.ImageListView.setAlternatingRowColors(True)
         self.ImageListView.setDragEnabled(True)
         self.ImageListView.setObjectName('ImageListView')

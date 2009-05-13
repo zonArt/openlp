@@ -230,6 +230,7 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL("pressed()"), self.onQuickSearchButton)
         # Context Menus
         self.BibleListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+
         self.BibleListView.addAction(self.contextMenuAction(
             self.BibleListView, ':/system/system_preview.png',
             translate(u'BibleMediaItem',u'&Preview Verse'), self.onBiblePreviewClick))

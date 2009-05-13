@@ -26,6 +26,7 @@ from openlp.core.lib import OpenLPToolbar
 from openlp.core.lib import ServiceItem
 from openlp.core.lib import RenderManager
 from openlp.core import translate
+from openlp import buildIcon
 from openlp.core.lib import Event, EventType, EventManager
 
 class ServiceManager(QtGui.QWidget):
@@ -82,14 +83,38 @@ class ServiceManager(QtGui.QWidget):
         self.ServiceManagerList .__class__.dragEnterEvent=self.dragEnterEvent
         self.ServiceManagerList .__class__.dragMoveEvent=self.dragEnterEvent
         self.ServiceManagerList .__class__.dropEvent =self.dropEvent
-        #endable drag
-        #self.ServiceManagerList.setDragEnabled(True)
-        #self.ServiceManagerList .__class__.mouseMoveEvent =self.onMouseMoveEvent
+
+        self.ServiceManagerList.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+
+        self.ServiceManagerList.addAction(self.contextMenuAction(
+            self.ServiceManagerList, ':/system/system_preview.png',
+            translate(u'ServiceManager',u'&Preview Verse'), self.makeLive))
+        self.ServiceManagerList.addAction(self.contextMenuAction(
+            self.ServiceManagerList, ':/system/system_live.png',
+            translate(u'ServiceManager',u'&Show Live'), self.makePreview))
+        self.ServiceManagerList.addAction(self.contextMenuSeparator(self.ServiceManagerList))
+        self.ServiceManagerList.addAction(self.contextMenuAction(
+            self.ServiceManagerList, ':/services/service_delete',
+            translate(u'ServiceManager',u'&Remove from Service'), self.onDeleteFromService))
 
         self.Layout.addWidget(self.ServiceManagerList)
 
         QtCore.QObject.connect(self.ThemeComboBox,
             QtCore.SIGNAL("activated(int)"), self.onThemeComboBoxSelected)
+
+    def contextMenuAction(self, base, icon, text, slot):
+        """
+        Utility method to help build context menus for plugins
+        """
+        action = QtGui.QAction(text, base)
+        action .setIcon(buildIcon(icon))
+        QtCore.QObject.connect(action, QtCore.SIGNAL("triggered()"), slot)
+        return action
+
+    def contextMenuSeparator(self, base):
+        action = QtGui.QAction("", base)
+        action.setSeparator(True)
+        return action
 
     def onServiceTop(self):
         pass
@@ -129,6 +154,9 @@ class ServiceManager(QtGui.QWidget):
             text = frame[u'formatted'][0]
             treewidgetitem1.setText(0,text[:30])
             #treewidgetitem1.setIcon(0,frame[u'image'])
+
+    def makePreview(self):
+        print "make Preview"
 
     def makeLive(self):
         print "make live"
@@ -178,34 +206,7 @@ class ServiceManager(QtGui.QWidget):
         link=event.mimeData()
         if link.hasText():
             plugin = event.mimeData().text()
-            print plugin
             self.eventManager.post_event(Event(EventType.LoadServiceItem, plugin))
-
-#    def onMouseMoveEvent(self, event):
-#        """
-#        Drag and drop eventDo not care what data is selected
-#        as the recepient will use events to request the data move
-#        just tell it what plugin to call
-#        """
-#        print "ServiceManager"
-#        if event.buttons() != QtCore.Qt.LeftButton:
-#            return
-#
-#        items = self.ServiceManagerList.selectedIndexes()
-#        if items == []:
-#            return
-#
-#        drag = QtGui.QDrag(self)
-#        mimeData = QtCore.QMimeData()
-#        drag.setMimeData(mimeData)
-#        for item in items:
-#            mimeData.setText(u'ServiceManager')
-#
-#        dropAction = drag.start(QtCore.Qt.CopyAction)
-#
-#        if dropAction == QtCore.Qt.CopyAction:
-#            self.close()
-
 
     def oos_as_text(self):
         text=[]

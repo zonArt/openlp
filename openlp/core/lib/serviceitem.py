@@ -18,11 +18,11 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import logging
-import types
 import time
-
+from openlp import buildIcon
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
 
 class ServiceItem():
     """
@@ -50,18 +50,7 @@ class ServiceItem():
         log.debug(u'Service item created for %s', self.shortname)
 
     def addIcon(self, icon):
-        ButtonIcon = None
-        if type(icon) is QIcon:
-            ButtonIcon = icon
-        elif type(icon) is types.StringType or type(icon) is types.UnicodeType:
-            ButtonIcon = QIcon()
-            if icon.startswith(u':/'):
-                ButtonIcon.addPixmap(QPixmap(icon), QIcon.Normal,
-                    QIcon.Off)
-            else:
-                ButtonIcon.addPixmap(QPixmap.fromImage(QImage(icon)),
-                    QIcon.Normal, QIcon.Off)
-        self.iconic_representation = ButtonIcon
+        self.iconic_representation = buildIcon(icon)
 
     def render(self):
         """
