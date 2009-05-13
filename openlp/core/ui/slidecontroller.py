@@ -26,62 +26,64 @@ from openlp.core.lib import OpenLPToolbar
 from openlp.core import translate
 from openlp.core.lib import Event, EventType, EventManager
 
-class PreviewList(QtGui.QListView):
-
-    def __init__(self,parent=None):
-        QtGui.QListView.__init__(self,parent)
-        self.setAcceptDrops(True)
-
-    def dragEnterEvent(self, event):
-        """
-        Accept Drag events
-        """
-        event.accept()
-        self.dropEvent(event)
-
-    def dropEvent(self, event):
-        """
-        Handle the release of the event and trigger the plugin
-        to add the data
-        """
-        print "preview drop event"
-        link=event.mimeData()
-        if link.hasText():
-            plugin = event.mimeData().text()
-            if plugin == u'ServiceManager':
-                #Service Manager to Preview is not a sane
-                self.serviceManager.makeLive()
-            else:
-                print "preview fired ", plugin
-                self.eventManager.post_event(Event(EventType.PreviewShow, plugin))
-
-class LiveList(QtGui.QListView):
-    def __init__(self,parent=None):
-        QtGui.QListView.__init__(self,parent)
-        self.setAcceptDrops(True)
-
-    def dragEnterEvent(self, event):
-        """
-        Accept Drag events
-        """
-        event.accept()
-        self.dropEvent(event)
-
-    def dropEvent(self, event):
-        """
-        Handle the release of the event and trigger the plugin
-        to add the data
-        """
-        print "Live drop event"
-        link=event.mimeData()
-        if link.hasText():
-            plugin = event.mimeData().text()
-            if plugin == u'ServiceManager':
-                #Service Manager to Preview is not a sane
-                self.serviceManager.makeLive()
-            else:
-                print "live fired plugin ", plugin
-                self.eventManager.post_event(Event(EventType.LiveShow, plugin))
+#class PreviewList(QtGui.QListView):
+#
+#    def __init__(self,parent=None):
+#        QtGui.QListView.__init__(self,parent)
+#        self.setAcceptDrops(True)
+#        self.setDropIndicatorShown(True)
+#        self.setDragEnabled(False)
+#        self.setDragDropMode(QtGui.QAbstractItemView.DropOnly)
+#
+#    def dragEnterEvent(self, event):
+#        """
+#        Accept Drag events
+#        """
+#        event.accept()
+#
+#    def dropEvent(self, event):
+#        """
+#        Handle the release of the event and trigger the plugin
+#        to add the data
+#        """
+#        print "preview drop event"
+#        link=event.mimeData()
+#        if link.hasText():
+#            plugin = event.mimeData().text()
+#            if plugin == u'ServiceManager':
+#                #Service Manager to Preview is not a sane
+#                self.serviceManager.makeLive()
+#            else:
+#                print "preview fired ", plugin
+#                self.eventManager.post_event(Event(EventType.PreviewShow, plugin))
+#
+#class LiveList(QtGui.QListView):
+#    def __init__(self,parent=None):
+#        QtGui.QListView.__init__(self,parent)
+#        self.setAcceptDrops(True)
+#        self.setDropIndicatorShown(True)
+#        self.setDragEnabled(False)
+#        self.setDragDropMode(QtGui.QAbstractItemView.DropOnly)
+#
+#    def dragEnterEvent(self, event):
+#        """
+#        Accept Drag events
+#        """
+#        event.accept()
+#
+#    def dropEvent(self, event):
+#        """
+#        Handle the release of the event and trigger the plugin
+#        to add the data
+#        """
+#        print "Live drop event"
+#        link=event.mimeData()
+#        if link.hasText():
+#            plugin = event.mimeData().text()
+#            if plugin == u'ServiceManager':
+#                self.serviceManager.makeLive()
+#            else:
+#                self.eventManager.post_event(Event(EventType.LiveShow, plugin))
 
 
 class SlideData(QtCore.QAbstractListModel):
@@ -184,14 +186,8 @@ class SlideController(QtGui.QWidget):
         self.gridLayout.setObjectName("gridLayout")
 
         #load the correct class for drag and drop
-        if self.isLive:
-            self.PreviewListView = LiveList(self.scrollAreaWidgetContents)
-        else:
-            self.PreviewListView = PreviewList(self.scrollAreaWidgetContents)
 
-        self.PreviewListView.setDragEnabled(False)
-        self.PreviewListView.setDragDropMode(QtGui.QAbstractItemView.DropOnly)
-
+        self.PreviewListView = QtGui.QListView(self.scrollAreaWidgetContents)
         self.PreviewListData = SlideData()
         self.PreviewListView.isLive = self.isLive
         self.PreviewListView.setModel(self.PreviewListData)
@@ -250,11 +246,6 @@ class SlideController(QtGui.QWidget):
 
         QtCore.QObject.connect(self.PreviewListView,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
-
-    def postInit(self):
-        self.PreviewListView.eventManager = self.eventManager
-        self.PreviewListView.serviceManager = self.serviceManager
-
 
     def onSlideSelectedFirst(self):
         row = self.PreviewListData.createIndex(0, 0)

@@ -78,11 +78,13 @@ class ServiceManager(QtGui.QWidget):
         self.ServiceManagerList.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
         self.ServiceManagerList.setAlternatingRowColors(True)
         self.ServiceManagerList.setObjectName("ServiceManagerList")
+        #endable drop
         self.ServiceManagerList .__class__.dragEnterEvent=self.dragEnterEvent
         self.ServiceManagerList .__class__.dragMoveEvent=self.dragEnterEvent
         self.ServiceManagerList .__class__.dropEvent =self.dropEvent
-        self.ServiceManagerList.setDragEnabled(True)
-        self.ServiceManagerList .__class__.mouseMoveEvent =self.onMouseMoveEvent
+        #endable drag
+        #self.ServiceManagerList.setDragEnabled(True)
+        #self.ServiceManagerList .__class__.mouseMoveEvent =self.onMouseMoveEvent
 
         self.Layout.addWidget(self.ServiceManagerList)
 
@@ -179,30 +181,30 @@ class ServiceManager(QtGui.QWidget):
             print plugin
             self.eventManager.post_event(Event(EventType.LoadServiceItem, plugin))
 
-    def onMouseMoveEvent(self, event):
-        """
-        Drag and drop eventDo not care what data is selected
-        as the recepient will use events to request the data move
-        just tell it what plugin to call
-        """
-        print "ServiceManager"
-        if event.buttons() != QtCore.Qt.LeftButton:
-            return
-
-        items = self.ServiceManagerList.selectedIndexes()
-        if items == []:
-            return
-
-        drag = QtGui.QDrag(self)
-        mimeData = QtCore.QMimeData()
-        drag.setMimeData(mimeData)
-        for item in items:
-            mimeData.setText(u'ServiceManager')
-
-        dropAction = drag.start(QtCore.Qt.CopyAction)
-
-        if dropAction == QtCore.Qt.CopyAction:
-            self.close()
+#    def onMouseMoveEvent(self, event):
+#        """
+#        Drag and drop eventDo not care what data is selected
+#        as the recepient will use events to request the data move
+#        just tell it what plugin to call
+#        """
+#        print "ServiceManager"
+#        if event.buttons() != QtCore.Qt.LeftButton:
+#            return
+#
+#        items = self.ServiceManagerList.selectedIndexes()
+#        if items == []:
+#            return
+#
+#        drag = QtGui.QDrag(self)
+#        mimeData = QtCore.QMimeData()
+#        drag.setMimeData(mimeData)
+#        for item in items:
+#            mimeData.setText(u'ServiceManager')
+#
+#        dropAction = drag.start(QtCore.Qt.CopyAction)
+#
+#        if dropAction == QtCore.Qt.CopyAction:
+#            self.close()
 
 
     def oos_as_text(self):

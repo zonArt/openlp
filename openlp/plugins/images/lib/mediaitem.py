@@ -24,7 +24,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core import translate
 from openlp.core.lib import MediaManagerItem
-from openlp.core.resources import *
+from openlp.core.lib import ServiceItem
 
 from openlp.plugins.images.lib import ListWithPreviews
 
@@ -150,20 +150,33 @@ class ImageMediaItem(MediaManagerItem):
             self.ImageListData.removeRow(current_row)
         self.parent.config.set_list(u'images', self.ImageListData.getFileList())
 
-    def onImageClick(self, where):
+    def generateSlideData(self, service_item):
         indexes = self.ImageListView.selectedIndexes()
         for index in indexes:
             filename = self.ImageListData.getFilename(index)
-            log.info(u"Click %s:%s"%(str(where), filename))
-            where.add(filename)
-        where.render()
+            frame = QtGui.QPixmap(str(filename))
+            service_item.frames.append({u'formatted': u'Image', u'image': frame})
 
     def onImagePreviewClick(self):
-        self.onImageClick(self.parent.preview_service_item)
+        log.debug(u'Image Preview Requested')
+        service_item = ServiceItem(self.parent)
+        service_item.addIcon( ":/media/media_image.png")
+        service_item.render_manager = self.parent.render_manager
+        self.generateSlideData(service_item)
+        self.parent.preview_controller.addServiceItem(service_item)
 
     def onImageLiveClick(self):
-        self.onImageClick(self.parent.live_service_item)
+        log.debug(u'Image Live Requested')
+        service_item = ServiceItem(self.parent)
+        service_item.addIcon( ":/media/media_image.png")
+        service_item.render_manager = self.parent.render_manager
+        self.generateSlideData(service_item)
+        self.parent.live_controller.addServiceItem(service_item)
 
     def onImageAddClick(self):
-        """Add this item to the OOS"""
-        pass
+        log.debug(u'Image Live Requested')
+        service_item = ServiceItem(self.parent)
+        service_item.addIcon( ":/media/media_image.png")
+        service_item.render_manager = self.parent.render_manager
+        self.generateSlideData(service_item)
+        self.parent.service_manager.addServiceItem(service_item)

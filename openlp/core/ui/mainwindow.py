@@ -100,8 +100,6 @@ class MainWindow(object):
         self.ServiceManagerContents.liveController = self.LiveController
         self.ThemeManagerContents.serviceManager = self.ServiceManagerContents
         self.ThemeManagerContents.loadThemes()
-        self.PreviewController.postInit()
-        self.LiveController.postInit()
 
         # Initialise SlideControllers
         log.info(u'Set Up SlideControllers')
