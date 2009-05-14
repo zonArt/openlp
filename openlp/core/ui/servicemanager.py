@@ -43,6 +43,7 @@ class ServiceManager(QtGui.QWidget):
     def __init__(self, parent):
         QtGui.QWidget.__init__(self)
         self.parent=parent
+        self.serviceItems=[]
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
         self.Layout.setMargin(0)
@@ -88,10 +89,10 @@ class ServiceManager(QtGui.QWidget):
 
         self.ServiceManagerList.addAction(self.contextMenuAction(
             self.ServiceManagerList, ':/system/system_preview.png',
-            translate(u'ServiceManager',u'&Preview Verse'), self.makeLive))
+            translate(u'ServiceManager',u'&Preview Verse'), self.makePreview))
         self.ServiceManagerList.addAction(self.contextMenuAction(
             self.ServiceManagerList, ':/system/system_live.png',
-            translate(u'ServiceManager',u'&Show Live'), self.makePreview))
+            translate(u'ServiceManager',u'&Show Live'), self.makeLive))
         self.ServiceManagerList.addAction(self.contextMenuSeparator(self.ServiceManagerList))
         self.ServiceManagerList.addAction(self.contextMenuAction(
             self.ServiceManagerList, ':/services/service_delete',
@@ -144,53 +145,43 @@ class ServiceManager(QtGui.QWidget):
         self.renderManager.default_theme = self.ThemeComboBox.currentText()
 
     def addServiceItem(self, item):
+        self.serviceItems.append({u'data': item, u'order': len(self.serviceItems)+1})
         treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
         treewidgetitem.setText(0,item.title + u':' + item.shortname)
         treewidgetitem.setIcon(0,item.iconic_representation)
+        treewidgetitem.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(len(self.serviceItems)))
         treewidgetitem.setExpanded(True)
         item.render()
+        count = 0
         for frame in item.frames:
             treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
             text = frame[u'formatted'][0]
             treewidgetitem1.setText(0,text[:30])
-            #treewidgetitem1.setIcon(0,frame[u'image'])
+            treewidgetitem1.setData(0, QtCore.Qt.UserRole,QtCore.QVariant(count))
+            count = count + 1
 
     def makePreview(self):
-        print "make Preview"
+        item, count = self.findServiceItem()
+        self.previewController.addServiceManagerItem(self.serviceItems[item][u'data'], count)
 
     def makeLive(self):
-        print "make live"
-        self.liveController.addServiceManagerItem(None, 1)
-#        items = self.serviceManagerList.selectedItems()
-#        if items == []:
-#            return
-#
-#        for item in items:
-#            childCount = item.childCount()
-#            print childCount, item.text(0)
-#            if childCount >= 1: # is parent
-#                who = item.text(0)
-#                listwidgetitem = QListWidgetItem()
-#                listwidgetitem.setText(who)
-#                self.slideControllerList.insertItem(0, listwidgetitem)
-#                self.slideControllerList.setCurrentRow(0)
-#
-#                listwidgetitem1 = QListWidgetItem()
-#                listwidgetitem1.setText(u'Children inserted here')
-#                self.slideControllerList.insertItem(1, listwidgetitem1)
-#
-#            else:
-#                parentitem = item.parent()
-#                print parentitem
-#                who = parentitem.text(0)
-#                listwidgetitem = QListWidgetItem()
-#                listwidgetitem.setText(who)
-#                self.slideControllerList.insertItem(0, listwidgetitem)
-#
-#                listwidgetitem1 = QListWidgetItem()
-#                listwidgetitem1.setText(u'Children inserted here')
-#                self.slideControllerList.insertItem(1, listwidgetitem1)
-#                self.slideControllerList.setCurrentRow(1)
+        item, count = self.findServiceItem()
+        self.liveController.addServiceManagerItem(self.serviceItems[item][u'data'], count)
+
+    def findServiceItem(self):
+        items = self.ServiceManagerList.selectedItems()
+        pos = 0
+        count = 0
+        for item in items:
+            childCount = item.childCount()
+            if childCount >= 1: # is the parent
+                pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
+            else:
+                parentitem = item.parent()
+                pos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
+                count = item.data(0, QtCore.Qt.UserRole).toInt()[0]
+        pos = pos - 1 #adjust for zeor indexing
+        return pos, count
 
     def dragEnterEvent(self, event):
         """

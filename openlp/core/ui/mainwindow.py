@@ -98,6 +98,7 @@ class MainWindow(object):
         self.ServiceManagerContents.renderManager = self.RenderManager
         self.ServiceManagerContents.eventManager = self.EventManager
         self.ServiceManagerContents.liveController = self.LiveController
+        self.ServiceManagerContents.previewController = self.PreviewController
         self.ThemeManagerContents.serviceManager = self.ServiceManagerContents
         self.ThemeManagerContents.loadThemes()
 

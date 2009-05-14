@@ -190,11 +190,6 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
         QtCore.QObject.connect(self.PreviewListView,
             QtCore.SIGNAL(u'activated(QModelIndex)'), self.onSlideSelected)
-        QtCore.QObject.connect(self.PreviewListView,
-            QtCore.SIGNAL(u'keyPressEvent(QKeyEvent)'), self.onSlideSelecteda)
-
-    def onSlideSelecteda(self, index):
-        print "a", index
 
     def onSlideSelectedFirst(self):
         row = self.PreviewListData.createIndex(0, 0)
@@ -264,7 +259,8 @@ class SlideController(QtGui.QWidget):
             self.onSlideSelected(row)
 
     def addServiceManagerItem(self, serviceitem, slideno):
-        print "addServiceManagerItem"
-
-    def render(self):
-        pass
+        self.addServiceItem(serviceitem)
+        row = self.PreviewListData.createIndex(slideno, 0)
+        if row.isValid():
+            self.PreviewListView.selectionModel().setCurrentIndex(row, QtGui.QItemSelectionModel.SelectCurrent)
+            self.onSlideSelected(row)
