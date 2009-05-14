@@ -56,10 +56,16 @@ class CustomPlugin(Plugin):
         """
         Handle the event contained in the event object.
         """
-        log.debug(u'Handle event called with event %s'%event.event_type)
+        log.debug(u'Handle event called with event %s with payload %s'%(event.event_type, event.payload))
         if event.event_type == EventType.ThemeListChanged:
             log.debug(u'New Theme request received')
             self.edit_custom_form.loadThemes(self.theme_manager.getThemes())
         if event.event_type == EventType.LoadServiceItem and event.payload == 'Custom':
             log.debug(u'Load Service Item received')
             self.media_item.onCustomAddClick()
+        if event.event_type == EventType.PreviewShow and event.payload == 'Custom':
+            log.debug(u'Load Service Item received ')
+            self.media_item.onCustomPreviewClick()
+        if event.event_type == EventType.LiveShow and event.payload == 'Custom':
+            log.debug(u'Load Service Item received')
+            self.media_item.onCustomLiveClick()

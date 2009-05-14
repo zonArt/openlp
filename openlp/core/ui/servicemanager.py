@@ -20,93 +20,14 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import os
 import logging
 
-from time import sleep
-from copy import deepcopy
-
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar
 from openlp.core.lib import ServiceItem
 from openlp.core.lib import RenderManager
 from openlp.core import translate
+from openlp import buildIcon
 from openlp.core.lib import Event, EventType, EventManager
-
-#class ServiceData(QtCore.QAbstractItemModel):
-#    """
-#    Tree of items for an order of service.
-#    Includes methods for reading and writing the contents to an OOS file
-#    Root contains a list of ServiceItems
-#    """
-#    global log
-#    log=logging.getLogger(u'ServiceData')
-#    def __init__(self):
-#        QtCore.QAbstractItemModel.__init__(self)
-#        self.items=[]
-#        log.info("Starting")
-#
-#    def clearItems(self):
-#        self.items = []
-#
-#    def columnCount(self, parent=None):
-#        return 1; # always only a single column (for now)
-#
-#    def rowCount(self, parent=None):
-#        return len(self.items)
-#
-#    def insertRow(self, row, service_item):
-#        self.beginInsertRows(QtCore.QModelIndex(),row,row)
-#        log.info("insert row %s:%s" % (row,service_item))
-#        self.items.insert(row, service_item)
-#        log.info("Items: %s" % self.items)
-#        self.endInsertRows()
-#
-#    def removeRow(self, row):
-#        self.beginRemoveRows(QtCore.QModelIndex(), row,row)
-#        self.items.pop(row)
-#        self.endRemoveRows()
-#
-#    def addRow(self, service_item):
-#        self.insertRow(len(self.items), service_item)
-#
-#    def index(self, row, col, parent = QtCore.QModelIndex()):
-#        return self.createIndex(row,col)
-#
-#    def parent(self, index=QtCore.QModelIndex()):
-#        return QtCore.QModelIndex() # no children as yet
-#
-#    def data(self, index, role):
-#        """
-#        Called by the service manager to draw us in the service window
-#        """
-#        log.debug(u'data %s %d', index, role)
-#        row = index.row()
-#        if row > len(self.items): # if the last row is selected and deleted, we then get called with an empty row!
-#            return QtCore.QVariant()
-#        item = self.items[row]
-#        if role == QtCore.Qt.DisplayRole:
-#            retval= item.title + u':' + item.shortname
-#        elif role == QtCore.Qt.DecorationRole:
-#            retval = item.iconic_representation
-#        elif role == QtCore.Qt.ToolTipRole:
-#            retval = None
-#        else:
-#            retval = None
-#        if retval == None:
-#            retval = QtCore.QVariant()
-##         log.info("Returning"+ str(retval))
-#        if type(retval) is not type(QtCore.QVariant):
-#            return QtCore.QVariant(retval)
-#        else:
-#            return retval
-#
-#    def __iter__(self):
-#        for i in self.items:
-#            yield i
-#
-#    def item(self, row):
-#        log.info("Get Item:%d -> %s" %(row, str(self.items)))
-#        return self.items[row]
-
 
 class ServiceManager(QtGui.QWidget):
 
@@ -122,6 +43,7 @@ class ServiceManager(QtGui.QWidget):
     def __init__(self, parent):
         QtGui.QWidget.__init__(self)
         self.parent=parent
+        self.serviceItems=[]
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
         self.Layout.setMargin(0)
@@ -153,19 +75,47 @@ class ServiceManager(QtGui.QWidget):
         self.Toolbar.addAction(self.ThemeWidget)
         self.Layout.addWidget(self.Toolbar)
 
-        self.serviceManagerList = QtGui.QTreeWidget(self)
-        self.serviceManagerList.setEditTriggers(QtGui.QAbstractItemView.CurrentChanged|QtGui.QAbstractItemView.DoubleClicked|QtGui.QAbstractItemView.EditKeyPressed)
-        self.serviceManagerList.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
-        self.serviceManagerList.setAlternatingRowColors(True)
-        self.serviceManagerList.setObjectName("serviceManagerList")
-        self.serviceManagerList .__class__.dragEnterEvent=self.dragEnterEvent
-        self.serviceManagerList .__class__.dragMoveEvent=self.dragEnterEvent
-        self.serviceManagerList .__class__.dropEvent =self.dropEvent
+        self.ServiceManagerList = QtGui.QTreeWidget(self)
+        self.ServiceManagerList.setEditTriggers(QtGui.QAbstractItemView.CurrentChanged|QtGui.QAbstractItemView.DoubleClicked|QtGui.QAbstractItemView.EditKeyPressed)
+        self.ServiceManagerList.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
+        self.ServiceManagerList.setAlternatingRowColors(True)
+        self.ServiceManagerList.setObjectName("ServiceManagerList")
+        #endable drop
+        self.ServiceManagerList .__class__.dragEnterEvent=self.dragEnterEvent
+        self.ServiceManagerList .__class__.dragMoveEvent=self.dragEnterEvent
+        self.ServiceManagerList .__class__.dropEvent =self.dropEvent
 
-        self.Layout.addWidget(self.serviceManagerList)
+        self.ServiceManagerList.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+
+        self.ServiceManagerList.addAction(self.contextMenuAction(
+            self.ServiceManagerList, ':/system/system_preview.png',
+            translate(u'ServiceManager',u'&Preview Verse'), self.makePreview))
+        self.ServiceManagerList.addAction(self.contextMenuAction(
+            self.ServiceManagerList, ':/system/system_live.png',
+            translate(u'ServiceManager',u'&Show Live'), self.makeLive))
+        self.ServiceManagerList.addAction(self.contextMenuSeparator(self.ServiceManagerList))
+        self.ServiceManagerList.addAction(self.contextMenuAction(
+            self.ServiceManagerList, ':/services/service_delete',
+            translate(u'ServiceManager',u'&Remove from Service'), self.onDeleteFromService))
+
+        self.Layout.addWidget(self.ServiceManagerList)
 
         QtCore.QObject.connect(self.ThemeComboBox,
             QtCore.SIGNAL("activated(int)"), self.onThemeComboBoxSelected)
+
+    def contextMenuAction(self, base, icon, text, slot):
+        """
+        Utility method to help build context menus for plugins
+        """
+        action = QtGui.QAction(text, base)
+        action .setIcon(buildIcon(icon))
+        QtCore.QObject.connect(action, QtCore.SIGNAL("triggered()"), slot)
+        return action
+
+    def contextMenuSeparator(self, base):
+        action = QtGui.QAction("", base)
+        action.setSeparator(True)
+        return action
 
     def onServiceTop(self):
         pass
@@ -195,16 +145,43 @@ class ServiceManager(QtGui.QWidget):
         self.renderManager.default_theme = self.ThemeComboBox.currentText()
 
     def addServiceItem(self, item):
-        treewidgetitem = QtGui.QTreeWidgetItem(self.serviceManagerList)
+        self.serviceItems.append({u'data': item, u'order': len(self.serviceItems)+1})
+        treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
         treewidgetitem.setText(0,item.title + u':' + item.shortname)
         treewidgetitem.setIcon(0,item.iconic_representation)
+        treewidgetitem.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(len(self.serviceItems)))
         treewidgetitem.setExpanded(True)
         item.render()
+        count = 0
         for frame in item.frames:
             treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
             text = frame[u'formatted'][0]
-            treewidgetitem1.setText(0,text[:10])
-            #treewidgetitem1.setIcon(0,frame[u'image'])
+            treewidgetitem1.setText(0,text[:30])
+            treewidgetitem1.setData(0, QtCore.Qt.UserRole,QtCore.QVariant(count))
+            count = count + 1
+
+    def makePreview(self):
+        item, count = self.findServiceItem()
+        self.previewController.addServiceManagerItem(self.serviceItems[item][u'data'], count)
+
+    def makeLive(self):
+        item, count = self.findServiceItem()
+        self.liveController.addServiceManagerItem(self.serviceItems[item][u'data'], count)
+
+    def findServiceItem(self):
+        items = self.ServiceManagerList.selectedItems()
+        pos = 0
+        count = 0
+        for item in items:
+            childCount = item.childCount()
+            if childCount >= 1: # is the parent
+                pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
+            else:
+                parentitem = item.parent()
+                pos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
+                count = item.data(0, QtCore.Qt.UserRole).toInt()[0]
+        pos = pos - 1 #adjust for zeor indexing
+        return pos, count
 
     def dragEnterEvent(self, event):
         """

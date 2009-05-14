@@ -88,11 +88,17 @@ class MainWindow(object):
         self.plugin_manager.initialise_plugins()
 
         # Once all components are initialised load the Themes
-        log.info(u'Load Themes')
+        log.info(u'Load Themes and Managers')
+        self.PreviewController.eventManager = self.EventManager
+        self.PreviewController.serviceManager = self.ServiceManagerContents
+        self.LiveController.eventManager = self.EventManager
+        self.LiveController.serviceManager = self.ServiceManagerContents
         self.ThemeManagerContents.eventManager = self.EventManager
         self.ThemeManagerContents.renderManager = self.RenderManager
         self.ServiceManagerContents.renderManager = self.RenderManager
         self.ServiceManagerContents.eventManager = self.EventManager
+        self.ServiceManagerContents.liveController = self.LiveController
+        self.ServiceManagerContents.previewController = self.PreviewController
         self.ThemeManagerContents.serviceManager = self.ServiceManagerContents
         self.ThemeManagerContents.loadThemes()
 

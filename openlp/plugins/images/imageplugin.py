@@ -21,8 +21,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin
-from openlp.core.resources import *
+from openlp.core.lib import Plugin, Event
+from openlp.core.lib import EventType
 
 from openlp.plugins.images.lib import ImageMediaItem, ImageServiceItem
 
@@ -37,7 +37,7 @@ class ImagePlugin(Plugin):
         self.weight = -7
         # Create the plugin icon
         self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(':/media/media_image.png'),
+        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_image.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
         self.preview_service_item = ImageServiceItem(self.preview_controller)
@@ -45,11 +45,25 @@ class ImagePlugin(Plugin):
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
-        self.MediaManagerItem = ImageMediaItem(self, self.icon, u'Images')
-        return self.MediaManagerItem
+        self.media_item = ImageMediaItem(self, self.icon, u'Images')
+        return self.media_item
 
     def initialise(self):
         log.info(u'Plugin Initialising')
-        log.info(u'Done')
+
+    def handle_event(self, event):
+        """
+        Handle the event contained in the event object.
+        """
+        log.debug(u'Handle event called with event %s with payload %s'%(event.event_type, event.payload))
+        if event.event_type == EventType.LoadServiceItem and event.payload == 'Image':
+            log.debug(u'Load Service Item received')
+            self.media_item.onImageAddClick()
+        if event.event_type == EventType.PreviewShow and event.payload == 'Image':
+            log.debug(u'Load Service Item received')
+            self.media_item.onImagePreviewClick()
+        if event.event_type == EventType.LiveShow and event.payload == 'Image':
+            log.debug(u'Load Service Item received')
+            self.media_item.onImageLiveClick()
 
 
