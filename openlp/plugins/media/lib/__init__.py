@@ -19,7 +19,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 from filelistdata import FileListData
-from videotab import VideoTab
-from mediaitem import VideoMediaItem
+from mediatab import MediaTab
+from mediaitem import MediaMediaItem
 
-__all__ = ['VideoTab', 'VideoMediaItem', 'FileListData']
+__all__ = ['MediaTab', 'MediaMediaItem', 'FileListData']

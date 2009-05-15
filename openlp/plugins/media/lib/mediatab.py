@@ -24,39 +24,39 @@ from openlp.core import translate
 from openlp import convertStringToBoolean
 from openlp.core.lib import SettingsTab
 
-class VideoTab(SettingsTab):
+class MediaTab(SettingsTab):
     """
-    VideoTab is the video settings tab in the settings dialog.
+    mediaTab is the media settings tab in the settings dialog.
     """
     def __init__(self):
-        SettingsTab.__init__(self, u'Videos')
+        SettingsTab.__init__(self, u'Media')
 
     def setupUi(self):
-        self.setObjectName(u'VideoTab')
+        self.setObjectName(u'MediaTab')
 
-        self.VideoLayout = QtGui.QFormLayout(self)
-        self.VideoLayout.setObjectName("VideoLayout")
+        self.MediaLayout = QtGui.QFormLayout(self)
+        self.MediaLayout.setObjectName("MediaLayout")
 
-        self.VideoModeGroupBox = QtGui.QGroupBox(self)
-        self.VideoModeGroupBox.setObjectName("VideoModeGroupBox")
-        self.VideoModeLayout = QtGui.QVBoxLayout(self.VideoModeGroupBox)
-        self.VideoModeLayout.setSpacing(8)
-        self.VideoModeLayout.setMargin(8)
-        self.VideoModeLayout.setObjectName("VideoModeLayout")
-        self.UseVMRCheckBox = QtGui.QCheckBox(self.VideoModeGroupBox)
+        self.MediaModeGroupBox = QtGui.QGroupBox(self)
+        self.MediaModeGroupBox.setObjectName("MediaModeGroupBox")
+        self.MediaModeLayout = QtGui.QVBoxLayout(self.MediaModeGroupBox)
+        self.MediaModeLayout.setSpacing(8)
+        self.MediaModeLayout.setMargin(8)
+        self.MediaModeLayout.setObjectName("MediaModeLayout")
+        self.UseVMRCheckBox = QtGui.QCheckBox(self.MediaModeGroupBox)
         self.UseVMRCheckBox.setObjectName("UseVMRCheckBox")
-        self.VideoModeLayout.addWidget(self.UseVMRCheckBox)
-        self.UseVMRLabel = QtGui.QLabel(self.VideoModeGroupBox)
+        self.MediaModeLayout.addWidget(self.UseVMRCheckBox)
+        self.UseVMRLabel = QtGui.QLabel(self.MediaModeGroupBox)
         self.UseVMRLabel.setObjectName("UseVMRLabel")
-        self.VideoModeLayout.addWidget(self.UseVMRLabel)
+        self.MediaModeLayout.addWidget(self.UseVMRLabel)
 
-        self.VideoLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.VideoModeGroupBox)
+        self.MediaLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.MediaModeGroupBox)
         # Signals and slots
         QtCore.QObject.connect(self.UseVMRCheckBox,
             QtCore.SIGNAL("stateChanged(int)"), self.onVMRCheckBoxChanged)
 
     def retranslateUi(self):
-        self.VideoModeGroupBox.setTitle(translate("SettingsForm", "Video Mode"))
+        self.MediaModeGroupBox.setTitle(translate("SettingsForm", "Media Mode"))
         self.UseVMRCheckBox.setText(translate("SettingsForm", "Use Video Mode Rendering"))
         self.UseVMRLabel.setText(translate("SettingsForm", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"

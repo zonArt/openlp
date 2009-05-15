@@ -22,13 +22,13 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.resources import *
 from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab
-from openlp.plugins.videos.lib import VideoTab, VideoMediaItem
+from openlp.plugins.media.lib import MediaTab,MediaMediaItem
 
-class VideoPlugin(Plugin):
+class MediaPlugin(Plugin):
 
     def __init__(self, plugin_helpers):
         # Call the parent constructor
-        Plugin.__init__(self, u'Videos', u'1.9.0', plugin_helpers)
+        Plugin.__init__(self, u'Media', u'1.9.0', plugin_helpers)
         self.weight = -6
         # Create the plugin icon
         self.icon = QtGui.QIcon()
@@ -36,11 +36,11 @@ class VideoPlugin(Plugin):
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
     def get_settings_tab(self):
-        self.VideosTab = VideoTab()
-        return self.VideosTab
+        self.MediaTab = MediaTab()
+        return self.MediaTab
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
-        self.media_item = VideoMediaItem(self, self.icon, u'Videos')
-        return self.media_item        
- 
+        self.media_item = MediaMediaItem(self, self.icon, u'Media')
+        return self.media_item
+
