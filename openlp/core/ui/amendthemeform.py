@@ -22,10 +22,8 @@ import os, os.path
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QColor, QFont
-from openlp.core.lib import ThemeXML
-from openlp.core.lib import Renderer
-from openlp.core import fileToXML
-from openlp.core import translate
+from openlp.core.lib import ThemeXML,  Renderer
+from openlp.core import fileToXML,  translate
 
 from amendthemedialog import Ui_AmendThemeDialog
 
@@ -105,12 +103,18 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         new_theme = ThemeXML()
         theme_name = str(self.ThemeNameEdit.displayText())
         new_theme.new_document(theme_name)
+        save_from = None
+        save_to = None
         if self.theme.background_type == u'solid':
             new_theme.add_background_solid(str(self.theme.background_color))
         elif self.theme.background_type == u'gradient':
-            new_theme.add_background_gradient(str(self.theme.background_startColor), str(self.theme.background_endColor), self.theme.background_direction)
-        #else:
-            #newtheme.add_background_image(str(self.theme.))
+            new_theme.add_background_gradient(str(self.theme.background_startColor),
+                    str(self.theme.background_endColor), self.theme.background_direction)
+        else:
+            (path, filename) =os.path.split(str(self.theme.background_filename))
+            new_theme.add_background_image(filename)
+            save_to= os.path.join(self.path, theme_name,filename )
+            save_from = self.theme.background_filename
 
         new_theme.add_font(str(self.theme.font_main_name), str(self.theme.font_main_color),
                 str(self.theme.font_main_proportion), str(self.theme.font_main_override),u'main',
@@ -127,7 +131,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
 
         theme = new_theme.extract_xml()
 
-        self.thememanager.saveTheme(theme_name, theme)
+        self.thememanager.saveTheme(theme_name, theme, save_from, save_to)
         return QtGui.QDialog.accept(self)
 
     def themePath(self, path):

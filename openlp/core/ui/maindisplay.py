@@ -60,9 +60,9 @@ class MainDisplay(QtGui.QWidget):
         painter.fillRect(self.blankFrame.rect(), QtGui.QColor(u'#000000'))
 
     def frameView(self, frame):
+        self.frame = frame
         if self.displayBlank == False:
             self.display.setPixmap(frame)
-            self.frame = frame
 
     def blankDisplay(self):
         if self.displayBlank == False:

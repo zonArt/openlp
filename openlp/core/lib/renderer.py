@@ -72,8 +72,7 @@ class Renderer:
 
     def set_bg_image(self, filename):
         log.debug(u'set bg image %s', filename)
-        #self._bg_image_filename=os.path.join(self._path, self._theme.theme_name,  filename)
-        self._bg_image_filename = filename
+        self._bg_image_filename = str(filename)
         if self._frame is not None:
             self.scale_bg_image()
 
@@ -127,7 +126,6 @@ class Renderer:
         verses_text = []
         for v in verses:
             verses_text.append(u'\n'.join(v).lstrip()) # remove first \n
-        print verses_text
         return verses_text
 
     def render_screen(self, screennum):
@@ -213,9 +211,6 @@ class Renderer:
         for line in lines:
             bboxes.append(self._render_single_line(line, footer))
 
-        print "-------------"
-        print bboxes
-        print "------------"
         numlines = len(lines)
         bottom = self._rect.bottom()
         for ratio in (numlines, numlines/2, numlines/3, numlines/4):
@@ -226,7 +221,7 @@ class Renderer:
                 by = 0
                 for (x, y) in bboxes[startline:endline]:
                     by += y
-                print "A ", by, bottom
+                print "A ", by, bottom , bboxes
                 if by > bottom:
                     good=0
                     break
@@ -261,7 +256,6 @@ class Renderer:
                     endline = startline # gets incremented below
                     by = 0
                 endline += 1
-        print retval
         return retval
 
     def _correctAlignment(self, rect, bbox):
@@ -284,9 +278,6 @@ class Renderer:
         if footer_lines is not None:
             bbox1 = self._render_lines_unaligned(footer_lines, True) # Footer Font
 
-        # put stuff on background so need to reset before doing the job properly.
-        #self._render_background()
-
         self._frame = QtGui.QPixmap(self._bg_frame)
 
         x, y = self._correctAlignment(self._rect, bbox)
@@ -299,7 +290,6 @@ class Renderer:
         return self._frame
 
     def _render_lines_unaligned(self, lines,  footer,  tlcorner=(0,0)):
-
         """
         Given a list of lines to render, render each one in turn
         (using the _render_single_line fn - which may result in going
@@ -316,8 +306,9 @@ class Renderer:
             # render after current bottom, but at original left edge
             # keep track of right edge to see which is biggest
             (thisx, bry) = self._render_single_line(line, footer, (x,bry))
+            print thisx ,  bry
             if (thisx > brx):
-                brx=thisx
+                brx = thisx
         retval = QtCore.QRect(x, y,brx-x, bry-y)
         if self._debug:
             painter = QtGui.QPainter()
@@ -329,8 +320,8 @@ class Renderer:
         return  retval
 
     def _render_single_line(self, line, footer, tlcorner=(0,0)):
-
-        """render a single line of words onto the DC, top left corner
+        """
+        Render a single line of words onto the DC, top left corner
         specified.
 
         If the line is too wide for the context, it wraps, but
@@ -339,13 +330,10 @@ class Renderer:
         Returns the bottom-right corner (of what was rendered) as a tuple(x, y).
         """
         log.debug(u'Render single line %s @ %s '%( line, tlcorner))
-        x, y=tlcorner
+        x, y = tlcorner
         # We draw the text to see how big it is and then iterate to make it fit
         # when we line wrap we do in in the "lyrics" style, so the second line is
         # right aligned with a "hanging indent"
-
-        # get the words
-#         log.debug(u" "Getting the words split right"
 
         print "before ", line
         words = line.split(u' ')
@@ -374,19 +362,20 @@ class Renderer:
 
         for linenum in range(len(lines)):
             line = lines[linenum]
+            print "render line ",  line
             #find out how wide line is
             w , h = self._get_extent_and_render(line, footer,  tlcorner=(x, y), draw=False)
 
             if self._theme.display_shadow:
-                w+=self._shadow_offset
-                h+=self._shadow_offset
+                w += self._shadow_offset
+                h += self._shadow_offset
             if self._theme.display_outline:
-                w+=2*self._outline_offset # pixels either side
-                h+=2*self._outline_offset #  pixels top/bottom
+                w += 2*self._outline_offset # pixels either side
+                h += 2*self._outline_offset #  pixels top/bottom
             if align==0: # left align
-                rightextent=x+w
+                rightextent = x+w
                 if self._theme.display_wrapStyle == 1 and linenum != 0: # shift right from last line's rh edge
-                    rightextent=self._first_line_right_extent + self._right_margin
+                    rightextent = self._first_line_right_extent + self._right_margin
                     if rightextent > maxx:
                         rightextent = maxx
                     x = rightextent-w
@@ -430,10 +419,10 @@ class Renderer:
             painter = QtGui.QPainter()
             painter.begin(self._frame)
             painter.setPen(QtGui.QPen(QtGui.QColor(0,255,0)))
-            painter.drawRect(startx,starty,rightextent-startx, y-starty)
+            painter.drawRect(startx , starty , rightextent-startx , y-starty)
             painter.end()
 
-        brcorner = (rightextent,y)
+        brcorner = (rightextent , y)
         log.debug(u'Render single line Finish')
         return brcorner
 

@@ -245,6 +245,7 @@ class ThemeManager(QWidget):
             xml = newtheme.extract_xml()
         theme = ThemeXML()
         theme.parse(xml)
+        theme.extend_filename(self.path)
         return theme
 
     def checkThemesExists(self, dir):
@@ -332,9 +333,8 @@ class ThemeManager(QWidget):
             str(theme.WrapStyle))
         return newtheme.extract_xml()
 
-    def saveTheme(self, name, theme_xml) :
+    def saveTheme(self, name, theme_xml, image_from, image_to) :
         log.debug(u'saveTheme %s %s', name, theme_xml)
-        self.generateAndSaveImage(self.path, name, theme_xml)
         theme_dir = os.path.join(self.path, name)
         if os.path.exists(theme_dir) == False:
             os.mkdir(os.path.join(self.path, name))
@@ -342,6 +342,9 @@ class ThemeManager(QWidget):
         outfile = open(theme_file, u'w')
         outfile.write(theme_xml)
         outfile.close()
+        if image_from is not None:
+            shutil.copyfile(image_from,  image_to)
+        self.generateAndSaveImage(self.path, name, theme_xml)
         self.themeData.clearItems()
         self.loadThemes()
 
@@ -349,6 +352,7 @@ class ThemeManager(QWidget):
         log.debug(u'generateAndSaveImage %s %s %s', dir, name, theme_xml)
         theme = ThemeXML()
         theme.parse(theme_xml)
+        theme.extend_filename(dir)
         frame = self.generateImage(theme)
         im = frame.toImage()
         samplepathname = os.path.join(self.path, name + u'.png')

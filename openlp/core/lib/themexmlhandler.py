@@ -21,7 +21,7 @@ from xml.etree.ElementTree import ElementTree, XML, dump
 
 For XML Schema see wiki.openlp.org
 """
-
+import os,  os.path
 from openlp import convertStringToBoolean
 from xml.dom.minidom import  Document
 from xml.etree.ElementTree import ElementTree, XML, dump
@@ -68,6 +68,10 @@ class ThemeXML():
     def __init__(self):
         # Create the minidom document
         self.theme_xml = Document()
+
+    def extend_filename(self, path):
+        if self.background_filename is not None:
+            self.background_filename = os.path.join(path, self.theme_name, self.background_filename)
 
     def new_document(self, name):
         # Create the <song> base element
