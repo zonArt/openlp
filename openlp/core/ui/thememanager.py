@@ -222,8 +222,9 @@ class ThemeManager(QWidget):
             for name in files:
                 if name.endswith(u'.png'):
                     self.themeData.addRow(os.path.join(self.path, name))
-        self.eventManager.post_event(Event(EventType.ThemeListChanged))
-        self.serviceManager.updateThemeList(self.getThemes())
+        self.EventManager.post_event(Event(EventType.ThemeListChanged))
+        self.ServiceManager.updateThemeList(self.getThemes())
+        #self.themeTab.updateThemeList(self.getThemes())
 
     def getThemes(self):
         return self.themeData.getList()
@@ -358,6 +359,6 @@ class ThemeManager(QWidget):
 
     def generateImage(self, themedata):
         log.debug(u'generateImage %s ', themedata)
-        frame = self.renderManager.generate_preview(themedata)
+        frame = self.RenderManager.generate_preview(themedata)
         return frame
 

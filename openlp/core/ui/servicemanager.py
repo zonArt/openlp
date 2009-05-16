@@ -136,13 +136,13 @@ class ServiceManager(QtGui.QWidget):
         pass
 
     def onSaveService(self):
-        Pass
+        pass
 
     def onLoadService(self):
-        Pass
+        pass
 
     def onThemeComboBoxSelected(self, currentIndex):
-        self.renderManager.default_theme = self.ThemeComboBox.currentText()
+        self.RenderManager.default_theme = self.ThemeComboBox.currentText()
 
     def addServiceItem(self, item):
         self.serviceItems.append({u'data': item, u'order': len(self.serviceItems)+1})
@@ -162,11 +162,11 @@ class ServiceManager(QtGui.QWidget):
 
     def makePreview(self):
         item, count = self.findServiceItem()
-        self.previewController.addServiceManagerItem(self.serviceItems[item][u'data'], count)
+        self.PreviewController.addServiceManagerItem(self.serviceItems[item][u'data'], count)
 
     def makeLive(self):
         item, count = self.findServiceItem()
-        self.liveController.addServiceManagerItem(self.serviceItems[item][u'data'], count)
+        self.LiveController.addServiceManagerItem(self.serviceItems[item][u'data'], count)
 
     def findServiceItem(self):
         items = self.ServiceManagerList.selectedItems()
@@ -197,7 +197,7 @@ class ServiceManager(QtGui.QWidget):
         link=event.mimeData()
         if link.hasText():
             plugin = event.mimeData().text()
-            self.eventManager.post_event(Event(EventType.LoadServiceItem, plugin))
+            self.EventManager.post_event(Event(EventType.LoadServiceItem, plugin))
 
     def oos_as_text(self):
         text=[]
@@ -226,5 +226,5 @@ class ServiceManager(QtGui.QWidget):
         self.ThemeComboBox.clear()
         for theme in theme_list:
             self.ThemeComboBox.addItem(theme)
-            self.renderManager.default_theme = self.ThemeComboBox.currentText()
+            self.RenderManager.default_theme = self.ThemeComboBox.currentText()
 

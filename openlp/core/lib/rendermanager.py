@@ -96,21 +96,22 @@ class RenderManager:
 
     def generate_preview(self, themedata):
         log.debug(u'generate preview')
-        self.calculate_default(QtCore.QSize(800,600))
+        self.calculate_default(QtCore.QSize(800, 600))
         self.renderer.set_theme(themedata)
         self.build_text_rectangle(themedata)
 
         self.renderer.set_frame_dest(self.width, self.height, True)
 
-        lines=[]
+        lines = []
         lines.append(u'Amazing Grace!')
         lines.append(u'How sweet the sound')
         lines.append(u'To save a wretch like me;')
         lines.append(u'I once was lost but now am found,')
         lines.append(u'Was blind, but now I see.')
-        lines1=[]
+        lines1 = []
         lines1.append(u'Amazing Grace (John Newton)' )
-        lines1.append(u'CCLI xxx (c)Openlp.org')
+        lines1.append(u'Public Domain')
+        lines1.append(u'CCLI xxx')
         return self.renderer.render_lines(lines, lines1)
 
 
@@ -131,7 +132,7 @@ class RenderManager:
         self.width = screen.width()
         self.height = screen.height()
         log.debug(u'calculate default %d,%d' , self.width, self.height)
-        self.footer_start = int(self.height*0.95) # 95% is start of footer
+        self.footer_start = int(self.height*0.90) # 90% is start of footer
 
     def snoop_Image(self, image, image2=None):
         """

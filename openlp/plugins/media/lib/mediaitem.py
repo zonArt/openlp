@@ -93,7 +93,7 @@ class MediaMediaItem(MediaManagerItem):
             translate('MediaMediaItem',u'&Add to Service'), self.onMediaAddClick))
 
     def initialise(self):
-        list = self.parent.config.load_list(u'Medias')
+        list = self.parent.config.load_list(u'Media')
         self.loadMediaList(list)
 
     def onMediaNewClick(self):

@@ -54,6 +54,3 @@ class Event(object):
     def __init__(self, event_type=EventType.Default, payload=None):
         self.event_type = event_type
         self.payload = payload
-
-    def get_type(self):
-        return self.event_type

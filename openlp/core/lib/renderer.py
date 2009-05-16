@@ -127,6 +127,7 @@ class Renderer:
         verses_text = []
         for v in verses:
             verses_text.append(u'\n'.join(v).lstrip()) # remove first \n
+        print verses_text
         return verses_text
 
     def render_screen(self, screennum):
@@ -399,17 +400,25 @@ class Renderer:
             # now draw the text, and any outlines/shadows
             if self._theme.display_shadow:
                 self._get_extent_and_render(line, footer,tlcorner=(x+self._shadow_offset,y+self._shadow_offset),
-                    draw=True, color = t.display_shadow_color)
+                    draw=True, color = self._theme.display_shadow_color)
             if self._theme.display_outline:
-                self._get_extent_and_render(line, footer,(x+self._outline_offset,y), draw=True, color = t.display_outline_color)
-                self._get_extent_and_render(line, footer,(x, y+self._outline_offset), draw=True, color = t.display_outline_color)
-                self._get_extent_and_render(line, footer,(x, y-self._outline_offset), draw=True, color = t.display_outline_color)
-                self._get_extent_and_render(line, footer,(x-self._outline_offset,y), draw=True, color = t.display_outline_color)
+                self._get_extent_and_render(line, footer,(x+self._outline_offset,y), draw=True,
+                        color = self._theme.display_outline_color)
+                self._get_extent_and_render(line, footer,(x, y+self._outline_offset), draw=True,
+                        color = self._theme.display_outline_color)
+                self._get_extent_and_render(line, footer,(x, y-self._outline_offset), draw=True,
+                        color = self._theme.display_outline_color)
+                self._get_extent_and_render(line, footer,(x-self._outline_offset,y), draw=True,
+                        color = self._theme.display_outline_color)
                 if self._outline_offset > 1:
-                    self._get_extent_and_render(line, footer,(x+self._outline_offset,y+self._outline_offset), draw=True, color = t.display_outline_color)
-                    self._get_extent_and_render(line, footer,(x-self._outline_offset,y+self._outline_offset), draw=True, color = t.display_outline_color)
-                    self._get_extent_and_render(line, footer,(x+self._outline_offset,y-self._outline_offset), draw=True, color = t.display_outline_color)
-                    self._get_extent_and_render(line, footer,(x-self._outline_offset,y-self._outline_offset), draw=True, color = t.display_outline_color)
+                    self._get_extent_and_render(line, footer,(x+self._outline_offset,y+self._outline_offset), draw=True,
+                        color = self._theme.display_outline_color)
+                    self._get_extent_and_render(line, footer,(x-self._outline_offset,y+self._outline_offset), draw=True,
+                        color = self._theme.display_outline_color)
+                    self._get_extent_and_render(line, footer,(x+self._outline_offset,y-self._outline_offset), draw=True,
+                        color = self._theme.display_outline_color)
+                    self._get_extent_and_render(line, footer,(x-self._outline_offset,y-self._outline_offset), draw=True,
+                        color = self._theme.display_outline_color)
 
             self._get_extent_and_render(line, footer,tlcorner=(x, y), draw=True)
 #             log.debug(u'Line %2d: Render '%s' at (%d, %d) wh=(%d,%d)' % ( linenum, line, x, y,w,h)

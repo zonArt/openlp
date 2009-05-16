@@ -105,3 +105,11 @@ class ThemesTab(SettingsTab):
         self.ServiceLevelLabel.setText(translate(u'ThemesTab', u'Use the theme from the service , overriding any of the individual songs\' themes. If the service doesn\'t have a theme, then use the global theme.'))
         self.GlobalLevelRadioButton.setText(translate(u'ThemesTab', u'Global level'))
         self.GlobalLevelLabel.setText(translate(u'ThemesTab', u'Use the global theme, overriding any themes associated wither either the service or the songs.'))
+
+    def updateThemeList(self, theme_list):
+        """
+        Called from ThemeManager when the Themes have changed
+        """
+        self.DefaultComboBox.clear()
+        for theme in theme_list:
+            self.DefaultComboBox.addItem(theme)

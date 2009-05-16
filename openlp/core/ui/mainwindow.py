@@ -90,15 +90,19 @@ class MainWindow(object):
 
         # Once all components are initialised load the Themes
         log.info(u'Load Themes and Managers')
-        self.PreviewController.serviceManager = self.ServiceManagerContents
-        self.LiveController.serviceManager = self.ServiceManagerContents
-        self.ThemeManagerContents.eventManager = self.EventManager
-        self.ThemeManagerContents.renderManager = self.RenderManager
-        self.ServiceManagerContents.renderManager = self.RenderManager
-        self.ServiceManagerContents.eventManager = self.EventManager
-        self.ServiceManagerContents.liveController = self.LiveController
-        self.ServiceManagerContents.previewController = self.PreviewController
-        self.ThemeManagerContents.serviceManager = self.ServiceManagerContents
+        self.PreviewController.ServiceManager = self.ServiceManagerContents
+        self.LiveController.ServiceManager = self.ServiceManagerContents
+
+        self.ThemeManagerContents.EventManager = self.EventManager
+        self.ThemeManagerContents.RenderManager = self.RenderManager
+        self.ThemeManagerContents.ServiceManager = self.ServiceManagerContents
+        #self.ThemeManagerContents.ThemesTab = self.ServiceManagerContents.ThemesTab
+
+        self.ServiceManagerContents.RenderManager = self.RenderManager
+        self.ServiceManagerContents.EventManager = self.EventManager
+        self.ServiceManagerContents.LiveController = self.LiveController
+        self.ServiceManagerContents.PreviewController = self.PreviewController
+
         self.ThemeManagerContents.loadThemes()
 
         # Initialise SlideControllers
