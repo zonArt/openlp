@@ -40,7 +40,7 @@ blankthemexml=\
       <direction>vertical</direction>
    </background>
    <background type="image" mode="opaque">
-      <filename>fred.bmp</filename>
+      <filename></filename>
    </background>
    <font type="main">
       <name>Arial</name>

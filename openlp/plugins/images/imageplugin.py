@@ -60,10 +60,10 @@ class ImagePlugin(Plugin):
             log.debug(u'Load Service Item received')
             self.media_item.onImageAddClick()
         if event.event_type == EventType.PreviewShow and event.payload == 'Image':
-            log.debug(u'Load Service Item received')
+            log.debug(u'Load Preview Item received')
             self.media_item.onImagePreviewClick()
         if event.event_type == EventType.LiveShow and event.payload == 'Image':
-            log.debug(u'Load Service Item received')
+            log.debug(u'Load Live Show Item received')
             self.media_item.onImageLiveClick()
 
 

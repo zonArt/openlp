@@ -53,6 +53,8 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             QtCore.SIGNAL("pressed()"), self.onOutlineColorPushButtonClicked)
         QtCore.QObject.connect(self.ShadowColorPushButton,
             QtCore.SIGNAL("pressed()"), self.onShadowColorPushButtonClicked)
+        QtCore.QObject.connect(self.ImageToolButton,
+            QtCore.SIGNAL("pressed()"), self.onImageToolButtonClicked)
 
         #Combo boxes
         QtCore.QObject.connect(self.BackgroundComboBox,
@@ -99,7 +101,6 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         QtCore.QObject.connect(self.ShadowCheckBox,
             QtCore.SIGNAL("stateChanged(int)"), self.onShadowCheckBoxChanged)
 
-
     def accept(self):
         new_theme = ThemeXML()
         theme_name = str(self.ThemeNameEdit.displayText())
@@ -140,9 +141,17 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             xml_file = os.path.join(self.path, theme, theme+u'.xml')
             xml = fileToXML(xml_file)
             self.theme.parse(xml)
+        self.allowPreview = False
         self.paintUi(self.theme)
+        self.allowPreview = True
         self.previewTheme(self.theme)
 
+    def onImageToolButtonClicked(self):
+        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file')
+        if filename != "":
+            self.ImageLineEdit.setText(filename)
+            self.theme.background_filename = filename
+            self.previewTheme(self.theme)
     #
     #Main Font Tab
     #
@@ -196,8 +205,6 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     def onFontMainHeightSpinBoxChanged(self, value):
         self.theme.font_main_height = value
         self.previewTheme(self.theme)
-
-
     #
     #Footer Font Tab
     #
@@ -216,7 +223,6 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     def onFontFooterSizeSpinBoxChanged(self, value):
         self.theme.font_footer_proportion = value
         self.previewTheme(self.theme)
-
 
     def onFontFooterDefaultCheckBoxChanged(self, value):
         if value == 2:  # checked
@@ -516,5 +522,6 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
 
 
     def previewTheme(self, theme):
-        frame = self.thememanager.generateImage(theme)
-        self.ThemePreview.setPixmap(frame)
+        if self.allowPreview:
+            frame = self.thememanager.generateImage(theme)
+            self.ThemePreview.setPixmap(frame)

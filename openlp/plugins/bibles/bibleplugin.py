@@ -90,8 +90,8 @@ class BiblePlugin(Plugin):
             log.debug(u'Load Service Item received')
             self.media_item.onBibleAddClick()
         if event.event_type == EventType.PreviewShow and event.payload == 'Bibles':
-            log.debug(u'Load Service Item received')
+            log.debug(u'Load Preview Item received')
             self.media_item.onBiblePreviewClick()
         if event.event_type == EventType.LiveShow and event.payload == 'Bibles':
-            log.debug(u'Load Service Item received')
+            log.debug(u'Load Live Show Item received')
             self.media_item.onBibleLiveClick()

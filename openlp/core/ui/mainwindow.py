@@ -37,6 +37,7 @@ class MainWindow(object):
 
     def __init__(self, screens):
         self.main_window = QtGui.QMainWindow()
+        self.main_window.__class__.closeEvent = self.onCloseEvent
         self.main_display = MainDisplay(None, screens)
         self.screen_list = screens
         self.EventManager = EventManager()
@@ -89,9 +90,7 @@ class MainWindow(object):
 
         # Once all components are initialised load the Themes
         log.info(u'Load Themes and Managers')
-        self.PreviewController.eventManager = self.EventManager
         self.PreviewController.serviceManager = self.ServiceManagerContents
-        self.LiveController.eventManager = self.EventManager
         self.LiveController.serviceManager = self.ServiceManagerContents
         self.ThemeManagerContents.eventManager = self.EventManager
         self.ThemeManagerContents.renderManager = self.RenderManager
@@ -105,6 +104,13 @@ class MainWindow(object):
         # Initialise SlideControllers
         log.info(u'Set Up SlideControllers')
         self.LiveController.mainDisplay = self.main_display
+
+    def onCloseEvent(self, event):
+        """
+        Hook to close the main window and display windows on exit
+        """
+        self.main_display.close()
+        event.accept()
 
     def setupUi(self):
         self.main_window.setObjectName(u'main_window')

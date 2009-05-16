@@ -71,7 +71,3 @@ class MainDisplay(QtGui.QWidget):
         else:
             self.displayBlank = False
             self.frameView(self.frame)
-
-
-    def kill(self):
-        pass

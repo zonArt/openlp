@@ -24,7 +24,6 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar
 from openlp.core import translate
-from openlp.core.lib import Event, EventType, EventManager
 
 class SlideData(QtCore.QAbstractListModel):
     """
@@ -37,17 +36,13 @@ class SlideData(QtCore.QAbstractListModel):
 
     def __init__(self):
         QtCore.QAbstractListModel.__init__(self)
-        self.items=[]
-        self.rowheight=50
-        self.maximagewidth=self.rowheight*16/9.0;
+        self.items = []
+        self.rowheight = 50
+        self.maximagewidth = self.rowheight * 16/9.0;
         log.info(u'Starting')
 
-    def eventFilter(self, obj, event):
-        print obj, event
-        return false
-
     def clear(self):
-        self.items=[]
+        self.items = []
 
     def columnCount(self, parent):
         return 1

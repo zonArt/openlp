@@ -64,8 +64,8 @@ class CustomPlugin(Plugin):
             log.debug(u'Load Service Item received')
             self.media_item.onCustomAddClick()
         if event.event_type == EventType.PreviewShow and event.payload == 'Custom':
-            log.debug(u'Load Service Item received ')
+            log.debug(u'Load Preview Item received ')
             self.media_item.onCustomPreviewClick()
         if event.event_type == EventType.LiveShow and event.payload == 'Custom':
-            log.debug(u'Load Service Item received')
+            log.debug(u'Load Live Show Item received')
             self.media_item.onCustomLiveClick()
