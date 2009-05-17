@@ -205,3 +205,11 @@ class BiblesTab(SettingsTab):
         self.config.set_config("display brackets", str(self.display_style))
         self.config.set_config("search as type", str(self.bible_search))
         self.config.set_config("bible theme", str(self.bible_theme))
+
+    def updateThemeList(self, theme_list):
+        """
+        Called from ThemeManager when the Themes have changed
+        """
+        self.BibleThemeComboBox.clear()
+        for theme in theme_list:
+            self.BibleThemeComboBox.addItem(theme)

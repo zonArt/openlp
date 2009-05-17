@@ -224,7 +224,8 @@ class ThemeManager(QWidget):
                     self.themeData.addRow(os.path.join(self.path, name))
         self.EventManager.post_event(Event(EventType.ThemeListChanged))
         self.ServiceManager.updateThemeList(self.getThemes())
-        #self.themeTab.updateThemeList(self.getThemes())
+        self.parent.settings_form.ThemesTab.updateThemeList(self.getThemes())
+
 
     def getThemes(self):
         return self.themeData.getList()
