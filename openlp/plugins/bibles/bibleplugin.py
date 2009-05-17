@@ -85,13 +85,13 @@ class BiblePlugin(Plugin):
         log.debug(u'Handle event called with event %s with payload %s'%(event.event_type, event.payload))
         if event.event_type == EventType.ThemeListChanged:
             log.debug(u'New Theme request received')
-            #self.edit_custom_form.loadThemes(self.theme_manager.getThemes())
+            self.bibles_tab.updateThemeList(self.theme_manager.getThemes())
         if event.event_type == EventType.LoadServiceItem and event.payload == 'Bibles':
             log.debug(u'Load Service Item received')
             self.media_item.onBibleAddClick()
         if event.event_type == EventType.PreviewShow and event.payload == 'Bibles':
-            log.debug(u'Load Service Item received')
+            log.debug(u'Load Preview Item received')
             self.media_item.onBiblePreviewClick()
         if event.event_type == EventType.LiveShow and event.payload == 'Bibles':
-            log.debug(u'Load Service Item received')
+            log.debug(u'Load Live Show Item received')
             self.media_item.onBibleLiveClick()

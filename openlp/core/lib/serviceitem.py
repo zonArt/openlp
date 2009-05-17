@@ -47,7 +47,7 @@ class ServiceItem():
         self.frames = []
         self.raw_footer = None
         self.theme = None
-        log.debug(u'Service item created for %s', self.shortname)
+        log.debug(u'Service item created for %s ', self.shortname)
 
     def addIcon(self, icon):
         self.iconic_representation = buildIcon(icon)

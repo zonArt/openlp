@@ -105,10 +105,6 @@ class SongsPlugin(Plugin):
         QtCore.QObject.connect(self.ExportOpenlp1Item, QtCore.SIGNAL("triggered()"), self.onExportOpenlp1ItemClicked)
         QtCore.QObject.connect(self.ExportOpenSongItem, QtCore.SIGNAL("triggered()"), self.onExportOpenSongItemClicked)
 
-    def get_settings_tab(self):
-        self.SongsTab = SongsTab()
-        return self.SongsTab
-
     def initialise(self):
         pass
 

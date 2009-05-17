@@ -37,6 +37,7 @@ class MainWindow(object):
 
     def __init__(self, screens):
         self.main_window = QtGui.QMainWindow()
+        self.main_window.__class__.closeEvent = self.onCloseEvent
         self.main_display = MainDisplay(None, screens)
         self.screen_list = screens
         self.EventManager = EventManager()
@@ -89,22 +90,31 @@ class MainWindow(object):
 
         # Once all components are initialised load the Themes
         log.info(u'Load Themes and Managers')
-        self.PreviewController.eventManager = self.EventManager
-        self.PreviewController.serviceManager = self.ServiceManagerContents
-        self.LiveController.eventManager = self.EventManager
-        self.LiveController.serviceManager = self.ServiceManagerContents
-        self.ThemeManagerContents.eventManager = self.EventManager
-        self.ThemeManagerContents.renderManager = self.RenderManager
-        self.ServiceManagerContents.renderManager = self.RenderManager
-        self.ServiceManagerContents.eventManager = self.EventManager
-        self.ServiceManagerContents.liveController = self.LiveController
-        self.ServiceManagerContents.previewController = self.PreviewController
-        self.ThemeManagerContents.serviceManager = self.ServiceManagerContents
+        self.PreviewController.ServiceManager = self.ServiceManagerContents
+        self.LiveController.ServiceManager = self.ServiceManagerContents
+
+        self.ThemeManagerContents.EventManager = self.EventManager
+        self.ThemeManagerContents.RenderManager = self.RenderManager
+        self.ThemeManagerContents.ServiceManager = self.ServiceManagerContents
+        #self.ThemeManagerContents.ThemesTab = self.ServiceManagerContents.ThemesTab
+
+        self.ServiceManagerContents.RenderManager = self.RenderManager
+        self.ServiceManagerContents.EventManager = self.EventManager
+        self.ServiceManagerContents.LiveController = self.LiveController
+        self.ServiceManagerContents.PreviewController = self.PreviewController
+
         self.ThemeManagerContents.loadThemes()
 
         # Initialise SlideControllers
         log.info(u'Set Up SlideControllers')
         self.LiveController.mainDisplay = self.main_display
+
+    def onCloseEvent(self, event):
+        """
+        Hook to close the main window and display windows on exit
+        """
+        self.main_display.close()
+        event.accept()
 
     def setupUi(self):
         self.main_window.setObjectName(u'main_window')

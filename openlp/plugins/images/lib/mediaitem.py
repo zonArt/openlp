@@ -175,7 +175,7 @@ class ImageMediaItem(MediaManagerItem):
         self.parent.live_controller.addServiceItem(service_item)
 
     def onImageAddClick(self):
-        log.debug(u'Image Live Requested')
+        log.debug(u'Image Add Requested')
         service_item = ServiceItem(self.parent)
         service_item.addIcon( ":/media/media_image.png")
         service_item.render_manager = self.parent.render_manager

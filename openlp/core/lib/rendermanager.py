@@ -29,6 +29,9 @@ import sys
 import linecache
 
 def traceit(frame, event, arg):
+    """
+    Code to allow calls to be traced by python runtime
+    """
     if event == "line":
         lineno = frame.f_lineno
         filename = frame.f_globals["__file__"]
@@ -59,7 +62,7 @@ class RenderManager:
         self.theme_manager = theme_manager
         self.displays = len(screen_list)
         self.current_display = 0
-        self.renderer = Renderer(None)
+        self.renderer = Renderer()
         self.calculate_default(self.screen_list[self.current_display]['size'])
 
     def set_override_theme(self, theme):
@@ -68,11 +71,12 @@ class RenderManager:
             self.theme = theme
         else:
             self.theme = self.default_theme
-        log.debug(u'theme is now %s',  self.theme)
-        self.themedata = self.theme_manager.getThemeData(self.theme)
-        self.calculate_default(self.screen_list[self.current_display]['size'])
-        self.renderer.set_theme(self.themedata)
-        self.build_text_rectangle(self.themedata)
+        if self.theme != self.renderer.theme_name:
+            log.debug(u'theme is now %s',  self.theme)
+            self.themedata = self.theme_manager.getThemeData(self.theme)
+            self.calculate_default(self.screen_list[self.current_display]['size'])
+            self.renderer.set_theme(self.themedata)
+            self.build_text_rectangle(self.themedata)
 
     def build_text_rectangle(self, theme):
         log.debug(u'build_text_rectangle ')
@@ -95,50 +99,52 @@ class RenderManager:
 
     def generate_preview(self, themedata):
         log.debug(u'generate preview')
-        self.calculate_default(QtCore.QSize(800,600))
+        self.calculate_default(QtCore.QSize(800, 600))
         self.renderer.set_theme(themedata)
         self.build_text_rectangle(themedata)
 
-        frame = QtGui.QPixmap(self.width, self.height)
-        self.renderer.set_paint_dest(frame)
+        self.renderer.set_frame_dest(self.width, self.height, True)
 
-        lines=[]
+        lines = []
         lines.append(u'Amazing Grace!')
         lines.append(u'How sweet the sound')
         lines.append(u'To save a wretch like me;')
         lines.append(u'I once was lost but now am found,')
         lines.append(u'Was blind, but now I see.')
-        lines1=[]
+        lines1 = []
         lines1.append(u'Amazing Grace (John Newton)' )
-        lines1.append(u'CCLI xxx (c)Openlp.org')
-        answer=self.renderer.render_lines(lines, lines1)
-        return frame
+        lines1.append(u'Public Domain')
+        lines1.append(u'CCLI xxx')
+        return self.renderer.render_lines(lines, lines1)
+
 
     def format_slide(self, words, footer):
         log.debug(u'format slide')
         self.calculate_default(self.screen_list[self.current_display]['size'])
-        self.renderer.set_paint_dest(QtGui.QPixmap(self.width, self.height))
-        return self.renderer.format_slide(words, footer)
+        self.build_text_rectangle(self.themedata)
+        self.renderer.set_frame_dest(self.width, self.height)
+        return self.renderer.format_slide(words, False)
 
     def generate_slide(self,main_text, footer_text):
         log.debug(u'generate slide')
-        #sys.settrace(traceit)
-
         self.calculate_default(self.screen_list[self.current_display]['size'])
-
-        bef = datetime.now()
-        frame = QtGui.QPixmap(self.width, self.height)
-        aft = datetime.now()
-        print "framebuild time", bef, aft, aft-bef
-
-        self.renderer.set_paint_dest(frame)
-        answer=self.renderer.render_lines(main_text, footer_text)
-        #sys.settrace()
-        return frame
+        self.build_text_rectangle(self.themedata)
+        self.renderer.set_frame_dest(self.width, self.height)
+        return self.renderer.render_lines(main_text, footer_text)
 
     def calculate_default(self, screen):
         log.debug(u'calculate default %s' , screen)
         self.width = screen.width()
         self.height = screen.height()
         log.debug(u'calculate default %d,%d' , self.width, self.height)
-        self.footer_start = int(self.height*0.95) # 95% is start of footer
+        self.footer_start = int(self.height*0.90) # 90% is start of footer
+
+    def snoop_Image(self, image, image2=None):
+        """
+        Debugging method to allow images to be viewed
+        """
+        im = image.toImage()
+        im.save("renderer.png", "png")
+        if image2 is not None:
+            im = image2.toImage()
+            im.save("renderer2.png", "png")

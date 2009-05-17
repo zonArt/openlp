@@ -22,10 +22,8 @@ import os, os.path
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QColor, QFont
-from openlp.core.lib import ThemeXML
-from openlp.core.lib import Renderer
-from openlp.core import fileToXML
-from openlp.core import translate
+from openlp.core.lib import ThemeXML,  Renderer
+from openlp.core import fileToXML,  translate
 
 from amendthemedialog import Ui_AmendThemeDialog
 
@@ -53,6 +51,8 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             QtCore.SIGNAL("pressed()"), self.onOutlineColorPushButtonClicked)
         QtCore.QObject.connect(self.ShadowColorPushButton,
             QtCore.SIGNAL("pressed()"), self.onShadowColorPushButtonClicked)
+        QtCore.QObject.connect(self.ImageToolButton,
+            QtCore.SIGNAL("pressed()"), self.onImageToolButtonClicked)
 
         #Combo boxes
         QtCore.QObject.connect(self.BackgroundComboBox,
@@ -99,17 +99,22 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         QtCore.QObject.connect(self.ShadowCheckBox,
             QtCore.SIGNAL("stateChanged(int)"), self.onShadowCheckBoxChanged)
 
-
     def accept(self):
         new_theme = ThemeXML()
         theme_name = str(self.ThemeNameEdit.displayText())
         new_theme.new_document(theme_name)
+        save_from = None
+        save_to = None
         if self.theme.background_type == u'solid':
             new_theme.add_background_solid(str(self.theme.background_color))
         elif self.theme.background_type == u'gradient':
-            new_theme.add_background_gradient(str(self.theme.background_startColor), str(self.theme.background_endColor), self.theme.background_direction)
-        #else:
-            #newtheme.add_background_image(str(self.theme.))
+            new_theme.add_background_gradient(str(self.theme.background_startColor),
+                    str(self.theme.background_endColor), self.theme.background_direction)
+        else:
+            (path, filename) =os.path.split(str(self.theme.background_filename))
+            new_theme.add_background_image(filename)
+            save_to= os.path.join(self.path, theme_name,filename )
+            save_from = self.theme.background_filename
 
         new_theme.add_font(str(self.theme.font_main_name), str(self.theme.font_main_color),
                 str(self.theme.font_main_proportion), str(self.theme.font_main_override),u'main',
@@ -126,7 +131,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
 
         theme = new_theme.extract_xml()
 
-        self.thememanager.saveTheme(theme_name, theme)
+        self.thememanager.saveTheme(theme_name, theme, save_from, save_to)
         return QtGui.QDialog.accept(self)
 
     def themePath(self, path):
@@ -140,9 +145,17 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             xml_file = os.path.join(self.path, theme, theme+u'.xml')
             xml = fileToXML(xml_file)
             self.theme.parse(xml)
+        self.allowPreview = False
         self.paintUi(self.theme)
+        self.allowPreview = True
         self.previewTheme(self.theme)
 
+    def onImageToolButtonClicked(self):
+        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file')
+        if filename != "":
+            self.ImageLineEdit.setText(filename)
+            self.theme.background_filename = filename
+            self.previewTheme(self.theme)
     #
     #Main Font Tab
     #
@@ -196,8 +209,6 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     def onFontMainHeightSpinBoxChanged(self, value):
         self.theme.font_main_height = value
         self.previewTheme(self.theme)
-
-
     #
     #Footer Font Tab
     #
@@ -216,7 +227,6 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     def onFontFooterSizeSpinBoxChanged(self, value):
         self.theme.font_footer_proportion = value
         self.previewTheme(self.theme)
-
 
     def onFontFooterDefaultCheckBoxChanged(self, value):
         if value == 2:  # checked
@@ -516,5 +526,6 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
 
 
     def previewTheme(self, theme):
-        frame = self.thememanager.generateImage(theme)
-        self.ThemePreview.setPixmap(frame)
+        if self.allowPreview:
+            frame = self.thememanager.generateImage(theme)
+            self.ThemePreview.setPixmap(frame)

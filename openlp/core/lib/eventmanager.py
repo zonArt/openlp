@@ -40,7 +40,7 @@ class EventManager(object):
         self.endpoints.append(plugin)
 
     def post_event(self, event):
-        log.debug(u'post event called for event %s', event.get_type)
+        log.debug(u'post event called for event %s', event.event_type)
         for point in self.endpoints:
             point.handle_event(event)
 
