@@ -118,7 +118,7 @@ class Renderer:
         """
         log.debug(u'format_slide %s', words)
         verses = []
-        verses_text = words.splitlines()
+        verses_text = words.split(u'\n\n')
         for verse in verses_text:
             lines = verse.split(u'\n')
             verses.append(self.split_set_of_lines(lines, footer)[0])

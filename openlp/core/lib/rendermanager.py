@@ -123,7 +123,7 @@ class RenderManager:
         self.calculate_default(self.screen_list[self.current_display]['size'])
         self.build_text_rectangle(self.themedata)
         self.renderer.set_frame_dest(self.width, self.height)
-        return self.renderer.format_slide(words, footer)
+        return self.renderer.format_slide(words, False)
 
     def generate_slide(self,main_text, footer_text):
         log.debug(u'generate slide')

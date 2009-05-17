@@ -198,6 +198,7 @@ class BiblesTab(SettingsTab):
             self.BibleThemeComboBox.setCurrentIndex(self.bible_theme)
         else:
             pass # TODO need to code
+        self.bible_theme = None
 
     def save(self):
         self.config.set_config("paragraph style", str(self.paragraph_style))

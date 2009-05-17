@@ -369,13 +369,14 @@ class BibleMediaItem(MediaManagerItem):
     def generateSlideData(self, service_item):
         log.debug(u'Bible Preview Button pressed')
         items = self.BibleListView.selectedIndexes()
-        old_chapter = ''
+        old_chapter = u''
         raw_slides=[]
         raw_footer = []
+        bible_text = u''
         for item in items:
             text = self.BibleListData.getValue(item)
-            verse = text[:text.find("(")]
-            bible = text[text.find("(") + 1:text.find(")")]
+            verse = text[:text.find(u'(')]
+            bible = text[text.find(u'(') + 1:text.find(u')')]
             self.searchByReference(bible, verse)
             book = self.search_results[0][0]
             chapter = str(self.search_results[0][1])
@@ -392,15 +393,15 @@ class BibleMediaItem(MediaManagerItem):
             else:
                 loc = self.formatVerse(old_chapter, chapter, verse, u'', u'')
             old_chapter = chapter
-            raw_slides.append(loc + u' '+text)
+            bible_text = bible_text + u' '+ loc + u' '+ text
             service_item.title = book + u' ' + loc
             if len(raw_footer) <= 1:
                 raw_footer.append(book)
 
-        if len(raw_slides) > 0:
-            service_item.theme = None
-            service_item.raw_slides = raw_slides
-            service_item.raw_footer = raw_footer
+        service_item.theme = self.parent.bibles_tab.bible_theme
+        raw_slides.append(bible_text)
+        service_item.raw_slides = raw_slides
+        service_item.raw_footer = raw_footer
 
     def formatVerse(self, old_chapter, chapter, verse, opening, closing):
         loc = opening
