@@ -221,7 +221,6 @@ class Renderer:
                 by = 0
                 for (x, y) in bboxes[startline:endline]:
                     by += y
-                print "A ", by, bottom , bboxes
                 if by > bottom:
                     good=0
                     break
@@ -305,8 +304,7 @@ class Renderer:
         for line in lines:
             # render after current bottom, but at original left edge
             # keep track of right edge to see which is biggest
-            (thisx, bry) = self._render_single_line(line, footer, (x,bry))
-            print thisx ,  bry
+            (thisx, bry) = self._render_single_line(line, footer, (x , bry))
             if (thisx > brx):
                 brx = thisx
         retval = QtCore.QRect(x, y,brx-x, bry-y)
@@ -334,13 +332,12 @@ class Renderer:
         # We draw the text to see how big it is and then iterate to make it fit
         # when we line wrap we do in in the "lyrics" style, so the second line is
         # right aligned with a "hanging indent"
-
-        print "before ", line
         words = line.split(u' ')
         thisline = u' '.join(words)
         lastword = len(words)
         lines = []
-        maxx = self._rect.width(); maxy=self._rect.height();
+        maxx = self._rect.width();
+        maxy = self._rect.height();
         while (len(words)>0):
             w , h = self._get_extent_and_render(thisline, footer)
             rhs = w + x
@@ -358,33 +355,30 @@ class Renderer:
         if footer: # dont allow alignment messing with footers
             align = 0
         else:
-            align = self._theme .display_horizontalAlign
+            align = int(self._theme .display_horizontalAlign)
 
         for linenum in range(len(lines)):
             line = lines[linenum]
-            print "render line ",  line
             #find out how wide line is
             w , h = self._get_extent_and_render(line, footer,  tlcorner=(x, y), draw=False)
-
             if self._theme.display_shadow:
                 w += self._shadow_offset
                 h += self._shadow_offset
             if self._theme.display_outline:
                 w += 2*self._outline_offset # pixels either side
                 h += 2*self._outline_offset #  pixels top/bottom
-            if align==0: # left align
-                rightextent = x+w
+            if align == 0: # left align
+                rightextent = x + w
                 if self._theme.display_wrapStyle == 1 and linenum != 0: # shift right from last line's rh edge
                     rightextent = self._first_line_right_extent + self._right_margin
                     if rightextent > maxx:
                         rightextent = maxx
-                    x = rightextent-w
-
+                    x = rightextent - w
             elif align == 1: # right align
                 rightextent = maxx
                 x = maxx-w
             elif align == 2: # centre
-                x = (maxx-w)/2;
+                x = (maxx-w) / 2;
                 rightextent = x+w
             # now draw the text, and any outlines/shadows
             if self._theme.display_shadow:
@@ -410,7 +404,6 @@ class Renderer:
                         color = self._theme.display_outline_color)
 
             self._get_extent_and_render(line, footer,tlcorner=(x, y), draw=True)
-#             log.debug(u'Line %2d: Render '%s' at (%d, %d) wh=(%d,%d)' % ( linenum, line, x, y,w,h)
             y += h
             if linenum == 0:
                 self._first_line_right_extent = rightextent

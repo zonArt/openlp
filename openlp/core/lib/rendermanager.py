@@ -29,6 +29,9 @@ import sys
 import linecache
 
 def traceit(frame, event, arg):
+    """
+    Code to allow calls to be traced by python runtime
+    """
     if event == "line":
         lineno = frame.f_lineno
         filename = frame.f_globals["__file__"]
@@ -118,12 +121,14 @@ class RenderManager:
     def format_slide(self, words, footer):
         log.debug(u'format slide')
         self.calculate_default(self.screen_list[self.current_display]['size'])
+        self.build_text_rectangle(self.themedata)
         self.renderer.set_frame_dest(self.width, self.height)
         return self.renderer.format_slide(words, footer)
 
     def generate_slide(self,main_text, footer_text):
         log.debug(u'generate slide')
         self.calculate_default(self.screen_list[self.current_display]['size'])
+        self.build_text_rectangle(self.themedata)
         self.renderer.set_frame_dest(self.width, self.height)
         return self.renderer.render_lines(main_text, footer_text)
 
