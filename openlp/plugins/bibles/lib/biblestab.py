@@ -190,7 +190,7 @@ class BiblesTab(SettingsTab):
         self.paragraph_style = convertStringToBoolean(self.config.get_config(u'paragraph style', u'True'))
         self.show_new_chapters = convertStringToBoolean(self.config.get_config(u'display new chapter', u"False"))
         self.display_style = int(self.config.get_config(u'display brackets', u'0'))
-        self.bible_theme = int(self.config.get_config(u'bible theme', u'0'))
+        self.bible_theme = self.config.get_config(u'bible theme', u'0')
         self.bible_search = convertStringToBoolean(self.config.get_config(u'search as type', u'True'))
         if self.paragraph_style:
             self.ParagraphRadioButton.setChecked(True)
@@ -218,4 +218,5 @@ class BiblesTab(SettingsTab):
         id = self.BibleThemeComboBox.findText(str(self.bible_theme), QtCore.Qt.MatchExactly)
         if id == -1:
             id = 0 # Not Found
+            self.bible_theme = u''
         self.BibleThemeComboBox.setCurrentIndex(id)
