@@ -3,7 +3,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley,
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley,
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -22,7 +22,6 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core import translate
 from openlp.core.lib import SettingsTab
-from openlp.core.resources import *
 
 class ThemesTab(SettingsTab):
     """
@@ -101,6 +100,8 @@ class ThemesTab(SettingsTab):
         QtCore.QObject.connect(self.DefaultComboBox,
             QtCore.SIGNAL("activated(int)"), self.onDefaultComboBoxChanged)
 
+        #self.DefaultListView.setScaledContents(True)
+
     def retranslateUi(self):
         self.GlobalGroupBox.setTitle(translate(u'ThemesTab', u'Global theme'))
         self.LevelGroupBox.setTitle(translate(u'ThemesTab', u'Theme level'))
@@ -140,6 +141,10 @@ class ThemesTab(SettingsTab):
     def onDefaultComboBoxChanged(self, value):
         self.global_theme = self.DefaultComboBox.currentText()
         self.parent.RenderManager.set_global_theme(self.global_theme, self.global_style)
+        image = self.parent.ThemeManagerContents.getPreviewImage(str(self.global_theme))
+        preview = QtGui.QPixmap(str(image))
+        display = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        self.DefaultListView.setPixmap(display)
 
     def updateThemeList(self, theme_list):
         """
@@ -154,5 +159,8 @@ class ThemesTab(SettingsTab):
             self.global_theme = u''
         self.DefaultComboBox.setCurrentIndex(id)
         self.parent.RenderManager.set_global_theme(self.global_theme, self.global_style)
-
-
+        if self.global_theme is not u'':
+            image = self.parent.ThemeManagerContents.getPreviewImage(str(self.global_theme))
+            preview = QtGui.QPixmap(str(image))
+            display = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            self.DefaultListView.setPixmap(display)

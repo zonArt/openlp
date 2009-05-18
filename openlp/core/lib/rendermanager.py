@@ -44,8 +44,6 @@ def traceit(frame, event, arg):
             print "%s:%s: %s" % (name, lineno, line.rstrip())
     return traceit
 
-
-
 class RenderManager:
     """
     Class to pull all Renderer interactions into one place.
