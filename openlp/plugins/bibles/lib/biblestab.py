@@ -3,7 +3,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley,
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley,
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -18,7 +18,7 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import Qt, QtCore, QtGui
 
 from openlp.core import translate
 from openlp import  convertStringToBoolean
@@ -144,6 +144,8 @@ class BiblesTab(SettingsTab):
             QtCore.SIGNAL("pressed()"), self.onParagraphRadioButtonPressed)
         QtCore.QObject.connect(self.DisplayStyleComboBox,
             QtCore.SIGNAL("activated(int)"), self.onDisplayStyleComboBoxChanged)
+        QtCore.QObject.connect(self.BibleThemeComboBox,
+            QtCore.SIGNAL("activated(int)"), self.onBibleThemeComboBoxChanged)
 
     def retranslateUi(self):
         self.VerseDisplayGroupBox.setTitle(translate('SettingsForm', 'Verse Display'))
@@ -159,6 +161,9 @@ class BiblesTab(SettingsTab):
         self.ChangeNoteLabel.setText(translate('SettingsForm', 'Note:\nChanges don\'t affect verses already in the service'))
         self.BibleSearchGroupBox.setTitle(translate('SettingsForm', 'Search'))
         self.BibleSearchCheckBox.setText(translate('SettingsForm', 'Search-as-you-type'))
+
+    def onBibleThemeComboBoxChanged(self):
+        self.bible_theme = self.BibleThemeComboBox.currentText()
 
     def onDisplayStyleComboBoxChanged(self):
         self.display_style = self.DisplayStyleComboBox.currentIndex()
@@ -182,11 +187,11 @@ class BiblesTab(SettingsTab):
             self.bible_search = True
 
     def load(self):
-        self.paragraph_style = convertStringToBoolean(self.config.get_config('paragraph style', u'True'))
-        self.show_new_chapters = convertStringToBoolean(self.config.get_config('display new chapter', u"False"))
-        self.display_style = int(self.config.get_config('display brackets', '0'))
-        self.bible_theme = int(self.config.get_config('bible theme', '0'))
-        self.bible_search = convertStringToBoolean(self.config.get_config('search as type', u'True'))
+        self.paragraph_style = convertStringToBoolean(self.config.get_config(u'paragraph style', u'True'))
+        self.show_new_chapters = convertStringToBoolean(self.config.get_config(u'display new chapter', u"False"))
+        self.display_style = int(self.config.get_config(u'display brackets', u'0'))
+        self.bible_theme = int(self.config.get_config(u'bible theme', u'0'))
+        self.bible_search = convertStringToBoolean(self.config.get_config(u'search as type', u'True'))
         if self.paragraph_style:
             self.ParagraphRadioButton.setChecked(True)
         else:
@@ -194,23 +199,23 @@ class BiblesTab(SettingsTab):
         self.NewChaptersCheckBox.setChecked(self.show_new_chapters)
         self.DisplayStyleComboBox.setCurrentIndex(self.display_style)
         self.BibleSearchCheckBox.setChecked(self.bible_search)
-        if self.bible_theme == 0:  # must be new set to first
-            self.BibleThemeComboBox.setCurrentIndex(self.bible_theme)
-        else:
-            pass # TODO need to code
-        self.bible_theme = None
 
     def save(self):
-        self.config.set_config("paragraph style", str(self.paragraph_style))
-        self.config.set_config("display new chapter", str(self.show_new_chapters))
-        self.config.set_config("display brackets", str(self.display_style))
-        self.config.set_config("search as type", str(self.bible_search))
-        self.config.set_config("bible theme", str(self.bible_theme))
+        self.config.set_config(u'paragraph style', str(self.paragraph_style))
+        self.config.set_config(u'display new chapter', str(self.show_new_chapters))
+        self.config.set_config(u'display brackets', str(self.display_style))
+        self.config.set_config(u'search as type', str(self.bible_search))
+        self.config.set_config(u'bible theme', str(self.bible_theme))
 
     def updateThemeList(self, theme_list):
         """
         Called from ThemeManager when the Themes have changed
         """
         self.BibleThemeComboBox.clear()
+        self.BibleThemeComboBox.addItem(u'')
         for theme in theme_list:
             self.BibleThemeComboBox.addItem(theme)
+        id = self.BibleThemeComboBox.findText(str(self.bible_theme), QtCore.Qt.MatchExactly)
+        if id == -1:
+            id = 0 # Not Found
+        self.BibleThemeComboBox.setCurrentIndex(id)
