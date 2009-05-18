@@ -118,6 +118,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.loadPresentationList(list)
         self.DisplayTypeComboBox.addItem(u'Impress')
         self.DisplayTypeComboBox.addItem(u'Powerpoint')
+        self.DisplayTypeComboBox.addItem(u'Keynote')
 
     def onPresentationNewClick(self):
         files = QtGui.QFileDialog.getOpenFileNames(None,

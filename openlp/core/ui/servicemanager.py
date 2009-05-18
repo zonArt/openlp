@@ -21,7 +21,7 @@ import os
 import logging
 
 from PyQt4 import QtCore, QtGui
-
+from openlp.core.lib import PluginConfig
 from openlp.core.lib import OpenLPToolbar
 from openlp.core.lib import ServiceItem
 from openlp.core.lib import RenderManager
@@ -103,6 +103,9 @@ class ServiceManager(QtGui.QWidget):
         QtCore.QObject.connect(self.ThemeComboBox,
             QtCore.SIGNAL("activated(int)"), self.onThemeComboBoxSelected)
 
+        self.config = PluginConfig(u'Main')
+        self.service_theme = self.config.get_config(u'theme service theme', u'')
+
     def contextMenuAction(self, base, icon, text, slot):
         """
         Utility method to help build context menus for plugins
@@ -142,7 +145,9 @@ class ServiceManager(QtGui.QWidget):
         pass
 
     def onThemeComboBoxSelected(self, currentIndex):
-        self.RenderManager.default_theme = self.ThemeComboBox.currentText()
+        self.service_theme = self.ThemeComboBox.currentText()
+        self.RenderManager.set_service_theme(self.service_theme)
+        self.config.set_config(u'theme service theme', self.service_theme)
 
     def addServiceItem(self, item):
         self.serviceItems.append({u'data': item, u'order': len(self.serviceItems)+1})
@@ -224,7 +229,11 @@ class ServiceManager(QtGui.QWidget):
         Called from ThemeManager when the Themes have changed
         """
         self.ThemeComboBox.clear()
+        self.ThemeComboBox.addItem(u'')
         for theme in theme_list:
             self.ThemeComboBox.addItem(theme)
-            self.RenderManager.default_theme = self.ThemeComboBox.currentText()
-
+        id = self.ThemeComboBox.findText(str(self.service_theme), QtCore.Qt.MatchExactly)
+        if id == -1:
+            id = 0 # Not Found
+            self.service_theme = u''
+        self.ThemeComboBox.setCurrentIndex(id)

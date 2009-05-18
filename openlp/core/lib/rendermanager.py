@@ -64,14 +64,34 @@ class RenderManager:
         self.current_display = 0
         self.renderer = Renderer()
         self.calculate_default(self.screen_list[self.current_display]['size'])
+        self.theme = u''
+
+    def set_global_theme(self, global_theme, global_style = u'Global'):
+        self.global_theme = global_theme
+        self.global_style = global_style
+
+    def set_service_theme(self, service_theme):
+        self.service_theme = service_theme
 
     def set_override_theme(self, theme):
         log.debug(u'set override theme to %s',  theme)
-        if theme is not None:
-            self.theme = theme
+        if self.global_style == u'Global':
+            self.theme = self.global_theme
+        elif self.global_style == u'Service':
+            if self.service_theme == u'':
+                self.theme = self.global_theme
+            else:
+                self.theme = self.service_theme
         else:
-            self.theme = self.default_theme
-        if self.theme != self.renderer.theme_name:
+            if theme is not None:
+                self.theme = theme
+            elif self.global_style == u'Service':
+                if self.service_theme == u'':
+                    self.theme = self.global_theme
+                else:
+                    self.theme = self.service_theme
+
+        if self.theme is not self.renderer.theme_name:
             log.debug(u'theme is now %s',  self.theme)
             self.themedata = self.theme_manager.getThemeData(self.theme)
             self.calculate_default(self.screen_list[self.current_display]['size'])

@@ -43,7 +43,7 @@ class MainWindow(object):
         self.EventManager = EventManager()
         self.alert_form = AlertForm()
         self.about_form = AboutForm()
-        self.settings_form = SettingsForm(self.screen_list)
+        self.settings_form = SettingsForm(self.screen_list, self)
 
         pluginpath = os.path.split(os.path.abspath(__file__))[0]
         pluginpath = os.path.abspath(os.path.join(pluginpath, u'..', u'..', u'plugins'))

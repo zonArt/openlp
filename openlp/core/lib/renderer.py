@@ -118,6 +118,7 @@ class Renderer:
         """
         log.debug(u'format_slide %s', words)
         verses = []
+        words=words.replace("\r\n", "\n")
         verses_text = words.split(u'\n\n')
         for verse in verses_text:
             lines = verse.split(u'\n')

@@ -24,7 +24,7 @@ from openlp.core import translate
 
 class MainDisplay(QtGui.QWidget):
 
-    def __init__(self, parent, screens):
+    def __init__(self, parent , screens):
         QtGui.QWidget.__init__(self, parent)
         self.setWindowTitle(u'OpenLP Display')
         self.screens = screens
