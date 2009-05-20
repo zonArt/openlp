@@ -64,7 +64,7 @@ class MediaManagerItem(QtGui.QWidget):
         item.
         """
         if self.Toolbar is None:
-            self.Toolbar=OpenLPToolbar(self)
+            self.Toolbar = OpenLPToolbar(self)
             self.PageLayout.addWidget(self.Toolbar)
 
     def addToolbarButton(self, title, tooltip, icon, slot=None, objectname=None):
@@ -82,7 +82,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.Toolbar.addSeparator()
 
     def contextMenuSeparator(self, base):
-        action = QtGui.QAction("", base)
+        action = QtGui.QAction(u'', base)
         action.setSeparator(True)
         return action
 
@@ -94,7 +94,7 @@ class MediaManagerItem(QtGui.QWidget):
             ButtonIcon = icon
         elif type(icon) is types.StringType:
             ButtonIcon = QtGui.QIcon()
-            if icon.startswith(':/'):
+            if icon.startswith(u':/'):
                 ButtonIcon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
                     QtGui.QIcon.Off)
             else:
@@ -103,6 +103,6 @@ class MediaManagerItem(QtGui.QWidget):
 
         action = QtGui.QAction(text, base)
         action .setIcon(ButtonIcon)
-        QtCore.QObject.connect(action, QtCore.SIGNAL("triggered()"), slot)
+        QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
         return action
 

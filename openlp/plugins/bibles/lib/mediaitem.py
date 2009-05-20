@@ -383,7 +383,7 @@ class BibleMediaItem(MediaManagerItem):
             verse = str(self.search_results[0][2])
             text = self.search_results[0][3]
             if self.parent.bibles_tab.paragraph_style: #Paragraph
-                text = text + u'\n'
+                text = text + u'\n\n'
             if self.parent.bibles_tab.display_style == 1:
                 loc = self.formatVerse(old_chapter, chapter, verse, u'(', u')')
             elif  self.parent.bibles_tab.display_style == 2:

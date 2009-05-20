@@ -4,7 +4,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley,
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley,
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -26,17 +26,15 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver
 
 logging.basicConfig(level=logging.DEBUG,
-                format=u'%(asctime)s %(msecs)d %(name)-12s %(levelname)-8s %(message)s',
-                datefmt=u'%m-%d %H:%M:%S',
-                filename=u'openlp.log',
-                filemode=u'w')
+    format=u'%(asctime)s %(msecs)d %(name)-12s %(levelname)-8s %(message)s',
+    datefmt=u'%m-%d %H:%M:%S', filename=u'openlp.log', filemode=u'w')
 
 from openlp.core.resources import *
 from openlp.core.ui import MainWindow, SplashScreen
 
 class OpenLP(QtGui.QApplication):
     global log
-    log=logging.getLogger(u'OpenLP Application')
+    log = logging.getLogger(u'OpenLP Application')
     log.info(u'Application Loaded')
 
     def run(self):
@@ -56,15 +54,16 @@ class OpenLP(QtGui.QApplication):
             screens.append({u'number': screen,
                             u'size': self.desktop().availableGeometry(screen),
                             u'primary': (self.desktop().primaryScreen() == screen)})
-            log.info(u'Screen %d found with resolution %s', screen, self.desktop().availableGeometry(screen))
+            log.info(u'Screen %d found with resolution %s',
+                screen, self.desktop().availableGeometry(screen))
         # start the main app window
-        self.main_window = MainWindow(screens)
-        self.main_window.show()
+        self.mainWindow = MainWindow(screens)
+        self.mainWindow.show()
         # now kill the splashscreen
-        self.splash.finish(self.main_window.main_window)
+        self.splash.finish(self.mainWindow.mainWindow)
         sys.exit(app.exec_())
 
-if __name__ == '__main__':
+if __name__ == u'__main__':
     app = OpenLP(sys.argv)
     app.run()
 

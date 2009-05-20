@@ -19,15 +19,13 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import QDialog
 
-from openlp.core import translate
-from openlp.core.resources import *
+from openlp.core.lib import translate
 
-class AboutForm(QDialog):
+class AboutForm(QtGui.QDialog):
 
     def __init__(self, parent=None):
-        QDialog.__init__(self, parent)
+        QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
 
     def setupUi(self, AboutForm):
@@ -126,7 +124,7 @@ class AboutForm(QDialog):
         self.License1Label.setText(translate("AboutDialog", "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."))
         self.License2Label.setText(translate("AboutDialog", "You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA."))
         self.License3Label.setText(translate("AboutDialog", "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."))
-        self.AboutNotebook.setTabText(self.AboutNotebook.indexOf(self.LicenseTab), QtGui.QApplication.translate("AboutDialog", "License", None, QtGui.QApplication.UnicodeUTF8))
+        self.AboutNotebook.setTabText(self.AboutNotebook.indexOf(self.LicenseTab), translate("AboutDialog", "License"))
         self.CreditsTextEdit.setPlainText(translate("AboutDialog", "Project Lead\n"
 "    Raoul \"superfly\" Snyman\n"
 "\n"
@@ -143,11 +141,6 @@ class AboutForm(QDialog):
         self.extContributeItem.setText(translate("AboutDialog", "&Contribute"))
 
     def onContributeButtonClicked(self):
-        ''' This routine will open the default
-            web-browser to the contribute page
-            of openlp.org as did the original
-            button on the About form
-        '''
         import webbrowser
         url = "http://www.openlp.org/en/documentation/introduction/contributing.html"
         webbrowser.open_new(url)

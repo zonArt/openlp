@@ -21,13 +21,8 @@ import os
 import logging
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import PluginConfig
-from openlp.core.lib import OpenLPToolbar
-from openlp.core.lib import ServiceItem
-from openlp.core.lib import RenderManager
-from openlp.core import translate
+from openlp.core.lib import PluginConfig,  OpenLPToolbar, ServiceItem, RenderManager, Event, EventType, EventManager,  translate
 from openlp import buildIcon
-from openlp.core.lib import Event, EventType, EventManager
 
 class ServiceManager(QtGui.QWidget):
 

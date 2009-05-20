@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
+import types
+from PyQt4 import QtCore, QtGui
 from pluginconfig import PluginConfig
 from plugin import Plugin
 from settingstab import SettingsTab
@@ -35,6 +37,31 @@ from themexmlhandler import ThemeXML
 from renderer import Renderer
 from rendermanager import RenderManager
 
-__all__ = ['Renderer','PluginConfig', 'Plugin', 'SettingsTab', 'MediaManagerItem', 'Event', 'EventType'
-           'XmlRootClass', 'ServiceItem', 'Receiver', 'OpenLPToolbar', 'SongXMLBuilder',
-           'SongXMLParser', 'EventManager', 'ThemeXML', 'RenderManager']
+#__all__ = ['Renderer','PluginConfig', 'Plugin', 'SettingsTab', 'MediaManagerItem', 'Event', 'EventType'
+#           'XmlRootClass', 'ServiceItem', 'Receiver', 'OpenLPToolbar', 'SongXMLBuilder',
+#           'SongXMLParser', 'EventManager', 'ThemeXML', 'RenderManager']
+
+__all__ = [ 'translate', 'fileToXML', 'convertStringToBoolean','buildIcon' ]
+
+def translate(context, text):
+    return QtGui.QApplication.translate(context, text, None, QtGui.QApplication.UnicodeUTF8)
+
+def fileToXML(xmlfile):
+    return open(xmlfile).read()
+
+def convertStringToBoolean(stringvalue):
+    return stringvalue.strip().lower() in (u'true', u'yes', u'y')
+
+def buildIcon(icon):
+    ButtonIcon = None
+    if type(icon) is QtGui.QIcon:
+        ButtonIcon = icon
+    elif type(icon) is types.StringType or type(icon) is types.UnicodeType:
+        ButtonIcon = QtGui.QIcon()
+        if icon.startswith(u':/'):
+            ButtonIcon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
+                QtGui.QIcon.Off)
+        else:
+            ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QImage(icon)),
+                QtGui.QIcon.Normal, QtGui.QIcon.Off)
+    return ButtonIcon

@@ -21,9 +21,7 @@ import logging
 import os, os.path
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import QColor, QFont
-from openlp.core.lib import ThemeXML,  Renderer
-from openlp.core import fileToXML,  translate
+from openlp.core.lib import ThemeXML,  Renderer,  fileToXML,  translate
 
 from amendthemedialog import Ui_AmendThemeDialog
 
@@ -138,11 +136,11 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.path = path
 
     def loadTheme(self, theme):
-        log.debug(u'LoadTheme %s ', theme)
+        log.debug(u'LoadTheme %s', theme)
         if theme == None:
             self.theme.parse(self.baseTheme())
         else:
-            xml_file = os.path.join(self.path, theme, theme+u'.xml')
+            xml_file = os.path.join(self.path, theme, theme + u'.xml')
             xml = fileToXML(xml_file)
             self.theme.parse(xml)
         self.allowPreview = False
@@ -165,10 +163,10 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
 
     def onFontMainColorPushButtonClicked(self):
         self.theme.font_main_color = QtGui.QColorDialog.getColor(
-            QColor(self.theme.font_main_color), self).name()
+            QtGui.QColor(self.theme.font_main_color), self).name()
 
         self.FontMainColorPushButton.setStyleSheet(
-            'background-color: %s' % str(self.theme.font_main_color))
+            u'background-color: %s' % str(self.theme.font_main_color))
         self.previewTheme(self.theme)
 
     def onFontMainSizeSpinBoxChanged(self, value):
@@ -218,7 +216,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
 
     def onFontFooterColorPushButtonClicked(self):
         self.theme.font_footer_color = QtGui.QColorDialog.getColor(
-            QColor(self.theme.font_footer_color), self).name()
+            QtGui.QColor(self.theme.font_footer_color), self).name()
 
         self.FontFooterColorPushButton.setStyleSheet(
             'background-color: %s' % str(self.theme.font_footer_color))
@@ -307,22 +305,22 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     def onColor1PushButtonClicked(self):
         if self.theme.background_type == u'solid':
             self.theme.background_color = QtGui.QColorDialog.getColor(
-                QColor(self.theme.background_color), self).name()
+                QtGui.QColor(self.theme.background_color), self).name()
             self.Color1PushButton.setStyleSheet(
-                'background-color: %s' % str(self.theme.background_color))
+                u'background-color: %s' % str(self.theme.background_color))
         else:
             self.theme.background_startColor = QtGui.QColorDialog.getColor(
-                QColor(self.theme.background_startColor), self).name()
+                QtGui.QColor(self.theme.background_startColor), self).name()
             self.Color1PushButton.setStyleSheet(
-                'background-color: %s' % str(self.theme.background_startColor))
+                u'background-color: %s' % str(self.theme.background_startColor))
 
         self.previewTheme(self.theme)
 
     def onColor2PushButtonClicked(self):
         self.theme.background_endColor = QtGui.QColorDialog.getColor(
-            QColor(self.theme.background_endColor), self).name()
+            QtGui.QColor(self.theme.background_endColor), self).name()
         self.Color2PushButton.setStyleSheet(
-            'background-color: %s' % str(self.theme.background_endColor))
+            u'background-color: %s' % str(self.theme.background_endColor))
 
         self.previewTheme(self.theme)
     #
@@ -338,9 +336,9 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
 
     def onOutlineColorPushButtonClicked(self):
         self.theme.display_outline_color = QtGui.QColorDialog.getColor(
-            QColor(self.theme.display_outline_color), self).name()
+            QtGui.QColor(self.theme.display_outline_color), self).name()
         self.OutlineColorPushButton.setStyleSheet(
-            'background-color: %s' % str(self.theme.display_outline_color))
+            u'background-color: %s' % str(self.theme.display_outline_color))
         self.previewTheme(self.theme)
 
     def onShadowCheckBoxChanged(self, value):
@@ -353,9 +351,9 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
 
     def onShadowColorPushButtonClicked(self):
         self.theme.display_shadow_color = QtGui.QColorDialog.getColor(
-            QColor(self.theme.display_shadow_color), self).name()
+            QtGui.QColor(self.theme.display_shadow_color), self).name()
         self.ShadowColorPushButton.setStyleSheet(
-            'background-color: %s' % str(self.theme.display_shadow_color))
+            u'background-color: %s' % str(self.theme.display_shadow_color))
         self.previewTheme(self.theme)
 
     def onHorizontalComboBoxSelected(self, currentIndex):
@@ -375,8 +373,8 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         newtheme = ThemeXML()
         newtheme.new_document(u'New Theme')
         newtheme.add_background_solid(str(u'#000000'))
-        newtheme.add_font(str(QFont().family()), str(u'#FFFFFF'), str(30), u'False')
-        newtheme.add_font(str(QFont().family()), str(u'#FFFFFF'), str(12), u'False', u'footer')
+        newtheme.add_font(str(QtGui.QFont().family()), str(u'#FFFFFF'), str(30), u'False')
+        newtheme.add_font(str(QtGui.QFont().family()), str(u'#FFFFFF'), str(12), u'False', u'footer')
         newtheme.add_display(u'False', str(u'#FFFFFF'), u'False', str(u'#FFFFFF'),
             str(0), str(0), str(0))
 
@@ -415,9 +413,9 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.FontFooterWidthSpinBox.setValue(int(self.theme.font_footer_width))
         self.FontFooterHeightSpinBox.setValue(int(self.theme.font_footer_height))
         self.FontMainColorPushButton.setStyleSheet(
-            'background-color: %s' % str(theme.font_main_color))
+            u'background-color: %s' % str(theme.font_main_color))
         self.FontFooterColorPushButton.setStyleSheet(
-            'background-color: %s' % str(theme.font_footer_color))
+            u'background-color: %s' % str(theme.font_footer_color))
 
         if self.theme.font_main_override == False:
             self.FontMainDefaultCheckBox.setChecked(True)
@@ -430,9 +428,9 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             self.FontFooterDefaultCheckBox.setChecked(False)
 
         self.OutlineColorPushButton.setStyleSheet(
-            'background-color: %s' % str(theme.display_outline_color))
+            u'background-color: %s' % str(theme.display_outline_color))
         self.ShadowColorPushButton.setStyleSheet(
-            'background-color: %s' % str(theme.display_shadow_color))
+            u'background-color: %s' % str(theme.display_shadow_color))
 
         if self.theme.display_outline:
             self.OutlineCheckBox.setChecked(True)
@@ -454,7 +452,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     def stateChanging(self, theme):
         if theme.background_type == u'solid':
             self.Color1PushButton.setStyleSheet(
-                'background-color: %s' % str(theme.background_color))
+                u'background-color: %s' % str(theme.background_color))
             self.Color1Label.setText(translate(u'ThemeManager', u'Background Color:'))
             self.Color1Label.setVisible(True)
             self.Color1PushButton.setVisible(True)
@@ -467,9 +465,9 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             self.GradientComboBox.setVisible(False)
         elif theme.background_type == u'gradient':
             self.Color1PushButton.setStyleSheet(
-                'background-color: %s' % str(theme.background_startColor))
+                u'background-color: %s' % str(theme.background_startColor))
             self.Color2PushButton.setStyleSheet(
-                'background-color: %s' % str(theme.background_endColor))
+                u'background-color: %s' % str(theme.background_endColor))
             self.Color1Label.setText(translate(u'ThemeManager', u'First  Color:'))
             self.Color2Label.setText(translate(u'ThemeManager', u'Second Color:'))
             self.Color1Label.setVisible(True)

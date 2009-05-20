@@ -19,10 +19,8 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import logging
 import time
-from openlp import buildIcon
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-
+from openlp.core.lib import buildIcon
+from PyQt4 import QtCore, QtGui
 
 class ServiceItem():
     """

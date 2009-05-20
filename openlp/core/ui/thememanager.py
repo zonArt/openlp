@@ -23,23 +23,17 @@ import zipfile
 import shutil
 
 from time import sleep
-from copy import deepcopy
 from xml.etree.ElementTree import ElementTree, XML
-from PyQt4 import *
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
 
 from openlp.core.ui import AmendThemeForm, ServiceManager
-from openlp.core import translate, fileToXML
 from openlp.core.theme import Theme
-from openlp.core.lib import Event, EventType, EventManager, OpenLPToolbar, ThemeXML, Renderer
+from openlp.core.lib import Event, EventType, EventManager, OpenLPToolbar, ThemeXML, Renderer,  translate
 from openlp.core.utils import ConfigHelper
-from openlp.core.resources import *
 
 import logging
 
-class ThemeData(QAbstractListModel):
+class ThemeData(QtCore.QAbstractListModel):
     """
     Tree of items for an order of Theme.
     Includes methods for reading and writing the contents to an OOS file
@@ -49,7 +43,7 @@ class ThemeData(QAbstractListModel):
     log=logging.getLogger(u'ThemeData')
 
     def __init__(self):
-        QAbstractListModel.__init__(self)
+        QtCore.QAbstractListModel.__init__(self)
         self.items = []
         self.rowheight = 50
         self.maximagewidth = self.rowheight * 16 / 9.0;
@@ -62,36 +56,36 @@ class ThemeData(QAbstractListModel):
         return len(self.items)
 
     def insertRow(self, row, filename):
-        self.beginInsertRows(QModelIndex(), row, row)
+        self.beginInsertRows(QtCore.QModelIndex(), row, row)
         log.info(u'insert row %d:%s' % (row, filename))
         (prefix, shortfilename) = os.path.split(str(filename))
         log.info(u'shortfilename = %s' % shortfilename)
         theme = shortfilename.split(u'.')
         # create a preview image
         if os.path.exists(filename):
-            preview = QPixmap(str(filename))
+            preview = QtGui.QPixmap(str(filename))
             width = self.maximagewidth
             height = self.rowheight
-            preview = preview.scaled(width, height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            preview = preview.scaled(width, height, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
             realwidth = preview.width()
             realheight = preview.height()
             # and move it to the centre of the preview space
-            pixmap = QPixmap(width, height)
-            pixmap.fill(Qt.transparent)
-            painter = QPainter(pixmap)
+            pixmap = QtGui.QPixmap(width, height)
+            pixmap.fill(QtCore.Qt.transparent)
+            painter = QtGui.QPainter(pixmap)
             painter.drawPixmap((width - realwidth) / 2, (height - realheight) / 2, preview)
         else:
             width = self.maximagewidth
             height = self.rowheight
-            pixmap = QPixmap(width, height)
-            pixmap.fill(Qt.transparent)
+            pixmap = QtGui.QtGui.QPixmap(width, height)
+            pixmap.fill(QtCore.Qt.transparent)
         # finally create the row
         self.items.insert(row, (filename, pixmap, shortfilename, theme[0]))
         log.info(u'Items: %s' % self.items)
         self.endInsertRows()
 
     def removeRow(self, row):
-        self.beginRemoveRows(QModelIndex(), row, row)
+        self.beginRemoveRows(QtCore.QModelIndex(), row, row)
         self.items.pop(row)
         self.endRemoveRows()
 
@@ -102,16 +96,16 @@ class ThemeData(QAbstractListModel):
         row = index.row()
         if row > len(self.items):
             # if the last row is selected and deleted, we then get called with an empty row!
-            return QVariant()
-        if role == Qt.DisplayRole:
+            return QtCore.QVariant()
+        if role == QtCore.Qt.DisplayRole:
             retval = self.items[row][3]
-        elif role == Qt.DecorationRole:
+        elif role == QtCore.Qt.DecorationRole:
             retval = self.items[row][1]
         else:
-            retval = QVariant()
+            retval = QtCore.QVariant()
         #log.info("Returning"+ str(retval))
-        if type(retval) is not type(QVariant):
-            return QVariant(retval)
+        if type(retval) is not type(QtCore.QVariant):
+            return QtCore.QVariant(retval)
         else:
             return retval
 
@@ -131,15 +125,15 @@ class ThemeData(QAbstractListModel):
         filelist = [item[3] for item in self.items]
         return filelist
 
-class ThemeManager(QWidget):
+class ThemeManager(QtGui.QWidget):
     """
     Manages the orders of Theme.
     """
     global log
-    log=logging.getLogger(u'ThemeManager')
+    log = logging.getLogger(u'ThemeManager')
 
     def __init__(self, parent):
-        QWidget.__init__(self)
+        QtGui.QWidget.__init__(self)
         self.parent = parent
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
@@ -224,7 +218,7 @@ class ThemeManager(QWidget):
                     self.themeData.addRow(os.path.join(self.path, name))
         self.EventManager.post_event(Event(EventType.ThemeListChanged))
         self.ServiceManager.updateThemeList(self.getThemes())
-        self.parent.settings_form.ThemesTab.updateThemeList(self.getThemes())
+        self.parent.settingsForm.ThemesTab.updateThemeList(self.getThemes())
 
 
     def getThemes(self):

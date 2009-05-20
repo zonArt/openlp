@@ -80,7 +80,7 @@ class Plugin(object):
         if name is not None:
             self.name = name
         else:
-            self.name = 'Plugin'
+            self.name = u'Plugin'
         if version is not None:
             self.version = version
         self.icon = None
@@ -88,12 +88,12 @@ class Plugin(object):
         self.weight = 0
         # Set up logging
         self.log = logging.getLogger(self.name)
-        self.preview_controller=plugin_helpers[u'preview']
-        self.live_controller=plugin_helpers[u'live']
-        self.theme_manager=plugin_helpers[u'theme']
-        self.event_manager=plugin_helpers[u'event']
-        self.render_manager=plugin_helpers[u'render']
-        self.service_manager=plugin_helpers[u'service']
+        self.preview_controller = plugin_helpers[u'preview']
+        self.live_controller = plugin_helpers[u'live']
+        self.theme_manager = plugin_helpers[u'theme']
+        self.event_manager = plugin_helpers[u'event']
+        self.render_manager = plugin_helpers[u'render']
+        self.service_manager = plugin_helpers[u'service']
 
     def check_pre_conditions(self):
         """

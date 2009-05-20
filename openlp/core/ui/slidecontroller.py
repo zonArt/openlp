@@ -22,8 +22,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar
-from openlp.core import translate
+from openlp.core.lib import OpenLPToolbar, translate
 
 class SlideData(QtCore.QAbstractListModel):
     """

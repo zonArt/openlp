@@ -29,10 +29,10 @@ class EventManager(object):
 
     """
     global log
-    log=logging.getLogger(u'EventManager')
+    log = logging.getLogger(u'EventManager')
 
     def __init__(self):
-        self.endpoints=[]
+        self.endpoints = []
         log.info(u'Initialising')
 
     def register(self, plugin):

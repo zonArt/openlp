@@ -22,13 +22,9 @@ import platform
 import sys
 import os
 from types import StringType, NoneType, UnicodeType
-sys.path.append(os.path.abspath("./../.."))
+sys.path.append(os.path.abspath(u'./../..'))
 
-ver = platform.python_version()
-if ver >= '2.5':
-    from xml.etree.ElementTree import ElementTree, XML
-else:
-    from elementtree import ElementTree, XML
+from xml.etree.ElementTree import ElementTree, XML
 
 
 class XmlRootClass(object):
@@ -47,23 +43,27 @@ class XmlRootClass(object):
         xml (string) -- formatted as xml tags and values
         rootTag -- main tag of the xml
         """
-        root=ElementTree(element=XML(xml))
-        iter=root.getiterator()
+        root = ElementTree(element=XML(xml))
+        iter = root.getiterator()
         for element in iter:
             if element.tag != rootTag:
-                t=element.text
+                t = element.text
                 #print element.tag, t, type(t)
-                if type(t) == NoneType: # easy!
+                if type(t) == NoneType:
+                    # easy!
                     val=t
                 elif type(t) == UnicodeType :
                     val=t
-                elif type(t) == StringType: # strings need special handling to sort the colours out
+                elif type(t) == StringType:
+                    # strings need special handling to sort the colours out
                     #print "str",
-                    if t[0] == "$": # might be a hex number
+                    if t[0] == '$':
+                        # might be a hex number
                         #print "hex",
                         try:
-                            val=int(t[1:], 16)
-                        except ValueError: # nope
+                            val = int(t[1:], 16)
+                        except ValueError:
+                            # nope
                             #print "nope",
                             pass
                     else:
@@ -74,9 +74,9 @@ class XmlRootClass(object):
                         except ValueError:
                             #print "give up",
                             val=t
-                    if hasattr(self, "post_tag_hook"):
+                    if hasattr(self, u'post_tag_hook'):
                         (element.tag, val) = self.post_tag_hook(element.tag, val)
-                setattr(self,element.tag, val)
+                setattr(self, element.tag, val)
         pass
 
     def __str__(self):
@@ -88,15 +88,15 @@ class XmlRootClass(object):
         """
         l = []
         for k in dir(self):
-            if not k.startswith("_"):
-                l.append("%30s : %s" %(k,getattr(self,k)))
-        return "\n".join(l)
+            if not k.startswith(u'_'):
+                l.append(u'%30s : %s' %(k,getattr(self,k)))
+        return u'\n'.join(l)
 
     def _get_as_string(self):
         """Return one string with all public attributes"""
         s=""
         for k in dir(self):
-            if not k.startswith("_"):
-                s+= "_%s_" %(getattr(self,k))
+            if not k.startswith(u'_'):
+                s+= u'_%s_' %(getattr(self,k))
         return s
 

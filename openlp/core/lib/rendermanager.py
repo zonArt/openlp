@@ -63,6 +63,7 @@ class RenderManager:
         self.renderer = Renderer()
         self.calculate_default(self.screen_list[self.current_display]['size'])
         self.theme = u''
+        self.service_theme = u''
 
     def set_global_theme(self, global_theme, global_style = u'Global'):
         self.global_theme = global_theme
