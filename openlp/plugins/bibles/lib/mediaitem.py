@@ -398,7 +398,10 @@ class BibleMediaItem(MediaManagerItem):
             if len(raw_footer) <= 1:
                 raw_footer.append(book)
 
-        service_item.theme = self.parent.bibles_tab.bible_theme
+        if  len(self.parent.bibles_tab.bible_theme)  == 0:
+            service_item.theme = None
+        else:
+            service_item.theme = self.parent.bibles_tab.bible_theme
         raw_slides.append(bible_text)
         service_item.raw_slides = raw_slides
         service_item.raw_footer = raw_footer

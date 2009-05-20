@@ -20,5 +20,6 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from filelistdata import FileListData
 from mediaitem import PresentationMediaItem
+from presentationtab import PresentationTab
 
-__all__ = ['PresentationMediaItem', 'FileListData']
+__all__ = ['PresentationMediaItem', 'FileListData', 'PresentationTab']

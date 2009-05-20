@@ -100,7 +100,7 @@ class MediaMediaItem(MediaManagerItem):
         files = QtGui.QFileDialog.getOpenFileNames(None,
             translate('MediaMediaItem', u'Select Media(s) items'),
             self.parent.config.get_last_dir(),
-            u'Images (*.avi *.mpeg);;Audio (*.mp3 *.ogg *.wma);;All files (*)')
+            u'Videos (*.avi *.mpeg);;Audio (*.mp3 *.ogg *.wma);;All files (*)')
         if len(files) > 0:
             self.loadMediaList(files)
             dir, filename = os.path.split(str(files[0]))

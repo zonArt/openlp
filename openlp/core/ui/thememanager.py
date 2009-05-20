@@ -367,3 +367,7 @@ class ThemeManager(QWidget):
         frame = self.RenderManager.generate_preview(themedata)
         return frame
 
+    def getPreviewImage(self, theme):
+        log.debug(u'getPreviewImage %s ', theme)
+        image = os.path.join(self.path, theme + u'.png')
+        return image

@@ -3,7 +3,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley,
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley,
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -22,9 +22,8 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.resources import *
 from openlp.core.lib import Plugin,  MediaManagerItem
-from openlp.plugins.presentations.lib import PresentationMediaItem
+from openlp.plugins.presentations.lib import PresentationMediaItem, PresentationTab
 
 class PresentationPlugin(Plugin):
 
@@ -38,7 +37,8 @@ class PresentationPlugin(Plugin):
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
     def get_settings_tab(self):
-        pass
+        self.presentation_tab = PresentationTab()
+        return self.presentation_tab
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object

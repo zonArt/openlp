@@ -78,26 +78,19 @@ class Renderer:
 
     def scale_bg_image(self):
         assert self._frame
-        image = QtGui.QImage(self._bg_image_filename)
-        # rescale and offset
-        imw = image.width()
-        imh = image.height()
-        dcw = self._frame.width()+1
-        dch = self._frame.height()
-        imratio = imw/float(imh)
-        dcratio = dcw/float(dch)
-        log.debug(u'Image scaling params %s %s %s %s %s %s', imw, imh, imratio, dcw, dch, dcratio)
-        if imratio > dcratio:
-            scale = dcw/float(imw)
-        elif imratio < dcratio:
-            scale = dch/float(imh)
-        else:
-            scale = dcw/float(imw) # either will do
-        neww = int(round(imw*scale))
-        newh = int(round(imh*scale))
-        self.background_offsetx=(dcw-neww)/2
-        self.background_offsety=(dch-newh)/2
-        self.bg_image=QtGui.QPixmap.fromImage(image.scaled(QtCore.QSize(neww, newh), Qt.Qt.KeepAspectRatio))
+        preview = QtGui.QPixmap(self._bg_image_filename)
+        width = self._frame.width()
+        height = self._frame.height()
+        preview = preview.scaled(width, height, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        realwidth = preview.width()
+        realheight = preview.height()
+        # and move it to the centre of the preview space
+        self.bg_image = QtGui.QPixmap(width, height)
+        self.bg_image.fill(QtCore.Qt.transparent)
+        painter = QtGui.QPainter(self.bg_image)
+        self.background_offsetx = (width - realwidth) / 2
+        self.background_offsety = (height - realheight) / 2
+        painter.drawPixmap(self.background_offsetx, self.background_offsety , preview)
 
     def set_frame_dest(self, frame_width, frame_height, preview=False):
         """
@@ -118,6 +111,7 @@ class Renderer:
         """
         log.debug(u'format_slide %s', words)
         verses = []
+        words=words.replace("\r\n", "\n")
         verses_text = words.split(u'\n\n')
         for verse in verses_text:
             lines = verse.split(u'\n')

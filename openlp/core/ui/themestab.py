@@ -3,7 +3,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley,
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley,
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -22,13 +22,13 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core import translate
 from openlp.core.lib import SettingsTab
-from openlp.core.resources import *
 
 class ThemesTab(SettingsTab):
     """
     ThemesTab is the theme settings tab in the settings dialog.
     """
-    def __init__(self):
+    def __init__(self, parent):
+        self.parent = parent
         SettingsTab.__init__(self, u'Themes')
 
     def setupUi(self):
@@ -45,11 +45,8 @@ class ThemesTab(SettingsTab):
         self.GlobalGroupBoxLayout.setObjectName(u'GlobalGroupBoxLayout')
         self.DefaultComboBox = QtGui.QComboBox(self.GlobalGroupBox)
         self.DefaultComboBox.setObjectName(u'DefaultComboBox')
-        self.DefaultComboBox.addItem(QtCore.QString())
-        self.DefaultComboBox.addItem(QtCore.QString())
-        self.DefaultComboBox.addItem(QtCore.QString())
         self.GlobalGroupBoxLayout.addWidget(self.DefaultComboBox)
-        self.DefaultListView = QtGui.QListView(self.GlobalGroupBox)
+        self.DefaultListView = QtGui.QLabel(self.GlobalGroupBox)
         self.DefaultListView.setObjectName(u'DefaultListView')
         self.GlobalGroupBoxLayout.addWidget(self.DefaultListView)
         self.ThemesTabLayout.addWidget(self.GlobalGroupBox)
@@ -93,11 +90,20 @@ class ThemesTab(SettingsTab):
             self.GlobalLevelLabel)
         self.ThemesTabLayout.addWidget(self.LevelGroupBox)
 
+        QtCore.QObject.connect(self.SongLevelRadioButton,
+            QtCore.SIGNAL("pressed()"), self.onSongLevelButtonPressed)
+        QtCore.QObject.connect(self.ServiceLevelRadioButton,
+            QtCore.SIGNAL("pressed()"), self.onServiceLevelButtonPressed)
+        QtCore.QObject.connect(self.GlobalLevelRadioButton,
+            QtCore.SIGNAL("pressed()"), self.onGlobalLevelButtonPressed)
+
+        QtCore.QObject.connect(self.DefaultComboBox,
+            QtCore.SIGNAL("activated(int)"), self.onDefaultComboBoxChanged)
+
+        #self.DefaultListView.setScaledContents(True)
+
     def retranslateUi(self):
         self.GlobalGroupBox.setTitle(translate(u'ThemesTab', u'Global theme'))
-        self.DefaultComboBox.setItemText(0, translate(u'ThemesTab', u'African Sunset'))
-        self.DefaultComboBox.setItemText(1, translate(u'ThemesTab', u'Snowy Mountains'))
-        self.DefaultComboBox.setItemText(2, translate(u'ThemesTab', u'Wilderness'))
         self.LevelGroupBox.setTitle(translate(u'ThemesTab', u'Theme level'))
         self.SongLevelRadioButton.setText(translate(u'ThemesTab', u'Song level'))
         self.SongLevelLabel.setText(translate(u'ThemesTab', u'Use the theme from each song in the database. If a song doesn\'t have a theme associated with it, then use the service\'s theme. If the service doesn\'t have a theme, then use the global theme.'))
@@ -106,6 +112,40 @@ class ThemesTab(SettingsTab):
         self.GlobalLevelRadioButton.setText(translate(u'ThemesTab', u'Global level'))
         self.GlobalLevelLabel.setText(translate(u'ThemesTab', u'Use the global theme, overriding any themes associated wither either the service or the songs.'))
 
+    def load(self):
+        self.global_style = self.config.get_config(u'theme global style', u'Global')
+        self.global_theme = self.config.get_config(u'theme global theme', u'')
+        if self.global_style == u'Global':
+            self.GlobalLevelRadioButton.setChecked(True)
+        elif self.global_style == u'Service':
+            self.ServiceLevelRadioButton.setChecked(True)
+        else:
+            self.SongLevelRadioButton.setChecked(True)
+
+    def save(self):
+        self.config.set_config(u'theme global style', self.global_style )
+        self.config.set_config(u'theme global theme',self.global_theme)
+
+    def onSongLevelButtonPressed(self):
+        self.global_style= u'Song'
+        self.parent.RenderManager.set_global_theme(self.global_theme, self.global_style)
+
+    def onServiceLevelButtonPressed(self):
+        self.global_style= u'Service'
+        self.parent.RenderManager.set_global_theme(self.global_theme, self.global_style)
+
+    def onGlobalLevelButtonPressed(self):
+        self.global_style= u'Global'
+        self.parent.RenderManager.set_global_theme(self.global_theme, self.global_style)
+
+    def onDefaultComboBoxChanged(self, value):
+        self.global_theme = self.DefaultComboBox.currentText()
+        self.parent.RenderManager.set_global_theme(self.global_theme, self.global_style)
+        image = self.parent.ThemeManagerContents.getPreviewImage(str(self.global_theme))
+        preview = QtGui.QPixmap(str(image))
+        display = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        self.DefaultListView.setPixmap(display)
+
     def updateThemeList(self, theme_list):
         """
         Called from ThemeManager when the Themes have changed
@@ -113,3 +153,14 @@ class ThemesTab(SettingsTab):
         self.DefaultComboBox.clear()
         for theme in theme_list:
             self.DefaultComboBox.addItem(theme)
+        id = self.DefaultComboBox.findText(str(self.global_theme), QtCore.Qt.MatchExactly)
+        if id == -1:
+            id = 0 # Not Found
+            self.global_theme = u''
+        self.DefaultComboBox.setCurrentIndex(id)
+        self.parent.RenderManager.set_global_theme(self.global_theme, self.global_style)
+        if self.global_theme is not u'':
+            image = self.parent.ThemeManagerContents.getPreviewImage(str(self.global_theme))
+            preview = QtGui.QPixmap(str(image))
+            display = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            self.DefaultListView.setPixmap(display)

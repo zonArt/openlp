@@ -31,14 +31,14 @@ log = logging.getLogger('SettingsForm')
 
 class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
 
-    def __init__(self, screen_list, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+    def __init__(self, screen_list, mainWindow, parent=None):
+        QtGui.QDialog.__init__(self, None)
         self.setupUi(self)
         # General tab
         self.GeneralTab = GeneralTab(screen_list)
         self.addTab(self.GeneralTab)
         # Themes tab
-        self.ThemesTab = ThemesTab()
+        self.ThemesTab = ThemesTab(mainWindow)
         self.addTab(self.ThemesTab)
         # Alert tab
         self.AlertsTab = AlertsTab()
