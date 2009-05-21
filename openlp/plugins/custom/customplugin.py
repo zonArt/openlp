@@ -21,10 +21,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.resources import *
-from openlp.core.lib import Plugin, Event
-from openlp.core.lib import EventType
 from forms import EditCustomForm
+from openlp.core.lib import Plugin, Event,  EventType
 from openlp.plugins.custom.lib import CustomManager, CustomTab, CustomMediaItem, CustomServiceItem
 
 

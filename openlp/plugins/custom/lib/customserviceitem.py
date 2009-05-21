@@ -19,6 +19,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 from PyQt4 import QtCore, QtGui
 import logging
+
 from openlp.core.lib import ServiceItem
 
 from openlp.plugins.custom.lib import TextListData
@@ -40,12 +41,12 @@ class CustomServiceItem(ServiceItem):
       it simply tells the slide controller to use it???
 
     It contains 1 or more images
-          
+
     """
     global log
     log=logging.getLogger(u'CustomServiceItem')
     log.info(u'CustomServiceItem loaded')
-    
+
     def __init__(self, controller):
         """
         Init Method
@@ -58,7 +59,7 @@ class CustomServiceItem(ServiceItem):
 #         c.uniformItemSizes=True
 #         c.setModel(self.imgs)
 #         c.setGeometry(0,0,200,200)
-    
+
     def render(self):
         """
         The render method is what the plugin uses to render its meda to the
@@ -66,7 +67,7 @@ class CustomServiceItem(ServiceItem):
         """
         # render the "image chooser first"
 #         for f in self.imgs:
-#             fl ,  nm = os.path.split(str(f))            
+#             fl ,  nm = os.path.split(str(f))
 #             c = self.slide_controller.rowCount()
 #             self.slide_controller.setRowCount(c+1)
 #             twi = QtGui.QTableWidgetItem(str(f))
@@ -74,7 +75,7 @@ class CustomServiceItem(ServiceItem):
 #             twi = QtGui.QTableWidgetItem(str(nm))
 #             self.slide_controller.setItem(c , 1, twi)
 #             self.slide_controller.setRowHeight(c, 80)
-            
+
         # render the preview screen here
 
     def get_parent_node(self):
@@ -83,7 +84,7 @@ class CustomServiceItem(ServiceItem):
         Manager.
         """
         pass
-        
+
     def add(self, data):
         """
         append an image to the list
@@ -95,7 +96,7 @@ class CustomServiceItem(ServiceItem):
             log.info("add Item..."+str(data))
             for filename in data.imgs.get_file_list():
                 self.add(filename)
-            
+
 
     def get_oos_text(self):
         """
@@ -114,4 +115,4 @@ class CustomServiceItem(ServiceItem):
         files=text.split('\n')
         for f in files:
             self.imgs.addRow(f)
-        
+

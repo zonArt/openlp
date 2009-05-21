@@ -21,11 +21,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core import translate
-from openlp.core.lib import MediaManagerItem
-from openlp.core.lib import SongXMLParser
-from openlp.core.lib import ServiceItem
-
+from openlp.core.lib import MediaManagerItem,  SongXMLParser,  ServiceItem,  translate
 from openlp.plugins.custom.lib import TextListData
 
 class CustomList(QtGui.QListView):

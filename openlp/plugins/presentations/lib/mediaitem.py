@@ -22,9 +22,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core import translate
-from openlp.core.lib import MediaManagerItem
-from openlp.core.resources import *
+from openlp.core.lib import MediaManagerItem,  translate
 
 from openlp.plugins.presentations.lib import FileListData
 

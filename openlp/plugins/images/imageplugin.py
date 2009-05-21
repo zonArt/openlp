@@ -21,14 +21,12 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, Event
-from openlp.core.lib import EventType
-
+from openlp.core.lib import Plugin, Event,  EventType
 from openlp.plugins.images.lib import ImageMediaItem, ImageServiceItem
 
 class ImagePlugin(Plugin):
     global log
-    log=logging.getLogger(u'ImagePlugin')
+    log = logging.getLogger(u'ImagePlugin')
     log.info(u'Image Plugin loaded')
 
     def __init__(self, plugin_helpers):

@@ -517,7 +517,7 @@ class Ui_AmendThemeDialog(object):
         AmendThemeDialog.setTabOrder(self.HorizontalComboBox, self.VerticalComboBox)
 
     def retranslateUi(self, AmendThemeDialog):
-        AmendThemeDialog.setWindowTitle(QtGui.QApplication.translate("AmendThemeDialog", "Theme Maintance", None, QtGui.QApplication.UnicodeUTF8))
+        AmendThemeDialog.setWindowTitle(QtGui.QApplication.translate("AmendThemeDialog", "Theme Maintenance", None, QtGui.QApplication.UnicodeUTF8))
         self.ThemeNameLabel.setText(QtGui.QApplication.translate("AmendThemeDialog", "Theme Name:", None, QtGui.QApplication.UnicodeUTF8))
         self.BackgroundLabel.setText(QtGui.QApplication.translate("AmendThemeDialog", "Background:", None, QtGui.QApplication.UnicodeUTF8))
         self.BackgroundComboBox.setItemText(0, QtGui.QApplication.translate("AmendThemeDialog", "Opaque", None, QtGui.QApplication.UnicodeUTF8))

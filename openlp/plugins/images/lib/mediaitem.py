@@ -22,10 +22,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core import translate
-from openlp.core.lib import MediaManagerItem
-from openlp.core.lib import ServiceItem
-
+from openlp.core.lib import MediaManagerItem,  ServiceItem,  translate
 from openlp.plugins.images.lib import ListWithPreviews
 
 class ImageList(QtGui.QListView):

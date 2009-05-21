@@ -8,7 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
-from openlp.core import translate
+from openlp.core.lib import translate
 
 class Ui_customEditDialog(object):
     def setupUi(self, customEditDialog):
