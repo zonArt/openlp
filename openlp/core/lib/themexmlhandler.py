@@ -22,7 +22,7 @@ from xml.etree.ElementTree import ElementTree, XML, dump
 For XML Schema see wiki.openlp.org
 """
 import os,  os.path
-from openlp import convertStringToBoolean
+from openlp.core.lib import str_to_bool
 from xml.dom.minidom import  Document
 from xml.etree.ElementTree import ElementTree, XML, dump
 
@@ -231,14 +231,14 @@ class ThemeXML():
                         master += e[1] + u'_'
                     elif master == u'display_' and (element.tag == u'shadow' or element.tag == u'outline'):
                         #print "b", master, element.tag, element.text, e[0], e[1]
-                        et = convertStringToBoolean(element.text)
+                        et = str_to_bool(element.text)
                         setattr(self, master + element.tag , et)
                         setattr(self, master + element.tag +u'_'+ e[0], e[1])
                     else:
                         field = master + e[0]
                         e1 = e[1]
                         if e[1] == u'True' or e[1] == u'False':
-                            e1 = convertStringToBoolean(e[1])
+                            e1 = str_to_bool(e[1])
                         setattr(self, field, e1)
             else:
                 #print "c", element.tag, element.text

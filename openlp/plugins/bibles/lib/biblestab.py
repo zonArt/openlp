@@ -20,8 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from PyQt4 import Qt, QtCore, QtGui
 
-from openlp.core import translate
-from openlp import  convertStringToBoolean
+from openlp.core.lib import translate, str_to_bool
 from openlp.core.lib import SettingsTab
 
 class BiblesTab(SettingsTab):
@@ -187,11 +186,11 @@ class BiblesTab(SettingsTab):
             self.bible_search = True
 
     def load(self):
-        self.paragraph_style = convertStringToBoolean(self.config.get_config(u'paragraph style', u'True'))
-        self.show_new_chapters = convertStringToBoolean(self.config.get_config(u'display new chapter', u"False"))
+        self.paragraph_style = str_to_bool(self.config.get_config(u'paragraph style', u'True'))
+        self.show_new_chapters = str_to_bool(self.config.get_config(u'display new chapter', u"False"))
         self.display_style = int(self.config.get_config(u'display brackets', u'0'))
         self.bible_theme = self.config.get_config(u'bible theme', u'0')
-        self.bible_search = convertStringToBoolean(self.config.get_config(u'search as type', u'True'))
+        self.bible_search = str_to_bool(self.config.get_config(u'search as type', u'True'))
         if self.paragraph_style:
             self.ParagraphRadioButton.setChecked(True)
         else:

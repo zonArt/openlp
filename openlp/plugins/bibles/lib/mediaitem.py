@@ -21,10 +21,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core import translate
-from openlp.core.lib import MediaManagerItem, Receiver
-from openlp.core.lib import ServiceItem
-
+from openlp.core.lib import ServiceItem, MediaManagerItem, Receiver, translate
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import TextListData
 

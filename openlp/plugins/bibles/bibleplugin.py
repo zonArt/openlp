@@ -21,10 +21,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
-from PyQt4.QtGui import *
 
-from openlp.core.lib import Plugin, Event
-from openlp.core.lib import EventType
+from openlp.core.lib import Plugin, Event,  EventType,  translate
 
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 from openlp.plugins.bibles.lib.tables import *
@@ -59,7 +57,7 @@ class BiblePlugin(Plugin):
         self.ImportBibleItem = QtGui.QAction(import_menu)
         self.ImportBibleItem.setObjectName("ImportBibleItem")
         import_menu.addAction(self.ImportBibleItem)
-        self.ImportBibleItem.setText(QtGui.QApplication.translate("main_window", "&Bible", None, QtGui.QApplication.UnicodeUTF8))
+        self.ImportBibleItem.setText(translate("BiblePlugin", "&Bible"))
         # Signals and slots
         QtCore.QObject.connect(self.ImportBibleItem, QtCore.SIGNAL("triggered()"),  self.onBibleNewClick)
 
@@ -67,8 +65,7 @@ class BiblePlugin(Plugin):
         self.ExportBibleItem = QtGui.QAction(export_menu)
         self.ExportBibleItem.setObjectName("ExportBibleItem")
         export_menu.addAction(self.ExportBibleItem)
-        self.ExportBibleItem.setText(
-            QtGui.QApplication.translate("main_window", u'&Bible', None, QtGui.QApplication.UnicodeUTF8))
+        self.ExportBibleItem.setText(translate("BiblePlugin", u'&Bible'))
 
     def initialise(self):
         pass

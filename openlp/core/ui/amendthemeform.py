@@ -21,7 +21,7 @@ import logging
 import os, os.path
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import ThemeXML,  Renderer,  fileToXML,  translate
+from openlp.core.lib import ThemeXML,  Renderer,  file_to_xml,  translate
 
 from amendthemedialog import Ui_AmendThemeDialog
 
@@ -141,7 +141,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             self.theme.parse(self.baseTheme())
         else:
             xml_file = os.path.join(self.path, theme, theme + u'.xml')
-            xml = fileToXML(xml_file)
+            xml = file_to_xml(xml_file)
             self.theme.parse(xml)
         self.allowPreview = False
         self.paintUi(self.theme)

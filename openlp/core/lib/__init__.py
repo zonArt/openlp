@@ -19,6 +19,31 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import types
 from PyQt4 import QtCore, QtGui
+
+def translate(context, text):
+    return QtGui.QApplication.translate(context, text, None, QtGui.QApplication.UnicodeUTF8)
+
+def file_to_xml(xmlfile):
+    return open(xmlfile).read()
+
+def str_to_bool(stringvalue):
+    return stringvalue.strip().lower() in (u'true', u'yes', u'y')
+
+def buildIcon(icon):
+    ButtonIcon = None
+    if type(icon) is QtGui.QIcon:
+        ButtonIcon = icon
+    elif type(icon) is types.StringType or type(icon) is types.UnicodeType:
+        ButtonIcon = QtGui.QIcon()
+        if icon.startswith(u':/'):
+            ButtonIcon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
+                QtGui.QIcon.Off)
+        else:
+            ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QImage(icon)),
+                QtGui.QIcon.Normal, QtGui.QIcon.Off)
+    return ButtonIcon
+
+
 from pluginconfig import PluginConfig
 from plugin import Plugin
 from settingstab import SettingsTab
@@ -41,27 +66,7 @@ from rendermanager import RenderManager
 #           'XmlRootClass', 'ServiceItem', 'Receiver', 'OpenLPToolbar', 'SongXMLBuilder',
 #           'SongXMLParser', 'EventManager', 'ThemeXML', 'RenderManager']
 
-__all__ = [ 'translate', 'fileToXML', 'convertStringToBoolean','buildIcon' ]
+__all__ = [ 'translate', 'file_to_xml', 'str_to_bool']
 
-def translate(context, text):
-    return QtGui.QApplication.translate(context, text, None, QtGui.QApplication.UnicodeUTF8)
 
-def fileToXML(xmlfile):
-    return open(xmlfile).read()
 
-def convertStringToBoolean(stringvalue):
-    return stringvalue.strip().lower() in (u'true', u'yes', u'y')
-
-def buildIcon(icon):
-    ButtonIcon = None
-    if type(icon) is QtGui.QIcon:
-        ButtonIcon = icon
-    elif type(icon) is types.StringType or type(icon) is types.UnicodeType:
-        ButtonIcon = QtGui.QIcon()
-        if icon.startswith(u':/'):
-            ButtonIcon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
-                QtGui.QIcon.Off)
-        else:
-            ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QImage(icon)),
-                QtGui.QIcon.Normal, QtGui.QIcon.Off)
-    return ButtonIcon

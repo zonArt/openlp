@@ -22,4 +22,3 @@ from openlp.core.lib.pluginmanager import PluginManager
 
 __all__ = ['SettingsManager', 'PluginManager' ]
 
-
