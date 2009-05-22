@@ -231,3 +231,4 @@ class ServiceManager(QtGui.QWidget):
             id = 0 # Not Found
             self.service_theme = u''
         self.ThemeComboBox.setCurrentIndex(id)
+        self.RenderManager.set_service_theme(self.service_theme)

@@ -32,7 +32,9 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     def __init__(self, thememanager, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.thememanager = thememanager
-        self.theme = ThemeXML() # Needed here as UI setup generates Events
+        # Needed here as UI setup generates Events
+        self.path = None
+        self.theme = ThemeXML()
         self.setupUi(self)
 
         #define signals
@@ -111,15 +113,15 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         else:
             (path, filename) =os.path.split(str(self.theme.background_filename))
             new_theme.add_background_image(filename)
-            save_to= os.path.join(self.path, theme_name,filename )
+            save_to= os.path.join(self.path, theme_name, filename )
             save_from = self.theme.background_filename
 
         new_theme.add_font(str(self.theme.font_main_name), str(self.theme.font_main_color),
-                str(self.theme.font_main_proportion), str(self.theme.font_main_override),u'main',
+                str(self.theme.font_main_proportion), str(self.theme.font_main_override), u'main',
                 str(self.theme.font_main_x), str(self.theme.font_main_y), str(self.theme.font_main_width),
                 str(self.theme.font_main_height))
         new_theme.add_font(str(self.theme.font_footer_name), str(self.theme.font_footer_color),
-                str(self.theme.font_footer_proportion), str(self.theme.font_footer_override),u'footer',
+                str(self.theme.font_footer_proportion), str(self.theme.font_footer_override), u'footer',
                 str(self.theme.font_footer_x), str(self.theme.font_footer_y), str(self.theme.font_footer_width),
                 str(self.theme.font_footer_height) )
         new_theme.add_display(str(self.theme.display_shadow), str(self.theme.display_shadow_color),
@@ -132,9 +134,6 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.thememanager.saveTheme(theme_name, theme, save_from, save_to)
         return QtGui.QDialog.accept(self)
 
-    def themePath(self, path):
-        self.path = path
-
     def loadTheme(self, theme):
         log.debug(u'LoadTheme %s', theme)
         if theme == None:
@@ -143,6 +142,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             xml_file = os.path.join(self.path, theme, theme + u'.xml')
             xml = file_to_xml(xml_file)
             self.theme.parse(xml)
+            self.theme.extend_image_filename(self.path)
         self.allowPreview = False
         self.paintUi(self.theme)
         self.allowPreview = True

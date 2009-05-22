@@ -28,7 +28,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AmendThemeForm, ServiceManager
 from openlp.core.theme import Theme
-from openlp.core.lib import Event, EventType, EventManager, OpenLPToolbar, ThemeXML, Renderer,  translate
+from openlp.core.lib import Event, EventType, EventManager, OpenLPToolbar, ThemeXML, Renderer,  translate,  file_to_xml
 from openlp.core.utils import ConfigHelper
 
 import logging
@@ -103,7 +103,6 @@ class ThemeData(QtCore.QAbstractListModel):
             retval = self.items[row][1]
         else:
             retval = QtCore.QVariant()
-        #log.info("Returning"+ str(retval))
         if type(retval) is not type(QtCore.QVariant):
             return QtCore.QVariant(retval)
         else:
@@ -168,7 +167,7 @@ class ThemeManager(QtGui.QWidget):
         self.themelist = []
         self.path = os.path.join(ConfigHelper.get_data_path(), u'themes')
         self.checkThemesExists(self.path)
-        self.amendThemeForm.themePath(self.path)
+        self.amendThemeForm.path = self.path
 
     def onAddTheme(self):
         self.amendThemeForm.loadTheme(None)
@@ -220,7 +219,6 @@ class ThemeManager(QtGui.QWidget):
         self.ServiceManager.updateThemeList(self.getThemes())
         self.parent.settingsForm.ThemesTab.updateThemeList(self.getThemes())
 
-
     def getThemes(self):
         return self.themeData.getList()
 
@@ -228,19 +226,19 @@ class ThemeManager(QtGui.QWidget):
         log.debug(u'getthemedata for theme %s', themename)
         xml_file = os.path.join(self.path, str(themename), str(themename) + u'.xml')
         try:
-            xml = fileToXML(xml_file)
+            xml = file_to_xml(xml_file)
         except:
             newtheme = ThemeXML()
             newtheme.new_document(u'New Theme')
             newtheme.add_background_solid(str(u'#000000'))
-            newtheme.add_font(str(QFont().family()), str(u'#FFFFFF'), str(30), u'False')
-            newtheme.add_font(str(QFont().family()), str(u'#FFFFFF'), str(12), u'False', u'footer')
+            newtheme.add_font(str(QtGui.QFont().family()), str(u'#FFFFFF'), str(30), u'False')
+            newtheme.add_font(str(QtGui.QFont().family()), str(u'#FFFFFF'), str(12), u'False', u'footer')
             newtheme.add_display(u'False', str(u'#FFFFFF'), u'False', str(u'#FFFFFF'),
                 str(0), str(0), str(0))
             xml = newtheme.extract_xml()
         theme = ThemeXML()
         theme.parse(xml)
-        theme.extend_filename(self.path)
+        theme.extend_image_filename(self.path)
         return theme
 
     def checkThemesExists(self, dir):
@@ -347,7 +345,7 @@ class ThemeManager(QtGui.QWidget):
         log.debug(u'generateAndSaveImage %s %s %s', dir, name, theme_xml)
         theme = ThemeXML()
         theme.parse(theme_xml)
-        theme.extend_filename(dir)
+        theme.extend_image_filename(dir)
         frame = self.generateImage(theme)
         im = frame.toImage()
         samplepathname = os.path.join(self.path, name + u'.png')

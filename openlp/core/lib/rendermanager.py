@@ -84,11 +84,13 @@ class RenderManager:
         else:
             if theme is not None:
                 self.theme = theme
-            elif self.global_style == u'Service':
+            elif self.global_style == u'Song' or self.global_style == u'Service':
                 if self.service_theme == u'':
                     self.theme = self.global_theme
                 else:
                     self.theme = self.service_theme
+            else:
+                self.theme = self.global_theme
 
         if self.theme is not self.renderer.theme_name:
             log.debug(u'theme is now %s',  self.theme)
