@@ -153,7 +153,7 @@ class ImageMediaItem(MediaManagerItem):
         for index in indexes:
             filename = self.ImageListData.getFilename(index)
             frame = QtGui.QPixmap(str(filename))
-            service_item.frames.append({u'formatted': u'Image', u'image': frame})
+            service_item.frames.append({u'title': filename , u'image': frame})
 
     def onImagePreviewClick(self):
         log.debug(u'Image Preview Requested')

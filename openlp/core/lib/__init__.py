@@ -43,6 +43,19 @@ def buildIcon(icon):
                 QtGui.QIcon.Normal, QtGui.QIcon.Off)
     return ButtonIcon
 
+def contextMenuAction(base, icon, text, slot):
+    """
+    Utility method to help build context menus for plugins
+    """
+    action = QtGui.QAction(text, base)
+    action .setIcon(buildIcon(icon))
+    QtCore.QObject.connect(action, QtCore.SIGNAL("triggered()"), slot)
+    return action
+
+def contextMenuSeparator(base):
+    action = QtGui.QAction("", base)
+    action.setSeparator(True)
+    return action
 
 from pluginconfig import PluginConfig
 from plugin import Plugin
@@ -66,7 +79,7 @@ from rendermanager import RenderManager
 #           'XmlRootClass', 'ServiceItem', 'Receiver', 'OpenLPToolbar', 'SongXMLBuilder',
 #           'SongXMLParser', 'EventManager', 'ThemeXML', 'RenderManager']
 
-__all__ = [ 'translate', 'file_to_xml', 'str_to_bool']
+__all__ = [ 'translate', 'file_to_xml', 'str_to_bool', 'contextMenuAction', 'contextMenuSeparator']
 
 
 

@@ -30,7 +30,7 @@ class SongMediaItem(MediaManagerItem):
     This is the custom media manager item for Songs.
     """
     global log
-    log=logging.getLogger("SongMediaItem")
+    log = logging.getLogger("SongMediaItem")
     log.info("Song Media Item loaded")
 
     def __init__(self, parent, icon, title):

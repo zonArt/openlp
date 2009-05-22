@@ -21,7 +21,7 @@ import os
 import logging
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import PluginConfig,  OpenLPToolbar, ServiceItem, RenderManager, Event, EventType, EventManager,  translate,  buildIcon
+from openlp.core.lib import PluginConfig,  OpenLPToolbar, ServiceItem, RenderManager, Event, EventType, EventManager,  translate,  buildIcon,  contextMenuAction,  contextMenuSeparator
 
 class ServiceManager(QtGui.QWidget):
 
@@ -32,12 +32,12 @@ class ServiceManager(QtGui.QWidget):
     Also handles the UI tasks of moving things up and down etc.
     """
     global log
-    log=logging.getLogger(u'ServiceManager')
+    log = logging.getLogger(u'ServiceManager')
 
     def __init__(self, parent):
         QtGui.QWidget.__init__(self)
-        self.parent=parent
-        self.serviceItems=[]
+        self.parent = parent
+        self.serviceItems = []
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
         self.Layout.setMargin(0)
@@ -51,15 +51,15 @@ class ServiceManager(QtGui.QWidget):
         self.Toolbar.addToolbarButton(u'Move to bottom', u':/services/service_bottom.png',
             translate(u'ServiceManager', u'Move to end'), self.onServiceEnd)
         self.Toolbar.addSeparator()
-        self.Toolbar.addToolbarButton(u'New Service', u':/services/service_new.png',
-            translate(u'ServiceManager', u'Create a new Service'), self.onNewService)
         self.Toolbar.addToolbarButton(u'Delete From Service', u':/services/service_delete.png',
             translate(u'ServiceManager', u'Delete From Service'), self.onDeleteFromService)
+        self.Toolbar.addToolbarButton(u'New Service', u':/services/service_new.png',
+            translate(u'ServiceManager', u'Create a new Service'), self.onNewService)
+        self.Toolbar.addToolbarButton(u'Open Service', u':/services/service_open.png',
+            translate(u'ServiceManager', u'Load Existing'), self.onLoadService)
         self.Toolbar.addSeparator()
         self.Toolbar.addToolbarButton(u'Save Service', u':/services/service_save.png',
             translate(u'ServiceManager', u'Save Service'), self.onSaveService)
-        self.Toolbar.addToolbarButton(u'Load Service', u':/services/service_open.png',
-            translate(u'ServiceManager', u'Load Existing'), self.onLoadService)
 
         self.Toolbar.addSeparator()
         self.ThemeComboBox = QtGui.QComboBox(self.Toolbar)
@@ -81,14 +81,14 @@ class ServiceManager(QtGui.QWidget):
 
         self.ServiceManagerList.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
-        self.ServiceManagerList.addAction(self.contextMenuAction(
+        self.ServiceManagerList.addAction(contextMenuAction(
             self.ServiceManagerList, ':/system/system_preview.png',
             translate(u'ServiceManager',u'&Preview Verse'), self.makePreview))
-        self.ServiceManagerList.addAction(self.contextMenuAction(
+        self.ServiceManagerList.addAction(contextMenuAction(
             self.ServiceManagerList, ':/system/system_live.png',
             translate(u'ServiceManager',u'&Show Live'), self.makeLive))
-        self.ServiceManagerList.addAction(self.contextMenuSeparator(self.ServiceManagerList))
-        self.ServiceManagerList.addAction(self.contextMenuAction(
+        self.ServiceManagerList.addAction(contextMenuSeparator(self.ServiceManagerList))
+        self.ServiceManagerList.addAction(contextMenuAction(
             self.ServiceManagerList, ':/services/service_delete',
             translate(u'ServiceManager',u'&Remove from Service'), self.onDeleteFromService))
 
@@ -99,20 +99,6 @@ class ServiceManager(QtGui.QWidget):
 
         self.config = PluginConfig(u'Main')
         self.service_theme = self.config.get_config(u'theme service theme', u'')
-
-    def contextMenuAction(self, base, icon, text, slot):
-        """
-        Utility method to help build context menus for plugins
-        """
-        action = QtGui.QAction(text, base)
-        action .setIcon(buildIcon(icon))
-        QtCore.QObject.connect(action, QtCore.SIGNAL("triggered()"), slot)
-        return action
-
-    def contextMenuSeparator(self, base):
-        action = QtGui.QAction("", base)
-        action.setSeparator(True)
-        return action
 
     def onServiceTop(self):
         pass
@@ -154,7 +140,7 @@ class ServiceManager(QtGui.QWidget):
         count = 0
         for frame in item.frames:
             treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
-            text = frame[u'formatted'][0]
+            text = frame[u'title'][0]
             treewidgetitem1.setText(0,text[:30])
             treewidgetitem1.setData(0, QtCore.Qt.UserRole,QtCore.QVariant(count))
             count = count + 1
@@ -193,7 +179,7 @@ class ServiceManager(QtGui.QWidget):
         Handle the release of the event and trigger the plugin
         to add the data
         """
-        link=event.mimeData()
+        link = event.mimeData()
         if link.hasText():
             plugin = event.mimeData().text()
             self.EventManager.post_event(Event(EventType.LoadServiceItem, plugin))
@@ -227,8 +213,9 @@ class ServiceManager(QtGui.QWidget):
         for theme in theme_list:
             self.ThemeComboBox.addItem(theme)
         id = self.ThemeComboBox.findText(str(self.service_theme), QtCore.Qt.MatchExactly)
+        # Not Found
         if id == -1:
-            id = 0 # Not Found
+            id = 0
             self.service_theme = u''
         self.ThemeComboBox.setCurrentIndex(id)
         self.RenderManager.set_service_theme(self.service_theme)

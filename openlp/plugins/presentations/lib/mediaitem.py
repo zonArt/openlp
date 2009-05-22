@@ -21,9 +21,7 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-
 from openlp.core.lib import MediaManagerItem,  translate
-
 from openlp.plugins.presentations.lib import FileListData
 
 class PresentationMediaItem(MediaManagerItem):

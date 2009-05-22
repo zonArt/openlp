@@ -120,7 +120,7 @@ class RenderManager:
 
     def generate_preview(self, themedata):
         log.debug(u'generate preview')
-        self.calculate_default(QtCore.QSize(800, 600))
+        self.calculate_default(QtCore.QSize(1024, 768))
         self.renderer.set_theme(themedata)
         self.build_text_rectangle(themedata)
 

@@ -32,7 +32,7 @@ class MediaMediaItem(MediaManagerItem):
     This is the custom media manager item for Media Slides.
     """
     global log
-    log=logging.getLogger(u'MediaMediaItem')
+    log = logging.getLogger(u'MediaMediaItem')
     log.info(u'Media Media Item loaded')
 
     def __init__(self, parent, icon, title):
