@@ -54,7 +54,7 @@ class BibleMediaItem(MediaManagerItem):
     This is the custom media manager item for Bibles.
     """
     global log
-    log=logging.getLogger(u'BibleMediaItem')
+    log = logging.getLogger(u'BibleMediaItem')
     log.info(u'Bible Media Item loaded')
 
     def __init__(self, parent, icon, title):
@@ -204,7 +204,7 @@ class BibleMediaItem(MediaManagerItem):
         self.BibleListView.setAlternatingRowColors(True)
         self.BibleListData = TextListData()
         self.BibleListView.setModel(self.BibleListData)
-        self.BibleListView.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
+        self.BibleListView.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.BibleListView.setDragEnabled(True)
 
         self.PageLayout.addWidget(self.BibleListView)

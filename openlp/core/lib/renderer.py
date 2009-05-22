@@ -202,6 +202,7 @@ class Renderer:
         bboxes = []
         for line in lines:
             bboxes.append(self._render_single_line(line, footer))
+            print line,  bboxes
 
         numlines = len(lines)
         bottom = self._rect.bottom()
@@ -214,6 +215,8 @@ class Renderer:
             by = 0
             for (x, y) in bboxes[startline:endline]:
                 by += y
+                print by
+            print by , bottom
             if by > bottom:
                 good=0
                 break
@@ -221,6 +224,7 @@ class Renderer:
             endline = startline+ratio
 #        if good == 1:
 #            break
+        print "---------"
 
         retval = []
         numlines_per_page = ratio

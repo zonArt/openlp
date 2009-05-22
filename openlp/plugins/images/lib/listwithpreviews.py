@@ -89,7 +89,7 @@ class ListWithPreviews(QtCore.QAbstractListModel):
         else:
             retval = QtCore.QVariant()
         if type(retval) is not type(QtCore.QVariant):
-            return QVariant(retval)
+            return QtCore.QVariant(retval)
         else:
             return retval
 
