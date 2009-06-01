@@ -20,9 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core import translate
-from openlp import convertStringToBoolean
-from openlp.core.lib import SettingsTab
+from openlp.core.lib import SettingsTab,  str_to_bool,  translate
 
 class MediaTab(SettingsTab):
     """
@@ -67,11 +65,12 @@ class MediaTab(SettingsTab):
     def onVMRCheckBoxChanged(self):
         use_vmr_mode = self.UseVMRCheckBox.checkState()
         self.use_vmr_mode = False
-        if use_vmr_mode == 2: # we have a set value convert to True/False
+        if use_vmr_mode == 2:
+            # we have a set value convert to True/False
             self.use_vmr_mode = True
 
     def load(self):
-        self.use_vmr_mode = convertStringToBoolean(self.config.get_config(u'use mode layout', u'False'))
+        self.use_vmr_mode = str_to_bool(self.config.get_config(u'use mode layout', u'False'))
         if self.use_vmr_mode :
             self.UseVMRCheckBox.setChecked(True)
 

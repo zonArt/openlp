@@ -20,9 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core import translate
-from openlp.core.lib import SettingsTab
-from openlp.core.resources import *
+from openlp.core.lib import SettingsTab,  translate
 
 class CustomTab(SettingsTab):
     """

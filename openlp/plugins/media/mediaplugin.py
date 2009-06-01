@@ -20,7 +20,6 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import os
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.resources import *
 from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab
 from openlp.plugins.media.lib import MediaTab,MediaMediaItem
 

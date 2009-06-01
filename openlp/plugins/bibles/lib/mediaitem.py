@@ -21,10 +21,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core import translate
-from openlp.core.lib import MediaManagerItem, Receiver
-from openlp.core.lib import ServiceItem
-
+from openlp.core.lib import ServiceItem, MediaManagerItem, Receiver, translate
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import TextListData
 
@@ -57,7 +54,7 @@ class BibleMediaItem(MediaManagerItem):
     This is the custom media manager item for Bibles.
     """
     global log
-    log=logging.getLogger(u'BibleMediaItem')
+    log = logging.getLogger(u'BibleMediaItem')
     log.info(u'Bible Media Item loaded')
 
     def __init__(self, parent, icon, title):
@@ -207,7 +204,7 @@ class BibleMediaItem(MediaManagerItem):
         self.BibleListView.setAlternatingRowColors(True)
         self.BibleListData = TextListData()
         self.BibleListView.setModel(self.BibleListData)
-        self.BibleListView.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
+        self.BibleListView.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.BibleListView.setDragEnabled(True)
 
         self.PageLayout.addWidget(self.BibleListView)
@@ -383,7 +380,7 @@ class BibleMediaItem(MediaManagerItem):
             verse = str(self.search_results[0][2])
             text = self.search_results[0][3]
             if self.parent.bibles_tab.paragraph_style: #Paragraph
-                text = text + u'\n'
+                text = text + u'\n\n'
             if self.parent.bibles_tab.display_style == 1:
                 loc = self.formatVerse(old_chapter, chapter, verse, u'(', u')')
             elif  self.parent.bibles_tab.display_style == 2:

@@ -22,8 +22,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core import translate
-from openlp.core.lib import MediaManagerItem
+from openlp.core.lib import MediaManagerItem, translate
 
 from openlp.plugins.media.lib import MediaTab
 from openlp.plugins.media.lib import FileListData
@@ -33,7 +32,7 @@ class MediaMediaItem(MediaManagerItem):
     This is the custom media manager item for Media Slides.
     """
     global log
-    log=logging.getLogger(u'MediaMediaItem')
+    log = logging.getLogger(u'MediaMediaItem')
     log.info(u'Media Media Item loaded')
 
     def __init__(self, parent, icon, title):

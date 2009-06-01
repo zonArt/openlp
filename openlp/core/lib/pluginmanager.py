@@ -29,7 +29,7 @@ class PluginManager(object):
     and executes all the hooks, as and when necessary.
     """
     global log
-    log=logging.getLogger(u'PluginMgr')
+    log = logging.getLogger(u'PluginMgr')
     log.info(u'Plugin manager loaded')
 
     def __init__(self, dir):
@@ -42,25 +42,26 @@ class PluginManager(object):
             log.debug("Inserting %s into sys.path", dir)
             sys.path.insert(0, dir)
         self.basepath = os.path.abspath(dir)
-        log.debug("Base path %s ", self.basepath)
+        log.debug(u'Base path %s ', self.basepath)
         self.plugins = []
         # this has to happen after the UI is sorted self.find_plugins(dir)
-        log.info("Plugin manager done init")
+        log.info(u'Plugin manager done init')
 
-    def find_plugins(self, dir, plugin_helpers, eventmanager): # TODO shouldn't dir come from self.basepath
+    def find_plugins(self, dir, plugin_helpers, eventmanager):
         """
         Scan the directory dir for objects inheriting from openlp.plugin
         """
         self.plugin_helpers = plugin_helpers
-        startdepth=len(os.path.abspath(dir).split(os.sep))
-        log.debug("find plugins %s at depth %d" %( str(dir), startdepth))
+        startdepth = len(os.path.abspath(dir).split(os.sep))
+        log.debug(u'find plugins %s at depth %d' %( str(dir), startdepth))
 
         for root, dirs, files in os.walk(dir):
             for name in files:
-                if name.endswith(".py") and not name.startswith("__"):
+                if name.endswith(u'.py') and not name.startswith(u'__'):
                     path = os.path.abspath(os.path.join(root, name))
-                    thisdepth=len(path.split(os.sep))
-                    if thisdepth-startdepth > 2: # skip anything lower down
+                    thisdepth = len(path.split(os.sep))
+                    if thisdepth-startdepth > 2:
+                        # skip anything lower down
                         continue
                     modulename, pyext = os.path.splitext(path)
                     prefix = os.path.commonprefix([self.basepath, path])
@@ -68,11 +69,11 @@ class PluginManager(object):
                     modulename = modulename[len(prefix) + 1:]
                     modulename = modulename.replace(os.path.sep, '.')
                     # import the modules
-                    log.debug("Importing %s from %s. Depth %d" % (modulename, path, thisdepth))
+                    log.debug(u'Importing %s from %s. Depth %d' % (modulename, path, thisdepth))
                     try:
                         __import__(modulename, globals(), locals(), [])
                     except ImportError, e:
-                        log.error("Failed to import module %s on path %s for reason %s", modulename, path, e.message)
+                        log.error(u'Failed to import module %s on path %s for reason %s', modulename, path, e.message)
         self.plugin_classes = Plugin.__subclasses__()
         self.plugins = []
         plugin_objects = []
@@ -80,9 +81,9 @@ class PluginManager(object):
             try:
                 plugin = p(self.plugin_helpers)
                 log.debug(u'loaded plugin %s with helpers'%str(p))
-                log.debug("Plugin="+str(p))
+                log.debug(u'Plugin: %s', str(p))
                 if plugin.check_pre_conditions():
-                    log.debug("Appending "+str(p))
+                    log.debug(u'Appending %s ',  str(p))
                     plugin_objects.append(plugin)
                     eventmanager.register(plugin)
             except TypeError:
@@ -100,7 +101,7 @@ class PluginManager(object):
         for plugin in self.plugins:
             media_manager_item = plugin.get_media_manager_item()
             if media_manager_item is not None:
-                log.debug('Inserting media manager item from %s' % plugin.name)
+                log.debug(u'Inserting media manager item from %s' % plugin.name)
                 mediatoolbox.addItem(media_manager_item, plugin.icon, media_manager_item.title)
 
     def hook_settings_tabs(self, settingsform=None):
@@ -111,10 +112,10 @@ class PluginManager(object):
         for plugin in self.plugins:
             settings_tab = plugin.get_settings_tab()
             if settings_tab is not None:
-                log.debug('Inserting settings tab item from %s' % plugin.name)
+                log.debug(u'Inserting settings tab item from %s' % plugin.name)
                 settingsform.addTab(settings_tab)
             else:
-                log.debug('No settings in %s' % plugin.name)
+                log.debug(u'No settings in %s' % plugin.name)
 
     def hook_import_menu(self, import_menu):
         """
@@ -132,15 +133,6 @@ class PluginManager(object):
         for plugin in self.plugins:
             plugin.add_export_menu_item(export_menu)
 
-    def hook_handle_event(self, eventmanager):
-        for plugin in self.plugins:
-            handle_event = plugin.handle_event(None)
-            print plugin, handle_event
-#            if settings_tab is not None:
-#                log.debug('Inserting settings tab item from %s' % plugin.name)
-#                settingsform.addTab(settings_tab)
-#            else:
-#                log.debug('No settings in %s' % plugin.name)
     def initialise_plugins(self):
         """
         Loop through all the plugins and give them an opportunity to add an item

@@ -22,10 +22,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core import translate
-from openlp.core.lib import MediaManagerItem
-from openlp.core.lib import ServiceItem
-
+from openlp.core.lib import MediaManagerItem,  ServiceItem,  translate
 from openlp.plugins.images.lib import ListWithPreviews
 
 class ImageList(QtGui.QListView):
@@ -156,7 +153,7 @@ class ImageMediaItem(MediaManagerItem):
         for index in indexes:
             filename = self.ImageListData.getFilename(index)
             frame = QtGui.QPixmap(str(filename))
-            service_item.frames.append({u'formatted': u'Image', u'image': frame})
+            service_item.frames.append({u'title': filename , u'image': frame})
 
     def onImagePreviewClick(self):
         log.debug(u'Image Preview Requested')

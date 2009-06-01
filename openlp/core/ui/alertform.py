@@ -19,17 +19,14 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import logging
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import QDialog
+from openlp.core.lib import translate
 
-from openlp.core import translate
-from openlp.core.resources import *
-
-class AlertForm(QDialog):
+class AlertForm(QtGui.QDialog):
     global log
     log=logging.getLogger(u'AlertForm')
 
     def __init__(self, parent=None):
-        QDialog.__init__(self, parent)
+        QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         log.info(u'Defined')
 

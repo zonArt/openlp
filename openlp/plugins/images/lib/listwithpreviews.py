@@ -1,51 +1,74 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+"""
+OpenLP - Open Source Lyrics Projection
+Copyright (c) 2008 Raoul Snyman
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; version 2 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place, Suite 330, Boston, MA 02111-1307 USA
+"""
 import os
 import logging
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-class ListWithPreviews(QAbstractListModel):
+from PyQt4 import QtCore, QtGui
+
+
+class ListWithPreviews(QtCore.QAbstractListModel):
     """
     An abstract list of strings and the preview icon to go with them
     """
     global log
-    log=logging.getLogger("ListWithPreviews")
+    log = logging.getLogger("ListWithPreviews")
     log.info("started")
 
     def __init__(self):
-        QAbstractListModel.__init__(self)
-        self.items=[] # will be a list of (full filename, QPixmap, shortname) tuples
-        self.rowheight=50
-        self.maximagewidth=self.rowheight*16/9.0;
+        QtCore.QAbstractListModel.__init__(self)
+        self.items = [] # will be a list of (full filename, QPixmap, shortname) tuples
+        self.rowheight = 50
+        self.maximagewidth = self.rowheight*16/9.0;
 
     def rowCount(self, parent):
         return len(self.items)
 
     def insertRow(self, row, filename):
-        self.beginInsertRows(QModelIndex(),row,row)
-        log.info("insert row %d:%s"%(row,filename))
+        self.beginInsertRows(QtCore.QModelIndex(),row,row)
+        log.info("insert row %d:%s"% (row,filename))
         # get short filename to display next to image
         (prefix, shortfilename) = os.path.split(str(filename))
-        log.info("shortfilename=%s"%(shortfilename))
+        log.info("shortfilename=%s"% (shortfilename))
         # create a preview image
         if os.path.exists(filename):
-            preview = QPixmap(str(filename))
-            w=self.maximagewidth;h=self.rowheight
-            preview = preview.scaled(w,h, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            realw=preview.width(); realh=preview.height()
+            preview = QtGui.QPixmap(str(filename))
+            w = self.maximagewidth;
+            h = self.rowheight
+            preview = preview.scaled(w, h, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            realw = preview.width();
+            realh = preview.height()
             # and move it to the centre of the preview space
-            p=QPixmap(w,h)
-            p.fill(Qt.transparent)
-            painter=QPainter(p)
+            p = QtGui.QPixmap(w,h)
+            p.fill(QtCore.Qt.transparent)
+            painter = QtGui.QPainter(p)
             painter.drawPixmap((w-realw)/2,(h-realh)/2,preview)
         else:
-            w=self.maximagewidth;h=self.rowheight
-            p=QPixmap(w,h)
-            p.fill(Qt.transparent)
+            w = self.maximagewidth;
+            h = self.rowheight
+            p = QtGui.QPixmap(w,h)
+            p.fill(QtCore.Qt.transparent)
         # finally create the row
         self.items.insert(row, (filename, p, shortfilename))
         self.endInsertRows()
 
     def removeRow(self, row):
-        self.beginRemoveRows(QModelIndex(), row,row)
+        self.beginRemoveRows(QtCore.QModelIndex(), row, row)
         self.items.pop(row)
         self.endRemoveRows()
 
@@ -53,20 +76,20 @@ class ListWithPreviews(QAbstractListModel):
         self.insertRow(len(self.items), filename)
 
     def data(self, index, role):
-        row=index.row()
-        if row > len(self.items): # if the last row is selected and deleted, we then get called with an empty row!
-            return QVariant()
-        if role==Qt.DisplayRole:
-            retval= self.items[row][2]
-        elif role == Qt.DecorationRole:
-            retval= self.items[row][1]
-        elif role == Qt.ToolTipRole:
-            retval= self.items[row][0]
+        row = index.row()
+        if row > len(self.items):
+            # if the last row is selected and deleted, we then get called with an empty row!
+            return QtCore.QVariant()
+        if role == QtCore.Qt.DisplayRole:
+            retval = self.items[row][2]
+        elif role == QtCore.Qt.DecorationRole:
+            retval = self.items[row][1]
+        elif role == QtCore.Qt.ToolTipRole:
+            retval = self.items[row][0]
         else:
-            retval= QVariant()
-#         log.info("Returning"+ str(retval))
-        if type(retval) is not type(QVariant):
-            return QVariant(retval)
+            retval = QtCore.QVariant()
+        if type(retval) is not type(QtCore.QVariant):
+            return QtCore.QVariant(retval)
         else:
             return retval
 

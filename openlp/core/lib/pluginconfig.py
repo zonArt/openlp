@@ -37,12 +37,12 @@ class PluginConfig(object):
         Get a configuration value from the configuration registry.
         """
         return ConfigHelper.get_config(self.section, key, default)
-        
+
     def delete_config(self, key):
         """
         Delete a configuration value from the configuration registry.
         """
-        return ConfigHelper.delete_config(self.section, key)        
+        return ConfigHelper.delete_config(self.section, key)
 
     def set_config(self, key, value):
         """
@@ -64,26 +64,28 @@ class PluginConfig(object):
 
     def set_data_path(self, path):
         return self.set_config(u'data path', os.path.basename(path))
-        
+
     def get_files(self, suffix=None):
-        returnfiles = []        
         #suffix = self.get_config("suffix name", default_suffixes)
         try:
-            files = os.listdir(self.get_data_path()) 
+            files = os.listdir(self.get_data_path())
         except:
-            return returnfiles
+            return []
         if suffix != None:
+            return_files = []
             for f in files:
                 if f.find('.') != -1:
                     nme = f.split('.')
                     bname = nme[0]
                     sfx = nme[1].lower()
                     sfx = sfx.lower()
-                    if suffix.find(sfx) > -1 : # only load files with the correct suffix
-                        returnfiles.append(f)
-            return returnfiles
+                    # only load files with the correct suffix
+                    if suffix.find(sfx) > -1 :
+                        return_files.append(f)
+            return return_files
         else:
-            return files  # no filtering required
+            # no filtering required
+            return files
 
     def load_list(self, name):
         """

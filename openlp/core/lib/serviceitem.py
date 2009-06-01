@@ -19,10 +19,8 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import logging
 import time
-from openlp import buildIcon
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-
+from openlp.core.lib import buildIcon
+from PyQt4 import QtCore, QtGui
 
 class ServiceItem():
     """
@@ -44,6 +42,8 @@ class ServiceItem():
         self.items = []
         self.iconic_representation = None
         self.raw_slides = None
+        self.frame_titles = []
+        self.command_files = []
         self.frames = []
         self.raw_footer = None
         self.theme = None
@@ -62,11 +62,14 @@ class ServiceItem():
         else:
             self.render_manager.set_override_theme(self.theme)
         log.debug(u'Formatting slides')
-        if len(self.frames) == 0 :
+        if len(self.frames) == 0 and len(self.raw_slides) > 0 :
             for slide in self.raw_slides:
                 formated = self.render_manager.format_slide(slide, False)
                 frame = self.render_manager.generate_slide(formated, self.raw_footer)
-                self.frames.append({u'formatted': formated, u'image': frame})
+                self.frames.append({u'title': formated, u'image': frame})
+        else:
+            if len(self.command_files) > 0:
+                pass
 
 
     def get_parent_node(self):

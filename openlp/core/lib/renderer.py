@@ -177,13 +177,11 @@ class Renderer:
             painter.drawPath(rectPath)
 
         elif self._theme.background_type== u'image': # image
-            r = self._frame.rect()
-            log.debug(u'Image size details %d %d %d %d ', r.x(), r.y(), r.width(),r.height())
-            #log.debug(u' Background Parameter %d ', self._theme.background_color1)
-            #if self._theme.background_color1 is not None:
-            #    p.fillRect(self._frame.rect(), self._theme.background_borderColor)
+            #r = self._frame.rect()
+            #log.debug(u'Image size details %d %d %d %d ', r.x(), r.y(), r.width(),r.height())
             if self.bg_image is not None:
-                painter.drawPixmap(self.background_offsetx,self.background_offsety, self.bg_image)
+                #painter.drawPixmap(self.background_offsetx,self.background_offsety, self.bg_image)
+                painter.drawPixmap(0 ,0 , self.bg_image)
             else:
                 painter.fillRect(self._frame.rect(), QtGui.QColor(u'#000000'))
         painter.end()
@@ -204,24 +202,29 @@ class Renderer:
         bboxes = []
         for line in lines:
             bboxes.append(self._render_single_line(line, footer))
+            #print line,  bboxes
 
         numlines = len(lines)
         bottom = self._rect.bottom()
-        for ratio in (numlines, numlines/2, numlines/3, numlines/4):
-            good = 1
-            startline = 0
-            endline = startline + ratio
-            while (endline <= numlines):
-                by = 0
-                for (x, y) in bboxes[startline:endline]:
-                    by += y
-                if by > bottom:
-                    good=0
-                    break
-                startline += ratio
-                endline = startline+ratio
-            if good == 1:
+        #for ratio in (numlines): #, numlines/2, numlines/3, numlines/4):
+        ratio = numlines
+        good = 1
+        startline = 0
+        endline = startline + ratio
+        while (endline <= numlines):
+            by = 0
+            for (x, y) in bboxes[startline:endline]:
+                by += y
+                #print by
+            #print by , bottom
+            if by > bottom:
+                good=0
                 break
+            startline += ratio
+            endline = startline+ratio
+#        if good == 1:
+#            break
+        #print "---------"
 
         retval = []
         numlines_per_page = ratio

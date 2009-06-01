@@ -17,16 +17,8 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-from PyQt4 import QtCore, QtGui
-
 from settingsmanager import SettingsManager
 from openlp.core.lib.pluginmanager import PluginManager
 
-__all__ = ['SettingsManager', 'PluginManager', 'translate',
-            'fileToXML' ]
+__all__ = ['SettingsManager', 'PluginManager' ]
 
-def translate(context, text):
-    return QtGui.QApplication.translate(context, text, None, QtGui.QApplication.UnicodeUTF8)
-
-def fileToXML(xmlfile):
-    return open(xmlfile).read()

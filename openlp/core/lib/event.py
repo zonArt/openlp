@@ -44,6 +44,7 @@ class EventType(object):
     #PreviewBeforeShow  = 13
     #PreviewAfterShow   = 14
 
+#Theme Related Events
     ThemeListChanged = 15
 
 

@@ -63,6 +63,7 @@ class RenderManager:
         self.renderer = Renderer()
         self.calculate_default(self.screen_list[self.current_display]['size'])
         self.theme = u''
+        self.service_theme = u''
 
     def set_global_theme(self, global_theme, global_style = u'Global'):
         self.global_theme = global_theme
@@ -83,11 +84,13 @@ class RenderManager:
         else:
             if theme is not None:
                 self.theme = theme
-            elif self.global_style == u'Service':
+            elif self.global_style == u'Song' or self.global_style == u'Service':
                 if self.service_theme == u'':
                     self.theme = self.global_theme
                 else:
                     self.theme = self.service_theme
+            else:
+                self.theme = self.global_theme
 
         if self.theme is not self.renderer.theme_name:
             log.debug(u'theme is now %s',  self.theme)
@@ -117,7 +120,7 @@ class RenderManager:
 
     def generate_preview(self, themedata):
         log.debug(u'generate preview')
-        self.calculate_default(QtCore.QSize(800, 600))
+        self.calculate_default(QtCore.QSize(1024, 768))
         self.renderer.set_theme(themedata)
         self.build_text_rectangle(themedata)
 

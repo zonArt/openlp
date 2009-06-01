@@ -19,11 +19,8 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import QColor, QFont
 
-from openlp.core import translate
-from openlp.core.lib import SettingsTab
-from openlp.core.resources import *
+from openlp.core.lib import SettingsTab,  translate
 
 class AlertsTab(SettingsTab):
     """
@@ -175,7 +172,7 @@ class AlertsTab(SettingsTab):
         self.timeout = int(self.config.get_config('timeout', 5))
         self.font_color = str(self.config.get_config('font color', u'#ffffff'))
         self.bg_color = str(self.config.get_config('background color', u'#660000'))
-        self.font_face = str(self.config.get_config('font face', QFont().family()))
+        self.font_face = str(self.config.get_config('font face', QtGui.QFont().family()))
         self.TimeoutSpinBox.setValue(self.timeout)
         self.FontColorButton.setStyleSheet('background-color: %s' % self.font_color)
         self.BackgroundColorButton.setStyleSheet('background-color: %s' % self.bg_color)
@@ -192,7 +189,7 @@ class AlertsTab(SettingsTab):
         self.config.set_config('timeout', str(self.timeout))
 
     def updateDisplay(self):
-        font = QFont()
+        font = QtGui.QFont()
         font.setFamily(self.FontComboBox.currentFont().family())
         font.setBold(True)
         font.setPointSize(16)
