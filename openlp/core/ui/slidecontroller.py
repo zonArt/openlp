@@ -100,8 +100,8 @@ class SlideController(QtGui.QWidget):
     global log
     log=logging.getLogger(u'SlideController')
 
-    def __init__(self, control_splitter, isLive):
-        QtGui.QWidget.__init__(self)
+    def __init__(self, parent, control_splitter, isLive):
+        QtGui.QWidget.__init__(self, parent)
         self.isLive = isLive
         self.Panel = QtGui.QWidget(control_splitter)
         self.Splitter = QtGui.QSplitter(self.Panel)
@@ -109,32 +109,29 @@ class SlideController(QtGui.QWidget):
 
         self.PanelLayout = QtGui.QVBoxLayout(self.Panel)
         self.PanelLayout.addWidget(self.Splitter)
-        self.PanelLayout.setSpacing(50)
+        self.PanelLayout.setSpacing(0)
         self.PanelLayout.setMargin(0)
 
-        self.Controller = QtGui.QScrollArea(self.Splitter)
-        self.Controller.setGeometry(QtCore.QRect(0, 0, 700, 536))
-        self.Controller.setWidgetResizable(True)
-        self.Controller.setObjectName("scrollArea")
+        self.Controller = QtGui.QWidget(self.Splitter)
+        self.Controller.setGeometry(QtCore.QRect(0, 0, 800, 536))
+        self.Controller.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Maximum))
+        self.ControllerLayout = QtGui.QVBoxLayout(self.Controller)
+        self.ControllerLayout.setSpacing(0)
+        self.ControllerLayout.setMargin(0)
 
-        self.scrollAreaWidgetContents = QtGui.QWidget(self.Controller)
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 700, 536))
-        self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
-        self.gridLayout = QtGui.QGridLayout(self.scrollAreaWidgetContents)
-        self.gridLayout.setObjectName("gridLayout")
-
-        self.PreviewListView = QtGui.QListView(self.scrollAreaWidgetContents)
+        self.PreviewListView = QtGui.QListView(self.Controller)
         self.PreviewListData = SlideData()
         self.PreviewListView.isLive = self.isLive
+        self.PreviewListView.setFlow(1)
+        self.PreviewListView.setViewMode(1)
+        self.PreviewListView.setWrapping(False)
         self.PreviewListView.setModel(self.PreviewListData)
-        self.PreviewListView.setSelectionRectVisible(True)
-        self.PreviewListView.setSpacing(5)
+        #self.PreviewListView.setSelectionRectVisible(True)
+        self.PreviewListView.setSpacing(0)
         self.PreviewListView.setObjectName("PreviewListView")
+        self.ControllerLayout.addWidget(self.PreviewListView)
 
-        self.gridLayout.addWidget(self.PreviewListView, 0, 0, 1, 1)
-        self.Controller.setWidget(self.scrollAreaWidgetContents)
-
-        self.Toolbar = OpenLPToolbar(self.Splitter)
+        self.Toolbar = OpenLPToolbar(self.Controller)
         sizeToolbarPolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizeToolbarPolicy.setHorizontalStretch(0)
         sizeToolbarPolicy.setVerticalStretch(0)
@@ -156,14 +153,18 @@ class SlideController(QtGui.QWidget):
 
         self.Toolbar.setSizePolicy(sizeToolbarPolicy)
 
+        self.ControllerLayout.addWidget(self.Toolbar)
+
         self.PreviewFrame = QtGui.QFrame(self.Splitter)
-        self.PreviewFrame.setGeometry(QtCore.QRect(50, 270, 250, 190))
+        self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, 250, 190))
+        self.PreviewFrame.setSizePolicy(QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Minimum))
         self.PreviewFrame.setFrameShape(QtGui.QFrame.StyledPanel)
         self.PreviewFrame.setFrameShadow(QtGui.QFrame.Sunken)
         self.PreviewFrame.setObjectName(u'PreviewFrame')
 
         self.grid = QtGui.QGridLayout(self.PreviewFrame)
-        self.grid.setMargin(10)
+        self.grid.setMargin(8)
         self.grid.setObjectName(u'grid')
 
         self.SlidePreview = QtGui.QLabel(self.PreviewFrame)
@@ -173,8 +174,8 @@ class SlideController(QtGui.QWidget):
         sizePolicy.setHeightForWidth(self.SlidePreview.sizePolicy().hasHeightForWidth())
         self.SlidePreview.setSizePolicy(sizePolicy)
         self.SlidePreview.setMinimumSize(QtCore.QSize(250, 190))
-        self.SlidePreview.setFrameShape(QtGui.QFrame.WinPanel)
-        self.SlidePreview.setFrameShadow(QtGui.QFrame.Sunken)
+        self.SlidePreview.setFrameShape(QtGui.QFrame.Box)
+        self.SlidePreview.setFrameShadow(QtGui.QFrame.Plain)
         self.SlidePreview.setLineWidth(1)
         self.SlidePreview.setScaledContents(True)
         self.SlidePreview.setObjectName(u'SlidePreview')
