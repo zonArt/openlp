@@ -119,7 +119,7 @@ class AboutForm(QtGui.QDialog):
 
     def retranslateUi(self, AboutForm):
         AboutForm.setWindowTitle(translate(u'AboutDialog', u'About openlp.org',))
-        self.CopyrightLabel.setText(translate(u'AboutDialog', u'Copyright © 2004-2009 openlp.org Foundation'))
+        self.CopyrightLabel.setText(translate(u'AboutDialog', u'Copyright (c) 2004-2009 openlp.org Foundation'))
         self.AboutAuthors.setText(translate(u'AboutDialog', u'openlp.org is written and maintained by volunteers. If you would like to see more free Christian software being written, please consider contributing by using the button below.'))
         self.License1Label.setText(translate(u'AboutDialog', u'This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.'))
         self.License2Label.setText(translate(u'AboutDialog', u'You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.'))
