@@ -134,6 +134,9 @@ class SlideController(QtGui.QWidget):
         self.PreviewListView.setSpacing(5)
         self.PreviewListView.setObjectName("PreviewListView")
 
+        self.PreviewListView.setStyleSheet(
+            u'background-color: %s' % str(self.theme.font_main_color))
+
         self.gridLayout.addWidget(self.PreviewListView, 0, 0, 1, 1)
         self.Controller.setWidget(self.scrollAreaWidgetContents)
 
