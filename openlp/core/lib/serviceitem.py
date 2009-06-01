@@ -58,14 +58,15 @@ class ServiceItem():
         """
         log.debug(u'Render called')
         if self.theme == None:
-            self.render_manager.set_override_theme(None)
+            self.plugin.render_manager.set_override_theme(None)
         else:
-            self.render_manager.set_override_theme(self.theme)
+            self.plugin.render_manager.set_override_theme(self.theme)
         log.debug(u'Formatting slides')
         if len(self.frames) == 0 and len(self.raw_slides) > 0 :
             for slide in self.raw_slides:
-                formated = self.render_manager.format_slide(slide, False)
-                frame = self.render_manager.generate_slide(formated, self.raw_footer)
+                formated = self.plugin.render_manager.format_slide(slide)
+                print formated
+                frame = self.plugin.render_manager.generate_slide(formated, self.raw_footer)
                 self.frames.append({u'title': formated, u'image': frame})
         else:
             if len(self.command_files) > 0:

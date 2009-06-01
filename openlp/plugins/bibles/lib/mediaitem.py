@@ -345,21 +345,18 @@ class BibleMediaItem(MediaManagerItem):
     def onBibleLiveClick(self):
         service_item = ServiceItem(self.parent)
         service_item.addIcon( ":/media/media_verse.png")
-        service_item.render_manager = self.parent.render_manager
         self.generateSlideData(service_item)
         self.parent.live_controller.addServiceItem(service_item)
 
     def onBibleAddClick(self):
         service_item = ServiceItem(self.parent)
         service_item.addIcon( ":/media/media_verse.png")
-        service_item.render_manager = self.parent.render_manager
         self.generateSlideData(service_item)
         self.parent.service_manager.addServiceItem(service_item)
 
     def onBiblePreviewClick(self):
         service_item = ServiceItem(self.parent)
         service_item.addIcon( ":/media/media_verse.png")
-        service_item.render_manager = self.parent.render_manager
         self.generateSlideData(service_item)
         self.parent.preview_controller.addServiceItem(service_item)
 

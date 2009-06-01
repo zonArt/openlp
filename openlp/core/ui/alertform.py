@@ -18,17 +18,19 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import logging
+
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate
 
 class AlertForm(QtGui.QDialog):
     global log
-    log=logging.getLogger(u'AlertForm')
+    log = logging.getLogger(u'AlertForm')
 
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtGui.QDialog.__init__(self, None)
+        self.parent = parent
         self.setupUi(self)
-        log.info(u'Defined')
+        log.debug(u'Defined')
 
     def setupUi(self, AlertForm):
         AlertForm.setObjectName("AlertForm")
@@ -92,7 +94,6 @@ class AlertForm(QtGui.QDialog):
         self.DisplayButton.setText(translate("AlertForm", u'Display'))
         self.CancelButton.setText(translate("AlertForm", u'Cancel'))
 
-
     def load_settings(self):
         pass
 
@@ -100,4 +101,4 @@ class AlertForm(QtGui.QDialog):
         pass
 
     def onDisplayClicked(self):
-        pass
+        self.parent.mainDisplay.alert(self.parent.settingsForm.AlertsTab, self.AlertEntryEditItem.text())

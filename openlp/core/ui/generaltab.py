@@ -20,7 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab,  translate
+from openlp.core.lib import SettingsTab,  translate,  str_to_bool
 
 class GeneralTab(SettingsTab):
     """
@@ -113,6 +113,19 @@ class GeneralTab(SettingsTab):
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.GeneralRightLayout.addItem(self.GeneralRightSpacer)
         self.GeneralLayout.addWidget(self.GeneralRightWidget)
+        QtCore.QObject.connect(self.MonitorComboBox,
+            QtCore.SIGNAL("activated(int)"), self.onMonitorComboBoxChanged)
+        QtCore.QObject.connect(self.WarningCheckBox,
+            QtCore.SIGNAL("stateChanged(int)"), self.onWarningCheckBoxChanged)
+        QtCore.QObject.connect(self.AutoOpenCheckBox,
+            QtCore.SIGNAL("stateChanged(int)"), self.onAutoOpenCheckBoxChanged)
+        QtCore.QObject.connect(self.NumberEdit,
+            QtCore.SIGNAL("lostFocus()"), self.onNumberEditLostFocus)
+        QtCore.QObject.connect(self.UsernameEdit,
+            QtCore.SIGNAL("lostFocus()"), self.onUsernameEditLostFocus)
+        QtCore.QObject.connect(self.PasswordEdit,
+            QtCore.SIGNAL("lostFocus()"), self.onPasswordEditLostFocus)
+
 
     def retranslateUi(self):
         self.MonitorGroupBox.setTitle(translate(u'GeneralTab', u'Monitors'))
@@ -126,7 +139,29 @@ class GeneralTab(SettingsTab):
         self.UsernameLabel.setText(translate(u'GeneralTab', u'SongSelect Username:'))
         self.PasswordLabel.setText(translate(u'GeneralTab', u'SongSelect Password:'))
 
-    def initialise(self):
+    def onMonitorComboBoxChanged(self):
+        self.MonitorNumber = self.MonitorComboBox.currentIndex()
+
+    def onAutoOpenCheckBoxChanged(self, value):
+        self.AutoOpen = False
+        if value == 2: # we have a set value convert to True/False
+            self.AutoOpen = True
+
+    def onWarningCheckBoxChanged(self, value):
+        self.Warning = False
+        if value == 2: # we have a set value convert to True/False
+            self.Warning = True
+
+    def onNumberEditLostFocus(self):
+        self.CCLNumber = self.NumberEdit.displayText()
+
+    def onUsernameEditLostFocus(self):
+        self.Username = self.UsernameEdit.displayText()
+
+    def onPasswordEditLostFocus(self):
+        self.Password = self.PasswordEdit.displayText()
+
+    def load(self):
         for screen in self.screen_list:
             screen_name = translate(u'GeneralTab', u'Screen') + u' ' + \
                 str(screen['number'] + 1)
@@ -134,3 +169,25 @@ class GeneralTab(SettingsTab):
                 screen_name = screen_name + u' (' + \
                     translate(u'GeneralTab', u'primary') + u')'
             self.MonitorComboBox.addItem(screen_name)
+
+        self.MonitorNumber = int(self.config.get_config(u'Monitor', u'0'))
+        self.Warning = str_to_bool(self.config.get_config(u'Warning', u"False"))
+        self.AutoOpen = str_to_bool(self.config.get_config(u'Auto Open', u"False"))
+        self.CCLNumber = str(self.config.get_config('CCL Number', u'XXX'))
+        self.Username = str(self.config.get_config('User Name', u''))
+        self.Password = str(self.config.get_config('Password', u''))
+
+        self.MonitorComboBox.setCurrentIndex(self.MonitorNumber)
+        self.WarningCheckBox.setChecked(self.Warning)
+        self.AutoOpenCheckBox.setChecked(self.AutoOpen)
+        self.NumberEdit.setText(self.CCLNumber)
+        self.UsernameEdit.setText(self.Username)
+        self.PasswordEdit.setText(self.Password)
+
+    def save(self):
+        self.config.set_config(u'Monitor',str(self.MonitorNumber))
+        self.config.set_config(u'Warning', str(self.Warning))
+        self.config.set_config(u'Auto Open', str(self.AutoOpen))
+        self.config.set_config('CCL Number', str(self.CCLNumber))
+        self.config.set_config('User Name',str(self.Username))
+        self.config.set_config('Password', str(self.Password ))

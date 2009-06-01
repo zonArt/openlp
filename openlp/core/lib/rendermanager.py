@@ -136,10 +136,9 @@ class RenderManager:
         lines1.append(u'Amazing Grace (John Newton)' )
         lines1.append(u'Public Domain')
         lines1.append(u'CCLI xxx')
-        return self.renderer.render_lines(lines, lines1)
+        return self.renderer.generate_frame_from_lines(lines, lines1)
 
-
-    def format_slide(self, words, footer):
+    def format_slide(self, words):
         log.debug(u'format slide')
         self.calculate_default(self.screen_list[self.current_display]['size'])
         self.build_text_rectangle(self.themedata)
@@ -151,7 +150,7 @@ class RenderManager:
         self.calculate_default(self.screen_list[self.current_display]['size'])
         self.build_text_rectangle(self.themedata)
         self.renderer.set_frame_dest(self.width, self.height)
-        return self.renderer.render_lines(main_text, footer_text)
+        return self.renderer.generate_frame_from_lines(main_text, footer_text)
 
     def calculate_default(self, screen):
         log.debug(u'calculate default %s' , screen)

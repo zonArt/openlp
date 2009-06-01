@@ -210,7 +210,6 @@ class CustomMediaItem(MediaManagerItem):
         log.debug(u'Custom Preview Requested')
         service_item = ServiceItem(self.parent)
         service_item.addIcon( ":/media/media_song.png")
-        service_item.render_manager = self.parent.render_manager
         self.generateSlideData(service_item)
         self.parent.preview_controller.addServiceItem(service_item)
 
@@ -218,7 +217,6 @@ class CustomMediaItem(MediaManagerItem):
         log.debug(u'Custom Live Requested')
         service_item = ServiceItem(self.parent)
         service_item.addIcon( ":/media/media_song.png")
-        service_item.render_manager = self.parent.render_manager
         self.generateSlideData(service_item)
         self.parent.live_controller.addServiceItem(service_item)
 
@@ -226,7 +224,6 @@ class CustomMediaItem(MediaManagerItem):
         log.debug(u'Custom Add Requested')
         service_item = ServiceItem(self.parent)
         service_item.addIcon( ":/media/media_song.png")
-        service_item.render_manager = self.parent.render_manager
         self.generateSlideData(service_item)
         self.parent.service_manager.addServiceItem(service_item)
 

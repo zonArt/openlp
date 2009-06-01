@@ -100,9 +100,10 @@ class SlideController(QtGui.QWidget):
     global log
     log=logging.getLogger(u'SlideController')
 
-    def __init__(self, control_splitter, isLive):
+    def __init__(self, control_splitter, parent , isLive):
         QtGui.QWidget.__init__(self)
         self.isLive = isLive
+        self.parent = parent
         self.Panel = QtGui.QWidget(control_splitter)
         self.Splitter = QtGui.QSplitter(self.Panel)
         self.Splitter.setOrientation(QtCore.Qt.Vertical)
@@ -124,10 +125,12 @@ class SlideController(QtGui.QWidget):
         self.gridLayout.setObjectName("gridLayout")
 
         self.PreviewListView = QtGui.QListView(self.scrollAreaWidgetContents)
+        self.PreviewListView.setFlow(1)
+        self.PreviewListView.setViewMode(1)
+        self.PreviewListView.setWrapping(False)
         self.PreviewListData = SlideData()
-        self.PreviewListView.isLive = self.isLive
         self.PreviewListView.setModel(self.PreviewListData)
-        self.PreviewListView.setSelectionRectVisible(True)
+        #self.PreviewListView.setSelectionRectVisible(True)
         self.PreviewListView.setSpacing(5)
         self.PreviewListView.setObjectName("PreviewListView")
 
@@ -235,7 +238,7 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             no = frame[1]
             LiveFrame = self.serviceitem.frames[no][u'image']
-            self.mainDisplay.frameView(LiveFrame)
+            self.parent.mainDisplay.frameView(LiveFrame)
 
     def addServiceItem(self, serviceitem):
         log.debug(u'addServiceItem')

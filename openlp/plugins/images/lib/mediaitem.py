@@ -159,7 +159,6 @@ class ImageMediaItem(MediaManagerItem):
         log.debug(u'Image Preview Requested')
         service_item = ServiceItem(self.parent)
         service_item.addIcon( ":/media/media_image.png")
-        service_item.render_manager = self.parent.render_manager
         self.generateSlideData(service_item)
         self.parent.preview_controller.addServiceItem(service_item)
 
@@ -167,7 +166,6 @@ class ImageMediaItem(MediaManagerItem):
         log.debug(u'Image Live Requested')
         service_item = ServiceItem(self.parent)
         service_item.addIcon( ":/media/media_image.png")
-        service_item.render_manager = self.parent.render_manager
         self.generateSlideData(service_item)
         self.parent.live_controller.addServiceItem(service_item)
 
@@ -175,6 +173,5 @@ class ImageMediaItem(MediaManagerItem):
         log.debug(u'Image Add Requested')
         service_item = ServiceItem(self.parent)
         service_item.addIcon( ":/media/media_image.png")
-        service_item.render_manager = self.parent.render_manager
         self.generateSlideData(service_item)
         self.parent.service_manager.addServiceItem(service_item)

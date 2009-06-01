@@ -29,7 +29,7 @@ from copy import copy
 class Renderer:
 
     global log
-    log=logging.getLogger(u'Renderer')
+    log = logging.getLogger(u'Renderer')
     log.info(u'Renderer Loaded')
     """All the functions for rendering a set of words onto a Device Context
 
@@ -44,7 +44,7 @@ class Renderer:
     def __init__(self):
         self._rect = None
         self._debug = 0
-        self.words = None
+        #self.words = None
         self._right_margin = 64 # the amount of right indent
         self._shadow_offset = 5
         self._outline_offset = 2
@@ -103,7 +103,7 @@ class Renderer:
         if self._bg_image_filename is not None:
             self.scale_bg_image()
         if self._bg_frame is None:
-            self._render_background()
+            self._generate_background_frame()
 
     def format_slide(self, words, footer):
         """
@@ -111,30 +111,57 @@ class Renderer:
         """
         log.debug(u'format_slide %s', words)
         verses = []
-        words=words.replace("\r\n", "\n")
+        words = words.replace("\r\n", "\n")
         verses_text = words.split(u'\n\n')
+        text = []
         for verse in verses_text:
             lines = verse.split(u'\n')
-            verses.append(self.split_set_of_lines(lines, footer)[0])
-        self.words = verses
-        verses_text = []
-        for v in verses:
-            verses_text.append(u'\n'.join(v).lstrip()) # remove first \n
-        return verses_text
+            for line in lines:
+                text.append(line)
 
-    def render_screen(self, screennum):
-        log.debug(u'render screen\n %s %s ', screennum, self.words[screennum])
-        t = 0.0
-        words = self.words[screennum]
-        retval = self._render_lines(words)
-        return retval
+        print self._split_set_of_lines(text, False)
+        #verses_text = []
+        #for verse in verses:
+        #    for line in verse:
+         #       verses_text.append(line)
+        print "text ", text
+        return text
+
+#    def render_screen(self, screennum):
+#        log.debug(u'render screen\n %s %s ', screennum, self.words[screennum])
+#        t = 0.0
+#        words = self.words[screennum]
+#        retval = self._render_lines(words)
+#        return retval
 
     def set_text_rectangle(self, rect_main, rect_footer):
         """ Sets the rectangle within which text should be rendered"""
         self._rect = rect_main
         self._rect_footer = rect_footer
 
-    def _render_background(self):
+    def generate_frame_from_lines(self, lines, footer_lines=None):
+        """
+        render a set of lines according to the theme, return bounding box
+         """
+        log.debug(u'generate_frame_from_lines - Start')
+
+        bbox = self._render_lines_unaligned(lines, False)
+        if footer_lines is not None:
+            bbox1 = self._render_lines_unaligned(footer_lines, True)
+
+        # reset the frame. first time do not worrk about what you paint on.
+        self._frame = QtGui.QPixmap(self._bg_frame)
+
+        x, y = self._correctAlignment(self._rect, bbox)
+        bbox = self._render_lines_unaligned(lines, False,  (x, y))
+
+        if footer_lines is not None:
+            bbox = self._render_lines_unaligned(footer_lines, True, (self._rect_footer.left(), self._rect_footer.top()) )
+        log.debug(u'generate_frame_from_lines - Finish')
+
+        return self._frame
+
+    def _generate_background_frame(self):
         """
         Generate a background frame to the same size as the frame to be used
         Results cached for performance reasons.
@@ -150,14 +177,14 @@ class Renderer:
         elif self._theme.background_type == u'gradient' : # gradient
             gradient = None
             if self._theme.background_direction == u'horizontal':
-                w = int(self._frame.width())/2
+                w = int(self._frame.width()) / 2
                 gradient = QtGui.QLinearGradient(w, 0, w, self._frame.height()) # vertical
             elif self._theme.background_direction == u'vertical':
-                h = int(self._frame.height())/2
+                h = int(self._frame.height()) / 2
                 gradient = QtGui.QLinearGradient(0, h, self._frame.width(), h)   # Horizontal
             else:
-                w = int(self._frame.width())/2
-                h = int(self._frame.height())/2
+                w = int(self._frame.width()) / 2
+                h = int(self._frame.height()) / 2
                 gradient = QtGui.QRadialGradient(w, h, w) # Circular
 
             gradient.setColorAt(0, QtGui.QColor(self._theme.background_startColor))
@@ -189,9 +216,9 @@ class Renderer:
         print "background time", bef, aft, aft-bef
         log.debug(u'render background finish')
 
-    def split_set_of_lines(self, lines, footer):
-
-        """Given a list of lines, decide how to split them best if they don't all fit on the screen
+    def _split_set_of_lines(self, lines, footer):
+        """
+        Given a list of lines, decide how to split them best if they don't all fit on the screen
          - this is done by splitting at 1/2, 1/3 or 1/4 of the set
          If it doesn't fit, even at this size, just split at each opportunity
 
@@ -200,8 +227,9 @@ class Renderer:
          """
         log.debug(u'Split set of lines')
         bboxes = []
+        print "Lines ", lines
         for line in lines:
-            bboxes.append(self._render_single_line(line, footer))
+            bboxes.append(self._render_and_wrap_single_line(line, footer))
             #print line,  bboxes
 
         numlines = len(lines)
@@ -211,6 +239,8 @@ class Renderer:
         good = 1
         startline = 0
         endline = startline + ratio
+        #print "A ",  numlines ,  startline,  endline
+        #print "B ", bboxes
         while (endline <= numlines):
             by = 0
             for (x, y) in bboxes[startline:endline]:
@@ -224,7 +254,7 @@ class Renderer:
             endline = startline+ratio
 #        if good == 1:
 #            break
-        #print "---------"
+       # print "---------"
 
         retval = []
         numlines_per_page = ratio
@@ -252,6 +282,7 @@ class Renderer:
                     endline = startline # gets incremented below
                     by = 0
                 endline += 1
+        print "retval ", retval
         return retval
 
     def _correctAlignment(self, rect, bbox):
@@ -259,31 +290,12 @@ class Renderer:
         if int(self._theme.display_verticalAlign) == 0: # top align
             y = rect.top()
         elif int(self._theme.display_verticalAlign) == 2: # bottom align
-            y = rect.bottom()-bbox.height()
+            y = rect.bottom() - bbox.height()
         elif int(self._theme.display_verticalAlign) == 1: # centre align
-            y = rect.top()+(rect.height()-bbox.height())/2
+            y = rect.top() + (rect.height() - bbox.height()) / 2
         else:
-            assert(0, u'Invalid value for theme.VerticalAlign:%s' % self._theme.display_verticalAlign)
+            assert(0 , u'Invalid value for theme.VerticalAlign:%s' % self._theme.display_verticalAlign)
         return x, y
-
-    def render_lines(self, lines, footer_lines=None):
-        """render a set of lines according to the theme, return bounding box"""
-        log.debug(u'render_lines - Start')
-
-        bbox = self._render_lines_unaligned(lines, False) # Main font
-        if footer_lines is not None:
-            bbox1 = self._render_lines_unaligned(footer_lines, True) # Footer Font
-
-        self._frame = QtGui.QPixmap(self._bg_frame)
-
-        x, y = self._correctAlignment(self._rect, bbox)
-        bbox = self._render_lines_unaligned(lines, False,  (x, y))
-
-        if footer_lines is not None:
-            bbox = self._render_lines_unaligned(footer_lines, True, (self._rect_footer.left(), self._rect_footer.top()) )
-        log.debug(u'render_lines- Finish')
-
-        return self._frame
 
     def _render_lines_unaligned(self, lines,  footer,  tlcorner=(0,0)):
         """
@@ -298,12 +310,14 @@ class Renderer:
         x, y = tlcorner
         brx = x
         bry = y
+        print "A ", bry
         for line in lines:
             # render after current bottom, but at original left edge
             # keep track of right edge to see which is biggest
-            (thisx, bry) = self._render_single_line(line, footer, (x , bry))
+            (thisx, bry) = self._render_and_wrap_single_line(line, footer, (x , bry))
             if (thisx > brx):
                 brx = thisx
+            print "B ", bry
         retval = QtCore.QRect(x, y,brx-x, bry-y)
         if self._debug:
             painter = QtGui.QPainter()
@@ -314,7 +328,7 @@ class Renderer:
         log.debug(u'render lines unaligned Finish')
         return  retval
 
-    def _render_single_line(self, line, footer, tlcorner=(0,0)):
+    def _render_and_wrap_single_line(self, line, footer, tlcorner=(0,0)):
         """
         Render a single line of words onto the DC, top left corner
         specified.
@@ -335,10 +349,10 @@ class Renderer:
         lines = []
         maxx = self._rect.width();
         maxy = self._rect.height();
-        while (len(words)>0):
+        while (len(words) > 0):
             w , h = self._get_extent_and_render(thisline, footer)
             rhs = w + x
-            if rhs < maxx-self._right_margin:
+            if rhs < maxx - self._right_margin:
                 lines.append(thisline)
                 words = words[lastword:]
                 thisline = ' '.join(words)
@@ -373,10 +387,10 @@ class Renderer:
                     x = rightextent - w
             elif align == 1: # right align
                 rightextent = maxx
-                x = maxx-w
+                x = maxx - w
             elif align == 2: # centre
-                x = (maxx-w) / 2;
-                rightextent = x+w
+                x = (maxx - w) / 2;
+                rightextent = x + w
             # now draw the text, and any outlines/shadows
             if self._theme.display_shadow:
                 self._get_extent_and_render(line, footer,tlcorner=(x+self._shadow_offset,y+self._shadow_offset),
@@ -441,7 +455,6 @@ class Renderer:
                          QtGui.QFont.Normal, # weight
                          0)# italic
             font.setPixelSize(int(self._theme.font_main_proportion))
-        #log.debug(u'Font details %s %s %s %d', self._theme.font_main_name, self._theme.font_main_proportion,  font.family(), font.pointSize())
         painter.setFont(font)
         if color == None:
             if footer:
@@ -454,9 +467,9 @@ class Renderer:
         metrics=QtGui.QFontMetrics(font)
         # xxx some fudges to make it exactly like wx!  Take 'em out later
         w = metrics.width(line)
-        h = metrics.height()-2
+        h = metrics.height() - 2
         if draw:
-            painter.drawText(x, y+metrics.height()-metrics.descent()-1, line)
+            painter.drawText(x, y + metrics.ascent() , line)
         painter.end()
         return (w, h)
 
