@@ -109,6 +109,7 @@ class Renderer:
         """
         External API to sort out the text to pe placed on the frame
         """
+        print "########## Format Slide ##################"
         log.debug(u'format_slide %s', words)
         verses = []
         words = words.replace("\r\n", "\n")
@@ -120,10 +121,6 @@ class Renderer:
                 text.append(line)
 
         print self._split_set_of_lines(text, False)
-        #verses_text = []
-        #for verse in verses:
-        #    for line in verse:
-         #       verses_text.append(line)
         print "text ", text
         return text
 
@@ -141,9 +138,12 @@ class Renderer:
 
     def generate_frame_from_lines(self, lines, footer_lines=None):
         """
-        render a set of lines according to the theme, return bounding box
+        Render a set of lines according to the theme, return bounding box
          """
+        print "########## Generate frame from lines ##################"
         log.debug(u'generate_frame_from_lines - Start')
+
+        print "Render Lines ", lines
 
         bbox = self._render_lines_unaligned(lines, False)
         if footer_lines is not None:
@@ -204,10 +204,7 @@ class Renderer:
             painter.drawPath(rectPath)
 
         elif self._theme.background_type== u'image': # image
-            #r = self._frame.rect()
-            #log.debug(u'Image size details %d %d %d %d ', r.x(), r.y(), r.width(),r.height())
             if self.bg_image is not None:
-                #painter.drawPixmap(self.background_offsetx,self.background_offsety, self.bg_image)
                 painter.drawPixmap(0 ,0 , self.bg_image)
             else:
                 painter.fillRect(self._frame.rect(), QtGui.QColor(u'#000000'))
@@ -225,6 +222,11 @@ class Renderer:
          We'll do this by getting the bounding box of each line, and then summing them appropriately
          Returns a list of [lists of lines], one set for each screenful
          """
+
+
+         ############  THIS IS WRONG SO FIX IT
+
+
         log.debug(u'Split set of lines')
         bboxes = []
         print "Lines ", lines
@@ -367,6 +369,8 @@ class Renderer:
             align = 0
         else:
             align = int(self._theme .display_horizontalAlign)
+
+        print "wrap ", lines
 
         for linenum in range(len(lines)):
             line = lines[linenum]
