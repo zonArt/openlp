@@ -19,22 +19,28 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import os
 import logging
-from time import sleep
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
-                           SlideController, ServiceManager, ThemeManager, MainDisplay
-from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab, EventManager, RenderManager, translate
-
+from openlp.core.ui import AboutForm, SettingsForm, AlertForm, ServiceManager, \
+    ThemeManager, MainDisplay, SlideController
+from openlp.core.lib import translate, Plugin, MediaManagerItem, SettingsTab, \
+    EventManager, RenderManager
 from openlp.core import PluginManager
 
 class MainWindow(object):
+    """
+    The main window.
+    """
     global log
     log = logging.getLogger(u'MainWindow')
     log.info(u'MainWindow loaded')
 
     def __init__(self, screens):
+        """
+        This constructor sets up the interface, the various managers, and the
+        plugins.
+        """
         self.mainWindow = QtGui.QMainWindow()
         self.mainWindow.__class__.closeEvent = self.onCloseEvent
         self.mainDisplay = MainDisplay(None, screens)
@@ -43,19 +49,18 @@ class MainWindow(object):
         self.alertForm = AlertForm(self)
         self.aboutForm = AboutForm()
         self.settingsForm = SettingsForm(self.screenList, self)
-
+        # Set up the path with plugins
         pluginpath = os.path.split(os.path.abspath(__file__))[0]
-        pluginpath = os.path.abspath(os.path.join(pluginpath, u'..', u'..', u'plugins'))
+        pluginpath = os.path.abspath(
+            os.path.join(pluginpath, u'..', u'..', u'plugins'))
         self.plugin_manager = PluginManager(pluginpath)
         self.plugin_helpers = {}
-
+        # Set up the interface
         self.setupUi()
-
         #warning cyclic dependency
         #RenderManager needs to call ThemeManager and
         #ThemeManager needs to call RenderManager
         self.RenderManager = RenderManager(self.ThemeManagerContents, self.screenList)
-
         log.info(u'Load Plugins')
         self.plugin_helpers[u'preview'] = self.PreviewController
         self.plugin_helpers[u'live'] = self.LiveController
@@ -63,60 +68,54 @@ class MainWindow(object):
         self.plugin_helpers[u'theme'] = self.ThemeManagerContents
         self.plugin_helpers[u'render'] = self.RenderManager
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
-
-        self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers, self.EventManager)
-        # hook methods have to happen after find_plugins.  Find plugins needs the controllers
-        # hence the hooks have moved from setupUI() to here
+        self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers,
+            self.EventManager)
+        # hook methods have to happen after find_plugins. Find plugins needs the
+        # controllershence the hooks have moved from setupUI() to here
 
         # Find and insert media manager items
         log.info(u'hook media')
         self.plugin_manager.hook_media_manager(self.MediaToolBox)
-
         # Find and insert settings tabs
         log.info(u'hook settings')
         self.plugin_manager.hook_settings_tabs(self.settingsForm)
-
         # Call the hook method to pull in import menus.
         log.info(u'hook menus')
         self.plugin_manager.hook_import_menu(self.FileImportMenu)
-
         # Call the hook method to pull in export menus.
         self.plugin_manager.hook_export_menu(self.FileExportMenu)
-
         # Call the initialise method to setup plugins.
         log.info(u'initialise plugins')
         self.plugin_manager.initialise_plugins()
-
         # Once all components are initialised load the Themes
         log.info(u'Load Themes')
         self.ThemeManagerContents.loadThemes()
 
-    def onCloseEvent(self, event):
-        """
-        Hook to close the main window and display windows on exit
-        """
-        self.mainDisplay.close()
-        event.accept()
-
     def setupUi(self):
+        """
+        Set up the user interface
+        """
         self.mainWindow.setObjectName(u'mainWindow')
         self.mainWindow.resize(1087, 847)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
             QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.mainWindow.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.mainWindow.sizePolicy().hasHeightForWidth())
         self.mainWindow.setSizePolicy(sizePolicy)
         main_icon = QtGui.QIcon()
         main_icon.addPixmap(QtGui.QPixmap(u':/icon/openlp-logo-16x16.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.mainWindow.setWindowIcon(main_icon)
-
+        # Set up the main container, which contains all the other form widgets
         self.MainContent = QtGui.QWidget(self.mainWindow)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
+            QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.MainContent.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.MainContent.sizePolicy().hasHeightForWidth())
         self.MainContent.setSizePolicy(sizePolicy)
         self.MainContent.setObjectName(u'MainContent')
         self.MainContentLayout = QtGui.QHBoxLayout(self.MainContent)
@@ -128,10 +127,10 @@ class MainWindow(object):
         self.ControlSplitter.setOrientation(QtCore.Qt.Horizontal)
         self.ControlSplitter.setObjectName(u'ControlSplitter')
         self.MainContentLayout.addWidget(self.ControlSplitter)
-
-        self.PreviewController = SlideController( self.ControlSplitter, self,  False)
-        self.LiveController = SlideController(self.ControlSplitter, self,  True)
-
+        # Create slide controllers
+        self.PreviewController = SlideController(self.ControlSplitter, self)
+        self.LiveController = SlideController(self.ControlSplitter, self, True)
+        # Create menu
         self.MenuBar = QtGui.QMenuBar(self.mainWindow)
         self.MenuBar.setGeometry(QtCore.QRect(0, 0, 1087, 27))
         self.MenuBar.setObjectName(u'MenuBar')
@@ -139,7 +138,6 @@ class MainWindow(object):
         self.FileMenu.setObjectName(u'FileMenu')
         self.FileImportMenu = QtGui.QMenu(self.FileMenu)
         self.FileImportMenu.setObjectName(u'FileImportMenu')
-
         self.FileExportMenu = QtGui.QMenu(self.FileMenu)
         self.FileExportMenu.setObjectName(u'FileExportMenu')
         self.OptionsMenu = QtGui.QMenu(self.MenuBar)
@@ -158,65 +156,55 @@ class MainWindow(object):
         self.StatusBar = QtGui.QStatusBar(self.mainWindow)
         self.StatusBar.setObjectName(u'StatusBar')
         self.mainWindow.setStatusBar(self.StatusBar)
-
+        # Create the MediaManager
         self.MediaManagerDock = QtGui.QDockWidget(self.mainWindow)
-        #MmSizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
-        #MmSizePolicy.setHorizontalStretch(0)
-        #MmSizePolicy.setVerticalStretch(0)
-        #MmSizePolicy.setHeightForWidth(self.MediaManagerDock.sizePolicy().hasHeightForWidth())
-        #self.MediaManagerDock.setSizePolicy(MmSizePolicy)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(u':/system/system_mediamanager.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
-
         self.MediaManagerDock.setWindowIcon(icon)
         self.MediaManagerDock.setFloating(False)
         self.MediaManagerDock.setObjectName(u'MediaManagerDock')
-        self.MediaManagerDock.setMinimumWidth(250)
+        self.MediaManagerDock.setMinimumWidth(300)
         self.MediaManagerContents = QtGui.QWidget()
-        #sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
-        #sizePolicy.setHorizontalStretch(0)
-        #sizePolicy.setVerticalStretch(0)
-        #sizePolicy.setHeightForWidth(self.MediaManagerContents.sizePolicy().hasHeightForWidth())
-        #self.MediaManagerContents.setSizePolicy(sizePolicy)
         self.MediaManagerContents.setObjectName(u'MediaManagerContents')
         self.MediaManagerLayout = QtGui.QHBoxLayout(self.MediaManagerContents)
         self.MediaManagerLayout.setContentsMargins(0, 2, 0, 0)
         self.MediaManagerLayout.setObjectName(u'MediaManagerLayout')
         self.MediaToolBox = QtGui.QToolBox(self.MediaManagerContents)
         self.MediaToolBox.setObjectName(u'MediaToolBox')
-
         self.MediaManagerLayout.addWidget(self.MediaToolBox)
         self.MediaManagerDock.setWidget(self.MediaManagerContents)
-        self.mainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.MediaManagerDock)
-
-        #Sevice Manager Defined
+        self.mainWindow.addDockWidget(
+            QtCore.Qt.DockWidgetArea(1), self.MediaManagerDock)
+        # Create the service manager
         self.ServiceManagerDock = QtGui.QDockWidget(self.mainWindow)
         ServiceManagerIcon = QtGui.QIcon()
-        ServiceManagerIcon.addPixmap(QtGui.QPixmap(u':/system/system_servicemanager.png'),
+        ServiceManagerIcon.addPixmap(
+            QtGui.QPixmap(u':/system/system_servicemanager.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.ServiceManagerDock.setWindowIcon(ServiceManagerIcon)
-        self.ServiceManagerDock.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
+        self.ServiceManagerDock.setFeatures(
+            QtGui.QDockWidget.AllDockWidgetFeatures)
         self.ServiceManagerDock.setObjectName(u'ServiceManagerDock')
+        self.ServiceManagerDock.setMinimumWidth(300)
         self.ServiceManagerContents = ServiceManager(self)
         self.ServiceManagerDock.setWidget(self.ServiceManagerContents)
-        self.mainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.ServiceManagerDock)
-
-        #Theme Manager Defined
+        self.mainWindow.addDockWidget(
+            QtCore.Qt.DockWidgetArea(2), self.ServiceManagerDock)
+        # Create the theme manager
         self.ThemeManagerDock = QtGui.QDockWidget(self.mainWindow)
         ThemeManagerIcon = QtGui.QIcon()
-        ThemeManagerIcon.addPixmap(QtGui.QPixmap(u':/system/system_thememanager.png'),
+        ThemeManagerIcon.addPixmap(
+            QtGui.QPixmap(u':/system/system_thememanager.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.ThemeManagerDock.setWindowIcon(ThemeManagerIcon)
         self.ThemeManagerDock.setFloating(False)
         self.ThemeManagerDock.setObjectName(u'ThemeManagerDock')
-
         self.ThemeManagerContents = ThemeManager(self)
-
         self.ThemeManagerDock.setWidget(self.ThemeManagerContents)
-        self.mainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.ThemeManagerDock)
-
-        #Menu Items define
+        self.mainWindow.addDockWidget(
+            QtCore.Qt.DockWidgetArea(2), self.ThemeManagerDock)
+        # Create the menu items
         self.FileNewItem = QtGui.QAction(self.mainWindow)
         self.FileNewItem.setIcon(
             self.ServiceManagerContents.Toolbar.getIconFromTitle(u'New Service'))
@@ -346,9 +334,10 @@ class MainWindow(object):
         self.MenuBar.addAction(self.OptionsMenu.menuAction())
         self.MenuBar.addAction(self.ToolsMenu.menuAction())
         self.MenuBar.addAction(self.HelpMenu.menuAction())
-
+        # Initialise the translation
         self.retranslateUi()
         self.MediaToolBox.setCurrentIndex(0)
+        # Connect up some signals and slots
         QtCore.QObject.connect(self.FileExitItem,
             QtCore.SIGNAL(u'triggered()'), self.mainWindow.close)
         QtCore.QObject.connect(self.ViewMediaManagerItem,
@@ -373,9 +362,11 @@ class MainWindow(object):
             QtCore.SIGNAL(u'triggered()'), self.onOptionsSettingsItemClicked)
         QtCore.QMetaObject.connectSlotsByName(self.mainWindow)
 
-
     def retranslateUi(self):
-        self.mainWindow.setWindowTitle(translate(u'mainWindow', u'openlp.org 2.0'))
+        """
+        Set up the translation system
+        """
+        self.mainWindow.setWindowTitle(translate(u'mainWindow', u'OpenLP 2.0'))
         self.FileMenu.setTitle(translate(u'mainWindow', u'&File'))
         self.FileImportMenu.setTitle(translate(u'mainWindow', u'&Import'))
         self.FileExportMenu.setTitle(translate(u'mainWindow', u'&Export'))
@@ -385,27 +376,35 @@ class MainWindow(object):
         self.OptionsLanguageMenu.setTitle(translate(u'mainWindow', u'&Language'))
         self.ToolsMenu.setTitle(translate(u'mainWindow', u'&Tools'))
         self.HelpMenu.setTitle(translate(u'mainWindow', u'&Help'))
-        self.MediaManagerDock.setWindowTitle(translate(u'mainWindow', u'Media Manager'))
-        self.ServiceManagerDock.setWindowTitle(translate(u'mainWindow', u'Service Manager'))
-        self.ThemeManagerDock.setWindowTitle(translate(u'mainWindow', u'Theme Manager'))
+        self.MediaManagerDock.setWindowTitle(
+            translate(u'mainWindow', u'Media Manager'))
+        self.ServiceManagerDock.setWindowTitle(
+            translate(u'mainWindow', u'Service Manager'))
+        self.ThemeManagerDock.setWindowTitle(
+            translate(u'mainWindow', u'Theme Manager'))
         self.FileNewItem.setText(translate(u'mainWindow', u'&New'))
         self.FileNewItem.setToolTip(translate(u'mainWindow', u'New Service'))
-        self.FileNewItem.setStatusTip(translate(u'mainWindow', u'Create a new Service'))
+        self.FileNewItem.setStatusTip(
+            translate(u'mainWindow', u'Create a new Service'))
         self.FileNewItem.setShortcut(translate(u'mainWindow', u'Ctrl+N'))
         self.FileOpenItem.setText(translate(u'mainWindow', u'&Open'))
         self.FileOpenItem.setToolTip(translate(u'mainWindow', u'Open Service'))
-        self.FileOpenItem.setStatusTip(translate(u'mainWindow', u'Open an existing service'))
+        self.FileOpenItem.setStatusTip(
+            translate(u'mainWindow', u'Open an existing service'))
         self.FileOpenItem.setShortcut(translate(u'mainWindow', u'Ctrl+O'))
         self.FileSaveItem.setText(translate(u'mainWindow', u'&Save'))
         self.FileSaveItem.setToolTip(translate(u'mainWindow', u'Save Service'))
-        self.FileSaveItem.setStatusTip(translate(u'mainWindow', u'Save the current service to disk'))
+        self.FileSaveItem.setStatusTip(
+            translate(u'mainWindow', u'Save the current service to disk'))
         self.FileSaveItem.setShortcut(translate(u'mainWindow', u'Ctrl+S'))
         self.FileSaveAsItem.setText(translate(u'mainWindow', u'Save &As...'))
-        self.FileSaveAsItem.setToolTip(translate(u'mainWindow', u'Save Service As'))
-        self.FileSaveAsItem.setStatusTip(translate(u'mainWindow', u'Save the current service under a new name'))
+        self.FileSaveAsItem.setToolTip(
+            translate(u'mainWindow', u'Save Service As'))
+        self.FileSaveAsItem.setStatusTip(translate(u'mainWindow',
+            u'Save the current service under a new name'))
         self.FileSaveAsItem.setShortcut(translate(u'mainWindow', u'F12'))
         self.FileExitItem.setText(translate(u'mainWindow', u'E&xit'))
-        self.FileExitItem.setStatusTip(translate(u'mainWindow', u'Quit OpenLP 2.0'))
+        self.FileExitItem.setStatusTip(translate(u'mainWindow', u'Quit OpenLP'))
         self.FileExitItem.setShortcut(translate(u'mainWindow', u'Alt+F4'))
         self.ImportThemeItem.setText(translate(u'mainWindow', u'&Theme'))
         self.ImportLanguageItem.setText(translate(u'mainWindow', u'&Language'))
@@ -413,46 +412,83 @@ class MainWindow(object):
         self.ExportLanguageItem.setText(translate(u'mainWindow', u'&Language'))
         self.actionLook_Feel.setText(translate(u'mainWindow', u'Look && &Feel'))
         self.OptionsSettingsItem.setText(translate(u'mainWindow', u'&Settings'))
-        self.ViewMediaManagerItem.setText(translate(u'mainWindow', u'&Media Manager'))
-        self.ViewMediaManagerItem.setToolTip(translate(u'mainWindow', u'Toggle Media Manager'))
-        self.ViewMediaManagerItem.setStatusTip(translate(u'mainWindow', u'Toggle the visibility of the Media Manager'))
+        self.ViewMediaManagerItem.setText(
+            translate(u'mainWindow', u'&Media Manager'))
+        self.ViewMediaManagerItem.setToolTip(
+            translate(u'mainWindow', u'Toggle Media Manager'))
+        self.ViewMediaManagerItem.setStatusTip(translate(u'mainWindow',
+            u'Toggle the visibility of the Media Manager'))
         self.ViewMediaManagerItem.setShortcut(translate(u'mainWindow', u'F8'))
-        self.ViewThemeManagerItem.setText(translate(u'mainWindow', u'&Theme Manager'))
-        self.ViewThemeManagerItem.setToolTip(translate(u'mainWindow', u'Toggle Theme Manager'))
-        self.ViewThemeManagerItem.setStatusTip(translate(u'mainWindow', u'Toggle the visibility of the Theme Manager'))
+        self.ViewThemeManagerItem.setText(
+            translate(u'mainWindow', u'&Theme Manager'))
+        self.ViewThemeManagerItem.setToolTip(
+            translate(u'mainWindow', u'Toggle Theme Manager'))
+        self.ViewThemeManagerItem.setStatusTip(translate(u'mainWindow',
+            u'Toggle the visibility of the Theme Manager'))
         self.ViewThemeManagerItem.setShortcut(translate(u'mainWindow', u'F10'))
-        self.ViewServiceManagerItem.setText(translate(u'mainWindow', u'&Service Manager'))
-        self.ViewServiceManagerItem.setToolTip(translate(u'mainWindow', u'Toggle Service Manager'))
-        self.ViewServiceManagerItem.setStatusTip(translate(u'mainWindow', u'Toggle the visibility of the Service Manager'))
+        self.ViewServiceManagerItem.setText(
+            translate(u'mainWindow', u'&Service Manager'))
+        self.ViewServiceManagerItem.setToolTip(
+            translate(u'mainWindow', u'Toggle Service Manager'))
+        self.ViewServiceManagerItem.setStatusTip(translate(u'mainWindow',
+            u'Toggle the visibility of the Service Manager'))
         self.ViewServiceManagerItem.setShortcut(translate(u'mainWindow', u'F9'))
         self.ToolsAlertItem.setText(translate(u'mainWindow', u'&Alert'))
-        self.ToolsAlertItem.setStatusTip(translate(u'mainWindow', u'Show an alert message'))
+        self.ToolsAlertItem.setStatusTip(
+            translate(u'mainWindow', u'Show an alert message'))
         self.ToolsAlertItem.setShortcut(translate(u'mainWindow', u'F7'))
-        self.HelpDocumentationItem.setText(translate(u'mainWindow', u'&User Guide'))
+        self.HelpDocumentationItem.setText(
+            translate(u'mainWindow', u'&User Guide'))
         self.HelpAboutItem.setText(translate(u'mainWindow', u'&About'))
-        self.HelpAboutItem.setStatusTip(translate(u'mainWindow', u'More information about OpenLP'))
+        self.HelpAboutItem.setStatusTip(
+            translate(u'mainWindow', u'More information about OpenLP'))
         self.HelpAboutItem.setShortcut(translate(u'mainWindow', u'Ctrl+F1'))
-        self.HelpOnlineHelpItem.setText(translate(u'mainWindow', u'&Online Help'))
+        self.HelpOnlineHelpItem.setText(
+            translate(u'mainWindow', u'&Online Help'))
         self.HelpWebSiteItem.setText(translate(u'mainWindow', u'&Web Site'))
-        self.LanguageTranslateItem.setText(translate(u'mainWindow', u'&Translate'))
-        self.LanguageTranslateItem.setStatusTip(translate(u'mainWindow', u'Translate the interface to your language'))
+        self.LanguageTranslateItem.setText(
+            translate(u'mainWindow', u'&Translate'))
+        self.LanguageTranslateItem.setStatusTip(translate(u'mainWindow',
+            u'Translate the interface to your language'))
         self.LanguageEnglishItem.setText(translate(u'mainWindow', u'English'))
-        self.LanguageEnglishItem.setStatusTip(translate(u'mainWindow', u'Set the interface language to English'))
+        self.LanguageEnglishItem.setStatusTip(translate(u'mainWindow',
+            u'Set the interface language to English'))
         self.ToolsAddToolItem.setText(translate(u'mainWindow', u'&Add Tool...'))
-        self.ToolsAddToolItem.setStatusTip(translate(u'mainWindow', u'Add an application to the list of tools'))
-        self.action_Preview_Panel.setText(translate(u'mainWindow', u'&Preview Pane'))
+        self.ToolsAddToolItem.setStatusTip(translate(u'mainWindow',
+            u'Add an application to the list of tools'))
+        self.action_Preview_Panel.setText(
+            translate(u'mainWindow', u'&Preview Pane'))
         self.ModeLiveItem.setText(translate(u'mainWindow', u'&Live'))
 
     def show(self):
+        """
+        Show the main form, as well as the display form
+        """
         self.mainWindow.showMaximized()
         self.mainDisplay.setup(self.settingsForm.GeneralTab.MonitorNumber)
         self.mainDisplay.show()
 
     def onHelpAboutItemClicked(self):
+        """
+        Show the About form
+        """
         self.aboutForm.exec_()
 
     def onToolsAlertItemClicked(self):
+        """
+        Show the Alert form
+        """
         self.alertForm.exec_()
 
     def onOptionsSettingsItemClicked(self):
+        """
+        Show the Settings dialog
+        """
         self.settingsForm.exec_()
+
+    def onCloseEvent(self, event):
+        """
+        Hook to close the main window and display windows on exit
+        """
+        self.mainDisplay.close()
+        event.accept()

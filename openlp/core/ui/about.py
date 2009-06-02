@@ -23,12 +23,21 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate
 
 class AboutForm(QtGui.QDialog):
+    """
+    The About dialog
+    """
 
     def __init__(self, parent=None):
+        """
+        Do some initialisation stuff
+        """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
 
     def setupUi(self, AboutForm):
+        """
+        Set up user interface
+        """
         AboutForm.setObjectName(u'AboutForm')
         AboutForm.resize(470, 481)
         icon = QtGui.QIcon()
@@ -41,11 +50,10 @@ class AboutForm(QtGui.QDialog):
         self.Logo = QtGui.QLabel(AboutForm)
         self.Logo.setAutoFillBackground(False)
         self.Logo.setStyleSheet(u'background-color: rgb(255, 255, 255);')
-        self.Logo.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.Logo.setLineWidth(1)
+        self.Logo.setLineWidth(0)
         self.Logo.setPixmap(QtGui.QPixmap(u':/graphics/openlp-about-logo.png'))
         self.Logo.setScaledContents(False)
-        self.Logo.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.Logo.setAlignment(QtCore.Qt.AlignCenter)
         self.Logo.setObjectName(u'Logo')
         AboutFormLayout.addWidget(self.Logo)
         self.AboutNotebook = QtGui.QTabWidget(AboutForm)
@@ -60,22 +68,26 @@ class AboutForm(QtGui.QDialog):
         self.CopyrightLabel.setObjectName(u'CopyrightLabel')
         self.LicenseTabLayout.addWidget(self.CopyrightLabel)
         self.AboutAuthors = QtGui.QLabel(self.LicenseTab)
-        self.AboutAuthors.setAlignment(QtCore.Qt.AlignJustify|QtCore.Qt.AlignVCenter)
+        self.AboutAuthors.setAlignment(
+            QtCore.Qt.AlignJustify | QtCore.Qt.AlignVCenter)
         self.AboutAuthors.setWordWrap(True)
         self.AboutAuthors.setObjectName(u'AboutAuthors')
         self.LicenseTabLayout.addWidget(self.AboutAuthors)
         self.License1Label = QtGui.QLabel(self.LicenseTab)
-        self.License1Label.setAlignment(QtCore.Qt.AlignJustify|QtCore.Qt.AlignVCenter)
+        self.License1Label.setAlignment(
+            QtCore.Qt.AlignJustify | QtCore.Qt.AlignVCenter)
         self.License1Label.setWordWrap(True)
         self.License1Label.setObjectName(u'License1Label')
         self.LicenseTabLayout.addWidget(self.License1Label)
         self.License2Label = QtGui.QLabel(self.LicenseTab)
-        self.License2Label.setAlignment(QtCore.Qt.AlignJustify|QtCore.Qt.AlignVCenter)
+        self.License2Label.setAlignment(
+            QtCore.Qt.AlignJustify | QtCore.Qt.AlignVCenter)
         self.License2Label.setWordWrap(True)
         self.License2Label.setObjectName(u'License2Label')
         self.LicenseTabLayout.addWidget(self.License2Label)
         self.License3Label = QtGui.QLabel(self.LicenseTab)
-        self.License3Label.setAlignment(QtCore.Qt.AlignJustify|QtCore.Qt.AlignVCenter)
+        self.License3Label.setAlignment(
+            QtCore.Qt.AlignJustify | QtCore.Qt.AlignVCenter)
         self.License3Label.setWordWrap(True)
         self.License3Label.setObjectName(u'License3Label')
         self.LicenseTabLayout.addWidget(self.License3Label)
@@ -83,8 +95,8 @@ class AboutForm(QtGui.QDialog):
         self.CreditsTab = QtGui.QWidget()
         self.CreditsTab.setObjectName(u'CreditsTab')
         self.CreditsTabLayout = QtGui.QVBoxLayout(self.CreditsTab)
-        self.CreditsTabLayout.setSpacing(0) #
-        self.CreditsTabLayout.setMargin(8) #
+        self.CreditsTabLayout.setSpacing(0)
+        self.CreditsTabLayout.setMargin(8)
         self.CreditsTabLayout.setObjectName(u'CreditsTabLayout')
         self.CreditsTextEdit = QtGui.QTextEdit(self.CreditsTab)
         self.CreditsTextEdit.setReadOnly(True)
@@ -98,7 +110,8 @@ class AboutForm(QtGui.QDialog):
         self.ButtonWidgetLayout.setSpacing(8)
         self.ButtonWidgetLayout.setMargin(0)
         self.ButtonWidgetLayout.setObjectName(u'ButtonWidgetLayout')
-        spacerItem = QtGui.QSpacerItem(275, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem = QtGui.QSpacerItem(275, 20, QtGui.QSizePolicy.Expanding,
+            QtGui.QSizePolicy.Minimum)
         self.ButtonWidgetLayout.addItem(spacerItem)
         self.ContributeButton = QtGui.QPushButton(self.ButtonWidget)
         self.ContributeButton.setObjectName(u'ContributeButton')
@@ -109,39 +122,55 @@ class AboutForm(QtGui.QDialog):
         AboutFormLayout.addWidget(self.ButtonWidget)
         self.extContributeItem = QtGui.QAction(AboutForm)
         self.extContributeItem.setObjectName(u'extContributeItem')
-
+        # Do translation
         self.retranslateUi(AboutForm)
         self.AboutNotebook.setCurrentIndex(0)
-        QtCore.QObject.connect(self.CloseButton, QtCore.SIGNAL(u'clicked()'), AboutForm.close)
+        QtCore.QObject.connect(self.CloseButton, QtCore.SIGNAL(u'clicked()'),
+            AboutForm.close)
+        QtCore.QObject.connect(self.ContributeButton,
+            QtCore.SIGNAL(u'clicked()'), self.onContributeButtonClicked)
         QtCore.QMetaObject.connectSlotsByName(AboutForm)
 
-        QtCore.QObject.connect(self.ContributeButton, QtCore.SIGNAL(u'clicked()'), self.onContributeButtonClicked)
-
     def retranslateUi(self, AboutForm):
-        AboutForm.setWindowTitle(translate(u'AboutDialog', u'About openlp.org',))
-        self.CopyrightLabel.setText(translate(u'AboutDialog', u'Copyright (c) 2004-2009 openlp.org Foundation'))
-        self.AboutAuthors.setText(translate(u'AboutDialog', u'openlp.org is written and maintained by volunteers. If you would like to see more free Christian software being written, please consider contributing by using the button below.'))
-        self.License1Label.setText(translate(u'AboutDialog', u'This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.'))
-        self.License2Label.setText(translate(u'AboutDialog', u'You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.'))
-        self.License3Label.setText(translate(u'AboutDialog', u'This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.'))
-        self.AboutNotebook.setTabText(self.AboutNotebook.indexOf(self.LicenseTab), translate(u'AboutDialog', u'License'))
+        """
+        Set up translation
+        """
+        AboutForm.setWindowTitle(translate(u'AboutDialog', u'About openlp.org'))
+        self.CopyrightLabel.setText(translate(u'AboutDialog',
+            u'Copyright (c) 2004-2009 openlp.org Foundation'))
+        self.AboutAuthors.setText(translate(u'AboutDialog',
+            u'openlp.org is written and maintained by volunteers. If you would like to see more free Christian software being written, please consider contributing by using the button below.'))
+        self.License1Label.setText(translate(u'AboutDialog',
+            u'This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.'))
+        self.License2Label.setText(translate(u'AboutDialog',
+            u'You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.'))
+        self.License3Label.setText(translate(u'AboutDialog',
+            u'This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.'))
+        self.AboutNotebook.setTabText(
+            self.AboutNotebook.indexOf(self.LicenseTab),
+            translate(u'AboutDialog', u'License'))
         self.CreditsTextEdit.setPlainText(translate(u'AboutDialog',
-        u'Project Lead\n'
-        u'    Raoul \"superfly\" Snyman\n'
-        u'\n'
-        u'Developers\n'
-        u'    Tim \"TRB143\" Bentley\n'
-        u'    Jonathan \"gushie\" Corwin\n'
-        u'    Scott \"sguerrieri\" Guerrieri\n'
-        u'    Raoul \"superfly\" Snyman\n'
-        u'    Martin \"mijiti\" Thompson\n'
-        u'    Carsten \"catini\" Tingaard'))
-        self.AboutNotebook.setTabText(self.AboutNotebook.indexOf(self.CreditsTab), translate(u'AboutDialog', u'Credits'))
+            u'Project Lead\n'
+            u'    Raoul \"superfly\" Snyman\n'
+            u'\n'
+            u'Developers\n'
+            u'    Tim \"TRB143\" Bentley\n'
+            u'    Jonathan \"gushie\" Corwin\n'
+            u'    Scott \"sguerrieri\" Guerrieri\n'
+            u'    Raoul \"superfly\" Snyman\n'
+            u'    Martin \"mijiti\" Thompson\n'
+            u'    Carsten \"catini\" Tingaard'))
+        self.AboutNotebook.setTabText(
+            self.AboutNotebook.indexOf(self.CreditsTab),
+            translate(u'AboutDialog', u'Credits'))
         self.ContributeButton.setText(translate(u'AboutDialog', u'Contribute'))
         self.CloseButton.setText(translate(u'AboutDialog', u'Close'))
         self.extContributeItem.setText(translate(u'AboutDialog', u'&Contribute'))
 
     def onContributeButtonClicked(self):
+        """
+        Launch a web browser and go to the contribute page on the site.
+        """
         import webbrowser
         url = "http://www.openlp.org/en/documentation/introduction/contributing.html"
         webbrowser.open_new(url)
