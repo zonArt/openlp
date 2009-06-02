@@ -215,8 +215,8 @@ class ThemeManager(QtGui.QWidget):
             for name in files:
                 if name.endswith(u'.png'):
                     self.themeData.addRow(os.path.join(self.path, name))
-        self.EventManager.post_event(Event(EventType.ThemeListChanged))
-        self.ServiceManager.updateThemeList(self.getThemes())
+        self.parent.EventManager.post_event(Event(EventType.ThemeListChanged))
+        self.parent.ServiceManagerContents.updateThemeList(self.getThemes())
         self.parent.settingsForm.ThemesTab.updateThemeList(self.getThemes())
 
     def getThemes(self):
@@ -335,7 +335,7 @@ class ThemeManager(QtGui.QWidget):
         outfile = open(theme_file, u'w')
         outfile.write(theme_xml)
         outfile.close()
-        if image_from is not None:
+        if image_from is not None and image_from != image_to:
             shutil.copyfile(image_from,  image_to)
         self.generateAndSaveImage(self.path, name, theme_xml)
         self.themeData.clearItems()
@@ -356,7 +356,7 @@ class ThemeManager(QtGui.QWidget):
 
     def generateImage(self, themedata):
         log.debug(u'generateImage %s ', themedata)
-        frame = self.RenderManager.generate_preview(themedata)
+        frame = self.parent.RenderManager.generate_preview(themedata)
         return frame
 
     def getPreviewImage(self, theme):

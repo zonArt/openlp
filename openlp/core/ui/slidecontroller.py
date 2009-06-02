@@ -98,11 +98,12 @@ class SlideData(QtCore.QAbstractListModel):
 
 class SlideController(QtGui.QWidget):
     global log
-    log=logging.getLogger(u'SlideController')
+    log = logging.getLogger(u'SlideController')
 
-    def __init__(self, parent, control_splitter, isLive):
-        QtGui.QWidget.__init__(self, parent)
+    def __init__(self, control_splitter, parent, isLive):
+        QtGui.QWidget.__init__(self, parent.mainWindow)
         self.isLive = isLive
+        self.parent = parent
         self.Panel = QtGui.QWidget(control_splitter)
         self.Splitter = QtGui.QSplitter(self.Panel)
         self.Splitter.setOrientation(QtCore.Qt.Vertical)
@@ -127,6 +128,7 @@ class SlideController(QtGui.QWidget):
         self.PreviewListView.setWrapping(False)
         self.PreviewListView.setModel(self.PreviewListData)
         #self.PreviewListView.setSelectionRectVisible(True)
+
         self.PreviewListView.setSpacing(0)
         self.PreviewListView.setObjectName("PreviewListView")
         self.ControllerLayout.addWidget(self.PreviewListView)
@@ -236,7 +238,7 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             no = frame[1]
             LiveFrame = self.serviceitem.frames[no][u'image']
-            self.mainDisplay.frameView(LiveFrame)
+            self.parent.mainDisplay.frameView(LiveFrame)
 
     def addServiceItem(self, serviceitem):
         log.debug(u'addServiceItem')

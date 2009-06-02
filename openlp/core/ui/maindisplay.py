@@ -18,8 +18,9 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui, QtTest
 
+from time import sleep
 from openlp.core.lib import translate
 
 class MainDisplay(QtGui.QWidget):
@@ -32,6 +33,9 @@ class MainDisplay(QtGui.QWidget):
         self.display.setScaledContents(True)
         self.displayBlank = False
         self.blankFrame= None
+        self.alertactive = False
+        self.alerttext = u''
+        self.alertTab = None
 
     def setup(self, screenNumber):
         """
@@ -55,19 +59,55 @@ class MainDisplay(QtGui.QWidget):
             self.showMinimized()
 
         painter=QtGui.QPainter()
-        self.blankFrame = QtGui.QPixmap(800, 600)
+        self.blankFrame = QtGui.QPixmap(screen['size'].width(), screen['size'].height())
         painter.begin(self.blankFrame)
         painter.fillRect(self.blankFrame.rect(), QtGui.QColor(u'#000000'))
+        self.frameView(self.blankFrame)
 
     def frameView(self, frame):
         self.frame = frame
-        if self.displayBlank == False:
+        if not self.displayBlank:
             self.display.setPixmap(frame)
+        elif self.alertactive:
+            self.displayAlert()
 
     def blankDisplay(self):
-        if self.displayBlank == False:
+        if not self.displayBlank:
             self.displayBlank = True
             self.display.setPixmap(self.blankFrame)
         else:
             self.displayBlank = False
             self.frameView(self.frame)
+
+    def alert(self, alertTab, text):
+        """
+        Called from the Alert Tab
+        alertTab = details from AlertTab
+        text = display text
+        screen = screen number to be displayed on.
+        """
+        self.alerttext = text
+        self.alertTab = alertTab
+        if len(text) > 0:
+            self.alertactive = True
+            self.displayAlert()
+            self.alertactive = False
+
+    def displayAlert(self):
+        alertframe = QtGui.QPixmap(self.frame)
+        painter = QtGui.QPainter(alertframe)
+        top = alertframe.rect().height() * 0.9
+        painter.fillRect(QtCore.QRect(0, top , alertframe.rect().width(), alertframe.rect().height() - top), QtGui.QColor(self.alertTab.bg_color))
+        font = QtGui.QFont()
+        font.setFamily(self.alertTab.font_face)
+        font.setBold(True)
+        font.setPointSize(40)
+        painter.setFont(font)
+        painter.setPen(QtGui.QColor(self.alertTab.font_color))
+        x, y = (0, top)
+        metrics=QtGui.QFontMetrics(font)
+        painter.drawText(x, y+metrics.height()-metrics.descent()-1, self.alerttext)
+        painter.end()
+        self.display.setPixmap(alertframe)
+        QtTest.QTest.qWait(self.alertTab.timeout*1000)
+        self.display.setPixmap(self.frame)

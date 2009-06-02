@@ -40,7 +40,7 @@ class MainWindow(object):
         self.mainDisplay = MainDisplay(None, screens)
         self.screenList = screens
         self.EventManager = EventManager()
-        self.alertForm = AlertForm()
+        self.alertForm = AlertForm(self)
         self.aboutForm = AboutForm()
         self.settingsForm = SettingsForm(self.screenList, self)
 
@@ -88,25 +88,8 @@ class MainWindow(object):
         self.plugin_manager.initialise_plugins()
 
         # Once all components are initialised load the Themes
-        log.info(u'Load Themes and Managers')
-        self.PreviewController.ServiceManager = self.ServiceManagerContents
-        self.LiveController.ServiceManager = self.ServiceManagerContents
-
-        self.ThemeManagerContents.EventManager = self.EventManager
-        self.ThemeManagerContents.RenderManager = self.RenderManager
-        self.ThemeManagerContents.ServiceManager = self.ServiceManagerContents
-        #self.ThemeManagerContents.ThemesTab = self.ServiceManagerContents.ThemesTab
-
-        self.ServiceManagerContents.RenderManager = self.RenderManager
-        self.ServiceManagerContents.EventManager = self.EventManager
-        self.ServiceManagerContents.LiveController = self.LiveController
-        self.ServiceManagerContents.PreviewController = self.PreviewController
-
+        log.info(u'Load Themes')
         self.ThemeManagerContents.loadThemes()
-
-        # Initialise SlideControllers
-        log.info(u'Set Up SlideControllers')
-        self.LiveController.mainDisplay = self.mainDisplay
 
     def onCloseEvent(self, event):
         """
@@ -128,6 +111,7 @@ class MainWindow(object):
         main_icon.addPixmap(QtGui.QPixmap(u':/icon/openlp-logo-16x16.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.mainWindow.setWindowIcon(main_icon)
+
         self.MainContent = QtGui.QWidget(self.mainWindow)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -144,8 +128,10 @@ class MainWindow(object):
         self.ControlSplitter.setOrientation(QtCore.Qt.Horizontal)
         self.ControlSplitter.setObjectName(u'ControlSplitter')
         self.MainContentLayout.addWidget(self.ControlSplitter)
-        self.PreviewController = SlideController(self.mainWindow, self.ControlSplitter, False)
-        self.LiveController = SlideController(self.mainWindow, self.ControlSplitter, True)
+
+        self.PreviewController = SlideController( self.ControlSplitter, self,  False)
+        self.LiveController = SlideController(self.ControlSplitter, self,  True)
+
         self.MenuBar = QtGui.QMenuBar(self.mainWindow)
         self.MenuBar.setGeometry(QtCore.QRect(0, 0, 1087, 27))
         self.MenuBar.setObjectName(u'MenuBar')
@@ -172,12 +158,13 @@ class MainWindow(object):
         self.StatusBar = QtGui.QStatusBar(self.mainWindow)
         self.StatusBar.setObjectName(u'StatusBar')
         self.mainWindow.setStatusBar(self.StatusBar)
+
         self.MediaManagerDock = QtGui.QDockWidget(self.mainWindow)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.MediaManagerDock.sizePolicy().hasHeightForWidth())
-        self.MediaManagerDock.setSizePolicy(sizePolicy)
+        #MmSizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        #MmSizePolicy.setHorizontalStretch(0)
+        #MmSizePolicy.setVerticalStretch(0)
+        #MmSizePolicy.setHeightForWidth(self.MediaManagerDock.sizePolicy().hasHeightForWidth())
+        #self.MediaManagerDock.setSizePolicy(MmSizePolicy)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(u':/system/system_mediamanager.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -187,11 +174,11 @@ class MainWindow(object):
         self.MediaManagerDock.setObjectName(u'MediaManagerDock')
         self.MediaManagerDock.setMinimumWidth(250)
         self.MediaManagerContents = QtGui.QWidget()
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.MediaManagerContents.sizePolicy().hasHeightForWidth())
-        self.MediaManagerContents.setSizePolicy(sizePolicy)
+        #sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        #sizePolicy.setHorizontalStretch(0)
+        #sizePolicy.setVerticalStretch(0)
+        #sizePolicy.setHeightForWidth(self.MediaManagerContents.sizePolicy().hasHeightForWidth())
+        #self.MediaManagerContents.setSizePolicy(sizePolicy)
         self.MediaManagerContents.setObjectName(u'MediaManagerContents')
         self.MediaManagerLayout = QtGui.QHBoxLayout(self.MediaManagerContents)
         self.MediaManagerLayout.setContentsMargins(0, 2, 0, 0)
@@ -202,6 +189,7 @@ class MainWindow(object):
         self.MediaManagerLayout.addWidget(self.MediaToolBox)
         self.MediaManagerDock.setWidget(self.MediaManagerContents)
         self.mainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.MediaManagerDock)
+
         #Sevice Manager Defined
         self.ServiceManagerDock = QtGui.QDockWidget(self.mainWindow)
         ServiceManagerIcon = QtGui.QIcon()
@@ -213,6 +201,7 @@ class MainWindow(object):
         self.ServiceManagerContents = ServiceManager(self)
         self.ServiceManagerDock.setWidget(self.ServiceManagerContents)
         self.mainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.ServiceManagerDock)
+
         #Theme Manager Defined
         self.ThemeManagerDock = QtGui.QDockWidget(self.mainWindow)
         ThemeManagerIcon = QtGui.QIcon()
@@ -227,6 +216,7 @@ class MainWindow(object):
         self.ThemeManagerDock.setWidget(self.ThemeManagerContents)
         self.mainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.ThemeManagerDock)
 
+        #Menu Items define
         self.FileNewItem = QtGui.QAction(self.mainWindow)
         self.FileNewItem.setIcon(
             self.ServiceManagerContents.Toolbar.getIconFromTitle(u'New Service'))
@@ -397,22 +387,7 @@ class MainWindow(object):
         self.HelpMenu.setTitle(translate(u'mainWindow', u'&Help'))
         self.MediaManagerDock.setWindowTitle(translate(u'mainWindow', u'Media Manager'))
         self.ServiceManagerDock.setWindowTitle(translate(u'mainWindow', u'Service Manager'))
-#        self.ServiceManagerContents.MoveTopButton.setText(translate(u'mainWindow', u'Move To Top'))
-#        self.ServiceManagerContents.MoveUpButton.setText(translate(u'mainWindow', u'Move Up'))
-#        self.ServiceManagerContents.MoveDownButton.setText(translate(u'mainWindow', u'Move Down'))
-#        self.ServiceManagerContents.MoveBottomButton.setText(translate(u'mainWindow', u'Move To Bottom'))
-#        self.ServiceManagerContents.NewItem.setText(translate(u'mainWindow', u'New Service'))
-#        self.ServiceManagerContents.OpenItem.setText(translate(u'mainWindow', u'Open Service'))
-#        self.ServiceManagerContents.SaveItem.setText(translate(u'mainWindow', u'Save Service'))
-#        self.ServiceManagerContents.ThemeComboBox.setItemText(0, translate(u'mainWindow', u'African Sunset'))
-#        self.ServiceManagerContents.ThemeComboBox.setItemText(1, translate(u'mainWindow', u'Snowy Mountains'))
-#        self.ServiceManagerContents.ThemeComboBox.setItemText(2, translate(u'mainWindow', u'Wilderness'))
         self.ThemeManagerDock.setWindowTitle(translate(u'mainWindow', u'Theme Manager'))
-#        self.ThemeNewItem.setText(translate(u'mainWindow', u'New Theme'))
-#        self.ThemeEditItem.setText(translate(u'mainWindow', u'Edit Theme'))
-#        self.ThemeDeleteButton.setText(translate(u'mainWindow', u'Delete Theme'))
-#        self.ThemeImportButton.setText(translate(u'mainWindow', u'Import Theme'))
-#        self.ThemeExportButton.setText(translate(u'mainWindow', u'Export Theme'))
         self.FileNewItem.setText(translate(u'mainWindow', u'&New'))
         self.FileNewItem.setToolTip(translate(u'mainWindow', u'New Service'))
         self.FileNewItem.setStatusTip(translate(u'mainWindow', u'Create a new Service'))
@@ -470,7 +445,7 @@ class MainWindow(object):
 
     def show(self):
         self.mainWindow.showMaximized()
-        self.mainDisplay.setup(0)
+        self.mainDisplay.setup(self.settingsForm.GeneralTab.MonitorNumber)
         self.mainDisplay.show()
 
     def onHelpAboutItemClicked(self):

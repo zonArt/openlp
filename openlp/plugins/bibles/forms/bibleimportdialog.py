@@ -128,6 +128,7 @@ class Ui_BibleImportDialog(object):
         self.PasswordLabel.setObjectName("PasswordLabel")
         self.ProxySettingsLayout.setWidget(2, QtGui.QFormLayout.LabelRole, self.PasswordLabel)
         self.PasswordEdit = QtGui.QLineEdit(self.ProxyGroupBox)
+        self.PasswordEdit.setEchoMode(QtGui.QLineEdit.Password)
         self.PasswordEdit.setObjectName("PasswordEdit")
         self.ProxySettingsLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.PasswordEdit)
         self.WebBibleLayout.addWidget(self.ProxyGroupBox)
