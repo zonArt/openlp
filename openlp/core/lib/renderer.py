@@ -109,7 +109,7 @@ class Renderer:
         """
         External API to sort out the text to pe placed on the frame
         """
-        print "########## Format Slide ##################"
+        #print "########## Format Slide ##################"
         log.debug(u'format_slide %s', words)
         verses = []
         words = words.replace("\r\n", "\n")
@@ -120,9 +120,10 @@ class Renderer:
             for line in lines:
                 text.append(line)
 
-        print self._split_set_of_lines(text, False)
-        print "text ", text
-        return text
+        split_text = self._split_set_of_lines(text, False)
+        #print "split text ", split_text
+        #print "text ", text
+        return split_text
 
 #    def render_screen(self, screennum):
 #        log.debug(u'render screen\n %s %s ', screennum, self.words[screennum])
@@ -132,7 +133,9 @@ class Renderer:
 #        return retval
 
     def set_text_rectangle(self, rect_main, rect_footer):
-        """ Sets the rectangle within which text should be rendered"""
+        """
+        Sets the rectangle within which text should be rendered
+        """
         self._rect = rect_main
         self._rect_footer = rect_footer
 
@@ -140,10 +143,10 @@ class Renderer:
         """
         Render a set of lines according to the theme, return bounding box
          """
-        print "########## Generate frame from lines ##################"
+        #print "########## Generate frame from lines ##################"
         log.debug(u'generate_frame_from_lines - Start')
 
-        print "Render Lines ", lines
+        #print "Render Lines ", lines
 
         bbox = self._render_lines_unaligned(lines, False)
         if footer_lines is not None:
@@ -222,69 +225,73 @@ class Renderer:
          We'll do this by getting the bounding box of each line, and then summing them appropriately
          Returns a list of [lists of lines], one set for each screenful
          """
-
-
-         ############  THIS IS WRONG SO FIX IT
-
-
-        log.debug(u'Split set of lines')
         bboxes = []
-        print "Lines ", lines
+        #print "lines ",  lines
+
         for line in lines:
             bboxes.append(self._render_and_wrap_single_line(line, footer))
-            #print line,  bboxes
+        #print "bboxes ", bboxes
 
         numlines = len(lines)
         bottom = self._rect.bottom()
-        #for ratio in (numlines): #, numlines/2, numlines/3, numlines/4):
-        ratio = numlines
-        good = 1
-        startline = 0
-        endline = startline + ratio
-        #print "A ",  numlines ,  startline,  endline
-        #print "B ", bboxes
-        while (endline <= numlines):
-            by = 0
-            for (x, y) in bboxes[startline:endline]:
-                by += y
-                #print by
-            #print by , bottom
-            if by > bottom:
-                good=0
+
+        count = 0
+
+        for ratio in (numlines,  numlines/2, numlines/3, numlines/4):
+            good = 1
+            startline = 0
+            endline = startline + ratio
+            while (endline <= numlines and endline != 0):
+                count += 1
+                if count > 100:
+                    #print "busted"
+                    break
+                by = 0
+                for (x,y) in bboxes[startline:endline]:
+                    #print by, startline, endline, x, y, bottom
+                    by += y
+                #print "by ", by ,  bottom, startline,  endline, numlines, ratio
+                if by > bottom:
+                    good = 0
+                    break
+                startline += ratio
+                endline = startline + ratio
+            if good == 1:
                 break
-            startline += ratio
-            endline = startline+ratio
-#        if good == 1:
-#            break
-       # print "---------"
 
         retval = []
         numlines_per_page = ratio
+        #print "good ", good, ratio
         if good:
             c = 0
             thislines = []
             while c < numlines:
                 thislines.append(lines[c])
                 c += 1
+                #print "c ", c, len(thislines), numlines_per_page, thislines
                 if len(thislines) == numlines_per_page:
                     retval.append(thislines)
                     thislines = []
+            if len(thislines) > 0:
+                retval.append(thislines)
+            #print "extra ", thislines
         else:
-#             log.debug(u" "Just split where you can"
+#             print "Just split where you can"
             retval = []
             startline = 0
-            endline = startline+1
+            endline = startline + 1
             while (endline <= numlines):
                 by = 0
-                for (x, y) in bboxes[startline:endline]:
+                for (x,y) in bboxes[startline:endline]:
                     by += y
                 if by > bottom:
                     retval.append(lines[startline:endline-1])
                     startline = endline-1
-                    endline = startline # gets incremented below
+                    # gets incremented below
+                    endline = startline
                     by = 0
                 endline += 1
-        print "retval ", retval
+        #print "retval ", retval
         return retval
 
     def _correctAlignment(self, rect, bbox):
@@ -312,14 +319,12 @@ class Renderer:
         x, y = tlcorner
         brx = x
         bry = y
-        print "A ", bry
         for line in lines:
             # render after current bottom, but at original left edge
             # keep track of right edge to see which is biggest
             (thisx, bry) = self._render_and_wrap_single_line(line, footer, (x , bry))
             if (thisx > brx):
                 brx = thisx
-            print "B ", bry
         retval = QtCore.QRect(x, y,brx-x, bry-y)
         if self._debug:
             painter = QtGui.QPainter()
@@ -369,8 +374,6 @@ class Renderer:
             align = 0
         else:
             align = int(self._theme .display_horizontalAlign)
-
-        print "wrap ", lines
 
         for linenum in range(len(lines)):
             line = lines[linenum]
