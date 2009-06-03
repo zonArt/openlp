@@ -8,6 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+from openlp.plugins.songs.lib import TextListData
 
 class Ui_AuthorsDialog(object):
     def setupUi(self, AuthorsDialog):
@@ -17,14 +18,21 @@ class Ui_AuthorsDialog(object):
         self.DialogLayout.setSpacing(8)
         self.DialogLayout.setMargin(8)
         self.DialogLayout.setObjectName("DialogLayout")
-        self.AuthorListView = QtGui.QTableWidget(AuthorsDialog)
-        self.AuthorListView.setDragEnabled(True)
+
+
+#        self.AuthorListView = QtGui.QTableWidget(AuthorsDialog)
+#        self.AuthorListView.setDragEnabled(True)
+#        self.AuthorListView.setAlternatingRowColors(True)
+#        self.AuthorListView.setColumnCount(0)
+#        self.AuthorListView.setObjectName("AuthorListView")
+#        self.AuthorListView.setColumnCount(0)
+#        self.AuthorListView.setRowCount(0)
+        self.AuthorListView = QtGui.QListView()
         self.AuthorListView.setAlternatingRowColors(True)
-        self.AuthorListView.setColumnCount(0)
-        self.AuthorListView.setObjectName("AuthorListView")
-        self.AuthorListView.setColumnCount(0)
-        self.AuthorListView.setRowCount(0)
+        self.AuthorListData = TextListData()
+        self.AuthorListView.setModel(self.AuthorListData)
         self.DialogLayout.addWidget(self.AuthorListView)
+
         self.AuthorDetails = QtGui.QGroupBox(AuthorsDialog)
         self.AuthorDetails.setMinimumSize(QtCore.QSize(0, 0))
         self.AuthorDetails.setObjectName("AuthorDetails")

@@ -3,7 +3,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -34,7 +34,7 @@ class SongManager():
     """
 
     global log
-    log=logging.getLogger('SongManager')
+    log = logging.getLogger('SongManager')
     log.info('Song manager loaded')
 
     def __init__(self, config):
@@ -134,11 +134,14 @@ class SongManager():
 
     def delete_author(self, authorid):
         """
-        Delete the author and refresh the author cache
+        Delete the author
         """
+        author = self.get_author(authorid)
         try:
             self.session.delete(author)
             self.session.commit()
             return True
         except:
+            log.error("Errow thrown %s", sys.exc_info()[1])
+            print "Errow thrown ", sys.exc_info()[1]
             return False
