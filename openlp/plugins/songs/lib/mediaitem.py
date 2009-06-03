@@ -3,7 +3,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -21,9 +21,33 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem,  translate
+from openlp.core.lib import MediaManagerItem,  translate,  ServiceItem
 
 from openlp.plugins.songs.forms import EditSongForm
+from openlp.plugins.songs.lib import TextListData
+
+class SongList(QtGui.QListView):
+
+    def __init__(self,parent=None,name=None):
+        QtGui.QListView.__init__(self,parent)
+
+    def mouseMoveEvent(self, event):
+        """
+        Drag and drop event does not care what data is selected
+        as the recepient will use events to request the data move
+        just tell it what plugin to call
+        """
+        if event.buttons() != QtCore.Qt.LeftButton:
+            return
+        drag = QtGui.QDrag(self)
+        mimeData = QtCore.QMimeData()
+        drag.setMimeData(mimeData)
+        mimeData.setText(u'Song')
+
+        dropAction = drag.start(QtCore.Qt.CopyAction)
+
+        if dropAction == QtCore.Qt.CopyAction:
+            self.close()
 
 class SongMediaItem(MediaManagerItem):
     """
@@ -98,19 +122,29 @@ class SongMediaItem(MediaManagerItem):
         self.SearchLayout.addWidget(self.SearchTextButton, 3, 2, 1, 1)
         # Add the song widget to the page layout
         self.PageLayout.addWidget(self.SongWidget)
-        self.SongListView = QtGui.QTableWidget()
-        self.SongListView.setColumnCount(2)
-        self.SongListView.setColumnHidden(0, True)
-        self.SongListView.setColumnWidth(1, 240)
-        self.SongListView.setShowGrid(False)
-        self.SongListView.setSortingEnabled(False)
+
+        self.SongListView = SongList()
         self.SongListView.setAlternatingRowColors(True)
-        self.SongListView.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
-        self.SongListView.horizontalHeader().setVisible(False)
-        self.SongListView.verticalHeader().setVisible(False)
-        self.SongListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
+        self.SongListData = TextListData()
+        self.SongListView.setModel(self.SongListData)
+        self.SongListView.setDragEnabled(True)
+
+#        self.SongListView = QtGui.QTableWidget()
+#        self.SongListView.setColumnCount(2)
+#        self.SongListView.setColumnHidden(0, True)
+#        self.SongListView.setColumnWidth(1, 240)
+#        self.SongListView.setShowGrid(False)
+#        self.SongListView.setSortingEnabled(False)
+#        self.SongListView.setAlternatingRowColors(True)
+#        self.SongListView.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+#        self.SongListView.horizontalHeader().setVisible(False)
+#        self.SongListView.verticalHeader().setVisible(False)
+#        self.SongListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.SongListView.setObjectName('SongListView')
+
         self.PageLayout.addWidget(self.SongListView)
+        self.SongListView.setDragEnabled(True)
+
         # Signals and slots
         QtCore.QObject.connect(self.SearchTextButton,
             QtCore.SIGNAL('pressed()'), self.onSearchTextButtonClick)
@@ -118,8 +152,8 @@ class SongMediaItem(MediaManagerItem):
             QtCore.SIGNAL('pressed()'), self.onClearTextButtonClick)
         QtCore.QObject.connect(self.SearchTextEdit,
             QtCore.SIGNAL('textChanged(const QString&)'), self.onSearchTextEditChanged)
-        QtCore.QObject.connect(self.SongListView,
-            QtCore.SIGNAL('itemPressed(QTableWidgetItem * item)'), self.onSongSelected)
+#        QtCore.QObject.connect(self.SongListView,
+#            QtCore.SIGNAL('itemPressed(QTableWidgetItem * item)'), self.onSongSelected)
         #define and add the context menu
         self.SongListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.SongListView.addAction(self.contextMenuAction(self.SongListView,
@@ -148,26 +182,18 @@ class SongMediaItem(MediaManagerItem):
         self.SearchTypeComboBox.addItem(translate('SongMediaItem', u'Authors'))
 
     def displayResults(self, searchresults):
-        log.debug("_search results")
-        self.SongListView.clear() # clear the results
-        self.SongListView.horizontalHeader().setVisible(False)
-        self.SongListView.verticalHeader().setVisible(False)
-        self.SongListView.setRowCount(0)
+        log.debug("display results")
+        self.SongListData.resetStore()
         #log.debug("Records returned from search %s", len(searchresults))
         for song in searchresults:
-            row_count = self.SongListView.rowCount()
-            self.SongListView.setRowCount(row_count + 1)
-            song_index = QtGui.QTableWidgetItem(str(song.id))
-            self.SongListView.setItem(row_count, 0, song_index)
             author_list = u''
             for author in song.authors:
                 if author_list != u'':
                     author_list = author_list + u', '
                 author_list = author_list + author.display_name
-            song_detail = QtGui.QTableWidgetItem(
-                u'%s (%s)' % (str(song.title), str(author_list)))
-            self.SongListView.setItem(row_count, 1, song_detail)
-            self.SongListView.setRowHeight(row_count, 20)
+            song_detail = str(u'%s (%s)' % (str(song.title), str(author_list)))
+
+            self.SongListData.addRow(song.id,song_detail)
 
     def onClearTextButtonClick(self):
         """
@@ -197,9 +223,6 @@ class SongMediaItem(MediaManagerItem):
             #searchresults = self.songmanager.get_song_from_author(searchtext)
         self.displayResults(search_results)
 
-    def onSongSelected(self, item):
-        print item
-
     def onSongNewClick(self):
         self.edit_song_form.exec_()
 
@@ -210,13 +233,46 @@ class SongMediaItem(MediaManagerItem):
         self.edit_song_form.exec_()
 
     def onSongDeleteClick(self):
-        pass
+        indexes = self.SongListView.selectedIndexes()
+        for index in indexes:
+            id = self.SongListData.getId(index)
+            self.parent.songmanager.delete_song(id)
+            self.SongListData.deleteRow(index)
 
     def onSongPreviewClick(self):
-        pass
+        service_item = ServiceItem(self.parent)
+        service_item.addIcon( ":/media/media_song.png")
+        self.generateSlideData(service_item)
+        self.parent.preview_controller.addServiceItem(service_item)
+
+    def generateSlideData(self, service_item):
+        raw_slides =[]
+        raw_footer = []
+        indexes = self.SongListView.selectedIndexes()
+        for index in indexes:
+            id = self.SongListData.getId(index)
+            song = self.parent.songmanager.get_song(id)
+            if  song.theme_name == None or len(song.theme_name)  == 0:
+                service_item.theme = None
+            else:
+                service_item.theme = song.theme_name
+            verses = song.lyrics.split(u'\n\n')
+            for verse in verses:
+                raw_slides.append(verse)
+            service_item.raw_slides = raw_slides
+            service_item.title = song.title
+        raw_footer.append(str(u'%s \n%s \n' % (song.title, song.copyright )))
+        raw_footer.append(song.copyright)
+        service_item.raw_footer = raw_footer
 
     def onSongLiveClick(self):
-        pass
+        service_item = ServiceItem(self.parent)
+        service_item.addIcon( ":/media/media_song.png")
+        self.generateSlideData(service_item)
+        self.parent.live_controller.addServiceItem(service_item)
 
     def onSongAddClick(self):
-        pass
+        service_item = ServiceItem(self.parent)
+        service_item.addIcon( ":/media/media_song.png")
+        self.generateSlideData(service_item)
+        self.parent.service_manager.addServiceItem(service_item)

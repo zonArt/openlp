@@ -49,8 +49,8 @@ class SongsPlugin(Plugin):
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
-        self.MediaManagerItem = SongMediaItem(self, self.icon, 'Songs')
-        return self.MediaManagerItem
+        self.media_item = SongMediaItem(self, self.icon, 'Songs')
+        return self.media_item
 
     def add_import_menu_item(self, import_menu):
         self.ImportSongMenu = QtGui.QMenu(import_menu)
@@ -127,3 +127,12 @@ class SongsPlugin(Plugin):
         if event.event_type == EventType.ThemeListChanged:
             log.debug(u'New Theme request received')
             #self.edit_custom_form.loadThemes(self.theme_manager.getThemes())
+        if event.event_type == EventType.LoadServiceItem and event.payload == 'Song':
+            log.debug(u'Load Service Item received')
+            self.media_item.onSongAddClick()
+        if event.event_type == EventType.PreviewShow and event.payload == 'Song':
+            log.debug(u'Load Preview Item received ')
+            self.media_item.onSongPreviewClick()
+        if event.event_type == EventType.LiveShow and event.payload == 'Song':
+            log.debug(u'Load Live Show Item received')
+            self.media_item.onSongLiveClick()

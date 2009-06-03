@@ -109,7 +109,7 @@ class Renderer:
         """
         External API to sort out the text to pe placed on the frame
         """
-        #print "########## Format Slide ##################"
+        print "########## Format Slide ##################"
         log.debug(u'format_slide %s', words)
         verses = []
         words = words.replace("\r\n", "\n")
@@ -121,8 +121,8 @@ class Renderer:
                 text.append(line)
 
         split_text = self._split_set_of_lines(text, False)
-        #print "split text ", split_text
-        #print "text ", text
+        print "split text ", split_text
+        print "text ", text
         return split_text
 
 #    def render_screen(self, screennum):

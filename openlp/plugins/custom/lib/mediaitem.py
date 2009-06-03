@@ -228,11 +228,11 @@ class CustomMediaItem(MediaManagerItem):
         self.parent.service_manager.addServiceItem(service_item)
 
     def generateSlideData(self, service_item):
-        indexes = self.CustomListView.selectedIndexes()
         raw_slides =[]
         raw_footer = []
         slide = None
         theme = None
+        indexes = self.CustomListView.selectedIndexes()
         for index in indexes:
             id = self.CustomListData.getId(index)
             customSlide = self.parent.custommanager.get_custom(id)
