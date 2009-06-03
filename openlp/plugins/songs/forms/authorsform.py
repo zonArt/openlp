@@ -2,7 +2,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley, Carsten Tinggaard
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten Tinggaard
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -17,10 +17,6 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 from PyQt4 import QtGui, QtCore
-from PyQt4.QtCore import pyqtSignature
-
-from openlp.core.resources import *
-from openlp.plugins.songs.lib.classes import *
 
 from openlp.plugins.songs.forms.authorsdialog import Ui_AuthorsDialog
 
@@ -38,17 +34,27 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         self.AuthorListView.setColumnCount(2)
         self.AuthorListView.setColumnHidden(0, True)
         self.AuthorListView.setColumnWidth(1, 300)
-        #self.AuthorListView.setHorizontalHeaderLabels(QtCore.QStringList([" ","Author"]))
         self.AuthorListView.horizontalHeader().setVisible(False)
         self.AuthorListView.verticalHeader().setVisible(False)
-        self.currentrow = 0
+        self.currentRow = 0
         self.author = None
+
+        QtCore.QObject.connect(self.DeleteButton,
+            QtCore.SIGNAL('pressed()'), self.onDeleteButtonClick)
+        QtCore.QObject.connect(self.ClearButton,
+            QtCore.SIGNAL('pressed()'), self.onClearButtonClick)
+        QtCore.QObject.connect(self.AddUpdateButton,
+            QtCore.SIGNAL('pressed()'), self.onAddUpdateButtonClick)
+        QtCore.QObject.connect(self.DisplayEdit,
+            QtCore.SIGNAL('pressed()'), self.onDisplayEditLostFocus)
+        QtCore.QObject.connect(self.AuthorListView,
+            QtCore.SIGNAL('pressed()'), self.onAuthorListViewItemClicked)
 
     def load_form(self):
         """
         Refresh the screen and rest fields
         """
-        self.on_ClearButton_clicked() # tidy up screen
+        self.onClearButtonClick() # tidy up screen
         authors = self.songmanager.get_authors()
         self.AuthorListView.clear() # clear the results
         #self.AuthorListView.setHorizontalHeaderLabels(QtCore.QStringList([" ","Author"]))
@@ -65,27 +71,24 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
             self.AuthorListView.setItem(row_count, 1, display_name)
             self.AuthorListView.setRowHeight(row_count, 20)
         row_count = self.AuthorListView.rowCount()
-        if self.currentrow > row_count:
+        if self.currentRow > row_count:
             # in case we have delete the last row of the table
-            self.currentrow = row_count
-        self.AuthorListView.selectRow(self.currentrow) # set selected row to previous selected row
+            self.currentRow = row_count
+        self.AuthorListView.selectRow(self.currentRow) # set selected row to previous selected row
         self._validate_form()
 
-    @pyqtSignature("")
-    def on_DeleteButton_clicked(self):
+    def onDeleteButtonClick(self):
         """
         Delete the author is the Author is not attached to any songs
         """
         self.songmanager.delete_author(self.author.id)
-        self.on_ClearButton_clicked()
+        self.onClearButtonClick()
         self.load_form()
 
-    @pyqtSignature("")
-    def on_DisplayEdit_lostFocus(self):
+    def onDisplayEditLostFocus(self):
         self._validate_form()
 
-    @pyqtSignature("")
-    def on_AddUpdateButton_clicked(self):
+    def onAddUpdateButtonClick(self):
         """
         Sent New or update details to the database
         """
@@ -95,13 +98,11 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         self.author.first_name = unicode(self.FirstNameEdit.displayText())
         self.author.last_name = unicode(self.LastNameEdit.displayText())
         self.songmanager.save_author(self.author)
-        self.on_ClearButton_clicked()
+        self.onClearButtonClick()
         self.load_form()
         self._validate_form()
 
-
-    @pyqtSignature("")
-    def on_ClearButton_clicked(self):
+    def onClearButtonClick(self):
         """
         Tidy up screen if clear button pressed
         """
@@ -113,14 +114,13 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         self.author = None
         self._validate_form()
 
-    @pyqtSignature("QTableWidgetItem*")
-    def on_AuthorListView_itemClicked(self, item):
+    def onAuthorListViewItemClicked(self, item):
         """
         An Author has been selected display it
         If the author is attached to a Song prevent delete
         """
-        self.currentrow = self.AuthorListView.currentRow()
-        id = int(self.AuthorListView.item(self.currentrow, 0).text())
+        self.currentRow = self.AuthorListView.currentRow()
+        id = int(self.AuthorListView.item(self.currentRow, 0).text())
         self.author = self.songmanager.get_author(id)
 
         self.DisplayEdit.setText(self.author.display_name)

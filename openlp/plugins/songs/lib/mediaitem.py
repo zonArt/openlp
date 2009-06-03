@@ -227,10 +227,11 @@ class SongMediaItem(MediaManagerItem):
         self.edit_song_form.exec_()
 
     def onSongEditClick(self):
-        current_row = self.SongListView.currentRow()
-        id = int(self.SongListView.item(current_row, 0).text())
-        self.edit_song_form.loadSong(id)
-        self.edit_song_form.exec_()
+        indexes = self.SongListView.selectedIndexes()
+        for index in indexes:
+            id = self.SongListData.getId(index)
+            self.edit_song_form.loadSong(id)
+            self.edit_song_form.exec_()
 
     def onSongDeleteClick(self):
         indexes = self.SongListView.selectedIndexes()
