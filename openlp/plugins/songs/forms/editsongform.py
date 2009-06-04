@@ -70,6 +70,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def initialise(self):
         self.loadAuthors()
         self.loadTopics()
+        self.loadBooks()
 
     def loadAuthors(self):
         authors = self.songmanager.get_authors()
@@ -78,10 +79,16 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.AuthorsSelectionComboItem.addItem(author.display_name)
 
     def loadTopics(self):
-        topics= self.songmanager.get_topics()
+        topics = self.songmanager.get_topics()
         self.SongTopicCombo.clear()
         for topic in topics:
             self.SongTopicCombo.addItem(topic.name)
+
+    def loadBooks(self):
+        books = self.songmanager.get_books()
+        self.SongbookCombo.clear()
+        for book in books:
+            self.SongbookCombo.addItem(book.name)
 
     def loadSong(self, id):
         self.song = self.songmanager.get_song(id)
@@ -126,6 +133,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         self.song_book_form.load_form()
         self.song_book_form.exec_()
+        self.loadBooks()
 
     def onAddVerseButtonClicked(self):
         self.verse_form.setVerse('')

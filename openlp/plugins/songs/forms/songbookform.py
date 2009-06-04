@@ -18,19 +18,18 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import QDialog
-from PyQt4.QtCore import pyqtSignature
 from songbookdialog import Ui_SongBookDialog
+from openlp.plugins.songs.lib.classes import Book
 
-class SongBookForm(QDialog, Ui_SongBookDialog):
+class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
     """
     Class documentation goes here.
     """
-    def __init__(self,songmanager,  parent = None):
+    def __init__(self, songmanager, parent = None):
         """
         Constructor
         """
-        QDialog.__init__(self, parent)
+        QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self.songmanager = songmanager
         self.currentRow = 0
@@ -42,82 +41,85 @@ class SongBookForm(QDialog, Ui_SongBookDialog):
             QtCore.SIGNAL('pressed()'), self.onClearButtonClick)
         QtCore.QObject.connect(self.AddUpdateButton,
             QtCore.SIGNAL('pressed()'), self.onAddUpdateButtonClick)
-#        QtCore.QObject.connect(self.DisplayEdit,
-#            QtCore.SIGNAL('pressed()'), self.onDisplayEditLostFocus)
-#        QtCore.QObject.connect(self.SongBookListView,
-#            QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSongBookListViewItemClicked)
+        QtCore.QObject.connect(self.NameEdit,
+            QtCore.SIGNAL('lostFocus()'), self.onBookNameEditLostFocus)
+        QtCore.QObject.connect(self.BookSongListView,
+            QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onBooksListViewItemClicked)
 
     def load_form(self):
         """
         Refresh the screen and rest fields
         """
-        self.SongBookListData.resetStore()
+        self.BookSongListData.resetStore()
         self.onClearButtonClick() # tidy up screen
-        SongBooks = self.songmanager.get_SongBooks()
-        for SongBook in SongBooks:
-            self.SongBookListData.addRow(SongBook.id,SongBook.display_name)
-        row_count = self.SongBookListData.rowCount(None)
+        Books = self.songmanager.get_books()
+        for Book in Books:
+            self.BookSongListData.addRow(Book.id,Book.name)
+        row_count = self.BookSongListData.rowCount(None)
         if self.currentRow > row_count:
             # in case we have delete the last row of the table
             self.currentRow = row_count
-        row = self.SongBookListData.createIndex(self.currentRow, 0)
+        row = self.BookSongListData.createIndex(self.currentRow, 0)
         if row.isValid():
-            self.SongBookListView.selectionModel().setCurrentIndex(row, QtGui.QItemSelectionModel.SelectCurrent)
+            self.BookSongListView.selectionModel().setCurrentIndex(row,
+                QtGui.QItemSelectionModel.SelectCurrent)
         self._validate_form()
 
     def onDeleteButtonClick(self):
         """
-        Delete the SongBook is the SongBook is not attached to any songs
+        Delete the Book is the Book is not attached to any songs
         """
-        self.songmanager.delete_SongBook(self.SongBook.id)
-        self.onClearButtonClick()
+        self.songmanager.delete_book(self.Book.id)
         self.load_form()
 
-    def onDisplayEditLostFocus(self):
+    def onBookNameEditLostFocus(self):
         self._validate_form()
 
     def onAddUpdateButtonClick(self):
         """
         Sent New or update details to the database
         """
-        if self.SongBook == None:
-            self.SongBook = SongBook()
-        self.SongBook.display_name = unicode(self.DisplayEdit.displayText())
-        self.songmanager.save_SongBook(self.SongBook)
+        if self.Book == None:
+            self.Book = Book()
+        self.Book.name = unicode(self.NameEdit.displayText())
+        self.Book.publisher = unicode(self.PublisherEdit.displayText())
+        self.songmanager.save_book(self.Book)
         self.onClearButtonClick()
         self.load_form()
-        self._validate_form()
 
     def onClearButtonClick(self):
         """
         Tidy up screen if clear button pressed
         """
-        self.DisplayEdit.setText(u'')
+        self.NameEdit.setText(u'')
+        self.PublisherEdit.setText(u'')
         self.MessageLabel.setText(u'')
         self.DeleteButton.setEnabled(False)
-        self.SongBook = None
+        self.AddUpdateButton.setEnabled(True)
+        self.Book = None
         self._validate_form()
 
-    def onSongBookListViewItemClicked(self, index):
+    def onBooksListViewItemClicked(self, index):
         """
-        An SongBook has been selected display it
-        If the SongBook is attached to a Song prevent delete
+        An Book has been selected display it
+        If the Book is attached to a Song prevent delete
         """
         self.currentRow = index.row()
-        id = int(self.SongBookListData.getId(index))
-        self.SongBook = self.songmanager.get_SongBook(id)
+        id = int(self.BookSongListData.getId(index))
+        self.Book = self.songmanager.get_book(id)
 
-        self.DisplayEdit.setText(self.SongBook.display_name)
-        if len(self.SongBook.songs) > 0:
-            self.MessageLabel.setText("SongBook in use 'Delete' is disabled")
+        self.NameEdit.setText(self.Book.name)
+        self.PublisherEdit.setText(self.Book.publisher)
+        if len(self.Book.songs) > 0:
+            self.MessageLabel.setText("Book in use 'Delete' is disabled")
             self.DeleteButton.setEnabled(False)
         else:
-            self.MessageLabel.setText("SongBook is not used")
+            self.MessageLabel.setText("Book is not used")
             self.DeleteButton.setEnabled(True)
         self._validate_form()
 
     def _validate_form(self):
-        if len(self.DisplayEdit.displayText()) == 0: # We need at lease a display name
+        if len(self.NameEdit.displayText()) == 0: # We need at lease a display name
             self.AddUpdateButton.setEnabled(False)
         else:
             self.AddUpdateButton.setEnabled(True)

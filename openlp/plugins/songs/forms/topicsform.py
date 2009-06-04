@@ -52,6 +52,7 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         """
         Refresh the screen and rest fields
         """
+        print "topics load form start"
         self.TopicsListData.resetStore()
         self.onClearButtonClick() # tidy up screen
         Topics = self.songmanager.get_topics()
@@ -66,12 +67,14 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
             self.TopicsListView.selectionModel().setCurrentIndex(row,
                 QtGui.QItemSelectionModel.SelectCurrent)
         self._validate_form()
+        print "topics load form end"
 
     def onDeleteButtonClick(self):
         """
         Delete the Topic is the Topic is not attached to any songs
         """
         self.songmanager.delete_topic(self.Topic.id)
+        self.onClearButtonClick()
         self.load_form()
 
     def onTopicNameEditLostFocus(self):

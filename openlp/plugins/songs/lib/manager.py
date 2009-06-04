@@ -23,7 +23,7 @@ import sys
 
 from sqlalchemy import asc, desc
 from openlp.plugins.songs.lib.models import init_models, metadata, session, \
-    engine, songs_table, Song, Author, Topic
+    engine, songs_table, Song, Author, Topic,  Book
 
 import logging
 
@@ -143,7 +143,6 @@ class SongManager():
             return True
         except:
             log.error("Errow thrown %s", sys.exc_info()[1])
-            print "Errow thrown ", sys.exc_info()[1]
             return False
 
     def get_topics(self):
@@ -180,5 +179,40 @@ class SongManager():
             return True
         except:
             log.error("Errow thrown %s", sys.exc_info()[1])
-            print "Errow thrown ", sys.exc_info()[1]
+            return False
+
+    def get_books(self):
+        """
+        Returns a list of all the Books
+        """
+        return self.session.query(Book).order_by(Book.name).all()
+
+    def get_book(self, id):
+        """
+        Details of the Books
+        """
+        return self.session.query(Book).get(id)
+
+    def save_book(self, book):
+        """
+        Save the Book
+        """
+        try:
+            self.session.add(book)
+            self.session.commit()
+            return True
+        except:
+            return False
+
+    def delete_book(self, bookid):
+        """
+        Delete the Book
+        """
+        book = self.get_book(bookid)
+        try:
+            self.session.delete(book)
+            self.session.commit()
+            return True
+        except:
+            log.error("Errow thrown %s", sys.exc_info()[1])
             return False

@@ -19,10 +19,6 @@ class Ui_SongBookDialog(object):
         self.DialogLayout.setMargin(8)
         self.DialogLayout.setObjectName("DialogLayout")
 
-#        self.BookSongListView = QtGui.QTableWidget(SongBookDialog)
-#        self.BookSongListView.setObjectName("BookSongListView")
-#        self.BookSongListView.setColumnCount(0)
-#        self.BookSongListView.setRowCount(0)
         self.BookSongListView = QtGui.QListView()
         self.BookSongListView.setAlternatingRowColors(True)
         self.BookSongListData = TextListData()
