@@ -42,7 +42,7 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         QtCore.QObject.connect(self.AddUpdateButton,
             QtCore.SIGNAL('pressed()'), self.onAddUpdateButtonClick)
         QtCore.QObject.connect(self.DisplayEdit,
-            QtCore.SIGNAL('pressed()'), self.onDisplayEditLostFocus)
+            QtCore.SIGNAL('lostFocus()'), self.onDisplayEditLostFocus)
         QtCore.QObject.connect(self.AuthorListView,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onAuthorListViewItemClicked)
 
@@ -61,7 +61,8 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
             self.currentRow = row_count
         row = self.AuthorListData.createIndex(self.currentRow, 0)
         if row.isValid():
-            self.AuthorListView.selectionModel().setCurrentIndex(row, QtGui.QItemSelectionModel.SelectCurrent)
+            self.AuthorListView.selectionModel().setCurrentIndex(row,
+                QtGui.QItemSelectionModel.SelectCurrent)
         self._validate_form()
 
     def onDeleteButtonClick(self):
@@ -69,7 +70,6 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         Delete the author is the Author is not attached to any songs
         """
         self.songmanager.delete_author(self.author.id)
-        self.onClearButtonClick()
         self.load_form()
 
     def onDisplayEditLostFocus(self):
@@ -87,7 +87,6 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         self.songmanager.save_author(self.author)
         self.onClearButtonClick()
         self.load_form()
-        self._validate_form()
 
     def onClearButtonClick(self):
         """

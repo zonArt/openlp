@@ -42,10 +42,10 @@ class SongBookForm(QDialog, Ui_SongBookDialog):
             QtCore.SIGNAL('pressed()'), self.onClearButtonClick)
         QtCore.QObject.connect(self.AddUpdateButton,
             QtCore.SIGNAL('pressed()'), self.onAddUpdateButtonClick)
-        QtCore.QObject.connect(self.DisplayEdit,
-            QtCore.SIGNAL('pressed()'), self.onDisplayEditLostFocus)
-        QtCore.QObject.connect(self.SongBookListView,
-            QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSongBookListViewItemClicked)
+#        QtCore.QObject.connect(self.DisplayEdit,
+#            QtCore.SIGNAL('pressed()'), self.onDisplayEditLostFocus)
+#        QtCore.QObject.connect(self.SongBookListView,
+#            QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSongBookListViewItemClicked)
 
     def load_form(self):
         """

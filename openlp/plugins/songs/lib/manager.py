@@ -45,7 +45,7 @@ class SongManager():
         self.config = config
         log.debug('Song Initialising')
         self.db_url = u''
-        db_type = self.config.get_config(u'db type')
+        db_type = self.config.get_config(u'db type', u'sqlite')
         if db_type == u'sqlite':
             self.db_url = u'sqlite:///' + self.config.get_data_path() + \
                 u'/songs.sqlite'
@@ -139,6 +139,43 @@ class SongManager():
         author = self.get_author(authorid)
         try:
             self.session.delete(author)
+            self.session.commit()
+            return True
+        except:
+            log.error("Errow thrown %s", sys.exc_info()[1])
+            print "Errow thrown ", sys.exc_info()[1]
+            return False
+
+    def get_topics(self):
+        """
+        Returns a list of all the topics
+        """
+        return self.session.query(Topic).order_by(Topic.name).all()
+
+    def get_topic(self, id):
+        """
+        Details of the Topic
+        """
+        return self.session.query(Topic).get(id)
+
+    def save_topic(self, topic):
+        """
+        Save the Topic
+        """
+        try:
+            self.session.add(topic)
+            self.session.commit()
+            return True
+        except:
+            return False
+
+    def delete_topic(self, topicid):
+        """
+        Delete the topic
+        """
+        topic = self.get_topic(topicid)
+        try:
+            self.session.delete(topic)
             self.session.commit()
             return True
         except:
