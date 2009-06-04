@@ -8,6 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+from openlp.plugins.songs.lib import TextListData
 
 class Ui_TopicsDialog(object):
     def setupUi(self, TopicsDialog):
@@ -49,11 +50,18 @@ class Ui_TopicsDialog(object):
         self.MessageLabel = QtGui.QLabel(TopicsDialog)
         self.MessageLabel.setObjectName("MessageLabel")
         self.gridLayout_2.addWidget(self.MessageLabel, 3, 0, 1, 1)
-        self.TopicsListView = QtGui.QTableWidget(TopicsDialog)
-        self.TopicsListView.setObjectName("TopicsListView")
-        self.TopicsListView.setColumnCount(0)
-        self.TopicsListView.setRowCount(0)
+
+#        self.TopicsListView = QtGui.QTableWidget(TopicsDialog)
+#        self.TopicsListView.setObjectName("TopicsListView")
+#        self.TopicsListView.setColumnCount(0)
+#        self.TopicsListView.setRowCount(0)
+
+        self.TopicsListView = QtGui.QListView()
+        self.TopicsListView.setAlternatingRowColors(True)
+        self.TopicsListData = TextListData()
+        self.TopicsListView.setModel(self.TopicsListData)
         self.gridLayout_2.addWidget(self.TopicsListView, 0, 0, 1, 1)
+
         self.ButtonBox = QtGui.QDialogButtonBox(TopicsDialog)
         self.ButtonBox.setOrientation(QtCore.Qt.Horizontal)
         self.ButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Ok)

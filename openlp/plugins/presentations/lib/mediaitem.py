@@ -119,7 +119,7 @@ class PresentationMediaItem(MediaManagerItem):
     def onPresentationNewClick(self):
         files = QtGui.QFileDialog.getOpenFileNames(None,
             translate('PresentationsMediaItem', u'Select presentations(s)'),
-            self.parent.config.get_last_dir(), u'Presentations (*.ppt *.pps *.odi)')
+            self.parent.config.get_last_dir(), u'Presentations (*.ppt *.pps *.odp)')
         if len(files) > 0:
             self.loadPresentationList(files)
             dir, filename = os.path.split(str(files[0]))

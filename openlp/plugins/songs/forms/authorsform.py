@@ -106,7 +106,7 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         An Author has been selected display it
         If the author is attached to a Song prevent delete
         """
-        print index
+        self.currentRow = index.row()
         id = int(self.AuthorListData.getId(index))
         self.author = self.songmanager.get_author(id)
 
@@ -122,7 +122,8 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         self._validate_form()
 
     def _validate_form(self):
-        if len(self.DisplayEdit.displayText()) == 0: # We need at lease a display name
+        # We need at lease a display name
+        if len(self.DisplayEdit.displayText()) == 0:
             self.AddUpdateButton.setEnabled(False)
         else:
             self.AddUpdateButton.setEnabled(True)

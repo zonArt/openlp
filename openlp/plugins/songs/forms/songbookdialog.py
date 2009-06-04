@@ -8,6 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+from openlp.plugins.songs.lib import TextListData
 
 class Ui_SongBookDialog(object):
     def setupUi(self, SongBookDialog):
@@ -17,10 +18,17 @@ class Ui_SongBookDialog(object):
         self.DialogLayout.setSpacing(8)
         self.DialogLayout.setMargin(8)
         self.DialogLayout.setObjectName("DialogLayout")
-        self.BookSongListView = QtGui.QTableWidget(SongBookDialog)
-        self.BookSongListView.setObjectName("BookSongListView")
-        self.BookSongListView.setColumnCount(0)
-        self.BookSongListView.setRowCount(0)
+
+#        self.BookSongListView = QtGui.QTableWidget(SongBookDialog)
+#        self.BookSongListView.setObjectName("BookSongListView")
+#        self.BookSongListView.setColumnCount(0)
+#        self.BookSongListView.setRowCount(0)
+        self.BookSongListView = QtGui.QListView()
+        self.BookSongListView.setAlternatingRowColors(True)
+        self.BookSongListData = TextListData()
+        self.BookSongListView.setModel(self.BookSongListData)
+        self.DialogLayout.addWidget(self.BookSongListView)
+
         self.DialogLayout.addWidget(self.BookSongListView)
         self.SongBookGroup = QtGui.QGroupBox(SongBookDialog)
         self.SongBookGroup.setMinimumSize(QtCore.QSize(0, 200))

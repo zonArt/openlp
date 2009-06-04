@@ -33,27 +33,91 @@ class SongBookForm(QDialog, Ui_SongBookDialog):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.songmanager = songmanager
+        self.currentRow = 0
+        self.songbook = None
+
+        QtCore.QObject.connect(self.DeleteButton,
+            QtCore.SIGNAL('pressed()'), self.onDeleteButtonClick)
+        QtCore.QObject.connect(self.ClearButton,
+            QtCore.SIGNAL('pressed()'), self.onClearButtonClick)
+        QtCore.QObject.connect(self.AddUpdateButton,
+            QtCore.SIGNAL('pressed()'), self.onAddUpdateButtonClick)
+        QtCore.QObject.connect(self.DisplayEdit,
+            QtCore.SIGNAL('pressed()'), self.onDisplayEditLostFocus)
+        QtCore.QObject.connect(self.SongBookListView,
+            QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSongBookListViewItemClicked)
 
     def load_form(self):
-        A = 1
+        """
+        Refresh the screen and rest fields
+        """
+        self.SongBookListData.resetStore()
+        self.onClearButtonClick() # tidy up screen
+        SongBooks = self.songmanager.get_SongBooks()
+        for SongBook in SongBooks:
+            self.SongBookListData.addRow(SongBook.id,SongBook.display_name)
+        row_count = self.SongBookListData.rowCount(None)
+        if self.currentRow > row_count:
+            # in case we have delete the last row of the table
+            self.currentRow = row_count
+        row = self.SongBookListData.createIndex(self.currentRow, 0)
+        if row.isValid():
+            self.SongBookListView.selectionModel().setCurrentIndex(row, QtGui.QItemSelectionModel.SelectCurrent)
+        self._validate_form()
 
-    @pyqtSignature("QTableWidgetItem*")
-    def on_BookSongListView_itemClicked(self, item):
+    def onDeleteButtonClick(self):
         """
-        Slot documentation goes here.
+        Delete the SongBook is the SongBook is not attached to any songs
         """
-        print "bslv ic " + str(item)
+        self.songmanager.delete_SongBook(self.SongBook.id)
+        self.onClearButtonClick()
+        self.load_form()
 
-    @pyqtSignature("")
-    def on_DeleteButton_clicked(self):
-        """
-        Slot documentation goes here.
-        """
-        print "db c "
+    def onDisplayEditLostFocus(self):
+        self._validate_form()
 
-    @pyqtSignature("")
-    def on_AddUpdateButton_clicked(self):
+    def onAddUpdateButtonClick(self):
         """
-        Slot documentation goes here.
+        Sent New or update details to the database
         """
-        print "au c "
+        if self.SongBook == None:
+            self.SongBook = SongBook()
+        self.SongBook.display_name = unicode(self.DisplayEdit.displayText())
+        self.songmanager.save_SongBook(self.SongBook)
+        self.onClearButtonClick()
+        self.load_form()
+        self._validate_form()
+
+    def onClearButtonClick(self):
+        """
+        Tidy up screen if clear button pressed
+        """
+        self.DisplayEdit.setText(u'')
+        self.MessageLabel.setText(u'')
+        self.DeleteButton.setEnabled(False)
+        self.SongBook = None
+        self._validate_form()
+
+    def onSongBookListViewItemClicked(self, index):
+        """
+        An SongBook has been selected display it
+        If the SongBook is attached to a Song prevent delete
+        """
+        self.currentRow = index.row()
+        id = int(self.SongBookListData.getId(index))
+        self.SongBook = self.songmanager.get_SongBook(id)
+
+        self.DisplayEdit.setText(self.SongBook.display_name)
+        if len(self.SongBook.songs) > 0:
+            self.MessageLabel.setText("SongBook in use 'Delete' is disabled")
+            self.DeleteButton.setEnabled(False)
+        else:
+            self.MessageLabel.setText("SongBook is not used")
+            self.DeleteButton.setEnabled(True)
+        self._validate_form()
+
+    def _validate_form(self):
+        if len(self.DisplayEdit.displayText()) == 0: # We need at lease a display name
+            self.AddUpdateButton.setEnabled(False)
+        else:
+            self.AddUpdateButton.setEnabled(True)
