@@ -28,7 +28,7 @@ class EventReceiver(QtCore.QObject):
         QtCore.QObject.__init__(self)
 
     def send_message(self, event, msg=None):
-        self.emit(SIGNAL(event), msg)
+        self.emit(QtCore.SIGNAL(event), msg)
 
     def received(self, msg=None):
         print msg
