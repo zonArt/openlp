@@ -140,8 +140,8 @@ class ServiceManager(QtGui.QWidget):
         count = 0
         for frame in item.frames:
             treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
-            text = frame[u'title'][0]
-            treewidgetitem1.setText(0,text[:30])
+            text = frame[u'title']
+            treewidgetitem1.setText(0,text[:40])
             treewidgetitem1.setData(0, QtCore.Qt.UserRole,QtCore.QVariant(count))
             count = count + 1
 

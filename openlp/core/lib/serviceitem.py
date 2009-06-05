@@ -48,6 +48,7 @@ class ServiceItem():
         self.raw_footer = None
         self.theme = None
         log.debug(u'Service item created for %s ', self.shortname)
+        self.service_frames = []
 
     def addIcon(self, icon):
         self.iconic_representation = buildIcon(icon)
@@ -62,23 +63,35 @@ class ServiceItem():
         else:
             self.plugin.render_manager.set_override_theme(self.theme)
         log.debug(u'Formatting slides')
-        if len(self.frames) == 0 and len(self.raw_slides) > 0 :
-            for slide in self.raw_slides:
-                formated = self.plugin.render_manager.format_slide(slide)
+        if self.service_item_type == u'text':
+            for slide in self.service_frames:
+                formated = self.plugin.render_manager.format_slide(slide[u'raw_slide'])
                 for format in formated:
                     frame = self.plugin.render_manager.generate_slide(format, self.raw_footer)
-                    self.frames.append({u'title': format, u'image': frame})
+                    self.frames.append({u'title': slide[u'title'], u'image': frame})
+        elif self.service_item_type == u'command':
+            self.frames = self.service_frames
+            self.service_frames = []
+        elif self.service_item_type == u'image':
+            self.frames = self.service_frames
+            self.service_frames = []
         else:
-            if len(self.command_files) > 0:
-                pass
+            assert(0 , u'Invalid value rendere :%s' % self.service_item_type)
+
+    def add_from_image(self, frame_title, image):
+        self.service_item_type = u'image'
+        self.service_frames.append({u'title': frame_title, u'image': image})
+
+    def add_from_text(self, frame_title, raw_slide):
+        self.service_item_type = u'text'
+        frame_title = frame_title.split(u'\n')[0]
+        self.service_frames.append({u'title': frame_title, u'raw_slide': raw_slide})
+
+    def add_from_command(self, frame_title, command):
+        self.service_item_type = u'command'
+        self.service_frames.append({u'title': frame_title, u'command': command})
 
 
-    def get_parent_node(self):
-        """
-        This method returns a parent node to be inserted into the Service
-        Manager. At the moment this has to be a QAbstractListModel based class
-        """
-        pass
 
     def get_oos_repr(self):
         """
