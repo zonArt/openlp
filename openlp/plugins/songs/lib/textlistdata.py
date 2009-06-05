@@ -59,6 +59,8 @@ class TextListData(QtCore.QAbstractListModel):
         if row > len(self.items): # if the last row is selected and deleted, we then get called with an empty row!
             return QtCore.QVariant()
         if role == QtCore.Qt.DisplayRole:
+            if row == self.rowCount(None):
+                row -= 1
             retval = self.items[row][1]
         else:
             retval = QtCore.QVariant()
