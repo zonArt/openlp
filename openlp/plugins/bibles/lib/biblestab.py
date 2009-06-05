@@ -32,7 +32,7 @@ class BiblesTab(SettingsTab):
         self.show_new_chapters = False
         self.display_style = 0
         self.bible_search = True
-        SettingsTab.__init__(self, u'Bibles')
+        SettingsTab.__init__(self, translate(u'BiblesTab', u'Bibles'), u'Bibles')
 
     def setupUi(self):
         self.setObjectName(u'BiblesTab')
@@ -134,32 +134,32 @@ class BiblesTab(SettingsTab):
         self.BibleLayout.addWidget(self.BibleRightWidget)
         # Signals and slots
         QtCore.QObject.connect(self.NewChaptersCheckBox,
-            QtCore.SIGNAL("stateChanged(int)"), self.onNewChaptersCheckBoxChanged)
+            QtCore.SIGNAL(u'stateChanged(int)'), self.onNewChaptersCheckBoxChanged)
         QtCore.QObject.connect(self.BibleSearchCheckBox,
-            QtCore.SIGNAL("stateChanged(int)"), self.onBibleSearchCheckBoxChanged)
+            QtCore.SIGNAL(u'stateChanged(int)'), self.onBibleSearchCheckBoxChanged)
         QtCore.QObject.connect(self.VerseRadioButton,
-            QtCore.SIGNAL("pressed()"), self.onVerseRadioButtonPressed)
+            QtCore.SIGNAL(u'pressed()'), self.onVerseRadioButtonPressed)
         QtCore.QObject.connect(self.ParagraphRadioButton,
-            QtCore.SIGNAL("pressed()"), self.onParagraphRadioButtonPressed)
+            QtCore.SIGNAL(u'pressed()'), self.onParagraphRadioButtonPressed)
         QtCore.QObject.connect(self.DisplayStyleComboBox,
-            QtCore.SIGNAL("activated(int)"), self.onDisplayStyleComboBoxChanged)
+            QtCore.SIGNAL(u'activated(int)'), self.onDisplayStyleComboBoxChanged)
         QtCore.QObject.connect(self.BibleThemeComboBox,
-            QtCore.SIGNAL("activated(int)"), self.onBibleThemeComboBoxChanged)
+            QtCore.SIGNAL(u'activated(int)'), self.onBibleThemeComboBoxChanged)
 
     def retranslateUi(self):
-        self.VerseDisplayGroupBox.setTitle(translate('SettingsForm', 'Verse Display'))
-        self.VerseRadioButton.setText(translate('SettingsForm', 'Verse style'))
-        self.ParagraphRadioButton.setText(translate('SettingsForm','Paragraph style'))
-        self.NewChaptersCheckBox.setText(translate('SettingsForm', 'Only show new chapter numbers'))
-        self.DisplayStyleLabel.setText(translate('SettingsForm', 'Display Style:'))
-        self.BibleThemeLabel.setText(translate('SettingsForm', 'Bible Theme:'))
-        self.DisplayStyleComboBox.setItemText(0, translate('SettingsForm', 'No brackets'))
-        self.DisplayStyleComboBox.setItemText(1, translate('SettingsForm', '( and )'))
-        self.DisplayStyleComboBox.setItemText(2, translate('SettingsForm', '{ and }'))
-        self.DisplayStyleComboBox.setItemText(3, translate('SettingsForm', '[ and ]'))
-        self.ChangeNoteLabel.setText(translate('SettingsForm', 'Note:\nChanges don\'t affect verses already in the service'))
-        self.BibleSearchGroupBox.setTitle(translate('SettingsForm', 'Search'))
-        self.BibleSearchCheckBox.setText(translate('SettingsForm', 'Search-as-you-type'))
+        self.VerseDisplayGroupBox.setTitle(translate(u'SettingsForm', u'Verse Display'))
+        self.VerseRadioButton.setText(translate(u'SettingsForm', u'Verse style'))
+        self.ParagraphRadioButton.setText(translate(u'SettingsForm', u'Paragraph style'))
+        self.NewChaptersCheckBox.setText(translate(u'SettingsForm', u'Only show new chapter numbers'))
+        self.DisplayStyleLabel.setText(translate(u'SettingsForm', u'Display Style:'))
+        self.BibleThemeLabel.setText(translate(u'SettingsForm', u'Bible Theme:'))
+        self.DisplayStyleComboBox.setItemText(0, translate(u'SettingsForm', u'No brackets'))
+        self.DisplayStyleComboBox.setItemText(1, translate(u'SettingsForm', u'( and )'))
+        self.DisplayStyleComboBox.setItemText(2, translate(u'SettingsForm', u'{ and }'))
+        self.DisplayStyleComboBox.setItemText(3, translate(u'SettingsForm', u'[ and ]'))
+        self.ChangeNoteLabel.setText(translate(u'SettingsForm', u'Note:\nChanges don\'t affect verses already in the service'))
+        self.BibleSearchGroupBox.setTitle(translate(u'SettingsForm', u'Search'))
+        self.BibleSearchCheckBox.setText(translate(u'SettingsForm', u'Search-as-you-type'))
 
     def onBibleThemeComboBoxChanged(self):
         self.bible_theme = self.BibleThemeComboBox.currentText()
@@ -187,7 +187,7 @@ class BiblesTab(SettingsTab):
 
     def load(self):
         self.paragraph_style = str_to_bool(self.config.get_config(u'paragraph style', u'True'))
-        self.show_new_chapters = str_to_bool(self.config.get_config(u'display new chapter', u"False"))
+        self.show_new_chapters = str_to_bool(self.config.get_config(u'display new chapter', u'False'))
         self.display_style = int(self.config.get_config(u'display brackets', u'0'))
         self.bible_theme = self.config.get_config(u'bible theme', u'0')
         self.bible_search = str_to_bool(self.config.get_config(u'search as type', u'True'))
@@ -216,6 +216,7 @@ class BiblesTab(SettingsTab):
             self.BibleThemeComboBox.addItem(theme)
         id = self.BibleThemeComboBox.findText(str(self.bible_theme), QtCore.Qt.MatchExactly)
         if id == -1:
-            id = 0 # Not Found
+            # Not Found
+            id = 0
             self.bible_theme = u''
         self.BibleThemeComboBox.setCurrentIndex(id)

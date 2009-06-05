@@ -28,7 +28,7 @@ class ThemesTab(SettingsTab):
     """
     def __init__(self, parent):
         self.parent = parent
-        SettingsTab.__init__(self, u'Themes')
+        SettingsTab.__init__(self, translate(u'ThemesTab', u'Themes'), u'Themes')
 
     def setupUi(self):
         self.setObjectName(u'ThemesTab')
@@ -90,11 +90,11 @@ class ThemesTab(SettingsTab):
         self.ThemesTabLayout.addWidget(self.LevelGroupBox)
 
         QtCore.QObject.connect(self.SongLevelRadioButton,
-            QtCore.SIGNAL("pressed()"), self.onSongLevelButtonPressed)
+            QtCore.SIGNAL(u'pressed()'), self.onSongLevelButtonPressed)
         QtCore.QObject.connect(self.ServiceLevelRadioButton,
-            QtCore.SIGNAL("pressed()"), self.onServiceLevelButtonPressed)
+            QtCore.SIGNAL(u'pressed()'), self.onServiceLevelButtonPressed)
         QtCore.QObject.connect(self.GlobalLevelRadioButton,
-            QtCore.SIGNAL("pressed()"), self.onGlobalLevelButtonPressed)
+            QtCore.SIGNAL(u'pressed()'), self.onGlobalLevelButtonPressed)
 
         QtCore.QObject.connect(self.DefaultComboBox,
             QtCore.SIGNAL("activated(int)"), self.onDefaultComboBoxChanged)

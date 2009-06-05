@@ -27,7 +27,7 @@ class CustomTab(SettingsTab):
     SongsTab is the songs settings tab in the settings dialog.
     """
     def __init__(self):
-        SettingsTab.__init__(self, u'Custom')
+        SettingsTab.__init__(self, translate(u'CustomTab', u'Custom'), u'Custom')
 
     def setupUi(self):
         self.setObjectName(u'CustomTab')

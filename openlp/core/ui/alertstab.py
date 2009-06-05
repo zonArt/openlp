@@ -29,7 +29,7 @@ class AlertsTab(SettingsTab):
     def __init__(self):
         self.font_color = '#ffffff'
         self.bg_color = '#660000'
-        SettingsTab.__init__(self, u'Alerts')
+        SettingsTab.__init__(self, translate(u'AlertsTab', u'Alerts'), u'Alerts')
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
@@ -130,13 +130,13 @@ class AlertsTab(SettingsTab):
         self.AlertsLayout.addWidget(self.AlertRightColumn)
         # Signals and slots
         QtCore.QObject.connect(self.BackgroundColorButton,
-            QtCore.SIGNAL("pressed()"), self.onBackgroundColorButtonClicked)
+            QtCore.SIGNAL(u'pressed()'), self.onBackgroundColorButtonClicked)
         QtCore.QObject.connect(self.FontColorButton,
-            QtCore.SIGNAL("pressed()"), self.onFontColorButtonClicked)
+            QtCore.SIGNAL(u'pressed()'), self.onFontColorButtonClicked)
         QtCore.QObject.connect(self.FontComboBox,
-            QtCore.SIGNAL("activated(int)"), self.onFontComboBoxClicked)
+            QtCore.SIGNAL(u'activated(int)'), self.onFontComboBoxClicked)
         QtCore.QObject.connect(self.TimeoutSpinBox,
-            QtCore.SIGNAL("valueChanged(int)"), self.onTimeoutSpinBoxChanged)
+            QtCore.SIGNAL(u'valueChanged(int)'), self.onTimeoutSpinBoxChanged)
 
     def retranslateUi(self):
         self.FontGroupBox.setTitle(translate(u'AlertsTab', u'Font'))
@@ -146,13 +146,13 @@ class AlertsTab(SettingsTab):
         self.TimeoutLabel.setText(translate(u'AlertsTab', u'Alert timeout:'))
         self.TimeoutSpinBox.setSuffix(translate(u'AlertsTab', u's'))
         self.PreviewGroupBox.setTitle(translate(u'AlertsTab', u'Preview'))
-        self.FontPreview.setText(translate(u'AlertsTab', 'openlp.org 2.0 rocks!'))
+        self.FontPreview.setText(translate(u'AlertsTab', u'openlp.org 2.0 rocks!'))
 
     def onBackgroundColorButtonClicked(self):
         self.bg_color = QtGui.QColorDialog.getColor(
-            QColor(self.bg_color), self).name()
+            QtGui.QColor(self.bg_color), self).name()
         self.BackgroundColorButton.setStyleSheet(
-            'background-color: %s' % self.bg_color)
+            u'background-color: %s' % self.bg_color)
         self.updateDisplay()
 
     def onFontComboBoxClicked(self):
@@ -160,22 +160,22 @@ class AlertsTab(SettingsTab):
 
     def onFontColorButtonClicked(self):
         self.font_color = QtGui.QColorDialog.getColor(
-            QColor(self.font_color), self).name()
+            QtGui.QColor(self.font_color), self).name()
         self.FontColorButton.setStyleSheet(
-            'background-color: %s' % self.font_color)
+            u'background-color: %s' % self.font_color)
         self.updateDisplay()
 
     def onTimeoutSpinBoxChanged(self):
         self.timeout = self.TimeoutSpinBox.value()
 
     def load(self):
-        self.timeout = int(self.config.get_config('timeout', 5))
-        self.font_color = str(self.config.get_config('font color', u'#ffffff'))
-        self.bg_color = str(self.config.get_config('background color', u'#660000'))
-        self.font_face = str(self.config.get_config('font face', QtGui.QFont().family()))
+        self.timeout = int(self.config.get_config(u'timeout', 5))
+        self.font_color = str(self.config.get_config(u'font color', u'#ffffff'))
+        self.bg_color = str(self.config.get_config(u'background color', u'#660000'))
+        self.font_face = str(self.config.get_config(u'font face', QtGui.QFont().family()))
         self.TimeoutSpinBox.setValue(self.timeout)
-        self.FontColorButton.setStyleSheet('background-color: %s' % self.font_color)
-        self.BackgroundColorButton.setStyleSheet('background-color: %s' % self.bg_color)
+        self.FontColorButton.setStyleSheet(u'background-color: %s' % self.font_color)
+        self.BackgroundColorButton.setStyleSheet(u'background-color: %s' % self.bg_color)
         font = QtGui.QFont()
         font.setFamily(self.font_face)
         self.FontComboBox.setCurrentFont(font)
@@ -183,10 +183,10 @@ class AlertsTab(SettingsTab):
 
     def save(self):
         self.font_face = self.FontComboBox.currentFont().family()
-        self.config.set_config('background color', str(self.bg_color))
-        self.config.set_config('font color', str(self.font_color))
-        self.config.set_config('font face', str(self.font_face))
-        self.config.set_config('timeout', str(self.timeout))
+        self.config.set_config(u'background color', str(self.bg_color))
+        self.config.set_config(u'font color', str(self.font_color))
+        self.config.set_config(u'font face', str(self.font_face))
+        self.config.set_config(u'timeout', str(self.timeout))
 
     def updateDisplay(self):
         font = QtGui.QFont()
@@ -195,4 +195,4 @@ class AlertsTab(SettingsTab):
         font.setPointSize(16)
         self.FontPreview.setFont(font)
         self.FontPreview.setStyleSheet(
-            'background-color: %s; color: %s' % (self.bg_color, self.font_color))
+            u'background-color: %s; color: %s' % (self.bg_color, self.font_color))
