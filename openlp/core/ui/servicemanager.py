@@ -132,7 +132,7 @@ class ServiceManager(QtGui.QWidget):
     def addServiceItem(self, item):
         self.serviceItems.append({u'data': item, u'order': len(self.serviceItems)+1})
         treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
-        treewidgetitem.setText(0,item.title + u':' + item.shortname)
+        treewidgetitem.setText(0,item.title) # + u':' + item.shortname)
         treewidgetitem.setIcon(0,item.iconic_representation)
         treewidgetitem.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(len(self.serviceItems)))
         treewidgetitem.setExpanded(True)

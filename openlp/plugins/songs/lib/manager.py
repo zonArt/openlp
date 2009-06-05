@@ -3,7 +3,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -23,7 +23,7 @@ import sys
 
 from sqlalchemy import asc, desc
 from openlp.plugins.songs.lib.models import init_models, metadata, session, \
-    engine, songs_table, Song, Author, Topic
+    engine, songs_table, Song, Author, Topic,  Book
 
 import logging
 
@@ -34,7 +34,7 @@ class SongManager():
     """
 
     global log
-    log=logging.getLogger('SongManager')
+    log = logging.getLogger('SongManager')
     log.info('Song manager loaded')
 
     def __init__(self, config):
@@ -45,7 +45,7 @@ class SongManager():
         self.config = config
         log.debug('Song Initialising')
         self.db_url = u''
-        db_type = self.config.get_config(u'db type')
+        db_type = self.config.get_config(u'db type', u'sqlite')
         if db_type == u'sqlite':
             self.db_url = u'sqlite:///' + self.config.get_data_path() + \
                 u'/songs.sqlite'
@@ -134,11 +134,85 @@ class SongManager():
 
     def delete_author(self, authorid):
         """
-        Delete the author and refresh the author cache
+        Delete the author
         """
+        author = self.get_author(authorid)
         try:
             self.session.delete(author)
             self.session.commit()
             return True
         except:
+            log.error("Errow thrown %s", sys.exc_info()[1])
+            return False
+
+    def get_topics(self):
+        """
+        Returns a list of all the topics
+        """
+        return self.session.query(Topic).order_by(Topic.name).all()
+
+    def get_topic(self, id):
+        """
+        Details of the Topic
+        """
+        return self.session.query(Topic).get(id)
+
+    def save_topic(self, topic):
+        """
+        Save the Topic
+        """
+        try:
+            self.session.add(topic)
+            self.session.commit()
+            return True
+        except:
+            return False
+
+    def delete_topic(self, topicid):
+        """
+        Delete the topic
+        """
+        topic = self.get_topic(topicid)
+        try:
+            self.session.delete(topic)
+            self.session.commit()
+            return True
+        except:
+            log.error("Errow thrown %s", sys.exc_info()[1])
+            return False
+
+    def get_books(self):
+        """
+        Returns a list of all the Books
+        """
+        return self.session.query(Book).order_by(Book.name).all()
+
+    def get_book(self, id):
+        """
+        Details of the Books
+        """
+        return self.session.query(Book).get(id)
+
+    def save_book(self, book):
+        """
+        Save the Book
+        """
+        try:
+            self.session.add(book)
+            self.session.commit()
+            return True
+        except:
+            return False
+
+    def delete_book(self, bookid):
+        """
+        Delete the Book
+        """
+        book = self.get_book(bookid)
+        try:
+            self.session.delete(book)
+            self.session.commit()
+            return True
+        except:
+            log.error("Errow thrown %s", sys.exc_info()[1])
             return False

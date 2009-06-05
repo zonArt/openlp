@@ -3,7 +3,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley,
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley,
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -69,12 +69,26 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def initialise(self):
         self.loadAuthors()
+        self.loadTopics()
+        self.loadBooks()
 
     def loadAuthors(self):
         authors = self.songmanager.get_authors()
         self.AuthorsSelectionComboItem.clear()
         for author in authors:
             self.AuthorsSelectionComboItem.addItem(author.display_name)
+
+    def loadTopics(self):
+        topics = self.songmanager.get_topics()
+        self.SongTopicCombo.clear()
+        for topic in topics:
+            self.SongTopicCombo.addItem(topic.name)
+
+    def loadBooks(self):
+        books = self.songmanager.get_books()
+        self.SongbookCombo.clear()
+        for book in books:
+            self.SongbookCombo.addItem(book.name)
 
     def loadSong(self, id):
         self.song = self.songmanager.get_song(id)
@@ -111,6 +125,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         self.topics_form.load_form()
         self.topics_form.exec_()
+        self.loadTopics()
 
     def onAddSongBookButtonClicked(self):
         """
@@ -118,6 +133,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         self.song_book_form.load_form()
         self.song_book_form.exec_()
+        self.loadBooks()
 
     def onAddVerseButtonClicked(self):
         self.verse_form.setVerse('')

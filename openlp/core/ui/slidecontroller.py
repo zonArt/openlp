@@ -53,7 +53,7 @@ class SlideData(QtCore.QAbstractListModel):
         self.beginInsertRows(QtCore.QModelIndex(), row, row)
         log.info(u'insert row %d' % row)
         # create a preview image
-        frame1 = frame.scaled(QtCore.QSize(300, 225), QtCore.Qt.KeepAspectRatio,
+        frame1 = frame.scaled(QtCore.QSize(280, 210), QtCore.Qt.KeepAspectRatio,
             QtCore.Qt.SmoothTransformation)
         self.items.insert(row, (frame1, framenumber))
         log.info(u'Items: %s' % self.items)
@@ -196,7 +196,7 @@ class SlideController(QtGui.QWidget):
         sizePolicy.setHeightForWidth(
             self.SlidePreview.sizePolicy().hasHeightForWidth())
         self.SlidePreview.setSizePolicy(sizePolicy)
-        self.SlidePreview.setMinimumSize(QtCore.QSize(250, 190))
+        self.SlidePreview.setMinimumSize(QtCore.QSize(280, 210))
         self.SlidePreview.setFrameShape(QtGui.QFrame.Box)
         self.SlidePreview.setFrameShadow(QtGui.QFrame.Plain)
         self.SlidePreview.setLineWidth(1)

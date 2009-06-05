@@ -8,6 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+from openlp.plugins.songs.lib import TextListData
 
 class Ui_AuthorsDialog(object):
     def setupUi(self, AuthorsDialog):
@@ -17,14 +18,13 @@ class Ui_AuthorsDialog(object):
         self.DialogLayout.setSpacing(8)
         self.DialogLayout.setMargin(8)
         self.DialogLayout.setObjectName("DialogLayout")
-        self.AuthorListView = QtGui.QTableWidget(AuthorsDialog)
-        self.AuthorListView.setDragEnabled(True)
+
+        self.AuthorListView = QtGui.QListView()
         self.AuthorListView.setAlternatingRowColors(True)
-        self.AuthorListView.setColumnCount(0)
-        self.AuthorListView.setObjectName("AuthorListView")
-        self.AuthorListView.setColumnCount(0)
-        self.AuthorListView.setRowCount(0)
+        self.AuthorListData = TextListData()
+        self.AuthorListView.setModel(self.AuthorListData)
         self.DialogLayout.addWidget(self.AuthorListView)
+
         self.AuthorDetails = QtGui.QGroupBox(AuthorsDialog)
         self.AuthorDetails.setMinimumSize(QtCore.QSize(0, 0))
         self.AuthorDetails.setObjectName("AuthorDetails")
@@ -107,7 +107,7 @@ class Ui_AuthorsDialog(object):
         self.FirstNameLabel.setText(QtGui.QApplication.translate("AuthorsDialog", "First Name:", None, QtGui.QApplication.UnicodeUTF8))
         self.LastNameLabel.setText(QtGui.QApplication.translate("AuthorsDialog", "Last Name:", None, QtGui.QApplication.UnicodeUTF8))
         self.ClearButton.setToolTip(QtGui.QApplication.translate("AuthorsDialog", "Clear Selection", None, QtGui.QApplication.UnicodeUTF8))
-        self.ClearButton.setText(QtGui.QApplication.translate("AuthorsDialog", "New", None, QtGui.QApplication.UnicodeUTF8))
+        self.ClearButton.setText(QtGui.QApplication.translate("AuthorsDialog", "Clear", None, QtGui.QApplication.UnicodeUTF8))
         self.AddUpdateButton.setToolTip(QtGui.QApplication.translate("AuthorsDialog", "Add Update Author", None, QtGui.QApplication.UnicodeUTF8))
         self.AddUpdateButton.setText(QtGui.QApplication.translate("AuthorsDialog", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.DeleteButton.setToolTip(QtGui.QApplication.translate("AuthorsDialog", "Delete Author", None, QtGui.QApplication.UnicodeUTF8))

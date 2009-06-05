@@ -8,6 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+from openlp.plugins.songs.lib import TextListData
 
 class Ui_TopicsDialog(object):
     def setupUi(self, TopicsDialog):
@@ -35,13 +36,13 @@ class Ui_TopicsDialog(object):
         self.gridLayout.addWidget(self.DeleteButton, 1, 3, 1, 1)
         self.AddUpdateButton = QtGui.QPushButton(self.TopicGroupBox)
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(":/system/system_settings.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(":/services/service_save.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.AddUpdateButton.setIcon(icon1)
         self.AddUpdateButton.setObjectName("AddUpdateButton")
         self.gridLayout.addWidget(self.AddUpdateButton, 1, 4, 1, 1)
         self.ClearButton = QtGui.QPushButton(self.TopicGroupBox)
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(":/songs/song_edit.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap(":/services/service_new.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.ClearButton.setIcon(icon2)
         self.ClearButton.setObjectName("ClearButton")
         self.gridLayout.addWidget(self.ClearButton, 1, 2, 1, 1)
@@ -49,11 +50,13 @@ class Ui_TopicsDialog(object):
         self.MessageLabel = QtGui.QLabel(TopicsDialog)
         self.MessageLabel.setObjectName("MessageLabel")
         self.gridLayout_2.addWidget(self.MessageLabel, 3, 0, 1, 1)
-        self.TopicsListView = QtGui.QTableWidget(TopicsDialog)
-        self.TopicsListView.setObjectName("TopicsListView")
-        self.TopicsListView.setColumnCount(0)
-        self.TopicsListView.setRowCount(0)
+
+        self.TopicsListView = QtGui.QListView()
+        self.TopicsListView.setAlternatingRowColors(True)
+        self.TopicsListData = TextListData()
+        self.TopicsListView.setModel(self.TopicsListData)
         self.gridLayout_2.addWidget(self.TopicsListView, 0, 0, 1, 1)
+
         self.ButtonBox = QtGui.QDialogButtonBox(TopicsDialog)
         self.ButtonBox.setOrientation(QtCore.Qt.Horizontal)
         self.ButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
@@ -69,8 +72,11 @@ class Ui_TopicsDialog(object):
         TopicsDialog.setWindowTitle(QtGui.QApplication.translate("TopicsDialog", "Topic Maintenance", None, QtGui.QApplication.UnicodeUTF8))
         self.TopicGroupBox.setTitle(QtGui.QApplication.translate("TopicsDialog", "Topic", None, QtGui.QApplication.UnicodeUTF8))
         self.TopicNameLabel.setText(QtGui.QApplication.translate("TopicsDialog", "Topic Name:", None, QtGui.QApplication.UnicodeUTF8))
-        self.DeleteButton.setToolTip(QtGui.QApplication.translate("TopicsDialog", "Delete Author", None, QtGui.QApplication.UnicodeUTF8))
-        self.AddUpdateButton.setToolTip(QtGui.QApplication.translate("TopicsDialog", "Add Update Author", None, QtGui.QApplication.UnicodeUTF8))
-        self.ClearButton.setToolTip(QtGui.QApplication.translate("TopicsDialog", "Clear Selection", None, QtGui.QApplication.UnicodeUTF8))
 
+        self.DeleteButton.setToolTip(QtGui.QApplication.translate("TopicsDialog", "Delete Author", None, QtGui.QApplication.UnicodeUTF8))
+        self.DeleteButton.setText(QtGui.QApplication.translate("AuthorsDialog", "Delete", None, QtGui.QApplication.UnicodeUTF8))
+        self.AddUpdateButton.setToolTip(QtGui.QApplication.translate("TopicsDialog", "Add Update Author", None, QtGui.QApplication.UnicodeUTF8))
+        self.AddUpdateButton.setText(QtGui.QApplication.translate("AuthorsDialog", "Save", None, QtGui.QApplication.UnicodeUTF8))
+        self.ClearButton.setToolTip(QtGui.QApplication.translate("TopicsDialog", "Clear Selection", None, QtGui.QApplication.UnicodeUTF8))
+        self.ClearButton.setText(QtGui.QApplication.translate("TopicsDialog", "Clear", None, QtGui.QApplication.UnicodeUTF8))
 

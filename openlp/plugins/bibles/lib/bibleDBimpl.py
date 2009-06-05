@@ -38,7 +38,7 @@ class BibleDBImpl(BibleCommon):
         self.config = config
         self.biblefile = os.path.join(biblepath, biblename+u'.sqlite')
         log.debug( "Load bible %s on path %s", biblename, self.biblefile)
-        db_type = self.config.get_config(u'db type')
+        db_type = self.config.get_config(u'db type', u'sqlite')
         if db_type  == u'sqlite':
             self.db = create_engine("sqlite:///" + self.biblefile)
         else:
@@ -101,6 +101,7 @@ class BibleDBImpl(BibleCommon):
         return book
 
     def save_meta(self, key, value):
+        log.debug( "save_meta %s/%s", key, value)
         metadata.bind.echo = False
         session = self.session()
         bmeta= BibleMeta()

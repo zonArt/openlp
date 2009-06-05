@@ -283,7 +283,7 @@ class BibleMediaItem(MediaManagerItem):
                 self.initialiseBible(bible) # use the first bible as the trigger
 
     def onAdvancedVersionComboBox(self):
-        self.initialiseBible(str(self.AdvancedVersionComboBox.currentText())) # restet the bible info
+        self.initialiseBible(str(self.AdvancedVersionComboBox.currentText())) # reset the bible info
 
     def onAdvancedBookComboBox(self):
         self.initialiseBible(str(self.AdvancedVersionComboBox.currentText())) # reset the bible info
@@ -291,7 +291,7 @@ class BibleMediaItem(MediaManagerItem):
     def onBibleNewClick(self):
         self.bibleimportform = BibleImportForm(self.parent.config, self.parent.biblemanager, self)
         self.bibleimportform.exec_()
-        pass
+        self.reloadBibles()
 
     def onAdvancedFromVerse(self):
         frm = self.AdvancedFromVerse.currentText()
@@ -417,22 +417,14 @@ class BibleMediaItem(MediaManagerItem):
 
     def initialiseBible(self, bible):
         log.debug(u"initialiseBible %s", bible)
-        current_book = str(self.AdvancedBookComboBox.currentText())
-        chapter_count = self.parent.biblemanager.get_book_chapter_count(bible,
-            current_book)[0]
-        log.debug(u'Book change bible %s book %s ChapterCount %s', bible,
-            current_book, chapter_count)
-        if chapter_count == None:
-            # Only change the search details if the book is missing from the new bible
-            books = self.parent.biblemanager.get_bible_books(str(
-                self.AdvancedVersionComboBox.currentText()))
-            self.AdvancedBookComboBox.clear()
-            first = True
-            for book in books:
-                self.AdvancedBookComboBox.addItem(book.name)
-                if first:
-                    first = False
-                    self.initialiseChapterVerse(bible, book.name)
+        books = self.parent.biblemanager.get_bible_books(str(bible))
+        self.AdvancedBookComboBox.clear()
+        first = True
+        for book in books:
+            self.AdvancedBookComboBox.addItem(book.name)
+            if first:
+                first = False
+                self.initialiseChapterVerse(bible, book.name)
 
     def initialiseChapterVerse(self, bible, book):
         log.debug(u"initialiseChapterVerse %s , %s", bible, book)

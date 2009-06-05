@@ -3,7 +3,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -23,6 +23,3 @@ from customserviceitem import CustomServiceItem
 from manager import CustomManager
 from customtab import CustomTab
 from mediaitem import CustomMediaItem
-
-__all__ = ['CustomManager', 'CustomTab', 'CustomMediaItem', 'CustomServiceItem','TextListData']
-
