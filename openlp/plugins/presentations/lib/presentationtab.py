@@ -24,23 +24,23 @@ from openlp.core.lib import SettingsTab, translate
 
 class PresentationTab(SettingsTab):
     """
-    BiblesTab is the Bibles settings tab in the settings dialog.
+    PresentationsTab is the Presentations settings tab in the settings dialog.
     """
     def __init__(self):
-        SettingsTab.__init__(self, u'Presentation')
+        SettingsTab.__init__(self, translate(u'PresentationTab', u'Presentation'), u'Presentation')
 
     def setupUi(self):
-        self.setObjectName(u'BiblesTab')
-        self.BibleLayout = QtGui.QHBoxLayout(self)
-        self.BibleLayout.setSpacing(8)
-        self.BibleLayout.setMargin(8)
-        self.BibleLayout.setObjectName(u'BibleLayout')
-        self.BibleLeftWidget = QtGui.QWidget(self)
-        self.BibleLeftWidget.setObjectName(u'BibleLeftWidget')
-        self.BibleLeftLayout = QtGui.QVBoxLayout(self.BibleLeftWidget)
-        self.BibleLeftLayout.setObjectName(u'BibleLeftLayout')
-        self.BibleLeftLayout.setSpacing(8)
-        self.BibleLeftLayout.setMargin(0)
+        self.setObjectName(u'PresentationTab')
+        self.PresentationLayout = QtGui.QHBoxLayout(self)
+        self.PresentationLayout.setSpacing(8)
+        self.PresentationLayout.setMargin(8)
+        self.PresentationLayout.setObjectName(u'PresentationLayout')
+        self.PresentationLeftWidget = QtGui.QWidget(self)
+        self.PresentationLeftWidget.setObjectName(u'PresentationLeftWidget')
+        self.PresentationLeftLayout = QtGui.QVBoxLayout(self.PresentationLeftWidget)
+        self.PresentationLeftLayout.setObjectName(u'PresentationLeftLayout')
+        self.PresentationLeftLayout.setSpacing(8)
+        self.PresentationLeftLayout.setMargin(0)
 
         self.VerseDisplayGroupBox = QtGui.QGroupBox(self)
         self.VerseDisplayGroupBox.setObjectName(u'VerseDisplayGroupBox')
@@ -70,29 +70,29 @@ class PresentationTab(SettingsTab):
         self.ImpressPath.setObjectName("ImpressPath")
         self.VerseDisplayLayout.addWidget(self.ImpressPath, 3, 0, 1, 1)
 
-        self.BibleThemeWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
-        self.BibleThemeWidget.setObjectName(u'BibleThemeWidget')
-        self.BibleThemeLayout = QtGui.QHBoxLayout(self.BibleThemeWidget)
-        self.BibleThemeLayout.setSpacing(8)
-        self.BibleThemeLayout.setMargin(0)
-        self.BibleThemeLayout.setObjectName(u'BibleThemeLayout')
+        self.PresentationThemeWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
+        self.PresentationThemeWidget.setObjectName(u'PresentationThemeWidget')
+        self.PresentationThemeLayout = QtGui.QHBoxLayout(self.PresentationThemeWidget)
+        self.PresentationThemeLayout.setSpacing(8)
+        self.PresentationThemeLayout.setMargin(0)
+        self.PresentationThemeLayout.setObjectName(u'PresentationThemeLayout')
 
-        self.BibleLeftLayout.addWidget(self.VerseDisplayGroupBox)
-        self.BibleLeftSpacer = QtGui.QSpacerItem(40, 20,
+        self.PresentationLeftLayout.addWidget(self.VerseDisplayGroupBox)
+        self.PresentationLeftSpacer = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.BibleLeftLayout.addItem(self.BibleLeftSpacer)
-        self.BibleLayout.addWidget(self.BibleLeftWidget)
+        self.PresentationLeftLayout.addItem(self.PresentationLeftSpacer)
+        self.PresentationLayout.addWidget(self.PresentationLeftWidget)
 
-        self.BibleRightWidget = QtGui.QWidget(self)
-        self.BibleRightWidget.setObjectName(u'BibleRightWidget')
-        self.BibleRightLayout = QtGui.QVBoxLayout(self.BibleRightWidget)
-        self.BibleRightLayout.setObjectName(u'BibleRightLayout')
-        self.BibleRightLayout.setSpacing(8)
-        self.BibleRightLayout.setMargin(0)
-        self.BibleRightSpacer = QtGui.QSpacerItem(50, 20,
+        self.PresentationRightWidget = QtGui.QWidget(self)
+        self.PresentationRightWidget.setObjectName(u'PresentationRightWidget')
+        self.PresentationRightLayout = QtGui.QVBoxLayout(self.PresentationRightWidget)
+        self.PresentationRightLayout.setObjectName(u'PresentationRightLayout')
+        self.PresentationRightLayout.setSpacing(8)
+        self.PresentationRightLayout.setMargin(0)
+        self.PresentationRightSpacer = QtGui.QSpacerItem(50, 20,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.BibleRightLayout.addItem(self.BibleRightSpacer)
-        self.BibleLayout.addWidget(self.BibleRightWidget)
+        self.PresentationRightLayout.addItem(self.PresentationRightSpacer)
+        self.PresentationLayout.addWidget(self.PresentationRightWidget)
 
         # Signals and slots
         #QtCore.QObject.connect(self.NewChaptersCheckBox,
@@ -116,20 +116,20 @@ class PresentationTab(SettingsTab):
 #        self.paragraph_style = (self.config.get_config(u'paragraph style', u'True'))
 #        self.show_new_chapters = (self.config.get_config(u'display new chapter', u"False"))
 #        self.display_style = int(self.config.get_config(u'display brackets', u'0'))
-#        self.bible_theme = int(self.config.get_config(u'bible theme', u'0'))
-#        self.bible_search = (self.config.get_config(u'search as type', u'True'))
+#        self.Presentation_theme = int(self.config.get_config(u'Presentation theme', u'0'))
+#        self.Presentation_search = (self.config.get_config(u'search as type', u'True'))
 #        if self.paragraph_style:
 #            self.ParagraphRadioButton.setChecked(True)
 #        else:
 #            self.VerseRadioButton.setChecked(True)
 #        self.NewChaptersCheckBox.setChecked(self.show_new_chapters)
 #        self.DisplayStyleComboBox.setCurrentIndex(self.display_style)
-#        self.BibleSearchCheckBox.setChecked(self.bible_search)
+#        self.PresentationSearchCheckBox.setChecked(self.Presentation_search)
 
     def save(self):
         pass
 #        self.config.set_config(u'paragraph style', str(self.paragraph_style))
 #        self.config.set_config(u'display new chapter', str(self.show_new_chapters))
 #        self.config.set_config(u'display brackets', str(self.display_style))
-#        self.config.set_config(u'search as type', str(self.bible_search))
-#        self.config.set_config(u'bible theme', str(self.bible_theme))
+#        self.config.set_config(u'search as type', str(self.Presentation_search))
+#        self.config.set_config(u'Presentation theme', str(self.Presentation_theme))

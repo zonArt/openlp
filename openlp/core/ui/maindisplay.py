@@ -29,8 +29,13 @@ class MainDisplay(QtGui.QWidget):
         QtGui.QWidget.__init__(self, parent)
         self.setWindowTitle(u'OpenLP Display')
         self.screens = screens
+        self.layout = QtGui.QVBoxLayout(self)
+        self.layout.setSpacing(0)
+        self.layout.setMargin(0)
+        self.layout.setObjectName(u'layout')
         self.display = QtGui.QLabel(self)
         self.display.setScaledContents(True)
+        self.layout.addWidget(self.display)
         self.displayBlank = False
         self.blankFrame= None
         self.alertactive = False
@@ -43,23 +48,21 @@ class MainDisplay(QtGui.QWidget):
         @param (integer) screen This is the screen number.
         """
         screen = self.screens[screenNumber]
-        if screen['number'] != screenNumber:
+        if screen[u'number'] != screenNumber:
             # We will most probably never actually hit this bit, but just in
             # case the index in the list doesn't match the screen number, we
             # search for it.
             for scrn in self.screens:
-                if scrn['number'] == screenNumber:
+                if scrn[u'number'] == screenNumber:
                     screen = scrn
                     break
-        self.setGeometry(screen['size'])
-        self.display.setGeometry(screen['size'])
-        if not screen['primary']:
+        self.setGeometry(screen[u'size'])
+        if not screen[u'primary']:
             self.showFullScreen()
         else:
-            self.showMinimized()
-
-        painter=QtGui.QPainter()
-        self.blankFrame = QtGui.QPixmap(screen['size'].width(), screen['size'].height())
+            self.hide()
+        painter = QtGui.QPainter()
+        self.blankFrame = QtGui.QPixmap(screen[u'size'].width(), screen[u'size'].height())
         painter.begin(self.blankFrame)
         painter.fillRect(self.blankFrame.rect(), QtGui.QColor(u'#000000'))
         self.frameView(self.blankFrame)

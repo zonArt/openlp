@@ -27,11 +27,8 @@ from PyQt4 import QtGui, QtCore, Qt
 from copy import copy
 
 class Renderer:
-
-    global log
-    log = logging.getLogger(u'Renderer')
-    log.info(u'Renderer Loaded')
-    """All the functions for rendering a set of words onto a Device Context
+    """
+    All the functions for rendering a set of words onto a Device Context
 
     How to use:
     set the words to be displayed with a call to format_slide() - this returns an array of screenfuls of data
@@ -39,8 +36,11 @@ class Renderer:
     tell it which DC to render to with set_DC()
     set the borders of where you want the text (if not the whole DC) with set_text_rectangle()
     tell it to render a particular screenfull with render_screen(n)
-
     """
+    global log
+    log = logging.getLogger(u'Renderer')
+    log.info(u'Renderer Loaded')
+
     def __init__(self):
         self._rect = None
         self._debug = 0
@@ -119,18 +119,10 @@ class Renderer:
             lines = verse.split(u'\n')
             for line in lines:
                 text.append(line)
-
         split_text = self._split_set_of_lines(text, False)
         print "split text ", split_text
         print "text ", text
         return split_text
-
-#    def render_screen(self, screennum):
-#        log.debug(u'render screen\n %s %s ', screennum, self.words[screennum])
-#        t = 0.0
-#        words = self.words[screennum]
-#        retval = self._render_lines(words)
-#        return retval
 
     def set_text_rectangle(self, rect_main, rect_footer):
         """
@@ -145,23 +137,17 @@ class Renderer:
          """
         #print "########## Generate frame from lines ##################"
         log.debug(u'generate_frame_from_lines - Start')
-
         #print "Render Lines ", lines
-
         bbox = self._render_lines_unaligned(lines, False)
         if footer_lines is not None:
             bbox1 = self._render_lines_unaligned(footer_lines, True)
-
         # reset the frame. first time do not worrk about what you paint on.
         self._frame = QtGui.QPixmap(self._bg_frame)
-
         x, y = self._correctAlignment(self._rect, bbox)
         bbox = self._render_lines_unaligned(lines, False,  (x, y))
-
         if footer_lines is not None:
             bbox = self._render_lines_unaligned(footer_lines, True, (self._rect_footer.left(), self._rect_footer.top()) )
         log.debug(u'generate_frame_from_lines - Finish')
-
         return self._frame
 
     def _generate_background_frame(self):
@@ -189,23 +175,18 @@ class Renderer:
                 w = int(self._frame.width()) / 2
                 h = int(self._frame.height()) / 2
                 gradient = QtGui.QRadialGradient(w, h, w) # Circular
-
             gradient.setColorAt(0, QtGui.QColor(self._theme.background_startColor))
             gradient.setColorAt(1, QtGui.QColor(self._theme.background_endColor))
-
             painter.setBrush(QtGui.QBrush(gradient))
             rectPath = QtGui.QPainterPath()
-
             max_x = self._frame.width()
             max_y = self._frame.height()
             rectPath.moveTo(0, 0)
             rectPath.lineTo(0, max_y)
             rectPath.lineTo(max_x, max_y)
             rectPath.lineTo(max_x, 0)
-
             rectPath.closeSubpath()
             painter.drawPath(rectPath)
-
         elif self._theme.background_type== u'image': # image
             if self.bg_image is not None:
                 painter.drawPixmap(0 ,0 , self.bg_image)
@@ -219,24 +200,19 @@ class Renderer:
     def _split_set_of_lines(self, lines, footer):
         """
         Given a list of lines, decide how to split them best if they don't all fit on the screen
-         - this is done by splitting at 1/2, 1/3 or 1/4 of the set
-         If it doesn't fit, even at this size, just split at each opportunity
-
-         We'll do this by getting the bounding box of each line, and then summing them appropriately
-         Returns a list of [lists of lines], one set for each screenful
-         """
+        - this is done by splitting at 1/2, 1/3 or 1/4 of the set
+        If it doesn't fit, even at this size, just split at each opportunity.
+        We'll do this by getting the bounding box of each line, and then summing them appropriately
+        Returns a list of [lists of lines], one set for each screenful
+        """
         bboxes = []
         #print "lines ",  lines
-
         for line in lines:
             bboxes.append(self._render_and_wrap_single_line(line, footer))
         #print "bboxes ", bboxes
-
         numlines = len(lines)
         bottom = self._rect.bottom()
-
         count = 0
-
         for ratio in (numlines,  numlines/2, numlines/3, numlines/4):
             good = 1
             startline = 0
@@ -258,7 +234,6 @@ class Renderer:
                 endline = startline + ratio
             if good == 1:
                 break
-
         retval = []
         numlines_per_page = ratio
         #print "good ", good, ratio
@@ -276,7 +251,7 @@ class Renderer:
                 retval.append(thislines)
             #print "extra ", thislines
         else:
-#             print "Just split where you can"
+            # print "Just split where you can"
             retval = []
             startline = 0
             endline = startline + 1
@@ -312,7 +287,6 @@ class Renderer:
         (using the _render_single_line fn - which may result in going
         off the bottom) They are expected to be pre-arranged to less
         than a screenful (eg. by using split_set_of_lines)
-
         Returns the bounding box of the text as QRect
         """
         log.debug(u'render lines unaligned Start')
@@ -339,10 +313,8 @@ class Renderer:
         """
         Render a single line of words onto the DC, top left corner
         specified.
-
         If the line is too wide for the context, it wraps, but
         right-aligns the surplus words in the manner of song lyrics
-
         Returns the bottom-right corner (of what was rendered) as a tuple(x, y).
         """
         log.debug(u'Render single line %s @ %s '%( line, tlcorner))
@@ -374,7 +346,6 @@ class Renderer:
             align = 0
         else:
             align = int(self._theme .display_horizontalAlign)
-
         for linenum in range(len(lines)):
             line = lines[linenum]
             #find out how wide line is
@@ -420,7 +391,6 @@ class Renderer:
                         color = self._theme.display_outline_color)
                     self._get_extent_and_render(line, footer,(x-self._outline_offset,y-self._outline_offset), draw=True,
                         color = self._theme.display_outline_color)
-
             self._get_extent_and_render(line, footer,tlcorner=(x, y), draw=True)
             y += h
             if linenum == 0:
@@ -432,7 +402,6 @@ class Renderer:
             painter.setPen(QtGui.QPen(QtGui.QColor(0,255,0)))
             painter.drawRect(startx , starty , rightextent-startx , y-starty)
             painter.end()
-
         brcorner = (rightextent , y)
         log.debug(u'Render single line Finish')
         return brcorner
@@ -489,3 +458,10 @@ class Renderer:
         if image2 is not None:
             im = image2.toImage()
             im.save("renderer2.png", "png")
+
+#    def render_screen(self, screennum):
+#        log.debug(u'render screen\n %s %s ', screennum, self.words[screennum])
+#        t = 0.0
+#        words = self.words[screennum]
+#        retval = self._render_lines(words)
+#        return retval

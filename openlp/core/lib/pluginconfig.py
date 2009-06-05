@@ -56,10 +56,8 @@ class PluginConfig(object):
         safe_name = self.section.replace(u' ',u'-')
         plugin_data = self.get_config(u'data path', safe_name)
         path = os.path.join(app_data, plugin_data)
-
         if not os.path.exists(path):
             os.makedirs(path)
-
         return path
 
     def set_data_path(self, path):
@@ -74,8 +72,8 @@ class PluginConfig(object):
         if suffix != None:
             return_files = []
             for f in files:
-                if f.find('.') != -1:
-                    nme = f.split('.')
+                if f.find(u'.') != -1:
+                    nme = f.split(u'.')
                     bname = nme[0]
                     sfx = nme[1].lower()
                     sfx = sfx.lower()
@@ -127,7 +125,7 @@ class PluginConfig(object):
             name = u'last directory'
         last_dir = self.get_config(name)
         if last_dir is None:
-            last_dir = ''
+            last_dir = u''
         return last_dir
 
     def set_last_dir(self, directory, num=None):

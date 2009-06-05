@@ -28,7 +28,7 @@ class GeneralTab(SettingsTab):
     """
     def __init__(self, screen_list):
         self.screen_list = screen_list
-        SettingsTab.__init__(self, translate(u'GeneralTab', u'General'))
+        SettingsTab.__init__(self, translate(u'GeneralTab', u'General'), u'General')
 
     def setupUi(self):
         self.setObjectName(u'GeneralTab')
@@ -114,18 +114,17 @@ class GeneralTab(SettingsTab):
         self.GeneralRightLayout.addItem(self.GeneralRightSpacer)
         self.GeneralLayout.addWidget(self.GeneralRightWidget)
         QtCore.QObject.connect(self.MonitorComboBox,
-            QtCore.SIGNAL("activated(int)"), self.onMonitorComboBoxChanged)
+            QtCore.SIGNAL(u'activated(int)'), self.onMonitorComboBoxChanged)
         QtCore.QObject.connect(self.WarningCheckBox,
-            QtCore.SIGNAL("stateChanged(int)"), self.onWarningCheckBoxChanged)
+            QtCore.SIGNAL(u'stateChanged(int)'), self.onWarningCheckBoxChanged)
         QtCore.QObject.connect(self.AutoOpenCheckBox,
-            QtCore.SIGNAL("stateChanged(int)"), self.onAutoOpenCheckBoxChanged)
+            QtCore.SIGNAL(u'stateChanged(int)'), self.onAutoOpenCheckBoxChanged)
         QtCore.QObject.connect(self.NumberEdit,
-            QtCore.SIGNAL("lostFocus()"), self.onNumberEditLostFocus)
+            QtCore.SIGNAL(u'lostFocus()'), self.onNumberEditLostFocus)
         QtCore.QObject.connect(self.UsernameEdit,
-            QtCore.SIGNAL("lostFocus()"), self.onUsernameEditLostFocus)
+            QtCore.SIGNAL(u'lostFocus()'), self.onUsernameEditLostFocus)
         QtCore.QObject.connect(self.PasswordEdit,
-            QtCore.SIGNAL("lostFocus()"), self.onPasswordEditLostFocus)
-
+            QtCore.SIGNAL(u'lostFocus()'), self.onPasswordEditLostFocus)
 
     def retranslateUi(self):
         self.MonitorGroupBox.setTitle(translate(u'GeneralTab', u'Monitors'))
@@ -144,12 +143,14 @@ class GeneralTab(SettingsTab):
 
     def onAutoOpenCheckBoxChanged(self, value):
         self.AutoOpen = False
-        if value == 2: # we have a set value convert to True/False
+        if value == 2:
+            # we have a set value convert to True/False
             self.AutoOpen = True
 
     def onWarningCheckBoxChanged(self, value):
         self.Warning = False
-        if value == 2: # we have a set value convert to True/False
+        if value == 2:
+            # we have a set value convert to True/False
             self.Warning = True
 
     def onNumberEditLostFocus(self):
@@ -164,19 +165,19 @@ class GeneralTab(SettingsTab):
     def load(self):
         for screen in self.screen_list:
             screen_name = translate(u'GeneralTab', u'Screen') + u' ' + \
-                str(screen['number'] + 1)
-            if screen['primary']:
+                str(screen[u'number'] + 1)
+            if screen[u'primary']:
                 screen_name = screen_name + u' (' + \
                     translate(u'GeneralTab', u'primary') + u')'
             self.MonitorComboBox.addItem(screen_name)
-
+        # Get the configs
         self.MonitorNumber = int(self.config.get_config(u'Monitor', u'0'))
-        self.Warning = str_to_bool(self.config.get_config(u'Warning', u"False"))
-        self.AutoOpen = str_to_bool(self.config.get_config(u'Auto Open', u"False"))
-        self.CCLNumber = str(self.config.get_config('CCL Number', u'XXX'))
-        self.Username = str(self.config.get_config('User Name', u''))
-        self.Password = str(self.config.get_config('Password', u''))
-
+        self.Warning = str_to_bool(self.config.get_config(u'Warning', u'False'))
+        self.AutoOpen = str_to_bool(self.config.get_config(u'Auto Open', u'False'))
+        self.CCLNumber = str(self.config.get_config(u'CCL Number', u'XXX'))
+        self.Username = str(self.config.get_config(u'User Name', u''))
+        self.Password = str(self.config.get_config(u'Password', u''))
+        # Set a few things up
         self.MonitorComboBox.setCurrentIndex(self.MonitorNumber)
         self.WarningCheckBox.setChecked(self.Warning)
         self.AutoOpenCheckBox.setChecked(self.AutoOpen)
@@ -185,9 +186,9 @@ class GeneralTab(SettingsTab):
         self.PasswordEdit.setText(self.Password)
 
     def save(self):
-        self.config.set_config(u'Monitor',str(self.MonitorNumber))
-        self.config.set_config(u'Warning', str(self.Warning))
-        self.config.set_config(u'Auto Open', str(self.AutoOpen))
-        self.config.set_config('CCL Number', str(self.CCLNumber))
-        self.config.set_config('User Name',str(self.Username))
-        self.config.set_config('Password', str(self.Password ))
+        self.config.set_config(u'Monitor', self.MonitorNumber)
+        self.config.set_config(u'Warning', self.Warning)
+        self.config.set_config(u'Auto Open', self.AutoOpen)
+        self.config.set_config(u'CCL Number', self.CCLNumber)
+        self.config.set_config(u'User Name', self.Username)
+        self.config.set_config(u'Password', self.Password)

@@ -54,16 +54,24 @@ class RenderManager:
     log=logging.getLogger(u'RenderManager')
     log.info(u'RenderManager Loaded')
 
-    def __init__(self, theme_manager, screen_list):
+    def __init__(self, theme_manager, screen_list, screen_number=0):
         log.debug(u'Initilisation started')
         self.screen_list = screen_list
         self.theme_manager = theme_manager
         self.displays = len(screen_list)
-        self.current_display = 0
+        self.current_display = screen_number
         self.renderer = Renderer()
         self.calculate_default(self.screen_list[self.current_display]['size'])
         self.theme = u''
         self.service_theme = u''
+
+    def update_display(self, screen_number):
+        """
+        Updates the render manager's information about the current screen.
+        """
+        if self.current_display != screen_number:
+            self.current_display = screen_number
+            self.calculate_default(self.screen_list[self.current_display]['size'])
 
     def set_global_theme(self, global_theme, global_style = u'Global'):
         self.global_theme = global_theme
@@ -95,7 +103,7 @@ class RenderManager:
         if self.theme is not self.renderer.theme_name:
             log.debug(u'theme is now %s',  self.theme)
             self.themedata = self.theme_manager.getThemeData(self.theme)
-            self.calculate_default(self.screen_list[self.current_display]['size'])
+            self.calculate_default(self.screen_list[self.current_display][u'size'])
             self.renderer.set_theme(self.themedata)
             self.build_text_rectangle(self.themedata)
 
@@ -140,14 +148,14 @@ class RenderManager:
 
     def format_slide(self, words):
         log.debug(u'format slide')
-        self.calculate_default(self.screen_list[self.current_display]['size'])
+        self.calculate_default(self.screen_list[self.current_display][u'size'])
         self.build_text_rectangle(self.themedata)
         self.renderer.set_frame_dest(self.width, self.height)
         return self.renderer.format_slide(words, False)
 
     def generate_slide(self,main_text, footer_text):
         log.debug(u'generate slide')
-        self.calculate_default(self.screen_list[self.current_display]['size'])
+        self.calculate_default(self.screen_list[self.current_display][u'size'])
         self.build_text_rectangle(self.themedata)
         self.renderer.set_frame_dest(self.width, self.height)
         return self.renderer.generate_frame_from_lines(main_text, footer_text)
