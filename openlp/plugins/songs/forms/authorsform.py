@@ -55,7 +55,8 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         authors = self.songmanager.get_authors()
         for author in authors:
             self.AuthorListData.addRow(author.id,author.display_name)
-        row_count = self.AuthorListData.rowCount(None)
+        #rowCount is number of rows BUT test should be Zero based
+        row_count = self.AuthorListData.rowCount(None) - 1
         if self.currentRow > row_count:
             # in case we have delete the last row of the table
             self.currentRow = row_count

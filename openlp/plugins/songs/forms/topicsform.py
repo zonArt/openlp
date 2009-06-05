@@ -35,7 +35,7 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         self.setupUi(self)
         self.songmanager = songmanager
         self.currentRow = 0
-        self.songbook = None
+        self.topic = None
 
         QtCore.QObject.connect(self.DeleteButton,
             QtCore.SIGNAL('pressed()'), self.onDeleteButtonClick)
@@ -52,13 +52,13 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         """
         Refresh the screen and rest fields
         """
-        print "topics load form start"
         self.TopicsListData.resetStore()
         self.onClearButtonClick() # tidy up screen
-        Topics = self.songmanager.get_topics()
-        for Topic in Topics:
-            self.TopicsListData.addRow(Topic.id,Topic.name)
-        row_count = self.TopicsListData.rowCount(None)
+        topics = self.songmanager.get_topics()
+        for topic in topics:
+            self.TopicsListData.addRow(topic.id,topic.name)
+        #rowCount is number of rows BUT test should be Zero based
+        row_count = self.TopicsListData.rowCount(None) - 1
         if self.currentRow > row_count:
             # in case we have delete the last row of the table
             self.currentRow = row_count
@@ -67,14 +67,12 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
             self.TopicsListView.selectionModel().setCurrentIndex(row,
                 QtGui.QItemSelectionModel.SelectCurrent)
         self._validate_form()
-        print "topics load form end"
 
     def onDeleteButtonClick(self):
         """
         Delete the Topic is the Topic is not attached to any songs
         """
-        self.songmanager.delete_topic(self.Topic.id)
-        self.onClearButtonClick()
+        self.songmanager.delete_topic(self.topic.id)
         self.load_form()
 
     def onTopicNameEditLostFocus(self):
@@ -84,10 +82,10 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         """
         Sent New or update details to the database
         """
-        if self.Topic == None:
-            self.Topic = Topic()
-        self.Topic.name = unicode(self.TopicNameEdit.displayText())
-        self.songmanager.save_topic(self.Topic)
+        if self.topic == None:
+            self.topic = Topic()
+        self.topic.name = unicode(self.TopicNameEdit.displayText())
+        self.songmanager.save_topic(self.topic)
         self.onClearButtonClick()
         self.load_form()
 
@@ -99,7 +97,7 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         self.MessageLabel.setText(u'')
         self.DeleteButton.setEnabled(False)
         self.AddUpdateButton.setEnabled(True)
-        self.Topic = None
+        self.topic = None
         self._validate_form()
 
     def onTopicsListViewItemClicked(self, index):
@@ -109,10 +107,10 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         """
         self.currentRow = index.row()
         id = int(self.TopicsListData.getId(index))
-        self.Topic = self.songmanager.get_topic(id)
+        self.topic = self.songmanager.get_topic(id)
 
-        self.TopicNameEdit.setText(self.Topic.name)
-        if len(self.Topic.songs) > 0:
+        self.TopicNameEdit.setText(self.topic.name)
+        if len(self.topic.songs) > 0:
             self.MessageLabel.setText("Topic in use 'Delete' is disabled")
             self.DeleteButton.setEnabled(False)
         else:

@@ -23,19 +23,16 @@ import sys
 import time
 import logging
 
-from openlp.core.resources import *
-
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import QDialog
 
 from bibleimportdialog import Ui_BibleImportDialog
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver,  translate
 
 
-class BibleImportForm(QDialog, Ui_BibleImportDialog):
+class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
     global log
     log=logging.getLogger("BibleImportForm")
-    log.info("BibleImportForm loaded")    
+    log.info("BibleImportForm loaded")
     """
     Class documentation goes here.
     """
@@ -43,7 +40,7 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
         """
         Constructor
         """
-        QDialog.__init__(self, parent)
+        QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self.biblemanager = biblemanager
         self.config = config
@@ -53,9 +50,9 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
         self.AddressEdit.setText(self.config.get_config("proxy_address", ""))
         self.UsernameEdit.setText(self.config.get_config("proxy_username", ""))
         self.PasswordEdit.setText(self.config.get_config("proxy_password",""))
-        
+
         filepath = os.path.split(os.path.abspath(__file__))[0]
-        filepath = os.path.abspath(os.path.join(filepath, '..', 'resources','crosswalkbooks.csv')) 
+        filepath = os.path.abspath(os.path.join(filepath, '..', 'resources','crosswalkbooks.csv'))
         fbibles=open(filepath, 'r')
         self.bible_versions = {}
         self.BibleComboBox.clear()
@@ -64,125 +61,136 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
             p = line.split(",")
             self.bible_versions[p[0]] = p[1].replace('\n', '')
             self.BibleComboBox.addItem(str(p[0]))
-   
+
         #Combo Boxes
         QtCore.QObject.connect(self.LocationComboBox, QtCore.SIGNAL("activated(int)"), self.onLocationComboBoxSelected)
         QtCore.QObject.connect(self.BibleComboBox, QtCore.SIGNAL("activated(int)"), self.onBibleComboBoxSelected)
 
-        #Buttons 
-        QtCore.QObject.connect(self.ImportButton, QtCore.SIGNAL("pressed()"), self.onImportButtonClicked)        
+        #Buttons
+        QtCore.QObject.connect(self.ImportButton, QtCore.SIGNAL("pressed()"), self.onImportButtonClicked)
         QtCore.QObject.connect(self.CancelButton, QtCore.SIGNAL("pressed()"), self.onCancelButtonClicked)
         QtCore.QObject.connect(self.VersesFileButton, QtCore.SIGNAL("pressed()"), self.onVersesFileButtonClicked)
         QtCore.QObject.connect(self.BooksFileButton, QtCore.SIGNAL("pressed()"), self.onBooksFileButtonClicked)
-        QtCore.QObject.connect(self.OsisFileButton, QtCore.SIGNAL("pressed()"), self.onOsisFileButtonClicked)        
-        
+        QtCore.QObject.connect(self.OsisFileButton, QtCore.SIGNAL("pressed()"), self.onOsisFileButtonClicked)
+
         #Lost Focus
         QtCore.QObject.connect(self.OSISLocationEdit, QtCore.SIGNAL("lostFocus()"), self.onOSISLocationEditLostFocus)
         QtCore.QObject.connect(self.BooksLocationEdit, QtCore.SIGNAL("lostFocus()"),self.onBooksLocationEditLostFocus)
         QtCore.QObject.connect(self.VerseLocationEdit, QtCore.SIGNAL("lostFocus()"), self.onVerseLocationEditLostFocus)
         QtCore.QObject.connect(self.AddressEdit, QtCore.SIGNAL("lostFocus()"), self.onProxyAddressEditLostFocus)
         QtCore.QObject.connect(self.UsernameEdit, QtCore.SIGNAL("lostFocus()"), self.onProxyUsernameEditLostFocus)
-        QtCore.QObject.connect(self.PasswordEdit, QtCore.SIGNAL("lostFocus()"), self.onProxyPasswordEditLostFocus)        
+        QtCore.QObject.connect(self.PasswordEdit, QtCore.SIGNAL("lostFocus()"), self.onProxyPasswordEditLostFocus)
 
 
     def onVersesFileButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self.config.get_last_dir(1))
         if filename != "":
-            self.VerseLocationEdit.setText(filename)            
+            self.VerseLocationEdit.setText(filename)
             self.config.set_last_dir(filename, 1)
-            self.setCsv()        
-        
+            self.setCsv()
+
     def onBooksFileButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self.config.get_last_dir(2))
-        if filename != "": 
-            self.BooksLocationEdit.setText(filename)            
+        if filename != "":
+            self.BooksLocationEdit.setText(filename)
             self.config.set_last_dir(filename, 2)
-            self.setCsv()                
-    
+            self.setCsv()
+
     def onOsisFileButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',self.config.get_last_dir(3))
-        if filename != "":        
+        if filename != "":
             self.OSISLocationEdit.setText(filename)
             self.config.set_last_dir(filename, 3)
             self.setOsis()
- 
+
     def onOSISLocationEditLostFocus(self):
         if len(self.OSISLocationEdit.displayText() ) > 0:
             self.setOsis()
         else:
-            if self.bible_type == "OSIS": # Was OSIS and is not any more stops lostFocus running mad
-                self.bible_type = None        
+            # Was OSIS and is not any more stops lostFocus running mad
+            if self.bible_type == "OSIS":
+                self.bible_type = None
                 self.freeAll()
-            
+
     def onBooksLocationEditLostFocus(self):
         self.checkOsis()
-        
+
     def onVerseLocationEditLostFocus(self):
         self.checkOsis()
-        
+
     def onProxyAddressEditLostFocus(self):
         self.config.set_config("proxy_address", str(self.AddressEdit.displayText()))
 
     def onProxyUsernameEditLostFocus(self):
         self.config.set_config("proxy_username", str(self.UsernameEdit.displayText()))
-    
+
     def onProxyPasswordEditLostFocus(self):
         self.config.set_config("proxy_password", str(self.PasswordEdit.displayText()))
-        
+
     def onLocationComboBoxSelected(self):
-        self.checkHttp()        
-        
+        self.checkHttp()
+
     def onBibleComboBoxSelected(self):
         self.checkHttp()
         self.BibleNameEdit.setText(str(self.BibleComboBox.currentText()))
-        
+
     def onCancelButtonClicked(self):
         # tell import to stop
-        Receiver().send_message("openlpstopimport") 
+        Receiver().send_message("openlpstopimport")
         # tell bibleplugin to reload the bibles
         Receiver().send_message("openlpreloadbibles")
-        self.close() 
-        
+        self.close()
+
     def onImportButtonClicked(self):
         if self.biblemanager != None:
             if not self.bible_type == None and len(self.BibleNameEdit.displayText()) > 0:
                 self.MessageLabel.setText("Import Started")
-                self.ProgressBar.setMinimum(0) 
+                self.ProgressBar.setMinimum(0)
                 self.setMax(65)
                 self.ProgressBar.setValue(0)
                 self.biblemanager.process_dialog(self)
                 self.importBible()
                 self.MessageLabel.setText("Import Complete")
-                self.ProgressBar.setValue(self.barmax) 
+                self.ProgressBar.setValue(self.barmax)
                 # tell bibleplugin to reload the bibles
-                Receiver().send_message("openlpreloadbibles") 
+                Receiver().send_message("openlpreloadbibles")
+                message = u'Bible import completered'
+                reply = QtGui.QMessageBox.information(self,
+                    translate(u'BibleMediaItem', u'Information'),
+                    translate(u'BibleMediaItem', message))
 
     def setMax(self, max):
-        log.debug("set Max %s", max)        
+        log.debug("set Max %s", max)
         self.barmax = max
-        self.ProgressBar.setMaximum(max)        
+        self.ProgressBar.setMaximum(max)
 
     def incrementProgressBar(self, text ):
         log.debug("IncrementBar %s", text)
         self.MessageLabel.setText("Import processing " + text)
         self.ProgressBar.setValue(self.ProgressBar.value()+1)
-                
+
     def importBible(self):
         log.debug("Import Bible ")
         if self.bible_type == "OSIS":
-            self.biblemanager.register_osis_file_bible(str(self.BibleNameEdit.displayText()), self.OSISLocationEdit.displayText())
+            loaded = self.biblemanager.register_osis_file_bible(str(self.BibleNameEdit.displayText()),
+                self.OSISLocationEdit.displayText())
         elif self.bible_type == "CSV":
-            self.biblemanager.register_csv_file_bible(str(self.BibleNameEdit.displayText()), self.BooksLocationEdit.displayText(), self.VerseLocationEdit.displayText())
+            loaded = self.biblemanager.register_csv_file_bible(str(self.BibleNameEdit.displayText()),
+                self.BooksLocationEdit.displayText(), self.VerseLocationEdit.displayText())
         else:
             self.setMax(1) # set a value as it will not be needed
             bible = self.bible_versions[str(self.BibleComboBox.currentText())]
-            self.biblemanager.register_http_bible(str(self.BibleComboBox.currentText()), \
+            loaded = self.biblemanager.register_http_bible(str(self.BibleComboBox.currentText()), \
                                                                                      str(self.LocationComboBox.currentText()),  \
                                                                                      str(bible), \
                                                                                      str(self.AddressEdit.displayText()),  \
                                                                                      str(self.UsernameEdit .displayText()),  \
-                                                                                     str(self.PasswordEdit.displayText())) 
-        self.biblemanager.save_meta_data(str(self.BibleNameEdit.displayText()), str(self.VersionNameEdit.displayText()), str(self.CopyrightEdit.displayText()), str(self.PermisionEdit.displayText()))
+                                                                                     str(self.PasswordEdit.displayText()))
+        if loaded:
+            self.biblemanager.save_meta_data(str(self.BibleNameEdit.displayText()),
+                str(self.VersionNameEdit.displayText()),
+                str(self.CopyrightEdit.displayText()),
+                str(self.PermisionEdit.displayText()))
         self.bible_type = None
         self.freeAll() # free the screen state restrictions
         self.resetAll() # reset all the screen fields
@@ -191,16 +199,18 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
         if len(self.BooksLocationEdit.displayText()) > 0 or len(self.VerseLocationEdit.displayText()) > 0:
             self.setCsv()
         else:
-            if self.bible_type == "CSV": # Was CSV and is not any more stops lostFocus running mad
-                self.bible_type = None        
+            # Was CSV and is not any more stops lostFocus running mad
+            if self.bible_type == "CSV":
+                self.bible_type = None
                 self.freeAll()
-        
+
     def checkHttp(self):
         if self.BibleComboBox.currentIndex() != 0 :  # First slot is blank so no bible
             self.setHttp()
         else:
-            if self.bible_type == "HTTP": # Was HTTP and is not any more stops lostFocus running mad
-                self.bible_type = None        
+            # Was HTTP and is not any more stops lostFocus running mad
+            if self.bible_type == "HTTP":
+                self.bible_type = None
                 self.freeAll()
 
     def blockCsv(self):
@@ -208,48 +218,48 @@ class BibleImportForm(QDialog, Ui_BibleImportDialog):
         self.VerseLocationEdit.setReadOnly(True)
         self.BooksFileButton.setEnabled(False)
         self.VersesFileButton.setEnabled(False)
-        
+
     def setCsv(self):
-        self.bible_type = "CSV" 
+        self.bible_type = "CSV"
         self.BooksLocationEdit.setReadOnly(False)
-        self.VerseLocationEdit.setReadOnly(False) 
+        self.VerseLocationEdit.setReadOnly(False)
         self.BooksFileButton.setEnabled(True)
         self.VersesFileButton.setEnabled(True)
         self.blockOsis()
-        self.blockHttp()        
-        
+        self.blockHttp()
+
     def setOsis(self):
-        self.bible_type = "OSIS"         
+        self.bible_type = "OSIS"
         self.OSISLocationEdit.setReadOnly(False)
-        self.OsisFileButton.setEnabled(True)        
+        self.OsisFileButton.setEnabled(True)
         self.blockCsv()
-        self.blockHttp()        
- 
+        self.blockHttp()
+
     def blockOsis(self):
         self.OSISLocationEdit.setReadOnly(True)
         self.OsisFileButton.setEnabled(False)
-        
+
     def setHttp(self):
-        self.bible_type = "HTTP"         
+        self.bible_type = "HTTP"
         self.LocationComboBox.setEnabled(True)
-        self.BibleComboBox.setEnabled(True)        
+        self.BibleComboBox.setEnabled(True)
         self.blockCsv()
-        self.blockOsis()        
- 
+        self.blockOsis()
+
     def blockHttp(self):
-        self.LocationComboBox.setEnabled(False)        
-        self.BibleComboBox.setEnabled(False)                
-        
+        self.LocationComboBox.setEnabled(False)
+        self.BibleComboBox.setEnabled(False)
+
     def freeAll(self):
-        if self.bible_type == None:  # only reset if no bible type set.  
+        if self.bible_type == None:  # only reset if no bible type set.
             self.BooksLocationEdit.setReadOnly(False)
-            self.VerseLocationEdit.setReadOnly(False) 
+            self.VerseLocationEdit.setReadOnly(False)
             self.BooksFileButton.setEnabled(True)
             self.VersesFileButton.setEnabled(True)
             self.OSISLocationEdit.setReadOnly(False)
-            self.OsisFileButton.setEnabled(True) 
+            self.OsisFileButton.setEnabled(True)
             self.LocationComboBox.setEnabled(True)
-            self.BibleComboBox.setEnabled(True)        
+            self.BibleComboBox.setEnabled(True)
 
     def resetAll(self):
         self.BooksLocationEdit.setText("")

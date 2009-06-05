@@ -128,7 +128,10 @@ class BibleManager():
                 nbible.save_meta("proxyid", proxyid) # store the proxy userid
             if proxypass != None and proxypass != "":
                 nbible.save_meta("proxypass", proxypass) # store the proxy password
-
+            return True
+        else:
+            log.debug( "register_http_file_bible %s not created already exists", biblename)
+            return False
 
     def register_csv_file_bible(self, biblename, booksfile, versefile):
         """
@@ -143,6 +146,10 @@ class BibleManager():
             self.bible_db_cache[biblename] = nbible # cache the database for use later
             bcsv = BibleCSVImpl(nbible) # create the loader and pass in the database
             bcsv.load_data(booksfile, versefile, self.dialogobject)
+            return True
+        else:
+            log.debug( "register_csv_file_bible %s not created already exists", biblename)
+            return False
 
     def register_osis_file_bible(self, biblename, osisfile):
         """
@@ -157,6 +164,10 @@ class BibleManager():
             self.bible_db_cache[biblename] = nbible # cache the database for use later
             bcsv = BibleOSISImpl(self.biblePath, nbible) # create the loader and pass in the database
             bcsv.load_data(osisfile, self.dialogobject)
+            return True
+        else:
+            log.debug( "register_OSIS_file_bible %s , %s not created already exists", biblename, osisfile)
+            return False
 
     def get_bibles(self, mode="full"):
         log.debug("get_bibles")

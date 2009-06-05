@@ -55,7 +55,8 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
         Books = self.songmanager.get_books()
         for Book in Books:
             self.BookSongListData.addRow(Book.id,Book.name)
-        row_count = self.BookSongListData.rowCount(None)
+        #rowCount is number of rows BUT test should be Zero based
+        row_count = self.BookSongListData.rowCount(None) - 1
         if self.currentRow > row_count:
             # in case we have delete the last row of the table
             self.currentRow = row_count

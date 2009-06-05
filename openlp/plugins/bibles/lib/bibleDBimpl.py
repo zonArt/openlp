@@ -101,6 +101,7 @@ class BibleDBImpl(BibleCommon):
         return book
 
     def save_meta(self, key, value):
+        log.debug( "save_meta %s/%s", key, value)
         metadata.bind.echo = False
         session = self.session()
         bmeta= BibleMeta()
