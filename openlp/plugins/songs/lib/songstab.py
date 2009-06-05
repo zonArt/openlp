@@ -20,14 +20,14 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab,  translate
+from openlp.core.lib import SettingsTab, translate
 
 class SongsTab(SettingsTab):
     """
     SongsTab is the songs settings tab in the settings dialog.
     """
     def __init__(self):
-        SettingsTab.__init__(self, u'Songs')
+        SettingsTab.__init__(self, translate(u'SongsTab', u'Songs'), u'Songs')
 
     def setupUi(self):
         self.setObjectName(u'SongsTab')

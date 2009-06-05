@@ -28,8 +28,8 @@ class Registry(object):
     """
     def __init__(self, dir):
         self.config = SafeConfigParser()
-        self.file_name = os.path.join(dir, 'openlp.conf')
-        self.config.read(self.file_name)
+        self.file_name = os.path.join(dir, u'openlp.conf')
+        self._load()
 
     def has_value(self, section, key):
         """
@@ -95,14 +95,24 @@ class Registry(object):
         except:
             return False
 
+    def _load(self):
+        try:
+            if not os.path.isfile(self.file_name):
+                return False
+            file_handle = open(self.file_name, u'r')
+            self.config.readfp(file_handle)
+            file_handle.close()
+            return True
+        except:
+            return False
+
     def _save(self):
         try:
             if not os.path.exists(os.path.dirname(self.file_name)):
                 os.makedirs(os.path.dirname(self.file_name))
-            file_handle = open(self.file_name, 'w')
+            file_handle = open(self.file_name, u'w')
             self.config.write(file_handle)
-            close(file_handle)
-            self.config.read(self.file_name)
-            return True
+            file_handle.close()
+            return self._load()
         except:
             return False

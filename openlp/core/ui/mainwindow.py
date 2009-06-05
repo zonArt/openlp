@@ -25,7 +25,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.ui import AboutForm, SettingsForm, AlertForm, ServiceManager, \
     ThemeManager, MainDisplay, SlideController
 from openlp.core.lib import translate, Plugin, MediaManagerItem, SettingsTab, \
-    EventManager, RenderManager
+    EventManager, RenderManager, PluginConfig
 from openlp.core import PluginManager
 
 class MainWindow(object):
@@ -46,6 +46,7 @@ class MainWindow(object):
         self.mainDisplay = MainDisplay(None, screens)
         self.screenList = screens
         self.EventManager = EventManager()
+        self.generalConfig = PluginConfig(u'General')
         self.alertForm = AlertForm(self)
         self.aboutForm = AboutForm()
         self.settingsForm = SettingsForm(self.screenList, self)
@@ -60,7 +61,8 @@ class MainWindow(object):
         #warning cyclic dependency
         #RenderManager needs to call ThemeManager and
         #ThemeManager needs to call RenderManager
-        self.RenderManager = RenderManager(self.ThemeManagerContents, self.screenList)
+        self.RenderManager = RenderManager(self.ThemeManagerContents,
+            self.screenList, int(self.generalConfig.get_config(u'Monitor', 0)))
         log.info(u'Load Plugins')
         self.plugin_helpers[u'preview'] = self.PreviewController
         self.plugin_helpers[u'live'] = self.LiveController
@@ -90,6 +92,43 @@ class MainWindow(object):
         # Once all components are initialised load the Themes
         log.info(u'Load Themes')
         self.ThemeManagerContents.loadThemes()
+
+    def show(self):
+        """
+        Show the main form, as well as the display form
+        """
+        self.mainWindow.showMaximized()
+        self.mainDisplay.setup(self.settingsForm.GeneralTab.MonitorNumber)
+        self.mainDisplay.show()
+        #self.mainWindow.setFocus(QtCore.Qt.OtherFocusReason)
+
+    def onHelpAboutItemClicked(self):
+        """
+        Show the About form
+        """
+        self.aboutForm.exec_()
+
+    def onToolsAlertItemClicked(self):
+        """
+        Show the Alert form
+        """
+        self.alertForm.exec_()
+
+    def onOptionsSettingsItemClicked(self):
+        """
+        Show the Settings dialog
+        """
+        self.settingsForm.exec_()
+        screen_number = int(self.generalConfig.get_config(u'Monitor', 0))
+        self.RenderManager.update_display(screen_number)
+        self.mainDisplay.setup(screen_number)
+
+    def onCloseEvent(self, event):
+        """
+        Hook to close the main window and display windows on exit
+        """
+        self.mainDisplay.close()
+        event.accept()
 
     def setupUi(self):
         """
@@ -459,36 +498,3 @@ class MainWindow(object):
         self.action_Preview_Panel.setText(
             translate(u'mainWindow', u'&Preview Pane'))
         self.ModeLiveItem.setText(translate(u'mainWindow', u'&Live'))
-
-    def show(self):
-        """
-        Show the main form, as well as the display form
-        """
-        self.mainWindow.showMaximized()
-        self.mainDisplay.setup(self.settingsForm.GeneralTab.MonitorNumber)
-        self.mainDisplay.show()
-
-    def onHelpAboutItemClicked(self):
-        """
-        Show the About form
-        """
-        self.aboutForm.exec_()
-
-    def onToolsAlertItemClicked(self):
-        """
-        Show the Alert form
-        """
-        self.alertForm.exec_()
-
-    def onOptionsSettingsItemClicked(self):
-        """
-        Show the Settings dialog
-        """
-        self.settingsForm.exec_()
-
-    def onCloseEvent(self, event):
-        """
-        Hook to close the main window and display windows on exit
-        """
-        self.mainDisplay.close()
-        event.accept()
