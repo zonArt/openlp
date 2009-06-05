@@ -168,7 +168,7 @@ class SongMediaItem(MediaManagerItem):
             self.onSongLiveClick))
         self.SongListView.addAction(self.contextMenuAction(self.SongListView,
             ':/system/system_add.png', translate('SongMediaItem', u'&Add to Service'),
-            self.onSongEditClick))
+            self.onSongAddClick))
 
     def retranslateUi(self):
         self.SearchTypeLabel.setText(translate('SongMediaItem', u'Search Type:'))
@@ -258,9 +258,8 @@ class SongMediaItem(MediaManagerItem):
             else:
                 service_item.theme = song.theme_name
             verses = song.lyrics.split(u'\n\n')
-            for verse in verses:
-                raw_slides.append(verse)
-            service_item.raw_slides = raw_slides
+            for slide in verses:
+                service_item.add_from_text(slide[:30], slide)
             service_item.title = song.title
         raw_footer.append(str(u'%s \n%s \n' % (song.title, song.copyright )))
         raw_footer.append(song.copyright)

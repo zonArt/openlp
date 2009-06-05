@@ -397,7 +397,8 @@ class BibleMediaItem(MediaManagerItem):
         else:
             service_item.theme = self.parent.bibles_tab.bible_theme
         raw_slides.append(bible_text)
-        service_item.raw_slides = raw_slides
+        for slide in raw_slides:
+            service_item.add_from_text(slide[:30], slide)
         service_item.raw_footer = raw_footer
 
     def formatVerse(self, old_chapter, chapter, verse, opening, closing):

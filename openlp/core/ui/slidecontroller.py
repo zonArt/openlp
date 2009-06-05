@@ -291,7 +291,7 @@ class SlideController(QtGui.QWidget):
         """
         Loads a ServiceItem.
         """
-        log.debug(u'addServiceItem')
+        log.debug(u'add Service Item')
         self.serviceitem = serviceitem
         self.serviceitem.render()
         self.PreviewListData.clear()
@@ -309,7 +309,13 @@ class SlideController(QtGui.QWidget):
         """
         Loads a ServiceManagerItem.
         """
-        self.addServiceItem(serviceitem)
+        log.debug(u'add Service Manager Item')
+        self.PreviewListData.clear()
+        self.serviceitem = serviceitem
+        framenumber = 0
+        for frame in self.serviceitem.frames:
+            self.PreviewListData.addRow(frame[u'image'], framenumber)
+            framenumber += 1
         row = self.PreviewListData.createIndex(slideno, 0)
         if row.isValid():
             self.PreviewListView.selectionModel().setCurrentIndex(row,

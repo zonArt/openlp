@@ -248,5 +248,6 @@ class CustomMediaItem(MediaManagerItem):
             raw_footer.append(title + u' '+ credit)
         if theme is not None:
             service_item.title = title
-            service_item.raw_slides = raw_slides
+            for slide in raw_slides:
+                service_item.add_from_text(slide[:30], slide)
             service_item.raw_footer = raw_footer
