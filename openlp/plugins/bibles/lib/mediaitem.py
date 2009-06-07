@@ -225,9 +225,10 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'pressed()'), self.onAdvancedSearchButton)
         QtCore.QObject.connect(self.QuickSearchButton,
             QtCore.SIGNAL(u'pressed()'), self.onQuickSearchButton)
+        QtCore.QObject.connect(self.BibleListView,
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onRowSelected)
         # Context Menus
         self.BibleListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-
         self.BibleListView.addAction(self.contextMenuAction(
             self.BibleListView, u':/system/system_preview.png',
             translate(u'BibleMediaItem',u'&Preview Verse'), self.onBiblePreviewClick))
@@ -237,6 +238,7 @@ class BibleMediaItem(MediaManagerItem):
         self.BibleListView.addAction(self.contextMenuAction(
             self.BibleListView, u':/system/system_add.png',
             translate(u'BibleMediaItem',u'&Add to Service'), self.onBibleAddClick))
+
 
     def retranslateUi(self):
         log.debug(u'retranslateUi')
@@ -259,6 +261,9 @@ class BibleMediaItem(MediaManagerItem):
         self.ClearQuickSearchComboBox.addItem(translate(u'BibleMediaItem', u'Keep'))
         self.ClearAdvancedSearchComboBox.addItem(translate(u'BibleMediaItem', u'Clear'))
         self.ClearAdvancedSearchComboBox.addItem(translate(u'BibleMediaItem', u'Keep'))
+
+    def onRowSelected(self, row):
+        self.onBiblePreviewClick()
 
     def initialise(self):
         log.debug(u'initialise')
@@ -370,8 +375,8 @@ class BibleMediaItem(MediaManagerItem):
         bible_text = u''
         for item in items:
             text = self.BibleListData.getValue(item)
-            verse = text[:text.find(u'(u')]
-            bible = text[text.find(u'(u') + 1:text.find(u')')]
+            verse = text[:text.find(u'(')]
+            bible = text[text.find(u'(') + 1:text.find(u')')]
             self.searchByReference(bible, verse)
             book = self.search_results[0][0]
             chapter = str(self.search_results[0][1])
@@ -380,7 +385,7 @@ class BibleMediaItem(MediaManagerItem):
             if self.parent.bibles_tab.paragraph_style: #Paragraph
                 text = text + u'\n\n'
             if self.parent.bibles_tab.display_style == 1:
-                loc = self.formatVerse(old_chapter, chapter, verse, u'(u', u')')
+                loc = self.formatVerse(old_chapter, chapter, verse, u'(', u')')
             elif  self.parent.bibles_tab.display_style == 2:
                 loc = self.formatVerse(old_chapter, chapter, verse, u'{', u'}')
             elif  self.parent.bibles_tab.display_style == 3:
@@ -457,14 +462,16 @@ class BibleMediaItem(MediaManagerItem):
         search = search.replace(u'  ', ' ').strip()
         original = search
         message = None
-        # Remove book
-        for i in range (len(search)-1, 0, -1):   # 0 index arrays
+        # Remove book beware 0 index arrays
+        for i in range (len(search)-1, 0, - 1):
             if search[i] == ' ':
                 book = search[:i]
-                search = search[i:] # remove book from string
+                # remove book from string
+                search = search[i:]
                 break
-        search = search.replace(u'v', ':')  # allow V or v for verse instead of :
-        search = search.replace(u'V', ':')  # allow V or v for verse instead of :
+        # allow V or v for verse instead of :
+        search = search.replace(u'v', ':')
+        search = search.replace(u'V', ':')
         search = search.strip()
         colon = search.find(u':')
         if colon == -1:
@@ -498,13 +505,15 @@ class BibleMediaItem(MediaManagerItem):
                 end_verse = start_verse
             else:
                 sp1 = sp[1].split(u':')
-                #print sp1, len(sp1)
+                #print "2nd details", sp1, len(sp1)
                 if len(sp1) == 1:
-                    end_chapter = sp1[0]
-                    end_verse = 1
+                    end_chapter = start_chapter
+                    end_verse =  sp1[0]
                 else:
                     end_chapter = sp1[0]
                     end_verse = sp1[1]
+        #print 'search = ' + str(original)
+        #print 'results = ' + str(book) + ' @ '+ str(start_chapter)+' @ '+ str(end_chapter)+' @ '+ str(start_verse)+ ' @ '+ str(end_verse)
         if end_chapter == '':
             end_chapter = start_chapter.rstrip()
         if start_verse == '':
