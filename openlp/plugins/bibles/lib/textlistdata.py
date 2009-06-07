@@ -19,21 +19,21 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import logging
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtCore, QtGui
 
 
-class TextListData(QAbstractListModel):
+class TextListData(QtCore.QAbstractListModel):
     """
     An abstract list of strings
     """
     global log
-    log=logging.getLogger(u'TextListData')
+    log = logging.getLogger(u'TextListData')
     log.info(u'started')
 
     def __init__(self):
-        QAbstractListModel.__init__(self)
-        self.items = [] # will be a list of (database id , title) tuples
+        QtCore.QAbstractListModel.__init__(self)
+        # will be a list of (database id , title) tuples
+        self.items = []
 
     def resetStore(self):
         #reset list so can be reloaded
@@ -43,8 +43,8 @@ class TextListData(QAbstractListModel):
         return len(self.items)
 
     def insertRow(self, row, id, title):
-        self.beginInsertRows(QModelIndex(),row,row)
-        log.debug(u'insert row %d:%s for id %d'%(row,title, id))
+        self.beginInsertRows(QtCore.QModelIndex(),row,row)
+        log.debug(u'insert row %d:%s for id %d' % (row,title, id))
         self.items.insert(row, (id, title))
         self.endInsertRows()
 
@@ -57,15 +57,16 @@ class TextListData(QAbstractListModel):
         self.insertRow(len(self.items), id, title)
 
     def data(self, index, role):
-        row=index.row()
-        if row > len(self.items): # if the last row is selected and deleted, we then get called with an empty row!
-            return QVariant()
-        if role == Qt.DisplayRole:
+        row = index.row()
+        # if the last row is selected and deleted, we then get called with an empty row!
+        if row > len(self.items):
+            return QtCore.QVariant()
+        if role == QtCore.Qt.DisplayRole:
             retval = self.items[row][1]
         else:
-            retval = QVariant()
-        if type(retval) is not type(QVariant):
-            return QVariant(retval)
+            retval = QtCore.QVariant()
+        if type(retval) is not type(QtCore.QVariant):
+            return QtCore.QVariant(retval)
         else:
             return retval
 
