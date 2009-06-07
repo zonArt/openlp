@@ -92,7 +92,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         if type(icon) is QtGui.QIcon:
             ButtonIcon = icon
-        elif type(icon) is types.StringType:
+        elif type(icon) is types.StringType or type(icon) is types.UnicodeType:
             ButtonIcon = QtGui.QIcon()
             if icon.startswith(u':/'):
                 ButtonIcon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
