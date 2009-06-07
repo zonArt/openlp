@@ -42,9 +42,7 @@ class ImageList(QtGui.QListView):
         mimeData = QtCore.QMimeData()
         drag.setMimeData(mimeData)
         mimeData.setText(u'Image')
-
         dropAction = drag.start(QtCore.Qt.CopyAction)
-
         if dropAction == QtCore.Qt.CopyAction:
             self.close()
 
@@ -65,32 +63,31 @@ class ImageMediaItem(MediaManagerItem):
         # Create buttons for the toolbar
         ## New Song Button ##
         self.addToolbarButton(
-            translate('ImageMediaItem', u'Load Image'),
-            translate('ImageMediaItem', u'Load images into openlp.org'),
-            ':/images/image_load.png', self.onImagesNewClick, 'ImageNewItem')
+            translate(u'ImageMediaItem', u'Load Image'),
+            translate(u'ImageMediaItem', u'Load images into openlp.org'),
+            u':/images/image_load.png', self.onImagesNewClick, u'ImageNewItem')
         ## Delete Song Button ##
         self.addToolbarButton(
-            translate('ImageMediaItem', u'Delete Image'),
-            translate('ImageMediaItem', u'Delete the selected image'),
-            ':/images/image_delete.png', self.onImageDeleteClick, 'ImageDeleteItem')
+            translate(u'ImageMediaItem', u'Delete Image'),
+            translate(u'ImageMediaItem', u'Delete the selected image'),
+            u':/images/image_delete.png', self.onImageDeleteClick, u'ImageDeleteItem')
         ## Separator Line ##
         self.addToolbarSeparator()
         ## Preview Song Button ##
         self.addToolbarButton(
-            translate('ImageMediaItem', u'Preview Song'),
-            translate('ImageMediaItem', u'Preview the selected image'),
-            ':/system/system_preview.png', self.onImagePreviewClick, 'ImagePreviewItem')
+            translate(u'ImageMediaItem', u'Preview Song'),
+            translate(u'ImageMediaItem', u'Preview the selected image'),
+            u':/system/system_preview.png', self.onImagePreviewClick, u'ImagePreviewItem')
         ## Live Song Button ##
         self.addToolbarButton(
-            translate('ImageMediaItem', u'Go Live'),
-            translate('ImageMediaItem', u'Send the selected image live'),
-            ':/system/system_live.png', self.onImageLiveClick, 'ImageLiveItem')
+            translate(u'ImageMediaItem', u'Go Live'),
+            translate(u'ImageMediaItem', u'Send the selected image live'),
+            u':/system/system_live.png', self.onImageLiveClick, u'ImageLiveItem')
         ## Add Song Button ##
         self.addToolbarButton(
-            translate('ImageMediaItem', u'Add Image To Service'),
-            translate('ImageMediaItem', u'Add the selected image(s) to the service'),
-            ':/system/system_add.png', self.onImageAddClick, 'ImageAddItem')
-
+            translate(u'ImageMediaItem', u'Add Image To Service'),
+            translate(u'ImageMediaItem', u'Add the selected image(s) to the service'),
+            u':/system/system_add.png', self.onImageAddClick, u'ImageAddItem')
         #Add the Image List widget
         self.ImageListView = ImageList()
         self.ImageListView.uniformItemSizes = True
@@ -101,33 +98,29 @@ class ImageMediaItem(MediaManagerItem):
         self.ImageListView.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
         self.ImageListView.setAlternatingRowColors(True)
         self.ImageListView.setDragEnabled(True)
-        self.ImageListView.setObjectName('ImageListView')
-
+        self.ImageListView.setObjectName(u'ImageListView')
         self.PageLayout.addWidget(self.ImageListView)
-
         #define and add the context menu
         self.ImageListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-
         self.ImageListView.addAction(self.contextMenuAction(
             self.ImageListView, ':/system/system_preview.png',
-            translate('ImageMediaItem', u'&Preview Image'),
+            translate(u'ImageMediaItem', u'&Preview Image'),
             self.onImagePreviewClick))
         self.ImageListView.addAction(self.contextMenuAction(
             self.ImageListView, ':/system/system_live.png',
-            translate('ImageMediaItem', u'&Show Live'),
+            translate(u'ImageMediaItem', u'&Show Live'),
             self.onImageLiveClick))
         self.ImageListView.addAction(self.contextMenuAction(
             self.ImageListView, ':/system/system_add.png',
-            translate('ImageMediaItem', u'&Add to Service'),
+            translate(u'ImageMediaItem', u'&Add to Service'),
             self.onImageAddClick))
-
 
     def initialise(self):
         self.loadImageList(self.parent.config.load_list(u'images'))
 
     def onImagesNewClick(self):
         files = QtGui.QFileDialog.getOpenFileNames(None,
-            translate('ImageMediaItem', u'Select Image(s)'),
+            translate(u'ImageMediaItem', u'Select Image(s)'),
             self.parent.config.get_last_dir(),
             u'Images (*.jpg *.gif *.png *.bmp)')
         log.info(u'New image(s)', str(files))
@@ -160,20 +153,20 @@ class ImageMediaItem(MediaManagerItem):
     def onImagePreviewClick(self):
         log.debug(u'Image Preview Requested')
         service_item = ServiceItem(self.parent)
-        service_item.addIcon( ":/media/media_image.png")
+        service_item.addIcon(u':/media/media_image.png')
         self.generateSlideData(service_item)
         self.parent.preview_controller.addServiceItem(service_item)
 
     def onImageLiveClick(self):
         log.debug(u'Image Live Requested')
         service_item = ServiceItem(self.parent)
-        service_item.addIcon( ":/media/media_image.png")
+        service_item.addIcon(u':/media/media_image.png')
         self.generateSlideData(service_item)
         self.parent.live_controller.addServiceItem(service_item)
 
     def onImageAddClick(self):
         log.debug(u'Image Add Requested')
         service_item = ServiceItem(self.parent)
-        service_item.addIcon( ":/media/media_image.png")
+        service_item.addIcon(u':/media/media_image.png')
         self.generateSlideData(service_item)
         self.parent.service_manager.addServiceItem(service_item)

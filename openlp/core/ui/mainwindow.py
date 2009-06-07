@@ -99,8 +99,6 @@ class MainWindow(object):
         """
         self.mainWindow.showMaximized()
         self.mainDisplay.setup(self.settingsForm.GeneralTab.MonitorNumber)
-        self.mainDisplay.show()
-        #self.mainWindow.setFocus(QtCore.Qt.OtherFocusReason)
 
     def onHelpAboutItemClicked(self):
         """

@@ -135,11 +135,10 @@ class SlideController(QtGui.QWidget):
         self.PreviewListView = QtGui.QListView(self.Controller)
         self.PreviewListData = SlideData()
         self.PreviewListView.isLive = self.isLive
-        self.PreviewListView.setFlow(1)
-        self.PreviewListView.setViewMode(1)
+        #self.PreviewListView.setFlow(1)
+        #self.PreviewListView.setViewMode(1)
         self.PreviewListView.setWrapping(False)
         self.PreviewListView.setModel(self.PreviewListData)
-        #self.PreviewListView.setSelectionRectVisible(True)
         self.PreviewListView.setSpacing(0)
         self.PreviewListView.setObjectName(u'PreviewListView')
         self.ControllerLayout.addWidget(self.PreviewListView)

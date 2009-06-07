@@ -41,7 +41,6 @@ class OpenLP(QtGui.QApplication):
         #provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlpprocessevents'), self.processEvents)
-
         self.setApplicationName(u'openlp.org')
         self.setApplicationVersion(u'1.9.0')
         self.splash = SplashScreen(self.applicationVersion())
@@ -66,4 +65,3 @@ class OpenLP(QtGui.QApplication):
 if __name__ == u'__main__':
     app = OpenLP(sys.argv)
     app.run()
-
