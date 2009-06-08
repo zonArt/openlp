@@ -19,6 +19,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import os
 import logging
+import cPickle
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, Event, \
@@ -134,7 +135,8 @@ class ServiceManager(QtGui.QWidget):
         """
         Clear the list to create a new service
         """
-        self.service_data.clearItems()
+        self.ServiceManagerList.clear()
+        self.serviceItems = []
 
     def onDeleteFromService(self):
         """
@@ -146,16 +148,34 @@ class ServiceManager(QtGui.QWidget):
         """
         Save the current service
         """
-        service = []
-        for item in self.serviceItems:
-            service.append({u'serviceitem':item[u'data'].get_oos_repr()})
-        print service
+        filename = QtGui.QFileDialog.getSaveFileName(self, u'Save Order of Service',self.config.get_last_dir() )
+        if filename != u'':
+            self.config.set_last_dir(filename)
+            print filename
+            service = []
+            for item in self.serviceItems:
+                service.append({u'serviceitem':item[u'data'].get_oos_repr()})
+            file = open(filename+u'.oos', u'wb')
+            cPickle.dump(service, file)
+            file.close()
 
     def onLoadService(self):
         """
         Load an existing service from disk
         """
-        pass
+        filename = QtGui.QFileDialog.getOpenFileName(self, u'Open Order of Service',self.config.get_last_dir(),
+            u'Services (*.oos)')
+        if filename != u'':
+            self.config.set_last_dir(filename)
+            file = open(filename, u'r')
+            items = cPickle.load(file)
+            file.close()
+            self.onNewService()
+            for item in items:
+                serviceitem = ServiceItem()
+                serviceitem.RenderManager = self.parent.RenderManager
+                serviceitem.set_from_oos(item)
+                self.addServiceItem(serviceitem)
 
     def onThemeComboBoxSelected(self, currentIndex):
         """

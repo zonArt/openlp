@@ -32,12 +32,14 @@ class ServiceItem():
     log=logging.getLogger(u'ServiceItem')
     log.info(u'Service Item created')
 
-    def __init__(self, hostplugin):
+    def __init__(self, hostplugin=None):
         """
         Init Method
         """
         self.plugin = hostplugin
-        self.shortname = hostplugin.name
+        if hostplugin is not None:
+            self.RenderManager = self.plugin.render_manager
+            self.shortname = hostplugin.name
         self.title = u''
         self.items = []
         self.iconic_representation = None
@@ -47,7 +49,7 @@ class ServiceItem():
         self.frames = []
         self.raw_footer = None
         self.theme = None
-        log.debug(u'Service item created for %s ', self.shortname)
+        #log.debug(u'Service item created for %s ', self.shortname)
         self.service_frames = []
 
     def addIcon(self, icon):
@@ -60,15 +62,15 @@ class ServiceItem():
         """
         log.debug(u'Render called')
         if self.theme == None:
-            self.plugin.render_manager.set_override_theme(None)
+            self.RenderManager.set_override_theme(None)
         else:
-            self.plugin.render_manager.set_override_theme(self.theme)
+            self.RenderManager.set_override_theme(self.theme)
         log.debug(u'Formatting slides')
         if self.service_item_type == u'text':
             for slide in self.service_frames:
-                formated = self.plugin.render_manager.format_slide(slide[u'raw_slide'])
+                formated = self.RenderManager.format_slide(slide[u'raw_slide'])
                 for format in formated:
-                    frame = self.plugin.render_manager.generate_slide(format, self.raw_footer)
+                    frame = self.RenderManager.generate_slide(format, self.raw_footer)
                     self.frames.append({u'title': slide[u'title'], u'image': frame})
         elif self.service_item_type == u'command':
             self.frames = self.service_frames
@@ -77,7 +79,7 @@ class ServiceItem():
             self.frames = self.service_frames
             self.service_frames = []
         else:
-            log.error(u'Invalid value rendere :%s' % self.service_item_type)
+            log.error(u'Invalid value renderer :%s' % self.service_item_type)
 
     def add_from_image(self, frame_title, image):
         self.service_item_type = u'image'
@@ -97,17 +99,24 @@ class ServiceItem():
         This method returns some text which can be saved into the OOS
         file to represent this item
         """
-        oos_header = {u'type': self.shortname,u'theme':self.theme, u'title':self.title,
-            u'icon':self.icon, u'footer':self.raw_footer}
+        oos_header = {u'plugin': self.shortname,u'theme':self.theme, u'title':self.title,
+            u'icon':self.icon, u'footer':self.raw_footer, u'type':self.service_item_type}
         oos_data = []
         if self.service_item_type == u'text':
             for slide in self.service_frames:
                 oos_data.append(slide[u'raw_slide'])
-        return {u'header': oos_header, u'data': oos_data}
+        return {u'header': oos_header, u'data': self.service_frames}
 
-    def set_from_oos(self, oostext):
+    def set_from_oos(self, serviceitem):
         """
         This method takes some oostext (passed from the ServiceManager)
         and parses it into the data actually required
         """
-        pass
+        header = serviceitem[u'serviceitem'][u'header']
+        self.title = header[u'title']
+        self.service_item_type = header[u'type']
+        self.shortname = header[u'plugin']
+        self.theme = header[u'theme']
+        self.addIcon(header[u'icon'])
+        self.raw_footer = header[u'footer']
+        self.service_frames = serviceitem[u'serviceitem'][u'data']
