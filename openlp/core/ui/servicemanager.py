@@ -119,7 +119,10 @@ class ServiceManager(QtGui.QWidget):
         pass
 
     def onSaveService(self):
-        pass
+        service = []
+        for item in self.serviceItems:
+            service.append({u'serviceitem':item[u'data'].get_oos_repr()})
+        print service
 
     def onLoadService(self):
         pass
@@ -129,13 +132,13 @@ class ServiceManager(QtGui.QWidget):
         self.parent.RenderManager.set_service_theme(self.service_theme)
         self.config.set_config(u'theme service theme', self.service_theme)
 
-    def addServiceItem(self, item):
+    def addServiceItem(self, item, expand=True):
         self.serviceItems.append({u'data': item, u'order': len(self.serviceItems)+1})
         treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
-        treewidgetitem.setText(0,item.title) # + u':' + item.shortname)
+        treewidgetitem.setText(0,item.title)
         treewidgetitem.setIcon(0,item.iconic_representation)
         treewidgetitem.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(len(self.serviceItems)))
-        treewidgetitem.setExpanded(True)
+        treewidgetitem.setExpanded(expand)
         item.render()
         count = 0
         for frame in item.frames:
@@ -159,13 +162,14 @@ class ServiceManager(QtGui.QWidget):
         count = 0
         for item in items:
             childCount = item.childCount()
-            if childCount >= 1: # is the parent
+            if childCount >= 1:
                 pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
             else:
                 parentitem = item.parent()
                 pos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
                 count = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-        pos = pos - 1 #adjust for zeor indexing
+        #adjuest for zero based arrays
+        pos = pos - 1
         return pos, count
 
     def dragEnterEvent(self, event):
@@ -183,26 +187,6 @@ class ServiceManager(QtGui.QWidget):
         if link.hasText():
             plugin = event.mimeData().text()
             self.parent.EventManager.post_event(Event(EventType.LoadServiceItem, plugin))
-
-    def oos_as_text(self):
-        text=[]
-        log.info( "oos as text")
-        log.info("Data:"+str(self.service_data))
-        for i in self.service_data:
-            text.append("# " + str(i))
-            text.append(i.get_oos_text())
-        return '\n'.join(text)
-
-    def write_oos(self, filename):
-        """
-        Write a full OOS file out - iterate over plugins and call their respective methods
-        This format is totally arbitrary testing purposes - something sensible needs to go in here!
-        """
-        oosfile=open(filename, "w")
-        oosfile.write("# BEGIN OOS\n")
-        oosfile.write(self.oos_as_text)
-        oosfile.write("# END OOS\n")
-        oosfile.close()
 
     def updateThemeList(self, theme_list):
         """

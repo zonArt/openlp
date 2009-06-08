@@ -51,6 +51,7 @@ class ServiceItem():
         self.service_frames = []
 
     def addIcon(self, icon):
+        self.icon = icon
         self.iconic_representation = buildIcon(icon)
 
     def render(self):
@@ -76,7 +77,7 @@ class ServiceItem():
             self.frames = self.service_frames
             self.service_frames = []
         else:
-            assert(0 , u'Invalid value rendere :%s' % self.service_item_type)
+            log.error(u'Invalid value rendere :%s' % self.service_item_type)
 
     def add_from_image(self, frame_title, image):
         self.service_item_type = u'image'
@@ -91,24 +92,22 @@ class ServiceItem():
         self.service_item_type = u'command'
         self.service_frames.append({u'title': frame_title, u'command': command})
 
-
-
     def get_oos_repr(self):
         """
         This method returns some text which can be saved into the OOS
         file to represent this item
         """
-        pass
+        oos_header = {u'type': self.shortname,u'theme':self.theme, u'title':self.title,
+            u'icon':self.icon, u'footer':self.raw_footer}
+        oos_data = []
+        if self.service_item_type == u'text':
+            for slide in self.service_frames:
+                oos_data.append(slide[u'raw_slide'])
+        return {u'header': oos_header, u'data': oos_data}
 
     def set_from_oos(self, oostext):
         """
         This method takes some oostext (passed from the ServiceManager)
         and parses it into the data actually required
-        """
-        pass
-
-    def set_from_plugin(self):
-        """
-        Takes data from the plugin media chooser
         """
         pass
