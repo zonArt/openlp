@@ -20,22 +20,14 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import logging
 import os,  os.path
 import sys
+#from copy import copy
 
-from datetime import *
 from PyQt4 import QtGui, QtCore, Qt
-
-from copy import copy
 
 class Renderer:
     """
-    All the functions for rendering a set of words onto a Device Context
-
-    How to use:
-    set the words to be displayed with a call to format_slide() - this returns an array of screenfuls of data
-    set a theme (if you need) with set_theme
-    tell it which DC to render to with set_DC()
-    set the borders of where you want the text (if not the whole DC) with set_text_rectangle()
-    tell it to render a particular screenfull with render_screen(n)
+    Genarates a pixmap image of a array of text. The Text is formatted to
+    make sure it fits on the screen and if not extra frames a generated.
     """
     global log
     log = logging.getLogger(u'Renderer')
@@ -98,7 +90,7 @@ class Renderer:
         """
         if preview == True:
             self._bg_frame = None
-        log.debug(u'set frame dest (frame) w %d h %d',frame_width, frame_height)
+        log.debug(u'set frame dest (frame) w %d h %d', frame_width, frame_height)
         self._frame = QtGui.QPixmap(frame_width, frame_height)
         if self._bg_image_filename is not None:
             self.scale_bg_image()
@@ -109,10 +101,10 @@ class Renderer:
         """
         External API to sort out the text to pe placed on the frame
         """
-        print "########## Format Slide ##################"
+        #print "########## Format Slide ##################"
         log.debug(u'format_slide %s', words)
         verses = []
-        words = words.replace("\r\n", "\n")
+        words = words.replace(u'\r\n', u'\n')
         verses_text = words.split(u'\n\n')
         text = []
         for verse in verses_text:
@@ -120,8 +112,8 @@ class Renderer:
             for line in lines:
                 text.append(line)
         split_text = self._split_set_of_lines(text, False)
-        print "split text ", split_text
-        print "text ", text
+        #print "split text ", split_text
+        #print "text ", text
         return split_text
 
     def set_text_rectangle(self, rect_main, rect_footer):
@@ -147,7 +139,6 @@ class Renderer:
         bbox = self._render_lines_unaligned(lines, False,  (x, y))
         if footer_lines is not None:
             bbox = self._render_lines_unaligned(footer_lines, True, (self._rect_footer.left(), self._rect_footer.top()) )
-        log.debug(u'generate_frame_from_lines - Finish')
         return self._frame
 
     def _generate_background_frame(self):
@@ -158,7 +149,6 @@ class Renderer:
         assert(self._theme)
         self._bg_frame = QtGui.QPixmap(self._frame.width(), self._frame.height())
         log.debug(u'render background %s ', self._theme.background_type)
-        bef = datetime.now()
         painter = QtGui.QPainter()
         painter.begin(self._bg_frame)
         if self._theme.background_type == u'solid':
@@ -193,9 +183,6 @@ class Renderer:
             else:
                 painter.fillRect(self._frame.rect(), QtGui.QColor(u'#000000'))
         painter.end()
-        aft = datetime.now()
-        print "background time", bef, aft, aft-bef
-        log.debug(u'render background finish')
 
     def _split_set_of_lines(self, lines, footer):
         """
@@ -212,16 +199,11 @@ class Renderer:
         #print "bboxes ", bboxes
         numlines = len(lines)
         bottom = self._rect.bottom()
-        count = 0
         for ratio in (numlines,  numlines/2, numlines/3, numlines/4):
             good = 1
             startline = 0
             endline = startline + ratio
             while (endline <= numlines and endline != 0):
-                count += 1
-                if count > 100:
-                    #print "busted"
-                    break
                 by = 0
                 for (x,y) in bboxes[startline:endline]:
                     #print by, startline, endline, x, y, bottom
@@ -278,7 +260,7 @@ class Renderer:
         elif int(self._theme.display_verticalAlign) == 1: # centre align
             y = rect.top() + (rect.height() - bbox.height()) / 2
         else:
-            assert(0 , u'Invalid value for theme.VerticalAlign:%s' % self._theme.display_verticalAlign)
+            log.error(u'Invalid value for theme.VerticalAlign:%s' % self._theme.display_verticalAlign)
         return x, y
 
     def _render_lines_unaligned(self, lines,  footer,  tlcorner=(0,0)):
@@ -306,7 +288,6 @@ class Renderer:
             painter.setPen(QtGui.QPen(QtGui.QColor(0,0,255)))
             painter.drawRect(retval)
             painter.end()
-        log.debug(u'render lines unaligned Finish')
         return  retval
 
     def _render_and_wrap_single_line(self, line, footer, tlcorner=(0,0)):
@@ -317,7 +298,7 @@ class Renderer:
         right-aligns the surplus words in the manner of song lyrics
         Returns the bottom-right corner (of what was rendered) as a tuple(x, y).
         """
-        log.debug(u'Render single line %s @ %s '%( line, tlcorner))
+        #log.debug(u'Render single line %s @ %s '%( line, tlcorner))
         x, y = tlcorner
         # We draw the text to see how big it is and then iterate to make it fit
         # when we line wrap we do in in the "lyrics" style, so the second line is
@@ -342,7 +323,8 @@ class Renderer:
         startx = x
         starty = y
         rightextent = None
-        if footer: # dont allow alignment messing with footers
+        # dont allow alignment messing with footers
+        if footer:
             align = 0
         else:
             align = int(self._theme .display_horizontalAlign)
@@ -354,42 +336,47 @@ class Renderer:
                 w += self._shadow_offset
                 h += self._shadow_offset
             if self._theme.display_outline:
-                w += 2*self._outline_offset # pixels either side
-                h += 2*self._outline_offset #  pixels top/bottom
+                # pixels either side
+                w += 2 * self._outline_offset
+                #  pixels top/bottom
+                h += 2 * self._outline_offset
             if align == 0: # left align
                 rightextent = x + w
-                if self._theme.display_wrapStyle == 1 and linenum != 0: # shift right from last line's rh edge
+                # shift right from last line's rh edge
+                if self._theme.display_wrapStyle == 1 and linenum != 0:
                     rightextent = self._first_line_right_extent + self._right_margin
                     if rightextent > maxx:
                         rightextent = maxx
                     x = rightextent - w
-            elif align == 1: # right align
+            # right align
+            elif align == 1:
                 rightextent = maxx
                 x = maxx - w
-            elif align == 2: # centre
+            # centre
+            elif align == 2:
                 x = (maxx - w) / 2;
                 rightextent = x + w
             # now draw the text, and any outlines/shadows
             if self._theme.display_shadow:
-                self._get_extent_and_render(line, footer,tlcorner=(x+self._shadow_offset,y+self._shadow_offset),
+                self._get_extent_and_render(line, footer, tlcorner=(x+self._shadow_offset,y+self._shadow_offset),
                     draw=True, color = self._theme.display_shadow_color)
             if self._theme.display_outline:
-                self._get_extent_and_render(line, footer,(x+self._outline_offset,y), draw=True,
+                self._get_extent_and_render(line, footer, (x+self._outline_offset,y), draw=True,
                         color = self._theme.display_outline_color)
-                self._get_extent_and_render(line, footer,(x, y+self._outline_offset), draw=True,
+                self._get_extent_and_render(line, footer, (x, y+self._outline_offset), draw=True,
                         color = self._theme.display_outline_color)
-                self._get_extent_and_render(line, footer,(x, y-self._outline_offset), draw=True,
+                self._get_extent_and_render(line, footer, (x, y-self._outline_offset), draw=True,
                         color = self._theme.display_outline_color)
-                self._get_extent_and_render(line, footer,(x-self._outline_offset,y), draw=True,
+                self._get_extent_and_render(line, footer, (x-self._outline_offset,y), draw=True,
                         color = self._theme.display_outline_color)
                 if self._outline_offset > 1:
-                    self._get_extent_and_render(line, footer,(x+self._outline_offset,y+self._outline_offset), draw=True,
+                    self._get_extent_and_render(line, footer, (x+self._outline_offset,y+self._outline_offset), draw=True,
                         color = self._theme.display_outline_color)
-                    self._get_extent_and_render(line, footer,(x-self._outline_offset,y+self._outline_offset), draw=True,
+                    self._get_extent_and_render(line, footer, (x-self._outline_offset,y+self._outline_offset), draw=True,
                         color = self._theme.display_outline_color)
-                    self._get_extent_and_render(line, footer,(x+self._outline_offset,y-self._outline_offset), draw=True,
+                    self._get_extent_and_render(line, footer, (x+self._outline_offset,y-self._outline_offset), draw=True,
                         color = self._theme.display_outline_color)
-                    self._get_extent_and_render(line, footer,(x-self._outline_offset,y-self._outline_offset), draw=True,
+                    self._get_extent_and_render(line, footer, (x-self._outline_offset,y-self._outline_offset), draw=True,
                         color = self._theme.display_outline_color)
             self._get_extent_and_render(line, footer,tlcorner=(x, y), draw=True)
             y += h
@@ -403,7 +390,6 @@ class Renderer:
             painter.drawRect(startx , starty , rightextent-startx , y-starty)
             painter.end()
         brcorner = (rightextent , y)
-        log.debug(u'Render single line Finish')
         return brcorner
 
     # xxx this is what to override for an SDL version
@@ -454,14 +440,7 @@ class Renderer:
         Debugging method to allow images to be viewed
         """
         im = image.toImage()
-        im.save("renderer.png", "png")
+        im.save(u'renderer.png', u'png')
         if image2 is not None:
             im = image2.toImage()
-            im.save("renderer2.png", "png")
-
-#    def render_screen(self, screennum):
-#        log.debug(u'render screen\n %s %s ', screennum, self.words[screennum])
-#        t = 0.0
-#        words = self.words[screennum]
-#        retval = self._render_lines(words)
-#        return retval
+            im.save(u'renderer2.png', u'png')

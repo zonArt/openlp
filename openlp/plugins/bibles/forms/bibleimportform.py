@@ -33,9 +33,9 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
     global log
     log=logging.getLogger(u'BibleImportForm')
     log.info(u'BibleImportForm loaded')
-    '''
+    """
     Class documentation goes here.
-    '''
+    """
     def __init__(self, config, biblemanager , bibleplugin, parent = None):
         '''
         Constructor

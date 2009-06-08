@@ -226,7 +226,7 @@ class BibleMediaItem(MediaManagerItem):
         QtCore.QObject.connect(self.QuickSearchButton,
             QtCore.SIGNAL(u'pressed()'), self.onQuickSearchButton)
         QtCore.QObject.connect(self.BibleListView,
-            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onRowSelected)
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onBiblePreviewClick())
         # Context Menus
         self.BibleListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.BibleListView.addAction(self.contextMenuAction(
@@ -238,7 +238,6 @@ class BibleMediaItem(MediaManagerItem):
         self.BibleListView.addAction(self.contextMenuAction(
             self.BibleListView, u':/system/system_add.png',
             translate(u'BibleMediaItem',u'&Add to Service'), self.onBibleAddClick))
-
 
     def retranslateUi(self):
         log.debug(u'retranslateUi')
@@ -261,9 +260,6 @@ class BibleMediaItem(MediaManagerItem):
         self.ClearQuickSearchComboBox.addItem(translate(u'BibleMediaItem', u'Keep'))
         self.ClearAdvancedSearchComboBox.addItem(translate(u'BibleMediaItem', u'Clear'))
         self.ClearAdvancedSearchComboBox.addItem(translate(u'BibleMediaItem', u'Keep'))
-
-    def onRowSelected(self, row):
-        self.onBiblePreviewClick()
 
     def initialise(self):
         log.debug(u'initialise')
