@@ -136,7 +136,7 @@ class SongMediaItem(MediaManagerItem):
         QtCore.QObject.connect(self.SearchTextEdit,
             QtCore.SIGNAL(u'textChanged(const QString&)'), self.onSearchTextEditChanged)
         QtCore.QObject.connect(self.SongListView,
-            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onSongPreviewClick)
+           QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onSongPreviewClick)
         #define and add the context menu
         self.SongListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.SongListView.addAction(self.contextMenuAction(self.SongListView,

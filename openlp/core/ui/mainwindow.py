@@ -75,12 +75,12 @@ class MainWindow(object):
         # hook methods have to happen after find_plugins. Find plugins needs the
         # controllershence the hooks have moved from setupUI() to here
 
-        # Find and insert media manager items
-        log.info(u'hook media')
-        self.plugin_manager.hook_media_manager(self.MediaToolBox)
         # Find and insert settings tabs
         log.info(u'hook settings')
         self.plugin_manager.hook_settings_tabs(self.settingsForm)
+        # Find and insert media manager items
+        log.info(u'hook media')
+        self.plugin_manager.hook_media_manager(self.MediaToolBox)
         # Call the hook method to pull in import menus.
         log.info(u'hook menus')
         self.plugin_manager.hook_import_menu(self.FileImportMenu)

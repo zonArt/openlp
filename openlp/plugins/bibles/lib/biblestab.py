@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
+import logging
 
 from PyQt4 import Qt, QtCore, QtGui
 
@@ -27,6 +28,10 @@ class BiblesTab(SettingsTab):
     """
     BiblesTab is the Bibles settings tab in the settings dialog.
     """
+    global log
+    log = logging.getLogger(u'BibleTab')
+    log.info(u'Bible Tab loaded')
+
     def __init__(self):
         self.paragraph_style = True
         self.show_new_chapters = False
@@ -67,14 +72,12 @@ class BiblesTab(SettingsTab):
         self.NewChaptersCheckBox = QtGui.QCheckBox(self.VerseDisplayGroupBox)
         self.NewChaptersCheckBox.setObjectName("NewChaptersCheckBox")
         self.VerseDisplayLayout.addWidget(self.NewChaptersCheckBox, 1, 0, 1, 1)
-
         self.DisplayStyleWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
         self.DisplayStyleWidget.setObjectName(u'DisplayStyleWidget')
         self.DisplayStyleLayout = QtGui.QHBoxLayout(self.DisplayStyleWidget)
         self.DisplayStyleLayout.setSpacing(8)
         self.DisplayStyleLayout.setMargin(0)
         self.DisplayStyleLayout.setObjectName(u'DisplayStyleLayout')
-
         self.DisplayStyleLabel = QtGui.QLabel(self.DisplayStyleWidget)
         self.DisplayStyleLabel.setObjectName(u'DisplayStyleLabel')
         self.DisplayStyleLayout.addWidget(self.DisplayStyleLabel)
@@ -86,14 +89,12 @@ class BiblesTab(SettingsTab):
         self.DisplayStyleComboBox.addItem(QtCore.QString())
         self.DisplayStyleLayout.addWidget(self.DisplayStyleComboBox)
         self.VerseDisplayLayout.addWidget(self.DisplayStyleWidget, 2, 0, 1, 1)
-
         self.BibleThemeWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
         self.BibleThemeWidget.setObjectName(u'BibleThemeWidget')
         self.BibleThemeLayout = QtGui.QHBoxLayout(self.BibleThemeWidget)
         self.BibleThemeLayout.setSpacing(8)
         self.BibleThemeLayout.setMargin(0)
         self.BibleThemeLayout.setObjectName(u'BibleThemeLayout')
-
         self.BibleThemeLabel = QtGui.QLabel(self.BibleThemeWidget)
         self.BibleThemeLabel.setObjectName(u'BibleThemeLabel')
         self.BibleThemeLayout.addWidget(self.BibleThemeLabel)
@@ -102,7 +103,6 @@ class BiblesTab(SettingsTab):
         self.BibleThemeComboBox.addItem(QtCore.QString())
         self.BibleThemeLayout.addWidget(self.BibleThemeComboBox)
         self.VerseDisplayLayout.addWidget(self.BibleThemeWidget, 3, 0, 1, 1)
-
         self.ChangeNoteLabel = QtGui.QLabel(self.VerseDisplayGroupBox)
         self.ChangeNoteLabel.setObjectName(u'ChangeNoteLabel')
         self.VerseDisplayLayout.addWidget(self.ChangeNoteLabel, 4, 0, 1, 1)
@@ -111,7 +111,6 @@ class BiblesTab(SettingsTab):
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.BibleLeftLayout.addItem(self.BibleLeftSpacer)
         self.BibleLayout.addWidget(self.BibleLeftWidget)
-
         self.BibleRightWidget = QtGui.QWidget(self)
         self.BibleRightWidget.setObjectName(u'BibleRightWidget')
         self.BibleRightLayout = QtGui.QVBoxLayout(self.BibleRightWidget)
@@ -176,13 +175,15 @@ class BiblesTab(SettingsTab):
     def onNewChaptersCheckBoxChanged(self):
         check_state = self.NewChaptersCheckBox.checkState()
         self.show_new_chapters = False
-        if check_state == 2: # we have a set value convert to True/False
+        # we have a set value convert to True/False
+        if check_state == 2:
             self.show_new_chapters = True
 
     def onBibleSearchCheckBoxChanged(self):
         check_state = self.BibleSearchCheckBox.checkState()
         self.bible_search = False
-        if check_state == 2: # we have a set value convert to True/False
+        # we have a set value convert to True/False
+        if check_state == 2:
             self.bible_search = True
 
     def load(self):
