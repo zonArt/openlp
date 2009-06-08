@@ -33,9 +33,9 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
     global log
     log=logging.getLogger(u'BibleImportForm')
     log.info(u'BibleImportForm loaded')
-    '''
+    """
     Class documentation goes here.
-    '''
+    """
     def __init__(self, config, biblemanager , bibleplugin, parent = None):
         '''
         Constructor
@@ -124,7 +124,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
             # Was OSIS and is not any more stops lostFocus running mad
             if self.bible_type == u'OSIS':
                 self.bible_type = None
-                self.freeAll()
+                self.resetScreenFieldStates()
 
     def onBooksLocationEditLostFocus(self):
         self.checkOsis()
@@ -209,9 +209,9 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
                 str(self.PermisionEdit.displayText()))
         self.bible_type = None
         # free the screen state restrictions
-        self.freeAll()
+        self.resetScreenFieldStates()
          # reset all the screen fields
-        self.resetAll()
+        self.resetEntryFields()
 
     def checkOsis(self):
         if len(self.BooksLocationEdit.displayText()) > 0 or len(self.VerseLocationEdit.displayText()) > 0:
@@ -220,7 +220,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
             # Was CSV and is not any more stops lostFocus running mad
             if self.bible_type == u'CSV':
                 self.bible_type = None
-                self.freeAll()
+                self.resetScreenFieldStates()
 
     def checkHttp(self):
         if self.BibleComboBox.currentIndex() != 0 :  # First slot is blank so no bible
@@ -229,7 +229,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
             # Was HTTP and is not any more stops lostFocus running mad
             if self.bible_type == u'HTTP':
                 self.bible_type = None
-                self.freeAll()
+                self.resetScreenFieldStates()
 
     def blockCsv(self):
         self.BooksLocationEdit.setReadOnly(True)
@@ -247,7 +247,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         self.blockHttp()
 
     def setOsis(self):
-        self.bible_type = 'OSIS'
+        self.bible_type = u'OSIS'
         self.OSISLocationEdit.setReadOnly(False)
         self.OsisFileButton.setEnabled(True)
         self.blockCsv()
@@ -268,8 +268,9 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         self.LocationComboBox.setEnabled(False)
         self.BibleComboBox.setEnabled(False)
 
-    def freeAll(self):
-        if self.bible_type == None:  # only reset if no bible type set.
+    def resetScreenFieldStates(self):
+        # only reset if no bible type set.
+        if self.bible_type == None:
             self.BooksLocationEdit.setReadOnly(False)
             self.VerseLocationEdit.setReadOnly(False)
             self.BooksFileButton.setEnabled(True)
@@ -279,7 +280,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
             self.LocationComboBox.setEnabled(True)
             self.BibleComboBox.setEnabled(True)
 
-    def resetAll(self):
+    def resetEntryFields(self):
         self.BooksLocationEdit.setText(u'')
         self.VerseLocationEdit.setText(u'')
         self.OSISLocationEdit.setText(u'')

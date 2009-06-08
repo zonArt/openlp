@@ -60,7 +60,7 @@ class MainDisplay(QtGui.QWidget):
         if not screen[u'primary']:
             self.showFullScreen()
         else:
-            self.hide()
+            self.showMinimized()
         painter = QtGui.QPainter()
         self.blankFrame = QtGui.QPixmap(screen[u'size'].width(), screen[u'size'].height())
         painter.begin(self.blankFrame)

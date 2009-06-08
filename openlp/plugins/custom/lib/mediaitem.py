@@ -41,9 +41,7 @@ class CustomList(QtGui.QListView):
         mimeData = QtCore.QMimeData()
         drag.setMimeData(mimeData)
         mimeData.setText(u'Custom')
-
         dropAction = drag.start(QtCore.Qt.CopyAction)
-
         if dropAction == QtCore.Qt.CopyAction:
             self.close()
 
@@ -65,36 +63,36 @@ class CustomMediaItem(MediaManagerItem):
         # Create buttons for the toolbar
         ## New Custom Button ##
         self.addToolbarButton(
-            translate('CustomMediaItem',u'New Custom Item'),
-            translate('CustomMediaItem',u'Add a new Custom Item'),
-            ':/custom/custom_new.png', self.onCustomNewClick, 'CustomNewItem')
+            translate(u'CustomMediaItem',u'New Custom Item'),
+            translate(u'CustomMediaItem',u'Add a new Custom Item'),
+            u':/custom/custom_new.png', self.onCustomNewClick, u'CustomNewItem')
         ## Edit Custom Button ##
         self.addToolbarButton(
-            translate('CustomMediaItem',u'Edit Custom Item'),
-            translate('CustomMediaItem',u'Edit the selected Custom Item'),
-            ':/custom/custom_edit.png', self.onCustomEditClick, 'CustomEditItem')
+            translate(u'CustomMediaItem',u'Edit Custom Item'),
+            translate(u'CustomMediaItem',u'Edit the selected Custom Item'),
+            u':/custom/custom_edit.png', self.onCustomEditClick, u'CustomEditItem')
         ## Delete Custom Button ##
         self.addToolbarButton(
-            translate('CustomMediaItem',u'Delete Custom Item'),
-            translate('CustomMediaItem',u'Delete the selected Custom Item'),
-            ':/custom/custom_delete.png', self.onCustomDeleteClick, 'CustomDeleteItem')
+            translate(u'CustomMediaItem',u'Delete Custom Item'),
+            translate(u'CustomMediaItem',u'Delete the selected Custom Item'),
+            u':/custom/custom_delete.png', self.onCustomDeleteClick, u'CustomDeleteItem')
         ## Separator Line ##
         self.addToolbarSeparator()
         ## Preview Custom Button ##
         self.addToolbarButton(
-            translate('CustomMediaItem',u'Preview Custom Item'),
-            translate('CustomMediaItem',u'Preview the selected Custom Item'),
-            ':/system/system_preview.png', self.onCustomPreviewClick, 'CustomPreviewItem')
+            translate(u'CustomMediaItem',u'Preview Custom Item'),
+            translate(u'CustomMediaItem',u'Preview the selected Custom Item'),
+            u':/system/system_preview.png', self.onCustomPreviewClick, u'CustomPreviewItem')
         ## Live Custom Button ##
         self.addToolbarButton(
-            translate('CustomMediaItem',u'Go Live'),
-            translate('CustomMediaItem', u'Send the selected Custom live'),
-            ':/system/system_live.png', self.onCustomLiveClick, 'CustomLiveItem')
+            translate(u'CustomMediaItem',u'Go Live'),
+            translate(u'CustomMediaItem', u'Send the selected Custom live'),
+            u':/system/system_live.png', self.onCustomLiveClick, u'CustomLiveItem')
         ## Add Custom Button ##
         self.addToolbarButton(
-            translate('CustomMediaItem',u'Add Custom To Service'),
-            translate('CustomMediaItem',u'Add the selected Custom(s) to the service'),
-            ':/system/system_add.png', self.onCustomAddClick, 'CustomAddItem')
+            translate(u'CustomMediaItem',u'Add Custom To Service'),
+            translate(u'CustomMediaItem',u'Add the selected Custom(s) to the service'),
+            u':/system/system_add.png', self.onCustomAddClick, u'CustomAddItem')
         # Add the Customlist widget
         self.CustomWidget = QtGui.QWidget(self)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
@@ -103,64 +101,36 @@ class CustomMediaItem(MediaManagerItem):
         sizePolicy.setHeightForWidth(self.CustomWidget.sizePolicy().hasHeightForWidth())
         self.CustomWidget.setSizePolicy(sizePolicy)
         self.CustomWidget.setObjectName(u'CustomWidget')
-
-#        self.SearchLayout = QtGui.QGridLayout(self.CustomWidget)
-#        self.SearchLayout.setObjectName('SearchLayout')
-#        self.SearchTextLabel = QtGui.QLabel(self.CustomWidget)
-#        self.SearchTextLabel.setObjectName('SearchTextLabel')
-#        self.SearchTextLabel.setText('Search Text:')
-#        self.SearchLayout.addWidget(self.SearchTextLabel, 2, 0, 1, 1)
-#        self.SearchTextEdit = QtGui.QLineEdit(self.CustomWidget)
-#        self.SearchTextEdit.setObjectName('SearchTextEdit')
-#        self.SearchLayout.addWidget(self.SearchTextEdit, 2, 1, 1, 2)
-#
-#        self.ClearTextButton = QtGui.QPushButton(self.CustomWidget)
-#        self.ClearTextButton.setObjectName('ClearTextButton')
-#
-#        self.SearchLayout.addWidget(self.ClearTextButton, 3, 1, 1, 1)
-#        self.SearchTextButton = QtGui.QPushButton(self.CustomWidget)
-#        self.SearchTextButton.setObjectName('SearchTextButton')
-#        self.SearchLayout.addWidget(self.SearchTextButton, 3, 2, 1, 1)
         # Add the Custom widget to the page layout
         self.PageLayout.addWidget(self.CustomWidget)
-
         self.CustomListView = CustomList()
         self.CustomListView.setAlternatingRowColors(True)
         self.CustomListData = TextListData()
         self.CustomListView.setModel(self.CustomListData)
         self.CustomListView.setDragEnabled(True)
-
         self.PageLayout.addWidget(self.CustomListView)
-
         # Signals
-#        QtCore.QObject.connect(self.SearchTextButton,
-#            QtCore.SIGNAL("pressed()"), self.onSearchTextButtonClick)
-#        QtCore.QObject.connect(self.ClearTextButton,
-#            QtCore.SIGNAL("pressed()"), self.onClearTextButtonClick)
-#        QtCore.QObject.connect(self.SearchTextEdit,
-#            QtCore.SIGNAL("textChanged(const QString&)"), self.onSearchTextEditChanged)
-#        QtCore.QObject.connect(self.CustomListView,
-#            QtCore.SIGNAL("itemPressed(QTableWidgetItem * item)"), self.onCustomSelected)
-
+        QtCore.QObject.connect(self.CustomListView,
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onCustomPreviewClick)
         #define and add the context menu
         self.CustomListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.CustomListView.addAction(self.contextMenuAction(self.CustomListView,
-            ':/custom/custom_edit.png', translate('CustomMediaItem', u'&Edit Custom'),
+            ':/custom/custom_edit.png', translate(u'CustomMediaItem', u'&Edit Custom'),
             self.onCustomEditClick))
         self.CustomListView.addAction(self.contextMenuSeparator(self.CustomListView))
         self.CustomListView.addAction(self.contextMenuAction(
             self.CustomListView, ':/system/system_preview.png',
-            translate('CustomMediaItem',u'&Preview Custom'), self.onCustomPreviewClick))
+            translate(u'CustomMediaItem',u'&Preview Custom'), self.onCustomPreviewClick))
         self.CustomListView.addAction(self.contextMenuAction(
             self.CustomListView, ':/system/system_live.png',
-            translate('CustomMediaItem',u'&Show Live'), self.onCustomLiveClick))
+            translate(u'CustomMediaItem',u'&Show Live'), self.onCustomLiveClick))
         self.CustomListView.addAction(self.contextMenuAction(
             self.CustomListView, ':/system/system_add.png',
-            translate('CustomMediaItem',u'&Add to Service'), self.onCustomAddClick))
+            translate(u'CustomMediaItem',u'&Add to Service'), self.onCustomAddClick))
 
 #    def retranslateUi(self):
-#        self.ClearTextButton.setText(translate('CustomMediaItem', u'Clear'))
-#        self.SearchTextButton.setText(translate('CustomMediaItem', u'Search'))
+#        self.ClearTextButton.setText(translate(u'CustomMediaItem', u'Clear'))
+#        self.SearchTextButton.setText(translate(u'CustomMediaItem', u'Search'))
 
     def initialise(self):
         self.loadCustomList(self.parent.custommanager.get_all_slides())
@@ -177,7 +147,8 @@ class CustomMediaItem(MediaManagerItem):
         self.SearchTextEdit.clear()
 
     def onSearchTextEditChanged(self, text):
-        if len(text) > 3:  # only search if > 3 characters
+        # only search if > 3 characters
+        if len(text) > 3:
             self.onSearchTextButtonClick()
 
     def onSearchTextButtonClick(self):
@@ -209,21 +180,21 @@ class CustomMediaItem(MediaManagerItem):
     def onCustomPreviewClick(self):
         log.debug(u'Custom Preview Requested')
         service_item = ServiceItem(self.parent)
-        service_item.addIcon( ":/media/media_song.png")
+        service_item.addIcon(u':/media/media_song.png')
         self.generateSlideData(service_item)
         self.parent.preview_controller.addServiceItem(service_item)
 
     def onCustomLiveClick(self):
         log.debug(u'Custom Live Requested')
         service_item = ServiceItem(self.parent)
-        service_item.addIcon( ":/media/media_song.png")
+        service_item.addIcon(u':/media/media_song.png')
         self.generateSlideData(service_item)
         self.parent.live_controller.addServiceItem(service_item)
 
     def onCustomAddClick(self):
         log.debug(u'Custom Add Requested')
         service_item = ServiceItem(self.parent)
-        service_item.addIcon( ":/media/media_song.png")
+        service_item.addIcon(u':/media/media_song.png')
         self.generateSlideData(service_item)
         self.parent.service_manager.addServiceItem(service_item)
 

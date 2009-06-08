@@ -19,6 +19,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import os
 import logging
+import cPickle
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, Event, \
@@ -134,7 +135,8 @@ class ServiceManager(QtGui.QWidget):
         """
         Clear the list to create a new service
         """
-        self.service_data.clearItems()
+        self.ServiceManagerList.clear()
+        self.serviceItems = []
 
     def onDeleteFromService(self):
         """
@@ -146,13 +148,34 @@ class ServiceManager(QtGui.QWidget):
         """
         Save the current service
         """
-        pass
+        filename = QtGui.QFileDialog.getSaveFileName(self, u'Save Order of Service',self.config.get_last_dir() )
+        if filename != u'':
+            self.config.set_last_dir(filename)
+            print filename
+            service = []
+            for item in self.serviceItems:
+                service.append({u'serviceitem':item[u'data'].get_oos_repr()})
+            file = open(filename+u'.oos', u'wb')
+            cPickle.dump(service, file)
+            file.close()
 
     def onLoadService(self):
         """
         Load an existing service from disk
         """
-        pass
+        filename = QtGui.QFileDialog.getOpenFileName(self, u'Open Order of Service',self.config.get_last_dir(),
+            u'Services (*.oos)')
+        if filename != u'':
+            self.config.set_last_dir(filename)
+            file = open(filename, u'r')
+            items = cPickle.load(file)
+            file.close()
+            self.onNewService()
+            for item in items:
+                serviceitem = ServiceItem()
+                serviceitem.RenderManager = self.parent.RenderManager
+                serviceitem.set_from_oos(item)
+                self.addServiceItem(serviceitem)
 
     def onThemeComboBoxSelected(self, currentIndex):
         """
@@ -162,16 +185,16 @@ class ServiceManager(QtGui.QWidget):
         self.parent.RenderManager.set_service_theme(self.service_theme)
         self.config.set_config(u'theme service theme', self.service_theme)
 
-    def addServiceItem(self, item):
+    def addServiceItem(self, item, expand=True):
         """
         Add an item to the list
         """
         self.serviceItems.append({u'data': item, u'order': len(self.serviceItems)+1})
         treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
-        treewidgetitem.setText(0,item.title) # + u':' + item.shortname)
+        treewidgetitem.setText(0,item.title)
         treewidgetitem.setIcon(0,item.iconic_representation)
         treewidgetitem.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(len(self.serviceItems)))
-        treewidgetitem.setExpanded(True)
+        treewidgetitem.setExpanded(expand)
         item.render()
         count = 0
         for frame in item.frames:
@@ -204,13 +227,14 @@ class ServiceManager(QtGui.QWidget):
         count = 0
         for item in items:
             childCount = item.childCount()
-            if childCount >= 1: # is the parent
+            if childCount >= 1:
                 pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
             else:
                 parentitem = item.parent()
                 pos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
                 count = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-        pos = pos - 1 #adjust for zeor indexing
+        #adjuest for zero based arrays
+        pos = pos - 1
         return pos, count
 
     def dragEnterEvent(self, event):
@@ -229,26 +253,6 @@ class ServiceManager(QtGui.QWidget):
             plugin = event.mimeData().text()
             self.parent.EventManager.post_event(Event(EventType.LoadServiceItem, plugin))
 
-    def oos_as_text(self):
-        text=[]
-        log.info( "oos as text")
-        log.info("Data:"+str(self.service_data))
-        for i in self.service_data:
-            text.append("# " + str(i))
-            text.append(i.get_oos_text())
-        return '\n'.join(text)
-
-    def write_oos(self, filename):
-        """
-        Write a full OOS file out - iterate over plugins and call their respective methods
-        This format is totally arbitrary testing purposes - something sensible needs to go in here!
-        """
-        oosfile=open(filename, "w")
-        oosfile.write("# BEGIN OOS\n")
-        oosfile.write(self.oos_as_text)
-        oosfile.write("# END OOS\n")
-        oosfile.close()
-
     def updateThemeList(self, theme_list):
         """
         Called from ThemeManager when the Themes have changed
@@ -264,4 +268,3 @@ class ServiceManager(QtGui.QWidget):
             self.service_theme = u''
         self.ThemeComboBox.setCurrentIndex(id)
         self.parent.RenderManager.set_service_theme(self.service_theme)
-

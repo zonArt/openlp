@@ -64,6 +64,7 @@ class RenderManager:
         self.calculate_default(self.screen_list[self.current_display]['size'])
         self.theme = u''
         self.service_theme = u''
+        self.global_style = u''
 
     def update_display(self, screen_number):
         """
