@@ -138,9 +138,9 @@ class Renderer:
         self._frame = QtGui.QPixmap(self._frame.width(), self._frame.height()) #(self._bg_frame)
         self._frame.fill(QtCore.Qt.transparent)
         x, y = self._correctAlignment(self._rect, bbox)
-        bbox = self._render_lines_unaligned(lines, False,  (x, y))
+        bbox = self._render_lines_unaligned(lines, False,  (x, y), True)
         if footer_lines is not None:
-            bbox = self._render_lines_unaligned(footer_lines, True, (self._rect_footer.left(), self._rect_footer.top()) )
+            bbox = self._render_lines_unaligned(footer_lines, True, (self._rect_footer.left(), self._rect_footer.top()), True )
         log.debug(u'generate_frame_from_lines - Finish')
         return self._frame
 
@@ -261,7 +261,7 @@ class Renderer:
             log.error(u'Invalid value for theme.VerticalAlign:%s' % self._theme.display_verticalAlign)
         return x, y
 
-    def _render_lines_unaligned(self, lines,  footer,  tlcorner=(0,0)):
+    def _render_lines_unaligned(self, lines,  footer,  tlcorner=(0,0), live=False):
         """
         Given a list of lines to render, render each one in turn
         (using the _render_single_line fn - which may result in going
@@ -275,7 +275,7 @@ class Renderer:
         for line in lines:
             # render after current bottom, but at original left edge
             # keep track of right edge to see which is biggest
-            (thisx, bry) = self._render_and_wrap_single_line(line, footer, (x , bry))
+            (thisx, bry) = self._render_and_wrap_single_line(line, footer, (x , bry), live)
             if (thisx > brx):
                 brx = thisx
         retval = QtCore.QRect(x, y,brx-x, bry-y)
@@ -287,7 +287,7 @@ class Renderer:
             painter.end()
         return  retval
 
-    def _render_and_wrap_single_line(self, line, footer, tlcorner=(0,0)):
+    def _render_and_wrap_single_line(self, line, footer, tlcorner=(0,0), live=False):
         """
         Render a single line of words onto the DC, top left corner
         specified.
@@ -352,29 +352,30 @@ class Renderer:
             elif align == 2:
                 x = (maxx - w) / 2;
                 rightextent = x + w
-            # now draw the text, and any outlines/shadows
-            if self._theme.display_shadow:
-                self._get_extent_and_render(line, footer, tlcorner=(x+self._shadow_offset,y+self._shadow_offset),
-                    draw=True, color = self._theme.display_shadow_color)
-            if self._theme.display_outline:
-                self._get_extent_and_render(line, footer, (x+self._outline_offset,y), draw=True,
-                        color = self._theme.display_outline_color)
-                self._get_extent_and_render(line, footer, (x, y+self._outline_offset), draw=True,
-                        color = self._theme.display_outline_color)
-                self._get_extent_and_render(line, footer, (x, y-self._outline_offset), draw=True,
-                        color = self._theme.display_outline_color)
-                self._get_extent_and_render(line, footer, (x-self._outline_offset,y), draw=True,
-                        color = self._theme.display_outline_color)
-                if self._outline_offset > 1:
-                    self._get_extent_and_render(line, footer, (x+self._outline_offset,y+self._outline_offset), draw=True,
-                        color = self._theme.display_outline_color)
-                    self._get_extent_and_render(line, footer, (x-self._outline_offset,y+self._outline_offset), draw=True,
-                        color = self._theme.display_outline_color)
-                    self._get_extent_and_render(line, footer, (x+self._outline_offset,y-self._outline_offset), draw=True,
-                        color = self._theme.display_outline_color)
-                    self._get_extent_and_render(line, footer, (x-self._outline_offset,y-self._outline_offset), draw=True,
-                        color = self._theme.display_outline_color)
-            self._get_extent_and_render(line, footer,tlcorner=(x, y), draw=True)
+            if live:
+                # now draw the text, and any outlines/shadows
+                if self._theme.display_shadow:
+                    self._get_extent_and_render(line, footer, tlcorner=(x+self._shadow_offset,y+self._shadow_offset),
+                        draw=True, color = self._theme.display_shadow_color)
+                if self._theme.display_outline:
+                    self._get_extent_and_render(line, footer, (x+self._outline_offset,y), draw=True,
+                            color = self._theme.display_outline_color)
+                    self._get_extent_and_render(line, footer, (x, y+self._outline_offset), draw=True,
+                            color = self._theme.display_outline_color)
+                    self._get_extent_and_render(line, footer, (x, y-self._outline_offset), draw=True,
+                            color = self._theme.display_outline_color)
+                    self._get_extent_and_render(line, footer, (x-self._outline_offset,y), draw=True,
+                            color = self._theme.display_outline_color)
+                    if self._outline_offset > 1:
+                        self._get_extent_and_render(line, footer, (x+self._outline_offset,y+self._outline_offset), draw=True,
+                            color = self._theme.display_outline_color)
+                        self._get_extent_and_render(line, footer, (x-self._outline_offset,y+self._outline_offset), draw=True,
+                            color = self._theme.display_outline_color)
+                        self._get_extent_and_render(line, footer, (x+self._outline_offset,y-self._outline_offset), draw=True,
+                            color = self._theme.display_outline_color)
+                        self._get_extent_and_render(line, footer, (x-self._outline_offset,y-self._outline_offset), draw=True,
+                            color = self._theme.display_outline_color)
+                self._get_extent_and_render(line, footer,tlcorner=(x, y), draw=True)
             y += h
             if linenum == 0:
                 self._first_line_right_extent = rightextent
