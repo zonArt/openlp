@@ -282,7 +282,7 @@ class SlideController(QtGui.QWidget):
         """
         Generates a preview of the current slide.
         """
-        self.SlidePreview.setPixmap(frame[0])
+        self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame[0]))
         if self.isLive:
             no = frame[1]
             LiveFrame = self.serviceitem.frames[no][u'image']
