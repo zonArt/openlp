@@ -63,22 +63,22 @@ class ThemeData(QtCore.QAbstractListModel):
         theme = shortfilename.split(u'.')
         # create a preview image
         if os.path.exists(filename):
-            preview = QtGui.QPixmap(str(filename))
+            preview = QtGui.QImage(str(filename))
             width = self.maximagewidth
             height = self.rowheight
             preview = preview.scaled(width, height, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
             realwidth = preview.width()
             realheight = preview.height()
             # and move it to the centre of the preview space
-            pixmap = QtGui.QPixmap(width, height)
-            pixmap.fill(QtCore.Qt.transparent)
+            pixmap = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32_Premultiplied)
+            pixmap.fill(QtCore.Qt.black)
             painter = QtGui.QPainter(pixmap)
-            painter.drawPixmap((width - realwidth) / 2, (height - realheight) / 2, preview)
+            painter.drawImage((width - realwidth) / 2, (height - realheight) / 2, preview)
         else:
             width = self.maximagewidth
             height = self.rowheight
-            pixmap = QtGui.QtGui.QPixmap(width, height)
-            pixmap.fill(QtCore.Qt.transparent)
+            pixmap = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32_Premultiplied)
+            pixmap.fill(QtCore.Qt.black)
         # finally create the row
         self.items.insert(row, (filename, pixmap, shortfilename, theme[0]))
         log.info(u'Items: %s' % self.items)
@@ -347,11 +347,11 @@ class ThemeManager(QtGui.QWidget):
         theme.parse(theme_xml)
         theme.extend_image_filename(dir)
         frame = self.generateImage(theme)
-        im = frame.toImage()
+        #im = frame.toImage()
         samplepathname = os.path.join(self.path, name + u'.png')
         if os.path.exists(samplepathname):
             os.unlink(samplepathname)
-        im.save(samplepathname, u'png')
+        frame.save(samplepathname, u'png')
         log.debug(u'Theme image written to %s', samplepathname)
 
     def generateImage(self, themedata):

@@ -67,7 +67,7 @@ class SongManager():
         """
         Returns the details of a song
         """
-        return self.session.query(Song).order_by(title).all()
+        return self.session.query(Song).order_by(Song.title).all()
 
     def search_song_title(self, keywords):
         """

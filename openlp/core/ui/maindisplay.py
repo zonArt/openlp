@@ -62,15 +62,16 @@ class MainDisplay(QtGui.QWidget):
         else:
             self.showMinimized()
         painter = QtGui.QPainter()
-        self.blankFrame = QtGui.QPixmap(screen[u'size'].width(), screen[u'size'].height())
+        self.blankFrame = QtGui.QImage(screen[u'size'].width(),
+            screen[u'size'].height(), QtGui.QImage.Format_ARGB32_Premultiplied)
         painter.begin(self.blankFrame)
-        painter.fillRect(self.blankFrame.rect(), QtGui.QColor(u'#000000'))
+        painter.fillRect(self.blankFrame.rect(), QtCore.Qt.black)
         self.frameView(self.blankFrame)
 
     def frameView(self, frame):
         self.frame = frame
         if not self.displayBlank:
-            self.display.setPixmap(frame)
+            self.display.setPixmap(QtGui.QPixmap.fromImage(frame))
         elif self.alertactive:
             self.displayAlert()
 
