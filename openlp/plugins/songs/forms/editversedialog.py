@@ -8,30 +8,31 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_EditVerseDialog(object):
     def setupUi(self, EditVerseDialog):
-        EditVerseDialog.setObjectName("EditVerseDialog")
+        EditVerseDialog.setObjectName(u'EditVerseDialog')
         EditVerseDialog.resize(492, 373)
         EditVerseDialog.setModal(True)
         self.DialogLayout = QtGui.QVBoxLayout(EditVerseDialog)
         self.DialogLayout.setSpacing(8)
         self.DialogLayout.setMargin(8)
-        self.DialogLayout.setObjectName("DialogLayout")
+        self.DialogLayout.setObjectName(u'DialogLayout')
         self.VerseTextEdit = QtGui.QTextEdit(EditVerseDialog)
         self.VerseTextEdit.setAcceptRichText(False)
-        self.VerseTextEdit.setObjectName("VerseTextEdit")
+        self.VerseTextEdit.setObjectName(u'VerseTextEdit')
         self.DialogLayout.addWidget(self.VerseTextEdit)
         self.ButtonBox = QtGui.QDialogButtonBox(EditVerseDialog)
         self.ButtonBox.setOrientation(QtCore.Qt.Horizontal)
         self.ButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Save)
-        self.ButtonBox.setObjectName("ButtonBox")
+        self.ButtonBox.setObjectName(u'ButtonBox')
         self.DialogLayout.addWidget(self.ButtonBox)
 
         self.retranslateUi(EditVerseDialog)
-        QtCore.QObject.connect(self.ButtonBox, QtCore.SIGNAL("accepted()"), EditVerseDialog.accept)
-        QtCore.QObject.connect(self.ButtonBox, QtCore.SIGNAL("rejected()"), EditVerseDialog.reject)
+        QtCore.QObject.connect(self.ButtonBox, QtCore.SIGNAL(u'accepted()'), EditVerseDialog.accept)
+        QtCore.QObject.connect(self.ButtonBox, QtCore.SIGNAL(u'rejected()'), EditVerseDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(EditVerseDialog)
 
     def retranslateUi(self, EditVerseDialog):
-        EditVerseDialog.setWindowTitle(QtGui.QApplication.translate("EditVerseDialog", "Dialog", None, QtGui.QApplication.UnicodeUTF8))
+        EditVerseDialog.setWindowTitle(translate(u'EditVerseDialog', u'Dialog'))

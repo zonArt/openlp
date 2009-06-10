@@ -36,19 +36,19 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.setupUi(self)
         # Connecting signals and slots
         QtCore.QObject.connect(self.AddAuthorsButton,
-            QtCore.SIGNAL('clicked()'), self.onAddAuthorsButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onAddAuthorsButtonClicked)
         QtCore.QObject.connect(self.AddTopicButton,
-            QtCore.SIGNAL('clicked()'), self.onAddTopicButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onAddTopicButtonClicked)
         QtCore.QObject.connect(self.AddSongBookButton,
-            QtCore.SIGNAL('clicked()'), self.onAddSongBookButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onAddSongBookButtonClicked)
         QtCore.QObject.connect(self.CopyrightInsertItem,
-            QtCore.SIGNAL('clicked()'), self.onCopyrightInsertItemTriggered)
+            QtCore.SIGNAL(u'clicked()'), self.onCopyrightInsertItemTriggered)
         QtCore.QObject.connect(self.AddButton,
-            QtCore.SIGNAL('clicked()'), self.onAddVerseButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onAddVerseButtonClicked)
         QtCore.QObject.connect(self.EditButton,
-            QtCore.SIGNAL('clicked()'), self.onEditVerseButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onEditVerseButtonClicked)
         QtCore.QObject.connect(self.DeleteButton,
-            QtCore.SIGNAL('clicked()'), self.onDeleteVerseButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onDeleteVerseButtonClicked)
         # Create other objects and forms
         self.songmanager = songmanager
         self.authors_form = AuthorsForm(self.songmanager)
@@ -95,7 +95,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.TitleEditItem.setText(self.song.title)
         self.CopyrightEditItem.setText(self.song.copyright)
         #self.LyricsTextEdit.setText(self.song.lyrics)
-        verses = self.song.lyrics.split('\n\n')
+        verses = self.song.lyrics.split(u'\n\n')
         for verse in verses:
             self.VerseListWidget.addItem(verse)
 
@@ -136,7 +136,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.loadBooks()
 
     def onAddVerseButtonClicked(self):
-        self.verse_form.setVerse('')
+        self.verse_form.setVerse(u'')
         self.verse_form.exec_()
         self.VerseListWidget.addItem(self.verse_form.getVerse())
 
@@ -174,9 +174,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def _color_widget(self, slot, invalid):
         r = Qt.QPalette(slot.palette())
         if invalid == True:
-            r.setColor(Qt.QPalette.Base, Qt.QColor('darkRed'))
+            r.setColor(Qt.QPalette.Base, Qt.QColor(u'darkRed'))
         else:
-            r.setColor(Qt.QPalette.Base, Qt.QColor('white'))
+            r.setColor(Qt.QPalette.Base, Qt.QColor(u'white'))
         slot.setPalette(r)
         slot.setAutoFillBackground(True)
 
@@ -191,3 +191,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.CopyrightEditItem.setText(text)
         self.CopyrightEditItem.setFocus()
         self.CopyrightEditItem.setCursorPosition(pos + 1)
+
+    def onAccept(self):
+        a = c

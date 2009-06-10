@@ -18,6 +18,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 from PyQt4 import QtGui, QtCore
+from openlp.core.lib import translate
 from songbookdialog import Ui_SongBookDialog
 from openlp.plugins.songs.lib.classes import Book
 
@@ -36,13 +37,13 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
         self.songbook = None
 
         QtCore.QObject.connect(self.DeleteButton,
-            QtCore.SIGNAL('pressed()'), self.onDeleteButtonClick)
+            QtCore.SIGNAL(u'pressed()'), self.onDeleteButtonClick)
         QtCore.QObject.connect(self.ClearButton,
-            QtCore.SIGNAL('pressed()'), self.onClearButtonClick)
+            QtCore.SIGNAL(u'pressed()'), self.onClearButtonClick)
         QtCore.QObject.connect(self.AddUpdateButton,
-            QtCore.SIGNAL('pressed()'), self.onAddUpdateButtonClick)
+            QtCore.SIGNAL(u'pressed()'), self.onAddUpdateButtonClick)
         QtCore.QObject.connect(self.NameEdit,
-            QtCore.SIGNAL('lostFocus()'), self.onBookNameEditLostFocus)
+            QtCore.SIGNAL(u'lostFocus()'), self.onBookNameEditLostFocus)
         QtCore.QObject.connect(self.BookSongListView,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onBooksListViewItemClicked)
 
@@ -112,15 +113,16 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
         self.NameEdit.setText(self.Book.name)
         self.PublisherEdit.setText(self.Book.publisher)
         if len(self.Book.songs) > 0:
-            self.MessageLabel.setText("Book in use 'Delete' is disabled")
+            self.MessageLabel.setText(translate(u'BookForm', u'Book in use "Delete" is disabled'))
             self.DeleteButton.setEnabled(False)
         else:
-            self.MessageLabel.setText("Book is not used")
+            self.MessageLabel.setText(translate(u'BookForm', u'Book in not used'))
             self.DeleteButton.setEnabled(True)
         self._validate_form()
 
     def _validate_form(self):
-        if len(self.NameEdit.displayText()) == 0: # We need at lease a display name
+        # We need at lease a display name
+        if len(self.NameEdit.displayText()) == 0:
             self.AddUpdateButton.setEnabled(False)
         else:
             self.AddUpdateButton.setEnabled(True)
