@@ -66,6 +66,7 @@ class ServiceItem():
         else:
             self.RenderManager.set_override_theme(self.theme)
         log.debug(u'Formatting slides')
+        self.frames = []
         if self.service_item_type == u'text':
             for slide in self.service_frames:
                 formated = self.RenderManager.format_slide(slide[u'raw_slide'])
