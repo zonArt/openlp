@@ -526,4 +526,4 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     def previewTheme(self, theme):
         if self.allowPreview:
             frame = self.thememanager.generateImage(theme)
-            self.ThemePreview.setPixmap(frame)
+            self.ThemePreview.setPixmap(QtGui.QPixmap.fromImage(frame))

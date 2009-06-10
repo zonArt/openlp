@@ -70,19 +70,21 @@ class Renderer:
 
     def scale_bg_image(self):
         assert self._frame
-        preview = QtGui.QPixmap(self._bg_image_filename)
+        preview = QtGui.QImage(self._bg_image_filename)
         width = self._frame.width()
         height = self._frame.height()
         preview = preview.scaled(width, height, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
         realwidth = preview.width()
         realheight = preview.height()
         # and move it to the centre of the preview space
-        self.bg_image = QtGui.QPixmap(width, height)
-        self.bg_image.fill(QtCore.Qt.transparent)
-        painter = QtGui.QPainter(self.bg_image)
+        self.bg_image = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32_Premultiplied)
+        self.bg_image.fill(QtCore.Qt.black)
+        painter = QtGui.QPainter()
+        painter.begin(self.bg_image)
         self.background_offsetx = (width - realwidth) / 2
         self.background_offsety = (height - realheight) / 2
-        painter.drawPixmap(self.background_offsetx, self.background_offsety , preview)
+        painter.drawImage(self.background_offsetx, self.background_offsety, preview)
+        painter.end()
 
     def set_frame_dest(self, frame_width, frame_height, preview=False):
         """
@@ -91,7 +93,8 @@ class Renderer:
         if preview == True:
             self._bg_frame = None
         log.debug(u'set frame dest (frame) w %d h %d', frame_width, frame_height)
-        self._frame = QtGui.QPixmap(frame_width, frame_height)
+        self._frame = QtGui.QImage(frame_width, frame_height,
+            QtGui.QImage.Format_ARGB32_Premultiplied)
         if self._bg_image_filename is not None:
             self.scale_bg_image()
         if self._bg_frame is None:
@@ -134,7 +137,7 @@ class Renderer:
         if footer_lines is not None:
             bbox1 = self._render_lines_unaligned(footer_lines, True)
         # reset the frame. first time do not worrk about what you paint on.
-        self._frame = QtGui.QPixmap(self._bg_frame)
+        self._frame = QtGui.QImage(self._bg_frame)
         x, y = self._correctAlignment(self._rect, bbox)
         bbox = self._render_lines_unaligned(lines, False,  (x, y))
         if footer_lines is not None:
@@ -147,7 +150,8 @@ class Renderer:
         Results cached for performance reasons.
         """
         assert(self._theme)
-        self._bg_frame = QtGui.QPixmap(self._frame.width(), self._frame.height())
+        self._bg_frame = QtGui.QImage(self._frame.width(), self._frame.height(),
+            QtGui.QImage.Format_ARGB32_Premultiplied)
         log.debug(u'render background %s ', self._theme.background_type)
         painter = QtGui.QPainter()
         painter.begin(self._bg_frame)
@@ -178,10 +182,9 @@ class Renderer:
             rectPath.closeSubpath()
             painter.drawPath(rectPath)
         elif self._theme.background_type== u'image': # image
+            painter.fillRect(self._frame.rect(), QtCore.Qt.black)
             if self.bg_image is not None:
-                painter.drawPixmap(0 ,0 , self.bg_image)
-            else:
-                painter.fillRect(self._frame.rect(), QtGui.QColor(u'#000000'))
+                painter.drawImage(0 ,0 , self.bg_image)
         painter.end()
 
     def _split_set_of_lines(self, lines, footer):
