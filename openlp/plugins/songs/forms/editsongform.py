@@ -155,21 +155,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         Check the validity of the form. Only display the 'save' if the data can be saved.
         """
         valid = True   # Lets be nice and assume the data is correct.
-        if len(self.TitleEditItem.displayText()) == 0: #Song title missing
+        if len(self.TitleEditItem.displayText()) == 0:
             valid = False
-            #self._color_widget(self.TitleEditItem, True)
-        #else:
-            #self._color_widget(self.TitleEditItem, False)
-        if len(self.CopyrightEditItem.displayText()) == 0: #Song title missing
+        if len(self.CopyrightEditItem.displayText()) == 0:
             valid = False
-            #self._color_widget(self.CopyrightEditItem, True)
-        #else:
-            #self._color_widget(self.CopyrightEditItem, False)
-
-        if valid:
-            self.ButtonBox.addButton(self.savebutton, QtGui.QDialogButtonBox.AcceptRole) # hide the save button tile screen is valid
-        else:
-            self.ButtonBox.removeButton(self.savebutton) # hide the save button tile screen is valid
 
     def _color_widget(self, slot, invalid):
         r = Qt.QPalette(slot.palette())
@@ -193,4 +182,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.CopyrightEditItem.setCursorPosition(pos + 1)
 
     def onAccept(self):
-        a = c
+        #self.song.topics.append(9) << need opject here
+        self.song.title = unicode(self.TitleEditItem.displayText())
+        self.song.copyright = unicode(self.CopyrightEditItem.displayText())
+        self.songmanager.save_song(self.song)
+        self.close()
