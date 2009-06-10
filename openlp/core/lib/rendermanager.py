@@ -70,6 +70,7 @@ class RenderManager:
         """
         Updates the render manager's information about the current screen.
         """
+        log.debug(u'Update Display')
         if self.current_display != screen_number:
             self.current_display = screen_number
             self.calculate_default(self.screen_list[self.current_display]['size'])
@@ -100,7 +101,6 @@ class RenderManager:
                     self.theme = self.service_theme
             else:
                 self.theme = self.global_theme
-
         if self.theme is not self.renderer.theme_name:
             log.debug(u'theme is now %s',  self.theme)
             self.themedata = self.theme_manager.getThemeData(self.theme)
@@ -112,19 +112,16 @@ class RenderManager:
         log.debug(u'build_text_rectangle ')
         main_rect = None
         footer_rect = None
-
         if theme.font_main_override == False:
             main_rect = QtCore.QRect(10,0, self.width-1, self.height-1)
         else:
             main_rect = QtCore.QRect(int(theme.font_main_x) , int(theme.font_main_y),
                 int(theme.font_main_width)-1, int(theme.font_main_height)-1)
-
         if theme.font_footer_override == False:
             footer_rect = QtCore.QRect(10,self.footer_start, self.width-1, self.height-self.footer_start)
         else:
             footer_rect = QtCore.QRect(int(theme.font_footer_x),int(theme.font_footer_y),
                 int(theme.font_footer_width)-1, int(theme.font_footer_height)-1)
-
         self.renderer.set_text_rectangle(main_rect,footer_rect)
 
     def generate_preview(self, themedata):
@@ -132,9 +129,7 @@ class RenderManager:
         self.calculate_default(QtCore.QSize(1024, 768))
         self.renderer.set_theme(themedata)
         self.build_text_rectangle(themedata)
-
         self.renderer.set_frame_dest(self.width, self.height, True)
-
         lines = []
         lines.append(u'Amazing Grace!')
         lines.append(u'How sweet the sound')
@@ -165,15 +160,7 @@ class RenderManager:
         log.debug(u'calculate default %s' , screen)
         self.width = screen.width()
         self.height = screen.height()
+        self.width = 1024
+        self.height = 768
         log.debug(u'calculate default %d,%d' , self.width, self.height)
         self.footer_start = int(self.height*0.90) # 90% is start of footer
-
-    def snoop_Image(self, image, image2=None):
-        """
-        Debugging method to allow images to be viewed
-        """
-        im = image.toImage()
-        im.save("renderer.png", "png")
-        if image2 is not None:
-            im = image2.toImage()
-            im.save("renderer2.png", "png")

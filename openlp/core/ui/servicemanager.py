@@ -184,6 +184,11 @@ class ServiceManager(QtGui.QWidget):
         self.service_theme = self.ThemeComboBox.currentText()
         self.parent.RenderManager.set_service_theme(self.service_theme)
         self.config.set_config(u'theme service theme', self.service_theme)
+        if len(self.serviceItems) > 0:
+            tempServiceItems = self.serviceItems
+            self.onNewService()
+            for item in tempServiceItems:
+                self.addServiceItem(item[u'data'])
 
     def addServiceItem(self, item, expand=True):
         """

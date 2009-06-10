@@ -56,7 +56,7 @@ class SlideData(QtCore.QAbstractListModel):
         frame1 = frame.scaled(QtCore.QSize(280, 210), QtCore.Qt.KeepAspectRatio,
             QtCore.Qt.SmoothTransformation)
         self.items.insert(row, (frame1, framenumber))
-        log.info(u'Items: %s' % self.items)
+        log.info(u'Item loaded')
         self.endInsertRows()
 
     def removeRow(self, row):
@@ -133,6 +133,8 @@ class SlideController(QtGui.QWidget):
         self.ControllerLayout.setMargin(0)
         # Controller list view
         self.PreviewListView = QtGui.QListView(self.Controller)
+        self.PreviewListView.setUniformItemSizes(True)
+        self.PreviewListView.setIconSize(QtCore.QSize(250, 190))
         self.PreviewListData = SlideData()
         self.PreviewListView.isLive = self.isLive
         #self.PreviewListView.setFlow(1)
