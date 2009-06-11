@@ -94,6 +94,7 @@ class Plugin(object):
         self.event_manager = plugin_helpers[u'event']
         self.render_manager = plugin_helpers[u'render']
         self.service_manager = plugin_helpers[u'service']
+        self.settings= plugin_helpers[u'settings']
 
     def check_pre_conditions(self):
         """

@@ -57,15 +57,15 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.verse_form = EditVerseForm()
         self.initialise()
 
-        self.AuthorsListView.setColumnCount(2)
-        self.AuthorsListView.setColumnHidden(0, True)
-        self.AuthorsListView.setColumnWidth(1, 200)
-        self.AuthorsListView.setShowGrid(False)
+        #self.AuthorsListView.setColumnCount(2)
+        #self.AuthorsListView.setColumnHidden(0, True)
+        #self.AuthorsListView.setColumnWidth(1, 200)
+        #self.AuthorsListView.setShowGrid(False)
         self.AuthorsListView.setSortingEnabled(False)
         self.AuthorsListView.setAlternatingRowColors(True)
-        self.AuthorsListView.horizontalHeader().setVisible(False)
-        self.AuthorsListView.verticalHeader().setVisible(False)
-        self.savebutton = self.ButtonBox.button(QtGui.QDialogButtonBox.Save)
+        #self.AuthorsListView.horizontalHeader().setVisible(False)
+        #self.AuthorsListView.verticalHeader().setVisible(False)
+        #self.savebutton = self.ButtonBox.button(QtGui.QDialogButtonBox.Save)
 
     def initialise(self):
         self.loadAuthors()
@@ -98,17 +98,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         verses = self.song.lyrics.split(u'\n\n')
         for verse in verses:
             self.VerseListWidget.addItem(verse)
-
-        self.AuthorsListView.clear() # clear the results
-        self.AuthorsListView.setRowCount(0)
+        # clear the results
+        self.AuthorsListView.clear()
         for author in self.song.authors:
-            row_count = self.AuthorsListView.rowCount()
-            self.AuthorsListView.setRowCount(row_count + 1)
-            author_id = QtGui.QTableWidgetItem(str(author.id))
-            self.AuthorsListView.setItem(row_count, 0, author_id)
-            author_name = QtGui.QTableWidgetItem(str(author.display_name))
-            self.AuthorsListView.setItem(row_count, 1, author_name)
-            self.AuthorsListView.setRowHeight(row_count, 20)
+            author_name = QtGui.QListWidgetItem(str(author.display_name))
+            author_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
+            self.AuthorsListView.addItem(author_name)
         self._validate_song()
 
     def onAddAuthorsButtonClicked(self):
@@ -185,5 +180,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         #self.song.topics.append(9) << need opject here
         self.song.title = unicode(self.TitleEditItem.displayText())
         self.song.copyright = unicode(self.CopyrightEditItem.displayText())
+        for i in range(0, self.AuthorsListView.count()):
+            print self.AuthorsListView.item(i)
+        for i in range(0, self.TopicsListView.count()):
+            print self.TopicsListView.item(i)
+
         self.songmanager.save_song(self.song)
         self.close()

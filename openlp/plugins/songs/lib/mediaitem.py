@@ -184,7 +184,7 @@ class SongMediaItem(MediaManagerItem):
         self.SearchTextEdit.clear()
 
     def onSearchTextEditChanged(self, text):
-        search_length = 3
+        search_length = 1
         if self.SearchTypeComboBox.currentIndex() == 1:
             search_length = 7
         if len(text) > search_length:
@@ -231,6 +231,8 @@ class SongMediaItem(MediaManagerItem):
     def generateSlideData(self, service_item):
         raw_slides =[]
         raw_footer = []
+        author_list = u''
+        ccl = u''
         indexes = self.SongListView.selectedIndexes()
         for index in indexes:
             id = self.SongListData.getId(index)
@@ -243,8 +245,18 @@ class SongMediaItem(MediaManagerItem):
             for slide in verses:
                 service_item.add_from_text(slide[:30], slide)
             service_item.title = song.title
-        raw_footer.append(str(u'%s \n%s \n' % (song.title, song.copyright )))
-        raw_footer.append(song.copyright)
+            for author in song.authors:
+                if len(author_list) > 1:
+                    author_list = author_list + u', '
+                author_list = author_list + str(author.display_name)
+            if song.ccli_number == None or len(song.ccli_number) == 0:
+                ccl = self.parent.settings.GeneralTab.CCLNumber
+            else:
+                ccl = str(song.ccli_number)
+        raw_footer.append(song.title)
+        raw_footer.append(author_list)
+        raw_footer.append(song.copyright )
+        raw_footer.append(str(translate(u'SongMediaItem', u'CCL Licence: ') + ccl ))
         service_item.raw_footer = raw_footer
 
     def onSongLiveClick(self):

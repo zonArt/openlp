@@ -70,6 +70,7 @@ class MainWindow(object):
         self.plugin_helpers[u'theme'] = self.ThemeManagerContents
         self.plugin_helpers[u'render'] = self.RenderManager
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
+        self.plugin_helpers[u'settings'] = self.settingsForm
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers,
             self.EventManager)
         # hook methods have to happen after find_plugins. Find plugins needs the
