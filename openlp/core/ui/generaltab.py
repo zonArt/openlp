@@ -165,7 +165,7 @@ class GeneralTab(SettingsTab):
     def load(self):
         for screen in self.screen_list:
             screen_name = translate(u'GeneralTab', u'Screen') + u' ' + \
-                str(screen[u'number'] + 1)
+                unicode(screen[u'number'] + 1)
             if screen[u'primary']:
                 screen_name = screen_name + u' (' + \
                     translate(u'GeneralTab', u'primary') + u')'
@@ -174,9 +174,9 @@ class GeneralTab(SettingsTab):
         self.MonitorNumber = int(self.config.get_config(u'Monitor', u'0'))
         self.Warning = str_to_bool(self.config.get_config(u'Warning', u'False'))
         self.AutoOpen = str_to_bool(self.config.get_config(u'Auto Open', u'False'))
-        self.CCLNumber = str(self.config.get_config(u'CCL Number', u'XXX'))
-        self.Username = str(self.config.get_config(u'User Name', u''))
-        self.Password = str(self.config.get_config(u'Password', u''))
+        self.CCLNumber = unicode(self.config.get_config(u'CCL Number', u'XXX'))
+        self.Username = unicode(self.config.get_config(u'User Name', u''))
+        self.Password = unicode(self.config.get_config(u'Password', u''))
         # Set a few things up
         self.MonitorComboBox.setCurrentIndex(self.MonitorNumber)
         self.WarningCheckBox.setChecked(self.Warning)

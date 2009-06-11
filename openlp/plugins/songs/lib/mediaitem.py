@@ -174,7 +174,7 @@ class SongMediaItem(MediaManagerItem):
                 if author_list != u'':
                     author_list = author_list + u', '
                 author_list = author_list + author.display_name
-            song_detail = str(u'%s (%s)' % (str(song.title), str(author_list)))
+            song_detail = unicode(u'%s (%s)' % (unicode(song.title), unicode(author_list)))
             self.SongListData.addRow(song.id,song_detail)
 
     def onClearTextButtonClick(self):
@@ -191,7 +191,7 @@ class SongMediaItem(MediaManagerItem):
             self.onSearchTextButtonClick()
 
     def onSearchTextButtonClick(self):
-        search_keywords = str(self.SearchTextEdit.displayText())
+        search_keywords = unicode(self.SearchTextEdit.displayText())
         search_results  = []
         search_type = self.SearchTypeComboBox.currentIndex()
         if search_type == 0:
@@ -207,6 +207,7 @@ class SongMediaItem(MediaManagerItem):
 
     def onSongNewClick(self):
         self.edit_song_form.exec_()
+        self.onSearchTextButtonClick()
 
     def onSongEditClick(self):
         indexes = self.SongListView.selectedIndexes()
@@ -214,6 +215,7 @@ class SongMediaItem(MediaManagerItem):
             id = self.SongListData.getId(index)
             self.edit_song_form.loadSong(id)
             self.edit_song_form.exec_()
+        self.onSearchTextButtonClick()
 
     def onSongDeleteClick(self):
         indexes = self.SongListView.selectedIndexes()
@@ -221,6 +223,7 @@ class SongMediaItem(MediaManagerItem):
             id = self.SongListData.getId(index)
             self.parent.songmanager.delete_song(id)
             self.SongListData.deleteRow(index)
+        self.onSearchTextButtonClick()
 
     def onSongPreviewClick(self):
         service_item = ServiceItem(self.parent)
@@ -248,15 +251,15 @@ class SongMediaItem(MediaManagerItem):
             for author in song.authors:
                 if len(author_list) > 1:
                     author_list = author_list + u', '
-                author_list = author_list + str(author.display_name)
+                author_list = author_list + unicode(author.display_name)
             if song.ccli_number == None or len(song.ccli_number) == 0:
                 ccl = self.parent.settings.GeneralTab.CCLNumber
             else:
-                ccl = str(song.ccli_number)
+                ccl = unicode(song.ccli_number)
         raw_footer.append(song.title)
         raw_footer.append(author_list)
         raw_footer.append(song.copyright )
-        raw_footer.append(str(translate(u'SongMediaItem', u'CCL Licence: ') + ccl ))
+        raw_footer.append(unicode(translate(u'SongMediaItem', u'CCL Licence: ') + ccl ))
         service_item.raw_footer = raw_footer
 
     def onSongLiveClick(self):

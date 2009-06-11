@@ -101,7 +101,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         # clear the results
         self.AuthorsListView.clear()
         for author in self.song.authors:
-            author_name = QtGui.QListWidgetItem(str(author.display_name))
+            author_name = QtGui.QListWidgetItem(unicode(author.display_name))
             author_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
             self.AuthorsListView.addItem(author_name)
         self._validate_song()
