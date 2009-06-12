@@ -100,15 +100,17 @@ class SongManager():
             return True
         except:
             log.error(u'Errow thrown %s', sys.exc_info()[1])
-            print u'Errow thrown ', sys.exc_info()[1]
             return False
 
-    def delete_song(self, song):
+    def delete_song(self, songid):
+        song = self.get_song(songid)
         try:
             self.session.delete(song)
             self.session.commit()
             return True
         except:
+            log.error(u'Errow thrown %s', sys.exc_info()[1])
+            print u'Errow thrown ', sys.exc_info()[1]
             return False
 
     def get_authors(self):

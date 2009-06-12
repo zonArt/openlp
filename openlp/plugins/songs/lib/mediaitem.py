@@ -20,8 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import logging
 
 from PyQt4 import QtCore, QtGui
-
-from openlp.core.lib import MediaManagerItem,  translate,  ServiceItem
+from openlp.core.lib import MediaManagerItem,  translate,  ServiceItem,  SongXMLParser
 
 from openlp.plugins.songs.forms import EditSongForm
 from openlp.plugins.songs.lib import TextListData
@@ -206,6 +205,7 @@ class SongMediaItem(MediaManagerItem):
         self.displayResults(search_results)
 
     def onSongNewClick(self):
+        self.edit_song_form.newSong()
         self.edit_song_form.exec_()
         self.onSearchTextButtonClick()
 
@@ -244,9 +244,15 @@ class SongMediaItem(MediaManagerItem):
                 service_item.theme = None
             else:
                 service_item.theme = song.theme_name
-            verses = song.lyrics.split(u'\n\n')
-            for slide in verses:
-                service_item.add_from_text(slide[:30], slide)
+            if song.lyrics.startswith(u'<?xml version='):
+                songXML=SongXMLParser(song.lyrics)
+                verseList = songXML.get_verses()
+                for verse in verseList:
+                    service_item.add_from_text(verse[1][:30], verse[1])
+            else:
+                verses = song.lyrics.split(u'\n\n')
+                for slide in verses:
+                    service_item.add_from_text(slide[:30], slide)
             service_item.title = song.title
             for author in song.authors:
                 if len(author_list) > 1:

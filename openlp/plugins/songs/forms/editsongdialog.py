@@ -102,7 +102,6 @@ class Ui_EditSongDialog(object):
         self.ThemeSelectionComboItem = QtGui.QComboBox(self.ThemeGroupBox)
         self.ThemeSelectionComboItem.setObjectName(u'ThemeSelectionComboItem')
         self.ThemeLayout.addWidget(self.ThemeSelectionComboItem)
-
         self.DetailsLayout.addWidget(self.ThemeGroupBox)
         self.TopLayout.addWidget(self.TextWidget)
         self.AdditionalWidget = QtGui.QWidget(self.TopWidget)

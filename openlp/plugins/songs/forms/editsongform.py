@@ -18,9 +18,10 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 from PyQt4 import Qt, QtCore, QtGui
-
+from openlp.core.lib import SongXMLBuilder, SongXMLParser
 from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm, \
     EditVerseForm
+from openlp.plugins.songs.lib.models import Song
 
 from editsongdialog import Ui_EditSongDialog
 
@@ -56,16 +57,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song_book_form = SongBookForm(self.songmanager)
         self.verse_form = EditVerseForm()
         self.initialise()
-
-        #self.AuthorsListView.setColumnCount(2)
-        #self.AuthorsListView.setColumnHidden(0, True)
-        #self.AuthorsListView.setColumnWidth(1, 200)
-        #self.AuthorsListView.setShowGrid(False)
         self.AuthorsListView.setSortingEnabled(False)
         self.AuthorsListView.setAlternatingRowColors(True)
-        #self.AuthorsListView.horizontalHeader().setVisible(False)
-        #self.AuthorsListView.verticalHeader().setVisible(False)
-        #self.savebutton = self.ButtonBox.button(QtGui.QDialogButtonBox.Save)
+        self.TopicsListView.setSortingEnabled(False)
+        self.TopicsListView.setAlternatingRowColors(True)
 
     def initialise(self):
         self.loadAuthors()
@@ -90,6 +85,15 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         for book in books:
             self.SongbookCombo.addItem(book.name)
 
+    def newSong(self):
+        self.song = Song()
+        self.TitleEditItem.setText(u'')
+        self.AlternativeEdit.setText(u'')
+        self.CopyrightEditItem.setText(u'')
+        self.VerseListWidget.clear()
+        self.AuthorsListView.clear()
+        self.TopicsListView.clear()
+
     def loadSong(self, id):
         self.song = self.songmanager.get_song(id)
         self.TitleEditItem.setText(self.song.title)
@@ -97,14 +101,26 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if len(title) > 1:
             self.AlternativeEdit.setText(title[1])
         self.CopyrightEditItem.setText(self.song.copyright)
-        #self.LyricsTextEdit.setText(self.song.lyrics)
-        verses = self.song.lyrics.split(u'\n\n')
         self.VerseListWidget.clear()
-        for verse in verses:
-            self.VerseListWidget.addItem(verse)
+        #lazy xml migration for now
+        if self.song.lyrics.startswith(u'<?xml version='):
+            songXML=SongXMLParser(self.song.lyrics)
+            verseList = songXML.get_verses()
+            for verse in verseList:
+                self.VerseListWidget.addItem(verse[1])
+        else:
+            verses = self.song.lyrics.split(u'\n\n')
+            for verse in verses:
+                self.VerseListWidget.addItem(verse)
         # clear the results
         self.AuthorsListView.clear()
         for author in self.song.authors:
+            author_name = QtGui.QListWidgetItem(unicode(author.display_name))
+            author_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
+            self.AuthorsListView.addItem(author_name)
+        # clear the results
+        self.TopicsListView.clear()
+        for topics in self.song.topics:
             author_name = QtGui.QListWidgetItem(unicode(author.display_name))
             author_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
             self.AuthorsListView.addItem(author_name)
@@ -185,7 +201,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.title = unicode(self.TitleEditItem.displayText())
         self.song.copyright = unicode(self.CopyrightEditItem.displayText())
         self.song.search_title = self.TitleEditItem.displayText() + u'@'+ self.AlternativeEdit.displayText()
-        self.cleanUpText()
+        self.processLyrics()
+        self.processTitle()
 
         for i in range(0, self.AuthorsListView.count()):
             print self.AuthorsListView.item(i)
@@ -195,18 +212,29 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.songmanager.save_song(self.song)
         self.close()
 
-    def cleanUpText(self):
-        self.song.search_lyrics =  self.song.lyrics.replace("'", u'')
-        self.song.search_lyrics =  self.song.lyrics.replace(u',', u'')
-        self.song.search_lyrics =  self.song.lyrics.replace(u';', u'')
-        self.song.search_lyrics =  self.song.lyrics.replace(u':', u'')
-        self.song.search_lyrics =  self.song.lyrics.replace(u'(', u'')
-        self.song.search_lyrics =  self.song.lyrics.replace(u')', u'')
-        self.song.search_lyrics =  self.song.lyrics.replace(u'{', u'')
-        self.song.search_lyrics =  self.song.lyrics.replace(u'}', u'')
-        self.song.search_lyrics =  self.song.lyrics.replace(u'?', u'')
-        self.song.search_lyrics  = unicode(self.song.search_lyrics)
+    def processLyrics(self):
+        sxml=SongXMLBuilder()
+        sxml.new_document()
+        sxml.add_lyrics_to_song()
+        count = 1
+        text = u' '
+        for i in range (0, self.VerseListWidget.count()):
+            sxml.add_verse_to_lyrics(u'Verse', unicode(count),  unicode(self.VerseListWidget.item(i).text()))
+            text = text + unicode(self.VerseListWidget.item(i).text()) + u' '
+            count += 1
+        text =  text.replace("'", u'')
+        text =  text.replace(u',', u'')
+        text =  text.replace(u';', u'')
+        text =  text.replace(u':', u'')
+        text =  text.replace(u'(', u'')
+        text =  text.replace(u')', u'')
+        text =  text.replace(u'{', u'')
+        text =  text.replace(u'}', u'')
+        text =  text.replace(u'?', u'')
+        self.song.search_lyrics  = unicode(text)
+        self.song.lyrics = unicode(sxml.extract_xml())
 
+    def processTitle(self):
         self.song.search_title =  self.song.search_title.replace("'", u'')
         self.song.search_title =  self.song.search_title.replace(u',', u'')
         self.song.search_title =  self.song.search_title.replace(u';', u'')
