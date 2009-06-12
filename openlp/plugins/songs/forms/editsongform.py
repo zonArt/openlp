@@ -93,9 +93,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def loadSong(self, id):
         self.song = self.songmanager.get_song(id)
         self.TitleEditItem.setText(self.song.title)
+        title = self.song.search_title.split(u'@')
+        if len(title) > 1:
+            self.AlternativeEdit.setText(title[1])
         self.CopyrightEditItem.setText(self.song.copyright)
         #self.LyricsTextEdit.setText(self.song.lyrics)
         verses = self.song.lyrics.split(u'\n\n')
+        self.VerseListWidget.clear()
         for verse in verses:
             self.VerseListWidget.addItem(verse)
         # clear the results
@@ -180,6 +184,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         #self.song.topics.append(9) << need opject here
         self.song.title = unicode(self.TitleEditItem.displayText())
         self.song.copyright = unicode(self.CopyrightEditItem.displayText())
+        self.song.search_title = self.TitleEditItem.displayText() + u'@'+ self.AlternativeEdit.displayText()
+        self.cleanUpText()
+
         for i in range(0, self.AuthorsListView.count()):
             print self.AuthorsListView.item(i)
         for i in range(0, self.TopicsListView.count()):
@@ -187,3 +194,26 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
         self.songmanager.save_song(self.song)
         self.close()
+
+    def cleanUpText(self):
+        self.song.search_lyrics =  self.song.lyrics.replace("'", u'')
+        self.song.search_lyrics =  self.song.lyrics.replace(u',', u'')
+        self.song.search_lyrics =  self.song.lyrics.replace(u';', u'')
+        self.song.search_lyrics =  self.song.lyrics.replace(u':', u'')
+        self.song.search_lyrics =  self.song.lyrics.replace(u'(', u'')
+        self.song.search_lyrics =  self.song.lyrics.replace(u')', u'')
+        self.song.search_lyrics =  self.song.lyrics.replace(u'{', u'')
+        self.song.search_lyrics =  self.song.lyrics.replace(u'}', u'')
+        self.song.search_lyrics =  self.song.lyrics.replace(u'?', u'')
+        self.song.search_lyrics  = unicode(self.song.search_lyrics)
+
+        self.song.search_title =  self.song.search_title.replace("'", u'')
+        self.song.search_title =  self.song.search_title.replace(u',', u'')
+        self.song.search_title =  self.song.search_title.replace(u';', u'')
+        self.song.search_title =  self.song.search_title.replace(u':', u'')
+        self.song.search_title =  self.song.search_title.replace(u'(', u'')
+        self.song.search_title =  self.song.search_title.replace(u')', u'')
+        self.song.search_title =  self.song.search_title.replace(u'{', u'')
+        self.song.search_title =  self.song.search_title.replace(u'}', u'')
+        self.song.search_title =  self.song.search_title.replace(u'?', u'')
+        self.song.search_title  = unicode(self.song.search_title)
