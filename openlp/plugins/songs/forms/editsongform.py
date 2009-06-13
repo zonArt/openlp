@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
+import logging
 from PyQt4 import Qt, QtCore, QtGui
 from openlp.core.lib import SongXMLBuilder, SongXMLParser
 from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm, \
@@ -27,8 +28,11 @@ from editsongdialog import Ui_EditSongDialog
 
 class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     """
-    Class documentation goes here.
+    Class to manage the editing of a song
     """
+    global log
+    log = logging.getLogger(u'EditSongForm')
+    log.info(u'Song Editor loaded')
     def __init__(self, songmanager, parent=None):
         """
         Constructor
@@ -38,6 +42,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         # Connecting signals and slots
         QtCore.QObject.connect(self.AddAuthorsButton,
             QtCore.SIGNAL(u'clicked()'), self.onAddAuthorsButtonClicked)
+        QtCore.QObject.connect(self.AuthorAddtoSongItem,
+            QtCore.SIGNAL(u'clicked()'), self.onAuthorAddtoSongItemClicked)
+        QtCore.QObject.connect(self.AuthorRemoveItem,
+            QtCore.SIGNAL(u'clicked()'), self.onAuthorRemovefromSongItemClicked)
+        QtCore.QObject.connect(self.AuthorsListView,
+            QtCore.SIGNAL("itemClicked(QListWidgetItem*)"), self.onAuthorsListViewPressed)
+
         QtCore.QObject.connect(self.AddTopicButton,
             QtCore.SIGNAL(u'clicked()'), self.onAddTopicButtonClicked)
         QtCore.QObject.connect(self.AddSongBookButton,
@@ -50,6 +61,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'clicked()'), self.onEditVerseButtonClicked)
         QtCore.QObject.connect(self.DeleteButton,
             QtCore.SIGNAL(u'clicked()'), self.onDeleteVerseButtonClicked)
+        QtCore.QObject.connect(self.VerseListWidget,
+            QtCore.SIGNAL("itemClicked(QListWidgetItem*)"), self.onVerseListViewPressed)
         # Create other objects and forms
         self.songmanager = songmanager
         self.authors_form = AuthorsForm(self.songmanager)
@@ -66,6 +79,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.loadAuthors()
         self.loadTopics()
         self.loadBooks()
+        self.EditButton.setEnabled(False)
+        self.DeleteButton.setEnabled(False)
+        self.AuthorRemoveItem.setEnabled(False)
 
     def loadAuthors(self):
         authors = self.songmanager.get_authors()
@@ -82,10 +98,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def loadBooks(self):
         books = self.songmanager.get_books()
         self.SongbookCombo.clear()
+        self.SongbookCombo.addItem(u' ')
         for book in books:
             self.SongbookCombo.addItem(book.name)
 
     def newSong(self):
+        log.debug(u'New Song')
         self.song = Song()
         self.TitleEditItem.setText(u'')
         self.AlternativeEdit.setText(u'')
@@ -95,9 +113,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.TopicsListView.clear()
 
     def loadSong(self, id):
+        log.debug(u'Load Song')
         self.song = self.songmanager.get_song(id)
         self.TitleEditItem.setText(self.song.title)
         title = self.song.search_title.split(u'@')
+        if self.song.song_book_id != 0:
+            book_name = self.songmanager.get_book(self.song.song_book_id)
+
         if len(title) > 1:
             self.AlternativeEdit.setText(title[1])
         self.CopyrightEditItem.setText(self.song.copyright)
@@ -126,6 +148,27 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.AuthorsListView.addItem(author_name)
         self._validate_song()
 
+    def onAuthorAddtoSongItemClicked(self):
+        author_name = unicode(self.AuthorsSelectionComboItem.currentText())
+        author = self.songmanager.get_author_by_name(author_name)
+        self.song.authors.append(author)
+        author_name = QtGui.QListWidgetItem(unicode(author.display_name))
+        author_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
+        self.AuthorsListView.addItem(author_name)
+
+    def onAuthorsListViewPressed(self):
+        self.AuthorRemoveItem.setEnabled(True)
+
+    def onAuthorRemovefromSongItemClicked(self):
+        self.AuthorRemoveItem.setEnabled(False)
+        item = self.AuthorsListView.currentItem()
+        author_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        author = self.songmanager.get_author(author_id)
+        self.song.authors.remove(author)
+        row = self.AuthorsListView.row(item)
+        self.AuthorsListView.takeItem(row)
+        self.AuthorRemoveItem.setEnabled(False)
+
     def onAddAuthorsButtonClicked(self):
         """
         Slot documentation goes here.
@@ -150,6 +193,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song_book_form.exec_()
         self.loadBooks()
 
+    def onVerseListViewPressed(self):
+        self.EditButton.setEnabled(True)
+        self.DeleteButton.setEnabled(True)
+
     def onAddVerseButtonClicked(self):
         self.verse_form.setVerse(u'')
         self.verse_form.exec_()
@@ -157,23 +204,35 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def onEditVerseButtonClicked(self):
         item = self.VerseListWidget.currentItem()
-        self.verse_form.setVerse(item.text())
-        self.verse_form.exec_()
-        item.setText(self.verse_form.getVerse())
+        if item is not None:
+            self.verse_form.setVerse(item.text())
+            self.verse_form.exec_()
+            item.setText(self.verse_form.getVerse())
+        self.EditButton.setEnabled(False)
+        self.DeleteButton.setEnabled(False)
 
     def onDeleteVerseButtonClicked(self):
         item = self.VerseListWidget.takeItem(self.VerseListWidget.currentRow())
         item = None
+        self.EditButton.setEnabled(False)
+        self.DeleteButton.setEnabled(False)
 
     def _validate_song(self):
         """
         Check the validity of the form. Only display the 'save' if the data can be saved.
         """
-        valid = True   # Lets be nice and assume the data is correct.
+        log.debug(u'Validate Song')
+        # Lets be nice and assume the data is correct.
+        valid = True
         if len(self.TitleEditItem.displayText()) == 0:
             valid = False
         if len(self.CopyrightEditItem.displayText()) == 0:
             valid = False
+        if self.VerseListWidget.count() == 0:
+            valid = False
+        if self.AuthorsListView.count() == 0:
+            valid = False
+        return valid
 
     def _color_widget(self, slot, invalid):
         r = Qt.QPalette(slot.palette())
@@ -197,22 +256,26 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.CopyrightEditItem.setCursorPosition(pos + 1)
 
     def onAccept(self):
+        log.debug(u'OnAccept')
         #self.song.topics.append(9) << need opject here
+        if not self._validate_song():
+            return
         self.song.title = unicode(self.TitleEditItem.displayText())
         self.song.copyright = unicode(self.CopyrightEditItem.displayText())
         self.song.search_title = self.TitleEditItem.displayText() + u'@'+ self.AlternativeEdit.displayText()
         self.processLyrics()
         self.processTitle()
-
-        for i in range(0, self.AuthorsListView.count()):
-            print self.AuthorsListView.item(i)
-        for i in range(0, self.TopicsListView.count()):
-            print self.TopicsListView.item(i)
+        self.song.song_book_id = 0
+#        for i in range(0, self.AuthorsListView.count()):
+#            print self.AuthorsListView.item(i)
+#        for i in range(0, self.TopicsListView.count()):
+#            print self.TopicsListView.item(i)
 
         self.songmanager.save_song(self.song)
         self.close()
 
     def processLyrics(self):
+        log.debug(u'processLyrics')
         sxml=SongXMLBuilder()
         sxml.new_document()
         sxml.add_lyrics_to_song()
@@ -235,6 +298,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.lyrics = unicode(sxml.extract_xml())
 
     def processTitle(self):
+        log.debug(u'processTitle')
         self.song.search_title =  self.song.search_title.replace("'", u'')
         self.song.search_title =  self.song.search_title.replace(u',', u'')
         self.song.search_title =  self.song.search_title.replace(u';', u'')

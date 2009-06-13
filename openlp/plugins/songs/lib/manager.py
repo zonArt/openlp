@@ -125,6 +125,11 @@ class SongManager():
         """
         return self.session.query(Author).get(id)
 
+    def get_author_by_name(self, name):
+        """
+        Details of the Author
+        """
+        return self.session.query(Author).filter_by(display_name = name).first()
     def save_author(self, author):
         """
         Save the Author and refresh the cache

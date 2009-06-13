@@ -103,6 +103,8 @@ class ServiceManager(QtGui.QWidget):
         # Connect up our signals and slots
         QtCore.QObject.connect(self.ThemeComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onThemeComboBoxSelected)
+        QtCore.QObject.connect(self.ServiceManagerList,
+           QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.makeLive)
         # Last little bits of setting up
         self.config = PluginConfig(u'Main')
         self.service_theme = self.config.get_config(u'theme service theme', u'')
