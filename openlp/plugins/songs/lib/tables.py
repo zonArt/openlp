@@ -38,7 +38,7 @@ song_books_table = Table('song_books', metadata,
 
 # Definition of the "songs" table
 songs_table = Table('songs', metadata,
-    Column('id', types.Integer(), primary_key=True),
+    Column('id', types.Integer, primary_key=True),
     Column('song_book_id', types.Integer, ForeignKey('song_books.id'), default=0),
     Column('title', types.Unicode(255), nullable=False),
     Column('lyrics', types.UnicodeText, nullable=False),

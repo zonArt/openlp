@@ -99,6 +99,7 @@ class SongManager():
             self.session.commit()
             return True
         except:
+            self.session.rollback()
             log.error(u'Errow thrown %s', sys.exc_info()[1])
             return False
 
@@ -109,6 +110,7 @@ class SongManager():
             self.session.commit()
             return True
         except:
+            self.session.rollback()
             log.error(u'Errow thrown %s', sys.exc_info()[1])
             print u'Errow thrown ', sys.exc_info()[1]
             return False
@@ -139,6 +141,7 @@ class SongManager():
             self.session.commit()
             return True
         except:
+            self.session.rollback()
             log.error(u'Errow thrown %s', sys.exc_info()[1])
             return False
 
@@ -152,6 +155,7 @@ class SongManager():
             self.session.commit()
             return True
         except:
+            self.session.rollback()
             log.error(u'Errow thrown %s', sys.exc_info()[1])
             return False
 
@@ -176,6 +180,7 @@ class SongManager():
             self.session.commit()
             return True
         except:
+            self.session.rollback()
             log.error(u'Errow thrown %s', sys.exc_info()[1])
             return False
 
@@ -189,6 +194,7 @@ class SongManager():
             self.session.commit()
             return True
         except:
+            self.session.rollback()
             log.error(u'Errow thrown %s', sys.exc_info()[1])
             return False
 
@@ -213,6 +219,8 @@ class SongManager():
             self.session.commit()
             return True
         except:
+            self.session.rollback()
+            log.error(u'Errow thrown %s', sys.exc_info()[1])
             return False
 
     def delete_book(self, bookid):
@@ -225,5 +233,6 @@ class SongManager():
             self.session.commit()
             return True
         except:
+            self.session.rollback()
             log.error(u'Errow thrown %s', sys.exc_info()[1])
             return False

@@ -215,7 +215,6 @@ class SongMediaItem(MediaManagerItem):
             id = self.SongListData.getId(index)
             self.edit_song_form.loadSong(id)
             self.edit_song_form.exec_()
-        self.onSearchTextButtonClick()
 
     def onSongDeleteClick(self):
         indexes = self.SongListView.selectedIndexes()
@@ -223,7 +222,6 @@ class SongMediaItem(MediaManagerItem):
             id = self.SongListData.getId(index)
             self.parent.songmanager.delete_song(id)
             self.SongListData.deleteRow(index)
-        self.onSearchTextButtonClick()
 
     def onSongPreviewClick(self):
         service_item = ServiceItem(self.parent)

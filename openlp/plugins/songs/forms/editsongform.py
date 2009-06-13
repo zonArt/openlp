@@ -266,11 +266,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.processLyrics()
         self.processTitle()
         self.song.song_book_id = 0
-#        for i in range(0, self.AuthorsListView.count()):
-#            print self.AuthorsListView.item(i)
-#        for i in range(0, self.TopicsListView.count()):
-#            print self.TopicsListView.item(i)
-
         self.songmanager.save_song(self.song)
         self.close()
 
