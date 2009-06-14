@@ -17,7 +17,7 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 from PyQt4 import QtGui, QtCore
-
+from openlp.core.lib import translate
 from openlp.plugins.songs.forms.authorsdialog import Ui_AuthorsDialog
 from openlp.plugins.songs.lib import TextListData
 
@@ -36,13 +36,13 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         self.author = None
 
         QtCore.QObject.connect(self.DeleteButton,
-            QtCore.SIGNAL('pressed()'), self.onDeleteButtonClick)
+            QtCore.SIGNAL(u'pressed()'), self.onDeleteButtonClick)
         QtCore.QObject.connect(self.ClearButton,
-            QtCore.SIGNAL('pressed()'), self.onClearButtonClick)
+            QtCore.SIGNAL(u'pressed()'), self.onClearButtonClick)
         QtCore.QObject.connect(self.AddUpdateButton,
-            QtCore.SIGNAL('pressed()'), self.onAddUpdateButtonClick)
+            QtCore.SIGNAL(u'pressed()'), self.onAddUpdateButtonClick)
         QtCore.QObject.connect(self.DisplayEdit,
-            QtCore.SIGNAL('lostFocus()'), self.onDisplayEditLostFocus)
+            QtCore.SIGNAL(u'lostFocus()'), self.onDisplayEditLostFocus)
         QtCore.QObject.connect(self.AuthorListView,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onAuthorListViewItemClicked)
 
@@ -114,10 +114,10 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         self.FirstNameEdit.setText(self.author.first_name)
         self.LastNameEdit.setText(self.author.last_name)
         if len(self.author.songs) > 0:
-            self.MessageLabel.setText("Author in use 'Delete' is disabled")
+            self.MessageLabel.setText(translate(u'AuthorForm', u'Author in use "Delete" is disabled'))
             self.DeleteButton.setEnabled(False)
         else:
-            self.MessageLabel.setText("Author is not used")
+            self.MessageLabel.setText(translate(u'AuthorForm', u'Author in not used'))
             self.DeleteButton.setEnabled(True)
         self._validate_form()
 

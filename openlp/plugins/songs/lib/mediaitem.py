@@ -20,8 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import logging
 
 from PyQt4 import QtCore, QtGui
-
-from openlp.core.lib import MediaManagerItem,  translate,  ServiceItem
+from openlp.core.lib import MediaManagerItem,  translate,  ServiceItem,  SongXMLParser
 
 from openlp.plugins.songs.forms import EditSongForm
 from openlp.plugins.songs.lib import TextListData
@@ -57,7 +56,7 @@ class SongMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         MediaManagerItem.__init__(self, parent, icon, title)
-        self.edit_song_form = EditSongForm(self.parent.songmanager)
+        self.edit_song_form = EditSongForm(self.parent.songmanager, self.parent.event_manager)
 
     def setupUi(self):
         # Add a toolbar
@@ -174,7 +173,7 @@ class SongMediaItem(MediaManagerItem):
                 if author_list != u'':
                     author_list = author_list + u', '
                 author_list = author_list + author.display_name
-            song_detail = str(u'%s (%s)' % (str(song.title), str(author_list)))
+            song_detail = unicode(u'%s (%s)' % (unicode(song.title), unicode(author_list)))
             self.SongListData.addRow(song.id,song_detail)
 
     def onClearTextButtonClick(self):
@@ -184,14 +183,14 @@ class SongMediaItem(MediaManagerItem):
         self.SearchTextEdit.clear()
 
     def onSearchTextEditChanged(self, text):
-        search_length = 3
+        search_length = 1
         if self.SearchTypeComboBox.currentIndex() == 1:
             search_length = 7
         if len(text) > search_length:
             self.onSearchTextButtonClick()
 
     def onSearchTextButtonClick(self):
-        search_keywords = str(self.SearchTextEdit.displayText())
+        search_keywords = unicode(self.SearchTextEdit.displayText())
         search_results  = []
         search_type = self.SearchTypeComboBox.currentIndex()
         if search_type == 0:
@@ -206,6 +205,7 @@ class SongMediaItem(MediaManagerItem):
         self.displayResults(search_results)
 
     def onSongNewClick(self):
+        self.edit_song_form.newSong()
         self.edit_song_form.exec_()
 
     def onSongEditClick(self):
@@ -231,20 +231,35 @@ class SongMediaItem(MediaManagerItem):
     def generateSlideData(self, service_item):
         raw_slides =[]
         raw_footer = []
+        author_list = u''
+        ccl = u''
         indexes = self.SongListView.selectedIndexes()
         for index in indexes:
             id = self.SongListData.getId(index)
             song = self.parent.songmanager.get_song(id)
-            if  song.theme_name == None or len(song.theme_name)  == 0:
-                service_item.theme = None
+            service_item.theme = song.theme_name
+            if song.lyrics.startswith(u'<?xml version='):
+                songXML=SongXMLParser(song.lyrics)
+                verseList = songXML.get_verses()
+                for verse in verseList:
+                    service_item.add_from_text(verse[1][:30], verse[1])
             else:
-                service_item.theme = song.theme_name
-            verses = song.lyrics.split(u'\n\n')
-            for slide in verses:
-                service_item.add_from_text(slide[:30], slide)
+                verses = song.lyrics.split(u'\n\n')
+                for slide in verses:
+                    service_item.add_from_text(slide[:30], slide)
             service_item.title = song.title
-        raw_footer.append(str(u'%s \n%s \n' % (song.title, song.copyright )))
-        raw_footer.append(song.copyright)
+            for author in song.authors:
+                if len(author_list) > 1:
+                    author_list = author_list + u', '
+                author_list = author_list + unicode(author.display_name)
+            if song.ccli_number == None or len(song.ccli_number) == 0:
+                ccl = self.parent.settings.GeneralTab.CCLNumber
+            else:
+                ccl = unicode(song.ccli_number)
+        raw_footer.append(song.title)
+        raw_footer.append(author_list)
+        raw_footer.append(song.copyright )
+        raw_footer.append(unicode(translate(u'SongMediaItem', u'CCL Licence: ') + ccl ))
         service_item.raw_footer = raw_footer
 
     def onSongLiveClick(self):

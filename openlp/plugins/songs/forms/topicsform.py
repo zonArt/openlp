@@ -16,10 +16,9 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-
 from PyQt4 import QtGui, QtCore
+from openlp.core.lib import translate
 from openlp.plugins.songs.lib import TextListData
-
 from openlp.plugins.songs.forms.topicsdialog import Ui_TopicsDialog
 from openlp.plugins.songs.lib.classes import Topic
 
@@ -38,13 +37,13 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         self.topic = None
 
         QtCore.QObject.connect(self.DeleteButton,
-            QtCore.SIGNAL('pressed()'), self.onDeleteButtonClick)
+            QtCore.SIGNAL(u'pressed()'), self.onDeleteButtonClick)
         QtCore.QObject.connect(self.ClearButton,
-            QtCore.SIGNAL('pressed()'), self.onClearButtonClick)
+            QtCore.SIGNAL(u'pressed()'), self.onClearButtonClick)
         QtCore.QObject.connect(self.AddUpdateButton,
-            QtCore.SIGNAL('pressed()'), self.onAddUpdateButtonClick)
+            QtCore.SIGNAL(u'pressed()'), self.onAddUpdateButtonClick)
         QtCore.QObject.connect(self.TopicNameEdit,
-            QtCore.SIGNAL('lostFocus()'), self.onTopicNameEditLostFocus)
+            QtCore.SIGNAL(u'lostFocus()'), self.onTopicNameEditLostFocus)
         QtCore.QObject.connect(self.TopicsListView,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onTopicsListViewItemClicked)
 
@@ -111,15 +110,16 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
 
         self.TopicNameEdit.setText(self.topic.name)
         if len(self.topic.songs) > 0:
-            self.MessageLabel.setText("Topic in use 'Delete' is disabled")
+            self.MessageLabel.setText(translate(u'TopicForm', u'Topic in use "Delete" is disabled'))
             self.DeleteButton.setEnabled(False)
         else:
-            self.MessageLabel.setText("Topic is not used")
+            self.MessageLabel.setText(translate(u'TopicForm', u'Topic in not used'))
             self.DeleteButton.setEnabled(True)
         self._validate_form()
 
     def _validate_form(self):
-        if len(self.TopicNameEdit.displayText()) == 0: # We need at lease a display name
+        # We need at lease a display name
+        if len(self.TopicNameEdit.displayText()) == 0:
             self.AddUpdateButton.setEnabled(False)
         else:
             self.AddUpdateButton.setEnabled(True)

@@ -42,7 +42,6 @@ class TextListData(QtCore.QAbstractListModel):
 
     def insertRow(self, row, id, title):
         self.beginInsertRows(QtCore.QModelIndex(),row,row)
-        log.debug("insert row %d:%s for id %d" % (row,title, id))
         self.items.insert(row, (id, title))
         self.endInsertRows()
 

@@ -34,8 +34,8 @@ class SongManager():
     """
 
     global log
-    log = logging.getLogger('SongManager')
-    log.info('Song manager loaded')
+    log = logging.getLogger(u'SongManager')
+    log.info(u'Song manager loaded')
 
     def __init__(self, config):
         """
@@ -43,7 +43,7 @@ class SongManager():
         don't exist.
         """
         self.config = config
-        log.debug('Song Initialising')
+        log.debug(u'Song Initialising')
         self.db_url = u''
         db_type = self.config.get_config(u'db type', u'sqlite')
         if db_type == u'sqlite':
@@ -58,7 +58,7 @@ class SongManager():
         self.session = init_models(self.db_url)
         if not songs_table.exists():
             metadata.create_all()
-        log.debug('Song Initialised')
+        log.debug(u'Song Initialised')
 
     def process_dialog(self, dialogobject):
         self.dialogobject = dialogobject
@@ -99,14 +99,20 @@ class SongManager():
             self.session.commit()
             return True
         except:
+            self.session.rollback()
+            log.error(u'Errow thrown %s', sys.exc_info()[1])
             return False
 
-    def delete_song(self, song):
+    def delete_song(self, songid):
+        song = self.get_song(songid)
         try:
             self.session.delete(song)
             self.session.commit()
             return True
         except:
+            self.session.rollback()
+            log.error(u'Errow thrown %s', sys.exc_info()[1])
+            print u'Errow thrown ', sys.exc_info()[1]
             return False
 
     def get_authors(self):
@@ -121,6 +127,12 @@ class SongManager():
         """
         return self.session.query(Author).get(id)
 
+    def get_author_by_name(self, name):
+        """
+        Details of the Author
+        """
+        return self.session.query(Author).filter_by(display_name = name).first()
+
     def save_author(self, author):
         """
         Save the Author and refresh the cache
@@ -130,6 +142,8 @@ class SongManager():
             self.session.commit()
             return True
         except:
+            self.session.rollback()
+            log.error(u'Errow thrown %s', sys.exc_info()[1])
             return False
 
     def delete_author(self, authorid):
@@ -142,7 +156,8 @@ class SongManager():
             self.session.commit()
             return True
         except:
-            log.error("Errow thrown %s", sys.exc_info()[1])
+            self.session.rollback()
+            log.error(u'Errow thrown %s', sys.exc_info()[1])
             return False
 
     def get_topics(self):
@@ -157,6 +172,12 @@ class SongManager():
         """
         return self.session.query(Topic).get(id)
 
+    def get_topic_by_name(self, name):
+        """
+        Details of the Topic
+        """
+        return self.session.query(Topic).filter_by(name = name).first()
+
     def save_topic(self, topic):
         """
         Save the Topic
@@ -166,6 +187,8 @@ class SongManager():
             self.session.commit()
             return True
         except:
+            self.session.rollback()
+            log.error(u'Errow thrown %s', sys.exc_info()[1])
             return False
 
     def delete_topic(self, topicid):
@@ -178,7 +201,8 @@ class SongManager():
             self.session.commit()
             return True
         except:
-            log.error("Errow thrown %s", sys.exc_info()[1])
+            self.session.rollback()
+            log.error(u'Errow thrown %s', sys.exc_info()[1])
             return False
 
     def get_books(self):
@@ -193,6 +217,12 @@ class SongManager():
         """
         return self.session.query(Book).get(id)
 
+    def get_book_by_name(self, name):
+        """
+        Details of the Books
+        """
+        return self.session.query(Book).filter_by(name = name).first()
+
     def save_book(self, book):
         """
         Save the Book
@@ -202,6 +232,8 @@ class SongManager():
             self.session.commit()
             return True
         except:
+            self.session.rollback()
+            log.error(u'Errow thrown %s', sys.exc_info()[1])
             return False
 
     def delete_book(self, bookid):
@@ -214,5 +246,6 @@ class SongManager():
             self.session.commit()
             return True
         except:
-            log.error("Errow thrown %s", sys.exc_info()[1])
+            self.session.rollback()
+            log.error(u'Errow thrown %s', sys.exc_info()[1])
             return False
