@@ -238,10 +238,7 @@ class SongMediaItem(MediaManagerItem):
         for index in indexes:
             id = self.SongListData.getId(index)
             song = self.parent.songmanager.get_song(id)
-            if  song.theme_name == None or len(song.theme_name)  == 0:
-                service_item.theme = None
-            else:
-                service_item.theme = song.theme_name
+            service_item.theme = song.theme_name
             if song.lyrics.startswith(u'<?xml version='):
                 songXML=SongXMLParser(song.lyrics)
                 verseList = songXML.get_verses()

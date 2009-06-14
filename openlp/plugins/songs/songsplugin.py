@@ -79,7 +79,6 @@ class SongsPlugin(Plugin):
         QtCore.QObject.connect(self.ImportOpenlp2Item, QtCore.SIGNAL(u'triggered()'), self.onImportOpenlp1ItemClick)
         QtCore.QObject.connect(self.ImportOpenSongItem, QtCore.SIGNAL(u'triggered()'), self.onImportOpenSongItemClick)
 
-
     def add_export_menu_item(self, export_menu):
         self.ExportSongMenu = QtGui.QMenu(export_menu)
         self.ExportSongMenu.setObjectName(u'ExportSongMenu')
@@ -125,7 +124,7 @@ class SongsPlugin(Plugin):
         log.debug(u'Handle event called with event %s' % event.event_type)
         if event.event_type == EventType.ThemeListChanged:
             log.debug(u'New Theme request received')
-            #self.edit_custom_form.loadThemes(self.theme_manager.getThemes())
+            self.media_item.edit_song_form.loadThemes(self.theme_manager.getThemes())
         if event.event_type == EventType.LoadServiceItem and event.payload == 'Song':
             log.debug(u'Load Service Item received')
             self.media_item.onSongAddClick()

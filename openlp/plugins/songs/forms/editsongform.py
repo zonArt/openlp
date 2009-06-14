@@ -70,6 +70,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL("itemClicked(QListWidgetItem*)"), self.onVerseListViewPressed)
         QtCore.QObject.connect(self.SongbookCombo,
             QtCore.SIGNAL(u'activated(int)'), self.onSongBookComboChanged)
+        QtCore.QObject.connect(self.ThemeSelectionComboItem,
+            QtCore.SIGNAL(u'activated(int)'), self.onThemeComboChanged)
         # Create other objects and forms
         self.songmanager = songmanager
         self.authors_form = AuthorsForm(self.songmanager)
@@ -110,6 +112,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         for book in books:
             self.SongbookCombo.addItem(book.name)
 
+    def loadThemes(self, theme_list):
+        self.ThemeSelectionComboItem.clear()
+        self.ThemeSelectionComboItem.addItem(u' ')
+        for theme in theme_list:
+            self.ThemeSelectionComboItem.addItem(theme)
+
     def newSong(self):
         log.debug(u'New Song')
         self.song = Song()
@@ -132,6 +140,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 # Not Found
                 id = 0
             book_name.setCurrentIndex(id)
+        if self.song.theme_name is not None and len(self.song.theme_name) > 0:
+            id = self.SongbookCombo.findText(unicode(self.song.theme_name), QtCore.Qt.MatchExactly)
+            if id == -1:
+                # Not Found
+                id = 0
+                self.song.theme_name = None
+            self.SongbookCombo.setCurrentIndex(id)
         if len(title) > 1:
             self.AlternativeEdit.setText(title[1])
         self.CopyrightEditItem.setText(self.song.copyright)
@@ -232,6 +247,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             book_name = unicode(self.SongbookCombo.itemText(item))
             book = self.songmanager.get_book_by_name(book_name)
             self.song.song_book_id = book.id
+
+    def onThemeComboChanged(self, item):
+        if item == 0:
+            #None means no Theme
+            self.song.song_theme = None
+        else:
+            them_name = unicode(self.ThemeSelectionComboItem.itemText(item))
+            self.song.theme_name = them_name
 
     def onVerseListViewPressed(self):
         self.EditButton.setEnabled(True)
