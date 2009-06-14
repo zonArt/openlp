@@ -48,9 +48,16 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'clicked()'), self.onAuthorRemovefromSongItemClicked)
         QtCore.QObject.connect(self.AuthorsListView,
             QtCore.SIGNAL("itemClicked(QListWidgetItem*)"), self.onAuthorsListViewPressed)
-
         QtCore.QObject.connect(self.AddTopicButton,
             QtCore.SIGNAL(u'clicked()'), self.onAddTopicButtonClicked)
+        QtCore.QObject.connect(self.AddTopicsToSongButton,
+            QtCore.SIGNAL(u'clicked()'), self.onTopicAddtoSongItemClicked)
+        QtCore.QObject.connect(self.TopicRemoveItem,
+            QtCore.SIGNAL(u'clicked()'), self.onTopicRemovefromSongItemClicked)
+        QtCore.QObject.connect(self.TopicsListView,
+            QtCore.SIGNAL("itemClicked(QListWidgetItem*)"), self.onTopicListViewPressed)
+
+
         QtCore.QObject.connect(self.AddSongBookButton,
             QtCore.SIGNAL(u'clicked()'), self.onAddSongBookButtonClicked)
         QtCore.QObject.connect(self.CopyrightInsertItem,
@@ -82,6 +89,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.EditButton.setEnabled(False)
         self.DeleteButton.setEnabled(False)
         self.AuthorRemoveItem.setEnabled(False)
+        self.TopicRemoveItem.setEnabled(False)
 
     def loadAuthors(self):
         authors = self.songmanager.get_authors()
@@ -142,22 +150,23 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.AuthorsListView.addItem(author_name)
         # clear the results
         self.TopicsListView.clear()
-        for topics in self.song.topics:
-            author_name = QtGui.QListWidgetItem(unicode(author.display_name))
-            author_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
-            self.AuthorsListView.addItem(author_name)
+        for topic in self.song.topics:
+            topic_name = QtGui.QListWidgetItem(unicode(topic.name))
+            topic_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
+            self.TopicsListView.addItem(topic_name)
         self._validate_song()
 
     def onAuthorAddtoSongItemClicked(self):
         author_name = unicode(self.AuthorsSelectionComboItem.currentText())
         author = self.songmanager.get_author_by_name(author_name)
         self.song.authors.append(author)
-        author_name = QtGui.QListWidgetItem(unicode(author.display_name))
-        author_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
-        self.AuthorsListView.addItem(author_name)
+        author_item = QtGui.QListWidgetItem(unicode(author.display_name))
+        author_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
+        self.AuthorsListView.addItem(author_item)
 
     def onAuthorsListViewPressed(self):
-        self.AuthorRemoveItem.setEnabled(True)
+        if self.AuthorsListView.count() >1:
+            self.AuthorRemoveItem.setEnabled(True)
 
     def onAuthorRemovefromSongItemClicked(self):
         self.AuthorRemoveItem.setEnabled(False)
@@ -167,7 +176,26 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.authors.remove(author)
         row = self.AuthorsListView.row(item)
         self.AuthorsListView.takeItem(row)
-        self.AuthorRemoveItem.setEnabled(False)
+
+    def onTopicAddtoSongItemClicked(self):
+        topic_name = unicode(self.SongTopicCombo.currentText())
+        topic = self.songmanager.get_topic_by_name(topic_name)
+        self.song.topics.append(topic)
+        topic_item = QtGui.QListWidgetItem(unicode(topic.name))
+        topic_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
+        self.TopicsListView.addItem(topic_item)
+
+    def onTopicListViewPressed(self):
+        self.TopicRemoveItem.setEnabled(True)
+
+    def onTopicRemovefromSongItemClicked(self):
+        self.TopicRemoveItem.setEnabled(False)
+        item = self.TopicsListView.currentItem()
+        topic_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        topic = self.songmanager.get_topic(topic_id)
+        self.song.topics.remove(topic)
+        row = self.TopicsListView.row(item)
+        self.TopicsListView.takeItem(row)
 
     def onAddAuthorsButtonClicked(self):
         """
