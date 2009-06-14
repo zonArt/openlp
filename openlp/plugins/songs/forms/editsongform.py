@@ -56,8 +56,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'clicked()'), self.onTopicRemovefromSongItemClicked)
         QtCore.QObject.connect(self.TopicsListView,
             QtCore.SIGNAL("itemClicked(QListWidgetItem*)"), self.onTopicListViewPressed)
-
-
         QtCore.QObject.connect(self.AddSongBookButton,
             QtCore.SIGNAL(u'clicked()'), self.onAddSongBookButtonClicked)
         QtCore.QObject.connect(self.CopyrightInsertItem,
@@ -70,6 +68,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'clicked()'), self.onDeleteVerseButtonClicked)
         QtCore.QObject.connect(self.VerseListWidget,
             QtCore.SIGNAL("itemClicked(QListWidgetItem*)"), self.onVerseListViewPressed)
+        QtCore.QObject.connect(self.SongbookCombo,
+            QtCore.SIGNAL(u'activated(int)'), self.onSongBookComboChanged)
         # Create other objects and forms
         self.songmanager = songmanager
         self.authors_form = AuthorsForm(self.songmanager)
@@ -127,7 +127,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         title = self.song.search_title.split(u'@')
         if self.song.song_book_id != 0:
             book_name = self.songmanager.get_book(self.song.song_book_id)
-
+            id = self.SongbookCombo.findText(unicode(book_name), QtCore.Qt.MatchExactly)
+            if id == -1:
+                # Not Found
+                id = 0
+            book_name.setCurrentIndex(id)
         if len(title) > 1:
             self.AlternativeEdit.setText(title[1])
         self.CopyrightEditItem.setText(self.song.copyright)
@@ -220,6 +224,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song_book_form.load_form()
         self.song_book_form.exec_()
         self.loadBooks()
+
+    def onSongBookComboChanged(self, item):
+        if item == 0:
+            self.song.song_book_id = 0
+        else:
+            book_name = unicode(self.SongbookCombo.itemText(item))
+            book = self.songmanager.get_book_by_name(book_name)
+            self.song.song_book_id = book.id
 
     def onVerseListViewPressed(self):
         self.EditButton.setEnabled(True)

@@ -217,6 +217,12 @@ class SongManager():
         """
         return self.session.query(Book).get(id)
 
+    def get_book_by_name(self, name):
+        """
+        Details of the Books
+        """
+        return self.session.query(Book).filter_by(name = name).first()
+
     def save_book(self, book):
         """
         Save the Book
