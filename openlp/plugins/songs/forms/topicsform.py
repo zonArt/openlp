@@ -18,7 +18,6 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 from PyQt4 import QtGui, QtCore
 from openlp.core.lib import translate
-from openlp.plugins.songs.lib import TextListData
 from openlp.plugins.songs.forms.topicsdialog import Ui_TopicsDialog
 from openlp.plugins.songs.lib.classes import Topic
 
@@ -44,27 +43,24 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
             QtCore.SIGNAL(u'pressed()'), self.onAddUpdateButtonClick)
         QtCore.QObject.connect(self.TopicNameEdit,
             QtCore.SIGNAL(u'lostFocus()'), self.onTopicNameEditLostFocus)
-        QtCore.QObject.connect(self.TopicsListView,
-            QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onTopicsListViewItemClicked)
+        QtCore.QObject.connect(self.TopicsListWidget,
+            QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onTopicsListWidgetItemClicked)
 
     def load_form(self):
         """
         Refresh the screen and rest fields
         """
-        self.TopicsListData.resetStore()
+        self.TopicsListWidget.clear()
         self.onClearButtonClick() # tidy up screen
         topics = self.songmanager.get_topics()
         for topic in topics:
-            self.TopicsListData.addRow(topic.id,topic.name)
-        #rowCount is number of rows BUT test should be Zero based
-        row_count = self.TopicsListData.rowCount(None) - 1
-        if self.currentRow > row_count:
-            # in case we have delete the last row of the table
-            self.currentRow = row_count
-        row = self.TopicsListData.createIndex(self.currentRow, 0)
-        if row.isValid():
-            self.TopicsListView.selectionModel().setCurrentIndex(row,
-                QtGui.QItemSelectionModel.SelectCurrent)
+            topic_name = QtGui.QListWidgetItem(topic.name)
+            topic_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
+            self.TopicsListWidget.addItem(topic_name)
+        if self.currentRow >= self.TopicsListWidget.count() :
+            self.TopicsListWidget.setCurrentRow(self.TopicsListWidget.count() - 1)
+        else:
+            self.TopicsListWidget.setCurrentRow(self.currentRow)
         self._validate_form()
 
     def onDeleteButtonClick(self):
@@ -99,15 +95,15 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         self.topic = None
         self._validate_form()
 
-    def onTopicsListViewItemClicked(self, index):
+    def onTopicsListWidgetItemClicked(self, index):
         """
         An Topic has been selected display it
         If the Topic is attached to a Song prevent delete
         """
-        self.currentRow = index.row()
-        id = int(self.TopicsListData.getId(index))
-        self.topic = self.songmanager.get_topic(id)
-
+        self.currentRow = self.TopicsListWidget.currentRow()
+        item = self.TopicsListWidget.currentItem()
+        item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        self.topic = self.songmanager.get_topic(item_id)
         self.TopicNameEdit.setText(self.topic.name)
         if len(self.topic.songs) > 0:
             self.MessageLabel.setText(translate(u'TopicForm', u'Topic in use "Delete" is disabled'))

@@ -19,7 +19,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from PyQt4 import QtGui, QtCore
 from openlp.core.lib import translate
 from openlp.plugins.songs.forms.authorsdialog import Ui_AuthorsDialog
-from openlp.plugins.songs.lib import TextListData
+from openlp.plugins.songs.lib.classes import Author
 
 class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
     """
@@ -43,27 +43,24 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
             QtCore.SIGNAL(u'pressed()'), self.onAddUpdateButtonClick)
         QtCore.QObject.connect(self.DisplayEdit,
             QtCore.SIGNAL(u'lostFocus()'), self.onDisplayEditLostFocus)
-        QtCore.QObject.connect(self.AuthorListView,
-            QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onAuthorListViewItemClicked)
+        QtCore.QObject.connect(self.AuthorListWidget,
+            QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onAuthorListWidgetItemClicked)
 
     def load_form(self):
         """
         Refresh the screen and rest fields
         """
-        self.AuthorListData.resetStore()
+        self.AuthorListWidget.clear()
         self.onClearButtonClick() # tidy up screen
         authors = self.songmanager.get_authors()
         for author in authors:
-            self.AuthorListData.addRow(author.id,author.display_name)
-        #rowCount is number of rows BUT test should be Zero based
-        row_count = self.AuthorListData.rowCount(None) - 1
-        if self.currentRow > row_count:
-            # in case we have delete the last row of the table
-            self.currentRow = row_count
-        row = self.AuthorListData.createIndex(self.currentRow, 0)
-        if row.isValid():
-            self.AuthorListView.selectionModel().setCurrentIndex(row,
-                QtGui.QItemSelectionModel.SelectCurrent)
+            author_name = QtGui.QListWidgetItem(author.display_name)
+            author_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
+            self.AuthorListWidget.addItem(author_name)
+        if self.currentRow >= self.AuthorListWidget.count() :
+            self.AuthorListWidget.setCurrentRow(self.AuthorListWidget.count() - 1)
+        else:
+            self.AuthorListWidget.setCurrentRow(self.currentRow)
         self._validate_form()
 
     def onDeleteButtonClick(self):
@@ -101,15 +98,15 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         self.author = None
         self._validate_form()
 
-    def onAuthorListViewItemClicked(self, index):
+    def onAuthorListWidgetItemClicked(self, index):
         """
         An Author has been selected display it
         If the author is attached to a Song prevent delete
         """
-        self.currentRow = index.row()
-        id = int(self.AuthorListData.getId(index))
-        self.author = self.songmanager.get_author(id)
-
+        self.currentRow = self.AuthorListWidget.currentRow()
+        item = self.AuthorListWidget.currentItem()
+        item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        self.author = self.songmanager.get_author(item_id)
         self.DisplayEdit.setText(self.author.display_name)
         self.FirstNameEdit.setText(self.author.first_name)
         self.LastNameEdit.setText(self.author.last_name)
