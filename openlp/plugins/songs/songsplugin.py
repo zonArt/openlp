@@ -134,3 +134,6 @@ class SongsPlugin(Plugin):
         if event.event_type == EventType.LiveShow and event.payload == 'Song':
             log.debug(u'Load Live Show Item received')
             self.media_item.onSongLiveClick()
+        if event.event_type == EventType.LoadSongList :
+            log.debug(u'Load Load Song List Item received')
+            self.media_item.displayResults(self.songmanager.get_songs())

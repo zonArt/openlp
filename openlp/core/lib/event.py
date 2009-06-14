@@ -24,28 +24,17 @@ class EventType(object):
     Types of events are stored in this class.
     """
     # "Default" event - a non-event
-    Default            = 0
+    Default = 0
     # General application events
-    InitApplication    = -1
-    ShowApplication    = -2
-    BeforeAppClose     = -3
-    ApplicationClose   = -4
     # Service events
-    BeforeLoadService  = 1
-    AfterLoadService   = 2
-    BeforeSaveService  = 3
-    AfterSaveService   = 4
-    LoadServiceItem   = 5
+    LoadServiceItem = 20
     # Preview events
-    PreviewShow  = 10
-    LiveShow  = 11
-    #PreviewBeforeLoad  = 11
-    #PreviewAfterLoad   = 12
-    #PreviewBeforeShow  = 13
-    #PreviewAfterShow   = 14
-
-#Theme Related Events
-    ThemeListChanged = 15
+    PreviewShow = 30
+    LiveShow = 31
+    #Theme Related Events
+    ThemeListChanged = 40
+    #Plugin Related Events
+    LoadSongList = 50
 
 
 class Event(object):

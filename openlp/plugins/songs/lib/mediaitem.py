@@ -56,7 +56,7 @@ class SongMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         MediaManagerItem.__init__(self, parent, icon, title)
-        self.edit_song_form = EditSongForm(self.parent.songmanager)
+        self.edit_song_form = EditSongForm(self.parent.songmanager, self.parent.event_manager)
 
     def setupUi(self):
         # Add a toolbar
@@ -207,7 +207,6 @@ class SongMediaItem(MediaManagerItem):
     def onSongNewClick(self):
         self.edit_song_form.newSong()
         self.edit_song_form.exec_()
-        self.onSearchTextButtonClick()
 
     def onSongEditClick(self):
         indexes = self.SongListView.selectedIndexes()

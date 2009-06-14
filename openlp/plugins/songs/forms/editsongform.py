@@ -19,7 +19,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import logging
 from PyQt4 import Qt, QtCore, QtGui
-from openlp.core.lib import SongXMLBuilder, SongXMLParser
+from openlp.core.lib import SongXMLBuilder, SongXMLParser, Event, EventType, EventManager
 from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm, \
     EditVerseForm
 from openlp.plugins.songs.lib.models import Song
@@ -33,7 +33,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     global log
     log = logging.getLogger(u'EditSongForm')
     log.info(u'Song Editor loaded')
-    def __init__(self, songmanager, parent=None):
+    def __init__(self, songmanager, eventmanager,  parent=None):
         """
         Constructor
         """
@@ -74,6 +74,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'activated(int)'), self.onThemeComboChanged)
         # Create other objects and forms
         self.songmanager = songmanager
+        self.eventmanager = eventmanager
         self.authors_form = AuthorsForm(self.songmanager)
         self.topics_form = TopicsForm(self.songmanager)
         self.song_book_form = SongBookForm(self.songmanager)
@@ -92,6 +93,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.DeleteButton.setEnabled(False)
         self.AuthorRemoveItem.setEnabled(False)
         self.TopicRemoveItem.setEnabled(False)
+        self.title_change = False
 
     def loadAuthors(self):
         authors = self.songmanager.get_authors()
@@ -127,6 +129,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.VerseListWidget.clear()
         self.AuthorsListView.clear()
         self.TopicsListView.clear()
+        self.title_change = False
 
     def loadSong(self, id):
         log.debug(u'Load Song')
@@ -174,6 +177,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             topic_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
             self.TopicsListView.addItem(topic_name)
         self._validate_song()
+        self.title_change = False
 
     def onAuthorAddtoSongItemClicked(self):
         author_name = unicode(self.AuthorsSelectionComboItem.currentText())
@@ -307,8 +311,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         slot.setAutoFillBackground(True)
 
     def on_TitleEditItem_lostFocus(self):
-        #self._validate_song()
-        pass
+        self.song.title = self.TitleEditItem.text()
+        self.title_change = True
 
     def onCopyrightInsertItemTriggered(self):
         text = self.CopyrightEditItem.displayText()
@@ -330,6 +334,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.processTitle()
         self.song.song_book_id = 0
         self.songmanager.save_song(self.song)
+        if self.title_change:
+            self.eventmanager.post_event(Event(EventType.LoadSongList))
         self.close()
 
     def processLyrics(self):
