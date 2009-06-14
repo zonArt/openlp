@@ -44,28 +44,24 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
             QtCore.SIGNAL(u'pressed()'), self.onAddUpdateButtonClick)
         QtCore.QObject.connect(self.NameEdit,
             QtCore.SIGNAL(u'lostFocus()'), self.onBookNameEditLostFocus)
-        QtCore.QObject.connect(self.BookSongListView,
+        QtCore.QObject.connect(self.BookSongListWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onBooksListViewItemClicked)
 
     def load_form(self):
         """
         Refresh the screen and rest fields
         """
-        self.BookSongListData.resetStore()
+        self.BookSongListWidget.clear()
         self.onClearButtonClick() # tidy up screen
-        Books = self.songmanager.get_books()
-        for Book in Books:
-            self.BookSongListData.addRow(Book.id,Book.name)
-        #rowCount is number of rows BUT test should be Zero based
-        row_count = self.BookSongListData.rowCount(None) - 1
-        if self.currentRow > row_count:
-            # in case we have delete the last row of the table
-            self.currentRow = row_count
-        row = self.BookSongListData.createIndex(self.currentRow, 0)
-        if row.isValid():
-            self.BookSongListView.selectionModel().setCurrentIndex(row,
-                QtGui.QItemSelectionModel.SelectCurrent)
-        self._validate_form()
+        books = self.songmanager.get_books()
+        for book in books:
+            book_name = QtGui.QListWidgetItem(book.name)
+            book_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(book.id))
+            self.BookSongListWidget.addItem(book_name)
+        if self.currentRow >= self.BookSongListWidget.count() :
+            self.BookSongListWidget.setCurrentRow(self.BookSongListWidget.count() - 1)
+        else:
+            self.BookSongListWidget.setCurrentRow(self.currentRow)
 
     def onDeleteButtonClick(self):
         """
@@ -106,10 +102,10 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
         An Book has been selected display it
         If the Book is attached to a Song prevent delete
         """
-        self.currentRow = index.row()
-        id = int(self.BookSongListData.getId(index))
-        self.Book = self.songmanager.get_book(id)
-
+        self.currentRow = self.BookSongListWidget.currentRow()
+        item = self.BookSongListWidget.currentItem()
+        item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        self.Book = self.songmanager.get_book(item_id)
         self.NameEdit.setText(self.Book.name)
         self.PublisherEdit.setText(self.Book.publisher)
         if len(self.Book.songs) > 0:
