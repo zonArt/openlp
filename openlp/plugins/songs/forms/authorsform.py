@@ -19,7 +19,6 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from PyQt4 import QtGui, QtCore
 from openlp.core.lib import translate
 from openlp.plugins.songs.forms.authorsdialog import Ui_AuthorsDialog
-from openlp.plugins.songs.lib import TextListData
 
 class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
     """

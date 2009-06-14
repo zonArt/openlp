@@ -1,12 +1,22 @@
 # -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+"""
+OpenLP - Open Source Lyrics Projection
+Copyright (c) 2008 Raoul Snyman
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley,
 
-# Form implementation generated from reading ui file 'authorsdialog.ui'
-#
-# Created: Sat Jan  3 11:48:36 2009
-#      by: PyQt4 UI code generator 4.4.3
-#
-# WARNING! All changes made in this file will be lost!
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; version 2 of the License.
 
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place, Suite 330, Boston, MA 02111-1307 USA
+"""
 from PyQt4 import QtCore, QtGui
 from openlp.plugins.songs.lib import TextListData
 
@@ -18,13 +28,9 @@ class Ui_AuthorsDialog(object):
         self.DialogLayout.setSpacing(8)
         self.DialogLayout.setMargin(8)
         self.DialogLayout.setObjectName("DialogLayout")
-
         self.AuthorListView = QtGui.QListView()
         self.AuthorListView.setAlternatingRowColors(True)
-        self.AuthorListData = TextListData()
-        self.AuthorListView.setModel(self.AuthorListData)
         self.DialogLayout.addWidget(self.AuthorListView)
-
         self.AuthorDetails = QtGui.QGroupBox(AuthorsDialog)
         self.AuthorDetails.setMinimumSize(QtCore.QSize(0, 0))
         self.AuthorDetails.setObjectName("AuthorDetails")

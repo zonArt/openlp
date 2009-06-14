@@ -99,20 +99,26 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         authors = self.songmanager.get_authors()
         self.AuthorsSelectionComboItem.clear()
         for author in authors:
+            row = self.AuthorsSelectionComboItem.count()
             self.AuthorsSelectionComboItem.addItem(author.display_name)
+            self.AuthorsSelectionComboItem.setItemData(row, QtCore.QVariant(author.id))
 
     def loadTopics(self):
         topics = self.songmanager.get_topics()
         self.SongTopicCombo.clear()
         for topic in topics:
+            row = self.SongTopicCombo.count()
             self.SongTopicCombo.addItem(topic.name)
+            self.SongTopicCombo.setItemData(row, QtCore.QVariant(topic.id))
 
     def loadBooks(self):
         books = self.songmanager.get_books()
         self.SongbookCombo.clear()
         self.SongbookCombo.addItem(u' ')
         for book in books:
+            row = self.SongbookCombo.count()
             self.SongbookCombo.addItem(book.name)
+            self.SongbookCombo.setItemData(row, QtCore.QVariant(book.id))
 
     def loadThemes(self, theme_list):
         self.ThemeSelectionComboItem.clear()
@@ -180,8 +186,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.title_change = False
 
     def onAuthorAddtoSongItemClicked(self):
-        author_name = unicode(self.AuthorsSelectionComboItem.currentText())
-        author = self.songmanager.get_author_by_name(author_name)
+        item = int(self.AuthorsSelectionComboItem.currentIndex())
+        item_id = (self.AuthorsSelectionComboItem.itemData(item)).toInt()[0]
+        author = self.songmanager.get_author(item_id)
         self.song.authors.append(author)
         author_item = QtGui.QListWidgetItem(unicode(author.display_name))
         author_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
@@ -201,8 +208,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.AuthorsListView.takeItem(row)
 
     def onTopicAddtoSongItemClicked(self):
-        topic_name = unicode(self.SongTopicCombo.currentText())
-        topic = self.songmanager.get_topic_by_name(topic_name)
+        item = int(self.SongTopicCombo.currentIndex())
+        item_id = (self.SongTopicCombo.itemData(item)).toInt()[0]
+        topic = self.songmanager.get_topic(item_id)
         self.song.topics.append(topic)
         topic_item = QtGui.QListWidgetItem(unicode(topic.name))
         topic_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
@@ -248,9 +256,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if item == 0:
             self.song.song_book_id = 0
         else:
-            book_name = unicode(self.SongbookCombo.itemText(item))
-            book = self.songmanager.get_book_by_name(book_name)
-            self.song.song_book_id = book.id
+            item = int(self.SongbookCombo.currentIndex())
+            self.song.song_book_id = (self.SongbookCombo.itemData(item)).toInt()[0]
 
     def onThemeComboChanged(self, item):
         if item == 0:
@@ -293,22 +300,25 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         valid = True
         if len(self.TitleEditItem.displayText()) == 0:
             valid = False
+            self.TitleEditItem.setStyleSheet(u'background-color: red; color: white')
+        else:
+            self.TitleEditItem.setStyleSheet(u'')
         if len(self.CopyrightEditItem.displayText()) == 0:
             valid = False
+            self.CopyrightEditItem.setStyleSheet(u'background-color: red; color: white')
+        else:
+            self.CopyrightEditItem.setStyleSheet(u'')
         if self.VerseListWidget.count() == 0:
             valid = False
+            self.VerseListWidget.setStyleSheet(u'background-color: red; color: white')
+        else:
+            self.VerseListWidget.setStyleSheet(u'')
         if self.AuthorsListView.count() == 0:
             valid = False
-        return valid
-
-    def _color_widget(self, slot, invalid):
-        r = Qt.QPalette(slot.palette())
-        if invalid == True:
-            r.setColor(Qt.QPalette.Base, Qt.QColor(u'darkRed'))
+            self.AuthorsListView.setStyleSheet(u'background-color: red; color: white')
         else:
-            r.setColor(Qt.QPalette.Base, Qt.QColor(u'white'))
-        slot.setPalette(r)
-        slot.setAutoFillBackground(True)
+            self.AuthorsListView.setStyleSheet(u'')
+        return valid
 
     def on_TitleEditItem_lostFocus(self):
         self.song.title = self.TitleEditItem.text()

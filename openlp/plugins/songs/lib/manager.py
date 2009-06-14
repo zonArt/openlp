@@ -127,12 +127,6 @@ class SongManager():
         """
         return self.session.query(Author).get(id)
 
-    def get_author_by_name(self, name):
-        """
-        Details of the Author
-        """
-        return self.session.query(Author).filter_by(display_name = name).first()
-
     def save_author(self, author):
         """
         Save the Author and refresh the cache
@@ -172,12 +166,6 @@ class SongManager():
         """
         return self.session.query(Topic).get(id)
 
-    def get_topic_by_name(self, name):
-        """
-        Details of the Topic
-        """
-        return self.session.query(Topic).filter_by(name = name).first()
-
     def save_topic(self, topic):
         """
         Save the Topic
@@ -216,12 +204,6 @@ class SongManager():
         Details of the Books
         """
         return self.session.query(Book).get(id)
-
-    def get_book_by_name(self, name):
-        """
-        Details of the Books
-        """
-        return self.session.query(Book).filter_by(name = name).first()
 
     def save_book(self, book):
         """
