@@ -152,7 +152,7 @@ class CustomMediaItem(MediaManagerItem):
             self.onSearchTextButtonClick()
 
     def onSearchTextButtonClick(self):
-        search_keywords = str(self.SearchTextEdit.displayText())
+        search_keywords = unicode(self.SearchTextEdit.displayText())
         search_results  = []
         search_type = self.SearchTypeComboBox.currentText()
         search_results = self.Custommanager.search_Custom_lyrics(search_keywords)

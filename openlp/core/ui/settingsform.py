@@ -27,7 +27,7 @@ from openlp.core.ui import GeneralTab, ThemesTab, AlertsTab
 
 from settingsdialog import Ui_SettingsDialog
 
-log = logging.getLogger('SettingsForm')
+log = logging.getLogger(u'SettingsForm')
 
 class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
 

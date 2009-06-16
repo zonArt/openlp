@@ -13,7 +13,7 @@ class ImpressCOMApp(object):
 
     def createApp(self):
         try:
-            self._sm = Dispatch("com.sun.star.ServiceManager")
+            self._sm = Dispatch(u'com.sun.star.ServiceManager')
             self._app = self._sm.createInstance( "com.sun.star.frame.Desktop" )
         except:
             self._sm = None
@@ -48,7 +48,7 @@ class ImpressCOMPres(object):
     pres = property(getPres)
     
     def open(self):
-        self.comp = self.oooApp.app.loadComponentFromURL("file:///" + self.filename, "_blank", 0, []) 
+        self.comp = self.oooApp.app.loadComponentFromURL(u'file:///" + self.filename, "_blank", 0, []) 
         self.presdoc = self.comp.getPresentation()
         self.presdoc.start()
         self._pres = self.presdoc.getController()
@@ -112,7 +112,7 @@ class ImpressCOMSlide(object):
 
 if __name__ == '__main__':
     ooo = ImpressCOMApp()
-    show = ImpressCOMPres(ooo, "c:/test1.ppt")
+    show = ImpressCOMPres(ooo, "c:/test1.ppt')
     show.go()
     show.resume()
     show.nextStep()

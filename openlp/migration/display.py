@@ -20,8 +20,8 @@ import logging
 
 class Display():
     global log
-    log=logging.getLogger("Display Logger")
-    log.info("Display Class loaded")
+    log=logging.getLogger(u'Display Logger')
+    log.info(u'Display Class loaded')
     
     @staticmethod
     def output(string):
@@ -31,5 +31,5 @@ class Display():
     @staticmethod
     def sub_output(string):
         if not string == None:
-            log.debug("   "+string);
-            print ("   "+string)        
+            log.debug(u'   "+string);
+            print (u'   "+string)        

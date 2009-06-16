@@ -98,7 +98,7 @@ class MainDisplay(QtGui.QWidget):
             self.alertactive = False
 
     def displayAlert(self):
-        alertframe = QtGui.QPixmap(self.frame)
+        alertframe = QtGui.QPixmap.fromImage(self.frame)
         painter = QtGui.QPainter(alertframe)
         top = alertframe.rect().height() * 0.9
         painter.fillRect(QtCore.QRect(0, top , alertframe.rect().width(), alertframe.rect().height() - top), QtGui.QColor(self.alertTab.bg_color))
@@ -114,4 +114,4 @@ class MainDisplay(QtGui.QWidget):
         painter.end()
         self.display.setPixmap(alertframe)
         QtTest.QTest.qWait(self.alertTab.timeout*1000)
-        self.display.setPixmap(self.frame)
+        self.display.QtGui.QPixmap.fromImage(self.frame)

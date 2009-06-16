@@ -58,12 +58,12 @@ class ThemeData(QtCore.QAbstractListModel):
     def insertRow(self, row, filename):
         self.beginInsertRows(QtCore.QModelIndex(), row, row)
         log.info(u'insert row %d:%s' % (row, filename))
-        (prefix, shortfilename) = os.path.split(str(filename))
+        (prefix, shortfilename) = os.path.split(unicode(filename))
         log.info(u'shortfilename = %s' % shortfilename)
         theme = shortfilename.split(u'.')
         # create a preview image
         if os.path.exists(filename):
-            preview = QtGui.QImage(str(filename))
+            preview = QtGui.QImage(unicode(filename))
             width = self.maximagewidth
             height = self.rowheight
             preview = preview.scaled(width, height, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
@@ -117,7 +117,7 @@ class ThemeData(QtCore.QAbstractListModel):
         return self.items[row]
 
     def getItem(self, row):
-        log.info(u'Get Item:%d -> %s' % (row, str(self.items)))
+        log.info(u'Get Item:%d -> %s' % (row, unicode(self.items)))
         return self.items[row]
 
     def getList(self):
@@ -202,7 +202,7 @@ class ThemeManager(QtGui.QWidget):
         files = QtGui.QFileDialog.getOpenFileNames(None,
             translate(u'ThemeManager', u'Select Import File'),
             self.path, u'Theme (*.theme)')
-        log.info(u'New Themes %s', str(files))
+        log.info(u'New Themes %s', unicode(files))
         if len(files) > 0:
             for file in files:
                 self.unzipTheme(file, self.path)
@@ -224,17 +224,17 @@ class ThemeManager(QtGui.QWidget):
 
     def getThemeData(self, themename):
         log.debug(u'getthemedata for theme %s', themename)
-        xml_file = os.path.join(self.path, str(themename), str(themename) + u'.xml')
+        xml_file = os.path.join(self.path, unicode(themename), unicode(themename) + u'.xml')
         try:
             xml = file_to_xml(xml_file)
         except:
             newtheme = ThemeXML()
             newtheme.new_document(u'New Theme')
-            newtheme.add_background_solid(str(u'#000000'))
-            newtheme.add_font(str(QtGui.QFont().family()), str(u'#FFFFFF'), str(30), u'False')
-            newtheme.add_font(str(QtGui.QFont().family()), str(u'#FFFFFF'), str(12), u'False', u'footer')
-            newtheme.add_display(u'False', str(u'#FFFFFF'), u'False', str(u'#FFFFFF'),
-                str(0), str(0), str(0))
+            newtheme.add_background_solid(unicode(u'#000000'))
+            newtheme.add_font(unicode(QtGui.QFont().family()), unicode(u'#FFFFFF'), unicode(30), u'False')
+            newtheme.add_font(unicode(QtGui.QFont().family()), unicode(u'#FFFFFF'), unicode(12), u'False', u'footer')
+            newtheme.add_display(u'False', unicode(u'#FFFFFF'), u'False', unicode(u'#FFFFFF'),
+                unicode(0), unicode(0), unicode(0))
             xml = newtheme.extract_xml()
         theme = ThemeXML()
         theme.parse(xml)
@@ -253,7 +253,7 @@ class ThemeManager(QtGui.QWidget):
         necessary.
         """
         log.debug(u'Unzipping theme %s', filename)
-        zip = zipfile.ZipFile(str(filename))
+        zip = zipfile.ZipFile(unicode(filename))
         filexml = None
         themename = None
         for file in zip.namelist():
@@ -299,31 +299,31 @@ class ThemeManager(QtGui.QWidget):
         newtheme = ThemeXML()
         newtheme.new_document(theme.Name)
         if theme.BackgroundType == 0:
-            newtheme.add_background_solid(str(theme.BackgroundParameter1.name()))
+            newtheme.add_background_solid(unicode(theme.BackgroundParameter1.name()))
         elif theme.BackgroundType == 1:
             direction = u'vertical'
             if theme.BackgroundParameter3.name() == 1:
                 direction = u'horizontal'
             newtheme.add_background_gradient(
-                str(theme.BackgroundParameter1.name()),
-                str(theme.BackgroundParameter2.name()), direction)
+                unicode(theme.BackgroundParameter1.name()),
+                unicode(theme.BackgroundParameter2.name()), direction)
         else:
-            newtheme.add_background_image(str(theme.BackgroundParameter1))
+            newtheme.add_background_image(unicode(theme.BackgroundParameter1))
 
-        newtheme.add_font(str(theme.FontName), str(theme.FontColor.name()),
-            str(theme.FontProportion * 2), u'False')
-        newtheme.add_font(str(theme.FontName), str(theme.FontColor.name()),
-            str(12), u'False', u'footer')
+        newtheme.add_font(unicode(theme.FontName), unicode(theme.FontColor.name()),
+            unicode(theme.FontProportion * 2), u'False')
+        newtheme.add_font(unicode(theme.FontName), unicode(theme.FontColor.name()),
+            unicode(12), u'False', u'footer')
         outline = False
         shadow = False
         if theme.Shadow == 1:
             shadow = True
         if theme.Outline == 1:
             outline = True
-        newtheme.add_display(str(shadow), str(theme.ShadowColor.name()),
-            str(outline), str(theme.OutlineColor.name()),
-            str(theme.HorizontalAlign), str(theme.VerticalAlign),
-            str(theme.WrapStyle))
+        newtheme.add_display(unicode(shadow), unicode(theme.ShadowColor.name()),
+            unicode(outline), unicode(theme.OutlineColor.name()),
+            unicode(theme.HorizontalAlign), unicode(theme.VerticalAlign),
+            unicode(theme.WrapStyle))
         return newtheme.extract_xml()
 
     def saveTheme(self, name, theme_xml, image_from, image_to) :

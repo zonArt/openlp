@@ -272,11 +272,11 @@ class BibleMediaItem(MediaManagerItem):
                 self.initialiseBible(bible)
 
     def onAdvancedVersionComboBox(self):
-        self.initialiseBible(str(self.AdvancedVersionComboBox.currentText()))
+        self.initialiseBible(unicode(self.AdvancedVersionComboBox.currentText()))
 
     def onAdvancedBookComboBox(self):
-        self.initialiseChapterVerse(str(self.AdvancedVersionComboBox.currentText()),
-            str(self.AdvancedBookComboBox.currentText()))
+        self.initialiseChapterVerse(unicode(self.AdvancedVersionComboBox.currentText()),
+            unicode(self.AdvancedBookComboBox.currentText()))
 
     def onBibleNewClick(self):
         self.bibleimportform = BibleImportForm(self.parent.config, self.parent.biblemanager, self)
@@ -291,15 +291,15 @@ class BibleMediaItem(MediaManagerItem):
         t1 =  self.AdvancedFromChapter.currentText()
         t2 =  self.AdvancedToChapter.currentText()
         if t1 != t2:
-            bible = str(self.AdvancedVersionComboBox.currentText())
-            book = str(self.AdvancedBookComboBox.currentText())
+            bible = unicode(self.AdvancedVersionComboBox.currentText())
+            book = unicode(self.AdvancedBookComboBox.currentText())
             vse = self.parent.biblemanager.get_book_verse_count(bible, book, int(t2))[0] # get the verse count for new chapter
             self.adjustComboBox(1, vse, self.AdvancedToVerse)
 
     def onAdvancedSearchButton(self):
         log.debug(u'Advanced Search Button pressed')
-        bible = str(self.AdvancedVersionComboBox.currentText())
-        book = str(self.AdvancedBookComboBox.currentText())
+        bible = unicode(self.AdvancedVersionComboBox.currentText())
+        book = unicode(self.AdvancedBookComboBox.currentText())
         chapter_from =  int(self.AdvancedFromChapter.currentText())
         chapter_to =  int(self.AdvancedToChapter.currentText())
         verse_from =  int(self.AdvancedFromVerse.currentText())
@@ -311,8 +311,8 @@ class BibleMediaItem(MediaManagerItem):
             self.displayResults(bible)
 
     def onAdvancedFromChapter(self):
-        bible = str(self.AdvancedVersionComboBox.currentText())
-        book = str(self.AdvancedBookComboBox.currentText())
+        bible = unicode(self.AdvancedVersionComboBox.currentText())
+        book = unicode(self.AdvancedBookComboBox.currentText())
         cf = self.AdvancedFromChapter.currentText()
         self.adjustComboBox(cf, self.chapters_from, self.AdvancedToChapter)
         vse = self.parent.biblemanager.get_book_verse_count(bible, book, int(cf))[0] # get the verse count for new chapter
@@ -321,8 +321,8 @@ class BibleMediaItem(MediaManagerItem):
 
     def onQuickSearchButton(self):
         log.debug(u'Quick Search Button pressed')
-        bible = str(self.QuickVersionComboBox.currentText())
-        text = str(self.QuickSearchEdit.displayText())
+        bible = unicode(self.QuickVersionComboBox.currentText())
+        text = unicode(self.QuickSearchEdit.displayText())
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
             self.BibleListData.resetStore()
         if self.QuickSearchComboBox.currentIndex() == 1:
@@ -363,13 +363,13 @@ class BibleMediaItem(MediaManagerItem):
             bible = text[text.find(u'(') + 1:text.find(u')')]
             self.searchByReference(bible, verse)
             book = self.search_results[0][0]
-            chapter = str(self.search_results[0][1])
-            verse = str(self.search_results[0][2])
+            chapter = unicode(self.search_results[0][1])
+            verse = unicode(self.search_results[0][2])
             text = self.search_results[0][3]
             if self.parent.bibles_tab.paragraph_style: #Paragraph
                 text = text + u'\n\n'
             if self.parent.bibles_tab.display_style == 1:
-                loc = self.formatVerse(old_chapter, chapter, verse, u'(', u')')
+                loc = self.formatVerse(old_chapter, chapter, verse, u'(u', u')')
             elif  self.parent.bibles_tab.display_style == 2:
                 loc = self.formatVerse(old_chapter, chapter, verse, u'{', u'}')
             elif  self.parent.bibles_tab.display_style == 3:
@@ -407,7 +407,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def initialiseBible(self, bible):
         log.debug(u'initialiseBible %s', bible)
-        books = self.parent.biblemanager.get_bible_books(str(bible))
+        books = self.parent.biblemanager.get_bible_books(unicode(bible))
         self.AdvancedBookComboBox.clear()
         first = True
         for book in books:
@@ -429,11 +429,11 @@ class BibleMediaItem(MediaManagerItem):
         log.debug(u'adjustComboBox %s , %s , %s', combo, frm,  to)
         combo.clear()
         for i in range(int(frm), int(to) + 1):
-            combo.addItem(str(i))
+            combo.addItem(unicode(i))
 
     def displayResults(self, bible):
         for book, chap, vse , txt in self.search_results:
-            text = str(u' %s %d:%d (%s)'%(book , chap,vse, bible))
+            text = unicode(u' %s %d:%d (%s)'%(book , chap,vse, bible))
             self.BibleListData.addRow(0,text)
 
     def searchByReference(self, bible,  search):
@@ -496,8 +496,8 @@ class BibleMediaItem(MediaManagerItem):
                 else:
                     end_chapter = sp1[0]
                     end_verse = sp1[1]
-        #print 'search = ' + str(original)
-        #print 'results = ' + str(book) + ' @ '+ str(start_chapter)+' @ '+ str(end_chapter)+' @ '+ str(start_verse)+ ' @ '+ str(end_verse)
+        #print 'search = ' + unicode(original)
+        #print 'results = ' + unicode(book) + ' @ '+ unicode(start_chapter)+' @ '+ unicode(end_chapter)+' @ '+ unicode(start_verse)+ ' @ '+ unicode(end_verse)
         if end_chapter == '':
             end_chapter = start_chapter.rstrip()
         if start_verse == '':
@@ -509,9 +509,9 @@ class BibleMediaItem(MediaManagerItem):
             end_verse = 99
         if start_chapter == '':
             message = u'No chapter found for search'
-        #print 'message = ' + str(message)
-        #print 'search = ' + str(original)
-        #print 'results = ' + str(book) + ' @ '+ str(start_chapter)+' @ '+ str(end_chapter)+' @ '+ str(start_verse)+ ' @ '+ str(end_verse)
+        #print 'message = ' + unicode(message)
+        #print 'search = ' + unicode(original)
+        #print 'results = ' + unicode(book) + ' @ '+ unicode(start_chapter)+' @ '+ unicode(end_chapter)+' @ '+ unicode(start_verse)+ ' @ '+ unicode(end_verse)
         if message == None:
             self.search_results = None
             self.search_results = self.parent.biblemanager.get_verse_text(bible, book,

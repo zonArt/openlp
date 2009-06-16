@@ -36,25 +36,25 @@ logging.basicConfig(level=logging.DEBUG,
 
 console=logging.StreamHandler()
 # set a format which is simpler for console use
-formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+formatter = logging.Formatter(u'%(name)-12s: %(levelname)-8s %(message)s')
 # tell the handler to use this format
 console.setFormatter(formatter)
-logging.getLogger('').addHandler(console)
-log=logging.getLogger('')
+logging.getLogger(u'').addHandler(console)
+log=logging.getLogger(u'')
 
-logging.info("\nLogging started")
+logging.info(u'\nLogging started')
 
 class TestBibleManager:
-    log=logging.getLogger("testBibleMgr")
+    log=logging.getLogger(u'testBibleMgr')
     def setup_class(self):
-        log.debug("\n.......Register BM")
+        log.debug(u'\n.......Register BM')
         self.bm = BibleManager()
 
     def testRegisterCSVBibleFiles(self):
         # Register a bible from files
-        log.debug("\n.......testRegisterBibleFiles")
-        self.bm.registerCSVFileBible("TheMessage",'biblebooks_msg_short.csv','bibleverses_msg_short.csv')
-        self.bm.registerCSVFileBible("NIV",'biblebooks_niv_short.csv','bibleverses_niv_short.csv')        
+        log.debug(u'\n.......testRegisterBibleFiles')
+        self.bm.registerCSVFileBible(u'TheMessage",'biblebooks_msg_short.csv','bibleverses_msg_short.csv')
+        self.bm.registerCSVFileBible(u'NIV",'biblebooks_niv_short.csv','bibleverses_niv_short.csv')        
         b = self.bm.get_bibles()
         for b1 in b:
             log.debug( b1)

@@ -31,7 +31,7 @@ class MediaPlugin(Plugin):
         self.weight = -6
         # Create the plugin icon
         self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(':/media/media_video.png'),
+        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_video.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
     def get_settings_tab(self):
@@ -42,4 +42,3 @@ class MediaPlugin(Plugin):
         # Create the MediaManagerItem object
         self.media_item = MediaMediaItem(self, self.icon, u'Media')
         return self.media_item
-

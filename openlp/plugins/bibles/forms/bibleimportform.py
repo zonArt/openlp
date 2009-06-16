@@ -61,7 +61,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         for line in fbibles:
             p = line.split(u',')
             self.bible_versions[p[0]] = p[1].replace(u'\n', u'')
-            self.BibleComboBox.addItem(str(p[0]))
+            self.BibleComboBox.addItem(unicode(p[0]))
 
         #Combo Boxes
         QtCore.QObject.connect(self.LocationComboBox,
@@ -133,20 +133,20 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         self.checkOsis()
 
     def onProxyAddressEditLostFocus(self):
-        self.config.set_config(u'proxy_address', str(self.AddressEdit.displayText()))
+        self.config.set_config(u'proxy_address', unicode(self.AddressEdit.displayText()))
 
     def onProxyUsernameEditLostFocus(self):
-        self.config.set_config(u'proxy_username', str(self.UsernameEdit.displayText()))
+        self.config.set_config(u'proxy_username', unicode(self.UsernameEdit.displayText()))
 
     def onProxyPasswordEditLostFocus(self):
-        self.config.set_config(u'proxy_password', str(self.PasswordEdit.displayText()))
+        self.config.set_config(u'proxy_password', unicode(self.PasswordEdit.displayText()))
 
     def onLocationComboBoxSelected(self):
         self.checkHttp()
 
     def onBibleComboBoxSelected(self):
         self.checkHttp()
-        self.BibleNameEdit.setText(str(self.BibleComboBox.currentText()))
+        self.BibleNameEdit.setText(unicode(self.BibleComboBox.currentText()))
 
     def onCancelButtonClicked(self):
         # tell import to stop
@@ -187,26 +187,26 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
     def importBible(self):
         log.debug(u'Import Bible ')
         if self.bible_type == u'OSIS':
-            loaded = self.biblemanager.register_osis_file_bible(str(self.BibleNameEdit.displayText()),
+            loaded = self.biblemanager.register_osis_file_bible(unicode(self.BibleNameEdit.displayText()),
                 self.OSISLocationEdit.displayText())
         elif self.bible_type == u'CSV':
-            loaded = self.biblemanager.register_csv_file_bible(str(self.BibleNameEdit.displayText()),
+            loaded = self.biblemanager.register_csv_file_bible(unicode(self.BibleNameEdit.displayText()),
                 self.BooksLocationEdit.displayText(), self.VerseLocationEdit.displayText())
         else:
             # set a value as it will not be needed
             self.setMax(1)
-            bible = self.bible_versions[str(self.BibleComboBox.currentText())]
-            loaded = self.biblemanager.register_http_bible(str(self.BibleComboBox.currentText()), \
-                                                                                     str(self.LocationComboBox.currentText()),  \
-                                                                                     str(bible), \
-                                                                                     str(self.AddressEdit.displayText()),  \
-                                                                                     str(self.UsernameEdit .displayText()),  \
-                                                                                     str(self.PasswordEdit.displayText()))
+            bible = self.bible_versions[unicode(self.BibleComboBox.currentText())]
+            loaded = self.biblemanager.register_http_bible(unicode(self.BibleComboBox.currentText()), \
+                                                                                     unicode(self.LocationComboBox.currentText()),  \
+                                                                                     unicode(bible), \
+                                                                                     unicode(self.AddressEdit.displayText()),  \
+                                                                                     unicode(self.UsernameEdit .displayText()),  \
+                                                                                     unicode(self.PasswordEdit.displayText()))
         if loaded:
-            self.biblemanager.save_meta_data(str(self.BibleNameEdit.displayText()),
-                str(self.VersionNameEdit.displayText()),
-                str(self.CopyrightEdit.displayText()),
-                str(self.PermisionEdit.displayText()))
+            self.biblemanager.save_meta_data(unicode(self.BibleNameEdit.displayText()),
+                unicode(self.VersionNameEdit.displayText()),
+                unicode(self.CopyrightEdit.displayText()),
+                unicode(self.PermisionEdit.displayText()))
         self.bible_type = None
         # free the screen state restrictions
         self.resetScreenFieldStates()

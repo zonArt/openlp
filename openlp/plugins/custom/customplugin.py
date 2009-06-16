@@ -40,7 +40,7 @@ class CustomPlugin(Plugin):
         self.edit_custom_form = EditCustomForm(self.custommanager)
         # Create the plugin icon
         self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(':/media/media_custom.png'),
+        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_custom.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.preview_service_item = CustomServiceItem(self.preview_controller)
         self.live_service_item = CustomServiceItem(self.live_controller)

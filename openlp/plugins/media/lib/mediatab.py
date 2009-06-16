@@ -73,4 +73,4 @@ class MediaTab(SettingsTab):
             self.UseVMRCheckBox.setChecked(True)
 
     def save(self):
-        self.config.set_config(u'use mode layout', str(self.use_vmr_mode))
+        self.config.set_config(u'use mode layout', unicode(self.use_vmr_mode))

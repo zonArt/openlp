@@ -22,31 +22,31 @@ from sqlalchemy import Column, Table, MetaData, ForeignKey, schema
 
 metadata = MetaData()
 #Define the tables and indexes
-meta_table = Table('metadata', metadata, 
-    Column('key', String(255), primary_key=True), 
-    Column('value', String(255)), 
+meta_table = Table(u'metadata', metadata, 
+    Column(u'key', String(255), primary_key=True), 
+    Column(u'value', String(255)), 
 )
 
-testament_table = Table('testament', metadata, 
-    Column('id', Integer, primary_key=True), 
-    Column('name', String(30)), 
+testament_table = Table(u'testament', metadata, 
+    Column(u'id', Integer, primary_key=True), 
+    Column(u'name', String(30)), 
 )
    
-book_table = Table('book', metadata, 
-    Column('id', Integer, primary_key=True), 
-    Column('testament_id', Integer, schema.ForeignKey('testament.id')), 
-    Column('name', String(30)), 
-    Column('abbreviation', String(5)), 
+book_table = Table(u'book', metadata, 
+    Column(u'id', Integer, primary_key=True), 
+    Column(u'testament_id', Integer, schema.ForeignKey(u'testament.id')), 
+    Column(u'name', String(30)), 
+    Column(u'abbreviation', String(5)), 
 )
-Index('idx_name', book_table.c.name, book_table.c.id)
-Index('idx_abbrev', book_table.c.abbreviation, book_table.c.id)
+Index(u'idx_name', book_table.c.name, book_table.c.id)
+Index(u'idx_abbrev', book_table.c.abbreviation, book_table.c.id)
 
-verse_table = Table('verse', metadata, 
-   Column('id', Integer, primary_key=True), 
-    Column('book_id', Integer , schema.ForeignKey('book.id')), 
-    Column('chapter', Integer), 
-    Column('verse', Integer), 
-    Column('text', Text), 
+verse_table = Table(u'verse', metadata, 
+   Column(u'id', Integer, primary_key=True), 
+    Column(u'book_id', Integer , schema.ForeignKey(u'book.id')), 
+    Column(u'chapter', Integer), 
+    Column(u'verse', Integer), 
+    Column(u'text', Text), 
 )
-Index('idx_chapter_verse_book', verse_table.c.chapter, verse_table.c.verse, verse_table.c.book_id, verse_table.c.id)
-Index('idx_chapter_verse_text', verse_table.c.text, verse_table.c.verse, verse_table.c.book_id, verse_table.c.id)
+Index(u'idx_chapter_verse_book', verse_table.c.chapter, verse_table.c.verse, verse_table.c.book_id, verse_table.c.id)
+Index(u'idx_chapter_verse_text', verse_table.c.text, verse_table.c.verse, verse_table.c.book_id, verse_table.c.id)

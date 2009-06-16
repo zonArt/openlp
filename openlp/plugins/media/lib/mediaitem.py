@@ -44,30 +44,30 @@ class MediaMediaItem(MediaManagerItem):
         # Create buttons for the toolbar
         ## New Media Button ##
         self.addToolbarButton(
-            translate('MediaMediaItem',u'New Media'),
-            translate('MediaMediaItem',u'Load Media into openlp.org'),
+            translate(u'MediaMediaItem',u'New Media'),
+            translate(u'MediaMediaItem',u'Load Media into openlp.org'),
             ':/videos/video_load.png', self.onMediaNewClick, 'MediaNewItem')
         ## Delete Media Button ##
         self.addToolbarButton(
-            translate('MediaMediaItem',u'Delete Media'),
-            translate('MediaMediaItem',u'Delete the selected Media item'),
+            translate(u'MediaMediaItem',u'Delete Media'),
+            translate(u'MediaMediaItem',u'Delete the selected Media item'),
             ':/videos/video_delete.png', self.onMediaDeleteClick, 'MediaDeleteItem')
         ## Separator Line ##
         self.addToolbarSeparator()
         ## Preview Media Button ##
         self.addToolbarButton(
-            translate('MediaMediaItem',u'Preview Media'),
-            translate('MediaMediaItem',u'Preview the selected Media item'),
+            translate(u'MediaMediaItem',u'Preview Media'),
+            translate(u'MediaMediaItem',u'Preview the selected Media item'),
             ':/system/system_preview.png', self.onMediaPreviewClick, 'MediaPreviewItem')
         ## Live Media Button ##
         self.addToolbarButton(
-            translate('MediaMediaItem',u'Go Live'),
-            translate('MediaMediaItem',u'Send the selected Media item live'),
+            translate(u'MediaMediaItem',u'Go Live'),
+            translate(u'MediaMediaItem',u'Send the selected Media item live'),
             ':/system/system_live.png', self.onMediaLiveClick, 'MediaLiveItem')
         ## Add Media Button ##
         self.addToolbarButton(
-            translate('MediaMediaItem',u'Add Media To Service'),
-            translate('MediaMediaItem',u'Add the selected Media items(s) to the service'),
+            translate(u'MediaMediaItem',u'Add Media To Service'),
+            translate(u'MediaMediaItem',u'Add the selected Media items(s) to the service'),
             ':/system/system_add.png',self.onMediaAddClick, 'MediaAddItem')
         ## Add the Medialist widget ##
 
@@ -83,13 +83,13 @@ class MediaMediaItem(MediaManagerItem):
 
         self.MediaListView.addAction(self.contextMenuAction(
             self.MediaListView, ':/system/system_preview.png',
-            translate('MediaMediaItem',u'&Preview Media'), self.onMediaPreviewClick))
+            translate(u'MediaMediaItem',u'&Preview Media'), self.onMediaPreviewClick))
         self.MediaListView.addAction(self.contextMenuAction(
             self.MediaListView, ':/system/system_live.png',
-            translate('MediaMediaItem',u'&Show Live'), self.onMediaLiveClick))
+            translate(u'MediaMediaItem',u'&Show Live'), self.onMediaLiveClick))
         self.MediaListView.addAction(self.contextMenuAction(
             self.MediaListView, ':/system/system_add.png',
-            translate('MediaMediaItem',u'&Add to Service'), self.onMediaAddClick))
+            translate(u'MediaMediaItem',u'&Add to Service'), self.onMediaAddClick))
 
     def initialise(self):
         list = self.parent.config.load_list(u'Media')
@@ -97,12 +97,12 @@ class MediaMediaItem(MediaManagerItem):
 
     def onMediaNewClick(self):
         files = QtGui.QFileDialog.getOpenFileNames(None,
-            translate('MediaMediaItem', u'Select Media(s) items'),
+            translate(u'MediaMediaItem', u'Select Media(s) items'),
             self.parent.config.get_last_dir(),
             u'Videos (*.avi *.mpeg);;Audio (*.mp3 *.ogg *.wma);;All files (*)')
         if len(files) > 0:
             self.loadMediaList(files)
-            dir, filename = os.path.split(str(files[0]))
+            dir, filename = os.path.split(unicode(files[0]))
             self.parent.config.set_last_dir(dir)
             self.parent.config.set_list(u'media', self.MediaListData.getFileList())
 

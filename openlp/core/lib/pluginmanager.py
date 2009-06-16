@@ -39,7 +39,7 @@ class PluginManager(object):
         """
         log.info(u'Plugin manager initing')
         if not dir in sys.path:
-            log.debug("Inserting %s into sys.path", dir)
+            log.debug(u'Inserting %s into sys.path', dir)
             sys.path.insert(0, dir)
         self.basepath = os.path.abspath(dir)
         log.debug(u'Base path %s ', self.basepath)
@@ -53,7 +53,7 @@ class PluginManager(object):
         """
         self.plugin_helpers = plugin_helpers
         startdepth = len(os.path.abspath(dir).split(os.sep))
-        log.debug(u'find plugins %s at depth %d' %( str(dir), startdepth))
+        log.debug(u'find plugins %s at depth %d' %( unicode(dir), startdepth))
 
         for root, dirs, files in os.walk(dir):
             for name in files:
@@ -80,14 +80,14 @@ class PluginManager(object):
         for p in self.plugin_classes:
             try:
                 plugin = p(self.plugin_helpers)
-                log.debug(u'loaded plugin %s with helpers'%str(p))
-                log.debug(u'Plugin: %s', str(p))
+                log.debug(u'loaded plugin %s with helpers'%unicode(p))
+                log.debug(u'Plugin: %s', unicode(p))
                 if plugin.check_pre_conditions():
-                    log.debug(u'Appending %s ',  str(p))
+                    log.debug(u'Appending %s ',  unicode(p))
                     plugin_objects.append(plugin)
                     eventmanager.register(plugin)
             except TypeError:
-                log.error(u'loaded plugin %s has no helpers'%str(p))
+                log.error(u'loaded plugin %s has no helpers'%unicode(p))
         self.plugins = sorted(plugin_objects, self.order_by_weight)
 
     def order_by_weight(self, x, y):

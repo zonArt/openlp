@@ -47,7 +47,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.AuthorRemoveItem,
             QtCore.SIGNAL(u'clicked()'), self.onAuthorRemovefromSongItemClicked)
         QtCore.QObject.connect(self.AuthorsListView,
-            QtCore.SIGNAL("itemClicked(QListWidgetItem*)"), self.onAuthorsListViewPressed)
+            QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'), self.onAuthorsListViewPressed)
         QtCore.QObject.connect(self.AddTopicButton,
             QtCore.SIGNAL(u'clicked()'), self.onAddTopicButtonClicked)
         QtCore.QObject.connect(self.AddTopicsToSongButton,
@@ -55,7 +55,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.TopicRemoveItem,
             QtCore.SIGNAL(u'clicked()'), self.onTopicRemovefromSongItemClicked)
         QtCore.QObject.connect(self.TopicsListView,
-            QtCore.SIGNAL("itemClicked(QListWidgetItem*)"), self.onTopicListViewPressed)
+            QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'), self.onTopicListViewPressed)
         QtCore.QObject.connect(self.AddSongBookButton,
             QtCore.SIGNAL(u'clicked()'), self.onAddSongBookButtonClicked)
         QtCore.QObject.connect(self.CopyrightInsertItem,
@@ -67,7 +67,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.DeleteButton,
             QtCore.SIGNAL(u'clicked()'), self.onDeleteVerseButtonClicked)
         QtCore.QObject.connect(self.VerseListWidget,
-            QtCore.SIGNAL("itemClicked(QListWidgetItem*)"), self.onVerseListViewPressed)
+            QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'), self.onVerseListViewPressed)
         QtCore.QObject.connect(self.SongbookCombo,
             QtCore.SIGNAL(u'activated(int)'), self.onSongBookComboChanged)
         QtCore.QObject.connect(self.ThemeSelectionComboItem,
@@ -132,6 +132,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.TitleEditItem.setText(u'')
         self.AlternativeEdit.setText(u'')
         self.CopyrightEditItem.setText(u'')
+        self.VerseOrderEdit.setText(u'')
+        self.CommentsEdit.setText(u'')
+        self.CCLNumberEdit.setText(u'')
         self.VerseListWidget.clear()
         self.AuthorsListView.clear()
         self.TopicsListView.clear()
@@ -160,6 +163,18 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.AlternativeEdit.setText(title[1])
         self.CopyrightEditItem.setText(self.song.copyright)
         self.VerseListWidget.clear()
+        if self.song.verse_order is not None:
+            self.VerseOrderEdit.setText(self.song.verse_order)
+        else:
+            self.VerseOrderEdit.setText(u'')
+        if self.song.comments is not None:
+            self.CommentsEdit.setText(self.song.comments)
+        else:
+            self.CommentsEdit.setText(u'')
+        if self.song.ccli_number is not None:
+            self.CCLNumberEdit.setText(self.song.ccli_number)
+        else:
+            self.CCLNumberEdit.setText(u'')
         #lazy xml migration for now
         if self.song.lyrics.startswith(u'<?xml version='):
             songXML=SongXMLParser(self.song.lyrics)
@@ -227,7 +242,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.topics.remove(topic)
         row = self.TopicsListView.row(item)
         self.TopicsListView.takeItem(row)
-
     def onAddAuthorsButtonClicked(self):
         """
         Slot documentation goes here.
@@ -324,6 +338,15 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.title = self.TitleEditItem.text()
         self.title_change = True
 
+    def on_VerseOrderEdit_lostFocus(self):
+        self.song.verse_order = self.VerseOrderEdit.text()
+
+    def on_CommentsEdit_lostFocus(self):
+        self.song.comments = self.CommentsEdit.text()
+
+    def on_CCLNumberEdit_lostFocus(self):
+        self.song.ccli_number = self.CCLNumberEdit.text()
+
     def onCopyrightInsertItemTriggered(self):
         text = self.CopyrightEditItem.displayText()
         pos = self.CopyrightEditItem.cursorPosition()
@@ -355,15 +378,19 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         sxml.add_lyrics_to_song()
         count = 1
         text = u' '
+        verse_order = u''
         for i in range (0, self.VerseListWidget.count()):
             sxml.add_verse_to_lyrics(u'Verse', unicode(count),  unicode(self.VerseListWidget.item(i).text()))
             text = text + unicode(self.VerseListWidget.item(i).text()) + u' '
+            verse_order = verse_order +unicode(count) + u' '
             count += 1
+        if self.song.verse_order is None:
+            self.song.verse_order = verse_order
         text =  text.replace("'", u'')
         text =  text.replace(u',', u'')
         text =  text.replace(u';', u'')
         text =  text.replace(u':', u'')
-        text =  text.replace(u'(', u'')
+        text =  text.replace(u'(u', u'')
         text =  text.replace(u')', u'')
         text =  text.replace(u'{', u'')
         text =  text.replace(u'}', u'')
@@ -377,7 +404,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.search_title =  self.song.search_title.replace(u',', u'')
         self.song.search_title =  self.song.search_title.replace(u';', u'')
         self.song.search_title =  self.song.search_title.replace(u':', u'')
-        self.song.search_title =  self.song.search_title.replace(u'(', u'')
+        self.song.search_title =  self.song.search_title.replace(u'(u', u'')
         self.song.search_title =  self.song.search_title.replace(u')', u'')
         self.song.search_title =  self.song.search_title.replace(u'{', u'')
         self.song.search_title =  self.song.search_title.replace(u'}', u'')

@@ -45,15 +45,15 @@ class TstFrame:
 
 class TestRender_base:
     def __init__(self):
-        if not os.path.exists("test_results"):
-            os.mkdir("test_results")
+        if not os.path.exists(u'test_results'):
+            os.mkdir(u'test_results')
         self.app=None
     def write_to_file(self, pixmap, name):
         im=pixmap.toImage()
-        testpathname=os.path.join("test_results", name+".bmp")
+        testpathname=os.path.join(u'test_results", name+".bmp')
         if os.path.exists(testpathname):
             os.unlink(testpathname)
-        im.save(testpathname, "bmp")
+        im.save(testpathname, "bmp')
         return im
     # xxx quitting the app still leaves it hanging aroudn so we die
     # when trying to start another one.  Not quitting doesn't help
@@ -84,7 +84,7 @@ class TestRender_base:
 
     def setup_method(self, method):
         print "SSsetup", method
-        if not hasattr(self, "app"):
+        if not hasattr(self, "app'):
             self.app=None
         try: # see if we already have an app for some reason.
             # have to try and so something, cant just test against None
@@ -109,7 +109,7 @@ class TestRender_base:
         print "--------------- Setup Done -------------"
 
     def teardown_method(self, method):
-        self.write_to_file(self.frame.GetPixmap(), "test_render")
+        self.write_to_file(self.frame.GetPixmap(), "test_render')
 
 class TestRender(TestRender_base):
     def __init__(self):
@@ -118,29 +118,29 @@ class TestRender(TestRender_base):
     def setup_method(self, method):
         TestRender_base.setup_method(self, method)
         self.r.set_debug(1)
-        themefile=os.path.abspath("data_for_tests/render_theme.xml")
+        themefile=os.path.abspath(u'data_for_tests/render_theme.xml')
         self.r.set_theme(Theme(themefile)) # set default theme
         self.r._render_background()
         self.r.set_text_rectangle(QtCore.QRect(0,0, self.size.width()-1, self.size.height()-1))
         self.msg=None
 
     def test_easy(self):
-        answer=self.r._render_single_line("Test line", tlcorner=(0,100))
+        answer=self.r._render_single_line(u'Test line", tlcorner=(0,100))
         assert (answer==(219,163))
     def test_longer(self):
-        answer=self.r._render_single_line("Test line with more words than fit on one line",
+        answer=self.r._render_single_line(u'Test line with more words than fit on one line",
                                          tlcorner=(10,10))
         assert (answer==(753,136))
     def test_even_longer(self):
-        answer=self.r._render_single_line("Test line with more words than fit on either one or two lines",
+        answer=self.r._render_single_line(u'Test line with more words than fit on either one or two lines",
                                          tlcorner=(10,10))
         assert(answer==(753,199))
     def test_lines(self):
         lines=[]
-        lines.append("Line One")
-        lines.append("Line Two")
-        lines.append("Line Three and should be long enough to wrap")
-        lines.append("Line Four and should be long enough to wrap also")
+        lines.append(u'Line One')
+        lines.append(u'Line Two')
+        lines.append(u'Line Three and should be long enough to wrap')
+        lines.append(u'Line Four and should be long enough to wrap also')
         answer=self.r._render_lines(lines)
         assert(answer==QtCore.QRect(0,0,741,378))
 
@@ -187,7 +187,7 @@ Line 3"""
             extra=""
             if i == 51: # make an extra long line on line 51 to test wrapping
                 extra="Some more words to make it wrap around don't you know until it wraps so many times we don't know what to do"
-            lines.append("Line %d %s" % (i, extra))
+            lines.append(u'Line %d %s" % (i, extra))
         result=self.r.split_set_of_lines(lines)
         print "results---------------__", result
         for i in range(len(result)):
@@ -219,4 +219,3 @@ if __name__=="__main__":
     t.test_easy()
     t.test_splits()
     t.teardown_method(None)
-

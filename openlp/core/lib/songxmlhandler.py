@@ -66,7 +66,7 @@ class SongXMLBuilder():
 
     def dump_xml(self):
         # Debugging aid to see what we have
-        print self.song_xml.toprettyxml(indent="  ")
+        print self.song_xml.toprettyxml(indent=u'  ')
 
     def extract_xml(self):
         # Print our newly created XML

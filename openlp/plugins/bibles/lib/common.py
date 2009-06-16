@@ -15,7 +15,6 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-
 import os
 import os.path
 import sys
@@ -42,13 +41,13 @@ class SearchResults:
 
 class BibleCommon:
     global log
-    log=logging.getLogger("BibleCommon")
-    log.info("BibleCommon")
+    log = logging.getLogger(u'BibleCommon')
+    log.info(u'BibleCommon')
     def __init__(self):
         """
         """
     def _get_web_text(self, urlstring, proxyurl):
-        log.debug( "get_web_text %s %s", proxyurl, urlstring)
+        log.debug(u'get_web_text %s %s', proxyurl, urlstring)
         if  not proxyurl == None:
             proxy_support = urllib2.ProxyHandler({'http':  self.proxyurl})
             http_support = urllib2.HTTPHandler()
@@ -56,13 +55,13 @@ class BibleCommon:
             urllib2.install_opener(opener)
         xml_string = ""
         req = urllib2.Request(urlstring)
-        req.add_header('User-Agent', 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)')
+        req.add_header(u'User-Agent', 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)')
         try:
             handle = urllib2.urlopen(req)
             xml_string = handle.read()
         except IOError, e:
-            if hasattr(e, 'reason'):
-                log.error( 'Reason : ')
+            if hasattr(e, u'reason'):
+                log.error(u'Reason : ')
                 log.error( e.reason)
         return xml_string
 
@@ -73,42 +72,40 @@ class BibleCommon:
         """
         #return text.rstrip()
         # Remove Headings from the Text
-        i = text.find("<h")
+        i = text.find(u'<h')
         while i > -1:
-            j=text.find("</h", i)
+            j=text.find(u'</h', i)
             text = text[ : (i - 1)]+text[(j+4)]
-            i = text.find("<h")
+            i = text.find(u'<h')
 
         # Remove Support References from the Text
-        x = text.find("<sup>")
+        x = text.find(u'<sup>')
         while x > -1:
-            y = text.find("</sup>")
+            y = text.find(u'</sup>')
             text= text[:x] + text[y + 6:len(text)]
-            x = text.find("<sup>")
+            x = text.find(u'<sup>')
 
         # Static Clean ups
-        text= text.replace('\n', '')
-        text= text.replace('\r', '')
-        text= text.replace('&nbsp;', '')
-        text= text.replace('<P>', '')
-        text= text.replace('<I>', '')
-        text= text.replace('</I>', '')
-        text= text.replace('<P />', '')
-        text= text.replace('<p />', '')
-        text= text.replace('</P>', '')
-        text= text.replace('<BR>', '')
-        text= text.replace('<BR />', '')
-        text= text.replace(chr(189), '1/2')
-        text= text.replace("&quot;", '"')
-        text= text.replace("&apos;", "'")
+        text= text.replace(u'\n', u'')
+        text= text.replace(u'\r', u'')
+        text= text.replace(u'&nbsp;', u'')
+        text= text.replace(u'<P>', u'')
+        text= text.replace(u'<I>', u'')
+        text= text.replace(u'</I>', u'')
+        text= text.replace(u'<P />', u'')
+        text= text.replace(u'<p />', u'')
+        text= text.replace(u'</P>', u'')
+        text= text.replace(u'<BR>', u'')
+        text= text.replace(u'<BR />', u'')
+        text= text.replace(chr(189), u'1/2')
+        text= text.replace(u'&quot;", u''')
+        text= text.replace(u'&apos;", u''')
 
-        i = text.find("<")
+        i = text.find(u'<')
         while i > -1 :
-            j = text.find(">", i)
+            j = text.find(u'>', i)
             text= text[:i] + text[j+1:]
-            i = text.find("<")
+            i = text.find(u'<')
 
-        text= text.replace('>', '')
+        text= text.replace(u'>', u'')
         return text.rstrip()
-
-

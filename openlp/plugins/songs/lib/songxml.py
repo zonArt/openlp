@@ -22,7 +22,7 @@ import sys
 import os
 from types import StringType, ListType, NoneType
 
-sys.path.append(os.path.abspath("./../../../.."))
+sys.path.append(os.path.abspath(u'./../../../..'))
 
 from openlp.core.lib import XmlRootClass
 
@@ -75,13 +75,13 @@ class _OpenSong(XmlRootClass):
     def _reset(self):
         """Reset all song attributes"""
         global _blankOpenSongXml
-        self._setFromXml(_blankOpenSongXml, "song")
+        self._setFromXml(_blankOpenSongXml, "song')
 
     def from_buffer(self,  xmlContent):
         """Initialize from buffer(string) with xml content"""
         self._reset()
         if xmlContent != None :
-            self._setFromXml(xmlContent, "song")
+            self._setFromXml(xmlContent, "song')
 
     def get_author_list(self):
         """Convert author field to an authorlist
@@ -91,10 +91,10 @@ class _OpenSong(XmlRootClass):
         """
         res = []
         if self.author != None :
-            lst = self.author.split(' and ')
+            lst = self.author.split(u' and ')
             for l in lst :
                 res.append(l.strip())
-        s = ", ".join(res)
+        s = ", u'.join(res)
         return s
 
     def get_category_array(self):
@@ -107,7 +107,7 @@ class _OpenSong(XmlRootClass):
             res.append(self.theme)
         if self.alttheme != None :
             res.append(self.alttheme)
-        s = ", ".join(res)
+        s = ", u'.join(res)
         return s
 
     def _reorder_verse(self, tag, tmpVerse):
@@ -123,7 +123,7 @@ class _OpenSong(XmlRootClass):
                 if l.startswith(c) :
                     if tagPending :
                         tagPending = False
-                        t = tag.strip("[]").lower()
+                        t = tag.strip(u'[]').lower()
                         if 'v' == t :
                             newtag = "Verse"
                         elif 'c' == t :
@@ -134,7 +134,7 @@ class _OpenSong(XmlRootClass):
                             newtag = "Pre-chorus"
                         else :
                             newtag = t
-                        s = ("# %s %s"%(newtag, c)).rstrip()
+                        s = (u'# %s %s"%(newtag, c)).rstrip()
                         res.append(s)
                     res.append(l[1:])
                 if (len(l) == 0) and (not tagPending) :
@@ -146,17 +146,17 @@ class _OpenSong(XmlRootClass):
 
         return as list of strings
         """
-        lyrics = self.lyrics.split("\n")
+        lyrics = self.lyrics.split(u'\n')
         tmpVerse = []
         finalLyrics = []
         tag = ""
         for l in lyrics:
             line = l.rstrip()
-            if not line.startswith('.') :
+            if not line.startswith(u'.') :
                 # drop all chords
                 tmpVerse.append(line)
                 if len(line) > 0 :
-                    if line.startswith('['):
+                    if line.startswith(u'['):
                         tag = line
                 else :
                     r = self._reorder_verse(tag, tmpVerse)
@@ -230,7 +230,7 @@ class Song(object) :
     def _reset(self):
         """Reset all song attributes"""
         self.slideList = []
-        self.set_title("BlankSong")
+        self.set_title(u'BlankSong')
         self.author_list = None
         self.song_cclino = ""
         self.copyright = ""
@@ -244,7 +244,7 @@ class Song(object) :
         self.song_number = ""
         self.comments = ""
         self.verse_order = ""
-        self.set_lyrics("")
+        self.set_lyrics(u'')
         return
 
     def set_songid(self, songid):
@@ -305,9 +305,9 @@ class Song(object) :
         self.title = title.strip()
         self.search_title = self._remove_punctuation(title).strip()
         if len(self.title) < 1 :
-            raise SongTitleError("The title is empty")
+            raise SongTitleError(u'The title is empty')
         if len(self.search_title) < 1 :
-            raise SongTitleError("The searchable title is empty")
+            raise SongTitleError(u'The searchable title is empty')
 
     def get_title(self):
         """Return title value"""
@@ -343,19 +343,19 @@ class Song(object) :
                     sCopyright = l[1:].strip()
                 if lastpart == 3 :
                     sAuthor = l
-            elif l.startswith('CCLI Song') :
+            elif l.startswith(u'CCLI Song') :
                 sCcli = l[13:].strip()
                 lastpart = 1
             else :
                 if metMisc :
                     metMisc = False
-                    if l.upper().startswith("(BRIDGE)") :
-                        lyrics.append("# Bridge")
+                    if l.upper().startswith(u'(BRIDGE)') :
+                        lyrics.append(u'# Bridge')
                     # otherwise unknown misc keyword
-                elif l.startswith("Misc") :
+                elif l.startswith(u'Misc') :
                     metMisc = True
-                elif l.startswith("Verse") or l.startswith("Chorus"):
-                    lyrics.append("# %s"%l)
+                elif l.startswith(u'Verse') or l.startswith(u'Chorus'):
+                    lyrics.append(u'# %s"%l)
                 else :
                     # should we remove multiple blank lines?
                     if n == 1 :
@@ -363,10 +363,10 @@ class Song(object) :
                     else :
                         lyrics.append(l)
         # split on known separators
-        lst = sAuthor.split('/')
+        lst = sAuthor.split(u'/')
         if len(lst) < 2:
-            lst = sAuthor.split('|')
-        author_list = ", ".join(lst)
+            lst = sAuthor.split(u'|')
+        author_list = ", u'.join(lst)
         self.set_title(sName)
         self.set_author_list(author_list)
         self.set_copyright(sCopyright)
@@ -390,14 +390,14 @@ class Song(object) :
         if s == None :
             r = ""
         else :
-            r = str(s)
+            r = unicode(s)
         return r
 
     def _split_to_list(self, aString):
         """Split a string into a list - comma separated"""
         res = []
         if aString != None :
-            lst = aString.split(',')
+            lst = aString.split(u',')
             for l in lst :
                 # remove whitespace
                 res.append(l.strip())
@@ -412,8 +412,8 @@ class Song(object) :
         elif type(strOrList) == NoneType :
             lst = []
         else :
-            raise SongTypeError("Variable not String or List")
-        s = ", ".join(lst)
+            raise SongTypeError(u'Variable not String or List')
+        s = ", u'.join(lst)
         return s
 
     def get_copyright(self):
@@ -479,7 +479,7 @@ class Song(object) :
         True -- string:
           "John Newton, A Parker"
         False -- list of strings
-          ["John Newton", "A Parker"]
+          ["John Newton", u'A Parker"]
         """
         if asOneString :
             res = self._assure_string(self.author_list)
@@ -504,7 +504,7 @@ class Song(object) :
         True -- string:
           "Hymn, Gospel"
         False -- list of strings
-          ["Hymn", "Gospel"]
+          ["Hymn", u'Gospel"]
         """
         if asOneString :
             res = self._assure_string(self.category_array)
@@ -598,9 +598,9 @@ class Song(object) :
         """
         num = len(self.slideList)
         if num < 1 :
-            raise SongSlideError("No slides in this song")
+            raise SongSlideError(u'No slides in this song')
         elif slideNumber > num :
-            raise SongSlideError("Slide number too high")
+            raise SongSlideError(u'Slide number too high')
         if slideNumber > 0 :
             # return this slide
             res = self.slideList[slideNumber-1]
@@ -609,7 +609,7 @@ class Song(object) :
             res = []
             for i in range(num):
                 if i > 0 :
-                    res.append("")
+                    res.append(u'')
                 res.extend()
         # remove formattingincluding themes
         return res
@@ -629,9 +629,9 @@ class Song(object) :
         """
         num = len(self.slideList)
         if num < 1 :
-            raise SongSlideError("No slides in this song")
+            raise SongSlideError(u'No slides in this song')
         elif slideNumber > num :
-            raise SongSlideError("Slide number too high")
+            raise SongSlideError(u'Slide number too high')
         res = []
         if self.show_title :
             title = self.get_title()

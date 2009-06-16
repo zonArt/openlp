@@ -23,9 +23,9 @@ import sys
 
 __ThisDir__ = os.path.dirname(__file__)
 if "" == __ThisDir__ :
-    __ThisDir__ = os.path.abspath(".")
+    __ThisDir__ = os.path.abspath(u'.')
 
-sys.path.append(os.path.abspath("%s/../../../.."%__ThisDir__))
+sys.path.append(os.path.abspath(u'%s/../../../.."%__ThisDir__))
 
 from openlp.plugins.songs.lib.songxml import *
 
@@ -49,19 +49,19 @@ class Test_Verse(object):
     def check_allfields(self, r, isblank = 0):
         #[theme, title, author, cpright, ccli, lyrics]
         if isblank == 1 :
-            assert(r[1] == "")
+            assert(r[1] == "')
         else :
             assert(r[1] == self.title)
         if isblank == 2 :
-            assert(r[2] == "")
+            assert(r[2] == "')
         else :
             assert(r[2] == self.author)
         if isblank == 3 :
-            assert(r[3] == "")
+            assert(r[3] == "')
         else :
             assert(r[3] == self.copyright)
         if isblank == 4 :
-            assert(r[4] == "")
+            assert(r[4] == "')
         else :
             assert(r[4] == self.ccli)
         
@@ -135,18 +135,18 @@ class Test_Verse(object):
     def test_verse3b(self):
         """Test a one liner song"""
         s = Song()
-        s.set_lyrics(["", "Single verse"])
+        s.set_lyrics(["", u'Single verse"])
         assert(s.get_number_of_slides() == 1)
         
     def test_verse3c(self):
         """Test a one liner song"""
         s = Song()
-        s.set_lyrics(["", "Single verse", "", ""])
+        s.set_lyrics(["", u'Single verse", u'", u'"])
         assert(s.get_number_of_slides() == 1)
 
     def test_verse3d(self):
         """Test a one liner song"""
         s = Song()
-        s.set_lyrics(["", "# Verse", "", ""])
+        s.set_lyrics(["", u'# Verse", u'", u'"])
         assert(s.get_number_of_slides() == 1)
         

@@ -33,7 +33,7 @@ class PresentationPlugin(Plugin):
         self.weight = -8
         # Create the plugin icon
         self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(':/media/media_presentation.png'),
+        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_presentation.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
     def get_settings_tab(self):

@@ -40,7 +40,7 @@ class TstFrame(QtGui.QMainWindow):
         self.size=(1024,768)
 
         self.v=0
-        self._font=QtGui.QFont('Decorative', 32)
+        self._font=QtGui.QFont(u'Decorative', 32)
         self.framecount=0
         self.totaltime = 0
         self.dir=1
@@ -49,7 +49,7 @@ class TstFrame(QtGui.QMainWindow):
         self.frame=QtGui.QFrame()
         self.setCentralWidget(self.frame)
         self.r=Renderer()
-        self.r.set_theme(Theme('demo_theme.xml'))
+        self.r.set_theme(Theme(u'demo_theme.xml'))
 
         self.r.set_text_rectangle(self.frame.frameRect())
         self.r.set_paint_dest(self)
@@ -79,4 +79,3 @@ class Demo:
 
 if __name__=="__main__":
     t=Demo()
-

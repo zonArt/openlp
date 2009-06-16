@@ -123,10 +123,10 @@ class ImageMediaItem(MediaManagerItem):
             translate(u'ImageMediaItem', u'Select Image(s)'),
             self.parent.config.get_last_dir(),
             u'Images (*.jpg *.gif *.png *.bmp)')
-        log.info(u'New image(s)', str(files))
+        log.info(u'New image(s)', unicode(files))
         if len(files) > 0:
             self.loadImageList(files)
-            dir, filename = os.path.split(str(files[0]))
+            dir, filename = os.path.split(unicode(files[0]))
             self.parent.config.set_last_dir(dir)
             self.parent.config.set_list(u'images', self.ImageListData.getFileList())
 
@@ -146,7 +146,7 @@ class ImageMediaItem(MediaManagerItem):
         service_item.title = u'Images'
         for index in indexes:
             filename = self.ImageListData.getFilename(index)
-            frame = QtGui.QPixmap(str(filename))
+            frame = QtGui.QPixmap(unicode(filename))
             (path, name) =os.path.split(filename)
             service_item.add_from_image(name, frame)
 

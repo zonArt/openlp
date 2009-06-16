@@ -22,9 +22,9 @@ import sys
 
 __ThisDir__ = os.path.dirname(__file__)
 if "" == __ThisDir__ :
-    __ThisDir__ = os.path.abspath(".")
+    __ThisDir__ = os.path.abspath(u'.')
 
-sys.path.append(os.path.abspath("%s/../../../.."%__ThisDir__))
+sys.path.append(os.path.abspath(u'%s/../../../.."%__ThisDir__))
 
 from openlp.plugins.songs.lib.songxml import *
 
@@ -147,41 +147,40 @@ class Test_OpenSong(object):
         """OpenSong: parse Amazing Grace"""
         global __ThisDir__
         s = Song()
-        s.from_opensong_file("%s/data_opensong/Amazing Grace"%(__ThisDir__))
-        assert(s.get_title() == "Amazing Grace")
-        assert(s.get_copyright() == "1982 Jubilate Hymns Limited")
-        assert(s.get_song_cclino() == "1037882")
-        assert(s.get_category_array(True) == "God: Attributes")
-        assert(s.get_author_list(True) == "John Newton")
-        assert(s.get_verse_order() == "")
+        s.from_opensong_file(u'%s/data_opensong/Amazing Grace"%(__ThisDir__))
+        assert(s.get_title() == "Amazing Grace')
+        assert(s.get_copyright() == "1982 Jubilate Hymns Limited')
+        assert(s.get_song_cclino() == "1037882')
+        assert(s.get_category_array(True) == "God: Attributes')
+        assert(s.get_author_list(True) == "John Newton')
+        assert(s.get_verse_order() == "')
         assert(s.get_number_of_slides() == 4)
         
     def test_file2(self):
         """OpenSong: parse The Solid Rock"""
         s = Song()
-        s.from_opensong_file("%s/data_opensong/The Solid Rock"%(__ThisDir__))
-        assert(s.get_title() == "The Solid Rock")
-        assert(s.get_copyright() == "Public Domain")
-        assert(s.get_song_cclino() == "101740")
-        assert(s.get_category_array(True) == "Christ: Victory, Fruit: Peace/Comfort")
-        assert(s.get_author_list(True) == "Edward Mote, John B. Dykes")
-        assert(s.get_verse_order() == "V1 C V2 C V3 C V4 C")
+        s.from_opensong_file(u'%s/data_opensong/The Solid Rock"%(__ThisDir__))
+        assert(s.get_title() == "The Solid Rock')
+        assert(s.get_copyright() == "Public Domain')
+        assert(s.get_song_cclino() == "101740')
+        assert(s.get_category_array(True) == "Christ: Victory, Fruit: Peace/Comfort')
+        assert(s.get_author_list(True) == "Edward Mote, John B. Dykes')
+        assert(s.get_verse_order() == "V1 C V2 C V3 C V4 C')
         assert(s.get_number_of_slides() == 5)
         
     def test_file3(self):
         """OpenSong: parse 'På en fjern ensom høj' (danish)"""
         #FIXME: problem with XML convert and danish characters
         s = Song()
-        s.from_opensong_file("%s/data_opensong/På en fjern ensom høj"%(__ThisDir__))
-        assert(s.get_title() == u"På en fjern ensom høj")
-        assert(s.get_copyright() == "")
-        assert(s.get_song_cclino() == "")
-        assert(s.get_category_array(True) == "")
-        assert(s.get_author_list(True) == "")
-        assert(s.get_verse_order() == "V1 C1 V2 C2 V3 C3 V4 C4")
+        s.from_opensong_file(u'%s/data_opensong/På en fjern ensom høj"%(__ThisDir__))
+        assert(s.get_title() == u"På en fjern ensom høj')
+        assert(s.get_copyright() == "')
+        assert(s.get_song_cclino() == "')
+        assert(s.get_category_array(True) == "')
+        assert(s.get_author_list(True) == "')
+        assert(s.get_verse_order() == "V1 C1 V2 C2 V3 C3 V4 C4')
         assert(s.get_number_of_slides() == 8)
         
 if '__main__' == __name__:
     r = Test_OpenSong()
     r.test_file3()
-

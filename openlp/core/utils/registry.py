@@ -54,7 +54,7 @@ class Registry(object):
         Set a single value in the registry.
         """
         try :
-            self.config.set(section, key, str(value))
+            self.config.set(section, key, unicode(value))
             return self._save()
         except:
             return False
