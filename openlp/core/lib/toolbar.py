@@ -54,12 +54,12 @@ class OpenLPToolbar(QtGui.QToolBar):
             if tooltip is not None:
                 ToolbarButton.setToolTip(tooltip)
             if slot is not None:
-                QtCore.QObject.connect(ToolbarButton, QtCore.SIGNAL('triggered()'), slot)
+                QtCore.QObject.connect(ToolbarButton, QtCore.SIGNAL(u'triggered()'), slot)
             self.icons[title] = ButtonIcon
 
     def getIconFromTitle(self, title):
         if self.icons.has_key(title):
             return self.icons[title]
         else:
-            self.log.error("getIconFromTitle - no icon for %s" % title)
+            self.log.error(u'getIconFromTitle - no icon for %s' % title)
             return QtGui.QIcon()

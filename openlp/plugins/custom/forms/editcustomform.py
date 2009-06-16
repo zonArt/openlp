@@ -35,21 +35,21 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         #self.parent = parent
         self.setupUi(self)
         # Connecting signals and slots
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.rejected)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.accept)
-        QtCore.QObject.connect(self.AddButton, QtCore.SIGNAL("pressed()"), self.onAddButtonPressed)
-        QtCore.QObject.connect(self.EditButton, QtCore.SIGNAL("pressed()"), self.onEditButtonPressed)
-        QtCore.QObject.connect(self.SaveButton, QtCore.SIGNAL("pressed()"), self.onSaveButtonPressed)
-        QtCore.QObject.connect(self.DeleteButton, QtCore.SIGNAL("pressed()"), self.onDeleteButtonPressed)
-        QtCore.QObject.connect(self.ClearButton, QtCore.SIGNAL("pressed()"), self.onClearButtonPressed)
-        QtCore.QObject.connect(self.UpButton, QtCore.SIGNAL("pressed()"), self.onUpButtonPressed)
-        QtCore.QObject.connect(self.DownButton, QtCore.SIGNAL("pressed()"), self.onDownButtonPressed)
-        QtCore.QObject.connect(self.TitleEdit, QtCore.SIGNAL("lostFocus()"), self.validate)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'), self.rejected)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'), self.accept)
+        QtCore.QObject.connect(self.AddButton, QtCore.SIGNAL(u'pressed()'), self.onAddButtonPressed)
+        QtCore.QObject.connect(self.EditButton, QtCore.SIGNAL(u'pressed()'), self.onEditButtonPressed)
+        QtCore.QObject.connect(self.SaveButton, QtCore.SIGNAL(u'pressed()'), self.onSaveButtonPressed)
+        QtCore.QObject.connect(self.DeleteButton, QtCore.SIGNAL(u'pressed()'), self.onDeleteButtonPressed)
+        QtCore.QObject.connect(self.ClearButton, QtCore.SIGNAL(u'pressed()'), self.onClearButtonPressed)
+        QtCore.QObject.connect(self.UpButton, QtCore.SIGNAL(u'pressed()'), self.onUpButtonPressed)
+        QtCore.QObject.connect(self.DownButton, QtCore.SIGNAL(u'pressed()'), self.onDownButtonPressed)
+        QtCore.QObject.connect(self.TitleEdit, QtCore.SIGNAL(u'lostFocus()'), self.validate)
 
         QtCore.QObject.connect(self.VerseListView,
-            QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem*)"), self.onVerseListViewSelected)
+            QtCore.SIGNAL(u'itemDoubleClicked(QListWidgetItem*)'), self.onVerseListViewSelected)
         QtCore.QObject.connect(self.VerseListView,
-            QtCore.SIGNAL("itemClicked(QListWidgetItem*)"), self.onVerseListViewPressed)
+            QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'), self.onVerseListViewPressed)
         # Create other objects and forms
         self.custommanager = custommanager
         self.initialise()
@@ -60,8 +60,8 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.DeleteButton.setEnabled(False)
         self.EditButton.setEnabled(False)
         self.SaveButton.setEnabled(False)
-        self.TitleEdit.setText('')
-        self.CreditEdit.setText('')
+        self.TitleEdit.setText(u'')
+        self.CreditEdit.setText(u'')
         self.VerseTextEdit.clear()
         self.VerseListView.clear()
         #make sure we have a new item
@@ -86,7 +86,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             verseList = songXML.get_verses()
             for verse in verseList:
                 self.VerseListView.addItem(verse[1])
-            theme = str(self.customSlide.theme_name)
+            theme = unicode(self.customSlide.theme_name)
             id = self.ThemecomboBox.findText(theme, QtCore.Qt.MatchExactly)
             if id == -1:
                 id = 0 # Not Found
@@ -103,7 +103,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             sxml.add_lyrics_to_song()
             count = 1
             for i in range (0, self.VerseListView.count()):
-                sxml.add_verse_to_lyrics(u'custom', str(count),  str(self.VerseListView.item(i).text()))
+                sxml.add_verse_to_lyrics(u'custom', unicode(count),  unicode(self.VerseListView.item(i).text()))
                 count += 1
             self.customSlide.title = unicode(self.TitleEdit.displayText())
             self.customSlide.text = unicode(sxml.extract_xml())
@@ -167,9 +167,9 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.valid = True
         if len(self.TitleEdit.displayText()) == 0:
             invalid += 1
-            self.TitleLabel.setStyleSheet('color: red')
+            self.TitleLabel.setStyleSheet(u'color: red')
         else:
-            self.TitleLabel.setStyleSheet('color: black')
+            self.TitleLabel.setStyleSheet(u'color: black')
 
         if self.VerseListView.count() == 0:    # must have 1 slide
             invalid += 1

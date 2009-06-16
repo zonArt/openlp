@@ -10,7 +10,7 @@ class PowerPointApp(object):
 
     def createApp(self):
         try:
-            self._app = Dispatch("PowerPoint.Application")
+            self._app = Dispatch(u'PowerPoint.Application')
         except:
             self._app = None
             return

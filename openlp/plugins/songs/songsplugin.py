@@ -43,7 +43,7 @@ class SongsPlugin(Plugin):
         self.opensong_export_form = OpenSongExportForm()
         # Create the plugin icon
         self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(':/media/media_song.png'),
+        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_song.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
     def get_media_manager_item(self):

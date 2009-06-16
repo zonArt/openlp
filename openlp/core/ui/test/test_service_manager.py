@@ -28,20 +28,20 @@ from openlp.core.ui import ServiceManager
 from openlp.plugins.images.lib import ImageServiceItem
 
 import logging
-logging.basicConfig(filename="test_service_manager.log",level=logging.INFO, filemode="w")
+logging.basicConfig(filename="test_service_manager.log",level=logging.INFO, filemode="w')
 
 # # from http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66062
 # def whoami(depth=1):
 #     return sys._getframe(depth).f_code.co_name
 global app
 global log
-log=logging.getLogger("TestServiceManager")
+log=logging.getLogger(u'TestServiceManager')
 class TestServiceManager_base:
     def __init__(self):
         pass
 
     def setup_class(self):
-        log.info( "class setup"+str(self))
+        log.info( "class setup"+unicode(self))
         try:
             if app is None:
                 app = QtGui.QApplication([])
@@ -53,11 +53,11 @@ class TestServiceManager_base:
         pass
 
     def setup_method(self, method):
-        log.info("Setup method:"+str(method))
+        log.info(u'Setup method:"+unicode(method))
         self.expected_answer="Don't know yet"
         self.answer=None
         self.s=ServiceManager(None)
-        log.info("--------------- Setup Done -------------")
+        log.info(u'--------------- Setup Done -------------')
 
     def teardown_method(self, method):
         self.s=None
@@ -69,64 +69,64 @@ class TestServiceManager_base:
         # make a selection of it
         self.sm=QItemSelectionModel(self.s.service_data)
         self.sm.select(i, QItemSelectionModel.ClearAndSelect)
-        log.info(str(self.sm.selectedIndexes()))
+        log.info(unicode(self.sm.selectedIndexes()))
         self.s.TreeView.setSelectionModel(self.sm)
-        log.info("Selected indexes = " + str(self.s.TreeView.selectedIndexes()))
+        log.info(u'Selected indexes = " + unicode(self.s.TreeView.selectedIndexes()))
     def test_easy(self):
-        log.info("test_easy")
+        log.info(u'test_easy')
         item=ImageServiceItem(None)
-        item.add("test.gif")
+        item.add(u'test.gif')
         self.s.addServiceItem(item)
         answer = self.s.oos_as_text()
-        log.info("Answer = " + str(answer))
-        lines=answer.split("\n")
-        log.info("lines = " + str(lines))
-        assert lines[0].startswith("# <openlp.plugins.images.imageserviceitem.ImageServiceItem object")
+        log.info(u'Answer = " + unicode(answer))
+        lines=answer.split(u'\n')
+        log.info(u'lines = " + unicode(lines))
+        assert lines[0].startswith(u'# <openlp.plugins.images.imageserviceitem.ImageServiceItem object')
         assert lines[1] == "test.gif"
-        log.info("done")
+        log.info(u'done')
 
     def test_2items_as_separate_items(self):
         # If nothing is selected when item is added, a new base service item is added
-        log.info("test_2items_as_separate_items")
+        log.info(u'test_2items_as_separate_items')
         item=ImageServiceItem(None)
-        item.add("test.gif")
+        item.add(u'test.gif')
         self.s.addServiceItem(item)
         item=ImageServiceItem(None)
-        item.add("test2.gif")
-        item.add("test3.gif")
+        item.add(u'test2.gif')
+        item.add(u'test3.gif')
         self.s.addServiceItem(item)
         answer = self.s.oos_as_text()
-        log.info("Answer = " + str(answer))
-        lines=answer.split("\n")
-        log.info("lines = " + str(lines))
-        assert lines[0].startswith("# <openlp.plugins.images.imageserviceitem.ImageServiceItem object")
+        log.info(u'Answer = " + unicode(answer))
+        lines=answer.split(u'\n')
+        log.info(u'lines = " + unicode(lines))
+        assert lines[0].startswith(u'# <openlp.plugins.images.imageserviceitem.ImageServiceItem object')
         assert lines[1] == "test.gif"
-        assert lines[2].startswith("# <openlp.plugins.images.imageserviceitem.ImageServiceItem object")
+        assert lines[2].startswith(u'# <openlp.plugins.images.imageserviceitem.ImageServiceItem object')
         assert lines[3] == "test2.gif"
         assert lines[4] == "test3.gif"
-        log.info("done")
+        log.info(u'done')
 
     def test_2items_merged(self):
         # If the first object is selected when item is added it should be extended
-        log.info("test_2items_merged")
+        log.info(u'test_2items_merged')
         item=ImageServiceItem(None)
-        item.add("test.gif")
+        item.add(u'test.gif')
         self.s.addServiceItem(item)
         self.select_row(0)
-        log.info("Selected indexes = " + str(self.s.TreeView.selectedIndexes()))
+        log.info(u'Selected indexes = " + unicode(self.s.TreeView.selectedIndexes()))
         item=ImageServiceItem(None)
-        item.add("test2.gif")
-        item.add("test3.gif")
+        item.add(u'test2.gif')
+        item.add(u'test3.gif')
         self.s.addServiceItem(item)
         answer = self.s.oos_as_text()
-        log.info("Answer = " + str(answer))
-        lines=answer.split("\n")
-        log.info("lines = " + str(lines))
-        assert lines[0].startswith("# <openlp.plugins.images.imageserviceitem.ImageServiceItem object")
+        log.info(u'Answer = " + unicode(answer))
+        lines=answer.split(u'\n')
+        log.info(u'lines = " + unicode(lines))
+        assert lines[0].startswith(u'# <openlp.plugins.images.imageserviceitem.ImageServiceItem object')
         assert lines[1] == "test.gif"
         assert lines[2] == "test2.gif"
         assert lines[3] == "test3.gif"
-        log.info("done")
+        log.info(u'done')
 
     # more tests to do:
     #  add different types of service item
@@ -143,4 +143,4 @@ if __name__=="__main__":
     t.test_easy()
     t.teardown_method(None)
     print "Pass"
-    log.info("Pass")
+    log.info(u'Pass')

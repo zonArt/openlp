@@ -42,7 +42,7 @@ class ConfigHelper(object):
             except ImportError:
                 path = os.path.join(os.getenv(u'HOME'), u'.openlp', u'data')
         reg = ConfigHelper.get_registry()
-        #path = ConfigHelper.get_config('main', 'data path', path)
+        #path = ConfigHelper.get_config(u'main', 'data path', path)
         if not os.path.exists(path):
             os.makedirs(path)
         return path

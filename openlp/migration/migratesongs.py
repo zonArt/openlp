@@ -42,9 +42,9 @@ mapper(Topic, topics_table)
 class MigrateSongs():
     def __init__(self, display):
         self.display = display
-        self.config = PluginConfig('Songs')
+        self.config = PluginConfig(u'Songs')
         self.data_path = self.config.get_data_path()
-        self.database_files = self.config.get_files('sqlite')
+        self.database_files = self.config.get_files(u'sqlite')
         print self.database_files
 
     def process(self):
@@ -66,49 +66,49 @@ class MigrateSongs():
     def _v1_9_0_authors(self, database):
         self.display.sub_output(u'Authors Started for ' + database)
         conn = sqlite3.connect(self.data_path + os.sep + database)
-        conn.execute("""alter table authors rename to authors_temp;""")
+        conn.execute(u'""alter table authors rename to authors_temp;""')
         conn.commit()
         self.display.sub_output(u'old author renamed to author_temp')
-        conn.execute("""create table authors (
+        conn.execute(u'""create table authors (
             id integer primary key ASC AUTOINCREMENT,
             first_name varchar(128),
             last_name varchar(128),
             display_name varchar(255)
-            );""")
+            );""')
         conn.commit()
         self.display.sub_output(u'authors table created')
-        conn.execute("""create index if not exists author1 on authors 
-            (display_name ASC,id ASC);""")
+        conn.execute(u'""create index if not exists author1 on authors 
+            (display_name ASC,id ASC);""')
         conn.commit()
         self.display.sub_output(u'index author1 created')
-        conn.execute("""create index if not exists author2 on authors 
-            (last_name ASC,id ASC);""")
+        conn.execute(u'""create index if not exists author2 on authors 
+            (last_name ASC,id ASC);""')
         conn.commit()
         self.display.sub_output(u'index author2 created')
-        conn.execute("""create index if not exists author3 on authors 
-            (first_name ASC,id ASC);""")
+        conn.execute(u'""create index if not exists author3 on authors 
+            (first_name ASC,id ASC);""')
         conn.commit()
         self.display.sub_output(u'index author3 created')
         self.display.sub_output(u'Author Data Migration started')
-        conn.execute("""insert into authors (id, display_name) 
-            select authorid, authorname from authors_temp;""")
+        conn.execute(u'""insert into authors (id, display_name) 
+            select authorid, authorname from authors_temp;""')
         conn.commit()
         self.display.sub_output(u'authors populated')
         c = conn.cursor()        
-        text = c.execute("""select * from authors""") .fetchall()
+        text = c.execute(u'""select * from authors""') .fetchall()
         for author in text:
             dispname = author[3]
-            dispname = dispname.replace("'", "") 
-            pos = dispname.rfind(" ")
+            dispname = dispname.replace(u''", u'') 
+            pos = dispname.rfind(u' ')
             authorfirstname = dispname[:pos]
             authorlastname = dispname[pos + 1:len(dispname)]
             s = "update authors set first_name = '" \
                 + authorfirstname + "', last_name = '" + authorlastname \
-                + "' where id = " + str(author[0])
+                + "' where id = " + unicode(author[0])
             c.execute(s)
         conn.commit()
         self.display.sub_output(u'Author Data Migration Completed')
-        conn.execute("""drop table authors_temp;""")
+        conn.execute(u'""drop table authors_temp;""')
         conn.commit()
         conn.close()
         self.display.sub_output(u'author_temp dropped')
@@ -117,17 +117,17 @@ class MigrateSongs():
     def _v1_9_0_songbook(self, database):
         self.display.sub_output(u'SongBook Started for ' + database)
         conn = sqlite3.connect(self.data_path + os.sep + database)
-        conn.execute("""create table if not exists song_books (
+        conn.execute(u'""create table if not exists song_books (
             id integer Primary Key ASC AUTOINCREMENT,
             name varchar(128),
             publisher varchar(128)
-            );""")
+            );""')
         conn.commit()
         self.display.sub_output(u'songbook table created')
-        conn.execute("""create index if not exists songbook1 on song_books (name ASC,id ASC);""")
+        conn.execute(u'""create index if not exists songbook1 on song_books (name ASC,id ASC);""')
         conn.commit()
         self.display.sub_output(u'index songbook1 created')
-        conn.execute("""create index if not exists songbook2 on song_books (publisher ASC,id ASC);""")
+        conn.execute(u'""create index if not exists songbook2 on song_books (publisher ASC,id ASC);""')
         conn.commit()
         conn.close()
         self.display.sub_output(u'index songbook2 created')
@@ -136,9 +136,9 @@ class MigrateSongs():
     def _v1_9_0_songs(self, database):
         self.display.sub_output(u'Songs Started for ' + database)
         conn = sqlite3.connect(self.data_path + os.sep + database)
-        conn.execute("""alter table songs rename to songs_temp;""")
+        conn.execute(u'""alter table songs rename to songs_temp;""')
         conn.commit()
-        conn.execute("""create table if not exists songs  (
+        conn.execute(u'""create table if not exists songs  (
             id integer Primary Key ASC AUTOINCREMENT,
             song_book_id integer,
             title varchar(255),
@@ -151,31 +151,31 @@ class MigrateSongs():
             theme_name varchar(128),
             search_title varchar(255),
             search_lyrics text
-            );""")
+            );""')
         conn.commit()
         self.display.sub_output(u'songs table created')
-        conn.execute("""create index if not exists songs1 on songs 
-            (search_lyrics ASC,id ASC);""")
+        conn.execute(u'""create index if not exists songs1 on songs 
+            (search_lyrics ASC,id ASC);""')
         conn.commit()
         self.display.sub_output(u'index songs1 created')
-        conn.execute("""create index if not exists songs2 on songs 
-            (search_title ASC,id ASC);""")
+        conn.execute(u'""create index if not exists songs2 on songs 
+            (search_title ASC,id ASC);""')
         conn.commit()
         self.display.sub_output(u'index songs2 created')
-        conn.execute("""insert into songs (id, title, lyrics, copyright,
+        conn.execute(u'""insert into songs (id, title, lyrics, copyright,
             search_title, search_lyrics, song_book_id) 
             select songid,  songtitle, lyrics, copyrightinfo, 
             replace(replace(replace(replace(replace(replace(replace(replace(
             replace(songtitle,  '&', 'and'), ',', ''), ';', ''), ':', ''), 
-            '(', ''), ')', ''), '{', ''), '}',''),'?',''), 
+            '(u', ''), ')', ''), '{', ''), '}',''),'?',''), 
             replace(replace(replace(replace(replace(replace(replace(replace(
             replace(lyrics,  '&', 'and'), ',', ''), ';', ''), ':', ''),
-            '(', ''), ')', ''), '{', ''), '}',''),'?',''),
+            '(u', ''), ')', ''), '{', ''), '}',''),'?',''),
             0
-            from songs_temp;""")
+            from songs_temp;""')
         conn.commit()
         self.display.sub_output(u'songs populated')
-        conn.execute("""drop table songs_temp;""")
+        conn.execute(u'""drop table songs_temp;""')
         conn.commit()
         conn.close()
         self.display.sub_output(u'songs_temp dropped')
@@ -185,12 +185,12 @@ class MigrateSongs():
         self.display.sub_output(u'Topics Started for ' + database)
         conn = sqlite3.connect(self.data_path+os.sep+database)
         conn.text_factory = str
-        conn.execute("""create table if not exists topics 
+        conn.execute(u'""create table if not exists topics 
             (id integer Primary Key ASC AUTOINCREMENT,
-            name varchar(128));""")
+            name varchar(128));""')
         conn.commit()
         self.display.sub_output(u'Topic table created')
-        conn.execute("""create index if not exists topic1 on topics (name ASC,id ASC);""")
+        conn.execute(u'""create index if not exists topic1 on topics (name ASC,id ASC);""')
         conn.commit()
         conn.close()
         self.display.sub_output(u'index topic1 created')
@@ -200,16 +200,16 @@ class MigrateSongs():
     def _v1_9_0_songauthors(self, database):
         self.display.sub_output(u'SongAuthors Started for ' + database);
         conn = sqlite3.connect(self.data_path + os.sep + database)
-        conn.execute("""create table if not exists authors_songs 
+        conn.execute(u'""create table if not exists authors_songs 
             (author_id integer,
-            song_id integer);""")
+            song_id integer);""')
         conn.commit()
         self.display.sub_output(u'authors_songs table created')
-        conn.execute("""insert into authors_songs (author_id, song_id) 
-            select authorid, songid from songauthors;""")
+        conn.execute(u'""insert into authors_songs (author_id, song_id) 
+            select authorid, songid from songauthors;""')
         conn.commit()
         self.display.sub_output(u'authors_songs populated')
-        conn.execute("""drop table songauthors;""")
+        conn.execute(u'""drop table songauthors;""')
         conn.commit()
         self.display.sub_output(u'songauthors dropped')
         conn.close()
@@ -218,15 +218,15 @@ class MigrateSongs():
     def _v1_9_0_songtopics(self, database):
         self.display.sub_output(u'Songtopics Started for ' + database);
         conn = sqlite3.connect(self.data_path+os.sep+database)
-        conn.execute("""create table if not exists song_topics 
+        conn.execute(u'""create table if not exists song_topics 
             (song_id integer,
-            topic_id integer);""")
+            topic_id integer);""')
         conn.commit()
         self.display.sub_output(u'songtopics table created')
-        conn.execute("""create index if not exists songtopic1 on song_topics (topic_id ASC,song_id ASC);""")
+        conn.execute(u'""create index if not exists songtopic1 on song_topics (topic_id ASC,song_id ASC);""')
         conn.commit()
         self.display.sub_output(u'index songtopic1 created')
-        conn.execute("""create index if not exists songtopic2 on song_topics (song_id ASC,topic_id ASC);""")
+        conn.execute(u'""create index if not exists songtopic2 on song_topics (song_id ASC,topic_id ASC);""')
         conn.commit()
         conn.close()
         self.display.sub_output(u'index songtopic2 created')

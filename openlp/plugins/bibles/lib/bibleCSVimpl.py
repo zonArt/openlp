@@ -34,7 +34,7 @@ class BibleCSVImpl(BibleCommon):
         """         
         self.bibledb = bibledb
         self.loadbible = True
-        QtCore.QObject.connect(Receiver().get_receiver(),QtCore.SIGNAL("openlpstopimport"),self.stop_import)
+        QtCore.QObject.connect(Receiver().get_receiver(),QtCore.SIGNAL(u'openlpstopimport'),self.stop_import)
         
     def stop_import(self):
         self.loadbible= False
@@ -56,7 +56,7 @@ class BibleCSVImpl(BibleCommon):
             self.bibledb.create_book(p2, p3, int(p1))
             count += 1
             if count % 3 == 0:   #Every x verses repaint the screen
-                Receiver().send_message("openlpprocessevents")                    
+                Receiver().send_message(u'openlpprocessevents')                    
                 count = 0
         
         count = 0
@@ -75,5 +75,5 @@ class BibleCSVImpl(BibleCommon):
             self.bibledb.add_verse(book.id, p[1], p[2], p3)
             count += 1
             if count % 3 == 0:   #Every x verses repaint the screen
-                Receiver().send_message("openlpprocessevents")                    
+                Receiver().send_message(u'openlpprocessevents')                    
                 count = 0

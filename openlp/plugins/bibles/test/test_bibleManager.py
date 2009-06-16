@@ -36,25 +36,25 @@ logging.basicConfig(level=logging.DEBUG,
 
 console=logging.StreamHandler()
 # set a format which is simpler for console use
-formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+formatter = logging.Formatter(u'%(name)-12s: %(levelname)-8s %(message)s')
 # tell the handler to use this format
 console.setFormatter(formatter)
-logging.getLogger('').addHandler(console)
-log=logging.getLogger('')
+logging.getLogger(u'').addHandler(console)
+log=logging.getLogger(u'')
 
-logging.info("\nLogging started")
+logging.info(u'\nLogging started')
 
 class TestBibleManager:
-    log=logging.getLogger("testBibleMgr")
+    log=logging.getLogger(u'testBibleMgr')
     def setup_class(self):
-        log.debug("\n.......Register BM")
+        log.debug(u'\n.......Register BM')
         self.bm = BibleManager()
 
     def testRegisterCSVBibleFiles(self):
         # Register a bible from files
-        log.debug("\n.......testRegisterBibleFiles")
-        self.bm.registerFileBible("TheMessage",'biblebooks_msg_short.csv','bibleverses_msg_short.csv')
-        self.bm.registerFileBible("NIV",'biblebooks_niv_short.csv','bibleverses_niv_short.csv')        
+        log.debug(u'\n.......testRegisterBibleFiles')
+        self.bm.registerFileBible(u'TheMessage",'biblebooks_msg_short.csv','bibleverses_msg_short.csv')
+        self.bm.registerFileBible(u'NIV",'biblebooks_niv_short.csv','bibleverses_niv_short.csv')        
         b = self.bm.get_bibles()
         for b1 in b:
             log.debug( b1)
@@ -62,10 +62,10 @@ class TestBibleManager:
             
     def testRegisterHTTPBible(self):
         # Register a bible from files
-        log.debug( "\n.......testRegisterBibleHTTP")
-        self.bm.registerHTTPBible("asv","Crosswalk", "", "", "")
-        self.bm.registerHTTPBible("nasb","Biblegateway", "", "", "")
-        self.bm.registerHTTPBible("nkj","Biblegateway", "http://tigger2:3128/", "", "")                
+        log.debug( "\n.......testRegisterBibleHTTP')
+        self.bm.registerHTTPBible(u'asv","Crosswalk", u'", u'", u'')
+        self.bm.registerHTTPBible(u'nasb","Biblegateway", u'", u'", u'')
+        self.bm.registerHTTPBible(u'nkj","Biblegateway", u'http://tigger2:3128/", u'", u'')                
         b = self.bm.get_bibles()
         for b1 in b:
             log.debug( b1)
@@ -73,7 +73,7 @@ class TestBibleManager:
 
             
     def testGetBibles(self):
-        log.debug( "\n.......testGetBibles")
+        log.debug( "\n.......testGetBibles')
         # make sure the shuffled sequence does not lose any elements
         b = self.bm.get_bibles()
         for b1 in b:
@@ -81,38 +81,38 @@ class TestBibleManager:
             assert(b1 in b)
 
     def testGetBibleBooks(self):
-        log.debug( "\n.......testGetBibleBooks")
-        c = self.bm.get_bible_books("NIV")
+        log.debug( "\n.......testGetBibleBooks')
+        c = self.bm.get_bible_books(u'NIV')
         for c1 in c:
             log.debug( c1)
             assert(c1 in c)
             
     def testGetBookChapterCount(self):
-        log.debug( "\n.......testGetBookChapterCount")       
-        assert(self.bm.get_book_chapter_count("Matthew") == '28')
+        log.debug( "\n.......testGetBookChapterCount')       
+        assert(self.bm.get_book_chapter_count(u'Matthew') == '28')
 
     def testGetBookVerseCount(self):
-        log.debug( "\n.......testGetBookVerseCount")    
-        assert(self.bm.get_book_verse_count("Genesis", 1) == '31')
-        assert(self.bm.get_book_verse_count("Genesis", 2) == '25')
-        assert(self.bm.get_book_verse_count("Matthew", 1) == '25')
-        assert(self.bm.get_book_verse_count("Revelation", 1) == '20')        
+        log.debug( "\n.......testGetBookVerseCount')    
+        assert(self.bm.get_book_verse_count(u'Genesis", 1) == '31')
+        assert(self.bm.get_book_verse_count(u'Genesis", 2) == '25')
+        assert(self.bm.get_book_verse_count(u'Matthew", 1) == '25')
+        assert(self.bm.get_book_verse_count(u'Revelation", 1) == '20')        
 
     def testGetVerseText(self):
-        log.debug( "\n.......testGetVerseText")
-        #c = self.bm.get_verse_text("TheMessage",'Genesis',1,2,1)
+        log.debug( "\n.......testGetVerseText')
+        #c = self.bm.get_verse_text(u'TheMessage",'Genesis',1,2,1)
         #log.debug( c )
-        #c = self.bm.get_verse_text('NIV','Genesis',1,1,2)
+        #c = self.bm.get_verse_text(u'NIV','Genesis',1,1,2)
         #log.debug( c ) 
-        c = self.bm.get_verse_text('asv','Genesis',10,1,20)
+        c = self.bm.get_verse_text(u'asv','Genesis',10,1,20)
         log.debug( c )
-        c = self.bm.get_verse_text('nasb','Genesis',10,1,20)
+        c = self.bm.get_verse_text(u'nasb','Genesis',10,1,20)
         log.debug( c )       
-        c = self.bm.get_verse_text('nkj','Revelation',10,1,20)
+        c = self.bm.get_verse_text(u'nkj','Revelation',10,1,20)
         log.debug( c ) 
         
     def testLoadBible(self):
-        log.debug( "\n.......testLoadBible")
-        #self.bm.loadBible('asv')
-        #self.bm.loadBible('nasb')        
-        #self.bm.loadBible('nkj') 
+        log.debug( "\n.......testLoadBible')
+        #self.bm.loadBible(u'asv')
+        #self.bm.loadBible(u'nasb')        
+        #self.bm.loadBible(u'nkj') 

@@ -36,24 +36,24 @@ logging.basicConfig(level=logging.DEBUG,
 
 console=logging.StreamHandler()
 # set a format which is simpler for console use
-formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+formatter = logging.Formatter(u'%(name)-12s: %(levelname)-8s %(message)s')
 # tell the handler to use this format
 console.setFormatter(formatter)
-logging.getLogger('').addHandler(console)
-log=logging.getLogger('')
+logging.getLogger(u'').addHandler(console)
+log=logging.getLogger(u'')
 
-logging.info("\nLogging started")
+logging.info(u'\nLogging started')
 
 class TestBibleManager:
-    log=logging.getLogger("testBibleMgr")
+    log=logging.getLogger(u'testBibleMgr')
     def setup_class(self):
-        log.debug("\n.......Register BM")
+        log.debug(u'\n.......Register BM')
         self.bm = BibleManager()
 
     def testRegisterOSISBibleFiles(self):
         # Register a bible from files
-        log.debug("\n.......testRegisterOSISBibleFiles")
-        self.bm.register_osis_file_bible("asv",'asv.osis')
+        log.debug(u'\n.......testRegisterOSISBibleFiles')
+        self.bm.register_osis_file_bible(u'asv",'asv.osis')
         b = self.bm.get_bibles()
         for b1 in b:
             log.debug( b1)

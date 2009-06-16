@@ -67,7 +67,7 @@ class Renderer:
 
     def set_bg_image(self, filename):
         log.debug(u'set bg image %s', filename)
-        self._bg_image_filename = str(filename)
+        self._bg_image_filename = unicode(filename)
         if self._frame is not None:
             self.scale_bg_image()
 

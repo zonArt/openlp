@@ -17,20 +17,18 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-
 from PyQt4 import QtCore, QtGui
-
 from openlp.core.lib import translate
 
 class SplashScreen(object):
     def __init__(self, version):
         self.splash_screen = QtGui.QSplashScreen()
         self.setupUi()
-        starting = translate('SplashScreen',u'Starting')
+        starting = translate(u'SplashScreen',u'Starting')
         self.message=starting+u'..... '+version
 
     def setupUi(self):
-        self.splash_screen.setObjectName("splash_screen")
+        self.splash_screen.setObjectName(u'splash_screen')
         self.splash_screen.setWindowModality(QtCore.Qt.NonModal)
         self.splash_screen.setEnabled(True)
         self.splash_screen.resize(370, 370)
@@ -41,8 +39,8 @@ class SplashScreen(object):
         self.splash_screen.setSizePolicy(sizePolicy)
         self.splash_screen.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/icon/openlp-logo-16x16.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        splash_image = QtGui.QPixmap(":/graphics/openlp-splash-screen.png")
+        icon.addPixmap(QtGui.QPixmap(u':/icon/openlp-logo-16x16.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        splash_image = QtGui.QPixmap(u':/graphics/openlp-splash-screen.png')
         self.splash_screen.setWindowIcon(icon)
         self.splash_screen.setPixmap(splash_image)
         self.splash_screen.setMask(splash_image.mask())
@@ -51,7 +49,7 @@ class SplashScreen(object):
         QtCore.QMetaObject.connectSlotsByName(self.splash_screen)
 
     def retranslateUi(self):
-        self.splash_screen.setWindowTitle(QtGui.QApplication.translate("splash_screen", "Splash Screen", None, QtGui.QApplication.UnicodeUTF8))
+        self.splash_screen.setWindowTitle(translate(u'splash_screen', u'Splash Screen'))
 
     def show(self):
         self.splash_screen.show()

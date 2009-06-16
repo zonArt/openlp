@@ -27,8 +27,8 @@ class ListWithPreviews(QtCore.QAbstractListModel):
     An abstract list of strings and the preview icon to go with them
     """
     global log
-    log = logging.getLogger("ListWithPreviews")
-    log.info("started")
+    log = logging.getLogger(u'ListWithPreviews')
+    log.info(u'started')
 
     def __init__(self):
         QtCore.QAbstractListModel.__init__(self)
@@ -41,13 +41,13 @@ class ListWithPreviews(QtCore.QAbstractListModel):
 
     def insertRow(self, row, filename):
         self.beginInsertRows(QtCore.QModelIndex(),row,row)
-        log.info("insert row %d:%s"% (row,filename))
+        log.info(u'insert row %d:%s'% (row,filename))
         # get short filename to display next to image
-        (prefix, shortfilename) = os.path.split(str(filename))
-        log.info("shortfilename=%s"% (shortfilename))
+        (prefix, shortfilename) = os.path.split(unicode(filename))
+        log.info(u'shortfilename=%s'% (shortfilename))
         # create a preview image
         if os.path.exists(filename):
-            preview = QtGui.QPixmap(str(filename))
+            preview = QtGui.QPixmap(unicode(filename))
             w = self.maximagewidth;
             h = self.rowheight
             preview = preview.scaled(w, h, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)

@@ -70,7 +70,7 @@ class BiblesTab(SettingsTab):
         self.VerseTypeLayout.addWidget(self.ParagraphRadioButton)
         self.VerseDisplayLayout.addWidget(self.VerseTypeWidget, 0, 0, 1, 1)
         self.NewChaptersCheckBox = QtGui.QCheckBox(self.VerseDisplayGroupBox)
-        self.NewChaptersCheckBox.setObjectName("NewChaptersCheckBox")
+        self.NewChaptersCheckBox.setObjectName(u'NewChaptersCheckBox')
         self.VerseDisplayLayout.addWidget(self.NewChaptersCheckBox, 1, 0, 1, 1)
         self.DisplayStyleWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
         self.DisplayStyleWidget.setObjectName(u'DisplayStyleWidget')
@@ -201,11 +201,11 @@ class BiblesTab(SettingsTab):
         self.BibleSearchCheckBox.setChecked(self.bible_search)
 
     def save(self):
-        self.config.set_config(u'paragraph style', str(self.paragraph_style))
-        self.config.set_config(u'display new chapter', str(self.show_new_chapters))
-        self.config.set_config(u'display brackets', str(self.display_style))
-        self.config.set_config(u'search as type', str(self.bible_search))
-        self.config.set_config(u'bible theme', str(self.bible_theme))
+        self.config.set_config(u'paragraph style', unicode(self.paragraph_style))
+        self.config.set_config(u'display new chapter', unicode(self.show_new_chapters))
+        self.config.set_config(u'display brackets', unicode(self.display_style))
+        self.config.set_config(u'search as type', unicode(self.bible_search))
+        self.config.set_config(u'bible theme', unicode(self.bible_theme))
 
     def updateThemeList(self, theme_list):
         """
@@ -215,7 +215,7 @@ class BiblesTab(SettingsTab):
         self.BibleThemeComboBox.addItem(u'')
         for theme in theme_list:
             self.BibleThemeComboBox.addItem(theme)
-        id = self.BibleThemeComboBox.findText(str(self.bible_theme), QtCore.Qt.MatchExactly)
+        id = self.BibleThemeComboBox.findText(unicode(self.bible_theme), QtCore.Qt.MatchExactly)
         if id == -1:
             # Not Found
             id = 0

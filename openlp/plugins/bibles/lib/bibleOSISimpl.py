@@ -24,7 +24,7 @@ from PyQt4 import QtCore
 
 class BibleOSISImpl():
     global log
-    log=logging.getLogger(u'BibleOSISImpl')
+    log = logging.getLogger(u'BibleOSISImpl')
     log.info(u'BibleOSISImpl loaded')
 
     def __init__(self, biblepath, bibledb):
@@ -33,20 +33,20 @@ class BibleOSISImpl():
         self.abbrevOfBible = {} # books of the bible linked to bibleid  {osis ,Abbrev }
 
         filepath = os.path.split(os.path.abspath(__file__))[0]
-        filepath = os.path.abspath(os.path.join(filepath, '..', 'resources','osisbooks.csv'))
-        fbibles=open(filepath, 'r')
+        filepath = os.path.abspath(os.path.join(filepath, u'..', u'resources',u'osisbooks.csv'))
+        fbibles=open(filepath, u'r')
         for line in fbibles:
-            p = line.split(",")
-            self.booksOfBible[p[0]] = p[1].replace('\n', '')
-            self.abbrevOfBible[p[0]] = p[2].replace('\n', '')
+            p = line.split(u',')
+            self.booksOfBible[p[0]] = p[1].replace(u'\n', '')
+            self.abbrevOfBible[p[0]] = p[2].replace(u'\n', '')
         self.loadbible = True
-        QtCore.QObject.connect(Receiver().get_receiver(),QtCore.SIGNAL("openlpstopimport"),self.stop_import)
+        QtCore.QObject.connect(Receiver().get_receiver(),QtCore.SIGNAL(u'openlpstopimport'),self.stop_import)
 
     def stop_import(self):
         self.loadbible= False
 
     def load_data(self, osisfile, dialogobject=None):
-        osis=open(osisfile, 'r')
+        osis=open(osisfile, u'r')
 
         book_ptr = None
         id = 0
@@ -60,19 +60,19 @@ class BibleOSISImpl():
 #            print file
             pos = file.find(verseText)
             if pos > -1: # we have a verse
-                epos= file.find(">", pos)
+                epos= file.find(u'>', pos)
                 ref =  file[pos+15:epos-1]  # Book Reference
 
                 #lets find the bible text only
                 pos = epos + 1 # find start of text
-                epos = file.find("</verse>", pos) # end  of text
+                epos = file.find(u'</verse>', pos) # end  of text
                 text = unicode(file[pos : epos], u'utf8')
                 #print pos, e, f[pos:e] # Found Basic Text
 
                 #remove tags of extra information
-                text = self.remove_block(u'<title',u'</title>', text)
-                text = self.remove_block(u'<note',u'</note>', text)
-                text = self.remove_block(u'<divineName',u'</divineName>', text)
+                text = self.remove_block(u'<title', u'</title>', text)
+                text = self.remove_block(u'<note', u'</note>', text)
+                text = self.remove_block(u'<divineName', u'</divineName>', text)
 
                 text = self.remove_tag(u'<lb',  text)
                 text = self.remove_tag(u'<q',  text)
@@ -113,12 +113,12 @@ class BibleOSISImpl():
                     book_ptr = p[0]
                     book = self.bibledb.create_book(self.booksOfBible[p[0]] , self.abbrevOfBible[p[0]], testament)
                     dialogobject.incrementProgressBar(self.booksOfBible[p[0]] )
-                    Receiver().send_message("openlpprocessevents")
+                    Receiver().send_message(u'openlpprocessevents')
                     count = 0
                 self.bibledb.add_verse(book.id, p[1], p[2], text)
                 count += 1
                 if count % 3 == 0:   #Every 3 verses repaint the screen
-                    Receiver().send_message("openlpprocessevents")
+                    Receiver().send_message(u'openlpprocessevents')
                     count = 0
 
     def remove_block(self, start_tag, end_tag,  text):

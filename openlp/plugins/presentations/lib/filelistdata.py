@@ -39,10 +39,10 @@ class FileListData(QAbstractListModel):
 
     def insertRow(self, row, filename):
         self.beginInsertRows(QModelIndex(),row,row)
-        log.info("insert row %d:%s"%(row,filename))
+        log.info(u'insert row %d:%s'%(row,filename))
         # get short filename to display next to image
-        (prefix, shortfilename) = os.path.split(str(filename))
-        log.info("shortfilename=%s"%(shortfilename))
+        (prefix, shortfilename) = os.path.split(unicode(filename))
+        log.info(u'shortfilename=%s'%(shortfilename))
         # create a preview image
         self.items.insert(row, (filename, shortfilename))
         self.endInsertRows()
@@ -67,7 +67,7 @@ class FileListData(QAbstractListModel):
             retval= self.items[row][0]
         else:
             retval= QVariant()
-#         log.info("Returning"+ str(retval))
+#         log.info(u'Returning"+ unicode(retval))
         if type(retval) is not type(QVariant):
             return QVariant(retval)
         else:

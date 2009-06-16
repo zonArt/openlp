@@ -68,7 +68,7 @@ class ServiceManager(QtGui.QWidget):
         self.ServiceManagerList.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
         self.ServiceManagerList.setAlternatingRowColors(True)
         self.ServiceManagerList.setHeaderHidden(True)
-        self.ServiceManagerList.setObjectName("ServiceManagerList")
+        self.ServiceManagerList.setObjectName(u'ServiceManagerList')
         # enable drop
         self.ServiceManagerList.__class__.dragEnterEvent = self.dragEnterEvent
         self.ServiceManagerList.__class__.dragMoveEvent = self.dragEnterEvent
@@ -268,7 +268,7 @@ class ServiceManager(QtGui.QWidget):
         self.ThemeComboBox.addItem(u'')
         for theme in theme_list:
             self.ThemeComboBox.addItem(theme)
-        id = self.ThemeComboBox.findText(str(self.service_theme), QtCore.Qt.MatchExactly)
+        id = self.ThemeComboBox.findText(unicode(self.service_theme), QtCore.Qt.MatchExactly)
         # Not Found
         if id == -1:
             id = 0

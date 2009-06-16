@@ -96,7 +96,7 @@ class Theme:
 #                 print element.tag, t, type(t)
                 if type(t) == type(None): # easy!
                     val=t
-                if type(t) == type(" "): # strings need special handling to sort the colours out
+                if type(t) == type(u' '): # strings need special handling to sort the colours out
 #                    print "str",
                     if t[0] == "$": # might be a hex number
 #                        print "hex",
@@ -113,8 +113,8 @@ class Theme:
                             val=int(t)
                         except ValueError:
                             val=t
-                if (element.tag.find("Color") > 0 or
-                    (element.tag.find("BackgroundParameter") == 0 and type(val) == type(0))):
+                if (element.tag.find(u'Color') > 0 or
+                    (element.tag.find(u'BackgroundParameter') == 0 and type(val) == type(0))):
                     # convert to a wx.Colour
                     val= QtGui.QColor((val>>16) & 0xFF, (val>>8)&0xFF, val&0xFF)
  #               print [val]
@@ -127,4 +127,3 @@ class Theme:
             if k[0:1] != "_":
                 s+= "%30s : %s\n" %(k,getattr(self,k))
         return s
-

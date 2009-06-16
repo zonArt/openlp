@@ -97,7 +97,7 @@ class ThemesTab(SettingsTab):
             QtCore.SIGNAL(u'pressed()'), self.onGlobalLevelButtonPressed)
 
         QtCore.QObject.connect(self.DefaultComboBox,
-            QtCore.SIGNAL("activated(int)"), self.onDefaultComboBoxChanged)
+            QtCore.SIGNAL(u'activated(int)'), self.onDefaultComboBoxChanged)
 
         #self.DefaultListView.setScaledContents(True)
 
@@ -140,8 +140,8 @@ class ThemesTab(SettingsTab):
     def onDefaultComboBoxChanged(self, value):
         self.global_theme = self.DefaultComboBox.currentText()
         self.parent.RenderManager.set_global_theme(self.global_theme, self.global_style)
-        image = self.parent.ThemeManagerContents.getPreviewImage(str(self.global_theme))
-        preview = QtGui.QPixmap(str(image))
+        image = self.parent.ThemeManagerContents.getPreviewImage(unicode(self.global_theme))
+        preview = QtGui.QPixmap(unicode(image))
         display = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
         self.DefaultListView.setPixmap(display)
 
@@ -152,14 +152,14 @@ class ThemesTab(SettingsTab):
         self.DefaultComboBox.clear()
         for theme in theme_list:
             self.DefaultComboBox.addItem(theme)
-        id = self.DefaultComboBox.findText(str(self.global_theme), QtCore.Qt.MatchExactly)
+        id = self.DefaultComboBox.findText(unicode(self.global_theme), QtCore.Qt.MatchExactly)
         if id == -1:
             id = 0 # Not Found
             self.global_theme = u''
         self.DefaultComboBox.setCurrentIndex(id)
         self.parent.RenderManager.set_global_theme(self.global_theme, self.global_style)
         if self.global_theme is not u'':
-            image = self.parent.ThemeManagerContents.getPreviewImage(str(self.global_theme))
-            preview = QtGui.QPixmap(str(image))
+            image = self.parent.ThemeManagerContents.getPreviewImage(unicode(self.global_theme))
+            preview = QtGui.QPixmap(unicode(image))
             display = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
             self.DefaultListView.setPixmap(display)

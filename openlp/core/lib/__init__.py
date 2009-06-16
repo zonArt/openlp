@@ -49,7 +49,7 @@ def contextMenuAction(base, icon, text, slot):
     """
     action = QtGui.QAction(text, base)
     action .setIcon(buildIcon(icon))
-    QtCore.QObject.connect(action, QtCore.SIGNAL("triggered()"), slot)
+    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
     return action
 
 def contextMenuSeparator(base):
@@ -75,11 +75,4 @@ from themexmlhandler import ThemeXML
 from renderer import Renderer
 from rendermanager import RenderManager
 
-#__all__ = ['Renderer','PluginConfig', 'Plugin', 'SettingsTab', 'MediaManagerItem', 'Event', 'EventType'
-#           'XmlRootClass', 'ServiceItem', 'Receiver', 'OpenLPToolbar', 'SongXMLBuilder',
-#           'SongXMLParser', 'EventManager', 'ThemeXML', 'RenderManager']
-
 __all__ = [ 'translate', 'file_to_xml', 'str_to_bool', 'contextMenuAction', 'contextMenuSeparator']
-
-
-

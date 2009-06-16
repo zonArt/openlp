@@ -23,5 +23,5 @@ class MigrateBibles():
         self.display = display
 
     def process(self):
-        self.display.output("Bible process started");
-        self.display.output("Bible process finished");   
+        self.display.output(u'Bible process started');
+        self.display.output(u'Bible process finished');   

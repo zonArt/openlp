@@ -42,13 +42,13 @@ class ImageServiceItem(ServiceItem):
 
     """
     global log
-    log=logging.getLogger("ImageServiceItem")
-    log.info("ImageServiceItem loaded")
+    log=logging.getLogger(u'ImageServiceItem')
+    log.info(u'ImageServiceItem loaded')
     def __init__(self, controller):
         """
         Init Method
         """
-        log.info("init")
+        log.info(u'init')
         self.imgs=ListWithPreviews()
 #         self.slide_controller=controller
 #         self.slide_controller.ControllerContents=QtGui.QListView()
@@ -64,12 +64,12 @@ class ImageServiceItem(ServiceItem):
         """
         # render the "image chooser first"
 #         for f in self.imgs:
-#             fl ,  nm = os.path.split(str(f))
+#             fl ,  nm = os.path.split(unicode(f))
 #             c = self.slide_controller.rowCount()
 #             self.slide_controller.setRowCount(c+1)
-#             twi = QtGui.QTableWidgetItem(str(f))
+#             twi = QtGui.QTableWidgetItem(unicode(f))
 #             self.slide_controller.setItem(c , 0, twi)
-#             twi = QtGui.QTableWidgetItem(str(nm))
+#             twi = QtGui.QTableWidgetItem(unicode(nm))
 #             self.slide_controller.setItem(c , 1, twi)
 #             self.slide_controller.setRowHeight(c, 80)
 
@@ -85,11 +85,11 @@ class ImageServiceItem(ServiceItem):
         """
         append an image to the list
         """
-        if type(data)==type("string"):
-            log.info("add filename:"+data)
+        if type(data)==type(u'string'):
+            log.info(u'add filename:'+data)
             self.imgs.addRow(data)
         else: # it's another service item to be merged in
-            log.info("add Item..."+str(data))
+            log.info(u'add Item...'+unicode(data))
             for filename in data.get_file_list():
                 self.add(filename)
 
@@ -98,17 +98,16 @@ class ImageServiceItem(ServiceItem):
         """
         Turn the image list into a set of filenames for storage in the oos file
         """
-        log.info("Get oos text")
-        log.info(str(self.imgs))
-#        log.info(str(self.imgs.get_file_list()))
+        log.info(u'Get oos text')
+        log.info(unicode(self.imgs))
+#        log.info(unicode(self.imgs.get_file_list()))
         return '\n'.join(self.imgs.get_file_list())
 
     def set_from_oos(self, text):
         """
         get text from the OOS file and setup the internal structure
         """
-        log.info("Set from OOS:"+text)
-        files=text.split('\n')
+        log.info(u'Set from OOS:'+text)
+        files=text.split(u'\n')
         for f in files:
             self.imgs.addRow(f)
-

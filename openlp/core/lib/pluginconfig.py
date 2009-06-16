@@ -64,7 +64,7 @@ class PluginConfig(object):
         return self.set_config(u'data path', os.path.basename(path))
 
     def get_files(self, suffix=None):
-        #suffix = self.get_config("suffix name", default_suffixes)
+        #suffix = self.get_config(u'suffix name", default_suffixes)
         try:
             files = os.listdir(self.get_data_path())
         except:
@@ -97,7 +97,7 @@ class PluginConfig(object):
         list = []
         if list_count > 0:
             for counter in range(0 , list_count):
-                item = str(self.get_config(u'%s %d' % (name, counter)))
+                item = unicode(self.get_config(u'%s %d' % (name, counter)))
                 list.append(item)
         return list
 

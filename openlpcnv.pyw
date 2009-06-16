@@ -22,8 +22,8 @@ class Migration():
         """
         """
         self.display = Display()        
-        self.stime =  time.strftime("%Y-%m-%d-%H%M%S", time.localtime())
-        self.display.output("OpenLp v1.9.0 Migration Utility Started" )
+        self.stime =  time.strftime(u'%Y-%m-%d-%H%M%S", time.localtime())
+        self.display.output(u'OpenLp v1.9.0 Migration Utility Started" )
         
     def process(self):
         MigrateFiles(self.display).process()
@@ -33,9 +33,9 @@ class Migration():
     def move_log_file(self):
         fname = 'openlp-migration.log'
         c = os.path.splitext(fname)
-        b = (c[0]+'-'+ str(self.stime) + c[1])
-        self.display.output("Logfile " +b + " generated")       
-        self.display.output("Migration Utility Finished ")
+        b = (c[0]+'-'+ unicode(self.stime) + c[1])
+        self.display.output(u'Logfile " +b + " generated')       
+        self.display.output(u'Migration Utility Finished ')
         os.rename(fname, b)        
 
         

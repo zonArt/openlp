@@ -39,7 +39,7 @@ class BiblePlugin(Plugin):
         self.weight = -9
         # Create the plugin icon
         self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(':/media/media_verse.png'),
+        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_verse.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         #Register the bible Manager
         self.biblemanager = BibleManager(self.config)
@@ -55,17 +55,17 @@ class BiblePlugin(Plugin):
 
     def add_import_menu_item(self, import_menu):
         self.ImportBibleItem = QtGui.QAction(import_menu)
-        self.ImportBibleItem.setObjectName("ImportBibleItem")
+        self.ImportBibleItem.setObjectName(u'ImportBibleItem')
         import_menu.addAction(self.ImportBibleItem)
-        self.ImportBibleItem.setText(translate("BiblePlugin", "&Bible"))
+        self.ImportBibleItem.setText(translate(u'BiblePlugin', u'&Bible'))
         # Signals and slots
-        QtCore.QObject.connect(self.ImportBibleItem, QtCore.SIGNAL("triggered()"),  self.onBibleNewClick)
+        QtCore.QObject.connect(self.ImportBibleItem, QtCore.SIGNAL(u'triggered()'),  self.onBibleNewClick)
 
     def add_export_menu_item(self, export_menu):
         self.ExportBibleItem = QtGui.QAction(export_menu)
-        self.ExportBibleItem.setObjectName("ExportBibleItem")
+        self.ExportBibleItem.setObjectName(u'ExportBibleItem')
         export_menu.addAction(self.ExportBibleItem)
-        self.ExportBibleItem.setText(translate("BiblePlugin", u'&Bible'))
+        self.ExportBibleItem.setText(translate(u'BiblePlugin', u'&Bible'))
 
     def initialise(self):
         pass

@@ -57,7 +57,7 @@ class TestRenderTheme(TestRender_base):
         TestRender_base.setup_method(self, method)
         print "Theme setup", method
 #         print "setup theme"
-        self.r.set_theme(Theme('blank_theme.xml')) # set "blank" theme
+        self.r.set_theme(Theme(u'blank_theme.xml')) # set "blank" theme
         self.r.set_text_rectangle(QtCore.QRect(0,0, self.size.width(), self.size.height()))
         words="""How sweet the name of Jesus sounds
 In a believer's ear!
@@ -87,7 +87,7 @@ And drives away his fear.
         p=self.frame.GetPixmap()
         im=self.write_to_file(p, name)
         print "Compare"
-        goldenfilename=os.path.join("golden_bitmaps",name+".bmp")
+        goldenfilename=os.path.join(u'golden_bitmaps",name+".bmp')
         if os.path.exists(goldenfilename):
             goldenim=QtGui.QImage(goldenfilename)
         else:
@@ -129,9 +129,9 @@ And drives away his fear.
     # }}}
     # {{{ backgrounds
     def test_bg_stretch_y(self):
-        t=Theme('blank_theme.xml')
+        t=Theme(u'blank_theme.xml')
         t.BackgroundType = 2
-        t.BackgroundParameter1 = os.path.join('data_for_tests', "snowsmall.jpg");
+        t.BackgroundParameter1 = os.path.join(u'data_for_tests', "snowsmall.jpg');
         t.BackgroundParameter2 = QtGui.QColor(0,0,64);
         t.BackgroundParameter3 = 0
         t.Name="stretch y"
@@ -142,9 +142,9 @@ And drives away his fear.
         self.bmpname=whoami()
         print "fone"
     def test_bg_shrink_y(self):
-        t=Theme('blank_theme.xml')
+        t=Theme(u'blank_theme.xml')
         t.BackgroundType = 2
-        t.BackgroundParameter1 = os.path.join('data_for_tests', "snowbig.jpg");
+        t.BackgroundParameter1 = os.path.join(u'data_for_tests', "snowbig.jpg');
         t.BackgroundParameter2 = QtGui.QColor(0,0,64);
         t.BackgroundParameter3 = 0
         t.Name="shrink y"
@@ -153,9 +153,9 @@ And drives away his fear.
         self.bmpname=whoami()
 
     def test_bg_stretch_x(self):
-        t=Theme('blank_theme.xml')
+        t=Theme(u'blank_theme.xml')
         t.BackgroundType = 2
-        t.BackgroundParameter1 = os.path.join('data_for_tests', "treessmall.jpg");
+        t.BackgroundParameter1 = os.path.join(u'data_for_tests', "treessmall.jpg');
         t.BackgroundParameter2 = QtGui.QColor(0,0,64);
         t.BackgroundParameter3 = 0
         t.VerticalAlign = 2
@@ -166,9 +166,9 @@ And drives away his fear.
         self.bmpname=whoami()
 
     def test_bg_shrink_x(self):
-        t=Theme('blank_theme.xml')
+        t=Theme(u'blank_theme.xml')
         t.BackgroundType = 2
-        t.BackgroundParameter1 = os.path.join('data_for_tests', "treesbig.jpg");
+        t.BackgroundParameter1 = os.path.join(u'data_for_tests', "treesbig.jpg');
         t.BackgroundParameter2 = QtGui.QColor(0,0,64);
         t.BackgroundParameter3 = 0
         t.VerticalAlign = 2
@@ -180,7 +180,7 @@ And drives away his fear.
     # }}}
     # {{{ Vertical alignment
     def test_theme_vertical_align_top(self):
-        t=Theme('blank_theme.xml')
+        t=Theme(u'blank_theme.xml')
         t.BackgroundType = 0
         t.BackgroundParameter1 = QtGui.QColor(0,0,64);
         t.VerticalAlign = 0
@@ -190,7 +190,7 @@ And drives away his fear.
         self.bmpname=whoami()
 
     def test_theme_vertical_align_bot(self):
-        t=Theme('blank_theme.xml')
+        t=Theme(u'blank_theme.xml')
         t.BackgroundType = 0
         t.BackgroundParameter1 = QtGui.QColor(0,0,64);
         t.VerticalAlign = 1
@@ -201,7 +201,7 @@ And drives away his fear.
         self.bmpname=whoami()
 
     def test_theme_vertical_align_cen(self):
-        t=Theme('blank_theme.xml')
+        t=Theme(u'blank_theme.xml')
         t.BackgroundType = 0
         t.BackgroundParameter1 = QtGui.QColor(0,0,64);
         t.VerticalAlign = 2
@@ -213,7 +213,7 @@ And drives away his fear.
     # }}}
     # {{{ Horzontal alignment
     def test_theme_horizontal_align_left(self):
-        t=Theme('blank_theme.xml')
+        t=Theme(u'blank_theme.xml')
         t.BackgroundType = 0
         t.BackgroundParameter1 = QtGui.QColor(0,0,64);
         t.VerticalAlign = 0
@@ -224,7 +224,7 @@ And drives away his fear.
         self.bmpname=whoami()
 
     def test_theme_horizontal_align_right(self):
-        t=Theme('blank_theme.xml')
+        t=Theme(u'blank_theme.xml')
         t.BackgroundType = 0
         t.BackgroundParameter1 = QtGui.QColor(0,0,64);
         t.VerticalAlign = 0
@@ -236,7 +236,7 @@ And drives away his fear.
         self.bmpname=whoami()
 
     def test_theme_horizontal_align_centre(self):
-        t=Theme('blank_theme.xml')
+        t=Theme(u'blank_theme.xml')
         t.BackgroundType = 0
         t.BackgroundParameter1 = QtGui.QColor(0,0,64);
         t.VerticalAlign = 0
@@ -248,7 +248,7 @@ And drives away his fear.
         self.bmpname=whoami()
 
     def test_theme_horizontal_align_left_lyric(self):
-        t=Theme('blank_theme.xml')
+        t=Theme(u'blank_theme.xml')
         t.BackgroundType = 0
         t.BackgroundParameter1 = QtGui.QColor(0,0,64);
         t.VerticalAlign = 0
@@ -263,7 +263,7 @@ And drives away his fear.
     # }}}
     # {{{ Shadows and outlines
     def test_theme_shadow_outline(self):
-        t=Theme('blank_theme.xml')
+        t=Theme(u'blank_theme.xml')
 
         t.BackgroundType = 0
         t.BackgroundParameter1 = QtGui.QColor(0,0,0);
@@ -282,7 +282,7 @@ And drives away his fear.
         self.bmpname=whoami()
     # }}}
     def test_theme_font(self):
-        t=Theme('blank_theme.xml')
+        t=Theme(u'blank_theme.xml')
         t.BackgroundType = 0
         t.BackgroundParameter1 = QtGui.QColor(0,0,64);
         t.Name="font"

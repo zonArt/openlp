@@ -7,24 +7,24 @@ class PPTViewer(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
         self.pptid = -1
-        self.setWindowTitle('PowerPoint Viewer Test')
+        self.setWindowTitle(u'PowerPoint Viewer Test')
 
-        PPTLabel = QtGui.QLabel('Open PowerPoint file')
-        slideLabel = QtGui.QLabel('Go to slide #')
+        PPTLabel = QtGui.QLabel(u'Open PowerPoint file')
+        slideLabel = QtGui.QLabel(u'Go to slide #')
         self.PPTEdit = QtGui.QLineEdit()
         self.slideEdit = QtGui.QLineEdit()
         self.total = QtGui.QLabel()
-        PPTBtn = QtGui.QPushButton("Open")
-        PPTDlgBtn = QtGui.QPushButton("...")
-        slideBtn = QtGui.QPushButton("Go")
-        prev = QtGui.QPushButton("Prev")
-        next = QtGui.QPushButton("Next")
-        blank = QtGui.QPushButton("Blank")
-        unblank = QtGui.QPushButton("Unblank")
-        restart = QtGui.QPushButton("Restart")
-        close = QtGui.QPushButton("Close")
-        resume = QtGui.QPushButton("Resume")
-        stop = QtGui.QPushButton("Stop")
+        PPTBtn = QtGui.QPushButton(u'Open')
+        PPTDlgBtn = QtGui.QPushButton(u'...')
+        slideBtn = QtGui.QPushButton(u'Go')
+        prev = QtGui.QPushButton(u'Prev')
+        next = QtGui.QPushButton(u'Next')
+        blank = QtGui.QPushButton(u'Blank')
+        unblank = QtGui.QPushButton(u'Unblank')
+        restart = QtGui.QPushButton(u'Restart')
+        close = QtGui.QPushButton(u'Close')
+        resume = QtGui.QPushButton(u'Resume')
+        stop = QtGui.QPushButton(u'Stop')
         pptwindow = QtGui.QWidget()
 
         grid = QtGui.QGridLayout()
@@ -44,17 +44,17 @@ class PPTViewer(QtGui.QWidget):
         grid.addWidget(stop, 5, 0)
         grid.addWidget(resume, 5, 1)
         grid.addWidget(pptwindow, 6, 0, 10, 3)
-        self.connect(PPTBtn, QtCore.SIGNAL('clicked()'), self.OpenClick)
-        self.connect(PPTDlgBtn, QtCore.SIGNAL('clicked()'), self.OpenDialog)
-        self.connect(slideBtn, QtCore.SIGNAL('clicked()'), self.GotoClick)
-        self.connect(prev, QtCore.SIGNAL('clicked()'), self.PrevClick)
-        self.connect(next, QtCore.SIGNAL('clicked()'), self.NextClick)
-        self.connect(blank, QtCore.SIGNAL('clicked()'), self.BlankClick)
-        self.connect(unblank, QtCore.SIGNAL('clicked()'), self.UnblankClick)
-        self.connect(restart, QtCore.SIGNAL('clicked()'), self.RestartClick)
-        self.connect(close, QtCore.SIGNAL('clicked()'), self.CloseClick)
-        self.connect(stop, QtCore.SIGNAL('clicked()'), self.StopClick)
-        self.connect(resume, QtCore.SIGNAL('clicked()'), self.ResumeClick)
+        self.connect(PPTBtn, QtCore.SIGNAL(u'clicked()'), self.OpenClick)
+        self.connect(PPTDlgBtn, QtCore.SIGNAL(u'clicked()'), self.OpenDialog)
+        self.connect(slideBtn, QtCore.SIGNAL(u'clicked()'), self.GotoClick)
+        self.connect(prev, QtCore.SIGNAL(u'clicked()'), self.PrevClick)
+        self.connect(next, QtCore.SIGNAL(u'clicked()'), self.NextClick)
+        self.connect(blank, QtCore.SIGNAL(u'clicked()'), self.BlankClick)
+        self.connect(unblank, QtCore.SIGNAL(u'clicked()'), self.UnblankClick)
+        self.connect(restart, QtCore.SIGNAL(u'clicked()'), self.RestartClick)
+        self.connect(close, QtCore.SIGNAL(u'clicked()'), self.CloseClick)
+        self.connect(stop, QtCore.SIGNAL(u'clicked()'), self.StopClick)
+        self.connect(resume, QtCore.SIGNAL(u'clicked()'), self.ResumeClick)
 
         self.setLayout(grid)
 
@@ -107,20 +107,20 @@ class PPTViewer(QtGui.QWidget):
     def OpenClick(self):
         oldid = self.pptid;
         rect = RECT(100,100,900,700)
-        filename = str(self.PPTEdit.text())
+        filename = unicode(self.PPTEdit.text())
         print filename
-        self.pptid = pptdll.OpenPPT(filename, None, rect, "c:\\temp\\slide")
-        print "id: " + str(self.pptid)
+        self.pptid = pptdll.OpenPPT(filename, None, rect, "c:\\temp\\slide')
+        print "id: " + unicode(self.pptid)
         if oldid>=0:
             pptdll.ClosePPT(oldid);
         slides = pptdll.GetSlideCount(self.pptid)
-        print "slidecount: " + str(slides)
+        print "slidecount: " + unicode(slides)
         self.total.setNum(pptdll.GetSlideCount(self.pptid))
         self.UpdateCurrSlide()
             
     def UpdateCurrSlide(self):
         if(self.pptid<0): return
-        slide = str(pptdll.GetCurrentSlide(self.pptid))
+        slide = unicode(pptdll.GetCurrentSlide(self.pptid))
         print "currslide: " + slide
         self.slideEdit.setText(slide)
         app.processEvents()
@@ -136,12 +136,11 @@ class PPTViewer(QtGui.QWidget):
         self.PPTEdit.setText(QtGui.QFileDialog.getOpenFileName(self, 'Open file'))
 
 if __name__ == '__main__':
-    #pptdll = cdll.LoadLibrary(r"C:\Documents and Settings\jonathan\Desktop\pptviewlib.dll")
-    pptdll = cdll.LoadLibrary(r"pptviewlib.dll")
+    #pptdll = cdll.LoadLibrary(r"C:\Documents and Settings\jonathan\Desktop\pptviewlib.dll')
+    pptdll = cdll.LoadLibrary(r"pptviewlib.dll')
     pptdll.SetDebug(1)
     print "Begin..."
     app = QtGui.QApplication(sys.argv)
     qb = PPTViewer()
     qb.show()
     sys.exit(app.exec_())
-

@@ -91,7 +91,7 @@ class SlideData(QtCore.QAbstractListModel):
         return self.items[row]
 
     def getItem(self, row):
-        log.info(u'Get Item:%d -> %s' %(row, str(self.items)))
+        log.info(u'Get Item:%d -> %s' %(row, unicode(self.items)))
         return self.items[row]
 
     def getList(self):

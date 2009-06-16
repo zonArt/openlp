@@ -55,19 +55,19 @@ class PresentationTab(SettingsTab):
         self.VerseTypeLayout.setObjectName(u'VerseTypeLayout')
 
         self.PowerpointCheckBox = QtGui.QCheckBox(self.VerseDisplayGroupBox)
-        self.PowerpointCheckBox.setObjectName("PowerpointCheckBox")
+        self.PowerpointCheckBox.setObjectName(u'PowerpointCheckBox')
         self.VerseDisplayLayout.addWidget(self.PowerpointCheckBox, 0, 0, 1, 1)
 
         self.PowerpointPath = QtGui.QLineEdit(self.VerseDisplayGroupBox)
-        self.PowerpointPath.setObjectName("PowerpointPath")
+        self.PowerpointPath.setObjectName(u'PowerpointPath')
         self.VerseDisplayLayout.addWidget(self.PowerpointPath, 1, 0, 1, 1)
 
         self.ImpressCheckBox = QtGui.QCheckBox(self.VerseDisplayGroupBox)
-        self.ImpressCheckBox.setObjectName("ImpressCheckBox")
+        self.ImpressCheckBox.setObjectName(u'ImpressCheckBox')
         self.VerseDisplayLayout.addWidget(self.ImpressCheckBox, 2, 0, 1, 1)
 
         self.ImpressPath = QtGui.QLineEdit(self.VerseDisplayGroupBox)
-        self.ImpressPath.setObjectName("ImpressPath")
+        self.ImpressPath.setObjectName(u'ImpressPath')
         self.VerseDisplayLayout.addWidget(self.ImpressPath, 3, 0, 1, 1)
 
         self.PresentationThemeWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
@@ -96,11 +96,11 @@ class PresentationTab(SettingsTab):
 
         # Signals and slots
         #QtCore.QObject.connect(self.NewChaptersCheckBox,
-           # QtCore.SIGNAL("stateChanged(int)"), self.onNewChaptersCheckBoxChanged)
+           # QtCore.SIGNAL(u'stateChanged(int)'), self.onNewChaptersCheckBoxChanged)
 
     def retranslateUi(self):
-        self.PowerpointCheckBox.setText(translate('PresentationTab', 'Powerpoint available:'))
-        self.ImpressCheckBox.setText(translate('PresentationTab', 'Impress available:'))
+        self.PowerpointCheckBox.setText(translate(u'PresentationTab', 'Powerpoint available:'))
+        self.ImpressCheckBox.setText(translate(u'PresentationTab', 'Impress available:'))
         self.PowerpointPath.setText(u'powerpoint.exe ')
         self.ImpressPath.setText(u'openoffice.org -nologo -show ')
 
@@ -114,7 +114,7 @@ class PresentationTab(SettingsTab):
     def load(self):
         pass
 #        self.paragraph_style = (self.config.get_config(u'paragraph style', u'True'))
-#        self.show_new_chapters = (self.config.get_config(u'display new chapter', u"False"))
+#        self.show_new_chapters = (self.config.get_config(u'display new chapter', u"False'))
 #        self.display_style = int(self.config.get_config(u'display brackets', u'0'))
 #        self.Presentation_theme = int(self.config.get_config(u'Presentation theme', u'0'))
 #        self.Presentation_search = (self.config.get_config(u'search as type', u'True'))
@@ -128,8 +128,8 @@ class PresentationTab(SettingsTab):
 
     def save(self):
         pass
-#        self.config.set_config(u'paragraph style', str(self.paragraph_style))
-#        self.config.set_config(u'display new chapter', str(self.show_new_chapters))
-#        self.config.set_config(u'display brackets', str(self.display_style))
-#        self.config.set_config(u'search as type', str(self.Presentation_search))
-#        self.config.set_config(u'Presentation theme', str(self.Presentation_theme))
+#        self.config.set_config(u'paragraph style', unicode(self.paragraph_style))
+#        self.config.set_config(u'display new chapter', unicode(self.show_new_chapters))
+#        self.config.set_config(u'display brackets', unicode(self.display_style))
+#        self.config.set_config(u'search as type', unicode(self.Presentation_search))
+#        self.config.set_config(u'Presentation theme', unicode(self.Presentation_theme))

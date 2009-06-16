@@ -216,8 +216,9 @@ class SongMediaItem(MediaManagerItem):
     def onSongDeleteClick(self):
         item = self.SongListWidget.currentItem()
         item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-        self.parent.songmanager.delete_song(id)
-        self.SongListWidget.removeItem(item)
+        self.parent.songmanager.delete_song(item_id)
+        row = self.SongListWidget.row(item)
+        self.SongListWidget.takeItem(row)
 
     def onSongPreviewClick(self):
         service_item = ServiceItem(self.parent)
@@ -238,7 +239,8 @@ class SongMediaItem(MediaManagerItem):
             songXML=SongXMLParser(song.lyrics)
             verseList = songXML.get_verses()
             for verse in verseList:
-                service_item.add_from_text(verse[1][:30], verse[1])
+                if verse[1] is not None:
+                    service_item.add_from_text(verse[1][:30], verse[1])
         else:
             verses = song.lyrics.split(u'\n\n')
             for slide in verses:
