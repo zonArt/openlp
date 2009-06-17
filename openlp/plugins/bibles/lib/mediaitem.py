@@ -23,9 +23,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import ServiceItem, MediaManagerItem, Receiver, translate
 from openlp.plugins.bibles.forms import BibleImportForm
-from openlp.plugins.bibles.lib import TextListData
 
-class BibleList(QtGui.QListView):
+class BibleList(QtGui.QListWidget):
 
     def __init__(self,parent=None,name=None):
         QtGui.QListView.__init__(self,parent)
@@ -189,13 +188,11 @@ class BibleMediaItem(MediaManagerItem):
         self.SearchTabWidget.addTab(self.AdvancedTab, u'Advanced')
         # Add the search tab widget to the page layout
         self.PageLayout.addWidget(self.SearchTabWidget)
-        self.BibleListView = BibleList()
-        self.BibleListView.setAlternatingRowColors(True)
-        self.BibleListData = TextListData()
-        self.BibleListView.setModel(self.BibleListData)
-        self.BibleListView.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
-        self.BibleListView.setDragEnabled(True)
-        self.PageLayout.addWidget(self.BibleListView)
+        self.BibleListWidget = BibleList()
+        self.BibleListWidget.setAlternatingRowColors(True)
+        self.BibleListWidget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.BibleListWidget.setDragEnabled(True)
+        self.PageLayout.addWidget(self.BibleListWidget)
         # Combo Boxes
         QtCore.QObject.connect(self.AdvancedVersionComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onAdvancedVersionComboBox)
@@ -212,18 +209,18 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'pressed()'), self.onAdvancedSearchButton)
         QtCore.QObject.connect(self.QuickSearchButton,
             QtCore.SIGNAL(u'pressed()'), self.onQuickSearchButton)
-        QtCore.QObject.connect(self.BibleListView,
+        QtCore.QObject.connect(self.BibleListWidget,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onBiblePreviewClick)
         # Context Menus
-        self.BibleListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.BibleListView.addAction(self.contextMenuAction(
-            self.BibleListView, u':/system/system_preview.png',
+        self.BibleListWidget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.BibleListWidget.addAction(self.contextMenuAction(
+            self.BibleListWidget, u':/system/system_preview.png',
             translate(u'BibleMediaItem',u'&Preview Verse'), self.onBiblePreviewClick))
-        self.BibleListView.addAction(self.contextMenuAction(
-            self.BibleListView, u':/system/system_live.png',
+        self.BibleListWidget.addAction(self.contextMenuAction(
+            self.BibleListWidget, u':/system/system_live.png',
             translate(u'BibleMediaItem',u'&Show Live'), self.onBibleLiveClick))
-        self.BibleListView.addAction(self.contextMenuAction(
-            self.BibleListView, u':/system/system_add.png',
+        self.BibleListWidget.addAction(self.contextMenuAction(
+            self.BibleListWidget, u':/system/system_add.png',
             translate(u'BibleMediaItem',u'&Add to Service'), self.onBibleAddClick))
 
     def retranslateUi(self):
@@ -293,7 +290,8 @@ class BibleMediaItem(MediaManagerItem):
         if t1 != t2:
             bible = unicode(self.AdvancedVersionComboBox.currentText())
             book = unicode(self.AdvancedBookComboBox.currentText())
-            vse = self.parent.biblemanager.get_book_verse_count(bible, book, int(t2))[0] # get the verse count for new chapter
+            # get the verse count for new chapter
+            vse = self.parent.biblemanager.get_book_verse_count(bible, book, int(t2))[0]
             self.adjustComboBox(1, vse, self.AdvancedToVerse)
 
     def onAdvancedSearchButton(self):
@@ -307,15 +305,16 @@ class BibleMediaItem(MediaManagerItem):
         self.search_results = self.parent.biblemanager.get_verse_text(bible, book,
             chapter_from, chapter_to, verse_from, verse_to)
         if self.ClearAdvancedSearchComboBox.currentIndex() == 0:
-            self.BibleListData.resetStore()
-            self.displayResults(bible)
+            self.BibleListWidget.clear()
+        self.displayResults(bible)
 
     def onAdvancedFromChapter(self):
         bible = unicode(self.AdvancedVersionComboBox.currentText())
         book = unicode(self.AdvancedBookComboBox.currentText())
         cf = self.AdvancedFromChapter.currentText()
         self.adjustComboBox(cf, self.chapters_from, self.AdvancedToChapter)
-        vse = self.parent.biblemanager.get_book_verse_count(bible, book, int(cf))[0] # get the verse count for new chapter
+        # get the verse count for new chapter
+        vse = self.parent.biblemanager.get_book_verse_count(bible, book, int(cf))[0]
         self.adjustComboBox(1, vse, self.AdvancedFromVerse)
         self.adjustComboBox(1, vse, self.AdvancedToVerse)
 
@@ -324,12 +323,12 @@ class BibleMediaItem(MediaManagerItem):
         bible = unicode(self.QuickVersionComboBox.currentText())
         text = unicode(self.QuickSearchEdit.displayText())
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
-            self.BibleListData.resetStore()
+            self.BibleListWidget.clear()
         if self.QuickSearchComboBox.currentIndex() == 1:
             self.search_results = self.parent.biblemanager.get_verse_from_text(bible, text)
         else:
             self.searchByReference(bible, text)
-        if not self.search_results == None:
+        if self.search_results is not None:
             self.displayResults(bible)
 
     def onBibleLiveClick(self):
@@ -352,13 +351,14 @@ class BibleMediaItem(MediaManagerItem):
 
     def generateSlideData(self, service_item):
         log.debug(u'generating slide data')
-        items = self.BibleListView.selectedIndexes()
+        items = self.BibleListWidget.selectedIndexes()
         old_chapter = u''
         raw_slides=[]
         raw_footer = []
         bible_text = u''
         for item in items:
-            text = self.BibleListData.getValue(item)
+            bitem =  self.BibleListWidget.item(item.row())
+            text = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
             verse = text[:text.find(u'(')]
             bible = text[text.find(u'(') + 1:text.find(u')')]
             self.searchByReference(bible, verse)
@@ -433,8 +433,10 @@ class BibleMediaItem(MediaManagerItem):
 
     def displayResults(self, bible):
         for book, chap, vse , txt in self.search_results:
-            text = unicode(u' %s %d:%d (%s)'%(book , chap,vse, bible))
-            self.BibleListData.addRow(0,text)
+            bible_text = unicode(u' %s %d:%d (%s)'%(book , chap,vse, bible))
+            bible_verse = QtGui.QListWidgetItem(bible_text)
+            bible_verse.setData(QtCore.Qt.UserRole, QtCore.QVariant(bible_text))
+            self.BibleListWidget.addItem(bible_verse)
 
     def searchByReference(self, bible,  search):
         log.debug(u'searchByReference %s ,%s', bible, search)

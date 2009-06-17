@@ -43,4 +43,3 @@ class EventManager(object):
         log.debug(u'post event called for event %s', event.event_type)
         for point in self.endpoints:
             point.handle_event(event)
-

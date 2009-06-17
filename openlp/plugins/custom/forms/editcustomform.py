@@ -53,7 +53,6 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         # Create other objects and forms
         self.custommanager = custommanager
         self.initialise()
-        self.VerseListView.setAlternatingRowColors(True)
 
     def initialise(self):
         self.valid = True
@@ -96,8 +95,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             self.ThemecomboBox.setCurrentIndex(0)
 
     def accept(self):
-        self.validate()
-        if self.valid:
+        if self.validate():
             sxml=SongXMLBuilder()
             sxml.new_document()
             sxml.add_lyrics_to_song()
@@ -124,7 +122,8 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
 
     def onDownButtonPressed(self):
         selectedRow = self.VerseListView.currentRow()
-        if selectedRow != self.VerseListView.count() - 1: # zero base arrays
+        # zero base arrays
+        if selectedRow != self.VerseListView.count() - 1:
             qw = self.VerseListView.takeItem(selectedRow)
             self.VerseListView.insertItem(selectedRow + 1, qw)
             self.VerseListView.setCurrentRow(selectedRow + 1)
@@ -146,6 +145,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.VerseListView.addItem(self.VerseTextEdit.toPlainText())
         self.DeleteButton.setEnabled(False)
         self.VerseTextEdit.clear()
+        self.validate()
 
     def onEditButtonPressed(self):
         self.VerseTextEdit.setPlainText(self.VerseListView.currentItem().text())
@@ -163,16 +163,16 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.EditButton.setEnabled(False)
 
     def validate(self):
-        invalid = 0
-        self.valid = True
+        valid = True
         if len(self.TitleEdit.displayText()) == 0:
-            invalid += 1
-            self.TitleLabel.setStyleSheet(u'color: red')
+            valid = False
+            self.TitleEdit.setStyleSheet(u'background-color: red; color: white')
         else:
-            self.TitleLabel.setStyleSheet(u'color: black')
-
-        if self.VerseListView.count() == 0:    # must have 1 slide
-            invalid += 1
-
-        if invalid == 1:
-            self.valid = False
+            self.TitleEdit.setStyleSheet(u'')
+        # must have 1 slide
+        if self.VerseListView.count() == 0:
+            valid = False
+            self.VerseListView.setStyleSheet(u'background-color: red; color: white')
+        else:
+            self.VerseListView.setStyleSheet(u'')
+        return valid

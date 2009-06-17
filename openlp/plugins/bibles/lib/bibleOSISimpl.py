@@ -29,16 +29,18 @@ class BibleOSISImpl():
 
     def __init__(self, biblepath, bibledb):
         self.bibledb = bibledb
-        self.booksOfBible = {} # books of the bible linked to bibleid  {osis , name}
-        self.abbrevOfBible = {} # books of the bible linked to bibleid  {osis ,Abbrev }
+        # books of the bible linked to bibleid  {osis , name}
+        self.booksOfBible = {}
+        # books of the bible linked to bibleid  {osis ,Abbrev }
+        self.abbrevOfBible = {}
 
         filepath = os.path.split(os.path.abspath(__file__))[0]
         filepath = os.path.abspath(os.path.join(filepath, u'..', u'resources',u'osisbooks.csv'))
         fbibles=open(filepath, u'r')
         for line in fbibles:
             p = line.split(u',')
-            self.booksOfBible[p[0]] = p[1].replace(u'\n', '')
-            self.abbrevOfBible[p[0]] = p[2].replace(u'\n', '')
+            self.booksOfBible[p[0]] = p[1].replace(u'\n', u'')
+            self.abbrevOfBible[p[0]] = p[2].replace(u'\n', u'')
         self.loadbible = True
         QtCore.QObject.connect(Receiver().get_receiver(),QtCore.SIGNAL(u'openlpstopimport'),self.stop_import)
 
@@ -64,8 +66,10 @@ class BibleOSISImpl():
                 ref =  file[pos+15:epos-1]  # Book Reference
 
                 #lets find the bible text only
-                pos = epos + 1 # find start of text
-                epos = file.find(u'</verse>', pos) # end  of text
+                # find start of text
+                pos = epos + 1
+                # end  of text
+                epos = file.find(u'</verse>', pos)
                 text = unicode(file[pos : epos], u'utf8')
                 #print pos, e, f[pos:e] # Found Basic Text
 
@@ -103,12 +107,15 @@ class BibleOSISImpl():
                 #print p, ">>>", text
 
                 if book_ptr != p[0]:
-                    if book_ptr == None:  # first time through
-                        if p[0]  == u'Gen':  # set the max book size depending on the first book read
+                    # first time through
+                    if book_ptr == None:
+                        # set the max book size depending on the first book read
+                        if p[0]  == u'Gen':
                             dialogobject.setMax(65)
                         else:
                             dialogobject.setMax(27)
-                    if  p[0] == u'Matt': # First book of NT
+                    # First book of NT
+                    if  p[0] == u'Matt':
                         testament += 1
                     book_ptr = p[0]
                     book = self.bibledb.create_book(self.booksOfBible[p[0]] , self.abbrevOfBible[p[0]], testament)
@@ -117,7 +124,8 @@ class BibleOSISImpl():
                     count = 0
                 self.bibledb.add_verse(book.id, p[1], p[2], text)
                 count += 1
-                if count % 3 == 0:   #Every 3 verses repaint the screen
+                #Every 3 verses repaint the screen
+                if count % 3 == 0:
                     Receiver().send_message(u'openlpprocessevents')
                     count = 0
 
@@ -129,7 +137,7 @@ class BibleOSISImpl():
         pos = text.find(start_tag)
         while pos > -1:
             epos = text.find(end_tag, pos)
-            if epos == -1: # TODO
+            if epos == -1:
                 #print "Y", pos, epos
                 pos = -1
             else:

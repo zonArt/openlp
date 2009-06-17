@@ -32,6 +32,7 @@ class Ui_customEditDialog(object):
         self.horizontalLayout_4.setObjectName(u'horizontalLayout_4')
         self.VerseListView = QtGui.QListWidget(customEditDialog)
         self.VerseListView.setObjectName(u'VerseListView')
+        self.VerseListView.setAlternatingRowColors(True)
         self.horizontalLayout_4.addWidget(self.VerseListView)
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setObjectName(u'verticalLayout')
@@ -107,7 +108,6 @@ class Ui_customEditDialog(object):
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(u'buttonBox')
         self.gridLayout.addWidget(self.buttonBox, 5, 0, 1, 1)
-
         self.retranslateUi(customEditDialog)
         QtCore.QMetaObject.connectSlotsByName(customEditDialog)
         customEditDialog.setTabOrder(self.TitleEdit, self.VerseTextEdit)

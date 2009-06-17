@@ -41,7 +41,7 @@ class Receiver():
     As there is only one instance of it in the systems the QT signal/slot architecture
     can send messages across the system
     Send message
-       Receiver().send_message(u'messageid",data)
+       Receiver().send_message(u'messageid',data)
 
     Receive Message
         QtCore.QObject.connect(Receiver().get_receiver(),QtCore.SIGNAL(u'openlprepaint'),<<ACTION>>)

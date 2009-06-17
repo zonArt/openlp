@@ -23,7 +23,7 @@ from PyQt4 import QtCore, QtGui
 
 from forms import EditCustomForm
 from openlp.core.lib import Plugin, Event,  EventType
-from openlp.plugins.custom.lib import CustomManager, CustomTab, CustomMediaItem, CustomServiceItem
+from openlp.plugins.custom.lib import CustomManager, CustomTab, CustomMediaItem
 
 
 class CustomPlugin(Plugin):
@@ -42,8 +42,6 @@ class CustomPlugin(Plugin):
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(u':/media/media_custom.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.preview_service_item = CustomServiceItem(self.preview_controller)
-        self.live_service_item = CustomServiceItem(self.live_controller)
 
     def get_media_manager_item(self):
         # Create the CustomManagerItem object

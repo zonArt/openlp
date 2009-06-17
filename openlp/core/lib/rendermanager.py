@@ -28,22 +28,6 @@ from renderer import  Renderer
 import sys
 import linecache
 
-def traceit(frame, event, arg):
-    """
-    Code to allow calls to be traced by python runtime
-    """
-    if event == "line":
-        lineno = frame.f_lineno
-        filename = frame.f_globals["__file__"]
-        if (filename.endswith(u'.pyc') or
-            filename.endswith(u'.pyo')):
-            filename = filename[:-1]
-        name = frame.f_globals["__name__"]
-        line = linecache.getline(filename, lineno)
-        if name.startswith(u'openlp'):
-            print "%s:%s: %s" % (name, lineno, line.rstrip())
-    return traceit
-
 class RenderManager:
     """
     Class to pull all Renderer interactions into one place.
@@ -61,7 +45,7 @@ class RenderManager:
         self.displays = len(screen_list)
         self.current_display = screen_number
         self.renderer = Renderer()
-        self.calculate_default(self.screen_list[self.current_display]['size'])
+        self.calculate_default(self.screen_list[self.current_display][u'size'])
         self.theme = u''
         self.service_theme = u''
         self.global_style = u''
@@ -73,7 +57,7 @@ class RenderManager:
         log.debug(u'Update Display')
         if self.current_display != screen_number:
             self.current_display = screen_number
-            self.calculate_default(self.screen_list[self.current_display]['size'])
+            self.calculate_default(self.screen_list[self.current_display][u'size'])
 
     def set_global_theme(self, global_theme, global_style = u'Global'):
         self.global_theme = global_theme
@@ -160,7 +144,6 @@ class RenderManager:
         log.debug(u'calculate default %s' , screen)
         self.width = screen.width()
         self.height = screen.height()
-        self.width = 1024
-        self.height = 768
         log.debug(u'calculate default %d,%d' , self.width, self.height)
-        self.footer_start = int(self.height*0.90) # 90% is start of footer
+        # 90% is start of footer
+        self.footer_start = int(self.height*0.90)
