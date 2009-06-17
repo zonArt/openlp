@@ -357,7 +357,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def onAccept(self):
         log.debug(u'OnAccept')
-        #self.song.topics.append(9) << need opject here
         if not self._validate_song():
             return
         self.song.title = unicode(self.TitleEditItem.displayText())
@@ -390,7 +389,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         text =  text.replace(u',', u'')
         text =  text.replace(u';', u'')
         text =  text.replace(u':', u'')
-        text =  text.replace(u'(u', u'')
+        text =  text.replace(u'(', u'')
         text =  text.replace(u')', u'')
         text =  text.replace(u'{', u'')
         text =  text.replace(u'}', u'')
@@ -404,7 +403,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.search_title =  self.song.search_title.replace(u',', u'')
         self.song.search_title =  self.song.search_title.replace(u';', u'')
         self.song.search_title =  self.song.search_title.replace(u':', u'')
-        self.song.search_title =  self.song.search_title.replace(u'(u', u'')
+        self.song.search_title =  self.song.search_title.replace(u'(', u'')
         self.song.search_title =  self.song.search_title.replace(u')', u'')
         self.song.search_title =  self.song.search_title.replace(u'{', u'')
         self.song.search_title =  self.song.search_title.replace(u'}', u'')

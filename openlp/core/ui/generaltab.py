@@ -167,7 +167,7 @@ class GeneralTab(SettingsTab):
             screen_name = translate(u'GeneralTab', u'Screen') + u' ' + \
                 unicode(screen[u'number'] + 1)
             if screen[u'primary']:
-                screen_name = screen_name + u' (u' + \
+                screen_name = screen_name + u' (' + \
                     translate(u'GeneralTab', u'primary') + u')'
             self.MonitorComboBox.addItem(screen_name)
         # Get the configs

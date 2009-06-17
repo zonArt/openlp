@@ -22,9 +22,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem,  SongXMLParser,  ServiceItem,  translate
-from openlp.plugins.custom.lib import TextListData
 
-class CustomList(QtGui.QListView):
+class CustomList(QtGui.QListWidget):
 
     def __init__(self,parent=None,name=None):
         QtGui.QListView.__init__(self,parent)
@@ -103,60 +102,38 @@ class CustomMediaItem(MediaManagerItem):
         self.CustomWidget.setObjectName(u'CustomWidget')
         # Add the Custom widget to the page layout
         self.PageLayout.addWidget(self.CustomWidget)
-        self.CustomListView = CustomList()
-        self.CustomListView.setAlternatingRowColors(True)
-        self.CustomListData = TextListData()
-        self.CustomListView.setModel(self.CustomListData)
-        self.CustomListView.setDragEnabled(True)
-        self.PageLayout.addWidget(self.CustomListView)
+        self.CustomListWidget = CustomList()
+        self.CustomListWidget.setAlternatingRowColors(True)
+        self.CustomListWidget.setDragEnabled(True)
+        self.PageLayout.addWidget(self.CustomListWidget)
         # Signals
-        QtCore.QObject.connect(self.CustomListView,
+        QtCore.QObject.connect(self.CustomListWidget,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onCustomPreviewClick)
         #define and add the context menu
-        self.CustomListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.CustomListView.addAction(self.contextMenuAction(self.CustomListView,
+        self.CustomListWidget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.CustomListWidget.addAction(self.contextMenuAction(self.CustomListWidget,
             ':/custom/custom_edit.png', translate(u'CustomMediaItem', u'&Edit Custom'),
             self.onCustomEditClick))
-        self.CustomListView.addAction(self.contextMenuSeparator(self.CustomListView))
-        self.CustomListView.addAction(self.contextMenuAction(
-            self.CustomListView, ':/system/system_preview.png',
+        self.CustomListWidget.addAction(self.contextMenuSeparator(self.CustomListWidget))
+        self.CustomListWidget.addAction(self.contextMenuAction(
+            self.CustomListWidget, ':/system/system_preview.png',
             translate(u'CustomMediaItem',u'&Preview Custom'), self.onCustomPreviewClick))
-        self.CustomListView.addAction(self.contextMenuAction(
-            self.CustomListView, ':/system/system_live.png',
+        self.CustomListWidget.addAction(self.contextMenuAction(
+            self.CustomListWidget, ':/system/system_live.png',
             translate(u'CustomMediaItem',u'&Show Live'), self.onCustomLiveClick))
-        self.CustomListView.addAction(self.contextMenuAction(
-            self.CustomListView, ':/system/system_add.png',
+        self.CustomListWidget.addAction(self.contextMenuAction(
+            self.CustomListWidget, ':/system/system_add.png',
             translate(u'CustomMediaItem',u'&Add to Service'), self.onCustomAddClick))
-
-#    def retranslateUi(self):
-#        self.ClearTextButton.setText(translate(u'CustomMediaItem', u'Clear'))
-#        self.SearchTextButton.setText(translate(u'CustomMediaItem', u'Search'))
 
     def initialise(self):
         self.loadCustomList(self.parent.custommanager.get_all_slides())
 
     def loadCustomList(self, list):
-        self.CustomListData.resetStore()
+        self.CustomListWidget.clear()
         for CustomSlide in list:
-            self.CustomListData.addRow(CustomSlide.id,CustomSlide.title)
-
-    def onClearTextButtonClick(self):
-        """
-        Clear the search text.
-        """
-        self.SearchTextEdit.clear()
-
-    def onSearchTextEditChanged(self, text):
-        # only search if > 3 characters
-        if len(text) > 3:
-            self.onSearchTextButtonClick()
-
-    def onSearchTextButtonClick(self):
-        search_keywords = unicode(self.SearchTextEdit.displayText())
-        search_results  = []
-        search_type = self.SearchTypeComboBox.currentText()
-        search_results = self.Custommanager.search_Custom_lyrics(search_keywords)
-        self._display_results(search_results)
+            custom_name = QtGui.QListWidgetItem(CustomSlide.title)
+            custom_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(CustomSlide.id))
+            self.CustomListWidget.addItem(custom_name)
 
     def onCustomNewClick(self):
         self.parent.edit_custom_form.loadCustom(0)
@@ -164,18 +141,18 @@ class CustomMediaItem(MediaManagerItem):
         self.initialise()
 
     def onCustomEditClick(self):
-        indexes = self.CustomListView.selectedIndexes()
-        for index in indexes:
-            self.parent.edit_custom_form.loadCustom(self.CustomListData.getId(index))
-            self.parent.edit_custom_form.exec_()
+        item = self.CustomListWidget.currentItem()
+        item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        self.parent.edit_custom_form.loadCustom(item_id)
+        self.parent.edit_custom_form.exec_()
         self.initialise()
 
     def onCustomDeleteClick(self):
-        indexes = self.CustomListView.selectedIndexes()
-        for index in indexes:
-            id = self.CustomListData.getId(index)
-            self.parent.custommanager.delete_custom(id)
-            self.CustomListData.deleteRow(index)
+        item = self.CustomListWidget.currentItem()
+        item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        self.parent.custommanager.delete_custom(item_id)
+        row = self.CustomListWidget.row(item)
+        self.CustomListWidget.takeItem(row)
 
     def onCustomPreviewClick(self):
         log.debug(u'Custom Preview Requested')
@@ -203,20 +180,19 @@ class CustomMediaItem(MediaManagerItem):
         raw_footer = []
         slide = None
         theme = None
-        indexes = self.CustomListView.selectedIndexes()
-        for index in indexes:
-            id = self.CustomListData.getId(index)
-            customSlide = self.parent.custommanager.get_custom(id)
-            title = customSlide.title
-            credit = customSlide.credits
-            theme = customSlide.theme_name
-            if len(theme) is not 0 :
-                service_item.theme = theme
-            songXML=SongXMLParser(customSlide.text)
-            verseList = songXML.get_verses()
-            for verse in verseList:
-                raw_slides.append(verse[1])
-            raw_footer.append(title + u' '+ credit)
+        item = self.CustomListWidget.currentItem()
+        item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        customSlide = self.parent.custommanager.get_custom(item_id)
+        title = customSlide.title
+        credit = customSlide.credits
+        theme = customSlide.theme_name
+        if len(theme) is not 0 :
+            service_item.theme = theme
+        songXML=SongXMLParser(customSlide.text)
+        verseList = songXML.get_verses()
+        for verse in verseList:
+            raw_slides.append(verse[1])
+        raw_footer.append(title + u' '+ credit)
         if theme is not None:
             service_item.title = title
             for slide in raw_slides:

@@ -114,4 +114,4 @@ class MainDisplay(QtGui.QWidget):
         painter.end()
         self.display.setPixmap(alertframe)
         QtTest.QTest.qWait(self.alertTab.timeout*1000)
-        self.display.QtGui.QPixmap.fromImage(self.frame)
+        self.display.setPixmap(QtGui.QPixmap.fromImage(self.frame))
