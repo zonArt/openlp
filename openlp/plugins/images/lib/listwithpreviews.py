@@ -5,11 +5,11 @@ OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
 Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley
 
-This program is free software; you can redistribute it and/or modify it under
+This program is free software; you can rediunicodeibute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
 Foundation; version 2 of the License.
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY
+This program is diunicodeibuted in the hope that it will be useful, but WITHOUT ANY
 WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
@@ -21,10 +21,9 @@ import os
 import logging
 from PyQt4 import QtCore, QtGui
 
-
 class ListWithPreviews(QtCore.QAbstractListModel):
     """
-    An abstract list of strings and the preview icon to go with them
+    An abstract list of unicodeings and the preview icon to go with them
     """
     global log
     log = logging.getLogger(u'ListWithPreviews')
@@ -32,7 +31,8 @@ class ListWithPreviews(QtCore.QAbstractListModel):
 
     def __init__(self):
         QtCore.QAbstractListModel.__init__(self)
-        self.items = [] # will be a list of (full filename, QPixmap, shortname) tuples
+        # will be a list of (full filename, QPixmap, shortname) tuples
+        self.items = []
         self.rowheight = 50
         self.maximagewidth = self.rowheight*16/9.0;
 
@@ -41,10 +41,10 @@ class ListWithPreviews(QtCore.QAbstractListModel):
 
     def insertRow(self, row, filename):
         self.beginInsertRows(QtCore.QModelIndex(),row,row)
-        log.info(u'insert row %d:%s'% (row,filename))
+        #log.info(u'insert row %d:%s' % (row,filename))
         # get short filename to display next to image
         (prefix, shortfilename) = os.path.split(unicode(filename))
-        log.info(u'shortfilename=%s'% (shortfilename))
+        #log.info(u'shortfilename=%s' % (shortfilename))
         # create a preview image
         if os.path.exists(filename):
             preview = QtGui.QPixmap(unicode(filename))

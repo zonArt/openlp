@@ -122,7 +122,7 @@ class ImageMediaItem(MediaManagerItem):
         files = QtGui.QFileDialog.getOpenFileNames(None,
             translate(u'ImageMediaItem', u'Select Image(s)'),
             self.parent.config.get_last_dir(),
-            u'Images (*.jpg *.gif *.png *.bmp)')
+            u'Images (*.jpg *jpeg *.gif *.png *.bmp)')
         log.info(u'New image(s)', unicode(files))
         if len(files) > 0:
             self.loadImageList(files)

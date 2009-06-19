@@ -209,16 +209,18 @@ class SongMediaItem(MediaManagerItem):
 
     def onSongEditClick(self):
         item = self.SongListWidget.currentItem()
-        item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-        self.edit_song_form.loadSong(item_id)
-        self.edit_song_form.exec_()
+        if item is not None:
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            self.edit_song_form.loadSong(item_id)
+            self.edit_song_form.exec_()
 
     def onSongDeleteClick(self):
         item = self.SongListWidget.currentItem()
-        item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-        self.parent.songmanager.delete_song(item_id)
-        row = self.SongListWidget.row(item)
-        self.SongListWidget.takeItem(row)
+        if item is not None:
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            self.parent.songmanager.delete_song(item_id)
+            row = self.SongListWidget.row(item)
+            self.SongListWidget.takeItem(row)
 
     def onSongPreviewClick(self):
         service_item = ServiceItem(self.parent)

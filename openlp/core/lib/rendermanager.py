@@ -21,9 +21,8 @@ import logging
 import os,  os.path
 import sys
 
-from datetime import *
-from PyQt4 import QtGui, QtCore, Qt
-from renderer import  Renderer
+from PyQt4 import QtGui, QtCore
+from renderer import Renderer
 
 import sys
 import linecache

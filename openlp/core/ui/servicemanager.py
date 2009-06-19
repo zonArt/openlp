@@ -113,25 +113,47 @@ class ServiceManager(QtGui.QWidget):
         """
         Move the current ServiceItem to the top of the list
         """
-        pass
+        item, count = self.findServiceItem()
+        if item < len(self.serviceItems) and item is not -1:
+            temp = self.serviceItems[item]
+            self.serviceItems.remove(self.serviceItems[item])
+            self.serviceItems.insert(0, temp)
+            self.repaintServiceList()
 
     def onServiceUp(self):
         """
         Move the current ServiceItem up in the list
+        Note move up means move to top of area  ie 0.
         """
-        pass
+        item, count = self.findServiceItem()
+        if item > 0:
+            temp = self.serviceItems[item]
+            self.serviceItems.remove(self.serviceItems[item])
+            self.serviceItems.insert(item - 1, temp)
+            self.repaintServiceList()
 
     def onServiceDown(self):
         """
         Move the current ServiceItem down in the list
+        Note move down means move to bottom of area i.e len().
         """
-        pass
+        item, count = self.findServiceItem()
+        if item < len(self.serviceItems) and item is not -1:
+            temp = self.serviceItems[item]
+            self.serviceItems.remove(self.serviceItems[item])
+            self.serviceItems.insert(item + 1, temp)
+            self.repaintServiceList()
 
     def onServiceEnd(self):
         """
         Move the current ServiceItem to the bottom of the list
         """
-        pass
+        item, count = self.findServiceItem()
+        if item < len(self.serviceItems) and item is not -1:
+            temp = self.serviceItems[item]
+            self.serviceItems.remove(self.serviceItems[item])
+            self.serviceItems.insert(len(self.serviceItems), temp)
+            self.repaintServiceList()
 
     def onNewService(self):
         """
@@ -144,7 +166,32 @@ class ServiceManager(QtGui.QWidget):
         """
         Remove the current ServiceItem from the list
         """
-        pass
+        item, count = self.findServiceItem()
+        if item is not -1:
+            self.serviceItems.remove(self.serviceItems[item])
+            self.repaintServiceList()
+
+    def repaintServiceList(self):
+        #Correct order of idems in array
+        count = 1
+        for item in self.serviceItems:
+            item[u'order'] = count
+            count += 1
+        #Repaint the screen
+        self.ServiceManagerList.clear()
+        for item in self.serviceItems:
+            serviceitem = item[u'data']
+            treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
+            treewidgetitem.setText(0,serviceitem.title)
+            treewidgetitem.setIcon(0,serviceitem.iconic_representation)
+            treewidgetitem.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(item[u'order']))
+            count = 0
+            for frame in serviceitem.frames:
+                treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
+                text = frame[u'title']
+                treewidgetitem1.setText(0,text[:40])
+                treewidgetitem1.setData(0, QtCore.Qt.UserRole,QtCore.QVariant(count))
+                count = count + 1
 
     def onSaveService(self):
         """
@@ -233,11 +280,10 @@ class ServiceManager(QtGui.QWidget):
         pos = 0
         count = 0
         for item in items:
-            childCount = item.childCount()
-            if childCount >= 1:
+            parentitem =  item.parent()
+            if parentitem is None:
                 pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
             else:
-                parentitem = item.parent()
                 pos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
                 count = item.data(0, QtCore.Qt.UserRole).toInt()[0]
         #adjuest for zero based arrays
