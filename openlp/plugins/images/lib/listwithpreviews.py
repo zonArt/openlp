@@ -5,7 +5,7 @@ OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
 Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley
 
-This program is free software; you can rediunicodeibute it and/or modify it under
+This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
 Foundation; version 2 of the License.
 

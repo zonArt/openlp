@@ -200,7 +200,7 @@ class ThemeManager(QtGui.QWidget):
 
     def onImportTheme(self):
         files = QtGui.QFileDialog.getOpenFileNames(None,
-            translate(u'ThemeManager', u'Select Import File'),
+            translate(u'ThemeManager', u'Select Theme Import File'),
             self.path, u'Theme (*.theme)')
         log.info(u'New Themes %s', unicode(files))
         if len(files) > 0:

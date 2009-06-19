@@ -378,6 +378,10 @@ class MainWindow(object):
         # Connect up some signals and slots
         QtCore.QObject.connect(self.FileExitItem,
             QtCore.SIGNAL(u'triggered()'), self.mainWindow.close)
+        QtCore.QObject.connect(self.ImportThemeItem,
+            QtCore.SIGNAL(u'triggered()'), self.ThemeManagerContents.onImportTheme)
+        QtCore.QObject.connect(self.ExportThemeItem,
+            QtCore.SIGNAL(u'triggered()'), self.ThemeManagerContents.onExportTheme)
         QtCore.QObject.connect(self.ViewMediaManagerItem,
             QtCore.SIGNAL(u'triggered(bool)'), self.MediaManagerDock.setVisible)
         QtCore.QObject.connect(self.ViewServiceManagerItem,
