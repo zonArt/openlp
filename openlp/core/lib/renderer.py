@@ -20,9 +20,8 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import logging
 import os,  os.path
 import sys
-#from copy import copy
 
-from PyQt4 import QtGui, QtCore, Qt
+from PyQt4 import QtGui, QtCore
 
 class Renderer:
     """
@@ -36,7 +35,6 @@ class Renderer:
     def __init__(self):
         self._rect = None
         self._debug = 0
-        #self.words = None
         self._right_margin = 64 # the amount of right indent
         self._shadow_offset = 5
         self._outline_offset = 2
@@ -140,7 +138,7 @@ class Renderer:
         # reset the frame. first time do not worry about what you paint on.
         #self._frame = QtGui.QPixmap(self._frame.width(), self._frame.height()) #(self._bg_frame)
         #self._frame.fill(QtCore.Qt.transparent)
-        # reset the frame. first time do not worrk about what you paint on.
+        # reset the frame. first time do not worry about what you paint on.
         self._frame = QtGui.QImage(self._bg_frame)
         x, y = self._correctAlignment(self._rect, bbox)
         bbox = self._render_lines_unaligned(lines, False,  (x, y), True)

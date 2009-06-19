@@ -142,17 +142,20 @@ class CustomMediaItem(MediaManagerItem):
 
     def onCustomEditClick(self):
         item = self.CustomListWidget.currentItem()
-        item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-        self.parent.edit_custom_form.loadCustom(item_id)
-        self.parent.edit_custom_form.exec_()
-        self.initialise()
+        item = self.CustomListWidget.currentItem()
+        if item is not None:
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            self.parent.edit_custom_form.loadCustom(item_id)
+            self.parent.edit_custom_form.exec_()
+            self.initialise()
 
     def onCustomDeleteClick(self):
         item = self.CustomListWidget.currentItem()
-        item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-        self.parent.custommanager.delete_custom(item_id)
-        row = self.CustomListWidget.row(item)
-        self.CustomListWidget.takeItem(row)
+        if item is not None:
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            self.parent.custommanager.delete_custom(item_id)
+            row = self.CustomListWidget.row(item)
+            self.CustomListWidget.takeItem(row)
 
     def onCustomPreviewClick(self):
         log.debug(u'Custom Preview Requested')
