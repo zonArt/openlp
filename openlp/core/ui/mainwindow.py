@@ -64,6 +64,7 @@ class MainWindow(object):
         self.RenderManager = RenderManager(self.ThemeManagerContents,
             self.screenList, int(self.generalConfig.get_config(u'Monitor', 0)))
         log.info(u'Load Plugins')
+        #make the controllers available to the plugins
         self.plugin_helpers[u'preview'] = self.PreviewController
         self.plugin_helpers[u'live'] = self.LiveController
         self.plugin_helpers[u'event'] = self.EventManager
@@ -74,7 +75,7 @@ class MainWindow(object):
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers,
             self.EventManager)
         # hook methods have to happen after find_plugins. Find plugins needs the
-        # controllershence the hooks have moved from setupUI() to here
+        # controllers hence the hooks have moved from setupUI() to here
 
         # Find and insert settings tabs
         log.info(u'hook settings')

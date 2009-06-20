@@ -105,9 +105,21 @@ class ServiceManager(QtGui.QWidget):
             QtCore.SIGNAL(u'activated(int)'), self.onThemeComboBoxSelected)
         QtCore.QObject.connect(self.ServiceManagerList,
            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.makeLive)
+        QtCore.QObject.connect(self.ServiceManagerList,
+           QtCore.SIGNAL(u'itemCollapsed(QTreeWidgetItem*)'), self.collapsed)
+        QtCore.QObject.connect(self.ServiceManagerList,
+           QtCore.SIGNAL(u'itemExpanded(QTreeWidgetItem*)'), self.expanded)
         # Last little bits of setting up
         self.config = PluginConfig(u'Main')
         self.service_theme = self.config.get_config(u'theme service theme', u'')
+
+    def collapsed(self, item):
+        pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
+        self.serviceItems[pos -1 ][u'expanded'] = False
+
+    def expanded(self, item):
+        pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
+        self.serviceItems[pos -1 ][u'expanded'] = True
 
     def onServiceTop(self):
         """
@@ -185,6 +197,7 @@ class ServiceManager(QtGui.QWidget):
             treewidgetitem.setText(0,serviceitem.title)
             treewidgetitem.setIcon(0,serviceitem.iconic_representation)
             treewidgetitem.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(item[u'order']))
+            treewidgetitem.setExpanded(item[u'expanded'])
             count = 0
             for frame in serviceitem.frames:
                 treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
@@ -239,16 +252,16 @@ class ServiceManager(QtGui.QWidget):
             for item in tempServiceItems:
                 self.addServiceItem(item[u'data'])
 
-    def addServiceItem(self, item, expand=True):
+    def addServiceItem(self, item):
         """
         Add an item to the list
         """
-        self.serviceItems.append({u'data': item, u'order': len(self.serviceItems)+1})
+        self.serviceItems.append({u'data': item, u'order': len(self.serviceItems)+1, u'expanded':True})
         treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
         treewidgetitem.setText(0,item.title)
         treewidgetitem.setIcon(0,item.iconic_representation)
         treewidgetitem.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(len(self.serviceItems)))
-        treewidgetitem.setExpanded(expand)
+        treewidgetitem.setExpanded(True)
         item.render()
         count = 0
         for frame in item.frames:
