@@ -21,11 +21,13 @@ import os
 import logging
 import cPickle
 import zipfile
+import shutil
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, Event, \
     RenderManager, EventType, EventManager, translate, buildIcon, \
     contextMenuAction, contextMenuSeparator
+from openlp.core.utils import ConfigHelper
 
 class ServiceManager(QtGui.QWidget):
     """
@@ -111,7 +113,8 @@ class ServiceManager(QtGui.QWidget):
         QtCore.QObject.connect(self.ServiceManagerList,
            QtCore.SIGNAL(u'itemExpanded(QTreeWidgetItem*)'), self.expanded)
         # Last little bits of setting up
-        self.config = PluginConfig(u'Main')
+        self.config = PluginConfig(u'ServiceManager')
+        self.servicePath = self.config.get_data_path()
         self.service_theme = self.config.get_config(u'theme service theme', u'')
 
     def collapsed(self, item):
@@ -217,23 +220,22 @@ class ServiceManager(QtGui.QWidget):
             self.config.set_last_dir(filename)
             service = []
             servicefile= filename + u'.ood'
+            zip = zipfile.ZipFile(unicode(filename) + u'.oos', 'w')
             for item in self.serviceItems:
                 service.append({u'serviceitem':item[u'data'].get_oos_repr()})
                 if item[u'data'].service_item_type == u'image':
-                    print item[u'data'].service_item_path
                     for frame in item[u'data'].frames:
-                        print frame[u'title']
+                        path_from = unicode(item[u'data'].service_item_path + u'/' + frame[u'title'])
+                        zip.write(path_from)
             file = open(servicefile, u'wb')
             cPickle.dump(service, file)
             file.close()
-            zip = zipfile.ZipFile(unicode(filename)+u'.oos', 'w')
             zip.write(servicefile)
             zip.close()
             try:
                 os.remove(servicefile)
             except:
                 pass #if not present do not worry
-
 
     def onLoadService(self):
         """
@@ -248,25 +250,28 @@ class ServiceManager(QtGui.QWidget):
             filexml = None
             themename = None
             for file in zip.namelist():
-                pickle_data = zip.read(file)
-                path = file.split(u'.')
-                p_file = unicode(u'/'+path[0]+u'.ood')
-                file_handle = open(p_file, u'wb')
-                file_handle.write(pickle_data)
-                file_handle.close()
-                file = open(p_file, u'r')
-                items = cPickle.load(file)
-                file.close()
-                self.onNewService()
-                for item in items:
-                    serviceitem = ServiceItem()
-                    serviceitem.RenderManager = self.parent.RenderManager
-                    serviceitem.set_from_oos(item)
-                    self.addServiceItem(serviceitem)
-                try:
-                    os.remove(p_file)
-                except:
-                    pass #if not present do not worry
+                names = file.split(os.path.sep)
+                file_to = os.path.join(self.servicePath, names[len(names) - 1])
+                file_data = zip.read(file)
+                f = open(file_to, u'w')
+                f.write(file_data)
+                f.close()
+                if file_to.endswith(u'ood'):
+                    p_file = file_to
+            f = open(p_file, u'r')
+            items = cPickle.load(f)
+            f.close()
+            self.onNewService()
+            for item in items:
+                #print item
+                serviceitem = ServiceItem()
+                serviceitem.RenderManager = self.parent.RenderManager
+                serviceitem.set_from_oos(item, self.servicePath )
+                self.addServiceItem(serviceitem)
+            try:
+                os.remove(p_file)
+            except:
+                pass #if not present do not worry
 
     def onThemeComboBoxSelected(self, currentIndex):
         """
