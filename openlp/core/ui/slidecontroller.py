@@ -137,8 +137,9 @@ class SlideController(QtGui.QWidget):
         self.PreviewListView.setIconSize(QtCore.QSize(250, 190))
         self.PreviewListData = SlideData()
         self.PreviewListView.isLive = self.isLive
-        #self.PreviewListView.setFlow(1)
-        #self.PreviewListView.setViewMode(1)
+        if QtCore.QT_VERSION_STR > u'4.4.0':
+            self.PreviewListView.setFlow(1)
+            self.PreviewListView.setViewMode(1)
         self.PreviewListView.setWrapping(False)
         self.PreviewListView.setModel(self.PreviewListData)
         self.PreviewListView.setSpacing(0)

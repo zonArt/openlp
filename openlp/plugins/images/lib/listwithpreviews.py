@@ -34,34 +34,35 @@ class ListWithPreviews(QtCore.QAbstractListModel):
         # will be a list of (full filename, QPixmap, shortname) tuples
         self.items = []
         self.rowheight = 50
-        self.maximagewidth = self.rowheight*16/9.0;
+        self.maximagewidth = self.rowheight * 16 / 9.0;
 
     def rowCount(self, parent):
         return len(self.items)
 
     def insertRow(self, row, filename):
-        self.beginInsertRows(QtCore.QModelIndex(),row,row)
+        self.beginInsertRows(QtCore.QModelIndex(), row, row)
         #log.info(u'insert row %d:%s' % (row,filename))
         # get short filename to display next to image
-        (prefix, shortfilename) = os.path.split(unicode(filename))
+        filename = unicode(filename)
+        (prefix, shortfilename) = os.path.split(filename)
         #log.info(u'shortfilename=%s' % (shortfilename))
         # create a preview image
         if os.path.exists(filename):
-            preview = QtGui.QPixmap(unicode(filename))
+            preview = QtGui.QImage(filename)
             w = self.maximagewidth;
             h = self.rowheight
             preview = preview.scaled(w, h, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
             realw = preview.width();
             realh = preview.height()
             # and move it to the centre of the preview space
-            p = QtGui.QPixmap(w,h)
+            p = QtGui.QImage(w, h, QtGui.QImage.Format_ARGB32_Premultiplied)
             p.fill(QtCore.Qt.transparent)
             painter = QtGui.QPainter(p)
-            painter.drawPixmap((w-realw)/2,(h-realh)/2,preview)
+            painter.drawImage((w-realw) / 2 , (h-realh) / 2, preview)
         else:
             w = self.maximagewidth;
             h = self.rowheight
-            p = QtGui.QPixmap(w,h)
+            p = QtGui.QImage(w, h, QtGui.QImage.Format_ARGB32_Premultiplied)
             p.fill(QtCore.Qt.transparent)
         # finally create the row
         self.items.insert(row, (filename, p, shortfilename))

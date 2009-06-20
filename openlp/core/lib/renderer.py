@@ -136,8 +136,6 @@ class Renderer:
         if footer_lines is not None:
             bbox1 = self._render_lines_unaligned(footer_lines, True)
         # reset the frame. first time do not worry about what you paint on.
-        #self._frame = QtGui.QPixmap(self._frame.width(), self._frame.height()) #(self._bg_frame)
-        #self._frame.fill(QtCore.Qt.transparent)
         # reset the frame. first time do not worry about what you paint on.
         self._frame = QtGui.QImage(self._bg_frame)
         x, y = self._correctAlignment(self._rect, bbox)

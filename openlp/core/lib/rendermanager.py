@@ -139,6 +139,20 @@ class RenderManager:
         self.renderer.set_frame_dest(self.width, self.height)
         return self.renderer.generate_frame_from_lines(main_text, footer_text)
 
+    def resize_image(self, image):
+        preview = QtGui.QImage(image)
+        w = self.width
+        h = self.height
+        preview = preview.scaled(w, h, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        realw = preview.width();
+        realh = preview.height()
+        # and move it to the centre of the preview space
+        newImage = QtGui.QImage(w, h, QtGui.QImage.Format_ARGB32_Premultiplied)
+        newImage.fill(QtCore.Qt.transparent)
+        painter = QtGui.QPainter(newImage)
+        painter.drawImage((w-realw) / 2 , (h-realh) / 2, preview)
+        return newImage
+
     def calculate_default(self, screen):
         log.debug(u'calculate default %s' , screen)
         self.width = screen.width()

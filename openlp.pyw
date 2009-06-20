@@ -26,7 +26,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver
 
 logging.basicConfig(level=logging.DEBUG,
-    format=u'%(asctime)s %(msecs)d %(name)-12s %(levelname)-8s %(message)s',
+    format=u'%(asctime)s:%(msecs)3d %(name)-15s %(levelname)-8s %(message)s',
     datefmt=u'%m-%d %H:%M:%S', filename=u'openlp.log', filemode=u'w')
 
 from openlp.core.resources import *

@@ -49,6 +49,8 @@ class ServiceItem():
         self.frames = []
         self.raw_footer = None
         self.theme = None
+        self.service_item_path = None
+        self.service_item_type = None
         #log.debug(u'Service item created for %s ', self.shortname)
         self.service_frames = []
 
@@ -77,13 +79,16 @@ class ServiceItem():
             self.frames = self.service_frames
             self.service_frames = []
         elif self.service_item_type == u'image':
+            for slide in self.service_frames:
+                slide[u'image'] = self.RenderManager.resize_image(slide[u'image'])
             self.frames = self.service_frames
             self.service_frames = []
         else:
             log.error(u'Invalid value renderer :%s' % self.service_item_type)
 
-    def add_from_image(self, frame_title, image):
+    def add_from_image(self, path,  frame_title, image):
         self.service_item_type = u'image'
+        self.service_item_path = path
         self.service_frames.append({u'title': frame_title, u'image': image})
 
     def add_from_text(self, frame_title, raw_slide):
@@ -110,8 +115,8 @@ class ServiceItem():
 
     def set_from_oos(self, serviceitem):
         """
-        This method takes some oostext (passed from the ServiceManager)
-        and parses it into the data actually required
+        This method takes some oos list (passed from the ServiceManager)
+        and extracts the data actually required
         """
         header = serviceitem[u'serviceitem'][u'header']
         self.title = header[u'title']
