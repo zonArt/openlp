@@ -159,4 +159,4 @@ class RenderManager:
         self.height = screen.height()
         log.debug(u'calculate default %d,%d' , self.width, self.height)
         # 90% is start of footer
-        self.footer_start = int(self.height*0.90)
+        self.footer_start = int(self.height * 0.90)

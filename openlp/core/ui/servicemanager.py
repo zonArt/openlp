@@ -20,6 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import os
 import logging
 import cPickle
+import zipfile
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, Event, \
@@ -211,15 +212,28 @@ class ServiceManager(QtGui.QWidget):
         Save the current service
         """
         filename = QtGui.QFileDialog.getSaveFileName(self, u'Save Order of Service',self.config.get_last_dir() )
+        filename = unicode(filename)
         if filename != u'':
             self.config.set_last_dir(filename)
-            print filename
             service = []
+            servicefile= filename + u'.ood'
             for item in self.serviceItems:
                 service.append({u'serviceitem':item[u'data'].get_oos_repr()})
-            file = open(filename+u'.oos', u'wb')
+                if item[u'data'].service_item_type == u'image':
+                    print item[u'data'].service_item_path
+                    for frame in item[u'data'].frames:
+                        print frame[u'title']
+            file = open(servicefile, u'wb')
             cPickle.dump(service, file)
             file.close()
+            zip = zipfile.ZipFile(unicode(filename)+u'.oos', 'w')
+            zip.write(servicefile)
+            zip.close()
+            try:
+                os.remove(servicefile)
+            except:
+                pass #if not present do not worry
+
 
     def onLoadService(self):
         """
@@ -227,17 +241,32 @@ class ServiceManager(QtGui.QWidget):
         """
         filename = QtGui.QFileDialog.getOpenFileName(self, u'Open Order of Service',self.config.get_last_dir(),
             u'Services (*.oos)')
+        filename = unicode(filename)
         if filename != u'':
             self.config.set_last_dir(filename)
-            file = open(filename, u'r')
-            items = cPickle.load(file)
-            file.close()
-            self.onNewService()
-            for item in items:
-                serviceitem = ServiceItem()
-                serviceitem.RenderManager = self.parent.RenderManager
-                serviceitem.set_from_oos(item)
-                self.addServiceItem(serviceitem)
+            zip = zipfile.ZipFile(unicode(filename))
+            filexml = None
+            themename = None
+            for file in zip.namelist():
+                pickle_data = zip.read(file)
+                path = file.split(u'.')
+                p_file = unicode(u'/'+path[0]+u'.ood')
+                file_handle = open(p_file, u'wb')
+                file_handle.write(pickle_data)
+                file_handle.close()
+                file = open(p_file, u'r')
+                items = cPickle.load(file)
+                file.close()
+                self.onNewService()
+                for item in items:
+                    serviceitem = ServiceItem()
+                    serviceitem.RenderManager = self.parent.RenderManager
+                    serviceitem.set_from_oos(item)
+                    self.addServiceItem(serviceitem)
+                try:
+                    os.remove(p_file)
+                except:
+                    pass #if not present do not worry
 
     def onThemeComboBoxSelected(self, currentIndex):
         """
