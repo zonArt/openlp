@@ -160,8 +160,25 @@ class SongMediaItem(MediaManagerItem):
         self.SearchTypeComboBox.addItem(translate(u'SongMediaItem', u'Lyrics'))
         self.SearchTypeComboBox.addItem(translate(u'SongMediaItem', u'Authors'))
 
-    def displayResults(self, searchresults):
-        log.debug(u'display results')
+    def onSearchTextButtonClick(self):
+        search_keywords = unicode(self.SearchTextEdit.displayText())
+        search_results  = []
+        search_type = self.SearchTypeComboBox.currentIndex()
+        if search_type == 0:
+            log.debug(u'Titles Search')
+            search_results = self.parent.songmanager.search_song_title(search_keywords)
+            self.displayResultsSong(search_results)
+        elif search_type == 1:
+            log.debug(u'Lyrics Search')
+            search_results = self.parent.songmanager.search_song_lyrics(search_keywords)
+            self.displayResultsSong(search_results)
+        elif search_type == 2:
+            log.debug(u'Authors Search')
+            search_results = self.parent.songmanager.get_song_from_author(search_keywords)
+            self.displayResultsAuthor(search_results)
+
+    def displayResultsSong(self, searchresults):
+        log.debug(u'display results Song')
         self.SongListWidget.clear()
         #log.debug(u'Records returned from search %s", len(searchresults))
         for song in searchresults:
@@ -175,6 +192,16 @@ class SongMediaItem(MediaManagerItem):
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
             self.SongListWidget.addItem(song_name)
 
+    def displayResultsAuthor(self, searchresults):
+        log.debug(u'display results Author')
+        self.SongListWidget.clear()
+        for author in searchresults:
+            for song in author.songs:
+                song_detail = unicode(u'%s (%s)' % (unicode(author.display_name), unicode(song.title)))
+                song_name = QtGui.QListWidgetItem(song_detail)
+                song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
+                self.SongListWidget.addItem(song_name)
+
     def onClearTextButtonClick(self):
         """
         Clear the search text.
@@ -187,21 +214,6 @@ class SongMediaItem(MediaManagerItem):
             search_length = 7
         if len(text) > search_length:
             self.onSearchTextButtonClick()
-
-    def onSearchTextButtonClick(self):
-        search_keywords = unicode(self.SearchTextEdit.displayText())
-        search_results  = []
-        search_type = self.SearchTypeComboBox.currentIndex()
-        if search_type == 0:
-            log.debug(u'Titles Search')
-            search_results = self.parent.songmanager.search_song_title(search_keywords)
-        elif search_type == 1:
-            log.debug(u'Lyrics Search')
-            search_results = self.parent.songmanager.search_song_lyrics(search_keywords)
-        elif search_type == 2:
-            log.debug(u'Authors Search')
-            #searchresults = self.songmanager.get_song_from_author(searchtext)
-        self.displayResults(search_results)
 
     def onSongNewClick(self):
         self.edit_song_form.newSong()

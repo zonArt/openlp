@@ -60,8 +60,8 @@ class SongManager():
             metadata.create_all()
         log.debug(u'Song Initialised')
 
-    def process_dialog(self, dialogobject):
-        self.dialogobject = dialogobject
+#    def process_dialog(self, dialogobject):
+#        self.dialogobject = dialogobject
 
     def get_songs(self):
         """
@@ -80,6 +80,12 @@ class SongManager():
         Searches the song lyrics for keywords.
         """
         return self.session.query(Song).filter(Song.search_lyrics.like(u'%' + keywords + u'%')).order_by(Song.search_lyrics.asc()).all()
+
+    def get_song_from_author(self, keywords):
+        """
+        Searches the song authors for keywords.
+        """
+        return self.session.query(Author).filter(Author.display_name.like(u'%' + keywords + u'%')).order_by(Author.display_name.asc()).all()
 
     def get_song(self, id=None):
         """
