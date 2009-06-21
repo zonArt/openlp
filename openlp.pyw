@@ -38,6 +38,11 @@ class OpenLP(QtGui.QApplication):
     log.info(u'Application Loaded')
 
     def run(self):
+       #set the default string encoding
+        try:
+            sys.setappdefaultencoding(u'utf-8')
+        except:
+            pass
         #provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlpprocessevents'), self.processEvents)
