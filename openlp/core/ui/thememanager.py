@@ -40,7 +40,7 @@ class ThemeData(QtCore.QAbstractListModel):
     Root contains a list of ThemeItems
     """
     global log
-    log=logging.getLogger(u'ThemeData')
+    log = logging.getLogger(u'ThemeData')
 
     def __init__(self):
         QtCore.QAbstractListModel.__init__(self)
@@ -200,7 +200,7 @@ class ThemeManager(QtGui.QWidget):
 
     def onImportTheme(self):
         files = QtGui.QFileDialog.getOpenFileNames(None,
-            translate(u'ThemeManager', u'Select Import File'),
+            translate(u'ThemeManager', u'Select Theme Import File'),
             self.path, u'Theme (*.theme)')
         log.info(u'New Themes %s', unicode(files))
         if len(files) > 0:
@@ -335,7 +335,7 @@ class ThemeManager(QtGui.QWidget):
         outfile = open(theme_file, u'w')
         outfile.write(theme_xml)
         outfile.close()
-        if image_from is not None and image_from != image_to:
+        if image_from is not None and image_from is not image_to:
             shutil.copyfile(image_from,  image_to)
         self.generateAndSaveImage(self.path, name, theme_xml)
         self.themeData.clearItems()

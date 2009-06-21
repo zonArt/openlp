@@ -8,6 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_BibleImportDialog(object):
     def setupUi(self, BibleImportDialog):

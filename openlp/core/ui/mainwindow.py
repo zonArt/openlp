@@ -64,6 +64,7 @@ class MainWindow(object):
         self.RenderManager = RenderManager(self.ThemeManagerContents,
             self.screenList, int(self.generalConfig.get_config(u'Monitor', 0)))
         log.info(u'Load Plugins')
+        #make the controllers available to the plugins
         self.plugin_helpers[u'preview'] = self.PreviewController
         self.plugin_helpers[u'live'] = self.LiveController
         self.plugin_helpers[u'event'] = self.EventManager
@@ -74,7 +75,7 @@ class MainWindow(object):
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers,
             self.EventManager)
         # hook methods have to happen after find_plugins. Find plugins needs the
-        # controllershence the hooks have moved from setupUI() to here
+        # controllers hence the hooks have moved from setupUI() to here
 
         # Find and insert settings tabs
         log.info(u'hook settings')
@@ -378,6 +379,10 @@ class MainWindow(object):
         # Connect up some signals and slots
         QtCore.QObject.connect(self.FileExitItem,
             QtCore.SIGNAL(u'triggered()'), self.mainWindow.close)
+        QtCore.QObject.connect(self.ImportThemeItem,
+            QtCore.SIGNAL(u'triggered()'), self.ThemeManagerContents.onImportTheme)
+        QtCore.QObject.connect(self.ExportThemeItem,
+            QtCore.SIGNAL(u'triggered()'), self.ThemeManagerContents.onExportTheme)
         QtCore.QObject.connect(self.ViewMediaManagerItem,
             QtCore.SIGNAL(u'triggered(bool)'), self.MediaManagerDock.setVisible)
         QtCore.QObject.connect(self.ViewServiceManagerItem,

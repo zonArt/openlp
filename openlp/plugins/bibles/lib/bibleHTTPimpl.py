@@ -44,7 +44,7 @@ class BGExtract(BibleCommon):
         log.debug( u'get_bible_chapter %s,%s,%s,%s', version, bookid, bookname,  chapter)
         urlstring = u'http://www.biblegateway.com/passage/?book_id='+unicode(bookid)+u'&chapter'+unicode(chapter)+u'&version='+unicode(version)
         xml_string = self._get_web_text(urlstring, self.proxyurl)
-        print xml_string
+        #print xml_string
         VerseSearch = u'class='+u'"'+u'sup'+u'"'+u'>'
         verse = 1
         i= xml_string.find(u'result-text-style-normal')
@@ -97,7 +97,7 @@ class CWExtract(BibleCommon):
         """
         log.debug(u'get_bible_chapter %s,%s,%s,%s', version, bookid, bookname,  chapter)
         bookname = bookname.replace(u' ', '')
-        urlstring = "http://bible.crosswalk.com/OnlineStudyBible/bible.cgi?word="+bookname+"+"+unicode(chapter)+"&version="+version
+        urlstring = u'http://bible.crosswalk.com/OnlineStudyBible/bible.cgi?word='+bookname+u'+'+unicode(chapter)+u'&version='+version
         xml_string = self._get_web_text(urlstring, self.proxyurl)
         #log.debug(u'Return data %s', xml_string)
         ## Strip Book Title from Heading to return it to system
@@ -115,27 +115,33 @@ class CWExtract(BibleCommon):
 
         ## Strip Verse Data from Page and build an array
         ##
+        #log.debug(u'bible data %s', xml_string)
         i= xml_string.find(u'NavCurrentChapter')
         xml_string = xml_string[i:len(xml_string)]
         i= xml_string.find(u'<TABLE')
         xml_string = xml_string[i:len(xml_string)]
         i= xml_string.find(u'<B>')
-        xml_string = xml_string[i + 3 :len(xml_string)] #remove the <B> at the front
-        i= xml_string.find(u'<B>') # Remove the heading for the book
-        xml_string = xml_string[i + 3 :len(xml_string)] #remove the <B> at the front
+        #remove the <B> at the front
+        xml_string = xml_string[i + 3 :len(xml_string)]
+        # Remove the heading for the book
+        i= xml_string.find(u'<B>')
+        #remove the <B> at the front
+        xml_string = xml_string[i + 3 :len(xml_string)]
         versePos = xml_string.find(u'<BLOCKQUOTE>')
-        #log.debug( versePos)
+        #log.debug(u'verse pos %d',  versePos)
         bible = {}
         while versePos > 0:
-            verseText = '' # clear out string
+            verseText = u''
             versePos = xml_string.find(u'<B><I>', versePos) + 6
             i = xml_string.find(u'</I></B>', versePos)
             #log.debug( versePos, i)
             verse= xml_string[versePos:i] # Got the Chapter
             #verse = int(temp)
-            #log.debug( 'Chapter = ' + unicode(temp))
-            versePos = i + 8     # move the starting position to negining of the text
-            i = xml_string.find(u'<B><I>', versePos) # fine the start of the next verse
+            #log.debug( 'Chapter = %s', verse)
+            # move the starting position to begining of the text
+            versePos = i + 8
+            # fined the start of the next verse
+            i = xml_string.find(u'<B><I>', versePos)
             if i == -1:
                 i = xml_string.find(u'</BLOCKQUOTE>',versePos)
                 verseText = xml_string[versePos: i]

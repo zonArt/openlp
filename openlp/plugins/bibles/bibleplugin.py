@@ -25,8 +25,6 @@ from PyQt4.QtCore import *
 from openlp.core.lib import Plugin, Event,  EventType,  translate
 
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
-from openlp.plugins.bibles.lib.tables import *
-from openlp.plugins.bibles.lib.classes import *
 
 class BiblePlugin(Plugin):
     global log
@@ -71,9 +69,7 @@ class BiblePlugin(Plugin):
         pass
 
     def onBibleNewClick(self):
-        self.bibleimportform = BibleImportForm(self.config, self.biblemanager, self)
-        self.bibleimportform.exec_()
-        pass
+        self.media_item.onBibleNewClick()
 
     def handle_event(self, event):
         """

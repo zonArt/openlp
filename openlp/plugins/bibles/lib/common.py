@@ -53,12 +53,12 @@ class BibleCommon:
             http_support = urllib2.HTTPHandler()
             opener= urllib2.build_opener(proxy_support, http_support)
             urllib2.install_opener(opener)
-        xml_string = ""
+        xml_string = u''
         req = urllib2.Request(urlstring)
         req.add_header(u'User-Agent', 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)')
         try:
             handle = urllib2.urlopen(req)
-            xml_string = handle.read()
+            xml_string = unicode(handle.read())
         except IOError, e:
             if hasattr(e, u'reason'):
                 log.error(u'Reason : ')
@@ -97,9 +97,9 @@ class BibleCommon:
         text= text.replace(u'</P>', u'')
         text= text.replace(u'<BR>', u'')
         text= text.replace(u'<BR />', u'')
-        text= text.replace(chr(189), u'1/2')
-        text= text.replace(u'&quot;", u''')
-        text= text.replace(u'&apos;", u''')
+        #text= text.replace(chr(189), u'1/2');print "l"
+        text= text.replace(u'&quot;', "'")
+        text= text.replace(u'&apos;', "'")
 
         i = text.find(u'<')
         while i > -1 :

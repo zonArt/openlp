@@ -18,6 +18,7 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import logging
+import os
 import time
 from openlp.core.lib import buildIcon
 from PyQt4 import QtCore, QtGui
@@ -49,6 +50,8 @@ class ServiceItem():
         self.frames = []
         self.raw_footer = None
         self.theme = None
+        self.service_item_path = None
+        self.service_item_type = None
         #log.debug(u'Service item created for %s ', self.shortname)
         self.service_frames = []
 
@@ -77,13 +80,18 @@ class ServiceItem():
             self.frames = self.service_frames
             self.service_frames = []
         elif self.service_item_type == u'image':
+            #print "image"
+            #print self.service_frames
+            for slide in self.service_frames:
+                slide[u'image'] = self.RenderManager.resize_image(slide[u'image'])
             self.frames = self.service_frames
-            self.service_frames = []
+            #self.service_frames = []
         else:
             log.error(u'Invalid value renderer :%s' % self.service_item_type)
 
-    def add_from_image(self, frame_title, image):
+    def add_from_image(self, path,  frame_title, image):
         self.service_item_type = u'image'
+        self.service_item_path = path
         self.service_frames.append({u'title': frame_title, u'image': image})
 
     def add_from_text(self, frame_title, raw_slide):
@@ -105,14 +113,21 @@ class ServiceItem():
         oos_data = []
         if self.service_item_type == u'text':
             for slide in self.service_frames:
-                oos_data.append(slide[u'raw_slide'])
-        return {u'header': oos_header, u'data': self.service_frames}
+                oos_data.append(slide)
+        elif self.service_item_type == u'image':
+            #print "sf", self.service_frames
+            for slide in self.service_frames:
+                #print "s", slide
+                oos_data.append(slide[u'title'])
+        #print "od", oos_data
+        return {u'header': oos_header, u'data': oos_data}
 
-    def set_from_oos(self, serviceitem):
+    def set_from_oos(self, serviceitem, path=None):
         """
-        This method takes some oostext (passed from the ServiceManager)
-        and parses it into the data actually required
+        This method takes some oos list (passed from the ServiceManager)
+        and extracts the data actually required
         """
+        #print "sfs", serviceitem
         header = serviceitem[u'serviceitem'][u'header']
         self.title = header[u'title']
         self.service_item_type = header[u'type']
@@ -120,4 +135,12 @@ class ServiceItem():
         self.theme = header[u'theme']
         self.addIcon(header[u'icon'])
         self.raw_footer = header[u'footer']
-        self.service_frames = serviceitem[u'serviceitem'][u'data']
+        if self.service_item_type == u'text':
+            for slide in serviceitem[u'serviceitem'][u'data']:
+                self.service_frames.append(slide)
+        elif self.service_item_type == u'image':
+            for text_image in serviceitem[u'serviceitem'][u'data']:
+                filename = os.path.join(path, text_image)
+                #print "fn",  filename
+                real_image = QtGui.QImage(unicode(filename))
+                self.add_from_image(path, text_image, real_image)

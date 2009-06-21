@@ -3,7 +3,7 @@
 """
 OpenLP - Open Source Lyrics Projection
 Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley,
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley,
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -22,7 +22,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, Event,  EventType
-from openlp.plugins.images.lib import ImageMediaItem, ImageServiceItem
+from openlp.plugins.images.lib import ImageMediaItem
 
 class ImagePlugin(Plugin):
     global log
@@ -37,9 +37,6 @@ class ImagePlugin(Plugin):
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(u':/media/media_image.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
-
-        self.preview_service_item = ImageServiceItem(self.preview_controller)
-        self.live_service_item = ImageServiceItem(self.live_controller)
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
@@ -63,5 +60,3 @@ class ImagePlugin(Plugin):
         if event.event_type == EventType.LiveShow and event.payload == 'Image':
             log.debug(u'Load Live Show Item received')
             self.media_item.onImageLiveClick()
-
-

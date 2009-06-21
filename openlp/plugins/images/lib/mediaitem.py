@@ -51,7 +51,7 @@ class ImageMediaItem(MediaManagerItem):
     This is the custom media manager item for images.
     """
     global log
-    log=logging.getLogger(u'ImageMediaItem')
+    log = logging.getLogger(u'ImageMediaItem')
     log.info(u'Image Media Item loaded')
 
     def __init__(self, parent, icon, title):
@@ -95,7 +95,7 @@ class ImageMediaItem(MediaManagerItem):
         self.ImageListView.setModel(self.ImageListData)
         self.ImageListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.ImageListView.setSpacing(1)
-        self.ImageListView.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
+        self.ImageListView.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.ImageListView.setAlternatingRowColors(True)
         self.ImageListView.setDragEnabled(True)
         self.ImageListView.setObjectName(u'ImageListView')
@@ -114,6 +114,8 @@ class ImageMediaItem(MediaManagerItem):
             self.ImageListView, ':/system/system_add.png',
             translate(u'ImageMediaItem', u'&Add to Service'),
             self.onImageAddClick))
+        QtCore.QObject.connect(self.ImageListView,
+           QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onImagePreviewClick)
 
     def initialise(self):
         self.loadImageList(self.parent.config.load_list(u'images'))
@@ -143,12 +145,12 @@ class ImageMediaItem(MediaManagerItem):
 
     def generateSlideData(self, service_item):
         indexes = self.ImageListView.selectedIndexes()
-        service_item.title = u'Images'
+        service_item.title = u'Image(s)'
         for index in indexes:
             filename = self.ImageListData.getFilename(index)
-            frame = QtGui.QPixmap(unicode(filename))
-            (path, name) =os.path.split(filename)
-            service_item.add_from_image(name, frame)
+            frame = QtGui.QImage(unicode(filename))
+            (path, name) = os.path.split(filename)
+            service_item.add_from_image(path,  name, frame)
 
     def onImagePreviewClick(self):
         log.debug(u'Image Preview Requested')
