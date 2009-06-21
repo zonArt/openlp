@@ -104,11 +104,17 @@ class SlideList(QtGui.QListView):
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
             #here accept the event and do something
-            if event.key() == QtCore.Qt.Key_PageUp:
+            if event.key() == QtCore.Qt.Key_Up:
                 self.parent.onSlideSelectedPrevious()
                 event.accept()
-            elif event.key() == QtCore.Qt.Key_PageDown:
+            elif event.key() == QtCore.Qt.Key_Down:
                 self.parent.onSlideSelectedNext()
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_PageUp:
+                self.parent.onSlideSelectedFirst()
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_PageDown:
+                self.parent.onSlideSelectedLast()
                 event.accept()
             event.ignore()
         else:
