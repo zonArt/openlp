@@ -103,7 +103,7 @@ class SongsPlugin(Plugin):
         QtCore.QObject.connect(self.ExportOpenSongItem, QtCore.SIGNAL(u'triggered()'), self.onExportOpenSongItemClicked)
 
     def initialise(self):
-        self.media_item.displayResults(self.songmanager.get_songs())
+        self.media_item.displayResultsSong(self.songmanager.get_songs())
 
     def onImportOpenlp1ItemClick(self):
         self.openlp_import_form.show()

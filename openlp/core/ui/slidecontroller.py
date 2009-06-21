@@ -21,14 +21,11 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-
 from openlp.core.lib import OpenLPToolbar, translate
 
 class SlideData(QtCore.QAbstractListModel):
     """
-    Tree of items for an order of Theme.
-    Includes methods for reading and writing the contents to an OOS file
-    Root contains a list of ThemeItems
+    List of frames to be displayed on the list and the main display.
     """
     global log
     log = logging.getLogger(u'SlideData')
@@ -98,6 +95,24 @@ class SlideData(QtCore.QAbstractListModel):
         filelist = [item[3] for item in self.items];
         return filelist
 
+class SlideList(QtGui.QListView):
+
+    def __init__(self,parent=None,name=None):
+        QtGui.QListView.__init__(self,parent.Controller)
+        self.parent = parent
+
+    def keyPressEvent(self, event):
+        if type(event) == QtGui.QKeyEvent:
+            #here accept the event and do something
+            if event.key() == QtCore.Qt.Key_PageUp:
+                self.parent.onSlideSelectedPrevious()
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_PageDown:
+                self.parent.onSlideSelectedNext()
+                event.accept()
+            event.ignore()
+        else:
+            event.ignore()
 
 class SlideController(QtGui.QWidget):
     """
@@ -132,7 +147,7 @@ class SlideController(QtGui.QWidget):
         self.ControllerLayout.setSpacing(0)
         self.ControllerLayout.setMargin(0)
         # Controller list view
-        self.PreviewListView = QtGui.QListView(self.Controller)
+        self.PreviewListView = SlideList(self)
         self.PreviewListView.setUniformItemSizes(True)
         self.PreviewListView.setIconSize(QtCore.QSize(250, 190))
         self.PreviewListData = SlideData()
@@ -210,6 +225,11 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
         QtCore.QObject.connect(self.PreviewListView,
             QtCore.SIGNAL(u'activated(QModelIndex)'), self.onSlideSelected)
+        QtCore.QObject.connect(self.PreviewListView,
+            QtCore.SIGNAL(u'entered(QModelIndex)'), self.onTest)
+
+    def onTest(self ,  item):
+        print "found", item
 
     def onSlideSelectedFirst(self):
         """

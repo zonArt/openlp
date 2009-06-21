@@ -29,6 +29,7 @@ from xml.etree.ElementTree import ElementTree, XML, dump
 </song>
 
 """
+import logging
 from xml.dom.minidom import  Document
 from xml.etree.ElementTree import ElementTree, XML, dump
 
@@ -70,11 +71,20 @@ class SongXMLBuilder():
 
     def extract_xml(self):
         # Print our newly created XML
-        return self.song_xml.toxml()
+        return self.song_xml.toxml(u'utf-8')
 
 class SongXMLParser():
+    global log
+    log = logging.getLogger(u'SongXMLParser')
+    log.info(u'SongXMLParser Loaded')
+
     def __init__(self, xml):
-        self.song_xml = ElementTree(element=XML(xml))
+        #print xml
+        try:
+            self.song_xml = ElementTree(element=XML(xml))
+        except:
+            #print "invalid xml ", xml
+            log.debug(u'invalid xml %s', xml)
 
     def get_verses(self):
         #return a list of verse's and attributes
