@@ -50,10 +50,10 @@ class TestRender_base:
         self.app=None
     def write_to_file(self, pixmap, name):
         im=pixmap.toImage()
-        testpathname=os.path.join(u'test_results", name+".bmp')
+        testpathname=os.path.join(u'test_results', name+'.bmp')
         if os.path.exists(testpathname):
             os.unlink(testpathname)
-        im.save(testpathname, "bmp')
+        im.save(testpathname, 'bmp')
         return im
     # xxx quitting the app still leaves it hanging aroudn so we die
     # when trying to start another one.  Not quitting doesn't help
