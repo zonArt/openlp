@@ -22,35 +22,17 @@ import types
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib.toolbar import *
 from openlp.core.lib import translate
-
-# xxx this should be in core.lib probably
-from openlp.plugins.images.lib import ListWithPreviews
-class ImageList(QtGui.QListView):
-
-    def __init__(self,parent=None,name=None):
-        QtGui.QListView.__init__(self,parent)
-
-    def mouseMoveEvent(self, event):
-        """
-        Drag and drop event does not care what data is selected
-        as the recepient will use events to request the data move
-        just tell it what plugin to call
-        """
-        if event.buttons() != QtCore.Qt.LeftButton:
-            return
-        drag = QtGui.QDrag(self)
-        mimeData = QtCore.QMimeData()
-        drag.setMimeData(mimeData)
-        mimeData.setText(u'Image')
-        dropAction = drag.start(QtCore.Qt.CopyAction)
-        if dropAction == QtCore.Qt.CopyAction:
-            self.close()
-
-
+from imagelist import ImageList
+from listwithpreviews import ListWithPreviews
+from serviceitem import ServiceItem
 class MediaManagerItem(QtGui.QWidget):
     """
     MediaManagerItem is a helper widget for plugins.
     """
+    global log
+    log = logging.getLogger(u'MediaManagerItem')
+    log.info(u'Media Item loaded')
+
     def __init__(self, parent=None, icon=None, title=None):
         """
         Constructor to create the media manager item.
