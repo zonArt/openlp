@@ -74,5 +74,8 @@ from songxmlhandler import SongXMLParser
 from themexmlhandler import ThemeXML
 from renderer import Renderer
 from rendermanager import RenderManager
+from mediamanageritem import MediaManagerItem, ImageList
 
-__all__ = [ 'translate', 'file_to_xml', 'str_to_bool', 'contextMenuAction', 'contextMenuSeparator']
+__all__ = [ 'translate', 'file_to_xml', 'str_to_bool',
+            'contextMenuAction', 'contextMenuSeparator',
+            'MediaManagerItem', 'ServiceItem']
