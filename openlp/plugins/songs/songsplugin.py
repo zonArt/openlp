@@ -136,4 +136,4 @@ class SongsPlugin(Plugin):
             self.media_item.onSongLiveClick()
         if event.event_type == EventType.LoadSongList :
             log.debug(u'Load Load Song List Item received')
-            self.media_item.displayResults(self.songmanager.get_songs())
+            self.media_item.displayResultsSong(self.songmanager.get_songs())
