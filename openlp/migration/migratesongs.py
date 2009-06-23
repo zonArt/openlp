@@ -16,6 +16,7 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import os
+import sys
 import logging
 import sqlite3
 from openlp.core.lib import PluginConfig
@@ -24,20 +25,81 @@ from sqlalchemy import  *
 from sqlalchemy.sql import select
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation, clear_mappers
-
+from openlp.plugins.songs.lib.models import metadata, session, \
+    engine, songs_table, Song, Author, Topic,  Book
 from openlp.plugins.songs.lib.tables import *
 from openlp.plugins.songs.lib.classes import *
 
-clear_mappers()
-mapper(Author, authors_table)
-mapper(Book, song_books_table)
-mapper(Song, songs_table, properties={
-        'authors': relation(Author, backref='songs',
-        secondary=authors_songs_table),
-        'book': relation(Book, backref='songs'),
-        'topics': relation(Topic, backref='songs',
-        secondary=songs_topics_table)})
-mapper(Topic, topics_table)
+def init_models(url):
+    engine = create_engine(url)
+    metadata.bind = engine
+    session = scoped_session(sessionmaker(autoflush=True, autocommit=False,
+                                          bind=engine))
+    mapper(Author, authors_table)
+    mapper(TAuthor, temp_authors_table)
+    mapper(Book, song_books_table)
+    mapper(Song, songs_table,
+       properties={'authors': relation(Author, backref='songs',
+                                       secondary=authors_songs_table),
+                   'book': relation(Book, backref='songs'),
+                   'topics': relation(Topic, backref='songs',
+                                      secondary=songs_topics_table)})
+    mapper(TSong, temp_songs_table)
+    mapper(TSongAuthor, temp_authors_songs_table)
+    mapper(Topic, topics_table)
+    return session
+
+temp_authors_table = Table(u'authors_temp', metadata,
+    Column(u'authorid', types.Integer,  primary_key=True),
+    Column(u'authorname', String(40))
+)
+
+temp_songs_table = Table(u'songs_temp', metadata,
+    Column(u'songid', types.Integer, primary_key=True),
+    Column(u'songtitle', String(60)),
+    Column(u'lyrics', types.UnicodeText),
+    Column(u'copyrightinfo', String(255)),
+    Column(u'settingsid', types.Integer)
+)
+
+# Definition of the "authors_songs" table
+temp_authors_songs_table = Table(u'songauthors_temp', metadata,
+    Column(u'authorid', types.Integer, primary_key=True),
+    Column(u'songid', types.Integer)
+)
+class BaseModel(object):
+    """
+    BaseModel provides a base object with a set of generic functions
+    """
+
+    @classmethod
+    def populate(cls, **kwargs):
+        """
+        Creates an instance of a class and populates it, returning the instance
+        """
+        me = cls()
+        keys = kwargs.keys()
+        for key in keys:
+            me.__setattr__(key, kwargs[key])
+        return me
+
+class TAuthor(BaseModel):
+    """
+    Author model
+    """
+    pass
+
+class TSong(BaseModel):
+    """
+    Author model
+    """
+    pass
+
+class TSongAuthor(BaseModel):
+    """
+    Author model
+    """
+    pass
 
 class MigrateSongs():
     def __init__(self, display):
@@ -55,186 +117,61 @@ class MigrateSongs():
 
     def v_1_9_0(self, database):
         self.display.output(u'Migration 1.9.0 Started for ' + database)
-        self._v1_9_0_authors(database)
-        self._v1_9_0_topics(database)
-        self._v1_9_0_songbook(database)
-        self._v1_9_0_songauthors(database)
-        self._v1_9_0_songtopics(database)
-        self._v1_9_0_songs(database)
+        self._v1_9_0_old(database)
+        self._v1_9_0_new(database)
+        self._v1_9_0_cleanup(database)
         self.display.output(u'Migration 1.9.0 Finished for ' + database)
 
-    def _v1_9_0_authors(self, database):
-        self.display.sub_output(u'Authors Started for ' + database)
+    def _v1_9_0_old(self, database):
+        self.display.sub_output(u'Rename Tables ' + database)
         conn = sqlite3.connect(self.data_path + os.sep + database)
-        conn.execute(u'""alter table authors rename to authors_temp;""')
+        conn.execute(u'alter table authors rename to authors_temp;')
         conn.commit()
-        self.display.sub_output(u'old author renamed to author_temp')
-        conn.execute(u'""create table authors (
-            id integer primary key ASC AUTOINCREMENT,
-            first_name varchar(128),
-            last_name varchar(128),
-            display_name varchar(255)
-            );""')
+        conn.execute(u'alter table songs rename to songs_temp;')
         conn.commit()
-        self.display.sub_output(u'authors table created')
-        conn.execute(u'""create index if not exists author1 on authors 
-            (display_name ASC,id ASC);""')
+        conn.execute(u'alter table songauthors rename to songauthors_temp;')
         conn.commit()
-        self.display.sub_output(u'index author1 created')
-        conn.execute(u'""create index if not exists author2 on authors 
-            (last_name ASC,id ASC);""')
-        conn.commit()
-        self.display.sub_output(u'index author2 created')
-        conn.execute(u'""create index if not exists author3 on authors 
-            (first_name ASC,id ASC);""')
-        conn.commit()
-        self.display.sub_output(u'index author3 created')
-        self.display.sub_output(u'Author Data Migration started')
-        conn.execute(u'""insert into authors (id, display_name) 
-            select authorid, authorname from authors_temp;""')
-        conn.commit()
-        self.display.sub_output(u'authors populated')
-        c = conn.cursor()        
-        text = c.execute(u'""select * from authors""') .fetchall()
-        for author in text:
-            dispname = author[3]
-            dispname = dispname.replace(u''", u'') 
-            pos = dispname.rfind(u' ')
-            authorfirstname = dispname[:pos]
-            authorlastname = dispname[pos + 1:len(dispname)]
-            s = "update authors set first_name = '" \
-                + authorfirstname + "', last_name = '" + authorlastname \
-                + "' where id = " + unicode(author[0])
-            c.execute(s)
-        conn.commit()
-        self.display.sub_output(u'Author Data Migration Completed')
-        conn.execute(u'""drop table authors_temp;""')
-        conn.commit()
-        conn.close()
-        self.display.sub_output(u'author_temp dropped')
-        self.display.sub_output(u'Authors Completed')
 
-    def _v1_9_0_songbook(self, database):
-        self.display.sub_output(u'SongBook Started for ' + database)
-        conn = sqlite3.connect(self.data_path + os.sep + database)
-        conn.execute(u'""create table if not exists song_books (
-            id integer Primary Key ASC AUTOINCREMENT,
-            name varchar(128),
-            publisher varchar(128)
-            );""')
-        conn.commit()
-        self.display.sub_output(u'songbook table created')
-        conn.execute(u'""create index if not exists songbook1 on song_books (name ASC,id ASC);""')
-        conn.commit()
-        self.display.sub_output(u'index songbook1 created')
-        conn.execute(u'""create index if not exists songbook2 on song_books (publisher ASC,id ASC);""')
-        conn.commit()
-        conn.close()
-        self.display.sub_output(u'index songbook2 created')
-        self.display.sub_output(u'SongBook Completed')
+    def _v1_9_0_new(self, database):
+        self.display.sub_output(u'Create new Tables ' + database)
+        self.db_url = u'sqlite:///' + self.data_path + u'/songs.sqlite'
+        print self.db_url
+        self.session = init_models(self.db_url)
+        if not songs_table.exists():
+            metadata.create_all()
+        results = self.session.query(TSong).order_by(TSong.songid).all()
+        for songs_temp in results:
+            song = Song()
+            song.title = songs_temp.songtitle
+            song.lyrics = songs_temp.lyrics.replace(u'\r\n', u'\n')
+            song.copyright = songs_temp.copyrightinfo
+            song.search_title = u''
+            song.search_lyrics = u''
+            print songs_temp.songtitle
+            aa  = self.session.execute(u'select * from songauthors_temp where songid =' + unicode(songs_temp.songid) )
+            for row in aa:
+                a = row['authorid']
+                author = Author()
+                authors_temp = self.session.query(TAuthor).get(a)
+                author.display_name =  authors_temp.authorname
+                song.authors.append(author)
+            try:
+                self.session.add(song)
+                self.session.commit()
+            except:
+                self.session.rollback()
+                print u'Errow thrown = ', sys.exc_info()[1]
 
-    def _v1_9_0_songs(self, database):
-        self.display.sub_output(u'Songs Started for ' + database)
+    def _v1_9_0_cleanup(self, database):
+        self.display.sub_output(u'Update Internal Data ' + database)
         conn = sqlite3.connect(self.data_path + os.sep + database)
-        conn.execute(u'""alter table songs rename to songs_temp;""')
-        conn.commit()
-        conn.execute(u'""create table if not exists songs  (
-            id integer Primary Key ASC AUTOINCREMENT,
-            song_book_id integer,
-            title varchar(255),
-            lyrics text,
-            verse_order varchar(128),
-            copyright varchar(255),
-            comments text,
-            ccli_number varchar(64),
-            song_number varchar(64),
-            theme_name varchar(128),
-            search_title varchar(255),
-            search_lyrics text
-            );""')
-        conn.commit()
-        self.display.sub_output(u'songs table created')
-        conn.execute(u'""create index if not exists songs1 on songs 
-            (search_lyrics ASC,id ASC);""')
-        conn.commit()
-        self.display.sub_output(u'index songs1 created')
-        conn.execute(u'""create index if not exists songs2 on songs 
-            (search_title ASC,id ASC);""')
-        conn.commit()
-        self.display.sub_output(u'index songs2 created')
-        conn.execute(u'""insert into songs (id, title, lyrics, copyright,
-            search_title, search_lyrics, song_book_id) 
-            select songid,  songtitle, lyrics, copyrightinfo, 
+        conn.execute("""update songs set search_title =
             replace(replace(replace(replace(replace(replace(replace(replace(
-            replace(songtitle,  '&', 'and'), ',', ''), ';', ''), ':', ''), 
-            '(u', ''), ')', ''), '{', ''), '}',''),'?',''), 
+            replace(title,  '&', 'and'), ',', ''), ';', ''), ':', ''),
+            '(u', ''), ')', ''), '{', ''), '}',''),'?','');""")
+        conn.execute("""update songs set search_lyrics =
             replace(replace(replace(replace(replace(replace(replace(replace(
             replace(lyrics,  '&', 'and'), ',', ''), ';', ''), ':', ''),
-            '(u', ''), ')', ''), '{', ''), '}',''),'?',''),
-            0
-            from songs_temp;""')
+            '(u', ''), ')', ''), '{', ''), '}',''),'?','')
+            ;""")
         conn.commit()
-        self.display.sub_output(u'songs populated')
-        conn.execute(u'""drop table songs_temp;""')
-        conn.commit()
-        conn.close()
-        self.display.sub_output(u'songs_temp dropped')
-        self.display.sub_output(u'Songs Completed')
-
-    def _v1_9_0_topics(self, database):
-        self.display.sub_output(u'Topics Started for ' + database)
-        conn = sqlite3.connect(self.data_path+os.sep+database)
-        conn.text_factory = str
-        conn.execute(u'""create table if not exists topics 
-            (id integer Primary Key ASC AUTOINCREMENT,
-            name varchar(128));""')
-        conn.commit()
-        self.display.sub_output(u'Topic table created')
-        conn.execute(u'""create index if not exists topic1 on topics (name ASC,id ASC);""')
-        conn.commit()
-        conn.close()
-        self.display.sub_output(u'index topic1 created')
-
-        self.display.sub_output(u'Topics Completed')
-
-    def _v1_9_0_songauthors(self, database):
-        self.display.sub_output(u'SongAuthors Started for ' + database);
-        conn = sqlite3.connect(self.data_path + os.sep + database)
-        conn.execute(u'""create table if not exists authors_songs 
-            (author_id integer,
-            song_id integer);""')
-        conn.commit()
-        self.display.sub_output(u'authors_songs table created')
-        conn.execute(u'""insert into authors_songs (author_id, song_id) 
-            select authorid, songid from songauthors;""')
-        conn.commit()
-        self.display.sub_output(u'authors_songs populated')
-        conn.execute(u'""drop table songauthors;""')
-        conn.commit()
-        self.display.sub_output(u'songauthors dropped')
-        conn.close()
-        self.display.sub_output(u'SongAuthors Completed')
-
-    def _v1_9_0_songtopics(self, database):
-        self.display.sub_output(u'Songtopics Started for ' + database);
-        conn = sqlite3.connect(self.data_path+os.sep+database)
-        conn.execute(u'""create table if not exists song_topics 
-            (song_id integer,
-            topic_id integer);""')
-        conn.commit()
-        self.display.sub_output(u'songtopics table created')
-        conn.execute(u'""create index if not exists songtopic1 on song_topics (topic_id ASC,song_id ASC);""')
-        conn.commit()
-        self.display.sub_output(u'index songtopic1 created')
-        conn.execute(u'""create index if not exists songtopic2 on song_topics (song_id ASC,topic_id ASC);""')
-        conn.commit()
-        conn.close()
-        self.display.sub_output(u'index songtopic2 created')
-        self.display.sub_output(u'SongTopics Completed')
-
-    def run_cmd(self, cmd):
-        filein, fileout  = os.popen4(cmd)
-        out = fileout.readlines()
-        if len(out) > 0:
-            for o in range (0, len(out)):
-                self.display.sub_output(out[o])

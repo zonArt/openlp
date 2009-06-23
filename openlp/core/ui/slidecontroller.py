@@ -231,11 +231,6 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
         QtCore.QObject.connect(self.PreviewListView,
             QtCore.SIGNAL(u'activated(QModelIndex)'), self.onSlideSelected)
-        QtCore.QObject.connect(self.PreviewListView,
-            QtCore.SIGNAL(u'entered(QModelIndex)'), self.onTest)
-
-    def onTest(self ,  item):
-        print "found", item
 
     def onSlideSelectedFirst(self):
         """
