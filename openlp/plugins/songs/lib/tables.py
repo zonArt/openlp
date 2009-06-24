@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-
+from sqlalchemy import  *
 from sqlalchemy import Column, Table, ForeignKey, types
 
 from openlp.plugins.songs.lib.meta import metadata
@@ -69,3 +69,12 @@ songs_topics_table = Table(u'songs_topics', metadata,
     Column(u'song_id', types.Integer, ForeignKey(u'songs.id'), primary_key=True),
     Column(u'topic_id', types.Integer, ForeignKey(u'topics.id'), primary_key=True)
 )
+Index(u'authors_id',authors_table.c.id)
+Index(u'authors_display_name_id',authors_table.c.display_name, authors_table.c.id)
+Index(u'song_books_id',song_books_table.c.id)
+Index(u'songs_id',songs_table.c.id)
+Index(u'topics_id',topics_table.c.id)
+Index(u'authors_songs_author',authors_songs_table.c.author_id, authors_songs_table.c.song_id)
+Index(u'authors_songs_song',authors_songs_table.c.song_id, authors_songs_table.c.author_id)
+Index(u'topics_song_topic', songs_topics_table.c.topic_id, songs_topics_table.c.song_id)
+Index(u'topics_song_song',songs_topics_table.c.song_id, songs_topics_table.c.topic_id)

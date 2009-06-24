@@ -24,18 +24,18 @@ class MigrateFiles():
     def process(self):
         self.display.output(u'Files process started');
         self._initial_setup()
-        self.display.output(u'Files process finished');        
-        
+        self.display.output(u'Files process finished');
+
     def _initial_setup(self):
         self.display.output(u'Initial Setup started');
         ConfigHelper.get_data_path()
-        self.display.sub_output(u'Config created');        
-        ConfigHelper.get_config(u'bible", u'data path')
-        self.display.sub_output(u'Config created');        
-        ConfigHelper.get_config(u'videos", u'data path') 
-        self.display.sub_output(u'videos created');                
-        ConfigHelper.get_config(u'images", u'data path') 
-        self.display.sub_output(u'images created');                
-        ConfigHelper.get_config(u'presentations", u'data path') 
-        self.display.sub_output(u'presentations created');                
-        self.display.output(u'Initial Setup finished');        
+        self.display.sub_output(u'Config created');
+        ConfigHelper.get_config(u'bible', u'data path')
+        self.display.sub_output(u'Config created');
+        ConfigHelper.get_config(u'videos', u'data path')
+        self.display.sub_output(u'videos created');
+        ConfigHelper.get_config(u'images', u'data path')
+        self.display.sub_output(u'images created');
+        ConfigHelper.get_config(u'presentations', u'data path')
+        self.display.sub_output(u'presentations created');
+        self.display.output(u'Initial Setup finished');

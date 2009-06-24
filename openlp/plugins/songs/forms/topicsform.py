@@ -51,7 +51,8 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         Refresh the screen and rest fields
         """
         self.TopicsListWidget.clear()
-        self.onClearButtonClick() # tidy up screen
+        # tidy up screen
+        self.onClearButtonClick()
         topics = self.songmanager.get_topics()
         for topic in topics:
             topic_name = QtGui.QListWidgetItem(topic.name)
@@ -77,12 +78,13 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         """
         Sent New or update details to the database
         """
-        if self.topic == None:
-            self.topic = Topic()
-        self.topic.name = unicode(self.TopicNameEdit.displayText())
-        self.songmanager.save_topic(self.topic)
-        self.onClearButtonClick()
-        self.load_form()
+        if self._validate_form():
+            if self.topic == None:
+                self.topic = Topic()
+            self.topic.name = unicode(self.TopicNameEdit.displayText())
+            self.songmanager.save_topic(self.topic)
+            self.onClearButtonClick()
+            self.load_form()
 
     def onClearButtonClick(self):
         """
@@ -91,7 +93,6 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         self.TopicNameEdit.setText(u'')
         self.MessageLabel.setText(u'')
         self.DeleteButton.setEnabled(False)
-        self.AddUpdateButton.setEnabled(True)
         self.topic = None
         self._validate_form()
 
@@ -115,7 +116,10 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
 
     def _validate_form(self):
         # We need at lease a display name
+        valid = True
         if len(self.TopicNameEdit.displayText()) == 0:
-            self.AddUpdateButton.setEnabled(False)
+            valid = False
+            self.TopicNameEdit.setStyleSheet(u'background-color: red; color: white')
         else:
-            self.AddUpdateButton.setEnabled(True)
+            self.TopicNameEdit.setStyleSheet(u'')
+        return valid

@@ -57,9 +57,9 @@ class ThemeData(QtCore.QAbstractListModel):
 
     def insertRow(self, row, filename):
         self.beginInsertRows(QtCore.QModelIndex(), row, row)
-        log.info(u'insert row %d:%s' % (row, filename))
+        log.debug(u'insert row %d:%s' % (row, filename))
         (prefix, shortfilename) = os.path.split(unicode(filename))
-        log.info(u'shortfilename = %s' % shortfilename)
+        log.debug(u'shortfilename = %s' % shortfilename)
         theme = shortfilename.split(u'.')
         # create a preview image
         if os.path.exists(filename):
@@ -81,7 +81,7 @@ class ThemeData(QtCore.QAbstractListModel):
             pixmap.fill(QtCore.Qt.black)
         # finally create the row
         self.items.insert(row, (filename, pixmap, shortfilename, theme[0]))
-        log.info(u'Items: %s' % self.items)
+        log.debug(u'Items: %s' % self.items)
         self.endInsertRows()
 
     def removeRow(self, row):
@@ -190,8 +190,13 @@ class ThemeManager(QtGui.QWidget):
         try:
             os.remove(os.path.join(self.path, th))
         except:
-            pass #if not present do not worry
-        shutil.rmtree(os.path.join(self.path, theme))
+            #if not present do not worry
+            pass
+        try:
+            shutil.rmtree(os.path.join(self.path, theme))
+        except:
+            #if not present do not worry
+            pass
         self.themeData.clearItems()
         self.loadThemes()
 
@@ -201,7 +206,7 @@ class ThemeManager(QtGui.QWidget):
     def onImportTheme(self):
         files = QtGui.QFileDialog.getOpenFileNames(None,
             translate(u'ThemeManager', u'Select Theme Import File'),
-            self.path, u'Theme (*.theme)')
+            self.path, u'Theme (*.*)')
         log.info(u'New Themes %s', unicode(files))
         if len(files) > 0:
             for file in files:
@@ -335,7 +340,7 @@ class ThemeManager(QtGui.QWidget):
         outfile = open(theme_file, u'w')
         outfile.write(theme_xml)
         outfile.close()
-        if image_from is not None and image_from is not image_to:
+        if image_from is not None and image_from != image_to:
             shutil.copyfile(image_from,  image_to)
         self.generateAndSaveImage(self.path, name, theme_xml)
         self.themeData.clearItems()

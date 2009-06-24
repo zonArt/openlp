@@ -16,8 +16,6 @@ PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
-from xml.dom.minidom import  Document
-from xml.etree.ElementTree import ElementTree, XML, dump
 
 For XML Schema see wiki.openlp.org
 """
@@ -256,5 +254,5 @@ class ThemeXML():
         s = u''
         for k in dir(self):
             if k[0:1] != u'_':
-                s += u'%30s : %s\n' %(k,getattr(self,k))
+                s += u'%30s : %s\n' %(k, getattr(self, k))
         return s
