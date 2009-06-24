@@ -35,6 +35,7 @@ class w(QtGui.QMainWindow):
         self.setWindowTitle(u'simple media player')
         self.show()
 
+
 if __name__==u'__main__':
     app = QtGui.QApplication([])
 #     widget = QtGui.QWidget()
@@ -46,8 +47,8 @@ if __name__==u'__main__':
     widget=QtGui.QWidget(mainwindow)
     mainwindow.setCentralWidget(widget)
     widget.setLayout(QtGui.QVBoxLayout(widget))
-#     videofile=u'r-128.rm'
-    videofile=u'/extra_space/Download/coa360download56Kbps240x160.mpg'
+    videofile=u'synctest.24.muxed.avi'
+#     videofile=u'/extra_space/Download/coa360download56Kbps240x160.mpg'
     source=Phonon.MediaSource(videofile)
 
     media=Phonon.MediaObject(widget)
