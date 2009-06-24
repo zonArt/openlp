@@ -21,6 +21,10 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import logging
 
 from openlp.core.lib import PluginConfig
+# why does this not work???
+# from openlp.core.lib import Event,  EventType
+# so I have to do this???
+from event import Event, EventType
 
 class Plugin(object):
     """
@@ -66,6 +70,9 @@ class Plugin(object):
         A method used to render something to the screen, given the current theme
         and screen number.
     """
+    global log
+    log = logging.getLogger(u'Plugin')
+    log.info(u'loaded')
 
     def __init__(self, name=None, version=None, plugin_helpers=None):
         """
@@ -95,6 +102,7 @@ class Plugin(object):
         self.render_manager = plugin_helpers[u'render']
         self.service_manager = plugin_helpers[u'service']
         self.settings= plugin_helpers[u'settings']
+        self.dnd_id=None
 
     def check_pre_conditions(self):
         """
@@ -138,7 +146,23 @@ class Plugin(object):
         """
         Handle the event contained in the event object.
         """
-        pass
+    def handle_event(self, event):
+        """
+        Handle the event contained in the event object.  If you want
+        to use this default behaviour, you must set self.dnd_id equal
+        to that sent by the dnd source - eg the MediaItem
+        """
+        # default behaviour - can be overridden if desired
+        log.debug(u'Handle event called with event %s with payload %s'%(event.event_type, event.payload))
+        if event.event_type == EventType.LoadServiceItem and event.payload == self.dnd_id:
+            log.debug(u'Load Service Item received')
+            self.media_item.onAddClick()
+        if event.event_type == EventType.PreviewShow and event.payload == self.dnd_id:
+            log.debug(u'Load Preview Item received')
+            self.media_item.onPreviewClick()
+        if event.event_type == EventType.LiveShow and event.payload == self.dnd_id:
+            log.debug(u'Load Live Show Item received')
+            self.media_item.onLiveClick()
 
     def about(self):
         """

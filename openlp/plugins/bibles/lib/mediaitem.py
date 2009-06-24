@@ -45,7 +45,6 @@ class BibleList(QtGui.QListWidget):
         if dropAction == QtCore.Qt.CopyAction:
             self.close()
 
-
 class BibleMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Bibles.

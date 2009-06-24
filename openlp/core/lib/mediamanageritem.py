@@ -112,15 +112,17 @@ class MediaManagerItem(QtGui.QWidget):
     ### them cmopletely in your plugin's implementation.  Alternatively, call them from your
     ### plugin before or after you've done etra things that you need to.
     ### in order for them to work, you need to have setup
-    # self.translation_context
-    # self.plugin_text_short # eg "Image" for the image plugin
-    # self.config_section - where the items in the media manager are stored
-    #   this could potentially be self.plugin_text_short.lower()
+    # self.TranslationContext
+    # self.PluginTextShort # eg "Image" for the image plugin
+    # self.ConfigSection - where the items in the media manager are stored
+    #   this could potentially be self.PluginTextShort.lower()
     #
-    # self.on_new_prompt=u'Select Image(s)'
-    # self.on_new_file_masks=u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
+    # self.OnNewPrompt=u'Select Image(s)'
+    # self.OnNewFileMasks=u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
     #   assumes that the new action is to load a file. If not, override onnew
-    
+    # self.ListViewWithDnD_class - there is a base list class with DnD assigned to it (openlp.core.lib.BaseListWithDnD())
+    # each plugin needs to inherit a class from this and pass that *class* (not an instance) to here
+    # via the ListViewWithDnD_class member
     # The assumption is that given that at least two plugins are of the form
     # "text with an icon" then all this will help
     # even for plugins of another sort, the setup of the right-click menu, common toolbar
@@ -137,105 +139,105 @@ class MediaManagerItem(QtGui.QWidget):
         # Create buttons for the toolbar
         ## New Song Button ##
         self.addToolbarButton(
-            translate(self.translation_context, u'Load '+self.plugin_text_short),
-            translate(self.translation_context, u'Load item into openlp.org'),
+            translate(self.TranslationContext, u'Load '+self.PluginTextShort),
+            translate(self.TranslationContext, u'Load item into openlp.org'),
             u':/images/image_load.png', self.onNewClick, u'ImageNewItem')
         ## Delete Song Button ##
         self.addToolbarButton(
-            translate(self.translation_context, u'Delete '+self.plugin_text_short),
-            translate(self.translation_context, u'Delete the selected item'),
+            translate(self.TranslationContext, u'Delete '+self.PluginTextShort),
+            translate(self.TranslationContext, u'Delete the selected item'),
             u':/images/image_delete.png', self.onDeleteClick, u'DeleteItem')
         ## Separator Line ##
         self.addToolbarSeparator()
         ## Preview  Button ##
         self.addToolbarButton(
-            translate(self.translation_context, u'Preview '+self.plugin_text_short),
-            translate(self.translation_context, u'Preview the selected item'),
+            translate(self.TranslationContext, u'Preview '+self.PluginTextShort),
+            translate(self.TranslationContext, u'Preview the selected item'),
             u':/system/system_preview.png', self.onPreviewClick, u'PreviewItem')
         ## Live  Button ##
         self.addToolbarButton(
-            translate(self.translation_context, u'Go Live'),
-            translate(self.translation_context, u'Send the selected item live'),
+            translate(self.TranslationContext, u'Go Live'),
+            translate(self.TranslationContext, u'Send the selected item live'),
             u':/system/system_live.png', self.onLiveClick, u'LiveItem')
         ## Add  Button ##
         self.addToolbarButton(
-            translate(self.translation_context, u'Add '+self.plugin_text_short+u' To Service'),
-            translate(self.translation_context, u'Add the selected item(s) to the service'),
-            u':/system/system_add.png', self.onAddClick, self.plugin_text_short+u'AddItem')
-        #Add the Image List widget
-        self.ImageListView = ImageList()
-        self.ImageListView.uniformItemSizes = True
-        self.ImageListData = ListWithPreviews()
-        self.ImageListView.setModel(self.ImageListData)
-        self.ImageListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
-        self.ImageListView.setSpacing(1)
-        self.ImageListView.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
-        self.ImageListView.setAlternatingRowColors(True)
-        self.ImageListView.setDragEnabled(True)
-        self.ImageListView.setObjectName(self.plugin_text_short+u'ListView')
-        self.PageLayout.addWidget(self.ImageListView)
+            translate(self.TranslationContext, u'Add '+self.PluginTextShort+u' To Service'),
+            translate(self.TranslationContext, u'Add the selected item(s) to the service'),
+            u':/system/system_add.png', self.onAddClick, self.PluginTextShort+u'AddItem')
+        #Add the List widget
+        self.ListView = self.ListViewWithDnD_class()
+        self.ListView.uniformItemSizes = True
+        self.ListData = ListWithPreviews()
+        self.ListView.setModel(self.ListData)
+        self.ListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
+        self.ListView.setSpacing(1)
+        self.ListView.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.ListView.setAlternatingRowColors(True)
+        self.ListView.setDragEnabled(True)
+        self.ListView.setObjectName(self.PluginTextShort+u'ListView')
+        self.PageLayout.addWidget(self.ListView)
         #define and add the context menu
-        self.ImageListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.ImageListView.addAction(self.contextMenuAction(
-            self.ImageListView, ':/system/system_preview.png',
-            translate(self.translation_context, u'&Preview '+self.plugin_text_short),
+        self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.ListView.addAction(self.contextMenuAction(
+            self.ListView, ':/system/system_preview.png',
+            translate(self.TranslationContext, u'&Preview '+self.PluginTextShort),
             self.onPreviewClick))
-        self.ImageListView.addAction(self.contextMenuAction(
-            self.ImageListView, ':/system/system_live.png',
-            translate(self.translation_context, u'&Show Live'),
+        self.ListView.addAction(self.contextMenuAction(
+            self.ListView, ':/system/system_live.png',
+            translate(self.TranslationContext, u'&Show Live'),
             self.onLiveClick))
-        self.ImageListView.addAction(self.contextMenuAction(
-            self.ImageListView, ':/system/system_add.png',
-            translate(self.translation_context, u'&Add to Service'),
+        self.ListView.addAction(self.contextMenuAction(
+            self.ListView, ':/system/system_add.png',
+            translate(self.TranslationContext, u'&Add to Service'),
             self.onAddClick))
-        QtCore.QObject.connect(self.ImageListView,
+        QtCore.QObject.connect(self.ListView,
            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onPreviewClick)
 
     def initialise(self):
-        self.loadList(self.parent.config.load_list(self.config_section))
+        self.loadList(self.parent.config.load_list(self.ConfigSection))
 
     def onNewClick(self):
         files = QtGui.QFileDialog.getOpenFileNames(None,
-            translate(self.translation_context, self.on_new_prompt),
+            translate(self.TranslationContext, self.OnNewPrompt),
             self.parent.config.get_last_dir(),
-            self.on_new_file_masks)
+            self.OnNewFileMasks)
         log.info(u'New files(s)', unicode(files))
         if len(files) > 0:
             self.loadList(files)
             dir, filename = os.path.split(unicode(files[0]))
             self.parent.config.set_last_dir(dir)
-            self.parent.config.set_list(self.config_section, self.ImageListData.getFileList())
+            self.parent.config.set_list(self.ConfigSection, self.ListData.getFileList())
 
     def loadList(self, list):
         for file in list:
-            self.ImageListData.addRow(file)
+            self.ListData.addRow(file)
 
     def onDeleteClick(self):
-        indexes = self.ImageListView.selectedIndexes()
+        indexes = self.ListView.selectedIndexes()
         for index in indexes:
             current_row = int(index.row())
-            self.ImageListData.removeRow(current_row)
-        self.parent.config.set_list(self.config_section, self.ImageListData.getFileList())
+            self.ListData.removeRow(current_row)
+        self.parent.config.set_list(self.ConfigSection, self.ListData.getFileList())
 
     def generateSlideData(self):
         assert (0, 'This fn needs to be defined by the plugin');
 
     def onPreviewClick(self):
-        log.debug(self.plugin_text_short+u'Preview Requested')
+        log.debug(self.PluginTextShort+u'Preview Requested')
         service_item = ServiceItem(self.parent)
         service_item.addIcon(u':/media/media_image.png')
         self.generateSlideData(service_item)
         self.parent.preview_controller.addServiceItem(service_item)
 
     def onLiveClick(self):
-        log.debug(self.plugin_text_short+u' Live Requested')
+        log.debug(self.PluginTextShort+u' Live Requested')
         service_item = ServiceItem(self.parent)
         service_item.addIcon(u':/media/media_image.png')
         self.generateSlideData(service_item)
         self.parent.live_controller.addServiceItem(service_item)
 
     def onAddClick(self):
-        log.debug(self.plugin_text_short+u' Add Requested')
+        log.debug(self.PluginTextShort+u' Add Requested')
         service_item = ServiceItem(self.parent)
         service_item.addIcon(u':/media/media_image.png')
         self.generateSlideData(service_item)

@@ -23,15 +23,15 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib.toolbar import *
 from openlp.core.lib import translate
 
-class ImageList(QtGui.QListView):
+class BaseListWithDnD(QtGui.QListView):
 
-    def __init__(self,parent=None,name=None):
+    def __init__(self,parent=None):
         QtGui.QListView.__init__(self,parent)
-
+        assert (self.PluginName) # this must be set by the class which is inheriting
     def mouseMoveEvent(self, event):
         """
         Drag and drop event does not care what data is selected
-        as the recepient will use events to request the data move
+        as the recipient will use events to request the data move
         just tell it what plugin to call
         """
         if event.buttons() != QtCore.Qt.LeftButton:
@@ -39,7 +39,7 @@ class ImageList(QtGui.QListView):
         drag = QtGui.QDrag(self)
         mimeData = QtCore.QMimeData()
         drag.setMimeData(mimeData)
-        mimeData.setText(u'Image')
+        mimeData.setText(self.PluginName)
         dropAction = drag.start(QtCore.Qt.CopyAction)
         if dropAction == QtCore.Qt.CopyAction:
             self.close()

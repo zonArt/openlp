@@ -24,8 +24,15 @@ from PyQt4 import QtCore, QtGui
 
 # from openlp.plugins.images.lib import ListWithPreviews
 from listwithpreviews import ListWithPreviews
-from openlp.core.lib import MediaManagerItem, ServiceItem, translate
+from openlp.core.lib import MediaManagerItem, ServiceItem, translate, BaseListWithDnD
 
+# We have to explicitly create separate classes for each plugin
+# in order for DnD to the Service manager to work correctly.
+class ImageListView(BaseListWithDnD):
+    def __init__(self, parent=None):
+        self.PluginName = u'Image'
+        BaseListWithDnD.__init__(self, parent)
+        
 class ImageMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for images.
@@ -35,19 +42,22 @@ class ImageMediaItem(MediaManagerItem):
     log.info(u'Image Media Item loaded')
 
     def __init__(self, parent, icon, title):
-        self.translation_context = u'ImagePlugin'
-        self.plugin_text_short =u'Image'
-        self.config_section=u'images'
-        self.on_new_prompt=u'Select Image(s)'
-        self.on_new_file_masks=u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
+        self.TranslationContext = u'ImagePlugin'
+        self.PluginTextShort =u'Image'
+        self.ConfigSection=u'images'
+        self.OnNewPrompt=u'Select Image(s)'
+        self.OnNewFileMasks=u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
+        # this next is a class, not an instance of a class - it will
+        # be instanced by the base MediaManagerItem
+        self.ListViewWithDnD_class=ImageListView 
         MediaManagerItem.__init__(self, parent, icon, title)
 
 
     def generateSlideData(self, service_item):
-        indexes = self.ImageListView.selectedIndexes()
+        indexes = self.ListView.selectedIndexes()
         service_item.title = u'Image(s)'
         for index in indexes:
-            filename = self.ImageListData.getFilename(index)
+            filename = self.ListData.getFilename(index)
             frame = QtGui.QImage(unicode(filename))
             (path, name) = os.path.split(filename)
             service_item.add_from_image(path,  name, frame)
