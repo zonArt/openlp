@@ -116,6 +116,10 @@ class MediaManagerItem(QtGui.QWidget):
     # self.plugin_text_short # eg "Image" for the image plugin
     # self.config_section - where the items in the media manager are stored
     #   this could potentially be self.plugin_text_short.lower()
+    #
+    # self.on_new_prompt=u'Select Image(s)'
+    # self.on_new_file_masks=u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
+    #   assumes that the new action is to load a file. If not, override onnew
     
     # The assumption is that given that at least two plugins are of the form
     # "text with an icon" then all this will help
