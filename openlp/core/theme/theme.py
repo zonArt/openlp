@@ -1,9 +1,26 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+"""
+OpenLP - Open Source Lyrics Projection
+Copyright (c) 2008 Raoul Snyman
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten Tinggaard
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; version 2 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place, Suite 330, Boston, MA 02111-1307 USA
+
+"""
 import platform
-ver = platform.python_version()
-if ver >= '2.5':
-	from xml.etree.ElementTree import ElementTree, XML
-else:
-	from elementtree import ElementTree, XML
+import types
+from xml.etree.ElementTree import ElementTree, XML
 
 from PyQt4 import QtGui
 
@@ -59,7 +76,7 @@ class Theme:
           FontName       : name of font to use
           FontColor      : color for main font
           FontProportion : size of font
-	  FontUnits      : whether size of font is in <pixels> or <points>
+          FontUnits      : whether size of font is in <pixels> or <points>
 
           Shadow       : 0 - no shadow, non-zero use shadow
           ShadowColor  : color for drop shadow
@@ -78,52 +95,57 @@ class Theme:
         # init to defaults
         self._set_from_XML(blankstylexml)
         self._set_from_XML(xml)
+#        print self.__str__()
 
     def _get_as_string(self):
-        s=""
+        s = u''
         keys=dir(self)
         keys.sort()
         for k in keys:
-            if k[0:1] != "_":
-                s+= "_%s_" %(getattr(self,k))
+            if k[0:1] != u'_':
+                s += u'_%s_' %(getattr(self,k))
         return s
+
     def _set_from_XML(self, xml):
-        root=ElementTree(element=XML(xml))
-        iter=root.getiterator()
+        root = ElementTree(element=XML(xml))
+        iter = root.getiterator()
         for element in iter:
-            if element.tag != "Theme":
-                t=element.text
-#                 print element.tag, t, type(t)
-                if type(t) == type(None): # easy!
-                    val=t
-                if type(t) == type(u' '): # strings need special handling to sort the colours out
-#                    print "str",
-                    if t[0] == "$": # might be a hex number
-#                        print "hex",
+            if element.tag != u'Theme':
+                t = element.text
+#                print element.tag, t, type(t)
+                val = 0
+                # easy!
+                if type(t) == type(None):
+                    val = t
+                # strings need special handling to sort the colours out
+                if type(t) is types.StringType or type(t) is types.UnicodeType:
+#                    print u'str',
+                    if t[0] == u'$': # might be a hex number
+#                        print u'hex',
                         try:
-                            val=int(t[1:], 16)
+                            val = int(t[1:], 16)
                         except ValueError: # nope
-#                            print "nope",
+#                            print u'nope'
                             pass
                     elif DelphiColors.has_key(t):
-#                        print "colour",
-                        val=DelphiColors[t]
+#                        print u'colour ', t
+                        val = DelphiColors[t]
                     else:
                         try:
-                            val=int(t)
+                            val = int(t)
                         except ValueError:
-                            val=t
+                            val = t
                 if (element.tag.find(u'Color') > 0 or
                     (element.tag.find(u'BackgroundParameter') == 0 and type(val) == type(0))):
                     # convert to a wx.Colour
                     val= QtGui.QColor((val>>16) & 0xFF, (val>>8)&0xFF, val&0xFF)
- #               print [val]
-                setattr(self,element.tag, val)
-
+#                    print [val]
+#                print u'>> ', element.tag, val
+                setattr(self, element.tag, val)
 
     def __str__(self):
-        s=""
+        s = u''
         for k in dir(self):
-            if k[0:1] != "_":
-                s+= "%30s : %s\n" %(k,getattr(self,k))
+            if k[0:1] != u'_':
+                s += u'%30s : %s\n' %(k, getattr(self, k))
         return s
