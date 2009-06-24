@@ -117,8 +117,8 @@ class MigrateSongs():
 
     def v_1_9_0(self, database):
         self.display.output(u'Migration 1.9.0 Started for ' + database)
-        self._v1_9_0_old(database)
-        self._v1_9_0_new(database)
+        #self._v1_9_0_old(database)
+        #self._v1_9_0_new(database)
         self._v1_9_0_cleanup(database)
         self.display.output(u'Migration 1.9.0 Finished for ' + database)
 
@@ -174,4 +174,13 @@ class MigrateSongs():
             replace(lyrics,  '&', 'and'), ',', ''), ';', ''), ':', ''),
             '(u', ''), ')', ''), '{', ''), '}',''),'?','')
             ;""")
+        conn.commit()
+        conn.execute(u'drop table authors_temp;')
+        conn.commit()
+        conn.execute(u'drop table songs_temp;')
+        conn.commit()
+        conn.execute(u'drop table songauthors_temp;')
+        conn.commit()
+        conn.execute(u'drop table settings;')
+
         conn.commit()
