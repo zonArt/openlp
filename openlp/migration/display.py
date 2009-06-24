@@ -22,14 +22,14 @@ class Display():
     global log
     log=logging.getLogger(u'Display Logger')
     log.info(u'Display Class loaded')
-    
+
     @staticmethod
     def output(string):
         log.debug(string);
         print (string)
-        
+
     @staticmethod
     def sub_output(string):
         if not string == None:
-            log.debug(u'   "+string);
-            print (u'   "+string)        
+            log.debug(u'   '+string);
+            print (u'   '+string)
