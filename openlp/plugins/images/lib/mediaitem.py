@@ -43,13 +43,13 @@ class ImageMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.TranslationContext = u'ImagePlugin'
-        self.PluginTextShort =u'Image'
-        self.ConfigSection=u'images'
-        self.OnNewPrompt=u'Select Image(s)'
-        self.OnNewFileMasks=u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
+        self.PluginTextShort = u'Image'
+        self.ConfigSection = u'images'
+        self.OnNewPrompt = u'Select Image(s)'
+        self.OnNewFileMasks = u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
-        self.ListViewWithDnD_class=ImageListView 
+        self.ListViewWithDnD_class = ImageListView 
         MediaManagerItem.__init__(self, parent, icon, title)
 
 

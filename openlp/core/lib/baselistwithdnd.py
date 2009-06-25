@@ -25,7 +25,7 @@ from openlp.core.lib import translate
 
 class BaseListWithDnD(QtGui.QListView):
 
-    def __init__(self,parent=None):
+    def __init__(self,parent = None):
         QtGui.QListView.__init__(self,parent)
         assert (self.PluginName) # this must be set by the class which is inheriting
     def mouseMoveEvent(self, event):
