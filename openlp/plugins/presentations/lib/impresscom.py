@@ -1,5 +1,22 @@
-#from win32com.client import Dispatch
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+"""
+OpenLP - Open Source Lyrics Projection
+Copyright (c) 2008 Raoul Snyman
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley
 
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; version 2 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place, Suite 330, Boston, MA 02111-1307 USA
+"""
 # OOo API documentation:
 # http://api.openoffice.org/docs/common/ref/com/sun/star/presentation/XSlideShowController.html
 # http://docs.go-oo.org/sd/html/classsd_1_1SlideShow.html
@@ -7,15 +24,55 @@
 # http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/Working_with_Presentations
 # http://mail.python.org/pipermail/python-win32/2008-January/006676.html
 
-class ImpressCOMApp(object):
+import os ,  subprocess
+import time
+import uno
+
+class Openoffice(object):
     def __init__(self):
+        self.startOpenoffice()
+
+    def createResolver(self):
+        self.localContext = uno.getComponentContext()
+        self.resolver = self.localContext.ServiceManager.createInstanceWithContext(u'com.sun.star.bridge.UnoUrlResolver', self.localContext)
+        try:
+            self.ctx = self.resolver.resolve(u'uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
+        except:
+            return False
+        return True
+
+    def buildEnvironment(self):
+        self.smgr = self.ctx.ServiceManager
+        self.desktop = self.smgr.createInstanceWithContext( "com.sun.star.frame.Desktop", self.ctx )
+        self.model = self.desktop.getCurrentComponent()
+        text = self.model.Text
+        cursor = text.createTextCursor()
+        text.insertString(cursor, "Hello world", 0)
+        self.ctx.ServiceManager
         self.createApp()
+        if self._sm == None:
+            # start OO here
+            # Create output log file
+            time.sleep(10)
+            self.createApp()
+
+    def startOpenoffice(self):
+        cmd = u'openoffice.org -nologo -norestore -minimized ' + u'"' + u'-accept=socket,host=localhost,port=2002;urp;'+ u'"'
+        retval = subprocess.Popen(cmd,  shell=True)
+        self.oopid = retval.pid
+
+    def checkOoPid(self):
+        procfile = open("/proc/%d/stat" %(self.oopid))
+        if procfile.readline().split()[1] == u'(soffice)':
+            return False
+        return True
 
     def createApp(self):
         try:
-            self._sm = Dispatch(u'com.sun.star.ServiceManager')
             self._app = self._sm.createInstance( "com.sun.star.frame.Desktop" )
+            print "started"
         except:
+            print "oops"
             self._sm = None
             self._app = None
             return
@@ -35,6 +92,7 @@ class ImpressCOMApp(object):
         self._sm = None
 
 class ImpressCOMPres(object):
+
     def __init__(self, oooApp, filename):
         self.oooApp = oooApp
         self.filename = filename
@@ -111,8 +169,9 @@ class ImpressCOMSlide(object):
         return self.preview
 
 if __name__ == '__main__':
-    ooo = ImpressCOMApp()
-    show = ImpressCOMPres(ooo, u'c:/test1.ppt')
-    show.go()
-    show.resume()
-    show.nextStep()
+    ooo = Openoffice()
+    ooo.createResolver()
+    #show = ImpressCOMPres(ooo, u'/home/timali/test1.odp')
+    #show.go()
+    #show.resume()
+    #show.nextStep()

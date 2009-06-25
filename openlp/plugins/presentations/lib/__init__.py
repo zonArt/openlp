@@ -21,5 +21,6 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from filelistdata import FileListData
 from mediaitem import PresentationMediaItem
 from presentationtab import PresentationTab
+from impresscom import Openoffice
 
-__all__ = ['PresentationMediaItem', 'FileListData', 'PresentationTab']
+__all__ = ['PresentationMediaItem', 'FileListData', 'PresentationTab', 'OpenOffice']
