@@ -57,15 +57,17 @@ class Openoffice(object):
             self.createApp()
 
     def startOpenoffice(self):
-        cmd = u'openoffice.org -nologo -norestore -minimized ' + u'"' + u'-accept=socket,host=localhost,port=2002;urp;'+ u'"'
+        cmd = u'openoffice.org -nologo, -norestore, -minimized, -impress,' + u'"' + u'-accept=socket,host=localhost,port=2002;urp;'+ u'"'
         retval = subprocess.Popen(cmd,  shell=True)
         self.oopid = retval.pid
 
     def checkOoPid(self):
         procfile = open("/proc/%d/stat" %(self.oopid))
-        if procfile.readline().split()[1] == u'(soffice)':
-            return False
-        return True
+        file = procfile.readline().split()[1]
+        print file
+        if file == u'(soffice)' or file == u'(openoffice.org)':
+            return True
+        return False
 
     def createApp(self):
         try:
