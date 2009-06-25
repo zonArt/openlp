@@ -122,6 +122,8 @@ class MediaManagerItem(QtGui.QWidget):
     # self.ListViewWithDnD_class - there is a base list class with DnD assigned to it (openlp.core.lib.BaseListWithDnD())
     # each plugin needs to inherit a class from this and pass that *class* (not an instance) to here
     # via the ListViewWithDnD_class member
+    # self.ServiceItemIconName - string referring to an icon file or a resource icon
+
     # The assumption is that given that at least two plugins are of the form
     # "text with an icon" then all this will help
     # even for plugins of another sort, the setup of the right-click menu, common toolbar
@@ -219,25 +221,25 @@ class MediaManagerItem(QtGui.QWidget):
         self.parent.config.set_list(self.ConfigSection, self.ListData.getFileList())
 
     def generateSlideData(self):
-        assert (0, 'This fn needs to be defined by the plugin');
+        assert 0, 'This fn needs to be defined by the plugin'
 
     def onPreviewClick(self):
         log.debug(self.PluginTextShort+u'Preview Requested')
         service_item = ServiceItem(self.parent)
-        service_item.addIcon(u':/media/media_image.png')
+        service_item.addIcon(self.ServiceItemIconName)
         self.generateSlideData(service_item)
         self.parent.preview_controller.addServiceItem(service_item)
 
     def onLiveClick(self):
         log.debug(self.PluginTextShort+u' Live Requested')
         service_item = ServiceItem(self.parent)
-        service_item.addIcon(u':/media/media_image.png')
+        service_item.addIcon(self.ServiceItemIconName)
         self.generateSlideData(service_item)
         self.parent.live_controller.addServiceItem(service_item)
 
     def onAddClick(self):
         log.debug(self.PluginTextShort+u' Add Requested')
         service_item = ServiceItem(self.parent)
-        service_item.addIcon(u':/media/media_image.png')
+        service_item.addIcon(self.ServiceItemIconName)
         self.generateSlideData(service_item)
         self.parent.service_manager.addServiceItem(service_item)

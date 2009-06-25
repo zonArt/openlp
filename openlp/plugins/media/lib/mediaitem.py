@@ -26,6 +26,12 @@ from openlp.core.lib import MediaManagerItem, translate
 
 from openlp.plugins.media.lib import MediaTab
 from openlp.plugins.media.lib import FileListData
+# from listwithpreviews import ListWithPreviews
+from openlp.core.lib import MediaManagerItem, ServiceItem, translate, BaseListWithDnD
+class MediaListView(BaseListWithDnD):
+    def __init__(self, parent=None):
+        self.PluginName = u'Media'
+        BaseListWithDnD.__init__(self, parent)
 
 class MediaMediaItem(MediaManagerItem):
     """
@@ -36,92 +42,29 @@ class MediaMediaItem(MediaManagerItem):
     log.info(u'Media Media Item loaded')
 
     def __init__(self, parent, icon, title):
+        self.TranslationContext = u'MediaPlugin'
+        self.PluginTextShort = u'Media'
+        self.ConfigSection = u'images'
+        self.OnNewPrompt = u'Select Media(s)'
+        self.OnNewFileMasks = u'Videos (*.avi *.mpeg *.mpg *.mp4);;Audio (*.ogg *.mp3 *.wma);;All files (*)'
+        # this next is a class, not an instance of a class - it will
+        # be instanced by the base MediaManagerItem
+        self.ListViewWithDnD_class = MediaListView
+        self.ServiceItemIconName = u':/media/media_image.png'
         MediaManagerItem.__init__(self, parent, icon, title)
 
-    def setupUi(self):
-                # Add a toolbar
-        self.addToolbar()
-        # Create buttons for the toolbar
-        ## New Media Button ##
-        self.addToolbarButton(
-            translate(u'MediaMediaItem',u'New Media'),
-            translate(u'MediaMediaItem',u'Load Media into openlp.org'),
-            ':/videos/video_load.png', self.onMediaNewClick, 'MediaNewItem')
-        ## Delete Media Button ##
-        self.addToolbarButton(
-            translate(u'MediaMediaItem',u'Delete Media'),
-            translate(u'MediaMediaItem',u'Delete the selected Media item'),
-            ':/videos/video_delete.png', self.onMediaDeleteClick, 'MediaDeleteItem')
-        ## Separator Line ##
-        self.addToolbarSeparator()
-        ## Preview Media Button ##
-        self.addToolbarButton(
-            translate(u'MediaMediaItem',u'Preview Media'),
-            translate(u'MediaMediaItem',u'Preview the selected Media item'),
-            ':/system/system_preview.png', self.onMediaPreviewClick, 'MediaPreviewItem')
-        ## Live Media Button ##
-        self.addToolbarButton(
-            translate(u'MediaMediaItem',u'Go Live'),
-            translate(u'MediaMediaItem',u'Send the selected Media item live'),
-            ':/system/system_live.png', self.onMediaLiveClick, 'MediaLiveItem')
-        ## Add Media Button ##
-        self.addToolbarButton(
-            translate(u'MediaMediaItem',u'Add Media To Service'),
-            translate(u'MediaMediaItem',u'Add the selected Media items(s) to the service'),
-            ':/system/system_add.png',self.onMediaAddClick, 'MediaAddItem')
-        ## Add the Medialist widget ##
 
-        self.MediaListView = QtGui.QListView()
-        self.MediaListView.setAlternatingRowColors(True)
-        self.MediaListData = FileListData()
-        self.MediaListView.setModel(self.MediaListData)
-
-        self.PageLayout.addWidget(self.MediaListView)
-
-        #define and add the context menu
-        self.MediaListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-
-        self.MediaListView.addAction(self.contextMenuAction(
-            self.MediaListView, ':/system/system_preview.png',
-            translate(u'MediaMediaItem',u'&Preview Media'), self.onMediaPreviewClick))
-        self.MediaListView.addAction(self.contextMenuAction(
-            self.MediaListView, ':/system/system_live.png',
-            translate(u'MediaMediaItem',u'&Show Live'), self.onMediaLiveClick))
-        self.MediaListView.addAction(self.contextMenuAction(
-            self.MediaListView, ':/system/system_add.png',
-            translate(u'MediaMediaItem',u'&Add to Service'), self.onMediaAddClick))
-
-    def initialise(self):
-        list = self.parent.config.load_list(u'Media')
-        self.loadMediaList(list)
-
-    def onMediaNewClick(self):
-        files = QtGui.QFileDialog.getOpenFileNames(None,
-            translate(u'MediaMediaItem', u'Select Media(s) items'),
-            self.parent.config.get_last_dir(),
-            u'Videos (*.avi *.mpeg);;Audio (*.mp3 *.ogg *.wma);;All files (*)')
-        if len(files) > 0:
-            self.loadMediaList(files)
-            dir, filename = os.path.split(unicode(files[0]))
-            self.parent.config.set_last_dir(dir)
-            self.parent.config.set_list(u'media', self.MediaListData.getFileList())
-
-    def getFileList(self):
-        filelist = [item[0] for item in self.MediaListView];
-        return filelist
-
-    def loadMediaList(self, list):
-        for files in list:
-            self.MediaListData.addRow(files)
-
-    def onMediaDeleteClick(self):
-        indexes = self.MediaListView.selectedIndexes()
+    def generateSlideData(self, service_item):
+        indexes = self.ListView.selectedIndexes()
+        service_item.title = u'Media'
         for index in indexes:
-            current_row = int(index.row())
-            self.MediaListData.removeRow(current_row)
-        self.parent.config.set_list(u'media', self.MediaListData.getFileList())
+            filename = self.ListData.getFilename(index)
+            frame = QtGui.QImage(unicode(filename))
+            (path, name) = os.path.split(filename)
+            service_item.add_from_image(path,  name, frame)
 
-    def onMediaPreviewClick(self):
+
+    def onPreviewClick(self):
         log.debug(u'Media Preview Button pressed')
         items = self.MediaListView.selectedIndexes()
         for item in items:
@@ -129,7 +72,9 @@ class MediaMediaItem(MediaManagerItem):
             print text
 
     def onMediaLiveClick(self):
+        log.debug(u'Media Live Button pressed')
         pass
 
-    def onMediaAddClick(self):
-        pass
+#     def onMediaAddClick(self):
+#         log.debug(u'Media Add Button pressed')
+#         pass
