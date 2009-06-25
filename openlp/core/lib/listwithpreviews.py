@@ -29,24 +29,18 @@ class ListWithPreviews(QtCore.QAbstractListModel):
     log = logging.getLogger(u'ListWithPreviews')
     log.info(u'started')
 
-    def __init__(self):
+    def __init__(self, new_preview_function=None):
         QtCore.QAbstractListModel.__init__(self)
         # will be a list of (full filename, QPixmap, shortname) tuples
         self.items = []
         self.rowheight = 50
         self.maximagewidth = self.rowheight * 16 / 9.0;
-
-    def rowCount(self, parent):
-        return len(self.items)
-
-    def insertRow(self, row, filename):
-        self.beginInsertRows(QtCore.QModelIndex(), row, row)
-        #log.info(u'insert row %d:%s' % (row,filename))
-        # get short filename to display next to image
-        filename = unicode(filename)
-        (prefix, shortfilename) = os.path.split(filename)
-        #log.info(u'shortfilename=%s' % (shortfilename))
-        # create a preview image
+        if new_preview_function is not None:
+            self.make_preview=new_preview_function
+        else:
+            self.make_preview=self.preview_function
+        
+    def preview_function(self, filename):
         if os.path.exists(filename):
             preview = QtGui.QImage(filename)
             w = self.maximagewidth;
@@ -64,6 +58,20 @@ class ListWithPreviews(QtCore.QAbstractListModel):
             h = self.rowheight
             p = QtGui.QImage(w, h, QtGui.QImage.Format_ARGB32_Premultiplied)
             p.fill(QtCore.Qt.transparent)
+        return p
+
+    def rowCount(self, parent):
+        return len(self.items)
+
+    def insertRow(self, row, filename):
+        self.beginInsertRows(QtCore.QModelIndex(), row, row)
+        #log.info(u'insert row %d:%s' % (row,filename))
+        # get short filename to display next to image
+        filename = unicode(filename)
+        (prefix, shortfilename) = os.path.split(filename)
+        #log.info(u'shortfilename=%s' % (shortfilename))
+        # create a preview image
+        p=self.make_preview(filename)
         # finally create the row
         self.items.insert(row, (filename, p, shortfilename))
         self.endInsertRows()
