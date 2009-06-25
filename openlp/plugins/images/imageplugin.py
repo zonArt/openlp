@@ -37,6 +37,7 @@ class ImagePlugin(Plugin):
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(u':/media/media_image.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.dnd_id = u'Image' # passed with drag and drop messages
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
@@ -46,17 +47,3 @@ class ImagePlugin(Plugin):
     def initialise(self):
         log.info(u'Plugin Initialising')
 
-    def handle_event(self, event):
-        """
-        Handle the event contained in the event object.
-        """
-        log.debug(u'Handle event called with event %s with payload %s'%(event.event_type, event.payload))
-        if event.event_type == EventType.LoadServiceItem and event.payload == 'Image':
-            log.debug(u'Load Service Item received')
-            self.media_item.onImageAddClick()
-        if event.event_type == EventType.PreviewShow and event.payload == 'Image':
-            log.debug(u'Load Preview Item received')
-            self.media_item.onImagePreviewClick()
-        if event.event_type == EventType.LiveShow and event.payload == 'Image':
-            log.debug(u'Load Live Show Item received')
-            self.media_item.onImageLiveClick()
