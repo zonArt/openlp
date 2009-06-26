@@ -57,7 +57,7 @@ class Openoffice(object):
             self.createApp()
 
     def startOpenoffice(self):
-        cmd = u'openoffice.org -nologo, -norestore, -minimized, -impress,' + u'"' + u'-accept=socket,host=localhost,port=2002;urp;'+ u'"'
+        cmd = u'openoffice.org -nologo -norestore -minimized -impress' + u'"' + u'-accept=socket,host=localhost,port=2002;urp;'+ u'"'
         retval = subprocess.Popen(cmd,  shell=True)
         self.oopid = retval.pid
 
