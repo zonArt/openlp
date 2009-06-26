@@ -46,7 +46,7 @@ class SongsPlugin(Plugin):
         self.icon.addPixmap(QtGui.QPixmap(u':/media/media_song.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         # passed with drag and drop messages
-        self.dnd_id=u'Songs'
+        self.dnd_id=u'Song'
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object

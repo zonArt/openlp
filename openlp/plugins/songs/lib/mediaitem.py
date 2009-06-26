@@ -54,6 +54,9 @@ class SongMediaItem(MediaManagerItem):
     log.info(u'Song Media Item loaded')
 
     def __init__(self, parent, icon, title):
+        self.TranslationContext = u'SongPlugin'
+        self.PluginTextShort = u'Song'
+        self.ConfigSection = u'song'
         MediaManagerItem.__init__(self, parent, icon, title)
         self.edit_song_form = EditSongForm(self.parent.songmanager, self.parent.event_manager)
 
