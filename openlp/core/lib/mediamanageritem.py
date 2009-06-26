@@ -20,10 +20,12 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import types
 
 from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib.toolbar import *
 from openlp.core.lib import translate
 from listwithpreviews import ListWithPreviews
 from serviceitem import ServiceItem
+
 class MediaManagerItem(QtGui.QWidget):
     """
     MediaManagerItem is a helper widget for plugins.
@@ -106,7 +108,7 @@ class MediaManagerItem(QtGui.QWidget):
         QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
         return action
 
-####################################################################################################
+    ###########################################################################
     ### None of the following *need* to be used, feel free to override
     ### them cmopletely in your plugin's implementation.  Alternatively, call them from your
     ### plugin before or after you've done etra things that you need to.
@@ -126,12 +128,12 @@ class MediaManagerItem(QtGui.QWidget):
     # "text with an icon" then all this will help
     # even for plugins of another sort, the setup of the right-click menu, common toolbar
     # will help to keep things consistent and ease the creation of new plugins
-    
+
     # also a set of completely consistent action anesm then exist
     # (onPreviewClick() is always called that, rather than having the
     # name of the plugin added in as well... I regard that as a
     # feature, I guess others might differ!)
-    
+
     def setupUi(self):
         # Add a toolbar
         self.addToolbar()
@@ -219,7 +221,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.parent.config.set_list(self.ConfigSection, self.ListData.getFileList())
 
     def generateSlideData(self):
-        assert (0, 'This fn needs to be defined by the plugin');
+        raise NotImplementedError(u'MediaManagerItem.generateSlideData needs to be defined by the plugin')
 
     def onPreviewClick(self):
         log.debug(self.PluginTextShort+u'Preview Requested')

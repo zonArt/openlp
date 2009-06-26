@@ -129,13 +129,11 @@ class Renderer:
         """
         Render a set of lines according to the theme, return bounding box
          """
-        #print "########## Generate frame from lines ##################"
         log.debug(u'generate_frame_from_lines - Start')
         #print "Render Lines ", lines
         bbox = self._render_lines_unaligned(lines, False)
         if footer_lines is not None:
             bbox1 = self._render_lines_unaligned(footer_lines, True)
-        # reset the frame. first time do not worry about what you paint on.
         # reset the frame. first time do not worry about what you paint on.
         self._frame = QtGui.QImage(self._bg_frame)
         x, y = self._correctAlignment(self._rect, bbox)
@@ -158,18 +156,22 @@ class Renderer:
         painter.begin(self._bg_frame)
         if self._theme.background_type == u'solid':
             painter.fillRect(self._frame.rect(), QtGui.QColor(self._theme.background_color))
-        elif self._theme.background_type == u'gradient' : # gradient
+        elif self._theme.background_type == u'gradient':
+            # gradient
             gradient = None
             if self._theme.background_direction == u'horizontal':
                 w = int(self._frame.width()) / 2
-                gradient = QtGui.QLinearGradient(w, 0, w, self._frame.height()) # vertical
+                # vertical
+                gradient = QtGui.QLinearGradient(w, 0, w, self._frame.height())
             elif self._theme.background_direction == u'vertical':
                 h = int(self._frame.height()) / 2
-                gradient = QtGui.QLinearGradient(0, h, self._frame.width(), h)   # Horizontal
+                # Horizontal
+                gradient = QtGui.QLinearGradient(0, h, self._frame.width(), h)
             else:
                 w = int(self._frame.width()) / 2
                 h = int(self._frame.height()) / 2
-                gradient = QtGui.QRadialGradient(w, h, w) # Circular
+                # Circular
+                gradient = QtGui.QRadialGradient(w, h, w)
             gradient.setColorAt(0, QtGui.QColor(self._theme.background_startColor))
             gradient.setColorAt(1, QtGui.QColor(self._theme.background_endColor))
             painter.setBrush(QtGui.QBrush(gradient))
@@ -182,7 +184,8 @@ class Renderer:
             rectPath.lineTo(max_x, 0)
             rectPath.closeSubpath()
             painter.drawPath(rectPath)
-        elif self._theme.background_type== u'image': # image
+        elif self._theme.background_type== u'image':
+            # image
             painter.fillRect(self._frame.rect(), QtCore.Qt.black)
             if self.bg_image is not None:
                 painter.drawImage(0 ,0 , self.bg_image)
@@ -252,11 +255,14 @@ class Renderer:
 
     def _correctAlignment(self, rect, bbox):
         x = rect.left()
-        if int(self._theme.display_verticalAlign) == 0: # top align
+        if int(self._theme.display_verticalAlign) == 0:
+            # top align
             y = rect.top()
-        elif int(self._theme.display_verticalAlign) == 2: # bottom align
+        elif int(self._theme.display_verticalAlign) == 2:
+            # bottom align
             y = rect.bottom() - bbox.height()
-        elif int(self._theme.display_verticalAlign) == 1: # centre align
+        elif int(self._theme.display_verticalAlign) == 1:
+            # centre align
             y = rect.top() + (rect.height() - bbox.height()) / 2
         else:
             log.error(u'Invalid value for theme.VerticalAlign:%s' % self._theme.display_verticalAlign)

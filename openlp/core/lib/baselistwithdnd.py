@@ -20,14 +20,20 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import types
 
 from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib.toolbar import *
 from openlp.core.lib import translate
 
 class BaseListWithDnD(QtGui.QListView):
+    """
+    Please put a short description of what this class does in here.
+    """
 
     def __init__(self,parent = None):
         QtGui.QListView.__init__(self,parent)
-        assert (self.PluginName) # this must be set by the class which is inheriting
+        # this must be set by the class which is inheriting
+        assert(self.PluginName)
+
     def mouseMoveEvent(self, event):
         """
         Drag and drop event does not care what data is selected
@@ -43,5 +49,4 @@ class BaseListWithDnD(QtGui.QListView):
         dropAction = drag.start(QtCore.Qt.CopyAction)
         if dropAction == QtCore.Qt.CopyAction:
             self.close()
-
 
