@@ -54,6 +54,11 @@ class BibleMediaItem(MediaManagerItem):
     log.info(u'Bible Media Item loaded')
 
     def __init__(self, parent, icon, title):
+        self.TranslationContext = u'BiblePlugin'
+        self.PluginTextShort = u'Bible'
+        self.ConfigSection = u'bibles'
+#        self.OnNewPrompt = u'Select Image(s)'
+#        self.OnNewFileMasks = u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
         MediaManagerItem.__init__(self, parent, icon, title)
         self.search_results = {} # place to store the search results
         QtCore.QObject.connect(Receiver().get_receiver(),
@@ -74,18 +79,18 @@ class BibleMediaItem(MediaManagerItem):
         self.addToolbarButton(
             translate(u'BibleMediaItem',u'Preview Bible'),
             translate(u'BibleMediaItem',u'Preview the selected Bible Verse'),
-            u':/system/system_preview.png', self.onBiblePreviewClick, u'BiblePreviewItem')
+            u':/system/system_preview.png', self.onPreviewClick, u'BiblePreviewItem')
         ## Live Bible Button ##
         self.addToolbarButton(
             translate(u'BibleMediaItem',u'Go Live'),
             translate(u'BibleMediaItem',u'Send the selected Bible Verse(s) live'),
-            u':/system/system_live.png', self.onBibleLiveClick, u'BibleLiveItem')
+            u':/system/system_live.png', self.onLiveClick, u'BibleLiveItem')
         ## Add Bible Button ##
         self.addToolbarButton(
             translate(u'BibleMediaItem',u'Add Bible Verse(s) To Service'),
             translate(u'BibleMediaItem',u'Add the selected Bible(s) to the service'),
             u':/system/system_add.png',
-            self.onBibleAddClick, u'BibleAddItem')
+            self.onAddClick, u'BibleAddItem')
         # Create the tab widget
         self.SearchTabWidget = QtGui.QTabWidget(self)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
@@ -209,18 +214,18 @@ class BibleMediaItem(MediaManagerItem):
         QtCore.QObject.connect(self.QuickSearchButton,
             QtCore.SIGNAL(u'pressed()'), self.onQuickSearchButton)
         QtCore.QObject.connect(self.BibleListWidget,
-            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onBiblePreviewClick)
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onPreviewClick)
         # Context Menus
         self.BibleListWidget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.BibleListWidget.addAction(self.contextMenuAction(
             self.BibleListWidget, u':/system/system_preview.png',
-            translate(u'BibleMediaItem',u'&Preview Verse'), self.onBiblePreviewClick))
+            translate(u'BibleMediaItem',u'&Preview Verse'), self.onPreviewClick))
         self.BibleListWidget.addAction(self.contextMenuAction(
             self.BibleListWidget, u':/system/system_live.png',
-            translate(u'BibleMediaItem',u'&Show Live'), self.onBibleLiveClick))
+            translate(u'BibleMediaItem',u'&Show Live'), self.onLiveClick))
         self.BibleListWidget.addAction(self.contextMenuAction(
             self.BibleListWidget, u':/system/system_add.png',
-            translate(u'BibleMediaItem',u'&Add to Service'), self.onBibleAddClick))
+            translate(u'BibleMediaItem',u'&Add to Service'), self.onAddClick))
 
     def retranslateUi(self):
         log.debug(u'retranslateUi')
@@ -330,23 +335,23 @@ class BibleMediaItem(MediaManagerItem):
         if self.search_results is not None:
             self.displayResults(bible)
 
-    def onBibleLiveClick(self):
-        service_item = ServiceItem(self.parent)
-        service_item.addIcon( u':/media/media_verse.png')
-        self.generateSlideData(service_item)
-        self.parent.live_controller.addServiceItem(service_item)
-
-    def onBibleAddClick(self):
-        service_item = ServiceItem(self.parent)
-        service_item.addIcon(u':/media/media_verse.png')
-        self.generateSlideData(service_item)
-        self.parent.service_manager.addServiceItem(service_item)
-
-    def onBiblePreviewClick(self):
-        service_item = ServiceItem(self.parent)
-        service_item.addIcon(u':/media/media_verse.png')
-        self.generateSlideData(service_item)
-        self.parent.preview_controller.addServiceItem(service_item)
+#    def onLiveClick(self):
+#        service_item = ServiceItem(self.parent)
+#        service_item.addIcon( u':/media/media_verse.png')
+#        self.generateSlideData(service_item)
+#        self.parent.live_controller.addServiceItem(service_item)
+#
+#    def onAddClick(self):
+#        service_item = ServiceItem(self.parent)
+#        service_item.addIcon(u':/media/media_verse.png')
+#        self.generateSlideData(service_item)
+#        self.parent.service_manager.addServiceItem(service_item)
+#
+#    def onPreviewClick(self):
+#        service_item = ServiceItem(self.parent)
+#        service_item.addIcon(u':/media/media_verse.png')
+#        self.generateSlideData(service_item)
+#        self.parent.preview_controller.addServiceItem(service_item)
 
     def generateSlideData(self, service_item):
         log.debug(u'generating slide data')
