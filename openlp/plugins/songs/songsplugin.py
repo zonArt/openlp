@@ -45,6 +45,8 @@ class SongsPlugin(Plugin):
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(u':/media/media_song.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        # passed with drag and drop messages
+        self.dnd_id=u'Song'
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
@@ -125,15 +127,7 @@ class SongsPlugin(Plugin):
         if event.event_type == EventType.ThemeListChanged:
             log.debug(u'New Theme request received')
             self.media_item.edit_song_form.loadThemes(self.theme_manager.getThemes())
-        if event.event_type == EventType.LoadServiceItem and event.payload == 'Song':
-            log.debug(u'Load Service Item received')
-            self.media_item.onSongAddClick()
-        if event.event_type == EventType.PreviewShow and event.payload == 'Song':
-            log.debug(u'Load Preview Item received ')
-            self.media_item.onSongPreviewClick()
-        if event.event_type == EventType.LiveShow and event.payload == 'Song':
-            log.debug(u'Load Live Show Item received')
-            self.media_item.onSongLiveClick()
         if event.event_type == EventType.LoadSongList :
             log.debug(u'Load Load Song List Item received')
             self.media_item.displayResultsSong(self.songmanager.get_songs())
+        Plugin.handle_event(self, event)

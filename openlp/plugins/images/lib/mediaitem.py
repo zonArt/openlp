@@ -32,7 +32,7 @@ class ImageListView(BaseListWithDnD):
     def __init__(self, parent=None):
         self.PluginName = u'Image'
         BaseListWithDnD.__init__(self, parent)
-        
+
 class ImageMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for images.
@@ -49,9 +49,8 @@ class ImageMediaItem(MediaManagerItem):
         self.OnNewFileMasks = u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
-        self.ListViewWithDnD_class = ImageListView 
+        self.ListViewWithDnD_class = ImageListView
         MediaManagerItem.__init__(self, parent, icon, title)
-
 
     def generateSlideData(self, service_item):
         indexes = self.ListView.selectedIndexes()

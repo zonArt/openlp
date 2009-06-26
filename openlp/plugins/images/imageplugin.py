@@ -37,7 +37,8 @@ class ImagePlugin(Plugin):
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(u':/media/media_image.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.dnd_id = u'Image' # passed with drag and drop messages
+        # passed with drag and drop messages
+        self.dnd_id = u'Image'
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object

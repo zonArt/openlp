@@ -19,16 +19,21 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 import os
+import logging
 
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin,  MediaManagerItem
-from openlp.plugins.presentations.lib import PresentationMediaItem, PresentationTab
+from openlp.plugins.presentations.lib import PresentationMediaItem, PresentationTab,  Openoffice
 
 class PresentationPlugin(Plugin):
 
+    global log
+    log = logging.getLogger(u'PresentationPlugin')
+
     def __init__(self, plugin_helpers):
         # Call the parent constructor
+        log.debug('Initialised')
         Plugin.__init__(self, u'Presentations', u'1.9.0', plugin_helpers)
         self.weight = -8
         # Create the plugin icon
@@ -44,3 +49,8 @@ class PresentationPlugin(Plugin):
         # Create the MediaManagerItem object
         self.media_item = PresentationMediaItem(self, self.icon, u'Presentations')
         return self.media_item
+
+    def check_pre_conditions(self):
+        log.debug('check_pre_conditions')
+        self.openoffice = Openoffice()
+        return self.openoffice.checkOoPid()

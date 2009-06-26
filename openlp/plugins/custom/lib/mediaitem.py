@@ -53,6 +53,9 @@ class CustomMediaItem(MediaManagerItem):
     log.info(u'Custom Media Item loaded')
 
     def __init__(self, parent, icon, title):
+        self.TranslationContext = u'CustomPlugin'
+        self.PluginTextShort = u'Custom'
+        self.ConfigSection = u'custom'
         MediaManagerItem.__init__(self, parent, icon, title)
         self.parent = parent
 

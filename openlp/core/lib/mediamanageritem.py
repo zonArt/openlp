@@ -50,6 +50,7 @@ class MediaManagerItem(QtGui.QWidget):
         if title is not None:
             self.title = title
         self.Toolbar = None
+        #self.ConfigSection = None
         self.PageLayout = QtGui.QVBoxLayout(self)
         self.PageLayout.setSpacing(0)
         self.PageLayout.setMargin(0)

@@ -41,6 +41,9 @@ class BiblePlugin(Plugin):
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         #Register the bible Manager
         self.biblemanager = BibleManager(self.config)
+        # passed with drag and drop messages
+        self.dnd_id = u'Bibles'
+
 
     def get_settings_tab(self):
         self.bibles_tab = BiblesTab()
@@ -79,12 +82,4 @@ class BiblePlugin(Plugin):
         if event.event_type == EventType.ThemeListChanged:
             log.debug(u'New Theme request received')
             self.bibles_tab.updateThemeList(self.theme_manager.getThemes())
-        if event.event_type == EventType.LoadServiceItem and event.payload == 'Bibles':
-            log.debug(u'Load Service Item received')
-            self.media_item.onBibleAddClick()
-        if event.event_type == EventType.PreviewShow and event.payload == 'Bibles':
-            log.debug(u'Load Preview Item received')
-            self.media_item.onBiblePreviewClick()
-        if event.event_type == EventType.LiveShow and event.payload == 'Bibles':
-            log.debug(u'Load Live Show Item received')
-            self.media_item.onBibleLiveClick()
+        Plugin.handle_event(self, event)
