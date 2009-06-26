@@ -23,7 +23,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AboutForm, SettingsForm, AlertForm, ServiceManager, \
-    ThemeManager, MainDisplay, SlideController
+    ThemeManager, MainDisplay, SlideController, SlideControllerManager
 from openlp.core.lib import translate, Plugin, MediaManagerItem, SettingsTab, \
     EventManager, RenderManager, PluginConfig
 from openlp.core import PluginManager
@@ -50,6 +50,7 @@ class MainWindow(object):
         self.alertForm = AlertForm(self)
         self.aboutForm = AboutForm()
         self.settingsForm = SettingsForm(self.screenList, self)
+        self.slideControllerManager = SlideControllerManager()
         # Set up the path with plugins
         pluginpath = os.path.split(os.path.abspath(__file__))[0]
         pluginpath = os.path.abspath(
@@ -167,8 +168,11 @@ class MainWindow(object):
         self.ControlSplitter.setObjectName(u'ControlSplitter')
         self.MainContentLayout.addWidget(self.ControlSplitter)
         # Create slide controllers
-        self.PreviewController = SlideController(self.ControlSplitter, self)
-        self.LiveController = SlideController(self.ControlSplitter, self, True)
+        PreviewController = SlideController(self.ControlSplitter, self)
+        LiveController = SlideController(self.ControlSplitter, self, True)
+        self.slideControllerManager.add_controllers(u'base', PreviewController, LiveController)
+        self.PreviewController = self.slideControllerManager.getPreviewController(u'base')
+        self.LiveController = self.slideControllerManager.getLiveController(u'base')
         # Create menu
         self.MenuBar = QtGui.QMenuBar(self.mainWindow)
         self.MenuBar.setGeometry(QtCore.QRect(0, 0, 1087, 27))

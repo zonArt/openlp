@@ -62,12 +62,20 @@ class Openoffice(object):
         self.oopid = retval.pid
 
     def checkOoPid(self):
-        procfile = open("/proc/%d/stat" %(self.oopid))
-        file = procfile.readline().split()[1]
-        print file
-        if file == u'(soffice)' or file == u'(openoffice.org)':
+        if os.name == u'nt':
+            import win32api
+            handle = win32api.OpenProcess(PROCESS_TERMINATE, False, self.oopid)
+            #todo need some code here
             return True
-        return False
+        elif os.name == u'mac':
+            pass
+        else:
+            procfile = open("/proc/%d/stat" %(self.oopid))
+            file = procfile.readline().split()[1]
+            print file
+            if file == u'(soffice)' or file == u'(openoffice.org)':
+                return True
+            return False
 
     def createApp(self):
         try:

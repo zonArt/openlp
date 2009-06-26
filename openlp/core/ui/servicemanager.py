@@ -280,6 +280,9 @@ class ServiceManager(QtGui.QWidget):
         self.service_theme = self.ThemeComboBox.currentText()
         self.parent.RenderManager.set_service_theme(self.service_theme)
         self.config.set_config(u'theme service theme', self.service_theme)
+        self.regenerateServiceItems()
+
+    def regenerateServiceItems(self):
         if len(self.serviceItems) > 0:
             tempServiceItems = self.serviceItems
             self.onNewService()
@@ -368,3 +371,4 @@ class ServiceManager(QtGui.QWidget):
             self.service_theme = u''
         self.ThemeComboBox.setCurrentIndex(id)
         self.parent.RenderManager.set_service_theme(self.service_theme)
+        self.regenerateServiceItems()

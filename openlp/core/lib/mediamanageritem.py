@@ -48,6 +48,7 @@ class MediaManagerItem(QtGui.QWidget):
         if title is not None:
             self.title = title
         self.Toolbar = None
+        #self.ConfigSection = None
         self.PageLayout = QtGui.QVBoxLayout(self)
         self.PageLayout.setSpacing(0)
         self.PageLayout.setMargin(0)
@@ -126,12 +127,12 @@ class MediaManagerItem(QtGui.QWidget):
     # "text with an icon" then all this will help
     # even for plugins of another sort, the setup of the right-click menu, common toolbar
     # will help to keep things consistent and ease the creation of new plugins
-    
+
     # also a set of completely consistent action anesm then exist
     # (onPreviewClick() is always called that, rather than having the
     # name of the plugin added in as well... I regard that as a
     # feature, I guess others might differ!)
-    
+
     def setupUi(self):
         # Add a toolbar
         self.addToolbar()
@@ -219,7 +220,8 @@ class MediaManagerItem(QtGui.QWidget):
         self.parent.config.set_list(self.ConfigSection, self.ListData.getFileList())
 
     def generateSlideData(self):
-        assert (0, 'This fn needs to be defined by the plugin');
+        #assert (0, 'This fn needs to be defined by the plugin');
+        pass
 
     def onPreviewClick(self):
         log.debug(self.PluginTextShort+u'Preview Requested')
