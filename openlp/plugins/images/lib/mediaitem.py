@@ -55,8 +55,16 @@ class ImageMediaItem(MediaManagerItem):
 
     def initialise(self):
         self.ListView.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
-        self.ListView.setIconSize(QtCore.QSize(88,50))
+        self.ListView.setIconSize(QtCore.QSize(50,88))
         self.loadList(self.parent.config.load_list(self.ConfigSection))
+
+    def onDeleteClick(self):
+        item = self.ListView.currentItem()
+        if item is not None:
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            row = self.ListView.row(item)
+            self.ListView.takeItem(row)
+            self.parent.config.set_list(self.ConfigSection, self.ListData.getFileList())
 
     def loadList(self, list):
         for file in list:

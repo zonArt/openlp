@@ -227,16 +227,22 @@ class MediaManagerItem(QtGui.QWidget):
             translate(self.TranslationContext, self.OnNewPrompt),
             self.parent.config.get_last_dir(),
             self.OnNewFileMasks)
-        log.info(u'New files(s)', unicode(files))
+        log.info(u'New files(s)%s', unicode(files))
         if len(files) > 0:
             self.loadList(files)
             dir, filename = os.path.split(unicode(files[0]))
             self.parent.config.set_last_dir(dir)
             #self.parent.config.set_list(self.ConfigSection, self.ListData.getFileList())
 
+    def getFileList(self):
+        count = 0
+        while  count < len(self.ListView):
+            filelist = [set.ListView.item(count).text()]
+            count += 1
+        return filelist
+
     def loadList(self, list):
-        for file in list:
-            self.ListData.addRow(file)
+        raise NotImplementedError(u'MediaManagerItem.loadList needs to be defined by the plugin')
 
     def onNewClick(self):
         raise NotImplementedError(u'MediaManagerItem.onNewClick needs to be defined by the plugin')
@@ -245,11 +251,7 @@ class MediaManagerItem(QtGui.QWidget):
         raise NotImplementedError(u'MediaManagerItem.onEditClick needs to be defined by the plugin')
 
     def onDeleteClick(self):
-        indexes = self.ListView.selectedIndexes()
-        for index in indexes:
-            current_row = int(index.row())
-            self.ListData.removeRow(current_row)
-        self.parent.config.set_list(self.ConfigSection, self.ListData.getFileList())
+        raise NotImplementedError(u'MediaManagerItem.onDeleteClick needs to be defined by the plugin')
 
     def generateSlideData(self):
         raise NotImplementedError(u'MediaManagerItem.generateSlideData needs to be defined by the plugin')
@@ -257,15 +259,15 @@ class MediaManagerItem(QtGui.QWidget):
     def onPreviewClick(self):
         log.debug(self.PluginTextShort+u'Preview Requested')
         service_item = ServiceItem(self.parent)
-        service_item.addIcon(u':/media/media_image.png')
+        service_item.addIcon(u':/media/media_'+self.PluginTextShort.lower()+u'.png')
         self.generateSlideData(service_item)
         self.parent.preview_controller.addServiceItem(service_item)
         self.ListView.clearSelection()
 
     def onLiveClick(self):
-        log.debug(self.PluginTextShort+u' Live Requested')
+        log.debug(self.PluginTextShort + u' Live Requested')
         service_item = ServiceItem(self.parent)
-        service_item.addIcon(u':/media/media_image.png')
+        service_item.addIcon(u':/media/media_'+self.PluginTextShort.lower()+u'.png')
         self.generateSlideData(service_item)
         self.parent.live_controller.addServiceItem(service_item)
         self.ListView.clearSelection()
@@ -273,7 +275,7 @@ class MediaManagerItem(QtGui.QWidget):
     def onAddClick(self):
         log.debug(self.PluginTextShort+u' Add Requested')
         service_item = ServiceItem(self.parent)
-        service_item.addIcon(u':/media/media_image.png')
+        service_item.addIcon(u':/media/media_'+self.PluginTextShort.lower()+u'.png')
         self.generateSlideData(service_item)
         self.parent.service_manager.addServiceItem(service_item)
         self.ListView.clearSelection()

@@ -90,13 +90,6 @@ class PresentationMediaItem(MediaManagerItem):
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.ListView.addItem(item_name)
 
-    def getFileList(self):
-        count = 0
-        while  count < len(self.ListView):
-            filelist = [set.ListView.item(count).text()]
-            count += 1
-        return filelist
-
     def loadPresentationList(self, list):
         pass
 #        for files in list:
