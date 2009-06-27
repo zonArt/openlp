@@ -21,9 +21,6 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-
-# from openlp.plugins.images.lib import ListWithPreviews
-from listwithpreviews import ListWithPreviews
 from openlp.core.lib import MediaManagerItem, ServiceItem, translate, BaseListWithDnD
 
 # We have to explicitly create separate classes for each plugin
@@ -57,17 +54,24 @@ class ImageMediaItem(MediaManagerItem):
         MediaManagerItem.__init__(self, parent, icon, title)
 
     def initialise(self):
-        self.ListData = ListWithPreviews()
-        self.ListView.setModel(self.ListData)
-
+        self.ListView.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.ListView.setIconSize(QtCore.QSize(88,50))
         self.loadList(self.parent.config.load_list(self.ConfigSection))
 
+    def loadList(self, list):
+        for file in list:
+            (path, filename) = os.path.split(unicode(file))
+            item_name = QtGui.QListWidgetItem(filename)
+            item_name.setIcon(QtGui.QIcon(file))
+            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
+            self.ListView.addItem(item_name)
+
     def generateSlideData(self, service_item):
-        indexes = self.ListView.selectedIndexes()
+        items = self.ListView.selectedIndexes()
         service_item.title = u'Image(s)'
-        for index in indexes:
-            filename = self.ListData.getFilename(index)
+        for item in items:
+            bitem =  self.ListView.item(item.row())
+            filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
             frame = QtGui.QImage(unicode(filename))
             (path, name) = os.path.split(filename)
             service_item.add_from_image(path,  name, frame)
-

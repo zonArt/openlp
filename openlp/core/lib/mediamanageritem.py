@@ -18,6 +18,7 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import types
+import os
 
 from PyQt4 import QtCore, QtGui
 
@@ -231,7 +232,7 @@ class MediaManagerItem(QtGui.QWidget):
             self.loadList(files)
             dir, filename = os.path.split(unicode(files[0]))
             self.parent.config.set_last_dir(dir)
-            self.parent.config.set_list(self.ConfigSection, self.ListData.getFileList())
+            #self.parent.config.set_list(self.ConfigSection, self.ListData.getFileList())
 
     def loadList(self, list):
         for file in list:
@@ -259,6 +260,7 @@ class MediaManagerItem(QtGui.QWidget):
         service_item.addIcon(u':/media/media_image.png')
         self.generateSlideData(service_item)
         self.parent.preview_controller.addServiceItem(service_item)
+        self.ListView.clearSelection()
 
     def onLiveClick(self):
         log.debug(self.PluginTextShort+u' Live Requested')
@@ -266,6 +268,7 @@ class MediaManagerItem(QtGui.QWidget):
         service_item.addIcon(u':/media/media_image.png')
         self.generateSlideData(service_item)
         self.parent.live_controller.addServiceItem(service_item)
+        self.ListView.clearSelection()
 
     def onAddClick(self):
         log.debug(self.PluginTextShort+u' Add Requested')
@@ -273,3 +276,4 @@ class MediaManagerItem(QtGui.QWidget):
         service_item.addIcon(u':/media/media_image.png')
         self.generateSlideData(service_item)
         self.parent.service_manager.addServiceItem(service_item)
+        self.ListView.clearSelection()

@@ -83,8 +83,18 @@ class PresentationMediaItem(MediaManagerItem):
 #        self.DisplayTypeComboBox.addItem(u'Powerpoint')
 #        self.DisplayTypeComboBox.addItem(u'Keynote')
 
+    def loadList(self, list):
+        for file in list:
+            (path, filename) = os.path.split(unicode(file))
+            item_name = QtGui.QListWidgetItem(filename)
+            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
+            self.ListView.addItem(item_name)
+
     def getFileList(self):
-        filelist = [item[0] for item in self.PresentationsListView];
+        count = 0
+        while  count < len(self.ListView):
+            filelist = [set.ListView.item(count).text()]
+            count += 1
         return filelist
 
     def loadPresentationList(self, list):

@@ -335,24 +335,6 @@ class BibleMediaItem(MediaManagerItem):
         if self.search_results is not None:
             self.displayResults(bible)
 
-#    def onLiveClick(self):
-#        service_item = ServiceItem(self.parent)
-#        service_item.addIcon( u':/media/media_verse.png')
-#        self.generateSlideData(service_item)
-#        self.parent.live_controller.addServiceItem(service_item)
-#
-#    def onAddClick(self):
-#        service_item = ServiceItem(self.parent)
-#        service_item.addIcon(u':/media/media_verse.png')
-#        self.generateSlideData(service_item)
-#        self.parent.service_manager.addServiceItem(service_item)
-#
-#    def onPreviewClick(self):
-#        service_item = ServiceItem(self.parent)
-#        service_item.addIcon(u':/media/media_verse.png')
-#        self.generateSlideData(service_item)
-#        self.parent.preview_controller.addServiceItem(service_item)
-
     def generateSlideData(self, service_item):
         log.debug(u'generating slide data')
         items = self.BibleListWidget.selectedIndexes()

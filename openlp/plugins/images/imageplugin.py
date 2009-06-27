@@ -47,4 +47,3 @@ class ImagePlugin(Plugin):
 
     def initialise(self):
         log.info(u'Plugin Initialising')
-

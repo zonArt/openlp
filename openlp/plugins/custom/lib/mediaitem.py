@@ -145,7 +145,6 @@ class CustomMediaItem(MediaManagerItem):
 
     def onCustomEditClick(self):
         item = self.CustomListWidget.currentItem()
-        item = self.CustomListWidget.currentItem()
         if item is not None:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.parent.edit_custom_form.loadCustom(item_id)
