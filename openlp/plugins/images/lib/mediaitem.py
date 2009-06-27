@@ -45,12 +45,22 @@ class ImageMediaItem(MediaManagerItem):
         self.TranslationContext = u'ImagePlugin'
         self.PluginTextShort = u'Image'
         self.ConfigSection = u'images'
+        self.IconPath = u'images/image'
+        self.hasFileIcon = True
+        self.hasNewIcon = False
+        self.hasEditIcon = False
         self.OnNewPrompt = u'Select Image(s)'
         self.OnNewFileMasks = u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
         MediaManagerItem.__init__(self, parent, icon, title)
+
+    def initialise(self):
+        self.ListData = ListWithPreviews()
+        self.ListView.setModel(self.ListData)
+
+        self.loadList(self.parent.config.load_list(self.ConfigSection))
 
     def generateSlideData(self, service_item):
         indexes = self.ListView.selectedIndexes()
