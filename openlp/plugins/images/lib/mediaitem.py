@@ -22,6 +22,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, ServiceItem, translate, BaseListWithDnD
+from openlp.plugins.images.lib.imageslidecontroller import ImageSlideController
 
 # We have to explicitly create separate classes for each plugin
 # in order for DnD to the Service manager to work correctly.
@@ -48,10 +49,16 @@ class ImageMediaItem(MediaManagerItem):
         self.hasEditIcon = False
         self.OnNewPrompt = u'Select Image(s)'
         self.OnNewFileMasks = u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
+        self.slidecontroller = u'image'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
         MediaManagerItem.__init__(self, parent, icon, title)
+        #create and install our own slide controllers
+        #a=c
+        live_controller = ImageSlideController(self.parent.slideManager.parent, True)
+        preview_controller = ImageSlideController(self.parent.slideManager.parent)
+        self.parent.slideManager.add_controllers(u'image', preview_controller, live_controller)
 
     def initialise(self):
         self.ListView.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)

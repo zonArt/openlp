@@ -122,20 +122,20 @@ class SlideList(QtGui.QListView):
 
 class SlideController(QtGui.QWidget):
     """
-    SlideController is THE slide controller widget. This widget is what the user
+    SlideController is the slide controller widget. This widget is what the user
     uses to control the displaying of verses/slides/etc on the screen.
     """
     global log
     log = logging.getLogger(u'SlideController')
 
-    def __init__(self, controlSplitter, parent, isLive=False):
+    def __init__(self,  parent, isLive=False):
         """
         Set up the Slide Controller.
         """
         QtGui.QWidget.__init__(self, parent.mainWindow)
         self.isLive = isLive
         self.parent = parent
-        self.Panel = QtGui.QWidget(controlSplitter)
+        self.Panel = QtGui.QWidget(parent.ControlSplitter)
         self.Splitter = QtGui.QSplitter(self.Panel)
         self.Splitter.setOrientation(QtCore.Qt.Vertical)
         # Layout for holding panel
@@ -166,6 +166,41 @@ class SlideController(QtGui.QWidget):
         self.PreviewListView.setSpacing(0)
         self.PreviewListView.setObjectName(u'PreviewListView')
         self.ControllerLayout.addWidget(self.PreviewListView)
+        self.defineToolbar()
+        # Screen preview area
+        self.PreviewFrame = QtGui.QFrame(self.Splitter)
+        self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, 250, 190))
+        self.PreviewFrame.setSizePolicy(QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Minimum))
+        self.PreviewFrame.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.PreviewFrame.setFrameShadow(QtGui.QFrame.Sunken)
+        self.PreviewFrame.setObjectName(u'PreviewFrame')
+        self.grid = QtGui.QGridLayout(self.PreviewFrame)
+        self.grid.setMargin(8)
+        self.grid.setObjectName(u'grid')
+        # Actual preview screen
+        self.SlidePreview = QtGui.QLabel(self.PreviewFrame)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.SlidePreview.sizePolicy().hasHeightForWidth())
+        self.SlidePreview.setSizePolicy(sizePolicy)
+        self.SlidePreview.setMinimumSize(QtCore.QSize(280, 210))
+        self.SlidePreview.setFrameShape(QtGui.QFrame.Box)
+        self.SlidePreview.setFrameShadow(QtGui.QFrame.Plain)
+        self.SlidePreview.setLineWidth(1)
+        self.SlidePreview.setScaledContents(True)
+        self.SlidePreview.setObjectName(u'SlidePreview')
+        self.grid.addWidget(self.SlidePreview, 0, 0, 1, 1)
+        # Some events
+        QtCore.QObject.connect(self.PreviewListView,
+            QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
+        QtCore.QObject.connect(self.PreviewListView,
+            QtCore.SIGNAL(u'activated(QModelIndex)'), self.onSlideSelected)
+
+    def defineToolbar(self):
         # Controller toolbar
         self.Toolbar = OpenLPToolbar(self.Controller)
         sizeToolbarPolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
@@ -199,38 +234,6 @@ class SlideController(QtGui.QWidget):
                 self.onBlankScreen)
         self.Toolbar.setSizePolicy(sizeToolbarPolicy)
         self.ControllerLayout.addWidget(self.Toolbar)
-        # Screen preview area
-        self.PreviewFrame = QtGui.QFrame(self.Splitter)
-        self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, 250, 190))
-        self.PreviewFrame.setSizePolicy(QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Minimum))
-        self.PreviewFrame.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.PreviewFrame.setFrameShadow(QtGui.QFrame.Sunken)
-        self.PreviewFrame.setObjectName(u'PreviewFrame')
-        self.grid = QtGui.QGridLayout(self.PreviewFrame)
-        self.grid.setMargin(8)
-        self.grid.setObjectName(u'grid')
-        # Actual preview screen
-        self.SlidePreview = QtGui.QLabel(self.PreviewFrame)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.SlidePreview.sizePolicy().hasHeightForWidth())
-        self.SlidePreview.setSizePolicy(sizePolicy)
-        self.SlidePreview.setMinimumSize(QtCore.QSize(280, 210))
-        self.SlidePreview.setFrameShape(QtGui.QFrame.Box)
-        self.SlidePreview.setFrameShadow(QtGui.QFrame.Plain)
-        self.SlidePreview.setLineWidth(1)
-        self.SlidePreview.setScaledContents(True)
-        self.SlidePreview.setObjectName(u'SlidePreview')
-        self.grid.addWidget(self.SlidePreview, 0, 0, 1, 1)
-        # Some events
-        QtCore.QObject.connect(self.PreviewListView,
-            QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
-        QtCore.QObject.connect(self.PreviewListView,
-            QtCore.SIGNAL(u'activated(QModelIndex)'), self.onSlideSelected)
 
     def onSlideSelectedFirst(self):
         """
