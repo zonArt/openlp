@@ -39,7 +39,7 @@ def buildIcon(icon):
             ButtonIcon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
                 QtGui.QIcon.Off)
         else:
-            ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QImage(icon)),
+            ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
                 QtGui.QIcon.Normal, QtGui.QIcon.Off)
     return ButtonIcon
 
@@ -75,7 +75,7 @@ from themexmlhandler import ThemeXML
 from renderer import Renderer
 from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem
-from baselistwithdnd import BaseListWithDnD 
+from baselistwithdnd import BaseListWithDnD
 from listwithpreviews import ListWithPreviews
 
 __all__ = [ 'translate', 'file_to_xml', 'str_to_bool',

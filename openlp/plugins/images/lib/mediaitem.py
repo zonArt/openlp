@@ -21,7 +21,7 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import MediaManagerItem, ServiceItem, translate, BaseListWithDnD
+from openlp.core.lib import MediaManagerItem, ServiceItem, translate, BaseListWithDnD,  buildIcon
 from openlp.plugins.images.lib.imageslidecontroller import ImageToolbar
 
 # We have to explicitly create separate classes for each plugin
@@ -62,7 +62,7 @@ class ImageMediaItem(MediaManagerItem):
 
     def initialise(self):
         self.ListView.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
-        self.ListView.setIconSize(QtCore.QSize(50,88))
+        self.ListView.setIconSize(QtCore.QSize(88,50))
         self.loadList(self.parent.config.load_list(self.ConfigSection))
 
     def onDeleteClick(self):
@@ -77,7 +77,7 @@ class ImageMediaItem(MediaManagerItem):
         for file in list:
             (path, filename) = os.path.split(unicode(file))
             item_name = QtGui.QListWidgetItem(filename)
-            item_name.setIcon(QtGui.QIcon(file))
+            item_name.setIcon(buildIcon(file))
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.ListView.addItem(item_name)
 
