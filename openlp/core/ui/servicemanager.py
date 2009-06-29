@@ -29,6 +29,22 @@ from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, Event, \
     contextMenuAction, contextMenuSeparator
 from openlp.core.utils import ConfigHelper
 
+class ServiceManagerList(QtGui.QTreeWidget):
+
+    def __init__(self,parent=None,name=None):
+        QtGui.QListView.__init__(self,parent)
+        self.parent = parent
+
+    def keyPressEvent(self, event):
+        if type(event) == QtGui.QKeyEvent:
+            #here accept the event and do something
+            if event.key() == QtCore.Qt.Key_Enter:
+                self.parent.makeLive()
+                event.accept()
+            event.ignore()
+        else:
+            event.ignore()
+
 class ServiceManager(QtGui.QWidget):
     """
     Manages the orders of service.  Currently this involves taking
@@ -66,7 +82,7 @@ class ServiceManager(QtGui.QWidget):
         self.Toolbar.addAction(self.ThemeWidget)
         self.Layout.addWidget(self.Toolbar)
         # Create the service manager list
-        self.ServiceManagerList = QtGui.QTreeWidget(self)
+        self.ServiceManagerList = ServiceManagerList(self)
         self.ServiceManagerList.setEditTriggers(QtGui.QAbstractItemView.CurrentChanged|QtGui.QAbstractItemView.DoubleClicked|QtGui.QAbstractItemView.EditKeyPressed)
         self.ServiceManagerList.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
         self.ServiceManagerList.setAlternatingRowColors(True)
