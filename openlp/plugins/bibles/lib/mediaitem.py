@@ -57,8 +57,6 @@ class BibleMediaItem(MediaManagerItem):
         self.TranslationContext = u'BiblePlugin'
         self.PluginTextShort = u'Bible'
         self.ConfigSection = u'bibles'
-#        self.OnNewPrompt = u'Select Image(s)'
-#        self.OnNewFileMasks = u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
         MediaManagerItem.__init__(self, parent, icon, title)
         self.search_results = {} # place to store the search results
         QtCore.QObject.connect(Receiver().get_receiver(),
@@ -192,11 +190,11 @@ class BibleMediaItem(MediaManagerItem):
         self.SearchTabWidget.addTab(self.AdvancedTab, u'Advanced')
         # Add the search tab widget to the page layout
         self.PageLayout.addWidget(self.SearchTabWidget)
-        self.BibleListWidget = BibleList()
-        self.BibleListWidget.setAlternatingRowColors(True)
-        self.BibleListWidget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
-        self.BibleListWidget.setDragEnabled(True)
-        self.PageLayout.addWidget(self.BibleListWidget)
+        self.ListView = BibleList()
+        self.ListView.setAlternatingRowColors(True)
+        self.ListView.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.ListView.setDragEnabled(True)
+        self.PageLayout.addWidget(self.ListView)
         # Combo Boxes
         QtCore.QObject.connect(self.AdvancedVersionComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onAdvancedVersionComboBox)
@@ -213,18 +211,18 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'pressed()'), self.onAdvancedSearchButton)
         QtCore.QObject.connect(self.QuickSearchButton,
             QtCore.SIGNAL(u'pressed()'), self.onQuickSearchButton)
-        QtCore.QObject.connect(self.BibleListWidget,
+        QtCore.QObject.connect(self.ListView,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onPreviewClick)
         # Context Menus
-        self.BibleListWidget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.BibleListWidget.addAction(self.contextMenuAction(
-            self.BibleListWidget, u':/system/system_preview.png',
+        self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.ListView.addAction(self.contextMenuAction(
+            self.ListView, u':/system/system_preview.png',
             translate(u'BibleMediaItem',u'&Preview Verse'), self.onPreviewClick))
-        self.BibleListWidget.addAction(self.contextMenuAction(
-            self.BibleListWidget, u':/system/system_live.png',
+        self.ListView.addAction(self.contextMenuAction(
+            self.ListView, u':/system/system_live.png',
             translate(u'BibleMediaItem',u'&Show Live'), self.onLiveClick))
-        self.BibleListWidget.addAction(self.contextMenuAction(
-            self.BibleListWidget, u':/system/system_add.png',
+        self.ListView.addAction(self.contextMenuAction(
+            self.ListView, u':/system/system_add.png',
             translate(u'BibleMediaItem',u'&Add to Service'), self.onAddClick))
 
     def retranslateUi(self):
@@ -309,7 +307,7 @@ class BibleMediaItem(MediaManagerItem):
         self.search_results = self.parent.biblemanager.get_verse_text(bible, book,
             chapter_from, chapter_to, verse_from, verse_to)
         if self.ClearAdvancedSearchComboBox.currentIndex() == 0:
-            self.BibleListWidget.clear()
+            self.ListView.clear()
         self.displayResults(bible)
 
     def onAdvancedFromChapter(self):
@@ -327,7 +325,7 @@ class BibleMediaItem(MediaManagerItem):
         bible = unicode(self.QuickVersionComboBox.currentText())
         text = unicode(self.QuickSearchEdit.displayText())
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
-            self.BibleListWidget.clear()
+            self.ListView.clear()
         if self.QuickSearchComboBox.currentIndex() == 1:
             self.search_results = self.parent.biblemanager.get_verse_from_text(bible, text)
         else:
@@ -335,33 +333,15 @@ class BibleMediaItem(MediaManagerItem):
         if self.search_results is not None:
             self.displayResults(bible)
 
-#    def onLiveClick(self):
-#        service_item = ServiceItem(self.parent)
-#        service_item.addIcon( u':/media/media_verse.png')
-#        self.generateSlideData(service_item)
-#        self.parent.live_controller.addServiceItem(service_item)
-#
-#    def onAddClick(self):
-#        service_item = ServiceItem(self.parent)
-#        service_item.addIcon(u':/media/media_verse.png')
-#        self.generateSlideData(service_item)
-#        self.parent.service_manager.addServiceItem(service_item)
-#
-#    def onPreviewClick(self):
-#        service_item = ServiceItem(self.parent)
-#        service_item.addIcon(u':/media/media_verse.png')
-#        self.generateSlideData(service_item)
-#        self.parent.preview_controller.addServiceItem(service_item)
-
     def generateSlideData(self, service_item):
         log.debug(u'generating slide data')
-        items = self.BibleListWidget.selectedIndexes()
+        items = self.ListView.selectedIndexes()
         old_chapter = u''
         raw_slides=[]
         raw_footer = []
         bible_text = u''
         for item in items:
-            bitem =  self.BibleListWidget.item(item.row())
+            bitem =  self.ListView.item(item.row())
             text = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
             verse = text[:text.find(u'(')]
             bible = text[text.find(u'(') + 1:text.find(u')')]
@@ -440,7 +420,7 @@ class BibleMediaItem(MediaManagerItem):
             bible_text = unicode(u' %s %d:%d (%s)'%(book , chap,vse, bible))
             bible_verse = QtGui.QListWidgetItem(bible_text)
             bible_verse.setData(QtCore.Qt.UserRole, QtCore.QVariant(bible_text))
-            self.BibleListWidget.addItem(bible_verse)
+            self.ListView.addItem(bible_verse)
 
     def searchByReference(self, bible,  search):
         log.debug(u'searchByReference %s ,%s', bible, search)

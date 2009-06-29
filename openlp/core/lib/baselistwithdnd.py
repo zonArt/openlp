@@ -24,13 +24,13 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib.toolbar import *
 from openlp.core.lib import translate
 
-class BaseListWithDnD(QtGui.QListView):
+class BaseListWithDnD(QtGui.QListWidget):
     """
     Please put a short description of what this class does in here.
     """
 
     def __init__(self,parent = None):
-        QtGui.QListView.__init__(self,parent)
+        QtGui.QListWidget.__init__(self,parent)
         # this must be set by the class which is inheriting
         assert(self.PluginName)
 

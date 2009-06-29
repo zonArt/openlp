@@ -105,38 +105,38 @@ class CustomMediaItem(MediaManagerItem):
         self.CustomWidget.setObjectName(u'CustomWidget')
         # Add the Custom widget to the page layout
         self.PageLayout.addWidget(self.CustomWidget)
-        self.CustomListWidget = CustomList()
-        self.CustomListWidget.setAlternatingRowColors(True)
-        self.CustomListWidget.setDragEnabled(True)
-        self.PageLayout.addWidget(self.CustomListWidget)
+        self.ListView = CustomList()
+        self.ListView.setAlternatingRowColors(True)
+        self.ListView.setDragEnabled(True)
+        self.PageLayout.addWidget(self.ListView)
         # Signals
-        QtCore.QObject.connect(self.CustomListWidget,
+        QtCore.QObject.connect(self.ListView,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onCustomPreviewClick)
         #define and add the context menu
-        self.CustomListWidget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.CustomListWidget.addAction(self.contextMenuAction(self.CustomListWidget,
+        self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.ListView.addAction(self.contextMenuAction(self.ListView,
             ':/custom/custom_edit.png', translate(u'CustomMediaItem', u'&Edit Custom'),
             self.onCustomEditClick))
-        self.CustomListWidget.addAction(self.contextMenuSeparator(self.CustomListWidget))
-        self.CustomListWidget.addAction(self.contextMenuAction(
-            self.CustomListWidget, ':/system/system_preview.png',
+        self.ListView.addAction(self.contextMenuSeparator(self.ListView))
+        self.ListView.addAction(self.contextMenuAction(
+            self.ListView, ':/system/system_preview.png',
             translate(u'CustomMediaItem',u'&Preview Custom'), self.onCustomPreviewClick))
-        self.CustomListWidget.addAction(self.contextMenuAction(
-            self.CustomListWidget, ':/system/system_live.png',
+        self.ListView.addAction(self.contextMenuAction(
+            self.ListView, ':/system/system_live.png',
             translate(u'CustomMediaItem',u'&Show Live'), self.onCustomLiveClick))
-        self.CustomListWidget.addAction(self.contextMenuAction(
-            self.CustomListWidget, ':/system/system_add.png',
+        self.ListView.addAction(self.contextMenuAction(
+            self.ListView, ':/system/system_add.png',
             translate(u'CustomMediaItem',u'&Add to Service'), self.onCustomAddClick))
 
     def initialise(self):
         self.loadCustomList(self.parent.custommanager.get_all_slides())
 
     def loadCustomList(self, list):
-        self.CustomListWidget.clear()
+        self.ListView.clear()
         for CustomSlide in list:
             custom_name = QtGui.QListWidgetItem(CustomSlide.title)
             custom_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(CustomSlide.id))
-            self.CustomListWidget.addItem(custom_name)
+            self.ListView.addItem(custom_name)
 
     def onCustomNewClick(self):
         self.parent.edit_custom_form.loadCustom(0)
@@ -144,8 +144,7 @@ class CustomMediaItem(MediaManagerItem):
         self.initialise()
 
     def onCustomEditClick(self):
-        item = self.CustomListWidget.currentItem()
-        item = self.CustomListWidget.currentItem()
+        item = self.ListView.currentItem()
         if item is not None:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.parent.edit_custom_form.loadCustom(item_id)
@@ -153,12 +152,12 @@ class CustomMediaItem(MediaManagerItem):
             self.initialise()
 
     def onCustomDeleteClick(self):
-        item = self.CustomListWidget.currentItem()
+        item = self.ListView.currentItem()
         if item is not None:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.parent.custommanager.delete_custom(item_id)
-            row = self.CustomListWidget.row(item)
-            self.CustomListWidget.takeItem(row)
+            row = self.ListView.row(item)
+            self.ListView.takeItem(row)
 
     def onCustomPreviewClick(self):
         log.debug(u'Custom Preview Requested')
@@ -186,7 +185,7 @@ class CustomMediaItem(MediaManagerItem):
         raw_footer = []
         slide = None
         theme = None
-        item = self.CustomListWidget.currentItem()
+        item = self.ListView.currentItem()
         item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         customSlide = self.parent.custommanager.get_custom(item_id)
         title = customSlide.title

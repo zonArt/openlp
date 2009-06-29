@@ -317,11 +317,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.TitleEditItem.setStyleSheet(u'background-color: red; color: white')
         else:
             self.TitleEditItem.setStyleSheet(u'')
-        if len(self.CopyrightEditItem.displayText()) == 0:
-            valid = False
-            self.CopyrightEditItem.setStyleSheet(u'background-color: red; color: white')
-        else:
-            self.CopyrightEditItem.setStyleSheet(u'')
         if self.VerseListWidget.count() == 0:
             valid = False
             self.VerseListWidget.setStyleSheet(u'background-color: red; color: white')

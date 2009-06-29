@@ -43,107 +43,52 @@ class PresentationMediaItem(MediaManagerItem):
         self.TranslationContext = u'PresentationPlugin'
         self.PluginTextShort = u'Presentation'
         self.ConfigSection = u'presentation'
-        self.OnNewPrompt = u'Select Image(s)'
-        self.OnNewFileMasks = u'Images (*.ppt *.pps *.odp)'
+        self.hasFileIcon = True
+        self.hasNewIcon = False
+        self.hasEditIcon = False
+        self.IconPath = u'presentations/presentation'
+        self.OnNewPrompt = u'Select Presentation(s)'
+        self.OnNewFileMasks = u'Presentations (*.ppt *.pps *.odp)'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = PresentationListView
         MediaManagerItem.__init__(self, parent, icon, title)
 
-#    def setupUi(self):
-#                # Add a toolbar
-#        self.addToolbar()
-#        # Create buttons for the toolbar
-#        ## New Presentation Button ##
-#        self.addToolbarButton(
-#            translate(u'PresentationsMediaItem',u'New presentations'),
-#            translate(u'PresentationsMediaItem',u'Load presentations into openlp.org'),
-#            ':/presentations/presentation_load.png', self.onPresentationNewClick, 'PresentationNewItem')
-#        ## Delete Presentation Button ##
-#        self.addToolbarButton(
-#            translate(u'PresentationsMediaItem',u'Delete Presentation'),
-#            translate(u'PresentationsMediaItem',u'Delete the selected presentation'),
-#            ':/presentations/presentation_delete.png', self.onPresentationDeleteClick, 'PresentationDeleteItem')
-#        ## Separator Line ##
-#        self.addToolbarSeparator()
-#        ## Preview Presentation Button ##
-#        self.addToolbarButton(
-#            translate(u'PresentationsMediaItem',u'Preview Presentation'),
-#            translate(u'PresentationsMediaItem',u'Preview the selected Presentation'),
-#            ':/system/system_preview.png', self.onPresentationPreviewClick, 'PresentationPreviewItem')
-#        ## Live Presentation Button ##
-#        self.addToolbarButton(
-#            translate(u'PresentationsMediaItem',u'Go Live'),
-#            translate(u'PresentationsMediaItem',u'Send the selected presentation live'),
-#            ':/system/system_live.png', self.onPresentationLiveClick, 'PresentationLiveItem')
-#        ## Add Presentation Button ##
-#        self.addToolbarButton(
-#            translate(u'PresentationsMediaItem',u'Add Presentation To Service'),
-#            translate(u'PresentationsMediaItem',u'Add the selected Presentations(s) to the service'),
-#            ':/system/system_add.png',self.onPresentationAddClick, 'PresentationsAddItem')
-#        ## Add the Presentationlist widget ##
-#
-#        self.PresentationWidget = QtGui.QWidget(self)
-#        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-#        sizePolicy.setHorizontalStretch(0)
-#        sizePolicy.setVerticalStretch(0)
-#        sizePolicy.setHeightForWidth(self.PresentationWidget.sizePolicy().hasHeightForWidth())
-#        self.PresentationWidget.setSizePolicy(sizePolicy)
-#        self.PresentationWidget.setObjectName(u'PresentationWidget')
-#        self.DisplayLayout = QtGui.QGridLayout(self.PresentationWidget)
-#        self.DisplayLayout.setObjectName(u'DisplayLayout')
-#        self.DisplayTypeComboBox = QtGui.QComboBox(self.PresentationWidget)
-#        self.DisplayTypeComboBox.setObjectName(u'DisplayTypeComboBox')
-#        self.DisplayLayout.addWidget(self.DisplayTypeComboBox, 0, 1, 1, 2)
-#        self.DisplayTypeLabel = QtGui.QLabel(self.PresentationWidget)
-#        self.DisplayTypeLabel.setObjectName(u'SearchTypeLabel')
-#        self.DisplayLayout.addWidget(self.DisplayTypeLabel, 0, 0, 1, 1)
-#
-#        self.DisplayTypeLabel.setText(translate(u'PresentationMediaItem', u'Present using:'))
-#
-#        # Add the song widget to the page layout
-#        self.PageLayout.addWidget(self.PresentationWidget)
-#
-#        self.PresentationsListView = QtGui.QListView()
-#        self.PresentationsListView.setAlternatingRowColors(True)
-#        self.PresentationsListData = FileListData()
-#        self.PresentationsListView.setModel(self.PresentationsListData)
-#
-#        self.PageLayout.addWidget(self.PresentationsListView)
-#
-#        #define and add the context menu
-#        self.PresentationsListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-#
-#        self.PresentationsListView.addAction(self.contextMenuAction(
-#            self.PresentationsListView, ':/system/system_preview.png',
-#            translate(u'PresentationsMediaItem',u'&Preview presentations'), self.onPresentationPreviewClick))
-#        self.PresentationsListView.addAction(self.contextMenuAction(
-#            self.PresentationsListView, ':/system/system_live.png',
-#            translate(u'PresentationsMediaItem',u'&Show Live'), self.onPresentationLiveClick))
-#        self.PresentationsListView.addAction(self.contextMenuAction(
-#            self.PresentationsListView, ':/system/system_add.png',
-#            translate(u'PresentationsMediaItem',u'&Add to Service'), self.onPresentationAddClick))
+    def addHeaderBar(self):
+        self.PresentationWidget = QtGui.QWidget(self)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.PresentationWidget.sizePolicy().hasHeightForWidth())
+        self.PresentationWidget.setSizePolicy(sizePolicy)
+        self.PresentationWidget.setObjectName(u'PresentationWidget')
+        self.DisplayLayout = QtGui.QGridLayout(self.PresentationWidget)
+        self.DisplayLayout.setObjectName(u'DisplayLayout')
+        self.DisplayTypeComboBox = QtGui.QComboBox(self.PresentationWidget)
+        self.DisplayTypeComboBox.setObjectName(u'DisplayTypeComboBox')
+        self.DisplayLayout.addWidget(self.DisplayTypeComboBox, 0, 1, 1, 2)
+        self.DisplayTypeLabel = QtGui.QLabel(self.PresentationWidget)
+        self.DisplayTypeLabel.setObjectName(u'SearchTypeLabel')
+        self.DisplayLayout.addWidget(self.DisplayTypeLabel, 0, 0, 1, 1)
+
+        self.DisplayTypeLabel.setText(translate(u'PresentationMediaItem', u'Present using:'))
+
+        # Add the Presentation widget to the page layout
+        self.PageLayout.addWidget(self.PresentationWidget)
 
     def initialise(self):
         list = self.parent.config.load_list(u'presentations')
         self.loadPresentationList(list)
-#        self.DisplayTypeComboBox.addItem(u'Impress')
+        self.DisplayTypeComboBox.addItem(u'Impress')
 #        self.DisplayTypeComboBox.addItem(u'Powerpoint')
 #        self.DisplayTypeComboBox.addItem(u'Keynote')
 
-    def onPresentationNewClick(self):
-        files = QtGui.QFileDialog.getOpenFileNames(None,
-            translate(u'PresentationsMediaItem', u'Select presentations(s)'),
-            self.parent.config.get_last_dir(), u'Presentations (*.ppt *.pps *.odp)')
-        if len(files) > 0:
-            self.loadPresentationList(files)
-            dir, filename = os.path.split(unicode(files[0]))
-            self.parent.config.set_last_dir(dir)
-            self.parent.config.set_list(u'Presentations', self.PresentationsListData.getFileList())
-
-    def getFileList(self):
-        filelist = [item[0] for item in self.PresentationsListView];
-        return filelist
+    def loadList(self, list):
+        for file in list:
+            (path, filename) = os.path.split(unicode(file))
+            item_name = QtGui.QListWidgetItem(filename)
+            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
+            self.ListView.addItem(item_name)
 
     def loadPresentationList(self, list):
         pass

@@ -50,7 +50,7 @@ class MainWindow(object):
         self.alertForm = AlertForm(self)
         self.aboutForm = AboutForm()
         self.settingsForm = SettingsForm(self.screenList, self)
-        self.slideControllerManager = SlideControllerManager()
+        self.slideControllerManager = SlideControllerManager(self)
         # Set up the path with plugins
         pluginpath = os.path.split(os.path.abspath(__file__))[0]
         pluginpath = os.path.abspath(
@@ -73,6 +73,7 @@ class MainWindow(object):
         self.plugin_helpers[u'render'] = self.RenderManager
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
         self.plugin_helpers[u'settings'] = self.settingsForm
+        self.plugin_helpers[u'slideManager'] = self.slideControllerManager
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers,
             self.EventManager)
         # hook methods have to happen after find_plugins. Find plugins needs the
@@ -168,11 +169,8 @@ class MainWindow(object):
         self.ControlSplitter.setObjectName(u'ControlSplitter')
         self.MainContentLayout.addWidget(self.ControlSplitter)
         # Create slide controllers
-        PreviewController = SlideController(self.ControlSplitter, self)
-        LiveController = SlideController(self.ControlSplitter, self, True)
-        self.slideControllerManager.add_controllers(u'base', PreviewController, LiveController)
-        self.PreviewController = self.slideControllerManager.getPreviewController(u'base')
-        self.LiveController = self.slideControllerManager.getLiveController(u'base')
+        self.PreviewController = SlideController(self)
+        self.LiveController = SlideController(self, True)
         # Create menu
         self.MenuBar = QtGui.QMenuBar(self.mainWindow)
         self.MenuBar.setGeometry(QtCore.QRect(0, 0, 1087, 27))

@@ -121,12 +121,12 @@ class SongMediaItem(MediaManagerItem):
         self.SearchLayout.addWidget(self.SearchTextButton, 3, 2, 1, 1)
         # Add the song widget to the page layout
         self.PageLayout.addWidget(self.SongWidget)
-        self.SongListWidget = SongList()
-        self.SongListWidget.setAlternatingRowColors(True)
-        self.SongListWidget.setDragEnabled(True)
-        self.SongListWidget.setObjectName(u'SongListWidget')
-        self.PageLayout.addWidget(self.SongListWidget)
-        self.SongListWidget.setDragEnabled(True)
+        self.ListView = SongList()
+        self.ListView.setAlternatingRowColors(True)
+        self.ListView.setDragEnabled(True)
+        self.ListView.setObjectName(u'ListView')
+        self.PageLayout.addWidget(self.ListView)
+        self.ListView.setDragEnabled(True)
         # Signals and slots
         QtCore.QObject.connect(self.SearchTextButton,
             QtCore.SIGNAL(u'pressed()'), self.onSearchTextButtonClick)
@@ -134,21 +134,21 @@ class SongMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'pressed()'), self.onClearTextButtonClick)
         QtCore.QObject.connect(self.SearchTextEdit,
             QtCore.SIGNAL(u'textChanged(const QString&)'), self.onSearchTextEditChanged)
-        QtCore.QObject.connect(self.SongListWidget,
+        QtCore.QObject.connect(self.ListView,
            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onSongPreviewClick)
         #define and add the context menu
-        self.SongListWidget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.SongListWidget.addAction(self.contextMenuAction(self.SongListWidget,
+        self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.ListView.addAction(self.contextMenuAction(self.ListView,
             ':/songs/song_new.png', translate(u'SongMediaItem', u'&Edit Song'),
             self.onSongEditClick))
-        self.SongListWidget.addAction(self.contextMenuSeparator(self.SongListWidget))
-        self.SongListWidget.addAction(self.contextMenuAction(self.SongListWidget,
+        self.ListView.addAction(self.contextMenuSeparator(self.ListView))
+        self.ListView.addAction(self.contextMenuAction(self.ListView,
             ':/system/system_preview.png', translate(u'SongMediaItem', u'&Preview Song'),
             self.onSongPreviewClick))
-        self.SongListWidget.addAction(self.contextMenuAction(self.SongListWidget,
+        self.ListView.addAction(self.contextMenuAction(self.ListView,
             ':/system/system_live.png', translate(u'SongMediaItem', u'&Show Live'),
             self.onSongLiveClick))
-        self.SongListWidget.addAction(self.contextMenuAction(self.SongListWidget,
+        self.ListView.addAction(self.contextMenuAction(self.ListView,
             ':/system/system_add.png', translate(u'SongMediaItem', u'&Add to Service'),
             self.onSongAddClick))
 
@@ -182,7 +182,7 @@ class SongMediaItem(MediaManagerItem):
 
     def displayResultsSong(self, searchresults):
         log.debug(u'display results Song')
-        self.SongListWidget.clear()
+        self.ListView.clear()
         #log.debug(u'Records returned from search %s", len(searchresults))
         for song in searchresults:
             author_list = u''
@@ -193,17 +193,17 @@ class SongMediaItem(MediaManagerItem):
             song_detail = unicode(u'%s (%s)' % (unicode(song.title), unicode(author_list)))
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
-            self.SongListWidget.addItem(song_name)
+            self.ListView.addItem(song_name)
 
     def displayResultsAuthor(self, searchresults):
         log.debug(u'display results Author')
-        self.SongListWidget.clear()
+        self.ListView.clear()
         for author in searchresults:
             for song in author.songs:
                 song_detail = unicode(u'%s (%s)' % (unicode(author.display_name), unicode(song.title)))
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
-                self.SongListWidget.addItem(song_name)
+                self.ListView.addItem(song_name)
 
     def onClearTextButtonClick(self):
         """
@@ -223,19 +223,19 @@ class SongMediaItem(MediaManagerItem):
         self.edit_song_form.exec_()
 
     def onSongEditClick(self):
-        item = self.SongListWidget.currentItem()
+        item = self.ListView.currentItem()
         if item is not None:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_song_form.loadSong(item_id)
             self.edit_song_form.exec_()
 
     def onSongDeleteClick(self):
-        item = self.SongListWidget.currentItem()
+        item = self.ListView.currentItem()
         if item is not None:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.parent.songmanager.delete_song(item_id)
-            row = self.SongListWidget.row(item)
-            self.SongListWidget.takeItem(row)
+            row = self.ListView.row(item)
+            self.ListView.takeItem(row)
 
     def onSongPreviewClick(self):
         service_item = ServiceItem(self.parent)
@@ -248,7 +248,7 @@ class SongMediaItem(MediaManagerItem):
         raw_footer = []
         author_list = u''
         ccl = u''
-        item = self.SongListWidget.currentItem()
+        item = self.ListView.currentItem()
         item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         song = self.parent.songmanager.get_song(item_id)
         service_item.theme = song.theme_name
