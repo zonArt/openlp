@@ -169,11 +169,8 @@ class MainWindow(object):
         self.ControlSplitter.setObjectName(u'ControlSplitter')
         self.MainContentLayout.addWidget(self.ControlSplitter)
         # Create slide controllers
-        PreviewController = SlideController(self)
-        LiveController = SlideController(self, True)
-        self.slideControllerManager.add_controllers(u'base', PreviewController, LiveController)
-        self.PreviewController = PreviewController
-        self.LiveController = LiveController
+        self.PreviewController = SlideController(self)
+        self.LiveController = SlideController(self, True)
         # Create menu
         self.MenuBar = QtGui.QMenuBar(self.mainWindow)
         self.MenuBar.setGeometry(QtCore.QRect(0, 0, 1087, 27))

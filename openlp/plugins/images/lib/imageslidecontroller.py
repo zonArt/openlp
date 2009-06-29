@@ -22,13 +22,23 @@ import os
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, translate
-from openlp.core.ui import SlideController
+from openlp.core.ui.slidecontroller import BaseToolbar
 
-class ImageSlideController(SlideController):
+class ImageToolbar(BaseToolbar):
+
+    def __init__(self, isLive):
+        self.Toolbar = None
+        self.PreviewListView = QtGui.QListWidget()
+        self.PreviewListData = None
+        self.isLive = isLive
+        self.defineToolbar()
+
+    def getToolbar(self):
+        return self.Toolbar
 
     def defineToolbar(self):
         # Controller toolbar
-        self.Toolbar = OpenLPToolbar(self.Controller)
+        #self.Toolbar = OpenLPToolbar(self.Controller)
         sizeToolbarPolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Fixed)
         sizeToolbarPolicy.setHorizontalStretch(0)
@@ -62,10 +72,32 @@ class ImageSlideController(SlideController):
         self.Toolbar.addToolbarButton(u'Start Loop',
             u':/slides/slide_last.png',
             translate(u'SlideController', u'Start continuous loop'),
-            self.onSlideSelectedLast)
+            self.onStartLoop)
         self.Toolbar.addToolbarButton(u'Stop Loop',
             u':/slides/slide_last.png',
             translate(u'SlideController', u'Start continuous loop'),
-            self.onSlideSelectedLast)
+            self.onStopLoop)
         self.Toolbar.setSizePolicy(sizeToolbarPolicy)
         self.ControllerLayout.addWidget(self.Toolbar)
+
+    def onStartLoop(self):
+        """
+        Go to the last slide.
+        """
+        row = self.PreviewListData.createIndex(
+            self.PreviewListData.rowCount() - 1, 0)
+        if row.isValid():
+            self.PreviewListView.selectionModel().setCurrentIndex(row,
+                QtGui.QItemSelectionModel.SelectCurrent)
+            self.onSlideSelected(row)
+
+    def onStopLoop(self):
+        """
+        Go to the last slide.
+        """
+        row = self.PreviewListData.createIndex(
+            self.PreviewListData.rowCount() - 1, 0)
+        if row.isValid():
+            self.PreviewListView.selectionModel().setCurrentIndex(row,
+                QtGui.QItemSelectionModel.SelectCurrent)
+            self.onSlideSelected(row)

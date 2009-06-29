@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
+from slidecontroller import BaseToolbar
 from slidecontrollermanager import SlideControllerManager
 from maindisplay import MainDisplay
 from amendthemeform import AmendThemeForm
@@ -32,5 +33,5 @@ from servicemanager import ServiceManager
 from thememanager import ThemeManager
 from mainwindow import MainWindow
 
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm',
+__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'BaseToolbar'
            'MainWindow', 'MainDisplay',  'SlideController', 'ServiceManager', 'ThemeManager', 'AmendThemeForm']

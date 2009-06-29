@@ -166,7 +166,17 @@ class SlideController(QtGui.QWidget):
         self.PreviewListView.setSpacing(0)
         self.PreviewListView.setObjectName(u'PreviewListView')
         self.ControllerLayout.addWidget(self.PreviewListView)
-        self.defineToolbar()
+        # Plugin the Base Toolbar class
+        self.BaseToolbar = BaseToolbar(self.isLive)
+        self.Toolbar = self.BaseToolbar.getToolbar()
+        self.ControllerLayout.addWidget(self.Toolbar)
+        sizeToolbarPolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Fixed)
+        sizeToolbarPolicy.setHorizontalStretch(0)
+        sizeToolbarPolicy.setVerticalStretch(0)
+        sizeToolbarPolicy.setHeightForWidth(
+            self.Toolbar.sizePolicy().hasHeightForWidth())
+        self.Toolbar.setSizePolicy(sizeToolbarPolicy)
         # Screen preview area
         self.PreviewFrame = QtGui.QFrame(self.Splitter)
         self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, 250, 190))
@@ -194,21 +204,46 @@ class SlideController(QtGui.QWidget):
         self.SlidePreview.setScaledContents(True)
         self.SlidePreview.setObjectName(u'SlidePreview')
         self.grid.addWidget(self.SlidePreview, 0, 0, 1, 1)
-        # Some events
         QtCore.QObject.connect(self.PreviewListView,
-            QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
+            QtCore.SIGNAL(u'clicked(QModelIndex)'), self.BaseToolbar.onSlideSelected)
         QtCore.QObject.connect(self.PreviewListView,
-            QtCore.SIGNAL(u'activated(QModelIndex)'), self.onSlideSelected)
+            QtCore.SIGNAL(u'activated(QModelIndex)'), self.BaseToolbar.onSlideSelected)
+        # Add Late Arrivals
+        self.BaseToolbar.PreviewListView = self.PreviewListView
+        self.BaseToolbar.PreviewListData = self.PreviewListData
+        self.BaseToolbar.SlidePreview = self.SlidePreview
+        self.BaseToolbar.mainDisplay = self.parent.mainDisplay
+
+    def addServiceItem(self, item):
+        self.BaseToolbar.addServiceItem(item)
+
+    def addServiceManagerItem(self, item, slideno):
+        self.BaseToolbar.addServiceManagerItem(item, slideno)
+
+class BaseToolbar(object):
+
+    def __init__(self, isLive):
+        self.Toolbar = None
+        self.PreviewListView = QtGui.QListWidget()
+        self.PreviewListData = None
+        self.isLive = isLive
+        self.defineToolbar()
+
+    def getToolbar(self):
+        return self.Toolbar
 
     def defineToolbar(self):
         # Controller toolbar
-        self.Toolbar = OpenLPToolbar(self.Controller)
+        #self.Toolbar = OpenLPToolbar(self.Controller)
+        self.Toolbar = OpenLPToolbar(self)
         sizeToolbarPolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Fixed)
         sizeToolbarPolicy.setHorizontalStretch(0)
         sizeToolbarPolicy.setVerticalStretch(0)
         sizeToolbarPolicy.setHeightForWidth(
             self.Toolbar.sizePolicy().hasHeightForWidth())
+        self.Toolbar.setSizePolicy(sizeToolbarPolicy)
+
         if self.isLive:
             self.Toolbar.addToolbarButton(u'First Slide',
                 u':/slides/slide_first.png',
@@ -232,8 +267,6 @@ class SlideController(QtGui.QWidget):
                 u':/slides/slide_close.png',
                 translate(u'SlideController', u'Close Screen'),
                 self.onBlankScreen)
-        self.Toolbar.setSizePolicy(sizeToolbarPolicy)
-        self.ControllerLayout.addWidget(self.Toolbar)
 
     def onSlideSelectedFirst(self):
         """
@@ -311,7 +344,7 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             no = frame[1]
             LiveFrame = self.serviceitem.frames[no][u'image']
-            self.parent.mainDisplay.frameView(LiveFrame)
+            self.mainDisplay.frameView(LiveFrame)
 
     def addServiceItem(self, serviceitem):
         """

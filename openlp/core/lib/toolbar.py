@@ -28,7 +28,7 @@ class OpenLPToolbar(QtGui.QToolBar):
     Lots of toolbars around the place, so it makes sense to have a common way to manage them
     """
     def __init__(self, parent):
-        QtGui.QToolBar.__init__(self, parent)
+        QtGui.QToolBar.__init__(self, None)
         # useful to be able to reuse button icons...
         self.icons = {}
         self.log = logging.getLogger(u'OpenLPToolbar')

@@ -57,8 +57,6 @@ class BibleMediaItem(MediaManagerItem):
         self.TranslationContext = u'BiblePlugin'
         self.PluginTextShort = u'Bible'
         self.ConfigSection = u'bibles'
-#        self.OnNewPrompt = u'Select Image(s)'
-#        self.OnNewFileMasks = u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
         MediaManagerItem.__init__(self, parent, icon, title)
         self.search_results = {} # place to store the search results
         QtCore.QObject.connect(Receiver().get_receiver(),

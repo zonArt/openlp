@@ -253,7 +253,7 @@ class MediaManagerItem(QtGui.QWidget):
     def onDeleteClick(self):
         raise NotImplementedError(u'MediaManagerItem.onDeleteClick needs to be defined by the plugin')
 
-    def generateSlideData(self):
+    def generateSlideData(self, item):
         raise NotImplementedError(u'MediaManagerItem.generateSlideData needs to be defined by the plugin')
 
     def onPreviewClick(self):

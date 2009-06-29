@@ -175,30 +175,33 @@ class ThemeManager(QtGui.QWidget):
 
     def onEditTheme(self):
         items = self.ThemeListView.selectedIndexes()
-        for item in items:
-            data = self.themeData.getValue(item)
-            self.amendThemeForm.loadTheme(data[3])
-        self.amendThemeForm.exec_()
+        if len(items) > 0:
+            for item in items:
+                print item
+                data = self.themeData.getValue(item)
+                self.amendThemeForm.loadTheme(data[3])
+            self.amendThemeForm.exec_()
 
     def onDeleteTheme(self):
         items = self.ThemeListView.selectedIndexes()
-        theme = u''
-        for item in items:
-            data = self.themeData.getValue(item)
-            theme = data[3]
-        th = theme +  u'.png'
-        try:
-            os.remove(os.path.join(self.path, th))
-        except:
-            #if not present do not worry
-            pass
-        try:
-            shutil.rmtree(os.path.join(self.path, theme))
-        except:
-            #if not present do not worry
-            pass
-        self.themeData.clearItems()
-        self.loadThemes()
+        if len(items) > 0:
+            theme = u''
+            for item in items:
+                data = self.themeData.getValue(item)
+                theme = data[3]
+            th = theme +  u'.png'
+            try:
+                os.remove(os.path.join(self.path, th))
+            except:
+                #if not present do not worry
+                pass
+            try:
+                shutil.rmtree(os.path.join(self.path, theme))
+            except:
+                #if not present do not worry
+                pass
+            self.themeData.clearItems()
+            self.loadThemes()
 
     def onExportTheme(self):
         pass
