@@ -18,7 +18,7 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import types
-
+import os
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib.toolbar import *
 from openlp.core.lib import translate
@@ -123,6 +123,8 @@ class MediaManagerItem(QtGui.QWidget):
     # each plugin needs to inherit a class from this and pass that *class* (not an instance) to here
     # via the ListViewWithDnD_class member
     # self.ServiceItemIconName - string referring to an icon file or a resource icon
+    # self.PreviewFunction - a function which returns a QImage to represent the item (a preview usually) - no scaling required - that's done later
+    #                        If this fn is not defined, a default will be used (treat the filename as an image)
 
     # The assumption is that given that at least two plugins are of the form
     # "text with an icon" then all this will help
@@ -168,7 +170,10 @@ class MediaManagerItem(QtGui.QWidget):
         #Add the List widget
         self.ListView = self.ListViewWithDnD_class()
         self.ListView.uniformItemSizes = True
-        self.ListData = ListWithPreviews()
+        try:
+            self.ListData = ListWithPreviews(self.PreviewFunction)
+        except AttributeError:
+            self.ListData = ListWithPreviews(None)
         self.ListView.setModel(self.ListData)
         self.ListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.ListView.setSpacing(1)
