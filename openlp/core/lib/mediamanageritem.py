@@ -27,7 +27,32 @@ from serviceitem import ServiceItem
 class MediaManagerItem(QtGui.QWidget):
     """
     MediaManagerItem is a helper widget for plugins.
-    """
+
+    None of the following *need* to be used, feel free to override
+    them cmopletely in your plugin's implementation.  Alternatively, call them from your
+    plugin before or after you've done etra things that you need to.
+
+    The plugin will be assigned an icon called 
+     u':/media/media_' + 'self.ShortPluginName + u'image.png'
+     which needs to be available in the main resources
+
+    in order for them to work, you need to have setup
+
+     self.TranslationContext
+     self.PluginTextShort # eg 'Image' for the image plugin
+     self.ConfigSection - where the items in the media manager are stored
+       this could potentially be self.PluginTextShort.lower()
+    
+     self.OnNewPrompt=u'Select Image(s)'
+     self.OnNewFileMasks=u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
+       assumes that the new action is to load a file. If not, override onnew
+     self.ListViewWithDnD_class - there is a base list class with DnD assigned to it (openlp.core.lib.BaseListWithDnD())
+     each plugin needs to inherit a class from this and pass that *class* (not an instance) to here
+     via the ListViewWithDnD_class member
+     self.PreviewFunction - a function which returns a QImage to represent the item (a preview usually) - no scaling required - that's done later
+                            If this fn is not defined, a default will be used (treat the filename as an image)
+    
+"""
     global log
     log = logging.getLogger(u'MediaManagerItem')
     log.info(u'Media Item loaded')
@@ -106,53 +131,23 @@ class MediaManagerItem(QtGui.QWidget):
         QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
         return action
 
-####################################################################################################
-    ### None of the following *need* to be used, feel free to override
-    ### them cmopletely in your plugin's implementation.  Alternatively, call them from your
-    ### plugin before or after you've done etra things that you need to.
-    ### in order for them to work, you need to have setup
-    # self.TranslationContext
-    # self.PluginTextShort # eg "Image" for the image plugin
-    # self.ConfigSection - where the items in the media manager are stored
-    #   this could potentially be self.PluginTextShort.lower()
-    #
-    # self.OnNewPrompt=u'Select Image(s)'
-    # self.OnNewFileMasks=u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
-    #   assumes that the new action is to load a file. If not, override onnew
-    # self.ListViewWithDnD_class - there is a base list class with DnD assigned to it (openlp.core.lib.BaseListWithDnD())
-    # each plugin needs to inherit a class from this and pass that *class* (not an instance) to here
-    # via the ListViewWithDnD_class member
-    # self.ServiceItemIconName - string referring to an icon file or a resource icon
-    # self.PreviewFunction - a function which returns a QImage to represent the item (a preview usually) - no scaling required - that's done later
-    #                        If this fn is not defined, a default will be used (treat the filename as an image)
-
-    # The assumption is that given that at least two plugins are of the form
-    # "text with an icon" then all this will help
-    # even for plugins of another sort, the setup of the right-click menu, common toolbar
-    # will help to keep things consistent and ease the creation of new plugins
-    
-    # also a set of completely consistent action anesm then exist
-    # (onPreviewClick() is always called that, rather than having the
-    # name of the plugin added in as well... I regard that as a
-    # feature, I guess others might differ!)
-    
     def setupUi(self):
         # Add a toolbar
         self.addToolbar()
         # Create buttons for the toolbar
-        ## New Song Button ##
+        ## New Button ##
         self.addToolbarButton(
             translate(self.TranslationContext, u'Load '+self.PluginTextShort),
             translate(self.TranslationContext, u'Load item into openlp.org'),
-            u':/images/image_load.png', self.onNewClick, u'ImageNewItem')
-        ## Delete Song Button ##
+            u':/images/image_load.png', self.onNewClick, u'NewItem')
+        ## Delete Button ##
         self.addToolbarButton(
             translate(self.TranslationContext, u'Delete '+self.PluginTextShort),
             translate(self.TranslationContext, u'Delete the selected item'),
             u':/images/image_delete.png', self.onDeleteClick, u'DeleteItem')
         ## Separator Line ##
         self.addToolbarSeparator()
-        ## Preview  Button ##
+        ## Preview ##
         self.addToolbarButton(
             translate(self.TranslationContext, u'Preview '+self.PluginTextShort),
             translate(self.TranslationContext, u'Preview the selected item'),
@@ -162,7 +157,7 @@ class MediaManagerItem(QtGui.QWidget):
             translate(self.TranslationContext, u'Go Live'),
             translate(self.TranslationContext, u'Send the selected item live'),
             u':/system/system_live.png', self.onLiveClick, u'LiveItem')
-        ## Add  Button ##
+        ## Add to service Button ##
         self.addToolbarButton(
             translate(self.TranslationContext, u'Add '+self.PluginTextShort+u' To Service'),
             translate(self.TranslationContext, u'Add the selected item(s) to the service'),
@@ -210,7 +205,7 @@ class MediaManagerItem(QtGui.QWidget):
         log.info(u'New files(s)', unicode(files))
         if len(files) > 0:
             self.loadList(files)
-            dir, filename = os.path.split(unicode(files[0]))
+            dir, filename = os.path.split(uniClickcode(files[0]))
             self.parent.config.set_last_dir(dir)
             self.parent.config.set_list(self.ConfigSection, self.ListData.getFileList())
 
@@ -226,12 +221,13 @@ class MediaManagerItem(QtGui.QWidget):
         self.parent.config.set_list(self.ConfigSection, self.ListData.getFileList())
 
     def generateSlideData(self):
-        assert 0, 'This fn needs to be defined by the plugin'
+        raise NotImplementedError(u'This function needs to be defined by the plugin')
 
     def onPreviewClick(self):
         log.debug(self.PluginTextShort+u'Preview Requested')
         service_item = ServiceItem(self.parent)
         service_item.addIcon(self.ServiceItemIconName)
+            
         self.generateSlideData(service_item)
         self.parent.preview_controller.addServiceItem(service_item)
 

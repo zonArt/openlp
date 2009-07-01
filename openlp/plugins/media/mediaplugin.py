@@ -22,7 +22,6 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab
 from openlp.plugins.media.lib import MediaTab,MediaMediaItem
-from video_preview import video_get_preview
 class MediaPlugin(Plugin):
 
     def __init__(self, plugin_helpers):

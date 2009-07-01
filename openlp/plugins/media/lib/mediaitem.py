@@ -94,7 +94,7 @@ class MediaMediaItem(MediaManagerItem):
             log.info("Can't generate video preview for some reason");
             import sys
             print sys.exc_info()
-            return QtGui.QImage()
+            return None
         
 
     def generateSlideData(self, service_item):
