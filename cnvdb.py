@@ -30,6 +30,9 @@ class Convert():
         infile = codecs.open(inname, 'r', encoding='iso-8859-1')
         writefile = codecs.open(outname, 'w', encoding='utf-8')
         for line in infile:
+            #replace the quotes with quotes
+            line, replace(u'\x93', "'")
+            line, replace(u'\x94', "'")
             writefile.write(line)
         infile.close()
         writefile.close()

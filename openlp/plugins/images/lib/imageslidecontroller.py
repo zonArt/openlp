@@ -29,7 +29,6 @@ class ImageToolbar(BaseToolbar):
     def __init__(self, isLive):
         self.Toolbar = None
         self.PreviewListView = QtGui.QListWidget()
-        self.PreviewListData = None
         self.isLive = isLive
         self.defineToolbar()
 
@@ -84,20 +83,10 @@ class ImageToolbar(BaseToolbar):
         """
         Go to the last slide.
         """
-        row = self.PreviewListData.createIndex(
-            self.PreviewListData.rowCount() - 1, 0)
-        if row.isValid():
-            self.PreviewListView.selectionModel().setCurrentIndex(row,
-                QtGui.QItemSelectionModel.SelectCurrent)
-            self.onSlideSelected(row)
+        pass
 
     def onStopLoop(self):
         """
         Go to the last slide.
         """
-        row = self.PreviewListData.createIndex(
-            self.PreviewListData.rowCount() - 1, 0)
-        if row.isValid():
-            self.PreviewListView.selectionModel().setCurrentIndex(row,
-                QtGui.QItemSelectionModel.SelectCurrent)
-            self.onSlideSelected(row)
+        pass

@@ -55,7 +55,6 @@ class ImageMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = ImageListView
         MediaManagerItem.__init__(self, parent, icon, title)
         #create and install our own slide controllers
-        #a=c
 #        live_controller = ImageSlideController(self.parent.slideManager.parent, True)
 #        preview_controller = ImageSlideController(self.parent.slideManager.parent)
 #        self.parent.slideManager.add_controllers(u'image', preview_controller, live_controller)
