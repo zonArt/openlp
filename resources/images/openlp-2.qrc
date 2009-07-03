@@ -86,8 +86,10 @@
     <file>media_presentation.png</file>
     <file>media_image.png</file>
     <file>media_song.png</file>
-    <file>media_verse.png</file>
+    <file>media_bible.png</file>
     <file>media_video.png</file>
+    <file>media_time.png</file>
+    <file>media_stop.png</file>
   </qresource>
   <qresource prefix="messagebox" >
     <file>messagebox_critical.png</file>

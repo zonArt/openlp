@@ -22,22 +22,19 @@ import os
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, translate
-from openlp.core.ui.slidecontroller import BaseToolbar
+from openlp.core.ui.slidecontroller import MasterToolbar
 
-class ImageToolbar(BaseToolbar):
+class ImageToolbar(MasterToolbar):
 
     def __init__(self, isLive):
+        MasterToolbar.__init__(self, isLive)
         self.Toolbar = None
-        self.PreviewListView = QtGui.QListWidget()
         self.isLive = isLive
         self.defineToolbar()
 
-    def getToolbar(self):
-        return self.Toolbar
-
     def defineToolbar(self):
         # Controller toolbar
-        #self.Toolbar = OpenLPToolbar(self.Controller)
+        self.Toolbar = OpenLPToolbar(self)
         sizeToolbarPolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Fixed)
         sizeToolbarPolicy.setHorizontalStretch(0)
@@ -49,11 +46,11 @@ class ImageToolbar(BaseToolbar):
                 u':/slides/slide_first.png',
                 translate(u'SlideController', u'Move to first'),
                 self.onSlideSelectedFirst)
-        self.Toolbar.addToolbarButton(u'Last Slide',
+        self.Toolbar.addToolbarButton(u'Previous Slide',
             u':/slides/slide_previous.png',
             translate(u'SlideController', u'Move to previous'),
             self.onSlideSelectedPrevious)
-        self.Toolbar.addToolbarButton(u'First Slide',
+        self.Toolbar.addToolbarButton(u'Next Slide',
             u':/slides/slide_next.png',
             translate(u'SlideController', u'Move to next'),
             self.onSlideSelectedNext)
@@ -69,24 +66,23 @@ class ImageToolbar(BaseToolbar):
                 self.onBlankScreen)
         self.Toolbar.addSeparator()
         self.Toolbar.addToolbarButton(u'Start Loop',
-            u':/slides/slide_last.png',
+            u':/media/media_time.png',
             translate(u'SlideController', u'Start continuous loop'),
             self.onStartLoop)
         self.Toolbar.addToolbarButton(u'Stop Loop',
-            u':/slides/slide_last.png',
+            u':/media/media_stop.png',
             translate(u'SlideController', u'Start continuous loop'),
             self.onStopLoop)
         self.Toolbar.setSizePolicy(sizeToolbarPolicy)
-        self.ControllerLayout.addWidget(self.Toolbar)
 
     def onStartLoop(self):
         """
         Go to the last slide.
         """
-        pass
+        print "onStartLoop"
 
     def onStopLoop(self):
         """
         Go to the last slide.
         """
-        pass
+        print "onStopLoop"

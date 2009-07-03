@@ -257,7 +257,7 @@ class MediaManagerItem(QtGui.QWidget):
         raise NotImplementedError(u'MediaManagerItem.generateSlideData needs to be defined by the plugin')
 
     def onPreviewClick(self):
-        log.debug(self.PluginTextShort+u'Preview Requested')
+        log.debug(self.PluginTextShort+u' Preview Requested')
         service_item = ServiceItem(self.parent)
         service_item.addIcon(u':/media/media_'+self.PluginTextShort.lower()+u'.png')
         self.generateSlideData(service_item)
