@@ -37,7 +37,7 @@ class BiblePlugin(Plugin):
         self.weight = -9
         # Create the plugin icon
         self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_verse.png'),
+        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_bible.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         #Register the bible Manager
         self.biblemanager = BibleManager(self.config)

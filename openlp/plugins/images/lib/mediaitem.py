@@ -55,7 +55,7 @@ class ImageMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = ImageListView
         MediaManagerItem.__init__(self, parent, icon, title)
         #create and install our own slide controller toolbar
-        imageToolbar = ImageToolbar(True)
+        imageToolbar = ImageToolbar(self, True)
         parent.live_controller.registerToolbar(self.ConfigSection, imageToolbar)
 
     def initialise(self):

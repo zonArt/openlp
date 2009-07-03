@@ -144,8 +144,10 @@ class SlideController(QtGui.QWidget):
         self.toolbarList[handle.lower()] = controller
 
     def retrieveToolbar(self, handle):
-        print handle
-        print self.toolbarList
+        """
+        Find the toolbar and return master if none present
+        Add extra information back into toolbar class
+        """
         try:
             toolbar =  self.toolbarList[handle.lower()]
         except:
@@ -153,7 +155,6 @@ class SlideController(QtGui.QWidget):
         toolbar.PreviewListWidget = self.PreviewListWidget
         toolbar.SlidePreview = self.SlidePreview
         toolbar.mainDisplay = self.parent.mainDisplay
-        print toolbar
         return toolbar
 
     def addServiceItem(self, item):
@@ -162,6 +163,8 @@ class SlideController(QtGui.QWidget):
         """
         self.BaseToolbar = self.retrieveToolbar(item.shortname)
         self.ControllerLayout.removeWidget(self.Toolbar)
+        #remove the old toolbar
+        self.Toolbar.clear()
         self.Toolbar = self.BaseToolbar.getToolbar()
         self.ControllerLayout.addWidget(self.Toolbar)
         self.BaseToolbar.addServiceItem(item)
@@ -170,6 +173,12 @@ class SlideController(QtGui.QWidget):
         """
         helper method to pass item to correct toolbar
         """
+        self.BaseToolbar = self.retrieveToolbar(item.shortname)
+        self.ControllerLayout.removeWidget(self.Toolbar)
+        #remove the old toolbar
+        self.Toolbar.clear()
+        self.Toolbar = self.BaseToolbar.getToolbar()
+        self.ControllerLayout.addWidget(self.Toolbar)
         self.BaseToolbar.addServiceManagerItem(item, slideno)
 
 class MasterToolbar(QtCore.QObject):
@@ -181,9 +190,11 @@ class MasterToolbar(QtCore.QObject):
         QtCore.QObject.__init__(self)
         self.PreviewListWidget = QtGui.QListWidget()
         self.isLive = isLive
-        self.defineToolbar()
 
     def getToolbar(self):
+        #define toolbar here as it needs to be redefined each time
+        #as the clear destroys it.
+        self.defineToolbar()
         return self.Toolbar
 
     def defineToolbar(self):

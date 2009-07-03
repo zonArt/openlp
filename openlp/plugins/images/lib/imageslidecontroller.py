@@ -26,8 +26,9 @@ from openlp.core.ui.slidecontroller import MasterToolbar
 
 class ImageToolbar(MasterToolbar):
 
-    def __init__(self, isLive):
+    def __init__(self, parent,  isLive):
         MasterToolbar.__init__(self, isLive)
+        self.parent = parent
         self.Toolbar = None
         self.isLive = isLive
         self.defineToolbar()
@@ -71,7 +72,7 @@ class ImageToolbar(MasterToolbar):
             self.onStartLoop)
         self.Toolbar.addToolbarButton(u'Stop Loop',
             u':/media/media_stop.png',
-            translate(u'SlideController', u'Start continuous loop'),
+            translate(u'SlideController', u'Stop continuous loop'),
             self.onStopLoop)
         self.Toolbar.setSizePolicy(sizeToolbarPolicy)
 
@@ -79,10 +80,16 @@ class ImageToolbar(MasterToolbar):
         """
         Go to the last slide.
         """
-        print "onStartLoop"
+        delay = self.parent.parent.ImageTab.loop_delay
+        self.timer_id =  self.startTimer(delay * 1000)
 
     def onStopLoop(self):
         """
         Go to the last slide.
         """
-        print "onStopLoop"
+        self.killTimer(self.timer_id)
+
+    def timerEvent(self, event):
+        if event.timerId() == self.timer_id:
+            self.onSlideSelectedNext()
+
