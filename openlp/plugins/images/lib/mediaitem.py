@@ -53,6 +53,8 @@ class ImageMediaItem(MediaManagerItem):
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
+        self.ServiceItemIconName = u':/media/media_image.png'
+
         MediaManagerItem.__init__(self, parent, icon, title)
         #create and install our own slide controller toolbar
         imageToolbar = ImageToolbar(self, True)

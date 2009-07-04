@@ -23,14 +23,38 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib.toolbar import *
-from openlp.core.lib import translate
-from listwithpreviews import ListWithPreviews
+from openlp.core.lib import translate, contextMenuAction, contextMenuSeparator
 from serviceitem import ServiceItem
 
 class MediaManagerItem(QtGui.QWidget):
     """
     MediaManagerItem is a helper widget for plugins.
+
+    None of the following *need* to be used, feel free to override
+    them cmopletely in your plugin's implementation.  Alternatively, call them from your
+    plugin before or after you've done etra things that you need to.
+
+    The plugin will be assigned an icon called u':/media/media_' + 'self.ShortPluginName + u'image.png'
+     which needs to be available in the main resources in order for them to work, you need to have setup
+
+     self.TranslationContext
+     self.PluginTextShort # eg 'Image' for the image plugin
+     self.ConfigSection - where the items in the media manager are stored
+       this could potentially be self.PluginTextShort.lower()
+
+     self.OnNewPrompt=u'Select Image(s)'
+     self.OnNewFileMasks=u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
+       assumes that the new action is to load a file. If not, override onnew
+
+     self.ListViewWithDnD_class - there is a base list class with DnD assigned to it (openlp.core.lib.BaseListWithDnD())
+     each plugin needs to inherit a class from this and pass that *class* (not an instance) to here
+     via the ListViewWithDnD_class member
+
+     self.PreviewFunction - a function which returns a QImage to represent the item (a preview usually)
+        - no scaling required - that's done later
+        If this fn is not defined, a default will be used (treat the filename as an image)
     """
+
     global log
     log = logging.getLogger(u'MediaManagerItem')
     log.info(u'Media Item loaded')
@@ -84,61 +108,6 @@ class MediaManagerItem(QtGui.QWidget):
         """
         self.Toolbar.addSeparator()
 
-    def contextMenuSeparator(self, base):
-        action = QtGui.QAction(u'', base)
-        action.setSeparator(True)
-        return action
-
-    def contextMenuAction(self, base, icon, text, slot):
-        """
-        Utility method to help build context menus for plugins
-        """
-        if type(icon) is QtGui.QIcon:
-            ButtonIcon = icon
-        elif type(icon) is types.StringType or type(icon) is types.UnicodeType:
-            ButtonIcon = QtGui.QIcon()
-            if icon.startswith(u':/'):
-                ButtonIcon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
-                    QtGui.QIcon.Off)
-            else:
-                ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
-                    QtGui.QIcon.Normal, QtGui.QIcon.Off)
-
-        action = QtGui.QAction(text, base)
-        action .setIcon(ButtonIcon)
-        QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
-        return action
-
-    ###########################################################################
-    ### None of the following *need* to be used, feel free to override
-    ### them cmopletely in your plugin's implementation.  Alternatively, call them from your
-    ### plugin before or after you've done etra things that you need to.
-    ### in order for them to work, you need to have setup
-    # self.TranslationContext
-    # self.PluginTextShort # eg "Image" for the image plugin
-    # self.ConfigSection - where the items in the media manager are stored
-    #   this could potentially be self.PluginTextShort.lower()
-    # self.IconPath=u'images/images' - allows specific icons to be used
-    # self.hasFileIcon - Is the file Icon required
-    # self.hasEditIcon - Is the edit Icon required
-    # self.hasNewIcon - Is the new Icon required
-    #
-    # self.OnNewPrompt=u'Select Image(s)'
-    # self.OnNewFileMasks=u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
-    #   assumes that the new action is to load a file. If not, override onnew
-    # self.ListViewWithDnD_class - there is a base list class with DnD assigned to it (openlp.core.lib.BaseListWithDnD())
-    #    each plugin needs to inherit a class from this and pass that *class* (not an instance) to here
-    #    via the ListViewWithDnD_class member
-    # The assumption is that given that at least two plugins are of the form
-    # "text with an icon" then all this will help
-    # even for plugins of another sort, the setup of the right-click menu, common toolbar
-    # will help to keep things consistent and ease the creation of new plugins
-
-    # also a set of completely consistent action anesm then exist
-    # (onPreviewClick() is always called that, rather than having the
-    # name of the plugin added in as well... I regard that as a
-    # feature, I guess others might differ!)
-
     def setupUi(self):
         # Add a toolbar
         self.addToolbar()
@@ -168,7 +137,7 @@ class MediaManagerItem(QtGui.QWidget):
             u':'+self.IconPath+ u'_delete.png', self.onDeleteClick, self.PluginTextShort+u'DeleteItem')
         ## Separator Line ##
         self.addToolbarSeparator()
-        ## Preview  Button ##
+        ## Preview ##
         self.addToolbarButton(
             translate(self.TranslationContext, u'Preview '+self.PluginTextShort),
             translate(self.TranslationContext, u'Preview the selected item'),
@@ -178,7 +147,7 @@ class MediaManagerItem(QtGui.QWidget):
             translate(self.TranslationContext, u'Go Live'),
             translate(self.TranslationContext, u'Send the selected item live'),
             u':/system/system_live.png', self.onLiveClick, u'LiveItem')
-        ## Add  Button ##
+        ## Add to service Button ##
         self.addToolbarButton(
             translate(self.TranslationContext, u'Add '+self.PluginTextShort+u' To Service'),
             translate(self.TranslationContext, u'Add the selected item(s) to the service'),
@@ -199,25 +168,28 @@ class MediaManagerItem(QtGui.QWidget):
         #define and add the context menu
         self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         if self.hasEditIcon:
-            self.ListView.addAction(self.contextMenuAction(self.ListView,
+            self.ListView.addAction(contextMenuAction(self.ListView,
                 ':' +self.IconPath+u'_new.png',
                 translate(self.TranslationContext, u'&Edit '+self.PluginTextShort),
                 self.onEditClick))
             self.ListView.addAction(self.contextMenuSeparator(self.SongListWidget))
-        self.ListView.addAction(self.contextMenuAction(
+        self.ListView.addAction(contextMenuAction(
             self.ListView, ':/system/system_preview.png',
             translate(self.TranslationContext, u'&Preview '+self.PluginTextShort),
             self.onPreviewClick))
-        self.ListView.addAction(self.contextMenuAction(
+        self.ListView.addAction(contextMenuAction(
             self.ListView, ':/system/system_live.png',
             translate(self.TranslationContext, u'&Show Live'),
             self.onLiveClick))
-        self.ListView.addAction(self.contextMenuAction(
+        self.ListView.addAction(contextMenuAction(
             self.ListView, ':/system/system_add.png',
             translate(self.TranslationContext, u'&Add to Service'),
             self.onAddClick))
         QtCore.QObject.connect(self.ListView,
            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onPreviewClick)
+
+    def initialise(self):
+        pass
 
     def addHeaderBar(self):
         pass
@@ -232,12 +204,15 @@ class MediaManagerItem(QtGui.QWidget):
             self.loadList(files)
             dir, filename = os.path.split(unicode(files[0]))
             self.parent.config.set_last_dir(dir)
-            #self.parent.config.set_list(self.ConfigSection, self.ListData.getFileList())
+            self.parent.config.set_list(self.ConfigSection, self.getFileList())
 
     def getFileList(self):
         count = 0
-        while  count < len(self.ListView):
-            filelist = [set.ListView.item(count).text()]
+        filelist = []
+        while  count < self.ListView.count():
+            bitem =  self.ListView.item(count)
+            filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+            filelist.append(filename)
             count += 1
         return filelist
 

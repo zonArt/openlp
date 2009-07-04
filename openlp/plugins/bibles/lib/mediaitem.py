@@ -21,7 +21,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import ServiceItem, MediaManagerItem, Receiver, translate
+from openlp.core.lib import ServiceItem, MediaManagerItem, Receiver, translate, contextMenuAction, contextMenuSeparator
 from openlp.plugins.bibles.forms import BibleImportForm
 
 class BibleList(QtGui.QListWidget):
@@ -215,13 +215,13 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onPreviewClick)
         # Context Menus
         self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.ListView.addAction(self.contextMenuAction(
+        self.ListView.addAction(contextMenuAction(
             self.ListView, u':/system/system_preview.png',
             translate(u'BibleMediaItem',u'&Preview Verse'), self.onPreviewClick))
-        self.ListView.addAction(self.contextMenuAction(
+        self.ListView.addAction(contextMenuAction(
             self.ListView, u':/system/system_live.png',
             translate(u'BibleMediaItem',u'&Show Live'), self.onLiveClick))
-        self.ListView.addAction(self.contextMenuAction(
+        self.ListView.addAction(contextMenuAction(
             self.ListView, u':/system/system_add.png',
             translate(u'BibleMediaItem',u'&Add to Service'), self.onAddClick))
 

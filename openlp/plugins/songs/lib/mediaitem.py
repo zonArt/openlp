@@ -20,7 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import logging
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import MediaManagerItem,  translate,  ServiceItem,  SongXMLParser
+from openlp.core.lib import MediaManagerItem,  translate,  ServiceItem,  SongXMLParser , contextMenuAction, contextMenuSeparator
 
 from openlp.plugins.songs.forms import EditSongForm
 
@@ -138,17 +138,17 @@ class SongMediaItem(MediaManagerItem):
            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onSongPreviewClick)
         #define and add the context menu
         self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.ListView.addAction(self.contextMenuAction(self.ListView,
+        self.ListView.addAction(contextMenuAction(self.ListView,
             ':/songs/song_new.png', translate(u'SongMediaItem', u'&Edit Song'),
             self.onSongEditClick))
-        self.ListView.addAction(self.contextMenuSeparator(self.ListView))
-        self.ListView.addAction(self.contextMenuAction(self.ListView,
+        self.ListView.addAction(contextMenuSeparator(self.ListView))
+        self.ListView.addAction(contextMenuAction(self.ListView,
             ':/system/system_preview.png', translate(u'SongMediaItem', u'&Preview Song'),
             self.onSongPreviewClick))
-        self.ListView.addAction(self.contextMenuAction(self.ListView,
+        self.ListView.addAction(contextMenuAction(self.ListView,
             ':/system/system_live.png', translate(u'SongMediaItem', u'&Show Live'),
             self.onSongLiveClick))
-        self.ListView.addAction(self.contextMenuAction(self.ListView,
+        self.ListView.addAction(contextMenuAction(self.ListView,
             ':/system/system_add.png', translate(u'SongMediaItem', u'&Add to Service'),
             self.onSongAddClick))
 

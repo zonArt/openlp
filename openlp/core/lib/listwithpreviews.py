@@ -35,14 +35,18 @@ class ListWithPreviews(QtCore.QAbstractListModel):
         self.items = []
         self.rowheight = 50
         self.maximagewidth = self.rowheight * 16 / 9.0;
-        if new_preview_function is not None:
-            self.make_preview=new_preview_function
-        else:
-            self.make_preview=self.preview_function
+        self.preview_function = new_preview_function
         
-    def preview_function(self, filename):
+    def make_preview(self, filename):
         if os.path.exists(filename):
-            preview = QtGui.QImage(filename)
+            if self.preview_function is not None:
+                preview=self.preview_function(filename)
+            else:
+                preview = QtGui.QImage(filename)
+        else:
+            preview = None
+            
+        if preview is not None:
             w = self.maximagewidth;
             h = self.rowheight
             preview = preview.scaled(w, h, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
