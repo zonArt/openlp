@@ -22,23 +22,20 @@ import os
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, translate
-from openlp.core.ui.slidecontroller import BaseToolbar
+from openlp.core.ui.slidecontroller import MasterToolbar
 
-class ImageToolbar(BaseToolbar):
+class ImageToolbar(MasterToolbar):
 
-    def __init__(self, isLive):
+    def __init__(self, parent,  isLive):
+        MasterToolbar.__init__(self, isLive)
+        self.parent = parent
         self.Toolbar = None
-        self.PreviewListView = QtGui.QListWidget()
-        self.PreviewListData = None
         self.isLive = isLive
         self.defineToolbar()
 
-    def getToolbar(self):
-        return self.Toolbar
-
     def defineToolbar(self):
         # Controller toolbar
-        #self.Toolbar = OpenLPToolbar(self.Controller)
+        self.Toolbar = OpenLPToolbar(self)
         sizeToolbarPolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Fixed)
         sizeToolbarPolicy.setHorizontalStretch(0)
@@ -50,11 +47,11 @@ class ImageToolbar(BaseToolbar):
                 u':/slides/slide_first.png',
                 translate(u'SlideController', u'Move to first'),
                 self.onSlideSelectedFirst)
-        self.Toolbar.addToolbarButton(u'Last Slide',
+        self.Toolbar.addToolbarButton(u'Previous Slide',
             u':/slides/slide_previous.png',
             translate(u'SlideController', u'Move to previous'),
             self.onSlideSelectedPrevious)
-        self.Toolbar.addToolbarButton(u'First Slide',
+        self.Toolbar.addToolbarButton(u'Next Slide',
             u':/slides/slide_next.png',
             translate(u'SlideController', u'Move to next'),
             self.onSlideSelectedNext)
@@ -70,34 +67,29 @@ class ImageToolbar(BaseToolbar):
                 self.onBlankScreen)
         self.Toolbar.addSeparator()
         self.Toolbar.addToolbarButton(u'Start Loop',
-            u':/slides/slide_last.png',
+            u':/media/media_time.png',
             translate(u'SlideController', u'Start continuous loop'),
             self.onStartLoop)
         self.Toolbar.addToolbarButton(u'Stop Loop',
-            u':/slides/slide_last.png',
-            translate(u'SlideController', u'Start continuous loop'),
+            u':/media/media_stop.png',
+            translate(u'SlideController', u'Stop continuous loop'),
             self.onStopLoop)
         self.Toolbar.setSizePolicy(sizeToolbarPolicy)
-        self.ControllerLayout.addWidget(self.Toolbar)
 
     def onStartLoop(self):
         """
         Go to the last slide.
         """
-        row = self.PreviewListData.createIndex(
-            self.PreviewListData.rowCount() - 1, 0)
-        if row.isValid():
-            self.PreviewListView.selectionModel().setCurrentIndex(row,
-                QtGui.QItemSelectionModel.SelectCurrent)
-            self.onSlideSelected(row)
+        delay = self.parent.parent.ImageTab.loop_delay
+        self.timer_id =  self.startTimer(delay * 1000)
 
     def onStopLoop(self):
         """
         Go to the last slide.
         """
-        row = self.PreviewListData.createIndex(
-            self.PreviewListData.rowCount() - 1, 0)
-        if row.isValid():
-            self.PreviewListView.selectionModel().setCurrentIndex(row,
-                QtGui.QItemSelectionModel.SelectCurrent)
-            self.onSlideSelected(row)
+        self.killTimer(self.timer_id)
+
+    def timerEvent(self, event):
+        if event.timerId() == self.timer_id:
+            self.onSlideSelectedNext()
+

@@ -177,7 +177,6 @@ class ThemeManager(QtGui.QWidget):
         items = self.ThemeListView.selectedIndexes()
         if len(items) > 0:
             for item in items:
-                print item
                 data = self.themeData.getValue(item)
                 self.amendThemeForm.loadTheme(data[3])
             self.amendThemeForm.exec_()
@@ -222,7 +221,10 @@ class ThemeManager(QtGui.QWidget):
         for root, dirs, files in os.walk(self.path):
             for name in files:
                 if name.endswith(u'.png'):
-                    self.themeData.addRow(os.path.join(self.path, name))
+                    #check to see file is in route directory
+                    theme =  os.path.join(self.path, name)
+                    if os.path.exists(theme):
+                        self.themeData.addRow(theme)
         self.parent.EventManager.post_event(Event(EventType.ThemeListChanged))
         self.parent.ServiceManagerContents.updateThemeList(self.getThemes())
         self.parent.settingsForm.ThemesTab.updateThemeList(self.getThemes())

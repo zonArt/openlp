@@ -22,7 +22,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, Event,  EventType
-from openlp.plugins.images.lib import ImageMediaItem
+from openlp.plugins.images.lib import ImageMediaItem,  ImageTab
 
 class ImagePlugin(Plugin):
     global log
@@ -39,6 +39,10 @@ class ImagePlugin(Plugin):
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         # passed with drag and drop messages
         self.dnd_id = u'Image'
+
+    def get_settings_tab(self):
+        self.ImageTab = ImageTab()
+        return self.ImageTab
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object

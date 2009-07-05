@@ -78,7 +78,7 @@ class MainDisplay(QtGui.QWidget):
     def blankDisplay(self):
         if not self.displayBlank:
             self.displayBlank = True
-            self.display.setPixmap(self.blankFrame)
+            self.display.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
         else:
             self.displayBlank = False
             self.frameView(self.frame)

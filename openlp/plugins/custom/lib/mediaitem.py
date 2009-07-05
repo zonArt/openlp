@@ -21,7 +21,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem,  SongXMLParser,  ServiceItem,  translate
+from openlp.core.lib import MediaManagerItem,  SongXMLParser,  ServiceItem,  translate, contextMenuAction, contextMenuSeparator
 
 class CustomList(QtGui.QListWidget):
 
@@ -114,17 +114,17 @@ class CustomMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onCustomPreviewClick)
         #define and add the context menu
         self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.ListView.addAction(self.contextMenuAction(self.ListView,
+        self.ListView.addAction(contextMenuAction(self.ListView,
             ':/custom/custom_edit.png', translate(u'CustomMediaItem', u'&Edit Custom'),
             self.onCustomEditClick))
-        self.ListView.addAction(self.contextMenuSeparator(self.ListView))
-        self.ListView.addAction(self.contextMenuAction(
+        self.ListView.addAction(contextMenuSeparator(self.ListView))
+        self.ListView.addAction(contextMenuAction(
             self.ListView, ':/system/system_preview.png',
             translate(u'CustomMediaItem',u'&Preview Custom'), self.onCustomPreviewClick))
-        self.ListView.addAction(self.contextMenuAction(
+        self.ListView.addAction(contextMenuAction(
             self.ListView, ':/system/system_live.png',
             translate(u'CustomMediaItem',u'&Show Live'), self.onCustomLiveClick))
-        self.ListView.addAction(self.contextMenuAction(
+        self.ListView.addAction(contextMenuAction(
             self.ListView, ':/system/system_add.png',
             translate(u'CustomMediaItem',u'&Add to Service'), self.onCustomAddClick))
 

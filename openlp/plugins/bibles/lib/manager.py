@@ -245,7 +245,7 @@ class BibleManager():
                 log.debug(u'get_verse_text : new book')
                 for chapter in range(schapter, echapter+1):
                     search_results = self.bible_http_cache [bible].get_bible_chapter(bible, 0, bookname, chapter)
-                    if search_results.has_verse_list() :
+                    if search_results.has_verselist() :
                         ## We have found a book of the bible lets check to see if it was there.
                         ## By reusing the returned book name we get a correct book.
                         ## For example it is possible to request ac and get Acts back.

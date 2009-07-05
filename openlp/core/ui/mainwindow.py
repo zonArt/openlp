@@ -205,7 +205,7 @@ class MainWindow(object):
         self.MediaManagerDock.setWindowIcon(icon)
         self.MediaManagerDock.setFloating(False)
         self.MediaManagerDock.setObjectName(u'MediaManagerDock')
-        self.MediaManagerDock.setMinimumWidth(250)
+        self.MediaManagerDock.setMinimumWidth(300)
         self.MediaManagerContents = QtGui.QWidget()
         self.MediaManagerContents.setObjectName(u'MediaManagerContents')
         self.MediaManagerLayout = QtGui.QHBoxLayout(self.MediaManagerContents)
@@ -227,7 +227,7 @@ class MainWindow(object):
         self.ServiceManagerDock.setFeatures(
             QtGui.QDockWidget.AllDockWidgetFeatures)
         self.ServiceManagerDock.setObjectName(u'ServiceManagerDock')
-        self.ServiceManagerDock.setMinimumWidth(250)
+        self.ServiceManagerDock.setMinimumWidth(300)
         self.ServiceManagerContents = ServiceManager(self)
         self.ServiceManagerDock.setWidget(self.ServiceManagerContents)
         self.mainWindow.addDockWidget(

@@ -19,3 +19,4 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 from mediaitem import ImageMediaItem
 from imageslidecontroller import ImageToolbar
+from imagetab import ImageTab

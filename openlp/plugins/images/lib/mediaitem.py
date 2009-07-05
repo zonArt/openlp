@@ -53,12 +53,12 @@ class ImageMediaItem(MediaManagerItem):
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
+        self.ServiceItemIconName = u':/media/media_image.png'
+
         MediaManagerItem.__init__(self, parent, icon, title)
-        #create and install our own slide controllers
-        #a=c
-#        live_controller = ImageSlideController(self.parent.slideManager.parent, True)
-#        preview_controller = ImageSlideController(self.parent.slideManager.parent)
-#        self.parent.slideManager.add_controllers(u'image', preview_controller, live_controller)
+        #create and install our own slide controller toolbar
+        imageToolbar = ImageToolbar(self, True)
+        parent.live_controller.registerToolbar(self.ConfigSection, imageToolbar)
 
     def initialise(self):
         self.ListView.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
