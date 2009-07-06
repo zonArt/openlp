@@ -21,108 +21,15 @@ import os
 import sys
 import zipfile
 import shutil
+import logging
 
-from time import sleep
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AmendThemeForm, ServiceManager
 from openlp.core.theme import Theme
-from openlp.core.lib import Event, EventType, EventManager, OpenLPToolbar, ThemeXML, Renderer,  translate,  file_to_xml
+from openlp.core.lib import Event, EventType, EventManager, OpenLPToolbar, ThemeXML, Renderer,  translate,  file_to_xml,  buildIcon
 from openlp.core.utils import ConfigHelper
-
-import logging
-
-class ThemeData(QtCore.QAbstractListModel):
-    """
-    Tree of items for an order of Theme.
-    Includes methods for reading and writing the contents to an OOS file
-    Root contains a list of ThemeItems
-    """
-    global log
-    log = logging.getLogger(u'ThemeData')
-
-    def __init__(self):
-        QtCore.QAbstractListModel.__init__(self)
-        self.items = []
-        self.rowheight = 50
-        self.maximagewidth = self.rowheight * 16 / 9.0;
-        log.info(u'Starting')
-
-    def clearItems(self):
-        self.items = []
-
-    def rowCount(self, parent):
-        return len(self.items)
-
-    def insertRow(self, row, filename):
-        self.beginInsertRows(QtCore.QModelIndex(), row, row)
-        log.debug(u'insert row %d:%s' % (row, filename))
-        (prefix, shortfilename) = os.path.split(unicode(filename))
-        log.debug(u'shortfilename = %s' % shortfilename)
-        theme = shortfilename.split(u'.')
-        # create a preview image
-        if os.path.exists(filename):
-            preview = QtGui.QImage(unicode(filename))
-            width = self.maximagewidth
-            height = self.rowheight
-            preview = preview.scaled(width, height, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
-            realwidth = preview.width()
-            realheight = preview.height()
-            # and move it to the centre of the preview space
-            pixmap = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32_Premultiplied)
-            pixmap.fill(QtCore.Qt.black)
-            painter = QtGui.QPainter(pixmap)
-            painter.drawImage((width - realwidth) / 2, (height - realheight) / 2, preview)
-        else:
-            width = self.maximagewidth
-            height = self.rowheight
-            pixmap = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32_Premultiplied)
-            pixmap.fill(QtCore.Qt.black)
-        # finally create the row
-        self.items.insert(row, (filename, pixmap, shortfilename, theme[0]))
-        log.debug(u'Items: %s' % self.items)
-        self.endInsertRows()
-
-    def removeRow(self, row):
-        self.beginRemoveRows(QtCore.QModelIndex(), row, row)
-        self.items.pop(row)
-        self.endRemoveRows()
-
-    def addRow(self, item):
-        self.insertRow(len(self.items), item)
-
-    def data(self, index, role):
-        row = index.row()
-        if row > len(self.items):
-            # if the last row is selected and deleted, we then get called with an empty row!
-            return QtCore.QVariant()
-        if role == QtCore.Qt.DisplayRole:
-            retval = self.items[row][3]
-        elif role == QtCore.Qt.DecorationRole:
-            retval = self.items[row][1]
-        else:
-            retval = QtCore.QVariant()
-        if type(retval) is not type(QtCore.QVariant):
-            return QtCore.QVariant(retval)
-        else:
-            return retval
-
-    def __iter__(self):
-        for item in self.items:
-            yield item
-
-    def getValue(self, index):
-        row = index.row()
-        return self.items[row]
-
-    def getItem(self, row):
-        log.info(u'Get Item:%d -> %s' % (row, unicode(self.items)))
-        return self.items[row]
-
-    def getList(self):
-        filelist = [item[3] for item in self.items]
-        return filelist
 
 class ThemeManager(QtGui.QWidget):
     """
@@ -157,13 +64,10 @@ class ThemeManager(QtGui.QWidget):
             translate(u'ThemeManager', u'Export a theme'), self.onExportTheme)
         self.ThemeWidget = QtGui.QWidgetAction(self.Toolbar)
         self.Layout.addWidget(self.Toolbar)
-
-        self.ThemeListView = QtGui.QListView(self)
-        self.themeData = ThemeData()
-        self.ThemeListView.setModel(self.themeData)
-        self.ThemeListView.setAlternatingRowColors(True)
-        self.Layout.addWidget(self.ThemeListView)
-
+        self.ThemeListWidget = QtGui.QListWidget(self)
+        self.ThemeListWidget.setAlternatingRowColors(True)
+        self.ThemeListWidget.setIconSize(QtCore.QSize(88,50))
+        self.Layout.addWidget(self.ThemeListWidget)
         self.themelist = []
         self.path = os.path.join(ConfigHelper.get_data_path(), u'themes')
         self.checkThemesExists(self.path)
@@ -174,21 +78,18 @@ class ThemeManager(QtGui.QWidget):
         self.amendThemeForm.exec_()
 
     def onEditTheme(self):
-        items = self.ThemeListView.selectedIndexes()
-        if len(items) > 0:
-            for item in items:
-                data = self.themeData.getValue(item)
-                self.amendThemeForm.loadTheme(data[3])
+        item = self.ThemeListWidget.currentItem()
+        if item is not None:
+            self.amendThemeForm.loadTheme(unicode(item.text()))
             self.amendThemeForm.exec_()
 
     def onDeleteTheme(self):
-        items = self.ThemeListView.selectedIndexes()
-        if len(items) > 0:
-            theme = u''
-            for item in items:
-                data = self.themeData.getValue(item)
-                theme = data[3]
+        item = self.ThemeListWidget.currentItem()
+        if item is not None:
+            theme = unicode(item.text())
             th = theme +  u'.png'
+            row = self.ThemeListWidget.row(item)
+            self.ThemeListWidget.takeItem(row)
             try:
                 os.remove(os.path.join(self.path, th))
             except:
@@ -199,8 +100,6 @@ class ThemeManager(QtGui.QWidget):
             except:
                 #if not present do not worry
                 pass
-            self.themeData.clearItems()
-            self.loadThemes()
 
     def onExportTheme(self):
         pass
@@ -213,24 +112,37 @@ class ThemeManager(QtGui.QWidget):
         if len(files) > 0:
             for file in files:
                 self.unzipTheme(file, self.path)
-        self.themeData.clearItems()
         self.loadThemes()
 
     def loadThemes(self):
+        """
+        Loads the theme lists and triggers updates accross
+        the whole system using direct calls or core functions
+        and events for the plugins.
+        The plugins will call back in to get the real list if they want it.
+        """
         log.debug(u'Load themes from dir')
+        self.themelist = []
+        self.ThemeListWidget.clear()
         for root, dirs, files in os.walk(self.path):
             for name in files:
                 if name.endswith(u'.png'):
-                    #check to see file is in route directory
+                    #check to see file is in theme root directory
                     theme =  os.path.join(self.path, name)
                     if os.path.exists(theme):
-                        self.themeData.addRow(theme)
+                        (path, filename) = os.path.split(unicode(file))
+                        textName = os.path.splitext(name)[0]
+                        item_name = QtGui.QListWidgetItem(textName)
+                        item_name.setIcon(buildIcon(theme))
+                        item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(textName))
+                        self.ThemeListWidget.addItem(item_name)
+                        self.themelist.append(textName)
         self.parent.EventManager.post_event(Event(EventType.ThemeListChanged))
         self.parent.ServiceManagerContents.updateThemeList(self.getThemes())
         self.parent.settingsForm.ThemesTab.updateThemeList(self.getThemes())
 
     def getThemes(self):
-        return self.themeData.getList()
+        return self.themelist
 
     def getThemeData(self, themename):
         log.debug(u'getthemedata for theme %s', themename)
@@ -337,6 +249,10 @@ class ThemeManager(QtGui.QWidget):
         return newtheme.extract_xml()
 
     def saveTheme(self, name, theme_xml, image_from, image_to) :
+        """
+        Called by thememaintenance Dialog to save the theme
+        and to trigger the reload of the theme list
+        """
         log.debug(u'saveTheme %s %s', name, theme_xml)
         theme_dir = os.path.join(self.path, name)
         if os.path.exists(theme_dir) == False:
@@ -348,7 +264,6 @@ class ThemeManager(QtGui.QWidget):
         if image_from is not None and image_from != image_to:
             shutil.copyfile(image_from,  image_to)
         self.generateAndSaveImage(self.path, name, theme_xml)
-        self.themeData.clearItems()
         self.loadThemes()
 
     def generateAndSaveImage(self, dir, name, theme_xml):
@@ -357,7 +272,6 @@ class ThemeManager(QtGui.QWidget):
         theme.parse(theme_xml)
         theme.extend_image_filename(dir)
         frame = self.generateImage(theme)
-        #im = frame.toImage()
         samplepathname = os.path.join(self.path, name + u'.png')
         if os.path.exists(samplepathname):
             os.unlink(samplepathname)
@@ -365,6 +279,9 @@ class ThemeManager(QtGui.QWidget):
         log.debug(u'Theme image written to %s', samplepathname)
 
     def generateImage(self, themedata):
+        """
+        Call the RenderManager to build a Sample Image
+        """
         log.debug(u'generateImage %s ', themedata)
         frame = self.parent.RenderManager.generate_preview(themedata)
         return frame

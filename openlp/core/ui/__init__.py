@@ -18,7 +18,6 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 from slidecontroller import MasterToolbar
-from slidecontrollermanager import SlideControllerManager
 from maindisplay import MainDisplay
 from amendthemeform import AmendThemeForm
 from slidecontroller import SlideController

@@ -31,7 +31,7 @@ class Convert():
         writefile = codecs.open(outname, 'w', encoding='utf-8')
         for line in infile:
             #replace the quotes with quotes
-            line, replace("''", "'")
+            line = line.replace(u'\'\'', u'\'')
             writefile.write(line)
         infile.close()
         writefile.close()

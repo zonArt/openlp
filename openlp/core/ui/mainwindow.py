@@ -23,7 +23,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AboutForm, SettingsForm, AlertForm, ServiceManager, \
-    ThemeManager, MainDisplay, SlideController, SlideControllerManager
+    ThemeManager, MainDisplay, SlideController
 from openlp.core.lib import translate, Plugin, MediaManagerItem, SettingsTab, \
     EventManager, RenderManager, PluginConfig
 from openlp.core import PluginManager
@@ -50,7 +50,6 @@ class MainWindow(object):
         self.alertForm = AlertForm(self)
         self.aboutForm = AboutForm()
         self.settingsForm = SettingsForm(self.screenList, self)
-        self.slideControllerManager = SlideControllerManager(self)
         # Set up the path with plugins
         pluginpath = os.path.split(os.path.abspath(__file__))[0]
         pluginpath = os.path.abspath(
@@ -73,7 +72,6 @@ class MainWindow(object):
         self.plugin_helpers[u'render'] = self.RenderManager
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
         self.plugin_helpers[u'settings'] = self.settingsForm
-        self.plugin_helpers[u'slideManager'] = self.slideControllerManager
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers,
             self.EventManager)
         # hook methods have to happen after find_plugins. Find plugins needs the
