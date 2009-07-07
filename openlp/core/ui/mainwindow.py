@@ -41,6 +41,7 @@ class MainWindow(object):
         This constructor sets up the interface, the various managers, and the
         plugins.
         """
+        self.oosNotSaved = False
         self.mainWindow = QtGui.QMainWindow()
         self.mainWindow.__class__.closeEvent = self.onCloseEvent
         self.mainDisplay = MainDisplay(None, screens)
@@ -127,8 +128,46 @@ class MainWindow(object):
         """
         Hook to close the main window and display windows on exit
         """
-        self.mainDisplay.close()
-        event.accept()
+        if self.oosNotSaved == True:
+            box = QtGui.QMessageBox()
+            box.setWindowTitle(translate(u'mainWindow', u'Question?'))
+            box.setText(translate(u'mainWindow', u'Save changes to Order of Service?'))
+            box.setIcon(QtGui.QMessageBox.Question)
+            box.setStandardButtons(QtGui.QMessageBox.Save | QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel);
+            box.setDefaultButton(QtGui.QMessageBox.Save);
+            ret = box.exec_()
+            if ret == QtGui.QMessageBox.Save:
+                self.ServiceManagerContents.onSaveService()
+                self.mainDisplay.close()
+                event.accept()
+            elif ret == QtGui.QMessageBox.Discard:
+                self.mainDisplay.close()
+                event.accept()
+            else:
+                event.ignore()
+        else:
+            self.mainDisplay.close()
+            event.accept()
+
+    def OosChanged(self, reset = False, oosName = None):
+        """
+        Hook to change the title if the OOS has been changed
+        reset - tells if the OOS has been cleared or saved
+        oosName - is the name of the OOS (if it has one)
+        """
+        if reset == True:
+            self.oosNotSaved = False
+            if oosName is None:
+                title = self.mainTitle
+            else:
+                title = self.mainTitle + u' - (' + oosName + u')'
+        else:
+            self.oosNotSaved = True
+            if oosName is None:
+                title = self.mainTitle + u' - *'
+            else:
+                title = self.mainTitle + u' - *(' + oosName + u')'
+        self.mainWindow.setWindowTitle(title)
 
     def setupUi(self):
         """
@@ -409,7 +448,8 @@ class MainWindow(object):
         """
         Set up the translation system
         """
-        self.mainWindow.setWindowTitle(translate(u'mainWindow', u'OpenLP 2.0'))
+        self.mainTitle = translate(u'mainWindow', u'OpenLP 2.0')
+        self.mainWindow.setWindowTitle(self.mainTitle)
         self.FileMenu.setTitle(translate(u'mainWindow', u'&File'))
         self.FileImportMenu.setTitle(translate(u'mainWindow', u'&Import'))
         self.FileExportMenu.setTitle(translate(u'mainWindow', u'&Export'))
