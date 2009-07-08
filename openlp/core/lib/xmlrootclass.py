@@ -22,81 +22,80 @@ import platform
 import sys
 import os
 from types import StringType, NoneType, UnicodeType
-sys.path.append(os.path.abspath(u'./../..'))
 
 from xml.etree.ElementTree import ElementTree, XML
 
+sys.path.append(os.path.abspath(os.path.join('.', '..', '..')))
 
 class XmlRootClass(object):
-    """Root class for themes, songs etc
-
-    provides interface for parsing xml files into object attributes
-
-    if you overload this class and provide a function called
-    post_tag_hook, it will be called thusly for each tag,value pair:
-
-    (element.tag, val) = self.post_tag_hook(element.tag, val)
     """
-    def _setFromXml(self, xml, rootTag):
-        """Set song properties from given xml content
+    Root class for themes, songs etc
 
-        xml (string) -- formatted as xml tags and values
-        rootTag -- main tag of the xml
+    This class provides interface for parsing xml files into object attributes.
+
+    If you overload this class and provide a function called `post_tag_hook`,
+    it will be called thusly for each `tag, value` pair::
+
+        (element.tag, val) = self.post_tag_hook(element.tag, val)
+    """
+    def _setFromXml(self, xml, root_tag):
+        """
+        Set song properties from given xml content.
+
+        ``xml``
+            Formatted xml tags and values.
+        ``root_tag``
+            The root tag of the xml.
         """
         root = ElementTree(element=XML(xml))
         iter = root.getiterator()
         for element in iter:
-            if element.tag != rootTag:
-                t = element.text
-                #print element.tag, t, type(t)
-                if type(t) == NoneType:
-                    # easy!
-                    val=t
-                elif type(t) == UnicodeType :
-                    val=t
-                elif type(t) == StringType:
-                    # strings need special handling to sort the colours out
-                    #print "str",
-                    if t[0] == '$':
-                        # might be a hex number
-                        #print "hex",
+            if element.tag != root_tag:
+                text = element.text
+                if type(text) is NoneType:
+                    val = text
+                elif type(text) is UnicodeType :
+                    val = text
+                elif type(text) is StringType:
+                    # Strings need special handling to sort the colours out
+                    if text[0] == '$':
+                        # This might be a hex number, let's try to convert it.
                         try:
-                            val = int(t[1:], 16)
+                            val = int(text[1:], 16)
                         except ValueError:
-                            # nope
-                            #print "nope",
                             pass
                     else:
-                        #print "last chance",
+                        # Let's just see if it's a integer.
                         try:
-                            val=int(t)
-                            #print "int",
+                            val = int(text)
                         except ValueError:
-                            #print "give up",
-                            val=t
+                            # Ok, it seems to be a string.
+                            val = text
                     if hasattr(self, u'post_tag_hook'):
                         (element.tag, val) = self.post_tag_hook(element.tag, val)
                 setattr(self, element.tag, val)
-        pass
 
     def __str__(self):
-        """Return string with all public attributes
+        """
+        Return string with all public attributes
 
         The string is formatted with one attribute per line
         If the string is split on newline then the length of the
         list is equal to the number of attributes
         """
-        l = []
-        for k in dir(self):
-            if not k.startswith(u'_'):
-                l.append(u'%30s : %s' %(k,getattr(self,k)))
-        return u'\n'.join(l)
+        attributes = []
+        for attrib in dir(self):
+            if not attrib.startswith(u'_'):
+                attributes.append(u'%30s : %s' % (attrib, getattr(self, attrib)))
+        return u'\n'.join(attributes)
 
     def _get_as_string(self):
-        """Return one string with all public attributes"""
-        s=""
-        for k in dir(self):
-            if not k.startswith(u'_'):
-                s+= u'_%s_' %(getattr(self,k))
-        return s
+        """
+        Return one string with all public attributes
+        """
+        result = u''
+        for attrib in dir(self):
+            if not attrib.startswith(u'_'):
+                result += u'_%s_' % getattr(self, attrib)
+        return result
 

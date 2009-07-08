@@ -23,22 +23,29 @@ import sys
 import logging
 
 from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib import Receiver
+from openlp.core.resources import *
+from openlp.core.ui import MainWindow, SplashScreen
 
 logging.basicConfig(level=logging.DEBUG,
     format=u'%(asctime)s:%(msecs)3d %(name)-15s %(levelname)-8s %(message)s',
     datefmt=u'%m-%d %H:%M:%S', filename=u'openlp.log', filemode=u'w')
 
-from openlp.core.resources import *
-from openlp.core.ui import MainWindow, SplashScreen
-
 class OpenLP(QtGui.QApplication):
+    """
+    The core application class. This class inherits from Qt's QApplication
+    class in order to provide the core of the application.
+    """
     global log
     log = logging.getLogger(u'OpenLP Application')
     log.info(u'Application Loaded')
 
     def run(self):
-       #set the default string encoding
+        """
+        Run the OpenLP application.
+        """
+        #set the default string encoding
         try:
             sys.setappdefaultencoding(u'utf-8')
         except:
@@ -68,5 +75,8 @@ class OpenLP(QtGui.QApplication):
         sys.exit(app.exec_())
 
 if __name__ == u'__main__':
+    """
+    Instantiate and run the application.
+    """
     app = OpenLP(sys.argv)
     app.run()

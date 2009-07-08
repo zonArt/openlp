@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 """
@@ -19,15 +18,19 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import types
+import logging
 
 from PyQt4 import QtCore, QtGui
-import logging
 
 class OpenLPToolbar(QtGui.QToolBar):
     """
-    Lots of toolbars around the place, so it makes sense to have a common way to manage them
+    Lots of toolbars around the place, so it makes sense to have a common way
+    to manage them. This is the base toolbar class.
     """
     def __init__(self, parent):
+        """
+        Initialise the toolbar.
+        """
         QtGui.QToolBar.__init__(self, None)
         # useful to be able to reuse button icons...
         self.icons = {}
@@ -37,6 +40,23 @@ class OpenLPToolbar(QtGui.QToolBar):
     def addToolbarButton(self, title, icon, tooltip=None, slot=None, objectname=None):
         """
         A method to help developers easily add a button to the toolbar.
+
+        ``title``
+            The title of the button.
+
+        ``icon``
+            The icon of the button. This can be an instance of QIcon, or a
+            string cotaining either the absolute path to the image, or an
+            internal resource path starting with ':/'.
+
+        ``tooltip``
+            A hint or tooltip for this button.
+
+        ``slot``
+            The method to run when this button is clicked.
+
+        ``objectname``
+            The name of the object, as used in `<button>.setObjectName()`.
         """
         ButtonIcon = None
         if type(icon) is QtGui.QIcon:
@@ -58,6 +78,13 @@ class OpenLPToolbar(QtGui.QToolBar):
             self.icons[title] = ButtonIcon
 
     def getIconFromTitle(self, title):
+        """
+        Search through the list of icons for an icon with a particular title,
+        and return that icon.
+
+        ``title``
+            The title of the icon to search for.
+        """
         if self.icons.has_key(title):
             return self.icons[title]
         else:
