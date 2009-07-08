@@ -63,6 +63,7 @@ class ServiceManager(QtGui.QWidget):
         QtGui.QWidget.__init__(self)
         self.parent = parent
         self.serviceItems = []
+        self.serviceName = u''
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
         self.Layout.setMargin(0)
@@ -151,6 +152,7 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(0, temp)
             self.repaintServiceList()
+        self.parent.OosChanged(False, self.serviceName)
 
     def onServiceUp(self):
         """
@@ -163,6 +165,7 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(item - 1, temp)
             self.repaintServiceList()
+        self.parent.OosChanged(False, self.serviceName)
 
     def onServiceDown(self):
         """
@@ -175,6 +178,7 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(item + 1, temp)
             self.repaintServiceList()
+        self.parent.OosChanged(False, self.serviceName)
 
     def onServiceEnd(self):
         """
@@ -186,6 +190,7 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(len(self.serviceItems), temp)
             self.repaintServiceList()
+        self.parent.OosChanged(False, self.serviceName)
 
     def onNewService(self):
         """
@@ -193,6 +198,8 @@ class ServiceManager(QtGui.QWidget):
         """
         self.ServiceManagerList.clear()
         self.serviceItems = []
+        self.serviceName = u''
+        self.parent.OosChanged(True, self.serviceName)
 
     def onDeleteFromService(self):
         """
@@ -202,6 +209,7 @@ class ServiceManager(QtGui.QWidget):
         if item is not -1:
             self.serviceItems.remove(self.serviceItems[item])
             self.repaintServiceList()
+        self.parent.OosChanged(False, self.serviceName)
 
     def repaintServiceList(self):
         #Correct order of idems in array
@@ -252,6 +260,7 @@ class ServiceManager(QtGui.QWidget):
                 os.remove(servicefile)
             except:
                 pass #if not present do not worry
+        self.parent.OosChanged(True, self.serviceName)
 
     def onLoadService(self):
         """
@@ -260,6 +269,7 @@ class ServiceManager(QtGui.QWidget):
         filename = QtGui.QFileDialog.getOpenFileName(self, u'Open Order of Service',self.config.get_last_dir(),
             u'Services (*.oos)')
         filename = unicode(filename)
+        name = filename.split(os.path.sep)
         if filename != u'':
             self.config.set_last_dir(filename)
             zip = zipfile.ZipFile(unicode(filename))
@@ -279,7 +289,6 @@ class ServiceManager(QtGui.QWidget):
             f.close()
             self.onNewService()
             for item in items:
-                #print item
                 serviceitem = ServiceItem()
                 serviceitem.RenderManager = self.parent.RenderManager
                 serviceitem.set_from_oos(item, self.servicePath )
@@ -287,7 +296,10 @@ class ServiceManager(QtGui.QWidget):
             try:
                 os.remove(p_file)
             except:
-                pass #if not present do not worry
+                #if not present do not worry
+                pass
+        self.serviceName = name[len(name) - 1]
+        self.parent.OosChanged(True, self.serviceName)
 
     def onThemeComboBoxSelected(self, currentIndex):
         """
@@ -323,6 +335,7 @@ class ServiceManager(QtGui.QWidget):
             treewidgetitem1.setText(0,text[:40])
             treewidgetitem1.setData(0, QtCore.Qt.UserRole,QtCore.QVariant(count))
             count = count + 1
+        self.parent.OosChanged(False, self.serviceName)
 
     def makePreview(self):
         """

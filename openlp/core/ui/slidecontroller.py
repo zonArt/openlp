@@ -183,7 +183,7 @@ class SlideController(QtGui.QWidget):
 
 class MasterToolbar(QtCore.QObject):
     """
-    Class from which all tollbars should extend
+    Class from which all toolbars should extend
     """
     def __init__(self, isLive):
         self.Toolbar = None
@@ -231,6 +231,13 @@ class MasterToolbar(QtCore.QObject):
                 u':/slides/slide_close.png',
                 translate(u'SlideController', u'Close Screen'),
                 self.onBlankScreen)
+
+    def serviceLoaded(self):
+        """
+        method to allow toolbars to know when the service item
+        is fully in place
+        """
+        pass
 
     def onSlideSelectedFirst(self):
         """
@@ -325,3 +332,4 @@ class MasterToolbar(QtCore.QObject):
         else:
             self.PreviewListWidget.selectRow(slideno)
         self.onSlideSelected()
+        self.serviceLoaded()
