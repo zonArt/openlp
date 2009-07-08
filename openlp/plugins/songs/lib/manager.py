@@ -47,8 +47,7 @@ class SongManager():
         self.db_url = u''
         db_type = self.config.get_config(u'db type', u'sqlite')
         if db_type == u'sqlite':
-            self.db_url = u'sqlite:///' + self.config.get_data_path() + \
-                u'/songs.sqlite'
+            self.db_url = u'sqlite:///%s/songs.sqlite' % self.config.get_data_path()
         else:
             self.db_url = db_type + 'u://' + \
                 self.config.get_config(u'db username') + u':' + \
@@ -73,13 +72,17 @@ class SongManager():
         """
         Searches the song title for keywords.
         """
-        return self.session.query(Song).filter(Song.search_title.like(u'%' + keywords + u'%')).order_by(Song.search_title.asc()).all()
+        return self.session.query(Song).filter(
+            Song.search_title.like(u'%' + keywords + u'%')).order_by(
+                Song.search_title.asc()).all()
 
     def search_song_lyrics(self, keywords):
         """
         Searches the song lyrics for keywords.
         """
-        return self.session.query(Song).filter(Song.search_lyrics.like(u'%' + keywords + u'%')).order_by(Song.search_lyrics.asc()).all()
+        return self.session.query(Song).filter(
+            Song.search_lyrics.like(u'%' + keywords + u'%')).order_by(
+                Song.search_lyrics.asc()).all()
 
     def get_song_from_author(self, keywords):
         """
