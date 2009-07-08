@@ -53,7 +53,7 @@ class PluginManager(object):
         """
         self.plugin_helpers = plugin_helpers
         startdepth = len(os.path.abspath(dir).split(os.sep))
-        log.debug(u'find plugins %s at depth %d' %( unicode(dir), startdepth))
+        log.debug(u'find plugins %s at depth %d', unicode(dir), startdepth)
 
         for root, dirs, files in os.walk(dir):
             for name in files:
@@ -69,34 +69,46 @@ class PluginManager(object):
                     modulename = modulename[len(prefix) + 1:]
                     modulename = modulename.replace(os.path.sep, '.')
                     # import the modules
-                    log.debug(u'Importing %s from %s. Depth %d' % (modulename, path, thisdepth))
+                    log.debug(u'Importing %s from %s. Depth %d', modulename, path, thisdepth)
                     try:
                         __import__(modulename, globals(), locals(), [])
                     except ImportError, e:
-                        log.error(u'Failed to import module %s on path %s for reason %s', modulename, path,  sys.exc_info()[1])
+                        log.error(u'Failed to import module %s on path %s for reason %s', modulename, path, e.args[0])
         self.plugin_classes = Plugin.__subclasses__()
         self.plugins = []
         plugin_objects = []
         for p in self.plugin_classes:
             try:
                 plugin = p(self.plugin_helpers)
-                log.debug(u'loaded plugin %s with helpers'%unicode(p))
+                log.debug(u'loaded plugin %s with helpers', unicode(p))
                 log.debug(u'Plugin: %s', unicode(p))
                 if plugin.check_pre_conditions():
-                    log.debug(u'Appending %s ',  unicode(p))
+                    log.debug(u'Appending %s ', unicode(p))
                     plugin_objects.append(plugin)
                     eventmanager.register(plugin)
             except TypeError:
-                log.error(u'loaded plugin %s has no helpers'%unicode(p))
+                log.error(u'loaded plugin %s has no helpers', unicode(p))
         self.plugins = sorted(plugin_objects, self.order_by_weight)
 
     def order_by_weight(self, x, y):
+        """
+        Sort two plugins and order them by their weight.
+
+        ``x``
+            The first plugin.
+
+        ``y``
+            The second plugin.
+        """
         return cmp(x.weight, y.weight)
 
     def hook_media_manager(self, mediatoolbox):
         """
         Loop through all the plugins. If a plugin has a valid media manager item,
         add it to the media manager.
+
+        ``mediatoolbox``
+            The Media Manager itself.
         """
         for plugin in self.plugins:
             media_manager_item = plugin.get_media_manager_item()
@@ -140,3 +152,4 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             plugin.initialise()
+
