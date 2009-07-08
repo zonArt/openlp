@@ -19,5 +19,9 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 class SettingsManager(object):
-    def __init__(self):
+    """
+    Class to control the size of the UI components so they size correctly
+    This class is created by the main window and then calculates the size of individual components
+    """
+    def __init__(self, screen):
         pass

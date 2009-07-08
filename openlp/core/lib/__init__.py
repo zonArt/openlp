@@ -57,13 +57,15 @@ def contextMenuSeparator(base):
     action.setSeparator(True)
     return action
 
+from settingsmanager import SettingsManager
 from pluginconfig import PluginConfig
 from plugin import Plugin
+from eventmanager import EventManager
+from pluginmanager import PluginManager
 from settingstab import SettingsTab
 from mediamanageritem import MediaManagerItem
 from event import Event
 from event import EventType
-from eventmanager import EventManager
 from xmlrootclass import XmlRootClass
 from serviceitem import ServiceItem
 from eventreceiver import Receiver
@@ -79,5 +81,4 @@ from baselistwithdnd import BaseListWithDnD
 from listwithpreviews import ListWithPreviews
 
 __all__ = [ 'translate', 'file_to_xml', 'str_to_bool',
-            'contextMenuAction', 'contextMenuSeparator','ServiceItem'
-]
+            'contextMenuAction', 'contextMenuSeparator','ServiceItem']
