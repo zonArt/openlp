@@ -19,5 +19,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 class SettingsManager(object):
-    def __init__(self):
-        pass
+    """
+    A base settings manager class.
+    """
+    pass
