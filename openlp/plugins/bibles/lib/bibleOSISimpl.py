@@ -18,6 +18,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import os
 import os.path
 import logging
+import chardet
 from openlp.plugins.bibles.lib.bibleDBimpl import BibleDBImpl
 from openlp.core.lib import Receiver
 from PyQt4 import QtCore
@@ -45,34 +46,31 @@ class BibleOSISImpl():
         QtCore.QObject.connect(Receiver().get_receiver(),QtCore.SIGNAL(u'openlpstopimport'),self.stop_import)
 
     def stop_import(self):
-        self.loadbible= False
+        self.loadbible = False
 
-    def load_data(self, osisfile, dialogobject=None):
-        osis=open(osisfile, u'r')
-
+    def load_data(self, osisfile_record, dialogobject=None):
+        osis = open(osisfile_record, u'r')
         book_ptr = None
         id = 0
         count = 0
         verseText = u'<verse osisID='
         testament = 1
-        for file in osis.readlines():
+        for file_record in osis.readlines():
             # cancel pressed on UI
             if self.loadbible == False:
                 break
-#            print file
-            pos = file.find(verseText)
+            details = chardet.detect(file_record)
+            file_record = unicode(file_record, details['encoding'])
+            pos = file_record.find(verseText)
             if pos > -1: # we have a verse
-                epos= file.find(u'>', pos)
-                ref =  file[pos+15:epos-1]  # Book Reference
-
+                epos= file_record.find(u'>', pos)
+                ref =  file_record[pos+15:epos-1]  # Book Reference
                 #lets find the bible text only
                 # find start of text
                 pos = epos + 1
                 # end  of text
-                epos = file.find(u'</verse>', pos)
-                text = unicode(file[pos : epos], u'utf8')
-                #print pos, e, f[pos:e] # Found Basic Text
-
+                epos = file_record.find(u'</verse>', pos)
+                text = file_record[pos : epos]
                 #remove tags of extra information
                 text = self.remove_block(u'<title', u'</title>', text)
                 text = self.remove_block(u'<note', u'</note>', text)
@@ -82,7 +80,6 @@ class BibleOSISImpl():
                 text = self.remove_tag(u'<q',  text)
                 text = self.remove_tag(u'<l',  text)
                 text = self.remove_tag(u'<lg',  text)
-
                 # Strange tags where the end is not the same as the start
                 # The must be in this order as at least one bible has them
                 # crossing and the removal does not work.
@@ -95,17 +92,14 @@ class BibleOSISImpl():
                     else:
                         text =  text[:pos] + text[epos + 4: ]
                         pos = text.find(u'<FI>')
-
                 pos = text.find(u'<RF>')
                 while pos > -1:
                     epos = text.find(u'<Rf>', pos)
                     text =  text[:pos] + text[epos + 4: ]
                     #print "X", pos, epos, text
                     pos = text.find(u'<RF>')
-
-                p = ref.split(u'.', 3)  # split up the reference
-                #print p, ">>>", text
-
+                # split up the reference
+                p = ref.split(u'.', 3)
                 if book_ptr != p[0]:
                     # first time through
                     if book_ptr == None:
@@ -138,7 +132,6 @@ class BibleOSISImpl():
         while pos > -1:
             epos = text.find(end_tag, pos)
             if epos == -1:
-                #print "Y", pos, epos
                 pos = -1
             else:
                 text =  text[:pos] + text[epos + len(end_tag): ]

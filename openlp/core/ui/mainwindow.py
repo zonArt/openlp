@@ -174,7 +174,7 @@ class MainWindow(object):
         Set up the user interface
         """
         self.mainWindow.setObjectName(u'mainWindow')
-        self.mainWindow.resize(1087, 847)
+        self.mainWindow.resize(self.settingsmanager.width, self.settingsmanager.height)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
             QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)

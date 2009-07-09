@@ -42,8 +42,8 @@ class PresentationPlugin(Plugin):
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
     def get_settings_tab(self):
-        #self.presentation_tab = PresentationTab()
-        return None #self.presentation_tab
+        self.presentation_tab = PresentationTab()
+        return self.presentation_tab
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
