@@ -19,6 +19,7 @@ import os
 import os.path
 import logging
 import chardet
+import codecs
 from openlp.plugins.bibles.lib.bibleDBimpl import BibleDBImpl
 from openlp.core.lib import Receiver
 from PyQt4 import QtCore
@@ -49,7 +50,7 @@ class BibleOSISImpl():
         self.loadbible = False
 
     def load_data(self, osisfile_record, dialogobject=None):
-        osis = open(osisfile_record, u'r')
+        osis = codecs.open(osisfile_record, u'r')
         book_ptr = None
         id = 0
         count = 0
@@ -59,8 +60,6 @@ class BibleOSISImpl():
             # cancel pressed on UI
             if self.loadbible == False:
                 break
-            details = chardet.detect(file_record)
-            file_record = unicode(file_record, details['encoding'])
             pos = file_record.find(verseText)
             if pos > -1: # we have a verse
                 epos= file_record.find(u'>', pos)
@@ -75,7 +74,6 @@ class BibleOSISImpl():
                 text = self.remove_block(u'<title', u'</title>', text)
                 text = self.remove_block(u'<note', u'</note>', text)
                 text = self.remove_block(u'<divineName', u'</divineName>', text)
-
                 text = self.remove_tag(u'<lb',  text)
                 text = self.remove_tag(u'<q',  text)
                 text = self.remove_tag(u'<l',  text)
