@@ -30,21 +30,34 @@ from xml.etree.ElementTree import ElementTree, XML, dump
 
 """
 import logging
-from xml.dom.minidom import  Document
+from xml.dom.minidom import Document
 from xml.etree.ElementTree import ElementTree, XML, dump
 
 class SongXMLBuilder():
+    """
+    This class builds the XML used to describe songs.
+    """
     def __init__(self):
+        """
+        Set up the song builder.
+        """
         # Create the minidom document
         self.song_xml = Document()
 
     def new_document(self):
+        """
+        Create a new song XML document.
+        """
         # Create the <song> base element
         self.song = self.song_xml.createElement(u'song')
         self.song_xml.appendChild(self.song)
         self.song.setAttribute(u'version', u'1.0')
 
     def add_lyrics_to_song(self):
+        """
+        Set up and add a ``<lyrics>`` tag which contains the lyrics of the
+        song.
+        """
         # Create the main <lyrics> element
         self.lyrics = self.song_xml.createElement(u'lyrics')
         self.lyrics.setAttribute(u'language', u'en')
@@ -52,50 +65,72 @@ class SongXMLBuilder():
 
     def add_verse_to_lyrics(self, type, number, content):
         """
-        type - type of verse (Chorus, Verse , Bridge, Custom etc
-        number - number of item eg verse 1
-        content - the text to be stored
+        Add a verse to the ``<lyrics>`` tag.
+
+        ``type``
+            A string denoting the type of verse. Possible values are "Chorus",
+            "Verse", "Bridge", and "Custom".
+
+        ``number``
+            An integer denoting the number of the item, for example: verse 1.
+
+        ``content``
+            The actual text of the verse to be stored.
         """
         verse = self.song_xml.createElement(u'verse')
         verse.setAttribute(u'type', type)
         verse.setAttribute(u'label', number)
         self.lyrics.appendChild(verse)
-
-        # add data as a CDATA section
+        # add data as a CDATA section to protect the XML from special chars
         cds = self.song_xml.createCDATASection(content)
         verse.appendChild(cds)
 
     def dump_xml(self):
-        # Debugging aid to see what we have
+        """
+        Debugging aid to dump XML so that we can see what we have.
+        """
         print self.song_xml.toprettyxml(indent=u'  ')
 
     def extract_xml(self):
-        # Print our newly created XML
+        """
+        Extract our newly created XML song.
+        """
         return self.song_xml.toxml(u'utf-8')
 
 class SongXMLParser():
+    """
+    A class to read in and parse a song's XML.
+    """
     global log
     log = logging.getLogger(u'SongXMLParser')
     log.info(u'SongXMLParser Loaded')
 
     def __init__(self, xml):
-        #print xml
+        """
+        Set up our song XML parser.
+
+        ``xml``
+            The XML of the song to be parsed.
+        """
         try:
             self.song_xml = ElementTree(element=XML(xml))
         except:
-            #print "invalid xml ", xml
-            log.debug(u'invalid xml %s', xml)
+            log.debug(u'Invalid xml %s', xml)
 
     def get_verses(self):
-        #return a list of verse's and attributes
-        iter=self.song_xml.getiterator()
+        """
+        Iterates through the verses in the XML and returns a list of verses
+        and their attributes.
+        """
+        iter = self.song_xml.getiterator()
         verse_list = []
         for element in iter:
-            #print element.tag, element.attrib, element.text
             if element.tag == u'verse':
                 verse_list.append([element.attrib, element.text])
         return verse_list
 
     def dump_xml(self):
-        # Debugging aid to see what we have
+        """
+        Debugging aid to dump XML so that we can see what we have.
+        """
         print dump(self.song_xml)
