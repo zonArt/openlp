@@ -20,10 +20,12 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import logging
 import os
 import time
-from openlp.core.lib import buildIcon
+
 from PyQt4 import QtCore, QtGui
 
-class ServiceItem():
+from openlp.core.lib import buildIcon
+
+class ServiceItem(object):
     """
     The service item is a base class for the plugins to use to interact with
     the service manager, the slide controller, and the projection screen
@@ -35,7 +37,10 @@ class ServiceItem():
 
     def __init__(self, hostplugin=None):
         """
-        Init Method
+        Set up the service item.
+
+        ``hostplugin``
+            The plugin that this service item belongs to.
         """
         self.plugin = hostplugin
         if hostplugin is not None:
@@ -56,6 +61,14 @@ class ServiceItem():
         self.service_frames = []
 
     def addIcon(self, icon):
+        """
+        Add an icon to the service item. This is used when displaying the
+        service item in the service manager.
+
+        ``icon``
+            An instance of QIcon or a string to an icon in the resource or on
+            disk.
+        """
         self.icon = icon
         self.iconic_representation = buildIcon(icon)
 
@@ -89,27 +102,63 @@ class ServiceItem():
         else:
             log.error(u'Invalid value renderer :%s' % self.service_item_type)
 
-    def add_from_image(self, path,  frame_title, image):
+    def add_from_image(self, path, frame_title, image):
+        """
+        Add an image slide to the service item.
+
+        ``path``
+            The directory in which the image file is located.
+
+        ``frame_title``
+            A title for the slide in the service item.
+
+        ``image``
+            The actual image file name.
+        """
         self.service_item_type = u'image'
         self.service_item_path = path
         self.service_frames.append({u'title': frame_title, u'image': image})
 
     def add_from_text(self, frame_title, raw_slide):
+        """
+        Add a text slide to the service item.
+
+        ``frame_title``
+            The title of the slide in the service item.
+
+        ``raw_slide``
+            The raw text of the slide.
+        """
         self.service_item_type = u'text'
         frame_title = frame_title.split(u'\n')[0]
         self.service_frames.append({u'title': frame_title, u'raw_slide': raw_slide})
 
     def add_from_command(self, frame_title, command):
+        """
+        Add a slide from a command.
+
+        ``frame_title``
+            The title of the slide in the service item.
+
+        ``command``
+            The command of/for the slide.
+        """
         self.service_item_type = u'command'
         self.service_frames.append({u'title': frame_title, u'command': command})
 
     def get_oos_repr(self):
         """
         This method returns some text which can be saved into the OOS
-        file to represent this item
+        file to represent this item.
         """
-        oos_header = {u'plugin': self.shortname,u'theme':self.theme, u'title':self.title,
-            u'icon':self.icon, u'footer':self.raw_footer, u'type':self.service_item_type}
+        oos_header = {
+            u'plugin': self.shortname,
+            u'theme':self.theme,
+            u'title':self.title,
+            u'icon':self.icon,
+            u'footer':self.raw_footer,
+            u'type':self.service_item_type
+        }
         oos_data = []
         if self.service_item_type == u'text':
             for slide in self.service_frames:
@@ -124,8 +173,14 @@ class ServiceItem():
 
     def set_from_oos(self, serviceitem, path=None):
         """
-        This method takes some oos list (passed from the ServiceManager)
-        and extracts the data actually required
+        This method takes a service item from a saved service file (passed
+        from the ServiceManager) and extracts the data actually required.
+
+        ``serviceitem``
+            The item to extract data from.
+
+        ``path``
+            Defaults to *None*. Any path data, usually for images.
         """
         #print "sfs", serviceitem
         header = serviceitem[u'serviceitem'][u'header']

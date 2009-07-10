@@ -29,28 +29,50 @@ class PluginConfig(object):
         """
         Initialise the plugin config object, setting the section name to the
         plugin name.
+
+        ``plugin_name``
+            The name of the plugin to use as a section name.
         """
         self.section = plugin_name.lower()
 
     def get_config(self, key, default=None):
         """
         Get a configuration value from the configuration registry.
+
+        ``key``
+            The name of configuration to load.
+
+        ``default``
+            Defaults to *None*. The default value to return if there is no
+            other value.
         """
         return ConfigHelper.get_config(self.section, key, default)
 
     def delete_config(self, key):
         """
         Delete a configuration value from the configuration registry.
+
+        ``key``
+            The name of the configuration to remove.
         """
         return ConfigHelper.delete_config(self.section, key)
 
     def set_config(self, key, value):
         """
         Set a configuration value in the configuration registry.
+
+        ``key``
+            The name of the configuration to save.
+
+        ``value``
+            The value of the configuration to save.
         """
         return ConfigHelper.set_config(self.section, key, value)
 
     def get_data_path(self):
+        """
+        Dynamically build the data file path for a plugin.
+        """
         #app_data = ConfigHelper.get_data_path()
         app_data = ConfigHelper.get_data_path()
         safe_name = self.section.replace(u' ',u'-')
@@ -61,9 +83,21 @@ class PluginConfig(object):
         return path
 
     def set_data_path(self, path):
+        """
+        Set the data file path.
+
+        ``path``
+            The path to save.
+        """
         return self.set_config(u'data path', os.path.basename(path))
 
     def get_files(self, suffix=None):
+        """
+        Get a list of files from the data files path.
+
+        ``suffix``
+            Defaults to *None*. The extension to search for.
+        """
         try:
             files = os.listdir(self.get_data_path())
         except:
@@ -86,7 +120,10 @@ class PluginConfig(object):
 
     def load_list(self, name):
         """
-        Load a list from the config file
+        Load a list from the config file.
+
+        ``name``
+            The name of the list.
         """
         list_count = self.get_config(u'%s count' % name)
         if list_count is not None:
@@ -102,7 +139,13 @@ class PluginConfig(object):
 
     def set_list(self, name, list):
         """
-        Save a list to the config file
+        Save a list to the config file.
+
+        ``name``
+            The name of the list to save.
+
+        ``list``
+            The list of values to save.
         """
         old_count = int(self.get_config(u'%s count' % name, int(0)))
         new_count = len(list)
@@ -116,7 +159,10 @@ class PluginConfig(object):
 
     def get_last_dir(self, num=None):
         """
-        Read the last directory used for plugin
+        Read the last directory used for plugin.
+
+        ``num``
+            Defaults to *None*. A further qualifier.
         """
         if num is not None:
             name = u'last directory %d' % num
@@ -129,7 +175,10 @@ class PluginConfig(object):
 
     def set_last_dir(self, directory, num=None):
         """
-        Save the last directory used for plugin
+        Save the last directory used for plugin.
+
+        ``num``
+            Defaults to *None*. A further qualifier.
         """
         if num is not None:
             name = u'last directory %d' % num

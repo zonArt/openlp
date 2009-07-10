@@ -345,5 +345,5 @@ class ThemeXML(object):
         s = u''
         for k in dir(self):
             if k[0:1] != u'_':
-                s += u'%30s : %s\n' %(k, getattr(self, k))
+                s += u'%30s: %s\n' %(k, getattr(self, k))
         return s

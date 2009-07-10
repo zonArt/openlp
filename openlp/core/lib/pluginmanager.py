@@ -34,8 +34,11 @@ class PluginManager(object):
 
     def __init__(self, dir):
         """
-        The constructor for the plugin manager.
-        Passes the controllers on to the plugins for them to interact with via their ServiceItems
+        The constructor for the plugin manager. Passes the controllers on to
+        the plugins for them to interact with via their ServiceItems.
+
+        ``dir``
+            The directory to search for plugins.
         """
         log.info(u'Plugin manager initing')
         if not dir in sys.path:
@@ -49,7 +52,16 @@ class PluginManager(object):
 
     def find_plugins(self, dir, plugin_helpers, eventmanager):
         """
-        Scan the directory dir for objects inheriting from openlp.plugin
+        Scan the directory dir for objects inheriting from ``openlp.plugin``.
+
+        ``dir``
+            The directory to scan.
+
+        ``plugin_helpers``
+            A list of helper objects to pass to the plugins.
+
+        ``eventmanager``
+            The event manager to pass to the plugins.
         """
         self.plugin_helpers = plugin_helpers
         startdepth = len(os.path.abspath(dir).split(os.sep))
@@ -104,8 +116,8 @@ class PluginManager(object):
 
     def hook_media_manager(self, mediatoolbox):
         """
-        Loop through all the plugins. If a plugin has a valid media manager item,
-        add it to the media manager.
+        Loop through all the plugins. If a plugin has a valid media manager
+        item, add it to the media manager.
 
         ``mediatoolbox``
             The Media Manager itself.
@@ -118,8 +130,11 @@ class PluginManager(object):
 
     def hook_settings_tabs(self, settingsform=None):
         """
-        Loop through all the plugins. If a plugin has a valid settings tab item,
-        add it to the settings tab.
+        Loop through all the plugins. If a plugin has a valid settings tab
+        item, add it to the settings tab.
+
+        ``settingsform``
+            Defaults to *None*. The settings form to add tabs to.
         """
         for plugin in self.plugins:
             settings_tab = plugin.get_settings_tab()
@@ -131,24 +146,30 @@ class PluginManager(object):
 
     def hook_import_menu(self, import_menu):
         """
-        Loop through all the plugins and give them an opportunity to add an item
-        to the import menu.
+        Loop through all the plugins and give them an opportunity to add an
+        item to the import menu.
+
+        ``import_menu``
+            The Import menu.
         """
         for plugin in self.plugins:
             plugin.add_import_menu_item(import_menu)
 
     def hook_export_menu(self, export_menu):
         """
-        Loop through all the plugins and give them an opportunity to add an item
-        to the export menu.
+        Loop through all the plugins and give them an opportunity to add an
+        item to the export menu.
+
+        ``export_menu``
+            The Export menu.
         """
         for plugin in self.plugins:
             plugin.add_export_menu_item(export_menu)
 
     def initialise_plugins(self):
         """
-        Loop through all the plugins and give them an opportunity to add an item
-        to the export menu.
+        Loop through all the plugins and give them an opportunity to
+        initialise themselves.
         """
         for plugin in self.plugins:
             plugin.initialise()

@@ -23,11 +23,20 @@ from openlp.core.lib import PluginConfig
 
 class SettingsTab(QtGui.QWidget):
     """
-    SettingsTab is a helper widget for plugins to define Tabs for the settings dialog.
+    SettingsTab is a helper widget for plugins to define Tabs for the settings
+    dialog.
     """
     def __init__(self, title=None, section=None):
         """
-        Constructor to create the Steetings tab item.
+        Constructor to create the Settings tab item.
+
+        ``title``
+            Defaults to *None*. The title of the tab, which is usually
+            displayed on the tab.
+
+        ``section``
+            Defaults to *None*. This is the section in the configuration file
+            to write to when the ``save`` method is called.
         """
         QtGui.QWidget.__init__(self)
         self.tabTitle = title
@@ -43,6 +52,9 @@ class SettingsTab(QtGui.QWidget):
     def setTitle(self, title):
         """
         Set the title of the tab.
+
+        ``title``
+            The title of the tab, which is usually displayed on the tab.
         """
         self.tabTitle = title
 
