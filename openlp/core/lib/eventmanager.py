@@ -34,14 +34,27 @@ class EventManager(object):
     log = logging.getLogger(u'EventManager')
 
     def __init__(self):
+        """
+        Defines the class and a list of endpoints
+        """
         self.endpoints = []
         log.info(u'Initialising')
 
     def register(self, plugin):
+        """
+        Called by plugings who wish to receive event notifications
+        """
         log.debug(u'plugin %s registered with EventManager', plugin)
         self.endpoints.append(plugin)
 
     def post_event(self, event):
+        """
+        Called by any part of the system which wants send events to the plugins
+
+        ``event``
+            The event type to be triggered
+
+        """
         log.debug(u'post event called for event %s', event.event_type)
         for point in self.endpoints:
             point.handle_event(event)
