@@ -235,9 +235,25 @@ Place, Suite 330, Boston, MA 02111-1307 USA</p>
 <dl class="class">
 <dt id="openlp.core.lib.eventmanager.EventManager">
 <!--[openlp.core.lib.eventmanager.EventManager]-->class <tt class="descname">EventManager</tt><a class="headerlink" href="#openlp.core.lib.eventmanager.EventManager" title="Permalink to this definition">¶</a></dt>
-<dd>A mechanism to send events to all registered endpoints
+<dd><p>A mechanism to send events to all registered endpoints
 the endpoints are registered and listen with a handle_event method
-the endpoint will decide whether to do somthing with the event or ignore it</dd></dl>
+the endpoint will decide whether to do somthing with the event or ignore it</p>
+<dl class="method">
+<dt id="openlp.core.lib.eventmanager.EventManager.post_event">
+<!--[openlp.core.lib.eventmanager.EventManager.post_event]--><tt class="descname">post_event</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#openlp.core.lib.eventmanager.EventManager.post_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called by any part of the system which wants send events to the plugins</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">event</span></tt></dt>
+<dd>The event type to be triggered</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="openlp.core.lib.eventmanager.EventManager.register">
+<!--[openlp.core.lib.eventmanager.EventManager.register]--><tt class="descname">register</tt><big>(</big><em>plugin</em><big>)</big><a class="headerlink" href="#openlp.core.lib.eventmanager.EventManager.register" title="Permalink to this definition">¶</a></dt>
+<dd>Called by plugings who wish to receive event notifications</dd></dl>
+
+</dd></dl>
 
 </div>
 <div class="section" id="module-openlp.core.lib.eventreceiver">

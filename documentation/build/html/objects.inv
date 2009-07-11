@@ -12,15 +12,15 @@ openlp.plugins.images mod plugins/index.html
 openlp.plugins.songs mod plugins/index.html
 openlp.core mod core/index.html
 openlp.migration.migratesongs mod migration/index.html
+openlp.core.theme mod core/index.html
 openlp.plugins mod plugins/index.html
-openlp.plugins.presentations mod plugins/index.html
 openlp.plugins.media mod plugins/index.html
 openlp.plugins.bibles mod plugins/index.html
 openlp.core.lib.baselistwithdnd mod core/index.html
 openlp.core.lib.event mod core/index.html
 openlp.plugins.custom mod plugins/index.html
 openlp mod openlp.html
-openlp.core.theme mod core/index.html
+openlp.plugins.presentations mod plugins/index.html
 openlp.core.lib.ServiceItem.get_oos_repr method core/index.html
 openlp.core.lib.ServiceItem.render method core/index.html
 openlp.core.lib.eventreceiver.Receiver class core/index.html
@@ -29,6 +29,7 @@ openlp.core.lib.baselistwithdnd.BaseListWithDnD class core/index.html
 openlp.core.lib.event.Event class core/index.html
 openlp.migration.migratesongs.BaseModel class migration/index.html
 openlp.core.lib.eventreceiver.Receiver.send_message attribute core/index.html
+openlp.core.lib.eventmanager.EventManager.register method core/index.html
 openlp.core.lib.eventmanager.EventManager class core/index.html
 openlp.migration.migratesongs.BaseModel.populate attribute migration/index.html
 openlp.core.lib.eventreceiver.Receiver.receive attribute core/index.html
@@ -45,3 +46,4 @@ openlp.migration.migratesongs.TAuthor class migration/index.html
 openlp.core.lib.ServiceItem.set_from_oos method core/index.html
 openlp.core.lib.ServiceItem class core/index.html
 openlp.core.lib.contextMenuAction function core/index.html
+openlp.core.lib.eventmanager.EventManager.post_event method core/index.html
