@@ -25,8 +25,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.ui import AboutForm, SettingsForm, AlertForm, ServiceManager, \
     ThemeManager, MainDisplay, SlideController
 from openlp.core.lib import translate, Plugin, MediaManagerItem, SettingsTab, \
-    EventManager, RenderManager, PluginConfig
-from openlp.core import PluginManager
+    EventManager, RenderManager, PluginConfig, SettingsManager, PluginManager
 
 class MainWindow(object):
     """
@@ -42,6 +41,7 @@ class MainWindow(object):
         plugins.
         """
         self.oosNotSaved = False
+        self.settingsmanager = SettingsManager(screens)
         self.mainWindow = QtGui.QMainWindow()
         self.mainWindow.__class__.closeEvent = self.onCloseEvent
         self.mainDisplay = MainDisplay(None, screens)
@@ -174,7 +174,7 @@ class MainWindow(object):
         Set up the user interface
         """
         self.mainWindow.setObjectName(u'mainWindow')
-        self.mainWindow.resize(1087, 847)
+        self.mainWindow.resize(self.settingsmanager.width, self.settingsmanager.height)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
             QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)

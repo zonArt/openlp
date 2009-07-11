@@ -135,10 +135,18 @@ class ServiceManager(QtGui.QWidget):
         self.service_theme = self.config.get_config(u'theme service theme', u'')
 
     def collapsed(self, item):
+        """
+        Record if an item is collapsed
+        Used when repainting the list to get the correct state
+        """
         pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
         self.serviceItems[pos -1 ][u'expanded'] = False
 
     def expanded(self, item):
+        """
+        Record if an item is collapsed
+        Used when repainting the list to get the correct state
+        """
         pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
         self.serviceItems[pos -1 ][u'expanded'] = True
 
@@ -212,6 +220,11 @@ class ServiceManager(QtGui.QWidget):
         self.parent.OosChanged(False, self.serviceName)
 
     def repaintServiceList(self):
+        """
+        Clear the existing service list and prepaint all the items
+        Used when moving items as the move takes place in supporting array,
+        and when regenerating all the items due to theme changes
+        """
         #Correct order of idems in array
         count = 1
         for item in self.serviceItems:
@@ -236,7 +249,10 @@ class ServiceManager(QtGui.QWidget):
 
     def onSaveService(self):
         """
-        Save the current service
+        Save the current service in a zip file
+        This file contains
+        * An ood which is a pickle of the service items
+        * All image , presentation and video files needed to run the service.
         """
         filename = QtGui.QFileDialog.getSaveFileName(self, u'Save Order of Service',self.config.get_last_dir() )
         filename = unicode(filename)
@@ -264,7 +280,9 @@ class ServiceManager(QtGui.QWidget):
 
     def onLoadService(self):
         """
-        Load an existing service from disk
+        Load an existing service from disk and rebuilds the serviceitems
+        All files retrieved from the zip file are placed in a temporary directory and
+        will only be used for this service.
         """
         filename = QtGui.QFileDialog.getOpenFileName(self, u'Open Order of Service',self.config.get_last_dir(),
             u'Services (*.oos)')

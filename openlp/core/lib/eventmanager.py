@@ -2,9 +2,11 @@
 # vim: autoindent shiftwidth=4 expandtab textwidth=80
 """
 OpenLP - Open Source Lyrics Projection
+
 Copyright (c) 2008 Raoul Snyman
+
 Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Scott Guerreri,
-    Carsten Tingaard, Jonathan Corwin
+Carsten Tingaard, Jonathan Corwin
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -32,14 +34,27 @@ class EventManager(object):
     log = logging.getLogger(u'EventManager')
 
     def __init__(self):
+        """
+        Defines the class and a list of endpoints
+        """
         self.endpoints = []
         log.info(u'Initialising')
 
     def register(self, plugin):
+        """
+        Called by plugings who wish to receive event notifications
+        """
         log.debug(u'plugin %s registered with EventManager', plugin)
         self.endpoints.append(plugin)
 
     def post_event(self, event):
+        """
+        Called by any part of the system which wants send events to the plugins
+
+        ``event``
+            The event type to be triggered
+
+        """
         log.debug(u'post event called for event %s', event.event_type)
         for point in self.endpoints:
             point.handle_event(event)

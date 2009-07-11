@@ -233,24 +233,25 @@ class MediaManagerItem(QtGui.QWidget):
 
     def onPreviewClick(self):
         log.debug(self.PluginTextShort+u' Preview Requested')
-        service_item = ServiceItem(self.parent)
-        service_item.addIcon(u':/media/media_'+self.PluginTextShort.lower()+u'.png')
-        self.generateSlideData(service_item)
+        service_item = self.buildServiceItem()
         self.parent.preview_controller.addServiceItem(service_item)
-        self.ListView.clearSelection()
 
     def onLiveClick(self):
         log.debug(self.PluginTextShort + u' Live Requested')
-        service_item = ServiceItem(self.parent)
-        service_item.addIcon(u':/media/media_'+self.PluginTextShort.lower()+u'.png')
-        self.generateSlideData(service_item)
+        service_item = self.buildServiceItem()
         self.parent.live_controller.addServiceItem(service_item)
-        self.ListView.clearSelection()
 
     def onAddClick(self):
         log.debug(self.PluginTextShort+u' Add Requested')
+        service_item = self.buildServiceItem()
+        self.parent.service_manager.addServiceItem(service_item)
+
+    def buildServiceItem(self):
+        """
+        Common method for generating a service item
+        """
         service_item = ServiceItem(self.parent)
         service_item.addIcon(u':/media/media_'+self.PluginTextShort.lower()+u'.png')
         self.generateSlideData(service_item)
-        self.parent.service_manager.addServiceItem(service_item)
         self.ListView.clearSelection()
+        return service_item
