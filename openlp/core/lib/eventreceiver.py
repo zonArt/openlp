@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 OpenLP - Open Source Lyrics Projection
+
 Copyright (c) 2008 Raoul Snyman
+
 Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley,
 
 This program is free software; you can redistribute it and/or modify it under
@@ -40,6 +42,7 @@ class Receiver():
     This is a static wrapper around the EventReceiver class.
     As there is only one instance of it in the systems the QT signal/slot architecture
     can send messages across the system
+
     Send message
        Receiver().send_message(u'messageid',data)
 

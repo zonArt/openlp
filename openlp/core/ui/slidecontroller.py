@@ -61,6 +61,7 @@ class SlideController(QtGui.QWidget):
         Set up the Slide Controller.
         """
         self.toolbarList = {}
+        self.previewList = {}
         QtGui.QWidget.__init__(self, parent.mainWindow)
         self.isLive = isLive
         self.parent = parent
@@ -114,7 +115,119 @@ class SlideController(QtGui.QWidget):
         self.grid.setMargin(8)
         self.grid.setObjectName(u'grid')
         # Actual preview screen
-        self.SlidePreview = QtGui.QLabel(self.PreviewFrame)
+        masterPreview = MasterPreview(self.PreviewFrame).getPreview()
+        self.registerPreview(u'master', masterPreview)
+        self.SlidePreview = self.retrievePreview(u'master')
+        self.grid.addWidget(self.SlidePreview, 0, 0, 1, 1)
+        # Signals
+        QtCore.QObject.connect(self.PreviewListWidget,
+            QtCore.SIGNAL(u'clicked(QModelIndex)'), self.BaseToolbar.onSlideSelected)
+        QtCore.QObject.connect(self.PreviewListWidget,
+            QtCore.SIGNAL(u'activated(QModelIndex)'), self.BaseToolbar.onSlideSelected)
+        # Add Late Arrivals
+        self.BaseToolbar.PreviewListWidget = self.PreviewListWidget
+        self.BaseToolbar.SlidePreview = self.SlidePreview
+        self.BaseToolbar.mainDisplay = self.parent.mainDisplay
+
+    def registerToolbar(self, handle,controller):
+        """
+        Register a new toolbar with the controller
+        ``handle``
+            Identifier for the toolbar being stored this should equal the
+            plugins name.
+        ``controller``
+            The toolbar class which should extend MasterToolbar
+        """
+        #store the handle name in lower case so no probems later
+        self.toolbarList[handle.lower()] = controller
+
+    def registerPreview(self, handle,controller):
+        """
+        Register a new preview with the controller
+        ``handle``
+            Identifier for the preview being stored this should equal the
+            plugins name.
+        ``controller``
+            The preview class which should extend MasterToolbar
+        """
+        #store the handle name in lower case so no probems later
+        self.previewList[handle.lower()] = controller
+
+    def retrieveToolbar(self, handle):
+        """
+        Find the toolbar and return master if none present
+        Add extra information back into toolbar class
+        ``handle``
+            Identifier for the toolbar being requested
+        """
+        try:
+            toolbar =  self.toolbarList[handle.lower()]
+        except:
+            toolbar = self.toolbarList[u'master']
+        toolbar.PreviewListWidget = self.PreviewListWidget
+        toolbar.SlidePreview = self.SlidePreview
+        toolbar.mainDisplay = self.parent.mainDisplay
+        return toolbar
+
+    def retrievePreview(self, handle):
+        """
+        Find the preview and return master if none present
+        Add extra information back into toolbar class
+        ``handle``
+            Identifier for the toolbar being requested
+        """
+        try:
+            preview =  self.previewList[handle.lower()]
+        except:
+            preview = self.previewList[u'master']
+        return preview
+
+    def addServiceItem(self, item):
+        """
+        Method to install the service item into the controller and
+        request the correct the toolbar of the plugin
+        Called by plugins
+        """
+        self.SlidePreview = self.retrievePreview(item.shortname)
+        self.BaseToolbar = self.retrieveToolbar(item.shortname)
+        self.ControllerLayout.removeWidget(self.Toolbar)
+        #remove the old toolbar
+        self.Toolbar.clear()
+        self.Toolbar = self.BaseToolbar.getToolbar()
+        self.ControllerLayout.addWidget(self.Toolbar)
+        self.BaseToolbar.addServiceItem(item)
+
+    def addServiceManagerItem(self, item, slideno):
+        """
+        Method to install the service item into the controller and
+        request the correct the toolbar of the plugin
+        Called by ServiceManager
+        """
+        self.SlidePreview = self.retrievePreview(item.shortname)
+        self.BaseToolbar = self.retrieveToolbar(item.shortname)
+        self.ControllerLayout.removeWidget(self.Toolbar)
+        #remove the old toolbar
+        self.Toolbar.clear()
+        self.Toolbar = self.BaseToolbar.getToolbar()
+        self.ControllerLayout.addWidget(self.Toolbar)
+        self.BaseToolbar.addServiceManagerItem(item, slideno)
+
+
+class MasterPreview(QtCore.QObject):
+    """
+    Class from which all Previews should extend allowing plugins to
+    have their own previews
+    """
+    def __init__(self, parent):
+        self.parent = parent
+        QtCore.QObject.__init__(self)
+        self.definePreview()
+
+    def getPreview(self):
+        return self.SlidePreview
+
+    def definePreview(self):
+        self.SlidePreview = QtGui.QLabel(self.parent)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -128,62 +241,11 @@ class SlideController(QtGui.QWidget):
         self.SlidePreview.setLineWidth(1)
         self.SlidePreview.setScaledContents(True)
         self.SlidePreview.setObjectName(u'SlidePreview')
-        self.grid.addWidget(self.SlidePreview, 0, 0, 1, 1)
-        # Signals
-        QtCore.QObject.connect(self.PreviewListWidget,
-            QtCore.SIGNAL(u'clicked(QModelIndex)'), self.BaseToolbar.onSlideSelected)
-        QtCore.QObject.connect(self.PreviewListWidget,
-            QtCore.SIGNAL(u'activated(QModelIndex)'), self.BaseToolbar.onSlideSelected)
-        # Add Late Arrivals
-        self.BaseToolbar.PreviewListWidget = self.PreviewListWidget
-        self.BaseToolbar.SlidePreview = self.SlidePreview
-        self.BaseToolbar.mainDisplay = self.parent.mainDisplay
 
-    def registerToolbar(self, handle,controller):
-        #store the handle name in lower case so no probems later
-        self.toolbarList[handle.lower()] = controller
-
-    def retrieveToolbar(self, handle):
-        """
-        Find the toolbar and return master if none present
-        Add extra information back into toolbar class
-        """
-        try:
-            toolbar =  self.toolbarList[handle.lower()]
-        except:
-            toolbar = self.toolbarList[u'master']
-        toolbar.PreviewListWidget = self.PreviewListWidget
-        toolbar.SlidePreview = self.SlidePreview
-        toolbar.mainDisplay = self.parent.mainDisplay
-        return toolbar
-
-    def addServiceItem(self, item):
-        """
-        helper method to pass item to correct toolbar
-        """
-        self.BaseToolbar = self.retrieveToolbar(item.shortname)
-        self.ControllerLayout.removeWidget(self.Toolbar)
-        #remove the old toolbar
-        self.Toolbar.clear()
-        self.Toolbar = self.BaseToolbar.getToolbar()
-        self.ControllerLayout.addWidget(self.Toolbar)
-        self.BaseToolbar.addServiceItem(item)
-
-    def addServiceManagerItem(self, item, slideno):
-        """
-        helper method to pass item to correct toolbar
-        """
-        self.BaseToolbar = self.retrieveToolbar(item.shortname)
-        self.ControllerLayout.removeWidget(self.Toolbar)
-        #remove the old toolbar
-        self.Toolbar.clear()
-        self.Toolbar = self.BaseToolbar.getToolbar()
-        self.ControllerLayout.addWidget(self.Toolbar)
-        self.BaseToolbar.addServiceManagerItem(item, slideno)
 
 class MasterToolbar(QtCore.QObject):
     """
-    Class from which all tollbars should extend
+    Class from which all toolbars should extend
     """
     def __init__(self, isLive):
         self.Toolbar = None
@@ -231,6 +293,13 @@ class MasterToolbar(QtCore.QObject):
                 u':/slides/slide_close.png',
                 translate(u'SlideController', u'Close Screen'),
                 self.onBlankScreen)
+
+    def serviceLoaded(self):
+        """
+        method to allow toolbars to know when the service item
+        is fully in place
+        """
+        pass
 
     def onSlideSelectedFirst(self):
         """
@@ -298,30 +367,33 @@ class MasterToolbar(QtCore.QObject):
     def addServiceManagerItem(self, serviceitem, slideno):
         """
         Loads a ServiceItem into the system from ServiceManager
-        Display the Slide Passed
+        Display the slide number passed
         """
         log.debug(u'add Service Manager Item')
+        self.serviceitem = serviceitem
+        slide_pixmap = QtGui.QPixmap.fromImage(self.serviceitem.frames[0][u'image'])
+        slide_width = 300
+        slide_height = slide_width * slide_pixmap.height() / slide_pixmap.width()
         self.PreviewListWidget.clear()
         self.PreviewListWidget.setRowCount(0)
-        self.serviceitem = serviceitem
-        framenumber = 0
-        for frame in self.serviceitem.frames:
+        self.PreviewListWidget.setColumnWidth(0, slide_width)
+        for framenumber, frame in enumerate(self.serviceitem.frames):
             self.PreviewListWidget.setRowCount(self.PreviewListWidget.rowCount() + 1)
             pixmap = QtGui.QPixmap.fromImage(frame[u'image'])
             item = QtGui.QTableWidgetItem()
             label = QtGui.QLabel()
-            label.setMargin(15)
+            label.setMargin(8)
             label.setScaledContents(True)
-            width = 300
-            height = width * pixmap.height() / pixmap.width()
             label.setPixmap(pixmap)
-            self.PreviewListWidget.setCellWidget(framenumber, 0,label)
-            self.PreviewListWidget.setItem( framenumber, 0, item)
-            self.PreviewListWidget.setRowHeight(framenumber, height)
-            self.PreviewListWidget.setColumnWidth(0, width)
-            framenumber += 1
+            self.PreviewListWidget.setCellWidget(framenumber, 0, label)
+            self.PreviewListWidget.setItem(framenumber, 0, item)
+            self.PreviewListWidget.setRowHeight(framenumber, slide_height)
+        slide_width = self.PreviewListWidget.viewport().size().width()
+        self.PreviewListWidget.setColumnWidth(0, slide_width)
         if slideno > self.PreviewListWidget.rowCount():
             self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount())
         else:
             self.PreviewListWidget.selectRow(slideno)
         self.onSlideSelected()
+        self.serviceLoaded()
+        self.PreviewListWidget.setFocus()

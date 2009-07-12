@@ -49,7 +49,6 @@ class ImageTab(SettingsTab):
         self.TimeoutSpacer = QtGui.QSpacerItem(147, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.TimeoutLayout.addItem(self.TimeoutSpacer)
-
         self.ImageLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.ImageModeGroupBox)
         # Signals and slots
         QtCore.QObject.connect(self.TimeoutSpinBox,
@@ -57,6 +56,7 @@ class ImageTab(SettingsTab):
 
     def retranslateUi(self):
         self.TimeoutLabel.setText(translate(u'ImageTab', u'Slide Loop Delay:'))
+        self.TimeoutSpinBox.setSuffix(translate(u'ImageTab', u's'))
 
     def onTimeoutSpinBoxChanged(self):
         self.loop_delay = self.TimeoutSpinBox.value()

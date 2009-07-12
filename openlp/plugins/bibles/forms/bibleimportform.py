@@ -157,7 +157,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         self.close()
 
     def onImportButtonClicked(self):
-        self.message = u'Bible import completed'
+        message = u'Bible import completed'
         if self.biblemanager != None:
             if not self.bible_type == None and len(self.BibleNameEdit.displayText()) > 0:
                 self.MessageLabel.setText(u'Import Started')
@@ -165,14 +165,16 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
                 self.setMax(65)
                 self.ProgressBar.setValue(0)
                 self.biblemanager.process_dialog(self)
-                self.importBible()
-                self.MessageLabel.setText(u'Import Complete')
+                status, msg = self.importBible()
+                if msg is not None:
+                    message = msg
+                self.MessageLabel.setText(message)
                 self.ProgressBar.setValue(self.barmax)
                 # tell bibleplugin to reload the bibles
                 Receiver().send_message(u'openlpreloadbibles')
                 reply = QtGui.QMessageBox.information(self,
                     translate(u'BibleMediaItem', u'Information'),
-                    translate(u'BibleMediaItem', self.message))
+                    translate(u'BibleMediaItem', message))
 
     def setMax(self, max):
         log.debug(u'set Max %s', max)
@@ -185,7 +187,8 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         self.ProgressBar.setValue(self.ProgressBar.value()+1)
 
     def importBible(self):
-        log.debug(u'Import Bible ')
+        log.debug(u'Import Bible')
+        message = None
         if self.bible_type == u'OSIS':
             loaded = self.biblemanager.register_osis_file_bible(unicode(self.BibleNameEdit.displayText()),
                 self.OSISLocationEdit.displayText())
@@ -207,11 +210,14 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
                 unicode(self.VersionNameEdit.displayText()),
                 unicode(self.CopyrightEdit.displayText()),
                 unicode(self.PermisionEdit.displayText()))
+        else:
+            message = u'Bible import failed'
         self.bible_type = None
         # free the screen state restrictions
         self.resetScreenFieldStates()
          # reset all the screen fields
         self.resetEntryFields()
+        return loaded, message
 
     def checkOsis(self):
         if len(self.BooksLocationEdit.displayText()) > 0 or len(self.VerseLocationEdit.displayText()) > 0:

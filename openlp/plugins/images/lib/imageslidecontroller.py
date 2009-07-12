@@ -74,14 +74,26 @@ class ImageToolbar(MasterToolbar):
             u':/media/media_stop.png',
             translate(u'SlideController', u'Stop continuous loop'),
             self.onStopLoop)
+        self.Toolbar.addSeparator()
+        self.DelaySpinBox = QtGui.QSpinBox(self.Toolbar)
+        self.SpinWidget = QtGui.QWidgetAction(self.Toolbar)
+        self.SpinWidget.setDefaultWidget(self.DelaySpinBox)
+        self.Toolbar.addAction(self.SpinWidget)
+        #self.Layout.addWidget(self.Toolbar)
         self.Toolbar.setSizePolicy(sizeToolbarPolicy)
+        self.DelaySpinBox.setSuffix(translate(u'ImageSlideController', u's'))
+
+    def serviceLoaded(self):
+        self.DelaySpinBox.setValue(self.parent.parent.ImageTab.loop_delay)
+        if self.PreviewListWidget.rowCount() == 1:
+            self.DelaySpinBox.setEnabled(False)
 
     def onStartLoop(self):
         """
         Go to the last slide.
         """
-        delay = self.parent.parent.ImageTab.loop_delay
-        self.timer_id =  self.startTimer(delay * 1000)
+        if self.PreviewListWidget.rowCount() > 1:
+            self.timer_id =  self.startTimer(int(self.TimeoutSpinBox.value()) * 1000)
 
     def onStopLoop(self):
         """
@@ -92,4 +104,3 @@ class ImageToolbar(MasterToolbar):
     def timerEvent(self, event):
         if event.timerId() == self.timer_id:
             self.onSlideSelectedNext()
-

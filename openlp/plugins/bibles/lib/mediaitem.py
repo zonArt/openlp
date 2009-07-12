@@ -494,7 +494,7 @@ class BibleMediaItem(MediaManagerItem):
         if end_verse == '':
             end_verse = 99
         if start_chapter == '':
-            message = u'No chapter found for search'
+            message = u'No chapter found for search criteria'
         #print 'message = ' + unicode(message)
         #print 'search = ' + unicode(original)
         #print 'results = ' + unicode(book) + ' @ '+ unicode(start_chapter)+' @ '+ unicode(end_chapter)+' @ '+ unicode(start_verse)+ ' @ '+ unicode(end_verse)

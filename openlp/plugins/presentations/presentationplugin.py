@@ -52,5 +52,7 @@ class PresentationPlugin(Plugin):
 
     def check_pre_conditions(self):
         log.debug('check_pre_conditions')
-        self.openoffice = Openoffice()
-        return self.openoffice.checkOoPid()
+        return True
+#        self.openoffice = Openoffice()
+#        return self.openoffice.checkOoPid()
+

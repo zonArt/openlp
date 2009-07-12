@@ -31,42 +31,58 @@ class Plugin(object):
     Base class for openlp plugins to inherit from.
 
     Basic attributes are:
-    * name
+
+    ``name``
         The name that should appear in the plugins list.
-    * version
+
+    ``version``
         The version number of this iteration of the plugin.
-    * icon
+
+    ``icon``
         An instance of QIcon, which holds an icon for this plugin.
-    * config
+
+    ``config``
         An instance of PluginConfig, which allows plugins to read and write to
         openlp.org's configuration. This is pre-instantiated.
-    * log
+
+    ``log``
         A log object used to log debugging messages. This is pre-instantiated.
 
     Hook functions:
-    * check_pre_conditions()
+
+    ``check_pre_conditions()``
         Provides the Plugin with a handle to check if it can be loaded.
-    * get_media_manager_item()
+
+    ``get_media_manager_item()``
         Returns an instance of MediaManagerItem to be used in the Media Manager.
-    * add_import_menu_item(import_menu)
+
+    ``add_import_menu_item(import_menu)``
         Add an item to the Import menu.
-    * add_export_menu_item(export_menu)
+
+    ``add_export_menu_item(export_menu)``
         Add an item to the Export menu.
-    * get_settings_tab()
+
+    ``get_settings_tab()``
         Returns an instance of SettingsTabItem to be used in the Settings dialog.
-    * add_to_menu(menubar)
+
+    ``add_to_menu(menubar)``
         A method to add a menu item to anywhere in the menu, given the menu bar.
-    * handle_event(event)
+
+    ``handle_event(event)``
         A method use to handle events, given an Event object.
-    * about()
+
+    ``about()``
         Used in the plugin manager, when a person clicks on the 'About' button.
-    * save(data)
+
+    ``save(data)``
         A method to convert the plugin's data to a string to be stored in the
         Service file.
-    * load(string)
+
+    ``load(string)``
         A method to convert the string from a Service file into the plugin's
         own data format.
-    * render(theme, screen_number)
+
+    ``render(theme, screen_number)``
         A method used to render something to the screen, given the current theme
         and screen number.
     """
@@ -78,11 +94,20 @@ class Plugin(object):
         """
         This is the constructor for the plugin object. This provides an easy
         way for descendent plugins to populate common data. This method *must*
-        be overridden, like so:
-        class MyPlugin(Plugin):
-            def __init__(self):
-                Plugin.__init(self, 'MyPlugin', '0.1')
-                ...
+        be overridden, like so::
+
+            class MyPlugin(Plugin):
+                def __init__(self):
+                    Plugin.__init(self, u'MyPlugin', u'0.1')
+
+        ``name``
+            Defaults to *None*. The name of the plugin.
+
+        ``version``
+            Defaults to *None*. The version of the plugin.
+
+        ``plugin_helpers``
+            Defaults to *None*. A list of helper objects.
         """
         if name is not None:
             self.name = name
@@ -102,56 +127,64 @@ class Plugin(object):
         self.render_manager = plugin_helpers[u'render']
         self.service_manager = plugin_helpers[u'service']
         self.settings = plugin_helpers[u'settings']
-        self.slideManager = plugin_helpers[u'slideManager']
         self.dnd_id=None
 
     def check_pre_conditions(self):
         """
         Provides the Plugin with a handle to check if it can be loaded.
+
         Returns True or False.
         """
         return True
 
     def get_media_manager_item(self):
         """
-        Construct a MediaManagerItem object with all the buttons and things you
-        need, and return it for integration into openlp.org.
+        Construct a MediaManagerItem object with all the buttons and things
+        you need, and return it for integration into openlp.org.
         """
         pass
 
     def add_import_menu_item(self, import_menu):
         """
         Create a menu item and add it to the "Import" menu.
+
+        ``import_menu``
+            The Import menu.
         """
         pass
 
     def add_export_menu_item(self, export_menu):
         """
         Create a menu item and add it to the "Export" menu.
+
+        ``export_menu``
+            The Export menu
         """
         pass
 
     def get_settings_tab(self):
         """
-        Create a menu item and add it to the "Import" menu.
+        Create a tab for the settings window.
         """
         pass
 
     def add_to_menu(self, menubar):
         """
         Add menu items to the menu, given the menubar.
+
+        ``menubar``
+            The application's menu bar.
         """
         pass
 
     def handle_event(self, event):
         """
-        Handle the event contained in the event object.
-        """
-    def handle_event(self, event):
-        """
         Handle the event contained in the event object.  If you want
         to use this default behaviour, you must set self.dnd_id equal
         to that sent by the dnd source - eg the MediaItem
+
+        ``event``
+            An object describing the event.
         """
         # default behaviour - can be overridden if desired
         log.debug(u'Handle event called with event %s with payload %s'%(event.event_type, event.payload))
@@ -176,6 +209,9 @@ class Plugin(object):
         """
         Service item data is passed to this function, which should return a
         string which can be written to the service file.
+
+        ``data``
+            The data to be saved.
         """
         pass
 
@@ -183,12 +219,21 @@ class Plugin(object):
         """
         A string from the service file is passed in. This function parses and
         sets up the internals of the plugin.
+
+        ``string``
+            The data to be loaded into the plugin.
         """
         pass
 
     def render(self, theme, screen=None):
         """
         Render the screenth screenful of data using theme settings in theme.
+
+        ``theme``
+            The theme to use when rendering.
+
+        ``screen``
+            Defaults to *None*. The screen to render to.
         """
         pass
 

@@ -23,10 +23,9 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AboutForm, SettingsForm, AlertForm, ServiceManager, \
-    ThemeManager, MainDisplay, SlideController, SlideControllerManager
+    ThemeManager, MainDisplay, SlideController
 from openlp.core.lib import translate, Plugin, MediaManagerItem, SettingsTab, \
-    EventManager, RenderManager, PluginConfig
-from openlp.core import PluginManager
+    EventManager, RenderManager, PluginConfig, SettingsManager, PluginManager
 
 class MainWindow(object):
     """
@@ -41,6 +40,8 @@ class MainWindow(object):
         This constructor sets up the interface, the various managers, and the
         plugins.
         """
+        self.oosNotSaved = False
+        self.settingsmanager = SettingsManager(screens)
         self.mainWindow = QtGui.QMainWindow()
         self.mainWindow.__class__.closeEvent = self.onCloseEvent
         self.mainDisplay = MainDisplay(None, screens)
@@ -50,7 +51,6 @@ class MainWindow(object):
         self.alertForm = AlertForm(self)
         self.aboutForm = AboutForm()
         self.settingsForm = SettingsForm(self.screenList, self)
-        self.slideControllerManager = SlideControllerManager(self)
         # Set up the path with plugins
         pluginpath = os.path.split(os.path.abspath(__file__))[0]
         pluginpath = os.path.abspath(
@@ -73,7 +73,6 @@ class MainWindow(object):
         self.plugin_helpers[u'render'] = self.RenderManager
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
         self.plugin_helpers[u'settings'] = self.settingsForm
-        self.plugin_helpers[u'slideManager'] = self.slideControllerManager
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers,
             self.EventManager)
         # hook methods have to happen after find_plugins. Find plugins needs the
@@ -129,15 +128,53 @@ class MainWindow(object):
         """
         Hook to close the main window and display windows on exit
         """
-        self.mainDisplay.close()
-        event.accept()
+        if self.oosNotSaved == True:
+            box = QtGui.QMessageBox()
+            box.setWindowTitle(translate(u'mainWindow', u'Question?'))
+            box.setText(translate(u'mainWindow', u'Save changes to Order of Service?'))
+            box.setIcon(QtGui.QMessageBox.Question)
+            box.setStandardButtons(QtGui.QMessageBox.Save | QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel);
+            box.setDefaultButton(QtGui.QMessageBox.Save);
+            ret = box.exec_()
+            if ret == QtGui.QMessageBox.Save:
+                self.ServiceManagerContents.onSaveService()
+                self.mainDisplay.close()
+                event.accept()
+            elif ret == QtGui.QMessageBox.Discard:
+                self.mainDisplay.close()
+                event.accept()
+            else:
+                event.ignore()
+        else:
+            self.mainDisplay.close()
+            event.accept()
+
+    def OosChanged(self, reset = False, oosName = None):
+        """
+        Hook to change the title if the OOS has been changed
+        reset - tells if the OOS has been cleared or saved
+        oosName - is the name of the OOS (if it has one)
+        """
+        if reset == True:
+            self.oosNotSaved = False
+            if oosName is None:
+                title = self.mainTitle
+            else:
+                title = self.mainTitle + u' - (' + oosName + u')'
+        else:
+            self.oosNotSaved = True
+            if oosName is None:
+                title = self.mainTitle + u' - *'
+            else:
+                title = self.mainTitle + u' - *(' + oosName + u')'
+        self.mainWindow.setWindowTitle(title)
 
     def setupUi(self):
         """
         Set up the user interface
         """
         self.mainWindow.setObjectName(u'mainWindow')
-        self.mainWindow.resize(1087, 847)
+        self.mainWindow.resize(self.settingsmanager.width, self.settingsmanager.height)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
             QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -411,7 +448,8 @@ class MainWindow(object):
         """
         Set up the translation system
         """
-        self.mainWindow.setWindowTitle(translate(u'mainWindow', u'OpenLP 2.0'))
+        self.mainTitle = translate(u'mainWindow', u'OpenLP 2.0')
+        self.mainWindow.setWindowTitle(self.mainTitle)
         self.FileMenu.setTitle(translate(u'mainWindow', u'&File'))
         self.FileImportMenu.setTitle(translate(u'mainWindow', u'&Import'))
         self.FileExportMenu.setTitle(translate(u'mainWindow', u'&Export'))

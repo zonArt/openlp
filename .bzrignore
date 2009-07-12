@@ -8,3 +8,5 @@
 .eric4project
 list
 openlp.org 2.0.e4*
+documentation/build/html
+documentation/build/doctrees

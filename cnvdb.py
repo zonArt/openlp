@@ -21,27 +21,35 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import codecs
 import sys
 
+def convert_file(self, inname, outname):
+    """
+    Convert a file from another encoding into UTF-8.
 
-class Convert():
-    def __init__(self):
-        pass
+    ``inname``
+        The name of the file to be opened and converted.
 
-    def process(self, inname, outname):
-        infile = codecs.open(inname, 'r', encoding='iso-8859-1')
-        writefile = codecs.open(outname, 'w', encoding='utf-8')
-        for line in infile:
-            #replace the quotes with quotes
-            line, replace("''", "'")
-            writefile.write(line)
-        infile.close()
-        writefile.close()
+    ``outname``
+        The output file name.
+    """
+    infile = codecs.open(inname, 'r', encoding='iso-8859-1')
+    writefile = codecs.open(outname, 'w', encoding='utf-8')
+    for line in infile:
+        #replace the quotes with quotes
+        line = line.replace(u'\'\'', u'\'')
+        writefile.write(line)
+    infile.close()
+    writefile.close()
 
 if __name__ == '__main__':
+    """
+    Run the conversion script.
+    """
     if len(sys.argv) < 2:
         print 'No action specified.'
         sys.exit()
-    print u'Uncode conversion '
-    print u'Input file  = ',  sys.argv[1:]
-    print u'Output file = ',  sys.argv[2:]
-    mig = Convert()
-    mig.process(sys.argv[1:],sys.argv[2:])
+    print 'Uncode conversion:'
+    print 'Input file  = ', sys.argv[1]
+    print 'Output file = ', sys.argv[2]
+    print 'Converting...'
+    convert_file(sys.argv[1], sys.argv[2])
+    print 'Done.'

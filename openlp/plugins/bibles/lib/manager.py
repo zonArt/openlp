@@ -49,7 +49,6 @@ class BibleManager():
         self.proxyname = self.config.get_config(u'proxy name') #get proxy name for screen
         self.bibleSuffix = u'sqlite'
         self.dialogobject = None
-
         self.reload_bibles()
 
     def reload_bibles(self):
