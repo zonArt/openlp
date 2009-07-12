@@ -363,8 +363,11 @@ class BibleMediaItem(MediaManagerItem):
             old_chapter = chapter
             bible_text = bible_text + u' '+ loc + u' '+ text
             service_item.title = book + u' ' + loc
-            if len(raw_footer) <= 1:
-                raw_footer.append(book)
+            footer = book + u' (' + self.version + u' ' + self.copyright +u')'
+            try:
+                raw_footer.index(footer)
+            except:
+                raw_footer.append(footer)
         if  len(self.parent.bibles_tab.bible_theme)  == 0:
             service_item.theme = None
         else:
@@ -503,6 +506,9 @@ class BibleMediaItem(MediaManagerItem):
             self.search_results = self.parent.biblemanager.get_verse_text(bible, book,
                 int(start_chapter), int(end_chapter), int(start_verse),
                 int(end_verse))
+            self.copyright = unicode(self.parent.biblemanager.get_meta_data(bible, u'Copyright').value)
+            self.permissions = unicode(self.parent.biblemanager.get_meta_data(bible, u'Permissions').value)
+            self.version = unicode(self.parent.biblemanager.get_meta_data(bible, u'Version').value)
         else:
             reply = QtGui.QMessageBox.information(self,
                 translate(u'BibleMediaItem', u'Information'),
