@@ -97,7 +97,7 @@ class CWExtract(BibleCommon):
         """
         log.debug(u'get_bible_chapter %s,%s,%s,%s', version, bookid, bookname,  chapter)
         bookname = bookname.replace(u' ', '')
-        urlstring = u'http://bible.crosswalk.com/OnlineStudyBible/bible.cgi?word='+bookname+u'+'+unicode(chapter)+u'&version='+version
+        urlstring = u'http://bible.crosswalk.com/OnlineStudyBible/bible.cgi?word=%s+%d&version=%s' % (bookname, chapter, version)
         xml_string = self._get_web_text(urlstring, self.proxyurl)
         #log.debug(u'Return data %s', xml_string)
         ## Strip Book Title from Heading to return it to system
@@ -206,7 +206,7 @@ class BibleHTTPImpl():
                 ev = CWExtract(self.proxyurl)
             else:
                 ev = BGExtract(self.proxyurl)
-
             return ev.get_bible_chapter(self.bibleid, bookid, bookname,  chapter)
-        except:
-            log.error(u'Error thrown = %s', sys.exc_info()[1])
+        except Exception, e:
+            log.error(u'Error thrown = %s', e.args[0])
+            print e
