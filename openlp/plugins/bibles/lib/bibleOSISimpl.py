@@ -1,6 +1,8 @@
 """
 OpenLP - Open Source Lyrics Projection
+
 Copyright (c) 2008 Raoul Snyman
+
 Portions copyright (c) 2008 - 2009 Martin Thompson, Tim Bentley
 
 This program is free software; you can redistribute it and/or modify it under
@@ -20,37 +22,69 @@ import os.path
 import logging
 import chardet
 import codecs
-from openlp.plugins.bibles.lib.bibleDBimpl import BibleDBImpl
-from openlp.core.lib import Receiver
+
 from PyQt4 import QtCore
 
+from openlp.plugins.bibles.lib.bibleDBimpl import BibleDBImpl
+from openlp.core.lib import Receiver
+
 class BibleOSISImpl():
+    """
+    OSIS Bible format importer class.
+    """
     global log
     log = logging.getLogger(u'BibleOSISImpl')
     log.info(u'BibleOSISImpl loaded')
 
     def __init__(self, biblepath, bibledb):
+        """
+        Constructor to create and set up an instance of the
+        BibleOSISImpl class.
+
+        ``biblepath``
+            This does not seem to be used.
+
+        ``bibledb``
+            A reference to a Bible database object.
+        """
         self.bibledb = bibledb
         # books of the bible linked to bibleid  {osis , name}
         self.booksOfBible = {}
         # books of the bible linked to bibleid  {osis ,Abbrev }
         self.abbrevOfBible = {}
-
         filepath = os.path.split(os.path.abspath(__file__))[0]
-        filepath = os.path.abspath(os.path.join(filepath, u'..', u'resources',u'osisbooks.csv'))
+        filepath = os.path.abspath(os.path.join(
+            filepath, u'..', u'resources',u'osisbooks.csv'))
         fbibles=open(filepath, u'r')
         for line in fbibles:
             p = line.split(u',')
             self.booksOfBible[p[0]] = p[1].replace(u'\n', u'')
             self.abbrevOfBible[p[0]] = p[2].replace(u'\n', u'')
         self.loadbible = True
-        QtCore.QObject.connect(Receiver().get_receiver(),QtCore.SIGNAL(u'openlpstopimport'),self.stop_import)
+        QtCore.QObject.connect(Receiver().get_receiver(),
+            QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
 
     def stop_import(self):
+        """
+        Stops the import of the Bible.
+        """
         self.loadbible = False
 
     def load_data(self, osisfile_record, dialogobject=None):
-        osis = codecs.open(osisfile_record, u'r')
+        """
+        Loads a Bible from file.
+
+        ``osisfile_record``
+            The file to import from.
+
+        ``dialogobject``
+            The Import dialog, so that we can increase the counter on
+            the progress bar.
+        """
+        detect_file = open(osisfile_record,  u'r')
+        details = chardet.detect(detect_file.read(2048))
+        detect_file.close()
+        osis = codecs.open(osisfile_record, u'r', details['encoding'])
         book_ptr = None
         id = 0
         count = 0
@@ -110,8 +144,11 @@ class BibleOSISImpl():
                     if  p[0] == u'Matt':
                         testament += 1
                     book_ptr = p[0]
-                    book = self.bibledb.create_book(self.booksOfBible[p[0]] , self.abbrevOfBible[p[0]], testament)
-                    dialogobject.incrementProgressBar(self.booksOfBible[p[0]] )
+                    book = self.bibledb.create_book(
+                        self.booksOfBible[p[0]],
+                        self.abbrevOfBible[p[0]], testament)
+                    dialogobject.incrementProgressBar(
+                        self.booksOfBible[p[0]])
                     Receiver().send_message(u'openlpprocessevents')
                     count = 0
                 self.bibledb.add_verse(book.id, p[1], p[2], text)
@@ -121,10 +158,20 @@ class BibleOSISImpl():
                     Receiver().send_message(u'openlpprocessevents')
                     count = 0
 
-    def remove_block(self, start_tag, end_tag,  text):
+    def remove_block(self, start_tag, end_tag, text):
         """
-        removes a block of text between two tags
-        <tag attrib=xvf > Some not wanted text  </tag>
+        Removes a block of text between two tags::
+
+            <tag attrib="xvf">Some not wanted text</tag>
+
+        ``start_tag``
+            The XML tag to look for.
+
+        ``end_tag``
+            The ending XML tag.
+
+        ``text``
+            The string of XML to search.
         """
         pos = text.find(start_tag)
         while pos > -1:
@@ -136,10 +183,17 @@ class BibleOSISImpl():
                 pos = text.find(start_tag)
         return text
 
-    def remove_tag(self, start_tag,  text):
+    def remove_tag(self, start_tag, text):
         """
-        removes a single tag
-        <tag  attrib1=fajkdf attrib2=fajkdf attrib2=fajkdf  />
+        Removes a single tag::
+
+            <tag attrib1="fajkdf" attrib2="fajkdf" attrib3="fajkdf" />
+
+        ``start_tag``
+            The XML tag to remove.
+
+        ``text``
+            The string of XML to search.
         """
         pos = text.find(start_tag)
         while pos > -1:
