@@ -116,6 +116,7 @@ class CWExtract(BibleCommon):
         ## Strip Verse Data from Page and build an array
         ##
         #log.debug(u'bible data %s', xml_string)
+        #print xml_string
         i= xml_string.find(u'NavCurrentChapter')
         xml_string = xml_string[i:len(xml_string)]
         i= xml_string.find(u'<TABLE')
@@ -136,11 +137,10 @@ class CWExtract(BibleCommon):
             i = xml_string.find(u'</I></B>', versePos)
             #log.debug( versePos, i)
             verse= xml_string[versePos:i] # Got the Chapter
-            #verse = int(temp)
             #log.debug( 'Chapter = %s', verse)
             # move the starting position to begining of the text
             versePos = i + 8
-            # fined the start of the next verse
+            # find the start of the next verse
             i = xml_string.find(u'<B><I>', versePos)
             if i == -1:
                 i = xml_string.find(u'</BLOCKQUOTE>',versePos)
@@ -150,6 +150,7 @@ class CWExtract(BibleCommon):
                 #log.debug( i,  versePos)
                 verseText = xml_string[versePos: i]
                 versePos = i
+            #print verseText
             bible[verse] = self._clean_text(verseText)
             #bible[verse] = verseText
 

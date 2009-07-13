@@ -139,6 +139,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.AuthorsListView.clear()
         self.TopicsListView.clear()
         self.title_change = False
+        self.TitleEditItem.setFocus(QtCore.Qt.OtherFocusReason)
 
     def loadSong(self, id):
         log.debug(u'Load Song')
@@ -161,16 +162,19 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.SongbookCombo.setCurrentIndex(id)
         if len(title) > 1:
             self.AlternativeEdit.setText(title[1])
-        self.CopyrightEditItem.setText(self.song.copyright)
+        if self.song.copyright is not None:
+            self.CopyrightEditItem.setText(self.song.copyright)
+        else:
+            self.CopyrightEditItem.setText(u'')
         self.VerseListWidget.clear()
         if self.song.verse_order is not None:
             self.VerseOrderEdit.setText(self.song.verse_order)
         else:
             self.VerseOrderEdit.setText(u'')
         if self.song.comments is not None:
-            self.CommentsEdit.setText(self.song.comments)
+            self.CommentsEdit.setPlainText(self.song.comments)
         else:
-            self.CommentsEdit.setText(u'')
+            self.CommentsEdit.setPlainText(u'')
         if self.song.ccli_number is not None:
             self.CCLNumberEdit.setText(self.song.ccli_number)
         else:
@@ -199,6 +203,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.TopicsListView.addItem(topic_name)
         self._validate_song()
         self.title_change = False
+        self.TitleEditItem.setFocus(QtCore.Qt.OtherFocusReason)
 
     def onAuthorAddtoSongItemClicked(self):
         item = int(self.AuthorsSelectionComboItem.currentIndex())
@@ -296,6 +301,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.verse_form.setVerse(item.text())
             self.verse_form.exec_()
             item.setText(self.verse_form.getVerse())
+        self.VerseListWidget.update()
         self.EditButton.setEnabled(False)
         self.DeleteButton.setEnabled(False)
 
@@ -356,7 +362,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             return
         self.song.title = unicode(self.TitleEditItem.displayText())
         self.song.copyright = unicode(self.CopyrightEditItem.displayText())
-        self.song.search_title = self.TitleEditItem.displayText() + u'@'+ self.AlternativeEdit.displayText()
+        self.song.search_title = unicode(self.TitleEditItem.displayText()) + u'@'+ unicode(self.AlternativeEdit.displayText())
+        self.song.comments = unicode(self.CommentsEdit.toPlainText())
+        self.song.ccli_number = unicode(self.CCLNumberEdit.displayText())
         self.processLyrics()
         self.processTitle()
         self.song.song_book_id = 0
@@ -380,7 +388,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             count += 1
         if self.song.verse_order is None:
             self.song.verse_order = verse_order
-        text =  text.replace("'", u'')
+        text =  text.replace(u'\'', u'')
         text =  text.replace(u',', u'')
         text =  text.replace(u';', u'')
         text =  text.replace(u':', u'')
@@ -394,7 +402,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def processTitle(self):
         log.debug(u'processTitle')
-        self.song.search_title =  self.song.search_title.replace("'", u'')
+        self.song.search_title =  self.song.search_title.replace(u'\'', u'')
         self.song.search_title =  self.song.search_title.replace(u',', u'')
         self.song.search_title =  self.song.search_title.replace(u';', u'')
         self.song.search_title =  self.song.search_title.replace(u':', u'')
