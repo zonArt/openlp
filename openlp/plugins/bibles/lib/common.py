@@ -132,6 +132,11 @@ class BibleCommon(object):
             end_tag = text.find(u'</sup>')
             text = text[:start_tag] + text[end_tag + 6:len(text)]
             start_tag = text.find(u'<sup>')
+        start_tag = text.find(u'<SUP>')
+        while start_tag > -1:
+            end_tag = text.find(u'</SUP>')
+            text = text[:start_tag] + text[end_tag + 6:len(text)]
+            start_tag = text.find(u'<SUP>')
         # Static Clean ups
         text = text.replace(u'\n', u'')
         text = text.replace(u'\r', u'')
