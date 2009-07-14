@@ -2,7 +2,9 @@
 # vim: autoindent shiftwidth=4 expandtab textwidth=80
 """
 OpenLP - Open Source Lyrics Projection
+
 Copyright (c) 2008 Raoul Snyman
+
 Portions copyright (c) 2008 Martin Thompson, Tim Bentley,
 
 This program is free software; you can redistribute it and/or modify it under
@@ -22,7 +24,7 @@ import logging
 
 from openlp.core.lib import PluginConfig
 # why does this not work???
-# from openlp.core.lib import Event,  EventType
+# from openlp.core.lib import Event, EventType
 # so I have to do this???
 from event import Event, EventType
 

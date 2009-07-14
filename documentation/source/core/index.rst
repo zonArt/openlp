@@ -9,32 +9,10 @@
 :mod:`lib` Module
 -----------------
 
-.. automodule:: openlp.core.lib
-   :members:
+.. toctree::
+   :maxdepth: 2
 
-:mod:`baselistwithdnd` Submodule
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: openlp.core.lib.baselistwithdnd
-   :members:
-
-:mod:`event` Submodule
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: openlp.core.lib.event
-   :members:
-
-:mod:`eventmanager` Submodule
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: openlp.core.lib.eventmanager
-   :members:
-
-:mod:`eventreceiver` Submodule
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: openlp.core.lib.eventreceiver
-   :members:
+   lib
 
 :mod:`theme` Submodule
 ----------------------

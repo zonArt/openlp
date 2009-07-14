@@ -2,7 +2,9 @@
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 """
 OpenLP - Open Source Lyrics Projection
+
 Copyright (c) 2008 Raoul Snyman
+
 Portions copyright (c) 2008 - 2009Martin Thompson, Tim Bentley
 
 This program is free software; you can redistribute it and/or modify it under
@@ -33,7 +35,7 @@ class RenderManager(object):
     display defense code.
     """
     global log
-    log=logging.getLogger(u'RenderManager')
+    log = logging.getLogger(u'RenderManager')
     log.info(u'RenderManager Loaded')
 
     def __init__(self, theme_manager, screen_list, screen_number=0):

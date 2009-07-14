@@ -23,7 +23,13 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 class EventType(object):
     """
-    Types of events are stored in this class.
+    An enumeration-style class for event types.
+
+    ``EventType.Default``
+        Default event, a non-event.
+
+    ``EventType.LoadServiceItem``
+        When a service item is loaded.
     """
     # "Default" event - a non-event
     Default = 0

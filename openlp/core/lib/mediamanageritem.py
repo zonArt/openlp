@@ -2,7 +2,9 @@
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 """
 OpenLP - Open Source Lyrics Projection
+
 Copyright (c) 2008-2009 Raoul Snyman
+
 Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley
 
 This program is free software; you can redistribute it and/or modify it under
@@ -30,29 +32,47 @@ class MediaManagerItem(QtGui.QWidget):
     """
     MediaManagerItem is a helper widget for plugins.
 
-    None of the following *need* to be used, feel free to override
-    them cmopletely in your plugin's implementation.  Alternatively, call them from your
-    plugin before or after you've done etra things that you need to.
+    None of the following *need* to be used, feel free to override them
+    completely in your plugin's implementation.  Alternatively, call them from
+    your plugin before or after you've done etra things that you need to.
 
-    The plugin will be assigned an icon called u':/media/media_' + 'self.ShortPluginName + u'image.png'
-     which needs to be available in the main resources in order for them to work, you need to have setup
+    ``icon``
+        The plugin will be assigned an icon called ``u':/media/media_' +
+        self.ShortPluginName + u'image.png'`` which needs to be available in
+        the main resources in order for them to work, you need to have setup.
 
-     self.TranslationContext
-     self.PluginTextShort # eg 'Image' for the image plugin
-     self.ConfigSection - where the items in the media manager are stored
-       this could potentially be self.PluginTextShort.lower()
+    ``self.TranslationContext``
+        This is the "context" for the translation. This allows your plugin to
+        have it's own set of translatable strings which will not be
+        overwritten by the system-wide or application-wide translations.
 
-     self.OnNewPrompt=u'Select Image(s)'
-     self.OnNewFileMasks=u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
-       assumes that the new action is to load a file. If not, override onnew
+    ``self.PluginTextShort``
+        e.g. 'Image' for the image plugin. This is the short text name of your
+        plugin. This is used for things like the title of the item in the
+        media manager.
 
-     self.ListViewWithDnD_class - there is a base list class with DnD assigned to it (openlp.core.lib.BaseListWithDnD())
-     each plugin needs to inherit a class from this and pass that *class* (not an instance) to here
-     via the ListViewWithDnD_class member
+    ``self.ConfigSection``
+        This is the name of the section in the configuration file where the
+        configuration settings for your plugin are stored. This could
+        potentially be self.PluginTextShort.lower().
 
-     self.PreviewFunction - a function which returns a QImage to represent the item (a preview usually)
-        - no scaling required - that's done later
-        If this fn is not defined, a default will be used (treat the filename as an image)
+    ``self.OnNewPrompt``
+        e.g. ``u'Select Image(s)'``
+
+    ``self.OnNewFileMasks``
+        e.g. ``u'Images (*.jpg *jpeg *.gif *.png *.bmp)'`` This is the set of
+        file masks for the plugin's "save" dialog.
+
+    ``self.ListViewWithDnD_class``
+        The base list class with DnD assigned to it (which is inherited from
+        ``openlp.core.lib.BaseListWithDnD``). Each plugin needs to inherit a
+        class from ``BaseListWithDnD`` and pass that *class* (not an instance)
+        to here via the ListViewWithDnD_class member.
+
+    ``self.PreviewFunction``
+        Returns a QImage to represent the item (a preview usually). No image
+        scaling is required - that's done later. If this fn is not defined, a
+        default will be used (treat the filename as an image).
     """
 
     global log
@@ -62,6 +82,9 @@ class MediaManagerItem(QtGui.QWidget):
     def __init__(self, parent=None, icon=None, title=None):
         """
         Constructor to create the media manager item.
+
+        ``parent``
+            The parent object, usually the MediaManager instance.
         """
         QtGui.QWidget.__init__(self)
         self.parent = parent
@@ -83,6 +106,9 @@ class MediaManagerItem(QtGui.QWidget):
         self.initialise()
 
     def retranslateUi(self):
+        """
+        This method pulls in the translation system.
+        """
         pass
 
     def addToolbar(self):
