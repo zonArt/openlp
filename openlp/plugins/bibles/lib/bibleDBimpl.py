@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 """
 OpenLP - Open Source Lyrics Projection
 
@@ -18,43 +20,34 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import os
-import os.path
 import logging
-
-from sqlalchemy import  *
-from sqlalchemy.sql import select, func
-from sqlalchemy.orm import sessionmaker, mapper, scoped_session
 
 from common import BibleCommon
 from openlp.core.utils import ConfigHelper
-from openlp.plugins.bibles.lib.tables import *
-from openlp.plugins.bibles.lib.classes import *
+from openlp.plugins.bibles.lib.models import *
 
 class BibleDBImpl(BibleCommon):
     global log
     log=logging.getLogger(u'BibleDBImpl')
     log.info(u'BibleDBimpl loaded')
 
-    def __init__(self, biblepath , biblename, config):
+    def __init__(self, biblepath, biblename, config):
         # Connect to database
         self.config = config
-        self.biblefile = os.path.join(biblepath, biblename+u'.sqlite')
+        self.biblefile = os.path.join(biblepath, biblename + u'.sqlite')
         log.debug(u'Load bible %s on path %s', biblename, self.biblefile)
         db_type = self.config.get_config(u'db type', u'sqlite')
+        db_url = u''
         if db_type  == u'sqlite':
-            self.db = create_engine(u'sqlite:///' + self.biblefile)
+            db_url = u'sqlite:///' + self.biblefile
         else:
-            self.db_url = u'%s://%s:%s@%s/%s' % \
+            db_url = u'%s://%s:%s@%s/%s' % \
                 (db_type, self.config.get_config(u'db username'),
                     self.config.get_config(u'db password'),
                     self.config.get_config(u'db hostname'),
                     self.config.get_config(u'db database'))
-        self.db.echo = False
-        metadata.bind = self.db
-        metadata.bind.echo = False
-        self.session = scoped_session(sessionmaker(autoflush=True, autocommit=False))
-        self.session.configure(bind=self.db)
-        metadata.create_all(self.db)
+        self.metadata, self.session = init_models(db_url)
+        self.metadata.create_all(checkfirst=True)
 
     def create_tables(self):
         log.debug( u'createTables')
@@ -65,52 +58,48 @@ class BibleDBImpl(BibleCommon):
 
     def add_verse(self, bookid, chap,  vse, text):
         #log.debug(u'add_verse %s,%s,%s", bookid, chap, vse)
-        metadata.bind.echo = False
-        session = self.session()
+        #metadata.bind.echo = False
         verse = Verse()
         verse.book_id = bookid
         verse.chapter = chap
         verse.verse = vse
         verse.text = text
-        session.add(verse)
-        session.commit()
+        self.session.add(verse)
+        self.session.commit()
 
     def create_chapter(self, bookid, chap, textlist):
         log.debug(u'create_chapter %s,%s', bookid, chap)
         #log.debug(u'Text %s ", textlist)
-        metadata.bind.echo = False
-        session = self.session()
+        #metadata.bind.echo = False
         #text list has book and chapter as first to elements of the array
-        for v ,  t in textlist.iteritems():
+        for verse_number, verse_text in textlist.iteritems():
             verse = Verse()
             verse.book_id = bookid
             verse.chapter = chap
-            verse.verse = v
-            verse.text = t
-            session.add(verse)
-        session.commit()
+            verse.verse = verse_number
+            verse.text = verse_text
+            self.session.add(verse)
+        self.session.commit()
 
-    def create_book(self, bookname, bookabbrev, testament = 1):
+    def create_book(self, bookname, bookabbrev, testament=1):
         log.debug(u'create_book %s,%s', bookname, bookabbrev)
-        metadata.bind.echo = False
-        session = self.session
+        #metadata.bind.echo = False
         book = Book()
         book.testament_id = testament
         book.name = bookname
         book.abbreviation = bookabbrev
-        session.add(book)
-        session.commit()
+        self.session.add(book)
+        self.session.commit()
         return book
 
     def save_meta(self, key, value):
         log.debug(u'save_meta %s/%s', key, value)
-        metadata.bind.echo = False
-        session = self.session
+        #metadata.bind.echo = False
         bmeta = BibleMeta()
         bmeta.key = key
         bmeta.value = value
-        session.add(bmeta)
-        session.commit()
+        self.session.add(bmeta)
+        self.session.commit()
 
     def get_meta(self, metakey):
         log.debug(u'get meta %s', metakey)
@@ -119,20 +108,19 @@ class BibleDBImpl(BibleCommon):
     def delete_meta(self, metakey):
         biblemeta = self.get_meta(metakey)
         try:
-            session.delete(biblemeta)
-            session.commit()
+            self.session.delete(biblemeta)
+            self.session.commit()
             return True
         except:
             return False
 
     def _load_testament(self, testament):
         log.debug(u'load_testaments %s',  testament)
-        metadata.bind.echo = False
-        session = self.session
+        #metadata.bind.echo = False
         test = ONTestament()
         test.name = testament
-        session.add(test)
-        session.commit()
+        self.session.add(test)
+        self.session.commit()
 
     def get_bible_books(self):
         log.debug(u'get_bible_books')
@@ -140,7 +128,7 @@ class BibleDBImpl(BibleCommon):
 
     def get_max_bible_book_verses(self, bookname, chapter):
         log.debug(u'get_max_bible_book_verses %s, %s', bookname, chapter)
-        metadata.bind.echo = False
+        #metadata.bind.echo = False
         #s = text (u'select max(verse.verse) from verse,book where chapter = :c and book_id = book.id and book.name = :b ')
         #return self.db.execute(s, c=chapter, b=bookname).fetchone()
         verse = self.session.query(Verse).join(Book).filter(Book.name==bookname).filter(Verse.chapter==chapter).order_by(Verse.verse.desc()).first()
@@ -148,7 +136,7 @@ class BibleDBImpl(BibleCommon):
 
     def get_max_bible_book_chapter(self, bookname):
         log.debug(u'get_max_bible_book_chapter %s', bookname)
-        metadata.bind.echo = False
+        #metadata.bind.echo = False
         #s = text (u'select max(verse.chapter) from verse,book where book_id = book.id and book.name = :b')
         #return self.db.execute(s, b=bookname).fetchone()
         verse = self.session.query(Verse).join(Book).filter(Book.name==bookname).order_by(Verse.chapter.desc()).first()
@@ -163,30 +151,34 @@ class BibleDBImpl(BibleCommon):
 
     def get_bible_chapter(self, id, chapter):
         log.debug(u'get_bible_chapter %s, %s', id, chapter)
-        metadata.bind.echo = False
+        #metadata.bind.echo = False
         return self.session.query(Verse).filter_by(chapter=chapter).filter_by(book_id=id).first()
 
     def get_bible_text(self, bookname, chapter, sverse, everse):
         log.debug(u'get_bible_text %s, %s, %s, %s', bookname, chapter, sverse, everse)
-        metadata.bind.echo = False
+        #metadata.bind.echo = False
         #bookname = bookname + u"%"
         #s = text (u'select name,chapter,verse.verse, verse.text FROM verse , book where verse.book_id == book.id AND verse.chapter == :c AND (verse.verse between :v1 and :v2) and (book.name like :b)')
         #return self.db.execute(s, c=chapter, v1=sverse , v2=everse, b=bookname).fetchall()
         verses = self.session.query(Verse).join(Book).filter(Book.name==bookname).filter(Verse.chapter==chapter).filter(Verse.verse>=sverse).filter(Verse.verse<=everse).order_by(Verse.verse).all()
         return verses
 
-    def get_verses_from_text(self,versetext):
+    def get_verses_from_text(self, versetext):
         log.debug(u'get_verses_from_text %s',versetext)
-        metadata.bind.echo = False
-        versetext = "%"+versetext+"%"
-        s = text (u'select book.name, verse.chapter, verse.verse, verse.text FROM verse , book where  verse.book_id == book.id  and verse.text like :t')
-        return self.db.execute(s, t=versetext).fetchall()
+        #metadata.bind.echo = False
+        versetext = u'%%%s%%' % versetext
+        #s = text (u'select book.name, verse.chapter, verse.verse, verse.text FROM verse , book where  verse.book_id == book.id  and verse.text like :t')
+        #return self.db.execute(s, t=versetext).fetchall()
+        verses = self.session.query(Verse).filter(Verse.text.like(versetext)).all()
+        return verses
 
     def dump_bible(self):
         log.debug( u'.........Dumping Bible Database')
         log.debug( '...............................Books ')
-        s = text (u'select * FROM book ')
-        log.debug( self.db.execute(s).fetchall())
+        #s = text (u'select * FROM book ')
+        books = self.session.query(Book).all()
+        log.debug(books)
         log.debug( u'...............................Verses ')
-        s = text (u'select * FROM verse ')
-        log.debug( self.db.execute(s).fetchall())
+        #s = text (u'select * FROM verse ')
+        verses = self.session.query(Verse).all()
+        log.debug(verses)
