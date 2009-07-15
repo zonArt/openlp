@@ -154,6 +154,8 @@ class MigrateSongs():
                 author = Author()
                 authors_temp = self.session.query(TAuthor).get(a)
                 author.display_name =  authors_temp.authorname
+                author.first_name = u''
+                author.last_name = u''
                 song.authors.append(author)
             try:
                 self.session.add(song)

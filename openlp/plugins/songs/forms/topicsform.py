@@ -95,6 +95,7 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         self.DeleteButton.setEnabled(False)
         self.topic = None
         self._validate_form()
+        self.TopicNameEdit.setFocus()
 
     def onTopicsListWidgetItemClicked(self, index):
         """
@@ -113,6 +114,7 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
             self.MessageLabel.setText(translate(u'TopicForm', u'Topic in not used'))
             self.DeleteButton.setEnabled(True)
         self._validate_form()
+        self.TopicNameEdit.setFocus()
 
     def _validate_form(self):
         # We need at lease a display name

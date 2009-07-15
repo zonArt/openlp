@@ -71,29 +71,29 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             QtCore.SIGNAL(u'activated(int)'), self.onVerticalComboBoxSelected)
 
         QtCore.QObject.connect(self.FontMainSizeSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onFontMainSizeSpinBoxChanged)
+            QtCore.SIGNAL(u'editingFinished()'), self.onFontMainSizeSpinBoxChanged)
         QtCore.QObject.connect(self.FontFooterSizeSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onFontFooterSizeSpinBoxChanged)
+            QtCore.SIGNAL(u'editingFinished()'), self.onFontFooterSizeSpinBoxChanged)
         QtCore.QObject.connect(self.FontMainDefaultCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'), self.onFontMainDefaultCheckBoxChanged)
         QtCore.QObject.connect(self.FontMainXSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onFontMainXSpinBoxChanged)
+            QtCore.SIGNAL(u'editingFinished()'), self.onFontMainXSpinBoxChanged)
         QtCore.QObject.connect(self.FontMainYSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onFontMainYSpinBoxChanged)
+            QtCore.SIGNAL(u'editingFinished()'), self.onFontMainYSpinBoxChanged)
         QtCore.QObject.connect(self.FontMainWidthSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onFontMainWidthSpinBoxChanged)
+            QtCore.SIGNAL(u'editingFinished()'), self.onFontMainWidthSpinBoxChanged)
         QtCore.QObject.connect(self.FontMainHeightSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onFontMainHeightSpinBoxChanged)
+            QtCore.SIGNAL(u'editingFinished()'), self.onFontMainHeightSpinBoxChanged)
         QtCore.QObject.connect(self.FontFooterDefaultCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'), self.onFontFooterDefaultCheckBoxChanged)
         QtCore.QObject.connect(self.FontFooterXSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onFontFooterXSpinBoxChanged)
+            QtCore.SIGNAL(u'editingFinished()'), self.onFontFooterXSpinBoxChanged)
         QtCore.QObject.connect(self.FontFooterYSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onFontFooterYSpinBoxChanged)
+            QtCore.SIGNAL(u'editingFinished()'), self.onFontFooterYSpinBoxChanged)
         QtCore.QObject.connect(self.FontFooterWidthSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onFontFooterWidthSpinBoxChanged)
+            QtCore.SIGNAL(u'editingFinished()'), self.onFontFooterWidthSpinBoxChanged)
         QtCore.QObject.connect(self.FontFooterHeightSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onFontFooterHeightSpinBoxChanged)
+            QtCore.SIGNAL(u'editingFinished()'), self.onFontFooterHeightSpinBoxChanged)
         QtCore.QObject.connect(self.OutlineCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'), self.onOutlineCheckBoxChanged)
         QtCore.QObject.connect(self.ShadowCheckBox,
@@ -167,9 +167,10 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             u'background-color: %s' % unicode(self.theme.font_main_color))
         self.previewTheme(self.theme)
 
-    def onFontMainSizeSpinBoxChanged(self, value):
-        self.theme.font_main_proportion = value
-        self.previewTheme(self.theme)
+    def onFontMainSizeSpinBoxChanged(self):
+        if self.theme.font_main_proportion != self.FontMainSizeSpinBox.value():
+            self.theme.font_main_proportion = self.FontMainSizeSpinBox.value()
+            self.previewTheme(self.theme)
 
     def onFontMainDefaultCheckBoxChanged(self, value):
         if value == 2:  # checked
@@ -190,21 +191,25 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.stateChanging(self.theme)
         self.previewTheme(self.theme)
 
-    def onFontMainXSpinBoxChanged(self, value):
-        self.theme.font_main_x = value
-        self.previewTheme(self.theme)
+    def onFontMainXSpinBoxChanged(self):
+        if self.theme.font_main_x != self.FontMainXSpinBox.value():
+            self.theme.font_main_x = self.FontMainXSpinBox.value()
+            self.previewTheme(self.theme)
 
-    def onFontMainYSpinBoxChanged(self, value):
-        self.theme.font_main_y = value
-        self.previewTheme(self.theme)
+    def onFontMainYSpinBoxChanged(self):
+        if self.theme.font_main_y != self.FontMainYSpinBox.value():
+            self.theme.font_main_y = self.FontMainYSpinBox.value()
+            self.previewTheme(self.theme)
 
-    def onFontMainWidthSpinBoxChanged(self, value):
-        self.theme.font_main_width = value
-        self.previewTheme(self.theme)
+    def onFontMainWidthSpinBoxChanged(self):
+        if self.theme.font_main_width != self.FontMainWidthSpinBox.value():
+            self.theme.font_main_width = self.FontMainWidthSpinBox.value()
+            self.previewTheme(self.theme)
 
-    def onFontMainHeightSpinBoxChanged(self, value):
-        self.theme.font_main_height = value
-        self.previewTheme(self.theme)
+    def onFontMainHeightSpinBoxChanged(self):
+        if self.theme.font_main_height != self.FontMainHeightSpinBox.value():
+            self.theme.font_main_height = self.FontMainHeightSpinBox.value()
+            self.previewTheme(self.theme)
     #
     #Footer Font Tab
     #
@@ -220,9 +225,10 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             'background-color: %s' % unicode(self.theme.font_footer_color))
         self.previewTheme(self.theme)
 
-    def onFontFooterSizeSpinBoxChanged(self, value):
-        self.theme.font_footer_proportion = value
-        self.previewTheme(self.theme)
+    def onFontFooterSizeSpinBoxChanged(self):
+        if self.theme.font_footer_proportion != self.FontFooterSizeSpinBox.value():
+            self.theme.font_footer_proportion = self.FontFooterSizeSpinBox.value()
+            self.previewTheme(self.theme)
 
     def onFontFooterDefaultCheckBoxChanged(self, value):
         if value == 2:  # checked
@@ -245,22 +251,25 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.stateChanging(self.theme)
         self.previewTheme(self.theme)
 
-    def onFontFooterXSpinBoxChanged(self, value):
-        self.theme.font_footer_x = value
-        self.previewTheme(self.theme)
+    def onFontFooterXSpinBoxChanged(self):
+        if self.theme.font_footer_x != self.FontFooterXSpinBox.value():
+            self.theme.font_footer_x = self.FontFooterXSpinBox.value()
+            self.previewTheme(self.theme)
 
-    def onFontFooterYSpinBoxChanged(self, value):
-        self.theme.font_footer_y = value
-        self.previewTheme(self.theme)
+    def onFontFooterYSpinBoxChanged(self):
+        if self.theme.font_footer_y != self.FontFooterYSpinBox.value():
+            self.theme.font_footer_y = self.FontFooterYSpinBox.value()
+            self.previewTheme(self.theme)
 
-    def onFontFooterWidthSpinBoxChanged(self, value):
-        self.theme.font_footer_width = value
-        self.previewTheme(self.theme)
+    def onFontFooterWidthSpinBoxChanged(self):
+        if self.theme.font_footer_width != self.FontFooterWidthSpinBox.value():
+            self.theme.font_footer_width = self.FontFooterWidthSpinBox.value()
+            self.previewTheme(self.theme)
 
-    def onFontFooterHeightSpinBoxChanged(self, value):
-        self.theme.font_footer_height = value
-        self.previewTheme(self.theme)
-
+    def onFontFooterHeightSpinBoxChanged(self):
+        if self.theme.font_footer_height != self.FontFooterHeightSpinBox.value():
+            self.theme.font_footer_height = self.FontFooterHeightSpinBox.value()
+            self.previewTheme(self.theme)
     #
     #Background Tab
     #

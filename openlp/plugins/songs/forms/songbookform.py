@@ -96,6 +96,7 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
         self.AddUpdateButton.setEnabled(True)
         self.Book = None
         self._validate_form()
+        self.NameEdit.setFocus()
 
     def onBooksListViewItemClicked(self, index):
         """
@@ -115,6 +116,7 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
             self.MessageLabel.setText(translate(u'BookForm', u'Book in not used'))
             self.DeleteButton.setEnabled(True)
         self._validate_form()
+        self.NameEdit.setFocus()
 
     def _validate_form(self):
         # We need at lease a display name
