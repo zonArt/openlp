@@ -212,11 +212,12 @@ class SlideController(QtGui.QWidget):
         self.ControllerLayout.addWidget(self.Toolbar)
         self.BaseToolbar.addServiceManagerItem(item, slideno)
 
+
 class MasterPreview(QtCore.QObject):
     """
-    Class from which all Previews should extend allowing plugins to have their own
-    previews
-s    """
+    Class from which all Previews should extend allowing plugins to
+    have their own previews
+    """
     def __init__(self, parent):
         self.parent = parent
         QtCore.QObject.__init__(self)
@@ -369,28 +370,30 @@ class MasterToolbar(QtCore.QObject):
         Display the slide number passed
         """
         log.debug(u'add Service Manager Item')
+        self.serviceitem = serviceitem
+        slide_pixmap = QtGui.QPixmap.fromImage(self.serviceitem.frames[0][u'image'])
+        slide_width = 300
+        slide_height = slide_width * slide_pixmap.height() / slide_pixmap.width()
         self.PreviewListWidget.clear()
         self.PreviewListWidget.setRowCount(0)
-        self.serviceitem = serviceitem
-        framenumber = 0
-        for frame in self.serviceitem.frames:
+        self.PreviewListWidget.setColumnWidth(0, slide_width)
+        for framenumber, frame in enumerate(self.serviceitem.frames):
             self.PreviewListWidget.setRowCount(self.PreviewListWidget.rowCount() + 1)
             pixmap = QtGui.QPixmap.fromImage(frame[u'image'])
             item = QtGui.QTableWidgetItem()
             label = QtGui.QLabel()
-            label.setMargin(15)
+            label.setMargin(8)
             label.setScaledContents(True)
-            width = 300
-            height = width * pixmap.height() / pixmap.width()
             label.setPixmap(pixmap)
-            self.PreviewListWidget.setCellWidget(framenumber, 0,label)
-            self.PreviewListWidget.setItem( framenumber, 0, item)
-            self.PreviewListWidget.setRowHeight(framenumber, height)
-            self.PreviewListWidget.setColumnWidth(0, width)
-            framenumber += 1
+            self.PreviewListWidget.setCellWidget(framenumber, 0, label)
+            self.PreviewListWidget.setItem(framenumber, 0, item)
+            self.PreviewListWidget.setRowHeight(framenumber, slide_height)
+        slide_width = self.PreviewListWidget.viewport().size().width()
+        self.PreviewListWidget.setColumnWidth(0, slide_width)
         if slideno > self.PreviewListWidget.rowCount():
             self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount())
         else:
             self.PreviewListWidget.selectRow(slideno)
         self.onSlideSelected()
         self.serviceLoaded()
+        self.PreviewListWidget.setFocus()
