@@ -151,9 +151,69 @@ class Renderer(object):
             lines = verse.split(u'\n')
             for line in lines:
                 text.append(line)
-        split_text = self._split_set_of_lines(text, False)
+        print text
+        split_text = self.pre_render_text(text)
+#        print "-----------------------------"
+#        print split_text
+#        split_text = self._split_set_of_lines(text, False)
+        print "-----------------------------"
+        print split_text
         log.debug(u'format_slide - End')
         return split_text
+
+    def pre_render_text(self, text):
+        metrics = QtGui.QFontMetrics(self.mainFont)
+        #take the width work out approx how many characters and add 50%
+        line_width = self._rect.width() - self._right_margin
+        #number of lines on a page
+        page_length = self._rect.height() / metrics.height()
+        ave_line_width = line_width / metrics.averageCharWidth()
+        print ave_line_width
+        ave_line_width = int(ave_line_width + (ave_line_width * 0.5))
+        print ave_line_width
+        split_pages = []
+        page = []
+        split_lines = []
+        count = 0
+        for line in text:
+            print line ,  len(line)
+            if len(line) > ave_line_width:
+                while len(line) > 0:
+                    pos = line.find(u' ', ave_line_width)
+                    print ave_line_width,  pos,  line[:pos]
+                    split_text = line[:pos]
+                    print metrics.width(split_text,  -1), line_width
+                    while metrics.width(split_text,  -1) > line_width:
+                        #Find the next space to the left
+                        pos = line[:pos].rfind(u' ')
+                        print ave_line_width,  pos,  line[:pos]
+                        #no more spaces found
+                        if pos  == -1:
+                            split_text = line
+                        else:
+                            split_text = line[:pos]
+                    split_lines.append(split_text)
+                    line = line[pos:]
+                    #Text fits in a line now
+                    if len(line) <= ave_line_width:
+                        split_lines.append(line)
+                        line = u''
+                    count += 1
+                    if count == 50:
+                        a = c
+                    print split_lines
+                    print line
+            else:
+                split_lines.append(line)
+                line = u''
+        for line in split_lines:
+            page.append(line)
+            if len(page) == page_length:
+                split_pages.append(page)
+                page = []
+        if len(page) > 0:
+            split_pages.append(page)
+        return split_pages
 
     def set_text_rectangle(self, rect_main, rect_footer):
         """
@@ -544,7 +604,6 @@ class Renderer(object):
             painter.setPen(QtGui.QColor(color))
         x, y = tlcorner
         metrics = QtGui.QFontMetrics(font)
-        # xxx some fudges to make it exactly like wx!  Take 'em out later
         w = metrics.width(line)
         h = metrics.height() - 2
         if draw:
