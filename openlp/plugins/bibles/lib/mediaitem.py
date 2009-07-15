@@ -2,7 +2,9 @@
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 """
 OpenLP - Open Source Lyrics Projection
+
 Copyright (c) 2008 Raoul Snyman
+
 Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley
 
 This program is free software; you can redistribute it and/or modify it under
@@ -21,8 +23,10 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import ServiceItem, MediaManagerItem, Receiver, translate, contextMenuAction, contextMenuSeparator
+from openlp.core.lib import translate, ServiceItem, MediaManagerItem, \
+    Receiver, contextMenuAction, contextMenuSeparator
 from openlp.plugins.bibles.forms import BibleImportForm
+from openlp.plugins.bibles.lib.manager import BibleMode
 
 class BibleList(QtGui.QListWidget):
 
@@ -255,12 +259,12 @@ class BibleMediaItem(MediaManagerItem):
         log.debug(u'Loading Bibles')
         self.QuickVersionComboBox.clear()
         self.AdvancedVersionComboBox.clear()
-        bibles = self.parent.biblemanager.get_bibles(u'full')
+        bibles = self.parent.biblemanager.get_bibles(BibleMode.Full)
         # load bibles into the combo boxes
         for bible in bibles:
             self.QuickVersionComboBox.addItem(bible)
-        # Without HTT
-        bibles = self.parent.biblemanager.get_bibles(u'partial')
+        # Without HTTP
+        bibles = self.parent.biblemanager.get_bibles(BibleMode.Partial)
         first = True
         # load bibles into the combo boxes
         for bible in bibles:
@@ -287,8 +291,8 @@ class BibleMediaItem(MediaManagerItem):
         self.adjustComboBox(frm, self.verses, self.AdvancedToVerse)
 
     def onAdvancedToChapter(self):
-        t1 =  self.AdvancedFromChapter.currentText()
-        t2 =  self.AdvancedToChapter.currentText()
+        t1 = self.AdvancedFromChapter.currentText()
+        t2 = self.AdvancedToChapter.currentText()
         if t1 != t2:
             bible = unicode(self.AdvancedVersionComboBox.currentText())
             book = unicode(self.AdvancedBookComboBox.currentText())
@@ -344,12 +348,12 @@ class BibleMediaItem(MediaManagerItem):
             bitem =  self.ListView.item(item.row())
             text = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
             verse = text[:text.find(u'(')]
-            bible = text[text.find(u'(') + 1:text.find(u')')]
+            bible = text[text.find(u'(') + 1:-1]
             self.searchByReference(bible, verse)
-            book = self.search_results[0][0]
-            chapter = unicode(self.search_results[0][1])
-            verse = unicode(self.search_results[0][2])
-            text = self.search_results[0][3]
+            book = self.search_results[0].book.name
+            chapter = unicode(self.search_results[0].chapter)
+            verse = unicode(self.search_results[0].verse)
+            text = self.search_results[0].text
             #Paragraph style force new line per verse
             if self.parent.bibles_tab.paragraph_style:
                 text = text + u'\n\n'
@@ -406,8 +410,8 @@ class BibleMediaItem(MediaManagerItem):
 
     def initialiseChapterVerse(self, bible, book):
         log.debug(u'initialiseChapterVerse %s , %s', bible, book)
-        self.chapters_from = self.parent.biblemanager.get_book_chapter_count(bible, book)[0]
-        self.verses = self.parent.biblemanager.get_book_verse_count(bible, book, 1)[0]
+        self.chapters_from = self.parent.biblemanager.get_book_chapter_count(bible, book)
+        self.verses = self.parent.biblemanager.get_book_verse_count(bible, book, 1)
         self.adjustComboBox(1, self.chapters_from, self.AdvancedFromChapter)
         self.adjustComboBox(1, self.chapters_from, self.AdvancedToChapter)
         self.adjustComboBox(1, self.verses, self.AdvancedFromVerse)
@@ -420,10 +424,16 @@ class BibleMediaItem(MediaManagerItem):
             combo.addItem(unicode(i))
 
     def displayResults(self, bible):
-        for book, chap, vse , txt in self.search_results:
-            bible_text = unicode(u' %s %d:%d (%s)'%(book , chap,vse, bible))
+        for verse in self.search_results:
+            #bible_text = unicode(u' %s %d:%d (%s)'%(book , chap,vse, bible))
+            #bible_verse = QtGui.QListWidgetItem(bible_text)
+            #bible_verse.setData(QtCore.Qt.UserRole, QtCore.QVariant(bible_text))
+            #self.ListView.addItem(bible_verse)
+            bible_text = u' %s %d:%d (%s)' % (verse.book.name,
+                verse.chapter, verse.verse, bible)
             bible_verse = QtGui.QListWidgetItem(bible_text)
-            bible_verse.setData(QtCore.Qt.UserRole, QtCore.QVariant(bible_text))
+            bible_verse.setData(QtCore.Qt.UserRole,
+                QtCore.QVariant(bible_text))
             self.ListView.addItem(bible_verse)
 
     def searchByReference(self, bible,  search):
