@@ -86,9 +86,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.TopicsListView.setAlternatingRowColors(True)
 
     def initialise(self):
-        self.loadAuthors()
-        self.loadTopics()
-        self.loadBooks()
         self.EditButton.setEnabled(False)
         self.DeleteButton.setEnabled(False)
         self.AuthorRemoveItem.setEnabled(False)
@@ -140,9 +137,15 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.TopicsListView.clear()
         self.title_change = False
         self.TitleEditItem.setFocus(QtCore.Qt.OtherFocusReason)
+        self.loadAuthors()
+        self.loadTopics()
+        self.loadBooks()
 
     def loadSong(self, id):
         log.debug(u'Load Song')
+        self.loadAuthors()
+        self.loadTopics()
+        self.loadBooks()
         self.song = self.songmanager.get_song(id)
         self.TitleEditItem.setText(self.song.title)
         title = self.song.search_title.split(u'@')
@@ -304,7 +307,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.verse_form.setVerse(item.text())
             self.verse_form.exec_()
             item.setText(self.verse_form.getVerse())
-        self.VerseListWidget.update()
+        self.VerseListWidget.repaint()
         self.EditButton.setEnabled(False)
         self.DeleteButton.setEnabled(False)
 
