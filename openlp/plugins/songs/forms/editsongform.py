@@ -373,7 +373,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.ccli_number = unicode(self.CCLNumberEdit.displayText())
         self.processLyrics()
         self.processTitle()
-        self.song.song_book_id = 0
         self.songmanager.save_song(self.song)
         if self.title_change:
             self.eventmanager.post_event(Event(EventType.LoadSongList))
