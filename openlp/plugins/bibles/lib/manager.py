@@ -29,8 +29,8 @@ from bibleCSVimpl import BibleCSVImpl
 from bibleDBimpl import BibleDBImpl
 from bibleHTTPimpl import BibleHTTPImpl
 
-from openlp.plugins.bibles.lib.tables import *
-from openlp.plugins.bibles.lib.classes import *
+#from openlp.plugins.bibles.lib.tables import *
+#from openlp.plugins.bibles.lib.classes import *
 
 class BibleMode(object):
     Full = 1

@@ -139,15 +139,23 @@ class MainWindow(object):
             if ret == QtGui.QMessageBox.Save:
                 self.ServiceManagerContents.onSaveService()
                 self.mainDisplay.close()
+                self.cleanUp()
                 event.accept()
             elif ret == QtGui.QMessageBox.Discard:
                 self.mainDisplay.close()
+                self.cleanUp()
                 event.accept()
             else:
                 event.ignore()
         else:
             self.mainDisplay.close()
+            self.cleanUp()
             event.accept()
+
+    def cleanUp(self):
+        # Call the cleanup method to shutdown plugins.
+        log.info(u'cleanup plugins')
+        self.plugin_manager.initialise_plugins()
 
     def OosChanged(self, reset = False, oosName = None):
         """

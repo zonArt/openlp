@@ -243,3 +243,9 @@ class Plugin(object):
         """
         pass
 
+    def shutdown(self):
+        """
+        Called by the plugin Manager to cleanup things
+        """
+        pass
+

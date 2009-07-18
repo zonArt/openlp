@@ -51,7 +51,8 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         Refresh the screen and rest fields
         """
         self.AuthorListWidget.clear()
-        self.onClearButtonClick() # tidy up screen
+        # tidy up screen
+        self.onClearButtonClick()
         authors = self.songmanager.get_authors()
         for author in authors:
             author_name = QtGui.QListWidgetItem(author.display_name)
@@ -127,6 +128,9 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         self.DisplayEdit.setFocus()
 
     def _validate_form(self):
+        """
+        Validate the form and set if Add button if valid.
+        """
         # We need at lease a display name
         if len(self.DisplayEdit.displayText()) == 0:
             self.AddUpdateButton.setEnabled(False)
