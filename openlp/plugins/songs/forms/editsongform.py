@@ -151,18 +151,18 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         title = self.song.search_title.split(u'@')
         if self.song.song_book_id != 0:
             book_name = self.songmanager.get_book(self.song.song_book_id)
-            id = self.SongbookCombo.findText(unicode(book_name), QtCore.Qt.MatchExactly)
+            id = self.SongbookCombo.findText(unicode(book_name.name), QtCore.Qt.MatchExactly)
             if id == -1:
                 # Not Found
                 id = 0
             self.SongbookCombo.setCurrentIndex(id)
         if self.song.theme_name is not None and len(self.song.theme_name) > 0:
-            id = self.ThemeSelectionCombo.findText(unicode(self.song.theme_name), QtCore.Qt.MatchExactly)
+            id = self.ThemeSelectionComboItem.findText(unicode(self.song.theme_name), QtCore.Qt.MatchExactly)
             if id == -1:
                 # Not Found
                 id = 0
                 self.song.theme_name = None
-            self.ThemeSelectionCombo.setCurrentIndex(id)
+            self.ThemeSelectionComboItem.setCurrentIndex(id)
         if len(title) > 1:
             self.AlternativeEdit.setText(title[1])
         if self.song.copyright is not None:
