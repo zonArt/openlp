@@ -54,10 +54,10 @@ class ServiceManagerList(QtGui.QTreeWidget):
                 self.parent.onServiceDown()
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Up:
-                self.parent.onServiceUp()
+                self.parent.onMoveSelectionUp()
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Down:
-                self.parent.onServiceDown()
+                self.parent.onMoveSelectionDown()
                 event.accept()
             event.ignore()
         else:
@@ -65,14 +65,14 @@ class ServiceManagerList(QtGui.QTreeWidget):
 
 class Iter(QtGui.QTreeWidgetItemIterator):
   def __init__(self, *args):
-      QTreeWidgetItemIterator.__init__(self, *args)
+        QtGui.QTreeWidgetItemIterator.__init__(self, *args)
   def next(self):
-      self.__iadd__(1)
-      value = self.value()
-      if value:
-          return self.value()
-      else:
-          raise StopIteration
+        self.__iadd__(1)
+        value = self.value()
+        if value:
+            return self.value()
+        else:
+            return None
 
 class ServiceManager(QtGui.QWidget):
     """
@@ -162,6 +162,52 @@ class ServiceManager(QtGui.QWidget):
         self.config = PluginConfig(u'ServiceManager')
         self.servicePath = self.config.get_data_path()
         self.service_theme = self.config.get_config(u'theme service theme', u'')
+
+    def onMoveSelectionUp(self):
+        """
+        Moves the selection up the window
+        Called by the up arrow
+        """
+        it = Iter(self.ServiceManagerList)
+        item = it.value()
+        tempItem = None
+        setLastItem = False
+        while item is not None:
+            if item.isSelected() and tempItem is None:
+                setLastItem = True
+                item.setSelected(False)
+            if item.isSelected():
+                #We are on the first record
+                if tempItem is not None:
+                    tempItem.setSelected(True)
+                    item.setSelected(False)
+            else:
+                tempItem = item
+            lastItem = item
+            item = it.next()
+        #Top Item was selected so set the last one
+        if setLastItem:
+            lastItem.setSelected(True)
+
+    def onMoveSelectionDown(self):
+        """
+        Moves the selection down the window
+        Called by the down arrow
+        """
+        it = Iter(self.ServiceManagerList)
+        item = it.value()
+        firstItem = item
+        setSelected = False
+        while item is not None:
+            if setSelected:
+                setSelected = False
+                item.setSelected(True)
+            elif item.isSelected():
+                item.setSelected(False)
+                setSelected = True
+            item = it.next()
+        if setSelected:
+            firstItem.setSelected(True)
 
     def collapsed(self, item):
         """
@@ -254,10 +300,6 @@ class ServiceManager(QtGui.QWidget):
         Used when moving items as the move takes place in supporting array,
         and when regenerating all the items due to theme changes
         """
-        aa = Iter(self.ServiceManagerList)
-        print aa
-        for a in aa:
-            print a
         #Correct order of idems in array
         count = 1
         for item in self.serviceItems:
