@@ -63,6 +63,7 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         else:
             self.AuthorListWidget.setCurrentRow(self.currentRow)
         self._validate_form()
+        self.onAuthorListWidgetItemClicked()
 
     def onDeleteButtonClick(self):
         """
@@ -100,7 +101,7 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         self._validate_form()
         self.DisplayEdit.setFocus()
 
-    def onAuthorListWidgetItemClicked(self, index):
+    def onAuthorListWidgetItemClicked(self):
         """
         An Author has been selected display it
         If the author is attached to a Song prevent delete

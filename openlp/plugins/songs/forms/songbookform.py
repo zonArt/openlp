@@ -62,6 +62,7 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
             self.BookSongListWidget.setCurrentRow(self.BookSongListWidget.count() - 1)
         else:
             self.BookSongListWidget.setCurrentRow(self.currentRow)
+        self.onBooksListViewItemClicked()
 
     def onDeleteButtonClick(self):
         """
@@ -98,7 +99,7 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
         self._validate_form()
         self.NameEdit.setFocus()
 
-    def onBooksListViewItemClicked(self, index):
+    def onBooksListViewItemClicked(self):
         """
         An Book has been selected display it
         If the Book is attached to a Song prevent delete

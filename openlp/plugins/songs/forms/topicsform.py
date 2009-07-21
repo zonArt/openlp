@@ -63,6 +63,7 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         else:
             self.TopicsListWidget.setCurrentRow(self.currentRow)
         self._validate_form()
+        self.onTopicsListWidgetItemClicked()
 
     def onDeleteButtonClick(self):
         """
@@ -97,7 +98,7 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         self._validate_form()
         self.TopicNameEdit.setFocus()
 
-    def onTopicsListWidgetItemClicked(self, index):
+    def onTopicsListWidgetItemClicked(self):
         """
         An Topic has been selected display it
         If the Topic is attached to a Song prevent delete
