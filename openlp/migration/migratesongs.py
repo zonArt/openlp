@@ -137,8 +137,7 @@ class MigrateSongs():
         self.db_url = u'sqlite:///' + self.data_path + u'/songs.sqlite'
         print self.db_url
         self.session = init_models(self.db_url)
-        if not songs_table.exists():
-            metadata.create_all()
+        metadata.create_all(checkfirst=True)
         results = self.session.query(TSong).order_by(TSong.songid).all()
         for songs_temp in results:
             song = Song()
@@ -151,18 +150,21 @@ class MigrateSongs():
             aa  = self.session.execute(u'select * from songauthors_temp where songid =' + unicode(songs_temp.songid) )
             for row in aa:
                 a = row['authorid']
-                author = Author()
                 authors_temp = self.session.query(TAuthor).get(a)
-                author.display_name =  authors_temp.authorname
-                author.first_name = u''
-                author.last_name = u''
+                bb  = self.session.execute(u'select * from authors where display_name = \"%s\"' % unicode(authors_temp.authorname) ).fetchone()
+                if bb is None:
+                    author = Author()
+                    author.display_name =  authors_temp.authorname
+                else:
+                    id = int(bb[0])
+                    author = self.session.query(Author).get(bb[0])
                 song.authors.append(author)
-            try:
-                self.session.add(song)
-                self.session.commit()
-            except:
-                self.session.rollback()
-                print u'Errow thrown = ', sys.exc_info()[1]
+                try:
+                    self.session.add(song)
+                    self.session.commit()
+                except:
+                    self.session.rollback()
+                    print u'Errow thrown = ', sys.exc_info()[1]
 
     def _v1_9_0_cleanup(self, database):
         self.display.sub_output(u'Update Internal Data ' + database)
@@ -184,5 +186,4 @@ class MigrateSongs():
         conn.execute(u'drop table songauthors_temp;')
         conn.commit()
         conn.execute(u'drop table settings;')
-
         conn.commit()

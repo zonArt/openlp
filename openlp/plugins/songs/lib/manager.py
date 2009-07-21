@@ -55,12 +55,8 @@ class SongManager():
                 self.config.get_config(u'db hostname') + u'/' + \
                 self.config.get_config(u'db database')
         self.session = init_models(self.db_url)
-        if not songs_table.exists():
-            metadata.create_all()
+        metadata.create_all(checkfirst=True)
         log.debug(u'Song Initialised')
-
-#    def process_dialog(self, dialogobject):
-#        self.dialogobject = dialogobject
 
     def get_songs(self):
         """

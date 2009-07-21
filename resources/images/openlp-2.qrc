@@ -4,6 +4,9 @@
     <file>song_edit.png</file>
     <file>song_export.png</file>
     <file>song_new.png</file>
+    <file>song_author_edit.png</file>
+    <file>song_topic_edit.png</file>
+    <file>song_book_edit.png</file>
   </qresource>
   <qresource prefix="slides" >
     <file>slide_close.png</file>

@@ -174,3 +174,10 @@ class PluginManager(object):
         for plugin in self.plugins:
             plugin.initialise()
 
+    def cleanup_plugins(self):
+        """
+        Loop through all the plugins and give them an opportunity to
+        clean themselves up
+        """
+        for plugin in self.plugins:
+            plugin.cleanup()

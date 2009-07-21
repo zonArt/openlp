@@ -68,18 +68,13 @@ class Verse(BaseModel):
     """
     pass
 
-
 def init_models(db_url):
     engine = create_engine(db_url)
     metadata.bind = engine
     session = scoped_session(sessionmaker(autoflush=True,
                                           autocommit=False,
                                           bind=engine))
-    # Don't think this is needed...
-    #metadata.bind.echo = False
-    #Define the tables and indexes
     return metadata, session
-
 
 metadata = MetaData()
 meta_table = Table(u'metadata', metadata,

@@ -18,7 +18,7 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
-from PyQt4 import QtCore, QtGui, QtTest
+from PyQt4 import QtCore, QtGui
 
 from time import sleep
 from openlp.core.lib import translate
@@ -41,6 +41,7 @@ class MainDisplay(QtGui.QWidget):
         self.alertactive = False
         self.alerttext = u''
         self.alertTab = None
+        self.timer_id = 0
 
     def setup(self, screenNumber):
         """
@@ -69,11 +70,18 @@ class MainDisplay(QtGui.QWidget):
         self.frameView(self.blankFrame)
 
     def frameView(self, frame):
+        """
+        Called from a slide controller to display a frame
+        if the alert is in progress the alert is added on top
+        ``frame``
+            Image frame to be rendered
+        """
+
         self.frame = frame
-        if not self.displayBlank:
-            self.display.setPixmap(QtGui.QPixmap.fromImage(frame))
-        elif self.alertactive:
+        if self.timer_id != 0 :
             self.displayAlert()
+        elif not self.displayBlank:
+            self.display.setPixmap(QtGui.QPixmap.fromImage(frame))
 
     def blankDisplay(self):
         if not self.displayBlank:
@@ -85,17 +93,17 @@ class MainDisplay(QtGui.QWidget):
 
     def alert(self, alertTab, text):
         """
-        Called from the Alert Tab
-        alertTab = details from AlertTab
-        text = display text
-        screen = screen number to be displayed on.
+        Called from the Alert Tab to display an alert
+        ``alertTab``
+            details from AlertTab
+
+        ``text``
+            display text
         """
         self.alerttext = text
         self.alertTab = alertTab
         if len(text) > 0:
-            self.alertactive = True
             self.displayAlert()
-            self.alertactive = False
 
     def displayAlert(self):
         alertframe = QtGui.QPixmap.fromImage(self.frame)
@@ -113,5 +121,12 @@ class MainDisplay(QtGui.QWidget):
         painter.drawText(x, y+metrics.height()-metrics.descent()-1, self.alerttext)
         painter.end()
         self.display.setPixmap(alertframe)
-        QtTest.QTest.qWait(self.alertTab.timeout*1000)
-        self.display.setPixmap(QtGui.QPixmap.fromImage(self.frame))
+        # check to see if we have a timer running
+        if self.timer_id == 0:
+            self.timer_id =  self.startTimer(int(self.alertTab.timeout) * 1000)
+
+    def timerEvent(self, event):
+        if event.timerId() == self.timer_id:
+            self.display.setPixmap(QtGui.QPixmap.fromImage(self.frame))
+            self.killTimer(self.timer_id)
+            self.timer_id = 0

@@ -21,7 +21,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import codecs
 import sys
 
-def convert_file(self, inname, outname):
+def convert_file(inname, outname):
     """
     Convert a file from another encoding into UTF-8.
 
@@ -35,7 +35,8 @@ def convert_file(self, inname, outname):
     writefile = codecs.open(outname, 'w', encoding='utf-8')
     for line in infile:
         #replace the quotes with quotes
-        line = line.replace(u'\'\'', u'\'')
+        #TODO fix double quotes
+        #line = line.replace(u'\'\'', u'@')
         writefile.write(line)
     infile.close()
     writefile.close()
