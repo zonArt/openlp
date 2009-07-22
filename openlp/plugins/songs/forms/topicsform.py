@@ -105,16 +105,17 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         """
         self.currentRow = self.TopicsListWidget.currentRow()
         item = self.TopicsListWidget.currentItem()
-        item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-        self.topic = self.songmanager.get_topic(item_id)
-        self.TopicNameEdit.setText(self.topic.name)
-        if len(self.topic.songs) > 0:
-            self.MessageLabel.setText(translate(u'TopicForm', u'Topic in use "Delete" is disabled'))
-            self.DeleteButton.setEnabled(False)
-        else:
-            self.MessageLabel.setText(translate(u'TopicForm', u'Topic in not used'))
-            self.DeleteButton.setEnabled(True)
-        self._validate_form()
+        if item is not None:
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            self.topic = self.songmanager.get_topic(item_id)
+            self.TopicNameEdit.setText(self.topic.name)
+            if len(self.topic.songs) > 0:
+                self.MessageLabel.setText(translate(u'TopicForm', u'Topic in use "Delete" is disabled'))
+                self.DeleteButton.setEnabled(False)
+            else:
+                self.MessageLabel.setText(translate(u'TopicForm', u'Topic in not used'))
+                self.DeleteButton.setEnabled(True)
+            self._validate_form()
         self.TopicNameEdit.setFocus()
 
     def _validate_form(self):

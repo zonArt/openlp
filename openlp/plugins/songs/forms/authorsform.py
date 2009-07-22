@@ -108,24 +108,25 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         """
         self.currentRow = self.AuthorListWidget.currentRow()
         item = self.AuthorListWidget.currentItem()
-        item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-        self.author = self.songmanager.get_author(item_id)
-        self.DisplayEdit.setText(self.author.display_name)
-        if self.author.first_name is None:
-            self.FirstNameEdit.setText(u'')
-        else:
-            self.FirstNameEdit.setText(self.author.first_name)
-        if self.author.last_name is None:
-            self.LastNameEdit.setText(u'')
-        else:
-            self.LastNameEdit.setText(self.author.last_name)
-        if len(self.author.songs) > 0:
-            self.MessageLabel.setText(translate(u'AuthorForm', u'Author in use "Delete" is disabled'))
-            self.DeleteButton.setEnabled(False)
-        else:
-            self.MessageLabel.setText(translate(u'AuthorForm', u'Author in not used'))
-            self.DeleteButton.setEnabled(True)
-        self._validate_form()
+        if item is not None:
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            self.author = self.songmanager.get_author(item_id)
+            self.DisplayEdit.setText(self.author.display_name)
+            if self.author.first_name is None:
+                self.FirstNameEdit.setText(u'')
+            else:
+                self.FirstNameEdit.setText(self.author.first_name)
+            if self.author.last_name is None:
+                self.LastNameEdit.setText(u'')
+            else:
+                self.LastNameEdit.setText(self.author.last_name)
+            if len(self.author.songs) > 0:
+                self.MessageLabel.setText(translate(u'AuthorForm', u'Author in use "Delete" is disabled'))
+                self.DeleteButton.setEnabled(False)
+            else:
+                self.MessageLabel.setText(translate(u'AuthorForm', u'Author in not used'))
+                self.DeleteButton.setEnabled(True)
+            self._validate_form()
         self.DisplayEdit.setFocus()
 
     def _validate_form(self):
