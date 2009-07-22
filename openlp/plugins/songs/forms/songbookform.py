@@ -62,6 +62,7 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
             self.BookSongListWidget.setCurrentRow(self.BookSongListWidget.count() - 1)
         else:
             self.BookSongListWidget.setCurrentRow(self.currentRow)
+        self.onBooksListViewItemClicked()
 
     def onDeleteButtonClick(self):
         """
@@ -98,24 +99,25 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
         self._validate_form()
         self.NameEdit.setFocus()
 
-    def onBooksListViewItemClicked(self, index):
+    def onBooksListViewItemClicked(self):
         """
         An Book has been selected display it
         If the Book is attached to a Song prevent delete
         """
         self.currentRow = self.BookSongListWidget.currentRow()
         item = self.BookSongListWidget.currentItem()
-        item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-        self.Book = self.songmanager.get_book(item_id)
-        self.NameEdit.setText(self.Book.name)
-        self.PublisherEdit.setText(self.Book.publisher)
-        if len(self.Book.songs) > 0:
-            self.MessageLabel.setText(translate(u'BookForm', u'Book in use "Delete" is disabled'))
-            self.DeleteButton.setEnabled(False)
-        else:
-            self.MessageLabel.setText(translate(u'BookForm', u'Book in not used'))
-            self.DeleteButton.setEnabled(True)
-        self._validate_form()
+        if item is not None:
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            self.Book = self.songmanager.get_book(item_id)
+            self.NameEdit.setText(self.Book.name)
+            self.PublisherEdit.setText(self.Book.publisher)
+            if len(self.Book.songs) > 0:
+                self.MessageLabel.setText(translate(u'BookForm', u'Book in use "Delete" is disabled'))
+                self.DeleteButton.setEnabled(False)
+            else:
+                self.MessageLabel.setText(translate(u'BookForm', u'Book in not used'))
+                self.DeleteButton.setEnabled(True)
+            self._validate_form()
         self.NameEdit.setFocus()
 
     def _validate_form(self):

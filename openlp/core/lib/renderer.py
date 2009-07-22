@@ -40,6 +40,7 @@ class Renderer(object):
         self._debug = 0
         self._right_margin = 64 # the amount of right indent
         self._shadow_offset = 5
+        self._shadow_offset_footer = 3
         self._outline_offset = 2
         self.theme_name = None
         self._theme = None
@@ -482,15 +483,17 @@ class Renderer(object):
         # dont allow alignment messing with footers
         if footer:
             align = 0
+            shadow_offset = self._shadow_offset_footer
         else:
             align = int(self._theme .display_horizontalAlign)
+            shadow_offset = self._shadow_offset
         for linenum in range(len(lines)):
             line = lines[linenum]
             #find out how wide line is
             w , h = self._get_extent_and_render(line, footer,  tlcorner=(x, y), draw=False)
             if self._theme.display_shadow:
-                w += self._shadow_offset
-                h += self._shadow_offset
+                w += shadow_offset
+                h += shadow_offset
             if self._theme.display_outline:
                 # pixels either side
                 w += 2 * self._outline_offset
@@ -515,7 +518,7 @@ class Renderer(object):
             if live:
                 # now draw the text, and any outlines/shadows
                 if self._theme.display_shadow:
-                    self._get_extent_and_render(line, footer, tlcorner=(x+self._shadow_offset,y+self._shadow_offset),
+                    self._get_extent_and_render(line, footer, tlcorner=(x + shadow_offset, y + shadow_offset),
                         draw=True, color = self._theme.display_shadow_color)
                 if self._theme.display_outline:
                     self._get_extent_and_render(line, footer, (x+self._outline_offset,y), draw=True,

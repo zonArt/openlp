@@ -20,6 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import codecs
 import sys
+import chardet
 
 def convert_file(inname, outname):
     """
@@ -31,7 +32,7 @@ def convert_file(inname, outname):
     ``outname``
         The output file name.
     """
-    infile = codecs.open(inname, 'r', encoding='iso-8859-1')
+    infile = codecs.open(inname, 'r', encoding='CP1252')
     writefile = codecs.open(outname, 'w', encoding='utf-8')
     for line in infile:
         #replace the quotes with quotes

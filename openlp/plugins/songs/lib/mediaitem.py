@@ -289,7 +289,7 @@ class SongMediaItem(MediaManagerItem):
         else:
             verses = song.lyrics.split(u'\n\n')
             for slide in verses:
-                service_item.add_from_text(slide[:30], slide)
+                service_item.add_from_text(slide[:30], unicode(slide))
         service_item.title = song.title
         for author in song.authors:
             if len(author_list) > 1:
