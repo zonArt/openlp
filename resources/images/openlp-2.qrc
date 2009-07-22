@@ -1,5 +1,8 @@
 <RCC>
   <qresource prefix="songs" >
+    <file>book_maintenance.png</file>
+    <file>author_maintenance.png</file>
+    <file>topic_maintenance.png</file>
     <file>song_delete.png</file>
     <file>song_edit.png</file>
     <file>song_export.png</file>
