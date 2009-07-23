@@ -355,7 +355,7 @@ class BibleMediaItem(MediaManagerItem):
             verse = unicode(self.search_results[0].verse)
             text = self.search_results[0].text
             #Paragraph style force new line per verse
-            if self.parent.bibles_tab.paragraph_style:
+            if self.parent.bibles_tab.layout_style == 1:
                 text = text + u'\n\n'
             if self.parent.bibles_tab.display_style == 1:
                 loc = self.formatVerse(old_chapter, chapter, verse, u'(u', u')')
@@ -367,8 +367,13 @@ class BibleMediaItem(MediaManagerItem):
                 loc = self.formatVerse(old_chapter, chapter, verse, u'', u'')
             old_chapter = chapter
             bible_text = bible_text + u' '+ loc + u' '+ text
+            #if we are verse per slide then create slide
+            if self.parent.bibles_tab.layout_style == 0:
+                raw_slides.append(bible_text)
+                bible_text = u''
             service_item.title = book + u' ' + loc
             footer = book + u' (' + self.version + u' ' + self.copyright +u')'
+            #If not found throws and error so add.s
             try:
                 raw_footer.index(footer)
             except:
@@ -377,7 +382,9 @@ class BibleMediaItem(MediaManagerItem):
             service_item.theme = None
         else:
             service_item.theme = self.parent.bibles_tab.bible_theme
-        raw_slides.append(bible_text)
+        #if we are verse per slide we have already been added
+        if self.parent.bibles_tab.layout_style != 0:
+            raw_slides.append(bible_text)
         for slide in raw_slides:
             service_item.add_from_text(slide[:30], slide)
         service_item.raw_footer = raw_footer
@@ -425,10 +432,6 @@ class BibleMediaItem(MediaManagerItem):
 
     def displayResults(self, bible):
         for verse in self.search_results:
-            #bible_text = unicode(u' %s %d:%d (%s)'%(book , chap,vse, bible))
-            #bible_verse = QtGui.QListWidgetItem(bible_text)
-            #bible_verse.setData(QtCore.Qt.UserRole, QtCore.QVariant(bible_text))
-            #self.ListView.addItem(bible_verse)
             bible_text = u' %s %d:%d (%s)' % (verse.book.name,
                 verse.chapter, verse.verse, bible)
             bible_verse = QtGui.QListWidgetItem(bible_text)
