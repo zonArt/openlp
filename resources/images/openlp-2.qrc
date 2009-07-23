@@ -1,5 +1,14 @@
 <RCC>
   <qresource prefix="songs" >
+    <file>topic_edit.png</file>
+    <file>author_add.png</file>
+    <file>author_delete.png</file>
+    <file>book_add.png</file>
+    <file>topic_add.png</file>
+    <file>book_delete.png</file>
+    <file>book_edit.png</file>
+    <file>author_edit.png</file>
+    <file>topic_delete.png</file>
     <file>book_maintenance.png</file>
     <file>author_maintenance.png</file>
     <file>topic_maintenance.png</file>

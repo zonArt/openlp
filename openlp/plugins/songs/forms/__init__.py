@@ -23,6 +23,7 @@ from topicsform import TopicsForm
 from songbookform import SongBookForm
 from editverseform import EditVerseForm
 from editsongform import EditSongForm
+from songmaintenanceform import SongMaintenanceForm
 
 from openlpexportform import OpenLPExportForm
 from openlpimportform import OpenLPImportForm
