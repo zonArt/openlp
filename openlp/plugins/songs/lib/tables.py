@@ -31,7 +31,7 @@ authors_table = Table(u'authors', metadata,
 
 # Definition of the "song_books" table
 song_books_table = Table(u'song_books', metadata,
-    Column(u'id', types.Integer,  primary_key=True),
+    Column(u'id', types.Integer, primary_key=True),
     Column(u'name', types.Unicode(128), nullable=False),
     Column(u'publisher', types.Unicode(128))
 )

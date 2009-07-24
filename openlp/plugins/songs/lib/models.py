@@ -27,8 +27,8 @@ from openlp.plugins.songs.lib.classes import *
 def init_models(url):
     engine = create_engine(url)
     metadata.bind = engine
-    session = scoped_session(sessionmaker(autoflush=True, autocommit=False,
-                                          bind=engine))
+    session = scoped_session(sessionmaker(autoflush=True,
+        autocommit=False, bind=engine))
     mapper(Author, authors_table)
     mapper(Book, song_books_table)
     mapper(Song, songs_table,

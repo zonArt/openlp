@@ -1,158 +1,52 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>TopicsDialog</class>
- <widget class="QDialog" name="TopicsDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="TopicsDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>471</width>
-    <height>470</height>
+    <width>365</width>
+    <height>77</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Topic Maintenance</string>
   </property>
-  <layout class="QGridLayout" name="TopicsLayout" >
-   <property name="margin" >
+  <layout class="QFormLayout" name="TopicLayout">
+   <property name="fieldGrowthPolicy">
+    <enum>QFormLayout::ExpandingFieldsGrow</enum>
+   </property>
+   <property name="horizontalSpacing">
     <number>8</number>
    </property>
-   <property name="spacing" >
+   <property name="verticalSpacing">
     <number>8</number>
    </property>
-   <item row="1" column="0" >
-    <widget class="QGroupBox" name="TopicGroupBox" >
-     <property name="title" >
-      <string>Topic Details</string>
-     </property>
-     <layout class="QGridLayout" name="DetailsLayout" >
-      <property name="margin" >
-       <number>8</number>
-      </property>
-      <property name="spacing" >
-       <number>8</number>
-      </property>
-      <item row="0" column="0" >
-       <widget class="QLabel" name="TopicNameLabel" >
-        <property name="text" >
-         <string>Topic Name:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" colspan="6" >
-       <widget class="QLineEdit" name="TopicNameEdit" />
-      </item>
-      <item row="1" column="0" colspan="3" >
-       <spacer name="ButtonsSpacer" >
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0" >
-         <size>
-          <width>198</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="1" column="5" >
-       <widget class="QPushButton" name="DeleteButton" >
-        <property name="toolTip" >
-         <string>Delete Author</string>
-        </property>
-        <property name="text" >
-         <string>Delete</string>
-        </property>
-        <property name="icon" >
-         <iconset resource="../images/openlp-2.qrc" >
-          <normaloff>:/services/service_delete.png</normaloff>:/services/service_delete.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4" >
-       <widget class="QPushButton" name="AddUpdateButton" >
-        <property name="toolTip" >
-         <string>Add Update Author</string>
-        </property>
-        <property name="text" >
-         <string>Save</string>
-        </property>
-        <property name="icon" >
-         <iconset resource="../images/openlp-2.qrc" >
-          <normaloff>:/services/service_save.png</normaloff>:/services/service_save.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3" >
-       <widget class="QPushButton" name="ClearButton" >
-        <property name="toolTip" >
-         <string>Clear Selection</string>
-        </property>
-        <property name="text" >
-         <string>New</string>
-        </property>
-        <property name="icon" >
-         <iconset resource="../images/openlp-2.qrc" >
-          <normaloff>:/services/service_new.png</normaloff>:/services/service_new.png</iconset>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="0" column="0" >
-    <widget class="QTableWidget" name="TopicsListView" >
-     <property name="alternatingRowColors" >
-      <bool>true</bool>
+   <property name="margin">
+    <number>8</number>
+   </property>
+   <item row="0" column="0">
+    <widget class="QLabel" name="TopicNameLabel">
+     <property name="text">
+      <string>Topic Name:</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0" >
-    <widget class="QDialogButtonBox" name="ButtonBox" >
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Ok</set>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="TopicNameEdit"/>
+   </item>
+   <item row="1" column="1">
+    <widget class="QDialogButtonBox" name="TopicButtonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
  <resources>
-  <include location="../images/openlp-2.qrc" />
+  <include location="../images/openlp-2.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>ButtonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>TopicsDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>ButtonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>TopicsDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

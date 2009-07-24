@@ -43,7 +43,8 @@ class Book(BaseModel):
     """
     Book model
     """
-    pass
+    def __repr__(self):
+        return u'<Book id="%s" name="%s" publisher="%s" />' % (str(self.id), self.name, self.publisher)
 
 class Song(BaseModel):
     """

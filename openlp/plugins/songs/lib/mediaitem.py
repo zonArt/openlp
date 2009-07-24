@@ -60,10 +60,10 @@ class SongMediaItem(MediaManagerItem):
         self.ConfigSection = u'song'
         MediaManagerItem.__init__(self, parent, icon, title)
         self.edit_song_form = EditSongForm(self.parent.songmanager, self.parent.event_manager)
-        self.authors_form = AuthorsForm(self.parent.songmanager)
-        self.topics_form = TopicsForm(self.parent.songmanager)
-        self.song_book_form = SongBookForm(self.parent.songmanager)
-        self.song_maintenance_form = SongMaintenanceForm(self.parent.songmanager)
+        #self.authors_form = AuthorsForm(self.parent.songmanager)
+        #self.topics_form = TopicsForm(self.parent.songmanager)
+        #self.song_book_form = SongBookForm(self.parent.songmanager)
+        self.song_maintenance_form = SongMaintenanceForm(self.parent.songmanager, self)
 
     def setupUi(self):
         # Add a toolbar
