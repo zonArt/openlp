@@ -59,14 +59,15 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             QtCore.SIGNAL(u'pressed()'), self.onBookDeleteButtonClick)
 
     def exec_(self):
+        self.TypeListWidget.setCurrentRow(0)
         self.resetAuthors()
         self.resetTopics()
         self.resetBooks()
+        self.TypeListWidget.setFocus()
         return QtGui.QDialog.exec_(self)
 
     def _getCurrentItemId(self, ListWidget):
         item = ListWidget.currentItem()
-        print item
         if item is not None:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             return item_id

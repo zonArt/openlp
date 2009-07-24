@@ -22,44 +22,57 @@ from openlp.core.lib import translate
 
 class Ui_AuthorsDialog(object):
     def setupUi(self, AuthorsDialog):
-        AuthorsDialog.setObjectName("AuthorsDialog")
+        AuthorsDialog.setObjectName(u'AuthorsDialog')
         AuthorsDialog.resize(393, 147)
         self.AuthorsLayout = QtGui.QFormLayout(AuthorsDialog)
         self.AuthorsLayout.setMargin(8)
         self.AuthorsLayout.setSpacing(8)
-        self.AuthorsLayout.setObjectName("AuthorsLayout")
+        self.AuthorsLayout.setObjectName(u'AuthorsLayout')
         self.FirstNameLabel = QtGui.QLabel(AuthorsDialog)
-        self.FirstNameLabel.setObjectName("FirstNameLabel")
-        self.AuthorsLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.FirstNameLabel)
+        self.FirstNameLabel.setObjectName(u'FirstNameLabel')
+        self.AuthorsLayout.setWidget(0,
+            QtGui.QFormLayout.LabelRole, self.FirstNameLabel)
         self.FirstNameEdit = QtGui.QLineEdit(AuthorsDialog)
-        self.FirstNameEdit.setObjectName("FirstNameEdit")
-        self.AuthorsLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.FirstNameEdit)
+        self.FirstNameEdit.setObjectName(u'FirstNameEdit')
+        self.AuthorsLayout.setWidget(0,
+            QtGui.QFormLayout.FieldRole, self.FirstNameEdit)
         self.LastNameLabel = QtGui.QLabel(AuthorsDialog)
-        self.LastNameLabel.setObjectName("LastNameLabel")
-        self.AuthorsLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.LastNameLabel)
+        self.LastNameLabel.setObjectName(u'LastNameLabel')
+        self.AuthorsLayout.setWidget(1,
+            QtGui.QFormLayout.LabelRole, self.LastNameLabel)
         self.LastNameEdit = QtGui.QLineEdit(AuthorsDialog)
-        self.LastNameEdit.setObjectName("LastNameEdit")
-        self.AuthorsLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.LastNameEdit)
+        self.LastNameEdit.setObjectName(u'LastNameEdit')
+        self.AuthorsLayout.setWidget(1,
+            QtGui.QFormLayout.FieldRole, self.LastNameEdit)
         self.DisplayLabel = QtGui.QLabel(AuthorsDialog)
-        self.DisplayLabel.setObjectName("DisplayLabel")
-        self.AuthorsLayout.setWidget(2, QtGui.QFormLayout.LabelRole, self.DisplayLabel)
+        self.DisplayLabel.setObjectName(u'DisplayLabel')
+        self.AuthorsLayout.setWidget(2,
+            QtGui.QFormLayout.LabelRole, self.DisplayLabel)
         self.DisplayEdit = QtGui.QLineEdit(AuthorsDialog)
-        self.DisplayEdit.setObjectName("DisplayEdit")
-        self.AuthorsLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.DisplayEdit)
+        self.DisplayEdit.setObjectName(u'DisplayEdit')
+        self.AuthorsLayout.setWidget(2,
+            QtGui.QFormLayout.FieldRole, self.DisplayEdit)
         self.AuthorButtonBox = QtGui.QDialogButtonBox(AuthorsDialog)
         self.AuthorButtonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.AuthorButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Save)
-        self.AuthorButtonBox.setObjectName("AuthorButtonBox")
-        self.AuthorsLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.AuthorButtonBox)
+        self.AuthorButtonBox.setStandardButtons(
+            QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Save)
+        self.AuthorButtonBox.setObjectName(u'AuthorButtonBox')
+        self.AuthorsLayout.setWidget(3,
+            QtGui.QFormLayout.FieldRole, self.AuthorButtonBox)
 
         self.retranslateUi(AuthorsDialog)
-        QtCore.QObject.connect(self.AuthorButtonBox, QtCore.SIGNAL("accepted()"), AuthorsDialog.accept)
-        QtCore.QObject.connect(self.AuthorButtonBox, QtCore.SIGNAL("rejected()"), AuthorsDialog.reject)
+        QtCore.QObject.connect(self.AuthorButtonBox,
+            QtCore.SIGNAL(u'accepted()'), AuthorsDialog.accept)
+        QtCore.QObject.connect(self.AuthorButtonBox,
+            QtCore.SIGNAL(u'rejected()'), AuthorsDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(AuthorsDialog)
 
     def retranslateUi(self, AuthorsDialog):
-        AuthorsDialog.setWindowTitle(QtGui.QApplication.translate("AuthorsDialog", "Author Maintenance", None, QtGui.QApplication.UnicodeUTF8))
-        self.DisplayLabel.setText(QtGui.QApplication.translate("AuthorsDialog", "Display Name:", None, QtGui.QApplication.UnicodeUTF8))
-        self.FirstNameLabel.setText(QtGui.QApplication.translate("AuthorsDialog", "First Name:", None, QtGui.QApplication.UnicodeUTF8))
-        self.AuthorButtonBox.setToolTip(QtGui.QApplication.translate("AuthorsDialog", "Exit Screen", None, QtGui.QApplication.UnicodeUTF8))
-        self.LastNameLabel.setText(QtGui.QApplication.translate("AuthorsDialog", "Last Name:", None, QtGui.QApplication.UnicodeUTF8))
+        AuthorsDialog.setWindowTitle(
+            translate(u'AuthorsDialog', u'Author Maintenance'))
+        self.DisplayLabel.setText(
+            translate(u'AuthorsDialog', u'Display name:'))
+        self.FirstNameLabel.setText(
+            translate(u'AuthorsDialog', u'First name:'))
+        self.LastNameLabel.setText(
+            translate(u'AuthorsDialog', u'Last name:'))

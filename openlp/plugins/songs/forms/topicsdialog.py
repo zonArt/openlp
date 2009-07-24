@@ -22,32 +22,40 @@ from openlp.core.lib import translate
 
 class Ui_TopicsDialog(object):
     def setupUi(self, TopicsDialog):
-        TopicsDialog.setObjectName("TopicsDialog")
+        TopicsDialog.setObjectName(u'TopicsDialog')
         TopicsDialog.resize(365, 77)
         self.TopicLayout = QtGui.QFormLayout(TopicsDialog)
-        self.TopicLayout.setFieldGrowthPolicy(QtGui.QFormLayout.ExpandingFieldsGrow)
+        self.TopicLayout.setFieldGrowthPolicy(
+            QtGui.QFormLayout.ExpandingFieldsGrow)
         self.TopicLayout.setMargin(8)
         self.TopicLayout.setSpacing(8)
-        self.TopicLayout.setObjectName("TopicLayout")
+        self.TopicLayout.setObjectName(u'TopicLayout')
         self.NameLabel = QtGui.QLabel(TopicsDialog)
-        self.NameLabel.setObjectName("NameLabel")
-        self.TopicLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.NameLabel)
+        self.NameLabel.setObjectName(u'NameLabel')
+        self.TopicLayout.setWidget(0,
+            QtGui.QFormLayout.LabelRole, self.NameLabel)
         self.NameEdit = QtGui.QLineEdit(TopicsDialog)
-        self.NameEdit.setObjectName("NameEdit")
-        self.TopicLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.NameEdit)
+        self.NameEdit.setObjectName(u'NameEdit')
+        self.TopicLayout.setWidget(0,
+            QtGui.QFormLayout.FieldRole, self.NameEdit)
         self.TopicButtonBox = QtGui.QDialogButtonBox(TopicsDialog)
         self.TopicButtonBox.setOrientation(QtCore.Qt.Horizontal)
         self.TopicButtonBox.setStandardButtons(
             QtGui.QDialogButtonBox.Save | QtGui.QDialogButtonBox.Cancel)
-        self.TopicButtonBox.setObjectName("TopicButtonBox")
-        self.TopicLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.TopicButtonBox)
+        self.TopicButtonBox.setObjectName(u'TopicButtonBox')
+        self.TopicLayout.setWidget(1,
+            QtGui.QFormLayout.FieldRole, self.TopicButtonBox)
 
         self.retranslateUi(TopicsDialog)
-        QtCore.QObject.connect(self.TopicButtonBox, QtCore.SIGNAL("accepted()"), TopicsDialog.accept)
-        QtCore.QObject.connect(self.TopicButtonBox, QtCore.SIGNAL("rejected()"), TopicsDialog.reject)
+        QtCore.QObject.connect(self.TopicButtonBox,
+            QtCore.SIGNAL(u'accepted()'), TopicsDialog.accept)
+        QtCore.QObject.connect(self.TopicButtonBox,
+            QtCore.SIGNAL(u'rejected()'), TopicsDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(TopicsDialog)
 
     def retranslateUi(self, TopicsDialog):
-        TopicsDialog.setWindowTitle(QtGui.QApplication.translate("TopicsDialog", "Topic Maintenance", None, QtGui.QApplication.UnicodeUTF8))
-        self.NameLabel.setText(QtGui.QApplication.translate("TopicsDialog", "Topic Name:", None, QtGui.QApplication.UnicodeUTF8))
+        TopicsDialog.setWindowTitle(
+            translate(u'TopicsDialog', u'Topic Maintenance'))
+        self.NameLabel.setText(
+            translate(u'TopicsDialog', u'Topic name:'))
 

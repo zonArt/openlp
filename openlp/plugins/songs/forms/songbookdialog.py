@@ -22,37 +22,47 @@ from openlp.core.lib import translate
 
 class Ui_SongBookDialog(object):
     def setupUi(self, SongBookDialog):
-        SongBookDialog.setObjectName("SongBookDialog")
+        SongBookDialog.setObjectName(u'SongBookDialog')
         SongBookDialog.resize(367, 120)
         self.SongBookLayout = QtGui.QFormLayout(SongBookDialog)
         self.SongBookLayout.setMargin(8)
         self.SongBookLayout.setSpacing(8)
-        self.SongBookLayout.setObjectName("SongBookLayout")
+        self.SongBookLayout.setObjectName(u'SongBookLayout')
         self.NameLabel = QtGui.QLabel(SongBookDialog)
-        self.NameLabel.setObjectName("NameLabel")
-        self.SongBookLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.NameLabel)
+        self.NameLabel.setObjectName(u'NameLabel')
+        self.SongBookLayout.setWidget(0,
+            QtGui.QFormLayout.LabelRole, self.NameLabel)
         self.NameEdit = QtGui.QLineEdit(SongBookDialog)
-        self.NameEdit.setObjectName("NameEdit")
-        self.SongBookLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.NameEdit)
+        self.NameEdit.setObjectName(u'NameEdit')
+        self.SongBookLayout.setWidget(0,
+            QtGui.QFormLayout.FieldRole, self.NameEdit)
         self.PublisherLabel = QtGui.QLabel(SongBookDialog)
-        self.PublisherLabel.setObjectName("PublisherLabel")
-        self.SongBookLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.PublisherLabel)
+        self.PublisherLabel.setObjectName(u'PublisherLabel')
+        self.SongBookLayout.setWidget(1,
+            QtGui.QFormLayout.LabelRole, self.PublisherLabel)
         self.PublisherEdit = QtGui.QLineEdit(SongBookDialog)
-        self.PublisherEdit.setObjectName("PublisherEdit")
-        self.SongBookLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.PublisherEdit)
+        self.PublisherEdit.setObjectName(u'PublisherEdit')
+        self.SongBookLayout.setWidget(1,
+            QtGui.QFormLayout.FieldRole, self.PublisherEdit)
         self.ButtonBox = QtGui.QDialogButtonBox(SongBookDialog)
         self.ButtonBox.setOrientation(QtCore.Qt.Horizontal)
         self.ButtonBox.setStandardButtons(
             QtGui.QDialogButtonBox.Save | QtGui.QDialogButtonBox.Cancel)
-        self.ButtonBox.setObjectName("ButtonBox")
-        self.SongBookLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.ButtonBox)
+        self.ButtonBox.setObjectName(u'ButtonBox')
+        self.SongBookLayout.setWidget(2,
+            QtGui.QFormLayout.FieldRole, self.ButtonBox)
 
         self.retranslateUi(SongBookDialog)
-        QtCore.QObject.connect(self.ButtonBox, QtCore.SIGNAL("accepted()"), SongBookDialog.accept)
-        QtCore.QObject.connect(self.ButtonBox, QtCore.SIGNAL("rejected()"), SongBookDialog.reject)
+        QtCore.QObject.connect(self.ButtonBox,
+            QtCore.SIGNAL(u'accepted()'), SongBookDialog.accept)
+        QtCore.QObject.connect(self.ButtonBox,
+            QtCore.SIGNAL(u'rejected()'), SongBookDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(SongBookDialog)
 
     def retranslateUi(self, SongBookDialog):
-        SongBookDialog.setWindowTitle(QtGui.QApplication.translate("SongBookDialog", "Edit Book", None, QtGui.QApplication.UnicodeUTF8))
-        self.NameLabel.setText(QtGui.QApplication.translate("SongBookDialog", "Name:", None, QtGui.QApplication.UnicodeUTF8))
-        self.PublisherLabel.setText(QtGui.QApplication.translate("SongBookDialog", "Publisher:", None, QtGui.QApplication.UnicodeUTF8))
+        SongBookDialog.setWindowTitle(
+            translate(u'SongBookDialog', u'Edit Book'))
+        self.NameLabel.setText(
+            translate(u'SongBookDialog', u'Name:'))
+        self.PublisherLabel.setText(
+            translate(u'SongBookDialog', u'Publisher:'))
