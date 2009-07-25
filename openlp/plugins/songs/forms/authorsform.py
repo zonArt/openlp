@@ -66,94 +66,19 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
     def setAutoDisplayName(self, on):
         self.autoDisplayName = on
 
+    def accept(self):
+        if self.FirstNameEdit.text() == u'':
+            QtGui.QMessageBox.critical(self,
+                translate(u'AuthorsDialog', u'Error'),
+                translate(u'AuthorsDialog', u'You need to type in the first name of the author.'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+            self.FirstNameEdit.setFocus()
+            return False
+        if self.LastNameEdit.text() == u'':
+            QtGui.QMessageBox.critical(self,
+                translate(u'AuthorsDialog', u'Error'),
+                translate(u'AuthorsDialog', u'You need to type in the last name of the author.'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+            self.LastNameEdit.setFocus()
+            return False
 
-#    def load_form(self):
-#        """
-#        Refresh the screen and rest fields
-#        """
-#        self.AuthorListWidget.clear()
-#        # tidy up screen
-#        self.onClearButtonClick()
-#        authors = self.songmanager.get_authors()
-#        for author in authors:
-#            author_name = QtGui.QListWidgetItem(author.display_name)
-#            author_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
-#            self.AuthorListWidget.addItem(author_name)
-#        if self.currentRow >= self.AuthorListWidget.count() :
-#            self.AuthorListWidget.setCurrentRow(self.AuthorListWidget.count() - 1)
-#        else:
-#            self.AuthorListWidget.setCurrentRow(self.currentRow)
-#        self._validate_form()
-#
-#    def onDeleteButtonClick(self):
-#        """
-#        Delete the author is the Author is not attached to any songs
-#        """
-#        self.songmanager.delete_author(self.author.id)
-#        self.load_form()
-#
-#    def onDisplayEditLostFocus(self):
-#        self._validate_form()
-#
-#    def onAddUpdateButtonClick(self):
-#        """
-#        Sent New or update details to the database
-#        """
-#        if self.author == None:
-#            self.author = Author()
-#        self.author.display_name = unicode(self.DisplayEdit.displayText())
-#        self.author.first_name = unicode(self.FirstNameEdit.displayText())
-#        self.author.last_name = unicode(self.LastNameEdit.displayText())
-#        self.songmanager.save_author(self.author)
-#        self.onClearButtonClick()
-#        self.load_form()
-#
-#    def onClearButtonClick(self):
-#        """
-#        Tidy up screen if clear button pressed
-#        """
-#        self.DisplayEdit.setText(u'')
-#        self.FirstNameEdit.setText(u'')
-#        self.LastNameEdit.setText(u'')
-#        self.MessageLabel.setText(u'')
-#        self.DeleteButton.setEnabled(False)
-#        self.author = None
-#        self._validate_form()
-#        self.DisplayEdit.setFocus()
-#
-#    def onAuthorListWidgetItemClicked(self, index):
-#        """
-#        An Author has been selected display it
-#        If the author is attached to a Song prevent delete
-#        """
-#        self.currentRow = self.AuthorListWidget.currentRow()
-#        item = self.AuthorListWidget.currentItem()
-#        item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-#        self.author = self.songmanager.get_author(item_id)
-#        self.DisplayEdit.setText(self.author.display_name)
-#        if self.author.first_name is None:
-#            self.FirstNameEdit.setText(u'')
-#        else:
-#            self.FirstNameEdit.setText(self.author.first_name)
-#        if self.author.last_name is None:
-#            self.LastNameEdit.setText(u'')
-#        else:
-#            self.LastNameEdit.setText(self.author.last_name)
-#        if len(self.author.songs) > 0:
-#            self.MessageLabel.setText(translate(u'AuthorForm', u'Author in use "Delete" is disabled'))
-#            self.DeleteButton.setEnabled(False)
-#        else:
-#            self.MessageLabel.setText(translate(u'AuthorForm', u'Author in not used'))
-#            self.DeleteButton.setEnabled(True)
-#        self._validate_form()
-#        self.DisplayEdit.setFocus()
-#
-#    def _validate_form(self):
-#        """
-#        Validate the form and set if Add button if valid.
-#        """
-#        # We need at lease a display name
-#        if len(self.DisplayEdit.displayText()) == 0:
-#            self.AddUpdateButton.setEnabled(False)
-#        else:
-#            self.AddUpdateButton.setEnabled(True)
