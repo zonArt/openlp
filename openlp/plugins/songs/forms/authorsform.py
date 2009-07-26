@@ -74,11 +74,12 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             self.FirstNameEdit.setFocus()
             return False
-        if self.LastNameEdit.text() == u'':
+        elif self.LastNameEdit.text() == u'':
             QtGui.QMessageBox.critical(self,
                 translate(u'AuthorsDialog', u'Error'),
                 translate(u'AuthorsDialog', u'You need to type in the last name of the author.'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             self.LastNameEdit.setFocus()
             return False
-
+        else:
+            return QtGui.QDialog.accept(self)

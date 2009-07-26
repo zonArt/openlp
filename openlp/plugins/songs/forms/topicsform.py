@@ -37,3 +37,13 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         self.NameEdit.setFocus()
         return QtGui.QDialog.exec_(self)
 
+    def accept(self):
+        if self.NameEdit.text() == u'':
+            QtGui.QMessageBox.critical(self,
+                translate(u'SongBookDialog', u'Error'),
+                translate(u'SongBookDialog', u'You need to type in a topic name!'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+            self.NameEdit.setFocus()
+            return False
+        else:
+            return QtGui.QDialog.accept(self)
