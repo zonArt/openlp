@@ -81,5 +81,18 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             self.LastNameEdit.setFocus()
             return False
+        elif self.DisplayEdit.text() == u'':
+            if QtGui.QMessageBox.critical(self,
+                    translate(u'AuthorsDialog', u'Error'),
+                    translate(u'AuthorsDialog', u'You haven\'t set a display name for the author, would you like me to combine the first and last names for you?'),
+                    QtGui.QMessageBox.StandardButtons(
+                        QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
+                    ) == QtGui.QMessageBox.Yes:
+                self.DisplayEdit.setText(self.FirstNameEdit.text() + \
+                    u' ' + self.LastNameEdit.text())
+                return QtGui.QDialog.accept(self)
+            else:
+                self.DisplayEdit.setFocus()
+                return False
         else:
             return QtGui.QDialog.accept(self)
