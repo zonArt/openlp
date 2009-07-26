@@ -18,7 +18,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 from PyQt4 import QtGui, QtCore
 from openlp.core.lib import translate
-from topicsdialog import Ui_TopicsDialog
+from openlp.plugins.songs.forms.topicsdialog import Ui_TopicsDialog
 
 class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
     """
@@ -38,7 +38,7 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         return QtGui.QDialog.exec_(self)
 
     def accept(self):
-        if self.NameEdit.text() == u'':
+        if not self.NameEdit.text():
             QtGui.QMessageBox.critical(self,
                 translate(u'SongBookDialog', u'Error'),
                 translate(u'SongBookDialog', u'You need to type in a topic name!'),
