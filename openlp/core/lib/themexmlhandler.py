@@ -161,7 +161,7 @@ class ThemeXML(object):
         #Create Filename element
         self.child_element(background, u'filename', filename)
 
-    def add_font(self, name, color, proportion, override, fonttype=u'main',
+    def add_font(self, name, color, proportion, override, fonttype=u'main', weight=50, italics=0,
                  xpos=0, ypos=0, width=0, height=0):
         """
         Add a Font.
@@ -180,6 +180,12 @@ class ThemeXML(object):
 
         ``fonttype``
             The type of font, ``main`` or ``footer``. Defaults to ``main``.
+
+        ``weight``
+            The weight of then font Defaults to 50 Normal
+
+        ``italics``
+            Does the font render to italics Defaults to 0 Normal
 
         ``xpos``
             The X position of the text block.
@@ -202,8 +208,10 @@ class ThemeXML(object):
         self.child_element(background, u'color', color)
         #Create Proportion name element
         self.child_element(background, u'proportion', proportion)
-        #Create Proportion name element
-        self.child_element(background, u'proportion', proportion)
+        #Create weight name element
+        self.child_element(background, u'weight', weight)
+        #Create italics name element
+        self.child_element(background, u'italics', italics)
         #Create Location element
         element = self.theme_xml.createElement(u'location')
         element.setAttribute(u'override',override)
