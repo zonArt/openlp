@@ -20,9 +20,10 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import logging
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import MediaManagerItem,  translate,  ServiceItem,  SongXMLParser , contextMenuAction, contextMenuSeparator
-
-from openlp.plugins.songs.forms import EditSongForm, AuthorsForm, TopicsForm, SongBookForm
+from openlp.core.lib import MediaManagerItem, translate, ServiceItem, \
+    SongXMLParser, contextMenuAction, contextMenuSeparator
+from openlp.plugins.songs.forms import EditSongForm, AuthorsForm, \
+    TopicsForm, SongBookForm, SongMaintenanceForm
 
 class SongList(QtGui.QListWidget):
 
@@ -59,9 +60,7 @@ class SongMediaItem(MediaManagerItem):
         self.ConfigSection = u'song'
         MediaManagerItem.__init__(self, parent, icon, title)
         self.edit_song_form = EditSongForm(self.parent.songmanager, self.parent.event_manager)
-        self.authors_form = AuthorsForm(self.parent.songmanager)
-        self.topics_form = TopicsForm(self.parent.songmanager)
-        self.song_book_form = SongBookForm(self.parent.songmanager)
+        self.song_maintenance_form = SongMaintenanceForm(self.parent.songmanager, self)
 
     def setupUi(self):
         # Add a toolbar
@@ -94,18 +93,10 @@ class SongMediaItem(MediaManagerItem):
             translate(u'SongMediaItem', u'Add the selected song(s) to the service'),
             ':/system/system_add.png', self.onSongAddClick, 'SongAddItem')
         self.addToolbarSeparator()
-        ## Author Edit Button ##
-        self.addToolbarButton(translate(u'SongMediaItem', u'Edit Authors'),
-            translate(u'SongMediaItem', u'Maintain the list of Song Authors'),
-            ':/songs/song_author_edit.png', self.onEditAuthorClick, 'SongAuthorEditItem')
-        ## Author Edit Button ##
-        self.addToolbarButton(translate(u'SongMediaItem', u'Edit Books'),
-            translate(u'SongMediaItem', u'Maintain the list of Song Books'),
-            ':/songs/song_book_edit.png', self.onEditBookClick, 'SongAuthorEditItem')
-                    ## Author Edit Button ##
-        self.addToolbarButton(translate(u'SongMediaItem', u'Edit Topics'),
-            translate(u'SongMediaItem', u'Maintain the list of Song Topics'),
-            ':/songs/song_topic_edit.png', self.onEditTopicClick, 'SongAuthorEditItem')
+        ## Song Maintenance Button ##
+        self.addToolbarButton(translate(u'SongMediaItem', u'Song Maintenance'),
+            translate(u'SongMediaItem', u'Maintain the lists of authors, topics and books'),
+            ':/songs/song_maintenance.png', self.onSongMaintenanceClick, 'SongMaintenanceItem')
         ## Add the songlist widget ##
         # Create the tab widget
         self.SongWidget = QtGui.QWidget(self)
@@ -249,6 +240,9 @@ class SongMediaItem(MediaManagerItem):
     def onEditBookClick(self):
         self.song_book_form.load_form()
         self.song_book_form.exec_()
+
+    def onSongMaintenanceClick(self):
+        self.song_maintenance_form.exec_()
 
     def onSongEditClick(self):
         item = self.ListView.currentItem()

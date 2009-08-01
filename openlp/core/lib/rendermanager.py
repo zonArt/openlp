@@ -53,7 +53,10 @@ class RenderManager(object):
         self.screen_list = screen_list
         self.theme_manager = theme_manager
         self.displays = len(screen_list)
-        self.current_display = screen_number
+        if (screen_number + 1) > len(screen_list):
+            self.current_display = 0
+        else:
+            self.current_display = screen_number
         self.renderer = Renderer()
         self.calculate_default(self.screen_list[self.current_display][u'size'])
         self.theme = u''

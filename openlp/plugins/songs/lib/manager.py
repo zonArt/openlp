@@ -218,9 +218,9 @@ class SongManager():
             self.session.add(book)
             self.session.commit()
             return True
-        except:
+        except Exception, e:
             self.session.rollback()
-            log.error(u'Errow thrown %s', sys.exc_info()[1])
+            log.error(u'Errow thrown %s', e.args[0])
             return False
 
     def delete_book(self, bookid):
