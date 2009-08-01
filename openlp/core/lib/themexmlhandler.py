@@ -46,12 +46,16 @@ blankthemexml=\
       <name>Arial</name>
       <color>#000000</color>
       <proportion>30</proportion>
+      <weight>50</weight>
+      <italics>0</italics>
       <location override="False" x="0" y="0" width="0" height="0"/>
    </font>
    <font type="footer">
       <name>Arial</name>
       <color>#000000</color>
       <proportion>12</proportion>
+      <weight>50</weight>
+      <italics>0</italics>
       <location override="False" x="0" y="0" width="0" height="0"/>
    </font>
    <display>

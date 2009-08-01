@@ -558,13 +558,15 @@ class Renderer(object):
         """
         self.footerFont = QtGui.QFont(self._theme.font_footer_name,
                      int(self._theme.font_footer_proportion), # size
-                     QtGui.QFont.Normal, # weight
-                     0)# italic
+                     int(self._theme.font_footer_weight), # weight
+                    0)# italic
+        self.footerFont.setItalic(int(self._theme.font_footer_italics))
         self.footerFont.setPixelSize(int(self._theme.font_footer_proportion))
         self.mainFont = QtGui.QFont(self._theme.font_main_name,
                      int(self._theme.font_main_proportion), # size
-                     QtGui.QFont.Normal, # weight
+                     int(self._theme.font_main_weight), # weight
                      0)# italic
+        self.mainFont.setItalic(int(self._theme.font_main_italics))
         self.mainFont.setPixelSize(int(self._theme.font_main_proportion))
 
     def _get_extent_and_render(self, line, footer, tlcorner=(0, 0), draw=False, color=None):
