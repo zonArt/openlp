@@ -135,6 +135,12 @@ class BibleMediaItem(MediaManagerItem):
         self.ClearQuickSearchComboBox = QtGui.QComboBox(self.QuickTab)
         self.ClearQuickSearchComboBox.setObjectName(u'ClearQuickSearchComboBox')
         self.QuickLayout.addWidget(self.ClearQuickSearchComboBox, 3, 1, 1, 1)
+        self.QuickMsg1 = QtGui.QLabel(self.QuickTab)
+        self.QuickMsg1.setObjectName(u'QuickSearchLabel')
+        self.QuickLayout.addWidget(self.QuickMsg1, 4, 0, 1, 1)
+        self.QuickMsg2 = QtGui.QLabel(self.QuickTab)
+        self.QuickMsg2.setObjectName(u'QuickSearchLabel')
+        self.QuickLayout.addWidget(self.QuickMsg2, 4, 1, 1, 1)
         self.SearchTabWidget.addTab(self.QuickTab, 'Quick')
         QuickSpacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
             QtGui.QSizePolicy.Expanding)
@@ -254,6 +260,14 @@ class BibleMediaItem(MediaManagerItem):
     def initialise(self):
         log.debug(u'initialise')
         self.loadBibles()
+        self.parent.biblemanager.set_media_manager(self)
+
+    def setQuickMsg1(self, text):
+        self.QuickMsg1.setText(translate(u'BibleMediaItem', unicode(text)))
+
+    def setQuickMsg2(self, text):
+        self.QuickMsg2.setText(translate(u'BibleMediaItem', unicode(text)))
+        Receiver().send_message(u'openlpprocessevents')
 
     def loadBibles(self):
         log.debug(u'Loading Bibles')
