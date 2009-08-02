@@ -161,7 +161,7 @@ class ThemeXML(object):
         #Create Filename element
         self.child_element(background, u'filename', filename)
 
-    def add_font(self, name, color, proportion, override, fonttype=u'main', weight=50, italics=0,
+    def add_font(self, name, color, proportion, override, fonttype=u'main', weight=u'50', italics=u'0',
                  xpos=0, ypos=0, width=0, height=0):
         """
         Add a Font.

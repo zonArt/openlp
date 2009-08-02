@@ -300,7 +300,7 @@ class ServiceManager(QtGui.QWidget):
         Used when moving items as the move takes place in supporting array,
         and when regenerating all the items due to theme changes
         """
-        #Correct order of idems in array
+        #Correct order of items in array
         count = 1
         for item in self.serviceItems:
             item[u'order'] = count
@@ -398,7 +398,7 @@ class ServiceManager(QtGui.QWidget):
         """
         Set the theme for the current service
         """
-        self.service_theme = self.ThemeComboBox.currentText()
+        self.service_theme = unicode(self.ThemeComboBox.currentText())
         self.parent.RenderManager.set_service_theme(self.service_theme)
         self.config.set_config(u'theme service theme', self.service_theme)
         self.regenerateServiceItems()

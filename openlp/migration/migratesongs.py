@@ -155,6 +155,8 @@ class MigrateSongs():
                 if bb is None:
                     author = Author()
                     author.display_name =  authors_temp.authorname
+                    author.first_name = u''
+                    author.last_name = u''
                 else:
                     id = int(bb[0])
                     author = self.session.query(Author).get(bb[0])
