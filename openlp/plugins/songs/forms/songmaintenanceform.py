@@ -79,15 +79,15 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         item_id = self._getCurrentItemId(list_widget)
         if item_id != -1:
             item = get_func(item_id)
-            if QtGui.QMessageBox.warning(self, dlg_title, del_text,
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)
-                    ) == QtGui.QMessageBox.Yes:
-                if item is not None and len(item.songs) == 0:
+            if item is not None and len(item.songs) == 0:
+                if QtGui.QMessageBox.warning(self, dlg_title, del_text,
+                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)
+                        ) == QtGui.QMessageBox.Yes:
                     del_func(item.id)
                     reset_func()
-                else:
-                    QtGui.QMessageBox.critical(self, dlg_title, err_text,
-                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+            else:
+                QtGui.QMessageBox.critical(self, dlg_title, err_text,
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
         else:
             QtGui.QMessageBox.critical(self, dlg_title, sel_text,
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
