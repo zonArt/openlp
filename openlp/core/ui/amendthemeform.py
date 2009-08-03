@@ -166,17 +166,17 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
 
     def onFontMainWeightComboBoxSelected(self, value):
         if value  ==0:
-            self.theme.font_main_weight = 50
-            self.theme.font_main_italics = 0
+            self.theme.font_main_weight = u'Normal'
+            self.theme.font_main_italics = False
         elif value  == 1:
-            self.theme.font_main_weight = 75
-            self.theme.font_main_italics = 0
+            self.theme.font_main_weight = u'Bold'
+            self.theme.font_main_italics = False
         elif value  == 2:
-            self.theme.font_main_weight = 50
-            self.theme.font_main_italics = 1
+            self.theme.font_main_weight = u'Normal'
+            self.theme.font_main_italics = True
         else:
-            self.theme.font_main_weight = 75
-            self.theme.font_main_italics = 1
+            self.theme.font_main_weight = u'Bold'
+            self.theme.font_main_italics = True
         self.previewTheme(self.theme)
 
     def onFontMainColorPushButtonClicked(self):
@@ -239,17 +239,17 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
 
     def onFontFooterWeightComboBoxSelected(self, value):
         if value  == 0:
-            self.theme.font_footer_weight = 50
-            self.theme.font_footer_italics = 0
+            self.theme.font_footer_weight = u'Normal'
+            self.theme.font_footer_italics = False
         elif value  == 1:
-            self.theme.font_footer_weight = 75
-            self.theme.font_footer_italics = 0
+            self.theme.font_footer_weight = u'Bold'
+            self.theme.font_footer_italics = False
         elif value  == 2:
-            self.theme.font_footer_weight = 50
-            self.theme.font_footer_italics = 1
+            self.theme.font_footer_weight = u'Normal'
+            self.theme.font_footer_italics = True
         else:
-            self.theme.font_footer_weight = 75
-            self.theme.font_footer_italics = 1
+            self.theme.font_footer_weight = u'Bold'
+            self.theme.font_footer_italics = True
         self.previewTheme(self.theme)
 
     def onFontFooterColorPushButtonClicked(self):
@@ -445,11 +445,11 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             self.GradientComboBox.setCurrentIndex(2)
 
         self.FontMainSizeSpinBox.setValue(int(self.theme.font_main_proportion))
-        if int(self.theme.font_main_italics) == 0 and int(self.theme.font_main_weight) == 50:
+        if not self.theme.font_main_italics and self.theme.font_main_weight == u'Normal':
             self.FontMainWeightComboBox.setCurrentIndex(0)
-        elif int(self.theme.font_main_italics) == 0 and int(self.theme.font_main_weight) == 75:
+        elif not self.theme.font_main_italics and self.theme.font_main_weight == u'Bold':
             self.FontMainWeightComboBox.setCurrentIndex(1)
-        elif int(self.theme.font_main_italics) == 1 and int(self.theme.font_main_weight) == 50:
+        elif self.theme.font_main_italics and self.theme.font_main_weight == u'Normal':
             self.FontMainWeightComboBox.setCurrentIndex(2)
         else:
             self.FontMainWeightComboBox.setCurrentIndex(3)
@@ -459,11 +459,11 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.FontMainWidthSpinBox.setValue(int(self.theme.font_main_width))
         self.FontMainHeightSpinBox.setValue(int(self.theme.font_main_height))
         self.FontFooterSizeSpinBox.setValue(int(self.theme.font_footer_proportion))
-        if int(self.theme.font_footer_italics) == 0 and int(self.theme.font_footer_weight) == 50:
+        if not self.theme.font_footer_italics and self.theme.font_footer_weight == u'Normal':
             self.FontFooterWeightComboBox.setCurrentIndex(0)
-        elif int(self.theme.font_footer_italics) == 0 and int(self.theme.font_footer_weight) == 75:
+        elif not self.theme.font_footer_italics and self.theme.font_footer_weight == u'Bold':
             self.FontFooterWeightComboBox.setCurrentIndex(1)
-        elif int(self.theme.font_footer_italics) == 1 and int(self.theme.font_footer_weight) == 50:
+        elif self.theme.font_footer_italics and self.theme.font_footer_weight == u'Normal':
             self.FontFooterWeightComboBox.setCurrentIndex(2)
         else:
             self.FontFooterWeightComboBox.setCurrentIndex(3)

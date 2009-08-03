@@ -46,16 +46,16 @@ blankthemexml=\
       <name>Arial</name>
       <color>#000000</color>
       <proportion>30</proportion>
-      <weight>50</weight>
-      <italics>0</italics>
+      <weight>Normal</weight>
+      <italics>False</italics>
       <location override="False" x="0" y="0" width="0" height="0"/>
    </font>
    <font type="footer">
       <name>Arial</name>
       <color>#000000</color>
       <proportion>12</proportion>
-      <weight>50</weight>
-      <italics>0</italics>
+      <weight>Normal</weight>
+      <italics>False</italics>
       <location override="False" x="0" y="0" width="0" height="0"/>
    </font>
    <display>
@@ -161,7 +161,7 @@ class ThemeXML(object):
         #Create Filename element
         self.child_element(background, u'filename', filename)
 
-    def add_font(self, name, color, proportion, override, fonttype=u'main', weight=u'50', italics=u'0',
+    def add_font(self, name, color, proportion, override, fonttype=u'main', weight=u'Bold', italics=False,
                  xpos=0, ypos=0, width=0, height=0):
         """
         Add a Font.
@@ -341,14 +341,17 @@ class ThemeXML(object):
                         setattr(self, master + element.tag + u'_'+ e[0], e[1])
                     else:
                         field = master + e[0]
-                        e1 = e[1]
                         if e[1] == u'True' or e[1] == u'False':
-                            e1 = str_to_bool(e[1])
-                        setattr(self, field, e1)
+                            setattr(self, field, str_to_bool(e[1]))
+                        else:
+                            setattr(self, field, e[1])
             else:
                 if element.tag is not None:
                     field = master + element.tag
-                    setattr(self, field, element.text)
+                    if element.text == u'True' or element.text == u'False':
+                        setattr(self, field, str_to_bool(element.text))
+                    else:
+                        setattr(self, field, element.text)
 
     def __str__(self):
         """
