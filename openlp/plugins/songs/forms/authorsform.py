@@ -18,7 +18,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 from PyQt4 import QtGui, QtCore
 from openlp.core.lib import translate
-from authorsdialog import Ui_AuthorsDialog
+from openlp.plugins.songs.forms.authorsdialog import Ui_AuthorsDialog
 
 class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
     """
@@ -67,21 +67,21 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         self.autoDisplayName = on
 
     def accept(self):
-        if self.FirstNameEdit.text() == u'':
+        if not self.FirstNameEdit.text():
             QtGui.QMessageBox.critical(self,
                 translate(u'AuthorsDialog', u'Error'),
                 translate(u'AuthorsDialog', u'You need to type in the first name of the author.'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             self.FirstNameEdit.setFocus()
             return False
-        elif self.LastNameEdit.text() == u'':
+        elif not self.LastNameEdit.text():
             QtGui.QMessageBox.critical(self,
                 translate(u'AuthorsDialog', u'Error'),
                 translate(u'AuthorsDialog', u'You need to type in the last name of the author.'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             self.LastNameEdit.setFocus()
             return False
-        elif self.DisplayEdit.text() == u'':
+        elif not self.DisplayEdit.text():
             if QtGui.QMessageBox.critical(self,
                     translate(u'AuthorsDialog', u'Error'),
                     translate(u'AuthorsDialog', u'You haven\'t set a display name for the author, would you like me to combine the first and last names for you?'),

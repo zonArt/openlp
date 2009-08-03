@@ -19,7 +19,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from PyQt4 import QtGui, QtCore
 from openlp.core.lib import translate
-from songbookdialog import Ui_SongBookDialog
+from openlp.plugins.songs.forms.songbookdialog import Ui_SongBookDialog
 
 class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
     """
@@ -40,7 +40,7 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
         return QtGui.QDialog.exec_(self)
 
     def accept(self):
-        if self.NameEdit.text() == u'':
+        if not self.NameEdit.text():
             QtGui.QMessageBox.critical(self,
                 translate(u'SongBookDialog', u'Error'),
                 translate(u'SongBookDialog', u'You need to type in a book name!'),
