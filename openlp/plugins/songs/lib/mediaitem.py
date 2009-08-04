@@ -20,14 +20,14 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import logging
 
 from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib import MediaManagerItem, translate, ServiceItem, \
     SongXMLParser, contextMenuAction, contextMenuSeparator
-from openlp.plugins.songs.forms import EditSongForm, AuthorsForm, \
-    TopicsForm, SongBookForm, SongMaintenanceForm
+from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm
 
 class SongList(QtGui.QListWidget):
 
-    def __init__(self,parent=None,name=None):
+    def __init__(self, parent=None, name=None):
         QtGui.QListWidget.__init__(self,parent)
 
     def mouseMoveEvent(self, event):
@@ -59,7 +59,7 @@ class SongMediaItem(MediaManagerItem):
         self.PluginTextShort = u'Song'
         self.ConfigSection = u'song'
         MediaManagerItem.__init__(self, parent, icon, title)
-        self.edit_song_form = EditSongForm(self.parent.songmanager, self.parent.event_manager)
+        self.edit_song_form = EditSongForm(self.parent.songmanager, self.parent.event_manager, self)
         self.song_maintenance_form = SongMaintenanceForm(self.parent.songmanager, self)
 
     def setupUi(self):
