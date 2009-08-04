@@ -96,7 +96,7 @@ class CWExtract(BibleCommon):
             chapter - chapter number
         """
         log.debug(u'get_bible_chapter %s,%s,%s,%s', version, bookid, bookname,  chapter)
-        bookname = bookname.replace(u' ', '')
+        bookname = bookname.replace(u' ', u'')
         urlstring = u'http://bible.crosswalk.com/OnlineStudyBible/bible.cgi?word=%s+%d&version=%s' % (bookname, chapter, version)
         xml_string = self._get_web_text(urlstring, self.proxyurl)
         #log.debug(u'Return data %s', xml_string)
@@ -151,8 +151,8 @@ class CWExtract(BibleCommon):
                 verseText = xml_string[versePos: i]
                 versePos = i
             #print verseText
+            #print self._clean_text(verseText)
             bible[verse] = self._clean_text(verseText)
-            #bible[verse] = verseText
 
         #log.debug( bible)
         return SearchResults(book_title, book_chapter, bible)

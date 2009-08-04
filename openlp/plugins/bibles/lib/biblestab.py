@@ -56,22 +56,9 @@ class BiblesTab(SettingsTab):
         self.VerseDisplayLayout = QtGui.QGridLayout(self.VerseDisplayGroupBox)
         self.VerseDisplayLayout.setMargin(8)
         self.VerseDisplayLayout.setObjectName(u'VerseDisplayLayout')
-        self.VerseTypeWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
-        self.VerseTypeWidget.setObjectName(u'VerseTypeWidget')
-        self.VerseTypeLayout = QtGui.QHBoxLayout(self.VerseTypeWidget)
-        self.VerseTypeLayout.setSpacing(8)
-        self.VerseTypeLayout.setMargin(0)
-        self.VerseTypeLayout.setObjectName(u'VerseTypeLayout')
-        self.VerseRadioButton = QtGui.QRadioButton(self.VerseTypeWidget)
-        self.VerseRadioButton.setObjectName(u'VerseRadioButton')
-        self.VerseTypeLayout.addWidget(self.VerseRadioButton)
-        self.ParagraphRadioButton = QtGui.QRadioButton(self.VerseTypeWidget)
-        self.ParagraphRadioButton.setObjectName(u'ParagraphRadioButton')
-        self.VerseTypeLayout.addWidget(self.ParagraphRadioButton)
-        self.VerseDisplayLayout.addWidget(self.VerseTypeWidget, 0, 0, 1, 1)
         self.NewChaptersCheckBox = QtGui.QCheckBox(self.VerseDisplayGroupBox)
         self.NewChaptersCheckBox.setObjectName(u'NewChaptersCheckBox')
-        self.VerseDisplayLayout.addWidget(self.NewChaptersCheckBox, 1, 0, 1, 1)
+        self.VerseDisplayLayout.addWidget(self.NewChaptersCheckBox, 0, 0, 1, 1)
         self.DisplayStyleWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
         self.DisplayStyleWidget.setObjectName(u'DisplayStyleWidget')
         self.DisplayStyleLayout = QtGui.QHBoxLayout(self.DisplayStyleWidget)
@@ -88,7 +75,24 @@ class BiblesTab(SettingsTab):
         self.DisplayStyleComboBox.addItem(QtCore.QString())
         self.DisplayStyleComboBox.addItem(QtCore.QString())
         self.DisplayStyleLayout.addWidget(self.DisplayStyleComboBox)
-        self.VerseDisplayLayout.addWidget(self.DisplayStyleWidget, 2, 0, 1, 1)
+        self.VerseDisplayLayout.addWidget(self.DisplayStyleWidget, 1, 0, 1, 1)
+        self.LayoutStyleWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
+        self.LayoutStyleWidget.setObjectName(u'LayoutStyleWidget')
+        self.LayoutStyleLayout = QtGui.QHBoxLayout(self.LayoutStyleWidget)
+        self.LayoutStyleLayout.setSpacing(8)
+        self.LayoutStyleLayout.setMargin(0)
+        self.LayoutStyleLayout.setObjectName(u'LayoutStyleLayout')
+        self.LayoutStyleLabel = QtGui.QLabel(self.LayoutStyleWidget)
+        self.LayoutStyleLabel.setObjectName(u'LayoutStyleLabel')
+        self.LayoutStyleLayout.addWidget(self.LayoutStyleLabel)
+        self.LayoutStyleComboBox = QtGui.QComboBox(self.LayoutStyleWidget)
+        self.LayoutStyleComboBox.setObjectName(u'LayoutStyleComboBox')
+        self.LayoutStyleComboBox.addItem(QtCore.QString())
+        self.LayoutStyleComboBox.addItem(QtCore.QString())
+        self.LayoutStyleComboBox.addItem(QtCore.QString())
+        self.LayoutStyleLayout.addWidget(self.LayoutStyleComboBox)
+        self.VerseDisplayLayout.addWidget(self.LayoutStyleWidget, 2, 0, 1, 1)
+
         self.BibleThemeWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
         self.BibleThemeWidget.setObjectName(u'BibleThemeWidget')
         self.BibleThemeLayout = QtGui.QHBoxLayout(self.BibleThemeWidget)
@@ -136,22 +140,22 @@ class BiblesTab(SettingsTab):
             QtCore.SIGNAL(u'stateChanged(int)'), self.onNewChaptersCheckBoxChanged)
         QtCore.QObject.connect(self.BibleSearchCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'), self.onBibleSearchCheckBoxChanged)
-        QtCore.QObject.connect(self.VerseRadioButton,
-            QtCore.SIGNAL(u'pressed()'), self.onVerseRadioButtonPressed)
-        QtCore.QObject.connect(self.ParagraphRadioButton,
-            QtCore.SIGNAL(u'pressed()'), self.onParagraphRadioButtonPressed)
         QtCore.QObject.connect(self.DisplayStyleComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onDisplayStyleComboBoxChanged)
         QtCore.QObject.connect(self.BibleThemeComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onBibleThemeComboBoxChanged)
+        QtCore.QObject.connect(self.LayoutStyleComboBox,
+            QtCore.SIGNAL(u'activated(int)'), self.onLayoutStyleComboBoxChanged)
 
     def retranslateUi(self):
         self.VerseDisplayGroupBox.setTitle(translate(u'SettingsForm', u'Verse Display'))
-        self.VerseRadioButton.setText(translate(u'SettingsForm', u'Verse style'))
-        self.ParagraphRadioButton.setText(translate(u'SettingsForm', u'Paragraph style'))
         self.NewChaptersCheckBox.setText(translate(u'SettingsForm', u'Only show new chapter numbers'))
+        self.LayoutStyleLabel.setText(translate(u'SettingsForm', u'Layout Style:'))
         self.DisplayStyleLabel.setText(translate(u'SettingsForm', u'Display Style:'))
         self.BibleThemeLabel.setText(translate(u'SettingsForm', u'Bible Theme:'))
+        self.LayoutStyleComboBox.setItemText(0, translate(u'SettingsForm', u'verse per slide'))
+        self.LayoutStyleComboBox.setItemText(1, translate(u'SettingsForm', u'verse per line'))
+        self.LayoutStyleComboBox.setItemText(2, translate(u'SettingsForm', u'continuous'))
         self.DisplayStyleComboBox.setItemText(0, translate(u'SettingsForm', u'No brackets'))
         self.DisplayStyleComboBox.setItemText(1, translate(u'SettingsForm', u'( and )'))
         self.DisplayStyleComboBox.setItemText(2, translate(u'SettingsForm', u'{ and }'))
@@ -166,11 +170,8 @@ class BiblesTab(SettingsTab):
     def onDisplayStyleComboBoxChanged(self):
         self.display_style = self.DisplayStyleComboBox.currentIndex()
 
-    def onVerseRadioButtonPressed(self):
-        self.paragraph_style = False
-
-    def onParagraphRadioButtonPressed(self):
-        self.paragraph_style = True
+    def onLayoutStyleComboBoxChanged(self):
+        self.layout_style = self.LayoutStyleComboBox.currentIndex()
 
     def onNewChaptersCheckBoxChanged(self):
         check_state = self.NewChaptersCheckBox.checkState()
@@ -187,23 +188,20 @@ class BiblesTab(SettingsTab):
             self.bible_search = True
 
     def load(self):
-        self.paragraph_style = str_to_bool(self.config.get_config(u'paragraph style', u'True'))
         self.show_new_chapters = str_to_bool(self.config.get_config(u'display new chapter', u'False'))
         self.display_style = int(self.config.get_config(u'display brackets', u'0'))
+        self.layout_style = int(self.config.get_config(u'verse layout style', u'0'))
         self.bible_theme = self.config.get_config(u'bible theme', u'0')
         self.bible_search = str_to_bool(self.config.get_config(u'search as type', u'True'))
-        if self.paragraph_style:
-            self.ParagraphRadioButton.setChecked(True)
-        else:
-            self.VerseRadioButton.setChecked(True)
         self.NewChaptersCheckBox.setChecked(self.show_new_chapters)
         self.DisplayStyleComboBox.setCurrentIndex(self.display_style)
+        self.LayoutStyleComboBox.setCurrentIndex(self.layout_style)
         self.BibleSearchCheckBox.setChecked(self.bible_search)
 
     def save(self):
-        self.config.set_config(u'paragraph style', unicode(self.paragraph_style))
         self.config.set_config(u'display new chapter', unicode(self.show_new_chapters))
         self.config.set_config(u'display brackets', unicode(self.display_style))
+        self.config.set_config(u'verse layout style', unicode(self.layout_style))
         self.config.set_config(u'search as type', unicode(self.bible_search))
         self.config.set_config(u'bible theme', unicode(self.bible_theme))
 

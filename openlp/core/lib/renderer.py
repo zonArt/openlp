@@ -556,15 +556,21 @@ class Renderer(object):
         """
         Set the fonts from the current theme settings.
         """
+        footer_weight = 50
+        if self._theme.font_footer_weight == u'Bold':
+            footer_weight = 75
         self.footerFont = QtGui.QFont(self._theme.font_footer_name,
                      int(self._theme.font_footer_proportion), # size
-                     QtGui.QFont.Normal, # weight
-                     0)# italic
+                     int(footer_weight), # weight
+                     self._theme.font_footer_italics)# italic
         self.footerFont.setPixelSize(int(self._theme.font_footer_proportion))
+        main_weight = 50
+        if self._theme.font_main_weight == u'Bold':
+            main_weight = 75
         self.mainFont = QtGui.QFont(self._theme.font_main_name,
                      int(self._theme.font_main_proportion), # size
-                     QtGui.QFont.Normal, # weight
-                     0)# italic
+                     int(main_weight), # weight
+                     self._theme.font_main_italics)# italic
         self.mainFont.setPixelSize(int(self._theme.font_main_proportion))
 
     def _get_extent_and_render(self, line, footer, tlcorner=(0, 0), draw=False, color=None):

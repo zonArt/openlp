@@ -48,16 +48,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'clicked()'), self.onAuthorRemovefromSongItemClicked)
         QtCore.QObject.connect(self.AuthorsListView,
             QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'), self.onAuthorsListViewPressed)
-#        QtCore.QObject.connect(self.AddTopicButton,
-#            QtCore.SIGNAL(u'clicked()'), self.onAddTopicButtonClicked)
         QtCore.QObject.connect(self.AddTopicsToSongButton,
             QtCore.SIGNAL(u'clicked()'), self.onTopicAddtoSongItemClicked)
         QtCore.QObject.connect(self.TopicRemoveItem,
             QtCore.SIGNAL(u'clicked()'), self.onTopicRemovefromSongItemClicked)
         QtCore.QObject.connect(self.TopicsListView,
             QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'), self.onTopicListViewPressed)
-#        QtCore.QObject.connect(self.AddSongBookButton,
-#            QtCore.SIGNAL(u'clicked()'), self.onAddSongBookButtonClicked)
         QtCore.QObject.connect(self.CopyrightInsertItem,
             QtCore.SIGNAL(u'clicked()'), self.onCopyrightInsertItemTriggered)
         QtCore.QObject.connect(self.AddButton,
@@ -75,9 +71,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         # Create other objects and forms
         self.songmanager = songmanager
         self.eventmanager = eventmanager
-#        self.authors_form = AuthorsForm(self.songmanager)
-#        self.topics_form = TopicsForm(self.songmanager)
-#        self.song_book_form = SongBookForm(self.songmanager)
         self.verse_form = EditVerseForm()
         self.initialise()
         self.AuthorsListView.setSortingEnabled(False)
@@ -252,30 +245,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.topics.remove(topic)
         row = self.TopicsListView.row(item)
         self.TopicsListView.takeItem(row)
-
-#    def onAddAuthorsButtonClicked(self):
-#        """
-#        Slot documentation goes here.
-#        """
-#        self.authors_form.load_form()
-#        self.authors_form.exec_()
-#        self.loadAuthors()
-#
-#    def onAddTopicButtonClicked(self):
-#        """
-#        Slot documentation goes here.
-#        """
-#        self.topics_form.load_form()
-#        self.topics_form.exec_()
-#        self.loadTopics()
-#
-#    def onAddSongBookButtonClicked(self):
-#        """
-#        Slot documentation goes here.
-#        """
-#        self.song_book_form.load_form()
-#        self.song_book_form.exec_()
-#        self.loadBooks()
 
     def onSongBookComboChanged(self, item):
         if item == 0:
