@@ -167,7 +167,7 @@ class Renderer(object):
         #take the width work out approx how many characters and add 50%
         line_width = self._rect.width() - self._right_margin
         #number of lines on a page - adjust for rounding up.
-        print self._rect.height() ,  metrics.height(),  int(self._rect.height() / metrics.height())
+        #print self._rect.height() ,  metrics.height(),  int(self._rect.height() / metrics.height())
         page_length = int(self._rect.height() / metrics.height()) - 1
         ave_line_width = line_width / metrics.averageCharWidth()
 #        print "A", ave_line_width
@@ -212,7 +212,7 @@ class Renderer(object):
             else:
                 split_lines.append(line)
                 line = u''
-        print "I", split_lines, page_length
+        #print "I", split_lines, page_length
         for line in split_lines:
             page.append(line)
             if len(page) == page_length:
