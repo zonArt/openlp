@@ -60,6 +60,10 @@ class MainDisplay(QtGui.QWidget):
         Sets up the screen on a particular screen.
         @param (integer) screen This is the screen number.
         """
+        # Temporary fix until I can speak to Tim Bentley.
+        if screenNumber not in self.screens:
+            screenNumber = 0
+        # /Temporary fix
         screen = self.screens[screenNumber]
         if screen[u'number'] != screenNumber:
             # We will most probably never actually hit this bit, but just in
@@ -82,7 +86,8 @@ class MainDisplay(QtGui.QWidget):
         painter_image.begin(self.InitialFrame)
         painter_image.fillRect(self.InitialFrame.rect(), QtCore.Qt.white)
         painter_image.drawImage((screen[u'size'].width() - splash_image.width()) / 2,
-                                (screen[u'size'].height() - splash_image.height()) / 2  , splash_image)
+                                (screen[u'size'].height() - splash_image.height()) / 2,
+                                splash_image)
         self.frameView(self.InitialFrame)
         #Build a Black screen
         painter = QtGui.QPainter()
@@ -98,7 +103,6 @@ class MainDisplay(QtGui.QWidget):
         ``frame``
             Image frame to be rendered
         """
-
         self.frame = frame
         if self.timer_id != 0 :
             self.displayAlert()
@@ -131,7 +135,9 @@ class MainDisplay(QtGui.QWidget):
         alertframe = QtGui.QPixmap.fromImage(self.frame)
         painter = QtGui.QPainter(alertframe)
         top = alertframe.rect().height() * 0.9
-        painter.fillRect(QtCore.QRect(0, top , alertframe.rect().width(), alertframe.rect().height() - top), QtGui.QColor(self.alertTab.bg_color))
+        painter.fillRect(
+            QtCore.QRect(0, top, alertframe.rect().width(), alertframe.rect().height() - top),
+            QtGui.QColor(self.alertTab.bg_color))
         font = QtGui.QFont()
         font.setFamily(self.alertTab.font_face)
         font.setBold(True)
@@ -140,12 +146,13 @@ class MainDisplay(QtGui.QWidget):
         painter.setPen(QtGui.QColor(self.alertTab.font_color))
         x, y = (0, top)
         metrics=QtGui.QFontMetrics(font)
-        painter.drawText(x, y+metrics.height()-metrics.descent()-1, self.alerttext)
+        painter.drawText(
+            x, y + metrics.height() - metrics.descent() - 1, self.alerttext)
         painter.end()
         self.display.setPixmap(alertframe)
         # check to see if we have a timer running
         if self.timer_id == 0:
-            self.timer_id =  self.startTimer(int(self.alertTab.timeout) * 1000)
+            self.timer_id = self.startTimer(int(self.alertTab.timeout) * 1000)
 
     def timerEvent(self, event):
         if event.timerId() == self.timer_id:

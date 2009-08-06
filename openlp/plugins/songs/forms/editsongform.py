@@ -68,9 +68,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'activated(int)'), self.onSongBookComboChanged)
         QtCore.QObject.connect(self.ThemeSelectionComboItem,
             QtCore.SIGNAL(u'activated(int)'), self.onThemeComboChanged)
+        QtCore.QObject.connect(self.MaintenanceButton,
+            QtCore.SIGNAL(u'clicked()'), self.onMaintenanceButtonClicked)
         # Create other objects and forms
         self.songmanager = songmanager
         self.eventmanager = eventmanager
+        self.parent = parent
         self.verse_form = EditVerseForm()
         self.initialise()
         self.AuthorsListView.setSortingEnabled(False)
@@ -177,7 +180,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.CCLNumberEdit.setText(u'')
         #lazy xml migration for now
         if self.song.lyrics.startswith(u'<?xml version='):
-            songXML=SongXMLParser(self.song.lyrics)
+            songXML = SongXMLParser(self.song.lyrics)
             verseList = songXML.get_verses()
             for verse in verseList:
                 self.VerseListWidget.addItem(verse[1])
@@ -228,8 +231,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         item = int(self.SongTopicCombo.currentIndex())
         if item > -1:
             item_id = (self.SongTopicCombo.itemData(item)).toInt()[0]
-            print item_id
-            print self.TopicsListView
             topic = self.songmanager.get_topic(item_id)
             self.song.topics.append(topic)
             topic_item = QtGui.QListWidgetItem(unicode(topic.name))
@@ -332,6 +333,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.CopyrightEditItem.setText(text)
         self.CopyrightEditItem.setFocus()
         self.CopyrightEditItem.setCursorPosition(pos + 1)
+
+    def onMaintenanceButtonClicked(self):
+        self.parent.song_maintenance_form.exec_()
+        self.loadAuthors()
+        self.loadBooks()
+        self.loadTopics()
 
     def onAccept(self):
         log.debug(u'OnAccept')

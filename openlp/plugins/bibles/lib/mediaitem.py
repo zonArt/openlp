@@ -20,6 +20,7 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import logging
+import time
 
 from PyQt4 import QtCore, QtGui
 
@@ -268,6 +269,8 @@ class BibleMediaItem(MediaManagerItem):
     def setQuickMsg2(self, text):
         self.QuickMsg2.setText(translate(u'BibleMediaItem', unicode(text)))
         Receiver().send_message(u'openlpprocessevents')
+        #minor delay to get the events processed
+        time.sleep(0.5)
 
     def loadBibles(self):
         log.debug(u'Loading Bibles')
