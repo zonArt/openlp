@@ -145,7 +145,7 @@ class MainDisplay(QtGui.QWidget):
         painter.setFont(font)
         painter.setPen(QtGui.QColor(self.alertTab.font_color))
         x, y = (0, top)
-        metrics=QtGui.QFontMetrics(font)
+        metrics = QtGui.QFontMetrics(font)
         painter.drawText(
             x, y + metrics.height() - metrics.descent() - 1, self.alerttext)
         painter.end()
