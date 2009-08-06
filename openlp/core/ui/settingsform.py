@@ -24,7 +24,6 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import SettingsTab
 from openlp.core.resources import *
 from openlp.core.ui import GeneralTab, ThemesTab, AlertsTab
-
 from settingsdialog import Ui_SettingsDialog
 
 log = logging.getLogger(u'SettingsForm')
@@ -49,6 +48,6 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.SettingsTabWidget.addTab(tab, tab.title())
 
     def accept(self):
-        for tab_index in range(0,  self.SettingsTabWidget.count()):
+        for tab_index in range(0, self.SettingsTabWidget.count()):
             self.SettingsTabWidget.widget(tab_index).save()
         return QtGui.QDialog.accept(self)

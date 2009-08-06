@@ -18,12 +18,13 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import logging
-from PyQt4 import Qt, QtCore, QtGui
-from openlp.core.lib import SongXMLBuilder, SongXMLParser, Event, EventType, EventManager
-from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm, \
-    EditVerseForm
-from openlp.plugins.songs.lib.models import Song
 
+from PyQt4 import Qt, QtCore, QtGui
+
+from openlp.core.lib import SongXMLBuilder, SongXMLParser, Event, \
+    EventType, EventManager
+from openlp.plugins.songs.forms import EditVerseForm
+from openlp.plugins.songs.lib.models import Song
 from editsongdialog import Ui_EditSongDialog
 
 class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
@@ -33,44 +34,46 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     global log
     log = logging.getLogger(u'EditSongForm')
     log.info(u'Song Editor loaded')
-    def __init__(self, songmanager, eventmanager,  parent=None):
+
+    def __init__(self, songmanager, eventmanager, parent=None):
         """
         Constructor
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # Connecting signals and slots
-#        QtCore.QObject.connect(self.AddAuthorsButton,
-#            QtCore.SIGNAL(u'clicked()'), self.onAddAuthorsButtonClicked)
-        QtCore.QObject.connect(self.AuthorAddtoSongItem,
-            QtCore.SIGNAL(u'clicked()'), self.onAuthorAddtoSongItemClicked)
-        QtCore.QObject.connect(self.AuthorRemoveItem,
-            QtCore.SIGNAL(u'clicked()'), self.onAuthorRemovefromSongItemClicked)
+        QtCore.QObject.connect(self.AuthorAddButton,
+            QtCore.SIGNAL(u'clicked()'), self.onAuthorAddButtonClicked)
+        QtCore.QObject.connect(self.AuthorRemoveButton,
+            QtCore.SIGNAL(u'clicked()'), self.onAuthorRemoveButtonClicked)
         QtCore.QObject.connect(self.AuthorsListView,
             QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'), self.onAuthorsListViewPressed)
-        QtCore.QObject.connect(self.AddTopicsToSongButton,
-            QtCore.SIGNAL(u'clicked()'), self.onTopicAddtoSongItemClicked)
-        QtCore.QObject.connect(self.TopicRemoveItem,
-            QtCore.SIGNAL(u'clicked()'), self.onTopicRemovefromSongItemClicked)
+        QtCore.QObject.connect(self.TopicAddButton,
+            QtCore.SIGNAL(u'clicked()'), self.onTopicAddButtonClicked)
+        QtCore.QObject.connect(self.TopicRemoveButton,
+            QtCore.SIGNAL(u'clicked()'), self.onTopicRemoveButtonClicked)
         QtCore.QObject.connect(self.TopicsListView,
             QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'), self.onTopicListViewPressed)
-        QtCore.QObject.connect(self.CopyrightInsertItem,
-            QtCore.SIGNAL(u'clicked()'), self.onCopyrightInsertItemTriggered)
-        QtCore.QObject.connect(self.AddButton,
-            QtCore.SIGNAL(u'clicked()'), self.onAddVerseButtonClicked)
-        QtCore.QObject.connect(self.EditButton,
-            QtCore.SIGNAL(u'clicked()'), self.onEditVerseButtonClicked)
-        QtCore.QObject.connect(self.DeleteButton,
-            QtCore.SIGNAL(u'clicked()'), self.onDeleteVerseButtonClicked)
+        QtCore.QObject.connect(self.CopyrightInsertButton,
+            QtCore.SIGNAL(u'clicked()'), self.onCopyrightInsertButtonTriggered)
+        QtCore.QObject.connect(self.VerseAddButton,
+            QtCore.SIGNAL(u'clicked()'), self.onVerseAddButtonClicked)
+        QtCore.QObject.connect(self.VerseEditButton,
+            QtCore.SIGNAL(u'clicked()'), self.onVerseEditButtonClicked)
+        QtCore.QObject.connect(self.VerseDeleteButton,
+            QtCore.SIGNAL(u'clicked()'), self.onVerseDeleteButtonClicked)
         QtCore.QObject.connect(self.VerseListWidget,
             QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'), self.onVerseListViewPressed)
         QtCore.QObject.connect(self.SongbookCombo,
             QtCore.SIGNAL(u'activated(int)'), self.onSongBookComboChanged)
         QtCore.QObject.connect(self.ThemeSelectionComboItem,
             QtCore.SIGNAL(u'activated(int)'), self.onThemeComboChanged)
+        QtCore.QObject.connect(self.MaintenanceButton,
+            QtCore.SIGNAL(u'clicked()'), self.onMaintenanceButtonClicked)
         # Create other objects and forms
         self.songmanager = songmanager
         self.eventmanager = eventmanager
+        self.parent = parent
         self.verse_form = EditVerseForm()
         self.initialise()
         self.AuthorsListView.setSortingEnabled(False)
@@ -79,10 +82,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.TopicsListView.setAlternatingRowColors(True)
 
     def initialise(self):
-        self.EditButton.setEnabled(False)
-        self.DeleteButton.setEnabled(False)
-        self.AuthorRemoveItem.setEnabled(False)
-        self.TopicRemoveItem.setEnabled(False)
+        self.VerseEditButton.setEnabled(False)
+        self.VerseDeleteButton.setEnabled(False)
+        self.AuthorRemoveButton.setEnabled(False)
+        self.TopicRemoveButton.setEnabled(False)
         self.title_change = False
 
     def loadAuthors(self):
@@ -177,7 +180,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.CCLNumberEdit.setText(u'')
         #lazy xml migration for now
         if self.song.lyrics.startswith(u'<?xml version='):
-            songXML=SongXMLParser(self.song.lyrics)
+            songXML = SongXMLParser(self.song.lyrics)
             verseList = songXML.get_verses()
             for verse in verseList:
                 self.VerseListWidget.addItem(verse[1])
@@ -201,7 +204,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.title_change = False
         self.TitleEditItem.setFocus(QtCore.Qt.OtherFocusReason)
 
-    def onAuthorAddtoSongItemClicked(self):
+    def onAuthorAddButtonClicked(self):
         item = int(self.AuthorsSelectionComboItem.currentIndex())
         if item > -1:
             item_id = (self.AuthorsSelectionComboItem.itemData(item)).toInt()[0]
@@ -213,9 +216,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def onAuthorsListViewPressed(self):
         if self.AuthorsListView.count() > 1:
-            self.AuthorRemoveItem.setEnabled(True)
+            self.AuthorRemoveButton.setEnabled(True)
 
-    def onAuthorRemovefromSongItemClicked(self):
+    def onAuthorRemoveButtonClicked(self):
         self.AuthorRemoveItem.setEnabled(False)
         item = self.AuthorsListView.currentItem()
         author_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
@@ -224,7 +227,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         row = self.AuthorsListView.row(item)
         self.AuthorsListView.takeItem(row)
 
-    def onTopicAddtoSongItemClicked(self):
+    def onTopicAddButtonClicked(self):
         item = int(self.SongTopicCombo.currentIndex())
         if item > -1:
             item_id = (self.SongTopicCombo.itemData(item)).toInt()[0]
@@ -235,10 +238,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.TopicsListView.addItem(topic_item)
 
     def onTopicListViewPressed(self):
-        self.TopicRemoveItem.setEnabled(True)
+        self.TopicRemoveButton.setEnabled(True)
 
-    def onTopicRemovefromSongItemClicked(self):
-        self.TopicRemoveItem.setEnabled(False)
+    def onTopicRemoveButtonClicked(self):
+        self.TopicRemoveButton.setEnabled(False)
         item = self.TopicsListView.currentItem()
         topic_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         topic = self.songmanager.get_topic(topic_id)
@@ -262,29 +265,29 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.song.theme_name = them_name
 
     def onVerseListViewPressed(self):
-        self.EditButton.setEnabled(True)
-        self.DeleteButton.setEnabled(True)
+        self.VerseEditButton.setEnabled(True)
+        self.VerseDeleteButton.setEnabled(True)
 
-    def onAddVerseButtonClicked(self):
+    def onVerseAddButtonClicked(self):
         self.verse_form.setVerse(u'')
         self.verse_form.exec_()
         self.VerseListWidget.addItem(self.verse_form.getVerse())
 
-    def onEditVerseButtonClicked(self):
+    def onVerseEditButtonClicked(self):
         item = self.VerseListWidget.currentItem()
         if item is not None:
             self.verse_form.setVerse(item.text())
             self.verse_form.exec_()
             item.setText(self.verse_form.getVerse())
         self.VerseListWidget.repaint()
-        self.EditButton.setEnabled(False)
-        self.DeleteButton.setEnabled(False)
+        self.VerseEditButton.setEnabled(False)
+        self.VerseDeleteButton.setEnabled(False)
 
-    def onDeleteVerseButtonClicked(self):
+    def onVerseDeleteButtonClicked(self):
         item = self.VerseListWidget.takeItem(self.VerseListWidget.currentRow())
         item = None
-        self.EditButton.setEnabled(False)
-        self.DeleteButton.setEnabled(False)
+        self.VerseEditButton.setEnabled(False)
+        self.VerseDeleteButton.setEnabled(False)
 
     def _validate_song(self):
         """
@@ -323,13 +326,19 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def on_CCLNumberEdit_lostFocus(self):
         self.song.ccli_number = self.CCLNumberEdit.text()
 
-    def onCopyrightInsertItemTriggered(self):
+    def onCopyrightInsertButtonTriggered(self):
         text = self.CopyrightEditItem.displayText()
         pos = self.CopyrightEditItem.cursorPosition()
         text = text[:pos] + u'©' + text[pos:]
         self.CopyrightEditItem.setText(text)
         self.CopyrightEditItem.setFocus()
         self.CopyrightEditItem.setCursorPosition(pos + 1)
+
+    def onMaintenanceButtonClicked(self):
+        self.parent.song_maintenance_form.exec_()
+        self.loadAuthors()
+        self.loadBooks()
+        self.loadTopics()
 
     def onAccept(self):
         log.debug(u'OnAccept')
