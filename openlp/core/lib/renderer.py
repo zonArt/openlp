@@ -40,6 +40,7 @@ class Renderer(object):
         self._debug = 0
         self._right_margin = 64 # the amount of right indent
         self._shadow_offset = 5
+        self._shadow_offset_footer = 3
         self._outline_offset = 2
         self.theme_name = None
         self._theme = None
@@ -482,15 +483,17 @@ class Renderer(object):
         # dont allow alignment messing with footers
         if footer:
             align = 0
+            shadow_offset = self._shadow_offset_footer
         else:
             align = int(self._theme .display_horizontalAlign)
+            shadow_offset = self._shadow_offset
         for linenum in range(len(lines)):
             line = lines[linenum]
             #find out how wide line is
             w , h = self._get_extent_and_render(line, footer,  tlcorner=(x, y), draw=False)
             if self._theme.display_shadow:
-                w += self._shadow_offset
-                h += self._shadow_offset
+                w += shadow_offset
+                h += shadow_offset
             if self._theme.display_outline:
                 # pixels either side
                 w += 2 * self._outline_offset
@@ -515,7 +518,7 @@ class Renderer(object):
             if live:
                 # now draw the text, and any outlines/shadows
                 if self._theme.display_shadow:
-                    self._get_extent_and_render(line, footer, tlcorner=(x+self._shadow_offset,y+self._shadow_offset),
+                    self._get_extent_and_render(line, footer, tlcorner=(x + shadow_offset, y + shadow_offset),
                         draw=True, color = self._theme.display_shadow_color)
                 if self._theme.display_outline:
                     self._get_extent_and_render(line, footer, (x+self._outline_offset,y), draw=True,
@@ -553,15 +556,21 @@ class Renderer(object):
         """
         Set the fonts from the current theme settings.
         """
+        footer_weight = 50
+        if self._theme.font_footer_weight == u'Bold':
+            footer_weight = 75
         self.footerFont = QtGui.QFont(self._theme.font_footer_name,
                      int(self._theme.font_footer_proportion), # size
-                     QtGui.QFont.Normal, # weight
-                     0)# italic
+                     int(footer_weight), # weight
+                     self._theme.font_footer_italics)# italic
         self.footerFont.setPixelSize(int(self._theme.font_footer_proportion))
+        main_weight = 50
+        if self._theme.font_main_weight == u'Bold':
+            main_weight = 75
         self.mainFont = QtGui.QFont(self._theme.font_main_name,
                      int(self._theme.font_main_proportion), # size
-                     QtGui.QFont.Normal, # weight
-                     0)# italic
+                     int(main_weight), # weight
+                     self._theme.font_main_italics)# italic
         self.mainFont.setPixelSize(int(self._theme.font_main_proportion))
 
     def _get_extent_and_render(self, line, footer, tlcorner=(0, 0), draw=False, color=None):

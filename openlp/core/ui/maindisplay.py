@@ -24,8 +24,20 @@ from time import sleep
 from openlp.core.lib import translate
 
 class MainDisplay(QtGui.QWidget):
+    """
+    This is the form that is used to display things on the projector.
+    """
 
-    def __init__(self, parent , screens):
+    def __init__(self, parent, screens):
+        """
+        The constructor for the display form.
+
+        ``parent``
+            The parent widget.
+
+        ``screens``
+            The list of screens.
+        """
         QtGui.QWidget.__init__(self, parent)
         self.setWindowTitle(u'OpenLP Display')
         self.screens = screens
@@ -37,7 +49,7 @@ class MainDisplay(QtGui.QWidget):
         self.display.setScaledContents(True)
         self.layout.addWidget(self.display)
         self.displayBlank = False
-        self.blankFrame= None
+        self.blankFrame = None
         self.alertactive = False
         self.alerttext = u''
         self.alertTab = None
@@ -62,12 +74,22 @@ class MainDisplay(QtGui.QWidget):
             self.showFullScreen()
         else:
             self.showMinimized()
+        #Build a custom splash screen
+        self.InitialFrame = QtGui.QImage(screen[u'size'].width(),
+            screen[u'size'].height(), QtGui.QImage.Format_ARGB32_Premultiplied)
+        splash_image = QtGui.QImage(u':/graphics/openlp-splash-screen.png')
+        painter_image = QtGui.QPainter()
+        painter_image.begin(self.InitialFrame)
+        painter_image.fillRect(self.InitialFrame.rect(), QtCore.Qt.white)
+        painter_image.drawImage((screen[u'size'].width() - splash_image.width()) / 2,
+                                (screen[u'size'].height() - splash_image.height()) / 2  , splash_image)
+        self.frameView(self.InitialFrame)
+        #Build a Black screen
         painter = QtGui.QPainter()
         self.blankFrame = QtGui.QImage(screen[u'size'].width(),
             screen[u'size'].height(), QtGui.QImage.Format_ARGB32_Premultiplied)
         painter.begin(self.blankFrame)
         painter.fillRect(self.blankFrame.rect(), QtCore.Qt.black)
-        self.frameView(self.blankFrame)
 
     def frameView(self, frame):
         """

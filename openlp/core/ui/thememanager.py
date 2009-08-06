@@ -100,6 +100,10 @@ class ThemeManager(QtGui.QWidget):
             except:
                 #if not present do not worry
                 pass
+            #As we do not reload the themes push out the change
+            self.parent.EventManager.post_event(Event(EventType.ThemeListChanged))
+            self.parent.ServiceManagerContents.updateThemeList(self.getThemes())
+            self.parent.settingsForm.ThemesTab.updateThemeList(self.getThemes())
 
     def onExportTheme(self):
         pass

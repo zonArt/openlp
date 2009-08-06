@@ -96,3 +96,4 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
                 return False
         else:
             return QtGui.QDialog.accept(self)
+

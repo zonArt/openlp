@@ -28,9 +28,7 @@ from bibleOSISimpl import BibleOSISImpl
 from bibleCSVimpl import BibleCSVImpl
 from bibleDBimpl import BibleDBImpl
 from bibleHTTPimpl import BibleHTTPImpl
-
-#from openlp.plugins.bibles.lib.tables import *
-#from openlp.plugins.bibles.lib.classes import *
+from openlp.core.lib import Receiver
 
 class BibleMode(object):
     Full = 1
@@ -67,6 +65,15 @@ class BibleManager(object):
         self.bibleSuffix = u'sqlite'
         self.dialogobject = None
         self.reload_bibles()
+
+    def set_media_manager(self, media):
+        """
+        Sets the reference to the media manager.
+
+        ``media``
+            The reference to the media manager.
+        """
+        self.media = media
 
     def reload_bibles(self):
         log.debug(u'Reload bibles')
@@ -228,8 +235,7 @@ class BibleManager(object):
         Advanced Search, and when the mode is ``BibleMode.Partial``
         this method returns all the bibles for the Quick Search.
 
-        ``mode``
-            Defaults to ``BibleMode.Full``. The Bible mode.
+c
         """
         log.debug(u'get_bibles')
         bible_list = []
@@ -293,17 +299,24 @@ class BibleManager(object):
         Returns a list of verses for a given Book, Chapter and ranges of verses.
         If the end verse(everse) is less then the start verse(sverse)
         then only one verse is returned
-        bible        - Which bible to use.
+
+        ``bible``
+            The name of the bible to be used
+
         Rest can be guessed at !
         """
         text  = []
+        self.media.setQuickMsg1(u'')
+        self.media.setQuickMsg2(u'')
         log.debug(u'get_verse_text %s,%s,%s,%s,%s,%s',  bible, bookname,  schapter, echapter, sverse, everse)
-        if not self.bible_http_cache[bible] == None:
-            # check to see if book/chapter exists
+        # check to see if book/chapter exists fow HTTP bibles and load cache if necessary
+        if self.bible_http_cache[bible] is not None:
             book= self.bible_db_cache[bible].get_bible_book(bookname)
             if book == None:
+                self.media.setQuickMsg1(u'Downloading')
                 log.debug(u'get_verse_text : new book')
-                for chapter in range(schapter, echapter+1):
+                for chapter in range(schapter, echapter + 1):
+                    self.media.setQuickMsg2(u'%s: %s'% (bookname, chapter))
                     search_results = self.bible_http_cache [bible].get_bible_chapter(bible, 0, bookname, chapter)
                     if search_results.has_verselist() :
                         ## We have found a book of the bible lets check to see if it was there.
@@ -325,35 +338,39 @@ class BibleManager(object):
                             ## Book exists check chapter and texts only.
                             v = self.bible_db_cache[bible].get_bible_chapter(book.id, chapter)
                             if v == None:
+                                self.media.setQuickMsg2(u'%s: %s'%(bookname, chapter))
                                 self.bible_db_cache[bible].create_chapter(book.id, \
                                                                           chapter, \
                                                                           search_results.get_verselist())
             else:
                 log.debug(u'get_verse_text : old book')
-                for chapter in range(schapter, echapter+1):
+                for chapter in range(schapter, echapter + 1):
                     v = self.bible_db_cache[bible].get_bible_chapter(book.id, chapter)
                     if v == None:
                         try:
+                            self.media.setQuickMsg1(u'Downloading')
+                            self.media.setQuickMsg2(u'%s: %s'% (bookname, chapter))
                             search_results = self.bible_http_cache [bible].get_bible_chapter(bible, book.id, bookname, chapter)
-                            self.bible_db_cache[bible].create_chapter(book.id, \
-                                                                      search_results.get_chapter(),\
-                                                                      search_results.get_verselist())
+                            if search_results.has_verselist():
+                                self.bible_db_cache[bible].create_chapter(book.id, \
+                                                                          search_results.get_chapter(),\
+                                                                          search_results.get_verselist())
                         except :
                             log.error(u'Errow thrown %s', sys.exc_info()[1])
-
+        #Now get verses from database
         if schapter == echapter:
             text = self.bible_db_cache[bible].get_bible_text(bookname, schapter, sverse, everse)
         else:
             for i in range (schapter, echapter + 1):
                 if i == schapter:
                     start = sverse
-                    end = self.get_book_verse_count(bible, bookname,i )[0]
+                    end = self.get_book_verse_count(bible, bookname, i)
                 elif i == echapter:
                     start = 1
                     end = everse
                 else:
                     start = 1
-                    end = self.get_book_verse_count(bible, bookname,i )[0]
+                    end = self.get_book_verse_count(bible, bookname, i)
 
                 txt = self.bible_db_cache[bible].get_bible_text(bookname, i, start, end)
                 text.extend(txt)

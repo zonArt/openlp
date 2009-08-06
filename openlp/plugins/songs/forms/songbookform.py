@@ -49,3 +49,4 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
             return False
         else:
             return QtGui.QDialog.accept(self)
+

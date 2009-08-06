@@ -41,9 +41,38 @@ class ServiceManagerList(QtGui.QTreeWidget):
             if event.key() == QtCore.Qt.Key_Enter:
                 self.parent.makeLive()
                 event.accept()
+            elif event.key() == QtCore.Qt.Key_Home:
+                self.parent.onServiceTop()
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_End:
+                self.parent.onServiceEnd()
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_PageUp:
+                self.parent.onServiceUp()
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_PageDown:
+                self.parent.onServiceDown()
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_Up:
+                self.parent.onMoveSelectionUp()
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_Down:
+                self.parent.onMoveSelectionDown()
+                event.accept()
             event.ignore()
         else:
             event.ignore()
+
+class Iter(QtGui.QTreeWidgetItemIterator):
+  def __init__(self, *args):
+        QtGui.QTreeWidgetItemIterator.__init__(self, *args)
+  def next(self):
+        self.__iadd__(1)
+        value = self.value()
+        if value:
+            return self.value()
+        else:
+            return None
 
 class ServiceManager(QtGui.QWidget):
     """
@@ -134,6 +163,52 @@ class ServiceManager(QtGui.QWidget):
         self.servicePath = self.config.get_data_path()
         self.service_theme = self.config.get_config(u'theme service theme', u'')
 
+    def onMoveSelectionUp(self):
+        """
+        Moves the selection up the window
+        Called by the up arrow
+        """
+        it = Iter(self.ServiceManagerList)
+        item = it.value()
+        tempItem = None
+        setLastItem = False
+        while item is not None:
+            if item.isSelected() and tempItem is None:
+                setLastItem = True
+                item.setSelected(False)
+            if item.isSelected():
+                #We are on the first record
+                if tempItem is not None:
+                    tempItem.setSelected(True)
+                    item.setSelected(False)
+            else:
+                tempItem = item
+            lastItem = item
+            item = it.next()
+        #Top Item was selected so set the last one
+        if setLastItem:
+            lastItem.setSelected(True)
+
+    def onMoveSelectionDown(self):
+        """
+        Moves the selection down the window
+        Called by the down arrow
+        """
+        it = Iter(self.ServiceManagerList)
+        item = it.value()
+        firstItem = item
+        setSelected = False
+        while item is not None:
+            if setSelected:
+                setSelected = False
+                item.setSelected(True)
+            elif item.isSelected():
+                item.setSelected(False)
+                setSelected = True
+            item = it.next()
+        if setSelected:
+            firstItem.setSelected(True)
+
     def collapsed(self, item):
         """
         Record if an item is collapsed
@@ -159,7 +234,7 @@ class ServiceManager(QtGui.QWidget):
             temp = self.serviceItems[item]
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(0, temp)
-            self.repaintServiceList()
+            self.repaintServiceList(0, count)
         self.parent.OosChanged(False, self.serviceName)
 
     def onServiceUp(self):
@@ -172,7 +247,7 @@ class ServiceManager(QtGui.QWidget):
             temp = self.serviceItems[item]
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(item - 1, temp)
-            self.repaintServiceList()
+            self.repaintServiceList(item - 1 ,  count)
         self.parent.OosChanged(False, self.serviceName)
 
     def onServiceDown(self):
@@ -185,7 +260,7 @@ class ServiceManager(QtGui.QWidget):
             temp = self.serviceItems[item]
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(item + 1, temp)
-            self.repaintServiceList()
+            self.repaintServiceList(item + 1 ,  count)
         self.parent.OosChanged(False, self.serviceName)
 
     def onServiceEnd(self):
@@ -197,7 +272,7 @@ class ServiceManager(QtGui.QWidget):
             temp = self.serviceItems[item]
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(len(self.serviceItems), temp)
-            self.repaintServiceList()
+            self.repaintServiceList(len(self.serviceItems) - 1, count)
         self.parent.OosChanged(False, self.serviceName)
 
     def onNewService(self):
@@ -216,36 +291,36 @@ class ServiceManager(QtGui.QWidget):
         item, count = self.findServiceItem()
         if item is not -1:
             self.serviceItems.remove(self.serviceItems[item])
-            self.repaintServiceList()
+            self.repaintServiceList(0, 0)
         self.parent.OosChanged(False, self.serviceName)
 
-    def repaintServiceList(self):
+    def repaintServiceList(self, serviceItem,  serviceItemCount):
         """
         Clear the existing service list and prepaint all the items
         Used when moving items as the move takes place in supporting array,
         and when regenerating all the items due to theme changes
         """
-        #Correct order of idems in array
+        #Correct order of items in array
         count = 1
         for item in self.serviceItems:
             item[u'order'] = count
             count += 1
         #Repaint the screen
         self.ServiceManagerList.clear()
-        for item in self.serviceItems:
+        for itemcount, item in enumerate(self.serviceItems):
             serviceitem = item[u'data']
             treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
             treewidgetitem.setText(0,serviceitem.title)
             treewidgetitem.setIcon(0,serviceitem.iconic_representation)
             treewidgetitem.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(item[u'order']))
             treewidgetitem.setExpanded(item[u'expanded'])
-            count = 0
-            for frame in serviceitem.frames:
+            for count , frame in enumerate(serviceitem.frames):
                 treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
                 text = frame[u'title']
                 treewidgetitem1.setText(0,text[:40])
                 treewidgetitem1.setData(0, QtCore.Qt.UserRole,QtCore.QVariant(count))
-                count = count + 1
+                if serviceItem == itemcount and serviceItemCount == count:
+                   self.ServiceManagerList.setCurrentItem(treewidgetitem1)
 
     def onSaveService(self):
         """
@@ -323,7 +398,7 @@ class ServiceManager(QtGui.QWidget):
         """
         Set the theme for the current service
         """
-        self.service_theme = self.ThemeComboBox.currentText()
+        self.service_theme = unicode(self.ThemeComboBox.currentText())
         self.parent.RenderManager.set_service_theme(self.service_theme)
         self.config.set_config(u'theme service theme', self.service_theme)
         self.regenerateServiceItems()

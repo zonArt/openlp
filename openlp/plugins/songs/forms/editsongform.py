@@ -248,30 +248,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         row = self.TopicsListView.row(item)
         self.TopicsListView.takeItem(row)
 
-#    def onAddAuthorsButtonClicked(self):
-#        """
-#        Slot documentation goes here.
-#        """
-#        self.authors_form.load_form()
-#        self.authors_form.exec_()
-#        self.loadAuthors()
-#
-#    def onAddTopicButtonClicked(self):
-#        """
-#        Slot documentation goes here.
-#        """
-#        self.topics_form.load_form()
-#        self.topics_form.exec_()
-#        self.loadTopics()
-#
-#    def onAddSongBookButtonClicked(self):
-#        """
-#        Slot documentation goes here.
-#        """
-#        self.song_book_form.load_form()
-#        self.song_book_form.exec_()
-#        self.loadBooks()
-
     def onSongBookComboChanged(self, item):
         if item == 0:
             self.song.song_book_id = 0

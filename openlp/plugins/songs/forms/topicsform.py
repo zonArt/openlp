@@ -47,3 +47,4 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
             return False
         else:
             return QtGui.QDialog.accept(self)
+
