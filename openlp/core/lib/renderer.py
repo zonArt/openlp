@@ -154,11 +154,6 @@ class Renderer(object):
                 text.append(line)
         #print text
         split_text = self.pre_render_text(text)
-#        print "-----------------------------"
-#        print split_text
-#        split_text = self._split_set_of_lines(text, False)
-#        print "-----------------------------"
-#        print split_text
         log.debug(u'format_slide - End')
         return split_text
 
@@ -168,7 +163,7 @@ class Renderer(object):
         line_width = self._rect.width() - self._right_margin
         #number of lines on a page - adjust for rounding up.
         #print self._rect.height() ,  metrics.height(),  int(self._rect.height() / metrics.height())
-        page_length = int(self._rect.height() / metrics.height()) - 1
+        page_length = int(self._rect.height() / metrics.height() - 2 ) - 1
         ave_line_width = line_width / metrics.averageCharWidth()
 #        print "A", ave_line_width
         ave_line_width = int(ave_line_width + (ave_line_width * 0.5))
@@ -311,73 +306,6 @@ class Renderer(object):
         self._bg_frame_small = self._bg_frame.scaled(QtCore.QSize(280, 210), QtCore.Qt.KeepAspectRatio,
             QtCore.Qt.SmoothTransformation)
         log.debug(u'render background End')
-
-#    def _split_set_of_lines(self, lines, footer):
-#        """
-#        Given a list of lines, decide how to split them best if they don't all
-#        fit on the screen. This is done by splitting at 1/2, 1/3 or 1/4 of the
-#        set. If it doesn't fit, even at this size, just split at each
-#        opportunity. We'll do this by getting the bounding box of each line,
-#        and then summing them appropriately.
-#
-#        Returns a list of [lists of lines], one set for each screenful.
-#
-#        ``lines``
-#            The lines of text to split.
-#
-#        ``footer``
-#            The footer text.
-#        """
-#        bboxes = []
-#        for line in lines:
-#            bboxes.append(self._render_and_wrap_single_line(line, footer))
-#        numlines = len(lines)
-#        bottom = self._rect.bottom()
-#        for ratio in (numlines,  numlines/2, numlines/3, numlines/4):
-#            good = 1
-#            startline = 0
-#            endline = startline + ratio
-#            while (endline <= numlines and endline != 0):
-#                by = 0
-#                for (x,y) in bboxes[startline:endline]:
-#                    by += y
-#                if by > bottom:
-#                    good = 0
-#                    break
-#                startline += ratio
-#                endline = startline + ratio
-#            if good == 1:
-#                break
-#        retval = []
-#        numlines_per_page = ratio
-#        if good:
-#            c = 0
-#            thislines = []
-#            while c < numlines:
-#                thislines.append(lines[c])
-#                c += 1
-#                if len(thislines) == numlines_per_page:
-#                    retval.append(thislines)
-#                    thislines = []
-#            if len(thislines) > 0:
-#                retval.append(thislines)
-#        else:
-#            # print "Just split where you can"
-#            retval = []
-#            startline = 0
-#            endline = startline + 1
-#            while (endline <= numlines):
-#                by = 0
-#                for (x,y) in bboxes[startline:endline]:
-#                    by += y
-#                if by > bottom:
-#                    retval.append(lines[startline:endline-1])
-#                    startline = endline-1
-#                    # gets incremented below
-#                    endline = startline
-#                    by = 0
-#                endline += 1
-#        return retval
 
     def _correctAlignment(self, rect, bbox):
         """

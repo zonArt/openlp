@@ -161,7 +161,7 @@ class ServiceManager(QtGui.QWidget):
         # Last little bits of setting up
         self.config = PluginConfig(u'ServiceManager')
         self.servicePath = self.config.get_data_path()
-        self.service_theme = self.config.get_config(u'theme service theme', u'')
+        self.service_theme = unicode(self.config.get_config(u'theme service theme', u''))
 
     def onMoveSelectionUp(self):
         """
@@ -412,7 +412,11 @@ class ServiceManager(QtGui.QWidget):
 
     def addServiceItem(self, item):
         """
-        Add an item to the list
+        Add a Service item to the list
+
+        ``item``
+            Service Item to be added
+
         """
         self.serviceItems.append({u'data': item, u'order': len(self.serviceItems)+1, u'expanded':True})
         treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
@@ -465,13 +469,21 @@ class ServiceManager(QtGui.QWidget):
     def dragEnterEvent(self, event):
         """
         Accept Drag events
+
+        ``event``
+            Handle of the event pint passed
+
         """
         event.accept()
 
     def dropEvent(self, event):
         """
-        Handle the release of the event and trigger the plugin
-        to add the data
+        Receive drop event and trigger an internal event to get the
+        plugins to build and push the correct service item
+        The drag event payload carries the plugin name
+
+        ``event``
+            Handle of the event pint passed
         """
         link = event.mimeData()
         if link.hasText():
@@ -481,12 +493,16 @@ class ServiceManager(QtGui.QWidget):
     def updateThemeList(self, theme_list):
         """
         Called from ThemeManager when the Themes have changed
+
+        ``theme_list``
+            A list of current themes to be displayed
+
         """
         self.ThemeComboBox.clear()
         self.ThemeComboBox.addItem(u'')
         for theme in theme_list:
             self.ThemeComboBox.addItem(theme)
-        id = self.ThemeComboBox.findText(unicode(self.service_theme), QtCore.Qt.MatchExactly)
+        id = self.ThemeComboBox.findText(self.service_theme, QtCore.Qt.MatchExactly)
         # Not Found
         if id == -1:
             id = 0

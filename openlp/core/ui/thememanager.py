@@ -28,7 +28,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AmendThemeForm, ServiceManager
 from openlp.core.theme import Theme
-from openlp.core.lib import Event, EventType, EventManager, OpenLPToolbar, ThemeXML, Renderer,  translate,  file_to_xml,  buildIcon
+from openlp.core.lib import PluginConfig, Event, EventType, EventManager, OpenLPToolbar, ThemeXML, Renderer,  translate,  file_to_xml,  buildIcon
 from openlp.core.utils import ConfigHelper
 
 class ThemeManager(QtGui.QWidget):
@@ -72,6 +72,10 @@ class ThemeManager(QtGui.QWidget):
         self.path = os.path.join(ConfigHelper.get_data_path(), u'themes')
         self.checkThemesExists(self.path)
         self.amendThemeForm.path = self.path
+        # Last little bits of setting up
+        self.config = PluginConfig(u'themes')
+        self.servicePath = self.config.get_data_path()
+        self.global_theme = unicode(self.config.get_config(u'theme global theme', u''))
 
     def onAddTheme(self):
         self.amendThemeForm.loadTheme(None)
@@ -84,26 +88,32 @@ class ThemeManager(QtGui.QWidget):
             self.amendThemeForm.exec_()
 
     def onDeleteTheme(self):
+        self.global_theme = unicode(self.config.get_config(u'theme global theme', u''))
         item = self.ThemeListWidget.currentItem()
         if item is not None:
             theme = unicode(item.text())
-            th = theme +  u'.png'
-            row = self.ThemeListWidget.row(item)
-            self.ThemeListWidget.takeItem(row)
-            try:
-                os.remove(os.path.join(self.path, th))
-            except:
-                #if not present do not worry
-                pass
-            try:
-                shutil.rmtree(os.path.join(self.path, theme))
-            except:
-                #if not present do not worry
-                pass
-            #As we do not reload the themes push out the change
-            self.parent.EventManager.post_event(Event(EventType.ThemeListChanged))
-            self.parent.ServiceManagerContents.updateThemeList(self.getThemes())
-            self.parent.settingsForm.ThemesTab.updateThemeList(self.getThemes())
+            if theme == self.global_theme:
+                QtGui.QMessageBox.critical(self,
+                    translate(u'ThemeManager', u'Error'),
+                    translate(u'ThemeManager', u'You are unable to delete the default theme!'),
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+            else:
+                th = theme +  u'.png'
+                row = self.ThemeListWidget.row(item)
+                self.ThemeListWidget.takeItem(row)
+                try:
+                    os.remove(os.path.join(self.path, th))
+                except:
+                    #if not present do not worry
+                    pass
+                try:
+                    shutil.rmtree(os.path.join(self.path, theme))
+                except:
+                    #if not present do not worry
+                    pass
+                #As we do not reload the themes push out the change
+                #Reaload the list as the internal lists and events need to be triggered
+                self.loadThemes()
 
     def onExportTheme(self):
         pass
@@ -211,6 +221,9 @@ class ThemeManager(QtGui.QWidget):
         self.generateAndSaveImage(dir, themename, filexml)
 
     def checkVersion1(self, xmlfile):
+        """
+        Am I a version 1 theme
+        """
         log.debug(u'checkVersion1 ')
         theme = xmlfile
         tree = ElementTree(element=XML(theme)).getroot()
@@ -220,6 +233,11 @@ class ThemeManager(QtGui.QWidget):
             return True
 
     def migrateVersion122(self, filename, fullpath, xml_data):
+        """
+        Called by convert the xml data from version 1 format
+        to the current format.
+        New fields are defaulted but the new theme is useable
+        """
         log.debug(u'migrateVersion122 %s %s', filename, fullpath)
         theme = Theme(xml_data)
         newtheme = ThemeXML()
