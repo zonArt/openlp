@@ -267,41 +267,44 @@ class Renderer(object):
         log.debug(u'render background %s start', self._theme.background_type)
         painter = QtGui.QPainter()
         painter.begin(self._bg_frame)
-        if self._theme.background_type == u'solid':
-            painter.fillRect(self._frame.rect(), QtGui.QColor(self._theme.background_color))
-        elif self._theme.background_type == u'gradient':
-            # gradient
-            gradient = None
-            if self._theme.background_direction == u'horizontal':
-                w = int(self._frame.width()) / 2
-                # vertical
-                gradient = QtGui.QLinearGradient(w, 0, w, self._frame.height())
-            elif self._theme.background_direction == u'vertical':
-                h = int(self._frame.height()) / 2
-                # Horizontal
-                gradient = QtGui.QLinearGradient(0, h, self._frame.width(), h)
-            else:
-                w = int(self._frame.width()) / 2
-                h = int(self._frame.height()) / 2
-                # Circular
-                gradient = QtGui.QRadialGradient(w, h, w)
-            gradient.setColorAt(0, QtGui.QColor(self._theme.background_startColor))
-            gradient.setColorAt(1, QtGui.QColor(self._theme.background_endColor))
-            painter.setBrush(QtGui.QBrush(gradient))
-            rectPath = QtGui.QPainterPath()
-            max_x = self._frame.width()
-            max_y = self._frame.height()
-            rectPath.moveTo(0, 0)
-            rectPath.lineTo(0, max_y)
-            rectPath.lineTo(max_x, max_y)
-            rectPath.lineTo(max_x, 0)
-            rectPath.closeSubpath()
-            painter.drawPath(rectPath)
-        elif self._theme.background_type== u'image':
-            # image
-            painter.fillRect(self._frame.rect(), QtCore.Qt.black)
-            if self.bg_image is not None:
-                painter.drawImage(0 ,0 , self.bg_image)
+        if self._theme.background_mode == u'transparent':
+            painter.fillRect(self._frame.rect(), QtCore.Qt.transparent)
+        else:
+            if self._theme.background_type == u'solid':
+                painter.fillRect(self._frame.rect(), QtGui.QColor(self._theme.background_color))
+            elif self._theme.background_type == u'gradient':
+                # gradient
+                gradient = None
+                if self._theme.background_direction == u'horizontal':
+                    w = int(self._frame.width()) / 2
+                    # vertical
+                    gradient = QtGui.QLinearGradient(w, 0, w, self._frame.height())
+                elif self._theme.background_direction == u'vertical':
+                    h = int(self._frame.height()) / 2
+                    # Horizontal
+                    gradient = QtGui.QLinearGradient(0, h, self._frame.width(), h)
+                else:
+                    w = int(self._frame.width()) / 2
+                    h = int(self._frame.height()) / 2
+                    # Circular
+                    gradient = QtGui.QRadialGradient(w, h, w)
+                gradient.setColorAt(0, QtGui.QColor(self._theme.background_startColor))
+                gradient.setColorAt(1, QtGui.QColor(self._theme.background_endColor))
+                painter.setBrush(QtGui.QBrush(gradient))
+                rectPath = QtGui.QPainterPath()
+                max_x = self._frame.width()
+                max_y = self._frame.height()
+                rectPath.moveTo(0, 0)
+                rectPath.lineTo(0, max_y)
+                rectPath.lineTo(max_x, max_y)
+                rectPath.lineTo(max_x, 0)
+                rectPath.closeSubpath()
+                painter.drawPath(rectPath)
+            elif self._theme.background_type== u'image':
+                # image
+                painter.fillRect(self._frame.rect(), QtCore.Qt.black)
+                if self.bg_image is not None:
+                    painter.drawImage(0 ,0 , self.bg_image)
         painter.end()
         self._bg_frame_small = self._bg_frame.scaled(QtCore.QSize(280, 210), QtCore.Qt.KeepAspectRatio,
             QtCore.Qt.SmoothTransformation)

@@ -146,7 +146,11 @@ class ThemeManager(QtGui.QWidget):
                     if os.path.exists(theme):
                         (path, filename) = os.path.split(unicode(file))
                         textName = os.path.splitext(name)[0]
-                        item_name = QtGui.QListWidgetItem(textName)
+                        if textName == self.global_theme:
+                            name = (u'(%s):%s' % (translate(u'ThemeManager', u'default'), textName))
+                        else:
+                            name = textName
+                        item_name = QtGui.QListWidgetItem(name)
                         item_name.setIcon(buildIcon(theme))
                         item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(textName))
                         self.ThemeListWidget.addItem(item_name)
@@ -163,6 +167,7 @@ class ThemeManager(QtGui.QWidget):
         xml_file = os.path.join(self.path, unicode(themename), unicode(themename) + u'.xml')
         try:
             xml = file_to_xml(xml_file)
+            #print xml
         except:
             newtheme = ThemeXML()
             newtheme.new_document(u'New Theme')
@@ -173,7 +178,9 @@ class ThemeManager(QtGui.QWidget):
                 unicode(0), unicode(0), unicode(0))
             xml = newtheme.extract_xml()
         theme = ThemeXML()
+        #print theme
         theme.parse(xml)
+        #print "A ", theme
         theme.extend_image_filename(self.path)
         return theme
 
