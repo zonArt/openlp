@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
+
 import logging
 
 from PyQt4 import Qt, QtCore, QtGui
@@ -219,7 +220,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.AuthorRemoveButton.setEnabled(True)
 
     def onAuthorRemoveButtonClicked(self):
-        self.AuthorRemoveItem.setEnabled(False)
+        self.AuthorRemoveButton.setEnabled(False)
         item = self.AuthorsListView.currentItem()
         author_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         author = self.songmanager.get_author(author_id)
@@ -358,40 +359,41 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def processLyrics(self):
         log.debug(u'processLyrics')
-        sxml=SongXMLBuilder()
+        sxml = SongXMLBuilder()
         sxml.new_document()
         sxml.add_lyrics_to_song()
         count = 1
         text = u' '
         verse_order = u''
         for i in range (0, self.VerseListWidget.count()):
-            sxml.add_verse_to_lyrics(u'Verse', unicode(count),  unicode(self.VerseListWidget.item(i).text()))
+            sxml.add_verse_to_lyrics(u'Verse', unicode(count),
+                unicode(self.VerseListWidget.item(i).text()))
             text = text + unicode(self.VerseListWidget.item(i).text()) + u' '
-            verse_order = verse_order +unicode(count) + u' '
+            verse_order = verse_order + unicode(count) + u' '
             count += 1
         if self.song.verse_order is None:
             self.song.verse_order = verse_order
-        text =  text.replace(u'\'', u'')
-        text =  text.replace(u',', u'')
-        text =  text.replace(u';', u'')
-        text =  text.replace(u':', u'')
-        text =  text.replace(u'(', u'')
-        text =  text.replace(u')', u'')
-        text =  text.replace(u'{', u'')
-        text =  text.replace(u'}', u'')
-        text =  text.replace(u'?', u'')
+        text = text.replace(u'\'', u'')
+        text = text.replace(u',', u'')
+        text = text.replace(u';', u'')
+        text = text.replace(u':', u'')
+        text = text.replace(u'(', u'')
+        text = text.replace(u')', u'')
+        text = text.replace(u'{', u'')
+        text = text.replace(u'}', u'')
+        text = text.replace(u'?', u'')
         self.song.search_lyrics  = unicode(text)
         self.song.lyrics = unicode(sxml.extract_xml())
 
     def processTitle(self):
         log.debug(u'processTitle')
-        self.song.search_title =  self.song.search_title.replace(u'\'', u'')
-        self.song.search_title =  self.song.search_title.replace(u',', u'')
-        self.song.search_title =  self.song.search_title.replace(u';', u'')
-        self.song.search_title =  self.song.search_title.replace(u':', u'')
-        self.song.search_title =  self.song.search_title.replace(u'(', u'')
-        self.song.search_title =  self.song.search_title.replace(u')', u'')
-        self.song.search_title =  self.song.search_title.replace(u'{', u'')
-        self.song.search_title =  self.song.search_title.replace(u'}', u'')
-        self.song.search_title =  self.song.search_title.replace(u'?', u'')
-        self.song.search_title  = unicode(self.song.search_title)
+        self.song.search_title = self.song.search_title.replace(u'\'', u'')
+        self.song.search_title = self.song.search_title.replace(u',', u'')
+        self.song.search_title = self.song.search_title.replace(u';', u'')
+        self.song.search_title = self.song.search_title.replace(u':', u'')
+        self.song.search_title = self.song.search_title.replace(u'(', u'')
+        self.song.search_title = self.song.search_title.replace(u')', u'')
+        self.song.search_title = self.song.search_title.replace(u'{', u'')
+        self.song.search_title = self.song.search_title.replace(u'}', u'')
+        self.song.search_title = self.song.search_title.replace(u'?', u'')
+        self.song.search_title = unicode(self.song.search_title)

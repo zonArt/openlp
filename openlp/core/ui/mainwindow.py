@@ -129,20 +129,11 @@ class MainWindow(object):
         Hook to close the main window and display windows on exit
         """
         if self.oosNotSaved == True:
-            ret = QtGui.QMessageBox.question(self,
+            ret = QtGui.QMessageBox.question(None,
                 translate(u'mainWindow', u'Save Changes to Service?'),
                 translate(u'mainWindow', u'Your service has been changed, do you want to save those changes?'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Discard | QtGui.QMessageBox.Save),
                 QtGui.QMessageBox.Save)
-#
-#
-#            box = QtGui.QMessageBox()
-#            box.setWindowTitle(translate(u'mainWindow', u'Question?'))
-#            box.setText(translate(u'mainWindow', u'Save changes to Order of Service?'))
-#            box.setIcon(QtGui.QMessageBox.Question)
-#            box.setStandardButtons(QtGui.QMessageBox.Save | QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel);
-#            box.setDefaultButton(QtGui.QMessageBox.Save);
-#            ret = box.exec_()
             if ret == QtGui.QMessageBox.Save:
                 self.ServiceManagerContents.onSaveService()
                 self.mainDisplay.close()
