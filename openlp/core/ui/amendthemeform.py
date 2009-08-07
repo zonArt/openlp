@@ -108,16 +108,19 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         new_theme.new_document(theme_name)
         save_from = None
         save_to = None
-        if self.theme.background_type == u'solid':
-            new_theme.add_background_solid(unicode(self.theme.background_color))
-        elif self.theme.background_type == u'gradient':
-            new_theme.add_background_gradient(unicode(self.theme.background_startColor),
-                    unicode(self.theme.background_endColor), self.theme.background_direction)
+        if self.theme.background_mode == u'transparent':
+            new_theme.add_background_transparent()
         else:
-            (path, filename) =os.path.split(unicode(self.theme.background_filename))
-            new_theme.add_background_image(filename)
-            save_to= os.path.join(self.path, theme_name, filename )
-            save_from = self.theme.background_filename
+            if self.theme.background_type == u'solid':
+                new_theme.add_background_solid(unicode(self.theme.background_color))
+            elif self.theme.background_type == u'gradient':
+                new_theme.add_background_gradient(unicode(self.theme.background_startColor),
+                        unicode(self.theme.background_endColor), self.theme.background_direction)
+            else:
+                (path, filename) =os.path.split(unicode(self.theme.background_filename))
+                new_theme.add_background_image(filename)
+                save_to= os.path.join(self.path, theme_name, filename )
+                save_from = self.theme.background_filename
 
         new_theme.add_font(unicode(self.theme.font_main_name), unicode(self.theme.font_main_color),
                 unicode(self.theme.font_main_proportion), unicode(self.theme.font_main_override), u'main',
