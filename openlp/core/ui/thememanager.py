@@ -68,6 +68,10 @@ class ThemeManager(QtGui.QWidget):
         self.ThemeListWidget.setAlternatingRowColors(True)
         self.ThemeListWidget.setIconSize(QtCore.QSize(88,50))
         self.Layout.addWidget(self.ThemeListWidget)
+        #Signals
+        QtCore.QObject.connect(self.ThemeListWidget,
+           QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.changeGlobal)
+        #Variables
         self.themelist = []
         self.path = os.path.join(ConfigHelper.get_data_path(), u'themes')
         self.checkThemesExists(self.path)
@@ -76,6 +80,21 @@ class ThemeManager(QtGui.QWidget):
         self.config = PluginConfig(u'themes')
         self.servicePath = self.config.get_data_path()
         self.global_theme = unicode(self.config.get_config(u'theme global theme', u''))
+
+    def changeGlobal(self, index):
+        for count in range (0,  self.ThemeListWidget.count()):
+            item = self.ThemeListWidget.item(count)
+            oldName =  item.text()
+            #reset the old name
+            if oldName != unicode(item.data(QtCore.Qt.UserRole).toString()):
+                self.ThemeListWidget.item(count).setText(unicode(item.data(QtCore.Qt.UserRole).toString()))
+            #Set the new name
+            if count  == index.row():
+                self.global_theme = unicode(self.ThemeListWidget.item(count).text())
+                name = (u'(%s):%s' % (translate(u'ThemeManager', u'default'), self.global_theme))
+                self.ThemeListWidget.item(count).setText(name)
+                self.config.set_config(u'theme global theme', self.global_theme)
+                self.push_themes()
 
     def onAddTheme(self):
         self.amendThemeForm.loadTheme(None)
@@ -99,6 +118,7 @@ class ThemeManager(QtGui.QWidget):
                     translate(u'ThemeManager', u'You are unable to delete the default theme!'),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             else:
+                self.themelist.remove(theme)
                 th = theme +  u'.png'
                 row = self.ThemeListWidget.row(item)
                 self.ThemeListWidget.takeItem(row)
@@ -114,7 +134,7 @@ class ThemeManager(QtGui.QWidget):
                     pass
                 #As we do not reload the themes push out the change
                 #Reaload the list as the internal lists and events need to be triggered
-                self.loadThemes()
+                self.push_themes()
 
     def onExportTheme(self):
         pass
@@ -156,6 +176,9 @@ class ThemeManager(QtGui.QWidget):
                         item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(textName))
                         self.ThemeListWidget.addItem(item_name)
                         self.themelist.append(textName)
+        self.push_themes()
+
+    def push_themes(self):
         self.parent.EventManager.post_event(Event(EventType.ThemeListChanged))
         self.parent.ServiceManagerContents.updateThemeList(self.getThemes())
         self.parent.settingsForm.ThemesTab.updateThemeList(self.getThemes())

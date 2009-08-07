@@ -147,6 +147,8 @@ class ThemesTab(SettingsTab):
         """
         Called from ThemeManager when the Themes have changed
         """
+        #reload as may have been triggered by the ThemeManager
+        self.global_theme = self.config.get_config(u'theme global theme', u'')
         self.DefaultComboBox.clear()
         for theme in theme_list:
             self.DefaultComboBox.addItem(theme)
