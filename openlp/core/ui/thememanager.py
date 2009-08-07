@@ -84,7 +84,7 @@ class ThemeManager(QtGui.QWidget):
     def onEditTheme(self):
         item = self.ThemeListWidget.currentItem()
         if item is not None:
-            self.amendThemeForm.loadTheme(unicode(item.text()))
+            self.amendThemeForm.loadTheme(unicode(item.data(QtCore.Qt.UserRole).toString()))
             self.amendThemeForm.exec_()
 
     def onDeleteTheme(self):
@@ -92,7 +92,8 @@ class ThemeManager(QtGui.QWidget):
         item = self.ThemeListWidget.currentItem()
         if item is not None:
             theme = unicode(item.text())
-            if theme == self.global_theme:
+            # should be the same unless default
+            if theme != unicode(item.data(QtCore.Qt.UserRole).toString()):
                 QtGui.QMessageBox.critical(self,
                     translate(u'ThemeManager', u'Error'),
                     translate(u'ThemeManager', u'You are unable to delete the default theme!'),
