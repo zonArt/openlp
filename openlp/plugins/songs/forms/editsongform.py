@@ -122,6 +122,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def newSong(self):
         log.debug(u'New Song')
+        self.SongTabWidget.setCurrentIndex(0)
         self.song = Song()
         self.TitleEditItem.setText(u'')
         self.AlternativeEdit.setText(u'')
@@ -140,6 +141,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def loadSong(self, id):
         log.debug(u'Load Song')
+        self.SongTabWidget.setCurrentIndex(0)
         self.loadAuthors()
         self.loadTopics()
         self.loadBooks()
@@ -341,8 +343,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.loadBooks()
         self.loadTopics()
 
-    def onAccept(self):
-        log.debug(u'OnAccept')
+    def accept(self):
+        log.debug(u'accept')
         if not self._validate_song():
             return
         self.song.title = unicode(self.TitleEditItem.displayText())

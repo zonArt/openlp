@@ -380,11 +380,10 @@ class Ui_EditSongDialog(object):
         self.verticalLayout.addWidget(self.ButtonBox)
 
         self.retranslateUi(EditSongDialog)
-        self.SongTabWidget.setCurrentIndex(0)
         QtCore.QObject.connect(self.ButtonBox,
             QtCore.SIGNAL(u'rejected()'), EditSongDialog.close)
         QtCore.QObject.connect(self.ButtonBox,
-            QtCore.SIGNAL(u'accepted()'), EditSongDialog.close)
+            QtCore.SIGNAL(u'accepted()'), EditSongDialog.accept)
         QtCore.QMetaObject.connectSlotsByName(EditSongDialog)
         EditSongDialog.setTabOrder(self.SongTabWidget, self.TitleEditItem)
         EditSongDialog.setTabOrder(self.TitleEditItem, self.AlternativeEdit)
