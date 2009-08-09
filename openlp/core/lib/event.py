@@ -28,6 +28,7 @@ class EventType(object):
     # "Default" event - a non-event
     Default = 0
     # General application events
+    Ready = 10
     # Service events
     LoadServiceItem = 20
     # Preview events
@@ -43,6 +44,7 @@ class Event(object):
     """
     Provides an Event class to encapsulate events within openlp.org.
     """
-    def __init__(self, event_type=EventType.Default, payload=None):
+    def __init__(self, event_type=EventType.Default, payload=None, sender=None):
         self.event_type = event_type
         self.payload = payload
+        self.sender = sender

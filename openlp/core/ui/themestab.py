@@ -99,8 +99,6 @@ class ThemesTab(SettingsTab):
         QtCore.QObject.connect(self.DefaultComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onDefaultComboBoxChanged)
 
-        #self.DefaultListView.setScaledContents(True)
-
     def retranslateUi(self):
         self.GlobalGroupBox.setTitle(translate(u'ThemesTab', u'Global theme'))
         self.LevelGroupBox.setTitle(translate(u'ThemesTab', u'Theme level'))
@@ -138,9 +136,9 @@ class ThemesTab(SettingsTab):
         self.parent.RenderManager.set_global_theme(self.global_theme, self.global_style)
 
     def onDefaultComboBoxChanged(self, value):
-        self.global_theme = self.DefaultComboBox.currentText()
+        self.global_theme = unicode(self.DefaultComboBox.currentText())
         self.parent.RenderManager.set_global_theme(self.global_theme, self.global_style)
-        image = self.parent.ThemeManagerContents.getPreviewImage(unicode(self.global_theme))
+        image = self.parent.ThemeManagerContents.getPreviewImage(self.global_theme)
         preview = QtGui.QPixmap(unicode(image))
         display = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
         self.DefaultListView.setPixmap(display)
@@ -149,17 +147,19 @@ class ThemesTab(SettingsTab):
         """
         Called from ThemeManager when the Themes have changed
         """
+        #reload as may have been triggered by the ThemeManager
+        self.global_theme = self.config.get_config(u'theme global theme', u'')
         self.DefaultComboBox.clear()
         for theme in theme_list:
             self.DefaultComboBox.addItem(theme)
-        id = self.DefaultComboBox.findText(unicode(self.global_theme), QtCore.Qt.MatchExactly)
+        id = self.DefaultComboBox.findText(self.global_theme, QtCore.Qt.MatchExactly)
         if id == -1:
             id = 0 # Not Found
             self.global_theme = u''
         self.DefaultComboBox.setCurrentIndex(id)
         self.parent.RenderManager.set_global_theme(self.global_theme, self.global_style)
         if self.global_theme is not u'':
-            image = self.parent.ThemeManagerContents.getPreviewImage(unicode(self.global_theme))
+            image = self.parent.ThemeManagerContents.getPreviewImage(self.global_theme)
             preview = QtGui.QPixmap(unicode(image))
             display = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
             self.DefaultListView.setPixmap(display)

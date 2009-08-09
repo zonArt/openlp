@@ -25,10 +25,10 @@ import logging
 
 class EventManager(object):
     """
-    A mechanism to send events to all registered endpoints
-    the endpoints are registered and listen with a handle_event method
-    the endpoint will decide whether to do somthing with the event or ignore it
-
+    A mechanism to send events to all registered endpoints. The
+    endpoints are registered and listen with a handle_event method.
+    The endpoint will decide whether to do somthing with the event or
+    ignore it.
     """
     global log
     log = logging.getLogger(u'EventManager')

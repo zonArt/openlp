@@ -331,6 +331,11 @@ class ThemeXML(object):
         for element in iter:
             if len(element.getchildren()) > 0:
                 master = element.tag + u'_'
+            else:
+                #background transparent tags have no children so special case
+                if element.tag == u'background':
+                    for e in element.attrib.iteritems():
+                        setattr(self, element.tag + u'_' + e[0], e[1])
             if len(element.attrib) > 0:
                 for e in element.attrib.iteritems():
                     if master == u'font_' and e[0] == u'type':

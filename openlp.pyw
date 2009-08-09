@@ -71,7 +71,7 @@ class OpenLP(QtGui.QApplication):
         self.mainWindow = MainWindow(screens)
         self.mainWindow.show()
         # now kill the splashscreen
-        self.splash.finish(self.mainWindow.mainWindow)
+        self.splash.finish(self.mainWindow)
         sys.exit(app.exec_())
 
 if __name__ == u'__main__':
