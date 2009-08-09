@@ -24,9 +24,12 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, translate, buildIcon
 
 class SlideList(QtGui.QTableWidget):
-
-    def __init__(self,parent=None,name=None):
-        QtGui.QTableWidget.__init__(self,parent.Controller)
+    """
+    Customised version of QTableWidget which can respond to keyboard
+    events.
+    """
+    def __init__(self, parent=None, name=None):
+        QtGui.QTableWidget.__init__(self, parent.Controller)
         self.parent = parent
 
     def keyPressEvent(self, event):
@@ -56,7 +59,7 @@ class SlideController(QtGui.QWidget):
     global log
     log = logging.getLogger(u'SlideController')
 
-    def __init__(self,  parent, isLive=False):
+    def __init__(self, parent, isLive=False):
         """
         Set up the Slide Controller.
         """

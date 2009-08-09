@@ -60,10 +60,6 @@ class MainDisplay(QtGui.QWidget):
         Sets up the screen on a particular screen.
         @param (integer) screen This is the screen number.
         """
-        # Temporary fix until I can speak to Tim Bentley.
-        if screenNumber not in self.screens:
-            screenNumber = 0
-        # /Temporary fix
         screen = self.screens[screenNumber]
         if screen[u'number'] != screenNumber:
             # We will most probably never actually hit this bit, but just in
@@ -79,20 +75,23 @@ class MainDisplay(QtGui.QWidget):
         else:
             self.showMinimized()
         #Build a custom splash screen
-        self.InitialFrame = QtGui.QImage(screen[u'size'].width(),
-            screen[u'size'].height(), QtGui.QImage.Format_ARGB32_Premultiplied)
+        self.InitialFrame = QtGui.QImage(
+            screen[u'size'].width(), screen[u'size'].height(),
+            QtGui.QImage.Format_ARGB32_Premultiplied)
         splash_image = QtGui.QImage(u':/graphics/openlp-splash-screen.png')
         painter_image = QtGui.QPainter()
         painter_image.begin(self.InitialFrame)
         painter_image.fillRect(self.InitialFrame.rect(), QtCore.Qt.white)
-        painter_image.drawImage((screen[u'size'].width() - splash_image.width()) / 2,
-                                (screen[u'size'].height() - splash_image.height()) / 2,
-                                splash_image)
+        painter_image.drawImage(
+            (screen[u'size'].width() - splash_image.width()) / 2,
+            (screen[u'size'].height() - splash_image.height()) / 2,
+            splash_image)
         self.frameView(self.InitialFrame)
         #Build a Black screen
         painter = QtGui.QPainter()
-        self.blankFrame = QtGui.QImage(screen[u'size'].width(),
-            screen[u'size'].height(), QtGui.QImage.Format_ARGB32_Premultiplied)
+        self.blankFrame = QtGui.QImage(
+            screen[u'size'].width(), screen[u'size'].height(),
+            QtGui.QImage.Format_ARGB32_Premultiplied)
         painter.begin(self.blankFrame)
         painter.fillRect(self.blankFrame.rect(), QtCore.Qt.black)
 

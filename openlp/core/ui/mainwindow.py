@@ -22,10 +22,11 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.ui import AboutForm, SettingsForm, AlertForm, ServiceManager, \
-    ThemeManager, MainDisplay, SlideController
-from openlp.core.lib import translate, Plugin, MediaManagerItem, SettingsTab, \
-    EventManager, RenderManager, PluginConfig, SettingsManager, PluginManager
+from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
+    ServiceManager, ThemeManager, MainDisplay, SlideController
+from openlp.core.lib import translate, Plugin, MediaManagerItem, \
+    SettingsTab, EventManager, RenderManager, PluginConfig, \
+    SettingsManager, PluginManager
 
 class MainWindow(object):
     """
@@ -63,7 +64,7 @@ class MainWindow(object):
         #RenderManager needs to call ThemeManager and
         #ThemeManager needs to call RenderManager
         self.RenderManager = RenderManager(self.ThemeManagerContents,
-            self.screenList, int(self.generalConfig.get_config(u'Monitor', 0)))
+            self.screenList, self.getMonitorNumber())
         log.info(u'Load Plugins')
         #make the controllers available to the plugins
         self.plugin_helpers[u'preview'] = self.PreviewController
@@ -96,12 +97,25 @@ class MainWindow(object):
         log.info(u'Load Themes')
         self.ThemeManagerContents.loadThemes()
 
+    def getMonitorNumber(self):
+        """
+        Set up the default behaviour of the monitor configuration in
+        here. Currently it is set to default to monitor 0 if the saved
+        monitor number does not exist.
+        """
+        screen_number = int(self.generalConfig.get_config(u'Monitor', 0))
+        if screen_number not in self.screenList:
+            screen_number = 0
+        return screen_number
+
     def show(self):
         """
         Show the main form, as well as the display form
         """
         self.mainWindow.showMaximized()
-        self.mainDisplay.setup(self.settingsForm.GeneralTab.MonitorNumber)
+        screen_number = self.getMonitorNumber()
+        self.mainDisplay.setup(screen_number)
+        self.mainWindow.setFocus()
 
     def onHelpAboutItemClicked(self):
         """
@@ -120,7 +134,7 @@ class MainWindow(object):
         Show the Settings dialog
         """
         self.settingsForm.exec_()
-        screen_number = int(self.generalConfig.get_config(u'Monitor', 0))
+        screen_number = self.getMonitorNumber()
         self.RenderManager.update_display(screen_number)
         self.mainDisplay.setup(screen_number)
 
@@ -155,24 +169,22 @@ class MainWindow(object):
         log.info(u'cleanup plugins')
         self.plugin_manager.initialise_plugins()
 
-    def OosChanged(self, reset = False, oosName = None):
+    def OosChanged(self, reset=False, oosName=None):
         """
         Hook to change the title if the OOS has been changed
         reset - tells if the OOS has been cleared or saved
         oosName - is the name of the OOS (if it has one)
         """
+        if not oosName:
+            service_name = u'(Unsaved Service)'
+        else:
+            service_name = oosName
         if reset == True:
             self.oosNotSaved = False
-            if oosName is None:
-                title = self.mainTitle
-            else:
-                title = self.mainTitle + u' - (' + oosName + u')'
+            title = u'%s - %s' % (self.mainTitle, service_name)
         else:
             self.oosNotSaved = True
-            if oosName is None:
-                title = self.mainTitle + u' - *'
-            else:
-                title = self.mainTitle + u' - *(' + oosName + u')'
+            title = u'%s - %s*' % (self.mainTitle, service_name)
         self.mainWindow.setWindowTitle(title)
 
     def setupUi(self):
