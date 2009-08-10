@@ -28,7 +28,9 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AmendThemeForm, ServiceManager
 from openlp.core.theme import Theme
-from openlp.core.lib import PluginConfig, Event, EventType, EventManager, OpenLPToolbar, ThemeXML, Renderer,  translate,  file_to_xml,  buildIcon
+from openlp.core.lib import PluginConfig, Event, EventType, \
+    EventManager, OpenLPToolbar, ThemeXML, Renderer, translate, \
+    file_to_xml, buildIcon
 from openlp.core.utils import ConfigHelper
 
 class ThemeManager(QtGui.QWidget):
@@ -39,7 +41,7 @@ class ThemeManager(QtGui.QWidget):
     log = logging.getLogger(u'ThemeManager')
 
     def __init__(self, parent):
-        QtGui.QWidget.__init__(self)
+        QtGui.QWidget.__init__(self, parent)
         self.parent = parent
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
@@ -81,6 +83,9 @@ class ThemeManager(QtGui.QWidget):
         self.servicePath = self.config.get_data_path()
         self.global_theme = unicode(self.config.get_config(u'theme global theme', u''))
 
+    def getDefault(self):
+        return self.global_theme
+
     def changeGlobal(self, index):
         for count in range (0,  self.ThemeListWidget.count()):
             item = self.ThemeListWidget.item(count)
@@ -91,10 +96,10 @@ class ThemeManager(QtGui.QWidget):
             #Set the new name
             if count  == index.row():
                 self.global_theme = unicode(self.ThemeListWidget.item(count).text())
-                name = (u'(%s):%s' % (translate(u'ThemeManager', u'default'), self.global_theme))
+                name = u'%s (%s)' % (self.global_theme, translate(u'ThemeManager', u'default'))
                 self.ThemeListWidget.item(count).setText(name)
                 self.config.set_config(u'theme global theme', self.global_theme)
-                self.push_themes()
+                self.pushThemes()
 
     def onAddTheme(self):
         self.amendThemeForm.loadTheme(None)
@@ -134,7 +139,7 @@ class ThemeManager(QtGui.QWidget):
                     pass
                 #As we do not reload the themes push out the change
                 #Reaload the list as the internal lists and events need to be triggered
-                self.push_themes()
+                self.pushThemes()
 
     def onExportTheme(self):
         pass
@@ -168,7 +173,7 @@ class ThemeManager(QtGui.QWidget):
                         (path, filename) = os.path.split(unicode(file))
                         textName = os.path.splitext(name)[0]
                         if textName == self.global_theme:
-                            name = (u'(%s):%s' % (translate(u'ThemeManager', u'default'), textName))
+                            name = u'%s (%s)' % (textName, translate(u'ThemeManager', u'default'))
                         else:
                             name = textName
                         item_name = QtGui.QListWidgetItem(name)
@@ -176,12 +181,10 @@ class ThemeManager(QtGui.QWidget):
                         item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(textName))
                         self.ThemeListWidget.addItem(item_name)
                         self.themelist.append(textName)
-        self.push_themes()
+        self.pushThemes()
 
-    def push_themes(self):
+    def pushThemes(self):
         self.parent.EventManager.post_event(Event(EventType.ThemeListChanged))
-        self.parent.ServiceManagerContents.updateThemeList(self.getThemes())
-        self.parent.settingsForm.ThemesTab.updateThemeList(self.getThemes())
 
     def getThemes(self):
         return self.themelist
