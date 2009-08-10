@@ -93,7 +93,7 @@ class ImageToolbar(MasterToolbar):
         Go to the last slide.
         """
         if self.PreviewListWidget.rowCount() > 1:
-            self.timer_id =  self.startTimer(int(self.TimeoutSpinBox.value()) * 1000)
+            self.timer_id = self.startTimer(int(self.TimeoutSpinBox.value()) * 1000)
 
     def onStopLoop(self):
         """
