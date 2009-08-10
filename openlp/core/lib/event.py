@@ -27,6 +27,7 @@ class EventType(object):
     """
     # "Default" event - a non-event
     Default = 0
+    TriggerAlert = 1
     # General application events
     # Service events
     LoadServiceItem = 20
