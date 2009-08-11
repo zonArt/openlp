@@ -65,7 +65,7 @@ class SlideController(QtGui.QWidget):
         """
         self.toolbarList = {}
         self.previewList = {}
-        QtGui.QWidget.__init__(self, parent.mainWindow)
+        QtGui.QWidget.__init__(self, parent)
         self.isLive = isLive
         self.parent = parent
         self.Panel = QtGui.QWidget(parent.ControlSplitter)

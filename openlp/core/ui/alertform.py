@@ -93,11 +93,5 @@ class AlertForm(QtGui.QDialog):
         self.DisplayButton.setText(translate(u'AlertForm', u'Display'))
         self.CancelButton.setText(translate(u'AlertForm', u'Cancel'))
 
-    def load_settings(self):
-        pass
-
-    def save_settings(self):
-        pass
-
     def onDisplayClicked(self):
-        self.parent.mainDisplay.alert(self.parent.settingsForm.AlertsTab, self.AlertEntryEditItem.text())
+        self.parent.mainDisplay.displayAlert(self.AlertEntryEditItem.text())

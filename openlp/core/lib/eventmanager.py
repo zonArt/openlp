@@ -39,12 +39,14 @@ class EventManager(object):
         """
         self.endpoints = []
         log.info(u'Initialising')
+        self.processing = False
+        self.events = []
 
     def register(self, plugin):
         """
         Called by plugings who wish to receive event notifications
         """
-        log.debug(u'plugin %s registered with EventManager', plugin)
+        log.debug(u'Class %s registered with EventManager', plugin)
         self.endpoints.append(plugin)
 
     def post_event(self, event):
@@ -56,5 +58,12 @@ class EventManager(object):
 
         """
         log.debug(u'post event called for event %s', event.event_type)
-        for point in self.endpoints:
-            point.handle_event(event)
+        self.events.append(event)
+        if not self.processing:
+            self.processing = True
+            while len(self.events) > 0:
+                pEvent = self.events[0]
+                for point in self.endpoints:
+                    point.handle_event(pEvent)
+                self.events.remove(pEvent)
+            self.processing = False

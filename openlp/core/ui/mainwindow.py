@@ -404,8 +404,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.screenList = screens
         self.oosNotSaved = False
         self.settingsmanager = SettingsManager(screens)
-        self.mainDisplay = MainDisplay(None, screens)
         self.EventManager = EventManager()
+        self.mainDisplay = MainDisplay(self, screens)
         self.generalConfig = PluginConfig(u'General')
         self.alertForm = AlertForm(self)
         self.aboutForm = AboutForm()
@@ -476,11 +476,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Call the initialise method to setup plugins.
         log.info(u'initialise plugins')
         self.plugin_manager.initialise_plugins()
+        # Register the main form as an event consumer.
+        self.EventManager.register(self)
         # Once all components are initialised load the Themes
         log.info(u'Load Themes')
         self.ThemeManagerContents.loadThemes()
-        # Register the main form as an event consumer.
-        self.EventManager.register(self)
 
     def getMonitorNumber(self):
         """
@@ -552,7 +552,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def cleanUp(self):
         # Call the cleanup method to shutdown plugins.
         log.info(u'cleanup plugins')
-        self.plugin_manager.initialise_plugins()
+        self.plugin_manager.finalise_plugins()
 
     def OosChanged(self, reset=False, oosName=None):
         """

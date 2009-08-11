@@ -17,16 +17,19 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
-
+import logging
 from PyQt4 import QtCore, QtGui
 
 from time import sleep
-from openlp.core.lib import translate
+from openlp.core.lib import translate,  EventManager,  Event,  EventType
 
 class MainDisplay(QtGui.QWidget):
     """
     This is the form that is used to display things on the projector.
     """
+    global log
+    log=logging.getLogger(u'MainDisplay')
+    log.info(u'MainDisplay Loaded')
 
     def __init__(self, parent, screens):
         """
@@ -38,7 +41,9 @@ class MainDisplay(QtGui.QWidget):
         ``screens``
             The list of screens.
         """
-        QtGui.QWidget.__init__(self, parent)
+        log.debug(u'Initilisation started')
+        QtGui.QWidget.__init__(self, None)
+        self.parent = parent
         self.setWindowTitle(u'OpenLP Display')
         self.screens = screens
         self.layout = QtGui.QVBoxLayout(self)
@@ -51,9 +56,15 @@ class MainDisplay(QtGui.QWidget):
         self.displayBlank = False
         self.blankFrame = None
         self.alertactive = False
-        self.alerttext = u''
         self.alertTab = None
         self.timer_id = 0
+        # Register the main form as an event consumer.
+        self.parent.EventManager.register(self)
+
+    def handle_event(self, event):
+        log.debug(u'MainDisplay received event %s with payload %s'%(event.event_type, event.payload))
+        if event.event_type == EventType.TriggerAlert:
+            self.displayAlert(event.payload)
 
     def setup(self, screenNumber):
         """
@@ -116,42 +127,35 @@ class MainDisplay(QtGui.QWidget):
             self.displayBlank = False
             self.frameView(self.frame)
 
-    def alert(self, alertTab, text):
+    def displayAlert(self,  text=u''):
         """
         Called from the Alert Tab to display an alert
-        ``alertTab``
-            details from AlertTab
 
         ``text``
             display text
         """
-        self.alerttext = text
-        self.alertTab = alertTab
-        if len(text) > 0:
-            self.displayAlert()
-
-    def displayAlert(self):
+        alertTab = self.parent.settingsForm.AlertsTab
         alertframe = QtGui.QPixmap.fromImage(self.frame)
         painter = QtGui.QPainter(alertframe)
         top = alertframe.rect().height() * 0.9
         painter.fillRect(
             QtCore.QRect(0, top, alertframe.rect().width(), alertframe.rect().height() - top),
-            QtGui.QColor(self.alertTab.bg_color))
+            QtGui.QColor(alertTab.bg_color))
         font = QtGui.QFont()
-        font.setFamily(self.alertTab.font_face)
+        font.setFamily(alertTab.font_face)
         font.setBold(True)
         font.setPointSize(40)
         painter.setFont(font)
-        painter.setPen(QtGui.QColor(self.alertTab.font_color))
+        painter.setPen(QtGui.QColor(alertTab.font_color))
         x, y = (0, top)
         metrics = QtGui.QFontMetrics(font)
         painter.drawText(
-            x, y + metrics.height() - metrics.descent() - 1, self.alerttext)
+            x, y + metrics.height() - metrics.descent() - 1, text)
         painter.end()
         self.display.setPixmap(alertframe)
         # check to see if we have a timer running
         if self.timer_id == 0:
-            self.timer_id = self.startTimer(int(self.alertTab.timeout) * 1000)
+            self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
 
     def timerEvent(self, event):
         if event.timerId() == self.timer_id:

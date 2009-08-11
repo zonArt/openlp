@@ -144,6 +144,7 @@ class Renderer(object):
             The footer of the slide.
         """
         log.debug(u'format_slide - Start')
+#        print words
         verses = []
         words = words.replace(u'\r\n', u'\n')
         verses_text = words.split(u'\n\n')
@@ -152,8 +153,8 @@ class Renderer(object):
             lines = verse.split(u'\n')
             for line in lines:
                 text.append(line)
-        #print text
         split_text = self.pre_render_text(text)
+#        print split_text
         log.debug(u'format_slide - End')
         return split_text
 
@@ -162,11 +163,10 @@ class Renderer(object):
         #take the width work out approx how many characters and add 50%
         line_width = self._rect.width() - self._right_margin
         #number of lines on a page - adjust for rounding up.
-        #print self._rect.height() ,  metrics.height(),  int(self._rect.height() / metrics.height())
+#        print "Metrics ", line_width
         page_length = int(self._rect.height() / metrics.height() - 2 ) - 1
         ave_line_width = line_width / metrics.averageCharWidth()
-#        print "A", ave_line_width
-        ave_line_width = int(ave_line_width + (ave_line_width * 0.5))
+        ave_line_width = int(ave_line_width + (ave_line_width * 1))
 #        print "B", ave_line_width
         split_pages = []
         page = []
@@ -174,39 +174,36 @@ class Renderer(object):
         count = 0
         for line in text:
 #            print "C", line ,  len(line)
-            if len(line) > ave_line_width:
-                while len(line) > 0:
+            while len(line) > 0:
+#                print "C1", line ,  len(line)
+                if len(line) > ave_line_width:
                     pos = line.find(u' ', ave_line_width)
-#                    print "D2", len(line),  ave_line_width,  pos,  line[:pos]
                     split_text = line[:pos]
-#                    print "E", metrics.width(split_text,  -1), line_width
-                    while metrics.width(split_text,  -1) > line_width:
-                        #Find the next space to the left
-                        pos = line[:pos].rfind(u' ')
-#                        print "F", ave_line_width,  pos,  line[:pos]
-                        #no more spaces found
-                        if pos  == 0:
-                            split_text = line
-                            while metrics.width(split_text,  -1) > line_width:
-                                split_text = split_text[:-1]
-                            pos = len(split_text)
-                        else:
-                            split_text = line[:pos]
+                else:
+                    pos = len(line)
+                    split_text = line
+#                print "E", metrics.width(split_text,  -1), line_width
+                while metrics.width(split_text,  -1) > line_width:
+                    #Find the next space to the left
+                    pos = line[:pos].rfind(u' ')
+#                    print "F",  pos,  line[:pos]
+                    #no more spaces found
+                    if pos  == 0:
+                        split_text = line
+                        while metrics.width(split_text,  -1) > line_width:
+                            split_text = split_text[:-1]
+                        pos = len(split_text)
+                    else:
+                        split_text = line[:pos]
 #                    print "F1", split_text, line, pos
-                    split_lines.append(split_text)
-                    line = line[pos:]
-                    #Text fits in a line now
-                    if len(line) <= ave_line_width:
-                        split_lines.append(line)
-                        line = u''
-#                    count += 1
-#                    if count == 15:
-#                        a = c
-#                    print "G", split_lines
-#                    print "H", line
-            else:
-                split_lines.append(line)
-                line = u''
+                split_lines.append(split_text)
+                line = line[pos:]
+                #Text fits in a line now
+#                if len(line) <= line_width:
+#                    split_lines.append(line)
+#                    line = u''
+#                print "G", split_lines
+#                print "H", line
         #print "I", split_lines, page_length
         for line in split_lines:
             page.append(line)
@@ -397,26 +394,32 @@ class Renderer(object):
         # We draw the text to see how big it is and then iterate to make it fit
         # when we line wrap we do in in the "lyrics" style, so the second line is
         # right aligned with a "hanging indent"
-        words = line.split(u' ')
-        thisline = u' '.join(words)
-        lastword = len(words)
-        lines = []
+        #print "----------------------------"
+        #print line
+#        words = line.split(u' ')
+#        thisline = u' '.join(words)
+#        lastword = len(words)
+#        lines = []
         maxx = self._rect.width();
         maxy = self._rect.height();
-        while (len(words) > 0):
-            w , h = self._get_extent_and_render(thisline, footer)
-            rhs = w + x
-            if rhs < maxx - self._right_margin:
-                lines.append(thisline)
-                words = words[lastword:]
-                thisline = ' '.join(words)
-                lastword = len(words)
-            else:
-                lastword -= 1
-                thisline = ' '.join(words[:lastword])
+#        while (len(words) > 0):
+#            w , h = self._get_extent_and_render(thisline, footer)
+#            print "m", w, h, x, maxx
+#            rhs = w + x
+#            if rhs < maxx - self._right_margin:
+#                lines.append(thisline)
+#                words = words[lastword:]
+#                thisline = ' '.join(words)
+#                lastword = len(words)
+#            else:
+#                lastword -= 1
+#                thisline = ' '.join(words[:lastword])
+        lines = []
+        lines.append(line)
         startx = x
         starty = y
         rightextent = None
+        #print "inputs",  startx,  starty, maxx, maxy
         # dont allow alignment messing with footers
         if footer:
             align = 0
@@ -424,6 +427,7 @@ class Renderer(object):
         else:
             align = int(self._theme .display_horizontalAlign)
             shadow_offset = self._shadow_offset
+        #print lines
         for linenum in range(len(lines)):
             line = lines[linenum]
             #find out how wide line is
@@ -534,8 +538,6 @@ class Renderer(object):
         # setup defaults
         painter = QtGui.QPainter()
         painter.begin(self._frame)
-        # 'twould be more efficient to set this once when theme changes
-        # or p changes
         if footer :
             font = self.footerFont
         else:
