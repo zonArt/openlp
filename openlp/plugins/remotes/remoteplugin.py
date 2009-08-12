@@ -47,9 +47,9 @@ class RemotesPlugin(Plugin):
     def handle_datagram(self, datagram):
         pos = datagram.find(u':')
         event = unicode(datagram[:pos])
-        payyload = unicode(datagram[pos + 1:])
+        payload = unicode(datagram[pos + 1:])
         if event == u'Alert':
-            self.event_manager.post_event(Event(EventType.TriggerAlert, payyload))
+            self.event_manager.post_event(Event(EventType.TriggerAlert, u'RemotePlugin', payload))
 
 
 

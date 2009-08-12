@@ -356,7 +356,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.processTitle()
         self.songmanager.save_song(self.song)
         if self.title_change:
-            self.eventmanager.post_event(Event(EventType.LoadSongList))
+            self.eventmanager.post_event(Event(EventType.LoadSongList), u'EditSongForm')
         self.close()
 
     def processLyrics(self):

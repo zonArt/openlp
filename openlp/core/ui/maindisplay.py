@@ -62,9 +62,14 @@ class MainDisplay(QtGui.QWidget):
         self.parent.EventManager.register(self)
 
     def handle_event(self, event):
+        """
+        Accept Events for the system and If It's for Alert
+        action it and Return true to stop futher processing
+        """
         log.debug(u'MainDisplay received event %s with payload %s'%(event.event_type, event.payload))
         if event.event_type == EventType.TriggerAlert:
             self.displayAlert(event.payload)
+            return True
 
     def setup(self, screenNumber):
         """

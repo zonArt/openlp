@@ -140,4 +140,4 @@ class SongsPlugin(Plugin):
         if event.event_type == EventType.LoadSongList :
             log.debug(u'Load Load Song List Item received')
             self.media_item.displayResultsSong(self.songmanager.get_songs())
-        Plugin.handle_event(self, event)
+        return Plugin.handle_event(self, event)

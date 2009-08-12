@@ -20,21 +20,23 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import sys
 import logging
-from PyQt4 import QtNetwork, QtGui, QtCore
+import socket
 
 logging.basicConfig(level=logging.DEBUG,
     format=u'%(asctime)s:%(msecs)3d %(name)-15s %(levelname)-8s %(message)s',
-    datefmt=u'%m-%d %H:%M:%S', filename=u'openlp-cli.log', filemode=u'w')
+    datefmt=u'%m-%d %H:%M:%S', filename=u'remoteclient-cli.log', filemode=u'w')
 
 class OpenLPRemoteCli():
     global log
     log = logging.getLogger(u'OpenLP Remote Application')
-    log.info(u'Application Loaded')
 
     def __init__(self, argv):
         log.debug(u'Initialising')
+        host = u'localhost'
+        port = 4316
+        self.addr = (host, port)
         try:
-            self.tcpsocket = QtNetwork.QUdpSocket()
+            self.UDPSock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
             self.sendData()
         except:
             log.error(u'Errow thrown %s', sys.exc_info()[1])
@@ -42,8 +44,8 @@ class OpenLPRemoteCli():
 
     def sendData(self):
         text = "Alert:Wave to Zak, Superfly"
-        print self.tcpsocket
-        print self.tcpsocket.writeDatagram(text, QtNetwork.QHostAddress(QtNetwork.QHostAddress.Broadcast), 4316)
+        print self.UDPSock
+        print self.UDPSock.sendto(text, self.addr)
 
     def run(self):
         pass
