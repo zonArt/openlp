@@ -58,4 +58,4 @@ class CustomPlugin(Plugin):
         if event.event_type == EventType.ThemeListChanged:
             log.debug(u'New Theme request received')
             self.edit_custom_form.loadThemes(self.theme_manager.getThemes())
-        Plugin.handle_event(self, event)
+        return Plugin.handle_event(self, event)

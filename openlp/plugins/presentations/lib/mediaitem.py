@@ -21,25 +21,26 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-from openlp.plugins.presentations.lib import FileListData
 from openlp.core.lib import MediaManagerItem, ServiceItem, translate, BaseListWithDnD
 
 # We have to explicitly create separate classes for each plugin
 # in order for DnD to the Service manager to work correctly.
 class PresentationListView(BaseListWithDnD):
     def __init__(self, parent=None):
-        self.PluginName = u'Presentation'
+        self.PluginName = u'Presentations'
         BaseListWithDnD.__init__(self, parent)
 
 class PresentationMediaItem(MediaManagerItem):
     """
-    This is the custom media manager item for Custom Slides.
+    This is the Presentation media manager item for Presentation Items.
+    It can present files using Openoffice
     """
     global log
     log=logging.getLogger(u'PresentationsMediaItem')
     log.info(u'Presentations Media Item loaded')
 
-    def __init__(self, parent, icon, title):
+    def __init__(self, parent, icon, title, controllers):
+        self.controllers = controllers
         self.TranslationContext = u'PresentationPlugin'
         self.PluginTextShort = u'Presentation'
         self.ConfigSection = u'presentation'
@@ -76,10 +77,13 @@ class PresentationMediaItem(MediaManagerItem):
 
     def initialise(self):
         list = self.parent.config.load_list(u'presentations')
-        self.loadPresentationList(list)
-        self.DisplayTypeComboBox.addItem(u'Impress')
-#        self.DisplayTypeComboBox.addItem(u'Powerpoint')
-#        self.DisplayTypeComboBox.addItem(u'Keynote')
+        self.loadList(list)
+        for item in self.controllers:
+            #load the drop down selection
+            self.DisplayTypeComboBox.addItem(item)
+            #load the preview toolbars
+            #self.parent.preview_controller.registerToolbar(item,  self.controllers[item])
+            #self.parent.live_controller.registerToolbar(item,  self.controllers[item])
 
     def loadList(self, list):
         for file in list:
@@ -88,14 +92,21 @@ class PresentationMediaItem(MediaManagerItem):
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.ListView.addItem(item_name)
 
-    def loadPresentationList(self, list):
-        pass
-#        for files in list:
-#            self.PresentationsListData.addRow(files)
+    def onDeleteClick(self):
+        item = self.ListView.currentItem()
+        if item is not None:
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            row = self.ListView.row(item)
+            self.ListView.takeItem(row)
+            self.parent.config.set_list(self.ConfigSection, self.ListData.getFileList())
 
-    def onPresentationDeleteClick(self):
-        indexes = self.PresentationsListView.selectedIndexes()
-        for index in indexes:
-            current_row = int(index.row())
-            self.PresentationsListData.removeRow(current_row)
-        self.parent.config.set_list(u'Presentations', self.PresentationsListData.getFileList())
+    def generateSlideData(self, service_item):
+        items = self.ListView.selectedIndexes()
+        service_item.title = self.DisplayTypeComboBox.currentText()
+        service_item.shortname = unicode(self.DisplayTypeComboBox.currentText())
+        for item in items:
+            bitem =  self.ListView.item(item.row())
+            filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+            frame = QtGui.QImage(unicode(filename))
+            (path, name) = os.path.split(filename)
+            service_item.add_using_toolbar(path, name)

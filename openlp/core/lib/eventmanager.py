@@ -57,13 +57,16 @@ class EventManager(object):
             The event type to be triggered
 
         """
-        log.debug(u'post event called for event %s', event.event_type)
+        log.debug(u'post event called for event %s (%s)', event.event_type, event.sender)
         self.events.append(event)
         if not self.processing:
             self.processing = True
             while len(self.events) > 0:
                 pEvent = self.events[0]
                 for point in self.endpoints:
-                    point.handle_event(pEvent)
+                    status = point.handle_event(pEvent)
+                    #if call returns true message is finished with
+                    if status is not None and status :
+                        break
                 self.events.remove(pEvent)
             self.processing = False

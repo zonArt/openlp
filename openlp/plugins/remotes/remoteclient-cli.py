@@ -18,37 +18,54 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
+import socket
 import sys
-import logging
-from PyQt4 import QtNetwork, QtGui, QtCore
+from optparse import OptionParser
 
-logging.basicConfig(level=logging.DEBUG,
-    format=u'%(asctime)s:%(msecs)3d %(name)-15s %(levelname)-8s %(message)s',
-    datefmt=u'%m-%d %H:%M:%S', filename=u'openlp-cli.log', filemode=u'w')
 
-class OpenLPRemoteCli():
-    global log
-    log = logging.getLogger(u'OpenLP Remote Application')
-    log.info(u'Application Loaded')
+def sendData(options, message):
+    addr = (options.address, options.port)
+    try:
+        UDPSock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+        UDPSock.sendto(message, addr)
+        print u'message sent ', message ,  addr
+    except:
+        print u'Errow thrown ', sys.exc_info()[1]
 
-    def __init__(self, argv):
-        log.debug(u'Initialising')
-        try:
-            self.tcpsocket = QtNetwork.QUdpSocket()
-            self.sendData()
-        except:
-            log.error(u'Errow thrown %s', sys.exc_info()[1])
-            print u'Errow thrown ', sys.exc_info()[1]
+def format_message(options):
+    return u'%s:%s' % (options.event,  options.message)
 
-    def sendData(self):
-        text = "Alert:Wave to Zak, Superfly"
-        print self.tcpsocket
-        print self.tcpsocket.writeDatagram(text, QtNetwork.QHostAddress(QtNetwork.QHostAddress.Broadcast), 4316)
+def main():
+    usage = "usage: %prog [options] arg1 arg2"
+    parser = OptionParser(usage=usage)
+    parser.add_option("-v", "--verbose",
+                      action="store_true", dest="verbose", default=True,
+                      help="make lots of noise [%default]")
+    parser.add_option("-p", "--port",
+                      default=4316,
+                      help="IP Port number %default ")
+    parser.add_option("-a", "--address",
+                      help="Recipient address ")
+    parser.add_option("-e", "--event",
+                      default=u'Alert',
+                      help="Action to be undertaken")
+    parser.add_option("-m", "--message",
+                      help="Message to be passed for the action")
 
-    def run(self):
-        pass
+    (options, args) = parser.parse_args()
+    if len(args) > 0:
+        parser.print_help()
+        parser.error("incorrect number of arguments")
+    elif options.message is None:
+        parser.print_help()
+        parser.error("No message passed")
+    elif options.address is None:
+        parser.print_help()
+        parser.error("IP address missing")
+    else:
+        text = format_message(options)
+        sendData(options, text)
 
 if __name__ == u'__main__':
-    app = OpenLPRemoteCli(sys.argv)
-    app.run()
+    main()
 

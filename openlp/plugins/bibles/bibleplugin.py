@@ -82,4 +82,4 @@ class BiblePlugin(Plugin):
         if event.event_type == EventType.ThemeListChanged:
             log.debug(u'New Theme request received')
             self.bibles_tab.updateThemeList(self.theme_manager.getThemes())
-        Plugin.handle_event(self, event)
+        return Plugin.handle_event(self, event)

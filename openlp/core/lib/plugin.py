@@ -191,11 +191,14 @@ class Plugin(object):
         if event.event_type == EventType.LoadServiceItem and event.payload == self.dnd_id:
             log.debug(u'Load Service Item received')
             self.media_item.onAddClick()
+            return True
         if event.event_type == EventType.PreviewShow and event.payload == self.dnd_id:
             log.debug(u'Load Preview Item received')
             self.media_item.onPreviewClick()
+            return True
         if event.event_type == EventType.LiveShow and event.payload == self.dnd_id:
             log.debug(u'Load Live Show Item received')
+            return True
             self.media_item.onLiveClick()
 
     def about(self):
