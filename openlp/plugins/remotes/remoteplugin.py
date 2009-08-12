@@ -40,15 +40,17 @@ class RemotesPlugin(Plugin):
             QtCore.SIGNAL(u'readyRead()'), self.readData)
 
     def readData(self):
+        log.info(u'Remoted data has arrived')
         while self.server.hasPendingDatagrams():
             datagram,  host, port = self.server.readDatagram(self.server.pendingDatagramSize())
             self.handle_datagram(datagram)
 
     def handle_datagram(self, datagram):
+        log.info(u'Sending event %s ',  datagram)
         pos = datagram.find(u':')
-        event = unicode(datagram[:pos])
+        event = unicode(datagram[:pos].lower())
         payload = unicode(datagram[pos + 1:])
-        if event == u'Alert':
+        if event == u'alert':
             self.event_manager.post_event(Event(EventType.TriggerAlert, u'RemotePlugin', payload))
 
 
