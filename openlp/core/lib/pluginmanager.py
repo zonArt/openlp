@@ -86,18 +86,22 @@ class PluginManager(object):
                         __import__(modulename, globals(), locals(), [])
                     except ImportError, e:
                         log.error(u'Failed to import module %s on path %s for reason %s', modulename, path, e.args[0])
-        self.plugin_classes = Plugin.__subclasses__()
+        plugin_classes = Plugin.__subclasses__()
         self.plugins = []
+        self.plugin_list=[]
         plugin_objects = []
-        for p in self.plugin_classes:
+        for p in plugin_classes:
             try:
                 plugin = p(self.plugin_helpers)
                 log.debug(u'loaded plugin %s with helpers', unicode(p))
                 log.debug(u'Plugin: %s', unicode(p))
+                pList = {u'name': plugin.name, u'version':plugin.version, u'status': u'Inactive'}
                 if plugin.check_pre_conditions():
                     log.debug(u'Appending %s ', unicode(p))
                     plugin_objects.append(plugin)
                     eventmanager.register(plugin)
+                    pList[u'status'] = u'Active'
+                self.plugin_list.append(pList)
             except TypeError:
                 log.error(u'loaded plugin %s has no helpers', unicode(p))
         self.plugins = sorted(plugin_objects, self.order_by_weight)
