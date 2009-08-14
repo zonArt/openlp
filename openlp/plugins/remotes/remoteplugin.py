@@ -23,6 +23,7 @@ import sys
 from PyQt4 import QtNetwork, QtGui, QtCore
 
 from openlp.core.lib import Plugin, Event,  EventType
+from openlp.plugins.remotes.lib import RemoteTab
 
 class RemotesPlugin(Plugin):
 
@@ -35,9 +36,15 @@ class RemotesPlugin(Plugin):
         Plugin.__init__(self, u'Remotes', u'1.9.0', plugin_helpers)
         self.weight = -1
         self.server = QtNetwork.QUdpSocket()
-        self.server.bind(4316)
+        self.server.bind(int(self.config.get_config(u'remote port', 4316)))
         QtCore.QObject.connect(self.server,
             QtCore.SIGNAL(u'readyRead()'), self.readData)
+
+    def get_settings_tab(self):
+        """
+        Create the settings Tab
+        """
+        return RemoteTab()
 
     def readData(self):
         log.info(u'Remoted data has arrived')
