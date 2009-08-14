@@ -71,7 +71,7 @@ class PresentationPlugin(Plugin):
             #Check to see if we have uno installed
             import uno
             #openoffice = impressToolbar()
-            self.registerControllers(u'Impress', None)
+            #self.registerControllers(u'Impress', None)
         except:
             pass
         #If we have no controllers disable plugin
