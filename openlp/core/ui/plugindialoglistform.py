@@ -58,12 +58,12 @@ class PluginForm(QtGui.QDialog):
         """
         Load the plugin details into the screen
         """
-        for plugin in self.parent.plugin_manager.plugin_list:
+        for plugin in self.parent.plugin_manager.plugins:
             row = self.PluginViewList.rowCount()
             self.PluginViewList.setRowCount(row + 1)
-            item1 = QtGui.QTableWidgetItem(plugin[u'name'])
+            item1 = QtGui.QTableWidgetItem(plugin[u'plugin'].name)
             item1.setTextAlignment(QtCore.Qt.AlignVCenter)
-            item2 = QtGui.QTableWidgetItem(plugin[u'version'])
+            item2 = QtGui.QTableWidgetItem(plugin[u'plugin'].version)
             item2.setTextAlignment(QtCore.Qt.AlignVCenter)
             item3 = QtGui.QTableWidgetItem(translate(u'PluginForm', plugin[u'status']))
             item3.setTextAlignment(QtCore.Qt.AlignVCenter)
