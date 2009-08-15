@@ -58,6 +58,8 @@ class PluginForm(QtGui.QDialog):
         """
         Load the plugin details into the screen
         """
+        #self.PluginViewList.clear()
+        self.PluginViewList.setRowCount(0)
         for plugin in self.parent.plugin_manager.plugins:
             row = self.PluginViewList.rowCount()
             self.PluginViewList.setRowCount(row + 1)

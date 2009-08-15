@@ -93,4 +93,3 @@ class PresentationTab(SettingsTab):
     def save(self):
         self.config.set_config(u'Powerpoint', unicode(self.PowerpointCheckBox.checkState()))
         self.config.set_config(u'Impress', unicode(self.ImpressCheckBox.checkState()))
-        print self.PowerpointCheckBox.checkState(), unicode(self.PowerpointCheckBox.checkState())
