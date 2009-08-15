@@ -22,29 +22,13 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, translate, ServiceItem, \
-    SongXMLParser, contextMenuAction, contextMenuSeparator
+    SongXMLParser, contextMenuAction, contextMenuSeparator, BaseListWithDnD
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm
 
-class SongList(QtGui.QListWidget):
-
-    def __init__(self, parent=None, name=None):
-        QtGui.QListWidget.__init__(self,parent)
-
-    def mouseMoveEvent(self, event):
-        """
-        Drag and drop event does not care what data is selected
-        as the recepient will use events to request the data move
-        just tell it what plugin to call
-        """
-        if event.buttons() != QtCore.Qt.LeftButton:
-            return
-        drag = QtGui.QDrag(self)
-        mimeData = QtCore.QMimeData()
-        drag.setMimeData(mimeData)
-        mimeData.setText(u'Song')
-        dropAction = drag.start(QtCore.Qt.CopyAction)
-        if dropAction == QtCore.Qt.CopyAction:
-            self.close()
+class SongListView(BaseListWithDnD):
+    def __init__(self, parent=None):
+        self.PluginName = u'Song'
+        BaseListWithDnD.__init__(self, parent)
 
 class SongMediaItem(MediaManagerItem):
     """
@@ -97,7 +81,7 @@ class SongMediaItem(MediaManagerItem):
         self.addToolbarButton(translate(u'SongMediaItem', u'Song Maintenance'),
             translate(u'SongMediaItem', u'Maintain the lists of authors, topics and books'),
             ':/songs/song_maintenance.png', self.onSongMaintenanceClick, 'SongMaintenanceItem')
-        ## Add the songlist widget ##
+        ## Add the SongListView widget ##
         # Create the tab widget
         self.SongWidget = QtGui.QWidget(self)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
@@ -128,7 +112,7 @@ class SongMediaItem(MediaManagerItem):
         self.SearchLayout.addWidget(self.SearchTextButton, 3, 2, 1, 1)
         # Add the song widget to the page layout
         self.PageLayout.addWidget(self.SongWidget)
-        self.ListView = SongList()
+        self.ListView = SongListView()
         self.ListView.setAlternatingRowColors(True)
         self.ListView.setDragEnabled(True)
         self.ListView.setObjectName(u'ListView')
