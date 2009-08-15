@@ -19,6 +19,6 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 from mediaitem import PresentationMediaItem
 from presentationtab import PresentationTab
-from impressslidecontroller import impressToolbar
+from impresscontroller import impressController
 
-__all__ = ['PresentationMediaItem', 'PresentationTab', 'impressToolbar']
+__all__ = ['PresentationMediaItem', 'PresentationTab', 'impressController']

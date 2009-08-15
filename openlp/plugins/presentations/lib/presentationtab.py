@@ -20,14 +20,14 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from PyQt4 import Qt, QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate
+from openlp.core.lib import SettingsTab, translate,  str_to_bool
 
 class PresentationTab(SettingsTab):
     """
     PresentationsTab is the Presentations settings tab in the settings dialog.
     """
     def __init__(self):
-        SettingsTab.__init__(self, translate(u'PresentationTab', u'Presentation'), u'Presentation')
+        SettingsTab.__init__(self, translate(u'PresentationTab', u'Presentation'), u'Presentations')
 
     def setupUi(self):
         self.setObjectName(u'PresentationTab')
@@ -41,7 +41,6 @@ class PresentationTab(SettingsTab):
         self.PresentationLeftLayout.setObjectName(u'PresentationLeftLayout')
         self.PresentationLeftLayout.setSpacing(8)
         self.PresentationLeftLayout.setMargin(0)
-
         self.VerseDisplayGroupBox = QtGui.QGroupBox(self)
         self.VerseDisplayGroupBox.setObjectName(u'VerseDisplayGroupBox')
         self.VerseDisplayLayout = QtGui.QGridLayout(self.VerseDisplayGroupBox)
@@ -53,36 +52,25 @@ class PresentationTab(SettingsTab):
         self.VerseTypeLayout.setSpacing(8)
         self.VerseTypeLayout.setMargin(0)
         self.VerseTypeLayout.setObjectName(u'VerseTypeLayout')
-
         self.PowerpointCheckBox = QtGui.QCheckBox(self.VerseDisplayGroupBox)
+        self.PowerpointCheckBox.setTristate(False)
         self.PowerpointCheckBox.setObjectName(u'PowerpointCheckBox')
         self.VerseDisplayLayout.addWidget(self.PowerpointCheckBox, 0, 0, 1, 1)
-
-        self.PowerpointPath = QtGui.QLineEdit(self.VerseDisplayGroupBox)
-        self.PowerpointPath.setObjectName(u'PowerpointPath')
-        self.VerseDisplayLayout.addWidget(self.PowerpointPath, 1, 0, 1, 1)
-
         self.ImpressCheckBox = QtGui.QCheckBox(self.VerseDisplayGroupBox)
+        self.ImpressCheckBox.setTristate(False)
         self.ImpressCheckBox.setObjectName(u'ImpressCheckBox')
         self.VerseDisplayLayout.addWidget(self.ImpressCheckBox, 2, 0, 1, 1)
-
-        self.ImpressPath = QtGui.QLineEdit(self.VerseDisplayGroupBox)
-        self.ImpressPath.setObjectName(u'ImpressPath')
-        self.VerseDisplayLayout.addWidget(self.ImpressPath, 3, 0, 1, 1)
-
         self.PresentationThemeWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
         self.PresentationThemeWidget.setObjectName(u'PresentationThemeWidget')
         self.PresentationThemeLayout = QtGui.QHBoxLayout(self.PresentationThemeWidget)
         self.PresentationThemeLayout.setSpacing(8)
         self.PresentationThemeLayout.setMargin(0)
         self.PresentationThemeLayout.setObjectName(u'PresentationThemeLayout')
-
         self.PresentationLeftLayout.addWidget(self.VerseDisplayGroupBox)
         self.PresentationLeftSpacer = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.PresentationLeftLayout.addItem(self.PresentationLeftSpacer)
         self.PresentationLayout.addWidget(self.PresentationLeftWidget)
-
         self.PresentationRightWidget = QtGui.QWidget(self)
         self.PresentationRightWidget.setObjectName(u'PresentationRightWidget')
         self.PresentationRightLayout = QtGui.QVBoxLayout(self.PresentationRightWidget)
@@ -94,42 +82,15 @@ class PresentationTab(SettingsTab):
         self.PresentationRightLayout.addItem(self.PresentationRightSpacer)
         self.PresentationLayout.addWidget(self.PresentationRightWidget)
 
-        # Signals and slots
-        #QtCore.QObject.connect(self.NewChaptersCheckBox,
-           # QtCore.SIGNAL(u'stateChanged(int)'), self.onNewChaptersCheckBoxChanged)
-
     def retranslateUi(self):
         self.PowerpointCheckBox.setText(translate(u'PresentationTab', 'Powerpoint available:'))
         self.ImpressCheckBox.setText(translate(u'PresentationTab', 'Impress available:'))
-        self.PowerpointPath.setText(u'powerpoint.exe ')
-        self.ImpressPath.setText(u'openoffice.org -nologo -show ')
-
-    def onNewChaptersCheckBoxChanged(self):
-        check_state = self.NewChaptersCheckBox.checkState()
-        self.show_new_chapters = False
-        if check_state == 2: # we have a set value convert to True/False
-            self.show_new_chapters = True
-
 
     def load(self):
-        pass
-#        self.paragraph_style = (self.config.get_config(u'paragraph style', u'True'))
-#        self.show_new_chapters = (self.config.get_config(u'display new chapter', u"False'))
-#        self.display_style = int(self.config.get_config(u'display brackets', u'0'))
-#        self.Presentation_theme = int(self.config.get_config(u'Presentation theme', u'0'))
-#        self.Presentation_search = (self.config.get_config(u'search as type', u'True'))
-#        if self.paragraph_style:
-#            self.ParagraphRadioButton.setChecked(True)
-#        else:
-#            self.VerseRadioButton.setChecked(True)
-#        self.NewChaptersCheckBox.setChecked(self.show_new_chapters)
-#        self.DisplayStyleComboBox.setCurrentIndex(self.display_style)
-#        self.PresentationSearchCheckBox.setChecked(self.Presentation_search)
+        self.PowerpointCheckBox.setChecked(int(self.config.get_config(u'Powerpoint', 0)))
+        self.ImpressCheckBox.setChecked(int(self.config.get_config(u'Impress', 0)))
 
     def save(self):
-        pass
-#        self.config.set_config(u'paragraph style', unicode(self.paragraph_style))
-#        self.config.set_config(u'display new chapter', unicode(self.show_new_chapters))
-#        self.config.set_config(u'display brackets', unicode(self.display_style))
-#        self.config.set_config(u'search as type', unicode(self.Presentation_search))
-#        self.config.set_config(u'Presentation theme', unicode(self.Presentation_theme))
+        self.config.set_config(u'Powerpoint', unicode(self.PowerpointCheckBox.checkState()))
+        self.config.set_config(u'Impress', unicode(self.ImpressCheckBox.checkState()))
+        print self.PowerpointCheckBox.checkState(), unicode(self.PowerpointCheckBox.checkState())

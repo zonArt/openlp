@@ -24,7 +24,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin,  MediaManagerItem
-from openlp.plugins.presentations.lib import PresentationMediaItem, PresentationTab,  impressToolbar
+from openlp.plugins.presentations.lib import PresentationMediaItem, PresentationTab,  impressController
 
 class PresentationPlugin(Plugin):
 
@@ -66,17 +66,17 @@ class PresentationPlugin(Plugin):
         If Not do not install the plugin.
         """
         log.debug('check_pre_conditions')
-        impress = True
-        try:
-            #Check to see if we have uno installed
-            import uno
-            #openoffice = impressToolbar()
-            self.registerControllers(u'Impress', None)
-        except:
-            pass
+
+        if int(self.config.get_config(u'Powerpoint', 0)) == 2:
+            try:
+                #Check to see if we have uno installed
+                import uno
+                #openoffice = impressController()
+                self.registerControllers(u'Impress', None)
+            except:
+                pass
         #If we have no controllers disable plugin
         if len(self.controllers) > 0:
             return True
         else:
             return False
-#        return self.openoffice.checkOoPid()

@@ -23,7 +23,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
-    ServiceManager, ThemeManager, MainDisplay, SlideController
+    ServiceManager, ThemeManager, MainDisplay, SlideController,  \
+    PluginForm
 from openlp.core.lib import translate, Plugin, MediaManagerItem, \
     SettingsTab, EventManager, RenderManager, PluginConfig, \
     SettingsManager, PluginManager, EventType
@@ -203,6 +204,12 @@ class Ui_MainWindow(object):
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.ToolsAlertItem.setIcon(AlertIcon)
         self.ToolsAlertItem.setObjectName(u'ToolsAlertItem')
+        self.PluginItem = QtGui.QAction(MainWindow)
+        PluginIcon = QtGui.QIcon()
+        PluginIcon.addPixmap(QtGui.QPixmap(u':/tools/tools_alert.png'),
+            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.PluginItem.setIcon(AlertIcon)
+        self.PluginItem.setObjectName(u'PluginItem')
         self.HelpDocumentationItem = QtGui.QAction(MainWindow)
         ContentsIcon = QtGui.QIcon()
         ContentsIcon.addPixmap(QtGui.QPixmap(u':/system/system_help_contents.png'),
@@ -264,6 +271,7 @@ class Ui_MainWindow(object):
         self.OptionsMenu.addSeparator()
         self.OptionsMenu.addAction(self.OptionsSettingsItem)
         self.ToolsMenu.addAction(self.ToolsAlertItem)
+        self.ToolsMenu.addAction(self.PluginItem)
         self.ToolsMenu.addSeparator()
         self.ToolsMenu.addAction(self.ToolsAddToolItem)
         self.HelpMenu.addAction(self.HelpDocumentationItem)
@@ -362,6 +370,10 @@ class Ui_MainWindow(object):
         self.ToolsAlertItem.setStatusTip(
             translate(u'mainWindow', u'Show an alert message'))
         self.ToolsAlertItem.setShortcut(translate(u'mainWindow', u'F7'))
+        self.PluginItem.setText(translate(u'mainWindow', u'&Plugin'))
+        self.PluginItem.setStatusTip(
+            translate(u'mainWindow', u'List the Plugins'))
+        self.PluginItem.setShortcut(translate(u'mainWindow', u'Alt+F7'))
         self.HelpDocumentationItem.setText(
             translate(u'mainWindow', u'&User Guide'))
         self.HelpAboutItem.setText(translate(u'mainWindow', u'&About'))
@@ -408,6 +420,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.mainDisplay = MainDisplay(self, screens)
         self.generalConfig = PluginConfig(u'General')
         self.alertForm = AlertForm(self)
+        self.pluginForm = PluginForm(self)
         self.aboutForm = AboutForm()
         self.settingsForm = SettingsForm(self.screenList, self)
         # Set up the path with plugins
@@ -441,6 +454,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'), self.onHelpAboutItemClicked)
         QtCore.QObject.connect(self.ToolsAlertItem,
             QtCore.SIGNAL(u'triggered()'), self.onToolsAlertItemClicked)
+        QtCore.QObject.connect(self.PluginItem,
+            QtCore.SIGNAL(u'triggered()'), self.onPluginItemClicked)
         QtCore.QObject.connect(self.OptionsSettingsItem,
             QtCore.SIGNAL(u'triggered()'), self.onOptionsSettingsItemClicked)
         #warning cyclic dependency
@@ -513,6 +528,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Show the Alert form
         """
         self.alertForm.exec_()
+
+    def onPluginItemClicked(self):
+        """
+        Show the Plugin form
+        """
+        self.pluginForm.load()
+        self.pluginForm.exec_()
 
     def onOptionsSettingsItemClicked(self):
         """
