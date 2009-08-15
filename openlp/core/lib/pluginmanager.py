@@ -160,7 +160,8 @@ class PluginManager(object):
             The Import menu.
         """
         for plugin in self.plugins:
-            plugin[u'plugin'].add_import_menu_item(import_menu)
+            if plugin[u'status'] == u'Active':
+                plugin[u'plugin'].add_import_menu_item(import_menu)
 
     def hook_export_menu(self, export_menu):
         """
@@ -180,7 +181,8 @@ class PluginManager(object):
         initialise themselves.
         """
         for plugin in self.plugins:
-            plugin[u'plugin'].initialise()
+            if plugin[u'status'] == u'Active':
+                plugin[u'plugin'].initialise()
 
     def finalise_plugins(self):
         """
@@ -188,4 +190,5 @@ class PluginManager(object):
         clean themselves up
         """
         for plugin in self.plugins:
-            plugin[u'plugin'].finalise()
+            if plugin[u'status'] == u'Active':
+                plugin[u'plugin'].finalise()
