@@ -184,7 +184,7 @@ class ThemeManager(QtGui.QWidget):
         self.pushThemes()
 
     def pushThemes(self):
-        self.parent.EventManager.post_event(Event(EventType.ThemeListChanged,u'ThemeManager'))
+        self.parent.EventManager.post_event(Event(u'ThemeManager', EventType.ThemeListChanged, self.getThemes()))
 
     def getThemes(self):
         return self.themelist

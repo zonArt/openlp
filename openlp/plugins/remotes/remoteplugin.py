@@ -56,9 +56,9 @@ class RemotesPlugin(Plugin):
         log.info(u'Sending event %s ',  datagram)
         pos = datagram.find(u':')
         event = unicode(datagram[:pos].lower())
-        payload = unicode(datagram[pos + 1:])
+
         if event == u'alert':
-            self.event_manager.post_event(Event(EventType.TriggerAlert, u'RemotePlugin', payload))
+            self.event_manager.post_event(Event(u'RemotePlugin', EventType.TriggerAlert , unicode(datagram[pos + 1:])))
 
 
 

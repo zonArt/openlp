@@ -596,8 +596,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def handle_event(self, event):
         if event.event_type == EventType.ThemeListChanged:
-            themes = self.ThemeManagerContents.getThemes()
-            self.ServiceManagerContents.updateThemeList(themes)
-            self.settingsForm.ThemesTab.updateThemeList(themes)
+            self.ServiceManagerContents.updateThemeList(event.payload)
+            self.settingsForm.ThemesTab.updateThemeList(event.payload)
             self.DefaultThemeLabel.setText(self.defaultThemeText + \
                 self.ThemeManagerContents.getDefault())

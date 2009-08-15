@@ -488,7 +488,7 @@ class ServiceManager(QtGui.QWidget):
         link = event.mimeData()
         if link.hasText():
             plugin = event.mimeData().text()
-            self.parent.EventManager.post_event(Event(EventType.LoadServiceItem, u'ServiceManager', plugin))
+            self.parent.EventManager.post_event(Event(u'ServiceManager', EventType.LoadServiceItem, plugin))
 
     def updateThemeList(self, theme_list):
         """

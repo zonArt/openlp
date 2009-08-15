@@ -45,7 +45,7 @@ class Event(object):
     """
     Provides an Event class to encapsulate events within openlp.org.
     """
-    def __init__(self, event_type, sender, payload=None):
+    def __init__(self, sender, event_type=EventType.Default,  payload=None):
         self.event_type = event_type
         self.payload = payload
         self.sender = sender
