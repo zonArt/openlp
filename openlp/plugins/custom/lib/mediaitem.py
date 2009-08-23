@@ -21,28 +21,12 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem,  SongXMLParser,  ServiceItem,  translate, contextMenuAction, contextMenuSeparator
+from openlp.core.lib import MediaManagerItem,  SongXMLParser,  ServiceItem,  translate, contextMenuAction, contextMenuSeparator, BaseListWithDnD
 
-class CustomList(QtGui.QListWidget):
-
-    def __init__(self,parent=None,name=None):
-        QtGui.QListView.__init__(self,parent)
-
-    def mouseMoveEvent(self, event):
-        """
-        Drag and drop event does not care what data is selected
-        as the recepient will use events to request the data move
-        just tell it what plugin to call
-        """
-        if event.buttons() != QtCore.Qt.LeftButton:
-            return
-        drag = QtGui.QDrag(self)
-        mimeData = QtCore.QMimeData()
-        drag.setMimeData(mimeData)
-        mimeData.setText(u'Custom')
-        dropAction = drag.start(QtCore.Qt.CopyAction)
-        if dropAction == QtCore.Qt.CopyAction:
-            self.close()
+class CustomListView(BaseListWithDnD):
+    def __init__(self, parent=None):
+        self.PluginName = u'Custom'
+        BaseListWithDnD.__init__(self, parent)
 
 class CustomMediaItem(MediaManagerItem):
     """
@@ -95,7 +79,7 @@ class CustomMediaItem(MediaManagerItem):
             translate(u'CustomMediaItem',u'Add Custom To Service'),
             translate(u'CustomMediaItem',u'Add the selected Custom(s) to the service'),
             u':/system/system_add.png', self.onCustomAddClick, u'CustomAddItem')
-        # Add the Customlist widget
+        # Add the CustomListView widget
         self.CustomWidget = QtGui.QWidget(self)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
@@ -105,7 +89,7 @@ class CustomMediaItem(MediaManagerItem):
         self.CustomWidget.setObjectName(u'CustomWidget')
         # Add the Custom widget to the page layout
         self.PageLayout.addWidget(self.CustomWidget)
-        self.ListView = CustomList()
+        self.ListView = CustomListView()
         self.ListView.setAlternatingRowColors(True)
         self.ListView.setDragEnabled(True)
         self.PageLayout.addWidget(self.ListView)
@@ -129,9 +113,9 @@ class CustomMediaItem(MediaManagerItem):
             translate(u'CustomMediaItem',u'&Add to Service'), self.onCustomAddClick))
 
     def initialise(self):
-        self.loadCustomList(self.parent.custommanager.get_all_slides())
+        self.loadCustomListView(self.parent.custommanager.get_all_slides())
 
-    def loadCustomList(self, list):
+    def loadCustomListView(self, list):
         self.ListView.clear()
         for CustomSlide in list:
             custom_name = QtGui.QListWidgetItem(CustomSlide.title)

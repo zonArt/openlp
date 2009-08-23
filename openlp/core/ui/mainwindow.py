@@ -468,7 +468,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_helpers[u'preview'] = self.PreviewController
         self.plugin_helpers[u'live'] = self.LiveController
         self.plugin_helpers[u'event'] = self.EventManager
-        self.plugin_helpers[u'theme'] = self.ThemeManagerContents
         self.plugin_helpers[u'render'] = self.RenderManager
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
         self.plugin_helpers[u'settings'] = self.settingsForm
@@ -596,8 +595,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def handle_event(self, event):
         if event.event_type == EventType.ThemeListChanged:
-            themes = self.ThemeManagerContents.getThemes()
-            self.ServiceManagerContents.updateThemeList(themes)
-            self.settingsForm.ThemesTab.updateThemeList(themes)
+            self.ServiceManagerContents.updateThemeList(event.payload)
+            self.settingsForm.ThemesTab.updateThemeList(event.payload)
             self.DefaultThemeLabel.setText(self.defaultThemeText + \
                 self.ThemeManagerContents.getDefault())

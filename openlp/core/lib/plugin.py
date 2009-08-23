@@ -122,7 +122,6 @@ class Plugin(object):
         self.log = logging.getLogger(self.name)
         self.preview_controller = plugin_helpers[u'preview']
         self.live_controller = plugin_helpers[u'live']
-        self.theme_manager = plugin_helpers[u'theme']
         self.event_manager = plugin_helpers[u'event']
         self.render_manager = plugin_helpers[u'render']
         self.service_manager = plugin_helpers[u'service']
@@ -132,6 +131,7 @@ class Plugin(object):
     def check_pre_conditions(self):
         """
         Provides the Plugin with a handle to check if it can be loaded.
+        Failing Preconditions does not stop a settings Tab being created
 
         Returns True or False.
         """

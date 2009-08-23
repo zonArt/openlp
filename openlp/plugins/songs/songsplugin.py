@@ -136,7 +136,7 @@ class SongsPlugin(Plugin):
         log.debug(u'Handle event called with event %s' % event.event_type)
         if event.event_type == EventType.ThemeListChanged:
             log.debug(u'New Theme request received')
-            self.media_item.edit_song_form.loadThemes(self.theme_manager.getThemes())
+            self.media_item.edit_song_form.loadThemes(event.payload)
         if event.event_type == EventType.LoadSongList :
             log.debug(u'Load Load Song List Item received')
             self.media_item.displayResultsSong(self.songmanager.get_songs())

@@ -25,30 +25,14 @@ import time
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, ServiceItem, MediaManagerItem, \
-    Receiver, contextMenuAction, contextMenuSeparator
+    Receiver, contextMenuAction, contextMenuSeparator,  BaseListWithDnD
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib.manager import BibleMode
 
-class BibleList(QtGui.QListWidget):
-
-    def __init__(self,parent=None,name=None):
-        QtGui.QListView.__init__(self,parent)
-
-    def mouseMoveEvent(self, event):
-        """
-        Drag and drop event does not care what data is selected
-        as the recepient will use events to request the data move
-        just tell it what plugin to call
-        """
-        if event.buttons() != QtCore.Qt.LeftButton:
-            return
-        drag = QtGui.QDrag(self)
-        mimeData = QtCore.QMimeData()
-        drag.setMimeData(mimeData)
-        mimeData.setText(u'Bibles')
-        dropAction = drag.start(QtCore.Qt.CopyAction)
-        if dropAction == QtCore.Qt.CopyAction:
-            self.close()
+class BibleListView(BaseListWithDnD):
+    def __init__(self, parent=None):
+        self.PluginName = u'Bibles'
+        BaseListWithDnD.__init__(self, parent)
 
 class BibleMediaItem(MediaManagerItem):
     """
@@ -201,7 +185,7 @@ class BibleMediaItem(MediaManagerItem):
         self.SearchTabWidget.addTab(self.AdvancedTab, u'Advanced')
         # Add the search tab widget to the page layout
         self.PageLayout.addWidget(self.SearchTabWidget)
-        self.ListView = BibleList()
+        self.ListView = BibleListView()
         self.ListView.setAlternatingRowColors(True)
         self.ListView.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.ListView.setDragEnabled(True)

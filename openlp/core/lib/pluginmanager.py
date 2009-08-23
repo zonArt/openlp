@@ -93,18 +93,20 @@ class PluginManager(object):
         for p in plugin_classes:
             try:
                 plugin = p(self.plugin_helpers)
-                log.debug(u'loaded plugin %s with helpers', unicode(p))
-                log.debug(u'Plugin: %s', unicode(p))
-                pList = {u'name': plugin.name, u'version':plugin.version, u'status': u'Inactive'}
-                if plugin.check_pre_conditions():
-                    log.debug(u'Appending %s ', unicode(p))
-                    plugin_objects.append(plugin)
-                    eventmanager.register(plugin)
-                    pList[u'status'] = u'Active'
-                self.plugin_list.append(pList)
+                log.debug(u'Loaded plugin %s with helpers', unicode(p))
+
+                plugin_objects.append(plugin)
             except TypeError:
                 log.error(u'loaded plugin %s has no helpers', unicode(p))
-        self.plugins = sorted(plugin_objects, self.order_by_weight)
+        plugins_list = sorted(plugin_objects, self.order_by_weight)
+        for plugin in plugins_list:
+            pList = {u'plugin': plugin,  u'status': u'Inactive'}
+            if plugin.check_pre_conditions():
+                log.debug(u'Plugin %s active', unicode(plugin.name))
+                eventmanager.register(plugin)
+                pList[u'status'] = u'Active'
+            self.plugins.append(pList)
+
 
     def order_by_weight(self, x, y):
         """
@@ -127,10 +129,11 @@ class PluginManager(object):
             The Media Manager itself.
         """
         for plugin in self.plugins:
-            media_manager_item = plugin.get_media_manager_item()
-            if media_manager_item is not None:
-                log.debug(u'Inserting media manager item from %s' % plugin.name)
-                mediatoolbox.addItem(media_manager_item, plugin.icon, media_manager_item.title)
+            if plugin[u'status'] == u'Active':
+                media_manager_item = plugin[u'plugin'].get_media_manager_item()
+                if media_manager_item is not None:
+                    log.debug(u'Inserting media manager item from %s' % plugin[u'plugin'].name)
+                    mediatoolbox.addItem(media_manager_item, plugin[u'plugin'].icon, media_manager_item.title)
 
     def hook_settings_tabs(self, settingsform=None):
         """
@@ -141,12 +144,12 @@ class PluginManager(object):
             Defaults to *None*. The settings form to add tabs to.
         """
         for plugin in self.plugins:
-            settings_tab = plugin.get_settings_tab()
+            settings_tab = plugin[u'plugin'].get_settings_tab()
             if settings_tab is not None:
-                log.debug(u'Inserting settings tab item from %s' % plugin.name)
+                log.debug(u'Inserting settings tab item from %s' % plugin[u'plugin'].name)
                 settingsform.addTab(settings_tab)
             else:
-                log.debug(u'No settings in %s' % plugin.name)
+                log.debug(u'No settings in %s' % plugin[u'plugin'].name)
 
     def hook_import_menu(self, import_menu):
         """
@@ -157,7 +160,8 @@ class PluginManager(object):
             The Import menu.
         """
         for plugin in self.plugins:
-            plugin.add_import_menu_item(import_menu)
+            if plugin[u'status'] == u'Active':
+                plugin[u'plugin'].add_import_menu_item(import_menu)
 
     def hook_export_menu(self, export_menu):
         """
@@ -168,7 +172,8 @@ class PluginManager(object):
             The Export menu.
         """
         for plugin in self.plugins:
-            plugin.add_export_menu_item(export_menu)
+            if plugin[u'status'] == u'Active':
+                plugin[u'plugin'].add_export_menu_item(export_menu)
 
     def initialise_plugins(self):
         """
@@ -176,7 +181,8 @@ class PluginManager(object):
         initialise themselves.
         """
         for plugin in self.plugins:
-            plugin.initialise()
+            if plugin[u'status'] == u'Active':
+                plugin[u'plugin'].initialise()
 
     def finalise_plugins(self):
         """
@@ -184,4 +190,5 @@ class PluginManager(object):
         clean themselves up
         """
         for plugin in self.plugins:
-            plugin.finalise()
+            if plugin[u'status'] == u'Active':
+                plugin[u'plugin'].finalise()

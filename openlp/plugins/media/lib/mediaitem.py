@@ -32,7 +32,6 @@ from openlp.core.lib import MediaManagerItem, translate
 
 from openlp.plugins.media.lib import MediaTab
 from openlp.plugins.media.lib import FileListData
-# from listwithpreviews import ListWithPreviews
 from openlp.core.lib import MediaManagerItem, ServiceItem, translate, BaseListWithDnD, buildIcon
 
 class MediaListView(BaseListWithDnD):

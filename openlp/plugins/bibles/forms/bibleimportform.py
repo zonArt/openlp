@@ -47,6 +47,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         self.bibleplugin = bibleplugin
         self.bible_type = None
         self.barmax = 0
+        self.tabWidget.setCurrentIndex(0)
         self.AddressEdit.setText(self.config.get_config(u'proxy_address', u''))
         self.UsernameEdit.setText(self.config.get_config(u'proxy_username',u''))
         self.PasswordEdit.setText(self.config.get_config(u'proxy_password',u''))

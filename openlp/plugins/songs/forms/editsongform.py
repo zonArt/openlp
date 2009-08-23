@@ -23,7 +23,7 @@ import logging
 from PyQt4 import Qt, QtCore, QtGui
 
 from openlp.core.lib import SongXMLBuilder, SongXMLParser, Event, \
-    EventType, EventManager
+    EventType, EventManager,  translate
 from openlp.plugins.songs.forms import EditVerseForm
 from openlp.plugins.songs.lib.models import Song
 from editsongdialog import Ui_EditSongDialog
@@ -299,22 +299,26 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         log.debug(u'Validate Song')
         # Lets be nice and assume the data is correct.
         valid = True
+        message = u''
         if len(self.TitleEditItem.displayText()) == 0:
             valid = False
             self.TitleEditItem.setStyleSheet(u'background-color: red; color: white')
+            message = translate(u'SongFormDialog', u'You need to enter a song title \n')
         else:
             self.TitleEditItem.setStyleSheet(u'')
         if self.VerseListWidget.count() == 0:
             valid = False
             self.VerseListWidget.setStyleSheet(u'background-color: red; color: white')
+            message = message + translate(u'SongFormDialog', u'You need to enter some verse text \n')
         else:
             self.VerseListWidget.setStyleSheet(u'')
         if self.AuthorsListView.count() == 0:
             valid = False
             self.AuthorsListView.setStyleSheet(u'background-color: red; color: white')
+            message = message + translate(u'SongFormDialog', u'You need to provide an author')
         else:
             self.AuthorsListView.setStyleSheet(u'')
-        return valid
+        return valid,  message
 
     def on_TitleEditItem_lostFocus(self):
         self.song.title = self.TitleEditItem.text()
@@ -345,7 +349,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def accept(self):
         log.debug(u'accept')
-        if not self._validate_song():
+        valid ,  message = self._validate_song()
+        if not valid:
+            QtGui.QMessageBox.critical(self,
+            translate(u'SongFormDialog', u'Error'), message,
+            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             return
         self.song.title = unicode(self.TitleEditItem.displayText())
         self.song.copyright = unicode(self.CopyrightEditItem.displayText())
@@ -356,7 +364,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.processTitle()
         self.songmanager.save_song(self.song)
         if self.title_change:
-            self.eventmanager.post_event(Event(EventType.LoadSongList, u'EditSongForm'))
+            self.eventmanager.post_event(Event(u'EditSongForm', EventType.LoadSongList))
         self.close()
 
     def processLyrics(self):

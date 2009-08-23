@@ -67,12 +67,12 @@ class PresentationPlugin(Plugin):
         """
         log.debug('check_pre_conditions')
 
-        if int(self.config.get_config(u'Powerpoint', 0)) == 2:
+        if int(self.config.get_config(u'Impress', 0)) == 2:
             try:
                 #Check to see if we have uno installed
                 import uno
-                #openoffice = impressController()
-                self.registerControllers(u'Impress', None)
+                openoffice = impressController()
+                self.registerControllers(u'Impress', openoffice)
             except:
                 pass
         #If we have no controllers disable plugin
@@ -80,3 +80,10 @@ class PresentationPlugin(Plugin):
             return True
         else:
             return False
+
+    def finalise(self):
+        log.debug(u'Finalise')
+        print self.controllers
+        for controller in self.controllers:
+            print controller
+            self.controllers[controller].kill()
