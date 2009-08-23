@@ -43,37 +43,38 @@ class ImageToolbar(MasterToolbar):
         sizeToolbarPolicy.setHeightForWidth(
             self.Toolbar.sizePolicy().hasHeightForWidth())
         if self.isLive:
-            self.Toolbar.addToolbarButton(u'First Slide',
-                u':/slides/slide_first.png',
-                translate(u'SlideController', u'Move to first'),
-                self.onSlideSelectedFirst)
-        self.Toolbar.addToolbarButton(u'Previous Slide',
-            u':/slides/slide_previous.png',
-            translate(u'SlideController', u'Move to previous'),
-            self.onSlideSelectedPrevious)
-        self.Toolbar.addToolbarButton(u'Next Slide',
-            u':/slides/slide_next.png',
-            translate(u'SlideController', u'Move to next'),
-            self.onSlideSelectedNext)
-        if self.isLive:
-            self.Toolbar.addToolbarButton(u'Last Slide',
-                u':/slides/slide_last.png',
-                translate(u'SlideController', u'Move to last'),
-                self.onSlideSelectedLast)
-            self.Toolbar.addSeparator()
-            self.Toolbar.addToolbarButton(u'Close Screen',
-                u':/slides/slide_close.png',
-                translate(u'SlideController', u'Close Screen'),
-                self.onBlankScreen)
-        self.Toolbar.addSeparator()
-        self.Toolbar.addToolbarButton(u'Start Loop',
-            u':/media/media_time.png',
-            translate(u'SlideController', u'Start continuous loop'),
-            self.onStartLoop)
-        self.Toolbar.addToolbarButton(u'Stop Loop',
-            u':/media/media_stop.png',
-            translate(u'SlideController', u'Stop continuous loop'),
-            self.onStopLoop)
+            pass
+#            self.Toolbar.addToolbarButton(u'First Slide',
+#                u':/slides/slide_first.png',
+#                translate(u'SlideController', u'Move to first'),
+#                self.onSlideSelectedFirst)
+#        self.Toolbar.addToolbarButton(u'Previous Slide',
+#            u':/slides/slide_previous.png',
+#            translate(u'SlideController', u'Move to previous'),
+#            self.onSlideSelectedPrevious)
+#        self.Toolbar.addToolbarButton(u'Next Slide',
+#            u':/slides/slide_next.png',
+#            translate(u'SlideController', u'Move to next'),
+#            self.onSlideSelectedNext)
+#        if self.isLive:
+#            self.Toolbar.addToolbarButton(u'Last Slide',
+#                u':/slides/slide_last.png',
+#                translate(u'SlideController', u'Move to last'),
+#                self.onSlideSelectedLast)
+#            self.Toolbar.addSeparator()
+#            self.Toolbar.addToolbarButton(u'Close Screen',
+#                u':/slides/slide_close.png',
+#                translate(u'SlideController', u'Close Screen'),
+#                self.onBlankScreen)
+#        self.Toolbar.addSeparator()
+#        self.Toolbar.addToolbarButton(u'Start Loop',
+#            u':/media/media_time.png',
+#            translate(u'SlideController', u'Start continuous loop'),
+#            self.onStartLoop)
+#        self.Toolbar.addToolbarButton(u'Stop Loop',
+#            u':/media/media_stop.png',
+#            translate(u'SlideController', u'Stop continuous loop'),
+#            self.onStopLoop)
         self.Toolbar.addSeparator()
         self.DelaySpinBox = QtGui.QSpinBox(self.Toolbar)
         self.SpinWidget = QtGui.QWidgetAction(self.Toolbar)

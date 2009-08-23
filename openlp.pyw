@@ -28,7 +28,7 @@ from openlp.core.lib import Receiver
 from openlp.core.resources import *
 from openlp.core.ui import MainWindow, SplashScreen
 
-logging.basicConfig(level=logging.DEBUG,
+logging.basicConfig(level=logging.INFO,
     format=u'%(asctime)s:%(msecs)3d %(name)-15s %(levelname)-8s %(message)s',
     datefmt=u'%m-%d %H:%M:%S', filename=u'openlp.log', filemode=u'w')
 

@@ -30,10 +30,11 @@ class EventReceiver(QtCore.QObject):
         QtCore.QObject.__init__(self)
 
     def send_message(self, event, msg=None):
+        print "send_message ", event , msg
         self.emit(QtCore.SIGNAL(event), msg)
 
     def received(self, msg=None):
-        print msg
+        print "received ",  msg
 
 
 class Receiver():
