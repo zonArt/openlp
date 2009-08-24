@@ -32,10 +32,6 @@ class EventReceiver(QtCore.QObject):
     def send_message(self, event, msg=None):
         self.emit(QtCore.SIGNAL(event), msg)
 
-    def received(self, msg=None):
-        print msg
-
-
 class Receiver():
     """
     Class to allow events to be passed from different parts of the system.
@@ -54,10 +50,6 @@ class Receiver():
     @staticmethod
     def send_message(event, msg=None):
         Receiver.eventreceiver.send_message(event, msg)
-
-    @staticmethod
-    def receive():
-        Receiver.eventreceiver.receive()
 
     @staticmethod
     def get_receiver():

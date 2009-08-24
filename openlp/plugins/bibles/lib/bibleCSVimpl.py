@@ -60,7 +60,7 @@ class BibleCSVImpl(BibleCommon):
             count += 1
             #Flush the screen events
             if count % 3 == 0:
-                Receiver().send_message(u'openlpprocessevents')
+                Receiver().send_message(u'process_events')
                 count = 0
 
         count = 0
@@ -83,5 +83,5 @@ class BibleCSVImpl(BibleCommon):
             count += 1
             #Every x verses repaint the screen
             if count % 3 == 0:
-                Receiver().send_message(u'openlpprocessevents')
+                Receiver().send_message(u'process_events')
                 count = 0

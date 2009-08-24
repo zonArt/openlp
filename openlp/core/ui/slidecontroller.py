@@ -21,7 +21,7 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import OpenLPToolbar, translate, buildIcon
+from openlp.core.lib import OpenLPToolbar, translate, buildIcon, Receiver
 
 class SlideList(QtGui.QTableWidget):
     """
@@ -64,9 +64,11 @@ class SlideController(QtGui.QWidget):
         Set up the Slide Controller.
         """
         self.toolbarList = {}
-        self.previewList = {}
         QtGui.QWidget.__init__(self, parent)
         self.isLive = isLive
+        self.prefix  = u'preview_'
+        if isLive:
+            self.prefix  = u'live_'
         self.parent = parent
         self.Panel = QtGui.QWidget(parent.ControlSplitter)
         self.Splitter = QtGui.QSplitter(self.Panel)
@@ -118,118 +120,6 @@ class SlideController(QtGui.QWidget):
         self.grid.setMargin(8)
         self.grid.setObjectName(u'grid')
         # Actual preview screen
-        masterPreview = MasterPreview(self.PreviewFrame).getPreview()
-        self.registerPreview(u'master', masterPreview)
-        self.SlidePreview = self.retrievePreview(u'master')
-        self.grid.addWidget(self.SlidePreview, 0, 0, 1, 1)
-        # Signals
-        QtCore.QObject.connect(self.PreviewListWidget,
-            QtCore.SIGNAL(u'clicked(QModelIndex)'), self.BaseToolbar.onSlideSelected)
-        QtCore.QObject.connect(self.PreviewListWidget,
-            QtCore.SIGNAL(u'activated(QModelIndex)'), self.BaseToolbar.onSlideSelected)
-        # Add Late Arrivals
-        self.BaseToolbar.PreviewListWidget = self.PreviewListWidget
-        self.BaseToolbar.SlidePreview = self.SlidePreview
-        self.BaseToolbar.mainDisplay = self.parent.mainDisplay
-
-    def registerToolbar(self, handle,controller):
-        """
-        Register a new toolbar with the controller
-        ``handle``
-            Identifier for the toolbar being stored this should equal the
-            plugins name.
-        ``controller``
-            The toolbar class which should extend MasterToolbar
-        """
-        #store the handle name in lower case so no probems later
-        self.toolbarList[handle.lower()] = controller
-
-    def registerPreview(self, handle,controller):
-        """
-        Register a new preview with the controller
-        ``handle``
-            Identifier for the preview being stored this should equal the
-            plugins name.
-        ``controller``
-            The preview class which should extend MasterToolbar
-        """
-        #store the handle name in lower case so no probems later
-        self.previewList[handle.lower()] = controller
-
-    def retrieveToolbar(self, handle):
-        """
-        Find the toolbar and return master if none present
-        Add extra information back into toolbar class
-        ``handle``
-            Identifier for the toolbar being requested
-        """
-        try:
-            toolbar =  self.toolbarList[handle.lower()]
-        except:
-            toolbar = self.toolbarList[u'master']
-        toolbar.PreviewListWidget = self.PreviewListWidget
-        toolbar.SlidePreview = self.SlidePreview
-        toolbar.mainDisplay = self.parent.mainDisplay
-        return toolbar
-
-    def retrievePreview(self, handle):
-        """
-        Find the preview and return master if none present
-        Add extra information back into toolbar class
-        ``handle``
-            Identifier for the toolbar being requested
-        """
-        try:
-            preview =  self.previewList[handle.lower()]
-        except:
-            preview = self.previewList[u'master']
-        return preview
-
-    def addServiceItem(self, item):
-        """
-        Method to install the service item into the controller and
-        request the correct the toolbar of the plugin
-        Called by plugins
-        """
-        self.SlidePreview = self.retrievePreview(item.shortname)
-        self.BaseToolbar = self.retrieveToolbar(item.shortname)
-        self.ControllerLayout.removeWidget(self.Toolbar)
-        #remove the old toolbar
-        self.Toolbar.clear()
-        self.Toolbar = self.BaseToolbar.getToolbar()
-        self.ControllerLayout.addWidget(self.Toolbar)
-        self.BaseToolbar.addServiceItem(item)
-
-    def addServiceManagerItem(self, item, slideno):
-        """
-        Method to install the service item into the controller and
-        request the correct the toolbar of the plugin
-        Called by ServiceManager
-        """
-        self.SlidePreview = self.retrievePreview(item.shortname)
-        self.BaseToolbar = self.retrieveToolbar(item.shortname)
-        self.ControllerLayout.removeWidget(self.Toolbar)
-        #remove the old toolbar
-        self.Toolbar.clear()
-        self.Toolbar = self.BaseToolbar.getToolbar()
-        self.ControllerLayout.addWidget(self.Toolbar)
-        self.BaseToolbar.addServiceManagerItem(item, slideno)
-
-
-class MasterPreview(QtCore.QObject):
-    """
-    Class from which all Previews should extend allowing plugins to
-    have their own previews
-    """
-    def __init__(self, parent):
-        self.parent = parent
-        QtCore.QObject.__init__(self)
-        self.definePreview()
-
-    def getPreview(self):
-        return self.SlidePreview
-
-    def definePreview(self):
         self.SlidePreview = QtGui.QLabel(self.parent)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Fixed)
@@ -244,130 +134,82 @@ class MasterPreview(QtCore.QObject):
         self.SlidePreview.setLineWidth(1)
         self.SlidePreview.setScaledContents(True)
         self.SlidePreview.setObjectName(u'SlidePreview')
+        self.grid.addWidget(self.SlidePreview, 0, 0, 1, 1)
+        # Signals
+        QtCore.QObject.connect(self.PreviewListWidget,
+            QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
+        QtCore.QObject.connect(self.PreviewListWidget,
+            QtCore.SIGNAL(u'activated(QModelIndex)'), self.onSlideSelected)
+        # Window Event Handlers
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%sslide_first'% self.prefix), self.onSlideSelectedFirst)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%sslide_previous'% self.prefix), self.onSlideSelectedPrevious)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%sslide_next'% self.prefix), self.onSlideSelectedNext)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%sslide_last'% self.prefix), self.onSlideSelectedLast)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%sslide_start_loop'% self.prefix), self.onStartLoop)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%sslide_stop_loop'% self.prefix), self.onStopLoop)
 
 
-class MasterToolbar(QtCore.QObject):
-    """
-    Class from which all toolbars should extend
-    """
-    def __init__(self, isLive):
-        self.Toolbar = None
-        QtCore.QObject.__init__(self)
-        self.PreviewListWidget = QtGui.QListWidget()
-        self.isLive = isLive
+    def registerToolbar(self, handle,controller):
+        """
+        Register a new toolbar with the controller
+        ``handle``
+            Identifier for the toolbar being stored this should equal the
+            plugins name.
+        ``controller``
+            The toolbar class which should extend MasterToolbar
+        """
+        #store the handle name in lower case so no probems later
+        self.toolbarList[handle.lower()] = controller
 
-    def getToolbar(self):
-        #define toolbar here as it needs to be redefined each time
-        #as the clear destroys it.
-        self.defineToolbar()
-        return self.Toolbar
+    def retrieveToolbar(self, handle):
+        """
+        Find the toolbar and return master if none present
+        Add extra information back into toolbar class
+        ``handle``
+            Identifier for the toolbar being requested
+        """
+        try:
+            toolbar =  self.toolbarList[handle.lower()]
+        except:
+            toolbar = self.toolbarList[u'master']
+        return toolbar
 
-    def defineToolbar(self):
-        # Controller toolbar
-        self.Toolbar = OpenLPToolbar(self)
-        sizeToolbarPolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Fixed)
-        sizeToolbarPolicy.setHorizontalStretch(0)
-        sizeToolbarPolicy.setVerticalStretch(0)
-        sizeToolbarPolicy.setHeightForWidth(
-            self.Toolbar.sizePolicy().hasHeightForWidth())
-        self.Toolbar.setSizePolicy(sizeToolbarPolicy)
+    def addServiceItem(self, item):
+        """
+        Method to install the service item into the controller and
+        request the correct the toolbar of the plugin
+        Called by plugins
+        """
+        self.BaseToolbar = self.retrieveToolbar(item.shortname)
+        self.ControllerLayout.removeWidget(self.Toolbar)
+        #remove the old toolbar
+        self.Toolbar.clear()
+        self.Toolbar = self.BaseToolbar.getToolbar()
+        self.ControllerLayout.addWidget(self.Toolbar)
+        item.render()
+        self.displayServiceManagerItems(item, 0)
 
-        if self.isLive:
-            self.Toolbar.addToolbarButton(u'First Slide',
-                u':/slides/slide_first.png',
-                translate(u'SlideController', u'Move to first'),
-                self.onSlideSelectedFirst)
-        self.Toolbar.addToolbarButton(u'Previous Slide',
-            u':/slides/slide_previous.png',
-            translate(u'SlideController', u'Move to previous'),
-            self.onSlideSelectedPrevious)
-        self.Toolbar.addToolbarButton(u'Next Slide',
-            u':/slides/slide_next.png',
-            translate(u'SlideController', u'Move to next'),
-            self.onSlideSelectedNext)
-        if self.isLive:
-            self.Toolbar.addToolbarButton(u'Last Slide',
-                u':/slides/slide_last.png',
-                translate(u'SlideController', u'Move to last'),
-                self.onSlideSelectedLast)
-            self.Toolbar.addSeparator()
-            self.Toolbar.addToolbarButton(u'Close Screen',
-                u':/slides/slide_close.png',
-                translate(u'SlideController', u'Close Screen'),
-                self.onBlankScreen)
+    def addServiceManagerItem(self, item, slideno):
+        """
+        Method to install the service item into the controller and
+        request the correct the toolbar of the plugin
+        Called by ServiceManager
+        """
+        self.BaseToolbar = self.retrieveToolbar(item.shortname)
+        self.ControllerLayout.removeWidget(self.Toolbar)
+        #remove the old toolbar
+        self.Toolbar.clear()
+        self.Toolbar = self.BaseToolbar.getToolbar()
+        self.ControllerLayout.addWidget(self.Toolbar)
+        self.displayServiceManagerItems(item, slideno)
 
-    def serviceLoaded(self):
-        """
-        method to allow toolbars to know when the service item
-        is fully in place
-        """
-        pass
-
-    def onSlideSelectedFirst(self):
-        """
-        Go to the first slide.
-        """
-        self.PreviewListWidget.selectRow(0)
-        self.onSlideSelected()
-
-    def onSlideSelectedNext(self):
-        """
-        Go to the next slide.
-        """
-        row = self.PreviewListWidget.currentRow() + 1
-        if row == self.PreviewListWidget.rowCount():
-            row = 0
-        self.PreviewListWidget.selectRow(row)
-        self.onSlideSelected()
-
-    def onSlideSelectedPrevious(self):
-        """
-        Go to the previous slide.
-        """
-        row = self.PreviewListWidget.currentRow() - 1
-        if row == -1:
-            row = self.PreviewListWidget.rowCount() - 1
-        self.PreviewListWidget.selectRow(row)
-        self.onSlideSelected()
-
-    def onSlideSelectedLast(self):
-        """
-        Go to the last slide.
-        """
-        self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount() - 1)
-        self.onSlideSelected()
-
-    def onBlankScreen(self):
-        """
-        Blank the screen.
-        """
-        self.mainDisplay.blankDisplay()
-
-    def onSlideSelected(self):
-        """
-        Generate the preview when you click on a slide.
-        if this is the Live Controller also display on the screen
-        """
-        row = self.PreviewListWidget.currentRow()
-        if row > -1 and row < self.PreviewListWidget.rowCount():
-            label = self.PreviewListWidget.cellWidget(row, 0)
-            smallframe = label.pixmap()
-            frame = self.serviceitem.frames[row][u'image']
-            self.SlidePreview.setPixmap(smallframe)
-            if self.isLive:
-                self.mainDisplay.frameView(frame)
-
-    def addServiceItem(self, serviceitem, slideno = 1):
-        """
-        Loads a ServiceItem into the system from plugins
-        Display the first slide
-        """
-        log.debug(u'add Service Item')
-        serviceitem.render()
-        self.addServiceManagerItem(serviceitem, 0)
-
-    def addServiceManagerItem(self, serviceitem, slideno):
+    def displayServiceManagerItems(self, serviceitem, slideno):
         """
         Loads a ServiceItem into the system from ServiceManager
         Display the slide number passed
@@ -398,5 +240,177 @@ class MasterToolbar(QtCore.QObject):
         else:
             self.PreviewListWidget.selectRow(slideno)
         self.onSlideSelected()
-        self.serviceLoaded()
         self.PreviewListWidget.setFocus()
+
+    #Screen event methods
+    def onSlideSelected(self):
+        """
+        Generate the preview when you click on a slide.
+        if this is the Live Controller also display on the screen
+        """
+        row = self.PreviewListWidget.currentRow()
+        if row > -1 and row < self.PreviewListWidget.rowCount():
+            label = self.PreviewListWidget.cellWidget(row, 0)
+            smallframe = label.pixmap()
+            frame = self.serviceitem.frames[row][u'image']
+            self.SlidePreview.setPixmap(smallframe)
+            if self.isLive:
+                self.parent.mainDisplay.frameView(frame)
+
+    def onSlideSelectedFirst(self):
+        """
+        Go to the first slide.
+        """
+        print "oSSF"
+        self.PreviewListWidget.selectRow(0)
+        self.onSlideSelected()
+
+    def onBlankScreen(self):
+        """
+        Blank the screen.
+        """
+        self.parent.mainDisplay.blankDisplay()
+
+    def onSlideSelected(self):
+        """
+        Generate the preview when you click on a slide.
+        if this is the Live Controller also display on the screen
+        """
+        row = self.PreviewListWidget.currentRow()
+        if row > -1 and row < self.PreviewListWidget.rowCount():
+            label = self.PreviewListWidget.cellWidget(row, 0)
+            smallframe = label.pixmap()
+            frame = self.serviceitem.frames[row][u'image']
+            self.SlidePreview.setPixmap(smallframe)
+            if self.isLive:
+                self.parent.mainDisplay.frameView(frame)
+
+    def onSlideSelectedNext(self):
+        """
+        Go to the next slide.
+        """
+        row = self.PreviewListWidget.currentRow() + 1
+        if row == self.PreviewListWidget.rowCount():
+            row = 0
+        self.PreviewListWidget.selectRow(row)
+        self.onSlideSelected()
+
+    def onSlideSelectedPrevious(self):
+        """
+        Go to the previous slide.
+        """
+        row = self.PreviewListWidget.currentRow() - 1
+        if row == -1:
+            row = self.PreviewListWidget.rowCount() - 1
+        self.PreviewListWidget.selectRow(row)
+        self.onSlideSelected()
+
+    def onSlideSelectedLast(self):
+        """
+        Go to the last slide.
+        """
+        self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount() - 1)
+        self.onSlideSelected()
+
+    def onStartLoop(self, value):
+        """
+        Go to the last slide.
+        """
+        if self.PreviewListWidget.rowCount() > 1:
+            self.timer_id = self.startTimer(int(value) * 1000)
+
+    def onStopLoop(self):
+        """
+        Go to the last slide.
+        """
+        self.killTimer(self.timer_id)
+
+    def timerEvent(self, event):
+        if event.timerId() == self.timer_id:
+            self.onSlideSelectedNext()
+
+class MasterToolbar(QtCore.QObject):
+    """
+    Class from which all toolbars should extend
+    """
+    def __init__(self, isLive):
+        self.Toolbar = None
+        QtCore.QObject.__init__(self)
+        self.PreviewListWidget = QtGui.QListWidget()
+        self.isLive = isLive
+        self.prefix  = u'preview_'
+        if isLive:
+            self.prefix  = u'live_'
+
+    def getToolbar(self):
+        #define toolbar here as it needs to be redefined each time
+        #as the clear destroys it.
+        self.defineToolbar()
+        self.defineZone1()
+        self.defineZone2()
+        self.defineZone3()
+        self.defineZone4()
+        self.defineZone5()
+        return self.Toolbar
+
+    def defineToolbar(self):
+        # Controller toolbar
+        self.Toolbar = OpenLPToolbar(self)
+        sizeToolbarPolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Fixed)
+        sizeToolbarPolicy.setHorizontalStretch(0)
+        sizeToolbarPolicy.setVerticalStretch(0)
+        sizeToolbarPolicy.setHeightForWidth(
+            self.Toolbar.sizePolicy().hasHeightForWidth())
+        self.Toolbar.setSizePolicy(sizeToolbarPolicy)
+
+    def defineZone1(self):
+        #Dummy Zone
+        pass
+
+    def defineZone2(self):
+        if self.isLive:
+            self.Toolbar.addToolbarButton(u'First Slide',
+                u':/slides/slide_first.png',
+                translate(u'SlideController', u'Move to first'),
+                self.onSlideFirst)
+        self.Toolbar.addToolbarButton(u'Previous Slide',
+            u':/slides/slide_previous.png',
+            translate(u'SlideController', u'Move to previous'),
+            self.onSlidePrevious)
+        self.Toolbar.addToolbarButton(u'Next Slide',
+            u':/slides/slide_next.png',
+            translate(u'SlideController', u'Move to next'),
+            self.onSlideNext)
+        if self.isLive:
+            self.Toolbar.addToolbarButton(u'Last Slide',
+                u':/slides/slide_last.png',
+                translate(u'SlideController', u'Move to last'),
+                self.onSlideLast)
+
+    def defineZone3(self):
+        #Dummy Zone
+        pass
+
+    def defineZone4(self):
+        if self.isLive:
+            self.Toolbar.addSeparator()
+            self.Toolbar.addToolbarButton(u'Close Screen',
+                u':/slides/slide_close.png',
+                translate(u'SlideController', u'Close Screen'),
+                self.onSlideBlank)
+
+    def defineZone5(self):
+        #Dummy Zone
+        pass
+
+    def onSlideFirst(self):
+        Receiver().send_message(u'%sslide_first'% self.prefix)
+    def onSlidePrevious(self):
+        Receiver().send_message(u'%sslide_previous'% self.prefix)
+    def onSlideNext(self):
+        Receiver().send_message(u'%sslide_next'% self.prefix)
+    def onSlideLast(self):
+        Receiver().send_message(u'%sslide_last' % self.prefix)
+    def onSlideBlank(self):
+        Receiver().send_message(u'%sslide_blank' % self.prefix)

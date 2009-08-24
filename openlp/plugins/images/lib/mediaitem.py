@@ -22,7 +22,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, ServiceItem, translate, BaseListWithDnD,  buildIcon
-from openlp.plugins.images.lib.imageslidecontroller import ImageToolbar
+from openlp.plugins.images.lib.imagetoolbar import ImageToolbar
 
 # We have to explicitly create separate classes for each plugin
 # in order for DnD to the Service manager to work correctly.
@@ -54,7 +54,7 @@ class ImageMediaItem(MediaManagerItem):
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
         self.ServiceItemIconName = u':/media/media_image.png'
-
+        self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
         #create and install our own slide controller toolbar
         imageToolbar = ImageToolbar(self, True)
@@ -63,21 +63,37 @@ class ImageMediaItem(MediaManagerItem):
     def initialise(self):
         self.ListView.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.ListView.setIconSize(QtCore.QSize(88,50))
+        self.servicePath = os.path.join(self.parent.config.get_data_path(), u'.thumbnails')
+        if os.path.exists(self.servicePath) == False:
+            os.mkdir(self.servicePath)
         self.loadList(self.parent.config.load_list(self.ConfigSection))
 
     def onDeleteClick(self):
         item = self.ListView.currentItem()
         if item is not None:
+            try:
+                os.remove(os.path.join(self.servicePath, unicode(item.text())))
+            except:
+                #if not present do not worry
+                pass
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
-            self.parent.config.set_list(self.ConfigSection, self.ListData.getFileList())
+            self.parent.config.set_list(self.ConfigSection, self.getFileList())
 
     def loadList(self, list):
         for file in list:
             (path, filename) = os.path.split(unicode(file))
+            thumb = os.path.join(self.servicePath, filename)
+            if os.path.exists(thumb):
+                icon = buildIcon(thumb)
+            else:
+                icon = buildIcon(unicode(file))
+                pixmap = icon.pixmap(QtCore.QSize(88,50))
+                ext = os.path.splitext(thumb)[1].lower()
+                pixmap.save(thumb, ext[1:])
             item_name = QtGui.QListWidgetItem(filename)
-            item_name.setIcon(buildIcon(file))
+            item_name.setIcon(icon)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.ListView.addItem(item_name)
 

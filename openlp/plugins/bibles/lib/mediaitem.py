@@ -252,7 +252,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def setQuickMsg2(self, text):
         self.QuickMsg2.setText(translate(u'BibleMediaItem', unicode(text)))
-        Receiver().send_message(u'openlpprocessevents')
+        Receiver().send_message(u'process_events')
         #minor delay to get the events processed
         time.sleep(0.5)
 

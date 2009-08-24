@@ -21,7 +21,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from time import sleep
-from openlp.core.lib import translate,  EventManager,  Event,  EventType
+from openlp.core.lib import translate,  EventManager,  Event,  EventType,  Receiver
 
 class MainDisplay(QtGui.QWidget):
     """
@@ -60,6 +60,8 @@ class MainDisplay(QtGui.QWidget):
         self.timer_id = 0
         # Register the main form as an event consumer.
         self.parent.EventManager.register(self)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'live_slide_blank'), self.blankDisplay)
 
     def handle_event(self, event):
         """
