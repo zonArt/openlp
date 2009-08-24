@@ -19,12 +19,14 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 import logging
+from PyQt4 import QtCore
 
 from openlp.core.lib import PluginConfig
 # why does this not work???
 # from openlp.core.lib import Event,  EventType
 # so I have to do this???
 from event import Event, EventType
+from eventreceiver import Receiver
 
 class Plugin(object):
     """
@@ -126,7 +128,8 @@ class Plugin(object):
         self.render_manager = plugin_helpers[u'render']
         self.service_manager = plugin_helpers[u'service']
         self.settings = plugin_helpers[u'settings']
-        self.dnd_id=None
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_add_service_item'% self.name), self.process_add_service_event)
 
     def check_pre_conditions(self):
         """
@@ -177,29 +180,37 @@ class Plugin(object):
         """
         pass
 
+    def process_add_service_event(self):
+        """
+        Proxy method as method is not defined early enough
+        in the processing
+        """
+        log.debug(u'Handle event called with plugin %s' % self.name)
+        self.media_item.onAddClick()
     def handle_event(self, event):
-        """
-        Handle the event contained in the event object.  If you want
-        to use this default behaviour, you must set self.dnd_id equal
-        to that sent by the dnd source - eg the MediaItem
-
-        ``event``
-            An object describing the event.
-        """
-        # default behaviour - can be overridden if desired
-        log.debug(u'Handle event called with event %s with payload %s'%(event.event_type, event.payload))
-        if event.event_type == EventType.LoadServiceItem and event.payload == self.dnd_id:
-            log.debug(u'Load Service Item received')
-            self.media_item.onAddClick()
-            return True
-        if event.event_type == EventType.PreviewShow and event.payload == self.dnd_id:
-            log.debug(u'Load Preview Item received')
-            self.media_item.onPreviewClick()
-            return True
-        if event.event_type == EventType.LiveShow and event.payload == self.dnd_id:
-            log.debug(u'Load Live Show Item received')
-            return True
-            self.media_item.onLiveClick()
+#        """
+#        Handle the event contained in the event object.  If you want
+#        to use this default behaviour, you must set self.dnd_id equal
+#        to that sent by the dnd source - eg the MediaItem
+#
+#        ``event``
+#            An object describing the event.
+#        """
+#        # default behaviour - can be overridden if desired
+        pass
+#        log.debug(u'Handle event called with event %s with payload %s'%(event.event_type, event.payload))
+#        if event.event_type == EventType.LoadServiceItem and event.payload == self.dnd_id:
+#            log.debug(u'Load Service Item received')
+#            self.media_item.onAddClick()
+#            return True
+#        if event.event_type == EventType.PreviewShow and event.payload == self.dnd_id:
+#            log.debug(u'Load Preview Item received')
+#            self.media_item.onPreviewClick()
+#            return True
+#        if event.event_type == EventType.LiveShow and event.payload == self.dnd_id:
+#            log.debug(u'Load Live Show Item received')
+#            return True
+#            self.media_item.onLiveClick()
 
     def about(self):
         """
@@ -208,37 +219,37 @@ class Plugin(object):
         """
         pass
 
-    def save(self, data):
-        """
-        Service item data is passed to this function, which should return a
-        string which can be written to the service file.
-
-        ``data``
-            The data to be saved.
-        """
-        pass
-
-    def load(self, string):
-        """
-        A string from the service file is passed in. This function parses and
-        sets up the internals of the plugin.
-
-        ``string``
-            The data to be loaded into the plugin.
-        """
-        pass
-
-    def render(self, theme, screen=None):
-        """
-        Render the screenth screenful of data using theme settings in theme.
-
-        ``theme``
-            The theme to use when rendering.
-
-        ``screen``
-            Defaults to *None*. The screen to render to.
-        """
-        pass
+#    def save(self, data):
+#        """
+#        Service item data is passed to this function, which should return a
+#        string which can be written to the service file.
+#
+#        ``data``
+#            The data to be saved.
+#        """
+#        pass
+#
+#    def load(self, string):
+#        """
+#        A string from the service file is passed in. This function parses and
+#        sets up the internals of the plugin.
+#
+#        ``string``
+#            The data to be loaded into the plugin.
+#        """
+#        pass
+#
+#    def render(self, theme, screen=None):
+#        """
+#        Render the screenth screenful of data using theme settings in theme.
+#
+#        ``theme``
+#            The theme to use when rendering.
+#
+#        ``screen``
+#            Defaults to *None*. The screen to render to.
+#        """
+#        pass
 
     def initialise(self):
         """

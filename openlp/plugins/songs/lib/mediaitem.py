@@ -27,7 +27,7 @@ from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm
 
 class SongListView(BaseListWithDnD):
     def __init__(self, parent=None):
-        self.PluginName = u'Song'
+        self.PluginName = u'Songs'
         BaseListWithDnD.__init__(self, parent)
 
 class SongMediaItem(MediaManagerItem):

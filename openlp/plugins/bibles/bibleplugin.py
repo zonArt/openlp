@@ -41,9 +41,6 @@ class BiblePlugin(Plugin):
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         #Register the bible Manager
         self.biblemanager = BibleManager(self.config)
-        # passed with drag and drop messages
-        self.dnd_id = u'Bibles'
-
 
     def get_settings_tab(self):
         self.bibles_tab = BiblesTab()

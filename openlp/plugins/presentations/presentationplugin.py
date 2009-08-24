@@ -41,7 +41,6 @@ class PresentationPlugin(Plugin):
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(u':/media/media_presentation.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.dnd_id = u'Presentations'
 
     def get_settings_tab(self):
         """

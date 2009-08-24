@@ -30,7 +30,7 @@ from openlp.core.ui import AmendThemeForm, ServiceManager
 from openlp.core.theme import Theme
 from openlp.core.lib import PluginConfig, Event, EventType, \
     EventManager, OpenLPToolbar, ThemeXML, Renderer, translate, \
-    file_to_xml, buildIcon
+    file_to_xml, buildIcon,  Receiver
 from openlp.core.utils import ConfigHelper
 
 class ThemeManager(QtGui.QWidget):
@@ -184,7 +184,8 @@ class ThemeManager(QtGui.QWidget):
         self.pushThemes()
 
     def pushThemes(self):
-        self.parent.EventManager.post_event(Event(u'ThemeManager', EventType.ThemeListChanged, self.getThemes()))
+        #self.parent.EventManager.post_event(Event(u'ThemeManager', EventType.ThemeListChanged, self.getThemes()))
+        Receiver().send_message(u'update_themes',  self.getThemes() )
 
     def getThemes(self):
         return self.themelist
