@@ -22,7 +22,7 @@ import sys
 
 from PyQt4 import QtNetwork, QtGui, QtCore
 
-from openlp.core.lib import Plugin, Event,  EventType
+from openlp.core.lib import Plugin, Event,  EventType,  Receiver
 from openlp.plugins.remotes.lib import RemoteTab
 
 class RemotesPlugin(Plugin):
@@ -59,7 +59,8 @@ class RemotesPlugin(Plugin):
 
         if event == u'alert':
             self.event_manager.post_event(Event(u'RemotePlugin', EventType.TriggerAlert , unicode(datagram[pos + 1:])))
-
+        if event == u'next_slide':
+            Receiver().send_message(u'live_slide_next')
 
 
 

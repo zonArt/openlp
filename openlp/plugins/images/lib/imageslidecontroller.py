@@ -21,7 +21,7 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import OpenLPToolbar, translate
+from openlp.core.lib import OpenLPToolbar, translate,  Receiver
 from openlp.core.ui.slidecontroller import MasterToolbar
 
 class ImageToolbar(MasterToolbar):
@@ -31,77 +31,33 @@ class ImageToolbar(MasterToolbar):
         self.parent = parent
         self.Toolbar = None
         self.isLive = isLive
-        self.defineToolbar()
 
-    def defineToolbar(self):
-        # Controller toolbar
-        self.Toolbar = OpenLPToolbar(self)
-        sizeToolbarPolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Fixed)
-        sizeToolbarPolicy.setHorizontalStretch(0)
-        sizeToolbarPolicy.setVerticalStretch(0)
-        sizeToolbarPolicy.setHeightForWidth(
-            self.Toolbar.sizePolicy().hasHeightForWidth())
-        if self.isLive:
-            pass
-#            self.Toolbar.addToolbarButton(u'First Slide',
-#                u':/slides/slide_first.png',
-#                translate(u'SlideController', u'Move to first'),
-#                self.onSlideSelectedFirst)
-#        self.Toolbar.addToolbarButton(u'Previous Slide',
-#            u':/slides/slide_previous.png',
-#            translate(u'SlideController', u'Move to previous'),
-#            self.onSlideSelectedPrevious)
-#        self.Toolbar.addToolbarButton(u'Next Slide',
-#            u':/slides/slide_next.png',
-#            translate(u'SlideController', u'Move to next'),
-#            self.onSlideSelectedNext)
-#        if self.isLive:
-#            self.Toolbar.addToolbarButton(u'Last Slide',
-#                u':/slides/slide_last.png',
-#                translate(u'SlideController', u'Move to last'),
-#                self.onSlideSelectedLast)
-#            self.Toolbar.addSeparator()
-#            self.Toolbar.addToolbarButton(u'Close Screen',
-#                u':/slides/slide_close.png',
-#                translate(u'SlideController', u'Close Screen'),
-#                self.onBlankScreen)
-#        self.Toolbar.addSeparator()
-#        self.Toolbar.addToolbarButton(u'Start Loop',
-#            u':/media/media_time.png',
-#            translate(u'SlideController', u'Start continuous loop'),
-#            self.onStartLoop)
-#        self.Toolbar.addToolbarButton(u'Stop Loop',
-#            u':/media/media_stop.png',
-#            translate(u'SlideController', u'Stop continuous loop'),
-#            self.onStopLoop)
+    def defineZone5(self):
+        self.Toolbar.addSeparator()
+        self.Toolbar.addToolbarButton(u'Start Loop',
+            u':/media/media_time.png',
+            translate(u'SlideController', u'Start continuous loop'),
+            self.onStartLoop)
+        self.Toolbar.addToolbarButton(u'Stop Loop',
+            u':/media/media_stop.png',
+            translate(u'SlideController', u'Stop continuous loop'),
+            self.onStopLoop)
         self.Toolbar.addSeparator()
         self.DelaySpinBox = QtGui.QSpinBox(self.Toolbar)
         self.SpinWidget = QtGui.QWidgetAction(self.Toolbar)
         self.SpinWidget.setDefaultWidget(self.DelaySpinBox)
         self.Toolbar.addAction(self.SpinWidget)
-        #self.Layout.addWidget(self.Toolbar)
-        self.Toolbar.setSizePolicy(sizeToolbarPolicy)
-        self.DelaySpinBox.setSuffix(translate(u'ImageSlideController', u's'))
-
-    def serviceLoaded(self):
         self.DelaySpinBox.setValue(self.parent.parent.ImageTab.loop_delay)
-        if self.PreviewListWidget.rowCount() == 1:
-            self.DelaySpinBox.setEnabled(False)
+        self.DelaySpinBox.setSuffix(translate(u'ImageSlideController', u's'))
 
     def onStartLoop(self):
         """
-        Go to the last slide.
+        Trigger the slide controller to start to loop passing the delay
         """
-        if self.PreviewListWidget.rowCount() > 1:
-            self.timer_id = self.startTimer(int(self.TimeoutSpinBox.value()) * 1000)
+        Receiver().send_message(u'%sslide_start_loop' % self.prefix,  self.DelaySpinBox.value())
 
     def onStopLoop(self):
         """
-        Go to the last slide.
+        Trigger the slide controller to stop the loop
         """
-        self.killTimer(self.timer_id)
-
-    def timerEvent(self, event):
-        if event.timerId() == self.timer_id:
-            self.onSlideSelectedNext()
+        Receiver().send_message(u'%sslide_stop_loop' % self.prefix)

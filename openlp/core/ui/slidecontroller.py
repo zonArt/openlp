@@ -149,6 +149,11 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'%sslide_next'% self.prefix), self.onSlideSelectedNext)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%sslide_last'% self.prefix), self.onSlideSelectedLast)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%sslide_start_loop'% self.prefix), self.onStartLoop)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%sslide_stop_loop'% self.prefix), self.onStopLoop)
+
 
     def registerToolbar(self, handle,controller):
         """
@@ -307,6 +312,22 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount() - 1)
         self.onSlideSelected()
 
+    def onStartLoop(self, value):
+        """
+        Go to the last slide.
+        """
+        if self.PreviewListWidget.rowCount() > 1:
+            self.timer_id = self.startTimer(int(value) * 1000)
+
+    def onStopLoop(self):
+        """
+        Go to the last slide.
+        """
+        self.killTimer(self.timer_id)
+
+    def timerEvent(self, event):
+        if event.timerId() == self.timer_id:
+            self.onSlideSelectedNext()
 
 class MasterToolbar(QtCore.QObject):
     """

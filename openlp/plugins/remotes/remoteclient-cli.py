@@ -51,6 +51,8 @@ def main():
                       help="Action to be undertaken")
     parser.add_option("-m", "--message",
                       help="Message to be passed for the action")
+    parser.add_option("-n", "--slidenext",
+                      help="Trigger the next slide")
 
     (options, args) = parser.parse_args()
     if len(args) > 0:
@@ -62,6 +64,11 @@ def main():
     elif options.address is None:
         parser.print_help()
         parser.error("IP address missing")
+    elif options.slidenext is not None:
+        options.event = u'next_slide'
+        options.message = u''
+        text = format_message(options)
+        sendData(options, text)
     else:
         text = format_message(options)
         sendData(options, text)
