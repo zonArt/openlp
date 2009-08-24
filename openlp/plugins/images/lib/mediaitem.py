@@ -22,7 +22,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, ServiceItem, translate, BaseListWithDnD,  buildIcon
-from openlp.plugins.images.lib.imageslidecontroller import ImageToolbar
+from openlp.plugins.images.lib.imagetoolbar import ImageToolbar
 
 # We have to explicitly create separate classes for each plugin
 # in order for DnD to the Service manager to work correctly.
