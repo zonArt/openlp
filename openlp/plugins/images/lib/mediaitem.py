@@ -71,24 +71,26 @@ class ImageMediaItem(MediaManagerItem):
     def onDeleteClick(self):
         item = self.ListView.currentItem()
         if item is not None:
+            try:
+                os.remove(os.path.join(self.servicePath, unicode(item.text())))
+            except:
+                #if not present do not worry
+                pass
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
-            self.parent.config.set_list(self.ConfigSection, self.ListData.getFileList())
+            self.parent.config.set_list(self.ConfigSection, self.getFileList())
 
     def loadList(self, list):
         for file in list:
             (path, filename) = os.path.split(unicode(file))
             thumb = os.path.join(self.servicePath, filename)
             if os.path.exists(thumb):
-                print "found ", thumb
                 icon = buildIcon(thumb)
             else:
-                print "not found ", thumb
                 icon = buildIcon(unicode(file))
                 pixmap = icon.pixmap(QtCore.QSize(88,50))
                 ext = os.path.splitext(thumb)[1].lower()
-                print ext [1:]
                 pixmap.save(thumb, ext[1:])
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setIcon(icon)
