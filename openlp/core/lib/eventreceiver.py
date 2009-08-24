@@ -33,8 +33,8 @@ class EventReceiver(QtCore.QObject):
         print "send_message ", event , msg
         self.emit(QtCore.SIGNAL(event), msg)
 
-    def received(self, msg=None):
-        print "received ",  msg
+#    def received(self, msg=None):
+#        print "received ",  msg
 
 
 class Receiver():
@@ -56,9 +56,9 @@ class Receiver():
     def send_message(event, msg=None):
         Receiver.eventreceiver.send_message(event, msg)
 
-    @staticmethod
-    def receive():
-        Receiver.eventreceiver.receive()
+#    @staticmethod
+#    def receive():
+#        Receiver.eventreceiver.receive()
 
     @staticmethod
     def get_receiver():

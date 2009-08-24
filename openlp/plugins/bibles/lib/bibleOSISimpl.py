@@ -149,13 +149,13 @@ class BibleOSISImpl():
                         self.abbrevOfBible[p[0]], testament)
                     dialogobject.incrementProgressBar(
                         self.booksOfBible[p[0]])
-                    Receiver().send_message(u'openlpprocessevents')
+                    Receiver().send_message(u'process_events')
                     count = 0
                 self.bibledb.add_verse(book.id, p[1], p[2], text)
                 count += 1
                 #Every 3 verses repaint the screen
                 if count % 3 == 0:
-                    Receiver().send_message(u'openlpprocessevents')
+                    Receiver().send_message(u'process_events')
                     count = 0
 
     def remove_block(self, start_tag, end_tag, text):

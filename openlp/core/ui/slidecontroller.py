@@ -66,6 +66,9 @@ class SlideController(QtGui.QWidget):
         self.toolbarList = {}
         QtGui.QWidget.__init__(self, parent)
         self.isLive = isLive
+        self.prefix  = u'preview_'
+        if isLive:
+            self.prefix  = u'live_'
         self.parent = parent
         self.Panel = QtGui.QWidget(parent.ControlSplitter)
         self.Splitter = QtGui.QSplitter(self.Panel)
@@ -139,18 +142,13 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'activated(QModelIndex)'), self.onSlideSelected)
         # Window Event Handlers
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slide_first'), self.onSlideSelectedFirst)
+            QtCore.SIGNAL(u'%sslide_first'% self.prefix), self.onSlideSelectedFirst)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slide_previous'), self.onSlideSelectedPrevious)
+            QtCore.SIGNAL(u'%sslide_previous'% self.prefix), self.onSlideSelectedPrevious)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slide_next'), self.onSlideSelectedNext)
+            QtCore.SIGNAL(u'%sslide_next'% self.prefix), self.onSlideSelectedNext)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slide_last'), self.onSlideSelectedLast)
-
-        # Add Late Arrivals
-#        self.BaseToolbar.PreviewListWidget = self.PreviewListWidget
-#        self.BaseToolbar.SlidePreview = self.SlidePreview
-#        self.BaseToolbar.mainDisplay = self.parent.mainDisplay
+            QtCore.SIGNAL(u'%sslide_last'% self.prefix), self.onSlideSelectedLast)
 
     def registerToolbar(self, handle,controller):
         """
@@ -175,9 +173,6 @@ class SlideController(QtGui.QWidget):
             toolbar =  self.toolbarList[handle.lower()]
         except:
             toolbar = self.toolbarList[u'master']
-#        toolbar.PreviewListWidget = self.PreviewListWidget
-#        toolbar.SlidePreview = self.SlidePreview
-#        toolbar.mainDisplay = self.parent.mainDisplay
         return toolbar
 
     def addServiceItem(self, item):
@@ -243,12 +238,6 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.setFocus()
 
     #Screen event methods
-    def onBlankScreen(self):
-        """
-        Blank the screen.
-        """
-        self.mainDisplay.blankDisplay()
-
     def onSlideSelected(self):
         """
         Generate the preview when you click on a slide.
@@ -328,11 +317,19 @@ class MasterToolbar(QtCore.QObject):
         QtCore.QObject.__init__(self)
         self.PreviewListWidget = QtGui.QListWidget()
         self.isLive = isLive
+        self.prefix  = u'preview_'
+        if isLive:
+            self.prefix  = u'live_'
 
     def getToolbar(self):
         #define toolbar here as it needs to be redefined each time
         #as the clear destroys it.
         self.defineToolbar()
+        self.defineZone1()
+        self.defineZone2()
+        self.defineZone3()
+        self.defineZone4()
+        self.defineZone5()
         return self.Toolbar
 
     def defineToolbar(self):
@@ -346,6 +343,11 @@ class MasterToolbar(QtCore.QObject):
             self.Toolbar.sizePolicy().hasHeightForWidth())
         self.Toolbar.setSizePolicy(sizeToolbarPolicy)
 
+    def defineZone1(self):
+        #Dummy Zone
+        pass
+
+    def defineZone2(self):
         if self.isLive:
             self.Toolbar.addToolbarButton(u'First Slide',
                 u':/slides/slide_first.png',
@@ -364,19 +366,30 @@ class MasterToolbar(QtCore.QObject):
                 u':/slides/slide_last.png',
                 translate(u'SlideController', u'Move to last'),
                 self.onSlideLast)
+
+    def defineZone3(self):
+        #Dummy Zone
+        pass
+
+    def defineZone4(self):
+        if self.isLive:
             self.Toolbar.addSeparator()
             self.Toolbar.addToolbarButton(u'Close Screen',
                 u':/slides/slide_close.png',
                 translate(u'SlideController', u'Close Screen'),
                 self.onSlideBlank)
 
+    def defineZone5(self):
+        #Dummy Zone
+        pass
+
     def onSlideFirst(self):
-        Receiver().send_message(u'slide_first')
+        Receiver().send_message(u'%sslide_first'% self.prefix)
     def onSlidePrevious(self):
-        Receiver().send_message(u'slide_previous')
+        Receiver().send_message(u'%sslide_previous'% self.prefix)
     def onSlideNext(self):
-        Receiver().send_message(u'slide_next')
+        Receiver().send_message(u'%sslide_next'% self.prefix)
     def onSlideLast(self):
-        Receiver().send_message(u'slide_last')
+        Receiver().send_message(u'%sslide_last' % self.prefix)
     def onSlideBlank(self):
-        Receiver().send_message(u'slide_blank')
+        Receiver().send_message(u'%sslide_blank' % self.prefix)

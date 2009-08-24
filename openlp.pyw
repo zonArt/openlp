@@ -28,7 +28,7 @@ from openlp.core.lib import Receiver
 from openlp.core.resources import *
 from openlp.core.ui import MainWindow, SplashScreen
 
-logging.basicConfig(level=logging.INFO,
+logging.basicConfig(level=logging.DEBUG,
     format=u'%(asctime)s:%(msecs)3d %(name)-15s %(levelname)-8s %(message)s',
     datefmt=u'%m-%d %H:%M:%S', filename=u'openlp.log', filemode=u'w')
 
@@ -52,7 +52,7 @@ class OpenLP(QtGui.QApplication):
             pass
         #provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlpprocessevents'), self.processEvents)
+            QtCore.SIGNAL(u'process_events'), self.processEvents)
         self.setApplicationName(u'openlp.org')
         self.setApplicationVersion(u'1.9.0')
         self.splash = SplashScreen(self.applicationVersion())
