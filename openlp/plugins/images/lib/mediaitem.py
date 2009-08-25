@@ -28,7 +28,7 @@ from openlp.plugins.images.lib.imagetoolbar import ImageToolbar
 # in order for DnD to the Service manager to work correctly.
 class ImageListView(BaseListWithDnD):
     def __init__(self, parent=None):
-        self.PluginName = u'Image'
+        self.PluginName = u'Images'
         BaseListWithDnD.__init__(self, parent)
 
 class ImageMediaItem(MediaManagerItem):

@@ -21,7 +21,7 @@ import logging
 
 from PyQt4 import Qt, QtCore, QtGui
 
-from openlp.core.lib import translate, str_to_bool
+from openlp.core.lib import translate, str_to_bool,  Receiver
 from openlp.core.lib import SettingsTab
 
 class BiblesTab(SettingsTab):
@@ -146,6 +146,8 @@ class BiblesTab(SettingsTab):
             QtCore.SIGNAL(u'activated(int)'), self.onBibleThemeComboBoxChanged)
         QtCore.QObject.connect(self.LayoutStyleComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onLayoutStyleComboBoxChanged)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'update_themes'), self.updateThemeList)
 
     def retranslateUi(self):
         self.VerseDisplayGroupBox.setTitle(translate(u'SettingsForm', u'Verse Display'))

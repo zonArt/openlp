@@ -65,18 +65,6 @@ class BiblePlugin(Plugin):
         export_menu.addAction(self.ExportBibleItem)
         self.ExportBibleItem.setText(translate(u'BiblePlugin', u'&Bible'))
 
-    def initialise(self):
-        pass
-
     def onBibleNewClick(self):
         self.media_item.onBibleNewClick()
 
-    def handle_event(self, event):
-        """
-        Handle the event contained in the event object.
-        """
-        log.debug(u'Handle event called with event %s with payload %s'%(event.event_type, event.payload))
-        if event.event_type == EventType.ThemeListChanged:
-            log.debug(u'New Theme request received')
-            self.bibles_tab.updateThemeList(event.payload)
-        return Plugin.handle_event(self, event)

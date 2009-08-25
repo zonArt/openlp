@@ -42,20 +42,8 @@ class CustomPlugin(Plugin):
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(u':/media/media_custom.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        # passed with drag and drop messages
-        self.dnd_id=u'Custom'
 
     def get_media_manager_item(self):
         # Create the CustomManagerItem object
         self.media_item = CustomMediaItem(self, self.icon, u'Custom Slides')
         return self.media_item
-
-    def handle_event(self, event):
-        """
-        Handle the event contained in the event object.
-        """
-        log.debug(u'Handle event called with event %s with payload %s'%(event.event_type, event.payload))
-        if event.event_type == EventType.ThemeListChanged:
-            log.debug(u'New Theme request received')
-            self.edit_custom_form.loadThemes(event.payload)
-        return Plugin.handle_event(self, event)

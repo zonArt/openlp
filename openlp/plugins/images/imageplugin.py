@@ -37,8 +37,6 @@ class ImagePlugin(Plugin):
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(u':/media/media_image.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        # passed with drag and drop messages
-        self.dnd_id = u'Image'
 
     def get_settings_tab(self):
         self.ImageTab = ImageTab()

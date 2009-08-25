@@ -23,7 +23,7 @@ import logging
 from PyQt4 import Qt, QtCore, QtGui
 
 from openlp.core.lib import SongXMLBuilder, SongXMLParser, Event, \
-    EventType, EventManager,  translate
+    EventType, EventManager,  translate,  Receiver
 from openlp.plugins.songs.forms import EditVerseForm
 from openlp.plugins.songs.lib.models import Song
 from editsongdialog import Ui_EditSongDialog
@@ -71,6 +71,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'activated(int)'), self.onThemeComboChanged)
         QtCore.QObject.connect(self.MaintenanceButton,
             QtCore.SIGNAL(u'clicked()'), self.onMaintenanceButtonClicked)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'update_themes'), self.loadThemes)
         # Create other objects and forms
         self.songmanager = songmanager
         self.eventmanager = eventmanager

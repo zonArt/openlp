@@ -593,9 +593,5 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             title = u'%s - %s*' % (self.mainTitle, service_name)
         self.setWindowTitle(title)
 
-    def handle_event(self, event):
-        if event.event_type == EventType.ThemeListChanged:
-            self.ServiceManagerContents.updateThemeList(event.payload)
-            self.settingsForm.ThemesTab.updateThemeList(event.payload)
-            self.DefaultThemeLabel.setText(self.defaultThemeText + \
-                self.ThemeManagerContents.getDefault())
+    def DefaultThemeChanged(self, theme):
+        self.DefaultThemeLabel.setText(self.defaultThemeText + theme)
