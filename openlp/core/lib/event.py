@@ -27,18 +27,19 @@ class EventType(object):
     """
     # "Default" event - a non-event
     Default = 0
-    TriggerAlert = 1
+    #TriggerAlert = 1
     # General application events
-    Ready = 10
+   # Ready = 10
     # Service events
-    LoadServiceItem = 20
+    #LoadServiceItem = 20
     # Preview events
-    PreviewShow = 30
-    LiveShow = 31
+    #PreviewShow = 30
+    #LiveShow = 31
     #Theme Related Events
-    ThemeListChanged = 40
+    #ThemeListChanged = 40
     #Plugin Related Events
-    LoadSongList = 50
+    #LoadSongList = 50
+
 
 
 class Event(object):

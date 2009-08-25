@@ -51,7 +51,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         QtCore.QObject.connect(self.VerseListView,
             QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'), self.onVerseListViewPressed)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'update_themes'), self.loadThemest)
+            QtCore.SIGNAL(u'update_themes'), self.loadThemes)
         # Create other objects and forms
         self.custommanager = custommanager
         self.initialise()

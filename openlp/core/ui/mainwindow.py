@@ -27,7 +27,7 @@ from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
     PluginForm
 from openlp.core.lib import translate, Plugin, MediaManagerItem, \
     SettingsTab, EventManager, RenderManager, PluginConfig, \
-    SettingsManager, PluginManager, EventType
+    SettingsManager, PluginManager, EventType,  Receiver
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -458,6 +458,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'), self.onPluginItemClicked)
         QtCore.QObject.connect(self.OptionsSettingsItem,
             QtCore.SIGNAL(u'triggered()'), self.onOptionsSettingsItemClicked)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'update_global_theme'), self.defaultThemeChanged)
         #warning cyclic dependency
         #RenderManager needs to call ThemeManager and
         #ThemeManager needs to call RenderManager
@@ -593,5 +595,5 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             title = u'%s - %s*' % (self.mainTitle, service_name)
         self.setWindowTitle(title)
 
-    def DefaultThemeChanged(self, theme):
+    def defaultThemeChanged(self, theme):
         self.DefaultThemeLabel.setText(self.defaultThemeText + theme)

@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
+import logging
 
 from PyQt4 import QtCore
 
@@ -48,12 +49,14 @@ class EventReceiver(QtCore.QObject):
         Tell the components we have a new global theme
 
     """
-
+    global log
+    log = logging.getLogger(u'EventReceiver')
 
     def __init__(self):
         QtCore.QObject.__init__(self)
 
     def send_message(self, event, msg=None):
+        log.debug(u'Event %s passed with payload %s' % (event, msg))
         print u'message ', event, msg
         self.emit(QtCore.SIGNAL(event), msg)
 

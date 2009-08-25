@@ -72,7 +72,9 @@ class ThemeManager(QtGui.QWidget):
         self.Layout.addWidget(self.ThemeListWidget)
         #Signals
         QtCore.QObject.connect(self.ThemeListWidget,
-           QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.changeGlobal)
+           QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.changeGlobalFromScreen)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'update_global_theme'), self.changeGlobalFromTab)
         #Variables
         self.themelist = []
         self.path = os.path.join(ConfigHelper.get_data_path(), u'themes')
@@ -86,7 +88,22 @@ class ThemeManager(QtGui.QWidget):
     def getDefault(self):
         return self.global_theme
 
-    def changeGlobal(self, index):
+    def changeGlobalFromTab(self, themeName):
+        log.debug(u'changeGlobalFromTab %s', themeName)
+        for count in range (0,  self.ThemeListWidget.count()):
+            #reset the old name
+            item = self.ThemeListWidget.item(count)
+            oldName =  item.text()
+            newName = unicode(item.data(QtCore.Qt.UserRole).toString())
+            if oldName != newName:
+                self.ThemeListWidget.item(count).setText(newName)
+            #Set the new name
+            if themeName  == newName:
+                name = u'%s (%s)' % (newName, translate(u'ThemeManager', u'default'))
+                self.ThemeListWidget.item(count).setText(name)
+
+    def changeGlobalFromScreen(self, index):
+        log.debug(u'changeGlobalFromScreen %s', index)
         for count in range (0,  self.ThemeListWidget.count()):
             item = self.ThemeListWidget.item(count)
             oldName =  item.text()
@@ -184,7 +201,6 @@ class ThemeManager(QtGui.QWidget):
         self.pushThemes()
 
     def pushThemes(self):
-        #self.parent.EventManager.post_event(Event(u'ThemeManager', EventType.ThemeListChanged, self.getThemes()))
         Receiver().send_message(u'update_themes',  self.getThemes() )
 
     def getThemes(self):
@@ -195,7 +211,6 @@ class ThemeManager(QtGui.QWidget):
         xml_file = os.path.join(self.path, unicode(themename), unicode(themename) + u'.xml')
         try:
             xml = file_to_xml(xml_file)
-            #print xml
         except:
             newtheme = ThemeXML()
             newtheme.new_document(u'New Theme')
@@ -206,9 +221,7 @@ class ThemeManager(QtGui.QWidget):
                 unicode(0), unicode(0), unicode(0))
             xml = newtheme.extract_xml()
         theme = ThemeXML()
-        #print theme
         theme.parse(xml)
-        #print "A ", theme
         theme.extend_image_filename(self.path)
         return theme
 
