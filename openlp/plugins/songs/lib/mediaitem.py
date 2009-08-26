@@ -22,7 +22,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, translate, ServiceItem, \
-    SongXMLParser, contextMenuAction, contextMenuSeparator, BaseListWithDnD
+    SongXMLParser, contextMenuAction, contextMenuSeparator, BaseListWithDnD,  \
+    Receiver
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm
 
 class SongListView(BaseListWithDnD):
@@ -43,7 +44,7 @@ class SongMediaItem(MediaManagerItem):
         self.PluginTextShort = u'Song'
         self.ConfigSection = u'song'
         MediaManagerItem.__init__(self, parent, icon, title)
-        self.edit_song_form = EditSongForm(self.parent.songmanager, self.parent.event_manager, self)
+        self.edit_song_form = EditSongForm(self.parent.songmanager,  self)
         self.song_maintenance_form = SongMaintenanceForm(self.parent.songmanager, self)
 
     def setupUi(self):
@@ -127,6 +128,9 @@ class SongMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'textChanged(const QString&)'), self.onSearchTextEditChanged)
         QtCore.QObject.connect(self.ListView,
            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onSongPreviewClick)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'load_song_list'), self.onSearchTextButtonClick)
+
         #define and add the context menu
         self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.ListView.addAction(contextMenuAction(self.ListView,

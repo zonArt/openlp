@@ -21,7 +21,7 @@ import os
 import sys
 import logging
 
-from openlp.core.lib import Plugin, EventManager
+from openlp.core.lib import Plugin
 
 class PluginManager(object):
     """
@@ -50,7 +50,7 @@ class PluginManager(object):
         # this has to happen after the UI is sorted self.find_plugins(dir)
         log.info(u'Plugin manager done init')
 
-    def find_plugins(self, dir, plugin_helpers, eventmanager):
+    def find_plugins(self, dir, plugin_helpers):
         """
         Scan the directory dir for objects inheriting from ``openlp.plugin``.
 
@@ -60,8 +60,6 @@ class PluginManager(object):
         ``plugin_helpers``
             A list of helper objects to pass to the plugins.
 
-        ``eventmanager``
-            The event manager to pass to the plugins.
         """
         self.plugin_helpers = plugin_helpers
         startdepth = len(os.path.abspath(dir).split(os.sep))
@@ -103,10 +101,8 @@ class PluginManager(object):
             pList = {u'plugin': plugin,  u'status': u'Inactive'}
             if plugin.check_pre_conditions():
                 log.debug(u'Plugin %s active', unicode(plugin.name))
-                eventmanager.register(plugin)
                 pList[u'status'] = u'Active'
             self.plugins.append(pList)
-
 
     def order_by_weight(self, x, y):
         """

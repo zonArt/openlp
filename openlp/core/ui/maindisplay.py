@@ -21,7 +21,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from time import sleep
-from openlp.core.lib import translate,  EventManager,  Event,  EventType,  Receiver
+from openlp.core.lib import translate,  Receiver
 
 class MainDisplay(QtGui.QWidget):
     """
@@ -58,20 +58,10 @@ class MainDisplay(QtGui.QWidget):
         self.alertactive = False
         self.alertTab = None
         self.timer_id = 0
-        # Register the main form as an event consumer.
-        self.parent.EventManager.register(self)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'live_slide_blank'), self.blankDisplay)
-
-    def handle_event(self, event):
-        """
-        Accept Events for the system and If It's for Alert
-        action it and Return true to stop futher processing
-        """
-        log.debug(u'MainDisplay received event %s with payload %s'%(event.event_type, event.payload))
-        if event.event_type == EventType.TriggerAlert:
-            self.displayAlert(event.payload)
-            return True
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'alert_text'), self.displayAlert)
 
     def setup(self, screenNumber):
         """

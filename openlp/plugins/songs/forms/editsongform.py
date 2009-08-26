@@ -22,8 +22,8 @@ import logging
 
 from PyQt4 import Qt, QtCore, QtGui
 
-from openlp.core.lib import SongXMLBuilder, SongXMLParser, Event, \
-    EventType, EventManager,  translate,  Receiver
+from openlp.core.lib import SongXMLBuilder, SongXMLParser,  \
+    translate,  Receiver
 from openlp.plugins.songs.forms import EditVerseForm
 from openlp.plugins.songs.lib.models import Song
 from editsongdialog import Ui_EditSongDialog
@@ -36,7 +36,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     log = logging.getLogger(u'EditSongForm')
     log.info(u'Song Editor loaded')
 
-    def __init__(self, songmanager, eventmanager, parent=None):
+    def __init__(self, songmanager, parent=None):
         """
         Constructor
         """
@@ -75,7 +75,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'update_themes'), self.loadThemes)
         # Create other objects and forms
         self.songmanager = songmanager
-        self.eventmanager = eventmanager
         self.parent = parent
         self.verse_form = EditVerseForm()
         self.initialise()
@@ -366,7 +365,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.processTitle()
         self.songmanager.save_song(self.song)
         if self.title_change:
-            self.eventmanager.post_event(Event(u'EditSongForm', EventType.LoadSongList))
+            Receiver().send_message(u'load_song_list')
         self.close()
 
     def processLyrics(self):

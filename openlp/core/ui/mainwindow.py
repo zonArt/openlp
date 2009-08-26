@@ -26,8 +26,8 @@ from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
     ServiceManager, ThemeManager, MainDisplay, SlideController,  \
     PluginForm
 from openlp.core.lib import translate, Plugin, MediaManagerItem, \
-    SettingsTab, EventManager, RenderManager, PluginConfig, \
-    SettingsManager, PluginManager, EventType,  Receiver
+    SettingsTab, RenderManager, PluginConfig, \
+    SettingsManager, PluginManager, Receiver
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -416,7 +416,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.screenList = screens
         self.oosNotSaved = False
         self.settingsmanager = SettingsManager(screens)
-        self.EventManager = EventManager()
         self.mainDisplay = MainDisplay(self, screens)
         self.generalConfig = PluginConfig(u'General')
         self.alertForm = AlertForm(self)
@@ -469,12 +468,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         #make the controllers available to the plugins
         self.plugin_helpers[u'preview'] = self.PreviewController
         self.plugin_helpers[u'live'] = self.LiveController
-        self.plugin_helpers[u'event'] = self.EventManager
         self.plugin_helpers[u'render'] = self.RenderManager
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
         self.plugin_helpers[u'settings'] = self.settingsForm
-        self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers,
-            self.EventManager)
+        self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers)
         # hook methods have to happen after find_plugins. Find plugins needs the
         # controllers hence the hooks have moved from setupUI() to here
 
@@ -492,8 +489,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Call the initialise method to setup plugins.
         log.info(u'initialise plugins')
         self.plugin_manager.initialise_plugins()
-        # Register the main form as an event consumer.
-        self.EventManager.register(self)
         # Once all components are initialised load the Themes
         log.info(u'Load Themes')
         self.ThemeManagerContents.loadThemes()

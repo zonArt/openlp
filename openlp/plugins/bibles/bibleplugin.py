@@ -22,7 +22,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
 
-from openlp.core.lib import Plugin, Event,  EventType,  translate
+from openlp.core.lib import Plugin, translate
 
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 

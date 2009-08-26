@@ -47,6 +47,8 @@ class EventReceiver(QtCore.QObject):
         send out message with new themes
     ``update_global_theme ``
         Tell the components we have a new global theme
+    ``load_song_list``
+        Tells the the song plugin to reload the song list
 
     """
     global log
@@ -57,7 +59,6 @@ class EventReceiver(QtCore.QObject):
 
     def send_message(self, event, msg=None):
         log.debug(u'Event %s passed with payload %s' % (event, msg))
-        print u'message ', event, msg
         self.emit(QtCore.SIGNAL(event), msg)
 
 class Receiver():

@@ -22,7 +22,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, Event,  EventType,  translate
+from openlp.core.lib import Plugin, translate
 from openlp.plugins.songs.lib import SongManager, SongsTab, SongMediaItem
 from openlp.plugins.songs.forms import OpenLPImportForm, OpenSongExportForm, \
     OpenSongImportForm, OpenLPExportForm
@@ -126,13 +126,3 @@ class SongsPlugin(Plugin):
 
     def onExportOpenSongItemClicked(self):
         self.opensong_export_form.show()
-
-    def handle_event(self, event):
-        """
-        Handle the event contained in the event object.
-        """
-        log.debug(u'Handle event called with event %s' % event.event_type)
-        if event.event_type == EventType.LoadSongList :
-            log.debug(u'Load Load Song List Item received')
-            self.media_item.displayResultsSong(self.songmanager.get_songs())
-        return Plugin.handle_event(self, event)

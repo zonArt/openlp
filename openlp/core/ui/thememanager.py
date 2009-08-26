@@ -28,8 +28,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AmendThemeForm, ServiceManager
 from openlp.core.theme import Theme
-from openlp.core.lib import PluginConfig, Event, EventType, \
-    EventManager, OpenLPToolbar, ThemeXML, Renderer, translate, \
+from openlp.core.lib import PluginConfig,  \
+    OpenLPToolbar, ThemeXML, Renderer, translate, \
     file_to_xml, buildIcon,  Receiver
 from openlp.core.utils import ConfigHelper
 
@@ -116,6 +116,7 @@ class ThemeManager(QtGui.QWidget):
                 name = u'%s (%s)' % (self.global_theme, translate(u'ThemeManager', u'default'))
                 self.ThemeListWidget.item(count).setText(name)
                 self.config.set_config(u'theme global theme', self.global_theme)
+                Receiver().send_message(u'update_global_theme',  self.global_theme )
                 self.pushThemes()
 
     def onAddTheme(self):

@@ -32,11 +32,9 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     def __init__(self, thememanager, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.thememanager = thememanager
-        # Needed here as UI setup generates Events
         self.path = None
         self.theme = ThemeXML()
         self.setupUi(self)
-
         #define signals
         #Buttons
         QtCore.QObject.connect(self.Color1PushButton ,

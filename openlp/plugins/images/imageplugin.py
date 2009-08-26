@@ -21,7 +21,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, Event,  EventType
+from openlp.core.lib import Plugin
 from openlp.plugins.images.lib import ImageMediaItem,  ImageTab
 
 class ImagePlugin(Plugin):
