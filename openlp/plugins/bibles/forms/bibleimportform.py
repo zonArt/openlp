@@ -152,9 +152,9 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
     def onCancelButtonClicked(self):
         # tell import to stop
         self.message = u'Bible import stopped'
-        Receiver().send_message(u'openlpstopimport')
+        Receiver().send_message(u'stop_import')
         # tell bibleplugin to reload the bibles
-        Receiver().send_message(u'openlpreloadbibles')
+        Receiver().send_message(u'pre_load_bibles')
         self.close()
 
     def onImportButtonClicked(self):
@@ -172,7 +172,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
                 self.MessageLabel.setText(message)
                 self.ProgressBar.setValue(self.barmax)
                 # tell bibleplugin to reload the bibles
-                Receiver().send_message(u'openlpreloadbibles')
+                Receiver().send_message(u'pre_load_bibles')
                 reply = QtGui.QMessageBox.information(self,
                     translate(u'BibleMediaItem', u'Information'),
                     translate(u'BibleMediaItem', message))

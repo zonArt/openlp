@@ -22,7 +22,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
 
-from openlp.core.lib import Plugin, Event,  EventType,  translate
+from openlp.core.lib import Plugin, translate
 
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 
@@ -41,9 +41,6 @@ class BiblePlugin(Plugin):
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         #Register the bible Manager
         self.biblemanager = BibleManager(self.config)
-        # passed with drag and drop messages
-        self.dnd_id = u'Bibles'
-
 
     def get_settings_tab(self):
         self.bibles_tab = BiblesTab()
@@ -68,18 +65,6 @@ class BiblePlugin(Plugin):
         export_menu.addAction(self.ExportBibleItem)
         self.ExportBibleItem.setText(translate(u'BiblePlugin', u'&Bible'))
 
-    def initialise(self):
-        pass
-
     def onBibleNewClick(self):
         self.media_item.onBibleNewClick()
 
-    def handle_event(self, event):
-        """
-        Handle the event contained in the event object.
-        """
-        log.debug(u'Handle event called with event %s with payload %s'%(event.event_type, event.payload))
-        if event.event_type == EventType.ThemeListChanged:
-            log.debug(u'New Theme request received')
-            self.bibles_tab.updateThemeList(event.payload)
-        return Plugin.handle_event(self, event)

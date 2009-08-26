@@ -20,7 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab,  translate
+from openlp.core.lib import SettingsTab,  translate,  Receiver
 
 class ThemesTab(SettingsTab):
     """
@@ -88,16 +88,16 @@ class ThemesTab(SettingsTab):
         self.LevelLayout.setWidget(2, QtGui.QFormLayout.FieldRole,
             self.GlobalLevelLabel)
         self.ThemesTabLayout.addWidget(self.LevelGroupBox)
-
         QtCore.QObject.connect(self.SongLevelRadioButton,
             QtCore.SIGNAL(u'pressed()'), self.onSongLevelButtonPressed)
         QtCore.QObject.connect(self.ServiceLevelRadioButton,
             QtCore.SIGNAL(u'pressed()'), self.onServiceLevelButtonPressed)
         QtCore.QObject.connect(self.GlobalLevelRadioButton,
             QtCore.SIGNAL(u'pressed()'), self.onGlobalLevelButtonPressed)
-
         QtCore.QObject.connect(self.DefaultComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onDefaultComboBoxChanged)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'update_themes'), self.updateThemeList)
 
     def retranslateUi(self):
         self.GlobalGroupBox.setTitle(translate(u'ThemesTab', u'Global theme'))
@@ -122,6 +122,7 @@ class ThemesTab(SettingsTab):
     def save(self):
         self.config.set_config(u'theme global style', self.global_style )
         self.config.set_config(u'theme global theme',self.global_theme)
+        Receiver().send_message(u'update_global_theme',  self.global_theme )
 
     def onSongLevelButtonPressed(self):
         self.global_style= u'Song'

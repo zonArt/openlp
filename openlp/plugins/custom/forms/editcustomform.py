@@ -20,7 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from PyQt4 import Qt, QtCore, QtGui
 
 from editcustomdialog import Ui_customEditDialog
-from openlp.core.lib import SongXMLBuilder, SongXMLParser
+from openlp.core.lib import SongXMLBuilder, SongXMLParser,  Receiver
 from openlp.plugins.custom.lib.models import CustomSlide
 
 class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
@@ -50,6 +50,8 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             QtCore.SIGNAL(u'itemDoubleClicked(QListWidgetItem*)'), self.onVerseListViewSelected)
         QtCore.QObject.connect(self.VerseListView,
             QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'), self.onVerseListViewPressed)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'update_themes'), self.loadThemes)
         # Create other objects and forms
         self.custommanager = custommanager
         self.initialise()

@@ -24,9 +24,9 @@ import zipfile
 import shutil
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, Event, \
-    RenderManager, EventType, EventManager, translate, buildIcon, \
-    contextMenuAction, contextMenuSeparator
+from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
+    RenderManager, translate, buildIcon, \
+    contextMenuAction, contextMenuSeparator,  Receiver
 from openlp.core.utils import ConfigHelper
 
 class ServiceManagerList(QtGui.QTreeWidget):
@@ -66,6 +66,7 @@ class ServiceManagerList(QtGui.QTreeWidget):
 class Iter(QtGui.QTreeWidgetItemIterator):
   def __init__(self, *args):
         QtGui.QTreeWidgetItemIterator.__init__(self, *args)
+
   def next(self):
         self.__iadd__(1)
         value = self.value()
@@ -158,6 +159,8 @@ class ServiceManager(QtGui.QWidget):
            QtCore.SIGNAL(u'itemCollapsed(QTreeWidgetItem*)'), self.collapsed)
         QtCore.QObject.connect(self.ServiceManagerList,
            QtCore.SIGNAL(u'itemExpanded(QTreeWidgetItem*)'), self.expanded)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'update_themes'), self.updateThemeList)
         # Last little bits of setting up
         self.config = PluginConfig(u'ServiceManager')
         self.servicePath = self.config.get_data_path()
@@ -488,7 +491,7 @@ class ServiceManager(QtGui.QWidget):
         link = event.mimeData()
         if link.hasText():
             plugin = event.mimeData().text()
-            self.parent.EventManager.post_event(Event(u'ServiceManager', EventType.LoadServiceItem, plugin))
+            Receiver().send_message(u'%s_add_service_item' % plugin)
 
     def updateThemeList(self, theme_list):
         """
