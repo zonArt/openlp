@@ -34,8 +34,9 @@ class OpenLPToolbar(QtGui.QToolBar):
         QtGui.QToolBar.__init__(self, None)
         # useful to be able to reuse button icons...
         self.icons = {}
+        self.actions = {}
         self.log = logging.getLogger(u'OpenLPToolbar')
-        self.log.info(u'Init done')
+        self.log.debug(u'Init done')
 
     def addToolbarButton(self, title, icon, tooltip=None, slot=None, objectname=None):
         """
@@ -76,6 +77,7 @@ class OpenLPToolbar(QtGui.QToolBar):
             if slot is not None:
                 QtCore.QObject.connect(ToolbarButton, QtCore.SIGNAL(u'triggered()'), slot)
             self.icons[title] = ButtonIcon
+            self.actions[title] = ToolbarButton
 
     def getIconFromTitle(self, title):
         """

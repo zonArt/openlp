@@ -21,7 +21,7 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import OpenLPToolbar, translate, buildIcon, Receiver
+from openlp.core.lib import OpenLPToolbar, translate, buildIcon, Receiver, ServiceType
 
 class SlideList(QtGui.QTableWidget):
     """
@@ -63,12 +63,8 @@ class SlideController(QtGui.QWidget):
         """
         Set up the Slide Controller.
         """
-        self.toolbarList = {}
         QtGui.QWidget.__init__(self, parent)
         self.isLive = isLive
-        self.prefix  = u'preview_'
-        if isLive:
-            self.prefix  = u'live_'
         self.parent = parent
         self.Panel = QtGui.QWidget(parent.ControlSplitter)
         self.Splitter = QtGui.QSplitter(self.Panel)
@@ -96,10 +92,57 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.isLive = self.isLive
         self.PreviewListWidget.setObjectName(u'PreviewListWidget')
         self.ControllerLayout.addWidget(self.PreviewListWidget)
-        # Plugin the Base Toolbar class
-        self.BaseToolbar = MasterToolbar(self.isLive)
-        self.registerToolbar(u'master', self.BaseToolbar)
-        self.Toolbar = self.BaseToolbar.getToolbar()
+        # Build the full toolbar
+        self.Toolbar = OpenLPToolbar(self)
+        sizeToolbarPolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Fixed)
+        sizeToolbarPolicy.setHorizontalStretch(0)
+        sizeToolbarPolicy.setVerticalStretch(0)
+        sizeToolbarPolicy.setHeightForWidth(
+            self.Toolbar.sizePolicy().hasHeightForWidth())
+        self.Toolbar.setSizePolicy(sizeToolbarPolicy)
+        if self.isLive:
+            self.Toolbar.addToolbarButton(u'First Slide',
+                u':/slides/slide_first.png',
+                translate(u'SlideController', u'Move to first'),
+                self.onSlideSelectedFirst)
+        self.Toolbar.addToolbarButton(u'Previous Slide',
+            u':/slides/slide_previous.png',
+            translate(u'SlideController', u'Move to previous'),
+            self.onSlideSelectedPrevious)
+        self.Toolbar.addToolbarButton(u'Next Slide',
+            u':/slides/slide_next.png',
+            translate(u'SlideController', u'Move to next'),
+            self.onSlideSelectedNext)
+        if self.isLive:
+            self.Toolbar.addToolbarButton(u'Last Slide',
+                u':/slides/slide_last.png',
+                translate(u'SlideController', u'Move to last'),
+                self.onSlideSelectedLast)
+        if self.isLive:
+            self.Toolbar.addSeparator()
+            self.Toolbar.addToolbarButton(u'Close Screen',
+                u':/slides/slide_close.png',
+                translate(u'SlideController', u'Close Screen'),
+                self.onBlankScreen)
+        if isLive:
+            self.Toolbar.addSeparator()
+            self.Toolbar.addToolbarButton(u'Start Loop',
+                u':/media/media_time.png',
+                translate(u'SlideController', u'Start continuous loop'),
+                self.onStartLoop)
+            self.Toolbar.addToolbarButton(u'Stop Loop',
+                u':/media/media_stop.png',
+                translate(u'SlideController', u'Stop continuous loop'),
+                self.onStopLoop)
+            self.Toolbar.addSeparator()
+            self.DelaySpinBox = QtGui.QSpinBox(self.Toolbar)
+            self.SpinWidget = QtGui.QWidgetAction(self.Toolbar)
+            self.SpinWidget.setDefaultWidget(self.DelaySpinBox)
+            self.Toolbar.addAction(self.SpinWidget)
+            #self.DelaySpinBox.setValue(self.parent.parent.ImageTab.loop_delay)
+            self.DelaySpinBox.setSuffix(translate(u'SlideController', u's'))
+
         self.ControllerLayout.addWidget(self.Toolbar)
         sizeToolbarPolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Fixed)
@@ -140,45 +183,26 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
         QtCore.QObject.connect(self.PreviewListWidget,
             QtCore.SIGNAL(u'activated(QModelIndex)'), self.onSlideSelected)
-        # Window Event Handlers
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%sslide_first'% self.prefix), self.onSlideSelectedFirst)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%sslide_previous'% self.prefix), self.onSlideSelectedPrevious)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%sslide_next'% self.prefix), self.onSlideSelectedNext)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%sslide_last'% self.prefix), self.onSlideSelectedLast)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%sslide_start_loop'% self.prefix), self.onStartLoop)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%sslide_stop_loop'% self.prefix), self.onStopLoop)
 
+    def enableToolBar(self, item):
+        if self.isLive:
+            self.enableLiveToolBar(item)
+        else:
+            self.enablePreviewToolBar(item)
 
-    def registerToolbar(self, handle,controller):
+    def enableLiveToolBar(self, item):
         """
-        Register a new toolbar with the controller
-        ``handle``
-            Identifier for the toolbar being stored this should equal the
-            plugins name.
-        ``controller``
-            The toolbar class which should extend MasterToolbar
+        Allows the live toolbar to be customised
         """
-        #store the handle name in lower case so no probems later
-        self.toolbarList[handle.lower()] = controller
+        if item.service_item_type == ServiceType.Text:
+            a = c
+            pass
 
-    def retrieveToolbar(self, handle):
+    def enablePreviewToolBar(self, item):
         """
-        Find the toolbar and return master if none present
-        Add extra information back into toolbar class
-        ``handle``
-            Identifier for the toolbar being requested
+        Allows the Preview toolbar to be customised
         """
-        try:
-            toolbar =  self.toolbarList[handle.lower()]
-        except:
-            toolbar = self.toolbarList[u'master']
-        return toolbar
+        pass
 
     def addServiceItem(self, item):
         """
@@ -186,12 +210,7 @@ class SlideController(QtGui.QWidget):
         request the correct the toolbar of the plugin
         Called by plugins
         """
-        self.BaseToolbar = self.retrieveToolbar(item.shortname)
-        self.ControllerLayout.removeWidget(self.Toolbar)
-        #remove the old toolbar
-        self.Toolbar.clear()
-        self.Toolbar = self.BaseToolbar.getToolbar()
-        self.ControllerLayout.addWidget(self.Toolbar)
+        self.enableToolBar(item)
         item.render()
         self.displayServiceManagerItems(item, 0)
 
@@ -201,12 +220,7 @@ class SlideController(QtGui.QWidget):
         request the correct the toolbar of the plugin
         Called by ServiceManager
         """
-        self.BaseToolbar = self.retrieveToolbar(item.shortname)
-        self.ControllerLayout.removeWidget(self.Toolbar)
-        #remove the old toolbar
-        self.Toolbar.clear()
-        self.Toolbar = self.BaseToolbar.getToolbar()
-        self.ControllerLayout.addWidget(self.Toolbar)
+        self.enableToolBar(item)
         self.displayServiceManagerItems(item, slideno)
 
     def displayServiceManagerItems(self, serviceitem, slideno):
@@ -261,7 +275,6 @@ class SlideController(QtGui.QWidget):
         """
         Go to the first slide.
         """
-        print "oSSF"
         self.PreviewListWidget.selectRow(0)
         self.onSlideSelected()
 
@@ -329,88 +342,5 @@ class SlideController(QtGui.QWidget):
         if event.timerId() == self.timer_id:
             self.onSlideSelectedNext()
 
-class MasterToolbar(QtCore.QObject):
-    """
-    Class from which all toolbars should extend
-    """
-    def __init__(self, isLive):
-        self.Toolbar = None
-        QtCore.QObject.__init__(self)
-        self.PreviewListWidget = QtGui.QListWidget()
-        self.isLive = isLive
-        self.prefix  = u'preview_'
-        if isLive:
-            self.prefix  = u'live_'
 
-    def getToolbar(self):
-        #define toolbar here as it needs to be redefined each time
-        #as the clear destroys it.
-        self.defineToolbar()
-        self.defineZone1()
-        self.defineZone2()
-        self.defineZone3()
-        self.defineZone4()
-        self.defineZone5()
-        return self.Toolbar
 
-    def defineToolbar(self):
-        # Controller toolbar
-        self.Toolbar = OpenLPToolbar(self)
-        sizeToolbarPolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Fixed)
-        sizeToolbarPolicy.setHorizontalStretch(0)
-        sizeToolbarPolicy.setVerticalStretch(0)
-        sizeToolbarPolicy.setHeightForWidth(
-            self.Toolbar.sizePolicy().hasHeightForWidth())
-        self.Toolbar.setSizePolicy(sizeToolbarPolicy)
-
-    def defineZone1(self):
-        #Dummy Zone
-        pass
-
-    def defineZone2(self):
-        if self.isLive:
-            self.Toolbar.addToolbarButton(u'First Slide',
-                u':/slides/slide_first.png',
-                translate(u'SlideController', u'Move to first'),
-                self.onSlideFirst)
-        self.Toolbar.addToolbarButton(u'Previous Slide',
-            u':/slides/slide_previous.png',
-            translate(u'SlideController', u'Move to previous'),
-            self.onSlidePrevious)
-        self.Toolbar.addToolbarButton(u'Next Slide',
-            u':/slides/slide_next.png',
-            translate(u'SlideController', u'Move to next'),
-            self.onSlideNext)
-        if self.isLive:
-            self.Toolbar.addToolbarButton(u'Last Slide',
-                u':/slides/slide_last.png',
-                translate(u'SlideController', u'Move to last'),
-                self.onSlideLast)
-
-    def defineZone3(self):
-        #Dummy Zone
-        pass
-
-    def defineZone4(self):
-        if self.isLive:
-            self.Toolbar.addSeparator()
-            self.Toolbar.addToolbarButton(u'Close Screen',
-                u':/slides/slide_close.png',
-                translate(u'SlideController', u'Close Screen'),
-                self.onSlideBlank)
-
-    def defineZone5(self):
-        #Dummy Zone
-        pass
-
-    def onSlideFirst(self):
-        Receiver().send_message(u'%sslide_first'% self.prefix)
-    def onSlidePrevious(self):
-        Receiver().send_message(u'%sslide_previous'% self.prefix)
-    def onSlideNext(self):
-        Receiver().send_message(u'%sslide_next'% self.prefix)
-    def onSlideLast(self):
-        Receiver().send_message(u'%sslide_last' % self.prefix)
-    def onSlideBlank(self):
-        Receiver().send_message(u'%sslide_blank' % self.prefix)

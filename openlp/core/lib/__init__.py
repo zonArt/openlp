@@ -66,6 +66,7 @@ from mediamanageritem import MediaManagerItem
 from xmlrootclass import XmlRootClass
 from serviceitem import ServiceItem
 from eventreceiver import Receiver
+from serviceitem import ServiceType
 from serviceitem import ServiceItem
 from toolbar import OpenLPToolbar
 from songxmlhandler import SongXMLBuilder

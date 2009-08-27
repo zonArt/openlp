@@ -25,6 +25,11 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import buildIcon
 
+class ServiceType(object):
+    Text = 1
+    Image = 2
+    Command = 3
+
 class ServiceItem(object):
     """
     The service item is a base class for the plugins to use to interact with
@@ -83,16 +88,16 @@ class ServiceItem(object):
             self.RenderManager.set_override_theme(self.theme)
         log.debug(u'Formatting slides')
         self.frames = []
-        if self.service_item_type == u'text':
+        if self.service_item_type == ServiceType.Text:
             for slide in self.service_frames:
                 formated = self.RenderManager.format_slide(slide[u'raw_slide'])
                 for format in formated:
                     frame = self.RenderManager.generate_slide(format, self.raw_footer)
                     self.frames.append({u'title': slide[u'title'], u'image': frame})
-        elif self.service_item_type == u'command':
+        elif self.service_item_type == ServiceType.Command:
             self.frames = self.service_frames
             self.service_frames = []
-        elif self.service_item_type == u'image':
+        elif self.service_item_type == ServiceType.Image:
             #print "image"
             #print self.service_frames
             for slide in self.service_frames:
@@ -115,7 +120,7 @@ class ServiceItem(object):
         ``image``
             The actual image file name.
         """
-        self.service_item_type = u'image'
+        self.service_item_type = ServiceType.Image
         self.service_item_path = path
         self.service_frames.append({u'title': frame_title, u'image': image})
 
@@ -129,7 +134,7 @@ class ServiceItem(object):
         ``raw_slide``
             The raw text of the slide.
         """
-        self.service_item_type = u'text'
+        self.service_item_type = ServiceType.Text
         frame_title = frame_title.split(u'\n')[0]
         self.service_frames.append({u'title': frame_title, u'raw_slide': raw_slide})
 
@@ -143,7 +148,7 @@ class ServiceItem(object):
         ``command``
             The command of/for the slide.
         """
-        self.service_item_type = u'command'
+        self.service_item_type = ServiceType.Command
         self.service_frames.append({u'title': frame_title, u'command': command})
 
     def get_oos_repr(self):
@@ -160,15 +165,12 @@ class ServiceItem(object):
             u'type':self.service_item_type
         }
         oos_data = []
-        if self.service_item_type == u'text':
+        if self.service_item_type == ServiceType.Text:
             for slide in self.service_frames:
                 oos_data.append(slide)
-        elif self.service_item_type == u'image':
-            #print "sf", self.service_frames
+        elif self.service_item_type == ServiceType.Image:
             for slide in self.service_frames:
-                #print "s", slide
                 oos_data.append(slide[u'title'])
-        #print "od", oos_data
         return {u'header': oos_header, u'data': oos_data}
 
     def set_from_oos(self, serviceitem, path=None):
@@ -182,7 +184,6 @@ class ServiceItem(object):
         ``path``
             Defaults to *None*. Any path data, usually for images.
         """
-        #print "sfs", serviceitem
         header = serviceitem[u'serviceitem'][u'header']
         self.title = header[u'title']
         self.service_item_type = header[u'type']
@@ -190,12 +191,11 @@ class ServiceItem(object):
         self.theme = header[u'theme']
         self.addIcon(header[u'icon'])
         self.raw_footer = header[u'footer']
-        if self.service_item_type == u'text':
+        if self.service_item_type == ServiceType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self.service_frames.append(slide)
-        elif self.service_item_type == u'image':
+        elif self.service_item_type == ServiceType.Image:
             for text_image in serviceitem[u'serviceitem'][u'data']:
                 filename = os.path.join(path, text_image)
-                #print "fn",  filename
                 real_image = QtGui.QImage(unicode(filename))
                 self.add_from_image(path, text_image, real_image)
