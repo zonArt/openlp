@@ -329,13 +329,38 @@ class ThemeManager(QtGui.QWidget):
         if os.path.exists(theme_dir) == False:
             os.mkdir(os.path.join(self.path, name))
         theme_file = os.path.join(theme_dir, name + u'.xml')
-        outfile = open(theme_file, u'w')
-        outfile.write(theme_xml)
-        outfile.close()
-        if image_from is not None and image_from != image_to:
-            shutil.copyfile(image_from,  image_to)
-        self.generateAndSaveImage(self.path, name, theme_xml)
-        self.loadThemes()
+        log.debug(theme_file)
+        if  os.path.exists(theme_file):
+            result = QtGui.QMessageBox.information(
+                self, 
+                translate(u'ThemeManager',u'Theme already exist!'), 
+                translate(u'ThemeManager',u'This theme name already exist.\n') + \
+                translate(u'ThemeManager',u'do you want to overwrite it?'), 
+                translate(u'ThemeManager',u'Save'),
+                translate(u'ThemeManager',u'Discard'),
+                translate(u'ThemeManager',u'Cancel'),
+                0, 
+                2)
+        else:
+            result = 0
+        if result == 0:
+            outfile = open(theme_file, u'w')
+            outfile.write(theme_xml)
+            outfile.close()
+            if image_from is not None and image_from != image_to:
+                shutil.copyfile(image_from,  image_to)
+            self.generateAndSaveImage(self.path, name, theme_xml)
+            self.loadThemes()
+            """
+            Case 1,  Discard (Only Reload Theme's)
+            """
+        if result == 1:
+            self.loadThemes()
+            """
+            Case 2, Cancel (Back to New Theme Screen)
+            """
+        if result == 2:
+            return False
 
     def generateAndSaveImage(self, dir, name, theme_xml):
         log.debug(u'generateAndSaveImage %s %s %s', dir, name, theme_xml)
