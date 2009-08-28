@@ -137,9 +137,6 @@ class SlideController(QtGui.QWidget):
                 translate(u'SlideController', u'Stop continuous loop'),
                 self.onStopLoop)
             self.DelaySpinBox = QtGui.QSpinBox()
-#            self.SpinWidget = QtGui.QWidgetAction(self.Toolbar)
-#            self.SpinWidget.setDefaultWidget(self.DelaySpinBox)
-#            self.Toolbar.addAction(self.SpinWidget)
             self.Toolbar.addToolbarWidget(u'Image SpinBox', self.DelaySpinBox)
             #self.DelaySpinBox.setValue(self.parent.parent.ImageTab.loop_delay)
             self.DelaySpinBox.setSuffix(translate(u'SlideController', u's'))
@@ -184,8 +181,16 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
         QtCore.QObject.connect(self.PreviewListWidget,
             QtCore.SIGNAL(u'activated(QModelIndex)'), self.onSlideSelected)
+        if isLive:
+            self.Toolbar.makeWidgetsInvisible(self.image_list)
+        else:
+            pass
 
     def enableToolBar(self, item):
+        """
+        Allows the toolbars to be reconfigured based on Controller Type
+        and ServiceItem Type
+        """
         if self.isLive:
             self.enableLiveToolBar(item)
         else:
@@ -198,7 +203,11 @@ class SlideController(QtGui.QWidget):
         if item.service_item_type == ServiceType.Text:
             self.Toolbar.makeWidgetsInvisible(self.image_list)
         elif item.service_item_type == ServiceType.Image:
-            self.Toolbar.makeWidgetsVisible(self.image_list)
+            #Not sensible to allow loops with 1 frame
+            if len(item.frames) > 1:
+                self.Toolbar.makeWidgetsVisible(self.image_list)
+            else:
+                self.Toolbar.makeWidgetsInvisible(self.image_list)
 
     def enablePreviewToolBar(self, item):
         """
@@ -212,8 +221,8 @@ class SlideController(QtGui.QWidget):
         request the correct the toolbar of the plugin
         Called by plugins
         """
-        self.enableToolBar(item)
         item.render()
+        self.enableToolBar(item)
         self.displayServiceManagerItems(item, 0)
 
     def addServiceManagerItem(self, item, slideno):
