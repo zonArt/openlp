@@ -66,6 +66,7 @@ class SlideController(QtGui.QWidget):
         QtGui.QWidget.__init__(self, parent)
         self.isLive = isLive
         self.parent = parent
+        self.image_list = [u'Start Loop', u'Stop Loop', u'Loop Spearator', u'Image SpinBox']
         self.Panel = QtGui.QWidget(parent.ControlSplitter)
         self.Splitter = QtGui.QSplitter(self.Panel)
         self.Splitter.setOrientation(QtCore.Qt.Vertical)
@@ -120,13 +121,13 @@ class SlideController(QtGui.QWidget):
                 translate(u'SlideController', u'Move to last'),
                 self.onSlideSelectedLast)
         if self.isLive:
-            self.Toolbar.addSeparator()
+            self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(u'Close Screen',
                 u':/slides/slide_close.png',
                 translate(u'SlideController', u'Close Screen'),
                 self.onBlankScreen)
         if isLive:
-            self.Toolbar.addSeparator()
+            self.Toolbar.addToolbarSeparator(u'Loop Spearator')
             self.Toolbar.addToolbarButton(u'Start Loop',
                 u':/media/media_time.png',
                 translate(u'SlideController', u'Start continuous loop'),
@@ -135,11 +136,11 @@ class SlideController(QtGui.QWidget):
                 u':/media/media_stop.png',
                 translate(u'SlideController', u'Stop continuous loop'),
                 self.onStopLoop)
-            self.Toolbar.addSeparator()
-            self.DelaySpinBox = QtGui.QSpinBox(self.Toolbar)
-            self.SpinWidget = QtGui.QWidgetAction(self.Toolbar)
-            self.SpinWidget.setDefaultWidget(self.DelaySpinBox)
-            self.Toolbar.addAction(self.SpinWidget)
+            self.DelaySpinBox = QtGui.QSpinBox()
+#            self.SpinWidget = QtGui.QWidgetAction(self.Toolbar)
+#            self.SpinWidget.setDefaultWidget(self.DelaySpinBox)
+#            self.Toolbar.addAction(self.SpinWidget)
+            self.Toolbar.addToolbarWidget(u'Image SpinBox', self.DelaySpinBox)
             #self.DelaySpinBox.setValue(self.parent.parent.ImageTab.loop_delay)
             self.DelaySpinBox.setSuffix(translate(u'SlideController', u's'))
 
@@ -195,8 +196,9 @@ class SlideController(QtGui.QWidget):
         Allows the live toolbar to be customised
         """
         if item.service_item_type == ServiceType.Text:
-            a = c
-            pass
+            self.Toolbar.makeWidgetsInvisible(self.image_list)
+        elif item.service_item_type == ServiceType.Image:
+            self.Toolbar.makeWidgetsVisible(self.image_list)
 
     def enablePreviewToolBar(self, item):
         """

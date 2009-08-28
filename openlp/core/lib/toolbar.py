@@ -71,13 +71,28 @@ class OpenLPToolbar(QtGui.QToolBar):
                 ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
                     QtGui.QIcon.Normal, QtGui.QIcon.Off)
         if ButtonIcon is not None:
-            ToolbarButton = self.addAction(ButtonIcon, title)
+            if slot is not None:
+                ToolbarButton = self.addAction(ButtonIcon, title, slot)
+            else:
+                ToolbarButton = self.addAction(ButtonIcon, title)
             if tooltip is not None:
                 ToolbarButton.setToolTip(tooltip)
-            if slot is not None:
-                QtCore.QObject.connect(ToolbarButton, QtCore.SIGNAL(u'triggered()'), slot)
             self.icons[title] = ButtonIcon
             self.actions[title] = ToolbarButton
+
+    def addToolbarSeparator(self, handle):
+        """
+        Add a Separator bar to the toolbar and store it's Handle
+        """
+        action = self.addSeparator()
+        self.actions[handle] = action
+
+    def addToolbarWidget(self, handle, widget):
+        """
+        Add a Widget to the toolbar and store it's Handle
+        """
+        action = self.addWidget(widget)
+        self.actions[handle] = action
 
     def getIconFromTitle(self, title):
         """
@@ -92,3 +107,11 @@ class OpenLPToolbar(QtGui.QToolBar):
         else:
             self.log.error(u'getIconFromTitle - no icon for %s' % title)
             return QtGui.QIcon()
+
+    def makeWidgetsInvisible(self, widgets):
+        for widget in widgets:
+            self.actions[widget].setVisible(False)
+
+    def makeWidgetsVisible(self, widgets):
+        for widget in widgets:
+            self.actions[widget].setVisible(True)
