@@ -330,36 +330,27 @@ class ThemeManager(QtGui.QWidget):
             os.mkdir(os.path.join(self.path, name))
         theme_file = os.path.join(theme_dir, name + u'.xml')
         log.debug(theme_file)
-        if  os.path.exists(theme_file):
-            result = QtGui.QMessageBox.information(
-                self, 
-                translate(u'ThemeManager',u'Theme already exist!'), 
-                translate(u'ThemeManager',u'This theme name already exist.\n') + \
-                translate(u'ThemeManager',u'do you want to overwrite it?'), 
-                translate(u'ThemeManager',u'Save'),
-                translate(u'ThemeManager',u'Discard'),
-                translate(u'ThemeManager',u'Cancel'),
-                0, 
-                2)
-        else:
-            result = 0
-        if result == 0:
+ 
+        result = QtGui.QMessageBox.Yes
+        if os.path.exists(theme_file):
+            result = QtGui.QMessageBox.question(
+                self,
+                translate(u'ThemeManager',u'Theme Exists'),
+                translate(u'ThemeManager',u'A theme with this name already exists, would you like to overwrite it?'),
+                (QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
+                QtGui.QMessageBox.No)
+        if result == QtGui.QMessageBox.Yes:
+            # Save the theme, overwriting the existing theme if necessary.
             outfile = open(theme_file, u'w')
             outfile.write(theme_xml)
             outfile.close()
             if image_from is not None and image_from != image_to:
-                shutil.copyfile(image_from,  image_to)
+                shutil.copyfile(image_from, image_to)
+            
             self.generateAndSaveImage(self.path, name, theme_xml)
             self.loadThemes()
-            """
-            Case 1,  Discard (Only Reload Theme's)
-            """
-        if result == 1:
-            self.loadThemes()
-            """
-            Case 2, Cancel (Back to New Theme Screen)
-            """
-        if result == 2:
+        else:
+            # Don't close the dialog - allow the user to change the name of the theme or to cancel the theme dialog completely.
             return False
 
     def generateAndSaveImage(self, dir, name, theme_xml):
