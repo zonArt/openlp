@@ -22,7 +22,6 @@ import os
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, ServiceItem, translate, BaseListWithDnD,  buildIcon
-from openlp.plugins.images.lib.imagetoolbar import ImageToolbar
 
 # We have to explicitly create separate classes for each plugin
 # in order for DnD to the Service manager to work correctly.
@@ -56,9 +55,6 @@ class ImageMediaItem(MediaManagerItem):
         self.ServiceItemIconName = u':/media/media_image.png'
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
-        #create and install our own slide controller toolbar
-        imageToolbar = ImageToolbar(self, True)
-        parent.live_controller.registerToolbar(self.ConfigSection, imageToolbar)
 
     def initialise(self):
         self.ListView.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)

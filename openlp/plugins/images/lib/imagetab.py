@@ -20,7 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab,  str_to_bool,  translate
+from openlp.core.lib import SettingsTab,  str_to_bool,  translate,  Receiver
 
 class ImageTab(SettingsTab):
     """
@@ -67,3 +67,7 @@ class ImageTab(SettingsTab):
 
     def save(self):
         self.config.set_config(u'loop delay', self.loop_delay)
+        Receiver().send_message(u'update_spin_delay',  self.loop_delay )
+
+    def postSetUp(self):
+        Receiver().send_message(u'update_spin_delay',  self.loop_delay )

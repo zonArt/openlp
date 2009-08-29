@@ -29,26 +29,30 @@ class EventReceiver(QtCore.QObject):
 
     ``stop_import``
         Stops the Bible Import
+
     ``pre_load_bibles``
         Triggers the plugin to relaod the bible lists
+
     ``process_events``
         Requests the Application to flush the events queue
-    ``{preview|live}_slide_first``
-        display the first slide on the list
-    ``{preview|live}_slide_previous``
-        display the previous slide on the list
-    ``{preview|live}_slide_next``
-        display the next slide on the list
-    ``{preview|live}_slide_last``
-        display the last slide on the list
+
     ``{plugin}_add_service_item ``
         ask the plugin to push the selected items to the service item
+
     ``update_themes ``
         send out message with new themes
+
     ``update_global_theme ``
         Tell the components we have a new global theme
+
     ``load_song_list``
         Tells the the song plugin to reload the song list
+
+    ``update_spin_delay``
+        Pushes out the Image loop delay
+
+    ``request_spin_delay``
+        Requests a spin delay
 
     """
     global log

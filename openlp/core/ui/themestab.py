@@ -124,6 +124,9 @@ class ThemesTab(SettingsTab):
         self.config.set_config(u'theme global theme',self.global_theme)
         Receiver().send_message(u'update_global_theme',  self.global_theme )
 
+    def postSetUp(self):
+        Receiver().send_message(u'update_global_theme',  self.global_theme )
+
     def onSongLevelButtonPressed(self):
         self.global_style= u'Song'
         self.parent.RenderManager.set_global_theme(self.global_theme, self.global_style)
