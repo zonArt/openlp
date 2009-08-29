@@ -85,9 +85,6 @@ class ThemeManager(QtGui.QWidget):
         self.servicePath = self.config.get_data_path()
         self.global_theme = unicode(self.config.get_config(u'theme global theme', u''))
 
-    def getDefault(self):
-        return self.global_theme
-
     def changeGlobalFromTab(self, themeName):
         log.debug(u'changeGlobalFromTab %s', themeName)
         for count in range (0,  self.ThemeListWidget.count()):

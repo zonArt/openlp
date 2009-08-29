@@ -51,3 +51,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         for tab_index in range(0, self.SettingsTabWidget.count()):
             self.SettingsTabWidget.widget(tab_index).save()
         return QtGui.QDialog.accept(self)
+
+    def postSetUp(self):
+        for tab_index in range(0, self.SettingsTabWidget.count()):
+            self.SettingsTabWidget.widget(tab_index).postSetUp()

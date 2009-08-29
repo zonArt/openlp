@@ -93,3 +93,9 @@ class SettingsTab(QtGui.QWidget):
         Save settings to disk.
         """
         pass
+
+    def postSetUp(self):
+        """
+        Changes which need to be made after setup of application
+        """
+        pass

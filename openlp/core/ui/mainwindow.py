@@ -313,8 +313,6 @@ class Ui_MainWindow(object):
             translate(u'mainWindow', u'Service Manager'))
         self.ThemeManagerDock.setWindowTitle(
             translate(u'mainWindow', u'Theme Manager'))
-        self.DefaultThemeLabel.setText(MainWindow.defaultThemeText + \
-            self.ThemeManagerContents.getDefault())
         self.FileNewItem.setText(translate(u'mainWindow', u'&New'))
         self.FileNewItem.setToolTip(translate(u'mainWindow', u'New Service'))
         self.FileNewItem.setStatusTip(
@@ -492,6 +490,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Once all components are initialised load the Themes
         log.info(u'Load Themes')
         self.ThemeManagerContents.loadThemes()
+        log.info(u'Load data from Settings')
+        self.settingsForm.postSetUp()
 
     def getMonitorNumber(self):
         """

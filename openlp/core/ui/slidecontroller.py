@@ -139,7 +139,6 @@ class SlideController(QtGui.QWidget):
                 self.onStopLoop)
             self.DelaySpinBox = QtGui.QSpinBox()
             self.Toolbar.addToolbarWidget(u'Image SpinBox', self.DelaySpinBox)
-            #self.DelaySpinBox.setValue(self.parent.parent.ImageTab.loop_delay)
             self.DelaySpinBox.setSuffix(translate(u'SlideController', u's'))
 
         self.ControllerLayout.addWidget(self.Toolbar)
@@ -183,9 +182,16 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(self.PreviewListWidget,
             QtCore.SIGNAL(u'activated(QModelIndex)'), self.onSlideSelected)
         if isLive:
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'update_spin_delay'), self.receiveSpinDelay)
+            Receiver().send_message(u'request_spin_delay')
+        if isLive:
             self.Toolbar.makeWidgetsInvisible(self.image_list)
         else:
             pass
+
+    def receiveSpinDelay(self, value):
+        self.DelaySpinBox.setValue(int(value))
 
     def enableToolBar(self, item):
         """
