@@ -135,8 +135,8 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
                 unicode(self.theme.display_horizontalAlign), unicode(self.theme.display_verticalAlign),
                 unicode(self.theme.display_wrapStyle))
         theme = new_theme.extract_xml()
-        self.thememanager.saveTheme(theme_name, theme, save_from, save_to)
-        return QtGui.QDialog.accept(self)
+        if self.thememanager.saveTheme(theme_name, theme, save_from, save_to) is not False:
+            return QtGui.QDialog.accept(self)
 
     def loadTheme(self, theme):
         log.debug(u'LoadTheme %s', theme)
