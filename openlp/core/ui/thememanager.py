@@ -326,13 +326,29 @@ class ThemeManager(QtGui.QWidget):
         if os.path.exists(theme_dir) == False:
             os.mkdir(os.path.join(self.path, name))
         theme_file = os.path.join(theme_dir, name + u'.xml')
-        outfile = open(theme_file, u'w')
-        outfile.write(theme_xml)
-        outfile.close()
-        if image_from is not None and image_from != image_to:
-            shutil.copyfile(image_from,  image_to)
-        self.generateAndSaveImage(self.path, name, theme_xml)
-        self.loadThemes()
+        log.debug(theme_file)
+ 
+        result = QtGui.QMessageBox.Yes
+        if os.path.exists(theme_file):
+            result = QtGui.QMessageBox.question(
+                self,
+                translate(u'ThemeManager',u'Theme Exists'),
+                translate(u'ThemeManager',u'A theme with this name already exists, would you like to overwrite it?'),
+                (QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
+                QtGui.QMessageBox.No)
+        if result == QtGui.QMessageBox.Yes:
+            # Save the theme, overwriting the existing theme if necessary.
+            outfile = open(theme_file, u'w')
+            outfile.write(theme_xml)
+            outfile.close()
+            if image_from is not None and image_from != image_to:
+                shutil.copyfile(image_from, image_to)
+            
+            self.generateAndSaveImage(self.path, name, theme_xml)
+            self.loadThemes()
+        else:
+            # Don't close the dialog - allow the user to change the name of the theme or to cancel the theme dialog completely.
+            return False
 
     def generateAndSaveImage(self, dir, name, theme_xml):
         log.debug(u'generateAndSaveImage %s %s %s', dir, name, theme_xml)
