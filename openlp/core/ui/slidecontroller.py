@@ -36,16 +36,16 @@ class SlideList(QtGui.QTableWidget):
         if type(event) == QtGui.QKeyEvent:
             #here accept the event and do something
             if event.key() == QtCore.Qt.Key_Up:
-                self.parent.BaseToolbar.onSlideSelectedPrevious()
+                self.parent.onSlideSelectedPrevious()
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Down:
-                self.parent.BaseToolbar.onSlideSelectedNext()
+                self.parent.onSlideSelectedNext()
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageUp:
-                self.parent.BaseToolbar.onSlideSelectedFirst()
+                self.parent.onSlideSelectedFirst()
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageDown:
-                self.parent.BaseToolbar.onSlideSelectedLast()
+                self.parent.onSlideSelectedLast()
                 event.accept()
             event.ignore()
         else:
@@ -67,6 +67,7 @@ class SlideController(QtGui.QWidget):
         self.isLive = isLive
         self.parent = parent
         self.image_list = [u'Start Loop', u'Stop Loop', u'Loop Spearator', u'Image SpinBox']
+        self.timer_id = 0
         self.Panel = QtGui.QWidget(parent.ControlSplitter)
         self.Splitter = QtGui.QSplitter(self.Panel)
         self.Splitter.setOrientation(QtCore.Qt.Vertical)
@@ -268,20 +269,6 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.setFocus()
 
     #Screen event methods
-    def onSlideSelected(self):
-        """
-        Generate the preview when you click on a slide.
-        if this is the Live Controller also display on the screen
-        """
-        row = self.PreviewListWidget.currentRow()
-        if row > -1 and row < self.PreviewListWidget.rowCount():
-            label = self.PreviewListWidget.cellWidget(row, 0)
-            smallframe = label.pixmap()
-            frame = self.serviceitem.frames[row][u'image']
-            self.SlidePreview.setPixmap(smallframe)
-            if self.isLive:
-                self.parent.mainDisplay.frameView(frame)
-
     def onSlideSelectedFirst(self):
         """
         Go to the first slide.
@@ -336,12 +323,12 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount() - 1)
         self.onSlideSelected()
 
-    def onStartLoop(self, value):
+    def onStartLoop(self):
         """
         Go to the last slide.
         """
         if self.PreviewListWidget.rowCount() > 1:
-            self.timer_id = self.startTimer(int(value) * 1000)
+            self.timer_id = self.startTimer(int(self.DelaySpinBox.value()) * 1000)
 
     def onStopLoop(self):
         """
