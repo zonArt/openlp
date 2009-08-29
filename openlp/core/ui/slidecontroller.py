@@ -151,7 +151,7 @@ class SlideController(QtGui.QWidget):
         self.Toolbar.setSizePolicy(sizeToolbarPolicy)
         # Screen preview area
         self.PreviewFrame = QtGui.QFrame(self.Splitter)
-        self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, 280, 190))
+        self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, 300, 225))
         self.PreviewFrame.setSizePolicy(QtGui.QSizePolicy(
             QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Minimum))
         self.PreviewFrame.setFrameShape(QtGui.QFrame.StyledPanel)
@@ -169,7 +169,7 @@ class SlideController(QtGui.QWidget):
         sizePolicy.setHeightForWidth(
             self.SlidePreview.sizePolicy().hasHeightForWidth())
         self.SlidePreview.setSizePolicy(sizePolicy)
-        self.SlidePreview.setFixedSize(QtCore.QSize(250, 210))
+        self.SlidePreview.setFixedSize(QtCore.QSize(300, 225))
         self.SlidePreview.setFrameShape(QtGui.QFrame.Box)
         self.SlidePreview.setFrameShadow(QtGui.QFrame.Plain)
         self.SlidePreview.setLineWidth(1)
