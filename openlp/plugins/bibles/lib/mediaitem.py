@@ -432,13 +432,16 @@ class BibleMediaItem(MediaManagerItem):
             combo.addItem(unicode(i))
 
     def displayResults(self, bible):
-        for verse in self.search_results:
+        for count,  verse  in enumerate(self.search_results):
             bible_text = u' %s %d:%d (%s)' % (verse.book.name,
                 verse.chapter, verse.verse, bible)
             bible_verse = QtGui.QListWidgetItem(bible_text)
             bible_verse.setData(QtCore.Qt.UserRole,
                 QtCore.QVariant(bible_text))
             self.ListView.addItem(bible_verse)
+            cr = self.ListView.setCurrentRow(count)
+            if cr is not None:
+                cr.setSelected(True)
 
     def searchByReference(self, bible,  search):
         log.debug(u'searchByReference %s ,%s', bible, search)

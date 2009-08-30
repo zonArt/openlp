@@ -20,7 +20,8 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 import sys
-import logging
+import logging, logging.handlers
+from optparse import OptionParser
 
 from PyQt4 import QtCore, QtGui
 
@@ -28,9 +29,14 @@ from openlp.core.lib import Receiver
 from openlp.core.resources import *
 from openlp.core.ui import MainWindow, SplashScreen
 
-logging.basicConfig(level=logging.DEBUG,
-    format=u'%(asctime)s:%(msecs)3d %(name)-15s %(levelname)-8s %(message)s',
-    datefmt=u'%m-%d %H:%M:%S', filename=u'openlp.log', filemode=u'w')
+filename=u'openlp.log'
+
+logging.getLogger().setLevel(logging.INFO)
+
+logfile = logging.handlers.TimedRotatingFileHandler(filename , 'midnight', 1, backupCount=5)
+logfile.setLevel(logging.INFO)
+logfile.setFormatter(logging.Formatter(u'%(asctime)s:%(msecs)3d %(name)-15s %(levelname)-8s %(message)s'))
+logging.getLogger().addHandler(logfile)
 
 class OpenLP(QtGui.QApplication):
     """
@@ -74,10 +80,19 @@ class OpenLP(QtGui.QApplication):
         self.splash.finish(self.mainWindow)
         sys.exit(app.exec_())
 
+def main():
+    usage = "usage: %prog [options] arg1 arg2"
+    parser = OptionParser(usage=usage)
+    parser.add_option("-d", "--debug",
+                      help="Switch on Dbugging ")
+    (options, args) = parser.parse_args()
+    if options.debug is not None:
+        logfile.setLevel(logging.DEBUG)
 if __name__ == u'__main__':
     """
     Instantiate and run the application.
     """
+    main()
     app = OpenLP(sys.argv)
     #import cProfile
     #cProfile.run("app.run()", "profile.out")
