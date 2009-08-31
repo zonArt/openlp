@@ -147,7 +147,8 @@ class Renderer(object):
 #        print words
         verses = []
         words = words.replace(u'\r\n', u'\n')
-        verses_text = words.split(u'\n\n')
+        verses_text = words.split(u'\n')
+        #print verses_text
         text = []
         for verse in verses_text:
             lines = verse.split(u'\n')
@@ -173,7 +174,10 @@ class Renderer(object):
         split_lines = []
         count = 0
         for line in text:
-#            print "C", line ,  len(line)
+            #print "C", line ,  len(line)
+            #Must be a blank line so keep it.
+            if len(line) == 0:
+                line = u' '
             while len(line) > 0:
 #                print "C1", line ,  len(line)
                 if len(line) > ave_line_width:
@@ -391,29 +395,8 @@ class Renderer(object):
             Defaults to *False*. Whether or not this is a live screen.
         """
         x, y = tlcorner
-        # We draw the text to see how big it is and then iterate to make it fit
-        # when we line wrap we do in in the "lyrics" style, so the second line is
-        # right aligned with a "hanging indent"
-        #print "----------------------------"
-        #print line
-#        words = line.split(u' ')
-#        thisline = u' '.join(words)
-#        lastword = len(words)
-#        lines = []
         maxx = self._rect.width();
         maxy = self._rect.height();
-#        while (len(words) > 0):
-#            w , h = self._get_extent_and_render(thisline, footer)
-#            print "m", w, h, x, maxx
-#            rhs = w + x
-#            if rhs < maxx - self._right_margin:
-#                lines.append(thisline)
-#                words = words[lastword:]
-#                thisline = ' '.join(words)
-#                lastword = len(words)
-#            else:
-#                lastword -= 1
-#                thisline = ' '.join(words[:lastword])
         lines = []
         lines.append(line)
         startx = x

@@ -58,7 +58,7 @@ class RenderManager(object):
         else:
             self.current_display = screen_number
         self.renderer = Renderer()
-        self.calculate_default(self.screen_list[self.current_display][u'size'])
+        #self.calculate_default(self.screen_list[self.current_display][u'size'])
         self.theme = u''
         self.service_theme = u''
         self.global_style = u''
@@ -133,6 +133,7 @@ class RenderManager(object):
     def build_text_rectangle(self, theme):
         """
         Builds a text block using the settings in ``theme``.
+        One is needed per slide
 
         ``theme``
             The theme to build a text block for.
@@ -149,8 +150,8 @@ class RenderManager(object):
             footer_rect = QtCore.QRect(10,self.footer_start, self.width - 1, self.height-self.footer_start)
         else:
             footer_rect = QtCore.QRect(int(theme.font_footer_x),int(theme.font_footer_y),
-                int(theme.font_footer_width)-1, int(theme.font_footer_height)-1)
-        self.renderer.set_text_rectangle(main_rect,footer_rect)
+                int(theme.font_footer_width)-1, int(theme.font_footer_height) - 1)
+        self.renderer.set_text_rectangle(main_rect, footer_rect)
 
     def generate_preview(self, themedata):
         """
@@ -178,15 +179,15 @@ class RenderManager(object):
 
     def format_slide(self, words):
         """
-        Calculate how much text can fid on a slide.
+        Calculate how much text can fit on a slide.
 
         ``words``
             The words to go on the slides.
         """
         log.debug(u'format slide')
-        self.calculate_default(self.screen_list[self.current_display][u'size'])
+        #self.calculate_default(self.screen_list[self.current_display][u'size'])
         self.build_text_rectangle(self.themedata)
-        self.renderer.set_frame_dest(self.width, self.height)
+        #self.renderer.set_frame_dest(self.width, self.height)
         return self.renderer.format_slide(words, False)
 
     def generate_slide(self, main_text, footer_text):
@@ -200,7 +201,6 @@ class RenderManager(object):
             The text for the slide footer.
         """
         log.debug(u'generate slide')
-        self.calculate_default(self.screen_list[self.current_display][u'size'])
         self.build_text_rectangle(self.themedata)
         self.renderer.set_frame_dest(self.width, self.height)
         return self.renderer.generate_frame_from_lines(main_text, footer_text)
@@ -233,6 +233,7 @@ class RenderManager(object):
             The QWidget instance of the screen.
         """
         log.debug(u'calculate default %s', screen)
+        #size fixed so reflects the preview size.
         if self.current_display == 0:
             self.width = 1024
             self.height = 768
