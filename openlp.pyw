@@ -30,10 +30,14 @@ from openlp.core.resources import *
 from openlp.core.ui import MainWindow, SplashScreen
 
 filename=u'openlp.log'
+log = logging.getLogger()
+log.setLevel(logging.INFO)
+
 logfile = logging.handlers.TimedRotatingFileHandler(filename , 'midnight', 1, backupCount=5)
-logfile.setLevel(logging.INFO)
+logfile.setLevel(logging.DEBUG)
 logfile.setFormatter(logging.Formatter(u'%(asctime)s:%(msecs)3d %(name)-15s %(levelname)-8s %(message)s'))
-logging.getLogger().addHandler(logfile)
+
+log.addHandler(logfile)
 
 class OpenLP(QtGui.QApplication):
     """
@@ -41,8 +45,7 @@ class OpenLP(QtGui.QApplication):
     class in order to provide the core of the application.
     """
     global log
-    log = logging.getLogger(u'OpenLP Application')
-    log.info(u'Application Loaded')
+    log.info(u'OpenLP Application Loaded')
 
     def run(self):
         """
@@ -84,7 +87,7 @@ def main():
                       help="Switch on Debugging ")
     (options, args) = parser.parse_args()
     if options.debug is not None:
-        logfile.setLevel(logging.DEBUG)
+        log.setLevel(logging.DEBUG)
 if __name__ == u'__main__':
     """
     Instantiate and run the application.
