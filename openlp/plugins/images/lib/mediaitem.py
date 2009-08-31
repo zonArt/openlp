@@ -95,6 +95,8 @@ class ImageMediaItem(MediaManagerItem):
 
     def generateSlideData(self, service_item):
         items = self.ListView.selectedIndexes()
+        if len(items) > 1:
+            return False
         service_item.title = u'Image(s)'
         for item in items:
             bitem =  self.ListView.item(item.row())
@@ -102,3 +104,4 @@ class ImageMediaItem(MediaManagerItem):
             frame = QtGui.QImage(unicode(filename))
             (path, name) = os.path.split(filename)
             service_item.add_from_image(path,  name, frame)
+        return True

@@ -99,6 +99,8 @@ class PresentationMediaItem(MediaManagerItem):
 
     def generateSlideData(self, service_item):
         items = self.ListView.selectedIndexes()
+        if len(items) > 1:
+            return False
         service_item.title = unicode(self.DisplayTypeComboBox.currentText())
         service_item.shortname = unicode(self.DisplayTypeComboBox.currentText())
         for item in items:
@@ -106,3 +108,4 @@ class PresentationMediaItem(MediaManagerItem):
             filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
             (path, name) = os.path.split(filename)
             service_item.add_from_command(path,  name)
+        return True

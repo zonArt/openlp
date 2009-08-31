@@ -68,17 +68,17 @@ class CustomMediaItem(MediaManagerItem):
         self.addToolbarButton(
             translate(u'CustomMediaItem',u'Preview Custom Item'),
             translate(u'CustomMediaItem',u'Preview the selected Custom Item'),
-            u':/system/system_preview.png', self.onCustomPreviewClick, u'CustomPreviewItem')
+            u':/system/system_preview.png', self.onPreviewClick, u'CustomPreviewItem')
         ## Live Custom Button ##
         self.addToolbarButton(
             translate(u'CustomMediaItem',u'Go Live'),
             translate(u'CustomMediaItem', u'Send the selected Custom live'),
-            u':/system/system_live.png', self.onCustomLiveClick, u'CustomLiveItem')
+            u':/system/system_live.png', self.onLiveClick, u'CustomLiveItem')
         ## Add Custom Button ##
         self.addToolbarButton(
             translate(u'CustomMediaItem',u'Add Custom To Service'),
             translate(u'CustomMediaItem',u'Add the selected Custom(s) to the service'),
-            u':/system/system_add.png', self.onCustomAddClick, u'CustomAddItem')
+            u':/system/system_add.png', self.onAddClick, u'CustomAddItem')
         # Add the CustomListView widget
         self.CustomWidget = QtGui.QWidget(self)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
@@ -95,7 +95,7 @@ class CustomMediaItem(MediaManagerItem):
         self.PageLayout.addWidget(self.ListView)
         # Signals
         QtCore.QObject.connect(self.ListView,
-            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onCustomPreviewClick)
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onPreviewClick)
         #define and add the context menu
         self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.ListView.addAction(contextMenuAction(self.ListView,
@@ -104,13 +104,13 @@ class CustomMediaItem(MediaManagerItem):
         self.ListView.addAction(contextMenuSeparator(self.ListView))
         self.ListView.addAction(contextMenuAction(
             self.ListView, ':/system/system_preview.png',
-            translate(u'CustomMediaItem',u'&Preview Custom'), self.onCustomPreviewClick))
+            translate(u'CustomMediaItem',u'&Preview Custom'), self.onPreviewClick))
         self.ListView.addAction(contextMenuAction(
             self.ListView, ':/system/system_live.png',
-            translate(u'CustomMediaItem',u'&Show Live'), self.onCustomLiveClick))
+            translate(u'CustomMediaItem',u'&Show Live'), self.onLiveClick))
         self.ListView.addAction(contextMenuAction(
             self.ListView, ':/system/system_add.png',
-            translate(u'CustomMediaItem',u'&Add to Service'), self.onCustomAddClick))
+            translate(u'CustomMediaItem',u'&Add to Service'), self.onAddClick))
 
     def initialise(self):
         self.loadCustomListView(self.parent.custommanager.get_all_slides())
@@ -143,26 +143,26 @@ class CustomMediaItem(MediaManagerItem):
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
 
-    def onCustomPreviewClick(self):
-        log.debug(u'Custom Preview Requested')
-        service_item = ServiceItem(self.parent)
-        service_item.addIcon(u':/media/media_song.png')
-        self.generateSlideData(service_item)
-        self.parent.preview_controller.addServiceItem(service_item)
-
-    def onCustomLiveClick(self):
-        log.debug(u'Custom Live Requested')
-        service_item = ServiceItem(self.parent)
-        service_item.addIcon(u':/media/media_song.png')
-        self.generateSlideData(service_item)
-        self.parent.live_controller.addServiceItem(service_item)
-
-    def onCustomAddClick(self):
-        log.debug(u'Custom Add Requested')
-        service_item = ServiceItem(self.parent)
-        service_item.addIcon(u':/media/media_song.png')
-        self.generateSlideData(service_item)
-        self.parent.service_manager.addServiceItem(service_item)
+#    def onCustomPreviewClick(self):
+#        log.debug(u'Custom Preview Requested')
+#        service_item = ServiceItem(self.parent)
+#        service_item.addIcon(u':/media/media_song.png')
+#        self.generateSlideData(service_item)
+#        self.parent.preview_controller.addServiceItem(service_item)
+#
+#    def onCustomLiveClick(self):
+#        log.debug(u'Custom Live Requested')
+#        service_item = ServiceItem(self.parent)
+#        service_item.addIcon(u':/media/media_song.png')
+#        self.generateSlideData(service_item)
+#        self.parent.live_controller.addServiceItem(service_item)
+#
+#    def onCustomAddClick(self):
+#        log.debug(u'Custom Add Requested')
+#        service_item = ServiceItem(self.parent)
+#        service_item.addIcon(u':/media/media_song.png')
+#        self.generateSlideData(service_item)
+#        self.parent.service_manager.addServiceItem(service_item)
 
     def generateSlideData(self, service_item):
         raw_slides =[]
@@ -170,6 +170,8 @@ class CustomMediaItem(MediaManagerItem):
         slide = None
         theme = None
         item = self.ListView.currentItem()
+        if item is None:
+            return False
         item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         customSlide = self.parent.custommanager.get_custom(item_id)
         title = customSlide.title
@@ -187,3 +189,4 @@ class CustomMediaItem(MediaManagerItem):
             for slide in raw_slides:
                 service_item.add_from_text(slide[:30], slide)
             service_item.raw_footer = raw_footer
+        return True

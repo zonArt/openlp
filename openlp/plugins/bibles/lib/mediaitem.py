@@ -342,7 +342,7 @@ class BibleMediaItem(MediaManagerItem):
         log.debug(u'generating slide data')
         items = self.ListView.selectedIndexes()
         if len(items) > 1:
-            return
+            return False
         old_chapter = u''
         raw_slides = []
         raw_footer = []
@@ -391,6 +391,7 @@ class BibleMediaItem(MediaManagerItem):
         for slide in raw_slides:
             service_item.add_from_text(slide[:30], slide)
         service_item.raw_footer = raw_footer
+        return True
 
     def formatVerse(self, old_chapter, chapter, verse, opening, closing):
         loc = opening

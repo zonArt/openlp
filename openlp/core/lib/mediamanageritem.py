@@ -234,17 +234,20 @@ class MediaManagerItem(QtGui.QWidget):
     def onPreviewClick(self):
         log.debug(self.PluginTextShort+u' Preview Requested')
         service_item = self.buildServiceItem()
-        self.parent.preview_controller.addServiceItem(service_item)
+        if service_item is not None:
+            self.parent.preview_controller.addServiceItem(service_item)
 
     def onLiveClick(self):
         log.debug(self.PluginTextShort + u' Live Requested')
         service_item = self.buildServiceItem()
-        self.parent.live_controller.addServiceItem(service_item)
+        if service_item is not None:
+            self.parent.live_controller.addServiceItem(service_item)
 
     def onAddClick(self):
         log.debug(self.PluginTextShort+u' Add Requested')
         service_item = self.buildServiceItem()
-        self.parent.service_manager.addServiceItem(service_item)
+        if service_item is not None:
+            self.parent.service_manager.addServiceItem(service_item)
 
     def buildServiceItem(self):
         """
@@ -252,6 +255,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         service_item = ServiceItem(self.parent)
         service_item.addIcon(u':/media/media_'+self.PluginTextShort.lower()+u'.png')
-        self.generateSlideData(service_item)
-        self.ListView.clearSelection()
-        return service_item
+        if self.generateSlideData(service_item):
+            self.ListView.clearSelection()
+            return service_item
+        else:
+            return None
