@@ -135,7 +135,7 @@ class ServiceItem(object):
         frame_title = frame_title.split(u'\n')[0]
         self.service_frames.append({u'title': frame_title, u'raw_slide': raw_slide})
 
-    def add_from_command(self, frame_title, command):
+    def add_from_command(self, path , frame_title, command):
         """
         Add a slide from a command.
 
@@ -146,6 +146,7 @@ class ServiceItem(object):
             The command of/for the slide.
         """
         self.service_item_type = ServiceType.Command
+        self.service_item_path = path
         self.service_frames.append({u'title': frame_title, u'command': command})
 
     def get_oos_repr(self):
