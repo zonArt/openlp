@@ -341,8 +341,10 @@ class BibleMediaItem(MediaManagerItem):
     def generateSlideData(self, service_item):
         log.debug(u'generating slide data')
         items = self.ListView.selectedIndexes()
+        if len(items) > 1:
+            return
         old_chapter = u''
-        raw_slides=[]
+        raw_slides = []
         raw_footer = []
         bible_text = u''
         for item in items:
@@ -445,17 +447,17 @@ class BibleMediaItem(MediaManagerItem):
 
     def searchByReference(self, bible,  search):
         log.debug(u'searchByReference %s ,%s', bible, search)
-        book = ''
-        start_chapter = ''
-        end_chapter = ''
-        start_verse = ''
-        end_verse = ''
+        book = u''
+        start_chapter = u''
+        end_chapter = u''
+        start_verse = u''
+        end_verse = u''
         search = search.replace(u'  ', u' ').strip()
         original = search
         message = None
         # Remove book beware 0 index arrays
         for i in range (len(search)-1, 0, - 1):
-            if search[i] == ' ':
+            if search[i] == u' ':
                 book = search[:i]
                 # remove book from string
                 search = search[i:]
@@ -469,7 +471,7 @@ class BibleMediaItem(MediaManagerItem):
             # number : found
             i = search.rfind(u' ')
             if i == -1:
-                chapter = ''
+                chapter = u''
             else:
                 chapter = search[i:len(search)]
             hyphen = chapter.find(u'-')
@@ -496,29 +498,25 @@ class BibleMediaItem(MediaManagerItem):
                 end_verse = start_verse
             else:
                 sp1 = sp[1].split(u':')
-                #print "2nd details", sp1, len(sp1)
                 if len(sp1) == 1:
                     end_chapter = start_chapter
                     end_verse =  sp1[0]
                 else:
                     end_chapter = sp1[0]
                     end_verse = sp1[1]
-        #print 'search = ' + unicode(original)
-        #print 'results = ' + unicode(book) + ' @ '+ unicode(start_chapter)+' @ '+ unicode(end_chapter)+' @ '+ unicode(start_verse)+ ' @ '+ unicode(end_verse)
-        if end_chapter == '':
+        if end_chapter == u'':
             end_chapter = start_chapter.rstrip()
-        if start_verse == '':
-            if end_verse == '':
+        if start_verse == u'':
+            if end_verse == u'':
                 start_verse = 1
             else:
                 start_verse = end_verse
-        if end_verse == '':
+        if end_verse == u'':
             end_verse = 99
-        if start_chapter == '':
+        if start_chapter == u'':
             message = u'No chapter found for search criteria'
-        #print 'message = ' + unicode(message)
-        #print 'search = ' + unicode(original)
-        #print 'results = ' + unicode(book) + ' @ '+ unicode(start_chapter)+' @ '+ unicode(end_chapter)+' @ '+ unicode(start_verse)+ ' @ '+ unicode(end_verse)
+        log.debug(u'results = %s @ %s : %s @ %s : %s'% \
+                  (unicode(book), unicode(start_chapter), unicode(end_chapter),  unicode(start_verse),  unicode(end_verse)))
         if message == None:
             self.search_results = None
             self.search_results = self.parent.biblemanager.get_verse_text(bible, book,

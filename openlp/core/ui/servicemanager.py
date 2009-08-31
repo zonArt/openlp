@@ -25,7 +25,7 @@ import shutil
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
-    RenderManager, translate, buildIcon, \
+    RenderManager, translate, buildIcon, ServiceType, \
     contextMenuAction, contextMenuSeparator,  Receiver
 from openlp.core.utils import ConfigHelper
 
@@ -341,7 +341,8 @@ class ServiceManager(QtGui.QWidget):
             zip = zipfile.ZipFile(unicode(filename) + u'.oos', 'w')
             for item in self.serviceItems:
                 service.append({u'serviceitem':item[u'data'].get_oos_repr()})
-                if item[u'data'].service_item_type == u'image':
+                if item[u'data'].service_item_type == ServiceType.Image or \
+                        item[u'data'].service_item_type == ServiceType.Command:
                     for frame in item[u'data'].frames:
                         path_from = unicode(item[u'data'].service_item_path + u'/' + frame[u'title'])
                         zip.write(path_from)
@@ -354,7 +355,7 @@ class ServiceManager(QtGui.QWidget):
                 os.remove(servicefile)
             except:
                 pass #if not present do not worry
-        self.parent.OosChanged(True, self.serviceName)
+        self.parent.OosChanged(True, filename + u'.oos')
 
     def onLoadService(self):
         """
@@ -368,31 +369,34 @@ class ServiceManager(QtGui.QWidget):
         name = filename.split(os.path.sep)
         if filename != u'':
             self.config.set_last_dir(filename)
-            zip = zipfile.ZipFile(unicode(filename))
-            filexml = None
-            themename = None
-            for file in zip.namelist():
-                names = file.split(os.path.sep)
-                file_to = os.path.join(self.servicePath, names[len(names) - 1])
-                file_data = zip.read(file)
-                f = open(file_to, u'w')
-                f.write(file_data)
-                f.close()
-                if file_to.endswith(u'ood'):
-                    p_file = file_to
-            f = open(p_file, u'r')
-            items = cPickle.load(f)
-            f.close()
-            self.onNewService()
-            for item in items:
-                serviceitem = ServiceItem()
-                serviceitem.RenderManager = self.parent.RenderManager
-                serviceitem.set_from_oos(item, self.servicePath )
-                self.addServiceItem(serviceitem)
             try:
-                os.remove(p_file)
+                zip = zipfile.ZipFile(unicode(filename))
+                filexml = None
+                themename = None
+                for file in zip.namelist():
+                    names = file.split(os.path.sep)
+                    file_to = os.path.join(self.servicePath, names[len(names) - 1])
+                    file_data = zip.read(file)
+                    f = open(file_to, u'w')
+                    f.write(file_data)
+                    f.close()
+                    if file_to.endswith(u'ood'):
+                        p_file = file_to
+                f = open(p_file, u'r')
+                items = cPickle.load(f)
+                f.close()
+                self.onNewService()
+                for item in items:
+                    serviceitem = ServiceItem()
+                    serviceitem.RenderManager = self.parent.RenderManager
+                    serviceitem.set_from_oos(item, self.servicePath )
+                    self.addServiceItem(serviceitem)
+                try:
+                    os.remove(p_file)
+                except:
+                    #if not present do not worry
+                    pass
             except:
-                #if not present do not worry
                 pass
         self.serviceName = name[len(name) - 1]
         self.parent.OosChanged(True, self.serviceName)
