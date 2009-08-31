@@ -30,9 +30,6 @@ from openlp.core.resources import *
 from openlp.core.ui import MainWindow, SplashScreen
 
 filename=u'openlp.log'
-
-logging.getLogger().setLevel(logging.INFO)
-
 logfile = logging.handlers.TimedRotatingFileHandler(filename , 'midnight', 1, backupCount=5)
 logfile.setLevel(logging.INFO)
 logfile.setFormatter(logging.Formatter(u'%(asctime)s:%(msecs)3d %(name)-15s %(levelname)-8s %(message)s'))
@@ -83,8 +80,8 @@ class OpenLP(QtGui.QApplication):
 def main():
     usage = "usage: %prog [options] arg1 arg2"
     parser = OptionParser(usage=usage)
-    parser.add_option("-d", "--debug",
-                      help="Switch on Dbugging ")
+    parser.add_option("-d", "--debug",dest="debug",action="store_true",
+                      help="Switch on Debugging ")
     (options, args) = parser.parse_args()
     if options.debug is not None:
         logfile.setLevel(logging.DEBUG)
