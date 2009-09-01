@@ -228,6 +228,7 @@ class SlideController(QtGui.QWidget):
         request the correct the toolbar of the plugin
         Called by plugins
         """
+        log.debug(u'addServiceItem')
         item.render()
         self.enableToolBar(item)
         self.displayServiceManagerItems(item, 0)
@@ -238,6 +239,7 @@ class SlideController(QtGui.QWidget):
         request the correct the toolbar of the plugin
         Called by ServiceManager
         """
+        log.debug(u'addServiceItem')
         self.enableToolBar(item)
         self.displayServiceManagerItems(item, slideno)
 
@@ -246,7 +248,7 @@ class SlideController(QtGui.QWidget):
         Loads a ServiceItem into the system from ServiceManager
         Display the slide number passed
         """
-        log.debug(u'add Service Manager Item')
+        log.debug(u'displayServiceManagerItems Start')
         self.serviceitem = serviceitem
         slide_pixmap = QtGui.QPixmap.fromImage(self.serviceitem.frames[0][u'image'])
         slide_width = 300
@@ -273,6 +275,7 @@ class SlideController(QtGui.QWidget):
             self.PreviewListWidget.selectRow(slideno)
         self.onSlideSelected()
         self.PreviewListWidget.setFocus()
+        log.debug(u'displayServiceManagerItems End')
 
     #Screen event methods
     def onSlideSelectedFirst(self):

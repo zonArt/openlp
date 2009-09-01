@@ -100,12 +100,15 @@ class MediaMediaItem(MediaManagerItem):
 
     def generateSlideData(self, service_item):
         indexes = self.ListView.selectedIndexes()
+        if len(items) > 1:
+            return False
         service_item.title = u'Media'
         for index in indexes:
             filename = self.ListData.getFilename(index)
             frame = QtGui.QImage(unicode(filename))
             (path, name) = os.path.split(filename)
             service_item.add_from_image(path,  name, frame)
+        return True
 
     def onPreviewClick(self):
         log.debug(u'Media Preview Button pressed')

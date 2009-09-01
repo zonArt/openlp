@@ -68,15 +68,15 @@ class SongMediaItem(MediaManagerItem):
         ## Preview Song Button ##
         self.addToolbarButton(translate(u'SongMediaItem', u'Preview Song'),
             translate(u'SongMediaItem', u'Preview the selected song'),
-            ':/system/system_preview.png', self.onSongPreviewClick, 'SongPreviewItem')
+            ':/system/system_preview.png', self.onPreviewClick, 'SongPreviewItem')
         ## Live Song Button ##
         self.addToolbarButton(translate(u'SongMediaItem', u'Go Live'),
             translate(u'SongMediaItem', u'Send the selected song live'),
-            ':/system/system_live.png', self.onSongLiveClick, 'SongLiveItem')
+            ':/system/system_live.png', self.onLiveClick, 'SongLiveItem')
         ## Add Song Button ##
         self.addToolbarButton(translate(u'SongMediaItem', u'Add Song To Service'),
             translate(u'SongMediaItem', u'Add the selected song(s) to the service'),
-            ':/system/system_add.png', self.onSongAddClick, 'SongAddItem')
+            ':/system/system_add.png', self.onAddClick, 'SongAddItem')
         self.addToolbarSeparator()
         ## Song Maintenance Button ##
         self.addToolbarButton(translate(u'SongMediaItem', u'Song Maintenance'),
@@ -127,7 +127,7 @@ class SongMediaItem(MediaManagerItem):
         QtCore.QObject.connect(self.SearchTextEdit,
             QtCore.SIGNAL(u'textChanged(const QString&)'), self.onSearchTextEditChanged)
         QtCore.QObject.connect(self.ListView,
-           QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onSongPreviewClick)
+           QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onPreviewClick)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'load_song_list'), self.onSearchTextButtonClick)
 
@@ -139,13 +139,13 @@ class SongMediaItem(MediaManagerItem):
         self.ListView.addAction(contextMenuSeparator(self.ListView))
         self.ListView.addAction(contextMenuAction(self.ListView,
             ':/system/system_preview.png', translate(u'SongMediaItem', u'&Preview Song'),
-            self.onSongPreviewClick))
+            self.onPreviewClick))
         self.ListView.addAction(contextMenuAction(self.ListView,
             ':/system/system_live.png', translate(u'SongMediaItem', u'&Show Live'),
-            self.onSongLiveClick))
+            self.onLiveClick))
         self.ListView.addAction(contextMenuAction(self.ListView,
             ':/system/system_add.png', translate(u'SongMediaItem', u'&Add to Service'),
-            self.onSongAddClick))
+            self.onAddClick))
 
     def retranslateUi(self):
         self.SearchTypeLabel.setText(translate(u'SongMediaItem', u'Search Type:'))
@@ -246,12 +246,12 @@ class SongMediaItem(MediaManagerItem):
             self.parent.songmanager.delete_song(item_id)
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
-
-    def onSongPreviewClick(self):
-        service_item = ServiceItem(self.parent)
-        service_item.addIcon(u':/media/media_song.png')
-        self.generateSlideData(service_item)
-        self.parent.preview_controller.addServiceItem(service_item)
+#
+#    def onSongPreviewClick(self):
+#        service_item = ServiceItem(self.parent)
+#        service_item.addIcon(u':/media/media_song.png')
+#        self.generateSlideData(service_item)
+#        self.parent.preview_controller.addServiceItem(service_item)
 
     def generateSlideData(self, service_item):
         raw_slides =[]
@@ -259,6 +259,8 @@ class SongMediaItem(MediaManagerItem):
         author_list = u''
         ccl = u''
         item = self.ListView.currentItem()
+        if item is None:
+            return False
         item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         song = self.parent.songmanager.get_song(item_id)
         service_item.theme = song.theme_name
@@ -286,15 +288,16 @@ class SongMediaItem(MediaManagerItem):
         raw_footer.append(song.copyright )
         raw_footer.append(unicode(translate(u'SongMediaItem', u'CCL Licence: ') + ccl ))
         service_item.raw_footer = raw_footer
+        return True
 
-    def onSongLiveClick(self):
-        service_item = ServiceItem(self.parent)
-        service_item.addIcon(u':/media/media_song.png')
-        self.generateSlideData(service_item)
-        self.parent.live_controller.addServiceItem(service_item)
-
-    def onSongAddClick(self):
-        service_item = ServiceItem(self.parent)
-        service_item.addIcon( u':/media/media_song.png')
-        self.generateSlideData(service_item)
-        self.parent.service_manager.addServiceItem(service_item)
+#    def onSongLiveClick(self):
+#        service_item = ServiceItem(self.parent)
+#        service_item.addIcon(u':/media/media_song.png')
+#        self.generateSlideData(service_item)
+#        self.parent.live_controller.addServiceItem(service_item)
+#
+#    def onSongAddClick(self):
+#        service_item = ServiceItem(self.parent)
+#        service_item.addIcon( u':/media/media_song.png')
+#        self.generateSlideData(service_item)
+#        self.parent.service_manager.addServiceItem(service_item)

@@ -43,7 +43,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.controllers = controllers
         self.TranslationContext = u'PresentationPlugin'
         self.PluginTextShort = u'Presentation'
-        self.ConfigSection = u'presentation'
+        self.ConfigSection = u'presentations'
         self.hasFileIcon = True
         self.hasNewIcon = False
         self.hasEditIcon = False
@@ -81,9 +81,6 @@ class PresentationMediaItem(MediaManagerItem):
         for item in self.controllers:
             #load the drop down selection
             self.DisplayTypeComboBox.addItem(item)
-            #load the preview toolbars
-            #self.parent.preview_controller.registerToolbar(item,  self.controllers[item])
-            #self.parent.live_controller.registerToolbar(item,  self.controllers[item])
 
     def loadList(self, list):
         for file in list:
@@ -102,11 +99,13 @@ class PresentationMediaItem(MediaManagerItem):
 
     def generateSlideData(self, service_item):
         items = self.ListView.selectedIndexes()
-        service_item.title = self.DisplayTypeComboBox.currentText()
+        if len(items) > 1:
+            return False
+        service_item.title = unicode(self.DisplayTypeComboBox.currentText())
         service_item.shortname = unicode(self.DisplayTypeComboBox.currentText())
         for item in items:
             bitem =  self.ListView.item(item.row())
             filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
-            frame = QtGui.QImage(unicode(filename))
             (path, name) = os.path.split(filename)
-            service_item.add_using_toolbar(path, name)
+            service_item.add_from_command(path,  name)
+        return True

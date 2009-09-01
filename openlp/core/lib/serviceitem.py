@@ -96,7 +96,6 @@ class ServiceItem(object):
                     self.frames.append({u'title': slide[u'title'], u'image': frame})
         elif self.service_item_type == ServiceType.Command:
             self.frames = self.service_frames
-            self.service_frames = []
         elif self.service_item_type == ServiceType.Image:
             for slide in self.service_frames:
                 slide[u'image'] = self.RenderManager.resize_image(slide[u'image'])
@@ -135,7 +134,7 @@ class ServiceItem(object):
         frame_title = frame_title.split(u'\n')[0]
         self.service_frames.append({u'title': frame_title, u'raw_slide': raw_slide})
 
-    def add_from_command(self, frame_title, command):
+    def add_from_command(self, path , frame_title):
         """
         Add a slide from a command.
 
@@ -146,7 +145,8 @@ class ServiceItem(object):
             The command of/for the slide.
         """
         self.service_item_type = ServiceType.Command
-        self.service_frames.append({u'title': frame_title, u'command': command})
+        self.service_item_path = path
+        self.service_frames.append({u'title': frame_title, u'command':  None})
 
     def get_oos_repr(self):
         """
@@ -166,6 +166,9 @@ class ServiceItem(object):
             for slide in self.service_frames:
                 oos_data.append(slide)
         elif self.service_item_type == ServiceType.Image:
+            for slide in self.service_frames:
+                oos_data.append(slide[u'title'])
+        elif self.service_item_type == ServiceType.Command:
             for slide in self.service_frames:
                 oos_data.append(slide[u'title'])
         return {u'header': oos_header, u'data': oos_data}
@@ -196,3 +199,7 @@ class ServiceItem(object):
                 filename = os.path.join(path, text_image)
                 real_image = QtGui.QImage(unicode(filename))
                 self.add_from_image(path, text_image, real_image)
+        elif self.service_item_type == ServiceType.Command:
+            for text_image in serviceitem[u'serviceitem'][u'data']:
+                filename = os.path.join(path, text_image)
+                self.add_from_command(path, text_image)
