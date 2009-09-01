@@ -502,8 +502,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         screen_number = int(self.generalConfig.get_config(u'Monitor', 0))
 
         monitor_exists = False
-        for i in self.screenList:
-            if i[u'number'] == screen_number:
+        for screen in self.screenList:
+            if screen[u'number'] == screen_number:
                 monitor_exists = True
         if not monitor_exists:
             screen_number = 0
