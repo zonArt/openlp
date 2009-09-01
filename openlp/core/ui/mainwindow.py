@@ -500,8 +500,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         monitor number does not exist.
         """
         screen_number = int(self.generalConfig.get_config(u'Monitor', 0))
-        if screen_number not in self.screenList:
+
+        monitor_exists = False
+        for screen in self.screenList:
+            if screen[u'number'] == screen_number:
+                monitor_exists = True
+        if not monitor_exists:
             screen_number = 0
+
         return screen_number
 
     def show(self):
