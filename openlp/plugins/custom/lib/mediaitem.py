@@ -143,27 +143,6 @@ class CustomMediaItem(MediaManagerItem):
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
 
-#    def onCustomPreviewClick(self):
-#        log.debug(u'Custom Preview Requested')
-#        service_item = ServiceItem(self.parent)
-#        service_item.addIcon(u':/media/media_song.png')
-#        self.generateSlideData(service_item)
-#        self.parent.preview_controller.addServiceItem(service_item)
-#
-#    def onCustomLiveClick(self):
-#        log.debug(u'Custom Live Requested')
-#        service_item = ServiceItem(self.parent)
-#        service_item.addIcon(u':/media/media_song.png')
-#        self.generateSlideData(service_item)
-#        self.parent.live_controller.addServiceItem(service_item)
-#
-#    def onCustomAddClick(self):
-#        log.debug(u'Custom Add Requested')
-#        service_item = ServiceItem(self.parent)
-#        service_item.addIcon(u':/media/media_song.png')
-#        self.generateSlideData(service_item)
-#        self.parent.service_manager.addServiceItem(service_item)
-
     def generateSlideData(self, service_item):
         raw_slides =[]
         raw_footer = []

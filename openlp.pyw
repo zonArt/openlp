@@ -33,7 +33,7 @@ filename=u'openlp.log'
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 
-logfile = logging.handlers.TimedRotatingFileHandler(filename , 'midnight', 1, backupCount=5)
+logfile = logging.handlers.RotatingFileHandler(filename ,maxBytes=200000, backupCount=5)
 logfile.setLevel(logging.DEBUG)
 logfile.setFormatter(logging.Formatter(u'%(asctime)s %(name)-15s %(levelname)-8s %(message)s'))
 

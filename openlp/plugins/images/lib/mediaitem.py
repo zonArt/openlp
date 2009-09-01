@@ -95,7 +95,7 @@ class ImageMediaItem(MediaManagerItem):
 
     def generateSlideData(self, service_item):
         items = self.ListView.selectedIndexes()
-        if len(items) > 1:
+        if len(items) == 0:
             return False
         service_item.title = u'Image(s)'
         for item in items:

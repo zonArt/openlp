@@ -341,7 +341,7 @@ class BibleMediaItem(MediaManagerItem):
     def generateSlideData(self, service_item):
         log.debug(u'generating slide data')
         items = self.ListView.selectedIndexes()
-        if len(items) > 1:
+        if len(items) ==0:
             return False
         old_chapter = u''
         raw_slides = []
