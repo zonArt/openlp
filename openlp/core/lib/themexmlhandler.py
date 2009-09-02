@@ -340,9 +340,10 @@ class ThemeXML(object):
                 for e in element.attrib.iteritems():
                     if master == u'font_' and e[0] == u'type':
                         master += e[1] + u'_'
-                    elif master == u'display_' and (element.tag == u'shadow' or element.tag == u'outline'):
+                    elif master == u'display_' and (element.tag == u'shadow' or
+                        element.tag == u'outline'):
                         et = str_to_bool(element.text)
-                        setattr(self, master + element.tag , et)
+                        setattr(self, master + element.tag, et)
                         setattr(self, master + element.tag + u'_'+ e[0], e[1])
                     else:
                         field = master + e[0]
