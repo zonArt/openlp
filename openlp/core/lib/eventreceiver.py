@@ -24,8 +24,9 @@ from PyQt4 import QtCore
 
 class EventReceiver(QtCore.QObject):
     """
-    Class to allow events to be passed from different parts of the system.
-    This is a private class and should not be used directly but via the Receiver class
+    Class to allow events to be passed from different parts of the
+    system. This is a private class and should not be used directly
+    but rather via the Receiver class.
 
     ``stop_import``
         Stops the Bible Import
@@ -59,31 +60,57 @@ class EventReceiver(QtCore.QObject):
     log = logging.getLogger(u'EventReceiver')
 
     def __init__(self):
+        """
+        Initialise the event receiver, calling the parent constructor.
+        """
         QtCore.QObject.__init__(self)
 
     def send_message(self, event, msg=None):
-        log.debug(u'Event %s passed with payload %s' % (event, msg))
+        """
+        Emit a Qt signal.
+
+        ``event``
+            The event to that was sent.
+
+        ``msg``
+            Defaults to *None*. The message to send with the event.
+        """
         self.emit(QtCore.SIGNAL(event), msg)
+
 
 class Receiver():
     """
-    Class to allow events to be passed from different parts of the system.
-    This is a static wrapper around the EventReceiver class.
-    As there is only one instance of it in the systems the QT signal/slot architecture
-    can send messages across the system
+    Class to allow events to be passed from different parts of the
+    system. This is a static wrapper around the ``EventReceiver``
+    class. As there is only one instance of it in the system the QT
+    signal/slot architecture can send messages across the system.
 
-    ``Send message``
-       Receiver().send_message(u'<<Message ID>>', data)
+    To send a message:
+       ``Receiver().send_message(u'<<Message ID>>', data)``
 
-    ``Receive Message``
-        QtCore.QObject.connect(Receiver().get_receiver(),QtCore.SIGNAL(u'<<Message ID>>'),<<ACTION>>)
+    To receive a Message
+        ``QtCore.QObject.connect(Receiver().get_receiver(), QtCore.SIGNAL(u'<<Message ID>>'), <<ACTION>>)``
     """
     eventreceiver = EventReceiver()
 
     @staticmethod
     def send_message(event, msg=None):
+        """
+        Sends a message to the messaging system.
+
+        ``event``
+            The event to send.
+
+        ``msg``
+            Defaults to *None*. The message to send with the event.
+        """
         Receiver.eventreceiver.send_message(event, msg)
 
     @staticmethod
     def get_receiver():
+        """
+        Get the global ``eventreceiver`` instance.
+        """
         return Receiver.eventreceiver
+
+
