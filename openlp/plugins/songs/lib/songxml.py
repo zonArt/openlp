@@ -75,13 +75,13 @@ class _OpenSong(XmlRootClass):
     def _reset(self):
         """Reset all song attributes"""
         global _blankOpenSongXml
-        self._setFromXml(_blankOpenSongXml, "song')
+        self._setFromXml(_blankOpenSongXml, 'song')
 
     def from_buffer(self,  xmlContent):
         """Initialize from buffer(string) with xml content"""
         self._reset()
         if xmlContent != None :
-            self._setFromXml(xmlContent, "song')
+            self._setFromXml(xmlContent, 'song')
 
     def get_author_list(self):
         """Convert author field to an authorlist
@@ -94,7 +94,7 @@ class _OpenSong(XmlRootClass):
             lst = self.author.split(u' and ')
             for l in lst :
                 res.append(l.strip())
-        s = ", u'.join(res)
+        s = u', '.join(res)
         return s
 
     def get_category_array(self):
@@ -107,7 +107,7 @@ class _OpenSong(XmlRootClass):
             res.append(self.theme)
         if self.alttheme != None :
             res.append(self.alttheme)
-        s = ", u'.join(res)
+        s = u', u'.join(res)
         return s
 
     def _reorder_verse(self, tag, tmpVerse):
@@ -134,7 +134,7 @@ class _OpenSong(XmlRootClass):
                             newtag = "Pre-chorus"
                         else :
                             newtag = t
-                        s = (u'# %s %s"%(newtag, c)).rstrip()
+                        s = (u'# %s %s'%(newtag, c)).rstrip()
                         res.append(s)
                     res.append(l[1:])
                 if (len(l) == 0) and (not tagPending) :
@@ -355,7 +355,7 @@ class Song(object) :
                 elif l.startswith(u'Misc') :
                     metMisc = True
                 elif l.startswith(u'Verse') or l.startswith(u'Chorus'):
-                    lyrics.append(u'# %s"%l)
+                    lyrics.append(u'# %s'%l)
                 else :
                     # should we remove multiple blank lines?
                     if n == 1 :
@@ -366,7 +366,7 @@ class Song(object) :
         lst = sAuthor.split(u'/')
         if len(lst) < 2:
             lst = sAuthor.split(u'|')
-        author_list = ", u'.join(lst)
+        author_list = u', '.join(lst)
         self.set_title(sName)
         self.set_author_list(author_list)
         self.set_copyright(sCopyright)
@@ -413,7 +413,7 @@ class Song(object) :
             lst = []
         else :
             raise SongTypeError(u'Variable not String or List')
-        s = ", u'.join(lst)
+        s = u', '.join(lst)
         return s
 
     def get_copyright(self):

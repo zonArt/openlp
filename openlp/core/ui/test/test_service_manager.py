@@ -28,7 +28,8 @@ from openlp.core.ui import ServiceManager
 from openlp.plugins.images.lib import ImageServiceItem
 
 import logging
-logging.basicConfig(filename="test_service_manager.log",level=logging.INFO, filemode="w')
+logging.basicConfig(filename='test_service_manager.log', level=logging.INFO,
+    filemode='w')
 
 # # from http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66062
 # def whoami(depth=1):
@@ -53,7 +54,7 @@ class TestServiceManager_base:
         pass
 
     def setup_method(self, method):
-        log.info(u'Setup method:"+unicode(method))
+        log.info(u'Setup method:' + unicode(method))
         self.expected_answer="Don't know yet"
         self.answer=None
         self.s=ServiceManager(None)
@@ -71,16 +72,16 @@ class TestServiceManager_base:
         self.sm.select(i, QItemSelectionModel.ClearAndSelect)
         log.info(unicode(self.sm.selectedIndexes()))
         self.s.TreeView.setSelectionModel(self.sm)
-        log.info(u'Selected indexes = " + unicode(self.s.TreeView.selectedIndexes()))
+        log.info(u'Selected indexes = ' + unicode(self.s.TreeView.selectedIndexes()))
     def test_easy(self):
         log.info(u'test_easy')
         item=ImageServiceItem(None)
         item.add(u'test.gif')
         self.s.addServiceItem(item)
         answer = self.s.oos_as_text()
-        log.info(u'Answer = " + unicode(answer))
+        log.info(u'Answer = ' + unicode(answer))
         lines=answer.split(u'\n')
-        log.info(u'lines = " + unicode(lines))
+        log.info(u'lines = ' + unicode(lines))
         assert lines[0].startswith(u'# <openlp.plugins.images.imageserviceitem.ImageServiceItem object')
         assert lines[1] == "test.gif"
         log.info(u'done')
@@ -96,9 +97,9 @@ class TestServiceManager_base:
         item.add(u'test3.gif')
         self.s.addServiceItem(item)
         answer = self.s.oos_as_text()
-        log.info(u'Answer = " + unicode(answer))
+        log.info(u'Answer = ' + unicode(answer))
         lines=answer.split(u'\n')
-        log.info(u'lines = " + unicode(lines))
+        log.info(u'lines = ' + unicode(lines))
         assert lines[0].startswith(u'# <openlp.plugins.images.imageserviceitem.ImageServiceItem object')
         assert lines[1] == "test.gif"
         assert lines[2].startswith(u'# <openlp.plugins.images.imageserviceitem.ImageServiceItem object')
@@ -113,15 +114,15 @@ class TestServiceManager_base:
         item.add(u'test.gif')
         self.s.addServiceItem(item)
         self.select_row(0)
-        log.info(u'Selected indexes = " + unicode(self.s.TreeView.selectedIndexes()))
+        log.info(u'Selected indexes = ' + unicode(self.s.TreeView.selectedIndexes()))
         item=ImageServiceItem(None)
         item.add(u'test2.gif')
         item.add(u'test3.gif')
         self.s.addServiceItem(item)
         answer = self.s.oos_as_text()
-        log.info(u'Answer = " + unicode(answer))
+        log.info(u'Answer = ' + unicode(answer))
         lines=answer.split(u'\n')
-        log.info(u'lines = " + unicode(lines))
+        log.info(u'lines = ' + unicode(lines))
         assert lines[0].startswith(u'# <openlp.plugins.images.imageserviceitem.ImageServiceItem object')
         assert lines[1] == "test.gif"
         assert lines[2] == "test2.gif"

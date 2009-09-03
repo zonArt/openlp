@@ -109,7 +109,7 @@ class PPTViewer(QtGui.QWidget):
         rect = RECT(100,100,900,700)
         filename = unicode(self.PPTEdit.text())
         print filename
-        self.pptid = pptdll.OpenPPT(filename, None, rect, "c:\\temp\\slide')
+        self.pptid = pptdll.OpenPPT(filename, None, rect, 'c:\\temp\\slide')
         print "id: " + unicode(self.pptid)
         if oldid>=0:
             pptdll.ClosePPT(oldid);
@@ -136,8 +136,8 @@ class PPTViewer(QtGui.QWidget):
         self.PPTEdit.setText(QtGui.QFileDialog.getOpenFileName(self, 'Open file'))
 
 if __name__ == '__main__':
-    #pptdll = cdll.LoadLibrary(r"C:\Documents and Settings\jonathan\Desktop\pptviewlib.dll')
-    pptdll = cdll.LoadLibrary(r"pptviewlib.dll')
+    #pptdll = cdll.LoadLibrary(r'C:\Documents and Settings\jonathan\Desktop\pptviewlib.dll')
+    pptdll = cdll.LoadLibrary(r'pptviewlib.dll')
     pptdll.SetDebug(1)
     print "Begin..."
     app = QtGui.QApplication(sys.argv)

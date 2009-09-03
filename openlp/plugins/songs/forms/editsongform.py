@@ -350,7 +350,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def accept(self):
         log.debug(u'accept')
-        valid ,  message = self._validate_song()
+        valid, message = self._validate_song()
         if not valid:
             QtGui.QMessageBox.critical(self,
             translate(u'SongFormDialog', u'Error'), message,

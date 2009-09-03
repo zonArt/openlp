@@ -105,9 +105,9 @@ class ThemesTab(SettingsTab):
         self.SongLevelRadioButton.setText(translate(u'ThemesTab', u'Song level'))
         self.SongLevelLabel.setText(translate(u'ThemesTab', u'Use the theme from each song in the database. If a song doesn\'t have a theme associated with it, then use the service\'s theme. If the service doesn\'t have a theme, then use the global theme.'))
         self.ServiceLevelRadioButton.setText(translate(u'ThemesTab', u'Service level'))
-        self.ServiceLevelLabel.setText(translate(u'ThemesTab', u'Use the theme from the service , overriding any of the individual songs\' themes. If the service doesn\'t have a theme, then use the global theme.'))
+        self.ServiceLevelLabel.setText(translate(u'ThemesTab', u'Use the theme from the service, overriding any of the individual songs\' themes. If the service doesn\'t have a theme, then use the global theme.'))
         self.GlobalLevelRadioButton.setText(translate(u'ThemesTab', u'Global level'))
-        self.GlobalLevelLabel.setText(translate(u'ThemesTab', u'Use the global theme, overriding any themes associated wither either the service or the songs.'))
+        self.GlobalLevelLabel.setText(translate(u'ThemesTab', u'Use the global theme, overriding any themes associated with either the service or the songs.'))
 
     def load(self):
         self.global_style = self.config.get_config(u'theme global style', u'Global')
