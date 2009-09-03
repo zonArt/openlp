@@ -37,13 +37,13 @@ class EventReceiver(QtCore.QObject):
     ``process_events``
         Requests the Application to flush the events queue
 
-    ``{plugin}_add_service_item ``
+    ``{plugin}_add_service_item``
         ask the plugin to push the selected items to the service item
 
-    ``update_themes ``
+    ``update_themes``
         send out message with new themes
 
-    ``update_global_theme ``
+    ``update_global_theme``
         Tell the components we have a new global theme
 
     ``load_song_list``
