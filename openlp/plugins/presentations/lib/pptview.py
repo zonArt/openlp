@@ -4,7 +4,7 @@ from PyQt4 import QtGui, QtCore
 from ctypes import *
 from ctypes.wintypes import RECT
 
-pptdll = cdll.LoadLibrary(r"C:\Documents and Settings\jonathan\My Documents\Personal\openlp\openlp-2\trunk\openlp\libraries\pptviewlib\pptviewlib.dll')
+pptdll = cdll.LoadLibrary(r'C:\Documents and Settings\jonathan\My Documents\Personal\openlp\openlp-2\trunk\openlp\libraries\pptviewlib\pptviewlib.dll')
 
 class BoxLayout(QtGui.QWidget):
     def __init__(self, parent=None):
@@ -107,7 +107,7 @@ class BoxLayout(QtGui.QWidget):
         rect.width = 900
         rect.hight = 700
         #self.pptid = pptdll.OpenPPT(self.PPTEdit.text, None, rect, "c:\temp\slide')
-        self.pptid = pptdll.OpenPPT(u'C:\\test 1.ppt", None, rect, "c:\temp\slide')
+        self.pptid = pptdll.OpenPPT(u'C:\\test 1.ppt', None, rect, 'c:\temp\slide')
         self.total.setText(pptdll.GetSlideCount(self.pptid))
         self.slideEdit.setText(unicode(pptdll.GetCurrentSlide(self.pptid)))
 
