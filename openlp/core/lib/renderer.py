@@ -214,7 +214,7 @@ class Renderer(object):
             if len(page) == page_length:
                 split_pages.append(page)
                 page = []
-        if len(page) > 0:
+        if len(page) > 0 and page != u' ':
             split_pages.append(page)
         return split_pages
 
