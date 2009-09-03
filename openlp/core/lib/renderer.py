@@ -218,7 +218,7 @@ class Renderer(object):
             if len(page) == page_length:
                 split_pages.append(page)
                 page = []
-        if len(page) > 0:
+        if len(page) > 0 and page != u' ':
             split_pages.append(page)
         return split_pages
 
@@ -440,7 +440,7 @@ class Renderer(object):
                 rightextent = x + w
                 # shift right from last line's rh edge
                 if self._theme.display_wrapStyle == 1 and linenum != 0:
-                    rightextent = self._first_line_right_extent +
+                    rightextent = self._first_line_right_extent + \
                         self._right_margin
                     if rightextent > maxx:
                         rightextent = maxx

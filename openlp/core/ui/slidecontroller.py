@@ -21,7 +21,7 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import OpenLPToolbar, translate, buildIcon, Receiver, ServiceType
+from openlp.core.lib import OpenLPToolbar, translate, buildIcon, Receiver, ServiceType, RenderManager
 
 class SlideList(QtGui.QTableWidget):
     """
@@ -250,20 +250,21 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'displayServiceManagerItems Start')
         self.serviceitem = serviceitem
-        slide_pixmap = QtGui.QPixmap.fromImage(self.serviceitem.frames[0][u'image'])
+        slide_image = self.serviceitem.frames[0][u'image']
+        size = slide_image.size()
         slide_width = 300
-        slide_height = slide_width * slide_pixmap.height() / slide_pixmap.width()
+        slide_height = slide_width * size.height() / size.width()
         self.PreviewListWidget.clear()
         self.PreviewListWidget.setRowCount(0)
         self.PreviewListWidget.setColumnWidth(0, slide_width)
         for framenumber, frame in enumerate(self.serviceitem.frames):
             self.PreviewListWidget.setRowCount(self.PreviewListWidget.rowCount() + 1)
-            pixmap = QtGui.QPixmap.fromImage(frame[u'image'])
+            pixmap = self.parent.RenderManager.resize_image(frame[u'image'], slide_width, slide_height)
             item = QtGui.QTableWidgetItem()
             label = QtGui.QLabel()
             label.setMargin(8)
             label.setScaledContents(True)
-            label.setPixmap(pixmap)
+            label.setPixmap(QtGui.QPixmap.fromImage(pixmap))
             self.PreviewListWidget.setCellWidget(framenumber, 0, label)
             self.PreviewListWidget.setItem(framenumber, 0, item)
             self.PreviewListWidget.setRowHeight(framenumber, slide_height)

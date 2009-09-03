@@ -100,7 +100,7 @@ class ServiceItem(object):
             self.frames = self.service_frames
         elif self.service_item_type == ServiceType.Image:
             for slide in self.service_frames:
-                slide[u'image'] =
+                slide[u'image'] = \
                     self.RenderManager.resize_image(slide[u'image'])
             self.frames = self.service_frames
         else:

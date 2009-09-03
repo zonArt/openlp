@@ -209,7 +209,7 @@ class RenderManager(object):
         self.renderer.set_frame_dest(self.width, self.height)
         return self.renderer.generate_frame_from_lines(main_text, footer_text)
 
-    def resize_image(self, image):
+    def resize_image(self, image, width = 0,  height = 0):
         """
         Resize an image to fit on the current screen.
 
@@ -217,8 +217,12 @@ class RenderManager(object):
             The image to resize.
         """
         preview = QtGui.QImage(image)
-        w = self.width
-        h = self.height
+        if width == 0:
+            w = self.width
+            h = self.height
+        else:
+            w = width
+            h = height
         preview = preview.scaled(w, h, QtCore.Qt.KeepAspectRatio,
             QtCore.Qt.SmoothTransformation)
         realw = preview.width();
