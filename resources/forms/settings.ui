@@ -305,7 +305,7 @@
           <item row="1" column="1">
            <widget class="QLabel" name="ServiceLevelLabel">
             <property name="text">
-             <string>Use the theme from the service , overriding any of the individual songs' themes. If the service doesn't have a theme, then use the global theme.</string>
+             <string>Use the theme from the service, overriding any of the individual songs' themes. If the service doesn't have a theme, then use the global theme.</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -325,7 +325,7 @@
           <item row="2" column="1">
            <widget class="QLabel" name="GlobalLevelLabel">
             <property name="text">
-             <string>Use the global theme, overriding any themes associated wither either the service or the songs.</string>
+             <string>Use the global theme, overriding any themes associated with either the service or the songs.</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>

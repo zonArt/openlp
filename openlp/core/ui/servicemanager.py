@@ -64,10 +64,10 @@ class ServiceManagerList(QtGui.QTreeWidget):
             event.ignore()
 
 class Iter(QtGui.QTreeWidgetItemIterator):
-  def __init__(self, *args):
+    def __init__(self, *args):
         QtGui.QTreeWidgetItemIterator.__init__(self, *args)
 
-  def next(self):
+    def next(self):
         self.__iadd__(1)
         value = self.value()
         if value:
@@ -99,12 +99,15 @@ class ServiceManager(QtGui.QWidget):
         self.Layout.setMargin(0)
         # Create the top toolbar
         self.Toolbar = OpenLPToolbar(self)
-        self.Toolbar.addToolbarButton(u'New Service', u':/services/service_new.png',
-            translate(u'ServiceManager', u'Create a new Service'), self.onNewService)
-        self.Toolbar.addToolbarButton(u'Open Service', u':/services/service_open.png',
-            translate(u'ServiceManager', u'Load Existing'), self.onLoadService)
-        self.Toolbar.addToolbarButton(u'Save Service', u':/services/service_save.png',
-            translate(u'ServiceManager', u'Save Service'), self.onSaveService)
+        self.Toolbar.addToolbarButton(u'New Service',
+            u':/services/service_new.png', translate(u'ServiceManager',
+            u'Create a new Service'), self.onNewService)
+        self.Toolbar.addToolbarButton(u'Open Service',
+            u':/services/service_open.png', translate(u'ServiceManager',
+            u'Load Existing'), self.onLoadService)
+        self.Toolbar.addToolbarButton(u'Save Service',
+            u':/services/service_save.png', translate(u'ServiceManager',
+            u'Save Service'), self.onSaveService)
         self.Toolbar.addSeparator()
         self.ThemeComboBox = QtGui.QComboBox(self.Toolbar)
         self.ThemeComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
@@ -250,7 +253,7 @@ class ServiceManager(QtGui.QWidget):
             temp = self.serviceItems[item]
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(item - 1, temp)
-            self.repaintServiceList(item - 1 ,  count)
+            self.repaintServiceList(item - 1,  count)
         self.parent.OosChanged(False, self.serviceName)
 
     def onServiceDown(self):
@@ -263,7 +266,7 @@ class ServiceManager(QtGui.QWidget):
             temp = self.serviceItems[item]
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(item + 1, temp)
-            self.repaintServiceList(item + 1 ,  count)
+            self.repaintServiceList(item + 1,  count)
         self.parent.OosChanged(False, self.serviceName)
 
     def onServiceEnd(self):
@@ -315,13 +318,15 @@ class ServiceManager(QtGui.QWidget):
             treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
             treewidgetitem.setText(0,serviceitem.title)
             treewidgetitem.setIcon(0,serviceitem.iconic_representation)
-            treewidgetitem.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(item[u'order']))
+            treewidgetitem.setData(0, QtCore.Qt.UserRole,
+                QtCore.QVariant(item[u'order']))
             treewidgetitem.setExpanded(item[u'expanded'])
-            for count , frame in enumerate(serviceitem.frames):
+            for count, frame in enumerate(serviceitem.frames):
                 treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
                 text = frame[u'title']
                 treewidgetitem1.setText(0,text[:40])
-                treewidgetitem1.setData(0, QtCore.Qt.UserRole,QtCore.QVariant(count))
+                treewidgetitem1.setData(0, QtCore.Qt.UserRole,
+                    QtCore.QVariant(count))
                 if serviceItem == itemcount and serviceItemCount == count:
                    self.ServiceManagerList.setCurrentItem(treewidgetitem1)
 
@@ -330,7 +335,7 @@ class ServiceManager(QtGui.QWidget):
         Save the current service in a zip file
         This file contains
         * An ood which is a pickle of the service items
-        * All image , presentation and video files needed to run the service.
+        * All image, presentation and video files needed to run the service.
         """
         filename = QtGui.QFileDialog.getSaveFileName(self, u'Save Order of Service',self.config.get_last_dir() )
         filename = unicode(filename)

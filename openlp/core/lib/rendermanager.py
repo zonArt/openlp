@@ -142,15 +142,19 @@ class RenderManager(object):
         main_rect = None
         footer_rect = None
         if theme.font_main_override == False:
-            main_rect = QtCore.QRect(10,0, self.width - 1,  self.footer_start - 20)
+            main_rect = QtCore.QRect(10, 0, self.width - 1,
+                self.footer_start - 20)
         else:
-            main_rect = QtCore.QRect(int(theme.font_main_x) , int(theme.font_main_y),
-                int(theme.font_main_width)-1, int(theme.font_main_height) - 1)
+            main_rect = QtCore.QRect(int(theme.font_main_x),
+                int(theme.font_main_y), int(theme.font_main_width)-1,
+                int(theme.font_main_height) - 1)
         if theme.font_footer_override == False:
-            footer_rect = QtCore.QRect(10,self.footer_start, self.width - 1, self.height-self.footer_start)
+            footer_rect = QtCore.QRect(10,self.footer_start, self.width - 1,
+                self.height-self.footer_start)
         else:
-            footer_rect = QtCore.QRect(int(theme.font_footer_x),int(theme.font_footer_y),
-                int(theme.font_footer_width)-1, int(theme.font_footer_height) - 1)
+            footer_rect = QtCore.QRect(int(theme.font_footer_x),
+                int(theme.font_footer_y), int(theme.font_footer_width)-1,
+                int(theme.font_footer_height) - 1)
         self.renderer.set_text_rectangle(main_rect, footer_rect)
 
     def generate_preview(self, themedata):
@@ -219,14 +223,15 @@ class RenderManager(object):
         else:
             w = width
             h = height
-        preview = preview.scaled(w, h, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        preview = preview.scaled(w, h, QtCore.Qt.KeepAspectRatio,
+            QtCore.Qt.SmoothTransformation)
         realw = preview.width();
         realh = preview.height()
         # and move it to the centre of the preview space
         newImage = QtGui.QImage(w, h, QtGui.QImage.Format_ARGB32_Premultiplied)
         newImage.fill(QtCore.Qt.transparent)
         painter = QtGui.QPainter(newImage)
-        painter.drawImage((w-realw) / 2 , (h-realh) / 2, preview)
+        painter.drawImage((w-realw) / 2, (h-realh) / 2, preview)
         return newImage
 
     def calculate_default(self, screen):

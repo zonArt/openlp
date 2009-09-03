@@ -23,50 +23,58 @@ from openlp.core.lib import MediaManagerItem
 class TestMediaManager:
     def setup_class(self):
         self.app = QtGui.QApplication([])
-        logging.info (u'App is " + unicode(self.app))
+        logging.info (u'App is ' + unicode(self.app))
         self.main_window = QtGui.QMainWindow()
         self.main_window.resize(200, 600)
         self.MediaManagerDock = QtGui.QDockWidget(self.main_window)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
+	    QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.MediaManagerDock.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+	    self.MediaManagerDock.sizePolicy().hasHeightForWidth())
         self.MediaManagerDock.setSizePolicy(sizePolicy)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/system/system_mediamanager.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(u':/system/system_mediamanager.png'),
+	    QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.MediaManagerDock.setWindowIcon(icon)
         self.MediaManagerDock.setFloating(False)
         self.MediaManagerContents = QtGui.QWidget()
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
+	    QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.MediaManagerContents.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+	    self.MediaManagerContents.sizePolicy().hasHeightForWidth())
         self.MediaManagerContents.setSizePolicy(sizePolicy)
         self.MediaManagerLayout = QtGui.QHBoxLayout(self.MediaManagerContents)
         self.MediaManagerLayout.setContentsMargins(0, 2, 0, 0)
         self.MediaToolBox = QtGui.QToolBox(self.MediaManagerContents)
         self.MediaManagerDock.setWidget(self.MediaManagerContents)
-        self.main_window.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.MediaManagerDock)
+        self.main_window.addDockWidget(QtCore.Qt.DockWidgetArea(1),
+	    self.MediaManagerDock)
         self.MediaManagerLayout.addWidget(self.MediaToolBox)
     def test1(self):
         log=logging.getLogger(u'test1')
         log.info(u'Start')
         i1=MediaManagerItem(self.MediaToolBox)
         i2=MediaManagerItem(self.MediaToolBox)
-        log.info(u'i1"+unicode(i1))
-        log.info(u'i2"+unicode(i2))
+        log.info(u'i1'+unicode(i1))
+        log.info(u'i2'+unicode(i2))
         i1.addToolbar()
-        i1.addToolbarButton(u'Test1", u'Test1", None)
+        i1.addToolbarButton(u'Test1', u'Test1', None)
         i2.addToolbar()
-        i2.addToolbarButton(u'Test2", u'Test2", None)
-        self.MediaToolBox.setItemText(self.MediaToolBox.indexOf(i1), translate(u'main_window", u'Item1"))
-        self.MediaToolBox.setItemText(self.MediaToolBox.indexOf(i2), translate(u'main_window", u'Item2"))
+        i2.addToolbarButton(u'Test2', u'Test2', None)
+        self.MediaToolBox.setItemText(self.MediaToolBox.indexOf(i1),
+	    translate(u'main_window', u'Item1'))
+        self.MediaToolBox.setItemText(self.MediaToolBox.indexOf(i2),
+	    translate(u'main_window', u'Item2'))
         log.info(u'Show window')
         self.main_window.show()
         log.info(u'End')
         return 1
 
-if __name__=="__main__":
+if __name__ == "__main__":
     t=TestMediaManager()
     t.setup_class()
     t.test1()

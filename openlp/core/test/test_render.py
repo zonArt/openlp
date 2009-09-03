@@ -84,7 +84,7 @@ class TestRender_base:
 
     def setup_method(self, method):
         print "SSsetup", method
-        if not hasattr(self, "app'):
+        if not hasattr(self, 'app'):
             self.app=None
         try: # see if we already have an app for some reason.
             # have to try and so something, cant just test against None
@@ -109,7 +109,7 @@ class TestRender_base:
         print "--------------- Setup Done -------------"
 
     def teardown_method(self, method):
-        self.write_to_file(self.frame.GetPixmap(), "test_render')
+        self.write_to_file(self.frame.GetPixmap(), 'test_render')
 
 class TestRender(TestRender_base):
     def __init__(self):
@@ -121,19 +121,22 @@ class TestRender(TestRender_base):
         themefile=os.path.abspath(u'data_for_tests/render_theme.xml')
         self.r.set_theme(Theme(themefile)) # set default theme
         self.r._render_background()
-        self.r.set_text_rectangle(QtCore.QRect(0,0, self.size.width()-1, self.size.height()-1))
+        self.r.set_text_rectangle(QtCore.QRect(0,0, self.size.width()-1,
+	    self.size.height()-1))
         self.msg=None
 
     def test_easy(self):
-        answer=self.r._render_single_line(u'Test line", tlcorner=(0,100))
+        answer=self.r._render_single_line(u'Test line', tlcorner=(0,100))
         assert (answer==(219,163))
     def test_longer(self):
-        answer=self.r._render_single_line(u'Test line with more words than fit on one line",
-                                         tlcorner=(10,10))
+        answer=self.r._render_single_line(
+	    u'Test line with more words than fit on one line',
+	    tlcorner=(10,10))
         assert (answer==(753,136))
     def test_even_longer(self):
-        answer=self.r._render_single_line(u'Test line with more words than fit on either one or two lines",
-                                         tlcorner=(10,10))
+        answer=self.r._render_single_line(
+	    u'Test line with more words than fit on either one or two lines',
+            tlcorner=(10,10))
         assert(answer==(753,199))
     def test_lines(self):
         lines=[]
@@ -187,7 +190,7 @@ Line 3"""
             extra=""
             if i == 51: # make an extra long line on line 51 to test wrapping
                 extra="Some more words to make it wrap around don't you know until it wraps so many times we don't know what to do"
-            lines.append(u'Line %d %s" % (i, extra))
+            lines.append(u'Line %d %s' % (i, extra))
         result=self.r.split_set_of_lines(lines)
         print "results---------------__", result
         for i in range(len(result)):

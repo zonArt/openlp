@@ -28,7 +28,7 @@ def sendData(options, message):
     try:
         UDPSock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
         UDPSock.sendto(message, addr)
-        print u'message sent ', message ,  addr
+        print u'message sent ', message, addr
     except:
         print u'Errow thrown ', sys.exc_info()[1]
 

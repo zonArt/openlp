@@ -51,7 +51,7 @@ class TestBibleManager:
         self.bm = BibleManager()
            
     def testGetBibles(self):
-        log.debug( "\n.......testGetBibles')
+        log.debug(u'\n.......testGetBibles')
         # make sure the shuffled sequence does not lose any elements
         b = self.bm.getBibles()
         for b1 in b:
@@ -59,36 +59,37 @@ class TestBibleManager:
             assert(b1 in b)
 
     def testGetBibleBooks(self):
-        log.debug( "\n.......testGetBibleBooks')
+        log.debug(u'\n.......testGetBibleBooks')
         c = self.bm.getBibleBooks(u'asv')
         for c1 in c:
             log.debug( c1)
             assert(c1 in c)
             
     def testGetBookChapterCount(self):
-        log.debug( "\n.......testGetBookChapterCount')       
-        assert(self.bm.getBookChapterCount(u'asv","Matthew')[0] == 28)
+        log.debug(u'\n.......testGetBookChapterCount')       
+        assert(self.bm.getBookChapterCount(u'asv', u'Matthew')[0] == 28)
 
     def testGetBookVerseCount(self):
-        log.debug( "\n.......testGetBookVerseCount')    
-        assert(self.bm.getBookVerseCount(u'asv","Genesis", 1)[0] == 31)
-        assert(self.bm.getBookVerseCount(u'TheMessage","Genesis", 2)[0] == 25)
-        assert(self.bm.getBookVerseCount(u'asv","Matthew", 1)[0] == 25)
-        assert(self.bm.getBookVerseCount(u'TheMessage","Revelation", 1)[0] == 20)        
+        log.debug(u'\n.......testGetBookVerseCount')    
+        assert(self.bm.getBookVerseCount(u'asv', u'Genesis', 1)[0] == 31)
+        assert(self.bm.getBookVerseCount(u'TheMessage', u'Genesis', 2)[0] == 25)
+        assert(self.bm.getBookVerseCount(u'asv', u'Matthew', 1)[0] == 25)
+        assert(self.bm.getBookVerseCount(u'TheMessage', u'Revelation',
+	    1)[0] == 20)        
 
     def testGetVerseText(self):
-        log.debug( "\n.......testGetVerseText')
+        log.debug(u'\n.......testGetVerseText')
         #c = self.bm.getVerseText(u'TheMessage",'Genesis',1,2,1)
         #log.debug( c )
         #c = self.bm.getVerseText(u'NIV','Genesis',1,1,2)
         #log.debug( c ) 
-        c = self.bm.getVerseText(u'asv','Genesis',10,1,20)
+        c = self.bm.getVerseText(u'asv', u'Genesis', 10, 1, 20)
         log.debug( c )
-        c = self.bm.getVerseText(u'TheMessage','Genesis',10,1,20)
+        c = self.bm.getVerseText(u'TheMessage', u'Genesis', 10, 1, 20)
         log.debug( c )       
-        c = self.bm.getVerseText(u'asv','Revelation',10,1,20)
+        c = self.bm.getVerseText(u'asv', u'Revelation', 10, 1, 20)
         log.debug( c ) 
-        c = self.bm.getVersesFromText(u'asv", u'Jesus wept')
+        c = self.bm.getVersesFromText(u'asv', u'Jesus wept')
         log.debug( c )   
-        c = self.bm.getVersesFromText(u'TheMessage", u'Jesus wept')
+        c = self.bm.getVersesFromText(u'TheMessage', u'Jesus wept')
         log.debug( c )          

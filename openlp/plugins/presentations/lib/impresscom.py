@@ -24,7 +24,8 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 # http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/Working_with_Presentations
 # http://mail.python.org/pipermail/python-win32/2008-January/006676.html
 
-import os ,  subprocess
+import os
+import subprocess
 import time
 import uno
 
