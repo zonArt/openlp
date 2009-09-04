@@ -161,8 +161,8 @@ class ThemeXML(object):
         #Create Filename element
         self.child_element(background, u'filename', filename)
 
-    def add_font(self, name, color, proportion, override, fonttype=u'main', weight=u'Normal', italics=u'False',
-                 xpos=0, ypos=0, width=0, height=0):
+    def add_font(self, name, color, proportion, override, fonttype=u'main',
+        weight=u'Normal', italics=u'False', xpos=0, ypos=0, width=0, height=0):
         """
         Add a Font.
 
@@ -223,7 +223,7 @@ class ThemeXML(object):
         background.appendChild(element)
 
     def add_display(self, shadow, shadow_color, outline, outline_color,
-                    horizontal, vertical, wrap):
+        horizontal, vertical, wrap):
         """
         Add a Display options.
 
@@ -301,6 +301,12 @@ class ThemeXML(object):
         # Print our newly created XML
         return self.theme_xml.toxml()
 
+    def extract_formatted_xml(self):
+        """
+        Pull out the XML string formatted for human consumption
+        """
+        return self.theme_xml.toprettyxml(indent='    ', newl='\n')
+
     def parse(self, xml):
         """
         Read in an XML string and parse it.
@@ -340,8 +346,8 @@ class ThemeXML(object):
                 for e in element.attrib.iteritems():
                     if master == u'font_' and e[0] == u'type':
                         master += e[1] + u'_'
-                    elif master == u'display_' and (element.tag == u'shadow' or
-                        element.tag == u'outline'):
+                    elif master == u'display_' and (element.tag == u'shadow' \
+                        or element.tag == u'outline'):
                         et = str_to_bool(element.text)
                         setattr(self, master + element.tag, et)
                         setattr(self, master + element.tag + u'_'+ e[0], e[1])
