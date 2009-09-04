@@ -52,7 +52,8 @@ class PluginManager(object):
 
     def find_plugins(self, dir, plugin_helpers):
         """
-        Scan the directory dir for objects inheriting from ``openlp.plugin``.
+        Scan the directory ``dir`` for objects inheriting from the ``Plugin``
+        class.
 
         ``dir``
             The directory to scan.

@@ -109,9 +109,21 @@ class OpenLPToolbar(QtGui.QToolBar):
             return QtGui.QIcon()
 
     def makeWidgetsInvisible(self, widgets):
+        """
+        Hide a set of widgets.
+
+        ``widgets``
+            The list of names of widgets to be hidden.
+        """
         for widget in widgets:
             self.actions[widget].setVisible(False)
 
     def makeWidgetsVisible(self, widgets):
+        """
+        Show a set of widgets.
+
+        ``widgets``
+            The list of names of widgets to be shown.
+        """
         for widget in widgets:
             self.actions[widget].setVisible(True)

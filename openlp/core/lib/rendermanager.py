@@ -31,6 +31,15 @@ class RenderManager(object):
     Class to pull all Renderer interactions into one place. The plugins will
     call helper methods to do the rendering but this class will provide
     display defense code.
+
+    ``theme_manager``
+        The ThemeManager instance, used to get the current theme details.
+
+    ``screen_list``
+        The list of screens available.
+
+    ``screen_number``
+        Defaults to *0*. The index of the output/display screen.
     """
     global log
     log=logging.getLogger(u'RenderManager')
@@ -39,15 +48,6 @@ class RenderManager(object):
     def __init__(self, theme_manager, screen_list, screen_number=0):
         """
         Initialise the render manager.
-
-        ``theme_manager``
-            The ThemeManager instance, used to get the current theme details.
-
-        ``screen_list``
-            The list of screens available.
-
-        ``screen_number``
-            Defaults to *0*. The index of the output/display screen.
         """
         log.debug(u'Initilisation started')
         self.screen_list = screen_list

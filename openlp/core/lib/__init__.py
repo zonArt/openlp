@@ -57,6 +57,7 @@ def contextMenuSeparator(base):
     action.setSeparator(True)
     return action
 
+from eventreceiver import Receiver
 from settingsmanager import SettingsManager
 from pluginconfig import PluginConfig
 from plugin import Plugin
@@ -65,7 +66,6 @@ from settingstab import SettingsTab
 from mediamanageritem import MediaManagerItem
 from xmlrootclass import XmlRootClass
 from serviceitem import ServiceItem
-from eventreceiver import Receiver
 from serviceitem import ServiceType
 from serviceitem import ServiceItem
 from toolbar import OpenLPToolbar

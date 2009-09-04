@@ -115,12 +115,17 @@ class MediaManagerItem(QtGui.QWidget):
         self.initialise()
 
     def retranslateUi(self):
+        """
+        This method is called automatically to provide OpenLP with the
+        opportunity to translate the ``MediaManagerItem`` to another
+        language.
+        """
         pass
 
     def addToolbar(self):
         """
-        A method to help developers easily add a toolbar to the media manager
-        item.
+        A method to help developers easily add a toolbar to the media
+        manager item.
         """
         if self.Toolbar is None:
             self.Toolbar = OpenLPToolbar(self)
@@ -129,9 +134,29 @@ class MediaManagerItem(QtGui.QWidget):
     def addToolbarButton(self, title, tooltip, icon, slot=None, objectname=None):
         """
         A method to help developers easily add a button to the toolbar.
+
+        ``title``
+            The title of the button.
+
+        ``tooltip``
+            The tooltip to be displayed when the mouse hovers over the
+            button.
+
+        ``icon``
+            The icon of the button. This can be an instance of QIcon, or a
+            string cotaining either the absolute path to the image, or an
+            internal resource path starting with ':/'.
+
+        ``slot``
+            The method to call when the button is clicked.
+
+        ``objectname``
+            The name of the button.
         """
-        # NB different order (when I broke this out, I wanted to not break compatability)
-        # but it makes sense for the icon to come before the tooltip (as you have to have an icon, but not neccesarily a tooltip)
+        # NB different order (when I broke this out, I didn't want to
+        # break compatability), but it makes sense for the icon to
+        # come before the tooltip (as you have to have an icon, but
+        # not neccesarily a tooltip)
         self.Toolbar.addToolbarButton(title, icon, tooltip, slot, objectname)
 
     def addToolbarSeparator(self):
@@ -141,6 +166,11 @@ class MediaManagerItem(QtGui.QWidget):
         self.Toolbar.addSeparator()
 
     def setupUi(self):
+        """
+        This method sets up the interface on the button. Plugin
+        developers use this to add and create toolbars, and the rest
+        of the interface of the media manager item.
+        """
         # Add a toolbar
         self.addToolbar()
         # Create buttons for the toolbar
@@ -221,6 +251,11 @@ class MediaManagerItem(QtGui.QWidget):
            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onPreviewClick)
 
     def initialise(self):
+        """
+        Implement this method in your descendent media manager item to
+        do any UI or other initialisation. This method is called
+        automatically.
+        """
         pass
 
     def addHeaderBar(self):
