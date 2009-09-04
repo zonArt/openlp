@@ -22,8 +22,8 @@ import logging
 
 from PyQt4 import Qt, QtCore, QtGui
 
-from openlp.core.lib import SongXMLBuilder, SongXMLParser,  \
-    translate,  Receiver
+from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver, \
+    translate
 from openlp.plugins.songs.forms import EditVerseForm
 from openlp.plugins.songs.lib.models import Song
 from editsongdialog import Ui_EditSongDialog
@@ -61,6 +61,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'clicked()'), self.onVerseAddButtonClicked)
         QtCore.QObject.connect(self.VerseEditButton,
             QtCore.SIGNAL(u'clicked()'), self.onVerseEditButtonClicked)
+        QtCore.QObject.connect(self.VerseEditAllButton,
+            QtCore.SIGNAL(u'clicked()'), self.onVerseEditAllButtonClicked)
         QtCore.QObject.connect(self.VerseDeleteButton,
             QtCore.SIGNAL(u'clicked()'), self.onVerseDeleteButtonClicked)
         QtCore.QObject.connect(self.VerseListWidget,
@@ -286,6 +288,24 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.VerseListWidget.repaint()
         self.VerseEditButton.setEnabled(False)
         self.VerseDeleteButton.setEnabled(False)
+
+    def onVerseEditAllButtonClicked(self):
+        verse_list = u''
+        if self.VerseListWidget.count() > 0:
+            for row in range(0, self.VerseListWidget.count()):
+                item = self.VerseListWidget.item(row)
+                verse_list += item.text()
+                verse_list += u'\n\n'
+            self.verse_form.setVerse(verse_list)
+        else:
+            self.verse_form.setVerse(u'')
+        if self.verse_form.exec_():
+            verse_list = self.verse_form.getVerse()
+            verse_list = verse_list.replace(u'\r\n', u'\n')
+            self.VerseListWidget.clear()
+            for row in verse_list.split(u'\n\n'):
+                self.VerseListWidget.addItem(row)
+        self.VerseListWidget.repaint()
 
     def onVerseDeleteButtonClicked(self):
         item = self.VerseListWidget.takeItem(self.VerseListWidget.currentRow())
