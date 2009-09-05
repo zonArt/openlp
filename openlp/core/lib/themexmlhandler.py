@@ -305,7 +305,7 @@ class ThemeXML(object):
         """
         Pull out the XML string formatted for human consumption
         """
-        return self.theme_xml.toprettyxml(indent='    ', newl='\n')
+        return self.theme_xml.toprettyxml(indent=u'    ', newl=u'\n')
 
     def parse(self, xml):
         """
