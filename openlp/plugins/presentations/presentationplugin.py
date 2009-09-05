@@ -19,6 +19,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 import os
+import sys
 import logging
 
 from PyQt4 import QtCore, QtGui
@@ -73,7 +74,7 @@ class PresentationPlugin(Plugin):
                 openoffice = impressController()
                 self.registerControllers(u'Impress', openoffice)
             except:
-                pass
+                log.error(u'Reason : %s', sys.exc_info()[0])
         #If we have no controllers disable plugin
         if len(self.controllers) > 0:
             return True

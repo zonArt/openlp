@@ -135,6 +135,7 @@ class PluginManager(object):
         """
         Loop through all the plugins. If a plugin has a valid settings tab
         item, add it to the settings tab.
+        Tabs are set for all plugins not just Active ones
 
         ``settingsform``
             Defaults to *None*. The settings form to add tabs to.
