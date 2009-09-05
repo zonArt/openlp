@@ -182,7 +182,7 @@ class ImpressCOMSlide(object):
 if __name__ == '__main__':
     ooo = Openoffice()
     ooo.createResolver()
-    #show = ImpressCOMPres(ooo, u'/home/timali/test1.odp')
-    #show.go()
+    show = ImpressCOMPres(ooo, u'/home/timali/test1.odp')
+    show.go()
     #show.resume()
     #show.nextStep()
