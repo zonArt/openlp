@@ -51,6 +51,7 @@ class ServiceItem(object):
         if hostplugin is not None:
             self.RenderManager = self.plugin.render_manager
             self.shortname = hostplugin.name
+            self.name = self.plugin.name
         self.title = u''
         self.items = []
         self.iconic_representation = None
@@ -158,6 +159,7 @@ class ServiceItem(object):
         file to represent this item.
         """
         oos_header = {
+            u'name': self.name.lower(),
             u'plugin': self.shortname,
             u'theme':self.theme,
             u'title':self.title,
@@ -190,6 +192,7 @@ class ServiceItem(object):
         """
         header = serviceitem[u'serviceitem'][u'header']
         self.title = header[u'title']
+        self.name = header[u'name']
         self.service_item_type = header[u'type']
         self.shortname = header[u'plugin']
         self.theme = header[u'theme']

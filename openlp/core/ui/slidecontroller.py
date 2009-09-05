@@ -231,7 +231,11 @@ class SlideController(QtGui.QWidget):
         log.debug(u'addServiceItem')
         item.render()
         self.enableToolBar(item)
-        self.displayServiceManagerItems(item, 0)
+        if item.service_item_type == ServiceType.Command:
+            Receiver().send_message(u'%s_start'%item.name.lower(), \
+                u'%s:%s:%s' % (item.shortname, item.service_item_path, item.service_frames[0][u'title']))
+        else:
+            self.displayServiceManagerItems(item, 0)
 
     def addServiceManagerItem(self, item, slideno):
         """
@@ -241,7 +245,11 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'addServiceItem')
         self.enableToolBar(item)
-        self.displayServiceManagerItems(item, slideno)
+        if item.service_item_type == ServiceType.Command:
+            Receiver().send_message(u'%s_start'%item.name.lower(), \
+                u'%s:%s:%s' % (item.shortname, item.service_item_path, item.service_frames[0][u'title']))
+        else:
+            self.displayServiceManagerItems(item, slideno)
 
     def displayServiceManagerItems(self, serviceitem, slideno):
         """

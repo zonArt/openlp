@@ -25,7 +25,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin,  MediaManagerItem
-from openlp.plugins.presentations.lib import PresentationMediaItem, PresentationTab,  impressController
+from openlp.plugins.presentations.lib import PresentationMediaItem, PresentationTab,  ImpressController
 
 class PresentationPlugin(Plugin):
 
@@ -71,7 +71,7 @@ class PresentationPlugin(Plugin):
             try:
                 #Check to see if we have uno installed
                 import uno
-                openoffice = impressController()
+                openoffice = ImpressController()
                 self.registerControllers(u'Impress', openoffice)
             except:
                 log.error(u'Reason : %s', sys.exc_info()[0])

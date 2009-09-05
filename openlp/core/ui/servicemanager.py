@@ -18,6 +18,7 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import os
+import sys
 import logging
 import cPickle
 import zipfile
@@ -409,6 +410,7 @@ class ServiceManager(QtGui.QWidget):
                     #if not present do not worry
                     pass
             except:
+                log.error(u'Problem processing oos load %s', sys.exc_info()[0])
                 pass
         self.serviceName = name[len(name) - 1]
         self.parent.OosChanged(True, self.serviceName)

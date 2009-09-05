@@ -34,7 +34,7 @@ import uno
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate
 
-class impressController(object):
+class ImpressController(object):
     global log
     log = logging.getLogger(u'ImpressController')
 
