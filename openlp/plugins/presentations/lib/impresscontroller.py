@@ -30,9 +30,9 @@ import logging
 import os ,  subprocess
 import time
 import uno
+import sys
 
-from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
+from PyQt4 import QtCore
 
 class ImpressController(object):
     global log
@@ -46,34 +46,30 @@ class ImpressController(object):
     def startOpenoffice(self):
         log.debug(u'start Openoffice')
         cmd = u'openoffice.org -nologo -norestore -minimized -headless ' + u'"' + u'-accept=socket,host=localhost,port=2002;urp;'+ u'"'
-        print cmd
         self.process = QtCore.QProcess()
         self.process.startDetached(cmd)
         self.process.waitForStarted()
-
-    def createResolver(self):
-        self.localContext = uno.getComponentContext()
-        self.resolver = self.localContext.ServiceManager.createInstanceWithContext(u'com.sun.star.bridge.UnoUrlResolver', self.localContext)
-        try:
-            self.ctx = self.resolver.resolve(u'uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
-        except:
-            return False
-        return True
-
-    def buildEnvironment(self):
-        log.deug(u'buildEnvironment')
-        self.smgr = self.ctx.ServiceManager
-        self.desktop = self.smgr.createInstanceWithContext( "com.sun.star.frame.Desktop", self.ctx )
 
     def kill(self):
         log.debug(u'Kill')
         self.process.terminate()
 
     def loadPresentation(self, presentation):
-        url = uno.systemPathToFileUrl(presentation)
-        self.document = self.desktop(url, '_blank', 0, [])
-        self.presentation = self.document.getPresentation()
-        self.presentation.start()
+        log.debug(u'create Resolver')
+        try:
+            context = uno.getComponentContext()
+            resolver = context.ServiceManager.createInstanceWithContext(u'com.sun.star.bridge.UnoUrlResolver', context)
+            ctx = resolver.resolve(u'uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
+            smgr = ctx.ServiceManager
+            desktop = smgr.createInstanceWithContext( "com.sun.star.frame.Desktop", ctx )
+            url = uno.systemPathToFileUrl(presentation)
+            properties = []
+            properties = tuple(properties)
+            self.document = desktop.loadComponentFromURL(url, "_blank", 0, properties)
+            self.presentation = self.document.getPresentation()
+            self.presentation.start()
+        except:
+            log.error(u'Failed reason %s' % sys.exc_info())
 
     def closePresentation(self):
         self.document.dispose()
@@ -107,11 +103,8 @@ class ImpressController(object):
     slideNumber = property(getSlideNumber, setSlideNumber)
 
     def nextStep(self):
-        self.presentation.gotoNextEffect()
+        self.presentation.gotoNextSlide()
 
     def prevStep(self):
         self.presentation.gotoPreviousSlide()
 
-    def moveWindow(self, top, height, left, width):
-        # position the window somehow
-        pass

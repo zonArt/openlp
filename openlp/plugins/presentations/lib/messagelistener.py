@@ -20,6 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import logging
 import os
 
+from PyQt4 import QtCore
 from openlp.core.lib import Receiver
 from openlp.plugins.presentations.lib import ImpressController
 
@@ -34,4 +35,33 @@ class MessageListener(object):
 
     def __init__(self, controllers):
         self.controllers = controllers
-        print controllers
+        self.handler = None
+
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'presentations_start'), self.startup)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'presentations_stop'), self.next)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'presentations_first'), self.next)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'presentations_previous'), self.next)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'presentations_next'), self.next)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'presentations_last'), self.next)
+
+    def startup(self, message):
+        """
+        Start of new presentation
+        Save the handler as any new presentations start here
+        """
+        self.handler, file =  self.decodeMessage(message)
+        self.controllers[self.handler].loadPresentation(file)
+
+    def next(self, message):
+        self.controllers[self.handler].nextStep()
+
+    def decodeMessage(self, message):
+        bits = message.split(u':')
+        file = os.path.join(bits[1], bits[2])
+        return bits[0], file

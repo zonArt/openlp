@@ -74,7 +74,7 @@ class PresentationPlugin(Plugin):
                 openoffice = ImpressController()
                 self.registerControllers(u'Impress', openoffice)
             except:
-                log.error(u'Reason : %s', sys.exc_info()[0])
+                log.error(u'Reason : %s', sys.exc_info())#[0])
         #If we have no controllers disable plugin
         if len(self.controllers) > 0:
             return True
