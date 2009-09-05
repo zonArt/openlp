@@ -285,7 +285,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.verse_form.setVerse(item.text())
             self.verse_form.exec_()
             item.setText(self.verse_form.getVerse())
-        self.VerseListWidget.repaint()
         self.VerseEditButton.setEnabled(False)
         self.VerseDeleteButton.setEnabled(False)
 
