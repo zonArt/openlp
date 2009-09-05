@@ -27,6 +27,8 @@ def file_to_xml(xmlfile):
     return open(xmlfile).read()
 
 def str_to_bool(stringvalue):
+    if stringvalue is True or stringvalue is False:
+        return stringvalue
     return stringvalue.strip().lower() in (u'true', u'yes', u'y')
 
 def buildIcon(icon):

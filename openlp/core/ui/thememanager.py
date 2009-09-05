@@ -300,9 +300,11 @@ class ThemeManager(QtGui.QWidget):
         else:
             newtheme.add_background_image(unicode(theme.BackgroundParameter1))
 
-        newtheme.add_font(unicode(theme.FontName), unicode(theme.FontColor.name()),
+        newtheme.add_font(unicode(theme.FontName),
+            unicode(theme.FontColor.name()),
             unicode(theme.FontProportion * 2), u'False')
-        newtheme.add_font(unicode(theme.FontName), unicode(theme.FontColor.name()),
+        newtheme.add_font(unicode(theme.FontName),
+            unicode(theme.FontColor.name()),
             unicode(12), u'False', u'footer')
         outline = False
         shadow = False
@@ -316,7 +318,8 @@ class ThemeManager(QtGui.QWidget):
             unicode(theme.WrapStyle))
         return newtheme.extract_xml()
 
-    def saveTheme(self, name, theme_xml, image_from, image_to) :
+    def saveTheme(self, name, theme_xml, theme_pretty_xml, image_from,
+        image_to) :
         """
         Called by thememaintenance Dialog to save the theme
         and to trigger the reload of the theme list
@@ -339,7 +342,7 @@ class ThemeManager(QtGui.QWidget):
         if result == QtGui.QMessageBox.Yes:
             # Save the theme, overwriting the existing theme if necessary.
             outfile = open(theme_file, u'w')
-            outfile.write(theme_xml)
+            outfile.write(theme_pretty_xml)
             outfile.close()
             if image_from is not None and image_from != image_to:
                 shutil.copyfile(image_from, image_to)
@@ -347,7 +350,8 @@ class ThemeManager(QtGui.QWidget):
             self.generateAndSaveImage(self.path, name, theme_xml)
             self.loadThemes()
         else:
-            # Don't close the dialog - allow the user to change the name of the theme or to cancel the theme dialog completely.
+            # Don't close the dialog - allow the user to change the name of
+            # the theme or to cancel the theme dialog completely.
             return False
 
     def generateAndSaveImage(self, dir, name, theme_xml):
