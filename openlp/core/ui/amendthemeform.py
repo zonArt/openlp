@@ -125,10 +125,10 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             new_theme.add_background_transparent()
         else:
             if self.theme.background_type == u'solid':
-                new_theme.add_background_solid( \
+                new_theme.add_background_solid(
                     unicode(self.theme.background_color))
             elif self.theme.background_type == u'gradient':
-                new_theme.add_background_gradient( \
+                new_theme.add_background_gradient(
                     unicode(self.theme.background_startColor),
                     unicode(self.theme.background_endColor),
                     self.theme.background_direction)
@@ -244,13 +244,13 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.previewTheme(self.theme)
 
     def onFontMainWeightComboBoxSelected(self, value):
-        if value  ==0:
+        if value == 0:
             self.theme.font_main_weight = u'Normal'
             self.theme.font_main_italics = False
-        elif value  == 1:
+        elif value == 1:
             self.theme.font_main_weight = u'Bold'
             self.theme.font_main_italics = False
-        elif value  == 2:
+        elif value == 2:
             self.theme.font_main_weight = u'Normal'
             self.theme.font_main_italics = True
         else:
@@ -288,7 +288,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             self.FontMainXSpinBox.setValue(int(self.theme.font_main_x))
             self.FontMainYSpinBox.setValue(int(self.theme.font_main_y))
             self.FontMainWidthSpinBox.setValue(int(self.theme.font_main_width))
-            self.FontMainHeightSpinBox.setValue(int( \
+            self.FontMainHeightSpinBox.setValue(int(
                 self.theme.font_main_height))
         self.stateChanging(self.theme)
         self.previewTheme(self.theme)
@@ -367,9 +367,9 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
 
             self.FontFooterXSpinBox.setValue(int(self.theme.font_footer_x))
             self.FontFooterYSpinBox.setValue(int(self.theme.font_footer_y))
-            self.FontFooterWidthSpinBox.setValue(int( \
+            self.FontFooterWidthSpinBox.setValue(int(
                 self.theme.font_footer_width))
-            self.FontFooterHeightSpinBox.setValue(int( \
+            self.FontFooterHeightSpinBox.setValue(int(
                 self.theme.font_footer_height))
 
         self.stateChanging(self.theme)
@@ -556,7 +556,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.FontMainYSpinBox.setValue(int(self.theme.font_main_y))
         self.FontMainWidthSpinBox.setValue(int(self.theme.font_main_width))
         self.FontMainHeightSpinBox.setValue(int(self.theme.font_main_height))
-        self.FontFooterSizeSpinBox.setValue(int( \
+        self.FontFooterSizeSpinBox.setValue(int(
             self.theme.font_footer_proportion))
         if not self.theme.font_footer_italics and \
             self.theme.font_footer_weight == u'Normal':
@@ -572,7 +572,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.FontFooterXSpinBox.setValue(int(self.theme.font_footer_x))
         self.FontFooterYSpinBox.setValue(int(self.theme.font_footer_y))
         self.FontFooterWidthSpinBox.setValue(int(self.theme.font_footer_width))
-        self.FontFooterHeightSpinBox.setValue(int( \
+        self.FontFooterHeightSpinBox.setValue(int(
             self.theme.font_footer_height))
         self.FontMainColorPushButton.setStyleSheet(
             u'background-color: %s' % unicode(theme.font_main_color))
@@ -608,9 +608,9 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             self.ShadowCheckBox.setChecked(False)
             self.ShadowColorPushButton.setEnabled(False)
 
-        self.HorizontalComboBox.setCurrentIndex(int( \
+        self.HorizontalComboBox.setCurrentIndex(int(
             self.theme.display_horizontalAlign))
-        self.VerticalComboBox.setCurrentIndex(int( \
+        self.VerticalComboBox.setCurrentIndex(int(
             self.theme.display_verticalAlign))
 
     def stateChanging(self, theme):

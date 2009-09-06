@@ -24,23 +24,24 @@ sys.path.insert(0,(os.path.join(mypath, '..' ,'..', '..')))
 # test the plugin manager with some plugins in the test_plugins directory
 class TestPluginManager:
     def test_init(self):
-        self.p=PluginManager(u'./testplugins')
-        p=self.p
+        self.p = PluginManager(u'./testplugins')
+        p = self.p
         p.find_plugins(u'./testplugins', None, None)
-        assert (len(p.plugins)==2);
+        assert(len(p.plugins) == 2)
         # get list of the names of the plugins
-        names=[plugin.name for plugin in p.plugins]
+        names = [plugin.name for plugin in p.plugins]
         # see which ones we've got
-        assert (u'testplugin1' in names)
-        assert (u'testplugin2' in names)
+        assert(u'testplugin1' in names)
+        assert(u'testplugin2' in names)
         # and not got - it's too deep in the hierarchy!
-        assert (u'testplugin3' not in names)
+        assert(u'testplugin3' not in names)
         # test that the weighting is done right
-        assert p.plugins[0].name == "testplugin2"
-        assert p.plugins[1].name == "testplugin1"
+        assert(p.plugins[0].name == "testplugin2")
+        assert(p.plugins[1].name == "testplugin1")
+
 if __name__ == "__main__":
     log.debug(u'Starting')
-    t=TestPluginManager()
+    t = TestPluginManager()
     t.test_init()
     log.debug(u'List of plugins found:')
     for plugin in t.p.plugins:

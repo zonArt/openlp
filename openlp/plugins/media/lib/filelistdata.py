@@ -32,7 +32,7 @@ class FileListData(QAbstractListModel):
 
     def __init__(self):
         QAbstractListModel.__init__(self)
-        self.items=[] # will be a list of (full filename shortname) tuples
+        self.items = [] # will be a list of (full filename shortname) tuples
 
     def rowCount(self, parent):
         return len(self.items)
@@ -56,10 +56,10 @@ class FileListData(QAbstractListModel):
         self.insertRow(len(self.items), filename)
 
     def data(self, index, role):
-        row=index.row()
+        row = index.row()
         if row > len(self.items): # if the last row is selected and deleted, we then get called with an empty row!
             return QVariant()
-        if role==Qt.DisplayRole:
+        if role == Qt.DisplayRole:
             retval= self.items[row][1]
 #        elif role == Qt.DecorationRole:
 #            retval= self.items[row][1]

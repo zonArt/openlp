@@ -50,6 +50,6 @@ def test_theme():
     print "Tests passed"
 
     
-if __name__=="__main__":
+if __name__ == "__main__":
     test_read_theme()
     test_theme()

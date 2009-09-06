@@ -321,7 +321,8 @@ class BibleMediaItem(MediaManagerItem):
         cf = self.AdvancedFromChapter.currentText()
         self.adjustComboBox(cf, self.chapters_from, self.AdvancedToChapter)
         # get the verse count for new chapter
-        vse = self.parent.biblemanager.get_book_verse_count(bible, book, int(cf))[0]
+        vse = self.parent.biblemanager.get_book_verse_count(bible, book,
+            int(cf))[0]
         self.adjustComboBox(1, vse, self.AdvancedFromVerse)
         self.adjustComboBox(1, vse, self.AdvancedToVerse)
 
@@ -332,7 +333,8 @@ class BibleMediaItem(MediaManagerItem):
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
             self.ListView.clear()
         if self.QuickSearchComboBox.currentIndex() == 1:
-            self.search_results = self.parent.biblemanager.get_verse_from_text(bible, text)
+            self.search_results = self.parent.biblemanager.get_verse_from_text(
+                bible, text)
         else:
             self.searchByReference(bible, text)
         if self.search_results is not None:
@@ -341,7 +343,7 @@ class BibleMediaItem(MediaManagerItem):
     def generateSlideData(self, service_item):
         log.debug(u'generating slide data')
         items = self.ListView.selectedIndexes()
-        if len(items) ==0:
+        if len(items) == 0:
             return False
         old_chapter = u''
         raw_slides = []
@@ -421,8 +423,10 @@ class BibleMediaItem(MediaManagerItem):
 
     def initialiseChapterVerse(self, bible, book):
         log.debug(u'initialiseChapterVerse %s , %s', bible, book)
-        self.chapters_from = self.parent.biblemanager.get_book_chapter_count(bible, book)
-        self.verses = self.parent.biblemanager.get_book_verse_count(bible, book, 1)
+        self.chapters_from = self.parent.biblemanager.get_book_chapter_count(
+            bible, book)
+        self.verses = self.parent.biblemanager.get_book_verse_count(bible,
+            book, 1)
         self.adjustComboBox(1, self.chapters_from, self.AdvancedFromChapter)
         self.adjustComboBox(1, self.chapters_from, self.AdvancedToChapter)
         self.adjustComboBox(1, self.verses, self.AdvancedFromVerse)
@@ -517,15 +521,19 @@ class BibleMediaItem(MediaManagerItem):
         if start_chapter == u'':
             message = u'No chapter found for search criteria'
         log.debug(u'results = %s @ %s : %s @ %s : %s'% \
-                  (unicode(book), unicode(start_chapter), unicode(end_chapter),  unicode(start_verse),  unicode(end_verse)))
+            (unicode(book), unicode(start_chapter), unicode(end_chapter),
+            unicode(start_verse), unicode(end_verse)))
         if message == None:
             self.search_results = None
-            self.search_results = self.parent.biblemanager.get_verse_text(bible, book,
-                int(start_chapter), int(end_chapter), int(start_verse),
-                int(end_verse))
-            self.copyright = unicode(self.parent.biblemanager.get_meta_data(bible, u'Copyright').value)
-            self.permissions = unicode(self.parent.biblemanager.get_meta_data(bible, u'Permissions').value)
-            self.version = unicode(self.parent.biblemanager.get_meta_data(bible, u'Version').value)
+            self.search_results = self.parent.biblemanager.get_verse_text(
+                bible, book, int(start_chapter), int(end_chapter),
+                int(start_verse), int(end_verse))
+            self.copyright = unicode(self.parent.biblemanager.get_meta_data(
+                bible, u'Copyright').value)
+            self.permissions = unicode(self.parent.biblemanager.get_meta_data(
+                bible, u'Permissions').value)
+            self.version = unicode(self.parent.biblemanager.get_meta_data(
+                bible, u'Version').value)
         else:
             reply = QtGui.QMessageBox.information(self,
                 translate(u'BibleMediaItem', u'Information'),
