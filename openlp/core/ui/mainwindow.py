@@ -29,13 +29,16 @@ from openlp.core.lib import translate, Plugin, MediaManagerItem, \
     SettingsTab, RenderManager, PluginConfig, \
     SettingsManager, PluginManager, Receiver
 
+from openlp.core.utils import ConfigHelper
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         """
         Set up the user interface
         """
         MainWindow.setObjectName(u'MainWindow')
-        MainWindow.resize(self.settingsmanager.width, self.settingsmanager.height)
+        MainWindow.resize(self.settingsmanager.width,
+            self.settingsmanager.height)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
             QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -149,15 +152,18 @@ class Ui_MainWindow(object):
         # Create the menu items
         self.FileNewItem = QtGui.QAction(MainWindow)
         self.FileNewItem.setIcon(
-            self.ServiceManagerContents.Toolbar.getIconFromTitle(u'New Service'))
+            self.ServiceManagerContents.Toolbar.getIconFromTitle(
+            u'New Service'))
         self.FileNewItem.setObjectName(u'FileNewItem')
         self.FileOpenItem = QtGui.QAction(MainWindow)
         self.FileOpenItem.setIcon(
-            self.ServiceManagerContents.Toolbar.getIconFromTitle(u'Open Service'))
+            self.ServiceManagerContents.Toolbar.getIconFromTitle(
+            u'Open Service'))
         self.FileOpenItem.setObjectName(u'FileOpenItem')
         self.FileSaveItem = QtGui.QAction(MainWindow)
         self.FileSaveItem.setIcon(
-            self.ServiceManagerContents.Toolbar.getIconFromTitle(u'Save Service'))
+            self.ServiceManagerContents.Toolbar.getIconFromTitle(
+            u'Save Service'))
         self.FileSaveItem.setObjectName(u'FileSaveItem')
         self.FileSaveAsItem = QtGui.QAction(MainWindow)
         self.FileSaveAsItem.setObjectName(u'FileSaveAsItem')
@@ -212,7 +218,8 @@ class Ui_MainWindow(object):
         self.PluginItem.setObjectName(u'PluginItem')
         self.HelpDocumentationItem = QtGui.QAction(MainWindow)
         ContentsIcon = QtGui.QIcon()
-        ContentsIcon.addPixmap(QtGui.QPixmap(u':/system/system_help_contents.png'),
+        ContentsIcon.addPixmap(QtGui.QPixmap(
+            u':/system/system_help_contents.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.HelpDocumentationItem.setIcon(ContentsIcon)
         self.HelpDocumentationItem.setObjectName(u'HelpDocumentationItem')
@@ -296,7 +303,8 @@ class Ui_MainWindow(object):
         Set up the translation system
         """
         MainWindow.mainTitle = translate(u'mainWindow', u'OpenLP 2.0')
-        MainWindow.defaultThemeText = translate(u'mainWindow', 'Default Theme: ')
+        MainWindow.defaultThemeText = translate(u'mainWindow',
+            'Default Theme: ')
         MainWindow.setWindowTitle(MainWindow.mainTitle)
         self.FileMenu.setTitle(translate(u'mainWindow', u'&File'))
         self.FileImportMenu.setTitle(translate(u'mainWindow', u'&Import'))
@@ -304,7 +312,8 @@ class Ui_MainWindow(object):
         self.OptionsMenu.setTitle(translate(u'mainWindow', u'&Options'))
         self.OptionsViewMenu.setTitle(translate(u'mainWindow', u'&View'))
         self.ViewModeMenu.setTitle(translate(u'mainWindow', u'M&ode'))
-        self.OptionsLanguageMenu.setTitle(translate(u'mainWindow', u'&Language'))
+        self.OptionsLanguageMenu.setTitle(translate(u'mainWindow',
+            u'&Language'))
         self.ToolsMenu.setTitle(translate(u'mainWindow', u'&Tools'))
         self.HelpMenu.setTitle(translate(u'mainWindow', u'&Help'))
         self.MediaManagerDock.setWindowTitle(
@@ -430,23 +439,32 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         # Set up signals and slots
         QtCore.QObject.connect(self.ImportThemeItem,
-            QtCore.SIGNAL(u'triggered()'), self.ThemeManagerContents.onImportTheme)
+            QtCore.SIGNAL(u'triggered()'),
+            self.ThemeManagerContents.onImportTheme)
         QtCore.QObject.connect(self.ExportThemeItem,
-            QtCore.SIGNAL(u'triggered()'), self.ThemeManagerContents.onExportTheme)
+            QtCore.SIGNAL(u'triggered()'),
+            self.ThemeManagerContents.onExportTheme)
         QtCore.QObject.connect(self.ViewMediaManagerItem,
-            QtCore.SIGNAL(u'triggered(bool)'), self.MediaManagerDock.setVisible)
+            QtCore.SIGNAL(u'triggered(bool)'),
+            self.MediaManagerDock.setVisible)
         QtCore.QObject.connect(self.ViewServiceManagerItem,
-            QtCore.SIGNAL(u'triggered(bool)'), self.ServiceManagerDock.setVisible)
+            QtCore.SIGNAL(u'triggered(bool)'),
+            self.ServiceManagerDock.setVisible)
         QtCore.QObject.connect(self.ViewThemeManagerItem,
-            QtCore.SIGNAL(u'triggered(bool)'), self.ThemeManagerDock.setVisible)
+            QtCore.SIGNAL(u'triggered(bool)'),
+            self.ThemeManagerDock.setVisible)
         QtCore.QObject.connect(self.action_Preview_Panel,
-            QtCore.SIGNAL(u'toggled(bool)'), self.PreviewController.Panel.setVisible)
+            QtCore.SIGNAL(u'toggled(bool)'),
+            self.PreviewController.Panel.setVisible)
         QtCore.QObject.connect(self.MediaManagerDock,
-            QtCore.SIGNAL(u'visibilityChanged(bool)'), self.ViewMediaManagerItem.setChecked)
+            QtCore.SIGNAL(u'visibilityChanged(bool)'),
+            self.ViewMediaManagerItem.setChecked)
         QtCore.QObject.connect(self.ServiceManagerDock,
-            QtCore.SIGNAL(u'visibilityChanged(bool)'), self.ViewServiceManagerItem.setChecked)
+            QtCore.SIGNAL(u'visibilityChanged(bool)'),
+            self.ViewServiceManagerItem.setChecked)
         QtCore.QObject.connect(self.ThemeManagerDock,
-            QtCore.SIGNAL(u'visibilityChanged(bool)'), self.ViewThemeManagerItem.setChecked)
+            QtCore.SIGNAL(u'visibilityChanged(bool)'),
+            self.ViewThemeManagerItem.setChecked)
         QtCore.QObject.connect(self.HelpAboutItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpAboutItemClicked)
         QtCore.QObject.connect(self.ToolsAlertItem,
@@ -472,7 +490,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers)
         # hook methods have to happen after find_plugins. Find plugins needs the
         # controllers hence the hooks have moved from setupUI() to here
-
         # Find and insert settings tabs
         log.info(u'hook settings')
         self.plugin_manager.hook_settings_tabs(self.settingsForm)
@@ -492,6 +509,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.ThemeManagerContents.loadThemes()
         log.info(u'Load data from Settings')
         self.settingsForm.postSetUp()
+        # Load saved UI settings
+        self.loadUi()
 
     def getMonitorNumber(self):
         """
@@ -555,21 +574,27 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             ret = QtGui.QMessageBox.question(None,
                 translate(u'mainWindow', u'Save Changes to Service?'),
                 translate(u'mainWindow', u'Your service has been changed, do you want to save those changes?'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Discard | QtGui.QMessageBox.Save),
+                QtGui.QMessageBox.StandardButtons(
+                    QtGui.QMessageBox.Cancel | \
+                    QtGui.QMessageBox.Discard | \
+                    QtGui.QMessageBox.Save),
                 QtGui.QMessageBox.Save)
             if ret == QtGui.QMessageBox.Save:
                 self.ServiceManagerContents.onSaveService()
                 self.mainDisplay.close()
+                self.saveUi()
                 self.cleanUp()
                 event.accept()
             elif ret == QtGui.QMessageBox.Discard:
                 self.mainDisplay.close()
+                self.saveUi()
                 self.cleanUp()
                 event.accept()
             else:
                 event.ignore()
         else:
             self.mainDisplay.close()
+            self.saveUi()
             self.cleanUp()
             event.accept()
 
@@ -577,6 +602,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Call the cleanup method to shutdown plugins.
         log.info(u'cleanup plugins')
         self.plugin_manager.finalise_plugins()
+
+    def loadUi(self):
+        # Loads UI settings from openlp.conf
+        log.info(u'Load UI settings')
+
+
+    def saveUi(self):
+        # Saves UI settings to openlp.conf
+        log.info(u'Save UI settings')
 
     def OosChanged(self, reset=False, oosName=None):
         """

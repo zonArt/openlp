@@ -201,7 +201,7 @@ Line 3"""
             answer = self.r._render_lines(result[i])
             print answer
             self.write_to_file(self.frame.GetPixmap(), "split_test_%03d"% i)
-            print number, i, answer.x(), answer.y(), answer.width(),
+            print number, i, answer.x(), answer.y(), answer.width(), \
                 answer.height()
             e = expected_answers[i]
             assert(answer == QtCore.QRect(e[0],e[1],e[2],e[3]))

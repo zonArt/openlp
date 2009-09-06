@@ -17,7 +17,8 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import sys
 import os
-import PyQt4 import QtGui, QtCore
+
+from PyQt4 import QtGui, QtCore
 
 from openlp.core.theme import Theme
 from openlp.core import Renderer
@@ -107,7 +108,7 @@ And drives away his fear.
         self.answer = self.r.render_screen(0)
         self.bmpname = whoami()
         print self.r._theme.FontProportion
-        print self.answer, self.expected_answer,
+        print self.answer, self.expected_answer, \
             self.answer == self.expected_answer
 #         self.msg=self.bmpname
 
