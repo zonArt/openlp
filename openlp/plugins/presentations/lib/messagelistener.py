@@ -40,11 +40,11 @@ class MessageListener(object):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'presentations_start'), self.startup)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_stop'), self.next)
+            QtCore.SIGNAL(u'presentations_stop'), self.shutDown)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'presentations_first'), self.next)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_previous'), self.next)
+            QtCore.SIGNAL(u'presentations_previous'), self.previous)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'presentations_next'), self.next)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -60,6 +60,12 @@ class MessageListener(object):
 
     def next(self, message):
         self.controllers[self.handler].nextStep()
+
+    def previous(self, message):
+        self.controllers[self.handler].previousStep()
+
+    def shutDown(self, message):
+        self.controllers[self.handler].closePresentation()
 
     def decodeMessage(self, message):
         bits = message.split(u':')

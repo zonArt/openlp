@@ -21,7 +21,8 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import OpenLPToolbar, translate, buildIcon, Receiver, ServiceType, RenderManager
+from openlp.core.lib import OpenLPToolbar, translate, buildIcon, Receiver, \
+    ServiceType, RenderManager, SettingsManager
 
 class SlideList(QtGui.QTableWidget):
     """
@@ -59,11 +60,12 @@ class SlideController(QtGui.QWidget):
     global log
     log = logging.getLogger(u'SlideController')
 
-    def __init__(self, parent, isLive=False):
+    def __init__(self, parent, settingsmanager, isLive=False):
         """
         Set up the Slide Controller.
         """
         QtGui.QWidget.__init__(self, parent)
+        self.settingsmanager = settingsmanager
         self.isLive = isLive
         self.parent = parent
         self.image_list = [u'Start Loop', u'Stop Loop', u'Loop Spearator', u'Image SpinBox']
@@ -152,7 +154,7 @@ class SlideController(QtGui.QWidget):
         self.Toolbar.setSizePolicy(sizeToolbarPolicy)
         # Screen preview area
         self.PreviewFrame = QtGui.QFrame(self.Splitter)
-        self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, 300, 225))
+        self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, self.settingsmanager.slidecontroller_image, 225))
         self.PreviewFrame.setSizePolicy(QtGui.QSizePolicy(
             QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Minimum))
         self.PreviewFrame.setFrameShape(QtGui.QFrame.StyledPanel)
@@ -170,7 +172,7 @@ class SlideController(QtGui.QWidget):
         sizePolicy.setHeightForWidth(
             self.SlidePreview.sizePolicy().hasHeightForWidth())
         self.SlidePreview.setSizePolicy(sizePolicy)
-        self.SlidePreview.setFixedSize(QtCore.QSize(300, 225))
+        self.SlidePreview.setFixedSize(QtCore.QSize(self.settingsmanager.slidecontroller_image, 225))
         self.SlidePreview.setFrameShape(QtGui.QFrame.Box)
         self.SlidePreview.setFrameShadow(QtGui.QFrame.Plain)
         self.SlidePreview.setLineWidth(1)
@@ -232,7 +234,7 @@ class SlideController(QtGui.QWidget):
         log.debug(u'addServiceItem')
         #If old item was a command tell it to stop
         if self.item is not None and self.item.service_item_type == ServiceType.Command:
-            Receiver().send_message(u'%s_stop'%item.name.lower())
+            Receiver().send_message(u'%s_stop'% self.item.name.lower())
         self.item = item
         item.render()
         self.enableToolBar(item)
@@ -250,8 +252,8 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'addServiceItem')
         #If old item was a command tell it to stop
-        if self.item.service_item_type == ServiceType.Command:
-            Receiver().send_message(u'%s_stop'%item.name.lower())
+        if self.item is not None and self.item.service_item_type == ServiceType.Command:
+            Receiver().send_message(u'%s_stop'% self.item.name.lower())
         self.item = item
         self.enableToolBar(item)
         if item.service_item_type == ServiceType.Command:
@@ -269,7 +271,7 @@ class SlideController(QtGui.QWidget):
         self.serviceitem = serviceitem
         slide_image = self.serviceitem.frames[0][u'image']
         size = slide_image.size()
-        slide_width = 300
+        slide_width = self.settingsmanager.slidecontroller_image
         slide_height = slide_width * size.height() / size.width()
         self.PreviewListWidget.clear()
         self.PreviewListWidget.setRowCount(0)
@@ -340,11 +342,14 @@ class SlideController(QtGui.QWidget):
         """
         Go to the previous slide.
         """
-        row = self.PreviewListWidget.currentRow() - 1
-        if row == -1:
-            row = self.PreviewListWidget.rowCount() - 1
-        self.PreviewListWidget.selectRow(row)
-        self.onSlideSelected()
+        if self.item.service_item_type == ServiceType.Command:
+            Receiver().send_message(u'%s_previous'% self.item.name.lower())
+        else:
+            row = self.PreviewListWidget.currentRow() - 1
+            if row == -1:
+                row = self.PreviewListWidget.rowCount() - 1
+            self.PreviewListWidget.selectRow(row)
+            self.onSlideSelected()
 
     def onSlideSelectedLast(self):
         """
