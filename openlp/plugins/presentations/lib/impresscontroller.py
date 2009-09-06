@@ -41,6 +41,8 @@ class ImpressController(object):
     def __init__(self):
         log.debug(u'Initialising')
         self.process = None
+        self.document = None
+        self.presentation = None
         self.startOpenoffice()
 
     def startOpenoffice(self):
@@ -52,7 +54,7 @@ class ImpressController(object):
 
     def kill(self):
         log.debug(u'Kill')
-        self.process.terminate()
+        self.closePresentation()
 
     def loadPresentation(self, presentation):
         log.debug(u'create Resolver')
@@ -72,7 +74,17 @@ class ImpressController(object):
             log.error(u'Failed reason %s' % sys.exc_info())
 
     def closePresentation(self):
-        self.document.dispose()
+        """
+        Close presentation and clean up objects
+        Triggerent by new object being added to SlideController orOpenLP
+        being shut down
+        """
+        if self.document is not None:
+            if self.presentation is not None:
+                self.presentation.end()
+                self.presentation = None
+            self.document.dispose()
+            self.document = None
 
     def isActive(self):
         return self.presentation.isRunning() and self.presentation.isActive()
