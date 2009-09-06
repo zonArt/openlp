@@ -51,6 +51,7 @@ class ServiceItem(object):
         if hostplugin is not None:
             self.RenderManager = self.plugin.render_manager
             self.shortname = hostplugin.name
+            self.name = self.plugin.name
         self.title = u''
         self.items = []
         self.iconic_representation = None
@@ -92,13 +93,16 @@ class ServiceItem(object):
             for slide in self.service_frames:
                 formated = self.RenderManager.format_slide(slide[u'raw_slide'])
                 for format in formated:
-                    frame = self.RenderManager.generate_slide(format, self.raw_footer)
-                    self.frames.append({u'title': slide[u'title'], u'image': frame})
+                    frame = self.RenderManager.generate_slide(format,
+                        self.raw_footer)
+                    self.frames.append({u'title': slide[u'title'],
+                        u'image': frame})
         elif self.service_item_type == ServiceType.Command:
             self.frames = self.service_frames
         elif self.service_item_type == ServiceType.Image:
             for slide in self.service_frames:
-                slide[u'image'] = self.RenderManager.resize_image(slide[u'image'])
+                slide[u'image'] = \
+                    self.RenderManager.resize_image(slide[u'image'])
             self.frames = self.service_frames
         else:
             log.error(u'Invalid value renderer :%s' % self.service_item_type)
@@ -132,9 +136,10 @@ class ServiceItem(object):
         """
         self.service_item_type = ServiceType.Text
         frame_title = frame_title.split(u'\n')[0]
-        self.service_frames.append({u'title': frame_title, u'raw_slide': raw_slide})
+        self.service_frames.append({u'title': frame_title,
+            u'raw_slide': raw_slide})
 
-    def add_from_command(self, path , frame_title):
+    def add_from_command(self, path, frame_title):
         """
         Add a slide from a command.
 
@@ -154,6 +159,7 @@ class ServiceItem(object):
         file to represent this item.
         """
         oos_header = {
+            u'name': self.name.lower(),
             u'plugin': self.shortname,
             u'theme':self.theme,
             u'title':self.title,
@@ -186,6 +192,7 @@ class ServiceItem(object):
         """
         header = serviceitem[u'serviceitem'][u'header']
         self.title = header[u'title']
+        self.name = header[u'name']
         self.service_item_type = header[u'type']
         self.shortname = header[u'plugin']
         self.theme = header[u'theme']

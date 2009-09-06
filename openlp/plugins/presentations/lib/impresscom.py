@@ -24,7 +24,8 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 # http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/Working_with_Presentations
 # http://mail.python.org/pipermail/python-win32/2008-January/006676.html
 
-import os ,  subprocess
+import os
+import subprocess
 import time
 import uno
 
@@ -181,7 +182,7 @@ class ImpressCOMSlide(object):
 if __name__ == '__main__':
     ooo = Openoffice()
     ooo.createResolver()
-    #show = ImpressCOMPres(ooo, u'/home/timali/test1.odp')
-    #show.go()
+    show = ImpressCOMPres(ooo, u'/home/timali/test1.odp')
+    show.go()
     #show.resume()
     #show.nextStep()

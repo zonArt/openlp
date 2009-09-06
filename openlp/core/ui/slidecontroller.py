@@ -21,7 +21,7 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import OpenLPToolbar, translate, buildIcon, Receiver, ServiceType
+from openlp.core.lib import OpenLPToolbar, translate, buildIcon, Receiver, ServiceType, RenderManager
 
 class SlideList(QtGui.QTableWidget):
     """
@@ -68,6 +68,7 @@ class SlideController(QtGui.QWidget):
         self.parent = parent
         self.image_list = [u'Start Loop', u'Stop Loop', u'Loop Spearator', u'Image SpinBox']
         self.timer_id = 0
+        self.item = None
         self.Panel = QtGui.QWidget(parent.ControlSplitter)
         self.Splitter = QtGui.QSplitter(self.Panel)
         self.Splitter.setOrientation(QtCore.Qt.Vertical)
@@ -229,9 +230,17 @@ class SlideController(QtGui.QWidget):
         Called by plugins
         """
         log.debug(u'addServiceItem')
+        #If old item was a command tell it to stop
+        if self.item is not None and self.item.service_item_type == ServiceType.Command:
+            Receiver().send_message(u'%s_stop'%item.name.lower())
+        self.item = item
         item.render()
         self.enableToolBar(item)
-        self.displayServiceManagerItems(item, 0)
+        if item.service_item_type == ServiceType.Command:
+            Receiver().send_message(u'%s_start'%item.name.lower(), \
+                u'%s:%s:%s' % (item.shortname, item.service_item_path, item.service_frames[0][u'title']))
+        else:
+            self.displayServiceManagerItems(item, 0)
 
     def addServiceManagerItem(self, item, slideno):
         """
@@ -240,8 +249,16 @@ class SlideController(QtGui.QWidget):
         Called by ServiceManager
         """
         log.debug(u'addServiceItem')
+        #If old item was a command tell it to stop
+        if self.item.service_item_type == ServiceType.Command:
+            Receiver().send_message(u'%s_stop'%item.name.lower())
+        self.item = item
         self.enableToolBar(item)
-        self.displayServiceManagerItems(item, slideno)
+        if item.service_item_type == ServiceType.Command:
+            Receiver().send_message(u'%s_start'%item.name.lower(), \
+                u'%s:%s:%s' % (item.shortname, item.service_item_path, item.service_frames[0][u'title']))
+        else:
+            self.displayServiceManagerItems(item, slideno)
 
     def displayServiceManagerItems(self, serviceitem, slideno):
         """
@@ -250,20 +267,21 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'displayServiceManagerItems Start')
         self.serviceitem = serviceitem
-        slide_pixmap = QtGui.QPixmap.fromImage(self.serviceitem.frames[0][u'image'])
+        slide_image = self.serviceitem.frames[0][u'image']
+        size = slide_image.size()
         slide_width = 300
-        slide_height = slide_width * slide_pixmap.height() / slide_pixmap.width()
+        slide_height = slide_width * size.height() / size.width()
         self.PreviewListWidget.clear()
         self.PreviewListWidget.setRowCount(0)
         self.PreviewListWidget.setColumnWidth(0, slide_width)
         for framenumber, frame in enumerate(self.serviceitem.frames):
             self.PreviewListWidget.setRowCount(self.PreviewListWidget.rowCount() + 1)
-            pixmap = QtGui.QPixmap.fromImage(frame[u'image'])
+            pixmap = self.parent.RenderManager.resize_image(frame[u'image'], slide_width, slide_height)
             item = QtGui.QTableWidgetItem()
             label = QtGui.QLabel()
             label.setMargin(8)
             label.setScaledContents(True)
-            label.setPixmap(pixmap)
+            label.setPixmap(QtGui.QPixmap.fromImage(pixmap))
             self.PreviewListWidget.setCellWidget(framenumber, 0, label)
             self.PreviewListWidget.setItem(framenumber, 0, item)
             self.PreviewListWidget.setRowHeight(framenumber, slide_height)
@@ -309,11 +327,14 @@ class SlideController(QtGui.QWidget):
         """
         Go to the next slide.
         """
-        row = self.PreviewListWidget.currentRow() + 1
-        if row == self.PreviewListWidget.rowCount():
-            row = 0
-        self.PreviewListWidget.selectRow(row)
-        self.onSlideSelected()
+        if self.item.service_item_type == ServiceType.Command:
+            Receiver().send_message(u'%s_next'% self.item.name.lower())
+        else:
+            row = self.PreviewListWidget.currentRow() + 1
+            if row == self.PreviewListWidget.rowCount():
+                row = 0
+            self.PreviewListWidget.selectRow(row)
+            self.onSlideSelected()
 
     def onSlideSelectedPrevious(self):
         """

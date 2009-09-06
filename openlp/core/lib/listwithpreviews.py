@@ -49,14 +49,15 @@ class ListWithPreviews(QtCore.QAbstractListModel):
         if preview is not None:
             w = self.maximagewidth;
             h = self.rowheight
-            preview = preview.scaled(w, h, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            preview = preview.scaled(w, h, QtCore.Qt.KeepAspectRatio,
+                QtCore.Qt.SmoothTransformation)
             realw = preview.width();
             realh = preview.height()
             # and move it to the centre of the preview space
             p = QtGui.QImage(w, h, QtGui.QImage.Format_ARGB32_Premultiplied)
             p.fill(QtCore.Qt.transparent)
             painter = QtGui.QPainter(p)
-            painter.drawImage((w-realw) / 2 , (h-realh) / 2, preview)
+            painter.drawImage((w-realw) / 2, (h-realh) / 2, preview)
         else:
             w = self.maximagewidth;
             h = self.rowheight
@@ -91,7 +92,8 @@ class ListWithPreviews(QtCore.QAbstractListModel):
     def data(self, index, role):
         row = index.row()
         if row > len(self.items):
-            # if the last row is selected and deleted, we then get called with an empty row!
+            # If the last row is selected and deleted, we then get called
+            # with an empty row!
             return QtCore.QVariant()
         if role == QtCore.Qt.DisplayRole:
             retval = self.items[row][2]

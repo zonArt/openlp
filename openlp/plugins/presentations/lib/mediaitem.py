@@ -22,6 +22,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, ServiceItem, translate, BaseListWithDnD
+from openlp.plugins.presentations.lib import MessageListener
 
 # We have to explicitly create separate classes for each plugin
 # in order for DnD to the Service manager to work correctly.
@@ -54,6 +55,7 @@ class PresentationMediaItem(MediaManagerItem):
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = PresentationListView
         MediaManagerItem.__init__(self, parent, icon, title)
+        self.message_listener = MessageListener(controllers)
 
     def addHeaderBar(self):
         self.PresentationWidget = QtGui.QWidget(self)

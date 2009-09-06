@@ -55,6 +55,25 @@ class EventReceiver(QtCore.QObject):
     ``request_spin_delay``
         Requests a spin delay
 
+    ``{plugin}_start``
+        Requests a plugin to start a external program
+        Path and file provided in message
+
+    ``{plugin}_first``
+        Requests a plugin to handle a first event
+
+    ``{plugin}_previous``
+        Requests a plugin to handle a previous event
+
+    ``{plugin}_next``
+        Requests a plugin to handle a next event
+
+    ``{plugin}_last``
+        Requests a plugin to handle a last event
+
+    ``{plugin}_stop``
+        Requests a plugin to handle a stop event
+
     """
     global log
     log = logging.getLogger(u'EventReceiver')

@@ -31,17 +31,18 @@ class TestPluginManager:
         # get list of the names of the plugins
         names=[plugin.name for plugin in p.plugins]
         # see which ones we've got
-        assert (u'testplugin1" in names)
-        assert (u'testplugin2" in names)
+        assert (u'testplugin1' in names)
+        assert (u'testplugin2' in names)
         # and not got - it's too deep in the hierarchy!
-        assert (u'testplugin3" not in names)
+        assert (u'testplugin3' not in names)
         # test that the weighting is done right
-        assert p.plugins[0].name=="testplugin2"
-        assert p.plugins[1].name=="testplugin1"
-if __name__=="__main__":
+        assert p.plugins[0].name == "testplugin2"
+        assert p.plugins[1].name == "testplugin1"
+if __name__ == "__main__":
     log.debug(u'Starting')
     t=TestPluginManager()
     t.test_init()
     log.debug(u'List of plugins found:')
     for plugin in t.p.plugins:
-        log.debug(u'Plugin %s, name=%s (version=%d)"%(unicode(plugin), plugin.name, plugin.version))
+        log.debug(u'Plugin %s, name=%s (version=%d)' %(unicode(plugin),
+	    plugin.name, plugin.version))

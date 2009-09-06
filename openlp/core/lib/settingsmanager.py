@@ -27,7 +27,9 @@ class SettingsManager(object):
         self.screen = screen[0]
         self.width = self.screen[u'size'].width()
         self.height = self.screen[u'size'].height()
-        self.mainwindow_width = self.width * 0.8
         self.mainwindow_height = self.height * 0.8
-        self.mainwindow_docbars = self.width / 3
-        self.mainwindow_slidecontroller = self.width / 6
+        self.mainwindow_docbars = self.width / 5
+        if self.mainwindow_docbars > 300:
+            self.mainwindow_docbars = 300
+        self.mainwindow_slidecontroller = (self.width - (self.mainwindow_docbars * 3  ) / 2) / 2
+        print self.width,  self.mainwindow_docbars, self.mainwindow_slidecontroller

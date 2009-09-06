@@ -131,7 +131,7 @@ And drives away his fear.
     def test_bg_stretch_y(self):
         t=Theme(u'blank_theme.xml')
         t.BackgroundType = 2
-        t.BackgroundParameter1 = os.path.join(u'data_for_tests', "snowsmall.jpg');
+        t.BackgroundParameter1 = os.path.join(u'data_for_tests', 'snowsmall.jpg');
         t.BackgroundParameter2 = QtGui.QColor(0,0,64);
         t.BackgroundParameter3 = 0
         t.Name="stretch y"
@@ -144,7 +144,7 @@ And drives away his fear.
     def test_bg_shrink_y(self):
         t=Theme(u'blank_theme.xml')
         t.BackgroundType = 2
-        t.BackgroundParameter1 = os.path.join(u'data_for_tests', "snowbig.jpg');
+        t.BackgroundParameter1 = os.path.join(u'data_for_tests', 'snowbig.jpg');
         t.BackgroundParameter2 = QtGui.QColor(0,0,64);
         t.BackgroundParameter3 = 0
         t.Name="shrink y"
@@ -155,7 +155,8 @@ And drives away his fear.
     def test_bg_stretch_x(self):
         t=Theme(u'blank_theme.xml')
         t.BackgroundType = 2
-        t.BackgroundParameter1 = os.path.join(u'data_for_tests', "treessmall.jpg');
+        t.BackgroundParameter1 = os.path.join(u'data_for_tests',
+	    'treessmall.jpg');
         t.BackgroundParameter2 = QtGui.QColor(0,0,64);
         t.BackgroundParameter3 = 0
         t.VerticalAlign = 2
@@ -168,7 +169,7 @@ And drives away his fear.
     def test_bg_shrink_x(self):
         t=Theme(u'blank_theme.xml')
         t.BackgroundType = 2
-        t.BackgroundParameter1 = os.path.join(u'data_for_tests', "treesbig.jpg');
+        t.BackgroundParameter1 = os.path.join(u'data_for_tests', 'treesbig.jpg');
         t.BackgroundParameter2 = QtGui.QColor(0,0,64);
         t.BackgroundParameter3 = 0
         t.VerticalAlign = 2
