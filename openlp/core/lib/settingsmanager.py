@@ -31,5 +31,6 @@ class SettingsManager(object):
         self.mainwindow_docbars = self.width / 5
         if self.mainwindow_docbars > 300:
             self.mainwindow_docbars = 300
-        self.mainwindow_slidecontroller = (self.width - (self.mainwindow_docbars * 3  ) / 2) / 2
-        print self.width,  self.mainwindow_docbars, self.mainwindow_slidecontroller
+        self.slidecontroller = ((self.width - (self.mainwindow_docbars * 3  ) / 2) / 2) -100
+        self.slidecontroller_image = self.slidecontroller - 50
+        print self.width,  self.mainwindow_docbars,  self.slidecontroller, self.slidecontroller_image

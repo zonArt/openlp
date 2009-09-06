@@ -70,6 +70,7 @@ class ImpressController(object):
             self.document = desktop.loadComponentFromURL(url, "_blank", 0, properties)
             self.presentation = self.document.getPresentation()
             self.presentation.start()
+            self.xSlideSshowController =  desktop.getCurrentComponent().Presentation.getController()
         except:
             log.error(u'Failed reason %s' % sys.exc_info())
 
@@ -115,8 +116,8 @@ class ImpressController(object):
     slideNumber = property(getSlideNumber, setSlideNumber)
 
     def nextStep(self):
-        self.presentation.gotoNextSlide()
+       self.xSlideSshowController.gotoNextEffect()
 
-    def prevStep(self):
-        self.presentation.gotoPreviousSlide()
+    def previousStep(self):
+        self.xSlideSshowController.gotoPreviousSlide()
 
