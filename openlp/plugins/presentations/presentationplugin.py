@@ -19,12 +19,13 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 import os
+import sys
 import logging
 
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin,  MediaManagerItem
-from openlp.plugins.presentations.lib import PresentationMediaItem, PresentationTab,  impressController
+from openlp.plugins.presentations.lib import PresentationMediaItem, PresentationTab,  ImpressController
 
 class PresentationPlugin(Plugin):
 
@@ -65,16 +66,16 @@ class PresentationPlugin(Plugin):
         If Not do not install the plugin.
         """
         log.debug('check_pre_conditions')
-
+        #Lets see if Impress is required (Default is Not wanted)
         if int(self.config.get_config(u'Impress', 0)) == 2:
             try:
                 #Check to see if we have uno installed
                 import uno
-                openoffice = impressController()
+                openoffice = ImpressController()
                 self.registerControllers(u'Impress', openoffice)
             except:
-                pass
-        #If we have no controllers disable plugin
+                log.error(u'Reason : %s', sys.exc_info())#[0])
+        #If we have no available controllers disable plugin
         if len(self.controllers) > 0:
             return True
         else:
@@ -82,7 +83,7 @@ class PresentationPlugin(Plugin):
 
     def finalise(self):
         log.debug(u'Finalise')
-        print self.controllers
+        #Ask each controller to tidy up
         for controller in self.controllers:
             print controller
             self.controllers[controller].kill()

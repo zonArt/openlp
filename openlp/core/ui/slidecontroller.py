@@ -68,6 +68,7 @@ class SlideController(QtGui.QWidget):
         self.parent = parent
         self.image_list = [u'Start Loop', u'Stop Loop', u'Loop Spearator', u'Image SpinBox']
         self.timer_id = 0
+        self.item = None
         self.Panel = QtGui.QWidget(parent.ControlSplitter)
         self.Splitter = QtGui.QSplitter(self.Panel)
         self.Splitter.setOrientation(QtCore.Qt.Vertical)
@@ -229,9 +230,17 @@ class SlideController(QtGui.QWidget):
         Called by plugins
         """
         log.debug(u'addServiceItem')
+        #If old item was a command tell it to stop
+        if self.item is not None and self.item.service_item_type == ServiceType.Command:
+            Receiver().send_message(u'%s_stop'%item.name.lower())
+        self.item = item
         item.render()
         self.enableToolBar(item)
-        self.displayServiceManagerItems(item, 0)
+        if item.service_item_type == ServiceType.Command:
+            Receiver().send_message(u'%s_start'%item.name.lower(), \
+                u'%s:%s:%s' % (item.shortname, item.service_item_path, item.service_frames[0][u'title']))
+        else:
+            self.displayServiceManagerItems(item, 0)
 
     def addServiceManagerItem(self, item, slideno):
         """
@@ -240,8 +249,16 @@ class SlideController(QtGui.QWidget):
         Called by ServiceManager
         """
         log.debug(u'addServiceItem')
+        #If old item was a command tell it to stop
+        if self.item.service_item_type == ServiceType.Command:
+            Receiver().send_message(u'%s_stop'%item.name.lower())
+        self.item = item
         self.enableToolBar(item)
-        self.displayServiceManagerItems(item, slideno)
+        if item.service_item_type == ServiceType.Command:
+            Receiver().send_message(u'%s_start'%item.name.lower(), \
+                u'%s:%s:%s' % (item.shortname, item.service_item_path, item.service_frames[0][u'title']))
+        else:
+            self.displayServiceManagerItems(item, slideno)
 
     def displayServiceManagerItems(self, serviceitem, slideno):
         """
@@ -310,11 +327,14 @@ class SlideController(QtGui.QWidget):
         """
         Go to the next slide.
         """
-        row = self.PreviewListWidget.currentRow() + 1
-        if row == self.PreviewListWidget.rowCount():
-            row = 0
-        self.PreviewListWidget.selectRow(row)
-        self.onSlideSelected()
+        if self.item.service_item_type == ServiceType.Command:
+            Receiver().send_message(u'%s_next'% self.item.name.lower())
+        else:
+            row = self.PreviewListWidget.currentRow() + 1
+            if row == self.PreviewListWidget.rowCount():
+                row = 0
+            self.PreviewListWidget.selectRow(row)
+            self.onSlideSelected()
 
     def onSlideSelectedPrevious(self):
         """

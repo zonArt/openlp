@@ -18,6 +18,7 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 import os
+import sys
 import logging
 import cPickle
 import zipfile
@@ -137,21 +138,28 @@ class ServiceManager(QtGui.QWidget):
         self.ServiceManagerList.addAction(contextMenuSeparator(self.ServiceManagerList))
         self.ServiceManagerList.addAction(contextMenuAction(
             self.ServiceManagerList, ':/services/service_delete',
-            translate(u'ServiceManager',u'&Remove from Service'), self.onDeleteFromService))
+            translate(u'ServiceManager',u'&Remove from Service'),
+            self.onDeleteFromService))
         self.Layout.addWidget(self.ServiceManagerList)
         # Add the bottom toolbar
         self.OrderToolbar = OpenLPToolbar(self)
-        self.OrderToolbar.addToolbarButton(u'Move to top', u':/services/service_top.png',
+        self.OrderToolbar.addToolbarButton(u'Move to top',
+            u':/services/service_top.png',
             translate(u'ServiceManager', u'Move to top'), self.onServiceTop)
-        self.OrderToolbar.addToolbarButton(u'Move up', u':/services/service_up.png',
+        self.OrderToolbar.addToolbarButton(u'Move up',
+            u':/services/service_up.png',
             translate(u'ServiceManager', u'Move up order'), self.onServiceUp)
-        self.OrderToolbar.addToolbarButton(u'Move down', u':/services/service_down.png',
+        self.OrderToolbar.addToolbarButton(u'Move down',
+            u':/services/service_down.png',
             translate(u'ServiceManager', u'Move down order'), self.onServiceDown)
-        self.OrderToolbar.addToolbarButton(u'Move to bottom', u':/services/service_bottom.png',
+        self.OrderToolbar.addToolbarButton(u'Move to bottom',
+            u':/services/service_bottom.png',
             translate(u'ServiceManager', u'Move to end'), self.onServiceEnd)
         self.OrderToolbar.addSeparator()
-        self.OrderToolbar.addToolbarButton(u'Delete From Service', u':/services/service_delete.png',
-            translate(u'ServiceManager', u'Delete From Service'), self.onDeleteFromService)
+        self.OrderToolbar.addToolbarButton(u'Delete From Service',
+            u':/services/service_delete.png',
+            translate(u'ServiceManager', u'Delete From Service'),
+            self.onDeleteFromService)
         self.Layout.addWidget(self.OrderToolbar)
         # Connect up our signals and slots
         QtCore.QObject.connect(self.ThemeComboBox,
@@ -402,6 +410,7 @@ class ServiceManager(QtGui.QWidget):
                     #if not present do not worry
                     pass
             except:
+                log.error(u'Problem processing oos load %s', sys.exc_info()[0])
                 pass
         self.serviceName = name[len(name) - 1]
         self.parent.OosChanged(True, self.serviceName)
