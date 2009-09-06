@@ -26,7 +26,7 @@ from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
     ServiceManager, ThemeManager, MainDisplay, SlideController,  \
     PluginForm
 from openlp.core.lib import translate, Plugin, MediaManagerItem, \
-    SettingsTab, RenderManager, PluginConfig, \
+    SettingsTab, RenderManager, PluginConfig, str_to_bool, \
     SettingsManager, PluginManager, Receiver
 
 from openlp.core.utils import ConfigHelper
@@ -373,6 +373,13 @@ class Ui_MainWindow(object):
         self.ViewServiceManagerItem.setStatusTip(translate(u'mainWindow',
             u'Toggle the visibility of the Service Manager'))
         self.ViewServiceManagerItem.setShortcut(translate(u'mainWindow', u'F9'))
+        self.action_Preview_Panel.setText(
+            translate(u'mainWindow', u'&Preview Panel'))
+        self.action_Preview_Panel.setToolTip(
+            translate(u'mainWindow', u'Toggle Preview Panel'))
+        self.action_Preview_Panel.setStatusTip(translate(u'mainWindow',
+            u'Toggle the visibility of the Preview Panel'))
+        self.action_Preview_Panel.setShortcut(translate(u'mainWindow', u'F11'))
         self.ToolsAlertItem.setText(translate(u'mainWindow', u'&Alert'))
         self.ToolsAlertItem.setStatusTip(
             translate(u'mainWindow', u'Show an alert message'))
@@ -606,11 +613,26 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def loadUi(self):
         # Loads UI settings from openlp.conf
         log.info(u'Load UI settings')
-
+        self.MediaManagerDock.setVisible(str_to_bool(
+            ConfigHelper.get_config(u'ui', u'display mediamanager', True)))
+        self.ServiceManagerDock.setVisible(str_to_bool(
+            ConfigHelper.get_config(u'ui', u'display servicemanager', True)))
+        self.ThemeManagerDock.setVisible(str_to_bool(
+            ConfigHelper.get_config(u'ui', u'display thememanager', True)))
+        self.action_Preview_Panel.setChecked(str_to_bool(
+            ConfigHelper.get_config(u'ui', u'display previewpanel', True)))
 
     def saveUi(self):
         # Saves UI settings to openlp.conf
         log.info(u'Save UI settings')
+        ConfigHelper.set_config(u'ui', u'display mediamanager',
+            self.MediaManagerDock.isVisible())
+        ConfigHelper.set_config(u'ui', u'display servicemanager',
+            self.ServiceManagerDock.isVisible())
+        ConfigHelper.set_config(u'ui', u'display thememanager',
+            self.ThemeManagerDock.isVisible())
+        ConfigHelper.set_config(u'ui', u'display previewpanel',
+            self.PreviewController.Panel.isVisible())
 
     def OosChanged(self, reset=False, oosName=None):
         """
