@@ -18,10 +18,11 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 from impresscontroller import ImpressController
+from powerpointcontroller import PowerpointController
 from messagelistener import MessageListener
 from mediaitem import PresentationMediaItem
 from presentationtab import PresentationTab
 
 
 __all__ = ['PresentationMediaItem', 'PresentationTab',
-    'ImpressController', 'MessageListener']
+    'ImpressController', 'ImpressController', 'PowerpointController', 'MessageListener']

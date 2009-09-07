@@ -25,7 +25,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin,  MediaManagerItem
-from openlp.plugins.presentations.lib import PresentationMediaItem, PresentationTab,  ImpressController
+from openlp.plugins.presentations.lib import PresentationMediaItem, PresentationTab, \
+    ImpressController,  PowerpointController
 
 class PresentationPlugin(Plugin):
 
@@ -74,7 +75,25 @@ class PresentationPlugin(Plugin):
                 openoffice = ImpressController()
                 self.registerControllers(u'Impress', openoffice)
             except:
-                log.error(u'Reason : %s', sys.exc_info())#[0])
+                log.error(u'Reason : %s', sys.exc_info())
+        #Lets see if Impress is required (Default is Not wanted)
+        if int(self.config.get_config(u'Powerpoint', 0)) == 2:
+            try:
+                #Check to see if we are Win32
+                from win32com.client import Dispatch
+                powerpoint = PowerpointController()
+                self.registerControllers(u'Powerpoint', powerpoint)
+            except:
+                log.error(u'Reason : %s', sys.exc_info())
+        #Lets see if Impress is required (Default is Not wanted)
+        if int(self.config.get_config(u'Powerpoint Viewer', 0)) == 2:
+            try:
+                #Check to see if we are Win32
+                from win32com.client import Dispatch
+                powerpoint = PowerpointController()
+                self.registerControllers(u'Powerpoint Viewer', powerpoint)
+            except:
+                log.error(u'Reason : %s', sys.exc_info())
         #If we have no available controllers disable plugin
         if len(self.controllers) > 0:
             return True

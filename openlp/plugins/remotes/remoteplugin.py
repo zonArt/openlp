@@ -40,6 +40,17 @@ class RemotesPlugin(Plugin):
         QtCore.QObject.connect(self.server,
             QtCore.SIGNAL(u'readyRead()'), self.readData)
 
+    def check_pre_conditions(self):
+        """
+        Check to see if remotes is required
+        """
+        log.debug('check_pre_conditions')
+        #Lets see if Remote is required
+        if int(self.config.get_config(u'startup', 0)) == 2:
+            return True
+        else:
+            return False
+
     def get_settings_tab(self):
         """
         Create the settings Tab

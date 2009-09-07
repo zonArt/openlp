@@ -36,7 +36,7 @@ from PyQt4 import QtCore
 
 class ImpressController(object):
     """
-    Class to contol interactions with Impress Presentations
+    Class to control interactions with Impress Presentations
     It creates the runtime Environment , Loads the and Closes the Presentation
     As well as trigggering the correct activities based on the users input
     """
