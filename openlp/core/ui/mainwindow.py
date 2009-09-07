@@ -121,6 +121,7 @@ class Ui_MainWindow(object):
         self.MediaManagerDock.setWidget(self.MediaManagerContents)
         MainWindow.addDockWidget(
             QtCore.Qt.DockWidgetArea(1), self.MediaManagerDock)
+        self.MediaManagerDock.setVisible(self.settingsmanager.showMediaManager)
         # Create the service manager
         self.ServiceManagerDock = QtGui.QDockWidget(MainWindow)
         ServiceManagerIcon = QtGui.QIcon()
@@ -136,6 +137,8 @@ class Ui_MainWindow(object):
         self.ServiceManagerDock.setWidget(self.ServiceManagerContents)
         MainWindow.addDockWidget(
             QtCore.Qt.DockWidgetArea(2), self.ServiceManagerDock)
+        self.ServiceManagerDock.setVisible(
+            self.settingsmanager.showServiceManager)
         # Create the theme manager
         self.ThemeManagerDock = QtGui.QDockWidget(MainWindow)
         ThemeManagerIcon = QtGui.QIcon()
@@ -149,6 +152,7 @@ class Ui_MainWindow(object):
         self.ThemeManagerDock.setWidget(self.ThemeManagerContents)
         MainWindow.addDockWidget(
             QtCore.Qt.DockWidgetArea(2), self.ThemeManagerDock)
+        self.ThemeManagerDock.setVisible(self.settingsmanager.showThemeManager)
         # Create the menu items
         self.FileNewItem = QtGui.QAction(MainWindow)
         self.FileNewItem.setIcon(
@@ -191,17 +195,20 @@ class Ui_MainWindow(object):
         self.OptionsSettingsItem.setObjectName(u'OptionsSettingsItem')
         self.ViewMediaManagerItem = QtGui.QAction(MainWindow)
         self.ViewMediaManagerItem.setCheckable(True)
-        self.ViewMediaManagerItem.setChecked(True)
+        self.ViewMediaManagerItem.setChecked(
+            self.settingsmanager.showMediaManager)
         self.ViewMediaManagerItem.setIcon(icon)
         self.ViewMediaManagerItem.setObjectName(u'ViewMediaManagerItem')
         self.ViewThemeManagerItem = QtGui.QAction(MainWindow)
         self.ViewThemeManagerItem.setCheckable(True)
-        self.ViewThemeManagerItem.setChecked(True)
+        self.ViewThemeManagerItem.setChecked(
+            self.settingsmanager.showThemeManager)
         self.ViewThemeManagerItem.setIcon(ThemeManagerIcon)
         self.ViewThemeManagerItem.setObjectName(u'ViewThemeManagerItem')
         self.ViewServiceManagerItem = QtGui.QAction(MainWindow)
         self.ViewServiceManagerItem.setCheckable(True)
-        self.ViewServiceManagerItem.setChecked(True)
+        self.ViewServiceManagerItem.setChecked(
+            self.settingsmanager.showServiceManager)
         self.ViewServiceManagerItem.setIcon(ServiceManagerIcon)
         self.ViewServiceManagerItem.setObjectName(u'ViewServiceManagerItem')
         self.ToolsAlertItem = QtGui.QAction(MainWindow)
@@ -245,8 +252,11 @@ class Ui_MainWindow(object):
         self.ToolsAddToolItem.setObjectName(u'ToolsAddToolItem')
         self.action_Preview_Panel = QtGui.QAction(MainWindow)
         self.action_Preview_Panel.setCheckable(True)
-        self.action_Preview_Panel.setChecked(True)
+        self.action_Preview_Panel.setChecked(
+            self.settingsmanager.showPreviewPanel)
         self.action_Preview_Panel.setObjectName(u'action_Preview_Panel')
+        self.PreviewController.Panel.setVisible(
+            self.settingsmanager.showPreviewPanel)
         self.ModeLiveItem = QtGui.QAction(MainWindow)
         self.ModeLiveItem.setObjectName(u'ModeLiveItem')
         self.FileImportMenu.addAction(self.ImportThemeItem)
@@ -453,16 +463,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.ThemeManagerContents.onExportTheme)
         QtCore.QObject.connect(self.ViewMediaManagerItem,
             QtCore.SIGNAL(u'triggered(bool)'),
-            self.MediaManagerDock.setVisible)
+            self.toggleMediaManager)
         QtCore.QObject.connect(self.ViewServiceManagerItem,
             QtCore.SIGNAL(u'triggered(bool)'),
-            self.ServiceManagerDock.setVisible)
+            self.toggleServiceManager)
         QtCore.QObject.connect(self.ViewThemeManagerItem,
             QtCore.SIGNAL(u'triggered(bool)'),
-            self.ThemeManagerDock.setVisible)
+            self.toggleThemeManager)
         QtCore.QObject.connect(self.action_Preview_Panel,
             QtCore.SIGNAL(u'toggled(bool)'),
-            self.PreviewController.Panel.setVisible)
+            self.togglePreviewPanel)
         QtCore.QObject.connect(self.MediaManagerDock,
             QtCore.SIGNAL(u'visibilityChanged(bool)'),
             self.ViewMediaManagerItem.setChecked)
@@ -472,6 +482,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.ThemeManagerDock,
             QtCore.SIGNAL(u'visibilityChanged(bool)'),
             self.ViewThemeManagerItem.setChecked)
+        QtCore.QObject.connect(self.PreviewController.Panel,
+            QtCore.SIGNAL(u'visibilityChanged(bool)'),
+            self.action_Preview_Panel.setChecked)
         QtCore.QObject.connect(self.HelpAboutItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpAboutItemClicked)
         QtCore.QObject.connect(self.ToolsAlertItem,
@@ -516,8 +529,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.ThemeManagerContents.loadThemes()
         log.info(u'Load data from Settings')
         self.settingsForm.postSetUp()
-        # Load saved UI settings
-        self.loadUi()
 
     def getMonitorNumber(self):
         """
@@ -589,19 +600,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if ret == QtGui.QMessageBox.Save:
                 self.ServiceManagerContents.onSaveService()
                 self.mainDisplay.close()
-                self.saveUi()
                 self.cleanUp()
                 event.accept()
             elif ret == QtGui.QMessageBox.Discard:
                 self.mainDisplay.close()
-                self.saveUi()
                 self.cleanUp()
                 event.accept()
             else:
                 event.ignore()
         else:
             self.mainDisplay.close()
-            self.saveUi()
             self.cleanUp()
             event.accept()
 
@@ -609,30 +617,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Call the cleanup method to shutdown plugins.
         log.info(u'cleanup plugins')
         self.plugin_manager.finalise_plugins()
-
-    def loadUi(self):
-        # Loads UI settings from openlp.conf
-        log.info(u'Load UI settings')
-        self.MediaManagerDock.setVisible(str_to_bool(
-            ConfigHelper.get_config(u'ui', u'display mediamanager', True)))
-        self.ServiceManagerDock.setVisible(str_to_bool(
-            ConfigHelper.get_config(u'ui', u'display servicemanager', True)))
-        self.ThemeManagerDock.setVisible(str_to_bool(
-            ConfigHelper.get_config(u'ui', u'display thememanager', True)))
-        self.action_Preview_Panel.setChecked(str_to_bool(
-            ConfigHelper.get_config(u'ui', u'display previewpanel', True)))
-
-    def saveUi(self):
-        # Saves UI settings to openlp.conf
-        log.info(u'Save UI settings')
-        ConfigHelper.set_config(u'ui', u'display mediamanager',
-            self.MediaManagerDock.isVisible())
-        ConfigHelper.set_config(u'ui', u'display servicemanager',
-            self.ServiceManagerDock.isVisible())
-        ConfigHelper.set_config(u'ui', u'display thememanager',
-            self.ThemeManagerDock.isVisible())
-        ConfigHelper.set_config(u'ui', u'display previewpanel',
-            self.PreviewController.Panel.isVisible())
 
     def OosChanged(self, reset=False, oosName=None):
         """
@@ -654,3 +638,23 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def defaultThemeChanged(self, theme):
         self.DefaultThemeLabel.setText(self.defaultThemeText + theme)
+
+    def toggleMediaManager(self):
+        mediaBool = self.MediaManagerDock.isVisible()
+        self.MediaManagerDock.setVisible(not mediaBool)
+        self.settingsmanager.toggleMediaManager(not mediaBool)
+
+    def toggleServiceManager(self):
+        serviceBool = self.ServiceManagerDock.isVisible()
+        self.ServiceManagerDock.setVisible(not serviceBool)
+        self.settingsmanager.toggleServiceManager(not serviceBool)
+
+    def toggleThemeManager(self):
+        themeBool = self.ThemeManagerDock.isVisible()
+        self.ThemeManagerDock.setVisible(not themeBool)
+        self.settingsmanager.toggleThemeManager(not themeBool)
+
+    def togglePreviewPanel(self):
+        previewBool = self.PreviewController.Panel.isVisible()
+        self.PreviewController.Panel.setVisible(not previewBool)
+        self.settingsmanager.togglePreviewPanel(not previewBool)
