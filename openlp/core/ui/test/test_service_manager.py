@@ -136,7 +136,8 @@ class TestServiceManager_base:
     #  new and save as
     #  deleting items
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
 
     t=TestServiceManager_base()
     t.setup_class()
