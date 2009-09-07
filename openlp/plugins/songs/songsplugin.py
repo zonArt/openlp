@@ -28,12 +28,22 @@ from openlp.plugins.songs.forms import OpenLPImportForm, OpenSongExportForm, \
     OpenSongImportForm, OpenLPExportForm
 
 class SongsPlugin(Plugin):
+    """
+    This is the number 1 plugin, if importance were placed on any
+    plugins. This plugin enables the user to create, edit and display
+    songs. Songs are divided into verses, and the verse order can be
+    specified. Authors, topics and song books can be assigned to songs
+    as well.
+    """
 
     global log
     log = logging.getLogger(u'SongsPlugin')
     log.info(u'Song Plugin loaded')
 
     def __init__(self, plugin_helpers):
+        """
+        Create and set up the Songs plugin.
+        """
         # Call the parent constructor
         Plugin.__init__(self, u'Songs', u'1.9.0', plugin_helpers)
         self.weight = -10
@@ -48,11 +58,22 @@ class SongsPlugin(Plugin):
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
     def get_media_manager_item(self):
-        # Create the MediaManagerItem object
+        """
+        Create the MediaManagerItem object, which is displaed in the
+        Media Manager.
+        """
         self.media_item = SongMediaItem(self, self.icon, 'Songs')
         return self.media_item
 
     def add_import_menu_item(self, import_menu):
+        """
+        Give the Songs plugin the opportunity to add items to the
+        **Import** menu.
+
+        ``import_menu``
+            The actual **Import** menu item, so that your actions can
+            use it as their parent.
+        """
         self.ImportSongMenu = QtGui.QMenu(import_menu)
         self.ImportSongMenu.setObjectName(u'ImportSongMenu')
         self.ImportOpenSongItem = QtGui.QAction(import_menu)
@@ -88,6 +109,14 @@ class SongsPlugin(Plugin):
             QtCore.SIGNAL(u'triggered()'), self.onImportOpenSongItemClick)
 
     def add_export_menu_item(self, export_menu):
+        """
+        Give the Songs plugin the opportunity to add items to the
+        **Export** menu.
+
+        ``export_menu``
+            The actual **Export** menu item, so that your actions can
+            use it as their parent.
+        """
         self.ExportSongMenu = QtGui.QMenu(export_menu)
         self.ExportSongMenu.setObjectName(u'ExportSongMenu')
         self.ExportOpenSongItem = QtGui.QAction(export_menu)

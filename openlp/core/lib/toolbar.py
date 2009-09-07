@@ -2,7 +2,9 @@
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 """
 OpenLP - Open Source Lyrics Projection
+
 Copyright (c) 2009 Raoul Snyman
+
 Portions copyright (c) 2009 Martin Thompson, Tim Bentley
 
 This program is free software; you can redistribute it and/or modify it under
@@ -109,9 +111,21 @@ class OpenLPToolbar(QtGui.QToolBar):
             return QtGui.QIcon()
 
     def makeWidgetsInvisible(self, widgets):
+        """
+        Hide a set of widgets.
+
+        ``widgets``
+            The list of names of widgets to be hidden.
+        """
         for widget in widgets:
             self.actions[widget].setVisible(False)
 
     def makeWidgetsVisible(self, widgets):
+        """
+        Show a set of widgets.
+
+        ``widgets``
+            The list of names of widgets to be shown.
+        """
         for widget in widgets:
             self.actions[widget].setVisible(True)

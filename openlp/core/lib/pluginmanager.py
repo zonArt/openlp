@@ -2,7 +2,9 @@
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 """
 OpenLP - Open Source Lyrics Projection
+
 Copyright (c) 2008 Raoul Snyman
+
 Portions copyright (c) 2008 - 2009 Martin Thompson, Tim Bentley,
 
 This program is free software; you can redistribute it and/or modify it under
@@ -52,7 +54,8 @@ class PluginManager(object):
 
     def find_plugins(self, dir, plugin_helpers):
         """
-        Scan the directory dir for objects inheriting from ``openlp.plugin``.
+        Scan the directory ``dir`` for objects inheriting from the ``Plugin``
+        class.
 
         ``dir``
             The directory to scan.

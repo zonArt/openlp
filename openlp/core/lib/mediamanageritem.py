@@ -31,28 +31,60 @@ class MediaManagerItem(QtGui.QWidget):
     MediaManagerItem is a helper widget for plugins.
 
     None of the following *need* to be used, feel free to override
-    them cmopletely in your plugin's implementation.  Alternatively, call them from your
-    plugin before or after you've done etra things that you need to.
+    them cmopletely in your plugin's implementation. Alternatively,
+    call them from your plugin before or after you've done extra
+    things that you need to.
 
-    The plugin will be assigned an icon called u':/media/media_' + 'self.ShortPluginName + u'image.png'
-     which needs to be available in the main resources in order for them to work, you need to have setup
+    **Constructor Parameters**
 
-     self.TranslationContext
-     self.PluginTextShort # eg 'Image' for the image plugin
-     self.ConfigSection - where the items in the media manager are stored
-       this could potentially be self.PluginTextShort.lower()
+    ``parent``
+        The parent widget. Usually this will be the *Media Manager*
+        itself. This needs to be a class descended from ``QWidget``.
 
-     self.OnNewPrompt=u'Select Image(s)'
-     self.OnNewFileMasks=u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
-       assumes that the new action is to load a file. If not, override onnew
+    ``icon``
+        Either a ``QIcon``, a resource path, or a file name. This is
+        the icon which is displayed in the *Media Manager*.
 
-     self.ListViewWithDnD_class - there is a base list class with DnD assigned to it (openlp.core.lib.BaseListWithDnD())
-     each plugin needs to inherit a class from this and pass that *class* (not an instance) to here
-     via the ListViewWithDnD_class member
+    ``title``
+        The title visible on the item in the *Media Manager*.
 
-     self.PreviewFunction - a function which returns a QImage to represent the item (a preview usually)
-        - no scaling required - that's done later
-        If this fn is not defined, a default will be used (treat the filename as an image)
+    **Member Variables**
+
+    When creating a descendant class from this class for your plugin,
+    the following member variables should be set.
+
+    ``self.TranslationContext``
+        This sets the translation context of all the text in the
+        Media Manager item.
+
+    ``self.PluginTextShort``
+        The shortened name for the plugin, e.g. *'Image'* for the
+        image plugin.
+
+     ``self.ConfigSection``
+        The section in the configuration where the items in the media
+        manager are stored. This could potentially be
+        ``self.PluginTextShort.lower()``.
+
+     ``self.OnNewPrompt``
+        Defaults to *'Select Image(s)'*.
+
+     ``self.OnNewFileMasks``
+        Defaults to *'Images (*.jpg *jpeg *.gif *.png *.bmp)'*. This
+        assumes that the new action is to load a file. If not, you
+        need to override the ``OnNew`` method.
+
+     ``self.ListViewWithDnD_class``
+        This must be a **class**, not an object, descended from
+        ``openlp.core.lib.BaseListWithDnD`` that is not used in any
+        other part of OpenLP.
+
+     ``self.PreviewFunction``
+        This must be a method which returns a QImage to represent the
+        item (usually a preview). No scaling is required, that is
+        performed automatically by OpenLP when necessary. If this
+        method is not defined, a default will be used (treat the
+        filename as an image).
     """
 
     global log
@@ -83,12 +115,17 @@ class MediaManagerItem(QtGui.QWidget):
         self.initialise()
 
     def retranslateUi(self):
+        """
+        This method is called automatically to provide OpenLP with the
+        opportunity to translate the ``MediaManagerItem`` to another
+        language.
+        """
         pass
 
     def addToolbar(self):
         """
-        A method to help developers easily add a toolbar to the media manager
-        item.
+        A method to help developers easily add a toolbar to the media
+        manager item.
         """
         if self.Toolbar is None:
             self.Toolbar = OpenLPToolbar(self)
@@ -97,9 +134,29 @@ class MediaManagerItem(QtGui.QWidget):
     def addToolbarButton(self, title, tooltip, icon, slot=None, objectname=None):
         """
         A method to help developers easily add a button to the toolbar.
+
+        ``title``
+            The title of the button.
+
+        ``tooltip``
+            The tooltip to be displayed when the mouse hovers over the
+            button.
+
+        ``icon``
+            The icon of the button. This can be an instance of QIcon, or a
+            string cotaining either the absolute path to the image, or an
+            internal resource path starting with ':/'.
+
+        ``slot``
+            The method to call when the button is clicked.
+
+        ``objectname``
+            The name of the button.
         """
-        # NB different order (when I broke this out, I wanted to not break compatability)
-        # but it makes sense for the icon to come before the tooltip (as you have to have an icon, but not neccesarily a tooltip)
+        # NB different order (when I broke this out, I didn't want to
+        # break compatability), but it makes sense for the icon to
+        # come before the tooltip (as you have to have an icon, but
+        # not neccesarily a tooltip)
         self.Toolbar.addToolbarButton(title, icon, tooltip, slot, objectname)
 
     def addToolbarSeparator(self):
@@ -109,6 +166,11 @@ class MediaManagerItem(QtGui.QWidget):
         self.Toolbar.addSeparator()
 
     def setupUi(self):
+        """
+        This method sets up the interface on the button. Plugin
+        developers use this to add and create toolbars, and the rest
+        of the interface of the media manager item.
+        """
         # Add a toolbar
         self.addToolbar()
         # Create buttons for the toolbar
@@ -189,6 +251,11 @@ class MediaManagerItem(QtGui.QWidget):
            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onPreviewClick)
 
     def initialise(self):
+        """
+        Implement this method in your descendent media manager item to
+        do any UI or other initialisation. This method is called
+        automatically.
+        """
         pass
 
     def addHeaderBar(self):

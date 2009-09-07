@@ -6,11 +6,10 @@
 .. automodule:: openlp.plugins
    :members:
 
-:mod:`songs` Plugin
--------------------
+.. toctree::
+   :maxdepth: 2
 
-.. automodule:: openlp.plugins.songs
-   :members:
+   songs
 
 :mod:`bibles` Plugin
 --------------------

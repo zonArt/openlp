@@ -2,7 +2,9 @@
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 """
 OpenLP - Open Source Lyrics Projection
+
 Copyright (c) 2008 Raoul Snyman
+
 Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley,
 
 This program is free software; you can redistribute it and/or modify it under
@@ -21,17 +23,51 @@ import types
 from PyQt4 import QtCore, QtGui
 
 def translate(context, text):
+    """
+    A special shortcut method to wrap around the Qt4 translation functions.
+    This abstracts the translation procedure so that we can change it if at a
+    later date if necessary, without having to redo the whole of OpenLP.
+
+    ``context``
+        The translation context, used to give each string a context or a
+        namespace.
+
+    ``text``
+        The text to put into the translation tables for translation.
+    """
     return QtGui.QApplication.translate(context, text, None, QtGui.QApplication.UnicodeUTF8)
 
 def file_to_xml(xmlfile):
+    """
+    Open a file and return the contents of the file.
+
+    ``xmlfile``
+        The name of the file.
+    """
     return open(xmlfile).read()
 
 def str_to_bool(stringvalue):
+    """
+    Convert a string version of a boolean into a real boolean.
+
+    ``stringvalue``
+        The string value to examine and convert to a boolean type.
+    """
     if stringvalue is True or stringvalue is False:
         return stringvalue
     return stringvalue.strip().lower() in (u'true', u'yes', u'y')
 
 def buildIcon(icon):
+    """
+    Build a QIcon instance from an existing QIcon, a resource location, or a
+    physical file location. If the icon is a QIcon instance, that icon is
+    simply returned. If not, it builds a QIcon instance from the resource or
+    file name.
+
+    ``icon``
+        The icon to build. This can be a QIcon, a resource string in the form
+        ``:/resource/file.png``, or a file location like ``/path/to/file.png``.
+    """
     ButtonIcon = None
     if type(icon) is QtGui.QIcon:
         ButtonIcon = icon
@@ -59,6 +95,7 @@ def contextMenuSeparator(base):
     action.setSeparator(True)
     return action
 
+from eventreceiver import Receiver
 from settingsmanager import SettingsManager
 from pluginconfig import PluginConfig
 from plugin import Plugin
@@ -67,12 +104,10 @@ from settingstab import SettingsTab
 from mediamanageritem import MediaManagerItem
 from xmlrootclass import XmlRootClass
 from serviceitem import ServiceItem
-from eventreceiver import Receiver
 from serviceitem import ServiceType
 from serviceitem import ServiceItem
 from toolbar import OpenLPToolbar
-from songxmlhandler import SongXMLBuilder
-from songxmlhandler import SongXMLParser
+from songxmlhandler import SongXMLBuilder, SongXMLParser
 from themexmlhandler import ThemeXML
 from renderer import Renderer
 from rendermanager import RenderManager

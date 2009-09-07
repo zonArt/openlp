@@ -3,7 +3,9 @@
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 """
 OpenLP - Open Source Lyrics Projection
+
 Copyright (c) 2008 Raoul Snyman
+
 Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley,
 
 This program is free software; you can redistribute it and/or modify it under
@@ -29,15 +31,7 @@ from openlp.core.lib import Receiver
 from openlp.core.resources import *
 from openlp.core.ui import MainWindow, SplashScreen
 
-filename=u'openlp.log'
 log = logging.getLogger()
-log.setLevel(logging.INFO)
-
-logfile = logging.handlers.RotatingFileHandler(filename ,maxBytes=200000, backupCount=5)
-logfile.setLevel(logging.DEBUG)
-logfile.setFormatter(logging.Formatter(u'%(asctime)s %(name)-15s %(levelname)-8s %(message)s'))
-
-log.addHandler(logfile)
 
 class OpenLP(QtGui.QApplication):
     """
@@ -78,22 +72,40 @@ class OpenLP(QtGui.QApplication):
         self.mainWindow.show()
         # now kill the splashscreen
         self.splash.finish(self.mainWindow)
-        sys.exit(app.exec_())
+        sys.exit(self.exec_())
+
 
 def main():
-    usage = "usage: %prog [options] arg1 arg2"
+    """
+    The main function which parses command line options and then runs
+    the PyQt4 Application.
+    """
+    # Set up command line options.
+    usage = u'Usage: %prog [options] [qt-options]'
     parser = OptionParser(usage=usage)
-    parser.add_option("-d", "--debug",dest="debug",action="store_true",
-                      help="Switch on Debugging ")
+    parser.add_option("-d", "--debug", dest="debug",
+                      action="store_true", help="set logging to DEBUG level")
+    # Set up logging
+    filename = u'openlp.log'
+    logfile = logging.handlers.RotatingFileHandler(
+        filename, maxBytes=200000, backupCount=5)
+    logfile.setFormatter(
+        logging.Formatter(u'%(asctime)s %(name)-15s %(levelname)-8s %(message)s'))
+    log.addHandler(logfile)
+    # Parse command line options and deal with them.
     (options, args) = parser.parse_args()
     if options.debug is not None:
         log.setLevel(logging.DEBUG)
+    else:
+        log.setLevel(logging.INFO)
+    # Now create and actually run the application.
+    app = OpenLP(sys.argv)
+    app.run()
+
 if __name__ == u'__main__':
     """
     Instantiate and run the application.
     """
-    main()
-    app = OpenLP(sys.argv)
     #import cProfile
-    #cProfile.run("app.run()", "profile.out")
-    app.run()
+    #cProfile.run("main()", "profile.out")
+    main()
