@@ -35,10 +35,6 @@ class RemotesPlugin(Plugin):
         # Call the parent constructor
         Plugin.__init__(self, u'Remotes', u'1.9.0', plugin_helpers)
         self.weight = -1
-        self.server = QtNetwork.QUdpSocket()
-        self.server.bind(int(self.config.get_config(u'remote port', 4316)))
-        QtCore.QObject.connect(self.server,
-            QtCore.SIGNAL(u'readyRead()'), self.readData)
 
     def check_pre_conditions(self):
         """
@@ -50,6 +46,12 @@ class RemotesPlugin(Plugin):
             return True
         else:
             return False
+
+    def initialise(self):
+        self.server = QtNetwork.QUdpSocket()
+        self.server.bind(int(self.config.get_config(u'remote port', 4316)))
+        QtCore.QObject.connect(self.server,
+            QtCore.SIGNAL(u'readyRead()'), seld.readData)
 
     def get_settings_tab(self):
         """
