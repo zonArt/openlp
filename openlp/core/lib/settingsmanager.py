@@ -34,8 +34,14 @@ class SettingsManager(object):
         self.width = self.screen[u'size'].width()
         self.height = self.screen[u'size'].height()
         self.mainwindow_height = self.height * 0.8
-        self.mainwindow_docbars = self.width / 3
+        self.mainwindow_docbars = self.width / 5
+        if self.mainwindow_docbars > 300:
+            self.mainwindow_docbars > 300
         self.mainwindow_slidecontroller = self.width / 6
+        self.slidecontroller = ((self.width - (self.mainwindow_docbars * 3 ) / 2 ) / 2 ) -100
+        self.slidecontroller_image = self.slidecontroller - 50
+        print self.width, self.mainwindow_docbars, self.slidecontroller, self.slidecontroller_image
+
         self.showMediaManager = str_to_bool( ConfigHelper.get_config(
             u'user interface', u'display mediamanager', True))
         self.showServiceManager = str_to_bool(ConfigHelper.get_config(

@@ -35,6 +35,11 @@ import sys
 from PyQt4 import QtCore
 
 class ImpressController(object):
+    """
+    Class to control interactions with Impress Presentations
+    It creates the runtime Environment , Loads the and Closes the Presentation
+    As well as trigggering the correct activities based on the users input
+    """
     global log
     log = logging.getLogger(u'ImpressController')
 
@@ -46,6 +51,11 @@ class ImpressController(object):
         self.startOpenoffice()
 
     def startOpenoffice(self):
+        """
+        Loads a running version of OpenOffice inthe background.
+        It is not displayed to the user but is available to the Uno interface
+        when required.
+        """
         log.debug(u'start Openoffice')
         cmd = u'openoffice.org -nologo -norestore -minimized -headless ' + u'"' + u'-accept=socket,host=localhost,port=2002;urp;'+ u'"'
         self.process = QtCore.QProcess()
@@ -53,15 +63,34 @@ class ImpressController(object):
         self.process.waitForStarted()
 
     def kill(self):
+        """
+        Called at system exit to clean up any running presentations
+        """
         log.debug(u'Kill')
         self.closePresentation()
 
     def loadPresentation(self, presentation):
-        log.debug(u'create Resolver')
+        """
+        Called when a presentation is added to the SlideController.
+        It builds the environment, starts communcations with the background
+        OpenOffice task started earlier.  If OpenOffice is not present is ts started.
+        Once the environment is available the presentation is loaded and started.
+
+        ``presentation``
+        The file name of the presentatios to the run.
+        """
+        log.debug(u'LoadPresentation')
+        ctx = None
+        loop = 0
+        context = uno.getComponentContext()
+        resolver = context.ServiceManager.createInstanceWithContext(u'com.sun.star.bridge.UnoUrlResolver', context)
+        while ctx == None and loop < 3:
+            try:
+                ctx = resolver.resolve(u'uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
+            except:
+                self.startOpenoffice()
+                loop += 1
         try:
-            context = uno.getComponentContext()
-            resolver = context.ServiceManager.createInstanceWithContext(u'com.sun.star.bridge.UnoUrlResolver', context)
-            ctx = resolver.resolve(u'uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
             smgr = ctx.ServiceManager
             desktop = smgr.createInstanceWithContext( "com.sun.star.frame.Desktop", ctx )
             url = uno.systemPathToFileUrl(presentation)
@@ -70,7 +99,7 @@ class ImpressController(object):
             self.document = desktop.loadComponentFromURL(url, "_blank", 0, properties)
             self.presentation = self.document.getPresentation()
             self.presentation.start()
-            self.xSlideSshowController =  desktop.getCurrentComponent().Presentation.getController()
+            self.xSlideShowController =  desktop.getCurrentComponent().Presentation.getController()
         except:
             log.error(u'Failed reason %s' % sys.exc_info())
 
@@ -116,8 +145,14 @@ class ImpressController(object):
     slideNumber = property(getSlideNumber, setSlideNumber)
 
     def nextStep(self):
-       self.xSlideSshowController.gotoNextEffect()
+       """
+       Triggers the next effect of slide on the running presentation
+       """
+       self.xSlideShowController.gotoNextEffect()
 
     def previousStep(self):
-        self.xSlideSshowController.gotoPreviousSlide()
+        """
+        Triggers the previous slide on the running presentation
+        """
+        self.xSlideShowController.gotoPreviousSlide()
 

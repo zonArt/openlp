@@ -43,6 +43,9 @@ class RemoteTab(SettingsTab):
         self.RemotePortSpinBox.setObjectName(u'RemotePortSpinBox')
         self.RemotePortSpinBox.setMaximum(32767)
         self.RemoteModeLayout.addWidget(self.RemotePortSpinBox)
+        self.RemoteActive = QtGui.QCheckBox(self.RemoteModeGroupBox)
+        self.RemoteActive.setObjectName(u'RemotePortSpinBox')
+        self.RemoteModeLayout.addWidget(self.RemoteActive)
         self.WarningLabel = QtGui.QLabel(self.RemoteModeGroupBox)
         self.WarningLabel.setObjectName(u'WarningLabel')
         self.RemoteModeLayout.addWidget(self.WarningLabel)
@@ -50,10 +53,14 @@ class RemoteTab(SettingsTab):
 
     def retranslateUi(self):
         self.RemoteModeGroupBox.setTitle(translate(u'RemoteTab', u'Remotes Receiver Port'))
+        self.RemoteActive.setText(translate(u'RemoteTab', 'Remote available:'))
         self.WarningLabel.setText(translate(u'RemoteTab', u'A restart is needed for this change to become effective'))
 
     def load(self):
         self.RemotePortSpinBox.setValue(int(self.config.get_config(u'remote port', 4316)))
+        self.RemoteActive.setChecked(int(self.config.get_config(u'startup', 0)))
 
     def save(self):
         self.config.set_config(u'remote port', unicode(self.RemotePortSpinBox.value()))
+        self.config.set_config(u'startup', unicode(self.RemoteActive.checkState()))
+

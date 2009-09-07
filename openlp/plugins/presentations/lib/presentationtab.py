@@ -56,6 +56,10 @@ class PresentationTab(SettingsTab):
         self.PowerpointCheckBox.setTristate(False)
         self.PowerpointCheckBox.setObjectName(u'PowerpointCheckBox')
         self.VerseDisplayLayout.addWidget(self.PowerpointCheckBox, 0, 0, 1, 1)
+        self.PowerpointViewerCheckBox = QtGui.QCheckBox(self.VerseDisplayGroupBox)
+        self.PowerpointViewerCheckBox.setTristate(False)
+        self.PowerpointViewerCheckBox.setObjectName(u'PowerpointViewerCheckBox')
+        self.VerseDisplayLayout.addWidget(self.PowerpointViewerCheckBox, 1, 0, 1, 1)
         self.ImpressCheckBox = QtGui.QCheckBox(self.VerseDisplayGroupBox)
         self.ImpressCheckBox.setTristate(False)
         self.ImpressCheckBox.setObjectName(u'ImpressCheckBox')
@@ -84,12 +88,15 @@ class PresentationTab(SettingsTab):
 
     def retranslateUi(self):
         self.PowerpointCheckBox.setText(translate(u'PresentationTab', 'Powerpoint available:'))
+        self.PowerpointViewerCheckBox.setText(translate(u'PresentationTab', 'PowerpointViewer available:'))
         self.ImpressCheckBox.setText(translate(u'PresentationTab', 'Impress available:'))
 
     def load(self):
         self.PowerpointCheckBox.setChecked(int(self.config.get_config(u'Powerpoint', 0)))
+        self.PowerpointViewerCheckBox.setChecked(int(self.config.get_config(u'Powerpoint Viewer', 0)))
         self.ImpressCheckBox.setChecked(int(self.config.get_config(u'Impress', 0)))
 
     def save(self):
         self.config.set_config(u'Powerpoint', unicode(self.PowerpointCheckBox.checkState()))
+        self.config.set_config(u'Powerpoint Viewer', unicode(self.PowerpointViewerCheckBox.checkState()))
         self.config.set_config(u'Impress', unicode(self.ImpressCheckBox.checkState()))

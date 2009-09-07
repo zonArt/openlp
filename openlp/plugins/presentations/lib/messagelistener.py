@@ -59,15 +59,30 @@ class MessageListener(object):
         self.controllers[self.handler].loadPresentation(file)
 
     def next(self, message):
+        """
+        Based on the handler passed at startup triggers the next slide event
+        """
         self.controllers[self.handler].nextStep()
 
     def previous(self, message):
+        """
+        Based on the handler passed at startup triggers the previous slide event
+        """
         self.controllers[self.handler].previousStep()
 
     def shutDown(self, message):
+        """
+        Based on the handler passed at startup triggers slide show to shut down
+        """
         self.controllers[self.handler].closePresentation()
 
     def decodeMessage(self, message):
+        """
+        Splits the message from the SlideController into it's component parts
+
+        ``message``
+        Message containing Presentaion handler name and file to be presented.
+        """
         bits = message.split(u':')
         file = os.path.join(bits[1], bits[2])
         return bits[0], file
