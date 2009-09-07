@@ -35,23 +35,27 @@ class SettingsManager(object):
         self.mainwindow_height = self.height * 0.8
         self.mainwindow_docbars = self.width / 3
         self.mainwindow_slidecontroller = self.width / 6
-        self.showMediaManager = str_to_bool(
-            ConfigHelper.get_config(u'ui', u'display mediamanager', True))
-        self.showServiceManager = str_to_bool(
-            ConfigHelper.get_config(u'ui', u'display servicemanager', True))
-        self.showThemeManager = str_to_bool(
-            ConfigHelper.get_config(u'ui', u'display thememanager', True))
-        self.showPreviewPanel = str_to_bool(
-            ConfigHelper.get_config(u'ui', u'display previewpanel', True))
+        self.showMediaManager = str_to_bool( ConfigHelper.get_config(
+            u'user interface', u'display mediamanager', True))
+        self.showServiceManager = str_to_bool(ConfigHelper.get_config(
+            u'user interface', u'display servicemanager', True))
+        self.showThemeManager = str_to_bool(ConfigHelper.get_config(
+            u'user interface', u'display thememanager', True))
+        self.showPreviewPanel = str_to_bool(ConfigHelper.get_config(
+            u'user interface', u'display previewpanel', True))
 
     def toggleMediaManager(self, isVisible):
-        ConfigHelper.set_config(u'ui', u'display mediamanager', isVisible)
+        ConfigHelper.set_config(u'user interface', u'display mediamanager',
+            isVisible)
 
     def toggleServiceManager(self, isVisible):
-        ConfigHelper.set_config(u'ui', u'display servicemanager', isVisible)
+        ConfigHelper.set_config(u'user interface', u'display servicemanager',
+            isVisible)
 
     def toggleThemeManager(self, isVisible):
-        ConfigHelper.set_config(u'ui', u'display thememanager', isVisible)
+        ConfigHelper.set_config(u'user interface', u'display thememanager',
+            isVisible)
 
     def togglePreviewPanel(self, isVisible):
-        ConfigHelper.set_config(u'ui', u'display previewpanel', isVisible)
+        ConfigHelper.set_config(u'user interface', u'display previewpanel',
+            isVisible)
