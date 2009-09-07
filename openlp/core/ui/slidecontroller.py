@@ -68,7 +68,7 @@ class SlideController(QtGui.QWidget):
         self.settingsmanager = settingsmanager
         self.isLive = isLive
         self.parent = parent
-        self.image_list = [u'Start Loop', u'Stop Loop', u'Loop Spearator', u'Image SpinBox']
+        self.image_list = [u'Start Loop', u'Stop Loop', u'Loop Separator', u'Image SpinBox']
         self.timer_id = 0
         self.item = None
         self.Panel = QtGui.QWidget(parent.ControlSplitter)
@@ -131,7 +131,7 @@ class SlideController(QtGui.QWidget):
                 translate(u'SlideController', u'Close Screen'),
                 self.onBlankScreen)
         if isLive:
-            self.Toolbar.addToolbarSeparator(u'Loop Spearator')
+            self.Toolbar.addToolbarSeparator(u'Loop Separator')
             self.Toolbar.addToolbarButton(u'Start Loop',
                 u':/media/media_time.png',
                 translate(u'SlideController', u'Start continuous loop'),
