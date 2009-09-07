@@ -127,14 +127,16 @@ class ThemeManager(QtGui.QWidget):
                 self.pushThemes()
 
     def onAddTheme(self):
-        self.amendThemeForm.loadTheme(None)
+        self.amendThemeForm.theme.parse(self.baseTheme())
+        self.amendThemeForm.loadTheme()
         self.amendThemeForm.exec_()
 
     def onEditTheme(self):
         item = self.ThemeListWidget.currentItem()
         if item is not None:
-            self.amendThemeForm.loadTheme(
-                unicode(item.data(QtCore.Qt.UserRole).toString()))
+            self.amendThemeForm.setTheme(self.getThemeData(
+                item.data(QtCore.Qt.UserRole).toString()))
+            self.amendThemeForm.loadTheme()
             self.amendThemeForm.exec_()
 
     def onDeleteTheme(self):
@@ -227,16 +229,7 @@ class ThemeManager(QtGui.QWidget):
         try:
             xml = file_to_xml(xml_file)
         except:
-            newtheme = ThemeXML()
-            newtheme.new_document(u'New Theme')
-            newtheme.add_background_solid(unicode(u'#000000'))
-            newtheme.add_font(unicode(QtGui.QFont().family()),
-                unicode(u'#FFFFFF'), unicode(30), u'False')
-            newtheme.add_font(unicode(QtGui.QFont().family()),
-                unicode(u'#FFFFFF'), unicode(12), u'False', u'footer')
-            newtheme.add_display(u'False', unicode(u'#FFFFFF'), u'False',
-                unicode(u'#FFFFFF'), unicode(0), unicode(0), unicode(0))
-            xml = newtheme.extract_xml()
+            xml = self.baseTheme()
         theme = ThemeXML()
         theme.parse(xml)
         theme.extend_image_filename(self.path)
@@ -400,6 +393,19 @@ class ThemeManager(QtGui.QWidget):
         log.debug(u'getPreviewImage %s ', theme)
         image = os.path.join(self.path, theme + u'.png')
         return image
+
+    def baseTheme(self):
+        log.debug(u'base theme created')
+        newtheme = ThemeXML()
+        newtheme.new_document(u'New Theme')
+        newtheme.add_background_solid(unicode(u'#000000'))
+        newtheme.add_font(unicode(QtGui.QFont().family()), unicode(u'#FFFFFF'),
+            unicode(30), u'False')
+        newtheme.add_font(unicode(QtGui.QFont().family()), unicode(u'#FFFFFF'),
+            unicode(12), u'False', u'footer')
+        newtheme.add_display(u'False', unicode(u'#FFFFFF'), u'False',
+            unicode(u'#FFFFFF'), unicode(0), unicode(0), unicode(0))
+        return newtheme.extract_xml()
 
     def cleanTheme(self, theme):
         theme.background_color = theme.background_color.strip()

@@ -171,16 +171,11 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             save_from, save_to) is not False:
             return QtGui.QDialog.accept(self)
 
-    def loadTheme(self, theme):
-        log.debug(u'LoadTheme %s', theme)
-        if theme == None:
-            self.theme.parse(self.baseTheme())
-        else:
-            xml_file = os.path.join(self.path, theme, theme + u'.xml')
-            xml = file_to_xml(xml_file)
-            self.theme.parse(xml)
-            self.theme.extend_image_filename(self.path)
-        self.thememanager.cleanTheme(self.theme)
+    def setTheme(self, theme):
+        self.theme = theme
+
+    def loadTheme(self):
+        log.debug(u'LoadTheme %s', self.theme)
         self.allowPreview = False
         self.paintUi(self.theme)
         self.allowPreview = True
@@ -458,21 +453,6 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     #
     #Local Methods
     #
-    def baseTheme(self):
-        log.debug(u'base theme created')
-        newtheme = ThemeXML()
-        newtheme.new_document(u'New Theme')
-        newtheme.add_background_solid(unicode(u'#000000'))
-        newtheme.add_font(unicode(QtGui.QFont().family()), unicode(u'#FFFFFF'),
-            unicode(30), u'False')
-        newtheme.add_font(unicode(QtGui.QFont().family()), unicode(u'#FFFFFF'),
-            unicode(12), u'False', u'footer')
-        newtheme.add_display(u'False', unicode(u'#FFFFFF'), u'False',
-            unicode(u'#FFFFFF'),
-            unicode(0), unicode(0), unicode(0))
-
-        return newtheme.extract_xml()
-
     def paintUi(self, theme):
         self.stateChanging(theme)
         self.ThemeNameEdit.setText(self.theme.theme_name)
