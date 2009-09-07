@@ -28,7 +28,7 @@ from openlp.plugins.bibles.lib.models import *
 
 class BibleDBImpl(BibleCommon):
     global log
-    log=logging.getLogger(u'BibleDBImpl')
+    log = logging.getLogger(u'BibleDBImpl')
     log.info(u'BibleDBimpl loaded')
 
     def __init__(self, biblepath, biblename, config):
@@ -122,34 +122,45 @@ class BibleDBImpl(BibleCommon):
 
     def get_max_bible_book_verses(self, bookname, chapter):
         log.debug(u'get_max_bible_book_verses %s, %s', bookname, chapter)
-        verse = self.session.query(Verse).join(Book).filter(Book.name==bookname).filter(Verse.chapter==chapter).order_by(Verse.verse.desc()).first()
+        verse = self.session.query(Verse).join(Book).filter(
+            Book.name == bookname).filter(
+            Verse.chapter == chapter).order_by(Verse.verse.desc()).first()
         return verse.verse
 
     def get_max_bible_book_chapter(self, bookname):
         log.debug(u'get_max_bible_book_chapter %s', bookname)
-        verse = self.session.query(Verse).join(Book).filter(Book.name==bookname).order_by(Verse.chapter.desc()).first()
+        verse = self.session.query(Verse).join(Book).filter(
+            Book.name == bookname).order_by(Verse.chapter.desc()).first()
         return verse.chapter
 
     def get_bible_book(self, bookname):
         log.debug(u'get_bible_book %s', bookname)
-        bk = self.session.query(Book).filter(Book.name.like(bookname + u'%')).first()
+        bk = self.session.query(Book).filter(
+            Book.name.like(bookname + u'%')).first()
         if bk == None:
-            bk = self.session.query(Book).filter(Book.abbreviation.like(bookname + u'%')).first()
+            bk = self.session.query(Book).filter(
+                Book.abbreviation.like(bookname + u'%')).first()
         return bk
 
     def get_bible_chapter(self, id, chapter):
         log.debug(u'get_bible_chapter %s, %s', id, chapter)
-        return self.session.query(Verse).filter_by(chapter=chapter).filter_by(book_id=id).first()
+        return self.session.query(Verse).filter_by(chapter=chapter).filter_by(
+            book_id=id).first()
 
     def get_bible_text(self, bookname, chapter, sverse, everse):
-        log.debug(u'get_bible_text %s, %s, %s, %s', bookname, chapter, sverse, everse)
-        verses = self.session.query(Verse).join(Book).filter(Book.name==bookname).filter(Verse.chapter==chapter).filter(Verse.verse>=sverse).filter(Verse.verse<=everse).order_by(Verse.verse).all()
+        log.debug(u'get_bible_text %s, %s, %s, %s', bookname, chapter, sverse,
+            everse)
+        verses = self.session.query(Verse).join(Book).filter(
+            Book.name == bookname).filter(Verse.chapter == chapter).filter(
+            Verse.verse>=sverse).filter(Verse.verse<=everse).order_by(
+            Verse.verse).all()
         return verses
 
     def get_verses_from_text(self, versetext):
         log.debug(u'get_verses_from_text %s',versetext)
         versetext = u'%%%s%%' % versetext
-        verses = self.session.query(Verse).filter(Verse.text.like(versetext)).all()
+        verses = self.session.query(Verse).filter(
+            Verse.text.like(versetext)).all()
         return verses
 
     def dump_bible(self):

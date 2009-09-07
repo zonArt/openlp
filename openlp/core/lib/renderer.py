@@ -312,7 +312,7 @@ class Renderer(object):
                 rectPath.lineTo(max_x, 0)
                 rectPath.closeSubpath()
                 painter.drawPath(rectPath)
-            elif self._theme.background_type== u'image':
+            elif self._theme.background_type == u'image':
                 # image
                 painter.fillRect(self._frame.rect(), QtCore.Qt.black)
                 if self.bg_image is not None:
