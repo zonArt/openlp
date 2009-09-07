@@ -2,7 +2,9 @@
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 """
 OpenLP - Open Source Lyrics Projection
+
 Copyright (c) 2008 Raoul Snyman
+
 Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten Tinggaard
 
 This program is free software; you can redistribute it and/or modify it under
@@ -16,26 +18,25 @@ PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
-from xml.dom.minidom import  Document
-from xml.etree.ElementTree import ElementTree, XML, dump
-
-<?xml version="1.0" encoding="UTF-8"?>
-<song version="1.0">
-   <lyrics language="en">
-       <verse type="chorus" label="1">
-           <![CDATA[ ... ]]>
-       </verse>
-   </lyrics>
-</song>
-
 """
 import logging
 from xml.dom.minidom import Document
 from xml.etree.ElementTree import ElementTree, XML, dump
 
-class SongXMLBuilder():
+class SongXMLBuilder(object):
     """
     This class builds the XML used to describe songs.
+
+    The basic XML looks like this::
+
+        <?xml version="1.0" encoding="UTF-8"?>
+        <song version="1.0">
+          <lyrics language="en">
+            <verse type="chorus" label="1">
+              <![CDATA[ ... ]]>
+            </verse>
+          </lyrics>
+        </song>
     """
     def __init__(self):
         """
@@ -97,9 +98,21 @@ class SongXMLBuilder():
         """
         return self.song_xml.toxml(u'utf-8')
 
-class SongXMLParser():
+
+class SongXMLParser(object):
     """
     A class to read in and parse a song's XML.
+
+    The basic XML looks like this::
+
+        <?xml version="1.0" encoding="UTF-8"?>
+        <song version="1.0">
+          <lyrics language="en">
+            <verse type="chorus" label="1">
+              <![CDATA[ ... ]]>
+            </verse>
+          </lyrics>
+        </song>
     """
     global log
     log = logging.getLogger(u'SongXMLParser')

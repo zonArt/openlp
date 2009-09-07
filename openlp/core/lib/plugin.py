@@ -21,17 +21,13 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import logging
 from PyQt4 import QtCore
 
-from openlp.core.lib import PluginConfig
-# why does this not work???
-# from openlp.core.lib import Event,  EventType
-# so I have to do this???
-from eventreceiver import Receiver
+from openlp.core.lib import PluginConfig, Receiver
 
 class Plugin(object):
     """
     Base class for openlp plugins to inherit from.
 
-    Basic attributes are:
+    **Basic Attributes**
 
     ``name``
         The name that should appear in the plugins list.
@@ -49,7 +45,7 @@ class Plugin(object):
     ``log``
         A log object used to log debugging messages. This is pre-instantiated.
 
-    Hook functions:
+    **Hook Functions**
 
     ``check_pre_conditions()``
         Provides the Plugin with a handle to check if it can be loaded.
@@ -201,7 +197,7 @@ class Plugin(object):
 
     def finalise(self):
         """
-        Called by the plugin Manager to cleanup things
+        Called by the plugin Manager to cleanup things.
         """
         pass
 

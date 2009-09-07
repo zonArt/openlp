@@ -2,7 +2,9 @@
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 """
 OpenLP - Open Source Lyrics Projection
+
 Copyright (c) 2008 Raoul Snyman
+
 Portions copyright (c) 2008 - 2009Martin Thompson, Tim Bentley
 
 This program is free software; you can redistribute it and/or modify it under
@@ -31,23 +33,23 @@ class RenderManager(object):
     Class to pull all Renderer interactions into one place. The plugins will
     call helper methods to do the rendering but this class will provide
     display defense code.
+
+    ``theme_manager``
+        The ThemeManager instance, used to get the current theme details.
+
+    ``screen_list``
+        The list of screens available.
+
+    ``screen_number``
+        Defaults to *0*. The index of the output/display screen.
     """
     global log
-    log=logging.getLogger(u'RenderManager')
+    log = logging.getLogger(u'RenderManager')
     log.info(u'RenderManager Loaded')
 
     def __init__(self, theme_manager, screen_list, screen_number=0):
         """
         Initialise the render manager.
-
-        ``theme_manager``
-            The ThemeManager instance, used to get the current theme details.
-
-        ``screen_list``
-            The list of screens available.
-
-        ``screen_number``
-            Defaults to *0*. The index of the output/display screen.
         """
         log.debug(u'Initilisation started')
         self.screen_list = screen_list
