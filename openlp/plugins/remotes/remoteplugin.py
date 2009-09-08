@@ -51,7 +51,7 @@ class RemotesPlugin(Plugin):
         self.server = QtNetwork.QUdpSocket()
         self.server.bind(int(self.config.get_config(u'remote port', 4316)))
         QtCore.QObject.connect(self.server,
-            QtCore.SIGNAL(u'readyRead()'), seld.readData)
+            QtCore.SIGNAL(u'readyRead()'), self.readData)
 
     def get_settings_tab(self):
         """
@@ -62,7 +62,8 @@ class RemotesPlugin(Plugin):
     def readData(self):
         log.info(u'Remoted data has arrived')
         while self.server.hasPendingDatagrams():
-            datagram,  host, port = self.server.readDatagram(self.server.pendingDatagramSize())
+            datagram,  host, port = self.server.readDatagram(
+                self.server.pendingDatagramSize())
             self.handle_datagram(datagram)
 
     def handle_datagram(self, datagram):
