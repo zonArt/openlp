@@ -1,3 +1,27 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2009 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
+# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
+
 import sys
 import win32api
 from PyQt4 import QtGui, QtCore
@@ -66,29 +90,29 @@ class BoxLayout(QtGui.QWidget):
         if self.pptid<0: return
         pptdll.PrevStep(self.pptid)
         self.slideEdit.setText(pptdll.GetCurrentSlide(self.pptid))
-    
+
     def NextClick(self):
         if(self.pptid<0): return
         pptdll.NextStep(self.pptid)
         self.slideEdit.setText(pptdll.GetCurrentSlide(self.pptid))
-    
+
     def BlankClick(self):
         if(self.pptid<0): return
         pptdll.Blank(self.pptid)
-    
+
     def UnblankClick(self):
         if(self.pptid<0): return
         pptdll.Unblank(self.pptid)
-    
+
     def RestartClick(self):
         if(self.pptid<0): return
         pptdll.RestartShow(self.pptid)
         self.slideEdit.setText(pptdll.GetCurrentSlide(self.pptid))
-    
+
     def StopClick(self):
         if(self.pptid<0): return
         pptdll.Stop(self.pptid)
-    
+
     def ResumeClick(self):
         if(self.pptid<0): return
         pptdll.Resume(self.pptid)

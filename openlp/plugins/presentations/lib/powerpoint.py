@@ -1,8 +1,31 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2009 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
+# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
+
 from win32com.client import Dispatch
 
 # PPT API documentation:
 # http://msdn.microsoft.com/en-us/library/aa269321(office.10).aspx
-
 
 class PowerPointApp(object):
     def __init__(self):
@@ -31,13 +54,13 @@ class PowerPointApp(object):
     def quit(self):
         self._app.Quit()
         self._app = None
-        
+
 class PowerPointPres(object):
     def __init__(self, pptApp, filename):
         self.pptApp = pptApp
         self.filename = filename
         self.open()
-        
+
     def getPres(self):
         if self._pres == None:
             for p in self.pptApp.app.Presentations:
@@ -52,9 +75,9 @@ class PowerPointPres(object):
         if self._pres == None:
             self.openPres()
         return self._pres
-        
+
     pres = property(getPres)
-    
+
     def open(self):
         self.pptApp.app.Presentations.Open(self.filename, False, False, True)
         self._pres = self.pptApp.app.Presentations(ppt.app.Presentations.Count)
@@ -82,11 +105,11 @@ class PowerPointPres(object):
     def blankScreen(self):
         if self.isActive():
             self.pres.SlideShowWindow.View.State = 3
-    
+
     def stop(self):
         if self.isActive():
             self.pres.SlideShowWindow.View.Exit()
-    
+
     def go(self):
         self.pres.SlideShowSettings.Run()
 
@@ -95,7 +118,7 @@ class PowerPointPres(object):
             return self.pres.SlideShowWindow.View.CurrentShowPosition
         else:
             return -1
-        
+
     def setCurrentSlideIndex(self, slideno):
         if not self.isActive():
             self.resume()
@@ -136,4 +159,3 @@ class PowerPointSlide(object):
             # w.CloseClipboard()
         return self.preview
 
-    
