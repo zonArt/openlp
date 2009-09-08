@@ -22,6 +22,11 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+"""
+The :mod:`lib` module contains most of the components and libraries that make
+OpenLP work.
+"""
+
 import types
 from PyQt4 import QtCore, QtGui
 
