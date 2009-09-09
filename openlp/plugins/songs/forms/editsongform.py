@@ -289,13 +289,15 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             item.setText(afterText)
             #number of lines has change
             if len(tempText.split(u'\n')) != len(afterText.split(u'\n')):
-                tempList = []
+                tempList = {}
                 for row in range(0, self.VerseListWidget.count()):
-                    tempList.insert(row, self.VerseListWidget.item(row))
+                    item = self.VerseListWidget.item(row)
+                    tempList[row] = item.text()
                 self.VerseListWidget.clear()
                 for row in range (0,  len(tempList)):
-                    item = tempList[row]
-                    self.VerseListWidget.addItem(item)
+                    text = tempList[row]
+                    print text
+                    self.VerseListWidget.addItem(text)
                 self.VerseListWidget.repaint()
         self.VerseEditButton.setEnabled(False)
         self.VerseDeleteButton.setEnabled(False)
