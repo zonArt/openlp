@@ -291,13 +291,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             if len(tempText.split(u'\n')) != len(afterText.split(u'\n')):
                 tempList = {}
                 for row in range(0, self.VerseListWidget.count()):
-                    item = self.VerseListWidget.item(row)
-                    tempList[row] = item.text()
+                    tempList[row] = self.VerseListWidget.item(row).text()
                 self.VerseListWidget.clear()
                 for row in range (0,  len(tempList)):
-                    text = tempList[row]
-                    print text
-                    self.VerseListWidget.addItem(text)
+                    self.VerseListWidget.addItem(tempList[row])
                 self.VerseListWidget.repaint()
         self.VerseEditButton.setEnabled(False)
         self.VerseDeleteButton.setEnabled(False)
