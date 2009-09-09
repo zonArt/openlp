@@ -141,10 +141,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.EditButton.setEnabled(True)
 
     def onVerseListViewSelected(self, item):
-        self.VerseTextEdit.setPlainText(item.text())
-        self.DeleteButton.setEnabled(False)
-        self.EditButton.setEnabled(False)
-        self.SaveButton.setEnabled(True)
+        self.editText(item.text())
 
     def onAddButtonPressed(self):
         self.VerseListView.addItem(self.VerseTextEdit.toPlainText())
@@ -152,13 +149,27 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.VerseTextEdit.clear()
 
     def onEditButtonPressed(self):
-        self.VerseTextEdit.setPlainText(self.VerseListView.currentItem().text())
+        self.editText(self.VerseListView.currentItem().text())
+
+    def editText(self, text):
+        self.beforeText = text
+        self.VerseTextEdit.setPlainText(text)
         self.DeleteButton.setEnabled(False)
         self.EditButton.setEnabled(False)
         self.SaveButton.setEnabled(True)
 
     def onSaveButtonPressed(self):
         self.VerseListView.currentItem().setText(self.VerseTextEdit.toPlainText())
+        #number of lines has change
+        if len(self.beforeText.split(u'\n')) != len(self.VerseTextEdit.toPlainText().split(u'\n')):
+            tempList = {}
+            for row in range(0, self.VerseListView.count()):
+                tempList[row] = self.VerseListView.item(row).text()
+            self.VerseListView.clear()
+            for row in range (0,  len(tempList)):
+                self.VerseListView.addItem(tempList[row])
+            self.VerseListView.repaint()
+
         self.SaveButton.setEnabled(False)
         self.EditButton.setEnabled(False)
 
