@@ -20,7 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from PyQt4 import Qt, QtCore, QtGui
 
 from editcustomdialog import Ui_customEditDialog
-from openlp.core.lib import SongXMLBuilder, SongXMLParser,  Receiver,  translate
+from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver, translate
 from openlp.plugins.custom.lib.models import CustomSlide
 
 class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
@@ -166,10 +166,9 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             for row in range(0, self.VerseListView.count()):
                 tempList[row] = self.VerseListView.item(row).text()
             self.VerseListView.clear()
-            for row in range (0,  len(tempList)):
+            for row in range (0, len(tempList)):
                 self.VerseListView.addItem(tempList[row])
             self.VerseListView.repaint()
-
         self.SaveButton.setEnabled(False)
         self.EditButton.setEnabled(False)
 
