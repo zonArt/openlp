@@ -20,7 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 from PyQt4 import Qt, QtCore, QtGui
 
 from editcustomdialog import Ui_customEditDialog
-from openlp.core.lib import SongXMLBuilder, SongXMLParser,  Receiver
+from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver, translate
 from openlp.plugins.custom.lib.models import CustomSlide
 
 class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
@@ -44,7 +44,6 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         QtCore.QObject.connect(self.ClearButton, QtCore.SIGNAL(u'pressed()'), self.onClearButtonPressed)
         QtCore.QObject.connect(self.UpButton, QtCore.SIGNAL(u'pressed()'), self.onUpButtonPressed)
         QtCore.QObject.connect(self.DownButton, QtCore.SIGNAL(u'pressed()'), self.onDownButtonPressed)
-        QtCore.QObject.connect(self.TitleEdit, QtCore.SIGNAL(u'lostFocus()'), self.validate)
 
         QtCore.QObject.connect(self.VerseListView,
             QtCore.SIGNAL(u'itemDoubleClicked(QListWidgetItem*)'), self.onVerseListViewSelected)
@@ -92,25 +91,29 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             if id == -1:
                 id = 0 # Not Found
             self.ThemecomboBox.setCurrentIndex(id)
-            self.validate()
         else:
             self.ThemecomboBox.setCurrentIndex(0)
 
     def accept(self):
-        if self.validate():
-            sxml=SongXMLBuilder()
-            sxml.new_document()
-            sxml.add_lyrics_to_song()
-            count = 1
-            for i in range (0, self.VerseListView.count()):
-                sxml.add_verse_to_lyrics(u'custom', unicode(count),  unicode(self.VerseListView.item(i).text()))
-                count += 1
-            self.customSlide.title = unicode(self.TitleEdit.displayText())
-            self.customSlide.text = unicode(sxml.extract_xml())
-            self.customSlide.credits = unicode(self.CreditEdit.displayText())
-            self.customSlide.theme_name = unicode(self.ThemecomboBox.currentText())
-            self.custommanager.save_slide(self.customSlide)
-            self.close()
+        valid ,  message = self._validate()
+        if not valid:
+            QtGui.QMessageBox.critical(self,
+            translate(u'customEditDialog', u'Error'), message,
+            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+            return
+        sxml=SongXMLBuilder()
+        sxml.new_document()
+        sxml.add_lyrics_to_song()
+        count = 1
+        for i in range (0, self.VerseListView.count()):
+            sxml.add_verse_to_lyrics(u'custom', unicode(count),  unicode(self.VerseListView.item(i).text()))
+            count += 1
+        self.customSlide.title = unicode(self.TitleEdit.displayText())
+        self.customSlide.text = unicode(sxml.extract_xml())
+        self.customSlide.credits = unicode(self.CreditEdit.displayText())
+        self.customSlide.theme_name = unicode(self.ThemecomboBox.currentText())
+        self.custommanager.save_slide(self.customSlide)
+        self.close()
 
     def rejected(self):
         self.close()
@@ -138,25 +141,34 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.EditButton.setEnabled(True)
 
     def onVerseListViewSelected(self, item):
-        self.VerseTextEdit.setPlainText(item.text())
-        self.DeleteButton.setEnabled(False)
-        self.EditButton.setEnabled(False)
-        self.SaveButton.setEnabled(True)
+        self.editText(item.text())
 
     def onAddButtonPressed(self):
         self.VerseListView.addItem(self.VerseTextEdit.toPlainText())
         self.DeleteButton.setEnabled(False)
         self.VerseTextEdit.clear()
-        self.validate()
 
     def onEditButtonPressed(self):
-        self.VerseTextEdit.setPlainText(self.VerseListView.currentItem().text())
+        self.editText(self.VerseListView.currentItem().text())
+
+    def editText(self, text):
+        self.beforeText = text
+        self.VerseTextEdit.setPlainText(text)
         self.DeleteButton.setEnabled(False)
         self.EditButton.setEnabled(False)
         self.SaveButton.setEnabled(True)
 
     def onSaveButtonPressed(self):
         self.VerseListView.currentItem().setText(self.VerseTextEdit.toPlainText())
+        #number of lines has change
+        if len(self.beforeText.split(u'\n')) != len(self.VerseTextEdit.toPlainText().split(u'\n')):
+            tempList = {}
+            for row in range(0, self.VerseListView.count()):
+                tempList[row] = self.VerseListView.item(row).text()
+            self.VerseListView.clear()
+            for row in range (0, len(tempList)):
+                self.VerseListView.addItem(tempList[row])
+            self.VerseListView.repaint()
         self.SaveButton.setEnabled(False)
         self.EditButton.setEnabled(False)
 
@@ -164,17 +176,14 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.VerseListView.takeItem(self.VerseListView.currentRow())
         self.EditButton.setEnabled(False)
 
-    def validate(self):
+    def _validate(self):
         valid = True
+        message = u''
         if len(self.TitleEdit.displayText()) == 0:
             valid = False
-            self.TitleEdit.setStyleSheet(u'background-color: red; color: white')
-        else:
-            self.TitleEdit.setStyleSheet(u'')
+            message = translate(u'customEditDialog', u'You need to enter a title \n')
         # must have 1 slide
         if self.VerseListView.count() == 0:
             valid = False
-            self.VerseListView.setStyleSheet(u'background-color: red; color: white')
-        else:
-            self.VerseListView.setStyleSheet(u'')
-        return valid
+            message += translate(u'customEditDialog', u'You need to enter a slide \n')
+        return valid,  message
