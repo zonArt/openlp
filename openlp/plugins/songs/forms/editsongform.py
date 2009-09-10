@@ -290,9 +290,20 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def onVerseEditButtonClicked(self):
         item = self.VerseListWidget.currentItem()
         if item is not None:
-            self.verse_form.setVerse(item.text())
+            tempText = item.text()
+            self.verse_form.setVerse(tempText)
             self.verse_form.exec_()
-            item.setText(self.verse_form.getVerse())
+            afterText = self.verse_form.getVerse()
+            item.setText(afterText)
+            #number of lines has change
+            if len(tempText.split(u'\n')) != len(afterText.split(u'\n')):
+                tempList = {}
+                for row in range(0, self.VerseListWidget.count()):
+                    tempList[row] = self.VerseListWidget.item(row).text()
+                self.VerseListWidget.clear()
+                for row in range (0, len(tempList)):
+                    self.VerseListWidget.addItem(tempList[row])
+                self.VerseListWidget.repaint()
         self.VerseEditButton.setEnabled(False)
         self.VerseDeleteButton.setEnabled(False)
 

@@ -45,6 +45,9 @@ class Plugin(object):
     ``log``
         A log object used to log debugging messages. This is pre-instantiated.
 
+    ``weight``
+        A numerical value used to order the plugins.
+
     **Hook Functions**
 
     ``check_pre_conditions()``

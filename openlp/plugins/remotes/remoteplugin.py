@@ -35,10 +35,6 @@ class RemotesPlugin(Plugin):
         # Call the parent constructor
         Plugin.__init__(self, u'Remotes', u'1.9.0', plugin_helpers)
         self.weight = -1
-        self.server = QtNetwork.QUdpSocket()
-        self.server.bind(int(self.config.get_config(u'remote port', 4316)))
-        QtCore.QObject.connect(self.server,
-            QtCore.SIGNAL(u'readyRead()'), self.readData)
 
     def check_pre_conditions(self):
         """
@@ -51,6 +47,12 @@ class RemotesPlugin(Plugin):
         else:
             return False
 
+    def initialise(self):
+        self.server = QtNetwork.QUdpSocket()
+        self.server.bind(int(self.config.get_config(u'remote port', 4316)))
+        QtCore.QObject.connect(self.server,
+            QtCore.SIGNAL(u'readyRead()'), self.readData)
+
     def get_settings_tab(self):
         """
         Create the settings Tab
@@ -60,7 +62,8 @@ class RemotesPlugin(Plugin):
     def readData(self):
         log.info(u'Remoted data has arrived')
         while self.server.hasPendingDatagrams():
-            datagram,  host, port = self.server.readDatagram(self.server.pendingDatagramSize())
+            datagram,  host, port = self.server.readDatagram(
+                self.server.pendingDatagramSize())
             self.handle_datagram(datagram)
 
     def handle_datagram(self, datagram):

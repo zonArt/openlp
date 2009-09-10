@@ -47,7 +47,7 @@ class Ui_SongMaintenanceDialog(object):
         self.TypeListWidget.setIconSize(QtCore.QSize(112, 100));
         self.TypeListWidget.setMovement(QtGui.QListView.Static);
         self.TypeListWidget.setMaximumWidth(118);
-        self.TypeListWidget.setSpacing(3);
+        self.TypeListWidget.setSpacing(0);
         self.TypeListWidget.setSortingEnabled(False)
         self.TypeListWidget.setUniformItemSizes(True)
         self.TypeListWidget.setObjectName(u'TypeListWidget')
