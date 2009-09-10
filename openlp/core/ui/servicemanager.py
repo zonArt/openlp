@@ -101,14 +101,17 @@ class ServiceManager(QtGui.QWidget):
         # Create the top toolbar
         self.Toolbar = OpenLPToolbar(self)
         self.Toolbar.addToolbarButton(u'New Service',
-            u':/services/service_new.png', translate(u'ServiceManager',
-            u'Create a new service'), self.onNewService)
+            u':/services/service_new.png',
+            translate(u'ServiceManager', u'Create a new service'),
+            self.onNewService)
         self.Toolbar.addToolbarButton(u'Open Service',
-            u':/services/service_open.png', translate(u'ServiceManager',
-            u'Load an existing service'), self.onLoadService)
+            u':/services/service_open.png',
+            translate(u'ServiceManager', u'Load an existing service'),
+            self.onLoadService)
         self.Toolbar.addToolbarButton(u'Save Service',
-            u':/services/service_save.png', translate(u'ServiceManager',
-            u'Save this service'), self.onSaveService)
+            u':/services/service_save.png',
+            translate(u'ServiceManager', u'Save this service'),
+            self.onSaveService)
         self.Toolbar.addSeparator()
         self.ThemeLabel = QtGui.QLabel(translate(u'ServiceManager', u'Theme:'),
             self)
@@ -373,8 +376,8 @@ class ServiceManager(QtGui.QWidget):
                 if item[u'data'].service_item_type == ServiceType.Image or \
                     item[u'data'].service_item_type == ServiceType.Command:
                     for frame in item[u'data'].frames:
-                        path_from = unicode(item[u'data'].service_item_path + \
-                            u'/' + frame[u'title'])
+                        path_from = unicode(os.path.join(
+                            item[u'data'].service_item_path, frame[u'title']))
                         zip.write(path_from)
             file = open(servicefile, u'wb')
             cPickle.dump(service, file)
@@ -458,8 +461,8 @@ class ServiceManager(QtGui.QWidget):
             Service Item to be added
 
         """
-        self.serviceItems.append({u'data': item, u'order': len(
-            self.serviceItems)+1, u'expanded':True})
+        self.serviceItems.append({u'data': item,
+            u'order': len(self.serviceItems)+1, u'expanded':True})
         treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
         treewidgetitem.setText(0,item.title)
         treewidgetitem.setIcon(0,item.iconic_representation)
