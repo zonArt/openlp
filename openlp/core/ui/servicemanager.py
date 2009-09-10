@@ -102,24 +102,35 @@ class ServiceManager(QtGui.QWidget):
         self.Toolbar = OpenLPToolbar(self)
         self.Toolbar.addToolbarButton(u'New Service',
             u':/services/service_new.png', translate(u'ServiceManager',
-            u'Create a new Service'), self.onNewService)
+            u'Create a new service'), self.onNewService)
         self.Toolbar.addToolbarButton(u'Open Service',
             u':/services/service_open.png', translate(u'ServiceManager',
-            u'Load Existing'), self.onLoadService)
+            u'Load an existing service'), self.onLoadService)
         self.Toolbar.addToolbarButton(u'Save Service',
             u':/services/service_save.png', translate(u'ServiceManager',
-            u'Save Service'), self.onSaveService)
+            u'Save this service'), self.onSaveService)
         self.Toolbar.addSeparator()
+        self.ThemeLabel = QtGui.QLabel(translate(u'ServiceManager', u'Theme:'),
+            self)
+        self.ThemeLabel.setMargin(3)
+        self.Toolbar.addWidget(self.ThemeLabel)
         self.ThemeComboBox = QtGui.QComboBox(self.Toolbar)
-        self.ThemeComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
+        self.ThemeComboBox.setToolTip(translate(u'ServiceManager',
+            u'Select a theme for the service'))
+        self.ThemeComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToContents)
         self.ThemeWidget = QtGui.QWidgetAction(self.Toolbar)
         self.ThemeWidget.setDefaultWidget(self.ThemeComboBox)
         self.Toolbar.addAction(self.ThemeWidget)
         self.Layout.addWidget(self.Toolbar)
         # Create the service manager list
         self.ServiceManagerList = ServiceManagerList(self)
-        self.ServiceManagerList.setEditTriggers(QtGui.QAbstractItemView.CurrentChanged|QtGui.QAbstractItemView.DoubleClicked|QtGui.QAbstractItemView.EditKeyPressed)
-        self.ServiceManagerList.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
+        self.ServiceManagerList.setEditTriggers(
+            QtGui.QAbstractItemView.CurrentChanged | \
+            QtGui.QAbstractItemView.DoubleClicked | \
+            QtGui.QAbstractItemView.EditKeyPressed)
+        self.ServiceManagerList.setDragDropMode(
+            QtGui.QAbstractItemView.DragDrop)
         self.ServiceManagerList.setAlternatingRowColors(True)
         self.ServiceManagerList.setHeaderHidden(True)
         self.ServiceManagerList.setObjectName(u'ServiceManagerList')
@@ -128,14 +139,16 @@ class ServiceManager(QtGui.QWidget):
         self.ServiceManagerList.__class__.dragMoveEvent = self.dragEnterEvent
         self.ServiceManagerList.__class__.dropEvent = self.dropEvent
         # Add a context menu to the service manager list
-        self.ServiceManagerList.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.ServiceManagerList.setContextMenuPolicy(
+            QtCore.Qt.ActionsContextMenu)
         self.ServiceManagerList.addAction(contextMenuAction(
             self.ServiceManagerList, ':/system/system_preview.png',
             translate(u'ServiceManager',u'&Preview Verse'), self.makePreview))
         self.ServiceManagerList.addAction(contextMenuAction(
             self.ServiceManagerList, ':/system/system_live.png',
             translate(u'ServiceManager',u'&Show Live'), self.makeLive))
-        self.ServiceManagerList.addAction(contextMenuSeparator(self.ServiceManagerList))
+        self.ServiceManagerList.addAction(contextMenuSeparator(
+            self.ServiceManagerList))
         self.ServiceManagerList.addAction(contextMenuAction(
             self.ServiceManagerList, ':/services/service_delete',
             translate(u'ServiceManager',u'&Remove from Service'),
@@ -151,7 +164,8 @@ class ServiceManager(QtGui.QWidget):
             translate(u'ServiceManager', u'Move up order'), self.onServiceUp)
         self.OrderToolbar.addToolbarButton(u'Move down',
             u':/services/service_down.png',
-            translate(u'ServiceManager', u'Move down order'), self.onServiceDown)
+            translate(u'ServiceManager', u'Move down order'),
+            self.onServiceDown)
         self.OrderToolbar.addToolbarButton(u'Move to bottom',
             u':/services/service_bottom.png',
             translate(u'ServiceManager', u'Move to end'), self.onServiceEnd)
@@ -175,7 +189,8 @@ class ServiceManager(QtGui.QWidget):
         # Last little bits of setting up
         self.config = PluginConfig(u'ServiceManager')
         self.servicePath = self.config.get_data_path()
-        self.service_theme = unicode(self.config.get_config(u'theme service theme', u''))
+        self.service_theme = unicode(
+            self.config.get_config(u'theme service theme', u''))
 
     def onMoveSelectionUp(self):
         """
@@ -345,7 +360,8 @@ class ServiceManager(QtGui.QWidget):
         * An ood which is a pickle of the service items
         * All image, presentation and video files needed to run the service.
         """
-        filename = QtGui.QFileDialog.getSaveFileName(self, u'Save Order of Service',self.config.get_last_dir() )
+        filename = QtGui.QFileDialog.getSaveFileName(self,
+            u'Save Order of Service',self.config.get_last_dir() )
         filename = unicode(filename)
         if filename != u'':
             self.config.set_last_dir(filename)
@@ -355,9 +371,10 @@ class ServiceManager(QtGui.QWidget):
             for item in self.serviceItems:
                 service.append({u'serviceitem':item[u'data'].get_oos_repr()})
                 if item[u'data'].service_item_type == ServiceType.Image or \
-                        item[u'data'].service_item_type == ServiceType.Command:
+                    item[u'data'].service_item_type == ServiceType.Command:
                     for frame in item[u'data'].frames:
-                        path_from = unicode(item[u'data'].service_item_path + u'/' + frame[u'title'])
+                        path_from = unicode(item[u'data'].service_item_path + \
+                            u'/' + frame[u'title'])
                         zip.write(path_from)
             file = open(servicefile, u'wb')
             cPickle.dump(service, file)
@@ -373,10 +390,11 @@ class ServiceManager(QtGui.QWidget):
     def onLoadService(self):
         """
         Load an existing service from disk and rebuilds the serviceitems
-        All files retrieved from the zip file are placed in a temporary directory and
-        will only be used for this service.
+        All files retrieved from the zip file are placed in a temporary
+        directory and will only be used for this service.
         """
-        filename = QtGui.QFileDialog.getOpenFileName(self, u'Open Order of Service',self.config.get_last_dir(),
+        filename = QtGui.QFileDialog.getOpenFileName(self,
+            u'Open Order of Service',self.config.get_last_dir(),
             u'Services (*.oos)')
         filename = unicode(filename)
         name = filename.split(os.path.sep)
@@ -388,7 +406,8 @@ class ServiceManager(QtGui.QWidget):
                 themename = None
                 for file in zip.namelist():
                     names = file.split(os.path.sep)
-                    file_to = os.path.join(self.servicePath, names[len(names) - 1])
+                    file_to = os.path.join(self.servicePath,
+                        names[len(names) - 1])
                     file_data = zip.read(file)
                     f = open(file_to, u'w')
                     f.write(file_data)
@@ -439,11 +458,13 @@ class ServiceManager(QtGui.QWidget):
             Service Item to be added
 
         """
-        self.serviceItems.append({u'data': item, u'order': len(self.serviceItems)+1, u'expanded':True})
+        self.serviceItems.append({u'data': item, u'order': len(
+            self.serviceItems)+1, u'expanded':True})
         treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
         treewidgetitem.setText(0,item.title)
         treewidgetitem.setIcon(0,item.iconic_representation)
-        treewidgetitem.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(len(self.serviceItems)))
+        treewidgetitem.setData(0, QtCore.Qt.UserRole,
+            QtCore.QVariant(len(self.serviceItems)))
         treewidgetitem.setExpanded(True)
         item.render()
         count = 0
@@ -451,7 +472,8 @@ class ServiceManager(QtGui.QWidget):
             treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
             text = frame[u'title']
             treewidgetitem1.setText(0,text[:40])
-            treewidgetitem1.setData(0, QtCore.Qt.UserRole,QtCore.QVariant(count))
+            treewidgetitem1.setData(0, QtCore.Qt.UserRole,
+                QtCore.QVariant(count))
             count = count + 1
         self.parent.OosChanged(False, self.serviceName)
 
@@ -460,14 +482,16 @@ class ServiceManager(QtGui.QWidget):
         Send the current item to the Preview slide controller
         """
         item, count = self.findServiceItem()
-        self.parent.PreviewController.addServiceManagerItem(self.serviceItems[item][u'data'], count)
+        self.parent.PreviewController.addServiceManagerItem(
+            self.serviceItems[item][u'data'], count)
 
     def makeLive(self):
         """
         Send the current item to the Live slide controller
         """
         item, count = self.findServiceItem()
-        self.parent.LiveController.addServiceManagerItem(self.serviceItems[item][u'data'], count)
+        self.parent.LiveController.addServiceManagerItem(
+            self.serviceItems[item][u'data'], count)
 
     def findServiceItem(self):
         """
@@ -523,7 +547,8 @@ class ServiceManager(QtGui.QWidget):
         self.ThemeComboBox.addItem(u'')
         for theme in theme_list:
             self.ThemeComboBox.addItem(theme)
-        id = self.ThemeComboBox.findText(self.service_theme, QtCore.Qt.MatchExactly)
+        id = self.ThemeComboBox.findText(self.service_theme,
+            QtCore.Qt.MatchExactly)
         # Not Found
         if id == -1:
             id = 0
