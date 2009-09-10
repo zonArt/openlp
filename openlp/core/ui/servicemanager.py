@@ -129,8 +129,8 @@ class ServiceManager(QtGui.QWidget):
         # Create the service manager list
         self.ServiceManagerList = ServiceManagerList(self)
         self.ServiceManagerList.setEditTriggers(
-            QtGui.QAbstractItemView.CurrentChanged | \
-            QtGui.QAbstractItemView.DoubleClicked | \
+            QtGui.QAbstractItemView.CurrentChanged |
+            QtGui.QAbstractItemView.DoubleClicked |
             QtGui.QAbstractItemView.EditKeyPressed)
         self.ServiceManagerList.setDragDropMode(
             QtGui.QAbstractItemView.DragDrop)
