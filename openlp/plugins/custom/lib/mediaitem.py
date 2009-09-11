@@ -21,7 +21,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem,  SongXMLParser,  ServiceItem,  translate, contextMenuAction, contextMenuSeparator, BaseListWithDnD
+from openlp.core.lib import MediaManagerItem,  SongXMLParser,  ServiceItem, \
+    translate, contextMenuAction, contextMenuSeparator, BaseListWithDnD
 
 class CustomListView(BaseListWithDnD):
     def __init__(self, parent=None):
@@ -40,77 +41,86 @@ class CustomMediaItem(MediaManagerItem):
         self.TranslationContext = u'CustomPlugin'
         self.PluginTextShort = u'Custom'
         self.ConfigSection = u'custom'
+        self.IconPath = u'custom/custom'
+        self.hasFileIcon = False
+        self.hasNewIcon = True
+        self.hasEditIcon = True
+        # this next is a class, not an instance of a class - it will
+        # be instanced by the base MediaManagerItem
+        self.ListViewWithDnD_class = CustomListView
+        self.ServiceItemIconName = u':/custom/custom_image.png'
+        self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
         self.parent = parent
 
-    def setupUi(self):
-        # Add a toolbar
-        self.addToolbar()
-        # Create buttons for the toolbar
-        ## New Custom Button ##
-        self.addToolbarButton(
-            translate(u'CustomMediaItem',u'New Custom Item'),
-            translate(u'CustomMediaItem',u'Add a new Custom Item'),
-            u':/custom/custom_new.png', self.onCustomNewClick, u'CustomNewItem')
-        ## Edit Custom Button ##
-        self.addToolbarButton(
-            translate(u'CustomMediaItem',u'Edit Custom Item'),
-            translate(u'CustomMediaItem',u'Edit the selected Custom Item'),
-            u':/custom/custom_edit.png', self.onCustomEditClick, u'CustomEditItem')
-        ## Delete Custom Button ##
-        self.addToolbarButton(
-            translate(u'CustomMediaItem',u'Delete Custom Item'),
-            translate(u'CustomMediaItem',u'Delete the selected Custom Item'),
-            u':/custom/custom_delete.png', self.onCustomDeleteClick, u'CustomDeleteItem')
-        ## Separator Line ##
-        self.addToolbarSeparator()
-        ## Preview Custom Button ##
-        self.addToolbarButton(
-            translate(u'CustomMediaItem',u'Preview Custom Item'),
-            translate(u'CustomMediaItem',u'Preview the selected Custom Item'),
-            u':/system/system_preview.png', self.onPreviewClick, u'CustomPreviewItem')
-        ## Live Custom Button ##
-        self.addToolbarButton(
-            translate(u'CustomMediaItem',u'Go Live'),
-            translate(u'CustomMediaItem', u'Send the selected Custom live'),
-            u':/system/system_live.png', self.onLiveClick, u'CustomLiveItem')
-        ## Add Custom Button ##
-        self.addToolbarButton(
-            translate(u'CustomMediaItem',u'Add Custom To Service'),
-            translate(u'CustomMediaItem',u'Add the selected Custom(s) to the service'),
-            u':/system/system_add.png', self.onAddClick, u'CustomAddItem')
-        # Add the CustomListView widget
-        self.CustomWidget = QtGui.QWidget(self)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.CustomWidget.sizePolicy().hasHeightForWidth())
-        self.CustomWidget.setSizePolicy(sizePolicy)
-        self.CustomWidget.setObjectName(u'CustomWidget')
-        # Add the Custom widget to the page layout
-        self.PageLayout.addWidget(self.CustomWidget)
-        self.ListView = CustomListView()
-        self.ListView.setAlternatingRowColors(True)
-        self.ListView.setDragEnabled(True)
-        self.PageLayout.addWidget(self.ListView)
-        # Signals
-        QtCore.QObject.connect(self.ListView,
-            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onPreviewClick)
-        #define and add the context menu
-        self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.ListView.addAction(contextMenuAction(self.ListView,
-            ':/custom/custom_edit.png', translate(u'CustomMediaItem', u'&Edit Custom'),
-            self.onCustomEditClick))
-        self.ListView.addAction(contextMenuSeparator(self.ListView))
-        self.ListView.addAction(contextMenuAction(
-            self.ListView, ':/system/system_preview.png',
-            translate(u'CustomMediaItem',u'&Preview Custom'), self.onPreviewClick))
-        self.ListView.addAction(contextMenuAction(
-            self.ListView, ':/system/system_live.png',
-            translate(u'CustomMediaItem',u'&Show Live'), self.onLiveClick))
-        self.ListView.addAction(contextMenuAction(
-            self.ListView, ':/system/system_add.png',
-            translate(u'CustomMediaItem',u'&Add to Service'), self.onAddClick))
+#    def addHeaderBar(self):
+#        # Add a toolbar
+#        self.addToolbar()
+#        # Create buttons for the toolbar
+#        ## New Custom Button ##
+#        self.addToolbarButton(
+#            translate(u'CustomMediaItem',u'New Custom Item'),
+#            translate(u'CustomMediaItem',u'Add a new Custom Item'),
+#            u':/custom/custom_new.png', self.onCustomNewClick, u'CustomNewItem')
+#        ## Edit Custom Button ##
+#        self.addToolbarButton(
+#            translate(u'CustomMediaItem',u'Edit Custom Item'),
+#            translate(u'CustomMediaItem',u'Edit the selected Custom Item'),
+#            u':/custom/custom_edit.png', self.onCustomEditClick, u'CustomEditItem')
+#        ## Delete Custom Button ##
+#        self.addToolbarButton(
+#            translate(u'CustomMediaItem',u'Delete Custom Item'),
+#            translate(u'CustomMediaItem',u'Delete the selected Custom Item'),
+#            u':/custom/custom_delete.png', self.onCustomDeleteClick, u'CustomDeleteItem')
+#        ## Separator Line ##
+#        self.addToolbarSeparator()
+#        ## Preview Custom Button ##
+#        self.addToolbarButton(
+#            translate(u'CustomMediaItem',u'Preview Custom Item'),
+#            translate(u'CustomMediaItem',u'Preview the selected Custom Item'),
+#            u':/system/system_preview.png', self.onPreviewClick, u'CustomPreviewItem')
+#        ## Live Custom Button ##
+#        self.addToolbarButton(
+#            translate(u'CustomMediaItem',u'Go Live'),
+#            translate(u'CustomMediaItem', u'Send the selected Custom live'),
+#            u':/system/system_live.png', self.onLiveClick, u'CustomLiveItem')
+#        ## Add Custom Button ##
+#        self.addToolbarButton(
+#            translate(u'CustomMediaItem',u'Add Custom To Service'),
+#            translate(u'CustomMediaItem',u'Add the selected Custom(s) to the service'),
+#            u':/system/system_add.png', self.onAddClick, u'CustomAddItem')
+#        # Add the CustomListView widget
+#        self.CustomWidget = QtGui.QWidget(self)
+#        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+#        sizePolicy.setHorizontalStretch(0)
+#        sizePolicy.setVerticalStretch(0)
+#        sizePolicy.setHeightForWidth(self.CustomWidget.sizePolicy().hasHeightForWidth())
+#        self.CustomWidget.setSizePolicy(sizePolicy)
+#        self.CustomWidget.setObjectName(u'CustomWidget')
+#        # Add the Custom widget to the page layout
+#        self.PageLayout.addWidget(self.CustomWidget)
+#        self.ListView = CustomListView()
+#        self.ListView.setAlternatingRowColors(True)
+#        self.ListView.setDragEnabled(True)
+#        self.PageLayout.addWidget(self.ListView)
+#        # Signals
+#        QtCore.QObject.connect(self.ListView,
+#            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onPreviewClick)
+#        #define and add the context menu
+#        self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+#        self.ListView.addAction(contextMenuAction(self.ListView,
+#            ':/custom/custom_edit.png', translate(u'CustomMediaItem', u'&Edit Custom'),
+#            self.onCustomEditClick))
+#        self.ListView.addAction(contextMenuSeparator(self.ListView))
+#        self.ListView.addAction(contextMenuAction(
+#            self.ListView, ':/system/system_preview.png',
+#            translate(u'CustomMediaItem',u'&Preview Custom'), self.onPreviewClick))
+#        self.ListView.addAction(contextMenuAction(
+#            self.ListView, ':/system/system_live.png',
+#            translate(u'CustomMediaItem',u'&Show Live'), self.onLiveClick))
+#        self.ListView.addAction(contextMenuAction(
+#            self.ListView, ':/system/system_add.png',
+#            translate(u'CustomMediaItem',u'&Add to Service'), self.onAddClick))
 
     def initialise(self):
         self.loadCustomListView(self.parent.custommanager.get_all_slides())
@@ -122,12 +132,12 @@ class CustomMediaItem(MediaManagerItem):
             custom_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(CustomSlide.id))
             self.ListView.addItem(custom_name)
 
-    def onCustomNewClick(self):
+    def onNewClick(self):
         self.parent.edit_custom_form.loadCustom(0)
         self.parent.edit_custom_form.exec_()
         self.initialise()
 
-    def onCustomEditClick(self):
+    def onEditClick(self):
         item = self.ListView.currentItem()
         if item is not None:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
@@ -135,7 +145,7 @@ class CustomMediaItem(MediaManagerItem):
             self.parent.edit_custom_form.exec_()
             self.initialise()
 
-    def onCustomDeleteClick(self):
+    def onDeleteClick(self):
         item = self.ListView.currentItem()
         if item is not None:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]

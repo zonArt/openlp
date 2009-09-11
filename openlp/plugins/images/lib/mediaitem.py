@@ -48,7 +48,6 @@ class ImageMediaItem(MediaManagerItem):
         self.hasEditIcon = False
         self.OnNewPrompt = u'Select Image(s)'
         self.OnNewFileMasks = u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
-        self.slidecontroller = u'image'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView

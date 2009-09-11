@@ -23,10 +23,18 @@ from PyQt4 import QtCore, QtGui
 
 from forms import EditCustomForm
 from openlp.core.lib import Plugin
-from openlp.plugins.custom.lib import CustomManager, CustomTab, CustomMediaItem
+from openlp.plugins.custom.lib import CustomManager, CustomMediaItem
 
 
 class CustomPlugin(Plugin):
+    """
+    This plugin enables the user to create, edit and display
+    custom slide shows. Custom shows are divided into slides.
+    Each show is able to have it's own theme.
+    Custom shows are designed to replace the use of songs where
+    the songs plugin has become restrictive. Examples could be
+    Welcome slides, Bible Reading information, Orders of service.
+    """
 
     global log
     log=logging.getLogger(u'CustomPlugin')

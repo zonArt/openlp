@@ -173,6 +173,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         # Add a toolbar
         self.addToolbar()
+        #Allow the plugin to define it's own header
+        self.addHeaderBar1()
         # Create buttons for the toolbar
         ## File Button ##
         if self.hasFileIcon:
@@ -185,13 +187,13 @@ class MediaManagerItem(QtGui.QWidget):
             self.addToolbarButton(
                 translate(self.TranslationContext, u'New '+self.PluginTextShort),
                 translate(self.TranslationContext, u'Add a new '+self.PluginTextShort),
-                u':'+self.IconPath+ u'_load.png', self.onNewClick, self.PluginTextShort+u'NewItem')
+                u':'+self.IconPath+ u'_new.png', self.onNewClick, self.PluginTextShort+u'NewItem')
         ## Edit Button ##
         if self.hasEditIcon:
             self.addToolbarButton(
                 translate(self.TranslationContext, u'Edit '+self.PluginTextShort),
                 translate(self.TranslationContext, u'Edit the selected '+self.PluginTextShort),
-                u':'+self.IconPath+ u'_load.png', self.onEditClick, self.PluginTextShort+u'EditItem')
+                u':'+self.IconPath+ u'_edit.png', self.onEditClick, self.PluginTextShort+u'EditItem')
         ## Delete Button ##
         self.addToolbarButton(
             translate(self.TranslationContext, u'Delete '+self.PluginTextShort),
@@ -215,7 +217,7 @@ class MediaManagerItem(QtGui.QWidget):
             translate(self.TranslationContext, u'Add the selected item(s) to the service'),
             u':/system/system_add.png', self.onAddClick, self.PluginTextShort+u'AddItem')
         #Allow the plugin to define it's own header
-        self.addHeaderBar()
+        self.addHeaderBar2()
         #Add the List widget
         self.ListView = self.ListViewWithDnD_class()
         self.ListView.uniformItemSizes = True
@@ -234,7 +236,7 @@ class MediaManagerItem(QtGui.QWidget):
                 ':' +self.IconPath+u'_new.png',
                 translate(self.TranslationContext, u'&Edit '+self.PluginTextShort),
                 self.onEditClick))
-            self.ListView.addAction(self.contextMenuSeparator(self.SongListWidget))
+            self.ListView.addAction(contextMenuSeparator(self.ListView))
         self.ListView.addAction(contextMenuAction(
             self.ListView, ':/system/system_preview.png',
             translate(self.TranslationContext, u'&Preview '+self.PluginTextShort),
@@ -258,7 +260,16 @@ class MediaManagerItem(QtGui.QWidget):
         """
         pass
 
-    def addHeaderBar(self):
+    def addHeaderBar1(self):
+        """
+        Slot at start of toolbar for pluin to addwidgets
+        """
+        pass
+
+    def addHeaderBar2(self):
+        """
+        Slot at end of toolbar for pluin to add widgets
+        """
         pass
 
     def onFileClick(self):

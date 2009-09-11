@@ -1,11 +1,22 @@
 # -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+"""
+OpenLP - Open Source Lyrics Projection
+Copyright (c) 2008 Raoul Snyman
+Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley,
 
-# Form implementation generated from reading ui file 'editcustomdialog.ui'
-#
-# Created: Sat Mar  7 09:01:43 2009
-#      by: PyQt4 UI code generator 4.4.4
-#
-# WARNING! All changes made in this file will be lost!
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; version 2 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place, Suite 330, Boston, MA 02111-1307 USA
+"""
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate
@@ -15,7 +26,7 @@ class Ui_customEditDialog(object):
         customEditDialog.setObjectName(u'customEditDialog')
         customEditDialog.resize(590, 541)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/icon/openlp-logo-16x16.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(u':/icon/openlp.org-icon-32.bmp'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         customEditDialog.setWindowIcon(icon)
         self.gridLayout = QtGui.QGridLayout(customEditDialog)
         self.gridLayout.setObjectName(u'gridLayout')
@@ -31,8 +42,8 @@ class Ui_customEditDialog(object):
         self.horizontalLayout_4 = QtGui.QHBoxLayout()
         self.horizontalLayout_4.setObjectName(u'horizontalLayout_4')
         self.VerseListView = QtGui.QListWidget(customEditDialog)
-        self.VerseListView.setObjectName(u'VerseListView')
         self.VerseListView.setAlternatingRowColors(True)
+        self.VerseListView.setObjectName(u'VerseListView')
         self.horizontalLayout_4.addWidget(self.VerseListView)
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setObjectName(u'verticalLayout')
@@ -54,47 +65,49 @@ class Ui_customEditDialog(object):
         self.gridLayout.addLayout(self.horizontalLayout_4, 1, 0, 1, 1)
         self.EditWidget = QtGui.QWidget(customEditDialog)
         self.EditWidget.setObjectName(u'EditWidget')
-        self.EditLayout = QtGui.QHBoxLayout(self.EditWidget)
-        self.EditLayout.setSpacing(8)
-        self.EditLayout.setMargin(0)
-        self.EditLayout.setObjectName(u'EditLayout')
+        self.EditLayout_3 = QtGui.QHBoxLayout(self.EditWidget)
+        self.EditLayout_3.setSpacing(8)
+        self.EditLayout_3.setMargin(0)
+        self.EditLayout_3.setObjectName(u'EditLayout_3')
         self.VerseTextEdit = QtGui.QTextEdit(self.EditWidget)
         self.VerseTextEdit.setObjectName(u'VerseTextEdit')
-        self.EditLayout.addWidget(self.VerseTextEdit)
-        self.ButtonWidget = QtGui.QWidget(self.EditWidget)
-        self.ButtonWidget.setObjectName(u'ButtonWidget')
-        self.ButtonLayout = QtGui.QVBoxLayout(self.ButtonWidget)
-        self.ButtonLayout.setSpacing(8)
-        self.ButtonLayout.setMargin(0)
-        self.ButtonLayout.setObjectName(u'ButtonLayout')
-        self.AddButton = QtGui.QPushButton(self.ButtonWidget)
+        self.EditLayout_3.addWidget(self.VerseTextEdit)
+        self.ButtonWidge = QtGui.QWidget(self.EditWidget)
+        self.ButtonWidge.setObjectName(u'ButtonWidge')
+        self.verticalLayout_2 = QtGui.QVBoxLayout(self.ButtonWidge)
+        self.verticalLayout_2.setObjectName(u'verticalLayout_2')
+        self.AddButton = QtGui.QPushButton(self.ButtonWidge)
         self.AddButton.setObjectName(u'AddButton')
-        self.ButtonLayout.addWidget(self.AddButton)
-        self.EditButton = QtGui.QPushButton(self.ButtonWidget)
+        self.AddButton.setToolTip(translate(u'customEditDialog', u'Add new slide at bottom'))
+        self.verticalLayout_2.addWidget(self.AddButton)
+        self.EditButton = QtGui.QPushButton(self.ButtonWidge)
         self.EditButton.setObjectName(u'EditButton')
-        self.ButtonLayout.addWidget(self.EditButton)
-        self.SaveButton = QtGui.QPushButton(self.ButtonWidget)
+        self.verticalLayout_2.addWidget(self.EditButton)
+        self.EditAllButton = QtGui.QPushButton(self.ButtonWidge)
+        self.EditAllButton.setObjectName(u'EditAllButton')
+        self.verticalLayout_2.addWidget(self.EditAllButton)
+        self.SaveButton = QtGui.QPushButton(self.ButtonWidge)
         self.SaveButton.setObjectName(u'SaveButton')
-        self.ButtonLayout.addWidget(self.SaveButton)
-        self.DeleteButton = QtGui.QPushButton(self.ButtonWidget)
+        self.verticalLayout_2.addWidget(self.SaveButton)
+        self.DeleteButton = QtGui.QPushButton(self.ButtonWidge)
         self.DeleteButton.setObjectName(u'DeleteButton')
-        self.ButtonLayout.addWidget(self.DeleteButton)
-        self.ClearButton = QtGui.QPushButton(self.ButtonWidget)
+        self.verticalLayout_2.addWidget(self.DeleteButton)
+        self.ClearButton = QtGui.QPushButton(self.ButtonWidge)
         self.ClearButton.setObjectName(u'ClearButton')
-        self.ButtonLayout.addWidget(self.ClearButton)
+        self.verticalLayout_2.addWidget(self.ClearButton)
         spacerItem1 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.ButtonLayout.addItem(spacerItem1)
-        self.EditLayout.addWidget(self.ButtonWidget)
+        self.verticalLayout_2.addItem(spacerItem1)
+        self.EditLayout_3.addWidget(self.ButtonWidge)
         self.gridLayout.addWidget(self.EditWidget, 2, 0, 1, 1)
-        self.horizontalLayout = QtGui.QHBoxLayout()
-        self.horizontalLayout.setObjectName(u'horizontalLayout')
+        self.horizontalLayout_3 = QtGui.QHBoxLayout()
+        self.horizontalLayout_3.setObjectName(u'horizontalLayout_3')
         self.ThemeLabel = QtGui.QLabel(customEditDialog)
         self.ThemeLabel.setObjectName(u'ThemeLabel')
-        self.horizontalLayout.addWidget(self.ThemeLabel)
-        self.ThemecomboBox = QtGui.QComboBox(customEditDialog)
-        self.ThemecomboBox.setObjectName(u'ThemecomboBox')
-        self.horizontalLayout.addWidget(self.ThemecomboBox)
-        self.gridLayout.addLayout(self.horizontalLayout, 3, 0, 1, 1)
+        self.horizontalLayout_3.addWidget(self.ThemeLabel)
+        self.ThemeComboBox = QtGui.QComboBox(customEditDialog)
+        self.ThemeComboBox.setObjectName(u'ThemeComboBox')
+        self.horizontalLayout_3.addWidget(self.ThemeComboBox)
+        self.gridLayout.addLayout(self.horizontalLayout_3, 3, 0, 1, 1)
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u'horizontalLayout_2')
         self.CreditLabel = QtGui.QLabel(customEditDialog)
@@ -108,24 +121,39 @@ class Ui_customEditDialog(object):
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(u'buttonBox')
         self.gridLayout.addWidget(self.buttonBox, 5, 0, 1, 1)
+
         self.retranslateUi(customEditDialog)
         QtCore.QMetaObject.connectSlotsByName(customEditDialog)
         customEditDialog.setTabOrder(self.TitleEdit, self.VerseTextEdit)
-        customEditDialog.setTabOrder(self.VerseTextEdit, self.EditButton)
-        customEditDialog.setTabOrder(self.EditButton, self.SaveButton)
-        customEditDialog.setTabOrder(self.SaveButton, self.CreditEdit)
-        customEditDialog.setTabOrder(self.CreditEdit, self.VerseListView)
-        customEditDialog.setTabOrder(self.VerseListView, self.AddButton)
-        customEditDialog.setTabOrder(self.AddButton, self.DeleteButton)
-        customEditDialog.setTabOrder(self.DeleteButton, self.buttonBox)
+        customEditDialog.setTabOrder(self.VerseTextEdit, self.AddButton)
+        customEditDialog.setTabOrder(self.AddButton, self.VerseListView)
+        customEditDialog.setTabOrder(self.VerseListView, self.EditButton)
+        customEditDialog.setTabOrder(self.EditButton, self.EditAllButton)
+        customEditDialog.setTabOrder(self.EditAllButton, self.SaveButton)
+        customEditDialog.setTabOrder(self.SaveButton, self.DeleteButton)
+        customEditDialog.setTabOrder(self.DeleteButton, self.CreditEdit)
+        customEditDialog.setTabOrder(self.CreditEdit, self.UpButton)
+        customEditDialog.setTabOrder(self.UpButton, self.DownButton)
+        customEditDialog.setTabOrder(self.DownButton, self.ThemeComboBox)
+        customEditDialog.setTabOrder(self.ThemeComboBox, self.buttonBox)
 
     def retranslateUi(self, customEditDialog):
-        customEditDialog.setWindowTitle(translate(u'customEditDialog', u'Edit Custom Slides'))
-        self.TitleLabel.setText(translate(u'customEditDialog', u'Title:'))
-        self.AddButton.setText(translate(u'customEditDialog', u'Add'))
-        self.EditButton.setText(translate(u'customEditDialog', u'Edit'))
-        self.SaveButton.setText(translate(u'customEditDialog', u'Save'))
-        self.DeleteButton.setText(translate(u'customEditDialog', u'Delete'))
-        self.ClearButton.setText(translate(u'customEditDialog', u'Clear'))
-        self.ThemeLabel.setText(translate(u'customEditDialog', u'Theme:'))
-        self.CreditLabel.setText(translate(u'customEditDialog', u'Credits:'))
+        self.UpButton.setToolTip(translate(u'customEditDialog', u'Move slide Up 1'))
+        self.DownButton.setToolTip(translate(u'customEditDialog', u'Move slide down 1'))
+        customEditDialog.setWindowTitle(translate(u'customEditDialog', 'Edit Custom Slides'))
+        self.TitleLabel.setText(translate(u'customEditDialog', 'Title:'))
+        self.AddButton.setText(translate(u'customEditDialog', 'Add New'))
+        self.AddButton.setToolTip(translate(u'customEditDialog', u'Add new slide at bottom'))
+        self.EditButton.setText(translate(u'customEditDialog', 'Edit'))
+        self.EditButton.setToolTip(translate(u'customEditDialog', u'Edit selected slide'))
+        self.EditAllButton.setText(translate(u'customEditDialog', 'Edit All'))
+        self.EditAllButton.setToolTip(translate(u'customEditDialog', u'Edit all slides'))
+        self.SaveButton.setText(translate(u'customEditDialog', 'Save'))
+        self.SaveButton.setToolTip(translate(u'customEditDialog', u'Replace edited slide'))
+        self.DeleteButton.setText(translate(u'customEditDialog', 'Delete'))
+        self.DeleteButton.setToolTip(translate(u'customEditDialog', u'Delete selected slide'))
+        self.ClearButton.setText(translate(u'customEditDialog', 'Clear'))
+        self.ClearButton.setToolTip(translate(u'customEditDialog', u'Clear edit area'))
+        self.ThemeLabel.setText(translate(u'customEditDialog', 'Theme:'))
+        self.ThemeComboBox.setToolTip(translate(u'customEditDialog', u'Set Theme for Slides'))
+        self.CreditLabel.setText(translate(u'customEditDialog', 'Credits:'))
