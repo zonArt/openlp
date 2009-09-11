@@ -109,7 +109,8 @@ class Ui_MainWindow(object):
         self.MediaManagerDock.setWindowIcon(icon)
         self.MediaManagerDock.setFloating(False)
         self.MediaManagerDock.setObjectName(u'MediaManagerDock')
-        self.MediaManagerDock.setMinimumWidth(self.settingsmanager.mainwindow_docbars)
+        self.MediaManagerDock.setMinimumWidth(
+            self.settingsmanager.mainwindow_docbars)
         self.MediaManagerContents = QtGui.QWidget()
         self.MediaManagerContents.setObjectName(u'MediaManagerContents')
         self.MediaManagerLayout = QtGui.QHBoxLayout(self.MediaManagerContents)
@@ -132,7 +133,8 @@ class Ui_MainWindow(object):
         self.ServiceManagerDock.setFeatures(
             QtGui.QDockWidget.AllDockWidgetFeatures)
         self.ServiceManagerDock.setObjectName(u'ServiceManagerDock')
-        self.ServiceManagerDock.setMinimumWidth(self.settingsmanager.mainwindow_docbars)
+        self.ServiceManagerDock.setMinimumWidth(
+            self.settingsmanager.mainwindow_docbars)
         self.ServiceManagerContents = ServiceManager(self)
         self.ServiceManagerDock.setWidget(self.ServiceManagerContents)
         MainWindow.addDockWidget(
@@ -593,8 +595,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 translate(u'mainWindow', u'Save Changes to Service?'),
                 translate(u'mainWindow', u'Your service has been changed, do you want to save those changes?'),
                 QtGui.QMessageBox.StandardButtons(
-                    QtGui.QMessageBox.Cancel | \
-                    QtGui.QMessageBox.Discard | \
+                    QtGui.QMessageBox.Cancel |
+                    QtGui.QMessageBox.Discard |
                     QtGui.QMessageBox.Save),
                 QtGui.QMessageBox.Save)
             if ret == QtGui.QMessageBox.Save:
