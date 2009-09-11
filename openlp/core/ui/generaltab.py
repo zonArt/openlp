@@ -120,11 +120,11 @@ class GeneralTab(SettingsTab):
         QtCore.QObject.connect(self.AutoOpenCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'), self.onAutoOpenCheckBoxChanged)
         QtCore.QObject.connect(self.NumberEdit,
-            QtCore.SIGNAL(u'lostFocus()'), self.onNumberEditLostFocus)
+            QtCore.SIGNAL(u'editingFinished()'), self.onNumberEditLostFocus)
         QtCore.QObject.connect(self.UsernameEdit,
-            QtCore.SIGNAL(u'lostFocus()'), self.onUsernameEditLostFocus)
+            QtCore.SIGNAL(u'editingFinished()'), self.onUsernameEditLostFocus)
         QtCore.QObject.connect(self.PasswordEdit,
-            QtCore.SIGNAL(u'lostFocus()'), self.onPasswordEditLostFocus)
+            QtCore.SIGNAL(u'editingFinished()'), self.onPasswordEditLostFocus)
 
     def retranslateUi(self):
         self.MonitorGroupBox.setTitle(translate(u'GeneralTab', u'Monitors'))
