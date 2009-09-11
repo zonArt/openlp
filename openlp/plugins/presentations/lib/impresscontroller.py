@@ -57,7 +57,8 @@ class ImpressController(object):
         when required.
         """
         log.debug(u'start Openoffice')
-        cmd = u'openoffice.org -nologo -norestore -minimized -headless ' + u'"' + u'-accept=socket,host=localhost,port=2002;urp;'+ u'"'
+        # -headless
+        cmd = u'openoffice.org -nologo -norestore -minimized -invisible ' + u'"' + u'-accept=socket,host=localhost,port=2002;urp;'+ u'"'
         self.process = QtCore.QProcess()
         self.process.startDetached(cmd)
         self.process.waitForStarted()

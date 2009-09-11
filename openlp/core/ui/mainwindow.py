@@ -31,6 +31,15 @@ from openlp.core.lib import translate, Plugin, MediaManagerItem, \
 
 from openlp.core.utils import ConfigHelper
 
+class mediaDock(QtGui.QDockWidget):
+    def __init__(self, parent=None, name=None):
+        QtGui.QDockWidget.__init__(self, parent)
+        self.parent = parent
+
+    def resizeEvent(self, resizeEvent):
+        if resizeEvent.size().width() != resizeEvent.oldSize().width():
+            self.parent.settingsmanager.setDockbarLeft(resizeEvent.size().width())
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         """
@@ -102,15 +111,20 @@ class Ui_MainWindow(object):
         self.DefaultThemeLabel.setObjectName(u'DefaultThemeLabel')
         self.StatusBar.addPermanentWidget(self.DefaultThemeLabel)
         # Create the MediaManager
-        self.MediaManagerDock = QtGui.QDockWidget(MainWindow)
+        self.MediaManagerDock = mediaDock(MainWindow)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(u':/system/system_mediamanager.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.MediaManagerDock.setWindowIcon(icon)
         self.MediaManagerDock.setFloating(False)
         self.MediaManagerDock.setObjectName(u'MediaManagerDock')
-        self.MediaManagerDock.setMinimumWidth(
-            self.settingsmanager.mainwindow_docbars)
+        self.MediaManagerDock.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Ignored,
+            QtGui.QSizePolicy.Maximum))
+        geometry =  self.MediaManagerDock.geometry()
+        geometry.setWidth(self.settingsmanager.mainwindow_left)
+        self.MediaManagerDock.setGeometry(geometry)
+        self.MediaManagerDock.setMinimumWidth(10)
+
         self.MediaManagerContents = QtGui.QWidget()
         self.MediaManagerContents.setObjectName(u'MediaManagerContents')
         self.MediaManagerLayout = QtGui.QHBoxLayout(self.MediaManagerContents)
@@ -134,7 +148,7 @@ class Ui_MainWindow(object):
             QtGui.QDockWidget.AllDockWidgetFeatures)
         self.ServiceManagerDock.setObjectName(u'ServiceManagerDock')
         self.ServiceManagerDock.setMinimumWidth(
-            self.settingsmanager.mainwindow_docbars)
+            self.settingsmanager.mainwindow_right)
         self.ServiceManagerContents = ServiceManager(self)
         self.ServiceManagerDock.setWidget(self.ServiceManagerContents)
         MainWindow.addDockWidget(

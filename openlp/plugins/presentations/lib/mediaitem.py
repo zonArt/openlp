@@ -57,7 +57,7 @@ class PresentationMediaItem(MediaManagerItem):
         MediaManagerItem.__init__(self, parent, icon, title)
         self.message_listener = MessageListener(controllers)
 
-    def addHeaderBar2(self):
+    def addEndHeaderBar(self):
         self.PresentationWidget = QtGui.QWidget(self)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)

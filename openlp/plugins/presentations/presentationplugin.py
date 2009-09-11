@@ -104,5 +104,4 @@ class PresentationPlugin(Plugin):
         log.debug(u'Finalise')
         #Ask each controller to tidy up
         for controller in self.controllers:
-            print controller
             self.controllers[controller].kill()

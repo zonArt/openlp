@@ -374,6 +374,3 @@ class SlideController(QtGui.QWidget):
     def timerEvent(self, event):
         if event.timerId() == self.timer_id:
             self.onSlideSelectedNext()
-
-
-
