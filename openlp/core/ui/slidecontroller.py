@@ -70,7 +70,7 @@ class SlideController(QtGui.QWidget):
         self.parent = parent
         self.image_list = [u'Start Loop', u'Stop Loop', u'Loop Separator', u'Image SpinBox']
         self.timer_id = 0
-        self.item = None
+        self.commandItem = None
         self.Panel = QtGui.QWidget(parent.ControlSplitter)
         self.Splitter = QtGui.QSplitter(self.Panel)
         self.Splitter.setOrientation(QtCore.Qt.Vertical)
@@ -233,9 +233,9 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'addServiceItem')
         #If old item was a command tell it to stop
-        if self.item is not None and self.item.service_item_type == ServiceType.Command:
+        if self.commandItem is not None and self.commandItem.service_item_type == ServiceType.Command:
             Receiver().send_message(u'%s_stop'% self.item.name.lower())
-        self.item = item
+        self.commandItem = item
         item.render()
         self.enableToolBar(item)
         if item.service_item_type == ServiceType.Command:
@@ -252,9 +252,9 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'addServiceItem')
         #If old item was a command tell it to stop
-        if self.item is not None and self.item.service_item_type == ServiceType.Command:
+        if self.commandItem is not None and self.commandItem.service_item_type == ServiceType.Command:
             Receiver().send_message(u'%s_stop'% self.item.name.lower())
-        self.item = item
+        self.commandItem = item
         self.enableToolBar(item)
         if item.service_item_type == ServiceType.Command:
             Receiver().send_message(u'%s_start'%item.name.lower(), \
@@ -329,8 +329,8 @@ class SlideController(QtGui.QWidget):
         """
         Go to the next slide.
         """
-        if self.item.service_item_type == ServiceType.Command:
-            Receiver().send_message(u'%s_next'% self.item.name.lower())
+        if self.commandItem.service_item_type == ServiceType.Command:
+            Receiver().send_message(u'%s_next'% self.commandItem.name.lower())
         else:
             row = self.PreviewListWidget.currentRow() + 1
             if row == self.PreviewListWidget.rowCount():
@@ -342,8 +342,8 @@ class SlideController(QtGui.QWidget):
         """
         Go to the previous slide.
         """
-        if self.item.service_item_type == ServiceType.Command:
-            Receiver().send_message(u'%s_previous'% self.item.name.lower())
+        if self.commandItem.service_item_type == ServiceType.Command:
+            Receiver().send_message(u'%s_previous'% self.commandItem.name.lower())
         else:
             row = self.PreviewListWidget.currentRow() - 1
             if row == -1:

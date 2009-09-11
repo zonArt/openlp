@@ -77,5 +77,6 @@ class SettingsManager(object):
             isVisible)
 
     def setDockbarLeft(self, value):
-        ConfigHelper.set_config(u'user interface', u'mediamanager left', value)
+        #ConfigHelper.set_config(u'user interface', u'mediamanager left', value)
+        pass
 

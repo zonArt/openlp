@@ -118,12 +118,15 @@ class Ui_MainWindow(object):
         self.MediaManagerDock.setWindowIcon(icon)
         self.MediaManagerDock.setFloating(False)
         self.MediaManagerDock.setObjectName(u'MediaManagerDock')
-        self.MediaManagerDock.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Ignored,
-            QtGui.QSizePolicy.Maximum))
-        geometry =  self.MediaManagerDock.geometry()
-        geometry.setWidth(self.settingsmanager.mainwindow_left)
-        self.MediaManagerDock.setGeometry(geometry)
-        self.MediaManagerDock.setMinimumWidth(10)
+        self.MediaManagerDock.setMinimumWidth(
+            self.settingsmanager.mainwindow_left)
+
+#        self.MediaManagerDock.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Ignored,
+#            QtGui.QSizePolicy.Maximum))
+#        geometry =  self.MediaManagerDock.geometry()
+#        geometry.setWidth(self.settingsmanager.mainwindow_left)
+#        self.MediaManagerDock.setGeometry(geometry)
+#        self.MediaManagerDock.setMinimumWidth(10)
 
         self.MediaManagerContents = QtGui.QWidget()
         self.MediaManagerContents.setObjectName(u'MediaManagerContents')
