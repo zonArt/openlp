@@ -73,8 +73,16 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'activated(int)'), self.onThemeComboChanged)
         QtCore.QObject.connect(self.MaintenanceButton,
             QtCore.SIGNAL(u'clicked()'), self.onMaintenanceButtonClicked)
+        QtCore.QObject.connect(self.TitleEditItem,
+            QtCore.SIGNAL(u'lostFocus()'), self.onTitleEditItemLostFocus)
+        QtCore.QObject.connect(self.CCLNumberEdit,
+            QtCore.SIGNAL(u'lostFocus()'), self.onCCLNumberEditLostFocus)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'update_themes'), self.loadThemes)
+        QtCore.QObject.connect(self.CommentsEdit,
+            QtCore.SIGNAL(u'lostFocus()'), self.onCommentsEditLostFocus)
+        QtCore.QObject.connect(self.VerseOrderEdit,
+            QtCore.SIGNAL(u'lostFocus()'), self.onVerseOrderEditLostFocus)
         # Create other objects and forms
         self.songmanager = songmanager
         self.parent = parent
@@ -333,35 +341,41 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         message = u''
         if len(self.TitleEditItem.displayText()) == 0:
             valid = False
-            self.TitleEditItem.setStyleSheet(u'background-color: red; color: white')
-            message = translate(u'SongFormDialog', u'You need to enter a song title \n')
-        else:
-            self.TitleEditItem.setStyleSheet(u'')
+            ##self.TitleEditItem.setStyleSheet(u'background-color: red; color: white')
+            self.SongTabWidget.setCurrentIndex(0)
+            self.TitleEditItem.setFocus()
+            return False, translate(u'SongFormDialog', u'You need to enter a song title.')
+            #else:
+            #self.TitleEditItem.setStyleSheet(u'')
         if self.VerseListWidget.count() == 0:
             valid = False
-            self.VerseListWidget.setStyleSheet(u'background-color: red; color: white')
-            message = message + translate(u'SongFormDialog', u'You need to enter some verse text \n')
-        else:
-            self.VerseListWidget.setStyleSheet(u'')
+            #self.VerseListWidget.setStyleSheet(u'background-color: red; color: white')
+            self.SongTabWidget.setCurrentIndex(0)
+            self.VerseListWidget.setFocus()
+            return False, translate(u'SongFormDialog', u'You need to enter some verses.')
+            #else:
+            #self.VerseListWidget.setStyleSheet(u'')
         if self.AuthorsListView.count() == 0:
             valid = False
-            self.AuthorsListView.setStyleSheet(u'background-color: red; color: white')
-            message = message + translate(u'SongFormDialog', u'You need to provide an author')
-        else:
-            self.AuthorsListView.setStyleSheet(u'')
-        return valid,  message
+            #self.AuthorsListView.setStyleSheet(u'background-color: red; color: white')
+            self.SongTabWidget.setCurrentIndex(2)
+            self.AuthorsListView.setFocus()
+            return False, translate(u'SongFormDialog', u'You need to provide at least one author.')
+            #else:
+            #self.AuthorsListView.setStyleSheet(u'')
+        return valid, message
 
-    def on_TitleEditItem_lostFocus(self):
+    def onTitleEditItemLostFocus(self):
         self.song.title = self.TitleEditItem.text()
         self.title_change = True
 
-    def on_VerseOrderEdit_lostFocus(self):
+    def onVerseOrderEditLostFocus(self):
         self.song.verse_order = self.VerseOrderEdit.text()
 
-    def on_CommentsEdit_lostFocus(self):
+    def onCommentsEditLostFocus(self):
         self.song.comments = self.CommentsEdit.text()
 
-    def on_CCLNumberEdit_lostFocus(self):
+    def onCCLNumberEditLostFocus(self):
         self.song.ccli_number = self.CCLNumberEdit.text()
 
     def onCopyrightInsertButtonTriggered(self):
