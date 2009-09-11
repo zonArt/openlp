@@ -47,6 +47,3 @@ class BaseListWithDnD(QtGui.QListWidget):
         drag.setMimeData(mimeData)
         mimeData.setText(self.PluginName)
         dropAction = drag.start(QtCore.Qt.CopyAction)
-        if dropAction == QtCore.Qt.CopyAction:
-            self.close()
-
