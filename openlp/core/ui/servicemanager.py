@@ -126,11 +126,6 @@ class ServiceManager(QtGui.QWidget):
         self.ThemeWidget.setDefaultWidget(self.ThemeComboBox)
         self.Toolbar.addAction(self.ThemeWidget)
         self.Layout.addWidget(self.Toolbar)
-        # *** TEST Layout for vertical service order toolbar ***
-        self.SubLayout = QtGui.QHBoxLayout()
-        self.SubLayout.setSpacing(0)
-        self.SubLayout.setMargin(0)
-        self.Layout.insertLayout(-1, self.SubLayout)
         # Create the service manager list
         self.ServiceManagerList = ServiceManagerList(self)
         self.ServiceManagerList.setEditTriggers(
@@ -161,11 +156,9 @@ class ServiceManager(QtGui.QWidget):
             self.ServiceManagerList, ':/services/service_delete',
             translate(u'ServiceManager',u'&Remove from Service'),
             self.onDeleteFromService))
-        self.SubLayout.addWidget(self.ServiceManagerList)
+        self.Layout.addWidget(self.ServiceManagerList)
         # Add the bottom toolbar
         self.OrderToolbar = OpenLPToolbar(self)
-        self.OrderToolbar.setOrientation(QtCore.Qt.Vertical)
-        self.OrderToolbar.setIconSize(QtCore.QSize(17, 17))
         self.OrderToolbar.addToolbarButton(u'Move to top',
             u':/services/service_top.png',
             translate(u'ServiceManager', u'Move to top'), self.onServiceTop)
@@ -184,7 +177,7 @@ class ServiceManager(QtGui.QWidget):
             u':/services/service_delete.png',
             translate(u'ServiceManager', u'Delete From Service'),
             self.onDeleteFromService)
-        self.SubLayout.addWidget(self.OrderToolbar)
+        self.Layout.addWidget(self.OrderToolbar)
         # Connect up our signals and slots
         QtCore.QObject.connect(self.ThemeComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onThemeComboBoxSelected)

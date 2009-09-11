@@ -36,13 +36,11 @@ class OpenLPToolbar(QtGui.QToolBar):
         QtGui.QToolBar.__init__(self, None)
         # useful to be able to reuse button icons...
         self.icons = {}
-        self.setIconSize(QtCore.QSize(20, 20))
         self.actions = {}
         self.log = logging.getLogger(u'OpenLPToolbar')
         self.log.debug(u'Init done')
 
-    def addToolbarButton(self, title, icon, tooltip=None, slot=None,
-        objectname=None):
+    def addToolbarButton(self, title, icon, tooltip=None, slot=None, objectname=None):
         """
         A method to help developers easily add a button to the toolbar.
 
@@ -72,8 +70,8 @@ class OpenLPToolbar(QtGui.QToolBar):
                 ButtonIcon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
                     QtGui.QIcon.Off)
             else:
-                ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(
-                    QtGui.QImage(icon)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
+                    QtGui.QIcon.Normal, QtGui.QIcon.Off)
         if ButtonIcon is not None:
             if slot is not None:
                 ToolbarButton = self.addAction(ButtonIcon, title, slot)
