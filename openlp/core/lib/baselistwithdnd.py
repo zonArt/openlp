@@ -29,8 +29,8 @@ class BaseListWithDnD(QtGui.QListWidget):
     Please put a short description of what this class does in here.
     """
 
-    def __init__(self,parent = None):
-        QtGui.QListWidget.__init__(self,parent)
+    def __init__(self, parent=None):
+        QtGui.QListWidget.__init__(self, parent)
         # this must be set by the class which is inheriting
         assert(self.PluginName)
 
