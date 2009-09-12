@@ -1,22 +1,27 @@
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
-"""
-OpenLP - Open Source Lyrics Projection
-Copyright (c) 2009 Raoul Snyman
-Portions copyright (c) 2009 Martin Thompson, Tim Bentley,
 
-This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation; version 2 of the License.
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2009 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
+# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-Place, Suite 330, Boston, MA 02111-1307 USA
-"""
 import os
 import sys
 import zipfile
@@ -28,8 +33,9 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AmendThemeForm, ServiceManager
 from openlp.core.theme import Theme
-from openlp.core.lib import PluginConfig, OpenLPToolbar, ThemeXML, Renderer, \
-    translate, str_to_bool, file_to_xml, buildIcon,  Receiver
+from openlp.core.lib import PluginConfig,  \
+    OpenLPToolbar, ThemeXML, Renderer, translate, \
+    file_to_xml, buildIcon,  Receiver
 from openlp.core.utils import ConfigHelper
 
 class ThemeManager(QtGui.QWidget):
@@ -128,7 +134,7 @@ class ThemeManager(QtGui.QWidget):
 
     def onAddTheme(self):
         self.amendThemeForm.theme.parse(self.baseTheme())
-        self.amendThemeForm.loadTheme()
+        self.amendThemeForm.loadTheme(None)
         self.amendThemeForm.exec_()
 
     def onEditTheme(self):
@@ -224,16 +230,21 @@ class ThemeManager(QtGui.QWidget):
 
     def getThemeData(self, themename):
         log.debug(u'getthemedata for theme %s', themename)
-        xml_file = os.path.join(self.path, unicode(themename),
-            unicode(themename) + u'.xml')
+        xml_file = os.path.join(self.path, unicode(themename), unicode(themename) + u'.xml')
         try:
             xml = file_to_xml(xml_file)
         except:
-            xml = self.baseTheme()
+            newtheme = ThemeXML()
+            newtheme.new_document(u'New Theme')
+            newtheme.add_background_solid(unicode(u'#000000'))
+            newtheme.add_font(unicode(QtGui.QFont().family()), unicode(u'#FFFFFF'), unicode(30), u'False')
+            newtheme.add_font(unicode(QtGui.QFont().family()), unicode(u'#FFFFFF'), unicode(12), u'False', u'footer')
+            newtheme.add_display(u'False', unicode(u'#FFFFFF'), u'False', unicode(u'#FFFFFF'),
+                unicode(0), unicode(0), unicode(0))
+            xml = newtheme.extract_xml()
         theme = ThemeXML()
         theme.parse(xml)
         theme.extend_image_filename(self.path)
-        self.cleanTheme(theme)
         return theme
 
     def checkThemesExists(self, dir):
@@ -345,7 +356,7 @@ class ThemeManager(QtGui.QWidget):
             os.mkdir(os.path.join(self.path, name))
         theme_file = os.path.join(theme_dir, name + u'.xml')
         log.debug(theme_file)
- 
+
         result = QtGui.QMessageBox.Yes
         if os.path.exists(theme_file):
             result = QtGui.QMessageBox.question(
@@ -361,7 +372,7 @@ class ThemeManager(QtGui.QWidget):
             outfile.close()
             if image_from is not None and image_from != image_to:
                 shutil.copyfile(image_from, image_to)
-            
+
             self.generateAndSaveImage(self.path, name, theme_xml)
             self.loadThemes()
         else:
