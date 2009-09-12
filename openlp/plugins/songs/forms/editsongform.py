@@ -78,7 +78,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.MaintenanceButton,
             QtCore.SIGNAL(u'clicked()'), self.onMaintenanceButtonClicked)
         QtCore.QObject.connect(self.TitleEditItem,
-            QtCore.SIGNAL(u'lostFocus()'), self.onTitleEditItemLostFocus)
+            QtCore.SIGNAL(u'editingFinished()'), self.onTitleEditItemLostFocus)
         QtCore.QObject.connect(self.CCLNumberEdit,
             QtCore.SIGNAL(u'lostFocus()'), self.onCCLNumberEditLostFocus)
         QtCore.QObject.connect(Receiver.get_receiver(),
