@@ -1,22 +1,26 @@
-# -*- coding:iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
-"""
-OpenLP - Open Source Lyrics Projection
-Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley, Carsten Tinggaard
 
-This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation; version 2 of the License.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-Place, Suite 330, Boston, MA 02111-1307 USA
-"""
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2009 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
+# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 
 import sys
 import os
@@ -170,33 +174,33 @@ class _OpenSong(XmlRootClass):
 
 
 class Song(object) :
-    """Handling song properties and methods 
-    
+    """Handling song properties and methods
+
     handles all conversions between various input and output formats
-    
+
     CCLI :
         from_ccli_text_file
         to_ccli_text_file
         from_ccli_text_buffer
         to_ccli_text_buffer
-        
+
     OpenSong:
         from_opensong_file
         to_opensong_file
         from_opensong_buffer
         to_opensong_buffer
-        
+
     presentation (screen):
         get_number_of_slides
         get_preview_slide
         get_render_slide
-        
+
     openlp1 :
         from_openlp1_lyrics_buffer
         to_openlp1_lyrics_buffer
         set_author_list
         get_author_list
-        
+
     editing and openlp2 :
         set_*
         get_*
@@ -250,11 +254,11 @@ class Song(object) :
     def set_songid(self, songid):
         """Set the songid for the database"""
         self.songid = songid
-        
+
     def get_songid(self):
         """Return the songid for the database"""
         return self.songid
-    
+
     def from_opensong_buffer(self,  xmlcontent):
         """Initialize from buffer(string) of xml lines in opensong format"""
         self._reset()

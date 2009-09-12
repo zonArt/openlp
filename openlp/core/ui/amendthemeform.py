@@ -1,27 +1,33 @@
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
-"""
-OpenLP - Open Source Lyrics Projection
-Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley,
 
-This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation; version 2 of the License.
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2009 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
+# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-Place, Suite 330, Boston, MA 02111-1307 USA
-"""
 import logging
 import os, os.path
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import ThemeXML, Renderer, file_to_xml, translate
+from openlp.core.lib import ThemeXML, Renderer, file_to_xml, str_to_bool, \
+    translate
 
 from amendthemedialog import Ui_AmendThemeDialog
 
@@ -124,10 +130,10 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             new_theme.add_background_transparent()
         else:
             if self.theme.background_type == u'solid':
-                new_theme.add_background_solid(
+                new_theme.add_background_solid( \
                     unicode(self.theme.background_color))
             elif self.theme.background_type == u'gradient':
-                new_theme.add_background_gradient(
+                new_theme.add_background_gradient( \
                     unicode(self.theme.background_startColor),
                     unicode(self.theme.background_endColor),
                     self.theme.background_direction)
@@ -171,15 +177,63 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             save_from, save_to) is not False:
             return QtGui.QDialog.accept(self)
 
-    def setTheme(self, theme):
-        self.theme = theme
-
-    def loadTheme(self):
-        log.debug(u'LoadTheme %s', self.theme)
+    def loadTheme(self, theme):
+        log.debug(u'LoadTheme %s', theme)
+        if theme == None:
+            self.theme.parse(self.baseTheme())
+        else:
+            xml_file = os.path.join(self.path, theme, theme + u'.xml')
+            xml = file_to_xml(xml_file)
+            self.theme.parse(xml)
+            self.theme.extend_image_filename(self.path)
+        self.cleanTheme(self.theme)
         self.allowPreview = False
         self.paintUi(self.theme)
         self.allowPreview = True
         self.previewTheme(self.theme)
+
+    def cleanTheme(self, theme):
+        self.theme.background_color = theme.background_color.strip()
+        self.theme.background_direction = theme.background_direction.strip()
+        self.theme.background_endColor = theme.background_endColor.strip()
+        if theme.background_filename:
+            self.theme.background_filename = theme.background_filename.strip()
+        #self.theme.background_mode
+        self.theme.background_startColor = theme.background_startColor.strip()
+        #self.theme.background_type
+        self.theme.display_display = theme.display_display.strip()
+        self.theme.display_horizontalAlign = \
+            theme.display_horizontalAlign.strip()
+        self.theme.display_outline = str_to_bool(theme.display_outline)
+        #self.theme.display_outline_color
+        self.theme.display_shadow = str_to_bool(theme.display_shadow)
+        #self.theme.display_shadow_color
+        self.theme.display_verticalAlign = \
+            theme.display_verticalAlign.strip()
+        self.theme.display_wrapStyle = theme.display_wrapStyle.strip()
+        self.theme.font_footer_color = theme.font_footer_color.strip()
+        self.theme.font_footer_height = theme.font_footer_height.strip()
+        self.theme.font_footer_italics = str_to_bool(theme.font_footer_italics)
+        self.theme.font_footer_name = theme.font_footer_name.strip()
+        #self.theme.font_footer_override
+        self.theme.font_footer_proportion = \
+            theme.font_footer_proportion.strip()
+        self.theme.font_footer_weight = theme.font_footer_weight.strip()
+        self.theme.font_footer_width = theme.font_footer_width.strip()
+        self.theme.font_footer_x = theme.font_footer_x.strip()
+        self.theme.font_footer_y = theme.font_footer_y.strip()
+        self.theme.font_main_color = theme.font_main_color.strip()
+        self.theme.font_main_height = theme.font_main_height.strip()
+        self.theme.font_main_italics = str_to_bool(theme.font_main_italics)
+        self.theme.font_main_name = theme.font_main_name.strip()
+        #self.theme.font_main_override
+        self.theme.font_main_proportion = theme.font_main_proportion.strip()
+        self.theme.font_main_weight = theme.font_main_weight.strip()
+        self.theme.font_main_x = theme.font_main_x.strip()
+        self.theme.font_main_y = theme.font_main_y.strip()
+        #self.theme.theme_mode
+        self.theme.theme_name = theme.theme_name.strip()
+        #self.theme.theme_version
 
     def onImageToolButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file')
@@ -195,13 +249,13 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.previewTheme(self.theme)
 
     def onFontMainWeightComboBoxSelected(self, value):
-        if value == 0:
+        if value  ==0:
             self.theme.font_main_weight = u'Normal'
             self.theme.font_main_italics = False
-        elif value == 1:
+        elif value  == 1:
             self.theme.font_main_weight = u'Bold'
             self.theme.font_main_italics = False
-        elif value == 2:
+        elif value  == 2:
             self.theme.font_main_weight = u'Normal'
             self.theme.font_main_italics = True
         else:
@@ -239,7 +293,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             self.FontMainXSpinBox.setValue(int(self.theme.font_main_x))
             self.FontMainYSpinBox.setValue(int(self.theme.font_main_y))
             self.FontMainWidthSpinBox.setValue(int(self.theme.font_main_width))
-            self.FontMainHeightSpinBox.setValue(int(
+            self.FontMainHeightSpinBox.setValue(int( \
                 self.theme.font_main_height))
         self.stateChanging(self.theme)
         self.previewTheme(self.theme)
@@ -318,9 +372,9 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
 
             self.FontFooterXSpinBox.setValue(int(self.theme.font_footer_x))
             self.FontFooterYSpinBox.setValue(int(self.theme.font_footer_y))
-            self.FontFooterWidthSpinBox.setValue(int(
+            self.FontFooterWidthSpinBox.setValue(int( \
                 self.theme.font_footer_width))
-            self.FontFooterHeightSpinBox.setValue(int(
+            self.FontFooterHeightSpinBox.setValue(int( \
                 self.theme.font_footer_height))
 
         self.stateChanging(self.theme)
@@ -453,6 +507,21 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     #
     #Local Methods
     #
+    def baseTheme(self):
+        log.debug(u'base theme created')
+        newtheme = ThemeXML()
+        newtheme.new_document(u'New Theme')
+        newtheme.add_background_solid(unicode(u'#000000'))
+        newtheme.add_font(unicode(QtGui.QFont().family()), unicode(u'#FFFFFF'),
+            unicode(30), u'False')
+        newtheme.add_font(unicode(QtGui.QFont().family()), unicode(u'#FFFFFF'),
+            unicode(12), u'False', u'footer')
+        newtheme.add_display(u'False', unicode(u'#FFFFFF'), u'False',
+            unicode(u'#FFFFFF'),
+            unicode(0), unicode(0), unicode(0))
+
+        return newtheme.extract_xml()
+
     def paintUi(self, theme):
         self.stateChanging(theme)
         self.ThemeNameEdit.setText(self.theme.theme_name)
@@ -492,8 +561,8 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.FontMainYSpinBox.setValue(int(self.theme.font_main_y))
         self.FontMainWidthSpinBox.setValue(int(self.theme.font_main_width))
         self.FontMainHeightSpinBox.setValue(int(self.theme.font_main_height))
-        self.FontFooterSizeSpinBox.setValue(int(
-            self.theme.font_footer_proportion))
+        self.FontFooterSizeSpinBox.setValue(
+            int(self.theme.font_footer_proportion))
         if not self.theme.font_footer_italics and \
             self.theme.font_footer_weight == u'Normal':
             self.FontFooterWeightComboBox.setCurrentIndex(0)
@@ -508,8 +577,8 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.FontFooterXSpinBox.setValue(int(self.theme.font_footer_x))
         self.FontFooterYSpinBox.setValue(int(self.theme.font_footer_y))
         self.FontFooterWidthSpinBox.setValue(int(self.theme.font_footer_width))
-        self.FontFooterHeightSpinBox.setValue(int(
-            self.theme.font_footer_height))
+        self.FontFooterHeightSpinBox.setValue(
+            int(self.theme.font_footer_height))
         self.FontMainColorPushButton.setStyleSheet(
             u'background-color: %s' % unicode(theme.font_main_color))
         self.FontFooterColorPushButton.setStyleSheet(
@@ -544,10 +613,10 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             self.ShadowCheckBox.setChecked(False)
             self.ShadowColorPushButton.setEnabled(False)
 
-        self.HorizontalComboBox.setCurrentIndex(int(
-            self.theme.display_horizontalAlign))
-        self.VerticalComboBox.setCurrentIndex(int(
-            self.theme.display_verticalAlign))
+        self.HorizontalComboBox.setCurrentIndex(
+            int(self.theme.display_horizontalAlign))
+        self.VerticalComboBox.setCurrentIndex(
+            int(self.theme.display_verticalAlign))
 
     def stateChanging(self, theme):
         if theme.background_mode == u'transparent':
