@@ -72,7 +72,7 @@ class PresentationPlugin(Plugin):
         """
         log.debug('check_pre_conditions')
         #Lets see if Impress is required (Default is Not wanted)
-        if int(self.config.get_config(u'Impress', 0)) == 2:
+        if int(self.config.get_config(u'Impress', 0)) == QtCore.Qt.Checked:
             try:
                 #Check to see if we have uno installed
                 import uno
@@ -81,7 +81,7 @@ class PresentationPlugin(Plugin):
             except:
                 log.error(u'Reason : %s', sys.exc_info())
         #Lets see if Impress is required (Default is Not wanted)
-        if int(self.config.get_config(u'Powerpoint', 0)) == 2:
+        if int(self.config.get_config(u'Powerpoint', 0)) == QtCore.Qt.Checked:
             try:
                 #Check to see if we are Win32
                 from win32com.client import Dispatch
@@ -90,7 +90,7 @@ class PresentationPlugin(Plugin):
             except:
                 log.error(u'Reason : %s', sys.exc_info())
         #Lets see if Impress is required (Default is Not wanted)
-        if int(self.config.get_config(u'Powerpoint Viewer', 0)) == 2:
+        if int(self.config.get_config(u'Powerpoint Viewer', 0)) == QtCore.Qt.Checked:
             try:
                 #Check to see if we are Win32
                 from win32com.client import Dispatch
