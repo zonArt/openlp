@@ -201,7 +201,8 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         #self.theme.background_mode
         self.theme.background_startColor = theme.background_startColor.strip()
         #self.theme.background_type
-        self.theme.display_display = theme.display_display.strip()
+        if theme.display_display:
+            self.theme.display_display = theme.display_display.strip()
         self.theme.display_horizontalAlign = \
             theme.display_horizontalAlign.strip()
         self.theme.display_outline = str_to_bool(theme.display_outline)
@@ -277,7 +278,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             self.previewTheme(self.theme)
 
     def onFontMainDefaultCheckBoxChanged(self, value):
-        if value == QtCore.Qt.Checked:  # checked
+        if value == 2:  # checked
             self.theme.font_main_override = False
         else:
             self.theme.font_main_override = True
@@ -356,7 +357,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             self.previewTheme(self.theme)
 
     def onFontFooterDefaultCheckBoxChanged(self, value):
-        if value == QtCore.Qt.Checked:  # checked
+        if value == 2:  # checked
             self.theme.font_footer_override = False
         else:
             self.theme.font_footer_override = True
@@ -466,7 +467,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     #Other Tab
     #
     def onOutlineCheckBoxChanged(self, value):
-        if value == QtCore.Qt.Checked:  # checked
+        if value == 2:  # checked
             self.theme.display_outline = True
         else:
             self.theme.display_outline = False
@@ -481,7 +482,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.previewTheme(self.theme)
 
     def onShadowCheckBoxChanged(self, value):
-        if value == QtCore.Qt.Checked:  # checked
+        if value == 2:  # checked
             self.theme.display_shadow = True
         else:
             self.theme.display_shadow = False

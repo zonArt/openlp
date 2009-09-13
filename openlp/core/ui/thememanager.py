@@ -139,9 +139,8 @@ class ThemeManager(QtGui.QWidget):
     def onEditTheme(self):
         item = self.ThemeListWidget.currentItem()
         if item is not None:
-            self.amendThemeForm.setTheme(self.getThemeData(
-                item.data(QtCore.Qt.UserRole).toString()))
-            self.amendThemeForm.loadTheme()
+            self.amendThemeForm.loadTheme(
+                unicode(item.data(QtCore.Qt.UserRole).toString()))
             self.amendThemeForm.exec_()
 
     def onDeleteTheme(self):
