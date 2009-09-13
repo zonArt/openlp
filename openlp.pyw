@@ -29,9 +29,10 @@ from optparse import OptionParser
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, str_to_bool
 from openlp.core.resources import *
 from openlp.core.ui import MainWindow, SplashScreen
+from openlp.core.utils import ConfigHelper
 
 log = logging.getLogger()
 
@@ -55,10 +56,13 @@ class OpenLP(QtGui.QApplication):
         #provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'process_events'), self.processEvents)
-        self.setApplicationName(u'openlp.org')
+        self.setApplicationName(u'OpenLP')
         self.setApplicationVersion(u'1.9.0')
-        self.splash = SplashScreen(self.applicationVersion())
-        self.splash.show()
+        show_splash = str_to_bool(ConfigHelper.get_registry().get_value(
+            u'general', u'show splash', True))
+        if show_splash:
+            self.splash = SplashScreen(self.applicationVersion())
+            self.splash.show()
         # make sure Qt really display the splash screen
         self.processEvents()
         screens = []
@@ -72,9 +76,10 @@ class OpenLP(QtGui.QApplication):
         # start the main app window
         self.mainWindow = MainWindow(screens)
         self.mainWindow.show()
-        # now kill the splashscreen
-        self.splash.finish(self.mainWindow)
-        sys.exit(self.exec_())
+        if show_splash:
+            # now kill the splashscreen
+            self.splash.finish(self.mainWindow)
+        return self.exec_()
 
 
 def main():
@@ -102,7 +107,7 @@ def main():
         log.setLevel(logging.INFO)
     # Now create and actually run the application.
     app = OpenLP(sys.argv)
-    app.run()
+    sys.exit(app.run())
 
 if __name__ == u'__main__':
     """
