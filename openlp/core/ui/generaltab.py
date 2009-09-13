@@ -24,7 +24,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab,  translate,  str_to_bool
+from openlp.core.lib import SettingsTab, translate, str_to_bool
 
 class GeneralTab(SettingsTab):
     """
@@ -59,24 +59,22 @@ class GeneralTab(SettingsTab):
         self.MonitorComboBox.setObjectName(u'MonitorComboBox')
         self.MonitorLayout.addWidget(self.MonitorComboBox)
         self.GeneralLeftLayout.addWidget(self.MonitorGroupBox)
-        self.BlankScreenGroupBox = QtGui.QGroupBox(self.GeneralLeftWidget)
-        self.BlankScreenGroupBox.setObjectName(u'BlankScreenGroupBox')
-        self.BlankScreenLayout = QtGui.QVBoxLayout(self.BlankScreenGroupBox)
-        self.BlankScreenLayout.setSpacing(8)
-        self.BlankScreenLayout.setMargin(8)
-        self.BlankScreenLayout.setObjectName(u'BlankScreenLayout')
-        self.WarningCheckBox = QtGui.QCheckBox(self.BlankScreenGroupBox)
+        self.StartupGroupBox = QtGui.QGroupBox(self.GeneralLeftWidget)
+        self.StartupGroupBox.setObjectName(u'StartupGroupBox')
+        self.StartupLayout = QtGui.QVBoxLayout(self.StartupGroupBox)
+        self.StartupLayout.setSpacing(8)
+        self.StartupLayout.setMargin(8)
+        self.StartupLayout.setObjectName(u'StartupLayout')
+        self.WarningCheckBox = QtGui.QCheckBox(self.StartupGroupBox)
         self.WarningCheckBox.setObjectName(u'WarningCheckBox')
-        self.BlankScreenLayout.addWidget(self.WarningCheckBox)
-        self.GeneralLeftLayout.addWidget(self.BlankScreenGroupBox)
-        self.AutoOpenGroupBox = QtGui.QGroupBox(self.GeneralLeftWidget)
-        self.AutoOpenGroupBox.setObjectName(u'AutoOpenGroupBox')
-        self.AutoOpenLayout = QtGui.QVBoxLayout(self.AutoOpenGroupBox)
-        self.AutoOpenLayout.setObjectName(u'AutoOpenLayout')
-        self.AutoOpenCheckBox = QtGui.QCheckBox(self.AutoOpenGroupBox)
+        self.StartupLayout.addWidget(self.WarningCheckBox)
+        self.AutoOpenCheckBox = QtGui.QCheckBox(self.StartupGroupBox)
         self.AutoOpenCheckBox.setObjectName(u'AutoOpenCheckBox')
-        self.AutoOpenLayout.addWidget(self.AutoOpenCheckBox)
-        self.GeneralLeftLayout.addWidget(self.AutoOpenGroupBox)
+        self.StartupLayout.addWidget(self.AutoOpenCheckBox)
+        self.ShowSplashCheckBox = QtGui.QCheckBox(self.StartupGroupBox)
+        self.ShowSplashCheckBox.setObjectName(u'ShowSplashCheckBox')
+        self.StartupLayout.addWidget(self.ShowSplashCheckBox)
+        self.GeneralLeftLayout.addWidget(self.StartupGroupBox)
         self.GeneralLeftSpacer = QtGui.QSpacerItem(20, 40,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.GeneralLeftLayout.addItem(self.GeneralLeftSpacer)
@@ -123,6 +121,8 @@ class GeneralTab(SettingsTab):
             QtCore.SIGNAL(u'stateChanged(int)'), self.onWarningCheckBoxChanged)
         QtCore.QObject.connect(self.AutoOpenCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'), self.onAutoOpenCheckBoxChanged)
+        QtCore.QObject.connect(self.ShowSplashCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'), self.onShowSplashCheckBoxChanged)
         QtCore.QObject.connect(self.NumberEdit,
             QtCore.SIGNAL(u'editingFinished()'), self.onNumberEditLostFocus)
         QtCore.QObject.connect(self.UsernameEdit,
@@ -133,10 +133,10 @@ class GeneralTab(SettingsTab):
     def retranslateUi(self):
         self.MonitorGroupBox.setTitle(translate(u'GeneralTab', u'Monitors'))
         self.MonitorLabel.setText(translate(u'GeneralTab', u'Select monitor for output display:'))
-        self.BlankScreenGroupBox.setTitle(translate(u'GeneralTab', u'Blank Screen'))
-        self.WarningCheckBox.setText(translate(u'GeneralTab', u'Show warning on startup'))
-        self.AutoOpenGroupBox.setTitle(translate(u'GeneralTab', u'Auto Open Last Service'))
-        self.AutoOpenCheckBox.setText(translate(u'GeneralTab', u'Automatically open the last service at startup'))
+        self.StartupGroupBox.setTitle(translate(u'GeneralTab', u'Application Startup'))
+        self.WarningCheckBox.setText(translate(u'GeneralTab', u'Show blank screen warning'))
+        self.AutoOpenCheckBox.setText(translate(u'GeneralTab', u'Automatically open the last service'))
+        self.ShowSplashCheckBox.setText(translate(u'GeneralTab', u'Show the splash screen'))
         self.CCLIGroupBox.setTitle(translate(u'GeneralTab', u'CCLI Details'))
         self.NumberLabel.setText(translate(u'GeneralTab', u'CCLI Number:'))
         self.UsernameLabel.setText(translate(u'GeneralTab', u'SongSelect Username:'))
@@ -146,16 +146,13 @@ class GeneralTab(SettingsTab):
         self.MonitorNumber = self.MonitorComboBox.currentIndex()
 
     def onAutoOpenCheckBoxChanged(self, value):
-        self.AutoOpen = False
-        if value == 2:
-            # we have a set value convert to True/False
-            self.AutoOpen = True
+        self.AutoOpen = (value == QtCore.Qt.Checked)
+
+    def onShowSplashCheckBoxChanged(self, value):
+        self.ShowSplash = (value == QtCore.Qt.Checked)
 
     def onWarningCheckBoxChanged(self, value):
-        self.Warning = False
-        if value == 2:
-            # we have a set value convert to True/False
-            self.Warning = True
+        self.Warning = (value == QtCore.Qt.Checked)
 
     def onNumberEditLostFocus(self):
         self.CCLNumber = self.NumberEdit.displayText()
@@ -178,6 +175,7 @@ class GeneralTab(SettingsTab):
         self.MonitorNumber = int(self.config.get_config(u'Monitor', u'0'))
         self.Warning = str_to_bool(self.config.get_config(u'Warning', u'False'))
         self.AutoOpen = str_to_bool(self.config.get_config(u'Auto Open', u'False'))
+        self.ShowSplash = str_to_bool(self.config.get_config(u'show splash', u'True'))
         self.CCLNumber = unicode(self.config.get_config(u'CCL Number', u'XXX'))
         self.Username = unicode(self.config.get_config(u'User Name', u''))
         self.Password = unicode(self.config.get_config(u'Password', u''))
@@ -185,6 +183,7 @@ class GeneralTab(SettingsTab):
         self.MonitorComboBox.setCurrentIndex(self.MonitorNumber)
         self.WarningCheckBox.setChecked(self.Warning)
         self.AutoOpenCheckBox.setChecked(self.AutoOpen)
+        self.ShowSplashCheckBox.setChecked(self.ShowSplash)
         self.NumberEdit.setText(self.CCLNumber)
         self.UsernameEdit.setText(self.Username)
         self.PasswordEdit.setText(self.Password)
@@ -193,6 +192,7 @@ class GeneralTab(SettingsTab):
         self.config.set_config(u'Monitor', self.MonitorNumber)
         self.config.set_config(u'Warning', self.Warning)
         self.config.set_config(u'Auto Open', self.AutoOpen)
+        self.config.set_config(u'show splash', self.ShowSplash)
         self.config.set_config(u'CCL Number', self.CCLNumber)
         self.config.set_config(u'User Name', self.Username)
         self.config.set_config(u'Password', self.Password)
