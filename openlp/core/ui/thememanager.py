@@ -33,9 +33,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AmendThemeForm, ServiceManager
 from openlp.core.theme import Theme
-from openlp.core.lib import PluginConfig,  \
-    OpenLPToolbar, ThemeXML, Renderer, translate, \
-    file_to_xml, buildIcon,  Receiver
+from openlp.core.lib import PluginConfig, OpenLPToolbar, ThemeXML, Renderer, \
+        translate, str_to_bool, file_to_xml, buildIcon, Receiver
 from openlp.core.utils import ConfigHelper
 
 class ThemeManager(QtGui.QWidget):
@@ -230,21 +229,25 @@ class ThemeManager(QtGui.QWidget):
 
     def getThemeData(self, themename):
         log.debug(u'getthemedata for theme %s', themename)
-        xml_file = os.path.join(self.path, unicode(themename), unicode(themename) + u'.xml')
+        xml_file = os.path.join(self.path, unicode(themename),
+            unicode(themename) + u'.xml')
         try:
             xml = file_to_xml(xml_file)
         except:
             newtheme = ThemeXML()
             newtheme.new_document(u'New Theme')
             newtheme.add_background_solid(unicode(u'#000000'))
-            newtheme.add_font(unicode(QtGui.QFont().family()), unicode(u'#FFFFFF'), unicode(30), u'False')
-            newtheme.add_font(unicode(QtGui.QFont().family()), unicode(u'#FFFFFF'), unicode(12), u'False', u'footer')
-            newtheme.add_display(u'False', unicode(u'#FFFFFF'), u'False', unicode(u'#FFFFFF'),
-                unicode(0), unicode(0), unicode(0))
+            newtheme.add_font(unicode(QtGui.QFont().family()),
+                unicode(u'#FFFFFF'), unicode(30), u'False')
+            newtheme.add_font(unicode(QtGui.QFont().family()),
+                unicode(u'#FFFFFF'), unicode(12), u'False', u'footer')
+            newtheme.add_display(u'False', unicode(u'#FFFFFF'), u'False',
+                unicode(u'#FFFFFF'), unicode(0), unicode(0), unicode(0))
             xml = newtheme.extract_xml()
         theme = ThemeXML()
         theme.parse(xml)
         theme.extend_image_filename(self.path)
+        self.cleanTheme(theme)
         return theme
 
     def checkThemesExists(self, dir):
