@@ -277,7 +277,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             self.previewTheme(self.theme)
 
     def onFontMainDefaultCheckBoxChanged(self, value):
-        if value == 2:  # checked
+        if value == QtCore.Qt.Checked:  # checked
             self.theme.font_main_override = False
         else:
             self.theme.font_main_override = True
@@ -356,7 +356,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
             self.previewTheme(self.theme)
 
     def onFontFooterDefaultCheckBoxChanged(self, value):
-        if value == 2:  # checked
+        if value == QtCore.Qt.Checked:  # checked
             self.theme.font_footer_override = False
         else:
             self.theme.font_footer_override = True
@@ -466,7 +466,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
     #Other Tab
     #
     def onOutlineCheckBoxChanged(self, value):
-        if value == 2:  # checked
+        if value == QtCore.Qt.Checked:  # checked
             self.theme.display_outline = True
         else:
             self.theme.display_outline = False
@@ -481,7 +481,7 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         self.previewTheme(self.theme)
 
     def onShadowCheckBoxChanged(self, value):
-        if value == 2:  # checked
+        if value == QtCore.Qt.Checked:  # checked
             self.theme.display_shadow = True
         else:
             self.theme.display_shadow = False

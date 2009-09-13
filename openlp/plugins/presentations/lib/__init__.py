@@ -23,7 +23,7 @@
 ###############################################################################
 
 from impresscontroller import ImpressController
-from powerpointcontroller import PowerpointController
+#from powerpointcontroller import PowerpointController
 from messagelistener import MessageListener
 from mediaitem import PresentationMediaItem
 from presentationtab import PresentationTab

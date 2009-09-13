@@ -519,7 +519,7 @@ class Renderer(object):
         self.footerFont = QtGui.QFont(self._theme.font_footer_name,
                      int(self._theme.font_footer_proportion), # size
                      int(footer_weight), # weight
-                     self._theme.font_footer_italics)# italic
+                     self._theme.font_footer_italics) # italic
         self.footerFont.setPixelSize(int(self._theme.font_footer_proportion))
         main_weight = 50
         if self._theme.font_main_weight == u'Bold':
