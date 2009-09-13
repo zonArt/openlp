@@ -201,7 +201,8 @@ class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
         #self.theme.background_mode
         self.theme.background_startColor = theme.background_startColor.strip()
         #self.theme.background_type
-        self.theme.display_display = theme.display_display.strip()
+        if theme.display_display:
+            self.theme.display_display = theme.display_display.strip()
         self.theme.display_horizontalAlign = \
             theme.display_horizontalAlign.strip()
         self.theme.display_outline = str_to_bool(theme.display_outline)
