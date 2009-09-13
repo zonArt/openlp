@@ -239,7 +239,7 @@ class SlideController(QtGui.QWidget):
         log.debug(u'addServiceItem')
         #If old item was a command tell it to stop
         if self.commandItem is not None and self.commandItem.service_item_type == ServiceType.Command:
-            Receiver().send_message(u'%s_stop'% self.item.name.lower())
+            Receiver().send_message(u'%s_stop'% self.commandItem.name.lower())
         self.commandItem = item
         item.render()
         self.enableToolBar(item)
@@ -258,7 +258,7 @@ class SlideController(QtGui.QWidget):
         log.debug(u'addServiceItem')
         #If old item was a command tell it to stop
         if self.commandItem is not None and self.commandItem.service_item_type == ServiceType.Command:
-            Receiver().send_message(u'%s_stop'% self.item.name.lower())
+            Receiver().send_message(u'%s_stop'% self.commandItem.name.lower())
         self.commandItem = item
         self.enableToolBar(item)
         if item.service_item_type == ServiceType.Command:
