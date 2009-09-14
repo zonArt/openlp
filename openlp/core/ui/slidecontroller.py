@@ -394,4 +394,4 @@ class SlideController(QtGui.QWidget):
     def onGoLive(self):
         row = self.PreviewListWidget.currentRow()
         if row > -1 and row < self.PreviewListWidget.rowCount():
-            self.parent.LiveController.addServiceManagerItem(self.item, row)
+            self.parent.LiveController.addServiceManagerItem(self.commandItem, row)
