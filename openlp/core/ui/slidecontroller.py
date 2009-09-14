@@ -135,6 +135,12 @@ class SlideController(QtGui.QWidget):
                 u':/slides/slide_close.png',
                 translate(u'SlideController', u'Close Screen'),
                 self.onBlankScreen)
+        if not self.isLive:
+            self.Toolbar.addToolbarSeparator(u'Close Separator')
+            self.Toolbar.addToolbarButton(u'Go Live',
+                u':/system/system_live.png',
+                translate(u'SlideController', u'Move to live'),
+                self.onGoLive)
         if isLive:
             self.Toolbar.addToolbarSeparator(u'Loop Separator')
             self.Toolbar.addToolbarButton(u'Start Loop',
@@ -379,3 +385,8 @@ class SlideController(QtGui.QWidget):
     def timerEvent(self, event):
         if event.timerId() == self.timer_id:
             self.onSlideSelectedNext()
+    
+    def onGoLive(self):
+        row = self.PreviewListWidget.currentRow()
+        if row > -1 and row < self.PreviewListWidget.rowCount():
+            self.parent.LiveController.addServiceManagerItem(self.item, row)
