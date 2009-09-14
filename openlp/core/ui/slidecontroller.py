@@ -24,6 +24,7 @@
 
 import logging
 import os
+import time
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, translate, buildIcon, Receiver, \
@@ -241,7 +242,9 @@ class SlideController(QtGui.QWidget):
         if self.commandItem is not None and self.commandItem.service_item_type == ServiceType.Command:
             Receiver().send_message(u'%s_stop'% self.commandItem.name.lower())
         self.commandItem = item
+        before = time.time()
         item.render()
+        log.info(u'Rendering took %4s' % (time.time() - before))
         self.enableToolBar(item)
         if item.service_item_type == ServiceType.Command:
             Receiver().send_message(u'%s_start'%item.name.lower(), \
@@ -273,6 +276,7 @@ class SlideController(QtGui.QWidget):
         Display the slide number passed
         """
         log.debug(u'displayServiceManagerItems Start')
+        before = time.time()
         self.serviceitem = serviceitem
         slide_image = self.serviceitem.frames[0][u'image']
         size = slide_image.size()
@@ -300,6 +304,7 @@ class SlideController(QtGui.QWidget):
             self.PreviewListWidget.selectRow(slideno)
         self.onSlideSelected()
         self.PreviewListWidget.setFocus()
+        log.info(u'Display Rendering took %4s' % (time.time() - before))
         log.debug(u'displayServiceManagerItems End')
 
     #Screen event methods
