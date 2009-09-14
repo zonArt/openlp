@@ -177,7 +177,30 @@ class ThemeManager(QtGui.QWidget):
                 self.pushThemes()
 
     def onExportTheme(self):
-        pass
+        """
+        Save the theme in a zip file
+        """
+        item = self.ThemeListWidget.currentItem()
+        if item is None:
+            QtGui.QMessageBox.critical(self,
+                translate(u'ThemeManager', u'Error'),
+                translate(u'ThemeManager',
+                    u'You have not selected a theme!'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+            return
+        theme = unicode(item.text())
+        path = QtGui.QFileDialog.getExistingDirectory(self,
+            u'Save Theme',self.config.get_last_dir(1) )
+        path = unicode(path)
+        if path != u'':
+            self.config.set_last_dir(path, 1)
+            themePath =  os.path.join(path, theme + u'.theme')
+            zip = zipfile.ZipFile(themePath, 'w')
+            source = os.path.join(self.path, theme)
+            for root, dirs, files in os.walk(source):
+                for name in files:
+                    zip.write(os.path.join(source, name), os.path.join(theme, name))
+            zip.close()
 
     def onImportTheme(self):
         files = QtGui.QFileDialog.getOpenFileNames(None,
@@ -261,7 +284,16 @@ class ThemeManager(QtGui.QWidget):
         necessary.
         """
         log.debug(u'Unzipping theme %s', filename)
-        zip = zipfile.ZipFile(unicode(filename))
+        filename = unicode(filename)
+        try:
+            zip = zipfile.ZipFile(filename)
+        except:
+            QtGui.QMessageBox.critical(self,
+                translate(u'ThemeManager', u'Error'),
+                translate(u'ThemeManager',
+                    u'File is not a valid theme!'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+            return
         filexml = None
         themename = None
         for file in zip.namelist():
