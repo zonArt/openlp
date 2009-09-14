@@ -40,16 +40,18 @@ class SettingsManager(object):
         if mainwindow_docbars > 300:
             self.mainwindow_left = 300
             self.mainwindow_right = 300
+        else:
+            self.mainwindow_left = mainwindow_docbars
+            self.mainwindow_right = mainwindow_docbars
 
-        self.mainwindow_left = int( ConfigHelper.get_config(
-            u'user interface', u'mediamanager left', self.mainwindow_left))
-        self.mainwindow_right = int( ConfigHelper.get_config(
-            u'user interface', u'mediamanager right', self.mainwindow_right))
-        print self.mainwindow_left, self.mainwindow_right
+        #self.mainwindow_left = int( ConfigHelper.get_config(
+        #    u'user interface', u'mediamanager left', self.mainwindow_left))
+        #self.mainwindow_right = int( ConfigHelper.get_config(
+        #    u'user interface', u'mediamanager right', self.mainwindow_right))
 
-        self.slidecontroller = (self.width - (self.mainwindow_left + self.mainwindow_right) - 100 ) / 2
+        self.slidecontroller = (self.width - (
+            self.mainwindow_left + self.mainwindow_right) - 100 ) / 2
         self.slidecontroller_image = self.slidecontroller - 50
-        print self.width, mainwindow_docbars, self.slidecontroller, self.slidecontroller_image
 
         self.showMediaManager = str_to_bool( ConfigHelper.get_config(
             u'user interface', u'display mediamanager', True))
