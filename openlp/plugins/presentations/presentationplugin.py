@@ -30,7 +30,12 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin,  MediaManagerItem
 from openlp.plugins.presentations.lib import PresentationMediaItem, PresentationTab, \
-    ImpressController,  PowerpointController
+    ImpressController
+try:
+    from openlp.plugins.presentations.lib import PowerpointController
+except:
+    pass
+
 
 class PresentationPlugin(Plugin):
 
@@ -72,7 +77,7 @@ class PresentationPlugin(Plugin):
         """
         log.debug('check_pre_conditions')
         #Lets see if Impress is required (Default is Not wanted)
-        if int(self.config.get_config(u'Impress', 0)) == 2:
+        if int(self.config.get_config(u'Impress', QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
             try:
                 #Check to see if we have uno installed
                 import uno
@@ -80,8 +85,8 @@ class PresentationPlugin(Plugin):
                 self.registerControllers(u'Impress', openoffice)
             except:
                 log.error(u'Reason : %s', sys.exc_info())
-        #Lets see if Impress is required (Default is Not wanted)
-        if int(self.config.get_config(u'Powerpoint', 0)) == 2:
+        #Lets see if Powerpoint is required (Default is Not wanted)
+        if int(self.config.get_config(u'Powerpoint', QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
             try:
                 #Check to see if we are Win32
                 from win32com.client import Dispatch
@@ -89,8 +94,8 @@ class PresentationPlugin(Plugin):
                 self.registerControllers(u'Powerpoint', powerpoint)
             except:
                 log.error(u'Reason : %s', sys.exc_info())
-        #Lets see if Impress is required (Default is Not wanted)
-        if int(self.config.get_config(u'Powerpoint Viewer', 0)) == 2:
+        #Lets see if Powerpoint Viewer is required (Default is Not wanted)
+        if int(self.config.get_config(u'Powerpoint Viewer', QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
             try:
                 #Check to see if we are Win32
                 from win32com.client import Dispatch
@@ -108,5 +113,4 @@ class PresentationPlugin(Plugin):
         log.debug(u'Finalise')
         #Ask each controller to tidy up
         for controller in self.controllers:
-            print controller
             self.controllers[controller].kill()

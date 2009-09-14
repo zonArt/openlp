@@ -42,7 +42,7 @@ class RemotesPlugin(Plugin):
         """
         log.debug('check_pre_conditions')
         #Lets see if Remote is required
-        if int(self.config.get_config(u'startup', 0)) == 2:
+        if int(self.config.get_config(u'startup', 0)) == QtCore.Qt.Checked:
             return True
         else:
             return False

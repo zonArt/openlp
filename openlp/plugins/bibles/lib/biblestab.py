@@ -184,14 +184,14 @@ class BiblesTab(SettingsTab):
         check_state = self.NewChaptersCheckBox.checkState()
         self.show_new_chapters = False
         # we have a set value convert to True/False
-        if check_state == 2:
+        if check_state == QtCore.Qt.Checked:
             self.show_new_chapters = True
 
     def onBibleSearchCheckBoxChanged(self):
         check_state = self.BibleSearchCheckBox.checkState()
         self.bible_search = False
         # we have a set value convert to True/False
-        if check_state == 2:
+        if check_state == QtCore.Qt.Checked:
             self.bible_search = True
 
     def load(self):

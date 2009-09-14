@@ -23,5 +23,4 @@
 ###############################################################################
 
 from manager import CustomManager
-from customtab import CustomTab
 from mediaitem import CustomMediaItem

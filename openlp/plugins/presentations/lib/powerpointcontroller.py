@@ -21,8 +21,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
-from win32com.client import Dispatch
+try:
+    from win32com.client import Dispatch
+except:
+    pass
 
 # PPT API documentation:
 # http://msdn.microsoft.com/en-us/library/aa269321(office.10).aspx

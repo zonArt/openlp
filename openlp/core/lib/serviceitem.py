@@ -88,13 +88,13 @@ class ServiceItem(object):
         The render method is what renders the frames for the screen.
         """
         log.debug(u'Render called')
-        if self.theme == None:
-            self.RenderManager.set_override_theme(None)
-        else:
-            self.RenderManager.set_override_theme(self.theme)
-        log.debug(u'Formatting slides')
         self.frames = []
         if self.service_item_type == ServiceType.Text:
+            log.debug(u'Formatting slides')
+            if self.theme == None:
+                self.RenderManager.set_override_theme(None)
+            else:
+                self.RenderManager.set_override_theme(self.theme)
             for slide in self.service_frames:
                 formated = self.RenderManager.format_slide(slide[u'raw_slide'])
                 for format in formated:
