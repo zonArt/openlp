@@ -95,11 +95,15 @@ class ServiceItem(object):
                 self.RenderManager.set_override_theme(None)
             else:
                 self.RenderManager.set_override_theme(self.theme)
+            firstTime = True
             for slide in self.service_frames:
                 formated = self.RenderManager.format_slide(slide[u'raw_slide'])
                 for format in formated:
-                    frame = self.RenderManager.generate_slide(format,
-                        self.raw_footer)
+                    frame = None
+                    if firstTime:
+                        frame = self.RenderManager.generate_slide(format,
+                            self.raw_footer)
+                        firstTime = False
                     lines = u''
                     for line in format:
                         lines += line + u'\n'
@@ -114,6 +118,12 @@ class ServiceItem(object):
             self.frames = self.service_frames
         else:
             log.error(u'Invalid value renderer :%s' % self.service_item_type)
+
+    def render_individual(self, row):
+        format = self.frames[row][u'text'].split(u'\n')
+        frame = self.RenderManager.generate_slide(format,
+                        self.raw_footer)
+        return frame
 
     def add_from_image(self, path, frame_title, image):
         """

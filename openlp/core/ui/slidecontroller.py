@@ -337,6 +337,8 @@ class SlideController(QtGui.QWidget):
         if row > -1 and row < self.PreviewListWidget.rowCount():
             label = self.PreviewListWidget.cellWidget(row, 0)
             frame = self.serviceitem.frames[row][u'image']
+            if frame == None:
+                frame = self.serviceitem.render_individual(row)
             self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
             if self.isLive:
                 self.parent.mainDisplay.frameView(frame)
