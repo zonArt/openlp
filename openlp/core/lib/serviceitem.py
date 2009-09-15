@@ -61,14 +61,11 @@ class ServiceItem(object):
         self.items = []
         self.iconic_representation = None
         self.raw_slides = None
-        self.frame_titles = []
-        self.command_files = []
         self.frames = []
         self.raw_footer = None
         self.theme = None
         self.service_item_path = None
         self.service_item_type = None
-        #log.debug(u'Service item created for %s ', self.shortname)
         self.service_frames = []
 
     def addIcon(self, icon):
@@ -120,6 +117,11 @@ class ServiceItem(object):
             log.error(u'Invalid value renderer :%s' % self.service_item_type)
 
     def render_individual(self, row):
+        log.debug(u'render individual')
+        if self.theme == None:
+            self.RenderManager.set_override_theme(None)
+        else:
+            self.RenderManager.set_override_theme(self.theme)
         format = self.frames[row][u'text'].split(u'\n')
         frame = self.RenderManager.generate_slide(format,
                         self.raw_footer)
@@ -140,7 +142,7 @@ class ServiceItem(object):
         """
         self.service_item_type = ServiceType.Image
         self.service_item_path = path
-        self.service_frames.append({u'title': frame_title, u'image': image})
+        self.service_frames.append({u'title': frame_title, u'text':None, u'image': image})
 
     def add_from_text(self, frame_title, raw_slide):
         """

@@ -293,13 +293,15 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.setColumnWidth(0, slide_width)
         for framenumber, frame in enumerate(self.serviceitem.frames):
             self.PreviewListWidget.setRowCount(self.PreviewListWidget.rowCount() + 1)
-            #pixmap = self.parent.RenderManager.resize_image(frame[u'image'], slide_width, slide_height)
             item = QtGui.QTableWidgetItem()
             label = QtGui.QLabel()
             label.setMargin(8)
-            #label.setScaledContents(True)
-            label.setText(frame[u'text'])
-            #label.setPixmap(QtGui.QPixmap.fromImage(pixmap))
+            if frame[u'text'] == None:
+                pixmap = self.parent.RenderManager.resize_image(frame[u'image'], slide_width, slide_height)
+                label.setScaledContents(True)
+                label.setPixmap(QtGui.QPixmap.fromImage(pixmap))
+            else:
+                label.setText(frame[u'text'])
             self.PreviewListWidget.setCellWidget(framenumber, 0, label)
             self.PreviewListWidget.setItem(framenumber, 0, item)
             self.PreviewListWidget.setRowHeight(framenumber, slide_height)
@@ -337,9 +339,11 @@ class SlideController(QtGui.QWidget):
         if row > -1 and row < self.PreviewListWidget.rowCount():
             label = self.PreviewListWidget.cellWidget(row, 0)
             frame = self.serviceitem.frames[row][u'image']
+            before = time.time()
             if frame == None:
                 frame = self.serviceitem.render_individual(row)
             self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
+            log.info(u'Slide Rendering took %4s' % (time.time() - before))
             if self.isLive:
                 self.parent.mainDisplay.frameView(frame)
 
