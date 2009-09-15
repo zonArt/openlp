@@ -58,6 +58,7 @@ class ServiceItem(object):
             self.shortname = hostplugin.name
             self.name = self.plugin.name
         self.title = u''
+        self.audit = u''
         self.items = []
         self.iconic_representation = None
         self.raw_slides = None
@@ -170,7 +171,8 @@ class ServiceItem(object):
             u'title':self.title,
             u'icon':self.icon,
             u'footer':self.raw_footer,
-            u'type':self.service_item_type
+            u'type':self.service_item_type,
+            u'audit':self.audit
         }
         oos_data = []
         if self.service_item_type == ServiceType.Text:
@@ -203,6 +205,7 @@ class ServiceItem(object):
         self.theme = header[u'theme']
         self.addIcon(header[u'icon'])
         self.raw_footer = header[u'footer']
+        self.audit = header[u'audit']
         if self.service_item_type == ServiceType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self.service_frames.append(slide)

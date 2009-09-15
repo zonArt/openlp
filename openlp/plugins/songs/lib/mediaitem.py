@@ -251,12 +251,6 @@ class SongMediaItem(MediaManagerItem):
             self.parent.songmanager.delete_song(item_id)
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
-#
-#    def onSongPreviewClick(self):
-#        service_item = ServiceItem(self.parent)
-#        service_item.addIcon(u':/media/media_song.png')
-#        self.generateSlideData(service_item)
-#        self.parent.preview_controller.addServiceItem(service_item)
 
     def generateSlideData(self, service_item):
         raw_slides =[]
@@ -293,16 +287,5 @@ class SongMediaItem(MediaManagerItem):
         raw_footer.append(song.copyright )
         raw_footer.append(unicode(translate(u'SongMediaItem', u'CCL Licence: ') + ccl ))
         service_item.raw_footer = raw_footer
+        service_item.audit = u'%s,%s,%s' % (service_item.title, author_list, ccl)
         return True
-
-#    def onSongLiveClick(self):
-#        service_item = ServiceItem(self.parent)
-#        service_item.addIcon(u':/media/media_song.png')
-#        self.generateSlideData(service_item)
-#        self.parent.live_controller.addServiceItem(service_item)
-#
-#    def onSongAddClick(self):
-#        service_item = ServiceItem(self.parent)
-#        service_item.addIcon( u':/media/media_song.png')
-#        self.generateSlideData(service_item)
-#        self.parent.service_manager.addServiceItem(service_item)
