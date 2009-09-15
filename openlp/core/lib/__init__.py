@@ -43,7 +43,8 @@ def translate(context, text):
     ``text``
         The text to put into the translation tables for translation.
     """
-    return QtGui.QApplication.translate(context, text, None, QtGui.QApplication.UnicodeUTF8)
+    return QtGui.QApplication.translate(context, text, None,
+        QtGui.QApplication.UnicodeUTF8)
 
 def file_to_xml(xmlfile):
     """
@@ -87,6 +88,10 @@ def buildIcon(icon):
         else:
             ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
                 QtGui.QIcon.Normal, QtGui.QIcon.Off)
+    elif type(icon) is QtGui.QImage:
+        ButtonIcon = QtGui.QIcon()
+        ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(icon),
+            QtGui.QIcon.Normal, QtGui.QIcon.Off)
     return ButtonIcon
 
 def contextMenuAction(base, icon, text, slot):
