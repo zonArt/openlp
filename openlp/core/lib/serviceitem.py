@@ -100,7 +100,10 @@ class ServiceItem(object):
                 for format in formated:
                     frame = self.RenderManager.generate_slide(format,
                         self.raw_footer)
-                    self.frames.append({u'title': slide[u'title'],
+                    lines = u''
+                    for line in format:
+                        lines += line + u'\n'
+                    self.frames.append({u'title': slide[u'title'],u'text':lines,
                         u'image': frame})
         elif self.service_item_type == ServiceType.Command:
             self.frames = self.service_frames

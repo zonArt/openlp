@@ -166,7 +166,7 @@ class SlideController(QtGui.QWidget):
         self.Toolbar.setSizePolicy(sizeToolbarPolicy)
         # Screen preview area
         self.PreviewFrame = QtGui.QFrame(self.Splitter)
-        self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, self.settingsmanager.slidecontroller_image, 225))
+        self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, 300, 225))
         self.PreviewFrame.setSizePolicy(QtGui.QSizePolicy(
             QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Minimum))
         self.PreviewFrame.setFrameShape(QtGui.QFrame.StyledPanel)
@@ -293,12 +293,13 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.setColumnWidth(0, slide_width)
         for framenumber, frame in enumerate(self.serviceitem.frames):
             self.PreviewListWidget.setRowCount(self.PreviewListWidget.rowCount() + 1)
-            pixmap = self.parent.RenderManager.resize_image(frame[u'image'], slide_width, slide_height)
+            #pixmap = self.parent.RenderManager.resize_image(frame[u'image'], slide_width, slide_height)
             item = QtGui.QTableWidgetItem()
             label = QtGui.QLabel()
             label.setMargin(8)
-            label.setScaledContents(True)
-            label.setPixmap(QtGui.QPixmap.fromImage(pixmap))
+            #label.setScaledContents(True)
+            label.setText(frame[u'text'])
+            #label.setPixmap(QtGui.QPixmap.fromImage(pixmap))
             self.PreviewListWidget.setCellWidget(framenumber, 0, label)
             self.PreviewListWidget.setItem(framenumber, 0, item)
             self.PreviewListWidget.setRowHeight(framenumber, slide_height)
@@ -335,9 +336,8 @@ class SlideController(QtGui.QWidget):
         row = self.PreviewListWidget.currentRow()
         if row > -1 and row < self.PreviewListWidget.rowCount():
             label = self.PreviewListWidget.cellWidget(row, 0)
-            smallframe = label.pixmap()
             frame = self.serviceitem.frames[row][u'image']
-            self.SlidePreview.setPixmap(smallframe)
+            self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
             if self.isLive:
                 self.parent.mainDisplay.frameView(frame)
 
