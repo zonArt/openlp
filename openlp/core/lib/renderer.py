@@ -51,9 +51,9 @@ class Renderer(object):
         self._theme = None
         self._bg_image_filename = None
         self._frame = None
-        self._bg_frame = None
+        self.bg_frame = None
         self.bg_image = None
-        self._bg_frame_small = None
+        #self.bg_frame_small = None
 
     def set_debug(self, debug):
         """
@@ -73,7 +73,7 @@ class Renderer(object):
         """
         log.debug(u'set theme')
         self._theme = theme
-        self._bg_frame = None
+        self.bg_frame = None
         self.bg_image = None
         self.theme_name = theme.theme_name
         self._set_theme_font()
@@ -131,14 +131,14 @@ class Renderer(object):
             Defaults to *False*. Whether or not to generate a preview.
         """
         if preview == True:
-            self._bg_frame = None
+            self.bg_frame = None
         log.debug(u'set frame dest (frame) w %d h %d', frame_width,
             frame_height)
         self._frame = QtGui.QImage(frame_width, frame_height,
             QtGui.QImage.Format_ARGB32_Premultiplied)
         if self._bg_image_filename is not None and self.bg_image is None:
             self.scale_bg_image()
-        if self._bg_frame is None:
+        if self.bg_frame is None:
             self._generate_background_frame()
 
     def format_slide(self, words, footer):
@@ -257,7 +257,7 @@ class Renderer(object):
         if footer_lines is not None:
             bbox1 = self._render_lines_unaligned(footer_lines, True)
         # reset the frame. first time do not worry about what you paint on.
-        self._frame = QtGui.QImage(self._bg_frame)
+        self._frame = QtGui.QImage(self.bg_frame)
         x, y = self._correctAlignment(self._rect, bbox)
         bbox = self._render_lines_unaligned(lines, False,  (x, y), True)
         if footer_lines is not None:
@@ -272,11 +272,11 @@ class Renderer(object):
         Results are cached for performance reasons.
         """
         assert(self._theme)
-        self._bg_frame = QtGui.QImage(self._frame.width(), self._frame.height(),
+        self.bg_frame = QtGui.QImage(self._frame.width(), self._frame.height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
         log.debug(u'render background %s start', self._theme.background_type)
         painter = QtGui.QPainter()
-        painter.begin(self._bg_frame)
+        painter.begin(self.bg_frame)
         if self._theme.background_mode == u'transparent':
             painter.fillRect(self._frame.rect(), QtCore.Qt.transparent)
         else:
@@ -321,8 +321,8 @@ class Renderer(object):
                 if self.bg_image is not None:
                     painter.drawImage(0, 0, self.bg_image)
         painter.end()
-        self._bg_frame_small = self._bg_frame.scaled(QtCore.QSize(280, 210),
-            QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+#        self.bg_frame_small = self.bg_frame.scaled(QtCore.QSize(280, 210),
+#            QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
         log.debug(u'render background End')
 
     def _correctAlignment(self, rect, bbox):
