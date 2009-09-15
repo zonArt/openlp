@@ -157,13 +157,13 @@ class SlideController(QtGui.QWidget):
             self.DelaySpinBox.setSuffix(translate(u'SlideController', u's'))
 
         self.ControllerLayout.addWidget(self.Toolbar)
-        sizeToolbarPolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Fixed)
-        sizeToolbarPolicy.setHorizontalStretch(0)
-        sizeToolbarPolicy.setVerticalStretch(0)
-        sizeToolbarPolicy.setHeightForWidth(
-            self.Toolbar.sizePolicy().hasHeightForWidth())
-        self.Toolbar.setSizePolicy(sizeToolbarPolicy)
+        #sizeToolbarPolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
+        #    QtGui.QSizePolicy.Fixed)
+        #sizeToolbarPolicy.setHorizontalStretch(0)
+        #sizeToolbarPolicy.setVerticalStretch(0)
+        #sizeToolbarPolicy.setHeightForWidth(
+        #    self.Toolbar.sizePolicy().hasHeightForWidth())
+        #self.Toolbar.setSizePolicy(sizeToolbarPolicy)
         # Screen preview area
         self.PreviewFrame = QtGui.QFrame(self.Splitter)
         self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, self.settingsmanager.slidecontroller_image, 225))

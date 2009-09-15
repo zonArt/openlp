@@ -1,6 +1,5 @@
 *.pyc
 *.*~
-*.log
 \#*\#
 *.eric4project
 *.ropeproject
@@ -10,3 +9,4 @@ list
 openlp.org 2.0.e4*
 documentation/build/html
 documentation/build/doctrees
+*.log*
