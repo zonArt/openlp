@@ -39,39 +39,32 @@ class AuditTab(SettingsTab):
         self.AuditLayout.setObjectName(u'AuditLayout')
         self.AuditModeGroupBox = QtGui.QGroupBox(self)
         self.AuditModeGroupBox.setObjectName(u'AuditModeGroupBox')
-        self.TimeoutLayout = QtGui.QHBoxLayout(self.AuditModeGroupBox)
-        self.TimeoutLayout.setSpacing(8)
-        self.TimeoutLayout.setMargin(0)
-        self.TimeoutLayout.setObjectName(u'TimeoutLayout')
-        self.TimeoutLabel = QtGui.QLabel(self.AuditModeGroupBox)
-        self.TimeoutLabel.setObjectName(u'TimeoutLabel')
-        self.TimeoutLayout.addWidget(self.TimeoutLabel)
-        self.TimeoutSpinBox = QtGui.QSpinBox(self.AuditModeGroupBox)
-        self.TimeoutSpinBox.setMaximum(180)
-        self.TimeoutSpinBox.setObjectName(u'TimeoutSpinBox')
-        self.TimeoutLayout.addWidget(self.TimeoutSpinBox)
-        self.TimeoutSpacer = QtGui.QSpacerItem(147, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.TimeoutLayout.addItem(self.TimeoutSpacer)
+        self.AuditModeLayout = QtGui.QVBoxLayout(self.AuditModeGroupBox)
+        self.AuditModeLayout.setSpacing(8)
+        self.AuditModeLayout.setMargin(8)
+        self.AuditModeLayout.setObjectName(u'AuditModeLayout')
+        self.AuditPortSpinBox = QtGui.QSpinBox(self.AuditModeGroupBox)
+        self.AuditPortSpinBox.setObjectName(u'AuditPortSpinBox')
+        self.AuditPortSpinBox.setMaximum(32767)
+        self.AuditModeLayout.addWidget(self.AuditPortSpinBox)
+        self.AuditActive = QtGui.QCheckBox(self.AuditModeGroupBox)
+        self.AuditActive.setObjectName(u'AuditPortSpinBox')
+        self.AuditModeLayout.addWidget(self.AuditActive)
+        self.WarningLabel = QtGui.QLabel(self.AuditModeGroupBox)
+        self.WarningLabel.setObjectName(u'WarningLabel')
+        self.AuditModeLayout.addWidget(self.WarningLabel)
         self.AuditLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.AuditModeGroupBox)
-        # Signals and slots
-        QtCore.QObject.connect(self.TimeoutSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onTimeoutSpinBoxChanged)
 
     def retranslateUi(self):
-        self.TimeoutLabel.setText(translate(u'AuditTab', u'Slide Loop Delay:'))
-        self.TimeoutSpinBox.setSuffix(translate(u'AuditTab', u's'))
-
-    def onTimeoutSpinBoxChanged(self):
-        self.loop_delay = self.TimeoutSpinBox.value()
+        self.AuditModeGroupBox.setTitle(translate(u'AuditTab', u'Audit File'))
+        self.AuditActive.setText(translate(u'AuditTab', 'Audit available:'))
+        self.WarningLabel.setText(translate(u'AuditTab', u'A restart is needed for this change to become effective'))
 
     def load(self):
-        self.loop_delay = int(self.config.get_config(u'loop delay', 5))
-        self.TimeoutSpinBox.setValue(self.loop_delay)
+        self.AuditPortSpinBox.setValue(int(self.config.get_config(u'Audit port', 4316)))
+        self.AuditActive.setChecked(int(self.config.get_config(u'startup', 0)))
 
     def save(self):
-        self.config.set_config(u'loop delay', self.loop_delay)
-        Receiver().send_message(u'update_spin_delay',  self.loop_delay )
+        self.config.set_config(u'Audit port', unicode(self.AuditPortSpinBox.value()))
+        self.config.set_config(u'startup', unicode(self.AuditActive.checkState()))
 
-    def postSetUp(self):
-        Receiver().send_message(u'update_spin_delay',  self.loop_delay )

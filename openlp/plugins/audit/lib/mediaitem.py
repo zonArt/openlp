@@ -24,9 +24,10 @@
 
 import logging
 import os
+from datetime import date
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import MediaManagerItem, translate, buildIcon
+from openlp.core.lib import MediaManagerItem, translate, buildIcon,  Receiver
 
 class AuditMediaItem(MediaManagerItem):
     """
@@ -45,9 +46,13 @@ class AuditMediaItem(MediaManagerItem):
         self.hasNewIcon = False
         self.hasEditIcon = False
         MediaManagerItem.__init__(self, parent, icon, title)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'audit_live'), self.onReceiveAudit)
 
     def initialise(self):
-        pass
+        self.Toolbar.actions[self.startMessage].setVisible(True)
+        self.Toolbar.actions[self.stopMessage].setVisible(False)
+        self.auditActive = False
 
     def addStartHeaderBar(self):
         self.startMessage = translate(self.TranslationContext, u'Start Collecting')
@@ -77,7 +82,13 @@ class AuditMediaItem(MediaManagerItem):
     def onStartClick(self):
         self.Toolbar.actions[self.startMessage].setVisible(False)
         self.Toolbar.actions[self.stopMessage].setVisible(True)
+        self.auditActive = True
 
     def onStopClick(self):
         self.Toolbar.actions[self.startMessage].setVisible(True)
         self.Toolbar.actions[self.stopMessage].setVisible(False)
+        self.auditActive = False
+
+    def onReceiveAudit(self, auditData):
+        if self.auditActive:
+            self.auditFile.write(u'%s,%s\n' % (date.today(), auditData))

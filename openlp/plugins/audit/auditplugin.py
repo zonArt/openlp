@@ -42,6 +42,18 @@ class AuditPlugin(Plugin):
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(u':/media/media_image.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.auditfile = None
+
+    def check_pre_conditions(self):
+        """
+        Check to see if auditing is required
+        """
+        log.debug('check_pre_conditions')
+        #Lets see if audit is required
+        if int(self.config.get_config(u'startup', 0)) == QtCore.Qt.Checked:
+            return True
+        else:
+            return False
 
     def get_settings_tab(self):
         self.AuditTab = AuditTab()
@@ -54,3 +66,10 @@ class AuditPlugin(Plugin):
 
     def initialise(self):
         log.info(u'Plugin Initialising')
+        self.auditfile = open(u'openlp.aud', 'a')
+        self.media_item.auditFile = self.auditfile
+
+    def finalise(self):
+        log.debug(u'Finalise')
+        if self.auditfile is not None:
+            self.auditfile.close()
