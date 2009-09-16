@@ -121,11 +121,9 @@ class SongMediaItem(MediaManagerItem):
         self.SearchTextEdit.setObjectName(u'SearchTextEdit')
         self.SearchLayout.addWidget(self.SearchTextEdit, 2, 1, 1, 2)
         self.ClearTextButton = QtGui.QPushButton(self.SongWidget)
-        self.ClearTextButton.setMaximumHeight(20)
         self.ClearTextButton.setObjectName(u'ClearTextButton')
         self.SearchLayout.addWidget(self.ClearTextButton, 3, 1, 1, 1)
         self.SearchTextButton = QtGui.QPushButton(self.SongWidget)
-        self.SearchTextButton.setMaximumHeight(20)
         self.SearchTextButton.setObjectName(u'SearchTextButton')
         self.SearchLayout.addWidget(self.SearchTextButton, 3, 2, 1, 1)
         # Add the song widget to the page layout

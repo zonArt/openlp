@@ -116,7 +116,6 @@ class BibleMediaItem(MediaManagerItem):
         self.QuickSearchEdit.setObjectName(u'QuickSearchEdit')
         self.QuickLayout.addWidget(self.QuickSearchEdit, 2, 1, 1, 2)
         self.QuickSearchButton = QtGui.QPushButton(self.QuickTab)
-        self.QuickSearchButton.setMaximumHeight(20)
         self.QuickSearchButton.setObjectName(u'QuickSearchButton')
         self.QuickLayout.addWidget(self.QuickSearchButton, 3, 2, 1, 1)
         self.QuickClearLabel = QtGui.QLabel(self.QuickTab)
@@ -187,7 +186,6 @@ class BibleMediaItem(MediaManagerItem):
         self.AdvancedLayout.addWidget(
             self.ClearAdvancedSearchComboBox, 5, 2, 1, 1)
         self.AdvancedSearchButton = QtGui.QPushButton(self.AdvancedTab)
-        self.AdvancedSearchButton.setMaximumHeight(20)
         self.AdvancedSearchButton.setObjectName(u'AdvancedSearchButton')
         self.AdvancedLayout.addWidget(self.AdvancedSearchButton, 5, 3, 1, 1)
         self.SearchTabWidget.addTab(self.AdvancedTab, u'Advanced')
