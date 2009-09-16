@@ -28,16 +28,16 @@ import tempfile
 try:
     import gst
 except:
+    NOGST = True
     log = logging.getLogger(u'MediaMediaItemSetup')
     log.warning(u'Can\'t generate Videos previews - import gst failed');
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, translate
+from openlp.core.lib import MediaManagerItem, ServiceItem, translate, \
+    BaseListWithDnD, buildIcon
 
-from openlp.plugins.media.lib import MediaTab
-from openlp.plugins.media.lib import FileListData
-from openlp.core.lib import MediaManagerItem, ServiceItem, translate, BaseListWithDnD, buildIcon
+from openlp.plugins.media.lib import MediaTab, FileListData
 
 class MediaListView(BaseListWithDnD):
     def __init__(self, parent=None):
@@ -70,38 +70,50 @@ class MediaMediaItem(MediaManagerItem):
         MediaManagerItem.__init__(self, parent, icon, title)
 
     def video_get_preview(self, filename):
-        """Gets a preview of the first frame of a video file using
-        GSTREAMER (non-portable??? - Can't figure out how to do with
-        Phonon - returns a QImage"""
-        try:
-            # Define your pipeline, just as you would at the command prompt.
-            # This is much easier than trying to create and link each gstreamer element in Python.
-            # This is great for pipelines that end with a filesink (i.e. there is no audible or visual output)
-            log.info ("Video preview %s"%( filename))
-            outfile=tempfile.NamedTemporaryFile(suffix='.png')
-            cmd=u'filesrc location="%s" ! decodebin ! ffmpegcolorspace ! pngenc ! filesink location="%s"'% (filename, outfile.name)
-            pipe = gst.parse_launch(cmd)
-            # Get a reference to the pipeline's bus
-            bus = pipe.get_bus()
+        if NOGST:
+            #
+            # For now cross platform is an icon.  Phonon does not support
+            # individual frame access  (yet?) and GStreamer is not available
+            # on Windows
+            #
+            image = QtGui.QPixmap(u':/media/media_video.png').toImage()
+            return image
+        else:
+            """
+            Gets a preview of the first frame of a video file using GSTREAMER
+            (non-portable) - returns a QImage
+            """
+            try:
+                # Define your pipeline, just as you would at the command
+                # prompt.  This is much easier than trying to create and link
+                # each gstreamer element in Python.  This is great for
+                # pipelines that end with a filesink (i.e. there is no audible
+                # or visual output)
+                log.info ("Video preview %s"%( filename))
+                outfile = tempfile.NamedTemporaryFile(suffix='.png')
+                cmd = u'filesrc location="%s" ! decodebin ! ffmpegcolorspace ! pngenc ! filesink location="%s"'% (filename, outfile.name)
+                pipe = gst.parse_launch(cmd)
+                # Get a reference to the pipeline's bus
+                bus = pipe.get_bus()
 
-            # Set the pipeline's state to PLAYING
-            pipe.set_state(gst.STATE_PLAYING)
+                # Set the pipeline's state to PLAYING
+                pipe.set_state(gst.STATE_PLAYING)
 
-            # Listen to the pipeline's bus indefinitely until we receive a EOS (end of stream) message.
-            # This is a super important step, or the pipeline might not work as expected.  For example,
-            # in my example pipeline above, the pngenc will not export an actual image unless you have
-            # this line of code.  It just exports a 0 byte png file.  So... don't forget this step.
-            bus.poll(gst.MESSAGE_EOS, -1)
-            img = QtGui.QImage(outfile.name)
-            outfile.close()
+                # Listen to the pipeline's bus indefinitely until we receive a
+                # EOS (end of stream) message.  This is a super important step,
+                # or the pipeline might not work as expected.  For example, in
+                # my example pipeline above, the pngenc will not export an
+                # actual image unless you have this line of code.  It just
+                # exports a 0 byte png file.  So... don't forget this step.
+                bus.poll(gst.MESSAGE_EOS, -1)
+                img = QtGui.QImage(outfile.name)
+                outfile.close()
 #             os.unlink(outfile.name)
-            pipe.set_state(gst.STATE_NULL)
-            return img
-        except:
-            log.info("Can't generate video preview for some reason");
-            import sys
-            print sys.exc_info()
-            return None
+                pipe.set_state(gst.STATE_NULL)
+                return img
+            except:
+                log.info("Can't generate video preview for some reason");
+                return None
 
     def generateSlideData(self, service_item):
         indexes = self.ListView.selectedIndexes()
@@ -127,7 +139,8 @@ class MediaMediaItem(MediaManagerItem):
         pass
 
     def initialise(self):
-        self.ListView.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.ListView.setSelectionMode(
+            QtGui.QAbstractItemView.ExtendedSelection)
         self.ListView.setIconSize(QtCore.QSize(88,50))
         self.loadList(self.parent.config.load_list(self.ConfigSection))
 
@@ -137,14 +150,15 @@ class MediaMediaItem(MediaManagerItem):
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
-            self.parent.config.set_list(self.ConfigSection, self.ListData.getFileList())
+            self.parent.config.set_list(
+                self.ConfigSection, self.ListData.getFileList())
 
     def loadList(self, list):
         for file in list:
             (path, filename) = os.path.split(unicode(file))
             item_name = QtGui.QListWidgetItem(filename)
             img = self.video_get_preview(file)
-            #item_name.setIcon(buildIcon(file))
+            item_name.setIcon(buildIcon(img))
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.ListView.addItem(item_name)
 
