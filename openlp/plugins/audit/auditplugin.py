@@ -26,8 +26,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin
-from openlp.plugins.audit.lib import AuditMediaItem,  AuditTab
+from openlp.core.lib import Plugin,  Receiver,  translate
+from openlp.plugins.audit.lib import AuditTab
 
 class AuditPlugin(Plugin):
     global log
@@ -55,19 +55,55 @@ class AuditPlugin(Plugin):
         else:
             return False
 
+    def add_tools_menu_item(self, tools_menu):
+        """
+        Give the Audit plugin the opportunity to add items to the
+        **Tools** menu.
+
+        ``tools_menu``
+            The actual **Tools** menu item, so that your actions can
+            use it as their parent.
+        """
+        self.ToolsAuditItem = QtGui.QAction(tools_menu)
+        AuditIcon = QtGui.QIcon()
+        AuditIcon.addPixmap(QtGui.QPixmap(u':/tools/tools_alert.png'),
+            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.ToolsAuditItem.setIcon(AuditIcon)
+        self.ToolsAuditItem.setObjectName(u'ToolsAuditItem')
+        self.ToolsAuditItem.setCheckable(True)
+        self.ToolsAuditItem.setChecked(True)
+        tools_menu.addSeparator()
+        tools_menu.addAction(self.ToolsAuditItem)
+
+        self.ToolsAuditItem.setText(translate(u'AuditPlugin', u'A&udit'))
+        self.ToolsAuditItem.setStatusTip(
+            translate(u'AuditPlugin', u'Start/Stop live song auditing'))
+        self.ToolsAuditItem.setShortcut(translate(u'AuditPlugin', u'F4'))
+#
+        # Translations...
+#        # Signals and slots
+#        QtCore.QObject.connect(self.MediaManagerDock,
+#            QtCore.SIGNAL(u'visibilityChanged(bool)'),
+#            self.ViewMediaManagerItem.setChecked)
+#        QtCore.QObject.connect(self.ViewMediaManagerItem,
+#            QtCore.SIGNAL(u'triggered(bool)'),
+#            self.toggleMediaManager)
+
     def get_settings_tab(self):
         self.AuditTab = AuditTab()
         return self.AuditTab
 
-    def get_media_manager_item(self):
-        # Create the MediaManagerItem object
-        self.media_item = AuditMediaItem(self, self.icon, u'Audit')
-        return self.media_item
-
     def initialise(self):
         log.info(u'Plugin Initialising')
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'audit_live'), self.onReceiveAudit)
         self.auditfile = open(u'openlp.aud', 'a')
-        self.media_item.auditFile = self.auditfile
+        self.auditActive = False
+
+    def onReceiveAudit(self, auditData):
+        if self.auditActive:
+            self.auditFile.write(u'%s,%s\n' % (date.today(), auditData))
+            self.auditfile.flush()
 
     def finalise(self):
         log.debug(u'Finalise')
