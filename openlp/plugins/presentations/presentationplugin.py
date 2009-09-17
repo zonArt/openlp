@@ -29,8 +29,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin,  MediaManagerItem
-from openlp.plugins.presentations.lib import PresentationMediaItem, PresentationTab, \
-    ImpressController
+from openlp.plugins.presentations.lib import PresentationMediaItem, \
+    PresentationTab, ImpressController
 try:
     from openlp.plugins.presentations.lib import PowerpointController
 except:
@@ -64,7 +64,8 @@ class PresentationPlugin(Plugin):
         """
         Create the Media Manager List
         """
-        self.media_item = PresentationMediaItem(self, self.icon, u'Presentations', self.controllers)
+        self.media_item = PresentationMediaItem(
+            self, self.icon, u'Presentations', self.controllers)
         return self.media_item
 
     def registerControllers(self, handle, controller):
@@ -77,32 +78,35 @@ class PresentationPlugin(Plugin):
         """
         log.debug('check_pre_conditions')
         #Lets see if Impress is required (Default is Not wanted)
-        if int(self.config.get_config(u'Impress', QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
+        if int(self.config.get_config(
+            u'Impress', QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
             try:
                 #Check to see if we have uno installed
                 import uno
                 openoffice = ImpressController()
                 self.registerControllers(u'Impress', openoffice)
             except:
-                log.error(u'Reason : %s', sys.exc_info())
+                log.exception(u'Failed to set up plugin for Impress')
         #Lets see if Powerpoint is required (Default is Not wanted)
-        if int(self.config.get_config(u'Powerpoint', QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
+        if int(self.config.get_config(
+            u'Powerpoint', QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
             try:
                 #Check to see if we are Win32
                 from win32com.client import Dispatch
                 powerpoint = PowerpointController()
                 self.registerControllers(u'Powerpoint', powerpoint)
             except:
-                log.error(u'Reason : %s', sys.exc_info())
+                log.exception(u'Failed to set up plugin for Powerpoint')
         #Lets see if Powerpoint Viewer is required (Default is Not wanted)
-        if int(self.config.get_config(u'Powerpoint Viewer', QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
+        if int(self.config.get_config(
+            u'Powerpoint Viewer', QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
             try:
                 #Check to see if we are Win32
                 from win32com.client import Dispatch
                 powerpoint = PowerpointController()
                 self.registerControllers(u'Powerpoint Viewer', powerpoint)
             except:
-                log.error(u'Reason : %s', sys.exc_info())
+                log.exception(u'Failed to set up plugin for Powerpoint Viewer')
         #If we have no available controllers disable plugin
         if len(self.controllers) > 0:
             return True

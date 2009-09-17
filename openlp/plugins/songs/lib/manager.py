@@ -51,7 +51,8 @@ class SongManager():
         self.db_url = u''
         db_type = self.config.get_config(u'db type', u'sqlite')
         if db_type == u'sqlite':
-            self.db_url = u'sqlite:///%s/songs.sqlite' % self.config.get_data_path()
+            self.db_url = u'sqlite:///%s/songs.sqlite' % \
+                self.config.get_data_path()
         else:
             self.db_url = db_type + 'u://' + \
                 self.config.get_config(u'db username') + u':' + \
@@ -88,7 +89,8 @@ class SongManager():
         """
         Searches the song authors for keywords.
         """
-        return self.session.query(Author).filter(Author.display_name.like(u'%' + keywords + u'%')).order_by(Author.display_name.asc()).all()
+        return self.session.query(Author).filter(Author.display_name.like(
+            u'%' + keywords + u'%')).order_by(Author.display_name.asc()).all()
 
     def get_song(self, id=None):
         """
@@ -109,7 +111,7 @@ class SongManager():
             return True
         except:
             self.session.rollback()
-            log.error(u'Errow thrown %s', sys.exc_info()[1])
+            log.exception(u'Could not save song to song database')
             return False
 
     def delete_song(self, songid):
@@ -120,8 +122,7 @@ class SongManager():
             return True
         except:
             self.session.rollback()
-            log.error(u'Errow thrown %s', sys.exc_info()[1])
-            print u'Errow thrown ', sys.exc_info()[1]
+            log.exception(u'Could not delete song from song database')
             return False
 
     def get_authors(self):
@@ -146,7 +147,7 @@ class SongManager():
             return True
         except:
             self.session.rollback()
-            log.error(u'Errow thrown %s', sys.exc_info()[1])
+            log.exception(u'Could not save author to song database')
             return False
 
     def delete_author(self, authorid):
@@ -160,7 +161,7 @@ class SongManager():
             return True
         except:
             self.session.rollback()
-            log.error(u'Errow thrown %s', sys.exc_info()[1])
+            log.exception(u'Could not delete author from song database')
             return False
 
     def get_topics(self):
@@ -185,7 +186,7 @@ class SongManager():
             return True
         except:
             self.session.rollback()
-            log.error(u'Errow thrown %s', sys.exc_info()[1])
+            log.exception(u'Could not save topic to song database')
             return False
 
     def delete_topic(self, topicid):
@@ -199,7 +200,7 @@ class SongManager():
             return True
         except:
             self.session.rollback()
-            log.error(u'Errow thrown %s', sys.exc_info()[1])
+            log.exception(u'Could not delete topic from song database')
             return False
 
     def get_books(self):
@@ -224,7 +225,7 @@ class SongManager():
             return True
         except Exception, e:
             self.session.rollback()
-            log.error(u'Errow thrown %s', e.args[0])
+            log.error(u'Could not save book to song database')
             return False
 
     def delete_book(self, bookid):
@@ -238,5 +239,6 @@ class SongManager():
             return True
         except:
             self.session.rollback()
-            log.error(u'Errow thrown %s', sys.exc_info()[1])
+            log.exception(u'Could not delete book from song database')
             return False
+
