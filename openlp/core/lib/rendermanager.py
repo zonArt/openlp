@@ -63,7 +63,7 @@ class RenderManager(object):
         else:
             self.current_display = screen_number
         self.renderer = Renderer()
-        #self.calculate_default(self.screen_list[self.current_display][u'size'])
+        self.calculate_default(self.screen_list[self.current_display][u'size'])
         self.theme = u''
         self.service_theme = u''
         self.global_style = u''
