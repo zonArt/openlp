@@ -269,17 +269,12 @@ class SongMediaItem(MediaManagerItem):
             self.parent.songmanager.delete_song(item_id)
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
-#
-#    def onSongPreviewClick(self):
-#        service_item = ServiceItem(self.parent)
-#        service_item.addIcon(u':/media/media_song.png')
-#        self.generateSlideData(service_item)
-#        self.parent.preview_controller.addServiceItem(service_item)
 
     def generateSlideData(self, service_item):
         raw_slides =[]
         raw_footer = []
         author_list = u''
+        author_audit = []
         ccl = u''
         item = self.ListView.currentItem()
         if item is None:
@@ -302,6 +297,7 @@ class SongMediaItem(MediaManagerItem):
             if len(author_list) > 1:
                 author_list = author_list + u', '
             author_list = author_list + unicode(author.display_name)
+            author_audit.append(unicode(author.display_name))
         if song.ccli_number == None or len(song.ccli_number) == 0:
             ccl = self.parent.settings.GeneralTab.CCLNumber
         else:
@@ -312,16 +308,5 @@ class SongMediaItem(MediaManagerItem):
         raw_footer.append(unicode(
             translate(u'SongMediaItem', u'CCL Licence: ') + ccl ))
         service_item.raw_footer = raw_footer
+        service_item.audit = [service_item.title, author_audit, ccl]
         return True
-
-#    def onSongLiveClick(self):
-#        service_item = ServiceItem(self.parent)
-#        service_item.addIcon(u':/media/media_song.png')
-#        self.generateSlideData(service_item)
-#        self.parent.live_controller.addServiceItem(service_item)
-#
-#    def onSongAddClick(self):
-#        service_item = ServiceItem(self.parent)
-#        service_item.addIcon( u':/media/media_song.png')
-#        self.generateSlideData(service_item)
-#        self.parent.service_manager.addServiceItem(service_item)

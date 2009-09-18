@@ -178,8 +178,16 @@ class MediaManagerItem(QtGui.QWidget):
         """
         # Add a toolbar
         self.addToolbar()
-        #Allow the plugin to define it's own header
+        #Allow the plugin to define buttons at start of bar
         self.addStartHeaderBar()
+        #Add the middle of the tool bar (pre defined)
+        self.addMiddleHeaderBar()
+        #Allow the plugin to define buttons at end of bar
+        self.addEndHeaderBar()
+        #Add the list view
+        self.addListViewToToolBar()
+
+    def addMiddleHeaderBar(self):
         # Create buttons for the toolbar
         ## File Button ##
         if self.hasFileIcon:
@@ -221,8 +229,8 @@ class MediaManagerItem(QtGui.QWidget):
             translate(self.TranslationContext, u'Add '+self.PluginTextShort+u' To Service'),
             translate(self.TranslationContext, u'Add the selected item(s) to the service'),
             u':/system/system_add.png', self.onAddClick, self.PluginTextShort+u'AddItem')
-        #Allow the plugin to define it's own header
-        self.addEndHeaderBar()
+
+    def addListViewToToolBar(self):
         #Add the List widget
         self.ListView = self.ListViewWithDnD_class()
         self.ListView.uniformItemSizes = True

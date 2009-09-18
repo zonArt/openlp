@@ -166,6 +166,15 @@ class Plugin(object):
         """
         pass
 
+    def add_tools_menu_item(self, tools_menu):
+        """
+        Create a menu item and add it to the "Tools" menu.
+
+        ``tools_menu``
+            The Tools menu
+        """
+        pass
+
     def get_settings_tab(self):
         """
         Create a tab for the settings window.

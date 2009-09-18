@@ -178,6 +178,18 @@ class PluginManager(object):
             if plugin[u'status'] == u'Active':
                 plugin[u'plugin'].add_export_menu_item(export_menu)
 
+    def hook_tools_menu(self, tools_menu):
+        """
+        Loop through all the plugins and give them an opportunity to add an
+        item to the tools menu.
+
+        ``tools_menu``
+            The Tools menu.
+        """
+        for plugin in self.plugins:
+            if plugin[u'status'] == u'Active':
+                plugin[u'plugin'].add_tools_menu_item(tools_menu)
+
     def initialise_plugins(self):
         """
         Loop through all the plugins and give them an opportunity to
