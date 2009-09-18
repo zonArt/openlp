@@ -519,6 +519,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'), self.onOptionsSettingsItemClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'update_global_theme'), self.defaultThemeChanged)
+        QtCore.QObject.connect(self.FileNewItem, 
+            QtCore.SIGNAL(u'triggered()'), self.ServiceManagerContents.onNewService)
+        QtCore.QObject.connect(self.FileOpenItem, 
+            QtCore.SIGNAL(u'triggered()'), self.ServiceManagerContents.onLoadService)
+        QtCore.QObject.connect(self.FileSaveItem, 
+            QtCore.SIGNAL(u'triggered()'), self.ServiceManagerContents.onQuickSaveService)
+        QtCore.QObject.connect(self.FileSaveAsItem, 
+            QtCore.SIGNAL(u'triggered()'), self.ServiceManagerContents.onSaveService)
         #warning cyclic dependency
         #RenderManager needs to call ThemeManager and
         #ThemeManager needs to call RenderManager

@@ -100,6 +100,7 @@ class ServiceManager(QtGui.QWidget):
         self.parent = parent
         self.serviceItems = []
         self.serviceName = u''
+        self.isNew = True
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
         self.Layout.setMargin(0)
@@ -319,6 +320,7 @@ class ServiceManager(QtGui.QWidget):
         self.ServiceManagerList.clear()
         self.serviceItems = []
         self.serviceName = u''
+        self.isNew = True
         self.parent.OosChanged(True, self.serviceName)
 
     def onDeleteFromService(self):
@@ -361,21 +363,28 @@ class ServiceManager(QtGui.QWidget):
                 if serviceItem == itemcount and serviceItemCount == count:
                    self.ServiceManagerList.setCurrentItem(treewidgetitem1)
 
-    def onSaveService(self):
+    def onSaveService(self, quick=False):
         """
         Save the current service in a zip file
         This file contains
         * An ood which is a pickle of the service items
         * All image, presentation and video files needed to run the service.
         """
-        filename = QtGui.QFileDialog.getSaveFileName(self,
+        if not quick or self.isNew:
+            filename = QtGui.QFileDialog.getSaveFileName(self,
             u'Save Order of Service',self.config.get_last_dir() )
-        filename = unicode(filename)
+        else:
+            filename = self.config.get_last_dir()
         if filename != u'':
+            splittedFile = filename.split(u'.')
+            if splittedFile[-1] != u'oos':
+                filename = filename + u'.oos'
+            filename = unicode(filename)
+            self.isNew = False
             self.config.set_last_dir(filename)
             service = []
             servicefile= filename + u'.ood'
-            zip = zipfile.ZipFile(unicode(filename) + u'.oos', 'w')
+            zip = zipfile.ZipFile(unicode(filename), 'w')
             for item in self.serviceItems:
                 service.append({u'serviceitem':item[u'data'].get_oos_repr()})
                 if item[u'data'].service_item_type == ServiceType.Image or \
@@ -393,7 +402,12 @@ class ServiceManager(QtGui.QWidget):
                 os.remove(servicefile)
             except:
                 pass #if not present do not worry
-        self.parent.OosChanged(True, filename + u'.oos')
+        name = filename.split(os.path.sep)
+        self.serviceName = name[-1]
+        self.parent.OosChanged(True, self.serviceName)
+        
+    def onQuickSaveService(self):
+        self.onSaveService(True)
 
     def onLoadService(self):
         """
@@ -412,6 +426,7 @@ class ServiceManager(QtGui.QWidget):
                 zip = zipfile.ZipFile(unicode(filename))
                 filexml = None
                 themename = None
+
                 for file in zip.namelist():
                     names = file.split(os.path.sep)
                     file_to = os.path.join(self.servicePath,
@@ -439,6 +454,7 @@ class ServiceManager(QtGui.QWidget):
             except:
                 log.exception(u'Problem loading a service file')
                 pass
+        self.isNew = False
         self.serviceName = name[len(name) - 1]
         self.parent.OosChanged(True, self.serviceName)
 
