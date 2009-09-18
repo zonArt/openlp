@@ -83,6 +83,5 @@ class MessageListener(object):
         ``message``
         Message containing Presentaion handler name and file to be presented.
         """
-        bits = message.split(u':')
-        file = os.path.join(bits[1], bits[2])
-        return bits[0], file
+        file = os.path.join(message[1], message[2])
+        return message[0], file

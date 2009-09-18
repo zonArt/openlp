@@ -79,8 +79,12 @@ class PresentationPlugin(Plugin):
         #Lets see if Impress is required (Default is Not wanted)
         if int(self.config.get_config(u'Impress', QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
             try:
-                #Check to see if we have uno installed
-                import uno
+                if os.name == u'nt':
+                    #Check to see if we are Win32
+                    from win32com.client import Dispatch
+                else:
+                    #Check to see if we have uno installed
+                    import uno
                 openoffice = ImpressController()
                 self.registerControllers(u'Impress', openoffice)
             except:

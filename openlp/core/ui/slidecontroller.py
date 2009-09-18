@@ -254,7 +254,7 @@ class SlideController(QtGui.QWidget):
         self.enableToolBar(item)
         if item.service_item_type == ServiceType.Command:
             Receiver().send_message(u'%s_start'%item.name.lower(), \
-                u'%s:%s:%s' % (item.shortname, item.service_item_path, item.service_frames[0][u'title']))
+                [item.shortname, item.service_item_path, item.service_frames[0][u'title']])
         else:
             self.displayServiceManagerItems(item, 0)
 
@@ -272,7 +272,7 @@ class SlideController(QtGui.QWidget):
         self.enableToolBar(item)
         if item.service_item_type == ServiceType.Command:
             Receiver().send_message(u'%s_start'%item.name.lower(), \
-                u'%s:%s:%s' % (item.shortname, item.service_item_path, item.service_frames[0][u'title']))
+                [item.shortname, item.service_item_path, item.service_frames[0][u'title']])
         else:
             self.displayServiceManagerItems(item, slideno)
 
