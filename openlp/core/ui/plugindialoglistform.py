@@ -9,7 +9,7 @@
 
 import logging
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
+from openlp.core.lib import translate,  PluginStatus
 
 class PluginForm(QtGui.QDialog):
     global log
@@ -63,11 +63,14 @@ class PluginForm(QtGui.QDialog):
         for plugin in self.parent.plugin_manager.plugins:
             row = self.PluginViewList.rowCount()
             self.PluginViewList.setRowCount(row + 1)
-            item1 = QtGui.QTableWidgetItem(plugin[u'plugin'].name)
+            item1 = QtGui.QTableWidgetItem(plugin.name)
             item1.setTextAlignment(QtCore.Qt.AlignVCenter)
-            item2 = QtGui.QTableWidgetItem(plugin[u'plugin'].version)
+            item2 = QtGui.QTableWidgetItem(plugin.version)
             item2.setTextAlignment(QtCore.Qt.AlignVCenter)
-            item3 = QtGui.QTableWidgetItem(translate(u'PluginForm', plugin[u'status']))
+            if plugin.status == PluginStatus.Active:
+                item3 = QtGui.QTableWidgetItem(translate(u'PluginForm', u'Active'))
+            else:
+                item3 = QtGui.QTableWidgetItem(translate(u'PluginForm', u'Inactive'))
             item3.setTextAlignment(QtCore.Qt.AlignVCenter)
             self.PluginViewList.setItem(row, 0, item1)
             self.PluginViewList.setItem(row, 1, item2)
