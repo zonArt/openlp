@@ -437,7 +437,7 @@ class ServiceManager(QtGui.QWidget):
                     #if not present do not worry
                     pass
             except:
-                log.error(u'Problem processing oos load %s', sys.exc_info()[0])
+                log.exception(u'Problem loading a service file')
                 pass
         self.serviceName = name[len(name) - 1]
         self.parent.OosChanged(True, self.serviceName)
