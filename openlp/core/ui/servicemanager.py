@@ -100,6 +100,7 @@ class ServiceManager(QtGui.QWidget):
         self.parent = parent
         self.serviceItems = []
         self.serviceName = u''
+        self.isNew = True
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
         self.Layout.setMargin(0)
@@ -319,6 +320,7 @@ class ServiceManager(QtGui.QWidget):
         self.ServiceManagerList.clear()
         self.serviceItems = []
         self.serviceName = u''
+        self.isNew = True
         self.parent.OosChanged(True, self.serviceName)
 
     def onDeleteFromService(self):
@@ -369,7 +371,7 @@ class ServiceManager(QtGui.QWidget):
         * All image, presentation and video files needed to run the service.
         """
         
-        if not quick:
+        if not quick or self.isNew:
             filename = QtGui.QFileDialog.getSaveFileName(self,
             u'Save Order of Service',self.config.get_last_dir() )
         else:
@@ -379,6 +381,7 @@ class ServiceManager(QtGui.QWidget):
             filename = filename + u'.oos'
         filename = unicode(filename)
         if filename != u'':
+            self.isNew = False
             self.config.set_last_dir(filename)
             service = []
             servicefile= filename + u'.ood'
@@ -424,6 +427,7 @@ class ServiceManager(QtGui.QWidget):
                 zip = zipfile.ZipFile(unicode(filename))
                 filexml = None
                 themename = None
+                self.isNew = False
                 for file in zip.namelist():
                     names = file.split(os.path.sep)
                     file_to = os.path.join(self.servicePath,
