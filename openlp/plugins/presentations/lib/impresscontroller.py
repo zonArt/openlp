@@ -89,12 +89,12 @@ class ImpressController(object):
         log.debug(u'LoadPresentation')
         if os.name == u'nt':
             desktop = self.getCOMDesktop()
-            url = u'file:///' + presentation.replace(u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')            
+            url = u'file:///' + presentation.replace(u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
         else:
             desktop = self.getUNODesktop()
             url = uno.systemPathToFileUrl(presentation)
-        if(desktop==None):
-            return            
+        if desktop==None:
+            return
         try:
             properties = []
             properties = tuple(properties)
