@@ -29,8 +29,13 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 import logging
 import os ,  subprocess
 import time
-import uno
 import sys
+
+if os.name == u'nt':
+    from win32com.client import Dispatch
+else:
+    import uno
+
 
 from PyQt4 import QtCore
 
@@ -57,11 +62,12 @@ class ImpressController(object):
         when required.
         """
         log.debug(u'start Openoffice')
-        # -headless
-        cmd = u'openoffice.org -nologo -norestore -minimized -invisible ' + u'"' + u'-accept=socket,host=localhost,port=2002;urp;'+ u'"'
-        self.process = QtCore.QProcess()
-        self.process.startDetached(cmd)
-        self.process.waitForStarted()
+        if os.name != u'nt':
+            # -headless
+            cmd = u'openoffice.org -nologo -norestore -minimized -invisible ' + u'"' + u'-accept=socket,host=localhost,port=2002;urp;'+ u'"'
+            self.process = QtCore.QProcess()
+            self.process.startDetached(cmd)
+            self.process.waitForStarted()
 
     def kill(self):
         """
@@ -81,6 +87,26 @@ class ImpressController(object):
         The file name of the presentatios to the run.
         """
         log.debug(u'LoadPresentation')
+        if os.name == u'nt':
+            desktop = self.getCOMDesktop()
+            url = u'file:///' + presentation.replace(u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')            
+        else:
+            desktop = self.getUNODesktop()
+            url = uno.systemPathToFileUrl(presentation)
+        if(desktop==None):
+            return            
+        try:
+            properties = []
+            properties = tuple(properties)
+            self.document = desktop.loadComponentFromURL(url, "_blank", 0, properties)
+            self.presentation = self.document.getPresentation()
+            self.presentation.start()
+            self.xSlideShowController =  desktop.getCurrentComponent().Presentation.getController()
+        except:
+            log.error(u'Failed reason %s' % sys.exc_info())
+
+    def getUNODesktop(self):
+        log.debug(u'getUNODesktop')
         ctx = None
         loop = 0
         context = uno.getComponentContext()
@@ -94,15 +120,20 @@ class ImpressController(object):
         try:
             smgr = ctx.ServiceManager
             desktop = smgr.createInstanceWithContext( "com.sun.star.frame.Desktop", ctx )
-            url = uno.systemPathToFileUrl(presentation)
-            properties = []
-            properties = tuple(properties)
-            self.document = desktop.loadComponentFromURL(url, "_blank", 0, properties)
-            self.presentation = self.document.getPresentation()
-            self.presentation.start()
-            self.xSlideShowController =  desktop.getCurrentComponent().Presentation.getController()
+            return desktop
         except:
             log.error(u'Failed reason %s' % sys.exc_info())
+            return None
+
+    def getCOMDesktop(self):
+        log.debug(u'getCOMDesktop')
+        try:
+            smgr = Dispatch("com.sun.star.ServiceManager")
+            desktop = smgr.createInstance( "com.sun.star.frame.Desktop")
+            return desktop
+        except:
+            log.error(u'Failed reason %s' % sys.exc_info())
+            return None
 
     def closePresentation(self):
         """
