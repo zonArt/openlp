@@ -370,17 +370,16 @@ class ServiceManager(QtGui.QWidget):
         * An ood which is a pickle of the service items
         * All image, presentation and video files needed to run the service.
         """
-        
         if not quick or self.isNew:
             filename = QtGui.QFileDialog.getSaveFileName(self,
             u'Save Order of Service',self.config.get_last_dir() )
         else:
             filename = self.config.get_last_dir()
-        splittedFile = filename.split(u'.')
-        if splittedFile[-1] != u'oos':
-            filename = filename + u'.oos'
-        filename = unicode(filename)
         if filename != u'':
+            splittedFile = filename.split(u'.')
+            if splittedFile[-1] != u'oos':
+                filename = filename + u'.oos'
+            filename = unicode(filename)
             self.isNew = False
             self.config.set_last_dir(filename)
             service = []
@@ -427,7 +426,7 @@ class ServiceManager(QtGui.QWidget):
                 zip = zipfile.ZipFile(unicode(filename))
                 filexml = None
                 themename = None
-                self.isNew = False
+
                 for file in zip.namelist():
                     names = file.split(os.path.sep)
                     file_to = os.path.join(self.servicePath,
@@ -455,6 +454,7 @@ class ServiceManager(QtGui.QWidget):
             except:
                 log.error(u'Problem processing oos load %s', sys.exc_info()[0])
                 pass
+        self.isNew = False
         self.serviceName = name[len(name) - 1]
         self.parent.OosChanged(True, self.serviceName)
 
