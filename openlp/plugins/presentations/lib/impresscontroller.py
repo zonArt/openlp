@@ -93,7 +93,7 @@ class ImpressController(object):
         else:
             desktop = self.getUNODesktop()
             url = uno.systemPathToFileUrl(presentation)
-        if desktop==None:
+        if desktop is None:
             return
         try:
             properties = []
