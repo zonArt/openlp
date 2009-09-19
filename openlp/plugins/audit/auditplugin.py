@@ -116,7 +116,8 @@ class AuditPlugin(Plugin):
         Audit a live song from SlideController
         """
         if self.auditActive:
-            self.auditFile.write(u'\"%s\",\"%s\"\n' % (date.today(), auditData))
+            for author in auditData[1]:
+                self.auditFile.write(u'\"%s\",\"%s\",\"%s\",\"%s\"\n' % (date.today(), auditData[0], author,  auditData[2]))
             self.auditFile.flush()
 
     def onUpdateAudit(self):
