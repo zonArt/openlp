@@ -27,7 +27,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 from datetime import date
 
-from openlp.core.lib import Plugin,  Receiver,  translate
+from openlp.core.lib import Plugin,  Receiver,  translate,  str_to_bool
 from openlp.plugins.audit.lib import AuditTab
 
 class AuditPlugin(Plugin):
@@ -95,16 +95,48 @@ class AuditPlugin(Plugin):
         log.info(u'Plugin Initialising')
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'audit_live'), self.onReceiveAudit)
-        self.auditFile = open(u'openlp.aud', 'a')
-        self.auditActive = False
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'audit_changed'), self.onUpdateAudit)
+        self.auditFileName = self.config.get_config(u'audit file', u'')
+        self.auditActive = str_to_bool(self.config.get_config(u'audit active', False))
+        if self.auditFileName == u'':
+            self.auditActive = False
+            self.ToolsAuditItem.setEnabled(False)
+            self.auditFile = None
+        else:
+            self.auditFile = open(self.auditFileName, u'a')
+        self.ToolsAuditItem.setChecked(self.auditActive)
 
     def toggleAuditState(self):
         self.auditActive = not self.auditActive
+        self.config.set_config(u'audit active', self.auditActive)
 
     def onReceiveAudit(self, auditData):
+        """
+        Audit a live song from SlideController
+        """
         if self.auditActive:
-            self.auditFile.write(u'%s,%s\n' % (date.today(), auditData))
+            for author in auditData[1]:
+                self.auditFile.write(u'\"%s\",\"%s\",\"%s\",\"%s\"\n' % (date.today(), auditData[0], author,  auditData[2]))
             self.auditFile.flush()
+
+    def onUpdateAudit(self):
+        """
+        Someone may have changed to audit details
+        Sort out the file and the auditing state
+        """
+        self.auditFileNameNew = self.config.get_config(u'audit file', u'')
+        self.auditActive = str_to_bool(self.config.get_config(u'audit active', False))
+        if self.auditFileNameNew == u'':
+            self.auditActive = False
+            self.ToolsAuditItem.setChecked(self.auditActive)
+            self.ToolsAuditItem.setEnabled(False)
+            return
+        self.ToolsAuditItem.setEnabled(True)
+        if self.auditFileNameNew != self.auditFileName:
+            if self.auditFile is not None:
+                self.auditFile.close()
+            self.auditFile = open(self.auditFileNameNew, u'a')
 
     def finalise(self):
         log.debug(u'Finalise')
