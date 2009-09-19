@@ -80,6 +80,9 @@ class EventReceiver(QtCore.QObject):
 
     ``audit_live``
         Sends live song audit requests to the audit component
+
+    ``audit_changed``
+        Audit information may have changed
     """
     global log
     log = logging.getLogger(u'EventReceiver')
