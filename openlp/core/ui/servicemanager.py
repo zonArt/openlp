@@ -84,10 +84,9 @@ class Iter(QtGui.QTreeWidgetItemIterator):
 
 class ServiceManager(QtGui.QWidget):
     """
-    Manages the orders of service.  Currently this involves taking
-    text strings from plugins and adding them to an OOS file. In
-    future, it will also handle zipping up all the resources used into
-    one lump.
+    Manages the services.  This involves taking text strings from plugins and
+    adding them to the service.  This service can then be zipped up with all
+    the resources used into one OSZ file for use on any OpenLP v2 installation.
     Also handles the UI tasks of moving things up and down etc.
     """
     global log
@@ -274,7 +273,7 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(0, temp)
             self.repaintServiceList(0, count)
-        self.parent.OosChanged(False, self.serviceName)
+        self.parent.serviceChanged(False, self.serviceName)
 
     def onServiceUp(self):
         """
@@ -287,7 +286,7 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(item - 1, temp)
             self.repaintServiceList(item - 1,  count)
-        self.parent.OosChanged(False, self.serviceName)
+        self.parent.serviceChanged(False, self.serviceName)
 
     def onServiceDown(self):
         """
@@ -300,7 +299,7 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(item + 1, temp)
             self.repaintServiceList(item + 1,  count)
-        self.parent.OosChanged(False, self.serviceName)
+        self.parent.serviceChanged(False, self.serviceName)
 
     def onServiceEnd(self):
         """
@@ -312,7 +311,7 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(len(self.serviceItems), temp)
             self.repaintServiceList(len(self.serviceItems) - 1, count)
-        self.parent.OosChanged(False, self.serviceName)
+        self.parent.serviceChanged(False, self.serviceName)
 
     def onNewService(self):
         """
@@ -322,7 +321,7 @@ class ServiceManager(QtGui.QWidget):
         self.serviceItems = []
         self.serviceName = u''
         self.isNew = True
-        self.parent.OosChanged(True, self.serviceName)
+        self.parent.serviceChanged(True, self.serviceName)
 
     def onDeleteFromService(self):
         """
@@ -332,9 +331,9 @@ class ServiceManager(QtGui.QWidget):
         if item is not -1:
             self.serviceItems.remove(self.serviceItems[item])
             self.repaintServiceList(0, 0)
-        self.parent.OosChanged(False, self.serviceName)
+        self.parent.serviceChanged(False, self.serviceName)
 
-    def repaintServiceList(self, serviceItem,  serviceItemCount):
+    def repaintServiceList(self, serviceItem, serviceItemCount):
         """
         Clear the existing service list and prepaint all the items
         Used when moving items as the move takes place in supporting array,
@@ -366,28 +365,29 @@ class ServiceManager(QtGui.QWidget):
 
     def onSaveService(self, quick=False):
         """
-        Save the current service in a zip file
+        Save the current service in a zip (OSZ) file
         This file contains
-        * An ood which is a pickle of the service items
+        * An osd which is a pickle of the service items
         * All image, presentation and video files needed to run the service.
         """
         if not quick or self.isNew:
             filename = QtGui.QFileDialog.getSaveFileName(self,
-            u'Save Order of Service',self.config.get_last_dir() )
+            u'Save Service', self.config.get_last_dir())
         else:
             filename = self.config.get_last_dir()
         if filename != u'':
             splittedFile = filename.split(u'.')
-            if splittedFile[-1] != u'oos':
-                filename = filename + u'.oos'
+            if splittedFile[-1] != u'osz':
+                filename = filename + u'.osz'
             filename = unicode(filename)
             self.isNew = False
             self.config.set_last_dir(filename)
             service = []
-            servicefile= filename + u'.ood'
+            servicefile = filename + u'.osd'
             zip = zipfile.ZipFile(unicode(filename), 'w')
             for item in self.serviceItems:
-                service.append({u'serviceitem':item[u'data'].get_oos_repr()})
+                service.append(
+                    {u'serviceitem':item[u'data'].get_service_repr()})
                 if item[u'data'].service_item_type == ServiceType.Image or \
                     item[u'data'].service_item_type == ServiceType.Command:
                     for frame in item[u'data'].frames:
@@ -405,20 +405,19 @@ class ServiceManager(QtGui.QWidget):
                 pass #if not present do not worry
         name = filename.split(os.path.sep)
         self.serviceName = name[-1]
-        self.parent.OosChanged(True, self.serviceName)
+        self.parent.serviceChanged(True, self.serviceName)
         
     def onQuickSaveService(self):
         self.onSaveService(True)
 
     def onLoadService(self):
         """
-        Load an existing service from disk and rebuilds the serviceitems
-        All files retrieved from the zip file are placed in a temporary
-        directory and will only be used for this service.
+        Load an existing service from disk and rebuild the serviceitems.  All
+        files retrieved from the zip file are placed in a temporary directory
+        and will only be used for this service.
         """
-        filename = QtGui.QFileDialog.getOpenFileName(self,
-            u'Open Order of Service', self.config.get_last_dir(),
-            u'Services (*.oos)')
+        filename = QtGui.QFileDialog.getOpenFileName(self, u'Open Service',
+            self.config.get_last_dir(), u'Services (*.osz)')
         filename = unicode(filename)
         name = filename.split(os.path.sep)
         if filename != u'':
@@ -439,7 +438,7 @@ class ServiceManager(QtGui.QWidget):
                     f.write(zip.read(file))
                     f.flush()
                     f.close()
-                    if file_to.endswith(u'ood'):
+                    if file_to.endswith(u'osd'):
                         p_file = file_to
                 f = open(p_file, u'r')
                 items = cPickle.load(f)
@@ -448,17 +447,30 @@ class ServiceManager(QtGui.QWidget):
                 for item in items:
                     serviceitem = ServiceItem()
                     serviceitem.RenderManager = self.parent.RenderManager
-                    serviceitem.set_from_oos(item, self.servicePath )
+                    serviceitem.set_from_service(item, self.servicePath )
                     self.addServiceItem(serviceitem)
                 try:
-                    os.remove(p_file)
+                    if os.path.isfile(p_file):
+                        os.remove(p_file)
                 except:
-                    log.exception(u'Failed to remove ood file')
+                    log.exception(u'Failed to remove osd file')
             except:
                 log.exception(u'Problem loading a service file')
         self.isNew = False
         self.serviceName = name[len(name) - 1]
-        self.parent.OosChanged(True, self.serviceName)
+        self.parent.serviceChanged(True, self.serviceName)
+
+    def cleanUp(self):
+        """
+        Empties the servicePath of temporary files
+        """
+        for file in os.listdir(self.servicePath):
+            file_path = os.path.join(self.servicePath, file)
+            try:
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+            except:
+                log.exception(u'Failed to clean up servicePath')
 
     def onThemeComboBoxSelected(self, currentIndex):
         """
@@ -501,7 +513,7 @@ class ServiceManager(QtGui.QWidget):
             treewidgetitem1.setData(0, QtCore.Qt.UserRole,
                 QtCore.QVariant(count))
             count = count + 1
-        self.parent.OosChanged(False, self.serviceName)
+        self.parent.serviceChanged(False, self.serviceName)
 
     def makePreview(self):
         """

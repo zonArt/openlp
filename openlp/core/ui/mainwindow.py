@@ -453,7 +453,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtGui.QMainWindow.__init__(self)
         self.closeEvent = self.onCloseEvent
         self.screenList = screens
-        self.oosNotSaved = False
+        self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
         self.mainDisplay = MainDisplay(self, screens)
         self.generalConfig = PluginConfig(u'General')
@@ -535,8 +535,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
         self.plugin_helpers[u'settings'] = self.settingsForm
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers)
-        # hook methods have to happen after find_plugins. Find plugins needs the
-        # controllers hence the hooks have moved from setupUI() to here
+        # hook methods have to happen after find_plugins. Find plugins needs
+        # the controllers hence the hooks have moved from setupUI() to here
         # Find and insert settings tabs
         log.info(u'hook settings')
         self.plugin_manager.hook_settings_tabs(self.settingsForm)
@@ -617,10 +617,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Hook to close the main window and display windows on exit
         """
-        if self.oosNotSaved == True:
+        if self.serviceNotSaved == True:
             ret = QtGui.QMessageBox.question(None,
                 translate(u'mainWindow', u'Save Changes to Service?'),
-                translate(u'mainWindow', u'Your service has been changed, do you want to save those changes?'),
+                translate(u'mainWindow', u'Your service has changed, do you want to save those changes?'),
                 QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Cancel |
                     QtGui.QMessageBox.Discard |
@@ -629,16 +629,19 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if ret == QtGui.QMessageBox.Save:
                 self.ServiceManagerContents.onSaveService()
                 self.mainDisplay.close()
+                self.ServiceManagerContents.cleanUp()
                 self.cleanUp()
                 event.accept()
             elif ret == QtGui.QMessageBox.Discard:
                 self.mainDisplay.close()
+                self.ServiceManagerContents.cleanUp()
                 self.cleanUp()
                 event.accept()
             else:
                 event.ignore()
         else:
             self.mainDisplay.close()
+            self.ServiceManagerContents.cleanUp()
             self.cleanUp()
             event.accept()
 
@@ -647,21 +650,25 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         log.info(u'cleanup plugins')
         self.plugin_manager.finalise_plugins()
 
-    def OosChanged(self, reset=False, oosName=None):
+    def serviceChanged(self, reset=False, serviceName=None):
         """
-        Hook to change the title if the OOS has been changed
-        reset - tells if the OOS has been cleared or saved
-        oosName - is the name of the OOS (if it has one)
+        Hook to change the main window title when the service changes
+
+        ``reset``
+            Shows if the service has been cleared or saved
+
+        ``serviceName``
+            The name of the service (if it has one)
         """
-        if not oosName:
+        if not serviceName:
             service_name = u'(unsaved service)'
         else:
-            service_name = oosName
+            service_name = serviceName
         if reset == True:
-            self.oosNotSaved = False
+            self.serviceNotSaved = False
             title = u'%s - %s' % (self.mainTitle, service_name)
         else:
-            self.oosNotSaved = True
+            self.serviceNotSaved = True
             title = u'%s - %s*' % (self.mainTitle, service_name)
         self.setWindowTitle(title)
 
