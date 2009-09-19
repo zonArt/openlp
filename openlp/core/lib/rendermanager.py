@@ -234,7 +234,7 @@ class RenderManager(object):
         realh = preview.height()
         # and move it to the centre of the preview space
         newImage = QtGui.QImage(w, h, QtGui.QImage.Format_ARGB32_Premultiplied)
-        newImage.fill(QtCore.Qt.transparent)
+        newImage.fill(QtCore.Qt.black)
         painter = QtGui.QPainter(newImage)
         painter.drawImage((w-realw) / 2, (h-realh) / 2, preview)
         return newImage

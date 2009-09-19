@@ -23,8 +23,8 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 # http://www.oooforum.org/forum/viewtopic.phtml?t=5252
 # http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/Working_with_Presentations
 # http://mail.python.org/pipermail/python-win32/2008-January/006676.html
-#http://www.linuxjournal.com/content/starting-stopping-and-connecting-openoffice-python
-#http://nxsy.org/comparing-documents-with-openoffice-and-python
+# http://www.linuxjournal.com/content/starting-stopping-and-connecting-openoffice-python
+# http://nxsy.org/comparing-documents-with-openoffice-and-python
 
 import logging
 import os ,  subprocess
@@ -80,8 +80,9 @@ class ImpressController(object):
         """
         Called when a presentation is added to the SlideController.
         It builds the environment, starts communcations with the background
-        OpenOffice task started earlier.  If OpenOffice is not present is ts started.
-        Once the environment is available the presentation is loaded and started.
+        OpenOffice task started earlier.  If OpenOffice is not present is is
+        started.  Once the environment is available the presentation is loaded
+        and started.
 
         ``presentation``
         The file name of the presentatios to the run.
@@ -98,19 +99,22 @@ class ImpressController(object):
         try:
             properties = []
             properties = tuple(properties)
-            self.document = desktop.loadComponentFromURL(url, "_blank", 0, properties)
+            self.document = desktop.loadComponentFromURL(
+                url, "_blank", 0, properties)
             self.presentation = self.document.getPresentation()
             self.presentation.start()
-            self.xSlideShowController =  desktop.getCurrentComponent().Presentation.getController()
+            self.xSlideShowController = \
+                desktop.getCurrentComponent().Presentation.getController()
         except:
-            log.error(u'Failed reason %s' % sys.exc_info())
+            log.exception(u'Failed to load presentation')
 
     def getUNODesktop(self):
         log.debug(u'getUNODesktop')
         ctx = None
         loop = 0
         context = uno.getComponentContext()
-        resolver = context.ServiceManager.createInstanceWithContext(u'com.sun.star.bridge.UnoUrlResolver', context)
+        resolver = context.ServiceManager.createInstanceWithContext(
+            u'com.sun.star.bridge.UnoUrlResolver', context)
         while ctx == None and loop < 3:
             try:
                 ctx = resolver.resolve(u'uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
@@ -119,10 +123,11 @@ class ImpressController(object):
                 loop += 1
         try:
             smgr = ctx.ServiceManager
-            desktop = smgr.createInstanceWithContext( "com.sun.star.frame.Desktop", ctx )
+            desktop = smgr.createInstanceWithContext(
+                "com.sun.star.frame.Desktop", ctx )
             return desktop
         except:
-            log.error(u'Failed reason %s' % sys.exc_info())
+            log.exception(u'Failed to get UNO desktop')
             return None
 
     def getCOMDesktop(self):
@@ -132,7 +137,7 @@ class ImpressController(object):
             desktop = smgr.createInstance( "com.sun.star.frame.Desktop")
             return desktop
         except:
-            log.error(u'Failed reason %s' % sys.exc_info())
+            log.exception(u'Failed to get COM desktop')
             return None
 
     def closePresentation(self):

@@ -62,17 +62,17 @@ class SettingsManager(object):
         self.showPreviewPanel = str_to_bool(ConfigHelper.get_config(
             u'user interface', u'display previewpanel', True))
 
-    def toggleMediaManager(self, isVisible):
-        ConfigHelper.set_config(u'user interface', u'display mediamanager',
-            isVisible)
-
-    def toggleServiceManager(self, isVisible):
-        ConfigHelper.set_config(u'user interface', u'display servicemanager',
-            isVisible)
-
-    def toggleThemeManager(self, isVisible):
-        ConfigHelper.set_config(u'user interface', u'display thememanager',
-            isVisible)
+    def setUIItemVisibility(self, item=u'', isVisible=True):
+        if item != u'':
+            if item == u'ThemeManagerDock':
+                ConfigHelper.set_config('user interface',
+                    u'display thememanager', isVisible)
+            elif item == u'ServiceManagerDock':
+                ConfigHelper.set_config('user interface',
+                    u'display servicemanager', isVisible)
+            elif item == u'MediaManagerDock':
+                ConfigHelper.set_config('user interface',
+                    u'display mediamanager', isVisible)
 
     def togglePreviewPanel(self, isVisible):
         ConfigHelper.set_config(u'user interface', u'display previewpanel',

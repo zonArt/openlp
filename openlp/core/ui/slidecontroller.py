@@ -314,6 +314,7 @@ class SlideController(QtGui.QWidget):
         self.onSlideSelected()
         self.PreviewListWidget.setFocus()
         log.info(u'Display Rendering took %4s' % (time.time() - before))
+        Receiver().send_message(u'audit_live', self.serviceitem.audit)
         log.debug(u'displayServiceManagerItems End')
 
     #Screen event methods
@@ -382,22 +383,28 @@ class SlideController(QtGui.QWidget):
 
     def onStartLoop(self):
         """
-        Go to the last slide.
+        Start the timer loop running and store the timer id
         """
         if self.PreviewListWidget.rowCount() > 1:
             self.timer_id = self.startTimer(int(self.DelaySpinBox.value()) * 1000)
 
     def onStopLoop(self):
         """
-        Go to the last slide.
+        Stop the timer loop running
         """
         self.killTimer(self.timer_id)
 
     def timerEvent(self, event):
+        """
+        If the timer event is for this window select next slide
+        """
         if event.timerId() == self.timer_id:
             self.onSlideSelectedNext()
 
     def onGoLive(self):
+        """
+        If preview copy slide item to live
+        """
         row = self.PreviewListWidget.currentRow()
         if row > -1 and row < self.PreviewListWidget.rowCount():
             self.parent.LiveController.addServiceManagerItem(self.commandItem, row)

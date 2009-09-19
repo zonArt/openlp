@@ -78,6 +78,8 @@ class EventReceiver(QtCore.QObject):
     ``{plugin}_stop``
         Requests a plugin to handle a stop event
 
+    ``audit_live``
+        Sends live song audit requests to the audit component
     """
     global log
     log = logging.getLogger(u'EventReceiver')

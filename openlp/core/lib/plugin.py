@@ -27,6 +27,13 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import PluginConfig, Receiver
 
+class PluginStatus(object):
+    """
+    Defines the status of the plugin
+    """
+    Active = 1
+    Inactive = 2
+
 class Plugin(object):
     """
     Base class for openlp plugins to inherit from.
@@ -122,6 +129,7 @@ class Plugin(object):
         self.icon = None
         self.config = PluginConfig(self.name)
         self.weight = 0
+        self.status = PluginStatus.Inactive
         # Set up logging
         self.log = logging.getLogger(self.name)
         self.preview_controller = plugin_helpers[u'preview']
@@ -163,6 +171,15 @@ class Plugin(object):
 
         ``export_menu``
             The Export menu
+        """
+        pass
+
+    def add_tools_menu_item(self, tools_menu):
+        """
+        Create a menu item and add it to the "Tools" menu.
+
+        ``tools_menu``
+            The Tools menu
         """
         pass
 
