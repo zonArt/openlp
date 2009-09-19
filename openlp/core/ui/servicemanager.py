@@ -24,6 +24,7 @@
 
 import os
 import sys
+import string
 import logging
 import cPickle
 import zipfile
@@ -416,7 +417,7 @@ class ServiceManager(QtGui.QWidget):
         directory and will only be used for this service.
         """
         filename = QtGui.QFileDialog.getOpenFileName(self,
-            u'Open Order of Service',self.config.get_last_dir(),
+            u'Open Order of Service', self.config.get_last_dir(),
             u'Services (*.oos)')
         filename = unicode(filename)
         name = filename.split(os.path.sep)
@@ -426,14 +427,17 @@ class ServiceManager(QtGui.QWidget):
                 zip = zipfile.ZipFile(unicode(filename))
                 filexml = None
                 themename = None
-
                 for file in zip.namelist():
-                    names = file.split(os.path.sep)
+                    if os.name == u'nt':
+                        winfile = string.replace(file, '/', os.path.sep)
+                        names = winfile.split(os.path.sep)
+                    else:
+                        names = file.split(os.path.sep)
                     file_to = os.path.join(self.servicePath,
                         names[len(names) - 1])
-                    file_data = zip.read(file)
-                    f = open(file_to, u'w')
-                    f.write(file_data)
+                    f = open(file_to, u'wb')
+                    f.write(zip.read(file))
+                    f.flush()
                     f.close()
                     if file_to.endswith(u'ood'):
                         p_file = file_to
@@ -449,11 +453,9 @@ class ServiceManager(QtGui.QWidget):
                 try:
                     os.remove(p_file)
                 except:
-                    #if not present do not worry
-                    pass
+                    log.exception(u'Failed to remove ood file')
             except:
                 log.exception(u'Problem loading a service file')
-                pass
         self.isNew = False
         self.serviceName = name[len(name) - 1]
         self.parent.OosChanged(True, self.serviceName)
