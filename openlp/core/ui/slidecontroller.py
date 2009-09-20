@@ -304,7 +304,8 @@ class SlideController(QtGui.QWidget):
         self.onSlideSelected()
         self.PreviewListWidget.setFocus()
         log.info(u'Display Rendering took %4s' % (time.time() - before))
-        Receiver().send_message(u'audit_live', self.serviceitem.audit)
+        if self.serviceitem.audit != u'':
+            Receiver().send_message(u'audit_live', self.serviceitem.audit)
         log.debug(u'displayServiceManagerItems End')
 
     #Screen event methods
