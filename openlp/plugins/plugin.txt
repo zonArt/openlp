@@ -21,7 +21,7 @@ be able to:
 * Render their display (on the projection screen and in a "shrunken form"
   for preview purposes)
 
-These plugins need to be part of an service.  This means they need to 
+These plugins need to be part of a service.  This means they need to 
 * Be able to tell the service manager code what to put in the service for their
   "bit"
 * Have a "tab" in the media manager, which they can render on request
@@ -47,7 +47,7 @@ Funnily enough, the core lyrics engine fits those requirements, so could
 actually form a plugin...
 
 Each service entry may be made up of multiple plugins (to do text on video), so
-each plugin that contributes to an service item will need a "layering"
+each plugin that contributes to a service item will need a "layering"
 priority.
 
 Plugin management
@@ -62,7 +62,7 @@ These plugins are then queried for their capabilities/requirements and
 spaces made in the prefs UI as required, and in the media manager.
 
 The service manager can find out what plugins it has available (we need to
-report missing plugins when an service is loaded).
+report missing plugins when a service is loaded).
 
 The display manager will get a ref to a/some plugin(s) from the service
 manager when each service item is made live, and can then call on each to

@@ -31,7 +31,7 @@ from PyQt4 import QtGui, QtCore
 class Renderer(object):
     """
     Genarates a pixmap image of a array of text. The Text is formatted to
-    make sure it fits on the screen and if not extra frames a generated.
+    make sure it fits on the screen and if not extra frames are generated.
     """
     global log
     log = logging.getLogger(u'Renderer')
