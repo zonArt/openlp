@@ -131,7 +131,7 @@ class SongXMLParser(object):
         try:
             self.song_xml = ElementTree(element=XML(xml))
         except:
-            log.debug(u'Invalid xml %s', xml)
+            log.exception(u'Invalid xml %s', xml)
 
     def get_verses(self):
         """
