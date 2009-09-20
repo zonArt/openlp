@@ -30,7 +30,7 @@ from optparse import OptionParser
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, str_to_bool
-from openlp.core.resources import *
+from openlp.core.resources import qInitResources
 from openlp.core.ui import MainWindow, SplashScreen
 from openlp.core.utils import ConfigHelper
 
@@ -105,6 +105,8 @@ def main():
         log.setLevel(logging.DEBUG)
     else:
         log.setLevel(logging.INFO)
+    # Initialise the resources
+    qInitResources()
     # Now create and actually run the application.
     app = OpenLP(sys.argv)
     sys.exit(app.run())
@@ -113,6 +115,4 @@ if __name__ == u'__main__':
     """
     Instantiate and run the application.
     """
-    #import cProfile
-    #cProfile.run("main()", "profile.out")
     main()
