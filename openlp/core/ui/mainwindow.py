@@ -629,23 +629,25 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if ret == QtGui.QMessageBox.Save:
                 self.ServiceManagerContents.onSaveService()
                 self.mainDisplay.close()
-                self.ServiceManagerContents.cleanUp()
                 self.cleanUp()
                 event.accept()
             elif ret == QtGui.QMessageBox.Discard:
                 self.mainDisplay.close()
-                self.ServiceManagerContents.cleanUp()
                 self.cleanUp()
                 event.accept()
             else:
                 event.ignore()
         else:
             self.mainDisplay.close()
-            self.ServiceManagerContents.cleanUp()
             self.cleanUp()
             event.accept()
 
     def cleanUp(self):
+        """
+        Runs all the cleanup code before OpenLP shuts down
+        """
+        # Clean temporary files used by services
+        self.ServiceManagerContents.cleanUp()
         # Call the cleanup method to shutdown plugins.
         log.info(u'cleanup plugins')
         self.plugin_manager.finalise_plugins()
