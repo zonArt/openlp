@@ -153,18 +153,15 @@ class Renderer(object):
             The footer of the slide.
         """
         log.debug(u'format_slide - Start')
-#        print words
         verses = []
         words = words.replace(u'\r\n', u'\n')
         verses_text = words.split(u'\n')
-        #print verses_text
         text = []
         for verse in verses_text:
             lines = verse.split(u'\n')
             for line in lines:
                 text.append(line)
         split_text = self.pre_render_text(text)
-#        print split_text
         log.debug(u'format_slide - End')
         return split_text
 
@@ -173,33 +170,27 @@ class Renderer(object):
         #take the width work out approx how many characters and add 50%
         line_width = self._rect.width() - self._right_margin
         #number of lines on a page - adjust for rounding up.
-#        print "Metrics ", line_width
         page_length = int(self._rect.height() / metrics.height() - 2 ) - 1
         ave_line_width = line_width / metrics.averageCharWidth()
         ave_line_width = int(ave_line_width + (ave_line_width * 1))
-#        print "B", ave_line_width
         split_pages = []
         page = []
         split_lines = []
         count = 0
         for line in text:
-            #print "C", line, len(line)
             #Must be a blank line so keep it.
             if len(line) == 0:
                 line = u' '
             while len(line) > 0:
-#                print "C1", line, len(line)
                 if len(line) > ave_line_width:
                     pos = line.find(u' ', ave_line_width)
                     split_text = line[:pos]
                 else:
                     pos = len(line)
                     split_text = line
-#                print "E", metrics.width(split_text,  -1), line_width
                 while metrics.width(split_text,  -1) > line_width:
                     #Find the next space to the left
                     pos = line[:pos].rfind(u' ')
-#                    print "F",  pos,  line[:pos]
                     #no more spaces found
                     if pos  == 0:
                         split_text = line
@@ -208,16 +199,9 @@ class Renderer(object):
                         pos = len(split_text)
                     else:
                         split_text = line[:pos]
-#                    print "F1", split_text, line, pos
                 split_lines.append(split_text)
                 line = line[pos:]
                 #Text fits in a line now
-#                if len(line) <= line_width:
-#                    split_lines.append(line)
-#                    line = u''
-#                print "G", split_lines
-#                print "H", line
-        #print "I", split_lines, page_length
         for line in split_lines:
             page.append(line)
             if len(page) == page_length:
@@ -252,7 +236,6 @@ class Renderer(object):
             Defaults to *None*. The footer to render.
         """
         log.debug(u'generate_frame_from_lines - Start')
-        #print "Render Lines ", lines
         bbox = self._render_lines_unaligned(lines, False)
         if footer_lines is not None:
             bbox1 = self._render_lines_unaligned(footer_lines, True)
@@ -321,8 +304,6 @@ class Renderer(object):
                 if self.bg_image is not None:
                     painter.drawImage(0, 0, self.bg_image)
         painter.end()
-#        self.bg_frame_small = self.bg_frame.scaled(QtCore.QSize(280, 210),
-#            QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
         log.debug(u'render background End')
 
     def _correctAlignment(self, rect, bbox):
