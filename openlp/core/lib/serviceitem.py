@@ -93,15 +93,10 @@ class ServiceItem(object):
                 self.RenderManager.set_override_theme(None)
             else:
                 self.RenderManager.set_override_theme(self.theme)
-            firstTime = True
             for slide in self.service_frames:
                 formated = self.RenderManager.format_slide(slide[u'raw_slide'])
                 for format in formated:
                     frame = None
-                    if firstTime:
-                        frame = self.RenderManager.generate_slide(format,
-                            self.raw_footer)
-                        firstTime = False
                     lines = u''
                     for line in format:
                         lines += line + u'\n'
