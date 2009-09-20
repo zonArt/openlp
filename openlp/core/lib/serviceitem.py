@@ -100,7 +100,8 @@ class ServiceItem(object):
                     lines = u''
                     for line in format:
                         lines += line + u'\n'
-                    self.frames.append({u'title': slide[u'title'],u'text':lines,
+                    title = lines.split(u'\n')[0]
+                    self.frames.append({u'title': title ,u'text':lines,
                         u'image': frame})
         elif self.service_item_type == ServiceType.Command:
             self.frames = self.service_frames
