@@ -45,6 +45,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         Constructor
         """
         QtGui.QDialog.__init__(self, parent)
+        self.parent = parent
         self.setupUi(self)
         # Connecting signals and slots
         QtCore.QObject.connect(self.AuthorAddButton,
@@ -78,6 +79,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'activated(int)'), self.onSongBookComboChanged)
         QtCore.QObject.connect(self.ThemeSelectionComboItem,
             QtCore.SIGNAL(u'activated(int)'), self.onThemeComboChanged)
+        QtCore.QObject.connect(self.ThemeAddButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.parent.parent.render_manager.theme_manager.onAddTheme)
         QtCore.QObject.connect(self.MaintenanceButton,
             QtCore.SIGNAL(u'clicked()'), self.onMaintenanceButtonClicked)
         QtCore.QObject.connect(self.TitleEditItem,
@@ -92,7 +96,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'lostFocus()'), self.onVerseOrderEditLostFocus)
         # Create other objects and forms
         self.songmanager = songmanager
-        self.parent = parent
         self.verse_form = EditVerseForm()
         self.initialise()
         self.AuthorsListView.setSortingEnabled(False)
