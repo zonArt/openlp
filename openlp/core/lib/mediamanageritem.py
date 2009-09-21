@@ -192,35 +192,35 @@ class MediaManagerItem(QtGui.QWidget):
         # Create buttons for the toolbar
         ## File Button ##
         if self.hasFileIcon:
-            self.addToolbarButton(
-                translate(self.TranslationContext,
-                u'Load ' + self.PluginTextShort),
-                translate(self.TranslationContext,
-                u'Load a new ' + self.PluginTextShort),
+            self.addToolbarButton(translate(
+                    self.TranslationContext, u'Load ' + self.PluginTextShort),
+                translate(
+                    self.TranslationContext,
+                    u'Load a new ' + self.PluginTextShort),
                 u':' + self.IconPath + u'_load.png', self.onFileClick,
                 self.PluginTextShort + u'FileItem')
         ## New Button ##
         if self.hasNewIcon:
-            self.addToolbarButton(
-                translate(self.TranslationContext,
-                u'New ' + self.PluginTextShort),
-                translate(self.TranslationContext,
-                u'Add a new ' + self.PluginTextShort),
+            self.addToolbarButton(translate(
+                self.TranslationContext, u'New ' + self.PluginTextShort),
+                translate(
+                    self.TranslationContext,
+                    u'Add a new ' + self.PluginTextShort),
                 u':' + self.IconPath + u'_new.png', self.onNewClick,
                 self.PluginTextShort + u'NewItem')
         ## Edit Button ##
         if self.hasEditIcon:
-            self.addToolbarButton(
-                translate(self.TranslationContext,
-                u'Edit ' + self.PluginTextShort),
-                translate(self.TranslationContext,
-                u'Edit the selected ' + self.PluginTextShort),
+            self.addToolbarButton(translate(
+                self.TranslationContext, u'Edit ' + self.PluginTextShort),
+                translate(
+                    self.TranslationContext,
+                    u'Edit the selected ' + self.PluginTextShort),
                 u':' + self.IconPath + u'_edit.png', self.onEditClick,
                 self.PluginTextShort + u'EditItem')
         ## Delete Button ##
         self.addToolbarButton(
-            translate(self.TranslationContext,
-            u'Delete ' + self.PluginTextShort),
+            translate(
+                self.TranslationContext, u'Delete ' + self.PluginTextShort),
             translate(self.TranslationContext, u'Delete the selected item'),
             u':' + self.IconPath + u'_delete.png', self.onDeleteClick,
             self.PluginTextShort + u'DeleteItem')
@@ -228,8 +228,8 @@ class MediaManagerItem(QtGui.QWidget):
         self.addToolbarSeparator()
         ## Preview ##
         self.addToolbarButton(
-            translate(self.TranslationContext,
-            u'Preview ' + self.PluginTextShort),
+            translate(
+                self.TranslationContext, u'Preview ' + self.PluginTextShort),
             translate(self.TranslationContext, u'Preview the selected item'),
             u':/system/system_preview.png', self.onPreviewClick, u'PreviewItem')
         ## Live  Button ##
