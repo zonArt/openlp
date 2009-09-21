@@ -431,10 +431,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             Receiver().send_message(u'load_song_list')
         self.close()
 
-    def closeEvent(self, event):
-        self.songmanager.session.rollback()
-        event.accept()
-
     def processLyrics(self):
         log.debug(u'processLyrics')
         sxml = SongXMLBuilder()
