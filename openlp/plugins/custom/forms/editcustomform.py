@@ -208,7 +208,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             #number of lines has change
             if len(self.beforeText.split(u'\n')) != \
                 len(self.VerseTextEdit.toPlainText().split(u'\n')):
-                    tempList = {}
+                tempList = {}
                 for row in range(0, self.VerseListView.count()):
                     tempList[row] = self.VerseListView.item(row).text()
                 self.VerseListView.clear()
