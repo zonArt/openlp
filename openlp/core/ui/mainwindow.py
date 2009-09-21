@@ -31,19 +31,10 @@ from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
     ServiceManager, ThemeManager, MainDisplay, SlideController,  \
     PluginForm
 from openlp.core.lib import translate, Plugin, MediaManagerItem, \
-    SettingsTab, RenderManager, PluginConfig, str_to_bool, \
+    SettingsTab, RenderManager, PluginConfig, str_to_bool, OpenLPDockWidget, \
     SettingsManager, PluginManager, Receiver
 
 from openlp.core.utils import ConfigHelper
-
-class mediaDock(QtGui.QDockWidget):
-    def __init__(self, parent=None, name=None):
-        QtGui.QDockWidget.__init__(self, parent)
-        self.parent = parent
-
-    def resizeEvent(self, resizeEvent):
-        if resizeEvent.size().width() != resizeEvent.oldSize().width():
-            self.parent.settingsmanager.setDockbarLeft(resizeEvent.size().width())
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -116,7 +107,7 @@ class Ui_MainWindow(object):
         self.DefaultThemeLabel.setObjectName(u'DefaultThemeLabel')
         self.StatusBar.addPermanentWidget(self.DefaultThemeLabel)
         # Create the MediaManager
-        self.MediaManagerDock = mediaDock(MainWindow)
+        self.MediaManagerDock = OpenLPDockWidget(MainWindow)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(u':/system/system_mediamanager.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -146,7 +137,7 @@ class Ui_MainWindow(object):
             QtCore.Qt.DockWidgetArea(1), self.MediaManagerDock)
         self.MediaManagerDock.setVisible(self.settingsmanager.showMediaManager)
         # Create the service manager
-        self.ServiceManagerDock = QtGui.QDockWidget(MainWindow)
+        self.ServiceManagerDock = OpenLPDockWidget(MainWindow)
         ServiceManagerIcon = QtGui.QIcon()
         ServiceManagerIcon.addPixmap(
             QtGui.QPixmap(u':/system/system_servicemanager.png'),
@@ -164,7 +155,7 @@ class Ui_MainWindow(object):
         self.ServiceManagerDock.setVisible(
             self.settingsmanager.showServiceManager)
         # Create the theme manager
-        self.ThemeManagerDock = QtGui.QDockWidget(MainWindow)
+        self.ThemeManagerDock = OpenLPDockWidget(MainWindow)
         ThemeManagerIcon = QtGui.QIcon()
         ThemeManagerIcon.addPixmap(
             QtGui.QPixmap(u':/system/system_thememanager.png'),
@@ -462,7 +453,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtGui.QMainWindow.__init__(self)
         self.closeEvent = self.onCloseEvent
         self.screenList = screens
-        self.oosNotSaved = False
+        self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
         self.mainDisplay = MainDisplay(self, screens)
         self.generalConfig = PluginConfig(u'General')
@@ -519,6 +510,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'), self.onOptionsSettingsItemClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'update_global_theme'), self.defaultThemeChanged)
+        QtCore.QObject.connect(self.FileNewItem, 
+            QtCore.SIGNAL(u'triggered()'),
+            self.ServiceManagerContents.onNewService)
+        QtCore.QObject.connect(self.FileOpenItem, 
+            QtCore.SIGNAL(u'triggered()'),
+            self.ServiceManagerContents.onLoadService)
+        QtCore.QObject.connect(self.FileSaveItem, 
+            QtCore.SIGNAL(u'triggered()'),
+            self.ServiceManagerContents.onQuickSaveService)
+        QtCore.QObject.connect(self.FileSaveAsItem, 
+            QtCore.SIGNAL(u'triggered()'),
+            self.ServiceManagerContents.onSaveService)
         #warning cyclic dependency
         #RenderManager needs to call ThemeManager and
         #ThemeManager needs to call RenderManager
@@ -532,8 +535,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
         self.plugin_helpers[u'settings'] = self.settingsForm
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers)
-        # hook methods have to happen after find_plugins. Find plugins needs the
-        # controllers hence the hooks have moved from setupUI() to here
+        # hook methods have to happen after find_plugins. Find plugins needs
+        # the controllers hence the hooks have moved from setupUI() to here
         # Find and insert settings tabs
         log.info(u'hook settings')
         self.plugin_manager.hook_settings_tabs(self.settingsForm)
@@ -614,10 +617,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Hook to close the main window and display windows on exit
         """
-        if self.oosNotSaved == True:
+        if self.serviceNotSaved == True:
             ret = QtGui.QMessageBox.question(None,
                 translate(u'mainWindow', u'Save Changes to Service?'),
-                translate(u'mainWindow', u'Your service has been changed, do you want to save those changes?'),
+                translate(u'mainWindow', u'Your service has changed, do you want to save those changes?'),
                 QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Cancel |
                     QtGui.QMessageBox.Discard |
@@ -640,45 +643,57 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             event.accept()
 
     def cleanUp(self):
+        """
+        Runs all the cleanup code before OpenLP shuts down
+        """
+        # Clean temporary files used by services
+        self.ServiceManagerContents.cleanUp()
         # Call the cleanup method to shutdown plugins.
         log.info(u'cleanup plugins')
         self.plugin_manager.finalise_plugins()
 
-    def OosChanged(self, reset=False, oosName=None):
+    def serviceChanged(self, reset=False, serviceName=None):
         """
-        Hook to change the title if the OOS has been changed
-        reset - tells if the OOS has been cleared or saved
-        oosName - is the name of the OOS (if it has one)
+        Hook to change the main window title when the service changes
+
+        ``reset``
+            Shows if the service has been cleared or saved
+
+        ``serviceName``
+            The name of the service (if it has one)
         """
-        if not oosName:
+        if not serviceName:
             service_name = u'(unsaved service)'
         else:
-            service_name = oosName
+            service_name = serviceName
         if reset == True:
-            self.oosNotSaved = False
+            self.serviceNotSaved = False
             title = u'%s - %s' % (self.mainTitle, service_name)
         else:
-            self.oosNotSaved = True
+            self.serviceNotSaved = True
             title = u'%s - %s*' % (self.mainTitle, service_name)
         self.setWindowTitle(title)
 
     def defaultThemeChanged(self, theme):
         self.DefaultThemeLabel.setText(self.defaultThemeText + theme)
 
-    def toggleMediaManager(self):
-        mediaBool = self.MediaManagerDock.isVisible()
-        self.MediaManagerDock.setVisible(not mediaBool)
-        self.settingsmanager.toggleMediaManager(not mediaBool)
+    def toggleMediaManager(self, visible):
+        if self.MediaManagerDock.isVisible() != visible:
+            self.MediaManagerDock.setVisible(visible)
+            self.settingsmanager.setUIItemVisibility(
+                self.MediaManagerDock.objectName(), visible)
 
-    def toggleServiceManager(self):
-        serviceBool = self.ServiceManagerDock.isVisible()
-        self.ServiceManagerDock.setVisible(not serviceBool)
-        self.settingsmanager.toggleServiceManager(not serviceBool)
+    def toggleServiceManager(self, visible):
+        if self.ServiceManagerDock.isVisible() != visible:
+            self.ServiceManagerDock.setVisible(visible)
+            self.settingsmanager.setUIItemVisibility(
+                self.ServiceManagerDock.objectName(), visible)
 
-    def toggleThemeManager(self):
-        themeBool = self.ThemeManagerDock.isVisible()
-        self.ThemeManagerDock.setVisible(not themeBool)
-        self.settingsmanager.toggleThemeManager(not themeBool)
+    def toggleThemeManager(self, visible):
+        if self.ThemeManagerDock.isVisible() != visible:
+            self.ThemeManagerDock.setVisible(visible)
+            self.settingsmanager.setUIItemVisibility(
+                self.ThemeManagerDock.objectName(), visible)
 
     def togglePreviewPanel(self):
         previewBool = self.PreviewController.Panel.isVisible()

@@ -85,7 +85,8 @@ class PluginManager(object):
                     modulename = modulename[len(prefix) + 1:]
                     modulename = modulename.replace(os.path.sep, '.')
                     # import the modules
-                    log.debug(u'Importing %s from %s. Depth %d', modulename, path, thisdepth)
+                    log.debug(u'Importing %s from %s. Depth %d',
+                        modulename, path, thisdepth)
                     try:
                         __import__(modulename, globals(), locals(), [])
                     except ImportError, e:
@@ -131,8 +132,10 @@ class PluginManager(object):
             if plugin.status == PluginStatus.Active:
                 media_manager_item = plugin.get_media_manager_item()
                 if media_manager_item is not None:
-                    log.debug(u'Inserting media manager item from %s' % plugin.name)
-                    mediatoolbox.addItem(media_manager_item, plugin.icon, media_manager_item.title)
+                    log.debug(u'Inserting media manager item from %s' % \
+                        plugin.name)
+                    mediatoolbox.addItem(media_manager_item, plugin.icon,
+                        media_manager_item.title)
 
     def hook_settings_tabs(self, settingsform=None):
         """

@@ -93,19 +93,15 @@ class ServiceItem(object):
                 self.RenderManager.set_override_theme(None)
             else:
                 self.RenderManager.set_override_theme(self.theme)
-            firstTime = True
             for slide in self.service_frames:
                 formated = self.RenderManager.format_slide(slide[u'raw_slide'])
                 for format in formated:
                     frame = None
-                    if firstTime:
-                        frame = self.RenderManager.generate_slide(format,
-                            self.raw_footer)
-                        firstTime = False
                     lines = u''
                     for line in format:
                         lines += line + u'\n'
-                    self.frames.append({u'title': slide[u'title'],u'text':lines,
+                    title = lines.split(u'\n')[0]
+                    self.frames.append({u'title': title ,u'text':lines,
                         u'image': frame})
         elif self.service_item_type == ServiceType.Command:
             self.frames = self.service_frames
@@ -174,12 +170,12 @@ class ServiceItem(object):
         self.service_item_path = path
         self.service_frames.append({u'title': frame_title, u'command':  None})
 
-    def get_oos_repr(self):
+    def get_service_repr(self):
         """
-        This method returns some text which can be saved into the OOS
+        This method returns some text which can be saved into the service
         file to represent this item.
         """
-        oos_header = {
+        service_header = {
             u'name': self.name.lower(),
             u'plugin': self.shortname,
             u'theme':self.theme,
@@ -189,19 +185,19 @@ class ServiceItem(object):
             u'type':self.service_item_type,
             u'audit':self.audit
         }
-        oos_data = []
+        service_data = []
         if self.service_item_type == ServiceType.Text:
             for slide in self.service_frames:
-                oos_data.append(slide)
+                service_data.append(slide)
         elif self.service_item_type == ServiceType.Image:
             for slide in self.service_frames:
-                oos_data.append(slide[u'title'])
+                service_data.append(slide[u'title'])
         elif self.service_item_type == ServiceType.Command:
             for slide in self.service_frames:
-                oos_data.append(slide[u'title'])
-        return {u'header': oos_header, u'data': oos_data}
+                service_data.append(slide[u'title'])
+        return {u'header': service_header, u'data': service_data}
 
-    def set_from_oos(self, serviceitem, path=None):
+    def set_from_service(self, serviceitem, path=None):
         """
         This method takes a service item from a saved service file (passed
         from the ServiceManager) and extracts the data actually required.

@@ -157,13 +157,6 @@ class SlideController(QtGui.QWidget):
             self.DelaySpinBox.setSuffix(translate(u'SlideController', u's'))
 
         self.ControllerLayout.addWidget(self.Toolbar)
-        #sizeToolbarPolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
-        #    QtGui.QSizePolicy.Fixed)
-        #sizeToolbarPolicy.setHorizontalStretch(0)
-        #sizeToolbarPolicy.setVerticalStretch(0)
-        #sizeToolbarPolicy.setHeightForWidth(
-        #    self.Toolbar.sizePolicy().hasHeightForWidth())
-        #self.Toolbar.setSizePolicy(sizeToolbarPolicy)
         # Screen preview area
         self.PreviewFrame = QtGui.QFrame(self.Splitter)
         self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, 300, 225))
@@ -284,29 +277,26 @@ class SlideController(QtGui.QWidget):
         log.debug(u'displayServiceManagerItems Start')
         before = time.time()
         self.serviceitem = serviceitem
-        slide_image = self.serviceitem.frames[0][u'image']
-        size = slide_image.size()
-        slide_width = self.settingsmanager.slidecontroller_image
-        slide_height = slide_width * size.height() / size.width()
         self.PreviewListWidget.clear()
         self.PreviewListWidget.setRowCount(0)
-        self.PreviewListWidget.setColumnWidth(0, slide_width)
+        self.PreviewListWidget.setColumnWidth(0, self.settingsmanager.slidecontroller_image)
         for framenumber, frame in enumerate(self.serviceitem.frames):
             self.PreviewListWidget.setRowCount(self.PreviewListWidget.rowCount() + 1)
             item = QtGui.QTableWidgetItem()
             label = QtGui.QLabel()
             label.setMargin(8)
+            #It is a Image
             if frame[u'text'] == None:
-                pixmap = self.parent.RenderManager.resize_image(frame[u'image'], slide_width, slide_height)
+                pixmap = self.parent.RenderManager.resize_image(frame[u'image'])
                 label.setScaledContents(True)
                 label.setPixmap(QtGui.QPixmap.fromImage(pixmap))
             else:
                 label.setText(frame[u'text'])
             self.PreviewListWidget.setCellWidget(framenumber, 0, label)
             self.PreviewListWidget.setItem(framenumber, 0, item)
+            slide_height = self.settingsmanager.slidecontroller_image * self.parent.RenderManager.screen_ratio
             self.PreviewListWidget.setRowHeight(framenumber, slide_height)
-        slide_width = self.PreviewListWidget.viewport().size().width()
-        self.PreviewListWidget.setColumnWidth(0, slide_width)
+        self.PreviewListWidget.setColumnWidth(0, self.PreviewListWidget.viewport().size().width())
         if slideno > self.PreviewListWidget.rowCount():
             self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount())
         else:
@@ -314,7 +304,8 @@ class SlideController(QtGui.QWidget):
         self.onSlideSelected()
         self.PreviewListWidget.setFocus()
         log.info(u'Display Rendering took %4s' % (time.time() - before))
-        Receiver().send_message(u'audit_live', self.serviceitem.audit)
+        if self.serviceitem.audit != u'':
+            Receiver().send_message(u'audit_live', self.serviceitem.audit)
         log.debug(u'displayServiceManagerItems End')
 
     #Screen event methods

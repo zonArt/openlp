@@ -194,9 +194,7 @@ class RenderManager(object):
             The words to go on the slides.
         """
         log.debug(u'format slide')
-        #self.calculate_default(self.screen_list[self.current_display][u'size'])
         self.build_text_rectangle(self.themedata)
-        #self.renderer.set_frame_dest(self.width, self.height)
         return self.renderer.format_slide(words, False)
 
     def generate_slide(self, main_text, footer_text):
@@ -234,7 +232,7 @@ class RenderManager(object):
         realh = preview.height()
         # and move it to the centre of the preview space
         newImage = QtGui.QImage(w, h, QtGui.QImage.Format_ARGB32_Premultiplied)
-        newImage.fill(QtCore.Qt.transparent)
+        newImage.fill(QtCore.Qt.black)
         painter = QtGui.QPainter(newImage)
         painter.drawImage((w-realw) / 2, (h-realh) / 2, preview)
         return newImage
@@ -254,6 +252,7 @@ class RenderManager(object):
         else:
             self.width = screen.width()
             self.height = screen.height()
-        log.debug(u'calculate default %d, %d', self.width, self.height)
+        self.screen_ratio = float(self.height) / float(self.width)
+        log.debug(u'calculate default %d, %d, %f', self.width, self.height, self.screen_ratio )
         # 90% is start of footer
         self.footer_start = int(self.height * 0.90)

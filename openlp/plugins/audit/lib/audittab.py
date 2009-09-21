@@ -35,25 +35,30 @@ class AuditTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'AuditTab')
-        self.AuditLayout = QtGui.QFormLayout(self)
-        self.AuditLayout.setObjectName(u'AuditLayout')
         self.AuditModeGroupBox = QtGui.QGroupBox(self)
         self.AuditModeGroupBox.setObjectName(u'AuditModeGroupBox')
-        self.AuditModeLayout = QtGui.QVBoxLayout(self.AuditModeGroupBox)
-        self.AuditModeLayout.setSpacing(8)
-        self.AuditModeLayout.setMargin(8)
-        self.AuditModeLayout.setObjectName(u'AuditModeLayout')
-        self.AuditPortSpinBox = QtGui.QSpinBox(self.AuditModeGroupBox)
-        self.AuditPortSpinBox.setObjectName(u'AuditPortSpinBox')
-        self.AuditPortSpinBox.setMaximum(32767)
-        self.AuditModeLayout.addWidget(self.AuditPortSpinBox)
-        self.AuditActive = QtGui.QCheckBox(self.AuditModeGroupBox)
-        self.AuditActive.setObjectName(u'AuditPortSpinBox')
-        self.AuditModeLayout.addWidget(self.AuditActive)
-        self.WarningLabel = QtGui.QLabel(self.AuditModeGroupBox)
-        self.WarningLabel.setObjectName(u'WarningLabel')
-        self.AuditModeLayout.addWidget(self.WarningLabel)
-        self.AuditLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.AuditModeGroupBox)
+        self.verticalLayout = QtGui.QVBoxLayout(self.AuditModeGroupBox)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.AuditFileName = QtGui.QLineEdit(self)
+        self.AuditFileName.setObjectName("AuditFileName")
+        self.horizontalLayout.addWidget(self.AuditFileName)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(u':/imports/import_load.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.AuditFileButton = QtGui.QPushButton(self)
+        self.AuditFileButton.setObjectName("AuditFileButton")
+        self.AuditFileButton.setIcon(icon1)
+        self.horizontalLayout.addWidget(self.AuditFileButton)
+        self.verticalLayout.addLayout(self.horizontalLayout)
+        self.AuditActive = QtGui.QCheckBox(self)
+        self.AuditActive.setObjectName("AuditActive")
+        self.verticalLayout.addWidget(self.AuditActive)
+        self.WarningLabel = QtGui.QLabel(self)
+        self.WarningLabel.setObjectName("WarningLabel")
+        self.verticalLayout.addWidget(self.WarningLabel)
+        QtCore.QObject.connect(self.AuditFileButton,
+            QtCore.SIGNAL(u'pressed()'), self.onAuditFileButtonClicked)
 
     def retranslateUi(self):
         self.AuditModeGroupBox.setTitle(translate(u'AuditTab', u'Audit File'))
@@ -61,10 +66,16 @@ class AuditTab(SettingsTab):
         self.WarningLabel.setText(translate(u'AuditTab', u'A restart is needed for this change to become effective'))
 
     def load(self):
-        self.AuditPortSpinBox.setValue(int(self.config.get_config(u'Audit port', 4316)))
+        self.AuditFileName.setText(self.config.get_config(u'Audit file', u''))
         self.AuditActive.setChecked(int(self.config.get_config(u'startup', 0)))
 
-    def save(self):
-        self.config.set_config(u'Audit port', unicode(self.AuditPortSpinBox.value()))
-        self.config.set_config(u'startup', unicode(self.AuditActive.checkState()))
+    def onAuditFileButtonClicked(self):
+        filename = QtGui.QFileDialog.getOpenFileName(self, u'Audit File',self.AuditFileName.text())
+        if filename != u'':
+            filename = unicode(filename)
+            self.AuditFileName.setText(filename)
 
+    def save(self):
+        self.config.set_config(u'Audit file', unicode(self.AuditFileName.text()))
+        self.config.set_config(u'startup', unicode(self.AuditActive.checkState()))
+        Receiver().send_message(u'audit_changed')
