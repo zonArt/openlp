@@ -26,8 +26,8 @@ from openlp.plugins.presentations.lib import ImpressController
 
 class MessageListener(object):
     """
-    This is the Presentation listener who acts on events from the slide controller
-    and passes the messages on the the correct presentation handlers
+    This is the Presentation listener who acts on events from the slide
+    controller and passes the messages on the the correct presentation handlers
     """
     global log
     log=logging.getLogger(u'MessageListener')
@@ -55,7 +55,7 @@ class MessageListener(object):
         Start of new presentation
         Save the handler as any new presentations start here
         """
-        self.handler, file =  self.decodeMessage(message)
+        self.handler, file = self.decodeMessage(message)
         self.controllers[self.handler].loadPresentation(file)
 
     def next(self, message):

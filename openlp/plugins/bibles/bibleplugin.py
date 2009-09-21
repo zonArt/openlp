@@ -25,7 +25,6 @@
 import logging
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import *
 
 from openlp.core.lib import Plugin, translate
 
@@ -62,7 +61,8 @@ class BiblePlugin(Plugin):
         import_menu.addAction(self.ImportBibleItem)
         self.ImportBibleItem.setText(translate(u'BiblePlugin', u'&Bible'))
         # Signals and slots
-        QtCore.QObject.connect(self.ImportBibleItem, QtCore.SIGNAL(u'triggered()'),  self.onBibleNewClick)
+        QtCore.QObject.connect(self.ImportBibleItem,
+            QtCore.SIGNAL(u'triggered()'), self.onBibleNewClick)
 
     def add_export_menu_item(self, export_menu):
         self.ExportBibleItem = QtGui.QAction(export_menu)

@@ -62,12 +62,12 @@ class RemotesPlugin(Plugin):
     def readData(self):
         log.info(u'Remoted data has arrived')
         while self.server.hasPendingDatagrams():
-            datagram,  host, port = self.server.readDatagram(
+            datagram, host, port = self.server.readDatagram(
                 self.server.pendingDatagramSize())
             self.handle_datagram(datagram)
 
     def handle_datagram(self, datagram):
-        log.info(u'Sending event %s ',  datagram)
+        log.info(u'Sending event %s ', datagram)
         pos = datagram.find(u':')
         event = unicode(datagram[:pos].lower())
 

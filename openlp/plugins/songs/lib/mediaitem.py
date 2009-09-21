@@ -27,7 +27,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, translate, ServiceItem, \
-    SongXMLParser, contextMenuAction, contextMenuSeparator, BaseListWithDnD,  \
+    SongXMLParser, contextMenuAction, contextMenuSeparator, BaseListWithDnD, \
     Receiver
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm
 
@@ -49,7 +49,7 @@ class SongMediaItem(MediaManagerItem):
         self.PluginTextShort = u'Song'
         self.ConfigSection = u'song'
         MediaManagerItem.__init__(self, parent, icon, title)
-        self.edit_song_form = EditSongForm(self.parent.songmanager,  self)
+        self.edit_song_form = EditSongForm(self.parent.songmanager, self)
         self.song_maintenance_form = SongMaintenanceForm(
             self.parent.songmanager, self)
 
@@ -306,7 +306,7 @@ class SongMediaItem(MediaManagerItem):
         raw_footer.append(author_list)
         raw_footer.append(song.copyright )
         raw_footer.append(unicode(
-            translate(u'SongMediaItem', u'CCL Licence: ') + ccl ))
+            translate(u'SongMediaItem', u'CCL Licence: ') + ccl))
         service_item.raw_footer = raw_footer
         service_item.audit = [service_item.title, author_audit, ccl]
         return True

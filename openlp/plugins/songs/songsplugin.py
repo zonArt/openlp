@@ -94,7 +94,8 @@ class SongsPlugin(Plugin):
         # Translations...
         self.ImportSongMenu.setTitle(translate(u'main_window', u'&Song'))
         self.ImportOpenSongItem.setText(translate(u'main_window', u'OpenSong'))
-        self.ImportOpenlp1Item.setText(translate(u'main_window', u'openlp.org 1.0'))
+        self.ImportOpenlp1Item.setText(
+            translate(u'main_window', u'openlp.org 1.0'))
         self.ImportOpenlp1Item.setToolTip(
             translate(u'main_window', u'Export songs in openlp.org 1.0 format'))
         self.ImportOpenlp1Item.setStatusTip(
@@ -137,7 +138,8 @@ class SongsPlugin(Plugin):
         # Translations...
         self.ExportSongMenu.setTitle(translate(u'main_window', u'&Song'))
         self.ExportOpenSongItem.setText(translate(u'main_window', u'OpenSong'))
-        self.ExportOpenlp1Item.setText(translate(u'main_window', u'openlp.org 1.0'))
+        self.ExportOpenlp1Item.setText(
+            translate(u'main_window', u'openlp.org 1.0'))
         self.ExportOpenlp2Item.setText(translate(u'main_window', u'OpenLP 2.0'))
         # Signals and slots
         QtCore.QObject.connect(self.ExportOpenlp1Item,

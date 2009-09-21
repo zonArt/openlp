@@ -20,14 +20,15 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab,  str_to_bool,  translate
+from openlp.core.lib import SettingsTab, str_to_bool, translate
 
 class RemoteTab(SettingsTab):
     """
     RemoteTab is the Remotes settings tab in the settings dialog.
     """
     def __init__(self):
-        SettingsTab.__init__(self, translate(u'RemoteTab', u'Remotes'), u'Remotes')
+        SettingsTab.__init__(
+            self, translate(u'RemoteTab', u'Remotes'), u'Remotes')
 
     def setupUi(self):
         self.setObjectName(u'RemoteTab')
@@ -49,18 +50,25 @@ class RemoteTab(SettingsTab):
         self.WarningLabel = QtGui.QLabel(self.RemoteModeGroupBox)
         self.WarningLabel.setObjectName(u'WarningLabel')
         self.RemoteModeLayout.addWidget(self.WarningLabel)
-        self.RemoteLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.RemoteModeGroupBox)
+        self.RemoteLayout.setWidget(
+            0, QtGui.QFormLayout.LabelRole, self.RemoteModeGroupBox)
 
     def retranslateUi(self):
-        self.RemoteModeGroupBox.setTitle(translate(u'RemoteTab', u'Remotes Receiver Port'))
+        self.RemoteModeGroupBox.setTitle(
+            translate(u'RemoteTab', u'Remotes Receiver Port'))
         self.RemoteActive.setText(translate(u'RemoteTab', 'Remote available:'))
-        self.WarningLabel.setText(translate(u'RemoteTab', u'A restart is needed for this change to become effective'))
+        self.WarningLabel.setText(translate(u'RemoteTab',
+            u'A restart is needed for this change to become effective'))
 
     def load(self):
-        self.RemotePortSpinBox.setValue(int(self.config.get_config(u'remote port', 4316)))
-        self.RemoteActive.setChecked(int(self.config.get_config(u'startup', 0)))
+        self.RemotePortSpinBox.setValue(
+            int(self.config.get_config(u'remote port', 4316)))
+        self.RemoteActive.setChecked(
+            int(self.config.get_config(u'startup', 0)))
 
     def save(self):
-        self.config.set_config(u'remote port', unicode(self.RemotePortSpinBox.value()))
-        self.config.set_config(u'startup', unicode(self.RemoteActive.checkState()))
+        self.config.set_config(
+            u'remote port', unicode(self.RemotePortSpinBox.value()))
+        self.config.set_config(
+            u'startup', unicode(self.RemoteActive.checkState()))
 

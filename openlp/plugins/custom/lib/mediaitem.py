@@ -26,7 +26,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem,  SongXMLParser,  ServiceItem, \
+from openlp.core.lib import MediaManagerItem, SongXMLParser, ServiceItem, \
     translate, contextMenuAction, contextMenuSeparator, BaseListWithDnD
 
 class CustomListView(BaseListWithDnD):
@@ -65,7 +65,8 @@ class CustomMediaItem(MediaManagerItem):
         self.ListView.clear()
         for CustomSlide in list:
             custom_name = QtGui.QListWidgetItem(CustomSlide.title)
-            custom_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(CustomSlide.id))
+            custom_name.setData(
+                QtCore.Qt.UserRole, QtCore.QVariant(CustomSlide.id))
             self.ListView.addItem(custom_name)
 
     def onNewClick(self):

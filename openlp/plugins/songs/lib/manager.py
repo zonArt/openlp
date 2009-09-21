@@ -27,7 +27,7 @@ import sys
 
 from sqlalchemy import asc, desc
 from openlp.plugins.songs.lib.models import init_models, metadata, session, \
-    engine, songs_table, Song, Author, Topic,  Book
+    engine, songs_table, Song, Author, Topic, Book
 
 import logging
 

@@ -59,7 +59,7 @@ class BibleDBImpl(BibleCommon):
         self._load_testament(u'New Testament')
         self._load_testament(u'Apocrypha')
 
-    def add_verse(self, bookid, chap,  vse, text):
+    def add_verse(self, bookid, chap, vse, text):
         #log.debug(u'add_verse %s,%s,%s", bookid, chap, vse)
         verse = Verse()
         verse.book_id = bookid
@@ -113,7 +113,7 @@ class BibleDBImpl(BibleCommon):
             return False
 
     def _load_testament(self, testament):
-        log.debug(u'load_testaments %s',  testament)
+        log.debug(u'load_testaments %s', testament)
         test = ONTestament()
         test.name = testament
         self.session.add(test)

@@ -31,17 +31,18 @@ from openlp.core.lib import PluginConfig
 from sqlalchemy import  *
 from sqlalchemy.sql import select
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation, clear_mappers
+from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation, \
+    clear_mappers
 from openlp.plugins.songs.lib.models import metadata, session, \
-    engine, songs_table, Song, Author, Topic,  Book
+    engine, songs_table, Song, Author, Topic, Book
 from openlp.plugins.songs.lib.tables import *
 from openlp.plugins.songs.lib.classes import *
 
 def init_models(url):
     engine = create_engine(url)
     metadata.bind = engine
-    session = scoped_session(sessionmaker(autoflush=True, autocommit=False,
-                                          bind=engine))
+    session = scoped_session(
+        sessionmaker(autoflush=True, autocommit=False, bind=engine))
     mapper(Author, authors_table)
     mapper(TAuthor, temp_authors_table)
     mapper(Book, song_books_table)
@@ -57,7 +58,7 @@ def init_models(url):
     return session
 
 temp_authors_table = Table(u'authors_temp', metadata,
-    Column(u'authorid', types.Integer,  primary_key=True),
+    Column(u'authorid', types.Integer, primary_key=True),
     Column(u'authorname', String(40))
 )
 
@@ -154,14 +155,18 @@ class MigrateSongs():
             song.search_title = u''
             song.search_lyrics = u''
             print songs_temp.songtitle
-            aa  = self.session.execute(u'select * from songauthors_temp where songid =' + unicode(songs_temp.songid) )
+            aa  = self.session.execute(
+                u'select * from songauthors_temp where songid =' + \
+                unicode(songs_temp.songid) )
             for row in aa:
                 a = row['authorid']
                 authors_temp = self.session.query(TAuthor).get(a)
-                bb  = self.session.execute(u'select * from authors where display_name = \"%s\"' % unicode(authors_temp.authorname) ).fetchone()
+                bb  = self.session.execute(
+                    u'select * from authors where display_name = \"%s\"' % \
+                    unicode(authors_temp.authorname) ).fetchone()
                 if bb is None:
                     author = Author()
-                    author.display_name =  authors_temp.authorname
+                    author.display_name = authors_temp.authorname
                     author.first_name = u''
                     author.last_name = u''
                 else:
@@ -180,11 +185,11 @@ class MigrateSongs():
         conn = sqlite3.connect(self.data_path + os.sep + database)
         conn.execute("""update songs set search_title =
             replace(replace(replace(replace(replace(replace(replace(replace(
-            replace(title,  '&', 'and'), ',', ''), ';', ''), ':', ''),
+            replace(title, '&', 'and'), ',', ''), ';', ''), ':', ''),
             '(u', ''), ')', ''), '{', ''), '}',''),'?','');""")
         conn.execute("""update songs set search_lyrics =
             replace(replace(replace(replace(replace(replace(replace(replace(
-            replace(lyrics,  '&', 'and'), ',', ''), ';', ''), ':', ''),
+            replace(lyrics, '&', 'and'), ',', ''), ';', ''), ':', ''),
             '(u', ''), ')', ''), '{', ''), '}',''),'?','')
             ;""")
         conn.commit()
