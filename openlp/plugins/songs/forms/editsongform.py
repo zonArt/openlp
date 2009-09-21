@@ -45,6 +45,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         Constructor
         """
         QtGui.QDialog.__init__(self, parent)
+        self.parent = parent
         self.setupUi(self)
         # Connecting signals and slots
         QtCore.QObject.connect(self.AuthorAddButton,
@@ -52,13 +53,15 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.AuthorRemoveButton,
             QtCore.SIGNAL(u'clicked()'), self.onAuthorRemoveButtonClicked)
         QtCore.QObject.connect(self.AuthorsListView,
-            QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'), self.onAuthorsListViewPressed)
+            QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'),
+            self.onAuthorsListViewPressed)
         QtCore.QObject.connect(self.TopicAddButton,
             QtCore.SIGNAL(u'clicked()'), self.onTopicAddButtonClicked)
         QtCore.QObject.connect(self.TopicRemoveButton,
             QtCore.SIGNAL(u'clicked()'), self.onTopicRemoveButtonClicked)
         QtCore.QObject.connect(self.TopicsListView,
-            QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'), self.onTopicListViewPressed)
+            QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'),
+            self.onTopicListViewPressed)
         QtCore.QObject.connect(self.CopyrightInsertButton,
             QtCore.SIGNAL(u'clicked()'), self.onCopyrightInsertButtonTriggered)
         QtCore.QObject.connect(self.VerseAddButton,
@@ -70,11 +73,15 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.VerseDeleteButton,
             QtCore.SIGNAL(u'clicked()'), self.onVerseDeleteButtonClicked)
         QtCore.QObject.connect(self.VerseListWidget,
-            QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'), self.onVerseListViewPressed)
+            QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'),
+            self.onVerseListViewPressed)
         QtCore.QObject.connect(self.SongbookCombo,
             QtCore.SIGNAL(u'activated(int)'), self.onSongBookComboChanged)
         QtCore.QObject.connect(self.ThemeSelectionComboItem,
             QtCore.SIGNAL(u'activated(int)'), self.onThemeComboChanged)
+        QtCore.QObject.connect(self.ThemeAddButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.parent.parent.render_manager.theme_manager.onAddTheme)
         QtCore.QObject.connect(self.MaintenanceButton,
             QtCore.SIGNAL(u'clicked()'), self.onMaintenanceButtonClicked)
         QtCore.QObject.connect(self.TitleEditItem,
@@ -89,7 +96,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'lostFocus()'), self.onVerseOrderEditLostFocus)
         # Create other objects and forms
         self.songmanager = songmanager
-        self.parent = parent
         self.verse_form = EditVerseForm()
         self.initialise()
         self.AuthorsListView.setSortingEnabled(False)
@@ -110,7 +116,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         for author in authors:
             row = self.AuthorsSelectionComboItem.count()
             self.AuthorsSelectionComboItem.addItem(author.display_name)
-            self.AuthorsSelectionComboItem.setItemData(row, QtCore.QVariant(author.id))
+            self.AuthorsSelectionComboItem.setItemData(
+                row, QtCore.QVariant(author.id))
 
     def loadTopics(self):
         topics = self.songmanager.get_topics()
@@ -165,13 +172,15 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         title = self.song.search_title.split(u'@')
         if self.song.song_book_id != 0:
             book_name = self.songmanager.get_book(self.song.song_book_id)
-            id = self.SongbookCombo.findText(unicode(book_name.name), QtCore.Qt.MatchExactly)
+            id = self.SongbookCombo.findText(
+                unicode(book_name.name), QtCore.Qt.MatchExactly)
             if id == -1:
                 # Not Found
                 id = 0
             self.SongbookCombo.setCurrentIndex(id)
         if self.song.theme_name is not None and len(self.song.theme_name) > 0:
-            id = self.ThemeSelectionComboItem.findText(unicode(self.song.theme_name), QtCore.Qt.MatchExactly)
+            id = self.ThemeSelectionComboItem.findText(
+                unicode(self.song.theme_name), QtCore.Qt.MatchExactly)
             if id == -1:
                 # Not Found
                 id = 0
@@ -272,7 +281,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.song.song_book_id = 0
         else:
             item = int(self.SongbookCombo.currentIndex())
-            self.song.song_book_id = (self.SongbookCombo.itemData(item)).toInt()[0]
+            self.song.song_book_id = \
+                (self.SongbookCombo.itemData(item)).toInt()[0]
 
     def onThemeComboChanged(self, item):
         if item == 0:
@@ -337,7 +347,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def _validate_song(self):
         """
-        Check the validity of the form. Only display the 'save' if the data can be saved.
+        Check the validity of the form. Only display the 'save' if the data
+        can be saved.
         """
         log.debug(u'Validate Song')
         # Lets be nice and assume the data is correct.
@@ -345,26 +356,32 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         message = u''
         if len(self.TitleEditItem.displayText()) == 0:
             valid = False
-            ##self.TitleEditItem.setStyleSheet(u'background-color: red; color: white')
+            #self.TitleEditItem.setStyleSheet(
+            #    u'background-color: red; color: white')
             self.SongTabWidget.setCurrentIndex(0)
             self.TitleEditItem.setFocus()
-            return False, translate(u'SongFormDialog', u'You need to enter a song title.')
+            return False, translate(
+                u'SongFormDialog', u'You need to enter a song title.')
             #else:
             #self.TitleEditItem.setStyleSheet(u'')
         if self.VerseListWidget.count() == 0:
             valid = False
-            #self.VerseListWidget.setStyleSheet(u'background-color: red; color: white')
+            #self.VerseListWidget.setStyleSheet(
+            #    u'background-color: red; color: white')
             self.SongTabWidget.setCurrentIndex(0)
             self.VerseListWidget.setFocus()
-            return False, translate(u'SongFormDialog', u'You need to enter some verses.')
+            return False, translate(
+                u'SongFormDialog', u'You need to enter some verses.')
             #else:
             #self.VerseListWidget.setStyleSheet(u'')
         if self.AuthorsListView.count() == 0:
             valid = False
-            #self.AuthorsListView.setStyleSheet(u'background-color: red; color: white')
+            #self.AuthorsListView.setStyleSheet(
+            #    u'background-color: red; color: white')
             self.SongTabWidget.setCurrentIndex(2)
             self.AuthorsListView.setFocus()
-            return False, translate(u'SongFormDialog', u'You need to provide at least one author.')
+            return False, translate(
+                u'SongFormDialog', u'You need to provide at least one author.')
             #else:
             #self.AuthorsListView.setStyleSheet(u'')
         return valid, message
@@ -406,7 +423,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             return
         self.song.title = unicode(self.TitleEditItem.displayText())
         self.song.copyright = unicode(self.CopyrightEditItem.displayText())
-        self.song.search_title = unicode(self.TitleEditItem.displayText()) + u'@'+ unicode(self.AlternativeEdit.displayText())
+        self.song.search_title = unicode(self.TitleEditItem.displayText()) + \
+            u'@'+ unicode(self.AlternativeEdit.displayText())
         self.song.comments = unicode(self.CommentsEdit.toPlainText())
         self.song.ccli_number = unicode(self.CCLNumberEdit.displayText())
         self.processLyrics()
