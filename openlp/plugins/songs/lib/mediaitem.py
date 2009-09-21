@@ -178,7 +178,7 @@ class SongMediaItem(MediaManagerItem):
 
     def onSearchTextButtonClick(self):
         search_keywords = unicode(self.SearchTextEdit.displayText())
-        search_results  = []
+        search_results = []
         search_type = self.SearchTypeComboBox.currentIndex()
         if search_type == 0:
             log.debug(u'Titles Search')

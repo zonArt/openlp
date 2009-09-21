@@ -459,7 +459,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         text = text.replace(u'{', u'')
         text = text.replace(u'}', u'')
         text = text.replace(u'?', u'')
-        self.song.search_lyrics  = unicode(text)
+        self.song.search_lyrics = unicode(text)
         self.song.lyrics = unicode(sxml.extract_xml())
 
     def processTitle(self):

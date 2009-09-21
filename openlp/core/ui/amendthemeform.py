@@ -43,9 +43,9 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.setupUi(self)
         #define signals
         #Buttons
-        QtCore.QObject.connect(self.Color1PushButton ,
+        QtCore.QObject.connect(self.Color1PushButton,
             QtCore.SIGNAL(u'pressed()'), self.onColor1PushButtonClicked)
-        QtCore.QObject.connect(self.Color2PushButton ,
+        QtCore.QObject.connect(self.Color2PushButton,
             QtCore.SIGNAL(u'pressed()'), self.onColor2PushButtonClicked)
         QtCore.QObject.connect(self.FontMainColorPushButton,
             QtCore.SIGNAL(u'pressed()'), self.onFontMainColorPushButtonClicked)
@@ -250,13 +250,13 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.previewTheme(self.theme)
 
     def onFontMainWeightComboBoxSelected(self, value):
-        if value  ==0:
+        if value == 0:
             self.theme.font_main_weight = u'Normal'
             self.theme.font_main_italics = False
-        elif value  == 1:
+        elif value == 1:
             self.theme.font_main_weight = u'Bold'
             self.theme.font_main_italics = False
-        elif value  == 2:
+        elif value == 2:
             self.theme.font_main_weight = u'Normal'
             self.theme.font_main_italics = True
         else:
@@ -327,13 +327,13 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.previewTheme(self.theme)
 
     def onFontFooterWeightComboBoxSelected(self, value):
-        if value  == 0:
+        if value == 0:
             self.theme.font_footer_weight = u'Normal'
             self.theme.font_footer_italics = False
-        elif value  == 1:
+        elif value == 1:
             self.theme.font_footer_weight = u'Bold'
             self.theme.font_footer_italics = False
-        elif value  == 2:
+        elif value == 2:
             self.theme.font_footer_weight = u'Normal'
             self.theme.font_footer_italics = True
         else:

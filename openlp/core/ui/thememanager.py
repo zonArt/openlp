@@ -105,7 +105,7 @@ class ThemeManager(QtGui.QWidget):
             if oldName != newName:
                 self.ThemeListWidget.item(count).setText(newName)
             #Set the new name
-            if themeName  == newName:
+            if themeName == newName:
                 name = u'%s (%s)' % (newName, translate(u'ThemeManager',
                     u'default'))
                 self.ThemeListWidget.item(count).setText(name)
@@ -120,7 +120,7 @@ class ThemeManager(QtGui.QWidget):
                 self.ThemeListWidget.item(count).setText(
                     unicode(item.data(QtCore.Qt.UserRole).toString()))
             #Set the new name
-            if count  == index.row():
+            if count == index.row():
                 self.global_theme = unicode(
                     self.ThemeListWidget.item(count).text())
                 name = u'%s (%s)' % (self.global_theme,
@@ -158,7 +158,7 @@ class ThemeManager(QtGui.QWidget):
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             else:
                 self.themelist.remove(theme)
-                th = theme +  u'.png'
+                th = theme + u'.png'
                 row = self.ThemeListWidget.row(item)
                 self.ThemeListWidget.takeItem(row)
                 try:

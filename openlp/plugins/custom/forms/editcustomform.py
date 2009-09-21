@@ -115,7 +115,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             self.ThemeComboBox.setCurrentIndex(0)
 
     def accept(self):
-        valid , message = self._validate()
+        valid, message = self._validate()
         if not valid:
             QtGui.QMessageBox.critical(self,
             translate(u'customEditDialog', u'Error'), message,
