@@ -136,8 +136,8 @@ class MediaManagerItem(QtGui.QWidget):
             self.Toolbar = OpenLPToolbar(self)
             self.PageLayout.addWidget(self.Toolbar)
 
-    def addToolbarButton(self, title, tooltip, icon, slot=None,
-        objectname=None):
+    def addToolbarButton(
+        self, title, tooltip, icon, slot=None, objectname=None):
         """
         A method to help developers easily add a button to the toolbar.
 
