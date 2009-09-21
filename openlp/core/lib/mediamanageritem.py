@@ -192,7 +192,8 @@ class MediaManagerItem(QtGui.QWidget):
         # Create buttons for the toolbar
         ## File Button ##
         if self.hasFileIcon:
-            self.addToolbarButton(translate(
+            self.addToolbarButton(
+                translate(
                     self.TranslationContext, u'Load ' + self.PluginTextShort),
                 translate(
                     self.TranslationContext,
@@ -201,10 +202,10 @@ class MediaManagerItem(QtGui.QWidget):
                 self.PluginTextShort + u'FileItem')
         ## New Button ##
         if self.hasNewIcon:
-            self.addToolbarButton(translate(
-                self.TranslationContext, u'New ' + self.PluginTextShort),
+            self.addToolbarButton(
                 translate(
-                    self.TranslationContext,
+                    self.TranslationContext, u'New ' + self.PluginTextShort),
+                translate(self.TranslationContext,
                     u'Add a new ' + self.PluginTextShort),
                 u':' + self.IconPath + u'_new.png', self.onNewClick,
                 self.PluginTextShort + u'NewItem')
