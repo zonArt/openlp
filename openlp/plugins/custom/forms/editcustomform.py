@@ -126,7 +126,8 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         sxml.add_lyrics_to_song()
         count = 1
         for i in range (0, self.VerseListView.count()):
-            sxml.add_verse_to_lyrics(u'custom', unicode(count),
+            sxml.add_verse_to_lyrics(
+                u'custom', unicode(count),
                 unicode(self.VerseListView.item(i).text()))
             count += 1
         self.customSlide.title = unicode(self.TitleEdit.displayText())
@@ -207,7 +208,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             #number of lines has change
             if len(self.beforeText.split(u'\n')) != \
                 len(self.VerseTextEdit.toPlainText().split(u'\n')):
-                tempList = {}
+                    tempList = {}
                 for row in range(0, self.VerseListView.count()):
                     tempList[row] = self.VerseListView.item(row).text()
                 self.VerseListView.clear()

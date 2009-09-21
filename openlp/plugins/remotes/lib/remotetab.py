@@ -63,8 +63,8 @@ class RemoteTab(SettingsTab):
     def load(self):
         self.RemotePortSpinBox.setValue(
             int(self.config.get_config(u'remote port', 4316)))
-        self.RemoteActive.setChecked(int(
-            self.config.get_config(u'startup', 0)))
+        self.RemoteActive.setChecked(
+            int(self.config.get_config(u'startup', 0)))
 
     def save(self):
         self.config.set_config(

@@ -87,8 +87,7 @@ class BGExtract(BibleCommon):
                 versePos = -1
             else:
                 i = xml_string[:i].rfind(u'<span') + 1
-                # Loose the </span>
-                verseText = xml_string[versePos + 7 : i - 1 ]
+                verseText = xml_string[versePos + 7 : i - 1] # Loose </span>
                 # Chop off verse 1
                 xml_string = xml_string[i - 1 :len(xml_string)]
                 versePos = xml_string.find(VerseSearch) #look for the next verse

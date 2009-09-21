@@ -205,14 +205,16 @@ class MediaManagerItem(QtGui.QWidget):
             self.addToolbarButton(
                 translate(
                     self.TranslationContext, u'New ' + self.PluginTextShort),
-                translate(self.TranslationContext,
+                translate(
+                    self.TranslationContext,
                     u'Add a new ' + self.PluginTextShort),
                 u':' + self.IconPath + u'_new.png', self.onNewClick,
                 self.PluginTextShort + u'NewItem')
         ## Edit Button ##
         if self.hasEditIcon:
-            self.addToolbarButton(translate(
-                self.TranslationContext, u'Edit ' + self.PluginTextShort),
+            self.addToolbarButton(
+                translate(
+                    self.TranslationContext, u'Edit ' + self.PluginTextShort),
                 translate(
                     self.TranslationContext,
                     u'Edit the selected ' + self.PluginTextShort),
@@ -240,10 +242,12 @@ class MediaManagerItem(QtGui.QWidget):
             u':/system/system_live.png', self.onLiveClick, u'LiveItem')
         ## Add to service Button ##
         self.addToolbarButton(
-            translate(self.TranslationContext,
-            u'Add ' + self.PluginTextShort + u' To Service'),
-            translate(self.TranslationContext,
-            u'Add the selected item(s) to the service'),
+            translate(
+                self.TranslationContext,
+                u'Add ' + self.PluginTextShort + u' To Service'),
+            translate(
+                self.TranslationContext,
+                u'Add the selected item(s) to the service'),
             u':/system/system_add.png', self.onAddClick,
             self.PluginTextShort + u'AddItem')
 

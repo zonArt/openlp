@@ -141,8 +141,9 @@ class MainDisplay(QtGui.QWidget):
         painter = QtGui.QPainter(alertframe)
         top = alertframe.rect().height() * 0.9
         painter.fillRect(
-            QtCore.QRect(0, top,
-            alertframe.rect().width(), alertframe.rect().height() - top),
+            QtCore.QRect(
+                0, top, alertframe.rect().width(),
+                alertframe.rect().height() - top),
             QtGui.QColor(alertTab.bg_color))
         font = QtGui.QFont()
         font.setFamily(alertTab.font_face)
