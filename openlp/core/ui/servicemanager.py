@@ -33,7 +33,7 @@ import shutil
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
     RenderManager, translate, buildIcon, ServiceType, \
-    contextMenuAction, contextMenuSeparator,  Receiver
+    contextMenuAction, contextMenuSeparator, Receiver
 from openlp.core.utils import ConfigHelper
 
 class ServiceManagerList(QtGui.QTreeWidget):
@@ -285,7 +285,7 @@ class ServiceManager(QtGui.QWidget):
             temp = self.serviceItems[item]
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(item - 1, temp)
-            self.repaintServiceList(item - 1,  count)
+            self.repaintServiceList(item - 1, count)
         self.parent.serviceChanged(False, self.serviceName)
 
     def onServiceDown(self):
@@ -298,7 +298,7 @@ class ServiceManager(QtGui.QWidget):
             temp = self.serviceItems[item]
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(item + 1, temp)
-            self.repaintServiceList(item + 1,  count)
+            self.repaintServiceList(item + 1, count)
         self.parent.serviceChanged(False, self.serviceName)
 
     def onServiceEnd(self):
@@ -539,7 +539,7 @@ class ServiceManager(QtGui.QWidget):
         pos = 0
         count = 0
         for item in items:
-            parentitem =  item.parent()
+            parentitem = item.parent()
             if parentitem is None:
                 pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
             else:

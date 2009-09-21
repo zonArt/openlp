@@ -81,7 +81,7 @@ class BibleManager(object):
     def reload_bibles(self):
         log.debug(u'Reload bibles')
         files = self.config.get_files(self.bibleSuffix)
-        log.debug(u'Bible Files %s',  files )
+        log.debug(u'Bible Files %s', files )
         self.bible_db_cache = {}
         self.bible_http_cache  = {}
         # books of the bible with testaments
@@ -166,7 +166,7 @@ class BibleManager(object):
             Defaults to *None*. The password to accompany the username.
         """
         log.debug(u'register_HTTP_bible %s, %s, %s, %s, %s, %s',
-            biblename, biblesource, bibleid, proxyurl,  proxyid, proxypass)
+            biblename, biblesource, bibleid, proxyurl, proxyid, proxypass)
         if self._is_new_bible(biblename):
             # Create new Bible
             nbible = BibleDBImpl(self.biblePath, biblename, self.config)
@@ -271,7 +271,7 @@ c
         log.debug(u'get_bible_books %s', bible)
         return self.bible_db_cache[bible].get_bible_books()
 
-    def get_book_chapter_count(self, bible,  book):
+    def get_book_chapter_count(self, bible, book):
         """
         Returns the number of Chapters for a given book
         """
@@ -283,7 +283,7 @@ c
         Returns all the number of verses for a given
         book and chapterMaxBibleBookVerses
         """
-        log.debug(u'get_book_verse_count %s,%s,%s', bible, book,  chapter)
+        log.debug(u'get_book_verse_count %s,%s,%s', bible, book, chapter)
         return self.bible_db_cache[bible].get_max_bible_book_verses(
             book, chapter)
 
@@ -300,7 +300,7 @@ c
         Saves the bibles meta data
         """
         log.debug(u'save_meta data %s,%s, %s,%s',
-            bible,  version, copyright, permissions)
+            bible, version, copyright, permissions)
         self.bible_db_cache[bible].save_meta(u'Version', version)
         self.bible_db_cache[bible].save_meta(u'Copyright', copyright)
         self.bible_db_cache[bible].save_meta(u'Permissions', permissions)
@@ -309,7 +309,7 @@ c
         """
         Returns the meta data for a given key
         """
-        log.debug(u'get_meta %s,%s', bible,  key)
+        log.debug(u'get_meta %s,%s', bible, key)
         return self.bible_db_cache[bible].get_meta(key)
 
     def get_verse_text(self, bible, bookname, schapter, echapter, sverse,
@@ -414,7 +414,7 @@ c
         """
         Check cache to see if new bible
         """
-        for b ,  o in self.bible_db_cache.iteritems():
+        for b , o in self.bible_db_cache.iteritems():
             log.debug(u'Bible from cache in is_new_bible %s', b )
             if b == name :
                 return False

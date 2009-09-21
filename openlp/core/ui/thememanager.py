@@ -97,10 +97,10 @@ class ThemeManager(QtGui.QWidget):
 
     def changeGlobalFromTab(self, themeName):
         log.debug(u'changeGlobalFromTab %s', themeName)
-        for count in range (0,  self.ThemeListWidget.count()):
+        for count in range (0, self.ThemeListWidget.count()):
             #reset the old name
             item = self.ThemeListWidget.item(count)
-            oldName =  item.text()
+            oldName = item.text()
             newName = unicode(item.data(QtCore.Qt.UserRole).toString())
             if oldName != newName:
                 self.ThemeListWidget.item(count).setText(newName)
@@ -112,9 +112,9 @@ class ThemeManager(QtGui.QWidget):
 
     def changeGlobalFromScreen(self, index):
         log.debug(u'changeGlobalFromScreen %s', index)
-        for count in range (0,  self.ThemeListWidget.count()):
+        for count in range (0, self.ThemeListWidget.count()):
             item = self.ThemeListWidget.item(count)
-            oldName =  item.text()
+            oldName = item.text()
             #reset the old name
             if oldName != unicode(item.data(QtCore.Qt.UserRole).toString()):
                 self.ThemeListWidget.item(count).setText(
@@ -194,12 +194,13 @@ class ThemeManager(QtGui.QWidget):
         path = unicode(path)
         if path != u'':
             self.config.set_last_dir(path, 1)
-            themePath =  os.path.join(path, theme + u'.theme')
+            themePath = os.path.join(path, theme + u'.theme')
             zip = zipfile.ZipFile(themePath, 'w')
             source = os.path.join(self.path, theme)
             for root, dirs, files in os.walk(source):
                 for name in files:
-                    zip.write(os.path.join(source, name), os.path.join(theme, name))
+                    zip.write(
+                        os.path.join(source, name), os.path.join(theme, name))
             zip.close()
 
     def onImportTheme(self):
@@ -226,7 +227,7 @@ class ThemeManager(QtGui.QWidget):
             for name in files:
                 if name.endswith(u'.png'):
                     #check to see file is in theme root directory
-                    theme =  os.path.join(self.path, name)
+                    theme = os.path.join(self.path, name)
                     if os.path.exists(theme):
                         (path, filename) = os.path.split(unicode(file))
                         textName = os.path.splitext(name)[0]
@@ -244,7 +245,7 @@ class ThemeManager(QtGui.QWidget):
         self.pushThemes()
 
     def pushThemes(self):
-        Receiver().send_message(u'update_themes',  self.getThemes() )
+        Receiver().send_message(u'update_themes', self.getThemes() )
 
     def getThemes(self):
         return self.themelist

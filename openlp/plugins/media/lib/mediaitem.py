@@ -81,7 +81,7 @@ class MediaMediaItem(MediaManagerItem):
             filename = self.ListData.getFilename(index)
             frame = QtGui.QImage(unicode(filename))
             (path, name) = os.path.split(filename)
-            service_item.add_from_image(path,  name, frame)
+            service_item.add_from_image(path, name, frame)
         return True
 
     def onPreviewClick(self):

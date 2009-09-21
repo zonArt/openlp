@@ -26,7 +26,7 @@ import os
 import sys
 import logging
 
-from openlp.core.lib import Plugin,  PluginStatus
+from openlp.core.lib import Plugin, PluginStatus
 
 class PluginManager(object):
     """

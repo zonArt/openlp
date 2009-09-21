@@ -39,21 +39,32 @@ class BGExtract(BibleCommon):
         log.debug(u'init %s', proxyurl)
         self.proxyurl = proxyurl
 
-    def get_bible_chapter(self, version, bookid, bookname,  chapter) :
+    def get_bible_chapter(self, version, bookid, bookname, chapter) :
         """
         Access and decode bibles via the BibleGateway website
-            Version - the version of the bible like 31 for New International version
-            bookid - Book id for the book of the bible - eg 1 for Genesis
-            bookname - not used
-            chapter - chapter number
+
+        ``Version``
+            The version of the bible like 31 for New International version
+
+        ``bookid``
+            Book id for the book of the bible - eg 1 for Genesis
+
+        ``bookname``
+            Not used
+
+        ``chapter``
+            Chapter number
         """
-        log.debug( u'get_bible_chapter %s,%s,%s,%s', version, bookid, bookname,  chapter)
-        urlstring = u'http://www.biblegateway.com/passage/?book_id='+unicode(bookid)+u'&chapter'+unicode(chapter)+u'&version='+unicode(version)
+        log.debug(u'get_bible_chapter %s,%s,%s,%s',
+            version, bookid, bookname, chapter)
+        urlstring = u'http://www.biblegateway.com/passage/?book_id=' + \
+            unicode(bookid) + u'&chapter' + unicode(chapter) + u'&version=' + \
+            unicode(version)
         xml_string = self._get_web_text(urlstring, self.proxyurl)
         #print xml_string
-        VerseSearch = u'class='+u'"'+u'sup'+u'"'+u'>'
+        VerseSearch = u'class=' + u'"' + u'sup' + u'"' + u'>'
         verse = 1
-        i= xml_string.find(u'result-text-style-normal')
+        i = xml_string.find(u'result-text-style-normal')
         xml_string = xml_string[i:len(xml_string)]
         versePos = xml_string.find(VerseSearch)
         #print versePos
@@ -62,11 +73,11 @@ class BGExtract(BibleCommon):
             verseText = '' # clear out string
             versePos = xml_string.find(u'</span', versePos)
             i = xml_string.find(VerseSearch, versePos+1)
-            #print i ,  versePos
+            #print i , versePos
             if i == -1:
                 i = xml_string.find(u'</div', versePos+1)
                 j = xml_string.find(u'<strong', versePos+1)
-                #print i ,  j
+                #print i , j
                 if j > 0 and j < i:
                     i = j
                 verseText = xml_string[versePos + 7 : i ]
@@ -75,9 +86,11 @@ class BGExtract(BibleCommon):
                 bible[verse] = self._clean_text(verseText) # store the verse
                 versePos = -1
             else:
-                i = xml_string[:i].rfind(u'<span')+1
-                verseText = xml_string[versePos + 7 : i - 1 ] # Loose the </span>
-                xml_string = xml_string[i - 1 :len(xml_string)] # chop off verse 1
+                i = xml_string[:i].rfind(u'<span') + 1
+                # Loose the </span>
+                verseText = xml_string[versePos + 7 : i - 1 ]
+                # Chop off verse 1
+                xml_string = xml_string[i - 1 :len(xml_string)]
                 versePos = xml_string.find(VerseSearch) #look for the next verse
                 bible[verse] = self._clean_text(verseText) # store the verse
                 verse += 1
@@ -92,16 +105,26 @@ class CWExtract(BibleCommon):
         log.debug(u'init %s', proxyurl)
         self.proxyurl = proxyurl
 
-    def get_bible_chapter(self, version, bookid, bookname,  chapter) :
-        log.debug( u'getBibleChapter %s,%s,%s,%s', version, bookid, bookname,  chapter)
+    def get_bible_chapter(self, version, bookid, bookname, chapter) :
+        log.debug(u'getBibleChapter %s,%s,%s,%s',
+            version, bookid, bookname, chapter)
         """
         Access and decode bibles via the Crosswalk website
-            Version - the version of the bible like niv for New International version
-            bookid - not used
-            bookname - text name of in english eg 'gen' for Genesis
-            chapter - chapter number
+
+        ``version``
+            The version of the bible like niv for New International Version
+
+        ``bookid``
+            Not used
+
+        ``bookname``
+            Text name of in english e.g. 'gen' for Genesis
+
+        ``chapter``
+            Chapter number
         """
-        log.debug(u'get_bible_chapter %s,%s,%s,%s', version, bookid, bookname,  chapter)
+        log.debug(u'get_bible_chapter %s,%s,%s,%s',
+            version, bookid, bookname, chapter)
         bookname = bookname.replace(u' ', u'')
         urlstring = u'http://bible.crosswalk.com/OnlineStudyBible/bible.cgi?word=%s+%d&version=%s' % (bookname, chapter, version)
         xml_string = self._get_web_text(urlstring, self.proxyurl)
@@ -135,7 +158,7 @@ class CWExtract(BibleCommon):
         #remove the <B> at the front
         xml_string = xml_string[i + 3 :len(xml_string)]
         versePos = xml_string.find(u'<BLOCKQUOTE>')
-        #log.debug(u'verse pos %d',  versePos)
+        #log.debug(u'verse pos %d', versePos)
         bible = {}
         while versePos > 0:
             verseText = u''
@@ -153,7 +176,7 @@ class CWExtract(BibleCommon):
                 verseText = xml_string[versePos: i]
                 versePos = 0
             else:
-                #log.debug( i,  versePos)
+                #log.debug( i, versePos)
                 verseText = xml_string[versePos: i]
                 versePos = i
             #print verseText
@@ -170,7 +193,9 @@ class BibleHTTPImpl():
     def __init__(self):
         """
         Finds all the bibles defined for the system
-        Creates an Interface Object for each bible containing connection information
+        Creates an Interface Object for each bible containing connection
+        information
+
         Throws Exception if no Bibles are found.
 
         Init confirms the bible exists and stores the database path.
@@ -202,18 +227,19 @@ class BibleHTTPImpl():
         log.debug(u'set_bible_source %s', biblesource)
         self.biblesource = biblesource
 
-    def get_bible_chapter(self, version, bookid, bookname,  chapter):
+    def get_bible_chapter(self, version, bookid, bookname, chapter):
         """
         Receive the request and call the relevant handler methods
         """
-        log.debug(u'get_bible_chapter %s,%s,%s,%s', version, bookid, bookname,  chapter)
+        log.debug(u'get_bible_chapter %s,%s,%s,%s',
+            version, bookid, bookname, chapter)
         log.debug(u'biblesource = %s', self.biblesource)
         try:
             if self.biblesource.lower() == u'crosswalk':
                 ev = CWExtract(self.proxyurl)
             else:
                 ev = BGExtract(self.proxyurl)
-            return ev.get_bible_chapter(self.bibleid, bookid, bookname,  chapter)
+            return ev.get_bible_chapter(self.bibleid, bookid, bookname, chapter)
         except Exception, e:
             log.error(u'Error thrown = %s', e.args[0])
             print e

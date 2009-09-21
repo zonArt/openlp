@@ -60,8 +60,8 @@ class SlideList(QtGui.QTableWidget):
 
 class SlideController(QtGui.QWidget):
     """
-    SlideController is the slide controller widget. This widget is what the user
-    uses to control the displaying of verses/slides/etc on the screen.
+    SlideController is the slide controller widget. This widget is what the
+    user uses to control the displaying of verses/slides/etc on the screen.
     """
     global log
     log = logging.getLogger(u'SlideController')
@@ -74,7 +74,8 @@ class SlideController(QtGui.QWidget):
         self.settingsmanager = settingsmanager
         self.isLive = isLive
         self.parent = parent
-        self.image_list = [u'Start Loop', u'Stop Loop', u'Loop Separator', u'Image SpinBox']
+        self.image_list = [
+            u'Start Loop', u'Stop Loop', u'Loop Separator', u'Image SpinBox']
         self.timer_id = 0
         self.commandItem = None
         self.Panel = QtGui.QWidget(parent.ControlSplitter)
@@ -177,7 +178,8 @@ class SlideController(QtGui.QWidget):
         sizePolicy.setHeightForWidth(
             self.SlidePreview.sizePolicy().hasHeightForWidth())
         self.SlidePreview.setSizePolicy(sizePolicy)
-        self.SlidePreview.setFixedSize(QtCore.QSize(self.settingsmanager.slidecontroller_image, 225))
+        self.SlidePreview.setFixedSize(
+            QtCore.QSize(self.settingsmanager.slidecontroller_image, 225))
         self.SlidePreview.setFrameShape(QtGui.QFrame.Box)
         self.SlidePreview.setFrameShadow(QtGui.QFrame.Plain)
         self.SlidePreview.setLineWidth(1)
@@ -238,7 +240,8 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'addServiceItem')
         #If old item was a command tell it to stop
-        if self.commandItem is not None and self.commandItem.service_item_type == ServiceType.Command:
+        if self.commandItem is not None and \
+            self.commandItem.service_item_type == ServiceType.Command:
             Receiver().send_message(u'%s_stop'% self.commandItem.name.lower())
         self.commandItem = item
         before = time.time()
@@ -246,8 +249,9 @@ class SlideController(QtGui.QWidget):
         log.info(u'Rendering took %4s' % (time.time() - before))
         self.enableToolBar(item)
         if item.service_item_type == ServiceType.Command:
-            Receiver().send_message(u'%s_start'%item.name.lower(), \
-                [item.shortname, item.service_item_path, item.service_frames[0][u'title']])
+            Receiver().send_message(u'%s_start' % item.name.lower(), \
+                [item.shortname, item.service_item_path,
+                item.service_frames[0][u'title']])
         else:
             self.displayServiceManagerItems(item, 0)
 
@@ -259,13 +263,15 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'addServiceItem')
         #If old item was a command tell it to stop
-        if self.commandItem is not None and self.commandItem.service_item_type == ServiceType.Command:
+        if self.commandItem is not None and \
+            self.commandItem.service_item_type == ServiceType.Command:
             Receiver().send_message(u'%s_stop'% self.commandItem.name.lower())
         self.commandItem = item
         self.enableToolBar(item)
         if item.service_item_type == ServiceType.Command:
-            Receiver().send_message(u'%s_start'%item.name.lower(), \
-                [item.shortname, item.service_item_path, item.service_frames[0][u'title']])
+            Receiver().send_message(u'%s_start' % item.name.lower(), \
+                [item.shortname, item.service_item_path,
+                item.service_frames[0][u'title']])
         else:
             self.displayServiceManagerItems(item, slideno)
 
@@ -279,9 +285,11 @@ class SlideController(QtGui.QWidget):
         self.serviceitem = serviceitem
         self.PreviewListWidget.clear()
         self.PreviewListWidget.setRowCount(0)
-        self.PreviewListWidget.setColumnWidth(0, self.settingsmanager.slidecontroller_image)
+        self.PreviewListWidget.setColumnWidth(
+            0, self.settingsmanager.slidecontroller_image)
         for framenumber, frame in enumerate(self.serviceitem.frames):
-            self.PreviewListWidget.setRowCount(self.PreviewListWidget.rowCount() + 1)
+            self.PreviewListWidget.setRowCount(
+                self.PreviewListWidget.rowCount() + 1)
             item = QtGui.QTableWidgetItem()
             label = QtGui.QLabel()
             label.setMargin(8)
@@ -294,9 +302,11 @@ class SlideController(QtGui.QWidget):
                 label.setText(frame[u'text'])
             self.PreviewListWidget.setCellWidget(framenumber, 0, label)
             self.PreviewListWidget.setItem(framenumber, 0, item)
-            slide_height = self.settingsmanager.slidecontroller_image * self.parent.RenderManager.screen_ratio
+            slide_height = self.settingsmanager.slidecontroller_image * \
+                self.parent.RenderManager.screen_ratio
             self.PreviewListWidget.setRowHeight(framenumber, slide_height)
-        self.PreviewListWidget.setColumnWidth(0, self.PreviewListWidget.viewport().size().width())
+        self.PreviewListWidget.setColumnWidth(
+            0, self.PreviewListWidget.viewport().size().width())
         if slideno > self.PreviewListWidget.rowCount():
             self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount())
         else:
@@ -357,7 +367,8 @@ class SlideController(QtGui.QWidget):
         Go to the previous slide.
         """
         if self.commandItem.service_item_type == ServiceType.Command:
-            Receiver().send_message(u'%s_previous'% self.commandItem.name.lower())
+            Receiver().send_message(
+                u'%s_previous'% self.commandItem.name.lower())
         else:
             row = self.PreviewListWidget.currentRow() - 1
             if row == -1:
@@ -377,7 +388,8 @@ class SlideController(QtGui.QWidget):
         Start the timer loop running and store the timer id
         """
         if self.PreviewListWidget.rowCount() > 1:
-            self.timer_id = self.startTimer(int(self.DelaySpinBox.value()) * 1000)
+            self.timer_id = self.startTimer(
+                int(self.DelaySpinBox.value()) * 1000)
 
     def onStopLoop(self):
         """
@@ -398,4 +410,5 @@ class SlideController(QtGui.QWidget):
         """
         row = self.PreviewListWidget.currentRow()
         if row > -1 and row < self.PreviewListWidget.rowCount():
-            self.parent.LiveController.addServiceManagerItem(self.commandItem, row)
+            self.parent.LiveController.addServiceManagerItem(
+                self.commandItem, row)

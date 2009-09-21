@@ -26,7 +26,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from time import sleep
-from openlp.core.lib import translate,  Receiver
+from openlp.core.lib import translate, Receiver
 
 class MainDisplay(QtGui.QWidget):
     """
@@ -129,7 +129,7 @@ class MainDisplay(QtGui.QWidget):
             self.displayBlank = False
             self.frameView(self.frame)
 
-    def displayAlert(self,  text=u''):
+    def displayAlert(self, text=u''):
         """
         Called from the Alert Tab to display an alert
 
@@ -141,7 +141,8 @@ class MainDisplay(QtGui.QWidget):
         painter = QtGui.QPainter(alertframe)
         top = alertframe.rect().height() * 0.9
         painter.fillRect(
-            QtCore.QRect(0, top, alertframe.rect().width(), alertframe.rect().height() - top),
+            QtCore.QRect(0, top,
+            alertframe.rect().width(), alertframe.rect().height() - top),
             QtGui.QColor(alertTab.bg_color))
         font = QtGui.QFont()
         font.setFamily(alertTab.font_face)

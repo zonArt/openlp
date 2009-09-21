@@ -27,7 +27,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 from datetime import date
 
-from openlp.core.lib import Plugin,  Receiver,  translate,  str_to_bool
+from openlp.core.lib import Plugin, Receiver, translate, str_to_bool
 from openlp.plugins.audit.lib import AuditTab
 
 class AuditPlugin(Plugin):
@@ -98,7 +98,8 @@ class AuditPlugin(Plugin):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'audit_changed'), self.onUpdateAudit)
         self.auditFileName = self.config.get_config(u'audit file', u'')
-        self.auditActive = str_to_bool(self.config.get_config(u'audit active', False))
+        self.auditActive = str_to_bool(
+            self.config.get_config(u'audit active', False))
         if self.auditFileName == u'':
             self.auditActive = False
             self.ToolsAuditItem.setEnabled(False)
@@ -117,7 +118,8 @@ class AuditPlugin(Plugin):
         """
         if self.auditActive:
             for author in auditData[1]:
-                self.auditFile.write(u'\"%s\",\"%s\",\"%s\",\"%s\"\n' % (date.today(), auditData[0], author,  auditData[2]))
+                self.auditFile.write(u'\"%s\",\"%s\",\"%s\",\"%s\"\n' % \
+                    (date.today(), auditData[0], author, auditData[2]))
             self.auditFile.flush()
 
     def onUpdateAudit(self):
@@ -126,7 +128,8 @@ class AuditPlugin(Plugin):
         Sort out the file and the auditing state
         """
         self.auditFileNameNew = self.config.get_config(u'audit file', u'')
-        self.auditActive = str_to_bool(self.config.get_config(u'audit active', False))
+        self.auditActive = str_to_bool(
+            self.config.get_config(u'audit active', False))
         if self.auditFileNameNew == u'':
             self.auditActive = False
             self.ToolsAuditItem.setChecked(self.auditActive)

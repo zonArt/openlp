@@ -33,7 +33,7 @@ def sendData(options, message):
         print u'Errow thrown ', sys.exc_info()[1]
 
 def format_message(options):
-    return u'%s:%s' % (options.event,  options.message)
+    return u'%s:%s' % (options.event, options.message)
 
 def main():
     usage = "usage: %prog [options] arg1 arg2"

@@ -121,7 +121,8 @@ class RenderManager(object):
         else:
             if theme is not None:
                 self.theme = theme
-            elif self.global_style == u'Song' or self.global_style == u'Service':
+            elif self.global_style == u'Song' or \
+                self.global_style == u'Service':
                 if self.service_theme == u'':
                     self.theme = self.global_theme
                 else:
@@ -129,9 +130,10 @@ class RenderManager(object):
             else:
                 self.theme = self.global_theme
         if self.theme != self.renderer.theme_name:
-            log.debug(u'theme is now %s',  self.theme)
+            log.debug(u'theme is now %s', self.theme)
             self.themedata = self.theme_manager.getThemeData(self.theme)
-            self.calculate_default(self.screen_list[self.current_display][u'size'])
+            self.calculate_default(
+                self.screen_list[self.current_display][u'size'])
             self.renderer.set_theme(self.themedata)
             self.build_text_rectangle(self.themedata)
 
@@ -212,7 +214,7 @@ class RenderManager(object):
         self.renderer.set_frame_dest(self.width, self.height)
         return self.renderer.generate_frame_from_lines(main_text, footer_text)
 
-    def resize_image(self, image, width = 0,  height = 0):
+    def resize_image(self, image, width=0, height=0):
         """
         Resize an image to fit on the current screen.
 
@@ -253,6 +255,7 @@ class RenderManager(object):
             self.width = screen.width()
             self.height = screen.height()
         self.screen_ratio = float(self.height) / float(self.width)
-        log.debug(u'calculate default %d, %d, %f', self.width, self.height, self.screen_ratio )
+        log.debug(u'calculate default %d, %d, %f',
+            self.width, self.height, self.screen_ratio )
         # 90% is start of footer
         self.footer_start = int(self.height * 0.90)

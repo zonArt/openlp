@@ -29,36 +29,42 @@ class SplashScreen(object):
     def __init__(self, version):
         self.splash_screen = QtGui.QSplashScreen()
         self.setupUi()
-        starting = translate(u'SplashScreen',u'Starting')
-        self.message=starting+u'..... '+version
+        starting = translate(u'SplashScreen', u'Starting')
+        self.message = starting + u'..... ' + version
 
     def setupUi(self):
         self.splash_screen.setObjectName(u'splash_screen')
         self.splash_screen.setWindowModality(QtCore.Qt.NonModal)
         self.splash_screen.setEnabled(True)
         self.splash_screen.resize(370, 370)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.splash_screen.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.splash_screen.sizePolicy().hasHeightForWidth())
         self.splash_screen.setSizePolicy(sizePolicy)
         self.splash_screen.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/icon/openlp-logo-16x16.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(u':/icon/openlp-logo-16x16.png'),
+            QtGui.QIcon.Normal, QtGui.QIcon.Off)
         splash_image = QtGui.QPixmap(u':/graphics/openlp-splash-screen.png')
         self.splash_screen.setWindowIcon(icon)
         self.splash_screen.setPixmap(splash_image)
         self.splash_screen.setMask(splash_image.mask())
-        self.splash_screen.setWindowFlags(QtCore.Qt.SplashScreen | QtCore.Qt.WindowStaysOnTopHint)
+        self.splash_screen.setWindowFlags(
+            QtCore.Qt.SplashScreen | QtCore.Qt.WindowStaysOnTopHint)
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self.splash_screen)
 
     def retranslateUi(self):
-        self.splash_screen.setWindowTitle(translate(u'splash_screen', u'Splash Screen'))
+        self.splash_screen.setWindowTitle(
+            translate(u'splash_screen', u'Splash Screen'))
 
     def show(self):
         self.splash_screen.show()
-        self.splash_screen.showMessage(self.message, QtCore.Qt.AlignLeft | QtCore.Qt.AlignBottom,  QtCore.Qt.black)
+        self.splash_screen.showMessage(self.message,
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignBottom, QtCore.Qt.black)
         self.splash_screen.repaint()
 
     def finish(self, widget):

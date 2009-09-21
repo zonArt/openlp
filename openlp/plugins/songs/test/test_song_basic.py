@@ -50,8 +50,8 @@ class Test_Basic(object):
         s = Song()
         t = "A normal title"
         s.set_title(t)
-        assert(s.get_title() ==  t)
-        assert(s.get_search_title() ==  t)
+        assert(s.get_title() == t)
+        assert(s.get_search_title() == t)
 
     def test_Title3(self):
         """Set a titel with punctuation 1"""
@@ -59,8 +59,8 @@ class Test_Basic(object):
         t1 = "Hey! Come on, ya programmers*"
         t2 = "Hey Come on ya programmers"
         s.set_title(t1)
-        assert(s.get_title() ==  t1)
-        assert(s.get_search_title() ==  t2)
+        assert(s.get_title() == t1)
+        assert(s.get_search_title() == t2)
 
     def test_Title4(self):
         """Set a titel with punctuation 2"""
@@ -68,11 +68,14 @@ class Test_Basic(object):
         t1 = "??#Hey! Come on, ya programmers*"
         t2 = "Hey Come on ya programmers"
         s.set_title(t1)
-        assert(s.get_title() ==  t1)
-        assert(s.get_search_title() ==  t2)
+        assert(s.get_title() == t1)
+        assert(s.get_search_title() == t2)
 
     def test_Title5(self):
-        """Set a title, where searchable title becomes empty - raises an exception"""
+        """
+        Set a title
+        Where searchable title becomes empty raises an exception
+        """
         s = Song()
         py.test.raises(SongTitleError, s.set_title, ',*')
 

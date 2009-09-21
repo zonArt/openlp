@@ -24,7 +24,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab,  translate
+from openlp.core.lib import SettingsTab, translate
 
 class AlertsTab(SettingsTab):
     """
@@ -33,7 +33,8 @@ class AlertsTab(SettingsTab):
     def __init__(self):
         self.font_color = '#ffffff'
         self.bg_color = '#660000'
-        SettingsTab.__init__(self, translate(u'AlertsTab', u'Alerts'), u'Alerts')
+        SettingsTab.__init__(
+            self, translate(u'AlertsTab', u'Alerts'), u'Alerts')
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
@@ -110,10 +111,12 @@ class AlertsTab(SettingsTab):
         self.SlideRightLayout.setMargin(0)
         self.SlideRightLayout.setObjectName(u'SlideRightLayout')
         self.PreviewGroupBox = QtGui.QGroupBox(self.AlertRightColumn)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.PreviewGroupBox.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.PreviewGroupBox.sizePolicy().hasHeightForWidth())
         self.PreviewGroupBox.setSizePolicy(sizePolicy)
         self.PreviewGroupBox.setObjectName(u'PreviewGroupBox')
         self.PreviewLayout = QtGui.QVBoxLayout(self.PreviewGroupBox)
@@ -124,7 +127,8 @@ class AlertsTab(SettingsTab):
         self.FontPreview.setMinimumSize(QtCore.QSize(280, 100))
         self.FontPreview.setReadOnly(True)
         self.FontPreview.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.FontPreview.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
+        self.FontPreview.setAlignment(
+            QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
         self.FontPreview.setObjectName(u'FontPreview')
         self.PreviewLayout.addWidget(self.FontPreview)
         self.SlideRightLayout.addWidget(self.PreviewGroupBox)
@@ -146,11 +150,13 @@ class AlertsTab(SettingsTab):
         self.FontGroupBox.setTitle(translate(u'AlertsTab', u'Font'))
         self.FontLabel.setText(translate(u'AlertsTab', u'Font Name:'))
         self.FontColorLabel.setText(translate(u'AlertsTab', u'Font Color:'))
-        self.BackgroundColorLabel.setText(translate(u'AlertsTab', u'Background Color:'))
+        self.BackgroundColorLabel.setText(
+            translate(u'AlertsTab', u'Background Color:'))
         self.TimeoutLabel.setText(translate(u'AlertsTab', u'Alert timeout:'))
         self.TimeoutSpinBox.setSuffix(translate(u'AlertsTab', u's'))
         self.PreviewGroupBox.setTitle(translate(u'AlertsTab', u'Preview'))
-        self.FontPreview.setText(translate(u'AlertsTab', u'openlp.org 2.0 rocks!'))
+        self.FontPreview.setText(
+            translate(u'AlertsTab', u'openlp.org 2.0 rocks!'))
 
     def onBackgroundColorButtonClicked(self):
         self.bg_color = QtGui.QColorDialog.getColor(
@@ -174,12 +180,17 @@ class AlertsTab(SettingsTab):
 
     def load(self):
         self.timeout = int(self.config.get_config(u'timeout', 5))
-        self.font_color = unicode(self.config.get_config(u'font color', u'#ffffff'))
-        self.bg_color = unicode(self.config.get_config(u'background color', u'#660000'))
-        self.font_face = unicode(self.config.get_config(u'font face', QtGui.QFont().family()))
+        self.font_color = unicode(
+            self.config.get_config(u'font color', u'#ffffff'))
+        self.bg_color = unicode(
+            self.config.get_config(u'background color', u'#660000'))
+        self.font_face = unicode(
+            self.config.get_config(u'font face', QtGui.QFont().family()))
         self.TimeoutSpinBox.setValue(self.timeout)
-        self.FontColorButton.setStyleSheet(u'background-color: %s' % self.font_color)
-        self.BackgroundColorButton.setStyleSheet(u'background-color: %s' % self.bg_color)
+        self.FontColorButton.setStyleSheet(
+            u'background-color: %s' % self.font_color)
+        self.BackgroundColorButton.setStyleSheet(
+            u'background-color: %s' % self.bg_color)
         font = QtGui.QFont()
         font.setFamily(self.font_face)
         self.FontComboBox.setCurrentFont(font)
@@ -198,5 +209,5 @@ class AlertsTab(SettingsTab):
         font.setBold(True)
         font.setPointSize(16)
         self.FontPreview.setFont(font)
-        self.FontPreview.setStyleSheet(
-            u'background-color: %s; color: %s' % (self.bg_color, self.font_color))
+        self.FontPreview.setStyleSheet(u'background-color: %s; color: %s' % \
+            (self.bg_color, self.font_color))

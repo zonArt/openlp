@@ -31,7 +31,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from bibleimportdialog import Ui_BibleImportDialog
-from openlp.core.lib import Receiver,  translate
+from openlp.core.lib import Receiver, translate
 
 
 class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
@@ -41,7 +41,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
     """
     Class documentation goes here.
     """
-    def __init__(self, config, biblemanager , bibleplugin, parent = None):
+    def __init__(self, config, biblemanager, bibleplugin, parent=None):
         '''
         Constructor
         '''
@@ -196,23 +196,28 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         log.debug(u'Import Bible')
         message = None
         if self.bible_type == u'OSIS':
-            loaded = self.biblemanager.register_osis_file_bible(unicode(self.BibleNameEdit.displayText()),
+            loaded = self.biblemanager.register_osis_file_bible(
+                unicode(self.BibleNameEdit.displayText()),
                 self.OSISLocationEdit.displayText())
         elif self.bible_type == u'CSV':
-            loaded = self.biblemanager.register_csv_file_bible(unicode(self.BibleNameEdit.displayText()),
-                self.BooksLocationEdit.displayText(), self.VerseLocationEdit.displayText())
+            loaded = self.biblemanager.register_csv_file_bible(
+                unicode(self.BibleNameEdit.displayText()),
+                self.BooksLocationEdit.displayText(),
+                self.VerseLocationEdit.displayText())
         else:
             # set a value as it will not be needed
             self.setMax(1)
-            bible = self.bible_versions[unicode(self.BibleComboBox.currentText())]
-            loaded = self.biblemanager.register_http_bible(unicode(self.BibleComboBox.currentText()), \
-                                                                                     unicode(self.LocationComboBox.currentText()),  \
-                                                                                     unicode(bible), \
-                                                                                     unicode(self.AddressEdit.displayText()),  \
-                                                                                     unicode(self.UsernameEdit .displayText()),  \
-                                                                                     unicode(self.PasswordEdit.displayText()))
+            bible = self.bible_versions[
+                unicode(self.BibleComboBox.currentText())]
+            loaded = self.biblemanager.register_http_bible(
+                unicode(self.BibleComboBox.currentText()),
+                unicode(self.LocationComboBox.currentText()),
+                unicode(bible), unicode(self.AddressEdit.displayText()),
+                unicode(self.UsernameEdit .displayText()),
+                unicode(self.PasswordEdit.displayText()))
         if loaded:
-            self.biblemanager.save_meta_data(unicode(self.BibleNameEdit.displayText()),
+            self.biblemanager.save_meta_data(
+                unicode(self.BibleNameEdit.displayText()),
                 unicode(self.VersionNameEdit.displayText()),
                 unicode(self.CopyrightEdit.displayText()),
                 unicode(self.PermisionEdit.displayText()))
@@ -226,7 +231,8 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         return loaded, message
 
     def checkOsis(self):
-        if len(self.BooksLocationEdit.displayText()) > 0 or len(self.VerseLocationEdit.displayText()) > 0:
+        if len(self.BooksLocationEdit.displayText()) > 0 or \
+            len(self.VerseLocationEdit.displayText()) > 0:
             self.setCsv()
         else:
             # Was CSV and is not any more stops lostFocus running mad
@@ -235,7 +241,8 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
                 self.resetScreenFieldStates()
 
     def checkHttp(self):
-        if self.BibleComboBox.currentIndex() != 0 :  # First slot is blank so no bible
+        if self.BibleComboBox.currentIndex() != 0 :
+            # First slot is blank so no bible
             self.setHttp()
         else:
             # Was HTTP and is not any more stops lostFocus running mad

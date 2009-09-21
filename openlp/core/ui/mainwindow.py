@@ -28,7 +28,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
-    ServiceManager, ThemeManager, MainDisplay, SlideController,  \
+    ServiceManager, ThemeManager, MainDisplay, SlideController, \
     PluginForm
 from openlp.core.lib import translate, Plugin, MediaManagerItem, \
     SettingsTab, RenderManager, PluginConfig, str_to_bool, OpenLPDockWidget, \
@@ -119,7 +119,7 @@ class Ui_MainWindow(object):
 
 #        self.MediaManagerDock.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Ignored,
 #            QtGui.QSizePolicy.Maximum))
-#        geometry =  self.MediaManagerDock.geometry()
+#        geometry = self.MediaManagerDock.geometry()
 #        geometry.setWidth(self.settingsmanager.mainwindow_left)
 #        self.MediaManagerDock.setGeometry(geometry)
 #        self.MediaManagerDock.setMinimumWidth(10)

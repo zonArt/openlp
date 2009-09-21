@@ -28,7 +28,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin,  MediaManagerItem
+from openlp.core.lib import Plugin, MediaManagerItem
 from openlp.plugins.presentations.lib import PresentationMediaItem, \
     PresentationTab, ImpressController
 try:

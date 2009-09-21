@@ -9,7 +9,7 @@
 
 import logging
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate,  PluginStatus
+from openlp.core.lib import translate, PluginStatus
 
 class PluginForm(QtGui.QDialog):
     global log
@@ -45,14 +45,18 @@ class PluginForm(QtGui.QDialog):
         self.ButtonBox.setObjectName(u'ButtonBox')
 
         self.retranslateUi(PluginForm)
-        QtCore.QObject.connect(self.ButtonBox, QtCore.SIGNAL(u'accepted()'), PluginForm.close)
+        QtCore.QObject.connect(self.ButtonBox,
+            QtCore.SIGNAL(u'accepted()'), PluginForm.close)
         QtCore.QMetaObject.connectSlotsByName(PluginForm)
 
     def retranslateUi(self, PluginForm):
         PluginForm.setWindowTitle(translate(u'PluginForm', u'Plugin list'))
-        self.PluginViewList.horizontalHeaderItem(0).setText(translate(u'PluginForm', u'Name'))
-        self.PluginViewList.horizontalHeaderItem(1).setText(translate(u'PluginForm', u'Version'))
-        self.PluginViewList.horizontalHeaderItem(2).setText(translate(u'PluginForm', u'Status'))
+        self.PluginViewList.horizontalHeaderItem(0).setText(
+            translate(u'PluginForm', u'Name'))
+        self.PluginViewList.horizontalHeaderItem(1).setText(
+            translate(u'PluginForm', u'Version'))
+        self.PluginViewList.horizontalHeaderItem(2).setText(
+            translate(u'PluginForm', u'Status'))
 
     def load(self):
         """
@@ -68,14 +72,14 @@ class PluginForm(QtGui.QDialog):
             item2 = QtGui.QTableWidgetItem(plugin.version)
             item2.setTextAlignment(QtCore.Qt.AlignVCenter)
             if plugin.status == PluginStatus.Active:
-                item3 = QtGui.QTableWidgetItem(translate(u'PluginForm', u'Active'))
+                item3 = QtGui.QTableWidgetItem(
+                    translate(u'PluginForm', u'Active'))
             else:
-                item3 = QtGui.QTableWidgetItem(translate(u'PluginForm', u'Inactive'))
+                item3 = QtGui.QTableWidgetItem(
+                    translate(u'PluginForm', u'Inactive'))
             item3.setTextAlignment(QtCore.Qt.AlignVCenter)
             self.PluginViewList.setItem(row, 0, item1)
             self.PluginViewList.setItem(row, 1, item2)
             self.PluginViewList.setItem(row, 2, item3)
             self.PluginViewList.setRowHeight(row, 15)
-
-
 
