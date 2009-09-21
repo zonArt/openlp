@@ -37,28 +37,29 @@ class ImageTab(SettingsTab):
         self.setObjectName(u'ImageTab')
         self.ImageLayout = QtGui.QFormLayout(self)
         self.ImageLayout.setObjectName(u'ImageLayout')
-        self.ImageModeGroupBox = QtGui.QGroupBox(self)
-        self.ImageModeGroupBox.setObjectName(u'ImageModeGroupBox')
-        self.TimeoutLayout = QtGui.QHBoxLayout(self.ImageModeGroupBox)
+        self.ImageSettingsGroupBox = QtGui.QGroupBox(self)
+        self.ImageSettingsGroupBox.setObjectName(u'ImageSettingsGroupBox')
+        self.TimeoutLayout = QtGui.QHBoxLayout(self.ImageSettingsGroupBox)
         self.TimeoutLayout.setSpacing(8)
         self.TimeoutLayout.setMargin(0)
         self.TimeoutLayout.setObjectName(u'TimeoutLayout')
-        self.TimeoutLabel = QtGui.QLabel(self.ImageModeGroupBox)
+        self.TimeoutLabel = QtGui.QLabel(self.ImageSettingsGroupBox)
         self.TimeoutLabel.setObjectName(u'TimeoutLabel')
         self.TimeoutLayout.addWidget(self.TimeoutLabel)
-        self.TimeoutSpinBox = QtGui.QSpinBox(self.ImageModeGroupBox)
+        self.TimeoutSpinBox = QtGui.QSpinBox(self.ImageSettingsGroupBox)
         self.TimeoutSpinBox.setMaximum(180)
         self.TimeoutSpinBox.setObjectName(u'TimeoutSpinBox')
         self.TimeoutLayout.addWidget(self.TimeoutSpinBox)
         self.TimeoutSpacer = QtGui.QSpacerItem(147, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.TimeoutLayout.addItem(self.TimeoutSpacer)
-        self.ImageLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.ImageModeGroupBox)
+        self.ImageLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.ImageSettingsGroupBox)
         # Signals and slots
         QtCore.QObject.connect(self.TimeoutSpinBox,
             QtCore.SIGNAL(u'valueChanged(int)'), self.onTimeoutSpinBoxChanged)
 
     def retranslateUi(self):
+        self.ImageSettingsGroupBox.setTitle(translate(u'ImageTab', u'Image Settings'))
         self.TimeoutLabel.setText(translate(u'ImageTab', u'Slide Loop Delay:'))
         self.TimeoutSpinBox.setSuffix(translate(u'ImageTab', u's'))
 

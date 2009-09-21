@@ -70,7 +70,7 @@ class AuditTab(SettingsTab):
         self.AuditActive.setChecked(int(self.config.get_config(u'startup', 0)))
 
     def onAuditFileButtonClicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, u'Audit File',self.AuditFileName.text())
+        filename = QtGui.QFileDialog.getSaveFileName(self, u'Audit File',self.AuditFileName.text())
         if filename != u'':
             filename = unicode(filename)
             self.AuditFileName.setText(filename)

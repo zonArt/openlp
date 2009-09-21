@@ -118,7 +118,3 @@ class MediaMediaItem(MediaManagerItem):
             item_name.setIcon(buildIcon(img))
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.ListView.addItem(item_name)
-
-#     def onMediaAddClick(self):
-#         log.debug(u'Media Add Button pressed')
-#         pass
