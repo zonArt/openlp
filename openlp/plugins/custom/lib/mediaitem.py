@@ -105,7 +105,7 @@ class CustomMediaItem(MediaManagerItem):
         theme = customSlide.theme_name
         if len(theme) is not 0 :
             service_item.theme = theme
-        songXML=SongXMLParser(customSlide.text)
+        songXML = SongXMLParser(customSlide.text)
         verseList = songXML.get_verses()
         for verse in verseList:
             raw_slides.append(verse[1])
