@@ -39,17 +39,6 @@ class AuditTab(SettingsTab):
         self.AuditModeGroupBox.setObjectName(u'AuditModeGroupBox')
         self.verticalLayout = QtGui.QVBoxLayout(self.AuditModeGroupBox)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.horizontalLayout = QtGui.QHBoxLayout()
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        self.AuditFileName = QtGui.QLineEdit(self)
-        self.AuditFileName.setObjectName("AuditFileName")
-        self.horizontalLayout.addWidget(self.AuditFileName)
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(u':/imports/import_load.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.AuditFileButton = QtGui.QPushButton(self)
-        self.AuditFileButton.setObjectName("AuditFileButton")
-        self.AuditFileButton.setIcon(icon1)
-        self.horizontalLayout.addWidget(self.AuditFileButton)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.AuditActive = QtGui.QCheckBox(self)
         self.AuditActive.setObjectName("AuditActive")
@@ -69,13 +58,6 @@ class AuditTab(SettingsTab):
         self.AuditFileName.setText(self.config.get_config(u'Audit file', u''))
         self.AuditActive.setChecked(int(self.config.get_config(u'startup', 0)))
 
-    def onAuditFileButtonClicked(self):
-        filename = QtGui.QFileDialog.getSaveFileName(self, u'Audit File',self.AuditFileName.text())
-        if filename != u'':
-            filename = unicode(filename)
-            self.AuditFileName.setText(filename)
-
     def save(self):
-        self.config.set_config(u'Audit file', unicode(self.AuditFileName.text()))
         self.config.set_config(u'startup', unicode(self.AuditActive.checkState()))
         Receiver().send_message(u'audit_changed')

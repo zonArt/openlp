@@ -27,8 +27,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 from datetime import date
 
-from openlp.core.lib import Plugin,  Receiver,  translate,  str_to_bool
-from openlp.plugins.audit.lib import AuditTab
+from openlp.core.lib import Plugin, Receiver,  translate,  str_to_bool
+from openlp.plugins.audit.lib import AuditTab, AuditManager
 
 class AuditPlugin(Plugin):
     global log
@@ -106,6 +106,10 @@ class AuditPlugin(Plugin):
         else:
             self.auditFile = open(self.auditFileName, u'a')
         self.ToolsAuditItem.setChecked(self.auditActive)
+        try:
+            self.auditmanager = AuditManager()
+        except:
+            log.exception(u'oops')
 
     def toggleAuditState(self):
         self.auditActive = not self.auditActive
