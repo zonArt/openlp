@@ -111,8 +111,7 @@ def contextMenuSeparator(base):
 from eventreceiver import Receiver
 from settingsmanager import SettingsManager
 from pluginconfig import PluginConfig
-from plugin import PluginStatus
-from plugin import Plugin
+from plugin import PluginStatus, Plugin
 from pluginmanager import PluginManager
 from settingstab import SettingsTab
 from mediamanageritem import MediaManagerItem
