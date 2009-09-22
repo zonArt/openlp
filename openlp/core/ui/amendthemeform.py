@@ -33,7 +33,7 @@ from amendthemedialog import Ui_AmendThemeDialog
 
 log = logging.getLogger(u'AmendThemeForm')
 
-class AmendThemeForm(QtGui.QDialog,  Ui_AmendThemeDialog):
+class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
     def __init__(self, thememanager, parent=None):
         QtGui.QDialog.__init__(self, parent)

@@ -27,7 +27,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin
-from openlp.plugins.images.lib import ImageMediaItem,  ImageTab
+from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
 class ImagePlugin(Plugin):
     global log

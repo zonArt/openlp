@@ -28,7 +28,7 @@ import time
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, ServiceItem, MediaManagerItem, \
-    Receiver, contextMenuAction, contextMenuSeparator,  BaseListWithDnD
+    Receiver, contextMenuAction, contextMenuSeparator, BaseListWithDnD
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib.manager import BibleMode
 
@@ -329,10 +329,10 @@ class BibleMediaItem(MediaManagerItem):
         log.debug(u'Advanced Search Button pressed')
         bible = unicode(self.AdvancedVersionComboBox.currentText())
         book = unicode(self.AdvancedBookComboBox.currentText())
-        chapter_from =  int(self.AdvancedFromChapter.currentText())
-        chapter_to =  int(self.AdvancedToChapter.currentText())
-        verse_from =  int(self.AdvancedFromVerse.currentText())
-        verse_to =  int(self.AdvancedToVerse.currentText())
+        chapter_from = int(self.AdvancedFromChapter.currentText())
+        chapter_to = int(self.AdvancedToChapter.currentText())
+        verse_from = int(self.AdvancedFromVerse.currentText())
+        verse_to = int(self.AdvancedToVerse.currentText())
         self.search_results = self.parent.biblemanager.get_verse_text(
             bible, book, chapter_from, chapter_to, verse_from, verse_to)
         if self.ClearAdvancedSearchComboBox.currentIndex() == 0:
@@ -374,7 +374,7 @@ class BibleMediaItem(MediaManagerItem):
         raw_footer = []
         bible_text = u''
         for item in items:
-            bitem =  self.ListView.item(item.row())
+            bitem = self.ListView.item(item.row())
             text = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
             verse = text[:text.find(u'(')]
             bible = text[text.find(u'(') + 1:-1]
@@ -457,13 +457,13 @@ class BibleMediaItem(MediaManagerItem):
         self.adjustComboBox(1, self.verses, self.AdvancedToVerse)
 
     def adjustComboBox(self, frm, to , combo):
-        log.debug(u'adjustComboBox %s , %s , %s', combo, frm,  to)
+        log.debug(u'adjustComboBox %s , %s , %s', combo, frm, to)
         combo.clear()
         for i in range(int(frm), int(to) + 1):
             combo.addItem(unicode(i))
 
     def displayResults(self, bible):
-        for count,  verse  in enumerate(self.search_results):
+        for count, verse  in enumerate(self.search_results):
             bible_text = u' %s %d:%d (%s)' % (verse.book.name,
                 verse.chapter, verse.verse, bible)
             bible_verse = QtGui.QListWidgetItem(bible_text)
@@ -474,7 +474,7 @@ class BibleMediaItem(MediaManagerItem):
             if cr is not None:
                 cr.setSelected(True)
 
-    def searchByReference(self, bible,  search):
+    def searchByReference(self, bible, search):
         log.debug(u'searchByReference %s ,%s', bible, search)
         book = u''
         start_chapter = u''
@@ -529,7 +529,7 @@ class BibleMediaItem(MediaManagerItem):
                 sp1 = sp[1].split(u':')
                 if len(sp1) == 1:
                     end_chapter = start_chapter
-                    end_verse =  sp1[0]
+                    end_verse = sp1[0]
                 else:
                     end_chapter = sp1[0]
                     end_verse = sp1[1]

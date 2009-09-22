@@ -26,7 +26,8 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import MediaManagerItem, ServiceItem, translate, BaseListWithDnD
+from openlp.core.lib import MediaManagerItem, ServiceItem, translate, \
+    BaseListWithDnD
 from openlp.plugins.presentations.lib import MessageListener
 
 # We have to explicitly create separate classes for each plugin
@@ -64,10 +65,12 @@ class PresentationMediaItem(MediaManagerItem):
 
     def addEndHeaderBar(self):
         self.PresentationWidget = QtGui.QWidget(self)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.PresentationWidget.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.PresentationWidget.sizePolicy().hasHeightForWidth())
         self.PresentationWidget.setSizePolicy(sizePolicy)
         self.PresentationWidget.setObjectName(u'PresentationWidget')
         self.DisplayLayout = QtGui.QGridLayout(self.PresentationWidget)
@@ -78,7 +81,8 @@ class PresentationMediaItem(MediaManagerItem):
         self.DisplayTypeLabel = QtGui.QLabel(self.PresentationWidget)
         self.DisplayTypeLabel.setObjectName(u'SearchTypeLabel')
         self.DisplayLayout.addWidget(self.DisplayTypeLabel, 0, 0, 1, 1)
-        self.DisplayTypeLabel.setText(translate(u'PresentationMediaItem', u'Present using:'))
+        self.DisplayTypeLabel.setText(
+            translate(u'PresentationMediaItem', u'Present using:'))
         # Add the Presentation widget to the page layout
         self.PageLayout.addWidget(self.PresentationWidget)
 
@@ -102,7 +106,8 @@ class PresentationMediaItem(MediaManagerItem):
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
-            self.parent.config.set_list(self.ConfigSection, self.ListData.getFileList())
+            self.parent.config.set_list(
+                self.ConfigSection, self.ListData.getFileList())
 
     def generateSlideData(self, service_item):
         items = self.ListView.selectedIndexes()
@@ -111,8 +116,8 @@ class PresentationMediaItem(MediaManagerItem):
         service_item.title = unicode(self.DisplayTypeComboBox.currentText())
         service_item.shortname = unicode(self.DisplayTypeComboBox.currentText())
         for item in items:
-            bitem =  self.ListView.item(item.row())
+            bitem = self.ListView.item(item.row())
             filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
             (path, name) = os.path.split(filename)
-            service_item.add_from_command(path,  name)
+            service_item.add_from_command(path, name)
         return True

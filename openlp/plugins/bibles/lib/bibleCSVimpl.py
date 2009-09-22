@@ -42,7 +42,8 @@ class BibleCSVImpl(BibleCommon):
         """
         self.bibledb = bibledb
         self.loadbible = True
-        QtCore.QObject.connect(Receiver().get_receiver(),QtCore.SIGNAL(u'openlpstopimport'),self.stop_import)
+        QtCore.QObject.connect(Receiver().get_receiver(),
+            QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
 
     def stop_import(self):
         self.loadbible= False
@@ -80,7 +81,7 @@ class BibleCSVImpl(BibleCommon):
             # split into 3 units and leave the rest as a single field
             p = line.split(u',', 3)
             p0 = p[0].replace(u'"', u'')
-            p3 =  p[3].replace(u'"',u'')
+            p3 = p[3].replace(u'"',u'')
             if book_ptr is not p0:
                 book = self.bibledb.get_bible_book(p0)
                 book_ptr = book.name

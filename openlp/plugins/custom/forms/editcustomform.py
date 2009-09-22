@@ -115,7 +115,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             self.ThemeComboBox.setCurrentIndex(0)
 
     def accept(self):
-        valid ,  message = self._validate()
+        valid , message = self._validate()
         if not valid:
             QtGui.QMessageBox.critical(self,
             translate(u'customEditDialog', u'Error'), message,
@@ -126,7 +126,9 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         sxml.add_lyrics_to_song()
         count = 1
         for i in range (0, self.VerseListView.count()):
-            sxml.add_verse_to_lyrics(u'custom', unicode(count),  unicode(self.VerseListView.item(i).text()))
+            sxml.add_verse_to_lyrics(
+                u'custom', unicode(count),
+                unicode(self.VerseListView.item(i).text()))
             count += 1
         self.customSlide.title = unicode(self.TitleEdit.displayText())
         self.customSlide.text = unicode(sxml.extract_xml())
@@ -201,9 +203,11 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             for row in unicode(self.VerseTextEdit.toPlainText()).split(u'---'):
                 self.VerseListView.addItem(row)
         else:
-            self.VerseListView.currentItem().setText(self.VerseTextEdit.toPlainText())
+            self.VerseListView.currentItem().setText(
+                self.VerseTextEdit.toPlainText())
             #number of lines has change
-            if len(self.beforeText.split(u'\n')) != len(self.VerseTextEdit.toPlainText().split(u'\n')):
+            if len(self.beforeText.split(u'\n')) != \
+                len(self.VerseTextEdit.toPlainText().split(u'\n')):
                 tempList = {}
                 for row in range(0, self.VerseListView.count()):
                     tempList[row] = self.VerseListView.item(row).text()
@@ -227,9 +231,11 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         message = u''
         if len(self.TitleEdit.displayText()) == 0:
             valid = False
-            message = translate(u'customEditDialog', u'You need to enter a title \n')
+            message = translate(
+                u'customEditDialog', u'You need to enter a title \n')
         # must have 1 slide
         if self.VerseListView.count() == 0:
             valid = False
-            message += translate(u'customEditDialog', u'You need to enter a slide \n')
-        return valid,  message
+            message += translate(
+                u'customEditDialog', u'You need to enter a slide \n')
+        return valid, message

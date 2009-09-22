@@ -24,7 +24,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab,  str_to_bool,  translate,  Receiver
+from openlp.core.lib import SettingsTab, str_to_bool, translate, Receiver
 
 class ImageTab(SettingsTab):
     """
@@ -53,7 +53,8 @@ class ImageTab(SettingsTab):
         self.TimeoutSpacer = QtGui.QSpacerItem(147, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.TimeoutLayout.addItem(self.TimeoutSpacer)
-        self.ImageLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.ImageSettingsGroupBox)
+        self.ImageLayout.setWidget(
+            0, QtGui.QFormLayout.LabelRole, self.ImageModeGroupBox)
         # Signals and slots
         QtCore.QObject.connect(self.TimeoutSpinBox,
             QtCore.SIGNAL(u'valueChanged(int)'), self.onTimeoutSpinBoxChanged)
@@ -72,7 +73,7 @@ class ImageTab(SettingsTab):
 
     def save(self):
         self.config.set_config(u'loop delay', self.loop_delay)
-        Receiver().send_message(u'update_spin_delay',  self.loop_delay )
+        Receiver().send_message(u'update_spin_delay', self.loop_delay )
 
     def postSetUp(self):
-        Receiver().send_message(u'update_spin_delay',  self.loop_delay )
+        Receiver().send_message(u'update_spin_delay', self.loop_delay )

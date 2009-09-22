@@ -26,7 +26,8 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import MediaManagerItem, ServiceItem, translate, BaseListWithDnD,  buildIcon
+from openlp.core.lib import MediaManagerItem, ServiceItem, translate, \
+    BaseListWithDnD, buildIcon
 
 # We have to explicitly create separate classes for each plugin
 # in order for DnD to the Service manager to work correctly.
@@ -61,9 +62,11 @@ class ImageMediaItem(MediaManagerItem):
         MediaManagerItem.__init__(self, parent, icon, title)
 
     def initialise(self):
-        self.ListView.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.ListView.setSelectionMode(
+            QtGui.QAbstractItemView.ExtendedSelection)
         self.ListView.setIconSize(QtCore.QSize(88,50))
-        self.servicePath = os.path.join(self.parent.config.get_data_path(), u'.thumbnails')
+        self.servicePath = os.path.join(
+            self.parent.config.get_data_path(), u'.thumbnails')
         if os.path.exists(self.servicePath) == False:
             os.mkdir(self.servicePath)
         self.loadList(self.parent.config.load_list(self.ConfigSection))
@@ -103,9 +106,9 @@ class ImageMediaItem(MediaManagerItem):
             return False
         service_item.title = u'Image(s)'
         for item in items:
-            bitem =  self.ListView.item(item.row())
+            bitem = self.ListView.item(item.row())
             filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
             frame = QtGui.QImage(unicode(filename))
             (path, name) = os.path.split(filename)
-            service_item.add_from_image(path,  name, frame)
+            service_item.add_from_image(path, name, frame)
         return True

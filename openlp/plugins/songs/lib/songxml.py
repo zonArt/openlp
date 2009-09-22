@@ -71,7 +71,7 @@ _blankOpenSongXml = \
 class _OpenSong(XmlRootClass):
     """Class for import of OpenSogn"""
 
-    def __init__(self,  xmlContent = None):
+    def __init__(self, xmlContent = None):
         """Initialize from given xml content"""
         super(_OpenSong, self).__init__()
         self.from_buffer(xmlContent)
@@ -81,7 +81,7 @@ class _OpenSong(XmlRootClass):
         global _blankOpenSongXml
         self._setFromXml(_blankOpenSongXml, 'song')
 
-    def from_buffer(self,  xmlContent):
+    def from_buffer(self, xmlContent):
         """Initialize from buffer(string) with xml content"""
         self._reset()
         if xmlContent != None :
@@ -259,7 +259,7 @@ class Song(object) :
         """Return the songid for the database"""
         return self.songid
 
-    def from_opensong_buffer(self,  xmlcontent):
+    def from_opensong_buffer(self, xmlcontent):
         """Initialize from buffer(string) of xml lines in opensong format"""
         self._reset()
         opensong = _OpenSong(xmlcontent)
@@ -275,20 +275,20 @@ class Song(object) :
         self.set_category_array(opensong.get_category_array())
         self.set_lyrics(opensong.get_lyrics())
 
-    def from_opensong_file(self,  xmlfilename):
+    def from_opensong_file(self, xmlfilename):
         """Initialize from file containing xml
 
         xmlfilename -- path to xml file
         """
         lst = []
-        f = open(xmlfilename,  'r')
+        f = open(xmlfilename, 'r')
         for line in f :
             lst.append(line)
         f.close()
         xml = "".join(lst)
         self.from_opensong_buffer(xml)
 
-    def _remove_punctuation(self,  title):
+    def _remove_punctuation(self, title):
         """Remove the puntuation chars from title
 
         chars are: .,:;!?&%#/\@`$'|"^~*-
@@ -296,7 +296,7 @@ class Song(object) :
         punctuation = ".,:;!?&%#'\"/\\@`$|^~*-"
         s = title
         for c in punctuation :
-            s = s.replace(c,  '')
+            s = s.replace(c, '')
         return s
 
     def set_title(self, title):
@@ -322,7 +322,8 @@ class Song(object) :
         return self.search_title
 
     def from_ccli_text_buffer(self, textList):
-        """Create song from a list of texts (strings) - CCLI text format expected
+        """
+        Create song from a list of texts (strings) - CCLI text format expected
 
         textList (list of strings) -- the song
         """
@@ -377,13 +378,13 @@ class Song(object) :
         self.set_song_cclino(sCcli)
         self.set_lyrics(lyrics)
 
-    def from_ccli_text_file(self,  textFileName):
+    def from_ccli_text_file(self, textFileName):
         """Create song from a list of texts read from given file
 
         textFileName -- path to text file
         """
         lines = []
-        f = open(textFileName,  'r')
+        f = open(textFileName, 'r')
         for orgline in f:
             lines.append(orgline.rstrip())
         f.close()
@@ -424,7 +425,7 @@ class Song(object) :
         """Return copyright info string"""
         return self._assure_string(self.copyright)
 
-    def set_copyright(self,  copyright):
+    def set_copyright(self, copyright):
         """Set the copyright string"""
         self.copyright = copyright
 
@@ -432,7 +433,7 @@ class Song(object) :
         """Return the songCclino"""
         return self._assure_string(self.song_cclino)
 
-    def set_song_cclino(self,  song_cclino):
+    def set_song_cclino(self, song_cclino):
         """Set the song_cclino"""
         self.song_cclino = song_cclino
 
@@ -440,7 +441,7 @@ class Song(object) :
         """Return the theme name for the song"""
         return self._assure_string(self.theme)
 
-    def set_theme(self,  theme):
+    def set_theme(self, theme):
         """Set the theme name (string)"""
         self.theme = theme
 
@@ -448,7 +449,7 @@ class Song(object) :
         """Return the song_book (string)"""
         return self._assure_string(self.song_book)
 
-    def set_song_book(self,  song_book):
+    def set_song_book(self, song_book):
         """Set the song_book (string)"""
         self.song_book = song_book
 
@@ -456,7 +457,7 @@ class Song(object) :
         """Return the song_number (string)"""
         return self._assure_string(self.song_number)
 
-    def set_song_number(self,  song_number):
+    def set_song_number(self, song_number):
         """Set the song_number (string)"""
         self.song_number = song_number
 
@@ -464,7 +465,7 @@ class Song(object) :
         """Return the comments (string)"""
         return self._assure_string(self.comments)
 
-    def set_comments(self,  comments):
+    def set_comments(self, comments):
         """Set the comments (string)"""
         self.comments = comments
 
@@ -472,11 +473,11 @@ class Song(object) :
         """Get the verseOrder (string) - preferably space delimited"""
         return self._assure_string(self.verse_order)
 
-    def set_verse_order(self,  verse_order):
+    def set_verse_order(self, verse_order):
         """Set the verse order (string) - space delimited"""
         self.verse_order = verse_order
 
-    def get_author_list(self,  asOneString = True):
+    def get_author_list(self, asOneString = True):
         """Return the list of authors as a string
 
         asOneString
@@ -491,7 +492,7 @@ class Song(object) :
             res = self._split_to_list(self.author_list)
         return res
 
-    def set_author_list(self,  author_list):
+    def set_author_list(self, author_list):
         """Set the author_list
 
         author_list -- a string or list of strings
@@ -501,7 +502,7 @@ class Song(object) :
         else :
             self.author_list = self._list_to_string(author_list)
 
-    def get_category_array(self,  asOneString = True):
+    def get_category_array(self, asOneString = True):
         """Return the list of categories as a string
 
         asOneString
@@ -516,7 +517,7 @@ class Song(object) :
             res = self._split_to_list(self.category_array)
         return res
 
-    def set_category_array(self,  category_array):
+    def set_category_array(self, category_array):
         """Set the category_array
 
         category_array -- a string or list of strings
@@ -530,7 +531,7 @@ class Song(object) :
         """Return the show_title flag (bool)"""
         return self.show_title
 
-    def set_show_title(self,  show_title):
+    def set_show_title(self, show_title):
         """Set the show_title flag (bool)"""
         self.show_title = show_title
 
@@ -538,7 +539,7 @@ class Song(object) :
         """Return the show_author_list flag"""
         return self.show_author_list
 
-    def set_show_author_list(self,  show_author_list):
+    def set_show_author_list(self, show_author_list):
         """Set the show_author_list flag (bool)"""
         self.show_author_list = show_author_list
 
@@ -554,7 +555,7 @@ class Song(object) :
         """Return the showSongCclino (string)"""
         return self.show_song_cclino
 
-    def set_show_song_cclino(self,  show_song_cclino):
+    def set_show_song_cclino(self, show_song_cclino):
         """Set the show_song_cclino flag (bool)"""
         self.show_song_cclino = show_song_cclino
 
@@ -565,7 +566,7 @@ class Song(object) :
         """
         return self.lyrics
 
-    def set_lyrics(self,  lyrics):
+    def set_lyrics(self, lyrics):
         """Set the lyrics as a list of strings"""
         self.lyrics = lyrics
         self._parse_lyrics()
@@ -594,7 +595,7 @@ class Song(object) :
         numOfSlides = len(self.slideList)
         return numOfSlides
 
-    def get_preview_slide(self,  slideNumber):
+    def get_preview_slide(self, slideNumber):
         """Return the preview text for specified slide number
 
         slideNumber -- 0: all slides, 1..n : specific slide
@@ -618,7 +619,7 @@ class Song(object) :
         # remove formattingincluding themes
         return res
 
-    def get_render_slide(self,  slideNumber):
+    def get_render_slide(self, slideNumber):
         """Return the slide to be rendered including the additional
         properties
 

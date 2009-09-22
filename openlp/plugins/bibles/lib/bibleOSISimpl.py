@@ -86,7 +86,7 @@ class BibleOSISImpl():
             The Import dialog, so that we can increase the counter on
             the progress bar.
         """
-        detect_file = open(osisfile_record,  u'r')
+        detect_file = open(osisfile_record, u'r')
         details = chardet.detect(detect_file.read(2048))
         detect_file.close()
         osis = codecs.open(osisfile_record, u'r', details['encoding'])
@@ -102,7 +102,7 @@ class BibleOSISImpl():
             pos = file_record.find(verseText)
             if pos > -1: # we have a verse
                 epos= file_record.find(u'>', pos)
-                ref =  file_record[pos+15:epos-1]  # Book Reference
+                ref = file_record[pos+15:epos-1]  # Book Reference
                 #lets find the bible text only
                 # find start of text
                 pos = epos + 1
@@ -113,10 +113,10 @@ class BibleOSISImpl():
                 text = self.remove_block(u'<title', u'</title>', text)
                 text = self.remove_block(u'<note', u'</note>', text)
                 text = self.remove_block(u'<divineName', u'</divineName>', text)
-                text = self.remove_tag(u'<lb',  text)
-                text = self.remove_tag(u'<q',  text)
-                text = self.remove_tag(u'<l',  text)
-                text = self.remove_tag(u'<lg',  text)
+                text = self.remove_tag(u'<lb', text)
+                text = self.remove_tag(u'<q', text)
+                text = self.remove_tag(u'<l', text)
+                text = self.remove_tag(u'<lg', text)
                 # Strange tags where the end is not the same as the start
                 # The must be in this order as at least one bible has them
                 # crossing and the removal does not work.
@@ -127,12 +127,12 @@ class BibleOSISImpl():
                         #print "Y", search_text, e
                         pos = -1
                     else:
-                        text =  text[:pos] + text[epos + 4: ]
+                        text = text[:pos] + text[epos + 4: ]
                         pos = text.find(u'<FI>')
                 pos = text.find(u'<RF>')
                 while pos > -1:
                     epos = text.find(u'<Rf>', pos)
-                    text =  text[:pos] + text[epos + 4: ]
+                    text = text[:pos] + text[epos + 4: ]
                     #print "X", pos, epos, text
                     pos = text.find(u'<RF>')
                 # split up the reference
@@ -184,7 +184,7 @@ class BibleOSISImpl():
             if epos == -1:
                 pos = -1
             else:
-                text =  text[:pos] + text[epos + len(end_tag): ]
+                text = text[:pos] + text[epos + len(end_tag): ]
                 pos = text.find(start_tag)
         return text
 
@@ -203,6 +203,6 @@ class BibleOSISImpl():
         pos = text.find(start_tag)
         while pos > -1:
             epos = text.find(u'/>', pos)
-            text =  text[:pos] + text[epos + 2: ]
+            text = text[:pos] + text[epos + 2: ]
             pos = text.find(start_tag)
         return text

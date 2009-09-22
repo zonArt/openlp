@@ -188,13 +188,13 @@ class Renderer(object):
                 else:
                     pos = len(line)
                     split_text = line
-                while metrics.width(split_text,  -1) > line_width:
+                while metrics.width(split_text, -1) > line_width:
                     #Find the next space to the left
                     pos = line[:pos].rfind(u' ')
                     #no more spaces found
                     if pos  == 0:
                         split_text = line
-                        while metrics.width(split_text,  -1) > line_width:
+                        while metrics.width(split_text, -1) > line_width:
                             split_text = split_text[:-1]
                         pos = len(split_text)
                     else:
@@ -242,7 +242,7 @@ class Renderer(object):
         # reset the frame. first time do not worry about what you paint on.
         self._frame = QtGui.QImage(self.bg_frame)
         x, y = self._correctAlignment(self._rect, bbox)
-        bbox = self._render_lines_unaligned(lines, False,  (x, y), True)
+        bbox = self._render_lines_unaligned(lines, False, (x, y), True)
         if footer_lines is not None:
             bbox = self._render_lines_unaligned(footer_lines, True,
                 (self._rect_footer.left(), self._rect_footer.top()), True)
@@ -327,7 +327,8 @@ class Renderer(object):
             # centre align
             y = rect.top() + (rect.height() - bbox.height()) / 2
         else:
-            log.error(u'Invalid value for theme.VerticalAlign:%s' % self._theme.display_verticalAlign)
+            log.error(u'Invalid value for theme.VerticalAlign:%s',
+                self._theme.display_verticalAlign)
         return x, y
 
     def _render_lines_unaligned(self, lines, footer, tlcorner=(0, 0),
@@ -400,7 +401,7 @@ class Renderer(object):
         startx = x
         starty = y
         rightextent = None
-        #print "inputs",  startx,  starty, maxx, maxy
+        #print "inputs", startx, starty, maxx, maxy
         # dont allow alignment messing with footers
         if footer:
             align = 0
@@ -412,7 +413,7 @@ class Renderer(object):
         for linenum in range(len(lines)):
             line = lines[linenum]
             #find out how wide line is
-            w, h = self._get_extent_and_render(line, footer,  tlcorner=(x, y),
+            w, h = self._get_extent_and_render(line, footer, tlcorner=(x, y),
                 draw=False)
             if self._theme.display_shadow:
                 w += shadow_offset

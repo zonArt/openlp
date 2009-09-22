@@ -39,5 +39,5 @@ from thememanager import ThemeManager
 from mainwindow import MainWindow
 
 __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MasterToolbar',
-           'MainWindow', 'MainDisplay',  'SlideController', 'ServiceManager',
+           'MainWindow', 'MainDisplay', 'SlideController', 'ServiceManager',
            'ThemeManager', 'AmendThemeForm']

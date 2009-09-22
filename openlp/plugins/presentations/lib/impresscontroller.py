@@ -27,7 +27,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 # http://nxsy.org/comparing-documents-with-openoffice-and-python
 
 import logging
-import os ,  subprocess
+import os , subprocess
 import time
 import sys
 

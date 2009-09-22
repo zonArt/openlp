@@ -24,7 +24,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab,  str_to_bool,  translate,  Receiver
+from openlp.core.lib import SettingsTab, str_to_bool, translate, Receiver
 
 class AuditTab(SettingsTab):
     """
@@ -46,18 +46,20 @@ class AuditTab(SettingsTab):
         self.WarningLabel = QtGui.QLabel(self)
         self.WarningLabel.setObjectName("WarningLabel")
         self.verticalLayout.addWidget(self.WarningLabel)
-        QtCore.QObject.connect(self.AuditFileButton,
-            QtCore.SIGNAL(u'pressed()'), self.onAuditFileButtonClicked)
 
     def retranslateUi(self):
         self.AuditModeGroupBox.setTitle(translate(u'AuditTab', u'Audit File'))
         self.AuditActive.setText(translate(u'AuditTab', 'Audit available:'))
-        self.WarningLabel.setText(translate(u'AuditTab', u'A restart is needed for this change to become effective'))
+        self.WarningLabel.setText(translate(u'AuditTab',
+            u'A restart is needed for this change to become effective'))
 
     def load(self):
         self.AuditFileName.setText(self.config.get_config(u'Audit file', u''))
         self.AuditActive.setChecked(int(self.config.get_config(u'startup', 0)))
 
     def save(self):
-        self.config.set_config(u'startup', unicode(self.AuditActive.checkState()))
+        self.config.set_config(
+            u'Audit file', unicode(self.AuditFileName.text()))
+        self.config.set_config(
+            u'startup', unicode(self.AuditActive.checkState()))
         Receiver().send_message(u'audit_changed')

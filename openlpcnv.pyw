@@ -49,7 +49,7 @@ class Migration(object):
         Initialise the process.
         """
         self.display = Display()
-        self.stime =  time.strftime(u'%Y-%m-%d-%H%M%S', time.localtime())
+        self.stime = time.strftime(u'%Y-%m-%d-%H%M%S', time.localtime())
         self.display.output(u'OpenLp v1.9.0 Migration Utility Started')
 
     def process(self):

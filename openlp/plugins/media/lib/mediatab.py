@@ -24,7 +24,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab,  str_to_bool,  translate
+from openlp.core.lib import SettingsTab, str_to_bool, translate
 
 class MediaTab(SettingsTab):
     """
@@ -50,14 +50,16 @@ class MediaTab(SettingsTab):
         self.UseVMRLabel.setObjectName(u'UseVMRLabel')
         self.MediaModeLayout.addWidget(self.UseVMRLabel)
 
-        self.MediaLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.MediaModeGroupBox)
+        self.MediaLayout.setWidget(
+            0, QtGui.QFormLayout.LabelRole, self.MediaModeGroupBox)
         # Signals and slots
         QtCore.QObject.connect(self.UseVMRCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'), self.onVMRCheckBoxChanged)
 
     def retranslateUi(self):
         self.MediaModeGroupBox.setTitle(translate(u'MediaTab', u'Media Mode'))
-        self.UseVMRCheckBox.setText(translate(u'MediaTab', u'Use Video Mode Rendering'))
+        self.UseVMRCheckBox.setText(
+            translate(u'MediaTab', u'Use Video Mode Rendering'))
         self.UseVMRLabel.setText(translate(u'MediaTab', u'<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">\n'
             u'<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
             u'p, li { white-space: pre-wrap; }\n'
@@ -72,7 +74,8 @@ class MediaTab(SettingsTab):
             self.use_vmr_mode = True
 
     def load(self):
-        self.use_vmr_mode = str_to_bool(self.config.get_config(u'use mode layout', u'False'))
+        self.use_vmr_mode = str_to_bool(
+            self.config.get_config(u'use mode layout', u'False'))
         if self.use_vmr_mode :
             self.UseVMRCheckBox.setChecked(True)
 
