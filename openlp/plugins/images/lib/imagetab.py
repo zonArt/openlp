@@ -54,7 +54,7 @@ class ImageTab(SettingsTab):
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.TimeoutLayout.addItem(self.TimeoutSpacer)
         self.ImageLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.ImageModeGroupBox)
+            0, QtGui.QFormLayout.LabelRole, self.ImageSettingsGroupBox)
         # Signals and slots
         QtCore.QObject.connect(self.TimeoutSpinBox,
             QtCore.SIGNAL(u'valueChanged(int)'), self.onTimeoutSpinBoxChanged)
