@@ -35,6 +35,7 @@ try:
     from openlp.plugins.presentations.lib import PowerpointController
 except:
     pass
+from openlp.plugins.presentations.lib import PptviewController
 
 
 class PresentationPlugin(Plugin):
@@ -105,10 +106,8 @@ class PresentationPlugin(Plugin):
         if int(self.config.get_config(
             u'Powerpoint Viewer', QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
             try:
-                #Check to see if we are Win32
-                from win32com.client import Dispatch
-                powerpoint = PowerpointController()
-                self.registerControllers(u'Powerpoint Viewer', powerpoint)
+                pptview = PptviewController()
+                self.registerControllers(u'Powerpoint Viewer', pptview)
             except:
                 log.exception(u'Failed to set up plugin for Powerpoint Viewer')
         #If we have no available controllers disable plugin
