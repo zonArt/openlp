@@ -27,10 +27,11 @@ from sqlalchemy import Column, Table, ForeignKey, types
 from openlp.plugins.audit.lib.meta import metadata
 
 # Definition of the "songs" table
-audit_table = Table(u'custom_slide', metadata,
+audit_table = Table(u'audit_data', metadata,
     Column(u'id', types.Integer(), primary_key=True),
+    Column(u'auditdate', types.Date, index=True, nullable=False),
+    Column(u'audittime', types.Time, index=True, nullable=False),
     Column(u'title', types.Unicode(255), nullable=False),
-    Column(u'text', types.UnicodeText, nullable=False),
-    Column(u'credits', types.UnicodeText),
-    Column(u'theme_name', types.Unicode(128))
+    Column(u'authors', types.UnicodeText, nullable=False),
+    Column(u'ccl_id', types.Unicode(65), nullable=False)
 )
