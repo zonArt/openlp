@@ -51,8 +51,8 @@ class CustomManager():
         self.db_url = u''
         db_type = self.config.get_config(u'db type', u'sqlite')
         if db_type == u'sqlite':
-            self.db_url = u'sqlite:///' + self.config.get_data_path() + \
-                u'/custom.sqlite'
+            self.db_url = u'sqlite:///%s/custom.sqlite' % \
+                self.config.get_data_path()
         else:
             self.db_url = u'%s://%s:%s@%s/%s' % \
                 (db_type, self.config.get_config(u'db username'),
@@ -60,23 +60,19 @@ class CustomManager():
                     self.config.get_config(u'db hostname'),
                     self.config.get_config(u'db database'))
         self.session = init_models(self.db_url)
-        if not custom_slide_table.exists():
-            metadata.create_all()
+        metadata.create_all(checkfirst=True)
 
         log.debug(u'Custom Initialised')
-#
-#    def process_dialog(self, dialogobject):
-#        self.dialogobject = dialogobject
-#
+
     def get_all_slides(self):
         """
-        Returns the details of a song
+        Returns the details of a Custom Slide Show
         """
         return self.session.query(CustomSlide).order_by(CustomSlide.title).all()
 
     def save_slide(self, customslide):
         """
-        Saves a song to the database
+        Saves a Custom slide show to the database
         """
         log.debug(u'Custom Slide added')
         try:
@@ -85,7 +81,8 @@ class CustomManager():
             log.debug(u'Custom Slide saved')
             return True
         except:
-            log.debug(u'Custom Slide failed')
+            self.session.rollback()
+            log.excertion(u'Custom Slide save failed')
             return False
 
     def get_custom(self, id=None):
@@ -98,6 +95,9 @@ class CustomManager():
             return self.session.query(CustomSlide).get(id)
 
     def delete_custom(self, id):
+        """
+        Delete a Custom slide show
+        """
         if id !=0:
             customslide = self.get_custom(id)
             try:
@@ -105,6 +105,8 @@ class CustomManager():
                 self.session.commit()
                 return True
             except:
+                self.session.rollback()
+                log.excertion(u'Custom Slide deleton failed')
                 return False
         else:
             return True

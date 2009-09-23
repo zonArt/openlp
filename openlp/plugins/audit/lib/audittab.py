@@ -39,7 +39,6 @@ class AuditTab(SettingsTab):
         self.AuditModeGroupBox.setObjectName(u'AuditModeGroupBox')
         self.verticalLayout = QtGui.QVBoxLayout(self.AuditModeGroupBox)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.verticalLayout.addLayout(self.horizontalLayout)
         self.AuditActive = QtGui.QCheckBox(self)
         self.AuditActive.setObjectName("AuditActive")
         self.verticalLayout.addWidget(self.AuditActive)
@@ -54,12 +53,9 @@ class AuditTab(SettingsTab):
             u'A restart is needed for this change to become effective'))
 
     def load(self):
-        self.AuditFileName.setText(self.config.get_config(u'Audit file', u''))
         self.AuditActive.setChecked(int(self.config.get_config(u'startup', 0)))
 
     def save(self):
-        self.config.set_config(
-            u'Audit file', unicode(self.AuditFileName.text()))
         self.config.set_config(
             u'startup', unicode(self.AuditActive.checkState()))
         Receiver().send_message(u'audit_changed')

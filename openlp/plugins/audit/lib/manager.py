@@ -27,7 +27,7 @@ import sys
 
 from sqlalchemy import asc, desc
 from openlp.plugins.audit.lib.models import init_models, metadata, session, \
-    engine, audit_table, Audit
+    engine, AuditItem, audit_table
 
 import logging
 
@@ -38,7 +38,7 @@ class AuditManager():
     """
 
     global log
-    log = logging.getLogger(u'AuditManager')
+    log=logging.getLogger(u'AuditManager')
     log.info(u'Audit manager loaded')
 
     def __init__(self, config):
@@ -51,54 +51,61 @@ class AuditManager():
         self.db_url = u''
         db_type = self.config.get_config(u'db type', u'sqlite')
         if db_type == u'sqlite':
-            self.db_url = u'sqlite:///%s/Audit.sqlite' % \
+            self.db_url = u'sqlite:///%s/audit.sqlite' % \
                 self.config.get_data_path()
         else:
-            self.db_url = db_type + 'u://' + \
-                self.config.get_config(u'db username') + u':' + \
-                self.config.get_config(u'db password') + u'@' + \
-                self.config.get_config(u'db hostname') + u'/' + \
-                self.config.get_config(u'db database')
+            self.db_url = u'%s://%s:%s@%s/%s' % \
+                (db_type, self.config.get_config(u'db username'),
+                    self.config.get_config(u'db password'),
+                    self.config.get_config(u'db hostname'),
+                    self.config.get_config(u'db database'))
         self.session = init_models(self.db_url)
         metadata.create_all(checkfirst=True)
-        log.debug(u'AuditInitialised')
 
-    def get_audits(self):
-        """
-        Returns a list of all the audits
-        """
-        return self.session.query(audit).order_by(audit.whensung).all()
+        log.debug(u'Audit Initialised')
 
-    def get_audit(self, id):
+    def get_all_audits(self):
         """
-        Details of the audit
+        Returns the details of a audit
         """
-        return self.session.query(audit).get(id)
+        return self.session.query(AuditItem).order_by(AuditItem.title).all()
 
-    def save_audit(self, audit):
+    def insert_audit(self, audititem):
         """
-        Save the audit and refresh the cache
+        Saves an audit to the database
         """
+        log.debug(u'Audit added')
         try:
-            self.session.add(audit)
+            self.session.add(audititem)
             self.session.commit()
             return True
         except:
             self.session.rollback()
-            log.exception(u'Could not save audit to song database')
+            log.excertion(u'Audit item failed to save')
             return False
 
-    def delete_audit(self, auditid):
+    def get_audit(self, id=None):
         """
-        Delete the audit
+        Returns the details of an audit
         """
-        audit = self.get_audit(auditid)
-        try:
-            self.session.delete(audit)
-            self.session.commit()
+        if id is None:
+            return AuditItem()
+        else:
+            return self.session.query(AuditItem).get(id)
+
+    def delete_audit(self, id):
+        """
+        Delete a audit record
+        """
+        if id !=0:
+            audititem = self.get_audit(id)
+            try:
+                self.session.delete(audititem)
+                self.session.commit()
+                return True
+            except:
+                self.session.rollback()
+                log.excertion(u'Audit Item failed to delete')
+                return False
+        else:
             return True
-        except:
-            self.session.rollback()
-            log.exception(u'Could not delete audit from song database')
-            return False
-

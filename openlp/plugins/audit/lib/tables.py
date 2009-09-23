@@ -22,19 +22,15 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from datetime import now
-
-from sqlalchemy import  *
 from sqlalchemy import Column, Table, ForeignKey, types
 
 from openlp.plugins.audit.lib.meta import metadata
 
-# Definition of the "audits" table
-audit_table = Table(u'audits', metadata,
-    Column(u'id', types.Integer,  primary_key=True),
-    Column('whensung', types.DateTime, nullable=False, default=datetime.now()),
-    Column(u'authors', types.Unicode(255)),
-    Column(u'ccli_number', types.Unicode(64)),
+# Definition of the "songs" table
+audit_table = Table(u'custom_slide', metadata,
+    Column(u'id', types.Integer(), primary_key=True),
+    Column(u'title', types.Unicode(255), nullable=False),
+    Column(u'text', types.UnicodeText, nullable=False),
+    Column(u'credits', types.UnicodeText),
+    Column(u'theme_name', types.Unicode(128))
 )
-
-Index(u'audits_id',audit_table.c.timestamp, audit_table.c.id)

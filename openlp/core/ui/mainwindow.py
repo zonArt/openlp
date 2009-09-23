@@ -405,11 +405,11 @@ class Ui_MainWindow(object):
         self.action_Preview_Panel.setStatusTip(translate(u'mainWindow',
             u'Toggle the visibility of the Preview Panel'))
         self.action_Preview_Panel.setShortcut(translate(u'mainWindow', u'F11'))
-        self.ToolsAlertItem.setText(translate(u'mainWindow', u'&Alert'))
+        self.ToolsAlertItem.setText(translate(u'mainWindow', u'Trigger &Alert'))
         self.ToolsAlertItem.setStatusTip(
             translate(u'mainWindow', u'Show an alert message'))
         self.ToolsAlertItem.setShortcut(translate(u'mainWindow', u'F7'))
-        self.PluginItem.setText(translate(u'mainWindow', u'&Plugin'))
+        self.PluginItem.setText(translate(u'mainWindow', u'List &Plugins'))
         self.PluginItem.setStatusTip(
             translate(u'mainWindow', u'List the Plugins'))
         self.PluginItem.setShortcut(translate(u'mainWindow', u'Alt+F7'))
@@ -510,16 +510,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'), self.onOptionsSettingsItemClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'update_global_theme'), self.defaultThemeChanged)
-        QtCore.QObject.connect(self.FileNewItem, 
+        QtCore.QObject.connect(self.FileNewItem,
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onNewService)
-        QtCore.QObject.connect(self.FileOpenItem, 
+        QtCore.QObject.connect(self.FileOpenItem,
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onLoadService)
-        QtCore.QObject.connect(self.FileSaveItem, 
+        QtCore.QObject.connect(self.FileSaveItem,
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onQuickSaveService)
-        QtCore.QObject.connect(self.FileSaveAsItem, 
+        QtCore.QObject.connect(self.FileSaveAsItem,
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onSaveService)
         #warning cyclic dependency

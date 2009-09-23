@@ -38,8 +38,8 @@ class BaseModel(object):
             me.__setattr__(key, kwargs[key])
         return me
 
-class CustomSlide(BaseModel):
+class AuditItem(BaseModel):
     """
-    Custom Slide model
+    Audit model
     """
     pass

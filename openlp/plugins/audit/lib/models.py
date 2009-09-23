@@ -27,11 +27,12 @@ from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation
 
 from openlp.plugins.audit.lib.meta import session, metadata, engine
 from openlp.plugins.audit.lib.tables import *
+from openlp.plugins.audit.lib.classes import *
 
 def init_models(url):
     engine = create_engine(url)
     metadata.bind = engine
-    session = scoped_session(sessionmaker(autoflush=False,
-        autocommit=False, bind=engine))
-    mapper(Audit, audit_table)
+    session = scoped_session(sessionmaker(autoflush=True, autocommit=False,
+                                          bind=engine))
+    mapper(AuditItem, audit_table)
     return session

@@ -100,7 +100,7 @@ class AuditPlugin(Plugin):
         self.auditActive = str_to_bool(
             self.config.get_config(u'audit active', False))
         self.ToolsAuditItem.setChecked(self.auditActive)
-        self.auditmanager = AuditManager()
+        self.auditmanager = AuditManager(self.config)
 
     def toggleAuditState(self):
         self.auditActive = not self.auditActive
@@ -135,7 +135,3 @@ class AuditPlugin(Plugin):
                 self.auditFile.close()
             self.auditFile = open(self.auditFileNameNew, u'a')
 
-    def finalise(self):
-        log.debug(u'Finalise')
-        if self.auditFile is not None:
-            self.auditFile.close()
