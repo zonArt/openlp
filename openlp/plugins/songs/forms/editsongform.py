@@ -327,7 +327,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             for row in range(0, self.VerseListWidget.count()):
                 item = self.VerseListWidget.item(row)
                 verse_list += item.text()
-                verse_list += u'\n\n'
+                verse_list += u'\n---\n'
             self.verse_form.setVerse(verse_list)
         else:
             self.verse_form.setVerse(u'')
@@ -335,7 +335,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             verse_list = self.verse_form.getVerse()
             verse_list = verse_list.replace(u'\r\n', u'\n')
             self.VerseListWidget.clear()
-            for row in verse_list.split(u'\n\n'):
+            for row in verse_list.split(u'---'):
                 self.VerseListWidget.addItem(row)
         self.VerseListWidget.repaint()
 
@@ -352,39 +352,22 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         log.debug(u'Validate Song')
         # Lets be nice and assume the data is correct.
-        valid = True
-        message = u''
         if len(self.TitleEditItem.displayText()) == 0:
-            valid = False
-            #self.TitleEditItem.setStyleSheet(
-            #    u'background-color: red; color: white')
             self.SongTabWidget.setCurrentIndex(0)
             self.TitleEditItem.setFocus()
             return False, translate(
                 u'SongFormDialog', u'You need to enter a song title.')
-            #else:
-            #self.TitleEditItem.setStyleSheet(u'')
         if self.VerseListWidget.count() == 0:
-            valid = False
-            #self.VerseListWidget.setStyleSheet(
-            #    u'background-color: red; color: white')
             self.SongTabWidget.setCurrentIndex(0)
             self.VerseListWidget.setFocus()
             return False, translate(
                 u'SongFormDialog', u'You need to enter some verses.')
-            #else:
-            #self.VerseListWidget.setStyleSheet(u'')
         if self.AuthorsListView.count() == 0:
-            valid = False
-            #self.AuthorsListView.setStyleSheet(
-            #    u'background-color: red; color: white')
             self.SongTabWidget.setCurrentIndex(2)
             self.AuthorsListView.setFocus()
             return False, translate(
                 u'SongFormDialog', u'You need to provide at least one author.')
-            #else:
-            #self.AuthorsListView.setStyleSheet(u'')
-        return valid, message
+        return True, u''
 
     def onTitleEditItemLostFocus(self):
         self.song.title = self.TitleEditItem.text()

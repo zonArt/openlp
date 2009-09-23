@@ -23,3 +23,4 @@
 ###############################################################################
 
 from audittab import AuditTab
+from manager import AuditManager

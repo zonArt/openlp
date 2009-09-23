@@ -22,24 +22,17 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-class BaseModel(object):
-    """
-    BaseModel provides a base object with a set of generic functions
-    """
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation
 
-    @classmethod
-    def populate(cls, **kwargs):
-        """
-        Creates an instance of a class and populates it, returning the instance
-        """
-        me = cls()
-        keys = kwargs.keys()
-        for key in keys:
-            me.__setattr__(key, kwargs[key])
-        return me
+from openlp.plugins.audit.lib.meta import session, metadata, engine
+from openlp.plugins.audit.lib.tables import *
+from openlp.plugins.audit.lib.classes import *
 
-class CustomSlide(BaseModel):
-    """
-    Custom Slide model
-    """
-    pass
+def init_models(url):
+    engine = create_engine(url)
+    metadata.bind = engine
+    session = scoped_session(sessionmaker(autoflush=True, autocommit=False,
+                                          bind=engine))
+    mapper(AuditItem, audit_table)
+    return session

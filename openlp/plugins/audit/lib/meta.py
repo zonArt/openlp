@@ -22,24 +22,17 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-class BaseModel(object):
-    """
-    BaseModel provides a base object with a set of generic functions
-    """
+from sqlalchemy import MetaData
+from sqlalchemy.orm import scoped_session, sessionmaker
 
-    @classmethod
-    def populate(cls, **kwargs):
-        """
-        Creates an instance of a class and populates it, returning the instance
-        """
-        me = cls()
-        keys = kwargs.keys()
-        for key in keys:
-            me.__setattr__(key, kwargs[key])
-        return me
+__all__ = ['session', 'metadata', 'engine']
 
-class CustomSlide(BaseModel):
-    """
-    Custom Slide model
-    """
-    pass
+# SQLAlchemy database engine.  Updated by model.init_model()
+engine = None
+
+# SQLAlchemy session manager.  Updated by model.init_model()
+session = None
+
+# Global metadata. If you have multiple databases with overlapping table
+# names, you'll need a metadata for each database
+metadata = MetaData()

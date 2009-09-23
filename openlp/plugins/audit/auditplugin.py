@@ -22,13 +22,14 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+from datetime import datetime
 import logging
 
 from PyQt4 import QtCore, QtGui
-from datetime import date
 
 from openlp.core.lib import Plugin, Receiver, translate, str_to_bool
-from openlp.plugins.audit.lib import AuditTab
+from openlp.plugins.audit.lib import AuditTab, AuditManager
+from openlp.plugins.audit.lib.models import AuditItem
 
 class AuditPlugin(Plugin):
     global log
@@ -97,16 +98,10 @@ class AuditPlugin(Plugin):
             QtCore.SIGNAL(u'audit_live'), self.onReceiveAudit)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'audit_changed'), self.onUpdateAudit)
-        self.auditFileName = self.config.get_config(u'audit file', u'')
         self.auditActive = str_to_bool(
             self.config.get_config(u'audit active', False))
-        if self.auditFileName == u'':
-            self.auditActive = False
-            self.ToolsAuditItem.setEnabled(False)
-            self.auditFile = None
-        else:
-            self.auditFile = open(self.auditFileName, u'a')
         self.ToolsAuditItem.setChecked(self.auditActive)
+        self.auditmanager = AuditManager(self.config)
 
     def toggleAuditState(self):
         self.auditActive = not self.auditActive
@@ -117,17 +112,21 @@ class AuditPlugin(Plugin):
         Audit a live song from SlideController
         """
         if self.auditActive:
+            audititem = AuditItem()
+            audititem.auditdate = datetime.today()
+            audititem.audittime = datetime.now().time()
+            audititem.title = auditData[0]
+            audititem.ccl_id = auditData[2]
+            audititem.authors = u''
             for author in auditData[1]:
-                self.auditFile.write(u'\"%s\",\"%s\",\"%s\",\"%s\"\n' % \
-                    (date.today(), auditData[0], author, auditData[2]))
-            self.auditFile.flush()
+                audititem.authors += author + u' '
+            self.auditmanager.insert_audit(audititem)
 
     def onUpdateAudit(self):
         """
         Someone may have changed to audit details
         Sort out the file and the auditing state
         """
-        self.auditFileNameNew = self.config.get_config(u'audit file', u'')
         self.auditActive = str_to_bool(
             self.config.get_config(u'audit active', False))
         if self.auditFileNameNew == u'':
@@ -141,7 +140,3 @@ class AuditPlugin(Plugin):
                 self.auditFile.close()
             self.auditFile = open(self.auditFileNameNew, u'a')
 
-    def finalise(self):
-        log.debug(u'Finalise')
-        if self.auditFile is not None:
-            self.auditFile.close()

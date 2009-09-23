@@ -127,7 +127,6 @@ from renderer import Renderer
 from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem
 from baselistwithdnd import BaseListWithDnD
-from listwithpreviews import ListWithPreviews
 
 __all__ = [ 'translate', 'file_to_xml', 'str_to_bool',
             'contextMenuAction', 'contextMenuSeparator','ServiceItem']

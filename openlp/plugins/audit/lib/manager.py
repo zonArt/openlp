@@ -26,20 +26,20 @@ import os, os.path
 import sys
 
 from sqlalchemy import asc, desc
-from openlp.plugins.custom.lib.models import init_models, metadata, session, \
-    engine, CustomSlide, custom_slide_table
+from openlp.plugins.audit.lib.models import init_models, metadata, session, \
+    engine, AuditItem, audit_table
 
 import logging
 
-class CustomManager():
+class AuditManager():
     """
     The Song Manager provides a central location for all database code. This
     class takes care of connecting to the database and running all the queries.
     """
 
     global log
-    log=logging.getLogger(u'CustomManager')
-    log.info(u'Custom manager loaded')
+    log=logging.getLogger(u'AuditManager')
+    log.info(u'Audit manager loaded')
 
     def __init__(self, config):
         """
@@ -47,11 +47,11 @@ class CustomManager():
         don't exist.
         """
         self.config = config
-        log.debug(u'Custom Initialising')
+        log.debug(u'Audit Initialising')
         self.db_url = u''
         db_type = self.config.get_config(u'db type', u'sqlite')
         if db_type == u'sqlite':
-            self.db_url = u'sqlite:///%s/custom.sqlite' % \
+            self.db_url = u'sqlite:///%s/audit.sqlite' % \
                 self.config.get_data_path()
         else:
             self.db_url = u'%s://%s:%s@%s/%s' % \
@@ -62,51 +62,50 @@ class CustomManager():
         self.session = init_models(self.db_url)
         metadata.create_all(checkfirst=True)
 
-        log.debug(u'Custom Initialised')
+        log.debug(u'Audit Initialised')
 
-    def get_all_slides(self):
+    def get_all_audits(self):
         """
-        Returns the details of a Custom Slide Show
+        Returns the details of a audit
         """
-        return self.session.query(CustomSlide).order_by(CustomSlide.title).all()
+        return self.session.query(AuditItem).order_by(AuditItem.title).all()
 
-    def save_slide(self, customslide):
+    def insert_audit(self, audititem):
         """
-        Saves a Custom slide show to the database
+        Saves an audit to the database
         """
-        log.debug(u'Custom Slide added')
+        log.debug(u'Audit added')
         try:
-            self.session.add(customslide)
+            self.session.add(audititem)
             self.session.commit()
-            log.debug(u'Custom Slide saved')
             return True
         except:
             self.session.rollback()
-            log.excertion(u'Custom Slide save failed')
+            log.exception(u'Audit item failed to save')
             return False
 
-    def get_custom(self, id=None):
+    def get_audit(self, id=None):
         """
-        Returns the details of a Custom Slide
+        Returns the details of an audit
         """
         if id is None:
-            return CustomSlide()
+            return AuditItem()
         else:
-            return self.session.query(CustomSlide).get(id)
+            return self.session.query(AuditItem).get(id)
 
-    def delete_custom(self, id):
+    def delete_audit(self, id):
         """
-        Delete a Custom slide show
+        Delete a audit record
         """
         if id !=0:
-            customslide = self.get_custom(id)
+            audititem = self.get_audit(id)
             try:
-                self.session.delete(customslide)
+                self.session.delete(audititem)
                 self.session.commit()
                 return True
             except:
                 self.session.rollback()
-                log.excertion(u'Custom Slide deleton failed')
+                log.excertion(u'Audit Item failed to delete')
                 return False
         else:
             return True

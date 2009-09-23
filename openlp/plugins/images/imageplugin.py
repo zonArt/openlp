@@ -51,6 +51,3 @@ class ImagePlugin(Plugin):
         # Create the MediaManagerItem object
         self.media_item = ImageMediaItem(self, self.icon, u'Images')
         return self.media_item
-
-    def initialise(self):
-        log.info(u'Plugin Initialising')
