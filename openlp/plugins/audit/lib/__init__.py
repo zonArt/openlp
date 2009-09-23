@@ -21,9 +21,6 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-import sys
-try:
-    from audittab import AuditTab
-    from manager import AuditManager
-except:
-    print sys.exc_info()
+
+from audittab import AuditTab
+from manager import AuditManager

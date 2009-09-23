@@ -32,6 +32,6 @@ audit_table = Table(u'audit_data', metadata,
     Column(u'auditdate', types.Date, index=True, nullable=False),
     Column(u'audittime', types.Time, index=True, nullable=False),
     Column(u'title', types.Unicode(255), nullable=False),
-    Column(u'authors', types.UnicodeText, nullable=False),
+    Column(u'authors', types.Unicode(255), nullable=False),
     Column(u'ccl_id', types.Unicode(65), nullable=False)
 )

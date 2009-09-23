@@ -22,13 +22,15 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+from datetime import date
+from time import time
 import logging
 
 from PyQt4 import QtCore, QtGui
-from datetime import date
 
 from openlp.core.lib import Plugin, Receiver, translate, str_to_bool
 from openlp.plugins.audit.lib import AuditTab, AuditManager
+from openlp.plugins.audit.lib.models import AuditItem
 
 class AuditPlugin(Plugin):
     global log
@@ -111,17 +113,22 @@ class AuditPlugin(Plugin):
         Audit a live song from SlideController
         """
         if self.auditActive:
+            audititem = AuditItem()
+            audititem.auditdate = date.today()
+            a = time.time()
+            audititem.audittime = time.time()
+            audititem.title = auditData[0]
+            audititem.ccl_id = auditData[2]
+            audititem.authors = u''
             for author in auditData[1]:
-                self.auditFile.write(u'\"%s\",\"%s\",\"%s\",\"%s\"\n' % \
-                    (date.today(), auditData[0], author, auditData[2]))
-            self.auditFile.flush()
+                audititem.authors = author + u' '
+            self.auditmanager.insert_audit(audititem)
 
     def onUpdateAudit(self):
         """
         Someone may have changed to audit details
         Sort out the file and the auditing state
         """
-        self.auditFileNameNew = self.config.get_config(u'audit file', u'')
         self.auditActive = str_to_bool(
             self.config.get_config(u'audit active', False))
         if self.auditFileNameNew == u'':
