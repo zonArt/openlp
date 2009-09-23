@@ -81,7 +81,7 @@ class AuditManager():
             return True
         except:
             self.session.rollback()
-            log.excertion(u'Audit item failed to save')
+            log.exception(u'Audit item failed to save')
             return False
 
     def get_audit(self, id=None):

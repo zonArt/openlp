@@ -22,8 +22,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from datetime import date
-from time import time
+from datetime import datetime
 import logging
 
 from PyQt4 import QtCore, QtGui
@@ -114,14 +113,13 @@ class AuditPlugin(Plugin):
         """
         if self.auditActive:
             audititem = AuditItem()
-            audititem.auditdate = date.today()
-            a = time.time()
-            audititem.audittime = time.time()
+            audititem.auditdate = datetime.today()
+            audititem.audittime = datetime.now().time()
             audititem.title = auditData[0]
             audititem.ccl_id = auditData[2]
             audititem.authors = u''
             for author in auditData[1]:
-                audititem.authors = author + u' '
+                audititem.authors += author + u' '
             self.auditmanager.insert_audit(audititem)
 
     def onUpdateAudit(self):
