@@ -308,5 +308,5 @@ class SongMediaItem(MediaManagerItem):
         raw_footer.append(unicode(
             translate(u'SongMediaItem', u'CCL Licence: ') + ccl))
         service_item.raw_footer = raw_footer
-        service_item.audit = [service_item.title, author_audit, ccl]
+        service_item.audit = [song.title, author_audit, song.copyright, song.ccli_number]
         return True
