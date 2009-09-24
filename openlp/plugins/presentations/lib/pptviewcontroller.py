@@ -27,6 +27,7 @@ import os, subprocess
 import time
 import sys
 import win32api
+
 from ctypes import *
 from ctypes.wintypes import RECT
 
@@ -72,19 +73,16 @@ class PptviewController(object):
         and started.
 
         ``presentation``
-        The file name of the presentatios to the run.
+        The file name of the presentations to the run.
         """
         log.debug(u'LoadPresentation')
-        if(self.pptid>=0):
-            self.CloseClick()
-        rect = RECT()
-        rect.left = 0
-        rect.top = 0
-        rect.width = 0
-        rect.hight = 0
+        if self.pptid >= 0:
+            self.closePresentation()
+        rect = RECT(0, 0, 800, 600) # until such time I can get screen info
+        filename = str(presentation.replace(u'/', u'\\'));
         try:
-            tempfolder = None #r'c:\temp\pptviewlib\' + presentation
-            self.pptid = self.presentation.OpenPPT(presentation, None, rect, tempfolder)
+            tempfolder = None #r'c:\temp\pptviewlib\' + filename.split('u\\')[-1]
+            self.pptid = self.presentation.OpenPPT('c:\\test.ppt', None, rect, tempfolder)
         except:
             log.exception(u'Failed to load presentation')
         #self.slidecount = pptdll.GetSlideCount(self.pptid)
@@ -95,62 +93,95 @@ class PptviewController(object):
         Triggerent by new object being added to SlideController orOpenLP
         being shut down
         """
-        if(self.pptid<0): return
-        self.presentation.Close(self.pptid)
+        if self.pptid < 0:
+            return
+        self.presentation.ClosePPT(self.pptid)
         self.pptid = -1
-
-    def isActive(self):
-        return self.pptid >= 0
-
-    def resume(self):
-        if(self.pptid<0): return
-        self.presentation.Resume(self.pptid)
-
-    def pause(self):
-        return
-
-    def blankScreen(self):
-        if(self.pptid<0): return
-        self.presentation.Blank(self.pptid)
-
-    def unblankScreen(self):
-        if(self.pptid<0): return
-        self.presentation.Unblank(self.pptid)
-
-    def stop(self):
-        if(self.pptid<0): return
-        self.presentation.Stop(self.pptid)
-
-    def go(self):
-        if(self.pptid<0): return
-        self.presentation.RestartShow(self.pptid)
-
-    def getSlideNumber(self):
-        if(self.pptid<0): return -1
-        return self.presentation.GetCurrentSlide(self.pptid)
-
-    def setSlideNumber(self, slideno):
-        if(self.pptid<0): return
-        self.presentation.GotoSlide(self.pptid, slideno)
-
-    slideNumber = property(getSlideNumber, setSlideNumber)
 
     def nextStep(self):
         """
         Triggers the next effect of slide on the running presentation
         """
-        if(self.pptid<0): return
+        if self.pptid < 0:
+            return
         self.presentation.NextStep(self.pptid)
 
     def previousStep(self):
         """
         Triggers the previous slide on the running presentation
         """
-        if self.pptid<0: return
+        if self.pptid < 0:
+            return
         self.presentation.PrevStep(self.pptid)
 
-    def NextClick(self):
-        if(self.pptid<0): return
-        pptdll.NextStep(self.pptid)
-        self.slideEdit.setText(pptdll.GetCurrentSlide(self.pptid))
+    def isActive(self):
+        """
+        Returns true if a presentation is currently active
+        """
+        return self.pptid >= 0
+
+    def resume(self):
+        """
+        Resumes a previously paused presentation
+        """
+        if self.pptid < 0:
+            return
+        self.presentation.Resume(self.pptid)
+
+    def pause(self):
+        """
+        Not implemented (pauses a presentation)
+        """
+        return
+
+    def blankScreen(self):
+        """
+        Blanks the screen
+        """
+        if self.pptid < 0:
+            return
+        self.presentation.Blank(self.pptid)
+
+    def unblankScreen(self):
+        """
+        Unblanks (restores) the presentationn
+        """
+        if self.pptid < 0:
+            return
+        self.presentation.Unblank(self.pptid)
+
+    def stop(self):
+        """
+        Stops the current presentation and hides the output
+        """
+        if self.pptid < 0:
+            return
+        self.presentation.Stop(self.pptid)
+
+    def go(self):
+        """
+        Starts a presentation from the beginning
+        """
+        if self.pptid < 0:
+            return
+        self.presentation.RestartShow(self.pptid)
+
+    def getSlideNumber(self):
+        """
+        Returns the current slide number
+        """
+        if self.pptid < 0:
+            return -1
+        return self.presentation.GetCurrentSlide(self.pptid)
+
+    def setSlideNumber(self, slideno):
+        """
+        Moves to a specific slide in the presentation
+        """
+        if self.pptid < 0:
+            return
+        self.presentation.GotoSlide(self.pptid, slideno)
+
+    slideNumber = property(getSlideNumber, setSlideNumber)
+
 
