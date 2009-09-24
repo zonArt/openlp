@@ -22,6 +22,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+
 class BaseModel(object):
     """
     BaseModel provides a base object with a set of generic functions
