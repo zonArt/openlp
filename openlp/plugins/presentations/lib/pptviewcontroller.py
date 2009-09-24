@@ -73,7 +73,7 @@ class PptviewController(object):
         and started.
 
         ``presentation``
-        The file name of the presentations to the run.
+        The file name of the presentations to run.
         """
         log.debug(u'LoadPresentation')
         if self.pptid >= 0:
@@ -82,7 +82,7 @@ class PptviewController(object):
         filename = str(presentation.replace(u'/', u'\\'));
         try:
             tempfolder = None #r'c:\temp\pptviewlib\' + filename.split('u\\')[-1]
-            self.pptid = self.presentation.OpenPPT('c:\\test.ppt', None, rect, tempfolder)
+            self.pptid = self.presentation.OpenPPT(filename, None, rect, tempfolder)
         except:
             log.exception(u'Failed to load presentation')
         #self.slidecount = pptdll.GetSlideCount(self.pptid)
