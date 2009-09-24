@@ -180,61 +180,17 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
     def loadTheme(self, theme):
         log.debug(u'LoadTheme %s', theme)
         if theme == None:
-            self.theme.parse(self.baseTheme())
+            self.theme.parse(self.thememanager.baseTheme())
         else:
             xml_file = os.path.join(self.path, theme, theme + u'.xml')
             xml = file_to_xml(xml_file)
             self.theme.parse(xml)
             self.theme.extend_image_filename(self.path)
-        self.cleanTheme(self.theme)
+        self.thememanager.cleanTheme(self.theme)
         self.allowPreview = False
         self.paintUi(self.theme)
         self.allowPreview = True
         self.previewTheme(self.theme)
-
-    def cleanTheme(self, theme):
-        self.theme.background_color = theme.background_color.strip()
-        self.theme.background_direction = theme.background_direction.strip()
-        self.theme.background_endColor = theme.background_endColor.strip()
-        if theme.background_filename:
-            self.theme.background_filename = theme.background_filename.strip()
-        #self.theme.background_mode
-        self.theme.background_startColor = theme.background_startColor.strip()
-        #self.theme.background_type
-        if theme.display_display:
-            self.theme.display_display = theme.display_display.strip()
-        self.theme.display_horizontalAlign = \
-            theme.display_horizontalAlign.strip()
-        self.theme.display_outline = str_to_bool(theme.display_outline)
-        #self.theme.display_outline_color
-        self.theme.display_shadow = str_to_bool(theme.display_shadow)
-        #self.theme.display_shadow_color
-        self.theme.display_verticalAlign = \
-            theme.display_verticalAlign.strip()
-        self.theme.display_wrapStyle = theme.display_wrapStyle.strip()
-        self.theme.font_footer_color = theme.font_footer_color.strip()
-        self.theme.font_footer_height = theme.font_footer_height.strip()
-        self.theme.font_footer_italics = str_to_bool(theme.font_footer_italics)
-        self.theme.font_footer_name = theme.font_footer_name.strip()
-        #self.theme.font_footer_override
-        self.theme.font_footer_proportion = \
-            theme.font_footer_proportion.strip()
-        self.theme.font_footer_weight = theme.font_footer_weight.strip()
-        self.theme.font_footer_width = theme.font_footer_width.strip()
-        self.theme.font_footer_x = theme.font_footer_x.strip()
-        self.theme.font_footer_y = theme.font_footer_y.strip()
-        self.theme.font_main_color = theme.font_main_color.strip()
-        self.theme.font_main_height = theme.font_main_height.strip()
-        self.theme.font_main_italics = str_to_bool(theme.font_main_italics)
-        self.theme.font_main_name = theme.font_main_name.strip()
-        #self.theme.font_main_override
-        self.theme.font_main_proportion = theme.font_main_proportion.strip()
-        self.theme.font_main_weight = theme.font_main_weight.strip()
-        self.theme.font_main_x = theme.font_main_x.strip()
-        self.theme.font_main_y = theme.font_main_y.strip()
-        #self.theme.theme_mode
-        self.theme.theme_name = theme.theme_name.strip()
-        #self.theme.theme_version
 
     def onImageToolButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file')
@@ -508,21 +464,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
     #
     #Local Methods
     #
-    def baseTheme(self):
-        log.debug(u'base theme created')
-        newtheme = ThemeXML()
-        newtheme.new_document(u'New Theme')
-        newtheme.add_background_solid(unicode(u'#000000'))
-        newtheme.add_font(unicode(QtGui.QFont().family()), unicode(u'#FFFFFF'),
-            unicode(30), u'False')
-        newtheme.add_font(unicode(QtGui.QFont().family()), unicode(u'#FFFFFF'),
-            unicode(12), u'False', u'footer')
-        newtheme.add_display(u'False', unicode(u'#FFFFFF'), u'False',
-            unicode(u'#FFFFFF'),
-            unicode(0), unicode(0), unicode(0))
-
-        return newtheme.extract_xml()
-
     def paintUi(self, theme):
         self.stateChanging(theme)
         self.ThemeNameEdit.setText(self.theme.theme_name)

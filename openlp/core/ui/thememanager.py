@@ -132,7 +132,6 @@ class ThemeManager(QtGui.QWidget):
                 self.pushThemes()
 
     def onAddTheme(self):
-        self.amendThemeForm.theme.parse(self.baseTheme())
         self.amendThemeForm.loadTheme(None)
         self.amendThemeForm.exec_()
 
@@ -215,9 +214,8 @@ class ThemeManager(QtGui.QWidget):
 
     def loadThemes(self):
         """
-        Loads the theme lists and triggers updates accross
-        the whole system using direct calls or core functions
-        and events for the plugins.
+        Loads the theme lists and triggers updates accross the whole system
+        using direct calls or core functions and events for the plugins.
         The plugins will call back in to get the real list if they want it.
         """
         log.debug(u'Load themes from dir')
