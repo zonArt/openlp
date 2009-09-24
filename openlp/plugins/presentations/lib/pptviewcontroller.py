@@ -23,14 +23,12 @@
 ###############################################################################
 
 import logging
-import os ,  subprocess
+import os, subprocess
 import time
 import sys
-
-if os.name == u'nt':
-    import win32api
-    from ctypes import *
-    from ctypes.wintypes import RECT
+import win32api
+from ctypes import *
+from ctypes.wintypes import RECT
 
 from PyQt4 import QtCore
 
