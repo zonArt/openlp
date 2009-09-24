@@ -141,7 +141,7 @@ class BibleOSISImpl():
                     # first time through
                     if book_ptr == None:
                         # set the max book size depending on the first book read
-                        if p[0]  == u'Gen':
+                        if p[0] == u'Gen':
                             dialogobject.setMax(65)
                         else:
                             dialogobject.setMax(27)

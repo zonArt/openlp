@@ -105,7 +105,7 @@ class ThemeManager(QtGui.QWidget):
             if oldName != newName:
                 self.ThemeListWidget.item(count).setText(newName)
             #Set the new name
-            if themeName  == newName:
+            if themeName == newName:
                 name = u'%s (%s)' % (newName, translate(u'ThemeManager',
                     u'default'))
                 self.ThemeListWidget.item(count).setText(name)
@@ -120,7 +120,7 @@ class ThemeManager(QtGui.QWidget):
                 self.ThemeListWidget.item(count).setText(
                     unicode(item.data(QtCore.Qt.UserRole).toString()))
             #Set the new name
-            if count  == index.row():
+            if count == index.row():
                 self.global_theme = unicode(
                     self.ThemeListWidget.item(count).text())
                 name = u'%s (%s)' % (self.global_theme,
@@ -132,7 +132,6 @@ class ThemeManager(QtGui.QWidget):
                 self.pushThemes()
 
     def onAddTheme(self):
-        self.amendThemeForm.theme.parse(self.baseTheme())
         self.amendThemeForm.loadTheme(None)
         self.amendThemeForm.exec_()
 
@@ -158,7 +157,7 @@ class ThemeManager(QtGui.QWidget):
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             else:
                 self.themelist.remove(theme)
-                th = theme +  u'.png'
+                th = theme + u'.png'
                 row = self.ThemeListWidget.row(item)
                 self.ThemeListWidget.takeItem(row)
                 try:
@@ -215,9 +214,8 @@ class ThemeManager(QtGui.QWidget):
 
     def loadThemes(self):
         """
-        Loads the theme lists and triggers updates accross
-        the whole system using direct calls or core functions
-        and events for the plugins.
+        Loads the theme lists and triggers updates accross the whole system
+        using direct calls or core functions and events for the plugins.
         The plugins will call back in to get the real list if they want it.
         """
         log.debug(u'Load themes from dir')

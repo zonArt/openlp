@@ -73,11 +73,11 @@ class BGExtract(BibleCommon):
             verseText = '' # clear out string
             versePos = xml_string.find(u'</span', versePos)
             i = xml_string.find(VerseSearch, versePos+1)
-            #print i , versePos
+            #print i, versePos
             if i == -1:
                 i = xml_string.find(u'</div', versePos+1)
                 j = xml_string.find(u'<strong', versePos+1)
-                #print i , j
+                #print i, j
                 if j > 0 and j < i:
                     i = j
                 verseText = xml_string[versePos + 7 : i ]

@@ -192,7 +192,7 @@ class Renderer(object):
                     #Find the next space to the left
                     pos = line[:pos].rfind(u' ')
                     #no more spaces found
-                    if pos  == 0:
+                    if pos == 0:
                         split_text = line
                         while metrics.width(split_text, -1) > line_width:
                             split_text = split_text[:-1]

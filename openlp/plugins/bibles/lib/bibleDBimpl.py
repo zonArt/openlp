@@ -41,7 +41,7 @@ class BibleDBImpl(BibleCommon):
         log.debug(u'Load bible %s on path %s', biblename, self.biblefile)
         db_type = self.config.get_config(u'db type', u'sqlite')
         db_url = u''
-        if db_type  == u'sqlite':
+        if db_type == u'sqlite':
             db_url = u'sqlite:///' + self.biblefile
         else:
             db_url = u'%s://%s:%s@%s/%s' % \

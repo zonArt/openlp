@@ -27,6 +27,7 @@
 #include <sys/stat.h>
 #include "pptviewlib.h"
 
+
 // Because of the callbacks used by SetWindowsHookEx, the memory used needs to be
 // sharable across processes (the callbacks are done from a different process)
 // Therefore use data_seg with RWS memory.
@@ -310,9 +311,10 @@ BOOL GetPPTViewerPath(char *pptviewerpath, int strsize)
 	LRESULT lresult;
 
 	DEBUG("GetPPTViewerPath: start\n");
-	if(RegOpenKeyEx(HKEY_CLASSES_ROOT, "Applications\\PPTVIEW.EXE\\shell\\open\\command", 0, KEY_READ, &hkey)!=ERROR_SUCCESS)
-    	if(RegOpenKeyEx(HKEY_CLASSES_ROOT, "Applications\\PPTVIEW.EXE\\shell\\Show\\command", 0, KEY_READ, &hkey)!=ERROR_SUCCESS)
-		return FALSE;	
+	if(RegOpenKeyEx(HKEY_CLASSES_ROOT, "PowerPointViewer.Show.12\\shell\\Show\\command", 0, KEY_READ, &hkey)!=ERROR_SUCCESS)
+		if(RegOpenKeyEx(HKEY_CLASSES_ROOT, "Applications\\PPTVIEW.EXE\\shell\\open\\command", 0, KEY_READ, &hkey)!=ERROR_SUCCESS)
+    		if(RegOpenKeyEx(HKEY_CLASSES_ROOT, "Applications\\PPTVIEW.EXE\\shell\\Show\\command", 0, KEY_READ, &hkey)!=ERROR_SUCCESS)
+				return FALSE;	
 	dwtype = REG_SZ;
 	dwsize = (DWORD)strsize;
 	lresult = RegQueryValueEx(hkey, NULL, NULL, &dwtype, (LPBYTE)pptviewerpath, &dwsize );
