@@ -116,7 +116,8 @@ class AuditPlugin(Plugin):
             audititem.auditdate = datetime.today()
             audititem.audittime = datetime.now().time()
             audititem.title = auditData[0]
-            audititem.ccl_id = auditData[2]
+            audititem.copyright = auditData[2]
+            audititem.ccl_number = auditData[3]
             audititem.authors = u''
             for author in auditData[1]:
                 audititem.authors += author + u' '
@@ -129,14 +130,5 @@ class AuditPlugin(Plugin):
         """
         self.auditActive = str_to_bool(
             self.config.get_config(u'audit active', False))
-        if self.auditFileNameNew == u'':
-            self.auditActive = False
-            self.ToolsAuditItem.setChecked(self.auditActive)
-            self.ToolsAuditItem.setEnabled(False)
-            return
+#        self.ToolsAuditItem.setChecked(self.auditActive)
         self.ToolsAuditItem.setEnabled(True)
-        if self.auditFileNameNew != self.auditFileName:
-            if self.auditFile is not None:
-                self.auditFile.close()
-            self.auditFile = open(self.auditFileNameNew, u'a')
-
