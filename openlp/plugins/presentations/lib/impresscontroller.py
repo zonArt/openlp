@@ -27,7 +27,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 # http://nxsy.org/comparing-documents-with-openoffice-and-python
 
 import logging
-import os , subprocess
+import os, subprocess
 import time
 import sys
 
@@ -41,9 +41,9 @@ from PyQt4 import QtCore
 
 class ImpressController(object):
     """
-    Class to control interactions with Impress Presentations
-    It creates the runtime Environment , Loads the and Closes the Presentation
-    As well as trigggering the correct activities based on the users input
+    Class to control interactions with Impress presentations.
+    It creates the runtime environment, loads and closes the presentation as
+    well as triggering the correct activities based on the users input
     """
     global log
     log = logging.getLogger(u'ImpressController')
@@ -57,8 +57,8 @@ class ImpressController(object):
 
     def startOpenoffice(self):
         """
-        Loads a running version of OpenOffice inthe background.
-        It is not displayed to the user but is available to the Uno interface
+        Loads a running version of OpenOffice in the background.
+        It is not displayed to the user but is available to the UNO interface
         when required.
         """
         log.debug(u'start Openoffice')

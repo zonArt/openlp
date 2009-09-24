@@ -102,7 +102,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             self.TitleEdit.setText(self.customSlide.title)
             self.CreditEdit.setText(self.customSlide.credits)
 
-            songXML=SongXMLParser(self.customSlide.text)
+            songXML = SongXMLParser(self.customSlide.text)
             verseList = songXML.get_verses()
             for verse in verseList:
                 self.VerseListView.addItem(verse[1])
@@ -115,13 +115,13 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             self.ThemeComboBox.setCurrentIndex(0)
 
     def accept(self):
-        valid , message = self._validate()
+        valid, message = self._validate()
         if not valid:
             QtGui.QMessageBox.critical(self,
             translate(u'customEditDialog', u'Error'), message,
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             return
-        sxml=SongXMLBuilder()
+        sxml = SongXMLBuilder()
         sxml.new_document()
         sxml.add_lyrics_to_song()
         count = 1

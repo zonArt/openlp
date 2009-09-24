@@ -78,7 +78,8 @@ class RenderManager(object):
         log.debug(u'Update Display')
         if self.current_display != screen_number:
             self.current_display = screen_number
-            self.calculate_default(self.screen_list[self.current_display][u'size'])
+            self.calculate_default(
+                self.screen_list[self.current_display][u'size'])
 
     def set_global_theme(self, global_theme, global_style=u'Global'):
         """

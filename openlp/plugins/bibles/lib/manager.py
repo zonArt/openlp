@@ -61,7 +61,7 @@ class BibleManager(object):
         # dict of bible database objects
         self.bible_db_cache = None
         # dict of bible http readers
-        self.bible_http_cache  = None
+        self.bible_http_cache = None
         self.biblePath = self.config.get_data_path()
         #get proxy name for screen
         self.proxyname = self.config.get_config(u'proxy name')
@@ -83,12 +83,12 @@ class BibleManager(object):
         files = self.config.get_files(self.bibleSuffix)
         log.debug(u'Bible Files %s', files )
         self.bible_db_cache = {}
-        self.bible_http_cache  = {}
+        self.bible_http_cache = {}
         # books of the bible with testaments
         self.book_testaments = {}
         # books of the bible with abbreviation
         self.book_abbreviations = {}
-        self.web_bibles_present  = False
+        self.web_bibles_present = False
         for f in files:
             nme = f.split(u'.')
             bname = nme[0]
@@ -97,7 +97,7 @@ class BibleManager(object):
             # look to see if lazy load bible exists and get create getter.
             biblesource = self.bible_db_cache[bname].get_meta(u'WEB')
             if biblesource:
-                self.web_bibles_present  = True
+                self.web_bibles_present = True
                 nhttp = BibleHTTPImpl()
                 # tell The Server where to get the verses from.
                 nhttp.set_bible_source(biblesource.value)
@@ -226,7 +226,7 @@ class BibleManager(object):
         viewer.  If the database exists it is deleted and the database is
         reloaded from scratch.
         """
-        log.debug(u'register_OSIS_file_bible %s , %s', biblename, osisfile)
+        log.debug(u'register_OSIS_file_bible %s, %s', biblename, osisfile)
         if self._is_new_bible(biblename):
             # Create new Bible
             nbible = BibleDBImpl(self.biblePath, biblename, self.config)
@@ -240,7 +240,7 @@ class BibleManager(object):
             return True
         else:
             log.debug(
-                u'register_OSIS_file_bible %s , %s not created already exists',
+                u'register_OSIS_file_bible %s, %s not created already exists',
                 biblename, osisfile)
             return False
 
@@ -324,7 +324,7 @@ c
 
         Rest can be guessed at !
         """
-        text  = []
+        text = []
         self.media.setQuickMsg1(u'')
         self.media.setQuickMsg2(u'')
         log.debug(u'get_verse_text %s,%s,%s,%s,%s,%s',
@@ -355,7 +355,7 @@ c
                             book = self.bible_db_cache[bible].create_book(
                                 bookname, self.book_abbreviations[bookname],
                                 self.book_testaments[bookname])
-                            log.debug(u'New http book %s , %s, %s',
+                            log.debug(u'New http book %s, %s, %s',
                                 book, book.id, book.name)
                             self.bible_db_cache[bible].create_chapter(
                                 book.id, search_results.get_chapter(),
@@ -414,7 +414,7 @@ c
         """
         Check cache to see if new bible
         """
-        for b , o in self.bible_db_cache.iteritems():
+        for b, o in self.bible_db_cache.iteritems():
             log.debug(u'Bible from cache in is_new_bible %s', b )
             if b == name :
                 return False

@@ -155,13 +155,13 @@ class MigrateSongs():
             song.search_title = u''
             song.search_lyrics = u''
             print songs_temp.songtitle
-            aa  = self.session.execute(
+            aa = self.session.execute(
                 u'select * from songauthors_temp where songid =' + \
                 unicode(songs_temp.songid) )
             for row in aa:
                 a = row['authorid']
                 authors_temp = self.session.query(TAuthor).get(a)
-                bb  = self.session.execute(
+                bb = self.session.execute(
                     u'select * from authors where display_name = \"%s\"' % \
                     unicode(authors_temp.authorname) ).fetchone()
                 if bb is None:

@@ -407,7 +407,7 @@ class BibleMediaItem(MediaManagerItem):
                 raw_footer.index(footer)
             except:
                 raw_footer.append(footer)
-        if  len(self.parent.bibles_tab.bible_theme)  == 0:
+        if  len(self.parent.bibles_tab.bible_theme) == 0:
             service_item.theme = None
         else:
             service_item.theme = self.parent.bibles_tab.bible_theme
@@ -446,7 +446,7 @@ class BibleMediaItem(MediaManagerItem):
                 self.initialiseChapterVerse(bible, book.name)
 
     def initialiseChapterVerse(self, bible, book):
-        log.debug(u'initialiseChapterVerse %s , %s', bible, book)
+        log.debug(u'initialiseChapterVerse %s, %s', bible, book)
         self.chapters_from = self.parent.biblemanager.get_book_chapter_count(
             bible, book)
         self.verses = self.parent.biblemanager.get_book_verse_count(bible,
@@ -456,8 +456,8 @@ class BibleMediaItem(MediaManagerItem):
         self.adjustComboBox(1, self.verses, self.AdvancedFromVerse)
         self.adjustComboBox(1, self.verses, self.AdvancedToVerse)
 
-    def adjustComboBox(self, frm, to , combo):
-        log.debug(u'adjustComboBox %s , %s , %s', combo, frm, to)
+    def adjustComboBox(self, frm, to, combo):
+        log.debug(u'adjustComboBox %s, %s, %s', combo, frm, to)
         combo.clear()
         for i in range(int(frm), int(to) + 1):
             combo.addItem(unicode(i))
@@ -475,7 +475,7 @@ class BibleMediaItem(MediaManagerItem):
                 cr.setSelected(True)
 
     def searchByReference(self, bible, search):
-        log.debug(u'searchByReference %s ,%s', bible, search)
+        log.debug(u'searchByReference %s, %s', bible, search)
         book = u''
         start_chapter = u''
         end_chapter = u''
