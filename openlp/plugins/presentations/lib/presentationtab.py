@@ -22,6 +22,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import os
 from PyQt4 import QtGui
 
 from openlp.core.lib import SettingsTab, translate
@@ -60,11 +61,15 @@ class PresentationTab(SettingsTab):
         self.VerseTypeLayout.setObjectName(u'VerseTypeLayout')
         self.PowerpointCheckBox = QtGui.QCheckBox(self.VerseDisplayGroupBox)
         self.PowerpointCheckBox.setTristate(False)
+        if os.name != u'nt':
+            self.PowerpointCheckBox.setEnabled(False)
         self.PowerpointCheckBox.setObjectName(u'PowerpointCheckBox')
         self.VerseDisplayLayout.addWidget(self.PowerpointCheckBox, 0, 0, 1, 1)
         self.PowerpointViewerCheckBox = QtGui.QCheckBox(
             self.VerseDisplayGroupBox)
         self.PowerpointViewerCheckBox.setTristate(False)
+        if os.name != u'nt':
+            self.PowerpointViewerCheckBox.setEnabled(False)
         self.PowerpointViewerCheckBox.setObjectName(u'PowerpointViewerCheckBox')
         self.VerseDisplayLayout.addWidget(
             self.PowerpointViewerCheckBox, 1, 0, 1, 1)
