@@ -66,25 +66,57 @@ class AuditPlugin(Plugin):
             The actual **Tools** menu item, so that your actions can
             use it as their parent.
         """
+        self.AuditMenu = QtGui.QMenu(tools_menu)
+        self.AuditMenu.setObjectName(u'AuditMenu')
+        self.AuditMenu.setTitle(
+            translate(u'AuditPlugin', u'&Audit'))
+        #Audit Delete All
+        self.AuditDeleteAll = QtGui.QAction(tools_menu)
+        self.AuditDeleteAll.setText(
+            translate(u'AuditPlugin', u'Au&dit Delete All'))
+        self.AuditDeleteAll.setStatusTip(
+            translate(u'AuditPlugin', u'Deleted all Audit records'))
+        self.AuditDeleteAll.setObjectName(u'AuditDeleteAll')
+        #Audit Delete
+        self.AuditDelete = QtGui.QAction(tools_menu)
+        self.AuditDelete.setText(
+            translate(u'AuditPlugin', u'Audit &Delete'))
+        self.AuditDelete.setStatusTip(
+            translate(u'AuditPlugin', u'Delete all audit data to sepecified date'))
+        self.AuditDelete.setObjectName(u'AuditDelete')
+        #Audit Report
+        self.AuditReport = QtGui.QAction(tools_menu)
+        self.AuditReport.setText(
+            translate(u'AuditPlugin', u'Au&dit &Report'))
+        self.AuditReport.setStatusTip(
+            translate(u'AuditPlugin', u'Generate Reports on Audit Data'))
+        self.AuditReport.setObjectName(u'AuditReport')
+        #Audit activation
         AuditIcon = QtGui.QIcon()
         AuditIcon.addPixmap(QtGui.QPixmap(u':/tools/tools_alert.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.ToolsAuditItem = QtGui.QAction(tools_menu)
-        self.ToolsAuditItem.setIcon(AuditIcon)
-        self.ToolsAuditItem.setCheckable(True)
-        self.ToolsAuditItem.setChecked(False)
-        self.ToolsAuditItem.setText(translate(u'AuditPlugin', u'A&udit'))
-        self.ToolsAuditItem.setStatusTip(
+        self.AuditStatus = QtGui.QAction(tools_menu)
+        self.AuditStatus.setIcon(AuditIcon)
+        self.AuditStatus.setCheckable(True)
+        self.AuditStatus.setChecked(False)
+        self.AuditStatus.setText(translate(u'AuditPlugin', u'A&udit Status'))
+        self.AuditStatus.setStatusTip(
             translate(u'AuditPlugin', u'Start/Stop live song auditing'))
-        self.ToolsAuditItem.setShortcut(translate(u'AuditPlugin', u'F4'))
-        self.ToolsAuditItem.setObjectName(u'ToolsAuditItem')
-        tools_menu.addSeparator()
-        tools_menu.addAction(self.ToolsAuditItem)
+        self.AuditStatus.setShortcut(translate(u'AuditPlugin', u'F4'))
+        self.AuditStatus.setObjectName(u'AuditStatus')
+        #Add Menus together
+        tools_menu.addAction(self.AuditMenu.menuAction())
+        self.AuditMenu.addAction(self.AuditStatus)
+        self.AuditMenu.addSeparator()
+        self.AuditMenu.addAction(self.AuditDeleteAll)
+        self.AuditMenu.addAction(self.AuditDelete)
+        self.AuditMenu.addSeparator()
+        self.AuditMenu.addAction(self.AuditReport)
         # Signals and slots
-        QtCore.QObject.connect(self.ToolsAuditItem,
+        QtCore.QObject.connect(self.AuditStatus,
             QtCore.SIGNAL(u'visibilityChanged(bool)'),
-            self.ToolsAuditItem.setChecked)
-        QtCore.QObject.connect(self.ToolsAuditItem,
+            self.AuditStatus.setChecked)
+        QtCore.QObject.connect(self.AuditStatus,
             QtCore.SIGNAL(u'triggered(bool)'),
             self.toggleAuditState)
 
@@ -100,7 +132,7 @@ class AuditPlugin(Plugin):
             QtCore.SIGNAL(u'audit_changed'), self.onUpdateAudit)
         self.auditActive = str_to_bool(
             self.config.get_config(u'audit active', False))
-        self.ToolsAuditItem.setChecked(self.auditActive)
+        self.AuditStatus.setChecked(self.auditActive)
         self.auditmanager = AuditManager(self.config)
 
     def toggleAuditState(self):
@@ -130,5 +162,5 @@ class AuditPlugin(Plugin):
         """
         self.auditActive = str_to_bool(
             self.config.get_config(u'audit active', False))
-#        self.ToolsAuditItem.setChecked(self.auditActive)
-        self.ToolsAuditItem.setEnabled(True)
+#        self.AuditStatus.setChecked(self.auditActive)
+        self.AuditStatus.setEnabled(True)

@@ -200,7 +200,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
     def onSaveButtonPressed(self):
         if self.editAll:
             self.VerseListView.clear()
-            for row in unicode(self.VerseTextEdit.toPlainText()).split(u'---'):
+            for row in unicode(self.VerseTextEdit.toPlainText()).split(u'\n---\n'):
                 self.VerseListView.addItem(row)
         else:
             self.VerseListView.currentItem().setText(
@@ -227,15 +227,13 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.EditAllButton.setEnabled(True)
 
     def _validate(self):
-        valid = True
-        message = u''
         if len(self.TitleEdit.displayText()) == 0:
-            valid = False
-            message = translate(
+            self.TitleEdit.setFocus()
+            return False, translate(
                 u'customEditDialog', u'You need to enter a title \n')
         # must have 1 slide
         if self.VerseListView.count() == 0:
-            valid = False
-            message += translate(
+            self.VerseTextEdit.setFocus()
+            return False, translate(
                 u'customEditDialog', u'You need to enter a slide \n')
-        return valid, message
+        return True,  u''

@@ -31,9 +31,3 @@ if os.name == u'nt':
 from messagelistener import MessageListener
 from mediaitem import PresentationMediaItem
 from presentationtab import PresentationTab
-
-__all__ = ['PresentationMediaItem', 'PresentationTab',
-    'ImpressController', 'MessageListener']
-if os.name == u'nt':
-    __all__.append('PptviewController')
-    #__all__.append('PowerpointController');
