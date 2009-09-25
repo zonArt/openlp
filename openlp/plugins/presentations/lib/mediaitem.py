@@ -26,8 +26,8 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import MediaManagerItem, ServiceItem, translate, \
-    BaseListWithDnD
+
+from openlp.core.lib import MediaManagerItem, translate, BaseListWithDnD
 from openlp.plugins.presentations.lib import MessageListener
 
 # We have to explicitly create separate classes for each plugin

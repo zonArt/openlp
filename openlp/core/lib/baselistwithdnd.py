@@ -22,12 +22,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import types
-
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib.toolbar import *
-from openlp.core.lib import translate
 
 class BaseListWithDnD(QtGui.QListWidget):
     """

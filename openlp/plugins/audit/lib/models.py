@@ -23,9 +23,9 @@
 ###############################################################################
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation
+from sqlalchemy.orm import scoped_session, sessionmaker, mapper
 
-from openlp.plugins.audit.lib.meta import session, metadata, engine
+from openlp.plugins.audit.lib.meta import metadata
 from openlp.plugins.audit.lib.tables import *
 from openlp.plugins.audit.lib.classes import *
 

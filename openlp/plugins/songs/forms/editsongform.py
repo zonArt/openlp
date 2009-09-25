@@ -24,10 +24,9 @@
 
 import logging
 
-from PyQt4 import Qt, QtCore, QtGui
+from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver, \
-    translate
+from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver, translate
 from openlp.plugins.songs.forms import EditVerseForm
 from openlp.plugins.songs.lib.models import Song
 from editsongdialog import Ui_EditSongDialog

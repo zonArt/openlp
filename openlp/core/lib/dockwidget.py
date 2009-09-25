@@ -22,10 +22,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import types
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 class OpenLPDockWidget(QtGui.QDockWidget):
     """

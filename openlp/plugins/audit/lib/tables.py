@@ -22,7 +22,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from sqlalchemy import Column, Table, ForeignKey, types
+from sqlalchemy import Column, Table, types
 
 from openlp.plugins.audit.lib.meta import metadata
 

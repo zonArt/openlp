@@ -23,9 +23,6 @@
 ###############################################################################
 
 import logging
-import os
-import sys
-import linecache
 
 from PyQt4 import QtGui, QtCore
 

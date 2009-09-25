@@ -22,14 +22,10 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import os, os.path
-import sys
-
-from sqlalchemy import asc, desc
-from openlp.plugins.songs.lib.models import init_models, metadata, session, \
-    engine, songs_table, Song, Author, Topic, Book
-
 import logging
+
+from openlp.plugins.songs.lib.models import init_models, metadata, Song, \
+    Author, Topic, Book
 
 class SongManager():
     """

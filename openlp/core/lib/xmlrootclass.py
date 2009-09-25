@@ -22,9 +22,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import platform
-import sys
 import os
+import sys
 from types import StringType, NoneType, UnicodeType
 
 from xml.etree.ElementTree import ElementTree, XML

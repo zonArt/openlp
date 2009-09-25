@@ -38,6 +38,6 @@ from servicemanager import ServiceManager
 from thememanager import ThemeManager
 from mainwindow import MainWindow
 
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MasterToolbar',
-           'MainWindow', 'MainDisplay', 'SlideController', 'ServiceManager',
-           'ThemeManager', 'AmendThemeForm']
+__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainWindow',
+    'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
+    'AmendThemeForm']

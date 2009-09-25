@@ -22,14 +22,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import os, os.path
-import sys
-
-from sqlalchemy import asc, desc
-from openlp.plugins.audit.lib.models import init_models, metadata, session, \
-    engine, AuditItem, audit_table
-
 import logging
+
+from openlp.plugins.audit.lib.models import init_models, metadata, AuditItem
 
 class AuditManager():
     """

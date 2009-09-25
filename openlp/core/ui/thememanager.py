@@ -23,7 +23,6 @@
 ###############################################################################
 
 import os
-import sys
 import zipfile
 import shutil
 import logging
@@ -31,10 +30,10 @@ import logging
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.ui import AmendThemeForm, ServiceManager
+from openlp.core.ui import AmendThemeForm
 from openlp.core.theme import Theme
-from openlp.core.lib import PluginConfig, OpenLPToolbar, ThemeXML, Renderer, \
-        translate, str_to_bool, file_to_xml, buildIcon, Receiver
+from openlp.core.lib import PluginConfig, OpenLPToolbar, ThemeXML, translate, \
+    str_to_bool, file_to_xml, buildIcon, Receiver
 from openlp.core.utils import ConfigHelper
 
 class ThemeManager(QtGui.QWidget):

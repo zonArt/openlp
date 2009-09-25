@@ -25,8 +25,7 @@
 import logging
 from PyQt4 import QtCore, QtGui
 
-from time import sleep
-from openlp.core.lib import translate, Receiver
+from openlp.core.lib import Receiver
 
 class MainDisplay(QtGui.QWidget):
     """
