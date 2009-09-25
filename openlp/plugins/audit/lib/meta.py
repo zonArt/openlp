@@ -22,7 +22,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-
 from sqlalchemy import MetaData
 from sqlalchemy.orm import scoped_session, sessionmaker
 

@@ -81,7 +81,6 @@ class OpenLP(QtGui.QApplication):
             self.splash.finish(self.mainWindow)
         return self.exec_()
 
-
 def main():
     """
     The main function which parses command line options and then runs
