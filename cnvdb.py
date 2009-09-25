@@ -25,7 +25,6 @@
 
 import codecs
 import sys
-import chardet
 
 def convert_file(inname, outname):
     """

@@ -24,7 +24,7 @@
 
 import logging
 
-from PyQt4 import Qt, QtCore, QtGui
+from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, str_to_bool, Receiver
 from openlp.core.lib import SettingsTab

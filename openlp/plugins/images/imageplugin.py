@@ -24,7 +24,7 @@
 
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from openlp.core.lib import Plugin
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab

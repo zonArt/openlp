@@ -25,7 +25,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation
 
-from openlp.plugins.songs.lib.meta import session, metadata, engine
+from openlp.plugins.songs.lib.meta import metadata
 from openlp.plugins.songs.lib.tables import *
 from openlp.plugins.songs.lib.classes import *
 

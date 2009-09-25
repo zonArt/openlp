@@ -25,7 +25,7 @@
 import os
 
 from xml.dom.minidom import Document
-from xml.etree.ElementTree import ElementTree, XML, dump
+from xml.etree.ElementTree import ElementTree, XML
 
 from openlp.core.lib import str_to_bool
 

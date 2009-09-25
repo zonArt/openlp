@@ -24,9 +24,8 @@
 
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
-from openlp.core.lib import SettingsTab
 from openlp.core.ui import GeneralTab, ThemesTab, AlertsTab
 from settingsdialog import Ui_SettingsDialog
 

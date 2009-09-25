@@ -24,14 +24,11 @@
 
 import logging
 import os
-import sys
 
-from common import SearchResults
 from bibleOSISimpl import BibleOSISImpl
 from bibleCSVimpl import BibleCSVImpl
 from bibleDBimpl import BibleDBImpl
 from bibleHTTPimpl import BibleHTTPImpl
-from openlp.core.lib import Receiver
 
 class BibleMode(object):
     Full = 1

@@ -24,17 +24,15 @@
 
 import os
 import sys
-import logging
 import sqlite3
-from openlp.core.lib import PluginConfig
 
 from sqlalchemy import  *
-from sqlalchemy.sql import select
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation, \
-    clear_mappers
-from openlp.plugins.songs.lib.models import metadata, session, \
-    engine, songs_table, Song, Author, Topic, Book
+from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation
+    
+from openlp.core.lib import PluginConfig
+from openlp.plugins.songs.lib.models import metadata, songs_table, Song, \
+    Author, Topic, Book
 from openlp.plugins.songs.lib.tables import *
 from openlp.plugins.songs.lib.classes import *
 

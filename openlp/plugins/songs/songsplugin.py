@@ -27,7 +27,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, translate
-from openlp.plugins.songs.lib import SongManager, SongsTab, SongMediaItem
+from openlp.plugins.songs.lib import SongManager, SongMediaItem
 from openlp.plugins.songs.forms import OpenLPImportForm, OpenSongExportForm, \
     OpenSongImportForm, OpenLPExportForm
 

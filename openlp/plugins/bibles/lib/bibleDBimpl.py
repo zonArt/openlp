@@ -26,7 +26,6 @@ import os
 import logging
 
 from common import BibleCommon
-from openlp.core.utils import ConfigHelper
 from openlp.plugins.bibles.lib.models import *
 
 class BibleDBImpl(BibleCommon):

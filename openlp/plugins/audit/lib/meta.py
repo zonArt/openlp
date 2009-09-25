@@ -24,7 +24,6 @@
 
 
 from sqlalchemy import MetaData
-from sqlalchemy.orm import scoped_session, sessionmaker
 
 __all__ = ['session', 'metadata', 'engine']
 

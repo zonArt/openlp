@@ -16,19 +16,17 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
-import time
 import sys
 import os, os.path
 import logging
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
 
-mypath = os.path.split(os.path.abspath(__file__))[0]
-sys.path.insert(0, (os.path.join(mypath, '..', '..', '..', '..')))
+from PyQt4 import QtGui
 
 from openlp.core.ui import ServiceManager
 from openlp.plugins.images.lib import ImageServiceItem
+
+mypath = os.path.split(os.path.abspath(__file__))[0]
+sys.path.insert(0, (os.path.join(mypath, '..', '..', '..', '..')))
 
 logging.basicConfig(filename='test_service_manager.log', level=logging.INFO,
     filemode='w')

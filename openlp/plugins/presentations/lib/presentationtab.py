@@ -22,9 +22,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import Qt, QtCore, QtGui
+from PyQt4 import QtGui
 
-from openlp.core.lib import SettingsTab, translate, str_to_bool
+from openlp.core.lib import SettingsTab, translate
 
 class PresentationTab(SettingsTab):
     """

@@ -25,7 +25,7 @@
 import sys
 import time
 
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui
 
 from openlp.core import Renderer
 from openlp.theme import Theme

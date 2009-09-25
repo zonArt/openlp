@@ -21,8 +21,8 @@ import logging
 import os
 
 from PyQt4 import QtCore
+
 from openlp.core.lib import Receiver
-from openlp.plugins.presentations.lib import ImpressController
 
 class MessageListener(object):
     """

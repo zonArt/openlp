@@ -24,9 +24,8 @@
 
 import logging
 import os
-import time
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from openlp.core.lib import buildIcon
 
