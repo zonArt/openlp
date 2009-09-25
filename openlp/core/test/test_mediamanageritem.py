@@ -1,5 +1,11 @@
-from PyQt4 import QtCore, QtGui
 import logging
+import os
+import sys
+
+from PyQt4 import QtCore, QtGui
+
+from openlp.core.lib import MediaManagerItem
+
 logging.basicConfig(level=logging.DEBUG,
                 format='%(asctime)s %(name)-30s %(levelname)-8s %(message)s',
                 datefmt='%m-%d %H:%M',
@@ -12,14 +18,11 @@ formatter = logging.Formatter(u'%(name)24s: %(levelname)-8s %(message)s')
 # tell the handler to use this format
 console.setFormatter(formatter)
 logging.getLogger(u'').addHandler(console)
-log=logging.getLogger(u'')
-
+log = logging.getLogger(u'')
 logging.info(u'Logging started')
-import os, sys
-mypath=os.path.split(os.path.abspath(__file__))[0]
-
+mypath = os.path.split(os.path.abspath(__file__))[0]
 sys.path.insert(0,(os.path.join(mypath, '..' ,'..', '..')))
-from openlp.core.lib import MediaManagerItem
+
 class TestMediaManager:
     def setup_class(self):
         self.app = QtGui.QApplication([])

@@ -30,11 +30,9 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
     ServiceManager, ThemeManager, MainDisplay, SlideController, \
     PluginForm
-from openlp.core.lib import translate, Plugin, MediaManagerItem, \
-    SettingsTab, RenderManager, PluginConfig, str_to_bool, OpenLPDockWidget, \
-    SettingsManager, PluginManager, Receiver
+from openlp.core.lib import translate, RenderManager, PluginConfig, \
+    OpenLPDockWidget, SettingsManager, PluginManager, Receiver
 
-from openlp.core.utils import ConfigHelper
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):

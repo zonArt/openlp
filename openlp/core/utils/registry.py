@@ -23,7 +23,7 @@
 ###############################################################################
 
 import os
-import sys
+
 from ConfigParser import SafeConfigParser
 
 class Registry(object):

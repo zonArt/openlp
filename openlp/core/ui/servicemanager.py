@@ -23,18 +23,14 @@
 ###############################################################################
 
 import os
-import sys
 import string
 import logging
 import cPickle
 import zipfile
-import shutil
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
-    RenderManager, translate, buildIcon, ServiceType, \
-    contextMenuAction, contextMenuSeparator, Receiver
-from openlp.core.utils import ConfigHelper
+    translate, ServiceType, contextMenuAction, contextMenuSeparator, Receiver
 
 class ServiceManagerList(QtGui.QTreeWidget):
 

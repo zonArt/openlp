@@ -22,10 +22,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import platform
 import types
-from xml.etree.ElementTree import ElementTree, XML
 
+from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtGui
 
 DelphiColors={"clRed":0xFF0000,

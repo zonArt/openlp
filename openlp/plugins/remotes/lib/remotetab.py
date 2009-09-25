@@ -18,9 +18,9 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
-from openlp.core.lib import SettingsTab, str_to_bool, translate
+from openlp.core.lib import SettingsTab, translate
 
 class RemoteTab(SettingsTab):
     """

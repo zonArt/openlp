@@ -24,14 +24,10 @@
 
 import logging
 import os
-import tempfile
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, ServiceItem, translate, \
-    BaseListWithDnD, buildIcon
-
-from openlp.plugins.media.lib import MediaTab, FileListData
+from openlp.core.lib import MediaManagerItem, BaseListWithDnD, buildIcon
 
 class MediaListView(BaseListWithDnD):
     def __init__(self, parent=None):

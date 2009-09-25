@@ -23,12 +23,11 @@
 ###############################################################################
 
 import os
-import sys
 import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, MediaManagerItem
+from openlp.core.lib import Plugin
 from openlp.plugins.presentations.lib import PresentationMediaItem, \
     PresentationTab, ImpressController
 if os.name == u'nt':
@@ -37,7 +36,6 @@ if os.name == u'nt':
     except:
         pass
     from openlp.plugins.presentations.lib import PptviewController
-
 
 class PresentationPlugin(Plugin):
 

@@ -26,8 +26,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, SongXMLParser, ServiceItem, \
-    translate, contextMenuAction, contextMenuSeparator, BaseListWithDnD
+from openlp.core.lib import MediaManagerItem, SongXMLParser, BaseListWithDnD
 
 class CustomListView(BaseListWithDnD):
     def __init__(self, parent=None):

@@ -21,7 +21,6 @@ import os
 from PyQt4 import QtGui, QtCore
 
 from openlp.core.theme import Theme
-from openlp.core import Renderer
 from test_render import TestRender_base, whoami
 
 pypath = os.path.split(os.path.abspath(__file__))[0]

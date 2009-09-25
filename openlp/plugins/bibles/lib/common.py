@@ -22,9 +22,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import os
-import os.path
-import sys
 import urllib2
 import chardet
 import logging

@@ -30,7 +30,6 @@ import codecs
 
 from PyQt4 import QtCore
 
-from openlp.plugins.bibles.lib.bibleDBimpl import BibleDBImpl
 from openlp.core.lib import Receiver
 
 class BibleOSISImpl():

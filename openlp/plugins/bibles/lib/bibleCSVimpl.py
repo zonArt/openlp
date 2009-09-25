@@ -25,10 +25,8 @@
 import logging
 import chardet
 
-from openlp.plugins.bibles.lib.bibleDBimpl import BibleDBImpl
 from openlp.plugins.bibles.lib.common import BibleCommon
 from openlp.core.lib import Receiver
-
 
 class BibleCSVImpl(BibleCommon):
     global log

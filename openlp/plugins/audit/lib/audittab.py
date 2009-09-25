@@ -22,9 +22,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
-from openlp.core.lib import SettingsTab, str_to_bool, translate, Receiver
+from openlp.core.lib import SettingsTab, translate, Receiver
 
 class AuditTab(SettingsTab):
     """

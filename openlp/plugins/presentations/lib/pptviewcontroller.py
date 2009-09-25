@@ -23,15 +23,9 @@
 ###############################################################################
 
 import logging
-import os, subprocess
-import time
-import sys
-import win32api
 
 from ctypes import *
 from ctypes.wintypes import RECT
-
-from PyQt4 import QtCore
 
 class PptviewController(object):
     """

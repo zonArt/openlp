@@ -23,12 +23,10 @@
 ###############################################################################
 
 import logging
-import os
 import time
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import OpenLPToolbar, translate, buildIcon, Receiver, \
-    ServiceType, RenderManager, SettingsManager
+from openlp.core.lib import OpenLPToolbar, translate, Receiver, ServiceType
 
 class SlideList(QtGui.QTableWidget):
     """

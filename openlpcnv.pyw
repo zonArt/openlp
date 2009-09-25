@@ -24,10 +24,8 @@
 ###############################################################################
 
 import os
-import sys
 import logging
 import time
-import datetime
 
 from openlp.migration.display import *
 from openlp.migration.migratefiles import *
