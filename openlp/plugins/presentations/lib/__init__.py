@@ -21,14 +21,18 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+import os
 
 from impresscontroller import ImpressController
-#from powerpointcontroller import PowerpointController
-from pptviewcontroller import PptviewController
+if os.name == u'nt':
+    #from powerpointcontroller import PowerpointController
+    from pptviewcontroller import PptviewController
 from messagelistener import MessageListener
 from mediaitem import PresentationMediaItem
 from presentationtab import PresentationTab
 
-
 __all__ = ['PresentationMediaItem', 'PresentationTab',
-    'ImpressController', 'ImpressController', 'PowerpointController', 'MessageListener']
+    'ImpressController', 'MessageListener']
+if os.name == u'nt':
+    __all__.append('PptviewController')
+    #__all__.append('PowerpointController');
