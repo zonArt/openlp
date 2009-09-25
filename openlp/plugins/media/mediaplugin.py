@@ -24,8 +24,8 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import Plugin, 
-from openlp.plugins.media.lib import MediaTab,MediaMediaItem
+from openlp.core.lib import Plugin
+from openlp.plugins.media.lib import MediaTab, MediaMediaItem
 
 class MediaPlugin(Plugin):
 

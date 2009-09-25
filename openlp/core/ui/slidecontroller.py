@@ -26,7 +26,7 @@ import logging
 import time
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import OpenLPToolbar, translate, Receiver, ServiceType, 
+from openlp.core.lib import OpenLPToolbar, translate, Receiver, ServiceType
 
 class SlideList(QtGui.QTableWidget):
     """
