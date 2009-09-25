@@ -22,4 +22,5 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from editcustomform import EditCustomForm
+from auditdeleteform import AuditDeleteForm
+from auditdetailform import AuditDetailForm

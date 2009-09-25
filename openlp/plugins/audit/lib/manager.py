@@ -104,3 +104,21 @@ class AuditManager():
                 return False
         else:
             return True
+
+    def delete_all(self):
+        """
+        Delete a audit record
+        """
+        id = 0
+        if id !=0:
+            audititem = self.get_audit(id)
+            try:
+                self.session.delete(audititem)
+                self.session.commit()
+                return True
+            except:
+                self.session.rollback()
+                log.excertion(u'Audit Item failed to delete')
+                return False
+        else:
+            return True
