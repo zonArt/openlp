@@ -107,17 +107,17 @@ class PluginConfig(object):
             files = os.listdir(self.get_data_path())
         except:
             return []
-        if suffix != None:
+        if suffix is not None:
             return_files = []
-            for f in files:
-                if f.find(u'.') != -1:
-                    nme = f.split(u'.')
-                    bname = nme[0]
-                    sfx = nme[1].lower()
-                    sfx = sfx.lower()
+            for file in files:
+                if file.find(u'.') != -1:
+                    filename = file.split(u'.')
+                    #bname = nme[0]
+                    filesuffix = filename[1].lower()
+                    filesuffix = filesuffix.lower()
                     # only load files with the correct suffix
-                    if suffix.find(sfx) > -1 :
-                        return_files.append(f)
+                    if suffix.find(filesuffix) > -1 :
+                        return_files.append(file)
             return return_files
         else:
             # no filtering required

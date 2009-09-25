@@ -112,7 +112,7 @@ class ImpressController(object):
         context = uno.getComponentContext()
         resolver = context.ServiceManager.createInstanceWithContext(
             u'com.sun.star.bridge.UnoUrlResolver', context)
-        while ctx == None and loop < 3:
+        while ctx is None and loop < 3:
             try:
                 ctx = resolver.resolve(u'uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
             except:

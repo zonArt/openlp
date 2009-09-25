@@ -292,7 +292,7 @@ class SlideController(QtGui.QWidget):
             label = QtGui.QLabel()
             label.setMargin(8)
             #It is a Image
-            if frame[u'text'] == None:
+            if frame[u'text'] is None:
                 pixmap = self.parent.RenderManager.resize_image(frame[u'image'])
                 label.setScaledContents(True)
                 label.setPixmap(QtGui.QPixmap.fromImage(pixmap))
@@ -340,7 +340,7 @@ class SlideController(QtGui.QWidget):
             label = self.PreviewListWidget.cellWidget(row, 0)
             frame = self.serviceitem.frames[row][u'image']
             before = time.time()
-            if frame == None:
+            if frame is None:
                 frame = self.serviceitem.render_individual(row)
             self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
             log.info(u'Slide Rendering took %4s' % (time.time() - before))

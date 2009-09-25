@@ -270,7 +270,7 @@ class SongMediaItem(MediaManagerItem):
             self.ListView.takeItem(row)
 
     def generateSlideData(self, service_item):
-        raw_slides =[]
+        #raw_slides =[]
         raw_footer = []
         author_list = u''
         author_audit = []
@@ -297,7 +297,7 @@ class SongMediaItem(MediaManagerItem):
                 author_list = author_list + u', '
             author_list = author_list + unicode(author.display_name)
             author_audit.append(unicode(author.display_name))
-        if song.ccli_number == None or len(song.ccli_number) == 0:
+        if song.ccli_number is None or len(song.ccli_number) == 0:
             ccl = self.parent.settings.GeneralTab.CCLNumber
         else:
             ccl = unicode(song.ccli_number)

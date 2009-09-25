@@ -88,7 +88,7 @@ class ServiceItem(object):
         self.frames = []
         if self.service_item_type == ServiceType.Text:
             log.debug(u'Formatting slides')
-            if self.theme == None:
+            if self.theme is None:
                 self.RenderManager.set_override_theme(None)
             else:
                 self.RenderManager.set_override_theme(self.theme)
@@ -114,7 +114,7 @@ class ServiceItem(object):
 
     def render_individual(self, row):
         log.debug(u'render individual')
-        if self.theme == None:
+        if self.theme is None:
             self.RenderManager.set_override_theme(None)
         else:
             self.RenderManager.set_override_theme(self.theme)

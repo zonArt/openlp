@@ -47,9 +47,9 @@ class PowerPointApp(object):
         self._app.WindowState = 2
 
     def getApp(self):
-        if self._app == None:
+        if self._app is None:
             self.createApp()
-            if self._app == None:
+            if self._app is None:
                 return None
         if self._app.Windows.Count == 0:
             self.createApp()
@@ -69,17 +69,17 @@ class PowerPointPres(object):
         self.open()
 
     def getPres(self):
-        if self._pres == None:
+        if self._pres is None:
             for p in self.pptApp.app.Presentations:
                 if p.FullName == self.filename:
                     self._pres = p
                     break
-        if self._pres != None:
+        if self._pres is not None:
             try:
                 x = self._pres.Name
             except:
                 self._pres = None
-        if self._pres == None:
+        if self._pres is None:
             self.openPres()
         return self._pres
 
@@ -94,9 +94,9 @@ class PowerPointPres(object):
         self._pres = None
 
     def isActive(self):
-        if self.pres.SlideShowWindow == None:
+        if self.pres.SlideShowWindow is None:
             return False
-        if self.pres.SlideShowWindow.View == None:
+        if self.pres.SlideShowWindow.View is None:
             return False
         return True
 
@@ -157,7 +157,7 @@ class PowerPointSlide(object):
         self.slide = pres.Slides[index]
 
     def preview(self):
-        if self.preview == None:
+        if self.preview is None:
             self.slide.Copy
             # import win32clipboard as w
             # import win32con
@@ -165,4 +165,3 @@ class PowerPointSlide(object):
             # self.preview = w.GetClipboardData.GetData(win32con.CF_BITMAP)
             # w.CloseClipboard()
         return self.preview
-
