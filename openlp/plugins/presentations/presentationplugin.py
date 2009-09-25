@@ -68,8 +68,8 @@ class PresentationPlugin(Plugin):
             self, self.icon, u'Presentations', self.controllers)
         return self.media_item
 
-    def registerControllers(self, handle, controller):
-        self.controllers[handle] = controller
+    def registerControllers(self, controller):
+        self.controllers[controller.name] = controller
 
     def check_pre_conditions(self):
         """
@@ -88,7 +88,8 @@ class PresentationPlugin(Plugin):
                     #Check to see if we have uno installed
                     import uno
                 openoffice = ImpressController()
-                self.registerControllers(u'Impress', openoffice)
+                openoffice.name = u'Impress'    # until controller updated
+                self.registerControllers(openoffice)
             except:
                 log.exception(u'Failed to set up plugin for Impress')
         if os.name == u'nt':
@@ -99,15 +100,16 @@ class PresentationPlugin(Plugin):
                     #Check to see if we are Win32
                     from win32com.client import Dispatch
                     powerpoint = PowerpointController()
-                    self.registerControllers(u'Powerpoint', powerpoint)
+                    powerpoint.name = u'Powerpoint' # until controller updated
+                    self.registerControllers(powerpoint)
                 except:
                     log.exception(u'Failed to set up plugin for Powerpoint')
             #Lets see if Powerpoint Viewer is required (Default is Not wanted)
             if int(self.config.get_config(
                 u'Powerpoint Viewer', QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
                 try:
-                    pptview = PptviewController()
-                    self.registerControllers(u'Powerpoint Viewer', pptview)
+                    pptview = PptviewController(self)
+                    self.registerControllers(pptview)
                 except:
                     log.exception(u'Failed to set up plugin for Powerpoint Viewer')
         #If we have no available controllers disable plugin

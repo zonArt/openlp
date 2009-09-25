@@ -73,7 +73,7 @@ class ImpressController(object):
         log.debug(u'Kill')
         self.closePresentation()
 
-    def loadPresentation(self, presentation):
+    def load_presentation(self, presentation):
         """
         Called when a presentation is added to the SlideController.
         It builds the environment, starts communcations with the background
@@ -137,7 +137,7 @@ class ImpressController(object):
             log.exception(u'Failed to get COM desktop')
             return None
 
-    def closePresentation(self):
+    def close_presentation(self):
         """
         Close presentation and clean up objects
         Triggerent by new object being added to SlideController orOpenLP
@@ -178,13 +178,13 @@ class ImpressController(object):
 
     slideNumber = property(getSlideNumber, setSlideNumber)
 
-    def nextStep(self):
+    def next_step(self):
        """
        Triggers the next effect of slide on the running presentation
        """
        self.xSlideShowController.gotoNextEffect()
 
-    def previousStep(self):
+    def previous_step(self):
         """
         Triggers the previous slide on the running presentation
         """

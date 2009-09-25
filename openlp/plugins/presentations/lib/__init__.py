@@ -24,6 +24,7 @@
 
 import os
 
+from presentationcontroller import PresentationController
 from impresscontroller import ImpressController
 if os.name == u'nt':
     #from powerpointcontroller import PowerpointController

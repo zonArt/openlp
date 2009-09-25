@@ -22,12 +22,15 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import os
 import logging
 
 from ctypes import *
 from ctypes.wintypes import RECT
 
-class PptviewController(object):
+from presentationcontroller import PresentationController
+
+class PptviewController(PresentationController):
     """
     Class to control interactions with PowerPOint Viewer Presentations
     It creates the runtime Environment , Loads the and Closes the Presentation
@@ -36,29 +39,34 @@ class PptviewController(object):
     global log
     log = logging.getLogger(u'PptviewController')
 
-    def __init__(self):
-        log.debug(u'Initialising')
+    def __init__(self, plugin):
+        """
+        Initialise the class
+        """
+        log.debug(u'Initialised')
+        PresentationController.__init__(self, plugin, u'Powerpoint Viewer')
         self.process = None
-        self.document = None
-        self.presentation = None
         self.pptid = None
-        self.startPPTView()
+        self.thumbnailpath = os.path.join(plugin.config.get_data_path(),
+            u'pptview', u'thumbnails')
+        self.thumbprefix = u'slide'
+        self.start_process()
 
-    def startPPTView(self):
+    def start_process(self):
         """
         Loads the PPTVIEWLIB library
         """
         log.debug(u'start PPTView')
-        self.presentation = cdll.LoadLibrary(r'openlp\plugins\presentations\lib\pptviewlib\pptviewlib.dll')
+        self.process = cdll.LoadLibrary(r'openlp\plugins\presentations\lib\pptviewlib\pptviewlib.dll')
 
     def kill(self):
         """
         Called at system exit to clean up any running presentations
         """
         log.debug(u'Kill')
-        self.closePresentation()
+        self.close_presentation()
 
-    def loadPresentation(self, presentation):
+    def load_presentation(self, presentation):
         """
         Called when a presentation is added to the SlideController.
         It builds the environment, starts communcations with the background
@@ -71,17 +79,20 @@ class PptviewController(object):
         """
         log.debug(u'LoadPresentation')
         if self.pptid >= 0:
-            self.closePresentation()
-        rect = RECT(0, 0, 800, 600) # until such time I can get screen info
+            self.close_presentation()
+        rendermanager = self.plugin.render_manager
+        #screen = rendermanager.screen_list[rendermanager.current_display]
+        # x? y?
+        rect = RECT(0, 0, rendermanager.width, rendermanager.height)
         filename = str(presentation.replace(u'/', u'\\'));
         try:
-            tempfolder = None #r'c:\temp\pptviewlib\' + filename.split('u\\')[-1]
-            self.pptid = self.presentation.OpenPPT(filename, None, rect, tempfolder)
+            self.pptid = self.process.OpenPPT(filename, None, rect,
+                                              str(self.thumbnailpath))
         except:
             log.exception(u'Failed to load presentation')
-        #self.slidecount = pptdll.GetSlideCount(self.pptid)
 
-    def closePresentation(self):
+
+    def close_presentation(self):
         """
         Close presentation and clean up objects
         Triggerent by new object being added to SlideController orOpenLP
@@ -89,93 +100,110 @@ class PptviewController(object):
         """
         if self.pptid < 0:
             return
-        self.presentation.ClosePPT(self.pptid)
+        self.process.ClosePPT(self.pptid)
         self.pptid = -1
 
-    def nextStep(self):
-        """
-        Triggers the next effect of slide on the running presentation
-        """
-        if self.pptid < 0:
-            return
-        self.presentation.NextStep(self.pptid)
-
-    def previousStep(self):
-        """
-        Triggers the previous slide on the running presentation
-        """
-        if self.pptid < 0:
-            return
-        self.presentation.PrevStep(self.pptid)
-
-    def isActive(self):
+    def is_active(self):
         """
         Returns true if a presentation is currently active
         """
         return self.pptid >= 0
 
-    def resume(self):
+    def resume_presentation(self):
         """
         Resumes a previously paused presentation
         """
         if self.pptid < 0:
             return
-        self.presentation.Resume(self.pptid)
+        self.process.Resume(self.pptid)
 
-    def pause(self):
+    def pause_presentation(self):
         """
         Not implemented (pauses a presentation)
         """
         return
 
-    def blankScreen(self):
+    def blank_screen(self):
         """
         Blanks the screen
         """
         if self.pptid < 0:
             return
-        self.presentation.Blank(self.pptid)
+        self.process.Blank(self.pptid)
 
-    def unblankScreen(self):
+    def unblank_screen(self):
         """
         Unblanks (restores) the presentationn
         """
         if self.pptid < 0:
             return
-        self.presentation.Unblank(self.pptid)
+        self.process.Unblank(self.pptid)
 
-    def stop(self):
+    def stop_presentation(self):
         """
         Stops the current presentation and hides the output
         """
         if self.pptid < 0:
             return
-        self.presentation.Stop(self.pptid)
+        self.process.Stop(self.pptid)
 
-    def go(self):
+    def start_presentation(self):
         """
         Starts a presentation from the beginning
         """
         if self.pptid < 0:
             return
-        self.presentation.RestartShow(self.pptid)
+        self.process.RestartShow(self.pptid)
 
-    def getSlideNumber(self):
+    def get_slide_number(self):
         """
         Returns the current slide number
         """
         if self.pptid < 0:
-            return -1
-        return self.presentation.GetCurrentSlide(self.pptid)
+            return 0
+        return self.process.GetCurrentSlide(self.pptid)
 
-    def setSlideNumber(self, slideno):
+    def get_slide_count(self):
+        """
+        Returns total number of slides
+        """
+        if self.pptid < 0:
+            return 0
+        return self.process.GetSlideCount(self.pptid)
+
+    def goto_slide(self, slideno):
         """
         Moves to a specific slide in the presentation
         """
         if self.pptid < 0:
             return
-        self.presentation.GotoSlide(self.pptid, slideno)
+        self.process.GotoSlide(self.pptid, slideno)
 
-    slideNumber = property(getSlideNumber, setSlideNumber)
+    def next_step(self):
+        """
+        Triggers the next effect of slide on the running presentation
+        """
+        if self.pptid < 0:
+            return
+        self.process.NextStep(self.pptid)
 
+    def previous_step(self):
+        """
+        Triggers the previous slide on the running presentation
+        """
+        if self.pptid < 0:
+            return
+        self.process.PrevStep(self.pptid)
+
+    def get_slide_preview_file(self, slide_no):
+        """
+        Returns an image path containing a preview for the requested slide
+
+        ``slide_no``
+            The slide an image is required for, starting at 1
+        """
+        if self.pptid < 0:
+            return
+        return os.path.join(self.thumbnailpath,
+            self.thumbprefix + slide_no + u'.bmp')
 
