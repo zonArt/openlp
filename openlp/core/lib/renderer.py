@@ -51,7 +51,6 @@ class Renderer(object):
         self._frame = None
         self.bg_frame = None
         self.bg_image = None
-        #self.bg_frame_small = None
 
     def set_debug(self, debug):
         """

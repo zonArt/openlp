@@ -93,6 +93,8 @@ class SongMediaItem(MediaManagerItem):
             ':/songs/song_maintenance.png', self.onSongMaintenanceClick,
             'SongMaintenanceItem')
         ## Add the SongListView widget ##
+
+
         # Create the tab widget
         self.SongWidget = QtGui.QWidget(self)
         sizePolicy = QtGui.QSizePolicy(
@@ -127,6 +129,8 @@ class SongMediaItem(MediaManagerItem):
         self.SearchLayout.addWidget(self.SearchTextButton, 3, 2, 1, 1)
         # Add the song widget to the page layout
         self.PageLayout.addWidget(self.SongWidget)
+
+
         self.ListView = SongListView()
         self.ListView.setAlternatingRowColors(True)
         self.ListView.setDragEnabled(True)
