@@ -278,14 +278,14 @@ class BibleMediaItem(MediaManagerItem):
         self.adjustComboBox(frm, self.verses, self.AdvancedToVerse)
 
     def onAdvancedToChapter(self):
-        t1 = self.AdvancedFromChapter.currentText()
-        t2 = self.AdvancedToChapter.currentText()
-        if t1 != t2:
+        text1 = self.AdvancedFromChapter.currentText()
+        text2 = self.AdvancedToChapter.currentText()
+        if text1 != text2:
             bible = unicode(self.AdvancedVersionComboBox.currentText())
             book = unicode(self.AdvancedBookComboBox.currentText())
             # get the verse count for new chapter
             verses = self.parent.biblemanager.get_book_verse_count(
-                bible, book, int(t2))[0]
+                bible, book, int(text2))[0]
             self.adjustComboBox(1, verses, self.AdvancedToVerse)
 
     def onAdvancedSearchButton(self):
@@ -445,7 +445,7 @@ class BibleMediaItem(MediaManagerItem):
         start_verse = u''
         end_verse = u''
         search = search.replace(u'  ', u' ').strip()
-        original = search
+        #original = search
         message = None
         # Remove book beware 0 index arrays
         for i in range (len(search)-1, 0, - 1):
@@ -510,7 +510,7 @@ class BibleMediaItem(MediaManagerItem):
         log.debug(u'results = %s @ %s : %s @ %s : %s'% \
             (unicode(book), unicode(start_chapter), unicode(end_chapter),
             unicode(start_verse), unicode(end_verse)))
-        if message == None:
+        if message is None:
             self.search_results = None
             self.search_results = self.parent.biblemanager.get_verse_text(
                 bible, book, int(start_chapter), int(end_chapter),

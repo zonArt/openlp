@@ -28,6 +28,7 @@ OpenLP work.
 """
 
 import types
+
 from PyQt4 import QtCore, QtGui
 
 def translate(context, text):

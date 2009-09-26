@@ -17,12 +17,13 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 import sys
-import os, os.path
+import os
+import os.path
 
 from PyQt4 import QtGui, QtCore
 
 from openlp.core.theme import Theme
-from openlp.core import Renderer
+from openlp.core.lib import Renderer
 
 mypath = os.path.split(os.path.abspath(__file__))[0]
 sys.path.insert(0, (os.path.join(mypath, '..', '..', '..')))
@@ -104,8 +105,8 @@ class TestRender_base:
         frame = TstFrame(size = self.size)
         self.frame = frame
         self.paintdest = frame.GetPixmap()
-        self.r=Renderer()
-        self.r.set_paint_dest(self.paintdest)
+        self.renderer = Renderer()
+        self.renderer.set_paint_dest(self.paintdest)
         self.expected_answer = "Don't know yet"
         self.answer = None
         print "--------------- Setup Done -------------"
@@ -119,24 +120,27 @@ class TestRender(TestRender_base):
 
     def setup_method(self, method):
         TestRender_base.setup_method(self, method)
-        self.r.set_debug(1)
+        self.renderer.set_debug(1)
         themefile = os.path.abspath(u'data_for_tests/render_theme.xml')
-        self.r.set_theme(Theme(themefile)) # set default theme
-        self.r._render_background()
-        self.r.set_text_rectangle(QtCore.QRect(0,0, self.size.width()-1,
-	    self.size.height()-1))
+        self.renderer.set_theme(Theme(themefile)) # set default theme
+        self.renderer._render_background()
+        self.renderer.set_text_rectangle(QtCore.QRect(
+            0,0, self.size.width()-1, self.size.height()-1))
         self.msg = None
 
     def test_easy(self):
-        answer = self.r._render_single_line(u'Test line', tlcorner = (0,100))
+        answer = self.renderer._render_single_line(
+            u'Test line', tlcorner = (0,100))
         assert(answer == (219,163))
+
     def test_longer(self):
-        answer = self.r._render_single_line(
+        answer = self.renderer._render_single_line(
 	    u'Test line with more words than fit on one line',
 	    tlcorner = (10,10))
         assert(answer == (753,136))
+
     def test_even_longer(self):
-        answer = self.r._render_single_line(
+        answer = self.renderer._render_single_line(
 	    u'Test line with more words than fit on either one or two lines',
             tlcorner = (10,10))
         assert(answer == (753,199))
@@ -146,7 +150,7 @@ class TestRender(TestRender_base):
         lines.append(u'Line Two')
         lines.append(u'Line Three and should be long enough to wrap')
         lines.append(u'Line Four and should be long enough to wrap also')
-        answer = self.r._render_lines(lines)
+        answer = self.renderer._render_lines(lines)
         assert(answer == QtCore.QRect(0,0,741,378))
 
     def test_set_words_openlp(self):
@@ -161,7 +165,7 @@ Verse 3: Line 1
 Line 2
 Line 3"""
         expected_answer = ["Verse 1: Line 1\nLine 2","Verse 2: Line 1\nLine 2","Verse 3: Line 1\nLine 2\nLine 3"]
-        answer = self.r.set_words_openlp(words)
+        answer = self.renderer.set_words_openlp(words)
         assert(answer == expected_answer)
 
     def test_render_screens(self):
@@ -175,14 +179,14 @@ Line 2
 Verse 3: Line 1
 Line 2
 Line 3"""
-        verses = self.r.set_words_openlp(words)
+        verses = self.renderer.set_words_openlp(words)
         expected_answer = ["Verse 1: Line 1\nLine 2","Verse 2: Line 1\nLine 2","Verse 3: Line 1\nLine 2\nLine 3"]
         assert(verses == expected_answer)
 
         expected_answer = [QtCore.QRect(0,0,397,126), QtCore.QRect(0,0,397,126),
             QtCore.QRect(0,0,397,189)]
         for v in range(len(verses)):
-            answer=self.r.render_screen(v)
+            answer=self.renderer.render_screen(v)
 #             print v, answer.x(), answer.y(), answer.width(), answer.height()
             assert(answer == expected_answer[v])
 
@@ -194,11 +198,11 @@ Line 3"""
             if i == 51: # make an extra long line on line 51 to test wrapping
                 extra = "Some more words to make it wrap around don't you know until it wraps so many times we don't know what to do"
             lines.append(u'Line %d %s' % (i, extra))
-        result = self.r.split_set_of_lines(lines)
+        result = self.renderer.split_set_of_lines(lines)
         print "results---------------__", result
         for i in range(len(result)):
             self.setup_method(None)
-            answer = self.r._render_lines(result[i])
+            answer = self.renderer._render_lines(result[i])
             print answer
             self.write_to_file(self.frame.GetPixmap(), "split_test_%03d"% i)
             print number, i, answer.x(), answer.y(), answer.width(), \

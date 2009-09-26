@@ -219,7 +219,7 @@ class SongManager():
             self.session.add(book)
             self.session.commit()
             return True
-        except Exception, e:
+        except:
             self.session.rollback()
             log.exception(u'Could not save book to song database')
             return False

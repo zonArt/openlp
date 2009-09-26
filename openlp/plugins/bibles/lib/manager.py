@@ -39,7 +39,7 @@ class BibleManager(object):
     The Bible manager which holds and manages all the Bibles.
     """
     global log
-    log=logging.getLogger(u'BibleManager')
+    log = logging.getLogger(u'BibleManager')
     log.info(u'Bible manager loaded')
 
     def __init__(self, config):
@@ -102,7 +102,7 @@ class BibleManager(object):
                 # look to see if lazy load bible exists and get create getter.
                 meta = self.bible_db_cache[bname].get_meta(u'proxy')
                 proxy = None
-                if meta != None:
+                if meta is not None:
                     proxy = meta.value
                     # tell The Server where to get the verses from.
                 nhttp.set_proxy(proxy)
@@ -177,14 +177,14 @@ class BibleManager(object):
             nbible.save_meta(u'WEB', biblesource)
             # store the web id of the bible
             nbible.save_meta(u'bibleid', bibleid)
-            if proxyurl != None and proxyurl != "":
+            if proxyurl is not None and proxyurl != "":
                 # store the proxy URL
                 nbible.save_meta(u'proxy', proxyurl)
                 nhttp.set_proxy(proxyurl)
-            if proxyid != None and proxyid != "":
+            if proxyid is not None and proxyid != "":
                 # store the proxy userid
                 nbible.save_meta(u'proxyid', proxyid)
-            if proxypass != None and proxypass != "":
+            if proxypass is not None and proxypass != "":
                 # store the proxy password
                 nbible.save_meta(u'proxypass', proxypass)
             return True
@@ -329,8 +329,8 @@ c
         # check to see if book/chapter exists fow HTTP bibles and load cache
         # if necessary
         if self.bible_http_cache[bible] is not None:
-            book= self.bible_db_cache[bible].get_bible_book(bookname)
-            if book == None:
+            book = self.bible_db_cache[bible].get_bible_book(bookname)
+            if book is None:
                 self.media.setQuickMsg1(u'Downloading')
                 log.debug(u'get_verse_text : new book')
                 for chapter in range(schapter, echapter + 1):
@@ -347,7 +347,7 @@ c
                         # check to see if book/chapter exists
                         book = self.bible_db_cache[bible].get_bible_book(
                             bookname)
-                        if book == None:
+                        if book is None:
                             ## Then create book, chapter and text
                             book = self.bible_db_cache[bible].create_book(
                                 bookname, self.book_abbreviations[bookname],
@@ -361,7 +361,7 @@ c
                             ## Book exists check chapter and texts only.
                             v = self.bible_db_cache[bible].get_bible_chapter(
                                 book.id, chapter)
-                            if v == None:
+                            if v is None:
                                 self.media.setQuickMsg2(u'%s: %s'% (
                                     bookname, chapter))
                                 self.bible_db_cache[bible].create_chapter(
@@ -372,7 +372,7 @@ c
                 for chapter in range(schapter, echapter + 1):
                     v = self.bible_db_cache[bible].get_bible_chapter(
                         book.id, chapter)
-                    if v == None:
+                    if v is None:
                         try:
                             self.media.setQuickMsg1(u'Downloading')
                             self.media.setQuickMsg2(u'%s: %s'% \
@@ -411,8 +411,8 @@ c
         """
         Check cache to see if new bible
         """
-        for b, o in self.bible_db_cache.iteritems():
-            log.debug(u'Bible from cache in is_new_bible %s', b )
-            if b == name :
+        for bible, o in self.bible_db_cache.iteritems():
+            log.debug(u'Bible from cache in is_new_bible %s', bible)
+            if bible == name:
                 return False
         return True

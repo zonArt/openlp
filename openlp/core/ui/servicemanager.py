@@ -420,8 +420,6 @@ class ServiceManager(QtGui.QWidget):
             self.config.set_last_dir(filename)
             try:
                 zip = zipfile.ZipFile(unicode(filename))
-                filexml = None
-                themename = None
                 for file in zip.namelist():
                     if os.name == u'nt':
                         winfile = string.replace(file, '/', os.path.sep)

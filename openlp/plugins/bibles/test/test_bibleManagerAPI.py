@@ -17,7 +17,8 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 import logging
-import os, os.path
+import os
+import os.path
 import sys
 
 from openlp.plugins.biblemanager.bibleManager import BibleManager

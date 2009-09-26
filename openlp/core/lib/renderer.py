@@ -150,7 +150,6 @@ class Renderer(object):
             The footer of the slide.
         """
         log.debug(u'format_slide - Start')
-        verses = []
         words = words.replace(u'\r\n', u'\n')
         verses_text = words.split(u'\n')
         text = []
@@ -173,7 +172,6 @@ class Renderer(object):
         split_pages = []
         page = []
         split_lines = []
-        count = 0
         for line in text:
             #Must be a blank line so keep it.
             if len(line) == 0:
