@@ -44,9 +44,6 @@ class MediaMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.TranslationContext = u'MediaPlugin'
-        self.hasFileIcon = True
-        self.hasNewIcon = False
-        self.hasEditIcon = False
         self.IconPath = u'images/image'
         self.PluginTextShort = u'Media'
         self.ConfigSection = u'images'
@@ -58,6 +55,12 @@ class MediaMediaItem(MediaManagerItem):
         #self.ServiceItemIconName = u':/media/media_image.png'
         self.PreviewFunction = self.video_get_preview
         MediaManagerItem.__init__(self, parent, icon, title)
+
+    def requiredIcons(self):
+        MediaManagerItem.requiredIcons(self)
+        self.hasFileIcon = True
+        self.hasNewIcon = False
+        self.hasEditIcon = False
 
     def video_get_preview(self, filename):
         #

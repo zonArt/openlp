@@ -26,7 +26,7 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, buildIcon
+from openlp.core.lib import MediaManagerItem, BaseListWithDnD, buildIcon, translate
 
 # We have to explicitly create separate classes for each plugin
 # in order for DnD to the Service manager to work correctly.
@@ -48,9 +48,6 @@ class ImageMediaItem(MediaManagerItem):
         self.PluginTextShort = u'Image'
         self.ConfigSection = u'images'
         self.IconPath = u'images/image'
-        self.hasFileIcon = True
-        self.hasNewIcon = False
-        self.hasEditIcon = False
         self.OnNewPrompt = u'Select Image(s)'
         self.OnNewFileMasks = u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
         # this next is a class, not an instance of a class - it will
@@ -59,6 +56,13 @@ class ImageMediaItem(MediaManagerItem):
         self.ServiceItemIconName = u':/media/media_image.png'
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
+        self.overrideActive = False
+
+    def requiredIcons(self):
+        MediaManagerItem.requiredIcons(self)
+        self.hasFileIcon = True
+        self.hasNewIcon = False
+        self.hasEditIcon = False
 
     def initialise(self):
         self.ListView.setSelectionMode(
@@ -69,6 +73,37 @@ class ImageMediaItem(MediaManagerItem):
         if os.path.exists(self.servicePath) == False:
             os.mkdir(self.servicePath)
         self.loadList(self.parent.config.load_list(self.ConfigSection))
+
+    def addEndHeaderBar(self):
+        self.ImageWidget = QtGui.QWidget(self)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.ImageWidget.sizePolicy().hasHeightForWidth())
+        self.ImageWidget.setSizePolicy(sizePolicy)
+        self.ImageWidget.setObjectName(u'ImageWidget')
+        self.OverrideLayout = QtGui.QVBoxLayout(self.ImageWidget)
+        self.OverrideLayout.setMargin(5)
+        self.OverrideLayout.setSpacing(4)
+        self.OverrideLayout.setObjectName(u'OverrideLayout')
+        self.OverrideCheckBox = QtGui.QCheckBox(self.ImageWidget)
+        self.OverrideCheckBox.setObjectName(u'OverrideCheckBox')
+        self.OverrideCheckBox.setCheckable(True)
+        self.OverrideCheckBox.setChecked(False)
+        self.OverrideCheckBox.setText(translate(u'ImagePlugin', u'Override background'))
+        self.OverrideCheckBox.setStatusTip(
+            translate(u'ImageMedia', u'Allow background of live slide to be overridden'))
+        self.OverrideLayout.addWidget(self.OverrideCheckBox)
+        self.OverrideLabel = QtGui.QLabel(self.ImageWidget)
+        self.OverrideLabel.setObjectName(u'OverrideLabel')
+        self.OverrideLayout.addWidget(self.OverrideLabel)
+        # Add the song widget to the page layout
+        self.PageLayout.addWidget(self.ImageWidget)
+        QtCore.QObject.connect(self.OverrideCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.toggleOverrideState)
 
     def onDeleteClick(self):
         item = self.ListView.currentItem()
@@ -111,3 +146,24 @@ class ImageMediaItem(MediaManagerItem):
             (path, name) = os.path.split(filename)
             service_item.add_from_image(path, name, frame)
         return True
+
+    def toggleOverrideState(self):
+        self.overrideActive = not self.overrideActive
+        if not self.overrideActive:
+            self.OverrideLabel.setText(u'')
+            self.parent.render_manager.override_background = None
+
+    def onPreviewClick(self):
+        if self.overrideActive:
+            items = self.ListView.selectedIndexes()
+            if len(items) == 0:
+                return False
+            for item in items:
+                bitem = self.ListView.item(item.row())
+                filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+                self.OverrideLabel.setText(bitem.text())
+                frame = QtGui.QImage(unicode(filename))
+                self.parent.render_manager.override_background = frame
+                self.parent.render_manager.override_background_changed = True
+        else:
+            MediaManagerItem.onPreviewClick(self)

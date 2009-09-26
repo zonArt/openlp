@@ -115,9 +115,22 @@ class MediaManagerItem(QtGui.QWidget):
         self.PageLayout = QtGui.QVBoxLayout(self)
         self.PageLayout.setSpacing(0)
         self.PageLayout.setMargin(0)
+        self.requiredIcons()
         self.setupUi()
         self.retranslateUi()
         self.initialise()
+
+    def requiredIcons(self):
+        """
+        This method is called to define the icons for the plugin.
+        It provides a default set and the plugin is able to override
+        the if required.
+        """
+        self.hasNewIcon = True
+        self.hasEditIcon = True
+        self.hasFileIcon = False
+        self.hasDeleteIcon = True
+
 
     def retranslateUi(self):
         """
@@ -221,12 +234,13 @@ class MediaManagerItem(QtGui.QWidget):
                 u':' + self.IconPath + u'_edit.png', self.onEditClick,
                 self.PluginTextShort + u'EditItem')
         ## Delete Button ##
-        self.addToolbarButton(
-            translate(
-                self.TranslationContext, u'Delete ' + self.PluginTextShort),
-            translate(self.TranslationContext, u'Delete the selected item'),
-            u':' + self.IconPath + u'_delete.png', self.onDeleteClick,
-            self.PluginTextShort + u'DeleteItem')
+        if self.hasDeleteIcon:
+            self.addToolbarButton(
+                translate(
+                    self.TranslationContext, u'Delete ' + self.PluginTextShort),
+                translate(self.TranslationContext, u'Delete the selected item'),
+                u':' + self.IconPath + u'_delete.png', self.onDeleteClick,
+                self.PluginTextShort + u'DeleteItem')
         ## Separator Line ##
         self.addToolbarSeparator()
         ## Preview ##

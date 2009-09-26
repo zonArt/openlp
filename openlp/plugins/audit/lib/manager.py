@@ -104,3 +104,29 @@ class AuditManager():
                 return False
         else:
             return True
+
+    def delete_all(self):
+        """
+        Delete all audit records
+        """
+        try:
+            self.session.query(AuditItem).delete(synchronize_session=False)
+            self.session.commit()
+            return True
+        except:
+            self.session.rollback()
+            log.excertion(u'Failed to delete all audit items')
+            return False
+
+    def delete_to_date(self, date):
+        """
+        Delete audit records before given date
+        """
+        try:
+            self.session.query(AuditItem).filter(AuditItem.auditdate <= date).delete(synchronize_session=False)
+            self.session.commit()
+            return True
+        except:
+            self.session.rollback()
+            log.excertion(u'Failed to delete all audit items to %s' % date)
+            return False

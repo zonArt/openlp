@@ -29,6 +29,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, Receiver, translate, str_to_bool
 from openlp.plugins.audit.lib import AuditTab, AuditManager
+from openlp.plugins.audit.forms import AuditDetailForm, AuditDeleteForm
 from openlp.plugins.audit.lib.models import AuditItem
 
 class AuditPlugin(Plugin):
@@ -73,7 +74,7 @@ class AuditPlugin(Plugin):
         #Audit Delete All
         self.AuditDeleteAll = QtGui.QAction(tools_menu)
         self.AuditDeleteAll.setText(
-            translate(u'AuditPlugin', u'Au&dit Delete All'))
+            translate(u'AuditPlugin', u'Au&dit Delete all'))
         self.AuditDeleteAll.setStatusTip(
             translate(u'AuditPlugin', u'Deleted all Audit records'))
         self.AuditDeleteAll.setObjectName(u'AuditDeleteAll')
@@ -119,6 +120,12 @@ class AuditPlugin(Plugin):
         QtCore.QObject.connect(self.AuditStatus,
             QtCore.SIGNAL(u'triggered(bool)'),
             self.toggleAuditState)
+        QtCore.QObject.connect(self.AuditDeleteAll,
+            QtCore.SIGNAL(u'triggered()'), self.onAuditDeleteAll)
+        QtCore.QObject.connect(self.AuditDelete,
+            QtCore.SIGNAL(u'triggered()'), self.onAuditDelete)
+        QtCore.QObject.connect(self.AuditReport,
+            QtCore.SIGNAL(u'triggered()'), self.onAuditReport)
 
     def get_settings_tab(self):
         self.AuditTab = AuditTab()
@@ -134,6 +141,8 @@ class AuditPlugin(Plugin):
             self.config.get_config(u'audit active', False))
         self.AuditStatus.setChecked(self.auditActive)
         self.auditmanager = AuditManager(self.config)
+        self.auditdeleteform = AuditDeleteForm(self.auditmanager)
+        self.auditdetailform = AuditDetailForm(self.auditmanager)
 
     def toggleAuditState(self):
         self.auditActive = not self.auditActive
@@ -162,5 +171,21 @@ class AuditPlugin(Plugin):
         """
         self.auditActive = str_to_bool(
             self.config.get_config(u'audit active', False))
-#        self.AuditStatus.setChecked(self.auditActive)
         self.AuditStatus.setEnabled(True)
+
+    def onAuditDeleteAll(self):
+        ret = QtGui.QMessageBox.question(None,
+            translate(u'mainWindow', u'Delete All Audit Events?'),
+            translate(u'mainWindow', u'Are you sure you want to delete all Audit Data?'),
+            QtGui.QMessageBox.StandardButtons(
+                QtGui.QMessageBox.Ok |
+                QtGui.QMessageBox.Cancel),
+            QtGui.QMessageBox.Cancel)
+        if ret == QtGui.QMessageBox.Ok:
+            self.auditmanager.delete_all()
+
+    def onAuditDelete(self):
+        self.auditdeleteform.exec_()
+
+    def onAuditReport(self):
+        self.auditdetailform.exec_()

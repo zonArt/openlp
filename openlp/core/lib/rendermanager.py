@@ -64,6 +64,9 @@ class RenderManager(object):
         self.theme = u''
         self.service_theme = u''
         self.global_style = u''
+        self.override_background = None
+        self.save_bg_frame = None
+        self.override_background_changed = False
 
     def update_display(self, screen_number):
         """
@@ -134,6 +137,20 @@ class RenderManager(object):
                 self.screen_list[self.current_display][u'size'])
             self.renderer.set_theme(self.themedata)
             self.build_text_rectangle(self.themedata)
+        #Replace the backgrount image from renderer with one from image
+        if self.override_background is not None:
+            if self.save_bg_frame is None:
+                self.save_bg_frame = self.renderer.bg_frame
+            if self.override_background_changed:
+                self.renderer.bg_frame = self.resize_image(self.override_background)
+                self.override_background_changed = False
+        else:
+            if self.override_background_changed:
+                self.renderer.bg_frame = self.resize_image(self.override_background)
+                self.override_background_changed = False
+            if self.save_bg_frame is not None:
+                self.renderer.bg_frame = self.save_bg_frame
+                self.save_bg_frame = None
 
     def build_text_rectangle(self, theme):
         """

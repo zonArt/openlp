@@ -47,44 +47,20 @@ class SongMediaItem(MediaManagerItem):
         self.TranslationContext = u'SongPlugin'
         self.PluginTextShort = u'Song'
         self.ConfigSection = u'song'
+        self.IconPath = u'songs/song'
+        self.ListViewWithDnD_class = SongListView
+        self.ServiceItemIconName = u':/media/song_image.png'
+        self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
         self.edit_song_form = EditSongForm(self.parent.songmanager, self)
         self.song_maintenance_form = SongMaintenanceForm(
             self.parent.songmanager, self)
 
-    def setupUi(self):
-        # Add a toolbar
-        self.addToolbar()
-        # Create buttons for the toolbar
-        ## New Song Button ##
-        self.addToolbarButton(translate(u'SongMediaItem', u'New Song'),
-            translate(u'SongMediaItem', u'Add a new song'),
-            ':/songs/song_new.png', self.onSongNewClick, 'SongNewItem')
-        ## Edit Song Button ##
-        self.addToolbarButton(translate(u'SongMediaItem', u'Edit Song'),
-            translate(u'SongMediaItem', u'Edit the selected song'),
-            ':/songs/song_edit.png', self.onSongEditClick, 'SongEditItem')
-        ## Delete Song Button ##
-        self.addToolbarButton(translate(u'SongMediaItem', u'Delete Song'),
-            translate(u'SongMediaItem', u'Delete the selected song'),
-            ':/songs/song_delete.png', self.onSongDeleteClick, 'SongDeleteItem')
-        ## Separator Line ##
-        self.addToolbarSeparator()
-        ## Preview Song Button ##
-        self.addToolbarButton(translate(u'SongMediaItem', u'Preview Song'),
-            translate(u'SongMediaItem', u'Preview the selected song'),
-            ':/system/system_preview.png', self.onPreviewClick,
-            'SongPreviewItem')
-        ## Live Song Button ##
-        self.addToolbarButton(translate(u'SongMediaItem', u'Go Live'),
-            translate(u'SongMediaItem', u'Send the selected song live'),
-            ':/system/system_live.png', self.onLiveClick, 'SongLiveItem')
-        ## Add Song Button ##
-        self.addToolbarButton(
-            translate(u'SongMediaItem', u'Add Song To Service'),
-            translate(u'SongMediaItem',
-            u'Add the selected song(s) to the service'),
-            ':/system/system_add.png', self.onAddClick, 'SongAddItem')
+    def requiredIcons(self):
+        MediaManagerItem.requiredIcons(self)
+        self.hasFileIcon = False
+
+    def addEndHeaderBar(self):
         self.addToolbarSeparator()
         ## Song Maintenance Button ##
         self.addToolbarButton(translate(u'SongMediaItem', u'Song Maintenance'),
@@ -127,12 +103,6 @@ class SongMediaItem(MediaManagerItem):
         self.SearchLayout.addWidget(self.SearchTextButton, 3, 2, 1, 1)
         # Add the song widget to the page layout
         self.PageLayout.addWidget(self.SongWidget)
-        self.ListView = SongListView()
-        self.ListView.setAlternatingRowColors(True)
-        self.ListView.setDragEnabled(True)
-        self.ListView.setObjectName(u'ListView')
-        self.PageLayout.addWidget(self.ListView)
-        self.ListView.setDragEnabled(True)
         # Signals and slots
         QtCore.QObject.connect(self.SearchTextButton,
             QtCore.SIGNAL(u'pressed()'), self.onSearchTextButtonClick)
@@ -141,26 +111,8 @@ class SongMediaItem(MediaManagerItem):
         QtCore.QObject.connect(self.SearchTextEdit,
             QtCore.SIGNAL(u'textChanged(const QString&)'),
             self.onSearchTextEditChanged)
-        QtCore.QObject.connect(self.ListView,
-           QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onPreviewClick)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'load_song_list'), self.onSearchTextButtonClick)
-
-        #define and add the context menu
-        self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.ListView.addAction(contextMenuAction(self.ListView,
-            ':/songs/song_new.png', translate(u'SongMediaItem', u'&Edit Song'),
-            self.onSongEditClick))
-        self.ListView.addAction(contextMenuSeparator(self.ListView))
-        self.ListView.addAction(contextMenuAction(self.ListView,
-            ':/system/system_preview.png',
-            translate(u'SongMediaItem', u'&Preview Song'), self.onPreviewClick))
-        self.ListView.addAction(contextMenuAction(self.ListView,
-            ':/system/system_live.png',
-            translate(u'SongMediaItem', u'&Show Live'), self.onLiveClick))
-        self.ListView.addAction(contextMenuAction(self.ListView,
-            ':/system/system_add.png',
-            translate(u'SongMediaItem', u'&Add to Service'), self.onAddClick))
 
     def retranslateUi(self):
         self.SearchTypeLabel.setText(
@@ -235,7 +187,7 @@ class SongMediaItem(MediaManagerItem):
         if len(text) > search_length:
             self.onSearchTextButtonClick()
 
-    def onSongNewClick(self):
+    def onNewClick(self):
         self.edit_song_form.newSong()
         self.edit_song_form.exec_()
 
@@ -254,14 +206,14 @@ class SongMediaItem(MediaManagerItem):
     def onSongMaintenanceClick(self):
         self.song_maintenance_form.exec_()
 
-    def onSongEditClick(self):
+    def onEditClick(self):
         item = self.ListView.currentItem()
         if item is not None:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_song_form.loadSong(item_id)
             self.edit_song_form.exec_()
 
-    def onSongDeleteClick(self):
+    def onDeleteClick(self):
         item = self.ListView.currentItem()
         if item is not None:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]

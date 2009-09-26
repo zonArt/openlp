@@ -49,38 +49,21 @@ class BibleMediaItem(MediaManagerItem):
         self.TranslationContext = u'BiblePlugin'
         self.PluginTextShort = u'Bible'
         self.ConfigSection = u'bibles'
+        self.IconPath = u'songs/song'
+        self.ListViewWithDnD_class = BibleListView
+        self.ServiceItemIconName = u':/media/bible_image.png'
+        self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
         self.search_results = {} # place to store the search results
         QtCore.QObject.connect(Receiver().get_receiver(),
             QtCore.SIGNAL(u'openlpreloadbibles'), self.reloadBibles)
 
-    def setupUi(self):
-        # Add a toolbar
-        self.addToolbar()
-        # Create buttons for the toolbar
-        ## New Bible Button ##
-        self.addToolbarButton(translate(u'BibleMediaItem', u'New Bible'),
-            translate(u'BibleMediaItem', u'Register a new Bible'),
-            u':/themes/theme_import.png', self.onBibleNewClick, u'BibleNewItem')
-        ## Separator Line ##
-        self.addToolbarSeparator()
-        ## Preview Bible Button ##
-        self.addToolbarButton(translate(u'BibleMediaItem', u'Preview Bible'),
-            translate(u'BibleMediaItem', u'Preview the selected Bible Verse'),
-            u':/system/system_preview.png', self.onPreviewClick,
-            u'BiblePreviewItem')
-        ## Live Bible Button ##
-        self.addToolbarButton(translate(u'BibleMediaItem',u'Go Live'),
-            translate(u'BibleMediaItem',
-            u'Send the selected Bible Verse(s) live'),
-            u':/system/system_live.png', self.onLiveClick, u'BibleLiveItem')
-        ## Add Bible Button ##
-        self.addToolbarButton(
-            translate(u'BibleMediaItem', u'Add Bible Verse(s) To Service'),
-            translate(u'BibleMediaItem',
-            u'Add the selected Bible(s) to the service'),
-            u':/system/system_add.png', self.onAddClick, u'BibleAddItem')
-        # Create the tab widget
+    def requiredIcons(self):
+        MediaManagerItem.requiredIcons(self)
+        self.hasEditIcon = False
+        self.hasDeleteIcon = False
+
+    def addEndHeaderBar(self):
         self.SearchTabWidget = QtGui.QTabWidget(self)
         sizePolicy = QtGui.QSizePolicy(
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
@@ -191,12 +174,6 @@ class BibleMediaItem(MediaManagerItem):
         self.SearchTabWidget.addTab(self.AdvancedTab, u'Advanced')
         # Add the search tab widget to the page layout
         self.PageLayout.addWidget(self.SearchTabWidget)
-        self.ListView = BibleListView()
-        self.ListView.setAlternatingRowColors(True)
-        self.ListView.setSelectionMode(
-            QtGui.QAbstractItemView.ExtendedSelection)
-        self.ListView.setDragEnabled(True)
-        self.PageLayout.addWidget(self.ListView)
         # Combo Boxes
         QtCore.QObject.connect(self.AdvancedVersionComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onAdvancedVersionComboBox)
@@ -213,20 +190,6 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'pressed()'), self.onAdvancedSearchButton)
         QtCore.QObject.connect(self.QuickSearchButton,
             QtCore.SIGNAL(u'pressed()'), self.onQuickSearchButton)
-        QtCore.QObject.connect(self.ListView,
-            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onPreviewClick)
-        # Context Menus
-        self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.ListView.addAction(contextMenuAction(
-            self.ListView, u':/system/system_preview.png',
-            translate(u'BibleMediaItem',u'&Preview Verse'),
-            self.onPreviewClick))
-        self.ListView.addAction(contextMenuAction(
-            self.ListView, u':/system/system_live.png',
-            translate(u'BibleMediaItem',u'&Show Live'), self.onLiveClick))
-        self.ListView.addAction(contextMenuAction(
-            self.ListView, u':/system/system_add.png',
-            translate(u'BibleMediaItem',u'&Add to Service'), self.onAddClick))
 
     def retranslateUi(self):
         log.debug(u'retranslateUi')
@@ -304,7 +267,7 @@ class BibleMediaItem(MediaManagerItem):
             unicode(self.AdvancedVersionComboBox.currentText()),
             unicode(self.AdvancedBookComboBox.currentText()))
 
-    def onBibleNewClick(self):
+    def onNewClick(self):
         self.bibleimportform = BibleImportForm(
             self.parent.config, self.parent.biblemanager, self)
         self.bibleimportform.exec_()
