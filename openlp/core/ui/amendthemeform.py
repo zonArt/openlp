@@ -194,7 +194,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
     def onImageToolButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file')
-        if filename != "":
+        if filename != u'':
             self.ImageLineEdit.setText(filename)
             self.theme.background_filename = filename
             self.previewTheme(self.theme)

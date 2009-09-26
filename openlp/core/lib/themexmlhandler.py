@@ -295,7 +295,7 @@ class ThemeXML(object):
         Dump the XML to file.
         """
         # Debugging aid to see what we have
-        print self.theme_xml.toprettyxml(indent=u'  ')
+        return self.theme_xml.toprettyxml(indent=u'  ')
 
     def extract_xml(self):
         """

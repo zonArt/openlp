@@ -177,14 +177,14 @@ class BibleManager(object):
             nbible.save_meta(u'WEB', biblesource)
             # store the web id of the bible
             nbible.save_meta(u'bibleid', bibleid)
-            if proxyurl is not None and proxyurl != "":
+            if proxyurl is not None and proxyurl != u'':
                 # store the proxy URL
                 nbible.save_meta(u'proxy', proxyurl)
                 nhttp.set_proxy(proxyurl)
-            if proxyid is not None and proxyid != "":
+            if proxyid is not None and proxyid != u'':
                 # store the proxy userid
                 nbible.save_meta(u'proxyid', proxyid)
-            if proxypass is not None and proxypass != "":
+            if proxypass is not None and proxypass != u'':
                 # store the proxy password
                 nbible.save_meta(u'proxypass', proxypass)
             return True

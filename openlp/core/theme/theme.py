@@ -98,7 +98,6 @@ class Theme:
         # init to defaults
         self._set_from_XML(blankstylexml)
         self._set_from_XML(xml)
-#        print self.__str__()
 
     def _get_as_string(self):
         s = u''
@@ -115,23 +114,18 @@ class Theme:
         for element in iter:
             if element.tag != u'Theme':
                 t = element.text
-#                print element.tag, t, type(t)
                 val = 0
                 # easy!
                 if type(t) == type(None):
                     val = t
                 # strings need special handling to sort the colours out
                 if type(t) is types.StringType or type(t) is types.UnicodeType:
-#                    print u'str',
                     if t[0] == u'$': # might be a hex number
-#                        print u'hex',
                         try:
                             val = int(t[1:], 16)
                         except ValueError: # nope
-#                            print u'nope'
                             pass
                     elif DelphiColors.has_key(t):
-#                        print u'colour ', t
                         val = DelphiColors[t]
                     else:
                         try:
@@ -142,8 +136,6 @@ class Theme:
                     (element.tag.find(u'BackgroundParameter') == 0 and type(val) == type(0))):
                     # convert to a wx.Colour
                     val= QtGui.QColor((val>>16) & 0xFF, (val>>8)&0xFF, val&0xFF)
-#                    print [val]
-#                print u'>> ', element.tag, val
                 setattr(self, element.tag, val)
 
     def __str__(self):
