@@ -23,7 +23,8 @@
 ###############################################################################
 
 import logging
-import os, os.path
+import os
+import os.path
 
 from PyQt4 import QtCore, QtGui
 
@@ -178,7 +179,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
     def loadTheme(self, theme):
         log.debug(u'LoadTheme %s', theme)
-        if theme == None:
+        if theme is None:
             self.theme.parse(self.thememanager.baseTheme())
         else:
             xml_file = os.path.join(self.path, theme, theme + u'.xml')

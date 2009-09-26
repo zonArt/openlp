@@ -23,7 +23,8 @@
 ###############################################################################
 
 import logging
-import os, os.path
+import os
+import os.path
 
 from PyQt4 import QtCore, QtGui
 
@@ -33,7 +34,7 @@ from openlp.core.lib import Receiver, translate
 
 class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
     global log
-    log=logging.getLogger(u'BibleImportForm')
+    log = logging.getLogger(u'BibleImportForm')
     log.info(u'BibleImportForm loaded')
     """
     Class documentation goes here.
@@ -136,13 +137,16 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         self.checkOsis()
 
     def onProxyAddressEditLostFocus(self):
-        self.config.set_config(u'proxy_address', unicode(self.AddressEdit.displayText()))
+        self.config.set_config(
+            u'proxy_address', unicode(self.AddressEdit.displayText()))
 
     def onProxyUsernameEditLostFocus(self):
-        self.config.set_config(u'proxy_username', unicode(self.UsernameEdit.displayText()))
+        self.config.set_config(
+            u'proxy_username', unicode(self.UsernameEdit.displayText()))
 
     def onProxyPasswordEditLostFocus(self):
-        self.config.set_config(u'proxy_password', unicode(self.PasswordEdit.displayText()))
+        self.config.set_config(
+            u'proxy_password', unicode(self.PasswordEdit.displayText()))
 
     def onLocationComboBoxSelected(self):
         self.checkHttp()
@@ -161,8 +165,9 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
     def onImportButtonClicked(self):
         message = u'Bible import completed'
-        if self.biblemanager != None:
-            if not self.bible_type == None and len(self.BibleNameEdit.displayText()) > 0:
+        if self.biblemanager is not None:
+            if not self.bible_type is None and \
+                len(self.BibleNameEdit.displayText()) > 0:
                 self.MessageLabel.setText(u'Import Started')
                 self.ProgressBar.setMinimum(0)
                 self.setMax(65)
@@ -286,7 +291,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
     def resetScreenFieldStates(self):
         # only reset if no bible type set.
-        if self.bible_type == None:
+        if self.bible_type is None:
             self.BooksLocationEdit.setReadOnly(False)
             self.VerseLocationEdit.setReadOnly(False)
             self.BooksFileButton.setEnabled(True)

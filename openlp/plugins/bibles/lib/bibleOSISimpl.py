@@ -90,7 +90,7 @@ class BibleOSISImpl():
         detect_file.close()
         osis = codecs.open(osisfile_record, u'r', details['encoding'])
         book_ptr = None
-        id = 0
+        #id = 0
         count = 0
         verseText = u'<verse osisID='
         testament = 1
@@ -138,7 +138,7 @@ class BibleOSISImpl():
                 p = ref.split(u'.', 3)
                 if book_ptr != p[0]:
                     # first time through
-                    if book_ptr == None:
+                    if book_ptr is None:
                         # set the max book size depending on the first book read
                         if p[0] == u'Gen':
                             dialogobject.setMax(65)

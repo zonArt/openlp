@@ -24,7 +24,8 @@
 
 import sys
 import os
-from types import StringType, ListType, NoneType
+
+from types import StringType, ListType
 
 sys.path.append(os.path.abspath(u'./../../../..'))
 
@@ -84,7 +85,7 @@ class _OpenSong(XmlRootClass):
     def from_buffer(self, xmlContent):
         """Initialize from buffer(string) with xml content"""
         self._reset()
-        if xmlContent != None :
+        if xmlContent is not None:
             self._setFromXml(xmlContent, 'song')
 
     def get_author_list(self):
@@ -94,9 +95,9 @@ class _OpenSong(XmlRootClass):
         return as a string
         """
         res = []
-        if self.author != None :
+        if self.author is not None:
             lst = self.author.split(u' and ')
-            for l in lst :
+            for l in lst:
                 res.append(l.strip())
         s = u', '.join(res)
         return s
@@ -107,9 +108,9 @@ class _OpenSong(XmlRootClass):
         return as a string
         """
         res = []
-        if self.theme != None :
+        if self.theme is not None:
             res.append(self.theme)
-        if self.alttheme != None :
+        if self.alttheme is not None:
             res.append(self.alttheme)
         s = u', u'.join(res)
         return s
@@ -123,25 +124,25 @@ class _OpenSong(XmlRootClass):
         res = []
         for c in '1234567890 ':
             tagPending = True
-            for l in tmpVerse :
-                if l.startswith(c) :
-                    if tagPending :
+            for l in tmpVerse:
+                if l.startswith(c):
+                    if tagPending:
                         tagPending = False
                         t = tag.strip(u'[]').lower()
-                        if 'v' == t :
+                        if 'v' == t:
                             newtag = "Verse"
-                        elif 'c' == t :
+                        elif 'c' == t:
                             newtag = "Chorus"
-                        elif 'b' == t :
+                        elif 'b' == t:
                             newtag = "Bridge"
-                        elif 'p' == t :
+                        elif 'p' == t:
                             newtag = "Pre-chorus"
-                        else :
+                        else:
                             newtag = t
                         s = (u'# %s %s'%(newtag, c)).rstrip()
                         res.append(s)
                     res.append(l[1:])
-                if (len(l) == 0) and (not tagPending) :
+                if (len(l) == 0) and (not tagPending):
                     res.append(l)
         return res
 
@@ -156,13 +157,13 @@ class _OpenSong(XmlRootClass):
         tag = ""
         for l in lyrics:
             line = l.rstrip()
-            if not line.startswith(u'.') :
+            if not line.startswith(u'.'):
                 # drop all chords
                 tmpVerse.append(line)
-                if len(line) > 0 :
+                if len(line) > 0:
                     if line.startswith(u'['):
                         tag = line
-                else :
+                else:
                     r = self._reorder_verse(tag, tmpVerse)
                     finalLyrics.extend(r)
                     tag = ""
@@ -173,12 +174,12 @@ class _OpenSong(XmlRootClass):
         return finalLyrics
 
 
-class Song(object) :
+class Song(object):
     """Handling song properties and methods
 
     handles all conversions between various input and output formats
 
-    CCLI :
+    CCLI:
         from_ccli_text_file
         to_ccli_text_file
         from_ccli_text_buffer
@@ -195,13 +196,13 @@ class Song(object) :
         get_preview_slide
         get_render_slide
 
-    openlp1 :
+    openlp1:
         from_openlp1_lyrics_buffer
         to_openlp1_lyrics_buffer
         set_author_list
         get_author_list
 
-    editing and openlp2 :
+    editing and openlp2:
         set_*
         get_*
     """
@@ -263,13 +264,13 @@ class Song(object) :
         """Initialize from buffer(string) of xml lines in opensong format"""
         self._reset()
         opensong = _OpenSong(xmlcontent)
-        if opensong.title != None:
+        if opensong.title is not None:
             self.set_title(opensong.title)
-        if opensong.copyright != None :
+        if opensong.copyright is not None:
             self.set_copyright(opensong.copyright)
-        if opensong.presentation != None:
+        if opensong.presentation is not None:
             self.set_verse_order(opensong.presentation)
-        if opensong.ccli != None:
+        if opensong.ccli is not None:
             self.set_song_cclino(opensong.ccli)
         self.set_author_list(opensong.get_author_list())
         self.set_category_array(opensong.get_category_array())
@@ -282,7 +283,7 @@ class Song(object) :
         """
         lst = []
         f = open(xmlfilename, 'r')
-        for line in f :
+        for line in f:
             lst.append(line)
         f.close()
         xml = "".join(lst)
@@ -295,7 +296,7 @@ class Song(object) :
         """
         punctuation = ".,:;!?&%#'\"/\\@`$|^~*-"
         s = title
-        for c in punctuation :
+        for c in punctuation:
             s = s.replace(c, '')
         return s
 
@@ -308,9 +309,9 @@ class Song(object) :
         """
         self.title = title.strip()
         self.search_title = self._remove_punctuation(title).strip()
-        if len(self.title) < 1 :
+        if len(self.title) < 1:
             raise SongTitleError(u'The title is empty')
-        if len(self.search_title) < 1 :
+        if len(self.search_title) < 1:
             raise SongTitleError(u'The searchable title is empty')
 
     def get_title(self):
@@ -340,32 +341,32 @@ class Song(object) :
         n = 0
         metMisc = False
         lyrics = []
-        for l in textList :
+        for l in textList:
             n += 1
-            if lastpart > 0 :
+            if lastpart > 0:
                 lastpart += 1
-                if lastpart == 2 :
+                if lastpart == 2:
                     sCopyright = l[1:].strip()
-                if lastpart == 3 :
+                if lastpart == 3:
                     sAuthor = l
-            elif l.startswith(u'CCLI Song') :
+            elif l.startswith(u'CCLI Song'):
                 sCcli = l[13:].strip()
                 lastpart = 1
-            else :
-                if metMisc :
+            else:
+                if metMisc:
                     metMisc = False
-                    if l.upper().startswith(u'(BRIDGE)') :
+                    if l.upper().startswith(u'(BRIDGE)'):
                         lyrics.append(u'# Bridge')
                     # otherwise unknown misc keyword
-                elif l.startswith(u'Misc') :
+                elif l.startswith(u'Misc'):
                     metMisc = True
                 elif l.startswith(u'Verse') or l.startswith(u'Chorus'):
                     lyrics.append(u'# %s'%l)
-                else :
+                else:
                     # should we remove multiple blank lines?
-                    if n == 1 :
+                    if n == 1:
                         sName = l
-                    else :
+                    else:
                         lyrics.append(l)
         # split on known separators
         lst = sAuthor.split(u'/')
@@ -390,33 +391,33 @@ class Song(object) :
         f.close()
         self.from_ccli_text_buffer(lines)
 
-    def _assure_string(self, s):
+    def _assure_string(self, string_in):
         """Force a string is returned"""
-        if s == None :
-            r = ""
-        else :
-            r = unicode(s)
-        return r
+        if string_in is None:
+            string_out = ""
+        else:
+            string_out = unicode(s)
+        return string_out
 
     def _split_to_list(self, aString):
         """Split a string into a list - comma separated"""
         res = []
-        if aString != None :
+        if aString is not None:
             lst = aString.split(u',')
-            for l in lst :
+            for l in lst:
                 # remove whitespace
                 res.append(l.strip())
         return res
 
     def _list_to_string(self, strOrList):
         """Force a possibly list into a string"""
-        if type(strOrList) == StringType :
+        if type(strOrList) == StringType:
             lst = self._split_to_list(strOrList)
-        elif type(strOrList) == ListType :
+        elif type(strOrList) == ListType:
             lst = strOrList
-        elif type(strOrList) == NoneType :
+        elif strOrList is None:
             lst = []
-        else :
+        else:
             raise SongTypeError(u'Variable not String or List')
         s = u', '.join(lst)
         return s
@@ -486,9 +487,9 @@ class Song(object) :
         False -- list of strings
           ["John Newton", u'A Parker"]
         """
-        if asOneString :
+        if asOneString:
             res = self._assure_string(self.author_list)
-        else :
+        else:
             res = self._split_to_list(self.author_list)
         return res
 
@@ -497,9 +498,9 @@ class Song(object) :
 
         author_list -- a string or list of strings
         """
-        if author_list == None :
+        if author_list is None:
             self.author_list = None
-        else :
+        else:
             self.author_list = self._list_to_string(author_list)
 
     def get_category_array(self, asOneString = True):
@@ -511,9 +512,9 @@ class Song(object) :
         False -- list of strings
           ["Hymn", u'Gospel"]
         """
-        if asOneString :
+        if asOneString:
             res = self._assure_string(self.category_array)
-        else :
+        else:
             res = self._split_to_list(self.category_array)
         return res
 
@@ -522,9 +523,9 @@ class Song(object) :
 
         category_array -- a string or list of strings
         """
-        if category_array == None :
+        if category_array is None:
             self.category_array = None
-        else :
+        else:
             self.category_array = self._list_to_string(category_array)
 
     def get_show_title(self):
@@ -577,12 +578,12 @@ class Song(object) :
         self.slideList = []
         tmpSlide = []
         metContent = False
-        for l in self.lyrics :
-            if len(l) > 0 :
+        for l in self.lyrics:
+            if len(l) > 0:
                 metContent = True
                 tmpSlide.append(l)
-            else :
-                if metContent :
+            else:
+                if metContent:
                     metContent = False
                     self.slideList.append(tmpSlide)
                     tmpSlide = []
@@ -598,22 +599,22 @@ class Song(object) :
     def get_preview_slide(self, slideNumber):
         """Return the preview text for specified slide number
 
-        slideNumber -- 0: all slides, 1..n : specific slide
+        slideNumber -- 0: all slides, 1..n: specific slide
         a list of strings are returned
         """
         num = len(self.slideList)
-        if num < 1 :
+        if num < 1:
             raise SongSlideError(u'No slides in this song')
-        elif slideNumber > num :
+        elif slideNumber > num:
             raise SongSlideError(u'Slide number too high')
-        if slideNumber > 0 :
+        if slideNumber > 0:
             # return this slide
             res = self.slideList[slideNumber-1]
             # find theme in this slide
-        else :
+        else:
             res = []
             for i in range(num):
-                if i > 0 :
+                if i > 0:
                     res.append(u'')
                 res.extend()
         # remove formattingincluding themes
@@ -633,26 +634,26 @@ class Song(object) :
          lyric-part as a list of strings]
         """
         num = len(self.slideList)
-        if num < 1 :
+        if num < 1:
             raise SongSlideError(u'No slides in this song')
-        elif slideNumber > num :
+        elif slideNumber > num:
             raise SongSlideError(u'Slide number too high')
         res = []
-        if self.show_title :
+        if self.show_title:
             title = self.get_title()
-        else :
+        else:
             title = ""
-        if self.show_author_list :
+        if self.show_author_list:
             author = self.get_author_list(True)
-        else :
+        else:
             author = ""
-        if self.show_copyright :
+        if self.show_copyright:
             cpright = self.get_copyright()
-        else :
+        else:
             cpright = ""
-        if self.show_song_cclino :
+        if self.show_song_cclino:
             ccli = self.get_song_cclino()
-        else :
+        else:
             ccli = ""
         theme = self.get_theme()
         # examine the slide for a theme

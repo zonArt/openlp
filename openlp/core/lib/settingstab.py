@@ -48,7 +48,7 @@ class SettingsTab(QtGui.QWidget):
         self.setupUi()
         self.retranslateUi()
         self.initialise()
-        if section == None:
+        if section is None:
             self.config = PluginConfig(title)
         else:
             self.config = PluginConfig(section)

@@ -195,19 +195,19 @@ class BibleHTTPImpl():
 
         Init confirms the bible exists and stores the database path.
         """
-        bible = {}
-        biblesource = ''
-        proxyurl = None
-        bibleid = None
+        #bible = {}
+        self.biblesource = ''
+        self.proxyurl = None
+        self.bibleid = None
 
-    def set_proxy(self,proxyurl):
+    def set_proxy(self, proxyurl):
         """
         Set the Proxy Url
         """
         log.debug(u'set_proxy %s', proxyurl)
         self.proxyurl = proxyurl
 
-    def set_bibleid(self,bibleid):
+    def set_bibleid(self, bibleid):
         """
         Set the bible id.
         The shore identifier of the the bible.
@@ -215,7 +215,7 @@ class BibleHTTPImpl():
         log.debug(u'set_bibleid %s', bibleid)
         self.bibleid = bibleid
 
-    def set_bible_source(self,biblesource):
+    def set_bible_source(self, biblesource):
         """
         Set the source of where the bible text is coming from
         """
@@ -235,6 +235,5 @@ class BibleHTTPImpl():
             else:
                 ev = BGExtract(self.proxyurl)
             return ev.get_bible_chapter(self.bibleid, bookid, bookname, chapter)
-        except Exception, e:
-            log.error(u'Error thrown = %s', e.args[0])
-            print e
+        except:
+            log.exception("Failed to get bible chapter")

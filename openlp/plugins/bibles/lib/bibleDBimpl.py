@@ -137,12 +137,12 @@ class BibleDBImpl(BibleCommon):
 
     def get_bible_book(self, bookname):
         log.debug(u'get_bible_book %s', bookname)
-        bk = self.session.query(Book).filter(
+        book = self.session.query(Book).filter(
             Book.name.like(bookname + u'%')).first()
-        if bk == None:
-            bk = self.session.query(Book).filter(
+        if book is None:
+            book = self.session.query(Book).filter(
                 Book.abbreviation.like(bookname + u'%')).first()
-        return bk
+        return book
 
     def get_bible_chapter(self, id, chapter):
         log.debug(u'get_bible_chapter %s, %s', id, chapter)

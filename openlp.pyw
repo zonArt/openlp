@@ -24,9 +24,10 @@
 ###############################################################################
 
 import sys
-import logging, logging.handlers
-from optparse import OptionParser
+import logging
+import logging.handlers
 
+from optparse import OptionParser
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, str_to_bool

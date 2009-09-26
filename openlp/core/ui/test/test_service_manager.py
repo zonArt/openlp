@@ -17,7 +17,8 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 import sys
-import os, os.path
+import os
+import os.path
 import logging
 
 from PyQt4 import QtGui
