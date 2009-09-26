@@ -38,6 +38,7 @@ class AuditDeleteForm(QtGui.QDialog, Ui_AuditDeleteDialog):
         """
         Constructor
         """
+        self.auditmanager = auditmanager
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
 
@@ -54,4 +55,5 @@ class AuditDeleteForm(QtGui.QDialog, Ui_AuditDeleteDialog):
             print qDeleteDate
             deleteDate = date(qDeleteDate.year(), qDeleteDate.month(), qDeleteDate.day())
             print deleteDate
+            self.auditmanager.delete_to_date(deleteDate)
         self.close()
