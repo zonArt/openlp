@@ -30,7 +30,7 @@ import codecs
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import translate, Receiver
 
 class BibleOSISImpl():
     """
@@ -51,6 +51,7 @@ class BibleOSISImpl():
         ``bibledb``
             A reference to a Bible database object.
         """
+        log.info(u'BibleOSISImpl Initialising')
         self.bibledb = bibledb
         # books of the bible linked to bibleid  {osis , name}
         self.booksOfBible = {}
@@ -90,7 +91,6 @@ class BibleOSISImpl():
         detect_file.close()
         osis = codecs.open(osisfile_record, u'r', details['encoding'])
         book_ptr = None
-        #id = 0
         count = 0
         verseText = u'<verse osisID='
         testament = 1
@@ -123,7 +123,6 @@ class BibleOSISImpl():
                 while pos > -1:
                     epos = text.find(u'<Fi>', pos)
                     if epos == -1: # TODO
-                        #print "Y", search_text, e
                         pos = -1
                     else:
                         text = text[:pos] + text[epos + 4: ]
@@ -132,7 +131,6 @@ class BibleOSISImpl():
                 while pos > -1:
                     epos = text.find(u'<Rf>', pos)
                     text = text[:pos] + text[epos + 4: ]
-                    #print "X", pos, epos, text
                     pos = text.find(u'<RF>')
                 # split up the reference
                 p = ref.split(u'.', 3)
@@ -149,8 +147,9 @@ class BibleOSISImpl():
                         testament += 1
                     book_ptr = p[0]
                     book = self.bibledb.create_book(
-                        self.booksOfBible[p[0]],
-                        self.abbrevOfBible[p[0]], testament)
+                        unicode(translate(u'BibleBooks', self.booksOfBible[p[0]])),
+                        unicode(translate(u'BibleBooks', self.abbrevOfBible[p[0]])),
+                        testament)
                     dialogobject.incrementProgressBar(
                         self.booksOfBible[p[0]])
                     Receiver().send_message(u'process_events')

@@ -52,8 +52,6 @@ class AuditDeleteForm(QtGui.QDialog, Ui_AuditDeleteDialog):
             QtGui.QMessageBox.Cancel)
         if ret == QtGui.QMessageBox.Ok:
             qDeleteDate = self.DeleteCalendar.selectedDate()
-            print qDeleteDate
             deleteDate = date(qDeleteDate.year(), qDeleteDate.month(), qDeleteDate.day())
-            print deleteDate
             self.auditmanager.delete_to_date(deleteDate)
         self.close()
