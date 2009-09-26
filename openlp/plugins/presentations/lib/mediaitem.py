@@ -51,9 +51,6 @@ class PresentationMediaItem(MediaManagerItem):
         self.TranslationContext = u'PresentationPlugin'
         self.PluginTextShort = u'Presentation'
         self.ConfigSection = u'presentations'
-        self.hasFileIcon = True
-        self.hasNewIcon = False
-        self.hasEditIcon = False
         self.IconPath = u'presentations/presentation'
         self.OnNewPrompt = u'Select Presentation(s)'
         self.OnNewFileMasks = u'Presentations (*.ppt *.pps *.odp)'
@@ -62,6 +59,12 @@ class PresentationMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = PresentationListView
         MediaManagerItem.__init__(self, parent, icon, title)
         self.message_listener = MessageListener(controllers)
+
+    def requiredIcons(self):
+        MediaManagerItem.requiredIcons(self)
+        self.hasFileIcon = True
+        self.hasNewIcon = False
+        self.hasEditIcon = False
 
     def addEndHeaderBar(self):
         self.PresentationWidget = QtGui.QWidget(self)

@@ -48,9 +48,6 @@ class ImageMediaItem(MediaManagerItem):
         self.PluginTextShort = u'Image'
         self.ConfigSection = u'images'
         self.IconPath = u'images/image'
-        self.hasFileIcon = True
-        self.hasNewIcon = False
-        self.hasEditIcon = False
         self.OnNewPrompt = u'Select Image(s)'
         self.OnNewFileMasks = u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
         # this next is a class, not an instance of a class - it will
@@ -60,6 +57,12 @@ class ImageMediaItem(MediaManagerItem):
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
         self.overrideActive = False
+
+    def requiredIcons(self):
+        MediaManagerItem.requiredIcons(self)
+        self.hasFileIcon = True
+        self.hasNewIcon = False
+        self.hasEditIcon = False
 
     def initialise(self):
         self.ListView.setSelectionMode(

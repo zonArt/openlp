@@ -46,9 +46,6 @@ class CustomMediaItem(MediaManagerItem):
         self.PluginTextShort = u'Custom'
         self.ConfigSection = u'custom'
         self.IconPath = u'custom/custom'
-        self.hasFileIcon = False
-        self.hasNewIcon = True
-        self.hasEditIcon = True
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = CustomListView
@@ -56,6 +53,10 @@ class CustomMediaItem(MediaManagerItem):
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
         self.parent = parent
+
+    def requiredIcons(self):
+        MediaManagerItem.requiredIcons(self)
+        self.hasFileIcon = False
 
     def initialise(self):
         self.loadCustomListView(self.parent.custommanager.get_all_slides())

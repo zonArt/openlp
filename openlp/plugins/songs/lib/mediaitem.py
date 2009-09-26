@@ -48,9 +48,6 @@ class SongMediaItem(MediaManagerItem):
         self.PluginTextShort = u'Song'
         self.ConfigSection = u'song'
         self.IconPath = u'songs/song'
-        self.hasFileIcon = False
-        self.hasNewIcon = True
-        self.hasEditIcon = True
         self.ListViewWithDnD_class = SongListView
         self.ServiceItemIconName = u':/media/song_image.png'
         self.servicePath = None
@@ -58,6 +55,10 @@ class SongMediaItem(MediaManagerItem):
         self.edit_song_form = EditSongForm(self.parent.songmanager, self)
         self.song_maintenance_form = SongMaintenanceForm(
             self.parent.songmanager, self)
+
+    def requiredIcons(self):
+        MediaManagerItem.requiredIcons(self)
+        self.hasFileIcon = False
 
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
