@@ -56,25 +56,25 @@ class MessageListener(object):
         Save the handler as any new presentations start here
         """
         self.handler, file = self.decodeMessage(message)
-        self.controllers[self.handler].loadPresentation(file)
+        self.controllers[self.handler].load_presentation(file)
 
     def next(self, message):
         """
         Based on the handler passed at startup triggers the next slide event
         """
-        self.controllers[self.handler].nextStep()
+        self.controllers[self.handler].next_step()
 
     def previous(self, message):
         """
         Based on the handler passed at startup triggers the previous slide event
         """
-        self.controllers[self.handler].previousStep()
+        self.controllers[self.handler].previous_step()
 
     def shutDown(self, message):
         """
         Based on the handler passed at startup triggers slide show to shut down
         """
-        self.controllers[self.handler].closePresentation()
+        self.controllers[self.handler].close_presentation()
 
     def decodeMessage(self, message):
         """

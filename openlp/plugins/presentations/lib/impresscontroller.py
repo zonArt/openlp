@@ -36,7 +36,10 @@ else:
 
 from PyQt4 import QtCore
 
-class ImpressController(object):
+from presentationcontroller import PresentationController
+
+
+class ImpressController(PresentationController):
     """
     Class to control interactions with Impress presentations.
     It creates the runtime environment, loads and closes the presentation as
@@ -45,14 +48,29 @@ class ImpressController(object):
     global log
     log = logging.getLogger(u'ImpressController')
 
-    def __init__(self):
+    def __init__(self, plugin):
+        """
+        Initialise the class
+        """
         log.debug(u'Initialising')
+        PresentationController.__init__(self, plugin, u'Impress')
         self.process = None
         self.document = None
         self.presentation = None
-        self.startOpenoffice()
+        self.controller = None
 
-    def startOpenoffice(self):
+    def is_available(self):
+        """
+        PPT Viewer is able to run on this machine
+        """
+        log.debug(u'is_available')
+        try:
+            self.start_process()
+            return True
+        except:
+            return False
+        
+    def start_process(self):
         """
         Loads a running version of OpenOffice in the background.
         It is not displayed to the user but is available to the UNO interface
@@ -71,9 +89,9 @@ class ImpressController(object):
         Called at system exit to clean up any running presentations
         """
         log.debug(u'Kill')
-        self.closePresentation()
+        self.close_presentation()
 
-    def loadPresentation(self, presentation):
+    def load_presentation(self, presentation):
         """
         Called when a presentation is added to the SlideController.
         It builds the environment, starts communcations with the background
@@ -86,10 +104,10 @@ class ImpressController(object):
         """
         log.debug(u'LoadPresentation')
         if os.name == u'nt':
-            desktop = self.getCOMDesktop()
+            desktop = self.get_com_desktop()
             url = u'file:///' + presentation.replace(u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
         else:
-            desktop = self.getUNODesktop()
+            desktop = self.get_uno_desktop()
             url = uno.systemPathToFileUrl(presentation)
         if desktop is None:
             return
@@ -100,12 +118,12 @@ class ImpressController(object):
                 url, "_blank", 0, properties)
             self.presentation = self.document.getPresentation()
             self.presentation.start()
-            self.xSlideShowController = \
+            self.controller = \
                 desktop.getCurrentComponent().Presentation.getController()
         except:
             log.exception(u'Failed to load presentation')
 
-    def getUNODesktop(self):
+    def get_uno_desktop(self):
         log.debug(u'getUNODesktop')
         ctx = None
         loop = 0
@@ -127,7 +145,7 @@ class ImpressController(object):
             log.exception(u'Failed to get UNO desktop')
             return None
 
-    def getCOMDesktop(self):
+    def get_com_desktop(self):
         log.debug(u'getCOMDesktop')
         try:
             smgr = Dispatch("com.sun.star.ServiceManager")
@@ -137,7 +155,7 @@ class ImpressController(object):
             log.exception(u'Failed to get COM desktop')
             return None
 
-    def closePresentation(self):
+    def close_presentation(self):
         """
         Close presentation and clean up objects
         Triggerent by new object being added to SlideController orOpenLP
@@ -150,43 +168,45 @@ class ImpressController(object):
             self.document.dispose()
             self.document = None
 
-    def isActive(self):
+    def is_loaded(self):
+        return self.presentation is not None and self.document is not None
+
+    def is_active(self):
+        if not self.is_loaded():
+            return False
         return self.presentation.isRunning() and self.presentation.isActive()
 
-    def resume(self):
+    def unblank_screen(self):
         return self.presentation.resume()
 
-    def pause(self):
-        return self.presentation.pause()
-
-    def blankScreen(self):
+    def blank_screen(self):
         self.presentation.blankScreen(0)
 
-    def stop(self):
+    def stop_presentation(self):
         self.presentation.deactivate()
         # self.presdoc.end()
 
-    def go(self):
+    def start_presentation(self):
         self.presentation.activate()
         # self.presdoc.start()
 
-    def getSlideNumber(self):
+    def get_slide_number(self):
         return self.presentation.getCurrentSlideIndex
 
-    def setSlideNumber(self, slideno):
+    def goto_slide(self, slideno):
         self.presentation.gotoSlideIndex(slideno)
 
-    slideNumber = property(getSlideNumber, setSlideNumber)
-
-    def nextStep(self):
+    def next_step(self):
        """
        Triggers the next effect of slide on the running presentation
        """
-       self.xSlideShowController.gotoNextEffect()
+       self.controller.gotoNextEffect()
 
-    def previousStep(self):
+    def previous_step(self):
         """
         Triggers the previous slide on the running presentation
         """
-        self.xSlideShowController.gotoPreviousSlide()
+        self.controller.gotoPreviousSlide()
+
+    # def get_slide_preview_file(self, slide_no):
 
