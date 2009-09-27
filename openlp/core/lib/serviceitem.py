@@ -24,6 +24,7 @@
 
 import logging
 import os
+import time
 
 from PyQt4 import QtGui
 
@@ -93,6 +94,7 @@ class ServiceItem(object):
             else:
                 self.RenderManager.set_override_theme(self.theme)
             for slide in self.service_frames:
+                before = time.time()
                 formated = self.RenderManager.format_slide(slide[u'raw_slide'])
                 for format in formated:
                     frame = None
@@ -102,6 +104,7 @@ class ServiceItem(object):
                     title = lines.split(u'\n')[0]
                     self.frames.append({u'title': title, u'text': lines,
                         u'image': frame})
+                log.info(u'Formatting took %4s' % (time.time() - before))
         elif self.service_item_type == ServiceType.Command:
             self.frames = self.service_frames
         elif self.service_item_type == ServiceType.Image:

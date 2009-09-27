@@ -361,8 +361,8 @@ c
                             v = self.bible_db_cache[bible].get_bible_chapter(
                                 book.id, chapter)
                             if v is None:
-                                self.media.setQuickMsg2(u'%s: %s'% (
-                                    bookname, chapter))
+                                self.media.setQuickMessage \
+                                    (u'%Downloading %s: %s'% (bookname, chapter))
                                 self.bible_db_cache[bible].create_chapter(
                                     book.id, chapter,
                                     search_results.get_verselist())
