@@ -22,12 +22,10 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import os
-
+from presentationcontroller import PresentationController
 from impresscontroller import ImpressController
-if os.name == u'nt':
-    #from powerpointcontroller import PowerpointController
-    from pptviewcontroller import PptviewController
+from powerpointcontroller import PowerpointController
+from pptviewcontroller import PptviewController
 from messagelistener import MessageListener
 from mediaitem import PresentationMediaItem
 from presentationtab import PresentationTab
