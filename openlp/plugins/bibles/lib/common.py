@@ -153,7 +153,6 @@ class BibleCommon(object):
         text = text.replace(u'</P>', u'')
         text = text.replace(u'<BR>', u'')
         text = text.replace(u'<BR />', u'')
-        #text = text.replace(chr(189), u'1/2');print "l"
         text = text.replace(u'&quot;', u'\"')
         text = text.replace(u'&apos;', u'\'')
         # Remove some other tags

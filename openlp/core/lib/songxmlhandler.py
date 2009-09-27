@@ -93,7 +93,7 @@ class SongXMLBuilder(object):
         """
         Debugging aid to dump XML so that we can see what we have.
         """
-        print self.song_xml.toprettyxml(indent=u'  ')
+        return self.song_xml.toprettyxml(indent=u'  ')
 
     def extract_xml(self):
         """
@@ -149,4 +149,4 @@ class SongXMLParser(object):
         """
         Debugging aid to dump XML so that we can see what we have.
         """
-        print dump(self.song_xml)
+        return dump(self.song_xml)

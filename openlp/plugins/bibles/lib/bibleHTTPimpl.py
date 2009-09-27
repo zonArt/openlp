@@ -57,28 +57,23 @@ class BGExtract(BibleCommon):
             unicode(bookid) + u'&chapter' + unicode(chapter) + u'&version=' + \
             unicode(version)
         xml_string = self._get_web_text(urlstring, self.proxyurl)
-        #print xml_string
         VerseSearch = u'class=' + u'"' + u'sup' + u'"' + u'>'
         verse = 1
         i = xml_string.find(u'result-text-style-normal')
         xml_string = xml_string[i:len(xml_string)]
         versePos = xml_string.find(VerseSearch)
-        #print versePos
         bible = {}
         while versePos > -1:
-            verseText = '' # clear out string
+            # clear out string
+            verseText = ''
             versePos = xml_string.find(u'</span', versePos)
             i = xml_string.find(VerseSearch, versePos+1)
-            #print i, versePos
             if i == -1:
                 i = xml_string.find(u'</div', versePos+1)
                 j = xml_string.find(u'<strong', versePos+1)
-                #print i, j
                 if j > 0 and j < i:
                     i = j
                 verseText = xml_string[versePos + 7 : i ]
-                #print xml_string
-                #print 'VerseText = ' + unicode(verse) +' '+ verseText
                 bible[verse] = self._clean_text(verseText) # store the verse
                 versePos = -1
             else:
@@ -121,9 +116,9 @@ class CWExtract(BibleCommon):
         log.debug(u'get_bible_chapter %s,%s,%s,%s',
             version, bookid, bookname, chapter)
         bookname = bookname.replace(u' ', u'')
-        urlstring = u'http://bible.crosswalk.com/OnlineStudyBible/bible.cgi?word=%s+%d&version=%s' % (bookname, chapter, version)
+        urlstring = u'http://bible.crosswalk.com/OnlineStudyBible/bible.cgi?word=%s+%d&version=%s'\
+            % (bookname, chapter, version)
         xml_string = self._get_web_text(urlstring, self.proxyurl)
-        #log.debug(u'Return data %s', xml_string)
         ## Strip Book Title from Heading to return it to system
         ##
         i= xml_string.find(u'<title>')
@@ -136,11 +131,8 @@ class CWExtract(BibleCommon):
         book_title = book_title[:i].rstrip()
         log.debug(u'Book Title %s', book_title)
         log.debug(u'Book Chapter %s', book_chapter)
+        # Strip Verse Data from Page and build an array
 
-        ## Strip Verse Data from Page and build an array
-        ##
-        #log.debug(u'bible data %s', xml_string)
-        #print xml_string
         i= xml_string.find(u'NavCurrentChapter')
         xml_string = xml_string[i:len(xml_string)]
         i= xml_string.find(u'<TABLE')
@@ -153,15 +145,13 @@ class CWExtract(BibleCommon):
         #remove the <B> at the front
         xml_string = xml_string[i + 3 :len(xml_string)]
         versePos = xml_string.find(u'<BLOCKQUOTE>')
-        #log.debug(u'verse pos %d', versePos)
         bible = {}
         while versePos > 0:
             verseText = u''
             versePos = xml_string.find(u'<B><I>', versePos) + 6
             i = xml_string.find(u'</I></B>', versePos)
-            #log.debug( versePos, i)
-            verse= xml_string[versePos:i] # Got the Chapter
-            #log.debug( 'Chapter = %s', verse)
+            # Got the Chapter
+            verse= xml_string[versePos:i]
             # move the starting position to begining of the text
             versePos = i + 8
             # find the start of the next verse
@@ -171,14 +161,9 @@ class CWExtract(BibleCommon):
                 verseText = xml_string[versePos: i]
                 versePos = 0
             else:
-                #log.debug( i, versePos)
                 verseText = xml_string[versePos: i]
                 versePos = i
-            #print verseText
-            #print self._clean_text(verseText)
             bible[verse] = self._clean_text(verseText)
-
-        #log.debug( bible)
         return SearchResults(book_title, book_chapter, bible)
 
 class BibleHTTPImpl():

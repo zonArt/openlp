@@ -474,11 +474,8 @@ class BibleMediaItem(MediaManagerItem):
                 start_chapter = chapter
         else:
             # more complex
-            #print search
             sp = search.split(u'-') #find first
-            #print sp, len(sp)
             sp1 = sp[0].split(u':')
-            #print sp1, len(sp1)
             if len(sp1) == 1:
                 start_chapter = sp1[0]
                 start_verse = 1

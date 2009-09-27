@@ -396,7 +396,6 @@ class Renderer(object):
         startx = x
         starty = y
         rightextent = None
-        #print "inputs", startx, starty, maxx, maxy
         # dont allow alignment messing with footers
         if footer:
             align = 0
@@ -404,7 +403,6 @@ class Renderer(object):
         else:
             align = int(self._theme .display_horizontalAlign)
             shadow_offset = self._shadow_offset
-        #print lines
         for linenum in range(len(lines)):
             line = lines[linenum]
             #find out how wide line is
