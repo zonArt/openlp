@@ -30,7 +30,7 @@ class MessageListener(object):
     controller and passes the messages on the the correct presentation handlers
     """
     global log
-    log=logging.getLogger(u'MessageListener')
+    log = logging.getLogger(u'MessageListener')
     log.info(u'Message Listener loaded')
 
     def __init__(self, controllers):

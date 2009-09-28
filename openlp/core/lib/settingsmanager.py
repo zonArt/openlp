@@ -65,13 +65,13 @@ class SettingsManager(object):
     def setUIItemVisibility(self, item=u'', isVisible=True):
         if item != u'':
             if item == u'ThemeManagerDock':
-                ConfigHelper.set_config('user interface',
+                ConfigHelper.set_config(u'user interface',
                     u'display thememanager', isVisible)
             elif item == u'ServiceManagerDock':
-                ConfigHelper.set_config('user interface',
+                ConfigHelper.set_config(u'user interface',
                     u'display servicemanager', isVisible)
             elif item == u'MediaManagerDock':
-                ConfigHelper.set_config('user interface',
+                ConfigHelper.set_config(u'user interface',
                     u'display mediamanager', isVisible)
 
     def togglePreviewPanel(self, isVisible):

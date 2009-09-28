@@ -32,7 +32,7 @@ class MainDisplay(QtGui.QWidget):
     This is the form that is used to display things on the projector.
     """
     global log
-    log=logging.getLogger(u'MainDisplay')
+    log = logging.getLogger(u'MainDisplay')
     log.info(u'MainDisplay Loaded')
 
     def __init__(self, parent, screens):

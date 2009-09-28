@@ -88,7 +88,7 @@ class BGExtract(BibleCommon):
 
 class CWExtract(BibleCommon):
     global log
-    log=logging.getLogger(u'BibleHTTPMgr(CWExtract)')
+    log = logging.getLogger(u'BibleHTTPMgr(CWExtract)')
     log.info(u'CWExtract loaded')
 
     def __init__(self, proxyurl=None):
@@ -168,7 +168,7 @@ class CWExtract(BibleCommon):
 
 class BibleHTTPImpl():
     global log
-    log=logging.getLogger(u'BibleHTTPMgr')
+    log = logging.getLogger(u'BibleHTTPMgr')
     log.info(u'BibleHTTP manager loaded')
     def __init__(self):
         """

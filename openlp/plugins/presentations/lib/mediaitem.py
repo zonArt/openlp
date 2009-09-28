@@ -43,7 +43,7 @@ class PresentationMediaItem(MediaManagerItem):
     It can present files using Openoffice
     """
     global log
-    log=logging.getLogger(u'PresentationsMediaItem')
+    log = logging.getLogger(u'PresentationsMediaItem')
     log.info(u'Presentations Media Item loaded')
 
     def __init__(self, parent, icon, title, controllers):

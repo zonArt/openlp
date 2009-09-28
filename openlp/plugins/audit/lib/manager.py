@@ -33,7 +33,7 @@ class AuditManager():
     """
 
     global log
-    log=logging.getLogger(u'AuditManager')
+    log = logging.getLogger(u'AuditManager')
     log.info(u'Audit manager loaded')
 
     def __init__(self, config):
