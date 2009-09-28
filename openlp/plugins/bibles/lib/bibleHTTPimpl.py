@@ -28,7 +28,7 @@ from common import BibleCommon, SearchResults
 
 class BGExtract(BibleCommon):
     global log
-    log=logging.getLogger(u'BibleHTTPMgr(BG_extract)')
+    log = logging.getLogger(u'BibleHTTPMgr(BG_extract)')
     log.info(u'BG_extract loaded')
 
     def __init__(self, proxyurl= None):
@@ -65,7 +65,7 @@ class BGExtract(BibleCommon):
         bible = {}
         while versePos > -1:
             # clear out string
-            verseText = ''
+            verseText = u''
             versePos = xml_string.find(u'</span', versePos)
             i = xml_string.find(VerseSearch, versePos+1)
             if i == -1:
@@ -121,8 +121,8 @@ class CWExtract(BibleCommon):
         xml_string = self._get_web_text(urlstring, self.proxyurl)
         ## Strip Book Title from Heading to return it to system
         ##
-        i= xml_string.find(u'<title>')
-        j= xml_string.find(u'-', i)
+        i = xml_string.find(u'<title>')
+        j = xml_string.find(u'-', i)
         book_title = xml_string[i + 7:j]
         book_title = book_title.rstrip()
         log.debug(u'Book Title %s', book_title)
@@ -133,15 +133,15 @@ class CWExtract(BibleCommon):
         log.debug(u'Book Chapter %s', book_chapter)
         # Strip Verse Data from Page and build an array
 
-        i= xml_string.find(u'NavCurrentChapter')
+        i = xml_string.find(u'NavCurrentChapter')
         xml_string = xml_string[i:len(xml_string)]
-        i= xml_string.find(u'<TABLE')
+        i = xml_string.find(u'<TABLE')
         xml_string = xml_string[i:len(xml_string)]
-        i= xml_string.find(u'<B>')
+        i = xml_string.find(u'<B>')
         #remove the <B> at the front
         xml_string = xml_string[i + 3 :len(xml_string)]
         # Remove the heading for the book
-        i= xml_string.find(u'<B>')
+        i = xml_string.find(u'<B>')
         #remove the <B> at the front
         xml_string = xml_string[i + 3 :len(xml_string)]
         versePos = xml_string.find(u'<BLOCKQUOTE>')
@@ -151,7 +151,7 @@ class CWExtract(BibleCommon):
             versePos = xml_string.find(u'<B><I>', versePos) + 6
             i = xml_string.find(u'</I></B>', versePos)
             # Got the Chapter
-            verse= xml_string[versePos:i]
+            verse = xml_string[versePos:i]
             # move the starting position to begining of the text
             versePos = i + 8
             # find the start of the next verse
@@ -180,8 +180,7 @@ class BibleHTTPImpl():
 
         Init confirms the bible exists and stores the database path.
         """
-        #bible = {}
-        self.biblesource = ''
+        self.biblesource = u''
         self.proxyurl = None
         self.bibleid = None
 
