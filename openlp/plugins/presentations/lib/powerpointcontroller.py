@@ -150,10 +150,10 @@ class PowerpointController(PresentationController):
             self.presentation.SlideShowSettings.Run()
             rendermanager = self.plugin.render_manager
             rect = rendermanager.screen_list[rendermanager.current_display][u'size']
-            self.presentation.SlideShowWindow.Top = rect.y() / 20
-            self.presentation.SlideShowWindow.Height = rect.height() / 20
-            self.presentation.SlideShowWindow.Left = rect.x() / 20
-            self.presentation.SlideShowWindow.Width = rect.width() / 20
+            self.presentation.SlideShowWindow.Top = rect.y() 
+            self.presentation.SlideShowWindow.Height = rect.height() 
+            self.presentation.SlideShowWindow.Left = rect.x() 
+            self.presentation.SlideShowWindow.Width = rect.width() 
 
         def get_slide_number(self):
             """
@@ -168,10 +168,19 @@ class PowerpointController(PresentationController):
             return self.presentation.Slides.Count
         
         def goto_slide(self, slideno):
+            """
+            Moves to a specific slide in the presentation
+            """
             self.presentation.SlideShowWindow.View.GotoSlide(slideno)
 
         def next_step(self):
+            """
+            Triggers the next effect of slide on the running presentation
+            """
             self.presentation.SlideShowWindow.View.Next()
 
         def previous_step(self):
+            """
+            Triggers the previous slide on the running presentation
+            """
             self.presentation.SlideShowWindow.View.Previous()
