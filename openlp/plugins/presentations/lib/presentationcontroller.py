@@ -108,7 +108,6 @@ class PresentationController(object):
         """
         self.plugin = plugin
         self.name = name
-        self.start_process()
 
     def is_available(self):
         """
