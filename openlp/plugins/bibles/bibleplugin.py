@@ -31,7 +31,7 @@ from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 
 class BiblePlugin(Plugin):
     global log
-    log=logging.getLogger(u'BiblePlugin')
+    log = logging.getLogger(u'BiblePlugin')
     log.info(u'Bible Plugin loaded')
 
     def __init__(self, plugin_helpers):

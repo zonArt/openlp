@@ -30,7 +30,7 @@ from openlp.core.lib import Receiver
 
 class BibleCSVImpl(BibleCommon):
     global log
-    log=logging.getLogger(u'BibleCSVImpl')
+    log = logging.getLogger(u'BibleCSVImpl')
     log.info(u'BibleCVSImpl loaded')
     def __init__(self, bibledb):
         """

@@ -76,7 +76,9 @@ class BibleMediaItem(MediaManagerItem):
         # Add the Quick Search tab
         self.QuickTab = QtGui.QWidget()
         self.QuickTab.setObjectName(u'QuickTab')
-        self.QuickLayout = QtGui.QGridLayout(self.QuickTab)
+        self.QuickVerticalLayout = QtGui.QVBoxLayout(self.QuickTab)
+        self.QuickVerticalLayout.setObjectName("verticalLayout")
+        self.QuickLayout = QtGui.QGridLayout()
         self.QuickLayout.setMargin(5)
         self.QuickLayout.setSpacing(4)
         self.QuickLayout.setObjectName(u'QuickLayout')
@@ -107,12 +109,10 @@ class BibleMediaItem(MediaManagerItem):
         self.ClearQuickSearchComboBox = QtGui.QComboBox(self.QuickTab)
         self.ClearQuickSearchComboBox.setObjectName(u'ClearQuickSearchComboBox')
         self.QuickLayout.addWidget(self.ClearQuickSearchComboBox, 3, 1, 1, 1)
-        self.QuickMsg1 = QtGui.QLabel(self.QuickTab)
-        self.QuickMsg1.setObjectName(u'QuickSearchLabel')
-        self.QuickLayout.addWidget(self.QuickMsg1, 4, 0, 1, 1)
-        self.QuickMsg2 = QtGui.QLabel(self.QuickTab)
-        self.QuickMsg2.setObjectName(u'QuickSearchLabel')
-        self.QuickLayout.addWidget(self.QuickMsg2, 4, 1, 1, 1)
+        self.QuickVerticalLayout.addLayout(self.QuickLayout)
+        self.QuickMessage = QtGui.QLabel(self.QuickTab)
+        self.QuickMessage.setObjectName(u'QuickMessage')
+        self.QuickVerticalLayout.addWidget(self.QuickMessage)
         self.SearchTabWidget.addTab(self.QuickTab, 'Quick')
         QuickSpacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
             QtGui.QSizePolicy.Expanding)
@@ -230,14 +230,11 @@ class BibleMediaItem(MediaManagerItem):
         self.loadBibles()
         self.parent.biblemanager.set_media_manager(self)
 
-    def setQuickMsg1(self, text):
-        self.QuickMsg1.setText(translate(u'BibleMediaItem', unicode(text)))
-
-    def setQuickMsg2(self, text):
-        self.QuickMsg2.setText(translate(u'BibleMediaItem', unicode(text)))
+    def setQuickMessage(self, text):
+        self.QuickMessage.setText(translate(u'BibleMediaItem', unicode(text)))
         Receiver().send_message(u'process_events')
         #minor delay to get the events processed
-        time.sleep(0.5)
+        time.sleep(0.1)
 
     def loadBibles(self):
         log.debug(u'Loading Bibles')

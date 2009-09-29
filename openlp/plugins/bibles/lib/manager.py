@@ -322,8 +322,7 @@ c
         Rest can be guessed at !
         """
         text = []
-        self.media.setQuickMsg1(u'')
-        self.media.setQuickMsg2(u'')
+        self.media.setQuickMessage(u'')
         log.debug(u'get_verse_text %s,%s,%s,%s,%s,%s',
             bible, bookname, schapter, echapter, sverse, everse)
         # check to see if book/chapter exists fow HTTP bibles and load cache
@@ -331,10 +330,10 @@ c
         if self.bible_http_cache[bible] is not None:
             book = self.bible_db_cache[bible].get_bible_book(bookname)
             if book is None:
-                self.media.setQuickMsg1(u'Downloading')
                 log.debug(u'get_verse_text : new book')
                 for chapter in range(schapter, echapter + 1):
-                    self.media.setQuickMsg2(u'%s: %s'% (bookname, chapter))
+                    self.media.setQuickMessage \
+                        (u'Downloading %s: %s'% (bookname, chapter))
                     search_results = \
                         self.bible_http_cache[bible].get_bible_chapter(
                             bible, 0, bookname, chapter)
@@ -362,8 +361,8 @@ c
                             v = self.bible_db_cache[bible].get_bible_chapter(
                                 book.id, chapter)
                             if v is None:
-                                self.media.setQuickMsg2(u'%s: %s'% (
-                                    bookname, chapter))
+                                self.media.setQuickMessage \
+                                    (u'%Downloading %s: %s'% (bookname, chapter))
                                 self.bible_db_cache[bible].create_chapter(
                                     book.id, chapter,
                                     search_results.get_verselist())
@@ -374,9 +373,8 @@ c
                         book.id, chapter)
                     if v is None:
                         try:
-                            self.media.setQuickMsg1(u'Downloading')
-                            self.media.setQuickMsg2(u'%s: %s'% \
-                                (bookname, chapter))
+                            self.media.setQuickMessage \
+                                (u'Downloading %s: %s'% (bookname, chapter))
                             search_results = \
                                 self.bible_http_cache[bible].get_bible_chapter(
                                     bible, book.id, bookname, chapter)

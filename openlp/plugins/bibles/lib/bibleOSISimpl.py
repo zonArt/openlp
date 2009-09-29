@@ -60,7 +60,7 @@ class BibleOSISImpl():
         filepath = os.path.split(os.path.abspath(__file__))[0]
         filepath = os.path.abspath(os.path.join(
             filepath, u'..', u'resources',u'osisbooks.csv'))
-        fbibles=open(filepath, u'r')
+        fbibles = open(filepath, u'r')
         for line in fbibles:
             p = line.split(u',')
             self.booksOfBible[p[0]] = p[1].replace(u'\n', u'')
@@ -99,9 +99,11 @@ class BibleOSISImpl():
             if self.loadbible == False:
                 break
             pos = file_record.find(verseText)
-            if pos > -1: # we have a verse
-                epos= file_record.find(u'>', pos)
-                ref = file_record[pos+15:epos-1]  # Book Reference
+            # we have a verse
+            if pos > -1:
+                epos = file_record.find(u'>', pos)
+                # Book Reference
+                ref = file_record[pos+15:epos-1]
                 #lets find the bible text only
                 # find start of text
                 pos = epos + 1

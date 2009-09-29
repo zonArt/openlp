@@ -162,6 +162,7 @@ class AboutForm(QtGui.QDialog):
             u'    Scott \"sguerrieri\" Guerrieri\n'
             u'    Raoul \"superfly\" Snyman\n'
             u'    Martin \"mijiti\" Thompson\n'
+            u'    Jon \"Meths\" Tibble\n'
             u'    Carsten \"catini\" Tingaard'))
         self.AboutNotebook.setTabText(
             self.AboutNotebook.indexOf(self.CreditsTab),

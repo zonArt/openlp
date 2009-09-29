@@ -40,7 +40,7 @@ class CustomPlugin(Plugin):
     """
 
     global log
-    log=logging.getLogger(u'CustomPlugin')
+    log = logging.getLogger(u'CustomPlugin')
     log.info(u'Custom Plugin loaded')
 
     def __init__(self, plugin_helpers):

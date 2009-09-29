@@ -49,7 +49,7 @@ class AuditPlugin(Plugin):
         """
         Check to see if auditing is required
         """
-        log.debug('check_pre_conditions')
+        log.debug(u'check_pre_conditions')
         #Lets see if audit is required
         if int(self.config.get_config(u'startup', 0)) == QtCore.Qt.Checked:
             return True

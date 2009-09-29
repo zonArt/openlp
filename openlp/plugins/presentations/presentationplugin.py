@@ -36,7 +36,7 @@ class PresentationPlugin(Plugin):
 
     def __init__(self, plugin_helpers):
         # Call the parent constructor
-        log.debug('Initialised')
+        log.debug(u'Initialised')
         self.controllers = {}
         Plugin.__init__(self, u'Presentations', u'1.9.0', plugin_helpers)
         self.weight = -8
@@ -66,7 +66,7 @@ class PresentationPlugin(Plugin):
         Check to see if we have any presentation software available
         If Not do not install the plugin.
         """
-        log.debug('check_pre_conditions')
+        log.debug(u'check_pre_conditions')
         #Lets see if Powerpoint is required (Default is Not wanted)
         controller = PowerpointController(self)
         if int(self.config.get_config(

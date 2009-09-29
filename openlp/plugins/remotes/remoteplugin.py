@@ -39,7 +39,7 @@ class RemotesPlugin(Plugin):
         """
         Check to see if remotes is required
         """
-        log.debug('check_pre_conditions')
+        log.debug(u'check_pre_conditions')
         #Lets see if Remote is required
         if int(self.config.get_config(u'startup', 0)) == QtCore.Qt.Checked:
             return True

@@ -104,15 +104,15 @@ class BibleCommon(object):
             urllib2.install_opener(opener)
         xml_string = u''
         req = urllib2.Request(urlstring)
-        req.add_header('User-Agent', 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)')
+        req.add_header(u'User-Agent', u'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)')
         try:
             handle = urllib2.urlopen(req)
             html = handle.read()
             details = chardet.detect(html)
-            xml_string = unicode(html, details['encoding'])
+            xml_string = unicode(html, details[u'encoding'])
         except IOError, e:
             if hasattr(e, u'reason'):
-                log.error(u'Reason : %s', e.reason)
+                log.exception(u'Reason for failure: %s', e.reason)
         return xml_string
 
     def _clean_text(self, text):
