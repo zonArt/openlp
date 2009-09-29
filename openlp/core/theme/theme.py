@@ -25,7 +25,7 @@
 import types
 
 from xml.etree.ElementTree import ElementTree, XML
-from PyQt4.QtGui import QColor
+from PyQt4 import QtGui
 
 DelphiColors={"clRed":0xFF0000,
                 "clBlue":0x0000FF,
@@ -135,7 +135,7 @@ class Theme(object):
                 if (element.tag.find(u'Color') > 0 or
                     (element.tag.find(u'BackgroundParameter') == 0 and type(val) == type(0))):
                     # convert to a wx.Colour
-                    val = QColor((val>>16) & 0xFF, (val>>8)&0xFF, val&0xFF)
+                    val = QtGui.QColor((val>>16) & 0xFF, (val>>8)&0xFF, val&0xFF)
                 setattr(self, element.tag, val)
 
     def __str__(self):

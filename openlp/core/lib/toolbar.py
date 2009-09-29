@@ -24,12 +24,11 @@
 
 import logging
 
-from PyQt4.QtGui import QToolBar, QIcon
-from PyQt4.QtCore import QSize
+from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import buildIcon
 
-class OpenLPToolbar(QToolBar):
+class OpenLPToolbar(QtGui.QToolBar):
     """
     Lots of toolbars around the place, so it makes sense to have a common way
     to manage them. This is the base toolbar class.
@@ -38,10 +37,10 @@ class OpenLPToolbar(QToolBar):
         """
         Initialise the toolbar.
         """
-        QToolBar.__init__(self, None)
+        QtGui.QToolBar.__init__(self, None)
         # useful to be able to reuse button icons...
         self.icons = {}
-        self.setIconSize(QSize(20, 20))
+        self.setIconSize(QtCore.QSize(20, 20))
         self.actions = {}
         self.log = logging.getLogger(u'OpenLPToolbar')
         self.log.debug(u'Init done')
@@ -105,7 +104,7 @@ class OpenLPToolbar(QToolBar):
             return self.icons[title]
         else:
             self.log.error(u'getIconFromTitle - no icon for %s' % title)
-            return QIcon()
+            return QtGui.QIcon()
 
     def makeWidgetsInvisible(self, widgets):
         """

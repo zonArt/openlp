@@ -28,8 +28,7 @@ import logging
 
 from logging.handlers import RotatingFileHandler
 from optparse import OptionParser
-from PyQt4.QtCore import QObject, SIGNAL
-from PyQt4.QtGui import QApplication
+from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, str_to_bool
 from openlp.core.resources import qInitResources
@@ -38,7 +37,7 @@ from openlp.core.utils import ConfigHelper
 
 log = logging.getLogger()
 
-class OpenLP(QApplication):
+class OpenLP(QtGui.QApplication):
     """
     The core application class. This class inherits from Qt's QApplication
     class in order to provide the core of the application.
@@ -56,8 +55,8 @@ class OpenLP(QApplication):
         except:
             pass
         #provide a listener for widgets to reqest a screen update.
-        QObject.connect(Receiver.get_receiver(),
-            SIGNAL(u'process_events'), self.processEvents)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'process_events'), self.processEvents)
         self.setApplicationName(u'OpenLP')
         self.setApplicationVersion(u'1.9.0')
         show_splash = str_to_bool(ConfigHelper.get_registry().get_value(

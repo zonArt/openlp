@@ -29,8 +29,7 @@ OpenLP work.
 
 import types
 
-from PyQt4.QtCore import QObject, SIGNAL
-from PyQt4.QtGui import QAction, QIcon, QImage, QPixmap, QApplication as QApp
+from PyQt4 import QtCore, QtGui
 
 def translate(context, text):
     """
@@ -45,7 +44,8 @@ def translate(context, text):
     ``text``
         The text to put into the translation tables for translation.
     """
-    return QApp.translate(context, text, None, QApp.UnicodeUTF8)
+    return QtGui.QApplication.translate(
+        context, text, None, QtGui.QApplication.UnicodeUTF8)
 
 def file_to_xml(xmlfile):
     """
@@ -79,31 +79,33 @@ def buildIcon(icon):
         ``:/resource/file.png``, or a file location like ``/path/to/file.png``.
     """
     ButtonIcon = None
-    if type(icon) is QIcon:
+    if type(icon) is QtGui.QIcon:
         ButtonIcon = icon
     elif type(icon) is types.StringType or type(icon) is types.UnicodeType:
-        ButtonIcon = QIcon()
+        ButtonIcon = QtGui.QIcon()
         if icon.startswith(u':/'):
-            ButtonIcon.addPixmap(QPixmap(icon), QIcon.Normal, QIcon.Off)
+            ButtonIcon.addPixmap(
+                QtGui.QPixmap(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         else:
-            ButtonIcon.addPixmap(QPixmap.fromImage(QImage(icon)),
-                QIcon.Normal, QIcon.Off)
-    elif type(icon) is QImage:
-        ButtonIcon = QIcon()
-        ButtonIcon.addPixmap(QPixmap.fromImage(icon), QIcon.Normal, QIcon.Off)
+            ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
+                QtGui.QIcon.Normal, QtGui.QIcon.Off)
+    elif type(icon) is QtGui.QImage:
+        ButtonIcon = QtGui.QIcon()
+        ButtonIcon.addPixmap(
+            QtGui.QPixmap.fromImage(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
     return ButtonIcon
 
 def contextMenuAction(base, icon, text, slot):
     """
     Utility method to help build context menus for plugins
     """
-    action = QAction(text, base)
+    action = QtGui.QAction(text, base)
     action.setIcon(buildIcon(icon))
-    QObject.connect(action, SIGNAL(u'triggered()'), slot)
+    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
     return action
 
 def contextMenuSeparator(base):
-    action = QAction("", base)
+    action = QtGui.QAction("", base)
     action.setSeparator(True)
     return action
 

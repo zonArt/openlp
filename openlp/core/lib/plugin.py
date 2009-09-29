@@ -23,8 +23,7 @@
 ###############################################################################
 
 import logging
-
-from PyQt4.QtCore import QObject, SIGNAL
+from PyQt4 import QtCore
 
 from openlp.core.lib import PluginConfig, Receiver
 
@@ -138,8 +137,8 @@ class Plugin(object):
         self.render_manager = plugin_helpers[u'render']
         self.service_manager = plugin_helpers[u'service']
         self.settings = plugin_helpers[u'settings']
-        QObject.connect(Receiver.get_receiver(),
-            SIGNAL(u'%s_add_service_item'% self.name), self.process_add_service_event)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_add_service_item'% self.name), self.process_add_service_event)
 
     def check_pre_conditions(self):
         """

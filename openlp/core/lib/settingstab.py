@@ -22,11 +22,11 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4.QtGui import QWidget
+from PyQt4 import QtGui
 
 from openlp.core.lib import PluginConfig
 
-class SettingsTab(QWidget):
+class SettingsTab(QtGui.QWidget):
     """
     SettingsTab is a helper widget for plugins to define Tabs for the settings
     dialog.
@@ -43,7 +43,7 @@ class SettingsTab(QWidget):
             Defaults to *None*. This is the section in the configuration file
             to write to when the ``save`` method is called.
         """
-        QWidget.__init__(self)
+        QtGui.QWidget.__init__(self)
         self.tabTitle = title
         self.setupUi()
         self.retranslateUi()

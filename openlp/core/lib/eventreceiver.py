@@ -24,9 +24,9 @@
 
 import logging
 
-from PyQt4.QtCore import QObject, SIGNAL
+from PyQt4 import QtCore
 
-class EventReceiver(QObject):
+class EventReceiver(QtCore.QObject):
     """
     Class to allow events to be passed from different parts of the
     system. This is a private class and should not be used directly
@@ -91,7 +91,7 @@ class EventReceiver(QObject):
         """
         Initialise the event receiver, calling the parent constructor.
         """
-        QObject.__init__(self)
+        QtCore.QObject.__init__(self)
 
     def send_message(self, event, msg=None):
         """
@@ -104,7 +104,7 @@ class EventReceiver(QObject):
             Defaults to *None*. The message to send with the event.
         """
         log.debug(u'Event %s passed with payload %s' % (event, msg))
-        self.emit(SIGNAL(event), msg)
+        self.emit(QtCore.SIGNAL(event), msg)
 
 
 class Receiver():
