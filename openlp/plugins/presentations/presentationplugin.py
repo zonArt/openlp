@@ -22,12 +22,11 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import os
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
 
-from openlp.core.lib import Plugin
+from openlp.core.lib import Plugin, buildIcon
 from openlp.plugins.presentations.lib import *
 
 class PresentationPlugin(Plugin):
@@ -42,9 +41,7 @@ class PresentationPlugin(Plugin):
         Plugin.__init__(self, u'Presentations', u'1.9.0', plugin_helpers)
         self.weight = -8
         # Create the plugin icon
-        self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_presentation.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon = buildIcon(u':/media/media_presentation.png')
 
     def get_settings_tab(self):
         """

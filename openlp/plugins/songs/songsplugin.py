@@ -26,7 +26,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, translate
+from openlp.core.lib import Plugin, translate, buildIcon
 from openlp.plugins.songs.lib import SongManager, SongMediaItem
 from openlp.plugins.songs.forms import OpenLPImportForm, OpenSongExportForm, \
     OpenSongImportForm, OpenLPExportForm
@@ -57,9 +57,7 @@ class SongsPlugin(Plugin):
         self.openlp_export_form = OpenLPExportForm()
         self.opensong_export_form = OpenSongExportForm()
         # Create the plugin icon
-        self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_song.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon = buildIcon(u':/media/media_song.png')
 
     def get_media_manager_item(self):
         """

@@ -22,17 +22,18 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4.QtCore import QMimeData, Qt
+from PyQt4.QtGui import QDrag, QListWidget
 
 from openlp.core.lib.toolbar import *
 
-class BaseListWithDnD(QtGui.QListWidget):
+class BaseListWithDnD(QListWidget):
     """
     Please put a short description of what this class does in here.
     """
 
     def __init__(self, parent=None):
-        QtGui.QListWidget.__init__(self, parent)
+        QListWidget.__init__(self, parent)
         # this must be set by the class which is inheriting
         assert(self.PluginName)
 
@@ -42,10 +43,10 @@ class BaseListWithDnD(QtGui.QListWidget):
         as the recipient will use events to request the data move
         just tell it what plugin to call
         """
-        if event.buttons() != QtCore.Qt.LeftButton:
+        if event.buttons() != Qt.LeftButton:
             return
-        drag = QtGui.QDrag(self)
-        mimeData = QtCore.QMimeData()
+        drag = QDrag(self)
+        mimeData = QMimeData()
         drag.setMimeData(mimeData)
         mimeData.setText(self.PluginName)
-        dropAction = drag.start(QtCore.Qt.CopyAction)
+        dropAction = drag.start(Qt.CopyAction)

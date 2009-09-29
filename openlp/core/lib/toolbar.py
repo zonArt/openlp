@@ -22,12 +22,14 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import types
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4.QtGui import QToolBar, QIcon
+from PyQt4.QtCore import QSize
 
-class OpenLPToolbar(QtGui.QToolBar):
+from openlp.core.lib import buildIcon
+
+class OpenLPToolbar(QToolBar):
     """
     Lots of toolbars around the place, so it makes sense to have a common way
     to manage them. This is the base toolbar class.
@@ -36,10 +38,10 @@ class OpenLPToolbar(QtGui.QToolBar):
         """
         Initialise the toolbar.
         """
-        QtGui.QToolBar.__init__(self, None)
+        QToolBar.__init__(self, None)
         # useful to be able to reuse button icons...
         self.icons = {}
-        self.setIconSize(QtCore.QSize(20, 20))
+        self.setIconSize(QSize(20, 20))
         self.actions = {}
         self.log = logging.getLogger(u'OpenLPToolbar')
         self.log.debug(u'Init done')
@@ -66,17 +68,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         ``objectname``
             The name of the object, as used in `<button>.setObjectName()`.
         """
-        ButtonIcon = None
-        if type(icon) is QtGui.QIcon:
-            ButtonIcon = icon
-        elif type(icon) is types.StringType or type(icon) is types.UnicodeType:
-            ButtonIcon = QtGui.QIcon()
-            if icon.startswith(u':/'):
-                ButtonIcon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
-                    QtGui.QIcon.Off)
-            else:
-                ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(
-                    QtGui.QImage(icon)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        ButtonIcon = buildIcon(icon)
         if ButtonIcon is not None:
             if slot is not None:
                 ToolbarButton = self.addAction(ButtonIcon, title, slot)
@@ -113,7 +105,7 @@ class OpenLPToolbar(QtGui.QToolBar):
             return self.icons[title]
         else:
             self.log.error(u'getIconFromTitle - no icon for %s' % title)
-            return QtGui.QIcon()
+            return QIcon()
 
     def makeWidgetsInvisible(self, widgets):
         """

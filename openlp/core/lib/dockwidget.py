@@ -24,9 +24,9 @@
 
 import logging
 
-from PyQt4 import QtGui
+from PyQt4.QtGui import QDockWidget
 
-class OpenLPDockWidget(QtGui.QDockWidget):
+class OpenLPDockWidget(QDockWidget):
     """
     Custom DockWidget class to handle events
     """
@@ -34,10 +34,11 @@ class OpenLPDockWidget(QtGui.QDockWidget):
         """
         Initialise the DockWidget
         """
-        QtGui.QDockWidget.__init__(self, parent)
+        QDockWidget.__init__(self, parent)
         self.parent = parent
         if name is not None:
             self.setObjectName(name)
+        self.setFloating(False)
         self.log = logging.getLogger(u'OpenLPDockWidget')
         self.log.debug(u'Init done')
 

@@ -372,8 +372,8 @@ class ThemeXML(object):
         """
         Return a string representation of this object.
         """
-        s = u''
-        for k in dir(self):
-            if k[0:1] != u'_':
-                s += u'%30s: %s\n' %(k, getattr(self, k))
-        return s
+        theme_strings = []
+        for key in dir(self):
+            if key[0:1] != u'_':
+                theme_strings.append(u'%30s: %s' % (key, getattr(self, key)))
+        return u'\n'.join(theme_strings)

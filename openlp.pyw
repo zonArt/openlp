@@ -25,10 +25,11 @@
 
 import sys
 import logging
-import logging.handlers
 
+from logging.handlers import RotatingFileHandler
 from optparse import OptionParser
-from PyQt4 import QtCore, QtGui
+from PyQt4.QtCore import QObject, SIGNAL
+from PyQt4.QtGui import QApplication
 
 from openlp.core.lib import Receiver, str_to_bool
 from openlp.core.resources import qInitResources
@@ -37,7 +38,7 @@ from openlp.core.utils import ConfigHelper
 
 log = logging.getLogger()
 
-class OpenLP(QtGui.QApplication):
+class OpenLP(QApplication):
     """
     The core application class. This class inherits from Qt's QApplication
     class in order to provide the core of the application.
@@ -55,8 +56,8 @@ class OpenLP(QtGui.QApplication):
         except:
             pass
         #provide a listener for widgets to reqest a screen update.
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'process_events'), self.processEvents)
+        QObject.connect(Receiver.get_receiver(),
+            SIGNAL(u'process_events'), self.processEvents)
         self.setApplicationName(u'OpenLP')
         self.setApplicationVersion(u'1.9.0')
         show_splash = str_to_bool(ConfigHelper.get_registry().get_value(
@@ -94,10 +95,9 @@ def main():
                       action="store_true", help="set logging to DEBUG level")
     # Set up logging
     filename = u'openlp.log'
-    logfile = logging.handlers.RotatingFileHandler(
-        filename, maxBytes=200000, backupCount=5)
-    logfile.setFormatter(
-        logging.Formatter(u'%(asctime)s %(name)-15s %(levelname)-8s %(message)s'))
+    logfile = RotatingFileHandler(filename, maxBytes=200000, backupCount=5)
+    logfile.setFormatter(logging.Formatter(
+        u'%(asctime)s %(name)-15s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
     # Parse command line options and deal with them.
     (options, args) = parser.parse_args()

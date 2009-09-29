@@ -27,7 +27,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, translate, SongXMLParser, \
-    contextMenuAction, contextMenuSeparator, BaseListWithDnD, Receiver
+    BaseListWithDnD, Receiver
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm
 
 class SongListView(BaseListWithDnD):

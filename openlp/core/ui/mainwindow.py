@@ -31,7 +31,7 @@ from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
     ServiceManager, ThemeManager, MainDisplay, SlideController, \
     PluginForm
 from openlp.core.lib import translate, RenderManager, PluginConfig, \
-    OpenLPDockWidget, SettingsManager, PluginManager, Receiver
+    OpenLPDockWidget, SettingsManager, PluginManager, Receiver, buildIcon
 
 
 class Ui_MainWindow(object):
@@ -49,10 +49,8 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(
             MainWindow.sizePolicy().hasHeightForWidth())
         MainWindow.setSizePolicy(sizePolicy)
-        main_icon = QtGui.QIcon()
-        main_icon.addPixmap(QtGui.QPixmap(u':/icon/openlp-logo-16x16.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        MainWindow.setWindowIcon(main_icon)
+        MainIcon = buildIcon(u':/icon/openlp-logo-16x16.png')
+        MainWindow.setWindowIcon(MainIcon)
         # Set up the main container, which contains all the other form widgets
         self.MainContent = QtGui.QWidget(MainWindow)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
@@ -106,11 +104,8 @@ class Ui_MainWindow(object):
         self.StatusBar.addPermanentWidget(self.DefaultThemeLabel)
         # Create the MediaManager
         self.MediaManagerDock = OpenLPDockWidget(MainWindow)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/system/system_mediamanager.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.MediaManagerDock.setWindowIcon(icon)
-        self.MediaManagerDock.setFloating(False)
+        MediaManagerIcon = buildIcon(u':/system/system_mediamanager.png')
+        self.MediaManagerDock.setWindowIcon(MediaManagerIcon)
         self.MediaManagerDock.setObjectName(u'MediaManagerDock')
         self.MediaManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_left)
@@ -136,13 +131,8 @@ class Ui_MainWindow(object):
         self.MediaManagerDock.setVisible(self.settingsmanager.showMediaManager)
         # Create the service manager
         self.ServiceManagerDock = OpenLPDockWidget(MainWindow)
-        ServiceManagerIcon = QtGui.QIcon()
-        ServiceManagerIcon.addPixmap(
-            QtGui.QPixmap(u':/system/system_servicemanager.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        ServiceManagerIcon = buildIcon(u':/system/system_servicemanager.png')
         self.ServiceManagerDock.setWindowIcon(ServiceManagerIcon)
-        self.ServiceManagerDock.setFeatures(
-            QtGui.QDockWidget.AllDockWidgetFeatures)
         self.ServiceManagerDock.setObjectName(u'ServiceManagerDock')
         self.ServiceManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_right)
@@ -154,12 +144,8 @@ class Ui_MainWindow(object):
             self.settingsmanager.showServiceManager)
         # Create the theme manager
         self.ThemeManagerDock = OpenLPDockWidget(MainWindow)
-        ThemeManagerIcon = QtGui.QIcon()
-        ThemeManagerIcon.addPixmap(
-            QtGui.QPixmap(u':/system/system_thememanager.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        ThemeManagerIcon = buildIcon(u':/system/system_thememanager.png')
         self.ThemeManagerDock.setWindowIcon(ThemeManagerIcon)
-        self.ThemeManagerDock.setFloating(False)
         self.ThemeManagerDock.setObjectName(u'ThemeManagerDock')
         self.ThemeManagerContents = ThemeManager(self)
         self.ThemeManagerDock.setWidget(self.ThemeManagerContents)
@@ -185,9 +171,7 @@ class Ui_MainWindow(object):
         self.FileSaveAsItem = QtGui.QAction(MainWindow)
         self.FileSaveAsItem.setObjectName(u'FileSaveAsItem')
         self.FileExitItem = QtGui.QAction(MainWindow)
-        ExitIcon = QtGui.QIcon()
-        ExitIcon.addPixmap(QtGui.QPixmap(u':/system/system_exit.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        ExitIcon = buildIcon(u':/system/system_exit.png')
         self.FileExitItem.setIcon(ExitIcon)
         self.FileExitItem.setObjectName(u'FileExitItem')
         self.ImportThemeItem = QtGui.QAction(MainWindow)
@@ -201,16 +185,14 @@ class Ui_MainWindow(object):
         self.actionLook_Feel = QtGui.QAction(MainWindow)
         self.actionLook_Feel.setObjectName(u'actionLook_Feel')
         self.OptionsSettingsItem = QtGui.QAction(MainWindow)
-        SettingsIcon = QtGui.QIcon()
-        SettingsIcon.addPixmap(QtGui.QPixmap(u':/system/system_settings.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        SettingsIcon = buildIcon(u':/system/system_settings.png')
         self.OptionsSettingsItem.setIcon(SettingsIcon)
         self.OptionsSettingsItem.setObjectName(u'OptionsSettingsItem')
         self.ViewMediaManagerItem = QtGui.QAction(MainWindow)
         self.ViewMediaManagerItem.setCheckable(True)
         self.ViewMediaManagerItem.setChecked(
             self.settingsmanager.showMediaManager)
-        self.ViewMediaManagerItem.setIcon(icon)
+        self.ViewMediaManagerItem.setIcon(MediaManagerIcon)
         self.ViewMediaManagerItem.setObjectName(u'ViewMediaManagerItem')
         self.ViewThemeManagerItem = QtGui.QAction(MainWindow)
         self.ViewThemeManagerItem.setCheckable(True)
@@ -225,28 +207,19 @@ class Ui_MainWindow(object):
         self.ViewServiceManagerItem.setIcon(ServiceManagerIcon)
         self.ViewServiceManagerItem.setObjectName(u'ViewServiceManagerItem')
         self.ToolsAlertItem = QtGui.QAction(MainWindow)
-        AlertIcon = QtGui.QIcon()
-        AlertIcon.addPixmap(QtGui.QPixmap(u':/tools/tools_alert.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        AlertIcon = buildIcon(u':/tools/tools_alert.png')
         self.ToolsAlertItem.setIcon(AlertIcon)
         self.ToolsAlertItem.setObjectName(u'ToolsAlertItem')
         self.PluginItem = QtGui.QAction(MainWindow)
-        PluginIcon = QtGui.QIcon()
-        PluginIcon.addPixmap(QtGui.QPixmap(u':/tools/tools_alert.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        #PluginIcon = buildIcon(u':/tools/tools_alert.png')
         self.PluginItem.setIcon(AlertIcon)
         self.PluginItem.setObjectName(u'PluginItem')
         self.HelpDocumentationItem = QtGui.QAction(MainWindow)
-        ContentsIcon = QtGui.QIcon()
-        ContentsIcon.addPixmap(QtGui.QPixmap(
-            u':/system/system_help_contents.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        ContentsIcon = buildIcon(u':/system/system_help_contents.png')
         self.HelpDocumentationItem.setIcon(ContentsIcon)
         self.HelpDocumentationItem.setObjectName(u'HelpDocumentationItem')
         self.HelpAboutItem = QtGui.QAction(MainWindow)
-        AboutIcon = QtGui.QIcon()
-        AboutIcon.addPixmap(QtGui.QPixmap(u':/system/system_about.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        AboutIcon = buildIcon(u':/system/system_about.png')
         self.HelpAboutItem.setIcon(AboutIcon)
         self.HelpAboutItem.setObjectName(u'HelpAboutItem')
         self.HelpOnlineHelpItem = QtGui.QAction(MainWindow)
@@ -258,9 +231,7 @@ class Ui_MainWindow(object):
         self.LanguageEnglishItem = QtGui.QAction(MainWindow)
         self.LanguageEnglishItem.setObjectName(u'LanguageEnglishItem')
         self.ToolsAddToolItem = QtGui.QAction(MainWindow)
-        AddToolIcon = QtGui.QIcon()
-        AddToolIcon.addPixmap(QtGui.QPixmap(u':/tools/tools_add.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        AddToolIcon = buildIcon(u':/tools/tools_add.png')
         self.ToolsAddToolItem.setIcon(AddToolIcon)
         self.ToolsAddToolItem.setObjectName(u'ToolsAddToolItem')
         self.action_Preview_Panel = QtGui.QAction(MainWindow)
@@ -457,7 +428,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.generalConfig = PluginConfig(u'General')
         self.alertForm = AlertForm(self)
         self.pluginForm = PluginForm(self)
-        self.aboutForm = AboutForm()
+        self.aboutForm = AboutForm(self)
         self.settingsForm = SettingsForm(self.screenList, self)
         # Set up the path with plugins
         pluginpath = os.path.split(os.path.abspath(__file__))[0]

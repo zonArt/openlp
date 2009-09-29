@@ -23,7 +23,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
+from openlp.core.lib import translate, buildIcon
 
 class OpenSongExportForm(object):
 
@@ -34,8 +34,7 @@ class OpenSongExportForm(object):
     def setupUi(self):
         self.OpenSongExportForm.setObjectName(u'OpenSongExportForm')
         self.OpenSongExportForm.resize(473, 459)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/icon/openlp-logo-16x16.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon = buildIcon(u':/icon/openlp-logo-16x16.png')
         self.OpenSongExportForm.setWindowIcon(icon)
         self.verticalLayout_5 = QtGui.QVBoxLayout(self.OpenSongExportForm)
         self.verticalLayout_5.setMargin(8)
@@ -58,8 +57,7 @@ class OpenSongExportForm(object):
         self.ExportFileLineEdit.setObjectName(u'ExportFileLineEdit')
         self.horizontalLayout.addWidget(self.ExportFileLineEdit)
         self.ExportFileSelectPushButton = QtGui.QPushButton(self.ExportFileWidget)
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(u':/exports/export_load.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1 = buildIcon(u':/exports/export_load.png')
         self.ExportFileSelectPushButton.setIcon(icon1)
         self.ExportFileSelectPushButton.setObjectName(u'ExportFileSelectPushButton')
         self.horizontalLayout.addWidget(self.ExportFileSelectPushButton)
@@ -117,8 +115,7 @@ class OpenSongExportForm(object):
         sizePolicy.setHeightForWidth(self.ExportSelectAllPushButton.sizePolicy().hasHeightForWidth())
         self.ExportSelectAllPushButton.setSizePolicy(sizePolicy)
         self.ExportSelectAllPushButton.setMinimumSize(QtCore.QSize(100, 0))
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(u':/exports/export_selectall.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2 = buildIcon(u':/exports/export_selectall.png')
         self.ExportSelectAllPushButton.setIcon(icon2)
         self.ExportSelectAllPushButton.setObjectName(u'ExportSelectAllPushButton')
         self.horizontalLayout_2.addWidget(self.ExportSelectAllPushButton)
@@ -167,8 +164,7 @@ class OpenSongExportForm(object):
         sizePolicy.setHeightForWidth(self.AddSelectedPushButton.sizePolicy().hasHeightForWidth())
         self.AddSelectedPushButton.setSizePolicy(sizePolicy)
         self.AddSelectedPushButton.setMinimumSize(QtCore.QSize(25, 25))
-        icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(u':/exports/export_move_to_list.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon3 = buildIcon(u':/exports/export_move_to_list.png')
         self.AddSelectedPushButton.setIcon(icon3)
         self.AddSelectedPushButton.setObjectName(u'AddSelectedPushButton')
         self.verticalLayout_3.addWidget(self.AddSelectedPushButton)
@@ -237,8 +233,7 @@ class OpenSongExportForm(object):
         sizePolicy.setHeightForWidth(self.SelectedRemoveSelectedButton.sizePolicy().hasHeightForWidth())
         self.SelectedRemoveSelectedButton.setSizePolicy(sizePolicy)
         self.SelectedRemoveSelectedButton.setMinimumSize(QtCore.QSize(140, 0))
-        icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap(u':/exports/export_remove.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon4 = buildIcon(u':/exports/export_remove.png')
         self.SelectedRemoveSelectedButton.setIcon(icon4)
         self.SelectedRemoveSelectedButton.setObjectName(u'SelectedRemoveSelectedButton')
         self.horizontalLayout_5.addWidget(self.SelectedRemoveSelectedButton)

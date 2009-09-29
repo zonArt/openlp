@@ -27,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, Receiver, translate, str_to_bool
+from openlp.core.lib import Plugin, Receiver, translate, str_to_bool, buildIcon
 from openlp.plugins.audit.lib import AuditTab, AuditManager
 from openlp.plugins.audit.forms import AuditDetailForm, AuditDeleteForm
 from openlp.plugins.audit.lib.models import AuditItem
@@ -42,9 +42,7 @@ class AuditPlugin(Plugin):
         Plugin.__init__(self, u'Audit', u'1.9.0', plugin_helpers)
         self.weight = -4
         # Create the plugin icon
-        self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_image.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon = buildIcon(u':/media/media_image.png')
         self.auditfile = None
 
     def check_pre_conditions(self):
@@ -93,9 +91,7 @@ class AuditPlugin(Plugin):
             translate(u'AuditPlugin', u'Generate Reports on Audit Data'))
         self.AuditReport.setObjectName(u'AuditReport')
         #Audit activation
-        AuditIcon = QtGui.QIcon()
-        AuditIcon.addPixmap(QtGui.QPixmap(u':/tools/tools_alert.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        AuditIcon = buildIcon(u':/tools/tools_alert.png')
         self.AuditStatus = QtGui.QAction(tools_menu)
         self.AuditStatus.setIcon(AuditIcon)
         self.AuditStatus.setCheckable(True)

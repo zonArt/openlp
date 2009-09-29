@@ -23,7 +23,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
+from openlp.core.lib import translate, buildIcon
 
 class SplashScreen(object):
     def __init__(self, version):
@@ -45,11 +45,9 @@ class SplashScreen(object):
             self.splash_screen.sizePolicy().hasHeightForWidth())
         self.splash_screen.setSizePolicy(sizePolicy)
         self.splash_screen.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/icon/openlp-logo-16x16.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        splash_image = QtGui.QPixmap(u':/graphics/openlp-splash-screen.png')
+        icon = buildIcon(u':/icon/openlp-logo-16x16.png')
         self.splash_screen.setWindowIcon(icon)
+        splash_image = QtGui.QPixmap(u':/graphics/openlp-splash-screen.png')
         self.splash_screen.setPixmap(splash_image)
         self.splash_screen.setMask(splash_image.mask())
         self.splash_screen.setWindowFlags(
