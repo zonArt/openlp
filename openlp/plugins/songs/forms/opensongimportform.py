@@ -23,7 +23,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
+from openlp.core.lib import translate, buildIcon
 
 class OpenSongImportForm(object):
 
@@ -34,8 +34,7 @@ class OpenSongImportForm(object):
     def setupUi(self):
         self.OpenSongImportForm.setObjectName(u'OpenSongImportForm')
         self.OpenSongImportForm.resize(481, 153)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/icon/openlp-logo-16x16.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon = buildIcon(u':/icon/openlp-logo-16x16.png')
         self.OpenSongImportForm.setWindowIcon(icon)
         self.verticalLayout = QtGui.QVBoxLayout(self.OpenSongImportForm)
         self.verticalLayout.setSpacing(6)
@@ -59,8 +58,7 @@ class OpenSongImportForm(object):
         self.ImportFileLineEdit.setObjectName(u'ImportFileLineEdit')
         self.horizontalLayout.addWidget(self.ImportFileLineEdit)
         self.ImportFileSelectPushButton = QtGui.QPushButton(self.ImportFileWidget)
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(u':/imports/import_load.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1 = buildIcon(u':/imports/import_load.png')
         self.ImportFileSelectPushButton.setIcon(icon1)
         self.ImportFileSelectPushButton.setObjectName(u'ImportFileSelectPushButton')
         self.horizontalLayout.addWidget(self.ImportFileSelectPushButton)

@@ -22,9 +22,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
-
-from openlp.core.lib import Plugin
+from openlp.core.lib import Plugin, buildIcon
 from openlp.plugins.media.lib import MediaTab, MediaMediaItem
 
 class MediaPlugin(Plugin):
@@ -34,11 +32,9 @@ class MediaPlugin(Plugin):
         Plugin.__init__(self, u'Media', u'1.9.0', plugin_helpers)
         self.weight = -6
         # Create the plugin icon
-        self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_video.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon = buildIcon(u':/media/media_video.png')
         # passed with drag and drop messages
-        self.dnd_id=u'Media'
+        self.dnd_id = u'Media'
 
     def get_settings_tab(self):
         self.MediaTab = MediaTab()

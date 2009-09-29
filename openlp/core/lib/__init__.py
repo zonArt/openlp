@@ -44,8 +44,8 @@ def translate(context, text):
     ``text``
         The text to put into the translation tables for translation.
     """
-    return QtGui.QApplication.translate(context, text, None,
-        QtGui.QApplication.UnicodeUTF8)
+    return QtGui.QApplication.translate(
+        context, text, None, QtGui.QApplication.UnicodeUTF8)
 
 def file_to_xml(xmlfile):
     """
@@ -84,15 +84,15 @@ def buildIcon(icon):
     elif type(icon) is types.StringType or type(icon) is types.UnicodeType:
         ButtonIcon = QtGui.QIcon()
         if icon.startswith(u':/'):
-            ButtonIcon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
-                QtGui.QIcon.Off)
+            ButtonIcon.addPixmap(
+                QtGui.QPixmap(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         else:
             ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
                 QtGui.QIcon.Normal, QtGui.QIcon.Off)
     elif type(icon) is QtGui.QImage:
         ButtonIcon = QtGui.QIcon()
-        ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(icon),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        ButtonIcon.addPixmap(
+            QtGui.QPixmap.fromImage(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
     return ButtonIcon
 
 def contextMenuAction(base, icon, text, slot):
@@ -100,7 +100,7 @@ def contextMenuAction(base, icon, text, slot):
     Utility method to help build context menus for plugins
     """
     action = QtGui.QAction(text, base)
-    action .setIcon(buildIcon(icon))
+    action.setIcon(buildIcon(icon))
     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
     return action
 

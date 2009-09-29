@@ -25,8 +25,8 @@
 
 import sys
 import logging
-import logging.handlers
 
+from logging.handlers import RotatingFileHandler
 from optparse import OptionParser
 from PyQt4 import QtCore, QtGui
 
@@ -94,10 +94,9 @@ def main():
                       action="store_true", help="set logging to DEBUG level")
     # Set up logging
     filename = u'openlp.log'
-    logfile = logging.handlers.RotatingFileHandler(
-        filename, maxBytes=200000, backupCount=5)
-    logfile.setFormatter(
-        logging.Formatter(u'%(asctime)s %(name)-15s %(levelname)-8s %(message)s'))
+    logfile = RotatingFileHandler(filename, maxBytes=200000, backupCount=5)
+    logfile.setFormatter(logging.Formatter(
+        u'%(asctime)s %(name)-15s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
     # Parse command line options and deal with them.
     (options, args) = parser.parse_args()

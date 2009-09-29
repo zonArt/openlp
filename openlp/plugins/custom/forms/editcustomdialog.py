@@ -22,14 +22,13 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
+from openlp.core.lib import translate, buildIcon
 
 class Ui_customEditDialog(object):
     def setupUi(self, customEditDialog):
         customEditDialog.setObjectName(u'customEditDialog')
         customEditDialog.resize(590, 541)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/icon/openlp.org-icon-32.bmp'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon = buildIcon(u':/icon/openlp.org-icon-32.bmp')
         customEditDialog.setWindowIcon(icon)
         self.gridLayout = QtGui.QGridLayout(customEditDialog)
         self.gridLayout.setObjectName(u'gridLayout')
@@ -51,16 +50,14 @@ class Ui_customEditDialog(object):
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setObjectName(u'verticalLayout')
         self.UpButton = QtGui.QPushButton(customEditDialog)
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(u':/services/service_up.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1 = buildIcon(u':/services/service_up.png')
         self.UpButton.setIcon(icon1)
         self.UpButton.setObjectName(u'UpButton')
         self.verticalLayout.addWidget(self.UpButton)
         spacerItem = QtGui.QSpacerItem(20, 128, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem)
         self.DownButton = QtGui.QPushButton(customEditDialog)
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(u':/services/service_down.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2 = buildIcon(u':/services/service_down.png')
         self.DownButton.setIcon(icon2)
         self.DownButton.setObjectName(u'DownButton')
         self.verticalLayout.addWidget(self.DownButton)

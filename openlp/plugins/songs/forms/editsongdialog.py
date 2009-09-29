@@ -24,15 +24,13 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
+from openlp.core.lib import translate, buildIcon
 
 class Ui_EditSongDialog(object):
     def setupUi(self, EditSongDialog):
         EditSongDialog.setObjectName(u'EditSongDialog')
         EditSongDialog.resize(645, 417)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/icon/openlp.org-icon-32.bmp'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon = buildIcon(u':/icon/openlp.org-icon-32.bmp')
         EditSongDialog.setWindowIcon(icon)
         EditSongDialog.setModal(True)
         self.verticalLayout = QtGui.QVBoxLayout(EditSongDialog)

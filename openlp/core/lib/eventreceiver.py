@@ -141,5 +141,3 @@ class Receiver():
         Get the global ``eventreceiver`` instance.
         """
         return Receiver.eventreceiver
-
-

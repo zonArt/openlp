@@ -23,7 +23,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
+from openlp.core.lib import translate, buildIcon
 
 class OpenLPImportForm(object):
 
@@ -34,8 +34,7 @@ class OpenLPImportForm(object):
     def setupUi(self):
         self.OpenLPImportForm.setObjectName(u'OpenLPImportForm')
         self.OpenLPImportForm.resize(473, 459)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/icon/openlp-logo-16x16.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon = buildIcon(u':/icon/openlp-logo-16x16.png')
         self.OpenLPImportForm.setWindowIcon(icon)
         self.verticalLayout_5 = QtGui.QVBoxLayout(self.OpenLPImportForm)
         self.verticalLayout_5.setMargin(8)
@@ -58,8 +57,7 @@ class OpenLPImportForm(object):
         self.ImportFileLineEdit.setObjectName(u'ImportFileLineEdit')
         self.horizontalLayout.addWidget(self.ImportFileLineEdit)
         self.ImportFileSelectPushButton = QtGui.QPushButton(self.ImportFileWidget)
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(u':/imports/import_load.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1 = buildIcon(u':/imports/import_load.png')
         self.ImportFileSelectPushButton.setIcon(icon1)
         self.ImportFileSelectPushButton.setObjectName(u'ImportFileSelectPushButton')
         self.horizontalLayout.addWidget(self.ImportFileSelectPushButton)
@@ -117,8 +115,7 @@ class OpenLPImportForm(object):
         sizePolicy.setHeightForWidth(self.ImportSelectAllPushButton.sizePolicy().hasHeightForWidth())
         self.ImportSelectAllPushButton.setSizePolicy(sizePolicy)
         self.ImportSelectAllPushButton.setMinimumSize(QtCore.QSize(100, 0))
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(u':/imports/import_selectall.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2 = buildIcon(u':/imports/import_selectall.png')
         self.ImportSelectAllPushButton.setIcon(icon2)
         self.ImportSelectAllPushButton.setObjectName(u'ImportSelectAllPushButton')
         self.horizontalLayout_2.addWidget(self.ImportSelectAllPushButton)
@@ -167,8 +164,7 @@ class OpenLPImportForm(object):
         sizePolicy.setHeightForWidth(self.AddSelectedPushButton.sizePolicy().hasHeightForWidth())
         self.AddSelectedPushButton.setSizePolicy(sizePolicy)
         self.AddSelectedPushButton.setMinimumSize(QtCore.QSize(25, 25))
-        icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(u':/imports/import_move_to_list.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon3 = buildIcon(u':/imports/import_move_to_list.png')
         self.AddSelectedPushButton.setIcon(icon3)
         self.AddSelectedPushButton.setObjectName(u'AddSelectedPushButton')
         self.verticalLayout_3.addWidget(self.AddSelectedPushButton)
@@ -237,8 +233,7 @@ class OpenLPImportForm(object):
         sizePolicy.setHeightForWidth(self.SelectedRemoveSelectedButton.sizePolicy().hasHeightForWidth())
         self.SelectedRemoveSelectedButton.setSizePolicy(sizePolicy)
         self.SelectedRemoveSelectedButton.setMinimumSize(QtCore.QSize(140, 0))
-        icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap(u':/imports/import_remove.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon4 = buildIcon(u':/imports/import_remove.png')
         self.SelectedRemoveSelectedButton.setIcon(icon4)
         self.SelectedRemoveSelectedButton.setObjectName(u'SelectedRemoveSelectedButton')
         self.horizontalLayout_5.addWidget(self.SelectedRemoveSelectedButton)
