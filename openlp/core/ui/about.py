@@ -160,9 +160,9 @@ class AboutForm(QtGui.QDialog):
             u'    Tim \"TRB143\" Bentley\n'
             u'    Jonathan \"gushie\" Corwin\n'
             u'    Scott \"sguerrieri\" Guerrieri\n'
-            u'    Jon \"Meths\" Tibble\n'
             u'    Raoul \"superfly\" Snyman\n'
             u'    Martin \"mijiti\" Thompson\n'
+            u'    Jon \"Meths\" Tibble\n'
             u'    Carsten \"catini\" Tingaard'))
         self.AboutNotebook.setTabText(
             self.AboutNotebook.indexOf(self.CreditsTab),
