@@ -24,9 +24,7 @@
 
 import logging
 
-from PyQt4 import QtGui
-
-from openlp.core.lib import Plugin
+from openlp.core.lib import Plugin, buildIcon
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
 class ImagePlugin(Plugin):
@@ -39,9 +37,7 @@ class ImagePlugin(Plugin):
         Plugin.__init__(self, u'Images', u'1.9.0', plugin_helpers)
         self.weight = -7
         # Create the plugin icon
-        self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_image.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon = buildIcon(u':/media/media_image.png')
 
     def get_settings_tab(self):
         self.ImageTab = ImageTab()

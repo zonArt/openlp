@@ -24,11 +24,11 @@
 
 from datetime import date
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from auditdeletedialog import Ui_AuditDeleteDialog
 from openlp.core.lib import translate
-from openlp.plugins.audit.lib import AuditManager
+#from openlp.plugins.audit.lib import AuditManager
 
 class AuditDeleteForm(QtGui.QDialog, Ui_AuditDeleteDialog):
     """
@@ -43,7 +43,7 @@ class AuditDeleteForm(QtGui.QDialog, Ui_AuditDeleteDialog):
         self.setupUi(self)
 
     def accept(self):
-        ret = QtGui.QMessageBox.question(None,
+        ret = QtGui.QMessageBox.question(self,
             translate(u'mainWindow', u'Delete Selected Audit Events?'),
             translate(u'mainWindow', u'Are you sure you want to delete selected Audit Data?'),
             QtGui.QMessageBox.StandardButtons(

@@ -23,15 +23,14 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
+from openlp.core.lib import translate, buildIcon
 
 class Ui_AmendThemeDialog(object):
     def setupUi(self, AmendThemeDialog):
         AmendThemeDialog.setObjectName(u'AmendThemeDialog')
         AmendThemeDialog.setWindowModality(QtCore.Qt.ApplicationModal)
         AmendThemeDialog.resize(586, 651)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/icon/openlp-logo-16x16.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon = buildIcon(u':/icon/openlp-logo-16x16.png')
         AmendThemeDialog.setWindowIcon(icon)
         AmendThemeDialog.setModal(True)
         self.AmendThemeLayout = QtGui.QVBoxLayout(AmendThemeDialog)
@@ -116,8 +115,7 @@ class Ui_AmendThemeDialog(object):
         self.ImageLineEdit.setObjectName(u'ImageLineEdit')
         self.horizontalLayout_2.addWidget(self.ImageLineEdit)
         self.ImageToolButton = QtGui.QToolButton(self.ImageFilenameWidget)
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(u':/images/image_load.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1 = buildIcon(u':/images/image_load.png')
         self.ImageToolButton.setIcon(icon1)
         self.ImageToolButton.setObjectName(u'ImageToolButton')
         self.horizontalLayout_2.addWidget(self.ImageToolButton)

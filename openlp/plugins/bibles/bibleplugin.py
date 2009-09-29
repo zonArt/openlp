@@ -26,8 +26,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, translate
-
+from openlp.core.lib import Plugin, translate, buildIcon
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 
 class BiblePlugin(Plugin):
@@ -40,9 +39,7 @@ class BiblePlugin(Plugin):
         Plugin.__init__(self, u'Bibles', u'1.9.0', plugin_helpers)
         self.weight = -9
         # Create the plugin icon
-        self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_bible.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon = buildIcon(u':/media/media_bible.png')
         #Register the bible Manager
         self.biblemanager = BibleManager(self.config)
 

@@ -24,12 +24,13 @@
 
 from PyQt4 import QtCore, QtGui
 
+from openlp.core.lib import buildIcon
+
 class Ui_BibleImportDialog(object):
     def setupUi(self, BibleImportDialog):
         BibleImportDialog.setObjectName(u'BibleImportDialog')
         BibleImportDialog.resize(500, 686)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/icon/openlp.org-icon-32.bmp'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon = buildIcon(u':/icon/openlp.org-icon-32.bmp')
         BibleImportDialog.setWindowIcon(icon)
         self.LicenceDetailsGroupBox = QtGui.QGroupBox(BibleImportDialog)
         self.LicenceDetailsGroupBox.setGeometry(QtCore.QRect(10, 400, 480, 151))
@@ -110,8 +111,7 @@ class Ui_BibleImportDialog(object):
         self.OSISLocationEdit.setObjectName(u'OSISLocationEdit')
         self.horizontalLayout_3.addWidget(self.OSISLocationEdit)
         self.OsisFileButton = QtGui.QPushButton(self.OSISGroupBox)
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(u':/imports/import_load.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1 = buildIcon(u':/imports/import_load.png')
         self.OsisFileButton.setIcon(icon1)
         self.OsisFileButton.setObjectName(u'OsisFileButton')
         self.horizontalLayout_3.addWidget(self.OsisFileButton)

@@ -24,7 +24,7 @@
 
 import logging
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
+from openlp.core.lib import translate, buildIcon
 
 class AlertForm(QtGui.QDialog):
     global log
@@ -39,8 +39,7 @@ class AlertForm(QtGui.QDialog):
     def setupUi(self, AlertForm):
         AlertForm.setObjectName(u'AlertForm')
         AlertForm.resize(370, 110)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/icon/openlp-logo-16x16.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon = buildIcon(u':/icon/openlp-logo-16x16.png')
         AlertForm.setWindowIcon(icon)
         self.AlertFormLayout = QtGui.QVBoxLayout(AlertForm)
         self.AlertFormLayout.setSpacing(8)

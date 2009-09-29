@@ -24,7 +24,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
+from openlp.core.lib import translate, buildIcon
 
 class AboutForm(QtGui.QDialog):
     """
@@ -44,8 +44,7 @@ class AboutForm(QtGui.QDialog):
         """
         AboutForm.setObjectName(u'AboutForm')
         AboutForm.resize(470, 481)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/icon/openlp-logo-16x16.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon = buildIcon(u':/icon/openlp-logo-16x16.png')
         AboutForm.setWindowIcon(icon)
         AboutFormLayout = QtGui.QVBoxLayout(AboutForm)
         AboutFormLayout.setSpacing(8)

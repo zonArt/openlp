@@ -22,10 +22,11 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import types
 import logging
 
 from PyQt4 import QtCore, QtGui
+
+from openlp.core.lib import buildIcon
 
 class OpenLPToolbar(QtGui.QToolBar):
     """
@@ -66,17 +67,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         ``objectname``
             The name of the object, as used in `<button>.setObjectName()`.
         """
-        ButtonIcon = None
-        if type(icon) is QtGui.QIcon:
-            ButtonIcon = icon
-        elif type(icon) is types.StringType or type(icon) is types.UnicodeType:
-            ButtonIcon = QtGui.QIcon()
-            if icon.startswith(u':/'):
-                ButtonIcon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
-                    QtGui.QIcon.Off)
-            else:
-                ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(
-                    QtGui.QImage(icon)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        ButtonIcon = buildIcon(icon)
         if ButtonIcon is not None:
             if slot is not None:
                 ToolbarButton = self.addAction(ButtonIcon, title, slot)

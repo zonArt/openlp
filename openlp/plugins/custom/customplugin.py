@@ -24,10 +24,8 @@
 
 import logging
 
-from PyQt4 import QtGui
-
 from forms import EditCustomForm
-from openlp.core.lib import Plugin
+from openlp.core.lib import Plugin, buildIcon
 from openlp.plugins.custom.lib import CustomManager, CustomMediaItem
 
 
@@ -52,9 +50,7 @@ class CustomPlugin(Plugin):
         self.custommanager = CustomManager(self.config)
         self.edit_custom_form = EditCustomForm(self.custommanager)
         # Create the plugin icon
-        self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_custom.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon = buildIcon(u':/media/media_custom.png')
 
     def get_media_manager_item(self):
         # Create the CustomManagerItem object
