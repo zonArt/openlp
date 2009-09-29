@@ -200,8 +200,7 @@ class Plugin(object):
 
     def process_add_service_event(self):
         """
-        Proxy method as method is not defined early enough
-        in the processing
+        Generic Drag and drop handler triggered from service_manager.
         """
         log.debug(u'process_add_service_event event called for plugin %s' % self.name)
         self.media_item.onAddClick()
