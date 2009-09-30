@@ -94,7 +94,8 @@ class PresentationMediaItem(MediaManagerItem):
         self.loadList(list)
         for item in self.controllers:
             #load the drop down selection
-            self.DisplayTypeComboBox.addItem(item)
+            if self.controllers[item].enabled:
+                self.DisplayTypeComboBox.addItem(item)
 
     def loadList(self, list):
         for file in list:

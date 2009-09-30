@@ -20,6 +20,8 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 import logging
 
+from PyQt4 import QtCore
+
 class PresentationController(object):
     """
     Base class for presentation controllers to inherit from
@@ -32,6 +34,13 @@ class PresentationController(object):
     ``name``
         The name that appears in the options and the media manager
     
+    ``enabled``
+        The controller is enabled
+
+    ``available``
+        The controller is available on this machine. Set by init via
+        call to check_available
+        
     ``plugin``
         The presentationplugin object
 
@@ -40,7 +49,7 @@ class PresentationController(object):
     ``kill()``
         Called at system exit to clean up any running presentations
 
-    ``is_available()``
+    ``check_available()``
         Returns True if presentation application is installed/can run on this machine
 
     ``load_presentation(presentation)``
@@ -108,8 +117,14 @@ class PresentationController(object):
         """
         self.plugin = plugin
         self.name = name
+        self.available = self.check_available()
+        if self.available:
+            self.enabled = int(plugin.config.get_config(
+                name, QtCore.Qt.Unchecked)) == QtCore.Qt.Checked
+        else:
+            self.enabled = False
 
-    def is_available(self):
+    def check_available(self):
         """
         Presentation app is able to run on this machine
         """
