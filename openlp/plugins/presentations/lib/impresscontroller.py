@@ -34,6 +34,8 @@ if os.name == u'nt':
 else:
     import uno
 
+from PyQt4 import QtCore
+
 from presentationcontroller import PresentationController
 
 class ImpressController(PresentationController):
