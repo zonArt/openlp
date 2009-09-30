@@ -25,6 +25,9 @@ This library has a limit of 50 PowerPoints which can be opened simultaneously.
 
 USAGE
 -----
+BOOL CheckInstalled(void);
+	Returns TRUE if PowerPointViewer is installed. FALSE if not.
+
 int OpenPPT(char *filename, HWND hParentWnd, RECT rect, char *previewpath);
 
 	Opens the PowerPoint file, counts the number of slides, sizes and positions accordingly

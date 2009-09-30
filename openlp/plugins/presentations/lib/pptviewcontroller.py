@@ -39,37 +39,50 @@ class PptviewController(PresentationController):
     """
     global log
     log = logging.getLogger(u'PptviewController')
+    log.info(u'loaded')
 
     def __init__(self, plugin):
         """
         Initialise the class
         """
         log.debug(u'Initialising')
-        PresentationController.__init__(self, plugin, u'Powerpoint Viewer')
         self.process = None
+        PresentationController.__init__(self, plugin, u'Powerpoint Viewer')
         self.pptid = None
         self.thumbnailpath = os.path.join(plugin.config.get_data_path(),
             u'pptview', u'thumbnails')
         self.thumbprefix = u'slide'
 
-    def is_available(self):
+    def check_available(self):
         """
         PPT Viewer is able to run on this machine
         """
-        log.debug(u'is_available')
+        log.debug(u'check_available')
         if os.name != u'nt':
             return False
         try:
-            self.start_process()
-            return True
+            return self.check_installed()
         except:
             return False
 
     if os.name == u'nt':
+        def check_installed(self):
+            """
+            Check the viewer is installed
+            """
+            log.debug(u'Check installed')
+            try:
+                self.start_process()
+                return self.process.CheckInstalled()
+            except:
+               return False
+            
         def start_process(self):
             """
             Loads the PPTVIEWLIB library
             """
+            if self.process is not None:
+                return
             log.debug(u'start PPTView')
             self.process = cdll.LoadLibrary(r'openlp\plugins\presentations\lib\pptviewlib\pptviewlib.dll')
 

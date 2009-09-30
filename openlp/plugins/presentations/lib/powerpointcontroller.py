@@ -27,6 +27,7 @@ import logging
 
 if os.name == u'nt':
     from win32com.client import Dispatch
+    import _winreg
 
 from presentationcontroller import PresentationController
 
@@ -41,7 +42,8 @@ class PowerpointController(PresentationController):
     """
     global log
     log = logging.getLogger(u'PowerpointController')
-
+    log.info(u'loaded')
+    
     def __init__(self, plugin):
         """
         Initialise the class
@@ -51,18 +53,18 @@ class PowerpointController(PresentationController):
         self.process = None
         self.presentation = None
 
-    def is_available(self):
+    def check_available(self):
         """
         PowerPoint is able to run on this machine
         """
-        log.debug(u'is_available')
-        if os.name != u'nt':
-            return False
-        try:
-            self.start_process()
-            return True
-        except:
-            return False
+        log.debug(u'check_available')
+        if os.name == u'nt':
+            try:
+                _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT, u'PowerPoint.Application').Close()
+                return True
+            except:
+                pass
+        return False
 
     if os.name == u'nt':
         def start_process(self):
@@ -83,6 +85,9 @@ class PowerpointController(PresentationController):
                 return False
         
         def kill(self):
+            """
+            Called at system exit to clean up any running presentations
+            """            
             self.process.Quit()
             self.process = None
 

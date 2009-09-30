@@ -23,9 +23,6 @@
 ###############################################################################
 
 from presentationcontroller import PresentationController
-from impresscontroller import ImpressController
-from powerpointcontroller import PowerpointController
-from pptviewcontroller import PptviewController
 from messagelistener import MessageListener
 from mediaitem import PresentationMediaItem
 from presentationtab import PresentationTab

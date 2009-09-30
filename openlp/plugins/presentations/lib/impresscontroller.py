@@ -38,7 +38,6 @@ from PyQt4 import QtCore
 
 from presentationcontroller import PresentationController
 
-
 class ImpressController(PresentationController):
     """
     Class to control interactions with Impress presentations.
@@ -47,6 +46,7 @@ class ImpressController(PresentationController):
     """
     global log
     log = logging.getLogger(u'ImpressController')
+    log.info(u'loaded')
 
     def __init__(self, plugin):
         """
@@ -59,16 +59,17 @@ class ImpressController(PresentationController):
         self.presentation = None
         self.controller = None
 
-    def is_available(self):
+    def check_available(self):
         """
-        PPT Viewer is able to run on this machine
+        Impress is able to run on this machine
         """
-        log.debug(u'is_available')
-        try:
-            self.start_process()
+        log.debug(u'check_available')
+        if os.name == u'nt':
+            return self.get_com_servicemanager() is not None
+        else:
+            # If not windows, and we've got this far then probably
+            # installed else the import uno would likely have failed
             return True
-        except:
-            return False
         
     def start_process(self):
         """
@@ -148,11 +149,19 @@ class ImpressController(PresentationController):
     def get_com_desktop(self):
         log.debug(u'getCOMDesktop')
         try:
-            smgr = Dispatch("com.sun.star.ServiceManager")
+            smgr = self.get_com_servicemanager()
             desktop = smgr.createInstance( "com.sun.star.frame.Desktop")
             return desktop
         except:
             log.exception(u'Failed to get COM desktop')
+            return None
+
+    def get_com_servicemanager(self):
+        log.debug(u'get_com_servicemanager')
+        try:
+            return Dispatch("com.sun.star.ServiceManager")
+        except:
+            log.exception(u'Failed to get COM service manager')
             return None
 
     def close_presentation(self):
