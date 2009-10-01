@@ -97,8 +97,6 @@ class PresentationPlugin(Plugin):
     def finalise(self):
         log.debug(u'Finalise')
         #Ask each controller to tidy up
-        for controller in self.controllers:
-            self.controllers[controller].kill()
         for key in self.controllers:
             controller = self.controllers[key]
             if controller.enabled:
