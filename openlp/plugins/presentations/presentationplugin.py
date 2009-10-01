@@ -96,3 +96,6 @@ class PresentationPlugin(Plugin):
         #Ask each controller to tidy up
         for controller in self.controllers:
             self.controllers[controller].kill()
+
+    def about(self):
+        return u'<b>Presentation Plugin</b> <br> Delivers the ability to show presentations using a number of different programs. The choice of available presentaion programs is available in a drop down.'

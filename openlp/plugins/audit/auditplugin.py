@@ -185,3 +185,6 @@ class AuditPlugin(Plugin):
 
     def onAuditReport(self):
         self.auditdetailform.exec_()
+
+    def about(self):
+        return u'<b>Audit Plugin</b> <br>This plugin records the use of songs and when they have been used during a live service'

@@ -70,3 +70,5 @@ class BiblePlugin(Plugin):
     def onBibleNewClick(self):
         self.media_item.onBibleNewClick()
 
+    def about(self):
+        return u'<b>Bible Plugin</b> <br>This plugin allows bible verse from different sources to be displayed on the screen during the service.<br><br>This is a core plugin and cannot be made inactive</b>'
