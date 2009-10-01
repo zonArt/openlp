@@ -82,6 +82,14 @@ DllExport void SetDebug(BOOL onoff)
 	DEBUG("enabled\n");
 }
 
+DllExport BOOL CheckInstalled()
+{
+	DEBUG("CheckInstalled\n");
+	char cmdline[MAX_PATH * 2];
+
+	return GetPPTViewerPath(cmdline, sizeof(cmdline));
+}
+
 // Open the PointPoint, count the slides and take a snapshot of each slide
 // for use in previews
 // previewpath is a prefix for the location to put preview images of each slide.

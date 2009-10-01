@@ -22,11 +22,12 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import os
 import logging
 
-from PyQt4 import QtCore
+from PyQt4 import QtGui
 
-from openlp.core.lib import Plugin, buildIcon
+from openlp.core.lib import Plugin
 from openlp.plugins.presentations.lib import *
 
 class PresentationPlugin(Plugin):
@@ -41,7 +42,9 @@ class PresentationPlugin(Plugin):
         Plugin.__init__(self, u'Presentations', u'1.9.0', plugin_helpers)
         self.weight = -8
         # Create the plugin icon
-        self.icon = buildIcon(u':/media/media_presentation.png')
+        self.icon = QtGui.QIcon()
+        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_presentation.png'),
+            QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
     def get_settings_tab(self):
         """
@@ -67,25 +70,25 @@ class PresentationPlugin(Plugin):
         If Not do not install the plugin.
         """
         log.debug(u'check_pre_conditions')
-        #Lets see if Powerpoint is required (Default is Not wanted)
-        controller = PowerpointController(self)
-        if int(self.config.get_config(
-            controller.name, QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
-            if controller.is_available():
-                self.registerControllers(controller)
-        #Lets see if Impress is required (Default is Not wanted)
-        controller = ImpressController(self)
-        if int(self.config.get_config(
-            controller.name, QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
-            if controller.is_available():
-                self.registerControllers(controller)
-        #Lets see if Powerpoint Viewer is required (Default is Not wanted)
-        controller = PptviewController(self)
-        if int(self.config.get_config(
-            controller.name, QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
-            if controller.is_available():
-                self.registerControllers(controller)
-        #If we have no available controllers disable plugin
+        dir = os.path.join(os.path.dirname(__file__), u'lib')
+        for filename in os.listdir(dir):
+            if filename.endswith(u'controller.py') and \
+                not filename == 'presentationcontroller.py':
+                path = os.path.join(dir, filename)
+                if os.path.isfile(path):
+                    modulename = u'openlp.plugins.presentations.lib.' + \
+                        os.path.splitext(filename)[0]
+                    log.debug(u'Importing controller %s', modulename)
+                    try:
+                        __import__(modulename, globals(), locals(), [])
+                    except ImportError, e:
+                        log.error(u'Failed to import %s on path %s for reason %s', modulename, path, e.args[0])
+        controller_classes = PresentationController.__subclasses__()
+        for controller_class in controller_classes:
+            controller = controller_class(self)
+            self.registerControllers(controller)
+            if controller.enabled:
+                controller.start_process()
         if len(self.controllers) > 0:
             return True
         else:
@@ -96,6 +99,10 @@ class PresentationPlugin(Plugin):
         #Ask each controller to tidy up
         for controller in self.controllers:
             self.controllers[controller].kill()
+        for key in self.controllers:
+            controller = self.controllers[key]
+            if controller.enabled:
+                controller.kill()
 
     def about(self):
         return u'<b>Presentation Plugin</b> <br> Delivers the ability to show presentations using a number of different programs. The choice of available presentaion programs is available in a drop down.'

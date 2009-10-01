@@ -4,6 +4,7 @@
 enum PPTVIEWSTATE { PPT_CLOSED, PPT_STARTED, PPT_OPENED, PPT_LOADED, PPT_CLOSING};
 
 DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect, char *previewpath);
+DllExport BOOL CheckInstalled();
 DllExport void ClosePPT(int id);
 DllExport int GetCurrentSlide(int id);
 DllExport int GetSlideCount(int id);
