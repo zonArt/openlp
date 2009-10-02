@@ -54,7 +54,17 @@ def file_to_xml(xmlfile):
     ``xmlfile``
         The name of the file.
     """
-    return open(xmlfile).read()
+    file = None
+    xml = None
+    try:
+        file = open(xmlfile, u'r')
+        xml = file.read()
+    except IOError:
+        log.exception(u'Failed to open XML file')
+    finally:
+        if file:
+            file.close()
+    return xml
 
 def str_to_bool(stringvalue):
     """

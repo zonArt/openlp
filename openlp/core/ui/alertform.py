@@ -31,7 +31,7 @@ class AlertForm(QtGui.QDialog):
     log = logging.getLogger(u'AlertForm')
 
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, None)
+        QtGui.QDialog.__init__(self, parent)
         self.parent = parent
         self.setupUi(self)
         log.debug(u'Defined')

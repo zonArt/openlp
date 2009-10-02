@@ -125,3 +125,15 @@ class OpenLPToolbar(QtGui.QToolBar):
         """
         for widget in widgets:
             self.actions[widget].setVisible(True)
+
+    def addPushButton(self, imageFile=None, text=u''):
+        """
+        Adds a push button to the toolbar.
+
+        Returns the push button
+        """
+        pushButton = QtGui.QPushButton(buildIcon(imageFile), text)
+        pushButton.setCheckable(True)
+        pushButton.setFlat(True)
+        self.addWidget(pushButton)
+        return pushButton

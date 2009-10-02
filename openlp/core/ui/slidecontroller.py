@@ -131,10 +131,8 @@ class SlideController(QtGui.QWidget):
                 self.onSlideSelectedLast)
         if self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
-            self.Toolbar.addToolbarButton(u'Close Screen',
-                u':/slides/slide_close.png',
-                translate(u'SlideController', u'Close Screen'),
-                self.onBlankScreen)
+            self.blackPushButton = self.Toolbar.addPushButton(
+                u':/slides/slide_close.png')
         if not self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(u'Go Live',
@@ -190,6 +188,8 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(self.PreviewListWidget,
             QtCore.SIGNAL(u'activated(QModelIndex)'), self.onSlideSelected)
         if isLive:
+            QtCore.QObject.connect(self.blackPushButton,
+                QtCore.SIGNAL(u'toggled(bool)'), self.onBlankScreen)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'update_spin_delay'), self.receiveSpinDelay)
             Receiver().send_message(u'request_spin_delay')
@@ -337,7 +337,7 @@ class SlideController(QtGui.QWidget):
         """
         row = self.PreviewListWidget.currentRow()
         if row > -1 and row < self.PreviewListWidget.rowCount():
-            label = self.PreviewListWidget.cellWidget(row, 0)
+            #label = self.PreviewListWidget.cellWidget(row, 0)
             frame = self.serviceitem.frames[row][u'image']
             before = time.time()
             if frame is None:

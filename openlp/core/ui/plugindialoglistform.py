@@ -9,14 +9,14 @@
 
 import logging
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate, PluginStatus
+from openlp.core.lib import translate, PluginStatus, buildIcon
 
 class PluginForm(QtGui.QDialog):
     global log
     log = logging.getLogger(u'PluginForm')
 
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, None)
+        QtGui.QDialog.__init__(self, parent)
         self.parent = parent
         self.setupUi(self)
         log.debug(u'Defined')
@@ -24,6 +24,8 @@ class PluginForm(QtGui.QDialog):
     def setupUi(self, PluginForm):
         PluginForm.setObjectName(u'PluginForm')
         PluginForm.resize(400, 568)
+        icon = buildIcon(u':/icon/openlp-logo-16x16.png')
+        PluginForm.setWindowIcon(icon)
         self.PluginViewList = QtGui.QTableWidget(PluginForm)
         self.PluginViewList.setGeometry(QtCore.QRect(20, 10, 371, 261))
         self.PluginViewList.setObjectName(u'PluginViewList')
@@ -59,7 +61,7 @@ class PluginForm(QtGui.QDialog):
             QtCore.SIGNAL(u'accepted()'), PluginForm.close)
         QtCore.QMetaObject.connectSlotsByName(PluginForm)
         QtCore.QObject.connect(self.PluginViewList,
-           QtCore.SIGNAL(u'itemDoubleClicked(QTableWidgetItem*)'), self.displayAbout)
+           QtCore.SIGNAL(u'itemClicked(QTableWidgetItem*)'), self.displayAbout)
 
     def retranslateUi(self, PluginForm):
         PluginForm.setWindowTitle(translate(u'PluginForm', u'Plugin list'))

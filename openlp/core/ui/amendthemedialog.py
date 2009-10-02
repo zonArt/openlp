@@ -120,8 +120,6 @@ class Ui_AmendThemeDialog(object):
         self.ImageToolButton.setObjectName(u'ImageToolButton')
         self.horizontalLayout_2.addWidget(self.ImageToolButton)
         self.BackgroundLayout.setWidget(4, QtGui.QFormLayout.FieldRole, self.ImageFilenameWidget)
-        spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        #self.BackgroundLayout.addItem(spacerItem, 7, 1, 1, 1)
         self.ThemeTabWidget.addTab(self.BackgroundTab, u'')
         self.FontMainTab = QtGui.QWidget()
         self.FontMainTab.setObjectName(u'FontMainTab')
