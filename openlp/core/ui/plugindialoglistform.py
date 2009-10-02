@@ -89,18 +89,22 @@ class PluginForm(QtGui.QDialog):
             item2 = QtGui.QTableWidgetItem(plugin.version)
             item2.setTextAlignment(QtCore.Qt.AlignVCenter)
             item2.setFlags(QtCore.Qt.ItemIsSelectable)
-            if plugin.status == PluginStatus.Active:
-                item3 = QtGui.QTableWidgetItem(
-                    translate(u'PluginForm', u'Active'))
-            else:
-                item3 = QtGui.QTableWidgetItem(
-                    translate(u'PluginForm', u'Inactive'))
-            item3.setTextAlignment(QtCore.Qt.AlignVCenter)
-            item3.setFlags(QtCore.Qt.ItemIsSelectable)
             self.PluginViewList.setItem(row, 0, item1)
             self.PluginViewList.setItem(row, 1, item2)
-            self.PluginViewList.setItem(row, 2, item3)
-            self.PluginViewList.setRowHeight(row, 15)
+            if plugin.can_be_disabled():
+                combo = QtGui.QComboBox()
+                self.PluginViewList.setCellWidget(row, 2, combo)
+                combo.addItem(translate(u'PluginForm', u'Active'))
+                combo.addItem(translate(u'PluginForm', u'Inactive'))
+#                if plugin.status == PluginStatus.Active:
+                self.PluginViewList.setRowHeight(row, 25)
+            else:
+                item3 = QtGui.QTableWidgetItem(
+                    translate(u'PluginForm', u'Active'))
+                item3.setTextAlignment(QtCore.Qt.AlignVCenter)
+                item3.setFlags(QtCore.Qt.ItemIsSelectable)
+                self.PluginViewList.setItem(row, 2, item3)
+                self.PluginViewList.setRowHeight(row, 15)
 
     def displayAbout(self, item):
         if item is None:
