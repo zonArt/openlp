@@ -45,16 +45,8 @@ class AuditPlugin(Plugin):
         self.icon = buildIcon(u':/media/media_image.png')
         self.auditfile = None
 
-    def check_pre_conditions(self):
-        """
-        Check to see if auditing is required
-        """
-        log.debug(u'check_pre_conditions')
-        #Lets see if audit is required
-        if int(self.config.get_config(u'startup', 0)) == QtCore.Qt.Checked:
-            return True
-        else:
-            return False
+    def can_be_disabled(self):
+        return True
 
     def add_tools_menu_item(self, tools_menu):
         """

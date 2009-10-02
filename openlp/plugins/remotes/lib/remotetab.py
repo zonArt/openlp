@@ -71,4 +71,3 @@ class RemoteTab(SettingsTab):
             u'remote port', unicode(self.RemotePortSpinBox.value()))
         self.config.set_config(
             u'startup', unicode(self.RemoteActive.checkState()))
-

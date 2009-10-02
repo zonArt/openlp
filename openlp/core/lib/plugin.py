@@ -31,8 +31,9 @@ class PluginStatus(object):
     """
     Defines the status of the plugin
     """
-    Active = 1
-    Inactive = 2
+    Active = 0
+    Inactive = 1
+    Disabled = 2
 
 class Plugin(object):
     """
@@ -85,17 +86,6 @@ class Plugin(object):
     ``about()``
         Used in the plugin manager, when a person clicks on the 'About' button.
 
-    ``save(data)``
-        A method to convert the plugin's data to a string to be stored in the
-        Service file.
-
-    ``load(string)``
-        A method to convert the string from a Service file into the plugin's
-        own data format.
-
-    ``render(theme, screen_number)``
-        A method used to render something to the screen, given the current theme
-        and screen number.
     """
     global log
     log = logging.getLogger(u'Plugin')
@@ -156,6 +146,20 @@ class Plugin(object):
         Returns True or False.
         """
         return False
+
+    def set_status(self):
+        """
+        Sets the status of the plugin
+        """
+        self.status = self.config.get_config(\
+            u'%s_status' % self.name, PluginStatus.Inactive)
+
+    def toggle_status(self, new_status):
+        """
+        Changes the status of the plugin and remembers it
+        """
+        self.status = new_status
+        self.config.set_config(u'%s_status' % self.name, self.status)
 
     def get_media_manager_item(self):
         """

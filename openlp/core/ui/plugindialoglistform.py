@@ -96,7 +96,9 @@ class PluginForm(QtGui.QDialog):
                 self.PluginViewList.setCellWidget(row, 2, combo)
                 combo.addItem(translate(u'PluginForm', u'Active'))
                 combo.addItem(translate(u'PluginForm', u'Inactive'))
-#                if plugin.status == PluginStatus.Active:
+                QtCore.QObject.connect(combo,
+                    QtCore.SIGNAL(u'activated(int)'), self.statusComboChanged)
+                combo.setCurrentIndex(int(plugin.status))
                 self.PluginViewList.setRowHeight(row, 25)
             else:
                 item3 = QtGui.QTableWidgetItem(
@@ -114,3 +116,11 @@ class PluginForm(QtGui.QDialog):
         if text is not None:
             self.AboutTextLabel.setText(translate(u'PluginList', text))
 
+    def statusComboChanged(self, status):
+        row = self.PluginViewList.currentRow()
+        log.debug(u'Combo status changed %s for row %s' %(status, row))
+        self.parent.plugin_manager.plugins[row].toggle_status(status)
+        if status == PluginStatus.Active:
+            self.parent.plugin_manager.plugins[row].initialise()
+        else:
+            self.parent.plugin_manager.plugins[row].finalise()

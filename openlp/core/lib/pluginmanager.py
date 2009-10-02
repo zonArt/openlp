@@ -105,7 +105,12 @@ class PluginManager(object):
         for plugin in plugins_list:
             if plugin.check_pre_conditions():
                 log.debug(u'Plugin %s active', unicode(plugin.name))
-                plugin.status = PluginStatus.Active
+                if plugin.can_be_disabled():
+                    plugin.set_status()
+                else:
+                    plugin.status = PluginStatus.Active
+            else:
+                plugin.status = PluginStatus.Disabled
             self.plugins.append(plugin)
 
     def order_by_weight(self, x, y):
@@ -129,13 +134,14 @@ class PluginManager(object):
             The Media Manager itself.
         """
         for plugin in self.plugins:
-            if plugin.status == PluginStatus.Active:
-                media_manager_item = plugin.get_media_manager_item()
-                if media_manager_item is not None:
-                    log.debug(u'Inserting media manager item from %s' % \
-                        plugin.name)
-                    mediatoolbox.addItem(media_manager_item, plugin.icon,
-                        media_manager_item.title)
+            media_manager_item = plugin.get_media_manager_item()
+            if media_manager_item is not None:
+                log.debug(u'Inserting media manager item from %s' % \
+                    plugin.name)
+                mediatoolbox.addItem(media_manager_item, plugin.icon,
+                    media_manager_item.title)
+                if plugin.status == PluginStatus.Inactive:
+                    media_manager_item.hide()
 
     def hook_settings_tabs(self, settingsform=None):
         """
@@ -163,8 +169,9 @@ class PluginManager(object):
             The Import menu.
         """
         for plugin in self.plugins:
-            if plugin.status == PluginStatus.Active:
-                plugin.add_import_menu_item(import_menu)
+            plugin.add_import_menu_item(import_menu)
+            if plugin.status == PluginStatus.Inactive:
+                import_menu.hide()
 
     def hook_export_menu(self, export_menu):
         """
@@ -175,8 +182,9 @@ class PluginManager(object):
             The Export menu.
         """
         for plugin in self.plugins:
-            if plugin.status == PluginStatus.Active:
-                plugin.add_export_menu_item(export_menu)
+            plugin.add_export_menu_item(export_menu)
+            if plugin.status == PluginStatus.Inactive:
+                export_menu.hide()
 
     def hook_tools_menu(self, tools_menu):
         """
@@ -187,8 +195,9 @@ class PluginManager(object):
             The Tools menu.
         """
         for plugin in self.plugins:
-            if plugin.status == PluginStatus.Active:
-                plugin.add_tools_menu_item(tools_menu)
+            plugin.add_tools_menu_item(tools_menu)
+            if plugin.status == PluginStatus.Inactive:
+                tools_menu.hide()
 
     def initialise_plugins(self):
         """
