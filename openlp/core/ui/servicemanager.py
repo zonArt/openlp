@@ -35,7 +35,7 @@ from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
 class ServiceManagerList(QtGui.QTreeWidget):
 
     def __init__(self,parent=None,name=None):
-        QtGui.QListView.__init__(self,parent)
+        QtGui.QTreeWidget.__init__(self,parent)
         self.parent = parent
 
     def keyPressEvent(self, event):
@@ -402,7 +402,7 @@ class ServiceManager(QtGui.QWidget):
         name = filename.split(os.path.sep)
         self.serviceName = name[-1]
         self.parent.serviceChanged(True, self.serviceName)
-        
+
     def onQuickSaveService(self):
         self.onSaveService(True)
 

@@ -21,7 +21,7 @@ import logging
 
 from PyQt4 import QtNetwork, QtCore
 
-from openlp.core.lib import Plugin, Receiver
+from openlp.core.lib import Plugin, Receiver, translate
 from openlp.plugins.remotes.lib import RemoteTab
 
 class RemotesPlugin(Plugin):
@@ -34,6 +34,9 @@ class RemotesPlugin(Plugin):
         # Call the parent constructor
         Plugin.__init__(self, u'Remotes', u'1.9.0', plugin_helpers)
         self.weight = -1
+
+    def can_be_disabled(self):
+        return True
 
     def check_pre_conditions(self):
         """
@@ -51,6 +54,12 @@ class RemotesPlugin(Plugin):
         self.server.bind(int(self.config.get_config(u'remote port', 4316)))
         QtCore.QObject.connect(self.server,
             QtCore.SIGNAL(u'readyRead()'), self.readData)
+
+    def finalise(self):
+        pass
+
+    def about(self):
+        return u'<b>Remote Plugin</b> <br>This plugin provides the ability to send messages to a running version of openlp on a different computer.<br> The Primary use for this would be to send alerts from a creche'
 
     def get_settings_tab(self):
         """

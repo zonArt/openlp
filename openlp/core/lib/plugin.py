@@ -149,6 +149,14 @@ class Plugin(object):
         """
         return True
 
+    def can_be_disabled(self):
+        """
+        Indicates whether the plugin can be disabled by the plugin list.
+
+        Returns True or False.
+        """
+        return False
+
     def get_media_manager_item(self):
         """
         Construct a MediaManagerItem object with all the buttons and things

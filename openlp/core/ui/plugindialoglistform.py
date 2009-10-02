@@ -48,6 +48,8 @@ class PluginForm(QtGui.QDialog):
         QtCore.QObject.connect(self.ButtonBox,
             QtCore.SIGNAL(u'accepted()'), PluginForm.close)
         QtCore.QMetaObject.connectSlotsByName(PluginForm)
+        QtCore.QObject.connect(self.PluginViewList,
+           QtCore.SIGNAL(u'itemDoubleClicked(QTableWidgetItem*)'), self.displayAbout)
 
     def retranslateUi(self, PluginForm):
         PluginForm.setWindowTitle(translate(u'PluginForm', u'Plugin list'))
@@ -62,15 +64,16 @@ class PluginForm(QtGui.QDialog):
         """
         Load the plugin details into the screen
         """
-        #self.PluginViewList.clear()
         self.PluginViewList.setRowCount(0)
         for plugin in self.parent.plugin_manager.plugins:
             row = self.PluginViewList.rowCount()
             self.PluginViewList.setRowCount(row + 1)
             item1 = QtGui.QTableWidgetItem(plugin.name)
+            item1.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
             item1.setTextAlignment(QtCore.Qt.AlignVCenter)
             item2 = QtGui.QTableWidgetItem(plugin.version)
             item2.setTextAlignment(QtCore.Qt.AlignVCenter)
+            item2.setFlags(QtCore.Qt.ItemIsSelectable)
             if plugin.status == PluginStatus.Active:
                 item3 = QtGui.QTableWidgetItem(
                     translate(u'PluginForm', u'Active'))
@@ -78,8 +81,21 @@ class PluginForm(QtGui.QDialog):
                 item3 = QtGui.QTableWidgetItem(
                     translate(u'PluginForm', u'Inactive'))
             item3.setTextAlignment(QtCore.Qt.AlignVCenter)
+            item3.setFlags(QtCore.Qt.ItemIsSelectable)
             self.PluginViewList.setItem(row, 0, item1)
             self.PluginViewList.setItem(row, 1, item2)
             self.PluginViewList.setItem(row, 2, item3)
             self.PluginViewList.setRowHeight(row, 15)
 
+    def displayAbout(self, item):
+        if item is None:
+            return False
+        row = self.PluginViewList.row(item)
+        text = self.parent.plugin_manager.plugins[row].about()
+        if text is not None:
+            ret = QtGui.QMessageBox.information(self,
+                translate(u'PluginList', u'Plugin Information'),
+                translate(u'PluginList', text),
+                QtGui.QMessageBox.StandardButtons(
+                    QtGui.QMessageBox.Ok),
+                QtGui.QMessageBox.Ok)

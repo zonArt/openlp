@@ -44,3 +44,6 @@ class MediaPlugin(Plugin):
         # Create the MediaManagerItem object
         self.media_item = MediaMediaItem(self, self.icon, u'Media')
         return self.media_item
+
+    def about(self):
+        return u'<b>Media Plugin</b> <br> One day this may provide access to video and audio clips'
