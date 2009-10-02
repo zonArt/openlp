@@ -53,6 +53,8 @@ class PluginForm(QtGui.QDialog):
         self.PluginInfoGroupBox.setObjectName("PluginInfoGroupBox")
         self.AboutTextLabel = QtGui.QLabel(self.PluginInfoGroupBox)
         self.AboutTextLabel.setGeometry(QtCore.QRect(10, 30, 351, 191))
+        self.AboutTextLabel.setAlignment(QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.AboutTextLabel.setWordWrap(True)
         self.AboutTextLabel.setObjectName("AboutTextLabel")
 
 
@@ -106,9 +108,5 @@ class PluginForm(QtGui.QDialog):
         row = self.PluginViewList.row(item)
         text = self.parent.plugin_manager.plugins[row].about()
         if text is not None:
-            ret = QtGui.QMessageBox.information(self,
-                translate(u'PluginList', u'Plugin Information'),
-                translate(u'PluginList', text),
-                QtGui.QMessageBox.StandardButtons(
-                    QtGui.QMessageBox.Ok),
-                QtGui.QMessageBox.Ok)
+            self.AboutTextLabel.setText(translate(u'PluginList', text))
+
