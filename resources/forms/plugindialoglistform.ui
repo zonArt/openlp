@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>393</height>
+    <height>568</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <x>20</x>
      <y>10</y>
      <width>371</width>
-     <height>331</height>
+     <height>261</height>
     </rect>
    </property>
    <property name="showGrid">
@@ -34,10 +34,22 @@
    <attribute name="horizontalHeaderVisible">
     <bool>true</bool>
    </attribute>
+   <attribute name="horizontalHeaderCascadingSectionResizes">
+    <bool>false</bool>
+   </attribute>
    <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
     <bool>true</bool>
    </attribute>
+   <attribute name="horizontalHeaderStretchLastSection">
+    <bool>true</bool>
+   </attribute>
    <attribute name="verticalHeaderVisible">
+    <bool>false</bool>
+   </attribute>
+   <attribute name="horizontalHeaderStretchLastSection">
+    <bool>true</bool>
+   </attribute>
+   <attribute name="horizontalHeaderCascadingSectionResizes">
     <bool>false</bool>
    </attribute>
    <row/>
@@ -76,7 +88,7 @@
    <property name="geometry">
     <rect>
      <x>220</x>
-     <y>350</y>
+     <y>530</y>
      <width>170</width>
      <height>25</height>
     </rect>
@@ -84,6 +96,38 @@
    <property name="standardButtons">
     <set>QDialogButtonBox::Ok</set>
    </property>
+  </widget>
+  <widget class="QGroupBox" name="PluginInfoGroupBox">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>270</y>
+     <width>371</width>
+     <height>241</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>GroupBox</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   </property>
+   <property name="flat">
+    <bool>false</bool>
+   </property>
+   <widget class="QLabel" name="AboutTextLabel">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>351</width>
+      <height>191</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>
