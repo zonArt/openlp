@@ -23,9 +23,9 @@ class PluginForm(QtGui.QDialog):
 
     def setupUi(self, PluginForm):
         PluginForm.setObjectName(u'PluginForm')
-        PluginForm.resize(400, 393)
+        PluginForm.resize(400, 568)
         self.PluginViewList = QtGui.QTableWidget(PluginForm)
-        self.PluginViewList.setGeometry(QtCore.QRect(20, 10, 371, 331))
+        self.PluginViewList.setGeometry(QtCore.QRect(20, 10, 371, 261))
         self.PluginViewList.setObjectName(u'PluginViewList')
         self.PluginViewList.setShowGrid(False)
         self.PluginViewList.setGridStyle(QtCore.Qt.SolidLine)
@@ -38,11 +38,21 @@ class PluginForm(QtGui.QDialog):
         item = QtGui.QTableWidgetItem()
         self.PluginViewList.setHorizontalHeaderItem(2, item)
         self.PluginViewList.horizontalHeader().setVisible(True)
+        self.PluginViewList.horizontalHeader().setStretchLastSection(True)
         self.PluginViewList.verticalHeader().setVisible(False)
         self.ButtonBox = QtGui.QDialogButtonBox(PluginForm)
-        self.ButtonBox.setGeometry(QtCore.QRect(220, 350, 170, 25))
+        self.ButtonBox.setGeometry(QtCore.QRect(220, 530, 170, 25))
         self.ButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
         self.ButtonBox.setObjectName(u'ButtonBox')
+        self.PluginInfoGroupBox = QtGui.QGroupBox(PluginForm)
+        self.PluginInfoGroupBox.setGeometry(QtCore.QRect(20, 270, 371, 241))
+        self.PluginInfoGroupBox.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.PluginInfoGroupBox.setFlat(False)
+        self.PluginInfoGroupBox.setObjectName("PluginInfoGroupBox")
+        self.AboutTextLabel = QtGui.QLabel(self.PluginInfoGroupBox)
+        self.AboutTextLabel.setGeometry(QtCore.QRect(10, 30, 351, 191))
+        self.AboutTextLabel.setObjectName("AboutTextLabel")
+
 
         self.retranslateUi(PluginForm)
         QtCore.QObject.connect(self.ButtonBox,
@@ -53,6 +63,7 @@ class PluginForm(QtGui.QDialog):
 
     def retranslateUi(self, PluginForm):
         PluginForm.setWindowTitle(translate(u'PluginForm', u'Plugin list'))
+        self.PluginInfoGroupBox.setTitle(translate("PluginForm", "Selected Plugin Information"))
         self.PluginViewList.horizontalHeaderItem(0).setText(
             translate(u'PluginForm', u'Name'))
         self.PluginViewList.horizontalHeaderItem(1).setText(
