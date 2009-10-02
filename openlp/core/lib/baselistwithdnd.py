@@ -24,8 +24,6 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib.toolbar import *
-
 class BaseListWithDnD(QtGui.QListWidget):
     """
     Please put a short description of what this class does in here.
