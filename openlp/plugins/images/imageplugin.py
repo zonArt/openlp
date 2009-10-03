@@ -52,8 +52,7 @@ class ImagePlugin(Plugin):
         self.remove_toolbox_item()
 
     def get_settings_tab(self):
-        self.ImageTab = ImageTab()
-        return self.ImageTab
+        return ImageTab()
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object

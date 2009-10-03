@@ -154,10 +154,10 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                settings_tab = plugin.get_settings_tab()
-                if settings_tab is not None:
+                plugin.settings_tab = plugin.get_settings_tab()
+                if plugin.settings_tab is not None:
                     log.debug(u'Inserting settings tab item from %s' % plugin.name)
-                    settingsform.addTab(settings_tab)
+                    plugin.settings_id = settingsform.addTab(plugin.settings_tab)
                 else:
                     log.debug(u'No tab settings in %s' % plugin.name)
 
@@ -204,7 +204,6 @@ class PluginManager(object):
         """
         log.info(u'initialising plugins')
         for plugin in self.plugins:
-            print plugin.name ,  plugin.media_item
             if plugin.is_active():
                 plugin.initialise()
             if plugin.media_item is not None and not plugin.is_active():

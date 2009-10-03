@@ -44,8 +44,7 @@ class BiblePlugin(Plugin):
         self.biblemanager = BibleManager(self.config)
 
     def get_settings_tab(self):
-        self.bibles_tab = BiblesTab()
-        return self.bibles_tab
+        return BiblesTab()
 
     def get_media_manager_item(self):
         # Create the BibleManagerItem object

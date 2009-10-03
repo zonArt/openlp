@@ -50,8 +50,7 @@ class PresentationPlugin(Plugin):
         """
         Create the settings Tab
         """
-        self.presentation_tab = PresentationTab(self.controllers)
-        return self.presentation_tab
+        return PresentationTab(self.controllers)
 
     def get_media_manager_item(self):
         """

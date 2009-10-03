@@ -120,6 +120,7 @@ class Plugin(object):
         self.config = PluginConfig(self.name)
         self.weight = 0
         self.media_id = -1
+        self.settings_id = -1
         self.media_active = False
         self.status = PluginStatus.Inactive
         # Set up logging
@@ -254,14 +255,19 @@ class Plugin(object):
         """
         if self.media_id is not -1:
             self.mediatoolbox.removeItem(self.media_id)
-            self.media_active = False
+        if self.settings_id is not -1:
+            self.settings.removeTab(self.settings_id)
+        self.media_active = False
 
     def insert_toolbox_item(self):
         """
         Called by plugin to replace toolbar
         """
-        if self.media_id is not -1:
-            if not self.media_active:
+        if not self.media_active:
+            if self.media_id is not -1:
                 self.mediatoolbox.insertItem(
                     self.media_id, self.media_item, self.icon, self.media_item.title)
-                self.media_active = True
+            if self.settings_id is not -1:
+                self.settings.insertTab(
+                    self.settings_id, self.settings_tab)
+            self.media_active = True

@@ -37,8 +37,7 @@ class MediaPlugin(Plugin):
         self.dnd_id = u'Media'
 
     def get_settings_tab(self):
-        self.MediaTab = MediaTab()
-        return self.MediaTab
+        return MediaTab()
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
