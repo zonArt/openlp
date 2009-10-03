@@ -43,7 +43,7 @@ class AuditPlugin(Plugin):
         self.weight = -4
         # Create the plugin icon
         self.icon = buildIcon(u':/media/media_image.png')
-        self.auditfile = None
+        self.auditmanager = None
 
     def can_be_disabled(self):
         return True
@@ -115,9 +115,9 @@ class AuditPlugin(Plugin):
         QtCore.QObject.connect(self.AuditReport,
             QtCore.SIGNAL(u'triggered()'), self.onAuditReport)
 
-    def get_settings_tab(self):
-        self.AuditTab = AuditTab()
-        return self.AuditTab
+#    def get_settings_tab(self):
+#        self.AuditTab = AuditTab()
+#        return self.AuditTab
 
     def initialise(self):
         log.info(u'Plugin Initialising')
@@ -128,9 +128,15 @@ class AuditPlugin(Plugin):
         self.auditActive = str_to_bool(
             self.config.get_config(u'audit active', False))
         self.AuditStatus.setChecked(self.auditActive)
-        self.auditmanager = AuditManager(self.config)
+        if self.auditmanager is None:
+            self.auditmanager = AuditManager(self.config)
         self.auditdeleteform = AuditDeleteForm(self.auditmanager)
         self.auditdetailform = AuditDetailForm(self.auditmanager)
+        self.AuditMenu.setVisible(True)
+
+    def finalise(self):
+        log.info(u'Plugin Finalise')
+        self.AuditMenu.setVisible(True)
 
     def toggleAuditState(self):
         self.auditActive = not self.auditActive

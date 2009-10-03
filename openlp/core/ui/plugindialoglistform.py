@@ -11,6 +11,20 @@ import logging
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate, PluginStatus, buildIcon
 
+class PluginCombo(QtGui.QComboBox):
+    """
+    Customised version of QTableWidget which can respond to keyboard
+    events.
+    """
+    def __init__(self, parent=None, plugin=None):
+        QtGui.QComboBox.__init__(self, parent)
+        self.parent = parent
+        self.plugin = plugin
+
+    def enterEvent(self, event):
+        self.parent.activePlugin = self.plugin
+        event.ignore()
+
 class PluginForm(QtGui.QDialog):
     global log
     log = logging.getLogger(u'PluginForm')
@@ -18,6 +32,7 @@ class PluginForm(QtGui.QDialog):
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.parent = parent
+        self.activePlugin = None
         self.setupUi(self)
         log.debug(u'Defined')
 
@@ -57,7 +72,6 @@ class PluginForm(QtGui.QDialog):
         self.AboutTextLabel.setWordWrap(True)
         self.AboutTextLabel.setObjectName("AboutTextLabel")
 
-
         self.retranslateUi(PluginForm)
         QtCore.QObject.connect(self.ButtonBox,
             QtCore.SIGNAL(u'accepted()'), PluginForm.close)
@@ -92,13 +106,13 @@ class PluginForm(QtGui.QDialog):
             self.PluginViewList.setItem(row, 0, item1)
             self.PluginViewList.setItem(row, 1, item2)
             if plugin.can_be_disabled():
-                combo = QtGui.QComboBox()
+                combo = PluginCombo(self, plugin)
                 self.PluginViewList.setCellWidget(row, 2, combo)
                 combo.addItem(translate(u'PluginForm', u'Active'))
                 combo.addItem(translate(u'PluginForm', u'Inactive'))
-                QtCore.QObject.connect(combo,
-                    QtCore.SIGNAL(u'activated(int)'), self.statusComboChanged)
                 combo.setCurrentIndex(int(plugin.status))
+                QtCore.QObject.connect(combo,
+                    QtCore.SIGNAL(u'currentIndexChanged(int)'), self.statusComboChanged)
                 self.PluginViewList.setRowHeight(row, 25)
             else:
                 item3 = QtGui.QTableWidgetItem(
@@ -117,10 +131,9 @@ class PluginForm(QtGui.QDialog):
             self.AboutTextLabel.setText(translate(u'PluginList', text))
 
     def statusComboChanged(self, status):
-        row = self.PluginViewList.currentRow()
-        log.debug(u'Combo status changed %s for row %s' %(status, row))
-        self.parent.plugin_manager.plugins[row].toggle_status(status)
+        log.debug(u'Combo status changed %s for plugin %s' %(status, self.activePlugin.name))
+        self.activePlugin.toggle_status(status)
         if status == PluginStatus.Active:
-            self.parent.plugin_manager.plugins[row].initialise()
+            self.activePlugin.initialise()
         else:
-            self.parent.plugin_manager.plugins[row].finalise()
+            self.activePlugin.finalise()

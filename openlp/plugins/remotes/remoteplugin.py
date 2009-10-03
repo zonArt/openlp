@@ -34,6 +34,7 @@ class RemotesPlugin(Plugin):
         # Call the parent constructor
         Plugin.__init__(self, u'Remotes', u'1.9.0', plugin_helpers)
         self.weight = -1
+        self.server = None
 
     def can_be_disabled(self):
         return True
@@ -47,7 +48,8 @@ class RemotesPlugin(Plugin):
 
     def finalise(self):
         log.debug(u'finalise')
-        self.server.close()
+        if self.server is not None:
+            self.server.close()
 
     def about(self):
         return u'<b>Remote Plugin</b> <br>This plugin provides the ability to send messages to a running version of openlp on a different computer.<br> The Primary use for this would be to send alerts from a creche'
