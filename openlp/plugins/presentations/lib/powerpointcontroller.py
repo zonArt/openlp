@@ -153,12 +153,15 @@ class PowerpointController(PresentationController):
             Starts a presentation from the beginning
             """            
             self.presentation.SlideShowSettings.Run()
+            self.presentation.SlideShowWindow.View.GotoSlide(1)
             rendermanager = self.plugin.render_manager
             rect = rendermanager.screen_list[rendermanager.current_display][u'size']
-            self.presentation.SlideShowWindow.Top = rect.y() 
-            self.presentation.SlideShowWindow.Height = rect.height() 
-            self.presentation.SlideShowWindow.Left = rect.x() 
-            self.presentation.SlideShowWindow.Width = rect.width() 
+            dpi = 96    # This assumption is good some of the time, but not
+                        # all, but I don't know how to get the screen DPI yet
+            self.presentation.SlideShowWindow.Top = rect.y() * 72 / dpi
+            self.presentation.SlideShowWindow.Height = rect.height() * 72 / dpi
+            self.presentation.SlideShowWindow.Left = rect.x() * 72 / dpi
+            self.presentation.SlideShowWindow.Width = rect.width() * 72 / dpi
 
         def get_slide_number(self):
             """

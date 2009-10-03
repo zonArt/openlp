@@ -118,6 +118,7 @@ class ImpressController(PresentationController):
             self.document = desktop.loadComponentFromURL(
                 url, "_blank", 0, properties)
             self.presentation = self.document.getPresentation()
+            self.presentation.Display = self.plugin.render_manager.current_display + 1
             self.presentation.start()
             self.controller = \
                 desktop.getCurrentComponent().Presentation.getController()
@@ -178,32 +179,38 @@ class ImpressController(PresentationController):
             self.document = None
 
     def is_loaded(self):
-        return self.presentation is not None and self.document is not None
+        return self.presentation is not None \
+            and self.document is not None \
+            and self.controller is not None
 
     def is_active(self):
         if not self.is_loaded():
             return False
-        return self.presentation.isRunning() and self.presentation.isActive()
+        return self.controller.isRunning() and self.controller.isActive()
 
     def unblank_screen(self):
-        return self.presentation.resume()
+        return self.controller.resume()
 
     def blank_screen(self):
-        self.presentation.blankScreen(0)
+        self.controller.blankScreen(0)
 
     def stop_presentation(self):
-        self.presentation.deactivate()
+        self.controller.deactivate()
         # self.presdoc.end()
 
     def start_presentation(self):
-        self.presentation.activate()
+        self.controller.activate()
+        self.goto_slide(1)
         # self.presdoc.start()
 
     def get_slide_number(self):
-        return self.presentation.getCurrentSlideIndex
+        return self.controller.getCurrentSlideIndex()
+
+    def get_slide_count(self):
+        return self.controller.getSlideCount()
 
     def goto_slide(self, slideno):
-        self.presentation.gotoSlideIndex(slideno)
+        self.controller.gotoSlideIndex(slideno-1)
 
     def next_step(self):
        """

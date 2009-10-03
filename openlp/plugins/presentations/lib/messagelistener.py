@@ -36,19 +36,25 @@ class MessageListener(object):
     def __init__(self, controllers):
         self.controllers = controllers
         self.handler = None
-
+        # messages are sent from core.ui.slidecontroller
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'presentations_start'), self.startup)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_stop'), self.shutDown)
+            QtCore.SIGNAL(u'presentations_stop'), self.shutdown)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_first'), self.next)
+            QtCore.SIGNAL(u'presentations_first'), self.first)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'presentations_previous'), self.previous)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'presentations_next'), self.next)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_last'), self.next)
+            QtCore.SIGNAL(u'presentations_last'), self.last)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'presentations_slide'), self.slide)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'presentations_blank'), self.blank)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'presentations_unblank'), self.unblank)
 
     def startup(self, message):
         """
@@ -56,25 +62,77 @@ class MessageListener(object):
         Save the handler as any new presentations start here
         """
         self.handler, file = self.decodeMessage(message)
-        self.controllers[self.handler].load_presentation(file)
+        self.controller = self.controllers[self.handler]
+        if self.controller.is_loaded():
+            self.shutdown()
+        self.controller.load_presentation(file)
+
+    def slide(self, message):
+        #if not self.controller.is_loaded():
+        #    return
+        #if not self.controller.is_active():
+        #    self.controller.start_presentation()
+        self.controller.goto_slide(message[0])
+
+    def first(self, message):
+        """
+        Based on the handler passed at startup triggers the first slide
+        """
+        #if not self.controller.is_loaded():
+        #    return
+        self.controller.start_presentation()
+
+    def last(self, message):
+        """
+        Based on the handler passed at startup triggers the first slide
+        """
+        #if not self.controller.is_loaded():
+        #    return
+        #if not self.controller.is_active():
+        #    self.controller.start_presentation()
+        self.controller.goto_slide(self.controller.get_slide_count())
 
     def next(self, message):
         """
         Based on the handler passed at startup triggers the next slide event
         """
-        self.controllers[self.handler].next_step()
+        #if not self.controller.is_loaded():
+        #    return
+        #if not self.controller.is_active():
+        #    self.controller.start_presentation()
+        #    self.controller.goto_slide(self.controller.current_slide)
+        self.controller.next_step()
 
     def previous(self, message):
         """
         Based on the handler passed at startup triggers the previous slide event
         """
-        self.controllers[self.handler].previous_step()
+        #if not self.controller.is_loaded():
+        #    return
+        #if not self.controller.is_active():
+        #    self.controller.start_presentation()
+        #    self.controller.goto_slide(self.controller.current_slide)
+        self.controller.previous_step()
 
-    def shutDown(self, message):
+    def shutdown(self, message):
         """
         Based on the handler passed at startup triggers slide show to shut down
         """
-        self.controllers[self.handler].close_presentation()
+        self.controller.close_presentation()
+
+    def blank(self):
+        #if not self.controller.is_loaded():
+        #    return
+        #if not self.controller.is_active():
+        #    self.controller.start_presentation()
+        self.controller.blank_screen()        
+
+    def unblank(self):
+        #if not self.controller.is_loaded():
+        #    return
+        #if not self.controller.is_active():
+        #    self.controller.start_presentation()
+        self.controller.unblank_screen()        
 
     def decodeMessage(self, message):
         """
