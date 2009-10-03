@@ -65,6 +65,7 @@ class ImageMediaItem(MediaManagerItem):
         self.hasEditIcon = False
 
     def initialise(self):
+        log.debug(u'initialise')
         self.ListView.setSelectionMode(
             QtGui.QAbstractItemView.ExtendedSelection)
         self.ListView.setIconSize(QtCore.QSize(88,50))

@@ -135,14 +135,14 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                media_manager_item = plugin.get_media_manager_item()
-                if media_manager_item is not None:
+                plugin.media_item = plugin.get_media_manager_item()
+                if plugin.media_item is not None:
                     log.debug(u'Inserting media manager item from %s' % \
                         plugin.name)
-                    mediatoolbox.addItem(media_manager_item, plugin.icon,
-                        media_manager_item.title)
+                    mediatoolbox.addItem(plugin.media_item, plugin.icon,
+                        plugin.media_item.title)
                     if plugin.status == PluginStatus.Inactive:
-                        media_manager_item.hide()
+                        plugin.media_item.hide()
 
     def hook_settings_tabs(self, settingsform=None):
         """
@@ -160,7 +160,7 @@ class PluginManager(object):
                     log.debug(u'Inserting settings tab item from %s' % plugin.name)
                     settingsform.addTab(settings_tab)
                 else:
-                    log.debug(u'No settings in %s' % plugin.name)
+                    log.debug(u'No tab settings in %s' % plugin.name)
 
     def hook_import_menu(self, import_menu):
         """
@@ -173,8 +173,6 @@ class PluginManager(object):
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
                 plugin.add_import_menu_item(import_menu)
-                if plugin.status == PluginStatus.Inactive:
-                    import_menu.hide()
 
     def hook_export_menu(self, export_menu):
         """
@@ -187,8 +185,6 @@ class PluginManager(object):
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
                 plugin.add_export_menu_item(export_menu)
-                if plugin.status == PluginStatus.Inactive:
-                    export_menu.hide()
 
     def hook_tools_menu(self, tools_menu):
         """
@@ -201,23 +197,25 @@ class PluginManager(object):
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
                 plugin.add_tools_menu_item(tools_menu)
-                if plugin.status == PluginStatus.Inactive:
-                    tools_menu.hide()
 
     def initialise_plugins(self):
         """
         Loop through all the plugins and give them an opportunity to
         initialise themselves.
         """
+        log.info(u'initialising plugins')
         for plugin in self.plugins:
-            if plugin.status == PluginStatus.Active:
+            if plugin.is_active():
                 plugin.initialise()
+                if plugin.media_item is not None:
+                    plugin.media_item.initialise()
 
     def finalise_plugins(self):
         """
         Loop through all the plugins and give them an opportunity to
         clean themselves up
         """
+        log.info(u'finalising plugins')
         for plugin in self.plugins:
-            if plugin.status == PluginStatus.Active:
+            if plugin.is_active():
                 plugin.finalise()

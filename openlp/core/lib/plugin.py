@@ -161,6 +161,14 @@ class Plugin(object):
         self.status = new_status
         self.config.set_config(u'%s_status' % self.name, self.status)
 
+    def is_active(self):
+        """
+        Indicates if the plugin is active
+
+        Returns True or False.
+        """
+        return int(self.status ) == int(PluginStatus.Active)
+
     def get_media_manager_item(self):
         """
         Construct a MediaManagerItem object with all the buttons and things
@@ -228,6 +236,7 @@ class Plugin(object):
         """
         Called by the plugin Manager to initialise anything it needs.
         """
+        log.info(u'base class called')
         pass
 
     def finalise(self):

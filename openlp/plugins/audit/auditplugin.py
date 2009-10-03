@@ -58,6 +58,7 @@ class AuditPlugin(Plugin):
             The actual **Tools** menu item, so that your actions can
             use it as their parent.
         """
+        log.info(u'add tools menu')
         self.toolsMenu = tools_menu
         self.AuditMenu = QtGui.QMenu(tools_menu)
         self.AuditMenu.setObjectName(u'AuditMenu')
@@ -119,7 +120,7 @@ class AuditPlugin(Plugin):
         self.AuditMenu.menuAction().setVisible(False)
 
     def initialise(self):
-        log.info(u'Plugin Initialising')
+        log.info(u'audit Initialising')
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'audit_live'), self.onReceiveAudit)
         QtCore.QObject.connect(Receiver.get_receiver(),
