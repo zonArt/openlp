@@ -119,6 +119,8 @@ class Plugin(object):
         self.icon = None
         self.config = PluginConfig(self.name)
         self.weight = 0
+        self.media_id = -1
+        self.media_active = False
         self.status = PluginStatus.Inactive
         # Set up logging
         self.log = logging.getLogger(self.name)
@@ -127,6 +129,7 @@ class Plugin(object):
         self.render_manager = plugin_helpers[u'render']
         self.service_manager = plugin_helpers[u'service']
         self.settings = plugin_helpers[u'settings']
+        self.mediatoolbox = plugin_helpers[u'toolbox']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_add_service_item'% self.name), self.process_add_service_event)
 
@@ -236,8 +239,8 @@ class Plugin(object):
         """
         Called by the plugin Manager to initialise anything it needs.
         """
-        log.info(u'base class called')
-        pass
+        if self.media_item is not None:
+            self.media_item.initialise()
 
     def finalise(self):
         """
@@ -245,3 +248,20 @@ class Plugin(object):
         """
         pass
 
+    def remove_toolbox_item(self):
+        """
+        Called by the plugin to remove toolbar
+        """
+        if self.media_id is not -1:
+            self.mediatoolbox.removeItem(self.media_id)
+            self.media_active = False
+
+    def insert_toolbox_item(self):
+        """
+        Called by plugin to replace toolbar
+        """
+        if self.media_id is not -1:
+            if not self.media_active:
+                self.mediatoolbox.insertItem(
+                    self.media_id, self.media_item, self.icon, self.media_item.title)
+                self.media_active = True

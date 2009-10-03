@@ -109,19 +109,12 @@ class Ui_MainWindow(object):
         self.MediaManagerDock.setObjectName(u'MediaManagerDock')
         self.MediaManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_left)
-
-#        self.MediaManagerDock.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Ignored,
-#            QtGui.QSizePolicy.Maximum))
-#        geometry = self.MediaManagerDock.geometry()
-#        geometry.setWidth(self.settingsmanager.mainwindow_left)
-#        self.MediaManagerDock.setGeometry(geometry)
-#        self.MediaManagerDock.setMinimumWidth(10)
-
         self.MediaManagerContents = QtGui.QWidget()
         self.MediaManagerContents.setObjectName(u'MediaManagerContents')
         self.MediaManagerLayout = QtGui.QHBoxLayout(self.MediaManagerContents)
         self.MediaManagerLayout.setContentsMargins(0, 2, 0, 0)
         self.MediaManagerLayout.setObjectName(u'MediaManagerLayout')
+        # Create the media toolbox
         self.MediaToolBox = QtGui.QToolBox(self.MediaManagerContents)
         self.MediaToolBox.setObjectName(u'MediaToolBox')
         self.MediaManagerLayout.addWidget(self.MediaToolBox)
@@ -503,6 +496,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_helpers[u'render'] = self.RenderManager
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
         self.plugin_helpers[u'settings'] = self.settingsForm
+        self.plugin_helpers[u'toolbox'] = self.MediaToolBox
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers)
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here
@@ -527,6 +521,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.ThemeManagerContents.loadThemes()
         log.info(u'Load data from Settings')
         self.settingsForm.postSetUp()
+
 
     def getMonitorNumber(self):
         """

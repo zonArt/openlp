@@ -113,14 +113,13 @@ class PluginForm(QtGui.QDialog):
                 combo.setCurrentIndex(int(plugin.status))
                 QtCore.QObject.connect(combo,
                     QtCore.SIGNAL(u'currentIndexChanged(int)'), self.statusComboChanged)
-                self.PluginViewList.setRowHeight(row, 25)
             else:
                 item3 = QtGui.QTableWidgetItem(
                     translate(u'PluginForm', u'Active'))
                 item3.setTextAlignment(QtCore.Qt.AlignVCenter)
                 item3.setFlags(QtCore.Qt.ItemIsSelectable)
                 self.PluginViewList.setItem(row, 2, item3)
-                self.PluginViewList.setRowHeight(row, 15)
+            self.PluginViewList.setRowHeight(row, 25)
 
     def displayAbout(self, item):
         if item is None:

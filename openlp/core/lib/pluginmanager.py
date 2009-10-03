@@ -139,10 +139,9 @@ class PluginManager(object):
                 if plugin.media_item is not None:
                     log.debug(u'Inserting media manager item from %s' % \
                         plugin.name)
-                    mediatoolbox.addItem(plugin.media_item, plugin.icon,
-                        plugin.media_item.title)
-                    if plugin.status == PluginStatus.Inactive:
-                        plugin.media_item.hide()
+                    plugin.media_id = mediatoolbox.addItem(
+                        plugin.media_item, plugin.icon, plugin.media_item.title)
+                    plugin.media_active = True
 
     def hook_settings_tabs(self, settingsform=None):
         """
@@ -205,10 +204,11 @@ class PluginManager(object):
         """
         log.info(u'initialising plugins')
         for plugin in self.plugins:
+            print plugin.name ,  plugin.media_item
             if plugin.is_active():
                 plugin.initialise()
-                if plugin.media_item is not None:
-                    plugin.media_item.initialise()
+            if plugin.media_item is not None and not plugin.is_active():
+                plugin.remove_toolbox_item()
 
     def finalise_plugins(self):
         """

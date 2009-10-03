@@ -121,6 +121,7 @@ class AuditPlugin(Plugin):
 
     def initialise(self):
         log.info(u'audit Initialising')
+        Plugin.initialise(self)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'audit_live'), self.onReceiveAudit)
         QtCore.QObject.connect(Receiver.get_receiver(),

@@ -145,6 +145,7 @@ class SongsPlugin(Plugin):
             QtCore.SIGNAL(u'triggered()'), self.onExportOpenSongItemClicked)
 
     def initialise(self):
+        Plugin.initialise(self)
         self.media_item.displayResultsSong(self.songmanager.get_songs())
 
     def onImportOpenlp1ItemClick(self):
