@@ -28,7 +28,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, Receiver, translate, str_to_bool, buildIcon
-from openlp.plugins.audit.lib import AuditTab, AuditManager
+from openlp.plugins.audit.lib import AuditManager
 from openlp.plugins.audit.forms import AuditDetailForm, AuditDeleteForm
 from openlp.plugins.audit.lib.models import AuditItem
 
@@ -44,6 +44,7 @@ class AuditPlugin(Plugin):
         # Create the plugin icon
         self.icon = buildIcon(u':/media/media_image.png')
         self.auditmanager = None
+        self.auditActive = False
 
     def can_be_disabled(self):
         return True
@@ -57,6 +58,7 @@ class AuditPlugin(Plugin):
             The actual **Tools** menu item, so that your actions can
             use it as their parent.
         """
+        self.toolsMenu = tools_menu
         self.AuditMenu = QtGui.QMenu(tools_menu)
         self.AuditMenu.setObjectName(u'AuditMenu')
         self.AuditMenu.setTitle(
@@ -94,7 +96,7 @@ class AuditPlugin(Plugin):
         self.AuditStatus.setShortcut(translate(u'AuditPlugin', u'F4'))
         self.AuditStatus.setObjectName(u'AuditStatus')
         #Add Menus together
-        tools_menu.addAction(self.AuditMenu.menuAction())
+        self.toolsMenu.addAction(self.AuditMenu.menuAction())
         self.AuditMenu.addAction(self.AuditStatus)
         self.AuditMenu.addSeparator()
         self.AuditMenu.addAction(self.AuditDeleteAll)
@@ -114,10 +116,7 @@ class AuditPlugin(Plugin):
             QtCore.SIGNAL(u'triggered()'), self.onAuditDelete)
         QtCore.QObject.connect(self.AuditReport,
             QtCore.SIGNAL(u'triggered()'), self.onAuditReport)
-
-#    def get_settings_tab(self):
-#        self.AuditTab = AuditTab()
-#        return self.AuditTab
+        self.AuditMenu.menuAction().setVisible(False)
 
     def initialise(self):
         log.info(u'Plugin Initialising')
@@ -132,11 +131,13 @@ class AuditPlugin(Plugin):
             self.auditmanager = AuditManager(self.config)
         self.auditdeleteform = AuditDeleteForm(self.auditmanager)
         self.auditdetailform = AuditDetailForm(self.auditmanager)
-        self.AuditMenu.setVisible(True)
+        self.AuditMenu.menuAction().setVisible(True)
 
     def finalise(self):
         log.info(u'Plugin Finalise')
-        self.AuditMenu.setVisible(True)
+        self.AuditMenu.menuAction().setVisible(False)
+        #stop any events being processed
+        self.auditActive = False
 
     def toggleAuditState(self):
         self.auditActive = not self.auditActive
