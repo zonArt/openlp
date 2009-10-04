@@ -29,6 +29,15 @@ class PresentationController(object):
     It creates the runtime environment, loads and closes the presentation as
     well as triggering the correct activities based on the users input
 
+    To create a new controller, take a copy of this file and name it
+    so it ends in controller.py, i.e. foobarcontroller.py
+    Make sure it inhetits PresentationController
+    Then fill in the blanks. If possible try and make sure it loads
+    on all platforms, using for example os.name checks, although
+    __init__ and check_available should always work.
+    See impresscontroller, powerpointcontroller or pptviewcontroller
+    for examples.
+
     **Basic Attributes**
 
     ``name``
