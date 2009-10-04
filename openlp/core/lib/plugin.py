@@ -155,8 +155,8 @@ class Plugin(object):
         """
         Sets the status of the plugin
         """
-        self.status = self.config.get_config(\
-            u'%s_status' % self.name, PluginStatus.Inactive)
+        self.status = int(self.config.get_config(\
+            u'%s_status' % self.name, PluginStatus.Inactive))
 
     def toggle_status(self, new_status):
         """
@@ -171,7 +171,7 @@ class Plugin(object):
 
         Returns True or False.
         """
-        return int(self.status ) == int(PluginStatus.Active)
+        return self.status == PluginStatus.Active
 
     def get_media_manager_item(self):
         """
