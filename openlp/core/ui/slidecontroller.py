@@ -269,7 +269,7 @@ class SlideController(QtGui.QWidget):
         if item.service_item_type == ServiceType.Command:
             Receiver().send_message(u'%s_start' % item.name.lower(), \
                 [item.shortname, item.service_item_path,
-                item.service_frames[0][u'title']])
+                item.service_frames[0][u'title'], slideno])
         else:
             self.displayServiceManagerItems(item, slideno)
 
@@ -321,14 +321,23 @@ class SlideController(QtGui.QWidget):
         """
         Go to the first slide.
         """
-        self.PreviewListWidget.selectRow(0)
-        self.onSlideSelected()
+        if self.commandItem.service_item_type == ServiceType.Command:
+            Receiver().send_message(u'%s_first'% self.commandItem.name.lower())
+        else:
+            self.PreviewListWidget.selectRow(0)
+            self.onSlideSelected()
 
-    def onBlankScreen(self):
+    def onBlankScreen(self, blanked):
         """
         Blank the screen.
         """
-        self.parent.mainDisplay.blankDisplay()
+        if self.commandItem.service_item_type == ServiceType.Command:
+            if blanked:
+                Receiver().send_message(u'%s_blank'% self.commandItem.name.lower())
+            else:
+                Receiver().send_message(u'%s_unblank'% self.commandItem.name.lower())
+        else:          
+            self.parent.mainDisplay.blankDisplay()
 
     def onSlideSelected(self):
         """
@@ -337,15 +346,18 @@ class SlideController(QtGui.QWidget):
         """
         row = self.PreviewListWidget.currentRow()
         if row > -1 and row < self.PreviewListWidget.rowCount():
-            #label = self.PreviewListWidget.cellWidget(row, 0)
-            frame = self.serviceitem.frames[row][u'image']
-            before = time.time()
-            if frame is None:
-                frame = self.serviceitem.render_individual(row)
-            self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
-            log.info(u'Slide Rendering took %4s' % (time.time() - before))
-            if self.isLive:
-                self.parent.mainDisplay.frameView(frame)
+            if self.commandItem.service_item_type == ServiceType.Command:
+                Receiver().send_message(u'%s_slide'% self.commandItem.name.lower(), [row])                
+            else:
+                #label = self.PreviewListWidget.cellWidget(row, 0)
+                frame = self.serviceitem.frames[row][u'image']
+                before = time.time()
+                if frame is None:
+                    frame = self.serviceitem.render_individual(row)
+                self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
+                log.info(u'Slide Rendering took %4s' % (time.time() - before))
+                if self.isLive:
+                    self.parent.mainDisplay.frameView(frame)
 
     def onSlideSelectedNext(self):
         """
@@ -378,8 +390,11 @@ class SlideController(QtGui.QWidget):
         """
         Go to the last slide.
         """
-        self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount() - 1)
-        self.onSlideSelected()
+        if self.commandItem.service_item_type == ServiceType.Command:
+            Receiver().send_message(u'%s_last'% self.commandItem.name.lower())
+        else:
+            self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount() - 1)
+            self.onSlideSelected()
 
     def onStartLoop(self):
         """
