@@ -44,13 +44,11 @@ class BiblePlugin(Plugin):
         self.biblemanager = BibleManager(self.config)
 
     def get_settings_tab(self):
-        self.bibles_tab = BiblesTab()
-        return self.bibles_tab
+        return BiblesTab()
 
     def get_media_manager_item(self):
         # Create the BibleManagerItem object
-        self.media_item = BibleMediaItem(self, self.icon, u'Bible Verses')
-        return self.media_item
+        return BibleMediaItem(self, self.icon, u'Bible Verses')
 
     def add_import_menu_item(self, import_menu):
         self.ImportBibleItem = QtGui.QAction(import_menu)

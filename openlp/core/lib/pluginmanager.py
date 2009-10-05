@@ -105,7 +105,12 @@ class PluginManager(object):
         for plugin in plugins_list:
             if plugin.check_pre_conditions():
                 log.debug(u'Plugin %s active', unicode(plugin.name))
-                plugin.status = PluginStatus.Active
+                if plugin.can_be_disabled():
+                    plugin.set_status()
+                else:
+                    plugin.status = PluginStatus.Active
+            else:
+                plugin.status = PluginStatus.Disabled
             self.plugins.append(plugin)
 
     def order_by_weight(self, x, y):
@@ -129,13 +134,14 @@ class PluginManager(object):
             The Media Manager itself.
         """
         for plugin in self.plugins:
-            if plugin.status == PluginStatus.Active:
-                media_manager_item = plugin.get_media_manager_item()
-                if media_manager_item is not None:
+            if plugin.status is not PluginStatus.Disabled:
+                plugin.media_item = plugin.get_media_manager_item()
+                if plugin.media_item is not None:
                     log.debug(u'Inserting media manager item from %s' % \
                         plugin.name)
-                    mediatoolbox.addItem(media_manager_item, plugin.icon,
-                        media_manager_item.title)
+                    plugin.media_id = mediatoolbox.addItem(
+                        plugin.media_item, plugin.icon, plugin.media_item.title)
+                    plugin.media_active = True
 
     def hook_settings_tabs(self, settingsform=None):
         """
@@ -147,12 +153,13 @@ class PluginManager(object):
             Defaults to *None*. The settings form to add tabs to.
         """
         for plugin in self.plugins:
-            settings_tab = plugin.get_settings_tab()
-            if settings_tab is not None:
-                log.debug(u'Inserting settings tab item from %s' % plugin.name)
-                settingsform.addTab(settings_tab)
-            else:
-                log.debug(u'No settings in %s' % plugin.name)
+            if plugin.status is not PluginStatus.Disabled:
+                plugin.settings_tab = plugin.get_settings_tab()
+                if plugin.settings_tab is not None:
+                    log.debug(u'Inserting settings tab item from %s' % plugin.name)
+                    plugin.settings_id = settingsform.addTab(plugin.settings_tab)
+                else:
+                    log.debug(u'No tab settings in %s' % plugin.name)
 
     def hook_import_menu(self, import_menu):
         """
@@ -163,7 +170,7 @@ class PluginManager(object):
             The Import menu.
         """
         for plugin in self.plugins:
-            if plugin.status == PluginStatus.Active:
+            if plugin.status is not PluginStatus.Disabled:
                 plugin.add_import_menu_item(import_menu)
 
     def hook_export_menu(self, export_menu):
@@ -175,7 +182,7 @@ class PluginManager(object):
             The Export menu.
         """
         for plugin in self.plugins:
-            if plugin.status == PluginStatus.Active:
+            if plugin.status is not PluginStatus.Disabled:
                 plugin.add_export_menu_item(export_menu)
 
     def hook_tools_menu(self, tools_menu):
@@ -187,7 +194,7 @@ class PluginManager(object):
             The Tools menu.
         """
         for plugin in self.plugins:
-            if plugin.status == PluginStatus.Active:
+            if plugin.status is not PluginStatus.Disabled:
                 plugin.add_tools_menu_item(tools_menu)
 
     def initialise_plugins(self):
@@ -195,15 +202,19 @@ class PluginManager(object):
         Loop through all the plugins and give them an opportunity to
         initialise themselves.
         """
+        log.info(u'initialising plugins')
         for plugin in self.plugins:
-            if plugin.status == PluginStatus.Active:
+            if plugin.is_active():
                 plugin.initialise()
+            if plugin.media_item is not None and not plugin.is_active():
+                plugin.remove_toolbox_item()
 
     def finalise_plugins(self):
         """
         Loop through all the plugins and give them an opportunity to
         clean themselves up
         """
+        log.info(u'finalising plugins')
         for plugin in self.plugins:
-            if plugin.status == PluginStatus.Active:
+            if plugin.is_active():
                 plugin.finalise()

@@ -39,14 +39,24 @@ class ImagePlugin(Plugin):
         # Create the plugin icon
         self.icon = buildIcon(u':/media/media_image.png')
 
+    def can_be_disabled(self):
+        return True
+
+    def initialise(self):
+        log.info(u'Plugin Initialising')
+        Plugin.initialise(self)
+        self.insert_toolbox_item()
+
+    def finalise(self):
+        log.info(u'Plugin Finalise')
+        self.remove_toolbox_item()
+
     def get_settings_tab(self):
-        self.ImageTab = ImageTab()
-        return self.ImageTab
+        return ImageTab()
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
-        self.media_item = ImageMediaItem(self, self.icon, u'Images')
-        return self.media_item
+        return ImageMediaItem(self, self.icon, u'Images')
 
     def about(self):
         return u'<b>Image Plugin</b><br>Allows images of all types to be displayed. If a number of images are selected together and presented on the live controller it is possible to turn them into a timed loop.<br> From the plugin if the <i>Override background</i> is chosen and an image is selected any somgs which are rendered will use the selected image from the background instead of the one provied by the theme.<br>'

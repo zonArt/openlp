@@ -50,16 +50,14 @@ class PresentationPlugin(Plugin):
         """
         Create the settings Tab
         """
-        self.presentation_tab = PresentationTab(self.controllers)
-        return self.presentation_tab
+        return PresentationTab(self.controllers)
 
     def get_media_manager_item(self):
         """
         Create the Media Manager List
         """
-        self.media_item = PresentationMediaItem(
+        return PresentationMediaItem(
             self, self.icon, u'Presentations', self.controllers)
-        return self.media_item
 
     def registerControllers(self, controller):
         self.controllers[controller.name] = controller

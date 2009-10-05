@@ -64,8 +64,7 @@ class SongsPlugin(Plugin):
         Create the MediaManagerItem object, which is displaed in the
         Media Manager.
         """
-        self.media_item = SongMediaItem(self, self.icon, 'Songs')
-        return self.media_item
+        return SongMediaItem(self, self.icon, 'Songs')
 
     def add_import_menu_item(self, import_menu):
         """
@@ -146,6 +145,7 @@ class SongsPlugin(Plugin):
             QtCore.SIGNAL(u'triggered()'), self.onExportOpenSongItemClicked)
 
     def initialise(self):
+        Plugin.initialise(self)
         self.media_item.displayResultsSong(self.songmanager.get_songs())
 
     def onImportOpenlp1ItemClick(self):

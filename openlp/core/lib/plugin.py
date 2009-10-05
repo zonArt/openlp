@@ -31,8 +31,9 @@ class PluginStatus(object):
     """
     Defines the status of the plugin
     """
-    Active = 1
-    Inactive = 2
+    Active = 0
+    Inactive = 1
+    Disabled = 2
 
 class Plugin(object):
     """
@@ -85,17 +86,6 @@ class Plugin(object):
     ``about()``
         Used in the plugin manager, when a person clicks on the 'About' button.
 
-    ``save(data)``
-        A method to convert the plugin's data to a string to be stored in the
-        Service file.
-
-    ``load(string)``
-        A method to convert the string from a Service file into the plugin's
-        own data format.
-
-    ``render(theme, screen_number)``
-        A method used to render something to the screen, given the current theme
-        and screen number.
     """
     global log
     log = logging.getLogger(u'Plugin')
@@ -129,6 +119,9 @@ class Plugin(object):
         self.icon = None
         self.config = PluginConfig(self.name)
         self.weight = 0
+        self.media_id = -1
+        self.settings_id = -1
+        self.media_active = False
         self.status = PluginStatus.Inactive
         # Set up logging
         self.log = logging.getLogger(self.name)
@@ -137,6 +130,7 @@ class Plugin(object):
         self.render_manager = plugin_helpers[u'render']
         self.service_manager = plugin_helpers[u'service']
         self.settings = plugin_helpers[u'settings']
+        self.mediatoolbox = plugin_helpers[u'toolbox']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_add_service_item'% self.name), self.process_add_service_event)
 
@@ -156,6 +150,28 @@ class Plugin(object):
         Returns True or False.
         """
         return False
+
+    def set_status(self):
+        """
+        Sets the status of the plugin
+        """
+        self.status = self.config.get_config(\
+            u'%s_status' % self.name, PluginStatus.Inactive)
+
+    def toggle_status(self, new_status):
+        """
+        Changes the status of the plugin and remembers it
+        """
+        self.status = new_status
+        self.config.set_config(u'%s_status' % self.name, self.status)
+
+    def is_active(self):
+        """
+        Indicates if the plugin is active
+
+        Returns True or False.
+        """
+        return int(self.status ) == int(PluginStatus.Active)
 
     def get_media_manager_item(self):
         """
@@ -224,7 +240,8 @@ class Plugin(object):
         """
         Called by the plugin Manager to initialise anything it needs.
         """
-        pass
+        if self.media_item is not None:
+            self.media_item.initialise()
 
     def finalise(self):
         """
@@ -232,3 +249,25 @@ class Plugin(object):
         """
         pass
 
+    def remove_toolbox_item(self):
+        """
+        Called by the plugin to remove toolbar
+        """
+        if self.media_id is not -1:
+            self.mediatoolbox.removeItem(self.media_id)
+        if self.settings_id is not -1:
+            self.settings.removeTab(self.settings_id)
+        self.media_active = False
+
+    def insert_toolbox_item(self):
+        """
+        Called by plugin to replace toolbar
+        """
+        if not self.media_active:
+            if self.media_id is not -1:
+                self.mediatoolbox.insertItem(
+                    self.media_id, self.media_item, self.icon, self.media_item.title)
+            if self.settings_id is not -1:
+                self.settings.insertTab(
+                    self.settings_id, self.settings_tab)
+            self.media_active = True

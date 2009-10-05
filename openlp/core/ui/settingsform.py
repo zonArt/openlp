@@ -47,8 +47,17 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.addTab(self.AlertsTab)
 
     def addTab(self, tab):
-        log.info(u'Inserting %s' % tab.title())
-        self.SettingsTabWidget.addTab(tab, tab.title())
+        log.info(u'Adding %s tab' % tab.title())
+        return self.SettingsTabWidget.addTab(tab, tab.title())
+
+    def insertTab(self, id, tab):
+        log.debug(u'Inserting %s tab' % tab.title())
+        self.SettingsTabWidget.insertTab(id, tab, tab.title())
+
+    def removeTab(self, id):
+        log.debug(u'remove %s no tab' % unicode(id))
+        self.SettingsTabWidget.removeTab(id)
+
 
     def accept(self):
         for tab_index in range(0, self.SettingsTabWidget.count()):

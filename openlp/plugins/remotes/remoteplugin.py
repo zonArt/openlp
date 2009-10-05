@@ -34,29 +34,22 @@ class RemotesPlugin(Plugin):
         # Call the parent constructor
         Plugin.__init__(self, u'Remotes', u'1.9.0', plugin_helpers)
         self.weight = -1
+        self.server = None
 
     def can_be_disabled(self):
         return True
 
-    def check_pre_conditions(self):
-        """
-        Check to see if remotes is required
-        """
-        log.debug(u'check_pre_conditions')
-        #Lets see if Remote is required
-        if int(self.config.get_config(u'startup', 0)) == QtCore.Qt.Checked:
-            return True
-        else:
-            return False
-
     def initialise(self):
+        log.debug(u'initialise')
         self.server = QtNetwork.QUdpSocket()
         self.server.bind(int(self.config.get_config(u'remote port', 4316)))
         QtCore.QObject.connect(self.server,
             QtCore.SIGNAL(u'readyRead()'), self.readData)
 
     def finalise(self):
-        pass
+        log.debug(u'finalise')
+        if self.server is not None:
+            self.server.close()
 
     def about(self):
         return u'<b>Remote Plugin</b> <br>This plugin provides the ability to send messages to a running version of openlp on a different computer.<br> The Primary use for this would be to send alerts from a creche'
@@ -78,11 +71,7 @@ class RemotesPlugin(Plugin):
         log.info(u'Sending event %s ', datagram)
         pos = datagram.find(u':')
         event = unicode(datagram[:pos].lower())
-
         if event == u'alert':
             Receiver().send_message(u'alert_text', unicode(datagram[pos + 1:]))
         if event == u'next_slide':
             Receiver().send_message(u'live_slide_next')
-
-
-
