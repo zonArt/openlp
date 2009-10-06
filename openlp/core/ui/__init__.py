@@ -32,7 +32,7 @@ from generaltab import GeneralTab
 from themestab import ThemesTab
 from about import AboutForm
 from alertform import AlertForm
-from plugindialoglistform import PluginForm
+from pluginform import PluginForm
 from settingsform import SettingsForm
 from servicemanager import ServiceManager
 from thememanager import ThemeManager

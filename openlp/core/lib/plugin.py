@@ -171,7 +171,7 @@ class Plugin(object):
 
         Returns True or False.
         """
-        return int(self.status ) == int(PluginStatus.Active)
+        return int(self.status) == PluginStatus.Active
 
     def get_media_manager_item(self):
         """
