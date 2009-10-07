@@ -143,7 +143,7 @@ class ImpressController(PresentationController):
         for idx in range(pages.getCount()):
             page = pages.getByIndex(idx)
             doc.getCurrentController().setCurrentPage(page)
-            doc.storeToUrl(thumbdir + u'/' + self.thumbnailprefix + 
+            doc.storeToURL(thumbdir + u'/' + self.thumbnailprefix + 
                 unicode(idx+1) + u'.png', props)
 
     def get_uno_desktop(self):
