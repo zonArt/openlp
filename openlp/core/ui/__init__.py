@@ -34,10 +34,11 @@ from about import AboutForm
 from alertform import AlertForm
 from plugindialoglistform import PluginForm
 from settingsform import SettingsForm
+from mediadockmanager import MediaDockManager
 from servicemanager import ServiceManager
 from thememanager import ThemeManager
 from mainwindow import MainWindow
 
 __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainWindow',
     'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
-    'AmendThemeForm']
+    'AmendThemeForm', 'MediaDockManager']

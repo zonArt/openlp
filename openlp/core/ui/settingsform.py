@@ -35,29 +35,44 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
 
     def __init__(self, screen_list, mainWindow, parent=None):
         QtGui.QDialog.__init__(self, None)
+        self.tabs = {}
         self.setupUi(self)
         # General tab
         self.GeneralTab = GeneralTab(screen_list)
-        self.addTab(self.GeneralTab)
+        self.addTab(u'General', self.GeneralTab)
         # Themes tab
         self.ThemesTab = ThemesTab(mainWindow)
-        self.addTab(self.ThemesTab)
+        self.addTab(u'Themes', self.ThemesTab)
         # Alert tab
         self.AlertsTab = AlertsTab()
-        self.addTab(self.AlertsTab)
+        self.addTab(u'Alerts', self.AlertsTab)
 
-    def addTab(self, tab):
+    def addTab(self, name,  tab):
         log.info(u'Adding %s tab' % tab.title())
-        return self.SettingsTabWidget.addTab(tab, tab.title())
+        id = self.SettingsTabWidget.addTab(tab, tab.title())
+        self.tabs[name] = ({u'data': tab, u'id': id, u'active':True})
 
-    def insertTab(self, id, tab):
-        log.debug(u'Inserting %s tab' % tab.title())
-        self.SettingsTabWidget.insertTab(id, tab, tab.title())
+    def insertTab(self, name):
+        log.debug(u'Inserting %s tab' % name)
+        for tab_index in range(0, self.SettingsTabWidget.count()):
+            #print self.SettingsTabWidget.widget(tab_index).title()
+            if self.SettingsTabWidget.widget(tab_index).title() == name:
+                #print "Insert match"
+                #print self.SettingsTabWidget.widget(tab_index).isVisible()
+                self.SettingsTabWidget.widget(tab_index).setEnabled(True)
+                #print self.SettingsTabWidget.widget(tab_index).isVisible()
 
-    def removeTab(self, id):
-        log.debug(u'remove %s no tab' % unicode(id))
-        self.SettingsTabWidget.removeTab(id)
 
+    def removeTab(self, name):
+        log.debug(u'remove %s tab' % name)
+        #print ">>>>>>>>>>> remove settings"
+        for tab_index in range(0, self.SettingsTabWidget.count()):
+            #print self.SettingsTabWidget.widget(tab_index).title(), name
+            if self.SettingsTabWidget.widget(tab_index).title() == name:
+                #print "remove match"
+                #print self.SettingsTabWidget.widget(tab_index).isVisible()
+                self.SettingsTabWidget.widget(tab_index).setEnabled(False)
+                #print self.SettingsTabWidget.widget(tab_index).isVisible()
 
     def accept(self):
         for tab_index in range(0, self.SettingsTabWidget.count()):
