@@ -33,6 +33,7 @@ if os.name == u'nt':
     from win32com.client import Dispatch
 else:
     import uno
+    from com.sun.star.beans import PropertyValue
 
 from PyQt4 import QtCore
 
@@ -104,19 +105,23 @@ class ImpressController(PresentationController):
         The file name of the presentatios to the run.
         """
         log.debug(u'LoadPresentation')
+        self.store_filename(presentation)
         if os.name == u'nt':
             desktop = self.get_com_desktop()
             url = u'file:///' + presentation.replace(u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
+            thumbdir = u'file:///' + self.thumbnailpath.replace(
+                u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
         else:
             desktop = self.get_uno_desktop()
             url = uno.systemPathToFileUrl(presentation)
+            thumbdir = uno.systemPathToFileUrl(self.thumbnailpath)
         if desktop is None:
             return
         try:
             properties = []
-            properties = tuple(properties)
-            self.document = desktop.loadComponentFromURL(
-                url, "_blank", 0, properties)
+            properties = tuple(properties)            
+            doc = desktop.loadComponentFromURL(url, u'_blank', 0, properties)
+            self.document = doc
             self.presentation = self.document.getPresentation()
             self.presentation.Display = self.plugin.render_manager.current_display + 1
             self.presentation.start()
@@ -124,6 +129,22 @@ class ImpressController(PresentationController):
                 desktop.getCurrentComponent().Presentation.getController()
         except:
             log.exception(u'Failed to load presentation')
+            return
+        props = []
+        if os.name == u'nt':
+            prop = self.manager.Bridge_GetStruct(u'com.sun.star.beans.PropertyValue')
+        else:
+            prop = PropertyValue()
+        prop.Name = u'FilterName'
+        prop.Value = u'impress_png_Export'
+        props.append(prop)
+        props = tuple(props)
+        pages = doc.getDrawPages()
+        for idx in range(pages.getCount()):
+            page = pages.getByIndex(idx)
+            doc.getCurrentController().setCurrentPage(page)
+            doc.storeToUrl(thumbdir + u'/' + self.thumbnailprefix + 
+                unicode(idx+1) + u'.png', props)
 
     def get_uno_desktop(self):
         log.debug(u'getUNODesktop')
@@ -139,8 +160,8 @@ class ImpressController(PresentationController):
                 self.startOpenoffice()
                 loop += 1
         try:
-            smgr = ctx.ServiceManager
-            desktop = smgr.createInstanceWithContext(
+            self.manager = ctx.ServiceManager
+            desktop = self.manager.createInstanceWithContext(
                 "com.sun.star.frame.Desktop", ctx )
             return desktop
         except:
@@ -150,8 +171,10 @@ class ImpressController(PresentationController):
     def get_com_desktop(self):
         log.debug(u'getCOMDesktop')
         try:
-            smgr = self.get_com_servicemanager()
-            desktop = smgr.createInstance( "com.sun.star.frame.Desktop")
+            self.manager = self.get_com_servicemanager()
+            self.manager._FlagAsMethod(u'Bridge_GetStruct')
+            self.manager._FlagAsMethod(u'Bridge_GetValueObject')
+            desktop = self.manager.createInstance(u'com.sun.star.frame.Desktop')
             return desktop
         except:
             log.exception(u'Failed to get COM desktop')
@@ -160,7 +183,7 @@ class ImpressController(PresentationController):
     def get_com_servicemanager(self):
         log.debug(u'get_com_servicemanager')
         try:
-            return Dispatch("com.sun.star.ServiceManager")
+            return Dispatch(u'com.sun.star.ServiceManager')
         except:
             log.exception(u'Failed to get COM service manager')
             return None
@@ -224,5 +247,12 @@ class ImpressController(PresentationController):
         """
         self.controller.gotoPreviousSlide()
 
-    # def get_slide_preview_file(self, slide_no):
+    def get_slide_preview_file(self, slide_no):
+        """
+        Returns an image path containing a preview for the requested slide
 
+        ``slide_no``
+        The slide an image is required for, starting at 1
+        """
+        return os.path.join(self.thumbnailpath,
+            self.thumbnailprefix + slide_no + u'.png')

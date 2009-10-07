@@ -49,9 +49,6 @@ class PptviewController(PresentationController):
         self.process = None
         PresentationController.__init__(self, plugin, u'Powerpoint Viewer')
         self.pptid = None
-        self.thumbnailpath = os.path.join(plugin.config.get_data_path(),
-            u'pptview', u'thumbnails')
-        self.thumbprefix = u'slide'
 
     def check_available(self):
         """
@@ -105,15 +102,16 @@ class PptviewController(PresentationController):
             The file name of the presentations to run.
             """
             log.debug(u'LoadPresentation')
+            self.store_filename(presentation)
             if self.pptid >= 0:
                 self.close_presentation()
             rendermanager = self.plugin.render_manager
             rect = rendermanager.screen_list[rendermanager.current_display][u'size']
             rect = RECT(rect.x(), rect.y(), rect.right(), rect.bottom())        
-            filename = str(presentation.replace(u'/', u'\\'));
+            filepath = str(presentation.replace(u'/', u'\\'));
             try:
-                self.pptid = self.process.OpenPPT(filename, None, rect,
-                                                  str(self.thumbnailpath))
+                self.pptid = self.process.OpenPPT(filepath, None, rect,
+                    str(os.path.join(self.thumbnailpath, self.thumbnailprefix)))
             except:
                 log.exception(u'Failed to load presentation')
 
@@ -200,5 +198,5 @@ class PptviewController(PresentationController):
                 The slide an image is required for, starting at 1
             """
             return os.path.join(self.thumbnailpath,
-                self.thumbprefix + slide_no + u'.bmp')
+                self.thumbnailprefix + slide_no + u'.bmp')
 
