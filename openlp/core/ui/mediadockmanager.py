@@ -44,11 +44,11 @@ class MediaDockManager(object):
         for tab_index in range(0, self.mediaDock.count()):
             #print self.mediaDock.widget(tab_index).ConfigSection,  name
             if self.mediaDock.widget(tab_index).ConfigSection == name.lower():
-                self.mediaDock.widget(tab_index).setEnabled(True)
+                self.mediaDock.setItemEnabled(tab_index, True)
 
     def removeDock(self, name):
         log.debug(u'remove %s dock' % name)
         for tab_index in range(0, self.mediaDock.count()):
             #print self.mediaDock.widget(tab_index).ConfigSection, name
             if self.mediaDock.widget(tab_index).ConfigSection == name.lower():
-                self.mediaDock.widget(tab_index).setEnabled(False)
+                self.mediaDock.setItemEnabled(tab_index, False)

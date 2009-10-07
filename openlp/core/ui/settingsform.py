@@ -59,7 +59,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
             if self.SettingsTabWidget.widget(tab_index).title() == name:
                 #print "Insert match"
                 #print self.SettingsTabWidget.widget(tab_index).isVisible()
-                self.SettingsTabWidget.widget(tab_index).setEnabled(True)
+                self.SettingsTabWidget.setTabEnabled(tab_index, True)
                 #print self.SettingsTabWidget.widget(tab_index).isVisible()
 
 
@@ -71,7 +71,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
             if self.SettingsTabWidget.widget(tab_index).title() == name:
                 #print "remove match"
                 #print self.SettingsTabWidget.widget(tab_index).isVisible()
-                self.SettingsTabWidget.widget(tab_index).setEnabled(False)
+                self.SettingsTabWidget.setTabEnabled(tab_index, False)
                 #print self.SettingsTabWidget.widget(tab_index).isVisible()
 
     def accept(self):

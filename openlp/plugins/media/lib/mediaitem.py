@@ -46,9 +46,10 @@ class MediaMediaItem(MediaManagerItem):
         self.TranslationContext = u'MediaPlugin'
         self.IconPath = u'images/image'
         self.PluginTextShort = u'Media'
-        self.ConfigSection = u'images'
+        self.ConfigSection = u'media'
         self.OnNewPrompt = u'Select Media(s)'
-        self.OnNewFileMasks = u'Videos (*.avi *.mpeg *.mpg *.mp4);;Audio (*.ogg *.mp3 *.wma);;All files (*)'
+        self.OnNewFileMasks = \
+            u'Videos (*.avi *.mpeg *.mpg *.mp4);;Audio (*.ogg *.mp3 *.wma);;All files (*)'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = MediaListView
