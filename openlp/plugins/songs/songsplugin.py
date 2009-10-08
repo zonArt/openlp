@@ -51,7 +51,7 @@ class SongsPlugin(Plugin):
         # Call the parent constructor
         Plugin.__init__(self, u'Songs', u'1.9.0', plugin_helpers)
         self.weight = -10
-        self.songmanager = None
+        self.songmanager = SongManager(self.config)
         self.openlp_import_form = OpenLPImportForm()
         self.opensong_import_form = OpenSongImportForm()
         self.openlp_export_form = OpenLPExportForm()
@@ -64,8 +64,8 @@ class SongsPlugin(Plugin):
 
     def initialise(self):
         log.info(u'Songs Initialising')
-        if self.songmanager is None:
-            self.songmanager = SongManager(self.config)
+        #if self.songmanager is None:
+        #    self.songmanager = SongManager(self.config)
         Plugin.initialise(self)
         self.insert_toolbox_item()
         self.ImportSongMenu.menuAction().setVisible(True)
