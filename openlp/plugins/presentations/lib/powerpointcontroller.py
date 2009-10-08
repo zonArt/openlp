@@ -28,6 +28,7 @@ import logging
 if os.name == u'nt':
     from win32com.client import Dispatch
     import _winreg
+    import win32ui
 
 from presentationcontroller import PresentationController
 
@@ -52,7 +53,7 @@ class PowerpointController(PresentationController):
         PresentationController.__init__(self, plugin, u'Powerpoint')
         self.process = None
         self.presentation = None
-
+ 
     def check_available(self):
         """
         PowerPoint is able to run on this machine
@@ -102,9 +103,14 @@ class PowerpointController(PresentationController):
             ``presentation``
             The file name of the presentations to run.
             """            
-            self.filename = presentation
+            log.debug(u'LoadPresentation')
+            self.store_filename(presentation)
             self.process.Presentations.Open(presentation, False, False, True)
             self.presentation = self.process.Presentations(self.process.Presentations.Count)
+            self.presentation.Export(os.path.join(self.thumbnailpath, '')
+                                     , 'png', 600, 480)
+            # self.presentation.Slides[n].Copy()
+            # thumbnail = QClipboard.image()
             self.start_presentation()
             
         def close_presentation(self):
@@ -156,8 +162,8 @@ class PowerpointController(PresentationController):
             self.presentation.SlideShowWindow.View.GotoSlide(1)
             rendermanager = self.plugin.render_manager
             rect = rendermanager.screen_list[rendermanager.current_display][u'size']
-            dpi = 96    # This assumption is good some of the time, but not
-                        # all, but I don't know how to get the screen DPI yet
+            #SlideShowWindow measures its size/position by points, not pixels
+            dpi = win32ui.GetActiveWindow().GetDC().GetDeviceCaps(88)
             self.presentation.SlideShowWindow.Top = rect.y() * 72 / dpi
             self.presentation.SlideShowWindow.Height = rect.height() * 72 / dpi
             self.presentation.SlideShowWindow.Left = rect.x() * 72 / dpi
@@ -192,3 +198,13 @@ class PowerpointController(PresentationController):
             Triggers the previous slide on the running presentation
             """
             self.presentation.SlideShowWindow.View.Previous()
+
+        def get_slide_preview_file(self, slide_no):
+            """
+            Returns an image path containing a preview for the requested slide
+
+            ``slide_no``
+            The slide an image is required for, starting at 1
+            """
+            return os.path.join(self.thumbnailpath,
+                self.thumbnailprefix + slide_no + u'.png')

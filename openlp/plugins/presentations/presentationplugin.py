@@ -51,6 +51,19 @@ class PresentationPlugin(Plugin):
         Create the settings Tab
         """
         return PresentationTab(self.controllers)
+#
+#    def can_be_disabled(self):
+#        return True
+#
+#    def initialise(self):
+#        log.info(u'Presentations Initialising')
+#        Plugin.initialise(self)
+#        self.insert_toolbox_item()
+#
+#    def finalise(self):
+#        log.info(u'Plugin Finalise')
+#        Plugin.finalise(self)
+#        self.remove_toolbox_item()
 
     def get_media_manager_item(self):
         """

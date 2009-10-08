@@ -19,6 +19,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 import logging
+import os
 
 from PyQt4 import QtCore
 
@@ -132,6 +133,14 @@ class PresentationController(object):
                 name, QtCore.Qt.Unchecked)) == QtCore.Qt.Checked
         else:
             self.enabled = False
+        self.thumbnailroot = os.path.join(plugin.config.get_data_path(),
+            name, u'thumbnails')
+        self.thumbnailprefix = u'slide'
+        try:
+            os.makedirs(self.thumbnailroot)
+        except:
+            pass
+            
 
     def check_available(self):
         """
@@ -159,9 +168,21 @@ class PresentationController(object):
         Loads the presentation and starts it
 
         ``presentation``
-        The file name of the presentatios to the run.
+        The file name of the presentations to the run.
         """
         pass
+
+    def store_filename(self, presentation):
+        """
+        Set properties for the filename and thumbnail paths
+        """
+        self.filepath = presentation
+        self.filename = os.path.split(presentation)[1]
+        self.thumbnailpath = os.path.join(self.thumbnailroot, self.filename)
+        try:
+            os.mkdir(self.thumbnailpath)
+        except:
+            pass
 
     def close_presentation(self):
         """
