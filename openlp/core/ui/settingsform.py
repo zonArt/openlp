@@ -35,7 +35,6 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
 
     def __init__(self, screen_list, mainWindow, parent=None):
         QtGui.QDialog.__init__(self, None)
-        self.tabs = {}
         self.setupUi(self)
         # General tab
         self.GeneralTab = GeneralTab(screen_list)
@@ -50,7 +49,6 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
     def addTab(self, name,  tab):
         log.info(u'Adding %s tab' % tab.title())
         id = self.SettingsTabWidget.addTab(tab, tab.title())
-        self.tabs[name] = ({u'data': tab, u'id': id, u'active':True})
 
     def insertTab(self, name):
         log.debug(u'Inserting %s tab' % name)
@@ -67,7 +65,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         log.debug(u'remove %s tab' % name)
         #print ">>>>>>>>>>> remove settings"
         for tab_index in range(0, self.SettingsTabWidget.count()):
-            #print self.SettingsTabWidget.widget(tab_index).title(), name
+            #print "rt", self.SettingsTabWidget.widget(tab_index).title(), name
             if self.SettingsTabWidget.widget(tab_index).title() == name:
                 #print "remove match"
                 #print self.SettingsTabWidget.widget(tab_index).isVisible()

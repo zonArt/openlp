@@ -30,14 +30,11 @@ class MediaDockManager(object):
 
     def __init__(self, mediaDock):
         self.mediaDock = mediaDock
-        self.docks = {}
 
     def addDock(self, name,  media_item, icon):
         log.info(u'Adding %s dock' % name)
         id = self.mediaDock.addItem(
                         media_item, icon, media_item.title)
-        self.docks[name] = (\
-            {u'data':media_item, u'icon':icon, u'id': id, u'active':True})
 
     def insertDock(self, name):
         log.debug(u'Inserting %s dock' % name)
@@ -49,6 +46,6 @@ class MediaDockManager(object):
     def removeDock(self, name):
         log.debug(u'remove %s dock' % name)
         for tab_index in range(0, self.mediaDock.count()):
-            #print self.mediaDock.widget(tab_index).ConfigSection, name
+            #print "rd", self.mediaDock.widget(tab_index).ConfigSection, name
             if self.mediaDock.widget(tab_index).ConfigSection == name.lower():
                 self.mediaDock.setItemEnabled(tab_index, False)

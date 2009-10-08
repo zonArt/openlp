@@ -41,7 +41,26 @@ class BiblePlugin(Plugin):
         # Create the plugin icon
         self.icon = buildIcon(u':/media/media_bible.png')
         #Register the bible Manager
-        self.biblemanager = BibleManager(self.config)
+        self.biblemanager = None
+
+    def can_be_disabled(self):
+        return True
+
+    def initialise(self):
+        log.info(u'bibles Initialising')
+        if self.biblemanager is None:
+            self.biblemanager = BibleManager(self.config)
+        Plugin.initialise(self)
+        self.insert_toolbox_item()
+        self.ImportBibleItem.setVisible(True)
+        self.ExportBibleItem.setVisible(True)
+
+    def finalise(self):
+        log.info(u'Plugin Finalise')
+        Plugin.finalise(self)
+        self.remove_toolbox_item()
+        self.ImportBibleItem.setVisible(False)
+        self.ExportBibleItem.setVisible(False)
 
     def get_settings_tab(self):
         return BiblesTab()
@@ -58,15 +77,18 @@ class BiblePlugin(Plugin):
         # Signals and slots
         QtCore.QObject.connect(self.ImportBibleItem,
             QtCore.SIGNAL(u'triggered()'), self.onBibleNewClick)
+        self.ImportBibleItem.setVisible(False)
 
     def add_export_menu_item(self, export_menu):
         self.ExportBibleItem = QtGui.QAction(export_menu)
         self.ExportBibleItem.setObjectName(u'ExportBibleItem')
         export_menu.addAction(self.ExportBibleItem)
         self.ExportBibleItem.setText(translate(u'BiblePlugin', u'&Bible'))
+        self.ExportBibleItem.setVisible(False)
 
     def onBibleNewClick(self):
-        self.media_item.onBibleNewClick()
+        if self.media_item is not None:
+            self.media_item.onNewClick()
 
     def about(self):
         return u'<b>Bible Plugin</b> <br>This plugin allows bible verse from different sources to be displayed on the screen during the service.<br><br>This is a core plugin and cannot be made inactive</b>'

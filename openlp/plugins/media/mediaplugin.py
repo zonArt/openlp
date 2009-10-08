@@ -22,10 +22,15 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import logging
+
 from openlp.core.lib import Plugin, buildIcon
 from openlp.plugins.media.lib import MediaTab, MediaMediaItem
 
 class MediaPlugin(Plugin):
+    global log
+    log = logging.getLogger(u'MediaPlugin')
+    log.info(u'Media Plugin loaded')
 
     def __init__(self, plugin_helpers):
         # Call the parent constructor
@@ -38,6 +43,18 @@ class MediaPlugin(Plugin):
 
     def get_settings_tab(self):
         return MediaTab()
+
+    def can_be_disabled(self):
+        return True
+
+    def initialise(self):
+        log.info(u'Plugin Initialising')
+        Plugin.initialise(self)
+        self.insert_toolbox_item()
+
+    def finalise(self):
+        log.info(u'Plugin Finalise')
+        self.remove_toolbox_item()
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
