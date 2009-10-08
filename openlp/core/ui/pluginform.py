@@ -57,7 +57,19 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         self.PluginListWidget.clear()
         for plugin in self.parent.plugin_manager.plugins:
             item = QtGui.QListWidgetItem(self.PluginListWidget)
-            item.setText(plugin.name)
+            # We do this just to make 100% sure the status is an integer as
+            # sometimes when it's loaded from the config, it isn't cast to int.
+            plugin.status = int(plugin.status)
+            # Set the little status text in brackets next to the plugin name.
+            status_text = 'Inactive'
+            if plugin.status == PluginStatus.Active:
+                status_text = 'Active'
+            elif plugin.status == PluginStatus.Inactive:
+                status_text = 'Inactive'
+            elif plugin.status == PluginStatus.Disabled:
+                status_text = 'Disabled'
+            item.setText(u'%s (%s)' % (plugin.name, status_text))
+            # If the plugin has an icon, set it!
             if plugin.icon is not None:
                 item.setIcon(plugin.icon)
             self.PluginListWidget.addItem(item)
@@ -68,6 +80,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         self.AboutTextBrowser.setHtml(u'')
 
     def _setDetails(self):
+        log.debug('PluginStatus: %s', str(self.activePlugin.status))
         self.VersionNumberLabel.setText(self.activePlugin.version)
         self.AboutTextBrowser.setHtml(self.activePlugin.about())
         self.StatusComboBox.setCurrentIndex(int(self.activePlugin.status))
@@ -76,7 +89,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         if self.PluginListWidget.currentItem() is None:
             self._clearDetails()
             return
-        plugin_name = self.PluginListWidget.currentItem().text()
+        plugin_name = self.PluginListWidget.currentItem().text().split(u' ')[0]
         self.activePlugin = None
         for plugin in self.parent.plugin_manager.plugins:
             if plugin.name == plugin_name:
@@ -93,4 +106,13 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             self.activePlugin.initialise()
         else:
             self.activePlugin.finalise()
+        status_text = 'Inactive'
+        if self.activePlugin.status == PluginStatus.Active:
+            status_text = 'Active'
+        elif self.activePlugin.status == PluginStatus.Inactive:
+            status_text = 'Inactive'
+        elif self.activePlugin.status == PluginStatus.Disabled:
+            status_text = 'Disabled'
+        self.PluginListWidget.currentItem().setText(
+            u'%s (%s)' % (self.activePlugin.name, status_text))
 
