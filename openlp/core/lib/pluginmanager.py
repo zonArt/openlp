@@ -125,7 +125,7 @@ class PluginManager(object):
         """
         return cmp(x.weight, y.weight)
 
-    def hook_media_manager(self, mediatoolbox):
+    def hook_media_manager(self, mediadock):
         """
         Loop through all the plugins. If a plugin has a valid media manager
         item, add it to the media manager.
@@ -139,9 +139,8 @@ class PluginManager(object):
                 if plugin.media_item is not None:
                     log.debug(u'Inserting media manager item from %s' % \
                         plugin.name)
-                    plugin.media_id = mediatoolbox.addItem(
-                        plugin.media_item, plugin.icon, plugin.media_item.title)
-                    plugin.media_active = True
+                    mediadock.addDock(plugin.name,
+                        plugin.media_item, plugin.icon)
 
     def hook_settings_tabs(self, settingsform=None):
         """
@@ -157,7 +156,7 @@ class PluginManager(object):
                 plugin.settings_tab = plugin.get_settings_tab()
                 if plugin.settings_tab is not None:
                     log.debug(u'Inserting settings tab item from %s' % plugin.name)
-                    plugin.settings_id = settingsform.addTab(plugin.settings_tab)
+                    settingsform.addTab(plugin.name, plugin.settings_tab)
                 else:
                     log.debug(u'No tab settings in %s' % plugin.name)
 
@@ -202,11 +201,12 @@ class PluginManager(object):
         Loop through all the plugins and give them an opportunity to
         initialise themselves.
         """
-        log.info(u'initialising plugins')
         for plugin in self.plugins:
+            log.info(u'initialising plugins %s in a %s state'
+                % (plugin.name, plugin.is_active()))
             if plugin.is_active():
                 plugin.initialise()
-            if plugin.media_item is not None and not plugin.is_active():
+            if not plugin.is_active():
                 plugin.remove_toolbox_item()
 
     def finalise_plugins(self):

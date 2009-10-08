@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expanddock textwidth=80 dockstop=4 softdockstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -13,7 +13,7 @@
 # Software Foundation; version 2 of the License.                              #
 #                                                                             #
 # This program is distributed in the hope that it will be useful, but WITHOUT #
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# ANY WARRANTY; without even the implied warranty of MERCHANdockILITY or       #
 # FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
 # more details.                                                               #
 #                                                                             #
@@ -22,23 +22,30 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-#from slidecontroller import MasterToolbar
-from maindisplay import MainDisplay
-from amendthemeform import AmendThemeForm
-from slidecontroller import SlideController
-from splashscreen import SplashScreen
-from alertstab import AlertsTab
-from generaltab import GeneralTab
-from themestab import ThemesTab
-from about import AboutForm
-from alertform import AlertForm
-from plugindialoglistform import PluginForm
-from settingsform import SettingsForm
-from mediadockmanager import MediaDockManager
-from servicemanager import ServiceManager
-from thememanager import ThemeManager
-from mainwindow import MainWindow
+import logging
 
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainWindow',
-    'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
-    'AmendThemeForm', 'MediaDockManager']
+log = logging.getLogger(u'MediaDockManager')
+
+class MediaDockManager(object):
+
+    def __init__(self, mediaDock):
+        self.mediaDock = mediaDock
+
+    def addDock(self, name,  media_item, icon):
+        log.info(u'Adding %s dock' % name)
+        id = self.mediaDock.addItem(
+                        media_item, icon, media_item.title)
+
+    def insertDock(self, name):
+        log.debug(u'Inserting %s dock' % name)
+        for tab_index in range(0, self.mediaDock.count()):
+            #print self.mediaDock.widget(tab_index).ConfigSection,  name
+            if self.mediaDock.widget(tab_index).ConfigSection == name.lower():
+                self.mediaDock.setItemEnabled(tab_index, True)
+
+    def removeDock(self, name):
+        log.debug(u'remove %s dock' % name)
+        for tab_index in range(0, self.mediaDock.count()):
+            #print "rd", self.mediaDock.widget(tab_index).ConfigSection, name
+            if self.mediaDock.widget(tab_index).ConfigSection == name.lower():
+                self.mediaDock.setItemEnabled(tab_index, False)

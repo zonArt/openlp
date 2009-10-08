@@ -226,9 +226,10 @@ class BibleMediaItem(MediaManagerItem):
             translate(u'BibleMediaItem', u'Keep'))
 
     def initialise(self):
-        log.debug(u'initialise')
+        log.debug(u'bible manager initialise')
         self.loadBibles()
         self.parent.biblemanager.set_media_manager(self)
+        log.debug(u'bible manager initialise complete')
 
     def setQuickMessage(self, text):
         self.QuickMessage.setText(translate(u'BibleMediaItem', unicode(text)))

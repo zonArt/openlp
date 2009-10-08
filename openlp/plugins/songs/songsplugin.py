@@ -51,13 +51,33 @@ class SongsPlugin(Plugin):
         # Call the parent constructor
         Plugin.__init__(self, u'Songs', u'1.9.0', plugin_helpers)
         self.weight = -10
-        self.songmanager = SongManager(self.config)
+        self.songmanager = None
         self.openlp_import_form = OpenLPImportForm()
         self.opensong_import_form = OpenSongImportForm()
         self.openlp_export_form = OpenLPExportForm()
         self.opensong_export_form = OpenSongExportForm()
         # Create the plugin icon
         self.icon = buildIcon(u':/media/media_song.png')
+
+    def can_be_disabled(self):
+        return True
+
+    def initialise(self):
+        log.info(u'Songs Initialising')
+        if self.songmanager is None:
+            self.songmanager = SongManager(self.config)
+        Plugin.initialise(self)
+        self.insert_toolbox_item()
+        self.ImportSongMenu.menuAction().setVisible(True)
+        self.ExportSongMenu.menuAction().setVisible(True)
+        self.media_item.displayResultsSong(self.songmanager.get_songs())
+
+    def finalise(self):
+        log.info(u'Plugin Finalise')
+        Plugin.finalise(self)
+        self.remove_toolbox_item()
+        self.ImportSongMenu.menuAction().setVisible(False)
+        self.ExportSongMenu.menuAction().setVisible(False)
 
     def get_media_manager_item(self):
         """
@@ -109,6 +129,7 @@ class SongsPlugin(Plugin):
             QtCore.SIGNAL(u'triggered()'), self.onImportOpenlp1ItemClick)
         QtCore.QObject.connect(self.ImportOpenSongItem,
             QtCore.SIGNAL(u'triggered()'), self.onImportOpenSongItemClick)
+        self.ImportSongMenu.menuAction().setVisible(False)
 
     def add_export_menu_item(self, export_menu):
         """
@@ -143,10 +164,7 @@ class SongsPlugin(Plugin):
             QtCore.SIGNAL(u'triggered()'), self.onExportOpenlp1ItemClicked)
         QtCore.QObject.connect(self.ExportOpenSongItem,
             QtCore.SIGNAL(u'triggered()'), self.onExportOpenSongItemClicked)
-
-    def initialise(self):
-        Plugin.initialise(self)
-        self.media_item.displayResultsSong(self.songmanager.get_songs())
+        self.ExportSongMenu.menuAction().setVisible(False)
 
     def onImportOpenlp1ItemClick(self):
         self.openlp_import_form.show()

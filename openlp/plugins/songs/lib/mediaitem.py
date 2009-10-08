@@ -46,7 +46,7 @@ class SongMediaItem(MediaManagerItem):
     def __init__(self, parent, icon, title):
         self.TranslationContext = u'SongPlugin'
         self.PluginTextShort = u'Song'
-        self.ConfigSection = u'song'
+        self.ConfigSection = u'songs'
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = SongListView
         self.ServiceItemIconName = u':/media/song_image.png'

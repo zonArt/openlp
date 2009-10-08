@@ -41,6 +41,8 @@ class RemotesPlugin(Plugin):
 
     def initialise(self):
         log.debug(u'initialise')
+        Plugin.initialise(self)
+        self.insert_toolbox_item()
         self.server = QtNetwork.QUdpSocket()
         self.server.bind(int(self.config.get_config(u'remote port', 4316)))
         QtCore.QObject.connect(self.server,
@@ -48,6 +50,7 @@ class RemotesPlugin(Plugin):
 
     def finalise(self):
         log.debug(u'finalise')
+        self.remove_toolbox_item()
         if self.server is not None:
             self.server.close()
 

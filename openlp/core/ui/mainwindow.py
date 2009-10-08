@@ -29,9 +29,10 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
     ServiceManager, ThemeManager, MainDisplay, SlideController, \
-    PluginForm
+    PluginForm, MediaDockManager
 from openlp.core.lib import translate, RenderManager, PluginConfig, \
-    OpenLPDockWidget, SettingsManager, PluginManager, Receiver, buildIcon
+    OpenLPDockWidget, SettingsManager, PluginManager, Receiver, \
+    buildIcon
 
 
 class Ui_MainWindow(object):
@@ -489,6 +490,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         #ThemeManager needs to call RenderManager
         self.RenderManager = RenderManager(self.ThemeManagerContents,
             self.screenList, self.getMonitorNumber())
+        #Define the media Dock Manager
+        self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
         #make the controllers available to the plugins
         self.plugin_helpers[u'preview'] = self.PreviewController
@@ -496,7 +499,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_helpers[u'render'] = self.RenderManager
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
         self.plugin_helpers[u'settings'] = self.settingsForm
-        self.plugin_helpers[u'toolbox'] = self.MediaToolBox
+        self.plugin_helpers[u'toolbox'] = self.mediaDockManager
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers)
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here
@@ -505,7 +508,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_manager.hook_settings_tabs(self.settingsForm)
         # Find and insert media manager items
         log.info(u'hook media')
-        self.plugin_manager.hook_media_manager(self.MediaToolBox)
+        self.plugin_manager.hook_media_manager(self.mediaDockManager)
         # Call the hook method to pull in import menus.
         log.info(u'hook menus')
         self.plugin_manager.hook_import_menu(self.FileImportMenu)

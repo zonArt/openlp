@@ -119,9 +119,6 @@ class Plugin(object):
         self.icon = None
         self.config = PluginConfig(self.name)
         self.weight = 0
-        self.media_id = -1
-        self.settings_id = -1
-        self.media_active = False
         self.status = PluginStatus.Inactive
         # Set up logging
         self.log = logging.getLogger(self.name)
@@ -130,7 +127,7 @@ class Plugin(object):
         self.render_manager = plugin_helpers[u'render']
         self.service_manager = plugin_helpers[u'service']
         self.settings = plugin_helpers[u'settings']
-        self.mediatoolbox = plugin_helpers[u'toolbox']
+        self.mediadock = plugin_helpers[u'toolbox']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_add_service_item'% self.name), self.process_add_service_event)
 
@@ -155,8 +152,8 @@ class Plugin(object):
         """
         Sets the status of the plugin
         """
-        self.status = self.config.get_config(\
-            u'%s_status' % self.name, PluginStatus.Inactive)
+        self.status = int(self.config.get_config(\
+            u'%s_status' % self.name, PluginStatus.Inactive))
 
     def toggle_status(self, new_status):
         """
@@ -171,7 +168,7 @@ class Plugin(object):
 
         Returns True or False.
         """
-        return int(self.status ) == int(PluginStatus.Active)
+        return self.status == PluginStatus.Active
 
     def get_media_manager_item(self):
         """
@@ -253,21 +250,12 @@ class Plugin(object):
         """
         Called by the plugin to remove toolbar
         """
-        if self.media_id is not -1:
-            self.mediatoolbox.removeItem(self.media_id)
-        if self.settings_id is not -1:
-            self.settings.removeTab(self.settings_id)
-        self.media_active = False
+        self.mediadock.removeDock(self.name)
+        self.settings.removeTab(self.name)
 
     def insert_toolbox_item(self):
         """
         Called by plugin to replace toolbar
         """
-        if not self.media_active:
-            if self.media_id is not -1:
-                self.mediatoolbox.insertItem(
-                    self.media_id, self.media_item, self.icon, self.media_item.title)
-            if self.settings_id is not -1:
-                self.settings.insertTab(
-                    self.settings_id, self.settings_tab)
-            self.media_active = True
+        self.mediadock.insertDock(self.name)
+        self.settings.insertTab(self.name)
