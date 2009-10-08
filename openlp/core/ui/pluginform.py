@@ -38,7 +38,6 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         self.parent = parent
         self.activePlugin = None
         self.setupUi(self)
-        log.debug(u'Defined')
         self.load()
         self._clearDetails()
         # Right, now let's put some signals and slots together!
