@@ -42,8 +42,14 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         self.load()
         self._clearDetails()
         # Right, now let's put some signals and slots together!
-        QtCore.QObject.connect(self.PluginListWidget, QtCore.SIGNAL(u'currentItemChanged(QListWidgetItem *, QListWidgetItem *)'), self.onPluginListWidgetSelectionChanged)
-        QtCore.QObject.connect(self.StatusComboBox, QtCore.SIGNAL(u'currentIndexChanged(int)'), self.onStatusComboBoxChanged)
+        QtCore.QObject.connect(
+            self.PluginListWidget,
+            QtCore.SIGNAL(u'itemSelectionChanged()'),
+            self.onPluginListWidgetSelectionChanged)
+        QtCore.QObject.connect(
+            self.StatusComboBox,
+            QtCore.SIGNAL(u'currentIndexChanged(int)'),
+            self.onStatusComboBoxChanged)
 
     def load(self):
         """
@@ -65,11 +71,6 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
     def _setDetails(self):
         self.VersionNumberLabel.setText(self.activePlugin.version)
         self.AboutTextBrowser.setHtml(self.activePlugin.about())
-        #if not self.activePlugin.can_be_disabled():
-        #    self.StatusComboBox.setCurrentIndex(0)
-        #    self.StatusComboBox.setEnabled(False)
-        #else:
-        #self.StatusComboBox.setEnabled(False)
         self.StatusComboBox.setCurrentIndex(int(self.activePlugin.status))
 
     def onPluginListWidgetSelectionChanged(self):
@@ -88,9 +89,9 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             self._clearDetails()
 
     def onStatusComboBoxChanged(self, status):
-        log.debug(u'Combo status changed %s for plugin %s' %(status, self.activePlugin.name))
         self.activePlugin.toggle_status(status)
         if status == PluginStatus.Active:
             self.activePlugin.initialise()
         else:
             self.activePlugin.finalise()
+
