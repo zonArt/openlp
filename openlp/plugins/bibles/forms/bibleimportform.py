@@ -180,7 +180,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
                 self.ProgressBar.setValue(self.barmax)
                 # tell bibleplugin to reload the bibles
                 Receiver().send_message(u'pre_load_bibles')
-                reply = QtGui.QMessageBox.information(self,
+                QtGui.QMessageBox.information(self,
                     translate(u'BibleMediaItem', u'Information'),
                     translate(u'BibleMediaItem', message))
 
