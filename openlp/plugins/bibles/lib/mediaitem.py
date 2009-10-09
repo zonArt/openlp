@@ -110,17 +110,22 @@ class BibleMediaItem(MediaManagerItem):
         self.ClearQuickSearchComboBox.setObjectName(u'ClearQuickSearchComboBox')
         self.QuickLayout.addWidget(self.ClearQuickSearchComboBox, 3, 1, 1, 1)
         self.QuickVerticalLayout.addLayout(self.QuickLayout)
+        self.QuickSecondBibleComboBox = QtGui.QComboBox(self.QuickTab)
+        self.QuickSecondBibleComboBox.setObjectName(u'SecondBible')
+        self.QuickVerticalLayout.addWidget(self.QuickSecondBibleComboBox)
         self.QuickMessage = QtGui.QLabel(self.QuickTab)
         self.QuickMessage.setObjectName(u'QuickMessage')
         self.QuickVerticalLayout.addWidget(self.QuickMessage)
         self.SearchTabWidget.addTab(self.QuickTab, 'Quick')
-        QuickSpacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
+        QuickSpacerItem = QtGui.QSpacerItem(20, 35, QtGui.QSizePolicy.Minimum,
             QtGui.QSizePolicy.Expanding)
         self.QuickLayout.addItem(QuickSpacerItem, 4, 2, 1, 1)
         # Add the Advanced Search tab
         self.AdvancedTab = QtGui.QWidget()
         self.AdvancedTab.setObjectName(u'AdvancedTab')
-        self.AdvancedLayout = QtGui.QGridLayout(self.AdvancedTab)
+        self.AdvancedVerticalLayout = QtGui.QVBoxLayout(self.AdvancedTab)
+        self.AdvancedVerticalLayout.setObjectName("verticalLayout")
+        self.AdvancedLayout = QtGui.QGridLayout()
         self.AdvancedLayout.setMargin(5)
         self.AdvancedLayout.setSpacing(4)
         self.AdvancedLayout.setObjectName(u'AdvancedLayout')
@@ -171,6 +176,10 @@ class BibleMediaItem(MediaManagerItem):
         self.AdvancedSearchButton = QtGui.QPushButton(self.AdvancedTab)
         self.AdvancedSearchButton.setObjectName(u'AdvancedSearchButton')
         self.AdvancedLayout.addWidget(self.AdvancedSearchButton, 5, 3, 1, 1)
+        self.AdvancedVerticalLayout.addLayout(self.AdvancedLayout)
+        self.AdvancedSecondBibleComboBox = QtGui.QComboBox(self.AdvancedTab)
+        self.AdvancedSecondBibleComboBox.setObjectName(u'SecondBible')
+        self.AdvancedVerticalLayout.addWidget(self.AdvancedSecondBibleComboBox)
         self.SearchTabWidget.addTab(self.AdvancedTab, u'Advanced')
         # Add the search tab widget to the page layout
         self.PageLayout.addWidget(self.SearchTabWidget)
@@ -240,17 +249,23 @@ class BibleMediaItem(MediaManagerItem):
     def loadBibles(self):
         log.debug(u'Loading Bibles')
         self.QuickVersionComboBox.clear()
+        self.QuickSecondBibleComboBox.clear()
         self.AdvancedVersionComboBox.clear()
+        self.AdvancedSecondBibleComboBox.clear()
+        self.QuickSecondBibleComboBox.addItem(u'')
+        self.AdvancedSecondBibleComboBox.addItem(u'')
         bibles = self.parent.biblemanager.get_bibles(BibleMode.Full)
         # load bibles into the combo boxes
         for bible in bibles:
             self.QuickVersionComboBox.addItem(bible)
+            self.QuickSecondBibleComboBox.addItem(bible)
         # Without HTTP
         bibles = self.parent.biblemanager.get_bibles(BibleMode.Partial)
         first = True
         # load bibles into the combo boxes
         for bible in bibles:
             self.AdvancedVersionComboBox.addItem(bible)
+            self.AdvancedSecondBibleComboBox.addItem(bible)
             if first:
                 first = False
                 # use the first bible as the trigger
@@ -337,16 +352,13 @@ class BibleMediaItem(MediaManagerItem):
         for item in items:
             bitem = self.ListView.item(item.row())
             text = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
-            verse = text[:text.find(u'(')]
+            search_verse = text[:text.find(u'(')]
             bible = text[text.find(u'(') + 1:-1]
-            self.searchByReference(bible, verse)
+            self.searchByReference(bible, search_verse)
             book = self.search_results[0].book.name
             chapter = unicode(self.search_results[0].chapter)
             verse = unicode(self.search_results[0].verse)
             text = self.search_results[0].text
-            #Paragraph style force new line per verse
-            if self.parent.settings_tab.layout_style == 1:
-                text = text + u'\n\n'
             if self.parent.settings_tab.display_style == 1:
                 loc = self.formatVerse(old_chapter, chapter, verse, u'(u', u')')
             elif  self.parent.settings_tab.display_style == 2:
@@ -356,18 +368,41 @@ class BibleMediaItem(MediaManagerItem):
             else:
                 loc = self.formatVerse(old_chapter, chapter, verse, u'', u'')
             old_chapter = chapter
-            bible_text = bible_text + u' '+ loc + u' '+ text
-            #if we are verse per slide then create slide
-            if self.parent.settings_tab.layout_style == 0:
-                raw_slides.append(bible_text)
-                bible_text = u''
-            service_item.title = book + u' ' + loc
-            footer = book + u' (' + self.version + u' ' + self.copyright +u')'
+            footer = u'%s (%s %s)' % (book, self.version, self.copyright)
             #If not found throws and error so add.s
             try:
                 raw_footer.index(footer)
             except:
                 raw_footer.append(footer)
+            #If we want to use a 2nd translation / version
+            bible2 = u''
+            if self.SearchTabWidget.currentIndex() == 0:
+                bible2 = unicode(self.QuickSecondBibleComboBox.currentText())
+            else:
+                bible2 = unicode(self.AdvancedSecondBibleComboBox.currentText())
+            if len(bible2) > 0:
+                self.searchByReference(bible2, search_verse)
+                footer = u'%s (%s %s)' % (book, self.version, self.copyright)
+                #If not found throws and error so add.s
+                try:
+                    raw_footer.index(footer)
+                except:
+                    raw_footer.append(footer)
+                bible_text = u'%s %s \n\n\n %s %s)' % \
+                    (loc, text, loc, self.search_results[0].text)
+                raw_slides.append(bible_text)
+                bible_text = u''
+            else:
+                #Paragraph style force new line per verse
+                if self.parent.settings_tab.layout_style == 1:
+                    text = text + u'\n\n'
+                bible_text = u'%s %s %s' % (bible_text, loc, text)
+                #if we are verse per slide then create slide
+                if self.parent.settings_tab.layout_style == 0:
+                    raw_slides.append(bible_text)
+                    bible_text = u''
+            service_item.title = u'%s %s' % (book, loc)
+
         if  len(self.parent.settings_tab.bible_theme) == 0:
             service_item.theme = None
         else:
