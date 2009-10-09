@@ -198,5 +198,5 @@ class PptviewController(PresentationController):
                 The slide an image is required for, starting at 1
             """
             return os.path.join(self.thumbnailpath,
-                self.thumbnailprefix + slide_no + u'.bmp')
+                self.thumbnailprefix + unicode(slide_no) + u'.bmp')
 

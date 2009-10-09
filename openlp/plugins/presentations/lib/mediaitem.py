@@ -98,11 +98,22 @@ class PresentationMediaItem(MediaManagerItem):
                 self.DisplayTypeComboBox.addItem(item)
 
     def loadList(self, list):
+        currlist = self.getFileList()
+        titles = []
+        for file in currlist:
+            titles.append(os.path.split(file)[1])
         for file in list:
+            if currlist.count(file) > 0:
+                continue
             (path, filename) = os.path.split(unicode(file))
-            item_name = QtGui.QListWidgetItem(filename)
-            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
-            self.ListView.addItem(item_name)
+            if titles.count(filename) > 0:
+                QtGui.QMessageBox.critical(self, u'File exists',
+                    u'A presentation with that filename already exists.',
+                    QtGui.QMessageBox.Ok)
+            else:
+                item_name = QtGui.QListWidgetItem(filename)
+                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
+                self.ListView.addItem(item_name)
 
     def onDeleteClick(self):
         item = self.ListView.currentItem()
@@ -111,7 +122,10 @@ class PresentationMediaItem(MediaManagerItem):
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
             self.parent.config.set_list(
-                self.ConfigSection, self.ListData.getFileList())
+                self.ConfigSection, self.getFileList())
+            filepath = unicode((item.data(QtCore.Qt.UserRole)).toString())
+            for cidx in self.controllers:
+                self.controllers[cidx].presentation_deleted(filepath)
 
     def generateSlideData(self, service_item):
         items = self.ListView.selectedIndexes()
