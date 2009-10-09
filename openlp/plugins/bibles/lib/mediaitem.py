@@ -345,20 +345,20 @@ class BibleMediaItem(MediaManagerItem):
             verse = unicode(self.search_results[0].verse)
             text = self.search_results[0].text
             #Paragraph style force new line per verse
-            if self.parent.bibles_tab.layout_style == 1:
+            if self.parent.settings_tab.layout_style == 1:
                 text = text + u'\n\n'
-            if self.parent.bibles_tab.display_style == 1:
+            if self.parent.settings_tab.display_style == 1:
                 loc = self.formatVerse(old_chapter, chapter, verse, u'(u', u')')
-            elif  self.parent.bibles_tab.display_style == 2:
+            elif  self.parent.settings_tab.display_style == 2:
                 loc = self.formatVerse(old_chapter, chapter, verse, u'{', u'}')
-            elif  self.parent.bibles_tab.display_style == 3:
+            elif  self.parent.settings_tab.display_style == 3:
                 loc = self.formatVerse(old_chapter, chapter, verse, u'[', u']')
             else:
                 loc = self.formatVerse(old_chapter, chapter, verse, u'', u'')
             old_chapter = chapter
             bible_text = bible_text + u' '+ loc + u' '+ text
             #if we are verse per slide then create slide
-            if self.parent.bibles_tab.layout_style == 0:
+            if self.parent.settings_tab.layout_style == 0:
                 raw_slides.append(bible_text)
                 bible_text = u''
             service_item.title = book + u' ' + loc
@@ -368,12 +368,12 @@ class BibleMediaItem(MediaManagerItem):
                 raw_footer.index(footer)
             except:
                 raw_footer.append(footer)
-        if  len(self.parent.bibles_tab.bible_theme) == 0:
+        if  len(self.parent.settings_tab.bible_theme) == 0:
             service_item.theme = None
         else:
-            service_item.theme = self.parent.bibles_tab.bible_theme
+            service_item.theme = self.parent.settings_tab.bible_theme
         #if we are verse per slide we have already been added
-        if self.parent.bibles_tab.layout_style != 0:
+        if self.parent.settings_tab.layout_style != 0:
             raw_slides.append(bible_text)
         for slide in raw_slides:
             service_item.add_from_text(slide[:30], slide)
@@ -384,7 +384,7 @@ class BibleMediaItem(MediaManagerItem):
         loc = opening
         if old_chapter != chapter:
             loc += chapter + u':'
-        elif not self.parent.bibles_tab.show_new_chapters:
+        elif not self.parent.settings_tab.show_new_chapters:
             loc += chapter + u':'
         loc += verse
         loc += closing
