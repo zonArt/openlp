@@ -281,22 +281,22 @@ class MediaManagerItem(QtGui.QWidget):
         self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         if self.hasEditIcon:
             self.ListView.addAction(contextMenuAction(self.ListView,
-                ':' +self.IconPath+u'_new.png',
+                u':' +self.IconPath+u'_new.png',
                 translate(self.TranslationContext,
                 u'&Edit ' + self.PluginTextShort),
                 self.onEditClick))
             self.ListView.addAction(contextMenuSeparator(self.ListView))
         self.ListView.addAction(contextMenuAction(
-            self.ListView, ':/system/system_preview.png',
+            self.ListView, u':/system/system_preview.png',
             translate(self.TranslationContext,
                 u'&Preview ' + self.PluginTextShort),
             self.onPreviewClick))
         self.ListView.addAction(contextMenuAction(
-            self.ListView, ':/system/system_live.png',
+            self.ListView, u':/system/system_live.png',
             translate(self.TranslationContext, u'&Show Live'),
             self.onLiveClick))
         self.ListView.addAction(contextMenuAction(
-            self.ListView, ':/system/system_add.png',
+            self.ListView, u':/system/system_add.png',
             translate(self.TranslationContext, u'&Add to Service'),
             self.onAddClick))
         QtCore.QObject.connect(self.ListView,
