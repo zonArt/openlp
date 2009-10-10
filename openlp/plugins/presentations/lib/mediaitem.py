@@ -118,7 +118,6 @@ class PresentationMediaItem(MediaManagerItem):
     def onDeleteClick(self):
         item = self.ListView.currentItem()
         if item is not None:
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
             self.parent.config.set_list(
