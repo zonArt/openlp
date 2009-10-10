@@ -421,7 +421,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.mainDisplay = MainDisplay(self, screens)
         self.generalConfig = PluginConfig(u'General')
         self.alertForm = AlertForm(self)
-        self.pluginForm = PluginForm(self)
         self.aboutForm = AboutForm(self)
         self.settingsForm = SettingsForm(self.screenList, self)
         # Set up the path with plugins
@@ -432,6 +431,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_helpers = {}
         # Set up the interface
         self.setupUi(self)
+        self.pluginForm = PluginForm(self)
         # Set up signals and slots
         QtCore.QObject.connect(self.ImportThemeItem,
             QtCore.SIGNAL(u'triggered()'),
