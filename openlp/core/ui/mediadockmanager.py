@@ -35,7 +35,6 @@ class MediaDockManager(object):
         log.info(u'Adding %s dock' % media_item.title)
         id = self.mediaDock.addItem(
             media_item, icon, media_item.title)
-        print "add", media_item.title, id, weight, media_item
 
     def insertDock(self, media_item, icon, weight):
         """
@@ -44,27 +43,19 @@ class MediaDockManager(object):
         For now add at end of stack if not present
         """
         log.debug(u'Inserting %s dock' % media_item.title)
-        for dock_index in range(0, self.mediaDock.count()):
-            print "dock list", dock_index, self.mediaDock.widget(dock_index)
-        #self.mediaDock.insertItem(weight + 10, media_item, icon, media_item.title)
         match = False
         for dock_index in range(0, self.mediaDock.count()):
-            print self.mediaDock.widget(dock_index).ConfigSection , media_item.title.lower()
             if self.mediaDock.widget(dock_index).ConfigSection == media_item.title.lower():
-                print "match found ", dock_index
                 match = True
                 break
         if not match:
-            print "match not found ", media_item.title
             self.mediaDock.addItem(media_item, icon, media_item.title)
 
 
     def removeDock(self, name):
         log.debug(u'remove %s dock' % name)
-        print "remove dock ", name
         for dock_index in range(0, self.mediaDock.count()):
             if self.mediaDock.widget(dock_index) is not None:
                 if self.mediaDock.widget(dock_index).ConfigSection == name.lower():
-                    print "remove ", dock_index
                     self.mediaDock.widget(dock_index).hide()
                     self.mediaDock.removeItem(dock_index)
