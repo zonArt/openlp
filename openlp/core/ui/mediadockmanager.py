@@ -55,6 +55,7 @@ class MediaDockManager(object):
                 match = True
                 break
         if not match:
+            print "match not found ", media_item.title
             self.mediaDock.addItem(media_item, icon, media_item.title)
 
 

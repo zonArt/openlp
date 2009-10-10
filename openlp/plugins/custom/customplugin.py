@@ -54,7 +54,7 @@ class CustomPlugin(Plugin):
 
     def get_media_manager_item(self):
         # Create the CustomManagerItem object
-        return CustomMediaItem(self, self.icon, u'Custom Slides')
+        return CustomMediaItem(self, self.icon, u'Custom')
 
     def can_be_disabled(self):
         return True
