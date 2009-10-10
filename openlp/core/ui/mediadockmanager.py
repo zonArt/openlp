@@ -31,21 +31,21 @@ class MediaDockManager(object):
     def __init__(self, mediaDock):
         self.mediaDock = mediaDock
 
-    def addDock(self, name,  media_item, icon):
-        log.info(u'Adding %s dock' % name)
+    def addDock(self, media_item, icon, weight):
+        log.info(u'Adding %s dock' % media_item.title)
         id = self.mediaDock.addItem(
-                        media_item, icon, media_item.title)
+            media_item, icon, media_item.title)
+        print "add", media_item.title, id, weight
 
-    def insertDock(self, name):
-        log.debug(u'Inserting %s dock' % name)
-        for tab_index in range(0, self.mediaDock.count()):
-            #print self.mediaDock.widget(tab_index).ConfigSection,  name
-            if self.mediaDock.widget(tab_index).ConfigSection == name.lower():
-                self.mediaDock.setItemEnabled(tab_index, True)
+    def insertDock(self, media_item, icon, weight):
+        log.debug(u'Inserting %s dock' % media_item.title)
+        if self.mediaDock.widget(weight + 10) is None:
+            self.mediaDock.insertItem(weight + 10, media_item, icon, media_item.title)
+            print "insert", media_item.title, weight
 
     def removeDock(self, name):
         log.debug(u'remove %s dock' % name)
-        for tab_index in range(0, self.mediaDock.count()):
-            #print "rd", self.mediaDock.widget(tab_index).ConfigSection, name
-            if self.mediaDock.widget(tab_index).ConfigSection == name.lower():
-                self.mediaDock.setItemEnabled(tab_index, False)
+        for dock_index in range(0, self.mediaDock.count()):
+            if self.mediaDock.widget(dock_index) is not None:
+                if self.mediaDock.widget(dock_index).ConfigSection == name.lower():
+                    self.mediaDock.removeItem(dock_index)

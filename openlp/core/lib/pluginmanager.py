@@ -90,7 +90,8 @@ class PluginManager(object):
                     try:
                         __import__(modulename, globals(), locals(), [])
                     except ImportError, e:
-                        log.error(u'Failed to import module %s on path %s for reason %s', modulename, path, e.args[0])
+                        log.error(u'Failed to import module %s on path %s for reason %s',
+                                   modulename, path, e.args[0])
         plugin_classes = Plugin.__subclasses__()
         self.plugins = []
         plugin_objects = []
@@ -139,8 +140,7 @@ class PluginManager(object):
                 if plugin.media_item is not None:
                     log.debug(u'Inserting media manager item from %s' % \
                         plugin.name)
-                    mediadock.addDock(plugin.name,
-                        plugin.media_item, plugin.icon)
+                    mediadock.addDock(plugin.media_item, plugin.icon, plugin.weight)
 
     def hook_settings_tabs(self, settingsform=None):
         """
