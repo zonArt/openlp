@@ -286,7 +286,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def onThemeComboChanged(self, item):
         if item == 0:
             #None means no Theme
-            self.song.song_theme = None
+            self.song.theme_name = None
         else:
             them_name = unicode(self.ThemeSelectionComboItem.itemText(item))
             self.song.theme_name = them_name
@@ -339,8 +339,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.VerseListWidget.repaint()
 
     def onVerseDeleteButtonClicked(self):
-        item = self.VerseListWidget.takeItem(self.VerseListWidget.currentRow())
-        item = None
+        self.VerseListWidget.takeItem(self.VerseListWidget.currentRow())
         self.VerseEditButton.setEnabled(False)
         self.VerseDeleteButton.setEnabled(False)
 

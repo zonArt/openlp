@@ -21,7 +21,7 @@ import logging
 
 from PyQt4 import QtNetwork, QtCore
 
-from openlp.core.lib import Plugin, Receiver, translate
+from openlp.core.lib import Plugin, Receiver
 from openlp.plugins.remotes.lib import RemoteTab
 
 class RemotesPlugin(Plugin):

@@ -107,12 +107,25 @@ class PowerpointController(PresentationController):
             self.store_filename(presentation)
             self.process.Presentations.Open(presentation, False, False, True)
             self.presentation = self.process.Presentations(self.process.Presentations.Count)
+            self.create_thumbnails()
+            self.start_presentation()
+
+        def create_thumbnails(self):
+            """
+            Create the thumbnail images for the current presentation.
+            Note an alternative and quicker method would be do
+                self.presentation.Slides[n].Copy()
+                thumbnail = QApplication.clipboard.image()
+            But for now we want a physical file since it makes
+            life easier elsewhere
+            """
+            if self.check_thumbnails():
+                return
             self.presentation.Export(os.path.join(self.thumbnailpath, '')
                                      , 'png', 600, 480)
-            # self.presentation.Slides[n].Copy()
-            # thumbnail = QClipboard.image()
-            self.start_presentation()
             
+    
+
         def close_presentation(self):
             """
             Close presentation and clean up objects
@@ -207,4 +220,4 @@ class PowerpointController(PresentationController):
             The slide an image is required for, starting at 1
             """
             return os.path.join(self.thumbnailpath,
-                self.thumbnailprefix + slide_no + u'.png')
+                self.thumbnailprefix + unicode(slide_no) + u'.png')

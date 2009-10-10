@@ -552,6 +552,6 @@ class BibleMediaItem(MediaManagerItem):
             self.version = unicode(self.parent.biblemanager.get_meta_data(
                 bible, u'Version').value)
         else:
-            reply = QtGui.QMessageBox.information(self,
+            QtGui.QMessageBox.information(self,
                 translate(u'BibleMediaItem', u'Information'),
                 translate(u'BibleMediaItem', message))

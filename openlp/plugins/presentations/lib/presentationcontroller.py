@@ -20,6 +20,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 import logging
 import os
+import shutil
 
 from PyQt4 import QtCore
 
@@ -35,7 +36,7 @@ class PresentationController(object):
     Make sure it inhetits PresentationController
     Then fill in the blanks. If possible try and make sure it loads
     on all platforms, using for example os.name checks, although
-    __init__ and check_available should always work.
+    __init__, check_available and presentation_deleted should always work.
     See impresscontroller, powerpointcontroller or pptviewcontroller
     for examples.
 
@@ -61,6 +62,9 @@ class PresentationController(object):
 
     ``check_available()``
         Returns True if presentation application is installed/can run on this machine
+    
+    ``presentation_deleted()``
+        Deletes presentation specific files, e.g. thumbnails
 
     ``load_presentation(presentation)``
         Load a presentation file
@@ -136,11 +140,8 @@ class PresentationController(object):
         self.thumbnailroot = os.path.join(plugin.config.get_data_path(),
             name, u'thumbnails')
         self.thumbnailprefix = u'slide'
-        try:
+        if not os.path.isdir(self.thumbnailroot):
             os.makedirs(self.thumbnailroot)
-        except:
-            pass
-            
 
     def check_available(self):
         """
@@ -148,6 +149,14 @@ class PresentationController(object):
         """
         return False
 
+    def presentation_deleted(self, presentation):
+        """
+        Cleans up/deletes any controller specific files created for
+        a file, e.g. thumbnails
+        """
+        self.store_filename(presentation)
+        shutil.rmtree(self.thumbnailpath)
+    
     def start_process(self):
         """
         Loads a running version of the presentation application in the background.
@@ -179,10 +188,20 @@ class PresentationController(object):
         self.filepath = presentation
         self.filename = os.path.split(presentation)[1]
         self.thumbnailpath = os.path.join(self.thumbnailroot, self.filename)
-        try:
+        if not os.path.isdir(self.thumbnailpath):
             os.mkdir(self.thumbnailpath)
-        except:
-            pass
+
+    def check_thumbnails(self):
+        """
+        Returns true if the thumbnail images look to exist and are more
+        recent than the powerpoint
+        """
+        lastimage = self.get_slide_preview_file(self.get_slide_count())
+        if not os.path.isfile(lastimage):
+            return False
+        imgdate = os.stat(lastimage).st_mtime
+        pptdate = os.stat(self.filepath).st_mtime
+        return imgdate >= pptdate
 
     def close_presentation(self):
         """

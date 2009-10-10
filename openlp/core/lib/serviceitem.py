@@ -180,7 +180,7 @@ class ServiceItem(object):
         self.service_item_type = ServiceType.Command
         self.service_item_path = path
         self.service_frames.append(
-            {u'title': frame_title, u'command':  None})
+            {u'title': frame_title, u'command': None})
 
     def get_service_repr(self):
         """

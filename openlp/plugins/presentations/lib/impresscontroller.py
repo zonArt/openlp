@@ -109,19 +109,16 @@ class ImpressController(PresentationController):
         if os.name == u'nt':
             desktop = self.get_com_desktop()
             url = u'file:///' + presentation.replace(u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
-            thumbdir = u'file:///' + self.thumbnailpath.replace(
-                u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
         else:
             desktop = self.get_uno_desktop()
             url = uno.systemPathToFileUrl(presentation)
-            thumbdir = uno.systemPathToFileUrl(self.thumbnailpath)
         if desktop is None:
             return
         try:
             properties = []
             properties = tuple(properties)            
-            doc = desktop.loadComponentFromURL(url, u'_blank', 0, properties)
-            self.document = doc
+            self.document = desktop.loadComponentFromURL(url, u'_blank',
+                0, properties)
             self.presentation = self.document.getPresentation()
             self.presentation.Display = self.plugin.render_manager.current_display + 1
             self.presentation.start()
@@ -130,6 +127,20 @@ class ImpressController(PresentationController):
         except:
             log.exception(u'Failed to load presentation')
             return
+        self.create_thumbnails()
+
+    def create_thumbnails(self):
+        """
+        Create thumbnail images for presentation
+        """
+        if self.check_thumbnails():
+            return
+
+        if os.name == u'nt':
+            thumbdir = u'file:///' + self.thumbnailpath.replace(
+                u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
+        else:
+            thumbdir = uno.systemPathToFileUrl(self.thumbnailpath)
         props = []
         if os.name == u'nt':
             prop = self.manager.Bridge_GetStruct(u'com.sun.star.beans.PropertyValue')
@@ -139,6 +150,7 @@ class ImpressController(PresentationController):
         prop.Value = u'impress_png_Export'
         props.append(prop)
         props = tuple(props)
+        doc = self.document
         pages = doc.getDrawPages()
         for idx in range(pages.getCount()):
             page = pages.getByIndex(idx)
@@ -255,4 +267,4 @@ class ImpressController(PresentationController):
         The slide an image is required for, starting at 1
         """
         return os.path.join(self.thumbnailpath,
-            self.thumbnailprefix + slide_no + u'.png')
+            self.thumbnailprefix + unicode(slide_no) + u'.png')

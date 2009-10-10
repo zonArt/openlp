@@ -64,8 +64,8 @@ class SongsPlugin(Plugin):
 
     def initialise(self):
         log.info(u'Songs Initialising')
-        if self.songmanager is None:
-            self.songmanager = SongManager(self.config)
+        #if self.songmanager is None:
+        #    self.songmanager = SongManager(self.config)
         Plugin.initialise(self)
         self.insert_toolbox_item()
         self.ImportSongMenu.menuAction().setVisible(True)

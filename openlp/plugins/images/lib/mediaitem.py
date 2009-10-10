@@ -115,7 +115,6 @@ class ImageMediaItem(MediaManagerItem):
             except:
                 #if not present do not worry
                 pass
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
             self.parent.config.set_list(self.ConfigSection, self.getFileList())
