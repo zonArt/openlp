@@ -46,11 +46,6 @@ class SettingsManager(object):
             self.mainwindow_left = mainwindow_docbars
             self.mainwindow_right = mainwindow_docbars
 
-        #self.mainwindow_left = int( ConfigHelper.get_config(
-        #    u'user interface', u'mediamanager left', self.mainwindow_left))
-        #self.mainwindow_right = int( ConfigHelper.get_config(
-        #    u'user interface', u'mediamanager right', self.mainwindow_right))
-
         self.slidecontroller = (self.width - (
             self.mainwindow_left + self.mainwindow_right) - 100 ) / 2
         self.slidecontroller_image = self.slidecontroller - 50
@@ -79,8 +74,3 @@ class SettingsManager(object):
     def togglePreviewPanel(self, isVisible):
         ConfigHelper.set_config(u'user interface', u'display previewpanel',
             isVisible)
-
-    def setDockbarLeft(self, value):
-        #ConfigHelper.set_config(u'user interface', u'mediamanager left', value)
-        pass
-

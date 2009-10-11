@@ -529,7 +529,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def versionCheck(self):
         # We do not want this in development!
-        if log.isEnabledFor(logging.DEBUG):
+        if not log.isEnabledFor(logging.DEBUG):
             applicationVersion = self.generalConfig.get_config(u'Application version', u'1.9.0')
             version = LatestVersion(self.generalConfig).checkVersion(applicationVersion)
             if applicationVersion != version:

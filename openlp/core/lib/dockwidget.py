@@ -46,8 +46,3 @@ class OpenLPDockWidget(QtGui.QDockWidget):
         self.parent.settingsmanager.setUIItemVisibility(
             self.objectName(), False)
         event.accept()
-
-    def resizeEvent(self, event):
-        if self.objectName() == u'MediaManagerDock':
-            if event.size().width() != event.oldSize().width():
-                self.parent.settingsmanager.setDockbarLeft(event.size().width())
