@@ -80,16 +80,27 @@ class PowerpointController(PresentationController):
             """
             Returns true if a presentation is loaded
             """
-            if self.process is None:
+            try:
+                if not self.process.Visible:
+                    return False
+                if self.process.Windows.Count == 0:
+                    return False
+                if self.process.Presentations.Count == 0:
+                    return False
+            except:
                 return False
-            if self.process.Windows.Count == 0:
-                return False
+            return True
         
         def kill(self):
             """
             Called at system exit to clean up any running presentations
-            """            
-            self.process.Quit()
+            """
+            if self.process is None:
+                return
+            try:
+                self.process.Quit()
+            except:
+                pass
             self.process = None
 
         def load_presentation(self, presentation):
@@ -105,7 +116,15 @@ class PowerpointController(PresentationController):
             """            
             log.debug(u'LoadPresentation')
             self.store_filename(presentation)
-            self.process.Presentations.Open(presentation, False, False, True)
+            try:
+                if not self.process.Visible:
+                    self.start_process()
+            except:
+                self.start_process()
+            try:
+                self.process.Presentations.Open(presentation, False, False, True)
+            except:
+                return
             self.presentation = self.process.Presentations(self.process.Presentations.Count)
             self.create_thumbnails()
             self.start_presentation()
@@ -124,15 +143,18 @@ class PowerpointController(PresentationController):
             self.presentation.Export(os.path.join(self.thumbnailpath, '')
                                      , 'png', 600, 480)
             
-    
-
         def close_presentation(self):
             """
             Close presentation and clean up objects
             Triggerent by new object being added to SlideController orOpenLP
             being shut down
             """
-            self.presentation.Close()
+            if self.presentation == None:
+                return
+            try:
+                self.presentation.Close()
+            except:
+                pass
             self.presentation = None
 
         def is_active(self):
@@ -141,9 +163,12 @@ class PowerpointController(PresentationController):
             """
             if not self.is_loaded():
                 return False
-            if self.presentation.SlideShowWindow == None:
-                return False
-            if self.presentation.SlideShowWindow.View == None:
+            try:
+                if self.presentation.SlideShowWindow == None:
+                    return False
+                if self.presentation.SlideShowWindow.View == None:
+                    return False
+            except:
                 return False
             return True
 
@@ -171,12 +196,18 @@ class PowerpointController(PresentationController):
             """
             Starts a presentation from the beginning
             """            
+            #SlideShowWindow measures its size/position by points, not pixels
+            try:
+                dpi = win32ui.GetActiveWindow().GetDC().GetDeviceCaps(88)
+            except:
+                try:
+                    dpi = win32ui.GetForegroundWindow().GetDC().GetDeviceCaps(88)
+                except:
+                    dpi = 96
             self.presentation.SlideShowSettings.Run()
             self.presentation.SlideShowWindow.View.GotoSlide(1)
             rendermanager = self.plugin.render_manager
             rect = rendermanager.screen_list[rendermanager.current_display][u'size']
-            #SlideShowWindow measures its size/position by points, not pixels
-            dpi = win32ui.GetActiveWindow().GetDC().GetDeviceCaps(88)
             self.presentation.SlideShowWindow.Top = rect.y() * 72 / dpi
             self.presentation.SlideShowWindow.Height = rect.height() * 72 / dpi
             self.presentation.SlideShowWindow.Left = rect.x() * 72 / dpi
@@ -221,3 +252,4 @@ class PowerpointController(PresentationController):
             """
             return os.path.join(self.thumbnailpath,
                 self.thumbnailprefix + unicode(slide_no) + u'.png')
+\

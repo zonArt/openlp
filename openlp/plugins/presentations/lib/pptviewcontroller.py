@@ -128,13 +128,17 @@ class PptviewController(PresentationController):
             """
             Returns true if a presentation is loaded
             """
-            return self.pptid >= 0
+            if self.pptid < 0:
+                return False
+            if self.get_slide_count() < 0:
+                return False
+            return True
         
         def is_active(self):
             """
             Returns true if a presentation is currently active
             """
-            return self.pptid >= 0
+            return self.is_loaded()
 
         def blank_screen(self):
             """
