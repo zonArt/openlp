@@ -54,7 +54,19 @@ class CustomPlugin(Plugin):
 
     def get_media_manager_item(self):
         # Create the CustomManagerItem object
-        return CustomMediaItem(self, self.icon, u'Custom Slides')
+        return CustomMediaItem(self, self.icon, u'Custom')
+
+    def can_be_disabled(self):
+        return True
+
+    def initialise(self):
+        log.info(u'Plugin Initialising')
+        Plugin.initialise(self)
+        self.insert_toolbox_item()
+
+    def finalise(self):
+        log.info(u'Plugin Finalise')
+        self.remove_toolbox_item()
 
     def about(self):
         return u'<b>Custom Plugin</b> <br>This plugin allows slides to be displayed on the screen in the same way songs are. The difference between this plugin and songs is this plugin provides greater freedom.<br><br>This is a core plugin and cannot be made inactive</b>'

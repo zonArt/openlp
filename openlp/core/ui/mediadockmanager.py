@@ -31,21 +31,31 @@ class MediaDockManager(object):
     def __init__(self, mediaDock):
         self.mediaDock = mediaDock
 
-    def addDock(self, name,  media_item, icon):
-        log.info(u'Adding %s dock' % name)
+    def addDock(self, media_item, icon, weight):
+        log.info(u'Adding %s dock' % media_item.title)
         id = self.mediaDock.addItem(
-                        media_item, icon, media_item.title)
+            media_item, icon, media_item.title)
 
-    def insertDock(self, name):
-        log.debug(u'Inserting %s dock' % name)
-        for tab_index in range(0, self.mediaDock.count()):
-            #print self.mediaDock.widget(tab_index).ConfigSection,  name
-            if self.mediaDock.widget(tab_index).ConfigSection == name.lower():
-                self.mediaDock.setItemEnabled(tab_index, True)
+    def insertDock(self, media_item, icon, weight):
+        """
+        This should insert a dock item at a given location
+        This does not work as it gives a Segmentation error.
+        For now add at end of stack if not present
+        """
+        log.debug(u'Inserting %s dock' % media_item.title)
+        match = False
+        for dock_index in range(0, self.mediaDock.count()):
+            if self.mediaDock.widget(dock_index).ConfigSection == media_item.title.lower():
+                match = True
+                break
+        if not match:
+            self.mediaDock.addItem(media_item, icon, media_item.title)
+
 
     def removeDock(self, name):
         log.debug(u'remove %s dock' % name)
-        for tab_index in range(0, self.mediaDock.count()):
-            #print "rd", self.mediaDock.widget(tab_index).ConfigSection, name
-            if self.mediaDock.widget(tab_index).ConfigSection == name.lower():
-                self.mediaDock.setItemEnabled(tab_index, False)
+        for dock_index in range(0, self.mediaDock.count()):
+            if self.mediaDock.widget(dock_index) is not None:
+                if self.mediaDock.widget(dock_index).ConfigSection == name.lower():
+                    self.mediaDock.widget(dock_index).hide()
+                    self.mediaDock.removeItem(dock_index)

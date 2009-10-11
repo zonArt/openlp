@@ -257,5 +257,7 @@ class Plugin(object):
         """
         Called by plugin to replace toolbar
         """
-        self.mediadock.insertDock(self.name)
-        self.settings.insertTab(self.name)
+        if self.media_item is not None:
+            self.mediadock.insertDock(self.media_item, self.icon, self.weight)
+        if self.settings_tab is not None:
+            self.settings.insertTab(self.settings_tab, self.weight)
