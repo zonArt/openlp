@@ -49,6 +49,7 @@ class OpenLP(QtGui.QApplication):
         """
         Run the OpenLP application.
         """
+        applicationVersion = u'1.9.0'
         #set the default string encoding
         try:
             sys.setappdefaultencoding(u'utf-8')
@@ -58,7 +59,7 @@ class OpenLP(QtGui.QApplication):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'process_events'), self.processEvents)
         self.setApplicationName(u'OpenLP')
-        self.setApplicationVersion(u'1.9.0')
+        self.setApplicationVersion(applicationVersion)
         show_splash = str_to_bool(ConfigHelper.get_registry().get_value(
             u'general', u'show splash', True))
         if show_splash:

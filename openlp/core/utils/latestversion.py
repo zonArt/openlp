@@ -22,8 +22,36 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from registry import Registry
-from confighelper import ConfigHelper
-from latestversion import LatestVersion
+import logging
+import urllib2
+from datetime import datetime
 
-__all__ = ['Registry', 'ConfigHelper']
+
+class LatestVersion(object):
+    """
+    """
+    global log
+    log = logging.getLogger(u'LatestVersion')
+    log.info(u'Latest Version detector loaded')
+
+    def __init__(self, config):
+        self.config = config
+
+    def checkVersion(self, current_version):
+        version_string = current_version
+        lastTest = self.config.get_config(u'Application version Test', datetime.now().date())
+        thisTest = unicode(datetime.now().date())
+        self.config.set_config(u'Application version Test', thisTest)
+        if lastTest != thisTest:
+            print "Now check"
+            version_string = u''
+            req = urllib2.Request(u'http://www.openlp.oeg/files/version.txt')
+            req.add_header(u'User-Agent', u'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)')
+            try:
+                handle = urllib2.urlopen(req, None, 1)
+                html = handle.read()
+                version_string = unicode(html).rstrip()
+            except IOError, e:
+                if hasattr(e, u'reason'):
+                    log.exception(u'Reason for failure: %s', e.reason)
+        return version_string
