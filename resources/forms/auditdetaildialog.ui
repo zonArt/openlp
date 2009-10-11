@@ -108,7 +108,7 @@
     <item>
      <widget class="QGroupBox" name="DateRangeGroupBox">
       <property name="title">
-       <string>Date Range</string>
+       <string>Select Date Range</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
@@ -148,7 +148,7 @@
     <item>
      <widget class="QGroupBox" name="TimePeriodGroupBox">
       <property name="title">
-       <string>Time Periods</string>
+       <string>Select Time Periods</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
@@ -336,8 +336,76 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>FirstCheckBox</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>AuditDetailDialog</receiver>
+   <slot>changeFirstService(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>26</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>136</x>
+     <y>483</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SecondCheckBox</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>AuditDetailDialog</receiver>
+   <slot>changeSecondService(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>41</x>
+     <y>323</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>103</x>
+     <y>494</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ThirdCheckBox</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>AuditDetailDialog</receiver>
+   <slot>changeThirdService(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>38</x>
+     <y>351</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>155</x>
+     <y>463</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SaveFilePushButton</sender>
+   <signal>pressed()</signal>
+   <receiver>AuditDetailDialog</receiver>
+   <slot>defineOutputLocation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>538</x>
+     <y>419</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>385</x>
+     <y>480</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>accept()</slot>
+  <slot>changeFirstService(int)</slot>
+  <slot>changeSecondService(int)</slot>
+  <slot>changeThirdService(int)</slot>
+  <slot>defineOutputLocation()</slot>
  </slots>
 </ui>
