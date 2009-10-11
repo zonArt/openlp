@@ -45,7 +45,7 @@ class LatestVersion(object):
         if lastTest != thisTest:
             print "Now check"
             version_string = u''
-            req = urllib2.Request(u'http://www.openlp.oeg/files/version.txt')
+            req = urllib2.Request(u'http://www.openlp.org/files/version.txt')
             req.add_header(u'User-Agent', u'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)')
             try:
                 handle = urllib2.urlopen(req, None, 1)

@@ -90,7 +90,7 @@ class ThemeManager(QtGui.QWidget):
             self.onDeleteTheme))
         self.ThemeListWidget.addAction(contextMenuAction(self.ThemeListWidget,
             u':/themes/theme_export.png',
-            translate(u'ThemeManager', u'Make Global Theme'),
+            translate(u'ThemeManager', u'Make Global'),
             self.changeGlobalFromScreen))
         self.ThemeListWidget.addAction(contextMenuAction(self.ThemeListWidget,
             u':/themes/theme_export.png',
@@ -207,7 +207,7 @@ class ThemeManager(QtGui.QWidget):
                     u'You have not selected a theme!'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             return
-        theme = unicode(item.text())
+        theme = unicode(item.data(QtCore.Qt.UserRole).toString())
         path = QtGui.QFileDialog.getExistingDirectory(self,
             u'Save Theme - (%s)' %  theme,
             self.config.get_last_dir(1) )
