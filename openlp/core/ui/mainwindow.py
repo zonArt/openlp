@@ -528,18 +528,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.versionCheck()
 
     def versionCheck(self):
-        # We do not want this in development!
-        if not log.isEnabledFor(logging.DEBUG):
-            applicationVersion = self.generalConfig.get_config(u'Application version', u'1.9.0')
-            version = LatestVersion(self.generalConfig).checkVersion(applicationVersion)
-            if applicationVersion != version:
-                QtGui.QMessageBox.question(None,
-                    translate(u'mainWindow', u'OpenLP version Updated'),
-                    translate(u'mainWindow', u'OpenLP version %s has been updated to version %s'
-                        % (applicationVersion, version)),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
-                    QtGui.QMessageBox.Ok)
-                self.generalConfig.set_config(u'Application version', version)
+        applicationVersion = self.generalConfig.get_config(u'Application version', u'1.9.0-595')
+        version = LatestVersion(self.generalConfig).checkVersion(applicationVersion)
+        if applicationVersion != version:
+            QtGui.QMessageBox.question(None,
+                translate(u'mainWindow', u'OpenLP version Updated'),
+                translate(u'mainWindow', u'OpenLP version %s has been updated to version %s'
+                    % (applicationVersion, version)),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
+                QtGui.QMessageBox.Ok)
+            self.generalConfig.set_config(u'Application version', version)
 
 
     def getMonitorNumber(self):
