@@ -66,6 +66,20 @@ class ServiceManagerList(QtGui.QTreeWidget):
         else:
             event.ignore()
 
+    def mouseMoveEvent(self, event):
+        """
+        Drag and drop event does not care what data is selected
+        as the recipient will use events to request the data move
+        just tell it what plugin to call
+        """
+        if event.buttons() != QtCore.Qt.LeftButton:
+            return
+        drag = QtGui.QDrag(self)
+        mimeData = QtCore.QMimeData()
+        drag.setMimeData(mimeData)
+        mimeData.setText(u'ServiceManager')
+        dropAction = drag.start(QtCore.Qt.CopyAction)
+
 class Iter(QtGui.QTreeWidgetItemIterator):
     def __init__(self, *args):
         QtGui.QTreeWidgetItemIterator.__init__(self, *args)
@@ -558,7 +572,28 @@ class ServiceManager(QtGui.QWidget):
         link = event.mimeData()
         if link.hasText():
             plugin = event.mimeData().text()
-            Receiver().send_message(u'%s_add_service_item' % plugin)
+            if plugin == u'ServiceManager':
+                startpos,  startCount = self.findServiceItem()
+                item = self.ServiceManagerList.itemAt(event.pos())
+                if item == None:
+                    endpos = len(self.serviceItems)
+                else:
+                    parentitem = item.parent()
+                    if parentitem is None:
+                        endpos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
+                    else:
+                        endpos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
+                    endpos -= 1
+                if endpos < startpos:
+                    newpos = endpos
+                else:
+                    newpos = endpos + 1
+                serviceItem = self.serviceItems[startpos]
+                self.serviceItems.remove(serviceItem)
+                self.serviceItems.insert(newpos, serviceItem)
+                self.repaintServiceList(endpos, startCount)
+            else:
+                Receiver().send_message(u'%s_add_service_item' % plugin)
 
     def updateThemeList(self, theme_list):
         """
