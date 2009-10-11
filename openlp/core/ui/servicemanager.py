@@ -490,23 +490,16 @@ class ServiceManager(QtGui.QWidget):
             Service Item to be added
 
         """
-        self.serviceItems.append({u'data': item,
-            u'order': len(self.serviceItems)+1, u'expanded':True})
-        treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
-        treewidgetitem.setText(0,item.title)
-        treewidgetitem.setIcon(0,item.iconic_representation)
-        treewidgetitem.setData(0, QtCore.Qt.UserRole,
-            QtCore.QVariant(len(self.serviceItems)))
-        treewidgetitem.setExpanded(True)
+        sitem, count = self.findServiceItem()
         item.render()
-        count = 0
-        for frame in item.frames:
-            treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
-            text = frame[u'title']
-            treewidgetitem1.setText(0,text[:40])
-            treewidgetitem1.setData(0, QtCore.Qt.UserRole,
-                QtCore.QVariant(count))
-            count = count + 1
+        if sitem == -1:
+            self.serviceItems.append({u'data': item,
+                u'order': len(self.serviceItems) + 1, u'expanded':True})
+            self.repaintServiceList(len(self.serviceItems) + 1, 0)
+        else:
+            self.serviceItems.insert(sitem + 1, {u'data': item,
+                u'order': len(self.serviceItems)+1, u'expanded':True})
+            self.repaintServiceList(sitem + 1, 0)
         self.parent.serviceChanged(False, self.serviceName)
 
     def makePreview(self):
