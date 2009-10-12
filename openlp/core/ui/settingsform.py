@@ -53,28 +53,13 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
     def insertTab(self, tab, location):
         log.debug(u'Inserting %s tab' % tab.title())
         self.SettingsTabWidget.insertTab(location + 13, tab, tab.title())
-        #for tab_index in range(0, self.SettingsTabWidget.count()):
-            #print self.SettingsTabWidget.widget(tab_index).title()
-            #if self.SettingsTabWidget.widget(tab_index).title() == name:
-                #print "Insert match"
-                #print self.SettingsTabWidget.widget(tab_index).isVisible()
-                #self.SettingsTabWidget.setTabEnabled(tab_index, True)
-                #self.SettingsTabWidget.removeTab(tab_index)
-                #print self.SettingsTabWidget.widget(tab_index).isVisible()
-
 
     def removeTab(self, name):
         log.debug(u'remove %s tab' % name)
-        #print ">>>>>>>>>>> remove settings"
         for tab_index in range(0, self.SettingsTabWidget.count()):
             if self.SettingsTabWidget.widget(tab_index) is not None:
-                #print "rt", self.SettingsTabWidget.widget(tab_index).title(), name
                 if self.SettingsTabWidget.widget(tab_index).title() == name:
-                    #print "remove match"
-                    #print self.SettingsTabWidget.widget(tab_index).isVisible()
-                    #self.SettingsTabWidget.setTabEnabled(tab_index, False)
                     self.SettingsTabWidget.removeTab(tab_index)
-                    #print self.SettingsTabWidget.widget(tab_index).isVisible()
 
     def accept(self):
         for tab_index in range(0, self.SettingsTabWidget.count()):

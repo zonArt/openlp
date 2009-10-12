@@ -33,7 +33,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.ui import AmendThemeForm
 from openlp.core.theme import Theme
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ThemeXML, translate, \
-    str_to_bool, file_to_xml, buildIcon, Receiver
+    str_to_bool, file_to_xml, buildIcon, Receiver, contextMenuAction, \
+    contextMenuSeparator
 from openlp.core.utils import ConfigHelper
 
 class ThemeManager(QtGui.QWidget):
@@ -77,6 +78,25 @@ class ThemeManager(QtGui.QWidget):
         self.ThemeListWidget.setAlternatingRowColors(True)
         self.ThemeListWidget.setIconSize(QtCore.QSize(88,50))
         self.Layout.addWidget(self.ThemeListWidget)
+        self.ThemeListWidget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.ThemeListWidget.addAction(contextMenuAction(self.ThemeListWidget,
+            u':/themes/theme_edit.png',
+            translate(u'ThemeManager', u'Edit a theme'),
+            self.onEditTheme))
+        self.ThemeListWidget.addAction(contextMenuSeparator(self.ThemeListWidget))
+        self.ThemeListWidget.addAction(contextMenuAction(self.ThemeListWidget,
+            u':/themes/theme_delete.png',
+            translate(u'ThemeManager', u'Delete theme'),
+            self.onDeleteTheme))
+        self.ThemeListWidget.addAction(contextMenuAction(self.ThemeListWidget,
+            u':/themes/theme_export.png',
+            translate(u'ThemeManager', u'Make Global'),
+            self.changeGlobalFromScreen))
+        self.ThemeListWidget.addAction(contextMenuAction(self.ThemeListWidget,
+            u':/themes/theme_export.png',
+            translate(u'ThemeManager', u'Export theme'),
+            self.onExportTheme))
+        self.ThemeListWidget.addAction(contextMenuSeparator(self.ThemeListWidget))
         #Signals
         QtCore.QObject.connect(self.ThemeListWidget,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
@@ -109,8 +129,9 @@ class ThemeManager(QtGui.QWidget):
                     u'default'))
                 self.ThemeListWidget.item(count).setText(name)
 
-    def changeGlobalFromScreen(self, index):
+    def changeGlobalFromScreen(self, index = -1):
         log.debug(u'changeGlobalFromScreen %s', index)
+        selected_row = self.ThemeListWidget.currentRow()
         for count in range (0, self.ThemeListWidget.count()):
             item = self.ThemeListWidget.item(count)
             oldName = item.text()
@@ -119,7 +140,7 @@ class ThemeManager(QtGui.QWidget):
                 self.ThemeListWidget.item(count).setText(
                     unicode(item.data(QtCore.Qt.UserRole).toString()))
             #Set the new name
-            if count == index.row():
+            if count == selected_row:
                 self.global_theme = unicode(
                     self.ThemeListWidget.item(count).text())
                 name = u'%s (%s)' % (self.global_theme,
@@ -186,14 +207,15 @@ class ThemeManager(QtGui.QWidget):
                     u'You have not selected a theme!'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             return
-        theme = unicode(item.text())
+        theme = unicode(item.data(QtCore.Qt.UserRole).toString())
         path = QtGui.QFileDialog.getExistingDirectory(self,
-            u'Save Theme',self.config.get_last_dir(1) )
+            u'Save Theme - (%s)' %  theme,
+            self.config.get_last_dir(1) )
         path = unicode(path)
         if path != u'':
             self.config.set_last_dir(path, 1)
             themePath = os.path.join(path, theme + u'.theme')
-            zip = zipfile.ZipFile(themePath, 'w')
+            zip = zipfile.ZipFile(themePath, u'w')
             source = os.path.join(self.path, theme)
             for root, dirs, files in os.walk(source):
                 for name in files:
@@ -203,7 +225,8 @@ class ThemeManager(QtGui.QWidget):
 
     def onImportTheme(self):
         files = QtGui.QFileDialog.getOpenFileNames(None,
-            translate(u'ThemeManager', u'Select Theme Import File'),
+            translate(u'ThemeManager',
+            u'Select Theme Import File'),
             self.path, u'Theme (*.*)')
         log.info(u'New Themes %s', unicode(files))
         if len(files) > 0:

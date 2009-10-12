@@ -90,7 +90,7 @@ class PluginManager(object):
                     try:
                         __import__(modulename, globals(), locals(), [])
                     except ImportError, e:
-                        log.error(u'Failed to import module %s on path %s for reason %s',
+                        log.exception(u'Failed to import module %s on path %s for reason %s',
                                    modulename, path, e.args[0])
         plugin_classes = Plugin.__subclasses__()
         self.plugins = []

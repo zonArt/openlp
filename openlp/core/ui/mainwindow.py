@@ -33,7 +33,7 @@ from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
 from openlp.core.lib import translate, RenderManager, PluginConfig, \
     OpenLPDockWidget, SettingsManager, PluginManager, Receiver, \
     buildIcon
-
+from openlp.core.utils import check_latest_version
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -524,6 +524,19 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.ThemeManagerContents.loadThemes()
         log.info(u'Load data from Settings')
         self.settingsForm.postSetUp()
+        self.versionCheck()
+
+    def versionCheck(self):
+        applicationVersion = self.generalConfig.get_config(u'Application version', u'1.9.0-595')
+        version = check_latest_version(self.generalConfig, applicationVersion)
+        if applicationVersion != version:
+            QtGui.QMessageBox.question(None,
+                translate(u'mainWindow', u'OpenLP version Updated'),
+                translate(u'mainWindow', u'OpenLP version %s has been updated to version %s'
+                    % (applicationVersion, version)),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
+                QtGui.QMessageBox.Ok)
+            self.generalConfig.set_config(u'Application version', version)
 
 
     def getMonitorNumber(self):

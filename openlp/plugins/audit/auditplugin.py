@@ -64,14 +64,7 @@ class AuditPlugin(Plugin):
         self.AuditMenu.setObjectName(u'AuditMenu')
         self.AuditMenu.setTitle(
             translate(u'AuditPlugin', u'&Audit'))
-        #Audit Delete All
-        self.AuditDeleteAll = QtGui.QAction(tools_menu)
-        self.AuditDeleteAll.setText(
-            translate(u'AuditPlugin', u'Au&dit Delete all'))
-        self.AuditDeleteAll.setStatusTip(
-            translate(u'AuditPlugin', u'Deleted all Audit records'))
-        self.AuditDeleteAll.setObjectName(u'AuditDeleteAll')
-        #Audit Delete
+         #Audit Delete
         self.AuditDelete = QtGui.QAction(tools_menu)
         self.AuditDelete.setText(
             translate(u'AuditPlugin', u'Audit &Delete'))
@@ -81,9 +74,9 @@ class AuditPlugin(Plugin):
         #Audit Report
         self.AuditReport = QtGui.QAction(tools_menu)
         self.AuditReport.setText(
-            translate(u'AuditPlugin', u'Au&dit &Report'))
+            translate(u'AuditPlugin', u'Au&dit &Extract'))
         self.AuditReport.setStatusTip(
-            translate(u'AuditPlugin', u'Generate Reports on Audit Data'))
+            translate(u'AuditPlugin', u'Generate Extracts on Audit Data'))
         self.AuditReport.setObjectName(u'AuditReport')
         #Audit activation
         AuditIcon = buildIcon(u':/tools/tools_alert.png')
@@ -100,9 +93,7 @@ class AuditPlugin(Plugin):
         self.toolsMenu.addAction(self.AuditMenu.menuAction())
         self.AuditMenu.addAction(self.AuditStatus)
         self.AuditMenu.addSeparator()
-        self.AuditMenu.addAction(self.AuditDeleteAll)
         self.AuditMenu.addAction(self.AuditDelete)
-        self.AuditMenu.addSeparator()
         self.AuditMenu.addAction(self.AuditReport)
         # Signals and slots
         QtCore.QObject.connect(self.AuditStatus,
@@ -111,8 +102,6 @@ class AuditPlugin(Plugin):
         QtCore.QObject.connect(self.AuditStatus,
             QtCore.SIGNAL(u'triggered(bool)'),
             self.toggleAuditState)
-        QtCore.QObject.connect(self.AuditDeleteAll,
-            QtCore.SIGNAL(u'triggered()'), self.onAuditDeleteAll)
         QtCore.QObject.connect(self.AuditDelete,
             QtCore.SIGNAL(u'triggered()'), self.onAuditDelete)
         QtCore.QObject.connect(self.AuditReport,
@@ -132,7 +121,7 @@ class AuditPlugin(Plugin):
         if self.auditmanager is None:
             self.auditmanager = AuditManager(self.config)
         self.auditdeleteform = AuditDeleteForm(self.auditmanager)
-        self.auditdetailform = AuditDetailForm(self.auditmanager)
+        self.auditdetailform = AuditDetailForm(self)
         self.AuditMenu.menuAction().setVisible(True)
 
     def finalise(self):
@@ -169,17 +158,6 @@ class AuditPlugin(Plugin):
         self.auditActive = str_to_bool(
             self.config.get_config(u'audit active', False))
         self.AuditStatus.setEnabled(True)
-
-    def onAuditDeleteAll(self):
-        ret = QtGui.QMessageBox.question(None,
-            translate(u'mainWindow', u'Delete All Audit Events?'),
-            translate(u'mainWindow', u'Are you sure you want to delete all Audit Data?'),
-            QtGui.QMessageBox.StandardButtons(
-                QtGui.QMessageBox.Ok |
-                QtGui.QMessageBox.Cancel),
-            QtGui.QMessageBox.Cancel)
-        if ret == QtGui.QMessageBox.Ok:
-            self.auditmanager.delete_all()
 
     def onAuditDelete(self):
         self.auditdeleteform.exec_()

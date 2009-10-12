@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'auditdetaildialog.ui'
 #
-# Created: Fri Sep 25 21:04:08 2009
+# Created: Sun Oct 11 11:40:02 2009
 #      by: PyQt4 UI code generator 4.5.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -136,6 +136,10 @@ class Ui_AuditDetailDialog(object):
         self.retranslateUi(AuditDetailDialog)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), AuditDetailDialog.accept)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), AuditDetailDialog.close)
+        QtCore.QObject.connect(self.FirstCheckBox, QtCore.SIGNAL("stateChanged(int)"), AuditDetailDialog.changeFirstService)
+        QtCore.QObject.connect(self.SecondCheckBox, QtCore.SIGNAL("stateChanged(int)"), AuditDetailDialog.changeSecondService)
+        QtCore.QObject.connect(self.ThirdCheckBox, QtCore.SIGNAL("stateChanged(int)"), AuditDetailDialog.changeThirdService)
+        QtCore.QObject.connect(self.SaveFilePushButton, QtCore.SIGNAL("pressed()"), AuditDetailDialog.defineOutputLocation)
         QtCore.QMetaObject.connectSlotsByName(AuditDetailDialog)
 
     def retranslateUi(self, AuditDetailDialog):
@@ -144,11 +148,11 @@ class Ui_AuditDetailDialog(object):
         self.ReportTypeGroup.setTitle(QtGui.QApplication.translate("AuditDetailDialog", "Report Type", None, QtGui.QApplication.UnicodeUTF8))
         self.SummaryReport.setText(QtGui.QApplication.translate("AuditDetailDialog", "Summary", None, QtGui.QApplication.UnicodeUTF8))
         self.DetailedReport.setText(QtGui.QApplication.translate("AuditDetailDialog", "Detailed", None, QtGui.QApplication.UnicodeUTF8))
-        self.DateRangeGroupBox.setTitle(QtGui.QApplication.translate("AuditDetailDialog", "Date Range", None, QtGui.QApplication.UnicodeUTF8))
+        self.DateRangeGroupBox.setTitle(QtGui.QApplication.translate("AuditDetailDialog", "Select Date Range", None, QtGui.QApplication.UnicodeUTF8))
         self.FromDateEdit.setDisplayFormat(QtGui.QApplication.translate("AuditDetailDialog", "dd/MM/yyyy", None, QtGui.QApplication.UnicodeUTF8))
         self.To.setText(QtGui.QApplication.translate("AuditDetailDialog", "to", None, QtGui.QApplication.UnicodeUTF8))
         self.ToDateEdit.setDisplayFormat(QtGui.QApplication.translate("AuditDetailDialog", "dd/MM/yyyy", None, QtGui.QApplication.UnicodeUTF8))
-        self.TimePeriodGroupBox.setTitle(QtGui.QApplication.translate("AuditDetailDialog", "Time Periods", None, QtGui.QApplication.UnicodeUTF8))
+        self.TimePeriodGroupBox.setTitle(QtGui.QApplication.translate("AuditDetailDialog", "Select Time Periods", None, QtGui.QApplication.UnicodeUTF8))
         self.FirstCheckBox.setText(QtGui.QApplication.translate("AuditDetailDialog", "First Service", None, QtGui.QApplication.UnicodeUTF8))
         self.FirstFromTimeEdit.setDisplayFormat(QtGui.QApplication.translate("AuditDetailDialog", "hh:mm AP", None, QtGui.QApplication.UnicodeUTF8))
         self.FirstTo.setText(QtGui.QApplication.translate("AuditDetailDialog", "to", None, QtGui.QApplication.UnicodeUTF8))
