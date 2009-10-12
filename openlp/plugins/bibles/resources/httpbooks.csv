@@ -1,66 +1,66 @@
-Genesis,ge,1
-Exodus,ex,1
-Leviticus,le,1
-Numbers,nu,1
-Deuteronomy,de,1
-Joshua,jos,1
-Judges,jud,1
-Ruth,ru,1
-1 Samual,1sa,1
-2 Samual,2sa,1
-1 Kings,1ki,1
-2 Kings,2ki,1
-1 Chronicles,1ch,1
-2 Chronicles,2ch,1
-Ezra,ezr,1
-Nehemiah,ne,1
-Esther,es,1
-Job,job,1
-Psalms,ps,1
-Proverbs,pr,1
-Ecclesiastes,ec,1
-Song of Songs,so,1
-Isaiah,isa,1
-Jeremiah,jer,1
-Lamentations,la,1
-Ezekiel,exe,1
-Daniel,da,1
-Hosea,ho,1
-Joel,joe,1
-Amos,am,1
-Obad,ob,1
-Jonah,Jonah,1
-Micah,mic,1
-Naham,na,1
-Habakkuk,hab,1
-Zephaniah,zep,1
-Haggai,hag,1
-Zechariah,zec,1
-Malachi,mal,1
-Matthew,mt,2
-Mark,mk,2
-Luke,lu,2
-John,joh,2
-Acts,ac,2
-Romans,ro,2
-1 Corinthans,1co,2
-2 Corinthans,2co,2
-Galatians,ga,2
-Ephesians,eph,2
-Philippians,php,2
-Colossians,col,2
-1 Thessalonians,1th,2
-2 Thessalonians,2th,2
-1 Timothy,1ti,2
-2 Timothy,2ti,2
-Titus,tit,2
-Philemon,phm,2
-Hebrews,heb,2
-James,jas,2
-1 Peter,1pe,2
-2 Peter,2pe,2
-1 John,1jo,2
-2 John,2jo,2
-3 John,3jo,2
-Jude,jude,2
-Revelation,re,2
+Genesis,Gen,1,50
+Exodus,Exod,1,40
+Leviticus,Lev,1,27
+Numbers,Num,1,36
+Deuteronomy,Deut,1,34
+Joshua,Josh,1,24
+Judges,Judg,1,21
+Ruth,Ruth,1,4
+1 Samual,1Sam,1,31
+2 Samual,2Sam,1,24
+1 Kings,1Kgs,1,22
+2 Kings,2Kgs,1,25
+1 Chronicles,1Chr,1,29
+2 Chronicles,2Chr,1,36
+Ezra,Esra,1,10
+Nehemiah,Neh,1,13
+Esther,Esth,1,10
+Job,Job,1,42
+Psalms,Ps,1,150
+Proverbs,Prov,1,31
+Ecclesiastes,Eccl,1,12
+Song of Songs,Song,1,8
+Isaiah,Isa,1,66
+Jeremiah,Jer,1,5
+Lamentations,Lam,1,5
+Ezekiel,Ezek,1,48
+Daniel,Dan,1,12
+Hosea,Hos,1,14
+Joel,Joel,1,3
+Amos,Amos,1,9
+Obad,Obad,1,1
+Jonah,Jonah,1,4
+Micah,Mic,1,7
+Naham,Nah,1,3
+Habakkuk,Hab,1,3
+Zephaniah,Zeph,1,3
+Haggai,Hag,1,2
+Zechariah,Zech,1,3
+Malachi,Mal,1,4
+Matthew,Matt,2,28
+Mark,Mark,2,16
+Luke,Luke,2,24
+John,John,2,21
+Acts,Acts,2,28
+Romans,Rom,2,16
+1 Corinthans,1Cor,2,16
+2 Corinthans,2Cor,2,13
+Galatians,Gal,2,6
+Ephesians,Eph,2,6
+Philippians,Phil,2,4
+Colossians,Col,2,4
+1 Thessalonians,1Thess,2,5
+2 Thessalonians,2Thess,2,3
+1 Timothy,1Tim,2,6
+2 Timothy,2Tim,2,4
+Titus,Titus,2,3
+Philemon,Phlm,2,1
+Hebrews,Heb,2,13
+James,Jas,2,5
+1 Peter,1Pet,2,5
+2 Peter,2Pet,2,3
+1 John,1John,2,5
+2 John,2John,2,1
+3 John,3John,2,1
+Jude,Jude,2,1
+Revelation,Rev,2,22
