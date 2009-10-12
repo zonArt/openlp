@@ -79,7 +79,11 @@ class ImpressController(PresentationController):
         when required.
         """
         log.debug(u'start Openoffice')
-        if os.name != u'nt':
+        if os.name == u'nt':
+            self.manager = self.get_com_servicemanager()
+            self.manager._FlagAsMethod(u'Bridge_GetStruct')
+            self.manager._FlagAsMethod(u'Bridge_GetValueObject')
+        else:
             # -headless
             cmd = u'openoffice.org -nologo -norestore -minimized -invisible ' + u'"' + u'-accept=socket,host=localhost,port=2002;urp;'+ u'"'
             self.process = QtCore.QProcess()
@@ -108,6 +112,9 @@ class ImpressController(PresentationController):
         self.store_filename(presentation)
         if os.name == u'nt':
             desktop = self.get_com_desktop()
+            if desktop is None:
+                self.start_process()
+                desktop = self.get_com_desktop()
             url = u'file:///' + presentation.replace(u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
         else:
             desktop = self.get_uno_desktop()
@@ -169,7 +176,7 @@ class ImpressController(PresentationController):
             try:
                 ctx = resolver.resolve(u'uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
             except:
-                self.startOpenoffice()
+                self.start_process()
                 loop += 1
         try:
             self.manager = ctx.ServiceManager
@@ -183,14 +190,11 @@ class ImpressController(PresentationController):
     def get_com_desktop(self):
         log.debug(u'getCOMDesktop')
         try:
-            self.manager = self.get_com_servicemanager()
-            self.manager._FlagAsMethod(u'Bridge_GetStruct')
-            self.manager._FlagAsMethod(u'Bridge_GetValueObject')
             desktop = self.manager.createInstance(u'com.sun.star.frame.Desktop')
             return desktop
         except:
             log.exception(u'Failed to get COM desktop')
-            return None
+        return None
 
     def get_com_servicemanager(self):
         log.debug(u'get_com_servicemanager')

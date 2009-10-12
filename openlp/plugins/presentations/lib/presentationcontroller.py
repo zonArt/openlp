@@ -132,6 +132,7 @@ class PresentationController(object):
         self.plugin = plugin
         self.name = name
         self.available = self.check_available()
+        self.slidenumber = 0
         if self.available:
             self.enabled = int(plugin.config.get_config(
                 name, QtCore.Qt.Unchecked)) == QtCore.Qt.Checked

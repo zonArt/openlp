@@ -64,74 +64,74 @@ class MessageListener(object):
         self.handler, file = self.decodeMessage(message)
         self.controller = self.controllers[self.handler]
         if self.controller.is_loaded():
-            self.shutdown()
+            self.shutdown(None)
         self.controller.load_presentation(file)
+        self.controller.slidenumber = 0
 
+    def activate(self):
+        if self.controller.is_active():
+            return
+        if not self.controller.is_loaded():
+            self.controller.load_presentation(self.controller.filepath)
+        else:
+            self.controller.start_presentation()
+        if self.controller.slidenumber > 1:
+            self.controller.goto_slide(self.controller.slidenumber)
+        
     def slide(self, message):
-        #if not self.controller.is_loaded():
-        #    return
-        #if not self.controller.is_active():
-        #    self.controller.start_presentation()
-        self.controller.goto_slide(message[0])
+        self.activate()
+        if message is not None:
+            self.controller.goto_slide(message[0])
+            self.controller.slidenumber = self.controller.get_slide_number()
 
     def first(self, message):
         """
         Based on the handler passed at startup triggers the first slide
         """
-        #if not self.controller.is_loaded():
-        #    return
+        self.activate()
         self.controller.start_presentation()
+        self.controller.slidenumber = self.controller.get_slide_number()
 
     def last(self, message):
         """
         Based on the handler passed at startup triggers the first slide
         """
-        #if not self.controller.is_loaded():
-        #    return
-        #if not self.controller.is_active():
-        #    self.controller.start_presentation()
+        self.activate()
         self.controller.goto_slide(self.controller.get_slide_count())
+        self.controller.slidenumber = self.controller.get_slide_number()
 
     def next(self, message):
         """
         Based on the handler passed at startup triggers the next slide event
         """
-        #if not self.controller.is_loaded():
-        #    return
-        #if not self.controller.is_active():
-        #    self.controller.start_presentation()
-        #    self.controller.goto_slide(self.controller.current_slide)
+        self.activate()
         self.controller.next_step()
+        self.controller.slidenumber = self.controller.get_slide_number()
 
     def previous(self, message):
         """
         Based on the handler passed at startup triggers the previous slide event
         """
-        #if not self.controller.is_loaded():
-        #    return
-        #if not self.controller.is_active():
-        #    self.controller.start_presentation()
-        #    self.controller.goto_slide(self.controller.current_slide)
+        self.activate()
         self.controller.previous_step()
+        self.controller.slidenumber = self.controller.get_slide_number()
 
     def shutdown(self, message):
         """
         Based on the handler passed at startup triggers slide show to shut down
         """
         self.controller.close_presentation()
+        self.controller.slidenumber = 0
 
     def blank(self):
-        #if not self.controller.is_loaded():
-        #    return
-        #if not self.controller.is_active():
-        #    self.controller.start_presentation()
+        if not self.controller.is_loaded():
+            return
+        if not self.controller.is_active():
+            return
         self.controller.blank_screen()        
 
     def unblank(self):
-        #if not self.controller.is_loaded():
-        #    return
-        #if not self.controller.is_active():
-        #    self.controller.start_presentation()
+        self.activate()
         self.controller.unblank_screen()        
 
     def decodeMessage(self, message):
