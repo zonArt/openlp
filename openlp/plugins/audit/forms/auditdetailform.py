@@ -32,7 +32,7 @@ class AuditDetailForm(QtGui.QDialog, Ui_AuditDetailDialog):
     """
     Class documentation goes here.
     """
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         """
         Constructor
         """

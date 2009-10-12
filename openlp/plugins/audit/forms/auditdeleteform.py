@@ -34,7 +34,7 @@ class AuditDeleteForm(QtGui.QDialog, Ui_AuditDeleteDialog):
     """
     Class documentation goes here.
     """
-    def __init__(self, auditmanager, parent = None):
+    def __init__(self, auditmanager, parent=None):
         """
         Constructor
         """
