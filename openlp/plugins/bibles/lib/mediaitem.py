@@ -180,6 +180,9 @@ class BibleMediaItem(MediaManagerItem):
         self.AdvancedSecondBibleComboBox = QtGui.QComboBox(self.AdvancedTab)
         self.AdvancedSecondBibleComboBox.setObjectName(u'SecondBible')
         self.AdvancedVerticalLayout.addWidget(self.AdvancedSecondBibleComboBox)
+        self.AdvancedMessage = QtGui.QLabel(self.QuickTab)
+        self.AdvancedMessage.setObjectName(u'AdvancedMessage')
+        self.AdvancedVerticalLayout.addWidget(self.AdvancedMessage)
         self.SearchTabWidget.addTab(self.AdvancedTab, u'Advanced')
         # Add the search tab widget to the page layout
         self.PageLayout.addWidget(self.SearchTabWidget)
