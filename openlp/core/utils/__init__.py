@@ -28,6 +28,8 @@ from datetime import datetime
 from registry import Registry
 from confighelper import ConfigHelper
 
+log = logging.getLogger()
+
 __all__ = ['Registry', 'ConfigHelper']
 
 def check_latest_version(config, current_version):

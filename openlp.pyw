@@ -35,7 +35,7 @@ from openlp.core.resources import qInitResources
 from openlp.core.ui import MainWindow, SplashScreen
 from openlp.core.utils import ConfigHelper
 
-log = logging.getLogger()
+log = logging.getLogger(__name__)
 
 class OpenLP(QtGui.QApplication):
     """
