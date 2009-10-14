@@ -54,7 +54,8 @@ class BibleMediaItem(MediaManagerItem):
         self.ServiceItemIconName = u':/media/bible_image.png'
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
-        self.search_results = {} # place to store the search results
+        # place to store the search results
+        self.search_results = {}
         QtCore.QObject.connect(Receiver().get_receiver(),
             QtCore.SIGNAL(u'openlpreloadbibles'), self.reloadBibles)
 
@@ -180,6 +181,9 @@ class BibleMediaItem(MediaManagerItem):
         self.AdvancedSecondBibleComboBox = QtGui.QComboBox(self.AdvancedTab)
         self.AdvancedSecondBibleComboBox.setObjectName(u'SecondBible')
         self.AdvancedVerticalLayout.addWidget(self.AdvancedSecondBibleComboBox)
+        self.AdvancedMessage = QtGui.QLabel(self.QuickTab)
+        self.AdvancedMessage.setObjectName(u'AdvancedMessage')
+        self.AdvancedVerticalLayout.addWidget(self.AdvancedMessage)
         self.SearchTabWidget.addTab(self.AdvancedTab, u'Advanced')
         # Add the search tab widget to the page layout
         self.PageLayout.addWidget(self.SearchTabWidget)
@@ -242,6 +246,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def setQuickMessage(self, text):
         self.QuickMessage.setText(translate(u'BibleMediaItem', unicode(text)))
+        self.AdvancedMessage.setText(translate(u'BibleMediaItem', unicode(text)))
         Receiver().send_message(u'process_events')
         #minor delay to get the events processed
         time.sleep(0.1)
@@ -276,9 +281,11 @@ class BibleMediaItem(MediaManagerItem):
             unicode(self.AdvancedVersionComboBox.currentText()))
 
     def onAdvancedBookComboBox(self):
+        item = int(self.AdvancedBookComboBox.currentIndex())
         self.initialiseChapterVerse(
             unicode(self.AdvancedVersionComboBox.currentText()),
-            unicode(self.AdvancedBookComboBox.currentText()))
+            unicode(self.AdvancedBookComboBox.currentText()),
+            self.AdvancedBookComboBox.itemData(item).toInt()[0])
 
     def onNewClick(self):
         self.bibleimportform = BibleImportForm(
@@ -291,14 +298,14 @@ class BibleMediaItem(MediaManagerItem):
         self.adjustComboBox(frm, self.verses, self.AdvancedToVerse)
 
     def onAdvancedToChapter(self):
-        text1 = self.AdvancedFromChapter.currentText()
-        text2 = self.AdvancedToChapter.currentText()
+        text1 = unicode(self.AdvancedFromChapter.currentText())
+        text2 = unicode(self.AdvancedToChapter.currentText())
         if text1 != text2:
             bible = unicode(self.AdvancedVersionComboBox.currentText())
             book = unicode(self.AdvancedBookComboBox.currentText())
             # get the verse count for new chapter
             verses = self.parent.biblemanager.get_book_verse_count(
-                bible, book, int(text2))[0]
+                bible, book, int(text2))
             self.adjustComboBox(1, verses, self.AdvancedToVerse)
 
     def onAdvancedSearchButton(self):
@@ -318,11 +325,10 @@ class BibleMediaItem(MediaManagerItem):
     def onAdvancedFromChapter(self):
         bible = unicode(self.AdvancedVersionComboBox.currentText())
         book = unicode(self.AdvancedBookComboBox.currentText())
-        cf = self.AdvancedFromChapter.currentText()
+        cf = int(self.AdvancedFromChapter.currentText())
         self.adjustComboBox(cf, self.chapters_from, self.AdvancedToChapter)
         # get the verse count for new chapter
-        vse = self.parent.biblemanager.get_book_verse_count(bible, book,
-            int(cf))[0]
+        vse = self.parent.biblemanager.get_book_verse_count(bible, book, cf)
         self.adjustComboBox(1, vse, self.AdvancedFromVerse)
         self.adjustComboBox(1, vse, self.AdvancedToVerse)
 
@@ -432,30 +438,38 @@ class BibleMediaItem(MediaManagerItem):
 
     def initialiseBible(self, bible):
         log.debug(u'initialiseBible %s', bible)
-        books = self.parent.biblemanager.get_bible_books(unicode(bible))
+        book_data = self.parent.biblemanager.get_bible_books()
         self.AdvancedBookComboBox.clear()
         first = True
-        for book in books:
-            self.AdvancedBookComboBox.addItem(book.name)
+        for book in book_data:
+            row = self.AdvancedBookComboBox.count()
+            self.AdvancedBookComboBox.addItem(book[u'book'])
+            self.AdvancedBookComboBox.setItemData(row, QtCore.QVariant(book[u'total']))
             if first:
                 first = False
-                self.initialiseChapterVerse(bible, book.name)
+                self.initialiseChapterVerse(bible, book[u'book'], book[u'total'])
 
-    def initialiseChapterVerse(self, bible, book):
+    def initialiseChapterVerse(self, bible, book, chapters):
         log.debug(u'initialiseChapterVerse %s, %s', bible, book)
-        self.chapters_from = self.parent.biblemanager.get_book_chapter_count(
-            bible, book)
+        self.chapters_from = chapters
         self.verses = self.parent.biblemanager.get_book_verse_count(bible,
             book, 1)
-        self.adjustComboBox(1, self.chapters_from, self.AdvancedFromChapter)
-        self.adjustComboBox(1, self.chapters_from, self.AdvancedToChapter)
-        self.adjustComboBox(1, self.verses, self.AdvancedFromVerse)
-        self.adjustComboBox(1, self.verses, self.AdvancedToVerse)
+        if self.verses == 0:
+            self.AdvancedSearchButton.setEnabled(False)
+            self.AdvancedMessage.setText(
+                translate(u'BibleMediaItem', u'Bible not fully loaded'))
+        else:
+            self.AdvancedSearchButton.setEnabled(True)
+            self.AdvancedMessage.setText(u'')
+            self.adjustComboBox(1, self.chapters_from, self.AdvancedFromChapter)
+            self.adjustComboBox(1, self.chapters_from, self.AdvancedToChapter)
+            self.adjustComboBox(1, self.verses, self.AdvancedFromVerse)
+            self.adjustComboBox(1, self.verses, self.AdvancedToVerse)
 
-    def adjustComboBox(self, frm, to, combo):
-        log.debug(u'adjustComboBox %s, %s, %s', combo, frm, to)
+    def adjustComboBox(self, range_from, range_to, combo):
+        log.debug(u'adjustComboBox %s, %s, %s', combo, range_from, range_to)
         combo.clear()
-        for i in range(int(frm), int(to) + 1):
+        for i in range(int(range_from), int(range_to) + 1):
             combo.addItem(unicode(i))
 
     def displayResults(self, bible):

@@ -25,6 +25,8 @@
 import logging
 import os
 
+from openlp.core.lib import translate
+
 from bibleOSISimpl import BibleOSISImpl
 from bibleCSVimpl import BibleCSVImpl
 from bibleDBimpl import BibleDBImpl
@@ -55,6 +57,7 @@ class BibleManager(object):
         """
         self.config = config
         log.debug(u'Bible Initialising')
+        self.web = translate(u'BibleManager', u'Web')
         # dict of bible database objects
         self.bible_db_cache = None
         # dict of bible http readers
@@ -83,6 +86,8 @@ class BibleManager(object):
         self.bible_http_cache = {}
         # books of the bible with testaments
         self.book_testaments = {}
+        # books of the bible with chapter count
+        self.book_chapters = []
         # books of the bible with abbreviation
         self.book_abbreviations = {}
         self.web_bibles_present = False
@@ -126,6 +131,7 @@ class BibleManager(object):
                     p = line.split(u',')
                     self.book_abbreviations[p[0]] = p[1].replace(u'\n', '')
                     self.book_testaments[p[0]] = p[2].replace(u'\n', '')
+                    self.book_chapters.append({u'book':p[0], u'total':p[3].replace(u'\n', '')})
         log.debug(u'Bible Initialised')
 
     def process_dialog(self, dialogobject):
@@ -247,33 +253,34 @@ class BibleManager(object):
         ``BibleMode.Full`` this method returns all the Bibles for the
         Advanced Search, and when the mode is ``BibleMode.Partial``
         this method returns all the bibles for the Quick Search.
-
-c
         """
         log.debug(u'get_bibles')
         bible_list = []
         for bible_name, bible_object in self.bible_db_cache.iteritems():
-            if mode == BibleMode.Full:
-                bible_list.append(bible_name)
-            else:
-                if self.bible_http_cache[bible_name] is None:
-                    # we do not have an http bible
-                    bible_list.append(bible_name)
+            if self.bible_http_cache[bible_name] is not None:
+                bible_name = u'%s (%s)' % (bible_name, self.web)
+            bible_list.append(bible_name)
         return bible_list
 
-    def get_bible_books(self,bible):
-        """
-        Returns a list of the books of the bible from the database
-        """
-        log.debug(u'get_bible_books %s', bible)
-        return self.bible_db_cache[bible].get_bible_books()
+    def is_bible_web(self, bible):
+        pos_end = bible.find(u' (%s)' % self.web)
+        if pos_end != -1:
+            return True, bible[:pos_end]
+        return False, bible
 
-    def get_book_chapter_count(self, bible, book):
+    def get_bible_books(self):
+        """
+        Returns a list of the books of the bible
+        """
+        log.debug(u'get_bible_books')
+        return self.book_chapters
+
+    def get_book_chapter_count(self, book):
         """
         Returns the number of Chapters for a given book
         """
-        log.debug(u'get_book_chapter_count %s, %s', bible, book)
-        return self.bible_db_cache[bible].get_max_bible_book_chapter(book)
+        log.debug(u'get_book_chapter_count %s', book)
+        return self.book_chapters[book]
 
     def get_book_verse_count(self, bible, book, chapter):
         """
@@ -281,8 +288,18 @@ c
         book and chapterMaxBibleBookVerses
         """
         log.debug(u'get_book_verse_count %s,%s,%s', bible, book, chapter)
-        return self.bible_db_cache[bible].get_max_bible_book_verses(
-            book, chapter)
+        web, bible = self.is_bible_web(bible)
+        if web:
+            count = self.bible_db_cache[bible].get_max_bible_book_verses(
+                    book, chapter)
+            if count == 0:
+                text = self.get_verse_text(bible, book, chapter, chapter, 1, 1)
+                count = self.bible_db_cache[bible].get_max_bible_book_verses(
+                    book, chapter)
+            return count
+        else:
+            return self.bible_db_cache[bible].get_max_bible_book_verses(
+                book, chapter)
 
     def get_verse_from_text(self, bible, versetext):
         """
@@ -290,6 +307,7 @@ c
         book and chapterMaxBibleBookVerses
         """
         log.debug(u'get_verses_from_text %s,%s', bible, versetext)
+        web, bible = self.is_bible_web(bible)
         return self.bible_db_cache[bible].get_verses_from_text(versetext)
 
     def save_meta_data(self, bible, version, copyright, permissions):
@@ -307,6 +325,7 @@ c
         Returns the meta data for a given key
         """
         log.debug(u'get_meta %s,%s', bible, key)
+        web, bible = self.is_bible_web(bible)
         return self.bible_db_cache[bible].get_meta(key)
 
     def get_verse_text(self, bible, bookname, schapter, echapter, sverse,
@@ -327,6 +346,7 @@ c
             bible, bookname, schapter, echapter, sverse, everse)
         # check to see if book/chapter exists fow HTTP bibles and load cache
         # if necessary
+        web, bible = self.is_bible_web(bible)
         if self.bible_http_cache[bible] is not None:
             book = self.bible_db_cache[bible].get_bible_book(bookname)
             if book is None:

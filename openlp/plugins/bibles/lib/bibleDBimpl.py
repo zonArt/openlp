@@ -127,13 +127,19 @@ class BibleDBImpl(BibleCommon):
         verse = self.session.query(Verse).join(Book).filter(
             Book.name == bookname).filter(
             Verse.chapter == chapter).order_by(Verse.verse.desc()).first()
-        return verse.verse
+        if verse == None:
+            return 0
+        else:
+            return verse.verse
 
     def get_max_bible_book_chapter(self, bookname):
         log.debug(u'get_max_bible_book_chapter %s', bookname)
         verse = self.session.query(Verse).join(Book).filter(
             Book.name == bookname).order_by(Verse.chapter.desc()).first()
-        return verse.chapter
+        if verse == None:
+            return 0
+        else:
+            return verse.chapter
 
     def get_bible_book(self, bookname):
         log.debug(u'get_bible_book %s', bookname)

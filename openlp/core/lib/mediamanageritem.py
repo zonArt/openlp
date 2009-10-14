@@ -206,63 +206,72 @@ class MediaManagerItem(QtGui.QWidget):
         if self.hasFileIcon:
             self.addToolbarButton(
                 translate(
-                    self.TranslationContext, u'Load ' + self.PluginTextShort),
+                    self.TranslationContext, u'Load %s' % self.PluginTextShort),
                 translate(
                     self.TranslationContext,
-                    u'Load a new ' + self.PluginTextShort),
-                u':' + self.IconPath + u'_load.png', self.onFileClick,
-                self.PluginTextShort + u'FileItem')
+                    u'Load a new %s' % self.PluginTextShort),
+                u':%s_load.png' % self.IconPath,
+                self.onFileClick,
+                u'%sFileItem' %self.PluginTextShort)
         ## New Button ##
         if self.hasNewIcon:
             self.addToolbarButton(
                 translate(
-                    self.TranslationContext, u'New ' + self.PluginTextShort),
+                    self.TranslationContext, u'New %s' % self.PluginTextShort),
                 translate(
                     self.TranslationContext,
-                    u'Add a new ' + self.PluginTextShort),
-                u':' + self.IconPath + u'_new.png', self.onNewClick,
-                self.PluginTextShort + u'NewItem')
+                    u'Add a new %s' % self.PluginTextShort),
+                u':%s_new.png' % self.IconPath,
+                self.onNewClick,
+                u'%sNewItem' % self.PluginTextShort)
         ## Edit Button ##
         if self.hasEditIcon:
             self.addToolbarButton(
                 translate(
-                    self.TranslationContext, u'Edit ' + self.PluginTextShort),
+                    self.TranslationContext, u'Edit %s' % self.PluginTextShort),
                 translate(
                     self.TranslationContext,
-                    u'Edit the selected ' + self.PluginTextShort),
-                u':' + self.IconPath + u'_edit.png', self.onEditClick,
-                self.PluginTextShort + u'EditItem')
+                    u'Edit the selected %s' % self.PluginTextShort),
+                u':%s_edit.png' % self.IconPath,
+                self.onEditClick,
+                u'%sEditItem' %  self.PluginTextShort)
         ## Delete Button ##
         if self.hasDeleteIcon:
             self.addToolbarButton(
                 translate(
-                    self.TranslationContext, u'Delete ' + self.PluginTextShort),
+                    self.TranslationContext, u'Delete %s' % self.PluginTextShort),
                 translate(self.TranslationContext, u'Delete the selected item'),
-                u':' + self.IconPath + u'_delete.png', self.onDeleteClick,
-                self.PluginTextShort + u'DeleteItem')
+                u':%s_delete.png' % self.IconPath,
+                self.onDeleteClick,
+                u'%sDeleteItem' % self.PluginTextShort)
         ## Separator Line ##
         self.addToolbarSeparator()
         ## Preview ##
         self.addToolbarButton(
             translate(
-                self.TranslationContext, u'Preview ' + self.PluginTextShort),
+                self.TranslationContext, u'Preview %s' % self.PluginTextShort),
             translate(self.TranslationContext, u'Preview the selected item'),
-            u':/system/system_preview.png', self.onPreviewClick, u'PreviewItem')
+            u':/system/system_preview.png',
+            self.onPreviewClick,
+            u'PreviewItem')
         ## Live  Button ##
         self.addToolbarButton(
             translate(self.TranslationContext, u'Go Live'),
             translate(self.TranslationContext, u'Send the selected item live'),
-            u':/system/system_live.png', self.onLiveClick, u'LiveItem')
+            u':/system/system_live.png',
+            self.onLiveClick,
+            u'LiveItem')
         ## Add to service Button ##
         self.addToolbarButton(
             translate(
                 self.TranslationContext,
-                u'Add ' + self.PluginTextShort + u' To Service'),
+                u'Add %s to Service' % self.PluginTextShort),
             translate(
                 self.TranslationContext,
                 u'Add the selected item(s) to the service'),
-            u':/system/system_add.png', self.onAddClick,
-            self.PluginTextShort + u'AddItem')
+            u':/system/system_add.png',
+            self.onAddClick,
+            u'%sAddServiceItem' % self.PluginTextShort)
 
     def addListViewToToolBar(self):
         #Add the List widget
