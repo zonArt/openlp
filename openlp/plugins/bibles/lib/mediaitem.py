@@ -298,14 +298,14 @@ class BibleMediaItem(MediaManagerItem):
         self.adjustComboBox(frm, self.verses, self.AdvancedToVerse)
 
     def onAdvancedToChapter(self):
-        text1 = self.AdvancedFromChapter.currentText()
-        text2 = self.AdvancedToChapter.currentText()
+        text1 = unicode(self.AdvancedFromChapter.currentText())
+        text2 = unicode(self.AdvancedToChapter.currentText())
         if text1 != text2:
             bible = unicode(self.AdvancedVersionComboBox.currentText())
             book = unicode(self.AdvancedBookComboBox.currentText())
             # get the verse count for new chapter
             verses = self.parent.biblemanager.get_book_verse_count(
-                bible, book, int(text2))[0]
+                bible, book, int(text2))
             self.adjustComboBox(1, verses, self.AdvancedToVerse)
 
     def onAdvancedSearchButton(self):
@@ -325,11 +325,10 @@ class BibleMediaItem(MediaManagerItem):
     def onAdvancedFromChapter(self):
         bible = unicode(self.AdvancedVersionComboBox.currentText())
         book = unicode(self.AdvancedBookComboBox.currentText())
-        cf = self.AdvancedFromChapter.currentText()
+        cf = int(self.AdvancedFromChapter.currentText())
         self.adjustComboBox(cf, self.chapters_from, self.AdvancedToChapter)
         # get the verse count for new chapter
-        vse = self.parent.biblemanager.get_book_verse_count(bible, book,
-            int(cf))[0]
+        vse = self.parent.biblemanager.get_book_verse_count(bible, book, cf)
         self.adjustComboBox(1, vse, self.AdvancedFromVerse)
         self.adjustComboBox(1, vse, self.AdvancedToVerse)
 

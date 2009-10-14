@@ -28,7 +28,7 @@ from datetime import datetime
 from registry import Registry
 from confighelper import ConfigHelper
 
-log = logging.getLogger()
+log = logging.getLogger(__name__)
 
 __all__ = ['Registry', 'ConfigHelper']
 

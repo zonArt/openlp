@@ -290,7 +290,13 @@ class BibleManager(object):
         log.debug(u'get_book_verse_count %s,%s,%s', bible, book, chapter)
         web, bible = self.is_bible_web(bible)
         if web:
-            return int(99)
+            count = self.bible_db_cache[bible].get_max_bible_book_verses(
+                    book, chapter)
+            if count == 0:
+                text = self.get_verse_text(bible, book, chapter, chapter, 1, 1)
+                count = self.bible_db_cache[bible].get_max_bible_book_verses(
+                    book, chapter)
+            return count
         else:
             return self.bible_db_cache[bible].get_max_bible_book_verses(
                 book, chapter)
@@ -301,6 +307,7 @@ class BibleManager(object):
         book and chapterMaxBibleBookVerses
         """
         log.debug(u'get_verses_from_text %s,%s', bible, versetext)
+        web, bible = self.is_bible_web(bible)
         return self.bible_db_cache[bible].get_verses_from_text(versetext)
 
     def save_meta_data(self, bible, version, copyright, permissions):
@@ -318,6 +325,7 @@ class BibleManager(object):
         Returns the meta data for a given key
         """
         log.debug(u'get_meta %s,%s', bible, key)
+        web, bible = self.is_bible_web(bible)
         return self.bible_db_cache[bible].get_meta(key)
 
     def get_verse_text(self, bible, bookname, schapter, echapter, sverse,
@@ -338,6 +346,7 @@ class BibleManager(object):
             bible, bookname, schapter, echapter, sverse, everse)
         # check to see if book/chapter exists fow HTTP bibles and load cache
         # if necessary
+        web, bible = self.is_bible_web(bible)
         if self.bible_http_cache[bible] is not None:
             book = self.bible_db_cache[bible].get_bible_book(bookname)
             if book is None:
