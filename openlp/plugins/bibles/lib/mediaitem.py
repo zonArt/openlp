@@ -451,7 +451,6 @@ class BibleMediaItem(MediaManagerItem):
 
     def initialiseChapterVerse(self, bible, book, chapters):
         log.debug(u'initialiseChapterVerse %s, %s', bible, book)
-        print bible ,  book , chapters
         self.chapters_from = chapters
         self.verses = self.parent.biblemanager.get_book_verse_count(bible,
             book, 1)
