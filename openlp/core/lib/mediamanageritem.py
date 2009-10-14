@@ -239,7 +239,7 @@ class MediaManagerItem(QtGui.QWidget):
         if self.hasDeleteIcon:
             self.addToolbarButton(
                 translate(
-                    self.TranslationContext, u'Delete %s ' % self.PluginTextShort),
+                    self.TranslationContext, u'Delete %s' % self.PluginTextShort),
                 translate(self.TranslationContext, u'Delete the selected item'),
                 u':%s_delete.png' % self.IconPath,
                 self.onDeleteClick,

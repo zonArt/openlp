@@ -40,7 +40,7 @@ def check_latest_version(config, current_version):
     if lastTest != thisTest:
         version_string = u''
         req = urllib2.Request(u'http://www.openlp.org/files/version.txt')
-        req.add_header(u'User-Agent', u'OpenLP Version Checker')
+        req.add_header(u'User-Agent', u'OpenLP%s' % current_version)
         try:
             handle = urllib2.urlopen(req, None, 1)
             html = handle.read()

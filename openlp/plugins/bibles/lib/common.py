@@ -104,7 +104,7 @@ class BibleCommon(object):
             urllib2.install_opener(opener)
         xml_string = u''
         req = urllib2.Request(urlstring)
-        #May us look like an IE Browser on XP to stop blocking by web site
+        #Make us look like an IE Browser on XP to stop blocking by web site
         req.add_header(u'User-Agent', u'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)')
         try:
             handle = urllib2.urlopen(req)
