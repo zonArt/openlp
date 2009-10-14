@@ -32,6 +32,8 @@ log = logging.getLogger(__name__)
 
 __all__ = ['Registry', 'ConfigHelper']
 
+log = logging.getLogger(__name__)
+
 def check_latest_version(config, current_version):
     version_string = current_version
     lastTest = config.get_config(u'Application version Test', datetime.now().date())
