@@ -252,4 +252,3 @@ class PowerpointController(PresentationController):
             """
             return os.path.join(self.thumbnailpath,
                 self.thumbnailprefix + unicode(slide_no) + u'.png')
-\
