@@ -426,8 +426,10 @@ class ServiceManager(QtGui.QWidget):
         files retrieved from the zip file are placed in a temporary directory
         and will only be used for this service.
         """
-        filename = QtGui.QFileDialog.getOpenFileName(self, u'Open Service',
-            self.config.get_last_dir(), u'Services (*.osz)')
+        filename = QtGui.QFileDialog.getOpenFileName(self,
+            translate(u'ThemeManager', u'Open Service'),
+            self.config.get_last_dir(),
+            u'Services (*.osz)')
         filename = unicode(filename)
         name = filename.split(os.path.sep)
         if filename != u'':
