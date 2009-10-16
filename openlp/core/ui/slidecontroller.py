@@ -331,12 +331,13 @@ class SlideController(QtGui.QWidget):
         """
         Blank the screen.
         """
-        if self.commandItem.service_item_type == ServiceType.Command:
+        if self.commandItem is not None and \
+            self.commandItem.service_item_type == ServiceType.Command:
             if blanked:
                 Receiver().send_message(u'%s_blank'% self.commandItem.name.lower())
             else:
                 Receiver().send_message(u'%s_unblank'% self.commandItem.name.lower())
-        else:          
+        else:
             self.parent.mainDisplay.blankDisplay()
 
     def onSlideSelected(self):
@@ -347,7 +348,7 @@ class SlideController(QtGui.QWidget):
         row = self.PreviewListWidget.currentRow()
         if row > -1 and row < self.PreviewListWidget.rowCount():
             if self.commandItem.service_item_type == ServiceType.Command:
-                Receiver().send_message(u'%s_slide'% self.commandItem.name.lower(), [row])                
+                Receiver().send_message(u'%s_slide'% self.commandItem.name.lower(), [row])
             else:
                 #label = self.PreviewListWidget.cellWidget(row, 0)
                 frame = self.serviceitem.frames[row][u'image']
