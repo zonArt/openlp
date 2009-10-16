@@ -122,6 +122,7 @@ class ImpressController(PresentationController):
         if desktop is None:
             return
         try:
+            self.desktop = desktop
             properties = []
             properties = tuple(properties)            
             self.document = desktop.loadComponentFromURL(url, u'_blank',
@@ -218,9 +219,15 @@ class ImpressController(PresentationController):
             self.document = None
 
     def is_loaded(self):
-        return self.presentation is not None \
-            and self.document is not None \
-            and self.controller is not None
+        if self.presentation is None or self.document is None \
+            or self.controller is None:
+            return False
+        try:
+            if self.document.getPresentation() is None:
+                return False
+        except:
+            return False
+        return True
 
     def is_active(self):
         if not self.is_loaded():
@@ -235,12 +242,14 @@ class ImpressController(PresentationController):
 
     def stop_presentation(self):
         self.controller.deactivate()
-        # self.presdoc.end()
 
     def start_presentation(self):
-        self.controller.activate()
-        self.goto_slide(1)
-        # self.presdoc.start()
+        if not self.controller.isRunning():
+            self.presentation.start()
+            self.controller = self.desktop.getCurrentComponent().Presentation.getController()
+        else:
+            self.controller.activate()
+            self.goto_slide(1)
 
     def get_slide_number(self):
         return self.controller.getCurrentSlideIndex()
