@@ -127,7 +127,6 @@ class PowerpointController(PresentationController):
                 return
             self.presentation = self.process.Presentations(self.process.Presentations.Count)
             self.create_thumbnails()
-            self.start_presentation()
 
         def create_thumbnails(self):
             """
@@ -250,5 +249,9 @@ class PowerpointController(PresentationController):
             ``slide_no``
             The slide an image is required for, starting at 1
             """
-            return os.path.join(self.thumbnailpath,
+            path = os.path.join(self.thumbnailpath,
                 self.thumbnailprefix + unicode(slide_no) + u'.png')
+            if os.path.isfile(path):
+                return path
+            else:
+                return None

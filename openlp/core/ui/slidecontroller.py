@@ -250,8 +250,7 @@ class SlideController(QtGui.QWidget):
             Receiver().send_message(u'%s_start' % item.name.lower(), \
                 [item.shortname, item.service_item_path,
                 item.service_frames[0][u'title']])
-        else:
-            self.displayServiceManagerItems(item, 0)
+        self.displayServiceManagerItems(item, 0)
 
     def addServiceManagerItem(self, item, slideno):
         """
@@ -270,8 +269,7 @@ class SlideController(QtGui.QWidget):
             Receiver().send_message(u'%s_start' % item.name.lower(), \
                 [item.shortname, item.service_item_path,
                 item.service_frames[0][u'title'], slideno])
-        else:
-            self.displayServiceManagerItems(item, slideno)
+        self.displayServiceManagerItems(item, slideno)
 
     def displayServiceManagerItems(self, serviceitem, slideno):
         """

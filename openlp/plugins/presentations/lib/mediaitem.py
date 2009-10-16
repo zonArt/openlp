@@ -132,9 +132,18 @@ class PresentationMediaItem(MediaManagerItem):
             return False
         service_item.title = unicode(self.DisplayTypeComboBox.currentText())
         service_item.shortname = unicode(self.DisplayTypeComboBox.currentText())
+        cont = self.controllers[service_item.shortname]
         for item in items:
             bitem = self.ListView.item(item.row())
             filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
             (path, name) = os.path.split(filename)
-            service_item.add_from_command(path, name)
+            cont.store_filename(filename)
+            if cont.get_slide_preview_file(1) is None:
+                cont.load_presentation(filename)
+            i = 1
+            img = cont.get_slide_preview_file(i)
+            while img is not None:
+                service_item.add_from_command(path, name, img)
+                i = i + 1
+                img = cont.get_slide_preview_file(i)
         return True

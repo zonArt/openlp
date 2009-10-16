@@ -66,6 +66,7 @@ class MessageListener(object):
         if self.controller.is_loaded():
             self.shutdown(None)
         self.controller.load_presentation(file)
+        self.controller.start_presentation()
         self.controller.slidenumber = 0
 
     def activate(self):

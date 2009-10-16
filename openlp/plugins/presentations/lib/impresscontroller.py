@@ -129,9 +129,6 @@ class ImpressController(PresentationController):
                 0, properties)
             self.presentation = self.document.getPresentation()
             self.presentation.Display = self.plugin.render_manager.current_display + 1
-            self.presentation.start()
-            self.controller = \
-                desktop.getCurrentComponent().Presentation.getController()
         except:
             log.exception(u'Failed to load presentation')
             return
@@ -279,5 +276,9 @@ class ImpressController(PresentationController):
         ``slide_no``
         The slide an image is required for, starting at 1
         """
-        return os.path.join(self.thumbnailpath,
+        path = os.path.join(self.thumbnailpath,
             self.thumbnailprefix + unicode(slide_no) + u'.png')
+        if os.path.isfile(path):
+            return path
+        else:
+            return None
