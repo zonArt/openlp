@@ -368,7 +368,7 @@ class Ui_MainWindow(object):
         self.action_Preview_Panel.setStatusTip(translate(u'mainWindow',
             u'Toggle the visibility of the Preview Panel'))
         self.action_Preview_Panel.setShortcut(translate(u'mainWindow', u'F11'))
-        self.ToolsAlertItem.setText(translate(u'mainWindow', u'Nursery &Alert'))
+        self.ToolsAlertItem.setText(translate(u'mainWindow', u'&Alert'))
         self.ToolsAlertItem.setStatusTip(
             translate(u'mainWindow', u'Show an alert message'))
         self.ToolsAlertItem.setShortcut(translate(u'mainWindow', u'F7'))
