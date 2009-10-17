@@ -83,6 +83,9 @@ class EventReceiver(QtCore.QObject):
 
     ``audit_changed``
         Audit information may have changed
+
+    ``config_updated``
+        Informs components the config has changed
     """
     global log
     log = logging.getLogger(u'EventReceiver')

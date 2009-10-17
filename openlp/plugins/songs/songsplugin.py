@@ -27,7 +27,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, translate, buildIcon
-from openlp.plugins.songs.lib import SongManager, SongMediaItem
+from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab
 from openlp.plugins.songs.forms import OpenLPImportForm, OpenSongExportForm, \
     OpenSongImportForm, OpenLPExportForm
 
@@ -61,6 +61,9 @@ class SongsPlugin(Plugin):
 
     def can_be_disabled(self):
         return True
+
+    def get_settings_tab(self):
+        return SongsTab()
 
     def initialise(self):
         log.info(u'Songs Initialising')

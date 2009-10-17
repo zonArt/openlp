@@ -27,7 +27,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, translate, SongXMLParser, \
-    BaseListWithDnD, Receiver
+    BaseListWithDnD, Receiver,  str_to_bool
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm
 
 class SongListView(BaseListWithDnD):
@@ -68,42 +68,48 @@ class SongMediaItem(MediaManagerItem):
             u'Maintain the lists of authors, topics and books'),
             ':/songs/song_maintenance.png', self.onSongMaintenanceClick,
             'SongMaintenanceItem')
-        ## Add the SongListView widget ##
-        # Create the tab widget
-        self.SongWidget = QtGui.QWidget(self)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.SongWidget.sizePolicy().hasHeightForWidth())
-        self.SongWidget.setSizePolicy(sizePolicy)
-        self.SongWidget.setObjectName(u'SongWidget')
-        self.SearchLayout = QtGui.QGridLayout(self.SongWidget)
-        self.SearchLayout.setMargin(5)
+        self.SearchLayout = QtGui.QFormLayout()
+        self.SearchLayout.setMargin(0)
         self.SearchLayout.setSpacing(4)
         self.SearchLayout.setObjectName(u'SearchLayout')
-        self.SearchTypeComboBox = QtGui.QComboBox(self.SongWidget)
-        self.SearchTypeComboBox.setObjectName(u'SearchTypeComboBox')
-        self.SearchLayout.addWidget(self.SearchTypeComboBox, 0, 1, 1, 2)
-        self.SearchTypeLabel = QtGui.QLabel(self.SongWidget)
-        self.SearchTypeLabel.setObjectName(u'SearchTypeLabel')
-        self.SearchLayout.addWidget(self.SearchTypeLabel, 0, 0, 1, 1)
-        self.SearchTextLabel = QtGui.QLabel(self.SongWidget)
+        self.SearchTextLabel = QtGui.QLabel(self)
+        self.SearchTextLabel.setAlignment(
+            QtCore.Qt.AlignBottom|QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft)
         self.SearchTextLabel.setObjectName(u'SearchTextLabel')
-        self.SearchLayout.addWidget(self.SearchTextLabel, 2, 0, 1, 1)
-        self.SearchTextEdit = QtGui.QLineEdit(self.SongWidget)
+        self.SearchLayout.setWidget(
+            0, QtGui.QFormLayout.LabelRole, self.SearchTextLabel)
+        self.SearchTextEdit = QtGui.QLineEdit(self)
         self.SearchTextEdit.setObjectName(u'SearchTextEdit')
-        self.SearchLayout.addWidget(self.SearchTextEdit, 2, 1, 1, 2)
-        self.ClearTextButton = QtGui.QPushButton(self.SongWidget)
-        self.ClearTextButton.setObjectName(u'ClearTextButton')
-        self.SearchLayout.addWidget(self.ClearTextButton, 3, 1, 1, 1)
-        self.SearchTextButton = QtGui.QPushButton(self.SongWidget)
+        self.SearchLayout.setWidget(
+            0, QtGui.QFormLayout.FieldRole, self.SearchTextEdit)
+        self.SearchTypeLabel = QtGui.QLabel(self)
+        self.SearchTypeLabel.setAlignment(
+            QtCore.Qt.AlignBottom|QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft)
+        self.SearchTypeLabel.setObjectName(u'SearchTypeLabel')
+        self.SearchLayout.setWidget(
+            1, QtGui.QFormLayout.LabelRole, self.SearchTypeLabel)
+        self.SearchTypeComboBox = QtGui.QComboBox(self)
+        self.SearchTypeComboBox.setObjectName(u'SearchTypeComboBox')
+        self.SearchLayout.setWidget(
+            1, QtGui.QFormLayout.FieldRole, self.SearchTypeComboBox)
+        self.PageLayout.addLayout(self.SearchLayout)
+        self.SearchButtonLayout = QtGui.QHBoxLayout(self)
+        self.SearchButtonLayout.setMargin(0)
+        self.SearchButtonLayout.setSpacing(4)
+        self.SearchButtonLayout.setObjectName(u'SearchButtonLayout')
+        self.SearchButtonSpacer = QtGui.QSpacerItem(40, 20,
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.SearchButtonLayout.addItem(self.SearchButtonSpacer)
+        self.SearchTextButton = QtGui.QPushButton(self)
         self.SearchTextButton.setObjectName(u'SearchTextButton')
-        self.SearchLayout.addWidget(self.SearchTextButton, 3, 2, 1, 1)
-        # Add the song widget to the page layout
-        self.PageLayout.addWidget(self.SongWidget)
+        self.SearchButtonLayout.addWidget(self.SearchTextButton)
+        self.ClearTextButton = QtGui.QPushButton(self)
+        self.ClearTextButton.setObjectName(u'ClearTextButton')
+        self.SearchButtonLayout.addWidget(self.ClearTextButton)
+        self.PageLayout.addLayout(self.SearchButtonLayout)
         # Signals and slots
+        QtCore.QObject.connect(self.SearchTextEdit,
+            QtCore.SIGNAL(u'returnPressed()'), self.onSearchTextButtonClick)
         QtCore.QObject.connect(self.SearchTextButton,
             QtCore.SIGNAL(u'pressed()'), self.onSearchTextButtonClick)
         QtCore.QObject.connect(self.ClearTextButton,
@@ -113,12 +119,16 @@ class SongMediaItem(MediaManagerItem):
             self.onSearchTextEditChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'load_song_list'), self.onSearchTextButtonClick)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'config_updated'), self.configUpdated)
+
+    def configUpdated(self):
+        self.searchAsYouType = str_to_bool(
+            self.parent.config.get_config(u'search as type', u'False'))
 
     def retranslateUi(self):
-        self.SearchTypeLabel.setText(
-            translate(u'SongMediaItem', u'Search Type:'))
-        self.SearchTextLabel.setText(
-            translate(u'SongMediaItem', u'Search Text:'))
+        self.SearchTextLabel.setText(translate(u'SongMediaItem', u'Search:'))
+        self.SearchTypeLabel.setText(translate(u'SongMediaItem', u'Type:'))
         self.ClearTextButton.setText(translate(u'SongMediaItem', u'Clear'))
         self.SearchTextButton.setText(translate(u'SongMediaItem', u'Search'))
 
@@ -126,6 +136,7 @@ class SongMediaItem(MediaManagerItem):
         self.SearchTypeComboBox.addItem(translate(u'SongMediaItem', u'Titles'))
         self.SearchTypeComboBox.addItem(translate(u'SongMediaItem', u'Lyrics'))
         self.SearchTypeComboBox.addItem(translate(u'SongMediaItem', u'Authors'))
+        self.configUpdated()
 
     def onSearchTextButtonClick(self):
         search_keywords = unicode(self.SearchTextEdit.displayText())
@@ -181,11 +192,12 @@ class SongMediaItem(MediaManagerItem):
         self.SearchTextEdit.clear()
 
     def onSearchTextEditChanged(self, text):
-        search_length = 1
-        if self.SearchTypeComboBox.currentIndex() == 1:
-            search_length = 7
-        if len(text) > search_length:
-            self.onSearchTextButtonClick()
+        if self.searchAsYouType:
+            search_length = 1
+            if self.SearchTypeComboBox.currentIndex() == 1:
+                search_length = 7
+            if len(text) > search_length:
+                self.onSearchTextButtonClick()
 
     def onNewClick(self):
         self.edit_song_form.newSong()

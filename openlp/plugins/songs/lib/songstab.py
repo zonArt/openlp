@@ -22,14 +22,51 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from openlp.core.lib import SettingsTab, translate
+from PyQt4 import QtCore, QtGui
+
+from openlp.core.lib import SettingsTab, str_to_bool, translate
 
 class SongsTab(SettingsTab):
     """
-    SongsTab is the songs settings tab in the settings dialog.
+    SongsTab is the Songs settings tab in the settings dialog.
     """
     def __init__(self):
         SettingsTab.__init__(self, translate(u'SongsTab', u'Songs'), u'Songs')
 
     def setupUi(self):
         self.setObjectName(u'SongsTab')
+        self.SongsLayout = QtGui.QFormLayout(self)
+        self.SongsLayout.setObjectName(u'SongsLayout')
+        self.SongsModeGroupBox = QtGui.QGroupBox(self)
+        self.SongsModeGroupBox.setObjectName(u'SongsModeGroupBox')
+        self.SongsModeLayout = QtGui.QVBoxLayout(self.SongsModeGroupBox)
+        self.SongsModeLayout.setSpacing(8)
+        self.SongsModeLayout.setMargin(8)
+        self.SongsModeLayout.setObjectName(u'SongsModeLayout')
+        self.SearchAsTypeCheckBox = QtGui.QCheckBox(self.SongsModeGroupBox)
+        self.SearchAsTypeCheckBox.setObjectName(u'SearchAsTypeCheckBox')
+        self.SongsModeLayout.addWidget(self.SearchAsTypeCheckBox)
+        self.SongsLayout.setWidget(
+            0, QtGui.QFormLayout.LabelRole, self.SongsModeGroupBox)
+        QtCore.QObject.connect(self.SearchAsTypeCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onSearchAsTypeCheckBoxChanged)
+
+    def retranslateUi(self):
+        self.SongsModeGroupBox.setTitle(translate(u'SongsTab', u'Songs Mode'))
+        self.SearchAsTypeCheckBox.setText(
+            translate(u'SongsTab', u'Enable search as you type:'))
+
+    def onSearchAsTypeCheckBoxChanged(self, check_state):
+        self.bible_search = False
+        # we have a set value convert to True/False
+        if check_state == QtCore.Qt.Checked:
+            self.bible_search = True
+
+    def load(self):
+        self.bible_search = str_to_bool(
+            self.config.get_config(u'search as type', u'False'))
+        self.SearchAsTypeCheckBox.setChecked(self.bible_search)
+
+    def save(self):
+        self.config.set_config(u'search as type', unicode(self.bible_search))

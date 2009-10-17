@@ -28,7 +28,7 @@ import time
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, MediaManagerItem, Receiver, \
-    BaseListWithDnD
+    BaseListWithDnD, str_to_bool
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib.manager import BibleMode
 
@@ -80,7 +80,7 @@ class BibleMediaItem(MediaManagerItem):
         self.QuickVerticalLayout = QtGui.QVBoxLayout(self.QuickTab)
         self.QuickVerticalLayout.setObjectName("verticalLayout")
         self.QuickLayout = QtGui.QGridLayout()
-        self.QuickLayout.setMargin(5)
+        self.QuickLayout.setMargin(0)
         self.QuickLayout.setSpacing(4)
         self.QuickLayout.setObjectName(u'QuickLayout')
         self.QuickVersionLabel = QtGui.QLabel(self.QuickTab)
@@ -127,7 +127,7 @@ class BibleMediaItem(MediaManagerItem):
         self.AdvancedVerticalLayout = QtGui.QVBoxLayout(self.AdvancedTab)
         self.AdvancedVerticalLayout.setObjectName("verticalLayout")
         self.AdvancedLayout = QtGui.QGridLayout()
-        self.AdvancedLayout.setMargin(5)
+        self.AdvancedLayout.setMargin(0)
         self.AdvancedLayout.setSpacing(4)
         self.AdvancedLayout.setObjectName(u'AdvancedLayout')
         self.AdvancedVersionLabel = QtGui.QLabel(self.AdvancedTab)
@@ -173,10 +173,10 @@ class BibleMediaItem(MediaManagerItem):
         self.ClearAdvancedSearchComboBox.setObjectName(
             u'ClearAdvancedSearchComboBox')
         self.AdvancedLayout.addWidget(
-            self.ClearAdvancedSearchComboBox, 5, 2, 1, 1)
+            self.ClearAdvancedSearchComboBox, 5, 2, 1, 2)
         self.AdvancedSearchButton = QtGui.QPushButton(self.AdvancedTab)
         self.AdvancedSearchButton.setObjectName(u'AdvancedSearchButton')
-        self.AdvancedLayout.addWidget(self.AdvancedSearchButton, 5, 3, 1, 1)
+        self.AdvancedLayout.addWidget(self.AdvancedSearchButton, 6, 3, 1, 1)
         self.AdvancedVerticalLayout.addLayout(self.AdvancedLayout)
         self.AdvancedSecondBibleComboBox = QtGui.QComboBox(self.AdvancedTab)
         self.AdvancedSecondBibleComboBox.setObjectName(u'SecondBible')
@@ -203,6 +203,17 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'pressed()'), self.onAdvancedSearchButton)
         QtCore.QObject.connect(self.QuickSearchButton,
             QtCore.SIGNAL(u'pressed()'), self.onQuickSearchButton)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'config_updated'), self.configUpdated)
+
+    def configUpdated(self):
+        if str_to_bool(
+            self.parent.config.get_config(u'duel bibles', u'False')):
+            self.AdvancedSecondBibleComboBox.setVisible(True)
+            self.QuickSecondBibleComboBox.setVisible(True)
+        else:
+            self.AdvancedSecondBibleComboBox.setVisible(False)
+            self.QuickSecondBibleComboBox.setVisible(False)
 
     def retranslateUi(self):
         log.debug(u'retranslateUi')
@@ -242,6 +253,7 @@ class BibleMediaItem(MediaManagerItem):
         log.debug(u'bible manager initialise')
         self.loadBibles()
         self.parent.biblemanager.set_media_manager(self)
+        self.configUpdated()
         log.debug(u'bible manager initialise complete')
 
     def setQuickMessage(self, text):
