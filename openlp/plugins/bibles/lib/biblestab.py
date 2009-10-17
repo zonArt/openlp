@@ -97,7 +97,6 @@ class BiblesTab(SettingsTab):
         self.LayoutStyleComboBox.addItem(QtCore.QString())
         self.LayoutStyleLayout.addWidget(self.LayoutStyleComboBox)
         self.VerseDisplayLayout.addWidget(self.LayoutStyleWidget, 2, 0, 1, 1)
-
         self.BibleThemeWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
         self.BibleThemeWidget.setObjectName(u'BibleThemeWidget')
         self.BibleThemeLayout = QtGui.QHBoxLayout(self.BibleThemeWidget)
@@ -111,10 +110,13 @@ class BiblesTab(SettingsTab):
         self.BibleThemeComboBox.setObjectName(u'BibleThemeComboBox')
         self.BibleThemeComboBox.addItem(QtCore.QString())
         self.BibleThemeLayout.addWidget(self.BibleThemeComboBox)
-        self.VerseDisplayLayout.addWidget(self.BibleThemeWidget, 3, 0, 1, 1)
+        self.BibleDuelCheckBox = QtGui.QCheckBox(self.VerseDisplayGroupBox)
+        self.BibleDuelCheckBox.setObjectName(u'BibleDuelCheckBox')
+        self.VerseDisplayLayout.addWidget(self.BibleDuelCheckBox, 3, 0, 1, 1)
+        self.VerseDisplayLayout.addWidget(self.BibleThemeWidget, 4, 0, 1, 1)
         self.ChangeNoteLabel = QtGui.QLabel(self.VerseDisplayGroupBox)
         self.ChangeNoteLabel.setObjectName(u'ChangeNoteLabel')
-        self.VerseDisplayLayout.addWidget(self.ChangeNoteLabel, 4, 0, 1, 1)
+        self.VerseDisplayLayout.addWidget(self.ChangeNoteLabel, 5, 0, 1, 1)
         self.BibleLeftLayout.addWidget(self.VerseDisplayGroupBox)
         self.BibleLeftSpacer = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
@@ -139,6 +141,9 @@ class BiblesTab(SettingsTab):
         QtCore.QObject.connect(self.LayoutStyleComboBox,
             QtCore.SIGNAL(u'activated(int)'),
             self.onLayoutStyleComboBoxChanged)
+        QtCore.QObject.connect(self.BibleDuelCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onBibleDuelCheckBox)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'update_themes'), self.updateThemeList)
 
@@ -169,6 +174,8 @@ class BiblesTab(SettingsTab):
             3, translate(u'SettingsForm', u'[ and ]'))
         self.ChangeNoteLabel.setText(translate(u'SettingsForm',
             u'Note:\nChanges don\'t affect verses already in the service'))
+        self.BibleDuelCheckBox.setText(
+            translate(u'SettingsForm', u'Display Duel Bible Verses'))
 
     def onBibleThemeComboBoxChanged(self):
         self.bible_theme = self.BibleThemeComboBox.currentText()
@@ -179,12 +186,17 @@ class BiblesTab(SettingsTab):
     def onLayoutStyleComboBoxChanged(self):
         self.layout_style = self.LayoutStyleComboBox.currentIndex()
 
-    def onNewChaptersCheckBoxChanged(self):
-        check_state = self.NewChaptersCheckBox.checkState()
+    def onNewChaptersCheckBoxChanged(self, check_state):
         self.show_new_chapters = False
         # we have a set value convert to True/False
         if check_state == QtCore.Qt.Checked:
             self.show_new_chapters = True
+
+    def onBibleDuelCheckBox(self, check_state):
+        self.duel_bibles = False
+        # we have a set value convert to True/False
+        if check_state == QtCore.Qt.Checked:
+            self.duel_bibles = True
 
     def load(self):
         self.show_new_chapters = str_to_bool(
@@ -194,9 +206,12 @@ class BiblesTab(SettingsTab):
         self.layout_style = int(
             self.config.get_config(u'verse layout style', u'0'))
         self.bible_theme = self.config.get_config(u'bible theme', u'0')
+        self.duel_bibles = str_to_bool(
+            self.config.get_config(u'duel bibles', u'True'))
         self.NewChaptersCheckBox.setChecked(self.show_new_chapters)
         self.DisplayStyleComboBox.setCurrentIndex(self.display_style)
         self.LayoutStyleComboBox.setCurrentIndex(self.layout_style)
+        self.BibleDuelCheckBox.setChecked(self.duel_bibles)
 
     def save(self):
         self.config.set_config(
@@ -205,6 +220,7 @@ class BiblesTab(SettingsTab):
             u'display brackets', unicode(self.display_style))
         self.config.set_config(
             u'verse layout style', unicode(self.layout_style))
+        self.config.set_config(u'duel bibles', unicode(self.duel_bibles))
         self.config.set_config(u'bible theme', unicode(self.bible_theme))
 
     def updateThemeList(self, theme_list):

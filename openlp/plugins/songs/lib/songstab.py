@@ -24,7 +24,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, str_to_bool, translate, Receiver
+from openlp.core.lib import SettingsTab, str_to_bool, translate
 
 class SongsTab(SettingsTab):
     """
@@ -70,5 +70,3 @@ class SongsTab(SettingsTab):
 
     def save(self):
         self.config.set_config(u'search as type', unicode(self.bible_search))
-        Receiver().send_message(u'config_updated')
-

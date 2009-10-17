@@ -27,6 +27,7 @@ import logging
 from PyQt4 import QtGui
 
 from openlp.core.ui import GeneralTab, ThemesTab, AlertsTab
+from openlp.core.lib import Receiver
 from settingsdialog import Ui_SettingsDialog
 
 log = logging.getLogger(u'SettingsForm')
@@ -64,6 +65,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
     def accept(self):
         for tab_index in range(0, self.SettingsTabWidget.count()):
             self.SettingsTabWidget.widget(tab_index).save()
+        Receiver().send_message(u'config_updated')
         return QtGui.QDialog.accept(self)
 
     def postSetUp(self):

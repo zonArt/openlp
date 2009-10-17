@@ -28,7 +28,7 @@ import time
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, MediaManagerItem, Receiver, \
-    BaseListWithDnD
+    BaseListWithDnD, str_to_bool
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib.manager import BibleMode
 
@@ -203,6 +203,17 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'pressed()'), self.onAdvancedSearchButton)
         QtCore.QObject.connect(self.QuickSearchButton,
             QtCore.SIGNAL(u'pressed()'), self.onQuickSearchButton)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'config_updated'), self.configUpdated)
+
+    def configUpdated(self):
+        if str_to_bool(
+            self.parent.config.get_config(u'duel bibles', u'False')):
+            self.AdvancedSecondBibleComboBox.setVisible(True)
+            self.QuickSecondBibleComboBox.setVisible(True)
+        else:
+            self.AdvancedSecondBibleComboBox.setVisible(False)
+            self.QuickSecondBibleComboBox.setVisible(False)
 
     def retranslateUi(self):
         log.debug(u'retranslateUi')
@@ -242,6 +253,7 @@ class BibleMediaItem(MediaManagerItem):
         log.debug(u'bible manager initialise')
         self.loadBibles()
         self.parent.biblemanager.set_media_manager(self)
+        self.configUpdated()
         log.debug(u'bible manager initialise complete')
 
     def setQuickMessage(self, text):
