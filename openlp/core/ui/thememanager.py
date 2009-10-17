@@ -415,7 +415,6 @@ class ThemeManager(QtGui.QWidget):
         theme_file = os.path.join(theme_dir, name + u'.xml')
         log.debug(theme_file)
         result = QtGui.QMessageBox.Yes
-        print self.saveThemeName , name
         if self.saveThemeName != name:
             if os.path.exists(theme_file):
                 result = QtGui.QMessageBox.question(
@@ -432,8 +431,9 @@ class ThemeManager(QtGui.QWidget):
             outfile.write(theme_pretty_xml)
             outfile.close()
             if image_from is not None and image_from != image_to:
+                print "if", image_from
+                print "it", image_to
                 shutil.copyfile(image_from, image_to)
-
             self.generateAndSaveImage(self.path, name, theme_xml)
             self.loadThemes()
         else:
