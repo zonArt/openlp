@@ -66,6 +66,7 @@ class MessageListener(object):
         if self.controller.is_loaded():
             self.shutdown(None)
         self.controller.load_presentation(file)
+        self.controller.start_presentation()
         self.controller.slidenumber = 0
 
     def activate(self):
@@ -81,7 +82,7 @@ class MessageListener(object):
     def slide(self, message):
         self.activate()
         if message is not None:
-            self.controller.goto_slide(message[0])
+            self.controller.goto_slide(message[0]+1)
             self.controller.slidenumber = self.controller.get_slide_number()
 
     def first(self, message):

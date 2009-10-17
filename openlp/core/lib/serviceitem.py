@@ -167,7 +167,7 @@ class ServiceItem(object):
         self.service_frames.append(
             {u'title': frame_title, u'raw_slide': raw_slide})
 
-    def add_from_command(self, path, frame_title):
+    def add_from_command(self, path, frame_title, image):
         """
         Add a slide from a command.
 
@@ -180,7 +180,7 @@ class ServiceItem(object):
         self.service_item_type = ServiceType.Command
         self.service_item_path = path
         self.service_frames.append(
-            {u'title': frame_title, u'command': None})
+            {u'title': frame_title, u'command': None, u'text':None, u'image': image})
 
     def get_service_repr(self):
         """
