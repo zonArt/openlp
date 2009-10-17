@@ -37,6 +37,19 @@ from openlp.core.utils import ConfigHelper
 
 log = logging.getLogger()
 
+application_stylesheet = u"""
+QMainWindow::separator
+{
+  border: none;
+}
+
+QDockWidget::title
+{
+  border: none;
+  padding-left: 2px;
+}
+"""
+
 class OpenLP(QtGui.QApplication):
     """
     The core application class. This class inherits from Qt's QApplication
@@ -60,6 +73,7 @@ class OpenLP(QtGui.QApplication):
             QtCore.SIGNAL(u'process_events'), self.processEvents)
         self.setApplicationName(u'OpenLP')
         self.setApplicationVersion(applicationVersion)
+        self.setStyleSheet(application_stylesheet)
         show_splash = str_to_bool(ConfigHelper.get_registry().get_value(
             u'general', u'show splash', True))
         if show_splash:
