@@ -414,7 +414,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
-        self.closeEvent = self.onCloseEvent
         self.screenList = screens
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
@@ -593,7 +592,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.RenderManager.update_display(screen_number)
         self.mainDisplay.setup(screen_number)
 
-    def onCloseEvent(self, event):
+    def closeEvent(self, event):
         """
         Hook to close the main window and display windows on exit
         """
