@@ -224,13 +224,14 @@ class ThemeManager(QtGui.QWidget):
             zip.close()
 
     def onImportTheme(self):
-        files = QtGui.QFileDialog.getOpenFileNames(None,
-            translate(u'ThemeManager',
-            u'Select Theme Import File'),
-            self.path, u'Theme (*.*)')
+        files = QtGui.QFileDialog.getOpenFileNames(self,
+            translate(u'ThemeManager', u'Select Theme Import File'),
+            self.config.get_last_dir(),
+            u'Theme (*.*)')
         log.info(u'New Themes %s', unicode(files))
         if len(files) > 0:
             for file in files:
+                self.config.set_last_dir(filename)
                 self.unzipTheme(file, self.path)
         self.loadThemes()
 

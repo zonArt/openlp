@@ -27,7 +27,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, translate, SongXMLParser, \
-    BaseListWithDnD, Receiver
+    BaseListWithDnD, Receiver,  str_to_bool
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm
 
 class SongListView(BaseListWithDnD):
@@ -113,6 +113,12 @@ class SongMediaItem(MediaManagerItem):
             self.onSearchTextEditChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'load_song_list'), self.onSearchTextButtonClick)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'config_updated'), self.configUpdated)
+
+    def configUpdated(self):
+        self.searchAsYouType = str_to_bool(
+            self.parent.config.get_config(u'search as type', u'False'))
 
     def retranslateUi(self):
         self.SearchTypeLabel.setText(
@@ -126,6 +132,7 @@ class SongMediaItem(MediaManagerItem):
         self.SearchTypeComboBox.addItem(translate(u'SongMediaItem', u'Titles'))
         self.SearchTypeComboBox.addItem(translate(u'SongMediaItem', u'Lyrics'))
         self.SearchTypeComboBox.addItem(translate(u'SongMediaItem', u'Authors'))
+        self.configUpdated()
 
     def onSearchTextButtonClick(self):
         search_keywords = unicode(self.SearchTextEdit.displayText())
@@ -181,11 +188,12 @@ class SongMediaItem(MediaManagerItem):
         self.SearchTextEdit.clear()
 
     def onSearchTextEditChanged(self, text):
-        search_length = 1
-        if self.SearchTypeComboBox.currentIndex() == 1:
-            search_length = 7
-        if len(text) > search_length:
-            self.onSearchTextButtonClick()
+        if self.searchAsYouType:
+            search_length = 1
+            if self.SearchTypeComboBox.currentIndex() == 1:
+                search_length = 7
+            if len(text) > search_length:
+                self.onSearchTextButtonClick()
 
     def onNewClick(self):
         self.edit_song_form.newSong()
