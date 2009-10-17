@@ -23,6 +23,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import os
 import sys
 import logging
 
@@ -73,7 +74,8 @@ class OpenLP(QtGui.QApplication):
             QtCore.SIGNAL(u'process_events'), self.processEvents)
         self.setApplicationName(u'OpenLP')
         self.setApplicationVersion(applicationVersion)
-        self.setStyleSheet(application_stylesheet)
+        if os.name == u'nt':
+            self.setStyleSheet(application_stylesheet)
         show_splash = str_to_bool(ConfigHelper.get_registry().get_value(
             u'general', u'show splash', True))
         if show_splash:
