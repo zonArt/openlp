@@ -107,9 +107,18 @@ class Ui_MainWindow(object):
         self.MediaManagerDock = OpenLPDockWidget(MainWindow)
         MediaManagerIcon = buildIcon(u':/system/system_mediamanager.png')
         self.MediaManagerDock.setWindowIcon(MediaManagerIcon)
-        self.MediaManagerDock.setObjectName(u'MediaManagerDock')
+        self.MediaManagerDock.setStyleSheet("""
+ QToolBox::tab {
+     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                 stop: 0 palette(light), stop: 1.0 palette(dark));
+     border: none;
+     border-radius: 5px;
+     margin: 0;
+ }
+        """)
         self.MediaManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_left)
+        self.MediaManagerDock.setObjectName(u'MediaManagerDock')
         self.MediaManagerContents = QtGui.QWidget()
         self.MediaManagerContents.setObjectName(u'MediaManagerContents')
         self.MediaManagerLayout = QtGui.QHBoxLayout(self.MediaManagerContents)
@@ -414,7 +423,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
-        self.closeEvent = self.onCloseEvent
         self.screenList = screens
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
@@ -593,7 +601,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.RenderManager.update_display(screen_number)
         self.mainDisplay.setup(screen_number)
 
-    def onCloseEvent(self, event):
+    def closeEvent(self, event):
         """
         Hook to close the main window and display windows on exit
         """

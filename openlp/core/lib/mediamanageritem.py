@@ -113,7 +113,7 @@ class MediaManagerItem(QtGui.QWidget):
             self.title = title
         self.Toolbar = None
         self.PageLayout = QtGui.QVBoxLayout(self)
-        self.PageLayout.setSpacing(0)
+        self.PageLayout.setSpacing(4)
         self.PageLayout.setMargin(0)
         self.requiredIcons()
         self.setupUi()
