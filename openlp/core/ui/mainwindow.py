@@ -418,8 +418,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.screenList = screens
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
-        self.mainDisplay = MainDisplay(self, screens)
         self.generalConfig = PluginConfig(u'General')
+        self.mainDisplay = MainDisplay(self, screens)
         self.alertForm = AlertForm(self)
         self.aboutForm = AboutForm(self)
         self.settingsForm = SettingsForm(self.screenList, self)

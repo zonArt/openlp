@@ -25,7 +25,7 @@
 import logging
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, str_to_bool
 
 class MainDisplay(QtGui.QWidget):
     """
@@ -87,18 +87,19 @@ class MainDisplay(QtGui.QWidget):
         else:
             self.showMinimized()
         #Build a custom splash screen
-        self.InitialFrame = QtGui.QImage(
-            screen[u'size'].width(), screen[u'size'].height(),
-            QtGui.QImage.Format_ARGB32_Premultiplied)
-        splash_image = QtGui.QImage(u':/graphics/openlp-splash-screen.png')
-        painter_image = QtGui.QPainter()
-        painter_image.begin(self.InitialFrame)
-        painter_image.fillRect(self.InitialFrame.rect(), QtCore.Qt.white)
-        painter_image.drawImage(
-            (screen[u'size'].width() - splash_image.width()) / 2,
-            (screen[u'size'].height() - splash_image.height()) / 2,
-            splash_image)
-        self.frameView(self.InitialFrame)
+        if str_to_bool(self.parent.generalConfig.get_config(u'show splash', u'True')):
+            self.InitialFrame = QtGui.QImage(
+                screen[u'size'].width(), screen[u'size'].height(),
+                QtGui.QImage.Format_ARGB32_Premultiplied)
+            splash_image = QtGui.QImage(u':/graphics/openlp-splash-screen.png')
+            painter_image = QtGui.QPainter()
+            painter_image.begin(self.InitialFrame)
+            painter_image.fillRect(self.InitialFrame.rect(), QtCore.Qt.white)
+            painter_image.drawImage(
+                (screen[u'size'].width() - splash_image.width()) / 2,
+                (screen[u'size'].height() - splash_image.height()) / 2,
+                splash_image)
+            self.frameView(self.InitialFrame)
         #Build a Black screen
         painter = QtGui.QPainter()
         self.blankFrame = QtGui.QImage(
