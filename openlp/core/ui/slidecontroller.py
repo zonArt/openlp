@@ -195,8 +195,14 @@ class SlideController(QtGui.QWidget):
             Receiver().send_message(u'request_spin_delay')
         if isLive:
             self.Toolbar.makeWidgetsInvisible(self.image_list)
-        else:
-            pass
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'slidecontroller_first'), self.onSlideSelectedFirst)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'slidecontroller_next'), self.onSlideSelectedNext)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'slidecontroller_previous'), self.onSlideSelectedPrevious)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'slidecontroller_last'), self.onSlideSelectedLast)
 
     def receiveSpinDelay(self, value):
         self.DelaySpinBox.setValue(int(value))
@@ -321,7 +327,8 @@ class SlideController(QtGui.QWidget):
         """
         Go to the first slide.
         """
-        if self.commandItem.service_item_type == ServiceType.Command:
+        if self.commandItem is not None and \
+            self.commandItem.service_item_type == ServiceType.Command:
             Receiver().send_message(u'%s_first'% self.commandItem.name.lower())
         else:
             self.PreviewListWidget.selectRow(0)
@@ -364,7 +371,8 @@ class SlideController(QtGui.QWidget):
         """
         Go to the next slide.
         """
-        if self.commandItem.service_item_type == ServiceType.Command:
+        if self.commandItem is not None and \
+            self.commandItem.service_item_type == ServiceType.Command:
             Receiver().send_message(u'%s_next'% self.commandItem.name.lower())
         else:
             row = self.PreviewListWidget.currentRow() + 1
@@ -377,7 +385,8 @@ class SlideController(QtGui.QWidget):
         """
         Go to the previous slide.
         """
-        if self.commandItem.service_item_type == ServiceType.Command:
+        if self.commandItem is not None and \
+            self.commandItem.service_item_type == ServiceType.Command:
             Receiver().send_message(
                 u'%s_previous'% self.commandItem.name.lower())
         else:
@@ -391,7 +400,8 @@ class SlideController(QtGui.QWidget):
         """
         Go to the last slide.
         """
-        if self.commandItem.service_item_type == ServiceType.Command:
+        if self.commandItem is not None and \
+            self.commandItem.service_item_type == ServiceType.Command:
             Receiver().send_message(u'%s_last'% self.commandItem.name.lower())
         else:
             self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount() - 1)

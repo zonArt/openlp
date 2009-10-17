@@ -27,7 +27,38 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, str_to_bool
 
-class MainDisplay(QtGui.QWidget):
+class DisplayLabel(QtGui.QWidget):
+    """
+    Customised version of QTableWidget which can respond to keyboard
+    events.
+    """
+    def __init__(self, parent=None, name=None):
+        QQtGui.QWidget.__init__(self, parent)
+        self.parent = parent
+
+    def keyPressEvent(self, event):
+        if type(event) == QtGui.QKeyEvent:
+            #here accept the event and do something
+            if event.key() == QtCore.Qt.Key_Up:
+                Receiver().send_message(u'slidecontroller_previous')
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_Down:
+                Receiver().send_message(u'slidecontroller_next')
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_PageUp:
+                Receiver().send_message(u'slidecontroller_first')
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_PageDown:
+                Receiver().send_message(u'slidecontroller_last')
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_Escape:
+                self.resetDisplay()
+                event.accept()
+            event.ignore()
+        else:
+            event.ignore()
+
+class MainDisplay(DisplayLabel):
     """
     This is the form that is used to display things on the projector.
     """
@@ -59,6 +90,7 @@ class MainDisplay(QtGui.QWidget):
         self.layout.addWidget(self.display)
         self.displayBlank = False
         self.blankFrame = None
+        self.frame = None
         self.alertactive = False
         self.alertTab = None
         self.timer_id = 0
@@ -66,6 +98,10 @@ class MainDisplay(QtGui.QWidget):
             QtCore.SIGNAL(u'live_slide_blank'), self.blankDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'alert_text'), self.displayAlert)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'presentations_start'), self.hideDisplay)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'presentations_stop'), self.showDisplay)
 
     def setup(self, screenNumber):
         """
@@ -84,8 +120,10 @@ class MainDisplay(QtGui.QWidget):
         self.setGeometry(screen[u'size'])
         if not screen[u'primary']:
             self.showFullScreen()
+            self.primary = False
         else:
-            self.showMinimized()
+            self.setVisible(False)
+            self.primary = True
         #Build a custom splash screen
         if str_to_bool(self.parent.generalConfig.get_config(u'show splash', u'True')):
             self.InitialFrame = QtGui.QImage(
@@ -108,6 +146,17 @@ class MainDisplay(QtGui.QWidget):
         painter.begin(self.blankFrame)
         painter.fillRect(self.blankFrame.rect(), QtCore.Qt.black)
 
+    def resetDisplay(self):
+        if self.primary:
+            self.setVisible(False)
+
+    def hideDisplay(self):
+        self.setVisible(False)
+
+    def showDisplay(self):
+        if not self.primary:
+            self.setVisible(True)
+
     def frameView(self, frame):
         """
         Called from a slide controller to display a frame
@@ -120,6 +169,9 @@ class MainDisplay(QtGui.QWidget):
             self.displayAlert()
         elif not self.displayBlank:
             self.display.setPixmap(QtGui.QPixmap.fromImage(frame))
+            if not self.isVisible():
+                self.setVisible(True)
+                self.showFullScreen()
 
     def blankDisplay(self):
         if not self.displayBlank:
@@ -127,7 +179,8 @@ class MainDisplay(QtGui.QWidget):
             self.display.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
         else:
             self.displayBlank = False
-            self.frameView(self.frame)
+            if self.frame is not None:
+                self.frameView(self.frame)
 
     def displayAlert(self, text=u''):
         """
