@@ -82,7 +82,7 @@ class MessageListener(object):
     def slide(self, message):
         self.activate()
         if message is not None:
-            self.controller.goto_slide(message[0])
+            self.controller.goto_slide(message[0]+1)
             self.controller.slidenumber = self.controller.get_slide_number()
 
     def first(self, message):

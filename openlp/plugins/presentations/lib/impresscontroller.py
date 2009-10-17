@@ -129,6 +129,7 @@ class ImpressController(PresentationController):
                 0, properties)
             self.presentation = self.document.getPresentation()
             self.presentation.Display = self.plugin.render_manager.current_display + 1
+            self.controller = None
         except:
             log.exception(u'Failed to load presentation')
             return
@@ -216,8 +217,7 @@ class ImpressController(PresentationController):
             self.document = None
 
     def is_loaded(self):
-        if self.presentation is None or self.document is None \
-            or self.controller is None:
+        if self.presentation is None or self.document is None:
             return False
         try:
             if self.document.getPresentation() is None:
@@ -228,6 +228,8 @@ class ImpressController(PresentationController):
 
     def is_active(self):
         if not self.is_loaded():
+            return False
+        if self.controller is None:
             return False
         return self.controller.isRunning() and self.controller.isActive()
 
@@ -241,7 +243,7 @@ class ImpressController(PresentationController):
         self.controller.deactivate()
 
     def start_presentation(self):
-        if not self.controller.isRunning():
+        if self.controller is None or not self.controller.isRunning():
             self.presentation.start()
             self.controller = self.desktop.getCurrentComponent().Presentation.getController()
         else:
@@ -252,7 +254,7 @@ class ImpressController(PresentationController):
         return self.controller.getCurrentSlideIndex()
 
     def get_slide_count(self):
-        return self.controller.getSlideCount()
+        return self.document.getDrawPages().getCount()
 
     def goto_slide(self, slideno):
         self.controller.gotoSlideIndex(slideno-1)
