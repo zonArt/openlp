@@ -93,7 +93,7 @@ class SongMediaItem(MediaManagerItem):
         self.SearchLayout.setWidget(
             1, QtGui.QFormLayout.FieldRole, self.SearchTypeComboBox)
         self.PageLayout.addLayout(self.SearchLayout)
-        self.SearchButtonLayout = QtGui.QHBoxLayout(self)
+        self.SearchButtonLayout = QtGui.QHBoxLayout()
         self.SearchButtonLayout.setMargin(0)
         self.SearchButtonLayout.setSpacing(4)
         self.SearchButtonLayout.setObjectName(u'SearchButtonLayout')
