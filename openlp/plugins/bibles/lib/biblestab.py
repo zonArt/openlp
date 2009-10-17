@@ -41,7 +41,6 @@ class BiblesTab(SettingsTab):
         self.paragraph_style = True
         self.show_new_chapters = False
         self.display_style = 0
-        self.bible_search = True
         SettingsTab.__init__(
             self, translate(u'BiblesTab', u'Bibles'), u'Bibles')
 
@@ -127,27 +126,11 @@ class BiblesTab(SettingsTab):
         self.BibleRightLayout.setObjectName(u'BibleRightLayout')
         self.BibleRightLayout.setSpacing(8)
         self.BibleRightLayout.setMargin(0)
-        self.BibleSearchGroupBox = QtGui.QGroupBox(self)
-        self.BibleSearchGroupBox.setObjectName(u'BibleSearchGroupBox')
-        self.BibleSearchLayout = QtGui.QVBoxLayout(self.BibleSearchGroupBox)
-        self.BibleSearchLayout.setObjectName(u'BibleSearchLayout')
-        self.BibleSearchLayout.setSpacing(8)
-        self.BibleSearchLayout.setMargin(8)
-        self.BibleSearchCheckBox = QtGui.QCheckBox(self.BibleSearchGroupBox)
-        self.BibleSearchCheckBox.setObjectName(u'BibleSearchCheckBox')
-        self.BibleSearchLayout.addWidget(self.BibleSearchCheckBox)
-        self.BibleRightLayout.addWidget(self.BibleSearchGroupBox)
-        self.BibleRightSpacer = QtGui.QSpacerItem(40, 20,
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.BibleRightLayout.addItem(self.BibleRightSpacer)
         self.BibleLayout.addWidget(self.BibleRightWidget)
         # Signals and slots
         QtCore.QObject.connect(self.NewChaptersCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onNewChaptersCheckBoxChanged)
-        QtCore.QObject.connect(self.BibleSearchCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onBibleSearchCheckBoxChanged)
         QtCore.QObject.connect(self.DisplayStyleComboBox,
             QtCore.SIGNAL(u'activated(int)'),
             self.onDisplayStyleComboBoxChanged)
@@ -186,10 +169,6 @@ class BiblesTab(SettingsTab):
             3, translate(u'SettingsForm', u'[ and ]'))
         self.ChangeNoteLabel.setText(translate(u'SettingsForm',
             u'Note:\nChanges don\'t affect verses already in the service'))
-        self.BibleSearchGroupBox.setTitle(
-            translate(u'SettingsForm', u'Search'))
-        self.BibleSearchCheckBox.setText(
-            translate(u'SettingsForm', u'Search-as-you-type'))
 
     def onBibleThemeComboBoxChanged(self):
         self.bible_theme = self.BibleThemeComboBox.currentText()
@@ -207,13 +186,6 @@ class BiblesTab(SettingsTab):
         if check_state == QtCore.Qt.Checked:
             self.show_new_chapters = True
 
-    def onBibleSearchCheckBoxChanged(self):
-        check_state = self.BibleSearchCheckBox.checkState()
-        self.bible_search = False
-        # we have a set value convert to True/False
-        if check_state == QtCore.Qt.Checked:
-            self.bible_search = True
-
     def load(self):
         self.show_new_chapters = str_to_bool(
             self.config.get_config(u'display new chapter', u'False'))
@@ -222,12 +194,9 @@ class BiblesTab(SettingsTab):
         self.layout_style = int(
             self.config.get_config(u'verse layout style', u'0'))
         self.bible_theme = self.config.get_config(u'bible theme', u'0')
-        self.bible_search = str_to_bool(
-            self.config.get_config(u'search as type', u'True'))
         self.NewChaptersCheckBox.setChecked(self.show_new_chapters)
         self.DisplayStyleComboBox.setCurrentIndex(self.display_style)
         self.LayoutStyleComboBox.setCurrentIndex(self.layout_style)
-        self.BibleSearchCheckBox.setChecked(self.bible_search)
 
     def save(self):
         self.config.set_config(
@@ -236,7 +205,6 @@ class BiblesTab(SettingsTab):
             u'display brackets', unicode(self.display_style))
         self.config.set_config(
             u'verse layout style', unicode(self.layout_style))
-        self.config.set_config(u'search as type', unicode(self.bible_search))
         self.config.set_config(u'bible theme', unicode(self.bible_theme))
 
     def updateThemeList(self, theme_list):
