@@ -23,6 +23,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import os
 import sys
 import logging
 
@@ -36,6 +37,19 @@ from openlp.core.ui import MainWindow, SplashScreen
 from openlp.core.utils import ConfigHelper
 
 log = logging.getLogger()
+
+application_stylesheet = u"""
+QMainWindow::separator
+{
+  border: none;
+}
+
+QDockWidget::title
+{
+  border: none;
+  padding-left: 2px;
+}
+"""
 
 class OpenLP(QtGui.QApplication):
     """
@@ -60,6 +74,8 @@ class OpenLP(QtGui.QApplication):
             QtCore.SIGNAL(u'process_events'), self.processEvents)
         self.setApplicationName(u'OpenLP')
         self.setApplicationVersion(applicationVersion)
+        if os.name == u'nt':
+            self.setStyleSheet(application_stylesheet)
         show_splash = str_to_bool(ConfigHelper.get_registry().get_value(
             u'general', u'show splash', True))
         if show_splash:
