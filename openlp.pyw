@@ -50,6 +50,13 @@ QDockWidget::title
   padding-left: 5px;
   padding-top: 3px;
 }
+
+QToolBar
+{
+  border: none;
+  /*margin: 0;*/
+  padding: 0;
+}
 """
 
 class OpenLP(QtGui.QApplication):
