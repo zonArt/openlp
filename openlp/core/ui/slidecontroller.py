@@ -77,13 +77,22 @@ class SlideController(QtGui.QWidget):
         self.timer_id = 0
         self.commandItem = None
         self.Panel = QtGui.QWidget(parent.ControlSplitter)
-        self.Splitter = QtGui.QSplitter(self.Panel)
-        self.Splitter.setOrientation(QtCore.Qt.Vertical)
         # Layout for holding panel
         self.PanelLayout = QtGui.QVBoxLayout(self.Panel)
-        self.PanelLayout.addWidget(self.Splitter)
         self.PanelLayout.setSpacing(0)
         self.PanelLayout.setMargin(0)
+        # Type label for the top of the slide controller
+        self.TypeLabel = QtGui.QLabel(self.Panel)
+        if self.isLive:
+            self.TypeLabel.setText(u'<strong>%s</strong>' % translate(u'SlideController', u'Live'))
+        else:
+            self.TypeLabel.setText(u'<strong>%s</strong>' % translate(u'SlideController', u'Preview'))
+        self.TypeLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.PanelLayout.addWidget(self.TypeLabel)
+        # Splitter
+        self.Splitter = QtGui.QSplitter(self.Panel)
+        self.Splitter.setOrientation(QtCore.Qt.Vertical)
+        self.PanelLayout.addWidget(self.Splitter)
         # Actual controller section
         self.Controller = QtGui.QWidget(self.Splitter)
         self.Controller.setGeometry(QtCore.QRect(0, 0, 100, 536))
