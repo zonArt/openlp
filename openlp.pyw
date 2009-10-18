@@ -47,7 +47,8 @@ QMainWindow::separator
 QDockWidget::title
 {
   border: none;
-  padding-left: 2px;
+  padding-left: 5px;
+  padding-top: 3px;
 }
 """
 
