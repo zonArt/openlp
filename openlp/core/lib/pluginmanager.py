@@ -140,7 +140,7 @@ class PluginManager(object):
                 if plugin.media_item is not None:
                     log.debug(u'Inserting media manager item from %s' % \
                         plugin.name)
-                    mediadock.addDock(plugin.media_item, plugin.icon, plugin.weight)
+                    mediadock.add_dock(plugin.media_item, plugin.icon, plugin.weight)
 
     def hook_settings_tabs(self, settingsform=None):
         """

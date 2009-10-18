@@ -153,6 +153,7 @@ class ThemeManager(QtGui.QWidget):
 
     def onAddTheme(self):
         self.amendThemeForm.loadTheme(None)
+        self.saveThemeName = u''
         self.amendThemeForm.exec_()
 
     def onEditTheme(self):
@@ -160,6 +161,7 @@ class ThemeManager(QtGui.QWidget):
         if item is not None:
             self.amendThemeForm.loadTheme(
                 unicode(item.data(QtCore.Qt.UserRole).toString()))
+            self.saveThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
             self.amendThemeForm.exec_()
 
     def onDeleteTheme(self):
@@ -412,23 +414,26 @@ class ThemeManager(QtGui.QWidget):
             os.mkdir(os.path.join(self.path, name))
         theme_file = os.path.join(theme_dir, name + u'.xml')
         log.debug(theme_file)
-
         result = QtGui.QMessageBox.Yes
-        if os.path.exists(theme_file):
-            result = QtGui.QMessageBox.question(
-                self,
-                translate(u'ThemeManager', u'Theme Exists'),
-                translate(u'ThemeManager', u'A theme with this name already exists, would you like to overwrite it?'),
-                (QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
-                QtGui.QMessageBox.No)
+        if self.saveThemeName != name:
+            if os.path.exists(theme_file):
+                result = QtGui.QMessageBox.question(
+                    self,
+                    translate(u'ThemeManager', u'Theme Exists'),
+                    translate(u'ThemeManager', u'A theme with this name already exists, would you like to overwrite it?'),
+                    (QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
+                    QtGui.QMessageBox.No)
+            else:
+                result == QtGui.QMessageBox.Yes
         if result == QtGui.QMessageBox.Yes:
             # Save the theme, overwriting the existing theme if necessary.
             outfile = open(theme_file, u'w')
             outfile.write(theme_pretty_xml)
             outfile.close()
             if image_from is not None and image_from != image_to:
+                print "if", image_from
+                print "it", image_to
                 shutil.copyfile(image_from, image_to)
-
             self.generateAndSaveImage(self.path, name, theme_xml)
             self.loadThemes()
         else:

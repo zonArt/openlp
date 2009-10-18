@@ -208,7 +208,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def configUpdated(self):
         if str_to_bool(
-            self.parent.config.get_config(u'duel bibles', u'False')):
+            self.parent.config.get_config(u'dual bibles', u'False')):
             self.AdvancedSecondBibleComboBox.setVisible(True)
             self.QuickSecondBibleComboBox.setVisible(True)
         else:

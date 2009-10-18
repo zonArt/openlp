@@ -250,7 +250,7 @@ class Plugin(object):
         """
         Called by the plugin to remove toolbar
         """
-        self.mediadock.removeDock(self.name)
+        self.mediadock.remove_dock(self.name)
         self.settings.removeTab(self.name)
 
     def insert_toolbox_item(self):
@@ -258,6 +258,6 @@ class Plugin(object):
         Called by plugin to replace toolbar
         """
         if self.media_item is not None:
-            self.mediadock.insertDock(self.media_item, self.icon, self.weight)
+            self.mediadock.insert_dock(self.media_item, self.icon, self.weight)
         if self.settings_tab is not None:
             self.settings.insertTab(self.settings_tab, self.weight)

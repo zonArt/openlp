@@ -108,6 +108,7 @@ class MainDisplay(DisplayLabel):
         Sets up the screen on a particular screen.
         @param (integer) screen This is the screen number.
         """
+        log.debug(u'Setup %s for %s ' %(self.screens, screenNumber) )
         screen = self.screens[screenNumber]
         if screen[u'number'] != screenNumber:
             # We will most probably never actually hit this bit, but just in

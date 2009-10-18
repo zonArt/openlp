@@ -110,9 +110,9 @@ class BiblesTab(SettingsTab):
         self.BibleThemeComboBox.setObjectName(u'BibleThemeComboBox')
         self.BibleThemeComboBox.addItem(QtCore.QString())
         self.BibleThemeLayout.addWidget(self.BibleThemeComboBox)
-        self.BibleDuelCheckBox = QtGui.QCheckBox(self.VerseDisplayGroupBox)
-        self.BibleDuelCheckBox.setObjectName(u'BibleDuelCheckBox')
-        self.VerseDisplayLayout.addWidget(self.BibleDuelCheckBox, 3, 0, 1, 1)
+        self.BibleDualCheckBox = QtGui.QCheckBox(self.VerseDisplayGroupBox)
+        self.BibleDualCheckBox.setObjectName(u'BibleDualCheckBox')
+        self.VerseDisplayLayout.addWidget(self.BibleDualCheckBox, 3, 0, 1, 1)
         self.VerseDisplayLayout.addWidget(self.BibleThemeWidget, 4, 0, 1, 1)
         self.ChangeNoteLabel = QtGui.QLabel(self.VerseDisplayGroupBox)
         self.ChangeNoteLabel.setObjectName(u'ChangeNoteLabel')
@@ -141,9 +141,9 @@ class BiblesTab(SettingsTab):
         QtCore.QObject.connect(self.LayoutStyleComboBox,
             QtCore.SIGNAL(u'activated(int)'),
             self.onLayoutStyleComboBoxChanged)
-        QtCore.QObject.connect(self.BibleDuelCheckBox,
+        QtCore.QObject.connect(self.BibleDualCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onBibleDuelCheckBox)
+            self.onBibleDualCheckBox)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'update_themes'), self.updateThemeList)
 
@@ -174,8 +174,8 @@ class BiblesTab(SettingsTab):
             3, translate(u'SettingsForm', u'[ and ]'))
         self.ChangeNoteLabel.setText(translate(u'SettingsForm',
             u'Note:\nChanges don\'t affect verses already in the service'))
-        self.BibleDuelCheckBox.setText(
-            translate(u'SettingsForm', u'Display Duel Bible Verses'))
+        self.BibleDualCheckBox.setText(
+            translate(u'SettingsForm', u'Display Dual Bible Verses'))
 
     def onBibleThemeComboBoxChanged(self):
         self.bible_theme = self.BibleThemeComboBox.currentText()
@@ -192,7 +192,7 @@ class BiblesTab(SettingsTab):
         if check_state == QtCore.Qt.Checked:
             self.show_new_chapters = True
 
-    def onBibleDuelCheckBox(self, check_state):
+    def onBibleDualCheckBox(self, check_state):
         self.duel_bibles = False
         # we have a set value convert to True/False
         if check_state == QtCore.Qt.Checked:
@@ -207,11 +207,11 @@ class BiblesTab(SettingsTab):
             self.config.get_config(u'verse layout style', u'0'))
         self.bible_theme = self.config.get_config(u'bible theme', u'0')
         self.duel_bibles = str_to_bool(
-            self.config.get_config(u'duel bibles', u'True'))
+            self.config.get_config(u'dual bibles', u'True'))
         self.NewChaptersCheckBox.setChecked(self.show_new_chapters)
         self.DisplayStyleComboBox.setCurrentIndex(self.display_style)
         self.LayoutStyleComboBox.setCurrentIndex(self.layout_style)
-        self.BibleDuelCheckBox.setChecked(self.duel_bibles)
+        self.BibleDualCheckBox.setChecked(self.duel_bibles)
 
     def save(self):
         self.config.set_config(
@@ -220,7 +220,7 @@ class BiblesTab(SettingsTab):
             u'display brackets', unicode(self.display_style))
         self.config.set_config(
             u'verse layout style', unicode(self.layout_style))
-        self.config.set_config(u'duel bibles', unicode(self.duel_bibles))
+        self.config.set_config(u'dual bibles', unicode(self.duel_bibles))
         self.config.set_config(u'bible theme', unicode(self.bible_theme))
 
     def updateThemeList(self, theme_list):

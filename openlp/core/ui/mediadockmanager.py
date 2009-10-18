@@ -24,19 +24,19 @@
 
 import logging
 
-log = logging.getLogger(u'MediaDockManager')
+log = logging.getLogger(u'media_dockManager')
 
 class MediaDockManager(object):
 
-    def __init__(self, mediaDock):
-        self.mediaDock = mediaDock
+    def __init__(self, media_dock):
+        self.media_dock = media_dock
 
-    def addDock(self, media_item, icon, weight):
+    def add_dock(self, media_item, icon, weight):
         log.info(u'Adding %s dock' % media_item.title)
-        id = self.mediaDock.addItem(
+        id = self.media_dock.addItem(
             media_item, icon, media_item.title)
 
-    def insertDock(self, media_item, icon, weight):
+    def insert_dock(self, media_item, icon, weight):
         """
         This should insert a dock item at a given location
         This does not work as it gives a Segmentation error.
@@ -44,18 +44,18 @@ class MediaDockManager(object):
         """
         log.debug(u'Inserting %s dock' % media_item.title)
         match = False
-        for dock_index in range(0, self.mediaDock.count()):
-            if self.mediaDock.widget(dock_index).ConfigSection == media_item.title.lower():
+        for dock_index in range(0, self.media_dock.count()):
+            if self.media_dock.widget(dock_index).ConfigSection == media_item.title.lower():
                 match = True
                 break
         if not match:
-            self.mediaDock.addItem(media_item, icon, media_item.title)
+            self.media_dock.addItem(media_item, icon, media_item.title)
 
 
-    def removeDock(self, name):
+    def remove_dock(self, name):
         log.debug(u'remove %s dock' % name)
-        for dock_index in range(0, self.mediaDock.count()):
-            if self.mediaDock.widget(dock_index) is not None:
-                if self.mediaDock.widget(dock_index).ConfigSection == name.lower():
-                    self.mediaDock.widget(dock_index).hide()
-                    self.mediaDock.removeItem(dock_index)
+        for dock_index in range(0, self.media_dock.count()):
+            if self.media_dock.widget(dock_index) is not None:
+                if self.media_dock.widget(dock_index).ConfigSection == name.lower():
+                    self.media_dock.widget(dock_index).hide()
+                    self.media_dock.removeItem(dock_index)
