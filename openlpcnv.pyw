@@ -47,10 +47,10 @@ from openlp.migration.migratesongs import *
 ###############################################################################
 
 logging.basicConfig(level=logging.DEBUG,
-                format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                datefmt='%m-%d %H:%M',
-                filename='openlp-migration.log',
-                filemode='w')
+                format=u'%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                datefmt=u'%m-%d %H:%M',
+                filename=u'openlp-migration.log',
+                filemode=u'w')
 
 class Migration(object):
     """
@@ -76,10 +76,10 @@ class Migration(object):
         """
         Move the log file to a new location.
         """
-        fname = 'openlp-migration.log'
+        fname = u'openlp-migration.log'
         c = os.path.splitext(fname)
         b = (c[0]+'-'+ unicode(self.stime) + c[1])
-        self.display.output(u'Logfile " +b + " generated')
+        self.display.output(u'Logfile ' + b + u' generated')
         self.display.output(u'Migration Utility Finished ')
         os.rename(fname, b)
 
@@ -93,12 +93,9 @@ class Migration(object):
         ``outname``
             The output file name.
         """
-        infile = codecs.open(inname, 'r', encoding='CP1252')
-        writefile = codecs.open(outname, 'w', encoding='utf-8')
+        infile = codecs.open(inname, u'r', encoding=u'CP1252')
+        writefile = codecs.open(outname, u'w', encoding=u'utf-8')
         for line in infile:
-            #replace the quotes with quotes
-            #TODO fix double quotes
-            #line = line.replace(u'\'\'', u'@')
             writefile.write(line)
         infile.close()
         writefile.close()
@@ -106,16 +103,16 @@ class Migration(object):
     def convert_sqlite2_to_3(self, olddb, newdb):
         if os.name == u'nt':
             hKey = win32api.RegOpenKey(win32con.HKEY_LOCAL_MACHINE, u'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\SQLite ODBC Driver')
-            value, type = win32api.RegQueryValueEx (hKey, "UninstallString")
+            value, type = win32api.RegQueryValueEx (hKey, u'UninstallString')
             sqlitepath, temp = os.path.split(value)
             sqliteexe = os.path.join(sqlitepath, u'sqlite.exe')
         else:
             sqliteexe = u'sqlite'
-        cmd = sqliteexe + u' "' + olddb + u'" .dump'
+        cmd = u'%s "%s" .dump' % (sqliteexe, olddb)
         if os.name == u'nt':
-            subprocess.call(cmd, stdout=open(u'./sqlite.dmp', 'w'))
+            subprocess.call(cmd, stdout=open(u'./sqlite.dmp', u'w'))
         else:
-            subprocess.call(cmd, stdout=open(u'./sqlite.dmp', 'w'), shell=True)
+            subprocess.call(cmd, stdout=open(u'./sqlite.dmp', u'w'), shell=True)
         self.convert_file(u'sqlite.dmp', u'sqlite3.dmp')
         if os.name == u'nt':
             sqlite3exe = os.path.join(sqlitepath, u'sqlite3.exe')
@@ -124,16 +121,15 @@ class Migration(object):
         if os.path.isfile(newdb):
             saveddb = newdb + self.stime
             os.rename(newdb, saveddb)
-        cmd = sqlite3exe + ' "' + newdb + '"'
+        cmd = '%s "%s"' % (sqlite3exe, newdb)
         if os.name == u'nt':
-            subprocess.call(cmd, stdin=open('sqlite3.dmp', 'r'))
+            subprocess.call(cmd, stdin=open(u'sqlite3.dmp', u'r'))
         else:
-            subprocess.call(cmd, stdin=open('sqlite3.dmp', 'r'), shell=True)
+            subprocess.call(cmd, stdin=open(u'sqlite3.dmp', u'r'), shell=True)
         os.remove(u'sqlite.dmp')
         os.remove(u'sqlite3.dmp')
 
-
-if __name__ == '__main__':
+if __name__ == u'__main__':
     mig = Migration()
     config = PluginConfig(u'Songs')
     newpath = config.get_data_path()
@@ -141,7 +137,7 @@ if __name__ == '__main__':
         if not os.path.isdir(newpath):
             os.makedirs(newpath)
         ALL_USERS_APPLICATION_DATA = 35
-        shell = Dispatch("Shell.Application")
+        shell = Dispatch(u'Shell.Application')
         folder = shell.Namespace(ALL_USERS_APPLICATION_DATA)
         folderitem = folder.Self
         olddb = os.path.join(folderitem.path, u'openlp.org', u'Data', u'songs.olp')
