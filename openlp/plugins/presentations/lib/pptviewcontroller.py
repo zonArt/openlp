@@ -112,6 +112,7 @@ class PptviewController(PresentationController):
             try:
                 self.pptid = self.process.OpenPPT(filepath, None, rect,
                     str(os.path.join(self.thumbnailpath, self.thumbnailprefix)))
+                self.stop_presentation()
             except:
                 log.exception(u'Failed to load presentation')
 
@@ -201,6 +202,10 @@ class PptviewController(PresentationController):
             ``slide_no``
                 The slide an image is required for, starting at 1
             """
-            return os.path.join(self.thumbnailpath,
+            path = os.path.join(self.thumbnailpath,
                 self.thumbnailprefix + unicode(slide_no) + u'.bmp')
+            if os.path.isfile(path):
+                return path
+            else:
+                return None
 
