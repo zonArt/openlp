@@ -56,6 +56,7 @@ class MediaMediaItem(MediaManagerItem):
         #self.ServiceItemIconName = u':/media/media_image.png'
         self.PreviewFunction = self.video_get_preview
         MediaManagerItem.__init__(self, parent, icon, title)
+        self.MainDisplay = self.parent.live_controller.parent.mainDisplay
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -78,7 +79,7 @@ class MediaMediaItem(MediaManagerItem):
             return False
         service_item.title = u'Media'
         for index in indexes:
-            filename = self.ListData.getFilename(index)
+            filename = self.ListView.getFilename(index)
             frame = QtGui.QImage(unicode(filename))
             (path, name) = os.path.split(filename)
             service_item.add_from_image(path, name, frame)
@@ -88,12 +89,24 @@ class MediaMediaItem(MediaManagerItem):
         log.debug(u'Media Preview Button pressed')
         items = self.ListView.selectedIndexes()
         for item in items:
-            text = self.ListData.getValue(item)
-            print text
+            baseItem = self.ListView.item(item.row())
+            itemText = unicode(baseItem.data(QtCore.Qt.UserRole).tostring())
+            print itemText
 
-    def onMediaLiveClick(self):
+    def onLiveClick(self):
         log.debug(u'Media Live Button pressed')
-        pass
+        items = self.ListView.selectedIndexes()
+        if len(items) > 0:
+            firstPass = True
+            for item in items:
+                baseItem = self.ListView.item(item.row())
+                filename = unicode(baseItem.data(QtCore.Qt.UserRole).toString())
+                if firstPass:
+                    self.MainDisplay.queueMedia(filename, firstPass)
+                    firstPass = False
+                else:
+                    self.MainDisplay.queueMedia(filename, firstPass)
+        self.MainDisplay.playMedia()
 
     def initialise(self):
         self.ListView.setSelectionMode(
