@@ -182,6 +182,7 @@ class MainDisplay(DisplayLabel):
             self.displayBlank = False
             if self.frame is not None:
                 self.frameView(self.frame)
+        self.parent.generalConfig.set_config(u'Screen Blank',self.displayBlank)
 
     def displayAlert(self, text=u''):
         """

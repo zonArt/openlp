@@ -581,6 +581,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.versionCheck()
         if str_to_bool(self.generalConfig.get_config(u'Auto Open', False)):
             self.ServiceManagerContents.onLoadService(True)
+        if str_to_bool(self.generalConfig.get_config(u'Screen Blank', False)) \
+        and str_to_bool(self.generalConfig.get_config(u'Blank Warning', False)):
+            print "Popup goes here"
 
     def onHelpAboutItemClicked(self):
         """
