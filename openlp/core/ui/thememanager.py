@@ -290,8 +290,8 @@ class ThemeManager(QtGui.QWidget):
             xml = newtheme.extract_xml()
         theme = ThemeXML()
         theme.parse(xml)
-        theme.extend_image_filename(self.path)
         self.cleanTheme(theme)
+        theme.extend_image_filename(self.path)
         return theme
 
     def checkThemesExists(self, dir):

@@ -561,8 +561,6 @@ class Renderer(object):
         ``image2``
             Defaults to *None*. Another image to save to disk.
         """
-        im = image.toImage()
-        im.save(u'renderer.png', u'png')
+        image.save(u'renderer.png', u'png')
         if image2 is not None:
-            im = image2.toImage()
-            im.save(u'renderer2.png', u'png')
+            image2.save(u'renderer2.png', u'png')
