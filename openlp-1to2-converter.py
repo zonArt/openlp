@@ -5,11 +5,12 @@ import sys
 import os
 import sqlite
 import sqlite3
-import chardet
+import re
 from optparse import OptionParser
 from traceback import format_tb as get_traceback
 
 # Some global options to be used throughout the import process
+dirty_chars = re.compile(r'\W', re.UNICODE)
 verbose = False
 debug = False
 old_cursor = None
@@ -17,20 +18,20 @@ new_cursor = None
 
 # SQL create statments
 create_statements = [
-    u"""CREATE TABLE authors (
+    (u'table "authors"', u"""CREATE TABLE authors (
         id INTEGER NOT NULL,
         first_name VARCHAR(128),
         last_name VARCHAR(128),
         display_name VARCHAR(255) NOT NULL,
         PRIMARY KEY (id)
-)""",
-    u"""CREATE TABLE song_books (
+)"""),
+    (u'table "song_books"', u"""CREATE TABLE song_books (
         id INTEGER NOT NULL,
         name VARCHAR(128) NOT NULL,
         publisher VARCHAR(128),
         PRIMARY KEY (id)
-)""",
-    u"""CREATE TABLE songs (
+)"""),
+    (u'table "songs"', u"""CREATE TABLE songs (
         id INTEGER NOT NULL,
         song_book_id INTEGER,
         title VARCHAR(255) NOT NULL,
@@ -45,29 +46,54 @@ create_statements = [
         search_lyrics TEXT NOT NULL,
         PRIMARY KEY (id),
          FOREIGN KEY(song_book_id) REFERENCES song_books (id)
-)""",
-    u"""CREATE TABLE topics (
+)"""),
+    (u'table "topics"', u"""CREATE TABLE topics (
         id INTEGER NOT NULL,
         name VARCHAR(128) NOT NULL,
         PRIMARY KEY (id)
-)""",
-    u"""CREATE INDEX ix_songs_search_lyrics ON songs (search_lyrics)""",
-    u"""CREATE INDEX ix_songs_search_title ON songs (search_title)""",
-    u"""CREATE TABLE authors_songs (
+)"""),
+    (u'index "ix_songs_search_lyrics"',
+        u"""CREATE INDEX ix_songs_search_lyrics ON songs (search_lyrics)"""),
+    (u'index "ix_songs_search_title',
+        u"""CREATE INDEX ix_songs_search_title ON songs (search_title)"""),
+    (u'table "authors_songs"', u"""CREATE TABLE authors_songs (
         author_id INTEGER NOT NULL,
         song_id INTEGER NOT NULL,
         PRIMARY KEY (author_id, song_id),
          FOREIGN KEY(author_id) REFERENCES authors (id),
          FOREIGN KEY(song_id) REFERENCES songs (id)
-)""",
-    u"""CREATE TABLE songs_topics (
+)"""),
+    (u'table "songs_topics"', u"""CREATE TABLE songs_topics (
         song_id INTEGER NOT NULL,
         topic_id INTEGER NOT NULL,
         PRIMARY KEY (song_id, topic_id),
          FOREIGN KEY(song_id) REFERENCES songs (id),
          FOREIGN KEY(topic_id) REFERENCES topics (id)
-)"""
+)""")
 ]
+
+def clean_string(dirty):
+    return dirty_chars.sub(u'', dirty).replace(u'\r\n', ' ').replace(u'\n', ' ')
+
+def convert_string(buffer_column):
+    buffer_string = buffer(buffer_column)
+    #unicode(encoded_string.decode('cp1252', 'replace'))
+    return unicode(buffer_string, 'utf-8').decode('cp1252', 'replace')
+
+def display_sql(sql, params):
+    prepared_params = []
+    for param in params:
+        if isinstance(param, basestring):
+            prepared_params.append(u'"%s"' % param)
+        elif isinstance(param, (int, long)):
+            prepared_params.append(u'%d' % param)
+        elif isinstance(param, (float, complex)):
+            prepared_params.append(u'%f' % param)
+        else:
+            prepared_params.append(u'"%s"' % str(param))
+    for prepared_param in prepared_params:
+        sql = sql.replace(u'?', prepared_param, 1)
+    return sql
 
 def create_database():
     global new_cursor, create_statements
@@ -75,14 +101,11 @@ def create_database():
         print 'Creating new database:'
     else:
         print 'Creating new database...',
-    for sql_create in create_statements:
+    for statement_type, sql_create in create_statements:
         if debug:
             print '... ', sql_create.replace('\n', ' ').replace('         ', ' ')
         elif verbose:
-            if sql_create[:12] == u'CREATE TABLE':
-                print '... creating table "%s"...' % sql_create[13, sql_create.find(u'(') - 2],
-            elif sql_create[:12] == u'CREATE INDEX':
-                print '... creating index "%s"...' % sql_create[13, sql_create.find(u'ON') - 2],
+            print '... creating %s...' % statement_type,
         new_cursor.execute(sql_create)
         if verbose and not debug:
             print 'done.'
@@ -105,20 +128,21 @@ def import_songs():
         print 'done.'
     author_map = {}
     for row in rows:
-        names = row[1].split(u' ')
+        display_name = convert_string(row[1])
+        names = display_name.split(u' ')
         first_name = names[0]
         last_name = u' '.join(names[1:])
         if last_name is None:
             last_name = u''
         sql_insert = u'INSERT INTO authors '\
             '(id, first_name, last_name, display_name) '\
-            'VALUES (NULL, "%s", "%s", "%s")'\
-            % (first_name, last_name, row['displayname'])
+            'VALUES (NULL, ?, ?, ?)'
+        sql_params = (first_name, last_name, display_name)
         if debug:
-            print '...', str(sql_insert)
+            print '...', display_sql(sql_insert, sql_params)
         elif verbose:
-            print '... importing "%s"' % row['displayname']
-        new_cursor.execute(sql_insert)
+            print '... importing "%s"' % display_name
+        new_cursor.execute(sql_insert, sql_params)
         author_map[row[0]] = new_cursor.lastrowid
         if debug:
             print '    >>> authors.authorid =', row[0], 'authors.id =', author_map[row[0]]
@@ -129,36 +153,38 @@ def import_songs():
     else:
         print 'Importing songs...',
     if debug:
-        print '... SELECT songid AS id, songtitle AS title, lyrics, copyrightinfo AS copyright FROM songs'
+        print '... SELECT songid AS id, songtitle AS title, lyrics, copyrightinfo AS copyright FROM songs...',
     elif verbose:
         print '... fetching songs from old database...',
     old_cursor.execute(u'SELECT songid AS id, songtitle AS title, lyrics, copyrightinfo AS copyright FROM songs')
     rows = old_cursor.fetchall()
-    if not debug and verbose:
+    if debug or verbose:
         print 'done.'
     song_map = {}
     xml_lyrics_template = u'<?xml version="1.0" encoding="utf-8"?><song version="1.0"><lyrics language="en">%s</lyrics></song>'
     xml_verse_template = u'<verse label="%d" type="Verse"><![CDATA[%s]]></verse>'
     for row in rows:
-        print row[2].decode('iso-8859-1')
-        text_lyrics = unicode(row[2], 'iso-8859-1').split(u'\n\n')
+        clean_title = convert_string(row[1])
+        clean_lyrics = convert_string(row[2])
+        clean_copyright = convert_string(row[3])
+        text_lyrics = clean_lyrics.split(u'\n\n')
         xml_lyrics = u''
         for line, verse in enumerate(text_lyrics):
             if not verse:
                 continue
-            xml_lyrics += (xml_lyrics_template % (line, verse))
-        xml_verse = xml_verse_template % xml_lyrics
-        clean_title = row[1]
-        clean_lyrics = row[2]
+            xml_lyrics += (xml_verse_template % (line + 1, verse))
+        xml_verse = xml_lyrics_template % xml_lyrics
+        search_title = clean_string(clean_title)
+        search_lyrics = clean_string(clean_lyrics)
         sql_insert = u'INSERT INTO songs '\
             '(id, title, lyrics, copyright, search_title, search_lyrics) '\
-            'VALUES (NULL, "%s", "%s", "%s", "%s", "%s")'\
-            % (row[1], xml_lyrics, row[3], clean_title, clean_lyrics)
+            'VALUES (NULL, ?, ?, ?, ?, ?)'
+        sql_params = (clean_title, xml_lyrics, clean_copyright, clean_title, clean_lyrics)
         if debug:
-            print '...', str(sql_insert)
+            print '...', display_sql(sql_insert, (sql_params[0], u'<xml>', sql_params[2], sql_params[3], u'string'))
         elif verbose:
-            print '... importing "%s"' % row[u'title']
-        new_cursor.execute(sql_insert)
+            print '... importing "%s"' % clean_title
+        new_cursor.execute(sql_insert, sql_params)
         song_map[row[0]] = new_cursor.lastrowid
     if not verbose and not debug:
         print 'done.'
@@ -170,22 +196,22 @@ def import_songs():
         print '... SELECT authorid AS author_id, songid AS song_id FROM songauthors'
     elif verbose:
         print '... fetching song-to-author mapping from old database...',
-    old_cursor.execute(u'SELECT songid AS id, songtitle AS title, lyrics, copyrightinfo AS copyright FROM songs')
+    old_cursor.execute(u'SELECT authorid AS author_id, songid AS song_id FROM songauthors')
     rows = old_cursor.fetchall()
     if not debug and verbose:
         print 'done.'
     for row in rows:
         sql_insert = u'INSERT INTO authors_songs '\
             '(author_id, song_id) '\
-            'VALUES (%d, %d)'\
-            % (author_map[row[u'author_id']], song_map[row[u'song_id']])
+            'VALUES (?, ?)'
+        sql_params = (author_map[row[0]], song_map[row[1]])
         if debug:
-            print '... ', str(sql_insert)
+            print '... ', display_sql(sql_insert, sql_params)
         elif verbose:
             print '... Author %d (was %d) => Song %d (was %d)'\
                 % (int(row[0]), author_map[row[0]],
                    int(row[1]), song_map[row[1]])
-        new_cursor.execute(sql_insert)
+        new_cursor.execute(sql_insert, sql_params)
     if not verbose and not debug:
         print 'done.'
 
