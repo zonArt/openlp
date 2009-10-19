@@ -438,7 +438,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.mainDisplay = MainDisplay(self, screens)
         self.alertForm = AlertForm(self)
         self.aboutForm = AboutForm(self)
-        self.settingsForm = SettingsForm(self.screenList, self)
+        self.settingsForm = SettingsForm(self.screenList, self, self)
         # Set up the path with plugins
         pluginpath = os.path.split(os.path.abspath(__file__))[0]
         pluginpath = os.path.abspath(
