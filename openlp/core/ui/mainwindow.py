@@ -32,7 +32,7 @@ from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
     PluginForm, MediaDockManager
 from openlp.core.lib import translate, RenderManager, PluginConfig, \
     OpenLPDockWidget, SettingsManager, PluginManager, Receiver, \
-    buildIcon
+    buildIcon, str_to_bool
 from openlp.core.utils import check_latest_version
 
 media_manager_style = """
@@ -540,7 +540,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.ThemeManagerContents.loadThemes()
         log.info(u'Load data from Settings')
         self.settingsForm.postSetUp()
-        self.versionCheck()
 
     def versionCheck(self):
         applicationVersion = self.generalConfig.get_config(u'Application version', u'1.9.0-595')
@@ -569,7 +568,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 monitor_exists = True
         if not monitor_exists:
             screen_number = 0
-
         return screen_number
 
     def show(self):
@@ -580,6 +578,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         screen_number = self.getMonitorNumber()
         self.mainDisplay.setup(screen_number)
         self.setFocus()
+        self.versionCheck()
+        if str_to_bool(self.generalConfig.get_config(u'Auto Open', False)):
+            self.ServiceManagerContents.onLoadService(True)
+        if str_to_bool(self.generalConfig.get_config(u'Screen Blank', False)) \
+        and str_to_bool(self.generalConfig.get_config(u'Blank Warning', False)):
+            QtGui.QMessageBox.question(None,
+                translate(u'mainWindow', u'OpenLP Main Display Blanked'),
+                translate(u'mainWindow', u'The Main Display has been blanked out'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
+                QtGui.QMessageBox.Ok)
+            self.LiveController.blackPushButton.setChecked(True)
 
     def onHelpAboutItemClicked(self):
         """
