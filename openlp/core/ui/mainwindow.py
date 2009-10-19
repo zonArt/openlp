@@ -583,7 +583,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.ServiceManagerContents.onLoadService(True)
         if str_to_bool(self.generalConfig.get_config(u'Screen Blank', False)) \
         and str_to_bool(self.generalConfig.get_config(u'Blank Warning', False)):
-            print "Popup goes here"
+            QtGui.QMessageBox.question(None,
+                translate(u'mainWindow', u'OpenLP Main Display Blanked'),
+                translate(u'mainWindow', u'The Main Display has been blanked out'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
+                QtGui.QMessageBox.Ok)
+            self.LiveController.blackPushButton.setChecked(True)
 
     def onHelpAboutItemClicked(self):
         """
