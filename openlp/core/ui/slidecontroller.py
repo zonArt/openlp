@@ -31,8 +31,8 @@ from openlp.core.lib import OpenLPToolbar, translate, Receiver, ServiceType
 label_stylesheet = u"""
 QTableWidget::item:selected
 {
-    border: 1px solid black;
-    background: lightgray;
+    border: solid 20px pallette(dark);
+    color: palette(highlighted-text)
 }
 """
 
@@ -322,6 +322,7 @@ class SlideController(QtGui.QWidget):
                     self.parent.RenderManager.screen_ratio
             else:
                 label.setText(frame[u'text'])
+                label.setAlignment(QtCore.Qt.AlignHCenter)
                 slide_height = label.sizeHint().height()
             self.PreviewListWidget.setCellWidget(framenumber, 0, label)
             self.PreviewListWidget.setItem(framenumber, 0, item)
