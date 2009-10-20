@@ -174,8 +174,8 @@ def import_songs():
         search_title = clean_string(clean_title)
         search_lyrics = clean_string(clean_lyrics)
         sql_insert = u'INSERT INTO songs '\
-            '(id, title, lyrics, verse_order, copyright, search_title, search_lyrics) '\
-            'VALUES (NULL, ?, ?, ?, ?, ?, ?)'
+            '(id, song_book_id, title, lyrics, verse_order, copyright, search_title, search_lyrics) '\
+            'VALUES (NULL, 0, ?, ?, ?, ?, ?, ?)'
         sql_params = (clean_title, xml_lyrics, verse_order, clean_copyright, clean_title, clean_lyrics)
         if debug:
             print '...', display_sql(sql_insert, (sql_params[0], u'%s...' % clean_lyrics[:7], sql_params[2], sql_params[3], sql_params[4], u'%s...' % search_lyrics[:7]))

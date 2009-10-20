@@ -420,16 +420,19 @@ class ServiceManager(QtGui.QWidget):
     def onQuickSaveService(self):
         self.onSaveService(True)
 
-    def onLoadService(self):
+    def onLoadService(self, lastService = False):
         """
         Load an existing service from disk and rebuild the serviceitems.  All
         files retrieved from the zip file are placed in a temporary directory
         and will only be used for this service.
         """
-        filename = QtGui.QFileDialog.getOpenFileName(self,
-            translate(u'ThemeManager', u'Open Service'),
-            self.config.get_last_dir(),
-            u'Services (*.osz)')
+        if lastService:
+            filename = self.config.get_last_dir()
+        else:
+            filename = QtGui.QFileDialog.getOpenFileName(self,
+                translate(u'ThemeManager', u'Open Service'),
+                self.config.get_last_dir(),
+                u'Services (*.osz)')
         filename = unicode(filename)
         name = filename.split(os.path.sep)
         if filename != u'':

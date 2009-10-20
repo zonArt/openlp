@@ -25,8 +25,6 @@
 from PyQt4 import QtCore, QtGui
 
 from auditdetaildialog import Ui_AuditDetailDialog
-from openlp.core.lib import translate
-#from openlp.plugins.audit.lib.models import CustomSlide
 
 class AuditDetailForm(QtGui.QDialog, Ui_AuditDetailDialog):
     """

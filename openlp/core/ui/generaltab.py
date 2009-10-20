@@ -173,7 +173,7 @@ class GeneralTab(SettingsTab):
             self.MonitorComboBox.addItem(screen_name)
         # Get the configs
         self.MonitorNumber = int(self.config.get_config(u'Monitor', u'0'))
-        self.Warning = str_to_bool(self.config.get_config(u'Warning', u'False'))
+        self.Warning = str_to_bool(self.config.get_config(u'Blank Warning', u'False'))
         self.AutoOpen = str_to_bool(self.config.get_config(u'Auto Open', u'False'))
         self.ShowSplash = str_to_bool(self.config.get_config(u'show splash', u'True'))
         self.CCLNumber = unicode(self.config.get_config(u'CCL Number', u'XXX'))
@@ -190,7 +190,7 @@ class GeneralTab(SettingsTab):
 
     def save(self):
         self.config.set_config(u'Monitor', self.MonitorNumber)
-        self.config.set_config(u'Warning', self.Warning)
+        self.config.set_config(u'Blank Warning', self.Warning)
         self.config.set_config(u'Auto Open', self.AutoOpen)
         self.config.set_config(u'show splash', self.ShowSplash)
         self.config.set_config(u'CCL Number', self.CCLNumber)

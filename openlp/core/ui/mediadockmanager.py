@@ -24,7 +24,7 @@
 
 import logging
 
-log = logging.getLogger(u'media_dockManager')
+log = logging.getLogger(u'MediaDockManager')
 
 class MediaDockManager(object):
 
