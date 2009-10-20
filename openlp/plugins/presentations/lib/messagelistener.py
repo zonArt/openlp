@@ -74,8 +74,7 @@ class MessageListener(object):
             return
         if not self.controller.is_loaded():
             self.controller.load_presentation(self.controller.filepath)
-        else:
-            self.controller.start_presentation()
+        self.controller.start_presentation()
         if self.controller.slidenumber > 1:
             self.controller.goto_slide(self.controller.slidenumber)
         
