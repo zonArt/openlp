@@ -10,7 +10,7 @@ from optparse import OptionParser
 from traceback import format_tb as get_traceback
 
 # Some global options to be used throughout the import process
-dirty_chars = re.compile(r'\W', re.UNICODE)
+dirty_chars = re.compile(r'\W ', re.UNICODE)
 verbose = False
 debug = False
 old_cursor = None
@@ -73,12 +73,7 @@ create_statements = [
 ]
 
 def clean_string(dirty):
-    return dirty_chars.sub(u'', dirty).replace(u'\r\n', ' ').replace(u'\n', ' ')
-
-def convert_string(buffer_column):
-    buffer_string = buffer(buffer_column)
-    #unicode(encoded_string.decode('cp1252', 'replace'))
-    return unicode(buffer_string, 'utf-8').decode('cp1252', 'replace')
+    return dirty_chars.sub(u'', dirty.replace(u'\r\n', ' ').replace(u'\n', ' '))
 
 def display_sql(sql, params):
     prepared_params = []
@@ -128,7 +123,7 @@ def import_songs():
         print 'done.'
     author_map = {}
     for row in rows:
-        display_name = convert_string(row[1])
+        display_name = unicode(row[1], u'cp1252')
         names = display_name.split(u' ')
         first_name = names[0]
         last_name = u' '.join(names[1:])
@@ -153,10 +148,10 @@ def import_songs():
     else:
         print 'Importing songs...',
     if debug:
-        print '... SELECT songid AS id, songtitle AS title, lyrics, copyrightinfo AS copyright FROM songs...',
+        print '... SELECT songid AS id, songtitle AS title, lyrics || \'\' AS lyrics, copyrightinfo AS copyright FROM songs...',
     elif verbose:
         print '... fetching songs from old database...',
-    old_cursor.execute(u'SELECT songid AS id, songtitle AS title, lyrics, copyrightinfo AS copyright FROM songs')
+    old_cursor.execute(u'SELECT songid AS id, songtitle AS title, lyrics || \'\' AS lyrics, copyrightinfo AS copyright FROM songs')
     rows = old_cursor.fetchall()
     if debug or verbose:
         print 'done.'
@@ -164,28 +159,32 @@ def import_songs():
     xml_lyrics_template = u'<?xml version="1.0" encoding="utf-8"?><song version="1.0"><lyrics language="en">%s</lyrics></song>'
     xml_verse_template = u'<verse label="%d" type="Verse"><![CDATA[%s]]></verse>'
     for row in rows:
-        clean_title = convert_string(row[1])
-        clean_lyrics = convert_string(row[2])
-        clean_copyright = convert_string(row[3])
+        clean_title = unicode(row[1], u'cp1252')
+        clean_lyrics = unicode(row[2], u'cp1252')
+        clean_copyright = unicode(row[3], u'cp1252')
+        verse_order = u''
         text_lyrics = clean_lyrics.split(u'\n\n')
-        xml_lyrics = u''
+        xml_verse = u''
         for line, verse in enumerate(text_lyrics):
             if not verse:
                 continue
-            xml_lyrics += (xml_verse_template % (line + 1, verse))
-        xml_verse = xml_lyrics_template % xml_lyrics
+            xml_verse += (xml_verse_template % (line + 1, verse))
+            verse_order += '%d ' % (line + 1)
+        xml_lyrics = xml_lyrics_template % xml_verse
         search_title = clean_string(clean_title)
         search_lyrics = clean_string(clean_lyrics)
         sql_insert = u'INSERT INTO songs '\
-            '(id, title, lyrics, copyright, search_title, search_lyrics) '\
-            'VALUES (NULL, ?, ?, ?, ?, ?)'
-        sql_params = (clean_title, xml_lyrics, clean_copyright, clean_title, clean_lyrics)
+            '(id, title, lyrics, verse_order, copyright, search_title, search_lyrics) '\
+            'VALUES (NULL, ?, ?, ?, ?, ?, ?)'
+        sql_params = (clean_title, xml_lyrics, verse_order, clean_copyright, clean_title, clean_lyrics)
         if debug:
-            print '...', display_sql(sql_insert, (sql_params[0], u'<xml>', sql_params[2], sql_params[3], u'string'))
+            print '...', display_sql(sql_insert, (sql_params[0], u'%s...' % clean_lyrics[:7], sql_params[2], sql_params[3], sql_params[4], u'%s...' % search_lyrics[:7]))
         elif verbose:
             print '... importing "%s"' % clean_title
         new_cursor.execute(sql_insert, sql_params)
         song_map[row[0]] = new_cursor.lastrowid
+        if debug:
+            print '    >>> songs.songid =', row[0], 'songs.id =', song_map[row[0]]
     if not verbose and not debug:
         print 'done.'
     if debug or verbose:
