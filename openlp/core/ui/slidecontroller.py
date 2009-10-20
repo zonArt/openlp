@@ -31,8 +31,7 @@ from openlp.core.lib import OpenLPToolbar, translate, Receiver, ServiceType
 label_stylesheet = u"""
 QTableWidget::item:selected
 {
-    background-color: palette(highlight);
-    color: palette(highlighted-text);
+    background-color: %s;
 }
 """
 
@@ -45,6 +44,12 @@ class SlideList(QtGui.QTableWidget):
     def __init__(self, parent=None, name=None):
         QtGui.QTableWidget.__init__(self, parent.Controller)
         self.parent = parent
+        text_color = QtGui.QApplication.palette().color(QtGui.QPalette.Base)
+        if text_color.value() > 128:
+            text_color = text_color.darker(120).name()
+        else:
+            text_color = text_color.lighter(120).name()
+        self.setStyleSheet(label_stylesheet % text_color)
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
@@ -327,7 +332,6 @@ class SlideController(QtGui.QWidget):
             self.PreviewListWidget.setCellWidget(framenumber, 0, label)
             self.PreviewListWidget.setItem(framenumber, 0, item)
             self.PreviewListWidget.setRowHeight(framenumber, slide_height)
-            self.PreviewListWidget.setStyleSheet(label_stylesheet)
         self.PreviewListWidget.setColumnWidth(
             0, self.PreviewListWidget.viewport().size().width())
         if slideno > self.PreviewListWidget.rowCount():
