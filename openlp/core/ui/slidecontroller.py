@@ -31,8 +31,8 @@ from openlp.core.lib import OpenLPToolbar, translate, Receiver, ServiceType
 label_stylesheet = u"""
 QTableWidget::item:selected
 {
-    border: solid 20px pallette(dark);
-    color: palette(highlighted-text)
+    background-color: palette(highlight);
+    color: palette(highlighted-text);
 }
 """
 
