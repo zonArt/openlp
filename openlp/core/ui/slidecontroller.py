@@ -28,6 +28,16 @@ import time
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, translate, Receiver, ServiceType
 
+label_stylesheet = u"""
+QTableWidget::item:selected
+{
+    border: 2px solid black;
+    background: lightgray;
+    font: italic;
+}
+"""
+
+
 class SlideList(QtGui.QTableWidget):
     """
     Customised version of QTableWidget which can respond to keyboard
@@ -303,19 +313,21 @@ class SlideController(QtGui.QWidget):
                 self.PreviewListWidget.rowCount() + 1)
             item = QtGui.QTableWidgetItem()
             label = QtGui.QLabel()
-            label.setMargin(8)
+            label.setMargin(4)
             #It is a Image
             if frame[u'text'] is None:
                 pixmap = self.parent.RenderManager.resize_image(frame[u'image'])
                 label.setScaledContents(True)
                 label.setPixmap(QtGui.QPixmap.fromImage(pixmap))
+                slide_height = self.settingsmanager.slidecontroller_image * \
+                    self.parent.RenderManager.screen_ratio
             else:
                 label.setText(frame[u'text'])
+                slide_height = label.sizeHint().height()
             self.PreviewListWidget.setCellWidget(framenumber, 0, label)
             self.PreviewListWidget.setItem(framenumber, 0, item)
-            slide_height = self.settingsmanager.slidecontroller_image * \
-                self.parent.RenderManager.screen_ratio
             self.PreviewListWidget.setRowHeight(framenumber, slide_height)
+            self.PreviewListWidget.setStyleSheet(label_stylesheet)
         self.PreviewListWidget.setColumnWidth(
             0, self.PreviewListWidget.viewport().size().width())
         if slideno > self.PreviewListWidget.rowCount():
