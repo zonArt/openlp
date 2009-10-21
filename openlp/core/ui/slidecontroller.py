@@ -48,7 +48,7 @@ class SlideList(QtGui.QTableWidget):
         if text_color.value() > 128:
             text_color = text_color.darker(120).name()
         else:
-            text_color = text_color.lighter(120).name()
+            text_color = text_color.lighter(130).name()
         self.setStyleSheet(label_stylesheet % text_color)
 
     def keyPressEvent(self, event):
