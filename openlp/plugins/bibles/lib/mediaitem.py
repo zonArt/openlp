@@ -89,9 +89,9 @@ class BibleMediaItem(MediaManagerItem):
         self.QuickVersionComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.QuickVersionComboBox.setObjectName(u'VersionComboBox')
         self.QuickLayout.addWidget(self.QuickVersionComboBox, 0, 1, 1, 2)
-        self.QuickDualVersionLabel = QtGui.QLabel(self.QuickTab)
-        self.QuickDualVersionLabel.setObjectName(u'QuickDualVersionLabel')
-        self.QuickLayout.addWidget(self.QuickDualVersionLabel, 1, 0, 1, 1)
+        self.QuickSecondVersionLabel = QtGui.QLabel(self.QuickTab)
+        self.QuickSecondVersionLabel.setObjectName(u'QuickSecondVersionLabel')
+        self.QuickLayout.addWidget(self.QuickSecondVersionLabel, 1, 0, 1, 1)
         self.QuickSecondBibleComboBox = QtGui.QComboBox(self.QuickTab)
         self.QuickSecondBibleComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.QuickSecondBibleComboBox.setObjectName(u'SecondBible')
@@ -127,7 +127,7 @@ class BibleMediaItem(MediaManagerItem):
         self.QuickLayout.addLayout(self.QuickSearchButtonLayout, 5, 0, 1, 3)
         self.QuickMessage = QtGui.QLabel(self.QuickTab)
         self.QuickMessage.setObjectName(u'QuickMessage')
-        self.QuickLayout.addWidget(self.QuickMessage, 5, 0, 1, 3)
+        self.QuickLayout.addWidget(self.QuickMessage, 6, 0, 1, 3)
         self.SearchTabWidget.addTab(self.QuickTab, 'Quick')
         QuickSpacerItem = QtGui.QSpacerItem(20, 35, QtGui.QSizePolicy.Minimum,
             QtGui.QSizePolicy.Expanding)
@@ -203,7 +203,7 @@ class BibleMediaItem(MediaManagerItem):
         self.AdvancedSearchButton.setObjectName(u'AdvancedSearchButton')
         self.AdvancedSearchButtonLayout.addWidget(self.AdvancedSearchButton)
         self.AdvancedLayout.addLayout(self.AdvancedSearchButtonLayout, 7, 0, 1, 3)
-        self.AdvancedMessage = QtGui.QLabel(self.QuickTab)
+        self.AdvancedMessage = QtGui.QLabel(self.AdvancedTab)
         self.AdvancedMessage.setObjectName(u'AdvancedMessage')
         self.AdvancedLayout.addWidget(self.AdvancedMessage, 8, 0, 1, 3)
         self.SearchTabWidget.addTab(self.AdvancedTab, u'Advanced')
@@ -231,18 +231,22 @@ class BibleMediaItem(MediaManagerItem):
     def configUpdated(self):
         if str_to_bool(
             self.parent.config.get_config(u'dual bibles', u'False')):
+            self.AdvancedSecondBibleLabel.setVisible(True)
             self.AdvancedSecondBibleComboBox.setVisible(True)
+            self.QuickSecondVersionLabel.setVisible(True)
             self.QuickSecondBibleComboBox.setVisible(True)
         else:
+            self.AdvancedSecondBibleLabel.setVisible(False)
             self.AdvancedSecondBibleComboBox.setVisible(False)
+            self.QuickSecondVersionLabel.setVisible(False)
             self.QuickSecondBibleComboBox.setVisible(False)
 
     def retranslateUi(self):
         log.debug(u'retranslateUi')
         self.QuickVersionLabel.setText(
             translate(u'BibleMediaItem', u'Version:'))
-        self.QuickDualVersionLabel.setText(
-            translate(u'BibleMediaItem', u'Dual:'))       
+        self.QuickSecondVersionLabel.setText(
+            translate(u'BibleMediaItem', u'Dual:'))
         self.QuickSearchLabel.setText(
             translate(u'BibleMediaItem', u'Search Type:'))
         self.QuickSearchLabel.setText(translate(u'BibleMediaItem', u'Find:'))
