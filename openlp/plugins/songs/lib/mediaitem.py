@@ -68,6 +68,7 @@ class SongMediaItem(MediaManagerItem):
             u'Maintain the lists of authors, topics and books'),
             ':/songs/song_maintenance.png', self.onSongMaintenanceClick,
             'SongMaintenanceItem')
+        self.PageLayout.setSpacing(4)
         self.SearchLayout = QtGui.QFormLayout()
         self.SearchLayout.setMargin(0)
         self.SearchLayout.setSpacing(4)
