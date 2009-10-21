@@ -28,6 +28,14 @@ import time
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, translate, Receiver, ServiceType
 
+label_stylesheet = u"""
+QTableWidget::item:selected
+{
+    background-color: %s;
+}
+"""
+
+
 class SlideList(QtGui.QTableWidget):
     """
     Customised version of QTableWidget which can respond to keyboard
@@ -36,6 +44,12 @@ class SlideList(QtGui.QTableWidget):
     def __init__(self, parent=None, name=None):
         QtGui.QTableWidget.__init__(self, parent.Controller)
         self.parent = parent
+        text_color = QtGui.QApplication.palette().color(QtGui.QPalette.Base)
+        if text_color.value() > 128:
+            text_color = text_color.darker(120).name()
+        else:
+            text_color = text_color.lighter(120).name()
+        self.setStyleSheet(label_stylesheet % text_color)
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
@@ -303,18 +317,20 @@ class SlideController(QtGui.QWidget):
                 self.PreviewListWidget.rowCount() + 1)
             item = QtGui.QTableWidgetItem()
             label = QtGui.QLabel()
-            label.setMargin(8)
+            label.setMargin(4)
             #It is a Image
             if frame[u'text'] is None:
                 pixmap = self.parent.RenderManager.resize_image(frame[u'image'])
                 label.setScaledContents(True)
                 label.setPixmap(QtGui.QPixmap.fromImage(pixmap))
+                slide_height = self.settingsmanager.slidecontroller_image * \
+                    self.parent.RenderManager.screen_ratio
             else:
                 label.setText(frame[u'text'])
+                label.setAlignment(QtCore.Qt.AlignHCenter)
+                slide_height = label.sizeHint().height()
             self.PreviewListWidget.setCellWidget(framenumber, 0, label)
             self.PreviewListWidget.setItem(framenumber, 0, item)
-            slide_height = self.settingsmanager.slidecontroller_image * \
-                self.parent.RenderManager.screen_ratio
             self.PreviewListWidget.setRowHeight(framenumber, slide_height)
         self.PreviewListWidget.setColumnWidth(
             0, self.PreviewListWidget.viewport().size().width())
