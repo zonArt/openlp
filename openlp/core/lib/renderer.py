@@ -196,6 +196,10 @@ class Renderer(object):
                         split_text = line[:pos]
                 split_lines.append(split_text)
                 line = line[pos:]
+                #if we have more text add up to 10 spaces on the front.
+                if len(line) > 0 :
+                    line = u'%s%s' % \
+                        (u'          '[:self._theme.font_main_indentation], line)
                 #Text fits in a line now
         for line in split_lines:
             page.append(line)

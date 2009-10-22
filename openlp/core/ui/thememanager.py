@@ -510,6 +510,7 @@ class ThemeManager(QtGui.QWidget):
         theme.font_main_color = theme.font_main_color.strip()
         theme.font_main_height = theme.font_main_height.strip()
         theme.font_main_italics = str_to_bool(theme.font_main_italics)
+        theme.font_main_indentation = int(theme.font_main_indentation)
         theme.font_main_name = theme.font_main_name.strip()
         #theme.font_main_override
         theme.font_main_proportion = theme.font_main_proportion.strip()
