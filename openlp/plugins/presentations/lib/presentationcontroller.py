@@ -198,6 +198,8 @@ class PresentationController(object):
         recent than the powerpoint
         """
         lastimage = self.get_slide_preview_file(self.get_slide_count())
+        if lastimage is None:
+            return False
         if not os.path.isfile(lastimage):
             return False
         imgdate = os.stat(lastimage).st_mtime
