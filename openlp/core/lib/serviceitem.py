@@ -30,13 +30,14 @@ from PyQt4 import QtGui
 
 from openlp.core.lib import buildIcon
 
-class ServiceType(object):
+class ServiceItemType(object):
     """
     Defines the type of service item
     """
     Text = 1
     Image = 2
     Command = 3
+    Video = 4
 
 class ServiceItem(object):
     """
@@ -90,7 +91,7 @@ class ServiceItem(object):
         """
         log.debug(u'Render called')
         self.frames = []
-        if self.service_item_type == ServiceType.Text:
+        if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
             if self.theme is None:
                 self.RenderManager.set_override_theme(None)
@@ -108,9 +109,9 @@ class ServiceItem(object):
                     self.frames.append({u'title': title, u'text': lines,
                         u'image': frame})
                 log.info(u'Formatting took %4s' % (time.time() - before))
-        elif self.service_item_type == ServiceType.Command:
+        elif self.service_item_type == ServiceItemType.Command:
             self.frames = self.service_frames
-        elif self.service_item_type == ServiceType.Image:
+        elif self.service_item_type == ServiceItemType.Image:
             for slide in self.service_frames:
                 slide[u'image'] = \
                     self.RenderManager.resize_image(slide[u'image'])
@@ -147,7 +148,7 @@ class ServiceItem(object):
         ``image``
             The actual image file name.
         """
-        self.service_item_type = ServiceType.Image
+        self.service_item_type = ServiceItemType.Image
         self.service_item_path = path
         self.service_frames.append(
             {u'title': frame_title, u'text':None, u'image': image})
@@ -162,7 +163,7 @@ class ServiceItem(object):
         ``raw_slide``
             The raw text of the slide.
         """
-        self.service_item_type = ServiceType.Text
+        self.service_item_type = ServiceItemType.Text
         frame_title = frame_title.split(u'\n')[0]
         self.service_frames.append(
             {u'title': frame_title, u'raw_slide': raw_slide})
@@ -177,7 +178,7 @@ class ServiceItem(object):
         ``command``
             The command of/for the slide.
         """
-        self.service_item_type = ServiceType.Command
+        self.service_item_type = ServiceItemType.Command
         self.service_item_path = path
         self.service_frames.append(
             {u'title': frame_title, u'command': None, u'text':None, u'image': image})
@@ -198,15 +199,17 @@ class ServiceItem(object):
             u'audit':self.audit
         }
         service_data = []
-        if self.service_item_type == ServiceType.Text:
+        if self.service_item_type == ServiceItemType.Text:
             for slide in self.service_frames:
                 service_data.append(slide)
-        elif self.service_item_type == ServiceType.Image:
+        elif self.service_item_type == ServiceItemType.Image:
             for slide in self.service_frames:
                 service_data.append(slide[u'title'])
-        elif self.service_item_type == ServiceType.Command:
+        elif self.service_item_type == ServiceItemType.Command:
             for slide in self.service_frames:
                 service_data.append(slide[u'title'])
+        elif self.service_item_type == ServiceItemType.Video:
+            pass
         return {u'header': service_header, u'data': service_data}
 
     def set_from_service(self, serviceitem, path=None):
@@ -229,15 +232,17 @@ class ServiceItem(object):
         self.addIcon(header[u'icon'])
         self.raw_footer = header[u'footer']
         self.audit = header[u'audit']
-        if self.service_item_type == ServiceType.Text:
+        if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self.service_frames.append(slide)
-        elif self.service_item_type == ServiceType.Image:
+        elif self.service_item_type == ServiceItemType.Image:
             for text_image in serviceitem[u'serviceitem'][u'data']:
                 filename = os.path.join(path, text_image)
                 real_image = QtGui.QImage(unicode(filename))
                 self.add_from_image(path, text_image, real_image)
-        elif self.service_item_type == ServiceType.Command:
+        elif self.service_item_type == ServiceItemType.Command:
             for text_image in serviceitem[u'serviceitem'][u'data']:
                 filename = os.path.join(path, text_image)
                 self.add_from_command(path, text_image)
+        elif self.service_item_type == ServiceItemType.Video:
+            pass
