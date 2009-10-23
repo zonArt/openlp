@@ -128,7 +128,7 @@ class BibleMediaItem(MediaManagerItem):
         self.QuickMessage = QtGui.QLabel(self.QuickTab)
         self.QuickMessage.setObjectName(u'QuickMessage')
         self.QuickLayout.addWidget(self.QuickMessage, 6, 0, 1, 3)
-        self.SearchTabWidget.addTab(self.QuickTab, 'Quick')
+        self.SearchTabWidget.addTab(self.QuickTab, self.trUtf8(u'Quick'))
         QuickSpacerItem = QtGui.QSpacerItem(20, 35, QtGui.QSizePolicy.Minimum,
             QtGui.QSizePolicy.Expanding)
         self.QuickLayout.addItem(QuickSpacerItem, 6, 2, 1, 1)
@@ -206,7 +206,7 @@ class BibleMediaItem(MediaManagerItem):
         self.AdvancedMessage = QtGui.QLabel(self.AdvancedTab)
         self.AdvancedMessage.setObjectName(u'AdvancedMessage')
         self.AdvancedLayout.addWidget(self.AdvancedMessage, 8, 0, 1, 3)
-        self.SearchTabWidget.addTab(self.AdvancedTab, u'Advanced')
+        self.SearchTabWidget.addTab(self.AdvancedTab, self.trUtf8(u'Advanced'))
         # Add the search tab widget to the page layout
         self.PageLayout.addWidget(self.SearchTabWidget)
         # Combo Boxes
@@ -243,41 +243,27 @@ class BibleMediaItem(MediaManagerItem):
 
     def retranslateUi(self):
         log.debug(u'retranslateUi')
-        self.QuickVersionLabel.setText(
-            translate(u'BibleMediaItem', u'Version:'))
-        self.QuickSecondVersionLabel.setText(
-            translate(u'BibleMediaItem', u'Dual:'))
-        self.QuickSearchLabel.setText(
-            translate(u'BibleMediaItem', u'Search Type:'))
-        self.QuickSearchLabel.setText(translate(u'BibleMediaItem', u'Find:'))
-        self.QuickSearchButton.setText(translate(u'BibleMediaItem', u'Search'))
-        self.QuickClearLabel.setText(translate(u'BibleMediaItem', u'Results:'))
-        self.AdvancedVersionLabel.setText(
-            translate(u'BibleMediaItem', u'Version:'))
-        self.AdvancedSecondBibleLabel.setText(
-            translate(u'BibleMediaItem', u'Dual:'))
-        self.AdvancedBookLabel.setText(translate(u'BibleMediaItem', u'Book:'))
-        self.AdvancedChapterLabel.setText(
-            translate(u'BibleMediaItem', u'Chapter:'))
-        self.AdvancedVerseLabel.setText(translate(u'BibleMediaItem', u'Verse:'))
-        self.AdvancedFromLabel.setText(translate(u'BibleMediaItem', u'From:'))
-        self.AdvancedToLabel.setText(translate(u'BibleMediaItem', u'To:'))
-        self.AdvancedClearLabel.setText(
-            translate(u'BibleMediaItem', u'Results:'))
-        self.AdvancedSearchButton.setText(
-            translate(u'BibleMediaItem', u'Search'))
-        self.QuickSearchComboBox.addItem(
-            translate(u'BibleMediaItem', u'Verse Search'))
-        self.QuickSearchComboBox.addItem(
-            translate(u'BibleMediaItem', u'Text Search'))
-        self.ClearQuickSearchComboBox.addItem(
-            translate(u'BibleMediaItem', u'Clear'))
-        self.ClearQuickSearchComboBox.addItem(
-            translate(u'BibleMediaItem', u'Keep'))
-        self.ClearAdvancedSearchComboBox.addItem(
-            translate(u'BibleMediaItem', u'Clear'))
-        self.ClearAdvancedSearchComboBox.addItem(
-            translate(u'BibleMediaItem', u'Keep'))
+        self.QuickVersionLabel.setText(self.trUtf8(u'Version:'))
+        self.QuickSecondVersionLabel.setText(self.trUtf8(u'Dual:'))
+        self.QuickSearchLabel.setText(self.trUtf8(u'Search Type:'))
+        self.QuickSearchLabel.setText(self.trUtf8(u'Find:'))
+        self.QuickSearchButton.setText(self.trUtf8(u'Search'))
+        self.QuickClearLabel.setText(self.trUtf8(u'Results:'))
+        self.AdvancedVersionLabel.setText(self.trUtf8(u'Version:'))
+        self.AdvancedSecondBibleLabel.setText(self.trUtf8(u'Dual:'))
+        self.AdvancedBookLabel.setText(self.trUtf8(u'Book:'))
+        self.AdvancedChapterLabel.setText(self.trUtf8(u'Chapter:'))
+        self.AdvancedVerseLabel.setText(self.trUtf8(u'Verse:'))
+        self.AdvancedFromLabel.setText(self.trUtf8(u'From:'))
+        self.AdvancedToLabel.setText(self.trUtf8(u'To:'))
+        self.AdvancedClearLabel.setText(self.trUtf8(u'Results:'))
+        self.AdvancedSearchButton.setText(self.trUtf8(u'Search'))
+        self.QuickSearchComboBox.addItem(self.trUtf8(u'Verse Search'))
+        self.QuickSearchComboBox.addItem(self.trUtf8(u'Text Search'))
+        self.ClearQuickSearchComboBox.addItem(self.trUtf8(u'Clear'))
+        self.ClearQuickSearchComboBox.addItem(self.trUtf8(u'Keep'))
+        self.ClearAdvancedSearchComboBox.addItem(self.trUtf8(u'Clear'))
+        self.ClearAdvancedSearchComboBox.addItem(self.trUtf8(u'Keep'))
 
     def initialise(self):
         log.debug(u'bible manager initialise')
@@ -287,8 +273,8 @@ class BibleMediaItem(MediaManagerItem):
         log.debug(u'bible manager initialise complete')
 
     def setQuickMessage(self, text):
-        self.QuickMessage.setText(translate(u'BibleMediaItem', unicode(text)))
-        self.AdvancedMessage.setText(translate(u'BibleMediaItem', unicode(text)))
+        self.QuickMessage.setText(text)
+        self.AdvancedMessage.setText(text)
         Receiver().send_message(u'process_events')
         #minor delay to get the events processed
         time.sleep(0.1)
@@ -498,8 +484,7 @@ class BibleMediaItem(MediaManagerItem):
             book, 1)
         if self.verses == 0:
             self.AdvancedSearchButton.setEnabled(False)
-            self.AdvancedMessage.setText(
-                translate(u'BibleMediaItem', u'Bible not fully loaded'))
+            self.AdvancedMessage.setText(self.trUtf8(u'Bible not fully loaded'))
         else:
             self.AdvancedSearchButton.setEnabled(True)
             self.AdvancedMessage.setText(u'')
@@ -592,7 +577,7 @@ class BibleMediaItem(MediaManagerItem):
         if end_verse == u'':
             end_verse = 99
         if start_chapter == u'':
-            message = u'No chapter found for search criteria'
+            message = self.trUtf8(u'No chapter found for search criteria')
         log.debug(u'results = %s @ %s : %s @ %s : %s'% \
             (unicode(book), unicode(start_chapter), unicode(end_chapter),
             unicode(start_verse), unicode(end_verse)))
@@ -608,6 +593,5 @@ class BibleMediaItem(MediaManagerItem):
             self.version = unicode(self.parent.biblemanager.get_meta_data(
                 bible, u'Version').value)
         else:
-            QtGui.QMessageBox.information(self,
-                translate(u'BibleMediaItem', u'Information'),
-                translate(u'BibleMediaItem', message))
+            QtGui.QMessageBox.information(
+                self, self.trUtf8(u'Information'), message)

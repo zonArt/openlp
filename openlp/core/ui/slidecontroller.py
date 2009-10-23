@@ -98,9 +98,9 @@ class SlideController(QtGui.QWidget):
         # Type label for the top of the slide controller
         self.TypeLabel = QtGui.QLabel(self.Panel)
         if self.isLive:
-            self.TypeLabel.setText(u'<strong>%s</strong>' % translate(u'SlideController', u'Live'))
+            self.TypeLabel.setText(u'<strong>%s</strong>' % self.trUtf8(u'Live'))
         else:
-            self.TypeLabel.setText(u'<strong>%s</strong>' % translate(u'SlideController', u'Preview'))
+            self.TypeLabel.setText(u'<strong>%s</strong>' % self.trUtf8(u'Preview'))
         self.TypeLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.PanelLayout.addWidget(self.TypeLabel)
         # Splitter
@@ -135,46 +135,39 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.sizePolicy().hasHeightForWidth())
         self.Toolbar.setSizePolicy(sizeToolbarPolicy)
         if self.isLive:
-            self.Toolbar.addToolbarButton(u'First Slide',
-                u':/slides/slide_first.png',
-                translate(u'SlideController', u'Move to first'),
-                self.onSlideSelectedFirst)
-        self.Toolbar.addToolbarButton(u'Previous Slide',
-            u':/slides/slide_previous.png',
-            translate(u'SlideController', u'Move to previous'),
-            self.onSlideSelectedPrevious)
-        self.Toolbar.addToolbarButton(u'Next Slide',
-            u':/slides/slide_next.png',
-            translate(u'SlideController', u'Move to next'),
-            self.onSlideSelectedNext)
+            self.Toolbar.addToolbarButton(
+                self.trUtf8(u'First Slide'), u':/slides/slide_first.png',
+                self.trUtf8(u'Move to first'), self.onSlideSelectedFirst)
+        self.Toolbar.addToolbarButton(
+            self.trUtf8(u'Previous Slide'), u':/slides/slide_previous.png',
+            self.trUtf8(u'Move to previous'), self.onSlideSelectedPrevious)
+        self.Toolbar.addToolbarButton(
+            self.trUtf8(u'Next Slide'), u':/slides/slide_next.png',
+            self.trUtf8(u'Move to next'), self.onSlideSelectedNext)
         if self.isLive:
-            self.Toolbar.addToolbarButton(u'Last Slide',
-                u':/slides/slide_last.png',
-                translate(u'SlideController', u'Move to last'),
-                self.onSlideSelectedLast)
+            self.Toolbar.addToolbarButton(
+                self.trUtf8(u'Last Slide'), u':/slides/slide_last.png',
+                self.trUtf8(u'Move to last'), self.onSlideSelectedLast)
         if self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.blackPushButton = self.Toolbar.addPushButton(
                 u':/slides/slide_close.png')
         if not self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
-            self.Toolbar.addToolbarButton(u'Go Live',
-                u':/system/system_live.png',
-                translate(u'SlideController', u'Move to live'),
-                self.onGoLive)
+            self.Toolbar.addToolbarButton(
+                self.trUtf8(u'Go Live'), u':/system/system_live.png',
+                self.trUtf8(u'Move to live'), self.onGoLive)
         if isLive:
             self.Toolbar.addToolbarSeparator(u'Loop Separator')
-            self.Toolbar.addToolbarButton(u'Start Loop',
-                u':/media/media_time.png',
-                translate(u'SlideController', u'Start continuous loop'),
-                self.onStartLoop)
-            self.Toolbar.addToolbarButton(u'Stop Loop',
-                u':/media/media_stop.png',
-                translate(u'SlideController', u'Stop continuous loop'),
-                self.onStopLoop)
+            self.Toolbar.addToolbarButton(
+                self.trUtf8(u'Start Loop'),  u':/media/media_time.png',
+                self.trUtf8(u'Start continuous loop'), self.onStartLoop)
+            self.Toolbar.addToolbarButton(
+                self.trUtf8(u'Stop Loop'), u':/media/media_stop.png',
+                self.trUtf8(u'Stop continuous loop'), self.onStopLoop)
             self.DelaySpinBox = QtGui.QSpinBox()
             self.Toolbar.addToolbarWidget(u'Image SpinBox', self.DelaySpinBox)
-            self.DelaySpinBox.setSuffix(translate(u'SlideController', u's'))
+            self.DelaySpinBox.setSuffix(self.trUtf8(u's'))
 
         self.ControllerLayout.addWidget(self.Toolbar)
         # Screen preview area

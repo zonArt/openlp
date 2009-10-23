@@ -199,7 +199,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.previewTheme(self.theme)
 
     def onImageToolButtonClicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file')
+        filename = QtGui.QFileDialog.getOpenFileName(
+            self, self.trUtf8('Open file'))
         if filename != u'':
             self.ImageLineEdit.setText(filename)
             self.theme.background_filename = filename
@@ -592,8 +593,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             if theme.background_type == u'solid':
                 self.Color1PushButton.setStyleSheet(
                     u'background-color: %s' % unicode(theme.background_color))
-                self.Color1Label.setText(translate(u'ThemeManager',
-                    u'Background Color:'))
+                self.Color1Label.setText(self.trUtf8(u'Background Color:'))
                 self.Color1Label.setVisible(True)
                 self.Color1PushButton.setVisible(True)
                 self.Color2Label.setVisible(False)
@@ -608,10 +608,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                     % unicode(theme.background_startColor))
                 self.Color2PushButton.setStyleSheet(u'background-color: %s' \
                     % unicode(theme.background_endColor))
-                self.Color1Label.setText(translate(u'ThemeManager',
-                    u'First  Color:'))
-                self.Color2Label.setText(translate(u'ThemeManager',
-                    u'Second Color:'))
+                self.Color1Label.setText(self.trUtf8(u'First  Color:'))
+                self.Color2Label.setText(self.trUtf8(u'Second Color:'))
                 self.Color1Label.setVisible(True)
                 self.Color1PushButton.setVisible(True)
                 self.Color2Label.setVisible(True)
@@ -675,8 +673,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                          int(main_weight), # weight
                          self.theme.font_main_italics)# italic
             metrics = QtGui.QFontMetrics(mainFont)
-            page_length = (int(self.FontMainHeightSpinBox.value()) / metrics.height() - 2 ) - 1
+            page_length = (int(self.FontMainHeightSpinBox.value()) / metrics.height() - 2) - 1
             self.FontMainLinesPageLabel.setText(
-                translate(u'ThemeManager', u'Slide Height is %s rows' % page_length  ))
+                self.trUtf8(u'Slide Height is %s rows') % page_length)
             frame = self.thememanager.generateImage(theme)
             self.ThemePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
