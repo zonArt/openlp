@@ -26,7 +26,7 @@ import logging
 import time
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import OpenLPToolbar, translate, Receiver, ServiceType
+from openlp.core.lib import OpenLPToolbar, translate, Receiver, ServiceItemType
 
 label_stylesheet = u"""
 QTableWidget::item:selected
@@ -244,9 +244,9 @@ class SlideController(QtGui.QWidget):
         """
         Allows the live toolbar to be customised
         """
-        if item.service_item_type == ServiceType.Text:
+        if item.service_item_type == ServiceItemType.Text:
             self.Toolbar.makeWidgetsInvisible(self.image_list)
-        elif item.service_item_type == ServiceType.Image:
+        elif item.service_item_type == ServiceItemType.Image:
             #Not sensible to allow loops with 1 frame
             if len(item.frames) > 1:
                 self.Toolbar.makeWidgetsVisible(self.image_list)
@@ -268,14 +268,14 @@ class SlideController(QtGui.QWidget):
         log.debug(u'addServiceItem')
         #If old item was a command tell it to stop
         if self.commandItem is not None and \
-            self.commandItem.service_item_type == ServiceType.Command:
+            self.commandItem.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_stop'% self.commandItem.name.lower())
         self.commandItem = item
         before = time.time()
         item.render()
         log.info(u'Rendering took %4s' % (time.time() - before))
         self.enableToolBar(item)
-        if item.service_item_type == ServiceType.Command:
+        if item.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_start' % item.name.lower(), \
                 [item.shortname, item.service_item_path,
                 item.service_frames[0][u'title']])
@@ -290,11 +290,11 @@ class SlideController(QtGui.QWidget):
         log.debug(u'addServiceItem')
         #If old item was a command tell it to stop
         if self.commandItem is not None and \
-            self.commandItem.service_item_type == ServiceType.Command:
+            self.commandItem.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_stop'% self.commandItem.name.lower())
         self.commandItem = item
         self.enableToolBar(item)
-        if item.service_item_type == ServiceType.Command:
+        if item.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_start' % item.name.lower(), \
                 [item.shortname, item.service_item_path,
                 item.service_frames[0][u'title'], slideno])
@@ -351,7 +351,7 @@ class SlideController(QtGui.QWidget):
         Go to the first slide.
         """
         if self.commandItem is not None and \
-            self.commandItem.service_item_type == ServiceType.Command:
+            self.commandItem.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_first'% self.commandItem.name.lower())
         else:
             self.PreviewListWidget.selectRow(0)
@@ -362,7 +362,7 @@ class SlideController(QtGui.QWidget):
         Blank the screen.
         """
         if self.commandItem is not None and \
-            self.commandItem.service_item_type == ServiceType.Command:
+            self.commandItem.service_item_type == ServiceItemType.Command:
             if blanked:
                 Receiver().send_message(u'%s_blank'% self.commandItem.name.lower())
             else:
@@ -377,7 +377,7 @@ class SlideController(QtGui.QWidget):
         """
         row = self.PreviewListWidget.currentRow()
         if row > -1 and row < self.PreviewListWidget.rowCount():
-            if self.commandItem.service_item_type == ServiceType.Command:
+            if self.commandItem.service_item_type == ServiceItemType.Command:
                 Receiver().send_message(u'%s_slide'% self.commandItem.name.lower(), [row])
             else:
                 #label = self.PreviewListWidget.cellWidget(row, 0)
@@ -395,7 +395,7 @@ class SlideController(QtGui.QWidget):
         Go to the next slide.
         """
         if self.commandItem is not None and \
-            self.commandItem.service_item_type == ServiceType.Command:
+            self.commandItem.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_next'% self.commandItem.name.lower())
         else:
             row = self.PreviewListWidget.currentRow() + 1
@@ -409,7 +409,7 @@ class SlideController(QtGui.QWidget):
         Go to the previous slide.
         """
         if self.commandItem is not None and \
-            self.commandItem.service_item_type == ServiceType.Command:
+            self.commandItem.service_item_type == ServiceItemType.Command:
             Receiver().send_message(
                 u'%s_previous'% self.commandItem.name.lower())
         else:
@@ -424,7 +424,7 @@ class SlideController(QtGui.QWidget):
         Go to the last slide.
         """
         if self.commandItem is not None and \
-            self.commandItem.service_item_type == ServiceType.Command:
+            self.commandItem.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_last'% self.commandItem.name.lower())
         else:
             self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount() - 1)
