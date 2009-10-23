@@ -31,7 +31,7 @@ class ImageTab(SettingsTab):
     ImageTab is the Image settings tab in the settings dialog.
     """
     def __init__(self):
-        SettingsTab.__init__(self, translate(u'ImageTab', u'Images'), u'Image')
+        SettingsTab.__init__(self, translate(u'ImageTab', u'Images'), u'Images')
 
     def setupUi(self):
         self.setObjectName(u'ImageTab')
