@@ -591,7 +591,7 @@ class Ui_AmendThemeDialog(object):
         self.FontMainWeightComboBox.setItemText(1, self.trUtf8(u'Bold'))
         self.FontMainWeightComboBox.setItemText(2, self.trUtf8(u'Italics'))
         self.FontMainWeightComboBox.setItemText(3, self.trUtf8(u'Bold/Italics'))
-        self.FontMainWeightLabel.setText(translate("AmendThemeDialog", u'Font Weight:'))
+        self.FontMainWeightLabel.setText(self.trUtf8(u'Font Weight:'))
         self.MainLocationGroupBox.setTitle(self.trUtf8(u'Display Location'))
         self.DefaultLocationLabel.setText(self.trUtf8(u'Use Default Location:'))
         self.FontMainXLabel.setText(self.trUtf8(u'X Position:'))
@@ -610,14 +610,10 @@ class Ui_AmendThemeDialog(object):
         self.FontFooterColorLabel.setText(self.trUtf8(u'Font Color:'))
         self.FontFooterSizeLabel.setText(self.trUtf8(u'Size:'))
         self.FontFooterSizeSpinBox.setSuffix(self.trUtf8(u'pt'))
-        self.FontFooterWeightComboBox.setItemText(
-            0, translate("AmendThemeDialog", u'Normal'))
-        self.FontFooterWeightComboBox.setItemText(
-            1, translate("AmendThemeDialog", u'Bold'))
-        self.FontFooterWeightComboBox.setItemText(
-            2, translate("AmendThemeDialog", u'Italics'))
-        self.FontFooterWeightComboBox.setItemText(
-            3, translate("AmendThemeDialog", u'Bold/Italics'))
+        self.FontFooterWeightComboBox.setItemText(0, self.trUtf8(u'Normal'))
+        self.FontFooterWeightComboBox.setItemText(1, self.trUtf8(u'Bold'))
+        self.FontFooterWeightComboBox.setItemText(2, self.trUtf8(u'Italics'))
+        self.FontFooterWeightComboBox.setItemText(3, self.trUtf8(u'Bold/Italics'))
         self.FontFooterWeightLabel.setText(self.trUtf8(u'Font Weight:'))
         self.LocationFooterGroupBox.setTitle(self.trUtf8(u'Display Location'))
         self.FontFooterDefaultLabel.setText(self.trUtf8(u'Use Default Location:'))

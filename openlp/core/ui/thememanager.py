@@ -117,7 +117,7 @@ class ThemeManager(QtGui.QWidget):
                 self.ThemeListWidget.item(count).setText(newName)
             #Set the new name
             if themeName == newName:
-                name = self.trUtf8(u'%s (default)') % newName
+                name = u'%s (%s)' % (newName, self.trUtf8(u'default'))
                 self.ThemeListWidget.item(count).setText(name)
 
     def changeGlobalFromScreen(self, index = -1):
@@ -134,7 +134,7 @@ class ThemeManager(QtGui.QWidget):
             if count == selected_row:
                 self.global_theme = unicode(
                     self.ThemeListWidget.item(count).text())
-                name = self.trUtf8(u'%s (default)') % self.global_theme
+                name = u'%s (%s)' % (self.global_theme, self.trUtf8(u'default'))
                 self.ThemeListWidget.item(count).setText(name)
                 self.config.set_config(u'theme global theme', self.global_theme)
                 Receiver().send_message(

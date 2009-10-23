@@ -87,7 +87,11 @@ class SlideController(QtGui.QWidget):
         self.isLive = isLive
         self.parent = parent
         self.image_list = [
-            u'Start Loop', u'Stop Loop', u'Loop Separator', u'Image SpinBox']
+            self.trUtf8(u'Start Loop'),
+            self.trUtf8(u'Stop Loop'),
+            #self.trUtf8(u'Loop Separator'),
+            self.trUtf8(u'Image SpinBox')
+        ]
         self.timer_id = 0
         self.commandItem = None
         self.Panel = QtGui.QWidget(parent.ControlSplitter)
@@ -166,7 +170,8 @@ class SlideController(QtGui.QWidget):
                 self.trUtf8(u'Stop Loop'), u':/media/media_stop.png',
                 self.trUtf8(u'Stop continuous loop'), self.onStopLoop)
             self.DelaySpinBox = QtGui.QSpinBox()
-            self.Toolbar.addToolbarWidget(u'Image SpinBox', self.DelaySpinBox)
+            self.Toolbar.addToolbarWidget(
+                self.trUtf8(u'Image SpinBox'), self.DelaySpinBox)
             self.DelaySpinBox.setSuffix(self.trUtf8(u's'))
 
         self.ControllerLayout.addWidget(self.Toolbar)

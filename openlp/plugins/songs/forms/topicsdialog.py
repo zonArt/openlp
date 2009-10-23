@@ -59,8 +59,6 @@ class Ui_TopicsDialog(object):
         QtCore.QMetaObject.connectSlotsByName(TopicsDialog)
 
     def retranslateUi(self, TopicsDialog):
-        TopicsDialog.setWindowTitle(
-            translate(u'TopicsDialog', u'Topic Maintenance'))
-        self.NameLabel.setText(
-            translate(u'TopicsDialog', u'Topic name:'))
+        TopicsDialog.setWindowTitle(self.trUtf8(u'Topic Maintenance'))
+        self.NameLabel.setText(self.trUtf8(u'Topic name:'))
 

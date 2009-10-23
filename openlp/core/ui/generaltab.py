@@ -167,9 +167,9 @@ class GeneralTab(SettingsTab):
 
     def load(self):
         for screen in self.screen_list:
-            screen_name = self.trUtf8(u'Screen %d') % (screen[u'number'] + 1)
+            screen_name = u'%s %d' % (self.trUtf8(u'Screen'), screen[u'number'] + 1)
             if screen[u'primary']:
-                screen_name = self.trUtf8(u'%s (primary)') % screen_name
+                screen_name = u'%s (%s)' % (self.trUtf8(u'primary'), screen_name)
             self.MonitorComboBox.addItem(screen_name)
         # Get the configs
         self.MonitorNumber = int(self.config.get_config(u'Monitor', u'0'))

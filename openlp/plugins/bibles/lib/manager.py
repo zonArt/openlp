@@ -57,7 +57,7 @@ class BibleManager(object):
         """
         self.config = config
         log.debug(u'Bible Initialising')
-        self.web = self.trUtf8(u'Web')
+        self.web = u'Web'
         # dict of bible database objects
         self.bible_db_cache = None
         # dict of bible http readers

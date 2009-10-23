@@ -48,9 +48,6 @@ class ImageMediaItem(MediaManagerItem):
         self.PluginTextShort = u'Image'
         self.ConfigSection = u'images'
         self.IconPath = u'images/image'
-        self.OnNewPrompt = self.trUtf8(u'Select Image(s)')
-        self.OnNewFileMasks = \
-            self.trUtf8(u'Images (*.jpg *jpeg *.gif *.png *.bmp)')
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
@@ -58,6 +55,11 @@ class ImageMediaItem(MediaManagerItem):
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
         self.overrideActive = False
+
+    def retranslateUi(self):
+        self.OnNewPrompt = self.trUtf8(u'Select Image(s)')
+        self.OnNewFileMasks = \
+            self.trUtf8(u'Images (*.jpg *jpeg *.gif *.png *.bmp)')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
