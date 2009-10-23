@@ -674,8 +674,11 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                          int(self.theme.font_main_proportion), # size
                          int(main_weight), # weight
                          self.theme.font_main_italics)# italic
+            mainFont.setPixelSize(int(self.theme.font_main_proportion))
             metrics = QtGui.QFontMetrics(mainFont)
             page_length = (int(self.FontMainHeightSpinBox.value()) / metrics.height() - 2 ) - 1
+            log.debug(u'Page Length  area height %s , metrics %s , lines %s' %
+                      (int(self.FontMainHeightSpinBox.value()), metrics.height(), page_length ))
             self.FontMainLinesPageLabel.setText(
                 translate(u'ThemeManager', u'Slide Height is %s rows' % page_length  ))
             frame = self.thememanager.generateImage(theme)
