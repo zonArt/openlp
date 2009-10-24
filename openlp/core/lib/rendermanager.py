@@ -65,6 +65,7 @@ class RenderManager(object):
         self.service_theme = u''
         self.global_style = u''
         self.override_background = None
+        self.themedata = None
         self.save_bg_frame = None
         self.override_background_changed = False
 
@@ -130,7 +131,7 @@ class RenderManager(object):
                     self.theme = self.service_theme
             else:
                 self.theme = self.global_theme
-        if self.theme != self.renderer.theme_name:
+        if self.theme != self.renderer.theme_name or self.themedata is None:
             log.debug(u'theme is now %s', self.theme)
             self.themedata = self.theme_manager.getThemeData(self.theme)
             self.calculate_default(

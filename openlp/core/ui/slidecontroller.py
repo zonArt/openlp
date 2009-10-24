@@ -87,10 +87,13 @@ class SlideController(QtGui.QWidget):
         self.isLive = isLive
         self.parent = parent
         self.image_list = [
-            self.trUtf8(u'Start Loop'),
-            self.trUtf8(u'Stop Loop'),
-            #self.trUtf8(u'Loop Separator'),
-            self.trUtf8(u'Image SpinBox')
+            u'Start Loop',
+            u'Stop Loop',
+            u'Loop Separator',
+            u'Image SpinBox'
+        ]
+        self.song_list = [
+            u'Edit Song',
         ]
         self.timer_id = 0
         self.commandItem = None
@@ -140,17 +143,17 @@ class SlideController(QtGui.QWidget):
         self.Toolbar.setSizePolicy(sizeToolbarPolicy)
         if self.isLive:
             self.Toolbar.addToolbarButton(
-                self.trUtf8(u'First Slide'), u':/slides/slide_first.png',
+                u'First Slide', u':/slides/slide_first.png',
                 self.trUtf8(u'Move to first'), self.onSlideSelectedFirst)
         self.Toolbar.addToolbarButton(
-            self.trUtf8(u'Previous Slide'), u':/slides/slide_previous.png',
+            u'Previous Slide', u':/slides/slide_previous.png',
             self.trUtf8(u'Move to previous'), self.onSlideSelectedPrevious)
         self.Toolbar.addToolbarButton(
-            self.trUtf8(u'Next Slide'), u':/slides/slide_next.png',
+            u'Next Slide', u':/slides/slide_next.png',
             self.trUtf8(u'Move to next'), self.onSlideSelectedNext)
         if self.isLive:
             self.Toolbar.addToolbarButton(
-                self.trUtf8(u'Last Slide'), u':/slides/slide_last.png',
+                u'Last Slide', u':/slides/slide_last.png',
                 self.trUtf8(u'Move to last'), self.onSlideSelectedLast)
         if self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
@@ -159,19 +162,23 @@ class SlideController(QtGui.QWidget):
         if not self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
-                self.trUtf8(u'Go Live'), u':/system/system_live.png',
+                u'Go Live', u':/system/system_live.png',
                 self.trUtf8(u'Move to live'), self.onGoLive)
+            self.Toolbar.addToolbarSeparator(u'Close Separator')
+            self.Toolbar.addToolbarButton(
+                u'Edit Song', u':songs/song_edit.png',
+                self.trUtf8(u'Edit and re-preview Song'), self.onEditSong)
         if isLive:
             self.Toolbar.addToolbarSeparator(u'Loop Separator')
             self.Toolbar.addToolbarButton(
-                self.trUtf8(u'Start Loop'),  u':/media/media_time.png',
+                u'Start Loop',  u':/media/media_time.png',
                 self.trUtf8(u'Start continuous loop'), self.onStartLoop)
             self.Toolbar.addToolbarButton(
-                self.trUtf8(u'Stop Loop'), u':/media/media_stop.png',
+                u'Stop Loop', u':/media/media_stop.png',
                 self.trUtf8(u'Stop continuous loop'), self.onStopLoop)
             self.DelaySpinBox = QtGui.QSpinBox()
             self.Toolbar.addToolbarWidget(
-                self.trUtf8(u'Image SpinBox'), self.DelaySpinBox)
+                u'Image SpinBox', self.DelaySpinBox)
             self.DelaySpinBox.setSuffix(self.trUtf8(u's'))
 
         self.ControllerLayout.addWidget(self.Toolbar)
@@ -216,6 +223,8 @@ class SlideController(QtGui.QWidget):
             Receiver().send_message(u'request_spin_delay')
         if isLive:
             self.Toolbar.makeWidgetsInvisible(self.image_list)
+        else:
+            self.Toolbar.makeWidgetsInvisible(self.song_list)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_first'), self.onSlideSelectedFirst)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -255,7 +264,10 @@ class SlideController(QtGui.QWidget):
         """
         Allows the Preview toolbar to be customised
         """
-        pass
+        if item.name == u'Songs':
+            self.Toolbar.makeWidgetsVisible(self.song_list)
+        else:
+            self.Toolbar.makeWidgetsInvisible(self.song_list)
 
     def addServiceItem(self, item):
         """
@@ -389,13 +401,13 @@ class SlideController(QtGui.QWidget):
                 log.info(u'Slide Rendering took %4s' % (time.time() - before))
                 if self.isLive:
                     self.parent.mainDisplay.frameView(frame)
-    
+
     def grabMainDisplay(self):
         winid = QtGui.QApplication.desktop().winId()
         rm = self.parent.RenderManager
         rect = rm.screen_list[rm.current_display][u'size']
         winimg = QtGui.QPixmap.grabWindow(winid, rect.x(), rect.y(), rect.width(), rect.height())
-        self.SlidePreview.setPixmap(winimg)        
+        self.SlidePreview.setPixmap(winimg)
 
     def onSlideSelectedNext(self):
         """
@@ -460,6 +472,9 @@ class SlideController(QtGui.QWidget):
         """
         if event.timerId() == self.timer_id:
             self.onSlideSelectedNext()
+
+    def onEditSong(self):
+        Receiver().send_message(u'edit_song')
 
     def onGoLive(self):
         """

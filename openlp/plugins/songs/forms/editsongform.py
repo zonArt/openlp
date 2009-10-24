@@ -410,6 +410,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.songmanager.save_song(self.song)
         if self.title_change:
             Receiver().send_message(u'load_song_list')
+        Receiver().send_message(u'preview_song')
         self.close()
 
     def processLyrics(self):
