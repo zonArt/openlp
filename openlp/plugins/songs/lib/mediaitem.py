@@ -173,8 +173,8 @@ class SongMediaItem(MediaManagerItem):
                 if author_list != u'':
                     author_list = author_list + u', '
                 author_list = author_list + author.display_name
-            song_detail = unicode(u'%s (%s)' % \
-                (unicode(song.title), unicode(author_list)))
+            song_detail = unicode(self.trUtf8(u'%s (%s)' % \
+                (unicode(song.title), unicode(author_list))))
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
             self.ListView.addItem(song_name)
@@ -188,8 +188,8 @@ class SongMediaItem(MediaManagerItem):
         self.ListView.clear()
         for author in searchresults:
             for song in author.songs:
-                song_detail = unicode(u'%s (%s)' % \
-                    (unicode(author.display_name), unicode(song.title)))
+                song_detail = unicode(self.trUtf8(u'%s (%s)' % \
+                    (unicode(author.display_name), unicode(song.title))))
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
                 self.ListView.addItem(song_name)
@@ -231,6 +231,7 @@ class SongMediaItem(MediaManagerItem):
         item = self.ListView.currentItem()
         if item is not None:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            self.fromPreview = 0
             if preview:
                 self.fromPreview = item_id
             self.edit_song_form.loadSong(item_id)
