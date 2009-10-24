@@ -529,10 +529,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         applicationVersion = self.generalConfig.get_config(u'Application version', u'1.9.0-595')
         version = check_latest_version(self.generalConfig, applicationVersion)
         if applicationVersion != version:
+            version_text = self.trUtf8(u'OpenLP version %s has been updated '
+                u'to version %s')
             QtGui.QMessageBox.question(None,
-                self.trUtf8(u'OpenLP version Updated'),
-                self.trUtf8(u'OpenLP version %s has been updated to version %s')
-                    % (applicationVersion, version),
+                self.trUtf8(u'OpenLP Version Updated'),
+                version_text % (applicationVersion, version),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
             self.generalConfig.set_config(u'Application version', version)
