@@ -73,7 +73,7 @@ class BiblePlugin(Plugin):
         self.ImportBibleItem = QtGui.QAction(import_menu)
         self.ImportBibleItem.setObjectName(u'ImportBibleItem')
         import_menu.addAction(self.ImportBibleItem)
-        self.ImportBibleItem.setText(translate(u'BiblePlugin', u'&Bible'))
+        self.ImportBibleItem.setText(import_menu.trUtf8(u'&Bible'))
         # Signals and slots
         QtCore.QObject.connect(self.ImportBibleItem,
             QtCore.SIGNAL(u'triggered()'), self.onBibleNewClick)
@@ -83,7 +83,7 @@ class BiblePlugin(Plugin):
         self.ExportBibleItem = QtGui.QAction(export_menu)
         self.ExportBibleItem.setObjectName(u'ExportBibleItem')
         export_menu.addAction(self.ExportBibleItem)
-        self.ExportBibleItem.setText(translate(u'BiblePlugin', u'&Bible'))
+        self.ExportBibleItem.setText(export_menu.trUtf8(u'&Bible'))
         self.ExportBibleItem.setVisible(False)
 
     def onBibleNewClick(self):
@@ -91,4 +91,8 @@ class BiblePlugin(Plugin):
             self.media_item.onNewClick()
 
     def about(self):
-        return u'<b>Bible Plugin</b> <br>This plugin allows bible verse from different sources to be displayed on the screen during the service.<br><br>This is a core plugin and cannot be made inactive</b>'
+        about_text = u'<strong>Bible Plugin</strong><br />This plugin allows '\
+            u'bible verse from different sources to be displayed on the '\
+            u'screen during the service.<br /><br /><strong>This is a core '\
+            u'plugin and cannot be made inactive</strong>'
+        return about_text

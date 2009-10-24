@@ -94,6 +94,9 @@ class AboutForm(QtGui.QDialog):
         self.License3Label.setWordWrap(True)
         self.License3Label.setObjectName(u'License3Label')
         self.LicenseTabLayout.addWidget(self.License3Label)
+        self.LicenseSpacer = QtGui.QSpacerItem(20, 40,
+            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.LicenseTabLayout.addItem(self.LicenseSpacer)
         self.AboutNotebook.addTab(self.LicenseTab, u'License')
         self.CreditsTab = QtGui.QWidget()
         self.CreditsTab.setObjectName(u'CreditsTab')
@@ -138,21 +141,31 @@ class AboutForm(QtGui.QDialog):
         """
         Set up translation
         """
-        AboutForm.setWindowTitle(translate(u'AboutDialog', u'About openlp.org'))
-        self.CopyrightLabel.setText(translate(u'AboutDialog',
-            u'Copyright (c) 2004-2009 openlp.org Foundation'))
-        self.AboutAuthors.setText(translate(u'AboutDialog',
-            u'openlp.org is written and maintained by volunteers. If you would like to see more free Christian software being written, please consider contributing by using the button below.'))
-        self.License1Label.setText(translate(u'AboutDialog',
-            u'This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.'))
-        self.License2Label.setText(translate(u'AboutDialog',
-            u'You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.'))
-        self.License3Label.setText(translate(u'AboutDialog',
-            u'This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.'))
+        AboutForm.setWindowTitle(self.trUtf8(u'About openlp.org'))
+        self.CopyrightLabel.setText(
+            self.trUtf8(u'Copyright \xa9 2004-2009 openlp.org Foundation'))
+        self.AboutAuthors.setText(self.trUtf8(
+            u'openlp.org is written and maintained by volunteers. If you would '
+            u'like to see more free Christian software being written, please '
+            u'consider contributing by using the button below.'))
+        self.License1Label.setText(self.trUtf8(
+            u'This program is free software; you can redistribute it and/or '
+            u'modify it under the terms of the GNU General Public License as '
+            u'published by the Free Software Foundation; either version 2 of '
+            u'the License, or (at your option) any later version.'))
+        self.License2Label.setText(self.trUtf8(
+            u'You should have received a copy of the GNU General Public '
+            u'License along with this program; if not, write to the Free '
+            u'Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, '
+            u'MA 02111-1307 USA.'))
+        self.License3Label.setText(self.trUtf8(
+            u'This program is distributed in the hope that it will be useful, '
+            u'but WITHOUT ANY WARRANTY; without even the implied warranty of '
+            u'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU '
+            u'General Public License for more details.'))
         self.AboutNotebook.setTabText(
-            self.AboutNotebook.indexOf(self.LicenseTab),
-            translate(u'AboutDialog', u'License'))
-        self.CreditsTextEdit.setPlainText(translate(u'AboutDialog',
+            self.AboutNotebook.indexOf(self.LicenseTab), self.trUtf8(u'License'))
+        self.CreditsTextEdit.setPlainText(self.trUtf8(
             u'Project Lead\n'
             u'    Raoul \"superfly\" Snyman\n'
             u'\n'
@@ -165,11 +178,10 @@ class AboutForm(QtGui.QDialog):
             u'    Jon \"Meths\" Tibble\n'
             u'    Carsten \"catini\" Tingaard'))
         self.AboutNotebook.setTabText(
-            self.AboutNotebook.indexOf(self.CreditsTab),
-            translate(u'AboutDialog', u'Credits'))
-        self.ContributeButton.setText(translate(u'AboutDialog', u'Contribute'))
-        self.CloseButton.setText(translate(u'AboutDialog', u'Close'))
-        self.extContributeItem.setText(translate(u'AboutDialog', u'&Contribute'))
+            self.AboutNotebook.indexOf(self.CreditsTab), self.trUtf8(u'Credits'))
+        self.ContributeButton.setText(self.trUtf8(u'Contribute'))
+        self.CloseButton.setText(self.trUtf8(u'Close'))
+        self.extContributeItem.setText(self.trUtf8(u'&Contribute'))
 
     def onContributeButtonClicked(self):
         """
@@ -178,3 +190,4 @@ class AboutForm(QtGui.QDialog):
         import webbrowser
         url = "http://www.openlp.org/en/documentation/introduction/contributing.html"
         webbrowser.open_new(url)
+

@@ -353,18 +353,15 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if len(self.TitleEditItem.displayText()) == 0:
             self.SongTabWidget.setCurrentIndex(0)
             self.TitleEditItem.setFocus()
-            return False, translate(
-                u'SongFormDialog', u'You need to enter a song title.')
+            return False, self.trUtf8(u'You need to enter a song title.')
         if self.VerseListWidget.count() == 0:
             self.SongTabWidget.setCurrentIndex(0)
             self.VerseListWidget.setFocus()
-            return False, translate(
-                u'SongFormDialog', u'You need to enter some verses.')
+            return False, self.trUtf8(u'You need to enter some verses.')
         if self.AuthorsListView.count() == 0:
             self.SongTabWidget.setCurrentIndex(2)
             self.AuthorsListView.setFocus()
-            return False, translate(
-                u'SongFormDialog', u'You need to provide at least one author.')
+            return False, self.trUtf8(u'You need to provide at least one author.')
         return True, u''
 
     def onTitleEditItemLostFocus(self):
@@ -398,9 +395,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         log.debug(u'accept')
         valid, message = self._validate_song()
         if not valid:
-            QtGui.QMessageBox.critical(self,
-            translate(u'SongFormDialog', u'Error'), message,
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+            QtGui.QMessageBox.critical(
+                self, self.trUtf8(u'Error'), message,
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             return
         self.song.title = unicode(self.TitleEditItem.displayText())
         self.song.copyright = unicode(self.CopyrightEditItem.displayText())

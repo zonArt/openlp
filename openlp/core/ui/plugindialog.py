@@ -93,25 +93,17 @@ class Ui_PluginViewDialog(object):
         self.PluginLayout.addWidget(self.PluginListButtonBox)
 
         self.retranslateUi(PluginViewDialog)
-        QtCore.QObject.connect(
-            self.PluginListButtonBox,
-            QtCore.SIGNAL(u'accepted()'),
-            PluginViewDialog.close)
+        QtCore.QObject.connect(self.PluginListButtonBox,
+            QtCore.SIGNAL(u'accepted()'), PluginViewDialog.close)
         QtCore.QMetaObject.connectSlotsByName(PluginViewDialog)
 
     def retranslateUi(self, PluginViewDialog):
-        PluginViewDialog.setWindowTitle(
-            translate(u'PluginViewDialog', u'Plugin List'))
-        self.PluginInfoGroupBox.setTitle(
-            translate(u'PluginViewDialog', u'Plugin Details'))
-        self.VersionLabel.setText(
-            translate(u'PluginViewDialog', u'Version:'))
-        self.VersionNumberLabel.setText(
-            translate(u'PluginViewDialog', u'TextLabel'))
-        self.AboutLabel.setText(translate(u'PluginViewDialog', u'About:'))
-        self.StatusLabel.setText(translate(u'PluginViewDialog', u'Status:'))
-        self.StatusComboBox.setItemText(
-            0, translate(u'PluginViewDialog', u'Active'))
-        self.StatusComboBox.setItemText(
-            1, translate(u'PluginViewDialog', u'Inactive'))
+        PluginViewDialog.setWindowTitle(self.trUtf8(u'Plugin List'))
+        self.PluginInfoGroupBox.setTitle(self.trUtf8(u'Plugin Details'))
+        self.VersionLabel.setText(self.trUtf8(u'Version:'))
+        self.VersionNumberLabel.setText(self.trUtf8(u'TextLabel'))
+        self.AboutLabel.setText(self.trUtf8(u'About:'))
+        self.StatusLabel.setText(self.trUtf8(u'Status:'))
+        self.StatusComboBox.setItemText(0, self.trUtf8(u'Active'))
+        self.StatusComboBox.setItemText(1, self.trUtf8(u'Inactive'))
 

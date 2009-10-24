@@ -27,8 +27,7 @@ class RemoteTab(SettingsTab):
     RemoteTab is the Remotes settings tab in the settings dialog.
     """
     def __init__(self):
-        SettingsTab.__init__(
-            self, translate(u'RemoteTab', u'Remotes'), u'Remotes')
+        SettingsTab.__init__(self, u'Remotes', u'Remotes')
 
     def setupUi(self):
         self.setObjectName(u'RemoteTab')
@@ -48,8 +47,7 @@ class RemoteTab(SettingsTab):
             0, QtGui.QFormLayout.LabelRole, self.RemoteModeGroupBox)
 
     def retranslateUi(self):
-        self.RemoteModeGroupBox.setTitle(
-            translate(u'RemoteTab', u'Remotes Receiver Port'))
+        self.RemoteModeGroupBox.setTitle(self.trUtf8(u'Remotes Receiver Port'))
 
     def load(self):
         self.RemotePortSpinBox.setValue(

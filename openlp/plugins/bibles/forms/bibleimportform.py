@@ -57,7 +57,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
         filepath = os.path.split(os.path.abspath(__file__))[0]
         filepath = os.path.abspath(os.path.join(filepath, u'..',
-            u'resources',u'crosswalkbooks.csv'))
+            u'resources', u'crosswalkbooks.csv'))
         fbibles=open(filepath, 'r')
         self.bible_versions = {}
         self.BibleComboBox.clear()
@@ -101,21 +101,24 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
 
     def onVersesFileButtonClicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, u'Open file',self.config.get_last_dir(1))
+        filename = QtGui.QFileDialog.getOpenFileName(
+            self, self.trUtf8(u'Open file'), self.config.get_last_dir(1))
         if filename != u'':
             self.VerseLocationEdit.setText(filename)
             self.config.set_last_dir(filename, 1)
             self.setCsv()
 
     def onBooksFileButtonClicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, u'Open file',self.config.get_last_dir(2))
+        filename = QtGui.QFileDialog.getOpenFileName(
+            self, self.trUtf8(u'Open file'), self.config.get_last_dir(2))
         if filename != u'':
             self.BooksLocationEdit.setText(filename)
             self.config.set_last_dir(filename, 2)
             self.setCsv()
 
     def onOsisFileButtonClicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, u'Open file',self.config.get_last_dir(3))
+        filename = QtGui.QFileDialog.getOpenFileName(
+            self, self.trUtf8(u'Open file'), self.config.get_last_dir(3))
         if filename != u'':
             self.OSISLocationEdit.setText(filename)
             self.config.set_last_dir(filename, 3)
@@ -157,18 +160,18 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
     def onCancelButtonClicked(self):
         # tell import to stop
-        self.message = u'Bible import stopped'
+        self.message = self.trUtf8(u'Bible import stopped')
         Receiver().send_message(u'stop_import')
         # tell bibleplugin to reload the bibles
         Receiver().send_message(u'pre_load_bibles')
         self.close()
 
     def onImportButtonClicked(self):
-        message = u'Bible import completed'
+        message = self.trUtf8(u'Bible import completed')
         if self.biblemanager is not None:
             if not self.bible_type is None and \
                 len(self.BibleNameEdit.displayText()) > 0:
-                self.MessageLabel.setText(u'Import Started')
+                self.MessageLabel.setText(self.trUtf8(u'Import Started'))
                 self.ProgressBar.setMinimum(0)
                 self.setMax(65)
                 self.ProgressBar.setValue(0)
@@ -181,8 +184,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
                 # tell bibleplugin to reload the bibles
                 Receiver().send_message(u'pre_load_bibles')
                 QtGui.QMessageBox.information(self,
-                    translate(u'BibleMediaItem', u'Information'),
-                    translate(u'BibleMediaItem', message))
+                    self.trUtf8(u'Information'), self.trUtf8(message))
 
     def setMax(self, max):
         log.debug(u'set Max %s', max)
@@ -191,8 +193,8 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
     def incrementProgressBar(self, text ):
         log.debug(u'IncrementBar %s', text)
-        self.MessageLabel.setText(u'Import processing ' + text)
-        self.ProgressBar.setValue(self.ProgressBar.value()+1)
+        self.MessageLabel.setText(self.trUtf8(u'Import processing %s') % text)
+        self.ProgressBar.setValue(self.ProgressBar.value() + 1)
 
     def importBible(self):
         log.debug(u'Import Bible')
@@ -224,7 +226,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
                 unicode(self.CopyrightEdit.displayText()),
                 unicode(self.PermisionEdit.displayText()))
         else:
-            message = u'Bible import failed'
+            message = self.trUtf8(u'Bible import failed')
         self.bible_type = None
         # free the screen state restrictions
         self.resetScreenFieldStates()
