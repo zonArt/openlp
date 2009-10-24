@@ -386,7 +386,7 @@ class ThemeManager(QtGui.QWidget):
 
         newtheme.add_font(unicode(theme.FontName),
             unicode(theme.FontColor.name()),
-            unicode(theme.FontProportion * 2), u'False')
+            unicode(theme.FontProportion * 3), u'False')
         newtheme.add_font(unicode(theme.FontName),
             unicode(theme.FontColor.name()),
             unicode(12), u'False', u'footer')
