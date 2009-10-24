@@ -86,6 +86,13 @@ class EventReceiver(QtCore.QObject):
 
     ``config_updated``
         Informs components the config has changed
+
+    ``edit_song``
+        Requests the current song on the preview display be loaded for edit
+
+    ``preview_song``
+        Tells the song plugin the edit has finished and the song can be previewed
+        Only available if the edit was triggered by the Preview button.
     """
     global log
     log = logging.getLogger(u'EventReceiver')
