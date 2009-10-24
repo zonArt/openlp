@@ -678,6 +678,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             log.debug(u'Page Length  area height %s , metrics %s , lines %s' %
                       (int(self.FontMainHeightSpinBox.value()), metrics.height(), page_length ))
             self.FontMainLinesPageLabel.setText(
-                self.trUtf8(u'Slide Height is %s rows') % page_length)
+                self.trUtf8((u'Slide Height is %s rows') % page_length))
             frame = self.thememanager.generateImage(theme)
             self.ThemePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
