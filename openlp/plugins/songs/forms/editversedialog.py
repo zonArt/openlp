@@ -23,7 +23,6 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
 
 class Ui_EditVerseDialog(object):
     def setupUi(self, EditVerseDialog):

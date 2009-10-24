@@ -18,7 +18,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
 from PyQt4 import QtGui, QtCore
-from openlp.core.lib import translate
+
 from openlp.plugins.songs.lib.classes import Author, Book, Topic
 from songmaintenancedialog import Ui_SongMaintenanceDialog
 from authorsform import AuthorsForm

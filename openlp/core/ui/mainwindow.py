@@ -30,9 +30,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
     ServiceManager, ThemeManager, MainDisplay, SlideController, \
     PluginForm, MediaDockManager
-from openlp.core.lib import translate, RenderManager, PluginConfig, \
-    OpenLPDockWidget, SettingsManager, PluginManager, Receiver, \
-    buildIcon, str_to_bool
+from openlp.core.lib import RenderManager, PluginConfig, buildIcon, \
+    OpenLPDockWidget, SettingsManager, PluginManager, Receiver, str_to_bool
 from openlp.core.utils import check_latest_version
 
 media_manager_style = """

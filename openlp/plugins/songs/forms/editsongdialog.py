@@ -24,7 +24,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, buildIcon
+from openlp.core.lib import buildIcon
 
 class Ui_EditSongDialog(object):
     def setupUi(self, EditSongDialog):
