@@ -353,6 +353,7 @@ class SlideController(QtGui.QWidget):
         if self.commandItem is not None and \
             self.commandItem.service_item_type == ServiceType.Command:
             Receiver().send_message(u'%s_first'% self.commandItem.name.lower())
+            QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
         else:
             self.PreviewListWidget.selectRow(0)
             self.onSlideSelected()
@@ -379,6 +380,7 @@ class SlideController(QtGui.QWidget):
         if row > -1 and row < self.PreviewListWidget.rowCount():
             if self.commandItem.service_item_type == ServiceType.Command:
                 Receiver().send_message(u'%s_slide'% self.commandItem.name.lower(), [row])
+                QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
             else:
                 #label = self.PreviewListWidget.cellWidget(row, 0)
                 frame = self.serviceitem.frames[row][u'image']
@@ -389,6 +391,13 @@ class SlideController(QtGui.QWidget):
                 log.info(u'Slide Rendering took %4s' % (time.time() - before))
                 if self.isLive:
                     self.parent.mainDisplay.frameView(frame)
+    
+    def grabMainDisplay(self):
+        winid = QtGui.QApplication.desktop().winId()
+        rm = self.parent.RenderManager
+        rect = rm.screen_list[rm.current_display][u'size']
+        winimg = QtGui.QPixmap.grabWindow(winid, rect.x(), rect.y(), rect.width(), rect.height())
+        self.SlidePreview.setPixmap(winimg)        
 
     def onSlideSelectedNext(self):
         """
@@ -397,6 +406,7 @@ class SlideController(QtGui.QWidget):
         if self.commandItem is not None and \
             self.commandItem.service_item_type == ServiceType.Command:
             Receiver().send_message(u'%s_next'% self.commandItem.name.lower())
+            QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
         else:
             row = self.PreviewListWidget.currentRow() + 1
             if row == self.PreviewListWidget.rowCount():
@@ -412,6 +422,7 @@ class SlideController(QtGui.QWidget):
             self.commandItem.service_item_type == ServiceType.Command:
             Receiver().send_message(
                 u'%s_previous'% self.commandItem.name.lower())
+            QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
         else:
             row = self.PreviewListWidget.currentRow() - 1
             if row == -1:
@@ -426,6 +437,7 @@ class SlideController(QtGui.QWidget):
         if self.commandItem is not None and \
             self.commandItem.service_item_type == ServiceType.Command:
             Receiver().send_message(u'%s_last'% self.commandItem.name.lower())
+            QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
         else:
             self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount() - 1)
             self.onSlideSelected()
