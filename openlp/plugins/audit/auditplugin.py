@@ -27,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, Receiver, translate, str_to_bool, buildIcon
+from openlp.core.lib import Plugin, Receiver, str_to_bool, buildIcon
 from openlp.plugins.audit.lib import AuditManager
 from openlp.plugins.audit.forms import AuditDetailForm, AuditDeleteForm
 from openlp.plugins.audit.lib.models import AuditItem

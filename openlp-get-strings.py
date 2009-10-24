@@ -24,7 +24,6 @@
 ###############################################################################
 
 import os
-import sys
 import re
 
 ts_file = u"""<?xml version="1.0" encoding="utf-8"?>

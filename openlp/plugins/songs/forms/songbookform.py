@@ -24,7 +24,6 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import translate
 from openlp.plugins.songs.forms.songbookdialog import Ui_SongBookDialog
 
 class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):

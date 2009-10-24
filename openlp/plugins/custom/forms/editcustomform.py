@@ -25,7 +25,7 @@
 from PyQt4 import QtCore, QtGui
 
 from editcustomdialog import Ui_customEditDialog
-from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver, translate
+from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver
 from openlp.plugins.custom.lib.models import CustomSlide
 
 class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):

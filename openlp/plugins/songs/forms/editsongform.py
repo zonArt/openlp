@@ -26,7 +26,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver, translate
+from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver
 from openlp.plugins.songs.forms import EditVerseForm
 from openlp.plugins.songs.lib.models import Song
 from editsongdialog import Ui_EditSongDialog
@@ -410,6 +410,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.songmanager.save_song(self.song)
         if self.title_change:
             Receiver().send_message(u'load_song_list')
+        Receiver().send_message(u'preview_song')
         self.close()
 
     def processLyrics(self):

@@ -201,7 +201,7 @@ class Renderer(object):
                 #if we have more text add up to 10 spaces on the front.
                 if len(line) > 0 and self._theme.font_main_indentation > 0:
                     line = u'%s%s' % \
-                        (u'          '[:self._theme.font_main_indentation], line)
+                        (u'          '[:int(self._theme.font_main_indentation)], line)
                 #Text fits in a line now
         for count, line in enumerate(split_lines):
             page.append(line)

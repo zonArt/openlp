@@ -24,15 +24,15 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, Receiver
+from openlp.core.lib import SettingsTab, Receiver
 
 class ImageTab(SettingsTab):
     """
     ImageTab is the Image settings tab in the settings dialog.
     """
     def __init__(self):
-        #SettingsTab.__init__(self, self.trUtf8(u'Images'), u'Image')
-        SettingsTab.__init__(self, u'Images', u'Image')
+        #SettingsTab.__init__(self, self.trUtf8(u'Images'), u'Images')
+        SettingsTab.__init__(self, u'Images', u'Images')
 
     def setupUi(self):
         self.setObjectName(u'ImageTab')

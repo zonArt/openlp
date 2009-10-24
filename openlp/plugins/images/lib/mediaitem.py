@@ -26,7 +26,7 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, buildIcon, translate
+from openlp.core.lib import MediaManagerItem, BaseListWithDnD, buildIcon
 
 # We have to explicitly create separate classes for each plugin
 # in order for DnD to the Service manager to work correctly.

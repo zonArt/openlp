@@ -30,7 +30,7 @@ import codecs
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import translate, Receiver
+from openlp.core.lib import Receiver
 
 class BibleOSISImpl():
     """
