@@ -26,7 +26,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, translate, SongXMLParser, \
+from openlp.core.lib import MediaManagerItem, SongXMLParser, \
     BaseListWithDnD, Receiver,  str_to_bool
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm
 

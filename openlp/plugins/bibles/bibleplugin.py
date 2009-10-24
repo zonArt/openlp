@@ -26,7 +26,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, translate, buildIcon
+from openlp.core.lib import Plugin, buildIcon
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 
 class BiblePlugin(Plugin):

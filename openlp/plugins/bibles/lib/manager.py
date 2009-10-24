@@ -25,8 +25,6 @@
 import logging
 import os
 
-from openlp.core.lib import translate
-
 from bibleOSISimpl import BibleOSISImpl
 from bibleCSVimpl import BibleCSVImpl
 from bibleDBimpl import BibleDBImpl

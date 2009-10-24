@@ -32,7 +32,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AmendThemeForm
 from openlp.core.theme import Theme
-from openlp.core.lib import PluginConfig, OpenLPToolbar, ThemeXML, translate, \
+from openlp.core.lib import PluginConfig, OpenLPToolbar, ThemeXML, \
     str_to_bool, file_to_xml, buildIcon, Receiver, contextMenuAction, \
     contextMenuSeparator
 from openlp.core.utils import ConfigHelper
