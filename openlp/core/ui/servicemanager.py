@@ -30,7 +30,7 @@ import zipfile
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
-    translate, ServiceType, contextMenuAction, contextMenuSeparator, Receiver
+    ServiceType, contextMenuAction, contextMenuSeparator, Receiver
 
 class ServiceManagerList(QtGui.QTreeWidget):
 

@@ -24,7 +24,7 @@
 
 import logging
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate, buildIcon
+from openlp.core.lib import buildIcon
 
 class AlertForm(QtGui.QDialog):
     global log

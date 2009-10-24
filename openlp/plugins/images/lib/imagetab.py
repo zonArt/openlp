@@ -24,7 +24,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, Receiver
+from openlp.core.lib import SettingsTab, Receiver
 
 class ImageTab(SettingsTab):
     """

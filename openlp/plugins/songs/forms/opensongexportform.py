@@ -22,7 +22,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 from openlp.plugins.songs.forms.opensongexportdialog import Ui_OpenSongExportDialog
 
 class OpenSongExportForm(QtGui.QDialog, Ui_OpenSongExportDialog):

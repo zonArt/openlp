@@ -26,7 +26,7 @@ import logging
 import time
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import OpenLPToolbar, translate, Receiver, ServiceType
+from openlp.core.lib import OpenLPToolbar, Receiver, ServiceType
 
 label_stylesheet = u"""
 QTableWidget::item:selected

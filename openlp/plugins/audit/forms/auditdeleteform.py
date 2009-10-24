@@ -27,8 +27,6 @@ from datetime import date
 from PyQt4 import QtGui
 
 from auditdeletedialog import Ui_AuditDeleteDialog
-from openlp.core.lib import translate
-#from openlp.plugins.audit.lib import AuditManager
 
 class AuditDeleteForm(QtGui.QDialog, Ui_AuditDeleteDialog):
     """

@@ -22,7 +22,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 from openlp.plugins.songs.forms.openlpimportdialog import Ui_OpenLPImportDialog
 
 class OpenLPImportForm(QtGui.QDialog, Ui_OpenLPImportDialog):
@@ -30,4 +30,3 @@ class OpenLPImportForm(QtGui.QDialog, Ui_OpenLPImportDialog):
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-

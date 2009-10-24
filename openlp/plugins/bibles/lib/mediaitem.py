@@ -27,8 +27,8 @@ import time
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, MediaManagerItem, Receiver, \
-    BaseListWithDnD, str_to_bool
+from openlp.core.lib import MediaManagerItem, Receiver, str_to_bool, \
+    BaseListWithDnD
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib.manager import BibleMode
 
