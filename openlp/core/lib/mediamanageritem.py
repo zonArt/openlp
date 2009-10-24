@@ -118,7 +118,6 @@ class MediaManagerItem(QtGui.QWidget):
         self.requiredIcons()
         self.setupUi()
         self.retranslateUi()
-        #self.initialise()
 
     def requiredIcons(self):
         """
