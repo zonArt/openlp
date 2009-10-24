@@ -86,6 +86,9 @@ class EventReceiver(QtCore.QObject):
 
     ``config_updated``
         Informs components the config has changed
+        
+    ``slidecontroller_change``
+        Informs the slidecontroller that a slide change has occurred
     """
     global log
     log = logging.getLogger(u'EventReceiver')

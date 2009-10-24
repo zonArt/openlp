@@ -224,6 +224,8 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'slidecontroller_previous'), self.onSlideSelectedPrevious)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_last'), self.onSlideSelectedLast)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'slidecontroller_change'), self.onSlideChange)
 
     def receiveSpinDelay(self, value):
         self.DelaySpinBox.setValue(int(value))
@@ -389,14 +391,25 @@ class SlideController(QtGui.QWidget):
                 log.info(u'Slide Rendering took %4s' % (time.time() - before))
                 if self.isLive:
                     self.parent.mainDisplay.frameView(frame)
-    
-    def grabMainDisplay(self):
-        winid = QtGui.QApplication.desktop().winId()
-        rm = self.parent.RenderManager
-        rect = rm.screen_list[rm.current_display][u'size']
-        winimg = QtGui.QPixmap.grabWindow(winid, rect.x(), rect.y(), rect.width(), rect.height())
-        self.SlidePreview.setPixmap(winimg)        
 
+    def onSlideChange(self, row):
+        """
+        The slide has been changed. Update the slidecontroller accordingly
+        """
+        self.PreviewListWidget.selectRow(row)
+        QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
+
+    def grabMainDisplay(self):
+        rm = self.parent.RenderManager
+        if not rm.screen_list[rm.current_display][u'primary']:
+            winid = QtGui.QApplication.desktop().winId()
+            rect = rm.screen_list[rm.current_display][u'size']
+            winimg = QtGui.QPixmap.grabWindow(winid, rect.x(), rect.y(), rect.width(), rect.height())
+            self.SlidePreview.setPixmap(winimg)        
+        else:
+            label = self.PreviewListWidget.cellWidget(self.PreviewListWidget.currentRow(), 0)
+            self.SlidePreview.setPixmap(label.pixmap())
+            
     def onSlideSelectedNext(self):
         """
         Go to the next slide.
