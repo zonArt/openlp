@@ -84,8 +84,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.DisplayTypeLabel = QtGui.QLabel(self.PresentationWidget)
         self.DisplayTypeLabel.setObjectName(u'SearchTypeLabel')
         self.DisplayLayout.addWidget(self.DisplayTypeLabel, 0, 0, 1, 1)
-        self.DisplayTypeLabel.setText(
-            translate(u'PresentationMediaItem', u'Present using:'))
+        self.DisplayTypeLabel.setText(self.trUtf8(u'Present using:'))
         # Add the Presentation widget to the page layout
         self.PageLayout.addWidget(self.PresentationWidget)
 
@@ -107,8 +106,9 @@ class PresentationMediaItem(MediaManagerItem):
                 continue
             (path, filename) = os.path.split(unicode(file))
             if titles.count(filename) > 0:
-                QtGui.QMessageBox.critical(self, u'File exists',
-                    u'A presentation with that filename already exists.',
+                QtGui.QMessageBox.critical(
+                    self, self.trUtf8(u'File exists'),
+                    self.trUtf8(u'A presentation with that filename already exists.'),
                     QtGui.QMessageBox.Ok)
             else:
                 item_name = QtGui.QListWidgetItem(filename)

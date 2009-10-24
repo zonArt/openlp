@@ -414,33 +414,37 @@ class Ui_EditSongDialog(object):
         EditSongDialog.setTabOrder(self.CommentsEdit, self.ButtonBox)
 
     def retranslateUi(self, EditSongDialog):
-        EditSongDialog.setWindowTitle(translate(u'EditSongDialog', u'Song Editor'))
-        self.TitleLabel.setText(translate(u'EditSongDialog', u'Title:'))
-        self.AlternativeTitleLabel.setText(translate(u'EditSongDialog', u'Alternative Title:'))
-        self.LyricsLabel.setText(translate(u'EditSongDialog', u'Lyrics:'))
-        self.VerseOrderLabel.setText(translate(u'EditSongDialog', u'Verse Order:'))
-        self.VerseAddButton.setText(translate(u'EditSongDialog', u'Add'))
-        self.VerseEditButton.setText(translate(u'EditSongDialog', u'Edit'))
-        self.VerseEditAllButton.setText(translate(u'EditSongDialog', u'Edit All'))
-        self.VerseDeleteButton.setText(translate(u'EditSongDialog', u'Delete'))
-        self.SongTabWidget.setTabText(self.SongTabWidget.indexOf(self.LyricsTab),
-            translate(u'EditSongDialog', u'Title && Lyrics'))
-        self.AuthorsGroupBox.setTitle(translate(u'EditSongDialog', u'Authors'))
-        self.AuthorAddButton.setText(translate(u'EditSongDialog', u'&Add to Song'))
-        self.AuthorRemoveButton.setText(translate(u'EditSongDialog', u'&Remove'))
-        self.MaintenanceButton.setText(translate(u'EditSongDialog', u'&Manage Authors, Topics, Books'))
-        self.TopicGroupBox.setTitle(translate(u'EditSongDialog', u'Topic'))
-        self.TopicAddButton.setText(translate(u'EditSongDialog', u'A&dd to Song'))
-        self.TopicRemoveButton.setText(translate(u'EditSongDialog', u'R&emove'))
-        self.SongBookGroup.setTitle(translate(u'EditSongDialog', u'Song Book'))
-        self.SongTabWidget.setTabText(self.SongTabWidget.indexOf(self.AuthorsTab),
-            translate(u'EditSongDialog', u'Authors, Topics && Book'))
-        self.ThemeGroupBox.setTitle(translate(u'EditSongDialog', u'Theme'))
-        self.ThemeAddButton.setText(translate(u'EditSongDialog', u'Add a Theme'))
-        self.CopyrightGroupBox.setTitle(translate(u'EditSongDialog', u'Copyright Information'))
-        self.CopyrightInsertButton.setText(translate(u'EditSongDialog', '©'))
-        self.CCLILabel.setText(translate(u'EditSongDialog', u'CCLI Number:'))
-        self.CommentsGroupBox.setTitle(translate(u'EditSongDialog', u'Comments'))
-        self.SongTabWidget.setTabText(self.SongTabWidget.indexOf(self.ThemeTab),
-            translate(u'EditSongDialog', u'Theme, Copyright Info && Comments'))
+        EditSongDialog.setWindowTitle(self.trUtf8(u'Song Editor'))
+        self.TitleLabel.setText(self.trUtf8(u'Title:'))
+        self.AlternativeTitleLabel.setText(self.trUtf8(u'Alternative Title:'))
+        self.LyricsLabel.setText(self.trUtf8(u'Lyrics:'))
+        self.VerseOrderLabel.setText(self.trUtf8(u'Verse Order:'))
+        self.VerseAddButton.setText(self.trUtf8(u'Add'))
+        self.VerseEditButton.setText(self.trUtf8(u'Edit'))
+        self.VerseEditAllButton.setText(self.trUtf8(u'Edit All'))
+        self.VerseDeleteButton.setText(self.trUtf8(u'Delete'))
+        self.SongTabWidget.setTabText(
+            self.SongTabWidget.indexOf(self.LyricsTab),
+            self.trUtf8(u'Title && Lyrics'))
+        self.AuthorsGroupBox.setTitle(self.trUtf8(u'Authors'))
+        self.AuthorAddButton.setText(self.trUtf8(u'&Add to Song'))
+        self.AuthorRemoveButton.setText(self.trUtf8(u'&Remove'))
+        self.MaintenanceButton.setText(
+            self.trUtf8(u'&Manage Authors, Topics, Books'))
+        self.TopicGroupBox.setTitle(self.trUtf8(u'Topic'))
+        self.TopicAddButton.setText(self.trUtf8(u'A&dd to Song'))
+        self.TopicRemoveButton.setText(self.trUtf8(u'R&emove'))
+        self.SongBookGroup.setTitle(self.trUtf8(u'Song Book'))
+        self.SongTabWidget.setTabText(
+            self.SongTabWidget.indexOf(self.AuthorsTab),
+            self.trUtf8(u'Authors, Topics && Book'))
+        self.ThemeGroupBox.setTitle(self.trUtf8(u'Theme'))
+        self.ThemeAddButton.setText(self.trUtf8(u'Add a Theme'))
+        self.CopyrightGroupBox.setTitle(self.trUtf8(u'Copyright Information'))
+        self.CopyrightInsertButton.setText(self.trUtf8(u'\xa9'))
+        self.CCLILabel.setText(self.trUtf8(u'CCLI Number:'))
+        self.CommentsGroupBox.setTitle(self.trUtf8(u'Comments'))
+        self.SongTabWidget.setTabText(
+            self.SongTabWidget.indexOf(self.ThemeTab),
+            self.trUtf8(u'Theme, Copyright Info && Comments'))
 

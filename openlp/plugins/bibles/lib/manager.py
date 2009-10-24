@@ -57,7 +57,7 @@ class BibleManager(object):
         """
         self.config = config
         log.debug(u'Bible Initialising')
-        self.web = translate(u'BibleManager', u'Web')
+        self.web = u'Web'
         # dict of bible database objects
         self.bible_db_cache = None
         # dict of bible http readers
@@ -352,8 +352,8 @@ class BibleManager(object):
             if book is None:
                 log.debug(u'get_verse_text : new book')
                 for chapter in range(schapter, echapter + 1):
-                    self.media.setQuickMessage \
-                        (u'Downloading %s: %s'% (bookname, chapter))
+                    self.media.setQuickMessage(
+                        self.trUtf8(u'Downloading %s: %s') % (bookname, chapter))
                     search_results = \
                         self.bible_http_cache[bible].get_bible_chapter(
                             bible, 0, bookname, chapter)
@@ -381,8 +381,9 @@ class BibleManager(object):
                             v = self.bible_db_cache[bible].get_bible_chapter(
                                 book.id, chapter)
                             if v is None:
-                                self.media.setQuickMessage \
-                                    (u'%Downloading %s: %s'% (bookname, chapter))
+                                self.media.setQuickMessage(
+                                    self.trUtf8(u'%Downloading %s: %s')\
+                                        % (bookname, chapter))
                                 self.bible_db_cache[bible].create_chapter(
                                     book.id, chapter,
                                     search_results.get_verselist())

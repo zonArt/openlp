@@ -48,8 +48,6 @@ class ImageMediaItem(MediaManagerItem):
         self.PluginTextShort = u'Image'
         self.ConfigSection = u'images'
         self.IconPath = u'images/image'
-        self.OnNewPrompt = u'Select Image(s)'
-        self.OnNewFileMasks = u'Images (*.jpg *jpeg *.gif *.png *.bmp)'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
@@ -57,6 +55,11 @@ class ImageMediaItem(MediaManagerItem):
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
         self.overrideActive = False
+
+    def retranslateUi(self):
+        self.OnNewPrompt = self.trUtf8(u'Select Image(s)')
+        self.OnNewFileMasks = \
+            self.trUtf8(u'Images (*.jpg *jpeg *.gif *.png *.bmp)')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -94,9 +97,9 @@ class ImageMediaItem(MediaManagerItem):
         self.OverrideCheckBox.setObjectName(u'OverrideCheckBox')
         self.OverrideCheckBox.setCheckable(True)
         self.OverrideCheckBox.setChecked(False)
-        self.OverrideCheckBox.setText(translate(u'ImagePlugin', u'Override background'))
+        self.OverrideCheckBox.setText(self.trUtf8(u'Override background'))
         self.OverrideCheckBox.setStatusTip(
-            translate(u'ImageMedia', u'Allow background of live slide to be overridden'))
+            self.trUtf8(u'Allow background of live slide to be overridden'))
         self.OverrideLayout.addWidget(self.OverrideCheckBox)
         self.OverrideLabel = QtGui.QLabel(self.ImageWidget)
         self.OverrideLabel.setObjectName(u'OverrideLabel')
@@ -139,7 +142,7 @@ class ImageMediaItem(MediaManagerItem):
         items = self.ListView.selectedIndexes()
         if len(items) == 0:
             return False
-        service_item.title = u'Image(s)'
+        service_item.title = self.trUtf8(u'Image(s)')
         for item in items:
             bitem = self.ListView.item(item.row())
             filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())

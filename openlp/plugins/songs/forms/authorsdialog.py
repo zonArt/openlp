@@ -73,11 +73,7 @@ class Ui_AuthorsDialog(object):
         QtCore.QMetaObject.connectSlotsByName(AuthorsDialog)
 
     def retranslateUi(self, AuthorsDialog):
-        AuthorsDialog.setWindowTitle(
-            translate(u'AuthorsDialog', u'Author Maintenance'))
-        self.DisplayLabel.setText(
-            translate(u'AuthorsDialog', u'Display name:'))
-        self.FirstNameLabel.setText(
-            translate(u'AuthorsDialog', u'First name:'))
-        self.LastNameLabel.setText(
-            translate(u'AuthorsDialog', u'Last name:'))
+        AuthorsDialog.setWindowTitle(self.trUtf8(u'Author Maintenance'))
+        self.DisplayLabel.setText(self.trUtf8(u'Display name:'))
+        self.FirstNameLabel.setText(self.trUtf8(u'First name:'))
+        self.LastNameLabel.setText(self.trUtf8(u'Last name:'))

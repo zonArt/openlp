@@ -63,9 +63,8 @@ class SongMediaItem(MediaManagerItem):
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
         ## Song Maintenance Button ##
-        self.addToolbarButton(translate(u'SongMediaItem', u'Song Maintenance'),
-            translate(u'SongMediaItem',
-            u'Maintain the lists of authors, topics and books'),
+        self.addToolbarButton(self.trUtf8(u'Song Maintenance'),
+            self.trUtf8(u'Maintain the lists of authors, topics and books'),
             ':/songs/song_maintenance.png', self.onSongMaintenanceClick,
             'SongMaintenanceItem')
         self.PageLayout.setSpacing(4)
@@ -128,15 +127,15 @@ class SongMediaItem(MediaManagerItem):
             self.parent.config.get_config(u'search as type', u'False'))
 
     def retranslateUi(self):
-        self.SearchTextLabel.setText(translate(u'SongMediaItem', u'Search:'))
-        self.SearchTypeLabel.setText(translate(u'SongMediaItem', u'Type:'))
-        self.ClearTextButton.setText(translate(u'SongMediaItem', u'Clear'))
-        self.SearchTextButton.setText(translate(u'SongMediaItem', u'Search'))
+        self.SearchTextLabel.setText(self.trUtf8(u'Search:'))
+        self.SearchTypeLabel.setText(self.trUtf8(u'Type:'))
+        self.ClearTextButton.setText(self.trUtf8(u'Clear'))
+        self.SearchTextButton.setText(self.trUtf8(u'Search'))
 
     def initialise(self):
-        self.SearchTypeComboBox.addItem(translate(u'SongMediaItem', u'Titles'))
-        self.SearchTypeComboBox.addItem(translate(u'SongMediaItem', u'Lyrics'))
-        self.SearchTypeComboBox.addItem(translate(u'SongMediaItem', u'Authors'))
+        self.SearchTypeComboBox.addItem(self.trUtf8(u'Titles'))
+        self.SearchTypeComboBox.addItem(self.trUtf8(u'Lyrics'))
+        self.SearchTypeComboBox.addItem(self.trUtf8(u'Authors'))
         self.configUpdated()
 
     def onSearchTextButtonClick(self):
@@ -270,7 +269,7 @@ class SongMediaItem(MediaManagerItem):
         raw_footer.append(author_list)
         raw_footer.append(song.copyright )
         raw_footer.append(unicode(
-            translate(u'SongMediaItem', u'CCL Licence: ') + ccl))
+            self.trUtf8(u'CCL Licence: ') + ccl))
         service_item.raw_footer = raw_footer
         service_item.audit = [song.title, author_audit, song.copyright, song.ccli_number]
         return True

@@ -44,8 +44,8 @@ class AuditDeleteForm(QtGui.QDialog, Ui_AuditDeleteDialog):
 
     def accept(self):
         ret = QtGui.QMessageBox.question(self,
-            translate(u'mainWindow', u'Delete Selected Audit Events?'),
-            translate(u'mainWindow', u'Are you sure you want to delete selected Audit Data?'),
+            self.trUtf8(u'Delete Selected Audit Events?'),
+            self.trUtf8(u'Are you sure you want to delete selected Audit Data?'),
             QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Ok |
                 QtGui.QMessageBox.Cancel),
