@@ -97,6 +97,8 @@ class SlideController(QtGui.QWidget):
         ]
         self.timer_id = 0
         self.commandItem = None
+        self.songEdit = False
+        self.row = 0
         self.Panel = QtGui.QWidget(parent.ControlSplitter)
         # Layout for holding panel
         self.PanelLayout = QtGui.QVBoxLayout(self.Panel)
@@ -180,6 +182,7 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.addToolbarWidget(
                 u'Image SpinBox', self.DelaySpinBox)
             self.DelaySpinBox.setSuffix(self.trUtf8(u's'))
+            self.DelaySpinBox.setToolTip(self.trUtf8(u'Delay between slides in seconds'))
 
         self.ControllerLayout.addWidget(self.Toolbar)
         # Screen preview area
@@ -289,7 +292,12 @@ class SlideController(QtGui.QWidget):
             Receiver().send_message(u'%s_start' % item.name.lower(), \
                 [item.shortname, item.service_item_path,
                 item.service_frames[0][u'title']])
-        self.displayServiceManagerItems(item, 0)
+        slideno = 0
+        if self.songEdit:
+            slideno = self.row
+        self.songEdit = False
+        self.displayServiceManagerItems(item, slideno)
+
 
     def addServiceManagerItem(self, item, slideno):
         """
@@ -297,7 +305,7 @@ class SlideController(QtGui.QWidget):
         request the correct the toolbar of the plugin
         Called by ServiceManager
         """
-        log.debug(u'addServiceItem')
+        log.debug(u'addServiceManagerItem')
         #If old item was a command tell it to stop
         if self.commandItem is not None and \
             self.commandItem.service_item_type == ServiceType.Command:
@@ -387,12 +395,13 @@ class SlideController(QtGui.QWidget):
         if this is the Live Controller also display on the screen
         """
         row = self.PreviewListWidget.currentRow()
+        self.row = 0
         if row > -1 and row < self.PreviewListWidget.rowCount():
             if self.commandItem.service_item_type == ServiceType.Command:
                 Receiver().send_message(u'%s_slide'% self.commandItem.name.lower(), [row])
-                QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
+                if isLive:
+                    QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
             else:
-                #label = self.PreviewListWidget.cellWidget(row, 0)
                 frame = self.serviceitem.frames[row][u'image']
                 before = time.time()
                 if frame is None:
@@ -401,6 +410,7 @@ class SlideController(QtGui.QWidget):
                 log.info(u'Slide Rendering took %4s' % (time.time() - before))
                 if self.isLive:
                     self.parent.mainDisplay.frameView(frame)
+            self.row = row
 
     def grabMainDisplay(self):
         winid = QtGui.QApplication.desktop().winId()
@@ -474,6 +484,7 @@ class SlideController(QtGui.QWidget):
             self.onSlideSelectedNext()
 
     def onEditSong(self):
+        self.songEdit = True
         Receiver().send_message(u'edit_song')
 
     def onGoLive(self):

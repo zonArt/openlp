@@ -25,7 +25,13 @@
 
 import sys
 import os
-import sqlite
+try:
+    import sqlite
+except:
+    try:
+        import pysqlite2
+    except:
+        print 'No Sqlite2 package available'
 import sqlite3
 import re
 from optparse import OptionParser

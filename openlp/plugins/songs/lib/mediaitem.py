@@ -125,7 +125,7 @@ class SongMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'edit_song'), self.onEventEditSong)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'proview_song'), self.onPreviewClick)
+            QtCore.SIGNAL(u'preview_song'), self.onPreviewClick)
 
     def configUpdated(self):
         self.searchAsYouType = str_to_bool(
@@ -181,7 +181,6 @@ class SongMediaItem(MediaManagerItem):
             if song.id == self.fromPreview:
                 self.fromPreview = 0
                 self.ListView.setCurrentItem(song_name)
-        self.onPreviewClick()
 
     def displayResultsAuthor(self, searchresults):
         log.debug(u'display results Author')
