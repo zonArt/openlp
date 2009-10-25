@@ -181,7 +181,6 @@ class SongMediaItem(MediaManagerItem):
             if song.id == self.fromPreview:
                 self.fromPreview = 0
                 self.ListView.setCurrentItem(song_name)
-        self.onPreviewClick()
 
     def displayResultsAuthor(self, searchresults):
         log.debug(u'display results Author')

@@ -305,7 +305,7 @@ class SlideController(QtGui.QWidget):
         request the correct the toolbar of the plugin
         Called by ServiceManager
         """
-        log.debug(u'addServiceItem')
+        log.debug(u'addServiceManagerItem')
         #If old item was a command tell it to stop
         if self.commandItem is not None and \
             self.commandItem.service_item_type == ServiceType.Command:
@@ -399,9 +399,9 @@ class SlideController(QtGui.QWidget):
         if row > -1 and row < self.PreviewListWidget.rowCount():
             if self.commandItem.service_item_type == ServiceType.Command:
                 Receiver().send_message(u'%s_slide'% self.commandItem.name.lower(), [row])
-                QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
+                if isLive:
+                    QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
             else:
-                #label = self.PreviewListWidget.cellWidget(row, 0)
                 frame = self.serviceitem.frames[row][u'image']
                 before = time.time()
                 if frame is None:
