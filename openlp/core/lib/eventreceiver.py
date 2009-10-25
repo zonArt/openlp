@@ -93,6 +93,10 @@ class EventReceiver(QtCore.QObject):
     ``preview_song``
         Tells the song plugin the edit has finished and the song can be previewed
         Only available if the edit was triggered by the Preview button.
+        
+    ``slidecontroller_change``
+        Informs the slidecontroller that a slide change has occurred
+
     """
     global log
     log = logging.getLogger(u'EventReceiver')
