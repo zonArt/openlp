@@ -30,7 +30,7 @@ import zipfile
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
-    ServiceType, contextMenuAction, contextMenuSeparator, Receiver
+    ServiceType, contextMenuAction, contextMenuSeparator, Receiver, contextMenu
 
 class ServiceManagerList(QtGui.QTreeWidget):
 
@@ -168,6 +168,12 @@ class ServiceManager(QtGui.QWidget):
         self.ServiceManagerList.addAction(contextMenuAction(
             self.ServiceManagerList, ':/services/service_delete',
             self.trUtf8(u'&Remove from Service'), self.onDeleteFromService))
+        self.ServiceManagerList.addAction(contextMenuSeparator(
+            self.ServiceManagerList))
+        self.ThemeMenu = contextMenu(
+            self.ServiceManagerList, '',
+            self.trUtf8(u'&Change Item Theme'))
+        self.ServiceManagerList.addAction(self.ThemeMenu.menuAction())
         self.Layout.addWidget(self.ServiceManagerList)
         # Add the bottom toolbar
         self.OrderToolbar = OpenLPToolbar(self)
@@ -602,9 +608,15 @@ class ServiceManager(QtGui.QWidget):
 
         """
         self.ThemeComboBox.clear()
+        self.ThemeMenu.clear()
         self.ThemeComboBox.addItem(u'')
         for theme in theme_list:
             self.ThemeComboBox.addItem(theme)
+            action = contextMenuAction(
+                self.ServiceManagerList,
+                None,
+                theme , self.onThemeChangeAction)
+            self.ThemeMenu.addAction(action)
         id = self.ThemeComboBox.findText(self.service_theme,
             QtCore.Qt.MatchExactly)
         # Not Found
@@ -613,4 +625,10 @@ class ServiceManager(QtGui.QWidget):
             self.service_theme = u''
         self.ThemeComboBox.setCurrentIndex(id)
         self.parent.RenderManager.set_service_theme(self.service_theme)
+        self.regenerateServiceItems()
+
+    def onThemeChangeAction(self):
+        theme = unicode(self.sender().text())
+        item, count = self.findServiceItem()
+        self.serviceItems[item][u'data'].theme = theme
         self.regenerateServiceItems()
