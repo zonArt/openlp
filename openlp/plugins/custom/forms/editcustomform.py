@@ -25,7 +25,7 @@
 from PyQt4 import QtCore, QtGui
 
 from editcustomdialog import Ui_customEditDialog
-from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver, translate
+from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver
 from openlp.plugins.custom.lib.models import CustomSlide
 
 class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
@@ -60,7 +60,6 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             QtCore.SIGNAL(u'pressed()'), self.onUpButtonPressed)
         QtCore.QObject.connect(self.DownButton,
             QtCore.SIGNAL(u'pressed()'), self.onDownButtonPressed)
-
         QtCore.QObject.connect(self.VerseListView,
             QtCore.SIGNAL(u'itemDoubleClicked(QListWidgetItem*)'),
             self.onVerseListViewSelected)
@@ -117,17 +116,15 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
     def accept(self):
         valid, message = self._validate()
         if not valid:
-            QtGui.QMessageBox.critical(self,
-            translate(u'customEditDialog', u'Error'), message,
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+            QtGui.QMessageBox.critical(self, self.trUtf8(u'Error'), message,
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             return
         sxml = SongXMLBuilder()
         sxml.new_document()
         sxml.add_lyrics_to_song()
         count = 1
         for i in range (0, self.VerseListView.count()):
-            sxml.add_verse_to_lyrics(
-                u'custom', unicode(count),
+            sxml.add_verse_to_lyrics(u'custom', unicode(count),
                 unicode(self.VerseListView.item(i).text()))
             count += 1
         self.customSlide.title = unicode(self.TitleEdit.displayText())
@@ -229,11 +226,9 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
     def _validate(self):
         if len(self.TitleEdit.displayText()) == 0:
             self.TitleEdit.setFocus()
-            return False, translate(
-                u'customEditDialog', u'You need to enter a title \n')
+            return False, self.trUtf8(u'You need to enter a title \n')
         # must have 1 slide
         if self.VerseListView.count() == 0:
             self.VerseTextEdit.setFocus()
-            return False, translate(
-                u'customEditDialog', u'You need to enter a slide \n')
+            return False, self.trUtf8(u'You need to enter a slide \n')
         return True,  u''

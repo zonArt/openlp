@@ -37,41 +37,86 @@ class AuditDetailForm(QtGui.QDialog, Ui_AuditDetailDialog):
         QtGui.QDialog.__init__(self, None)
         self.parent = parent
         self.setupUi(self)
-        self.initialise()
 
     def initialise(self):
-        self.firstService = \
-            int(self.parent.config.get_config(u'first service', QtCore.Qt.Checked))
-        self.secondService = \
-            int(self.parent.config.get_config(u'second service', QtCore.Qt.Checked))
+        self.FirstCheckBox.setCheckState(
+            int(self.parent.config.get_config(u'first service', QtCore.Qt.Checked)))
+        self.SecondCheckBox.setCheckState(
+            int(self.parent.config.get_config(u'second service', QtCore.Qt.Checked)))
+        self.ThirdCheckBox.setCheckState(
+            int(self.parent.config.get_config(u'third service', QtCore.Qt.Checked)))
+        year = QtCore.QDate().currentDate().year()
+        if QtCore.QDate().currentDate().month() < 9:
+            year -= 1
+        toDate = QtCore.QDate(year, 8, 31)
+        fromDate = QtCore.QDate(year - 1, 9, 1)
+        self.FromDateEdit.setDate(fromDate)
+        self.ToDateEdit.setDate(toDate)
+        self.FileLineEdit.setText(self.parent.config.get_last_dir(1))
         self.resetWindow()
 
     def changeFirstService(self, value):
-        self.firstService = value
         self.parent.config.set_config(u'first service', value)
         self.resetWindow()
 
     def changeSecondService(self, value):
-        self.secondService = value
         self.parent.config.set_config(u'second service', value)
         self.resetWindow()
 
     def changeThirdService(self, value):
-        pass
+        self.parent.config.set_config(u'third service', value)
+        self.resetWindow()
 
     def defineOutputLocation(self):
-        pass
+        path = QtGui.QFileDialog.getExistingDirectory(self,
+            self.trUtf8(u'Output File Location'),
+            self.parent.config.get_last_dir(1) )
+        path = unicode(path)
+        if path != u'':
+            self.parent.config.set_last_dir(path, 1)
+            self.FileLineEdit.setText(path)
 
     def resetWindow(self):
-        if self.firstService == QtCore.Qt.Unchecked:
+        if self.FirstCheckBox.checkState() == QtCore.Qt.Unchecked:
             self.FirstFromTimeEdit.setEnabled(False)
             self.FirstToTimeEdit.setEnabled(False)
         else:
             self.FirstFromTimeEdit.setEnabled(True)
             self.FirstToTimeEdit.setEnabled(True)
-        if self.secondService == QtCore.Qt.Unchecked:
+        if self.SecondCheckBox.checkState() == QtCore.Qt.Unchecked:
             self.SecondFromTimeEdit.setEnabled(False)
             self.SecondToTimeEdit.setEnabled(False)
         else:
             self.SecondFromTimeEdit.setEnabled(True)
             self.SecondToTimeEdit.setEnabled(True)
+        if self.ThirdCheckBox.checkState() == QtCore.Qt.Unchecked:
+            self.ThirdFromTimeEdit.setEnabled(False)
+            self.ThirdToTimeEdit.setEnabled(False)
+        else:
+            self.ThirdFromTimeEdit.setEnabled(True)
+            self.ThirdToTimeEdit.setEnabled(True)
+
+    def accept(self):
+        print self.DetailedReport.isChecked()
+        print self.SummaryReport.isChecked()
+        print self.FromDateEdit.date()
+        print self.ToDateEdit.date()
+        if self.DetailedReport.isChecked():
+            self.detailedReport()
+        else:
+            self.summaryReport()
+        self.close()
+
+    def detailedReport(self):
+        print "detailed"
+        filename = u'audit_det_%s_%s.txt' % \
+            (self.FromDateEdit.date().toString(u'ddMMyyyy'),
+             self.ToDateEdit.date().toString(u'ddMMyyyy'))
+        print filename
+
+    def summaryReport(self):
+        print "summary"
+        filename = u'audit_sum_%s_%s.txt' % \
+            (self.FromDateEdit.date().toString(u'ddMMyyyy'),
+             self.ToDateEdit.date().toString(u'ddMMyyyy'))
+        print filename

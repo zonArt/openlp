@@ -30,7 +30,7 @@ import codecs
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import translate, Receiver
+from openlp.core.lib import Receiver
 
 class BibleOSISImpl():
     """
@@ -149,8 +149,8 @@ class BibleOSISImpl():
                         testament += 1
                     book_ptr = p[0]
                     book = self.bibledb.create_book(
-                        unicode(translate(u'BibleBooks', self.booksOfBible[p[0]])),
-                        unicode(translate(u'BibleBooks', self.abbrevOfBible[p[0]])),
+                        unicode(self.booksOfBible[p[0]]),
+                        unicode(self.abbrevOfBible[p[0]]),
                         testament)
                     dialogobject.incrementProgressBar(
                         self.booksOfBible[p[0]])

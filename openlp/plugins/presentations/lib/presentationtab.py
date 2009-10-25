@@ -24,7 +24,7 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import SettingsTab, translate
+from openlp.core.lib import SettingsTab
 
 class PresentationTab(SettingsTab):
     """
@@ -32,8 +32,7 @@ class PresentationTab(SettingsTab):
     """
     def __init__(self, controllers):
         self.controllers = controllers
-        SettingsTab.__init__(self,
-            translate(u'PresentationTab', u'Presentation'), u'Presentations')
+        SettingsTab.__init__(self, u'Presentation', u'Presentations')
 
     def setupUi(self):
         self.setObjectName(u'PresentationTab')
@@ -98,8 +97,8 @@ class PresentationTab(SettingsTab):
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
-            checkbox.setText(translate(u'PresentationTab',
-                controller.name + u' available:'))
+            checkbox.setText(
+                u'%s %s:' % (controller.name, self.trUtf8(u'available')))
 
     def load(self):
         for key in self.controllers:

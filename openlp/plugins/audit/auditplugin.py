@@ -27,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, Receiver, translate, str_to_bool, buildIcon
+from openlp.core.lib import Plugin, Receiver, str_to_bool, buildIcon
 from openlp.plugins.audit.lib import AuditManager
 from openlp.plugins.audit.forms import AuditDetailForm, AuditDeleteForm
 from openlp.plugins.audit.lib.models import AuditItem
@@ -62,21 +62,18 @@ class AuditPlugin(Plugin):
         self.toolsMenu = tools_menu
         self.AuditMenu = QtGui.QMenu(tools_menu)
         self.AuditMenu.setObjectName(u'AuditMenu')
-        self.AuditMenu.setTitle(
-            translate(u'AuditPlugin', u'&Audit'))
+        self.AuditMenu.setTitle(tools_menu.trUtf8(u'&Audit'))
          #Audit Delete
         self.AuditDelete = QtGui.QAction(tools_menu)
-        self.AuditDelete.setText(
-            translate(u'AuditPlugin', u'Audit &Delete'))
+        self.AuditDelete.setText(tools_menu.trUtf8(u'Audit &Delete'))
         self.AuditDelete.setStatusTip(
-            translate(u'AuditPlugin', u'Delete all audit data to sepecified date'))
+            tools_menu.trUtf8(u'Delete all audit data to sepecified date'))
         self.AuditDelete.setObjectName(u'AuditDelete')
         #Audit Report
         self.AuditReport = QtGui.QAction(tools_menu)
-        self.AuditReport.setText(
-            translate(u'AuditPlugin', u'Au&dit &Extract'))
+        self.AuditReport.setText(tools_menu.trUtf8(u'Au&dit &Extract'))
         self.AuditReport.setStatusTip(
-            translate(u'AuditPlugin', u'Generate Extracts on Audit Data'))
+            tools_menu.trUtf8(u'Generate Extracts on Audit Data'))
         self.AuditReport.setObjectName(u'AuditReport')
         #Audit activation
         AuditIcon = buildIcon(u':/tools/tools_alert.png')
@@ -84,10 +81,10 @@ class AuditPlugin(Plugin):
         self.AuditStatus.setIcon(AuditIcon)
         self.AuditStatus.setCheckable(True)
         self.AuditStatus.setChecked(False)
-        self.AuditStatus.setText(translate(u'AuditPlugin', u'A&udit Status'))
+        self.AuditStatus.setText(tools_menu.trUtf8(u'A&udit Status'))
         self.AuditStatus.setStatusTip(
-            translate(u'AuditPlugin', u'Start/Stop live song auditing'))
-        self.AuditStatus.setShortcut(translate(u'AuditPlugin', u'F4'))
+            tools_menu.trUtf8(u'Start/Stop live song auditing'))
+        self.AuditStatus.setShortcut(u'F4')
         self.AuditStatus.setObjectName(u'AuditStatus')
         #Add Menus together
         self.toolsMenu.addAction(self.AuditMenu.menuAction())
@@ -163,7 +160,10 @@ class AuditPlugin(Plugin):
         self.auditdeleteform.exec_()
 
     def onAuditReport(self):
+        self.auditdetailform.initialise()
         self.auditdetailform.exec_()
 
     def about(self):
-        return u'<b>Audit Plugin</b> <br>This plugin records the use of songs and when they have been used during a live service'
+        about_text = u'<b>Audit Plugin</b><br />This plugin records the use '\
+            u'of songs and when they have been used during a live service'
+        return about_text

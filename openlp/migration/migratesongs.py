@@ -170,12 +170,12 @@ class MigrateSongs():
                 else:
                     author = self.session.query(Author).get(bb[0])
                 song.authors.append(author)
-                try:
-                    self.session.add(song)
-                    self.session.commit()
-                except:
-                    self.session.rollback()
-                    print u'Errow thrown = ', sys.exc_info()[1]
+            try:
+                self.session.add(song)
+                self.session.commit()
+            except:
+                self.session.rollback()
+                print u'Error thrown = ', sys.exc_info()[1]
 
     def _v1_9_0_cleanup(self, database):
         self.display.sub_output(u'Update Internal Data ' + database)

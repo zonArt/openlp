@@ -23,7 +23,6 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
 
 class Ui_SettingsDialog(object):
     def setupUi(self, SettingsDialog):
@@ -54,4 +53,4 @@ class Ui_SettingsDialog(object):
         QtCore.QMetaObject.connectSlotsByName(SettingsDialog)
 
     def retranslateUi(self, SettingsDialog):
-        SettingsDialog.setWindowTitle(translate(u'SettingsDialog', u'Settings'))
+        SettingsDialog.setWindowTitle(self.trUtf8(u'Settings'))

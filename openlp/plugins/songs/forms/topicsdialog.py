@@ -23,7 +23,6 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
 
 class Ui_TopicsDialog(object):
     def setupUi(self, TopicsDialog):
@@ -59,8 +58,6 @@ class Ui_TopicsDialog(object):
         QtCore.QMetaObject.connectSlotsByName(TopicsDialog)
 
     def retranslateUi(self, TopicsDialog):
-        TopicsDialog.setWindowTitle(
-            translate(u'TopicsDialog', u'Topic Maintenance'))
-        self.NameLabel.setText(
-            translate(u'TopicsDialog', u'Topic name:'))
+        TopicsDialog.setWindowTitle(self.trUtf8(u'Topic Maintenance'))
+        self.NameLabel.setText(self.trUtf8(u'Topic name:'))
 

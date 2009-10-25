@@ -26,7 +26,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver, translate
+from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver
 from openlp.plugins.songs.forms import EditVerseForm
 from openlp.plugins.songs.lib.models import Song
 from editsongdialog import Ui_EditSongDialog
@@ -93,6 +93,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'lostFocus()'), self.onCommentsEditLostFocus)
         QtCore.QObject.connect(self.VerseOrderEdit,
             QtCore.SIGNAL(u'lostFocus()'), self.onVerseOrderEditLostFocus)
+        previewButton = QtGui.QPushButton()
+        previewButton.setText(self.trUtf8(u'Save & Preview'))
+        self.ButtonBox.addButton(previewButton, QtGui.QDialogButtonBox.ActionRole)
+        QtCore.QObject.connect(self.ButtonBox,
+            QtCore.SIGNAL(u'clicked(QAbstractButton*)'), self.onPreview)
         # Create other objects and forms
         self.songmanager = songmanager
         self.verse_form = EditVerseForm()
@@ -353,18 +358,15 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if len(self.TitleEditItem.displayText()) == 0:
             self.SongTabWidget.setCurrentIndex(0)
             self.TitleEditItem.setFocus()
-            return False, translate(
-                u'SongFormDialog', u'You need to enter a song title.')
+            return False, self.trUtf8(u'You need to enter a song title.')
         if self.VerseListWidget.count() == 0:
             self.SongTabWidget.setCurrentIndex(0)
             self.VerseListWidget.setFocus()
-            return False, translate(
-                u'SongFormDialog', u'You need to enter some verses.')
+            return False, self.trUtf8(u'You need to enter some verses.')
         if self.AuthorsListView.count() == 0:
             self.SongTabWidget.setCurrentIndex(2)
             self.AuthorsListView.setFocus()
-            return False, translate(
-                u'SongFormDialog', u'You need to provide at least one author.')
+            return False, self.trUtf8(u'You need to provide at least one author.')
         return True, u''
 
     def onTitleEditItemLostFocus(self):
@@ -394,14 +396,26 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.loadBooks()
         self.loadTopics()
 
+    def onPreview(self, button):
+        log.debug(u'onPreview')
+        if button.text() == self.trUtf8(u'Save & Preview') and self.saveSong():
+            Receiver().send_message(u'preview_song')
+
     def accept(self):
         log.debug(u'accept')
+        if self.saveSong():
+            if self.title_change:
+                Receiver().send_message(u'load_song_list')
+            Receiver().send_message(u'preview_song')
+            self.close()
+
+    def saveSong(self):
         valid, message = self._validate_song()
         if not valid:
-            QtGui.QMessageBox.critical(self,
-            translate(u'SongFormDialog', u'Error'), message,
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-            return
+            QtGui.QMessageBox.critical(
+                self, self.trUtf8(u'Error'), message,
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+            return False
         self.song.title = unicode(self.TitleEditItem.displayText())
         self.song.copyright = unicode(self.CopyrightEditItem.displayText())
         self.song.search_title = unicode(self.TitleEditItem.displayText()) + \
@@ -411,9 +425,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.processLyrics()
         self.processTitle()
         self.songmanager.save_song(self.song)
-        if self.title_change:
-            Receiver().send_message(u'load_song_list')
-        self.close()
+        return True
 
     def processLyrics(self):
         log.debug(u'processLyrics')

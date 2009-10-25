@@ -24,7 +24,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, str_to_bool
+from openlp.core.lib import SettingsTab, str_to_bool
 
 class GeneralTab(SettingsTab):
     """
@@ -32,7 +32,9 @@ class GeneralTab(SettingsTab):
     """
     def __init__(self, screen_list):
         self.screen_list = screen_list
-        SettingsTab.__init__(self, translate(u'GeneralTab', u'General'), u'General')
+        SettingsTab.__init__(self, u'General', u'General')
+        # Use this line when pulling the translation template
+        #SettingsTab.__init__(self, self.trUtf8(u'General'), u'General')
 
     def setupUi(self):
         self.setObjectName(u'GeneralTab')
@@ -131,16 +133,16 @@ class GeneralTab(SettingsTab):
             QtCore.SIGNAL(u'editingFinished()'), self.onPasswordEditLostFocus)
 
     def retranslateUi(self):
-        self.MonitorGroupBox.setTitle(translate(u'GeneralTab', u'Monitors'))
-        self.MonitorLabel.setText(translate(u'GeneralTab', u'Select monitor for output display:'))
-        self.StartupGroupBox.setTitle(translate(u'GeneralTab', u'Application Startup'))
-        self.WarningCheckBox.setText(translate(u'GeneralTab', u'Show blank screen warning'))
-        self.AutoOpenCheckBox.setText(translate(u'GeneralTab', u'Automatically open the last service'))
-        self.ShowSplashCheckBox.setText(translate(u'GeneralTab', u'Show the splash screen'))
-        self.CCLIGroupBox.setTitle(translate(u'GeneralTab', u'CCLI Details'))
-        self.NumberLabel.setText(translate(u'GeneralTab', u'CCLI Number:'))
-        self.UsernameLabel.setText(translate(u'GeneralTab', u'SongSelect Username:'))
-        self.PasswordLabel.setText(translate(u'GeneralTab', u'SongSelect Password:'))
+        self.MonitorGroupBox.setTitle(self.trUtf8(u'Monitors'))
+        self.MonitorLabel.setText(self.trUtf8(u'Select monitor for output display:'))
+        self.StartupGroupBox.setTitle(self.trUtf8(u'Application Startup'))
+        self.WarningCheckBox.setText(self.trUtf8(u'Show blank screen warning'))
+        self.AutoOpenCheckBox.setText(self.trUtf8(u'Automatically open the last service'))
+        self.ShowSplashCheckBox.setText(self.trUtf8(u'Show the splash screen'))
+        self.CCLIGroupBox.setTitle(self.trUtf8(u'CCLI Details'))
+        self.NumberLabel.setText(self.trUtf8(u'CCLI Number:'))
+        self.UsernameLabel.setText(self.trUtf8(u'SongSelect Username:'))
+        self.PasswordLabel.setText(self.trUtf8(u'SongSelect Password:'))
 
     def onMonitorComboBoxChanged(self):
         self.MonitorNumber = self.MonitorComboBox.currentIndex()
@@ -165,11 +167,9 @@ class GeneralTab(SettingsTab):
 
     def load(self):
         for screen in self.screen_list:
-            screen_name = translate(u'GeneralTab', u'Screen') + u' ' + \
-                unicode(screen[u'number'] + 1)
+            screen_name = u'%s %d' % (self.trUtf8(u'Screen'), screen[u'number'] + 1)
             if screen[u'primary']:
-                screen_name = screen_name + u' (' + \
-                    translate(u'GeneralTab', u'primary') + u')'
+                screen_name = u'%s (%s)' % (self.trUtf8(u'primary'), screen_name)
             self.MonitorComboBox.addItem(screen_name)
         # Get the configs
         self.MonitorNumber = int(self.config.get_config(u'Monitor', u'0'))

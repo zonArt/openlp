@@ -68,14 +68,14 @@ class MessageListener(object):
         self.controller.load_presentation(file)
         self.controller.start_presentation()
         self.controller.slidenumber = 0
+        self.controller.timer.start()
 
     def activate(self):
         if self.controller.is_active():
             return
         if not self.controller.is_loaded():
             self.controller.load_presentation(self.controller.filepath)
-        else:
-            self.controller.start_presentation()
+        self.controller.start_presentation()
         if self.controller.slidenumber > 1:
             self.controller.goto_slide(self.controller.slidenumber)
         
@@ -83,7 +83,7 @@ class MessageListener(object):
         self.activate()
         if message is not None:
             self.controller.goto_slide(message[0]+1)
-            self.controller.slidenumber = self.controller.get_slide_number()
+            self.controller.poll_slidenumber()
 
     def first(self, message):
         """
@@ -91,7 +91,7 @@ class MessageListener(object):
         """
         self.activate()
         self.controller.start_presentation()
-        self.controller.slidenumber = self.controller.get_slide_number()
+        self.controller.poll_slidenumber()
 
     def last(self, message):
         """
@@ -99,7 +99,7 @@ class MessageListener(object):
         """
         self.activate()
         self.controller.goto_slide(self.controller.get_slide_count())
-        self.controller.slidenumber = self.controller.get_slide_number()
+        self.controller.poll_slidenumber()
 
     def next(self, message):
         """
@@ -107,7 +107,7 @@ class MessageListener(object):
         """
         self.activate()
         self.controller.next_step()
-        self.controller.slidenumber = self.controller.get_slide_number()
+        self.controller.poll_slidenumber()
 
     def previous(self, message):
         """
@@ -115,7 +115,7 @@ class MessageListener(object):
         """
         self.activate()
         self.controller.previous_step()
-        self.controller.slidenumber = self.controller.get_slide_number()
+        self.controller.poll_slidenumber()
 
     def shutdown(self, message):
         """
@@ -123,6 +123,7 @@ class MessageListener(object):
         """
         self.controller.close_presentation()
         self.controller.slidenumber = 0
+        self.controller.timer.shutdown()
 
     def blank(self):
         if not self.controller.is_loaded():

@@ -24,6 +24,8 @@ import shutil
 
 from PyQt4 import QtCore
 
+from openlp.core.lib import Receiver
+
 class PresentationController(object):
     """
     Base class for presentation controllers to inherit from
@@ -143,6 +145,9 @@ class PresentationController(object):
         self.thumbnailprefix = u'slide'
         if not os.path.isdir(self.thumbnailroot):
             os.makedirs(self.thumbnailroot)
+        self.timer = QtCore.QTimer()
+        self.timer.setInterval(500)
+        QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.poll_slidenumber)
 
     def check_available(self):
         """
@@ -198,6 +203,8 @@ class PresentationController(object):
         recent than the powerpoint
         """
         lastimage = self.get_slide_preview_file(self.get_slide_count())
+        if lastimage is None:
+            return False
         if not os.path.isfile(lastimage):
             return False
         imgdate = os.stat(lastimage).st_mtime
@@ -289,3 +296,16 @@ class PresentationController(object):
             The slide an image is required for, starting at 1
         """
         return None
+
+    def poll_slidenumber(self):
+        """
+        Check the current slide number
+        """
+        if not self.is_active():
+            return
+        current = self.get_slide_number()
+        if current == self.slidenumber:
+            return
+        self.slidenumber = current
+        Receiver().send_message(u'slidecontroller_change', self.slidenumber - 1)
+        

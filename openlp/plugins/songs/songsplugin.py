@@ -26,7 +26,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, translate, buildIcon
+from openlp.core.lib import Plugin, buildIcon
 from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab
 from openlp.plugins.songs.forms import OpenLPImportForm, OpenSongExportForm, \
     OpenSongImportForm, OpenLPExportForm
@@ -112,19 +112,18 @@ class SongsPlugin(Plugin):
         self.ImportSongMenu.addAction(self.ImportOpenSongItem)
         import_menu.addAction(self.ImportSongMenu.menuAction())
         # Translations...
-        self.ImportSongMenu.setTitle(translate(u'main_window', u'&Song'))
-        self.ImportOpenSongItem.setText(translate(u'main_window', u'OpenSong'))
-        self.ImportOpenlp1Item.setText(
-            translate(u'main_window', u'openlp.org 1.0'))
+        self.ImportSongMenu.setTitle(import_menu.trUtf8(u'&Song'))
+        self.ImportOpenSongItem.setText(import_menu.trUtf8(u'OpenSong'))
+        self.ImportOpenlp1Item.setText(import_menu.trUtf8(u'openlp.org 1.0'))
         self.ImportOpenlp1Item.setToolTip(
-            translate(u'main_window', u'Export songs in openlp.org 1.0 format'))
+            import_menu.trUtf8(u'Export songs in openlp.org 1.0 format'))
         self.ImportOpenlp1Item.setStatusTip(
-            translate(u'main_window', u'Export songs in openlp.org 1.0 format'))
-        self.ImportOpenlp2Item.setText(translate(u'main_window', u'OpenLP 2.0'))
+            import_menu.trUtf8(u'Export songs in openlp.org 1.0 format'))
+        self.ImportOpenlp2Item.setText(import_menu.trUtf8(u'OpenLP 2.0'))
         self.ImportOpenlp2Item.setToolTip(
-            translate(u'main_window', u'Export songs in OpenLP 2.0 format'))
+            import_menu.trUtf8(u'Export songs in OpenLP 2.0 format'))
         self.ImportOpenlp2Item.setStatusTip(
-            translate(u'main_window', u'Export songs in OpenLP 2.0 format'))
+            import_menu.trUtf8(u'Export songs in OpenLP 2.0 format'))
         # Signals and slots
         QtCore.QObject.connect(self.ImportOpenlp1Item,
             QtCore.SIGNAL(u'triggered()'), self.onImportOpenlp1ItemClick)
@@ -157,11 +156,10 @@ class SongsPlugin(Plugin):
         self.ExportSongMenu.addAction(self.ExportOpenSongItem)
         export_menu.addAction(self.ExportSongMenu.menuAction())
         # Translations...
-        self.ExportSongMenu.setTitle(translate(u'main_window', u'&Song'))
-        self.ExportOpenSongItem.setText(translate(u'main_window', u'OpenSong'))
-        self.ExportOpenlp1Item.setText(
-            translate(u'main_window', u'openlp.org 1.0'))
-        self.ExportOpenlp2Item.setText(translate(u'main_window', u'OpenLP 2.0'))
+        self.ExportSongMenu.setTitle(export_menu.trUtf8(u'&Song'))
+        self.ExportOpenSongItem.setText(export_menu.trUtf8(u'OpenSong'))
+        self.ExportOpenlp1Item.setText(export_menu.trUtf8(u'openlp.org 1.0'))
+        self.ExportOpenlp2Item.setText(export_menu.trUtf8(u'OpenLP 2.0'))
         # Signals and slots
         QtCore.QObject.connect(self.ExportOpenlp1Item,
             QtCore.SIGNAL(u'triggered()'), self.onExportOpenlp1ItemClicked)
