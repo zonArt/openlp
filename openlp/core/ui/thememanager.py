@@ -198,7 +198,7 @@ class ThemeManager(QtGui.QWidget):
             return
         theme = unicode(item.data(QtCore.Qt.UserRole).toString())
         path = QtGui.QFileDialog.getExistingDirectory(self,
-            self.trUtf8(u'Save Theme - (%s)') %  theme,
+            unicode(self.trUtf8(u'Save Theme - (%s)')) %  theme,
             self.config.get_last_dir(1) )
         path = unicode(path)
         if path != u'':

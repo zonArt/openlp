@@ -160,6 +160,7 @@ class AuditPlugin(Plugin):
         self.auditdeleteform.exec_()
 
     def onAuditReport(self):
+        self.auditdetailform.initialise()
         self.auditdetailform.exec_()
 
     def about(self):
