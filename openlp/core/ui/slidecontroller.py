@@ -44,12 +44,12 @@ class SlideList(QtGui.QTableWidget):
     def __init__(self, parent=None, name=None):
         QtGui.QTableWidget.__init__(self, parent.Controller)
         self.parent = parent
-        text_color = QtGui.QApplication.palette().color(QtGui.QPalette.Base)
-        if text_color.value() > 128:
-            text_color = text_color.darker(120).name()
-        else:
-            text_color = text_color.lighter(130).name()
-        self.setStyleSheet(label_stylesheet % text_color)
+        #text_color = QtGui.QApplication.palette().color(QtGui.QPalette.Base)
+        #if text_color.value() > 128:
+        #    text_color = text_color.darker(120).name()
+        #else:
+        #    text_color = text_color.lighter(130).name()
+        #self.setStyleSheet(label_stylesheet % text_color)
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
@@ -427,11 +427,11 @@ class SlideController(QtGui.QWidget):
             winid = QtGui.QApplication.desktop().winId()
             rect = rm.screen_list[rm.current_display][u'size']
             winimg = QtGui.QPixmap.grabWindow(winid, rect.x(), rect.y(), rect.width(), rect.height())
-            self.SlidePreview.setPixmap(winimg)        
+            self.SlidePreview.setPixmap(winimg)
         else:
             label = self.PreviewListWidget.cellWidget(self.PreviewListWidget.currentRow(), 0)
             self.SlidePreview.setPixmap(label.pixmap())
-            
+
     def onSlideSelectedNext(self):
         """
         Go to the next slide.
