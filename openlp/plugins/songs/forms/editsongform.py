@@ -93,6 +93,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'lostFocus()'), self.onCommentsEditLostFocus)
         QtCore.QObject.connect(self.VerseOrderEdit,
             QtCore.SIGNAL(u'lostFocus()'), self.onVerseOrderEditLostFocus)
+        previewButton = QtGui.QPushButton()
+        previewButton.setText(self.trUtf8(u'Save & Preview'))
+        self.ButtonBox.addButton(previewButton, QtGui.QDialogButtonBox.ActionRole)
+        QtCore.QObject.connect(self.ButtonBox,
+            QtCore.SIGNAL(u'clicked(QAbstractButton*)'), self.onPreview)
         # Create other objects and forms
         self.songmanager = songmanager
         self.verse_form = EditVerseForm()
@@ -391,14 +396,26 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.loadBooks()
         self.loadTopics()
 
+    def onPreview(self, button):
+        log.debug(u'onPreview')
+        if button.text() == self.trUtf8(u'Save & Preview') and self.saveSong():
+            Receiver().send_message(u'preview_song')
+
     def accept(self):
         log.debug(u'accept')
+        if self.saveSong():
+            if self.title_change:
+                Receiver().send_message(u'load_song_list')
+            Receiver().send_message(u'preview_song')
+            self.close()
+
+    def saveSong(self):
         valid, message = self._validate_song()
         if not valid:
             QtGui.QMessageBox.critical(
                 self, self.trUtf8(u'Error'), message,
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-            return
+            return False
         self.song.title = unicode(self.TitleEditItem.displayText())
         self.song.copyright = unicode(self.CopyrightEditItem.displayText())
         self.song.search_title = unicode(self.TitleEditItem.displayText()) + \
@@ -408,10 +425,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.processLyrics()
         self.processTitle()
         self.songmanager.save_song(self.song)
-        if self.title_change:
-            Receiver().send_message(u'load_song_list')
-        Receiver().send_message(u'preview_song')
-        self.close()
+        return True
 
     def processLyrics(self):
         log.debug(u'processLyrics')
