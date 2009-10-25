@@ -447,4 +447,3 @@ class Ui_EditSongDialog(object):
         self.SongTabWidget.setTabText(
             self.SongTabWidget.indexOf(self.ThemeTab),
             self.trUtf8(u'Theme, Copyright Info && Comments'))
-

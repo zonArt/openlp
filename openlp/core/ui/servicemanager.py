@@ -605,7 +605,6 @@ class ServiceManager(QtGui.QWidget):
 
         ``theme_list``
             A list of current themes to be displayed
-
         """
         self.ThemeComboBox.clear()
         self.ThemeMenu.clear()
