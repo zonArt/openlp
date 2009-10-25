@@ -28,7 +28,7 @@ import os.path
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import ThemeXML, file_to_xml, translate
+from openlp.core.lib import ThemeXML, file_to_xml
 from amendthemedialog import Ui_AmendThemeDialog
 
 log = logging.getLogger(u'AmendThemeForm')
@@ -672,8 +672,11 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                          int(self.theme.font_main_proportion), # size
                          int(main_weight), # weight
                          self.theme.font_main_italics)# italic
+            mainFont.setPixelSize(int(self.theme.font_main_proportion))
             metrics = QtGui.QFontMetrics(mainFont)
             page_length = (int(self.FontMainHeightSpinBox.value()) / metrics.height() - 2) - 1
+            log.debug(u'Page Length area height %s, metrics %s, lines %s' %
+                      (int(self.FontMainHeightSpinBox.value()), metrics.height(), page_length))
             page_length_text = unicode(self.trUtf8(u'Slide Height is %s rows'))
             self.FontMainLinesPageLabel.setText(page_length_text % page_length)
             frame = self.thememanager.generateImage(theme)

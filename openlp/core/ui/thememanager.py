@@ -32,7 +32,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AmendThemeForm
 from openlp.core.theme import Theme
-from openlp.core.lib import PluginConfig, OpenLPToolbar, ThemeXML, translate, \
+from openlp.core.lib import PluginConfig, OpenLPToolbar, ThemeXML, \
     str_to_bool, file_to_xml, buildIcon, Receiver, contextMenuAction, \
     contextMenuSeparator
 from openlp.core.utils import ConfigHelper
@@ -371,7 +371,7 @@ class ThemeManager(QtGui.QWidget):
 
         newtheme.add_font(unicode(theme.FontName),
             unicode(theme.FontColor.name()),
-            unicode(theme.FontProportion * 2), u'False')
+            unicode(theme.FontProportion * 3), u'False')
         newtheme.add_font(unicode(theme.FontName),
             unicode(theme.FontColor.name()),
             unicode(12), u'False', u'footer')

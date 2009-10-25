@@ -28,7 +28,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib.toolbar import *
-from openlp.core.lib import translate, contextMenuAction, contextMenuSeparator
+from openlp.core.lib import contextMenuAction, contextMenuSeparator
 from serviceitem import ServiceItem
 
 class MediaManagerItem(QtGui.QWidget):
@@ -36,7 +36,7 @@ class MediaManagerItem(QtGui.QWidget):
     MediaManagerItem is a helper widget for plugins.
 
     None of the following *need* to be used, feel free to override
-    them cmopletely in your plugin's implementation. Alternatively,
+    them completely in your plugin's implementation. Alternatively,
     call them from your plugin before or after you've done extra
     things that you need to.
 
@@ -118,7 +118,6 @@ class MediaManagerItem(QtGui.QWidget):
         self.requiredIcons()
         self.setupUi()
         self.retranslateUi()
-        #self.initialise()
 
     def requiredIcons(self):
         """

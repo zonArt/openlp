@@ -29,8 +29,7 @@ import os.path
 from PyQt4 import QtCore, QtGui
 
 from bibleimportdialog import Ui_BibleImportDialog
-from openlp.core.lib import Receiver, translate
-
+from openlp.core.lib import Receiver
 
 class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
     global log

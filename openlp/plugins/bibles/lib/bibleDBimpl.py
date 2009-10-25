@@ -158,6 +158,11 @@ class BibleDBImpl(BibleCommon):
     def get_bible_text(self, bookname, chapter, sverse, everse):
         log.debug(u'get_bible_text %s, %s, %s, %s', bookname, chapter, sverse,
             everse)
+        #Look up book name or abbreviation
+        book = self.get_bible_book(bookname)
+        if book is not None:
+            bookname = book.name
+            log.debug(u'bookname corrected to  %s' % bookname)
         verses = self.session.query(Verse).join(Book).filter(
             Book.name == bookname).filter(Verse.chapter == chapter).filter(
             Verse.verse>=sverse).filter(Verse.verse<=everse).order_by(

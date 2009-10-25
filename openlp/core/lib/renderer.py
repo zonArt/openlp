@@ -169,6 +169,8 @@ class Renderer(object):
         page_length = int(self._rect.height() / metrics.height() - 2 ) - 1
         ave_line_width = line_width / metrics.averageCharWidth()
         ave_line_width = int(ave_line_width + (ave_line_width * 1))
+        log.debug(u'Page Length  area height %s , metrics %s , lines %s' %
+                  (int(self._rect.height()), metrics.height(), page_length ))
         split_pages = []
         page = []
         split_lines = []
@@ -195,15 +197,17 @@ class Renderer(object):
                     else:
                         split_text = line[:pos]
                 split_lines.append(split_text)
-                line = line[pos:]
+                line = line[pos:].lstrip()
                 #if we have more text add up to 10 spaces on the front.
-                if len(line) > 0 :
+                if len(line) > 0 and self._theme.font_main_indentation > 0:
                     line = u'%s%s' % \
-                        (u'          '[:self._theme.font_main_indentation], line)
+                        (u'          '[:int(self._theme.font_main_indentation)], line)
                 #Text fits in a line now
-        for line in split_lines:
+        for count, line in enumerate(split_lines):
             page.append(line)
-            if len(page) == page_length:
+            #last but one line and only 2 lines to go or end of page
+            if (len(page) == page_length - 1 and len(split_lines) - 3 == count) or \
+                len(page) == page_length:
                 split_pages.append(page)
                 page = []
         if len(page) > 0 and page != u' ':

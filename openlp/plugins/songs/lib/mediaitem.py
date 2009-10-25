@@ -26,7 +26,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, translate, SongXMLParser, \
+from openlp.core.lib import MediaManagerItem, SongXMLParser, \
     BaseListWithDnD, Receiver,  str_to_bool
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm
 
@@ -55,6 +55,7 @@ class SongMediaItem(MediaManagerItem):
         self.edit_song_form = EditSongForm(self.parent.songmanager, self)
         self.song_maintenance_form = SongMaintenanceForm(
             self.parent.songmanager, self)
+        self.fromPreview = None
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -121,6 +122,10 @@ class SongMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'load_song_list'), self.onSearchTextButtonClick)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.configUpdated)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'edit_song'), self.onEventEditSong)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'preview_song'), self.onPreviewClick)
 
     def configUpdated(self):
         self.searchAsYouType = str_to_bool(
@@ -168,19 +173,22 @@ class SongMediaItem(MediaManagerItem):
                 if author_list != u'':
                     author_list = author_list + u', '
                 author_list = author_list + author.display_name
-            song_detail = unicode(u'%s (%s)' % \
-                (unicode(song.title), unicode(author_list)))
+            song_detail = unicode(self.trUtf8(u'%s (%s)' % \
+                (unicode(song.title), unicode(author_list))))
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
             self.ListView.addItem(song_name)
+            if song.id == self.fromPreview:
+                self.fromPreview = 0
+                self.ListView.setCurrentItem(song_name)
 
     def displayResultsAuthor(self, searchresults):
         log.debug(u'display results Author')
         self.ListView.clear()
         for author in searchresults:
             for song in author.songs:
-                song_detail = unicode(u'%s (%s)' % \
-                    (unicode(author.display_name), unicode(song.title)))
+                song_detail = unicode(self.trUtf8(u'%s (%s)' % \
+                    (unicode(author.display_name), unicode(song.title))))
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
                 self.ListView.addItem(song_name)
@@ -218,12 +226,18 @@ class SongMediaItem(MediaManagerItem):
     def onSongMaintenanceClick(self):
         self.song_maintenance_form.exec_()
 
-    def onEditClick(self):
+    def onEditClick(self, preview=False):
         item = self.ListView.currentItem()
         if item is not None:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            self.fromPreview = 0
+            if preview:
+                self.fromPreview = item_id
             self.edit_song_form.loadSong(item_id)
             self.edit_song_form.exec_()
+
+    def onEventEditSong (self):
+        self.onEditClick(True)
 
     def onDeleteClick(self):
         item = self.ListView.currentItem()
