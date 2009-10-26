@@ -169,8 +169,25 @@ class SlideController(QtGui.QWidget):
                 u'Image SpinBox', self.DelaySpinBox)
             self.DelaySpinBox.setSuffix(self.trUtf8(u's'))
             self.DelaySpinBox.setToolTip(self.trUtf8(u'Delay between slides in seconds'))
-
         self.ControllerLayout.addWidget(self.Toolbar)
+        # Build the Song Toolbar
+        if isLive:
+            self.Songbar = OpenLPToolbar(self)
+            self.Songbar.addToolbarButton(
+                u'Bridge',  u':/media/media_time.png',
+                self.trUtf8(u'Bridge'),
+                self.onSongBarHandler)
+            self.Songbar.addToolbarButton(
+                u'Chorus',  u':/media/media_time.png',
+                self.trUtf8(u'Chorus'),
+                self.onSongBarHandler)
+            for verse in range(1, 9):
+                self.Songbar.addToolbarButton(
+                    unicode(verse),  u':/media/media_time.png',
+                    unicode(self.trUtf8(u'Verse %s'))%verse,
+                    self.onSongBarHandler)
+            self.ControllerLayout.addWidget(self.Songbar)
+            self.Songbar.setVisible(False)
         # Screen preview area
         self.PreviewFrame = QtGui.QFrame(self.Splitter)
         self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, 300, 225))
@@ -224,6 +241,21 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'slidecontroller_last'), self.onSlideSelectedLast)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_change'), self.onSlideChange)
+
+    def onSongBarHandler(self):
+        request = self.sender().text()
+        if request == u'B':
+            pass
+        elif request == u'C':
+            pass
+        else:
+            #Remember list is 1 out!
+            slideno = int(request) - 1
+            if slideno > self.PreviewListWidget.rowCount():
+                self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount())
+            else:
+                self.PreviewListWidget.selectRow(slideno)
+            self.onSlideSelected()
 
     def receiveSpinDelay(self, value):
         self.DelaySpinBox.setValue(int(value))
@@ -346,6 +378,10 @@ class SlideController(QtGui.QWidget):
             self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount())
         else:
             self.PreviewListWidget.selectRow(slideno)
+        if self.isLive:
+            self.Songbar.setVisible(False)
+            if self.serviceitem.name == u'Songs':
+                self.Songbar.setVisible(True)
         self.onSlideSelected()
         self.PreviewListWidget.setFocus()
         log.info(u'Display Rendering took %4s' % (time.time() - before))
