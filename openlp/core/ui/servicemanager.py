@@ -30,7 +30,7 @@ import zipfile
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
-    translate, ServiceItemType, contextMenuAction, contextMenuSeparator, \
+    ServiceItemType, contextMenuAction, contextMenuSeparator, contextMenu, \
     Receiver
 
 class ServiceManagerList(QtGui.QTreeWidget):
@@ -117,25 +117,22 @@ class ServiceManager(QtGui.QWidget):
         self.Layout.setMargin(0)
         # Create the top toolbar
         self.Toolbar = OpenLPToolbar(self)
-        self.Toolbar.addToolbarButton(u'New Service',
-            u':/services/service_new.png',
-            translate(u'ServiceManager', u'Create a new service'),
-            self.onNewService)
-        self.Toolbar.addToolbarButton(u'Open Service',
-            u':/services/service_open.png',
-            translate(u'ServiceManager', u'Load an existing service'),
-            self.onLoadService)
-        self.Toolbar.addToolbarButton(u'Save Service',
-            u':/services/service_save.png',
-            translate(u'ServiceManager', u'Save this service'),
-            self.onSaveService)
+        self.Toolbar.addToolbarButton(
+            self.trUtf8(u'New Service'), u':/services/service_new.png',
+            self.trUtf8(u'Create a new service'), self.onNewService)
+        self.Toolbar.addToolbarButton(
+            self.trUtf8(u'Open Service'), u':/services/service_open.png',
+            self.trUtf8(u'Load an existing service'), self.onLoadService)
+        self.Toolbar.addToolbarButton(
+            self.trUtf8(u'Save Service'), u':/services/service_save.png',
+            self.trUtf8(u'Save this service'), self.onSaveService)
         self.Toolbar.addSeparator()
-        self.ThemeLabel = QtGui.QLabel(translate(u'ServiceManager', u'Theme:'),
+        self.ThemeLabel = QtGui.QLabel(self.trUtf8(u'Theme:'),
             self)
         self.ThemeLabel.setMargin(3)
         self.Toolbar.addWidget(self.ThemeLabel)
         self.ThemeComboBox = QtGui.QComboBox(self.Toolbar)
-        self.ThemeComboBox.setToolTip(translate(u'ServiceManager',
+        self.ThemeComboBox.setToolTip(self.trUtf8(
             u'Select a theme for the service'))
         self.ThemeComboBox.setSizeAdjustPolicy(
             QtGui.QComboBox.AdjustToContents)
@@ -163,37 +160,40 @@ class ServiceManager(QtGui.QWidget):
             QtCore.Qt.ActionsContextMenu)
         self.ServiceManagerList.addAction(contextMenuAction(
             self.ServiceManagerList, ':/system/system_preview.png',
-            translate(u'ServiceManager',u'&Preview Verse'), self.makePreview))
+            self.trUtf8(u'&Preview Verse'), self.makePreview))
         self.ServiceManagerList.addAction(contextMenuAction(
             self.ServiceManagerList, ':/system/system_live.png',
-            translate(u'ServiceManager',u'&Show Live'), self.makeLive))
+            self.trUtf8(u'&Show Live'), self.makeLive))
         self.ServiceManagerList.addAction(contextMenuSeparator(
             self.ServiceManagerList))
         self.ServiceManagerList.addAction(contextMenuAction(
             self.ServiceManagerList, ':/services/service_delete',
-            translate(u'ServiceManager',u'&Remove from Service'),
-            self.onDeleteFromService))
+            self.trUtf8(u'&Remove from Service'), self.onDeleteFromService))
+        self.ServiceManagerList.addAction(contextMenuSeparator(
+            self.ServiceManagerList))
+        self.ThemeMenu = contextMenu(
+            self.ServiceManagerList, '',
+            self.trUtf8(u'&Change Item Theme'))
+        self.ServiceManagerList.addAction(self.ThemeMenu.menuAction())
         self.Layout.addWidget(self.ServiceManagerList)
         # Add the bottom toolbar
         self.OrderToolbar = OpenLPToolbar(self)
-        self.OrderToolbar.addToolbarButton(u'Move to top',
-            u':/services/service_top.png',
-            translate(u'ServiceManager', u'Move to top'), self.onServiceTop)
-        self.OrderToolbar.addToolbarButton(u'Move up',
-            u':/services/service_up.png',
-            translate(u'ServiceManager', u'Move up order'), self.onServiceUp)
-        self.OrderToolbar.addToolbarButton(u'Move down',
-            u':/services/service_down.png',
-            translate(u'ServiceManager', u'Move down order'),
-            self.onServiceDown)
-        self.OrderToolbar.addToolbarButton(u'Move to bottom',
-            u':/services/service_bottom.png',
-            translate(u'ServiceManager', u'Move to end'), self.onServiceEnd)
+        self.OrderToolbar.addToolbarButton(
+            self.trUtf8(u'Move to top'), u':/services/service_top.png',
+            self.trUtf8(u'Move to top'), self.onServiceTop)
+        self.OrderToolbar.addToolbarButton(
+            self.trUtf8(u'Move up'), u':/services/service_up.png',
+            self.trUtf8(u'Move up order'), self.onServiceUp)
+        self.OrderToolbar.addToolbarButton(
+            self.trUtf8(u'Move down'), u':/services/service_down.png',
+            self.trUtf8(u'Move down order'), self.onServiceDown)
+        self.OrderToolbar.addToolbarButton(
+            self.trUtf8(u'Move to bottom'), u':/services/service_bottom.png',
+            self.trUtf8(u'Move to end'), self.onServiceEnd)
         self.OrderToolbar.addSeparator()
-        self.OrderToolbar.addToolbarButton(u'Delete From Service',
-            u':/services/service_delete.png',
-            translate(u'ServiceManager', u'Delete From Service'),
-            self.onDeleteFromService)
+        self.OrderToolbar.addToolbarButton(
+            self.trUtf8(u'Delete From Service'), u':/services/service_delete.png',
+            self.trUtf8(u'Delete From Service'), self.onDeleteFromService)
         self.Layout.addWidget(self.OrderToolbar)
         # Connect up our signals and slots
         QtCore.QObject.connect(self.ThemeComboBox,
@@ -430,10 +430,9 @@ class ServiceManager(QtGui.QWidget):
         if lastService:
             filename = self.config.get_last_dir()
         else:
-            filename = QtGui.QFileDialog.getOpenFileName(self,
-                translate(u'ThemeManager', u'Open Service'),
-                self.config.get_last_dir(),
-                u'Services (*.osz)')
+            filename = QtGui.QFileDialog.getOpenFileName(
+                self, self.trUtf8(u'Open Service'),
+                self.config.get_last_dir(), u'Services (*.osz)')
         filename = unicode(filename)
         name = filename.split(os.path.sep)
         if filename != u'':
@@ -607,12 +606,17 @@ class ServiceManager(QtGui.QWidget):
 
         ``theme_list``
             A list of current themes to be displayed
-
         """
         self.ThemeComboBox.clear()
+        self.ThemeMenu.clear()
         self.ThemeComboBox.addItem(u'')
         for theme in theme_list:
             self.ThemeComboBox.addItem(theme)
+            action = contextMenuAction(
+                self.ServiceManagerList,
+                None,
+                theme , self.onThemeChangeAction)
+            self.ThemeMenu.addAction(action)
         id = self.ThemeComboBox.findText(self.service_theme,
             QtCore.Qt.MatchExactly)
         # Not Found
@@ -621,4 +625,10 @@ class ServiceManager(QtGui.QWidget):
             self.service_theme = u''
         self.ThemeComboBox.setCurrentIndex(id)
         self.parent.RenderManager.set_service_theme(self.service_theme)
+        self.regenerateServiceItems()
+
+    def onThemeChangeAction(self):
+        theme = unicode(self.sender().text())
+        item, count = self.findServiceItem()
+        self.serviceItems[item][u'data'].theme = theme
         self.regenerateServiceItems()

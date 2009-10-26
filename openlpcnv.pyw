@@ -28,8 +28,7 @@ import logging
 import time
 import subprocess
 import codecs
-import sys
-from datetime import date
+
 if os.name == u'nt':
     import win32api
     import win32con

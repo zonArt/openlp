@@ -24,7 +24,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, Receiver
+from openlp.core.lib import SettingsTab, Receiver
 
 class ThemesTab(SettingsTab):
     """
@@ -32,8 +32,9 @@ class ThemesTab(SettingsTab):
     """
     def __init__(self, parent):
         self.parent = parent
-        SettingsTab.__init__(
-            self, translate(u'ThemesTab', u'Themes'), u'Themes')
+        SettingsTab.__init__(self, u'Themes', u'Themes')
+        # Use the line below when pulling the translation template file.
+        #SettingsTab.__init__(self, self.trUtf8(u'Themes'), u'Themes')
 
     def setupUi(self):
         self.setObjectName(u'ThemesTab')
@@ -105,17 +106,21 @@ class ThemesTab(SettingsTab):
             QtCore.SIGNAL(u'update_themes'), self.updateThemeList)
 
     def retranslateUi(self):
-        self.GlobalGroupBox.setTitle(translate(u'ThemesTab', u'Global theme'))
-        self.LevelGroupBox.setTitle(translate(u'ThemesTab', u'Theme level'))
-        self.SongLevelRadioButton.setText(
-            translate(u'ThemesTab', u'Song level'))
-        self.SongLevelLabel.setText(translate(u'ThemesTab', u'Use the theme from each song in the database. If a song doesn\'t have a theme associated with it, then use the service\'s theme. If the service doesn\'t have a theme, then use the global theme.'))
-        self.ServiceLevelRadioButton.setText(
-            translate(u'ThemesTab', u'Service level'))
-        self.ServiceLevelLabel.setText(translate(u'ThemesTab', u'Use the theme from the service, overriding any of the individual songs\' themes. If the service doesn\'t have a theme, then use the global theme.'))
-        self.GlobalLevelRadioButton.setText(
-            translate(u'ThemesTab', u'Global level'))
-        self.GlobalLevelLabel.setText(translate(u'ThemesTab', u'Use the global theme, overriding any themes associated with either the service or the songs.'))
+        self.GlobalGroupBox.setTitle(self.trUtf8(u'Global theme'))
+        self.LevelGroupBox.setTitle(self.trUtf8(u'Theme level'))
+        self.SongLevelRadioButton.setText(self.trUtf8(u'Song level'))
+        self.SongLevelLabel.setText(self.trUtf8(u'Use the theme from each song '
+            u'in the database. If a song doesn\'t have a theme associated with '
+            u'it, then use the service\'s theme. If the service doesn\'t have '
+            u'a theme, then use the global theme.'))
+        self.ServiceLevelRadioButton.setText(self.trUtf8(u'Service level'))
+        self.ServiceLevelLabel.setText(self.trUtf8(u'Use the theme from the '
+            u'service, overriding any of the individual songs\' themes. If the '
+            u'service doesn\'t have a theme, then use the global theme.'))
+        self.GlobalLevelRadioButton.setText(self.trUtf8(u'Global level'))
+        self.GlobalLevelLabel.setText(self.trUtf8(u'Use the global theme, '
+            u'overriding any themes associated with either the service or the '
+            u'songs.'))
 
     def load(self):
         self.global_style = self.config.get_config(
@@ -137,17 +142,17 @@ class ThemesTab(SettingsTab):
         Receiver().send_message(u'update_global_theme', self.global_theme )
 
     def onSongLevelButtonPressed(self):
-        self.global_style= u'Song'
+        self.global_style = u'Song'
         self.parent.RenderManager.set_global_theme(
             self.global_theme, self.global_style)
 
     def onServiceLevelButtonPressed(self):
-        self.global_style= u'Service'
+        self.global_style = u'Service'
         self.parent.RenderManager.set_global_theme(
             self.global_theme, self.global_style)
 
     def onGlobalLevelButtonPressed(self):
-        self.global_style= u'Global'
+        self.global_style = u'Global'
         self.parent.RenderManager.set_global_theme(
             self.global_theme, self.global_style)
 

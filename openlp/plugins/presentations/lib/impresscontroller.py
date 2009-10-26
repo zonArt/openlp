@@ -28,6 +28,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 import logging
 import os
+import time
 
 if os.name == u'nt':
     from win32com.client import Dispatch
@@ -85,7 +86,7 @@ class ImpressController(PresentationController):
             self.manager._FlagAsMethod(u'Bridge_GetValueObject')
         else:
             # -headless
-            cmd = u'openoffice.org -nologo -norestore -minimized -invisible ' + u'"' + u'-accept=socket,host=localhost,port=2002;urp;'+ u'"'
+            cmd = u'openoffice.org -nologo -norestore -minimized -invisible -nofirststartwizard -accept="socket,host=localhost,port=2002;urp;"'
             self.process = QtCore.QProcess()
             self.process.startDetached(cmd)
             self.process.waitForStarted()
@@ -96,6 +97,12 @@ class ImpressController(PresentationController):
         """
         log.debug(u'Kill')
         self.close_presentation()
+        if os.name != u'nt':
+            desktop = self.get_uno_desktop()
+            try:
+                desktop.terminate()
+            except:
+                pass
 
     def load_presentation(self, presentation):
         """
@@ -121,18 +128,19 @@ class ImpressController(PresentationController):
             url = uno.systemPathToFileUrl(presentation)
         if desktop is None:
             return
+        self.desktop = desktop
+        properties = []
+        properties.append(self.create_property(u'Minimized', True))
+        properties = tuple(properties)            
         try:
-            self.desktop = desktop
-            properties = []
-            properties = tuple(properties)            
             self.document = desktop.loadComponentFromURL(url, u'_blank',
                 0, properties)
-            self.presentation = self.document.getPresentation()
-            self.presentation.Display = self.plugin.render_manager.current_display + 1
-            self.controller = None
         except:
             log.exception(u'Failed to load presentation')
             return
+        self.presentation = self.document.getPresentation()
+        self.presentation.Display = self.plugin.render_manager.current_display + 1
+        self.controller = None
         self.create_thumbnails()
 
     def create_thumbnails(self):
@@ -148,13 +156,7 @@ class ImpressController(PresentationController):
         else:
             thumbdir = uno.systemPathToFileUrl(self.thumbnailpath)
         props = []
-        if os.name == u'nt':
-            prop = self.manager.Bridge_GetStruct(u'com.sun.star.beans.PropertyValue')
-        else:
-            prop = PropertyValue()
-        prop.Name = u'FilterName'
-        prop.Value = u'impress_png_Export'
-        props.append(prop)
+        props.append(self.create_property(u'FilterName', u'impress_png_Export'))
         props = tuple(props)
         doc = self.document
         pages = doc.getDrawPages()
@@ -163,6 +165,15 @@ class ImpressController(PresentationController):
             doc.getCurrentController().setCurrentPage(page)
             doc.storeToURL(thumbdir + u'/' + self.thumbnailprefix + 
                 unicode(idx+1) + u'.png', props)
+
+    def create_property(self, name, value):
+        if os.name == u'nt':
+            prop = self.manager.Bridge_GetStruct(u'com.sun.star.beans.PropertyValue')
+        else:
+            prop = PropertyValue()
+        prop.Name = name
+        prop.Value = value
+        return prop
 
     def get_uno_desktop(self):
         log.debug(u'getUNODesktop')
@@ -245,6 +256,11 @@ class ImpressController(PresentationController):
     def start_presentation(self):
         if self.controller is None or not self.controller.isRunning():
             self.presentation.start()
+            # start() returns before the getCurrentComponent is ready. Try for 5 seconds
+            i = 1
+            while self.desktop.getCurrentComponent() is None and i < 50:
+                time.sleep(0.1)
+                i = i + 1
             self.controller = self.desktop.getCurrentComponent().Presentation.getController()
         else:
             self.controller.activate()

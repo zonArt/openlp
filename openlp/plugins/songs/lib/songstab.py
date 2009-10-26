@@ -24,14 +24,14 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, str_to_bool, translate
+from openlp.core.lib import SettingsTab, str_to_bool
 
 class SongsTab(SettingsTab):
     """
     SongsTab is the Songs settings tab in the settings dialog.
     """
     def __init__(self):
-        SettingsTab.__init__(self, translate(u'SongsTab', u'Songs'), u'Songs')
+        SettingsTab.__init__(self, u'Songs', u'Songs')
 
     def setupUi(self):
         self.setObjectName(u'SongsTab')
@@ -53,9 +53,8 @@ class SongsTab(SettingsTab):
             self.onSearchAsTypeCheckBoxChanged)
 
     def retranslateUi(self):
-        self.SongsModeGroupBox.setTitle(translate(u'SongsTab', u'Songs Mode'))
-        self.SearchAsTypeCheckBox.setText(
-            translate(u'SongsTab', u'Enable search as you type:'))
+        self.SongsModeGroupBox.setTitle(self.trUtf8(u'Songs Mode'))
+        self.SearchAsTypeCheckBox.setText(self.trUtf8(u'Enable search as you type:'))
 
     def onSearchAsTypeCheckBoxChanged(self, check_state):
         self.bible_search = False

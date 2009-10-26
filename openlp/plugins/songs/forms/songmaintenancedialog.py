@@ -24,7 +24,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, buildIcon
+from openlp.core.lib import buildIcon
 
 class Ui_SongMaintenanceDialog(object):
     def setupUi(self, SongMaintenanceDialog):
@@ -207,30 +207,17 @@ class Ui_SongMaintenanceDialog(object):
         QtCore.QMetaObject.connectSlotsByName(SongMaintenanceDialog)
 
     def retranslateUi(self, SongMaintenanceDialog):
-        SongMaintenanceDialog.setWindowTitle(
-            translate(u'SongMaintenanceDialog', u'Song Maintenance'))
-        self.TypeListWidget.item(0).setText(
-            translate(u'SongMaintenanceDialog', u'Authors'))
-        self.TypeListWidget.item(1).setText(
-            translate(u'SongMaintenanceDialog', u'Topics'))
-        self.TypeListWidget.item(2).setText(
-            translate(u'SongMaintenanceDialog', u'Books/Hymnals'))
-        self.AuthorAddButton.setText(
-            translate(u'SongMaintenanceDialog', u'Add'))
-        self.AuthorEditButton.setText(
-            translate(u'SongMaintenanceDialog', u'Edit'))
-        self.AuthorDeleteButton.setText(
-            translate(u'SongMaintenanceDialog', u'Delete'))
-        self.TopicAddButton.setText(
-            translate(u'SongMaintenanceDialog', u'Add'))
-        self.TopicEditButton.setText(
-            translate(u'SongMaintenanceDialog', u'Edit'))
-        self.TopicDeleteButton.setText(
-            translate(u'SongMaintenanceDialog', u'Delete'))
-        self.BookAddButton.setText(
-            translate(u'SongMaintenanceDialog', u'Add'))
-        self.BookEditButton.setText(
-            translate(u'SongMaintenanceDialog', u'Edit'))
-        self.BookDeleteButton.setText(
-            translate(u'SongMaintenanceDialog', u'Delete'))
+        SongMaintenanceDialog.setWindowTitle(self.trUtf8(u'Song Maintenance'))
+        self.TypeListWidget.item(0).setText(self.trUtf8(u'Authors'))
+        self.TypeListWidget.item(1).setText(self.trUtf8(u'Topics'))
+        self.TypeListWidget.item(2).setText(self.trUtf8(u'Books/Hymnals'))
+        self.AuthorAddButton.setText(self.trUtf8(u'Add'))
+        self.AuthorEditButton.setText(self.trUtf8(u'Edit'))
+        self.AuthorDeleteButton.setText(self.trUtf8(u'Delete'))
+        self.TopicAddButton.setText(self.trUtf8(u'Add'))
+        self.TopicEditButton.setText(self.trUtf8(u'Edit'))
+        self.TopicDeleteButton.setText(self.trUtf8(u'Delete'))
+        self.BookAddButton.setText(self.trUtf8(u'Add'))
+        self.BookEditButton.setText(self.trUtf8(u'Edit'))
+        self.BookDeleteButton.setText(self.trUtf8(u'Delete'))
 
