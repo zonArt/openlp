@@ -26,7 +26,7 @@ import logging
 import time
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import OpenLPToolbar, Receiver, ServiceType
+from openlp.core.lib import OpenLPToolbar, Receiver, ServiceType, str_to_bool, PluginConfig
 
 class SlideList(QtGui.QTableWidget):
     """
@@ -72,6 +72,7 @@ class SlideController(QtGui.QWidget):
         self.settingsmanager = settingsmanager
         self.isLive = isLive
         self.parent = parent
+        self.songsconfig = PluginConfig(u'Songs')
         self.image_list = [
             u'Start Loop',
             u'Stop Loop',
@@ -244,9 +245,9 @@ class SlideController(QtGui.QWidget):
 
     def onSongBarHandler(self):
         request = self.sender().text()
-        if request == u'B':
+        if request == u'Bridge':
             pass
-        elif request == u'C':
+        elif request == u'Chorus':
             pass
         else:
             #Remember list is 1 out!
@@ -276,6 +277,11 @@ class SlideController(QtGui.QWidget):
         """
         if item.service_item_type == ServiceType.Text:
             self.Toolbar.makeWidgetsInvisible(self.image_list)
+            if item.name == u'Songs' and \
+                str_to_bool(self.songsconfig.get_config(u'display songbar', True)):
+                self.Songbar.setVisible(True)
+            else:
+                self.Songbar.setVisible(False)
         elif item.service_item_type == ServiceType.Image:
             #Not sensible to allow loops with 1 frame
             if len(item.frames) > 1:
@@ -378,10 +384,6 @@ class SlideController(QtGui.QWidget):
             self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount())
         else:
             self.PreviewListWidget.selectRow(slideno)
-        if self.isLive:
-            self.Songbar.setVisible(False)
-            if self.serviceitem.name == u'Songs':
-                self.Songbar.setVisible(True)
         self.onSlideSelected()
         self.PreviewListWidget.setFocus()
         log.info(u'Display Rendering took %4s' % (time.time() - before))
