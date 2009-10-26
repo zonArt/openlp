@@ -339,7 +339,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             verse_list = self.verse_form.getVerse()
             verse_list = verse_list.replace(u'\r\n', u'\n')
             self.VerseListWidget.clear()
-            for row in verse_list.split(u'\n---'):
+            for row in verse_list.split(u'\n---\n'):
                 self.VerseListWidget.addItem(row)
         self.VerseListWidget.repaint()
 

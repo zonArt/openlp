@@ -35,27 +35,24 @@ class BGExtract(BibleCommon):
         log.debug(u'init %s', proxyurl)
         self.proxyurl = proxyurl
 
-    def get_bible_chapter(self, version, bookid, bookname, chapter) :
+    def get_bible_chapter(self, version, bookname, chapter) :
         """
         Access and decode bibles via the BibleGateway website
 
         ``Version``
             The version of the bible like 31 for New International version
 
-        ``bookid``
-            Book id for the book of the bible - eg 1 for Genesis
-
         ``bookname``
-            Not used
+            Name of the Book
 
         ``chapter``
             Chapter number
         """
-        log.debug(u'get_bible_chapter %s,%s,%s,%s',
-            version, bookid, bookname, chapter)
-        urlstring = u'http://www.biblegateway.com/passage/?book_id=' + \
-            unicode(bookid) + u'&chapter' + unicode(chapter) + u'&version=' + \
-            unicode(version)
+        log.debug(u'get_bible_chapter %s,%s,%s',
+            version, bookname, chapter)
+        urlstring = \
+            u'http://www.biblegateway.com/passage/?search=%s %s&version=%s' % \
+                (bookname, unicode(chapter) , version)
         xml_string = self._get_web_text(urlstring, self.proxyurl)
         VerseSearch = u'class=' + u'"' + u'sup' + u'"' + u'>'
         verse = 1
@@ -95,17 +92,14 @@ class CWExtract(BibleCommon):
         log.debug(u'init %s', proxyurl)
         self.proxyurl = proxyurl
 
-    def get_bible_chapter(self, version, bookid, bookname, chapter) :
-        log.debug(u'getBibleChapter %s,%s,%s,%s',
-            version, bookid, bookname, chapter)
+    def get_bible_chapter(self, version, bookname, chapter) :
+        log.debug(u'getBibleChapter %s,%s,%s',
+            version,bookname, chapter)
         """
         Access and decode bibles via the Crosswalk website
 
         ``version``
             The version of the bible like niv for New International Version
-
-        ``bookid``
-            Not used
 
         ``bookname``
             Text name of in english e.g. 'gen' for Genesis
