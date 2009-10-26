@@ -63,7 +63,7 @@ class AuditManager():
         """
         Returns the details of a audit
         """
-        return self.session.query(AuditItem).order_by(AuditItem.title).all()
+        return self.session.query(AuditItem).order_by(AuditItem.auditdate, AuditItem.audittime ).all()
 
     def insert_audit(self, audititem):
         """
