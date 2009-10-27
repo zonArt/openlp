@@ -85,7 +85,6 @@ class BGExtract(BibleCommon):
                     start_tag = verseText.find(verseFootnote)
                 # Chop off verse and start again
                 xml_string = xml_string[i:]
-                #print "C", xml_string
                 versePos = xml_string.find(verseSearch) #look for the next verse
                 bible[verse] = self._clean_text(verseText) # store the verse
                 verse += 1
