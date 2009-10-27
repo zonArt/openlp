@@ -25,9 +25,9 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from auditdetaildialog import Ui_AuditDetailDialog
+from songusagedetaildialog import Ui_SongUsageDetailDialog
 
-class AuditDetailForm(QtGui.QDialog, Ui_AuditDetailDialog):
+class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
     """
     Class documentation goes here.
     """

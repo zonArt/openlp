@@ -22,34 +22,4 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from datetime import date
-
-from PyQt4 import QtGui
-
-from auditdeletedialog import Ui_AuditDeleteDialog
-
-class AuditDeleteForm(QtGui.QDialog, Ui_AuditDeleteDialog):
-    """
-    Class documentation goes here.
-    """
-    def __init__(self, auditmanager, parent=None):
-        """
-        Constructor
-        """
-        self.auditmanager = auditmanager
-        QtGui.QDialog.__init__(self, parent)
-        self.setupUi(self)
-
-    def accept(self):
-        ret = QtGui.QMessageBox.question(self,
-            self.trUtf8(u'Delete Selected Audit Events?'),
-            self.trUtf8(u'Are you sure you want to delete selected Audit Data?'),
-            QtGui.QMessageBox.StandardButtons(
-                QtGui.QMessageBox.Ok |
-                QtGui.QMessageBox.Cancel),
-            QtGui.QMessageBox.Cancel)
-        if ret == QtGui.QMessageBox.Ok:
-            qDeleteDate = self.DeleteCalendar.selectedDate()
-            deleteDate = date(qDeleteDate.year(), qDeleteDate.month(), qDeleteDate.day())
-            self.auditmanager.delete_to_date(deleteDate)
-        self.close()
+from manager import SongUsageManager

@@ -78,7 +78,7 @@ class EventReceiver(QtCore.QObject):
     ``{plugin}_stop``
         Requests a plugin to handle a stop event
 
-    ``audit_live``
+    ``songusage_live``
         Sends live song audit requests to the audit component
 
     ``audit_changed``

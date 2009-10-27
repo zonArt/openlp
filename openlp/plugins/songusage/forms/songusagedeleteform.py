@@ -22,17 +22,34 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker, mapper
+from datetime import date
 
-from openlp.plugins.audit.lib.meta import metadata
-from openlp.plugins.audit.lib.tables import *
-from openlp.plugins.audit.lib.classes import *
+from PyQt4 import QtGui
 
-def init_models(url):
-    engine = create_engine(url)
-    metadata.bind = engine
-    session = scoped_session(sessionmaker(autoflush=True, autocommit=False,
-                                          bind=engine))
-    mapper(AuditItem, audit_table)
-    return session
+from songusagedeletedialog import Ui_SongUsageDeleteDialog
+
+class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
+    """
+    Class documentation goes here.
+    """
+    def __init__(self, auditmanager, parent=None):
+        """
+        Constructor
+        """
+        self.auditmanager = auditmanager
+        QtGui.QDialog.__init__(self, parent)
+        self.setupUi(self)
+
+    def accept(self):
+        ret = QtGui.QMessageBox.question(self,
+            self.trUtf8(u'Delete Selected Audit Events?'),
+            self.trUtf8(u'Are you sure you want to delete selected Audit Data?'),
+            QtGui.QMessageBox.StandardButtons(
+                QtGui.QMessageBox.Ok |
+                QtGui.QMessageBox.Cancel),
+            QtGui.QMessageBox.Cancel)
+        if ret == QtGui.QMessageBox.Ok:
+            qDeleteDate = self.DeleteCalendar.selectedDate()
+            deleteDate = date(qDeleteDate.year(), qDeleteDate.month(), qDeleteDate.day())
+            self.auditmanager.delete_to_date(deleteDate)
+        self.close()

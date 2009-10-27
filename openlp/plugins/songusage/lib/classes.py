@@ -22,17 +22,24 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from sqlalchemy import Column, Table, types
+class BaseModel(object):
+    """
+    BaseModel provides a base object with a set of generic functions
+    """
 
-from openlp.plugins.audit.lib.meta import metadata
+    @classmethod
+    def populate(cls, **kwargs):
+        """
+        Creates an instance of a class and populates it, returning the instance
+        """
+        me = cls()
+        keys = kwargs.keys()
+        for key in keys:
+            me.__setattr__(key, kwargs[key])
+        return me
 
-# Definition of the "songs" table
-audit_table = Table(u'audit_data', metadata,
-    Column(u'id', types.Integer(), primary_key=True),
-    Column(u'auditdate', types.Date, index=True, nullable=False),
-    Column(u'audittime', types.Time, index=True, nullable=False),
-    Column(u'title', types.Unicode(255), nullable=False),
-    Column(u'authors', types.Unicode(255), nullable=False),
-    Column(u'copyright', types.Unicode(255)),
-    Column(u'ccl_number', types.Unicode(65))
-)
+class SongUsageItem(BaseModel):
+    """
+    Audit model
+    """
+    pass
