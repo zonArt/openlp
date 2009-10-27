@@ -65,6 +65,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'clicked()'), self.onCopyrightInsertButtonTriggered)
         QtCore.QObject.connect(self.VerseAddButton,
             QtCore.SIGNAL(u'clicked()'), self.onVerseAddButtonClicked)
+        QtCore.QObject.connect(self.VerseListWidget,
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onVerseEditButtonClicked)
         QtCore.QObject.connect(self.VerseEditButton,
             QtCore.SIGNAL(u'clicked()'), self.onVerseEditButtonClicked)
         QtCore.QObject.connect(self.VerseEditAllButton,
@@ -94,7 +96,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.VerseOrderEdit,
             QtCore.SIGNAL(u'lostFocus()'), self.onVerseOrderEditLostFocus)
         previewButton = QtGui.QPushButton()
-        previewButton.setText(self.trUtf8(u'Save & Preview'))
+        previewButton.setText(self.trUtf8(u'Save && Preview'))
         self.ButtonBox.addButton(previewButton, QtGui.QDialogButtonBox.ActionRole)
         QtCore.QObject.connect(self.ButtonBox,
             QtCore.SIGNAL(u'clicked(QAbstractButton*)'), self.onPreview)

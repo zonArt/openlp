@@ -50,38 +50,41 @@ class BGExtract(BibleCommon):
         """
         log.debug(u'get_bible_chapter %s,%s,%s',
             version, bookname, chapter)
+        version=u'nasb'
         urlstring = \
             u'http://www.biblegateway.com/passage/?search=%s %s&version=%s' % \
                 (bookname, unicode(chapter) , version)
         xml_string = self._get_web_text(urlstring, self.proxyurl)
-        VerseSearch = u'class=' + u'"' + u'sup' + u'"' + u'>'
+        #print xml_string
+        verseSearch = u'<sup class='
         verse = 1
-        i = xml_string.find(u'result-text-style-normal')
+        i = xml_string.find(u'result-text-style-normal') + 26
         xml_string = xml_string[i:len(xml_string)]
-        versePos = xml_string.find(VerseSearch)
+        versePos = xml_string.find(verseSearch)
         bible = {}
         while versePos > -1:
             # clear out string
             verseText = u''
-            versePos = xml_string.find(u'</span', versePos)
-            i = xml_string.find(VerseSearch, versePos+1)
+            versePos = xml_string.find(u'</sup>', versePos) + 6
+            i = xml_string.find(verseSearch, versePos + 1)
+            #print versePos, i, xml_string[versePos:i]#, xml_string
             if i == -1:
-                i = xml_string.find(u'</div', versePos+1)
-                j = xml_string.find(u'<strong', versePos+1)
+                i = xml_string.find(u'</div', versePos + 1)
+                j = xml_string.find(u'<strong', versePos + 1)
                 if j > 0 and j < i:
                     i = j
                 verseText = xml_string[versePos + 7 : i ]
                 bible[verse] = self._clean_text(verseText) # store the verse
                 versePos = -1
             else:
-                i = xml_string[:i].rfind(u'<span') + 1
-                verseText = xml_string[versePos + 7 : i - 1] # Loose </span>
-                # Chop off verse 1
-                xml_string = xml_string[i - 1 :len(xml_string)]
-                versePos = xml_string.find(VerseSearch) #look for the next verse
+                verseText = xml_string[versePos: i]
+                # Chop off verse and start again
+                xml_string = xml_string[i:]
+                #print "C", xml_string
+                versePos = xml_string.find(verseSearch) #look for the next verse
                 bible[verse] = self._clean_text(verseText) # store the verse
                 verse += 1
-        return bible
+        return SearchResults(bookname, chapter, bible)
 
 class CWExtract(BibleCommon):
     global log
@@ -107,8 +110,8 @@ class CWExtract(BibleCommon):
         ``chapter``
             Chapter number
         """
-        log.debug(u'get_bible_chapter %s,%s,%s,%s',
-            version, bookid, bookname, chapter)
+        log.debug(u'get_bible_chapter %s,%s,%s',
+            version, bookname, chapter)
         bookname = bookname.replace(u' ', u'')
         urlstring = u'http://bible.crosswalk.com/OnlineStudyBible/bible.cgi?word=%s+%d&version=%s'\
             % (bookname, chapter, version)
@@ -200,18 +203,18 @@ class BibleHTTPImpl():
         log.debug(u'set_bible_source %s', biblesource)
         self.biblesource = biblesource
 
-    def get_bible_chapter(self, version, bookid, bookname, chapter):
+    def get_bible_chapter(self, version, bookname, chapter):
         """
         Receive the request and call the relevant handler methods
         """
-        log.debug(u'get_bible_chapter %s,%s,%s,%s',
-            version, bookid, bookname, chapter)
+        log.debug(u'get_bible_chapter %s,%s,%s',
+            version, bookname, chapter)
         log.debug(u'biblesource = %s', self.biblesource)
         try:
             if self.biblesource.lower() == u'crosswalk':
                 ev = CWExtract(self.proxyurl)
             else:
                 ev = BGExtract(self.proxyurl)
-            return ev.get_bible_chapter(self.bibleid, bookid, bookname, chapter)
+            return ev.get_bible_chapter(self.bibleid, bookname, chapter)
         except:
             log.exception("Failed to get bible chapter")

@@ -105,4 +105,3 @@ class Ui_PluginViewDialog(object):
         self.StatusLabel.setText(self.trUtf8(u'Status:'))
         self.StatusComboBox.setItemText(0, self.trUtf8(u'Active'))
         self.StatusComboBox.setItemText(1, self.trUtf8(u'Inactive'))
-

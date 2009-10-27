@@ -62,18 +62,18 @@ class AuditPlugin(Plugin):
         self.toolsMenu = tools_menu
         self.AuditMenu = QtGui.QMenu(tools_menu)
         self.AuditMenu.setObjectName(u'AuditMenu')
-        self.AuditMenu.setTitle(tools_menu.trUtf8(u'&Audit'))
+        self.AuditMenu.setTitle(tools_menu.trUtf8(u'&Song Usage'))
          #Audit Delete
         self.AuditDelete = QtGui.QAction(tools_menu)
-        self.AuditDelete.setText(tools_menu.trUtf8(u'Audit &Delete'))
+        self.AuditDelete.setText(tools_menu.trUtf8(u'&Delete recorded data'))
         self.AuditDelete.setStatusTip(
-            tools_menu.trUtf8(u'Delete all audit data to sepecified date'))
+            tools_menu.trUtf8(u'Delete sing usage to sepecified date'))
         self.AuditDelete.setObjectName(u'AuditDelete')
         #Audit Report
         self.AuditReport = QtGui.QAction(tools_menu)
-        self.AuditReport.setText(tools_menu.trUtf8(u'Au&dit &Extract'))
+        self.AuditReport.setText(tools_menu.trUtf8(u'&Extract recoreded data'))
         self.AuditReport.setStatusTip(
-            tools_menu.trUtf8(u'Generate Extracts on Audit Data'))
+            tools_menu.trUtf8(u'Generate Extracts on Song Usage'))
         self.AuditReport.setObjectName(u'AuditReport')
         #Audit activation
         AuditIcon = buildIcon(u':/tools/tools_alert.png')
@@ -81,9 +81,9 @@ class AuditPlugin(Plugin):
         self.AuditStatus.setIcon(AuditIcon)
         self.AuditStatus.setCheckable(True)
         self.AuditStatus.setChecked(False)
-        self.AuditStatus.setText(tools_menu.trUtf8(u'A&udit Status'))
+        self.AuditStatus.setText(tools_menu.trUtf8(u'Song Usage Status'))
         self.AuditStatus.setStatusTip(
-            tools_menu.trUtf8(u'Start/Stop live song auditing'))
+            tools_menu.trUtf8(u'Start/Stop live song usage recording'))
         self.AuditStatus.setShortcut(u'F4')
         self.AuditStatus.setObjectName(u'AuditStatus')
         #Add Menus together
