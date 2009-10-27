@@ -163,5 +163,5 @@ class BibleCommon(object):
             text = text[:start_tag] + text[end_tag + 1:]
             start_tag = text.find(u'<')
         text = text.replace(u'>', u'')
-        return text.rstrip()
+        return text.rstrip().lstrip()
 

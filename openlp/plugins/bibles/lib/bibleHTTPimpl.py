@@ -56,7 +56,8 @@ class BGExtract(BibleCommon):
                 (bookname, unicode(chapter) , version)
         xml_string = self._get_web_text(urlstring, self.proxyurl)
         #print xml_string
-        verseSearch = u'<sup class='
+        verseSearch = u'<sup class=\"versenum'
+        verseFootnote = u'<sup class=\'footnote'
         verse = 1
         i = xml_string.find(u'result-text-style-normal') + 26
         xml_string = xml_string[i:len(xml_string)]
@@ -67,7 +68,6 @@ class BGExtract(BibleCommon):
             verseText = u''
             versePos = xml_string.find(u'</sup>', versePos) + 6
             i = xml_string.find(verseSearch, versePos + 1)
-            #print versePos, i, xml_string[versePos:i]#, xml_string
             if i == -1:
                 i = xml_string.find(u'</div', versePos + 1)
                 j = xml_string.find(u'<strong', versePos + 1)
@@ -78,6 +78,11 @@ class BGExtract(BibleCommon):
                 versePos = -1
             else:
                 verseText = xml_string[versePos: i]
+                start_tag = verseText.find(verseFootnote)
+                while start_tag > -1:
+                    end_tag = verseText.find(u'</sup>')
+                    verseText = verseText[:start_tag] + verseText[end_tag + 6:len(verseText)]
+                    start_tag = verseText.find(verseFootnote)
                 # Chop off verse and start again
                 xml_string = xml_string[i:]
                 #print "C", xml_string
