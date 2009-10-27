@@ -66,15 +66,7 @@ class BibleManager(object):
         self.bibleSuffix = u'sqlite'
         self.dialogobject = None
         self.reload_bibles()
-
-    def set_media_manager(self, media):
-        """
-        Sets the reference to the media manager.
-
-        ``media``
-            The reference to the media manager.
-        """
-        self.media = media
+        self.media = None
 
     def reload_bibles(self):
         log.debug(u'Reload bibles')

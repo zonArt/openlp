@@ -101,7 +101,7 @@ class SongUsageManager():
                 return True
             except:
                 self.session.rollback()
-                log.excertion(u'SongUsage Item failed to delete')
+                log.exception(u'SongUsage Item failed to delete')
                 return False
         else:
             return True
@@ -116,7 +116,7 @@ class SongUsageManager():
             return True
         except:
             self.session.rollback()
-            log.excertion(u'Failed to delete all Song Usage items')
+            log.exception(u'Failed to delete all Song Usage items')
             return False
 
     def delete_to_date(self, date):
@@ -130,5 +130,5 @@ class SongUsageManager():
             return True
         except:
             self.session.rollback()
-            log.excertion(u'Failed to delete all Song Usage items to %s' % date)
+            log.exception(u'Failed to delete all Song Usage items to %s' % date)
             return False
