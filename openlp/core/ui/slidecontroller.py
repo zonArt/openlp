@@ -26,7 +26,7 @@ import logging
 import time
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import OpenLPToolbar, Receiver, ServiceType
+from openlp.core.lib import OpenLPToolbar, Receiver, ServiceType, str_to_bool, PluginConfig
 
 class SlideList(QtGui.QTableWidget):
     """
@@ -72,6 +72,7 @@ class SlideController(QtGui.QWidget):
         self.settingsmanager = settingsmanager
         self.isLive = isLive
         self.parent = parent
+        self.songsconfig = PluginConfig(u'Songs')
         self.image_list = [
             u'Start Loop',
             u'Stop Loop',
@@ -119,6 +120,7 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.setColumnWidth(1, self.Controller.width())
         self.PreviewListWidget.isLive = self.isLive
         self.PreviewListWidget.setObjectName(u'PreviewListWidget')
+        self.PreviewListWidget.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.ControllerLayout.addWidget(self.PreviewListWidget)
         # Build the full toolbar
         self.Toolbar = OpenLPToolbar(self)
@@ -169,8 +171,25 @@ class SlideController(QtGui.QWidget):
                 u'Image SpinBox', self.DelaySpinBox)
             self.DelaySpinBox.setSuffix(self.trUtf8(u's'))
             self.DelaySpinBox.setToolTip(self.trUtf8(u'Delay between slides in seconds'))
-
         self.ControllerLayout.addWidget(self.Toolbar)
+        # Build the Song Toolbar
+        if isLive:
+            self.Songbar = OpenLPToolbar(self)
+            self.Songbar.addToolbarButton(
+                u'Bridge',  u':/media/media_time.png',
+                self.trUtf8(u'Bridge'),
+                self.onSongBarHandler)
+            self.Songbar.addToolbarButton(
+                u'Chorus',  u':/media/media_time.png',
+                self.trUtf8(u'Chorus'),
+                self.onSongBarHandler)
+            for verse in range(1, 9):
+                self.Songbar.addToolbarButton(
+                    unicode(verse),  u':/media/media_time.png',
+                    unicode(self.trUtf8(u'Verse %s'))%verse,
+                    self.onSongBarHandler)
+            self.ControllerLayout.addWidget(self.Songbar)
+            self.Songbar.setVisible(False)
         # Screen preview area
         self.PreviewFrame = QtGui.QFrame(self.Splitter)
         self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, 300, 225))
@@ -225,6 +244,21 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_change'), self.onSlideChange)
 
+    def onSongBarHandler(self):
+        request = self.sender().text()
+        if request == u'Bridge':
+            pass
+        elif request == u'Chorus':
+            pass
+        else:
+            #Remember list is 1 out!
+            slideno = int(request) - 1
+            if slideno > self.PreviewListWidget.rowCount():
+                self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount())
+            else:
+                self.PreviewListWidget.selectRow(slideno)
+            self.onSlideSelected()
+
     def receiveSpinDelay(self, value):
         self.DelaySpinBox.setValue(int(value))
 
@@ -244,6 +278,11 @@ class SlideController(QtGui.QWidget):
         """
         if item.service_item_type == ServiceType.Text:
             self.Toolbar.makeWidgetsInvisible(self.image_list)
+            if item.name == u'Songs' and \
+                str_to_bool(self.songsconfig.get_config(u'display songbar', True)):
+                self.Songbar.setVisible(True)
+            else:
+                self.Songbar.setVisible(False)
         elif item.service_item_type == ServiceType.Image:
             #Not sensible to allow loops with 1 frame
             if len(item.frames) > 1:
@@ -349,8 +388,8 @@ class SlideController(QtGui.QWidget):
         self.onSlideSelected()
         self.PreviewListWidget.setFocus()
         log.info(u'Display Rendering took %4s' % (time.time() - before))
-        if self.serviceitem.audit != u'':
-            Receiver().send_message(u'audit_live', self.serviceitem.audit)
+        if self.serviceitem.audit != u'' and self.isLive:
+            Receiver().send_message(u'songusage_live', self.serviceitem.audit)
         log.debug(u'displayServiceManagerItems End')
 
     #Screen event methods

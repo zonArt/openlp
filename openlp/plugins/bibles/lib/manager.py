@@ -351,10 +351,10 @@ class BibleManager(object):
                 log.debug(u'get_verse_text : new book')
                 for chapter in range(schapter, echapter + 1):
                     self.media.setQuickMessage(
-                        self.trUtf8(u'Downloading %s: %s') % (bookname, chapter))
+                        unicode(self.media.trUtf8(u'Downloading %s: %s')) % (bookname, chapter))
                     search_results = \
                         self.bible_http_cache[bible].get_bible_chapter(
-                            bible, 0, bookname, chapter)
+                            bible, bookname, chapter)
                     if search_results.has_verselist() :
                         ## We have found a book of the bible lets check to see
                         ## if it was there.  By reusing the returned book name
@@ -380,7 +380,7 @@ class BibleManager(object):
                                 book.id, chapter)
                             if v is None:
                                 self.media.setQuickMessage(
-                                    self.trUtf8(u'%Downloading %s: %s')\
+                                    unicode(self.media.trUtf8(u'%Downloading %s: %s'))\
                                         % (bookname, chapter))
                                 self.bible_db_cache[bible].create_chapter(
                                     book.id, chapter,
@@ -392,11 +392,12 @@ class BibleManager(object):
                         book.id, chapter)
                     if v is None:
                         try:
-                            self.media.setQuickMessage \
-                                (u'Downloading %s: %s'% (bookname, chapter))
+                            self.media.setQuickMessage(\
+                                 unicode(self.media.trUtf8(u'Downloading %s: %s'))
+                                         % (bookname, chapter))
                             search_results = \
                                 self.bible_http_cache[bible].get_bible_chapter(
-                                    bible, book.id, bookname, chapter)
+                                    bible, bookname, chapter)
                             if search_results.has_verselist():
                                 self.bible_db_cache[bible].create_chapter(
                                     book.id, search_results.get_chapter(),

@@ -24,17 +24,17 @@
 
 import logging
 
-from openlp.plugins.audit.lib.models import init_models, metadata, AuditItem
+from openlp.plugins.songusage.lib.models import init_models, metadata, SongUsageItem
 
-class AuditManager():
+class SongUsageManager():
     """
     The Song Manager provides a central location for all database code. This
     class takes care of connecting to the database and running all the queries.
     """
 
     global log
-    log = logging.getLogger(u'AuditManager')
-    log.info(u'Audit manager loaded')
+    log = logging.getLogger(u'SongUsageManager')
+    log.info(u'SongUsage manager loaded')
 
     def __init__(self, config):
         """
@@ -42,11 +42,11 @@ class AuditManager():
         don't exist.
         """
         self.config = config
-        log.debug(u'Audit Initialising')
+        log.debug(u'SongUsage Initialising')
         self.db_url = u''
         db_type = self.config.get_config(u'db type', u'sqlite')
         if db_type == u'sqlite':
-            self.db_url = u'sqlite:///%s/audit.sqlite' % \
+            self.db_url = u'sqlite:///%s/songusage.sqlite' % \
                 self.config.get_data_path()
         else:
             self.db_url = u'%s://%s:%s@%s/%s' % \
@@ -57,76 +57,78 @@ class AuditManager():
         self.session = init_models(self.db_url)
         metadata.create_all(checkfirst=True)
 
-        log.debug(u'Audit Initialised')
+        log.debug(u'SongUsage Initialised')
 
-    def get_all_audits(self):
+    def get_all_songusage(self):
         """
-        Returns the details of a audit
+        Returns the details of SongUsage
         """
-        return self.session.query(AuditItem).order_by(AuditItem.title).all()
+        return self.session.query(SongUsageItem).\
+            order_by(SongUsageItem.usagedate, SongUsageItem.usagetime ).all()
 
-    def insert_audit(self, audititem):
+    def insert_songusage(self, songusageitem):
         """
-        Saves an audit to the database
+        Saves an SongUsage to the database
         """
-        log.debug(u'Audit added')
+        log.debug(u'SongUsage added')
         try:
-            self.session.add(audititem)
+            self.session.add(songusageitem)
             self.session.commit()
             return True
         except:
             self.session.rollback()
-            log.exception(u'Audit item failed to save')
+            log.exception(u'SongUsage item failed to save')
             return False
 
-    def get_audit(self, id=None):
+    def get_songusage(self, id=None):
         """
-        Returns the details of an audit
+        Returns the details of a SongUsage
         """
         if id is None:
-            return AuditItem()
+            return SongUsageItem()
         else:
-            return self.session.query(AuditItem).get(id)
+            return self.session.query(SongUsageItem).get(id)
 
-    def delete_audit(self, id):
+    def delete_songusage(self, id):
         """
-        Delete a audit record
+        Delete a SongUsage record
         """
         if id !=0:
-            audititem = self.get_audit(id)
+            songusageitem = self.get_songusage(id)
             try:
-                self.session.delete(audititem)
+                self.session.delete(songusageitem)
                 self.session.commit()
                 return True
             except:
                 self.session.rollback()
-                log.excertion(u'Audit Item failed to delete')
+                log.excertion(u'SongUsage Item failed to delete')
                 return False
         else:
             return True
 
     def delete_all(self):
         """
-        Delete all audit records
+        Delete all Song Usage records
         """
         try:
-            self.session.query(AuditItem).delete(synchronize_session=False)
+            self.session.query(SongUsageItem).delete(synchronize_session=False)
             self.session.commit()
             return True
         except:
             self.session.rollback()
-            log.excertion(u'Failed to delete all audit items')
+            log.excertion(u'Failed to delete all Song Usage items')
             return False
 
     def delete_to_date(self, date):
         """
-        Delete audit records before given date
+        Delete SongUsage records before given date
         """
         try:
-            self.session.query(AuditItem).filter(AuditItem.auditdate <= date).delete(synchronize_session=False)
+            self.session.query(SongUsageItem).\
+                filter(SongUsageItem.usagedate <= date).delete(synchronize_session=False)
             self.session.commit()
             return True
         except:
             self.session.rollback()
-            log.excertion(u'Failed to delete all audit items to %s' % date)
+            log.excertion(u'Failed to delete all Song Usage items to %s' % date)
             return False

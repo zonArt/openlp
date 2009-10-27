@@ -529,7 +529,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         version = check_latest_version(self.generalConfig, applicationVersion)
         if applicationVersion != version:
             version_text = unicode(self.trUtf8(u'OpenLP version %s has been updated '
-                u'to version %s'))
+                u'to version %s\nWould you like to get it?'))
             QtGui.QMessageBox.question(None,
                 self.trUtf8(u'OpenLP Version Updated'),
                 version_text % (applicationVersion, version),

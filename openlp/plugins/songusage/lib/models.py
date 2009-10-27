@@ -22,5 +22,17 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from auditdeleteform import AuditDeleteForm
-from auditdetailform import AuditDetailForm
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker, mapper
+
+from openlp.plugins.songusage.lib.meta import metadata
+from openlp.plugins.songusage.lib.tables import *
+from openlp.plugins.songusage.lib.classes import *
+
+def init_models(url):
+    engine = create_engine(url)
+    metadata.bind = engine
+    session = scoped_session(sessionmaker(autoflush=True, autocommit=False,
+                                          bind=engine))
+    mapper(SongUsageItem, songusage_table)
+    return session
