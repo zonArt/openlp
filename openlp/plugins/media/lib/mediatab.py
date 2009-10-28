@@ -31,11 +31,11 @@ class MediaTab(SettingsTab):
     mediaTab is the media settings tab in the settings dialog.
     """
     def __init__(self):
-        SettingsTab.__init__(self, section=u'Media')
+        SettingsTab.__init__(self, u'Media', u'Media')
 
     def setupUi(self):
         self.setObjectName(u'MediaTab')
-        self.setTitle(self.trUtf8(u'Media'))
+        self.tabTitleVisible = self.trUtf8(u'Media')
         self.MediaLayout = QtGui.QFormLayout(self)
         self.MediaLayout.setObjectName(u'MediaLayout')
         self.MediaModeGroupBox = QtGui.QGroupBox(self)

@@ -32,11 +32,11 @@ class PresentationTab(SettingsTab):
     """
     def __init__(self, controllers):
         self.controllers = controllers
-        SettingsTab.__init__(self, section=u'Presentations')
+        SettingsTab.__init__(self, u'Presentations', u'Presentations')
 
     def setupUi(self):
         self.setObjectName(u'PresentationTab')
-        self.setTitle(self.trUtf8(u'Presentations'))
+        self.tabTitleVisible = self.trUtf8(u'Presentations')
         self.PresentationLayout = QtGui.QHBoxLayout(self)
         self.PresentationLayout.setSpacing(8)
         self.PresentationLayout.setMargin(8)
