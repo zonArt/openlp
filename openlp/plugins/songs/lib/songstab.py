@@ -31,10 +31,11 @@ class SongsTab(SettingsTab):
     SongsTab is the Songs settings tab in the settings dialog.
     """
     def __init__(self):
-        SettingsTab.__init__(self, u'Songs', u'Songs')
+        SettingsTab.__init__(self, section=u'Songs')
 
     def setupUi(self):
         self.setObjectName(u'SongsTab')
+        self.setTitle(self.trUtf8(u'Songs'))
         self.SongsLayout = QtGui.QFormLayout(self)
         self.SongsLayout.setObjectName(u'SongsLayout')
         self.SongsModeGroupBox = QtGui.QGroupBox(self)
