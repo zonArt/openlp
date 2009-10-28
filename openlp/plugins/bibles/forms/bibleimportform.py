@@ -53,18 +53,33 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         self.AddressEdit.setText(self.config.get_config(u'proxy_address', u''))
         self.UsernameEdit.setText(self.config.get_config(u'proxy_username',u''))
         self.PasswordEdit.setText(self.config.get_config(u'proxy_password',u''))
-
+        #Load and store Crosswalk Bibles
         filepath = os.path.split(os.path.abspath(__file__))[0]
         filepath = os.path.abspath(os.path.join(filepath, u'..',
             u'resources', u'crosswalkbooks.csv'))
         fbibles=open(filepath, 'r')
-        self.bible_versions = {}
-        self.BibleComboBox.clear()
-        self.BibleComboBox.addItem(u'')
+        self.cw_bible_versions = {}
         for line in fbibles:
             p = line.split(u',')
-            self.bible_versions[p[0]] = p[1].replace(u'\n', u'')
-            self.BibleComboBox.addItem(unicode(p[0]))
+            self.cw_bible_versions[p[0]] = p[1].replace(u'\n', u'')
+        #Load and store BibleGateway Bibles
+        filepath = os.path.split(os.path.abspath(__file__))[0]
+        filepath = os.path.abspath(os.path.join(filepath, u'..',
+            u'resources', u'biblegateway.csv'))
+        fbibles=open(filepath, 'r')
+        self.bg_bible_versions = {}
+        for line in fbibles:
+            p = line.split(u',')
+            self.bg_bible_versions[p[0]] = p[1].replace(u'\n', u'')
+        self.loadBibleCombo(self.cw_bible_versions)
+
+    def loadBibleCombo(self, biblesList):
+        self.BibleComboBox.clear()
+        self.BibleComboBox.addItem(u'')
+        for bible in biblesList:
+            row = self.BibleComboBox.count()
+            self.BibleComboBox.addItem(unicode(self.trUtf8(bible)))
+            self.BibleComboBox.setItemData(row, QtCore.QVariant(bible))
 
         #Combo Boxes
         QtCore.QObject.connect(self.LocationComboBox,
@@ -150,12 +165,17 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         self.config.set_config(
             u'proxy_password', unicode(self.PasswordEdit.displayText()))
 
-    def onLocationComboBoxSelected(self):
+    def onLocationComboBoxSelected(self, value):
+        if value == 0:
+            self.loadBibleCombo(self.cw_bible_versions)
+        else:
+            self.loadBibleCombo(self.bg_bible_versions)
         self.checkHttp()
 
-    def onBibleComboBoxSelected(self):
+    def onBibleComboBoxSelected(self, value):
         self.checkHttp()
         self.BibleNameEdit.setText(unicode(self.BibleComboBox.currentText()))
+        self.VersionNameEdit.setText(unicode(self.BibleComboBox.currentText()))
 
     def onCancelButtonClicked(self):
         # tell import to stop
@@ -210,7 +230,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         else:
             # set a value as it will not be needed
             self.setMax(1)
-            bible = self.bible_versions[
+            bible = self.cw_bible_versions[
                 unicode(self.BibleComboBox.currentText())]
             loaded = self.biblemanager.register_http_bible(
                 unicode(self.BibleComboBox.currentText()),
