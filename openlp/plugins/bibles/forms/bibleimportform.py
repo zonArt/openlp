@@ -58,20 +58,21 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         filepath = os.path.abspath(os.path.join(filepath, u'..',
             u'resources', u'crosswalkbooks.csv'))
         fbibles=open(filepath, 'r')
-        self.cw_bible_versions = {}
+        self.cwBibleVersions           = {}
         for line in fbibles:
             p = line.split(u',')
-            self.cw_bible_versions[p[0]] = p[1].replace(u'\n', u'')
+            self.cwBibleVersions          [p[0]] = p[1].replace(u'\n', u'')
         #Load and store BibleGateway Bibles
         filepath = os.path.split(os.path.abspath(__file__))[0]
         filepath = os.path.abspath(os.path.join(filepath, u'..',
             u'resources', u'biblegateway.csv'))
         fbibles=open(filepath, 'r')
-        self.bg_bible_versions = {}
+        self.bgBibleVersions           = {}
         for line in fbibles:
             p = line.split(u',')
-            self.bg_bible_versions[p[0]] = p[1].replace(u'\n', u'')
-        self.loadBibleCombo(self.cw_bible_versions)
+            self.bgBibleVersions          [p[0]] = p[1].replace(u'\n', u'')
+        self.loadBibleCombo(self.cwBibleVersions          )
+        self.cwActive = True
 
     def loadBibleCombo(self, biblesList):
         self.BibleComboBox.clear()
@@ -167,9 +168,11 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
     def onLocationComboBoxSelected(self, value):
         if value == 0:
-            self.loadBibleCombo(self.cw_bible_versions)
+            self.loadBibleCombo(self.cwBibleVersions          )
+            self.cwActive = True
         else:
-            self.loadBibleCombo(self.bg_bible_versions)
+            self.loadBibleCombo(self.bgBibleVersions          )
+            self.cwActive = False
         self.checkHttp()
 
     def onBibleComboBoxSelected(self, value):
@@ -230,8 +233,12 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         else:
             # set a value as it will not be needed
             self.setMax(1)
-            bible = self.cw_bible_versions[
-                unicode(self.BibleComboBox.currentText())]
+            if self.cwActive:
+                bible = self.cwBibleVersions          [
+                    unicode(self.BibleComboBox.currentText())]
+            else:
+                bible = self.bgBibleVersions          [
+                    unicode(self.BibleComboBox.currentText())]
             loaded = self.biblemanager.register_http_bible(
                 unicode(self.BibleComboBox.currentText()),
                 unicode(self.LocationComboBox.currentText()),

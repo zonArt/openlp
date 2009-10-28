@@ -50,12 +50,11 @@ class BGExtract(BibleCommon):
         """
         log.debug(u'get_bible_chapter %s,%s,%s',
             version, bookname, chapter)
-        version=u'nasb'
         urlstring = \
-            u'http://www.biblegateway.com/passage/?search=%s %s&version=%s' % \
-                (bookname, unicode(chapter) , version)
+            u'http://www.biblegateway.com/passage/?search=%s+%d&version=%s' % \
+                (bookname, chapter, version)
+        log.debug(u'BibleGateway urm = %s' % urlstring)
         xml_string = self._get_web_text(urlstring, self.proxyurl)
-        #print xml_string
         verseSearch = u'<sup class=\"versenum'
         verseFootnote = u'<sup class=\'footnote'
         verse = 1
