@@ -44,9 +44,7 @@ class SettingsTab(QtGui.QWidget):
             to write to when the ``save`` method is called.
         """
         QtGui.QWidget.__init__(self)
-        self.tabTitle = self.trUtf8(title)
-        # Use the line below when pulling the translation template file.
-        #self.tabTitle = title
+        self.tabTitle = title
         self.setupUi()
         self.retranslateUi()
         self.initialise()

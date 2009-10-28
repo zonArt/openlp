@@ -47,13 +47,15 @@ class BibleMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.TranslationContext = u'BiblePlugin'
-        self.PluginTextShort = u'Bible'
+        self.PluginNameShort = u'Bible'
         self.ConfigSection = u'bibles'
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = BibleListView
         self.ServiceItemIconName = u':/media/bible_image.png'
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
+        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
+        self.finishInit()
         # place to store the search results
         self.search_results = {}
         QtCore.QObject.connect(Receiver().get_receiver(),

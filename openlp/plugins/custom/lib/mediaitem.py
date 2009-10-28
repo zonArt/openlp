@@ -43,7 +43,7 @@ class CustomMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.TranslationContext = u'CustomPlugin'
-        self.PluginTextShort = u'Custom'
+        self.PluginNameShort = u'Custom'
         self.ConfigSection = u'custom'
         self.IconPath = u'custom/custom'
         # this next is a class, not an instance of a class - it will
@@ -52,6 +52,8 @@ class CustomMediaItem(MediaManagerItem):
         self.ServiceItemIconName = u':/custom/custom_image.png'
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
+        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
+        self.finishInit()
         self.parent = parent
 
     def requiredIcons(self):
