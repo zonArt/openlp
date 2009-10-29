@@ -52,12 +52,13 @@ class SongMediaItem(MediaManagerItem):
         self.ServiceItemIconName = u':/media/song_image.png'
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
-        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
-        self.finishInit()
         self.edit_song_form = EditSongForm(self.parent.songmanager, self)
         self.song_maintenance_form = SongMaintenanceForm(
             self.parent.songmanager, self)
         self.fromPreview = None
+
+    def initPluginNameVisible(self):
+        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)

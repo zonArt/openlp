@@ -121,10 +121,12 @@ class MediaManagerItem(QtGui.QWidget):
         self.PageLayout.setSpacing(0)
         self.PageLayout.setContentsMargins(4, 0, 4, 0)
         self.requiredIcons()
-
-    def finishInit(self):
+        self.initPluginNameVisible()
         self.setupUi()
         self.retranslateUi()
+
+    def initPluginNameVisible(self):
+        pass
 
     def requiredIcons(self):
         """

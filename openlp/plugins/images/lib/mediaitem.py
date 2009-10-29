@@ -54,9 +54,10 @@ class ImageMediaItem(MediaManagerItem):
         self.ServiceItemIconName = u':/media/media_image.png'
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
-        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
-        self.finishInit()
         self.overrideActive = False
+
+    def initPluginNameVisible(self):
+        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
 
     def retranslateUi(self):
         self.OnNewPrompt = self.trUtf8(u'Select Image(s)')

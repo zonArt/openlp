@@ -56,8 +56,9 @@ class MediaMediaItem(MediaManagerItem):
         #self.ServiceItemIconName = u':/media/media_image.png'
         self.PreviewFunction = self.video_get_preview
         MediaManagerItem.__init__(self, parent, icon, title)
+
+    def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
-        self.finishInit()
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)

@@ -58,9 +58,10 @@ class PresentationMediaItem(MediaManagerItem):
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = PresentationListView
         MediaManagerItem.__init__(self, parent, icon, title)
-        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
-        self.finishInit()
         self.message_listener = MessageListener(controllers)
+
+    def initPluginNameVisible(self):
+        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)

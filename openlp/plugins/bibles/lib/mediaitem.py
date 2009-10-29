@@ -54,12 +54,13 @@ class BibleMediaItem(MediaManagerItem):
         self.ServiceItemIconName = u':/media/bible_image.png'
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
-        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
-        self.finishInit()
         # place to store the search results
         self.search_results = {}
         QtCore.QObject.connect(Receiver().get_receiver(),
             QtCore.SIGNAL(u'openlpreloadbibles'), self.reloadBibles)
+
+    def initPluginNameVisible(self):
+        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
