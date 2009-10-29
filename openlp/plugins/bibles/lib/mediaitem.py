@@ -271,7 +271,7 @@ class BibleMediaItem(MediaManagerItem):
     def initialise(self):
         log.debug(u'bible manager initialise')
         self.loadBibles()
-        self.parent.biblemanager.set_media_manager(self)
+        self.parent.biblemanager.media = self
         self.configUpdated()
         log.debug(u'bible manager initialise complete')
 

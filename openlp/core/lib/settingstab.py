@@ -45,6 +45,7 @@ class SettingsTab(QtGui.QWidget):
         """
         QtGui.QWidget.__init__(self)
         self.tabTitle = title
+        self.tabTitleVisible = None
         self.setupUi()
         self.retranslateUi()
         self.initialise()
@@ -53,21 +54,6 @@ class SettingsTab(QtGui.QWidget):
         else:
             self.config = PluginConfig(section)
         self.load()
-
-    def setTitle(self, title):
-        """
-        Set the title of the tab.
-
-        ``title``
-            The title of the tab, which is usually displayed on the tab.
-        """
-        self.tabTitle = title
-
-    def title(self):
-        """
-        Get the title of the tab.
-        """
-        return self.tabTitle
 
     def setupUi(self):
         """

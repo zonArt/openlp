@@ -26,7 +26,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, SongXMLParser, BaseListWithDnD
+from openlp.core.lib import MediaManagerItem, SongXMLParser, BaseListWithDnD, Receiver
 
 class CustomListView(BaseListWithDnD):
     def __init__(self, parent=None):
@@ -53,6 +53,15 @@ class CustomMediaItem(MediaManagerItem):
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
         self.parent = parent
+        self.fromServiceManager = -1
+
+    def addEndHeaderBar(self):
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_edit' % self.parent.name), self.onRemoteEdit)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'remote_edit_clear' ), self.onRemoteEditClear)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'load_custom_list'), self.initialise)
 
     def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
@@ -71,11 +80,23 @@ class CustomMediaItem(MediaManagerItem):
             custom_name.setData(
                 QtCore.Qt.UserRole, QtCore.QVariant(CustomSlide.id))
             self.ListView.addItem(custom_name)
+            if CustomSlide.id == self.fromServiceManager:
+                self.onAddClick()
 
     def onNewClick(self):
         self.parent.edit_custom_form.loadCustom(0)
         self.parent.edit_custom_form.exec_()
         self.initialise()
+
+    def onRemoteEditClear(self):
+        self.fromServiceManager = -1
+
+    def onRemoteEdit(self, item_id):
+        valid = self.parent.custommanager.get_custom(item_id)
+        if valid is not None:
+            self.fromServiceManager = item_id
+            self.parent.edit_custom_form.loadCustom(item_id)
+            self.parent.edit_custom_form.exec_()
 
     def onEditClick(self):
         item = self.ListView.currentItem()
@@ -98,13 +119,19 @@ class CustomMediaItem(MediaManagerItem):
         raw_footer = []
         slide = None
         theme = None
-        item = self.ListView.currentItem()
-        if item is None:
-            return False
-        item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        if self.fromServiceManager == -1:
+            item = self.ListView.currentItem()
+            if item is None:
+                return False
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        else:
+            item_id = self.fromServiceManager
+            self.fromServiceManager = -1
         customSlide = self.parent.custommanager.get_custom(item_id)
         title = customSlide.title
         credit = customSlide.credits
+        service_item.editEnabled = True
+        service_item.editId = item_id
         theme = customSlide.theme_name
         if len(theme) is not 0 :
             service_item.theme = theme

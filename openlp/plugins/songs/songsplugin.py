@@ -180,4 +180,4 @@ class SongsPlugin(Plugin):
         self.opensong_export_form.show()
 
     def about(self):
-        return u'<b>Song Plugin</b> <br>This plugin allows Songs to be managed and displayed.<br><br>This is a core plugin and cannot be made inactive</b>'
+        return u'<b>Song Plugin</b> <br>This plugin allows Songs to be managed and displayed.<br>'

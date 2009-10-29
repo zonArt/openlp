@@ -35,6 +35,7 @@ class SongsTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'SongsTab')
+        self.tabTitleVisible = self.trUtf8(u'Songs')
         self.SongsLayout = QtGui.QFormLayout(self)
         self.SongsLayout.setObjectName(u'SongsLayout')
         self.SongsModeGroupBox = QtGui.QGroupBox(self)
