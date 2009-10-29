@@ -267,7 +267,7 @@ class ThemeManager(QtGui.QWidget):
             xml = file_to_xml(xml_file)
         except:
             newtheme = ThemeXML()
-            newtheme.new_document(self.trUtf8(u'New Theme'))
+            newtheme.new_document(unicode(self.trUtf8(u'New Theme')))
             newtheme.add_background_solid(unicode(u'#000000'))
             newtheme.add_font(unicode(QtGui.QFont().family()),
                 unicode(u'#FFFFFF'), unicode(30), u'False')

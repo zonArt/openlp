@@ -403,6 +403,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if button.text() == self.trUtf8(u'Save & Preview') and self.saveSong():
             Receiver().send_message(u'preview_song')
 
+    def closePressed(self):
+        Receiver().send_message(u'remote_edit_clear')
+        self.close()
+
     def accept(self):
         log.debug(u'accept')
         if self.saveSong():

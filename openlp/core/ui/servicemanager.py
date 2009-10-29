@@ -38,6 +38,26 @@ class ServiceManagerList(QtGui.QTreeWidget):
         QtGui.QTreeWidget.__init__(self,parent)
         self.parent = parent
 
+#    def mousePressEvent(self, event):
+#        if type(event) == QtGui.QMouseEvent:
+#            if event.button() == QtCore.Qt.RightButton:
+#                item = self.itemAt(event.pos())
+#                parentitem = item.parent()
+#                if parentitem is None:
+#                    pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
+#                else:
+#                    pos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
+#                serviceItem = self.parent.serviceItems[pos - 1]
+#                if serviceItem[u'data'].editEnabled:
+#                    self.parent.editAction.setVisible(True)
+#                else:
+#                    self.parent.editAction.setVisible(False)
+#                event.ignore()
+#            else:
+#                event.ignore()
+#        else:
+#            event.ignore()
+
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
             #here accept the event and do something
@@ -111,6 +131,7 @@ class ServiceManager(QtGui.QWidget):
         self.serviceItems = []
         self.serviceName = u''
         self.isNew = True
+        self.remoteEditTriggered = False
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
         self.Layout.setMargin(0)
@@ -157,6 +178,12 @@ class ServiceManager(QtGui.QWidget):
         # Add a context menu to the service manager list
         self.ServiceManagerList.setContextMenuPolicy(
             QtCore.Qt.ActionsContextMenu)
+        self.editAction = contextMenuAction(
+            self.ServiceManagerList, ':/system/system_live.png',
+            self.trUtf8(u'&Edit Item'), self.remoteEdit)
+        self.ServiceManagerList.addAction(self.editAction)
+        self.ServiceManagerList.addAction(contextMenuSeparator(
+            self.ServiceManagerList))
         self.ServiceManagerList.addAction(contextMenuAction(
             self.ServiceManagerList, ':/system/system_preview.png',
             self.trUtf8(u'&Preview Verse'), self.makePreview))
@@ -205,6 +232,8 @@ class ServiceManager(QtGui.QWidget):
            QtCore.SIGNAL(u'itemExpanded(QTreeWidgetItem*)'), self.expanded)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'update_themes'), self.updateThemeList)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'remote_edit_clear'), self.onRemoteEditClear)
         # Last little bits of setting up
         self.config = PluginConfig(u'ServiceManager')
         self.servicePath = self.config.get_data_path()
@@ -510,14 +539,19 @@ class ServiceManager(QtGui.QWidget):
         """
         sitem, count = self.findServiceItem()
         item.render()
-        if sitem == -1:
-            self.serviceItems.append({u'data': item,
-                u'order': len(self.serviceItems) + 1, u'expanded':True})
-            self.repaintServiceList(len(self.serviceItems) + 1, 0)
-        else:
-            self.serviceItems.insert(sitem + 1, {u'data': item,
-                u'order': len(self.serviceItems)+1, u'expanded':True})
+        if self.remoteEditTriggered:
+            self.serviceItems[sitem][u'data'] = item
+            self.remoteEditTriggered = False
             self.repaintServiceList(sitem + 1, 0)
+        else:
+            if sitem == -1:
+                self.serviceItems.append({u'data': item,
+                    u'order': len(self.serviceItems) + 1, u'expanded':True})
+                self.repaintServiceList(len(self.serviceItems) + 1, 0)
+            else:
+                self.serviceItems.insert(sitem + 1, {u'data': item,
+                    u'order': len(self.serviceItems)+1, u'expanded':True})
+                self.repaintServiceList(sitem + 1, 0)
         self.parent.serviceChanged(False, self.serviceName)
 
     def makePreview(self):
@@ -535,6 +569,19 @@ class ServiceManager(QtGui.QWidget):
         item, count = self.findServiceItem()
         self.parent.LiveController.addServiceManagerItem(
             self.serviceItems[item][u'data'], count)
+
+    def remoteEdit(self):
+        """
+        Posts a remote edit message to a plugin to allow item to be edited.
+        """
+        item, count = self.findServiceItem()
+        if self.serviceItems[item][u'data'].editEnabled:
+            self.remoteEditTriggered = True
+            Receiver().send_message(u'%s_edit' % self.serviceItems[item][u'data'].name,
+                self.serviceItems[item][u'data'].editId )
+
+    def onRemoteEditClear(self):
+        self.remoteEditTriggered = False
 
     def findServiceItem(self):
         """
