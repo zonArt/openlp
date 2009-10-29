@@ -266,7 +266,7 @@ class ThemeManager(QtGui.QWidget):
         try:
             xml = file_to_xml(xml_file)
         except:
-            xml = basTheme()
+            xml = baseTheme()
         theme = ThemeXML()
         theme.parse(xml)
         self.cleanTheme(theme)
