@@ -53,6 +53,9 @@ class EventReceiver(QtCore.QObject):
     ``load_song_list``
         Tells the the song plugin to reload the song list
 
+    ``load_custom_list``
+        Tells the the custom plugin to reload the custom list
+
     ``update_spin_delay``
         Pushes out the Image loop delay
 
@@ -100,8 +103,7 @@ class EventReceiver(QtCore.QObject):
     ``slidecontroller_change``
         Informs the slidecontroller that a slide change has occurred
 
-
-    ``remote_edite_clear``
+    ``remote_edit_clear``
         Informs all components that remote edit has been aborted.
 
     """
