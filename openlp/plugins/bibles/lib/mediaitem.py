@@ -47,7 +47,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.TranslationContext = u'BiblePlugin'
-        self.PluginTextShort = u'Bible'
+        self.PluginNameShort = u'Bible'
         self.ConfigSection = u'bibles'
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = BibleListView
@@ -58,6 +58,9 @@ class BibleMediaItem(MediaManagerItem):
         self.search_results = {}
         QtCore.QObject.connect(Receiver().get_receiver(),
             QtCore.SIGNAL(u'openlpreloadbibles'), self.reloadBibles)
+
+    def initPluginNameVisible(self):
+        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -268,7 +271,7 @@ class BibleMediaItem(MediaManagerItem):
     def initialise(self):
         log.debug(u'bible manager initialise')
         self.loadBibles()
-        self.parent.biblemanager.set_media_manager(self)
+        self.parent.biblemanager.media = self
         self.configUpdated()
         log.debug(u'bible manager initialise complete')
 

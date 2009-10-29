@@ -44,8 +44,8 @@ class MediaMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.TranslationContext = u'MediaPlugin'
+        self.PluginNameShort = u'Media'
         self.IconPath = u'images/image'
-        self.PluginTextShort = u'Media'
         self.ConfigSection = u'media'
         self.OnNewPrompt = u'Select Media(s)'
         self.OnNewFileMasks = \
@@ -57,6 +57,9 @@ class MediaMediaItem(MediaManagerItem):
         self.PreviewFunction = self.video_get_preview
         MediaManagerItem.__init__(self, parent, icon, title)
         self.MainDisplay = self.parent.live_controller.parent.mainDisplay
+
+    def initPluginNameVisible(self):
+        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)

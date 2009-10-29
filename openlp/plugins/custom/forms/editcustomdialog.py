@@ -54,7 +54,8 @@ class Ui_customEditDialog(object):
         self.UpButton.setIcon(icon1)
         self.UpButton.setObjectName(u'UpButton')
         self.verticalLayout.addWidget(self.UpButton)
-        spacerItem = QtGui.QSpacerItem(20, 128, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem = QtGui.QSpacerItem(20, 128,
+            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem)
         self.DownButton = QtGui.QPushButton(customEditDialog)
         icon2 = buildIcon(u':/services/service_down.png')
@@ -94,7 +95,8 @@ class Ui_customEditDialog(object):
         self.ClearButton = QtGui.QPushButton(self.ButtonWidge)
         self.ClearButton.setObjectName(u'ClearButton')
         self.verticalLayout_2.addWidget(self.ClearButton)
-        spacerItem1 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem1 = QtGui.QSpacerItem(20, 40,
+            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout_2.addItem(spacerItem1)
         self.EditLayout_3.addWidget(self.ButtonWidge)
         self.gridLayout.addWidget(self.EditWidget, 2, 0, 1, 1)
@@ -117,11 +119,16 @@ class Ui_customEditDialog(object):
         self.horizontalLayout_2.addWidget(self.CreditEdit)
         self.gridLayout.addLayout(self.horizontalLayout_2, 4, 0, 1, 1)
         self.buttonBox = QtGui.QDialogButtonBox(customEditDialog)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setStandardButtons(
+            QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(u'buttonBox')
         self.gridLayout.addWidget(self.buttonBox, 5, 0, 1, 1)
 
         self.retranslateUi(customEditDialog)
+        QtCore.QObject.connect(self.buttonBox,
+            QtCore.SIGNAL(u'rejected()'), customEditDialog.closePressed)
+        QtCore.QObject.connect(self.buttonBox,
+            QtCore.SIGNAL(u'accepted()'), customEditDialog.accept)
         QtCore.QMetaObject.connectSlotsByName(customEditDialog)
         customEditDialog.setTabOrder(self.TitleEdit, self.VerseTextEdit)
         customEditDialog.setTabOrder(self.VerseTextEdit, self.AddButton)

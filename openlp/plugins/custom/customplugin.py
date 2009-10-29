@@ -69,4 +69,4 @@ class CustomPlugin(Plugin):
         self.remove_toolbox_item()
 
     def about(self):
-        return u'<b>Custom Plugin</b> <br>This plugin allows slides to be displayed on the screen in the same way songs are. The difference between this plugin and songs is this plugin provides greater freedom.<br><br>This is a core plugin and cannot be made inactive</b>'
+        return u'<b>Custom Plugin</b> <br>This plugin allows slides to be displayed on the screen in the same way songs are. The difference between this plugin and songs is this plugin provides greater freedom.<br>'

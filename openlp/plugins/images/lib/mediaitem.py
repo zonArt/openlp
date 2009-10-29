@@ -45,7 +45,7 @@ class ImageMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.TranslationContext = u'ImagePlugin'
-        self.PluginTextShort = u'Image'
+        self.PluginNameShort = u'Image'
         self.ConfigSection = u'images'
         self.IconPath = u'images/image'
         # this next is a class, not an instance of a class - it will
@@ -55,6 +55,9 @@ class ImageMediaItem(MediaManagerItem):
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
         self.overrideActive = False
+
+    def initPluginNameVisible(self):
+        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
 
     def retranslateUi(self):
         self.OnNewPrompt = self.trUtf8(u'Select Image(s)')

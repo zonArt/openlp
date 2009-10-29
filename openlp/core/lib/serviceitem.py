@@ -71,6 +71,7 @@ class ServiceItem(object):
         self.theme = None
         self.service_item_path = None
         self.service_item_type = None
+        self.editEnabled = False
         self.service_frames = []
 
     def addIcon(self, icon):

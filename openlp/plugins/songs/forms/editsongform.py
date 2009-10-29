@@ -65,6 +65,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'clicked()'), self.onCopyrightInsertButtonTriggered)
         QtCore.QObject.connect(self.VerseAddButton,
             QtCore.SIGNAL(u'clicked()'), self.onVerseAddButtonClicked)
+        QtCore.QObject.connect(self.VerseListWidget,
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onVerseEditButtonClicked)
         QtCore.QObject.connect(self.VerseEditButton,
             QtCore.SIGNAL(u'clicked()'), self.onVerseEditButtonClicked)
         QtCore.QObject.connect(self.VerseEditAllButton,
@@ -94,7 +96,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.VerseOrderEdit,
             QtCore.SIGNAL(u'lostFocus()'), self.onVerseOrderEditLostFocus)
         previewButton = QtGui.QPushButton()
-        previewButton.setText(self.trUtf8(u'Save & Preview'))
+        previewButton.setText(self.trUtf8(u'Save && Preview'))
         self.ButtonBox.addButton(previewButton, QtGui.QDialogButtonBox.ActionRole)
         QtCore.QObject.connect(self.ButtonBox,
             QtCore.SIGNAL(u'clicked(QAbstractButton*)'), self.onPreview)
@@ -398,15 +400,18 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def onPreview(self, button):
         log.debug(u'onPreview')
-        if button.text() == self.trUtf8(u'Save & Preview') and self.saveSong():
+        if button.text() == unicode(self.trUtf8(u'Save && Preview')) \
+            and self.saveSong():
             Receiver().send_message(u'preview_song')
+
+    def closePressed(self):
+        Receiver().send_message(u'remote_edit_clear')
+        self.close()
 
     def accept(self):
         log.debug(u'accept')
         if self.saveSong():
-            if self.title_change:
-                Receiver().send_message(u'load_song_list')
-            Receiver().send_message(u'preview_song')
+            Receiver().send_message(u'load_song_list')
             self.close()
 
     def saveSong(self):

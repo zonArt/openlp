@@ -33,11 +33,10 @@ class ThemesTab(SettingsTab):
     def __init__(self, parent):
         self.parent = parent
         SettingsTab.__init__(self, u'Themes', u'Themes')
-        # Use the line below when pulling the translation template file.
-        #SettingsTab.__init__(self, self.trUtf8(u'Themes'), u'Themes')
 
     def setupUi(self):
         self.setObjectName(u'ThemesTab')
+        self.tabTitleVisible = self.trUtf8(u'Themes')
         self.ThemesTabLayout = QtGui.QHBoxLayout(self)
         self.ThemesTabLayout.setSpacing(8)
         self.ThemesTabLayout.setMargin(8)
