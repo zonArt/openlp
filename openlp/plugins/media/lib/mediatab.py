@@ -32,10 +32,10 @@ class MediaTab(SettingsTab):
     """
     def __init__(self):
         SettingsTab.__init__(self, u'Media', u'Media')
-        #SettingsTab.__init__(self, self.trUtf8(u'Media'), u'Media')
 
     def setupUi(self):
         self.setObjectName(u'MediaTab')
+        self.tabTitleVisible = self.trUtf8(u'Media')
         self.MediaLayout = QtGui.QFormLayout(self)
         self.MediaLayout.setObjectName(u'MediaLayout')
         self.MediaModeGroupBox = QtGui.QGroupBox(self)

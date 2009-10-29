@@ -62,7 +62,11 @@ class PresentationPlugin(Plugin):
 
     def finalise(self):
         log.info(u'Plugin Finalise')
-        Plugin.finalise(self)
+        #Ask each controller to tidy up
+        for key in self.controllers:
+            controller = self.controllers[key]
+            if controller.enabled:
+                controller.kill()
         self.remove_toolbox_item()
 
     def get_media_manager_item(self):
@@ -104,14 +108,6 @@ class PresentationPlugin(Plugin):
             return True
         else:
             return False
-
-    def finalise(self):
-        log.debug(u'Finalise')
-        #Ask each controller to tidy up
-        for key in self.controllers:
-            controller = self.controllers[key]
-            if controller.enabled:
-                controller.kill()
 
     def about(self):
         return u'<b>Presentation Plugin</b> <br> Delivers the ability to show presentations using a number of different programs. The choice of available presentaion programs is available in a drop down.'
