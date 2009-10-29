@@ -50,6 +50,8 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         self.bible_type = None
         self.barmax = 0
         self.tabWidget.setCurrentIndex(0)
+        self.cwBibleVersions = {}
+        self.bgBibleVersions = {}
         self.AddressEdit.setText(self.config.get_config(u'proxy_address', u''))
         self.UsernameEdit.setText(self.config.get_config(u'proxy_username',u''))
         self.PasswordEdit.setText(self.config.get_config(u'proxy_password',u''))
@@ -57,21 +59,25 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         filepath = os.path.split(os.path.abspath(__file__))[0]
         filepath = os.path.abspath(os.path.join(filepath, u'..',
             u'resources', u'crosswalkbooks.csv'))
-        fbibles=open(filepath, 'r')
-        self.cwBibleVersions           = {}
-        for line in fbibles:
-            p = line.split(u',')
-            self.cwBibleVersions          [p[0]] = p[1].replace(u'\n', u'')
+        try:
+            fbibles = open(filepath, 'r')
+            for line in fbibles:
+                p = line.split(u',')
+                self.cwBibleVersions[p[0]] = p[1].replace(u'\n', u'')
+        except:
+            log.exception(u'Crosswalk resources missing')
         #Load and store BibleGateway Bibles
         filepath = os.path.split(os.path.abspath(__file__))[0]
         filepath = os.path.abspath(os.path.join(filepath, u'..',
             u'resources', u'biblegateway.csv'))
-        fbibles=open(filepath, 'r')
-        self.bgBibleVersions           = {}
-        for line in fbibles:
-            p = line.split(u',')
-            self.bgBibleVersions          [p[0]] = p[1].replace(u'\n', u'')
-        self.loadBibleCombo(self.cwBibleVersions          )
+        try:
+            fbibles = open(filepath, 'r')
+            for line in fbibles:
+                p = line.split(u',')
+                self.bgBibleVersions[p[0]] = p[1].replace(u'\n', u'')
+        except:
+            log.exception(u'Biblegateway resources missing')
+        self.loadBibleCombo(self.cwBibleVersions)
         self.cwActive = True
 
     def loadBibleCombo(self, biblesList):
@@ -117,7 +123,8 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
     def onVersesFileButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(
-            self, self.trUtf8(u'Open file'), self.config.get_last_dir(1))
+            self, self.trUtf8(u'Open Bible Verses file'),
+            self.config.get_last_dir(1))
         if filename != u'':
             self.VerseLocationEdit.setText(filename)
             self.config.set_last_dir(filename, 1)
@@ -125,7 +132,8 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
     def onBooksFileButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(
-            self, self.trUtf8(u'Open file'), self.config.get_last_dir(2))
+            self, self.trUtf8(u'Open Bible Books file'),
+            self.config.get_last_dir(2))
         if filename != u'':
             self.BooksLocationEdit.setText(filename)
             self.config.set_last_dir(filename, 2)
@@ -133,7 +141,8 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
     def onOsisFileButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(
-            self, self.trUtf8(u'Open file'), self.config.get_last_dir(3))
+            self, self.trUtf8(u'Open OSIS import file'),
+            self.config.get_last_dir(3))
         if filename != u'':
             self.OSISLocationEdit.setText(filename)
             self.config.set_last_dir(filename, 3)
