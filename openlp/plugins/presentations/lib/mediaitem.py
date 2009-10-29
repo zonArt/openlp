@@ -49,7 +49,7 @@ class PresentationMediaItem(MediaManagerItem):
     def __init__(self, parent, icon, title, controllers):
         self.controllers = controllers
         self.TranslationContext = u'PresentationPlugin'
-        self.PluginTextShort = u'Presentation'
+        self.PluginNameShort = u'Presentation'
         self.ConfigSection = u'presentations'
         self.IconPath = u'presentations/presentation'
         self.OnNewPrompt = u'Select Presentation(s)'
@@ -59,6 +59,9 @@ class PresentationMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = PresentationListView
         MediaManagerItem.__init__(self, parent, icon, title)
         self.message_listener = MessageListener(controllers)
+
+    def initPluginNameVisible(self):
+        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)

@@ -43,7 +43,7 @@ class CustomMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.TranslationContext = u'CustomPlugin'
-        self.PluginTextShort = u'Custom'
+        self.PluginNameShort = u'Custom'
         self.ConfigSection = u'custom'
         self.IconPath = u'custom/custom'
         # this next is a class, not an instance of a class - it will
@@ -62,6 +62,9 @@ class CustomMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'remote_edit_clear' ), self.onRemoteEditClear)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'load_custom_list'), self.initialise)
+
+    def initPluginNameVisible(self):
+        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
