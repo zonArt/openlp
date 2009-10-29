@@ -266,16 +266,7 @@ class ThemeManager(QtGui.QWidget):
         try:
             xml = file_to_xml(xml_file)
         except:
-            newtheme = ThemeXML()
-            newtheme.new_document(self.trUtf8(u'New Theme'))
-            newtheme.add_background_solid(unicode(u'#000000'))
-            newtheme.add_font(unicode(QtGui.QFont().family()),
-                unicode(u'#FFFFFF'), unicode(30), u'False')
-            newtheme.add_font(unicode(QtGui.QFont().family()),
-                unicode(u'#FFFFFF'), unicode(12), u'False', u'footer')
-            newtheme.add_display(u'False', unicode(u'#FFFFFF'), u'False',
-                unicode(u'#FFFFFF'), unicode(0), unicode(0), unicode(0))
-            xml = newtheme.extract_xml()
+            xml = baseTheme()
         theme = ThemeXML()
         theme.parse(xml)
         self.cleanTheme(theme)
@@ -454,7 +445,7 @@ class ThemeManager(QtGui.QWidget):
     def baseTheme(self):
         log.debug(u'base theme created')
         newtheme = ThemeXML()
-        newtheme.new_document(self.trUtf8(u'New Theme'))
+        newtheme.new_document(unicode(self.trUtf8(u'New Theme')))
         newtheme.add_background_solid(unicode(u'#000000'))
         newtheme.add_font(unicode(QtGui.QFont().family()), unicode(u'#FFFFFF'),
             unicode(30), u'False')
