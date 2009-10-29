@@ -177,10 +177,10 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
     def onLocationComboBoxSelected(self, value):
         if value == 0:
-            self.loadBibleCombo(self.cwBibleVersions          )
+            self.loadBibleCombo(self.cwBibleVersions)
             self.cwActive = True
         else:
-            self.loadBibleCombo(self.bgBibleVersions          )
+            self.loadBibleCombo(self.bgBibleVersions)
             self.cwActive = False
         self.checkHttp()
 
@@ -243,10 +243,10 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
             # set a value as it will not be needed
             self.setMax(1)
             if self.cwActive:
-                bible = self.cwBibleVersions          [
+                bible = self.cwBibleVersions[
                     unicode(self.BibleComboBox.currentText())]
             else:
-                bible = self.bgBibleVersions          [
+                bible = self.bgBibleVersions[
                     unicode(self.BibleComboBox.currentText())]
             loaded = self.biblemanager.register_http_bible(
                 unicode(self.BibleComboBox.currentText()),
