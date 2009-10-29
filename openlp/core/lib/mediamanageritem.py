@@ -319,8 +319,7 @@ class MediaManagerItem(QtGui.QWidget):
         pass
 
     def onFileClick(self):
-        files = QtGui.QFileDialog.getOpenFileNames(
-            self, self.trUtf8(self.OnNewPrompt),
+        files = QtGui.QFileDialog.getOpenFileNames(self, self.OnNewPrompt,
             self.parent.config.get_last_dir(), self.OnNewFileMasks)
         log.info(u'New files(s)%s', unicode(files))
         if len(files) > 0:
@@ -382,8 +381,11 @@ class MediaManagerItem(QtGui.QWidget):
         Common method for generating a service item
         """
         service_item = ServiceItem(self.parent)
-        service_item.addIcon(
-            u':/media/media_' + self.PluginNameShort.lower() + u'.png')
+        if self.ServiceItemIconName:
+            service_item.addIcon(self.ServiceItemIconName)
+        else:
+            service_item.addIcon(
+                u':/media/media_' + self.PluginNameShort.lower() + u'.png')
         if self.generateSlideData(service_item):
             self.ListView.clearSelection()
             return service_item

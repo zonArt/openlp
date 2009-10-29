@@ -117,6 +117,11 @@ class ServiceItem(object):
                 slide[u'image'] = \
                     self.RenderManager.resize_image(slide[u'image'])
             self.frames = self.service_frames
+        elif self.service_item_type == ServiceItemType.Video:
+            for slide in self.service_frames:
+                slide[u'image'] = \
+                    self.RenderManager.resize_image(slide[u'image'])
+            self.frames = self.service_frames
         else:
             log.error(u'Invalid value renderer :%s' % self.service_item_type)
 
@@ -152,7 +157,13 @@ class ServiceItem(object):
         self.service_item_type = ServiceItemType.Image
         self.service_item_path = path
         self.service_frames.append(
-            {u'title': frame_title, u'text':None, u'image': image})
+            {u'title': frame_title, u'text': None, u'image': image})
+
+    def add_from_media(self, path, frame_title, image):
+        self.service_item_type = ServiceItemType.Video
+        self.service_item_path = path
+        self.service_frames.append(
+            {u'title': frame_title, u'text': None, u'image': image})
 
     def add_from_text(self, frame_title, raw_slide):
         """
@@ -210,7 +221,8 @@ class ServiceItem(object):
             for slide in self.service_frames:
                 service_data.append(slide[u'title'])
         elif self.service_item_type == ServiceItemType.Video:
-            pass
+            for slide in self.service_frames:
+                service_data.append(slide[u'title'])
         return {u'header': service_header, u'data': service_data}
 
     def set_from_service(self, serviceitem, path=None):

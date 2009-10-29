@@ -47,13 +47,10 @@ class MediaMediaItem(MediaManagerItem):
         self.PluginNameShort = u'Media'
         self.IconPath = u'images/image'
         self.ConfigSection = u'media'
-        self.OnNewPrompt = u'Select Media(s)'
-        self.OnNewFileMasks = \
-            u'Videos (*.avi *.mpeg *.mpg *.mp4);;Audio (*.ogg *.mp3 *.wma);;All files (*)'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = MediaListView
-        #self.ServiceItemIconName = u':/media/media_image.png'
+        self.ServiceItemIconName = u':/media/media_video.png'
         self.PreviewFunction = self.video_get_preview
         MediaManagerItem.__init__(self, parent, icon, title)
         self.MainDisplay = self.parent.live_controller.parent.mainDisplay
@@ -61,13 +58,18 @@ class MediaMediaItem(MediaManagerItem):
     def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
 
+    def reTranslateUI(self):
+        self.OnNewPrompt = self.trUtf8(u'Select Media')
+        self.OnNewFileMasks = self.trUtf8(u'Videos (*.avi *.mpeg *.mpg'
+            '*.mp4);;Audio (*.ogg *.mp3 *.wma);;All files (*)')
+
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
         self.hasFileIcon = True
         self.hasNewIcon = False
         self.hasEditIcon = False
 
-    def video_get_preview(self, filename):
+    def video_get_preview(self):
         #
         # For now cross platform is an icon.  Phonon does not support
         # individual frame access (yet?) and GStreamer is not available
@@ -77,15 +79,19 @@ class MediaMediaItem(MediaManagerItem):
         return image
 
     def generateSlideData(self, service_item):
-        indexes = self.ListView.selectedIndexes()
-        if len(indexes) > 1:
+        items = self.ListView.selectedIndexes()
+        if len(items) > 1:
             return False
-        service_item.title = u'Media'
-        for index in indexes:
-            filename = self.ListView.getFilename(index)
-            frame = QtGui.QImage(unicode(filename))
+        service_item.title = self.trUtf8(u'Media')
+        for item in items:
+            bitem = self.ListView.item(item.row())
+            filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+            frame = u':/media/media_video.png'
             (path, name) = os.path.split(filename)
-            service_item.add_from_image(path, name, frame)
+            #service_item.add_from_image(path, name, frame)
+            print path
+            print name
+            service_item.add_from_media(path, name, frame)
         return True
 
     def onPreviewClick(self):
@@ -129,7 +135,7 @@ class MediaMediaItem(MediaManagerItem):
         for file in list:
             (path, filename) = os.path.split(unicode(file))
             item_name = QtGui.QListWidgetItem(filename)
-            img = self.video_get_preview(file)
+            img = self.video_get_preview()
             item_name.setIcon(buildIcon(img))
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.ListView.addItem(item_name)
