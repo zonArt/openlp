@@ -31,6 +31,7 @@ class RemoteTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'RemoteTab')
+        self.tabTitleVisible = self.trUtf8(u'Remotes')
         self.RemoteLayout = QtGui.QFormLayout(self)
         self.RemoteLayout.setObjectName(u'RemoteLayout')
         self.RemoteModeGroupBox = QtGui.QGroupBox(self)

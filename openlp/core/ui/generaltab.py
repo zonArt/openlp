@@ -33,11 +33,10 @@ class GeneralTab(SettingsTab):
     def __init__(self, screen_list):
         self.screen_list = screen_list
         SettingsTab.__init__(self, u'General', u'General')
-        # Use this line when pulling the translation template
-        #SettingsTab.__init__(self, self.trUtf8(u'General'), u'General')
 
     def setupUi(self):
         self.setObjectName(u'GeneralTab')
+        self.tabTitleVisible = self.trUtf8(u'General')
         self.GeneralLayout = QtGui.QHBoxLayout(self)
         self.GeneralLayout.setSpacing(8)
         self.GeneralLayout.setMargin(8)

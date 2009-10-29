@@ -32,13 +32,12 @@ class AlertsTab(SettingsTab):
     """
     def __init__(self):
         SettingsTab.__init__(self, u'Alerts', u'Alerts')
-        # Use the line below when pulling the translation template file.
-        #SettingsTab.__init__(self, self.trUtf8(u'Alerts'), u'Alerts')
         self.font_color = '#ffffff'
         self.bg_color = '#660000'
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
+        self.tabTitleVisible = self.trUtf8(u'Alerts')
         self.AlertsLayout = QtGui.QHBoxLayout(self)
         self.AlertsLayout.setSpacing(8)
         self.AlertsLayout.setMargin(8)

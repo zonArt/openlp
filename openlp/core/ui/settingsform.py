@@ -48,19 +48,19 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.addTab(u'Alerts', self.AlertsTab)
 
     def addTab(self, name,  tab):
-        log.info(u'Adding %s tab' % tab.title())
-        self.SettingsTabWidget.addTab(tab, tab.title())
+        log.info(u'Adding %s tab' % tab.tabTitle)
+        self.SettingsTabWidget.addTab(tab, tab.tabTitleVisible)
 
     def insertTab(self, tab, location):
-        log.debug(u'Inserting %s tab' % tab.title())
+        log.debug(u'Inserting %s tab' % tab.tabTitle)
         #13 : There are 3 tables currently and locations starts at -10
-        self.SettingsTabWidget.insertTab(location + 13, tab, tab.title())
+        self.SettingsTabWidget.insertTab(location + 13, tab, tab.tabTitleVisible)
 
     def removeTab(self, name):
         log.debug(u'remove %s tab' % name)
         for tab_index in range(0, self.SettingsTabWidget.count()):
             if self.SettingsTabWidget.widget(tab_index) is not None:
-                if self.SettingsTabWidget.widget(tab_index).title() == name:
+                if self.SettingsTabWidget.widget(tab_index).tabTitle == name:
                     self.SettingsTabWidget.removeTab(tab_index)
 
     def accept(self):
