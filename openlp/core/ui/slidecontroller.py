@@ -276,19 +276,17 @@ class SlideController(QtGui.QWidget):
         """
         Allows the live toolbar to be customised
         """
+        self.Songbar.setVisible(False)
+        self.Toolbar.makeWidgetsInvisible(self.image_list)
         if item.service_item_type == ServiceType.Text:
             self.Toolbar.makeWidgetsInvisible(self.image_list)
             if item.name == u'Songs' and \
                 str_to_bool(self.songsconfig.get_config(u'display songbar', True)):
                 self.Songbar.setVisible(True)
-            else:
-                self.Songbar.setVisible(False)
         elif item.service_item_type == ServiceType.Image:
             #Not sensible to allow loops with 1 frame
             if len(item.frames) > 1:
                 self.Toolbar.makeWidgetsVisible(self.image_list)
-            else:
-                self.Toolbar.makeWidgetsInvisible(self.image_list)
 
     def enablePreviewToolBar(self, item):
         """
