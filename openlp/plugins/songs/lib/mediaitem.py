@@ -55,7 +55,7 @@ class SongMediaItem(MediaManagerItem):
         self.edit_song_form = EditSongForm(self.parent.songmanager, self)
         self.song_maintenance_form = SongMaintenanceForm(
             self.parent.songmanager, self)
-        self.fromPreview = None
+        self.fromPreview = -1
         self.fromServiceManager = -1
 
     def requiredIcons(self):
@@ -184,8 +184,9 @@ class SongMediaItem(MediaManagerItem):
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
             self.ListView.addItem(song_name)
             if song.id == self.fromPreview:
-                self.fromPreview = 0
                 self.ListView.setCurrentItem(song_name)
+                self.onPreviewClick()
+                self.fromPreview = -1
             if song.id == self.fromServiceManager:
                 self.onAddClick()
 
@@ -247,7 +248,7 @@ class SongMediaItem(MediaManagerItem):
         item = self.ListView.currentItem()
         if item is not None:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.fromPreview = 0
+            self.fromPreview = -1
             if preview:
                 self.fromPreview = item_id
             self.edit_song_form.loadSong(item_id)

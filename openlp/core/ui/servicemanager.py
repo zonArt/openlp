@@ -39,24 +39,22 @@ class ServiceManagerList(QtGui.QTreeWidget):
         self.parent = parent
 
 #    def mousePressEvent(self, event):
-#        if type(event) == QtGui.QMouseEvent:
-#            if event.button() == QtCore.Qt.RightButton:
-#                item = self.itemAt(event.pos())
-#                parentitem = item.parent()
-#                if parentitem is None:
-#                    pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-#                else:
-#                    pos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
-#                serviceItem = self.parent.serviceItems[pos - 1]
-#                if serviceItem[u'data'].editEnabled:
-#                    self.parent.editAction.setVisible(True)
-#                else:
-#                    self.parent.editAction.setVisible(False)
-#                event.ignore()
+#        if event.button() == QtCore.Qt.RightButton:
+#            item = self.itemAt(event.pos())
+#            parentitem = item.parent()
+#            if parentitem is None:
+#                pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
 #            else:
-#                event.ignore()
+#                pos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
+#            serviceItem = self.parent.serviceItems[pos - 1]
+#            if serviceItem[u'data'].editEnabled:
+#                self.parent.editAction.setVisible(True)
+#            else:
+#                self.parent.editAction.setVisible(False)
+#            event.accept()
 #        else:
 #            event.ignore()
+
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
