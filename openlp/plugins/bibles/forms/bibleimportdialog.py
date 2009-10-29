@@ -250,8 +250,6 @@ class Ui_BibleImportDialog(object):
         self.LocationComboBox.setItemText(0, self.trUtf8(u'Crosswalk'))
         self.LocationComboBox.setItemText(1, self.trUtf8(u'BibleGateway'))
         self.BibleLabel.setText(self.trUtf8(u'Bible:'))
-        self.BibleComboBox.setItemText(1, self.trUtf8(u'NIV'))
-        self.BibleComboBox.setItemText(2, self.trUtf8(u'KJV'))
         self.ProxyGroupBox.setTitle(self.trUtf8(u'Proxy Settings (Optional)'))
         self.AddressLabel.setText(self.trUtf8(u'Proxy Address:'))
         self.UsernameLabel.setText(self.trUtf8(u'Username:'))

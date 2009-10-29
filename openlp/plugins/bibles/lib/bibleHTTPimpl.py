@@ -50,12 +50,11 @@ class BGExtract(BibleCommon):
         """
         log.debug(u'get_bible_chapter %s,%s,%s',
             version, bookname, chapter)
-        version=u'nasb'
         urlstring = \
-            u'http://www.biblegateway.com/passage/?search=%s %s&version=%s' % \
-                (bookname, unicode(chapter) , version)
+            u'http://www.biblegateway.com/passage/?search=%s+%d&version=%s' % \
+                (bookname, chapter, version)
+        log.debug(u'BibleGateway urm = %s' % urlstring)
         xml_string = self._get_web_text(urlstring, self.proxyurl)
-        #print xml_string
         verseSearch = u'<sup class=\"versenum'
         verseFootnote = u'<sup class=\'footnote'
         verse = 1
@@ -68,13 +67,15 @@ class BGExtract(BibleCommon):
             verseText = u''
             versePos = xml_string.find(u'</sup>', versePos) + 6
             i = xml_string.find(verseSearch, versePos + 1)
+            # Not sure if this is needed now
             if i == -1:
                 i = xml_string.find(u'</div', versePos + 1)
                 j = xml_string.find(u'<strong', versePos + 1)
                 if j > 0 and j < i:
                     i = j
                 verseText = xml_string[versePos + 7 : i ]
-                bible[verse] = self._clean_text(verseText) # store the verse
+                # store the verse
+                bible[verse] = self._clean_text(verseText)
                 versePos = -1
             else:
                 verseText = xml_string[versePos: i]
@@ -85,8 +86,10 @@ class BGExtract(BibleCommon):
                     start_tag = verseText.find(verseFootnote)
                 # Chop off verse and start again
                 xml_string = xml_string[i:]
-                versePos = xml_string.find(verseSearch) #look for the next verse
-                bible[verse] = self._clean_text(verseText) # store the verse
+                #look for the next verse
+                versePos = xml_string.find(verseSearch)
+                # store the verse
+                bible[verse] = self._clean_text(verseText)
                 verse += 1
         return SearchResults(bookname, chapter, bible)
 

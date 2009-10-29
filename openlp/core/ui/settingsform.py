@@ -53,6 +53,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
 
     def insertTab(self, tab, location):
         log.debug(u'Inserting %s tab' % tab.title())
+        #13 : There are 3 tables currently and locations starts at -10
         self.SettingsTabWidget.insertTab(location + 13, tab, tab.title())
 
     def removeTab(self, name):
