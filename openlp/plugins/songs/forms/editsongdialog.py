@@ -383,7 +383,7 @@ class Ui_EditSongDialog(object):
 
         self.retranslateUi(EditSongDialog)
         QtCore.QObject.connect(self.ButtonBox,
-            QtCore.SIGNAL(u'rejected()'), EditSongDialog.close)
+            QtCore.SIGNAL(u'rejected()'), EditSongDialog.closePressed)
         QtCore.QObject.connect(self.ButtonBox,
             QtCore.SIGNAL(u'accepted()'), EditSongDialog.accept)
         QtCore.QMetaObject.connectSlotsByName(EditSongDialog)

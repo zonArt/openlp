@@ -40,10 +40,6 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         #self.parent = parent
         self.setupUi(self)
         # Connecting signals and slots
-        QtCore.QObject.connect(self.buttonBox,
-            QtCore.SIGNAL(u'rejected()'), self.rejected)
-        QtCore.QObject.connect(self.buttonBox,
-            QtCore.SIGNAL(u'accepted()'), self.accept)
         QtCore.QObject.connect(self.AddButton,
             QtCore.SIGNAL(u'pressed()'), self.onAddButtonPressed)
         QtCore.QObject.connect(self.EditButton,
@@ -113,6 +109,10 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         else:
             self.ThemeComboBox.setCurrentIndex(0)
 
+    def closePressed(self):
+        Receiver().send_message(u'remote_edit_clear')
+        self.close()
+
     def accept(self):
         valid, message = self._validate()
         if not valid:
@@ -132,9 +132,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.customSlide.credits = unicode(self.CreditEdit.displayText())
         self.customSlide.theme_name = unicode(self.ThemeComboBox.currentText())
         self.custommanager.save_slide(self.customSlide)
-        self.close()
-
-    def rejected(self):
+        Receiver().send_message(u'load_custom_list')
         self.close()
 
     def onUpButtonPressed(self):

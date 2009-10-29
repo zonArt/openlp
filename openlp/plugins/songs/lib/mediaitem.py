@@ -55,7 +55,8 @@ class SongMediaItem(MediaManagerItem):
         self.edit_song_form = EditSongForm(self.parent.songmanager, self)
         self.song_maintenance_form = SongMaintenanceForm(
             self.parent.songmanager, self)
-        self.fromPreview = None
+        self.fromPreview = -1
+        self.fromServiceManager = -1
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -126,6 +127,10 @@ class SongMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'edit_song'), self.onEventEditSong)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'preview_song'), self.onPreviewClick)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_edit' % self.parent.name), self.onRemoteEdit)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'remote_edit_clear' ), self.onRemoteEditClear)
 
     def configUpdated(self):
         self.searchAsYouType = str_to_bool(
@@ -179,8 +184,11 @@ class SongMediaItem(MediaManagerItem):
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
             self.ListView.addItem(song_name)
             if song.id == self.fromPreview:
-                self.fromPreview = 0
                 self.ListView.setCurrentItem(song_name)
+                self.onPreviewClick()
+                self.fromPreview = -1
+            if song.id == self.fromServiceManager:
+                self.onAddClick()
 
     def displayResultsAuthor(self, searchresults):
         log.debug(u'display results Author')
@@ -226,11 +234,21 @@ class SongMediaItem(MediaManagerItem):
     def onSongMaintenanceClick(self):
         self.song_maintenance_form.exec_()
 
+    def onRemoteEditClear(self):
+        self.fromServiceManager = -1
+
+    def onRemoteEdit(self, songid):
+        valid = self.parent.songmanager.get_song(songid)
+        if valid is not None:
+            self.fromServiceManager = songid
+            self.edit_song_form.loadSong(songid)
+            self.edit_song_form.exec_()
+
     def onEditClick(self, preview=False):
         item = self.ListView.currentItem()
         if item is not None:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.fromPreview = 0
+            self.fromPreview = -1
             if preview:
                 self.fromPreview = item_id
             self.edit_song_form.loadSong(item_id)
@@ -253,12 +271,18 @@ class SongMediaItem(MediaManagerItem):
         author_list = u''
         author_audit = []
         ccl = u''
-        item = self.ListView.currentItem()
-        if item is None:
-            return False
-        item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        if self.fromServiceManager == -1:
+            item = self.ListView.currentItem()
+            if item is None:
+                return False
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        else:
+            item_id = self.fromServiceManager
+            self.fromServiceManager = -1
         song = self.parent.songmanager.get_song(item_id)
         service_item.theme = song.theme_name
+        service_item.editEnabled = True
+        service_item.editId = item_id
         if song.lyrics.startswith(u'<?xml version='):
             songXML=SongXMLParser(song.lyrics)
             verseList = songXML.get_verses()
