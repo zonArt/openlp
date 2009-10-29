@@ -90,7 +90,7 @@ class MediaMediaItem(MediaManagerItem):
         items = self.ListView.selectedIndexes()
         for item in items:
             baseItem = self.ListView.item(item.row())
-            itemText = unicode(baseItem.data(QtCore.Qt.UserRole).tostring())
+            itemText = unicode(baseItem.data(QtCore.Qt.UserRole).toString())
             print itemText
 
     def onLiveClick(self):

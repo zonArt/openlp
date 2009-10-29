@@ -242,6 +242,7 @@ class MainDisplay(DisplayLabel):
     def playMedia(self):
         self.display.close()
         self.mediaObject.play()
+        self.setVisible(True)
 
     def stopMedia(self):
         self.mediaObject.stop()
