@@ -36,7 +36,6 @@ class RemotesPlugin(Plugin):
     log.info(u'Remote Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        # Call the parent constructor
         Plugin.__init__(self, u'Remotes', u'1.9.0', plugin_helpers)
         self.weight = -1
         self.server = None
@@ -47,7 +46,6 @@ class RemotesPlugin(Plugin):
     def initialise(self):
         log.debug(u'initialise')
         Plugin.initialise(self)
-        self.insert_toolbox_item()
         self.server = QtNetwork.QUdpSocket()
         self.server.bind(int(self.config.get_config(u'remote port', 4316)))
         QtCore.QObject.connect(self.server,
@@ -59,14 +57,11 @@ class RemotesPlugin(Plugin):
         if self.server is not None:
             self.server.close()
 
-    def about(self):
-        return u'<b>Remote Plugin</b> <br>This plugin provides the ability to send messages to a running version of openlp on a different computer.<br> The Primary use for this would be to send alerts from a creche'
-
     def get_settings_tab(self):
         """
         Create the settings Tab
         """
-        return RemoteTab()
+        return RemoteTab(self.name)
 
     def readData(self):
         log.info(u'Remoted data has arrived')
@@ -83,3 +78,10 @@ class RemotesPlugin(Plugin):
             Receiver().send_message(u'alert_text', unicode(datagram[pos + 1:]))
         if event == u'next_slide':
             Receiver().send_message(u'live_slide_next')
+
+    def about(self):
+        about_text = self.trUtf8(u'<b>Remote Plugin</b><br>This plugin '
+            u'provides the ability to send messages to a running version of '
+            u'openlp on a different computer.<br>The Primary use for this '
+            u'would be to send alerts from a creche')
+        return about_text

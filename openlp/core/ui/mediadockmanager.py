@@ -33,8 +33,7 @@ class MediaDockManager(object):
 
     def add_dock(self, media_item, icon, weight):
         log.info(u'Adding %s dock' % media_item.title)
-        id = self.media_dock.addItem(
-            media_item, icon, media_item.title)
+        self.media_dock.addItem(media_item, icon, media_item.title)
 
     def insert_dock(self, media_item, icon, weight):
         """

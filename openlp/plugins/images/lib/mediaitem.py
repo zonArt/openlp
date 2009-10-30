@@ -44,20 +44,18 @@ class ImageMediaItem(MediaManagerItem):
     log.info(u'Image Media Item loaded')
 
     def __init__(self, parent, icon, title):
-        self.TranslationContext = u'ImagePlugin'
         self.PluginNameShort = u'Image'
-        self.ConfigSection = u'images'
+        self.ConfigSection = title
         self.IconPath = u'images/image'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
-        self.ServiceItemIconName = u':/media/media_image.png'
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
         self.overrideActive = False
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
+        self.PluginNameVisible = self.trUtf8(u'Image')
 
     def retranslateUi(self):
         self.OnNewPrompt = self.trUtf8(u'Select Image(s)')

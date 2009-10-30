@@ -93,7 +93,6 @@ class PluginManager(object):
                         log.exception(u'Failed to import module %s on path %s for reason %s',
                                    modulename, path, e.args[0])
         plugin_classes = Plugin.__subclasses__()
-        self.plugins = []
         plugin_objects = []
         for p in plugin_classes:
             try:

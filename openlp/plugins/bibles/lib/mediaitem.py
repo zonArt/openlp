@@ -46,12 +46,10 @@ class BibleMediaItem(MediaManagerItem):
     log.info(u'Bible Media Item loaded')
 
     def __init__(self, parent, icon, title):
-        self.TranslationContext = u'BiblePlugin'
         self.PluginNameShort = u'Bible'
-        self.ConfigSection = u'bibles'
+        self.ConfigSection = title
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = BibleListView
-        self.ServiceItemIconName = u':/media/bible_image.png'
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
         # place to store the search results
@@ -60,7 +58,7 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'openlpreloadbibles'), self.reloadBibles)
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
+        self.PluginNameVisible = self.trUtf8(u'Bible')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -89,14 +87,16 @@ class BibleMediaItem(MediaManagerItem):
         self.QuickVersionLabel.setObjectName(u'QuickVersionLabel')
         self.QuickLayout.addWidget(self.QuickVersionLabel, 0, 0, 1, 1)
         self.QuickVersionComboBox = QtGui.QComboBox(self.QuickTab)
-        self.QuickVersionComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToMinimumContentsLength)
+        self.QuickVersionComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.QuickVersionComboBox.setObjectName(u'VersionComboBox')
         self.QuickLayout.addWidget(self.QuickVersionComboBox, 0, 1, 1, 2)
         self.QuickSecondVersionLabel = QtGui.QLabel(self.QuickTab)
         self.QuickSecondVersionLabel.setObjectName(u'QuickSecondVersionLabel')
         self.QuickLayout.addWidget(self.QuickSecondVersionLabel, 1, 0, 1, 1)
         self.QuickSecondBibleComboBox = QtGui.QComboBox(self.QuickTab)
-        self.QuickSecondBibleComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToMinimumContentsLength)
+        self.QuickSecondBibleComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.QuickSecondBibleComboBox.setObjectName(u'SecondBible')
         self.QuickLayout.addWidget(self.QuickSecondBibleComboBox, 1, 1, 1, 2)
         self.QuickSearchLabel = QtGui.QLabel(self.QuickTab)
@@ -147,16 +147,20 @@ class BibleMediaItem(MediaManagerItem):
         self.AdvancedVersionLabel.setObjectName(u'AdvancedVersionLabel')
         self.AdvancedLayout.addWidget(self.AdvancedVersionLabel, 0, 0, 1, 1)
         self.AdvancedVersionComboBox = QtGui.QComboBox(self.AdvancedTab)
-        self.AdvancedVersionComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToMinimumContentsLength)
+        self.AdvancedVersionComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.AdvancedVersionComboBox.setObjectName(u'AdvancedVersionComboBox')
         self.AdvancedLayout.addWidget(self.AdvancedVersionComboBox, 0, 1, 1, 2)
         self.AdvancedSecondBibleLabel = QtGui.QLabel(self.AdvancedTab)
         self.AdvancedSecondBibleLabel.setObjectName(u'AdvancedSecondBibleLabel')
         self.AdvancedLayout.addWidget(self.AdvancedSecondBibleLabel, 1, 0, 1, 1)
         self.AdvancedSecondBibleComboBox = QtGui.QComboBox(self.AdvancedTab)
-        self.AdvancedSecondBibleComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToMinimumContentsLength)
-        self.AdvancedSecondBibleComboBox.setObjectName(u'AdvancedSecondBibleComboBox')
-        self.AdvancedLayout.addWidget(self.AdvancedSecondBibleComboBox, 1, 1, 1, 2)
+        self.AdvancedSecondBibleComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
+        self.AdvancedSecondBibleComboBox.setObjectName(
+            u'AdvancedSecondBibleComboBox')
+        self.AdvancedLayout.addWidget(
+            self.AdvancedSecondBibleComboBox, 1, 1, 1, 2)
         self.AdvancedBookLabel = QtGui.QLabel(self.AdvancedTab)
         self.AdvancedBookLabel.setObjectName(u'AdvancedBookLabel')
         self.AdvancedLayout.addWidget(self.AdvancedBookLabel, 2, 0, 1, 1)
@@ -198,14 +202,16 @@ class BibleMediaItem(MediaManagerItem):
         self.AdvancedSearchButtonLayout = QtGui.QHBoxLayout()
         self.AdvancedSearchButtonLayout.setMargin(0)
         self.AdvancedSearchButtonLayout.setSpacing(0)
-        self.AdvancedSearchButtonLayout.setObjectName(u'AdvancedSearchButtonLayout')
+        self.AdvancedSearchButtonLayout.setObjectName(
+            u'AdvancedSearchButtonLayout')
         self.AdvancedSearchButtonSpacer = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.AdvancedSearchButtonLayout.addItem(self.AdvancedSearchButtonSpacer)
         self.AdvancedSearchButton = QtGui.QPushButton(self.AdvancedTab)
         self.AdvancedSearchButton.setObjectName(u'AdvancedSearchButton')
         self.AdvancedSearchButtonLayout.addWidget(self.AdvancedSearchButton)
-        self.AdvancedLayout.addLayout(self.AdvancedSearchButtonLayout, 7, 0, 1, 3)
+        self.AdvancedLayout.addLayout(
+            self.AdvancedSearchButtonLayout, 7, 0, 1, 3)
         self.AdvancedMessage = QtGui.QLabel(self.AdvancedTab)
         self.AdvancedMessage.setObjectName(u'AdvancedMessage')
         self.AdvancedLayout.addWidget(self.AdvancedMessage, 8, 0, 1, 3)
@@ -475,10 +481,12 @@ class BibleMediaItem(MediaManagerItem):
         for book in book_data:
             row = self.AdvancedBookComboBox.count()
             self.AdvancedBookComboBox.addItem(book[u'book'])
-            self.AdvancedBookComboBox.setItemData(row, QtCore.QVariant(book[u'total']))
+            self.AdvancedBookComboBox.setItemData(
+                row, QtCore.QVariant(book[u'total']))
             if first:
                 first = False
-                self.initialiseChapterVerse(bible, book[u'book'], book[u'total'])
+                self.initialiseChapterVerse(
+                    bible, book[u'book'], book[u'total'])
 
     def initialiseChapterVerse(self, bible, book, chapters):
         log.debug(u'initialiseChapterVerse %s, %s', bible, book)

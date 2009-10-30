@@ -48,7 +48,6 @@ class SongsPlugin(Plugin):
         """
         Create and set up the Songs plugin.
         """
-        # Call the parent constructor
         Plugin.__init__(self, u'Songs', u'1.9.0', plugin_helpers)
         self.weight = -10
         self.songmanager = SongManager(self.config)
@@ -56,21 +55,19 @@ class SongsPlugin(Plugin):
         self.opensong_import_form = OpenSongImportForm()
         self.openlp_export_form = OpenLPExportForm()
         self.opensong_export_form = OpenSongExportForm()
-        # Create the plugin icon
         self.icon = buildIcon(u':/media/media_song.png')
 
     def can_be_disabled(self):
         return True
 
     def get_settings_tab(self):
-        return SongsTab()
+        return SongsTab(self.name)
 
     def initialise(self):
         log.info(u'Songs Initialising')
         #if self.songmanager is None:
         #    self.songmanager = SongManager(self.config)
         Plugin.initialise(self)
-        self.insert_toolbox_item()
         self.ImportSongMenu.menuAction().setVisible(True)
         self.ExportSongMenu.menuAction().setVisible(True)
         self.media_item.displayResultsSong(self.songmanager.get_songs())
@@ -87,7 +84,7 @@ class SongsPlugin(Plugin):
         Create the MediaManagerItem object, which is displaed in the
         Media Manager.
         """
-        return SongMediaItem(self, self.icon, 'Songs')
+        return SongMediaItem(self, self.icon, self.name)
 
     def add_import_menu_item(self, import_menu):
         """
@@ -180,4 +177,6 @@ class SongsPlugin(Plugin):
         self.opensong_export_form.show()
 
     def about(self):
-        return u'<b>Song Plugin</b> <br>This plugin allows Songs to be managed and displayed.<br>'
+        about_text = self.trUtf8(u'<b>Song Plugin</b> <br>This plugin allows '
+            u'Songs to be managed and displayed.<br>')
+        return about_text

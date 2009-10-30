@@ -44,17 +44,15 @@ class CustomPlugin(Plugin):
     log.info(u'Custom Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        # Call the parent constructor
         Plugin.__init__(self, u'Custom', u'1.9.0', plugin_helpers)
         self.weight = -5
         self.custommanager = CustomManager(self.config)
         self.edit_custom_form = EditCustomForm(self.custommanager)
-        # Create the plugin icon
         self.icon = buildIcon(u':/media/media_custom.png')
 
     def get_media_manager_item(self):
         # Create the CustomManagerItem object
-        return CustomMediaItem(self, self.icon, u'Custom')
+        return CustomMediaItem(self, self.icon, self.name)
 
     def can_be_disabled(self):
         return True
@@ -62,11 +60,14 @@ class CustomPlugin(Plugin):
     def initialise(self):
         log.info(u'Plugin Initialising')
         Plugin.initialise(self)
-        self.insert_toolbox_item()
 
     def finalise(self):
         log.info(u'Plugin Finalise')
         self.remove_toolbox_item()
 
     def about(self):
-        return u'<b>Custom Plugin</b> <br>This plugin allows slides to be displayed on the screen in the same way songs are. The difference between this plugin and songs is this plugin provides greater freedom.<br>'
+        about_text = self.trUtf8(u'<b>Custom Plugin</b><br>This plugin '
+            u'allows slides to be displayed on the screen in the same way '
+            u'songs are.  This plugin provides greater freedom over the '
+            u'songs plugin.<br>')
+        return about_text

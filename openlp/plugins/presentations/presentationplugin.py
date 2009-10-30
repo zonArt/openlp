@@ -25,9 +25,7 @@
 import os
 import logging
 
-from PyQt4 import QtGui
-
-from openlp.core.lib import Plugin
+from openlp.core.lib import Plugin, buildIcon
 from openlp.plugins.presentations.lib import *
 
 class PresentationPlugin(Plugin):
@@ -36,21 +34,17 @@ class PresentationPlugin(Plugin):
     log = logging.getLogger(u'PresentationPlugin')
 
     def __init__(self, plugin_helpers):
-        # Call the parent constructor
         log.debug(u'Initialised')
         self.controllers = {}
         Plugin.__init__(self, u'Presentations', u'1.9.0', plugin_helpers)
         self.weight = -8
-        # Create the plugin icon
-        self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_presentation.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon = buildIcon(u':/media/media_presentation.png')
 
     def get_settings_tab(self):
         """
         Create the settings Tab
         """
-        return PresentationTab(self.controllers)
+        return PresentationTab(self.name, self.controllers)
 
     def can_be_disabled(self):
         return True
@@ -58,7 +52,6 @@ class PresentationPlugin(Plugin):
     def initialise(self):
         log.info(u'Presentations Initialising')
         Plugin.initialise(self)
-        self.insert_toolbox_item()
 
     def finalise(self):
         log.info(u'Plugin Finalise')
@@ -74,7 +67,7 @@ class PresentationPlugin(Plugin):
         Create the Media Manager List
         """
         return PresentationMediaItem(
-            self, self.icon, u'Presentations', self.controllers)
+            self, self.icon, self.name, self.controllers)
 
     def registerControllers(self, controller):
         self.controllers[controller.name] = controller
@@ -110,4 +103,8 @@ class PresentationPlugin(Plugin):
             return False
 
     def about(self):
-        return u'<b>Presentation Plugin</b> <br> Delivers the ability to show presentations using a number of different programs. The choice of available presentaion programs is available in a drop down.'
+        about_text = self.trUtf8(u'<b>Presentation Plugin</b> <br> Delivers '
+            u'the ability to show presentations using a number of different '
+            u'programs.  The choice of available presentation programs is '
+            u'available to the user in a drop down box.')
+        return about_text

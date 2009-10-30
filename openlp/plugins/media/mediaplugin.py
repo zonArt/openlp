@@ -33,16 +33,14 @@ class MediaPlugin(Plugin):
     log.info(u'Media Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        # Call the parent constructor
         Plugin.__init__(self, u'Media', u'1.9.0', plugin_helpers)
         self.weight = -6
-        # Create the plugin icon
         self.icon = buildIcon(u':/media/media_video.png')
         # passed with drag and drop messages
         self.dnd_id = u'Media'
 
     def get_settings_tab(self):
-        return MediaTab()
+        return MediaTab(self.name)
 
     def can_be_disabled(self):
         return True
@@ -50,7 +48,6 @@ class MediaPlugin(Plugin):
     def initialise(self):
         log.info(u'Plugin Initialising')
         Plugin.initialise(self)
-        self.insert_toolbox_item()
 
     def finalise(self):
         log.info(u'Plugin Finalise')
@@ -58,7 +55,9 @@ class MediaPlugin(Plugin):
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
-        return MediaMediaItem(self, self.icon, u'Media')
+        return MediaMediaItem(self, self.icon, self.name)
 
     def about(self):
-        return u'<b>Media Plugin</b> <br> One day this may provide access to video and audio clips'
+        about_text = self.trUtf8(u'<b>Media Plugin</b><br>This plugin '
+            u'allows the playing of audio and video media')
+        return about_text

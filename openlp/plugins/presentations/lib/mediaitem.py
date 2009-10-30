@@ -48,11 +48,10 @@ class PresentationMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title, controllers):
         self.controllers = controllers
-        self.TranslationContext = u'PresentationPlugin'
         self.PluginNameShort = u'Presentation'
-        self.ConfigSection = u'presentations'
+        self.ConfigSection = title
         self.IconPath = u'presentations/presentation'
-        self.OnNewPrompt = u'Select Presentation(s)'
+        self.OnNewPrompt = self.trUtf8(u'Select Presentation(s)')
         self.OnNewFileMasks = u'Presentations (*.ppt *.pps *.odp)'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
@@ -61,7 +60,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.message_listener = MessageListener(controllers)
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
+        self.PluginNameVisible = self.trUtf8(u'Presentation')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -110,8 +109,8 @@ class PresentationMediaItem(MediaManagerItem):
             (path, filename) = os.path.split(unicode(file))
             if titles.count(filename) > 0:
                 QtGui.QMessageBox.critical(
-                    self, self.trUtf8(u'File exists'),
-                    self.trUtf8(u'A presentation with that filename already exists.'),
+                    self, self.trUtf8(u'File exists'), self.trUtf8(
+                        u'A presentation with that filename already exists.'),
                     QtGui.QMessageBox.Ok)
             else:
                 item_name = QtGui.QListWidgetItem(filename)
