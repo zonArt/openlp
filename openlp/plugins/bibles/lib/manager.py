@@ -283,7 +283,8 @@ class BibleManager(object):
             count = self.bible_db_cache[bible].get_max_bible_book_verses(
                     book, chapter)
             if count == 0:
-                #text = self.get_verse_text(bible, book, chapter, chapter, 1, 1)
+                # Make sure the first chapter has been downloaded
+                self.get_verse_text(bible, book, chapter, chapter, 1, 1)
                 count = self.bible_db_cache[bible].get_max_bible_book_verses(
                     book, chapter)
             return count
