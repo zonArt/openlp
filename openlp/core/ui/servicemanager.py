@@ -129,6 +129,8 @@ class ServiceManager(QtGui.QWidget):
         self.serviceItems = []
         self.serviceName = u''
         self.isNew = True
+        #Indicates if remoteTriggering is active.  If it is the next addServiceItem call
+        #will replace the currently selected one.
         self.remoteEditTriggered = False
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
