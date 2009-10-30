@@ -360,7 +360,8 @@ class ServiceManager(QtGui.QWidget):
         Clear the list to create a new service
         """
         if self.parent.serviceNotSaved and \
-            str_to_bool(PluginConfig(u'General').get_config(u'prompt save oos', u'False')):
+            str_to_bool(PluginConfig(u'General').
+                        get_config(u'prompt save service', u'False')):
             ret = QtGui.QMessageBox.question(None,
                 self.trUtf8(u'Save Changes to Service?'),
                 self.trUtf8(u'Your service is unsaved, do you want to save those '
