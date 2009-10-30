@@ -46,7 +46,6 @@ class MediaMediaItem(MediaManagerItem):
         self.PluginNameShort = u'Media'
         self.IconPath = u'images/image'
         self.ConfigSection = title
-        self.OnNewPrompt = self.trUtf8(u'Select Media')
         self.OnNewFileMasks = \
             u'Videos (*.avi *.mpeg *.mpg *.mp4);;Audio (*.ogg *.mp3 *.wma);;All files (*)'
         # this next is a class, not an instance of a class - it will
@@ -57,6 +56,9 @@ class MediaMediaItem(MediaManagerItem):
 
     def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8(u'Media')
+
+    def reTranslateUi(self):
+        self.OnNewPrompt = self.trUtf8(u'Select Media')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
