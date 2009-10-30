@@ -292,6 +292,7 @@ class SongMediaItem(MediaManagerItem):
         service_item.theme = song.theme_name
         service_item.editEnabled = True
         service_item.editId = item_id
+        service_item.verse_order = song.verse_order
         if song.lyrics.startswith(u'<?xml version='):
             songXML=SongXMLParser(song.lyrics)
             verseList = songXML.get_verses()

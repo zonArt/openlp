@@ -562,7 +562,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         screen_number = self.getMonitorNumber()
         self.mainDisplay.setup(screen_number)
         self.setFocus()
-        self.versionCheck()
         if str_to_bool(self.generalConfig.get_config(u'Auto Open', False)):
             self.ServiceManagerContents.onLoadService(True)
         if str_to_bool(self.generalConfig.get_config(u'Screen Blank', False)) \
