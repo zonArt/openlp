@@ -49,7 +49,7 @@ class SongMediaItem(MediaManagerItem):
         self.ConfigSection = u'songs'
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = SongListView
-        self.ServiceItemIconName = u':/media/song_image.png'
+        self.ServiceItemIconName = u':/media/media_song.png'
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
         self.edit_song_form = EditSongForm(self.parent.songmanager, self)
