@@ -44,12 +44,10 @@ class SongMediaItem(MediaManagerItem):
     log.info(u'Song Media Item loaded')
 
     def __init__(self, parent, icon, title):
-        self.TranslationContext = u'SongPlugin'
         self.PluginNameShort = u'Song'
-        self.ConfigSection = u'songs'
+        self.ConfigSection = title
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = SongListView
-        self.ServiceItemIconName = u':/media/song_image.png'
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
         self.edit_song_form = EditSongForm(self.parent.songmanager, self)
@@ -63,7 +61,7 @@ class SongMediaItem(MediaManagerItem):
         self.fromServiceManager = -1
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
+        self.PluginNameVisible = self.trUtf8(u'Song')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -319,5 +317,7 @@ class SongMediaItem(MediaManagerItem):
         raw_footer.append(unicode(
             self.trUtf8(u'CCL Licence: ') + ccl))
         service_item.raw_footer = raw_footer
-        service_item.audit = [song.title, author_audit, song.copyright, song.ccli_number]
+        service_item.audit = [
+            song.title, author_audit, song.copyright, song.ccli_number
+        ]
         return True

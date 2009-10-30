@@ -35,10 +35,8 @@ class BiblePlugin(Plugin):
     log.info(u'Bible Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        # Call the parent constructor
         Plugin.__init__(self, u'Bibles', u'1.9.0', plugin_helpers)
         self.weight = -9
-        # Create the plugin icon
         self.icon = buildIcon(u':/media/media_bible.png')
         #Register the bible Manager
         self.biblemanager = None
@@ -63,11 +61,11 @@ class BiblePlugin(Plugin):
         self.ExportBibleItem.setVisible(False)
 
     def get_settings_tab(self):
-        return BiblesTab()
+        return BiblesTab(self.name)
 
     def get_media_manager_item(self):
         # Create the BibleManagerItem object
-        return BibleMediaItem(self, self.icon, u'Bibles')
+        return BibleMediaItem(self, self.icon, self.name)
 
     def add_import_menu_item(self, import_menu):
         self.ImportBibleItem = QtGui.QAction(import_menu)
@@ -91,8 +89,7 @@ class BiblePlugin(Plugin):
             self.media_item.onNewClick()
 
     def about(self):
-        about_text = u'<strong>Bible Plugin</strong><br />This plugin allows '\
-            u'bible verse from different sources to be displayed on the '\
-            u'screen during the service.<br /><br /><strong>This is a core '\
-            u'plugin and cannot be made inactive</strong>'
+        about_text = self.trUtf8(u'<strong>Bible Plugin</strong><br />This '
+            u'plugin allows bible verses from different sources to be '
+            u'displayed on the screen during the service.')
         return about_text

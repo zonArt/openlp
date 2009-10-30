@@ -32,7 +32,7 @@ class GeneralTab(SettingsTab):
     """
     def __init__(self, screen_list):
         self.screen_list = screen_list
-        SettingsTab.__init__(self, u'General', u'General')
+        SettingsTab.__init__(self, u'General')
 
     def setupUi(self):
         self.setObjectName(u'GeneralTab')

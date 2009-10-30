@@ -33,10 +33,8 @@ class ImagePlugin(Plugin):
     log.info(u'Image Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        # Call the parent constructor
         Plugin.__init__(self, u'Images', u'1.9.0', plugin_helpers)
         self.weight = -7
-        # Create the plugin icon
         self.icon = buildIcon(u':/media/media_image.png')
 
     def can_be_disabled(self):
@@ -52,11 +50,18 @@ class ImagePlugin(Plugin):
         self.remove_toolbox_item()
 
     def get_settings_tab(self):
-        return ImageTab()
+        return ImageTab(self.name)
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
-        return ImageMediaItem(self, self.icon, u'Images')
+        return ImageMediaItem(self, self.icon, self.name)
 
     def about(self):
-        return u'<b>Image Plugin</b><br>Allows images of all types to be displayed. If a number of images are selected together and presented on the live controller it is possible to turn them into a timed loop.<br> From the plugin if the <i>Override background</i> is chosen and an image is selected any somgs which are rendered will use the selected image from the background instead of the one provied by the theme.<br>'
+        about_text = self.trUtf8(u'<b>Image Plugin</b><br>Allows images of '
+            u'all types to be displayed.  If a number of images are selected '
+            u'together and presented on the live controller it is possible '
+            u'to turn them into a timed loop.<br>From the plugin if the '
+            u'<i>Override background</i> is chosen and an image is selected '
+            u'any somgs which are rendered will use the selected image from '
+            u'the background instead of the one provied by the theme.<br>')
+        return about_text

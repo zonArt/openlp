@@ -58,18 +58,13 @@ class MediaManagerItem(QtGui.QWidget):
     When creating a descendant class from this class for your plugin,
     the following member variables should be set.
 
-    ``self.TranslationContext``
-        This sets the translation context of all the text in the
-        Media Manager item.
-
     ``self.PluginNameShort``
         The shortened (usually singular) name for the plugin e.g. *'Song'*
         for the Songs plugin.
 
     ``self.PluginNameVisible``
         The user visible name for a plugin which should use a suitable
-        translation function.  This should normally be
-        ``self.trUtf8(self.PluginNameShort)``.
+        translation function.
 
      ``self.ConfigSection``
         The section in the configuration where the items in the media
@@ -117,6 +112,7 @@ class MediaManagerItem(QtGui.QWidget):
         if title is not None:
             self.title = title
         self.Toolbar = None
+        self.ServiceItemIconName = None
         self.PageLayout = QtGui.QVBoxLayout(self)
         self.PageLayout.setSpacing(0)
         self.PageLayout.setContentsMargins(4, 0, 4, 0)
@@ -228,7 +224,8 @@ class MediaManagerItem(QtGui.QWidget):
         if self.hasEditIcon:
             self.addToolbarButton(
                 u'Edit %s' % self.PluginNameShort,
-                u'%s %s' % (self.trUtf8(u'Edit the selected'), self.PluginNameVisible),
+                u'%s %s' % (self.trUtf8(u'Edit the selected'),
+                    self.PluginNameVisible),
                 u':%s_edit.png' % self.IconPath, self.onEditClick,
                 u'%sEditItem' %  self.PluginNameShort)
         ## Delete Button ##
@@ -320,7 +317,7 @@ class MediaManagerItem(QtGui.QWidget):
 
     def onFileClick(self):
         files = QtGui.QFileDialog.getOpenFileNames(
-            self, self.trUtf8(self.OnNewPrompt),
+            self, self.OnNewPrompt,
             self.parent.config.get_last_dir(), self.OnNewFileMasks)
         log.info(u'New files(s)%s', unicode(files))
         if len(files) > 0:
@@ -382,8 +379,10 @@ class MediaManagerItem(QtGui.QWidget):
         Common method for generating a service item
         """
         service_item = ServiceItem(self.parent)
-        service_item.addIcon(
-            u':/media/media_' + self.PluginNameShort.lower() + u'.png')
+        if self.ServiceItemIconName is not None:
+            service_item.addIcon(self.ServiceItemIconName)
+        else:
+            service_item.addIcon(self.icon)
         if self.generateSlideData(service_item):
             self.ListView.clearSelection()
             return service_item

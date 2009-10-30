@@ -30,8 +30,8 @@ class ImageTab(SettingsTab):
     """
     ImageTab is the Image settings tab in the settings dialog.
     """
-    def __init__(self):
-        SettingsTab.__init__(self, u'Images', u'Images')
+    def __init__(self, title, section=None):
+        SettingsTab.__init__(self, title, section)
 
     def setupUi(self):
         self.setObjectName(u'ImageTab')
@@ -42,7 +42,7 @@ class ImageTab(SettingsTab):
         self.ImageSettingsGroupBox.setObjectName(u'ImageSettingsGroupBox')
         self.TimeoutLayout = QtGui.QHBoxLayout(self.ImageSettingsGroupBox)
         self.TimeoutLayout.setSpacing(8)
-        self.TimeoutLayout.setMargin(0)
+        self.TimeoutLayout.setMargin(8)
         self.TimeoutLayout.setObjectName(u'TimeoutLayout')
         self.TimeoutLabel = QtGui.QLabel(self.ImageSettingsGroupBox)
         self.TimeoutLabel.setObjectName(u'TimeoutLabel')

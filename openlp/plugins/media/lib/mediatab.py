@@ -30,8 +30,8 @@ class MediaTab(SettingsTab):
     """
     mediaTab is the media settings tab in the settings dialog.
     """
-    def __init__(self):
-        SettingsTab.__init__(self, u'Media', u'Media')
+    def __init__(self, title, section=None):
+        SettingsTab.__init__(self, title, section)
 
     def setupUi(self):
         self.setObjectName(u'MediaTab')

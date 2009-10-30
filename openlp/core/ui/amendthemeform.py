@@ -480,11 +480,11 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
     def paintUi(self, theme):
         self.stateChanging(theme)
         self.ThemeNameEdit.setText(self.theme.theme_name)
+        # Background Tab
         if self.theme.background_mode == u'opaque':
             self.BackgroundComboBox.setCurrentIndex(0)
         else:
             self.BackgroundComboBox.setCurrentIndex(1)
-
         self.ImageLineEdit.setText(u'')
         if theme.background_type == u'solid':
             self.BackgroundTypeComboBox.setCurrentIndex(0)
@@ -493,14 +493,15 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         else:
             self.BackgroundTypeComboBox.setCurrentIndex(2)
             self.ImageLineEdit.setText(self.theme.background_filename)
-
         if self.theme.background_direction == u'horizontal':
             self.GradientComboBox.setCurrentIndex(0)
         elif self.theme.background_direction == u'vertical':
             self.GradientComboBox.setCurrentIndex(1)
         else:
             self.GradientComboBox.setCurrentIndex(2)
-
+        # Font Main Tab
+        self.FontMainComboBox.setCurrentFont(
+            QtGui.QFont(self.theme.font_main_name))
         self.FontMainSizeSpinBox.setValue(int(self.theme.font_main_proportion))
         if not self.theme.font_main_italics and \
             self.theme.font_main_weight == u'Normal':
@@ -518,6 +519,9 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.FontMainYSpinBox.setValue(int(self.theme.font_main_y))
         self.FontMainWidthSpinBox.setValue(int(self.theme.font_main_width))
         self.FontMainHeightSpinBox.setValue(int(self.theme.font_main_height))
+        # Font Footer Tab
+        self.FontFooterComboBox.setCurrentFont(
+            QtGui.QFont(self.theme.font_footer_name))
         self.FontFooterSizeSpinBox.setValue(
             int(self.theme.font_footer_proportion))
         if not self.theme.font_footer_italics and \
