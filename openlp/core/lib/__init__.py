@@ -110,12 +110,21 @@ def contextMenuAction(base, icon, text, slot):
     Utility method to help build context menus for plugins
     """
     action = QtGui.QAction(text, base)
-    action.setIcon(buildIcon(icon))
+    if icon is not None:
+        action.setIcon(buildIcon(icon))
     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
     return action
 
+def contextMenu(base, icon, text):
+    """
+    Utility method to help build context menus for plugins
+    """
+    action = QtGui.QMenu(text, base)
+    action.setIcon(buildIcon(icon))
+    return action
+
 def contextMenuSeparator(base):
-    action = QtGui.QAction("", base)
+    action = QtGui.QAction(u'', base)
     action.setSeparator(True)
     return action
 

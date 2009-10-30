@@ -1,22 +1,27 @@
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
-"""
-OpenLP - Open Source Lyrics Projection
-Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley
 
-This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation; version 2 of the License.
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2009 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
+# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-Place, Suite 330, Boston, MA 02111-1307 USA
-"""
 import logging
 import os
 
@@ -68,14 +73,14 @@ class MessageListener(object):
         self.controller.load_presentation(file)
         self.controller.start_presentation()
         self.controller.slidenumber = 0
+        self.controller.timer.start()
 
     def activate(self):
         if self.controller.is_active():
             return
         if not self.controller.is_loaded():
             self.controller.load_presentation(self.controller.filepath)
-        else:
-            self.controller.start_presentation()
+        self.controller.start_presentation()
         if self.controller.slidenumber > 1:
             self.controller.goto_slide(self.controller.slidenumber)
         
@@ -83,7 +88,7 @@ class MessageListener(object):
         self.activate()
         if message is not None:
             self.controller.goto_slide(message[0]+1)
-            self.controller.slidenumber = self.controller.get_slide_number()
+            self.controller.poll_slidenumber()
 
     def first(self, message):
         """
@@ -91,7 +96,7 @@ class MessageListener(object):
         """
         self.activate()
         self.controller.start_presentation()
-        self.controller.slidenumber = self.controller.get_slide_number()
+        self.controller.poll_slidenumber()
 
     def last(self, message):
         """
@@ -99,7 +104,7 @@ class MessageListener(object):
         """
         self.activate()
         self.controller.goto_slide(self.controller.get_slide_count())
-        self.controller.slidenumber = self.controller.get_slide_number()
+        self.controller.poll_slidenumber()
 
     def next(self, message):
         """
@@ -107,7 +112,7 @@ class MessageListener(object):
         """
         self.activate()
         self.controller.next_step()
-        self.controller.slidenumber = self.controller.get_slide_number()
+        self.controller.poll_slidenumber()
 
     def previous(self, message):
         """
@@ -115,7 +120,7 @@ class MessageListener(object):
         """
         self.activate()
         self.controller.previous_step()
-        self.controller.slidenumber = self.controller.get_slide_number()
+        self.controller.poll_slidenumber()
 
     def shutdown(self, message):
         """
@@ -123,6 +128,7 @@ class MessageListener(object):
         """
         self.controller.close_presentation()
         self.controller.slidenumber = 0
+        self.controller.timer.shutdown()
 
     def blank(self):
         if not self.controller.is_loaded():

@@ -1,28 +1,34 @@
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
-"""
-OpenLP - Open Source Lyrics Projection
-Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley
 
-This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation; version 2 of the License.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-Place, Suite 330, Boston, MA 02111-1307 USA
-"""
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2009 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
+# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 
 import logging
 import os
 import shutil
 
 from PyQt4 import QtCore
+
+from openlp.core.lib import Receiver
 
 class PresentationController(object):
     """
@@ -143,6 +149,9 @@ class PresentationController(object):
         self.thumbnailprefix = u'slide'
         if not os.path.isdir(self.thumbnailroot):
             os.makedirs(self.thumbnailroot)
+        self.timer = QtCore.QTimer()
+        self.timer.setInterval(500)
+        QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.poll_slidenumber)
 
     def check_available(self):
         """
@@ -198,6 +207,8 @@ class PresentationController(object):
         recent than the powerpoint
         """
         lastimage = self.get_slide_preview_file(self.get_slide_count())
+        if lastimage is None:
+            return False
         if not os.path.isfile(lastimage):
             return False
         imgdate = os.stat(lastimage).st_mtime
@@ -289,3 +300,16 @@ class PresentationController(object):
             The slide an image is required for, starting at 1
         """
         return None
+
+    def poll_slidenumber(self):
+        """
+        Check the current slide number
+        """
+        if not self.is_active():
+            return
+        current = self.get_slide_number()
+        if current == self.slidenumber:
+            return
+        self.slidenumber = current
+        Receiver().send_message(u'slidecontroller_change', self.slidenumber - 1)
+        

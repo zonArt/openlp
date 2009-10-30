@@ -22,4 +22,17 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from manager import AuditManager
+from sqlalchemy import Column, Table, types
+
+from openlp.plugins.songusage.lib.meta import metadata
+
+# Definition of the "songusage" table
+songusage_table = Table(u'songusage_data', metadata,
+    Column(u'id', types.Integer(), primary_key=True),
+    Column(u'usagedate', types.Date, index=True, nullable=False),
+    Column(u'usagetime', types.Time, index=True, nullable=False),
+    Column(u'title', types.Unicode(255), nullable=False),
+    Column(u'authors', types.Unicode(255), nullable=False),
+    Column(u'copyright', types.Unicode(255)),
+    Column(u'ccl_number', types.Unicode(65))
+)

@@ -23,7 +23,6 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
 
 class Ui_SettingsDialog(object):
     def setupUi(self, SettingsDialog):
@@ -37,21 +36,26 @@ class Ui_SettingsDialog(object):
         self.SettingsTabWidget.setObjectName(u'SettingsTabWidget')
         self.SettingsLayout.addWidget(self.SettingsTabWidget)
         self.ButtonsBox = QtGui.QDialogButtonBox(SettingsDialog)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.ButtonsBox.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.ButtonsBox.sizePolicy().hasHeightForWidth())
         self.ButtonsBox.setSizePolicy(sizePolicy)
         self.ButtonsBox.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.ButtonsBox.setOrientation(QtCore.Qt.Horizontal)
-        self.ButtonsBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.ButtonsBox.setStandardButtons(
+            QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.ButtonsBox.setObjectName(u'ButtonsBox')
         self.SettingsLayout.addWidget(self.ButtonsBox)
         self.retranslateUi(SettingsDialog)
         self.SettingsTabWidget.setCurrentIndex(0)
-        QtCore.QObject.connect(self.ButtonsBox, QtCore.SIGNAL(u'accepted()'), SettingsDialog.accept)
-        QtCore.QObject.connect(self.ButtonsBox, QtCore.SIGNAL(u'rejected()'), SettingsDialog.reject)
+        QtCore.QObject.connect(self.ButtonsBox,
+            QtCore.SIGNAL(u'accepted()'), SettingsDialog.accept)
+        QtCore.QObject.connect(self.ButtonsBox,
+            QtCore.SIGNAL(u'rejected()'), SettingsDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(SettingsDialog)
 
     def retranslateUi(self, SettingsDialog):
-        SettingsDialog.setWindowTitle(translate(u'SettingsDialog', u'Settings'))
+        SettingsDialog.setWindowTitle(self.trUtf8(u'Settings'))

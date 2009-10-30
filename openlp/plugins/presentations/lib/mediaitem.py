@@ -27,7 +27,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, translate, BaseListWithDnD
+from openlp.core.lib import MediaManagerItem, BaseListWithDnD
 from openlp.plugins.presentations.lib import MessageListener
 
 # We have to explicitly create separate classes for each plugin
@@ -49,7 +49,7 @@ class PresentationMediaItem(MediaManagerItem):
     def __init__(self, parent, icon, title, controllers):
         self.controllers = controllers
         self.TranslationContext = u'PresentationPlugin'
-        self.PluginTextShort = u'Presentation'
+        self.PluginNameShort = u'Presentation'
         self.ConfigSection = u'presentations'
         self.IconPath = u'presentations/presentation'
         self.OnNewPrompt = u'Select Presentation(s)'
@@ -59,6 +59,9 @@ class PresentationMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = PresentationListView
         MediaManagerItem.__init__(self, parent, icon, title)
         self.message_listener = MessageListener(controllers)
+
+    def initPluginNameVisible(self):
+        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -84,8 +87,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.DisplayTypeLabel = QtGui.QLabel(self.PresentationWidget)
         self.DisplayTypeLabel.setObjectName(u'SearchTypeLabel')
         self.DisplayLayout.addWidget(self.DisplayTypeLabel, 0, 0, 1, 1)
-        self.DisplayTypeLabel.setText(
-            translate(u'PresentationMediaItem', u'Present using:'))
+        self.DisplayTypeLabel.setText(self.trUtf8(u'Present using:'))
         # Add the Presentation widget to the page layout
         self.PageLayout.addWidget(self.PresentationWidget)
 
@@ -107,8 +109,9 @@ class PresentationMediaItem(MediaManagerItem):
                 continue
             (path, filename) = os.path.split(unicode(file))
             if titles.count(filename) > 0:
-                QtGui.QMessageBox.critical(self, u'File exists',
-                    u'A presentation with that filename already exists.',
+                QtGui.QMessageBox.critical(
+                    self, self.trUtf8(u'File exists'),
+                    self.trUtf8(u'A presentation with that filename already exists.'),
                     QtGui.QMessageBox.Ok)
             else:
                 item_name = QtGui.QListWidgetItem(filename)

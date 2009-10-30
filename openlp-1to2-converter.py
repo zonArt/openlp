@@ -1,5 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2009 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
+# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 
 import sys
 import os
@@ -72,7 +94,7 @@ create_statements = [
 )""")
 ]
 
-def clean_string(dirty):
+def prepare_string(dirty):
     return dirty_chars.sub(u'', dirty.replace(u'\r\n', ' ').replace(u'\n', ' '))
 
 def display_sql(sql, params):
@@ -171,12 +193,12 @@ def import_songs():
             xml_verse += (xml_verse_template % (line + 1, verse))
             verse_order += '%d ' % (line + 1)
         xml_lyrics = xml_lyrics_template % xml_verse
-        search_title = clean_string(clean_title)
-        search_lyrics = clean_string(clean_lyrics)
+        search_title = prepare_string(clean_title)
+        search_lyrics = prepare_string(clean_lyrics)
         sql_insert = u'INSERT INTO songs '\
             '(id, song_book_id, title, lyrics, verse_order, copyright, search_title, search_lyrics) '\
             'VALUES (NULL, 0, ?, ?, ?, ?, ?, ?)'
-        sql_params = (clean_title, xml_lyrics, verse_order, clean_copyright, clean_title, clean_lyrics)
+        sql_params = (clean_title, xml_lyrics, verse_order, clean_copyright, search_title, search_lyrics)
         if debug:
             print '...', display_sql(sql_insert, (sql_params[0], u'%s...' % clean_lyrics[:7], sql_params[2], sql_params[3], sql_params[4], u'%s...' % search_lyrics[:7]))
         elif verbose:

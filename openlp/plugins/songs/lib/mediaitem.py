@@ -26,7 +26,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, translate, SongXMLParser, \
+from openlp.core.lib import MediaManagerItem, SongXMLParser, \
     BaseListWithDnD, Receiver,  str_to_bool
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm
 
@@ -45,16 +45,21 @@ class SongMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.TranslationContext = u'SongPlugin'
-        self.PluginTextShort = u'Song'
+        self.PluginNameShort = u'Song'
         self.ConfigSection = u'songs'
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = SongListView
-        self.ServiceItemIconName = u':/media/song_image.png'
+        self.ServiceItemIconName = u':/media/media_song.png'
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
         self.edit_song_form = EditSongForm(self.parent.songmanager, self)
         self.song_maintenance_form = SongMaintenanceForm(
             self.parent.songmanager, self)
+        self.fromPreview = -1
+        self.fromServiceManager = -1
+
+    def initPluginNameVisible(self):
+        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -63,11 +68,11 @@ class SongMediaItem(MediaManagerItem):
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
         ## Song Maintenance Button ##
-        self.addToolbarButton(translate(u'SongMediaItem', u'Song Maintenance'),
-            translate(u'SongMediaItem',
-            u'Maintain the lists of authors, topics and books'),
+        self.addToolbarButton(self.trUtf8(u'Song Maintenance'),
+            self.trUtf8(u'Maintain the lists of authors, topics and books'),
             ':/songs/song_maintenance.png', self.onSongMaintenanceClick,
             'SongMaintenanceItem')
+        self.PageLayout.setSpacing(4)
         self.SearchLayout = QtGui.QFormLayout()
         self.SearchLayout.setMargin(0)
         self.SearchLayout.setSpacing(4)
@@ -121,21 +126,29 @@ class SongMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'load_song_list'), self.onSearchTextButtonClick)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.configUpdated)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'edit_song'), self.onEventEditSong)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'preview_song'), self.onPreviewClick)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_edit' % self.parent.name), self.onRemoteEdit)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'remote_edit_clear' ), self.onRemoteEditClear)
 
     def configUpdated(self):
         self.searchAsYouType = str_to_bool(
             self.parent.config.get_config(u'search as type', u'False'))
 
     def retranslateUi(self):
-        self.SearchTextLabel.setText(translate(u'SongMediaItem', u'Search:'))
-        self.SearchTypeLabel.setText(translate(u'SongMediaItem', u'Type:'))
-        self.ClearTextButton.setText(translate(u'SongMediaItem', u'Clear'))
-        self.SearchTextButton.setText(translate(u'SongMediaItem', u'Search'))
+        self.SearchTextLabel.setText(self.trUtf8(u'Search:'))
+        self.SearchTypeLabel.setText(self.trUtf8(u'Type:'))
+        self.ClearTextButton.setText(self.trUtf8(u'Clear'))
+        self.SearchTextButton.setText(self.trUtf8(u'Search'))
 
     def initialise(self):
-        self.SearchTypeComboBox.addItem(translate(u'SongMediaItem', u'Titles'))
-        self.SearchTypeComboBox.addItem(translate(u'SongMediaItem', u'Lyrics'))
-        self.SearchTypeComboBox.addItem(translate(u'SongMediaItem', u'Authors'))
+        self.SearchTypeComboBox.addItem(self.trUtf8(u'Titles'))
+        self.SearchTypeComboBox.addItem(self.trUtf8(u'Lyrics'))
+        self.SearchTypeComboBox.addItem(self.trUtf8(u'Authors'))
         self.configUpdated()
 
     def onSearchTextButtonClick(self):
@@ -168,19 +181,25 @@ class SongMediaItem(MediaManagerItem):
                 if author_list != u'':
                     author_list = author_list + u', '
                 author_list = author_list + author.display_name
-            song_detail = unicode(u'%s (%s)' % \
-                (unicode(song.title), unicode(author_list)))
+            song_detail = unicode(self.trUtf8(u'%s (%s)' % \
+                (unicode(song.title), unicode(author_list))))
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
             self.ListView.addItem(song_name)
+            if song.id == self.fromPreview:
+                self.ListView.setCurrentItem(song_name)
+                self.onPreviewClick()
+                self.fromPreview = -1
+            if song.id == self.fromServiceManager:
+                self.onAddClick()
 
     def displayResultsAuthor(self, searchresults):
         log.debug(u'display results Author')
         self.ListView.clear()
         for author in searchresults:
             for song in author.songs:
-                song_detail = unicode(u'%s (%s)' % \
-                    (unicode(author.display_name), unicode(song.title)))
+                song_detail = unicode(self.trUtf8(u'%s (%s)' % \
+                    (unicode(author.display_name), unicode(song.title))))
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
                 self.ListView.addItem(song_name)
@@ -218,12 +237,28 @@ class SongMediaItem(MediaManagerItem):
     def onSongMaintenanceClick(self):
         self.song_maintenance_form.exec_()
 
-    def onEditClick(self):
+    def onRemoteEditClear(self):
+        self.fromServiceManager = -1
+
+    def onRemoteEdit(self, songid):
+        valid = self.parent.songmanager.get_song(songid)
+        if valid is not None:
+            self.fromServiceManager = songid
+            self.edit_song_form.loadSong(songid)
+            self.edit_song_form.exec_()
+
+    def onEditClick(self, preview=False):
         item = self.ListView.currentItem()
         if item is not None:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            self.fromPreview = -1
+            if preview:
+                self.fromPreview = item_id
             self.edit_song_form.loadSong(item_id)
             self.edit_song_form.exec_()
+
+    def onEventEditSong (self):
+        self.onEditClick(True)
 
     def onDeleteClick(self):
         item = self.ListView.currentItem()
@@ -239,12 +274,20 @@ class SongMediaItem(MediaManagerItem):
         author_list = u''
         author_audit = []
         ccl = u''
-        item = self.ListView.currentItem()
-        if item is None:
-            return False
-        item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        if self.fromServiceManager == -1:
+            item = self.ListView.currentItem()
+            if item is None:
+                return False
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        else:
+            item_id = self.fromServiceManager
+            #if we are in preview mode do not reset the servicemanage id
+            if self.fromPreview != -1:
+                self.fromServiceManager = -1
         song = self.parent.songmanager.get_song(item_id)
         service_item.theme = song.theme_name
+        service_item.editEnabled = True
+        service_item.editId = item_id
         if song.lyrics.startswith(u'<?xml version='):
             songXML=SongXMLParser(song.lyrics)
             verseList = songXML.get_verses()
@@ -269,7 +312,7 @@ class SongMediaItem(MediaManagerItem):
         raw_footer.append(author_list)
         raw_footer.append(song.copyright )
         raw_footer.append(unicode(
-            translate(u'SongMediaItem', u'CCL Licence: ') + ccl))
+            self.trUtf8(u'CCL Licence: ') + ccl))
         service_item.raw_footer = raw_footer
         service_item.audit = [song.title, author_audit, song.copyright, song.ccli_number]
         return True
