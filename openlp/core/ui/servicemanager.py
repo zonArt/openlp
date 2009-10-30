@@ -30,7 +30,8 @@ import zipfile
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
-    ServiceType, contextMenuAction, contextMenuSeparator, Receiver, contextMenu
+    ServiceType, contextMenuAction, contextMenuSeparator, Receiver, \
+    contextMenu, str_to_bool
 
 class ServiceManagerList(QtGui.QTreeWidget):
 
@@ -128,10 +129,12 @@ class ServiceManager(QtGui.QWidget):
         self.parent = parent
         self.serviceItems = []
         self.serviceName = u''
+        #is a new service and has not been saved
         self.isNew = True
         #Indicates if remoteTriggering is active.  If it is the next addServiceItem call
         #will replace the currently selected one.
         self.remoteEditTriggered = False
+        #start with the layout
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
         self.Layout.setMargin(0)
@@ -356,6 +359,18 @@ class ServiceManager(QtGui.QWidget):
         """
         Clear the list to create a new service
         """
+        if self.parent.serviceNotSaved and \
+            str_to_bool(PluginConfig(u'General').get_config(u'prompt save oos', u'False')):
+            ret = QtGui.QMessageBox.question(None,
+                self.trUtf8(u'Save Changes to Service?'),
+                self.trUtf8(u'Your service is unsaved, do you want to save those '
+                            u'changes before creating a new one ?'),
+                QtGui.QMessageBox.StandardButtons(
+                    QtGui.QMessageBox.Cancel |
+                    QtGui.QMessageBox.Save),
+                QtGui.QMessageBox.Save)
+            if ret == QtGui.QMessageBox.Save:
+                self.onSaveService()
         self.ServiceManagerList.clear()
         self.serviceItems = []
         self.serviceName = u''

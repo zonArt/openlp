@@ -408,7 +408,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 self.theme.background_endColor = u'#ff0000'
         else:
             self.theme.background_type = u'image'
-            a=c
         self.stateChanging(self.theme)
         self.previewTheme(self.theme)
 

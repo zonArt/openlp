@@ -76,6 +76,18 @@ class GeneralTab(SettingsTab):
         self.ShowSplashCheckBox.setObjectName(u'ShowSplashCheckBox')
         self.StartupLayout.addWidget(self.ShowSplashCheckBox)
         self.GeneralLeftLayout.addWidget(self.StartupGroupBox)
+
+        self.SettingsGroupBox = QtGui.QGroupBox(self.GeneralLeftWidget)
+        self.SettingsGroupBox.setObjectName(u'SettingsGroupBox')
+        self.SettingsLayout = QtGui.QVBoxLayout(self.SettingsGroupBox)
+        self.SettingsLayout.setSpacing(8)
+        self.SettingsLayout.setMargin(8)
+        self.SettingsLayout.setObjectName(u'SettingsLayout')
+        self.SaveCheckOOSCheckBox = QtGui.QCheckBox(self.SettingsGroupBox)
+        self.SaveCheckOOSCheckBox.setObjectName(u'SaveCheckOOSCheckBox')
+        self.SettingsLayout.addWidget(self.SaveCheckOOSCheckBox)
+        self.GeneralLeftLayout.addWidget(self.SettingsGroupBox)
+
         self.GeneralLeftSpacer = QtGui.QSpacerItem(20, 40,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.GeneralLeftLayout.addItem(self.GeneralLeftSpacer)
@@ -124,6 +136,8 @@ class GeneralTab(SettingsTab):
             QtCore.SIGNAL(u'stateChanged(int)'), self.onAutoOpenCheckBoxChanged)
         QtCore.QObject.connect(self.ShowSplashCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'), self.onShowSplashCheckBoxChanged)
+        QtCore.QObject.connect(self.SaveCheckOOSCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'), self.onSaveCheckOOSCheckBox)
         QtCore.QObject.connect(self.NumberEdit,
             QtCore.SIGNAL(u'editingFinished()'), self.onNumberEditLostFocus)
         QtCore.QObject.connect(self.UsernameEdit,
@@ -138,6 +152,8 @@ class GeneralTab(SettingsTab):
         self.WarningCheckBox.setText(self.trUtf8(u'Show blank screen warning'))
         self.AutoOpenCheckBox.setText(self.trUtf8(u'Automatically open the last service'))
         self.ShowSplashCheckBox.setText(self.trUtf8(u'Show the splash screen'))
+        self.SettingsGroupBox.setTitle(self.trUtf8(u'Application Settings'))
+        self.SaveCheckOOSCheckBox.setText(self.trUtf8(u'Prompt to save Sevice before starting New'))
         self.CCLIGroupBox.setTitle(self.trUtf8(u'CCLI Details'))
         self.NumberLabel.setText(self.trUtf8(u'CCLI Number:'))
         self.UsernameLabel.setText(self.trUtf8(u'SongSelect Username:'))
@@ -154,6 +170,9 @@ class GeneralTab(SettingsTab):
 
     def onWarningCheckBoxChanged(self, value):
         self.Warning = (value == QtCore.Qt.Checked)
+
+    def onSaveCheckOOSCheckBox(self, value):
+        self.PromptSaveOOS = (value == QtCore.Qt.Checked)
 
     def onNumberEditLostFocus(self):
         self.CCLNumber = self.NumberEdit.displayText()
@@ -175,9 +194,11 @@ class GeneralTab(SettingsTab):
         self.Warning = str_to_bool(self.config.get_config(u'Blank Warning', u'False'))
         self.AutoOpen = str_to_bool(self.config.get_config(u'Auto Open', u'False'))
         self.ShowSplash = str_to_bool(self.config.get_config(u'show splash', u'True'))
+        self.PromptSaveOOS = str_to_bool(self.config.get_config(u'prompt save oos', u'False'))
         self.CCLNumber = unicode(self.config.get_config(u'CCL Number', u'XXX'))
         self.Username = unicode(self.config.get_config(u'User Name', u''))
         self.Password = unicode(self.config.get_config(u'Password', u''))
+        self.SaveCheckOOSCheckBox.setChecked(self.PromptSaveOOS)
         # Set a few things up
         self.MonitorComboBox.setCurrentIndex(self.MonitorNumber)
         self.WarningCheckBox.setChecked(self.Warning)
@@ -192,6 +213,7 @@ class GeneralTab(SettingsTab):
         self.config.set_config(u'Blank Warning', self.Warning)
         self.config.set_config(u'Auto Open', self.AutoOpen)
         self.config.set_config(u'show splash', self.ShowSplash)
+        self.config.set_config(u'prompt save oos', self.PromptSaveOOS)
         self.config.set_config(u'CCL Number', self.CCLNumber)
         self.config.set_config(u'User Name', self.Username)
         self.config.set_config(u'Password', self.Password)
