@@ -30,8 +30,8 @@ class RemoteTab(SettingsTab):
     """
     RemoteTab is the Remotes settings tab in the settings dialog.
     """
-    def __init__(self):
-        SettingsTab.__init__(self, u'Remotes', u'Remotes')
+    def __init__(self, title, section=None):
+        SettingsTab.__init__(self, title, section)
 
     def setupUi(self):
         self.setObjectName(u'RemoteTab')

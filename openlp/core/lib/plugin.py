@@ -35,7 +35,7 @@ class PluginStatus(object):
     Inactive = 1
     Disabled = 2
 
-class Plugin(object):
+class Plugin(QtCore.QObject):
     """
     Base class for openlp plugins to inherit from.
 
@@ -91,7 +91,7 @@ class Plugin(object):
     log = logging.getLogger(u'Plugin')
     log.info(u'loaded')
 
-    def __init__(self, name=None, version=None, plugin_helpers=None):
+    def __init__(self, name, version=None, plugin_helpers=None):
         """
         This is the constructor for the plugin object. This provides an easy
         way for descendent plugins to populate common data. This method *must*
@@ -110,10 +110,8 @@ class Plugin(object):
         ``plugin_helpers``
             Defaults to *None*. A list of helper objects.
         """
-        if name is not None:
-            self.name = name
-        else:
-            self.name = u'Plugin'
+        QtCore.QObject.__init__(self)
+        self.name = name
         if version is not None:
             self.version = version
         self.icon = None
@@ -129,7 +127,7 @@ class Plugin(object):
         self.settings = plugin_helpers[u'settings']
         self.mediadock = plugin_helpers[u'toolbox']
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_add_service_item'% self.name),
+            QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.process_add_service_event)
 
     def check_pre_conditions(self):

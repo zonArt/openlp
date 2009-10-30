@@ -42,17 +42,14 @@ class CustomMediaItem(MediaManagerItem):
     log.info(u'Custom Media Item loaded')
 
     def __init__(self, parent, icon, title):
-        self.TranslationContext = u'CustomPlugin'
         self.PluginNameShort = u'Custom'
-        self.ConfigSection = u'custom'
+        self.ConfigSection = title
         self.IconPath = u'custom/custom'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = CustomListView
-        self.ServiceItemIconName = u':/custom/custom_image.png'
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
-        self.parent = parent
         self.fromServiceManager = -1
 
     def addEndHeaderBar(self):
@@ -64,7 +61,7 @@ class CustomMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'load_custom_list'), self.initialise)
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
+        self.PluginNameVisible = self.trUtf8(u'Custom')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)

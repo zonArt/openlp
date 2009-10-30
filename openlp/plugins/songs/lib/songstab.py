@@ -30,8 +30,8 @@ class SongsTab(SettingsTab):
     """
     SongsTab is the Songs settings tab in the settings dialog.
     """
-    def __init__(self):
-        SettingsTab.__init__(self, u'Songs', u'Songs')
+    def __init__(self, title, section=None):
+        SettingsTab.__init__(self, title, section)
 
     def setupUi(self):
         self.setObjectName(u'SongsTab')
@@ -61,8 +61,10 @@ class SongsTab(SettingsTab):
 
     def retranslateUi(self):
         self.SongsModeGroupBox.setTitle(self.trUtf8(u'Songs Mode'))
-        self.SearchAsTypeCheckBox.setText(self.trUtf8(u'Enable search as you type:'))
-        self.SongBarActiveCheckBox.setText(self.trUtf8(u'Display Verses on Live Tool bar:'))
+        self.SearchAsTypeCheckBox.setText(
+            self.trUtf8(u'Enable search as you type:'))
+        self.SongBarActiveCheckBox.setText(
+            self.trUtf8(u'Display Verses on Live Tool bar:'))
 
     def onSearchAsTypeCheckBoxChanged(self, check_state):
         self.song_search = False
