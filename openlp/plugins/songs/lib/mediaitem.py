@@ -53,7 +53,11 @@ class SongMediaItem(MediaManagerItem):
         self.edit_song_form = EditSongForm(self.parent.songmanager, self)
         self.song_maintenance_form = SongMaintenanceForm(
             self.parent.songmanager, self)
+        #fromPreview holds the id of the item if the song editor needs to trigger a preview
+        #without closing.  It is set to -1 if this function is inactive
         self.fromPreview = -1
+        #fromServiceManager holds the id of the item if the song editor needs to trigger posting
+        #to the servicemanager without closing.  It is set to -1 if this function is inactive
         self.fromServiceManager = -1
 
     def initPluginNameVisible(self):
@@ -242,7 +246,7 @@ class SongMediaItem(MediaManagerItem):
         valid = self.parent.songmanager.get_song(songid)
         if valid is not None:
             self.fromServiceManager = songid
-            self.edit_song_form.loadSong(songid)
+            self.edit_song_form.loadSong(songid, False)
             self.edit_song_form.exec_()
 
     def onEditClick(self, preview=False):
@@ -252,7 +256,7 @@ class SongMediaItem(MediaManagerItem):
             self.fromPreview = -1
             if preview:
                 self.fromPreview = item_id
-            self.edit_song_form.loadSong(item_id)
+            self.edit_song_form.loadSong(item_id, preview)
             self.edit_song_form.exec_()
 
     def onEventEditSong (self):
@@ -286,6 +290,7 @@ class SongMediaItem(MediaManagerItem):
         service_item.theme = song.theme_name
         service_item.editEnabled = True
         service_item.editId = item_id
+        service_item.verse_order = song.verse_order
         if song.lyrics.startswith(u'<?xml version='):
             songXML=SongXMLParser(song.lyrics)
             verseList = songXML.get_verses()

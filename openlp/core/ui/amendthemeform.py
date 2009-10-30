@@ -431,7 +431,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             QtGui.QColor(self.theme.background_endColor), self).name()
         self.Color2PushButton.setStyleSheet(
             u'background-color: %s' % unicode(self.theme.background_endColor))
-
         self.previewTheme(self.theme)
     #
     #Other Tab
@@ -486,12 +485,14 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.BackgroundComboBox.setCurrentIndex(0)
         else:
             self.BackgroundComboBox.setCurrentIndex(1)
+        self.ImageLineEdit.setText(u'')
         if theme.background_type == u'solid':
             self.BackgroundTypeComboBox.setCurrentIndex(0)
         elif theme.background_type == u'gradient':
             self.BackgroundTypeComboBox.setCurrentIndex(1)
         else:
             self.BackgroundTypeComboBox.setCurrentIndex(2)
+            self.ImageLineEdit.setText(self.theme.background_filename)
         if self.theme.background_direction == u'horizontal':
             self.GradientComboBox.setCurrentIndex(0)
         elif self.theme.background_direction == u'vertical':
