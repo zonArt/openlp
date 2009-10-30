@@ -256,7 +256,6 @@ class Plugin(QtCore.QObject):
         """
         Called by plugin to replace toolbar
         """
-        # Not sure self.media_item is being set properly
         if self.media_item is not None:
             self.mediadock.insert_dock(self.media_item, self.icon, self.weight)
         if self.settings_tab is not None:

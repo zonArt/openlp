@@ -136,10 +136,6 @@ class PluginManager(object):
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
                 plugin.media_item = plugin.get_media_manager_item()
-                if plugin.media_item is not None:
-                    log.debug(u'Inserting media manager item from %s' % \
-                        plugin.name)
-                    mediadock.add_dock(plugin.media_item, plugin.icon, plugin.weight)
 
     def hook_settings_tabs(self, settingsform=None):
         """

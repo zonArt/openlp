@@ -52,6 +52,7 @@ class PresentationPlugin(Plugin):
     def initialise(self):
         log.info(u'Presentations Initialising')
         Plugin.initialise(self)
+        self.insert_toolbox_item()
 
     def finalise(self):
         log.info(u'Plugin Finalise')

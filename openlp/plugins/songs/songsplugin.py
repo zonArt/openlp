@@ -68,6 +68,7 @@ class SongsPlugin(Plugin):
         #if self.songmanager is None:
         #    self.songmanager = SongManager(self.config)
         Plugin.initialise(self)
+        self.insert_toolbox_item()
         self.ImportSongMenu.menuAction().setVisible(True)
         self.ExportSongMenu.menuAction().setVisible(True)
         self.media_item.displayResultsSong(self.songmanager.get_songs())

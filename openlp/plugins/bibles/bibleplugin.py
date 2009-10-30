@@ -49,6 +49,7 @@ class BiblePlugin(Plugin):
         if self.biblemanager is None:
             self.biblemanager = BibleManager(self.config)
         Plugin.initialise(self)
+        self.insert_toolbox_item()
         self.ImportBibleItem.setVisible(True)
         self.ExportBibleItem.setVisible(True)
 
