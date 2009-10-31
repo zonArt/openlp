@@ -108,7 +108,6 @@ class SongManager():
         except:
             log.exception(u'Could not save song to song database')
             self.session.rollback()
-            log.exception(u'Could not save song to song database')
             return False
 
     def delete_song(self, songid):

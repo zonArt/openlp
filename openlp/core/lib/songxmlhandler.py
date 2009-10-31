@@ -41,6 +41,10 @@ class SongXMLBuilder(object):
           </lyrics>
         </song>
     """
+    global log
+    log = logging.getLogger(u'SongXMLBuilder')
+    log.info(u'SongXMLBuilder Loaded')
+
     def __init__(self):
         """
         Set up the song builder.
@@ -81,6 +85,7 @@ class SongXMLBuilder(object):
         ``content``
             The actual text of the verse to be stored.
         """
+        #log.debug(u'add_verse_to_lyrics %s, %s\n%s' % (type, number, content))
         verse = self.song_xml.createElement(u'verse')
         verse.setAttribute(u'type', type)
         verse.setAttribute(u'label', number)
