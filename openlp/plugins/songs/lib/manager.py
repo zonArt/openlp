@@ -106,6 +106,7 @@ class SongManager():
             self.session.commit()
             return True
         except:
+            log.exception(u'Could not save song to song database')
             self.session.rollback()
             log.exception(u'Could not save song to song database')
             return False

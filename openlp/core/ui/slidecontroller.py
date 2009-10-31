@@ -282,6 +282,7 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.makeWidgetsInvisible(self.image_list)
             if item.name == u'Songs' and \
                 str_to_bool(self.songsconfig.get_config(u'display songbar', True)):
+                print item.verse_order
                 self.Songbar.setVisible(True)
         elif item.service_item_type == ServiceType.Image:
             #Not sensible to allow loops with 1 frame
@@ -323,6 +324,13 @@ class SlideController(QtGui.QWidget):
         self.songEdit = False
         self.displayServiceManagerItems(item, slideno)
 
+    def replaceServiceManagerItem(self, item):
+        """
+        Replacement item following a remote edit
+        """
+        if self.commandItem is not None and \
+            item.uuid == self.commandItem.uuid:
+            self.addServiceManagerItem(item, self.PreviewListWidget.currentRow())
 
     def addServiceManagerItem(self, item, slideno):
         """

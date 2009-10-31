@@ -525,7 +525,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.settingsForm.postSetUp()
 
     def versionCheck(self):
-        applicationVersion = self.generalConfig.get_config(u'Application version', u'1.9.0-595')
+        applicationVersion = self.generalConfig.get_config(u'Application version', u'1.9.0-640')
         version = check_latest_version(self.generalConfig, applicationVersion)
         if applicationVersion != version:
             version_text = unicode(self.trUtf8(u'OpenLP version %s has been updated '
