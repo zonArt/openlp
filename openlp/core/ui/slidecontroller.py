@@ -176,16 +176,16 @@ class SlideController(QtGui.QWidget):
         if isLive:
             self.Songbar = OpenLPToolbar(self)
             self.Songbar.addToolbarButton(
-                u'Bridge',  u':/media/media_time.png',
+                u'Bridge',  u':/slides/slide_close.png',
                 self.trUtf8(u'Bridge'),
                 self.onSongBarHandler)
             self.Songbar.addToolbarButton(
-                u'Chorus',  u':/media/media_time.png',
+                u'Chorus',  u':/slides/slide_close.png',
                 self.trUtf8(u'Chorus'),
                 self.onSongBarHandler)
-            for verse in range(1, 9):
+            for verse in range(1, 20):
                 self.Songbar.addToolbarButton(
-                    unicode(verse),  u':/media/media_time.png',
+                    unicode(verse),  u':/slides/slide_close.png',
                     unicode(self.trUtf8(u'Verse %s'))%verse,
                     self.onSongBarHandler)
             self.ControllerLayout.addWidget(self.Songbar)
@@ -282,6 +282,15 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.makeWidgetsInvisible(self.image_list)
             if item.name == u'Songs' and \
                 str_to_bool(self.songsconfig.get_config(u'display songbar', True)):
+                for action in self.Songbar.actions:
+                    self.Songbar.actions[action].setVisible(False)
+                verses = item.verse_order.split(u' ')
+                for verse in verses:
+                    try:
+                        self.Songbar.actions[verse].setVisible(True)
+                    except:
+                        #More than 20 verses hard luck
+                        pass
                 self.Songbar.setVisible(True)
         elif item.service_item_type == ServiceType.Image:
             #Not sensible to allow loops with 1 frame
@@ -323,6 +332,13 @@ class SlideController(QtGui.QWidget):
         self.songEdit = False
         self.displayServiceManagerItems(item, slideno)
 
+    def replaceServiceManagerItem(self, item):
+        """
+        Replacement item following a remote edit
+        """
+        if self.commandItem is not None and \
+            item.uuid == self.commandItem.uuid:
+            self.addServiceManagerItem(item, self.PreviewListWidget.currentRow())
 
     def addServiceManagerItem(self, item, slideno):
         """

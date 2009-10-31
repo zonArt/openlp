@@ -27,6 +27,7 @@ import string
 import logging
 import cPickle
 import zipfile
+import uuid
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
@@ -556,17 +557,22 @@ class ServiceManager(QtGui.QWidget):
         sitem, count = self.findServiceItem()
         item.render()
         if self.remoteEditTriggered:
+            item.uuid = self.serviceItems[sitem][u'data'].uuid
             self.serviceItems[sitem][u'data'] = item
             self.remoteEditTriggered = False
             self.repaintServiceList(sitem + 1, 0)
+            self.parent.LiveController.replaceServiceManagerItem(item)
         else:
+            item.uuid = unicode(uuid.uuid1())
             if sitem == -1:
                 self.serviceItems.append({u'data': item,
-                    u'order': len(self.serviceItems) + 1, u'expanded':True})
+                    u'order': len(self.serviceItems) + 1,
+                    u'expanded':True})
                 self.repaintServiceList(len(self.serviceItems) + 1, 0)
             else:
                 self.serviceItems.insert(sitem + 1, {u'data': item,
-                    u'order': len(self.serviceItems)+1, u'expanded':True})
+                    u'order': len(self.serviceItems)+1,
+                    u'expanded':True})
                 self.repaintServiceList(sitem + 1, 0)
         self.parent.serviceChanged(False, self.serviceName)
 

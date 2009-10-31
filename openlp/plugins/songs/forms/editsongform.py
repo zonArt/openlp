@@ -115,7 +115,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.VerseDeleteButton.setEnabled(False)
         self.AuthorRemoveButton.setEnabled(False)
         self.TopicRemoveButton.setEnabled(False)
-        self.title_change = False
 
     def loadAuthors(self):
         authors = self.songmanager.get_authors()
@@ -162,7 +161,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.VerseListWidget.clear()
         self.AuthorsListView.clear()
         self.TopicsListView.clear()
-        self.title_change = False
         self.TitleEditItem.setFocus(QtCore.Qt.OtherFocusReason)
         self.loadAuthors()
         self.loadTopics()
@@ -235,7 +233,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             topic_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
             self.TopicsListView.addItem(topic_name)
         self._validate_song()
-        self.title_change = False
         self.TitleEditItem.setFocus(QtCore.Qt.OtherFocusReason)
         #if not preview hide the preview button
         self.previewButton.setVisible(False)
@@ -378,7 +375,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def onTitleEditItemLostFocus(self):
         self.song.title = self.TitleEditItem.text()
-        self.title_change = True
 
     def onVerseOrderEditLostFocus(self):
         self.song.verse_order = self.VerseOrderEdit.text()
@@ -431,6 +427,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.search_title = unicode(self.TitleEditItem.displayText()) + \
             u'@'+ unicode(self.AlternativeEdit.displayText())
         self.song.comments = unicode(self.CommentsEdit.toPlainText())
+        self.song.verse_order = unicode(self.VerseOrderEdit.text())
         self.song.ccli_number = unicode(self.CCLNumberEdit.displayText())
         self.processLyrics()
         self.processTitle()
