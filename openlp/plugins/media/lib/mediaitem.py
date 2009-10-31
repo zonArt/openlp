@@ -57,7 +57,7 @@ class MediaMediaItem(MediaManagerItem):
     def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8(u'Media')
 
-    def reTranslateUi(self):
+    def retranslateUi(self):
         self.OnNewPrompt = self.trUtf8(u'Select Media')
 
     def requiredIcons(self):

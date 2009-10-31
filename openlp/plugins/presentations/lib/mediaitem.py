@@ -61,7 +61,7 @@ class PresentationMediaItem(MediaManagerItem):
     def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8(u'Presentation')
 
-    def reTranslateUi(self):
+    def retranslateUi(self):
         self.OnNewPrompt = self.trUtf8(u'Select Presentation(s)')
 
     def requiredIcons(self):
