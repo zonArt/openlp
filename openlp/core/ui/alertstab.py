@@ -31,7 +31,7 @@ class AlertsTab(SettingsTab):
     AlertsTab is the alerts settings tab in the settings dialog.
     """
     def __init__(self):
-        SettingsTab.__init__(self, u'Alerts', u'Alerts')
+        SettingsTab.__init__(self, u'Alerts')
         self.font_color = '#ffffff'
         self.bg_color = '#660000'
 

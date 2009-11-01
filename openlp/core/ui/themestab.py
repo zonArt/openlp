@@ -32,7 +32,7 @@ class ThemesTab(SettingsTab):
     """
     def __init__(self, parent):
         self.parent = parent
-        SettingsTab.__init__(self, u'Themes', u'Themes')
+        SettingsTab.__init__(self, u'Themes')
 
     def setupUi(self):
         self.setObjectName(u'ThemesTab')

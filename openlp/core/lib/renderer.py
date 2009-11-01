@@ -72,9 +72,11 @@ class Renderer(object):
         self._theme = theme
         self.bg_frame = None
         self.bg_image = None
+        self._bg_image_filename = None
         self.theme_name = theme.theme_name
         self._set_theme_font()
         if theme.background_type == u'image':
+            print theme.background_filename
             if theme.background_filename is not None:
                 self.set_bg_image(theme.background_filename)
 
@@ -110,8 +112,8 @@ class Renderer(object):
         painter.begin(self.bg_image)
         self.background_offsetx = (width - realwidth) / 2
         self.background_offsety = (height - realheight) / 2
-        painter.drawImage(self.background_offsetx, self.background_offsety,
-            preview)
+        painter.drawImage(self.background_offsetx,
+                self.background_offsety, preview)
         painter.end()
 
     def set_frame_dest(self, frame_width, frame_height, preview=False):

@@ -43,10 +43,10 @@ class MediaMediaItem(MediaManagerItem):
     log.info(u'Media Media Item loaded')
 
     def __init__(self, parent, icon, title):
-        self.TranslationContext = u'MediaPlugin'
         self.PluginNameShort = u'Media'
         self.IconPath = u'images/image'
         self.ConfigSection = u'media'
+        self.ConfigSection = title
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = MediaListView
@@ -56,7 +56,10 @@ class MediaMediaItem(MediaManagerItem):
         self.MainDisplay = self.parent.live_controller.parent.mainDisplay
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = self.trUtf8(self.PluginNameShort)
+        self.PluginNameVisible = self.trUtf8(u'Media')
+
+    def retranslateUi(self):
+        self.OnNewPrompt = self.trUtf8(u'Select Media')
 
     def reTranslateUI(self):
         self.OnNewPrompt = self.trUtf8(u'Select Media')
@@ -70,13 +73,10 @@ class MediaMediaItem(MediaManagerItem):
         self.hasEditIcon = False
 
     def video_get_preview(self):
-        #
         # For now cross platform is an icon.  Phonon does not support
         # individual frame access (yet?) and GStreamer is not available
         # on Windows
-        #
-        image = QtGui.QPixmap(u':/media/media_video.png').toImage()
-        return image
+        return QtGui.QPixmap(u':/media/media_video.png').toImage()
 
     def generateSlideData(self, service_item):
         items = self.ListView.selectedIndexes()

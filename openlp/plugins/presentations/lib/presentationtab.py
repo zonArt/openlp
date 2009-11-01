@@ -30,9 +30,9 @@ class PresentationTab(SettingsTab):
     """
     PresentationsTab is the Presentations settings tab in the settings dialog.
     """
-    def __init__(self, controllers):
+    def __init__(self, title, controllers, section=None):
         self.controllers = controllers
-        SettingsTab.__init__(self, u'Presentations', u'Presentations')
+        SettingsTab.__init__(self, title, section)
 
     def setupUi(self):
         self.setObjectName(u'PresentationTab')

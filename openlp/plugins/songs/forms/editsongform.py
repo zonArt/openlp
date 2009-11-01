@@ -95,9 +95,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'lostFocus()'), self.onCommentsEditLostFocus)
         QtCore.QObject.connect(self.VerseOrderEdit,
             QtCore.SIGNAL(u'lostFocus()'), self.onVerseOrderEditLostFocus)
-        previewButton = QtGui.QPushButton()
-        previewButton.setText(self.trUtf8(u'Save && Preview'))
-        self.ButtonBox.addButton(previewButton, QtGui.QDialogButtonBox.ActionRole)
+        self.previewButton = QtGui.QPushButton()
+        self.previewButton.setText(self.trUtf8(u'Save && Preview'))
+        self.ButtonBox.addButton(
+            self.previewButton, QtGui.QDialogButtonBox.ActionRole)
         QtCore.QObject.connect(self.ButtonBox,
             QtCore.SIGNAL(u'clicked(QAbstractButton*)'), self.onPreview)
         # Create other objects and forms
@@ -114,7 +115,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.VerseDeleteButton.setEnabled(False)
         self.AuthorRemoveButton.setEnabled(False)
         self.TopicRemoveButton.setEnabled(False)
-        self.title_change = False
 
     def loadAuthors(self):
         authors = self.songmanager.get_authors()
@@ -161,13 +161,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.VerseListWidget.clear()
         self.AuthorsListView.clear()
         self.TopicsListView.clear()
-        self.title_change = False
         self.TitleEditItem.setFocus(QtCore.Qt.OtherFocusReason)
         self.loadAuthors()
         self.loadTopics()
         self.loadBooks()
 
-    def loadSong(self, id):
+    def loadSong(self, id, preview):
         log.debug(u'Load Song')
         self.SongTabWidget.setCurrentIndex(0)
         self.loadAuthors()
@@ -234,8 +233,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             topic_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
             self.TopicsListView.addItem(topic_name)
         self._validate_song()
-        self.title_change = False
         self.TitleEditItem.setFocus(QtCore.Qt.OtherFocusReason)
+        #if not preview hide the preview button
+        self.previewButton.setVisible(False)
+        if preview:
+            self.previewButton.setVisible(True)
 
     def onAuthorAddButtonClicked(self):
         item = int(self.AuthorsSelectionComboItem.currentIndex())
@@ -373,7 +375,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def onTitleEditItemLostFocus(self):
         self.song.title = self.TitleEditItem.text()
-        self.title_change = True
 
     def onVerseOrderEditLostFocus(self):
         self.song.verse_order = self.VerseOrderEdit.text()
@@ -426,6 +427,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.search_title = unicode(self.TitleEditItem.displayText()) + \
             u'@'+ unicode(self.AlternativeEdit.displayText())
         self.song.comments = unicode(self.CommentsEdit.toPlainText())
+        self.song.verse_order = unicode(self.VerseOrderEdit.text())
         self.song.ccli_number = unicode(self.CCLNumberEdit.displayText())
         self.processLyrics()
         self.processTitle()
@@ -434,31 +436,34 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def processLyrics(self):
         log.debug(u'processLyrics')
-        sxml = SongXMLBuilder()
-        sxml.new_document()
-        sxml.add_lyrics_to_song()
-        count = 1
-        text = u' '
-        verse_order = u''
-        for i in range (0, self.VerseListWidget.count()):
-            sxml.add_verse_to_lyrics(u'Verse', unicode(count),
-                unicode(self.VerseListWidget.item(i).text()))
-            text = text + unicode(self.VerseListWidget.item(i).text()) + u' '
-            verse_order = verse_order + unicode(count) + u' '
-            count += 1
-        if self.song.verse_order is None:
-            self.song.verse_order = verse_order
-        text = text.replace(u'\'', u'')
-        text = text.replace(u',', u'')
-        text = text.replace(u';', u'')
-        text = text.replace(u':', u'')
-        text = text.replace(u'(', u'')
-        text = text.replace(u')', u'')
-        text = text.replace(u'{', u'')
-        text = text.replace(u'}', u'')
-        text = text.replace(u'?', u'')
-        self.song.search_lyrics = unicode(text)
-        self.song.lyrics = unicode(sxml.extract_xml())
+        try:
+            sxml = SongXMLBuilder()
+            sxml.new_document()
+            sxml.add_lyrics_to_song()
+            count = 1
+            text = u' '
+            verse_order = u''
+            for i in range (0, self.VerseListWidget.count()):
+                sxml.add_verse_to_lyrics(u'Verse', unicode(count),
+                    unicode(self.VerseListWidget.item(i).text()))
+                text = text + unicode(self.VerseListWidget.item(i).text()) + u' '
+                verse_order = verse_order + unicode(count) + u' '
+                count += 1
+            if self.song.verse_order is None:
+                self.song.verse_order = verse_order
+            text = text.replace(u'\'', u'')
+            text = text.replace(u',', u'')
+            text = text.replace(u';', u'')
+            text = text.replace(u':', u'')
+            text = text.replace(u'(', u'')
+            text = text.replace(u')', u'')
+            text = text.replace(u'{', u'')
+            text = text.replace(u'}', u'')
+            text = text.replace(u'?', u'')
+            self.song.search_lyrics = unicode(text)
+            self.song.lyrics = unicode(sxml.extract_xml())
+        except:
+            log.exception(u'Problem processing song Lyrics \n%s', sxml.dump_xml())
 
     def processTitle(self):
         log.debug(u'processTitle')
