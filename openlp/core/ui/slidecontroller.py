@@ -294,7 +294,7 @@ class SlideController(QtGui.QWidget):
                             #More than 20 verses hard luck
                             pass
                     self.Songbar.setVisible(True)
-        elif item.service_item_type == ServiceType.Image:
+        elif item.service_item_type == ServiceItemType.Image:
             #Not sensible to allow loops with 1 frame
             if len(item.frames) > 1:
                 self.Toolbar.makeWidgetsVisible(self.image_list)
@@ -444,7 +444,7 @@ class SlideController(QtGui.QWidget):
         if row > -1 and row < self.PreviewListWidget.rowCount():
             if self.commandItem.service_item_type == ServiceItemType.Command:
                 Receiver().send_message(u'%s_slide'% self.commandItem.name.lower(), [row])
-                if isLive:
+                if self.isLive:
                     QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
             else:
                 frame = self.serviceitem.frames[row][u'image']

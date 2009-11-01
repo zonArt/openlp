@@ -91,31 +91,31 @@ class MediaMediaItem(MediaManagerItem):
             #service_item.add_from_image(path, name, frame)
             print path
             print name
-            service_item.add_from_media(path, name, frame)
+            service_item.add_from_command(path, name, frame)
         return True
 
-    def onPreviewClick(self):
-        log.debug(u'Media Preview Button pressed')
-        items = self.ListView.selectedIndexes()
-        for item in items:
-            baseItem = self.ListView.item(item.row())
-            itemText = unicode(baseItem.data(QtCore.Qt.UserRole).toString())
-            print itemText
-
-    def onLiveClick(self):
-        log.debug(u'Media Live Button pressed')
-        items = self.ListView.selectedIndexes()
-        if len(items) > 0:
-            firstPass = True
-            for item in items:
-                baseItem = self.ListView.item(item.row())
-                filename = unicode(baseItem.data(QtCore.Qt.UserRole).toString())
-                if firstPass:
-                    self.MainDisplay.queueMedia(filename, firstPass)
-                    firstPass = False
-                else:
-                    self.MainDisplay.queueMedia(filename, firstPass)
-        self.MainDisplay.playMedia()
+#    def onPreviewClick(self):
+#        log.debug(u'Media Preview Button pressed')
+#        items = self.ListView.selectedIndexes()
+#        for item in items:
+#            baseItem = self.ListView.item(item.row())
+#            itemText = unicode(baseItem.data(QtCore.Qt.UserRole).toString())
+#            print itemText
+#
+#    def onLiveClick(self):
+#        log.debug(u'Media Live Button pressed')
+#        items = self.ListView.selectedIndexes()
+#        if len(items) > 0:
+#            firstPass = True
+#            for item in items:
+#                baseItem = self.ListView.item(item.row())
+#                filename = unicode(baseItem.data(QtCore.Qt.UserRole).toString())
+#                if firstPass:
+#                    self.MainDisplay.queueMedia(filename, firstPass)
+#                    firstPass = False
+#                else:
+#                    self.MainDisplay.queueMedia(filename, firstPass)
+#        self.MainDisplay.playMedia()
 
     def initialise(self):
         self.ListView.setSelectionMode(
