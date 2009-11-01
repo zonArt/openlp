@@ -94,7 +94,7 @@ create_statements = [
 )""")
 ]
 
-def clean_string(dirty):
+def prepare_string(dirty):
     return dirty_chars.sub(u'', dirty.replace(u'\r\n', ' ').replace(u'\n', ' '))
 
 def display_sql(sql, params):
@@ -193,12 +193,12 @@ def import_songs():
             xml_verse += (xml_verse_template % (line + 1, verse))
             verse_order += '%d ' % (line + 1)
         xml_lyrics = xml_lyrics_template % xml_verse
-        search_title = clean_string(clean_title)
-        search_lyrics = clean_string(clean_lyrics)
+        search_title = prepare_string(clean_title)
+        search_lyrics = prepare_string(clean_lyrics)
         sql_insert = u'INSERT INTO songs '\
             '(id, song_book_id, title, lyrics, verse_order, copyright, search_title, search_lyrics) '\
             'VALUES (NULL, 0, ?, ?, ?, ?, ?, ?)'
-        sql_params = (clean_title, xml_lyrics, verse_order, clean_copyright, clean_title, clean_lyrics)
+        sql_params = (clean_title, xml_lyrics, verse_order, clean_copyright, search_title, search_lyrics)
         if debug:
             print '...', display_sql(sql_insert, (sql_params[0], u'%s...' % clean_lyrics[:7], sql_params[2], sql_params[3], sql_params[4], u'%s...' % search_lyrics[:7]))
         elif verbose:
