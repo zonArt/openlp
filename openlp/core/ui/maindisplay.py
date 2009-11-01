@@ -252,20 +252,19 @@ class MainDisplay(DisplayLabel):
             self.firstTime = False
         else:
             self.mediaObject.enqueue(Phonon.MediaSource(file))
+        self.onMediaPlay()
 
     def onMediaPlay(self):
         self.display.hide()
         self.mediaObject.play()
         self.setVisible(True)
 
-    def onMediaStop(self):
-        self.mediaObject.stop()
-
     def onMediaPaws(self):
-        self.mediaObject.stop()
+        self.mediaObject.pause()
 
     def onMediaFinish(self):
         self.setVisible(False)
         self.mediaObject.stop()
+        self.mediaObject.clearQueue()
         self.video.close()
         self.display.show()
