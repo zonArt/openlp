@@ -62,9 +62,6 @@ class PresentationMediaItem(MediaManagerItem):
 
     def retranslateUi(self):
         self.OnNewPrompt = self.trUtf8(u'Select Presentation(s)')
-
-    def reTranslateUI(self):
-        self.OnNewPrompt = self.trUtf8(u'Select Presentation(s)')
         self.OnNewFileMasks = self.trUtf8(u'Presentations (*.ppt *.pps *.odp)')
 
     def requiredIcons(self):
