@@ -408,19 +408,20 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     log = logging.getLogger(u'MainWindow')
     log.info(u'MainWindow loaded')
 
-    def __init__(self, screens):
+    def __init__(self, screens, applicationVersion):
         """
         This constructor sets up the interface, the various managers, and the
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
         self.screenList = screens
+        self.applicationVersion = applicationVersion
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
         self.generalConfig = PluginConfig(u'General')
         self.mainDisplay = MainDisplay(self, screens)
         self.alertForm = AlertForm(self)
-        self.aboutForm = AboutForm(self)
+        self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screenList, self, self)
         # Set up the path with plugins
         pluginpath = os.path.split(os.path.abspath(__file__))[0]
@@ -525,18 +526,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.settingsForm.postSetUp()
 
     def versionCheck(self):
-        applicationVersion = self.generalConfig.get_config(u'Application version', u'1.9.0-640')
+        applicationVersion = self.applicationVersion[u'Full']
         version = check_latest_version(self.generalConfig, applicationVersion)
         if applicationVersion != version:
             version_text = unicode(self.trUtf8(u'OpenLP version %s has been updated '
-                u'to version %s\nWould you like to get it?'))
+                u'to version %s\n\nYou can obtain the latest version from http://openlp.org'))
             QtGui.QMessageBox.question(None,
                 self.trUtf8(u'OpenLP Version Updated'),
                 version_text % (applicationVersion, version),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
-            self.generalConfig.set_config(u'Application version', version)
-
 
     def getMonitorNumber(self):
         """
@@ -577,6 +576,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Show the About form
         """
+        self.aboutForm.applicationVersion = self.applicationVersion
         self.aboutForm.exec_()
 
     def onToolsAlertItemClicked(self):

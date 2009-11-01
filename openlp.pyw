@@ -71,7 +71,18 @@ class OpenLP(QtGui.QApplication):
         """
         Run the OpenLP application.
         """
-        applicationVersion = u'1.9.0'
+        #Load and store current Application Version
+        filepath = os.path.split(os.path.abspath(__file__))[0]
+        filepath = os.path.abspath(os.path.join(filepath, u'version.txt'))
+        try:
+            fversion = open(filepath, 'r')
+            for line in fversion:
+                bits = unicode(line).split(u'-')
+                applicationVersion = {u'Full':unicode(line).rstrip(),
+                    u'version':bits[0], u'build':bits[1]}
+        except:
+                applicationVersion = {u'Full':u'1.9.0-000',
+                    u'version':u'1.9.0', u'build':u'000'}
         #set the default string encoding
         try:
             sys.setappdefaultencoding(u'utf-8')
@@ -81,7 +92,7 @@ class OpenLP(QtGui.QApplication):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'process_events'), self.processEvents)
         self.setApplicationName(u'OpenLP')
-        self.setApplicationVersion(applicationVersion)
+        self.setApplicationVersion(applicationVersion[u'version'])
         if os.name == u'nt':
             self.setStyleSheet(application_stylesheet)
         show_splash = str_to_bool(ConfigHelper.get_registry().get_value(
@@ -100,7 +111,7 @@ class OpenLP(QtGui.QApplication):
             log.info(u'Screen %d found with resolution %s',
                 screen, self.desktop().availableGeometry(screen))
         # start the main app window
-        self.mainWindow = MainWindow(screens)
+        self.mainWindow = MainWindow(screens, applicationVersion)
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
