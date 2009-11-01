@@ -30,8 +30,8 @@ import zipfile
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
-    ServiceType, contextMenuAction, contextMenuSeparator, Receiver, \
-    contextMenu, str_to_bool
+    ServiceItemType, contextMenuAction, contextMenuSeparator, contextMenu, \
+    Receiver, contextMenu, str_to_bool
 
 class ServiceManagerList(QtGui.QTreeWidget):
 
@@ -443,8 +443,8 @@ class ServiceManager(QtGui.QWidget):
             for item in self.serviceItems:
                 service.append(
                     {u'serviceitem':item[u'data'].get_service_repr()})
-                if item[u'data'].service_item_type == ServiceType.Image or \
-                    item[u'data'].service_item_type == ServiceType.Command:
+                if item[u'data'].service_item_type == ServiceItemType.Image or \
+                    item[u'data'].service_item_type == ServiceItemType.Command:
                     for frame in item[u'data'].frames:
                         path_from = unicode(os.path.join(
                             item[u'data'].service_item_path, frame[u'title']))

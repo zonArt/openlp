@@ -137,7 +137,7 @@ from settingstab import SettingsTab
 from mediamanageritem import MediaManagerItem
 from xmlrootclass import XmlRootClass
 from serviceitem import ServiceItem
-from serviceitem import ServiceType
+from serviceitem import ServiceItemType
 from serviceitem import ServiceItem
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
