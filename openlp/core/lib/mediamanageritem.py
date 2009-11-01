@@ -388,7 +388,8 @@ class MediaManagerItem(QtGui.QWidget):
         if self.ServiceItemIconName is not None:
             service_item.addIcon(self.ServiceItemIconName)
         else:
-            service_item.addIcon(self.icon)
+            service_item.addIcon(
+                u':/media/media_' + self.PluginNameShort.lower() + u'.png')
         if self.generateSlideData(service_item):
             self.ListView.clearSelection()
             return service_item

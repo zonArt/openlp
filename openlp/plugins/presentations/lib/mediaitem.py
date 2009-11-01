@@ -51,7 +51,6 @@ class PresentationMediaItem(MediaManagerItem):
         self.PluginNameShort = u'Presentation'
         self.ConfigSection = title
         self.IconPath = u'presentations/presentation'
-        self.OnNewFileMasks = u'Presentations (*.ppt *.pps *.odp)'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = PresentationListView
@@ -63,6 +62,10 @@ class PresentationMediaItem(MediaManagerItem):
 
     def retranslateUi(self):
         self.OnNewPrompt = self.trUtf8(u'Select Presentation(s)')
+
+    def reTranslateUI(self):
+        self.OnNewPrompt = self.trUtf8(u'Select Presentation(s)')
+        self.OnNewFileMasks = self.trUtf8(u'Presentations (*.ppt *.pps *.odp)')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
