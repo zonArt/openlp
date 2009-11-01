@@ -101,7 +101,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             verseList = songXML.get_verses()
             for verse in verseList:
                 self.VerseListView.addItem(verse[1])
-            theme = unicode(self.customSlide.theme_name)
+            theme = self.customSlide.theme_name
             id = self.ThemeComboBox.findText(theme, QtCore.Qt.MatchExactly)
             if id == -1:
                 id = 0 # Not Found
@@ -224,9 +224,12 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
     def _validate(self):
         if len(self.TitleEdit.displayText()) == 0:
             self.TitleEdit.setFocus()
-            return False, self.trUtf8(u'You need to enter a title \n')
+            return False, self.trUtf8(u'You need to enter a title')
         # must have 1 slide
         if self.VerseListView.count() == 0:
             self.VerseTextEdit.setFocus()
-            return False, self.trUtf8(u'You need to enter a slide \n')
+            return False, self.trUtf8(u'You need to enter a slide')
+        if len(self.VerseTextEdit.toPlainText()) > 0:
+            self.VerseTextEdit.setFocus()
+            return False, self.trUtf8(u'You have unsaved data')
         return True,  u''

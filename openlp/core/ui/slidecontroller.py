@@ -284,14 +284,15 @@ class SlideController(QtGui.QWidget):
                 str_to_bool(self.songsconfig.get_config(u'display songbar', True)):
                 for action in self.Songbar.actions:
                     self.Songbar.actions[action].setVisible(False)
-                verses = item.verse_order.split(u' ')
-                for verse in verses:
-                    try:
-                        self.Songbar.actions[verse].setVisible(True)
-                    except:
-                        #More than 20 verses hard luck
-                        pass
-                self.Songbar.setVisible(True)
+                if item.verse_order is not None:
+                    verses = item.verse_order.split(u' ')
+                    for verse in verses:
+                        try:
+                            self.Songbar.actions[verse].setVisible(True)
+                        except:
+                            #More than 20 verses hard luck
+                            pass
+                    self.Songbar.setVisible(True)
         elif item.service_item_type == ServiceType.Image:
             #Not sensible to allow loops with 1 frame
             if len(item.frames) > 1:
@@ -301,7 +302,7 @@ class SlideController(QtGui.QWidget):
         """
         Allows the Preview toolbar to be customised
         """
-        if item.name == u'Songs':
+        if item.name == u'Songs' and item.fromPlugin:
             self.Toolbar.makeWidgetsVisible(self.song_list)
         else:
             self.Toolbar.makeWidgetsInvisible(self.song_list)
