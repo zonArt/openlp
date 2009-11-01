@@ -289,6 +289,7 @@ class SongMediaItem(MediaManagerItem):
         song = self.parent.songmanager.get_song(item_id)
         service_item.theme = song.theme_name
         service_item.editEnabled = True
+        service_item.fromPlugin = True
         service_item.editId = item_id
         service_item.verse_order = song.verse_order
         if song.lyrics.startswith(u'<?xml version='):

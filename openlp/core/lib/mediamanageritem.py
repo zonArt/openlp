@@ -24,6 +24,7 @@
 
 import types
 import os
+import uuid
 
 from PyQt4 import QtCore, QtGui
 
@@ -360,18 +361,23 @@ class MediaManagerItem(QtGui.QWidget):
         log.debug(self.PluginNameShort + u' Preview Requested')
         service_item = self.buildServiceItem()
         if service_item is not None:
+            service_item.fromPlugin = True
             self.parent.preview_controller.addServiceItem(service_item)
 
     def onLiveClick(self):
         log.debug(self.PluginNameShort + u' Live Requested')
         service_item = self.buildServiceItem()
         if service_item is not None:
+            service_item.fromPlugin = True
+            service_item.uuid = unicode(uuid.uuid1())
             self.parent.live_controller.addServiceItem(service_item)
 
     def onAddClick(self):
         log.debug(self.PluginNameShort + u' Add Requested')
         service_item = self.buildServiceItem()
         if service_item is not None:
+            service_item.fromPlugin = False
+            service_item.uuid = unicode(uuid.uuid1())
             self.parent.service_manager.addServiceItem(service_item)
 
     def buildServiceItem(self):

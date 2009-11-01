@@ -120,7 +120,7 @@ class Ui_customEditDialog(object):
         self.gridLayout.addLayout(self.horizontalLayout_2, 4, 0, 1, 1)
         self.buttonBox = QtGui.QDialogButtonBox(customEditDialog)
         self.buttonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+            QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Save)
         self.buttonBox.setObjectName(u'buttonBox')
         self.gridLayout.addWidget(self.buttonBox, 5, 0, 1, 1)
 

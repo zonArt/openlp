@@ -468,6 +468,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def processTitle(self):
         log.debug(u'processTitle')
         self.song.search_title = self.song.search_title.replace(u'\'', u'')
+        self.song.search_title = self.song.search_title.replace(u'\"', u'')
+        self.song.search_title = self.song.search_title.replace(u'\`', u'')
         self.song.search_title = self.song.search_title.replace(u',', u'')
         self.song.search_title = self.song.search_title.replace(u';', u'')
         self.song.search_title = self.song.search_title.replace(u':', u'')
