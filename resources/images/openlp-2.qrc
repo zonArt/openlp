@@ -27,6 +27,9 @@
     <file>slide_last.png</file>
     <file>slide_next.png</file>
     <file>slide_previous.png</file>
+    <file>media_playback_start.png</file>
+    <file>media_playback_stop.png</file>
+    <file>media_playback_pause.png</file>
   </qresource>
   <qresource prefix="icon" >
     <file>openlp-logo-16x16.png</file>

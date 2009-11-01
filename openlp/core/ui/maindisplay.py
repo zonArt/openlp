@@ -23,6 +23,7 @@
 ###############################################################################
 
 import logging
+import os
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
@@ -103,6 +104,7 @@ class MainDisplay(DisplayLabel):
         self.alertactive = False
         self.alertTab = None
         self.timer_id = 0
+        self.firstTime = True
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'live_slide_blank'), self.blankDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -111,8 +113,17 @@ class MainDisplay(DisplayLabel):
             QtCore.SIGNAL(u'presentations_start'), self.hideDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'presentations_stop'), self.showDisplay)
-        QtCore.QObject.connect(self.mediaObject, QtCore.SIGNAL(u'finished()'),
-            self.onMediaFinish)
+        QtCore.QObject.connect(self.mediaObject,
+            QtCore.SIGNAL(u'finished()'), self.onMediaFinish)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'media_start'), self.onMediaQueue)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'media_play'), self.onMediaPlay)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'media_pause'), self.onMediaPaws)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'media_stop'), self.onMediaFinish)
+
 
     def setup(self, screenNumber):
         """
@@ -233,26 +244,28 @@ class MainDisplay(DisplayLabel):
             self.killTimer(self.timer_id)
             self.timer_id = 0
 
-    def queueMedia(self, item, firstItem=True):
-        if firstItem:
-            self.mediaObject.setCurrentSource(Phonon.MediaSource(item))
-        else:
-            self.mediaObject.enqueue(Phonon.MediaSource(item))
-
-    def playMedia(self):
+    def onMediaQueue(self, message):
         self.display.close()
+        file = os.path.join(message[1], message[2])
+        if self.firstTime:
+            self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
+            self.firstTime = False
+        else:
+            self.mediaObject.enqueue(Phonon.MediaSource(file))
+
+    def onMediaPlay(self):
+        self.display.hide()
         self.mediaObject.play()
         self.setVisible(True)
 
-    def stopMedia(self):
+    def onMediaStop(self):
+        self.mediaObject.stop()
+
+    def onMediaPaws(self):
         self.mediaObject.stop()
 
     def onMediaFinish(self):
+        self.setVisible(False)
         self.mediaObject.stop()
         self.video.close()
-        self.display = QtGui.QLabel(self)
-        self.display.setScaledContents(True)
-        self.layout.insertWidget(0, self.display)
-
-    def mediaFinished(self):
-        pass
+        self.display.show()
