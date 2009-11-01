@@ -31,11 +31,12 @@ class AboutForm(QtGui.QDialog):
     The About dialog
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent, applicationVersion):
         """
         Do some initialisation stuff
         """
         QtGui.QDialog.__init__(self, parent)
+        self.applicationVersion = applicationVersion
         self.setupUi(self)
 
     def setupUi(self, AboutForm):
@@ -94,6 +95,12 @@ class AboutForm(QtGui.QDialog):
         self.License3Label.setWordWrap(True)
         self.License3Label.setObjectName(u'License3Label')
         self.LicenseTabLayout.addWidget(self.License3Label)
+        self.License4Label = QtGui.QLabel(self.LicenseTab)
+        self.License4Label.setAlignment(
+            QtCore.Qt.AlignJustify | QtCore.Qt.AlignVCenter)
+        self.License4Label.setWordWrap(True)
+        self.License4Label.setObjectName(u'License4Label')
+        self.LicenseTabLayout.addWidget(self.License4Label)
         self.LicenseSpacer = QtGui.QSpacerItem(20, 40,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.LicenseTabLayout.addItem(self.LicenseSpacer)
@@ -163,6 +170,9 @@ class AboutForm(QtGui.QDialog):
             u'but WITHOUT ANY WARRANTY; without even the implied warranty of '
             u'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU '
             u'General Public License for more details.'))
+        self.License4Label.setText(unicode(self.trUtf8(
+            u'Software version %s, Build %s')) %
+            (self.applicationVersion[u'version'], self.applicationVersion[u'build']))
         self.AboutNotebook.setTabText(
             self.AboutNotebook.indexOf(self.LicenseTab), self.trUtf8(u'License'))
         self.CreditsTextEdit.setPlainText(self.trUtf8(
@@ -190,4 +200,3 @@ class AboutForm(QtGui.QDialog):
         import webbrowser
         url = "http://www.openlp.org/en/documentation/introduction/contributing.html"
         webbrowser.open_new(url)
-
