@@ -102,6 +102,7 @@ class MainDisplay(DisplayLabel):
         self.display = QtGui.QLabel(self)
         self.display.setScaledContents(True)
         self.layout.insertWidget(0, self.display)
+        self.primary = False
         self.displayBlank = False
         self.blankFrame = None
         self.frame = None
@@ -272,19 +273,22 @@ class MainDisplay(DisplayLabel):
         self.mediaLoaded = True
         self.display.hide()
         self.mediaObject.play()
-        self.setVisible(True)
+        if self.primary:
+            self.setVisible(True)
 
     def onMediaPaws(self):
-        log.debug(u'Pause the new media')
+        log.debug(u'Media paused by user')
         self.mediaObject.pause()
 
     def onMediaStop(self):
+        log.debug(u'Media stopped by user')
         self.mediaObject.stop()
         self.display.show()
 
     def onMediaFinish(self):
-        log.debug(u'Finish playing media')
-        self.setVisible(False)
+        log.debug(u'Reached end of media playlist')
+        if self.primary:
+            self.setVisible(False)
         self.mediaObject.stop()
         self.mediaObject.clearQueue()
         self.mediaLoaded = False
