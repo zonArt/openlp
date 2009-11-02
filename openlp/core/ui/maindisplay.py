@@ -35,6 +35,10 @@ class DisplayLabel(QtGui.QWidget):
     Customised version of QTableWidget which can respond to keyboard
     events.
     """
+    global log
+    log = logging.getLogger(u'MainDisplay')
+    log.info(u'MainDisplay loaded')
+
     def __init__(self, parent=None, name=None):
         QQtGui.QWidget.__init__(self, parent)
         self.parent = parent
@@ -250,6 +254,8 @@ class MainDisplay(DisplayLabel):
             self.timer_id = 0
 
     def onMediaQueue(self, message):
+        log.debug(u'Queue new media message %s' % message)
+        self.display.close()
         file = os.path.join(message[1], message[2])
         if self.firstTime:
             self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
@@ -259,6 +265,7 @@ class MainDisplay(DisplayLabel):
         self.onMediaPlay()
 
     def onMediaPlay(self):
+        log.debug(u'Play the new media')
         if not self.mediaLoaded and not self.displayBlank:
             self.blankDisplay()
         self.firstTime = True
@@ -268,6 +275,7 @@ class MainDisplay(DisplayLabel):
         self.setVisible(True)
 
     def onMediaPaws(self):
+        log.debug(u'Pause the new media')
         self.mediaObject.pause()
 
     def onMediaStop(self):
@@ -275,6 +283,11 @@ class MainDisplay(DisplayLabel):
         self.display.show()
 
     def onMediaFinish(self):
+<<<<<<< TREE
+        log.debug(u'Finish playing media')
+        self.setVisible(False)
+=======
+>>>>>>> MERGE-SOURCE
         self.mediaObject.stop()
         self.mediaObject.clearQueue()
         self.mediaLoaded = False
