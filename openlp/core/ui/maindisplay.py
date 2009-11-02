@@ -105,6 +105,7 @@ class MainDisplay(DisplayLabel):
         self.alertTab = None
         self.timer_id = 0
         self.firstTime = True
+        self.mediaLoaded = False
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'live_slide_blank'), self.blankDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -122,7 +123,7 @@ class MainDisplay(DisplayLabel):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_pause'), self.onMediaPaws)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_stop'), self.onMediaFinish)
+            QtCore.SIGNAL(u'media_stop'), self.onMediaStop)
 
 
     def setup(self, screenNumber):
@@ -204,6 +205,10 @@ class MainDisplay(DisplayLabel):
             self.displayBlank = False
             if self.frame is not None:
                 self.frameView(self.frame)
+        if self.parent.LiveController.blackPushButton.isChecked() != \
+            self.displayBlank:
+            self.parent.LiveController.blackPushButton.setChecked(
+                self.displayBlank)
         self.parent.generalConfig.set_config(u'Screen Blank',self.displayBlank)
 
     def displayAlert(self, text=u''):
@@ -245,7 +250,6 @@ class MainDisplay(DisplayLabel):
             self.timer_id = 0
 
     def onMediaQueue(self, message):
-        self.display.close()
         file = os.path.join(message[1], message[2])
         if self.firstTime:
             self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
@@ -255,6 +259,10 @@ class MainDisplay(DisplayLabel):
         self.onMediaPlay()
 
     def onMediaPlay(self):
+        if not self.mediaLoaded and not self.displayBlank:
+            self.blankDisplay()
+        self.firstTime = True
+        self.mediaLoaded = True
         self.display.hide()
         self.mediaObject.play()
         self.setVisible(True)
@@ -262,9 +270,12 @@ class MainDisplay(DisplayLabel):
     def onMediaPaws(self):
         self.mediaObject.pause()
 
+    def onMediaStop(self):
+        self.mediaObject.stop()
+        self.display.show()
+
     def onMediaFinish(self):
-        self.setVisible(False)
         self.mediaObject.stop()
         self.mediaObject.clearQueue()
-        self.video.close()
+        self.mediaLoaded = False
         self.display.show()
