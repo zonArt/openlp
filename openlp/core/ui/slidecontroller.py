@@ -241,7 +241,7 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'activated(QModelIndex)'), self.onSlideSelected)
         if isLive:
             QtCore.QObject.connect(self.blackPushButton,
-                QtCore.SIGNAL(u'toggled(bool)'), self.onBlankScreen)
+                QtCore.SIGNAL(u'clicked(bool)'), self.onBlankScreen)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'update_spin_delay'), self.receiveSpinDelay)
             Receiver().send_message(u'request_spin_delay')
