@@ -283,11 +283,8 @@ class MainDisplay(DisplayLabel):
         self.display.show()
 
     def onMediaFinish(self):
-<<<<<<< TREE
         log.debug(u'Finish playing media')
         self.setVisible(False)
-=======
->>>>>>> MERGE-SOURCE
         self.mediaObject.stop()
         self.mediaObject.clearQueue()
         self.mediaLoaded = False
