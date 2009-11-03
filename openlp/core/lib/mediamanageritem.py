@@ -373,6 +373,10 @@ class MediaManagerItem(QtGui.QWidget):
             self.parent.live_controller.addServiceItem(service_item)
 
     def onAddClick(self):
+        if not self.ListView.SelectedIndexes():
+            QtGui.QMessageBox.Information(self,
+                self.trUtf8(u'No items selected...'),
+                self.trUTf8(u'You must select one or more items'))
         log.debug(self.PluginNameShort + u' Add Requested')
         service_item = self.buildServiceItem()
         if service_item is not None:
