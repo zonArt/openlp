@@ -96,7 +96,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def onDeleteClick(self):
         item = self.ListView.currentItem()
-        if item is not None:
+        if item:
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
             self.parent.config.set_list(

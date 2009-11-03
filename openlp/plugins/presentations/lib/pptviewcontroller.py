@@ -78,7 +78,7 @@ class PptviewController(PresentationController):
             """
             Loads the PPTVIEWLIB library
             """
-            if self.process is not None:
+            if self.process:
                 return
             log.debug(u'start PPTView')
             self.process = cdll.LoadLibrary(r'openlp\plugins\presentations\lib\pptviewlib\pptviewlib.dll')

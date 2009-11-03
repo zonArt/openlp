@@ -90,14 +90,14 @@ class CustomMediaItem(MediaManagerItem):
 
     def onRemoteEdit(self, item_id):
         valid = self.parent.custommanager.get_custom(item_id)
-        if valid is not None:
+        if valid:
             self.fromServiceManager = item_id
             self.parent.edit_custom_form.loadCustom(item_id)
             self.parent.edit_custom_form.exec_()
 
     def onEditClick(self):
         item = self.ListView.currentItem()
-        if item is not None:
+        if item:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.parent.edit_custom_form.loadCustom(item_id)
             self.parent.edit_custom_form.exec_()
@@ -105,7 +105,7 @@ class CustomMediaItem(MediaManagerItem):
 
     def onDeleteClick(self):
         item = self.ListView.currentItem()
-        if item is not None:
+        if item:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.parent.custommanager.delete_custom(item_id)
             row = self.ListView.row(item)
@@ -137,7 +137,7 @@ class CustomMediaItem(MediaManagerItem):
         for verse in verseList:
             raw_slides.append(verse[1])
         raw_footer.append(title + u' '+ credit)
-        if theme is not None:
+        if theme:
             service_item.title = title
             for slide in raw_slides:
                 service_item.add_from_text(slide[:30], slide)

@@ -68,7 +68,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
 
     def _getCurrentItemId(self, ListWidget):
         item = ListWidget.currentItem()
-        if item is not None:
+        if item:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             return item_id
         else:
@@ -79,9 +79,10 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         item_id = self._getCurrentItemId(list_widget)
         if item_id != -1:
             item = get_func(item_id)
-            if item is not None and len(item.songs) == 0:
+            if item and len(item.songs) == 0:
                 if QtGui.QMessageBox.warning(self, dlg_title, del_text,
-                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)
+                        QtGui.QMessageBox.StandardButtons(
+                            QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)
                         ) == QtGui.QMessageBox.Yes:
                     del_func(item.id)
                     reset_func()
@@ -96,7 +97,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self.AuthorsListWidget.clear()
         authors = self.songmanager.get_authors()
         for author in authors:
-            if author.display_name is not None and author.display_name != u'':
+            if author.display_name:
                 author_name = QtGui.QListWidgetItem(author.display_name)
             else:
                 author_name = QtGui.QListWidgetItem(
