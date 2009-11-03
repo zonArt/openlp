@@ -323,7 +323,7 @@ class SlideController(QtGui.QWidget):
         """
         Allows the Preview toolbar to be customised
         """
-        if item.name == u'Songs' and item.fromPlugin:
+        if (item.name == u'Songs' or item.name == u'Custom') and item.fromPlugin:
             self.Toolbar.makeWidgetsVisible(self.song_list)
         else:
             self.Toolbar.makeWidgetsInvisible(self.song_list)
@@ -561,7 +561,8 @@ class SlideController(QtGui.QWidget):
 
     def onEditSong(self):
         self.songEdit = True
-        Receiver().send_message(u'edit_song')
+        Receiver().send_message(u'%s_edit' % self.commandItem.name, u'P:%s' %
+            self.commandItem.editId )
 
     def onGoLive(self):
         """

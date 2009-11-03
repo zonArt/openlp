@@ -53,12 +53,10 @@ class SongMediaItem(MediaManagerItem):
         self.edit_song_form = EditSongForm(self.parent.songmanager, self)
         self.song_maintenance_form = SongMaintenanceForm(
             self.parent.songmanager, self)
-        #fromPreview holds the id of the item if the song editor needs to trigger a preview
-        #without closing.  It is set to -1 if this function is inactive
-        self.fromPreview = -1
-        #fromServiceManager holds the id of the item if the song editor needs to trigger posting
-        #to the servicemanager without closing.  It is set to -1 if this function is inactive
-        self.fromServiceManager = -1
+        #Holds information about whether the edit is remotly triggered and which
+        #Song is required.
+        self.remoteTriggered = None
+        self.remoteSong = -1
 
     def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8(u'Song')
@@ -129,8 +127,6 @@ class SongMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.configUpdated)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'edit_song'), self.onEventEditSong)
-        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'preview_song'), self.onPreviewClick)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_edit' % self.parent.name), self.onRemoteEdit)
@@ -172,6 +168,14 @@ class SongMediaItem(MediaManagerItem):
             search_results = self.parent.songmanager.get_song_from_author(
                 search_keywords)
             self.displayResultsAuthor(search_results)
+        #Called to redisplay the song list screen edith from a search
+        #or from the exit of the Song edit dialog.  If remote editing is active
+        #Trigger it and clean up so it will not update again.
+        if self.remoteTriggered == u'L':
+            self.onAddClick()
+        if self.remoteTriggered == u'P':
+            self.onPreviewClick()
+        self.onRemoteEditClear()
 
     def displayResultsSong(self, searchresults):
         log.debug(u'display results Song')
@@ -188,12 +192,6 @@ class SongMediaItem(MediaManagerItem):
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
             self.ListView.addItem(song_name)
-            if song.id == self.fromPreview:
-                self.ListView.setCurrentItem(song_name)
-                self.onPreviewClick()
-                self.fromPreview = -1
-            if song.id == self.fromServiceManager:
-                self.onAddClick()
 
     def displayResultsAuthor(self, searchresults):
         log.debug(u'display results Author')
@@ -213,6 +211,11 @@ class SongMediaItem(MediaManagerItem):
         self.SearchTextEdit.clear()
 
     def onSearchTextEditChanged(self, text):
+        """
+        If search as type enabled invoke the search on each key press.
+        If the Lyrics are being searched do not start till 7 characters
+        have been entered.
+        """
         if self.searchAsYouType:
             search_length = 1
             if self.SearchTypeComboBox.currentIndex() == 1:
@@ -240,27 +243,29 @@ class SongMediaItem(MediaManagerItem):
         self.song_maintenance_form.exec_()
 
     def onRemoteEditClear(self):
-        self.fromServiceManager = -1
+        self.remoteTriggered = None
+        self.remoteSong = -1
 
     def onRemoteEdit(self, songid):
-        valid = self.parent.songmanager.get_song(songid)
+        """
+        Called by ServiceManager or SlideController by event passing
+        the Song Id in the payload along with an indicator to say which
+        type of display is required.
+        """
+        fields = songid.split(u':')
+        valid = self.parent.songmanager.get_song(fields[1])
         if valid is not None:
-            self.fromServiceManager = songid
-            self.edit_song_form.loadSong(songid, False)
+            self.remoteSong = fields[1]
+            self.remoteTriggered = fields[0]
+            self.edit_song_form.loadSong(fields[1], (fields[0] == u'P'))
             self.edit_song_form.exec_()
 
     def onEditClick(self, preview=False):
         item = self.ListView.currentItem()
         if item is not None:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.fromPreview = -1
-            if preview:
-                self.fromPreview = item_id
-            self.edit_song_form.loadSong(item_id, preview)
+            self.edit_song_form.loadSong(item_id, False)
             self.edit_song_form.exec_()
-
-    def onEventEditSong (self):
-        self.onEditClick(True)
 
     def onDeleteClick(self):
         item = self.ListView.currentItem()
@@ -271,21 +276,17 @@ class SongMediaItem(MediaManagerItem):
             self.ListView.takeItem(row)
 
     def generateSlideData(self, service_item):
-        #raw_slides =[]
         raw_footer = []
         author_list = u''
         author_audit = []
         ccl = u''
-        if self.fromServiceManager == -1:
+        if self.remoteTriggered is None:
             item = self.ListView.currentItem()
             if item is None:
                 return False
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         else:
-            item_id = self.fromServiceManager
-            #if we are in preview mode do not reset the servicemanage id
-            if self.fromPreview != -1:
-                self.fromServiceManager = -1
+            item_id = self.remoteSong
         song = self.parent.songmanager.get_song(item_id)
         service_item.theme = song.theme_name
         service_item.editEnabled = True
