@@ -76,7 +76,6 @@ class Renderer(object):
         self.theme_name = theme.theme_name
         self._set_theme_font()
         if theme.background_type == u'image':
-            print theme.background_filename
             if theme.background_filename is not None:
                 self.set_bg_image(theme.background_filename)
 

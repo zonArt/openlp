@@ -358,6 +358,10 @@ class MediaManagerItem(QtGui.QWidget):
             u'to be defined by the plugin')
 
     def onPreviewClick(self):
+        if not self.ListView.selectedIndexes():
+            QtGui.QMessageBox.information(self,
+                self.trUtf8(u'No items selected...'),
+                self.trUtf8(u'You must select one or more items'))
         log.debug(self.PluginNameShort + u' Preview Requested')
         service_item = self.buildServiceItem()
         if service_item is not None:
@@ -365,6 +369,10 @@ class MediaManagerItem(QtGui.QWidget):
             self.parent.preview_controller.addServiceItem(service_item)
 
     def onLiveClick(self):
+        if not self.ListView.selectedIndexes():
+            QtGui.QMessageBox.information(self,
+                self.trUtf8(u'No items selected...'),
+                self.trUtf8(u'You must select one or more items'))
         log.debug(self.PluginNameShort + u' Live Requested')
         service_item = self.buildServiceItem()
         if service_item is not None:
@@ -373,6 +381,10 @@ class MediaManagerItem(QtGui.QWidget):
             self.parent.live_controller.addServiceItem(service_item)
 
     def onAddClick(self):
+        if not self.ListView.selectedIndexes():
+            QtGui.QMessageBox.information(self,
+                self.trUtf8(u'No items selected...'),
+                self.trUtf8(u'You must select one or more items'))
         log.debug(self.PluginNameShort + u' Add Requested')
         service_item = self.buildServiceItem()
         if service_item is not None:

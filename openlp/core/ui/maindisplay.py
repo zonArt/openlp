@@ -94,15 +94,15 @@ class MainDisplay(DisplayLabel):
         self.layout.setObjectName(u'layout')
         self.mediaObject = Phonon.MediaObject(self)
         self.video = Phonon.VideoWidget()
+        self.video.setVisible(False)
         self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
-        self.video.setFullScreen(True)
         Phonon.createPath(self.mediaObject, self.video)
         Phonon.createPath(self.mediaObject, self.audio)
         self.layout.insertWidget(0, self.video)
         self.display = QtGui.QLabel(self)
         self.display.setScaledContents(True)
         self.layout.insertWidget(0, self.display)
-        self.primary = False
+        self.primary = True
         self.displayBlank = False
         self.blankFrame = None
         self.frame = None
@@ -272,6 +272,7 @@ class MainDisplay(DisplayLabel):
         self.firstTime = True
         self.mediaLoaded = True
         self.display.hide()
+        self.video.setFullScreen(True)
         self.mediaObject.play()
         if self.primary:
             self.setVisible(True)
@@ -292,4 +293,5 @@ class MainDisplay(DisplayLabel):
         self.mediaObject.stop()
         self.mediaObject.clearQueue()
         self.mediaLoaded = False
+        self.video.setVisible(False)
         self.display.show()
