@@ -99,17 +99,6 @@ class ServiceManagerList(QtGui.QTreeWidget):
         mimeData.setText(u'ServiceManager')
         dropAction = drag.start(QtCore.Qt.CopyAction)
 
-class Iter(QtGui.QTreeWidgetItemIterator):
-    def __init__(self, *args):
-        QtGui.QTreeWidgetItemIterator.__init__(self, *args)
-
-    def next(self):
-        self.__iadd__(1)
-        value = self.value()
-        if value:
-            return self.value()
-        else:
-            return None
 
 class ServiceManager(QtGui.QWidget):
     """
@@ -248,23 +237,22 @@ class ServiceManager(QtGui.QWidget):
         Moves the selection up the window
         Called by the up arrow
         """
-        it = Iter(self.ServiceManagerList)
-        item = it.value()
+        serviceIterator = QTreeWidgetItemIterator(self.ServiceManagerList)
         tempItem = None
         setLastItem = False
-        while item is not None:
-            if item.isSelected() and tempItem is None:
+        while serviceIterator:
+            if serviceIterator.isSelected() and tempItem is None:
                 setLastItem = True
-                item.setSelected(False)
-            if item.isSelected():
+                serviceIterator.setSelected(False)
+            if serviceIterator.isSelected():
                 #We are on the first record
                 if tempItem is not None:
                     tempItem.setSelected(True)
-                    item.setSelected(False)
+                    serviceIterator.setSelected(False)
             else:
-                tempItem = item
-            lastItem = item
-            item = it.next()
+                tempItem = serviceIterator
+            lastItem = serviceIterator
+            ++serviceIterator
         #Top Item was selected so set the last one
         if setLastItem:
             lastItem.setSelected(True)
@@ -274,18 +262,17 @@ class ServiceManager(QtGui.QWidget):
         Moves the selection down the window
         Called by the down arrow
         """
-        it = Iter(self.ServiceManagerList)
-        item = it.value()
-        firstItem = item
+        serviceIterator = QTreeWidgetItemIterator(self.ServiceManagerList)
+        firstItem = serviceIterator
         setSelected = False
-        while item is not None:
+        while serviceIterator:
             if setSelected:
                 setSelected = False
-                item.setSelected(True)
-            elif item.isSelected():
-                item.setSelected(False)
+                serviceIterator.setSelected(True)
+            elif serviceIterator.isSelected():
+                serviceIterator.setSelected(False)
                 setSelected = True
-            item = it.next()
+            ++serviceIterator
         if setSelected:
             firstItem.setSelected(True)
 
