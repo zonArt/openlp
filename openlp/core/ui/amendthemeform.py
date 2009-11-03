@@ -545,12 +545,12 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.FontFooterColorPushButton.setStyleSheet(
             u'background-color: %s' % unicode(theme.font_footer_color))
 
-        if self.theme.font_main_override == False:
+        if not self.theme.font_main_override:
             self.FontMainDefaultCheckBox.setChecked(True)
         else:
             self.FontMainDefaultCheckBox.setChecked(False)
 
-        if self.theme.font_footer_override == False:
+        if not self.theme.font_footer_override:
             self.FontFooterDefaultCheckBox.setChecked(True)
         else:
             self.FontFooterDefaultCheckBox.setChecked(False)
@@ -635,7 +635,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 self.GradientLabel.setVisible(False)
                 self.GradientComboBox.setVisible(False)
 
-        if theme.font_main_override == False:
+        if not theme.font_main_override:
             self.FontMainXSpinBox.setEnabled(False)
             self.FontMainYSpinBox.setEnabled(False)
             self.FontMainWidthSpinBox.setEnabled(False)
@@ -646,7 +646,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.FontMainWidthSpinBox.setEnabled(True)
             self.FontMainHeightSpinBox.setEnabled(True)
 
-        if theme.font_footer_override == False:
+        if not theme.font_footer_override:
             self.FontFooterXSpinBox.setEnabled(False)
             self.FontFooterYSpinBox.setEnabled(False)
             self.FontFooterWidthSpinBox.setEnabled(False)

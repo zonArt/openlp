@@ -164,14 +164,14 @@ class RenderManager(object):
         log.debug(u'build_text_rectangle')
         main_rect = None
         footer_rect = None
-        if theme.font_main_override == False:
+        if not theme.font_main_override:
             main_rect = QtCore.QRect(10, 0, self.width - 1,
                 self.footer_start - 20)
         else:
             main_rect = QtCore.QRect(int(theme.font_main_x),
                 int(theme.font_main_y), int(theme.font_main_width)-1,
                 int(theme.font_main_height) - 1)
-        if theme.font_footer_override == False:
+        if not theme.font_footer_override:
             footer_rect = QtCore.QRect(10,self.footer_start, self.width - 1,
                 self.height-self.footer_start)
         else:

@@ -128,7 +128,7 @@ class Renderer(object):
         ``preview``
             Defaults to *False*. Whether or not to generate a preview.
         """
-        if preview == True:
+        if preview:
             self.bg_frame = None
         log.debug(u'set frame dest (frame) w %d h %d', frame_width,
             frame_height)

@@ -275,7 +275,7 @@ class ThemeManager(QtGui.QWidget):
 
     def checkThemesExists(self, dir):
         log.debug(u'check themes')
-        if os.path.exists(dir) == False:
+        if not os.path.exists(dir):
             os.mkdir(dir)
 
     def unzipTheme(self, filename, dir):
@@ -299,7 +299,7 @@ class ThemeManager(QtGui.QWidget):
         for file in zip.namelist():
             if file.endswith(os.path.sep):
                 theme_dir = os.path.join(dir, file)
-                if os.path.exists(theme_dir) == False:
+                if not os.path.exists(theme_dir):
                     os.mkdir(os.path.join(dir, file))
             else:
                 fullpath = os.path.join(dir, file)
@@ -386,7 +386,7 @@ class ThemeManager(QtGui.QWidget):
         """
         log.debug(u'saveTheme %s %s', name, theme_xml)
         theme_dir = os.path.join(self.path, name)
-        if os.path.exists(theme_dir) == False:
+        if not os.path.exists(theme_dir):
             os.mkdir(os.path.join(self.path, name))
         theme_file = os.path.join(theme_dir, name + u'.xml')
         log.debug(theme_file)

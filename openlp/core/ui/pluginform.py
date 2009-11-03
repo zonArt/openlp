@@ -107,7 +107,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             self._clearDetails()
 
     def onStatusComboBoxChanged(self, status):
-        if self.programaticChange is True:
+        if self.programaticChange:
             self.programaticChange = False
             return
         self.activePlugin.toggle_status(status)
