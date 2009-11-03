@@ -208,7 +208,7 @@ class MainDisplay(DisplayLabel):
             self.display.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
         else:
             self.displayBlank = False
-            if self.frame is not None:
+            if self.frame:
                 self.frameView(self.frame)
         if self.parent.LiveController.blackPushButton.isChecked() != \
             self.displayBlank:

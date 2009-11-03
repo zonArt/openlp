@@ -246,7 +246,7 @@ class ServiceManager(QtGui.QWidget):
                 serviceIterator.setSelected(False)
             if serviceIterator.isSelected():
                 #We are on the first record
-                if tempItem is not None:
+                if tempItem:
                     tempItem.setSelected(True)
                     serviceIterator.setSelected(False)
             else:

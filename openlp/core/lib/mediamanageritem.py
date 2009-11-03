@@ -110,7 +110,7 @@ class MediaManagerItem(QtGui.QWidget):
                 QtGui.QIcon.Normal, QtGui.QIcon.Off)
         else:
             self.icon = None
-        if title is not None:
+        if title:
             self.title = title
         self.Toolbar = None
         self.ServiceItemIconName = None
@@ -364,7 +364,7 @@ class MediaManagerItem(QtGui.QWidget):
                 self.trUtf8(u'You must select one or more items'))
         log.debug(self.PluginNameShort + u' Preview Requested')
         service_item = self.buildServiceItem()
-        if service_item is not None:
+        if service_item:
             service_item.fromPlugin = True
             self.parent.preview_controller.addServiceItem(service_item)
 
@@ -375,7 +375,7 @@ class MediaManagerItem(QtGui.QWidget):
                 self.trUtf8(u'You must select one or more items'))
         log.debug(self.PluginNameShort + u' Live Requested')
         service_item = self.buildServiceItem()
-        if service_item is not None:
+        if service_item:
             service_item.fromPlugin = True
             service_item.uuid = unicode(uuid.uuid1())
             self.parent.live_controller.addServiceItem(service_item)
@@ -387,7 +387,7 @@ class MediaManagerItem(QtGui.QWidget):
                 self.trUtf8(u'You must select one or more items'))
         log.debug(self.PluginNameShort + u' Add Requested')
         service_item = self.buildServiceItem()
-        if service_item is not None:
+        if service_item:
             service_item.fromPlugin = False
             service_item.uuid = unicode(uuid.uuid1())
             self.parent.service_manager.addServiceItem(service_item)
@@ -397,7 +397,7 @@ class MediaManagerItem(QtGui.QWidget):
         Common method for generating a service item
         """
         service_item = ServiceItem(self.parent)
-        if self.ServiceItemIconName is not None:
+        if self.ServiceItemIconName:
             service_item.addIcon(self.ServiceItemIconName)
         else:
             service_item.addIcon(

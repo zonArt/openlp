@@ -68,12 +68,12 @@ class OpenLPToolbar(QtGui.QToolBar):
             The name of the object, as used in `<button>.setObjectName()`.
         """
         ButtonIcon = buildIcon(icon)
-        if ButtonIcon is not None:
-            if slot is not None:
+        if ButtonIcon:
+            if slot:
                 ToolbarButton = self.addAction(ButtonIcon, title, slot)
             else:
                 ToolbarButton = self.addAction(ButtonIcon, title)
-            if tooltip is not None:
+            if tooltip:
                 ToolbarButton.setToolTip(tooltip)
             self.icons[title] = ButtonIcon
             self.actions[title] = ToolbarButton

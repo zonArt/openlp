@@ -71,7 +71,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
                 status_text = 'Disabled'
             item.setText(u'%s (%s)' % (plugin.name, status_text))
             # If the plugin has an icon, set it!
-            if plugin.icon is not None:
+            if plugin.icon:
                 item.setIcon(plugin.icon)
             self.PluginListWidget.addItem(item)
 
@@ -101,7 +101,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             if plugin.name == plugin_name:
                 self.activePlugin = plugin
                 break
-        if self.activePlugin is not None:
+        if self.activePlugin:
             self._setDetails()
         else:
             self._clearDetails()

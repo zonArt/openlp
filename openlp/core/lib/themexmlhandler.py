@@ -91,7 +91,7 @@ class ThemeXML(object):
         ``path``
             The path name to be added.
         """
-        if self.background_filename is not None and path is not None:
+        if self.background_filename and path:
             self.theme_name = self.theme_name.rstrip().lstrip()
             self.background_filename = self.background_filename.rstrip().lstrip()
             self.background_filename = os.path.join(path, self.theme_name,
@@ -371,7 +371,7 @@ class ThemeXML(object):
                         else:
                             setattr(self, field, e[1])
             else:
-                if element.tag is not None:
+                if element.tag:
                     field = master + element.tag
                     if element.text == u'True' or element.text == u'False':
                         setattr(self, field, str_to_bool(element.text))

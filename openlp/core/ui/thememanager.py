@@ -148,17 +148,18 @@ class ThemeManager(QtGui.QWidget):
 
     def onEditTheme(self):
         item = self.ThemeListWidget.currentItem()
-        if item is not None:
+        if item:
             self.amendThemeForm.loadTheme(
                 unicode(item.data(QtCore.Qt.UserRole).toString()))
-            self.saveThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
+            self.saveThemeName = unicode(
+                item.data(QtCore.Qt.UserRole).toString())
             self.amendThemeForm.exec_()
 
     def onDeleteTheme(self):
         self.global_theme = unicode(
             self.config.get_config(u'theme global theme', u''))
         item = self.ThemeListWidget.currentItem()
-        if item is not None:
+        if item:
             theme = unicode(item.text())
             # should be the same unless default
             if theme != unicode(item.data(QtCore.Qt.UserRole).toString()):
@@ -406,7 +407,7 @@ class ThemeManager(QtGui.QWidget):
             outfile = open(theme_file, u'w')
             outfile.write(theme_pretty_xml)
             outfile.close()
-            if image_from is not None and image_from != image_to:
+            if image_from and image_from != image_to:
                 print "if", image_from
                 print "it", image_to
                 shutil.copyfile(image_from, image_to)

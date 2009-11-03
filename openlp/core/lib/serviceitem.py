@@ -57,7 +57,7 @@ class ServiceItem(object):
             The plugin that this service item belongs to.
         """
         self.plugin = hostplugin
-        if hostplugin is not None:
+        if hostplugin:
             self.RenderManager = self.plugin.render_manager
             self.shortname = hostplugin.name
             self.name = self.plugin.name
