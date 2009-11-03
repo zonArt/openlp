@@ -50,9 +50,9 @@ class MediaMediaItem(MediaManagerItem):
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = MediaListView
-        self.ServiceItemIconName = u':/media/media_video.png'
         self.PreviewFunction = self.video_get_preview
         MediaManagerItem.__init__(self, parent, icon, title)
+        self.ServiceItemIconName = u':/media/media_video.png'
         self.MainDisplay = self.parent.live_controller.parent.mainDisplay
 
     def initPluginNameVisible(self):
