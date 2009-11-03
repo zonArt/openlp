@@ -160,9 +160,11 @@ class ImageMediaItem(MediaManagerItem):
 
     def onPreviewClick(self):
         if self.overrideActive:
+            if not self.ListView.selectedIndexes():
+                QtGui.QMessageBox.information(self,
+                    self.trUtf8(u'No items selected...'),
+                    self.trUtf8(u'You must select one or more items'))
             items = self.ListView.selectedIndexes()
-            if len(items) == 0:
-                return False
             for item in items:
                 bitem = self.ListView.item(item.row())
                 filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
