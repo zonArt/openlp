@@ -78,17 +78,25 @@ class ThemeManager(QtGui.QWidget):
         self.ThemeListWidget.addAction(
             contextMenuAction(self.ThemeListWidget, u':/themes/theme_edit.png',
             self.trUtf8(u'Edit a theme'), self.onEditTheme))
-        self.ThemeListWidget.addAction(contextMenuSeparator(self.ThemeListWidget))
         self.ThemeListWidget.addAction(
-            contextMenuAction(self.ThemeListWidget, u':/themes/theme_delete.png',
-            self.trUtf8(u'Delete theme'), self.onDeleteTheme))
+            contextMenuSeparator(self.ThemeListWidget))
         self.ThemeListWidget.addAction(
-            contextMenuAction(self.ThemeListWidget, u':/themes/theme_export.png',
-            self.trUtf8(u'Make Global'), self.changeGlobalFromScreen))
+            contextMenuAction(self.ThemeListWidget,
+                u':/themes/theme_delete.png',
+                self.trUtf8(u'Delete theme'),
+            self.onDeleteTheme))
         self.ThemeListWidget.addAction(
-            contextMenuAction(self.ThemeListWidget, u':/themes/theme_export.png',
-            self.trUtf8(u'Export theme'), self.onExportTheme))
-        self.ThemeListWidget.addAction(contextMenuSeparator(self.ThemeListWidget))
+            contextMenuAction(self.ThemeListWidget,
+                u':/themes/theme_export.png',
+                self.trUtf8(u'Make Global'),
+            self.changeGlobalFromScreen))
+        self.ThemeListWidget.addAction(
+            contextMenuAction(self.ThemeListWidget,
+                u':/themes/theme_export.png',
+                self.trUtf8(u'Export theme'),
+            self.onExportTheme))
+        self.ThemeListWidget.addAction(
+            contextMenuSeparator(self.ThemeListWidget))
         #Signals
         QtCore.QObject.connect(self.ThemeListWidget,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
@@ -472,7 +480,7 @@ class ThemeManager(QtGui.QWidget):
         #theme.display_outline_color
         theme.display_shadow = str_to_bool(theme.display_shadow)
         #theme.display_shadow_color
-        theme.display_verticalAlign = theme.display_verticalAlign.strip()
+        theme.display_verticalAlign = int(theme.display_verticalAlign.strip())
         theme.display_wrapStyle = theme.display_wrapStyle.strip()
         theme.font_footer_color = theme.font_footer_color.strip()
         theme.font_footer_height = theme.font_footer_height.strip()
