@@ -461,6 +461,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             text = text.replace(u'}', u'')
             text = text.replace(u'?', u'')
             self.song.search_lyrics = unicode(text)
+            print type(sxml.extract_xml())
+            print type(unicode(sxml.extract_xml()))
             self.song.lyrics = unicode(sxml.extract_xml())
         except:
             log.exception(u'Problem processing song Lyrics \n%s', sxml.dump_xml())
