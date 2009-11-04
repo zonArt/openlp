@@ -24,7 +24,6 @@
 
 import types
 import os
-import uuid
 
 from PyQt4 import QtCore, QtGui
 
@@ -113,6 +112,7 @@ class MediaManagerItem(QtGui.QWidget):
         if title is not None:
             self.title = title
         self.Toolbar = None
+        self.remoteTriggered = None
         self.ServiceItemIconName = None
         self.PageLayout = QtGui.QVBoxLayout(self)
         self.PageLayout.setSpacing(0)
@@ -358,13 +358,13 @@ class MediaManagerItem(QtGui.QWidget):
             u'to be defined by the plugin')
 
     def onPreviewClick(self):
-        if not self.ListView.selectedIndexes():
+        if not self.ListView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self,
                 self.trUtf8(u'No items selected...'),
                 self.trUtf8(u'You must select one or more items'))
         log.debug(self.PluginNameShort + u' Preview Requested')
         service_item = self.buildServiceItem()
-        if service_item is not None:
+        if service_item:
             service_item.fromPlugin = True
             self.parent.preview_controller.addServiceItem(service_item)
 
@@ -375,21 +375,20 @@ class MediaManagerItem(QtGui.QWidget):
                 self.trUtf8(u'You must select one or more items'))
         log.debug(self.PluginNameShort + u' Live Requested')
         service_item = self.buildServiceItem()
-        if service_item is not None:
+        if service_item:
             service_item.fromPlugin = True
             service_item.uuid = unicode(uuid.uuid1())
             self.parent.live_controller.addServiceItem(service_item)
 
     def onAddClick(self):
-        if not self.ListView.selectedIndexes():
+        if not self.ListView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self,
                 self.trUtf8(u'No items selected...'),
                 self.trUtf8(u'You must select one or more items'))
         log.debug(self.PluginNameShort + u' Add Requested')
         service_item = self.buildServiceItem()
-        if service_item is not None:
+        if service_item:
             service_item.fromPlugin = False
-            service_item.uuid = unicode(uuid.uuid1())
             self.parent.service_manager.addServiceItem(service_item)
 
     def buildServiceItem(self):
@@ -397,7 +396,7 @@ class MediaManagerItem(QtGui.QWidget):
         Common method for generating a service item
         """
         service_item = ServiceItem(self.parent)
-        if self.ServiceItemIconName is not None:
+        if self.ServiceItemIconName:
             service_item.addIcon(self.ServiceItemIconName)
         else:
             service_item.addIcon(
