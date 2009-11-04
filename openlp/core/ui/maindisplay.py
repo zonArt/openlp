@@ -136,7 +136,8 @@ class MainDisplay(DisplayLabel):
         Sets up the screen on a particular screen.
         @param (integer) screen This is the screen number.
         """
-        log.debug(u'Setup %s for %s ' %(self.screens, screenNumber) )
+        log.debug(u'Setup %s for %s ' %(self.screens, screenNumber))
+        self.setVisible(False)
         screen = self.screens[screenNumber]
         if screen[u'number'] != screenNumber:
             # We will most probably never actually hit this bit, but just in
@@ -154,19 +155,18 @@ class MainDisplay(DisplayLabel):
             self.setVisible(False)
             self.primary = True
         #Build a custom splash screen
-        if str_to_bool(self.parent.generalConfig.get_config(u'show splash', u'True')):
-            self.InitialFrame = QtGui.QImage(
-                screen[u'size'].width(), screen[u'size'].height(),
-                QtGui.QImage.Format_ARGB32_Premultiplied)
-            splash_image = QtGui.QImage(u':/graphics/openlp-splash-screen.png')
-            painter_image = QtGui.QPainter()
-            painter_image.begin(self.InitialFrame)
-            painter_image.fillRect(self.InitialFrame.rect(), QtCore.Qt.white)
-            painter_image.drawImage(
-                (screen[u'size'].width() - splash_image.width()) / 2,
-                (screen[u'size'].height() - splash_image.height()) / 2,
-                splash_image)
-            self.frameView(self.InitialFrame)
+        self.InitialFrame = QtGui.QImage(
+            screen[u'size'].width(), screen[u'size'].height(),
+            QtGui.QImage.Format_ARGB32_Premultiplied)
+        splash_image = QtGui.QImage(u':/graphics/openlp-splash-screen.png')
+        painter_image = QtGui.QPainter()
+        painter_image.begin(self.InitialFrame)
+        painter_image.fillRect(self.InitialFrame.rect(), QtCore.Qt.white)
+        painter_image.drawImage(
+            (screen[u'size'].width() - splash_image.width()) / 2,
+            (screen[u'size'].height() - splash_image.height()) / 2,
+            splash_image)
+        self.frameView(self.InitialFrame)
         #Build a Black screen
         painter = QtGui.QPainter()
         self.blankFrame = QtGui.QImage(
