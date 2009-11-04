@@ -137,48 +137,23 @@ class RenderManager(object):
             self.calculate_default(
                 self.screen_list[self.current_display][u'size'])
             self.renderer.set_theme(self.themedata)
-            self.build_text_rectangle(self.themedata)
+            self.renderer.build_text_rectangle(self.themedata)
         #Replace the backgrount image from renderer with one from image
         if self.override_background is not None:
             if self.save_bg_frame is None:
                 self.save_bg_frame = self.renderer.bg_frame
             if self.override_background_changed:
-                self.renderer.bg_frame = self.resize_image(self.override_background)
+                self.renderer.bg_frame = self.resize_image(
+                    self.override_background)
                 self.override_background_changed = False
         else:
             if self.override_background_changed:
-                self.renderer.bg_frame = self.resize_image(self.override_background)
+                self.renderer.bg_frame = self.resize_image(
+                    self.override_background)
                 self.override_background_changed = False
             if self.save_bg_frame is not None:
                 self.renderer.bg_frame = self.save_bg_frame
                 self.save_bg_frame = None
-
-    def build_text_rectangle(self, theme):
-        """
-        Builds a text block using the settings in ``theme``.
-        One is needed per slide
-
-        ``theme``
-            The theme to build a text block for.
-        """
-        log.debug(u'build_text_rectangle')
-        main_rect = None
-        footer_rect = None
-        if theme.font_main_override == False:
-            main_rect = QtCore.QRect(10, 0, self.width - 1,
-                self.footer_start - 20)
-        else:
-            main_rect = QtCore.QRect(int(theme.font_main_x),
-                int(theme.font_main_y), int(theme.font_main_width)-1,
-                int(theme.font_main_height) - 1)
-        if theme.font_footer_override == False:
-            footer_rect = QtCore.QRect(10,self.footer_start, self.width - 1,
-                self.height-self.footer_start)
-        else:
-            footer_rect = QtCore.QRect(int(theme.font_footer_x),
-                int(theme.font_footer_y), int(theme.font_footer_width)-1,
-                int(theme.font_footer_height) - 1)
-        self.renderer.set_text_rectangle(main_rect, footer_rect)
 
     def generate_preview(self, themedata):
         """
@@ -190,7 +165,7 @@ class RenderManager(object):
         log.debug(u'generate preview')
         self.calculate_default(QtCore.QSize(1024, 768))
         self.renderer.set_theme(themedata)
-        self.build_text_rectangle(themedata)
+        self.renderer.build_text_rectangle(themedata)
         self.renderer.set_frame_dest(self.width, self.height, True)
         verse = []
         verse.append(u'Amazing Grace!')
@@ -212,7 +187,7 @@ class RenderManager(object):
             The words to go on the slides.
         """
         log.debug(u'format slide')
-        self.build_text_rectangle(self.themedata)
+        self.renderer.build_text_rectangle(self.themedata)
         return self.renderer.format_slide(words, False)
 
     def generate_slide(self, main_text, footer_text):
@@ -226,7 +201,7 @@ class RenderManager(object):
             The text for the slide footer.
         """
         log.debug(u'generate slide')
-        self.build_text_rectangle(self.themedata)
+        self.renderer.build_text_rectangle(self.themedata)
         self.renderer.set_frame_dest(self.width, self.height)
         return self.renderer.generate_frame_from_lines(main_text, footer_text)
 
@@ -246,7 +221,7 @@ class RenderManager(object):
             h = height
         preview = preview.scaled(w, h, QtCore.Qt.KeepAspectRatio,
             QtCore.Qt.SmoothTransformation)
-        realw = preview.width();
+        realw = preview.width()
         realh = preview.height()
         # and move it to the centre of the preview space
         newImage = QtGui.QImage(w, h, QtGui.QImage.Format_ARGB32_Premultiplied)

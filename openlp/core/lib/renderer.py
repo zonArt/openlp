@@ -40,6 +40,7 @@ class Renderer(object):
         Initialise the renderer.
         """
         self._rect = None
+        self._footer_rect = None
         self._debug = 0
         self._right_margin = 64 # the amount of right indent
         self._shadow_offset = 5
@@ -215,18 +216,29 @@ class Renderer(object):
             split_pages.append(page)
         return split_pages
 
-    def set_text_rectangle(self, rect_main, rect_footer):
+    def build_text_rectangle(self, theme):
         """
-        Sets the rectangle within which text should be rendered.
+        Builds a text block using the settings in ``theme``.
+        One is needed per slide
 
-        ``rect_main``
-            The main text block.
-
-        ``rect_footer``
-            The footer text block.
+        ``theme``
+            The theme to build a text block for.
         """
-        self._rect = rect_main
-        self._rect_footer = rect_footer
+        log.debug(u'build_text_rectangle')
+        if theme.font_main_override == False:
+            self._rect = QtCore.QRect(10, 0, self.width - 1,
+                self.footer_start - 20)
+        else:
+            self._rect = QtCore.QRect(int(theme.font_main_x),
+                int(theme.font_main_y), int(theme.font_main_width)-1,
+                int(theme.font_main_height) - 1)
+        if theme.font_footer_override == False:
+            self._footer_rect = QtCore.QRect(10,self.footer_start, self.width - 1,
+                self.height-self.footer_start)
+        else:
+            self._footer_rect = QtCore.QRect(int(theme.font_footer_x),
+                int(theme.font_footer_y), int(theme.font_footer_width)-1,
+                int(theme.font_footer_height) - 1)
 
     def generate_frame_from_lines(self, lines, footer_lines=None):
         """
