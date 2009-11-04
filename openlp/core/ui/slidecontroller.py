@@ -100,9 +100,11 @@ class SlideController(QtGui.QWidget):
         # Type label for the top of the slide controller
         self.TypeLabel = QtGui.QLabel(self.Panel)
         if self.isLive:
-            self.TypeLabel.setText(u'<strong>%s</strong>' % self.trUtf8(u'Live'))
+            self.TypeLabel.setText(u'<strong>%s</strong>' %
+                self.trUtf8(u'Live'))
         else:
-            self.TypeLabel.setText(u'<strong>%s</strong>' % self.trUtf8(u'Preview'))
+            self.TypeLabel.setText(u'<strong>%s</strong>' %
+                self.trUtf8(u'Preview'))
         self.TypeLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.PanelLayout.addWidget(self.TypeLabel)
         # Splitter
@@ -126,7 +128,8 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.setColumnWidth(1, self.Controller.width())
         self.PreviewListWidget.isLive = self.isLive
         self.PreviewListWidget.setObjectName(u'PreviewListWidget')
-        self.PreviewListWidget.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.PreviewListWidget.setEditTriggers(
+            QtGui.QAbstractItemView.NoEditTriggers)
         self.ControllerLayout.addWidget(self.PreviewListWidget)
         # Build the full toolbar
         self.Toolbar = OpenLPToolbar(self)

@@ -66,7 +66,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.VerseAddButton,
             QtCore.SIGNAL(u'clicked()'), self.onVerseAddButtonClicked)
         QtCore.QObject.connect(self.VerseListWidget,
-            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onVerseEditButtonClicked)
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
+            self.onVerseEditButtonClicked)
         QtCore.QObject.connect(self.VerseEditButton,
             QtCore.SIGNAL(u'clicked()'), self.onVerseEditButtonClicked)
         QtCore.QObject.connect(self.VerseEditAllButton,
@@ -463,7 +464,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.song.search_lyrics = unicode(text)
             self.song.lyrics = unicode(sxml.extract_xml())
         except:
-            log.exception(u'Problem processing song Lyrics \n%s', sxml.dump_xml())
+            log.exception(u'Problem processing song Lyrics \n%s',
+                sxml.dump_xml())
 
     def processTitle(self):
         log.debug(u'processTitle')

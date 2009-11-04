@@ -131,7 +131,7 @@ class SongMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_edit' % self.parent.name), self.onRemoteEdit)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'remote_edit_clear' ), self.onRemoteEditClear)
+            QtCore.SIGNAL(u'remote_edit_clear'), self.onRemoteEditClear)
 
     def configUpdated(self):
         self.searchAsYouType = str_to_bool(
@@ -322,3 +322,35 @@ class SongMediaItem(MediaManagerItem):
             song.title, author_audit, song.copyright, song.ccli_number
         ]
         return True
+
+    def onPreviewClick(self):
+        if not self.remoteTriggered:
+            MediaManagerItem.onPreviewClick(self)
+        else:
+            log.debug(self.PluginNameShort + u' Preview Requested')
+            service_item = self.buildServiceItem()
+            if service_item:
+                service_item.fromPlugin = True
+                self.parent.preview_controller.addServiceItem(service_item)
+
+    def onLiveClick(self):
+        if not self.remoteTriggered:
+            MediaManagerItem.onLiveClick(self)
+        else:
+            log.debug(self.PluginNameShort + u' Live Requested')
+            service_item = self.buildServiceItem()
+            if service_item:
+                service_item.fromPlugin = True
+                service_item.uuid = unicode(uuid.uuid1())
+                self.parent.live_controller.addServiceItem(service_item)
+
+    def onAddClick(self):
+        if not self.remoteTriggered:
+            MediaManagerItem.onAddClick(self)
+        else:
+            log.debug(self.PluginNameShort + u' Add Requested')
+            service_item = self.buildServiceItem()
+            if service_item:
+                service_item.fromPlugin = False
+                service_item.uuid = unicode(uuid.uuid1())
+                self.parent.service_manager.addServiceItem(service_item)

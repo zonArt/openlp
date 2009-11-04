@@ -246,21 +246,18 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         else:
             self.theme.font_main_override = True
 
-        if int(self.theme.font_main_x) == 0 and \
-            int(self.theme.font_main_y) == 0 and \
-            int(self.theme.font_main_width) == 0 and \
-            int(self.theme.font_main_height) == 0:
+        if not self.theme.font_main_x and not self.theme.font_main_y and \
+            not self.theme.font_main_width and not self.theme.font_main_height:
             self.theme.font_main_x = u'10'
             self.theme.font_main_y = u'10'
             self.theme.font_main_width = u'1024'
             self.theme.font_main_height = u'730'
-            self.FontMainXSpinBox.setValue(int(self.theme.font_main_x))
-            self.FontMainYSpinBox.setValue(int(self.theme.font_main_y))
-            self.FontMainWidthSpinBox.setValue(int(self.theme.font_main_width))
-            self.FontMainHeightSpinBox.setValue(int( \
-                self.theme.font_main_height))
-            self.FontMainLineSpacingSpinBox.setValue(int( \
-                self.theme.font_main_indentation))
+            self.FontMainXSpinBox.setValue(self.theme.font_main_x)
+            self.FontMainYSpinBox.setValue(self.theme.font_main_y)
+            self.FontMainWidthSpinBox.setValue(self.theme.font_main_width)
+            self.FontMainHeightSpinBox.setValue(self.theme.font_main_height)
+            self.FontMainLineSpacingSpinBox.setValue(
+                self.theme.font_main_indentation)
         self.stateChanging(self.theme)
         self.previewTheme(self.theme)
 
@@ -280,8 +277,10 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.previewTheme(self.theme)
 
     def onFontMainLineSpacingSpinBoxChanged(self):
-        if self.theme.font_main_indentation != self.FontMainLineSpacingSpinBox.value():
-            self.theme.font_main_indentation = self.FontMainLineSpacingSpinBox.value()
+        if self.theme.font_main_indentation != \
+            self.FontMainLineSpacingSpinBox.value():
+            self.theme.font_main_indentation = \
+                self.FontMainLineSpacingSpinBox.value()
             self.previewTheme(self.theme)
 
     def onFontMainHeightSpinBoxChanged(self):
@@ -331,23 +330,18 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.theme.font_footer_override = False
         else:
             self.theme.font_footer_override = True
-
-        if int(self.theme.font_footer_x) == 0 and \
-            int(self.theme.font_footer_y) == 0 and \
-            int(self.theme.font_footer_width) == 0 and \
-            int(self.theme.font_footer_height) == 0:
+        if not self.theme.font_footer_x and not self.theme.font_footer_y and \
+            not self.theme.font_footer_width and \
+            not self.theme.font_footer_height:
             self.theme.font_footer_x = u'10'
             self.theme.font_footer_y = u'730'
             self.theme.font_footer_width = u'1024'
             self.theme.font_footer_height = u'38'
-
-            self.FontFooterXSpinBox.setValue(int(self.theme.font_footer_x))
-            self.FontFooterYSpinBox.setValue(int(self.theme.font_footer_y))
-            self.FontFooterWidthSpinBox.setValue(int( \
-                self.theme.font_footer_width))
-            self.FontFooterHeightSpinBox.setValue(int( \
-                self.theme.font_footer_height))
-
+            self.FontFooterXSpinBox.setValue(self.theme.font_footer_x)
+            self.FontFooterYSpinBox.setValue(self.theme.font_footer_y)
+            self.FontFooterWidthSpinBox.setValue(self.theme.font_footer_width)
+            self.FontFooterHeightSpinBox.setValue(
+                self.theme.font_footer_height)
         self.stateChanging(self.theme)
         self.previewTheme(self.theme)
 
@@ -369,7 +363,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
     def onFontFooterHeightSpinBoxChanged(self):
         if self.theme.font_footer_height != \
             self.FontFooterHeightSpinBox.value():
-            self.theme.font_footer_height = self.FontFooterHeightSpinBox.value()
+            self.theme.font_footer_height = \
+                self.FontFooterHeightSpinBox.value()
             self.previewTheme(self.theme)
     #
     #Background Tab
@@ -502,7 +497,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         # Font Main Tab
         self.FontMainComboBox.setCurrentFont(
             QtGui.QFont(self.theme.font_main_name))
-        self.FontMainSizeSpinBox.setValue(int(self.theme.font_main_proportion))
+        self.FontMainSizeSpinBox.setValue(self.theme.font_main_proportion)
         if not self.theme.font_main_italics and \
             self.theme.font_main_weight == u'Normal':
             self.FontMainWeightComboBox.setCurrentIndex(0)
@@ -514,16 +509,17 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.FontMainWeightComboBox.setCurrentIndex(2)
         else:
             self.FontMainWeightComboBox.setCurrentIndex(3)
-        self.FontMainLineSpacingSpinBox.setValue(int(self.theme.font_main_indentation))
-        self.FontMainXSpinBox.setValue(int(self.theme.font_main_x))
-        self.FontMainYSpinBox.setValue(int(self.theme.font_main_y))
-        self.FontMainWidthSpinBox.setValue(int(self.theme.font_main_width))
-        self.FontMainHeightSpinBox.setValue(int(self.theme.font_main_height))
+        self.FontMainLineSpacingSpinBox.setValue(
+            self.theme.font_main_indentation)
+        self.FontMainXSpinBox.setValue(self.theme.font_main_x)
+        self.FontMainYSpinBox.setValue(self.theme.font_main_y)
+        self.FontMainWidthSpinBox.setValue(self.theme.font_main_width)
+        self.FontMainHeightSpinBox.setValue(self.theme.font_main_height)
         # Font Footer Tab
         self.FontFooterComboBox.setCurrentFont(
             QtGui.QFont(self.theme.font_footer_name))
         self.FontFooterSizeSpinBox.setValue(
-            int(self.theme.font_footer_proportion))
+            self.theme.font_footer_proportion)
         if not self.theme.font_footer_italics and \
             self.theme.font_footer_weight == u'Normal':
             self.FontFooterWeightComboBox.setCurrentIndex(0)
@@ -535,11 +531,10 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.FontFooterWeightComboBox.setCurrentIndex(2)
         else:
             self.FontFooterWeightComboBox.setCurrentIndex(3)
-        self.FontFooterXSpinBox.setValue(int(self.theme.font_footer_x))
-        self.FontFooterYSpinBox.setValue(int(self.theme.font_footer_y))
-        self.FontFooterWidthSpinBox.setValue(int(self.theme.font_footer_width))
-        self.FontFooterHeightSpinBox.setValue(
-            int(self.theme.font_footer_height))
+        self.FontFooterXSpinBox.setValue(self.theme.font_footer_x)
+        self.FontFooterYSpinBox.setValue(self.theme.font_footer_y)
+        self.FontFooterWidthSpinBox.setValue(self.theme.font_footer_width)
+        self.FontFooterHeightSpinBox.setValue(self.theme.font_footer_height)
         self.FontMainColorPushButton.setStyleSheet(
             u'background-color: %s' % unicode(theme.font_main_color))
         self.FontFooterColorPushButton.setStyleSheet(
@@ -575,23 +570,22 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.ShadowColorPushButton.setEnabled(False)
 
         self.HorizontalComboBox.setCurrentIndex(
-            int(self.theme.display_horizontalAlign))
-        self.VerticalComboBox.setCurrentIndex(
-            int(self.theme.display_verticalAlign))
+            self.theme.display_horizontalAlign)
+        self.VerticalComboBox.setCurrentIndex(self.theme.display_verticalAlign)
 
     def stateChanging(self, theme):
         if theme.background_mode == u'transparent':
-                self.Color1Label.setVisible(False)
-                self.Color1PushButton.setVisible(False)
-                self.Color2Label.setVisible(False)
-                self.Color2PushButton.setVisible(False)
-                self.ImageLabel.setVisible(False)
-                self.ImageLineEdit.setVisible(False)
-                self.ImageFilenameWidget.setVisible(False)
-                self.GradientLabel.setVisible(False)
-                self.GradientComboBox.setVisible(False)
-                self.BackgroundTypeComboBox.setVisible(False)
-                self.BackgroundTypeLabel.setVisible(False)
+            self.Color1Label.setVisible(False)
+            self.Color1PushButton.setVisible(False)
+            self.Color2Label.setVisible(False)
+            self.Color2PushButton.setVisible(False)
+            self.ImageLabel.setVisible(False)
+            self.ImageLineEdit.setVisible(False)
+            self.ImageFilenameWidget.setVisible(False)
+            self.GradientLabel.setVisible(False)
+            self.GradientComboBox.setVisible(False)
+            self.BackgroundTypeComboBox.setVisible(False)
+            self.BackgroundTypeLabel.setVisible(False)
         else:
             self.BackgroundTypeComboBox.setVisible(True)
             self.BackgroundTypeLabel.setVisible(True)
@@ -674,15 +668,18 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             if self.theme.font_main_weight == u'Bold':
                 main_weight = 75
             mainFont = QtGui.QFont(self.theme.font_main_name,
-                         int(self.theme.font_main_proportion), # size
-                         int(main_weight), # weight
+                         self.theme.font_main_proportion, # size
+                         main_weight, # weight
                          self.theme.font_main_italics)# italic
-            mainFont.setPixelSize(int(self.theme.font_main_proportion))
+            mainFont.setPixelSize(self.theme.font_main_proportion)
             metrics = QtGui.QFontMetrics(mainFont)
-            page_length = (int(self.FontMainHeightSpinBox.value()) / metrics.height() - 2) - 1
+            page_length = \
+                (self.FontMainHeightSpinBox.value() / metrics.height() - 2) - 1
             log.debug(u'Page Length area height %s, metrics %s, lines %s' %
-                      (int(self.FontMainHeightSpinBox.value()), metrics.height(), page_length))
+                (self.FontMainHeightSpinBox.value(), metrics.height(),
+                page_length))
             page_length_text = unicode(self.trUtf8(u'Slide Height is %s rows'))
             self.FontMainLinesPageLabel.setText(page_length_text % page_length)
             frame = self.thememanager.generateImage(theme)
             self.ThemePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
+

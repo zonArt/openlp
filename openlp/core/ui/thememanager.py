@@ -475,7 +475,8 @@ class ThemeManager(QtGui.QWidget):
         #theme.background_type
         if theme.display_display:
             theme.display_display = theme.display_display.strip()
-        theme.display_horizontalAlign = theme.display_horizontalAlign.strip()
+        theme.display_horizontalAlign = \
+            int(theme.display_horizontalAlign.strip())
         theme.display_outline = str_to_bool(theme.display_outline)
         #theme.display_outline_color
         theme.display_shadow = str_to_bool(theme.display_shadow)
@@ -483,25 +484,27 @@ class ThemeManager(QtGui.QWidget):
         theme.display_verticalAlign = int(theme.display_verticalAlign.strip())
         theme.display_wrapStyle = theme.display_wrapStyle.strip()
         theme.font_footer_color = theme.font_footer_color.strip()
-        theme.font_footer_height = theme.font_footer_height.strip()
+        theme.font_footer_height = int(theme.font_footer_height.strip())
         theme.font_footer_italics = str_to_bool(theme.font_footer_italics)
         theme.font_footer_name = theme.font_footer_name.strip()
         #theme.font_footer_override
-        theme.font_footer_proportion = theme.font_footer_proportion.strip()
+        theme.font_footer_proportion = \
+            int(theme.font_footer_proportion.strip())
         theme.font_footer_weight = theme.font_footer_weight.strip()
-        theme.font_footer_width = theme.font_footer_width.strip()
-        theme.font_footer_x = theme.font_footer_x.strip()
-        theme.font_footer_y = theme.font_footer_y.strip()
+        theme.font_footer_width = int(theme.font_footer_width.strip())
+        theme.font_footer_x = int(theme.font_footer_x.strip())
+        theme.font_footer_y = int(theme.font_footer_y.strip())
         theme.font_main_color = theme.font_main_color.strip()
-        theme.font_main_height = theme.font_main_height.strip()
+        theme.font_main_height = int(theme.font_main_height.strip())
         theme.font_main_italics = str_to_bool(theme.font_main_italics)
         theme.font_main_indentation = int(theme.font_main_indentation)
         theme.font_main_name = theme.font_main_name.strip()
         #theme.font_main_override
-        theme.font_main_proportion = theme.font_main_proportion.strip()
+        theme.font_main_proportion = int(theme.font_main_proportion.strip())
         theme.font_main_weight = theme.font_main_weight.strip()
-        theme.font_main_x = theme.font_main_x.strip()
-        theme.font_main_y = theme.font_main_y.strip()
+        theme.font_main_width = int(theme.font_main_width.strip())
+        theme.font_main_x = int(theme.font_main_x.strip())
+        theme.font_main_y = int(theme.font_main_y.strip())
         #theme.theme_mode
         theme.theme_name = theme.theme_name.strip()
         #theme.theme_version

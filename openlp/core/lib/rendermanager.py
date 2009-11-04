@@ -170,16 +170,15 @@ class RenderManager(object):
             main_rect = QtCore.QRect(10, 0, self.width - 1,
                 self.footer_start - 20)
         else:
-            main_rect = QtCore.QRect(int(theme.font_main_x),
-                int(theme.font_main_y), int(theme.font_main_width)-1,
-                int(theme.font_main_height) - 1)
+            main_rect = QtCore.QRect(theme.font_main_x, theme.font_main_y,
+                theme.font_main_width - 1, theme.font_main_height - 1)
         if not theme.font_footer_override:
-            footer_rect = QtCore.QRect(10,self.footer_start, self.width - 1,
+            footer_rect = QtCore.QRect(10, self.footer_start, self.width - 1,
                 self.height-self.footer_start)
         else:
-            footer_rect = QtCore.QRect(int(theme.font_footer_x),
-                int(theme.font_footer_y), int(theme.font_footer_width)-1,
-                int(theme.font_footer_height) - 1)
+            footer_rect = QtCore.QRect(theme.font_footer_x,
+                theme.font_footer_y, theme.font_footer_width - 1,
+                theme.font_footer_height - 1)
         self.renderer.set_text_rectangle(main_rect, footer_rect)
 
     def generate_preview(self, themedata):
