@@ -55,7 +55,6 @@ class SongMediaItem(MediaManagerItem):
             self.parent.songmanager, self)
         #Holds information about whether the edit is remotly triggered and which
         #Song is required.
-        self.remoteTriggered = None
         self.remoteSong = -1
 
     def initPluginNameVisible(self):
@@ -180,7 +179,6 @@ class SongMediaItem(MediaManagerItem):
     def displayResultsSong(self, searchresults):
         log.debug(u'display results Song')
         self.ListView.clear()
-        #log.debug(u'Records returned from search %s", len(searchresults))
         for song in searchresults:
             author_list = u''
             for author in song.authors:
