@@ -112,7 +112,7 @@ class Plugin(QtCore.QObject):
         """
         QtCore.QObject.__init__(self)
         self.name = name
-        if version is not None:
+        if version:
             self.version = version
         self.icon = None
         self.config = PluginConfig(self.name)
@@ -236,7 +236,7 @@ class Plugin(QtCore.QObject):
         """
         Called by the plugin Manager to initialise anything it needs.
         """
-        if self.media_item is not None:
+        if self.media_item:
             self.media_item.initialise()
 
     def finalise(self):
@@ -256,7 +256,7 @@ class Plugin(QtCore.QObject):
         """
         Called by plugin to replace toolbar
         """
-        if self.media_item is not None:
+        if self.media_item:
             self.mediadock.insert_dock(self.media_item, self.icon, self.weight)
-        if self.settings_tab is not None:
+        if self.settings_tab:
             self.settings.insertTab(self.settings_tab, self.weight)

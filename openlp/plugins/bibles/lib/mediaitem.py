@@ -380,7 +380,7 @@ class BibleMediaItem(MediaManagerItem):
                 bible, text)
         else:
             self.searchByReference(bible, text)
-        if self.search_results is not None:
+        if self.search_results:
             self.displayResults(bible)
 
     def generateSlideData(self, service_item):
@@ -518,9 +518,9 @@ class BibleMediaItem(MediaManagerItem):
             bible_verse.setData(QtCore.Qt.UserRole,
                 QtCore.QVariant(bible_text))
             self.ListView.addItem(bible_verse)
-            cr = self.ListView.setCurrentRow(count)
-            if cr is not None:
-                cr.setSelected(True)
+            row = self.ListView.setCurrentRow(count)
+            if row:
+                row.setSelected(True)
 
     def searchByReference(self, bible, search):
         log.debug(u'searchByReference %s, %s', bible, search)

@@ -78,17 +78,25 @@ class ThemeManager(QtGui.QWidget):
         self.ThemeListWidget.addAction(
             contextMenuAction(self.ThemeListWidget, u':/themes/theme_edit.png',
             self.trUtf8(u'Edit a theme'), self.onEditTheme))
-        self.ThemeListWidget.addAction(contextMenuSeparator(self.ThemeListWidget))
         self.ThemeListWidget.addAction(
-            contextMenuAction(self.ThemeListWidget, u':/themes/theme_delete.png',
-            self.trUtf8(u'Delete theme'), self.onDeleteTheme))
+            contextMenuSeparator(self.ThemeListWidget))
         self.ThemeListWidget.addAction(
-            contextMenuAction(self.ThemeListWidget, u':/themes/theme_export.png',
-            self.trUtf8(u'Make Global'), self.changeGlobalFromScreen))
+            contextMenuAction(self.ThemeListWidget,
+                u':/themes/theme_delete.png',
+                self.trUtf8(u'Delete theme'),
+            self.onDeleteTheme))
         self.ThemeListWidget.addAction(
-            contextMenuAction(self.ThemeListWidget, u':/themes/theme_export.png',
-            self.trUtf8(u'Export theme'), self.onExportTheme))
-        self.ThemeListWidget.addAction(contextMenuSeparator(self.ThemeListWidget))
+            contextMenuAction(self.ThemeListWidget,
+                u':/themes/theme_export.png',
+                self.trUtf8(u'Make Global'),
+            self.changeGlobalFromScreen))
+        self.ThemeListWidget.addAction(
+            contextMenuAction(self.ThemeListWidget,
+                u':/themes/theme_export.png',
+                self.trUtf8(u'Export theme'),
+            self.onExportTheme))
+        self.ThemeListWidget.addAction(
+            contextMenuSeparator(self.ThemeListWidget))
         #Signals
         QtCore.QObject.connect(self.ThemeListWidget,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
@@ -148,17 +156,18 @@ class ThemeManager(QtGui.QWidget):
 
     def onEditTheme(self):
         item = self.ThemeListWidget.currentItem()
-        if item is not None:
+        if item:
             self.amendThemeForm.loadTheme(
                 unicode(item.data(QtCore.Qt.UserRole).toString()))
-            self.saveThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
+            self.saveThemeName = unicode(
+                item.data(QtCore.Qt.UserRole).toString())
             self.amendThemeForm.exec_()
 
     def onDeleteTheme(self):
         self.global_theme = unicode(
             self.config.get_config(u'theme global theme', u''))
         item = self.ThemeListWidget.currentItem()
-        if item is not None:
+        if item:
             theme = unicode(item.text())
             # should be the same unless default
             if theme != unicode(item.data(QtCore.Qt.UserRole).toString()):
@@ -275,7 +284,7 @@ class ThemeManager(QtGui.QWidget):
 
     def checkThemesExists(self, dir):
         log.debug(u'check themes')
-        if os.path.exists(dir) == False:
+        if not os.path.exists(dir):
             os.mkdir(dir)
 
     def unzipTheme(self, filename, dir):
@@ -299,7 +308,7 @@ class ThemeManager(QtGui.QWidget):
         for file in zip.namelist():
             if file.endswith(os.path.sep):
                 theme_dir = os.path.join(dir, file)
-                if os.path.exists(theme_dir) == False:
+                if not os.path.exists(theme_dir):
                     os.mkdir(os.path.join(dir, file))
             else:
                 fullpath = os.path.join(dir, file)
@@ -386,7 +395,7 @@ class ThemeManager(QtGui.QWidget):
         """
         log.debug(u'saveTheme %s %s', name, theme_xml)
         theme_dir = os.path.join(self.path, name)
-        if os.path.exists(theme_dir) == False:
+        if not os.path.exists(theme_dir):
             os.mkdir(os.path.join(self.path, name))
         theme_file = os.path.join(theme_dir, name + u'.xml')
         log.debug(theme_file)
@@ -406,7 +415,7 @@ class ThemeManager(QtGui.QWidget):
             outfile = open(theme_file, u'w')
             outfile.write(theme_pretty_xml)
             outfile.close()
-            if image_from is not None and image_from != image_to:
+            if image_from and image_from != image_to:
                 print "if", image_from
                 print "it", image_to
                 shutil.copyfile(image_from, image_to)
@@ -466,33 +475,36 @@ class ThemeManager(QtGui.QWidget):
         #theme.background_type
         if theme.display_display:
             theme.display_display = theme.display_display.strip()
-        theme.display_horizontalAlign = theme.display_horizontalAlign.strip()
+        theme.display_horizontalAlign = \
+            int(theme.display_horizontalAlign.strip())
         theme.display_outline = str_to_bool(theme.display_outline)
         #theme.display_outline_color
         theme.display_shadow = str_to_bool(theme.display_shadow)
         #theme.display_shadow_color
-        theme.display_verticalAlign = theme.display_verticalAlign.strip()
+        theme.display_verticalAlign = int(theme.display_verticalAlign.strip())
         theme.display_wrapStyle = theme.display_wrapStyle.strip()
         theme.font_footer_color = theme.font_footer_color.strip()
-        theme.font_footer_height = theme.font_footer_height.strip()
+        theme.font_footer_height = int(theme.font_footer_height.strip())
         theme.font_footer_italics = str_to_bool(theme.font_footer_italics)
         theme.font_footer_name = theme.font_footer_name.strip()
         #theme.font_footer_override
-        theme.font_footer_proportion = theme.font_footer_proportion.strip()
+        theme.font_footer_proportion = \
+            int(theme.font_footer_proportion.strip())
         theme.font_footer_weight = theme.font_footer_weight.strip()
-        theme.font_footer_width = theme.font_footer_width.strip()
-        theme.font_footer_x = theme.font_footer_x.strip()
-        theme.font_footer_y = theme.font_footer_y.strip()
+        theme.font_footer_width = int(theme.font_footer_width.strip())
+        theme.font_footer_x = int(theme.font_footer_x.strip())
+        theme.font_footer_y = int(theme.font_footer_y.strip())
         theme.font_main_color = theme.font_main_color.strip()
-        theme.font_main_height = theme.font_main_height.strip()
+        theme.font_main_height = int(theme.font_main_height.strip())
         theme.font_main_italics = str_to_bool(theme.font_main_italics)
         theme.font_main_indentation = int(theme.font_main_indentation)
         theme.font_main_name = theme.font_main_name.strip()
         #theme.font_main_override
-        theme.font_main_proportion = theme.font_main_proportion.strip()
+        theme.font_main_proportion = int(theme.font_main_proportion.strip())
         theme.font_main_weight = theme.font_main_weight.strip()
-        theme.font_main_x = theme.font_main_x.strip()
-        theme.font_main_y = theme.font_main_y.strip()
+        theme.font_main_width = int(theme.font_main_width.strip())
+        theme.font_main_x = int(theme.font_main_x.strip())
+        theme.font_main_y = int(theme.font_main_y.strip())
         #theme.theme_mode
         theme.theme_name = theme.theme_name.strip()
         #theme.theme_version

@@ -160,7 +160,7 @@ class BibleDBImpl(BibleCommon):
             everse)
         #Look up book name or abbreviation
         book = self.get_bible_book(bookname)
-        if book is not None:
+        if book:
             bookname = book.name
             log.debug(u'bookname corrected to  %s' % bookname)
         verses = self.session.query(Verse).join(Book).filter(

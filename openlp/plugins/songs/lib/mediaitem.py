@@ -53,8 +53,8 @@ class SongMediaItem(MediaManagerItem):
         self.edit_song_form = EditSongForm(self.parent.songmanager, self)
         self.song_maintenance_form = SongMaintenanceForm(
             self.parent.songmanager, self)
-        #Holds information about whether the edit is remotly triggered and which
-        #Song is required.
+        # Holds information about whether the edit is remotly triggered and
+        # which Song is required.
         self.remoteSong = -1
 
     def initPluginNameVisible(self):
@@ -130,7 +130,7 @@ class SongMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_edit' % self.parent.name), self.onRemoteEdit)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'remote_edit_clear' ), self.onRemoteEditClear)
+            QtCore.SIGNAL(u'remote_edit_clear'), self.onRemoteEditClear)
 
     def configUpdated(self):
         self.searchAsYouType = str_to_bool(
@@ -252,7 +252,7 @@ class SongMediaItem(MediaManagerItem):
         """
         fields = songid.split(u':')
         valid = self.parent.songmanager.get_song(fields[1])
-        if valid is not None:
+        if valid:
             self.remoteSong = fields[1]
             self.remoteTriggered = fields[0]
             self.edit_song_form.loadSong(fields[1], (fields[0] == u'P'))
@@ -260,14 +260,14 @@ class SongMediaItem(MediaManagerItem):
 
     def onEditClick(self, preview=False):
         item = self.ListView.currentItem()
-        if item is not None:
+        if item:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_song_form.loadSong(item_id, False)
             self.edit_song_form.exec_()
 
     def onDeleteClick(self):
         item = self.ListView.currentItem()
-        if item is not None:
+        if item:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.parent.songmanager.delete_song(item_id)
             row = self.ListView.row(item)
@@ -294,7 +294,7 @@ class SongMediaItem(MediaManagerItem):
             songXML=SongXMLParser(song.lyrics)
             verseList = songXML.get_verses()
             for verse in verseList:
-                if verse[1] is not None:
+                if verse[1]:
                     service_item.add_from_text(verse[1][:30], verse[1])
         else:
             verses = song.lyrics.split(u'\n\n')
@@ -320,3 +320,4 @@ class SongMediaItem(MediaManagerItem):
             song.title, author_audit, song.copyright, song.ccli_number
         ]
         return True
+

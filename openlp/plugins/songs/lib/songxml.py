@@ -85,7 +85,7 @@ class _OpenSong(XmlRootClass):
     def from_buffer(self, xmlContent):
         """Initialize from buffer(string) with xml content"""
         self._reset()
-        if xmlContent is not None:
+        if xmlContent:
             self._setFromXml(xmlContent, 'song')
 
     def get_author_list(self):
@@ -95,7 +95,7 @@ class _OpenSong(XmlRootClass):
         return as a string
         """
         res = []
-        if self.author is not None:
+        if self.author:
             lst = self.author.split(u' and ')
             for l in lst:
                 res.append(l.strip())
@@ -108,9 +108,9 @@ class _OpenSong(XmlRootClass):
         return as a string
         """
         res = []
-        if self.theme is not None:
+        if self.theme:
             res.append(self.theme)
-        if self.alttheme is not None:
+        if self.alttheme:
             res.append(self.alttheme)
         s = u', u'.join(res)
         return s
@@ -264,13 +264,13 @@ class Song(object):
         """Initialize from buffer(string) of xml lines in opensong format"""
         self._reset()
         opensong = _OpenSong(xmlcontent)
-        if opensong.title is not None:
+        if opensong.title:
             self.set_title(opensong.title)
-        if opensong.copyright is not None:
+        if opensong.copyright:
             self.set_copyright(opensong.copyright)
-        if opensong.presentation is not None:
+        if opensong.presentation:
             self.set_verse_order(opensong.presentation)
-        if opensong.ccli is not None:
+        if opensong.ccli:
             self.set_song_cclino(opensong.ccli)
         self.set_author_list(opensong.get_author_list())
         self.set_category_array(opensong.get_category_array())
@@ -402,7 +402,7 @@ class Song(object):
     def _split_to_list(self, aString):
         """Split a string into a list - comma separated"""
         res = []
-        if aString is not None:
+        if aString:
             lst = aString.split(u',')
             for l in lst:
                 # remove whitespace

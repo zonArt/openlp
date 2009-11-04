@@ -85,7 +85,7 @@ class BiblePlugin(Plugin):
         self.ExportBibleItem.setVisible(False)
 
     def onBibleNewClick(self):
-        if self.media_item is not None:
+        if self.media_item:
             self.media_item.onNewClick()
 
     def about(self):

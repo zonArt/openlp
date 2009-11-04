@@ -36,7 +36,7 @@ class OpenLPDockWidget(QtGui.QDockWidget):
         """
         QtGui.QDockWidget.__init__(self, parent)
         self.parent = parent
-        if name is not None:
+        if name:
             self.setObjectName(name)
         self.setFloating(False)
         self.log = logging.getLogger(u'OpenLPDockWidget')

@@ -96,7 +96,7 @@ class BibleOSISImpl():
         testament = 1
         for file_record in osis.readlines():
             # cancel pressed on UI
-            if self.loadbible == False:
+            if not self.loadbible:
                 break
             pos = file_record.find(verseText)
             # we have a verse

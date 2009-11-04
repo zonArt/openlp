@@ -107,7 +107,7 @@ class PluginConfig(object):
             files = os.listdir(self.get_data_path())
         except:
             return []
-        if suffix is not None:
+        if suffix:
             return_files = []
             for file in files:
                 if file.find(u'.') != -1:
@@ -131,7 +131,7 @@ class PluginConfig(object):
             The name of the list.
         """
         list_count = self.get_config(u'%s count' % name)
-        if list_count is not None:
+        if list_count:
             list_count = int(list_count)
         else:
             list_count = 0
@@ -169,12 +169,12 @@ class PluginConfig(object):
         ``num``
             Defaults to *None*. A further qualifier.
         """
-        if num is not None:
+        if num:
             name = u'last directory %d' % num
         else:
             name = u'last directory'
         last_dir = self.get_config(name)
-        if last_dir is None:
+        if not last_dir:
             last_dir = u''
         return last_dir
 
@@ -185,7 +185,7 @@ class PluginConfig(object):
         ``num``
             Defaults to *None*. A further qualifier.
         """
-        if num is not None:
+        if num:
             name = u'last directory %d' % num
         else:
             name = u'last directory'

@@ -57,7 +57,7 @@ class ConfigHelper(object):
         if reg.has_value(section, key):
             return reg.get_value(section, key, default)
         else:
-            if default is not None:
+            if default:
                 ConfigHelper.set_config(section, key, default)
             return default
 

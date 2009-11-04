@@ -121,7 +121,7 @@ class PresentationMediaItem(MediaManagerItem):
 
     def onDeleteClick(self):
         item = self.ListView.currentItem()
-        if item is not None:
+        if item:
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
             self.parent.config.set_list(
@@ -146,7 +146,7 @@ class PresentationMediaItem(MediaManagerItem):
                 cont.load_presentation(filename)
             i = 1
             img = cont.get_slide_preview_file(i)
-            while img is not None:
+            while img:
                 service_item.add_from_command(path, name, img)
                 i = i + 1
                 img = cont.get_slide_preview_file(i)

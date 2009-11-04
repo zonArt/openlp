@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expanddock textwidth=80 dockstop=4 softdockstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -54,7 +54,7 @@ class MediaDockManager(object):
     def remove_dock(self, name):
         log.debug(u'remove %s dock' % name)
         for dock_index in range(0, self.media_dock.count()):
-            if self.media_dock.widget(dock_index) is not None:
+            if self.media_dock.widget(dock_index):
                 if self.media_dock.widget(dock_index).ConfigSection == name:
                     self.media_dock.widget(dock_index).hide()
                     self.media_dock.removeItem(dock_index)

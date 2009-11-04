@@ -66,7 +66,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.VerseAddButton,
             QtCore.SIGNAL(u'clicked()'), self.onVerseAddButtonClicked)
         QtCore.QObject.connect(self.VerseListWidget,
-            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onVerseEditButtonClicked)
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
+            self.onVerseEditButtonClicked)
         QtCore.QObject.connect(self.VerseEditButton,
             QtCore.SIGNAL(u'clicked()'), self.onVerseEditButtonClicked)
         QtCore.QObject.connect(self.VerseEditAllButton,
@@ -183,7 +184,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 # Not Found
                 id = 0
             self.SongbookCombo.setCurrentIndex(id)
-        if self.song.theme_name is not None and len(self.song.theme_name) > 0:
+        if self.song.theme_name:
             id = self.ThemeSelectionComboItem.findText(
                 unicode(self.song.theme_name), QtCore.Qt.MatchExactly)
             if id == -1:
@@ -193,20 +194,20 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.ThemeSelectionComboItem.setCurrentIndex(id)
         if len(title) > 1:
             self.AlternativeEdit.setText(title[1])
-        if self.song.copyright is not None:
+        if self.song.copyright:
             self.CopyrightEditItem.setText(self.song.copyright)
         else:
             self.CopyrightEditItem.setText(u'')
         self.VerseListWidget.clear()
-        if self.song.verse_order is not None:
+        if self.song.verse_order:
             self.VerseOrderEdit.setText(self.song.verse_order)
         else:
             self.VerseOrderEdit.setText(u'')
-        if self.song.comments is not None:
+        if self.song.comments:
             self.CommentsEdit.setPlainText(self.song.comments)
         else:
             self.CommentsEdit.setPlainText(u'')
-        if self.song.ccli_number is not None:
+        if self.song.ccli_number:
             self.CCLNumberEdit.setText(self.song.ccli_number)
         else:
             self.CCLNumberEdit.setText(u'')
@@ -311,7 +312,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def onVerseEditButtonClicked(self):
         item = self.VerseListWidget.currentItem()
-        if item is not None:
+        if item:
             tempText = item.text()
             self.verse_form.setVerse(tempText)
             self.verse_form.exec_()
@@ -463,7 +464,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.song.search_lyrics = unicode(text)
             self.song.lyrics = unicode(sxml.extract_xml())
         except:
-            log.exception(u'Problem processing song Lyrics \n%s', sxml.dump_xml())
+            log.exception(u'Problem processing song Lyrics \n%s',
+                sxml.dump_xml())
 
     def processTitle(self):
         log.debug(u'processTitle')
