@@ -97,7 +97,7 @@ class BibleCommon(object):
             The URL of a proxy server used to access the Internet.
         """
         log.debug(u'get_web_text %s %s', proxyurl, urlstring)
-        if proxyurl is not None:
+        if proxyurl:
             proxy_support = urllib2.ProxyHandler({'http': self.proxyurl})
             http_support = urllib2.HTTPHandler()
             opener = urllib2.build_opener(proxy_support, http_support)

@@ -59,7 +59,7 @@ class Renderer(object):
         ``debug``
             The debug mode.
         """
-        self._debug=debug
+        self._debug = debug
 
     def set_theme(self, theme):
         """
@@ -76,7 +76,7 @@ class Renderer(object):
         self.theme_name = theme.theme_name
         self._set_theme_font()
         if theme.background_type == u'image':
-            if theme.background_filename is not None:
+            if theme.background_filename:
                 self.set_bg_image(theme.background_filename)
 
     def set_bg_image(self, filename):
@@ -88,7 +88,7 @@ class Renderer(object):
         """
         log.debug(u'set bg image %s', filename)
         self._bg_image_filename = unicode(filename)
-        if self._frame is not None:
+        if self._frame:
             self.scale_bg_image()
 
     def scale_bg_image(self):
@@ -128,13 +128,13 @@ class Renderer(object):
         ``preview``
             Defaults to *False*. Whether or not to generate a preview.
         """
-        if preview == True:
+        if preview:
             self.bg_frame = None
         log.debug(u'set frame dest (frame) w %d h %d', frame_width,
             frame_height)
         self._frame = QtGui.QImage(frame_width, frame_height,
             QtGui.QImage.Format_ARGB32_Premultiplied)
-        if self._bg_image_filename is not None and self.bg_image is None:
+        if self._bg_image_filename and not self.bg_image:
             self.scale_bg_image()
         if self.bg_frame is None:
             self._generate_background_frame()
@@ -241,13 +241,13 @@ class Renderer(object):
         """
         log.debug(u'generate_frame_from_lines - Start')
         bbox = self._render_lines_unaligned(lines, False)
-        if footer_lines is not None:
+        if footer_lines:
             bbox1 = self._render_lines_unaligned(footer_lines, True)
         # reset the frame. first time do not worry about what you paint on.
         self._frame = QtGui.QImage(self.bg_frame)
         x, y = self._correctAlignment(self._rect, bbox)
         bbox = self._render_lines_unaligned(lines, False, (x, y), True)
-        if footer_lines is not None:
+        if footer_lines:
             bbox = self._render_lines_unaligned(footer_lines, True,
                 (self._rect_footer.left(), self._rect_footer.top()), True)
         log.debug(u'generate_frame_from_lines - Finish')
@@ -305,7 +305,7 @@ class Renderer(object):
             elif self._theme.background_type == u'image':
                 # image
                 painter.fillRect(self._frame.rect(), QtCore.Qt.black)
-                if self.bg_image is not None:
+                if self.bg_image:
                     painter.drawImage(0, 0, self.bg_image)
         painter.end()
         log.debug(u'render background End')
@@ -321,13 +321,13 @@ class Renderer(object):
             Footer dimensions?
         """
         x = rect.left()
-        if int(self._theme.display_verticalAlign) == 0:
+        if self._theme.display_verticalAlign == 0:
             # top align
             y = rect.top()
-        elif int(self._theme.display_verticalAlign) == 2:
+        elif self._theme.display_verticalAlign == 2:
             # bottom align
             y = rect.bottom() - bbox.height()
-        elif int(self._theme.display_verticalAlign) == 1:
+        elif self._theme.display_verticalAlign == 1:
             # centre align
             y = rect.top() + (rect.height() - bbox.height()) / 2
         else:
@@ -410,7 +410,7 @@ class Renderer(object):
             align = 0
             shadow_offset = self._shadow_offset_footer
         else:
-            align = int(self._theme .display_horizontalAlign)
+            align = self._theme.display_horizontalAlign
             shadow_offset = self._shadow_offset
         for linenum in range(len(lines)):
             line = lines[linenum]
@@ -501,18 +501,18 @@ class Renderer(object):
         if self._theme.font_footer_weight == u'Bold':
             footer_weight = 75
         self.footerFont = QtGui.QFont(self._theme.font_footer_name,
-                     int(self._theme.font_footer_proportion), # size
-                     int(footer_weight), # weight
+                     self._theme.font_footer_proportion, # size
+                     footer_weight, # weight
                      self._theme.font_footer_italics) # italic
-        self.footerFont.setPixelSize(int(self._theme.font_footer_proportion))
+        self.footerFont.setPixelSize(self._theme.font_footer_proportion)
         main_weight = 50
         if self._theme.font_main_weight == u'Bold':
             main_weight = 75
         self.mainFont = QtGui.QFont(self._theme.font_main_name,
-                     int(self._theme.font_main_proportion), # size
-                     int(main_weight), # weight
+                     self._theme.font_main_proportion, # size
+                     main_weight, # weight
                      self._theme.font_main_italics)# italic
-        self.mainFont.setPixelSize(int(self._theme.font_main_proportion))
+        self.mainFont.setPixelSize(self._theme.font_main_proportion)
 
     def _get_extent_and_render(self, line, footer, tlcorner=(0, 0), draw=False,
         color=None):
@@ -571,5 +571,5 @@ class Renderer(object):
             Defaults to *None*. Another image to save to disk.
         """
         image.save(u'renderer.png', u'png')
-        if image2 is not None:
+        if image2:
             image2.save(u'renderer2.png', u'png')

@@ -100,9 +100,11 @@ class SlideController(QtGui.QWidget):
         # Type label for the top of the slide controller
         self.TypeLabel = QtGui.QLabel(self.Panel)
         if self.isLive:
-            self.TypeLabel.setText(u'<strong>%s</strong>' % self.trUtf8(u'Live'))
+            self.TypeLabel.setText(u'<strong>%s</strong>' %
+                self.trUtf8(u'Live'))
         else:
-            self.TypeLabel.setText(u'<strong>%s</strong>' % self.trUtf8(u'Preview'))
+            self.TypeLabel.setText(u'<strong>%s</strong>' %
+                self.trUtf8(u'Preview'))
         self.TypeLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.PanelLayout.addWidget(self.TypeLabel)
         # Splitter
@@ -126,7 +128,8 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.setColumnWidth(1, self.Controller.width())
         self.PreviewListWidget.isLive = self.isLive
         self.PreviewListWidget.setObjectName(u'PreviewListWidget')
-        self.PreviewListWidget.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.PreviewListWidget.setEditTriggers(
+            QtGui.QAbstractItemView.NoEditTriggers)
         self.ControllerLayout.addWidget(self.PreviewListWidget)
         # Build the full toolbar
         self.Toolbar = OpenLPToolbar(self)
@@ -302,7 +305,7 @@ class SlideController(QtGui.QWidget):
                 str_to_bool(self.songsconfig.get_config(u'display songbar', True)):
                 for action in self.Songbar.actions:
                     self.Songbar.actions[action].setVisible(False)
-                if item.verse_order is not None:
+                if item.verse_order:
                     verses = item.verse_order.split(u' ')
                     for verse in verses:
                         try:
@@ -336,7 +339,7 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'addServiceItem')
         #If old item was a command tell it to stop
-        if self.commandItem is not None and \
+        if self.commandItem and \
             self.commandItem.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_stop'% self.commandItem.name.lower())
         self.commandItem = item
@@ -358,7 +361,7 @@ class SlideController(QtGui.QWidget):
         """
         Replacement item following a remote edit
         """
-        if self.commandItem is not None and \
+        if self.commandItem and \
             item.uuid == self.commandItem.uuid:
             self.addServiceManagerItem(item, self.PreviewListWidget.currentRow())
 
@@ -370,7 +373,7 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'addServiceManagerItem')
         #If old item was a command tell it to stop
-        if self.commandItem is not None and \
+        if self.commandItem and \
             self.commandItem.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_stop'% self.commandItem.name.lower())
         self.commandItem = item
@@ -413,7 +416,7 @@ class SlideController(QtGui.QWidget):
             self.PreviewListWidget.setItem(framenumber, 0, item)
             if slide_height != 0:
                 self.PreviewListWidget.setRowHeight(framenumber, slide_height)
-        if self.serviceitem.frames[0][u'text'] is not None:
+        if self.serviceitem.frames[0][u'text']:
             self.PreviewListWidget.resizeRowsToContents()
         self.PreviewListWidget.setColumnWidth(
             0, self.PreviewListWidget.viewport().size().width())
@@ -433,7 +436,7 @@ class SlideController(QtGui.QWidget):
         """
         Go to the first slide.
         """
-        if self.commandItem is not None and \
+        if self.commandItem and \
             self.commandItem.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_first'% self.commandItem.name.lower())
             QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
@@ -445,7 +448,7 @@ class SlideController(QtGui.QWidget):
         """
         Blank the screen.
         """
-        if self.commandItem is not None and \
+        if self.commandItem and \
             self.commandItem.service_item_type == ServiceItemType.Command:
             if blanked:
                 Receiver().send_message(u'%s_blank'% self.commandItem.name.lower())
@@ -499,7 +502,7 @@ class SlideController(QtGui.QWidget):
         """
         Go to the next slide.
         """
-        if self.commandItem is not None and \
+        if self.commandItem and \
             self.commandItem.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_next'% self.commandItem.name.lower())
             QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
@@ -514,7 +517,7 @@ class SlideController(QtGui.QWidget):
         """
         Go to the previous slide.
         """
-        if self.commandItem is not None and \
+        if self.commandItem and \
             self.commandItem.service_item_type == ServiceItemType.Command:
             Receiver().send_message(
                 u'%s_previous'% self.commandItem.name.lower())
@@ -530,7 +533,7 @@ class SlideController(QtGui.QWidget):
         """
         Go to the last slide.
         """
-        if self.commandItem is not None and \
+        if self.commandItem and \
             self.commandItem.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_last'% self.commandItem.name.lower())
             QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)

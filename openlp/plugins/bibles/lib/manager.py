@@ -97,7 +97,7 @@ class BibleManager(object):
                 # look to see if lazy load bible exists and get create getter.
                 meta = self.bible_db_cache[bname].get_meta(u'proxy')
                 proxy = None
-                if meta is not None:
+                if meta:
                     proxy = meta.value
                     # tell The Server where to get the verses from.
                 nhttp.set_proxy(proxy)
@@ -173,14 +173,14 @@ class BibleManager(object):
             nbible.save_meta(u'WEB', biblesource)
             # store the web id of the bible
             nbible.save_meta(u'bibleid', bibleid)
-            if proxyurl is not None and proxyurl != u'':
+            if proxyurl and proxyurl != u'':
                 # store the proxy URL
                 nbible.save_meta(u'proxy', proxyurl)
                 nhttp.set_proxy(proxyurl)
-            if proxyid is not None and proxyid != u'':
+            if proxyid and proxyid != u'':
                 # store the proxy userid
                 nbible.save_meta(u'proxyid', proxyid)
-            if proxypass is not None and proxypass != u'':
+            if proxypass and proxypass != u'':
                 # store the proxy password
                 nbible.save_meta(u'proxypass', proxypass)
             return True
@@ -247,7 +247,7 @@ class BibleManager(object):
         log.debug(u'get_bibles')
         bible_list = []
         for bible_name, bible_object in self.bible_db_cache.iteritems():
-            if self.bible_http_cache[bible_name] is not None:
+            if self.bible_http_cache[bible_name]:
                 bible_name = u'%s (%s)' % (bible_name, self.web)
             bible_list.append(bible_name)
         return bible_list
@@ -338,13 +338,14 @@ class BibleManager(object):
         # check to see if book/chapter exists fow HTTP bibles and load cache
         # if necessary
         web, bible = self.is_bible_web(bible)
-        if self.bible_http_cache[bible] is not None:
+        if self.bible_http_cache[bible]:
             book = self.bible_db_cache[bible].get_bible_book(bookname)
             if book is None:
                 log.debug(u'get_verse_text : new book')
                 for chapter in range(schapter, echapter + 1):
                     self.media.setQuickMessage(
-                        unicode(self.media.trUtf8(u'Downloading %s: %s')) % (bookname, chapter))
+                        unicode(self.media.trUtf8(u'Downloading %s: %s')) %
+                            (bookname, chapter))
                     search_results = \
                         self.bible_http_cache[bible].get_bible_chapter(
                             bible, bookname, chapter)

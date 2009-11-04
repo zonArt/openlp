@@ -55,7 +55,7 @@ class RemotesPlugin(Plugin):
     def finalise(self):
         log.debug(u'finalise')
         self.remove_toolbox_item()
-        if self.server is not None:
+        if self.server:
             self.server.close()
 
     def get_settings_tab(self):

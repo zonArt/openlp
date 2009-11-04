@@ -225,8 +225,8 @@ class ImpressController(PresentationController):
         Triggerent by new object being added to SlideController orOpenLP
         being shut down
         """
-        if self.document is not None:
-            if self.presentation is not None:
+        if self.document:
+            if self.presentation:
                 self.presentation.end()
                 self.presentation = None
             self.document.dispose()

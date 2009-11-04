@@ -44,17 +44,17 @@ class BibleCSVImpl(BibleCommon):
             QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
 
     def stop_import(self):
-        self.loadbible= False
+        self.loadbible = False
 
     def load_data(self, booksfile, versesfile, dialogobject):
         #Populate the Tables
-        fbooks=open(booksfile, 'r')
-        fverse=open(versesfile, 'r')
+        fbooks = open(booksfile, 'r')
+        fverse = open(versesfile, 'r')
 
         count = 0
         for line in fbooks:
             # cancel pressed
-            if self.loadbible == False:
+            if not self.loadbible:
                 break
             details = chardet.detect(line)
             line = unicode(line, details['encoding'])
@@ -72,7 +72,7 @@ class BibleCSVImpl(BibleCommon):
         count = 0
         book_ptr = None
         for line in fverse:
-            if self.loadbible == False:  # cancel pressed
+            if not self.loadbible:  # cancel pressed
                 break
             details = chardet.detect(line)
             line = unicode(line, details['encoding'])

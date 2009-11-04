@@ -69,7 +69,7 @@ def main():
     elif options.address is None:
         parser.print_help()
         parser.error("IP address missing")
-    elif options.slidenext is not None:
+    elif options.slidenext:
         options.event = u'next_slide'
         options.message = u''
         text = format_message(options)

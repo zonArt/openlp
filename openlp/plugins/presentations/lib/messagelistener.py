@@ -86,7 +86,7 @@ class MessageListener(object):
         
     def slide(self, message):
         self.activate()
-        if message is not None:
+        if message:
             self.controller.goto_slide(message[0]+1)
             self.controller.poll_slidenumber()
 

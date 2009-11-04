@@ -199,7 +199,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
     def onImportButtonClicked(self):
         message = self.trUtf8(u'Bible import completed')
-        if self.biblemanager is not None:
+        if self.biblemanager:
             if not self.bible_type is None and \
                 len(self.BibleNameEdit.displayText()) > 0:
                 self.MessageLabel.setText(self.trUtf8(u'Import Started'))
@@ -208,7 +208,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
                 self.ProgressBar.setValue(0)
                 self.biblemanager.process_dialog(self)
                 status, msg = self.importBible()
-                if msg is not None:
+                if msg:
                     message = msg
                 self.MessageLabel.setText(message)
                 self.ProgressBar.setValue(self.barmax)

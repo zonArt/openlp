@@ -149,8 +149,9 @@ class PluginManager(object):
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
                 plugin.settings_tab = plugin.get_settings_tab()
-                if plugin.settings_tab is not None:
-                    log.debug(u'Inserting settings tab item from %s' % plugin.name)
+                if plugin.settings_tab:
+                    log.debug(u'Inserting settings tab item from %s' %
+                        plugin.name)
                     settingsform.addTab(plugin.name, plugin.settings_tab)
                 else:
                     log.debug(u'No tab settings in %s' % plugin.name)

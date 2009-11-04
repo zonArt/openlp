@@ -606,7 +606,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Hook to close the main window and display windows on exit
         """
-        if self.serviceNotSaved == True:
+        if self.serviceNotSaved:
             ret = QtGui.QMessageBox.question(None,
                 self.trUtf8(u'Save Changes to Service?'),
                 self.trUtf8(u'Your service has changed, do you want to save those changes?'),
@@ -655,7 +655,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             service_name = u'(unsaved service)'
         else:
             service_name = serviceName
-        if reset == True:
+        if reset:
             self.serviceNotSaved = False
             title = u'%s - %s' % (self.mainTitle, service_name)
         else:

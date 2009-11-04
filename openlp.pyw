@@ -137,7 +137,7 @@ def main():
     log.addHandler(logfile)
     # Parse command line options and deal with them.
     (options, args) = parser.parse_args()
-    if options.debug is not None:
+    if options.debug:
         log.setLevel(logging.DEBUG)
     else:
         log.setLevel(logging.INFO)

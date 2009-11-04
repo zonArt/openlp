@@ -121,7 +121,7 @@ class RenderManager(object):
             else:
                 self.theme = self.service_theme
         else:
-            if theme is not None:
+            if theme:
                 self.theme = theme
             elif self.global_style == u'Song' or \
                 self.global_style == u'Service':
@@ -139,17 +139,19 @@ class RenderManager(object):
             self.renderer.set_theme(self.themedata)
             self.build_text_rectangle(self.themedata)
         #Replace the backgrount image from renderer with one from image
-        if self.override_background is not None:
+        if self.override_background:
             if self.save_bg_frame is None:
                 self.save_bg_frame = self.renderer.bg_frame
             if self.override_background_changed:
-                self.renderer.bg_frame = self.resize_image(self.override_background)
+                self.renderer.bg_frame = self.resize_image(
+                    self.override_background)
                 self.override_background_changed = False
         else:
             if self.override_background_changed:
-                self.renderer.bg_frame = self.resize_image(self.override_background)
+                self.renderer.bg_frame = self.resize_image(
+                    self.override_background)
                 self.override_background_changed = False
-            if self.save_bg_frame is not None:
+            if self.save_bg_frame:
                 self.renderer.bg_frame = self.save_bg_frame
                 self.save_bg_frame = None
 
@@ -164,20 +166,19 @@ class RenderManager(object):
         log.debug(u'build_text_rectangle')
         main_rect = None
         footer_rect = None
-        if theme.font_main_override == False:
+        if not theme.font_main_override:
             main_rect = QtCore.QRect(10, 0, self.width - 1,
                 self.footer_start - 20)
         else:
-            main_rect = QtCore.QRect(int(theme.font_main_x),
-                int(theme.font_main_y), int(theme.font_main_width)-1,
-                int(theme.font_main_height) - 1)
-        if theme.font_footer_override == False:
-            footer_rect = QtCore.QRect(10,self.footer_start, self.width - 1,
+            main_rect = QtCore.QRect(theme.font_main_x, theme.font_main_y,
+                theme.font_main_width - 1, theme.font_main_height - 1)
+        if not theme.font_footer_override:
+            footer_rect = QtCore.QRect(10, self.footer_start, self.width - 1,
                 self.height-self.footer_start)
         else:
-            footer_rect = QtCore.QRect(int(theme.font_footer_x),
-                int(theme.font_footer_y), int(theme.font_footer_width)-1,
-                int(theme.font_footer_height) - 1)
+            footer_rect = QtCore.QRect(theme.font_footer_x,
+                theme.font_footer_y, theme.font_footer_width - 1,
+                theme.font_footer_height - 1)
         self.renderer.set_text_rectangle(main_rect, footer_rect)
 
     def generate_preview(self, themedata):

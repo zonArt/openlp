@@ -76,7 +76,7 @@ class ImageMediaItem(MediaManagerItem):
         self.ListView.setIconSize(QtCore.QSize(88,50))
         self.servicePath = os.path.join(
             self.parent.config.get_data_path(), u'.thumbnails')
-        if os.path.exists(self.servicePath) == False:
+        if not os.path.exists(self.servicePath):
             os.mkdir(self.servicePath)
         self.loadList(self.parent.config.load_list(self.ConfigSection))
 
@@ -113,7 +113,7 @@ class ImageMediaItem(MediaManagerItem):
 
     def onDeleteClick(self):
         item = self.ListView.currentItem()
-        if item is not None:
+        if item:
             try:
                 os.remove(os.path.join(self.servicePath, unicode(item.text())))
             except:
@@ -141,16 +141,17 @@ class ImageMediaItem(MediaManagerItem):
 
     def generateSlideData(self, service_item):
         items = self.ListView.selectedIndexes()
-        if len(items) == 0:
+        if items:
+            service_item.title = self.trUtf8(u'Image(s)')
+            for item in items:
+                bitem = self.ListView.item(item.row())
+                filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+                frame = QtGui.QImage(unicode(filename))
+                (path, name) = os.path.split(filename)
+                service_item.add_from_image(path, name, frame)
+            return True
+        else:
             return False
-        service_item.title = self.trUtf8(u'Image(s)')
-        for item in items:
-            bitem = self.ListView.item(item.row())
-            filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
-            frame = QtGui.QImage(unicode(filename))
-            (path, name) = os.path.split(filename)
-            service_item.add_from_image(path, name, frame)
-        return True
 
     def toggleOverrideState(self):
         self.overrideActive = not self.overrideActive
