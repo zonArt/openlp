@@ -55,7 +55,6 @@ class SongMediaItem(MediaManagerItem):
             self.parent.songmanager, self)
         # Holds information about whether the edit is remotly triggered and
         # which Song is required.
-        self.remoteTriggered = None
         self.remoteSong = -1
 
     def initPluginNameVisible(self):
@@ -180,7 +179,6 @@ class SongMediaItem(MediaManagerItem):
     def displayResultsSong(self, searchresults):
         log.debug(u'display results Song')
         self.ListView.clear()
-        #log.debug(u'Records returned from search %s", len(searchresults))
         for song in searchresults:
             author_list = u''
             for author in song.authors:
@@ -323,34 +321,3 @@ class SongMediaItem(MediaManagerItem):
         ]
         return True
 
-    def onPreviewClick(self):
-        if not self.remoteTriggered:
-            MediaManagerItem.onPreviewClick(self)
-        else:
-            log.debug(self.PluginNameShort + u' Preview Requested')
-            service_item = self.buildServiceItem()
-            if service_item:
-                service_item.fromPlugin = True
-                self.parent.preview_controller.addServiceItem(service_item)
-
-    def onLiveClick(self):
-        if not self.remoteTriggered:
-            MediaManagerItem.onLiveClick(self)
-        else:
-            log.debug(self.PluginNameShort + u' Live Requested')
-            service_item = self.buildServiceItem()
-            if service_item:
-                service_item.fromPlugin = True
-                service_item.uuid = unicode(uuid.uuid1())
-                self.parent.live_controller.addServiceItem(service_item)
-
-    def onAddClick(self):
-        if not self.remoteTriggered:
-            MediaManagerItem.onAddClick(self)
-        else:
-            log.debug(self.PluginNameShort + u' Add Requested')
-            service_item = self.buildServiceItem()
-            if service_item:
-                service_item.fromPlugin = False
-                service_item.uuid = unicode(uuid.uuid1())
-                self.parent.service_manager.addServiceItem(service_item)

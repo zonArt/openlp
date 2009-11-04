@@ -24,7 +24,6 @@
 
 import types
 import os
-import uuid
 
 from PyQt4 import QtCore, QtGui
 
@@ -113,6 +112,7 @@ class MediaManagerItem(QtGui.QWidget):
         if title:
             self.title = title
         self.Toolbar = None
+        self.remoteTriggered = None
         self.ServiceItemIconName = None
         self.PageLayout = QtGui.QVBoxLayout(self)
         self.PageLayout.setSpacing(0)
@@ -358,7 +358,7 @@ class MediaManagerItem(QtGui.QWidget):
             u'to be defined by the plugin')
 
     def onPreviewClick(self):
-        if not self.ListView.selectedIndexes():
+        if not self.ListView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self,
                 self.trUtf8(u'No items selected...'),
                 self.trUtf8(u'You must select one or more items'))
@@ -381,7 +381,7 @@ class MediaManagerItem(QtGui.QWidget):
             self.parent.live_controller.addServiceItem(service_item)
 
     def onAddClick(self):
-        if not self.ListView.selectedIndexes():
+        if not self.ListView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self,
                 self.trUtf8(u'No items selected...'),
                 self.trUtf8(u'You must select one or more items'))
@@ -389,7 +389,6 @@ class MediaManagerItem(QtGui.QWidget):
         service_item = self.buildServiceItem()
         if service_item:
             service_item.fromPlugin = False
-            service_item.uuid = unicode(uuid.uuid1())
             self.parent.service_manager.addServiceItem(service_item)
 
     def buildServiceItem(self):

@@ -25,6 +25,7 @@
 import logging
 import os
 import time
+import uuid
 
 from PyQt4 import QtGui
 
@@ -73,6 +74,7 @@ class ServiceItem(object):
         self.service_item_type = None
         self.editEnabled = False
         self.service_frames = []
+        self.uuid = unicode(uuid.uuid1())
 
     def addIcon(self, icon):
         """
