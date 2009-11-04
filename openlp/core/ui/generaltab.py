@@ -151,7 +151,7 @@ class GeneralTab(SettingsTab):
         self.AutoOpenCheckBox.setText(self.trUtf8(u'Automatically open the last service'))
         self.ShowSplashCheckBox.setText(self.trUtf8(u'Show the splash screen'))
         self.SettingsGroupBox.setTitle(self.trUtf8(u'Application Settings'))
-        self.SaveCheckServiceCheckBox.setText(self.trUtf8(u'Prompt to save Sevice before starting New'))
+        self.SaveCheckServiceCheckBox.setText(self.trUtf8(u'Prompt to save Service before starting New'))
         self.CCLIGroupBox.setTitle(self.trUtf8(u'CCLI Details'))
         self.NumberLabel.setText(self.trUtf8(u'CCLI Number:'))
         self.UsernameLabel.setText(self.trUtf8(u'SongSelect Username:'))
