@@ -30,7 +30,7 @@ from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, str_to_bool
 
-class DisplayLabel(QtGui.QWidget):
+class DisplayWidget(QtGui.QWidget):
     """
     Customised version of QTableWidget which can respond to keyboard
     events.
@@ -40,7 +40,7 @@ class DisplayLabel(QtGui.QWidget):
     log.info(u'MainDisplay loaded')
 
     def __init__(self, parent=None, name=None):
-        QQtGui.QWidget.__init__(self, parent)
+        QtGui.QWidget.__init__(self, parent)
         self.parent = parent
 
     def keyPressEvent(self, event):
@@ -65,7 +65,7 @@ class DisplayLabel(QtGui.QWidget):
         else:
             event.ignore()
 
-class MainDisplay(DisplayLabel):
+class MainDisplay(DisplayWidget):
     """
     This is the form that is used to display things on the projector.
     """
@@ -84,7 +84,7 @@ class MainDisplay(DisplayLabel):
             The list of screens.
         """
         log.debug(u'Initilisation started')
-        QtGui.QWidget.__init__(self, None)
+        DisplayWidget.__init__(self, None)
         self.parent = parent
         self.setWindowTitle(u'OpenLP Display')
         self.screens = screens
@@ -148,12 +148,6 @@ class MainDisplay(DisplayLabel):
                     screen = scrn
                     break
         self.setGeometry(screen[u'size'])
-        if not screen[u'primary']:
-            self.showFullScreen()
-            self.primary = False
-        else:
-            self.setVisible(False)
-            self.primary = True
         #Build a custom splash screen
         self.InitialFrame = QtGui.QImage(
             screen[u'size'].width(), screen[u'size'].height(),
@@ -174,6 +168,13 @@ class MainDisplay(DisplayLabel):
             QtGui.QImage.Format_ARGB32_Premultiplied)
         painter.begin(self.blankFrame)
         painter.fillRect(self.blankFrame.rect(), QtCore.Qt.black)
+        # To display or not to display?
+        if not screen[u'primary']:
+            self.showFullScreen()
+            self.primary = False
+        else:
+            self.setVisible(False)
+            self.primary = True
 
     def resetDisplay(self):
         if self.primary:
