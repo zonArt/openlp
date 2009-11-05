@@ -544,7 +544,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         monitor number does not exist.
         """
         screen_number = int(self.generalConfig.get_config(u'Monitor', 0))
-
         monitor_exists = False
         for screen in self.screenList:
             if screen[u'number'] == screen_number:
@@ -560,7 +559,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.showMaximized()
         screen_number = self.getMonitorNumber()
         self.mainDisplay.setup(screen_number)
-        self.setFocus()
+        if self.mainDisplay.isVisible():
+            self.mainDisplay.setFocus()
+        self.activateWindow()
         if str_to_bool(self.generalConfig.get_config(u'Auto Open', False)):
             self.ServiceManagerContents.onLoadService(True)
         if str_to_bool(self.generalConfig.get_config(u'Screen Blank', False)) \
@@ -601,6 +602,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if updated_display != self.RenderManager.current_display:
             self.RenderManager.update_display(updated_display)
             self.mainDisplay.setup(updated_display)
+        self.activateWindow()
 
     def closeEvent(self, event):
         """
