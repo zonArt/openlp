@@ -430,6 +430,7 @@ class ThemeManager(QtGui.QWidget):
         log.debug(u'generateAndSaveImage %s %s %s', dir, name, theme_xml)
         theme = ThemeXML()
         theme.parse(theme_xml)
+        self.cleanTheme(theme)
         theme.extend_image_filename(dir)
         frame = self.generateImage(theme)
         samplepathname = os.path.join(self.path, name + u'.png')
