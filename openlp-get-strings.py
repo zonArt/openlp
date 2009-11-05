@@ -42,7 +42,7 @@ ts_message = u"""    <message>
       <translation type="unfinished"></translation>
     </message>
 """
-find_trUtf8 = re.compile(r"trUtf8\(u'([\w]+)'\)", re.UNICODE)
+find_trUtf8 = re.compile(r"trUtf8\(u'([\.:;\\&\w]+)'\)", re.UNICODE)
 strings = {}
 
 def parse_file(filename):
@@ -83,7 +83,7 @@ def write_file(filename):
     file.close()
 
 def main():
-    start_dir = u'/home/raoul/Projects/openlp/i18n'
+    start_dir = u'.'
     for root, dirs, files in os.walk(start_dir):
         for file in files:
             if file.endswith(u'.py'):
