@@ -256,3 +256,26 @@ class ServiceItem(object):
                 self.add_from_command(path, text_image)
         elif self.service_item_type == ServiceItemType.Video:
             pass
+
+    def merge(self, other):
+        """
+        Updates the uuid with the value from the original one
+        The uuid is unique for a give service item but this allows one to
+        replace an original version.
+        """
+        self.uuid = other.uuid
+
+    def __eq__(self, other):
+        """
+        Confirms the service items are for the same instance
+        """
+        if not other:
+            return False
+        return self.uuid == other.uuid
+
+    def __ne__(self, other):
+        """
+        Confirms the service items are not for the same instance
+        """
+        return self.uuid != other.uuid
+

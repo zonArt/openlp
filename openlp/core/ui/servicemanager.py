@@ -544,7 +544,7 @@ class ServiceManager(QtGui.QWidget):
         sitem, count = self.findServiceItem()
         item.render()
         if self.remoteEditTriggered:
-            item.uuid = self.serviceItems[sitem][u'data'].uuid
+            item.merge(self.serviceItems[sitem][u'data'])
             self.serviceItems[sitem][u'data'] = item
             self.remoteEditTriggered = False
             self.repaintServiceList(sitem + 1, 0)

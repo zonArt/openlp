@@ -361,8 +361,7 @@ class SlideController(QtGui.QWidget):
         """
         Replacement item following a remote edit
         """
-        if self.commandItem and \
-            item.uuid == self.commandItem.uuid:
+        if item.__eq__(self.commandItem):
             self.addServiceManagerItem(item, self.PreviewListWidget.currentRow())
 
     def addServiceManagerItem(self, item, slideno):
