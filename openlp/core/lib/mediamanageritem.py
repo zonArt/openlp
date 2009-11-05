@@ -377,7 +377,6 @@ class MediaManagerItem(QtGui.QWidget):
         service_item = self.buildServiceItem()
         if service_item:
             service_item.fromPlugin = True
-            service_item.uuid = unicode(uuid.uuid1())
             self.parent.live_controller.addServiceItem(service_item)
 
     def onAddClick(self):
