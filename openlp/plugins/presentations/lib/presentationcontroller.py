@@ -149,9 +149,6 @@ class PresentationController(object):
         self.thumbnailprefix = u'slide'
         if not os.path.isdir(self.thumbnailroot):
             os.makedirs(self.thumbnailroot)
-        self.timer = QtCore.QTimer()
-        self.timer.setInterval(500)
-        QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.poll_slidenumber)
 
     def check_available(self):
         """
@@ -181,13 +178,16 @@ class PresentationController(object):
         log.debug(u'Kill')
         self.close_presentation()
 
-    def load_presentation(self, presentation):
+    def load_presentation(self, presentation, is_live):
         """
         Called when a presentation is added to the SlideController.
         Loads the presentation and starts it
 
         ``presentation``
         The file name of the presentations to the run.
+
+        ``is_live``
+        True if Live controller is opening the presentation
         """
         pass
 
@@ -207,9 +207,7 @@ class PresentationController(object):
         recent than the powerpoint
         """
         lastimage = self.get_slide_preview_file(self.get_slide_count())
-        if lastimage is None:
-            return False
-        if not os.path.isfile(lastimage):
+        if not (lastimage and os.path.isfile(lastimage)):
             return False
         imgdate = os.stat(lastimage).st_mtime
         pptdate = os.stat(self.filepath).st_mtime
@@ -301,7 +299,7 @@ class PresentationController(object):
         """
         return None
 
-    def poll_slidenumber(self):
+    def poll_slidenumber(self, is_live):
         """
         Check the current slide number
         """
@@ -311,5 +309,9 @@ class PresentationController(object):
         if current == self.slidenumber:
             return
         self.slidenumber = current
-        Receiver().send_message(u'slidecontroller_change', self.slidenumber - 1)
-        
+        if is_live:
+            prefix = u'live'
+        else:
+            prefix = u'preview'
+        Receiver().send_message(u'%s_slidecontroller_change' % prefix, 
+            self.slidenumber - 1)

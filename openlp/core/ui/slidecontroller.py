@@ -253,16 +253,20 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.makeWidgetsInvisible(self.media_list)
         else:
             self.Toolbar.makeWidgetsInvisible(self.song_list)
+        if isLive:
+            prefix = u'live_slidecontroller'
+        else:
+            prefix = u'preview_slidecontroller'
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_first'), self.onSlideSelectedFirst)
+            QtCore.SIGNAL(u'%s_first' % prefix), self.onSlideSelectedFirst)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_next'), self.onSlideSelectedNext)
+            QtCore.SIGNAL(u'%s_next' % prefix), self.onSlideSelectedNext)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_previous'), self.onSlideSelectedPrevious)
+            QtCore.SIGNAL(u'%s_previous' % prefix), self.onSlideSelectedPrevious)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_last'), self.onSlideSelectedLast)
+            QtCore.SIGNAL(u'%s_last' % prefix), self.onSlideSelectedLast)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_change'), self.onSlideChange)
+            QtCore.SIGNAL(u'%s_change' % prefix), self.onSlideChange)
 
     def onSongBarHandler(self):
         request = self.sender().text()
@@ -350,7 +354,7 @@ class SlideController(QtGui.QWidget):
         if item.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_start' % item.name.lower(), \
                 [item.shortname, item.service_item_path,
-                item.service_frames[0][u'title']])
+                item.service_frames[0][u'title'], self.isLive])
         slideno = 0
         if self.songEdit:
             slideno = self.row
@@ -381,7 +385,7 @@ class SlideController(QtGui.QWidget):
         if item.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_start' % item.name.lower(), \
                 [item.shortname, item.service_item_path,
-                item.service_frames[0][u'title'], slideno])
+                item.service_frames[0][u'title'], slideno, self.isLive])
         self.displayServiceManagerItems(item, slideno)
 
     def displayServiceManagerItems(self, serviceitem, slideno):
