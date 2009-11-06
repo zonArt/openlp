@@ -276,7 +276,7 @@ class ThemeManager(QtGui.QWidget):
         xml = file_to_xml(xml_file)
         if not xml:
             xml = self.baseTheme()
-        return createThemeFromXml(xml, self.path)
+        return self.createThemeFromXml(xml, self.path)
 
     def checkThemesExists(self, dir):
         log.debug(u'check themes')

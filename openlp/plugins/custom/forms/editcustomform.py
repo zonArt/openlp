@@ -81,7 +81,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
     def onPreview(self, button):
         log.debug(u'onPreview')
         if button.text() == unicode(self.trUtf8(u'Save && Preview')) \
-            and self.saveSong():
+            and self.saveCustom():
             Receiver().send_message(u'preview_custom')
 
     def initialise(self):
@@ -105,7 +105,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         for themename in themelist:
             self.ThemeComboBox.addItem(themename)
 
-    def loadCustom(self, id):
+    def loadCustom(self, id, preview):
         self.customSlide = CustomSlide()
         self.initialise()
         if id != 0:
@@ -124,17 +124,27 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             self.ThemeComboBox.setCurrentIndex(id)
         else:
             self.ThemeComboBox.setCurrentIndex(0)
+        #if not preview hide the preview button
+        self.previewButton.setVisible(False)
+        if preview:
+            self.previewButton.setVisible(True)
 
     def closePressed(self):
         Receiver().send_message(u'remote_edit_clear')
         self.close()
 
     def accept(self):
+        log.debug(u'accept')
+        if self.saveCustom():
+            Receiver().send_message(u'load_custom_list')
+            self.close()
+
+    def saveCustom(self):
         valid, message = self._validate()
         if not valid:
             QtGui.QMessageBox.critical(self, self.trUtf8(u'Error'), message,
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-            return
+            return False
         sxml = SongXMLBuilder()
         sxml.new_document()
         sxml.add_lyrics_to_song()
@@ -148,8 +158,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.customSlide.credits = unicode(self.CreditEdit.displayText())
         self.customSlide.theme_name = unicode(self.ThemeComboBox.currentText())
         self.custommanager.save_slide(self.customSlide)
-        Receiver().send_message(u'load_custom_list')
-        self.close()
+        return True
 
     def onUpButtonPressed(self):
         selectedRow = self.VerseListView.currentRow()
