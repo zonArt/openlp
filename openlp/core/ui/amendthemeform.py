@@ -28,7 +28,7 @@ import os.path
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import ThemeXML, file_to_xml
+from openlp.core.lib import ThemeXML
 from amendthemedialog import Ui_AmendThemeDialog
 
 log = logging.getLogger(u'AmendThemeForm')
@@ -184,14 +184,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
     def loadTheme(self, theme):
         log.debug(u'LoadTheme %s', theme)
-        if theme is None:
-            self.theme.parse(self.thememanager.baseTheme())
-        else:
-            xml_file = os.path.join(self.path, theme, theme + u'.xml')
-            xml = file_to_xml(xml_file)
-            self.theme.parse(xml)
-            self.theme.extend_image_filename(self.path)
-        self.thememanager.cleanTheme(self.theme)
+        self.theme = self.thememanager.getThemeData(theme)
         # Stop the initial screen setup generating 1 preview per field!
         self.allowPreview = False
         self.paintUi(self.theme)
