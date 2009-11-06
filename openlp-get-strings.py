@@ -42,7 +42,7 @@ ts_message = u"""    <message>
       <translation type="unfinished"></translation>
     </message>
 """
-find_trUtf8 = re.compile(r"trUtf8\(u['\"]([^)]+)['\"]\)", re.UNICODE)
+find_trUtf8 = re.compile(r"trUtf8\(u?(['\"])([^\1]+)\1\)", re.UNICODE)
 strings = {}
 
 def parse_file(filename):
