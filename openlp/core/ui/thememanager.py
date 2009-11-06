@@ -269,18 +269,14 @@ class ThemeManager(QtGui.QWidget):
         return self.themelist
 
     def getThemeData(self, themename):
+        assert(themename)
         log.debug(u'getthemedata for theme %s', themename)
         xml_file = os.path.join(self.path, unicode(themename),
             unicode(themename) + u'.xml')
-        try:
-            xml = file_to_xml(xml_file)
-        except:
+        xml = file_to_xml(xml_file)
+        if not xml:
             xml = self.baseTheme()
-        theme = ThemeXML()
-        theme.parse(xml)
-        self.cleanTheme(theme)
-        theme.extend_image_filename(self.path)
-        return theme
+        return createThemeFromXml(xml, self.path)
 
     def checkThemesExists(self, dir):
         log.debug(u'check themes')
@@ -428,10 +424,7 @@ class ThemeManager(QtGui.QWidget):
 
     def generateAndSaveImage(self, dir, name, theme_xml):
         log.debug(u'generateAndSaveImage %s %s %s', dir, name, theme_xml)
-        theme = ThemeXML()
-        theme.parse(theme_xml)
-        self.cleanTheme(theme)
-        theme.extend_image_filename(dir)
+        theme = self.createThemeFromXml(theme_xml, dir)
         frame = self.generateImage(theme)
         samplepathname = os.path.join(self.path, name + u'.png')
         if os.path.exists(samplepathname):
@@ -464,6 +457,13 @@ class ThemeManager(QtGui.QWidget):
         newtheme.add_display(u'False', unicode(u'#FFFFFF'), u'False',
             unicode(u'#FFFFFF'), unicode(0), unicode(0), unicode(0))
         return newtheme.extract_xml()
+
+    def createThemeFromXml(self, theme_xml, path):
+        theme = ThemeXML()
+        theme.parse(theme_xml)
+        self.cleanTheme(theme)
+        theme.extend_image_filename(path)
+        return theme
 
     def cleanTheme(self, theme):
         theme.background_color = theme.background_color.strip()
