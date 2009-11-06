@@ -178,7 +178,7 @@ class PresentationController(object):
         log.debug(u'Kill')
         self.close_presentation()
 
-    def load_presentation(self, presentation, is_live):
+    def load_presentation(self, presentation):
         """
         Called when a presentation is added to the SlideController.
         Loads the presentation and starts it
@@ -186,8 +186,6 @@ class PresentationController(object):
         ``presentation``
         The file name of the presentations to the run.
 
-        ``is_live``
-        True if Live controller is opening the presentation
         """
         pass
 

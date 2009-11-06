@@ -142,7 +142,7 @@ class MessageListener(object):
         """
         Based on the handler passed at startup triggers slide show to shut down
         """
-        if not self.is_live:
+        if self.is_live:
             Receiver().send_message(u'live_slide_show') 
         self.controller.close_presentation()
         self.controller.slidenumber = 0
