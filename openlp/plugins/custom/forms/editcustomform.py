@@ -21,6 +21,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+import logging
 
 from PyQt4 import QtCore, QtGui
 
@@ -32,6 +33,9 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
     """
     Class documentation goes here.
     """
+    global log
+    log = logging.getLogger(u'EditCustomForm')
+    log.info(u'Custom Editor loaded')
     def __init__(self, custommanager, parent = None):
         """
         Constructor
@@ -40,6 +44,12 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         #self.parent = parent
         self.setupUi(self)
         # Connecting signals and slots
+        self.previewButton = QtGui.QPushButton()
+        self.previewButton.setText(self.trUtf8(u'Save && Preview'))
+        self.buttonBox.addButton(
+            self.previewButton, QtGui.QDialogButtonBox.ActionRole)
+        QtCore.QObject.connect(self.buttonBox,
+            QtCore.SIGNAL(u'clicked(QAbstractButton*)'), self.onPreview)
         QtCore.QObject.connect(self.AddButton,
             QtCore.SIGNAL(u'pressed()'), self.onAddButtonPressed)
         QtCore.QObject.connect(self.EditButton,
@@ -67,6 +77,12 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         # Create other objects and forms
         self.custommanager = custommanager
         self.initialise()
+
+    def onPreview(self, button):
+        log.debug(u'onPreview')
+        if button.text() == unicode(self.trUtf8(u'Save && Preview')) \
+            and self.saveSong():
+            Receiver().send_message(u'preview_custom')
 
     def initialise(self):
         self.editAll = False
