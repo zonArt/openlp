@@ -79,17 +79,16 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         self.StatusComboBox.setCurrentIndex(-1)
         self.VersionNumberLabel.setText(u'')
         self.AboutTextBrowser.setHtml(u'')
+        self.StatusComboBox.setEnabled(False)
 
     def _setDetails(self):
         log.debug('PluginStatus: %s', str(self.activePlugin.status))
         self.VersionNumberLabel.setText(self.activePlugin.version)
         self.AboutTextBrowser.setHtml(self.activePlugin.about())
-        if self.activePlugin.can_be_disabled():
-            self.programaticChange = True
-            self.StatusComboBox.setCurrentIndex(int(self.activePlugin.status))
-            self.StatusComboBox.setEnabled(True)
-        else:
-            self.StatusComboBox.setEnabled(False)
+        self.programaticChange = True
+        self.StatusComboBox.setCurrentIndex(int(self.activePlugin.status))
+        self.StatusComboBox.setEnabled(True)
+        self.programaticChange = False
 
     def onPluginListWidgetSelectionChanged(self):
         if self.PluginListWidget.currentItem() is None:
@@ -107,9 +106,6 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             self._clearDetails()
 
     def onStatusComboBoxChanged(self, status):
-        if self.programaticChange:
-            self.programaticChange = False
-            return
         self.activePlugin.toggle_status(status)
         if status == PluginStatus.Active:
             self.activePlugin.initialise()

@@ -40,9 +40,6 @@ class RemotesPlugin(Plugin):
         self.weight = -1
         self.server = None
 
-    def can_be_disabled(self):
-        return True
-
     def initialise(self):
         log.debug(u'initialise')
         Plugin.initialise(self)

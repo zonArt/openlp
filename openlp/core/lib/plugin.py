@@ -139,14 +139,6 @@ class Plugin(QtCore.QObject):
         """
         return True
 
-    def can_be_disabled(self):
-        """
-        Indicates whether the plugin can be disabled by the plugin list.
-
-        Returns True or False.
-        """
-        return False
-
     def set_status(self):
         """
         Sets the status of the plugin

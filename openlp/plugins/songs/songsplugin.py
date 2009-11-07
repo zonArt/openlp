@@ -57,9 +57,6 @@ class SongsPlugin(Plugin):
         self.opensong_export_form = OpenSongExportForm()
         self.icon = buildIcon(u':/media/media_song.png')
 
-    def can_be_disabled(self):
-        return True
-
     def get_settings_tab(self):
         return SongsTab(self.name)
 

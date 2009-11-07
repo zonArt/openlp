@@ -46,9 +46,6 @@ class PresentationPlugin(Plugin):
         """
         return PresentationTab(self.name, self.controllers)
 
-    def can_be_disabled(self):
-        return True
-
     def initialise(self):
         log.info(u'Presentations Initialising')
         Plugin.initialise(self)
