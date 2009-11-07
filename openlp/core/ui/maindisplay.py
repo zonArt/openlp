@@ -47,16 +47,16 @@ class DisplayWidget(QtGui.QWidget):
         if type(event) == QtGui.QKeyEvent:
             #here accept the event and do something
             if event.key() == QtCore.Qt.Key_Up:
-                Receiver().send_message(u'slidecontroller_previous')
+                Receiver().send_message(u'live_slidecontroller_previous')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Down:
-                Receiver().send_message(u'slidecontroller_next')
+                Receiver().send_message(u'live_slidecontroller_next')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageUp:
-                Receiver().send_message(u'slidecontroller_first')
+                Receiver().send_message(u'live_slidecontroller_first')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageDown:
-                Receiver().send_message(u'slidecontroller_last')
+                Receiver().send_message(u'live_slidecontroller_last')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Escape:
                 self.resetDisplay()
@@ -116,9 +116,9 @@ class MainDisplay(DisplayWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'alert_text'), self.displayAlert)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_start'), self.hideDisplay)
+            QtCore.SIGNAL(u'live_slide_hide'), self.hideDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_stop'), self.showDisplay)
+            QtCore.SIGNAL(u'live_slide_show'), self.showDisplay)
         QtCore.QObject.connect(self.mediaObject,
             QtCore.SIGNAL(u'finished()'), self.onMediaFinish)
         QtCore.QObject.connect(Receiver.get_receiver(),

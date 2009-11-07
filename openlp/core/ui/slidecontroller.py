@@ -253,16 +253,20 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.makeWidgetsInvisible(self.media_list)
         else:
             self.Toolbar.makeWidgetsInvisible(self.song_list)
+        if isLive:
+            prefix = u'live_slidecontroller'
+        else:
+            prefix = u'preview_slidecontroller'
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_first'), self.onSlideSelectedFirst)
+            QtCore.SIGNAL(u'%s_first' % prefix), self.onSlideSelectedFirst)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_next'), self.onSlideSelectedNext)
+            QtCore.SIGNAL(u'%s_next' % prefix), self.onSlideSelectedNext)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_previous'), self.onSlideSelectedPrevious)
+            QtCore.SIGNAL(u'%s_previous' % prefix), self.onSlideSelectedPrevious)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_last'), self.onSlideSelectedLast)
+            QtCore.SIGNAL(u'%s_last' % prefix), self.onSlideSelectedLast)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_change'), self.onSlideChange)
+            QtCore.SIGNAL(u'%s_change' % prefix), self.onSlideChange)
 
     def onSongBarHandler(self):
         request = self.sender().text()
@@ -350,7 +354,7 @@ class SlideController(QtGui.QWidget):
         if item.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_start' % item.name.lower(), \
                 [item.shortname, item.service_item_path,
-                item.service_frames[0][u'title']])
+                item.service_frames[0][u'title'], self.isLive])
         slideno = 0
         if self.songEdit:
             slideno = self.row
@@ -380,7 +384,7 @@ class SlideController(QtGui.QWidget):
         if item.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_start' % item.name.lower(), \
                 [item.shortname, item.service_item_path,
-                item.service_frames[0][u'title'], slideno])
+                item.service_frames[0][u'title'], slideno, self.isLive])
         self.displayServiceManagerItems(item, slideno)
 
     def displayServiceManagerItems(self, serviceitem, slideno):
@@ -438,7 +442,7 @@ class SlideController(QtGui.QWidget):
         if self.commandItem and \
             self.commandItem.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_first'% self.commandItem.name.lower())
-            QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
+            self.updatePreview()
         else:
             self.PreviewListWidget.selectRow(0)
             self.onSlideSelected()
@@ -467,7 +471,7 @@ class SlideController(QtGui.QWidget):
             if self.commandItem.service_item_type == ServiceItemType.Command:
                 Receiver().send_message(u'%s_slide'% self.commandItem.name.lower(), [row])
                 if self.isLive:
-                    QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
+                    self.updatePreview()
             else:
                 frame = self.serviceitem.frames[row][u'image']
                 before = time.time()
@@ -484,18 +488,24 @@ class SlideController(QtGui.QWidget):
         The slide has been changed. Update the slidecontroller accordingly
         """
         self.PreviewListWidget.selectRow(row)
-        QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
+        self.updatePreview()
 
-    def grabMainDisplay(self):
+    def updatePreview(self):
         rm = self.parent.RenderManager
         if not rm.screen_list[rm.current_display][u'primary']:
-            winid = QtGui.QApplication.desktop().winId()
-            rect = rm.screen_list[rm.current_display][u'size']
-            winimg = QtGui.QPixmap.grabWindow(winid, rect.x(), rect.y(), rect.width(), rect.height())
-            self.SlidePreview.setPixmap(winimg)
+            # Grab now, but try again in a couple of seconds if slide change is slow
+            QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
+            QtCore.QTimer.singleShot(2.5, self.grabMainDisplay)
         else:
             label = self.PreviewListWidget.cellWidget(self.PreviewListWidget.currentRow(), 0)
             self.SlidePreview.setPixmap(label.pixmap())
+    
+    def grabMainDisplay(self):
+        rm = self.parent.RenderManager
+        winid = QtGui.QApplication.desktop().winId()
+        rect = rm.screen_list[rm.current_display][u'size']
+        winimg = QtGui.QPixmap.grabWindow(winid, rect.x(), rect.y(), rect.width(), rect.height())
+        self.SlidePreview.setPixmap(winimg)
 
     def onSlideSelectedNext(self):
         """
@@ -504,7 +514,7 @@ class SlideController(QtGui.QWidget):
         if self.commandItem and \
             self.commandItem.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_next'% self.commandItem.name.lower())
-            QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
+            self.updatePreview()
         else:
             row = self.PreviewListWidget.currentRow() + 1
             if row == self.PreviewListWidget.rowCount():
@@ -520,7 +530,7 @@ class SlideController(QtGui.QWidget):
             self.commandItem.service_item_type == ServiceItemType.Command:
             Receiver().send_message(
                 u'%s_previous'% self.commandItem.name.lower())
-            QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
+            self.updatePreview()
         else:
             row = self.PreviewListWidget.currentRow() - 1
             if row == -1:
@@ -535,7 +545,7 @@ class SlideController(QtGui.QWidget):
         if self.commandItem and \
             self.commandItem.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_last'% self.commandItem.name.lower())
-            QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
+            self.updatePreview()
         else:
             self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount() - 1)
             self.onSlideSelected()
