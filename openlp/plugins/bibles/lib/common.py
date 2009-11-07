@@ -105,7 +105,8 @@ class BibleCommon(object):
         xml_string = u''
         req = urllib2.Request(urlstring)
         #Make us look like an IE Browser on XP to stop blocking by web site
-        req.add_header(u'User-Agent', u'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)')
+        req.add_header(u'User-Agent',
+            u'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)')
         try:
             handle = urllib2.urlopen(req)
             html = handle.read()
@@ -164,4 +165,3 @@ class BibleCommon(object):
             start_tag = text.find(u'<')
         text = text.replace(u'>', u'')
         return text.rstrip().lstrip()
-
