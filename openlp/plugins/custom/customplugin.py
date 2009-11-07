@@ -54,9 +54,6 @@ class CustomPlugin(Plugin):
         # Create the CustomManagerItem object
         return CustomMediaItem(self, self.icon, self.name)
 
-    def can_be_disabled(self):
-        return True
-
     def initialise(self):
         log.info(u'Plugin Initialising')
         Plugin.initialise(self)
