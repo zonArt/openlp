@@ -427,7 +427,7 @@ class SlideController(QtGui.QWidget):
         self.onSlideSelected()
         self.PreviewListWidget.setFocus()
         log.info(u'Display Rendering took %4s' % (time.time() - before))
-        if self.serviceitem.audit != u'' and self.isLive:
+        if self.serviceitem.audit and self.isLive:
             Receiver().send_message(u'songusage_live', self.serviceitem.audit)
         log.debug(u'displayServiceManagerItems End')
 

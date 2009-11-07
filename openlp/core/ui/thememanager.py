@@ -182,10 +182,6 @@ class ThemeManager(QtGui.QWidget):
                 self.ThemeListWidget.takeItem(row)
                 try:
                     os.remove(os.path.join(self.path, th))
-                except:
-                    #if not present do not worry
-                    pass
-                try:
                     shutil.rmtree(os.path.join(self.path, theme))
                 except:
                     #if not present do not worry
@@ -210,16 +206,22 @@ class ThemeManager(QtGui.QWidget):
             unicode(self.trUtf8(u'Save Theme - (%s)')) %  theme,
             self.config.get_last_dir(1) )
         path = unicode(path)
-        if path != u'':
+        if path:
             self.config.set_last_dir(path, 1)
             themePath = os.path.join(path, theme + u'.theme')
-            zip = zipfile.ZipFile(themePath, u'w')
-            source = os.path.join(self.path, theme)
-            for root, dirs, files in os.walk(source):
-                for name in files:
-                    zip.write(
-                        os.path.join(source, name), os.path.join(theme, name))
-            zip.close()
+            zip = None
+            try:
+                zip = zipfile.ZipFile(themePath, u'w')
+                source = os.path.join(self.path, theme)
+                for root, dirs, files in os.walk(source):
+                    for name in files:
+                        zip.write(
+                            os.path.join(source, name), os.path.join(theme, name))
+            except:
+                log.exception(u'Export Theme Failed')
+            finally:
+                if zip:
+                    zip.close()
 
     def onImportTheme(self):
         files = QtGui.QFileDialog.getOpenFileNames(
@@ -291,44 +293,49 @@ class ThemeManager(QtGui.QWidget):
         """
         log.debug(u'Unzipping theme %s', filename)
         filename = unicode(filename)
+        zip = None
+        outfile = None
         try:
             zip = zipfile.ZipFile(filename)
+            filexml = None
+            themename = None
+            for file in zip.namelist():
+                if file.endswith(os.path.sep):
+                    theme_dir = os.path.join(dir, file)
+                    if not os.path.exists(theme_dir):
+                        os.mkdir(os.path.join(dir, file))
+                else:
+                    fullpath = os.path.join(dir, file)
+                    names = file.split(os.path.sep)
+                    if len(names) > 1:
+                        # not preview file
+                        if themename is None:
+                            themename = names[0]
+                        xml_data = zip.read(file)
+                        if os.path.splitext(file)[1].lower() in [u'.xml']:
+                            if self.checkVersion1(xml_data):
+                                # upgrade theme xml
+                                filexml = self.migrateVersion122(filename,
+                                    fullpath, xml_data)
+                            else:
+                                filexml = xml_data
+                            outfile = open(fullpath, u'w')
+                            outfile.write(filexml)
+                        else:
+                            outfile = open(fullpath, u'w')
+                            outfile.write(zip.read(file))
+            self.generateAndSaveImage(dir, themename, filexml)
         except:
             QtGui.QMessageBox.critical(
                 self, self.trUtf8(u'Error'),
                 self.trUtf8(u'File is not a valid theme!'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-            return
-        filexml = None
-        themename = None
-        for file in zip.namelist():
-            if file.endswith(os.path.sep):
-                theme_dir = os.path.join(dir, file)
-                if not os.path.exists(theme_dir):
-                    os.mkdir(os.path.join(dir, file))
-            else:
-                fullpath = os.path.join(dir, file)
-                names = file.split(os.path.sep)
-                if len(names) > 1:
-                    # not preview file
-                    if themename is None:
-                        themename = names[0]
-                    xml_data = zip.read(file)
-                    if os.path.splitext(file)[1].lower() in [u'.xml']:
-                        if self.checkVersion1(xml_data):
-                            # upgrade theme xml
-                            filexml = self.migrateVersion122(filename,
-                                fullpath, xml_data)
-                        else:
-                            filexml = xml_data
-                        outfile = open(fullpath, u'w')
-                        outfile.write(filexml)
-                        outfile.close()
-                    else:
-                        outfile = open(fullpath, u'w')
-                        outfile.write(zip.read(file))
-                        outfile.close()
-        self.generateAndSaveImage(dir, themename, filexml)
+            log.exception(u'Importing theme from zip file failed')
+        finally:
+            if zip:
+                zip.close()
+            if outfile:
+                outfile.close()
 
     def checkVersion1(self, xmlfile):
         """
@@ -408,13 +415,22 @@ class ThemeManager(QtGui.QWidget):
                 result == QtGui.QMessageBox.Yes
         if result == QtGui.QMessageBox.Yes:
             # Save the theme, overwriting the existing theme if necessary.
-            outfile = open(theme_file, u'w')
-            outfile.write(theme_pretty_xml)
-            outfile.close()
+            outfile = None
+            try:
+                outfile = open(theme_file, u'w')
+                outfile.write(theme_pretty_xml)
+            except:
+                log.exception(u'Saving theme to file failed')
+            finally:
+                if outfile:
+                    outfile.close()
             if image_from and image_from != image_to:
                 print "if", image_from
                 print "it", image_to
-                shutil.copyfile(image_from, image_to)
+                try:
+                    shutil.copyfile(image_from, image_to)
+                except:
+                    log.exception(u'Failed to save theme image')
             self.generateAndSaveImage(self.path, name, theme_xml)
             self.loadThemes()
         else:

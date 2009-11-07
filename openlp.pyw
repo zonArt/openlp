@@ -74,6 +74,7 @@ class OpenLP(QtGui.QApplication):
         #Load and store current Application Version
         filepath = os.path.split(os.path.abspath(__file__))[0]
         filepath = os.path.abspath(os.path.join(filepath, u'version.txt'))
+        fversion = None
         try:
             fversion = open(filepath, 'r')
             for line in fversion:
@@ -83,6 +84,9 @@ class OpenLP(QtGui.QApplication):
         except:
                 applicationVersion = {u'Full':u'1.9.0-000',
                     u'version':u'1.9.0', u'build':u'000'}
+        finally:
+            if fversion:
+                fversion.close()
         #set the default string encoding
         try:
             sys.setappdefaultencoding(u'utf-8')

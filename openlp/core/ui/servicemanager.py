@@ -35,7 +35,7 @@ from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
 
 class ServiceManagerList(QtGui.QTreeWidget):
 
-    def __init__(self,parent=None,name=None):
+    def __init__(self, parent=None, name=None):
         QtGui.QTreeWidget.__init__(self,parent)
         self.parent = parent
 
@@ -418,7 +418,7 @@ class ServiceManager(QtGui.QWidget):
             u'Save Service', self.config.get_last_dir())
         else:
             filename = self.config.get_last_dir()
-        if filename != u'':
+        if filename:
             splittedFile = filename.split(u'.')
             if splittedFile[-1] != u'osz':
                 filename = filename + u'.osz'
@@ -427,21 +427,30 @@ class ServiceManager(QtGui.QWidget):
             self.config.set_last_dir(filename)
             service = []
             servicefile = filename + u'.osd'
-            zip = zipfile.ZipFile(unicode(filename), 'w')
-            for item in self.serviceItems:
-                service.append(
-                    {u'serviceitem':item[u'data'].get_service_repr()})
-                if item[u'data'].service_item_type == ServiceItemType.Image or \
-                    item[u'data'].service_item_type == ServiceItemType.Command:
-                    for frame in item[u'data'].frames:
-                        path_from = unicode(os.path.join(
-                            item[u'data'].service_item_path, frame[u'title']))
-                        zip.write(path_from)
-            file = open(servicefile, u'wb')
-            cPickle.dump(service, file)
-            file.close()
-            zip.write(servicefile)
-            zip.close()
+            zip = None
+            file = None
+            try:
+                zip = zipfile.ZipFile(unicode(filename), 'w')
+                for item in self.serviceItems:
+                    service.append(
+                        {u'serviceitem':item[u'data'].get_service_repr()})
+                    if item[u'data'].service_item_type == ServiceItemType.Image or \
+                        item[u'data'].service_item_type == ServiceItemType.Command:
+                        for frame in item[u'data'].frames:
+                            path_from = unicode(os.path.join(
+                                item[u'data'].service_item_path, frame[u'title']))
+                            zip.write(path_from)
+                file = open(servicefile, u'wb')
+                cPickle.dump(service, file)
+                file.close()
+                zip.write(servicefile)
+            except:
+                log.exception(u'Failed to save service to disk')
+            finally:
+                if file:
+                    file.close()
+                if zip:
+                    zip.close()
             try:
                 os.remove(servicefile)
             except:
@@ -467,8 +476,10 @@ class ServiceManager(QtGui.QWidget):
                 self.config.get_last_dir(), u'Services (*.osz)')
         filename = unicode(filename)
         name = filename.split(os.path.sep)
-        if filename != u'':
+        if filename:
             self.config.set_last_dir(filename)
+            zip = None
+            f = None
             try:
                 zip = zipfile.ZipFile(unicode(filename))
                 for file in zip.namelist():
@@ -501,6 +512,11 @@ class ServiceManager(QtGui.QWidget):
                     log.exception(u'Failed to remove osd file')
             except:
                 log.exception(u'Problem loading a service file')
+            finally:
+                if f:
+                    f.close()
+                if zip:
+                    zip.close()
         self.isNew = False
         self.serviceName = name[len(name) - 1]
         self.parent.serviceChanged(True, self.serviceName)

@@ -60,7 +60,7 @@ class SettingsManager(object):
             u'user interface', u'display previewpanel', True))
 
     def setUIItemVisibility(self, item=u'', isVisible=True):
-        if item != u'':
+        if item:
             if item == u'ThemeManagerDock':
                 ConfigHelper.set_config(u'user interface',
                     u'display thememanager', isVisible)

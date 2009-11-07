@@ -48,46 +48,59 @@ class BibleCSVImpl(BibleCommon):
 
     def load_data(self, booksfile, versesfile, dialogobject):
         #Populate the Tables
-        fbooks = open(booksfile, 'r')
-        fverse = open(versesfile, 'r')
+        fbooks = None
+        try:
+            fbooks = open(booksfile, 'r')
+            count = 0
+            for line in fbooks:
+                # cancel pressed
+                if not self.loadbible:
+                    break
+                details = chardet.detect(line)
+                line = unicode(line, details['encoding'])
+                p = line.split(u',')
+                p1 = p[1].replace(u'"', u'')
+                p2 = p[2].replace(u'"', u'')
+                p3 = p[3].replace(u'"', u'')
+                self.bibledb.create_book(p2, p3, int(p1))
+                count += 1
+                #Flush the screen events
+                if count % 3 == 0:
+                    Receiver().send_message(u'process_events')
+                    count = 0
+        except:
+            log.exception(u'Loading books from file failed')
+        finally:
+            if fbooks:
+                fbooks.close()
 
-        count = 0
-        for line in fbooks:
-            # cancel pressed
-            if not self.loadbible:
-                break
-            details = chardet.detect(line)
-            line = unicode(line, details['encoding'])
-            p = line.split(u',')
-            p1 = p[1].replace(u'"', u'')
-            p2 = p[2].replace(u'"', u'')
-            p3 = p[3].replace(u'"', u'')
-            self.bibledb.create_book(p2, p3, int(p1))
-            count += 1
-            #Flush the screen events
-            if count % 3 == 0:
-                Receiver().send_message(u'process_events')
-                count = 0
-
-        count = 0
-        book_ptr = None
-        for line in fverse:
-            if not self.loadbible:  # cancel pressed
-                break
-            details = chardet.detect(line)
-            line = unicode(line, details['encoding'])
-            # split into 3 units and leave the rest as a single field
-            p = line.split(u',', 3)
-            p0 = p[0].replace(u'"', u'')
-            p3 = p[3].replace(u'"',u'')
-            if book_ptr is not p0:
-                book = self.bibledb.get_bible_book(p0)
-                book_ptr = book.name
-                # increament the progress bar
-                dialogobject.incrementProgressBar(book.name)
-            self.bibledb.add_verse(book.id, p[1], p[2], p3)
-            count += 1
-            #Every x verses repaint the screen
-            if count % 3 == 0:
-                Receiver().send_message(u'process_events')
-                count = 0
+        fverse = None
+        try:
+            fverse = open(versesfile, 'r')
+            count = 0
+            book_ptr = None
+            for line in fverse:
+                if not self.loadbible:  # cancel pressed
+                    break
+                details = chardet.detect(line)
+                line = unicode(line, details['encoding'])
+                # split into 3 units and leave the rest as a single field
+                p = line.split(u',', 3)
+                p0 = p[0].replace(u'"', u'')
+                p3 = p[3].replace(u'"',u'')
+                if book_ptr is not p0:
+                    book = self.bibledb.get_bible_book(p0)
+                    book_ptr = book.name
+                    # increament the progress bar
+                    dialogobject.incrementProgressBar(book.name)
+                self.bibledb.add_verse(book.id, p[1], p[2], p3)
+                count += 1
+                #Every x verses repaint the screen
+                if count % 3 == 0:
+                    Receiver().send_message(u'process_events')
+                    count = 0
+        except:
+            log.exception(u'Loading verses from file failed')
+        finally:
+            if fverse:
+                fverse.close()
