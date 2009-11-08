@@ -300,7 +300,13 @@ class Ui_MainWindow(object):
         # Connect up some signals and slots
         QtCore.QObject.connect(self.FileExitItem,
             QtCore.SIGNAL(u'triggered()'), MainWindow.close)
+        QtCore.QObject.connect(self.ControlSplitter,
+            QtCore.SIGNAL(u'splitterMoved(int, int)'), self.trackSplitter)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def trackSplitter(self, tab, pos):
+        #print tab,  pos
+        pass
 
     def retranslateUi(self, MainWindow):
         """

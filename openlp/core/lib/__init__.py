@@ -26,10 +26,12 @@
 The :mod:`lib` module contains most of the components and libraries that make
 OpenLP work.
 """
-
+import logging
 import types
 
 from PyQt4 import QtCore, QtGui
+
+log = logging.getLogger(__name__)
 
 def translate(context, text):
     """
@@ -60,7 +62,9 @@ def file_to_xml(xmlfile):
         file = open(xmlfile, u'r')
         xml = file.read()
     except IOError:
-        print(u'Failed to open XML file')
+        #This may not be an error as this is also used to check
+        #that a file exist
+        log.error(u'Failed to open XML file %s' % xmlfile)
     finally:
         if file:
             file.close()
