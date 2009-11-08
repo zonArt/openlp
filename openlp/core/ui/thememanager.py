@@ -271,7 +271,6 @@ class ThemeManager(QtGui.QWidget):
         return self.themelist
 
     def getThemeData(self, themename):
-        assert(themename)
         log.debug(u'getthemedata for theme %s', themename)
         xml_file = os.path.join(self.path, unicode(themename),
             unicode(themename) + u'.xml')

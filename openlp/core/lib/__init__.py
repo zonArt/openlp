@@ -60,7 +60,7 @@ def file_to_xml(xmlfile):
         file = open(xmlfile, u'r')
         xml = file.read()
     except IOError:
-        log.exception(u'Failed to open XML file')
+        print(u'Failed to open XML file')
     finally:
         if file:
             file.close()
