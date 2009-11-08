@@ -253,7 +253,7 @@ class RenderManager(object):
         newImage = QtGui.QImage(w, h, QtGui.QImage.Format_ARGB32_Premultiplied)
         newImage.fill(QtCore.Qt.black)
         painter = QtGui.QPainter(newImage)
-        painter.drawImage((w-realw) / 2, (h-realh) / 2, preview)
+        painter.drawImage((w - realw) / 2, (h - realh) / 2, preview)
         return newImage
 
     def calculate_default(self, screen):

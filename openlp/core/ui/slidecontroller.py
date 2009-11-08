@@ -219,7 +219,7 @@ class SlideController(QtGui.QWidget):
         self.PreviewFrame = QtGui.QFrame(self.Splitter)
         self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, 300, 225))
         self.PreviewFrame.setSizePolicy(QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Minimum))
+            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Label))
         self.PreviewFrame.setFrameShape(QtGui.QFrame.StyledPanel)
         self.PreviewFrame.setFrameShadow(QtGui.QFrame.Sunken)
         self.PreviewFrame.setObjectName(u'PreviewFrame')
@@ -319,7 +319,7 @@ class SlideController(QtGui.QWidget):
                 if item.verse_order:
                     verses = item.verse_order.split(u' ')
                     for verse in verses:
-                        if int(verse) > 12:
+                        if not verse or int(verse) > 12:
                             break
                         try:
                             self.Songbar.actions[verse].setVisible(True)
