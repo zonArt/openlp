@@ -319,6 +319,8 @@ class SlideController(QtGui.QWidget):
                 if item.verse_order:
                     verses = item.verse_order.split(u' ')
                     for verse in verses:
+                        if int(verse) > 12:
+                            break
                         try:
                             self.Songbar.actions[verse].setVisible(True)
                         except:
