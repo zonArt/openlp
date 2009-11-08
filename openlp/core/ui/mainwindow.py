@@ -305,6 +305,9 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def trackSplitter(self, tab, pos):
+        """
+        Splitter between the Preview and Live Controllers.
+        """
         #print tab,  pos
         pass
 

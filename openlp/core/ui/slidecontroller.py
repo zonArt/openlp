@@ -108,14 +108,17 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             self.TypeLabel.setText(u'<strong>%s</strong>' %
                 self.trUtf8(u'Live'))
+            self.split = 1
         else:
             self.TypeLabel.setText(u'<strong>%s</strong>' %
                 self.trUtf8(u'Preview'))
+            self.split = 0
         self.TypeLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.PanelLayout.addWidget(self.TypeLabel)
         # Splitter
         self.Splitter = QtGui.QSplitter(self.Panel)
         self.Splitter.setOrientation(QtCore.Qt.Vertical)
+        self.Splitter.setOpaqueResize(False)
         self.PanelLayout.addWidget(self.Splitter)
         # Actual controller section
         self.Controller = QtGui.QWidget(self.Splitter)
@@ -195,7 +198,6 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.addToolbarButton(
                 u'Media Stop',  u':/slides/media_playback_stop.png',
                 self.trUtf8(u'Start playing media'), self.onMediaStop)
-
         self.ControllerLayout.addWidget(self.Toolbar)
         # Build the Song Toolbar
         if isLive:
@@ -273,6 +275,19 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'%s_last' % prefix), self.onSlideSelectedLast)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_change' % prefix), self.onSlideChange)
+        QtCore.QObject.connect(self.Splitter,
+            QtCore.SIGNAL(u'splitterMoved(int, int)'), self.trackSplitter)
+
+
+    def trackSplitter(self, tab, pos):
+        """
+        Splitter between the slide list and the preview panel
+        """
+        print tab,  pos
+        print self.Controller.height()
+        print self.PreviewFrame.height()
+        print self.Splitter.sizes()
+        pass
 
     def onSongBarHandler(self):
         request = self.sender().text()
@@ -403,14 +418,16 @@ class SlideController(QtGui.QWidget):
         Display the slide number passed
         """
         log.debug(u'displayServiceManagerItems Start')
+        print "display self", self.Splitter.sizes()
+        print "display parent", self.parent.ControlSplitter.sizes()
+        width = self.parent.ControlSplitter.sizes()[self.split]
         #Set pointing cursor when we have somthing to point at
         self.PreviewListWidget.setCursor(QtCore.Qt.PointingHandCursor)
         before = time.time()
         self.serviceitem = serviceitem
         self.PreviewListWidget.clear()
         self.PreviewListWidget.setRowCount(0)
-        self.PreviewListWidget.setColumnWidth(
-            0, self.settingsmanager.slidecontroller_image)
+        self.PreviewListWidget.setColumnWidth(0, width)
         for framenumber, frame in enumerate(self.serviceitem.frames):
             self.PreviewListWidget.setRowCount(
                 self.PreviewListWidget.rowCount() + 1)
@@ -420,15 +437,17 @@ class SlideController(QtGui.QWidget):
             if frame[u'text'] is None:
                 label = QtGui.QLabel()
                 label.setMargin(4)
+
                 pixmap = self.parent.RenderManager.resize_image(frame[u'image'])
+                print self.isLive, label.width(),  pixmap.width()
                 label.setScaledContents(True)
                 label.setPixmap(QtGui.QPixmap.fromImage(pixmap))
                 self.PreviewListWidget.setCellWidget(framenumber, 0, label)
-                slide_height = self.settingsmanager.slidecontroller_image * \
-                    self.parent.RenderManager.screen_ratio
+                slide_height = width * self.parent.RenderManager.screen_ratio
             else:
                 item.setText(frame[u'text'])
             self.PreviewListWidget.setItem(framenumber, 0, item)
+            print slide_height
             if slide_height != 0:
                 self.PreviewListWidget.setRowHeight(framenumber, slide_height)
         if self.serviceitem.frames[0][u'text']:
