@@ -84,6 +84,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.MainContent)
         self.ControlSplitter = QtGui.QSplitter(self.MainContent)
         self.ControlSplitter.setOrientation(QtCore.Qt.Horizontal)
+        self.ControlSplitter.setOpaqueResize(False)
         self.ControlSplitter.setObjectName(u'ControlSplitter')
         self.MainContentLayout.addWidget(self.ControlSplitter)
         # Create slide controllers
@@ -308,8 +309,8 @@ class Ui_MainWindow(object):
         """
         Splitter between the Preview and Live Controllers.
         """
-        #print tab,  pos
-        pass
+        self.LiveController.widthChanged()
+        self.PreviewController.widthChanged()
 
     def retranslateUi(self, MainWindow):
         """

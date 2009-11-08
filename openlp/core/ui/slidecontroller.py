@@ -139,6 +139,7 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.setObjectName(u'PreviewListWidget')
         self.PreviewListWidget.setEditTriggers(
             QtGui.QAbstractItemView.NoEditTriggers)
+        self.PreviewListWidget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.ControllerLayout.addWidget(self.PreviewListWidget)
         # Build the full toolbar
         self.Toolbar = OpenLPToolbar(self)
@@ -278,15 +279,26 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(self.Splitter,
             QtCore.SIGNAL(u'splitterMoved(int, int)'), self.trackSplitter)
 
+    def widthChanged(self):
+        """
+        Handle changes of width from the splitter between the live and preview
+        controller.  Event only issues when changes have finished
+        """
+        if not self.commandItem:
+            return
+        width = self.parent.ControlSplitter.sizes()[self.split]
+        height = width * self.parent.RenderManager.screen_ratio
+        self.PreviewListWidget.setColumnWidth(0, width)
+        for framenumber, frame in enumerate(self.commandItem.frames):
+            if frame[u'text']:
+                break
+            self.PreviewListWidget.setRowHeight(framenumber, height)
+
 
     def trackSplitter(self, tab, pos):
         """
         Splitter between the slide list and the preview panel
         """
-        print tab,  pos
-        print self.Controller.height()
-        print self.PreviewFrame.height()
-        print self.Splitter.sizes()
         pass
 
     def onSongBarHandler(self):
@@ -418,8 +430,6 @@ class SlideController(QtGui.QWidget):
         Display the slide number passed
         """
         log.debug(u'displayServiceManagerItems Start')
-        print "display self", self.Splitter.sizes()
-        print "display parent", self.parent.ControlSplitter.sizes()
         width = self.parent.ControlSplitter.sizes()[self.split]
         #Set pointing cursor when we have somthing to point at
         self.PreviewListWidget.setCursor(QtCore.Qt.PointingHandCursor)
@@ -437,9 +447,7 @@ class SlideController(QtGui.QWidget):
             if frame[u'text'] is None:
                 label = QtGui.QLabel()
                 label.setMargin(4)
-
                 pixmap = self.parent.RenderManager.resize_image(frame[u'image'])
-                print self.isLive, label.width(),  pixmap.width()
                 label.setScaledContents(True)
                 label.setPixmap(QtGui.QPixmap.fromImage(pixmap))
                 self.PreviewListWidget.setCellWidget(framenumber, 0, label)
@@ -447,7 +455,6 @@ class SlideController(QtGui.QWidget):
             else:
                 item.setText(frame[u'text'])
             self.PreviewListWidget.setItem(framenumber, 0, item)
-            print slide_height
             if slide_height != 0:
                 self.PreviewListWidget.setRowHeight(framenumber, slide_height)
         if self.serviceitem.frames[0][u'text']:
