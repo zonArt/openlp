@@ -85,8 +85,14 @@ class SlideController(QtGui.QWidget):
             u'Media Stop',
             u'Media Pause'
         ]
-        self.song_list = [
+        self.song_edit_list = [
             u'Edit Song',
+        ]
+        self.song_list = [
+            u'First Slide',
+            u'Previous Slide',
+            u'Next Slide',
+            u'Last Slide',
         ]
         self.timer_id = 0
         self.commandItem = None
@@ -195,16 +201,16 @@ class SlideController(QtGui.QWidget):
         if isLive:
             self.Songbar = OpenLPToolbar(self)
             self.Songbar.addToolbarButton(
-                u'Bridge',  u':/slides/slide_close.png',
+                u'Bridge',  u':/pages/page_bridge.png',
                 self.trUtf8(u'Bridge'),
                 self.onSongBarHandler)
             self.Songbar.addToolbarButton(
-                u'Chorus',  u':/slides/slide_close.png',
+                u'Chorus',  u':/pages/page_chorus.png',
                 self.trUtf8(u'Chorus'),
                 self.onSongBarHandler)
-            for verse in range(1, 20):
+            for verse in range(1, 12):
                 self.Songbar.addToolbarButton(
-                    unicode(verse),  u':/slides/slide_close.png',
+                    unicode(verse),  u':/pages/page_%s.png' % verse,
                     unicode(self.trUtf8(u'Verse %s'))%verse,
                     self.onSongBarHandler)
             self.ControllerLayout.addWidget(self.Songbar)
@@ -252,7 +258,7 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.makeWidgetsInvisible(self.image_list)
             self.Toolbar.makeWidgetsInvisible(self.media_list)
         else:
-            self.Toolbar.makeWidgetsInvisible(self.song_list)
+            self.Toolbar.makeWidgetsInvisible(self.song_edit_list)
         if isLive:
             prefix = u'live_slidecontroller'
         else:
@@ -303,6 +309,7 @@ class SlideController(QtGui.QWidget):
         self.Songbar.setVisible(False)
         self.Toolbar.makeWidgetsInvisible(self.image_list)
         self.Toolbar.makeWidgetsInvisible(self.media_list)
+        self.Toolbar.makeWidgetsVisible(self.song_list)
         if item.service_item_type == ServiceItemType.Text:
             self.Toolbar.makeWidgetsInvisible(self.image_list)
             if item.name == u'Songs' and \
@@ -324,6 +331,7 @@ class SlideController(QtGui.QWidget):
                 self.Toolbar.makeWidgetsVisible(self.image_list)
         elif item.service_item_type == ServiceItemType.Command and \
             item.name == u'Media':
+            self.Toolbar.makeWidgetsInvisible(self.song_list)
             self.Toolbar.makeWidgetsVisible(self.media_list)
 
     def enablePreviewToolBar(self, item):
@@ -331,9 +339,9 @@ class SlideController(QtGui.QWidget):
         Allows the Preview toolbar to be customised
         """
         if (item.name == u'Songs' or item.name == u'Custom') and item.fromPlugin:
-            self.Toolbar.makeWidgetsVisible(self.song_list)
+            self.Toolbar.makeWidgetsVisible(self.song_edit_list)
         else:
-            self.Toolbar.makeWidgetsInvisible(self.song_list)
+            self.Toolbar.makeWidgetsInvisible(self.song_edit_list)
 
     def addServiceItem(self, item):
         """
@@ -393,6 +401,8 @@ class SlideController(QtGui.QWidget):
         Display the slide number passed
         """
         log.debug(u'displayServiceManagerItems Start')
+        #Set pointing cursor when we have somthing to point at
+        self.PreviewListWidget.setCursor(QtCore.Qt.PointingHandCursor)
         before = time.time()
         self.serviceitem = serviceitem
         self.PreviewListWidget.clear()
@@ -499,7 +509,7 @@ class SlideController(QtGui.QWidget):
         else:
             label = self.PreviewListWidget.cellWidget(self.PreviewListWidget.currentRow(), 0)
             self.SlidePreview.setPixmap(label.pixmap())
-    
+
     def grabMainDisplay(self):
         rm = self.parent.RenderManager
         winid = QtGui.QApplication.desktop().winId()
