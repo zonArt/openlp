@@ -130,7 +130,6 @@ class MainDisplay(DisplayWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_stop'), self.onMediaStop)
 
-
     def setup(self, screenNumber):
         """
         Sets up the screen on a particular screen.
@@ -267,13 +266,14 @@ class MainDisplay(DisplayWidget):
         self.onMediaPlay(message[3])
 
     def onMediaPlay(self, live=True):
-        log.debug(u'Play the new media')
+        log.debug(u'Play the new media, Live %s', live)
         if not self.mediaLoaded and not self.displayBlank and live:
             self.blankDisplay()
         self.firstTime = True
         self.mediaLoaded = True
-        self.display.hide()
-        self.video.setFullScreen(True)
+        if live:
+            self.display.hide()
+            self.video.setFullScreen(True)
         self.mediaObject.play()
         if self.primary and not live:
             self.setVisible(True)
