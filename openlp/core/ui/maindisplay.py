@@ -107,7 +107,6 @@ class MainDisplay(DisplayWidget):
         self.blankFrame = None
         self.frame = None
         self.alertactive = False
-        self.alertTab = None
         self.timer_id = 0
         self.firstTime = True
         self.mediaLoaded = False

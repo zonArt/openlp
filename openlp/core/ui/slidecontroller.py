@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
-
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
@@ -24,6 +23,7 @@
 
 import logging
 import time
+import os
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
@@ -230,8 +230,21 @@ class SlideController(QtGui.QWidget):
         self.grid = QtGui.QGridLayout(self.PreviewFrame)
         self.grid.setMargin(8)
         self.grid.setObjectName(u'grid')
+
+        self.SlideLayout = QtGui.QVBoxLayout()
+        self.SlideLayout.setSpacing(0)
+        self.SlideLayout.setMargin(0)
+        self.SlideLayout.setObjectName(u'SlideLayout')
+        self.mediaObject = Phonon.MediaObject(self)
+        self.video = Phonon.VideoWidget()
+        self.video.setVisible(False)
+        self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
+        Phonon.createPath(self.mediaObject, self.video)
+        Phonon.createPath(self.mediaObject, self.audio)
+        self.SlideLayout.insertWidget(0, self.video)
+
         # Actual preview screen
-        self.SlidePreview = QtGui.QLabel(self.parent)
+        self.SlidePreview = QtGui.QLabel(self)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -246,7 +259,11 @@ class SlideController(QtGui.QWidget):
         self.SlidePreview.setLineWidth(1)
         self.SlidePreview.setScaledContents(True)
         self.SlidePreview.setObjectName(u'SlidePreview')
-        self.grid.addWidget(self.SlidePreview, 0, 0, 1, 1)
+        self.SlideLayout.insertWidget(0, self.SlidePreview)
+
+
+
+        self.grid.addLayout(self.SlideLayout, 0, 0, 1, 1)
         # Signals
         QtCore.QObject.connect(self.PreviewListWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
@@ -373,7 +390,7 @@ class SlideController(QtGui.QWidget):
             item.name == u'Media':
             self.Toolbar.setVisible(False)
             self.Mediabar.setVisible(True)
-            self.volumeSlider.setAudioOutput(self.parent.mainDisplay.audio)
+            self.volumeSlider.setAudioOutput(self.audio)
 
     def addServiceItem(self, item):
         """
@@ -385,16 +402,20 @@ class SlideController(QtGui.QWidget):
         #If old item was a command tell it to stop
         if self.commandItem and \
             self.commandItem.service_item_type == ServiceItemType.Command:
-            Receiver().send_message(u'%s_stop'% self.commandItem.name.lower())
+            self.onMediaStop()
         self.commandItem = item
         before = time.time()
         item.render()
         log.info(u'Rendering took %4s' % (time.time() - before))
         self.enableToolBar(item)
         if item.service_item_type == ServiceItemType.Command:
-            Receiver().send_message(u'%s_start' % item.name.lower(), \
-                [item.shortname, item.service_item_path,
-                item.service_frames[0][u'title'], self.isLive])
+            if self.isLive:
+                Receiver().send_message(u'%s_start' % item.name.lower(), \
+                    [item.shortname, item.service_item_path,
+                    item.service_frames[0][u'title'], self.isLive])
+            else:
+                if item.name == u'Media':
+                    self.onMediaStart(item)
         slideno = 0
         if self.songEdit:
             slideno = self.row
@@ -418,13 +439,17 @@ class SlideController(QtGui.QWidget):
         #If old item was a command tell it to stop
         if self.commandItem and \
             self.commandItem.service_item_type == ServiceItemType.Command:
-            Receiver().send_message(u'%s_stop'% self.commandItem.name.lower())
+            self.onMediaStop()
         self.commandItem = item
         self.enableToolBar(item)
         if item.service_item_type == ServiceItemType.Command:
-            Receiver().send_message(u'%s_start' % item.name.lower(), \
-                [item.shortname, item.service_item_path,
-                item.service_frames[0][u'title'], slideno, self.isLive])
+            if self.isLive:
+                Receiver().send_message(u'%s_start' % item.name.lower(), \
+                    [item.shortname, item.service_item_path,
+                    item.service_frames[0][u'title'], slideno, self.isLive])
+            else:
+                if item.name == u'Media':
+                    self.onMediaStart(item)
         self.displayServiceManagerItems(item, slideno)
 
     def displayServiceManagerItems(self, serviceitem, slideno):
@@ -626,11 +651,31 @@ class SlideController(QtGui.QWidget):
             self.parent.LiveController.addServiceManagerItem(
                 self.commandItem, row)
 
+    def onMediaStart(self, item):
+        self.mediaObject.stop()
+        self.mediaObject.clearQueue()
+        file = os.path.join(item.service_item_path, item.service_frames[0][u'title'])
+        self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
+        self.onMediaPlay()
+
     def onMediaPause(self):
-        Receiver().send_message(u'%s_pause'% self.commandItem.name.lower())
+        if self.isLive:
+            Receiver().send_message(u'%s_pause'% self.commandItem.name.lower())
+        else:
+            self.mediaObject.pause()
 
     def onMediaPlay(self):
-        Receiver().send_message(u'%s_play'% self.commandItem.name.lower(), self.isLive)
+        if self.isLive:
+            Receiver().send_message(u'%s_play'% self.commandItem.name.lower(), self.isLive)
+        else:
+            self.SlidePreview.hide()
+            self.video.show()
+            self.mediaObject.play()
 
     def onMediaStop(self):
-        Receiver().send_message(u'%s_stop'% self.commandItem.name.lower())
+        if self.isLive:
+            Receiver().send_message(u'%s_stop'% self.commandItem.name.lower())
+        else:
+            self.mediaObject.stop()
+            self.video.hide()
+            self.SlidePreview.show()
