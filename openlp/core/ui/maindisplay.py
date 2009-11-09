@@ -264,18 +264,18 @@ class MainDisplay(DisplayWidget):
             self.firstTime = False
         else:
             self.mediaObject.enqueue(Phonon.MediaSource(file))
-        self.onMediaPlay()
+        self.onMediaPlay(message[3])
 
-    def onMediaPlay(self):
+    def onMediaPlay(self, live=True):
         log.debug(u'Play the new media')
-        if not self.mediaLoaded and not self.displayBlank:
+        if not self.mediaLoaded and not self.displayBlank and live:
             self.blankDisplay()
         self.firstTime = True
         self.mediaLoaded = True
         self.display.hide()
         self.video.setFullScreen(True)
         self.mediaObject.play()
-        if self.primary:
+        if self.primary and not live:
             self.setVisible(True)
 
     def onMediaPaws(self):
