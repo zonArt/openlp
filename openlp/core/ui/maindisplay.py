@@ -275,7 +275,7 @@ class MainDisplay(DisplayWidget):
             self.display.hide()
             self.video.setFullScreen(True)
         self.mediaObject.play()
-        if self.primary and not live:
+        if self.primary and live:
             self.setVisible(True)
 
     def onMediaPaws(self):
