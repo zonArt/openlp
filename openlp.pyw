@@ -131,8 +131,16 @@ def main():
     # Set up command line options.
     usage = u'Usage: %prog [options] [qt-options]'
     parser = OptionParser(usage=usage)
-    parser.add_option("-d", "--debug", dest="debug",
-                      action="store_true", help="set logging to DEBUG level")
+    parser.add_option("-l", "--log-level", dest="loglevel",
+                      default="info", metavar="LEVEL",
+                      help="Set logging to LEVEL level. Valid values are "
+                           "\"debug\", \"info\", \"warning\".")
+    parser.add_option("-p", "--portable", dest="portable",
+                      action="store_true",
+                      help="Specify if this should be run as a portable app, "
+                           "off a USB flash drive.")
+    parser.add_option("-s", "--style", dest="style",
+                      help="Set the Qt4 style (passed directly to Qt4).")
     # Set up logging
     filename = u'openlp.log'
     logfile = RotatingFileHandler(filename, maxBytes=200000, backupCount=5)
@@ -141,14 +149,21 @@ def main():
     log.addHandler(logfile)
     # Parse command line options and deal with them.
     (options, args) = parser.parse_args()
-    if options.debug:
+    qt_args = []
+    if options.loglevel.lower() in ['d', 'debug']:
         log.setLevel(logging.DEBUG)
+    elif options.loglevel.lower() in ['w', 'warning']:
+        log.setLevel(logging.WARNING)
     else:
         log.setLevel(logging.INFO)
+    if options.style:
+        qt_args.extend(['-style', options.style])
+    # Throw the rest of the arguments at Qt, just in case.
+    qt_args.extend(args)
     # Initialise the resources
     qInitResources()
     # Now create and actually run the application.
-    app = OpenLP(sys.argv)
+    app = OpenLP(qt_args)
     sys.exit(app.run())
 
 if __name__ == u'__main__':
