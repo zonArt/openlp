@@ -230,7 +230,6 @@ class SlideController(QtGui.QWidget):
         self.grid = QtGui.QGridLayout(self.PreviewFrame)
         self.grid.setMargin(8)
         self.grid.setObjectName(u'grid')
-
         self.SlideLayout = QtGui.QVBoxLayout()
         self.SlideLayout.setSpacing(0)
         self.SlideLayout.setMargin(0)
@@ -242,7 +241,6 @@ class SlideController(QtGui.QWidget):
         Phonon.createPath(self.mediaObject, self.video)
         Phonon.createPath(self.mediaObject, self.audio)
         self.SlideLayout.insertWidget(0, self.video)
-
         # Actual preview screen
         self.SlidePreview = QtGui.QLabel(self)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
@@ -260,9 +258,6 @@ class SlideController(QtGui.QWidget):
         self.SlidePreview.setScaledContents(True)
         self.SlidePreview.setObjectName(u'SlidePreview')
         self.SlideLayout.insertWidget(0, self.SlidePreview)
-
-
-
         self.grid.addLayout(self.SlideLayout, 0, 0, 1, 1)
         # Signals
         QtCore.QObject.connect(self.PreviewListWidget,
