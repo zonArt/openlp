@@ -107,7 +107,6 @@ class MainDisplay(DisplayWidget):
         self.blankFrame = None
         self.frame = None
         self.alertactive = False
-        self.alertTab = None
         self.timer_id = 0
         self.firstTime = True
         self.mediaLoaded = False
@@ -129,7 +128,6 @@ class MainDisplay(DisplayWidget):
             QtCore.SIGNAL(u'media_pause'), self.onMediaPaws)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_stop'), self.onMediaStop)
-
 
     def setup(self, screenNumber):
         """
@@ -264,16 +262,17 @@ class MainDisplay(DisplayWidget):
             self.firstTime = False
         else:
             self.mediaObject.enqueue(Phonon.MediaSource(file))
-        self.onMediaPlay()
+        self.onMediaPlay(message[3])
 
-    def onMediaPlay(self):
-        log.debug(u'Play the new media')
+    def onMediaPlay(self, live=True):
+        log.debug(u'Play the new media, Live %s', live)
         if not self.mediaLoaded and not self.displayBlank:
             self.blankDisplay()
         self.firstTime = True
         self.mediaLoaded = True
-        self.display.hide()
-        self.video.setFullScreen(True)
+        if live:
+            self.display.hide()
+            self.video.setFullScreen(True)
         self.mediaObject.play()
         if self.primary:
             self.setVisible(True)
