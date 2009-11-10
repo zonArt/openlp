@@ -678,4 +678,5 @@ class SlideController(QtGui.QWidget):
         else:
             self.mediaObject.stop()
             self.video.hide()
+            self.SlidePreview.clear()
             self.SlidePreview.show()

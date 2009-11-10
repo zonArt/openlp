@@ -266,7 +266,7 @@ class MainDisplay(DisplayWidget):
 
     def onMediaPlay(self, live=True):
         log.debug(u'Play the new media, Live %s', live)
-        if not self.mediaLoaded and not self.displayBlank and live:
+        if not self.mediaLoaded and not self.displayBlank:
             self.blankDisplay()
         self.firstTime = True
         self.mediaLoaded = True
@@ -274,7 +274,7 @@ class MainDisplay(DisplayWidget):
             self.display.hide()
             self.video.setFullScreen(True)
         self.mediaObject.play()
-        if self.primary and live:
+        if self.primary:
             self.setVisible(True)
 
     def onMediaPaws(self):
