@@ -279,3 +279,10 @@ class ServiceItem(object):
         """
         return self.uuid != other.uuid
 
+    def isSong(self):
+        return self.name == u'Songs'
+
+    def isMedia(self):
+        return self.name == u'Media'
+
+

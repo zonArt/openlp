@@ -24,6 +24,7 @@
 
 import logging
 import os
+import time
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
@@ -196,10 +197,15 @@ class MainDisplay(DisplayWidget):
         if self.timer_id != 0 :
             self.displayAlert()
         elif not self.displayBlank:
+            #self.setWindowOpacity(0.5)
             self.display.setPixmap(QtGui.QPixmap.fromImage(frame))
+            #QtCore.QTimer.singleShot(500, self.aa )
             if not self.isVisible():
                 self.setVisible(True)
                 self.showFullScreen()
+
+#    def aa(self):
+#        self.setWindowOpacity(1)
 
     def blankDisplay(self):
         if not self.displayBlank:

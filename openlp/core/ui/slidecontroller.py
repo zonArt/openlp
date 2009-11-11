@@ -347,7 +347,7 @@ class SlideController(QtGui.QWidget):
         self.Toolbar.makeWidgetsInvisible(self.image_list)
         if item.service_item_type == ServiceItemType.Text:
             self.Toolbar.makeWidgetsInvisible(self.image_list)
-            if item.name == u'Songs' and \
+            if item.isSong() and \
                 str_to_bool(self.songsconfig.get_config(u'display songbar', True)):
                 for action in self.Songbar.actions:
                     self.Songbar.actions[action].setVisible(False)
@@ -366,8 +366,7 @@ class SlideController(QtGui.QWidget):
             #Not sensible to allow loops with 1 frame
             if len(item.frames) > 1:
                 self.Toolbar.makeWidgetsVisible(self.image_list)
-        elif item.service_item_type == ServiceItemType.Command and \
-            item.name == u'Media':
+        elif item.isMedia():
             self.Toolbar.setVisible(False)
             self.Mediabar.setVisible(True)
             self.volumeSlider.setAudioOutput(self.parent.mainDisplay.audio)
@@ -379,10 +378,9 @@ class SlideController(QtGui.QWidget):
         self.Toolbar.setVisible(True)
         self.Mediabar.setVisible(False)
         self.Toolbar.makeWidgetsInvisible(self.song_edit_list)
-        if (item.name == u'Songs' or item.name == u'Custom') and item.fromPlugin:
+        if item.editEnabled and item.fromPlugin:
             self.Toolbar.makeWidgetsVisible(self.song_edit_list)
-        elif item.service_item_type == ServiceItemType.Command and \
-            item.name == u'Media':
+        elif item.isMedia():
             self.Toolbar.setVisible(False)
             self.Mediabar.setVisible(True)
             self.volumeSlider.setAudioOutput(self.audio)
@@ -401,7 +399,7 @@ class SlideController(QtGui.QWidget):
         self.commandItem = item
         before = time.time()
         item.render()
-        log.info(u'Rendering took %4s' % (time.time() - before))
+        log.log(15, u'Rendering took %4s' % (time.time() - before))
         self.enableToolBar(item)
         if item.service_item_type == ServiceItemType.Command:
             if self.isLive:
@@ -490,7 +488,7 @@ class SlideController(QtGui.QWidget):
             self.PreviewListWidget.selectRow(slideno)
         self.onSlideSelected()
         self.PreviewListWidget.setFocus()
-        log.info(u'Display Rendering took %4s' % (time.time() - before))
+        log.log(15, u'Display Rendering took %4s' % (time.time() - before))
         if self.serviceitem.audit and self.isLive:
             Receiver().send_message(u'songusage_live', self.serviceitem.audit)
         log.debug(u'displayServiceManagerItems End')
@@ -539,7 +537,7 @@ class SlideController(QtGui.QWidget):
                 if frame is None:
                     frame = self.serviceitem.render_individual(row)
                 self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
-                log.info(u'Slide Rendering took %4s' % (time.time() - before))
+                log.log(15, u'Slide Rendering took %4s' % (time.time() - before))
                 if self.isLive:
                     self.parent.mainDisplay.frameView(frame)
             self.row = row

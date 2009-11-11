@@ -56,7 +56,6 @@ class ServiceManagerList(QtGui.QTreeWidget):
 #        else:
 #            event.ignore()
 
-
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
             #here accept the event and do something
@@ -98,7 +97,6 @@ class ServiceManagerList(QtGui.QTreeWidget):
         drag.setMimeData(mimeData)
         mimeData.setText(u'ServiceManager')
         dropAction = drag.start(QtCore.Qt.CopyAction)
-
 
 class ServiceManager(QtGui.QWidget):
     """
