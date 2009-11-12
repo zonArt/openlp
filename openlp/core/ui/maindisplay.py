@@ -198,8 +198,9 @@ class MainDisplay(DisplayWidget):
             self.displayAlert()
         elif not self.displayBlank:
             self.setWindowOpacity(0.5)
+            self.show()
             self.display.setPixmap(QtGui.QPixmap.fromImage(frame))
-            QtCore.QTimer.singleShot(250, self.aa )
+            QtCore.QTimer.singleShot(500, self.aa )
             if not self.isVisible():
                 self.setVisible(True)
                 self.showFullScreen()
