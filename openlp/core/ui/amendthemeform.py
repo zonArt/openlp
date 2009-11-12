@@ -126,7 +126,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
     def accept(self):
         new_theme = ThemeXML()
         theme_name = unicode(self.ThemeNameEdit.displayText())
-        new_theme.new_document(theme_name)
+        new_theme.new_document(theme_name.encode('unicode-escape'))
         save_from = None
         save_to = None
         if self.theme.background_mode == u'transparent':
@@ -144,7 +144,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 (path, filename) = \
                     os.path.split(unicode(self.theme.background_filename))
                 new_theme.add_background_image(filename)
-                save_to= os.path.join(self.path, theme_name, filename )
+                save_to = os.path.join(self.path, theme_name, filename)
                 save_from = self.theme.background_filename
 
         new_theme.add_font(unicode(self.theme.font_main_name),
