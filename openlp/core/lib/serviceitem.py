@@ -244,8 +244,6 @@ class ServiceItem(object):
             for text_image in serviceitem[u'serviceitem'][u'data']:
                 filename = os.path.join(path, text_image[u'title'])
                 self.add_from_command(path, text_image[u'title'], text_image[u'image'] )
-        elif self.service_item_type == ServiceItemType.Video:
-            pass
 
     def merge(self, other):
         """
