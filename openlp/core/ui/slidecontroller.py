@@ -345,7 +345,7 @@ class SlideController(QtGui.QWidget):
         self.Songbar.setVisible(False)
         self.Mediabar.setVisible(False)
         self.Toolbar.makeWidgetsInvisible(self.image_list)
-        if item.service_item_type == ServiceItemType.Text:
+        if item.isText():
             self.Toolbar.makeWidgetsInvisible(self.image_list)
             if item.isSong() and \
                 str_to_bool(self.songsconfig.get_config(u'display songbar', True)):
@@ -362,7 +362,7 @@ class SlideController(QtGui.QWidget):
                             #More than 20 verses hard luck
                             pass
                     self.Songbar.setVisible(True)
-        elif item.service_item_type == ServiceItemType.Image:
+        elif item.isImage():
             #Not sensible to allow loops with 1 frame
             if len(item.frames) > 1:
                 self.Toolbar.makeWidgetsVisible(self.image_list)
@@ -393,21 +393,20 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'addServiceItem')
         #If old item was a command tell it to stop
-        if self.commandItem and \
-            self.commandItem.service_item_type == ServiceItemType.Command:
+        if self.commandItem and self.commandItem.isCommand():
             self.onMediaStop()
         self.commandItem = item
         before = time.time()
         item.render()
         log.log(15, u'Rendering took %4s' % (time.time() - before))
         self.enableToolBar(item)
-        if item.service_item_type == ServiceItemType.Command:
+        if item.isCommand():
             if self.isLive:
                 Receiver().send_message(u'%s_start' % item.name.lower(), \
                     [item.shortname, item.service_item_path,
                     item.service_frames[0][u'title'], self.isLive])
             else:
-                if item.name == u'Media':
+                if item.isMedia():
                     self.onMediaStart(item)
         slideno = 0
         if self.songEdit:
@@ -430,18 +429,17 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'addServiceManagerItem')
         #If old item was a command tell it to stop
-        if self.commandItem and \
-            self.commandItem.service_item_type == ServiceItemType.Command:
+        if self.commandItem and self.commandItem.isCommand():
             self.onMediaStop()
         self.commandItem = item
         self.enableToolBar(item)
-        if item.service_item_type == ServiceItemType.Command:
+        if item.isCommand():
             if self.isLive:
                 Receiver().send_message(u'%s_start' % item.name.lower(), \
                     [item.shortname, item.service_item_path,
                     item.service_frames[0][u'title'], slideno, self.isLive])
             else:
-                if item.name == u'Media':
+                if item.isMedia():
                     self.onMediaStart(item)
         self.displayServiceManagerItems(item, slideno)
 
@@ -498,8 +496,7 @@ class SlideController(QtGui.QWidget):
         """
         Go to the first slide.
         """
-        if self.commandItem and \
-            self.commandItem.service_item_type == ServiceItemType.Command:
+        if self.commandItem and self.commandItem.isCommand():
             Receiver().send_message(u'%s_first'% self.commandItem.name.lower())
             self.updatePreview()
         else:
@@ -510,8 +507,7 @@ class SlideController(QtGui.QWidget):
         """
         Blank the screen.
         """
-        if self.commandItem and \
-            self.commandItem.service_item_type == ServiceItemType.Command:
+        if self.commandItem and self.commandItem.isCommand():
             if blanked:
                 Receiver().send_message(u'%s_blank'% self.commandItem.name.lower())
             else:
@@ -527,7 +523,7 @@ class SlideController(QtGui.QWidget):
         row = self.PreviewListWidget.currentRow()
         self.row = 0
         if row > -1 and row < self.PreviewListWidget.rowCount():
-            if self.commandItem.service_item_type == ServiceItemType.Command:
+            if self.commandItem.isCommand():
                 Receiver().send_message(u'%s_slide'% self.commandItem.name.lower(), [row])
                 if self.isLive:
                     self.updatePreview()
@@ -556,22 +552,23 @@ class SlideController(QtGui.QWidget):
             QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
             QtCore.QTimer.singleShot(2.5, self.grabMainDisplay)
         else:
-            label = self.PreviewListWidget.cellWidget(self.PreviewListWidget.currentRow(), 0)
+            label = self.PreviewListWidget.cellWidget(
+                self.PreviewListWidget.currentRow(), 0)
             self.SlidePreview.setPixmap(label.pixmap())
 
     def grabMainDisplay(self):
         rm = self.parent.RenderManager
         winid = QtGui.QApplication.desktop().winId()
         rect = rm.screen_list[rm.current_display][u'size']
-        winimg = QtGui.QPixmap.grabWindow(winid, rect.x(), rect.y(), rect.width(), rect.height())
+        winimg = QtGui.QPixmap.grabWindow(winid, rect.x(),
+            rect.y(), rect.width(), rect.height())
         self.SlidePreview.setPixmap(winimg)
 
     def onSlideSelectedNext(self):
         """
         Go to the next slide.
         """
-        if self.commandItem and \
-            self.commandItem.service_item_type == ServiceItemType.Command:
+        if self.commandItem and self.commandItem.isCommand():
             Receiver().send_message(u'%s_next'% self.commandItem.name.lower())
             self.updatePreview()
         else:
@@ -585,8 +582,7 @@ class SlideController(QtGui.QWidget):
         """
         Go to the previous slide.
         """
-        if self.commandItem and \
-            self.commandItem.service_item_type == ServiceItemType.Command:
+        if self.commandItem and self.commandItem.isCommand():
             Receiver().send_message(
                 u'%s_previous'% self.commandItem.name.lower())
             self.updatePreview()
@@ -601,8 +597,7 @@ class SlideController(QtGui.QWidget):
         """
         Go to the last slide.
         """
-        if self.commandItem and \
-            self.commandItem.service_item_type == ServiceItemType.Command:
+        if self.commandItem and self.commandItem.isCommand():
             Receiver().send_message(u'%s_last'% self.commandItem.name.lower())
             self.updatePreview()
         else:

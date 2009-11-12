@@ -285,4 +285,11 @@ class ServiceItem(object):
     def isMedia(self):
         return self.name == u'Media'
 
+    def isCommand(self):
+        return self.service_item_type == ServiceItemType.Command
 
+    def isImage(self):
+        return self.service_item_type == ServiceItemType.Image
+
+    def isText(self):
+        return self.service_item_type == ServiceItemType.Text
