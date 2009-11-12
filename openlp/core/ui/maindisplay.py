@@ -24,6 +24,7 @@
 
 import logging
 import os
+import time
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
@@ -196,10 +197,16 @@ class MainDisplay(DisplayWidget):
         if self.timer_id != 0 :
             self.displayAlert()
         elif not self.displayBlank:
+#            self.setWindowOpacity(0.5)
+#            self.show()
             self.display.setPixmap(QtGui.QPixmap.fromImage(frame))
+#            QtCore.QTimer.singleShot(500, self.aa )
             if not self.isVisible():
                 self.setVisible(True)
                 self.showFullScreen()
+#
+#    def aa(self):
+#        self.setWindowOpacity(1)
 
     def blankDisplay(self):
         if not self.displayBlank:
@@ -262,17 +269,16 @@ class MainDisplay(DisplayWidget):
             self.firstTime = False
         else:
             self.mediaObject.enqueue(Phonon.MediaSource(file))
-        self.onMediaPlay(message[3])
+        self.onMediaPlay()
 
-    def onMediaPlay(self, live=True):
-        log.debug(u'Play the new media, Live %s', live)
+    def onMediaPlay(self):
+        log.debug(u'Play the new media, Live ')
         if not self.mediaLoaded and not self.displayBlank:
             self.blankDisplay()
         self.firstTime = True
         self.mediaLoaded = True
-        if live:
-            self.display.hide()
-            self.video.setFullScreen(True)
+        self.display.hide()
+        self.video.setFullScreen(True)
         self.mediaObject.play()
         if self.primary:
             self.setVisible(True)
