@@ -291,7 +291,7 @@ class SongMediaItem(MediaManagerItem):
         service_item.editId = item_id
         service_item.verse_order = song.verse_order
         if song.lyrics.startswith(u'<?xml version='):
-            songXML=SongXMLParser(song.lyrics)
+            songXML = SongXMLParser(song.lyrics)
             verseList = songXML.get_verses()
             for verse in verseList:
                 if verse[1]:
