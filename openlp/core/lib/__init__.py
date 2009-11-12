@@ -27,6 +27,7 @@ The :mod:`lib` module contains most of the components and libraries that make
 OpenLP work.
 """
 import logging
+import os.path
 import types
 
 from PyQt4 import QtCore, QtGui
@@ -49,26 +50,28 @@ def translate(context, text):
     return QtGui.QApplication.translate(
         context, text, None, QtGui.QApplication.UnicodeUTF8)
 
-def file_to_xml(xmlfile):
+def get_text_file_string(text_file):
     """
-    Open a file and return the contents of the file.
+    Open a file and return the contents of the file.  If the supplied file name
+    is not a file then the function returns False.  If there is an error
+    loading the file then the function will return None.
 
-    ``xmlfile``
+    ``textfile``
         The name of the file.
     """
-    file = None
-    xml = None
+    if not os.path.isfile(text_file):
+        return False
+    file_handle = None
+    content_string = None
     try:
-        file = open(xmlfile, u'r')
-        xml = file.read()
+        file_handle = open(text_file, u'r')
+        content_string = file_handle.read()
     except IOError:
-        #This may not be an error as this is also used to check
-        #that a file exist
-        log.error(u'Failed to open XML file %s' % xmlfile)
+        log.error(u'Failed to open text file %s' % text_file)
     finally:
-        if file:
-            file.close()
-    return xml
+        if file_handle:
+            file_handle.close()
+    return content_string
 
 def str_to_bool(stringvalue):
     """
@@ -152,5 +155,5 @@ from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem
 from baselistwithdnd import BaseListWithDnD
 
-__all__ = [ 'translate', 'file_to_xml', 'str_to_bool',
-            'contextMenuAction', 'contextMenuSeparator','ServiceItem']
+__all__ = [ 'translate', 'get_text_file_string', 'str_to_bool',
+            'contextMenuAction', 'contextMenuSeparator', 'ServiceItem']

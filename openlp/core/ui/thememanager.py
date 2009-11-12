@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.ui import AmendThemeForm
 from openlp.core.theme import Theme
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ThemeXML, \
-    str_to_bool, file_to_xml, buildIcon, Receiver, contextMenuAction, \
+    str_to_bool, get_text_file_string, buildIcon, Receiver, contextMenuAction, \
     contextMenuSeparator
 from openlp.core.utils import ConfigHelper
 
@@ -274,7 +274,7 @@ class ThemeManager(QtGui.QWidget):
         log.debug(u'getthemedata for theme %s', themename)
         xml_file = os.path.join(self.path, unicode(themename),
             unicode(themename) + u'.xml')
-        xml = file_to_xml(xml_file)
+        xml = get_text_file_string(xml_file)
         if not xml:
             xml = self.baseTheme()
         return self.createThemeFromXml(xml, self.path)
