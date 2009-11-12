@@ -150,15 +150,17 @@ class ThemeManager(QtGui.QWidget):
                 self.pushThemes()
 
     def onAddTheme(self):
-        self.amendThemeForm.loadTheme(None)
+        theme = self.createThemeFromXml(self.baseTheme(), self.path)
+        self.amendThemeForm.loadTheme(theme)
         self.saveThemeName = u''
         self.amendThemeForm.exec_()
 
     def onEditTheme(self):
         item = self.ThemeListWidget.currentItem()
         if item:
-            self.amendThemeForm.loadTheme(
+            theme = self.getThemeData(
                 unicode(item.data(QtCore.Qt.UserRole).toString()))
+            self.amendThemeForm.loadTheme(theme)
             self.saveThemeName = unicode(
                 item.data(QtCore.Qt.UserRole).toString())
             self.amendThemeForm.exec_()
@@ -265,7 +267,7 @@ class ThemeManager(QtGui.QWidget):
         self.pushThemes()
 
     def pushThemes(self):
-        Receiver().send_message(u'update_themes', self.getThemes() )
+        Receiver().send_message(u'update_themes', self.getThemes())
 
     def getThemes(self):
         return self.themelist
@@ -501,6 +503,8 @@ class ThemeManager(QtGui.QWidget):
         theme.display_wrapStyle = theme.display_wrapStyle.strip()
         theme.font_footer_color = theme.font_footer_color.strip()
         theme.font_footer_height = int(theme.font_footer_height.strip())
+        theme.font_footer_indentation = \
+            int(theme.font_footer_indentation.strip())
         theme.font_footer_italics = str_to_bool(theme.font_footer_italics)
         theme.font_footer_name = theme.font_footer_name.strip()
         #theme.font_footer_override
