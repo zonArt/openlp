@@ -676,7 +676,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.setWindowTitle(title)
 
     def defaultThemeChanged(self, theme):
-        self.DefaultThemeLabel.setText(self.defaultThemeText + theme)
+        self.DefaultThemeLabel.setText(
+            u'%s %s' % (self.defaultThemeText, theme))
 
     def toggleMediaManager(self, visible):
         if self.MediaManagerDock.isVisible() != visible:

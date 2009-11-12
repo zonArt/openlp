@@ -30,7 +30,7 @@ from xml.etree.ElementTree import ElementTree, XML
 from openlp.core.lib import str_to_bool
 
 blankthemexml=\
-'''<?xml version="1.0" encoding="iso-8859-1"?>
+'''<?xml version="1.0" encoding="utf-8"?>
  <theme version="1.0">
    <name>BlankStyle</name>
    <background mode="transparent"/>
@@ -348,6 +348,7 @@ class ThemeXML(object):
         iter = theme_xml.getiterator()
         master = u''
         for element in iter:
+            element.text = unicode(element.text).decode('unicode-escape')
             if len(element.getchildren()) > 0:
                 master = element.tag + u'_'
             else:
