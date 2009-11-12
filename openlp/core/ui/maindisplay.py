@@ -29,7 +29,7 @@ import time
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver, str_to_bool
+from openlp.core.lib import Receiver
 
 class DisplayWidget(QtGui.QWidget):
     """
