@@ -423,7 +423,7 @@ class SlideController(QtGui.QWidget):
     def addServiceManagerItem(self, item, slideno):
         """
         Method to install the service item into the controller and
-        request the correct the toolbar of the plugin
+        request the correct toolbar for the plugin.
         Called by ServiceManager
         """
         log.debug(u'addServiceManagerItem')
