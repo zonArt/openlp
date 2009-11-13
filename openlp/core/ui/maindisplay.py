@@ -24,11 +24,12 @@
 
 import logging
 import os
+import time
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver, str_to_bool
+from openlp.core.lib import Receiver
 
 class DisplayWidget(QtGui.QWidget):
     """
@@ -107,7 +108,6 @@ class MainDisplay(DisplayWidget):
         self.blankFrame = None
         self.frame = None
         self.alertactive = False
-        self.alertTab = None
         self.timer_id = 0
         self.firstTime = True
         self.mediaLoaded = False
@@ -129,7 +129,6 @@ class MainDisplay(DisplayWidget):
             QtCore.SIGNAL(u'media_pause'), self.onMediaPaws)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_stop'), self.onMediaStop)
-
 
     def setup(self, screenNumber):
         """
@@ -198,10 +197,16 @@ class MainDisplay(DisplayWidget):
         if self.timer_id != 0 :
             self.displayAlert()
         elif not self.displayBlank:
+#            self.setWindowOpacity(0.5)
+#            self.show()
             self.display.setPixmap(QtGui.QPixmap.fromImage(frame))
+#            QtCore.QTimer.singleShot(500, self.aa )
             if not self.isVisible():
                 self.setVisible(True)
                 self.showFullScreen()
+#
+#    def aa(self):
+#        self.setWindowOpacity(1)
 
     def blankDisplay(self):
         if not self.displayBlank:
@@ -267,7 +272,7 @@ class MainDisplay(DisplayWidget):
         self.onMediaPlay()
 
     def onMediaPlay(self):
-        log.debug(u'Play the new media')
+        log.debug(u'Play the new media, Live ')
         if not self.mediaLoaded and not self.displayBlank:
             self.blankDisplay()
         self.firstTime = True

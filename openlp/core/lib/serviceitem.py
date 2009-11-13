@@ -38,7 +38,6 @@ class ServiceItemType(object):
     Text = 1
     Image = 2
     Command = 3
-    Video = 4
 
 class ServiceItem(object):
     """
@@ -156,12 +155,6 @@ class ServiceItem(object):
         self.service_frames.append(
             {u'title': frame_title, u'text': None, u'image': image})
 
-    def add_from_media(self, path, frame_title, image):
-        self.service_item_type = ServiceItemType.Video
-        self.service_item_path = path
-        self.service_frames.append(
-            {u'title': frame_title, u'text': None, u'image': image})
-
     def add_from_text(self, frame_title, raw_slide):
         """
         Add a text slide to the service item.
@@ -216,10 +209,7 @@ class ServiceItem(object):
                 service_data.append(slide[u'title'])
         elif self.service_item_type == ServiceItemType.Command:
             for slide in self.service_frames:
-                service_data.append(slide[u'title'])
-        elif self.service_item_type == ServiceItemType.Video:
-            for slide in self.service_frames:
-                service_data.append(slide[u'title'])
+                service_data.append({u'title':slide[u'title'], u'image':slide[u'image']})
         return {u'header': service_header, u'data': service_data}
 
     def set_from_service(self, serviceitem, path=None):
@@ -252,10 +242,8 @@ class ServiceItem(object):
                 self.add_from_image(path, text_image, real_image)
         elif self.service_item_type == ServiceItemType.Command:
             for text_image in serviceitem[u'serviceitem'][u'data']:
-                filename = os.path.join(path, text_image)
-                self.add_from_command(path, text_image)
-        elif self.service_item_type == ServiceItemType.Video:
-            pass
+                filename = os.path.join(path, text_image[u'title'])
+                self.add_from_command(path, text_image[u'title'], text_image[u'image'] )
 
     def merge(self, other):
         """
@@ -279,3 +267,17 @@ class ServiceItem(object):
         """
         return self.uuid != other.uuid
 
+    def isSong(self):
+        return self.name == u'Songs'
+
+    def isMedia(self):
+        return self.name.lower() == u'media'
+
+    def isCommand(self):
+        return self.service_item_type == ServiceItemType.Command
+
+    def isImage(self):
+        return self.service_item_type == ServiceItemType.Image
+
+    def isText(self):
+        return self.service_item_type == ServiceItemType.Text

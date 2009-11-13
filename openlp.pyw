@@ -81,6 +81,8 @@ class OpenLP(QtGui.QApplication):
                 bits = unicode(line).split(u'-')
                 applicationVersion = {u'Full':unicode(line).rstrip(),
                     u'version':bits[0], u'build':bits[1]}
+            log.info(u'Openlp version %s build %s' %
+                (applicationVersion[u'version'],applicationVersion[u'build'] ))
         except:
                 applicationVersion = {u'Full':u'1.9.0-000',
                     u'version':u'1.9.0', u'build':u'000'}
@@ -147,6 +149,7 @@ def main():
     logfile.setFormatter(logging.Formatter(
         u'%(asctime)s %(name)-15s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
+    logging.addLevelName(15, u'Timer')
     # Parse command line options and deal with them.
     (options, args) = parser.parse_args()
     qt_args = []

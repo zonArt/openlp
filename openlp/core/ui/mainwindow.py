@@ -536,6 +536,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.settingsForm.postSetUp()
 
     def versionCheck(self):
+        """
+        Checks the version of the Application called from openlp.pyw
+        """
         applicationVersion = self.applicationVersion[u'Full']
         version = check_latest_version(self.generalConfig, applicationVersion)
         if applicationVersion != version:
@@ -676,7 +679,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.setWindowTitle(title)
 
     def defaultThemeChanged(self, theme):
-        self.DefaultThemeLabel.setText(self.defaultThemeText + theme)
+        self.DefaultThemeLabel.setText(
+            u'%s %s' % (self.defaultThemeText, theme))
 
     def toggleMediaManager(self, visible):
         if self.MediaManagerDock.isVisible() != visible:
