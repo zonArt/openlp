@@ -79,9 +79,9 @@ class OpenLPToolbar(QtGui.QToolBar):
                 ToolbarButton.setCheckable(True)
                 QtCore.QObject.connect(ToolbarButton,
                     QtCore.SIGNAL(u'toggled(bool)'), slot)
-                #log.debug(u'checkable')
             self.icons[title] = ButtonIcon
             self.actions[title] = ToolbarButton
+            return ToolbarButton
 
     def addToolbarSeparator(self, handle):
         """

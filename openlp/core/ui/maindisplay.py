@@ -208,7 +208,7 @@ class MainDisplay(DisplayWidget):
 #    def aa(self):
 #        self.setWindowOpacity(1)
 
-    def blankDisplay(self):
+    def blankDisplay(self, blanked=True):
         if not self.displayBlank:
             self.displayBlank = True
             self.display.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
@@ -216,11 +216,9 @@ class MainDisplay(DisplayWidget):
             self.displayBlank = False
             if self.frame:
                 self.frameView(self.frame)
-        if self.parent.LiveController.blackPushButton.isChecked() != \
-            self.displayBlank:
-            self.parent.LiveController.blackPushButton.setChecked(
-                self.displayBlank)
-        self.parent.generalConfig.set_config(u'Screen Blank',self.displayBlank)
+        if blanked != self.displayBlank:
+            self.parent.LiveController.blankButton.setChecked(self.displayBlank)
+        self.parent.generalConfig.set_config(u'Screen Blank', self.displayBlank)
 
     def displayAlert(self, text=u''):
         """
