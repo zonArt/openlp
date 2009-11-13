@@ -404,16 +404,16 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         log.debug(u'onPreview')
         if button.text() == unicode(self.trUtf8(u'Save && Preview')) \
             and self.saveSong():
-            Receiver().send_message(u'preview_song')
+            Receiver.send_message(u'preview_song')
 
     def closePressed(self):
-        Receiver().send_message(u'remote_edit_clear')
+        Receiver.send_message(u'remote_edit_clear')
         self.close()
 
     def accept(self):
         log.debug(u'accept')
         if self.saveSong():
-            Receiver().send_message(u'load_song_list')
+            Receiver.send_message(u'load_song_list')
             self.close()
 
     def saveSong(self):

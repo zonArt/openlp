@@ -145,7 +145,7 @@ class ThemeManager(QtGui.QWidget):
                 name = u'%s (%s)' % (self.global_theme, self.trUtf8(u'default'))
                 self.ThemeListWidget.item(count).setText(name)
                 self.config.set_config(u'theme global theme', self.global_theme)
-                Receiver().send_message(
+                Receiver.send_message(
                     u'update_global_theme', self.global_theme)
                 self.pushThemes()
 
@@ -265,7 +265,7 @@ class ThemeManager(QtGui.QWidget):
         self.pushThemes()
 
     def pushThemes(self):
-        Receiver().send_message(u'update_themes', self.getThemes() )
+        Receiver.send_message(u'update_themes', self.getThemes() )
 
     def getThemes(self):
         return self.themelist

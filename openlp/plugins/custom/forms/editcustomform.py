@@ -82,7 +82,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         log.debug(u'onPreview')
         if button.text() == unicode(self.trUtf8(u'Save && Preview')) \
             and self.saveCustom():
-            Receiver().send_message(u'preview_custom')
+            Receiver.send_message(u'preview_custom')
 
     def initialise(self):
         self.editAll = False
@@ -130,13 +130,13 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             self.previewButton.setVisible(True)
 
     def closePressed(self):
-        Receiver().send_message(u'remote_edit_clear')
+        Receiver.send_message(u'remote_edit_clear')
         self.close()
 
     def accept(self):
         log.debug(u'accept')
         if self.saveCustom():
-            Receiver().send_message(u'load_custom_list')
+            Receiver.send_message(u'load_custom_list')
             self.close()
 
     def saveCustom(self):

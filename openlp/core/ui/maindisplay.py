@@ -48,16 +48,16 @@ class DisplayWidget(QtGui.QWidget):
         if type(event) == QtGui.QKeyEvent:
             #here accept the event and do something
             if event.key() == QtCore.Qt.Key_Up:
-                Receiver().send_message(u'live_slidecontroller_previous')
+                Receiver.send_message(u'live_slidecontroller_previous')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Down:
-                Receiver().send_message(u'live_slidecontroller_next')
+                Receiver.send_message(u'live_slidecontroller_next')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageUp:
-                Receiver().send_message(u'live_slidecontroller_first')
+                Receiver.send_message(u'live_slidecontroller_first')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageDown:
-                Receiver().send_message(u'live_slidecontroller_last')
+                Receiver.send_message(u'live_slidecontroller_last')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Escape:
                 self.resetDisplay()
@@ -111,8 +111,6 @@ class MainDisplay(DisplayWidget):
         self.timer_id = 0
         self.firstTime = True
         self.mediaLoaded = False
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'live_slide_blank'), self.blankDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'alert_text'), self.displayAlert)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -209,15 +207,15 @@ class MainDisplay(DisplayWidget):
 #        self.setWindowOpacity(1)
 
     def blankDisplay(self, blanked=True):
-        if not self.displayBlank:
+        if blanked:
             self.displayBlank = True
             self.display.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
         else:
             self.displayBlank = False
             if self.frame:
                 self.frameView(self.frame)
-        if blanked != self.displayBlank:
-            self.parent.LiveController.blankButton.setChecked(self.displayBlank)
+        #if blanked != self.displayBlank:
+        #    self.parent.LiveController.blankButton.setChecked(self.displayBlank)
         self.parent.generalConfig.set_config(u'Screen Blank', self.displayBlank)
 
     def displayAlert(self, text=u''):
