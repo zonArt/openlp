@@ -159,8 +159,11 @@ class SlideController(QtGui.QWidget):
                 self.trUtf8(u'Move to last'), self.onSlideSelectedLast)
         if self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
-            self.blackPushButton = self.Toolbar.addPushButton(
-                u':/slides/slide_close.png')
+            self.Toolbar.addToolbarButton(
+                u'Blank Screen', u':/slides/slide_close.png',
+                self.trUtf8(u'Blank Screen'), self.onBlankScreen, True)
+            #self.blackPushButton = self.Toolbar.addPushButton(
+            #    u':/slides/slide_close.png')
         if not self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
@@ -197,7 +200,7 @@ class SlideController(QtGui.QWidget):
             self.trUtf8(u'Start playing media'), self.onMediaStop)
         self.volumeSlider = Phonon.VolumeSlider()
         self.volumeSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
-        self.volumeSlider.setObjectName("volumeSlider")
+        self.volumeSlider.setObjectName(u'volumeSlider')
         self.Mediabar.addToolbarWidget(
             u'Audio Volume', self.volumeSlider)
         self.ControllerLayout.addWidget(self.Mediabar)
@@ -265,8 +268,8 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(self.PreviewListWidget,
             QtCore.SIGNAL(u'activated(QModelIndex)'), self.onSlideSelected)
         if isLive:
-            QtCore.QObject.connect(self.blackPushButton,
-                QtCore.SIGNAL(u'clicked(bool)'), self.onBlankScreen)
+            #QtCore.QObject.connect(self.blackPushButton,
+            #    QtCore.SIGNAL(u'clicked(bool)'), self.onBlankScreen)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'update_spin_delay'), self.receiveSpinDelay)
             Receiver().send_message(u'request_spin_delay')
