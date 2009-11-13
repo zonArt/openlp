@@ -507,7 +507,7 @@ class SlideController(QtGui.QWidget):
             self.onSlideSelected()
 
     def onBlankDisplay(self):
-        self.blankButton.setChecked(not self.parent.mainDisplay.displayBlank)
+        self.blankButton.setChecked(self.parent.mainDisplay.displayBlank)
 
     def onBlankScreen(self, blanked):
         """
