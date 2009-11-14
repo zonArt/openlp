@@ -423,8 +423,8 @@ class SlideController(QtGui.QWidget):
             self.wasCommandItem = False
             if self.isLive:
                 Receiver().send_message(u'%s_start' % item.name.lower(), \
-                    [item.name, item.service_item_path,
-                    item.service_frames[0][u'title'], slideno, self.isLive])
+                    [item.title, item.service_item_path,
+                    item.get_frame_title(), slideno, self.isLive])
             else:
                 if item.is_media():
                     self.onMediaStart(item)
