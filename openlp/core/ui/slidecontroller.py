@@ -364,7 +364,7 @@ class SlideController(QtGui.QWidget):
                     self.Songbar.setVisible(True)
         elif item.isImage():
             #Not sensible to allow loops with 1 frame
-            if len(item.frames) > 1:
+            if len(item.getFrames()) > 1:
                 self.Toolbar.makeWidgetsVisible(self.image_list)
         elif item.isMedia():
             self.Toolbar.setVisible(False)
@@ -463,7 +463,7 @@ class SlideController(QtGui.QWidget):
             item = QtGui.QTableWidgetItem()
             slide_height = 0
             #It is a Image
-            if frame[u'text'] is None:
+            if not self.serviceitem.isText():
                 label = QtGui.QLabel()
                 label.setMargin(4)
                 pixmap = self.parent.RenderManager.resize_image(frame[u'image'])
@@ -476,7 +476,7 @@ class SlideController(QtGui.QWidget):
             self.PreviewListWidget.setItem(framenumber, 0, item)
             if slide_height != 0:
                 self.PreviewListWidget.setRowHeight(framenumber, slide_height)
-        if self.serviceitem.getFrames()[0][u'text']:
+        if self.serviceitem.isText():
             self.PreviewListWidget.resizeRowsToContents()
         self.PreviewListWidget.setColumnWidth(
             0, self.PreviewListWidget.viewport().size().width())
@@ -528,10 +528,11 @@ class SlideController(QtGui.QWidget):
                 if self.isLive:
                     self.updatePreview()
             else:
-                frame = self.serviceitem.getFrames()[row][u'image']
+                #frame = self.serviceitem.getFrames()[row][u'image']
                 before = time.time()
-                if frame is None:
-                    frame = self.serviceitem.render_individual(row)
+                #if frame is None:
+                    #frame = self.serviceitem.render_individual(row)
+                frame = self.serviceitem.get_rendered_frame(row)
                 self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
                 log.log(15, u'Slide Rendering took %4s' % (time.time() - before))
                 if self.isLive:

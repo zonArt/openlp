@@ -101,13 +101,11 @@ class ServiceItem(object):
                 before = time.time()
                 formated = self.RenderManager.format_slide(slide[u'raw_slide'])
                 for format in formated:
-                    frame = None
                     lines = u''
                     for line in format:
                         lines += line + u'\n'
                     title = lines.split(u'\n')[0]
-                    self.display_frames.append({u'title': title, u'text': lines,
-                        u'image': frame})
+                    self.display_frames.append({u'title': title, u'text': lines})
                 log.info(u'Formatting took %4s' % (time.time() - before))
         elif self.service_item_type == ServiceItemType.Command:
             self.display_frames = self.raw_frames
@@ -115,7 +113,6 @@ class ServiceItem(object):
             for slide in self.raw_frames:
                 slide[u'image'] = \
                     self.RenderManager.resize_image(slide[u'image'])
-            self.display_frames = self.raw_frames
         else:
             log.error(u'Invalid value renderer :%s' % self.service_item_type)
 
@@ -151,7 +148,7 @@ class ServiceItem(object):
         self.service_item_type = ServiceItemType.Image
         self.service_item_path = path
         self.raw_frames.append(
-            {u'title': title, u'text': None, u'image': image})
+            {u'title': title, u'image': image})
 
     def add_from_text(self, title, raw_slide):
         """
@@ -184,7 +181,7 @@ class ServiceItem(object):
         self.service_item_type = ServiceItemType.Command
         self.service_item_path = path
         self.raw_frames.append(
-            {u'title': file_name, u'command': None, u'text':None, u'image': image})
+            {u'title': file_name, u'image': image})
 
     def get_service_repr(self):
         """
@@ -284,4 +281,13 @@ class ServiceItem(object):
         return self.service_item_type == ServiceItemType.Text
 
     def getFrames(self):
-        return self.display_frames
+        if self.service_item_type == ServiceItemType.Text:
+            return self.display_frames
+        else:
+            return self.raw_frames
+
+    def get_rendered_frame(self, row):
+        if self.service_item_type == ServiceItemType.Text:
+            return self.render_individual(row)
+        else:
+            return self.raw_frames[row][u'image']
