@@ -86,9 +86,9 @@ class SlideController(QtGui.QWidget):
             u'Edit Song',
         ]
         self.timer_id = 0
-        self.wasCommandItem = False
         self.songEdit = False
         self.selectedRow = 0
+        self.serviceItem = None
         self.Panel = QtGui.QWidget(parent.ControlSplitter)
         # Layout for holding panel
         self.PanelLayout = QtGui.QVBoxLayout(self.Panel)
@@ -293,15 +293,12 @@ class SlideController(QtGui.QWidget):
         Handle changes of width from the splitter between the live and preview
         controller.  Event only issues when changes have finished
         """
-        if self.wasCommandItem:
-            return
         width = self.parent.ControlSplitter.sizes()[self.split]
         height = width * self.parent.RenderManager.screen_ratio
         self.PreviewListWidget.setColumnWidth(0, width)
-        for framenumber, frame in enumerate(self.commandItem.frames):
-            if frame[u'text']:
-                return
-            self.PreviewListWidget.setRowHeight(framenumber, height)
+        if self.serviceItem and not self.serviceItem.is_text():
+            for framenumber, frame in enumerate(self.serviceItem.get_frames()):
+                self.PreviewListWidget.setRowHeight(framenumber, height)
 
     def trackSplitter(self, tab, pos):
         """
@@ -415,12 +412,10 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'addServiceManagerItem')
         #If old item was a command tell it to stop
-        if self.wasCommandItem:
+        if self.serviceItem and self.serviceItem.is_command():
             self.onMediaStop()
-            self.wasCommandItem = False
         self.enableToolBar(item)
         if item.is_command():
-            self.wasCommandItem = False
             if self.isLive:
                 Receiver().send_message(u'%s_start' % item.name.lower(), \
                     [item.title, item.service_item_path,
@@ -474,8 +469,8 @@ class SlideController(QtGui.QWidget):
         self.onSlideSelected()
         self.PreviewListWidget.setFocus()
         log.log(15, u'Display Rendering took %4s' % (time.time() - before))
-        if self.serviceItem.audit and self.isLive:
-            Receiver().send_message(u'songusage_live', self.serviceItem.audit)
+        if self.isLive:
+            self.serviceItem.request_audit()
         log.debug(u'displayServiceManagerItems End')
 
     #Screen event methods

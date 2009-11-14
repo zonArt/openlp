@@ -29,7 +29,7 @@ import uuid
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import buildIcon
+from openlp.core.lib import buildIcon, Receiver
 
 class ServiceItemType(object):
     """
@@ -298,3 +298,7 @@ class ServiceItem(object):
         Returns the title of the raw frame
         """
         return self._raw_frames[row][u'title']
+
+    def request_audit(self):
+        if self.audit:
+            Receiver.send_message(u'songusage_live', self.audit)
