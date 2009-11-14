@@ -387,33 +387,18 @@ class SlideController(QtGui.QWidget):
 
     def addServiceItem(self, item):
         """
-        Method to install the service item into the controller and
-        request the correct the toolbar of the plugin
+        Method to install the service item into the controller
         Called by plugins
         """
         log.debug(u'addServiceItem')
-        #If old item was a command tell it to stop
-        if self.wasCommandItem:
-            self.onMediaStop()
-            self.wasCommandItem = False
         before = time.time()
         item.render()
         log.log(15, u'Rendering took %4s' % (time.time() - before))
-        self.enableToolBar(item)
-        if item.is_command():
-            self.wasCommandItem = True
-            if self.isLive:
-                Receiver().send_message(u'%s_start' % item.name.lower(), \
-                    [item.title, item.service_item_path,
-                    item.get_frame_title(), self.isLive])
-            else:
-                if item.is_media():
-                    self.onMediaStart(item)
         slideno = 0
         if self.songEdit:
             slideno = self.selectedRow
         self.songEdit = False
-        self.displayServiceManagerItems(item, slideno)
+        self.addServiceManagerItem(item, slideno)
 
     def replaceServiceManagerItem(self, item):
         """
