@@ -457,7 +457,7 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.clear()
         self.PreviewListWidget.setRowCount(0)
         self.PreviewListWidget.setColumnWidth(0, width)
-        for framenumber, frame in enumerate(self.serviceitem.frames):
+        for framenumber, frame in enumerate(self.serviceitem.getFrames()):
             self.PreviewListWidget.setRowCount(
                 self.PreviewListWidget.rowCount() + 1)
             item = QtGui.QTableWidgetItem()
@@ -476,7 +476,7 @@ class SlideController(QtGui.QWidget):
             self.PreviewListWidget.setItem(framenumber, 0, item)
             if slide_height != 0:
                 self.PreviewListWidget.setRowHeight(framenumber, slide_height)
-        if self.serviceitem.frames[0][u'text']:
+        if self.serviceitem.getFrames()[0][u'text']:
             self.PreviewListWidget.resizeRowsToContents()
         self.PreviewListWidget.setColumnWidth(
             0, self.PreviewListWidget.viewport().size().width())
@@ -528,7 +528,7 @@ class SlideController(QtGui.QWidget):
                 if self.isLive:
                     self.updatePreview()
             else:
-                frame = self.serviceitem.frames[row][u'image']
+                frame = self.serviceitem.getFrames()[row][u'image']
                 before = time.time()
                 if frame is None:
                     frame = self.serviceitem.render_individual(row)

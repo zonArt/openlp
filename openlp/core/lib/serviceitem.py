@@ -49,30 +49,28 @@ class ServiceItem(object):
     log = logging.getLogger(u'ServiceItem')
     log.info(u'Service Item created')
 
-    def __init__(self, hostplugin=None):
+    def __init__(self, plugin=None):
         """
         Set up the service item.
 
-        ``hostplugin``
+        ``plugin``
             The plugin that this service item belongs to.
         """
-        self.plugin = hostplugin
-        if hostplugin:
-            self.RenderManager = self.plugin.render_manager
-            self.shortname = hostplugin.name
-            self.name = self.plugin.name
+        if plugin:
+            self.RenderManager = plugin.render_manager
+            self.name = plugin.name
         self.title = u''
         self.audit = u''
         self.items = []
         self.iconic_representation = None
         self.raw_slides = None
-        self.frames = []
+        self.display_frames = []
         self.raw_footer = None
         self.theme = None
         self.service_item_path = None
         self.service_item_type = None
         self.editEnabled = False
-        self.service_frames = []
+        self.raw_frames = []
         self.uuid = unicode(uuid.uuid1())
 
     def addIcon(self, icon):
@@ -92,14 +90,14 @@ class ServiceItem(object):
         The render method is what generates the frames for the screen.
         """
         log.debug(u'Render called')
-        self.frames = []
+        self.display_frames = []
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
             if self.theme is None:
                 self.RenderManager.set_override_theme(None)
             else:
                 self.RenderManager.set_override_theme(self.theme)
-            for slide in self.service_frames:
+            for slide in self.raw_frames:
                 before = time.time()
                 formated = self.RenderManager.format_slide(slide[u'raw_slide'])
                 for format in formated:
@@ -108,16 +106,16 @@ class ServiceItem(object):
                     for line in format:
                         lines += line + u'\n'
                     title = lines.split(u'\n')[0]
-                    self.frames.append({u'title': title, u'text': lines,
+                    self.display_frames.append({u'title': title, u'text': lines,
                         u'image': frame})
                 log.info(u'Formatting took %4s' % (time.time() - before))
         elif self.service_item_type == ServiceItemType.Command:
-            self.frames = self.service_frames
+            self.display_frames = self.raw_frames
         elif self.service_item_type == ServiceItemType.Image:
-            for slide in self.service_frames:
+            for slide in self.raw_frames:
                 slide[u'image'] = \
                     self.RenderManager.resize_image(slide[u'image'])
-            self.frames = self.service_frames
+            self.display_frames = self.raw_frames
         else:
             log.error(u'Invalid value renderer :%s' % self.service_item_type)
 
@@ -132,19 +130,19 @@ class ServiceItem(object):
             self.RenderManager.set_override_theme(None)
         else:
             self.RenderManager.set_override_theme(self.theme)
-        format = self.frames[row][u'text'].split(u'\n')
+        format = self.display_frames[row][u'text'].split(u'\n')
         frame = self.RenderManager.generate_slide(format,
                         self.raw_footer)
         return frame
 
-    def add_from_image(self, path, frame_title, image):
+    def add_from_image(self, path, title, image):
         """
         Add an image slide to the service item.
 
         ``path``
             The directory in which the image file is located.
 
-        ``frame_title``
+        ``title``
             A title for the slide in the service item.
 
         ``image``
@@ -152,10 +150,10 @@ class ServiceItem(object):
         """
         self.service_item_type = ServiceItemType.Image
         self.service_item_path = path
-        self.service_frames.append(
-            {u'title': frame_title, u'text': None, u'image': image})
+        self.raw_frames.append(
+            {u'title': title, u'text': None, u'image': image})
 
-    def add_from_text(self, frame_title, raw_slide):
+    def add_from_text(self, title, raw_slide):
         """
         Add a text slide to the service item.
 
@@ -166,24 +164,27 @@ class ServiceItem(object):
             The raw text of the slide.
         """
         self.service_item_type = ServiceItemType.Text
-        frame_title = frame_title.split(u'\n')[0]
-        self.service_frames.append(
-            {u'title': frame_title, u'raw_slide': raw_slide})
+        title = title.split(u'\n')[0]
+        self.raw_frames.append(
+            {u'title': title, u'raw_slide': raw_slide})
 
-    def add_from_command(self, path, frame_title, image):
+    def add_from_command(self, path, file_name, image):
         """
         Add a slide from a command.
 
-        ``frame_title``
+        ``path``
             The title of the slide in the service item.
 
-        ``command``
+        ``file_name``
+            The title of the slide in the service item.
+
+        ``immage``
             The command of/for the slide.
         """
         self.service_item_type = ServiceItemType.Command
         self.service_item_path = path
-        self.service_frames.append(
-            {u'title': frame_title, u'command': None, u'text':None, u'image': image})
+        self.raw_frames.append(
+            {u'title': file_name, u'command': None, u'text':None, u'image': image})
 
     def get_service_repr(self):
         """
@@ -192,7 +193,7 @@ class ServiceItem(object):
         """
         service_header = {
             u'name': self.name.lower(),
-            u'plugin': self.shortname,
+            u'plugin': self.name,
             u'theme':self.theme,
             u'title':self.title,
             u'icon':self.icon,
@@ -202,13 +203,13 @@ class ServiceItem(object):
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
-            for slide in self.service_frames:
+            for slide in self.raw_frames:
                 service_data.append(slide)
         elif self.service_item_type == ServiceItemType.Image:
-            for slide in self.service_frames:
+            for slide in self.raw_frames:
                 service_data.append(slide[u'title'])
         elif self.service_item_type == ServiceItemType.Command:
-            for slide in self.service_frames:
+            for slide in self.raw_frames:
                 service_data.append({u'title':slide[u'title'], u'image':slide[u'image']})
         return {u'header': service_header, u'data': service_data}
 
@@ -234,7 +235,7 @@ class ServiceItem(object):
         self.audit = header[u'audit']
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
-                self.service_frames.append(slide)
+                self.raw_frames.append(slide)
         elif self.service_item_type == ServiceItemType.Image:
             for text_image in serviceitem[u'serviceitem'][u'data']:
                 filename = os.path.join(path, text_image)
@@ -281,3 +282,6 @@ class ServiceItem(object):
 
     def isText(self):
         return self.service_item_type == ServiceItemType.Text
+
+    def getFrames(self):
+        return self.display_frames
