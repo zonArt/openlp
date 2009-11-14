@@ -214,8 +214,8 @@ class MainDisplay(DisplayWidget):
             self.displayBlank = False
             if self.frame:
                 self.frameView(self.frame)
-        #if blanked != self.displayBlank:
-        #    self.parent.LiveController.blankButton.setChecked(self.displayBlank)
+        if blanked != self.parent.LiveController.blankButton.isChecked():
+            self.parent.LiveController.blankButton.setChecked(self.displayBlank)
         self.parent.generalConfig.set_config(u'Screen Blank', self.displayBlank)
 
     def displayAlert(self, text=u''):
