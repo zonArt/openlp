@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.ui import AmendThemeForm
 from openlp.core.theme import Theme
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ThemeXML, \
-    str_to_bool, file_to_xml, buildIcon, Receiver, contextMenuAction, \
+    str_to_bool, get_text_file_string, buildIcon, Receiver, contextMenuAction, \
     contextMenuSeparator
 from openlp.core.utils import ConfigHelper
 
@@ -150,15 +150,17 @@ class ThemeManager(QtGui.QWidget):
                 self.pushThemes()
 
     def onAddTheme(self):
-        self.amendThemeForm.loadTheme(None)
+        theme = self.createThemeFromXml(self.baseTheme(), self.path)
+        self.amendThemeForm.loadTheme(theme)
         self.saveThemeName = u''
         self.amendThemeForm.exec_()
 
     def onEditTheme(self):
         item = self.ThemeListWidget.currentItem()
         if item:
-            self.amendThemeForm.loadTheme(
+            theme = self.getThemeData(
                 unicode(item.data(QtCore.Qt.UserRole).toString()))
+            self.amendThemeForm.loadTheme(theme)
             self.saveThemeName = unicode(
                 item.data(QtCore.Qt.UserRole).toString())
             self.amendThemeForm.exec_()
@@ -265,7 +267,7 @@ class ThemeManager(QtGui.QWidget):
         self.pushThemes()
 
     def pushThemes(self):
-        Receiver().send_message(u'update_themes', self.getThemes() )
+        Receiver().send_message(u'update_themes', self.getThemes())
 
     def getThemes(self):
         return self.themelist
@@ -274,7 +276,7 @@ class ThemeManager(QtGui.QWidget):
         log.debug(u'getthemedata for theme %s', themename)
         xml_file = os.path.join(self.path, unicode(themename),
             unicode(themename) + u'.xml')
-        xml = file_to_xml(xml_file)
+        xml = get_text_file_string(xml_file)
         if not xml:
             xml = self.baseTheme()
         return self.createThemeFromXml(xml, self.path)
@@ -501,6 +503,8 @@ class ThemeManager(QtGui.QWidget):
         theme.display_wrapStyle = theme.display_wrapStyle.strip()
         theme.font_footer_color = theme.font_footer_color.strip()
         theme.font_footer_height = int(theme.font_footer_height.strip())
+        theme.font_footer_indentation = \
+            int(theme.font_footer_indentation.strip())
         theme.font_footer_italics = str_to_bool(theme.font_footer_italics)
         theme.font_footer_name = theme.font_footer_name.strip()
         #theme.font_footer_override

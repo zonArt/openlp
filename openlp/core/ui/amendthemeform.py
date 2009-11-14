@@ -184,7 +184,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
     def loadTheme(self, theme):
         log.debug(u'LoadTheme %s', theme)
-        self.theme = self.thememanager.getThemeData(theme)
+        self.theme = theme
         # Stop the initial screen setup generating 1 preview per field!
         self.allowPreview = False
         self.paintUi(self.theme)
