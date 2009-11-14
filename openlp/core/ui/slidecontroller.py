@@ -86,7 +86,7 @@ class SlideController(QtGui.QWidget):
             u'Edit Song',
         ]
         self.timer_id = 0
-        self.commandItem = None
+        self.wasCommandItem = False
         self.songEdit = False
         self.row = 0
         self.Panel = QtGui.QWidget(parent.ControlSplitter)
@@ -293,7 +293,7 @@ class SlideController(QtGui.QWidget):
         Handle changes of width from the splitter between the live and preview
         controller.  Event only issues when changes have finished
         """
-        if not self.commandItem:
+        if self.wasCommandItem:
             return
         width = self.parent.ControlSplitter.sizes()[self.split]
         height = width * self.parent.RenderManager.screen_ratio
@@ -393,14 +393,15 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'addServiceItem')
         #If old item was a command tell it to stop
-        if self.commandItem and self.commandItem.isCommand():
+        if self.wasCommandItem:
             self.onMediaStop()
-        self.commandItem = item
+            self.wasCommandItem = False
         before = time.time()
         item.render()
         log.log(15, u'Rendering took %4s' % (time.time() - before))
         self.enableToolBar(item)
         if item.isCommand():
+            self.wasCommandItem = True
             if self.isLive:
                 Receiver().send_message(u'%s_start' % item.name.lower(), \
                     [item.shortname, item.service_item_path,
@@ -418,7 +419,7 @@ class SlideController(QtGui.QWidget):
         """
         Replacement item following a remote edit
         """
-        if item.__eq__(self.commandItem):
+        if item.__eq__(self.serviceItem):
             self.addServiceManagerItem(item, self.PreviewListWidget.currentRow())
 
     def addServiceManagerItem(self, item, slideno):
@@ -429,11 +430,12 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'addServiceManagerItem')
         #If old item was a command tell it to stop
-        if self.commandItem and self.commandItem.isCommand():
+        if self.wasCommandItem:
             self.onMediaStop()
-        self.commandItem = item
+            self.wasCommandItem = False
         self.enableToolBar(item)
         if item.isCommand():
+            self.wasCommandItem = False
             if self.isLive:
                 Receiver().send_message(u'%s_start' % item.name.lower(), \
                     [item.shortname, item.service_item_path,
@@ -453,17 +455,17 @@ class SlideController(QtGui.QWidget):
         #Set pointing cursor when we have somthing to point at
         self.PreviewListWidget.setCursor(QtCore.Qt.PointingHandCursor)
         before = time.time()
-        self.serviceitem = serviceitem
+        self.serviceItem = serviceitem
         self.PreviewListWidget.clear()
         self.PreviewListWidget.setRowCount(0)
         self.PreviewListWidget.setColumnWidth(0, width)
-        for framenumber, frame in enumerate(self.serviceitem.getFrames()):
+        for framenumber, frame in enumerate(self.serviceItem.getFrames()):
             self.PreviewListWidget.setRowCount(
                 self.PreviewListWidget.rowCount() + 1)
             item = QtGui.QTableWidgetItem()
             slide_height = 0
             #It is a Image
-            if not self.serviceitem.isText():
+            if not self.serviceItem.isText():
                 label = QtGui.QLabel()
                 label.setMargin(4)
                 pixmap = self.parent.RenderManager.resize_image(frame[u'image'])
@@ -476,7 +478,7 @@ class SlideController(QtGui.QWidget):
             self.PreviewListWidget.setItem(framenumber, 0, item)
             if slide_height != 0:
                 self.PreviewListWidget.setRowHeight(framenumber, slide_height)
-        if self.serviceitem.isText():
+        if self.serviceItem.isText():
             self.PreviewListWidget.resizeRowsToContents()
         self.PreviewListWidget.setColumnWidth(
             0, self.PreviewListWidget.viewport().size().width())
@@ -487,8 +489,8 @@ class SlideController(QtGui.QWidget):
         self.onSlideSelected()
         self.PreviewListWidget.setFocus()
         log.log(15, u'Display Rendering took %4s' % (time.time() - before))
-        if self.serviceitem.audit and self.isLive:
-            Receiver().send_message(u'songusage_live', self.serviceitem.audit)
+        if self.serviceItem.audit and self.isLive:
+            Receiver().send_message(u'songusage_live', self.serviceItem.audit)
         log.debug(u'displayServiceManagerItems End')
 
     #Screen event methods
@@ -496,8 +498,8 @@ class SlideController(QtGui.QWidget):
         """
         Go to the first slide.
         """
-        if self.commandItem and self.commandItem.isCommand():
-            Receiver().send_message(u'%s_first'% self.commandItem.name.lower())
+        if self.serviceItem.isCommand():
+            Receiver().send_message(u'%s_first'% self.serviceItem.name.lower())
             self.updatePreview()
         else:
             self.PreviewListWidget.selectRow(0)
@@ -507,11 +509,11 @@ class SlideController(QtGui.QWidget):
         """
         Blank the screen.
         """
-        if self.commandItem and self.commandItem.isCommand():
+        if self.serviceItem.isCommand():
             if blanked:
-                Receiver().send_message(u'%s_blank'% self.commandItem.name.lower())
+                Receiver().send_message(u'%s_blank'% self.serviceItem.name.lower())
             else:
-                Receiver().send_message(u'%s_unblank'% self.commandItem.name.lower())
+                Receiver().send_message(u'%s_unblank'% self.serviceItem.name.lower())
         else:
             self.parent.mainDisplay.blankDisplay()
 
@@ -523,16 +525,13 @@ class SlideController(QtGui.QWidget):
         row = self.PreviewListWidget.currentRow()
         self.row = 0
         if row > -1 and row < self.PreviewListWidget.rowCount():
-            if self.commandItem.isCommand():
-                Receiver().send_message(u'%s_slide'% self.commandItem.name.lower(), [row])
+            if self.serviceItem.isCommand():
+                Receiver().send_message(u'%s_slide'% self.serviceItem.name.lower(), [row])
                 if self.isLive:
                     self.updatePreview()
             else:
-                #frame = self.serviceitem.getFrames()[row][u'image']
                 before = time.time()
-                #if frame is None:
-                    #frame = self.serviceitem.render_individual(row)
-                frame = self.serviceitem.get_rendered_frame(row)
+                frame = self.serviceItem.get_rendered_frame(row)
                 self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
                 log.log(15, u'Slide Rendering took %4s' % (time.time() - before))
                 if self.isLive:
@@ -569,8 +568,8 @@ class SlideController(QtGui.QWidget):
         """
         Go to the next slide.
         """
-        if self.commandItem and self.commandItem.isCommand():
-            Receiver().send_message(u'%s_next'% self.commandItem.name.lower())
+        if self.serviceItem.isCommand():
+            Receiver().send_message(u'%s_next'% self.serviceItem.name.lower())
             self.updatePreview()
         else:
             row = self.PreviewListWidget.currentRow() + 1
@@ -583,9 +582,9 @@ class SlideController(QtGui.QWidget):
         """
         Go to the previous slide.
         """
-        if self.commandItem and self.commandItem.isCommand():
+        if self.serviceItem.isCommand():
             Receiver().send_message(
-                u'%s_previous'% self.commandItem.name.lower())
+                u'%s_previous'% self.serviceItem.name.lower())
             self.updatePreview()
         else:
             row = self.PreviewListWidget.currentRow() - 1
@@ -598,8 +597,8 @@ class SlideController(QtGui.QWidget):
         """
         Go to the last slide.
         """
-        if self.commandItem and self.commandItem.isCommand():
-            Receiver().send_message(u'%s_last'% self.commandItem.name.lower())
+        if self.serviceItem.isCommand():
+            Receiver().send_message(u'%s_last'% self.serviceItem.name.lower())
             self.updatePreview()
         else:
             self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount() - 1)
@@ -628,8 +627,8 @@ class SlideController(QtGui.QWidget):
 
     def onEditSong(self):
         self.songEdit = True
-        Receiver().send_message(u'%s_edit' % self.commandItem.name, u'P:%s' %
-            self.commandItem.editId )
+        Receiver().send_message(u'%s_edit' % self.serviceItem.name, u'P:%s' %
+            self.serviceItem.editId )
 
     def onGoLive(self):
         """
@@ -638,24 +637,24 @@ class SlideController(QtGui.QWidget):
         row = self.PreviewListWidget.currentRow()
         if row > -1 and row < self.PreviewListWidget.rowCount():
             self.parent.LiveController.addServiceManagerItem(
-                self.commandItem, row)
+                self.serviceItem, row)
 
     def onMediaStart(self, item):
         self.mediaObject.stop()
         self.mediaObject.clearQueue()
-        file = os.path.join(item.service_item_path, item.service_frames[0][u'title'])
+        file = os.path.join(item.service_item_path, item.get_frame_title(0))
         self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
         self.onMediaPlay()
 
     def onMediaPause(self):
         if self.isLive:
-            Receiver().send_message(u'%s_pause'% self.commandItem.name.lower())
+            Receiver().send_message(u'%s_pause'% self.serviceItem.name.lower())
         else:
             self.mediaObject.pause()
 
     def onMediaPlay(self):
         if self.isLive:
-            Receiver().send_message(u'%s_play'% self.commandItem.name.lower(), self.isLive)
+            Receiver().send_message(u'%s_play'% self.serviceItem.name.lower(), self.isLive)
         else:
             self.SlidePreview.hide()
             self.video.show()
@@ -663,7 +662,7 @@ class SlideController(QtGui.QWidget):
 
     def onMediaStop(self):
         if self.isLive:
-            Receiver().send_message(u'%s_stop'% self.commandItem.name.lower())
+            Receiver().send_message(u'%s_stop'% self.serviceItem.name.lower())
         else:
             self.mediaObject.stop()
             self.video.hide()

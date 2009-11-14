@@ -106,8 +106,6 @@ class ServiceItem(object):
                     title = lines.split(u'\n')[0]
                     self._display_frames.append({u'title': title, u'text': lines})
                 log.info(u'Formatting took %4s' % (time.time() - before))
-        elif self.service_item_type == ServiceItemType.Command:
-            self._display_frames = self._raw_frames
         elif self.service_item_type == ServiceItemType.Image:
             for slide in self._raw_frames:
                 slide[u'image'] = \
@@ -294,3 +292,9 @@ class ServiceItem(object):
             return self.render_individual(row)
         else:
             return self._raw_frames[row][u'image']
+
+    def get_frame_title(self, row):
+        """
+        Returns the title of the raw frame
+        """
+        return self._raw_frames[row][u'title']
