@@ -88,7 +88,7 @@ class SlideController(QtGui.QWidget):
         self.timer_id = 0
         self.wasCommandItem = False
         self.songEdit = False
-        self.row = 0
+        self.selectedRow = 0
         self.Panel = QtGui.QWidget(parent.ControlSplitter)
         # Layout for holding panel
         self.PanelLayout = QtGui.QVBoxLayout(self.Panel)
@@ -404,14 +404,14 @@ class SlideController(QtGui.QWidget):
             self.wasCommandItem = True
             if self.isLive:
                 Receiver().send_message(u'%s_start' % item.name.lower(), \
-                    [item.shortname, item.service_item_path,
-                    item.service_frames[0][u'title'], self.isLive])
+                    [item.title, item.service_item_path,
+                    item.get_frame_title(), self.isLive])
             else:
                 if item.is_media():
                     self.onMediaStart(item)
         slideno = 0
         if self.songEdit:
-            slideno = self.row
+            slideno = self.selectedRow
         self.songEdit = False
         self.displayServiceManagerItems(item, slideno)
 
@@ -438,7 +438,7 @@ class SlideController(QtGui.QWidget):
             self.wasCommandItem = False
             if self.isLive:
                 Receiver().send_message(u'%s_start' % item.name.lower(), \
-                    [item.shortname, item.service_item_path,
+                    [item.name, item.service_item_path,
                     item.service_frames[0][u'title'], slideno, self.isLive])
             else:
                 if item.is_media():
@@ -523,7 +523,7 @@ class SlideController(QtGui.QWidget):
         if this is the Live Controller also display on the screen
         """
         row = self.PreviewListWidget.currentRow()
-        self.row = 0
+        self.selectedRow = 0
         if row > -1 and row < self.PreviewListWidget.rowCount():
             if self.serviceItem.is_command():
                 Receiver().send_message(u'%s_slide'% self.serviceItem.name.lower(), [row])
@@ -536,7 +536,7 @@ class SlideController(QtGui.QWidget):
                 log.log(15, u'Slide Rendering took %4s' % (time.time() - before))
                 if self.isLive:
                     self.parent.mainDisplay.frameView(frame)
-            self.row = row
+            self.selectedRow = row
 
     def onSlideChange(self, row):
         """
@@ -642,7 +642,7 @@ class SlideController(QtGui.QWidget):
     def onMediaStart(self, item):
         self.mediaObject.stop()
         self.mediaObject.clearQueue()
-        file = os.path.join(item.service_item_path, item.get_frame_title(0))
+        file = os.path.join(item.service_item_path, item.get_frame_title())
         self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
         self.onMediaPlay()
 

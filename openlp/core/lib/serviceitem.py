@@ -293,7 +293,7 @@ class ServiceItem(object):
         else:
             return self._raw_frames[row][u'image']
 
-    def get_frame_title(self, row):
+    def get_frame_title(self, row=0):
         """
         Returns the title of the raw frame
         """
