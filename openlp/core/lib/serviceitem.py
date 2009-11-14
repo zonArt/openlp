@@ -67,7 +67,7 @@ class ServiceItem(object):
         self.theme = None
         self.service_item_path = None
         self.service_item_type = None
-        self.editEnabled = False
+        self.edit_enabled = False
         self._raw_frames = []
         self._display_frames = []
         self._uuid = unicode(uuid.uuid1())
@@ -262,22 +262,22 @@ class ServiceItem(object):
         """
         return self._uuid != other._uuid
 
-    def isSong(self):
+    def is_song(self):
         return self.name == u'Songs'
 
-    def isMedia(self):
+    def is_media(self):
         return self.name.lower() == u'media'
 
-    def isCommand(self):
+    def is_command(self):
         return self.service_item_type == ServiceItemType.Command
 
-    def isImage(self):
+    def is_image(self):
         return self.service_item_type == ServiceItemType.Image
 
-    def isText(self):
+    def is_text(self):
         return self.service_item_type == ServiceItemType.Text
 
-    def getFrames(self):
+    def get_frames(self):
         if self.service_item_type == ServiceItemType.Text:
             return self._display_frames
         else:

@@ -345,9 +345,9 @@ class SlideController(QtGui.QWidget):
         self.Songbar.setVisible(False)
         self.Mediabar.setVisible(False)
         self.Toolbar.makeWidgetsInvisible(self.image_list)
-        if item.isText():
+        if item.is_text():
             self.Toolbar.makeWidgetsInvisible(self.image_list)
-            if item.isSong() and \
+            if item.is_song() and \
                 str_to_bool(self.songsconfig.get_config(u'display songbar', True)):
                 for action in self.Songbar.actions:
                     self.Songbar.actions[action].setVisible(False)
@@ -362,11 +362,11 @@ class SlideController(QtGui.QWidget):
                             #More than 20 verses hard luck
                             pass
                     self.Songbar.setVisible(True)
-        elif item.isImage():
+        elif item.is_image():
             #Not sensible to allow loops with 1 frame
-            if len(item.getFrames()) > 1:
+            if len(item.get_frames()) > 1:
                 self.Toolbar.makeWidgetsVisible(self.image_list)
-        elif item.isMedia():
+        elif item.is_media():
             self.Toolbar.setVisible(False)
             self.Mediabar.setVisible(True)
             self.volumeSlider.setAudioOutput(self.parent.mainDisplay.audio)
@@ -378,9 +378,9 @@ class SlideController(QtGui.QWidget):
         self.Toolbar.setVisible(True)
         self.Mediabar.setVisible(False)
         self.Toolbar.makeWidgetsInvisible(self.song_edit_list)
-        if item.editEnabled and item.fromPlugin:
+        if item.edit_enabled and item.fromPlugin:
             self.Toolbar.makeWidgetsVisible(self.song_edit_list)
-        elif item.isMedia():
+        elif item.is_media():
             self.Toolbar.setVisible(False)
             self.Mediabar.setVisible(True)
             self.volumeSlider.setAudioOutput(self.audio)
@@ -400,14 +400,14 @@ class SlideController(QtGui.QWidget):
         item.render()
         log.log(15, u'Rendering took %4s' % (time.time() - before))
         self.enableToolBar(item)
-        if item.isCommand():
+        if item.is_command():
             self.wasCommandItem = True
             if self.isLive:
                 Receiver().send_message(u'%s_start' % item.name.lower(), \
                     [item.shortname, item.service_item_path,
                     item.service_frames[0][u'title'], self.isLive])
             else:
-                if item.isMedia():
+                if item.is_media():
                     self.onMediaStart(item)
         slideno = 0
         if self.songEdit:
@@ -434,14 +434,14 @@ class SlideController(QtGui.QWidget):
             self.onMediaStop()
             self.wasCommandItem = False
         self.enableToolBar(item)
-        if item.isCommand():
+        if item.is_command():
             self.wasCommandItem = False
             if self.isLive:
                 Receiver().send_message(u'%s_start' % item.name.lower(), \
                     [item.shortname, item.service_item_path,
                     item.service_frames[0][u'title'], slideno, self.isLive])
             else:
-                if item.isMedia():
+                if item.is_media():
                     self.onMediaStart(item)
         self.displayServiceManagerItems(item, slideno)
 
@@ -459,13 +459,13 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.clear()
         self.PreviewListWidget.setRowCount(0)
         self.PreviewListWidget.setColumnWidth(0, width)
-        for framenumber, frame in enumerate(self.serviceItem.getFrames()):
+        for framenumber, frame in enumerate(self.serviceItem.get_frames()):
             self.PreviewListWidget.setRowCount(
                 self.PreviewListWidget.rowCount() + 1)
             item = QtGui.QTableWidgetItem()
             slide_height = 0
             #It is a Image
-            if not self.serviceItem.isText():
+            if not self.serviceItem.is_text():
                 label = QtGui.QLabel()
                 label.setMargin(4)
                 pixmap = self.parent.RenderManager.resize_image(frame[u'image'])
@@ -478,7 +478,7 @@ class SlideController(QtGui.QWidget):
             self.PreviewListWidget.setItem(framenumber, 0, item)
             if slide_height != 0:
                 self.PreviewListWidget.setRowHeight(framenumber, slide_height)
-        if self.serviceItem.isText():
+        if self.serviceItem.is_text():
             self.PreviewListWidget.resizeRowsToContents()
         self.PreviewListWidget.setColumnWidth(
             0, self.PreviewListWidget.viewport().size().width())
@@ -498,7 +498,7 @@ class SlideController(QtGui.QWidget):
         """
         Go to the first slide.
         """
-        if self.serviceItem.isCommand():
+        if self.serviceItem.is_command():
             Receiver().send_message(u'%s_first'% self.serviceItem.name.lower())
             self.updatePreview()
         else:
@@ -509,7 +509,7 @@ class SlideController(QtGui.QWidget):
         """
         Blank the screen.
         """
-        if self.serviceItem.isCommand():
+        if self.serviceItem.is_command():
             if blanked:
                 Receiver().send_message(u'%s_blank'% self.serviceItem.name.lower())
             else:
@@ -525,7 +525,7 @@ class SlideController(QtGui.QWidget):
         row = self.PreviewListWidget.currentRow()
         self.row = 0
         if row > -1 and row < self.PreviewListWidget.rowCount():
-            if self.serviceItem.isCommand():
+            if self.serviceItem.is_command():
                 Receiver().send_message(u'%s_slide'% self.serviceItem.name.lower(), [row])
                 if self.isLive:
                     self.updatePreview()
@@ -568,7 +568,7 @@ class SlideController(QtGui.QWidget):
         """
         Go to the next slide.
         """
-        if self.serviceItem.isCommand():
+        if self.serviceItem.is_command():
             Receiver().send_message(u'%s_next'% self.serviceItem.name.lower())
             self.updatePreview()
         else:
@@ -582,7 +582,7 @@ class SlideController(QtGui.QWidget):
         """
         Go to the previous slide.
         """
-        if self.serviceItem.isCommand():
+        if self.serviceItem.is_command():
             Receiver().send_message(
                 u'%s_previous'% self.serviceItem.name.lower())
             self.updatePreview()
@@ -597,7 +597,7 @@ class SlideController(QtGui.QWidget):
         """
         Go to the last slide.
         """
-        if self.serviceItem.isCommand():
+        if self.serviceItem.is_command():
             Receiver().send_message(u'%s_last'% self.serviceItem.name.lower())
             self.updatePreview()
         else:

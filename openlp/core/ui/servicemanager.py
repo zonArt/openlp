@@ -48,7 +48,7 @@ class ServiceManagerList(QtGui.QTreeWidget):
 #            else:
 #                pos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
 #            serviceItem = self.parent.serviceItems[pos - 1]
-#            if serviceItem[u'data'].editEnabled:
+#            if serviceItem[u'data'].edit_enabled:
 #                self.parent.editAction.setVisible(True)
 #            else:
 #                self.parent.editAction.setVisible(False)
@@ -395,7 +395,7 @@ class ServiceManager(QtGui.QWidget):
             treewidgetitem.setData(0, QtCore.Qt.UserRole,
                 QtCore.QVariant(item[u'order']))
             treewidgetitem.setExpanded(item[u'expanded'])
-            for count, frame in enumerate(serviceitem.getFrames()):
+            for count, frame in enumerate(serviceitem.get_frames()):
                 treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
                 text = frame[u'title']
                 treewidgetitem1.setText(0,text[:40])
@@ -597,7 +597,7 @@ class ServiceManager(QtGui.QWidget):
         Posts a remote edit message to a plugin to allow item to be edited.
         """
         item, count = self.findServiceItem()
-        if self.serviceItems[item][u'service_item'].editEnabled:
+        if self.serviceItems[item][u'service_item'].edit_enabled:
             self.remoteEditTriggered = True
             Receiver().send_message(u'%s_edit' % self.serviceItems[item][u'service_item'].name, u'L:%s' %
                 self.serviceItems[item][u'service_item'].editId )
