@@ -28,8 +28,7 @@ import os
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import OpenLPToolbar, Receiver, ServiceItemType, \
-    str_to_bool, PluginConfig
+from openlp.core.lib import OpenLPToolbar, Receiver, str_to_bool, PluginConfig
 
 class SlideList(QtGui.QTableWidget):
     """
@@ -407,7 +406,7 @@ class SlideController(QtGui.QWidget):
     def addServiceManagerItem(self, item, slideno):
         """
         Method to install the service item into the controller and
-        request the correct the toolbar of the plugin
+        request the correct toolbar for the plugin.
         Called by ServiceManager
         """
         log.debug(u'addServiceManagerItem')

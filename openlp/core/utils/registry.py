@@ -101,10 +101,10 @@ class Registry(object):
             return False
 
     def _load(self):
+        if not os.path.isfile(self.file_name):
+            return False
         file_handle = None
         try:
-            if not os.path.isfile(self.file_name):
-                return False
             file_handle = open(self.file_name, u'r')
             self.config.readfp(file_handle)
             return True

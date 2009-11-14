@@ -23,7 +23,6 @@
 ###############################################################################
 
 import os
-import string
 import logging
 import cPickle
 import zipfile
@@ -460,7 +459,7 @@ class ServiceManager(QtGui.QWidget):
     def onQuickSaveService(self):
         self.onSaveService(True)
 
-    def onLoadService(self, lastService = False):
+    def onLoadService(self, lastService=False):
         """
         Load an existing service from disk and rebuild the serviceitems.  All
         files retrieved from the zip file are placed in a temporary directory
@@ -481,11 +480,8 @@ class ServiceManager(QtGui.QWidget):
             try:
                 zip = zipfile.ZipFile(unicode(filename))
                 for file in zip.namelist():
-                    if os.name == u'nt':
-                        winfile = string.replace(file, '/', os.path.sep)
-                        names = winfile.split(os.path.sep)
-                    else:
-                        names = file.split(os.path.sep)
+                    osfile = unicode(QtCore.QDir.toNativeSeparators(file))
+                    names = osfile.split(os.path.sep)
                     file_to = os.path.join(self.servicePath,
                         names[len(names) - 1])
                     f = open(file_to, u'wb')
@@ -501,7 +497,7 @@ class ServiceManager(QtGui.QWidget):
                 for item in items:
                     serviceitem = ServiceItem()
                     serviceitem.RenderManager = self.parent.RenderManager
-                    serviceitem.set_from_service(item, self.servicePath )
+                    serviceitem.set_from_service(item, self.servicePath)
                     self.addServiceItem(serviceitem)
                 try:
                     if os.path.isfile(p_file):
