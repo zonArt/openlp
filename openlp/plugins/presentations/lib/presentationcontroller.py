@@ -50,25 +50,25 @@ class PresentationController(object):
 
     ``name``
         The name that appears in the options and the media manager
-    
+
     ``enabled``
         The controller is enabled
 
     ``available``
         The controller is available on this machine. Set by init via
         call to check_available
-        
+
     ``plugin``
         The presentationplugin object
 
     **Hook Functions**
-    
+
     ``kill()``
         Called at system exit to clean up any running presentations
 
     ``check_available()``
         Returns True if presentation application is installed/can run on this machine
-    
+
     ``presentation_deleted()``
         Deletes presentation specific files, e.g. thumbnails
 
@@ -83,7 +83,7 @@ class PresentationController(object):
 
     ``is_active()``
         Returns True if a presentation is currently running
-    
+
     ``blank_screen()``
         Blanks the screen, making it black.
 
@@ -118,7 +118,7 @@ class PresentationController(object):
     global log
     log = logging.getLogger(u'PresentationController')
     log.info(u'loaded')
-    
+
     def __init__(self, plugin=None, name=u'PresentationController'):
         """
         This is the constructor for the presentationcontroller object.
@@ -163,7 +163,7 @@ class PresentationController(object):
         """
         self.store_filename(presentation)
         shutil.rmtree(self.thumbnailpath)
-    
+
     def start_process(self):
         """
         Loads a running version of the presentation application in the background.
@@ -229,7 +229,7 @@ class PresentationController(object):
         Returns true if a presentation is loaded
         """
         return False
-    
+
     def blank_screen(self):
         """
         Blanks the screen, making it black.
@@ -311,5 +311,5 @@ class PresentationController(object):
             prefix = u'live'
         else:
             prefix = u'preview'
-        Receiver().send_message(u'%s_slidecontroller_change' % prefix, 
+        Receiver.send_message(u'%s_slidecontroller_change' % prefix,
             self.slidenumber - 1)

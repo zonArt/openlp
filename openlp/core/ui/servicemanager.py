@@ -595,7 +595,7 @@ class ServiceManager(QtGui.QWidget):
         item, count = self.findServiceItem()
         if self.serviceItems[item][u'data'].editEnabled:
             self.remoteEditTriggered = True
-            Receiver().send_message(u'%s_edit' % self.serviceItems[item][u'data'].name, u'L:%s' %
+            Receiver.send_message(u'%s_edit' % self.serviceItems[item][u'data'].name, u'L:%s' %
                 self.serviceItems[item][u'data'].editId )
 
     def onRemoteEditClear(self):
@@ -662,7 +662,7 @@ class ServiceManager(QtGui.QWidget):
                 self.serviceItems.insert(newpos, serviceItem)
                 self.repaintServiceList(endpos, startCount)
             else:
-                Receiver().send_message(u'%s_add_service_item' % plugin)
+                Receiver.send_message(u'%s_add_service_item' % plugin)
 
     def updateThemeList(self, theme_list):
         """

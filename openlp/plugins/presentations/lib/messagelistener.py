@@ -77,7 +77,7 @@ class MessageListener(object):
         self.controller.load_presentation(file)
         if self.is_live:
             self.controller.start_presentation()
-            Receiver().send_message(u'live_slide_hide') 
+            Receiver.send_message(u'live_slide_hide')
         self.controller.slidenumber = 0
         self.timer.start()
 
@@ -89,7 +89,7 @@ class MessageListener(object):
         self.controller.start_presentation()
         if self.controller.slidenumber > 1:
             self.controller.goto_slide(self.controller.slidenumber)
-        
+
     def slide(self, message):
         if not self.is_live:
             return
@@ -143,7 +143,7 @@ class MessageListener(object):
         Based on the handler passed at startup triggers slide show to shut down
         """
         if self.is_live:
-            Receiver().send_message(u'live_slide_show') 
+            Receiver.send_message(u'live_slide_show')
         self.controller.close_presentation()
         self.controller.slidenumber = 0
         self.timer.stop()
@@ -155,13 +155,13 @@ class MessageListener(object):
             return
         if not self.controller.is_active():
             return
-        self.controller.blank_screen()        
+        self.controller.blank_screen()
 
     def unblank(self):
         if not self.is_live:
             return
         self.activate()
-        self.controller.unblank_screen()        
+        self.controller.unblank_screen()
 
     def decodeMessage(self, message):
         """

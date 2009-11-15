@@ -158,8 +158,11 @@ class SlideController(QtGui.QWidget):
                 self.trUtf8(u'Move to last'), self.onSlideSelectedLast)
         if self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
-            self.blackPushButton = self.Toolbar.addPushButton(
-                u':/slides/slide_close.png')
+            self.blankButton = self.Toolbar.addToolbarButton(
+                u'Blank Screen', u':/slides/slide_close.png',
+                self.trUtf8(u'Blank Screen'), self.onBlankScreen, True)
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'live_slide_blank'), self.onBlankDisplay)
         if not self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
@@ -196,7 +199,7 @@ class SlideController(QtGui.QWidget):
             self.trUtf8(u'Start playing media'), self.onMediaStop)
         self.volumeSlider = Phonon.VolumeSlider()
         self.volumeSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
-        self.volumeSlider.setObjectName("volumeSlider")
+        self.volumeSlider.setObjectName(u'volumeSlider')
         self.Mediabar.addToolbarWidget(
             u'Audio Volume', self.volumeSlider)
         self.ControllerLayout.addWidget(self.Mediabar)
@@ -264,11 +267,11 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(self.PreviewListWidget,
             QtCore.SIGNAL(u'activated(QModelIndex)'), self.onSlideSelected)
         if isLive:
-            QtCore.QObject.connect(self.blackPushButton,
-                QtCore.SIGNAL(u'clicked(bool)'), self.onBlankScreen)
+            #QtCore.QObject.connect(self.blackPushButton,
+            #    QtCore.SIGNAL(u'clicked(bool)'), self.onBlankScreen)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'update_spin_delay'), self.receiveSpinDelay)
-            Receiver().send_message(u'request_spin_delay')
+            Receiver.send_message(u'request_spin_delay')
         if isLive:
             self.Toolbar.makeWidgetsInvisible(self.image_list)
         else:
@@ -401,7 +404,7 @@ class SlideController(QtGui.QWidget):
         self.enableToolBar(item)
         if item.isCommand():
             if self.isLive:
-                Receiver().send_message(u'%s_start' % item.name.lower(), \
+                Receiver.send_message(u'%s_start' % item.name.lower(), \
                     [item.shortname, item.service_item_path,
                     item.service_frames[0][u'title'], self.isLive])
             else:
@@ -434,7 +437,7 @@ class SlideController(QtGui.QWidget):
         self.enableToolBar(item)
         if item.isCommand():
             if self.isLive:
-                Receiver().send_message(u'%s_start' % item.name.lower(), \
+                Receiver.send_message(u'%s_start' % item.name.lower(), \
                     [item.shortname, item.service_item_path,
                     item.service_frames[0][u'title'], slideno, self.isLive])
             else:
@@ -487,7 +490,7 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.setFocus()
         log.log(15, u'Display Rendering took %4s' % (time.time() - before))
         if self.serviceitem.audit and self.isLive:
-            Receiver().send_message(u'songusage_live', self.serviceitem.audit)
+            Receiver.send_message(u'songusage_live', self.serviceitem.audit)
         log.debug(u'displayServiceManagerItems End')
 
     #Screen event methods
@@ -496,11 +499,14 @@ class SlideController(QtGui.QWidget):
         Go to the first slide.
         """
         if self.commandItem and self.commandItem.isCommand():
-            Receiver().send_message(u'%s_first'% self.commandItem.name.lower())
+            Receiver.send_message(u'%s_first'% self.commandItem.name.lower())
             self.updatePreview()
         else:
             self.PreviewListWidget.selectRow(0)
             self.onSlideSelected()
+
+    def onBlankDisplay(self):
+        self.blankButton.setChecked(self.parent.mainDisplay.displayBlank)
 
     def onBlankScreen(self, blanked):
         """
@@ -508,11 +514,11 @@ class SlideController(QtGui.QWidget):
         """
         if self.commandItem and self.commandItem.isCommand():
             if blanked:
-                Receiver().send_message(u'%s_blank'% self.commandItem.name.lower())
+                Receiver.send_message(u'%s_blank'% self.commandItem.name.lower())
             else:
-                Receiver().send_message(u'%s_unblank'% self.commandItem.name.lower())
+                Receiver.send_message(u'%s_unblank'% self.commandItem.name.lower())
         else:
-            self.parent.mainDisplay.blankDisplay()
+            self.parent.mainDisplay.blankDisplay(blanked)
 
     def onSlideSelected(self):
         """
@@ -523,7 +529,7 @@ class SlideController(QtGui.QWidget):
         self.row = 0
         if row > -1 and row < self.PreviewListWidget.rowCount():
             if self.commandItem.isCommand():
-                Receiver().send_message(u'%s_slide'% self.commandItem.name.lower(), [row])
+                Receiver.send_message(u'%s_slide'% self.commandItem.name.lower(), [row])
                 if self.isLive:
                     self.updatePreview()
             else:
@@ -568,7 +574,7 @@ class SlideController(QtGui.QWidget):
         Go to the next slide.
         """
         if self.commandItem and self.commandItem.isCommand():
-            Receiver().send_message(u'%s_next'% self.commandItem.name.lower())
+            Receiver.send_message(u'%s_next'% self.commandItem.name.lower())
             self.updatePreview()
         else:
             row = self.PreviewListWidget.currentRow() + 1
@@ -582,7 +588,7 @@ class SlideController(QtGui.QWidget):
         Go to the previous slide.
         """
         if self.commandItem and self.commandItem.isCommand():
-            Receiver().send_message(
+            Receiver.send_message(
                 u'%s_previous'% self.commandItem.name.lower())
             self.updatePreview()
         else:
@@ -597,7 +603,7 @@ class SlideController(QtGui.QWidget):
         Go to the last slide.
         """
         if self.commandItem and self.commandItem.isCommand():
-            Receiver().send_message(u'%s_last'% self.commandItem.name.lower())
+            Receiver.send_message(u'%s_last'% self.commandItem.name.lower())
             self.updatePreview()
         else:
             self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount() - 1)
@@ -626,7 +632,7 @@ class SlideController(QtGui.QWidget):
 
     def onEditSong(self):
         self.songEdit = True
-        Receiver().send_message(u'%s_edit' % self.commandItem.name, u'P:%s' %
+        Receiver.send_message(u'%s_edit' % self.commandItem.name, u'P:%s' %
             self.commandItem.editId )
 
     def onGoLive(self):
@@ -647,13 +653,13 @@ class SlideController(QtGui.QWidget):
 
     def onMediaPause(self):
         if self.isLive:
-            Receiver().send_message(u'%s_pause'% self.commandItem.name.lower())
+            Receiver.send_message(u'%s_pause'% self.commandItem.name.lower())
         else:
             self.mediaObject.pause()
 
     def onMediaPlay(self):
         if self.isLive:
-            Receiver().send_message(u'%s_play'% self.commandItem.name.lower(), self.isLive)
+            Receiver.send_message(u'%s_play'% self.commandItem.name.lower(), self.isLive)
         else:
             self.SlidePreview.hide()
             self.video.show()
@@ -661,7 +667,7 @@ class SlideController(QtGui.QWidget):
 
     def onMediaStop(self):
         if self.isLive:
-            Receiver().send_message(u'%s_stop'% self.commandItem.name.lower())
+            Receiver.send_message(u'%s_stop'% self.commandItem.name.lower())
         else:
             self.mediaObject.stop()
             self.video.hide()

@@ -74,7 +74,7 @@ class BibleOSISImpl():
             self.loadbible = False
             if fbibles:
                 fbibles.close()
-        QtCore.QObject.connect(Receiver().get_receiver(),
+        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
 
     def stop_import(self):
@@ -173,13 +173,13 @@ class BibleOSISImpl():
                             testament)
                         dialogobject.incrementProgressBar(
                             self.booksOfBible[p[0]])
-                        Receiver().send_message(u'process_events')
+                        Receiver.send_message(u'process_events')
                         count = 0
                     self.bibledb.add_verse(book.id, p[1], p[2], text)
                     count += 1
                     #Every 3 verses repaint the screen
                     if count % 3 == 0:
-                        Receiver().send_message(u'process_events')
+                        Receiver.send_message(u'process_events')
                         count = 0
         except:
             log.exception(u'Loading bible from OSIS file failed')

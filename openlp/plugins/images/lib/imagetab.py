@@ -74,7 +74,7 @@ class ImageTab(SettingsTab):
 
     def save(self):
         self.config.set_config(u'loop delay', self.loop_delay)
-        Receiver().send_message(u'update_spin_delay', self.loop_delay)
+        Receiver.send_message(u'update_spin_delay', self.loop_delay)
 
     def postSetUp(self):
-        Receiver().send_message(u'update_spin_delay', self.loop_delay)
+        Receiver.send_message(u'update_spin_delay', self.loop_delay)
