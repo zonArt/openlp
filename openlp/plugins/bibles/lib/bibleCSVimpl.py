@@ -40,7 +40,7 @@ class BibleCSVImpl(BibleCommon):
         """
         self.bibledb = bibledb
         self.loadbible = True
-        QtCore.QObject.connect(Receiver().get_receiver(),
+        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
 
     def stop_import(self):
@@ -66,7 +66,7 @@ class BibleCSVImpl(BibleCommon):
                 count += 1
                 #Flush the screen events
                 if count % 3 == 0:
-                    Receiver().send_message(u'process_events')
+                    Receiver.send_message(u'process_events')
                     count = 0
         except:
             log.exception(u'Loading books from file failed')
@@ -97,7 +97,7 @@ class BibleCSVImpl(BibleCommon):
                 count += 1
                 #Every x verses repaint the screen
                 if count % 3 == 0:
-                    Receiver().send_message(u'process_events')
+                    Receiver.send_message(u'process_events')
                     count = 0
         except:
             log.exception(u'Loading verses from file failed')

@@ -46,7 +46,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         self.log.debug(u'Init done')
 
     def addToolbarButton(self, title, icon, tooltip=None, slot=None,
-        objectname=None):
+        checkable=False):
         """
         A method to help developers easily add a button to the toolbar.
 
@@ -69,14 +69,19 @@ class OpenLPToolbar(QtGui.QToolBar):
         """
         ButtonIcon = buildIcon(icon)
         if ButtonIcon:
-            if slot:
+            if slot and not checkable:
                 ToolbarButton = self.addAction(ButtonIcon, title, slot)
             else:
                 ToolbarButton = self.addAction(ButtonIcon, title)
             if tooltip:
                 ToolbarButton.setToolTip(tooltip)
+            if checkable:
+                ToolbarButton.setCheckable(True)
+                QtCore.QObject.connect(ToolbarButton,
+                    QtCore.SIGNAL(u'toggled(bool)'), slot)
             self.icons[title] = ButtonIcon
             self.actions[title] = ToolbarButton
+            return ToolbarButton
 
     def addToolbarSeparator(self, handle):
         """

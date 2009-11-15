@@ -54,7 +54,7 @@ class BibleMediaItem(MediaManagerItem):
         MediaManagerItem.__init__(self, parent, icon, title)
         # place to store the search results
         self.search_results = {}
-        QtCore.QObject.connect(Receiver().get_receiver(),
+        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlpreloadbibles'), self.reloadBibles)
 
     def initPluginNameVisible(self):
@@ -284,7 +284,7 @@ class BibleMediaItem(MediaManagerItem):
     def setQuickMessage(self, text):
         self.QuickMessage.setText(text)
         self.AdvancedMessage.setText(text)
-        Receiver().send_message(u'process_events')
+        Receiver.send_message(u'process_events')
         #minor delay to get the events processed
         time.sleep(0.1)
 
