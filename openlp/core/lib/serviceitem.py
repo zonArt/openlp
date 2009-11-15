@@ -105,7 +105,7 @@ class ServiceItem(object):
                         lines += line + u'\n'
                     title = lines.split(u'\n')[0]
                     self._display_frames.append({u'title': title, u'text': lines})
-                log.info(u'Formatting took %4s' % (time.time() - before))
+                log.log(15, u'Formatting took %4s' % (time.time() - before))
         elif self.service_item_type == ServiceItemType.Image:
             for slide in self._raw_frames:
                 slide[u'image'] = \

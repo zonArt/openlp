@@ -193,17 +193,17 @@ class RenderManager(object):
         self.renderer.set_theme(themedata)
         self.build_text_rectangle(themedata)
         self.renderer.set_frame_dest(self.width, self.height, True)
-        verse = []
-        verse.append(u'Amazing Grace!')
-        verse.append(u'How sweet the sound')
-        verse.append(u'To save a wretch like me;')
-        verse.append(u'I once was lost but now am found,')
-        verse.append(u'Was blind, but now I see.')
+        verse = u'Amazing Grace!\n'\
+        'How sweet the sound\n'\
+        'To save a wretch like me;\n'\
+        'I once was lost but now am found,\n'\
+        'Was blind, but now I see.'
         footer = []
         footer.append(u'Amazing Grace (John Newton)' )
         footer.append(u'Public Domain')
         footer.append(u'CCLI xxx')
-        return self.renderer.generate_frame_from_lines(verse, footer)
+        formatted = self.renderer.format_slide(verse, False)
+        return self.renderer.generate_frame_from_lines(formatted[0], footer)
 
     def format_slide(self, words):
         """

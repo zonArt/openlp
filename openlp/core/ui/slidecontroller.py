@@ -488,7 +488,7 @@ class SlideController(QtGui.QWidget):
         """
         Blank the screen.
         """
-        if self.serviceItem.is_command():
+        if self.serviceItem and self.serviceItem.is_command():
             if blanked:
                 Receiver().send_message(u'%s_blank'% self.serviceItem.name.lower())
             else:
