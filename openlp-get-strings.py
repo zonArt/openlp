@@ -56,9 +56,9 @@ def parse_file(filename):
             class_name = line[6:line.find(u'(')]
             continue
         for match in find_trUtf8.finditer(line):
-            key = u'%s-%s' % (class_name, match.group(1))
+            key = u'%s-%s' % (class_name, match.group(2))
             if not key in strings:
-                strings[key] = [class_name, filename, line_number, match.group(1)]
+                strings[key] = [class_name, filename, line_number, match.group(2)]
     file.close()
 
 def write_file(filename):
