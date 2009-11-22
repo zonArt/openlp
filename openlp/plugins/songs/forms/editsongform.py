@@ -356,7 +356,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             verse_list = verse_list.replace(u'\r\n', u'\n')
             self.VerseListWidget.clear()
             for row in verse_list.split(u'\n---\n'):
-                self.VerseListWidget.addItem(row)
+                bits = row.split(u'>\n')
+                item = QtGui.QListWidgetItem(bits[1])
+                verse = bits[0][1:]
+                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(verse))
+                self.VerseListWidget.addItem(item)
         self.VerseListWidget.repaint()
 
     def onVerseDeleteButtonClicked(self):
@@ -456,10 +460,17 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             text = u' '
             verse_order = u''
             for i in range (0, self.VerseListWidget.count()):
-                sxml.add_verse_to_lyrics(u'Verse', unicode(count),
+                verseId = unicode((item.data(QtCore.Qt.UserRole)).toString()[0])
+                if len(verseId) <= 2:
+                    type = u'Verse'
+                    value = verseId
+                else:
+                    type = verseId
+                    value = 0
+                sxml.add_verse_to_lyrics(type, verseId,
                     unicode(self.VerseListWidget.item(i).text()))
                 text = text + unicode(self.VerseListWidget.item(i).text()) + u' '
-                verse_order = verse_order + unicode(count) + u' '
+                verse_order = verse_order + verseId + u' '
                 count += 1
             if self.song.verse_order is None:
                 self.song.verse_order = verse_order
