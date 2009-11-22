@@ -216,11 +216,19 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             songXML = SongXMLParser(self.song.lyrics)
             verseList = songXML.get_verses()
             for verse in verseList:
-                self.VerseListWidget.addItem(verse[1])
+                if verse[0][u'type'] == u'Verse':
+                    variant = verse[0][u'label']
+                else:
+                    variant = verse[0][u'type']
+                item = QtGui.QListWidgetItem(verse[1])
+                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(variant))
+                self.VerseListWidget.addItem(item)
         else:
             verses = self.song.lyrics.split(u'\n\n')
-            for verse in verses:
-                self.VerseListWidget.addItem(verse)
+            for count, verse in enumerate(verses):
+                item = QtGui.QListWidgetItem(verse)
+                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(count + 1))
+                self.VerseListWidget.addItem(item)
         # clear the results
         self.AuthorsListView.clear()
         for author in self.song.authors:
@@ -314,7 +322,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         item = self.VerseListWidget.currentItem()
         if item:
             tempText = item.text()
-            self.verse_form.setVerse(tempText)
+            verseId = unicode((item.data(QtCore.Qt.UserRole)).toString()[0])
+            self.verse_form.setVerse(tempText, True, verseId)
             self.verse_form.exec_()
             afterText = self.verse_form.getVerse()
             item.setText(afterText)
@@ -335,6 +344,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if self.VerseListWidget.count() > 0:
             for row in range(0, self.VerseListWidget.count()):
                 item = self.VerseListWidget.item(row)
+                verse_list += u'<%s>\n' % \
+                    unicode((item.data(QtCore.Qt.UserRole)).toString()[0])
                 verse_list += item.text()
                 verse_list += u'\n---\n'
             self.verse_form.setVerse(verse_list)

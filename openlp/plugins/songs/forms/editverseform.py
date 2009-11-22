@@ -38,8 +38,30 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
 
-    def setVerse(self, verse):
-        self.VerseTextEdit.setPlainText(verse)
+    def setVerse(self, text, single=False, id=0):
+        posVerse = 0
+        posSub = 0
+        if single:
+            if len(id) <= 2:
+                if len(id) == 1:
+                    posVerse = self.VerseListComboBox.findText(id, QtCore.Qt.MatchExactly)
+                else:
+                    posVerse = self.VerseListComboBox.findText(id[0], QtCore.Qt.MatchExactly)
+                    posSub = self.SubVerseListComboBox.findText(id[1], QtCore.Qt.MatchExactly)
+            else:
+                posVerse = self.VerseListComboBox.findText(id, QtCore.Qt.MatchExactly)
+            if posVerse == -1:
+                posVerse = 0
+            if posSub == -1:
+                posSub = 0
+            self.VerseListComboBox.setEnabled(True)
+            self.SubVerseListComboBox.setEnabled(True)
+        else:
+            self.VerseListComboBox.setEnabled(False)
+            self.SubVerseListComboBox.setEnabled(False)
+        self.VerseListComboBox.setCurrentIndex(posVerse)
+        self.SubVerseListComboBox.setCurrentIndex(posSub)
+        self.VerseTextEdit.setPlainText(text)
         self.VerseTextEdit.setFocus(QtCore.Qt.OtherFocusReason)
 
     def getVerse(self):
