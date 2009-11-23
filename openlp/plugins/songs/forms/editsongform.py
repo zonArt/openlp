@@ -347,7 +347,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             for row in range(0, self.VerseListWidget.count()):
                 item = self.VerseListWidget.item(row)
                 verse_list += u'<%s>\n' % \
-                    unicode((item.data(QtCore.Qt.UserRole)).toString()[0])
+                    unicode((item.data(QtCore.Qt.UserRole)).toString())
                 verse_list += item.text()
                 verse_list += u'\n---\n'
             self.verse_form.setVerse(verse_list)
