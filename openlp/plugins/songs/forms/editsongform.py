@@ -322,10 +322,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         item = self.VerseListWidget.currentItem()
         if item:
             tempText = item.text()
-            verseId = unicode((item.data(QtCore.Qt.UserRole)).toString()[0])
+            verseId = unicode((item.data(QtCore.Qt.UserRole)).toString())
             self.verse_form.setVerse(tempText, True, verseId)
             self.verse_form.exec_()
-            afterText = self.verse_form.getVerse()
+            afterText, verse, subVerse = self.verse_form.getVerse()
+            data = u'%s%s' %(verse , subVerse)
+            item.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
             item.setText(afterText)
             #number of lines has change
             if len(tempText.split(u'\n')) != len(afterText.split(u'\n')):

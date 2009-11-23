@@ -30,13 +30,21 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
     """
     This is the form that is used to edit the verses of the song.
     """
-
     def __init__(self, parent=None):
         """
         Constructor
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
+        QtCore.QObject.connect(self.VerseListComboBox,
+            QtCore.SIGNAL(u'activated(int)'), self.onVerseListComboBoxChanged)
+
+    def onVerseListComboBoxChanged(self, value):
+        if unicode(self.VerseListComboBox.currentText()).isdigit():
+            self.SubVerseListComboBox.setEnabled(True)
+        else:
+            self.SubVerseListComboBox.setCurrentIndex(0)
+            self.SubVerseListComboBox.setEnabled(False)
 
     def setVerse(self, text, single=False, id=0):
         posVerse = 0
@@ -65,4 +73,6 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         self.VerseTextEdit.setFocus(QtCore.Qt.OtherFocusReason)
 
     def getVerse(self):
-        return self.VerseTextEdit.toPlainText()
+       return self.VerseTextEdit.toPlainText(), \
+            unicode(self.VerseListComboBox.currentText()), \
+            unicode(self.SubVerseListComboBox.currentText())
