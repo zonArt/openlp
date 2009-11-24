@@ -556,7 +556,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         here. Currently it is set to default to monitor 0 if the saved
         monitor number does not exist.
         """
-        screen_number = int(self.generalConfig.get_config(u'Monitor', 0))
+        screen_number = int(self.generalConfig.get_config(u'monitor', 0))
         monitor_exists = False
         for screen in self.screenList:
             if screen[u'number'] == screen_number:
@@ -575,16 +575,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.mainDisplay.isVisible():
             self.mainDisplay.setFocus()
         self.activateWindow()
-        if str_to_bool(self.generalConfig.get_config(u'Auto Open', False)):
+        if str_to_bool(self.generalConfig.get_config(u'auto open', False)):
             self.ServiceManagerContents.onLoadService(True)
-        if str_to_bool(self.generalConfig.get_config(u'Screen Blank', False)) \
-        and str_to_bool(self.generalConfig.get_config(u'Blank Warning', False)):
+        if str_to_bool(self.generalConfig.get_config(u'screen blank', False)) \
+        and str_to_bool(self.generalConfig.get_config(u'blank warning', False)):
             QtGui.QMessageBox.question(None,
                 self.trUtf8(u'OpenLP Main Display Blanked'),
                 self.trUtf8(u'The Main Display has been blanked out'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
-            self.LiveController.blackPushButton.setChecked(True)
+            self.LiveController.blankButton.setChecked(True)
 
     def onHelpAboutItemClicked(self):
         """
