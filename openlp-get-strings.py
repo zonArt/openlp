@@ -83,14 +83,14 @@ def write_file(filename):
     file.close()
 
 def main():
-    start_dir = u'.'
+    start_dir = os.path.abspath(u'.')
     for root, dirs, files in os.walk(start_dir):
         for file in files:
             if file.endswith(u'.py'):
                 print u'Parsing "%s"' % file
                 parse_file(os.path.join(root, file))
     print u'Generating TS file...',
-    write_file(os.path.join(start_dir, u'i18n', u'openlp_en.ts'))
+    write_file(os.path.join(start_dir, u'..', u'resources', u'i18n', u'openlp_en.ts'))
     print u'done.'
 
 if __name__ == u'__main__':
