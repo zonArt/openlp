@@ -24,7 +24,6 @@
 
 import logging
 import os
-import time
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
@@ -275,6 +274,7 @@ class MainDisplay(DisplayWidget):
         self.mediaLoaded = True
         self.display.hide()
         self.video.setFullScreen(True)
+        self.video.setVisible(True)
         self.mediaObject.play()
         if self.primary:
             self.setVisible(True)
@@ -286,7 +286,6 @@ class MainDisplay(DisplayWidget):
     def onMediaStop(self):
         log.debug(u'Media stopped by user')
         self.mediaObject.stop()
-        self.display.show()
 
     def onMediaFinish(self):
         log.debug(u'Reached end of media playlist')

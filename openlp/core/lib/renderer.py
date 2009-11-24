@@ -168,35 +168,45 @@ class Renderer(object):
         line_width = self._rect.width() - self._right_margin
         #number of lines on a page - adjust for rounding up.
         page_length = int(self._rect.height() / metrics.height() - 2 ) - 1
+        #Average number of characters in line
         ave_line_width = line_width / metrics.averageCharWidth()
-        ave_line_width = int(ave_line_width + (ave_line_width * 1))
+        #Maximum size of a character
+        max_char_width = metrics.maxWidth()
+        #Min size of a character
+        min_char_width = metrics.width(u'i')
+        char_per_line = line_width / min_char_width
         log.debug(u'Page Length  area height %s , metrics %s , lines %s' %
                   (int(self._rect.height()), metrics.height(), page_length ))
         split_pages = []
         page = []
         split_lines = []
+        count = 0
         for line in text:
             #Must be a blank line so keep it.
             if len(line) == 0:
                 line = u' '
             while len(line) > 0:
-                if len(line) > ave_line_width:
-                    pos = line.find(u' ', ave_line_width)
-                    split_text = line[:pos]
-                else:
-                    pos = len(line)
-                    split_text = line
-                while metrics.width(split_text, -1) > line_width:
-                    #Find the next space to the left
-                    pos = line[:pos].rfind(u' ')
-                    #no more spaces found
-                    if pos == 0:
-                        split_text = line
+                pos = char_per_line
+                split_text = line[:pos]
+                #line needs splitting
+                if metrics.width(split_text, -1) > line_width:
+                    #We have no spaces
+                    if split_text.find(u' ') == -1:
+                        #Move back 1 char at a time till it fits
                         while metrics.width(split_text, -1) > line_width:
                             split_text = split_text[:-1]
-                        pos = len(split_text)
+                            pos = len(split_text)
                     else:
-                        split_text = line[:pos]
+                        #We have spaces so split at previous one
+                        while metrics.width(split_text, -1) > line_width:
+                            pos = split_text.rfind(u' ')
+                            #no more spaces and we are still too long
+                            if pos == -1:
+                                while metrics.width(split_text, -1) > line_width:
+                                    split_text = split_text[:-1]
+                                    pos = len(split_text)
+                            else:
+                                split_text = line[:pos]
                 split_lines.append(split_text)
                 line = line[pos:].lstrip()
                 #if we have more text add up to 10 spaces on the front.
@@ -450,32 +460,32 @@ class Renderer(object):
                         draw=True, color = self._theme.display_shadow_color)
                 if self._theme.display_outline:
                     self._get_extent_and_render(line, footer,
-                        (x+self._outline_offset, y), draw=True,
+                        (x + self._outline_offset, y), draw=True,
                         color = self._theme.display_outline_color)
                     self._get_extent_and_render(line, footer,
-                        (x, y+self._outline_offset), draw=True,
+                        (x, y + self._outline_offset), draw=True,
                         color = self._theme.display_outline_color)
                     self._get_extent_and_render(line, footer,
-                        (x, y-self._outline_offset), draw=True,
+                        (x, y - self._outline_offset), draw=True,
                         color = self._theme.display_outline_color)
                     self._get_extent_and_render(line, footer,
-                        (x-self._outline_offset, y), draw=True,
+                        (x - self._outline_offset, y), draw=True,
                         color = self._theme.display_outline_color)
                     if self._outline_offset > 1:
                         self._get_extent_and_render(line, footer,
-                            (x+self._outline_offset, y+self._outline_offset),
+                            (x + self._outline_offset, y + self._outline_offset),
                             draw=True,
                             color = self._theme.display_outline_color)
                         self._get_extent_and_render(line, footer,
-                            (x-self._outline_offset, y+self._outline_offset),
+                            (x - self._outline_offset, y + self._outline_offset),
                             draw=True,
                             color = self._theme.display_outline_color)
                         self._get_extent_and_render(line, footer,
-                            (x+self._outline_offset, y-self._outline_offset),
+                            (x + self._outline_offset, y - self._outline_offset),
                             draw=True,
                             color = self._theme.display_outline_color)
                         self._get_extent_and_render(line, footer,
-                            (x-self._outline_offset, y-self._outline_offset),
+                            (x - self._outline_offset, y - self._outline_offset),
                             draw=True,
                             color = self._theme.display_outline_color)
                 self._get_extent_and_render(line, footer,tlcorner=(x, y),
