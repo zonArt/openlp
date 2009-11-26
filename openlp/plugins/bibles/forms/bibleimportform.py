@@ -130,7 +130,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
     def onVersesFileButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(
-            self, self.trUtf8(u'Open Bible Verses file'),
+            self, self.trUtf8('Open Bible Verses file'),
             self.config.get_last_dir(1))
         if filename:
             self.VerseLocationEdit.setText(filename)
@@ -139,7 +139,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
     def onBooksFileButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(
-            self, self.trUtf8(u'Open Bible Books file'),
+            self, self.trUtf8('Open Bible Books file'),
             self.config.get_last_dir(2))
         if filename:
             self.BooksLocationEdit.setText(filename)
@@ -148,7 +148,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
     def onOsisFileButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(
-            self, self.trUtf8(u'Open OSIS import file'),
+            self, self.trUtf8('Open OSIS import file'),
             self.config.get_last_dir(3))
         if filename:
             self.OSISLocationEdit.setText(filename)
@@ -198,18 +198,18 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
     def onCancelButtonClicked(self):
         # tell import to stop
-        self.message = self.trUtf8(u'Bible import stopped')
+        self.message = self.trUtf8('Bible import stopped')
         Receiver.send_message(u'stop_import')
         # tell bibleplugin to reload the bibles
         Receiver.send_message(u'pre_load_bibles')
         self.close()
 
     def onImportButtonClicked(self):
-        message = self.trUtf8(u'Bible import completed')
+        message = self.trUtf8('Bible import completed')
         if self.biblemanager:
             if not self.bible_type is None and \
                 len(self.BibleNameEdit.displayText()) > 0:
-                self.MessageLabel.setText(self.trUtf8(u'Import Started'))
+                self.MessageLabel.setText(self.trUtf8('Import Started'))
                 self.ProgressBar.setMinimum(0)
                 self.setMax(65)
                 self.ProgressBar.setValue(0)
@@ -222,7 +222,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
                 # tell bibleplugin to reload the bibles
                 Receiver.send_message(u'pre_load_bibles')
                 QtGui.QMessageBox.information(self,
-                    self.trUtf8(u'Information'), self.trUtf8(message))
+                    self.trUtf8('Information'), self.trUtf8(message))
 
     def setMax(self, max):
         log.debug(u'set Max %s', max)
@@ -231,7 +231,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
     def incrementProgressBar(self, text ):
         log.debug(u'IncrementBar %s', text)
-        self.MessageLabel.setText(self.trUtf8(u'Import processing %s') % text)
+        self.MessageLabel.setText(self.trUtf8('Import processing %s') % text)
         self.ProgressBar.setValue(self.ProgressBar.value() + 1)
 
     def importBible(self):
@@ -268,7 +268,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
                 unicode(self.CopyrightEdit.displayText()),
                 unicode(self.PermisionEdit.displayText()))
         else:
-            message = self.trUtf8(u'Bible import failed')
+            message = self.trUtf8('Bible import failed')
         self.bible_type = None
         # free the screen state restrictions
         self.resetScreenFieldStates()

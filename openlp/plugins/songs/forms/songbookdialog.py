@@ -64,6 +64,6 @@ class Ui_SongBookDialog(object):
         QtCore.QMetaObject.connectSlotsByName(SongBookDialog)
 
     def retranslateUi(self, SongBookDialog):
-        SongBookDialog.setWindowTitle(self.trUtf8(u'Edit Book'))
-        self.NameLabel.setText(self.trUtf8(u'Name:'))
-        self.PublisherLabel.setText(self.trUtf8(u'Publisher:'))
+        SongBookDialog.setWindowTitle(self.trUtf8('Edit Book'))
+        self.NameLabel.setText(self.trUtf8('Name:'))
+        self.PublisherLabel.setText(self.trUtf8('Publisher:'))

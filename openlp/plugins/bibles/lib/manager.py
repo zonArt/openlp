@@ -351,7 +351,7 @@ class BibleManager(object):
                 log.debug(u'get_verse_text : new book')
                 for chapter in range(schapter, echapter + 1):
                     self.media.setQuickMessage(
-                        unicode(self.media.trUtf8(u'Downloading %s: %s')) %
+                        unicode(self.media.trUtf8('Downloading %s: %s')) %
                             (bookname, chapter))
                     search_results = \
                         self.bible_http_cache[bible].get_bible_chapter(
@@ -381,7 +381,7 @@ class BibleManager(object):
                                 book.id, chapter)
                             if v is None:
                                 self.media.setQuickMessage(
-                                    unicode(self.media.trUtf8(u'%Downloading %s: %s'))\
+                                    unicode(self.media.trUtf8('%Downloading %s: %s'))\
                                         % (bookname, chapter))
                                 self.bible_db_cache[bible].create_chapter(
                                     book.id, chapter,
@@ -394,7 +394,7 @@ class BibleManager(object):
                     if v is None:
                         try:
                             self.media.setQuickMessage(\
-                                 unicode(self.media.trUtf8(u'Downloading %s: %s'))
+                                 unicode(self.media.trUtf8('Downloading %s: %s'))
                                          % (bookname, chapter))
                             search_results = \
                                 self.bible_http_cache[bible].get_bible_chapter(

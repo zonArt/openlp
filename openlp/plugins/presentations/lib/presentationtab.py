@@ -36,7 +36,7 @@ class PresentationTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'PresentationTab')
-        self.tabTitleVisible = self.trUtf8(u'Presentations')
+        self.tabTitleVisible = self.trUtf8('Presentations')
         self.PresentationLayout = QtGui.QHBoxLayout(self)
         self.PresentationLayout.setSpacing(8)
         self.PresentationLayout.setMargin(8)
@@ -99,7 +99,7 @@ class PresentationTab(SettingsTab):
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
             checkbox.setText(
-                u'%s %s:' % (controller.name, self.trUtf8(u'available')))
+                u'%s %s:' % (controller.name, self.trUtf8('available')))
 
     def load(self):
         for key in self.controllers:
