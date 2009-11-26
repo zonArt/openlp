@@ -51,7 +51,9 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         posSub = 0
         if single:
             if len(id) <= 2:
-                if len(id) == 1:
+                if len(id) == 0:
+                    pass
+                elif len(id) == 1:
                     posVerse = self.VerseListComboBox.findText(id, QtCore.Qt.MatchExactly)
                 else:
                     posVerse = self.VerseListComboBox.findText(id[0], QtCore.Qt.MatchExactly)
@@ -76,3 +78,6 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
        return self.VerseTextEdit.toPlainText(), \
             unicode(self.VerseListComboBox.currentText()), \
             unicode(self.SubVerseListComboBox.currentText())
+
+    def getVerseAll(self):
+       return self.VerseTextEdit.toPlainText()

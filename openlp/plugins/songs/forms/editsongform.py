@@ -23,6 +23,7 @@
 ###############################################################################
 
 import logging
+import re
 
 from PyQt4 import QtCore, QtGui
 
@@ -110,6 +111,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.AuthorsListView.setAlternatingRowColors(True)
         self.TopicsListView.setSortingEnabled(False)
         self.TopicsListView.setAlternatingRowColors(True)
+        self.findVerseSplit = re.compile(u'---\[\]---\n', re.UNICODE)
 
     def initialise(self):
         self.VerseEditButton.setEnabled(False)
@@ -346,23 +348,36 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if self.VerseListWidget.count() > 0:
             for row in range(0, self.VerseListWidget.count()):
                 item = self.VerseListWidget.item(row)
-                verse_list += u'<%s>\n' % \
-                    unicode((item.data(QtCore.Qt.UserRole)).toString())
+                field = unicode((item.data(QtCore.Qt.UserRole)).toString())
+                if len(field) <= 2:
+                    verse_list += u'---[v%s]---\n' % field
+                else:
+                    verse_list += u'---[%s]---\n' % field
                 verse_list += item.text()
-                verse_list += u'\n---\n'
+                verse_list += u'\n'
             self.verse_form.setVerse(verse_list)
         else:
             self.verse_form.setVerse(u'')
         if self.verse_form.exec_():
-            verse_list = self.verse_form.getVerse()
-            verse_list = verse_list.replace(u'\r\n', u'\n')
+            verse_list = self.verse_form.getVerseAll()
+            verse_list = unicode(verse_list.replace(u'\r\n', u'\n'))
             self.VerseListWidget.clear()
-            for row in verse_list.split(u'\n---\n'):
-                bits = row.split(u'>\n')
-                item = QtGui.QListWidgetItem(bits[1])
-                verse = bits[0][1:]
-                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(verse))
-                self.VerseListWidget.addItem(item)
+            print self.findVerseSplit.split(verse_list)
+            for row in self.findVerseSplit.split(verse_list):
+                print row
+#                parts = unicode(row).split(u']---\n')
+#                print len(parts) ,  parts
+#                verse = u''
+#                if len(parts) > 1:
+#                    item = QtGui.QListWidgetItem(parts[1])
+#                    if parts[0][0].lower() == u'v':
+#                        verse = parts[0][1:]
+#                    else:
+#                        verse = parts[0]
+#                else:
+#                    item = QtGui.QListWidgetItem(parts[0])
+#                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(verse))
+#                self.VerseListWidget.addItem(item)
         self.VerseListWidget.repaint()
 
     def onVerseDeleteButtonClicked(self):
