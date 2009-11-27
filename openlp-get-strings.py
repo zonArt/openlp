@@ -42,13 +42,13 @@ ts_message = u"""    <message>
       <translation type="unfinished"></translation>
     </message>
 """
-strings = {}
 count = 0
 
 class StringExtractor(NodeVisitor):
 
     def __init__(self, strings, filename):
         self.filename = filename
+        self.strings = strings
         self.classname = 'unknown'
 
     def visit_ClassDef(self, node):
@@ -61,10 +61,10 @@ class StringExtractor(NodeVisitor):
             string = node.args[0].s
             count += 1
             key = '%s-%s' % (self.classname, string)
-            strings[key] = [self.classname, self.filename, node.lineno, string]
+            self.strings[key] = [self.classname, self.filename, node.lineno, string]
         self.generic_visit(node)
 
-def parse_file(filename):
+def parse_file(filename, strings):
     file = open(filename, u'r')
     try:
         ast = parse(file.read())
@@ -75,7 +75,7 @@ def parse_file(filename):
 
     StringExtractor(strings, filename).visit(ast)
 
-def write_file(filename):
+def write_file(filename, strings):
     translation_file = u''
     translation_contexts = []
     translation_messages = []
@@ -96,15 +96,16 @@ def write_file(filename):
     file.close()
 
 def main():
+    strings = {}
     start_dir = u'.'
     for root, dirs, files in os.walk(start_dir):
         for file in files:
             if file.endswith(u'.py'):
                 print u'Parsing "%s"' % file
-                parse_file(os.path.join(root, file))
+                parse_file(os.path.join(root, file), strings)
     print u'Found %s strings' % count
     print u'Generating TS file...',
-    write_file(os.path.join(start_dir, u'i18n', u'openlp_en.ts'))
+    write_file(os.path.join(start_dir, u'i18n', u'openlp_en.ts'), strings)
     print u'done.'
 
 if __name__ == u'__main__':
