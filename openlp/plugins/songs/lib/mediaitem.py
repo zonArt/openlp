@@ -287,11 +287,11 @@ class SongMediaItem(MediaManagerItem):
             item_id = self.remoteSong
         song = self.parent.songmanager.get_song(item_id)
         service_item.theme = song.theme_name
-        service_item.editEnabled = True
+        service_item.edit_enabled = True
         service_item.editId = item_id
         service_item.verse_order = song.verse_order
         if song.lyrics.startswith(u'<?xml version='):
-            songXML=SongXMLParser(song.lyrics)
+            songXML = SongXMLParser(song.lyrics)
             verseList = songXML.get_verses()
             for verse in verseList:
                 if verse[1]:
@@ -320,4 +320,3 @@ class SongMediaItem(MediaManagerItem):
             song.title, author_audit, song.copyright, song.ccli_number
         ]
         return True
-

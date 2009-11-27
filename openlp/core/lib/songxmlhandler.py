@@ -134,7 +134,8 @@ class SongXMLParser(object):
             The XML of the song to be parsed.
         """
         try:
-            self.song_xml = ElementTree(element=XML(xml))
+            self.song_xml = ElementTree(
+                element=XML(unicode(xml).encode('unicode-escape')))
         except:
             log.exception(u'Invalid xml %s', xml)
 
@@ -147,7 +148,8 @@ class SongXMLParser(object):
         verse_list = []
         for element in iter:
             if element.tag == u'verse':
-                verse_list.append([element.attrib, element.text])
+                verse_list.append([element.attrib,
+                    unicode(element.text).decode('unicode-escape')])
         return verse_list
 
     def dump_xml(self):

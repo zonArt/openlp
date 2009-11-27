@@ -40,9 +40,6 @@ class RemotesPlugin(Plugin):
         self.weight = -1
         self.server = None
 
-    def can_be_disabled(self):
-        return True
-
     def initialise(self):
         log.debug(u'initialise')
         Plugin.initialise(self)
@@ -76,9 +73,9 @@ class RemotesPlugin(Plugin):
         pos = datagram.find(u':')
         event = unicode(datagram[:pos].lower())
         if event == u'alert':
-            Receiver().send_message(u'alert_text', unicode(datagram[pos + 1:]))
+            Receiver.send_message(u'alert_text', unicode(datagram[pos + 1:]))
         if event == u'next_slide':
-            Receiver().send_message(u'live_slide_next')
+            Receiver.send_message(u'live_slide_next')
 
     def about(self):
         about_text = self.trUtf8(u'<b>Remote Plugin</b><br>This plugin '

@@ -94,13 +94,10 @@ class _OpenSong(XmlRootClass):
         in OpenSong an author list may be separated by '/'
         return as a string
         """
-        res = []
         if self.author:
-            lst = self.author.split(u' and ')
-            for l in lst:
-                res.append(l.strip())
-        s = u', '.join(res)
-        return s
+            list = self.author.split(u' and ')
+            res = [item.strip() for item in list]
+            return u', '.join(res)
 
     def get_category_array(self):
         """Convert theme and alttheme into category_array
@@ -116,8 +113,8 @@ class _OpenSong(XmlRootClass):
         return s
 
     def _reorder_verse(self, tag, tmpVerse):
-        """Reorder the verse in case of first char is a number
-
+        """
+        Reorder the verse in case of first char is a number
         tag -- the tag of this verse / verse group
         tmpVerse -- list of strings
         """
@@ -147,8 +144,8 @@ class _OpenSong(XmlRootClass):
         return res
 
     def get_lyrics(self):
-        """Convert the lyrics to openlp lyrics format
-
+        """
+        Convert the lyrics to openlp lyrics format
         return as list of strings
         """
         lyrics = self.lyrics.split(u'\n')
@@ -277,17 +274,22 @@ class Song(object):
         self.set_lyrics(opensong.get_lyrics())
 
     def from_opensong_file(self, xmlfilename):
-        """Initialize from file containing xml
-
+        """
+        Initialize from file containing xml
         xmlfilename -- path to xml file
         """
-        lst = []
-        f = open(xmlfilename, 'r')
-        for line in f:
-            lst.append(line)
-        f.close()
-        xml = "".join(lst)
-        self.from_opensong_buffer(xml)
+        osfile = None
+        try:
+            osfile = open(xmlfilename, 'r')
+            list = [line for line in osfile]
+            osfile.close()
+            xml = "".join(list)
+            self.from_opensong_buffer(xml)
+        except:
+            log.exception(u'Failed to load opensong xml file')
+        finally:
+            if osfile:
+                osfile.close()
 
     def _remove_punctuation(self, title):
         """Remove the puntuation chars from title
@@ -380,16 +382,20 @@ class Song(object):
         self.set_lyrics(lyrics)
 
     def from_ccli_text_file(self, textFileName):
-        """Create song from a list of texts read from given file
-
+        """
+        Create song from a list of texts read from given file
         textFileName -- path to text file
         """
-        lines = []
-        f = open(textFileName, 'r')
-        for orgline in f:
-            lines.append(orgline.rstrip())
-        f.close()
-        self.from_ccli_text_buffer(lines)
+        ccli_file = None
+        try:
+            ccli_file = open(textFileName, 'r')
+            lines = [orgline.rstrip() for orgline in ccli_file]
+            self.from_ccli_text_buffer(lines)
+        except:
+            log.exception(u'Failed to load CCLI text file')
+        finally:
+            if ccli_file:
+                ccli_file.close()
 
     def _assure_string(self, string_in):
         """Force a string is returned"""
@@ -401,13 +407,10 @@ class Song(object):
 
     def _split_to_list(self, aString):
         """Split a string into a list - comma separated"""
-        res = []
         if aString:
-            lst = aString.split(u',')
-            for l in lst:
-                # remove whitespace
-                res.append(l.strip())
-        return res
+            list = aString.split(u',')
+            res = [item.strip() for item in list]
+            return res
 
     def _list_to_string(self, strOrList):
         """Force a possibly list into a string"""
@@ -419,8 +422,8 @@ class Song(object):
             lst = []
         else:
             raise SongTypeError(u'Variable not String or List')
-        s = u', '.join(lst)
-        return s
+        string = u', '.join(lst)
+        return string
 
     def get_copyright(self):
         """Return copyright info string"""

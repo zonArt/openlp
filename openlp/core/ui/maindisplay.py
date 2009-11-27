@@ -28,9 +28,9 @@ import os
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver, str_to_bool
+from openlp.core.lib import Receiver
 
-class DisplayLabel(QtGui.QWidget):
+class DisplayWidget(QtGui.QWidget):
     """
     Customised version of QTableWidget which can respond to keyboard
     events.
@@ -40,23 +40,23 @@ class DisplayLabel(QtGui.QWidget):
     log.info(u'MainDisplay loaded')
 
     def __init__(self, parent=None, name=None):
-        QQtGui.QWidget.__init__(self, parent)
+        QtGui.QWidget.__init__(self, parent)
         self.parent = parent
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
             #here accept the event and do something
             if event.key() == QtCore.Qt.Key_Up:
-                Receiver().send_message(u'slidecontroller_previous')
+                Receiver.send_message(u'live_slidecontroller_previous')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Down:
-                Receiver().send_message(u'slidecontroller_next')
+                Receiver.send_message(u'live_slidecontroller_next')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageUp:
-                Receiver().send_message(u'slidecontroller_first')
+                Receiver.send_message(u'live_slidecontroller_first')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageDown:
-                Receiver().send_message(u'slidecontroller_last')
+                Receiver.send_message(u'live_slidecontroller_last')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Escape:
                 self.resetDisplay()
@@ -65,7 +65,7 @@ class DisplayLabel(QtGui.QWidget):
         else:
             event.ignore()
 
-class MainDisplay(DisplayLabel):
+class MainDisplay(DisplayWidget):
     """
     This is the form that is used to display things on the projector.
     """
@@ -84,7 +84,7 @@ class MainDisplay(DisplayLabel):
             The list of screens.
         """
         log.debug(u'Initilisation started')
-        QtGui.QWidget.__init__(self, None)
+        DisplayWidget.__init__(self, None)
         self.parent = parent
         self.setWindowTitle(u'OpenLP Display')
         self.screens = screens
@@ -107,18 +107,15 @@ class MainDisplay(DisplayLabel):
         self.blankFrame = None
         self.frame = None
         self.alertactive = False
-        self.alertTab = None
         self.timer_id = 0
         self.firstTime = True
         self.mediaLoaded = False
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'live_slide_blank'), self.blankDisplay)
-        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'alert_text'), self.displayAlert)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_start'), self.hideDisplay)
+            QtCore.SIGNAL(u'live_slide_hide'), self.hideDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_stop'), self.showDisplay)
+            QtCore.SIGNAL(u'live_slide_show'), self.showDisplay)
         QtCore.QObject.connect(self.mediaObject,
             QtCore.SIGNAL(u'finished()'), self.onMediaFinish)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -130,13 +127,13 @@ class MainDisplay(DisplayLabel):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_stop'), self.onMediaStop)
 
-
     def setup(self, screenNumber):
         """
         Sets up the screen on a particular screen.
         @param (integer) screen This is the screen number.
         """
-        log.debug(u'Setup %s for %s ' %(self.screens, screenNumber) )
+        log.debug(u'Setup %s for %s ' %(self.screens, screenNumber))
+        self.setVisible(False)
         screen = self.screens[screenNumber]
         if screen[u'number'] != screenNumber:
             # We will most probably never actually hit this bit, but just in
@@ -147,26 +144,19 @@ class MainDisplay(DisplayLabel):
                     screen = scrn
                     break
         self.setGeometry(screen[u'size'])
-        if not screen[u'primary']:
-            self.showFullScreen()
-            self.primary = False
-        else:
-            self.setVisible(False)
-            self.primary = True
         #Build a custom splash screen
-        if str_to_bool(self.parent.generalConfig.get_config(u'show splash', u'True')):
-            self.InitialFrame = QtGui.QImage(
-                screen[u'size'].width(), screen[u'size'].height(),
-                QtGui.QImage.Format_ARGB32_Premultiplied)
-            splash_image = QtGui.QImage(u':/graphics/openlp-splash-screen.png')
-            painter_image = QtGui.QPainter()
-            painter_image.begin(self.InitialFrame)
-            painter_image.fillRect(self.InitialFrame.rect(), QtCore.Qt.white)
-            painter_image.drawImage(
-                (screen[u'size'].width() - splash_image.width()) / 2,
-                (screen[u'size'].height() - splash_image.height()) / 2,
-                splash_image)
-            self.frameView(self.InitialFrame)
+        self.InitialFrame = QtGui.QImage(
+            screen[u'size'].width(), screen[u'size'].height(),
+            QtGui.QImage.Format_ARGB32_Premultiplied)
+        splash_image = QtGui.QImage(u':/graphics/openlp-splash-screen.png')
+        painter_image = QtGui.QPainter()
+        painter_image.begin(self.InitialFrame)
+        painter_image.fillRect(self.InitialFrame.rect(), QtCore.Qt.white)
+        painter_image.drawImage(
+            (screen[u'size'].width() - splash_image.width()) / 2,
+            (screen[u'size'].height() - splash_image.height()) / 2,
+            splash_image)
+        self.frameView(self.InitialFrame)
         #Build a Black screen
         painter = QtGui.QPainter()
         self.blankFrame = QtGui.QImage(
@@ -174,6 +164,13 @@ class MainDisplay(DisplayLabel):
             QtGui.QImage.Format_ARGB32_Premultiplied)
         painter.begin(self.blankFrame)
         painter.fillRect(self.blankFrame.rect(), QtCore.Qt.black)
+        # To display or not to display?
+        if not screen[u'primary']:
+            self.showFullScreen()
+            self.primary = False
+        else:
+            self.setVisible(False)
+            self.primary = True
 
     def resetDisplay(self):
         if self.primary:
@@ -197,24 +194,28 @@ class MainDisplay(DisplayLabel):
         if self.timer_id != 0 :
             self.displayAlert()
         elif not self.displayBlank:
+#            self.setWindowOpacity(0.5)
+#            self.show()
             self.display.setPixmap(QtGui.QPixmap.fromImage(frame))
+#            QtCore.QTimer.singleShot(500, self.aa )
             if not self.isVisible():
                 self.setVisible(True)
                 self.showFullScreen()
+#
+#    def aa(self):
+#        self.setWindowOpacity(1)
 
-    def blankDisplay(self):
-        if not self.displayBlank:
+    def blankDisplay(self, blanked=True):
+        if blanked:
             self.displayBlank = True
             self.display.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
         else:
             self.displayBlank = False
             if self.frame:
                 self.frameView(self.frame)
-        if self.parent.LiveController.blackPushButton.isChecked() != \
-            self.displayBlank:
-            self.parent.LiveController.blackPushButton.setChecked(
-                self.displayBlank)
-        self.parent.generalConfig.set_config(u'Screen Blank',self.displayBlank)
+        if blanked != self.parent.LiveController.blankButton.isChecked():
+            self.parent.LiveController.blankButton.setChecked(self.displayBlank)
+        self.parent.generalConfig.set_config(u'Screen Blank', self.displayBlank)
 
     def displayAlert(self, text=u''):
         """
@@ -266,13 +267,14 @@ class MainDisplay(DisplayLabel):
         self.onMediaPlay()
 
     def onMediaPlay(self):
-        log.debug(u'Play the new media')
+        log.debug(u'Play the new media, Live ')
         if not self.mediaLoaded and not self.displayBlank:
             self.blankDisplay()
         self.firstTime = True
         self.mediaLoaded = True
         self.display.hide()
         self.video.setFullScreen(True)
+        self.video.setVisible(True)
         self.mediaObject.play()
         if self.primary:
             self.setVisible(True)
@@ -284,7 +286,6 @@ class MainDisplay(DisplayLabel):
     def onMediaStop(self):
         log.debug(u'Media stopped by user')
         self.mediaObject.stop()
-        self.display.show()
 
     def onMediaFinish(self):
         log.debug(u'Reached end of media playlist')

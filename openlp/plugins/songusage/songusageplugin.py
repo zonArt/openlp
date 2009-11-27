@@ -44,9 +44,6 @@ class SongUsagePlugin(Plugin):
         self.songusagemanager = None
         self.songusageActive = False
 
-    def can_be_disabled(self):
-        return True
-
     def add_tools_menu_item(self, tools_menu):
         """
         Give the SongUsage plugin the opportunity to add items to the

@@ -45,7 +45,6 @@ class SettingsManager(object):
         else:
             self.mainwindow_left = mainwindow_docbars
             self.mainwindow_right = mainwindow_docbars
-
         self.slidecontroller = (self.width - (
             self.mainwindow_left + self.mainwindow_right) - 100 ) / 2
         self.slidecontroller_image = self.slidecontroller - 50
@@ -60,7 +59,7 @@ class SettingsManager(object):
             u'user interface', u'display previewpanel', True))
 
     def setUIItemVisibility(self, item=u'', isVisible=True):
-        if item != u'':
+        if item:
             if item == u'ThemeManagerDock':
                 ConfigHelper.set_config(u'user interface',
                     u'display thememanager', isVisible)

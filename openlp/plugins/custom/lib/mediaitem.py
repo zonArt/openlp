@@ -50,7 +50,9 @@ class CustomMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = CustomListView
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
-        self.fromServiceManager = -1
+        # Holds information about whether the edit is remotly triggered and
+        # which Custom is required.
+        self.remoteCustom = -1
 
     def addEndHeaderBar(self):
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -59,6 +61,8 @@ class CustomMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'remote_edit_clear' ), self.onRemoteEditClear)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'load_custom_list'), self.initialise)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'preview_custom'), self.onPreviewClick)
 
     def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8(u'Custom')
@@ -69,6 +73,14 @@ class CustomMediaItem(MediaManagerItem):
 
     def initialise(self):
         self.loadCustomListView(self.parent.custommanager.get_all_slides())
+        #Called to redisplay the song list screen edith from a search
+        #or from the exit of the Song edit dialog.  If remote editing is active
+        #Trigger it and clean up so it will not update again.
+        if self.remoteTriggered == u'L':
+            self.onAddClick()
+        if self.remoteTriggered == u'P':
+            self.onPreviewClick()
+        self.onRemoteEditClear()
 
     def loadCustomListView(self, list):
         self.ListView.clear()
@@ -77,8 +89,6 @@ class CustomMediaItem(MediaManagerItem):
             custom_name.setData(
                 QtCore.Qt.UserRole, QtCore.QVariant(CustomSlide.id))
             self.ListView.addItem(custom_name)
-            if CustomSlide.id == self.fromServiceManager:
-                self.onAddClick()
 
     def onNewClick(self):
         self.parent.edit_custom_form.loadCustom(0)
@@ -86,20 +96,29 @@ class CustomMediaItem(MediaManagerItem):
         self.initialise()
 
     def onRemoteEditClear(self):
-        self.fromServiceManager = -1
+        self.remoteTriggered = None
+        self.remoteCustom = -1
 
-    def onRemoteEdit(self, item_id):
-        valid = self.parent.custommanager.get_custom(item_id)
+    def onRemoteEdit(self, customid):
+        """
+        Called by ServiceManager or SlideController by event passing
+        the Song Id in the payload along with an indicator to say which
+        type of display is required.
+        """
+        fields = customid.split(u':')
+        valid = self.parent.custommanager.get_custom(fields[1])
         if valid:
-            self.fromServiceManager = item_id
-            self.parent.edit_custom_form.loadCustom(item_id)
+            self.remoteCustom = fields[1]
+            self.remoteTriggered = fields[0]
+            self.parent.edit_custom_form.loadCustom(fields[1],
+                (fields[0] == u'P'))
             self.parent.edit_custom_form.exec_()
 
     def onEditClick(self):
         item = self.ListView.currentItem()
         if item:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.parent.edit_custom_form.loadCustom(item_id)
+            self.parent.edit_custom_form.loadCustom(item_id, False)
             self.parent.edit_custom_form.exec_()
             self.initialise()
 
@@ -116,18 +135,17 @@ class CustomMediaItem(MediaManagerItem):
         raw_footer = []
         slide = None
         theme = None
-        if self.fromServiceManager == -1:
+        if self.remoteTriggered is None:
             item = self.ListView.currentItem()
             if item is None:
                 return False
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         else:
-            item_id = self.fromServiceManager
-            self.fromServiceManager = -1
+            item_id = self.remoteCustom
         customSlide = self.parent.custommanager.get_custom(item_id)
         title = customSlide.title
         credit = customSlide.credits
-        service_item.editEnabled = True
+        service_item.edit_enabled = True
         service_item.editId = item_id
         theme = customSlide.theme_name
         if len(theme) is not 0 :
@@ -137,9 +155,8 @@ class CustomMediaItem(MediaManagerItem):
         for verse in verseList:
             raw_slides.append(verse[1])
         raw_footer.append(title + u' '+ credit)
-        if theme:
-            service_item.title = title
-            for slide in raw_slides:
-                service_item.add_from_text(slide[:30], slide)
-            service_item.raw_footer = raw_footer
+        service_item.title = title
+        for slide in raw_slides:
+            service_item.add_from_text(slide[:30], slide)
+        service_item.raw_footer = raw_footer
         return True

@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.ui import AmendThemeForm
 from openlp.core.theme import Theme
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ThemeXML, \
-    str_to_bool, file_to_xml, buildIcon, Receiver, contextMenuAction, \
+    str_to_bool, get_text_file_string, buildIcon, Receiver, contextMenuAction, \
     contextMenuSeparator
 from openlp.core.utils import ConfigHelper
 
@@ -145,20 +145,22 @@ class ThemeManager(QtGui.QWidget):
                 name = u'%s (%s)' % (self.global_theme, self.trUtf8(u'default'))
                 self.ThemeListWidget.item(count).setText(name)
                 self.config.set_config(u'theme global theme', self.global_theme)
-                Receiver().send_message(
+                Receiver.send_message(
                     u'update_global_theme', self.global_theme)
                 self.pushThemes()
 
     def onAddTheme(self):
-        self.amendThemeForm.loadTheme(None)
+        theme = self.createThemeFromXml(self.baseTheme(), self.path)
+        self.amendThemeForm.loadTheme(theme)
         self.saveThemeName = u''
         self.amendThemeForm.exec_()
 
     def onEditTheme(self):
         item = self.ThemeListWidget.currentItem()
         if item:
-            self.amendThemeForm.loadTheme(
+            theme = self.getThemeData(
                 unicode(item.data(QtCore.Qt.UserRole).toString()))
+            self.amendThemeForm.loadTheme(theme)
             self.saveThemeName = unicode(
                 item.data(QtCore.Qt.UserRole).toString())
             self.amendThemeForm.exec_()
@@ -182,10 +184,6 @@ class ThemeManager(QtGui.QWidget):
                 self.ThemeListWidget.takeItem(row)
                 try:
                     os.remove(os.path.join(self.path, th))
-                except:
-                    #if not present do not worry
-                    pass
-                try:
                     shutil.rmtree(os.path.join(self.path, theme))
                 except:
                     #if not present do not worry
@@ -210,16 +208,22 @@ class ThemeManager(QtGui.QWidget):
             unicode(self.trUtf8(u'Save Theme - (%s)')) %  theme,
             self.config.get_last_dir(1) )
         path = unicode(path)
-        if path != u'':
+        if path:
             self.config.set_last_dir(path, 1)
             themePath = os.path.join(path, theme + u'.theme')
-            zip = zipfile.ZipFile(themePath, u'w')
-            source = os.path.join(self.path, theme)
-            for root, dirs, files in os.walk(source):
-                for name in files:
-                    zip.write(
-                        os.path.join(source, name), os.path.join(theme, name))
-            zip.close()
+            zip = None
+            try:
+                zip = zipfile.ZipFile(themePath, u'w')
+                source = os.path.join(self.path, theme)
+                for root, dirs, files in os.walk(source):
+                    for name in files:
+                        zip.write(
+                            os.path.join(source, name), os.path.join(theme, name))
+            except:
+                log.exception(u'Export Theme Failed')
+            finally:
+                if zip:
+                    zip.close()
 
     def onImportTheme(self):
         files = QtGui.QFileDialog.getOpenFileNames(
@@ -263,7 +267,7 @@ class ThemeManager(QtGui.QWidget):
         self.pushThemes()
 
     def pushThemes(self):
-        Receiver().send_message(u'update_themes', self.getThemes() )
+        Receiver.send_message(u'update_themes', self.getThemes() )
 
     def getThemes(self):
         return self.themelist
@@ -272,15 +276,10 @@ class ThemeManager(QtGui.QWidget):
         log.debug(u'getthemedata for theme %s', themename)
         xml_file = os.path.join(self.path, unicode(themename),
             unicode(themename) + u'.xml')
-        try:
-            xml = file_to_xml(xml_file)
-        except:
+        xml = get_text_file_string(xml_file)
+        if not xml:
             xml = self.baseTheme()
-        theme = ThemeXML()
-        theme.parse(xml)
-        self.cleanTheme(theme)
-        theme.extend_image_filename(self.path)
-        return theme
+        return self.createThemeFromXml(xml, self.path)
 
     def checkThemesExists(self, dir):
         log.debug(u'check themes')
@@ -295,44 +294,49 @@ class ThemeManager(QtGui.QWidget):
         """
         log.debug(u'Unzipping theme %s', filename)
         filename = unicode(filename)
+        zip = None
+        outfile = None
         try:
             zip = zipfile.ZipFile(filename)
+            filexml = None
+            themename = None
+            for file in zip.namelist():
+                if file.endswith(os.path.sep):
+                    theme_dir = os.path.join(dir, file)
+                    if not os.path.exists(theme_dir):
+                        os.mkdir(os.path.join(dir, file))
+                else:
+                    fullpath = os.path.join(dir, file)
+                    names = file.split(os.path.sep)
+                    if len(names) > 1:
+                        # not preview file
+                        if themename is None:
+                            themename = names[0]
+                        xml_data = zip.read(file)
+                        if os.path.splitext(file)[1].lower() in [u'.xml']:
+                            if self.checkVersion1(xml_data):
+                                # upgrade theme xml
+                                filexml = self.migrateVersion122(filename,
+                                    fullpath, xml_data)
+                            else:
+                                filexml = xml_data
+                            outfile = open(fullpath, u'w')
+                            outfile.write(filexml)
+                        else:
+                            outfile = open(fullpath, u'w')
+                            outfile.write(zip.read(file))
+            self.generateAndSaveImage(dir, themename, filexml)
         except:
             QtGui.QMessageBox.critical(
                 self, self.trUtf8(u'Error'),
                 self.trUtf8(u'File is not a valid theme!'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-            return
-        filexml = None
-        themename = None
-        for file in zip.namelist():
-            if file.endswith(os.path.sep):
-                theme_dir = os.path.join(dir, file)
-                if not os.path.exists(theme_dir):
-                    os.mkdir(os.path.join(dir, file))
-            else:
-                fullpath = os.path.join(dir, file)
-                names = file.split(os.path.sep)
-                if len(names) > 1:
-                    # not preview file
-                    if themename is None:
-                        themename = names[0]
-                    xml_data = zip.read(file)
-                    if os.path.splitext(file)[1].lower() in [u'.xml']:
-                        if self.checkVersion1(xml_data):
-                            # upgrade theme xml
-                            filexml = self.migrateVersion122(filename,
-                                fullpath, xml_data)
-                        else:
-                            filexml = xml_data
-                        outfile = open(fullpath, u'w')
-                        outfile.write(filexml)
-                        outfile.close()
-                    else:
-                        outfile = open(fullpath, u'w')
-                        outfile.write(zip.read(file))
-                        outfile.close()
-        self.generateAndSaveImage(dir, themename, filexml)
+            log.exception(u'Importing theme from zip file failed')
+        finally:
+            if zip:
+                zip.close()
+            if outfile:
+                outfile.close()
 
     def checkVersion1(self, xmlfile):
         """
@@ -412,13 +416,22 @@ class ThemeManager(QtGui.QWidget):
                 result == QtGui.QMessageBox.Yes
         if result == QtGui.QMessageBox.Yes:
             # Save the theme, overwriting the existing theme if necessary.
-            outfile = open(theme_file, u'w')
-            outfile.write(theme_pretty_xml)
-            outfile.close()
+            outfile = None
+            try:
+                outfile = open(theme_file, u'w')
+                outfile.write(theme_pretty_xml)
+            except:
+                log.exception(u'Saving theme to file failed')
+            finally:
+                if outfile:
+                    outfile.close()
             if image_from and image_from != image_to:
                 print "if", image_from
                 print "it", image_to
-                shutil.copyfile(image_from, image_to)
+                try:
+                    shutil.copyfile(image_from, image_to)
+                except:
+                    log.exception(u'Failed to save theme image')
             self.generateAndSaveImage(self.path, name, theme_xml)
             self.loadThemes()
         else:
@@ -428,10 +441,7 @@ class ThemeManager(QtGui.QWidget):
 
     def generateAndSaveImage(self, dir, name, theme_xml):
         log.debug(u'generateAndSaveImage %s %s %s', dir, name, theme_xml)
-        theme = ThemeXML()
-        theme.parse(theme_xml)
-        self.cleanTheme(theme)
-        theme.extend_image_filename(dir)
+        theme = self.createThemeFromXml(theme_xml, dir)
         frame = self.generateImage(theme)
         samplepathname = os.path.join(self.path, name + u'.png')
         if os.path.exists(samplepathname):
@@ -465,6 +475,13 @@ class ThemeManager(QtGui.QWidget):
             unicode(u'#FFFFFF'), unicode(0), unicode(0), unicode(0))
         return newtheme.extract_xml()
 
+    def createThemeFromXml(self, theme_xml, path):
+        theme = ThemeXML()
+        theme.parse(theme_xml)
+        self.cleanTheme(theme)
+        theme.extend_image_filename(path)
+        return theme
+
     def cleanTheme(self, theme):
         theme.background_color = theme.background_color.strip()
         theme.background_direction = theme.background_direction.strip()
@@ -486,6 +503,8 @@ class ThemeManager(QtGui.QWidget):
         theme.display_wrapStyle = theme.display_wrapStyle.strip()
         theme.font_footer_color = theme.font_footer_color.strip()
         theme.font_footer_height = int(theme.font_footer_height.strip())
+        theme.font_footer_indentation = \
+            int(theme.font_footer_indentation.strip())
         theme.font_footer_italics = str_to_bool(theme.font_footer_italics)
         theme.font_footer_name = theme.font_footer_name.strip()
         #theme.font_footer_override

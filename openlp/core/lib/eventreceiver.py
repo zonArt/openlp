@@ -129,16 +129,16 @@ class EventReceiver(QtCore.QObject):
 
 class Receiver():
     """
-    Class to allow events to be passed from different parts of the
-    system. This is a static wrapper around the ``EventReceiver``
-    class. As there is only one instance of it in the system the QT
-    signal/slot architecture can send messages across the system.
+    Class to allow events to be passed from different parts of the system. This
+    is a static wrapper around the ``EventReceiver`` class. As there is only
+    one instance of it in the system the Qt4 signal/slot architecture can send
+    messages across the system.
 
     To send a message:
-       ``Receiver().send_message(u'<<Message ID>>', data)``
+       ``Receiver.send_message(u'<<Message ID>>', data)``
 
     To receive a Message
-        ``QtCore.QObject.connect(Receiver().get_receiver(), QtCore.SIGNAL(u'<<Message ID>>'), <<ACTION>>)``
+        ``QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'<<Message ID>>'), <<ACTION>>)``
     """
     eventreceiver = EventReceiver()
 

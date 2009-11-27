@@ -272,7 +272,7 @@ class ImpressController(PresentationController):
             self.goto_slide(1)
 
     def get_slide_number(self):
-        return self.controller.getCurrentSlideIndex()
+        return self.controller.getCurrentSlideIndex() + 1
 
     def get_slide_count(self):
         return self.document.getDrawPages().getCount()

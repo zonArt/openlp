@@ -41,9 +41,6 @@ class BiblePlugin(Plugin):
         #Register the bible Manager
         self.biblemanager = None
 
-    def can_be_disabled(self):
-        return True
-
     def initialise(self):
         log.info(u'bibles Initialising')
         if self.biblemanager is None:

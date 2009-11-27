@@ -21,6 +21,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+import logging
 
 from PyQt4 import QtCore, QtGui
 
@@ -32,6 +33,9 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
     """
     Class documentation goes here.
     """
+    global log
+    log = logging.getLogger(u'EditCustomForm')
+    log.info(u'Custom Editor loaded')
     def __init__(self, custommanager, parent = None):
         """
         Constructor
@@ -40,6 +44,12 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         #self.parent = parent
         self.setupUi(self)
         # Connecting signals and slots
+        self.previewButton = QtGui.QPushButton()
+        self.previewButton.setText(self.trUtf8(u'Save && Preview'))
+        self.buttonBox.addButton(
+            self.previewButton, QtGui.QDialogButtonBox.ActionRole)
+        QtCore.QObject.connect(self.buttonBox,
+            QtCore.SIGNAL(u'clicked(QAbstractButton*)'), self.onPreview)
         QtCore.QObject.connect(self.AddButton,
             QtCore.SIGNAL(u'pressed()'), self.onAddButtonPressed)
         QtCore.QObject.connect(self.EditButton,
@@ -68,6 +78,12 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.custommanager = custommanager
         self.initialise()
 
+    def onPreview(self, button):
+        log.debug(u'onPreview')
+        if button.text() == unicode(self.trUtf8(u'Save && Preview')) \
+            and self.saveCustom():
+            Receiver.send_message(u'preview_custom')
+
     def initialise(self):
         self.editAll = False
         self.DeleteButton.setEnabled(False)
@@ -89,7 +105,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         for themename in themelist:
             self.ThemeComboBox.addItem(themename)
 
-    def loadCustom(self, id):
+    def loadCustom(self, id, preview):
         self.customSlide = CustomSlide()
         self.initialise()
         if id != 0:
@@ -108,17 +124,27 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             self.ThemeComboBox.setCurrentIndex(id)
         else:
             self.ThemeComboBox.setCurrentIndex(0)
+        #if not preview hide the preview button
+        self.previewButton.setVisible(False)
+        if preview:
+            self.previewButton.setVisible(True)
 
     def closePressed(self):
-        Receiver().send_message(u'remote_edit_clear')
+        Receiver.send_message(u'remote_edit_clear')
         self.close()
 
     def accept(self):
+        log.debug(u'accept')
+        if self.saveCustom():
+            Receiver.send_message(u'load_custom_list')
+            self.close()
+
+    def saveCustom(self):
         valid, message = self._validate()
         if not valid:
             QtGui.QMessageBox.critical(self, self.trUtf8(u'Error'), message,
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-            return
+            return False
         sxml = SongXMLBuilder()
         sxml.new_document()
         sxml.add_lyrics_to_song()
@@ -132,8 +158,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.customSlide.credits = unicode(self.CreditEdit.displayText())
         self.customSlide.theme_name = unicode(self.ThemeComboBox.currentText())
         self.custommanager.save_slide(self.customSlide)
-        Receiver().send_message(u'load_custom_list')
-        self.close()
+        return True
 
     def onUpButtonPressed(self):
         selectedRow = self.VerseListView.currentRow()

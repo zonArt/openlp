@@ -105,10 +105,7 @@ class PluginManager(object):
         for plugin in plugins_list:
             if plugin.check_pre_conditions():
                 log.debug(u'Plugin %s active', unicode(plugin.name))
-                if plugin.can_be_disabled():
-                    plugin.set_status()
-                else:
-                    plugin.status = PluginStatus.Active
+                plugin.set_status()
             else:
                 plugin.status = PluginStatus.Disabled
             self.plugins.append(plugin)

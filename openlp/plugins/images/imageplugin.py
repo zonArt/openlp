@@ -37,9 +37,6 @@ class ImagePlugin(Plugin):
         self.weight = -7
         self.icon = buildIcon(u':/media/media_image.png')
 
-    def can_be_disabled(self):
-        return True
-
     def initialise(self):
         log.info(u'Plugin Initialising')
         Plugin.initialise(self)
@@ -60,7 +57,7 @@ class ImagePlugin(Plugin):
         about_text = self.trUtf8(u'<b>Image Plugin</b><br>Allows images of '
             u'all types to be displayed.  If a number of images are selected '
             u'together and presented on the live controller it is possible '
-            u'to turn them into a timed loop.<br>From the plugin if the '
+            u'to turn them into a timed loop.<br<br>From the plugin if the '
             u'<i>Override background</i> is chosen and an image is selected '
             u'any somgs which are rendered will use the selected image from '
             u'the background instead of the one provied by the theme.<br>')

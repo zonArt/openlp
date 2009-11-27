@@ -84,6 +84,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.MainContent)
         self.ControlSplitter = QtGui.QSplitter(self.MainContent)
         self.ControlSplitter.setOrientation(QtCore.Qt.Horizontal)
+        self.ControlSplitter.setOpaqueResize(False)
         self.ControlSplitter.setObjectName(u'ControlSplitter')
         self.MainContentLayout.addWidget(self.ControlSplitter)
         # Create slide controllers
@@ -300,7 +301,16 @@ class Ui_MainWindow(object):
         # Connect up some signals and slots
         QtCore.QObject.connect(self.FileExitItem,
             QtCore.SIGNAL(u'triggered()'), MainWindow.close)
+        QtCore.QObject.connect(self.ControlSplitter,
+            QtCore.SIGNAL(u'splitterMoved(int, int)'), self.trackSplitter)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def trackSplitter(self, tab, pos):
+        """
+        Splitter between the Preview and Live Controllers.
+        """
+        self.LiveController.widthChanged()
+        self.PreviewController.widthChanged()
 
     def retranslateUi(self, MainWindow):
         """
@@ -526,6 +536,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.settingsForm.postSetUp()
 
     def versionCheck(self):
+        """
+        Checks the version of the Application called from openlp.pyw
+        """
         applicationVersion = self.applicationVersion[u'Full']
         version = check_latest_version(self.generalConfig, applicationVersion)
         if applicationVersion != version:
@@ -544,7 +557,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         monitor number does not exist.
         """
         screen_number = int(self.generalConfig.get_config(u'Monitor', 0))
-
         monitor_exists = False
         for screen in self.screenList:
             if screen[u'number'] == screen_number:
@@ -560,7 +572,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.showMaximized()
         screen_number = self.getMonitorNumber()
         self.mainDisplay.setup(screen_number)
-        self.setFocus()
+        if self.mainDisplay.isVisible():
+            self.mainDisplay.setFocus()
+        self.activateWindow()
         if str_to_bool(self.generalConfig.get_config(u'Auto Open', False)):
             self.ServiceManagerContents.onLoadService(True)
         if str_to_bool(self.generalConfig.get_config(u'Screen Blank', False)) \
@@ -570,7 +584,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 self.trUtf8(u'The Main Display has been blanked out'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
-            self.LiveController.blackPushButton.setChecked(True)
+            #self.LiveController.blackPushButton.setChecked(True)
 
     def onHelpAboutItemClicked(self):
         """
@@ -601,6 +615,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if updated_display != self.RenderManager.current_display:
             self.RenderManager.update_display(updated_display)
             self.mainDisplay.setup(updated_display)
+        self.activateWindow()
 
     def closeEvent(self, event):
         """
@@ -664,7 +679,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.setWindowTitle(title)
 
     def defaultThemeChanged(self, theme):
-        self.DefaultThemeLabel.setText(self.defaultThemeText + theme)
+        self.DefaultThemeLabel.setText(
+            u'%s %s' % (self.defaultThemeText, theme))
 
     def toggleMediaManager(self, visible):
         if self.MediaManagerDock.isVisible() != visible:

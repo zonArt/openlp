@@ -111,13 +111,19 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
              self.ToDateEdit.date().toString(u'ddMMyyyy'))
         audits = self.parent.auditmanager.get_all_audits()
         outname = os.path.join(unicode(self.FileLineEdit.text()), filename)
-        file = open(outname, u'w')
-        for audit in audits:
-            record = u'\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n' % \
-                (audit.auditdate,audit.audittime, audit.title,
-                 audit.copyright, audit.ccl_number , audit.authors)
-            file.write(record)
-        file.close()
+        file = None
+        try:
+            file = open(outname, u'w')
+            for audit in audits:
+                record = u'\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n' % \
+                    (audit.auditdate,audit.audittime, audit.title,
+                    audit.copyright, audit.ccl_number , audit.authors)
+                file.write(record)
+        except:
+            log.exception(u'Failed to write out audit records')
+        finally:
+            if file:
+                file.close()
 
     def summaryReport(self):
         print "summary"

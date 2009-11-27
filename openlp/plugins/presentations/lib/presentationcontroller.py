@@ -50,25 +50,25 @@ class PresentationController(object):
 
     ``name``
         The name that appears in the options and the media manager
-    
+
     ``enabled``
         The controller is enabled
 
     ``available``
         The controller is available on this machine. Set by init via
         call to check_available
-        
+
     ``plugin``
         The presentationplugin object
 
     **Hook Functions**
-    
+
     ``kill()``
         Called at system exit to clean up any running presentations
 
     ``check_available()``
         Returns True if presentation application is installed/can run on this machine
-    
+
     ``presentation_deleted()``
         Deletes presentation specific files, e.g. thumbnails
 
@@ -83,7 +83,7 @@ class PresentationController(object):
 
     ``is_active()``
         Returns True if a presentation is currently running
-    
+
     ``blank_screen()``
         Blanks the screen, making it black.
 
@@ -118,7 +118,7 @@ class PresentationController(object):
     global log
     log = logging.getLogger(u'PresentationController')
     log.info(u'loaded')
-    
+
     def __init__(self, plugin=None, name=u'PresentationController'):
         """
         This is the constructor for the presentationcontroller object.
@@ -149,9 +149,6 @@ class PresentationController(object):
         self.thumbnailprefix = u'slide'
         if not os.path.isdir(self.thumbnailroot):
             os.makedirs(self.thumbnailroot)
-        self.timer = QtCore.QTimer()
-        self.timer.setInterval(500)
-        QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.poll_slidenumber)
 
     def check_available(self):
         """
@@ -166,7 +163,7 @@ class PresentationController(object):
         """
         self.store_filename(presentation)
         shutil.rmtree(self.thumbnailpath)
-    
+
     def start_process(self):
         """
         Loads a running version of the presentation application in the background.
@@ -188,6 +185,7 @@ class PresentationController(object):
 
         ``presentation``
         The file name of the presentations to the run.
+
         """
         pass
 
@@ -207,9 +205,7 @@ class PresentationController(object):
         recent than the powerpoint
         """
         lastimage = self.get_slide_preview_file(self.get_slide_count())
-        if lastimage is None:
-            return False
-        if not os.path.isfile(lastimage):
+        if not (lastimage and os.path.isfile(lastimage)):
             return False
         imgdate = os.stat(lastimage).st_mtime
         pptdate = os.stat(self.filepath).st_mtime
@@ -233,7 +229,7 @@ class PresentationController(object):
         Returns true if a presentation is loaded
         """
         return False
-    
+
     def blank_screen(self):
         """
         Blanks the screen, making it black.
@@ -301,7 +297,7 @@ class PresentationController(object):
         """
         return None
 
-    def poll_slidenumber(self):
+    def poll_slidenumber(self, is_live):
         """
         Check the current slide number
         """
@@ -311,5 +307,9 @@ class PresentationController(object):
         if current == self.slidenumber:
             return
         self.slidenumber = current
-        Receiver().send_message(u'slidecontroller_change', self.slidenumber - 1)
-        
+        if is_live:
+            prefix = u'live'
+        else:
+            prefix = u'preview'
+        Receiver.send_message(u'%s_slidecontroller_change' % prefix,
+            self.slidenumber - 1)

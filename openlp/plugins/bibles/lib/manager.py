@@ -71,7 +71,7 @@ class BibleManager(object):
     def reload_bibles(self):
         log.debug(u'Reload bibles')
         files = self.config.get_files(self.bibleSuffix)
-        log.debug(u'Bible Files %s', files )
+        log.debug(u'Bible Files %s', files)
         self.bible_db_cache = {}
         self.bible_http_cache = {}
         # books of the bible with testaments
@@ -116,12 +116,19 @@ class BibleManager(object):
                 filepath = os.path.split(os.path.abspath(__file__))[0]
                 filepath = os.path.abspath(os.path.join(
                     filepath, u'..', u'resources',u'httpbooks.csv'))
-                fbibles = open(filepath, u'r')
-                for line in fbibles:
-                    p = line.split(u',')
-                    self.book_abbreviations[p[0]] = p[1].replace(u'\n', '')
-                    self.book_testaments[p[0]] = p[2].replace(u'\n', '')
-                    self.book_chapters.append({u'book':p[0], u'total':p[3].replace(u'\n', '')})
+                fbibles = None
+                try:
+                    fbibles = open(filepath, u'r')
+                    for line in fbibles:
+                        p = line.split(u',')
+                        self.book_abbreviations[p[0]] = p[1].replace(u'\n', '')
+                        self.book_testaments[p[0]] = p[2].replace(u'\n', '')
+                        self.book_chapters.append({u'book':p[0], u'total':p[3].replace(u'\n', '')})
+                except:
+                    log.exception(u'Failed to load bible')
+                finally:
+                    if fbibles:
+                        fbibles.close()
         log.debug(u'Bible Initialised')
 
     def process_dialog(self, dialogobject):

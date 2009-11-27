@@ -404,16 +404,16 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         log.debug(u'onPreview')
         if button.text() == unicode(self.trUtf8(u'Save && Preview')) \
             and self.saveSong():
-            Receiver().send_message(u'preview_song')
+            Receiver.send_message(u'preview_song')
 
     def closePressed(self):
-        Receiver().send_message(u'remote_edit_clear')
+        Receiver.send_message(u'remote_edit_clear')
         self.close()
 
     def accept(self):
         log.debug(u'accept')
         if self.saveSong():
-            Receiver().send_message(u'load_song_list')
+            Receiver.send_message(u'load_song_list')
             self.close()
 
     def saveSong(self):
@@ -462,7 +462,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             text = text.replace(u'}', u'')
             text = text.replace(u'?', u'')
             self.song.search_lyrics = unicode(text)
-            self.song.lyrics = unicode(sxml.extract_xml())
+            self.song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         except:
             log.exception(u'Problem processing song Lyrics \n%s',
                 sxml.dump_xml())
