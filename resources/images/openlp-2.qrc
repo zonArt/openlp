@@ -43,8 +43,8 @@
     <file>splash-screen-new.bmp</file>
     <file>about-new.bmp</file>
     <file>openlp-about-logo.png</file>
-    <file>openlp-splash-screen.png</file>
     <file>openlp-splash-screen.svg</file>
+    <file>openlp-splash-screen.png</file>
   </qresource>
   <qresource prefix="imports" >
     <file>import_selectall.png</file>
