@@ -347,7 +347,7 @@ class SlideController(QtGui.QWidget):
         if item.is_text():
             self.Toolbar.makeWidgetsInvisible(self.image_list)
             if item.is_song() and \
-                str_to_bool(self.songsconfig.get_config(u'display songbar', True)):
+                str_to_bool(self.songsconfig.get_config(u'show songbar', True)):
                 for action in self.Songbar.actions:
                     self.Songbar.actions[action].setVisible(False)
                 if item.verse_order:

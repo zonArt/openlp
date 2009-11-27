@@ -31,9 +31,9 @@ class PluginStatus(object):
     """
     Defines the status of the plugin
     """
-    Active = 0
-    Inactive = 1
-    Disabled = 2
+    Active = 1
+    Inactive = 0
+    Disabled = -1
 
 class Plugin(QtCore.QObject):
     """
@@ -143,15 +143,15 @@ class Plugin(QtCore.QObject):
         """
         Sets the status of the plugin
         """
-        self.status = int(self.config.get_config(\
-            u'%s_status' % self.name, PluginStatus.Inactive))
+        self.status = int(self.config.get_config(u'status',
+            PluginStatus.Inactive))
 
     def toggle_status(self, new_status):
         """
         Changes the status of the plugin and remembers it
         """
         self.status = new_status
-        self.config.set_config(u'%s_status' % self.name, self.status)
+        self.config.set_config(u'status', self.status)
 
     def is_active(self):
         """

@@ -228,7 +228,7 @@ class ServiceManager(QtGui.QWidget):
         self.config = PluginConfig(u'ServiceManager')
         self.servicePath = self.config.get_data_path()
         self.service_theme = unicode(
-            self.config.get_config(u'theme service theme', u''))
+            self.config.get_config(u'service theme', u''))
 
     def onMoveSelectionUp(self):
         """
@@ -346,7 +346,7 @@ class ServiceManager(QtGui.QWidget):
         """
         if self.parent.serviceNotSaved and \
             str_to_bool(PluginConfig(u'General').
-                        get_config(u'prompt save service', u'False')):
+                        get_config(u'save prompt', u'False')):
             ret = QtGui.QMessageBox.question(None,
                 self.trUtf8(u'Save Changes to Service?'),
                 self.trUtf8(u'Your service is unsaved, do you want to save those '
@@ -533,7 +533,7 @@ class ServiceManager(QtGui.QWidget):
         """
         self.service_theme = unicode(self.ThemeComboBox.currentText())
         self.parent.RenderManager.set_service_theme(self.service_theme)
-        self.config.set_config(u'theme service theme', self.service_theme)
+        self.config.set_config(u'service theme', self.service_theme)
         self.regenerateServiceItems()
 
     def regenerateServiceItems(self):

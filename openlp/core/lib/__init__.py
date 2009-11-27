@@ -135,6 +135,11 @@ def contextMenuSeparator(base):
     action.setSeparator(True)
     return action
 
+class ThemeLevel(object):
+    Global = 1
+    Service = 2
+    Song = 3
+
 from eventreceiver import Receiver
 from settingsmanager import SettingsManager
 from pluginconfig import PluginConfig
@@ -155,5 +160,5 @@ from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem
 from baselistwithdnd import BaseListWithDnD
 
-__all__ = [ 'translate', 'get_text_file_string', 'str_to_bool',
-            'contextMenuAction', 'contextMenuSeparator', 'ServiceItem']
+#__all__ = [ 'translate', 'get_text_file_string', 'str_to_bool',
+#            'contextMenuAction', 'contextMenuSeparator', 'ServiceItem']

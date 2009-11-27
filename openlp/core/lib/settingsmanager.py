@@ -49,27 +49,26 @@ class SettingsManager(object):
             self.mainwindow_left + self.mainwindow_right) - 100 ) / 2
         self.slidecontroller_image = self.slidecontroller - 50
 
-        self.showMediaManager = str_to_bool( ConfigHelper.get_config(
-            u'user interface', u'display mediamanager', True))
+        self.showMediaManager = str_to_bool(ConfigHelper.get_config(
+            u'user interface', u'media manager', True))
         self.showServiceManager = str_to_bool(ConfigHelper.get_config(
-            u'user interface', u'display servicemanager', True))
+            u'user interface', u'service manager', True))
         self.showThemeManager = str_to_bool(ConfigHelper.get_config(
-            u'user interface', u'display thememanager', True))
+            u'user interface', u'theme manager', True))
         self.showPreviewPanel = str_to_bool(ConfigHelper.get_config(
-            u'user interface', u'display previewpanel', True))
+            u'user interface', u'preview panel', True))
 
     def setUIItemVisibility(self, item=u'', isVisible=True):
         if item:
             if item == u'ThemeManagerDock':
                 ConfigHelper.set_config(u'user interface',
-                    u'display thememanager', isVisible)
+                    u'theme manager', isVisible)
             elif item == u'ServiceManagerDock':
                 ConfigHelper.set_config(u'user interface',
-                    u'display servicemanager', isVisible)
+                    u'service manager', isVisible)
             elif item == u'MediaManagerDock':
                 ConfigHelper.set_config(u'user interface',
-                    u'display mediamanager', isVisible)
+                    u'media manager', isVisible)
 
     def togglePreviewPanel(self, isVisible):
-        ConfigHelper.set_config(u'user interface', u'display previewpanel',
-            isVisible)
+        ConfigHelper.set_config(u'user interface', u'preview panel', isVisible)
