@@ -46,7 +46,6 @@ ts_message = u"""    <message>
     </message>
 """
 strings = {}
-counts=0
 
 class StringExtractor(NodeVisitor):
 
@@ -60,11 +59,8 @@ class StringExtractor(NodeVisitor):
         self.generic_visit(node)
 
     def visit_Call(self, node):
-        global counts
         if hasattr(node.func, 'attr') and node.func.attr == 'trUtf8' and isinstance(node.args[0], Str):
-            counts += 1
             string = node.args[0].s
-            print string
             key = '%s-%s' % (self.classname, string)
             strings[key] = [self.classname, self.filename, node.lineno, string]
         self.generic_visit(node)
@@ -74,6 +70,7 @@ def parse_file(filename):
     try:
         ast = parse(file.read())
     except SyntaxError, e:
+        print "Unable to parse %s: %s" % (filename, e)
         return
     file.close()
 
@@ -96,7 +93,7 @@ def write_file(filename):
     translation_contexts.append(current_context)
     translation_file = ts_file % (u''.join(translation_contexts))
     file = open(filename, u'w')
-    file.write(translation_file)
+    file.write(translation_file.encode('utf8'))
     file.close()
 
 def main():
@@ -104,11 +101,9 @@ def main():
     for root, dirs, files in os.walk(start_dir):
         for file in files:
             if file.endswith(u'.py'):
-                #print u'Parsing "%s"' % file
+                print u'Parsing "%s"' % file
                 parse_file(os.path.join(root, file))
-    #print u'Generating TS file...',
-    print counts
-    exit(0)
+    print u'Generating TS file...',
     write_file(os.path.join(start_dir, u'i18n', u'openlp_en.ts'))
     print u'done.'
 
