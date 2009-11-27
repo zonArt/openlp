@@ -25,6 +25,9 @@
 
 import os
 import re
+from os import walk
+from ast import parse, NodeVisitor, Str
+from sys import exit
 
 ts_file = u"""<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
@@ -42,27 +45,41 @@ ts_message = u"""    <message>
       <translation type="unfinished"></translation>
     </message>
 """
-find_trUtf8 = re.compile(r"trUtf8\(u?(['\"])([^\1]+)\1\)", re.UNICODE)
 strings = {}
+counts=0
+
+class StringExtractor(NodeVisitor):
+
+    def __init__(self, strings, filename):
+        self.strings = strings
+        self.filename = filename
+        self.classname = 'unknown'
+
+    def visit_ClassDef(self, node):
+        self.classname = node.name
+        self.generic_visit(node)
+
+    def visit_Call(self, node):
+        global counts
+        if hasattr(node.func, 'attr') and node.func.attr == 'trUtf8' and isinstance(node.args[0], Str):
+            counts += 1
+            string = node.args[0].s
+            print string
+            key = '%s-%s' % (self.classname, string)
+            strings[key] = [self.classname, self.filename, node.lineno, string]
+        self.generic_visit(node)
 
 def parse_file(filename):
-    global strings
     file = open(filename, u'r')
-    class_name = u''
-    line_number = 0
-    for line in file:
-        line_number += 1
-        if line[:5] == u'class':
-            class_name = line[6:line.find(u'(')]
-            continue
-        for match in find_trUtf8.finditer(line):
-            key = u'%s-%s' % (class_name, match.group(1))
-            if not key in strings:
-                strings[key] = [class_name, filename, line_number, match.group(1)]
+    try:
+        ast = parse(file.read())
+    except SyntaxError, e:
+        return
     file.close()
 
+    StringExtractor(strings, filename).visit(ast)
+
 def write_file(filename):
-    global strings
     translation_file = u''
     translation_contexts = []
     translation_messages = []
@@ -87,9 +104,11 @@ def main():
     for root, dirs, files in os.walk(start_dir):
         for file in files:
             if file.endswith(u'.py'):
-                print u'Parsing "%s"' % file
+                #print u'Parsing "%s"' % file
                 parse_file(os.path.join(root, file))
-    print u'Generating TS file...',
+    #print u'Generating TS file...',
+    print counts
+    exit(0)
     write_file(os.path.join(start_dir, u'i18n', u'openlp_en.ts'))
     print u'done.'
 
