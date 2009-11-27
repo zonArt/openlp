@@ -42,7 +42,6 @@ ts_message = u"""    <message>
       <translation type="unfinished"></translation>
     </message>
 """
-count = 0
 
 class StringExtractor(NodeVisitor):
 
@@ -56,10 +55,8 @@ class StringExtractor(NodeVisitor):
         self.generic_visit(node)
 
     def visit_Call(self, node):
-        global count
         if hasattr(node.func, 'attr') and node.func.attr == 'trUtf8' and isinstance(node.args[0], Str):
             string = node.args[0].s
-            count += 1
             key = '%s-%s' % (self.classname, string)
             self.strings[key] = [self.classname, self.filename, node.lineno, string]
         self.generic_visit(node)
@@ -103,7 +100,6 @@ def main():
             if file.endswith(u'.py'):
                 print u'Parsing "%s"' % file
                 parse_file(os.path.join(root, file), strings)
-    print u'Found %s strings' % count
     print u'Generating TS file...',
     write_file(os.path.join(start_dir, u'i18n', u'openlp_en.ts'), strings)
     print u'done.'
