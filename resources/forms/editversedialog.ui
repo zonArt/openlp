@@ -19,10 +19,10 @@
   <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>8</x>
-     <y>11</y>
+     <x>9</x>
+     <y>12</y>
      <width>471</width>
-     <height>461</height>
+     <height>471</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -50,6 +50,15 @@
           <string>Bridge</string>
          </property>
         </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="SubVerseListComboBox">
+        <item>
+         <property name="text">
+          <string/>
+         </property>
+        </item>
         <item>
          <property name="text">
           <string>1</string>
@@ -57,7 +66,27 @@
         </item>
         <item>
          <property name="text">
+          <string>1a</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>1b</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
           <string>2</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>2a</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>2b</string>
          </property>
         </item>
         <item>
@@ -85,50 +114,6 @@
           <string>7</string>
          </property>
         </item>
-        <item>
-         <property name="text">
-          <string>9</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>8</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="SubVerseListComboBox">
-        <item>
-         <property name="text">
-          <string/>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>a</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>b</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>c</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>d</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>e</string>
-         </property>
-        </item>
        </widget>
       </item>
      </layout>
@@ -139,6 +124,31 @@
        <bool>false</bool>
       </property>
      </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QPushButton" name="addVerse">
+        <property name="text">
+         <string>Verse</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="addChorus">
+        <property name="text">
+         <string>Chorus</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="addBridge">
+        <property name="text">
+         <string>Bridge</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item>
      <widget class="QDialogButtonBox" name="ButtonBox">

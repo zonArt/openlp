@@ -218,10 +218,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             songXML = SongXMLParser(self.song.lyrics)
             verseList = songXML.get_verses()
             for verse in verseList:
-                if verse[0][u'type'] == u'Verse':
-                    variant = verse[0][u'label']
-                else:
-                    variant = verse[0][u'type']
+                variant = u'%s:%s' % (verse[0][u'type'], verse[0][u'label'])
                 item = QtGui.QListWidgetItem(verse[1])
                 item.setData(QtCore.Qt.UserRole, QtCore.QVariant(variant))
                 self.VerseListWidget.addItem(item)
@@ -328,7 +325,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.verse_form.setVerse(tempText, True, verseId)
             self.verse_form.exec_()
             afterText, verse, subVerse = self.verse_form.getVerse()
-            data = u'%s%s' %(verse , subVerse)
+            data = u'%s:%s' %(verse , subVerse)
             item.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
             item.setText(afterText)
             #number of lines has change
@@ -349,10 +346,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             for row in range(0, self.VerseListWidget.count()):
                 item = self.VerseListWidget.item(row)
                 field = unicode((item.data(QtCore.Qt.UserRole)).toString())
-                if len(field) <= 2:
-                    verse_list += u'---[v%s]---\n' % field
-                else:
-                    verse_list += u'---[%s]---\n' % field
+                verse_list += u'---[%s]---\n' % field
                 verse_list += item.text()
                 verse_list += u'\n'
             self.verse_form.setVerse(verse_list)
@@ -477,15 +471,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             text = u' '
             verse_order = u''
             for i in range (0, self.VerseListWidget.count()):
-                verseId = unicode((item.data(QtCore.Qt.UserRole)).toString()[0])
-                if len(verseId) <= 2:
-                    type = u'Verse'
-                    value = verseId
-                else:
-                    type = verseId
-                    value = 0
-                sxml.add_verse_to_lyrics(type, verseId,
-                    unicode(self.VerseListWidget.item(i).text()))
+                item = self.VerseListWidget.item(i)
+                verseId = unicode((item.data(QtCore.Qt.UserRole)).toString())
+                bits = verseId.split(u':')
+                sxml.add_verse_to_lyrics(bits[0], bits[1], unicode(item.text()))
                 text = text + unicode(self.VerseListWidget.item(i).text()) + u' '
                 verse_order = verse_order + verseId + u' '
                 count += 1

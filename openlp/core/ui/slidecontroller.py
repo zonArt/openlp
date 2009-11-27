@@ -26,7 +26,7 @@ import time
 import os
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.phonon import Phonon
+#from PyQt4.phonon import Phonon
 
 from openlp.core.lib import OpenLPToolbar, Receiver, str_to_bool, PluginConfig
 
@@ -197,11 +197,11 @@ class SlideController(QtGui.QWidget):
         self.Mediabar.addToolbarButton(
             u'Media Stop',  u':/slides/media_playback_stop.png',
             self.trUtf8(u'Start playing media'), self.onMediaStop)
-        self.volumeSlider = Phonon.VolumeSlider()
-        self.volumeSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
-        self.volumeSlider.setObjectName(u'volumeSlider')
-        self.Mediabar.addToolbarWidget(
-            u'Audio Volume', self.volumeSlider)
+        #self.volumeSlider = Phonon.VolumeSlider()
+        #self.volumeSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
+        #self.volumeSlider.setObjectName(u'volumeSlider')
+        #self.Mediabar.addToolbarWidget(
+         #   u'Audio Volume', self.volumeSlider)
         self.ControllerLayout.addWidget(self.Mediabar)
         # Build the Song Toolbar
         if isLive:
@@ -236,13 +236,13 @@ class SlideController(QtGui.QWidget):
         self.SlideLayout.setSpacing(0)
         self.SlideLayout.setMargin(0)
         self.SlideLayout.setObjectName(u'SlideLayout')
-        self.mediaObject = Phonon.MediaObject(self)
-        self.video = Phonon.VideoWidget()
-        self.video.setVisible(False)
-        self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
-        Phonon.createPath(self.mediaObject, self.video)
-        Phonon.createPath(self.mediaObject, self.audio)
-        self.SlideLayout.insertWidget(0, self.video)
+       # self.mediaObject = Phonon.MediaObject(self)
+        #self.video = Phonon.VideoWidget()
+        #self.video.setVisible(False)
+        #self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
+        #Phonon.createPath(self.mediaObject, self.video)
+        #Phonon.createPath(self.mediaObject, self.audio)
+        #self.SlideLayout.insertWidget(0, self.video)
         # Actual preview screen
         self.SlidePreview = QtGui.QLabel(self)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,

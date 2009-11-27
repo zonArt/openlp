@@ -26,7 +26,7 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.phonon import Phonon
+#from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver
 
@@ -92,13 +92,13 @@ class MainDisplay(DisplayWidget):
         self.layout.setSpacing(0)
         self.layout.setMargin(0)
         self.layout.setObjectName(u'layout')
-        self.mediaObject = Phonon.MediaObject(self)
-        self.video = Phonon.VideoWidget()
-        self.video.setVisible(False)
-        self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
-        Phonon.createPath(self.mediaObject, self.video)
-        Phonon.createPath(self.mediaObject, self.audio)
-        self.layout.insertWidget(0, self.video)
+        #self.mediaObject = Phonon.MediaObject(self)
+        #self.video = Phonon.VideoWidget()
+        #self.video.setVisible(False)
+        #self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
+        #Phonon.createPath(self.mediaObject, self.video)
+        #Phonon.createPath(self.mediaObject, self.audio)
+        #self.layout.insertWidget(0, self.video)
         self.display = QtGui.QLabel(self)
         self.display.setScaledContents(True)
         self.layout.insertWidget(0, self.display)
@@ -116,16 +116,16 @@ class MainDisplay(DisplayWidget):
             QtCore.SIGNAL(u'live_slide_hide'), self.hideDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'live_slide_show'), self.showDisplay)
-        QtCore.QObject.connect(self.mediaObject,
-            QtCore.SIGNAL(u'finished()'), self.onMediaFinish)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_start'), self.onMediaQueue)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_play'), self.onMediaPlay)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_pause'), self.onMediaPaws)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_stop'), self.onMediaStop)
+#        QtCore.QObject.connect(self.mediaObject,
+#            QtCore.SIGNAL(u'finished()'), self.onMediaFinish)
+#        QtCore.QObject.connect(Receiver.get_receiver(),
+#            QtCore.SIGNAL(u'media_start'), self.onMediaQueue)
+#        QtCore.QObject.connect(Receiver.get_receiver(),
+#            QtCore.SIGNAL(u'media_play'), self.onMediaPlay)
+#        QtCore.QObject.connect(Receiver.get_receiver(),
+#            QtCore.SIGNAL(u'media_pause'), self.onMediaPaws)
+#        QtCore.QObject.connect(Receiver.get_receiver(),
+#            QtCore.SIGNAL(u'media_stop'), self.onMediaStop)
 
     def setup(self, screenNumber):
         """

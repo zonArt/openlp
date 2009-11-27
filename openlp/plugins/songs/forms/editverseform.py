@@ -23,7 +23,6 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-
 from editversedialog import Ui_EditVerseDialog
 
 class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
@@ -36,39 +35,44 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        QtCore.QObject.connect(self.VerseListComboBox,
-            QtCore.SIGNAL(u'activated(int)'), self.onVerseListComboBoxChanged)
+        QtCore.QObject.connect(self.addVerse,
+            QtCore.SIGNAL(u'clicked()'), self.onAddVerse)
+        QtCore.QObject.connect(self.addChorus,
+            QtCore.SIGNAL(u'clicked()'), self.onAddChorus)
+        QtCore.QObject.connect(self.addBridge,
+            QtCore.SIGNAL(u'clicked()'), self.onAddBridge)
 
-    def onVerseListComboBoxChanged(self, value):
-        if unicode(self.VerseListComboBox.currentText()).isdigit():
-            self.SubVerseListComboBox.setEnabled(True)
-        else:
-            self.SubVerseListComboBox.setCurrentIndex(0)
-            self.SubVerseListComboBox.setEnabled(False)
+    def onAddBridge(self):
+        self.VerseTextEdit.insertPlainText(u'---[Bridge:1]---\n')
 
-    def setVerse(self, text, single=False, id=0):
+    def onAddChorus(self):
+        self.VerseTextEdit.insertPlainText(u'---[Chorus:1]---\n')
+
+    def onAddVerse(self):
+        self.VerseTextEdit.insertPlainText(u'---[Verse:1]---\n')
+
+    def setVerse(self, text, single=False, tag=0):
         posVerse = 0
         posSub = 0
         if single:
-            if len(id) <= 2:
-                if len(id) == 0:
-                    pass
-                elif len(id) == 1:
-                    posVerse = self.VerseListComboBox.findText(id, QtCore.Qt.MatchExactly)
-                else:
-                    posVerse = self.VerseListComboBox.findText(id[0], QtCore.Qt.MatchExactly)
-                    posSub = self.SubVerseListComboBox.findText(id[1], QtCore.Qt.MatchExactly)
-            else:
-                posVerse = self.VerseListComboBox.findText(id, QtCore.Qt.MatchExactly)
+            id = tag.split(u':')
+            posVerse = self.VerseListComboBox.findText(id[0], QtCore.Qt.MatchExactly)
+            posSub = self.SubVerseListComboBox.findText(id[1], QtCore.Qt.MatchExactly)
             if posVerse == -1:
                 posVerse = 0
             if posSub == -1:
                 posSub = 0
             self.VerseListComboBox.setEnabled(True)
             self.SubVerseListComboBox.setEnabled(True)
+            self.addBridge.setEnabled(False)
+            self.addChorus.setEnabled(False)
+            self.addVerse.setEnabled(False)
         else:
             self.VerseListComboBox.setEnabled(False)
             self.SubVerseListComboBox.setEnabled(False)
+            self.addBridge.setEnabled(True)
+            self.addChorus.setEnabled(True)
+            self.addVerse.setEnabled(True)
         self.VerseListComboBox.setCurrentIndex(posVerse)
         self.SubVerseListComboBox.setCurrentIndex(posSub)
         self.VerseTextEdit.setPlainText(text)

@@ -31,9 +31,9 @@ class PluginStatus(object):
     """
     Defines the status of the plugin
     """
-    Active = 0
-    Inactive = 1
-    Disabled = 2
+    Active = 1
+    Inactive = 0
+    Disabled = -1
 
 class Plugin(QtCore.QObject):
     """
