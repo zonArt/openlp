@@ -24,10 +24,7 @@
 ###############################################################################
 
 import os
-import re
-from os import walk
 from ast import parse, NodeVisitor, Str
-from sys import exit
 
 ts_file = u"""<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
