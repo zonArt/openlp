@@ -261,7 +261,7 @@ class Renderer(object):
             bbox = self._render_lines_unaligned(footer_lines, True,
                 (self._rect_footer.left(), self._rect_footer.top()), True)
         log.debug(u'generate_frame_from_lines - Finish')
-        return self._frame
+        return {u'main':self._frame, u'trans':None}
 
     def _generate_background_frame(self):
         """

@@ -325,7 +325,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.verse_form.setVerse(tempText, True, verseId)
             self.verse_form.exec_()
             afterText, verse, subVerse = self.verse_form.getVerse()
-            data = u'%s:%s' %(verse , subVerse)
+            data = u'%s:%s' %(verse, subVerse)
             item.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
             item.setText(afterText)
             #number of lines has change
