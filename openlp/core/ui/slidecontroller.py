@@ -456,6 +456,8 @@ class SlideController(QtGui.QWidget):
                 self.PreviewListWidget.setCellWidget(framenumber, 0, label)
                 slide_height = width * self.parent.RenderManager.screen_ratio
             else:
+                variant = u'%s:%s' % (verse[0][u'type'], verse[0][u'label'])
+                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(frame[u'text']))
                 item.setText(frame[u'text'])
             self.PreviewListWidget.setItem(framenumber, 0, item)
             if slide_height != 0:

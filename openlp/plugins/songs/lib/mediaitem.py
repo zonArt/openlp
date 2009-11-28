@@ -295,7 +295,8 @@ class SongMediaItem(MediaManagerItem):
             verseList = songXML.get_verses()
             for verse in verseList:
                 if verse[1]:
-                    service_item.add_from_text(verse[1][:30], verse[1])
+                    verseTag = u'%s:%s' % (verse[0][u'type'], verse[0][u'label'])
+                    service_item.add_from_text(verse[1][:30], verse[1], verseTag)
         else:
             verses = song.lyrics.split(u'\n\n')
             for slide in verses:

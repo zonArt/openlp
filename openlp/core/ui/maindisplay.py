@@ -198,7 +198,7 @@ class MainDisplay(DisplayWidget):
         elif not self.displayBlank:
             if transition:
                 if self.hasTransition:
-                    delay = 0.1
+                    delay = 0.01
                     self.display.setPixmap(QtGui.QPixmap.fromImage(self.frame[u'trans']))
                     self.repaint()
                     time.sleep(delay)
