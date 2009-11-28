@@ -24,6 +24,7 @@
 
 import logging
 import os
+import time
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
@@ -110,6 +111,7 @@ class MainDisplay(DisplayWidget):
         self.timer_id = 0
         self.firstTime = True
         self.mediaLoaded = False
+        self.hasTransition = False
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'alert_text'), self.displayAlert)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -126,6 +128,7 @@ class MainDisplay(DisplayWidget):
             QtCore.SIGNAL(u'media_pause'), self.onMediaPaws)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_stop'), self.onMediaStop)
+
 
     def setup(self, screenNumber):
         """
@@ -194,10 +197,19 @@ class MainDisplay(DisplayWidget):
             self.displayAlert()
         elif not self.displayBlank:
             if transition:
+                if self.hasTransition:
+                    delay = 0.1
+                    self.display.setPixmap(QtGui.QPixmap.fromImage(self.frame[u'trans']))
+                    self.repaint()
+                    time.sleep(delay)
+                    self.display.setPixmap(QtGui.QPixmap.fromImage(frame[u'trans']))
+                    self.repaint()
+                    time.sleep(delay)
+                self.hasTransition = True
                 self.display.setPixmap(QtGui.QPixmap.fromImage(frame[u'main']))
+                self.repaint()
             else:
                 self.display.setPixmap(QtGui.QPixmap.fromImage(frame))
-#            QtCore.QTimer.singleShot(500, self.aa )
             if not self.isVisible():
                 self.setVisible(True)
                 self.showFullScreen()

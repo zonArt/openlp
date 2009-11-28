@@ -352,14 +352,14 @@ class SlideController(QtGui.QWidget):
                     self.Songbar.actions[action].setVisible(False)
                 if item.verse_order:
                     verses = item.verse_order.split(u' ')
-                    for verse in verses:
-                        if not verse or int(verse) > 12:
-                            break
-                        try:
-                            self.Songbar.actions[verse].setVisible(True)
-                        except:
-                            #More than 20 verses hard luck
-                            pass
+#                    for verse in verses:
+#                        if not verse or int(verse) > 12:
+#                            break
+#                        try:
+#                            self.Songbar.actions[verse].setVisible(True)
+#                        except:
+#                            #More than 20 verses hard luck
+#                            pass
                     self.Songbar.setVisible(True)
         elif item.is_image():
             #Not sensible to allow loops with 1 frame
