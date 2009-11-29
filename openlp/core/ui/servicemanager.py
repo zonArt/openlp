@@ -433,9 +433,9 @@ class ServiceManager(QtGui.QWidget):
                         {u'serviceitem':item[u'service_item'].get_service_repr()})
                     if item[u'service_item'].service_item_type == ServiceItemType.Image or \
                         item[u'service_item'].service_item_type == ServiceItemType.Command:
-                        for frame in item[u'service_item'].frames:
+                        for frame in item[u'service_item'].get_frames:
                             path_from = unicode(os.path.join(
-                                item[u'service_item'].service_item_path, frame[u'title']))
+                                item[u'service_item'].service_item_path, frame.get_frame_title()))
                             zip.write(path_from)
                 file = open(servicefile, u'wb')
                 cPickle.dump(service, file)

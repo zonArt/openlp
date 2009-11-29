@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
 ###############################################################################
@@ -49,6 +49,7 @@ class Renderer(object):
         self._theme = None
         self._bg_image_filename = None
         self._frame = None
+        self._frameOp = None
         self.bg_frame = None
         self.bg_image = None
 
@@ -133,6 +134,8 @@ class Renderer(object):
         log.debug(u'set frame dest (frame) w %d h %d', frame_width,
             frame_height)
         self._frame = QtGui.QImage(frame_width, frame_height,
+            QtGui.QImage.Format_ARGB32_Premultiplied)
+        self._frameOp = QtGui.QImage(frame_width, frame_height,
             QtGui.QImage.Format_ARGB32_Premultiplied)
         if self._bg_image_filename and not self.bg_image:
             self.scale_bg_image()
@@ -255,13 +258,14 @@ class Renderer(object):
             bbox1 = self._render_lines_unaligned(footer_lines, True)
         # reset the frame. first time do not worry about what you paint on.
         self._frame = QtGui.QImage(self.bg_frame)
+        self._frameOp = QtGui.QImage(self.bg_frame)
         x, y = self._correctAlignment(self._rect, bbox)
         bbox = self._render_lines_unaligned(lines, False, (x, y), True)
         if footer_lines:
             bbox = self._render_lines_unaligned(footer_lines, True,
                 (self._rect_footer.left(), self._rect_footer.top()), True)
         log.debug(u'generate_frame_from_lines - Finish')
-        return self._frame
+        return {u'main':self._frame, u'trans':self._frameOp}
 
     def _generate_background_frame(self):
         """
@@ -566,6 +570,22 @@ class Renderer(object):
         metrics = QtGui.QFontMetrics(font)
         w = metrics.width(line)
         h = metrics.height() - 2
+        if draw:
+            painter.drawText(x, y + metrics.ascent(), line)
+        painter.end()
+        # Print 2nd image with 50% weight
+        painter = QtGui.QPainter()
+        painter.begin(self._frameOp)
+        painter.setRenderHint(QtGui.QPainter.Antialiasing);
+        painter.setOpacity(0.5)
+        painter.setFont(font)
+        if color is None:
+            if footer:
+                painter.setPen(QtGui.QColor(self._theme.font_footer_color))
+            else:
+                painter.setPen(QtGui.QColor(self._theme.font_main_color))
+        else:
+            painter.setPen(QtGui.QColor(color))
         if draw:
             painter.drawText(x, y + metrics.ascent(), line)
         painter.end()

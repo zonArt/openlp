@@ -104,7 +104,8 @@ class ServiceItem(object):
                     for line in format:
                         lines += line + u'\n'
                     title = lines.split(u'\n')[0]
-                    self._display_frames.append({u'title': title, u'text': lines})
+                    self._display_frames.append({u'title': title, \
+                        u'text': lines, u'verseTag': slide[u'verseTag'] })
                 log.log(15, u'Formatting took %4s' % (time.time() - before))
         elif self.service_item_type == ServiceItemType.Image:
             for slide in self._raw_frames:
@@ -147,7 +148,7 @@ class ServiceItem(object):
         self._raw_frames.append(
             {u'title': title, u'image': image})
 
-    def add_from_text(self, title, raw_slide):
+    def add_from_text(self, title, raw_slide, verseTag=None):
         """
         Add a text slide to the service item.
 
@@ -160,7 +161,7 @@ class ServiceItem(object):
         self.service_item_type = ServiceItemType.Text
         title = title.split(u'\n')[0]
         self._raw_frames.append(
-            {u'title': title, u'raw_slide': raw_slide})
+            {u'title': title, u'raw_slide': raw_slide, u'verseTag':verseTag})
 
     def add_from_command(self, path, file_name, image):
         """
