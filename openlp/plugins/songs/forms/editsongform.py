@@ -407,7 +407,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 self.SongTabWidget.setCurrentIndex(0)
                 self.VerseOrderEdit.setFocus()
                 return False, \
-                    self.trUtf8('Invalid verse entry - values must be Numberic, B or C')
+                    self.trUtf8('Invalid verse entry - values must be Numeric, B or C')
         return True, u''
 
     def onTitleEditItemLostFocus(self):
@@ -479,17 +479,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             sxml.add_lyrics_to_song()
             count = 1
             text = u' '
-            verse_order = u''
             for i in range (0, self.VerseListWidget.count()):
                 item = self.VerseListWidget.item(i)
                 verseId = unicode((item.data(QtCore.Qt.UserRole)).toString())
                 bits = verseId.split(u':')
                 sxml.add_verse_to_lyrics(bits[0], bits[1], unicode(item.text()))
                 text = text + unicode(self.VerseListWidget.item(i).text()) + u' '
-                verse_order = verse_order + verseId + u' '
                 count += 1
-            if self.song.verse_order is None:
-                self.song.verse_order = verse_order
             text = text.replace(u'\'', u'')
             text = text.replace(u',', u'')
             text = text.replace(u';', u'')
