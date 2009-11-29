@@ -74,7 +74,7 @@ class Ui_EditVerseDialog(object):
         QtCore.QMetaObject.connectSlotsByName(EditVerseDialog)
 
     def retranslateUi(self, EditVerseDialog):
-        EditVerseDialog.setWindowTitle(QtGui.QApplication.translate("EditVerseDialog", "Dialog", None, QtGui.QApplication.UnicodeUTF8))
+        EditVerseDialog.setWindowTitle(QtGui.QApplication.translate("EditVerseDialog", "Edit Verse", None, QtGui.QApplication.UnicodeUTF8))
         self.VerseListComboBox.setItemText(1, QtGui.QApplication.translate("EditVerseDialog", "Verse", None, QtGui.QApplication.UnicodeUTF8))
         self.VerseListComboBox.setItemText(2, QtGui.QApplication.translate("EditVerseDialog", "Chorus", None, QtGui.QApplication.UnicodeUTF8))
         self.VerseListComboBox.setItemText(3, QtGui.QApplication.translate("EditVerseDialog", "Bridge", None, QtGui.QApplication.UnicodeUTF8))
@@ -92,4 +92,3 @@ class Ui_EditVerseDialog(object):
         self.addVerse.setText(QtGui.QApplication.translate("EditVerseDialog", "Verse", None, QtGui.QApplication.UnicodeUTF8))
         self.addChorus.setText(QtGui.QApplication.translate("EditVerseDialog", "Chorus", None, QtGui.QApplication.UnicodeUTF8))
         self.addBridge.setText(QtGui.QApplication.translate("EditVerseDialog", "Bridge", None, QtGui.QApplication.UnicodeUTF8))
-

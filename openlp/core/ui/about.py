@@ -148,50 +148,50 @@ class AboutForm(QtGui.QDialog):
         """
         Set up translation
         """
-        AboutForm.setWindowTitle(self.trUtf8(u'About openlp.org'))
+        AboutForm.setWindowTitle(self.trUtf8('About openlp.org'))
         self.CopyrightLabel.setText(
-            self.trUtf8(u'Copyright \xa9 2004-2009 openlp.org Foundation'))
+            self.trUtf8('Copyright \u00a9 2004-2009 openlp.org Foundation'))
         self.AboutAuthors.setText(self.trUtf8(
-            u'openlp.org is written and maintained by volunteers. If you would '
-            u'like to see more free Christian software being written, please '
-            u'consider contributing by using the button below.'))
+            'openlp.org is written and maintained by volunteers. If you would '
+            'like to see more free Christian software being written, please '
+            'consider contributing by using the button below.'))
         self.License1Label.setText(self.trUtf8(
-            u'This program is free software; you can redistribute it and/or '
-            u'modify it under the terms of the GNU General Public License as '
-            u'published by the Free Software Foundation; either version 2 of '
-            u'the License, or (at your option) any later version.'))
+            'This program is free software; you can redistribute it and/or '
+            'modify it under the terms of the GNU General Public License as '
+            'published by the Free Software Foundation; either version 2 of '
+            'the License, or (at your option) any later version.'))
         self.License2Label.setText(self.trUtf8(
-            u'You should have received a copy of the GNU General Public '
-            u'License along with this program; if not, write to the Free '
-            u'Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, '
-            u'MA 02111-1307 USA.'))
+            'You should have received a copy of the GNU General Public '
+            'License along with this program; if not, write to the Free '
+            'Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, '
+            'MA 02111-1307 USA.'))
         self.License3Label.setText(self.trUtf8(
-            u'This program is distributed in the hope that it will be useful, '
-            u'but WITHOUT ANY WARRANTY; without even the implied warranty of '
-            u'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU '
-            u'General Public License for more details.'))
+            'This program is distributed in the hope that it will be useful, '
+            'but WITHOUT ANY WARRANTY; without even the implied warranty of '
+            'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU '
+            'General Public License for more details.'))
         self.License4Label.setText(unicode(self.trUtf8(
-            u'Software version %s, Build %s')) %
+            'Software version %s, Build %s')) %
             (self.applicationVersion[u'version'], self.applicationVersion[u'build']))
         self.AboutNotebook.setTabText(
-            self.AboutNotebook.indexOf(self.LicenseTab), self.trUtf8(u'License'))
+            self.AboutNotebook.indexOf(self.LicenseTab), self.trUtf8('License'))
         self.CreditsTextEdit.setPlainText(self.trUtf8(
-            u'Project Lead\n'
-            u'    Raoul \"superfly\" Snyman\n'
-            u'\n'
-            u'Developers\n'
-            u'    Tim \"TRB143\" Bentley\n'
-            u'    Jonathan \"gushie\" Corwin\n'
-            u'    Scott \"sguerrieri\" Guerrieri\n'
-            u'    Raoul \"superfly\" Snyman\n'
-            u'    Martin \"mijiti\" Thompson\n'
-            u'    Jon \"Meths\" Tibble\n'
-            u'    Carsten \"catini\" Tingaard'))
+            'Project Lead\n'
+            '    Raoul \"superfly\" Snyman\n'
+            '\n'
+            'Developers\n'
+            '    Tim \"TRB143\" Bentley\n'
+            '    Jonathan \"gushie\" Corwin\n'
+            '    Scott \"sguerrieri\" Guerrieri\n'
+            '    Raoul \"superfly\" Snyman\n'
+            '    Martin \"mijiti\" Thompson\n'
+            '    Jon \"Meths\" Tibble\n'
+            '    Carsten \"catini\" Tingaard'))
         self.AboutNotebook.setTabText(
-            self.AboutNotebook.indexOf(self.CreditsTab), self.trUtf8(u'Credits'))
-        self.ContributeButton.setText(self.trUtf8(u'Contribute'))
-        self.CloseButton.setText(self.trUtf8(u'Close'))
-        self.extContributeItem.setText(self.trUtf8(u'&Contribute'))
+            self.AboutNotebook.indexOf(self.CreditsTab), self.trUtf8('Credits'))
+        self.ContributeButton.setText(self.trUtf8('Contribute'))
+        self.CloseButton.setText(self.trUtf8('Close'))
+        self.extContributeItem.setText(self.trUtf8('&Contribute'))
 
     def onContributeButtonClicked(self):
         """

@@ -42,8 +42,8 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
 
     def accept(self):
         ret = QtGui.QMessageBox.question(self,
-            self.trUtf8(u'Delete Selected Audit Events?'),
-            self.trUtf8(u'Are you sure you want to delete selected Audit Data?'),
+            self.trUtf8('Delete Selected Audit Events?'),
+            self.trUtf8('Are you sure you want to delete selected Audit Data?'),
             QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Ok |
                 QtGui.QMessageBox.Cancel),

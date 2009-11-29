@@ -70,7 +70,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
 
     def defineOutputLocation(self):
         path = QtGui.QFileDialog.getExistingDirectory(self,
-            self.trUtf8(u'Output File Location'),
+            self.trUtf8('Output File Location'),
             self.parent.config.get_last_dir(1) )
         path = unicode(path)
         if path != u'':

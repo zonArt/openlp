@@ -69,9 +69,9 @@ class TestMediaManager:
         i2.addToolbar()
         i2.addToolbarButton(u'Test2', u'Test2', None)
         self.MediaToolBox.setItemText(
-            self.MediaToolBox.indexOf(i1), self.trUtf8(u'Item1'))
+            self.MediaToolBox.indexOf(i1), self.trUtf8('Item1'))
         self.MediaToolBox.setItemText(
-            self.MediaToolBox.indexOf(i2), self.trUtf8(u'Item2'))
+            self.MediaToolBox.indexOf(i2), self.trUtf8('Item2'))
         log.info(u'Show window')
         self.main_window.show()
         log.info(u'End')

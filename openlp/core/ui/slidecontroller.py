@@ -98,12 +98,12 @@ class SlideController(QtGui.QWidget):
         self.TypeLabel = QtGui.QLabel(self.Panel)
         if self.isLive:
             self.TypeLabel.setText(u'<strong>%s</strong>' %
-                self.trUtf8(u'Live'))
+                self.trUtf8('Live'))
             self.split = 1
             prefix = u'live_slidecontroller'
         else:
             self.TypeLabel.setText(u'<strong>%s</strong>' %
-                self.trUtf8(u'Preview'))
+                self.trUtf8('Preview'))
             self.split = 0
             prefix = u'preview_slidecontroller'
         self.TypeLabel.setAlignment(QtCore.Qt.AlignCenter)
@@ -146,58 +146,58 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             self.Toolbar.addToolbarButton(
                 u'First Slide', u':/slides/slide_first.png',
-                self.trUtf8(u'Move to first'), self.onSlideSelectedFirst)
+                self.trUtf8('Move to first'), self.onSlideSelectedFirst)
         self.Toolbar.addToolbarButton(
             u'Previous Slide', u':/slides/slide_previous.png',
-            self.trUtf8(u'Move to previous'), self.onSlideSelectedPrevious)
+            self.trUtf8('Move to previous'), self.onSlideSelectedPrevious)
         self.Toolbar.addToolbarButton(
             u'Next Slide', u':/slides/slide_next.png',
-            self.trUtf8(u'Move to next'), self.onSlideSelectedNext)
+            self.trUtf8('Move to next'), self.onSlideSelectedNext)
         if self.isLive:
             self.Toolbar.addToolbarButton(
                 u'Last Slide', u':/slides/slide_last.png',
-                self.trUtf8(u'Move to last'), self.onSlideSelectedLast)
+                self.trUtf8('Move to last'), self.onSlideSelectedLast)
         if self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.blankButton = self.Toolbar.addToolbarButton(
                 u'Blank Screen', u':/slides/slide_close.png',
-                self.trUtf8(u'Blank Screen'), self.onBlankScreen, True)
+                self.trUtf8('Blank Screen'), self.onBlankScreen, True)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'live_slide_blank'), self.onBlankDisplay)
         if not self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
                 u'Go Live', u':/system/system_live.png',
-                self.trUtf8(u'Move to live'), self.onGoLive)
+                self.trUtf8('Move to live'), self.onGoLive)
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
                 u'Edit Song', u':songs/song_edit.png',
-                self.trUtf8(u'Edit and re-preview Song'), self.onEditSong)
+                self.trUtf8('Edit and re-preview Song'), self.onEditSong)
         if isLive:
             self.Toolbar.addToolbarSeparator(u'Loop Separator')
             self.Toolbar.addToolbarButton(
                 u'Start Loop',  u':/media/media_time.png',
-                self.trUtf8(u'Start continuous loop'), self.onStartLoop)
+                self.trUtf8('Start continuous loop'), self.onStartLoop)
             self.Toolbar.addToolbarButton(
                 u'Stop Loop', u':/media/media_stop.png',
-                self.trUtf8(u'Stop continuous loop'), self.onStopLoop)
+                self.trUtf8('Stop continuous loop'), self.onStopLoop)
             self.DelaySpinBox = QtGui.QSpinBox()
             self.Toolbar.addToolbarWidget(
                 u'Image SpinBox', self.DelaySpinBox)
-            self.DelaySpinBox.setSuffix(self.trUtf8(u's'))
-            self.DelaySpinBox.setToolTip(self.trUtf8(u'Delay between slides in seconds'))
+            self.DelaySpinBox.setSuffix(self.trUtf8('s'))
+            self.DelaySpinBox.setToolTip(self.trUtf8('Delay between slides in seconds'))
         self.ControllerLayout.addWidget(self.Toolbar)
         #Build a Media ToolBar
         self.Mediabar = OpenLPToolbar(self)
         self.Mediabar.addToolbarButton(
             u'Media Start',  u':/slides/media_playback_start.png',
-            self.trUtf8(u'Start playing media'), self.onMediaPlay)
+            self.trUtf8('Start playing media'), self.onMediaPlay)
         self.Mediabar.addToolbarButton(
             u'Media Pause',  u':/slides/media_playback_pause.png',
-            self.trUtf8(u'Start playing media'), self.onMediaPause)
+            self.trUtf8('Start playing media'), self.onMediaPause)
         self.Mediabar.addToolbarButton(
             u'Media Stop',  u':/slides/media_playback_stop.png',
-            self.trUtf8(u'Start playing media'), self.onMediaStop)
+            self.trUtf8('Start playing media'), self.onMediaStop)
         self.volumeSlider = Phonon.VolumeSlider()
         self.volumeSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
         self.volumeSlider.setObjectName(u'volumeSlider')
@@ -209,16 +209,16 @@ class SlideController(QtGui.QWidget):
             self.Songbar = OpenLPToolbar(self)
             self.Songbar.addToolbarButton(
                 u'Bridge',  u':/pages/page_bridge.png',
-                self.trUtf8(u'Bridge'),
+                self.trUtf8('Bridge'),
                 self.onSongBarHandler)
             self.Songbar.addToolbarButton(
                 u'Chorus',  u':/pages/page_chorus.png',
-                self.trUtf8(u'Chorus'),
+                self.trUtf8('Chorus'),
                 self.onSongBarHandler)
             for verse in range(1, 12):
                 self.Songbar.addToolbarButton(
                     unicode(verse),  u':/pages/page_%s.png' % verse,
-                    unicode(self.trUtf8(u'Verse %s'))%verse,
+                    unicode(self.trUtf8('Verse %s'))%verse,
                     self.onSongBarHandler)
             self.ControllerLayout.addWidget(self.Songbar)
             self.Songbar.setVisible(False)
