@@ -68,7 +68,7 @@ class BiblePlugin(Plugin):
         self.ImportBibleItem = QtGui.QAction(import_menu)
         self.ImportBibleItem.setObjectName(u'ImportBibleItem')
         import_menu.addAction(self.ImportBibleItem)
-        self.ImportBibleItem.setText(import_menu.trUtf8(u'&Bible'))
+        self.ImportBibleItem.setText(import_menu.trUtf8('&Bible'))
         # Signals and slots
         QtCore.QObject.connect(self.ImportBibleItem,
             QtCore.SIGNAL(u'triggered()'), self.onBibleNewClick)
@@ -78,7 +78,7 @@ class BiblePlugin(Plugin):
         self.ExportBibleItem = QtGui.QAction(export_menu)
         self.ExportBibleItem.setObjectName(u'ExportBibleItem')
         export_menu.addAction(self.ExportBibleItem)
-        self.ExportBibleItem.setText(export_menu.trUtf8(u'&Bible'))
+        self.ExportBibleItem.setText(export_menu.trUtf8('&Bible'))
         self.ExportBibleItem.setVisible(False)
 
     def onBibleNewClick(self):
@@ -86,7 +86,7 @@ class BiblePlugin(Plugin):
             self.media_item.onNewClick()
 
     def about(self):
-        about_text = self.trUtf8(u'<strong>Bible Plugin</strong><br />This '
-            u'plugin allows bible verses from different sources to be '
-            u'displayed on the screen during the service.')
+        about_text = self.trUtf8('<strong>Bible Plugin</strong><br />This '
+            'plugin allows bible verses from different sources to be '
+            'displayed on the screen during the service.')
         return about_text

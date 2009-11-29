@@ -64,8 +64,8 @@ class CustomPlugin(Plugin):
         self.remove_toolbox_item()
 
     def about(self):
-        about_text = self.trUtf8(u'<b>Custom Plugin</b><br>This plugin '
-            u'allows slides to be displayed on the screen in the same way '
-            u'songs are.  This plugin provides greater freedom over the '
-            u'songs plugin.<br>')
+        about_text = self.trUtf8('<b>Custom Plugin</b><br>This plugin '
+            'allows slides to be displayed on the screen in the same way '
+            'songs are.  This plugin provides greater freedom over the '
+            'songs plugin.<br>')
         return about_text

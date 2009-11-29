@@ -58,7 +58,7 @@ class SongMediaItem(MediaManagerItem):
         self.remoteSong = -1
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = self.trUtf8(u'Song')
+        self.PluginNameVisible = self.trUtf8('Song')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -67,8 +67,8 @@ class SongMediaItem(MediaManagerItem):
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
         ## Song Maintenance Button ##
-        self.addToolbarButton(self.trUtf8(u'Song Maintenance'),
-            self.trUtf8(u'Maintain the lists of authors, topics and books'),
+        self.addToolbarButton(self.trUtf8('Song Maintenance'),
+            self.trUtf8('Maintain the lists of authors, topics and books'),
             ':/songs/song_maintenance.png', self.onSongMaintenanceClick,
             'SongMaintenanceItem')
         self.PageLayout.setSpacing(4)
@@ -137,15 +137,15 @@ class SongMediaItem(MediaManagerItem):
             self.parent.config.get_config(u'search as type', u'False'))
 
     def retranslateUi(self):
-        self.SearchTextLabel.setText(self.trUtf8(u'Search:'))
-        self.SearchTypeLabel.setText(self.trUtf8(u'Type:'))
-        self.ClearTextButton.setText(self.trUtf8(u'Clear'))
-        self.SearchTextButton.setText(self.trUtf8(u'Search'))
+        self.SearchTextLabel.setText(self.trUtf8('Search:'))
+        self.SearchTypeLabel.setText(self.trUtf8('Type:'))
+        self.ClearTextButton.setText(self.trUtf8('Clear'))
+        self.SearchTextButton.setText(self.trUtf8('Search'))
 
     def initialise(self):
-        self.SearchTypeComboBox.addItem(self.trUtf8(u'Titles'))
-        self.SearchTypeComboBox.addItem(self.trUtf8(u'Lyrics'))
-        self.SearchTypeComboBox.addItem(self.trUtf8(u'Authors'))
+        self.SearchTypeComboBox.addItem(self.trUtf8('Titles'))
+        self.SearchTypeComboBox.addItem(self.trUtf8('Lyrics'))
+        self.SearchTypeComboBox.addItem(self.trUtf8('Authors'))
         self.configUpdated()
 
     def onSearchTextButtonClick(self):
@@ -185,7 +185,7 @@ class SongMediaItem(MediaManagerItem):
                 if author_list != u'':
                     author_list = author_list + u', '
                 author_list = author_list + author.display_name
-            song_detail = unicode(self.trUtf8(u'%s (%s)' % \
+            song_detail = unicode(self.trUtf8('%s (%s)' % \
                 (unicode(song.title), unicode(author_list))))
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
@@ -196,7 +196,7 @@ class SongMediaItem(MediaManagerItem):
         self.ListView.clear()
         for author in searchresults:
             for song in author.songs:
-                song_detail = unicode(self.trUtf8(u'%s (%s)' % \
+                song_detail = unicode(self.trUtf8('%s (%s)' % \
                     (unicode(author.display_name), unicode(song.title))))
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
@@ -295,7 +295,8 @@ class SongMediaItem(MediaManagerItem):
             verseList = songXML.get_verses()
             for verse in verseList:
                 if verse[1]:
-                    service_item.add_from_text(verse[1][:30], verse[1])
+                    verseTag = u'%s:%s' % (verse[0][u'type'], verse[0][u'label'])
+                    service_item.add_from_text(verse[1][:30], verse[1], verseTag)
         else:
             verses = song.lyrics.split(u'\n\n')
             for slide in verses:
@@ -314,7 +315,7 @@ class SongMediaItem(MediaManagerItem):
         raw_footer.append(author_list)
         raw_footer.append(song.copyright )
         raw_footer.append(unicode(
-            self.trUtf8(u'CCL Licence: ') + ccl))
+            self.trUtf8('CCL Licence: ') + ccl))
         service_item.raw_footer = raw_footer
         service_item.audit = [
             song.title, author_audit, song.copyright, song.ccli_number

@@ -193,7 +193,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
     def onImageToolButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(
-            self, self.trUtf8('Open file'))
+            self, self.trUtf8(u'Open file'))
         if filename:
             self.ImageLineEdit.setText(filename)
             self.theme.background_filename = filename
@@ -584,7 +584,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             if theme.background_type == u'solid':
                 self.Color1PushButton.setStyleSheet(
                     u'background-color: %s' % unicode(theme.background_color))
-                self.Color1Label.setText(self.trUtf8(u'Background Color:'))
+                self.Color1Label.setText(self.trUtf8('Background Color:'))
                 self.Color1Label.setVisible(True)
                 self.Color1PushButton.setVisible(True)
                 self.Color2Label.setVisible(False)
@@ -599,8 +599,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                     % unicode(theme.background_startColor))
                 self.Color2PushButton.setStyleSheet(u'background-color: %s' \
                     % unicode(theme.background_endColor))
-                self.Color1Label.setText(self.trUtf8(u'First  Color:'))
-                self.Color2Label.setText(self.trUtf8(u'Second Color:'))
+                self.Color1Label.setText(self.trUtf8('First  Color:'))
+                self.Color2Label.setText(self.trUtf8('Second Color:'))
                 self.Color1Label.setVisible(True)
                 self.Color1PushButton.setVisible(True)
                 self.Color2Label.setVisible(True)
@@ -662,7 +662,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             log.debug(u'Page Length area height %s, metrics %s, lines %s' %
                 (self.FontMainHeightSpinBox.value(), metrics.height(),
                 page_length))
-            page_length_text = unicode(self.trUtf8(u'Slide Height is %s rows'))
+            page_length_text = unicode(self.trUtf8('Slide Height is %s rows'))
             self.FontMainLinesPageLabel.setText(page_length_text % page_length)
             #a=c
             frame = self.thememanager.generateImage(self.theme)

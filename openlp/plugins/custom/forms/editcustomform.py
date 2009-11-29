@@ -45,7 +45,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.setupUi(self)
         # Connecting signals and slots
         self.previewButton = QtGui.QPushButton()
-        self.previewButton.setText(self.trUtf8(u'Save && Preview'))
+        self.previewButton.setText(self.trUtf8('Save && Preview'))
         self.buttonBox.addButton(
             self.previewButton, QtGui.QDialogButtonBox.ActionRole)
         QtCore.QObject.connect(self.buttonBox,
@@ -80,7 +80,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
 
     def onPreview(self, button):
         log.debug(u'onPreview')
-        if button.text() == unicode(self.trUtf8(u'Save && Preview')) \
+        if button.text() == unicode(self.trUtf8('Save && Preview')) \
             and self.saveCustom():
             Receiver.send_message(u'preview_custom')
 
@@ -142,7 +142,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
     def saveCustom(self):
         valid, message = self._validate()
         if not valid:
-            QtGui.QMessageBox.critical(self, self.trUtf8(u'Error'), message,
+            QtGui.QMessageBox.critical(self, self.trUtf8('Error'), message,
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             return False
         sxml = SongXMLBuilder()
@@ -249,12 +249,12 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
     def _validate(self):
         if len(self.TitleEdit.displayText()) == 0:
             self.TitleEdit.setFocus()
-            return False, self.trUtf8(u'You need to enter a title')
+            return False, self.trUtf8('You need to enter a title')
         # must have 1 slide
         if self.VerseListView.count() == 0:
             self.VerseTextEdit.setFocus()
-            return False, self.trUtf8(u'You need to enter a slide')
+            return False, self.trUtf8('You need to enter a slide')
         if len(self.VerseTextEdit.toPlainText()) > 0:
             self.VerseTextEdit.setFocus()
-            return False, self.trUtf8(u'You have unsaved data')
+            return False, self.trUtf8('You have unsaved data')
         return True,  u''

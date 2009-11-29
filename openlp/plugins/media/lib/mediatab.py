@@ -35,7 +35,7 @@ class MediaTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'MediaTab')
-        self.tabTitleVisible = self.trUtf8(u'Media')
+        self.tabTitleVisible = self.trUtf8('Media')
         self.MediaLayout = QtGui.QFormLayout(self)
         self.MediaLayout.setObjectName(u'MediaLayout')
         self.MediaModeGroupBox = QtGui.QGroupBox(self)
@@ -58,10 +58,10 @@ class MediaTab(SettingsTab):
             QtCore.SIGNAL(u'stateChanged(int)'), self.onVMRCheckBoxChanged)
 
     def retranslateUi(self):
-        self.MediaModeGroupBox.setTitle(self.trUtf8(u'Media Mode'))
-        self.UseVMRCheckBox.setText(self.trUtf8(u'Use Video Mode Rendering'))
+        self.MediaModeGroupBox.setTitle(self.trUtf8('Media Mode'))
+        self.UseVMRCheckBox.setText(self.trUtf8('Use Video Mode Rendering'))
         self.UseVMRLabel.setText(
-            self.trUtf8(u'<em>No video preview available with VMR enabled</em>'))
+            self.trUtf8('<em>No video preview available with VMR enabled</em>'))
 
     def onVMRCheckBoxChanged(self):
         use_vmr_mode = self.UseVMRCheckBox.checkState()

@@ -54,11 +54,11 @@ class ImagePlugin(Plugin):
         return ImageMediaItem(self, self.icon, self.name)
 
     def about(self):
-        about_text = self.trUtf8(u'<b>Image Plugin</b><br>Allows images of '
-            u'all types to be displayed.  If a number of images are selected '
-            u'together and presented on the live controller it is possible '
-            u'to turn them into a timed loop.<br<br>From the plugin if the '
-            u'<i>Override background</i> is chosen and an image is selected '
-            u'any somgs which are rendered will use the selected image from '
-            u'the background instead of the one provied by the theme.<br>')
+        about_text = self.trUtf8('<b>Image Plugin</b><br>Allows images of '
+            'all types to be displayed.  If a number of images are selected '
+            'together and presented on the live controller it is possible '
+            'to turn them into a timed loop.<br<br>From the plugin if the '
+            '<i>Override background</i> is chosen and an image is selected '
+            'any somgs which are rendered will use the selected image from '
+            'the background instead of the one provied by the theme.<br>')
         return about_text

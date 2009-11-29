@@ -92,10 +92,10 @@ class AlertForm(QtGui.QDialog):
         QtCore.QMetaObject.connectSlotsByName(AlertForm)
 
     def retranslateUi(self, AlertForm):
-        AlertForm.setWindowTitle(self.trUtf8(u'Alert Message'))
-        self.AlertEntryLabel.setText(self.trUtf8(u'Alert Text:'))
-        self.DisplayButton.setText(self.trUtf8(u'Display'))
-        self.CancelButton.setText(self.trUtf8(u'Cancel'))
+        AlertForm.setWindowTitle(self.trUtf8('Alert Message'))
+        self.AlertEntryLabel.setText(self.trUtf8('Alert Text:'))
+        self.DisplayButton.setText(self.trUtf8('Display'))
+        self.CancelButton.setText(self.trUtf8('Cancel'))
 
     def onDisplayClicked(self):
         self.parent.mainDisplay.displayAlert(self.AlertEntryEditItem.text())

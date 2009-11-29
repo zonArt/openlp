@@ -56,11 +56,11 @@ class MediaMediaItem(MediaManagerItem):
         self.MainDisplay = self.parent.live_controller.parent.mainDisplay
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = self.trUtf8(u'Media')
+        self.PluginNameVisible = self.trUtf8('Media')
 
     def retranslateUi(self):
-        self.OnNewPrompt = self.trUtf8(u'Select Media')
-        self.OnNewFileMasks = self.trUtf8(u'Videos (*.avi *.mpeg *.mpg'
+        self.OnNewPrompt = self.trUtf8('Select Media')
+        self.OnNewFileMasks = self.trUtf8('Videos (*.avi *.mpeg *.mpg'
             '*.mp4);;Audio (*.ogg *.mp3 *.wma);;All files (*)')
 
     def requiredIcons(self):
@@ -79,7 +79,7 @@ class MediaMediaItem(MediaManagerItem):
         items = self.ListView.selectedIndexes()
         if len(items) > 1:
             return False
-        service_item.title = unicode(self.trUtf8(u'Media'))
+        service_item.title = unicode(self.trUtf8('Media'))
         for item in items:
             bitem = self.ListView.item(item.row())
             filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
