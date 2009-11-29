@@ -30,7 +30,7 @@ from splashscreen import SplashScreen
 from alertstab import AlertsTab
 from generaltab import GeneralTab
 from themestab import ThemesTab
-from about import AboutForm
+from aboutform import AboutForm
 from alertform import AlertForm
 from pluginform import PluginForm
 from settingsform import SettingsForm

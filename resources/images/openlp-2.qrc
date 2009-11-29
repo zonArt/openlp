@@ -40,10 +40,7 @@
     <file>openlp-logo-256x256.png</file>
   </qresource>
   <qresource prefix="graphics" >
-    <file>splash-screen-new.bmp</file>
-    <file>about-new.bmp</file>
     <file>openlp-about-logo.png</file>
-    <file>openlp-splash-screen.svg</file>
     <file>openlp-splash-screen.png</file>
   </qresource>
   <qresource prefix="imports" >
@@ -89,12 +86,14 @@
     <file>service_save.png</file>
   </qresource>
   <qresource prefix="system" >
+    <file>system_close.png</file>
     <file>system_about.png</file>
     <file>system_help_contents.png</file>
     <file>system_add.png</file>
     <file>system_live.png</file>
     <file>system_preview.png</file>
     <file>system_mediamanager.png</file>
+    <file>system_contribute.png</file>
     <file>system_servicemanager.png</file>
     <file>system_thememanager.png</file>
     <file>system_exit.png</file>

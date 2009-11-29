@@ -539,14 +539,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Checks the version of the Application called from openlp.pyw
         """
-        applicationVersion = self.applicationVersion[u'Full']
-        version = check_latest_version(self.generalConfig, applicationVersion)
-        if applicationVersion != version:
+        app_version = self.applicationVersion[u'full']
+        version = check_latest_version(self.generalConfig, app_version)
+        if app_version != version:
             version_text = unicode(self.trUtf8(u'OpenLP version %s has been updated '
                 u'to version %s\n\nYou can obtain the latest version from http://openlp.org'))
             QtGui.QMessageBox.question(None,
                 self.trUtf8(u'OpenLP Version Updated'),
-                version_text % (applicationVersion, version),
+                version_text % (app_version, version),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
 
