@@ -477,7 +477,6 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             self.serviceItem.request_audit()
         log.debug(u'displayServiceManagerItems End')
-        print self.slideList
 
     #Screen event methods
     def onSlideSelectedFirst(self):
