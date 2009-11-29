@@ -5,8 +5,9 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -37,7 +38,8 @@ class Ui_AboutDialog(object):
         self.AboutDialogLayout.setMargin(8)
         self.AboutDialogLayout.setObjectName(u'AboutDialogLayout')
         self.LogoLabel = QtGui.QLabel(AboutDialog)
-        self.LogoLabel.setPixmap(QtGui.QPixmap(u':/graphics/openlp-about-logo.png'))
+        self.LogoLabel.setPixmap(
+            QtGui.QPixmap(u':/graphics/openlp-about-logo.png'))
         self.LogoLabel.setScaledContents(False)
         self.LogoLabel.setIndent(0)
         self.LogoLabel.setObjectName(u'LogoLabel')
@@ -111,7 +113,7 @@ class Ui_AboutDialog(object):
         QtCore.QMetaObject.connectSlotsByName(AboutDialog)
 
     def retranslateUi(self, AboutDialog):
-        AboutDialog.setWindowTitle(self.trUtf8('About openlp.org'))
+        AboutDialog.setWindowTitle(self.trUtf8('About OpenLP'))
         self.AboutTextEdit.setPlainText(self.trUtf8(
             'OpenLP <version> build <revision> - Open Source Lyrics '
             'Projection\n'
@@ -137,22 +139,25 @@ class Ui_AboutDialog(object):
             'Developers\n'
             '    Tim "TRB143" Bentley\n'
             '    Jonathan "gushie" Corwin\n'
+            '    Michael "cocooncrash" Gorven\n'
             '    Scott "sguerrieri" Guerrieri\n'
             '    Raoul "superfly" Snyman\n'
             '    Maikel Stuivenberg\n'
             '    Martin "mijiti" Thompson\n'
+            '    Jon "Meths" Tibble\n'
             '    Carsten "catini" Tingaard\n'
             '\n'
             'Testers\n'
             '    Wesley "wrst" Stout'
         ))
         self.AboutNotebook.setTabText(
-            self.AboutNotebook.indexOf(self.CreditsTab), self.trUtf8('Credits'))
+            self.AboutNotebook.indexOf(self.CreditsTab),
+            self.trUtf8('Credits'))
         self.LicenseTextEdit.setPlainText(self.trUtf8(
             'Copyright © 2004-2009 Raoul Snyman\n'
             'Portions copyright © 2004-2009 Tim Bentley, Jonathan Corwin, '
-            'Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Carsten '
-            'Tinggaard, Jon Tibble\n'
+            'Michael Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin '
+            'Thompson, Jon Tibble, Carsten Tinggaard\n'
             '\n'
             'This program is free software; you can redistribute it and/or '
             'modify it under the terms of the GNU General Public License as '
@@ -537,7 +542,8 @@ class Ui_AboutDialog(object):
             'what you want to do, use the GNU Lesser General Public License '
             'instead of this License.'))
         self.AboutNotebook.setTabText(
-            self.AboutNotebook.indexOf(self.LicenseTab), self.trUtf8('License'))
+            self.AboutNotebook.indexOf(self.LicenseTab),
+            self.trUtf8('License'))
         self.ContributeButton.setText(self.trUtf8('Contribute'))
         self.CloseButton.setText(self.trUtf8('Close'))
 

@@ -5,8 +5,9 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Carsten       #
+# Tinggaard, Jon Tibble                                                       #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -185,7 +186,7 @@ class GeneralTab(SettingsTab):
         for screen in self.screen_list:
             screen_name = u'%s %d' % (self.trUtf8('Screen'), screen[u'number'] + 1)
             if screen[u'primary']:
-                screen_name = u'%s (%s)' % (self.trUtf8('primary'), screen_name)
+                screen_name = u'%s (%s)' % (screen_name, self.trUtf8('primary'))
             self.MonitorComboBox.addItem(screen_name)
         # Get the configs
         self.MonitorNumber = int(self.config.get_config(u'monitor', u'0'))
