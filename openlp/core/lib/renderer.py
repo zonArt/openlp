@@ -549,6 +549,7 @@ class Renderer(object):
         # setup defaults
         painter = QtGui.QPainter()
         painter.begin(self._frame)
+        painter.setRenderHint(QtGui.QPainter.Antialiasing);
         if footer :
             font = self.footerFont
         else:
