@@ -293,10 +293,24 @@ class SongMediaItem(MediaManagerItem):
         if song.lyrics.startswith(u'<?xml version='):
             songXML = SongXMLParser(song.lyrics)
             verseList = songXML.get_verses()
-            for verse in verseList:
-                if verse[1]:
-                    verseTag = u'%s:%s' % (verse[0][u'type'], verse[0][u'label'])
-                    service_item.add_from_text(verse[1][:30], verse[1], verseTag)
+            for order in service_item.verse_order:
+                for verse in verseList:
+                    if verse[1]:
+                        #Check for verses and expand all verses
+                        if order.isdigit():
+
+                            if verse[0][u'type'] == "Verse" and \
+                                    verse[0][u'label'].find(order) > -1:
+                                verseTag = u'%s:%s' % \
+                                    (verse[0][u'type'], verse[0][u'label'])
+                                service_item.add_from_text\
+                                    (verse[1][:30], verse[1], verseTag)
+                        else:
+                            if verse[0][u'type'].find(order) > -1:
+                                verseTag = u'%s:%s' % \
+                                    (verse[0][u'type'], verse[0][u'label'])
+                                service_item.add_from_text\
+                                    (verse[1][:30], verse[1], verseTag)
         else:
             verses = song.lyrics.split(u'\n\n')
             for slide in verses:
