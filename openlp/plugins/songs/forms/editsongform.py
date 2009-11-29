@@ -97,7 +97,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.VerseOrderEdit,
             QtCore.SIGNAL(u'lostFocus()'), self.onVerseOrderEditLostFocus)
         self.previewButton = QtGui.QPushButton()
-        self.previewButton.setText(self.trUtf8(u'Save && Preview'))
+        self.previewButton.setText(self.trUtf8('Save && Preview'))
         self.ButtonBox.addButton(
             self.previewButton, QtGui.QDialogButtonBox.ActionRole)
         QtCore.QObject.connect(self.ButtonBox,
@@ -363,15 +363,15 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if len(self.TitleEditItem.displayText()) == 0:
             self.SongTabWidget.setCurrentIndex(0)
             self.TitleEditItem.setFocus()
-            return False, self.trUtf8(u'You need to enter a song title.')
+            return False, self.trUtf8('You need to enter a song title.')
         if self.VerseListWidget.count() == 0:
             self.SongTabWidget.setCurrentIndex(0)
             self.VerseListWidget.setFocus()
-            return False, self.trUtf8(u'You need to enter some verses.')
+            return False, self.trUtf8('You need to enter some verses.')
         if self.AuthorsListView.count() == 0:
             self.SongTabWidget.setCurrentIndex(2)
             self.AuthorsListView.setFocus()
-            return False, self.trUtf8(u'You need to provide at least one author.')
+            return False, self.trUtf8('You need to provide at least one author.')
         return True, u''
 
     def onTitleEditItemLostFocus(self):
@@ -402,7 +402,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def onPreview(self, button):
         log.debug(u'onPreview')
-        if button.text() == unicode(self.trUtf8(u'Save && Preview')) \
+        if button.text() == unicode(self.trUtf8('Save && Preview')) \
             and self.saveSong():
             Receiver.send_message(u'preview_song')
 
@@ -420,7 +420,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         valid, message = self._validate_song()
         if not valid:
             QtGui.QMessageBox.critical(
-                self, self.trUtf8(u'Error'), message,
+                self, self.trUtf8('Error'), message,
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             return False
         self.song.title = unicode(self.TitleEditItem.displayText())

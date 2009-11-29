@@ -94,7 +94,7 @@ def write_file(filename, strings):
 
 def main():
     strings = {}
-    start_dir = u'.'
+    start_dir = os.path.abspath(u'.')
     for root, dirs, files in os.walk(start_dir):
         for file in files:
             if file.endswith(u'.py'):

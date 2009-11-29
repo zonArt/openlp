@@ -55,12 +55,12 @@ class ImageMediaItem(MediaManagerItem):
         self.overrideActive = False
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = self.trUtf8(u'Image')
+        self.PluginNameVisible = self.trUtf8('Image')
 
     def retranslateUi(self):
-        self.OnNewPrompt = self.trUtf8(u'Select Image(s)')
+        self.OnNewPrompt = self.trUtf8('Select Image(s)')
         self.OnNewFileMasks = \
-            self.trUtf8(u'Images (*.jpg *jpeg *.gif *.png *.bmp)')
+            self.trUtf8('Images (*.jpg *jpeg *.gif *.png *.bmp)')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -98,9 +98,9 @@ class ImageMediaItem(MediaManagerItem):
         self.OverrideCheckBox.setObjectName(u'OverrideCheckBox')
         self.OverrideCheckBox.setCheckable(True)
         self.OverrideCheckBox.setChecked(False)
-        self.OverrideCheckBox.setText(self.trUtf8(u'Override background'))
+        self.OverrideCheckBox.setText(self.trUtf8('Override background'))
         self.OverrideCheckBox.setStatusTip(
-            self.trUtf8(u'Allow background of live slide to be overridden'))
+            self.trUtf8('Allow background of live slide to be overridden'))
         self.OverrideLayout.addWidget(self.OverrideCheckBox)
         self.OverrideLabel = QtGui.QLabel(self.ImageWidget)
         self.OverrideLabel.setObjectName(u'OverrideLabel')
@@ -142,7 +142,7 @@ class ImageMediaItem(MediaManagerItem):
     def generateSlideData(self, service_item):
         items = self.ListView.selectedIndexes()
         if items:
-            service_item.title = self.trUtf8(u'Image(s)')
+            service_item.title = self.trUtf8('Image(s)')
             for item in items:
                 bitem = self.ListView.item(item.row())
                 filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
@@ -163,8 +163,8 @@ class ImageMediaItem(MediaManagerItem):
         if self.overrideActive:
             if not self.ListView.selectedIndexes():
                 QtGui.QMessageBox.information(self,
-                    self.trUtf8(u'No items selected...'),
-                    self.trUtf8(u'You must select one or more items'))
+                    self.trUtf8('No items selected...'),
+                    self.trUtf8('You must select one or more items'))
             items = self.ListView.selectedIndexes()
             for item in items:
                 bitem = self.ListView.item(item.row())

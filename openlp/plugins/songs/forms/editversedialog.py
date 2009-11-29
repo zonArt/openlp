@@ -49,4 +49,4 @@ class Ui_EditVerseDialog(object):
         self.VerseTextEdit.setFocus(QtCore.Qt.OtherFocusReason)
 
     def retranslateUi(self, EditVerseDialog):
-        EditVerseDialog.setWindowTitle(self.trUtf8(u'Edit Verse'))
+        EditVerseDialog.setWindowTitle(self.trUtf8('Edit Verse'))

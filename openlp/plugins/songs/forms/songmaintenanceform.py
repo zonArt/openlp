@@ -132,8 +132,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 self.resetAuthors()
             else:
                 QtGui.QMessageBox.critical(
-                    self, self.trUtf8(u'Error'),
-                    self.trUtf8(u'Couldn\'t add your author!'),
+                    self, self.trUtf8('Error'),
+                    self.trUtf8('Couldn\'t add your author!'),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
 
     def onTopicAddButtonClick(self):
@@ -143,8 +143,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 self.resetTopics()
             else:
                 QtGui.QMessageBox.critical(
-                    self, self.trUtf8(u'Error'),
-                    self.trUtf8(u'Couldn\'t add your topic!'),
+                    self, self.trUtf8('Error'),
+                    self.trUtf8('Couldn\'t add your topic!'),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
 
     def onBookAddButtonClick(self):
@@ -155,8 +155,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 self.resetBooks()
             else:
                 QtGui.QMessageBox.critical(
-                    self, self.trUtf8(u'Error'),
-                    self.trUtf8(u'Couldn\'t add your book!'),
+                    self, self.trUtf8('Error'),
+                    self.trUtf8('Couldn\'t add your book!'),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
 
     def onAuthorEditButtonClick(self):
@@ -175,8 +175,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     self.resetAuthors()
                 else:
                     QtGui.QMessageBox.critical(
-                        self, self.trUtf8(u'Error'),
-                        self.trUtf8(u'Couldn\'t save your author!'),
+                        self, self.trUtf8('Error'),
+                        self.trUtf8('Couldn\'t save your author!'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
 
     def onTopicEditButtonClick(self):
@@ -190,8 +190,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     self.resetTopics()
                 else:
                     QtGui.QMessageBox.critical(
-                        self, self.trUtf8(u'Error'),
-                        self.trUtf8(u'Couldn\'t save your topic!'),
+                        self, self.trUtf8('Error'),
+                        self.trUtf8('Couldn\'t save your topic!'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
 
     def onBookEditButtonClick(self):
@@ -207,8 +207,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     self.resetBooks()
                 else:
                     QtGui.QMessageBox.critical(
-                        self, self.trUtf8(u'Error'),
-                        self.trUtf8(u'Couldn\'t save your book!'),
+                        self, self.trUtf8('Error'),
+                        self.trUtf8('Couldn\'t save your book!'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
 
     def onAuthorDeleteButtonClick(self):
@@ -218,11 +218,11 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self._deleteItem(
             self.AuthorsListWidget, self.songmanager.get_author,
             self.songmanager.delete_author, self.resetAuthors,
-            self.trUtf8(u'Delete Author'),
-            self.trUtf8(u'Are you sure you want to delete the selected author?'),
-            self.trUtf8(u'This author can\'t be deleted, they are currently '
-                u'assigned to at least one song!'),
-            self.trUtf8(u'No author selected!'))
+            self.trUtf8('Delete Author'),
+            self.trUtf8('Are you sure you want to delete the selected author?'),
+            self.trUtf8('This author can\'t be deleted, they are currently '
+                'assigned to at least one song!'),
+            self.trUtf8('No author selected!'))
 
     def onTopicDeleteButtonClick(self):
         """
@@ -231,11 +231,11 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self._deleteItem(
             self.TopicsListWidget, self.songmanager.get_topic,
             self.songmanager.delete_topic, self.resetTopics,
-            self.trUtf8(u'Delete Topic'),
-            self.trUtf8(u'Are you sure you want to delete the selected topic?'),
-            self.trUtf8(u'This topic can\'t be deleted, it is currently '
-                u'assigned to at least one song!'),
-            self.trUtf8(u'No topic selected!'))
+            self.trUtf8('Delete Topic'),
+            self.trUtf8('Are you sure you want to delete the selected topic?'),
+            self.trUtf8('This topic can\'t be deleted, it is currently '
+                'assigned to at least one song!'),
+            self.trUtf8('No topic selected!'))
 
     def onBookDeleteButtonClick(self):
         """
@@ -244,8 +244,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self._deleteItem(
             self.BooksListWidget, self.songmanager.get_book,
             self.songmanager.delete_book, self.resetBooks,
-            self.trUtf8(u'Delete Book'),
-            self.trUtf8(u'Are you sure you want to delete the selected book?'),
-            self.trUtf8(u'This book can\'t be deleted, it is currently '
-                u'assigned to at least one song!'),
-            self.trUtf8(u'No book selected!'))
+            self.trUtf8('Delete Book'),
+            self.trUtf8('Are you sure you want to delete the selected book?'),
+            self.trUtf8('This book can\'t be deleted, it is currently '
+                'assigned to at least one song!'),
+            self.trUtf8('No book selected!'))

@@ -127,16 +127,16 @@ class ServiceManager(QtGui.QWidget):
         # Create the top toolbar
         self.Toolbar = OpenLPToolbar(self)
         self.Toolbar.addToolbarButton(
-            self.trUtf8(u'New Service'), u':/services/service_new.png',
-            self.trUtf8(u'Create a new service'), self.onNewService)
+            self.trUtf8('New Service'), u':/services/service_new.png',
+            self.trUtf8('Create a new service'), self.onNewService)
         self.Toolbar.addToolbarButton(
-            self.trUtf8(u'Open Service'), u':/services/service_open.png',
-            self.trUtf8(u'Load an existing service'), self.onLoadService)
+            self.trUtf8('Open Service'), u':/services/service_open.png',
+            self.trUtf8('Load an existing service'), self.onLoadService)
         self.Toolbar.addToolbarButton(
-            self.trUtf8(u'Save Service'), u':/services/service_save.png',
-            self.trUtf8(u'Save this service'), self.onSaveService)
+            self.trUtf8('Save Service'), u':/services/service_save.png',
+            self.trUtf8('Save this service'), self.onSaveService)
         self.Toolbar.addSeparator()
-        self.ThemeLabel = QtGui.QLabel(self.trUtf8(u'Theme:'),
+        self.ThemeLabel = QtGui.QLabel(self.trUtf8('Theme:'),
             self)
         self.ThemeLabel.setMargin(3)
         self.Toolbar.addWidget(self.ThemeLabel)
@@ -170,46 +170,46 @@ class ServiceManager(QtGui.QWidget):
             QtCore.Qt.ActionsContextMenu)
         self.editAction = contextMenuAction(
             self.ServiceManagerList, ':/system/system_live.png',
-            self.trUtf8(u'&Edit Item'), self.remoteEdit)
+            self.trUtf8('&Edit Item'), self.remoteEdit)
         self.ServiceManagerList.addAction(self.editAction)
         self.ServiceManagerList.addAction(contextMenuSeparator(
             self.ServiceManagerList))
         self.ServiceManagerList.addAction(contextMenuAction(
             self.ServiceManagerList, ':/system/system_preview.png',
-            self.trUtf8(u'&Preview Verse'), self.makePreview))
+            self.trUtf8('&Preview Verse'), self.makePreview))
         self.ServiceManagerList.addAction(contextMenuAction(
             self.ServiceManagerList, ':/system/system_live.png',
-            self.trUtf8(u'&Show Live'), self.makeLive))
+            self.trUtf8('&Show Live'), self.makeLive))
         self.ServiceManagerList.addAction(contextMenuSeparator(
             self.ServiceManagerList))
         self.ServiceManagerList.addAction(contextMenuAction(
             self.ServiceManagerList, ':/services/service_delete',
-            self.trUtf8(u'&Remove from Service'), self.onDeleteFromService))
+            self.trUtf8('&Remove from Service'), self.onDeleteFromService))
         self.ServiceManagerList.addAction(contextMenuSeparator(
             self.ServiceManagerList))
         self.ThemeMenu = contextMenu(
             self.ServiceManagerList, '',
-            self.trUtf8(u'&Change Item Theme'))
+            self.trUtf8('&Change Item Theme'))
         self.ServiceManagerList.addAction(self.ThemeMenu.menuAction())
         self.Layout.addWidget(self.ServiceManagerList)
         # Add the bottom toolbar
         self.OrderToolbar = OpenLPToolbar(self)
         self.OrderToolbar.addToolbarButton(
-            self.trUtf8(u'Move to top'), u':/services/service_top.png',
-            self.trUtf8(u'Move to top'), self.onServiceTop)
+            self.trUtf8('Move to top'), u':/services/service_top.png',
+            self.trUtf8('Move to top'), self.onServiceTop)
         self.OrderToolbar.addToolbarButton(
-            self.trUtf8(u'Move up'), u':/services/service_up.png',
-            self.trUtf8(u'Move up order'), self.onServiceUp)
+            self.trUtf8('Move up'), u':/services/service_up.png',
+            self.trUtf8('Move up order'), self.onServiceUp)
         self.OrderToolbar.addToolbarButton(
-            self.trUtf8(u'Move down'), u':/services/service_down.png',
-            self.trUtf8(u'Move down order'), self.onServiceDown)
+            self.trUtf8('Move down'), u':/services/service_down.png',
+            self.trUtf8('Move down order'), self.onServiceDown)
         self.OrderToolbar.addToolbarButton(
-            self.trUtf8(u'Move to bottom'), u':/services/service_bottom.png',
-            self.trUtf8(u'Move to end'), self.onServiceEnd)
+            self.trUtf8('Move to bottom'), u':/services/service_bottom.png',
+            self.trUtf8('Move to end'), self.onServiceEnd)
         self.OrderToolbar.addSeparator()
         self.OrderToolbar.addToolbarButton(
-            self.trUtf8(u'Delete From Service'), u':/services/service_delete.png',
-            self.trUtf8(u'Delete From Service'), self.onDeleteFromService)
+            self.trUtf8('Delete From Service'), u':/services/service_delete.png',
+            self.trUtf8('Delete From Service'), self.onDeleteFromService)
         self.Layout.addWidget(self.OrderToolbar)
         # Connect up our signals and slots
         QtCore.QObject.connect(self.ThemeComboBox,
@@ -348,9 +348,9 @@ class ServiceManager(QtGui.QWidget):
             str_to_bool(PluginConfig(u'General').
                         get_config(u'prompt save service', u'False')):
             ret = QtGui.QMessageBox.question(None,
-                self.trUtf8(u'Save Changes to Service?'),
-                self.trUtf8(u'Your service is unsaved, do you want to save those '
-                            u'changes before creating a new one ?'),
+                self.trUtf8('Save Changes to Service?'),
+                self.trUtf8('Your service is unsaved, do you want to save those '
+                            'changes before creating a new one ?'),
                 QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Cancel |
                     QtGui.QMessageBox.Save),
@@ -469,7 +469,7 @@ class ServiceManager(QtGui.QWidget):
             filename = self.config.get_last_dir()
         else:
             filename = QtGui.QFileDialog.getOpenFileName(
-                self, self.trUtf8(u'Open Service'),
+                self, self.trUtf8('Open Service'),
                 self.config.get_last_dir(), u'Services (*.osz)')
         filename = unicode(filename)
         name = filename.split(os.path.sep)

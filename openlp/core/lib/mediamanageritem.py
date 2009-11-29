@@ -211,21 +211,21 @@ class MediaManagerItem(QtGui.QWidget):
         if self.hasFileIcon:
             self.addToolbarButton(
                 u'Load %s' % self.PluginNameShort,
-                u'%s %s' % (self.trUtf8(u'Load a new'), self.PluginNameVisible),
+                u'%s %s' % (self.trUtf8('Load a new'), self.PluginNameVisible),
                 u':%s_load.png' % self.IconPath, self.onFileClick,
                 u'%sFileItem' % self.PluginNameShort)
         ## New Button ##
         if self.hasNewIcon:
             self.addToolbarButton(
                 u'New %s' % self.PluginNameShort,
-                u'%s %s' % (self.trUtf8(u'Add a new'), self.PluginNameVisible),
+                u'%s %s' % (self.trUtf8('Add a new'), self.PluginNameVisible),
                 u':%s_new.png' % self.IconPath, self.onNewClick,
                 u'%sNewItem' % self.PluginNameShort)
         ## Edit Button ##
         if self.hasEditIcon:
             self.addToolbarButton(
                 u'Edit %s' % self.PluginNameShort,
-                u'%s %s' % (self.trUtf8(u'Edit the selected'),
+                u'%s %s' % (self.trUtf8('Edit the selected'),
                     self.PluginNameVisible),
                 u':%s_edit.png' % self.IconPath, self.onEditClick,
                 u'%sEditItem' %  self.PluginNameShort)
@@ -233,7 +233,7 @@ class MediaManagerItem(QtGui.QWidget):
         if self.hasDeleteIcon:
             self.addToolbarButton(
                 u'Delete %s' % self.PluginNameShort,
-                self.trUtf8(u'Delete the selected item'),
+                self.trUtf8('Delete the selected item'),
                 u':%s_delete.png' % self.IconPath, self.onDeleteClick,
                 u'%sDeleteItem' % self.PluginNameShort)
         ## Separator Line ##
@@ -241,19 +241,19 @@ class MediaManagerItem(QtGui.QWidget):
         ## Preview ##
         self.addToolbarButton(
             u'Preview %s' % self.PluginNameShort,
-            self.trUtf8(u'Preview the selected item'),
+            self.trUtf8('Preview the selected item'),
             u':/system/system_preview.png', self.onPreviewClick,
             u'PreviewItem')
         ## Live  Button ##
         self.addToolbarButton(
             u'Go Live',
-            self.trUtf8(u'Send the selected item live'),
+            self.trUtf8('Send the selected item live'),
             u':/system/system_live.png', self.onLiveClick,
             u'LiveItem')
         ## Add to service Button ##
         self.addToolbarButton(
-            u'%s %s %s' % (u'Add', self.PluginNameShort, u'to Service'),
-            self.trUtf8(u'Add the selected item(s) to the service'),
+            u'Add %s to Service' % self.PluginNameShort,
+            self.trUtf8('Add the selected item(s) to the service'),
             u':/system/system_add.png', self.onAddClick,
             u'%sAddServiceItem' % self.PluginNameShort)
 
@@ -276,22 +276,22 @@ class MediaManagerItem(QtGui.QWidget):
             self.ListView.addAction(
                 contextMenuAction(
                     self.ListView, u':%s_new.png' % self.IconPath,
-                    u'%s %s' % (self.trUtf8(u'&Edit'), self.PluginNameVisible),
+                    u'%s %s' % (self.trUtf8('&Edit'), self.PluginNameVisible),
                     self.onEditClick))
             self.ListView.addAction(contextMenuSeparator(self.ListView))
         self.ListView.addAction(
             contextMenuAction(
                 self.ListView, u':/system/system_preview.png',
-                u'%s %s' % (self.trUtf8(u'&Preview'), self.PluginNameVisible),
+                u'%s %s' % (self.trUtf8('&Preview'), self.PluginNameVisible),
                 self.onPreviewClick))
         self.ListView.addAction(
             contextMenuAction(
                 self.ListView, u':/system/system_live.png',
-                self.trUtf8(u'&Show Live'), self.onLiveClick))
+                self.trUtf8('&Show Live'), self.onLiveClick))
         self.ListView.addAction(
             contextMenuAction(
                 self.ListView, u':/system/system_add.png',
-                self.trUtf8(u'&Add to Service'), self.onAddClick))
+                self.trUtf8('&Add to Service'), self.onAddClick))
         QtCore.QObject.connect(
             self.ListView, QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
             self.onPreviewClick)
@@ -360,8 +360,8 @@ class MediaManagerItem(QtGui.QWidget):
     def onPreviewClick(self):
         if not self.ListView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self,
-                self.trUtf8(u'No items selected...'),
-                self.trUtf8(u'You must select one or more items'))
+                self.trUtf8('No items selected...'),
+                self.trUtf8('You must select one or more items'))
         log.debug(self.PluginNameShort + u' Preview Requested')
         service_item = self.buildServiceItem()
         if service_item:
@@ -371,8 +371,8 @@ class MediaManagerItem(QtGui.QWidget):
     def onLiveClick(self):
         if not self.ListView.selectedIndexes():
             QtGui.QMessageBox.information(self,
-                self.trUtf8(u'No items selected...'),
-                self.trUtf8(u'You must select one or more items'))
+                self.trUtf8('No items selected...'),
+                self.trUtf8('You must select one or more items'))
         log.debug(self.PluginNameShort + u' Live Requested')
         service_item = self.buildServiceItem()
         if service_item:
@@ -382,8 +382,8 @@ class MediaManagerItem(QtGui.QWidget):
     def onAddClick(self):
         if not self.ListView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self,
-                self.trUtf8(u'No items selected...'),
-                self.trUtf8(u'You must select one or more items'))
+                self.trUtf8('No items selected...'),
+                self.trUtf8('You must select one or more items'))
         log.debug(self.PluginNameShort + u' Add Requested')
         service_item = self.buildServiceItem()
         if service_item:

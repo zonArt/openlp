@@ -78,8 +78,8 @@ class RemotesPlugin(Plugin):
             Receiver.send_message(u'live_slide_next')
 
     def about(self):
-        about_text = self.trUtf8(u'<b>Remote Plugin</b><br>This plugin '
-            u'provides the ability to send messages to a running version of '
-            u'openlp on a different computer.<br>The Primary use for this '
-            u'would be to send alerts from a creche')
+        about_text = self.trUtf8('<b>Remote Plugin</b><br>This plugin '
+            'provides the ability to send messages to a running version of '
+            'openlp on a different computer.<br>The Primary use for this '
+            'would be to send alerts from a creche')
         return about_text

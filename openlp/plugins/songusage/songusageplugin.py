@@ -57,20 +57,20 @@ class SongUsagePlugin(Plugin):
         self.toolsMenu = tools_menu
         self.SongUsageMenu = QtGui.QMenu(tools_menu)
         self.SongUsageMenu.setObjectName(u'SongUsageMenu')
-        self.SongUsageMenu.setTitle(tools_menu.trUtf8(u'&Song Usage'))
+        self.SongUsageMenu.setTitle(tools_menu.trUtf8('&Song Usage'))
         #SongUsage Delete
         self.SongUsageDelete = QtGui.QAction(tools_menu)
         self.SongUsageDelete.setText(
-            tools_menu.trUtf8(u'&Delete recorded data'))
+            tools_menu.trUtf8('&Delete recorded data'))
         self.SongUsageDelete.setStatusTip(
-            tools_menu.trUtf8(u'Delete song usage to specified date'))
+            tools_menu.trUtf8('Delete song usage to specified date'))
         self.SongUsageDelete.setObjectName(u'SongUsageDelete')
         #SongUsage Report
         self.SongUsageReport = QtGui.QAction(tools_menu)
         self.SongUsageReport.setText(
-            tools_menu.trUtf8(u'&Extract recorded data'))
+            tools_menu.trUtf8('&Extract recorded data'))
         self.SongUsageReport.setStatusTip(
-            tools_menu.trUtf8(u'Generate report on Song Usage'))
+            tools_menu.trUtf8('Generate report on Song Usage'))
         self.SongUsageReport.setObjectName(u'SongUsageReport')
         #SongUsage activation
         SongUsageIcon = buildIcon(u':/tools/tools_alert.png')
@@ -78,9 +78,9 @@ class SongUsagePlugin(Plugin):
         self.SongUsageStatus.setIcon(SongUsageIcon)
         self.SongUsageStatus.setCheckable(True)
         self.SongUsageStatus.setChecked(False)
-        self.SongUsageStatus.setText(tools_menu.trUtf8(u'Song Usage Status'))
+        self.SongUsageStatus.setText(tools_menu.trUtf8('Song Usage Status'))
         self.SongUsageStatus.setStatusTip(
-            tools_menu.trUtf8(u'Start/Stop live song usage recording'))
+            tools_menu.trUtf8('Start/Stop live song usage recording'))
         self.SongUsageStatus.setShortcut(u'F4')
         self.SongUsageStatus.setObjectName(u'SongUsageStatus')
         #Add Menus together
@@ -150,7 +150,7 @@ class SongUsagePlugin(Plugin):
         self.SongUsagedetailform.exec_()
 
     def about(self):
-        about_text = self.trUtf8(u'<b>SongUsage Plugin</b><br>This plugin '
-            u'records the use of songs and when they have been used during '
-            u'a live service')
+        about_text = self.trUtf8('<b>SongUsage Plugin</b><br>This plugin '
+            'records the use of songs and when they have been used during '
+            'a live service')
         return about_text
