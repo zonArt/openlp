@@ -400,6 +400,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.SongTabWidget.setCurrentIndex(2)
             self.AuthorsListView.setFocus()
             return False, self.trUtf8(u'You need to provide at least one author.')
+        for verse in unicode(self.VerseOrderEdit.text()):
+            if verse.isdigit() or u' BC'.find(verse) > -1:
+                pass
+            else:
+                self.SongTabWidget.setCurrentIndex(0)
+                self.VerseOrderEdit.setFocus()
+                return False, \
+                    self.trUtf8('Invalid verse entry - values must be Numberic, B or C')
         return True, u''
 
     def onTitleEditItemLostFocus(self):
