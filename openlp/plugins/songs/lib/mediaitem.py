@@ -308,14 +308,14 @@ class SongMediaItem(MediaManagerItem):
             author_list = author_list + unicode(author.display_name)
             author_audit.append(unicode(author.display_name))
         if song.ccli_number is None or len(song.ccli_number) == 0:
-            ccl = self.parent.settings.GeneralTab.CCLNumber
+            ccli = self.parent.settings.GeneralTab.CCLINumber
         else:
-            ccl = unicode(song.ccli_number)
+            ccli = unicode(song.ccli_number)
         raw_footer.append(song.title)
         raw_footer.append(author_list)
         raw_footer.append(song.copyright )
         raw_footer.append(unicode(
-            self.trUtf8('CCL Licence: ') + ccl))
+            self.trUtf8('CCLI Licence: ') + ccli))
         service_item.raw_footer = raw_footer
         service_item.audit = [
             song.title, author_audit, song.copyright, song.ccli_number

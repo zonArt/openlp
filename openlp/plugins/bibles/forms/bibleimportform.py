@@ -52,9 +52,9 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         self.tabWidget.setCurrentIndex(0)
         self.cwBibleVersions = {}
         self.bgBibleVersions = {}
-        self.AddressEdit.setText(self.config.get_config(u'proxy_address', u''))
-        self.UsernameEdit.setText(self.config.get_config(u'proxy_username',u''))
-        self.PasswordEdit.setText(self.config.get_config(u'proxy_password',u''))
+        self.AddressEdit.setText(self.config.get_config(u'proxy address', u''))
+        self.UsernameEdit.setText(self.config.get_config(u'proxy username',u''))
+        self.PasswordEdit.setText(self.config.get_config(u'proxy password',u''))
         #Load and store Crosswalk Bibles
         filepath = os.path.split(os.path.abspath(__file__))[0]
         filepath = os.path.abspath(os.path.join(filepath, u'..',
@@ -172,15 +172,15 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
     def onProxyAddressEditLostFocus(self):
         self.config.set_config(
-            u'proxy_address', unicode(self.AddressEdit.displayText()))
+            u'proxy address', unicode(self.AddressEdit.displayText()))
 
     def onProxyUsernameEditLostFocus(self):
         self.config.set_config(
-            u'proxy_username', unicode(self.UsernameEdit.displayText()))
+            u'proxy username', unicode(self.UsernameEdit.displayText()))
 
     def onProxyPasswordEditLostFocus(self):
         self.config.set_config(
-            u'proxy_password', unicode(self.PasswordEdit.displayText()))
+            u'proxy password', unicode(self.PasswordEdit.displayText()))
 
     def onLocationComboBoxSelected(self, value):
         if value == 0:

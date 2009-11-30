@@ -124,8 +124,9 @@ class SongUsageManager():
         Delete SongUsage records before given date
         """
         try:
-            self.session.query(SongUsageItem).\
-                filter(SongUsageItem.usagedate <= date).delete(synchronize_session=False)
+            self.session.query(SongUsageItem)\
+                .filter(SongUsageItem.usagedate <= date)\
+                .delete(synchronize_session=False)
             self.session.commit()
             return True
         except:

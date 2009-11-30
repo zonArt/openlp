@@ -36,10 +36,10 @@ log = logging.getLogger(__name__)
 
 def check_latest_version(config, current_version):
     version_string = current_version
-    lastTest = config.get_config(u'Application version Test', datetime.now().date())
-    thisTest = unicode(datetime.now().date())
-    config.set_config(u'Application version Test', thisTest)
-    if lastTest != thisTest:
+    last_test = config.get_config(u'last version test', datetime.now().date())
+    this_test = unicode(datetime.now().date())
+    config.set_config(u'last version test', this_test)
+    if last_test != this_test:
         version_string = u''
         req = urllib2.Request(u'http://www.openlp.org/files/version.txt')
         req.add_header(u'User-Agent', u'OpenLP/%s' % current_version)
@@ -51,3 +51,4 @@ def check_latest_version(config, current_version):
             if hasattr(e, u'reason'):
                 log.exception(u'Reason for failure: %s', e.reason)
     return version_string
+

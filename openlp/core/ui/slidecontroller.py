@@ -557,6 +557,8 @@ class SlideController(QtGui.QWidget):
         """
         Go to the next slide.
         """
+        if not self.serviceItem:
+            return
         if self.serviceItem.is_command():
             Receiver.send_message(u'%s_next'% self.serviceItem.name.lower())
             self.updatePreview()

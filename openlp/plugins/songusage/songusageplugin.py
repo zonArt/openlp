@@ -108,7 +108,7 @@ class SongUsagePlugin(Plugin):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'songusage_live'), self.onReceiveSongUsage)
         self.SongUsageActive = str_to_bool(
-            self.config.get_config(u'audit active', False))
+            self.config.get_config(u'active', False))
         self.SongUsageStatus.setChecked(self.SongUsageActive)
         if self.songusagemanager is None:
             self.songusagemanager = SongUsageManager(self.config)
@@ -124,7 +124,7 @@ class SongUsagePlugin(Plugin):
 
     def toggleSongUsageState(self):
         self.SongUsageActive = not self.SongUsageActive
-        self.config.set_config(u'SongUsage active', self.SongUsageActive)
+        self.config.set_config(u'active', self.SongUsageActive)
 
     def onReceiveSongUsage(self, SongUsageData):
         """
