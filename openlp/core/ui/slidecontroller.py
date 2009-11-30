@@ -556,7 +556,7 @@ class SlideController(QtGui.QWidget):
         """
         Go to the next slide.
         """
-        if self.serviceItem and self.serviceItem.is_command():
+        if self.serviceItem.is_command():
             Receiver.send_message(u'%s_next'% self.serviceItem.name.lower())
             self.updatePreview()
         else:
@@ -570,7 +570,7 @@ class SlideController(QtGui.QWidget):
         """
         Go to the previous slide.
         """
-        if self.serviceItem and self.serviceItem.is_command():
+        if self.serviceItem.is_command():
             Receiver.send_message(
                 u'%s_previous'% self.serviceItem.name.lower())
             self.updatePreview()
@@ -585,7 +585,7 @@ class SlideController(QtGui.QWidget):
         """
         Go to the last slide.
         """
-        if self.serviceItem and self.serviceItem.is_command():
+        if self.serviceItem.is_command():
             Receiver.send_message(u'%s_last'% self.serviceItem.name.lower())
             self.updatePreview()
         else:
