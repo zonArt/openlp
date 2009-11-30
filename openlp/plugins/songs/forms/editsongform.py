@@ -226,7 +226,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             verses = self.song.lyrics.split(u'\n\n')
             for count, verse in enumerate(verses):
                 item = QtGui.QListWidgetItem(verse)
-                variant = u'Verse:%s' % count + 1
+                variant = u'Verse:%s' % unicode(count + 1)
                 item.setData(QtCore.Qt.UserRole, QtCore.QVariant(variant))
                 self.VerseListWidget.addItem(item)
         # clear the results
