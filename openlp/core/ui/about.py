@@ -150,7 +150,7 @@ class AboutForm(QtGui.QDialog):
         """
         AboutForm.setWindowTitle(self.trUtf8('About openlp.org'))
         self.CopyrightLabel.setText(
-            self.trUtf8('Copyright \u00a9 2004-2009 openlp.org Foundation'))
+            self.trUtf8(u'Copyright \u00a9 2004-2009 openlp.org Foundation'.encode('utf8')))
         self.AboutAuthors.setText(self.trUtf8(
             'openlp.org is written and maintained by volunteers. If you would '
             'like to see more free Christian software being written, please '
