@@ -199,13 +199,10 @@ class MainDisplay(DisplayWidget):
         elif not self.displayBlank:
             if transition:
                 if self.hasTransition:
-                    delay = 0.01
                     self.display.setPixmap(QtGui.QPixmap.fromImage(self.frame[u'trans']))
                     self.repaint()
-                    time.sleep(delay)
                     self.display.setPixmap(QtGui.QPixmap.fromImage(frame[u'trans']))
                     self.repaint()
-                    time.sleep(delay)
                 self.hasTransition = True
                 self.display.setPixmap(QtGui.QPixmap.fromImage(frame[u'main']))
                 self.repaint()

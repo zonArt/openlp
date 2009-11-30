@@ -578,7 +578,7 @@ class Renderer(object):
         painter = QtGui.QPainter()
         painter.begin(self._frameOp)
         painter.setRenderHint(QtGui.QPainter.Antialiasing);
-        painter.setOpacity(0.5)
+        painter.setOpacity(0.7)
         painter.setFont(font)
         if color is None:
             if footer:
