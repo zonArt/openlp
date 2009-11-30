@@ -25,27 +25,33 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, str_to_bool
+from openlp.core.lib import build_icon
+from aboutdialog import Ui_AboutDialog
 
-class MediaTab(SettingsTab):
+class AboutForm(QtGui.QDialog, Ui_AboutDialog):
     """
-    mediaTab is the media settings tab in the settings dialog.
+    The About dialog
     """
-    def __init__(self, title, section=None):
-        SettingsTab.__init__(self, title, section)
 
-    def setupUi(self):
-        self.setObjectName(u'MediaTab')
-        self.tabTitleVisible = self.trUtf8('Media')
-        #self.MediaLayout = QtGui.QFormLayout(self)
-        #self.MediaLayout.setObjectName(u'MediaLayout')
+    def __init__(self, parent, applicationVersion):
+        """
+        Do some initialisation stuff
+        """
+        QtGui.QDialog.__init__(self, parent)
+        self.applicationVersion = applicationVersion
+        self.setupUi(self)
+        self.AboutTextEdit.setPlainText(
+            self.AboutTextEdit.toPlainText()\
+                .replace(u'<version>', self.applicationVersion[u'version'])\
+                .replace(u'<revision>', self.applicationVersion[u'build'])
+        )
+        QtCore.QObject.connect(self.ContributeButton,
+            QtCore.SIGNAL(u'clicked()'), self.onContributeButtonClicked)
 
-    def retranslateUi(self):
-        pass
-
-    def load(self):
-        pass
-
-    def save(self):
-        pass
-
+    def onContributeButtonClicked(self):
+        """
+        Launch a web browser and go to the contribute page on the site.
+        """
+        import webbrowser
+        url = u'http://www.openlp.org/en/documentation/introduction/contributing.html'
+        webbrowser.open_new(url)

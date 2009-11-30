@@ -5,8 +5,9 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,7 +28,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, buildIcon
+from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon
 
 class MediaListView(BaseListWithDnD):
     def __init__(self, parent=None):
@@ -107,6 +108,6 @@ class MediaMediaItem(MediaManagerItem):
             (path, filename) = os.path.split(unicode(file))
             item_name = QtGui.QListWidgetItem(filename)
             img = self.video_get_preview()
-            item_name.setIcon(buildIcon(img))
+            item_name.setIcon(build_icon(img))
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.ListView.addItem(item_name)

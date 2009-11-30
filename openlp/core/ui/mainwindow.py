@@ -5,8 +5,9 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -30,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
     ServiceManager, ThemeManager, MainDisplay, SlideController, \
     PluginForm, MediaDockManager
-from openlp.core.lib import RenderManager, PluginConfig, buildIcon, \
+from openlp.core.lib import RenderManager, PluginConfig, build_icon, \
     OpenLPDockWidget, SettingsManager, PluginManager, Receiver, str_to_bool
 from openlp.core.utils import check_latest_version
 
@@ -65,7 +66,7 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(
             MainWindow.sizePolicy().hasHeightForWidth())
         MainWindow.setSizePolicy(sizePolicy)
-        MainIcon = buildIcon(u':/icon/openlp-logo-16x16.png')
+        MainIcon = build_icon(u':/icon/openlp-logo-16x16.png')
         MainWindow.setWindowIcon(MainIcon)
         # Set up the main container, which contains all the other form widgets
         self.MainContent = QtGui.QWidget(MainWindow)
@@ -121,7 +122,7 @@ class Ui_MainWindow(object):
         self.StatusBar.addPermanentWidget(self.DefaultThemeLabel)
         # Create the MediaManager
         self.MediaManagerDock = OpenLPDockWidget(MainWindow)
-        MediaManagerIcon = buildIcon(u':/system/system_mediamanager.png')
+        MediaManagerIcon = build_icon(u':/system/system_mediamanager.png')
         self.MediaManagerDock.setWindowIcon(MediaManagerIcon)
         self.MediaManagerDock.setStyleSheet(media_manager_style)
         self.MediaManagerDock.setMinimumWidth(
@@ -142,7 +143,7 @@ class Ui_MainWindow(object):
         self.MediaManagerDock.setVisible(self.settingsmanager.showMediaManager)
         # Create the service manager
         self.ServiceManagerDock = OpenLPDockWidget(MainWindow)
-        ServiceManagerIcon = buildIcon(u':/system/system_servicemanager.png')
+        ServiceManagerIcon = build_icon(u':/system/system_servicemanager.png')
         self.ServiceManagerDock.setWindowIcon(ServiceManagerIcon)
         self.ServiceManagerDock.setObjectName(u'ServiceManagerDock')
         self.ServiceManagerDock.setMinimumWidth(
@@ -155,7 +156,7 @@ class Ui_MainWindow(object):
             self.settingsmanager.showServiceManager)
         # Create the theme manager
         self.ThemeManagerDock = OpenLPDockWidget(MainWindow)
-        ThemeManagerIcon = buildIcon(u':/system/system_thememanager.png')
+        ThemeManagerIcon = build_icon(u':/system/system_thememanager.png')
         self.ThemeManagerDock.setWindowIcon(ThemeManagerIcon)
         self.ThemeManagerDock.setObjectName(u'ThemeManagerDock')
         self.ThemeManagerContents = ThemeManager(self)
@@ -182,7 +183,7 @@ class Ui_MainWindow(object):
         self.FileSaveAsItem = QtGui.QAction(MainWindow)
         self.FileSaveAsItem.setObjectName(u'FileSaveAsItem')
         self.FileExitItem = QtGui.QAction(MainWindow)
-        ExitIcon = buildIcon(u':/system/system_exit.png')
+        ExitIcon = build_icon(u':/system/system_exit.png')
         self.FileExitItem.setIcon(ExitIcon)
         self.FileExitItem.setObjectName(u'FileExitItem')
         self.ImportThemeItem = QtGui.QAction(MainWindow)
@@ -196,7 +197,7 @@ class Ui_MainWindow(object):
         self.actionLook_Feel = QtGui.QAction(MainWindow)
         self.actionLook_Feel.setObjectName(u'actionLook_Feel')
         self.OptionsSettingsItem = QtGui.QAction(MainWindow)
-        SettingsIcon = buildIcon(u':/system/system_settings.png')
+        SettingsIcon = build_icon(u':/system/system_settings.png')
         self.OptionsSettingsItem.setIcon(SettingsIcon)
         self.OptionsSettingsItem.setObjectName(u'OptionsSettingsItem')
         self.ViewMediaManagerItem = QtGui.QAction(MainWindow)
@@ -218,19 +219,19 @@ class Ui_MainWindow(object):
         self.ViewServiceManagerItem.setIcon(ServiceManagerIcon)
         self.ViewServiceManagerItem.setObjectName(u'ViewServiceManagerItem')
         self.ToolsAlertItem = QtGui.QAction(MainWindow)
-        AlertIcon = buildIcon(u':/tools/tools_alert.png')
+        AlertIcon = build_icon(u':/tools/tools_alert.png')
         self.ToolsAlertItem.setIcon(AlertIcon)
         self.ToolsAlertItem.setObjectName(u'ToolsAlertItem')
         self.PluginItem = QtGui.QAction(MainWindow)
-        #PluginIcon = buildIcon(u':/tools/tools_alert.png')
+        #PluginIcon = build_icon(u':/tools/tools_alert.png')
         self.PluginItem.setIcon(AlertIcon)
         self.PluginItem.setObjectName(u'PluginItem')
         self.HelpDocumentationItem = QtGui.QAction(MainWindow)
-        ContentsIcon = buildIcon(u':/system/system_help_contents.png')
+        ContentsIcon = build_icon(u':/system/system_help_contents.png')
         self.HelpDocumentationItem.setIcon(ContentsIcon)
         self.HelpDocumentationItem.setObjectName(u'HelpDocumentationItem')
         self.HelpAboutItem = QtGui.QAction(MainWindow)
-        AboutIcon = buildIcon(u':/system/system_about.png')
+        AboutIcon = build_icon(u':/system/system_about.png')
         self.HelpAboutItem.setIcon(AboutIcon)
         self.HelpAboutItem.setObjectName(u'HelpAboutItem')
         self.HelpOnlineHelpItem = QtGui.QAction(MainWindow)
@@ -242,7 +243,7 @@ class Ui_MainWindow(object):
         self.LanguageEnglishItem = QtGui.QAction(MainWindow)
         self.LanguageEnglishItem.setObjectName(u'LanguageEnglishItem')
         self.ToolsAddToolItem = QtGui.QAction(MainWindow)
-        AddToolIcon = buildIcon(u':/tools/tools_add.png')
+        AddToolIcon = build_icon(u':/tools/tools_add.png')
         self.ToolsAddToolItem.setIcon(AddToolIcon)
         self.ToolsAddToolItem.setObjectName(u'ToolsAddToolItem')
         self.action_Preview_Panel = QtGui.QAction(MainWindow)
@@ -539,14 +540,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Checks the version of the Application called from openlp.pyw
         """
-        applicationVersion = self.applicationVersion[u'Full']
-        version = check_latest_version(self.generalConfig, applicationVersion)
-        if applicationVersion != version:
+        app_version = self.applicationVersion[u'full']
+        version = check_latest_version(self.generalConfig, app_version)
+        if app_version != version:
             version_text = unicode(self.trUtf8('OpenLP version %s has been updated '
                 'to version %s\n\nYou can obtain the latest version from http://openlp.org'))
             QtGui.QMessageBox.question(None,
                 self.trUtf8('OpenLP Version Updated'),
-                version_text % (applicationVersion, version),
+                version_text % (app_version, version),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
 

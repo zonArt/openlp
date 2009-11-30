@@ -5,8 +5,9 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, buildIcon
+from openlp.core.lib import Plugin, build_icon
 from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab
 from openlp.plugins.songs.forms import OpenLPImportForm, OpenSongExportForm, \
     OpenSongImportForm, OpenLPExportForm
@@ -55,7 +56,7 @@ class SongsPlugin(Plugin):
         self.opensong_import_form = OpenSongImportForm()
         self.openlp_export_form = OpenLPExportForm()
         self.opensong_export_form = OpenSongExportForm()
-        self.icon = buildIcon(u':/media/media_song.png')
+        self.icon = build_icon(u':/media/media_song.png')
 
     def get_settings_tab(self):
         return SongsTab(self.name)

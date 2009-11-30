@@ -6,8 +6,9 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -76,16 +77,24 @@ class OpenLP(QtGui.QApplication):
         filepath = os.path.abspath(os.path.join(filepath, u'version.txt'))
         fversion = None
         try:
-            fversion = open(filepath, 'r')
+            fversion = open(filepath, u'r')
             for line in fversion:
-                bits = unicode(line).split(u'-')
-                applicationVersion = {u'Full':unicode(line).rstrip(),
-                    u'version':bits[0], u'build':bits[1]}
-            log.info(u'Openlp version %s build %s' %
-                (applicationVersion[u'version'],applicationVersion[u'build'] ))
+                full_version = unicode(line).rstrip() #\
+                    #.replace(u'\r', u'').replace(u'\n', u'')
+                bits = full_version.split(u'-')
+                app_version = {
+                    u'full': full_version,
+                    u'version': bits[0],
+                    u'build': bits[1]
+                }
+            log.info(u'Openlp version %s build %s' % (
+                app_version[u'version'], app_version[u'build']))
         except:
-                applicationVersion = {u'Full':u'1.9.0-000',
-                    u'version':u'1.9.0', u'build':u'000'}
+                app_version = {
+                    u'full': u'1.9.0-000',
+                    u'version': u'1.9.0',
+                    u'build': u'000'
+                }
         finally:
             if fversion:
                 fversion.close()
@@ -98,7 +107,7 @@ class OpenLP(QtGui.QApplication):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'process_events'), self.processEvents)
         self.setApplicationName(u'OpenLP')
-        self.setApplicationVersion(applicationVersion[u'version'])
+        self.setApplicationVersion(app_version[u'version'])
         if os.name == u'nt':
             self.setStyleSheet(application_stylesheet)
         show_splash = str_to_bool(ConfigHelper.get_registry().get_value(
@@ -117,7 +126,7 @@ class OpenLP(QtGui.QApplication):
             log.info(u'Screen %d found with resolution %s',
                 screen, self.desktop().availableGeometry(screen))
         # start the main app window
-        self.mainWindow = MainWindow(screens, applicationVersion)
+        self.mainWindow = MainWindow(screens, app_version)
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen

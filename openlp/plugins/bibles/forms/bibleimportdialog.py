@@ -5,8 +5,9 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,13 +25,13 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import buildIcon
+from openlp.core.lib import build_icon
 
 class Ui_BibleImportDialog(object):
     def setupUi(self, BibleImportDialog):
         BibleImportDialog.setObjectName(u'BibleImportDialog')
         BibleImportDialog.resize(500, 686)
-        icon = buildIcon(u':/icon/openlp.org-icon-32.bmp')
+        icon = build_icon(u':/icon/openlp.org-icon-32.bmp')
         BibleImportDialog.setWindowIcon(icon)
         self.LicenceDetailsGroupBox = QtGui.QGroupBox(BibleImportDialog)
         self.LicenceDetailsGroupBox.setGeometry(QtCore.QRect(10, 400, 480, 151))
@@ -111,7 +112,7 @@ class Ui_BibleImportDialog(object):
         self.OSISLocationEdit.setObjectName(u'OSISLocationEdit')
         self.horizontalLayout_3.addWidget(self.OSISLocationEdit)
         self.OsisFileButton = QtGui.QPushButton(self.OSISGroupBox)
-        icon1 = buildIcon(u':/imports/import_load.png')
+        icon1 = build_icon(u':/imports/import_load.png')
         self.OsisFileButton.setIcon(icon1)
         self.OsisFileButton.setObjectName(u'OsisFileButton')
         self.horizontalLayout_3.addWidget(self.OsisFileButton)

@@ -5,8 +5,9 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -36,13 +37,13 @@ log = logging.getLogger(__name__)
 
 def check_latest_version(config, current_version):
     version_string = current_version
-    lastTest = config.get_config(u'Application version Test', datetime.now().date())
-    thisTest = unicode(datetime.now().date())
-    config.set_config(u'Application version Test', thisTest)
-    if lastTest != thisTest:
+    last_test = config.get_config(u'last version test', datetime.now().date())
+    this_test = unicode(datetime.now().date())
+    config.set_config(u'last version test', this_test)
+    if last_test != this_test:
         version_string = u''
         req = urllib2.Request(u'http://www.openlp.org/files/version.txt')
-        req.add_header(u'User-Agent', u'OpenLP%s' % current_version)
+        req.add_header(u'User-Agent', u'OpenLP/%s' % current_version)
         try:
             handle = urllib2.urlopen(req, None)
             html = handle.read()
@@ -51,3 +52,4 @@ def check_latest_version(config, current_version):
             if hasattr(e, u'reason'):
                 log.exception(u'Reason for failure: %s', e.reason)
     return version_string
+

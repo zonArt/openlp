@@ -5,8 +5,9 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -173,7 +174,7 @@ class GeneralTab(SettingsTab):
         self.PromptSaveService = (value == QtCore.Qt.Checked)
 
     def onNumberEditLostFocus(self):
-        self.CCLNumber = self.NumberEdit.displayText()
+        self.CCLINumber = self.NumberEdit.displayText()
 
     def onUsernameEditLostFocus(self):
         self.Username = self.UsernameEdit.displayText()
@@ -185,33 +186,33 @@ class GeneralTab(SettingsTab):
         for screen in self.screen_list:
             screen_name = u'%s %d' % (self.trUtf8('Screen'), screen[u'number'] + 1)
             if screen[u'primary']:
-                screen_name = u'%s (%s)' % (self.trUtf8('primary'), screen_name)
+                screen_name = u'%s (%s)' % (screen_name, self.trUtf8('primary'))
             self.MonitorComboBox.addItem(screen_name)
         # Get the configs
-        self.MonitorNumber = int(self.config.get_config(u'Monitor', u'0'))
-        self.Warning = str_to_bool(self.config.get_config(u'Blank Warning', u'False'))
-        self.AutoOpen = str_to_bool(self.config.get_config(u'Auto Open', u'False'))
+        self.MonitorNumber = int(self.config.get_config(u'monitor', u'0'))
+        self.Warning = str_to_bool(self.config.get_config(u'blank warning', u'False'))
+        self.AutoOpen = str_to_bool(self.config.get_config(u'auto open', u'False'))
         self.ShowSplash = str_to_bool(self.config.get_config(u'show splash', u'True'))
-        self.PromptSaveService = str_to_bool(self.config.get_config(u'prompt save service', u'False'))
-        self.CCLNumber = unicode(self.config.get_config(u'CCL Number', u'XXX'))
-        self.Username = unicode(self.config.get_config(u'User Name', u''))
-        self.Password = unicode(self.config.get_config(u'Password', u''))
+        self.PromptSaveService = str_to_bool(self.config.get_config(u'save prompt', u'False'))
+        self.CCLINumber = unicode(self.config.get_config(u'ccli number', u''))
+        self.Username = unicode(self.config.get_config(u'songselect username', u''))
+        self.Password = unicode(self.config.get_config(u'songselect password', u''))
         self.SaveCheckServiceCheckBox.setChecked(self.PromptSaveService)
         # Set a few things up
         self.MonitorComboBox.setCurrentIndex(self.MonitorNumber)
         self.WarningCheckBox.setChecked(self.Warning)
         self.AutoOpenCheckBox.setChecked(self.AutoOpen)
         self.ShowSplashCheckBox.setChecked(self.ShowSplash)
-        self.NumberEdit.setText(self.CCLNumber)
+        self.NumberEdit.setText(self.CCLINumber)
         self.UsernameEdit.setText(self.Username)
         self.PasswordEdit.setText(self.Password)
 
     def save(self):
-        self.config.set_config(u'Monitor', self.MonitorNumber)
-        self.config.set_config(u'Blank Warning', self.Warning)
-        self.config.set_config(u'Auto Open', self.AutoOpen)
+        self.config.set_config(u'monitor', self.MonitorNumber)
+        self.config.set_config(u'blank warning', self.Warning)
+        self.config.set_config(u'auto open', self.AutoOpen)
         self.config.set_config(u'show splash', self.ShowSplash)
-        self.config.set_config(u'prompt save service', self.PromptSaveService)
-        self.config.set_config(u'CCL Number', self.CCLNumber)
-        self.config.set_config(u'User Name', self.Username)
-        self.config.set_config(u'Password', self.Password)
+        self.config.set_config(u'save prompt', self.PromptSaveService)
+        self.config.set_config(u'ccli number', self.CCLINumber)
+        self.config.set_config(u'songselect username', self.Username)
+        self.config.set_config(u'songselect password', self.Password)
