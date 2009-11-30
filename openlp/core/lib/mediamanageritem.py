@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Carsten       #
-# Tinggaard, Jon Tibble                                                       #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -155,7 +155,7 @@ class MediaManagerItem(QtGui.QWidget):
             self.PageLayout.addWidget(self.Toolbar)
 
     def addToolbarButton(
-        self, title, tooltip, icon, slot=None, objectname=None):
+        self, title, tooltip, icon, slot=None, checkable=False):
         """
         A method to help developers easily add a button to the toolbar.
 
@@ -181,7 +181,7 @@ class MediaManagerItem(QtGui.QWidget):
         # break compatability), but it makes sense for the icon to
         # come before the tooltip (as you have to have an icon, but
         # not neccesarily a tooltip)
-        self.Toolbar.addToolbarButton(title, icon, tooltip, slot, objectname)
+        self.Toolbar.addToolbarButton(title, icon, tooltip, slot, checkable)
 
     def addToolbarSeparator(self):
         """
@@ -213,50 +213,43 @@ class MediaManagerItem(QtGui.QWidget):
             self.addToolbarButton(
                 u'Load %s' % self.PluginNameShort,
                 u'%s %s' % (self.trUtf8('Load a new'), self.PluginNameVisible),
-                u':%s_load.png' % self.IconPath, self.onFileClick,
-                u'%sFileItem' % self.PluginNameShort)
+                u':%s_load.png' % self.IconPath, self.onFileClick)
         ## New Button ##
         if self.hasNewIcon:
             self.addToolbarButton(
                 u'New %s' % self.PluginNameShort,
                 u'%s %s' % (self.trUtf8('Add a new'), self.PluginNameVisible),
-                u':%s_new.png' % self.IconPath, self.onNewClick,
-                u'%sNewItem' % self.PluginNameShort)
+                u':%s_new.png' % self.IconPath, self.onNewClick)
         ## Edit Button ##
         if self.hasEditIcon:
             self.addToolbarButton(
                 u'Edit %s' % self.PluginNameShort,
                 u'%s %s' % (self.trUtf8('Edit the selected'),
                     self.PluginNameVisible),
-                u':%s_edit.png' % self.IconPath, self.onEditClick,
-                u'%sEditItem' %  self.PluginNameShort)
+                u':%s_edit.png' % self.IconPath, self.onEditClick)
         ## Delete Button ##
         if self.hasDeleteIcon:
             self.addToolbarButton(
                 u'Delete %s' % self.PluginNameShort,
                 self.trUtf8('Delete the selected item'),
-                u':%s_delete.png' % self.IconPath, self.onDeleteClick,
-                u'%sDeleteItem' % self.PluginNameShort)
+                u':%s_delete.png' % self.IconPath, self.onDeleteClick)
         ## Separator Line ##
         self.addToolbarSeparator()
         ## Preview ##
         self.addToolbarButton(
             u'Preview %s' % self.PluginNameShort,
             self.trUtf8('Preview the selected item'),
-            u':/system/system_preview.png', self.onPreviewClick,
-            u'PreviewItem')
+            u':/system/system_preview.png', self.onPreviewClick)
         ## Live  Button ##
         self.addToolbarButton(
             u'Go Live',
             self.trUtf8('Send the selected item live'),
-            u':/system/system_live.png', self.onLiveClick,
-            u'LiveItem')
+            u':/system/system_live.png', self.onLiveClick)
         ## Add to service Button ##
         self.addToolbarButton(
             u'Add %s to Service' % self.PluginNameShort,
             self.trUtf8('Add the selected item(s) to the service'),
-            u':/system/system_add.png', self.onAddClick,
-            u'%sAddServiceItem' % self.PluginNameShort)
+            u':/system/system_add.png', self.onAddClick)
 
     def addListViewToToolBar(self):
         #Add the List widget

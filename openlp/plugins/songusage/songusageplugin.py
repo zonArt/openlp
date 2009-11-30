@@ -5,8 +5,9 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,7 +28,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, Receiver, str_to_bool, buildIcon
+from openlp.core.lib import Plugin, Receiver, str_to_bool, build_icon
 from openlp.plugins.songusage.lib import SongUsageManager
 from openlp.plugins.songusage.forms import SongUsageDetailForm, SongUsageDeleteForm
 from openlp.plugins.songusage.lib.models import SongUsageItem
@@ -40,7 +41,7 @@ class SongUsagePlugin(Plugin):
     def __init__(self, plugin_helpers):
         Plugin.__init__(self, u'SongUsage', u'1.9.0', plugin_helpers)
         self.weight = -4
-        self.icon = buildIcon(u':/media/media_image.png')
+        self.icon = build_icon(u':/media/media_image.png')
         self.songusagemanager = None
         self.songusageActive = False
 
@@ -73,7 +74,7 @@ class SongUsagePlugin(Plugin):
             tools_menu.trUtf8('Generate report on Song Usage'))
         self.SongUsageReport.setObjectName(u'SongUsageReport')
         #SongUsage activation
-        SongUsageIcon = buildIcon(u':/tools/tools_alert.png')
+        SongUsageIcon = build_icon(u':/tools/tools_alert.png')
         self.SongUsageStatus = QtGui.QAction(tools_menu)
         self.SongUsageStatus.setIcon(SongUsageIcon)
         self.SongUsageStatus.setCheckable(True)

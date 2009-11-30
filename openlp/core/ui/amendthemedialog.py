@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Carsten       #
-# Tinggaard, Jon Tibble                                                       #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,14 +24,14 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import buildIcon
+from openlp.core.lib import build_icon
 
 class Ui_AmendThemeDialog(object):
     def setupUi(self, AmendThemeDialog):
         AmendThemeDialog.setObjectName(u'AmendThemeDialog')
         AmendThemeDialog.setWindowModality(QtCore.Qt.ApplicationModal)
         AmendThemeDialog.resize(586, 651)
-        icon = buildIcon(u':/icon/openlp-logo-16x16.png')
+        icon = build_icon(u':/icon/openlp-logo-16x16.png')
         AmendThemeDialog.setWindowIcon(icon)
         AmendThemeDialog.setModal(True)
         self.AmendThemeLayout = QtGui.QVBoxLayout(AmendThemeDialog)
@@ -116,7 +116,7 @@ class Ui_AmendThemeDialog(object):
         self.ImageLineEdit.setObjectName(u'ImageLineEdit')
         self.horizontalLayout_2.addWidget(self.ImageLineEdit)
         self.ImageToolButton = QtGui.QToolButton(self.ImageFilenameWidget)
-        icon1 = buildIcon(u':/images/image_load.png')
+        icon1 = build_icon(u':/images/image_load.png')
         self.ImageToolButton.setIcon(icon1)
         self.ImageToolButton.setObjectName(u'ImageToolButton')
         self.horizontalLayout_2.addWidget(self.ImageToolButton)

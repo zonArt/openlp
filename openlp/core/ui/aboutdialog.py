@@ -154,10 +154,12 @@ class Ui_AboutDialog(object):
             self.AboutNotebook.indexOf(self.CreditsTab),
             self.trUtf8('Credits'))
         self.LicenseTextEdit.setPlainText(self.trUtf8(
-            'Copyright © 2004-2009 Raoul Snyman\n'
-            'Portions copyright © 2004-2009 Tim Bentley, Jonathan Corwin, '
-            'Michael Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin '
-            'Thompson, Jon Tibble, Carsten Tinggaard\n'
+            'Copyright ' + u'\u00a9'.encode('utf8') + ' 2004-2009 Raoul '
+            'Snyman\n'
+            'Portions copyright ' + u'\u00a9'.encode('utf8') + ' 2004-2009 '
+            'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri, '
+            'Maikel Stuivenberg, Martin Thompson, Jon Tibble, Carsten '
+            'Tinggaard\n'
             '\n'
             'This program is free software; you can redistribute it and/or '
             'modify it under the terms of the GNU General Public License as '

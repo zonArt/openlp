@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Carsten       #
-# Tinggaard, Jon Tibble                                                       #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import buildIcon
+from openlp.core.lib import build_icon
 
 class OpenLPToolbar(QtGui.QToolBar):
     """
@@ -68,7 +68,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         ``objectname``
             The name of the object, as used in `<button>.setObjectName()`.
         """
-        ButtonIcon = buildIcon(icon)
+        ButtonIcon = build_icon(icon)
         if ButtonIcon:
             if slot and not checkable:
                 ToolbarButton = self.addAction(ButtonIcon, title, slot)
@@ -132,14 +132,14 @@ class OpenLPToolbar(QtGui.QToolBar):
         for widget in widgets:
             self.actions[widget].setVisible(True)
 
-    def addPushButton(self, imageFile=None, text=u''):
+    def addPushButton(self, image_file=None, text=u''):
         """
         Adds a push button to the toolbar.
 
         Returns the push button
         """
-        pushButton = QtGui.QPushButton(buildIcon(imageFile), text)
-        pushButton.setCheckable(True)
-        pushButton.setFlat(True)
-        self.addWidget(pushButton)
-        return pushButton
+        push_button = QtGui.QPushButton(build_icon(image_file), text)
+        push_button.setCheckable(True)
+        push_button.setFlat(True)
+        self.addWidget(push_button)
+        return push_button

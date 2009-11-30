@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,13 +24,13 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import buildIcon
+from openlp.core.lib import build_icon
 
 class Ui_customEditDialog(object):
     def setupUi(self, customEditDialog):
         customEditDialog.setObjectName(u'customEditDialog')
         customEditDialog.resize(590, 541)
-        icon = buildIcon(u':/icon/openlp.org-icon-32.bmp')
+        icon = build_icon(u':/icon/openlp.org-icon-32.bmp')
         customEditDialog.setWindowIcon(icon)
         self.gridLayout = QtGui.QGridLayout(customEditDialog)
         self.gridLayout.setObjectName(u'gridLayout')
@@ -50,7 +52,7 @@ class Ui_customEditDialog(object):
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setObjectName(u'verticalLayout')
         self.UpButton = QtGui.QPushButton(customEditDialog)
-        icon1 = buildIcon(u':/services/service_up.png')
+        icon1 = build_icon(u':/services/service_up.png')
         self.UpButton.setIcon(icon1)
         self.UpButton.setObjectName(u'UpButton')
         self.verticalLayout.addWidget(self.UpButton)
@@ -58,7 +60,7 @@ class Ui_customEditDialog(object):
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem)
         self.DownButton = QtGui.QPushButton(customEditDialog)
-        icon2 = buildIcon(u':/services/service_down.png')
+        icon2 = build_icon(u':/services/service_down.png')
         self.DownButton.setIcon(icon2)
         self.DownButton.setObjectName(u'DownButton')
         self.verticalLayout.addWidget(self.DownButton)

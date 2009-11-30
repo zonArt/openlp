@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Carsten       #
-# Tinggaard, Jon Tibble                                                       #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,9 +33,9 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AmendThemeForm
 from openlp.core.theme import Theme
-from openlp.core.lib import PluginConfig, OpenLPToolbar, ThemeXML, ThemeLevel,\
-    str_to_bool, get_text_file_string, buildIcon, Receiver, contextMenuAction,\
-    contextMenuSeparator
+from openlp.core.lib import PluginConfig, OpenLPToolbar, contextMenuAction, \
+    ThemeXML, ThemeLevel, str_to_bool, get_text_file_string, build_icon, \
+    Receiver, contextMenuSeparator
 from openlp.core.utils import ConfigHelper
 
 class ThemeManager(QtGui.QWidget):
@@ -260,7 +260,7 @@ class ThemeManager(QtGui.QWidget):
                         else:
                             name = textName
                         item_name = QtGui.QListWidgetItem(name)
-                        item_name.setIcon(buildIcon(theme))
+                        item_name.setIcon(build_icon(theme))
                         item_name.setData(QtCore.Qt.UserRole,
                             QtCore.QVariant(textName))
                         self.ThemeListWidget.addItem(item_name)

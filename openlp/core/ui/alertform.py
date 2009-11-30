@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Carsten       #
-# Tinggaard, Jon Tibble                                                       #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,7 +25,7 @@
 
 import logging
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import buildIcon
+from openlp.core.lib import build_icon
 
 class AlertForm(QtGui.QDialog):
     global log
@@ -40,7 +40,7 @@ class AlertForm(QtGui.QDialog):
     def setupUi(self, AlertForm):
         AlertForm.setObjectName(u'AlertForm')
         AlertForm.resize(370, 110)
-        icon = buildIcon(u':/icon/openlp-logo-16x16.png')
+        icon = build_icon(u':/icon/openlp-logo-16x16.png')
         AlertForm.setWindowIcon(icon)
         self.AlertFormLayout = QtGui.QVBoxLayout(AlertForm)
         self.AlertFormLayout.setSpacing(8)

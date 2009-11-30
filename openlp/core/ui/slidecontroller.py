@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Carsten       #
-# Tinggaard, Jon Tibble                                                       #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -484,6 +485,8 @@ class SlideController(QtGui.QWidget):
         """
         Go to the first slide.
         """
+        if not self.serviceItem:
+            return
         if self.serviceItem.is_command():
             Receiver.send_message(u'%s_first'% self.serviceItem.name.lower())
             self.updatePreview()
@@ -498,7 +501,7 @@ class SlideController(QtGui.QWidget):
         """
         Blank the screen.
         """
-        if self.serviceItem and self.serviceItem.is_command():
+        if not self.serviceItem and self.serviceItem.is_command():
             if blanked:
                 Receiver.send_message(u'%s_blank'% self.serviceItem.name.lower())
             else:
@@ -573,6 +576,8 @@ class SlideController(QtGui.QWidget):
         """
         Go to the previous slide.
         """
+        if not self.serviceItem:
+            return
         if self.serviceItem.is_command():
             Receiver.send_message(
                 u'%s_previous'% self.serviceItem.name.lower())
@@ -588,6 +593,8 @@ class SlideController(QtGui.QWidget):
         """
         Go to the last slide.
         """
+        if not self.serviceItem:
+            return
         if self.serviceItem.is_command():
             Receiver.send_message(u'%s_last'% self.serviceItem.name.lower())
             self.updatePreview()

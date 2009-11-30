@@ -5,8 +5,9 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -226,7 +227,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             verses = self.song.lyrics.split(u'\n\n')
             for count, verse in enumerate(verses):
                 item = QtGui.QListWidgetItem(verse)
-                variant = u'Verse:%s' % count + 1
+                variant = u'Verse:%s' % unicode(count + 1)
                 item.setData(QtCore.Qt.UserRole, QtCore.QVariant(variant))
                 self.VerseListWidget.addItem(item)
         # clear the results
