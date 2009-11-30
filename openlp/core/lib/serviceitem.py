@@ -5,8 +5,9 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,7 +30,7 @@ import uuid
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import buildIcon, Receiver
+from openlp.core.lib import build_icon, Receiver
 
 class ServiceItemType(object):
     """
@@ -82,7 +83,7 @@ class ServiceItem(object):
             disk.
         """
         self.icon = icon
-        self.iconic_representation = buildIcon(icon)
+        self.iconic_representation = build_icon(icon)
 
     def render(self):
         """

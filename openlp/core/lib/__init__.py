@@ -5,8 +5,9 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -84,7 +85,7 @@ def str_to_bool(stringvalue):
         return stringvalue
     return stringvalue.strip().lower() in (u'true', u'yes', u'y')
 
-def buildIcon(icon):
+def build_icon(icon):
     """
     Build a QIcon instance from an existing QIcon, a resource location, or a
     physical file location. If the icon is a QIcon instance, that icon is
@@ -118,7 +119,7 @@ def contextMenuAction(base, icon, text, slot):
     """
     action = QtGui.QAction(text, base)
     if icon:
-        action.setIcon(buildIcon(icon))
+        action.setIcon(build_icon(icon))
     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
     return action
 
@@ -127,13 +128,18 @@ def contextMenu(base, icon, text):
     Utility method to help build context menus for plugins
     """
     action = QtGui.QMenu(text, base)
-    action.setIcon(buildIcon(icon))
+    action.setIcon(build_icon(icon))
     return action
 
 def contextMenuSeparator(base):
     action = QtGui.QAction(u'', base)
     action.setSeparator(True)
     return action
+
+class ThemeLevel(object):
+    Global = 1
+    Service = 2
+    Song = 3
 
 from eventreceiver import Receiver
 from settingsmanager import SettingsManager
@@ -155,5 +161,5 @@ from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem
 from baselistwithdnd import BaseListWithDnD
 
-__all__ = [ 'translate', 'get_text_file_string', 'str_to_bool',
-            'contextMenuAction', 'contextMenuSeparator', 'ServiceItem']
+#__all__ = [ 'translate', 'get_text_file_string', 'str_to_bool',
+#            'contextMenuAction', 'contextMenuSeparator', 'ServiceItem']

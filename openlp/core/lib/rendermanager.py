@@ -5,8 +5,9 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,6 +28,7 @@ import logging
 from PyQt4 import QtGui, QtCore
 
 from renderer import Renderer
+from openlp.core.lib import ThemeLevel
 
 class RenderManager(object):
     """
@@ -63,7 +65,7 @@ class RenderManager(object):
         self.calculate_default(self.screen_list[self.current_display][u'size'])
         self.theme = u''
         self.service_theme = u''
-        self.global_style = u''
+        self.theme_level = u''
         self.override_background = None
         self.themedata = None
         self.save_bg_frame = None
@@ -82,19 +84,20 @@ class RenderManager(object):
             self.calculate_default(
                 self.screen_list[self.current_display][u'size'])
 
-    def set_global_theme(self, global_theme, global_style=u'Global'):
+    def set_global_theme(self, global_theme, theme_level=ThemeLevel.Global):
         """
         Set the global-level theme and the theme level.
 
         ``global_theme``
             The global-level theme to be set.
 
-        ``global_style``
-            Defaults to *"Global"*. The theme level, can be "Global",
-            "Service" or "Song".
+        ``theme_level``
+            Defaults to *``ThemeLevel.Global``*. The theme level, can be
+            ``ThemeLevel.Global``, ``ThemeLevel.Service`` or
+            ``ThemeLevel.Song``.
         """
         self.global_theme = global_theme
-        self.global_style = global_style
+        self.theme_level = theme_level
 
     def set_service_theme(self, service_theme):
         """
@@ -113,9 +116,9 @@ class RenderManager(object):
             The name of the song-level theme.
         """
         log.debug(u'set override theme to %s', theme)
-        if self.global_style == u'Global':
+        if self.theme_level == ThemeLevel.Global:
             self.theme = self.global_theme
-        elif self.global_style == u'Service':
+        elif self.theme_level == ThemeLevel.Service:
             if self.service_theme == u'':
                 self.theme = self.global_theme
             else:
@@ -123,8 +126,8 @@ class RenderManager(object):
         else:
             if theme:
                 self.theme = theme
-            elif self.global_style == u'Song' or \
-                self.global_style == u'Service':
+            elif self.theme_level == ThemeLevel.Song or \
+                self.theme_level == ThemeLevel.Service:
                 if self.service_theme == u'':
                     self.theme = self.global_theme
                 else:
@@ -201,7 +204,7 @@ class RenderManager(object):
         footer = []
         footer.append(u'Amazing Grace (John Newton)' )
         footer.append(u'Public Domain')
-        footer.append(u'CCLI xxx')
+        footer.append(u'CCLI 123456')
         formatted = self.renderer.format_slide(verse, False)
         return self.renderer.generate_frame_from_lines(formatted[0], footer)
 

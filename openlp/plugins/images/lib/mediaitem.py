@@ -5,8 +5,9 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,7 +27,7 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, buildIcon
+from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon
 
 # We have to explicitly create separate classes for each plugin
 # in order for DnD to the Service manager to work correctly.
@@ -128,9 +129,9 @@ class ImageMediaItem(MediaManagerItem):
             (path, filename) = os.path.split(unicode(file))
             thumb = os.path.join(self.servicePath, filename)
             if os.path.exists(thumb):
-                icon = buildIcon(thumb)
+                icon = build_icon(thumb)
             else:
-                icon = buildIcon(unicode(file))
+                icon = build_icon(unicode(file))
                 pixmap = icon.pixmap(QtCore.QSize(88,50))
                 ext = os.path.splitext(thumb)[1].lower()
                 pixmap.save(thumb, ext[1:])

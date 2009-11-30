@@ -5,8 +5,9 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,9 +33,9 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AmendThemeForm
 from openlp.core.theme import Theme
-from openlp.core.lib import PluginConfig, OpenLPToolbar, ThemeXML, \
-    str_to_bool, get_text_file_string, buildIcon, Receiver, contextMenuAction, \
-    contextMenuSeparator
+from openlp.core.lib import PluginConfig, OpenLPToolbar, contextMenuAction, \
+    ThemeXML, ThemeLevel, str_to_bool, get_text_file_string, build_icon, \
+    Receiver, contextMenuSeparator
 from openlp.core.utils import ConfigHelper
 
 class ThemeManager(QtGui.QWidget):
@@ -112,7 +113,7 @@ class ThemeManager(QtGui.QWidget):
         self.config = PluginConfig(u'themes')
         self.servicePath = self.config.get_data_path()
         self.global_theme = unicode(
-            self.config.get_config(u'theme global theme', u''))
+            self.config.get_config(u'global theme', u''))
 
     def changeGlobalFromTab(self, themeName):
         log.debug(u'changeGlobalFromTab %s', themeName)
@@ -144,7 +145,7 @@ class ThemeManager(QtGui.QWidget):
                     self.ThemeListWidget.item(count).text())
                 name = u'%s (%s)' % (self.global_theme, self.trUtf8('default'))
                 self.ThemeListWidget.item(count).setText(name)
-                self.config.set_config(u'theme global theme', self.global_theme)
+                self.config.set_config(u'global theme', self.global_theme)
                 Receiver.send_message(
                     u'update_global_theme', self.global_theme)
                 self.pushThemes()
@@ -167,7 +168,7 @@ class ThemeManager(QtGui.QWidget):
 
     def onDeleteTheme(self):
         self.global_theme = unicode(
-            self.config.get_config(u'theme global theme', u''))
+            self.config.get_config(u'global theme', u''))
         item = self.ThemeListWidget.currentItem()
         if item:
             theme = unicode(item.text())
@@ -259,7 +260,7 @@ class ThemeManager(QtGui.QWidget):
                         else:
                             name = textName
                         item_name = QtGui.QListWidgetItem(name)
-                        item_name.setIcon(buildIcon(theme))
+                        item_name.setIcon(build_icon(theme))
                         item_name.setData(QtCore.Qt.UserRole,
                             QtCore.QVariant(textName))
                         self.ThemeListWidget.addItem(item_name)
