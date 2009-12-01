@@ -206,7 +206,7 @@ class RenderManager(object):
         footer.append(u'Public Domain')
         footer.append(u'CCLI 123456')
         formatted = self.renderer.format_slide(verse, False)
-        return self.renderer.generate_frame_from_lines(formatted[0], footer)
+        return self.renderer.generate_frame_from_lines(formatted[0], footer)[u'main']
 
     def format_slide(self, words):
         """

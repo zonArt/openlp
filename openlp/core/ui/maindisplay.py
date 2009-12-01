@@ -198,7 +198,7 @@ class MainDisplay(DisplayWidget):
             self.displayAlert()
         elif not self.displayBlank:
             if transition:
-                if self.hasTransition:
+                if self.hasTransition and self.frame[u'trans'] is not None:
                     self.display.setPixmap(QtGui.QPixmap.fromImage(self.frame[u'trans']))
                     self.repaint()
                     self.display.setPixmap(QtGui.QPixmap.fromImage(frame[u'trans']))
