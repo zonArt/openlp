@@ -209,19 +209,25 @@ class SlideController(QtGui.QWidget):
         # Build the Song Toolbar
         if isLive:
             self.Songbar = OpenLPToolbar(self)
-            self.Songbar.addToolbarButton(
-                u'Bridge:1',  u'B',
-                self.trUtf8('Bridge'),
-                self.onSongBarHandler)
-            self.Songbar.addToolbarButton(
-                u'Chorus:1',  u'C',
-                self.trUtf8('Chorus'),
-                self.onSongBarHandler)
+            self.Songbar.addToolbarButton(u'Intro:1',  u'I',
+                self.trUtf8('Intro'),self.onSongBarHandler)
+            self.Songbar.addToolbarButton(u'Bridge:1',  u'B',
+                self.trUtf8('Bridge'),self.onSongBarHandler)
+            self.Songbar.addToolbarButton(u'PreChorus:1',  u'P',
+                self.trUtf8('PreChorus'), self.onSongBarHandler)
+            self.Songbar.addToolbarButton(u'Chorus:1',  u'C',
+                self.trUtf8('Chorus'), self.onSongBarHandler)
+            self.Songbar.addToolbarButton(u'Tag:1',  u'T',
+                self.trUtf8('Tag'), self.onSongBarHandler)
             for verse in range(1, 12):
                 self.Songbar.addToolbarButton(
                     unicode(u'Verse:%s'% verse), u'%s' % verse,
                     unicode(self.trUtf8('Verse %s'))% verse,
                     self.onSongBarHandler)
+            self.Songbar.addToolbarButton(u'Other:1',  u'O',
+                self.trUtf8('Other'), self.onSongBarHandler)
+            self.Songbar.addToolbarButton(u'Ending:1',  u'E',
+                self.trUtf8('Ending'), self.onSongBarHandler)
             self.ControllerLayout.addWidget(self.Songbar)
             self.Songbar.setVisible(False)
         # Screen preview area
@@ -313,18 +319,13 @@ class SlideController(QtGui.QWidget):
 
     def onSongBarHandler(self):
         request = unicode(self.sender().text())
-        if request == u'Bridge':
-            a=c
-        elif request == u'Chorus':
-            a=c
+        #Remember list is 1 out!
+        slideno = self.slideList[request]
+        if slideno > self.PreviewListWidget.rowCount():
+            self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount())
         else:
-            #Remember list is 1 out!
-            slideno = self.slideList[request]
-            if slideno > self.PreviewListWidget.rowCount():
-                self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount())
-            else:
-                self.PreviewListWidget.selectRow(slideno)
-            self.onSlideSelected()
+            self.PreviewListWidget.selectRow(slideno)
+        self.onSlideSelected()
 
     def receiveSpinDelay(self, value):
         self.DelaySpinBox.setValue(int(value))
@@ -354,20 +355,8 @@ class SlideController(QtGui.QWidget):
                 for action in self.Songbar.actions:
                     self.Songbar.actions[action].setVisible(False)
                 if item.verse_order:
-                    verses = item.verse_order.split(u' ')
-                    for verse in verses:
-                        if verse is not u' ':
-                            pass
-                        try:
-                            if verse == u'C':
-                                self.Songbar.actions[u'Chorus:1'].setVisible(True)
-                            elif verse == u'B':
-                                self.Songbar.actions[u'Bridge:1'].setVisible(True)
-                            else:
-                                vse = u'Verse:%s' % verse
-                                self.Songbar.actions[vse].setVisible(True)
-                        except:
-                            pass
+                    for slide in self.slideList:
+                        self.Songbar.actions[slide].setVisible(True)
                     self.Songbar.setVisible(True)
         elif item.is_image():
             #Not sensible to allow loops with 1 frame
