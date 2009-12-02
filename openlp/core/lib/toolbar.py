@@ -106,7 +106,8 @@ class OpenLPToolbar(QtGui.QToolBar):
         ``title``
             The title of the icon to search for.
         """
-        if self.icons.has_key(title):
+        title = QtCore.QString(title)
+        if self.icons[title]:
             return self.icons[title]
         else:
             self.log.error(u'getIconFromTitle - no icon for %s' % title)
