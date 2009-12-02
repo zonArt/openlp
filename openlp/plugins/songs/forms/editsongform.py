@@ -315,7 +315,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.VerseDeleteButton.setEnabled(True)
 
     def onVerseAddButtonClicked(self):
-        self.verse_form.setVerse(u'')
+        self.verse_form.setVerse(u'', self.VerseListWidget.count() + 1, True)
         self.verse_form.exec_()
         afterText, verse, subVerse = self.verse_form.getVerse()
         data = u'%s:%s' %(verse, subVerse)
@@ -329,7 +329,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if item:
             tempText = item.text()
             verseId = unicode((item.data(QtCore.Qt.UserRole)).toString())
-            self.verse_form.setVerse(tempText, True, verseId)
+            self.verse_form.setVerse(tempText, \
+                self.VerseListWidget.count(), True, verseId)
             self.verse_form.exec_()
             afterText, verse, subVerse = self.verse_form.getVerse()
             data = u'%s:%s' %(verse, subVerse)
@@ -401,13 +402,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.SongTabWidget.setCurrentIndex(2)
             self.AuthorsListView.setFocus()
         for verse in unicode(self.VerseOrderEdit.text()):
-            if verse.isdigit() or u' BC'.find(verse) > -1:
+            if verse.isdigit() or u' BCITPEO'.find(verse.upper()) > -1:
                 pass
             else:
                 self.SongTabWidget.setCurrentIndex(0)
                 self.VerseOrderEdit.setFocus()
                 return False, \
-                    self.trUtf8('Invalid verse entry - values must be Numeric, B or C')
+                    self.trUtf8('Invalid verse entry - values must be Numeric, I,B,C,T,P,E,O')
         return True, u''
 
     def onTitleEditItemLostFocus(self):

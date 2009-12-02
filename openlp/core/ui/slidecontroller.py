@@ -210,17 +210,17 @@ class SlideController(QtGui.QWidget):
         if isLive:
             self.Songbar = OpenLPToolbar(self)
             self.Songbar.addToolbarButton(
-                u'Bridge',  u':/pages/page_bridge.png',
+                u'Bridge:1',  u':/pages/page_bridge.png',
                 self.trUtf8('Bridge'),
                 self.onSongBarHandler)
             self.Songbar.addToolbarButton(
-                u'Chorus',  u':/pages/page_chorus.png',
+                u'Chorus:1',  u':/pages/page_chorus.png',
                 self.trUtf8('Chorus'),
                 self.onSongBarHandler)
             for verse in range(1, 12):
                 self.Songbar.addToolbarButton(
-                    unicode(verse),  u':/pages/page_%s.png' % verse,
-                    unicode(self.trUtf8('Verse %s'))%verse,
+                    unicode(u'Verse:%s'% verse), u':/pages/page_%s.png' % verse,
+                    unicode(self.trUtf8('Verse %s'))% verse,
                     self.onSongBarHandler)
             self.ControllerLayout.addWidget(self.Songbar)
             self.Songbar.setVisible(False)
@@ -312,14 +312,14 @@ class SlideController(QtGui.QWidget):
         pass
 
     def onSongBarHandler(self):
-        request = self.sender().text()
+        request = unicode(self.sender().text())
         if request == u'Bridge':
-            pass
+            a=c
         elif request == u'Chorus':
-            pass
+            a=c
         else:
             #Remember list is 1 out!
-            slideno = int(request) - 1
+            slideno = self.slideList[request]
             if slideno > self.PreviewListWidget.rowCount():
                 self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount())
             else:
@@ -355,14 +355,19 @@ class SlideController(QtGui.QWidget):
                     self.Songbar.actions[action].setVisible(False)
                 if item.verse_order:
                     verses = item.verse_order.split(u' ')
-#                    for verse in verses:
-#                        if not verse or int(verse) > 12:
-#                            break
-#                        try:
-#                            self.Songbar.actions[verse].setVisible(True)
-#                        except:
-#                            #More than 20 verses hard luck
-#                            pass
+                    for verse in verses:
+                        if verse is not u' ':
+                            pass
+                        try:
+                            if verse == u'C':
+                                self.Songbar.actions[u'Chorus:1'].setVisible(True)
+                            elif verse == u'B':
+                                self.Songbar.actions[u'Bridge:1'].setVisible(True)
+                            else:
+                                vse = u'Verse:%s' % verse
+                                self.Songbar.actions[vse].setVisible(True)
+                        except:
+                            pass
                     self.Songbar.setVisible(True)
         elif item.is_image():
             #Not sensible to allow loops with 1 frame
@@ -451,7 +456,11 @@ class SlideController(QtGui.QWidget):
             slide_height = 0
             #It is a based Text Render
             if self.serviceItem.is_text():
-                self.slideList[frame[u'verseTag']] = framenumber
+                #only load the slot once
+                try:
+                    test = self.slideList[frame[u'verseTag']]
+                except:
+                    self.slideList[frame[u'verseTag']] = framenumber
                 item.setText(frame[u'text'])
             else:
                 label = QtGui.QLabel()
@@ -479,6 +488,7 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             self.serviceItem.request_audit()
         log.debug(u'displayServiceManagerItems End')
+        print self.slideList
 
     #Screen event methods
     def onSlideSelectedFirst(self):
