@@ -105,8 +105,9 @@ def build_icon(icon):
             ButtonIcon.addPixmap(
                 QtGui.QPixmap(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         else:
-            ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
-                QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            if len(icon) < 5:
+                ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
+                    QtGui.QIcon.Normal, QtGui.QIcon.Off)
     elif type(icon) is QtGui.QImage:
         ButtonIcon = QtGui.QIcon()
         ButtonIcon.addPixmap(

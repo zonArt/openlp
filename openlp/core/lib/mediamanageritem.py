@@ -213,26 +213,26 @@ class MediaManagerItem(QtGui.QWidget):
             self.addToolbarButton(
                 u'Load %s' % self.PluginNameShort,
                 u'%s %s' % (self.trUtf8('Load a new'), self.PluginNameVisible),
-                u':%s_load.png' % self.IconPath, self.onFileClick)
+                u':/%s_load.png' % self.IconPath, self.onFileClick)
         ## New Button ##
         if self.hasNewIcon:
             self.addToolbarButton(
                 u'New %s' % self.PluginNameShort,
                 u'%s %s' % (self.trUtf8('Add a new'), self.PluginNameVisible),
-                u':%s_new.png' % self.IconPath, self.onNewClick)
+                u':/%s_new.png' % self.IconPath, self.onNewClick)
         ## Edit Button ##
         if self.hasEditIcon:
             self.addToolbarButton(
                 u'Edit %s' % self.PluginNameShort,
                 u'%s %s' % (self.trUtf8('Edit the selected'),
                     self.PluginNameVisible),
-                u':%s_edit.png' % self.IconPath, self.onEditClick)
+                u':/%s_edit.png' % self.IconPath, self.onEditClick)
         ## Delete Button ##
         if self.hasDeleteIcon:
             self.addToolbarButton(
                 u'Delete %s' % self.PluginNameShort,
                 self.trUtf8('Delete the selected item'),
-                u':%s_delete.png' % self.IconPath, self.onDeleteClick)
+                u':/%s_delete.png' % self.IconPath, self.onDeleteClick)
         ## Separator Line ##
         self.addToolbarSeparator()
         ## Preview ##
