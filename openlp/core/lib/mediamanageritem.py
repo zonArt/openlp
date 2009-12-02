@@ -269,7 +269,7 @@ class MediaManagerItem(QtGui.QWidget):
         if self.hasEditIcon:
             self.ListView.addAction(
                 contextMenuAction(
-                    self.ListView, u':%s_new.png' % self.IconPath,
+                    self.ListView, u':/%s_new.png' % self.IconPath,
                     u'%s %s' % (self.trUtf8('&Edit'), self.PluginNameVisible),
                     self.onEditClick))
             self.ListView.addAction(contextMenuSeparator(self.ListView))

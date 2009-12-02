@@ -173,7 +173,7 @@ class SlideController(QtGui.QWidget):
                 self.trUtf8('Move to live'), self.onGoLive)
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
-                u'Edit Song', u':songs/song_edit.png',
+                u'Edit Song', u':/songs/song_edit.png',
                 self.trUtf8('Edit and re-preview Song'), self.onEditSong)
         if isLive:
             self.Toolbar.addToolbarSeparator(u'Loop Separator')
@@ -210,16 +210,16 @@ class SlideController(QtGui.QWidget):
         if isLive:
             self.Songbar = OpenLPToolbar(self)
             self.Songbar.addToolbarButton(
-                u'Bridge:1',  u':/pages/page_bridge.png',
+                u'Bridge:1',  u'B',
                 self.trUtf8('Bridge'),
                 self.onSongBarHandler)
             self.Songbar.addToolbarButton(
-                u'Chorus:1',  u':/pages/page_chorus.png',
+                u'Chorus:1',  u'C',
                 self.trUtf8('Chorus'),
                 self.onSongBarHandler)
             for verse in range(1, 12):
                 self.Songbar.addToolbarButton(
-                    unicode(u'Verse:%s'% verse), u':/pages/page_%s.png' % verse,
+                    unicode(u'Verse:%s'% verse), u'%s' % verse,
                     unicode(self.trUtf8('Verse %s'))% verse,
                     self.onSongBarHandler)
             self.ControllerLayout.addWidget(self.Songbar)
@@ -488,7 +488,6 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             self.serviceItem.request_audit()
         log.debug(u'displayServiceManagerItems End')
-        print self.slideList
 
     #Screen event methods
     def onSlideSelectedFirst(self):

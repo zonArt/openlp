@@ -105,9 +105,25 @@ def build_icon(icon):
             ButtonIcon.addPixmap(
                 QtGui.QPixmap(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         else:
-            if len(icon) < 5:
+            if len(icon) > 2:
                 ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
                     QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            else:
+                #lets build a Icon from text
+                pmap = QtGui.QPixmap(u':/pages/slide.png')
+                painter = QtGui.QPainter(pmap)
+                painter.setPen(QtGui.QColor(QtGui.QColor.black))
+                font = QtGui.QFont()
+                font.setFamily(u'Arial')
+                font.setBold(True)
+                font.setPointSize(12)
+                painter.setFont(font)
+                metrics = QtGui.QFontMetrics(font)
+                painter.drawText(5, 3 + metrics.ascent(), icon)
+                painter.end()
+                ButtonIcon.addPixmap(
+                    pmap, QtGui.QIcon.Normal, QtGui.QIcon.Off)
+
     elif type(icon) is QtGui.QImage:
         ButtonIcon = QtGui.QIcon()
         ButtonIcon.addPixmap(
