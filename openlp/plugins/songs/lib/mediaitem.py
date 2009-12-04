@@ -297,11 +297,11 @@ class SongMediaItem(MediaManagerItem):
                 for verse in verseList:
                     service_item.add_from_text(verse[1][:30], unicode(verse[1]))
             else:
-                for order in service_item.verse_order:
+                for order in service_item.verse_order.split(u' '):
                     for verse in verseList:
                         if verse[1]:
                             if verse[0][u'type'] == "Verse" and \
-                                        verse[0][u'label'][0] == order[0]:
+                                        verse[0][u'label'][0] == order[1:]:
                                     verseTag = u'%s:%s' % \
                                         (verse[0][u'type'], verse[0][u'label'])
                                     service_item.add_from_text\
