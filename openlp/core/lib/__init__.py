@@ -97,9 +97,9 @@ def build_icon(icon):
         ``:/resource/file.png``, or a file location like ``/path/to/file.png``.
     """
     ButtonIcon = None
-    if type(icon) is QtGui.QIcon:
+    if isinstance(icon, QtGui.QIcon):
         ButtonIcon = icon
-    elif type(icon) is types.StringType or type(icon) is types.UnicodeType:
+    elif isinstance(icon, basestring):
         ButtonIcon = QtGui.QIcon()
         if icon.startswith(u':/'):
             ButtonIcon.addPixmap(
@@ -124,7 +124,7 @@ def build_icon(icon):
                 ButtonIcon.addPixmap(
                     pmap, QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
-    elif type(icon) is QtGui.QImage:
+    elif isinstance(icon, QtGui.QImage):
         ButtonIcon = QtGui.QIcon()
         ButtonIcon.addPixmap(
             QtGui.QPixmap.fromImage(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)

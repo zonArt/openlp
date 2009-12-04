@@ -401,7 +401,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if self.AuthorsListView.count() == 0:
             self.SongTabWidget.setCurrentIndex(2)
             self.AuthorsListView.setFocus()
-        for verse in unicode(self.VerseOrderEdit.text()).split(u' '):
+        #split the verse list by space and mark lower case for testing
+        for verse in unicode(self.VerseOrderEdit.text()).lower().split(u' '):
             if len(verse) == 2:
                 if verse[0:1] == u'v' and verse[1:].isdigit():
                     pass
@@ -411,7 +412,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     return False, \
                         self.trUtf8('Invalid verse entry - vX')
             else:
-                if u' BCITPEO'.find(verse.upper()) > -1:
+                if u' bcitped'.find(verse) > -1:
                     pass
                 else:
                     self.SongTabWidget.setCurrentIndex(0)

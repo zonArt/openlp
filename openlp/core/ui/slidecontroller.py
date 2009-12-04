@@ -356,7 +356,7 @@ class SlideController(QtGui.QWidget):
                     self.Songbar.actions[action].setVisible(False)
                 if item.verse_order:
                     for slide in self.slideList:
-                        self.Songbar.actions[slide].setVisible(True)
+                        self.Songbar.actions[slide.lower()].setVisible(True)
                     self.Songbar.setVisible(True)
         elif item.is_image():
             #Not sensible to allow loops with 1 frame
@@ -447,9 +447,9 @@ class SlideController(QtGui.QWidget):
             if self.serviceItem.is_text():
                 #only load the slot once
                 try:
-                    test = self.slideList[frame[u'verseTag']]
+                    test = self.slideList[frame[u'verseTag'].lower()]
                 except:
-                    self.slideList[frame[u'verseTag']] = framenumber
+                    self.slideList[frame[u'verseTag'].lower()] = framenumber
                 item.setText(frame[u'text'])
             else:
                 label = QtGui.QLabel()
