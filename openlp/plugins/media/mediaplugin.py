@@ -40,9 +40,6 @@ class MediaPlugin(Plugin):
         # passed with drag and drop messages
         self.dnd_id = u'Media'
 
-    def get_settings_tab(self):
-        return MediaTab(self.name)
-
     def initialise(self):
         log.info(u'Plugin Initialising')
         Plugin.initialise(self)

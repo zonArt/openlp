@@ -289,28 +289,29 @@ class SongMediaItem(MediaManagerItem):
         service_item.theme = song.theme_name
         service_item.edit_enabled = True
         service_item.editId = item_id
-        service_item.verse_order = song.verse_order
         if song.lyrics.startswith(u'<?xml version='):
             songXML = SongXMLParser(song.lyrics)
             verseList = songXML.get_verses()
             #no verse list or only 1 space (in error)
-            if service_item.verse_order is None or \
-                service_item.verse_order == u'' or service_item.verse_order == u' ':
+            if song.verse_order is None or \
+                song.verse_order == u'' or song.verse_order == u' ':
                 for verse in verseList:
                     service_item.add_from_text(verse[1][:30], unicode(verse[1]))
             else:
                 #Loop through the verse list and expand the song accordingly.
-                for order in service_item.verse_order.split(u' '):
+                for order in song.verse_order.upper().split(u' '):
+                    if len(order) == 0:
+                        break
                     for verse in verseList:
                         if verse[1]:
-                            if verse[0][u'type'].lower() == "verse" and \
-                                        verse[0][u'label'][0].lower() == order[1:].lower():
+                            if verse[0][u'type'] == "Verse":
+                                if verse[0][u'label'][0] == order[1:]:
                                     verseTag = u'%s:%s' % \
                                         (verse[0][u'type'], verse[0][u'label'])
                                     service_item.add_from_text\
                                         (verse[1][:30], verse[1], verseTag)
                             else:
-                                if verse[0][u'type'][0].lower() == order[0].lower():
+                                if verse[0][u'type'][0] == order[0]:
                                     verseTag = u'%s:%s' % \
                                         (verse[0][u'type'], verse[0][u'label'])
                                     service_item.add_from_text\

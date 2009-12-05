@@ -354,9 +354,12 @@ class SlideController(QtGui.QWidget):
                 str_to_bool(self.songsconfig.get_config(u'show songbar', True)):
                 for action in self.Songbar.actions:
                     self.Songbar.actions[action].setVisible(False)
-                if item.verse_order:
-                    for slide in self.slideList:
-                        self.Songbar.actions[slide.lower()].setVisible(True)
+                hasButtons = False
+                for slide in self.slideList:
+                    if slide is not None:
+                        self.Songbar.actions[slide].setVisible(True)
+                        hasButtons = True
+                if hasButtons:
                     self.Songbar.setVisible(True)
         elif item.is_image():
             #Not sensible to allow loops with 1 frame
@@ -447,9 +450,9 @@ class SlideController(QtGui.QWidget):
             if self.serviceItem.is_text():
                 #only load the slot once
                 try:
-                    test = self.slideList[frame[u'verseTag'].lower()]
+                    test = self.slideList[frame[u'verseTag']]
                 except:
-                    self.slideList[frame[u'verseTag'].lower()] = framenumber
+                    self.slideList[frame[u'verseTag']] = framenumber
                 item.setText(frame[u'text'])
             else:
                 label = QtGui.QLabel()

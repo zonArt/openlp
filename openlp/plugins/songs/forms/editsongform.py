@@ -369,7 +369,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     for count, parts in enumerate(match.split(u']---\n')):
                         if len(parts) > 1:
                             if count == 0:
-                                variant = parts
+                                #make sure the tag is correctly cased
+                                variant = u'%s%s' % \
+                                    (parts[0:1].upper(), parts[1:].lower())
                             else:
                                 if parts.endswith(u'\n'):
                                     parts = parts.rstrip(u'\n')
