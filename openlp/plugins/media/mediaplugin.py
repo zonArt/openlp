@@ -26,7 +26,7 @@
 import logging
 
 from openlp.core.lib import Plugin, build_icon
-from openlp.plugins.media.lib import MediaTab, MediaMediaItem
+from openlp.plugins.media.lib import MediaMediaItem
 
 class MediaPlugin(Plugin):
     global log
