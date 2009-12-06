@@ -125,7 +125,4 @@
     <file>theme_export.png</file>
     <file>theme_import.png</file>
   </qresource>
-  <qresource prefix="pages" >
-    <file>slide.png</file>
-  </qresource>
 </RCC>
