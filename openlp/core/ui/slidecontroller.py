@@ -208,22 +208,16 @@ class SlideController(QtGui.QWidget):
         self.ControllerLayout.addWidget(self.Mediabar)
         # Build the Song Toolbar
         if isLive:
-            self.Songbar = OpenLPToolbar(self)
-            self.Songbar.addToolbarButton(
-                u'Bridge',  u':/pages/page_bridge.png',
-                self.trUtf8('Bridge'),
-                self.onSongBarHandler)
-            self.Songbar.addToolbarButton(
-                u'Chorus',  u':/pages/page_chorus.png',
-                self.trUtf8('Chorus'),
-                self.onSongBarHandler)
-            for verse in range(1, 12):
-                self.Songbar.addToolbarButton(
-                    unicode(verse),  u':/pages/page_%s.png' % verse,
-                    unicode(self.trUtf8('Verse %s'))%verse,
-                    self.onSongBarHandler)
-            self.ControllerLayout.addWidget(self.Songbar)
-            self.Songbar.setVisible(False)
+            self.SongMenu = QtGui.QToolButton(self.Toolbar)
+            self.SongMenu.setText(self.trUtf8('Go to Verse'))
+            self.SongMenu.setPopupMode(QtGui.QToolButton.InstantPopup)
+            self.Toolbar.addWidget(self.SongMenu)
+            self.SongMenu.setMenu(QtGui.QMenu(self.trUtf8('Go to Verse'), self.Toolbar))
+            self.SongMenu.menu().addAction(self.trUtf8('V1'), self.onSongBarHandler)
+            self.SongMenu.menu().addAction(self.trUtf8('V2'), self.onSongBarHandler)
+            self.SongMenu.menu().addAction(self.trUtf8('V3'), self.onSongBarHandler)
+            self.SongMenu.setVisible(False)
+            self.SongMenu.menu().setVisible(False)
         # Screen preview area
         self.PreviewFrame = QtGui.QFrame(self.Splitter)
         self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, 300, 225))
@@ -319,7 +313,7 @@ class SlideController(QtGui.QWidget):
             pass
         else:
             #Remember list is 1 out!
-            slideno = int(request) - 1
+            slideno = int(request[1:]) - 1
             if slideno > self.PreviewListWidget.rowCount():
                 self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount())
             else:
@@ -344,17 +338,18 @@ class SlideController(QtGui.QWidget):
         Allows the live toolbar to be customised
         """
         self.Toolbar.setVisible(True)
-        self.Songbar.setVisible(False)
+        #self.Songbar.setVisible(False)
+        self.SongMenu.setVisible(True)
         self.Mediabar.setVisible(False)
         self.Toolbar.makeWidgetsInvisible(self.image_list)
         if item.is_text():
             self.Toolbar.makeWidgetsInvisible(self.image_list)
             if item.is_song() and \
                 str_to_bool(self.songsconfig.get_config(u'show songbar', True)):
-                for action in self.Songbar.actions:
-                    self.Songbar.actions[action].setVisible(False)
-                if item.verse_order:
-                    verses = item.verse_order.split(u' ')
+                #for action in self.Songbar.actions:
+                #    self.Songbar.actions[action].setVisible(False)
+                #if item.verse_order:
+                #    verses = item.verse_order.split(u' ')
 #                    for verse in verses:
 #                        if not verse or int(verse) > 12:
 #                            break
@@ -363,7 +358,8 @@ class SlideController(QtGui.QWidget):
 #                        except:
 #                            #More than 20 verses hard luck
 #                            pass
-                    self.Songbar.setVisible(True)
+                #    self.Songbar.setVisible(True)
+                self.SongMenu.setVisible(True)
         elif item.is_image():
             #Not sensible to allow loops with 1 frame
             if len(item.get_frames()) > 1:
@@ -524,7 +520,10 @@ class SlideController(QtGui.QWidget):
             else:
                 before = time.time()
                 frame = self.serviceItem.get_rendered_frame(row)
-                self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame[u'main']))
+                if isinstance(frame, QtGui.QImage):
+                    self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
+                else:
+                    self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame[u'main']))
                 log.log(15, u'Slide Rendering took %4s' % (time.time() - before))
                 if self.isLive:
                     self.parent.mainDisplay.frameView(frame, True)
