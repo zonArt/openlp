@@ -356,33 +356,36 @@ class MediaManagerItem(QtGui.QWidget):
             QtGui.QMessageBox.information(self,
                 self.trUtf8('No items selected...'),
                 self.trUtf8('You must select one or more items'))
-        log.debug(self.PluginNameShort + u' Preview Requested')
-        service_item = self.buildServiceItem()
-        if service_item:
-            service_item.fromPlugin = True
-            self.parent.preview_controller.addServiceItem(service_item)
+        else:
+            log.debug(self.PluginNameShort + u' Preview Requested')
+            service_item = self.buildServiceItem()
+            if service_item:
+                service_item.fromPlugin = True
+                self.parent.preview_controller.addServiceItem(service_item)
 
     def onLiveClick(self):
         if not self.ListView.selectedIndexes():
             QtGui.QMessageBox.information(self,
                 self.trUtf8('No items selected...'),
                 self.trUtf8('You must select one or more items'))
-        log.debug(self.PluginNameShort + u' Live Requested')
-        service_item = self.buildServiceItem()
-        if service_item:
-            service_item.fromPlugin = True
-            self.parent.live_controller.addServiceItem(service_item)
+        else:
+            log.debug(self.PluginNameShort + u' Live Requested')
+            service_item = self.buildServiceItem()
+            if service_item:
+                service_item.fromPlugin = True
+                self.parent.live_controller.addServiceItem(service_item)
 
     def onAddClick(self):
         if not self.ListView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self,
                 self.trUtf8('No items selected...'),
                 self.trUtf8('You must select one or more items'))
-        log.debug(self.PluginNameShort + u' Add Requested')
-        service_item = self.buildServiceItem()
-        if service_item:
-            service_item.fromPlugin = False
-            self.parent.service_manager.addServiceItem(service_item)
+        else:
+            log.debug(self.PluginNameShort + u' Add Requested')
+            service_item = self.buildServiceItem()
+            if service_item:
+                service_item.fromPlugin = False
+                self.parent.service_manager.addServiceItem(service_item)
 
     def buildServiceItem(self):
         """

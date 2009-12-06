@@ -208,28 +208,20 @@ class SlideController(QtGui.QWidget):
         self.ControllerLayout.addWidget(self.Mediabar)
         # Build the Song Toolbar
         if isLive:
-            self.Songbar = OpenLPToolbar(self)
-            self.Songbar.addToolbarButton( u'I', u':/pages/slide.png',
-                self.trUtf8('Intro'),self.onSongBarHandler)
-            self.Songbar.addToolbarButton(u'Bridge:1',  u'B',
-                self.trUtf8('Bridge'),self.onSongBarHandler)
-            self.Songbar.addToolbarButton(u'PreChorus:1',  u'P',
-                self.trUtf8('PreChorus'), self.onSongBarHandler)
-            self.Songbar.addToolbarButton(u'Chorus:1',  u'C',
-                self.trUtf8('Chorus'), self.onSongBarHandler)
-            self.Songbar.addToolbarButton(u'Tag:1',  u'T',
-                self.trUtf8('Tag'), self.onSongBarHandler)
-            for verse in range(1, 12):
-                self.Songbar.addToolbarButton(
-                    unicode(u'Verse:%s'% verse), u'%s' % verse,
-                    unicode(self.trUtf8('Verse %s'))% verse,
-                    self.onSongBarHandler)
-            self.Songbar.addToolbarButton(u'Other:1',  u'O',
-                self.trUtf8('Other'), self.onSongBarHandler)
-            self.Songbar.addToolbarButton(u'Ending:1',  u'E',
-                self.trUtf8('Ending'), self.onSongBarHandler)
-            self.ControllerLayout.addWidget(self.Songbar)
-            self.Songbar.setVisible(False)
+            self.SongMenu = QtGui.QToolButton(self.Toolbar)
+            self.SongMenu.setText(self.trUtf8('Go to Verse'))
+            self.SongMenu.setPopupMode(QtGui.QToolButton.InstantPopup)
+            self.Toolbar.addToolbarWidget(u'Song Menu', self.SongMenu)
+            self.SongMenu.setMenu(QtGui.QMenu(self.trUtf8('Go to Verse'), self.Toolbar))
+            self.SongMenu.menu().addAction(self.trUtf8('Intro'), self.onSongBarHandler)
+            self.SongMenu.menu().addAction(self.trUtf8('Bridge'), self.onSongBarHandler)
+            self.SongMenu.menu().addAction(self.trUtf8('PreChorus'), self.onSongBarHandler)
+            self.SongMenu.menu().addAction(self.trUtf8('Chorus'), self.onSongBarHandler)
+            for i in range(1, 10):
+                self.SongMenu.menu().addAction(self.trUtf8('V%s'%i), self.onSongBarHandler)
+            self.SongMenu.menu().addAction(self.trUtf8('Other'), self.onSongBarHandler)
+            self.SongMenu.menu().addAction(self.trUtf8('End'), self.onSongBarHandler)
+            self.Toolbar.makeWidgetsInvisible([u'Song Menu'])
         # Screen preview area
         self.PreviewFrame = QtGui.QFrame(self.Splitter)
         self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, 300, 225))
@@ -276,8 +268,6 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(self.PreviewListWidget,
             QtCore.SIGNAL(u'activated(QModelIndex)'), self.onSlideSelected)
         if isLive:
-            #QtCore.QObject.connect(self.blackPushButton,
-            #    QtCore.SIGNAL(u'clicked(bool)'), self.onBlankScreen)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'update_spin_delay'), self.receiveSpinDelay)
             Receiver.send_message(u'request_spin_delay')
@@ -320,12 +310,21 @@ class SlideController(QtGui.QWidget):
     def onSongBarHandler(self):
         request = unicode(self.sender().text())
         #Remember list is 1 out!
-        slideno = self.slideList[request]
+        slideno = self.slideList[request[1:]] -1
         if slideno > self.PreviewListWidget.rowCount():
             self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount())
         else:
             self.PreviewListWidget.selectRow(slideno)
         self.onSlideSelected()
+#=======
+#            #Remember list is 1 out!
+#            slideno = int(request[1:]) - 1
+#            if slideno > self.PreviewListWidget.rowCount():
+#                self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount())
+#            else:
+#                self.PreviewListWidget.selectRow(slideno)
+#            self.onSlideSelected()
+#>>>>>>> MERGE-SOURCE
 
     def receiveSpinDelay(self, value):
         self.DelaySpinBox.setValue(int(value))
@@ -345,23 +344,19 @@ class SlideController(QtGui.QWidget):
         Allows the live toolbar to be customised
         """
         self.Toolbar.setVisible(True)
-        self.Songbar.setVisible(False)
         self.Mediabar.setVisible(False)
         self.Toolbar.makeWidgetsInvisible(self.image_list)
         if item.is_text():
             self.Toolbar.makeWidgetsInvisible(self.image_list)
             if item.is_song() and \
                 str_to_bool(self.songsconfig.get_config(u'show songbar', True)):
-                for action in self.Songbar.actions:
-                    pass
-                    #self.Songbar.actions[action].setVisible(False)
                 hasButtons = False
                 for slide in self.slideList:
-                    if slide is not None:
-                        self.Songbar.actions[slide].setVisible(True)
-                        hasButtons = True
+#                    if slide is not None:
+#                        self.SongMenu.actions[slide].setVisible(True)
+                    hasButtons = True
                 if hasButtons:
-                    self.Songbar.setVisible(True)
+                    self.Toolbar.makeWidgetsVisible([u'Song Menu'])
         elif item.is_image():
             #Not sensible to allow loops with 1 frame
             if len(item.get_frames()) > 1:
@@ -450,10 +445,15 @@ class SlideController(QtGui.QWidget):
             #It is a based Text Render
             if self.serviceItem.is_text():
                 #only load the slot once
+                bits = frame[u'verseTag'].split(u':')
+                if bits[0] == self.trUtf8('Verse'):
+                    tag = u'%s%s' % (bits[0][0], bits[1][0] )
+                else:
+                    tag = bits[0]
                 try:
-                    test = self.slideList[frame[u'verseTag']]
+                    test = self.slideList[tag]
                 except:
-                    self.slideList[frame[u'verseTag']] = framenumber
+                    self.slideList[tag] = framenumber
                 item.setText(frame[u'text'])
             else:
                 label = QtGui.QLabel()
@@ -526,7 +526,10 @@ class SlideController(QtGui.QWidget):
             else:
                 before = time.time()
                 frame = self.serviceItem.get_rendered_frame(row)
-                self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame[u'main']))
+                if isinstance(frame, QtGui.QImage):
+                    self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
+                else:
+                    self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame[u'main']))
                 log.log(15, u'Slide Rendering took %4s' % (time.time() - before))
                 if self.isLive:
                     self.parent.mainDisplay.frameView(frame, True)
