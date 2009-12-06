@@ -209,7 +209,7 @@ class SlideController(QtGui.QWidget):
         # Build the Song Toolbar
         if isLive:
             self.Songbar = OpenLPToolbar(self)
-            self.Songbar.addToolbarButton(u'Intro:1',  u'I',
+            self.Songbar.addToolbarButton( u'I', u':/pages/slide.png',
                 self.trUtf8('Intro'),self.onSongBarHandler)
             self.Songbar.addToolbarButton(u'Bridge:1',  u'B',
                 self.trUtf8('Bridge'),self.onSongBarHandler)
@@ -353,7 +353,8 @@ class SlideController(QtGui.QWidget):
             if item.is_song() and \
                 str_to_bool(self.songsconfig.get_config(u'show songbar', True)):
                 for action in self.Songbar.actions:
-                    self.Songbar.actions[action].setVisible(False)
+                    pass
+                    #self.Songbar.actions[action].setVisible(False)
                 hasButtons = False
                 for slide in self.slideList:
                     if slide is not None:
