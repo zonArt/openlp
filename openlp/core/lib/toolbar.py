@@ -68,21 +68,30 @@ class OpenLPToolbar(QtGui.QToolBar):
         ``objectname``
             The name of the object, as used in `<button>.setObjectName()`.
         """
-        ButtonIcon = build_icon(icon)
+        ToolbarButton = None
+        if icon:
+            ButtonIcon = build_icon(icon)
+        else:
+            ButtonIcon = None
         if ButtonIcon:
             if slot and not checkable:
                 ToolbarButton = self.addAction(ButtonIcon, title, slot)
             else:
                 ToolbarButton = self.addAction(ButtonIcon, title)
-            if tooltip:
-                ToolbarButton.setToolTip(tooltip)
-            if checkable:
-                ToolbarButton.setCheckable(True)
-                QtCore.QObject.connect(ToolbarButton,
-                    QtCore.SIGNAL(u'toggled(bool)'), slot)
             self.icons[title] = ButtonIcon
-            self.actions[title] = ToolbarButton
-            return ToolbarButton
+        else:
+            ToolbarButton = QtGui.QAction(title, ToolbarButton)
+            self.addAction(ToolbarButton)
+            QtCore.QObject.connect(ToolbarButton,
+                QtCore.SIGNAL(u'triggered()'), slot)
+        if tooltip:
+            ToolbarButton.setToolTip(tooltip)
+        if checkable:
+            ToolbarButton.setCheckable(True)
+            QtCore.QObject.connect(ToolbarButton,
+                QtCore.SIGNAL(u'toggled(bool)'), slot)
+        self.actions[title] = ToolbarButton
+        return ToolbarButton
 
     def addToolbarSeparator(self, handle):
         """
@@ -106,7 +115,8 @@ class OpenLPToolbar(QtGui.QToolBar):
         ``title``
             The title of the icon to search for.
         """
-        if self.icons.has_key(title):
+        title = QtCore.QString(title)
+        if self.icons[title]:
             return self.icons[title]
         else:
             self.log.error(u'getIconFromTitle - no icon for %s' % title)

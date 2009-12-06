@@ -97,17 +97,34 @@ def build_icon(icon):
         ``:/resource/file.png``, or a file location like ``/path/to/file.png``.
     """
     ButtonIcon = None
-    if type(icon) is QtGui.QIcon:
+    if isinstance(icon, QtGui.QIcon):
         ButtonIcon = icon
-    elif type(icon) is types.StringType or type(icon) is types.UnicodeType:
+    elif isinstance(icon, basestring):
         ButtonIcon = QtGui.QIcon()
         if icon.startswith(u':/'):
             ButtonIcon.addPixmap(
                 QtGui.QPixmap(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         else:
-            ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
-                QtGui.QIcon.Normal, QtGui.QIcon.Off)
-    elif type(icon) is QtGui.QImage:
+            if len(icon) > 2:
+                ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
+                    QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            else:
+                #lets build a Icon from text
+                pmap = QtGui.QPixmap(u':/pages/slide.png')
+                painter = QtGui.QPainter(pmap)
+                painter.setPen(QtGui.QColor(QtGui.QColor.black))
+                font = QtGui.QFont()
+                font.setFamily(u'Arial')
+                font.setBold(True)
+                font.setPointSize(12)
+                painter.setFont(font)
+                metrics = QtGui.QFontMetrics(font)
+                painter.drawText(5, 3 + metrics.ascent(), icon)
+                painter.end()
+                ButtonIcon.addPixmap(
+                    pmap, QtGui.QIcon.Normal, QtGui.QIcon.Off)
+
+    elif isinstance(icon, QtGui.QImage):
         ButtonIcon = QtGui.QIcon()
         ButtonIcon.addPixmap(
             QtGui.QPixmap.fromImage(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)

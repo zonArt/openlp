@@ -26,7 +26,7 @@
 import logging
 
 from openlp.core.lib import Plugin, build_icon
-from openlp.plugins.media.lib import MediaTab, MediaMediaItem
+from openlp.plugins.media.lib import MediaMediaItem
 
 class MediaPlugin(Plugin):
     global log
@@ -39,9 +39,6 @@ class MediaPlugin(Plugin):
         self.icon = build_icon(u':/media/media_video.png')
         # passed with drag and drop messages
         self.dnd_id = u'Media'
-
-    def get_settings_tab(self):
-        return MediaTab(self.name)
 
     def initialise(self):
         log.info(u'Plugin Initialising')

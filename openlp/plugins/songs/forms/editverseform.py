@@ -42,17 +42,39 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             QtCore.SIGNAL(u'clicked()'), self.onAddChorus)
         QtCore.QObject.connect(self.addBridge,
             QtCore.SIGNAL(u'clicked()'), self.onAddBridge)
+        QtCore.QObject.connect(self.addIntro,
+            QtCore.SIGNAL(u'clicked()'), self.onAddIntro)
+        QtCore.QObject.connect(self.addOther,
+            QtCore.SIGNAL(u'clicked()'), self.onAddOther)
+        QtCore.QObject.connect(self.addPreChorus,
+            QtCore.SIGNAL(u'clicked()'), self.onAddPreChorus)
+        QtCore.QObject.connect(self.addEnding,
+            QtCore.SIGNAL(u'clicked()'), self.onAddEnding)
+        QtCore.QObject.connect(self.VerseListComboBox,
+            QtCore.SIGNAL(u'activated(int)'), self.onVerseComboChanged)
+
+    def onAddIntro(self):
+        self.VerseTextEdit.insertPlainText(u'---[Intro:1]---')
+
+    def onAddEnding(self):
+        self.VerseTextEdit.insertPlainText(u'---[Ending:1]---')
+
+    def onAddOther(self):
+        self.VerseTextEdit.insertPlainText(u'---[Other:1]---')
+
+    def onAddPreChorus(self):
+        self.VerseTextEdit.insertPlainText(u'---[PreChorus:1]---')
 
     def onAddBridge(self):
-        self.VerseTextEdit.insertPlainText(u'---[Bridge:1]---\n')
+        self.VerseTextEdit.insertPlainText(u'---[Bridge:1]---')
 
     def onAddChorus(self):
-        self.VerseTextEdit.insertPlainText(u'---[Chorus:1]---\n')
+        self.VerseTextEdit.insertPlainText(u'---[Chorus:1]---')
 
     def onAddVerse(self):
-        self.VerseTextEdit.insertPlainText(u'---[Verse:1]---\n')
+        self.VerseTextEdit.insertPlainText(u'---[Verse:1]---')
 
-    def setVerse(self, text, single=False, tag=0):
+    def setVerse(self, text, verseCount=0, single=False, tag=u'Verse:1'):
         posVerse = 0
         posSub = 0
         if single:
@@ -65,19 +87,31 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
                 posSub = 0
             self.VerseListComboBox.setEnabled(True)
             self.SubVerseListComboBox.setEnabled(True)
+            self.SubVerseListComboBox.clear()
+            for i in range(1, verseCount + 1):
+                self.SubVerseListComboBox.addItem(u'%s'% i)
             self.addBridge.setEnabled(False)
             self.addChorus.setEnabled(False)
             self.addVerse.setEnabled(False)
+            self.addIntro.setEnabled(False)
+            self.addPreChorus.setEnabled(False)
+            self.addOther.setEnabled(False)
+            self.addEnding.setEnabled(False)
         else:
             self.VerseListComboBox.setEnabled(False)
             self.SubVerseListComboBox.setEnabled(False)
             self.addBridge.setEnabled(True)
             self.addChorus.setEnabled(True)
             self.addVerse.setEnabled(True)
+            self.addIntro.setEnabled(True)
+            self.addPreChorus.setEnabled(True)
+            self.addOther.setEnabled(True)
+            self.addEnding.setEnabled(True)
         self.VerseListComboBox.setCurrentIndex(posVerse)
         self.SubVerseListComboBox.setCurrentIndex(posSub)
         self.VerseTextEdit.setPlainText(text)
         self.VerseTextEdit.setFocus(QtCore.Qt.OtherFocusReason)
+        self.onVerseComboChanged(0)
 
     def getVerse(self):
        return self.VerseTextEdit.toPlainText(), \
@@ -86,3 +120,10 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
 
     def getVerseAll(self):
        return self.VerseTextEdit.toPlainText()
+
+    def onVerseComboChanged(self, id):
+        if unicode(self.VerseListComboBox.currentText()) == u'Verse':
+            self.SubVerseListComboBox.setEnabled(True)
+        else:
+            self.SubVerseListComboBox.setEnabled(False)
+            self.SubVerseListComboBox.setCurrentIndex(0)

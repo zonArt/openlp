@@ -23,7 +23,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from mediatab import MediaTab
 from mediaitem import MediaMediaItem
 
-__all__ = ['MediaTab', 'MediaMediaItem']
+__all__ = ['MediaMediaItem']

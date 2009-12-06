@@ -1,88 +1,91 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
-###############################################################################
-# OpenLP - Open Source Lyrics Projection                                      #
-# --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
-# --------------------------------------------------------------------------- #
-# This program is free software; you can redistribute it and/or modify it     #
-# under the terms of the GNU General Public License as published by the Free  #
-# Software Foundation; version 2 of the License.                              #
-#                                                                             #
-# This program is distributed in the hope that it will be useful, but WITHOUT #
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
-# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
-# more details.                                                               #
-#                                                                             #
-# You should have received a copy of the GNU General Public License along     #
-# with this program; if not, write to the Free Software Foundation, Inc., 59  #
-# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
-###############################################################################
+# Form implementation generated from reading ui file 'editversedialog.ui'
+#
+# Created: Wed Dec  2 08:14:47 2009
+#      by: PyQt4 UI code generator 4.6.2
+#
+# WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
 
 class Ui_EditVerseDialog(object):
     def setupUi(self, EditVerseDialog):
         EditVerseDialog.setObjectName("EditVerseDialog")
-        EditVerseDialog.resize(492, 494)
+        EditVerseDialog.resize(500, 521)
         EditVerseDialog.setModal(True)
-        self.widget = QtGui.QWidget(EditVerseDialog)
-        self.widget.setGeometry(QtCore.QRect(9, 12, 471, 471))
-        self.widget.setObjectName("widget")
-        self.verticalLayout = QtGui.QVBoxLayout(self.widget)
-        self.verticalLayout.setObjectName("verticalLayout")
+        self.layoutWidget = QtGui.QWidget(EditVerseDialog)
+        self.layoutWidget.setGeometry(QtCore.QRect(11, 1, 471, 491))
+        self.layoutWidget.setObjectName("layoutWidget")
+        self.verticalLayout_3 = QtGui.QVBoxLayout(self.layoutWidget)
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.VerseListComboBox = QtGui.QComboBox(self.widget)
+        self.verticalLayout = QtGui.QVBoxLayout()
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.VerseTypeLabel = QtGui.QLabel(self.layoutWidget)
+        self.VerseTypeLabel.setTextFormat(QtCore.Qt.PlainText)
+        self.VerseTypeLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.VerseTypeLabel.setObjectName("VerseTypeLabel")
+        self.verticalLayout.addWidget(self.VerseTypeLabel)
+        self.VerseListComboBox = QtGui.QComboBox(self.layoutWidget)
         self.VerseListComboBox.setObjectName("VerseListComboBox")
         self.VerseListComboBox.addItem("")
-        self.VerseListComboBox.setItemText(0, "")
         self.VerseListComboBox.addItem("")
         self.VerseListComboBox.addItem("")
         self.VerseListComboBox.addItem("")
-        self.horizontalLayout.addWidget(self.VerseListComboBox)
-        self.SubVerseListComboBox = QtGui.QComboBox(self.widget)
+        self.VerseListComboBox.addItem("")
+        self.VerseListComboBox.addItem("")
+        self.VerseListComboBox.addItem("")
+        self.verticalLayout.addWidget(self.VerseListComboBox)
+        self.horizontalLayout.addLayout(self.verticalLayout)
+        self.verticalLayout_2 = QtGui.QVBoxLayout()
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.VerseNumberLabel = QtGui.QLabel(self.layoutWidget)
+        self.VerseNumberLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.VerseNumberLabel.setObjectName("VerseNumberLabel")
+        self.verticalLayout_2.addWidget(self.VerseNumberLabel)
+        self.SubVerseListComboBox = QtGui.QComboBox(self.layoutWidget)
         self.SubVerseListComboBox.setObjectName("SubVerseListComboBox")
-        self.SubVerseListComboBox.addItem("")
-        self.SubVerseListComboBox.setItemText(0, "")
-        self.SubVerseListComboBox.addItem("")
-        self.SubVerseListComboBox.addItem("")
-        self.SubVerseListComboBox.addItem("")
-        self.SubVerseListComboBox.addItem("")
-        self.SubVerseListComboBox.addItem("")
-        self.SubVerseListComboBox.addItem("")
-        self.SubVerseListComboBox.addItem("")
-        self.SubVerseListComboBox.addItem("")
-        self.SubVerseListComboBox.addItem("")
-        self.SubVerseListComboBox.addItem("")
-        self.SubVerseListComboBox.addItem("")
-        self.horizontalLayout.addWidget(self.SubVerseListComboBox)
-        self.verticalLayout.addLayout(self.horizontalLayout)
-        self.VerseTextEdit = QtGui.QTextEdit(self.widget)
+        self.verticalLayout_2.addWidget(self.SubVerseListComboBox)
+        self.horizontalLayout.addLayout(self.verticalLayout_2)
+        self.verticalLayout_3.addLayout(self.horizontalLayout)
+        self.VerseTextEdit = QtGui.QTextEdit(self.layoutWidget)
         self.VerseTextEdit.setAcceptRichText(False)
         self.VerseTextEdit.setObjectName("VerseTextEdit")
-        self.verticalLayout.addWidget(self.VerseTextEdit)
+        self.verticalLayout_3.addWidget(self.VerseTextEdit)
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.addVerse = QtGui.QPushButton(self.widget)
-        self.addVerse.setObjectName("addVerse")
-        self.horizontalLayout_2.addWidget(self.addVerse)
-        self.addChorus = QtGui.QPushButton(self.widget)
-        self.addChorus.setObjectName("addChorus")
-        self.horizontalLayout_2.addWidget(self.addChorus)
-        self.addBridge = QtGui.QPushButton(self.widget)
+        self.addBridge = QtGui.QPushButton(self.layoutWidget)
         self.addBridge.setObjectName("addBridge")
         self.horizontalLayout_2.addWidget(self.addBridge)
-        self.verticalLayout.addLayout(self.horizontalLayout_2)
-        self.ButtonBox = QtGui.QDialogButtonBox(self.widget)
+        self.addVerse = QtGui.QPushButton(self.layoutWidget)
+        self.addVerse.setObjectName("addVerse")
+        self.horizontalLayout_2.addWidget(self.addVerse)
+        self.addChorus = QtGui.QPushButton(self.layoutWidget)
+        self.addChorus.setObjectName("addChorus")
+        self.horizontalLayout_2.addWidget(self.addChorus)
+        self.verticalLayout_3.addLayout(self.horizontalLayout_2)
+        self.horizontalLayout_3 = QtGui.QHBoxLayout()
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.addPreChorus = QtGui.QPushButton(self.layoutWidget)
+        self.addPreChorus.setObjectName("addPreChorus")
+        self.horizontalLayout_3.addWidget(self.addPreChorus)
+        self.addIntro = QtGui.QPushButton(self.layoutWidget)
+        self.addIntro.setObjectName("addIntro")
+        self.horizontalLayout_3.addWidget(self.addIntro)
+        self.addOther = QtGui.QPushButton(self.layoutWidget)
+        self.addOther.setObjectName("addOther")
+        self.horizontalLayout_3.addWidget(self.addOther)
+        self.addEnding = QtGui.QPushButton(self.layoutWidget)
+        self.addEnding.setObjectName("addEnding")
+        self.horizontalLayout_3.addWidget(self.addEnding)
+        self.verticalLayout_3.addLayout(self.horizontalLayout_3)
+        self.ButtonBox = QtGui.QDialogButtonBox(self.layoutWidget)
         self.ButtonBox.setOrientation(QtCore.Qt.Horizontal)
         self.ButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Save)
         self.ButtonBox.setObjectName("ButtonBox")
-        self.verticalLayout.addWidget(self.ButtonBox)
+        self.verticalLayout_3.addWidget(self.ButtonBox)
 
         self.retranslateUi(EditVerseDialog)
         QtCore.QObject.connect(self.ButtonBox, QtCore.SIGNAL("accepted()"), EditVerseDialog.accept)
@@ -91,20 +94,20 @@ class Ui_EditVerseDialog(object):
 
     def retranslateUi(self, EditVerseDialog):
         EditVerseDialog.setWindowTitle(QtGui.QApplication.translate("EditVerseDialog", "Edit Verse", None, QtGui.QApplication.UnicodeUTF8))
+        self.VerseTypeLabel.setText(QtGui.QApplication.translate("EditVerseDialog", "Verse Type", None, QtGui.QApplication.UnicodeUTF8))
+        self.VerseListComboBox.setItemText(0, QtGui.QApplication.translate("EditVerseDialog", "Intro", None, QtGui.QApplication.UnicodeUTF8))
         self.VerseListComboBox.setItemText(1, QtGui.QApplication.translate("EditVerseDialog", "Verse", None, QtGui.QApplication.UnicodeUTF8))
-        self.VerseListComboBox.setItemText(2, QtGui.QApplication.translate("EditVerseDialog", "Chorus", None, QtGui.QApplication.UnicodeUTF8))
-        self.VerseListComboBox.setItemText(3, QtGui.QApplication.translate("EditVerseDialog", "Bridge", None, QtGui.QApplication.UnicodeUTF8))
-        self.SubVerseListComboBox.setItemText(1, QtGui.QApplication.translate("EditVerseDialog", "1", None, QtGui.QApplication.UnicodeUTF8))
-        self.SubVerseListComboBox.setItemText(2, QtGui.QApplication.translate("EditVerseDialog", "1a", None, QtGui.QApplication.UnicodeUTF8))
-        self.SubVerseListComboBox.setItemText(3, QtGui.QApplication.translate("EditVerseDialog", "1b", None, QtGui.QApplication.UnicodeUTF8))
-        self.SubVerseListComboBox.setItemText(4, QtGui.QApplication.translate("EditVerseDialog", "2", None, QtGui.QApplication.UnicodeUTF8))
-        self.SubVerseListComboBox.setItemText(5, QtGui.QApplication.translate("EditVerseDialog", "2a", None, QtGui.QApplication.UnicodeUTF8))
-        self.SubVerseListComboBox.setItemText(6, QtGui.QApplication.translate("EditVerseDialog", "2b", None, QtGui.QApplication.UnicodeUTF8))
-        self.SubVerseListComboBox.setItemText(7, QtGui.QApplication.translate("EditVerseDialog", "3", None, QtGui.QApplication.UnicodeUTF8))
-        self.SubVerseListComboBox.setItemText(8, QtGui.QApplication.translate("EditVerseDialog", "4", None, QtGui.QApplication.UnicodeUTF8))
-        self.SubVerseListComboBox.setItemText(9, QtGui.QApplication.translate("EditVerseDialog", "5", None, QtGui.QApplication.UnicodeUTF8))
-        self.SubVerseListComboBox.setItemText(10, QtGui.QApplication.translate("EditVerseDialog", "6", None, QtGui.QApplication.UnicodeUTF8))
-        self.SubVerseListComboBox.setItemText(11, QtGui.QApplication.translate("EditVerseDialog", "7", None, QtGui.QApplication.UnicodeUTF8))
+        self.VerseListComboBox.setItemText(2, QtGui.QApplication.translate("EditVerseDialog", "Pre-Chorus", None, QtGui.QApplication.UnicodeUTF8))
+        self.VerseListComboBox.setItemText(3, QtGui.QApplication.translate("EditVerseDialog", "Chorus", None, QtGui.QApplication.UnicodeUTF8))
+        self.VerseListComboBox.setItemText(4, QtGui.QApplication.translate("EditVerseDialog", "Bridge", None, QtGui.QApplication.UnicodeUTF8))
+        self.VerseListComboBox.setItemText(5, QtGui.QApplication.translate("EditVerseDialog", "Ending", None, QtGui.QApplication.UnicodeUTF8))
+        self.VerseListComboBox.setItemText(6, QtGui.QApplication.translate("EditVerseDialog", "Other", None, QtGui.QApplication.UnicodeUTF8))
+        self.VerseNumberLabel.setText(QtGui.QApplication.translate("EditVerseDialog", "Number", None, QtGui.QApplication.UnicodeUTF8))
+        self.addBridge.setText(QtGui.QApplication.translate("EditVerseDialog", "Bridge", None, QtGui.QApplication.UnicodeUTF8))
         self.addVerse.setText(QtGui.QApplication.translate("EditVerseDialog", "Verse", None, QtGui.QApplication.UnicodeUTF8))
         self.addChorus.setText(QtGui.QApplication.translate("EditVerseDialog", "Chorus", None, QtGui.QApplication.UnicodeUTF8))
-        self.addBridge.setText(QtGui.QApplication.translate("EditVerseDialog", "Bridge", None, QtGui.QApplication.UnicodeUTF8))
+        self.addPreChorus.setText(QtGui.QApplication.translate("EditVerseDialog", "Pre-Chorus", None, QtGui.QApplication.UnicodeUTF8))
+        self.addIntro.setText(QtGui.QApplication.translate("EditVerseDialog", "Intro", None, QtGui.QApplication.UnicodeUTF8))
+        self.addOther.setText(QtGui.QApplication.translate("EditVerseDialog", "Other", None, QtGui.QApplication.UnicodeUTF8))
+        self.addEnding.setText(QtGui.QApplication.translate("EditVerseDialog", "Ending", None, QtGui.QApplication.UnicodeUTF8))
+

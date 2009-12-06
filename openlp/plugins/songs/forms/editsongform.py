@@ -315,7 +315,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.VerseDeleteButton.setEnabled(True)
 
     def onVerseAddButtonClicked(self):
-        self.verse_form.setVerse(u'')
+        self.verse_form.setVerse(u'', self.VerseListWidget.count() + 1, True)
         self.verse_form.exec_()
         afterText, verse, subVerse = self.verse_form.getVerse()
         data = u'%s:%s' %(verse, subVerse)
@@ -329,7 +329,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if item:
             tempText = item.text()
             verseId = unicode((item.data(QtCore.Qt.UserRole)).toString())
-            self.verse_form.setVerse(tempText, True, verseId)
+            self.verse_form.setVerse(tempText, \
+                self.VerseListWidget.count(), True, verseId)
             self.verse_form.exec_()
             afterText, verse, subVerse = self.verse_form.getVerse()
             data = u'%s:%s' %(verse, subVerse)
@@ -368,7 +369,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     for count, parts in enumerate(match.split(u']---\n')):
                         if len(parts) > 1:
                             if count == 0:
-                                variant = parts
+                                #make sure the tag is correctly cased
+                                variant = u'%s%s' % \
+                                    (parts[0:1].upper(), parts[1:].lower())
                             else:
                                 if parts.endswith(u'\n'):
                                     parts = parts.rstrip(u'\n')
@@ -400,14 +403,25 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if self.AuthorsListView.count() == 0:
             self.SongTabWidget.setCurrentIndex(2)
             self.AuthorsListView.setFocus()
-        for verse in unicode(self.VerseOrderEdit.text()):
-            if verse.isdigit() or u' BC'.find(verse) > -1:
-                pass
+        #split the verse list by space and mark lower case for testing
+        for verse in unicode(self.VerseOrderEdit.text()).lower().split(u' '):
+            if len(verse) == 2:
+                if verse[0:1] == u'v' and verse[1:].isdigit():
+                    pass
+                else:
+                    self.SongTabWidget.setCurrentIndex(0)
+                    self.VerseOrderEdit.setFocus()
+                    return False, \
+                        self.trUtf8('Invalid verse entry - vX')
             else:
-                self.SongTabWidget.setCurrentIndex(0)
-                self.VerseOrderEdit.setFocus()
-                return False, \
-                    self.trUtf8('Invalid verse entry - values must be Numeric, B or C')
+                if u' bcitped'.find(verse) > -1:
+                    pass
+                else:
+                    self.SongTabWidget.setCurrentIndex(0)
+                    self.VerseOrderEdit.setFocus()
+                    return False, \
+                        self.trUtf8(\
+                        'Invalid verse entry - values must be Numeric, I,B,C,T,P,E,O')
         return True, u''
 
     def onTitleEditItemLostFocus(self):

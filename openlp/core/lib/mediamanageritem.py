@@ -213,26 +213,26 @@ class MediaManagerItem(QtGui.QWidget):
             self.addToolbarButton(
                 u'Load %s' % self.PluginNameShort,
                 u'%s %s' % (self.trUtf8('Load a new'), self.PluginNameVisible),
-                u':%s_load.png' % self.IconPath, self.onFileClick)
+                u':/%s_load.png' % self.IconPath, self.onFileClick)
         ## New Button ##
         if self.hasNewIcon:
             self.addToolbarButton(
                 u'New %s' % self.PluginNameShort,
                 u'%s %s' % (self.trUtf8('Add a new'), self.PluginNameVisible),
-                u':%s_new.png' % self.IconPath, self.onNewClick)
+                u':/%s_new.png' % self.IconPath, self.onNewClick)
         ## Edit Button ##
         if self.hasEditIcon:
             self.addToolbarButton(
                 u'Edit %s' % self.PluginNameShort,
                 u'%s %s' % (self.trUtf8('Edit the selected'),
                     self.PluginNameVisible),
-                u':%s_edit.png' % self.IconPath, self.onEditClick)
+                u':/%s_edit.png' % self.IconPath, self.onEditClick)
         ## Delete Button ##
         if self.hasDeleteIcon:
             self.addToolbarButton(
                 u'Delete %s' % self.PluginNameShort,
                 self.trUtf8('Delete the selected item'),
-                u':%s_delete.png' % self.IconPath, self.onDeleteClick)
+                u':/%s_delete.png' % self.IconPath, self.onDeleteClick)
         ## Separator Line ##
         self.addToolbarSeparator()
         ## Preview ##
@@ -269,7 +269,7 @@ class MediaManagerItem(QtGui.QWidget):
         if self.hasEditIcon:
             self.ListView.addAction(
                 contextMenuAction(
-                    self.ListView, u':%s_new.png' % self.IconPath,
+                    self.ListView, u':/%s_new.png' % self.IconPath,
                     u'%s %s' % (self.trUtf8('&Edit'), self.PluginNameVisible),
                     self.onEditClick))
             self.ListView.addAction(contextMenuSeparator(self.ListView))
@@ -356,33 +356,36 @@ class MediaManagerItem(QtGui.QWidget):
             QtGui.QMessageBox.information(self,
                 self.trUtf8('No items selected...'),
                 self.trUtf8('You must select one or more items'))
-        log.debug(self.PluginNameShort + u' Preview Requested')
-        service_item = self.buildServiceItem()
-        if service_item:
-            service_item.fromPlugin = True
-            self.parent.preview_controller.addServiceItem(service_item)
+        else:
+            log.debug(self.PluginNameShort + u' Preview Requested')
+            service_item = self.buildServiceItem()
+            if service_item:
+                service_item.fromPlugin = True
+                self.parent.preview_controller.addServiceItem(service_item)
 
     def onLiveClick(self):
         if not self.ListView.selectedIndexes():
             QtGui.QMessageBox.information(self,
                 self.trUtf8('No items selected...'),
                 self.trUtf8('You must select one or more items'))
-        log.debug(self.PluginNameShort + u' Live Requested')
-        service_item = self.buildServiceItem()
-        if service_item:
-            service_item.fromPlugin = True
-            self.parent.live_controller.addServiceItem(service_item)
+        else:
+            log.debug(self.PluginNameShort + u' Live Requested')
+            service_item = self.buildServiceItem()
+            if service_item:
+                service_item.fromPlugin = True
+                self.parent.live_controller.addServiceItem(service_item)
 
     def onAddClick(self):
         if not self.ListView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self,
                 self.trUtf8('No items selected...'),
                 self.trUtf8('You must select one or more items'))
-        log.debug(self.PluginNameShort + u' Add Requested')
-        service_item = self.buildServiceItem()
-        if service_item:
-            service_item.fromPlugin = False
-            self.parent.service_manager.addServiceItem(service_item)
+        else:
+            log.debug(self.PluginNameShort + u' Add Requested')
+            service_item = self.buildServiceItem()
+            if service_item:
+                service_item.fromPlugin = False
+                self.parent.service_manager.addServiceItem(service_item)
 
     def buildServiceItem(self):
         """
