@@ -266,7 +266,10 @@ class Renderer(object):
             bbox = self._render_lines_unaligned(footer_lines, True,
                 (self._rect_footer.left(), self._rect_footer.top()), True)
         log.debug(u'generate_frame_from_lines - Finish')
-        return {u'main':self._frame, u'trans':self._frameOp}
+        if self._theme.display_slideTransition:
+            return {u'main':self._frame, u'trans':self._frameOp}
+        else:
+            return {u'main':self._frame, u'trans':None}
 
     def _generate_background_frame(self):
         """
@@ -574,22 +577,23 @@ class Renderer(object):
         if draw:
             painter.drawText(x, y + metrics.ascent(), line)
         painter.end()
-        # Print 2nd image with 50% weight
-        painter = QtGui.QPainter()
-        painter.begin(self._frameOp)
-        painter.setRenderHint(QtGui.QPainter.Antialiasing);
-        painter.setOpacity(0.7)
-        painter.setFont(font)
-        if color is None:
-            if footer:
-                painter.setPen(QtGui.QColor(self._theme.font_footer_color))
+        if self._theme.display_slideTransition:
+            # Print 2nd image with 50% weight
+            painter = QtGui.QPainter()
+            painter.begin(self._frameOp)
+            painter.setRenderHint(QtGui.QPainter.Antialiasing);
+            painter.setOpacity(0.7)
+            painter.setFont(font)
+            if color is None:
+                if footer:
+                    painter.setPen(QtGui.QColor(self._theme.font_footer_color))
+                else:
+                    painter.setPen(QtGui.QColor(self._theme.font_main_color))
             else:
-                painter.setPen(QtGui.QColor(self._theme.font_main_color))
-        else:
-            painter.setPen(QtGui.QColor(color))
-        if draw:
-            painter.drawText(x, y + metrics.ascent(), line)
-        painter.end()
+                painter.setPen(QtGui.QColor(color))
+            if draw:
+                painter.drawText(x, y + metrics.ascent(), line)
+            painter.end()
         return (w, h)
 
     def snoop_Image(self, image, image2=None):

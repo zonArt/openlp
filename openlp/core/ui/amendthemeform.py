@@ -123,6 +123,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             QtCore.SIGNAL(u'stateChanged(int)'), self.onOutlineCheckBoxChanged)
         QtCore.QObject.connect(self.ShadowCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'), self.onShadowCheckBoxChanged)
+        QtCore.QObject.connect(self.SlideTransitionCheckedBox,
+            QtCore.SIGNAL(u'stateChanged(int)'), self.onSlideTransitionCheckedBoxChanged)
 
     def accept(self):
         new_theme = ThemeXML()
@@ -176,7 +178,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 unicode(self.theme.display_outline_color),
                 unicode(self.theme.display_horizontalAlign),
                 unicode(self.theme.display_verticalAlign),
-                unicode(self.theme.display_wrapStyle))
+                unicode(self.theme.display_wrapStyle),
+                unicode(self.theme.display_slideTransition))
         theme = new_theme.extract_xml()
         pretty_theme = new_theme.extract_formatted_xml()
         if self.thememanager.saveTheme(theme_name, theme, pretty_theme,
@@ -446,6 +449,15 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.stateChanging(self.theme)
         self.previewTheme()
 
+    def onSlideTransitionCheckedBoxChanged(self, value):
+        print "changed"
+        if value == 2:  # checked
+            self.theme.display_slideTransition= True
+        else:
+            self.theme.display_slideTransition = False
+        self.stateChanging(self.theme)
+        self.previewTheme()
+
     def onShadowColorPushButtonClicked(self):
         self.theme.display_shadow_color = QtGui.QColorDialog.getColor(
             QtGui.QColor(self.theme.display_shadow_color), self).name()
@@ -562,6 +574,12 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.ShadowCheckBox.setChecked(False)
             self.ShadowColorPushButton.setEnabled(False)
 
+        print self.theme.display_slideTransition
+        if self.theme.display_slideTransition:
+            self.SlideTransitionCheckedBox.setChecked(True)
+        else:
+            self.SlideTransitionCheckedBox.setChecked(False)
+
         self.HorizontalComboBox.setCurrentIndex(
             self.theme.display_horizontalAlign)
         self.VerticalComboBox.setCurrentIndex(self.theme.display_verticalAlign)
@@ -653,6 +671,11 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.ShadowColorPushButton.setEnabled(True)
         else:
             self.ShadowColorPushButton.setEnabled(False)
+
+        if self.theme.display_slideTransition:
+            self.SlideTransitionCheckedBox.setChecked(True)
+        else:
+            self.SlideTransitionCheckedBox.setChecked(False)
 
     def previewTheme(self):
         if self.allowPreview:
