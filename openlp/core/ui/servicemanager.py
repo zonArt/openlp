@@ -411,6 +411,7 @@ class ServiceManager(QtGui.QWidget):
         * An osd which is a pickle of the service items
         * All image, presentation and video files needed to run the service.
         """
+        log.debug(u'onSaveService')
         if not quick or self.isNew:
             filename = QtGui.QFileDialog.getSaveFileName(self,
             u'Save Service', self.config.get_last_dir())
@@ -430,13 +431,12 @@ class ServiceManager(QtGui.QWidget):
             try:
                 zip = zipfile.ZipFile(unicode(filename), 'w')
                 for item in self.serviceItems:
-                    service.append(
-                        {u'serviceitem':item[u'service_item'].get_service_repr()})
-                    if item[u'service_item'].service_item_type == ServiceItemType.Image or \
-                        item[u'service_item'].service_item_type == ServiceItemType.Command:
+                    service.append({u'serviceitem':item[u'service_item'].get_service_repr()})
+                    if item[u'service_item'].uses_file():
                         for frame in item[u'service_item'].get_frames:
                             path_from = unicode(os.path.join(
-                                item[u'service_item'].service_item_path, frame.get_frame_title()))
+                                item[u'service_item'].service_item_path,
+                                frame.get_frame_title()))
                             zip.write(path_from)
                 file = open(servicefile, u'wb')
                 cPickle.dump(service, file)

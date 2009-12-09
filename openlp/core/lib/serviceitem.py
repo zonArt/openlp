@@ -276,6 +276,10 @@ class ServiceItem(object):
     def is_image(self):
         return self.service_item_type == ServiceItemType.Image
 
+    def uses_file(self):
+        return self.service_item_type == ServiceItemType.Image or \
+            self.service_item_type == ServiceItemType.Command
+
     def is_text(self):
         return self.service_item_type == ServiceItemType.Text
 

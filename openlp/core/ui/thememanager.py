@@ -389,7 +389,7 @@ class ThemeManager(QtGui.QWidget):
         newtheme.add_display(unicode(shadow), unicode(theme.ShadowColor.name()),
             unicode(outline), unicode(theme.OutlineColor.name()),
             unicode(theme.HorizontalAlign), unicode(theme.VerticalAlign),
-            unicode(theme.WrapStyle))
+            unicode(theme.WrapStyle), 0)
         return newtheme.extract_xml()
 
     def saveTheme(self, name, theme_xml, theme_pretty_xml, image_from,
@@ -502,6 +502,7 @@ class ThemeManager(QtGui.QWidget):
         #theme.display_shadow_color
         theme.display_verticalAlign = int(theme.display_verticalAlign.strip())
         theme.display_wrapStyle = theme.display_wrapStyle.strip()
+        theme.display_slideTransition = theme.display_slideTransition
         theme.font_footer_color = theme.font_footer_color.strip()
         theme.font_footer_height = int(theme.font_footer_height.strip())
         theme.font_footer_indentation = \

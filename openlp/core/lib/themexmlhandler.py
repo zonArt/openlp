@@ -67,9 +67,10 @@ blankthemexml=\
    <display>
       <shadow color="#000000">True</shadow>
       <outline color="#000000">False</outline>
-       <horizontalAlign>0</horizontalAlign>
-       <verticalAlign>0</verticalAlign>
-       <wrapStyle>0</wrapStyle>
+      <horizontalAlign>0</horizontalAlign>
+      <verticalAlign>0</verticalAlign>
+      <wrapStyle>0</wrapStyle>
+      <slideTransition>False</slideTransition>
    </display>
  </theme>
 '''
@@ -237,7 +238,7 @@ class ThemeXML(object):
         background.appendChild(element)
 
     def add_display(self, shadow, shadow_color, outline, outline_color,
-        horizontal, vertical, wrap):
+        horizontal, vertical, wrap, transition):
         """
         Add a Display options.
 
@@ -261,6 +262,10 @@ class ThemeXML(object):
 
         ``wrap``
             Wrap style.
+
+        ``transition``
+            Whether the slide transition is active.
+
         """
         background = self.theme_xml.createElement(u'display')
         self.theme.appendChild(background)
@@ -291,6 +296,12 @@ class ThemeXML(object):
         value = self.theme_xml.createTextNode(wrap)
         element.appendChild(value)
         background.appendChild(element)
+        # Slide Transition
+        element = self.theme_xml.createElement(u'slideTransition')
+        value = self.theme_xml.createTextNode(transition)
+        element.appendChild(value)
+        background.appendChild(element)
+
 
     def child_element(self, element, tag, value):
         """
@@ -362,7 +373,7 @@ class ThemeXML(object):
                     if master == u'font_' and e[0] == u'type':
                         master += e[1] + u'_'
                     elif master == u'display_' and (element.tag == u'shadow' \
-                        or element.tag == u'outline'):
+                        or element.tag == u'outline' ):
                         et = str_to_bool(element.text)
                         setattr(self, master + element.tag, et)
                         setattr(self, master + element.tag + u'_'+ e[0], e[1])
@@ -375,6 +386,7 @@ class ThemeXML(object):
             else:
                 if element.tag:
                     field = master + element.tag
+                    element.text = element.text.strip().lstrip()
                     if element.text == u'True' or element.text == u'False':
                         setattr(self, field, str_to_bool(element.text))
                     else:
