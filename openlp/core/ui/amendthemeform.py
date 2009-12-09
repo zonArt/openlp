@@ -450,9 +450,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.previewTheme()
 
     def onSlideTransitionCheckedBoxChanged(self, value):
-        print "changed"
         if value == 2:  # checked
-            self.theme.display_slideTransition= True
+            self.theme.display_slideTransition = True
         else:
             self.theme.display_slideTransition = False
         self.stateChanging(self.theme)
@@ -574,11 +573,10 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.ShadowCheckBox.setChecked(False)
             self.ShadowColorPushButton.setEnabled(False)
 
-        print self.theme.display_slideTransition
         if self.theme.display_slideTransition:
-            self.SlideTransitionCheckedBox.setChecked(True)
+            self.SlideTransitionCheckedBox.setCheckState(QtCore.Qt.Checked)
         else:
-            self.SlideTransitionCheckedBox.setChecked(False)
+            self.SlideTransitionCheckedBox.setCheckState(QtCore.Qt.Unchecked)
 
         self.HorizontalComboBox.setCurrentIndex(
             self.theme.display_horizontalAlign)
@@ -671,11 +669,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.ShadowColorPushButton.setEnabled(True)
         else:
             self.ShadowColorPushButton.setEnabled(False)
-
-        if self.theme.display_slideTransition:
-            self.SlideTransitionCheckedBox.setChecked(True)
-        else:
-            self.SlideTransitionCheckedBox.setChecked(False)
 
     def previewTheme(self):
         if self.allowPreview:

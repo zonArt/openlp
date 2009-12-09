@@ -386,6 +386,7 @@ class ThemeXML(object):
             else:
                 if element.tag:
                     field = master + element.tag
+                    element.text = element.text.strip().lstrip()
                     if element.text == u'True' or element.text == u'False':
                         setattr(self, field, str_to_bool(element.text))
                     else:
