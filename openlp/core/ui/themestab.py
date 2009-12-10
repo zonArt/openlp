@@ -137,24 +137,20 @@ class ThemesTab(SettingsTab):
         self.config.set_config(u'theme level', self.theme_level)
         self.config.set_config(u'global theme',self.global_theme)
         Receiver.send_message(u'update_global_theme', self.global_theme)
+        self.parent.RenderManager.set_global_theme(
+            self.global_theme, self.theme_level)
 
     def postSetUp(self):
         Receiver.send_message(u'update_global_theme', self.global_theme)
 
     def onSongLevelButtonPressed(self):
-        self.global_style = u'Song'
-        self.parent.RenderManager.set_global_theme(
-            self.global_theme, self.theme_level)
+        self.theme_level = ThemeLevel.Song
 
     def onServiceLevelButtonPressed(self):
-        self.global_style = u'Service'
-        self.parent.RenderManager.set_global_theme(
-            self.global_theme, self.theme_level)
+        self.theme_level = ThemeLevel.Service
 
     def onGlobalLevelButtonPressed(self):
-        self.global_style = u'Global'
-        self.parent.RenderManager.set_global_theme(
-            self.global_theme, self.theme_level)
+        self.theme_level = ThemeLevel.Global
 
     def onDefaultComboBoxChanged(self, value):
         self.global_theme = unicode(self.DefaultComboBox.currentText())
