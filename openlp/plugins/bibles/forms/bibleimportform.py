@@ -232,11 +232,11 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
     def incrementProgressBar(self, text ):
         log.debug(u'IncrementBar %s', text)
-        self.MessageLabel.setText(self.trUtf8('Import processing %s') % text)
+        self.MessageLabel.setText(unicode(self.trUtf8('Import processing')) + ' - %s' % text)
         self.ProgressBar.setValue(self.ProgressBar.value() + 1)
 
     def importBible(self):
-        log.debug(u'Import Bible')
+        log.debug(u'Import Bible %s' % self.bible_type)
         message = None
         if self.bible_type == u'OSIS':
             loaded = self.biblemanager.register_osis_file_bible(
@@ -269,7 +269,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
                 unicode(self.CopyrightEdit.displayText()),
                 unicode(self.PermisionEdit.displayText()))
         else:
-            message = self.trUtf8('Bible import failed')
+            message = self.trUtf8('Bible import failed as name is already in use')
         self.bible_type = None
         # free the screen state restrictions
         self.resetScreenFieldStates()

@@ -62,17 +62,16 @@ class BibleOSISImpl():
         filepath = os.path.abspath(os.path.join(
             filepath, u'..', u'resources',u'osisbooks.csv'))
         fbibles = None
+        self.loadbible = True
         try:
             fbibles = open(filepath, u'r')
             for line in fbibles:
                 p = line.split(u',')
                 self.booksOfBible[p[0]] = p[1].replace(u'\n', u'')
                 self.abbrevOfBible[p[0]] = p[2].replace(u'\n', u'')
-            self.loadbible = True
         except:
             log.exception(u'OSIS bible import failed')
         finally:
-            self.loadbible = False
             if fbibles:
                 fbibles.close()
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -95,6 +94,7 @@ class BibleOSISImpl():
             The Import dialog, so that we can increase the counter on
             the progress bar.
         """
+        log.info(u'Load data for %s' % osisfile_record)
         detect_file = None
         try:
             detect_file = open(osisfile_record, u'r')
@@ -174,7 +174,6 @@ class BibleOSISImpl():
                             testament)
                         dialogobject.incrementProgressBar(
                             self.booksOfBible[p[0]])
-                        Receiver.send_message(u'process_events')
                         count = 0
                     self.bibledb.add_verse(book.id, p[1], p[2], text)
                     count += 1

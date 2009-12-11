@@ -473,7 +473,7 @@ class ThemeManager(QtGui.QWidget):
         newtheme.add_font(unicode(QtGui.QFont().family()), unicode(u'#FFFFFF'),
             unicode(12), u'False', u'footer')
         newtheme.add_display(u'False', unicode(u'#FFFFFF'), u'False',
-            unicode(u'#FFFFFF'), unicode(0), unicode(0), unicode(0))
+            unicode(u'#FFFFFF'), unicode(0), unicode(0), unicode(0), u'False')
         return newtheme.extract_xml()
 
     def createThemeFromXml(self, theme_xml, path):
