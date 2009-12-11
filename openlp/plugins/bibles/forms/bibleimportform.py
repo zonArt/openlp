@@ -232,7 +232,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
     def incrementProgressBar(self, text ):
         log.debug(u'IncrementBar %s', text)
-        self.MessageLabel.setText(self.trUtf8(unicode(u'Import processing - %s' % text)))
+        self.MessageLabel.setText(unicode(self.trUtf8('Import processing')) + ' - %s' % text)
         self.ProgressBar.setValue(self.ProgressBar.value() + 1)
 
     def importBible(self):

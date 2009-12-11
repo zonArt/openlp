@@ -289,6 +289,7 @@ class SlideController(QtGui.QWidget):
         width = self.parent.ControlSplitter.sizes()[self.split]
         height = width * self.parent.RenderManager.screen_ratio
         self.PreviewListWidget.setColumnWidth(0, width)
+        #Sort out image hights (Songs , bibles excluded)
         if self.serviceItem and not self.serviceItem.is_text():
             for framenumber, frame in enumerate(self.serviceItem.get_frames()):
                 self.PreviewListWidget.setRowHeight(framenumber, height)
@@ -301,7 +302,6 @@ class SlideController(QtGui.QWidget):
 
     def onSongBarHandler(self):
         request = unicode(self.sender().text())
-        #Remember list is 1 out!
         slideno = self.slideList[request]
         if slideno > self.PreviewListWidget.rowCount():
             self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount())
@@ -428,6 +428,7 @@ class SlideController(QtGui.QWidget):
                     #only load the slot once
                     bits = frame[u'verseTag'].split(u':')
                     tag = None
+                    #If verse handle verse number else tag only
                     if bits[0] == self.trUtf8('Verse'):
                         tag = u'%s%s' % (bits[0][0], bits[1][0] )
                     else:

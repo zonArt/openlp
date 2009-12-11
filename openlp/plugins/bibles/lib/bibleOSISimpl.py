@@ -106,7 +106,6 @@ class BibleOSISImpl():
             if detect_file:
                 detect_file.close()
         osis = None
-        x = 0
         try:
             osis = codecs.open(osisfile_record, u'r', details['encoding'])
             book_ptr = None
@@ -117,7 +116,6 @@ class BibleOSISImpl():
                 # cancel pressed on UI
                 if not self.loadbible:
                     break
-                x += 1
                 pos = file_record.find(verseText)
                 # we have a verse
                 if pos > -1:
@@ -176,7 +174,6 @@ class BibleOSISImpl():
                             testament)
                         dialogobject.incrementProgressBar(
                             self.booksOfBible[p[0]])
-                        Receiver.send_message(u'process_events')
                         count = 0
                     self.bibledb.add_verse(book.id, p[1], p[2], text)
                     count += 1
