@@ -246,7 +246,7 @@ class SlideController(QtGui.QWidget):
             self.SlidePreview.sizePolicy().hasHeightForWidth())
         self.SlidePreview.setSizePolicy(sizePolicy)
         self.SlidePreview.setFixedSize(
-            QtCore.QSize(self.settingsmanager.slidecontroller_image, 225))
+            QtCore.QSize(self.settingsmanager.slidecontroller_image,self.settingsmanager.slidecontroller_image / 1.3 ))
         self.SlidePreview.setFrameShape(QtGui.QFrame.Box)
         self.SlidePreview.setFrameShadow(QtGui.QFrame.Plain)
         self.SlidePreview.setLineWidth(1)

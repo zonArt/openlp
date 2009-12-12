@@ -28,6 +28,7 @@ import os.path
 import logging
 import chardet
 import codecs
+import time
 
 from PyQt4 import QtCore
 
@@ -174,12 +175,17 @@ class BibleOSISImpl():
                             testament)
                         dialogobject.incrementProgressBar(
                             self.booksOfBible[p[0]])
+                        Receiver.send_message(u'process_events')
+                        #minor delay to get the events processed
+                        time.sleep(0.1)
                         count = 0
                     self.bibledb.add_verse(book.id, p[1], p[2], text)
                     count += 1
                     #Every 3 verses repaint the screen
-                    if count % 3 == 0:
+                    if count % 30 == 0:
                         Receiver.send_message(u'process_events')
+                        #minor delay to get the events processed
+                        time.sleep(0.1)
                         count = 0
         except:
             log.exception(u'Loading bible from OSIS file failed')
