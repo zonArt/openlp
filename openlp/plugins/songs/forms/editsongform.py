@@ -336,14 +336,19 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             data = u'%s:%s' %(verse, subVerse)
             item.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
             item.setText(afterText)
-            #number of lines has change
+            #number of lines has change so repaint the list moving the data
             if len(tempText.split(u'\n')) != len(afterText.split(u'\n')):
                 tempList = {}
+                tempId = {}
                 for row in range(0, self.VerseListWidget.count()):
                     tempList[row] = self.VerseListWidget.item(row).text()
+                    tempId[row] = self.VerseListWidget.item(row).\
+                        data(QtCore.Qt.UserRole)
                 self.VerseListWidget.clear()
                 for row in range (0, len(tempList)):
-                    self.VerseListWidget.addItem(tempList[row])
+                    item = QtGui.QListWidgetItem(tempList[row])
+                    item.setData(QtCore.Qt.UserRole, tempId[row])
+                    self.VerseListWidget.addItem(item)
                 self.VerseListWidget.repaint()
         self.VerseEditButton.setEnabled(False)
         self.VerseDeleteButton.setEnabled(False)
