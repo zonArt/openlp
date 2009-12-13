@@ -214,7 +214,6 @@ class MainDisplay(DisplayWidget):
                 self.setVisible(True)
                 self.showFullScreen()
         self.frame = frame
-        print type(self.frame)
 
     def blankDisplay(self, blanked=True):
         if blanked:

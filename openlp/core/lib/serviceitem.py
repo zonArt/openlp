@@ -112,6 +112,8 @@ class ServiceItem(object):
             for slide in self._raw_frames:
                 slide[u'image'] = \
                     self.RenderManager.resize_image(slide[u'image'])
+        elif self.service_item_type == ServiceItemType.Command:
+            pass
         else:
             log.error(u'Invalid value renderer :%s' % self.service_item_type)
 

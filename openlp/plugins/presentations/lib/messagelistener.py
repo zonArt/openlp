@@ -30,6 +30,124 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
 
+class Controller(object):
+    """
+    This is the Presentation listener who acts on events from the slide
+    controller and passes the messages on the the correct presentation handlers
+    """
+    global log
+    log = logging.getLogger(u'Controller')
+    log.info(u'Controller loaded')
+
+    def __init__(self, live):
+        self.isLive = live
+        log.info(u'%s controller loaded' % live)
+
+    def addHandler(self, controller, file):
+        log.debug(u'Live = %s, addHandler %s' % (self.isLive, file))
+        self.controller = controller
+        if self.controller.is_loaded():
+            self.shutdown(None)
+        self.controller.load_presentation(file)
+        if self.isLive:
+            self.controller.start_presentation()
+            Receiver.send_message(u'live_slide_hide')
+        self.controller.slidenumber = 0
+
+    def activate(self):
+        log.debug(u'Live = %s, activate' % self.isLive)
+        if self.controller.is_active():
+            return
+        if not self.controller.is_loaded():
+            self.controller.load_presentation(self.controller.filepath)
+        if self.isLive:
+            self.controller.start_presentation()
+            if self.controller.slidenumber > 1:
+                self.controller.goto_slide(self.controller.slidenumber)
+
+    def slide(self, message):
+        log.debug(u'Live = %s, slide' % self.isLive)
+        print "slide ", message
+        if not self.isLive:
+            return
+        self.activate()
+        if message:
+            self.controller.goto_slide(message[0] + 1)
+            self.controller.poll_slidenumber(self.isLive)
+
+    def first(self, message):
+        """
+        Based on the handler passed at startup triggers the first slide
+        """
+        log.debug(u'Live = %s, first' % self.isLive)
+        print "first ", message
+        if not self.isLive:
+            return
+        self.activate()
+        self.controller.start_presentation()
+        self.controller.poll_slidenumber(self.isLive)
+
+    def last(self, message):
+        """
+        Based on the handler passed at startup triggers the first slide
+        """
+        log.debug(u'Live = %s, last' % self.isLive)
+        print "last ", message
+        if not self.isLive:
+            return
+        self.activate()
+        self.controller.goto_slide(self.controller.get_slide_count())
+        self.controller.poll_slidenumber(self.isLive)
+
+    def next(self, message):
+        """
+        Based on the handler passed at startup triggers the next slide event
+        """
+        log.debug(u'Live = %s, next' % self.isLive)
+        print "next ", message
+        if not self.isLive:
+            return
+        self.activate()
+        self.controller.next_step()
+        self.controller.poll_slidenumber(self.isLive)
+
+    def previous(self, message):
+        """
+        Based on the handler passed at startup triggers the previous slide event
+        """
+        log.debug(u'Live = %s, previous' % self.isLive)
+        if not self.isLive:
+            return
+        print "previous ", message
+        self.activate()
+        self.controller.previous_step()
+        self.controller.poll_slidenumber(self.isLive)
+
+    def shutdown(self, message):
+        """
+        Based on the handler passed at startup triggers slide show to shut down
+        """
+        log.debug(u'Live = %s, shutdown' % self.isLive)
+        self.controller.close_presentation()
+        self.controller.slidenumber = 0
+        #self.timer.stop()
+
+    def blank(self):
+        if not self.isLive:
+            return
+        if not self.controller.is_loaded():
+            return
+        if not self.controller.is_active():
+            return
+        self.controller.blank_screen()
+
+    def unblank(self):
+        if not self.is_live:
+            return
+        self.activate()
+        self.controller.unblank_screen()
+
+
 class MessageListener(object):
     """
     This is the Presentation listener who acts on events from the slide
@@ -41,8 +159,9 @@ class MessageListener(object):
 
     def __init__(self, controllers):
         self.controllers = controllers
-        self.handler = None
-        self.is_live = None
+        self.previewHandler = Controller(False)
+        self.liveHandler = Controller(True)
+        self.isLive = None
         # messages are sent from core.ui.slidecontroller
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'presentations_start'), self.startup)
@@ -71,108 +190,84 @@ class MessageListener(object):
         Start of new presentation
         Save the handler as any new presentations start here
         """
-        self.handler, file, self.is_live = self.decodeMessage(message)
-        self.controller = self.controllers[self.handler]
-        if self.controller.is_loaded():
-            self.shutdown(None)
-        self.controller.load_presentation(file)
-        if self.is_live:
-            self.controller.start_presentation()
-            Receiver.send_message(u'live_slide_hide')
-        self.controller.slidenumber = 0
-        self.timer.start()
-
-    def activate(self):
-        if self.controller.is_active():
-            return
-        if not self.controller.is_loaded():
-            self.controller.load_presentation(self.controller.filepath)
-        self.controller.start_presentation()
-        if self.controller.slidenumber > 1:
-            self.controller.goto_slide(self.controller.slidenumber)
+        log.debug(u'Startup called with message %s' % message)
+        self.handler, file, isLive = self.decodeMessage(message)
+        if isLive:
+            self.liveHandler.addHandler(self.controllers[self.handler], file)
+        else:
+            self.previewHandler.addHandler(self.controllers[self.handler], file)
 
     def slide(self, message):
-        if not self.is_live:
-            return
-        self.activate()
-        if message:
-            self.controller.goto_slide(message[0]+1)
-            self.controller.poll_slidenumber(self.is_live)
+        slide, live = self.splitMessage(message)
+        if live:
+            self.liveHandler.activate()
+        else:
+            self.previewHandler.activate()
 
     def first(self, message):
-        """
-        Based on the handler passed at startup triggers the first slide
-        """
-        if not self.is_live:
-            return
-        self.activate()
-        self.controller.start_presentation()
-        self.controller.poll_slidenumber(self.is_live)
+        if self.isLive:
+            self.liveHandler.first(message)
+        else:
+            self.previewHandler.first(message)
 
     def last(self, message):
-        """
-        Based on the handler passed at startup triggers the first slide
-        """
-        if not self.is_live:
-            return
-        self.activate()
-        self.controller.goto_slide(self.controller.get_slide_count())
-        self.controller.poll_slidenumber(self.is_live)
+        if self.isLive:
+            self.liveHandler.last(message)
+        else:
+            self.previewHandler.last(message)
 
     def next(self, message):
-        """
-        Based on the handler passed at startup triggers the next slide event
-        """
-        if not self.is_live:
-            return
-        self.activate()
-        self.controller.next_step()
-        self.controller.poll_slidenumber(self.is_live)
+        if self.isLive:
+            self.liveHandler.next(message)
+        else:
+            self.previewHandler.next(message)
 
     def previous(self, message):
-        """
-        Based on the handler passed at startup triggers the previous slide event
-        """
-        if not self.is_live:
-            return
-        self.activate()
-        self.controller.previous_step()
-        self.controller.poll_slidenumber(self.is_live)
+        if self.isLive:
+            self.liveHandler.previous(message)
+        else:
+            self.previewHandler.previous(message)
 
     def shutdown(self, message):
-        """
-        Based on the handler passed at startup triggers slide show to shut down
-        """
-        if self.is_live:
+        if self.isLive:
+            self.liveHandler.shutdown(message)
             Receiver.send_message(u'live_slide_show')
-        self.controller.close_presentation()
-        self.controller.slidenumber = 0
-        self.timer.stop()
+        else:
+            self.previewHandler.shutdown(message)
 
     def blank(self):
-        if not self.is_live:
-            return
-        if not self.controller.is_loaded():
-            return
-        if not self.controller.is_active():
-            return
-        self.controller.blank_screen()
+        if self.isLive:
+            self.liveHandler.blank()
+        else:
+            self.previewHandler.blank()
 
     def unblank(self):
-        if not self.is_live:
-            return
-        self.activate()
-        self.controller.unblank_screen()
+        if self.isLive:
+            self.liveHandler.unblank()
+        else:
+            self.previewHandler.unblank()
+
+    def splitMessage(self, message):
+        """
+        Splits the selection messages
+        into it's component parts
+
+        ``message``
+        Message containing Presentaion handler name and file to be presented.
+        """
+        bits = message.split(u':')
+        return bits[0], bits[1]
 
     def decodeMessage(self, message):
         """
-        Splits the message from the SlideController into it's component parts
+        Splits the initial message from the SlideController
+        into it's component parts
 
         ``message``
         Message containing Presentaion handler name and file to be presented.
         """
         file = os.path.join(message[1], message[2])
-        return message[0], file, message[3]
+        return message[0], file, message[4]
 
     def timeout(self):
         self.controller.poll_slidenumber(self.is_live)
