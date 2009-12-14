@@ -578,7 +578,7 @@ class Renderer(object):
             painter.drawText(x, y + metrics.ascent(), line)
         painter.end()
         if self._theme.display_slideTransition:
-            # Print 2nd image with 50% weight
+            # Print 2nd image with 70% weight
             painter = QtGui.QPainter()
             painter.begin(self._frameOp)
             painter.setRenderHint(QtGui.QPainter.Antialiasing);

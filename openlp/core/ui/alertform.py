@@ -99,4 +99,4 @@ class AlertForm(QtGui.QDialog):
         self.CancelButton.setText(self.trUtf8('Cancel'))
 
     def onDisplayClicked(self):
-        self.parent.mainDisplay.displayAlert(self.AlertEntryEditItem.text())
+        self.parent.mainDisplay.displayAlert(unicode(self.AlertEntryEditItem.text()))

@@ -25,3 +25,4 @@
 
 from manager import CustomManager
 from mediaitem import CustomMediaItem
+from customtab import CustomTab
