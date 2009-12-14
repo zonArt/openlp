@@ -159,7 +159,8 @@ class CustomMediaItem(MediaManagerItem):
         service_item.title = title
         for slide in raw_slides:
             service_item.add_from_text(slide[:30], slide)
-        if str_to_bool(self.parent.config.get_config(u'display footer', True)):
+        if str_to_bool(self.parent.config.get_config(u'display footer', True)) or \
+            len(credit) > 0:
             raw_footer.append(title + u' '+ credit)
         else:
             raw_footer.append(u'')

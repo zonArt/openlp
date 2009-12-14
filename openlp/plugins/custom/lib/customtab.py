@@ -57,7 +57,7 @@ class CustomTab(SettingsTab):
     def retranslateUi(self):
         self.CustomModeGroupBox.setTitle(self.trUtf8('Custom Display'))
         self.DisplayFooterCheckBox.setText(
-            self.trUtf8('Suppress display of footer:'))
+            self.trUtf8('Display Footer:'))
 
     def onDisplayFooterCheckBoxChanged(self, check_state):
         self.displayFooter = False
