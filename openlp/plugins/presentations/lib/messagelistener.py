@@ -65,15 +65,13 @@ class Controller(object):
             if self.controller.slidenumber > 1:
                 self.controller.goto_slide(self.controller.slidenumber)
 
-    def slide(self, message):
-        log.debug(u'Live = %s, slide' % self.isLive)
-        print "slide ", message
-        if not self.isLive:
-            return
+    def slide(self, slide, live):
+        log.debug(u'Live = %s, slide' % live)
+#        if not isLive:
+#            return
         self.activate()
-        if message:
-            self.controller.goto_slide(message[0] + 1)
-            self.controller.poll_slidenumber(self.isLive)
+        self.controller.goto_slide(int(slide) + 1)
+        self.controller.poll_slidenumber(live)
 
     def first(self, message):
         """
@@ -200,9 +198,9 @@ class MessageListener(object):
     def slide(self, message):
         slide, live = self.splitMessage(message)
         if live:
-            self.liveHandler.activate()
+            self.liveHandler.slide(slide, live)
         else:
-            self.previewHandler.activate()
+            self.previewHandler.slide(slide, live)
 
     def first(self, message):
         if self.isLive:
