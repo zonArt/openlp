@@ -65,8 +65,8 @@ blankthemexml=\
       <location override="False" x="10" y="730" width="1024" height="38"/>
    </font>
    <display>
-      <shadow color="#000000">True</shadow>
-      <outline color="#000000">False</outline>
+      <shadow color="#000000" size="5">True</shadow>
+      <outline color="#000000" size="2">False</outline>
       <horizontalAlign>0</horizontalAlign>
       <verticalAlign>0</verticalAlign>
       <wrapStyle>0</wrapStyle>
@@ -238,7 +238,7 @@ class ThemeXML(object):
         background.appendChild(element)
 
     def add_display(self, shadow, shadow_color, outline, outline_color,
-        horizontal, vertical, wrap, transition):
+        horizontal, vertical, wrap, transition, shadow_pixel=5, outline_pixel=2):
         """
         Add a Display options.
 
@@ -272,12 +272,14 @@ class ThemeXML(object):
         # Shadow
         element = self.theme_xml.createElement(u'shadow')
         element.setAttribute(u'color', shadow_color)
+        element.setAttribute(u'size', unicode(shadow_pixel))
         value = self.theme_xml.createTextNode(shadow)
         element.appendChild(value)
         background.appendChild(element)
         # Outline
         element = self.theme_xml.createElement(u'outline')
         element.setAttribute(u'color', outline_color)
+        element.setAttribute(u'size', unicode(outline_pixel))
         value = self.theme_xml.createTextNode(outline)
         element.appendChild(value)
         background.appendChild(element)

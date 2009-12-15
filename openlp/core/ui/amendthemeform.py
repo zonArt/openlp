@@ -121,8 +121,14 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.onFontFooterHeightSpinBoxChanged)
         QtCore.QObject.connect(self.OutlineCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'), self.onOutlineCheckBoxChanged)
+        QtCore.QObject.connect(self.ShadowSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.onShadowSpinBoxChanged)
         QtCore.QObject.connect(self.ShadowCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'), self.onShadowCheckBoxChanged)
+        QtCore.QObject.connect(self.OutlineSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.onOutlineSpinBoxChanged)
         QtCore.QObject.connect(self.SlideTransitionCheckedBox,
             QtCore.SIGNAL(u'stateChanged(int)'), self.onSlideTransitionCheckedBoxChanged)
 
@@ -179,7 +185,9 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 unicode(self.theme.display_horizontalAlign),
                 unicode(self.theme.display_verticalAlign),
                 unicode(self.theme.display_wrapStyle),
-                unicode(self.theme.display_slideTransition))
+                unicode(self.theme.display_slideTransition),
+                unicode(self.theme.display_shadow_size),
+                unicode(self.theme.display_outline_size))
         theme = new_theme.extract_xml()
         pretty_theme = new_theme.extract_formatted_xml()
         if self.thememanager.saveTheme(theme_name, theme, pretty_theme,
@@ -434,6 +442,16 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.stateChanging(self.theme)
         self.previewTheme()
 
+    def onOutlineSpinBoxChanged(self):
+        if self.theme.display_outline_size != self.OutlineSpinBox.value():
+            self.theme.display_outline_size = self.OutlineSpinBox.value()
+            self.previewTheme()
+
+    def onShadowSpinBoxChanged(self):
+        if self.theme.display_shadow_size != self.ShadowSpinBox.value():
+            self.theme.display_shadow_size = self.ShadowSpinBox.value()
+            self.previewTheme()
+
     def onOutlineColorPushButtonClicked(self):
         self.theme.display_outline_color = QtGui.QColorDialog.getColor(
             QtGui.QColor(self.theme.display_outline_color), self).name()
@@ -565,6 +583,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         else:
             self.OutlineCheckBox.setChecked(False)
             self.OutlineColorPushButton.setEnabled(False)
+        self.OutlineSpinBox.setValue(int(self.theme.display_outline_size))
 
         if self.theme.display_shadow:
             self.ShadowCheckBox.setChecked(True)
@@ -572,6 +591,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         else:
             self.ShadowCheckBox.setChecked(False)
             self.ShadowColorPushButton.setEnabled(False)
+        self.ShadowSpinBox.setValue(int(self.theme.display_shadow_size))
 
         if self.theme.display_slideTransition:
             self.SlideTransitionCheckedBox.setCheckState(QtCore.Qt.Checked)
