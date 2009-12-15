@@ -100,6 +100,7 @@ class BibleCSVImpl(BibleCommon):
                 if count % 3 == 0:
                     Receiver.send_message(u'process_events')
                     count = 0
+            self.bibledb.save_verses()
         except:
             log.exception(u'Loading verses from file failed')
         finally:

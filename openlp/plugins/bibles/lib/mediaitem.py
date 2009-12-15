@@ -30,7 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, Receiver, str_to_bool, \
     BaseListWithDnD
-from openlp.plugins.bibles.forms import BibleImportForm
+from openlp.plugins.bibles.forms import BibleImportForm, ImportWizardForm
 from openlp.plugins.bibles.lib.manager import BibleMode
 
 class BibleListView(BaseListWithDnD):
@@ -326,8 +326,11 @@ class BibleMediaItem(MediaManagerItem):
             self.AdvancedBookComboBox.itemData(item).toInt()[0])
 
     def onNewClick(self):
-        self.bibleimportform = BibleImportForm(
-            self.parent.config, self.parent.biblemanager, self)
+        #self.bibleimportform = BibleImportForm(
+        #    self.parent.config, self.parent.biblemanager, self)
+        #self.bibleimportform.exec_()
+        self.bibleimportform = ImportWizardForm(self, self.parent.config,
+            self.parent.biblemanager, self.parent)
         self.bibleimportform.exec_()
         self.reloadBibles()
 

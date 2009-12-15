@@ -67,6 +67,9 @@ class BibleDBImpl(BibleCommon):
         verse.verse = vse
         verse.text = text
         self.session.add(verse)
+        return verse
+
+    def save_verses(self):
         self.session.commit()
 
     def create_chapter(self, bookid, chap, textlist):

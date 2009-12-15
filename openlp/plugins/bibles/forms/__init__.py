@@ -24,5 +24,6 @@
 ###############################################################################
 
 from bibleimportform import BibleImportForm
+from importwizardform import ImportWizardForm
 
-__all__ = ['BibleImportForm']
+__all__ = ['BibleImportForm', 'ImportWizardForm']

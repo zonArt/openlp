@@ -112,7 +112,7 @@ class BibleOSISImpl():
             count = 0
             verseText = u'<verse osisID='
             testament = 1
-            for file_record in osis.readlines():
+            for file_record in osis:
                 # cancel pressed on UI
                 if not self.loadbible:
                     break
@@ -175,12 +175,14 @@ class BibleOSISImpl():
                         dialogobject.incrementProgressBar(
                             self.booksOfBible[p[0]])
                         count = 0
+                        self.bibledb.save_verses()
                     self.bibledb.add_verse(book.id, p[1], p[2], text)
                     count += 1
                     #Every 3 verses repaint the screen
                     if count % 3 == 0:
                         Receiver.send_message(u'process_events')
                         count = 0
+            self.bibledb.save_verses()
         except:
             log.exception(u'Loading bible from OSIS file failed')
         finally:
