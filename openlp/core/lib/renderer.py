@@ -43,8 +43,8 @@ class Renderer(object):
         self._rect = None
         self._debug = 0
         self._right_margin = 64 # the amount of right indent
-        self._display_shadow_size_footer = 3
-        _display_outline_size = 2
+        self._display_shadow_size_footer = 0
+        self._display_outline_size_footer = 0
         self.theme_name = None
         self._theme = None
         self._bg_image_filename = None
@@ -426,10 +426,11 @@ class Renderer(object):
         if footer:
             align = 0
             display_shadow_size = self._display_shadow_size_footer
+            display_outline_size = self._display_outline_size_footer
         else:
             align = self._theme.display_horizontalAlign
             display_shadow_size = int(self._theme.display_shadow_size)
-        _display_outline_size = int(self._theme.display_outline_size)
+            display_outline_size = int(self._theme.display_outline_size)
         for linenum in range(len(lines)):
             line = lines[linenum]
             #find out how wide line is
@@ -440,9 +441,9 @@ class Renderer(object):
                 h += display_shadow_size
             if self._theme.display_outline:
                 # pixels either side
-                w += 2 * _display_outline_size
+                w += 2 * display_outline_size
                 #  pixels top/bottom
-                h += 2 * _display_outline_size
+                h += 2 * display_outline_size
             if align == 0: # left align
                 rightextent = x + w
                 # shift right from last line's rh edge
@@ -468,32 +469,32 @@ class Renderer(object):
                         draw=True, color = self._theme.display_shadow_color)
                 if self._theme.display_outline:
                     self._get_extent_and_render(line, footer,
-                        (x + _display_outline_size, y), draw=True,
+                        (x + display_outline_size, y), draw=True,
                         color = self._theme.display_outline_color)
                     self._get_extent_and_render(line, footer,
-                        (x, y + _display_outline_size), draw=True,
+                        (x, y + display_outline_size), draw=True,
                         color = self._theme.display_outline_color)
                     self._get_extent_and_render(line, footer,
-                        (x, y - _display_outline_size), draw=True,
+                        (x, y - display_outline_size), draw=True,
                         color = self._theme.display_outline_color)
                     self._get_extent_and_render(line, footer,
-                        (x - _display_outline_size, y), draw=True,
+                        (x - display_outline_size, y), draw=True,
                         color = self._theme.display_outline_color)
-                    if _display_outline_size > 1:
+                    if display_outline_size > 1:
                         self._get_extent_and_render(line, footer,
-                            (x + _display_outline_size, y + _display_outline_size),
+                            (x + display_outline_size, y + display_outline_size),
                             draw=True,
                             color = self._theme.display_outline_color)
                         self._get_extent_and_render(line, footer,
-                            (x - _display_outline_size, y + _display_outline_size),
+                            (x - display_outline_size, y + display_outline_size),
                             draw=True,
                             color = self._theme.display_outline_color)
                         self._get_extent_and_render(line, footer,
-                            (x + _display_outline_size, y - _display_outline_size),
+                            (x + display_outline_size, y - display_outline_size),
                             draw=True,
                             color = self._theme.display_outline_color)
                         self._get_extent_and_render(line, footer,
-                            (x - _display_outline_size, y - _display_outline_size),
+                            (x - display_outline_size, y - display_outline_size),
                             draw=True,
                             color = self._theme.display_outline_color)
                 self._get_extent_and_render(line, footer,tlcorner=(x, y),
