@@ -134,6 +134,7 @@ class SongXMLParser(object):
         ``xml``
             The XML of the song to be parsed.
         """
+        self.song_xml = None
         try:
             self.song_xml = ElementTree(
                 element=XML(unicode(xml).encode('unicode-escape')))
