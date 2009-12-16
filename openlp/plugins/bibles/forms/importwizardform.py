@@ -60,23 +60,15 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.biblemanager = biblemanager
         self.config = config
         self.bibleplugin = bibleplugin
-        self.bible_type = BibleFormat.Unknown
+        self.web_bible_list = {}
+        self.loadWebBibles()
+        QtCore.QObject.connect(self.LocationComboBox,
+            QtCore.SIGNAL(u'currentIndexChanged(int)'),
+            self.onLocationComboBoxChanged)
 
-    def registerFields(self):
-        self.SelectPage.registerField(u'source_format', self.FormatComboBox)
-        self.SelectPage.registerField(u'osis_biblename', self.OsisBibleNameEdit)
-        self.SelectPage.registerField(u'osis_location', self.OSISLocationEdit)
-        self.SelectPage.registerField(u'csv_booksfile', self.BooksLocationEdit)
-        self.SelectPage.registerField(u'csv_versefile', self.CsvVerseLocationEdit)
-        self.SelectPage.registerField(u'opensong_file', self.OpenSongFileEdit)
-        self.SelectPage.registerField(u'web_location', self.LocationComboBox)
-        self.SelectPage.registerField(u'web_biblename', self.BibleComboBox)
-        self.SelectPage.registerField(u'web_server', self.AddressEdit)
-        self.SelectPage.registerField(u'web_username', self.UsernameEdit)
-        self.SelectPage.registerField(u'web_password', self.PasswordEdit)
-        self.LicenseDetailsPage.registerField(u'license_version', self.VersionNameEdit)
-        self.LicenseDetailsPage.registerField(u'license_copyright', self.CopyrightEdit)
-        self.LicenseDetailsPage.registerField(u'license_permission', self.PermissionEdit)
+    def show(self):
+        self.setDefaults()
+        return QtGui.QWizard.show()
 
     def validateCurrentPage(self):
         if self.currentId() == 0:
@@ -124,9 +116,75 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     return False
             return True
 
-    def show(self):
-        self.FormatComboBox.setCurrentIndex(0)
-        self.FormatWidget.setCurrentIndex(0)
-        self.WebDownloadTabWidget.setCurrentIndex(0)
-        return QtGui.QWizard.show()
+    def onLocationComboBoxChanged(self, index):
+        self.BibleComboBox.clear()
+        for bible, abbreviation in self.web_bible_list[index]:
+            row = self.BibleComboBox.count()
+            self.BibleComboBox.addItem(unicode(self.trUtf8(bible)))
+            self.BibleComboBox.setItemData(row, QtCore.QVariant(bible))
+
+    def registerFields(self):
+        self.SelectPage.registerField(u'source_format', self.FormatComboBox)
+        self.SelectPage.registerField(u'osis_biblename', self.OsisBibleNameEdit)
+        self.SelectPage.registerField(u'osis_location', self.OSISLocationEdit)
+        self.SelectPage.registerField(u'csv_booksfile', self.BooksLocationEdit)
+        self.SelectPage.registerField(u'csv_versefile', self.CsvVerseLocationEdit)
+        self.SelectPage.registerField(u'opensong_file', self.OpenSongFileEdit)
+        self.SelectPage.registerField(u'web_location', self.LocationComboBox)
+        self.SelectPage.registerField(u'web_biblename', self.BibleComboBox)
+        self.SelectPage.registerField(u'proxy_server', self.AddressEdit)
+        self.SelectPage.registerField(u'proxy_username', self.UsernameEdit)
+        self.SelectPage.registerField(u'proxy_password', self.PasswordEdit)
+        self.LicenseDetailsPage.registerField(u'license_version', self.VersionNameEdit)
+        self.LicenseDetailsPage.registerField(u'license_copyright', self.CopyrightEdit)
+        self.LicenseDetailsPage.registerField(u'license_permission', self.PermissionEdit)
+
+    def setDefaults(self):
+        self.setField(u'source_format', 0)
+        self.setField(u'osis_biblename', u'')
+        self.setField(u'osis_location', u'')
+        self.setField(u'csv_booksfile', u'')
+        self.setField(u'csv_versefile', u'')
+        self.setField(u'opensong_file', u'')
+        self.setField(u'web_location', 0)
+        self.setField(u'web_biblename', self.BibleComboBox)
+        self.setField(u'proxy_server', self.config.get_config(u'proxy address', u''))
+        self.setField(u'proxy_username', self.config.get_config(u'proxy username',u''))
+        self.setField(u'proxy_password', self.config.get_config(u'proxy password',u''))
+        self.setField(u'license_version', self.VersionNameEdit)
+        self.setField(u'license_copyright', self.CopyrightEdit)
+        self.setField(u'license_permission', self.PermissionEdit)
+        self.onLocationComboBoxChanged(0)
+
+    def loadWebBibles(self):
+        #Load and store Crosswalk Bibles
+        filepath = os.path.abspath(os.path.join(
+            os.path.split(os.path.abspath(__file__))[0],
+            u'..', u'resources'))
+        print filepath
+        fbibles = None
+        try:
+            self.web_bible_list[0] = []
+            fbibles = open(os.path.join(filepath, u'crosswalkbooks.csv'), 'r')
+            for line in fbibles:
+                p = line.split(u',')
+                self.web_bible_list[0].append((p[0], p[1].rstrip())) #replace(u'\n', u'')
+        except:
+            log.exception(u'Crosswalk resources missing')
+        finally:
+            if fbibles:
+                fbibles.close()
+        #Load and store BibleGateway Bibles
+        try:
+            self.web_bible_list[1] = []
+            fbibles = open(os.path.join(filepath, u'biblegateway.csv'), 'r')
+            for line in fbibles:
+                p = line.split(u',')
+                self.web_bible_list[1].append((p[0], p[1].rstrip()))
+        except:
+            log.exception(u'Biblegateway resources missing')
+        finally:
+            if fbibles:
+                fbibles.close()
+        print self.web_bible_list
 

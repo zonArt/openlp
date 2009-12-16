@@ -106,14 +106,13 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         for themename in themelist:
             self.ThemeComboBox.addItem(themename)
 
-    def loadCustom(self, id, preview):
+    def loadCustom(self, id, preview=False):
         self.customSlide = CustomSlide()
         self.initialise()
         if id != 0:
             self.customSlide = self.custommanager.get_custom(id)
             self.TitleEdit.setText(self.customSlide.title)
             self.CreditEdit.setText(self.customSlide.credits)
-
             songXML = SongXMLParser(self.customSlide.text)
             verseList = songXML.get_verses()
             for verse in verseList:
