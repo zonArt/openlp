@@ -65,6 +65,18 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         QtCore.QObject.connect(self.LocationComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
             self.onLocationComboBoxChanged)
+        QtCore.QObject.connect(self.OsisFileButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onOsisFileButtonClicked)
+        QtCore.QObject.connect(self.BooksFileButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onBooksFileButtonClicked)
+        QtCore.QObject.connect(self.CsvVersesFileButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onCsvVersesFileButtonClicked)
+        QtCore.QObject.connect(self.OpenSongBrowseButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onOpenSongBrowseButtonClicked)
 
     def show(self):
         self.setDefaults()
@@ -92,14 +104,14 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     self.OSISLocationEdit.setFocus()
                     return False
             elif self.field(u'source_format').toInt()[0] == BibleFormat.CSV:
-                if self.field(u'csv_booksfile').toString() == QtCore.QString(u''):
+                if self.field(u'csv_booksfile').toString() == u'':
                     QtGui.QMessageBox.critical(self,
                         self.trUtf8('Invalid Books File'),
                         self.trUtf8('You need to specify a file with books of the Bible to use in the import!'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                     self.BooksLocationEdit.setFocus()
                     return False
-                elif self.field(u'csv_versefile').toString() == QtCore.QString(u''):
+                elif self.field(u'csv_versefile').toString() == u'':
                     QtGui.QMessageBox.critical(self,
                         self.trUtf8('Invalid Verse File'),
                         self.trUtf8('You need to specify a file of Bible verses to import!'),
@@ -107,7 +119,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     self.CsvVerseLocationEdit.setFocus()
                     return False
             elif self.field(u'source_format').toInt()[0] == BibleFormat.OpenSong:
-                if self.field(u'opensong_file').toString() == QtCore.QString(u''):
+                if self.field(u'opensong_file').toString() == u'':
                     QtGui.QMessageBox.critical(self,
                         self.trUtf8('Invalid OpenSong Bible'),
                         self.trUtf8('You need to specify an OpenSong Bible file to import!'),
@@ -115,6 +127,21 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     self.OpenSongFileEdit.setFocus()
                     return False
             return True
+        elif self.currentId() == 2:
+            if self.field(u'license_version').toString() == u'':
+                QtGui.QMessageBox.critical(self,
+                    self.trUtf8('Empty Version Name'),
+                    self.trUtf8('You need to specify a version name for your Bible!'),
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                self.VersionNameEdit.setFocus()
+                return False
+            elif self.field(u'license_copyright').toString() == u'':
+                QtGui.QMessageBox.critical(self,
+                    self.trUtf8('Empty Copyright'),
+                    self.trUtf8('You need to set a copyright for your Bible! Bibles in the Public Domain need to be marked as such.'),
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                self.CopyrightEdit.setFocus()
+                return False
 
     def onLocationComboBoxChanged(self, index):
         self.BibleComboBox.clear()
@@ -122,6 +149,18 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             row = self.BibleComboBox.count()
             self.BibleComboBox.addItem(unicode(self.trUtf8(bible)))
             self.BibleComboBox.setItemData(row, QtCore.QVariant(bible))
+
+    def onOsisFileButtonClicked(self):
+        self.getFileName(self.trUtf8('Open OSIS file'), self.OSISLocationEdit)
+
+    def onBooksFileButtonClicked(self):
+        self.getFileName(self.trUtf8('Open Books CSV file'), self.BooksLocationEdit)
+
+    def onCsvVersesFileButtonClicked(self):
+        self.getFileName(self.trUtf8('Open Verses CSV file'), self.CsvVerseLocationEdit)
+
+    def onOpenSongBrowseButtonClicked(self):
+        self.getFileName(self.trUtf8('Open OpenSong Bible'), self.OpenSongFileEdit)
 
     def registerFields(self):
         self.SelectPage.registerField(u'source_format', self.FormatComboBox)
@@ -157,11 +196,13 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.onLocationComboBoxChanged(0)
 
     def loadWebBibles(self):
+        """
+        Load the list of Crosswalk and BibleGateway bibles.
+        """
         #Load and store Crosswalk Bibles
         filepath = os.path.abspath(os.path.join(
             os.path.split(os.path.abspath(__file__))[0],
             u'..', u'resources'))
-        print filepath
         fbibles = None
         try:
             self.web_bible_list[0] = []
@@ -186,5 +227,11 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         finally:
             if fbibles:
                 fbibles.close()
-        print self.web_bible_list
+
+    def getFileName(self, title, editbox):
+        filename = QtGui.QFileDialog.getOpenFileName(self, title,
+            self.config.get_last_dir(1))
+        if filename:
+            editbox.setText(filename)
+            self.config.set_last_dir(filename, 1)
 
