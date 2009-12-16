@@ -106,7 +106,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         for themename in themelist:
             self.ThemeComboBox.addItem(themename)
 
-    def loadCustom(self, id, preview):
+    def loadCustom(self, id, preview=False):
         self.customSlide = CustomSlide()
         self.initialise()
         if id != 0:
