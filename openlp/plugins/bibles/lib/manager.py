@@ -26,6 +26,7 @@
 import logging
 import os
 
+from bibleOpenSongimpl import BibleOpenSongImpl
 from bibleOSISimpl import BibleOSISImpl
 from bibleCSVimpl import BibleCSVImpl
 from bibleDBimpl import BibleDBImpl
@@ -176,7 +177,7 @@ class BibleManager(object):
             self.bible_db_cache[biblename] = nbible
             nhttp = BibleHTTPImpl()
             nhttp.set_bible_source(biblesource)
-            self.bible_http_cache [biblename] = nhttp
+            self.bible_http_cache[biblename] = nhttp
             # register a lazy loading interest
             nbible.save_meta(u'WEB', biblesource)
             # store the web id of the bible
@@ -243,6 +244,28 @@ class BibleManager(object):
             log.debug(
                 u'register_OSIS_file_bible %s, %s not created already exists',
                 biblename, osisfile)
+            return False
+
+    def register_opensong_bible(self, biblename, opensongfile):
+        """
+        Method to load a bible from an OpenSong xml file. If the database
+        exists it is deleted and the database is reloaded from scratch.
+        """
+        log.debug(u'register_opensong_file_bible %s, %s', biblename, opensongfile)
+        if self._is_new_bible(biblename):
+            # Create new Bible
+            nbible = BibleDBImpl(self.biblePath, biblename, self.config)
+            # Create Database
+            nbible.create_tables()
+            # Cache the database for use later
+            self.bible_db_cache[biblename] = nbible
+            # Create the loader and pass in the database
+            bcsv = BibleOpenSongImpl(self.biblePath, nbible)
+            bcsv.load_data(opensongfile, self.dialogobject)
+            return True
+        else:
+            log.debug(u'register_opensong_file_bible %s, %s not created '
+                u'already exists', biblename, opensongfile)
             return False
 
     def get_bibles(self, mode=BibleMode.Full):

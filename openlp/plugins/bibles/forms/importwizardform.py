@@ -26,6 +26,7 @@
 import logging
 import os
 import os.path
+from time import sleep
 
 from PyQt4 import QtCore, QtGui
 
@@ -38,6 +39,21 @@ class BibleFormat(object):
     CSV = 1
     OpenSong = 2
     WebDownload = 3
+
+
+class DownloadLocation(object):
+    Unknown = -1
+    Crosswalk = 0
+    BibleGateway = 1
+
+    Names = {
+        0: u'Crosswalk',
+        1: u'BibleGateway'
+    }
+
+    @classmethod
+    def get_name(class_, id):
+        return class_.Names[id]
 
 
 class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
@@ -57,10 +73,13 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         QtGui.QWizard.__init__(self, parent)
         self.setupUi(self)
         self.registerFields()
+        self.web_bible_list = {}
+        self.finishButton = self.button(QtGui.QWizard.FinishButton)
+        self.cancelButton = self.button(QtGui.QWizard.CancelButton)
         self.biblemanager = biblemanager
         self.config = config
         self.bibleplugin = bibleplugin
-        self.web_bible_list = {}
+        self.biblemanager.process_dialog(self)
         self.loadWebBibles()
         QtCore.QObject.connect(self.LocationComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
@@ -77,6 +96,9 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         QtCore.QObject.connect(self.OpenSongBrowseButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onOpenSongBrowseButtonClicked)
+        QtCore.QObject.connect(self,
+            QtCore.SIGNAL(u'currentIdChanged(int)'),
+            self.onCurrentIdChanged)
 
     def show(self):
         self.setDefaults()
@@ -128,6 +150,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     return False
             return True
         elif self.currentId() == 2:
+            # License details
             if self.field(u'license_version').toString() == u'':
                 QtGui.QMessageBox.critical(self,
                     self.trUtf8('Empty Version Name'),
@@ -142,13 +165,15 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                 self.CopyrightEdit.setFocus()
                 return False
+            return True
+        if self.currentId() == 3:
+            # Progress page
+            return True
 
     def onLocationComboBoxChanged(self, index):
         self.BibleComboBox.clear()
-        for bible, abbreviation in self.web_bible_list[index]:
-            row = self.BibleComboBox.count()
+        for bible, abbreviation in self.web_bible_list[index].iteritems():
             self.BibleComboBox.addItem(unicode(self.trUtf8(bible)))
-            self.BibleComboBox.setItemData(row, QtCore.QVariant(bible))
 
     def onOsisFileButtonClicked(self):
         self.getFileName(self.trUtf8('Open OSIS file'), self.OSISLocationEdit)
@@ -161,6 +186,12 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
 
     def onOpenSongBrowseButtonClicked(self):
         self.getFileName(self.trUtf8('Open OpenSong Bible'), self.OpenSongFileEdit)
+
+    def onCurrentIdChanged(self, id):
+        if id == 3:
+            self.preImport()
+            self.performImport()
+            self.postImport()
 
     def registerFields(self):
         self.SelectPage.registerField(u'source_format', self.FormatComboBox)
@@ -205,11 +236,11 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             u'..', u'resources'))
         fbibles = None
         try:
-            self.web_bible_list[0] = []
+            self.web_bible_list[DownloadLocation.Crosswalk] = {}
             fbibles = open(os.path.join(filepath, u'crosswalkbooks.csv'), 'r')
             for line in fbibles:
                 p = line.split(u',')
-                self.web_bible_list[0].append((p[0], p[1].rstrip())) #replace(u'\n', u'')
+                self.web_bible_list[DownloadLocation.Crosswalk][p[0]] = p[1].rstrip()
         except:
             log.exception(u'Crosswalk resources missing')
         finally:
@@ -217,11 +248,11 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                 fbibles.close()
         #Load and store BibleGateway Bibles
         try:
-            self.web_bible_list[1] = []
+            self.web_bible_list[DownloadLocation.BibleGateway] = {}
             fbibles = open(os.path.join(filepath, u'biblegateway.csv'), 'r')
             for line in fbibles:
                 p = line.split(u',')
-                self.web_bible_list[1].append((p[0], p[1].rstrip()))
+                self.web_bible_list[DownloadLocation.BibleGateway][p[0]] = p[1].rstrip()
         except:
             log.exception(u'Biblegateway resources missing')
         finally:
@@ -234,4 +265,75 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         if filename:
             editbox.setText(filename)
             self.config.set_last_dir(filename, 1)
+
+    def incrementProgressBar(self, status_text):
+        log.debug(u'IncrementBar %s', status_text)
+        self.ImportProgressLabel.setText(status_text)
+        self.ImportProgressBar.setValue(self.ImportProgressBar.value() + 1)
+        Receiver.send_message(u'process_events')
+
+    def preImport(self):
+        self.finishButton.setEnabled(False)
+        self.cancelButton.setVisible(False)
+        self.ImportProgressBar.setMinimum(0)
+        self.ImportProgressBar.setMaximum(65)
+        self.ImportProgressBar.setValue(0)
+        self.ImportProgressLabel.setText(self.trUtf8('Starting import...'))
+        Receiver.send_message(u'process_events')
+
+    def performImport(self):
+        bible_type = self.field(u'source_format').toInt()[0]
+        success = False
+        if bible_type == BibleFormat.OSIS:
+            # Import an OSIS bible
+            success = self.biblemanager.register_osis_file_bible(
+                unicode(self.field(u'license_version').toString()),
+                unicode(self.field(u'osis_location').toString())
+            )
+        elif bible_type == BibleFormat.CSV:
+            # Import a CSV bible
+            success = self.biblemanager.register_csv_file_bible(
+                unicode(self.field(u'license_version').toString()),
+                self.field(u'csv_booksfile').toString(),
+                self.field(u'csv_versefile').toString()
+            )
+        elif bible_type == BibleFormat.OpenSong:
+            # Import an OpenSong bible
+            success = self.biblemanager.register_opensong_bible(
+                unicode(self.field(u'license_version').toString()),
+                self.field(u'opensong_file').toString()
+            )
+        elif bible_type == BibleFormat.WebDownload:
+            # Import a bible from the web
+            self.ImportProgressBar.setMaximum(1)
+            download_location = self.field(u'web_location').toInt()[0]
+            if download_location == DownloadLocation.Crosswalk:
+                bible = self.web_bible_list[DownloadLocation.Crosswalk][
+                    unicode(self.BibleComboBox.currentText())]
+            elif download_location == DownloadLocation.BibleGateway:
+                bible = self.web_bible_list[DownloadLocation.BibleGateway][
+                    unicode(self.BibleComboBox.currentText())]
+            success = self.biblemanager.register_http_bible(
+                unicode(self.field(u'license_version').toString()),
+                unicode(DownloadLocation.get_name(download_location)),
+                unicode(bible),
+                unicode(self.field(u'proxy_server').toString()),
+                unicode(self.field(u'proxy_username').toString()),
+                unicode(self.field(u'proxy_password').toString())
+            )
+        if success:
+            self.biblemanager.save_meta_data(
+                unicode(self.field(u'license_version').toString()),
+                unicode(self.field(u'license_version').toString()),
+                unicode(self.field(u'license_copyright').toString()),
+                unicode(self.field(u'license_permission').toString())
+            )
+        else:
+            self.ImportProgressLabel.setText(self.trUtf8('Your Bible import failed.'))
+            self.ImportProgressBar.setValue(self.ImportProgressBar.maximum())
+
+    def postImport(self):
+        self.ImportProgressLabel.setText(self.trUtf8('Finished import.'))
+        self.finishButton.setEnabled(True)
+        Receiver.send_message(u'process_events')
 

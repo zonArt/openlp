@@ -76,7 +76,8 @@ class BibleOpenSongImpl():
             The Import dialog, so that we can increase the counter on
             the progress bar.
         """
-        log.info(u'Load data for %s' % opensong_bible)
+        log.info(u'Load data for %s' % bible_file)
+        bible_file = unicode(bible_file)
         detect_file = None
         try:
             detect_file = open(bible_file, u'r')
@@ -91,16 +92,16 @@ class BibleOpenSongImpl():
         try:
             opensong_bible = codecs.open(bible_file, u'r', details['encoding'])
             opensong = objectify.parse(opensong_bible)
-            bible_tag = opensong.getroot()
+            bible = opensong.getroot()
             for book in bible.b:
-                dbbook = self.bibledb.create_book(book.attrib['n'],
-                    book.attrib['n'][:4])
-                dialogobject.incrementProgressBar(dbbook.name)
+                dbbook = self.bibledb.create_book(book.attrib[u'n'],
+                    book.attrib[u'n'][:4])
                 for chapter in book.c:
                     for verse in chapter.v:
-                        self.bibledb.add_verse(dbbook.id, chapter.attrib['n'],
-                            verse.attrib['n'], verse.text)
+                        self.bibledb.add_verse(dbbook.id, chapter.attrib[u'n'],
+                            verse.attrib[u'n'], verse.text)
                         Receiver.send_message(u'process_events')
+                    dialogobject.incrementProgressBar(dbbook.name + str(chapter.attrib[u'n']))
                     self.bibledb.save_verses()
         except:
             log.exception(u'Loading bible from OpenSong file failed')

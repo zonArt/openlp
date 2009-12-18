@@ -230,7 +230,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         self.barmax = max
         self.ProgressBar.setMaximum(max)
 
-    def incrementProgressBar(self, text ):
+    def incrementProgressBar(self, text):
         log.debug(u'IncrementBar %s', text)
         self.MessageLabel.setText(unicode(self.trUtf8('Import processing')) + ' - %s' % text)
         self.ProgressBar.setValue(self.ProgressBar.value() + 1)
