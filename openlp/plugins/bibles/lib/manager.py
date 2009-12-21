@@ -36,6 +36,28 @@ class BibleMode(object):
     Full = 1
     Partial = 2
 
+
+class BibleFormat(object):
+    Unknown = -1
+    OSIS = 0
+    CSV = 1
+    OpenSong = 2
+    WebDownload = 3
+
+    @classmethod
+    def get_handler(class_, id):
+        if id == class_.OSIS:
+            return BibleOSISImpl
+        elif id == class_.CSV:
+            return BibleCSVImpl
+        elif id == class_.OpenSong:
+            return BibleOpenSongImpl
+        elif id == class_.WebDownload:
+            return BibleHTTPImpl
+        else:
+            return None
+
+
 class BibleManager(object):
     """
     The Bible manager which holds and manages all the Bibles.
@@ -141,6 +163,15 @@ class BibleManager(object):
             The reference to the dialog.
         """
         self.dialogobject = dialogobject
+
+    def import_bible(self, type, **kwargs):
+        """
+        Register a bible in the bible cache, and then import the verses.
+
+        ``type``
+            What type of Bible,
+        """
+        pass
 
     def register_http_bible(self, biblename, biblesource, bibleid,
                             proxyurl=None, proxyid=None, proxypass=None):

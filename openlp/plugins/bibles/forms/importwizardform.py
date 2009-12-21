@@ -32,14 +32,7 @@ from PyQt4 import QtCore, QtGui
 
 from bibleimportwizard import Ui_BibleImportWizard
 from openlp.core.lib import Receiver
-
-class BibleFormat(object):
-    Unknown = -1
-    OSIS = 0
-    CSV = 1
-    OpenSong = 2
-    WebDownload = 3
-
+from openlp.plugins.bibles.lib.manager import BibleFormat
 
 class DownloadLocation(object):
     Unknown = -1
@@ -276,7 +269,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.finishButton.setEnabled(False)
         self.cancelButton.setVisible(False)
         self.ImportProgressBar.setMinimum(0)
-        self.ImportProgressBar.setMaximum(65)
+        self.ImportProgressBar.setMaximum(1188)
         self.ImportProgressBar.setValue(0)
         self.ImportProgressLabel.setText(self.trUtf8('Starting import...'))
         Receiver.send_message(u'process_events')

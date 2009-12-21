@@ -53,6 +53,7 @@ class BibleOSISImpl():
             A reference to a Bible database object.
         """
         log.info(u'BibleOSISImpl Initialising')
+        self.verse_regex = re.compile(r'<verse osisID="([a-zA-Z0-9 ]*).([0-9]*).([0-9]*)">(.*)</verse>')
         self.bibledb = bibledb
         # books of the bible linked to bibleid  {osis , name}
         self.booksOfBible = {}
@@ -98,7 +99,7 @@ class BibleOSISImpl():
         detect_file = None
         try:
             detect_file = open(osisfile_record, u'r')
-            details = chardet.detect(detect_file.read(2048))
+            details = chardet.detect(detect_file.read(3000))
         except:
             log.exception(u'Failed to detect OSIS file encoding')
             return
@@ -153,6 +154,8 @@ class BibleOSISImpl():
                         epos = text.find(u'<Rf>', pos)
                         text = text[:pos] + text[epos + 4: ]
                         pos = text.find(u'<RF>')
+                    print ref
+                    continue
                     # split up the reference
                     p = ref.split(u'.', 3)
                     if book_ptr != p[0]:
@@ -161,28 +164,29 @@ class BibleOSISImpl():
                             # set the max book size depending
                             # on the first book read
                             if p[0] == u'Gen':
-                                dialogobject.setMax(65)
+                                dialogobject.ImportProgressBar.setMaximum(1188)
                             else:
-                                dialogobject.setMax(27)
+                                dialogobject.ImportProgressBar.setMaximum(260)
                         # First book of NT
                         if  p[0] == u'Matt':
                             testament += 1
+                        dialogobject.incrementProgressBar(u'Importing %s %s...' % \
+                            (self.booksOfBible[p[0]], p[1]))
+                        Receiver.send_message(u'process_events')
+                        self.bibledb.save_verses()
                         book_ptr = p[0]
                         book = self.bibledb.create_book(
                             unicode(self.booksOfBible[p[0]]),
                             unicode(self.abbrevOfBible[p[0]]),
                             testament)
-                        dialogobject.incrementProgressBar(
-                            self.booksOfBible[p[0]])
                         count = 0
-                        self.bibledb.save_verses()
                     self.bibledb.add_verse(book.id, p[1], p[2], text)
-                    count += 1
+                    #count += 1
                     #Every 3 verses repaint the screen
-                    if count % 3 == 0:
-                        Receiver.send_message(u'process_events')
-                        count = 0
-            self.bibledb.save_verses()
+                    #if count % 3 == 0:
+                    #    Receiver.send_message(u'process_events')
+                    #    count = 0
+            #self.bibledb.save_verses()
         except:
             log.exception(u'Loading bible from OSIS file failed')
         finally:

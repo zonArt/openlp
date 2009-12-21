@@ -101,7 +101,8 @@ class BibleOpenSongImpl():
                         self.bibledb.add_verse(dbbook.id, chapter.attrib[u'n'],
                             verse.attrib[u'n'], verse.text)
                         Receiver.send_message(u'process_events')
-                    dialogobject.incrementProgressBar(dbbook.name + str(chapter.attrib[u'n']))
+                    dialogobject.incrementProgressBar(u'Importing %s %s' % \
+                        (dbbook.name, str(chapter.attrib[u'n'])))
                     self.bibledb.save_verses()
         except:
             log.exception(u'Loading bible from OpenSong file failed')
