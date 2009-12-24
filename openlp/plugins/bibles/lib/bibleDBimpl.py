@@ -60,7 +60,6 @@ class BibleDBImpl(BibleCommon):
         self._load_testament(u'Apocrypha')
 
     def add_verse(self, bookid, chap, vse, text):
-        log.debug(u'add_verse %s,%s,%s', bookid, chap, vse)
         verse = Verse()
         verse.book_id = bookid
         verse.chapter = chap
@@ -70,6 +69,7 @@ class BibleDBImpl(BibleCommon):
         return verse
 
     def save_verses(self):
+        log.debug('Saving verses...')
         self.session.commit()
 
     def create_chapter(self, bookid, chap, textlist):

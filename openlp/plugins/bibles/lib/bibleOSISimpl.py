@@ -127,7 +127,6 @@ class BibleOSISImpl():
                     chapter = int(match.group(2))
                     verse = int(match.group(3))
                     verse_text = match.group(4)
-                    print book, chapter, verse
                     if not db_book or db_book.name != book:
                         if book == u'Matt':
                             testament += 1
