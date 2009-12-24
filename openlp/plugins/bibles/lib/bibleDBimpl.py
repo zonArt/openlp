@@ -53,20 +53,23 @@ class BibleDBImpl(BibleCommon):
         self.metadata.create_all(checkfirst=True)
 
     def create_tables(self):
-        log.debug( u'createTables')
+        log.debug(u'createTables')
         self.save_meta(u'dbversion', u'2')
         self._load_testament(u'Old Testament')
         self._load_testament(u'New Testament')
         self._load_testament(u'Apocrypha')
 
     def add_verse(self, bookid, chap, vse, text):
-        #log.debug(u'add_verse %s,%s,%s", bookid, chap, vse)
         verse = Verse()
         verse.book_id = bookid
         verse.chapter = chap
         verse.verse = vse
         verse.text = text
         self.session.add(verse)
+        return verse
+
+    def save_verses(self):
+        log.debug('Saving verses...')
         self.session.commit()
 
     def create_chapter(self, bookid, chap, textlist):

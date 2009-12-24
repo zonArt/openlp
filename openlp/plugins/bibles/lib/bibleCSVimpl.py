@@ -88,18 +88,20 @@ class BibleCSVImpl(BibleCommon):
                 # split into 3 units and leave the rest as a single field
                 p = line.split(u',', 3)
                 p0 = p[0].replace(u'"', u'')
-                p3 = p[3].replace(u'"',u'')
+                p3 = p[3].replace(u'"', u'')
                 if book_ptr is not p0:
                     book = self.bibledb.get_bible_book(p0)
                     book_ptr = book.name
                     # increament the progress bar
-                    dialogobject.incrementProgressBar(book.name)
+                    dialogobject.incrementProgressBar(u'Importing %s %s' % \
+                        book.name)
                 self.bibledb.add_verse(book.id, p[1], p[2], p3)
                 count += 1
                 #Every x verses repaint the screen
                 if count % 3 == 0:
                     Receiver.send_message(u'process_events')
                     count = 0
+            self.bibledb.save_verses()
         except:
             log.exception(u'Loading verses from file failed')
         finally:

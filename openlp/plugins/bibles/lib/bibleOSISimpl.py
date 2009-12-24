@@ -28,7 +28,7 @@ import os.path
 import logging
 import chardet
 import codecs
-import time
+import re
 
 from PyQt4 import QtCore
 
@@ -54,22 +54,31 @@ class BibleOSISImpl():
             A reference to a Bible database object.
         """
         log.info(u'BibleOSISImpl Initialising')
+        self.verse_regex = re.compile(
+            r'<verse osisID="([a-zA-Z0-9 ]*).([0-9]*).([0-9]*)">(.*?)</verse>')
+        self.note_regex = re.compile(r'<note(.*?)>(.*?)</note>')
+        self.title_regex = re.compile(r'<title(.*?)>(.*?)</title>')
+        self.milestone_regex = re.compile(r'<milestone(.*?)/>')
+        self.fi_regex = re.compile(r'<FI>(.*?)<Fi>')
+        self.rf_regex = re.compile(r'<RF>(.*?)<Rf>')
+        self.lb_regex = re.compile(r'<lb(.*?)>')
+        self.l_regex = re.compile(r'<l (.*?)>')
+        self.w_regex = re.compile(r'<w (.*?)>')
+        self.q_regex = re.compile(r'<q (.*?)>')
+        self.spaces_regex = re.compile(r'([ ]{2,})')
         self.bibledb = bibledb
-        # books of the bible linked to bibleid  {osis , name}
-        self.booksOfBible = {}
-        # books of the bible linked to bibleid  {osis ,Abbrev }
-        self.abbrevOfBible = {}
+        self.books = {}
         filepath = os.path.split(os.path.abspath(__file__))[0]
         filepath = os.path.abspath(os.path.join(
-            filepath, u'..', u'resources',u'osisbooks.csv'))
+            filepath, u'..', u'resources', u'osisbooks.csv'))
         fbibles = None
         self.loadbible = True
         try:
             fbibles = open(filepath, u'r')
             for line in fbibles:
-                p = line.split(u',')
-                self.booksOfBible[p[0]] = p[1].replace(u'\n', u'')
-                self.abbrevOfBible[p[0]] = p[2].replace(u'\n', u'')
+                book = line.split(u',')
+                self.books[book[0]] = (book[1].lstrip().rstrip(),
+                    book[2].lstrip().rstrip())
         except:
             log.exception(u'OSIS bible import failed')
         finally:
@@ -99,7 +108,7 @@ class BibleOSISImpl():
         detect_file = None
         try:
             detect_file = open(osisfile_record, u'r')
-            details = chardet.detect(detect_file.read(2048))
+            details = chardet.detect(detect_file.read(3000))
         except:
             log.exception(u'Failed to detect OSIS file encoding')
             return
@@ -109,130 +118,59 @@ class BibleOSISImpl():
         osis = None
         try:
             osis = codecs.open(osisfile_record, u'r', details['encoding'])
-            book_ptr = None
-            count = 0
-            verseText = u'<verse osisID='
+            last_chapter = 0
             testament = 1
-            for file_record in osis.readlines():
-                # cancel pressed on UI
-                if not self.loadbible:
-                    break
-                pos = file_record.find(verseText)
-                # we have a verse
-                if pos > -1:
-                    epos = file_record.find(u'>', pos)
-                    # Book Reference
-                    ref = file_record[pos+15:epos-1]
-                    #lets find the bible text only
-                    # find start of text
-                    pos = epos + 1
-                    # end  of text
-                    epos = file_record.find(u'</verse>', pos)
-                    text = file_record[pos : epos]
-                    #remove tags of extra information
-                    text = self.remove_block(u'<title', u'</title>', text)
-                    text = self.remove_block(u'<note', u'</note>', text)
-                    text = self.remove_block(
-                        u'<divineName', u'</divineName>', text)
-                    text = self.remove_tag(u'<lb', text)
-                    text = self.remove_tag(u'<q', text)
-                    text = self.remove_tag(u'<l', text)
-                    text = self.remove_tag(u'<lg', text)
-                    # Strange tags where the end is not the same as the start
-                    # The must be in this order as at least one bible has them
-                    # crossing and the removal does not work.
-                    pos = text.find(u'<FI>')
-                    while pos > -1:
-                        epos = text.find(u'<Fi>', pos)
-                        if epos == -1: # TODO
-                            pos = -1
-                        else:
-                            text = text[:pos] + text[epos + 4: ]
-                            pos = text.find(u'<FI>')
-                    pos = text.find(u'<RF>')
-                    while pos > -1:
-                        epos = text.find(u'<Rf>', pos)
-                        text = text[:pos] + text[epos + 4: ]
-                        pos = text.find(u'<RF>')
-                    # split up the reference
-                    p = ref.split(u'.', 3)
-                    if book_ptr != p[0]:
-                        # first time through
-                        if book_ptr is None:
-                            # set the max book size depending
-                            # on the first book read
-                            if p[0] == u'Gen':
-                                dialogobject.setMax(65)
-                            else:
-                                dialogobject.setMax(27)
-                        # First book of NT
-                        if  p[0] == u'Matt':
+            db_book = None
+            for file_record in osis:
+                match = self.verse_regex.search(file_record)
+                if match:
+                    book = match.group(1)
+                    chapter = int(match.group(2))
+                    verse = int(match.group(3))
+                    verse_text = match.group(4)
+                    if not db_book or db_book.name != book:
+                        if book == u'Matt':
                             testament += 1
-                        book_ptr = p[0]
-                        book = self.bibledb.create_book(
-                            unicode(self.booksOfBible[p[0]]),
-                            unicode(self.abbrevOfBible[p[0]]),
+                        db_book = self.bibledb.create_book(
+                            unicode(self.books[book][0]),
+                            unicode(self.books[book][1]),
                             testament)
+                    if last_chapter == 0:
+                        if book == u'Gen':
+                            dialogobject.ImportProgressBar.setMaximum(1188)
+                        else:
+                            dialogobject.ImportProgressBar.setMaximum(260)
+                    if last_chapter != chapter:
+                        if last_chapter != 0:
+                            self.bibledb.save_verses()
                         dialogobject.incrementProgressBar(
-                            self.booksOfBible[p[0]])
-                        Receiver.send_message(u'process_events')
-                        #minor delay to get the events processed
-                        time.sleep(0.1)
-                        count = 0
-                    self.bibledb.add_verse(book.id, p[1], p[2], text)
-                    count += 1
-                    #Every 3 verses repaint the screen
-                    if count % 30 == 0:
-                        Receiver.send_message(u'process_events')
-                        #minor delay to get the events processed
-                        time.sleep(0.1)
-                        count = 0
+                            u'Importing %s %s...' % \
+                            (self.books[match.group(1)][0], chapter))
+                        last_chapter = chapter
+                    # All of this rigmarol below is because the mod2osis
+                    # tool from the Sword library embeds XML in the OSIS
+                    # but neglects to enclose the verse text (with XML) in
+                    # <[CDATA[ ]]> tags.
+                    verse_text = self.note_regex.sub(u'', verse_text)
+                    verse_text = self.title_regex.sub(u'', verse_text)
+                    verse_text = self.milestone_regex.sub(u'', verse_text)
+                    verse_text = self.fi_regex.sub(u'', verse_text)
+                    verse_text = self.rf_regex.sub(u'', verse_text)
+                    verse_text = self.lb_regex.sub(u'', verse_text)
+                    verse_text = self.l_regex.sub(u'', verse_text)
+                    verse_text = self.w_regex.sub(u'', verse_text)
+                    verse_text = self.q_regex.sub(u'', verse_text)
+                    verse_text = verse_text.replace(u'</lb>', u'')\
+                        .replace(u'</l>', u'').replace(u'<lg>', u'')\
+                        .replace(u'</lg>', u'').replace(u'</q>', u'')\
+                        .replace(u'</div>', u'')
+                    verse_text = self.spaces_regex.sub(u' ', verse_text)
+                    self.bibledb.add_verse(db_book.id, chapter, verse, verse_text)
+            self.bibledb.save_verses()
+            dialogobject.incrementProgressBar(u'Finishing import...')
         except:
             log.exception(u'Loading bible from OSIS file failed')
         finally:
             if osis:
                 osis.close()
 
-    def remove_block(self, start_tag, end_tag, text):
-        """
-        Removes a block of text between two tags::
-
-            <tag attrib="xvf">Some not wanted text</tag>
-
-        ``start_tag``
-            The XML tag to look for.
-
-        ``end_tag``
-            The ending XML tag.
-
-        ``text``
-            The string of XML to search.
-        """
-        pos = text.find(start_tag)
-        while pos > -1:
-            epos = text.find(end_tag, pos)
-            if epos == -1:
-                pos = -1
-            else:
-                text = text[:pos] + text[epos + len(end_tag): ]
-                pos = text.find(start_tag)
-        return text
-
-    def remove_tag(self, start_tag, text):
-        """
-        Removes a single tag::
-
-            <tag attrib1="fajkdf" attrib2="fajkdf" attrib3="fajkdf" />
-
-        ``start_tag``
-            The XML tag to remove.
-
-        ``text``
-            The string of XML to search.
-        """
-        pos = text.find(start_tag)
-        while pos > -1:
-            epos = text.find(u'/>', pos)
-            text = text[:pos] + text[epos + 2: ]
-            pos = text.find(start_tag)
-        return text
