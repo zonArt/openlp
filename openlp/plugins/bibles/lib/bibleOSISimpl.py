@@ -54,7 +54,8 @@ class BibleOSISImpl():
             A reference to a Bible database object.
         """
         log.info(u'BibleOSISImpl Initialising')
-        self.verse_regex = re.compile(r'<verse osisID="([a-zA-Z0-9 ]*).([0-9]*).([0-9]*)">(.*?)</verse>')
+        self.verse_regex = re.compile(
+            r'<verse osisID="([a-zA-Z0-9 ]*).([0-9]*).([0-9]*)">(.*?)</verse>')
         self.note_regex = re.compile(r'<note(.*?)>(.*?)</note>')
         self.title_regex = re.compile(r'<title(.*?)>(.*?)</title>')
         self.milestone_regex = re.compile(r'<milestone(.*?)/>')
