@@ -27,7 +27,7 @@ import logging
 
 from forms import EditCustomForm
 from openlp.core.lib import Plugin, build_icon
-from openlp.plugins.custom.lib import CustomManager, CustomMediaItem
+from openlp.plugins.custom.lib import CustomManager, CustomMediaItem, CustomTab
 
 
 class CustomPlugin(Plugin):
@@ -50,6 +50,9 @@ class CustomPlugin(Plugin):
         self.custommanager = CustomManager(self.config)
         self.edit_custom_form = EditCustomForm(self.custommanager)
         self.icon = build_icon(u':/media/media_custom.png')
+
+    def get_settings_tab(self):
+        return CustomTab(self.name)
 
     def get_media_manager_item(self):
         # Create the CustomManagerItem object

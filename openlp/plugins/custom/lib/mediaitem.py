@@ -27,7 +27,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, SongXMLParser, BaseListWithDnD, Receiver
+from openlp.core.lib import MediaManagerItem, SongXMLParser, BaseListWithDnD,\
+Receiver, str_to_bool
 
 class CustomListView(BaseListWithDnD):
     def __init__(self, parent=None):
@@ -155,9 +156,13 @@ class CustomMediaItem(MediaManagerItem):
         verseList = songXML.get_verses()
         for verse in verseList:
             raw_slides.append(verse[1])
-        raw_footer.append(title + u' '+ credit)
         service_item.title = title
         for slide in raw_slides:
             service_item.add_from_text(slide[:30], slide)
+        if str_to_bool(self.parent.config.get_config(u'display footer', True)) or \
+            len(credit) > 0:
+            raw_footer.append(title + u' '+ credit)
+        else:
+            raw_footer.append(u'')
         service_item.raw_footer = raw_footer
         return True

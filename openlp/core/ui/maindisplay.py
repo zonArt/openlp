@@ -234,8 +234,12 @@ class MainDisplay(DisplayWidget):
         ``text``
             display text
         """
+        log.debug(u'display alert called %s' % text)
         alertTab = self.parent.settingsForm.AlertsTab
-        alertframe = QtGui.QPixmap.fromImage(self.frame)
+        if isinstance(self.frame, QtGui.QImage):
+            alertframe = QtGui.QPixmap.fromImage(self.frame)
+        else:
+            alertframe = QtGui.QPixmap.fromImage(self.frame[u'main'])
         painter = QtGui.QPainter(alertframe)
         top = alertframe.rect().height() * 0.9
         painter.fillRect(
@@ -261,7 +265,10 @@ class MainDisplay(DisplayWidget):
 
     def timerEvent(self, event):
         if event.timerId() == self.timer_id:
-            self.display.setPixmap(QtGui.QPixmap.fromImage(self.frame))
+            if isinstance(self.frame, QtGui.QImage):
+                self.display.setPixmap(QtGui.QPixmap.fromImage(self.frame))
+            else:
+                self.display.setPixmap(QtGui.QPixmap.fromImage(self.frame[u'main']))
             self.killTimer(self.timer_id)
             self.timer_id = 0
 

@@ -357,7 +357,7 @@ class MediaManagerItem(QtGui.QWidget):
                 self.trUtf8('No items selected...'),
                 self.trUtf8('You must select one or more items'))
         else:
-            log.debug(self.PluginNameShort + u' Preview Requested')
+            log.debug(self.PluginNameShort + u' Preview requested')
             service_item = self.buildServiceItem()
             if service_item:
                 service_item.fromPlugin = True
@@ -369,7 +369,7 @@ class MediaManagerItem(QtGui.QWidget):
                 self.trUtf8('No items selected...'),
                 self.trUtf8('You must select one or more items'))
         else:
-            log.debug(self.PluginNameShort + u' Live Requested')
+            log.debug(self.PluginNameShort + u' Live requested')
             service_item = self.buildServiceItem()
             if service_item:
                 service_item.fromPlugin = True
@@ -381,7 +381,7 @@ class MediaManagerItem(QtGui.QWidget):
                 self.trUtf8('No items selected...'),
                 self.trUtf8('You must select one or more items'))
         else:
-            log.debug(self.PluginNameShort + u' Add Requested')
+            log.debug(self.PluginNameShort + u' Add requested')
             service_item = self.buildServiceItem()
             if service_item:
                 service_item.fromPlugin = False

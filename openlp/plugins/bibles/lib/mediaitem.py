@@ -30,7 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, Receiver, str_to_bool, \
     BaseListWithDnD
-from openlp.plugins.bibles.forms import BibleImportForm, ImportWizardForm
+from openlp.plugins.bibles.forms import ImportWizardForm
 from openlp.plugins.bibles.lib.manager import BibleMode
 
 class BibleListView(BaseListWithDnD):
