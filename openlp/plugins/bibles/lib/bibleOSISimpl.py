@@ -91,6 +91,7 @@ class BibleOSISImpl():
         """
         Stops the import of the Bible.
         """
+        log.debug('Stopping import!')
         self.loadbible = False
 
     def load_data(self, osisfile_record, dialogobject=None):
@@ -116,19 +117,23 @@ class BibleOSISImpl():
             if detect_file:
                 detect_file.close()
         osis = None
+        success = True
         try:
             osis = codecs.open(osisfile_record, u'r', details['encoding'])
             last_chapter = 0
             testament = 1
             db_book = None
             for file_record in osis:
+                if not self.loadbible:
+                    break
                 match = self.verse_regex.search(file_record)
                 if match:
                     book = match.group(1)
                     chapter = int(match.group(2))
                     verse = int(match.group(3))
                     verse_text = match.group(4)
-                    if not db_book or db_book.name != book:
+                    if not db_book or db_book.name != self.books[book][0]:
+                        log.debug('New book: "%s"', self.books[book][0])
                         if book == u'Matt':
                             testament += 1
                         db_book = self.bibledb.create_book(
@@ -166,11 +171,19 @@ class BibleOSISImpl():
                         .replace(u'</div>', u'')
                     verse_text = self.spaces_regex.sub(u' ', verse_text)
                     self.bibledb.add_verse(db_book.id, chapter, verse, verse_text)
+                    Receiver.send_message(u'process_events')
             self.bibledb.save_verses()
             dialogobject.incrementProgressBar(u'Finishing import...')
         except:
             log.exception(u'Loading bible from OSIS file failed')
+            success = False
         finally:
             if osis:
                 osis.close()
-
+        if not self.loadbible:
+            dialogobject.incrementProgressBar(u'Import canceled!')
+            dialogobject.ImportProgressBar.setValue(
+                dialogobject.ImportProgressBar.maximum())
+            return False
+        else:
+            return success

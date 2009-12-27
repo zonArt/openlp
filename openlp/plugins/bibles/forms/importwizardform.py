@@ -66,13 +66,13 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         QtGui.QWizard.__init__(self, parent)
         self.setupUi(self)
         self.registerFields()
-        self.web_bible_list = {}
         self.finishButton = self.button(QtGui.QWizard.FinishButton)
         self.cancelButton = self.button(QtGui.QWizard.CancelButton)
         self.biblemanager = biblemanager
         self.config = config
         self.bibleplugin = bibleplugin
-        self.biblemanager.process_dialog(self)
+        self.biblemanager.set_process_dialog(self)
+        self.web_bible_list = {}
         self.loadWebBibles()
         QtCore.QObject.connect(self.LocationComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
@@ -89,6 +89,9 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         QtCore.QObject.connect(self.OpenSongBrowseButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onOpenSongBrowseButtonClicked)
+        QtCore.QObject.connect(self.cancelButton,
+            QtCore.SIGNAL(u'clicked(bool)'),
+            self.onCancelButtonClicked)
         QtCore.QObject.connect(self,
             QtCore.SIGNAL(u'currentIdChanged(int)'),
             self.onCurrentIdChanged)
@@ -192,6 +195,11 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.getFileName(self.trUtf8('Open OpenSong Bible'),
             self.OpenSongFileEdit)
 
+    def onCancelButtonClicked(self, checked):
+        log.debug('Cancel button pressed!')
+        if self.currentId() == 3:
+            Receiver.send_message(u'openlpstopimport')
+
     def onCurrentIdChanged(self, id):
         if id == 3:
             self.preImport()
@@ -237,11 +245,11 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.setField(u'opensong_file', u'')
         self.setField(u'web_location', 0)
         self.setField(u'web_biblename', self.BibleComboBox)
-        self.setField(u'proxy_server', 
+        self.setField(u'proxy_server',
             self.config.get_config(u'proxy address', u''))
-        self.setField(u'proxy_username', 
+        self.setField(u'proxy_username',
             self.config.get_config(u'proxy username',u''))
-        self.setField(u'proxy_password', 
+        self.setField(u'proxy_password',
             self.config.get_config(u'proxy password',u''))
         self.setField(u'license_version', self.VersionNameEdit)
         self.setField(u'license_copyright', self.CopyrightEdit)
@@ -297,8 +305,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         Receiver.send_message(u'process_events')
 
     def preImport(self):
-        self.finishButton.setEnabled(False)
-        self.cancelButton.setVisible(False)
+        self.finishButton.setVisible(False)
         self.ImportProgressBar.setMinimum(0)
         self.ImportProgressBar.setMaximum(1188)
         self.ImportProgressBar.setValue(0)
@@ -352,13 +359,14 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                 unicode(self.field(u'license_copyright').toString()),
                 unicode(self.field(u'license_permission').toString())
             )
+            self.ImportProgressLabel.setText(self.trUtf8('Finished import.'))
         else:
             self.ImportProgressLabel.setText(
                 self.trUtf8('Your Bible import failed.'))
-            self.ImportProgressBar.setValue(self.ImportProgressBar.maximum())
 
     def postImport(self):
-        self.ImportProgressLabel.setText(self.trUtf8('Finished import.'))
-        self.finishButton.setEnabled(True)
+        self.ImportProgressBar.setValue(self.ImportProgressBar.maximum())
+        self.finishButton.setVisible(True)
+        self.cancelButton.setVisible(False)
         Receiver.send_message(u'process_events')
 

@@ -155,7 +155,7 @@ class BibleManager(object):
                         fbibles.close()
         log.debug(u'Bible Initialised')
 
-    def process_dialog(self, dialogobject):
+    def set_process_dialog(self, dialogobject):
         """
         Sets the reference to the dialog with the progress bar on it.
 
@@ -246,8 +246,7 @@ class BibleManager(object):
             self.bible_db_cache[biblename] = nbible
             # Create the loader and pass in the database
             bcsv = BibleCSVImpl(nbible)
-            bcsv.load_data(booksfile, versefile, self.dialogobject)
-            return True
+            return bcsv.load_data(booksfile, versefile, self.dialogobject)
         else:
             log.debug(u'register_csv_file_bible %s not created already exists',
                 biblename)
@@ -268,9 +267,8 @@ class BibleManager(object):
             # Cache the database for use later
             self.bible_db_cache[biblename] = nbible
             # Create the loader and pass in the database
-            bcsv = BibleOSISImpl(self.biblePath, nbible)
-            bcsv.load_data(osisfile, self.dialogobject)
-            return True
+            bosis = BibleOSISImpl(self.biblePath, nbible)
+            return bosis.load_data(osisfile, self.dialogobject)
         else:
             log.debug(
                 u'register_OSIS_file_bible %s, %s not created already exists',

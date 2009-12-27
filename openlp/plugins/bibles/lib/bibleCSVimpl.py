@@ -49,6 +49,7 @@ class BibleCSVImpl(BibleCommon):
 
     def load_data(self, booksfile, versesfile, dialogobject):
         #Populate the Tables
+        success = True
         fbooks = None
         try:
             fbooks = open(booksfile, 'r')
@@ -71,10 +72,12 @@ class BibleCSVImpl(BibleCommon):
                     count = 0
         except:
             log.exception(u'Loading books from file failed')
+            success = False
         finally:
             if fbooks:
                 fbooks.close()
-
+        if not success:
+            return False
         fverse = None
         try:
             fverse = open(versesfile, 'r')
@@ -104,6 +107,14 @@ class BibleCSVImpl(BibleCommon):
             self.bibledb.save_verses()
         except:
             log.exception(u'Loading verses from file failed')
+            success = False
         finally:
             if fverse:
                 fverse.close()
+        if not self.loadbible:
+            dialogobject.incrementProgressBar(u'Import canceled!')
+            dialogobject.ImportProgressBar.setValue(
+                dialogobject.ImportProgressBar.maximum())
+            return False
+        else:
+            return success
