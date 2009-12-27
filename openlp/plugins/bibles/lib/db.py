@@ -27,17 +27,30 @@ import os
 import logging
 
 from common import BibleCommon
-from openlp.plugins.bibles.lib.models import *
+from models import *
 
-class BibleDBImpl(BibleCommon):
-    global log
-    log = logging.getLogger(u'BibleDBImpl')
-    log.info(u'BibleDBimpl loaded')
+log = logging.getLogger(__name__)
 
-    def __init__(self, biblepath, biblename, config):
+class BibleDB(BibleCommon):
+    """
+    This class represents a database-bound Bible. It is used as a base class
+    for all the custom importers, so that the can implement their own import
+    methods, but benefit from the database methods in here via inheritance,
+    rather than depending on yet another object.
+    """
+
+    def __init__(self, **kwargs):
+        log.info(u'BibleDBimpl loaded')
+        if u'biblepath' not in kwargs:
+            raise KeyError(u'Missing keyword argument "path".')
+        if u'biblename' not in kwargs:
+            raise KeyError(u'Missing keyword argument "name".')
+        if u'config' not in kwargs:
+            raise KeyError(u'Missing keyword argument "config".')
         # Connect to database
-        self.config = config
-        self.biblefile = os.path.join(biblepath, biblename + u'.sqlite')
+        self.config = kwargs[u'config']
+        self.db_file = os.path.join(kwargs[u'path'],
+            u'%s.sqlite' % kwargs[u'biblename'])
         log.debug(u'Load bible %s on path %s', biblename, self.biblefile)
         db_type = self.config.get_config(u'db type', u'sqlite')
         db_url = u''

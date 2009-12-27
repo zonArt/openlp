@@ -171,7 +171,7 @@ class CWExtract(BibleCommon):
             bible[verse] = self._clean_text(verseText)
         return SearchResults(book_title, book_chapter, bible)
 
-class BibleHTTPImpl():
+class HTTPBible(object):
     global log
     log = logging.getLogger(u'BibleHTTPMgr')
     log.info(u'BibleHTTP manager loaded')

@@ -85,7 +85,9 @@ class BibleCommon(object):
         """
         An empty constructor... not sure why I'm here.
         """
-        pass
+        self.loadbible = True
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
 
     def _get_web_text(self, urlstring, proxyurl):
         """

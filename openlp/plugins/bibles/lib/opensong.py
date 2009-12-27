@@ -23,94 +23,100 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import os
+import os.path
 import logging
 import chardet
+import codecs
+from lxml import objectify
 
-from openlp.plugins.bibles.lib.common import BibleCommon
+from PyQt4 import QtCore
+
 from openlp.core.lib import Receiver
 
-class BibleCSVImpl(BibleCommon):
+class OpenSongBible(object):
+    """
+    OSIS Bible format importer class.
+    """
     global log
-    log = logging.getLogger(u'BibleCSVImpl')
-    log.info(u'BibleCVSImpl loaded')
-    def __init__(self, bibledb):
+    log = logging.getLogger(__name__)
+    log.info(u'BibleOpenSongImpl loaded')
+
+    def __init__(self, biblepath, bibledb):
         """
-        Loads a Bible from a pair of CVS files passed in
-        This class assumes the files contain all the information and
-        a clean bible is being loaded.
+        Constructor to create and set up an instance of the
+        BibleOpenSongImpl class.
+
+        ``biblepath``
+            This does not seem to be used.
+
+        ``bibledb``
+            A reference to a Bible database object.
         """
+        log.info(u'BibleOpenSongImpl Initialising')
         self.bibledb = bibledb
         self.loadbible = True
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
 
     def stop_import(self):
+        """
+        Stops the import of the Bible.
+        """
         self.loadbible = False
 
-    def load_data(self, booksfile, versesfile, dialogobject):
-        #Populate the Tables
-        success = True
-        fbooks = None
+    def load_data(self, bible_file, dialogobject=None):
+        """
+        Loads a Bible from file.
+
+        ``bible_file``
+            The file to import from.
+
+        ``dialogobject``
+            The Import dialog, so that we can increase the counter on
+            the progress bar.
+        """
+        log.info(u'Load data for %s' % bible_file)
+        bible_file = unicode(bible_file)
+        detect_file = None
         try:
-            fbooks = open(booksfile, 'r')
-            count = 0
-            for line in fbooks:
-                # cancel pressed
+            detect_file = open(bible_file, u'r')
+            details = chardet.detect(detect_file.read(3000))
+        except:
+            log.exception(u'Failed to detect OpenSong file encoding')
+            return False
+        finally:
+            if detect_file:
+                detect_file.close()
+        opensong_bible = None
+        success = True
+        try:
+            opensong_bible = codecs.open(bible_file, u'r', details['encoding'])
+            opensong = objectify.parse(opensong_bible)
+            bible = opensong.getroot()
+            for book in bible.b:
                 if not self.loadbible:
                     break
-                details = chardet.detect(line)
-                line = unicode(line, details['encoding'])
-                p = line.split(u',')
-                p1 = p[1].replace(u'"', u'')
-                p2 = p[2].replace(u'"', u'')
-                p3 = p[3].replace(u'"', u'')
-                self.bibledb.create_book(p2, p3, int(p1))
-                count += 1
-                #Flush the screen events
-                if count % 3 == 0:
-                    Receiver.send_message(u'process_events')
-                    count = 0
-        except:
-            log.exception(u'Loading books from file failed')
-            success = False
-        finally:
-            if fbooks:
-                fbooks.close()
-        if not success:
-            return False
-        fverse = None
-        try:
-            fverse = open(versesfile, 'r')
-            count = 0
-            book_ptr = None
-            for line in fverse:
-                if not self.loadbible:  # cancel pressed
-                    break
-                details = chardet.detect(line)
-                line = unicode(line, details['encoding'])
-                # split into 3 units and leave the rest as a single field
-                p = line.split(u',', 3)
-                p0 = p[0].replace(u'"', u'')
-                p3 = p[3].replace(u'"', u'')
-                if book_ptr is not p0:
-                    book = self.bibledb.get_bible_book(p0)
-                    book_ptr = book.name
-                    # increament the progress bar
+                dbbook = self.bibledb.create_book(book.attrib[u'n'],
+                    book.attrib[u'n'][:4])
+                for chapter in book.c:
+                    if not self.loadbible:
+                        break
+                    for verse in chapter.v:
+                        if not self.loadbible:
+                            break
+                        self.bibledb.add_verse(dbbook.id, chapter.attrib[u'n'],
+                            verse.attrib[u'n'], verse.text)
+                        Receiver.send_message(u'process_events')
                     dialogobject.incrementProgressBar(u'Importing %s %s' % \
-                        book.name)
-                self.bibledb.add_verse(book.id, p[1], p[2], p3)
-                count += 1
-                #Every x verses repaint the screen
-                if count % 3 == 0:
-                    Receiver.send_message(u'process_events')
-                    count = 0
-            self.bibledb.save_verses()
+                        (dbbook.name, str(chapter.attrib[u'n'])))
+                    self.bibledb.save_verses()
         except:
-            log.exception(u'Loading verses from file failed')
+            log.exception(u'Loading bible from OpenSong file failed')
             success = False
         finally:
-            if fverse:
-                fverse.close()
+            if opensong_bible:
+                opensong_bible.close()
         if not self.loadbible:
             dialogobject.incrementProgressBar(u'Import canceled!')
             dialogobject.ImportProgressBar.setValue(
@@ -118,3 +124,4 @@ class BibleCSVImpl(BibleCommon):
             return False
         else:
             return success
+

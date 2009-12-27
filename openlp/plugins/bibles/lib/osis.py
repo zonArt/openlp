@@ -34,7 +34,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
 
-class BibleOSISImpl():
+class OSISBible(object):
     """
     OSIS Bible format importer class.
     """

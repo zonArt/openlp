@@ -26,36 +26,58 @@
 import logging
 import os
 
-from bibleOpenSongimpl import BibleOpenSongImpl
-from bibleOSISimpl import BibleOSISImpl
-from bibleCSVimpl import BibleCSVImpl
+from opensong import OpenSongBible
+from osis import OSISBible
+from csv import CSVBible
 from bibleDBimpl import BibleDBImpl
 from bibleHTTPimpl import BibleHTTPImpl
 
 class BibleMode(object):
+    """
+    This is basically an enumeration class which specifies the mode of a Bible.
+    Mode refers to whether or not a Bible in OpenLP is a full Bible or needs to
+    be downloaded from the Internet on an as-needed basis.
+    """
     Full = 1
     Partial = 2
 
 
 class BibleFormat(object):
+    """
+    This is a special enumeration class that holds the various types of Bibles,
+    plus a few helper functions to facilitate generic handling of Bible types
+    for importing.
+    """
     Unknown = -1
     OSIS = 0
     CSV = 1
     OpenSong = 2
     WebDownload = 3
 
-    @classmethod
-    def get_handler(class_, id):
-        if id == class_.OSIS:
+    @staticmethod
+    def get_class(id):
+        """
+        Return the appropriate imeplementation class.
+        """
+        if id == BibleFormat.OSIS:
             return BibleOSISImpl
-        elif id == class_.CSV:
+        elif id == BibleFormat.CSV:
             return BibleCSVImpl
-        elif id == class_.OpenSong:
+        elif id == BibleFormat.OpenSong:
             return BibleOpenSongImpl
-        elif id == class_.WebDownload:
+        elif id == BibleFormat.WebDownload:
             return BibleHTTPImpl
         else:
             return None
+
+    @staticmethod
+    def list():
+        return [
+            BibleFormat.OSIS,
+            BibleFormat.CSV,
+            BibleFormat.OpenSong,
+            BibleFormat.WebDownload
+        ]
 
 
 class BibleManager(object):
@@ -84,11 +106,11 @@ class BibleManager(object):
         self.bible_db_cache = None
         # dict of bible http readers
         self.bible_http_cache = None
-        self.biblePath = self.config.get_data_path()
+        self.bible_path = self.config.get_data_path()
         #get proxy name for screen
-        self.proxyname = self.config.get_config(u'proxy name')
-        self.bibleSuffix = u'sqlite'
-        self.dialogobject = None
+        self.proxy_name = self.config.get_config(u'proxy name')
+        self.bible_suffix = u'sqlite'
+        self.import_wizard = None
         self.reload_bibles()
         self.media = None
 
@@ -108,7 +130,7 @@ class BibleManager(object):
         for f in files:
             nme = f.split(u'.')
             bname = nme[0]
-            self.bible_db_cache[bname] = BibleDBImpl(self.biblePath,
+            self.bible_db_cache[bname] = BibleDBImpl(self.bible_path,
                 bname, self.config)
             # look to see if lazy load bible exists and get create getter.
             biblesource = self.bible_db_cache[bname].get_meta(u'WEB')
@@ -139,7 +161,7 @@ class BibleManager(object):
                 self.book_abbreviations = {}
                 filepath = os.path.split(os.path.abspath(__file__))[0]
                 filepath = os.path.abspath(os.path.join(
-                    filepath, u'..', u'resources',u'httpbooks.csv'))
+                    filepath, u'..', u'resources', u'httpbooks.csv'))
                 fbibles = None
                 try:
                     fbibles = open(filepath, u'r')
@@ -155,14 +177,14 @@ class BibleManager(object):
                         fbibles.close()
         log.debug(u'Bible Initialised')
 
-    def set_process_dialog(self, dialogobject):
+    def set_process_dialog(self, wizard):
         """
         Sets the reference to the dialog with the progress bar on it.
 
-        ``dialogobject``
-            The reference to the dialog.
+        ``dialog``
+            The reference to the import wizard.
         """
-        self.dialogobject = dialogobject
+        self.import_wizard = wizard
 
     def import_bible(self, type, **kwargs):
         """
@@ -171,7 +193,11 @@ class BibleManager(object):
         ``type``
             What type of Bible,
         """
-        pass
+        impl_class = BibleFormat.get_handler(type)
+        bible_impl = impl_class(**kwargs)
+        bible_name = bible_impl.register()
+        BibleDBImpl(self.biblePath, bible_name, self.config)
+        bible_impl.do_import()
 
     def register_http_bible(self, biblename, biblesource, bibleid,
                             proxyurl=None, proxyid=None, proxypass=None):
@@ -202,7 +228,7 @@ class BibleManager(object):
             biblename, biblesource, bibleid, proxyurl, proxyid, proxypass)
         if self._is_new_bible(biblename):
             # Create new Bible
-            nbible = BibleDBImpl(self.biblePath, biblename, self.config)
+            nbible = BibleDBImpl(self.bible_path, biblename, self.config)
             # Create Database
             nbible.create_tables()
             self.bible_db_cache[biblename] = nbible
@@ -239,7 +265,7 @@ class BibleManager(object):
             biblename, booksfile, versefile)
         if self._is_new_bible(biblename):
             # Create new Bible
-            nbible = BibleDBImpl(self.biblePath, biblename, self.config)
+            nbible = BibleDBImpl(self.bible_path, biblename, self.config)
             # Create database
             nbible.create_tables()
             # Cache the database for use later
@@ -261,13 +287,13 @@ class BibleManager(object):
         log.debug(u'register_OSIS_file_bible %s, %s', biblename, osisfile)
         if self._is_new_bible(biblename):
             # Create new Bible
-            nbible = BibleDBImpl(self.biblePath, biblename, self.config)
+            nbible = BibleDBImpl(self.bible_path, biblename, self.config)
             # Create Database
             nbible.create_tables()
             # Cache the database for use later
             self.bible_db_cache[biblename] = nbible
             # Create the loader and pass in the database
-            bosis = BibleOSISImpl(self.biblePath, nbible)
+            bosis = BibleOSISImpl(self.bible_path, nbible)
             return bosis.load_data(osisfile, self.dialogobject)
         else:
             log.debug(
@@ -283,13 +309,13 @@ class BibleManager(object):
         log.debug(u'register_opensong_file_bible %s, %s', biblename, opensongfile)
         if self._is_new_bible(biblename):
             # Create new Bible
-            nbible = BibleDBImpl(self.biblePath, biblename, self.config)
+            nbible = BibleDBImpl(self.bible_path, biblename, self.config)
             # Create Database
             nbible.create_tables()
             # Cache the database for use later
             self.bible_db_cache[biblename] = nbible
             # Create the loader and pass in the database
-            bcsv = BibleOpenSongImpl(self.biblePath, nbible)
+            bcsv = BibleOpenSongImpl(self.bible_path, nbible)
             bcsv.load_data(opensongfile, self.dialogobject)
             return True
         else:
