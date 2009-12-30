@@ -26,8 +26,8 @@
 import logging
 import chardet
 
-from openlp.plugins.bibles.lib.db import BibleDB
 from openlp.core.lib import Receiver
+from db import BibleDB
 
 log = logging.getLogger(__name__)
 
@@ -44,20 +44,22 @@ class CSVBible(BibleDB):
         """
         log.info(__name__)
         BibleDB.__init__(self, **kwargs)
+        if u'booksfile' not in kwargs:
+            raise KeyError(u'You have to supply a file to import books from.')
+        self.booksfile = kwargs[u'booksfile']
+        if u'versesfile' not in kwargs:
+            raise KeyError(u'You have to supply a file to import verses from.')
+        self.versesfile = kwargs[u'versesfile']
 
-    def stop_import(self):
-        self.loadbible = False
-
-    def load_data(self, booksfile, versesfile, dialogobject):
+    def do_import(self):
         #Populate the Tables
         success = True
         fbooks = None
         try:
-            fbooks = open(booksfile, 'r')
-            count = 0
+            fbooks = open(self.booksfile, 'r')
             for line in fbooks:
                 # cancel pressed
-                if not self.loadbible:
+                if self.stop_import:
                     break
                 details = chardet.detect(line)
                 line = unicode(line, details['encoding'])
@@ -65,12 +67,8 @@ class CSVBible(BibleDB):
                 p1 = p[1].replace(u'"', u'')
                 p2 = p[2].replace(u'"', u'')
                 p3 = p[3].replace(u'"', u'')
-                self.bibledb.create_book(p2, p3, int(p1))
-                count += 1
-                #Flush the screen events
-                if count % 3 == 0:
-                    Receiver.send_message(u'process_events')
-                    count = 0
+                self.create_book(p2, p3, int(p1))
+                Receiver.send_message(u'process_events')
         except:
             log.exception(u'Loading books from file failed')
             success = False
@@ -82,10 +80,9 @@ class CSVBible(BibleDB):
         fverse = None
         try:
             fverse = open(versesfile, 'r')
-            count = 0
             book_ptr = None
             for line in fverse:
-                if not self.loadbible:  # cancel pressed
+                if self.stop_import:  # cancel pressed
                     break
                 details = chardet.detect(line)
                 line = unicode(line, details['encoding'])
@@ -94,28 +91,23 @@ class CSVBible(BibleDB):
                 p0 = p[0].replace(u'"', u'')
                 p3 = p[3].replace(u'"', u'')
                 if book_ptr is not p0:
-                    book = self.bibledb.get_bible_book(p0)
+                    book = self.get_book(p0)
                     book_ptr = book.name
                     # increament the progress bar
-                    dialogobject.incrementProgressBar(u'Importing %s %s' % \
-                        book.name)
-                self.bibledb.add_verse(book.id, p[1], p[2], p3)
-                count += 1
-                #Every x verses repaint the screen
-                if count % 3 == 0:
-                    Receiver.send_message(u'process_events')
-                    count = 0
-            self.bibledb.save_verses()
+                    self.wizard.incrementProgressBar(
+                        u'Importing %s %s' % book.name)
+                    self.commit()
+                self.add_verse(book.id, p[1], p[2], p3)
+                Receiver.send_message(u'process_events')
+            self.commit()
         except:
             log.exception(u'Loading verses from file failed')
             success = False
         finally:
             if fverse:
                 fverse.close()
-        if not self.loadbible:
-            dialogobject.incrementProgressBar(u'Import canceled!')
-            dialogobject.ImportProgressBar.setValue(
-                dialogobject.ImportProgressBar.maximum())
+        if self.stop_import:
+            self.wizard.incrementProgressBar(u'Import canceled!')
             return False
         else:
             return success

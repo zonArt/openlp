@@ -33,54 +33,34 @@ from lxml import objectify
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
+from db import BibleDB
 
-class OpenSongBible(object):
+log = logging.getLogger(__name__)
+
+class OpenSongBible(BibleDB):
     """
-    OSIS Bible format importer class.
+    OpenSong Bible format importer class.
     """
-    global log
-    log = logging.getLogger(__name__)
-    log.info(u'BibleOpenSongImpl loaded')
 
-    def __init__(self, biblepath, bibledb):
+    def __init__(self, **kwargs):
         """
-        Constructor to create and set up an instance of the
-        BibleOpenSongImpl class.
-
-        ``biblepath``
-            This does not seem to be used.
-
-        ``bibledb``
-            A reference to a Bible database object.
+        Constructor to create and set up an instance of the OpenSongBible
+        class. This class is used to import Bibles from OpenSong's XML format.
         """
-        log.info(u'BibleOpenSongImpl Initialising')
-        self.bibledb = bibledb
-        self.loadbible = True
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
+        log.debug(__name__)
+        BibleDB.__init__(self, **kwargs)
+        if u'filename' not in kwargs:
+            raise KeyError(u'You have to supply a file name to import from.')
+        self.filename = kwargs[u'filename']
 
-    def stop_import(self):
-        """
-        Stops the import of the Bible.
-        """
-        self.loadbible = False
-
-    def load_data(self, bible_file, dialogobject=None):
+    def do_import(self):
         """
         Loads a Bible from file.
-
-        ``bible_file``
-            The file to import from.
-
-        ``dialogobject``
-            The Import dialog, so that we can increase the counter on
-            the progress bar.
         """
-        log.info(u'Load data for %s' % bible_file)
-        bible_file = unicode(bible_file)
+        log.debug(u'Starting OpenSong import from "%s"' % self.filename)
         detect_file = None
         try:
-            detect_file = open(bible_file, u'r')
+            detect_file = open(self.filename, u'r')
             details = chardet.detect(detect_file.read(3000))
         except:
             log.exception(u'Failed to detect OpenSong file encoding')
@@ -88,39 +68,37 @@ class OpenSongBible(object):
         finally:
             if detect_file:
                 detect_file.close()
-        opensong_bible = None
+        file = None
         success = True
         try:
-            opensong_bible = codecs.open(bible_file, u'r', details['encoding'])
-            opensong = objectify.parse(opensong_bible)
+            file = codecs.open(self.filename, u'r', details['encoding'])
+            opensong = objectify.parse(file)
             bible = opensong.getroot()
             for book in bible.b:
-                if not self.loadbible:
+                if self.stop_import:
                     break
-                dbbook = self.bibledb.create_book(book.attrib[u'n'],
-                    book.attrib[u'n'][:4])
+                db_book = self.create_book(book.attrib[u'n'],
+                                           book.attrib[u'n'][:4])
                 for chapter in book.c:
-                    if not self.loadbible:
+                    if self.stop_import:
                         break
                     for verse in chapter.v:
-                        if not self.loadbible:
+                        if self.stop_import:
                             break
-                        self.bibledb.add_verse(dbbook.id, chapter.attrib[u'n'],
+                        self.add_verse(db_book.id, chapter.attrib[u'n'],
                             verse.attrib[u'n'], verse.text)
                         Receiver.send_message(u'process_events')
-                    dialogobject.incrementProgressBar(u'Importing %s %s' % \
+                    self.wizard.incrementProgressBar(u'Importing %s %s' % \
                         (dbbook.name, str(chapter.attrib[u'n'])))
-                    self.bibledb.save_verses()
+                    self.commit()
         except:
             log.exception(u'Loading bible from OpenSong file failed')
             success = False
         finally:
-            if opensong_bible:
-                opensong_bible.close()
-        if not self.loadbible:
-            dialogobject.incrementProgressBar(u'Import canceled!')
-            dialogobject.ImportProgressBar.setValue(
-                dialogobject.ImportProgressBar.maximum())
+            if file:
+                file.close()
+        if self.stop_import:
+            self.wizard.incrementProgressBar(u'Import canceled!')
             return False
         else:
             return success

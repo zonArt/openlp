@@ -32,11 +32,16 @@ from openlp.core.lib import MediaManagerItem, Receiver, str_to_bool, \
     BaseListWithDnD
 from openlp.plugins.bibles.forms import ImportWizardForm
 from openlp.plugins.bibles.lib.manager import BibleMode
+from openlp.plugins.bibles.lib.common import parse_reference
 
 class BibleListView(BaseListWithDnD):
+    """
+    Drag and drop capable list for Bibles.
+    """
     def __init__(self, parent=None):
         self.PluginName = u'Bibles'
         BaseListWithDnD.__init__(self, parent)
+
 
 class BibleMediaItem(MediaManagerItem):
     """
@@ -380,8 +385,8 @@ class BibleMediaItem(MediaManagerItem):
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
             self.ListView.clear()
         if self.QuickSearchComboBox.currentIndex() == 1:
-            self.search_results = self.parent.biblemanager.get_verse_from_text(
-                bible, text)
+            self.search_results = \
+                self.parent.biblemanager.get_verses(bible, text)
         else:
             self.searchByReference(bible, text)
         if self.search_results:

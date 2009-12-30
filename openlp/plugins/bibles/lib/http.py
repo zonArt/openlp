@@ -26,17 +26,18 @@
 import logging
 
 from common import BibleCommon, SearchResults
+from db import BibleDB
 
 class BGExtract(BibleCommon):
     global log
     log = logging.getLogger(u'BibleHTTPMgr(BG_extract)')
     log.info(u'BG_extract loaded')
 
-    def __init__(self, proxyurl= None):
+    def __init__(self, proxyurl=None):
         log.debug(u'init %s', proxyurl)
         self.proxyurl = proxyurl
 
-    def get_bible_chapter(self, version, bookname, chapter) :
+    def get_chapter(self, version, bookname, chapter) :
         """
         Access and decode bibles via the BibleGateway website
 
@@ -49,12 +50,10 @@ class BGExtract(BibleCommon):
         ``chapter``
             Chapter number
         """
-        log.debug(u'get_bible_chapter %s,%s,%s',
-            version, bookname, chapter)
-        urlstring = \
-            u'http://www.biblegateway.com/passage/?search=%s+%d&version=%s' % \
-                (bookname, chapter, version)
-        log.debug(u'BibleGateway urm = %s' % urlstring)
+        log.debug(u'get_bible_chapter %s, %s, %s', version, bookname, chapter)
+        urlstring = u'http://www.biblegateway.com/passage/?search=%s+%d' \
+            u'&version=%s' % (bookname, chapter, version)
+        log.debug(u'BibleGateway url = %s' % urlstring)
         xml_string = self._get_web_text(urlstring, self.proxyurl)
         verseSearch = u'<sup class=\"versenum'
         verseFootnote = u'<sup class=\'footnote'
@@ -171,11 +170,12 @@ class CWExtract(BibleCommon):
             bible[verse] = self._clean_text(verseText)
         return SearchResults(book_title, book_chapter, bible)
 
-class HTTPBible(object):
+class HTTPBible(BibleDB):
     global log
     log = logging.getLogger(u'BibleHTTPMgr')
     log.info(u'BibleHTTP manager loaded')
-    def __init__(self):
+
+    def __init__(self, **kwargs):
         """
         Finds all the bibles defined for the system
         Creates an Interface Object for each bible containing connection
@@ -185,44 +185,51 @@ class HTTPBible(object):
 
         Init confirms the bible exists and stores the database path.
         """
-        self.biblesource = u''
-        self.proxyurl = None
-        self.bibleid = None
+        if u'download_source' not in kwargs:
+            raise KeyError(u'Missing keyword argument "download_source"')
+        if u'download_name' not in kwargs:
+            raise KeyError(u'Missing keyword argument "download_name"')
+        self.download_source = kwargs[u'download_source']
+        self.download_name = kwargs[u'download_name']
+        if u'proxy_server' in kwargs:
+            self.proxy_server = kwargs[u'proxy_server']
+        else:
+            self.proxy_server = None
+        if u'proxy_username' in kwargs:
+            self.proxy_username = kwargs[u'proxy_username']
+        else:
+            self.proxy_username = None
+        if u'proxy_password' in kwargs:
+            self.proxy_password = kwargs[u'proxy_password']
+        else:
+            self.proxy_password = None
 
-    def set_proxy(self, proxyurl):
-        """
-        Set the Proxy Url
-        """
-        log.debug(u'set_proxy %s', proxyurl)
-        self.proxyurl = proxyurl
+    def register(self):
+        name = BibleDB.register(self)
+        self.create_meta(u'download source', self.download_source)
+        self.create_meta(u'download name', self.download_name)
+        if self.proxy_server:
+            self.create_meta(u'proxy server', self.proxy_server)
+        if self.proxy_username:
+            # store the proxy userid
+            self.create_meta(u'proxy username', self.proxy_username)
+        if self.proxy_password:
+            # store the proxy password
+            self.create_meta(u'proxy password', self.proxy_password)
+        return name
 
-    def set_bibleid(self, bibleid):
-        """
-        Set the bible id.
-        The shore identifier of the the bible.
-        """
-        log.debug(u'set_bibleid %s', bibleid)
-        self.bibleid = bibleid
-
-    def set_bible_source(self, biblesource):
-        """
-        Set the source of where the bible text is coming from
-        """
-        log.debug(u'set_bible_source %s', biblesource)
-        self.biblesource = biblesource
-
-    def get_bible_chapter(self, version, bookname, chapter):
+    def get_bible_chapter(self, version, book, chapter):
         """
         Receive the request and call the relevant handler methods
         """
         log.debug(u'get_bible_chapter %s,%s,%s',
-            version, bookname, chapter)
+            version, book, chapter)
         log.debug(u'biblesource = %s', self.biblesource)
         try:
             if self.biblesource.lower() == u'crosswalk':
                 ev = CWExtract(self.proxyurl)
             else:
                 ev = BGExtract(self.proxyurl)
-            return ev.get_bible_chapter(self.bibleid, bookname, chapter)
+            return ev.get_bible_chapter(self.bibleid, book, chapter)
         except:
             log.exception("Failed to get bible chapter")

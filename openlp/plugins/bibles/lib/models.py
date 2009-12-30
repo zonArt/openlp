@@ -50,7 +50,7 @@ class BibleMeta(BaseModel):
     pass
 
 
-class ONTestament(BaseModel):
+class Testament(BaseModel):
     """
     Bible Testaments
     """
@@ -101,7 +101,7 @@ verse_table = Table(u'verse', metadata,
     Column(u'text', types.UnicodeText, index=True),
 )
 mapper(BibleMeta, meta_table)
-mapper(ONTestament, testament_table,
+mapper(Testament, testament_table,
     properties={'books': relation(Book, backref='testament')})
 mapper(Book, book_table,
     properties={'verses': relation(Verse, backref='book')})

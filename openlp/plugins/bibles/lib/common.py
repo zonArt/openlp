@@ -26,6 +26,63 @@
 import urllib2
 import chardet
 import logging
+import re
+
+only_verses = re.compile(r'([a-zA-Z0-9 ]+)[ ]+([0-9]+)[ ]*[:|v|V][ ]*([0-9]+)'
+    r'(?:[ ]*-[ ]*([0-9]+|end))?(?:[ ]*,[ ]*([0-9]+)(?:[ ]*-[ ]*([0-9]+|end))?)?',
+    re.UNICODE)
+chapter_range = re.compile(r'([a-zA-Z0-9 ]+)[ ]+([0-9]+)[ ]*[:|v|V][ ]*'
+    r'([0-9]+)[ ]*-[ ]*([0-9]+)[ ]*[:|v|V][ ]*([0-9]+)',
+    re.UNICODE)
+
+def parse_reference(reference):
+    """
+    This is the über-awesome function that takes a person's typed in string
+    and converts it to a reference list, a list of references to be queried
+    from the Bible database files.
+
+    The reference list is a list of tuples, with each tuple structured like
+    this::
+
+        (book, chapter, start_verse, end_verse)
+    """
+    reference = reference.strip()
+    reference_list = []
+    # We start with the most "complicated" match first, so that they are found
+    # first, and we don't have any "false positives".
+    match = chapter_range.match(reference)
+    if match:
+        reference_list.extend([
+            (match.group(1), match.group(2), match.group(3), -1),
+            (match.group(1), match.group(4), 1, match.group(5))
+        ])
+    else:
+        match = only_verses.match(reference)
+        if match:
+            book = match.group(1)
+            chapter = match.group(2)
+            verse = match.group(3)
+            if match.group(4) is None:
+                reference_list.append((book, chapter, verse, verse))
+            elif match.group(5) is None:
+                end_verse = match.group(4)
+                if end_verse == u'end':
+                    end_verse = -1
+                reference_list.append((book, chapter, verse, end_verse))
+            elif match.group(6) is None:
+                reference_list.extend([
+                    (book, chapter, verse, match.group(4)),
+                    (book, chapter, match.group(5), match.group(5))
+                ])
+            else:
+                end_verse = match.group(6)
+                if end_verse == u'end':
+                    end_verse = -1
+                reference_list.extend([
+                    (book, chapter, verse, match.group(4)),
+                    (book, chapter, match.group(5), end_verse)
+                ])
+    return reference_list
 
 class SearchResults:
     """
@@ -80,14 +137,6 @@ class BibleCommon(object):
     global log
     log = logging.getLogger(u'BibleCommon')
     log.info(u'BibleCommon')
-
-    def __init__(self):
-        """
-        An empty constructor... not sure why I'm here.
-        """
-        self.loadbible = True
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
 
     def _get_web_text(self, urlstring, proxyurl):
         """

@@ -169,6 +169,15 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                 self.CopyrightEdit.setFocus()
                 return False
+            elif self.biblemanager.exists(
+                     self.field(u'license_version').toString()):
+                QtGui.QMessageBox.critical(self,
+                    self.trUtf8('Bible Exists'),
+                    self.trUtf8('This Bible already exists! Please import '
+                        'a different Bible or first delete the existing one.'),
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                self.VersionNameEdit.setFocus()
+                return False
             return True
         if self.currentId() == 3:
             # Progress page
@@ -317,22 +326,22 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         success = False
         if bible_type == BibleFormat.OSIS:
             # Import an OSIS bible
-            success = self.biblemanager.register_osis_file_bible(
-                unicode(self.field(u'license_version').toString()),
-                unicode(self.field(u'osis_location').toString())
+            success = self.biblemanager.import_bible(BibleFormat.OSIS,
+                name=unicode(self.field(u'license_version').toString()),
+                filename=unicode(self.field(u'osis_location').toString())
             )
         elif bible_type == BibleFormat.CSV:
             # Import a CSV bible
-            success = self.biblemanager.register_csv_file_bible(
-                unicode(self.field(u'license_version').toString()),
-                self.field(u'csv_booksfile').toString(),
-                self.field(u'csv_versefile').toString()
+            success = self.biblemanager.import_bible(BibleFormat.CSV,
+                name=unicode(self.field(u'license_version').toString()),
+                booksfile=self.field(u'csv_booksfile').toString(),
+                versefile=self.field(u'csv_versefile').toString()
             )
         elif bible_type == BibleFormat.OpenSong:
             # Import an OpenSong bible
-            success = self.biblemanager.register_opensong_bible(
-                unicode(self.field(u'license_version').toString()),
-                self.field(u'opensong_file').toString()
+            success = self.biblemanager.import_bible(BibleFormat.OpenSong,
+                name=unicode(self.field(u'license_version').toString()),
+                filename=self.field(u'opensong_file').toString()
             )
         elif bible_type == BibleFormat.WebDownload:
             # Import a bible from the web
@@ -344,13 +353,13 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             elif download_location == DownloadLocation.BibleGateway:
                 bible = self.web_bible_list[DownloadLocation.BibleGateway][
                     unicode(self.BibleComboBox.currentText())]
-            success = self.biblemanager.register_http_bible(
-                unicode(self.field(u'license_version').toString()),
-                unicode(DownloadLocation.get_name(download_location)),
-                unicode(bible),
-                unicode(self.field(u'proxy_server').toString()),
-                unicode(self.field(u'proxy_username').toString()),
-                unicode(self.field(u'proxy_password').toString())
+            success = self.biblemanager.import_bible(BibleFormat.WebDownload,
+                name=unicode(self.field(u'license_version').toString()),
+                download_source=unicode(DownloadLocation.get_name(download_location)),
+                download_name=unicode(bible),
+                proxy_server=unicode(self.field(u'proxy_server').toString()),
+                proxy_username=unicode(self.field(u'proxy_username').toString()),
+                proxy_password=unicode(self.field(u'proxy_password').toString())
             )
         if success:
             self.biblemanager.save_meta_data(
@@ -359,6 +368,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                 unicode(self.field(u'license_copyright').toString()),
                 unicode(self.field(u'license_permission').toString())
             )
+            self.biblemanager.reload_bibles()
             self.ImportProgressLabel.setText(self.trUtf8('Finished import.'))
         else:
             self.ImportProgressLabel.setText(
