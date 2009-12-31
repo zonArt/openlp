@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
 # Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
@@ -105,4 +105,3 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
                 return False
         else:
             return QtGui.QDialog.accept(self)
-

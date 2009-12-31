@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
 # Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
@@ -363,4 +363,3 @@ class Ui_BibleImportWizard(object):
             self.trUtf8('Please wait while your Bible is imported.'))
         self.ImportProgressLabel.setText(self.trUtf8('Ready.'))
         #self.ImportProgressBar.setFormat(u'%p')
-
