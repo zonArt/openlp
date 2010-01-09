@@ -169,8 +169,12 @@ class ImpressController(PresentationController):
         for idx in range(pages.getCount()):
             page = pages.getByIndex(idx)
             doc.getCurrentController().setCurrentPage(page)
-            doc.storeToURL(thumbdir + u'/' + self.thumbnailprefix +
-                unicode(idx+1) + u'.png', props)
+            path = u'%s/%s%s.png'% (thumbdir, self.thumbnailprefix,
+                    unicode(idx+1))
+            try:
+                doc.storeToURL(path , props)
+            except:
+                log.exception(u'%s\nUnable to store preview' % path)
 
     def create_property(self, name, value):
         if os.name == u'nt':
@@ -230,7 +234,11 @@ class ImpressController(PresentationController):
             if self.presentation:
                 self.presentation.end()
                 self.presentation = None
-            self.document.dispose()
+            try:
+                self.document.dispose()
+            except:
+                #We tried!
+                pass
             self.document = None
 
     def is_loaded(self):

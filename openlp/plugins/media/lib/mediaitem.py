@@ -61,8 +61,9 @@ class MediaMediaItem(MediaManagerItem):
 
     def retranslateUi(self):
         self.OnNewPrompt = self.trUtf8('Select Media')
-        self.OnNewFileMasks = self.trUtf8('Videos (*.avi *.mpeg *.mpg'
-            '*.mp4);;Audio (*.ogg *.mp3 *.wma);;All files (*)')
+        self.OnNewFileMasks = self.trUtf8('Videos (*.avi *.mpeg *.mpg *.wmv'
+            '*.mov *.mp4 *.flv);;Audio (*.ogg *.mp3 *.wma *.wav *.flac)'
+            ';;All files (*)')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -84,7 +85,7 @@ class MediaMediaItem(MediaManagerItem):
         for item in items:
             bitem = self.ListView.item(item.row())
             filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
-            frame = u':/media/media_video.png'
+            frame = u':/media/image_clapperboard.png'
             (path, name) = os.path.split(filename)
             service_item.add_from_command(path, name, frame)
         return True

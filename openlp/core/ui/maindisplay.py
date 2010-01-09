@@ -90,29 +90,32 @@ class MainDisplay(DisplayWidget):
         self.parent = parent
         self.setWindowTitle(u'OpenLP Display')
         self.screens = screens
-        self.layout = QtGui.QVBoxLayout(self)
-        self.layout.setSpacing(0)
-        self.layout.setMargin(0)
-        self.layout.setObjectName(u'layout')
+#        self.layout = QtGui.QVBoxLayout(self)
+#        self.layout.setSpacing(0)
+#        self.layout.setMargin(0)
+#        self.layout.setObjectName(u'layout')
         self.mediaObject = Phonon.MediaObject(self)
         self.video = Phonon.VideoWidget()
         self.video.setVisible(False)
         self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
         Phonon.createPath(self.mediaObject, self.video)
         Phonon.createPath(self.mediaObject, self.audio)
-        self.layout.insertWidget(0, self.video)
+        #self.layout.insertWidget(0, self.video)
         self.display = QtGui.QLabel(self)
         self.display.setScaledContents(True)
-        self.layout.insertWidget(0, self.display)
+        self.alertDisplay = QtGui.QLabel(self)
+        self.alertDisplay.setScaledContents(True)
+        #self.layout.insertWidget(0, self.display)
         self.primary = True
         self.displayBlank = False
         self.blankFrame = None
         self.frame = None
-        self.alertactive = False
         self.timer_id = 0
         self.firstTime = True
         self.mediaLoaded = False
         self.hasTransition = False
+        self.alertList = []
+        self.mediaBackground = False
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'alert_text'), self.displayAlert)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -130,7 +133,6 @@ class MainDisplay(DisplayWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_stop'), self.onMediaStop)
 
-
     def setup(self, screenNumber):
         """
         Sets up the screen on a particular screen.
@@ -138,43 +140,63 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'Setup %s for %s ' %(self.screens, screenNumber))
         self.setVisible(False)
-        screen = self.screens[screenNumber]
-        if screen[u'number'] != screenNumber:
+        self.screen = self.screens[screenNumber]
+        if self.screen[u'number'] != screenNumber:
             # We will most probably never actually hit this bit, but just in
             # case the index in the list doesn't match the screen number, we
             # search for it.
             for scrn in self.screens:
                 if scrn[u'number'] == screenNumber:
-                    screen = scrn
+                    self.screen = scrn
                     break
-        self.setGeometry(screen[u'size'])
+        self.setScreenGeometry()
         #Build a custom splash screen
         self.InitialFrame = QtGui.QImage(
-            screen[u'size'].width(), screen[u'size'].height(),
+            self.screen[u'size'].width(),
+            self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
         splash_image = QtGui.QImage(u':/graphics/openlp-splash-screen.png')
         painter_image = QtGui.QPainter()
         painter_image.begin(self.InitialFrame)
         painter_image.fillRect(self.InitialFrame.rect(), QtCore.Qt.white)
         painter_image.drawImage(
-            (screen[u'size'].width() - splash_image.width()) / 2,
-            (screen[u'size'].height() - splash_image.height()) / 2,
+            (self.screen[u'size'].width() - splash_image.width()) / 2,
+            (self.screen[u'size'].height() - splash_image.height()) / 2,
             splash_image)
         self.frameView(self.InitialFrame)
         #Build a Black screen
         painter = QtGui.QPainter()
         self.blankFrame = QtGui.QImage(
-            screen[u'size'].width(), screen[u'size'].height(),
+            self.screen[u'size'].width(),
+            self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
         painter.begin(self.blankFrame)
         painter.fillRect(self.blankFrame.rect(), QtCore.Qt.black)
+        #buid a blank transparent image
+        self.transparent = QtGui.QPixmap(self.screen[u'size'].width(),
+                                         self.screen[u'size'].height())
+        self.transparent.fill(QtCore.Qt.transparent)
         # To display or not to display?
-        if not screen[u'primary']:
+        if not self.screen[u'primary']:
             self.showFullScreen()
             self.primary = False
         else:
             self.setVisible(False)
             self.primary = True
+
+    def setScreenGeometry(self):
+        """
+        Define and set up the display sizes.
+        The alert displays are set to 10% of the screen as the video display
+        is unable to handle transparent pixmaps.  This is a problem with QT.
+        """
+        self.setGeometry(self.screen[u'size'])
+        self.alertScreenPosition = self.screen[u'size'].height() * 0.9
+        self.alertHeight = self.screen[u'size'].height() - self.alertScreenPosition
+        self.alertDisplay.setGeometry(
+            QtCore.QRect(0, self.alertScreenPosition,
+                        self.screen[u'size'].width(),self.alertHeight))
+        self.video.setGeometry(self.screen[u'size'])
 
     def resetDisplay(self):
         if self.primary:
@@ -235,17 +257,27 @@ class MainDisplay(DisplayWidget):
             display text
         """
         log.debug(u'display alert called %s' % text)
+        self.alertList.append(text)
+        if self.timer_id != 0:
+            return
+        self.generateAlert()
+
+    def generateAlert(self):
+        log.debug(u'Generate Alert called')
+        if len(self.alertList) == 0:
+            return
+        text = self.alertList.pop(0)
         alertTab = self.parent.settingsForm.AlertsTab
-        if isinstance(self.frame, QtGui.QImage):
-            alertframe = QtGui.QPixmap.fromImage(self.frame)
-        else:
-            alertframe = QtGui.QPixmap.fromImage(self.frame[u'main'])
+        alertframe = \
+            QtGui.QPixmap(self.screen[u'size'].width(), self.alertHeight)
+        alertframe.fill(QtCore.Qt.transparent)
         painter = QtGui.QPainter(alertframe)
-        top = alertframe.rect().height() * 0.9
+        painter.fillRect(alertframe.rect(), QtCore.Qt.transparent)
+        painter.setRenderHint(QtGui.QPainter.Antialiasing)
         painter.fillRect(
             QtCore.QRect(
-                0, top, alertframe.rect().width(),
-                alertframe.rect().height() - top),
+                0, 0, alertframe.rect().width(),
+                alertframe.rect().height()),
             QtGui.QColor(alertTab.bg_color))
         font = QtGui.QFont()
         font.setFamily(alertTab.font_face)
@@ -253,24 +285,23 @@ class MainDisplay(DisplayWidget):
         font.setPointSize(40)
         painter.setFont(font)
         painter.setPen(QtGui.QColor(alertTab.font_color))
-        x, y = (0, top)
+        x, y = (0, 0)
         metrics = QtGui.QFontMetrics(font)
         painter.drawText(
             x, y + metrics.height() - metrics.descent() - 1, text)
         painter.end()
-        self.display.setPixmap(alertframe)
+        self.alertDisplay.setPixmap(alertframe)
+        self.alertDisplay.setVisible(True)
         # check to see if we have a timer running
         if self.timer_id == 0:
             self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
 
     def timerEvent(self, event):
         if event.timerId() == self.timer_id:
-            if isinstance(self.frame, QtGui.QImage):
-                self.display.setPixmap(QtGui.QPixmap.fromImage(self.frame))
-            else:
-                self.display.setPixmap(QtGui.QPixmap.fromImage(self.frame[u'main']))
-            self.killTimer(self.timer_id)
-            self.timer_id = 0
+            self.alertDisplay.setPixmap(self.transparent)
+        self.killTimer(self.timer_id)
+        self.timer_id = 0
+        self.generateAlert()
 
     def onMediaQueue(self, message):
         log.debug(u'Queue new media message %s' % message)
