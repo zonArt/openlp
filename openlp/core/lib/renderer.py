@@ -226,7 +226,6 @@ class Renderer(object):
         """
         self._rect = rect_main
         self._rect_footer = rect_footer
-        print "render = ", self._rect
 
     def generate_frame_from_lines(self, lines, footer_lines=None):
         """
@@ -245,6 +244,7 @@ class Renderer(object):
             bbox1 = self._render_lines_unaligned(footer_lines, True)
         # reset the frame. first time do not worry about what you paint on.
         self._frame = QtGui.QImage(self.bg_frame)
+        print "generate ", self._frame.size()
         self._frameOp = QtGui.QImage(self.bg_frame)
         x, y = self._correctAlignment(self._rect, bbox)
         bbox = self._render_lines_unaligned(lines, False, (x, y), True)
