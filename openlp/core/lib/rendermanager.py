@@ -160,8 +160,8 @@ class RenderManager(object):
 
     def build_text_rectangle(self, theme):
         """
-        Builds a text block using the settings in ``theme``.
-        One is needed per slide
+        Builds a text block using the settings in ``theme``
+        and the size of the display screen.height.
 
         ``theme``
             The theme to build a text block for.
@@ -170,14 +170,14 @@ class RenderManager(object):
         main_rect = None
         footer_rect = None
         if not theme.font_main_override:
-            main_rect = QtCore.QRect(10, 0, self.width - 1,
-                self.footer_start - 20)
+            main_rect = QtCore.QRect(10, 0,
+                            self.width - 1, self.footer_start)
         else:
             main_rect = QtCore.QRect(theme.font_main_x, theme.font_main_y,
                 theme.font_main_width - 1, theme.font_main_height - 1)
         if not theme.font_footer_override:
-            footer_rect = QtCore.QRect(10, self.footer_start, self.width - 1,
-                self.height-self.footer_start)
+            footer_rect = QtCore.QRect(10, self.footer_start,
+                            self.width - 1, self.height - self.footer_start)
         else:
             footer_rect = QtCore.QRect(theme.font_footer_x,
                 theme.font_footer_y, theme.font_footer_width - 1,
@@ -192,7 +192,7 @@ class RenderManager(object):
             The theme to generated a preview for.
         """
         log.debug(u'generate preview')
-        #set the defaukt image size for previews
+        #set the default image size for previews
         self.calculate_default(QtCore.QSize(1024, 768))
         self.renderer.set_theme(themedata)
         self.build_text_rectangle(themedata)

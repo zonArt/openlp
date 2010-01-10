@@ -42,7 +42,7 @@ class Renderer(object):
         Initialise the renderer.
         """
         self._rect = None
-        self._debug = 0
+        self._debug = True
         self._right_margin = 64 # the amount of right indent
         self._display_shadow_size_footer = 0
         self._display_outline_size_footer = 0
@@ -148,17 +148,22 @@ class Renderer(object):
 
     def pre_render_text(self, text):
         metrics = QtGui.QFontMetrics(self.mainFont)
-        #take the width work out approx how many characters and add 50%
+        #work out line width
         line_width = self._rect.width() - self._right_margin
         #number of lines on a page - adjust for rounding up.
-        page_length = int(self._rect.height() / metrics.height() - 2 ) - 1
+        line_height = metrics.height()
+        if self._theme.display_shadow:
+            line_height += int(self._theme.display_shadow_size)
+        if self._theme.display_outline:
+            #  pixels top/bottom
+            line_height += 2 * int(self._theme.display_outline_size)
+        page_length = int(self._rect.height() / line_height )
         #Average number of characters in line
         ave_line_width = line_width / metrics.averageCharWidth()
         #Maximum size of a character
         max_char_width = metrics.maxWidth()
-        #Min size of a character
-        min_char_width = metrics.width(u'i')
-        char_per_line = line_width / min_char_width
+        #Max characters pre line based on min size of a character
+        char_per_line = line_width / metrics.width(u'i')
         log.debug(u'Page Length  area height %s , metrics %s , lines %s' %
                   (int(self._rect.height()), metrics.height(), page_length ))
         split_pages = []
@@ -221,6 +226,7 @@ class Renderer(object):
         """
         self._rect = rect_main
         self._rect_footer = rect_footer
+        print "render = ", self._rect
 
     def generate_frame_from_lines(self, lines, footer_lines=None):
         """
@@ -567,7 +573,7 @@ class Renderer(object):
         x, y = tlcorner
         metrics = QtGui.QFontMetrics(font)
         w = metrics.width(line)
-        h = metrics.height() - 2
+        h = metrics.height()
         if draw:
             self.painter.drawText(x, y + metrics.ascent(), line)
         if self._theme.display_slideTransition:

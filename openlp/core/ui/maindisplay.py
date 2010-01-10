@@ -139,6 +139,7 @@ class MainDisplay(DisplayWidget):
         @param (integer) screen This is the screen number.
         """
         log.debug(u'Setup %s for %s ' %(self.screens, screenNumber))
+        print "all the screen ", self.screens
         self.setVisible(False)
         self.screen = self.screens[screenNumber]
         if self.screen[u'number'] != screenNumber:
@@ -190,7 +191,12 @@ class MainDisplay(DisplayWidget):
         The alert displays are set to 10% of the screen as the video display
         is unable to handle transparent pixmaps.  This is a problem with QT.
         """
+        print "--------- Set screen geom ------------"
+        print "display ", self.screen[u'size']
+        print "main geom before ", self.geometry()
         self.setGeometry(self.screen[u'size'])
+        print "main geom after ", self.geometry()
+        print "display geom", self.display.geometry()
         self.alertScreenPosition = self.screen[u'size'].height() * 0.9
         self.alertHeight = self.screen[u'size'].height() - self.alertScreenPosition
         self.alertDisplay.setGeometry(
@@ -221,6 +227,7 @@ class MainDisplay(DisplayWidget):
         elif not self.displayBlank:
             if transition:
                 if self.hasTransition:
+                    print len(self.frame[u'trans'])
                     if self.frame[u'trans'] is not None:
                         self.display.setPixmap(QtGui.QPixmap.fromImage(self.frame[u'trans']))
                         self.repaint()

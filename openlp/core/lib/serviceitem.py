@@ -102,11 +102,13 @@ class ServiceItem(object):
                 formated = self.RenderManager.format_slide(slide[u'raw_slide'])
                 for format in formated:
                     lines = u''
+                    title = u''
                     for line in format:
+                        if title == u'':
+                            title = line
                         lines += line + u'\n'
-                    title = lines.split(u'\n')[0]
                     self._display_frames.append({u'title': title, \
-                        u'text': lines, u'verseTag': slide[u'verseTag'] })
+                        u'text': lines.rstrip(), u'verseTag': slide[u'verseTag'] })
                 log.log(15, u'Formatting took %4s' % (time.time() - before))
         elif self.service_item_type == ServiceItemType.Image:
             for slide in self._raw_frames:

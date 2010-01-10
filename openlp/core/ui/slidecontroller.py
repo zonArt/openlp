@@ -441,6 +441,7 @@ class SlideController(QtGui.QWidget):
                         self.SongMenu.menu().addAction(self.trUtf8(u'%s'%tag),
                             self.onSongBarHandler)
                 item.setText(frame[u'text'])
+                #print {u'x':frame[u'text']}
             else:
                 label = QtGui.QLabel()
                 label.setMargin(4)
