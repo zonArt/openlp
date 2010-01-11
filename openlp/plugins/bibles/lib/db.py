@@ -29,8 +29,7 @@ import logging
 from sqlalchemy import or_
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver
-from models import *
+from openlp.plugins.bibles.lib.models import *
 
 log = logging.getLogger(__name__)
 
@@ -92,17 +91,8 @@ class BibleDB():
         may want to override this method to supply their own custom
         initialisation as well.
         """
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
         self.create_tables()
         return self.name
-
-    def stop_import(self):
-        """
-        Stops the import of the Bible.
-        """
-        log.debug('Stopping import!')
-        self.stop_import = True
 
     def commit(self):
         log.debug('Committing...')

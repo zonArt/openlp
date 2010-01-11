@@ -50,6 +50,15 @@ class CSVBible(BibleDB):
         if u'versesfile' not in kwargs:
             raise KeyError(u'You have to supply a file to import verses from.')
         self.versesfile = kwargs[u'versesfile']
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
+
+    def stop_import(self):
+        """
+        Stops the import of the Bible.
+        """
+        log.debug('Stopping import!')
+        self.stop_import = True
 
     def do_import(self):
         #Populate the Tables
