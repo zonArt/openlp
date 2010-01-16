@@ -183,7 +183,7 @@ class GeneralTab(SettingsTab):
         self.Password = self.PasswordEdit.displayText()
 
     def load(self):
-        for screen in self.screen_list:
+        for screen in self.screen_list.screen_list:
             screen_name = u'%s %d' % (self.trUtf8('Screen'), screen[u'number'] + 1)
             if screen[u'primary']:
                 screen_name = u'%s (%s)' % (screen_name, self.trUtf8('primary'))

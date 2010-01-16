@@ -425,7 +425,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
-        self.screenList = screens
+        self.screens = screens
         self.applicationVersion = applicationVersion
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
@@ -433,7 +433,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.mainDisplay = MainDisplay(self, screens)
         self.alertForm = AlertForm(self)
         self.aboutForm = AboutForm(self, applicationVersion)
-        self.settingsForm = SettingsForm(self.screenList, self, self)
+        self.settingsForm = SettingsForm(self.screens, self, self)
         # Set up the path with plugins
         pluginpath = os.path.split(os.path.abspath(__file__))[0]
         pluginpath = os.path.abspath(
@@ -500,7 +500,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         #RenderManager needs to call ThemeManager and
         #ThemeManager needs to call RenderManager
         self.RenderManager = RenderManager(self.ThemeManagerContents,
-            self.screenList, self.getMonitorNumber())
+            self.screens, self.getMonitorNumber())
         #Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
@@ -558,11 +558,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         monitor number does not exist.
         """
         screen_number = int(self.generalConfig.get_config(u'monitor', 0))
-        monitor_exists = False
-        for screen in self.screenList:
-            if screen[u'number'] == screen_number:
-                monitor_exists = True
-        if not monitor_exists:
+        if not self.screens.screen_exists(screen_number):
             screen_number = 0
         return screen_number
 
@@ -613,8 +609,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.settingsForm.exec_()
         updated_display = self.getMonitorNumber()
-        if updated_display != self.RenderManager.current_display:
+        if updated_display != self.screens.current_display:
             print "main display screen changed to ", updated_display
+            self.screens.set_current_display(updated_display)
             self.RenderManager.update_display(updated_display)
             self.mainDisplay.setup(updated_display)
         self.activateWindow()

@@ -22,24 +22,53 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+import logging
 
-from screen import Screen
-from maindisplay import MainDisplay
-from amendthemeform import AmendThemeForm
-from slidecontroller import SlideController
-from splashscreen import SplashScreen
-from alertstab import AlertsTab
-from generaltab import GeneralTab
-from themestab import ThemesTab
-from aboutform import AboutForm
-from alertform import AlertForm
-from pluginform import PluginForm
-from settingsform import SettingsForm
-from mediadockmanager import MediaDockManager
-from servicemanager import ServiceManager
-from thememanager import ThemeManager
-from mainwindow import MainWindow
+class Screen(object):
+    """
+    Wrapper to handle the parameters of the display screen
+    """
+    global log
+    log = logging.getLogger(u'Screen')
+    log.info(u'Screen loaded')
 
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainWindow',
-    'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
-    'AmendThemeForm', 'MediaDockManager', 'ThemeLevel']
+    def __init__(self):
+        self.preview = None
+        self.current = None
+        self.screen_list = []
+        self.count = 0
+        self.current_display = 0
+
+    def add_screen(self, screen):
+        if screen[u'primary'] == True:
+            self.current = screen
+        self.screen_list.append(screen)
+        self.count += 1
+        print self.screen_list
+
+    def screen_exists(self, number):
+        for screen in self.screen_list:
+            if screen[u'number'] == number:
+                return True
+        return False
+
+    def set_current_display(self, number):
+        if number + 1 > self.count:
+            self.current = self.screen_list[0]
+            self.current_display = 0
+        else:
+            self.current = self.screen_list[number]
+            self.preview = self.current
+            self.current_display = number
+        if self.count == 1:
+            self.preview = self.screen_list[0]
+
+#        if self.screen[u'number'] != screenNumber:
+#            # We will most probably never actually hit this bit, but just in
+#            # case the index in the list doesn't match the screen number, we
+#            # search for it.
+#            for scrn in self.screens:
+#                if scrn[u'number'] == screenNumber:
+#                    self.screen = scrn
+#                    break
+

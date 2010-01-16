@@ -34,7 +34,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, str_to_bool
 from openlp.core.resources import qInitResources
-from openlp.core.ui import MainWindow, SplashScreen
+from openlp.core.ui import MainWindow, SplashScreen, Screen
 from openlp.core.utils import ConfigHelper
 
 log = logging.getLogger()
@@ -117,10 +117,10 @@ class OpenLP(QtGui.QApplication):
             self.splash.show()
         # make sure Qt really display the splash screen
         self.processEvents()
-        screens = []
+        screens = Screen()
         # Decide how many screens we have and their size
         for screen in xrange(0, self.desktop().numScreens()):
-            screens.append({u'number': screen,
+            screens.add_screen({u'number': screen,
                             u'size': self.desktop().availableGeometry(screen),
                             u'primary': (self.desktop().primaryScreen() == screen)})
             log.info(u'Screen %d found with resolution %s',

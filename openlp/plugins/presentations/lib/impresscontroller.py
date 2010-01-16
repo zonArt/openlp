@@ -145,7 +145,7 @@ class ImpressController(PresentationController):
             log.exception(u'Failed to load presentation')
             return
         self.presentation = self.document.getPresentation()
-        self.presentation.Display = self.plugin.render_manager.current_display + 1
+        self.presentation.Display = self.plugin.render_manager.screens.current_display + 1
         self.controller = None
         self.create_thumbnails()
 

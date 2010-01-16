@@ -135,15 +135,7 @@ class MainDisplay(DisplayWidget):
         log.debug(u'Setup %s for %s ' %(self.screens, screenNumber))
         print "all the screen ", self.screens
         self.setVisible(False)
-        self.screen = self.screens[screenNumber]
-        if self.screen[u'number'] != screenNumber:
-            # We will most probably never actually hit this bit, but just in
-            # case the index in the list doesn't match the screen number, we
-            # search for it.
-            for scrn in self.screens:
-                if scrn[u'number'] == screenNumber:
-                    self.screen = scrn
-                    break
+        self.screen = self.screens.current
         #Sort out screen locations and sizes
         print "--------- Set screen geom ------------"
         print "display ", self.screen[u'size']

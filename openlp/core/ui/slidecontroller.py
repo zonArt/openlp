@@ -538,7 +538,7 @@ class SlideController(QtGui.QWidget):
 
     def updatePreview(self):
         rm = self.parent.RenderManager
-        if not rm.screen_list[rm.current_display][u'primary']:
+        if not rm.screens.current[u'primary']:
             # Grab now, but try again in a couple of seconds if slide change is slow
             QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
             QtCore.QTimer.singleShot(2.5, self.grabMainDisplay)
