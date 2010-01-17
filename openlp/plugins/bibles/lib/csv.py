@@ -106,7 +106,7 @@ class CSVBible(BibleDB):
                     self.wizard.incrementProgressBar(
                         u'Importing %s %s' % book.name)
                     self.commit()
-                self.add_verse(book.id, p[1], p[2], p3)
+                self.create_verse(book.id, p[1], p[2], p3)
                 Receiver.send_message(u'process_events')
             self.commit()
         except:
@@ -120,3 +120,4 @@ class CSVBible(BibleDB):
             return False
         else:
             return success
+

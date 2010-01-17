@@ -233,3 +233,4 @@ class HTTPBible(BibleDB):
             return ev.get_bible_chapter(self.bibleid, book, chapter)
         except:
             log.exception("Failed to get bible chapter")
+

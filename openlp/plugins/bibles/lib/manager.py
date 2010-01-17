@@ -61,13 +61,13 @@ class BibleFormat(object):
         Return the appropriate imeplementation class.
         """
         if id == BibleFormat.OSIS:
-            return BibleOSISImpl
+            return OSISBible
         elif id == BibleFormat.CSV:
-            return BibleCSVImpl
+            return CSVBible
         elif id == BibleFormat.OpenSong:
-            return BibleOpenSongImpl
+            return OpenSongBible
         elif id == BibleFormat.WebDownload:
-            return BibleHTTPImpl
+            return HTTPBible
         else:
             return None
 
@@ -161,10 +161,13 @@ class BibleManager(object):
                 try:
                     fbibles = open(filepath, u'r')
                     for line in fbibles:
-                        p = line.split(u',')
-                        self.book_abbreviations[p[0]] = p[1].replace(u'\n', '')
-                        self.book_testaments[p[0]] = p[2].replace(u'\n', '')
-                        self.book_chapters.append({u'book':p[0], u'total':p[3].replace(u'\n', '')})
+                        parts = line.split(u',')
+                        self.book_abbreviations[parts[0]] = parts[1].replace(u'\n', '')
+                        self.book_testaments[parts[0]] = parts[2].replace(u'\n', '')
+                        self.book_chapters.append({
+                            u'book': parts[0],
+                            u'total': parts[3].replace(u'\n', '')
+                        })
                 except:
                     log.exception(u'Failed to load bible')
                 finally:
@@ -192,10 +195,10 @@ class BibleManager(object):
             Keyword arguments to send to the actualy importer class.
         """
         class_ = BibleFormat.get_class(type)
-        kwargs[u'path'] = self.path
-        kwargs[u'config'] = self.config
+        kwargs['path'] = self.path
+        kwargs['config'] = self.config
         importer = class_(**kwargs)
-        name = importer.register()
+        name = importer.register(self.import_wizard)
         self.db_cache[name] = importer
         return importer.do_import()
 
@@ -231,7 +234,7 @@ class BibleManager(object):
             nbible = BibleDBImpl(self.bible_path, biblename, self.config)
             # Create Database
             nbible.create_tables()
-            self.bible_db_cache[biblename] = nbible
+            self.db_cache[biblename] = nbible
             nhttp = BibleHTTPImpl()
             nhttp.set_bible_source(biblesource)
             self.bible_http_cache[biblename] = nhttp
@@ -366,16 +369,16 @@ class BibleManager(object):
         log.debug(u'get_book_verse_count %s,%s,%s', bible, book, chapter)
         web, bible = self.is_bible_web(bible)
         if web:
-            count = self.bible_db_cache[bible].get_max_bible_book_verses(
+            count = self.db_cache[bible].get_max_bible_book_verses(
                     book, chapter)
             if count == 0:
                 # Make sure the first chapter has been downloaded
                 self.get_verse_text(bible, book, chapter, chapter, 1, 1)
-                count = self.bible_db_cache[bible].get_max_bible_book_verses(
+                count = self.db_cache[bible].get_max_bible_book_verses(
                     book, chapter)
             return count
         else:
-            return self.bible_db_cache[bible].get_max_bible_book_verses(
+            return self.db_cache[bible].get_max_bible_book_verses(
                 book, chapter)
 
     def get_verses(self, bible, versetext):
@@ -386,7 +389,7 @@ class BibleManager(object):
         log.debug(u'get_verses_from_text %s,%s', bible, versetext)
         reflist = parse_reference(versetext)
         web, bible = self.is_bible_web(bible)
-        return self.bible_db_cache[bible].get_verses(reflist)
+        return self.db_cache[bible].get_verses(reflist)
 
     def save_meta_data(self, bible, version, copyright, permissions):
         """
@@ -394,9 +397,9 @@ class BibleManager(object):
         """
         log.debug(u'save_meta data %s,%s, %s,%s',
             bible, version, copyright, permissions)
-        self.bible_db_cache[bible].save_meta(u'Version', version)
-        self.bible_db_cache[bible].save_meta(u'Copyright', copyright)
-        self.bible_db_cache[bible].save_meta(u'Permissions', permissions)
+        self.db_cache[bible].create_meta(u'Version', version)
+        self.db_cache[bible].create_meta(u'Copyright', copyright)
+        self.db_cache[bible].create_meta(u'Permissions', permissions)
 
     def get_meta_data(self, bible, key):
         """
@@ -404,7 +407,7 @@ class BibleManager(object):
         """
         log.debug(u'get_meta %s,%s', bible, key)
         web, bible = self.is_bible_web(bible)
-        return self.bible_db_cache[bible].get_meta(key)
+        return self.db_cache[bible].get_meta(key)
 
     def get_verse_text(self, bible, bookname, schapter, echapter, sverse,
         everse=0):
@@ -425,8 +428,8 @@ class BibleManager(object):
         # check to see if book/chapter exists fow HTTP bibles and load cache
         # if necessary
         web, bible = self.is_bible_web(bible)
-        if self.bible_http_cache[bible]:
-            book = self.bible_db_cache[bible].get_bible_book(bookname)
+        if self.http_cache[bible]:
+            book = self.db_cache[bible].get_bible_book(bookname)
             if book is None:
                 log.debug(u'get_verse_text : new book')
                 for chapter in range(schapter, echapter + 1):
@@ -434,7 +437,7 @@ class BibleManager(object):
                         unicode(self.media.trUtf8('Downloading %s: %s')) %
                             (bookname, chapter))
                     search_results = \
-                        self.bible_http_cache[bible].get_bible_chapter(
+                        self.http_cache[bible].get_bible_chapter(
                             bible, bookname, chapter)
                     if search_results.has_verselist() :
                         ## We have found a book of the bible lets check to see
@@ -443,33 +446,33 @@ class BibleManager(object):
                         ## to request ac and get Acts back.
                         bookname = search_results.get_book()
                         # check to see if book/chapter exists
-                        book = self.bible_db_cache[bible].get_bible_book(
+                        book = self.db_cache[bible].get_bible_book(
                             bookname)
                         if book is None:
                             ## Then create book, chapter and text
-                            book = self.bible_db_cache[bible].create_book(
+                            book = self.db_cache[bible].create_book(
                                 bookname, self.book_abbreviations[bookname],
                                 self.book_testaments[bookname])
                             log.debug(u'New http book %s, %s, %s',
                                 book, book.id, book.name)
-                            self.bible_db_cache[bible].create_chapter(
+                            self.db_cache[bible].create_chapter(
                                 book.id, search_results.get_chapter(),
                                 search_results.get_verselist())
                         else:
                             ## Book exists check chapter and texts only.
-                            v = self.bible_db_cache[bible].get_bible_chapter(
+                            v = self.db_cache[bible].get_bible_chapter(
                                 book.id, chapter)
                             if v is None:
                                 self.media.setQuickMessage(
                                     unicode(self.media.trUtf8('%Downloading %s: %s'))\
                                         % (bookname, chapter))
-                                self.bible_db_cache[bible].create_chapter(
+                                self.db_cache[bible].create_chapter(
                                     book.id, chapter,
                                     search_results.get_verselist())
             else:
                 log.debug(u'get_verse_text : old book')
                 for chapter in range(schapter, echapter + 1):
-                    v = self.bible_db_cache[bible].get_bible_chapter(
+                    v = self.db_cache[bible].get_bible_chapter(
                         book.id, chapter)
                     if v is None:
                         try:
@@ -477,17 +480,17 @@ class BibleManager(object):
                                  unicode(self.media.trUtf8('Downloading %s: %s'))
                                          % (bookname, chapter))
                             search_results = \
-                                self.bible_http_cache[bible].get_bible_chapter(
+                                self.http_cache[bible].get_bible_chapter(
                                     bible, bookname, chapter)
                             if search_results.has_verselist():
-                                self.bible_db_cache[bible].create_chapter(
+                                self.db_cache[bible].create_chapter(
                                     book.id, search_results.get_chapter(),
                                     search_results.get_verselist())
                         except:
                             log.exception(u'Problem getting scripture online')
         #Now get verses from database
         if schapter == echapter:
-            text = self.bible_db_cache[bible].get_bible_text(bookname,
+            text = self.db_cache[bible].get_bible_text(bookname,
                 schapter, sverse, everse)
         else:
             for i in range (schapter, echapter + 1):
@@ -501,7 +504,7 @@ class BibleManager(object):
                     start = 1
                     end = self.get_book_verse_count(bible, bookname, i)
 
-                txt = self.bible_db_cache[bible].get_bible_text(
+                txt = self.db_cache[bible].get_bible_text(
                     bookname, i, start, end)
                 text.extend(txt)
         return text

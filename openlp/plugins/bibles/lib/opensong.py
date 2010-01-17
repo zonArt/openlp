@@ -49,11 +49,11 @@ class OpenSongBible(BibleDB):
         """
         log.debug(__name__)
         BibleDB.__init__(self, **kwargs)
-        if u'filename' not in kwargs:
+        if 'filename' not in kwargs:
             raise KeyError(u'You have to supply a file name to import from.')
-        self.filename = kwargs[u'filename']
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
+        self.filename = kwargs['filename']
+        #QtCore.QObject.connect(Receiver.get_receiver(),
+        #    QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
 
     def stop_import(self):
         """
@@ -67,10 +67,12 @@ class OpenSongBible(BibleDB):
         Loads a Bible from file.
         """
         log.debug(u'Starting OpenSong import from "%s"' % self.filename)
+        self.filename = unicode(self.filename, u'utf-8')
+        self.wizard.incrementProgressBar(u'Preparing for import...')
         detect_file = None
         try:
             detect_file = open(self.filename, u'r')
-            details = chardet.detect(detect_file.read(3000))
+            details = chardet.detect(detect_file.read())
         except:
             log.exception(u'Failed to detect OpenSong file encoding')
             return False
@@ -94,11 +96,16 @@ class OpenSongBible(BibleDB):
                     for verse in chapter.v:
                         if self.stop_import:
                             break
-                        self.add_verse(db_book.id, chapter.attrib[u'n'],
-                            verse.attrib[u'n'], verse.text)
+                        self.create_verse(
+                            db_book.id,
+                            int(chapter.attrib[u'n']),
+                            int(verse.attrib[u'n']),
+                            verse.text
+                        )
                         Receiver.send_message(u'process_events')
-                    self.wizard.incrementProgressBar(u'Importing %s %s' % \
-                        (dbbook.name, str(chapter.attrib[u'n'])))
+                    self.wizard.incrementProgressBar(
+                        QtCore.QString('Importing %s %s' % \
+                                       (db_book.name, chapter.attrib[u'n'])))
                     self.commit()
         except:
             log.exception(u'Loading bible from OpenSong file failed')

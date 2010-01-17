@@ -25,6 +25,7 @@
 
 import os
 import logging
+import chardet
 
 from sqlalchemy import or_
 from PyQt4 import QtCore
@@ -84,13 +85,14 @@ class BibleDB():
         self.metadata, self.session = init_models(db_url)
         self.metadata.create_all(checkfirst=True)
 
-    def register(self):
+    def register(self, wizard):
         """
         This method basically just initialialises the database. It is called
         from the Bible Manager when a Bible is imported. Descendant classes
         may want to override this method to supply their own custom
         initialisation as well.
         """
+        self.wizard = wizard
         self.create_tables()
         return self.name
 
@@ -100,7 +102,7 @@ class BibleDB():
 
     def create_tables(self):
         log.debug(u'createTables')
-        self.save_meta(u'dbversion', u'2')
+        self.create_meta(u'dbversion', u'2')
         self.create_testament(u'Old Testament')
         self.create_testament(u'New Testament')
         self.create_testament(u'Apocrypha')
@@ -111,7 +113,7 @@ class BibleDB():
         self.commit()
 
     def create_book(self, name, abbrev, testament=1):
-        log.debug(u'create_book %s,%s', bookname, bookabbrev)
+        log.debug(u'create_book %s,%s', name, abbrev)
         book = Book.populate(name=name, abbreviation=abbrev,
             testament_id=testament)
         self.session.add(book)
@@ -132,6 +134,9 @@ class BibleDB():
         self.commit()
 
     def create_verse(self, book_id, chapter, verse, text):
+        if not isinstance(text, unicode):
+            details = chardet.detect(text)
+            text = unicode(text, details[u'encoding'])
         verse = Verse.populate(
             book_id=book_id,
             chapter=chapter,

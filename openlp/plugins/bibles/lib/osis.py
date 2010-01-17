@@ -160,7 +160,7 @@ class OSISBible(BibleDB):
                         .replace(u'</lg>', u'').replace(u'</q>', u'')\
                         .replace(u'</div>', u'')
                     verse_text = self.spaces_regex.sub(u' ', verse_text)
-                    self.add_verse(db_book.id, chapter, verse, verse_text)
+                    self.create_verse(db_book.id, chapter, verse, verse_text)
                     Receiver.send_message(u'process_events')
             self.commit()
             self.wizard.incrementProgressBar(u'Finishing import...')
@@ -175,3 +175,4 @@ class OSISBible(BibleDB):
             return False
         else:
             return success
+
