@@ -27,6 +27,9 @@
     <file>slide_last.png</file>
     <file>slide_next.png</file>
     <file>slide_previous.png</file>
+    <file>media_playback_start.png</file>
+    <file>media_playback_stop.png</file>
+    <file>media_playback_pause.png</file>
   </qresource>
   <qresource prefix="icon" >
     <file>openlp-logo-16x16.png</file>
@@ -122,5 +125,21 @@
     <file>theme_edit.png</file>
     <file>theme_export.png</file>
     <file>theme_import.png</file>
+  </qresource>
+  <qresource prefix="pages" >
+    <file>page_chorus.png</file>
+    <file>page_bridge.png</file>
+    <file>page_1.png</file>
+    <file>page_2.png</file>
+    <file>page_3.png</file>
+    <file>page_4.png</file>
+    <file>page_5.png</file>
+    <file>page_6.png</file>
+    <file>page_7.png</file>
+    <file>page_8.png</file>
+    <file>page_9.png</file>
+    <file>page_10.png</file>
+    <file>page_11.png</file>
+    <file>page_12.png</file>
   </qresource>
 </RCC>

@@ -22,20 +22,21 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import Qt, QtCore, QtGui
+from PyQt4 import QtGui
 
-from openlp.core.lib import SettingsTab, translate, str_to_bool
+from openlp.core.lib import SettingsTab
 
 class PresentationTab(SettingsTab):
     """
     PresentationsTab is the Presentations settings tab in the settings dialog.
     """
-    def __init__(self):
-        SettingsTab.__init__(self,
-            translate(u'PresentationTab', u'Presentation'), u'Presentations')
+    def __init__(self, title, controllers, section=None):
+        self.controllers = controllers
+        SettingsTab.__init__(self, title, section)
 
     def setupUi(self):
         self.setObjectName(u'PresentationTab')
+        self.tabTitleVisible = self.trUtf8(u'Presentations')
         self.PresentationLayout = QtGui.QHBoxLayout(self)
         self.PresentationLayout.setSpacing(8)
         self.PresentationLayout.setMargin(8)
@@ -58,20 +59,17 @@ class PresentationTab(SettingsTab):
         self.VerseTypeLayout.setSpacing(8)
         self.VerseTypeLayout.setMargin(0)
         self.VerseTypeLayout.setObjectName(u'VerseTypeLayout')
-        self.PowerpointCheckBox = QtGui.QCheckBox(self.VerseDisplayGroupBox)
-        self.PowerpointCheckBox.setTristate(False)
-        self.PowerpointCheckBox.setObjectName(u'PowerpointCheckBox')
-        self.VerseDisplayLayout.addWidget(self.PowerpointCheckBox, 0, 0, 1, 1)
-        self.PowerpointViewerCheckBox = QtGui.QCheckBox(
-            self.VerseDisplayGroupBox)
-        self.PowerpointViewerCheckBox.setTristate(False)
-        self.PowerpointViewerCheckBox.setObjectName(u'PowerpointViewerCheckBox')
-        self.VerseDisplayLayout.addWidget(
-            self.PowerpointViewerCheckBox, 1, 0, 1, 1)
-        self.ImpressCheckBox = QtGui.QCheckBox(self.VerseDisplayGroupBox)
-        self.ImpressCheckBox.setTristate(False)
-        self.ImpressCheckBox.setObjectName(u'ImpressCheckBox')
-        self.VerseDisplayLayout.addWidget(self.ImpressCheckBox, 2, 0, 1, 1)
+        self.PresenterCheckboxes = {}
+        index = 0
+        for key in self.controllers:
+            controller = self.controllers[key]
+            checkbox = QtGui.QCheckBox(self.VerseDisplayGroupBox)
+            checkbox.setTristate(False)
+            checkbox.setEnabled(controller.available)
+            checkbox.setObjectName(controller.name + u'CheckBox')
+            self.PresenterCheckboxes[controller.name] = checkbox
+            index = index + 1
+            self.VerseDisplayLayout.addWidget(checkbox, index, 0, 1, 1)
         self.PresentationThemeWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
         self.PresentationThemeWidget.setObjectName(u'PresentationThemeWidget')
         self.PresentationThemeLayout = QtGui.QHBoxLayout(
@@ -97,26 +95,23 @@ class PresentationTab(SettingsTab):
         self.PresentationLayout.addWidget(self.PresentationRightWidget)
 
     def retranslateUi(self):
-        self.PowerpointCheckBox.setText(
-            translate(u'PresentationTab', 'Powerpoint available:'))
-        self.PowerpointViewerCheckBox.setText(
-            translate(u'PresentationTab', 'PowerpointViewer available:'))
-        self.ImpressCheckBox.setText(
-            translate(u'PresentationTab', 'Impress available:'))
+        for key in self.controllers:
+            controller = self.controllers[key]
+            checkbox = self.PresenterCheckboxes[controller.name]
+            checkbox.setText(
+                u'%s %s:' % (controller.name, self.trUtf8(u'available')))
 
     def load(self):
-        self.PowerpointCheckBox.setChecked(
-            int(self.config.get_config(u'Powerpoint', 0)))
-        self.PowerpointViewerCheckBox.setChecked(
-            int(self.config.get_config(u'Powerpoint Viewer', 0)))
-        self.ImpressCheckBox.setChecked(
-            int(self.config.get_config(u'Impress', 0)))
+        for key in self.controllers:
+            controller = self.controllers[key]
+            if controller.available:
+                checkbox = self.PresenterCheckboxes[controller.name]
+                checkbox.setChecked(
+                    int(self.config.get_config(controller.name, 0)))
 
     def save(self):
-        self.config.set_config(
-            u'Powerpoint', unicode(self.PowerpointCheckBox.checkState()))
-        self.config.set_config(
-            u'Powerpoint Viewer',
-            unicode(self.PowerpointViewerCheckBox.checkState()))
-        self.config.set_config(
-            u'Impress', unicode(self.ImpressCheckBox.checkState()))
+        for key in self.controllers:
+            controller = self.controllers[key]
+            checkbox = self.PresenterCheckboxes[controller.name]
+            self.config.set_config(
+                controller.name, unicode(checkbox.checkState()))

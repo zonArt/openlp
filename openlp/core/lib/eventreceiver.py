@@ -53,6 +53,9 @@ class EventReceiver(QtCore.QObject):
     ``load_song_list``
         Tells the the song plugin to reload the song list
 
+    ``load_custom_list``
+        Tells the the custom plugin to reload the custom list
+
     ``update_spin_delay``
         Pushes out the Image loop delay
 
@@ -78,11 +81,28 @@ class EventReceiver(QtCore.QObject):
     ``{plugin}_stop``
         Requests a plugin to handle a stop event
 
-    ``audit_live``
+    ``{plugin}_edit``
+        Requests a plugin edit a database item with the key as the payload
+
+    ``songusage_live``
         Sends live song audit requests to the audit component
 
     ``audit_changed``
         Audit information may have changed
+
+    ``config_updated``
+        Informs components the config has changed
+
+    ``preview_song``
+        Tells the song plugin the edit has finished and the song can be previewed
+        Only available if the edit was triggered by the Preview button.
+
+    ``slidecontroller_change``
+        Informs the slidecontroller that a slide change has occurred
+
+    ``remote_edit_clear``
+        Informs all components that remote edit has been aborted.
+
     """
     global log
     log = logging.getLogger(u'EventReceiver')
@@ -141,5 +161,3 @@ class Receiver():
         Get the global ``eventreceiver`` instance.
         """
         return Receiver.eventreceiver
-
-

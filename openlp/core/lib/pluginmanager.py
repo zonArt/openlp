@@ -90,9 +90,9 @@ class PluginManager(object):
                     try:
                         __import__(modulename, globals(), locals(), [])
                     except ImportError, e:
-                        log.error(u'Failed to import module %s on path %s for reason %s', modulename, path, e.args[0])
+                        log.exception(u'Failed to import module %s on path %s for reason %s',
+                                   modulename, path, e.args[0])
         plugin_classes = Plugin.__subclasses__()
-        self.plugins = []
         plugin_objects = []
         for p in plugin_classes:
             try:
@@ -105,7 +105,9 @@ class PluginManager(object):
         for plugin in plugins_list:
             if plugin.check_pre_conditions():
                 log.debug(u'Plugin %s active', unicode(plugin.name))
-                plugin.status = PluginStatus.Active
+                plugin.set_status()
+            else:
+                plugin.status = PluginStatus.Disabled
             self.plugins.append(plugin)
 
     def order_by_weight(self, x, y):
@@ -120,7 +122,7 @@ class PluginManager(object):
         """
         return cmp(x.weight, y.weight)
 
-    def hook_media_manager(self, mediatoolbox):
+    def hook_media_manager(self, mediadock):
         """
         Loop through all the plugins. If a plugin has a valid media manager
         item, add it to the media manager.
@@ -129,13 +131,8 @@ class PluginManager(object):
             The Media Manager itself.
         """
         for plugin in self.plugins:
-            if plugin.status == PluginStatus.Active:
-                media_manager_item = plugin.get_media_manager_item()
-                if media_manager_item is not None:
-                    log.debug(u'Inserting media manager item from %s' % \
-                        plugin.name)
-                    mediatoolbox.addItem(media_manager_item, plugin.icon,
-                        media_manager_item.title)
+            if plugin.status is not PluginStatus.Disabled:
+                plugin.media_item = plugin.get_media_manager_item()
 
     def hook_settings_tabs(self, settingsform=None):
         """
@@ -147,12 +144,14 @@ class PluginManager(object):
             Defaults to *None*. The settings form to add tabs to.
         """
         for plugin in self.plugins:
-            settings_tab = plugin.get_settings_tab()
-            if settings_tab is not None:
-                log.debug(u'Inserting settings tab item from %s' % plugin.name)
-                settingsform.addTab(settings_tab)
-            else:
-                log.debug(u'No settings in %s' % plugin.name)
+            if plugin.status is not PluginStatus.Disabled:
+                plugin.settings_tab = plugin.get_settings_tab()
+                if plugin.settings_tab:
+                    log.debug(u'Inserting settings tab item from %s' %
+                        plugin.name)
+                    settingsform.addTab(plugin.name, plugin.settings_tab)
+                else:
+                    log.debug(u'No tab settings in %s' % plugin.name)
 
     def hook_import_menu(self, import_menu):
         """
@@ -163,7 +162,7 @@ class PluginManager(object):
             The Import menu.
         """
         for plugin in self.plugins:
-            if plugin.status == PluginStatus.Active:
+            if plugin.status is not PluginStatus.Disabled:
                 plugin.add_import_menu_item(import_menu)
 
     def hook_export_menu(self, export_menu):
@@ -175,7 +174,7 @@ class PluginManager(object):
             The Export menu.
         """
         for plugin in self.plugins:
-            if plugin.status == PluginStatus.Active:
+            if plugin.status is not PluginStatus.Disabled:
                 plugin.add_export_menu_item(export_menu)
 
     def hook_tools_menu(self, tools_menu):
@@ -187,7 +186,7 @@ class PluginManager(object):
             The Tools menu.
         """
         for plugin in self.plugins:
-            if plugin.status == PluginStatus.Active:
+            if plugin.status is not PluginStatus.Disabled:
                 plugin.add_tools_menu_item(tools_menu)
 
     def initialise_plugins(self):
@@ -196,14 +195,19 @@ class PluginManager(object):
         initialise themselves.
         """
         for plugin in self.plugins:
-            if plugin.status == PluginStatus.Active:
+            log.info(u'initialising plugins %s in a %s state'
+                % (plugin.name, plugin.is_active()))
+            if plugin.is_active():
                 plugin.initialise()
+            if not plugin.is_active():
+                plugin.remove_toolbox_item()
 
     def finalise_plugins(self):
         """
         Loop through all the plugins and give them an opportunity to
         clean themselves up
         """
+        log.info(u'finalising plugins')
         for plugin in self.plugins:
-            if plugin.status == PluginStatus.Active:
+            if plugin.is_active():
                 plugin.finalise()

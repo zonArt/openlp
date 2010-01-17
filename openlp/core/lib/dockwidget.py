@@ -22,10 +22,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import types
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 class OpenLPDockWidget(QtGui.QDockWidget):
     """
@@ -37,8 +36,9 @@ class OpenLPDockWidget(QtGui.QDockWidget):
         """
         QtGui.QDockWidget.__init__(self, parent)
         self.parent = parent
-        if name is not None:
+        if name:
             self.setObjectName(name)
+        self.setFloating(False)
         self.log = logging.getLogger(u'OpenLPDockWidget')
         self.log.debug(u'Init done')
 
@@ -46,8 +46,3 @@ class OpenLPDockWidget(QtGui.QDockWidget):
         self.parent.settingsmanager.setUIItemVisibility(
             self.objectName(), False)
         event.accept()
-
-    def resizeEvent(self, event):
-        if self.objectName() == u'MediaManagerDock':
-            if event.size().width() != event.oldSize().width():
-                self.parent.settingsmanager.setDockbarLeft(event.size().width())

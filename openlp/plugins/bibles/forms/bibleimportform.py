@@ -22,21 +22,18 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import sys
-import os, os.path
-import sys
-import time
 import logging
+import os
+import os.path
 
 from PyQt4 import QtCore, QtGui
 
 from bibleimportdialog import Ui_BibleImportDialog
-from openlp.core.lib import Receiver, translate
-
+from openlp.core.lib import Receiver
 
 class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
     global log
-    log=logging.getLogger(u'BibleImportForm')
+    log = logging.getLogger(u'BibleImportForm')
     log.info(u'BibleImportForm loaded')
     """
     Class documentation goes here.
@@ -53,21 +50,50 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         self.bible_type = None
         self.barmax = 0
         self.tabWidget.setCurrentIndex(0)
+        self.cwBibleVersions = {}
+        self.bgBibleVersions = {}
         self.AddressEdit.setText(self.config.get_config(u'proxy_address', u''))
         self.UsernameEdit.setText(self.config.get_config(u'proxy_username',u''))
         self.PasswordEdit.setText(self.config.get_config(u'proxy_password',u''))
-
+        #Load and store Crosswalk Bibles
         filepath = os.path.split(os.path.abspath(__file__))[0]
         filepath = os.path.abspath(os.path.join(filepath, u'..',
-            u'resources',u'crosswalkbooks.csv'))
-        fbibles=open(filepath, 'r')
-        self.bible_versions = {}
+            u'resources', u'crosswalkbooks.csv'))
+        fbibles = None
+        try:
+            fbibles = open(filepath, 'r')
+            for line in fbibles:
+                p = line.split(u',')
+                self.cwBibleVersions[p[0]] = p[1].replace(u'\n', u'')
+        except:
+            log.exception(u'Crosswalk resources missing')
+        finally:
+            if fbibles:
+                fbibles.close()
+        #Load and store BibleGateway Bibles
+        filepath = os.path.split(os.path.abspath(__file__))[0]
+        filepath = os.path.abspath(os.path.join(filepath, u'..',
+            u'resources', u'biblegateway.csv'))
+        try:
+            fbibles = open(filepath, 'r')
+            for line in fbibles:
+                p = line.split(u',')
+                self.bgBibleVersions[p[0]] = p[1].replace(u'\n', u'')
+        except:
+            log.exception(u'Biblegateway resources missing')
+        finally:
+            if fbibles:
+                fbibles.close()
+        self.loadBibleCombo(self.cwBibleVersions)
+        self.cwActive = True
+
+    def loadBibleCombo(self, biblesList):
         self.BibleComboBox.clear()
         self.BibleComboBox.addItem(u'')
-        for line in fbibles:
-            p = line.split(u',')
-            self.bible_versions[p[0]] = p[1].replace(u'\n', u'')
-            self.BibleComboBox.addItem(unicode(p[0]))
+        for bible in biblesList:
+            row = self.BibleComboBox.count()
+            self.BibleComboBox.addItem(unicode(self.trUtf8(bible)))
+            self.BibleComboBox.setItemData(row, QtCore.QVariant(bible))
 
         #Combo Boxes
         QtCore.QObject.connect(self.LocationComboBox,
@@ -103,22 +129,28 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
 
     def onVersesFileButtonClicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, u'Open file',self.config.get_last_dir(1))
-        if filename != u'':
+        filename = QtGui.QFileDialog.getOpenFileName(
+            self, self.trUtf8(u'Open Bible Verses file'),
+            self.config.get_last_dir(1))
+        if filename:
             self.VerseLocationEdit.setText(filename)
             self.config.set_last_dir(filename, 1)
             self.setCsv()
 
     def onBooksFileButtonClicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, u'Open file',self.config.get_last_dir(2))
-        if filename != u'':
+        filename = QtGui.QFileDialog.getOpenFileName(
+            self, self.trUtf8(u'Open Bible Books file'),
+            self.config.get_last_dir(2))
+        if filename:
             self.BooksLocationEdit.setText(filename)
             self.config.set_last_dir(filename, 2)
             self.setCsv()
 
     def onOsisFileButtonClicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, u'Open file',self.config.get_last_dir(3))
-        if filename != u'':
+        filename = QtGui.QFileDialog.getOpenFileName(
+            self, self.trUtf8(u'Open OSIS import file'),
+            self.config.get_last_dir(3))
+        if filename:
             self.OSISLocationEdit.setText(filename)
             self.config.set_last_dir(filename, 3)
             self.setOsis()
@@ -139,48 +171,58 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         self.checkOsis()
 
     def onProxyAddressEditLostFocus(self):
-        self.config.set_config(u'proxy_address', unicode(self.AddressEdit.displayText()))
+        self.config.set_config(
+            u'proxy_address', unicode(self.AddressEdit.displayText()))
 
     def onProxyUsernameEditLostFocus(self):
-        self.config.set_config(u'proxy_username', unicode(self.UsernameEdit.displayText()))
+        self.config.set_config(
+            u'proxy_username', unicode(self.UsernameEdit.displayText()))
 
     def onProxyPasswordEditLostFocus(self):
-        self.config.set_config(u'proxy_password', unicode(self.PasswordEdit.displayText()))
+        self.config.set_config(
+            u'proxy_password', unicode(self.PasswordEdit.displayText()))
 
-    def onLocationComboBoxSelected(self):
+    def onLocationComboBoxSelected(self, value):
+        if value == 0:
+            self.loadBibleCombo(self.cwBibleVersions)
+            self.cwActive = True
+        else:
+            self.loadBibleCombo(self.bgBibleVersions)
+            self.cwActive = False
         self.checkHttp()
 
-    def onBibleComboBoxSelected(self):
+    def onBibleComboBoxSelected(self, value):
         self.checkHttp()
         self.BibleNameEdit.setText(unicode(self.BibleComboBox.currentText()))
+        self.VersionNameEdit.setText(unicode(self.BibleComboBox.currentText()))
 
     def onCancelButtonClicked(self):
         # tell import to stop
-        self.message = u'Bible import stopped'
+        self.message = self.trUtf8(u'Bible import stopped')
         Receiver().send_message(u'stop_import')
         # tell bibleplugin to reload the bibles
         Receiver().send_message(u'pre_load_bibles')
         self.close()
 
     def onImportButtonClicked(self):
-        message = u'Bible import completed'
-        if self.biblemanager != None:
-            if not self.bible_type == None and len(self.BibleNameEdit.displayText()) > 0:
-                self.MessageLabel.setText(u'Import Started')
+        message = self.trUtf8(u'Bible import completed')
+        if self.biblemanager:
+            if not self.bible_type is None and \
+                len(self.BibleNameEdit.displayText()) > 0:
+                self.MessageLabel.setText(self.trUtf8(u'Import Started'))
                 self.ProgressBar.setMinimum(0)
                 self.setMax(65)
                 self.ProgressBar.setValue(0)
                 self.biblemanager.process_dialog(self)
                 status, msg = self.importBible()
-                if msg is not None:
+                if msg:
                     message = msg
                 self.MessageLabel.setText(message)
                 self.ProgressBar.setValue(self.barmax)
                 # tell bibleplugin to reload the bibles
                 Receiver().send_message(u'pre_load_bibles')
-                reply = QtGui.QMessageBox.information(self,
-                    translate(u'BibleMediaItem', u'Information'),
-                    translate(u'BibleMediaItem', message))
+                QtGui.QMessageBox.information(self,
+                    self.trUtf8(u'Information'), self.trUtf8(message))
 
     def setMax(self, max):
         log.debug(u'set Max %s', max)
@@ -189,8 +231,8 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
     def incrementProgressBar(self, text ):
         log.debug(u'IncrementBar %s', text)
-        self.MessageLabel.setText(u'Import processing ' + text)
-        self.ProgressBar.setValue(self.ProgressBar.value()+1)
+        self.MessageLabel.setText(self.trUtf8(u'Import processing %s') % text)
+        self.ProgressBar.setValue(self.ProgressBar.value() + 1)
 
     def importBible(self):
         log.debug(u'Import Bible')
@@ -207,8 +249,12 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
         else:
             # set a value as it will not be needed
             self.setMax(1)
-            bible = self.bible_versions[
-                unicode(self.BibleComboBox.currentText())]
+            if self.cwActive:
+                bible = self.cwBibleVersions[
+                    unicode(self.BibleComboBox.currentText())]
+            else:
+                bible = self.bgBibleVersions[
+                    unicode(self.BibleComboBox.currentText())]
             loaded = self.biblemanager.register_http_bible(
                 unicode(self.BibleComboBox.currentText()),
                 unicode(self.LocationComboBox.currentText()),
@@ -222,7 +268,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
                 unicode(self.CopyrightEdit.displayText()),
                 unicode(self.PermisionEdit.displayText()))
         else:
-            message = u'Bible import failed'
+            message = self.trUtf8(u'Bible import failed')
         self.bible_type = None
         # free the screen state restrictions
         self.resetScreenFieldStates()
@@ -289,7 +335,7 @@ class BibleImportForm(QtGui.QDialog, Ui_BibleImportDialog):
 
     def resetScreenFieldStates(self):
         # only reset if no bible type set.
-        if self.bible_type == None:
+        if self.bible_type is None:
             self.BooksLocationEdit.setReadOnly(False)
             self.VerseLocationEdit.setReadOnly(False)
             self.BooksFileButton.setEnabled(True)

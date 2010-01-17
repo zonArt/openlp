@@ -26,50 +26,67 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, translate
-
+from openlp.core.lib import Plugin, buildIcon
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 
 class BiblePlugin(Plugin):
     global log
-    log=logging.getLogger(u'BiblePlugin')
+    log = logging.getLogger(u'BiblePlugin')
     log.info(u'Bible Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        # Call the parent constructor
         Plugin.__init__(self, u'Bibles', u'1.9.0', plugin_helpers)
         self.weight = -9
-        # Create the plugin icon
-        self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_bible.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon = buildIcon(u':/media/media_bible.png')
         #Register the bible Manager
-        self.biblemanager = BibleManager(self.config)
+        self.biblemanager = None
+
+    def initialise(self):
+        log.info(u'bibles Initialising')
+        if self.biblemanager is None:
+            self.biblemanager = BibleManager(self.config)
+        Plugin.initialise(self)
+        self.insert_toolbox_item()
+        self.ImportBibleItem.setVisible(True)
+        self.ExportBibleItem.setVisible(True)
+
+    def finalise(self):
+        log.info(u'Plugin Finalise')
+        Plugin.finalise(self)
+        self.remove_toolbox_item()
+        self.ImportBibleItem.setVisible(False)
+        self.ExportBibleItem.setVisible(False)
 
     def get_settings_tab(self):
-        self.bibles_tab = BiblesTab()
-        return self.bibles_tab
+        return BiblesTab(self.name)
 
     def get_media_manager_item(self):
         # Create the BibleManagerItem object
-        self.media_item = BibleMediaItem(self, self.icon, u'Bible Verses')
-        return self.media_item
+        return BibleMediaItem(self, self.icon, self.name)
 
     def add_import_menu_item(self, import_menu):
         self.ImportBibleItem = QtGui.QAction(import_menu)
         self.ImportBibleItem.setObjectName(u'ImportBibleItem')
         import_menu.addAction(self.ImportBibleItem)
-        self.ImportBibleItem.setText(translate(u'BiblePlugin', u'&Bible'))
+        self.ImportBibleItem.setText(import_menu.trUtf8(u'&Bible'))
         # Signals and slots
         QtCore.QObject.connect(self.ImportBibleItem,
             QtCore.SIGNAL(u'triggered()'), self.onBibleNewClick)
+        self.ImportBibleItem.setVisible(False)
 
     def add_export_menu_item(self, export_menu):
         self.ExportBibleItem = QtGui.QAction(export_menu)
         self.ExportBibleItem.setObjectName(u'ExportBibleItem')
         export_menu.addAction(self.ExportBibleItem)
-        self.ExportBibleItem.setText(translate(u'BiblePlugin', u'&Bible'))
+        self.ExportBibleItem.setText(export_menu.trUtf8(u'&Bible'))
+        self.ExportBibleItem.setVisible(False)
 
     def onBibleNewClick(self):
-        self.media_item.onBibleNewClick()
+        if self.media_item:
+            self.media_item.onNewClick()
 
+    def about(self):
+        about_text = self.trUtf8(u'<strong>Bible Plugin</strong><br />This '
+            u'plugin allows bible verses from different sources to be '
+            u'displayed on the screen during the service.')
+        return about_text

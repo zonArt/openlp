@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AuditDetailDialog</class>
+ <widget class="QWidget" name="AuditDetailDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>593</width>
+    <height>501</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Audit Detail Extraction</string>
+  </property>
+  <widget class="QDialogButtonBox" name="buttonBox">
+   <property name="geometry">
+    <rect>
+     <x>420</x>
+     <y>470</y>
+     <width>170</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="FileGroupBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>370</y>
+     <width>571</width>
+     <height>70</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Report Location</string>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_4">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLineEdit" name="FileLineEdit"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="SaveFilePushButton">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../images/openlp-2.qrc">
+          <normaloff>:/exports/export_load.png</normaloff>:/exports/export_load.png</iconset>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>561</width>
+     <height>361</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_3">
+    <item>
+     <widget class="QGroupBox" name="ReportTypeGroup">
+      <property name="title">
+       <string>Report Type</string>
+      </property>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>50</x>
+         <y>40</y>
+         <width>481</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="ReportHorizontalLayout">
+        <item>
+         <widget class="QRadioButton" name="SummaryReport">
+          <property name="text">
+           <string>Summary</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="DetailedReport">
+          <property name="text">
+           <string>Detailed</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="DateRangeGroupBox">
+      <property name="title">
+       <string>Select Date Range</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <layout class="QHBoxLayout" name="DateHorizontalLayout">
+         <item>
+          <widget class="QDateEdit" name="FromDateEdit">
+           <property name="displayFormat">
+            <string>dd/MM/yyyy</string>
+           </property>
+           <property name="calendarPopup">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="To">
+           <property name="text">
+            <string>to</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDateEdit" name="ToDateEdit">
+           <property name="displayFormat">
+            <string>dd/MM/yyyy</string>
+           </property>
+           <property name="calendarPopup">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="TimePeriodGroupBox">
+      <property name="title">
+       <string>Select Time Periods</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <layout class="QHBoxLayout" name="FirstHorizontalLayout">
+         <item>
+          <widget class="QCheckBox" name="FirstCheckBox">
+           <property name="text">
+            <string>First Service</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTimeEdit" name="FirstFromTimeEdit">
+           <property name="displayFormat">
+            <string>hh:mm AP</string>
+           </property>
+           <property name="time">
+            <time>
+             <hour>9</hour>
+             <minute>0</minute>
+             <second>0</second>
+            </time>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="FirstTo">
+           <property name="text">
+            <string>to</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTimeEdit" name="FirstToTimeEdit">
+           <property name="displayFormat">
+            <string>hh:mm AP</string>
+           </property>
+           <property name="calendarPopup">
+            <bool>true</bool>
+           </property>
+           <property name="time">
+            <time>
+             <hour>10</hour>
+             <minute>0</minute>
+             <second>0</second>
+            </time>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="SecondHorizontalLayout">
+         <item>
+          <widget class="QCheckBox" name="SecondCheckBox">
+           <property name="text">
+            <string>Second Service</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTimeEdit" name="SecondFromTimeEdit">
+           <property name="displayFormat">
+            <string>hh:mm AP</string>
+           </property>
+           <property name="time">
+            <time>
+             <hour>10</hour>
+             <minute>45</minute>
+             <second>0</second>
+            </time>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="SecondTo">
+           <property name="text">
+            <string>to</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTimeEdit" name="SecondToTimeEdit">
+           <property name="displayFormat">
+            <string>hh:mm AP</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="ThirdHorizontalLayout">
+         <item>
+          <widget class="QCheckBox" name="ThirdCheckBox">
+           <property name="text">
+            <string>Third Service</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTimeEdit" name="ThirdFromTimeEdit">
+           <property name="displayFormat">
+            <string>hh:mm AP</string>
+           </property>
+           <property name="time">
+            <time>
+             <hour>18</hour>
+             <minute>30</minute>
+             <second>0</second>
+            </time>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="ThirdTo">
+           <property name="text">
+            <string>to</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTimeEdit" name="ThirdToTimeEdit">
+           <property name="displayFormat">
+            <string>hh:mm AP</string>
+           </property>
+           <property name="time">
+            <time>
+             <hour>19</hour>
+             <minute>30</minute>
+             <second>0</second>
+            </time>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources>
+  <include location="../images/openlp-2.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>AuditDetailDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>455</x>
+     <y>483</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>445</x>
+     <y>575</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>AuditDetailDialog</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>528</x>
+     <y>484</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>526</x>
+     <y>531</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>FirstCheckBox</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>AuditDetailDialog</receiver>
+   <slot>changeFirstService(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>26</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>136</x>
+     <y>483</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SecondCheckBox</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>AuditDetailDialog</receiver>
+   <slot>changeSecondService(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>41</x>
+     <y>323</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>103</x>
+     <y>494</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ThirdCheckBox</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>AuditDetailDialog</receiver>
+   <slot>changeThirdService(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>38</x>
+     <y>351</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>155</x>
+     <y>463</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SaveFilePushButton</sender>
+   <signal>pressed()</signal>
+   <receiver>AuditDetailDialog</receiver>
+   <slot>defineOutputLocation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>538</x>
+     <y>419</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>385</x>
+     <y>480</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>accept()</slot>
+  <slot>changeFirstService(int)</slot>
+  <slot>changeSecondService(int)</slot>
+  <slot>changeThirdService(int)</slot>
+  <slot>defineOutputLocation()</slot>
+ </slots>
+</ui>

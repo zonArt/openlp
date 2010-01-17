@@ -24,17 +24,18 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, str_to_bool, translate
+from openlp.core.lib import SettingsTab, str_to_bool
 
 class MediaTab(SettingsTab):
     """
     mediaTab is the media settings tab in the settings dialog.
     """
-    def __init__(self):
-        SettingsTab.__init__(self, translate(u'MediaTab', u'Media'), u'Media')
+    def __init__(self, title, section=None):
+        SettingsTab.__init__(self, title, section)
 
     def setupUi(self):
         self.setObjectName(u'MediaTab')
+        self.tabTitleVisible = self.trUtf8(u'Media')
         self.MediaLayout = QtGui.QFormLayout(self)
         self.MediaLayout.setObjectName(u'MediaLayout')
         self.MediaModeGroupBox = QtGui.QGroupBox(self)
@@ -57,14 +58,10 @@ class MediaTab(SettingsTab):
             QtCore.SIGNAL(u'stateChanged(int)'), self.onVMRCheckBoxChanged)
 
     def retranslateUi(self):
-        self.MediaModeGroupBox.setTitle(translate(u'MediaTab', u'Media Mode'))
-        self.UseVMRCheckBox.setText(
-            translate(u'MediaTab', u'Use Video Mode Rendering'))
-        self.UseVMRLabel.setText(translate(u'MediaTab', u'<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">\n'
-            u'<html><head><meta name="qrichtext" content="1" /><style type="text/css">\n'
-            u'p, li { white-space: pre-wrap; }\n'
-            u'</style></head><body style="font-family:\'DejaVu Sans\'; font-size:10pt; font-weight:400; font-style:normal;">\n'
-            u'<p style="margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-style:italic;">No video preview available with VMR enabled</span></p></body></html>'))
+        self.MediaModeGroupBox.setTitle(self.trUtf8(u'Media Mode'))
+        self.UseVMRCheckBox.setText(self.trUtf8(u'Use Video Mode Rendering'))
+        self.UseVMRLabel.setText(
+            self.trUtf8(u'<em>No video preview available with VMR enabled</em>'))
 
     def onVMRCheckBoxChanged(self):
         use_vmr_mode = self.UseVMRCheckBox.checkState()

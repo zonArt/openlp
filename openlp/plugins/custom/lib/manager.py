@@ -22,14 +22,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import os, os.path
-import sys
-
-from sqlalchemy import asc, desc
-from openlp.plugins.custom.lib.models import init_models, metadata, session, \
-    engine, CustomSlide, custom_slide_table
-
 import logging
+
+from openlp.plugins.custom.lib.models import init_models, metadata, CustomSlide
 
 class CustomManager():
     """
@@ -38,7 +33,7 @@ class CustomManager():
     """
 
     global log
-    log=logging.getLogger(u'CustomManager')
+    log = logging.getLogger(u'CustomManager')
     log.info(u'Custom manager loaded')
 
     def __init__(self, config):

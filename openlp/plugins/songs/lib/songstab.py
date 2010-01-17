@@ -24,14 +24,68 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate
+from openlp.core.lib import SettingsTab, str_to_bool
 
 class SongsTab(SettingsTab):
     """
-    SongsTab is the songs settings tab in the settings dialog.
+    SongsTab is the Songs settings tab in the settings dialog.
     """
-    def __init__(self):
-        SettingsTab.__init__(self, translate(u'SongsTab', u'Songs'), u'Songs')
+    def __init__(self, title, section=None):
+        SettingsTab.__init__(self, title, section)
 
     def setupUi(self):
         self.setObjectName(u'SongsTab')
+        self.tabTitleVisible = self.trUtf8(u'Songs')
+        self.SongsLayout = QtGui.QFormLayout(self)
+        self.SongsLayout.setObjectName(u'SongsLayout')
+        self.SongsModeGroupBox = QtGui.QGroupBox(self)
+        self.SongsModeGroupBox.setObjectName(u'SongsModeGroupBox')
+        self.SongsModeLayout = QtGui.QVBoxLayout(self.SongsModeGroupBox)
+        self.SongsModeLayout.setSpacing(8)
+        self.SongsModeLayout.setMargin(8)
+        self.SongsModeLayout.setObjectName(u'SongsModeLayout')
+        self.SearchAsTypeCheckBox = QtGui.QCheckBox(self.SongsModeGroupBox)
+        self.SearchAsTypeCheckBox.setObjectName(u'SearchAsTypeCheckBox')
+        self.SongsModeLayout.addWidget(self.SearchAsTypeCheckBox)
+        self.SongBarActiveCheckBox = QtGui.QCheckBox(self.SongsModeGroupBox)
+        self.SongBarActiveCheckBox.setObjectName(u'SearchAsTypeCheckBox')
+        self.SongsModeLayout.addWidget(self.SongBarActiveCheckBox)
+        self.SongsLayout.setWidget(
+            0, QtGui.QFormLayout.LabelRole, self.SongsModeGroupBox)
+        QtCore.QObject.connect(self.SearchAsTypeCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onSearchAsTypeCheckBoxChanged)
+        QtCore.QObject.connect(self.SongBarActiveCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.SongBarActiveCheckBoxChanged)
+
+    def retranslateUi(self):
+        self.SongsModeGroupBox.setTitle(self.trUtf8(u'Songs Mode'))
+        self.SearchAsTypeCheckBox.setText(
+            self.trUtf8(u'Enable search as you type:'))
+        self.SongBarActiveCheckBox.setText(
+            self.trUtf8(u'Display Verses on Live Tool bar:'))
+
+    def onSearchAsTypeCheckBoxChanged(self, check_state):
+        self.song_search = False
+        # we have a set value convert to True/False
+        if check_state == QtCore.Qt.Checked:
+            self.song_search = True
+
+    def SongBarActiveCheckBoxChanged(self, check_state):
+        self.song_bar = False
+        # we have a set value convert to True/False
+        if check_state == QtCore.Qt.Checked:
+            self.song_bar = True
+
+    def load(self):
+        self.song_search = str_to_bool(
+            self.config.get_config(u'search as type', False))
+        self.song_bar = str_to_bool(
+            self.config.get_config(u'display songbar', True))
+        self.SearchAsTypeCheckBox.setChecked(self.song_search)
+        self.SongBarActiveCheckBox.setChecked(self.song_bar)
+
+    def save(self):
+        self.config.set_config(u'search as type', unicode(self.song_search))
+        self.config.set_config(u'display songbar', unicode(self.song_bar))

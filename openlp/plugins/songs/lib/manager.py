@@ -22,14 +22,10 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import os, os.path
-import sys
-
-from sqlalchemy import asc, desc
-from openlp.plugins.songs.lib.models import init_models, metadata, session, \
-    engine, songs_table, Song, Author, Topic, Book
-
 import logging
+
+from openlp.plugins.songs.lib.models import init_models, metadata, Song, \
+    Author, Topic, Book
 
 class SongManager():
     """
@@ -110,8 +106,8 @@ class SongManager():
             self.session.commit()
             return True
         except:
-            self.session.rollback()
             log.exception(u'Could not save song to song database')
+            self.session.rollback()
             return False
 
     def delete_song(self, songid):
@@ -223,7 +219,7 @@ class SongManager():
             self.session.add(book)
             self.session.commit()
             return True
-        except Exception, e:
+        except:
             self.session.rollback()
             log.exception(u'Could not save book to song database')
             return False

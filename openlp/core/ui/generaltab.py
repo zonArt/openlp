@@ -24,7 +24,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, str_to_bool
+from openlp.core.lib import SettingsTab, str_to_bool
 
 class GeneralTab(SettingsTab):
     """
@@ -32,10 +32,11 @@ class GeneralTab(SettingsTab):
     """
     def __init__(self, screen_list):
         self.screen_list = screen_list
-        SettingsTab.__init__(self, translate(u'GeneralTab', u'General'), u'General')
+        SettingsTab.__init__(self, u'General')
 
     def setupUi(self):
         self.setObjectName(u'GeneralTab')
+        self.tabTitleVisible = self.trUtf8(u'General')
         self.GeneralLayout = QtGui.QHBoxLayout(self)
         self.GeneralLayout.setSpacing(8)
         self.GeneralLayout.setMargin(8)
@@ -75,6 +76,16 @@ class GeneralTab(SettingsTab):
         self.ShowSplashCheckBox.setObjectName(u'ShowSplashCheckBox')
         self.StartupLayout.addWidget(self.ShowSplashCheckBox)
         self.GeneralLeftLayout.addWidget(self.StartupGroupBox)
+        self.SettingsGroupBox = QtGui.QGroupBox(self.GeneralLeftWidget)
+        self.SettingsGroupBox.setObjectName(u'SettingsGroupBox')
+        self.SettingsLayout = QtGui.QVBoxLayout(self.SettingsGroupBox)
+        self.SettingsLayout.setSpacing(8)
+        self.SettingsLayout.setMargin(8)
+        self.SettingsLayout.setObjectName(u'SettingsLayout')
+        self.SaveCheckServiceCheckBox = QtGui.QCheckBox(self.SettingsGroupBox)
+        self.SaveCheckServiceCheckBox.setObjectName(u'SaveCheckServiceCheckBox')
+        self.SettingsLayout.addWidget(self.SaveCheckServiceCheckBox)
+        self.GeneralLeftLayout.addWidget(self.SettingsGroupBox)
         self.GeneralLeftSpacer = QtGui.QSpacerItem(20, 40,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.GeneralLeftLayout.addItem(self.GeneralLeftSpacer)
@@ -123,6 +134,8 @@ class GeneralTab(SettingsTab):
             QtCore.SIGNAL(u'stateChanged(int)'), self.onAutoOpenCheckBoxChanged)
         QtCore.QObject.connect(self.ShowSplashCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'), self.onShowSplashCheckBoxChanged)
+        QtCore.QObject.connect(self.SaveCheckServiceCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'), self.onSaveCheckServiceCheckBox)
         QtCore.QObject.connect(self.NumberEdit,
             QtCore.SIGNAL(u'editingFinished()'), self.onNumberEditLostFocus)
         QtCore.QObject.connect(self.UsernameEdit,
@@ -131,16 +144,18 @@ class GeneralTab(SettingsTab):
             QtCore.SIGNAL(u'editingFinished()'), self.onPasswordEditLostFocus)
 
     def retranslateUi(self):
-        self.MonitorGroupBox.setTitle(translate(u'GeneralTab', u'Monitors'))
-        self.MonitorLabel.setText(translate(u'GeneralTab', u'Select monitor for output display:'))
-        self.StartupGroupBox.setTitle(translate(u'GeneralTab', u'Application Startup'))
-        self.WarningCheckBox.setText(translate(u'GeneralTab', u'Show blank screen warning'))
-        self.AutoOpenCheckBox.setText(translate(u'GeneralTab', u'Automatically open the last service'))
-        self.ShowSplashCheckBox.setText(translate(u'GeneralTab', u'Show the splash screen'))
-        self.CCLIGroupBox.setTitle(translate(u'GeneralTab', u'CCLI Details'))
-        self.NumberLabel.setText(translate(u'GeneralTab', u'CCLI Number:'))
-        self.UsernameLabel.setText(translate(u'GeneralTab', u'SongSelect Username:'))
-        self.PasswordLabel.setText(translate(u'GeneralTab', u'SongSelect Password:'))
+        self.MonitorGroupBox.setTitle(self.trUtf8(u'Monitors'))
+        self.MonitorLabel.setText(self.trUtf8(u'Select monitor for output display:'))
+        self.StartupGroupBox.setTitle(self.trUtf8(u'Application Startup'))
+        self.WarningCheckBox.setText(self.trUtf8(u'Show blank screen warning'))
+        self.AutoOpenCheckBox.setText(self.trUtf8(u'Automatically open the last service'))
+        self.ShowSplashCheckBox.setText(self.trUtf8(u'Show the splash screen'))
+        self.SettingsGroupBox.setTitle(self.trUtf8(u'Application Settings'))
+        self.SaveCheckServiceCheckBox.setText(self.trUtf8(u'Prompt to save Service before starting New'))
+        self.CCLIGroupBox.setTitle(self.trUtf8(u'CCLI Details'))
+        self.NumberLabel.setText(self.trUtf8(u'CCLI Number:'))
+        self.UsernameLabel.setText(self.trUtf8(u'SongSelect Username:'))
+        self.PasswordLabel.setText(self.trUtf8(u'SongSelect Password:'))
 
     def onMonitorComboBoxChanged(self):
         self.MonitorNumber = self.MonitorComboBox.currentIndex()
@@ -154,6 +169,9 @@ class GeneralTab(SettingsTab):
     def onWarningCheckBoxChanged(self, value):
         self.Warning = (value == QtCore.Qt.Checked)
 
+    def onSaveCheckServiceCheckBox(self, value):
+        self.PromptSaveService = (value == QtCore.Qt.Checked)
+
     def onNumberEditLostFocus(self):
         self.CCLNumber = self.NumberEdit.displayText()
 
@@ -165,20 +183,20 @@ class GeneralTab(SettingsTab):
 
     def load(self):
         for screen in self.screen_list:
-            screen_name = translate(u'GeneralTab', u'Screen') + u' ' + \
-                unicode(screen[u'number'] + 1)
+            screen_name = u'%s %d' % (self.trUtf8(u'Screen'), screen[u'number'] + 1)
             if screen[u'primary']:
-                screen_name = screen_name + u' (' + \
-                    translate(u'GeneralTab', u'primary') + u')'
+                screen_name = u'%s (%s)' % (self.trUtf8(u'primary'), screen_name)
             self.MonitorComboBox.addItem(screen_name)
         # Get the configs
         self.MonitorNumber = int(self.config.get_config(u'Monitor', u'0'))
-        self.Warning = str_to_bool(self.config.get_config(u'Warning', u'False'))
+        self.Warning = str_to_bool(self.config.get_config(u'Blank Warning', u'False'))
         self.AutoOpen = str_to_bool(self.config.get_config(u'Auto Open', u'False'))
         self.ShowSplash = str_to_bool(self.config.get_config(u'show splash', u'True'))
+        self.PromptSaveService = str_to_bool(self.config.get_config(u'prompt save service', u'False'))
         self.CCLNumber = unicode(self.config.get_config(u'CCL Number', u'XXX'))
         self.Username = unicode(self.config.get_config(u'User Name', u''))
         self.Password = unicode(self.config.get_config(u'Password', u''))
+        self.SaveCheckServiceCheckBox.setChecked(self.PromptSaveService)
         # Set a few things up
         self.MonitorComboBox.setCurrentIndex(self.MonitorNumber)
         self.WarningCheckBox.setChecked(self.Warning)
@@ -190,9 +208,10 @@ class GeneralTab(SettingsTab):
 
     def save(self):
         self.config.set_config(u'Monitor', self.MonitorNumber)
-        self.config.set_config(u'Warning', self.Warning)
+        self.config.set_config(u'Blank Warning', self.Warning)
         self.config.set_config(u'Auto Open', self.AutoOpen)
         self.config.set_config(u'show splash', self.ShowSplash)
+        self.config.set_config(u'prompt save service', self.PromptSaveService)
         self.config.set_config(u'CCL Number', self.CCLNumber)
         self.config.set_config(u'User Name', self.Username)
         self.config.set_config(u'Password', self.Password)

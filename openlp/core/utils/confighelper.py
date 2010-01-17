@@ -45,7 +45,7 @@ class ConfigHelper(object):
                 path = os.path.join(BaseDirectory.xdg_data_home, u'openlp')
             except ImportError:
                 path = os.path.join(os.getenv(u'HOME'), u'.openlp', u'data')
-        reg = ConfigHelper.get_registry()
+        #reg = ConfigHelper.get_registry()
         #path = ConfigHelper.get_config(u'main', 'data path', path)
         if not os.path.exists(path):
             os.makedirs(path)
@@ -57,7 +57,7 @@ class ConfigHelper(object):
         if reg.has_value(section, key):
             return reg.get_value(section, key, default)
         else:
-            if default is not None:
+            if default:
                 ConfigHelper.set_config(section, key, default)
             return default
 

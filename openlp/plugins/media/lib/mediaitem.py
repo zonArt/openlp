@@ -24,14 +24,10 @@
 
 import logging
 import os
-import tempfile
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, ServiceItem, translate, \
-    BaseListWithDnD, buildIcon
-
-from openlp.plugins.media.lib import MediaTab, FileListData
+from openlp.core.lib import MediaManagerItem, BaseListWithDnD, buildIcon
 
 class MediaListView(BaseListWithDnD):
     def __init__(self, parent=None):
@@ -47,53 +43,50 @@ class MediaMediaItem(MediaManagerItem):
     log.info(u'Media Media Item loaded')
 
     def __init__(self, parent, icon, title):
-        self.TranslationContext = u'MediaPlugin'
-        self.hasFileIcon = True
-        self.hasNewIcon = False
-        self.hasEditIcon = False
+        self.PluginNameShort = u'Media'
         self.IconPath = u'images/image'
-        self.PluginTextShort = u'Media'
-        self.ConfigSection = u'images'
-        self.OnNewPrompt = u'Select Media(s)'
-        self.OnNewFileMasks = u'Videos (*.avi *.mpeg *.mpg *.mp4);;Audio (*.ogg *.mp3 *.wma);;All files (*)'
+        self.ConfigSection = u'media'
+        self.ConfigSection = title
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = MediaListView
-        #self.ServiceItemIconName = u':/media/media_image.png'
         self.PreviewFunction = self.video_get_preview
         MediaManagerItem.__init__(self, parent, icon, title)
+        self.ServiceItemIconName = u':/media/media_video.png'
+        self.MainDisplay = self.parent.live_controller.parent.mainDisplay
 
-    def video_get_preview(self, filename):
-        #
+    def initPluginNameVisible(self):
+        self.PluginNameVisible = self.trUtf8(u'Media')
+
+    def retranslateUi(self):
+        self.OnNewPrompt = self.trUtf8(u'Select Media')
+        self.OnNewFileMasks = self.trUtf8(u'Videos (*.avi *.mpeg *.mpg'
+            '*.mp4);;Audio (*.ogg *.mp3 *.wma);;All files (*)')
+
+    def requiredIcons(self):
+        MediaManagerItem.requiredIcons(self)
+        self.hasFileIcon = True
+        self.hasNewIcon = False
+        self.hasEditIcon = False
+
+    def video_get_preview(self):
         # For now cross platform is an icon.  Phonon does not support
         # individual frame access (yet?) and GStreamer is not available
         # on Windows
-        #
-        image = QtGui.QPixmap(u':/media/media_video.png').toImage()
-        return image
+        return QtGui.QPixmap(u':/media/media_video.png').toImage()
 
     def generateSlideData(self, service_item):
-        indexes = self.ListView.selectedIndexes()
-        if len(indexes) > 1:
-            return False
-        service_item.title = u'Media'
-        for index in indexes:
-            filename = self.ListData.getFilename(index)
-            frame = QtGui.QImage(unicode(filename))
-            (path, name) = os.path.split(filename)
-            service_item.add_from_image(path, name, frame)
-        return True
-
-    def onPreviewClick(self):
-        log.debug(u'Media Preview Button pressed')
         items = self.ListView.selectedIndexes()
+        if len(items) > 1:
+            return False
+        service_item.title = self.trUtf8(u'Media')
         for item in items:
-            text = self.ListData.getValue(item)
-            print text
-
-    def onMediaLiveClick(self):
-        log.debug(u'Media Live Button pressed')
-        pass
+            bitem = self.ListView.item(item.row())
+            filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+            frame = u':/media/media_video.png'
+            (path, name) = os.path.split(filename)
+            service_item.add_from_command(path, name, frame)
+        return True
 
     def initialise(self):
         self.ListView.setSelectionMode(
@@ -103,8 +96,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def onDeleteClick(self):
         item = self.ListView.currentItem()
-        if item is not None:
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        if item:
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
             self.parent.config.set_list(
@@ -114,7 +106,7 @@ class MediaMediaItem(MediaManagerItem):
         for file in list:
             (path, filename) = os.path.split(unicode(file))
             item_name = QtGui.QListWidgetItem(filename)
-            img = self.video_get_preview(file)
+            img = self.video_get_preview()
             item_name.setIcon(buildIcon(img))
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.ListView.addItem(item_name)

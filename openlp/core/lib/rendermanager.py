@@ -23,9 +23,6 @@
 ###############################################################################
 
 import logging
-import os
-import sys
-import linecache
 
 from PyQt4 import QtGui, QtCore
 
@@ -67,6 +64,10 @@ class RenderManager(object):
         self.theme = u''
         self.service_theme = u''
         self.global_style = u''
+        self.override_background = None
+        self.themedata = None
+        self.save_bg_frame = None
+        self.override_background_changed = False
 
     def update_display(self, screen_number):
         """
@@ -78,7 +79,8 @@ class RenderManager(object):
         log.debug(u'Update Display')
         if self.current_display != screen_number:
             self.current_display = screen_number
-            self.calculate_default(self.screen_list[self.current_display][u'size'])
+            self.calculate_default(
+                self.screen_list[self.current_display][u'size'])
 
     def set_global_theme(self, global_theme, global_style=u'Global'):
         """
@@ -119,7 +121,7 @@ class RenderManager(object):
             else:
                 self.theme = self.service_theme
         else:
-            if theme is not None:
+            if theme:
                 self.theme = theme
             elif self.global_style == u'Song' or \
                 self.global_style == u'Service':
@@ -129,13 +131,29 @@ class RenderManager(object):
                     self.theme = self.service_theme
             else:
                 self.theme = self.global_theme
-        if self.theme != self.renderer.theme_name:
+        if self.theme != self.renderer.theme_name or self.themedata is None:
             log.debug(u'theme is now %s', self.theme)
             self.themedata = self.theme_manager.getThemeData(self.theme)
             self.calculate_default(
                 self.screen_list[self.current_display][u'size'])
             self.renderer.set_theme(self.themedata)
             self.build_text_rectangle(self.themedata)
+        #Replace the backgrount image from renderer with one from image
+        if self.override_background:
+            if self.save_bg_frame is None:
+                self.save_bg_frame = self.renderer.bg_frame
+            if self.override_background_changed:
+                self.renderer.bg_frame = self.resize_image(
+                    self.override_background)
+                self.override_background_changed = False
+        else:
+            if self.override_background_changed:
+                self.renderer.bg_frame = self.resize_image(
+                    self.override_background)
+                self.override_background_changed = False
+            if self.save_bg_frame:
+                self.renderer.bg_frame = self.save_bg_frame
+                self.save_bg_frame = None
 
     def build_text_rectangle(self, theme):
         """
@@ -148,20 +166,19 @@ class RenderManager(object):
         log.debug(u'build_text_rectangle')
         main_rect = None
         footer_rect = None
-        if theme.font_main_override == False:
+        if not theme.font_main_override:
             main_rect = QtCore.QRect(10, 0, self.width - 1,
                 self.footer_start - 20)
         else:
-            main_rect = QtCore.QRect(int(theme.font_main_x),
-                int(theme.font_main_y), int(theme.font_main_width)-1,
-                int(theme.font_main_height) - 1)
-        if theme.font_footer_override == False:
-            footer_rect = QtCore.QRect(10,self.footer_start, self.width - 1,
+            main_rect = QtCore.QRect(theme.font_main_x, theme.font_main_y,
+                theme.font_main_width - 1, theme.font_main_height - 1)
+        if not theme.font_footer_override:
+            footer_rect = QtCore.QRect(10, self.footer_start, self.width - 1,
                 self.height-self.footer_start)
         else:
-            footer_rect = QtCore.QRect(int(theme.font_footer_x),
-                int(theme.font_footer_y), int(theme.font_footer_width)-1,
-                int(theme.font_footer_height) - 1)
+            footer_rect = QtCore.QRect(theme.font_footer_x,
+                theme.font_footer_y, theme.font_footer_width - 1,
+                theme.font_footer_height - 1)
         self.renderer.set_text_rectangle(main_rect, footer_rect)
 
     def generate_preview(self, themedata):
@@ -236,7 +253,7 @@ class RenderManager(object):
         newImage = QtGui.QImage(w, h, QtGui.QImage.Format_ARGB32_Premultiplied)
         newImage.fill(QtCore.Qt.black)
         painter = QtGui.QPainter(newImage)
-        painter.drawImage((w-realw) / 2, (h-realh) / 2, preview)
+        painter.drawImage((w - realw) / 2, (h - realh) / 2, preview)
         return newImage
 
     def calculate_default(self, screen):

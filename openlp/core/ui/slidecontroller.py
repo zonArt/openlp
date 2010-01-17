@@ -23,12 +23,11 @@
 ###############################################################################
 
 import logging
-import os
 import time
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import OpenLPToolbar, translate, buildIcon, Receiver, \
-    ServiceType, RenderManager, SettingsManager
+from openlp.core.lib import OpenLPToolbar, Receiver, ServiceItemType, \
+    str_to_bool, PluginConfig
 
 class SlideList(QtGui.QTableWidget):
     """
@@ -74,18 +73,53 @@ class SlideController(QtGui.QWidget):
         self.settingsmanager = settingsmanager
         self.isLive = isLive
         self.parent = parent
+        self.songsconfig = PluginConfig(u'Songs')
         self.image_list = [
-            u'Start Loop', u'Stop Loop', u'Loop Separator', u'Image SpinBox']
+            u'Start Loop',
+            u'Stop Loop',
+            u'Loop Separator',
+            u'Image SpinBox'
+        ]
+        self.media_list = [
+            u'Media Start',
+            u'Media Stop',
+            u'Media Pause'
+        ]
+        self.song_edit_list = [
+            u'Edit Song',
+        ]
+        self.song_list = [
+            u'First Slide',
+            u'Previous Slide',
+            u'Next Slide',
+            u'Last Slide',
+        ]
         self.timer_id = 0
         self.commandItem = None
+        self.songEdit = False
+        self.row = 0
         self.Panel = QtGui.QWidget(parent.ControlSplitter)
-        self.Splitter = QtGui.QSplitter(self.Panel)
-        self.Splitter.setOrientation(QtCore.Qt.Vertical)
         # Layout for holding panel
         self.PanelLayout = QtGui.QVBoxLayout(self.Panel)
-        self.PanelLayout.addWidget(self.Splitter)
         self.PanelLayout.setSpacing(0)
         self.PanelLayout.setMargin(0)
+        # Type label for the top of the slide controller
+        self.TypeLabel = QtGui.QLabel(self.Panel)
+        if self.isLive:
+            self.TypeLabel.setText(u'<strong>%s</strong>' %
+                self.trUtf8(u'Live'))
+            self.split = 1
+        else:
+            self.TypeLabel.setText(u'<strong>%s</strong>' %
+                self.trUtf8(u'Preview'))
+            self.split = 0
+        self.TypeLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.PanelLayout.addWidget(self.TypeLabel)
+        # Splitter
+        self.Splitter = QtGui.QSplitter(self.Panel)
+        self.Splitter.setOrientation(QtCore.Qt.Vertical)
+        self.Splitter.setOpaqueResize(False)
+        self.PanelLayout.addWidget(self.Splitter)
         # Actual controller section
         self.Controller = QtGui.QWidget(self.Splitter)
         self.Controller.setGeometry(QtCore.QRect(0, 0, 100, 536))
@@ -103,6 +137,9 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.setColumnWidth(1, self.Controller.width())
         self.PreviewListWidget.isLive = self.isLive
         self.PreviewListWidget.setObjectName(u'PreviewListWidget')
+        self.PreviewListWidget.setEditTriggers(
+            QtGui.QAbstractItemView.NoEditTriggers)
+        self.PreviewListWidget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.ControllerLayout.addWidget(self.PreviewListWidget)
         # Build the full toolbar
         self.Toolbar = OpenLPToolbar(self)
@@ -114,55 +151,78 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.sizePolicy().hasHeightForWidth())
         self.Toolbar.setSizePolicy(sizeToolbarPolicy)
         if self.isLive:
-            self.Toolbar.addToolbarButton(u'First Slide',
-                u':/slides/slide_first.png',
-                translate(u'SlideController', u'Move to first'),
-                self.onSlideSelectedFirst)
-        self.Toolbar.addToolbarButton(u'Previous Slide',
-            u':/slides/slide_previous.png',
-            translate(u'SlideController', u'Move to previous'),
-            self.onSlideSelectedPrevious)
-        self.Toolbar.addToolbarButton(u'Next Slide',
-            u':/slides/slide_next.png',
-            translate(u'SlideController', u'Move to next'),
-            self.onSlideSelectedNext)
+            self.Toolbar.addToolbarButton(
+                u'First Slide', u':/slides/slide_first.png',
+                self.trUtf8(u'Move to first'), self.onSlideSelectedFirst)
+        self.Toolbar.addToolbarButton(
+            u'Previous Slide', u':/slides/slide_previous.png',
+            self.trUtf8(u'Move to previous'), self.onSlideSelectedPrevious)
+        self.Toolbar.addToolbarButton(
+            u'Next Slide', u':/slides/slide_next.png',
+            self.trUtf8(u'Move to next'), self.onSlideSelectedNext)
         if self.isLive:
-            self.Toolbar.addToolbarButton(u'Last Slide',
-                u':/slides/slide_last.png',
-                translate(u'SlideController', u'Move to last'),
-                self.onSlideSelectedLast)
+            self.Toolbar.addToolbarButton(
+                u'Last Slide', u':/slides/slide_last.png',
+                self.trUtf8(u'Move to last'), self.onSlideSelectedLast)
         if self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
-            self.Toolbar.addToolbarButton(u'Close Screen',
-                u':/slides/slide_close.png',
-                translate(u'SlideController', u'Close Screen'),
-                self.onBlankScreen)
+            self.blackPushButton = self.Toolbar.addPushButton(
+                u':/slides/slide_close.png')
         if not self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
-            self.Toolbar.addToolbarButton(u'Go Live',
-                u':/system/system_live.png',
-                translate(u'SlideController', u'Move to live'),
-                self.onGoLive)
+            self.Toolbar.addToolbarButton(
+                u'Go Live', u':/system/system_live.png',
+                self.trUtf8(u'Move to live'), self.onGoLive)
+            self.Toolbar.addToolbarSeparator(u'Close Separator')
+            self.Toolbar.addToolbarButton(
+                u'Edit Song', u':songs/song_edit.png',
+                self.trUtf8(u'Edit and re-preview Song'), self.onEditSong)
         if isLive:
             self.Toolbar.addToolbarSeparator(u'Loop Separator')
-            self.Toolbar.addToolbarButton(u'Start Loop',
-                u':/media/media_time.png',
-                translate(u'SlideController', u'Start continuous loop'),
-                self.onStartLoop)
-            self.Toolbar.addToolbarButton(u'Stop Loop',
-                u':/media/media_stop.png',
-                translate(u'SlideController', u'Stop continuous loop'),
-                self.onStopLoop)
+            self.Toolbar.addToolbarButton(
+                u'Start Loop',  u':/media/media_time.png',
+                self.trUtf8(u'Start continuous loop'), self.onStartLoop)
+            self.Toolbar.addToolbarButton(
+                u'Stop Loop', u':/media/media_stop.png',
+                self.trUtf8(u'Stop continuous loop'), self.onStopLoop)
             self.DelaySpinBox = QtGui.QSpinBox()
-            self.Toolbar.addToolbarWidget(u'Image SpinBox', self.DelaySpinBox)
-            self.DelaySpinBox.setSuffix(translate(u'SlideController', u's'))
-
+            self.Toolbar.addToolbarWidget(
+                u'Image SpinBox', self.DelaySpinBox)
+            self.DelaySpinBox.setSuffix(self.trUtf8(u's'))
+            self.DelaySpinBox.setToolTip(self.trUtf8(u'Delay between slides in seconds'))
+            self.Toolbar.addToolbarButton(
+                u'Media Start',  u':/slides/media_playback_start.png',
+                self.trUtf8(u'Start playing media'), self.onMediaPlay)
+            self.Toolbar.addToolbarButton(
+                u'Media Pause',  u':/slides/media_playback_pause.png',
+                self.trUtf8(u'Start playing media'), self.onMediaPause)
+            self.Toolbar.addToolbarButton(
+                u'Media Stop',  u':/slides/media_playback_stop.png',
+                self.trUtf8(u'Start playing media'), self.onMediaStop)
         self.ControllerLayout.addWidget(self.Toolbar)
+        # Build the Song Toolbar
+        if isLive:
+            self.Songbar = OpenLPToolbar(self)
+            self.Songbar.addToolbarButton(
+                u'Bridge',  u':/pages/page_bridge.png',
+                self.trUtf8(u'Bridge'),
+                self.onSongBarHandler)
+            self.Songbar.addToolbarButton(
+                u'Chorus',  u':/pages/page_chorus.png',
+                self.trUtf8(u'Chorus'),
+                self.onSongBarHandler)
+            for verse in range(1, 12):
+                self.Songbar.addToolbarButton(
+                    unicode(verse),  u':/pages/page_%s.png' % verse,
+                    unicode(self.trUtf8(u'Verse %s'))%verse,
+                    self.onSongBarHandler)
+            self.ControllerLayout.addWidget(self.Songbar)
+            self.Songbar.setVisible(False)
         # Screen preview area
         self.PreviewFrame = QtGui.QFrame(self.Splitter)
         self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, 300, 225))
         self.PreviewFrame.setSizePolicy(QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Minimum))
+            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Label))
         self.PreviewFrame.setFrameShape(QtGui.QFrame.StyledPanel)
         self.PreviewFrame.setFrameShadow(QtGui.QFrame.Sunken)
         self.PreviewFrame.setObjectName(u'PreviewFrame')
@@ -192,13 +252,69 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(self.PreviewListWidget,
             QtCore.SIGNAL(u'activated(QModelIndex)'), self.onSlideSelected)
         if isLive:
+            QtCore.QObject.connect(self.blackPushButton,
+                QtCore.SIGNAL(u'clicked(bool)'), self.onBlankScreen)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'update_spin_delay'), self.receiveSpinDelay)
             Receiver().send_message(u'request_spin_delay')
         if isLive:
             self.Toolbar.makeWidgetsInvisible(self.image_list)
+            self.Toolbar.makeWidgetsInvisible(self.media_list)
         else:
+            self.Toolbar.makeWidgetsInvisible(self.song_edit_list)
+        if isLive:
+            prefix = u'live_slidecontroller'
+        else:
+            prefix = u'preview_slidecontroller'
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_first' % prefix), self.onSlideSelectedFirst)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_next' % prefix), self.onSlideSelectedNext)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_previous' % prefix), self.onSlideSelectedPrevious)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_last' % prefix), self.onSlideSelectedLast)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_change' % prefix), self.onSlideChange)
+        QtCore.QObject.connect(self.Splitter,
+            QtCore.SIGNAL(u'splitterMoved(int, int)'), self.trackSplitter)
+
+    def widthChanged(self):
+        """
+        Handle changes of width from the splitter between the live and preview
+        controller.  Event only issues when changes have finished
+        """
+        if not self.commandItem:
+            return
+        width = self.parent.ControlSplitter.sizes()[self.split]
+        height = width * self.parent.RenderManager.screen_ratio
+        self.PreviewListWidget.setColumnWidth(0, width)
+        for framenumber, frame in enumerate(self.commandItem.frames):
+            if frame[u'text']:
+                break
+            self.PreviewListWidget.setRowHeight(framenumber, height)
+
+
+    def trackSplitter(self, tab, pos):
+        """
+        Splitter between the slide list and the preview panel
+        """
+        pass
+
+    def onSongBarHandler(self):
+        request = self.sender().text()
+        if request == u'Bridge':
             pass
+        elif request == u'Chorus':
+            pass
+        else:
+            #Remember list is 1 out!
+            slideno = int(request) - 1
+            if slideno > self.PreviewListWidget.rowCount():
+                self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount())
+            else:
+                self.PreviewListWidget.selectRow(slideno)
+            self.onSlideSelected()
 
     def receiveSpinDelay(self, value):
         self.DelaySpinBox.setValue(int(value))
@@ -217,20 +333,44 @@ class SlideController(QtGui.QWidget):
         """
         Allows the live toolbar to be customised
         """
-        if item.service_item_type == ServiceType.Text:
+        self.Songbar.setVisible(False)
+        self.Toolbar.makeWidgetsInvisible(self.image_list)
+        self.Toolbar.makeWidgetsInvisible(self.media_list)
+        self.Toolbar.makeWidgetsVisible(self.song_list)
+        if item.service_item_type == ServiceItemType.Text:
             self.Toolbar.makeWidgetsInvisible(self.image_list)
-        elif item.service_item_type == ServiceType.Image:
+            if item.name == u'Songs' and \
+                str_to_bool(self.songsconfig.get_config(u'display songbar', True)):
+                for action in self.Songbar.actions:
+                    self.Songbar.actions[action].setVisible(False)
+                if item.verse_order:
+                    verses = item.verse_order.split(u' ')
+                    for verse in verses:
+                        if not verse or int(verse) > 12:
+                            break
+                        try:
+                            self.Songbar.actions[verse].setVisible(True)
+                        except:
+                            #More than 20 verses hard luck
+                            pass
+                    self.Songbar.setVisible(True)
+        elif item.service_item_type == ServiceItemType.Image:
             #Not sensible to allow loops with 1 frame
             if len(item.frames) > 1:
                 self.Toolbar.makeWidgetsVisible(self.image_list)
-            else:
-                self.Toolbar.makeWidgetsInvisible(self.image_list)
+        elif item.service_item_type == ServiceItemType.Command and \
+            item.name == u'Media':
+            self.Toolbar.makeWidgetsInvisible(self.song_list)
+            self.Toolbar.makeWidgetsVisible(self.media_list)
 
     def enablePreviewToolBar(self, item):
         """
         Allows the Preview toolbar to be customised
         """
-        pass
+        if (item.name == u'Songs' or item.name == u'Custom') and item.fromPlugin:
+            self.Toolbar.makeWidgetsVisible(self.song_edit_list)
+        else:
+            self.Toolbar.makeWidgetsInvisible(self.song_edit_list)
 
     def addServiceItem(self, item):
         """
@@ -240,20 +380,30 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'addServiceItem')
         #If old item was a command tell it to stop
-        if self.commandItem is not None and \
-            self.commandItem.service_item_type == ServiceType.Command:
+        if self.commandItem and \
+            self.commandItem.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_stop'% self.commandItem.name.lower())
         self.commandItem = item
         before = time.time()
         item.render()
         log.info(u'Rendering took %4s' % (time.time() - before))
         self.enableToolBar(item)
-        if item.service_item_type == ServiceType.Command:
+        if item.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_start' % item.name.lower(), \
                 [item.shortname, item.service_item_path,
-                item.service_frames[0][u'title']])
-        else:
-            self.displayServiceManagerItems(item, 0)
+                item.service_frames[0][u'title'], self.isLive])
+        slideno = 0
+        if self.songEdit:
+            slideno = self.row
+        self.songEdit = False
+        self.displayServiceManagerItems(item, slideno)
+
+    def replaceServiceManagerItem(self, item):
+        """
+        Replacement item following a remote edit
+        """
+        if item.__eq__(self.commandItem):
+            self.addServiceManagerItem(item, self.PreviewListWidget.currentRow())
 
     def addServiceManagerItem(self, item, slideno):
         """
@@ -261,19 +411,18 @@ class SlideController(QtGui.QWidget):
         request the correct the toolbar of the plugin
         Called by ServiceManager
         """
-        log.debug(u'addServiceItem')
+        log.debug(u'addServiceManagerItem')
         #If old item was a command tell it to stop
-        if self.commandItem is not None and \
-            self.commandItem.service_item_type == ServiceType.Command:
+        if self.commandItem and \
+            self.commandItem.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_stop'% self.commandItem.name.lower())
         self.commandItem = item
         self.enableToolBar(item)
-        if item.service_item_type == ServiceType.Command:
+        if item.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_start' % item.name.lower(), \
                 [item.shortname, item.service_item_path,
-                item.service_frames[0][u'title']])
-        else:
-            self.displayServiceManagerItems(item, slideno)
+                item.service_frames[0][u'title'], slideno, self.isLive])
+        self.displayServiceManagerItems(item, slideno)
 
     def displayServiceManagerItems(self, serviceitem, slideno):
         """
@@ -281,30 +430,35 @@ class SlideController(QtGui.QWidget):
         Display the slide number passed
         """
         log.debug(u'displayServiceManagerItems Start')
+        width = self.parent.ControlSplitter.sizes()[self.split]
+        #Set pointing cursor when we have somthing to point at
+        self.PreviewListWidget.setCursor(QtCore.Qt.PointingHandCursor)
         before = time.time()
         self.serviceitem = serviceitem
         self.PreviewListWidget.clear()
         self.PreviewListWidget.setRowCount(0)
-        self.PreviewListWidget.setColumnWidth(
-            0, self.settingsmanager.slidecontroller_image)
+        self.PreviewListWidget.setColumnWidth(0, width)
         for framenumber, frame in enumerate(self.serviceitem.frames):
             self.PreviewListWidget.setRowCount(
                 self.PreviewListWidget.rowCount() + 1)
             item = QtGui.QTableWidgetItem()
-            label = QtGui.QLabel()
-            label.setMargin(8)
+            slide_height = 0
             #It is a Image
-            if frame[u'text'] == None:
+            if frame[u'text'] is None:
+                label = QtGui.QLabel()
+                label.setMargin(4)
                 pixmap = self.parent.RenderManager.resize_image(frame[u'image'])
                 label.setScaledContents(True)
                 label.setPixmap(QtGui.QPixmap.fromImage(pixmap))
+                self.PreviewListWidget.setCellWidget(framenumber, 0, label)
+                slide_height = width * self.parent.RenderManager.screen_ratio
             else:
-                label.setText(frame[u'text'])
-            self.PreviewListWidget.setCellWidget(framenumber, 0, label)
+                item.setText(frame[u'text'])
             self.PreviewListWidget.setItem(framenumber, 0, item)
-            slide_height = self.settingsmanager.slidecontroller_image * \
-                self.parent.RenderManager.screen_ratio
-            self.PreviewListWidget.setRowHeight(framenumber, slide_height)
+            if slide_height != 0:
+                self.PreviewListWidget.setRowHeight(framenumber, slide_height)
+        if self.serviceitem.frames[0][u'text']:
+            self.PreviewListWidget.resizeRowsToContents()
         self.PreviewListWidget.setColumnWidth(
             0, self.PreviewListWidget.viewport().size().width())
         if slideno > self.PreviewListWidget.rowCount():
@@ -314,8 +468,8 @@ class SlideController(QtGui.QWidget):
         self.onSlideSelected()
         self.PreviewListWidget.setFocus()
         log.info(u'Display Rendering took %4s' % (time.time() - before))
-        if self.serviceitem.audit != u'':
-            Receiver().send_message(u'audit_live', self.serviceitem.audit)
+        if self.serviceitem.audit and self.isLive:
+            Receiver().send_message(u'songusage_live', self.serviceitem.audit)
         log.debug(u'displayServiceManagerItems End')
 
     #Screen event methods
@@ -323,14 +477,26 @@ class SlideController(QtGui.QWidget):
         """
         Go to the first slide.
         """
-        self.PreviewListWidget.selectRow(0)
-        self.onSlideSelected()
+        if self.commandItem and \
+            self.commandItem.service_item_type == ServiceItemType.Command:
+            Receiver().send_message(u'%s_first'% self.commandItem.name.lower())
+            self.updatePreview()
+        else:
+            self.PreviewListWidget.selectRow(0)
+            self.onSlideSelected()
 
-    def onBlankScreen(self):
+    def onBlankScreen(self, blanked):
         """
         Blank the screen.
         """
-        self.parent.mainDisplay.blankDisplay()
+        if self.commandItem and \
+            self.commandItem.service_item_type == ServiceItemType.Command:
+            if blanked:
+                Receiver().send_message(u'%s_blank'% self.commandItem.name.lower())
+            else:
+                Receiver().send_message(u'%s_unblank'% self.commandItem.name.lower())
+        else:
+            self.parent.mainDisplay.blankDisplay()
 
     def onSlideSelected(self):
         """
@@ -338,23 +504,55 @@ class SlideController(QtGui.QWidget):
         if this is the Live Controller also display on the screen
         """
         row = self.PreviewListWidget.currentRow()
+        self.row = 0
         if row > -1 and row < self.PreviewListWidget.rowCount():
-            label = self.PreviewListWidget.cellWidget(row, 0)
-            frame = self.serviceitem.frames[row][u'image']
-            before = time.time()
-            if frame == None:
-                frame = self.serviceitem.render_individual(row)
-            self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
-            log.info(u'Slide Rendering took %4s' % (time.time() - before))
-            if self.isLive:
-                self.parent.mainDisplay.frameView(frame)
+            if self.commandItem.service_item_type == ServiceItemType.Command:
+                Receiver().send_message(u'%s_slide'% self.commandItem.name.lower(), [row])
+                if self.isLive:
+                    self.updatePreview()
+            else:
+                frame = self.serviceitem.frames[row][u'image']
+                before = time.time()
+                if frame is None:
+                    frame = self.serviceitem.render_individual(row)
+                self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
+                log.info(u'Slide Rendering took %4s' % (time.time() - before))
+                if self.isLive:
+                    self.parent.mainDisplay.frameView(frame)
+            self.row = row
+
+    def onSlideChange(self, row):
+        """
+        The slide has been changed. Update the slidecontroller accordingly
+        """
+        self.PreviewListWidget.selectRow(row)
+        self.updatePreview()
+
+    def updatePreview(self):
+        rm = self.parent.RenderManager
+        if not rm.screen_list[rm.current_display][u'primary']:
+            # Grab now, but try again in a couple of seconds if slide change is slow
+            QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
+            QtCore.QTimer.singleShot(2.5, self.grabMainDisplay)
+        else:
+            label = self.PreviewListWidget.cellWidget(self.PreviewListWidget.currentRow(), 0)
+            self.SlidePreview.setPixmap(label.pixmap())
+
+    def grabMainDisplay(self):
+        rm = self.parent.RenderManager
+        winid = QtGui.QApplication.desktop().winId()
+        rect = rm.screen_list[rm.current_display][u'size']
+        winimg = QtGui.QPixmap.grabWindow(winid, rect.x(), rect.y(), rect.width(), rect.height())
+        self.SlidePreview.setPixmap(winimg)
 
     def onSlideSelectedNext(self):
         """
         Go to the next slide.
         """
-        if self.commandItem.service_item_type == ServiceType.Command:
+        if self.commandItem and \
+            self.commandItem.service_item_type == ServiceItemType.Command:
             Receiver().send_message(u'%s_next'% self.commandItem.name.lower())
+            self.updatePreview()
         else:
             row = self.PreviewListWidget.currentRow() + 1
             if row == self.PreviewListWidget.rowCount():
@@ -366,9 +564,11 @@ class SlideController(QtGui.QWidget):
         """
         Go to the previous slide.
         """
-        if self.commandItem.service_item_type == ServiceType.Command:
+        if self.commandItem and \
+            self.commandItem.service_item_type == ServiceItemType.Command:
             Receiver().send_message(
                 u'%s_previous'% self.commandItem.name.lower())
+            self.updatePreview()
         else:
             row = self.PreviewListWidget.currentRow() - 1
             if row == -1:
@@ -380,8 +580,13 @@ class SlideController(QtGui.QWidget):
         """
         Go to the last slide.
         """
-        self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount() - 1)
-        self.onSlideSelected()
+        if self.commandItem and \
+            self.commandItem.service_item_type == ServiceItemType.Command:
+            Receiver().send_message(u'%s_last'% self.commandItem.name.lower())
+            self.updatePreview()
+        else:
+            self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount() - 1)
+            self.onSlideSelected()
 
     def onStartLoop(self):
         """
@@ -404,6 +609,11 @@ class SlideController(QtGui.QWidget):
         if event.timerId() == self.timer_id:
             self.onSlideSelectedNext()
 
+    def onEditSong(self):
+        self.songEdit = True
+        Receiver().send_message(u'%s_edit' % self.commandItem.name, u'P:%s' %
+            self.commandItem.editId )
+
     def onGoLive(self):
         """
         If preview copy slide item to live
@@ -412,3 +622,12 @@ class SlideController(QtGui.QWidget):
         if row > -1 and row < self.PreviewListWidget.rowCount():
             self.parent.LiveController.addServiceManagerItem(
                 self.commandItem, row)
+
+    def onMediaPause(self):
+        Receiver().send_message(u'%s_pause'% self.commandItem.name.lower())
+
+    def onMediaPlay(self):
+        Receiver().send_message(u'%s_play'% self.commandItem.name.lower())
+
+    def onMediaStop(self):
+        Receiver().send_message(u'%s_stop'% self.commandItem.name.lower())

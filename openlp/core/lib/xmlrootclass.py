@@ -22,14 +22,13 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import platform
-import sys
 import os
+import sys
 from types import StringType, NoneType, UnicodeType
 
 from xml.etree.ElementTree import ElementTree, XML
 
-sys.path.append(os.path.abspath(os.path.join('.', '..', '..')))
+sys.path.append(os.path.abspath(os.path.join(u'.', u'..', u'..')))
 
 class XmlRootClass(object):
     """
@@ -62,7 +61,7 @@ class XmlRootClass(object):
                     val = text
                 elif type(text) is StringType:
                     # Strings need special handling to sort the colours out
-                    if text[0] == '$':
+                    if text[0] == u'$':
                         # This might be a hex number, let's try to convert it.
                         try:
                             val = int(text[1:], 16)

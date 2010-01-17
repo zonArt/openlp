@@ -1,24 +1,26 @@
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
-"""
-OpenLP - Open Source Lyrics Projection
 
-Copyright (c) 2008 Raoul Snyman
-
-Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley
-
-This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation; version 2 of the License.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-Place, Suite 330, Boston, MA 02111-1307 USA
-"""
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2009 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
+# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 
 from openlp.core.lib import str_to_bool
 from openlp.core.utils import ConfigHelper
@@ -43,12 +45,6 @@ class SettingsManager(object):
         else:
             self.mainwindow_left = mainwindow_docbars
             self.mainwindow_right = mainwindow_docbars
-
-        #self.mainwindow_left = int( ConfigHelper.get_config(
-        #    u'user interface', u'mediamanager left', self.mainwindow_left))
-        #self.mainwindow_right = int( ConfigHelper.get_config(
-        #    u'user interface', u'mediamanager right', self.mainwindow_right))
-
         self.slidecontroller = (self.width - (
             self.mainwindow_left + self.mainwindow_right) - 100 ) / 2
         self.slidecontroller_image = self.slidecontroller - 50
@@ -63,22 +59,17 @@ class SettingsManager(object):
             u'user interface', u'display previewpanel', True))
 
     def setUIItemVisibility(self, item=u'', isVisible=True):
-        if item != u'':
+        if item:
             if item == u'ThemeManagerDock':
-                ConfigHelper.set_config('user interface',
+                ConfigHelper.set_config(u'user interface',
                     u'display thememanager', isVisible)
             elif item == u'ServiceManagerDock':
-                ConfigHelper.set_config('user interface',
+                ConfigHelper.set_config(u'user interface',
                     u'display servicemanager', isVisible)
             elif item == u'MediaManagerDock':
-                ConfigHelper.set_config('user interface',
+                ConfigHelper.set_config(u'user interface',
                     u'display mediamanager', isVisible)
 
     def togglePreviewPanel(self, isVisible):
         ConfigHelper.set_config(u'user interface', u'display previewpanel',
             isVisible)
-
-    def setDockbarLeft(self, value):
-        #ConfigHelper.set_config(u'user interface', u'mediamanager left', value)
-        pass
-

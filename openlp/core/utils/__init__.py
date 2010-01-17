@@ -21,8 +21,33 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+import logging
+import urllib2
+from datetime import datetime
 
 from registry import Registry
 from confighelper import ConfigHelper
 
+log = logging.getLogger(__name__)
+
 __all__ = ['Registry', 'ConfigHelper']
+
+log = logging.getLogger(__name__)
+
+def check_latest_version(config, current_version):
+    version_string = current_version
+    lastTest = config.get_config(u'Application version Test', datetime.now().date())
+    thisTest = unicode(datetime.now().date())
+    config.set_config(u'Application version Test', thisTest)
+    if lastTest != thisTest:
+        version_string = u''
+        req = urllib2.Request(u'http://www.openlp.org/files/version.txt')
+        req.add_header(u'User-Agent', u'OpenLP%s' % current_version)
+        try:
+            handle = urllib2.urlopen(req, None)
+            html = handle.read()
+            version_string = unicode(html).rstrip()
+        except IOError, e:
+            if hasattr(e, u'reason'):
+                log.exception(u'Reason for failure: %s', e.reason)
+    return version_string

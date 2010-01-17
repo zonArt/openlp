@@ -24,9 +24,7 @@
 
 import logging
 
-from PyQt4 import QtCore, QtGui
-
-from openlp.core.lib import Plugin
+from openlp.core.lib import Plugin, buildIcon
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
 class ImagePlugin(Plugin):
@@ -35,19 +33,32 @@ class ImagePlugin(Plugin):
     log.info(u'Image Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        # Call the parent constructor
         Plugin.__init__(self, u'Images', u'1.9.0', plugin_helpers)
         self.weight = -7
-        # Create the plugin icon
-        self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_image.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon = buildIcon(u':/media/media_image.png')
+
+    def initialise(self):
+        log.info(u'Plugin Initialising')
+        Plugin.initialise(self)
+        self.insert_toolbox_item()
+
+    def finalise(self):
+        log.info(u'Plugin Finalise')
+        self.remove_toolbox_item()
 
     def get_settings_tab(self):
-        self.ImageTab = ImageTab()
-        return self.ImageTab
+        return ImageTab(self.name)
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
-        self.media_item = ImageMediaItem(self, self.icon, u'Images')
-        return self.media_item
+        return ImageMediaItem(self, self.icon, self.name)
+
+    def about(self):
+        about_text = self.trUtf8(u'<b>Image Plugin</b><br>Allows images of '
+            u'all types to be displayed.  If a number of images are selected '
+            u'together and presented on the live controller it is possible '
+            u'to turn them into a timed loop.<br<br>From the plugin if the '
+            u'<i>Override background</i> is chosen and an image is selected '
+            u'any somgs which are rendered will use the selected image from '
+            u'the background instead of the one provied by the theme.<br>')
+        return about_text

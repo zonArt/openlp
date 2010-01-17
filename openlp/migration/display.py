@@ -26,7 +26,7 @@ import logging
 
 class Display():
     global log
-    log=logging.getLogger(u'Display Logger')
+    log = logging.getLogger(u'Display Logger')
     log.info(u'Display Class loaded')
 
     @staticmethod
@@ -36,6 +36,6 @@ class Display():
 
     @staticmethod
     def sub_output(string):
-        if not string == None:
+        if not string is None:
             log.debug(u'   '+string);
             print (u'   '+string)

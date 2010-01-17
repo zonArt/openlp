@@ -22,9 +22,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import os
-import os.path
-import sys
 import urllib2
 import chardet
 import logging
@@ -100,22 +97,24 @@ class BibleCommon(object):
             The URL of a proxy server used to access the Internet.
         """
         log.debug(u'get_web_text %s %s', proxyurl, urlstring)
-        if proxyurl is not None:
+        if proxyurl:
             proxy_support = urllib2.ProxyHandler({'http': self.proxyurl})
             http_support = urllib2.HTTPHandler()
             opener = urllib2.build_opener(proxy_support, http_support)
             urllib2.install_opener(opener)
         xml_string = u''
         req = urllib2.Request(urlstring)
-        req.add_header('User-Agent', 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)')
+        #Make us look like an IE Browser on XP to stop blocking by web site
+        req.add_header(u'User-Agent',
+            u'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)')
         try:
             handle = urllib2.urlopen(req)
             html = handle.read()
             details = chardet.detect(html)
-            xml_string = unicode(html, details['encoding'])
+            xml_string = unicode(html, details[u'encoding'])
         except IOError, e:
             if hasattr(e, u'reason'):
-                log.error(u'Reason : %s', e.reason)
+                log.exception(u'Reason for failure: %s', e.reason)
         return xml_string
 
     def _clean_text(self, text):
@@ -156,7 +155,6 @@ class BibleCommon(object):
         text = text.replace(u'</P>', u'')
         text = text.replace(u'<BR>', u'')
         text = text.replace(u'<BR />', u'')
-        #text = text.replace(chr(189), u'1/2');print "l"
         text = text.replace(u'&quot;', u'\"')
         text = text.replace(u'&apos;', u'\'')
         # Remove some other tags
@@ -166,5 +164,4 @@ class BibleCommon(object):
             text = text[:start_tag] + text[end_tag + 1:]
             start_tag = text.find(u'<')
         text = text.replace(u'>', u'')
-        return text.rstrip()
-
+        return text.rstrip().lstrip()

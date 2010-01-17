@@ -22,30 +22,40 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import os
-from PyQt4 import QtCore, QtGui
+import logging
 
-from openlp.core.lib import Plugin, MediaManagerItem, SettingsTab
-from openlp.plugins.media.lib import MediaTab,MediaMediaItem
+from openlp.core.lib import Plugin, buildIcon
+from openlp.plugins.media.lib import MediaTab, MediaMediaItem
 
 class MediaPlugin(Plugin):
+    global log
+    log = logging.getLogger(u'MediaPlugin')
+    log.info(u'Media Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        # Call the parent constructor
         Plugin.__init__(self, u'Media', u'1.9.0', plugin_helpers)
         self.weight = -6
-        # Create the plugin icon
-        self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_video.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon = buildIcon(u':/media/media_video.png')
         # passed with drag and drop messages
-        self.dnd_id=u'Media'
+        self.dnd_id = u'Media'
 
     def get_settings_tab(self):
-        self.MediaTab = MediaTab()
-        return self.MediaTab
+        return MediaTab(self.name)
+
+    def initialise(self):
+        log.info(u'Plugin Initialising')
+        Plugin.initialise(self)
+        self.insert_toolbox_item()
+
+    def finalise(self):
+        log.info(u'Plugin Finalise')
+        self.remove_toolbox_item()
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
-        self.media_item = MediaMediaItem(self, self.icon, u'Media')
-        return self.media_item
+        return MediaMediaItem(self, self.icon, self.name)
+
+    def about(self):
+        about_text = self.trUtf8(u'<b>Media Plugin</b><br>This plugin '
+            u'allows the playing of audio and video media')
+        return about_text

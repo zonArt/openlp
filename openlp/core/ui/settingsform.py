@@ -24,10 +24,10 @@
 
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
-from openlp.core.lib import SettingsTab
 from openlp.core.ui import GeneralTab, ThemesTab, AlertsTab
+from openlp.core.lib import Receiver
 from settingsdialog import Ui_SettingsDialog
 
 log = logging.getLogger(u'SettingsForm')
@@ -35,25 +35,39 @@ log = logging.getLogger(u'SettingsForm')
 class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
 
     def __init__(self, screen_list, mainWindow, parent=None):
-        QtGui.QDialog.__init__(self, None)
+        QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # General tab
         self.GeneralTab = GeneralTab(screen_list)
-        self.addTab(self.GeneralTab)
+        self.addTab(u'General', self.GeneralTab)
         # Themes tab
         self.ThemesTab = ThemesTab(mainWindow)
-        self.addTab(self.ThemesTab)
+        self.addTab(u'Themes', self.ThemesTab)
         # Alert tab
         self.AlertsTab = AlertsTab()
-        self.addTab(self.AlertsTab)
+        self.addTab(u'Alerts', self.AlertsTab)
 
-    def addTab(self, tab):
-        log.info(u'Inserting %s' % tab.title())
-        self.SettingsTabWidget.addTab(tab, tab.title())
+    def addTab(self, name,  tab):
+        log.info(u'Adding %s tab' % tab.tabTitle)
+        self.SettingsTabWidget.addTab(tab, tab.tabTitleVisible)
+
+    def insertTab(self, tab, location):
+        log.debug(u'Inserting %s tab' % tab.tabTitle)
+        #13 : There are 3 tables currently and locations starts at -10
+        self.SettingsTabWidget.insertTab(
+            location + 13, tab, tab.tabTitleVisible)
+
+    def removeTab(self, name):
+        log.debug(u'remove %s tab' % name)
+        for tab_index in range(0, self.SettingsTabWidget.count()):
+            if self.SettingsTabWidget.widget(tab_index):
+                if self.SettingsTabWidget.widget(tab_index).tabTitle == name:
+                    self.SettingsTabWidget.removeTab(tab_index)
 
     def accept(self):
         for tab_index in range(0, self.SettingsTabWidget.count()):
             self.SettingsTabWidget.widget(tab_index).save()
+        Receiver().send_message(u'config_updated')
         return QtGui.QDialog.accept(self)
 
     def postSetUp(self):

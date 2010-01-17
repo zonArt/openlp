@@ -26,9 +26,12 @@
 The :mod:`lib` module contains most of the components and libraries that make
 OpenLP work.
 """
-
+import logging
 import types
+
 from PyQt4 import QtCore, QtGui
+
+log = logging.getLogger(__name__)
 
 def translate(context, text):
     """
@@ -43,8 +46,8 @@ def translate(context, text):
     ``text``
         The text to put into the translation tables for translation.
     """
-    return QtGui.QApplication.translate(context, text, None,
-        QtGui.QApplication.UnicodeUTF8)
+    return QtGui.QApplication.translate(
+        context, text, None, QtGui.QApplication.UnicodeUTF8)
 
 def file_to_xml(xmlfile):
     """
@@ -53,7 +56,19 @@ def file_to_xml(xmlfile):
     ``xmlfile``
         The name of the file.
     """
-    return open(xmlfile).read()
+    file = None
+    xml = None
+    try:
+        file = open(xmlfile, u'r')
+        xml = file.read()
+    except IOError:
+        #This may not be an error as this is also used to check
+        #that a file exist
+        log.error(u'Failed to open XML file %s' % xmlfile)
+    finally:
+        if file:
+            file.close()
+    return xml
 
 def str_to_bool(stringvalue):
     """
@@ -83,15 +98,15 @@ def buildIcon(icon):
     elif type(icon) is types.StringType or type(icon) is types.UnicodeType:
         ButtonIcon = QtGui.QIcon()
         if icon.startswith(u':/'):
-            ButtonIcon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
-                QtGui.QIcon.Off)
+            ButtonIcon.addPixmap(
+                QtGui.QPixmap(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         else:
             ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
                 QtGui.QIcon.Normal, QtGui.QIcon.Off)
     elif type(icon) is QtGui.QImage:
         ButtonIcon = QtGui.QIcon()
-        ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(icon),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        ButtonIcon.addPixmap(
+            QtGui.QPixmap.fromImage(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
     return ButtonIcon
 
 def contextMenuAction(base, icon, text, slot):
@@ -99,12 +114,21 @@ def contextMenuAction(base, icon, text, slot):
     Utility method to help build context menus for plugins
     """
     action = QtGui.QAction(text, base)
-    action .setIcon(buildIcon(icon))
+    if icon:
+        action.setIcon(buildIcon(icon))
     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
     return action
 
+def contextMenu(base, icon, text):
+    """
+    Utility method to help build context menus for plugins
+    """
+    action = QtGui.QMenu(text, base)
+    action.setIcon(buildIcon(icon))
+    return action
+
 def contextMenuSeparator(base):
-    action = QtGui.QAction("", base)
+    action = QtGui.QAction(u'', base)
     action.setSeparator(True)
     return action
 
@@ -117,7 +141,7 @@ from settingstab import SettingsTab
 from mediamanageritem import MediaManagerItem
 from xmlrootclass import XmlRootClass
 from serviceitem import ServiceItem
-from serviceitem import ServiceType
+from serviceitem import ServiceItemType
 from serviceitem import ServiceItem
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget

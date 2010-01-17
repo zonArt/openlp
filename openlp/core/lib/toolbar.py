@@ -22,10 +22,11 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import types
 import logging
 
 from PyQt4 import QtCore, QtGui
+
+from openlp.core.lib import buildIcon
 
 class OpenLPToolbar(QtGui.QToolBar):
     """
@@ -66,23 +67,13 @@ class OpenLPToolbar(QtGui.QToolBar):
         ``objectname``
             The name of the object, as used in `<button>.setObjectName()`.
         """
-        ButtonIcon = None
-        if type(icon) is QtGui.QIcon:
-            ButtonIcon = icon
-        elif type(icon) is types.StringType or type(icon) is types.UnicodeType:
-            ButtonIcon = QtGui.QIcon()
-            if icon.startswith(u':/'):
-                ButtonIcon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
-                    QtGui.QIcon.Off)
-            else:
-                ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(
-                    QtGui.QImage(icon)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        if ButtonIcon is not None:
-            if slot is not None:
+        ButtonIcon = buildIcon(icon)
+        if ButtonIcon:
+            if slot:
                 ToolbarButton = self.addAction(ButtonIcon, title, slot)
             else:
                 ToolbarButton = self.addAction(ButtonIcon, title)
-            if tooltip is not None:
+            if tooltip:
                 ToolbarButton.setToolTip(tooltip)
             self.icons[title] = ButtonIcon
             self.actions[title] = ToolbarButton
@@ -134,3 +125,15 @@ class OpenLPToolbar(QtGui.QToolBar):
         """
         for widget in widgets:
             self.actions[widget].setVisible(True)
+
+    def addPushButton(self, imageFile=None, text=u''):
+        """
+        Adds a push button to the toolbar.
+
+        Returns the push button
+        """
+        pushButton = QtGui.QPushButton(buildIcon(imageFile), text)
+        pushButton.setCheckable(True)
+        pushButton.setFlat(True)
+        self.addWidget(pushButton)
+        return pushButton

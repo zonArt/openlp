@@ -16,36 +16,34 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
-import random
-import unittest
-
-import os, os.path
+import logging
+import os
+import os.path
 import sys
-mypath=os.path.split(os.path.abspath(__file__))[0]
-sys.path.insert(0,(os.path.join(mypath, '..', '..','..','..')))
 
 from openlp.plugins.bibles.lib.biblemanager import BibleManager
-from openlp.utils import ConfigHelper
 
-import logging
+mypath = os.path.split(os.path.abspath(__file__))[0]
+sys.path.insert(0,(os.path.join(mypath, '..', '..','..','..')))
+
 logging.basicConfig(level=logging.DEBUG,
                 format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
                 datefmt='%m-%d %H:%M',
                 filename='plugins.log',
                 filemode='w')
 
-console=logging.StreamHandler()
+console = logging.StreamHandler()
 # set a format which is simpler for console use
 formatter = logging.Formatter(u'%(name)-12s: %(levelname)-8s %(message)s')
 # tell the handler to use this format
 console.setFormatter(formatter)
 logging.getLogger(u'').addHandler(console)
-log=logging.getLogger(u'')
+log = logging.getLogger(u'')
 
 logging.info(u'\nLogging started')
 
 class TestBibleManager:
-    log=logging.getLogger(u'testBibleMgr')
+    log = logging.getLogger(u'testBibleMgr')
     def setup_class(self):
         log.debug(u'\n.......Register BM')
         self.bm = BibleManager()

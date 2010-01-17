@@ -24,20 +24,20 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate
+from openlp.core.lib import SettingsTab
 
 class AlertsTab(SettingsTab):
     """
     AlertsTab is the alerts settings tab in the settings dialog.
     """
     def __init__(self):
+        SettingsTab.__init__(self, u'Alerts')
         self.font_color = '#ffffff'
         self.bg_color = '#660000'
-        SettingsTab.__init__(
-            self, translate(u'AlertsTab', u'Alerts'), u'Alerts')
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
+        self.tabTitleVisible = self.trUtf8(u'Alerts')
         self.AlertsLayout = QtGui.QHBoxLayout(self)
         self.AlertsLayout.setSpacing(8)
         self.AlertsLayout.setMargin(8)
@@ -147,16 +147,14 @@ class AlertsTab(SettingsTab):
             QtCore.SIGNAL(u'valueChanged(int)'), self.onTimeoutSpinBoxChanged)
 
     def retranslateUi(self):
-        self.FontGroupBox.setTitle(translate(u'AlertsTab', u'Font'))
-        self.FontLabel.setText(translate(u'AlertsTab', u'Font Name:'))
-        self.FontColorLabel.setText(translate(u'AlertsTab', u'Font Color:'))
-        self.BackgroundColorLabel.setText(
-            translate(u'AlertsTab', u'Background Color:'))
-        self.TimeoutLabel.setText(translate(u'AlertsTab', u'Alert timeout:'))
-        self.TimeoutSpinBox.setSuffix(translate(u'AlertsTab', u's'))
-        self.PreviewGroupBox.setTitle(translate(u'AlertsTab', u'Preview'))
-        self.FontPreview.setText(
-            translate(u'AlertsTab', u'openlp.org 2.0 rocks!'))
+        self.FontGroupBox.setTitle(self.trUtf8(u'Font'))
+        self.FontLabel.setText(self.trUtf8(u'Font Name:'))
+        self.FontColorLabel.setText(self.trUtf8(u'Font Color:'))
+        self.BackgroundColorLabel.setText(self.trUtf8(u'Background Color:'))
+        self.TimeoutLabel.setText(self.trUtf8(u'Alert timeout:'))
+        self.TimeoutSpinBox.setSuffix(self.trUtf8(u's'))
+        self.PreviewGroupBox.setTitle(self.trUtf8(u'Preview'))
+        self.FontPreview.setText(self.trUtf8(u'openlp.org 2.0 rocks!'))
 
     def onBackgroundColorButtonClicked(self):
         self.bg_color = QtGui.QColorDialog.getColor(

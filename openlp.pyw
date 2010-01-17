@@ -23,10 +23,12 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import os
 import sys
-import logging, logging.handlers
-from optparse import OptionParser
+import logging
 
+from logging.handlers import RotatingFileHandler
+from optparse import OptionParser
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, str_to_bool
@@ -35,6 +37,27 @@ from openlp.core.ui import MainWindow, SplashScreen
 from openlp.core.utils import ConfigHelper
 
 log = logging.getLogger()
+
+application_stylesheet = u"""
+QMainWindow::separator
+{
+  border: none;
+}
+
+QDockWidget::title
+{
+  border: none;
+  padding-left: 5px;
+  padding-top: 3px;
+}
+
+QToolBar
+{
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+"""
 
 class OpenLP(QtGui.QApplication):
     """
@@ -48,6 +71,22 @@ class OpenLP(QtGui.QApplication):
         """
         Run the OpenLP application.
         """
+        #Load and store current Application Version
+        filepath = os.path.split(os.path.abspath(__file__))[0]
+        filepath = os.path.abspath(os.path.join(filepath, u'version.txt'))
+        fversion = None
+        try:
+            fversion = open(filepath, 'r')
+            for line in fversion:
+                bits = unicode(line).split(u'-')
+                applicationVersion = {u'Full':unicode(line).rstrip(),
+                    u'version':bits[0], u'build':bits[1]}
+        except:
+                applicationVersion = {u'Full':u'1.9.0-000',
+                    u'version':u'1.9.0', u'build':u'000'}
+        finally:
+            if fversion:
+                fversion.close()
         #set the default string encoding
         try:
             sys.setappdefaultencoding(u'utf-8')
@@ -57,7 +96,9 @@ class OpenLP(QtGui.QApplication):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'process_events'), self.processEvents)
         self.setApplicationName(u'OpenLP')
-        self.setApplicationVersion(u'1.9.0')
+        self.setApplicationVersion(applicationVersion[u'version'])
+        if os.name == u'nt':
+            self.setStyleSheet(application_stylesheet)
         show_splash = str_to_bool(ConfigHelper.get_registry().get_value(
             u'general', u'show splash', True))
         if show_splash:
@@ -74,13 +115,13 @@ class OpenLP(QtGui.QApplication):
             log.info(u'Screen %d found with resolution %s',
                 screen, self.desktop().availableGeometry(screen))
         # start the main app window
-        self.mainWindow = MainWindow(screens)
+        self.mainWindow = MainWindow(screens, applicationVersion)
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
             self.splash.finish(self.mainWindow)
+        self.mainWindow.versionCheck()
         return self.exec_()
-
 
 def main():
     """
@@ -94,14 +135,13 @@ def main():
                       action="store_true", help="set logging to DEBUG level")
     # Set up logging
     filename = u'openlp.log'
-    logfile = logging.handlers.RotatingFileHandler(
-        filename, maxBytes=200000, backupCount=5)
-    logfile.setFormatter(
-        logging.Formatter(u'%(asctime)s %(name)-15s %(levelname)-8s %(message)s'))
+    logfile = RotatingFileHandler(filename, maxBytes=200000, backupCount=5)
+    logfile.setFormatter(logging.Formatter(
+        u'%(asctime)s %(name)-15s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
     # Parse command line options and deal with them.
     (options, args) = parser.parse_args()
-    if options.debug is not None:
+    if options.debug:
         log.setLevel(logging.DEBUG)
     else:
         log.setLevel(logging.INFO)

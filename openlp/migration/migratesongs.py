@@ -24,17 +24,15 @@
 
 import os
 import sys
-import logging
 import sqlite3
-from openlp.core.lib import PluginConfig
 
 from sqlalchemy import  *
-from sqlalchemy.sql import select
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation, \
-    clear_mappers
-from openlp.plugins.songs.lib.models import metadata, session, \
-    engine, songs_table, Song, Author, Topic, Book
+from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation
+    
+from openlp.core.lib import PluginConfig
+from openlp.plugins.songs.lib.models import metadata, songs_table, Song, \
+    Author, Topic, Book
 from openlp.plugins.songs.lib.tables import *
 from openlp.plugins.songs.lib.classes import *
 
@@ -155,13 +153,13 @@ class MigrateSongs():
             song.search_title = u''
             song.search_lyrics = u''
             print songs_temp.songtitle
-            aa  = self.session.execute(
+            aa = self.session.execute(
                 u'select * from songauthors_temp where songid =' + \
                 unicode(songs_temp.songid) )
             for row in aa:
                 a = row['authorid']
                 authors_temp = self.session.query(TAuthor).get(a)
-                bb  = self.session.execute(
+                bb = self.session.execute(
                     u'select * from authors where display_name = \"%s\"' % \
                     unicode(authors_temp.authorname) ).fetchone()
                 if bb is None:
@@ -170,15 +168,14 @@ class MigrateSongs():
                     author.first_name = u''
                     author.last_name = u''
                 else:
-                    id = int(bb[0])
                     author = self.session.query(Author).get(bb[0])
                 song.authors.append(author)
-                try:
-                    self.session.add(song)
-                    self.session.commit()
-                except:
-                    self.session.rollback()
-                    print u'Errow thrown = ', sys.exc_info()[1]
+            try:
+                self.session.add(song)
+                self.session.commit()
+            except:
+                self.session.rollback()
+                print u'Error thrown = ', sys.exc_info()[1]
 
     def _v1_9_0_cleanup(self, database):
         self.display.sub_output(u'Update Internal Data ' + database)

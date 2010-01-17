@@ -24,10 +24,8 @@
 
 import logging
 
-from PyQt4 import QtCore, QtGui
-
 from forms import EditCustomForm
-from openlp.core.lib import Plugin
+from openlp.core.lib import Plugin, buildIcon
 from openlp.plugins.custom.lib import CustomManager, CustomMediaItem
 
 
@@ -42,21 +40,32 @@ class CustomPlugin(Plugin):
     """
 
     global log
-    log=logging.getLogger(u'CustomPlugin')
+    log = logging.getLogger(u'CustomPlugin')
     log.info(u'Custom Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        # Call the parent constructor
         Plugin.__init__(self, u'Custom', u'1.9.0', plugin_helpers)
         self.weight = -5
         self.custommanager = CustomManager(self.config)
         self.edit_custom_form = EditCustomForm(self.custommanager)
-        # Create the plugin icon
-        self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_custom.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon = buildIcon(u':/media/media_custom.png')
 
     def get_media_manager_item(self):
         # Create the CustomManagerItem object
-        self.media_item = CustomMediaItem(self, self.icon, u'Custom Slides')
-        return self.media_item
+        return CustomMediaItem(self, self.icon, self.name)
+
+    def initialise(self):
+        log.info(u'Plugin Initialising')
+        Plugin.initialise(self)
+        self.insert_toolbox_item()
+
+    def finalise(self):
+        log.info(u'Plugin Finalise')
+        self.remove_toolbox_item()
+
+    def about(self):
+        about_text = self.trUtf8(u'<b>Custom Plugin</b><br>This plugin '
+            u'allows slides to be displayed on the screen in the same way '
+            u'songs are.  This plugin provides greater freedom over the '
+            u'songs plugin.<br>')
+        return about_text

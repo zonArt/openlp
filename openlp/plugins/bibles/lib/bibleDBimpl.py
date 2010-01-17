@@ -26,7 +26,6 @@ import os
 import logging
 
 from common import BibleCommon
-from openlp.core.utils import ConfigHelper
 from openlp.plugins.bibles.lib.models import *
 
 class BibleDBImpl(BibleCommon):
@@ -41,7 +40,7 @@ class BibleDBImpl(BibleCommon):
         log.debug(u'Load bible %s on path %s', biblename, self.biblefile)
         db_type = self.config.get_config(u'db type', u'sqlite')
         db_url = u''
-        if db_type  == u'sqlite':
+        if db_type == u'sqlite':
             db_url = u'sqlite:///' + self.biblefile
         else:
             db_url = u'%s://%s:%s@%s/%s' % \
@@ -128,22 +127,28 @@ class BibleDBImpl(BibleCommon):
         verse = self.session.query(Verse).join(Book).filter(
             Book.name == bookname).filter(
             Verse.chapter == chapter).order_by(Verse.verse.desc()).first()
-        return verse.verse
+        if verse == None:
+            return 0
+        else:
+            return verse.verse
 
     def get_max_bible_book_chapter(self, bookname):
         log.debug(u'get_max_bible_book_chapter %s', bookname)
         verse = self.session.query(Verse).join(Book).filter(
             Book.name == bookname).order_by(Verse.chapter.desc()).first()
-        return verse.chapter
+        if verse == None:
+            return 0
+        else:
+            return verse.chapter
 
     def get_bible_book(self, bookname):
         log.debug(u'get_bible_book %s', bookname)
-        bk = self.session.query(Book).filter(
+        book = self.session.query(Book).filter(
             Book.name.like(bookname + u'%')).first()
-        if bk == None:
-            bk = self.session.query(Book).filter(
+        if book is None:
+            book = self.session.query(Book).filter(
                 Book.abbreviation.like(bookname + u'%')).first()
-        return bk
+        return book
 
     def get_bible_chapter(self, id, chapter):
         log.debug(u'get_bible_chapter %s, %s', id, chapter)
@@ -153,6 +158,11 @@ class BibleDBImpl(BibleCommon):
     def get_bible_text(self, bookname, chapter, sverse, everse):
         log.debug(u'get_bible_text %s, %s, %s, %s', bookname, chapter, sverse,
             everse)
+        #Look up book name or abbreviation
+        book = self.get_bible_book(bookname)
+        if book:
+            bookname = book.name
+            log.debug(u'bookname corrected to  %s' % bookname)
         verses = self.session.query(Verse).join(Book).filter(
             Book.name == bookname).filter(Verse.chapter == chapter).filter(
             Verse.verse>=sverse).filter(Verse.verse<=everse).order_by(

@@ -26,8 +26,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, translate
-from openlp.plugins.songs.lib import SongManager, SongsTab, SongMediaItem
+from openlp.core.lib import Plugin, buildIcon
+from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab
 from openlp.plugins.songs.forms import OpenLPImportForm, OpenSongExportForm, \
     OpenSongImportForm, OpenLPExportForm
 
@@ -48,7 +48,6 @@ class SongsPlugin(Plugin):
         """
         Create and set up the Songs plugin.
         """
-        # Call the parent constructor
         Plugin.__init__(self, u'Songs', u'1.9.0', plugin_helpers)
         self.weight = -10
         self.songmanager = SongManager(self.config)
@@ -56,18 +55,34 @@ class SongsPlugin(Plugin):
         self.opensong_import_form = OpenSongImportForm()
         self.openlp_export_form = OpenLPExportForm()
         self.opensong_export_form = OpenSongExportForm()
-        # Create the plugin icon
-        self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_song.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon = buildIcon(u':/media/media_song.png')
+
+    def get_settings_tab(self):
+        return SongsTab(self.name)
+
+    def initialise(self):
+        log.info(u'Songs Initialising')
+        #if self.songmanager is None:
+        #    self.songmanager = SongManager(self.config)
+        Plugin.initialise(self)
+        self.insert_toolbox_item()
+        self.ImportSongMenu.menuAction().setVisible(True)
+        self.ExportSongMenu.menuAction().setVisible(True)
+        self.media_item.displayResultsSong(self.songmanager.get_songs())
+
+    def finalise(self):
+        log.info(u'Plugin Finalise')
+        Plugin.finalise(self)
+        self.remove_toolbox_item()
+        self.ImportSongMenu.menuAction().setVisible(False)
+        self.ExportSongMenu.menuAction().setVisible(False)
 
     def get_media_manager_item(self):
         """
         Create the MediaManagerItem object, which is displaed in the
         Media Manager.
         """
-        self.media_item = SongMediaItem(self, self.icon, 'Songs')
-        return self.media_item
+        return SongMediaItem(self, self.icon, self.name)
 
     def add_import_menu_item(self, import_menu):
         """
@@ -92,19 +107,18 @@ class SongsPlugin(Plugin):
         self.ImportSongMenu.addAction(self.ImportOpenSongItem)
         import_menu.addAction(self.ImportSongMenu.menuAction())
         # Translations...
-        self.ImportSongMenu.setTitle(translate(u'main_window', u'&Song'))
-        self.ImportOpenSongItem.setText(translate(u'main_window', u'OpenSong'))
-        self.ImportOpenlp1Item.setText(
-            translate(u'main_window', u'openlp.org 1.0'))
+        self.ImportSongMenu.setTitle(import_menu.trUtf8(u'&Song'))
+        self.ImportOpenSongItem.setText(import_menu.trUtf8(u'OpenSong'))
+        self.ImportOpenlp1Item.setText(import_menu.trUtf8(u'openlp.org 1.0'))
         self.ImportOpenlp1Item.setToolTip(
-            translate(u'main_window', u'Export songs in openlp.org 1.0 format'))
+            import_menu.trUtf8(u'Export songs in openlp.org 1.0 format'))
         self.ImportOpenlp1Item.setStatusTip(
-            translate(u'main_window', u'Export songs in openlp.org 1.0 format'))
-        self.ImportOpenlp2Item.setText(translate(u'main_window', u'OpenLP 2.0'))
+            import_menu.trUtf8(u'Export songs in openlp.org 1.0 format'))
+        self.ImportOpenlp2Item.setText(import_menu.trUtf8(u'OpenLP 2.0'))
         self.ImportOpenlp2Item.setToolTip(
-            translate(u'main_window', u'Export songs in OpenLP 2.0 format'))
+            import_menu.trUtf8(u'Export songs in OpenLP 2.0 format'))
         self.ImportOpenlp2Item.setStatusTip(
-            translate(u'main_window', u'Export songs in OpenLP 2.0 format'))
+            import_menu.trUtf8(u'Export songs in OpenLP 2.0 format'))
         # Signals and slots
         QtCore.QObject.connect(self.ImportOpenlp1Item,
             QtCore.SIGNAL(u'triggered()'), self.onImportOpenlp1ItemClick)
@@ -112,6 +126,7 @@ class SongsPlugin(Plugin):
             QtCore.SIGNAL(u'triggered()'), self.onImportOpenlp1ItemClick)
         QtCore.QObject.connect(self.ImportOpenSongItem,
             QtCore.SIGNAL(u'triggered()'), self.onImportOpenSongItemClick)
+        self.ImportSongMenu.menuAction().setVisible(False)
 
     def add_export_menu_item(self, export_menu):
         """
@@ -136,19 +151,16 @@ class SongsPlugin(Plugin):
         self.ExportSongMenu.addAction(self.ExportOpenSongItem)
         export_menu.addAction(self.ExportSongMenu.menuAction())
         # Translations...
-        self.ExportSongMenu.setTitle(translate(u'main_window', u'&Song'))
-        self.ExportOpenSongItem.setText(translate(u'main_window', u'OpenSong'))
-        self.ExportOpenlp1Item.setText(
-            translate(u'main_window', u'openlp.org 1.0'))
-        self.ExportOpenlp2Item.setText(translate(u'main_window', u'OpenLP 2.0'))
+        self.ExportSongMenu.setTitle(export_menu.trUtf8(u'&Song'))
+        self.ExportOpenSongItem.setText(export_menu.trUtf8(u'OpenSong'))
+        self.ExportOpenlp1Item.setText(export_menu.trUtf8(u'openlp.org 1.0'))
+        self.ExportOpenlp2Item.setText(export_menu.trUtf8(u'OpenLP 2.0'))
         # Signals and slots
         QtCore.QObject.connect(self.ExportOpenlp1Item,
             QtCore.SIGNAL(u'triggered()'), self.onExportOpenlp1ItemClicked)
         QtCore.QObject.connect(self.ExportOpenSongItem,
             QtCore.SIGNAL(u'triggered()'), self.onExportOpenSongItemClicked)
-
-    def initialise(self):
-        self.media_item.displayResultsSong(self.songmanager.get_songs())
+        self.ExportSongMenu.menuAction().setVisible(False)
 
     def onImportOpenlp1ItemClick(self):
         self.openlp_import_form.show()
@@ -161,3 +173,8 @@ class SongsPlugin(Plugin):
 
     def onExportOpenSongItemClicked(self):
         self.opensong_export_form.show()
+
+    def about(self):
+        about_text = self.trUtf8(u'<b>Song Plugin</b> <br>This plugin allows '
+            u'Songs to be managed and displayed.<br>')
+        return about_text

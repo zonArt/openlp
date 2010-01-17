@@ -23,21 +23,10 @@
 ###############################################################################
 
 import os
-import sys
 import logging
 
-from PyQt4 import QtCore, QtGui
-
-from openlp.core.lib import Plugin, MediaManagerItem
-from openlp.plugins.presentations.lib import PresentationMediaItem, \
-    PresentationTab, ImpressController
-if os.name == u'nt':
-    try:
-        from openlp.plugins.presentations.lib import PowerpointController
-    except:
-        pass
-    from openlp.plugins.presentations.lib import PptviewController
-
+from openlp.core.lib import Plugin, buildIcon
+from openlp.plugins.presentations.lib import *
 
 class PresentationPlugin(Plugin):
 
@@ -45,81 +34,75 @@ class PresentationPlugin(Plugin):
     log = logging.getLogger(u'PresentationPlugin')
 
     def __init__(self, plugin_helpers):
-        # Call the parent constructor
-        log.debug('Initialised')
+        log.debug(u'Initialised')
         self.controllers = {}
         Plugin.__init__(self, u'Presentations', u'1.9.0', plugin_helpers)
         self.weight = -8
-        # Create the plugin icon
-        self.icon = QtGui.QIcon()
-        self.icon.addPixmap(QtGui.QPixmap(u':/media/media_presentation.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon = buildIcon(u':/media/media_presentation.png')
 
     def get_settings_tab(self):
         """
         Create the settings Tab
         """
-        self.presentation_tab = PresentationTab()
-        return self.presentation_tab
+        return PresentationTab(self.name, self.controllers)
+
+    def initialise(self):
+        log.info(u'Presentations Initialising')
+        Plugin.initialise(self)
+        self.insert_toolbox_item()
+
+    def finalise(self):
+        log.info(u'Plugin Finalise')
+        #Ask each controller to tidy up
+        for key in self.controllers:
+            controller = self.controllers[key]
+            if controller.enabled:
+                controller.kill()
+        self.remove_toolbox_item()
 
     def get_media_manager_item(self):
         """
         Create the Media Manager List
         """
-        self.media_item = PresentationMediaItem(
-            self, self.icon, u'Presentations', self.controllers)
-        return self.media_item
+        return PresentationMediaItem(
+            self, self.icon, self.name, self.controllers)
 
-    def registerControllers(self, handle, controller):
-        self.controllers[handle] = controller
+    def registerControllers(self, controller):
+        self.controllers[controller.name] = controller
 
     def check_pre_conditions(self):
         """
         Check to see if we have any presentation software available
         If Not do not install the plugin.
         """
-        log.debug('check_pre_conditions')
-        #Lets see if Impress is required (Default is Not wanted)
-        if int(self.config.get_config(
-            u'Impress', QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
-            try:
-                if os.name == u'nt':
-                    #Check to see if we are Win32
-                    from win32com.client import Dispatch
-                else:
-                    #Check to see if we have uno installed
-                    import uno
-                openoffice = ImpressController()
-                self.registerControllers(u'Impress', openoffice)
-            except:
-                log.exception(u'Failed to set up plugin for Impress')
-        if os.name == u'nt':
-            #Lets see if Powerpoint is required (Default is Not wanted)
-            if int(self.config.get_config(
-                u'Powerpoint', QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
-                try:
-                    #Check to see if we are Win32
-                    from win32com.client import Dispatch
-                    powerpoint = PowerpointController()
-                    self.registerControllers(u'Powerpoint', powerpoint)
-                except:
-                    log.exception(u'Failed to set up plugin for Powerpoint')
-            #Lets see if Powerpoint Viewer is required (Default is Not wanted)
-            if int(self.config.get_config(
-                u'Powerpoint Viewer', QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
-                try:
-                    pptview = PptviewController()
-                    self.registerControllers(u'Powerpoint Viewer', pptview)
-                except:
-                    log.exception(u'Failed to set up plugin for Powerpoint Viewer')
-        #If we have no available controllers disable plugin
+        log.debug(u'check_pre_conditions')
+        dir = os.path.join(os.path.dirname(__file__), u'lib')
+        for filename in os.listdir(dir):
+            if filename.endswith(u'controller.py') and \
+                not filename == 'presentationcontroller.py':
+                path = os.path.join(dir, filename)
+                if os.path.isfile(path):
+                    modulename = u'openlp.plugins.presentations.lib.' + \
+                        os.path.splitext(filename)[0]
+                    log.debug(u'Importing controller %s', modulename)
+                    try:
+                        __import__(modulename, globals(), locals(), [])
+                    except ImportError, e:
+                        log.error(u'Failed to import %s on path %s for reason %s', modulename, path, e.args[0])
+        controller_classes = PresentationController.__subclasses__()
+        for controller_class in controller_classes:
+            controller = controller_class(self)
+            self.registerControllers(controller)
+            if controller.enabled:
+                controller.start_process()
         if len(self.controllers) > 0:
             return True
         else:
             return False
 
-    def finalise(self):
-        log.debug(u'Finalise')
-        #Ask each controller to tidy up
-        for controller in self.controllers:
-            self.controllers[controller].kill()
+    def about(self):
+        about_text = self.trUtf8(u'<b>Presentation Plugin</b> <br> Delivers '
+            u'the ability to show presentations using a number of different '
+            u'programs.  The choice of available presentation programs is '
+            u'available to the user in a drop down box.')
+        return about_text

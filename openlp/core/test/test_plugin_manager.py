@@ -1,5 +1,7 @@
 import logging
-import os, sys
+import os
+import sys
+
 from openlp.core.lib.pluginmanager import PluginManager
 
 logging.basicConfig(level=logging.DEBUG,
@@ -14,11 +16,9 @@ formatter = logging.Formatter(u'%(name)-12s: %(levelname)-8s %(message)s')
 # tell the handler to use this format
 console.setFormatter(formatter)
 logging.getLogger(u'').addHandler(console)
-log=logging.getLogger(u'')
-
+log = logging.getLogger(u'')
 logging.info(u'Logging started')
-mypath=os.path.split(os.path.abspath(__file__))[0]
-
+mypath = os.path.split(os.path.abspath(__file__))[0]
 sys.path.insert(0,(os.path.join(mypath, '..' ,'..', '..')))
 
 # test the plugin manager with some plugins in the test_plugins directory

@@ -21,148 +21,237 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-try:
+
+import os
+import logging
+
+if os.name == u'nt':
     from win32com.client import Dispatch
-except:
-    pass
+    import _winreg
+    import win32ui
+
+from presentationcontroller import PresentationController
 
 # PPT API documentation:
 # http://msdn.microsoft.com/en-us/library/aa269321(office.10).aspx
 
-class PowerPointApp(object):
-    def __init__(self):
+class PowerpointController(PresentationController):
+    """
+    Class to control interactions with PowerPoint Presentations
+    It creates the runtime Environment , Loads the and Closes the Presentation
+    As well as triggering the correct activities based on the users input
+    """
+    global log
+    log = logging.getLogger(u'PowerpointController')
+    log.info(u'loaded')
+    
+    def __init__(self, plugin):
+        """
+        Initialise the class
+        """
         log.debug(u'Initialising')
+        PresentationController.__init__(self, plugin, u'Powerpoint')
         self.process = None
-        self.document = None
         self.presentation = None
-        self.startPowerpoint()
-
-    def startPowerpoint(self):
-        try:
-            self._app = Dispatch(u'PowerPoint.Application')
-        except:
-            self._app = None
-            return
-        self._app.Visible = True
-        self._app.WindowState = 2
-
-    def getApp(self):
-        if self._app == None:
-            self.createApp()
-            if self._app == None:
-                return None
-        if self._app.Windows.Count == 0:
-            self.createApp()
-        return self._app
-
-    app = property(getApp)
-
-    def quit(self):
-        self._app.Quit()
-        self._app = None
-
-class PowerPointPres(object):
-
-    def __init__(self, pptApp, filename):
-        self.pptApp = pptApp
-        self.filename = filename
-        self.open()
-
-    def getPres(self):
-        if self._pres == None:
-            for p in self.pptApp.app.Presentations:
-                if p.FullName == self.filename:
-                    self._pres = p
-                    break
-        if self._pres != None:
+ 
+    def check_available(self):
+        """
+        PowerPoint is able to run on this machine
+        """
+        log.debug(u'check_available')
+        if os.name == u'nt':
             try:
-                x = self._pres.Name
+                _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT, u'PowerPoint.Application').Close()
+                return True
             except:
-                self._pres = None
-        if self._pres == None:
-            self.openPres()
-        return self._pres
+                pass
+        return False
 
-    pres = property(getPres)
+    if os.name == u'nt':
+        def start_process(self):
+            """
+            Loads PowerPoint process
+            """
+            self.process = Dispatch(u'PowerPoint.Application')
+            self.process.Visible = True
+            self.process.WindowState = 2
 
-    def open(self):
-        self.pptApp.app.Presentations.Open(self.filename, False, False, True)
-        self._pres = self.pptApp.app.Presentations(ppt.app.Presentations.Count)
+        def is_loaded(self):
+            """
+            Returns true if a presentation is loaded
+            """
+            try:
+                if not self.process.Visible:
+                    return False
+                if self.process.Windows.Count == 0:
+                    return False
+                if self.process.Presentations.Count == 0:
+                    return False
+            except:
+                return False
+            return True
+        
+        def kill(self):
+            """
+            Called at system exit to clean up any running presentations
+            """
+            if self.process is None:
+                return
+            try:
+                self.process.Quit()
+            except:
+                pass
+            self.process = None
 
-    def close(self):
-        self.pres.Close()
-        self._pres = None
+        def load_presentation(self, presentation):
+            """
+            Called when a presentation is added to the SlideController.
+            It builds the environment, starts communcations with the background
+            OpenOffice task started earlier.  If OpenOffice is not present is is
+            started.  Once the environment is available the presentation is loaded
+            and started.
 
-    def isActive(self):
-        if self.pres.SlideShowWindow == None:
-            return False
-        if self.pres.SlideShowWindow.View == None:
-            return False
-        return True
+            ``presentation``
+            The file name of the presentations to run.
+            """            
+            log.debug(u'LoadPresentation')
+            self.store_filename(presentation)
+            try:
+                if not self.process.Visible:
+                    self.start_process()
+            except:
+                self.start_process()
+            try:
+                self.process.Presentations.Open(presentation, False, False, True)
+            except:
+                return
+            self.presentation = self.process.Presentations(self.process.Presentations.Count)
+            self.create_thumbnails()
 
-    def resume(self):
-        self.pres.SlideShowSettings.Run()
-        self.pres.SlideShowWindow.View.State = 1
-        self.pres.SlideShowWindow.Activate()
+        def create_thumbnails(self):
+            """
+            Create the thumbnail images for the current presentation.
+            Note an alternative and quicker method would be do
+                self.presentation.Slides[n].Copy()
+                thumbnail = QApplication.clipboard.image()
+            But for now we want a physical file since it makes
+            life easier elsewhere
+            """
+            if self.check_thumbnails():
+                return
+            self.presentation.Export(os.path.join(self.thumbnailpath, '')
+                                     , 'png', 600, 480)
+            
+        def close_presentation(self):
+            """
+            Close presentation and clean up objects
+            Triggerent by new object being added to SlideController orOpenLP
+            being shut down
+            """
+            if self.presentation == None:
+                return
+            try:
+                self.presentation.Close()
+            except:
+                pass
+            self.presentation = None
 
-    def pause(self):
-        if self.isActive():
-            self.pres.SlideShowWindow.View.State = 2
+        def is_active(self):
+            """
+            Returns true if a presentation is currently active
+            """
+            if not self.is_loaded():
+                return False
+            try:
+                if self.presentation.SlideShowWindow == None:
+                    return False
+                if self.presentation.SlideShowWindow.View == None:
+                    return False
+            except:
+                return False
+            return True
 
-    def blankScreen(self):
-        if self.isActive():
-            self.pres.SlideShowWindow.View.State = 3
+        def unblank_screen(self):
+            """
+            Unblanks (restores) the presentationn
+            """
+            self.presentation.SlideShowSettings.Run()
+            self.presentation.SlideShowWindow.View.State = 1
+            self.presentation.SlideShowWindow.Activate()
 
-    def stop(self):
-        if self.isActive():
-            self.pres.SlideShowWindow.View.Exit()
+        def blank_screen(self):
+            """
+            Blanks the screen
+            """
+            self.presentation.SlideShowWindow.View.State = 3
 
-    def go(self):
-        self.pres.SlideShowSettings.Run()
+        def stop_presentation(self):
+            """
+            Stops the current presentation and hides the output
+            """
+            self.presentation.SlideShowWindow.View.Exit()
 
-    def getCurrentSlideIndex(self):
-        if self.isActive():
-            return self.pres.SlideShowWindow.View.CurrentShowPosition
-        else:
-            return -1
+        def start_presentation(self):
+            """
+            Starts a presentation from the beginning
+            """            
+            #SlideShowWindow measures its size/position by points, not pixels
+            try:
+                dpi = win32ui.GetActiveWindow().GetDC().GetDeviceCaps(88)
+            except:
+                try:
+                    dpi = win32ui.GetForegroundWindow().GetDC().GetDeviceCaps(88)
+                except:
+                    dpi = 96
+            self.presentation.SlideShowSettings.Run()
+            self.presentation.SlideShowWindow.View.GotoSlide(1)
+            rendermanager = self.plugin.render_manager
+            rect = rendermanager.screen_list[rendermanager.current_display][u'size']
+            self.presentation.SlideShowWindow.Top = rect.y() * 72 / dpi
+            self.presentation.SlideShowWindow.Height = rect.height() * 72 / dpi
+            self.presentation.SlideShowWindow.Left = rect.x() * 72 / dpi
+            self.presentation.SlideShowWindow.Width = rect.width() * 72 / dpi
 
-    def setCurrentSlideIndex(self, slideno):
-        if not self.isActive():
-            self.resume()
-        self.pres.SlideShowWindow.View.GotoSlide(slideno)
+        def get_slide_number(self):
+            """
+            Returns the current slide number
+            """
+            return self.presentation.SlideShowWindow.View.CurrentShowPosition
 
-    #currentSlideIndex = property(getSlideNumber, setSlideNumber)
+        def get_slide_count(self):
+            """
+            Returns total number of slides
+            """
+            return self.presentation.Slides.Count
+        
+        def goto_slide(self, slideno):
+            """
+            Moves to a specific slide in the presentation
+            """
+            self.presentation.SlideShowWindow.View.GotoSlide(slideno)
 
-    def nextStep(self):
-        if not self.isActive():
-            self.resume()
-        self.pres.SlideShowWindow.View.Next()
+        def next_step(self):
+            """
+            Triggers the next effect of slide on the running presentation
+            """
+            self.presentation.SlideShowWindow.View.Next()
 
-    def prevStep(self):
-        if not self.isActive():
-            self.resume()
-        self.pres.SlideShowWindow.View.Previous()
+        def previous_step(self):
+            """
+            Triggers the previous slide on the running presentation
+            """
+            self.presentation.SlideShowWindow.View.Previous()
 
-    def moveWindow(self, top, height, left, width):
-        if not self.isActive():
-            self.resume()
-        self.pres.SlideShowWindow.Top = top / 20
-        self.pres.SlideShowWindow.Height = height / 20
-        self.pres.SlideShowWindow.Left = left / 20
-        self.pres.SlideShowWindow.Width = width / 20
+        def get_slide_preview_file(self, slide_no):
+            """
+            Returns an image path containing a preview for the requested slide
 
-class PowerPointSlide(object):
-    def __init__(self, pres, index):
-        self.pres = pres
-        self.slide = pres.Slides[index]
-
-    def preview(self):
-        if self.preview == None:
-            self.slide.Copy
-            # import win32clipboard as w
-            # import win32con
-            # w.OpenClipboard()
-            # self.preview = w.GetClipboardData.GetData(win32con.CF_BITMAP)
-            # w.CloseClipboard()
-        return self.preview
-
+            ``slide_no``
+            The slide an image is required for, starting at 1
+            """
+            path = os.path.join(self.thumbnailpath,
+                self.thumbnailprefix + unicode(slide_no) + u'.png')
+            if os.path.isfile(path):
+                return path
+            else:
+                return None

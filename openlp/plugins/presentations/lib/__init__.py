@@ -22,13 +22,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from impresscontroller import ImpressController
-#from powerpointcontroller import PowerpointController
-from pptviewcontroller import PptviewController
+from presentationcontroller import PresentationController
 from messagelistener import MessageListener
 from mediaitem import PresentationMediaItem
 from presentationtab import PresentationTab
-
-
-__all__ = ['PresentationMediaItem', 'PresentationTab',
-    'ImpressController', 'ImpressController', 'PowerpointController', 'MessageListener']

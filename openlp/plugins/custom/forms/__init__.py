@@ -23,5 +23,3 @@
 ###############################################################################
 
 from editcustomform import EditCustomForm
-
-__all__ = ['EditCustomForm']

@@ -26,8 +26,8 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import MediaManagerItem, ServiceItem, translate, \
-    BaseListWithDnD
+
+from openlp.core.lib import MediaManagerItem, BaseListWithDnD
 from openlp.plugins.presentations.lib import MessageListener
 
 # We have to explicitly create separate classes for each plugin
@@ -43,25 +43,32 @@ class PresentationMediaItem(MediaManagerItem):
     It can present files using Openoffice
     """
     global log
-    log=logging.getLogger(u'PresentationsMediaItem')
+    log = logging.getLogger(u'PresentationsMediaItem')
     log.info(u'Presentations Media Item loaded')
 
     def __init__(self, parent, icon, title, controllers):
         self.controllers = controllers
-        self.TranslationContext = u'PresentationPlugin'
-        self.PluginTextShort = u'Presentation'
-        self.ConfigSection = u'presentations'
-        self.hasFileIcon = True
-        self.hasNewIcon = False
-        self.hasEditIcon = False
+        self.PluginNameShort = u'Presentation'
+        self.ConfigSection = title
         self.IconPath = u'presentations/presentation'
-        self.OnNewPrompt = u'Select Presentation(s)'
-        self.OnNewFileMasks = u'Presentations (*.ppt *.pps *.odp)'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = PresentationListView
         MediaManagerItem.__init__(self, parent, icon, title)
         self.message_listener = MessageListener(controllers)
+
+    def initPluginNameVisible(self):
+        self.PluginNameVisible = self.trUtf8(u'Presentation')
+
+    def retranslateUi(self):
+        self.OnNewPrompt = self.trUtf8(u'Select Presentation(s)')
+        self.OnNewFileMasks = self.trUtf8(u'Presentations (*.ppt *.pps *.odp)')
+
+    def requiredIcons(self):
+        MediaManagerItem.requiredIcons(self)
+        self.hasFileIcon = True
+        self.hasNewIcon = False
+        self.hasEditIcon = False
 
     def addEndHeaderBar(self):
         self.PresentationWidget = QtGui.QWidget(self)
@@ -81,8 +88,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.DisplayTypeLabel = QtGui.QLabel(self.PresentationWidget)
         self.DisplayTypeLabel.setObjectName(u'SearchTypeLabel')
         self.DisplayLayout.addWidget(self.DisplayTypeLabel, 0, 0, 1, 1)
-        self.DisplayTypeLabel.setText(
-            translate(u'PresentationMediaItem', u'Present using:'))
+        self.DisplayTypeLabel.setText(self.trUtf8(u'Present using:'))
         # Add the Presentation widget to the page layout
         self.PageLayout.addWidget(self.PresentationWidget)
 
@@ -91,23 +97,38 @@ class PresentationMediaItem(MediaManagerItem):
         self.loadList(list)
         for item in self.controllers:
             #load the drop down selection
-            self.DisplayTypeComboBox.addItem(item)
+            if self.controllers[item].enabled:
+                self.DisplayTypeComboBox.addItem(item)
 
     def loadList(self, list):
+        currlist = self.getFileList()
+        titles = []
+        for file in currlist:
+            titles.append(os.path.split(file)[1])
         for file in list:
+            if currlist.count(file) > 0:
+                continue
             (path, filename) = os.path.split(unicode(file))
-            item_name = QtGui.QListWidgetItem(filename)
-            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
-            self.ListView.addItem(item_name)
+            if titles.count(filename) > 0:
+                QtGui.QMessageBox.critical(
+                    self, self.trUtf8(u'File exists'), self.trUtf8(
+                        u'A presentation with that filename already exists.'),
+                    QtGui.QMessageBox.Ok)
+            else:
+                item_name = QtGui.QListWidgetItem(filename)
+                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
+                self.ListView.addItem(item_name)
 
     def onDeleteClick(self):
         item = self.ListView.currentItem()
-        if item is not None:
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        if item:
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
             self.parent.config.set_list(
-                self.ConfigSection, self.ListData.getFileList())
+                self.ConfigSection, self.getFileList())
+            filepath = unicode((item.data(QtCore.Qt.UserRole)).toString())
+            for cidx in self.controllers:
+                self.controllers[cidx].presentation_deleted(filepath)
 
     def generateSlideData(self, service_item):
         items = self.ListView.selectedIndexes()
@@ -115,9 +136,18 @@ class PresentationMediaItem(MediaManagerItem):
             return False
         service_item.title = unicode(self.DisplayTypeComboBox.currentText())
         service_item.shortname = unicode(self.DisplayTypeComboBox.currentText())
+        cont = self.controllers[service_item.shortname]
         for item in items:
             bitem = self.ListView.item(item.row())
             filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
             (path, name) = os.path.split(filename)
-            service_item.add_from_command(path, name)
+            cont.store_filename(filename)
+            if cont.get_slide_preview_file(1) is None:
+                cont.load_presentation(filename)
+            i = 1
+            img = cont.get_slide_preview_file(i)
+            while img:
+                service_item.add_from_command(path, name, img)
+                i = i + 1
+                img = cont.get_slide_preview_file(i)
         return True

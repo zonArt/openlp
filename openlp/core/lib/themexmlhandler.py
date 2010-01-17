@@ -25,7 +25,7 @@
 import os
 
 from xml.dom.minidom import Document
-from xml.etree.ElementTree import ElementTree, XML, dump
+from xml.etree.ElementTree import ElementTree, XML
 
 from openlp.core.lib import str_to_bool
 
@@ -51,7 +51,8 @@ blankthemexml=\
       <proportion>30</proportion>
       <weight>Normal</weight>
       <italics>False</italics>
-      <location override="False" x="0" y="0" width="0" height="0"/>
+      <indentation>0</indentation>
+      <location override="False" x="10" y="10" width="1024" height="730"/>
    </font>
    <font type="footer">
       <name>Arial</name>
@@ -59,7 +60,8 @@ blankthemexml=\
       <proportion>12</proportion>
       <weight>Normal</weight>
       <italics>False</italics>
-      <location override="False" x="0" y="0" width="0" height="0"/>
+      <indentation>0</indentation>
+      <location override="False" x="10" y="730" width="1024" height="38"/>
    </font>
    <display>
       <shadow color="#000000">True</shadow>
@@ -89,7 +91,9 @@ class ThemeXML(object):
         ``path``
             The path name to be added.
         """
-        if self.background_filename is not None and path is not None:
+        if self.background_filename and path:
+            self.theme_name = self.theme_name.rstrip().lstrip()
+            self.background_filename = self.background_filename.rstrip().lstrip()
             self.background_filename = os.path.join(path, self.theme_name,
                 self.background_filename)
 
@@ -165,7 +169,7 @@ class ThemeXML(object):
         self.child_element(background, u'filename', filename)
 
     def add_font(self, name, color, proportion, override, fonttype=u'main',
-        weight=u'Normal', italics=u'False', xpos=0, ypos=0, width=0, height=0):
+        weight=u'Normal', italics=u'False', indentation=0, xpos=0, ypos=0, width=0, height=0):
         """
         Add a Font.
 
@@ -189,6 +193,9 @@ class ThemeXML(object):
 
         ``italics``
             Does the font render to italics Defaults to 0 Normal
+
+        ``indentation``
+            Number of characters the wrap line is indented
 
         ``xpos``
             The X position of the text block.
@@ -215,6 +222,9 @@ class ThemeXML(object):
         self.child_element(background, u'weight', weight)
         #Create italics name element
         self.child_element(background, u'italics', italics)
+        #Create indentation name element
+        self.child_element(background, u'indentation', unicode(indentation))
+
         #Create Location element
         element = self.theme_xml.createElement(u'location')
         element.setAttribute(u'override',override)
@@ -295,7 +305,7 @@ class ThemeXML(object):
         Dump the XML to file.
         """
         # Debugging aid to see what we have
-        print self.theme_xml.toprettyxml(indent=u'  ')
+        return self.theme_xml.toprettyxml(indent=u'  ')
 
     def extract_xml(self):
         """
@@ -361,7 +371,7 @@ class ThemeXML(object):
                         else:
                             setattr(self, field, e[1])
             else:
-                if element.tag is not None:
+                if element.tag:
                     field = master + element.tag
                     if element.text == u'True' or element.text == u'False':
                         setattr(self, field, str_to_bool(element.text))
@@ -372,8 +382,8 @@ class ThemeXML(object):
         """
         Return a string representation of this object.
         """
-        s = u''
-        for k in dir(self):
-            if k[0:1] != u'_':
-                s += u'%30s: %s\n' %(k, getattr(self, k))
-        return s
+        theme_strings = []
+        for key in dir(self):
+            if key[0:1] != u'_':
+                theme_strings.append(u'%30s: %s' % (key, getattr(self, key)))
+        return u'\n'.join(theme_strings)

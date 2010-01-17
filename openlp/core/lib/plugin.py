@@ -31,10 +31,11 @@ class PluginStatus(object):
     """
     Defines the status of the plugin
     """
-    Active = 1
-    Inactive = 2
+    Active = 0
+    Inactive = 1
+    Disabled = 2
 
-class Plugin(object):
+class Plugin(QtCore.QObject):
     """
     Base class for openlp plugins to inherit from.
 
@@ -85,23 +86,12 @@ class Plugin(object):
     ``about()``
         Used in the plugin manager, when a person clicks on the 'About' button.
 
-    ``save(data)``
-        A method to convert the plugin's data to a string to be stored in the
-        Service file.
-
-    ``load(string)``
-        A method to convert the string from a Service file into the plugin's
-        own data format.
-
-    ``render(theme, screen_number)``
-        A method used to render something to the screen, given the current theme
-        and screen number.
     """
     global log
     log = logging.getLogger(u'Plugin')
     log.info(u'loaded')
 
-    def __init__(self, name=None, version=None, plugin_helpers=None):
+    def __init__(self, name, version=None, plugin_helpers=None):
         """
         This is the constructor for the plugin object. This provides an easy
         way for descendent plugins to populate common data. This method *must*
@@ -120,11 +110,9 @@ class Plugin(object):
         ``plugin_helpers``
             Defaults to *None*. A list of helper objects.
         """
-        if name is not None:
-            self.name = name
-        else:
-            self.name = u'Plugin'
-        if version is not None:
+        QtCore.QObject.__init__(self)
+        self.name = name
+        if version:
             self.version = version
         self.icon = None
         self.config = PluginConfig(self.name)
@@ -137,8 +125,10 @@ class Plugin(object):
         self.render_manager = plugin_helpers[u'render']
         self.service_manager = plugin_helpers[u'service']
         self.settings = plugin_helpers[u'settings']
+        self.mediadock = plugin_helpers[u'toolbox']
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_add_service_item'% self.name), self.process_add_service_event)
+            QtCore.SIGNAL(u'%s_add_service_item' % self.name),
+            self.process_add_service_event)
 
     def check_pre_conditions(self):
         """
@@ -148,6 +138,28 @@ class Plugin(object):
         Returns True or False.
         """
         return True
+
+    def set_status(self):
+        """
+        Sets the status of the plugin
+        """
+        self.status = int(self.config.get_config(\
+            u'%s_status' % self.name, PluginStatus.Inactive))
+
+    def toggle_status(self, new_status):
+        """
+        Changes the status of the plugin and remembers it
+        """
+        self.status = new_status
+        self.config.set_config(u'%s_status' % self.name, self.status)
+
+    def is_active(self):
+        """
+        Indicates if the plugin is active
+
+        Returns True or False.
+        """
+        return self.status == PluginStatus.Active
 
     def get_media_manager_item(self):
         """
@@ -200,8 +212,7 @@ class Plugin(object):
 
     def process_add_service_event(self):
         """
-        Proxy method as method is not defined early enough
-        in the processing
+        Generic Drag and drop handler triggered from service_manager.
         """
         log.debug(u'process_add_service_event event called for plugin %s' % self.name)
         self.media_item.onAddClick()
@@ -217,7 +228,8 @@ class Plugin(object):
         """
         Called by the plugin Manager to initialise anything it needs.
         """
-        pass
+        if self.media_item:
+            self.media_item.initialise()
 
     def finalise(self):
         """
@@ -225,3 +237,18 @@ class Plugin(object):
         """
         pass
 
+    def remove_toolbox_item(self):
+        """
+        Called by the plugin to remove toolbar
+        """
+        self.mediadock.remove_dock(self.name)
+        self.settings.removeTab(self.name)
+
+    def insert_toolbox_item(self):
+        """
+        Called by plugin to replace toolbar
+        """
+        if self.media_item:
+            self.mediadock.insert_dock(self.media_item, self.icon, self.weight)
+        if self.settings_tab:
+            self.settings.insertTab(self.settings_tab, self.weight)

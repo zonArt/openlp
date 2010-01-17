@@ -23,7 +23,7 @@
 ###############################################################################
 
 import os
-import sys
+
 from ConfigParser import SafeConfigParser
 
 class Registry(object):
@@ -101,23 +101,29 @@ class Registry(object):
             return False
 
     def _load(self):
+        file_handle = None
         try:
             if not os.path.isfile(self.file_name):
                 return False
             file_handle = open(self.file_name, u'r')
             self.config.readfp(file_handle)
-            file_handle.close()
             return True
         except:
             return False
+        finally:
+            if file_handle:
+                file_handle.close()
 
     def _save(self):
+        file_handle = None
         try:
             if not os.path.exists(os.path.dirname(self.file_name)):
                 os.makedirs(os.path.dirname(self.file_name))
             file_handle = open(self.file_name, u'w')
             self.config.write(file_handle)
-            file_handle.close()
             return self._load()
         except:
             return False
+        finally:
+            if file_handle:
+                file_handle.close()
