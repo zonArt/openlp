@@ -185,6 +185,7 @@ class ThemeManager(QtGui.QWidget):
                 self.ThemeListWidget.takeItem(row)
                 try:
                     os.remove(os.path.join(self.path, th))
+                    os.remove(os.path.join(self.path, u'thumbs', th))
                     shutil.rmtree(os.path.join(self.path, theme))
                 except:
                     #if not present do not worry
@@ -259,8 +260,16 @@ class ThemeManager(QtGui.QWidget):
                                 self.trUtf8('default'))
                         else:
                             name = textName
+                        thumb = os.path.join(self.path, u'thumbs', u'%s.png' %textName)
                         item_name = QtGui.QListWidgetItem(name)
-                        item_name.setIcon(build_icon(theme))
+                        if os.path.exists(thumb):
+                            icon = build_icon(thumb)
+                        else:
+                            icon = build_icon(theme)
+                            pixmap = icon.pixmap(QtCore.QSize(88,50))
+                            ext = os.path.splitext(thumb)[1].lower()
+                            pixmap.save(thumb, ext[1:])
+                        item_name.setIcon(icon)
                         item_name.setData(QtCore.Qt.UserRole,
                             QtCore.QVariant(textName))
                         self.ThemeListWidget.addItem(item_name)
@@ -427,8 +436,6 @@ class ThemeManager(QtGui.QWidget):
                 if outfile:
                     outfile.close()
             if image_from and image_from != image_to:
-                print "if", image_from
-                print "it", image_to
                 try:
                     shutil.copyfile(image_from, image_to)
                 except:
