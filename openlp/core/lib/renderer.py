@@ -26,6 +26,7 @@
 import logging
 
 from PyQt4 import QtGui, QtCore
+from openlp.core.lib import resize_image
 
 class Renderer(object):
     """
@@ -41,7 +42,7 @@ class Renderer(object):
         Initialise the renderer.
         """
         self._rect = None
-        self._debug = 0
+        self._debug = False
         self._right_margin = 64 # the amount of right indent
         self._display_shadow_size_footer = 0
         self._display_outline_size_footer = 0
@@ -90,31 +91,9 @@ class Renderer(object):
         log.debug(u'set bg image %s', filename)
         self._bg_image_filename = unicode(filename)
         if self._frame:
-            self.scale_bg_image()
-
-    def scale_bg_image(self):
-        """
-        Scale the background image to fit the screen.
-        """
-        assert self._frame
-        preview = QtGui.QImage(self._bg_image_filename)
-        width = self._frame.width()
-        height = self._frame.height()
-        preview = preview.scaled(width, height, QtCore.Qt.KeepAspectRatio,
-            QtCore.Qt.SmoothTransformation)
-        realwidth = preview.width()
-        realheight = preview.height()
-        # and move it to the centre of the preview space
-        self.bg_image = QtGui.QImage(width, height,
-            QtGui.QImage.Format_ARGB32_Premultiplied)
-        self.bg_image.fill(QtCore.Qt.black)
-        painter = QtGui.QPainter()
-        painter.begin(self.bg_image)
-        self.background_offsetx = (width - realwidth) / 2
-        self.background_offsety = (height - realheight) / 2
-        painter.drawImage(self.background_offsetx,
-                self.background_offsety, preview)
-        painter.end()
+            self.bg_image = resize_image(self._bg_image_filename,
+                                         self._frame.width(),
+                                         self._frame.height())
 
     def set_frame_dest(self, frame_width, frame_height, preview=False):
         """
@@ -138,7 +117,9 @@ class Renderer(object):
         self._frameOp = QtGui.QImage(frame_width, frame_height,
             QtGui.QImage.Format_ARGB32_Premultiplied)
         if self._bg_image_filename and not self.bg_image:
-            self.scale_bg_image()
+            self.bg_image = resize_image(self._bg_image_filename,
+                                         self._frame.width(),
+                                         self._frame.height())
         if self.bg_frame is None:
             self._generate_background_frame()
 
@@ -167,17 +148,22 @@ class Renderer(object):
 
     def pre_render_text(self, text):
         metrics = QtGui.QFontMetrics(self.mainFont)
-        #take the width work out approx how many characters and add 50%
+        #work out line width
         line_width = self._rect.width() - self._right_margin
         #number of lines on a page - adjust for rounding up.
-        page_length = int(self._rect.height() / metrics.height() - 2 ) - 1
+        line_height = metrics.height()
+        if self._theme.display_shadow:
+            line_height += int(self._theme.display_shadow_size)
+        if self._theme.display_outline:
+            #  pixels top/bottom
+            line_height += 2 * int(self._theme.display_outline_size)
+        page_length = int(self._rect.height() / line_height )
         #Average number of characters in line
         ave_line_width = line_width / metrics.averageCharWidth()
         #Maximum size of a character
         max_char_width = metrics.maxWidth()
-        #Min size of a character
-        min_char_width = metrics.width(u'i')
-        char_per_line = line_width / min_char_width
+        #Max characters pre line based on min size of a character
+        char_per_line = line_width / metrics.width(u'i')
         log.debug(u'Page Length  area height %s , metrics %s , lines %s' %
                   (int(self._rect.height()), metrics.height(), page_length ))
         split_pages = []
@@ -276,8 +262,13 @@ class Renderer(object):
         Results are cached for performance reasons.
         """
         assert(self._theme)
-        self.bg_frame = QtGui.QImage(self._frame.width(), self._frame.height(),
-            QtGui.QImage.Format_ARGB32_Premultiplied)
+        if self._theme.background_mode == u'transparent':
+            self.bg_frame = \
+                QtGui.QPixmap(self._frame.width(), self._frame.height())
+            self.bg_frame.fill(QtCore.Qt.transparent)
+        else:
+            self.bg_frame = QtGui.QImage(self._frame.width(), self._frame.height(),
+                QtGui.QImage.Format_ARGB32_Premultiplied)
         log.debug(u'render background %s start', self._theme.background_type)
         painter = QtGui.QPainter()
         painter.begin(self.bg_frame)
@@ -422,6 +413,14 @@ class Renderer(object):
         startx = x
         starty = y
         rightextent = None
+        self.painter = QtGui.QPainter()
+        self.painter.begin(self._frame)
+        self.painter.setRenderHint(QtGui.QPainter.Antialiasing);
+        if self._theme.display_slideTransition:
+            self.painter2 = QtGui.QPainter()
+            self.painter2.begin(self._frameOp)
+            self.painter2.setRenderHint(QtGui.QPainter.Antialiasing);
+            self.painter2.setOpacity(0.7)
         # dont allow alignment messing with footers
         if footer:
             align = 0
@@ -503,13 +502,14 @@ class Renderer(object):
             if linenum == 0:
                 self._first_line_right_extent = rightextent
         # draw a box around the text - debug only
+
         if self._debug:
-            painter = QtGui.QPainter()
-            painter.begin(self._frame)
-            painter.setPen(QtGui.QPen(QtGui.QColor(0,255,0)))
-            painter.drawRect(startx, starty, rightextent-startx, y-starty)
-            painter.end()
+            self.painter.setPen(QtGui.QPen(QtGui.QColor(0,255,0)))
+            self.painter.drawRect(startx, starty, rightextent-startx, y-starty)
         brcorner = (rightextent, y)
+        self.painter.end()
+        if self._theme.display_slideTransition:
+            self.painter2.end()
         return brcorner
 
     def _set_theme_font(self):
@@ -519,6 +519,7 @@ class Renderer(object):
         footer_weight = 50
         if self._theme.font_footer_weight == u'Bold':
             footer_weight = 75
+        #TODO Add  myfont.setPixelSize((screen_height / 100) * font_size)
         self.footerFont = QtGui.QFont(self._theme.font_footer_name,
                      self._theme.font_footer_proportion, # size
                      footer_weight, # weight
@@ -556,45 +557,36 @@ class Renderer(object):
             Defaults to *None*. The colour to draw with.
         """
         # setup defaults
-        painter = QtGui.QPainter()
-        painter.begin(self._frame)
-        painter.setRenderHint(QtGui.QPainter.Antialiasing);
         if footer :
             font = self.footerFont
         else:
             font = self.mainFont
-        painter.setFont(font)
+        self.painter.setFont(font)
         if color is None:
             if footer:
-                painter.setPen(QtGui.QColor(self._theme.font_footer_color))
+                self.painter.setPen(QtGui.QColor(self._theme.font_footer_color))
             else:
-                painter.setPen(QtGui.QColor(self._theme.font_main_color))
+                self.painter.setPen(QtGui.QColor(self._theme.font_main_color))
         else:
-            painter.setPen(QtGui.QColor(color))
+            self.painter.setPen(QtGui.QColor(color))
         x, y = tlcorner
         metrics = QtGui.QFontMetrics(font)
         w = metrics.width(line)
-        h = metrics.height() - 2
+        h = metrics.height()
         if draw:
-            painter.drawText(x, y + metrics.ascent(), line)
-        painter.end()
+            self.painter.drawText(x, y + metrics.ascent(), line)
         if self._theme.display_slideTransition:
             # Print 2nd image with 70% weight
-            painter = QtGui.QPainter()
-            painter.begin(self._frameOp)
-            painter.setRenderHint(QtGui.QPainter.Antialiasing);
-            painter.setOpacity(0.7)
-            painter.setFont(font)
+            self.painter2.setFont(font)
             if color is None:
                 if footer:
-                    painter.setPen(QtGui.QColor(self._theme.font_footer_color))
+                    self.painter2.setPen(QtGui.QColor(self._theme.font_footer_color))
                 else:
-                    painter.setPen(QtGui.QColor(self._theme.font_main_color))
+                    self.painter2.setPen(QtGui.QColor(self._theme.font_main_color))
             else:
-                painter.setPen(QtGui.QColor(color))
+                self.painter2.setPen(QtGui.QColor(color))
             if draw:
-                painter.drawText(x, y + metrics.ascent(), line)
-            painter.end()
+                self.painter2.drawText(x, y + metrics.ascent(), line)
         return (w, h)
 
     def snoop_Image(self, image, image2=None):

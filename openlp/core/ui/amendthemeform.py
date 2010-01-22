@@ -694,8 +694,14 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         if self.allowPreview:
             #calculate main number of rows
             metrics = self._getThemeMetrics()
+            line_height = metrics.height()
+            if self.theme.display_shadow:
+                line_height += int(self.theme.display_shadow_size)
+            if self.theme.display_outline:
+                #  pixels top/bottom
+                line_height += 2 * int(self.theme.display_outline_size)
             page_length = \
-                (self.FontMainHeightSpinBox.value() / metrics.height() - 2) - 1
+                ((self.FontMainHeightSpinBox.value()) / line_height )
             log.debug(u'Page Length area height %s, metrics %s, lines %s' %
                 (self.FontMainHeightSpinBox.value(), metrics.height(),
                 page_length))

@@ -28,7 +28,7 @@ import logging
 from PyQt4 import QtGui, QtCore
 
 from renderer import Renderer
-from openlp.core.lib import ThemeLevel
+from openlp.core.lib import ThemeLevel, resize_image
 
 class RenderManager(object):
     """
@@ -39,8 +39,8 @@ class RenderManager(object):
     ``theme_manager``
         The ThemeManager instance, used to get the current theme details.
 
-    ``screen_list``
-        The list of screens available.
+    ``screens``
+        Contains information about the Screens.
 
     ``screen_number``
         Defaults to *0*. The index of the output/display screen.
@@ -49,20 +49,16 @@ class RenderManager(object):
     log = logging.getLogger(u'RenderManager')
     log.info(u'RenderManager Loaded')
 
-    def __init__(self, theme_manager, screen_list, screen_number=0):
+    def __init__(self, theme_manager, screens, screen_number=0):
         """
         Initialise the render manager.
         """
         log.debug(u'Initilisation started')
-        self.screen_list = screen_list
+        self.screens = screens
         self.theme_manager = theme_manager
-        self.displays = len(screen_list)
-        if (screen_number + 1) > len(screen_list):
-            self.current_display = 0
-        else:
-            self.current_display = screen_number
         self.renderer = Renderer()
-        self.calculate_default(self.screen_list[self.current_display][u'size'])
+        self.screens.set_current_display(screen_number)
+        self.calculate_default(self.screens.current[u'size'])
         self.theme = u''
         self.service_theme = u''
         self.theme_level = u''
@@ -79,10 +75,8 @@ class RenderManager(object):
             The updated index of the output/display screen.
         """
         log.debug(u'Update Display')
-        if self.current_display != screen_number:
-            self.current_display = screen_number
-            self.calculate_default(
-                self.screen_list[self.current_display][u'size'])
+        self.calculate_default(self.screens.current[u'size'])
+        self.renderer.bg_frame = None
 
     def set_global_theme(self, global_theme, theme_level=ThemeLevel.Global):
         """
@@ -137,22 +131,21 @@ class RenderManager(object):
         if self.theme != self.renderer.theme_name or self.themedata is None:
             log.debug(u'theme is now %s', self.theme)
             self.themedata = self.theme_manager.getThemeData(self.theme)
-            self.calculate_default(
-                self.screen_list[self.current_display][u'size'])
+            self.calculate_default(self.screens.current[u'size'])
             self.renderer.set_theme(self.themedata)
             self.build_text_rectangle(self.themedata)
-        #Replace the backgrount image from renderer with one from image
+        #Replace the background image from renderer with one from image
         if self.override_background:
             if self.save_bg_frame is None:
                 self.save_bg_frame = self.renderer.bg_frame
             if self.override_background_changed:
-                self.renderer.bg_frame = self.resize_image(
-                    self.override_background)
+                self.renderer.bg_frame = resize_image(
+                    self.override_background, self.width, self.height)
                 self.override_background_changed = False
         else:
             if self.override_background_changed:
-                self.renderer.bg_frame = self.resize_image(
-                    self.override_background)
+                self.renderer.bg_frame = resize_image(
+                    self.override_background, self.width, self.height)
                 self.override_background_changed = False
             if self.save_bg_frame:
                 self.renderer.bg_frame = self.save_bg_frame
@@ -160,8 +153,8 @@ class RenderManager(object):
 
     def build_text_rectangle(self, theme):
         """
-        Builds a text block using the settings in ``theme``.
-        One is needed per slide
+        Builds a text block using the settings in ``theme``
+        and the size of the display screen.height.
 
         ``theme``
             The theme to build a text block for.
@@ -170,14 +163,14 @@ class RenderManager(object):
         main_rect = None
         footer_rect = None
         if not theme.font_main_override:
-            main_rect = QtCore.QRect(10, 0, self.width - 1,
-                self.footer_start - 20)
+            main_rect = QtCore.QRect(10, 0,
+                            self.width - 1, self.footer_start)
         else:
             main_rect = QtCore.QRect(theme.font_main_x, theme.font_main_y,
                 theme.font_main_width - 1, theme.font_main_height - 1)
         if not theme.font_footer_override:
-            footer_rect = QtCore.QRect(10, self.footer_start, self.width - 1,
-                self.height-self.footer_start)
+            footer_rect = QtCore.QRect(10, self.footer_start,
+                            self.width - 1, self.height - self.footer_start)
         else:
             footer_rect = QtCore.QRect(theme.font_footer_x,
                 theme.font_footer_y, theme.font_footer_width - 1,
@@ -192,10 +185,13 @@ class RenderManager(object):
             The theme to generated a preview for.
         """
         log.debug(u'generate preview')
-        self.calculate_default(QtCore.QSize(1024, 768))
+        #set the default image size for previews
+        self.calculate_default(self.screens.preview[u'size'])
         self.renderer.set_theme(themedata)
         self.build_text_rectangle(themedata)
         self.renderer.set_frame_dest(self.width, self.height, True)
+        #Reset the real screen size for subsequent render requests
+        self.calculate_default(self.screens.current[u'size'])
         verse = u'Amazing Grace!\n'\
         'How sweet the sound\n'\
         'To save a wretch like me;\n'\
@@ -206,6 +202,7 @@ class RenderManager(object):
         footer.append(u'Public Domain')
         footer.append(u'CCLI 123456')
         formatted = self.renderer.format_slide(verse, False)
+        #Only Render the first slide page returned
         return self.renderer.generate_frame_from_lines(formatted[0], footer)[u'main']
 
     def format_slide(self, words):
@@ -234,46 +231,16 @@ class RenderManager(object):
         self.renderer.set_frame_dest(self.width, self.height)
         return self.renderer.generate_frame_from_lines(main_text, footer_text)
 
-    def resize_image(self, image, width=0, height=0):
-        """
-        Resize an image to fit on the current screen.
-
-        ``image``
-            The image to resize.
-        """
-        preview = QtGui.QImage(image)
-        if width == 0:
-            w = self.width
-            h = self.height
-        else:
-            w = width
-            h = height
-        preview = preview.scaled(w, h, QtCore.Qt.KeepAspectRatio,
-            QtCore.Qt.SmoothTransformation)
-        realw = preview.width();
-        realh = preview.height()
-        # and move it to the centre of the preview space
-        newImage = QtGui.QImage(w, h, QtGui.QImage.Format_ARGB32_Premultiplied)
-        newImage.fill(QtCore.Qt.black)
-        painter = QtGui.QPainter(newImage)
-        painter.drawImage((w - realw) / 2, (h - realh) / 2, preview)
-        return newImage
-
     def calculate_default(self, screen):
         """
         Calculate the default dimentions of the screen.
 
         ``screen``
-            The QWidget instance of the screen.
+            The QSize of the screen.
         """
         log.debug(u'calculate default %s', screen)
-        #size fixed so reflects the preview size.
-        if self.current_display == 0:
-            self.width = 1024
-            self.height = 768
-        else:
-            self.width = screen.width()
-            self.height = screen.height()
+        self.width = screen.width()
+        self.height = screen.height()
         self.screen_ratio = float(self.height) / float(self.width)
         log.debug(u'calculate default %d, %d, %f',
             self.width, self.height, self.screen_ratio )
