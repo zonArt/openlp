@@ -23,7 +23,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from screen import Screen
+from screen import ScreenList
 from maindisplay import MainDisplay
 from amendthemeform import AmendThemeForm
 from slidecontroller import SlideController

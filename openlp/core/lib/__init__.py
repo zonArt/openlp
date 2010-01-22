@@ -143,11 +143,7 @@ def resize_image(image, width, height):
     ``image``
         The image to resize.
     """
-    if isinstance(image, QtGui.QImage):
-        preview = QtGui.QImage(image)
-    else:
-        preview = QtGui.QImage(image)
-
+    preview = QtGui.QImage(image)
     preview = preview.scaled(width, height, QtCore.Qt.KeepAspectRatio,
         QtCore.Qt.SmoothTransformation)
     realw = preview.width();

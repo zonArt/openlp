@@ -24,7 +24,7 @@
 ###############################################################################
 import logging
 
-class Screen(object):
+class ScreenList(object):
     """
     Wrapper to handle the parameters of the display screen
     """
