@@ -42,7 +42,7 @@ class Renderer(object):
         Initialise the renderer.
         """
         self._rect = None
-        self._debug = True
+        self._debug = False
         self._right_margin = 64 # the amount of right indent
         self._display_shadow_size_footer = 0
         self._display_outline_size_footer = 0
@@ -244,7 +244,6 @@ class Renderer(object):
             bbox1 = self._render_lines_unaligned(footer_lines, True)
         # reset the frame. first time do not worry about what you paint on.
         self._frame = QtGui.QImage(self.bg_frame)
-        print "generate ", self._frame.size()
         self._frameOp = QtGui.QImage(self.bg_frame)
         x, y = self._correctAlignment(self._rect, bbox)
         bbox = self._render_lines_unaligned(lines, False, (x, y), True)

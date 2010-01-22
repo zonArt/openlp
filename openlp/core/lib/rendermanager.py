@@ -175,7 +175,6 @@ class RenderManager(object):
             footer_rect = QtCore.QRect(theme.font_footer_x,
                 theme.font_footer_y, theme.font_footer_width - 1,
                 theme.font_footer_height - 1)
-        print "build_text_rectangle", main_rect
         self.renderer.set_text_rectangle(main_rect, footer_rect)
 
     def generate_preview(self, themedata):
@@ -229,7 +228,6 @@ class RenderManager(object):
         """
         log.debug(u'generate slide')
         self.build_text_rectangle(self.themedata)
-        print "set_frame_dest", self.width, self.height
         self.renderer.set_frame_dest(self.width, self.height)
         return self.renderer.generate_frame_from_lines(main_text, footer_text)
 
@@ -248,4 +246,3 @@ class RenderManager(object):
             self.width, self.height, self.screen_ratio )
         # 90% is start of footer
         self.footer_start = int(self.height * 0.90)
-        print "calculate_default ", self.width, self.height, self.footer_start

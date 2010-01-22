@@ -44,7 +44,6 @@ class Screen(object):
             self.current = screen
         self.screen_list.append(screen)
         self.count += 1
-        print self.screen_list
 
     def screen_exists(self, number):
         for screen in self.screen_list:

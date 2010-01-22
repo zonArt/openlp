@@ -610,7 +610,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.settingsForm.exec_()
         updated_display = self.getMonitorNumber()
         if updated_display != self.screens.current_display:
-            print "main display screen changed to ", updated_display
             self.screens.set_current_display(updated_display)
             self.RenderManager.update_display(updated_display)
             self.mainDisplay.setup(updated_display)

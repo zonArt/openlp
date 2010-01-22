@@ -133,15 +133,10 @@ class MainDisplay(DisplayWidget):
         @param (integer) screen This is the screen number.
         """
         log.debug(u'Setup %s for %s ' %(self.screens, screenNumber))
-        print "all the screen ", self.screens
         self.setVisible(False)
         self.screen = self.screens.current
         #Sort out screen locations and sizes
-        print "--------- Set screen geom ------------"
-        print "display ", self.screen[u'size']
         self.setGeometry(self.screen[u'size'])
-        print "main geom", self.geometry()
-        print "display geom 1", self.display.geometry()
         self.alertScreenPosition = self.screen[u'size'].height() * 0.9
         self.alertHeight = self.screen[u'size'].height() - self.alertScreenPosition
         self.alertDisplay.setGeometry(
@@ -150,7 +145,6 @@ class MainDisplay(DisplayWidget):
         self.video.setGeometry(self.screen[u'size'])
         self.display.resize(self.screen[u'size'].width(),
                             self.screen[u'size'].height())
-        print "display geom 2", self.display.geometry()
         #Build a custom splash screen
         self.InitialFrame = QtGui.QImage(
             self.screen[u'size'].width(),
@@ -203,31 +197,23 @@ class MainDisplay(DisplayWidget):
         ``frame``
             Image frame to be rendered
         """
-#        if self.timer_id != 0 :
-#            self.displayAlert()
-        print "render display start ", self.display.geometry()
         if not self.displayBlank:
             if transition:
                 if self.frame is not None:
-                    print "render frame 1 ", self.frame.size()
                     self.display.setPixmap(QtGui.QPixmap.fromImage(self.frame))
                     self.repaint()
                 self.frame = None
                 if frame[u'trans'] is not None:
-                    print "render frame 2 ", frame[u'trans'].size()
                     self.display.setPixmap(QtGui.QPixmap.fromImage(frame[u'trans']))
                     self.repaint()
                     self.frame = frame[u'trans']
-                print "render frame 3 ", frame[u'main'].size()
                 self.display.setPixmap(QtGui.QPixmap.fromImage(frame[u'main']))
                 self.repaint()
             else:
-                print "render frame 3 ", frame.size()
                 self.display.setPixmap(QtGui.QPixmap.fromImage(frame))
             if not self.isVisible():
                 self.setVisible(True)
                 self.showFullScreen()
-        print "render display end ", self.display.geometry()
 
     def blankDisplay(self, blanked=True):
         if blanked:
