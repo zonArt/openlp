@@ -493,6 +493,7 @@ class SlideController(QtGui.QWidget):
         """
         Blank the screen.
         """
+        print "onbl", blanked
         if self.serviceItem is not None:
             if self.serviceItem.is_command():
                 if blanked:
@@ -550,7 +551,7 @@ class SlideController(QtGui.QWidget):
     def grabMainDisplay(self):
         rm = self.parent.RenderManager
         winid = QtGui.QApplication.desktop().winId()
-        rect = rm.screen_list[rm.current_display][u'size']
+        rect = rm.screens.current[u'size']
         winimg = QtGui.QPixmap.grabWindow(winid, rect.x(),
             rect.y(), rect.width(), rect.height())
         self.SlidePreview.setPixmap(winimg)
@@ -666,7 +667,7 @@ class SlideController(QtGui.QWidget):
 
     def onMediaStop(self):
         if self.isLive:
-            Receiver.send_message(u'%s_stop'% self.serviceItem.name.lower())
+            Receiver.send_message(u'%s_stop'% self.serviceItem.name.lower(), self.isLive)
         else:
             self.mediaObject.stop()
             self.video.hide()

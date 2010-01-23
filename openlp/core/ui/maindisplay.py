@@ -236,7 +236,7 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'display alert called %s' % text)
         self.alertList.append(text)
-        if self.timer_id != 0:
+        if self.timer_id != 0 or self.mediaLoaded:
             return
         self.generateAlert()
 
@@ -299,6 +299,7 @@ class MainDisplay(DisplayWidget):
         self.firstTime = True
         self.mediaLoaded = True
         self.display.hide()
+        self.alertDisplay.hide()
         self.video.setFullScreen(True)
         self.video.setVisible(True)
         self.mediaObject.play()
