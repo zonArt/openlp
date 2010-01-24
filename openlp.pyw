@@ -28,7 +28,7 @@ import os
 import sys
 import logging
 
-from logging.handlers import RotatingFileHandler
+from logging import FileHandler
 from optparse import OptionParser
 from PyQt4 import QtCore, QtGui
 
@@ -154,7 +154,7 @@ def main():
                       help="Set the Qt4 style (passed directly to Qt4).")
     # Set up logging
     filename = u'openlp.log'
-    logfile = RotatingFileHandler(filename, maxBytes=200000, backupCount=5)
+    logfile = FileHandler(filename)
     logfile.setFormatter(logging.Formatter(
         u'%(asctime)s %(name)-15s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)

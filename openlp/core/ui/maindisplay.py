@@ -208,9 +208,11 @@ class MainDisplay(DisplayWidget):
                     self.repaint()
                     self.frame = frame[u'trans']
                 self.display.setPixmap(QtGui.QPixmap.fromImage(frame[u'main']))
+                self.display_frame = frame[u'main']
                 self.repaint()
             else:
                 self.display.setPixmap(QtGui.QPixmap.fromImage(frame))
+                self.display_frame = frame
             if not self.isVisible():
                 self.setVisible(True)
                 self.showFullScreen()
@@ -221,11 +223,11 @@ class MainDisplay(DisplayWidget):
             self.display.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
         else:
             self.displayBlank = False
-            if self.frame:
-                self.frameView(self.frame)
-        if blanked != self.parent.LiveController.blankButton.isChecked():
-            self.parent.LiveController.blankButton.setChecked(self.displayBlank)
-        self.parent.generalConfig.set_config(u'screen blank', self.displayBlank)
+            if self.display_frame:
+                self.frameView(self.display_frame)
+#        if blanked != self.parent.LiveController.blankButton.isChecked():
+#            self.parent.LiveController.blankButton.setChecked(self.displayBlank)
+#        self.parent.generalConfig.set_config(u'screen blank', self.displayBlank)
 
     def displayAlert(self, text=u''):
         """
@@ -313,6 +315,7 @@ class MainDisplay(DisplayWidget):
     def onMediaStop(self):
         log.debug(u'Media stopped by user')
         self.mediaObject.stop()
+        self.onMediaFinish()
 
     def onMediaFinish(self):
         log.debug(u'Reached end of media playlist')

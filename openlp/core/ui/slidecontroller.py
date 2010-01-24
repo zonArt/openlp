@@ -493,7 +493,7 @@ class SlideController(QtGui.QWidget):
         """
         Blank the screen.
         """
-        print "onbl", blanked
+        print "Button Pressed", blanked
         if self.serviceItem is not None:
             if self.serviceItem.is_command():
                 if blanked:

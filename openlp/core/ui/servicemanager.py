@@ -348,7 +348,7 @@ class ServiceManager(QtGui.QWidget):
         if self.parent.serviceNotSaved and \
             str_to_bool(PluginConfig(u'General').
                         get_config(u'save prompt', u'False')):
-            ret = QtGui.QMessageBox.question(None,
+            ret = QtGui.QMessageBox.question(self,
                 self.trUtf8('Save Changes to Service?'),
                 self.trUtf8('Your service is unsaved, do you want to save those '
                             'changes before creating a new one ?'),

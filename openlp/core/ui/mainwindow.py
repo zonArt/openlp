@@ -545,7 +545,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if app_version != version:
             version_text = unicode(self.trUtf8('OpenLP version %s has been updated '
                 'to version %s\n\nYou can obtain the latest version from http://openlp.org'))
-            QtGui.QMessageBox.question(None,
+            QtGui.QMessageBox.question(self,
                 self.trUtf8('OpenLP Version Updated'),
                 version_text % (app_version, version),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
@@ -576,7 +576,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.ServiceManagerContents.onLoadService(True)
         if str_to_bool(self.generalConfig.get_config(u'screen blank', False)) \
         and str_to_bool(self.generalConfig.get_config(u'blank warning', False)):
-            QtGui.QMessageBox.question(None,
+            QtGui.QMessageBox.question(self,
                 self.trUtf8('OpenLP Main Display Blanked'),
                 self.trUtf8('The Main Display has been blanked out'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
@@ -620,7 +620,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Hook to close the main window and display windows on exit
         """
         if self.serviceNotSaved:
-            ret = QtGui.QMessageBox.question(None,
+            ret = QtGui.QMessageBox.question(self,
                 self.trUtf8('Save Changes to Service?'),
                 self.trUtf8('Your service has changed, do you want to save those changes?'),
                 QtGui.QMessageBox.StandardButtons(
