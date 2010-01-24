@@ -232,13 +232,13 @@ class ImpressController(PresentationController):
         """
         if self.document:
             if self.presentation:
-                self.presentation.end()
-                self.presentation = None
-            try:
-                self.document.dispose()
-            except:
-                #We tried!
-                pass
+                try:
+                    self.presentation.end()
+                    self.presentation = None
+                    self.document.dispose()
+                except:
+                    #We tried!
+                    pass
             self.document = None
 
     def is_loaded(self):

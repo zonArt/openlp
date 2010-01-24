@@ -61,7 +61,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def retranslateUi(self):
         self.OnNewPrompt = self.trUtf8('Select Media')
-        self.OnNewFileMasks = self.trUtf8('Videos (*.avi *.mpeg *.mpg *.wmv'
+        self.OnNewFileMasks = self.trUtf8('Videos (*.avi *.mpeg *.mpg *.wmv '
             '*.mov *.mp4 *.flv);;Audio (*.ogg *.mp3 *.wma *.wav *.flac)'
             ';;All files (*)')
 

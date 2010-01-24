@@ -164,9 +164,9 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.blankButton = self.Toolbar.addToolbarButton(
                 u'Blank Screen', u':/slides/slide_close.png',
-                self.trUtf8('Blank Screen'), self.onBlankScreen, True)
+                self.trUtf8('Blank Screen'), self.onBlankDisplay, True)
             QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'live_slide_blank'), self.onBlankDisplay)
+                QtCore.SIGNAL(u'live_slide_blank'), self.blankScreen)
         if not self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
@@ -441,7 +441,6 @@ class SlideController(QtGui.QWidget):
                         self.SongMenu.menu().addAction(self.trUtf8(u'%s'%tag),
                             self.onSongBarHandler)
                 item.setText(frame[u'text'])
-                #print {u'x':frame[u'text']}
             else:
                 label = QtGui.QLabel()
                 label.setMargin(4)
@@ -486,12 +485,19 @@ class SlideController(QtGui.QWidget):
             self.PreviewListWidget.selectRow(0)
             self.onSlideSelected()
 
-    def onBlankDisplay(self):
-        self.blankButton.setChecked(self.parent.mainDisplay.displayBlank)
-
-    def onBlankScreen(self, blanked):
+    def onBlankDisplay(self, force=False):
         """
-        Blank the screen.
+        Handle the blank screen button
+        """
+        if force:
+            self.blankButton.setChecked(True)
+        self.blankScreen(self.blankButton.isChecked())
+        self.parent.generalConfig.set_config(u'screen blank',
+                                            self.blankButton.isChecked())
+
+    def blankScreen(self, blanked=False):
+        """
+        Blank the display screen.
         """
         if self.serviceItem is not None:
             if self.serviceItem.is_command():
@@ -550,7 +556,7 @@ class SlideController(QtGui.QWidget):
     def grabMainDisplay(self):
         rm = self.parent.RenderManager
         winid = QtGui.QApplication.desktop().winId()
-        rect = rm.screen_list[rm.current_display][u'size']
+        rect = rm.screens.current[u'size']
         winimg = QtGui.QPixmap.grabWindow(winid, rect.x(),
             rect.y(), rect.width(), rect.height())
         self.SlidePreview.setPixmap(winimg)
@@ -666,7 +672,7 @@ class SlideController(QtGui.QWidget):
 
     def onMediaStop(self):
         if self.isLive:
-            Receiver.send_message(u'%s_stop'% self.serviceItem.name.lower())
+            Receiver.send_message(u'%s_stop'% self.serviceItem.name.lower(), self.isLive)
         else:
             self.mediaObject.stop()
             self.video.hide()
