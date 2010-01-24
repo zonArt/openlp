@@ -308,7 +308,7 @@ class BibleMediaItem(MediaManagerItem):
             self.QuickVersionComboBox.addItem(bible)
             self.QuickSecondBibleComboBox.addItem(bible)
         # Without HTTP
-        bibles = self.parent.biblemanager.get_bibles(BibleMode.Partial)
+        #bibles = self.parent.biblemanager.get_bibles(BibleMode.Partial)
         first = True
         # load bibles into the combo boxes
         for bible in bibles:
@@ -362,8 +362,9 @@ class BibleMediaItem(MediaManagerItem):
         chapter_to = int(self.AdvancedToChapter.currentText())
         verse_from = int(self.AdvancedFromVerse.currentText())
         verse_to = int(self.AdvancedToVerse.currentText())
-        self.search_results = self.parent.biblemanager.get_verse_text(
-            bible, book, chapter_from, chapter_to, verse_from, verse_to)
+        versetext = u'%s %s:%s-%s:%s' % (book, chapter_from, verse_from, \
+                                         chapter_to, verse_to)
+        self.search_results = self.parent.manager.get_verses(bible, versetext)
         if self.ClearAdvancedSearchComboBox.currentIndex() == 0:
             self.ListView.clear()
         self.displayResults(bible)
@@ -384,11 +385,12 @@ class BibleMediaItem(MediaManagerItem):
         text = unicode(self.QuickSearchEdit.displayText())
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
             self.ListView.clear()
-        if self.QuickSearchComboBox.currentIndex() == 1:
-            self.search_results = \
-                self.parent.biblemanager.get_verses(bible, text)
-        else:
-            self.searchByReference(bible, text)
+        #if self.QuickSearchComboBox.currentIndex() == 1:
+        #    self.search_results = \
+        #        self.parent.biblemanager.get_verses(bible, text)
+        #else:
+        #    self.searchByReference(bible, text)
+        self.search_results = self.parent.biblemanager.get_verses(bible, text)
         if self.search_results:
             self.displayResults(bible)
 
@@ -484,18 +486,18 @@ class BibleMediaItem(MediaManagerItem):
 
     def initialiseBible(self, bible):
         log.debug(u'initialiseBible %s', bible)
-        book_data = self.parent.biblemanager.get_bible_books()
+        book_data = self.parent.biblemanager.get_bible_books(bible)
         self.AdvancedBookComboBox.clear()
         first = True
         for book in book_data:
             row = self.AdvancedBookComboBox.count()
-            self.AdvancedBookComboBox.addItem(book[u'book'])
+            self.AdvancedBookComboBox.addItem(book[u'name'])
             self.AdvancedBookComboBox.setItemData(
                 row, QtCore.QVariant(book[u'total']))
             if first:
                 first = False
                 self.initialiseChapterVerse(
-                    bible, book[u'book'], book[u'total'])
+                    bible, book[u'name'], book[u'total'])
 
     def initialiseChapterVerse(self, bible, book, chapters):
         log.debug(u'initialiseChapterVerse %s, %s', bible, book)
@@ -533,85 +535,95 @@ class BibleMediaItem(MediaManagerItem):
 
     def searchByReference(self, bible, search):
         log.debug(u'searchByReference %s, %s', bible, search)
-        book = u''
-        start_chapter = u''
-        end_chapter = u''
-        start_verse = u''
-        end_verse = u''
-        search = search.replace(u'  ', u' ').strip()
-        #original = search
-        message = None
-        # Remove book beware 0 index arrays
-        for i in range (len(search)-1, 0, - 1):
-            if search[i] == u' ':
-                book = search[:i]
-                # remove book from string
-                search = search[i:]
-                break
-        # allow V or v for verse instead of :
-        search = search.replace(u'v', ':')
-        search = search.replace(u'V', ':')
-        search = search.strip()
-        colon = search.find(u':')
-        if colon == -1:
-            # number : found
-            i = search.rfind(u' ')
-            if i == -1:
-                chapter = u''
-            else:
-                chapter = search[i:len(search)]
-            hyphen = chapter.find(u'-')
-            if hyphen != -1:
-                start_chapter= chapter[:hyphen]
-                end_chapter= chapter[hyphen + 1:len(chapter)]
-            else:
-                start_chapter = chapter
-        else:
-            # more complex
-            sp = search.split(u'-') #find first
-            sp1 = sp[0].split(u':')
-            if len(sp1) == 1:
-                start_chapter = sp1[0]
-                start_verse = 1
-            else:
-                start_chapter = sp1[0]
-                start_verse = sp1[1]
-            if len(sp)== 1:
-                end_chapter = start_chapter
-                end_verse = start_verse
-            else:
-                sp1 = sp[1].split(u':')
-                if len(sp1) == 1:
-                    end_chapter = start_chapter
-                    end_verse = sp1[0]
-                else:
-                    end_chapter = sp1[0]
-                    end_verse = sp1[1]
-        if end_chapter == u'':
-            end_chapter = start_chapter.rstrip()
-        if start_verse == u'':
-            if end_verse == u'':
-                start_verse = 1
-            else:
-                start_verse = end_verse
-        if end_verse == u'':
-            end_verse = 99
-        if start_chapter == u'':
-            message = self.trUtf8('No chapter found for search criteria')
-        log.debug(u'results = %s @ %s : %s @ %s : %s'% \
-            (unicode(book), unicode(start_chapter), unicode(end_chapter),
-            unicode(start_verse), unicode(end_verse)))
-        if message is None:
-            self.search_results = None
-            self.search_results = self.parent.biblemanager.get_verse_text(
-                bible, book, int(start_chapter), int(end_chapter),
-                int(start_verse), int(end_verse))
-            self.copyright = unicode(self.parent.biblemanager.get_meta_data(
-                bible, u'Copyright').value)
-            self.permissions = unicode(self.parent.biblemanager.get_meta_data(
-                bible, u'Permissions').value)
-            self.version = unicode(self.parent.biblemanager.get_meta_data(
-                bible, u'Version').value)
-        else:
-            QtGui.QMessageBox.information(
-                self, self.trUtf8('Information'), message)
+        self.search_results = self.parent.biblemanager.get_verses(bible, search)
+        self.copyright = unicode(self.parent.biblemanager.get_meta_data(
+            bible, u'Copyright').value)
+        self.permissions = unicode(self.parent.biblemanager.get_meta_data(
+            bible, u'Permissions').value)
+        self.version = unicode(self.parent.biblemanager.get_meta_data(
+            bible, u'Version').value)
+
+#    def searchByReference(self, bible, search):
+#        log.debug(u'searchByReference %s, %s', bible, search)
+#        book = u''
+#        start_chapter = u''
+#        end_chapter = u''
+#        start_verse = u''
+#        end_verse = u''
+#        search = search.replace(u'  ', u' ').strip()
+#        #original = search
+#        message = None
+#        # Remove book beware 0 index arrays
+#        for i in range (len(search)-1, 0, - 1):
+#            if search[i] == u' ':
+#                book = search[:i]
+#                # remove book from string
+#                search = search[i:]
+#                break
+#        # allow V or v for verse instead of :
+#        search = search.replace(u'v', ':')
+#        search = search.replace(u'V', ':')
+#        search = search.strip()
+#        colon = search.find(u':')
+#        if colon == -1:
+#            # number : found
+#            i = search.rfind(u' ')
+#            if i == -1:
+#                chapter = u''
+#            else:
+#                chapter = search[i:len(search)]
+#            hyphen = chapter.find(u'-')
+#            if hyphen != -1:
+#                start_chapter= chapter[:hyphen]
+#                end_chapter= chapter[hyphen + 1:len(chapter)]
+#            else:
+#                start_chapter = chapter
+#        else:
+#            # more complex
+#            sp = search.split(u'-') #find first
+#            sp1 = sp[0].split(u':')
+#            if len(sp1) == 1:
+#                start_chapter = sp1[0]
+#                start_verse = 1
+#            else:
+#                start_chapter = sp1[0]
+#                start_verse = sp1[1]
+#            if len(sp)== 1:
+#                end_chapter = start_chapter
+#                end_verse = start_verse
+#            else:
+#                sp1 = sp[1].split(u':')
+#                if len(sp1) == 1:
+#                    end_chapter = start_chapter
+#                    end_verse = sp1[0]
+#                else:
+#                    end_chapter = sp1[0]
+#                    end_verse = sp1[1]
+#        if end_chapter == u'':
+#            end_chapter = start_chapter.rstrip()
+#        if start_verse == u'':
+#            if end_verse == u'':
+#                start_verse = 1
+#            else:
+#                start_verse = end_verse
+#        if end_verse == u'':
+#            end_verse = 99
+#        if start_chapter == u'':
+#            message = self.trUtf8('No chapter found for search criteria')
+#        log.debug(u'results = %s @ %s : %s @ %s : %s'% \
+#            (unicode(book), unicode(start_chapter), unicode(end_chapter),
+#            unicode(start_verse), unicode(end_verse)))
+#        if message is None:
+#            self.search_results = None
+#            self.search_results = self.parent.biblemanager.get_verse_text(
+#                bible, book, int(start_chapter), int(end_chapter),
+#                int(start_verse), int(end_verse))
+#            self.copyright = unicode(self.parent.biblemanager.get_meta_data(
+#                bible, u'Copyright').value)
+#            self.permissions = unicode(self.parent.biblemanager.get_meta_data(
+#                bible, u'Permissions').value)
+#            self.version = unicode(self.parent.biblemanager.get_meta_data(
+#                bible, u'Version').value)
+#        else:
+#            QtGui.QMessageBox.information(
+#                self, self.trUtf8('Information'), message)

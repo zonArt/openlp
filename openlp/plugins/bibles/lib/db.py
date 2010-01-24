@@ -34,7 +34,7 @@ from openlp.plugins.bibles.lib.models import *
 
 log = logging.getLogger(__name__)
 
-class BibleDB():
+class BibleDB(QtCore.QObject):
     """
     This class represents a database-bound Bible. It is used as a base class
     for all the custom importers, so that the can implement their own import
@@ -121,12 +121,12 @@ class BibleDB():
         return book
 
     def create_chapter(self, book_id, chapter, textlist):
-        log.debug(u'create_chapter %s,%s', bookid, chap)
+        log.debug(u'create_chapter %s,%s', book_id, chapter)
         #text list has book and chapter as first two elements of the array
         for verse_number, verse_text in textlist.iteritems():
             verse = Verse.populate(
                 book_id = book_id,
-                chapter = chap,
+                chapter = chapter,
                 verse = verse_number,
                 text = verse_text
             )
@@ -158,7 +158,7 @@ class BibleDB():
     def get_book(self, book):
         log.debug(u'%s: %s', __name__, book)
         db_book = self.session.query(Book)\
-            .filter_by(Book.name.like(book + u'%'))\
+            .filter(Book.name.like(book + u'%'))\
             .first()
         if db_book is None:
             db_book = self.session.query(Book)\
@@ -198,10 +198,10 @@ class BibleDB():
             if end_verse == -1:
                 end_verse = self.get_chapter_count(book)
             if db_book:
-                book = book.name
+                book = db_book.name
                 log.debug(u'Book name corrected to "%s"' % book)
             verses = self.session.query(Verse)\
-                .filter_by(book_id=book.id)\
+                .filter_by(book_id=db_book.id)\
                 .filter_by(chapter=chapter)\
                 .filter(Verse.verse >= start_verse)\
                 .filter(Verse.verse <= end_verse)\

@@ -25,6 +25,7 @@
 
 import logging
 import chardet
+import csv
 
 from openlp.core.lib import Receiver
 from db import BibleDB
@@ -42,8 +43,8 @@ class CSVBible(BibleDB):
         This class assumes the files contain all the information and
         a clean bible is being loaded.
         """
-        log.info(__name__)
         BibleDB.__init__(self, **kwargs)
+        log.info(self.__class__.__name__)
         if u'booksfile' not in kwargs:
             raise KeyError(u'You have to supply a file to import books from.')
         self.booksfile = kwargs[u'booksfile']
@@ -63,58 +64,55 @@ class CSVBible(BibleDB):
     def do_import(self):
         #Populate the Tables
         success = True
-        fbooks = None
+        books_file = None
         try:
-            fbooks = open(self.booksfile, 'r')
-            for line in fbooks:
+            books_file = open(self.booksfile, 'r')
+            dialect = csv.Sniffer().sniff(books_file.read(1024))
+            books_file.seek(0)
+            books_reader = csv.reader(books_file, dialect)
+            for line in books_reader:
                 # cancel pressed
                 if self.stop_import:
                     break
-                details = chardet.detect(line)
-                line = unicode(line, details['encoding'])
-                p = line.split(u',')
-                p1 = p[1].replace(u'"', u'')
-                p2 = p[2].replace(u'"', u'')
-                p3 = p[3].replace(u'"', u'')
-                self.create_book(p2, p3, int(p1))
+                details = chardet.detect(line[1])
+                self.create_book(unicode(line[1], details['encoding']),
+                    line[2], int(line[0]))
                 Receiver.send_message(u'process_events')
         except:
             log.exception(u'Loading books from file failed')
             success = False
         finally:
-            if fbooks:
-                fbooks.close()
+            if books_file:
+                books_file.close()
         if not success:
             return False
-        fverse = None
+        verse_file = None
         try:
-            fverse = open(versesfile, 'r')
             book_ptr = None
-            for line in fverse:
+            verse_file = open(versesfile, 'r')
+            dialect = csv.Sniffer().sniff(verse_file.read(1024))
+            verse_file.seek(0)
+            verse_reader = csv.reader(verse_file, dialect)
+            for line in verse_reader:
                 if self.stop_import:  # cancel pressed
                     break
-                details = chardet.detect(line)
-                line = unicode(line, details['encoding'])
-                # split into 3 units and leave the rest as a single field
-                p = line.split(u',', 3)
-                p0 = p[0].replace(u'"', u'')
-                p3 = p[3].replace(u'"', u'')
-                if book_ptr is not p0:
-                    book = self.get_book(p0)
+                details = chardet.detect(line[3])
+                if book_ptr != line[0]:
+                    book = self.get_book(line[0])
                     book_ptr = book.name
-                    # increament the progress bar
                     self.wizard.incrementProgressBar(
-                        u'Importing %s %s' % book.name)
+                        u'Importing %s %s' % (book.name, line[1]))
                     self.commit()
-                self.create_verse(book.id, p[1], p[2], p3)
+                self.create_verse(book.id, line[1], line[2],
+                                  unicode(line[3], details['encoding']))
                 Receiver.send_message(u'process_events')
             self.commit()
         except:
             log.exception(u'Loading verses from file failed')
             success = False
         finally:
-            if fverse:
-                fverse.close()
+            if verse_file:
+                verse_file.close()
         if self.stop_import:
             self.wizard.incrementProgressBar(u'Import canceled!')
             return False

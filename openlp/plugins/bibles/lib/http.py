@@ -24,9 +24,13 @@
 ###############################################################################
 
 import logging
+import urllib2
+
+from BeautifulSoup import BeautifulSoup
 
 from common import BibleCommon, SearchResults
 from db import BibleDB
+from openlp.plugins.bibles.lib.models import Book
 
 class BGExtract(BibleCommon):
     global log
@@ -51,7 +55,7 @@ class BGExtract(BibleCommon):
             Chapter number
         """
         log.debug(u'get_bible_chapter %s, %s, %s', version, bookname, chapter)
-        urlstring = u'http://www.biblegateway.com/passage/?search=%s+%d' \
+        urlstring = u'http://www.biblegateway.com/passage/?search=%s+%s' \
             u'&version=%s' % (bookname, chapter, version)
         log.debug(u'BibleGateway url = %s' % urlstring)
         xml_string = self._get_web_text(urlstring, self.proxyurl)
@@ -94,17 +98,14 @@ class BGExtract(BibleCommon):
         return SearchResults(bookname, chapter, bible)
 
 class CWExtract(BibleCommon):
-    global log
-    log = logging.getLogger(u'BibleHTTPMgr(CWExtract)')
-    log.info(u'CWExtract loaded')
+    log.info(u'%s loaded', __name__)
 
     def __init__(self, proxyurl=None):
         log.debug(u'init %s', proxyurl)
         self.proxyurl = proxyurl
 
-    def get_bible_chapter(self, version, bookname, chapter) :
-        log.debug(u'getBibleChapter %s,%s,%s',
-            version,bookname, chapter)
+    def get_bible_chapter(self, version, bookname, chapter):
+        log.debug(u'%s %s, %s, %s', __name__, version, bookname, chapter)
         """
         Access and decode bibles via the Crosswalk website
 
@@ -120,60 +121,24 @@ class CWExtract(BibleCommon):
         log.debug(u'get_bible_chapter %s,%s,%s',
             version, bookname, chapter)
         bookname = bookname.replace(u' ', u'')
-        urlstring = u'http://bible.crosswalk.com/OnlineStudyBible/bible.cgi?word=%s+%d&version=%s'\
-            % (bookname, chapter, version)
-        xml_string = self._get_web_text(urlstring, self.proxyurl)
-        ## Strip Book Title from Heading to return it to system
-        ##
-        i = xml_string.find(u'<title>')
-        j = xml_string.find(u'-', i)
-        book_title = xml_string[i + 7:j]
-        book_title = book_title.rstrip()
-        log.debug(u'Book Title %s', book_title)
-        i = book_title.rfind(u' ')
-        book_chapter = book_title[i+1:len(book_title)].rstrip()
-        book_title = book_title[:i].rstrip()
-        log.debug(u'Book Title %s', book_title)
-        log.debug(u'Book Chapter %s', book_chapter)
-        # Strip Verse Data from Page and build an array
+        page = urllib2.urlopen(u'http://www.biblestudytools.com/%s/%s/%s.html' % \
+            (version, bookname.lower(), chapter))
+        soup = BeautifulSoup(page)
+        htmlverses = soup.findAll(u'span', u'versetext')
+        verses = {}
+        for verse in htmlverses:
+            versenumber = int(verse.contents[0].contents[0])
+            versetext = u''
+            for part in verse.contents:
+                if str(part)[0] != u'<':
+                    versetext = versetext + part
+            versetext = versetext.strip(u'\n\r\t ')
+            verses[versenumber] = versetext
+        return SearchResults(bookname, chapter, verses)
 
-        i = xml_string.find(u'NavCurrentChapter')
-        xml_string = xml_string[i:len(xml_string)]
-        i = xml_string.find(u'<TABLE')
-        xml_string = xml_string[i:len(xml_string)]
-        i = xml_string.find(u'<B>')
-        #remove the <B> at the front
-        xml_string = xml_string[i + 3 :len(xml_string)]
-        # Remove the heading for the book
-        i = xml_string.find(u'<B>')
-        #remove the <B> at the front
-        xml_string = xml_string[i + 3 :len(xml_string)]
-        versePos = xml_string.find(u'<BLOCKQUOTE>')
-        bible = {}
-        while versePos > 0:
-            verseText = u''
-            versePos = xml_string.find(u'<B><I>', versePos) + 6
-            i = xml_string.find(u'</I></B>', versePos)
-            # Got the Chapter
-            verse = xml_string[versePos:i]
-            # move the starting position to begining of the text
-            versePos = i + 8
-            # find the start of the next verse
-            i = xml_string.find(u'<B><I>', versePos)
-            if i == -1:
-                i = xml_string.find(u'</BLOCKQUOTE>',versePos)
-                verseText = xml_string[versePos: i]
-                versePos = 0
-            else:
-                verseText = xml_string[versePos: i]
-                versePos = i
-            bible[verse] = self._clean_text(verseText)
-        return SearchResults(book_title, book_chapter, bible)
 
 class HTTPBible(BibleDB):
-    global log
-    log = logging.getLogger(u'BibleHTTPMgr')
-    log.info(u'BibleHTTP manager loaded')
+    log.info(u'%s loaded', __name__)
 
     def __init__(self, **kwargs):
         """
@@ -185,6 +150,7 @@ class HTTPBible(BibleDB):
 
         Init confirms the bible exists and stores the database path.
         """
+        BibleDB.__init__(self, **kwargs)
         if u'download_source' not in kwargs:
             raise KeyError(u'Missing keyword argument "download_source"')
         if u'download_name' not in kwargs:
@@ -204,8 +170,9 @@ class HTTPBible(BibleDB):
         else:
             self.proxy_password = None
 
-    def register(self):
-        name = BibleDB.register(self)
+    def do_import(self):
+        self.wizard.ImportProgressBar.setMaximum(2)
+        self.wizard.incrementProgressBar('Registering bible...')
         self.create_meta(u'download source', self.download_source)
         self.create_meta(u'download name', self.download_name)
         if self.proxy_server:
@@ -216,21 +183,88 @@ class HTTPBible(BibleDB):
         if self.proxy_password:
             # store the proxy password
             self.create_meta(u'proxy password', self.proxy_password)
-        return name
+        self.wizard.incrementProgressBar('Registered.')
+        return True
 
-    def get_bible_chapter(self, version, book, chapter):
+    def get_verses(self, reference_list):
+        """
+        A reimplementation of the ``BibleDB.get_verses`` method, this one is
+        specifically for web Bibles. It first checks to see if the particular
+        chapter exists in the DB, and if not it pulls it from the web. If the
+        chapter DOES exist, it simply pulls the verses from the DB using the
+        ancestor method.
+
+        ``reference_list``
+            This is the list of references the media manager item wants. It is
+            a list of tuples, with the following format::
+
+                (book, chapter, start_verse, end_verse)
+
+            Therefore, when you are looking for multiple items, simply break
+            them up into references like this, bundle them into a list. This
+            function then runs through the list, and returns an amalgamated
+            list of ``Verse`` objects. For example::
+
+                [(u'Genesis', 1, 1, 1), (u'Genesis', 2, 2, 3)]
+        """
+        for reference in reference_list:
+            log.debug('Reference: %s', reference)
+            book = reference[0]
+            db_book = self.get_book(book)
+            if not db_book:
+                book_details = self.lookup_book(book)
+                db_book = self.create_book(book_details[u'name'],
+                    book_details[u'abbr'], book_details[u'test'])
+            book = db_book.name
+            if self.get_verse_count(book, reference[1]) == 0:
+                search_results = self.get_chapter(self.name, book, reference[1])
+                if search_results and search_results.has_verselist():
+                    ## We have found a book of the bible lets check to see
+                    ## if it was there.  By reusing the returned book name
+                    ## we get a correct book.  For example it is possible
+                    ## to request ac and get Acts back.
+                    bookname = search_results.get_book()
+                    # check to see if book/chapter exists
+                    db_book = self.get_book(bookname)
+                    self.create_chapter(db_book.id, search_results.get_chapter(),
+                        search_results.get_verselist())
+        return BibleDB.get_verses(self, reference_list)
+
+    def get_chapter(self, version, book, chapter):
         """
         Receive the request and call the relevant handler methods
         """
-        log.debug(u'get_bible_chapter %s,%s,%s',
-            version, book, chapter)
-        log.debug(u'biblesource = %s', self.biblesource)
+        log.debug(u'get_chapter %s, %s, %s', version, book, chapter)
+        log.debug(u'source = %s', self.download_source)
         try:
-            if self.biblesource.lower() == u'crosswalk':
-                ev = CWExtract(self.proxyurl)
+            if self.download_source.lower() == u'crosswalk':
+                ev = CWExtract(self.proxy_server)
             else:
-                ev = BGExtract(self.proxyurl)
-            return ev.get_bible_chapter(self.bibleid, book, chapter)
+                ev = BGExtract(self.proxy_server)
+            return ev.get_bible_chapter(self.download_name, book, chapter)
         except:
             log.exception("Failed to get bible chapter")
+            return None
+
+    def get_books(self):
+        return [Book.populate(name=book[u'name']) for book in self.books]
+
+    def get_chapter_count(self, book):
+        return self.books[book][u'chap']
+
+    def set_proxy_server(self, server):
+        self.proxy_server = server
+
+    def set_books(self, books):
+        self.books = books
+
+    def lookup_book(self, book):
+        log.debug('Looking up "%s" in %s', (book, self.books))
+        if book in self.books:
+            return self.books[book]
+        else:
+            for details in self.books:
+                if details[u'abbr'] == book:
+                    return details
+            return None
 
