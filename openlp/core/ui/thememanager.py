@@ -34,8 +34,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.ui import AmendThemeForm
 from openlp.core.theme import Theme
 from openlp.core.lib import PluginConfig, OpenLPToolbar, contextMenuAction, \
-    ThemeXML, ThemeLevel, str_to_bool, get_text_file_string, build_icon, \
-    Receiver, contextMenuSeparator
+    ThemeXML, str_to_bool, get_text_file_string, build_icon, Receiver, \
+    contextMenuSeparator
 from openlp.core.utils import ConfigHelper
 
 class ThemeManager(QtGui.QWidget):

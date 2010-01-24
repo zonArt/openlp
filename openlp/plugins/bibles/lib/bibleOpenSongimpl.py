@@ -23,13 +23,11 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import os
-import os.path
 import logging
 import chardet
 import codecs
-from lxml import objectify
 
+from lxml import objectify
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver

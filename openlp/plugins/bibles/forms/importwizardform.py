@@ -26,7 +26,6 @@
 import logging
 import os
 import os.path
-from time import sleep
 
 from PyQt4 import QtCore, QtGui
 

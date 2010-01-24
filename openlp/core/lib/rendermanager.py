@@ -25,7 +25,7 @@
 
 import logging
 
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtCore
 
 from renderer import Renderer
 from openlp.core.lib import ThemeLevel, resize_image
