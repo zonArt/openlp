@@ -164,9 +164,9 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.blankButton = self.Toolbar.addToolbarButton(
                 u'Blank Screen', u':/slides/slide_close.png',
-                self.trUtf8('Blank Screen'), self.onBlankScreen, True)
+                self.trUtf8('Blank Screen'), self.onBlankDisplay, True)
             QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'live_slide_blank'), self.onBlankDisplay)
+                QtCore.SIGNAL(u'live_slide_blank'), self.blankScreen)
         if not self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
@@ -485,12 +485,19 @@ class SlideController(QtGui.QWidget):
             self.PreviewListWidget.selectRow(0)
             self.onSlideSelected()
 
-    def onBlankDisplay(self):
-        self.blankButton.setChecked(self.parent.mainDisplay.displayBlank)
-
-    def onBlankScreen(self, blanked):
+    def onBlankDisplay(self, force=False):
         """
-        Blank the screen.
+        Handle the blank screen button
+        """
+        if force:
+            self.blankButton.setChecked(True)
+        self.blankScreen(self.blankButton.isChecked())
+        self.parent.generalConfig.set_config(u'screen blank',
+                                            self.blankButton.isChecked())
+
+    def blankScreen(self, blanked=False):
+        """
+        Blank the display screen.
         """
         if self.serviceItem is not None:
             if self.serviceItem.is_command():

@@ -576,12 +576,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.ServiceManagerContents.onLoadService(True)
         if str_to_bool(self.generalConfig.get_config(u'screen blank', False)) \
         and str_to_bool(self.generalConfig.get_config(u'blank warning', False)):
+            self.LiveController.onBlankDisplay(True)
             QtGui.QMessageBox.question(self,
                 self.trUtf8('OpenLP Main Display Blanked'),
                 self.trUtf8('The Main Display has been blanked out'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
-            self.LiveController.blankButton.setChecked(True)
 
     def onHelpAboutItemClicked(self):
         """
