@@ -441,7 +441,6 @@ class SlideController(QtGui.QWidget):
                         self.SongMenu.menu().addAction(self.trUtf8(u'%s'%tag),
                             self.onSongBarHandler)
                 item.setText(frame[u'text'])
-                #print {u'x':frame[u'text']}
             else:
                 label = QtGui.QLabel()
                 label.setMargin(4)
@@ -493,7 +492,6 @@ class SlideController(QtGui.QWidget):
         """
         Blank the screen.
         """
-        print "Button Pressed", blanked
         if self.serviceItem is not None:
             if self.serviceItem.is_command():
                 if blanked:

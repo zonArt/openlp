@@ -298,6 +298,7 @@ class MainDisplay(DisplayWidget):
         log.debug(u'Play the new media, Live ')
         if not self.mediaLoaded and not self.displayBlank:
             self.blankDisplay()
+            self.display_frame = self.blankFrame
         self.firstTime = True
         self.mediaLoaded = True
         self.display.hide()
@@ -326,3 +327,4 @@ class MainDisplay(DisplayWidget):
         self.mediaLoaded = False
         self.video.setVisible(False)
         self.display.show()
+        self.blankDisplay(False)
