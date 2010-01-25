@@ -96,8 +96,10 @@ class MainDisplay(DisplayWidget):
         self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
         Phonon.createPath(self.mediaObject, self.video)
         Phonon.createPath(self.mediaObject, self.audio)
-        self.display = QtGui.QLabel(self)
-        self.display.setScaledContents(True)
+        self.display_image = QtGui.QLabel(self)
+        self.display_image.setScaledContents(True)
+        self.display_text = QtGui.QLabel(self)
+        self.display_text.setScaledContents(True)
         self.alertDisplay = QtGui.QLabel(self)
         self.alertDisplay.setScaledContents(True)
         self.primary = True
@@ -123,7 +125,7 @@ class MainDisplay(DisplayWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_play'), self.onMediaPlay)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_pause'), self.onMediaPaws)
+            QtCore.SIGNAL(u'media_pause'), self.onMediaPause)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_stop'), self.onMediaStop)
 
@@ -143,7 +145,9 @@ class MainDisplay(DisplayWidget):
             QtCore.QRect(0, self.alertScreenPosition,
                         self.screen[u'size'].width(),self.alertHeight))
         self.video.setGeometry(self.screen[u'size'])
-        self.display.resize(self.screen[u'size'].width(),
+        self.display_image.resize(self.screen[u'size'].width(),
+                            self.screen[u'size'].height())
+        self.display_text.resize(self.screen[u'size'].width(),
                             self.screen[u'size'].height())
         #Build a custom splash screen
         self.InitialFrame = QtGui.QImage(
@@ -200,18 +204,18 @@ class MainDisplay(DisplayWidget):
         if not self.displayBlank:
             if transition:
                 if self.frame is not None:
-                    self.display.setPixmap(QtGui.QPixmap.fromImage(self.frame))
+                    self.display_text.setPixmap(QtGui.QPixmap.fromImage(self.frame))
                     self.repaint()
                 self.frame = None
                 if frame[u'trans'] is not None:
-                    self.display.setPixmap(QtGui.QPixmap.fromImage(frame[u'trans']))
+                    self.display_text.setPixmap(QtGui.QPixmap.fromImage(frame[u'trans']))
                     self.repaint()
                     self.frame = frame[u'trans']
-                self.display.setPixmap(QtGui.QPixmap.fromImage(frame[u'main']))
+                self.display_text.setPixmap(QtGui.QPixmap.fromImage(frame[u'main']))
                 self.display_frame = frame[u'main']
                 self.repaint()
             else:
-                self.display.setPixmap(QtGui.QPixmap.fromImage(frame))
+                self.display_text.setPixmap(QtGui.QPixmap.fromImage(frame))
                 self.display_frame = frame
             if not self.isVisible():
                 self.setVisible(True)
@@ -220,10 +224,10 @@ class MainDisplay(DisplayWidget):
     def blankDisplay(self, blanked=True):
         if blanked:
             self.displayBlank = True
-            self.display.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
+            self.display_text.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
         else:
             self.displayBlank = False
-            if self.display_frame:
+            if self.display_text_frame:
                 self.frameView(self.display_frame)
 #        if blanked != self.parent.LiveController.blankButton.isChecked():
 #            self.parent.LiveController.blankButton.setChecked(self.displayBlank)
@@ -285,7 +289,7 @@ class MainDisplay(DisplayWidget):
 
     def onMediaQueue(self, message):
         log.debug(u'Queue new media message %s' % message)
-        self.display.close()
+        self.display_text.close()
         file = os.path.join(message[1], message[2])
         if self.firstTime:
             self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
@@ -301,7 +305,8 @@ class MainDisplay(DisplayWidget):
             self.display_frame = self.blankFrame
         self.firstTime = True
         self.mediaLoaded = True
-        self.display.hide()
+        self.display_image.hide()
+        self.display_text.hide()
         self.alertDisplay.hide()
         self.video.setFullScreen(True)
         self.video.setVisible(True)
@@ -309,7 +314,7 @@ class MainDisplay(DisplayWidget):
         if self.primary:
             self.setVisible(True)
 
-    def onMediaPaws(self):
+    def onMediaPause(self):
         log.debug(u'Media paused by user')
         self.mediaObject.pause()
 
@@ -326,5 +331,5 @@ class MainDisplay(DisplayWidget):
         self.mediaObject.clearQueue()
         self.mediaLoaded = False
         self.video.setVisible(False)
-        self.display.show()
+        self.display_text.show()
         self.blankDisplay(False)
