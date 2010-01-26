@@ -30,7 +30,7 @@ import time
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, resize_image
 
 class DisplayWidget(QtGui.QWidget):
     """
@@ -162,7 +162,7 @@ class MainDisplay(DisplayWidget):
             (self.screen[u'size'].width() - splash_image.width()) / 2,
             (self.screen[u'size'].height() - splash_image.height()) / 2,
             splash_image)
-        self.frameView(self.InitialFrame)
+        self.display_image.setPixmap(QtGui.QPixmap.fromImage(self.InitialFrame))
         #Build a Black screen
         painter = QtGui.QPainter()
         self.blankFrame = QtGui.QImage(
@@ -171,10 +171,11 @@ class MainDisplay(DisplayWidget):
             QtGui.QImage.Format_ARGB32_Premultiplied)
         painter.begin(self.blankFrame)
         painter.fillRect(self.blankFrame.rect(), QtCore.Qt.red)
-        #buid a blank transparent image
+        #build a blank transparent image
         self.transparent = QtGui.QPixmap(self.screen[u'size'].width(),
                                          self.screen[u'size'].height())
         self.transparent.fill(QtCore.Qt.transparent)
+        self.frameView(self.transparent)
         # To display or not to display?
         if not self.screen[u'primary']:
             self.showFullScreen()
@@ -193,6 +194,16 @@ class MainDisplay(DisplayWidget):
     def showDisplay(self):
         if not self.primary:
             self.setVisible(True)
+
+    def addImageWithText(self, frame):
+        frame = resize_image(frame,
+                    self.screen[u'size'].width(),
+                    self.screen[u'size'].height() )
+        self.display_image.setPixmap(QtGui.QPixmap.fromImage(frame))
+#        self.display_image.show()
+#        if not self.isVisible():
+#            self.setVisible(True)
+#            self.showFullScreen()
 
     def frameView(self, frame, transition=False):
         """
@@ -215,7 +226,10 @@ class MainDisplay(DisplayWidget):
                 self.display_frame = frame[u'main']
                 self.repaint()
             else:
-                self.display_text.setPixmap(QtGui.QPixmap.fromImage(frame))
+                if isinstance(frame, QtGui.QPixmap):
+                    self.display_text.setPixmap(frame)
+                else:
+                    self.display_text.setPixmap(QtGui.QPixmap.fromImage(frame))
                 self.display_frame = frame
             if not self.isVisible():
                 self.setVisible(True)
