@@ -241,11 +241,8 @@ class MainDisplay(DisplayWidget):
             self.display_text.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
         else:
             self.displayBlank = False
-            if self.display_text_frame:
+            if self.display_frame:
                 self.frameView(self.display_frame)
-#        if blanked != self.parent.LiveController.blankButton.isChecked():
-#            self.parent.LiveController.blankButton.setChecked(self.displayBlank)
-#        self.parent.generalConfig.set_config(u'screen blank', self.displayBlank)
 
     def displayAlert(self, text=u''):
         """
