@@ -183,10 +183,13 @@ class MainDisplay(DisplayWidget):
         else:
             self.setVisible(False)
             self.primary = True
+        self.repaint()
 
     def resetDisplay(self):
         if self.primary:
             self.setVisible(False)
+        else:
+            self.showFullScreen()
 
     def hideDisplay(self):
         self.setVisible(False)
@@ -194,6 +197,7 @@ class MainDisplay(DisplayWidget):
     def showDisplay(self):
         if not self.primary:
             self.setVisible(True)
+            self.showFullScreen()
 
     def addImageWithText(self, frame):
         frame = resize_image(frame,
@@ -252,8 +256,11 @@ class MainDisplay(DisplayWidget):
             display text
         """
         log.debug(u'display alert called %s' % text)
+        self.parent.StatusBar.showMessage(self.trUtf8(u''))
         self.alertList.append(text)
         if self.timer_id != 0 or self.mediaLoaded:
+            self.parent.StatusBar.showMessage(\
+                    self.trUtf8(u'Alert message created and delayed'))
             return
         self.generateAlert()
 
@@ -343,4 +350,5 @@ class MainDisplay(DisplayWidget):
         self.mediaLoaded = False
         self.video.setVisible(False)
         self.display_text.show()
+        self.display_image.show()
         self.blankDisplay(False)

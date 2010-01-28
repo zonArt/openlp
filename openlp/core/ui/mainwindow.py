@@ -581,8 +581,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 self.trUtf8('The Main Display has been blanked out'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
-        self.repaint()
-        self.versionCheck()
 
     def onHelpAboutItemClicked(self):
         """
