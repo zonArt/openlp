@@ -100,8 +100,8 @@ class MainDisplay(DisplayWidget):
         self.display_image.setScaledContents(True)
         self.display_text = QtGui.QLabel(self)
         self.display_text.setScaledContents(True)
-        self.alertDisplay = QtGui.QLabel(self)
-        self.alertDisplay.setScaledContents(True)
+        self.display_alert = QtGui.QLabel(self)
+        self.display_alert.setScaledContents(True)
         self.primary = True
         self.displayBlank = False
         self.blankFrame = None
@@ -141,7 +141,7 @@ class MainDisplay(DisplayWidget):
         self.setGeometry(self.screen[u'size'])
         self.alertScreenPosition = self.screen[u'size'].height() * 0.9
         self.alertHeight = self.screen[u'size'].height() - self.alertScreenPosition
-        self.alertDisplay.setGeometry(
+        self.display_alert.setGeometry(
             QtCore.QRect(0, self.alertScreenPosition,
                         self.screen[u'size'].width(),self.alertHeight))
         self.video.setGeometry(self.screen[u'size'])
@@ -163,6 +163,7 @@ class MainDisplay(DisplayWidget):
             (self.screen[u'size'].height() - splash_image.height()) / 2,
             splash_image)
         self.display_image.setPixmap(QtGui.QPixmap.fromImage(self.InitialFrame))
+        self.repaint()
         #Build a Black screen
         painter = QtGui.QPainter()
         self.blankFrame = QtGui.QImage(
@@ -170,11 +171,13 @@ class MainDisplay(DisplayWidget):
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
         painter.begin(self.blankFrame)
+        #TODO make black when testing finished
         painter.fillRect(self.blankFrame.rect(), QtCore.Qt.red)
         #build a blank transparent image
         self.transparent = QtGui.QPixmap(self.screen[u'size'].width(),
                                          self.screen[u'size'].height())
         self.transparent.fill(QtCore.Qt.transparent)
+        self.display_alert.setPixmap(self.transparent)
         self.frameView(self.transparent)
         # To display or not to display?
         if not self.screen[u'primary']:
@@ -183,7 +186,6 @@ class MainDisplay(DisplayWidget):
         else:
             self.setVisible(False)
             self.primary = True
-        self.repaint()
 
     def resetDisplay(self):
         if self.primary:
@@ -248,6 +250,7 @@ class MainDisplay(DisplayWidget):
             if self.display_frame:
                 self.frameView(self.display_frame)
 
+
     def displayAlert(self, text=u''):
         """
         Called from the Alert Tab to display an alert
@@ -292,22 +295,24 @@ class MainDisplay(DisplayWidget):
         painter.drawText(
             x, y + metrics.height() - metrics.descent() - 1, text)
         painter.end()
-        self.alertDisplay.setPixmap(alertframe)
-        self.alertDisplay.setVisible(True)
+        self.display_alert.setPixmap(alertframe)
+        self.display_alert.setVisible(True)
         # check to see if we have a timer running
         if self.timer_id == 0:
             self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
 
     def timerEvent(self, event):
         if event.timerId() == self.timer_id:
-            self.alertDisplay.setPixmap(self.transparent)
+            self.display_alert.setPixmap(self.transparent)
         self.killTimer(self.timer_id)
         self.timer_id = 0
         self.generateAlert()
 
     def onMediaQueue(self, message):
         log.debug(u'Queue new media message %s' % message)
+        self.display_image.close()
         self.display_text.close()
+        self.display_alert.close()
         file = os.path.join(message[1], message[2])
         if self.firstTime:
             self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
@@ -325,12 +330,12 @@ class MainDisplay(DisplayWidget):
         self.mediaLoaded = True
         self.display_image.hide()
         self.display_text.hide()
-        self.alertDisplay.hide()
+        self.display_alert.hide()
         self.video.setFullScreen(True)
         self.video.setVisible(True)
         self.mediaObject.play()
-        if self.primary:
-            self.setVisible(True)
+        self.setVisible(True)
+        self.hide()
 
     def onMediaPause(self):
         log.debug(u'Media paused by user')
@@ -343,8 +348,6 @@ class MainDisplay(DisplayWidget):
 
     def onMediaFinish(self):
         log.debug(u'Reached end of media playlist')
-        if self.primary:
-            self.setVisible(False)
         self.mediaObject.stop()
         self.mediaObject.clearQueue()
         self.mediaLoaded = False

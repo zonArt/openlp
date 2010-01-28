@@ -68,6 +68,10 @@ class OpenLP(QtGui.QApplication):
     global log
     log.info(u'OpenLP Application Loaded')
 
+    def notify(self, obj, evt):
+        #TODO needed for presentation exceptions
+        return QtGui.QApplication.notify(self, obj, evt)
+
     def run(self):
         """
         Run the OpenLP application.
