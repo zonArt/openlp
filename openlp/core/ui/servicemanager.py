@@ -438,10 +438,10 @@ class ServiceManager(QtGui.QWidget):
                 for item in self.serviceItems:
                     service.append({u'serviceitem':item[u'service_item'].get_service_repr()})
                     if item[u'service_item'].uses_file():
-                        for frame in item[u'service_item'].get_frames:
+                        for frame in item[u'service_item'].get_frames():
                             path_from = unicode(os.path.join(
                                 item[u'service_item'].service_item_path,
-                                frame.get_frame_title()))
+                                frame[u'title']))
                             zip.write(path_from)
                 file = open(servicefile, u'wb')
                 cPickle.dump(service, file)
@@ -504,7 +504,8 @@ class ServiceManager(QtGui.QWidget):
                     serviceitem = ServiceItem()
                     serviceitem.RenderManager = self.parent.RenderManager
                     serviceitem.set_from_service(item, self.servicePath)
-                    self.addServiceItem(serviceitem)
+                    if self.validateItem(serviceitem):
+                        self.addServiceItem(serviceitem)
                 try:
                     if os.path.isfile(p_file):
                         os.remove(p_file)
@@ -520,6 +521,14 @@ class ServiceManager(QtGui.QWidget):
         self.isNew = False
         self.serviceName = name[len(name) - 1]
         self.parent.serviceChanged(True, self.serviceName)
+
+    def validateItem(self, serviceItem):
+        print "---"
+        print serviceItem.name
+        print serviceItem.title
+        print serviceItem.service_item_path
+        print serviceItem.service_item_type
+        return True
 
     def cleanUp(self):
         """
