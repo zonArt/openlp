@@ -136,6 +136,7 @@ class PresentationController(object):
         ``name``
             Name of the application, to appear in the application
         """
+        self.supports = []
         self.plugin = plugin
         self.name = name
         self.available = self.check_available()

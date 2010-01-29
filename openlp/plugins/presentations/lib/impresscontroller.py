@@ -62,6 +62,7 @@ class ImpressController(PresentationController):
         """
         log.debug(u'Initialising')
         PresentationController.__init__(self, plugin, u'Impress')
+        self.supports= [u'.odp', u'.ppt', u'.pps']
         self.process = None
         self.document = None
         self.presentation = None
