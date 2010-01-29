@@ -225,11 +225,16 @@ class ServiceManager(QtGui.QWidget):
             QtCore.SIGNAL(u'update_themes'), self.updateThemeList)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'remote_edit_clear'), self.onRemoteEditClear)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'presentation types'), self.onPresentationTypes)
         # Last little bits of setting up
         self.config = PluginConfig(u'ServiceManager')
         self.servicePath = self.config.get_data_path()
         self.service_theme = unicode(
             self.config.get_config(u'service theme', u''))
+
+    def onPresentationTypes(self, presentation_types):
+        self.presentation_types = presentation_types
 
     def onMoveSelectionUp(self):
         """
@@ -617,7 +622,7 @@ class ServiceManager(QtGui.QWidget):
             else:
                 pos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
                 count = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-        #adjuest for zero based arrays
+        #adjust for zero based arrays
         pos = pos - 1
         return pos, count
 
