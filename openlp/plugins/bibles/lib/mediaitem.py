@@ -42,6 +42,9 @@ class BibleListView(BaseListWithDnD):
         self.PluginName = u'Bibles'
         BaseListWithDnD.__init__(self, parent)
 
+    def resizeEvent(self, event):
+        self.parent.onListViewResize(event.size().width(), event.size().width())
+
 
 class BibleMediaItem(MediaManagerItem):
     """
@@ -242,6 +245,20 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'pressed()'), self.onQuickSearchButton)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.configUpdated)
+        # Other stuff
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u''))
+
+    def addListViewToToolBar(self):
+        MediaManagerItem.addListViewToToolBar(self)
+        # Progress Bar
+        self.SearchProgress = QtGui.QProgressBar(self)
+        self.SearchProgress.setFormat('%p%')
+        self.SearchProgress.setMaximum(3)
+        self.SearchProgress.setGeometry(self.ListView.geometry().left(),
+            self.ListView.geometry().top(), 81, 23)
+        self.SearchProgress.setVisible(False)
+        self.SearchProgress.setObjectName(u'SearchProgress')
 
     def configUpdated(self):
         if str_to_bool(
@@ -318,6 +335,19 @@ class BibleMediaItem(MediaManagerItem):
                 first = False
                 # use the first bible as the trigger
                 self.initialiseBible(bible)
+
+    def onListViewResize(self, width, height):
+        self.SearchProgress.setGeometry(self.ListView.geometry().x(),
+            (self.ListView.geometry().y() + self.ListView.geometry().height())\
+                - 23, 81, 23)
+
+    def onSearchProgressShow(self, value):
+        self.SearchProgress.setVisible(True)
+        self.SearchProgress.setValue(value)
+
+    def onSearchProgressHide(self, value):
+        self.SearchProgress.setVisible(True)
+        self.SearchProgress.setValue(value)
 
     def onAdvancedVersionComboBox(self):
         self.initialiseBible(

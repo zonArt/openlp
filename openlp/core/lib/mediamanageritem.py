@@ -253,7 +253,7 @@ class MediaManagerItem(QtGui.QWidget):
 
     def addListViewToToolBar(self):
         #Add the List widget
-        self.ListView = self.ListViewWithDnD_class()
+        self.ListView = self.ListViewWithDnD_class(self)
         self.ListView.uniformItemSizes = True
         self.ListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.ListView.setSpacing(1)

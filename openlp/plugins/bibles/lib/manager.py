@@ -202,8 +202,8 @@ class BibleManager(object):
         log.debug(u'get_bibles')
         bible_list = []
         for bible_name, bible_object in self.db_cache.iteritems():
-            if getattr(bible_object, 'download_source', None):
-                bible_name = u'%s (%s)' % (bible_name, self.web)
+            #if getattr(bible_object, 'download_source', None):
+            #    bible_name = u'%s (%s)' % (bible_name, self.web)
             bible_list.append(bible_name)
         return bible_list
 

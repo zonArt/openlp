@@ -247,7 +247,7 @@ class HTTPBible(BibleDB):
             return None
 
     def get_books(self):
-        return [Book.populate(name=book[u'name']) for book in self.books]
+        return [Book.populate(name=self.books[book]['name']) for book in self.books]
 
     def get_chapter_count(self, book):
         return self.books[book][u'chap']
