@@ -68,6 +68,10 @@ class OpenLP(QtGui.QApplication):
     global log
     log.info(u'OpenLP Application Loaded')
 
+    def notify(self, obj, evt):
+        #TODO needed for presentation exceptions
+        return QtGui.QApplication.notify(self, obj, evt)
+
     def run(self):
         """
         Run the OpenLP application.
@@ -131,6 +135,7 @@ class OpenLP(QtGui.QApplication):
         if show_splash:
             # now kill the splashscreen
             self.splash.finish(self.mainWindow)
+        self.mainWindow.repaint()
         self.mainWindow.versionCheck()
         return self.exec_()
 

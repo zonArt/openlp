@@ -256,7 +256,7 @@ class ImpressController(PresentationController):
             return False
         if self.controller is None:
             return False
-        return self.controller.isRunning() and self.controller.isActive()
+        return True
 
     def unblank_screen(self):
         return self.controller.resume()
