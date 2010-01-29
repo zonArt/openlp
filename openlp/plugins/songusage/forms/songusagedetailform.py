@@ -25,10 +25,14 @@
 import os
 
 from PyQt4 import QtCore, QtGui
+import logging
 
 from songusagedetaildialog import Ui_SongUsageDetailDialog
 
 class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
+    global log
+    log = logging.getLogger(u'SongUsageDetailForm')
+    log.info(u'SongUsage Detail Form loaded')
     """
     Class documentation goes here.
     """
@@ -106,19 +110,19 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         self.close()
 
     def detailedReport(self):
-        print "detailed"
-        filename = u'audit_det_%s_%s.txt' % \
+        log.debug(u'Detailed report generated')
+        filename = u'usage_detail_%s_%s.txt' % \
             (self.FromDateEdit.date().toString(u'ddMMyyyy'),
              self.ToDateEdit.date().toString(u'ddMMyyyy'))
-        audits = self.parent.auditmanager.get_all_audits()
+        usage = self.parent.songusagemanager.get_all_songusage()
         outname = os.path.join(unicode(self.FileLineEdit.text()), filename)
         file = None
         try:
             file = open(outname, u'w')
-            for audit in audits:
+            for instance in usage:
                 record = u'\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n' % \
-                    (audit.auditdate,audit.audittime, audit.title,
-                    audit.copyright, audit.ccl_number , audit.authors)
+                    (instance.usagedate,instance.usagetime, instance.title,
+                    instance.copyright, instance.ccl_number , instance.authors)
                 file.write(record)
         except:
             log.exception(u'Failed to write out audit records')
@@ -127,8 +131,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
                 file.close()
 
     def summaryReport(self):
-        print "summary"
+        log.debug(u'Summary report generated')
         filename = u'audit_sum_%s_%s.txt' % \
             (self.FromDateEdit.date().toString(u'ddMMyyyy'),
              self.ToDateEdit.date().toString(u'ddMMyyyy'))
-        print filename

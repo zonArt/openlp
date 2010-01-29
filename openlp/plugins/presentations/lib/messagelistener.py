@@ -47,7 +47,7 @@ class Controller(object):
         log.debug(u'Live = %s, addHandler %s' % (self.isLive, file))
         self.controller = controller
         if self.controller.is_loaded():
-            self.shutdown(None)
+            self.shutdown()
         self.controller.load_presentation(file)
         if self.isLive:
             self.controller.start_presentation()
@@ -73,55 +73,51 @@ class Controller(object):
         self.controller.goto_slide(int(slide) + 1)
         self.controller.poll_slidenumber(live)
 
-    def first(self, message):
+    def first(self):
         """
         Based on the handler passed at startup triggers the first slide
         """
         log.debug(u'Live = %s, first' % self.isLive)
-        print "first ", message
         if not self.isLive:
             return
         self.activate()
         self.controller.start_presentation()
         self.controller.poll_slidenumber(self.isLive)
 
-    def last(self, message):
+    def last(self):
         """
         Based on the handler passed at startup triggers the first slide
         """
         log.debug(u'Live = %s, last' % self.isLive)
-        print "last ", message
         if not self.isLive:
             return
         self.activate()
         self.controller.goto_slide(self.controller.get_slide_count())
         self.controller.poll_slidenumber(self.isLive)
 
-    def next(self, message):
+    def next(self):
         """
         Based on the handler passed at startup triggers the next slide event
         """
         log.debug(u'Live = %s, next' % self.isLive)
-        print "next ", message
         if not self.isLive:
             return
         self.activate()
         self.controller.next_step()
         self.controller.poll_slidenumber(self.isLive)
 
-    def previous(self, message):
+    def previous(self):
         """
         Based on the handler passed at startup triggers the previous slide event
         """
         log.debug(u'Live = %s, previous' % self.isLive)
         if not self.isLive:
             return
-        print "previous ", message
         self.activate()
         self.controller.previous_step()
         self.controller.poll_slidenumber(self.isLive)
 
-    def shutdown(self, message):
+    def shutdown(self):
         """
         Based on the handler passed at startup triggers slide show to shut down
         """
@@ -159,7 +155,6 @@ class MessageListener(object):
         self.controllers = controllers
         self.previewHandler = Controller(False)
         self.liveHandler = Controller(True)
-        self.isLive = None
         # messages are sent from core.ui.slidecontroller
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'presentations_start'), self.startup)
@@ -202,36 +197,36 @@ class MessageListener(object):
         else:
             self.previewHandler.slide(slide, live)
 
-    def first(self, message):
-        if self.isLive:
-            self.liveHandler.first(message)
+    def first(self, isLive):
+        if isLive:
+            self.liveHandler.first()
         else:
-            self.previewHandler.first(message)
+            self.previewHandler.first()
 
-    def last(self, message):
-        if self.isLive:
-            self.liveHandler.last(message)
+    def last(self, isLive):
+        if isLive:
+            self.liveHandler.last()
         else:
-            self.previewHandler.last(message)
+            self.previewHandler.last()
 
-    def next(self, message):
-        if self.isLive:
-            self.liveHandler.next(message)
+    def next(self, isLive):
+        if isLive:
+            self.liveHandler.next()
         else:
-            self.previewHandler.next(message)
+            self.previewHandler.next()
 
-    def previous(self, message):
-        if self.isLive:
-            self.liveHandler.previous(message)
+    def previous(self, isLive):
+        if isLive:
+            self.liveHandler.previous()
         else:
-            self.previewHandler.previous(message)
+            self.previewHandler.previous()
 
-    def shutdown(self, message):
-        if self.isLive:
-            self.liveHandler.shutdown(message)
+    def shutdown(self, isLive):
+        if isLive:
+            self.liveHandler.shutdown()
             Receiver.send_message(u'live_slide_show')
         else:
-            self.previewHandler.shutdown(message)
+            self.previewHandler.shutdown()
 
     def blank(self):
         if self.isLive:

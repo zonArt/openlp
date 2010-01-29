@@ -207,6 +207,7 @@ class HTTPBible(BibleDB):
 
                 [(u'Genesis', 1, 1, 1), (u'Genesis', 2, 2, 3)]
         """
+        Receiver.send_message(u'bible_showprogress')
         for reference in reference_list:
             log.debug('Reference: %s', reference)
             book = reference[0]
@@ -228,6 +229,7 @@ class HTTPBible(BibleDB):
                     db_book = self.get_book(bookname)
                     self.create_chapter(db_book.id, search_results.get_chapter(),
                         search_results.get_verselist())
+        Receiver.send_message(u'bible_hideprogress')
         return BibleDB.get_verses(self, reference_list)
 
     def get_chapter(self, version, book, chapter):

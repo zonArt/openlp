@@ -247,7 +247,9 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'config_updated'), self.configUpdated)
         # Other stuff
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u''))
+            QtCore.SIGNAL(u'bible_showprogress'), self.onSearchProgressShow)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'bible_hideprogress'), self.onSearchProgressHide)
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
@@ -341,13 +343,13 @@ class BibleMediaItem(MediaManagerItem):
             (self.ListView.geometry().y() + self.ListView.geometry().height())\
                 - 23, 81, 23)
 
-    def onSearchProgressShow(self, value):
+    def onSearchProgressShow(self):
         self.SearchProgress.setVisible(True)
-        self.SearchProgress.setValue(value)
+        self.SearchProgress.setMinimum(0)
+        self.SearchProgress.setMaximum(0)
 
-    def onSearchProgressHide(self, value):
-        self.SearchProgress.setVisible(True)
-        self.SearchProgress.setValue(value)
+    def onSearchProgressHide(self):
+        self.SearchProgress.setVisible(False)
 
     def onAdvancedVersionComboBox(self):
         self.initialiseBible(

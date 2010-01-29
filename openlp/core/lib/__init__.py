@@ -136,6 +136,26 @@ def contextMenuSeparator(base):
     action.setSeparator(True)
     return action
 
+def resize_image(image, width, height):
+    """
+    Resize an image to fit on the current screen.
+
+    ``image``
+        The image to resize.
+    """
+    preview = QtGui.QImage(image)
+    preview = preview.scaled(width, height, QtCore.Qt.KeepAspectRatio,
+        QtCore.Qt.SmoothTransformation)
+    realw = preview.width();
+    realh = preview.height()
+    # and move it to the centre of the preview space
+    newImage = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32_Premultiplied)
+    newImage.fill(QtCore.Qt.black)
+    painter = QtGui.QPainter(newImage)
+    painter.drawImage((width - realw) / 2, (height - realh) / 2, preview)
+    return newImage
+
+
 class ThemeLevel(object):
     Global = 1
     Service = 2
@@ -160,6 +180,3 @@ from renderer import Renderer
 from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem
 from baselistwithdnd import BaseListWithDnD
-
-#__all__ = [ 'translate', 'get_text_file_string', 'str_to_bool',
-#            'contextMenuAction', 'contextMenuSeparator', 'ServiceItem']

@@ -108,6 +108,8 @@ class ThemeManager(QtGui.QWidget):
         self.themelist = []
         self.path = os.path.join(ConfigHelper.get_data_path(), u'themes')
         self.checkThemesExists(self.path)
+        self.thumbPath = os.path.join(self.path, u'.thumbnails')
+        self.checkThemesExists(self.thumbPath)
         self.amendThemeForm.path = self.path
         # Last little bits of setting up
         self.config = PluginConfig(u'themes')
@@ -185,6 +187,7 @@ class ThemeManager(QtGui.QWidget):
                 self.ThemeListWidget.takeItem(row)
                 try:
                     os.remove(os.path.join(self.path, th))
+                    os.remove(os.path.join(self.thumbPath, th))
                     shutil.rmtree(os.path.join(self.path, theme))
                 except:
                     #if not present do not worry
@@ -246,25 +249,33 @@ class ThemeManager(QtGui.QWidget):
         log.debug(u'Load themes from dir')
         self.themelist = []
         self.ThemeListWidget.clear()
-        for root, dirs, files in os.walk(self.path):
-            for name in files:
-                if name.endswith(u'.png'):
-                    #check to see file is in theme root directory
-                    theme = os.path.join(self.path, name)
-                    if os.path.exists(theme):
-                        (path, filename) = os.path.split(unicode(file))
-                        textName = os.path.splitext(name)[0]
-                        if textName == self.global_theme:
-                            name = u'%s (%s)' % (textName,
-                                self.trUtf8('default'))
-                        else:
-                            name = textName
-                        item_name = QtGui.QListWidgetItem(name)
-                        item_name.setIcon(build_icon(theme))
-                        item_name.setData(QtCore.Qt.UserRole,
-                            QtCore.QVariant(textName))
-                        self.ThemeListWidget.addItem(item_name)
-                        self.themelist.append(textName)
+        #root, dirs, files = os.walk(self.path)
+        dirList = os.listdir(self.path)
+        for name in dirList:
+            if name.endswith(u'.png'):
+                #check to see file is in theme root directory
+                theme = os.path.join(self.path, name)
+                if os.path.exists(theme):
+                    (path, filename) = os.path.split(unicode(file))
+                    textName = os.path.splitext(name)[0]
+                    if textName == self.global_theme:
+                        name = u'%s (%s)' % (textName,
+                            self.trUtf8('default'))
+                    else:
+                        name = textName
+                    thumb = os.path.join(self.thumbPath, u'%s.png' % textName)
+                    item_name = QtGui.QListWidgetItem(name)
+                    if os.path.exists(thumb):
+                        icon = build_icon(thumb)
+                    else:
+                        icon = build_icon(theme)
+                        pixmap = icon.pixmap(QtCore.QSize(88,50))
+                        pixmap.save(thumb, u'png')
+                    item_name.setIcon(icon)
+                    item_name.setData(QtCore.Qt.UserRole,
+                        QtCore.QVariant(textName))
+                    self.ThemeListWidget.addItem(item_name)
+                    self.themelist.append(textName)
         self.pushThemes()
 
     def pushThemes(self):
@@ -427,8 +438,6 @@ class ThemeManager(QtGui.QWidget):
                 if outfile:
                     outfile.close()
             if image_from and image_from != image_to:
-                print "if", image_from
-                print "it", image_to
                 try:
                     shutil.copyfile(image_from, image_to)
                 except:
@@ -448,6 +457,10 @@ class ThemeManager(QtGui.QWidget):
         if os.path.exists(samplepathname):
             os.unlink(samplepathname)
         frame.save(samplepathname, u'png')
+        thumb = os.path.join(self.thumbPath, u'%s.png' % name)
+        icon = build_icon(frame)
+        pixmap = icon.pixmap(QtCore.QSize(88,50))
+        pixmap.save(thumb, u'png')
         log.debug(u'Theme image written to %s', samplepathname)
 
     def generateImage(self, themedata):

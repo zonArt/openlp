@@ -30,7 +30,8 @@ import os
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import OpenLPToolbar, Receiver, str_to_bool, PluginConfig
+from openlp.core.lib import OpenLPToolbar, Receiver, str_to_bool, \
+PluginConfig, resize_image
 
 class SlideList(QtGui.QTableWidget):
     """
@@ -163,9 +164,9 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.blankButton = self.Toolbar.addToolbarButton(
                 u'Blank Screen', u':/slides/slide_close.png',
-                self.trUtf8('Blank Screen'), self.onBlankScreen, True)
+                self.trUtf8('Blank Screen'), self.onBlankDisplay, True)
             QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'live_slide_blank'), self.onBlankDisplay)
+                QtCore.SIGNAL(u'live_slide_blank'), self.blankScreen)
         if not self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
@@ -235,6 +236,9 @@ class SlideController(QtGui.QWidget):
         self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
         Phonon.createPath(self.mediaObject, self.video)
         Phonon.createPath(self.mediaObject, self.audio)
+        if not self.isLive:
+            self.video.setGeometry(QtCore.QRect(0, 0, 300, 225))
+            self.video.setVisible(False)
         self.SlideLayout.insertWidget(0, self.video)
         # Actual preview screen
         self.SlidePreview = QtGui.QLabel(self)
@@ -246,7 +250,8 @@ class SlideController(QtGui.QWidget):
             self.SlidePreview.sizePolicy().hasHeightForWidth())
         self.SlidePreview.setSizePolicy(sizePolicy)
         self.SlidePreview.setFixedSize(
-            QtCore.QSize(self.settingsmanager.slidecontroller_image,self.settingsmanager.slidecontroller_image / 1.3 ))
+            QtCore.QSize(self.settingsmanager.slidecontroller_image,
+                         self.settingsmanager.slidecontroller_image / 1.3 ))
         self.SlidePreview.setFrameShape(QtGui.QFrame.Box)
         self.SlidePreview.setFrameShadow(QtGui.QFrame.Plain)
         self.SlidePreview.setLineWidth(1)
@@ -257,8 +262,6 @@ class SlideController(QtGui.QWidget):
         # Signals
         QtCore.QObject.connect(self.PreviewListWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
-        QtCore.QObject.connect(self.PreviewListWidget,
-            QtCore.SIGNAL(u'activated(QModelIndex)'), self.onSlideSelected)
         if isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'update_spin_delay'), self.receiveSpinDelay)
@@ -441,7 +444,9 @@ class SlideController(QtGui.QWidget):
             else:
                 label = QtGui.QLabel()
                 label.setMargin(4)
-                pixmap = self.parent.RenderManager.resize_image(frame[u'image'])
+                pixmap = resize_image(frame[u'image'],
+                                      self.parent.RenderManager.width,
+                                      self.parent.RenderManager.height)
                 label.setScaledContents(True)
                 label.setPixmap(QtGui.QPixmap.fromImage(pixmap))
                 self.PreviewListWidget.setCellWidget(framenumber, 0, label)
@@ -480,18 +485,26 @@ class SlideController(QtGui.QWidget):
             self.PreviewListWidget.selectRow(0)
             self.onSlideSelected()
 
-    def onBlankDisplay(self):
-        self.blankButton.setChecked(self.parent.mainDisplay.displayBlank)
+    def onBlankDisplay(self, force=False):
+        """
+        Handle the blank screen button
+        """
+        if force:
+            self.blankButton.setChecked(True)
+        self.blankScreen(self.blankButton.isChecked())
+        self.parent.generalConfig.set_config(u'screen blank',
+                                            self.blankButton.isChecked())
 
-    def onBlankScreen(self, blanked):
+    def blankScreen(self, blanked=False):
         """
-        Blank the screen.
+        Blank the display screen.
         """
-        if not self.serviceItem and self.serviceItem.is_command():
-            if blanked:
-                Receiver.send_message(u'%s_blank'% self.serviceItem.name.lower())
-            else:
-                Receiver.send_message(u'%s_unblank'% self.serviceItem.name.lower())
+        if self.serviceItem is not None:
+            if self.serviceItem.is_command():
+                if blanked:
+                    Receiver.send_message(u'%s_blank'% self.serviceItem.name.lower())
+                else:
+                    Receiver.send_message(u'%s_unblank'% self.serviceItem.name.lower())
         else:
             self.parent.mainDisplay.blankDisplay(blanked)
 
@@ -531,7 +544,7 @@ class SlideController(QtGui.QWidget):
 
     def updatePreview(self):
         rm = self.parent.RenderManager
-        if not rm.screen_list[rm.current_display][u'primary']:
+        if not rm.screens.current[u'primary']:
             # Grab now, but try again in a couple of seconds if slide change is slow
             QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
             QtCore.QTimer.singleShot(2.5, self.grabMainDisplay)
@@ -543,7 +556,7 @@ class SlideController(QtGui.QWidget):
     def grabMainDisplay(self):
         rm = self.parent.RenderManager
         winid = QtGui.QApplication.desktop().winId()
-        rect = rm.screen_list[rm.current_display][u'size']
+        rect = rm.screens.current[u'size']
         winimg = QtGui.QPixmap.grabWindow(winid, rect.x(),
             rect.y(), rect.width(), rect.height())
         self.SlidePreview.setPixmap(winimg)
@@ -635,7 +648,7 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             Receiver.send_message(u'%s_start' % item.name.lower(), \
                 [item.title, item.service_item_path,
-                item.get_frame_title(), slideno, self.isLive])
+                item.get_frame_title(), self.isLive])
         else:
             self.mediaObject.stop()
             self.mediaObject.clearQueue()
@@ -659,9 +672,9 @@ class SlideController(QtGui.QWidget):
 
     def onMediaStop(self):
         if self.isLive:
-            Receiver.send_message(u'%s_stop'% self.serviceItem.name.lower())
+            Receiver.send_message(u'%s_stop'% self.serviceItem.name.lower(), self.isLive)
         else:
             self.mediaObject.stop()
             self.video.hide()
-            self.SlidePreview.clear()
-            self.SlidePreview.show()
+        self.SlidePreview.clear()
+        self.SlidePreview.show()

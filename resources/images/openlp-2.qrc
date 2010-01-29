@@ -108,6 +108,7 @@
     <file>media_video.png</file>
     <file>media_time.png</file>
     <file>media_stop.png</file>
+    <file>image_clapperboard.png</file>
   </qresource>
   <qresource prefix="messagebox" >
     <file>messagebox_critical.png</file>

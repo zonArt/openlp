@@ -145,7 +145,7 @@ class ImpressController(PresentationController):
             log.exception(u'Failed to load presentation')
             return
         self.presentation = self.document.getPresentation()
-        self.presentation.Display = self.plugin.render_manager.current_display + 1
+        self.presentation.Display = self.plugin.render_manager.screens.current_display + 1
         self.controller = None
         self.create_thumbnails()
 
@@ -169,8 +169,12 @@ class ImpressController(PresentationController):
         for idx in range(pages.getCount()):
             page = pages.getByIndex(idx)
             doc.getCurrentController().setCurrentPage(page)
-            doc.storeToURL(thumbdir + u'/' + self.thumbnailprefix +
-                unicode(idx+1) + u'.png', props)
+            path = u'%s/%s%s.png'% (thumbdir, self.thumbnailprefix,
+                    unicode(idx+1))
+            try:
+                doc.storeToURL(path , props)
+            except:
+                log.exception(u'%s\nUnable to store preview' % path)
 
     def create_property(self, name, value):
         if os.name == u'nt':
@@ -228,9 +232,13 @@ class ImpressController(PresentationController):
         """
         if self.document:
             if self.presentation:
-                self.presentation.end()
-                self.presentation = None
-            self.document.dispose()
+                try:
+                    self.presentation.end()
+                    self.presentation = None
+                    self.document.dispose()
+                except:
+                    #We tried!
+                    pass
             self.document = None
 
     def is_loaded(self):
@@ -248,7 +256,7 @@ class ImpressController(PresentationController):
             return False
         if self.controller is None:
             return False
-        return self.controller.isRunning() and self.controller.isActive()
+        return True
 
     def unblank_screen(self):
         return self.controller.resume()

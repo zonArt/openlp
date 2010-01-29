@@ -50,7 +50,6 @@ media_manager_style = """
     border-color: palette(light);
   }
 """
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         """
@@ -425,7 +424,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
-        self.screenList = screens
+        self.screens = screens
         self.applicationVersion = applicationVersion
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
@@ -433,7 +432,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.mainDisplay = MainDisplay(self, screens)
         self.alertForm = AlertForm(self)
         self.aboutForm = AboutForm(self, applicationVersion)
-        self.settingsForm = SettingsForm(self.screenList, self, self)
+        self.settingsForm = SettingsForm(self.screens, self, self)
         # Set up the path with plugins
         pluginpath = os.path.split(os.path.abspath(__file__))[0]
         pluginpath = os.path.abspath(
@@ -500,7 +499,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         #RenderManager needs to call ThemeManager and
         #ThemeManager needs to call RenderManager
         self.RenderManager = RenderManager(self.ThemeManagerContents,
-            self.screenList, self.getMonitorNumber())
+            self.screens, self.getMonitorNumber())
         #Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
@@ -545,7 +544,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if app_version != version:
             version_text = unicode(self.trUtf8('OpenLP version %s has been updated '
                 'to version %s\n\nYou can obtain the latest version from http://openlp.org'))
-            QtGui.QMessageBox.question(None,
+            QtGui.QMessageBox.question(self,
                 self.trUtf8('OpenLP Version Updated'),
                 version_text % (app_version, version),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
@@ -558,11 +557,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         monitor number does not exist.
         """
         screen_number = int(self.generalConfig.get_config(u'monitor', 0))
-        monitor_exists = False
-        for screen in self.screenList:
-            if screen[u'number'] == screen_number:
-                monitor_exists = True
-        if not monitor_exists:
+        if not self.screens.screen_exists(screen_number):
             screen_number = 0
         return screen_number
 
@@ -580,12 +575,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.ServiceManagerContents.onLoadService(True)
         if str_to_bool(self.generalConfig.get_config(u'screen blank', False)) \
         and str_to_bool(self.generalConfig.get_config(u'blank warning', False)):
-            QtGui.QMessageBox.question(None,
+            self.LiveController.onBlankDisplay(True)
+            QtGui.QMessageBox.question(self,
                 self.trUtf8('OpenLP Main Display Blanked'),
                 self.trUtf8('The Main Display has been blanked out'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
-            self.LiveController.blankButton.setChecked(True)
 
     def onHelpAboutItemClicked(self):
         """
@@ -613,7 +608,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.settingsForm.exec_()
         updated_display = self.getMonitorNumber()
-        if updated_display != self.RenderManager.current_display:
+        if updated_display != self.screens.current_display:
+            self.screens.set_current_display(updated_display)
             self.RenderManager.update_display(updated_display)
             self.mainDisplay.setup(updated_display)
         self.activateWindow()
@@ -623,7 +619,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Hook to close the main window and display windows on exit
         """
         if self.serviceNotSaved:
-            ret = QtGui.QMessageBox.question(None,
+            ret = QtGui.QMessageBox.question(self,
                 self.trUtf8('Save Changes to Service?'),
                 self.trUtf8('Your service has changed, do you want to save those changes?'),
                 QtGui.QMessageBox.StandardButtons(

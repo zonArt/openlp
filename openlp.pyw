@@ -28,13 +28,13 @@ import os
 import sys
 import logging
 
-from logging.handlers import RotatingFileHandler
+from logging import FileHandler
 from optparse import OptionParser
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, str_to_bool
 from openlp.core.resources import qInitResources
-from openlp.core.ui import MainWindow, SplashScreen
+from openlp.core.ui import MainWindow, SplashScreen, ScreenList
 from openlp.core.utils import ConfigHelper
 
 log = logging.getLogger()
@@ -67,6 +67,10 @@ class OpenLP(QtGui.QApplication):
     """
     global log
     log.info(u'OpenLP Application Loaded')
+
+    def notify(self, obj, evt):
+        #TODO needed for presentation exceptions
+        return QtGui.QApplication.notify(self, obj, evt)
 
     def run(self):
         """
@@ -117,10 +121,10 @@ class OpenLP(QtGui.QApplication):
             self.splash.show()
         # make sure Qt really display the splash screen
         self.processEvents()
-        screens = []
+        screens = ScreenList()
         # Decide how many screens we have and their size
         for screen in xrange(0, self.desktop().numScreens()):
-            screens.append({u'number': screen,
+            screens.add_screen({u'number': screen,
                             u'size': self.desktop().availableGeometry(screen),
                             u'primary': (self.desktop().primaryScreen() == screen)})
             log.info(u'Screen %d found with resolution %s',
@@ -131,6 +135,7 @@ class OpenLP(QtGui.QApplication):
         if show_splash:
             # now kill the splashscreen
             self.splash.finish(self.mainWindow)
+        self.mainWindow.repaint()
         self.mainWindow.versionCheck()
         return self.exec_()
 
@@ -154,7 +159,7 @@ def main():
                       help="Set the Qt4 style (passed directly to Qt4).")
     # Set up logging
     filename = u'openlp.log'
-    logfile = RotatingFileHandler(filename, maxBytes=200000, backupCount=5)
+    logfile = FileHandler(filename)
     logfile.setFormatter(logging.Formatter(
         u'%(asctime)s %(name)-15s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
