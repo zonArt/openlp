@@ -250,6 +250,8 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'bible_showprogress'), self.onSearchProgressShow)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bible_hideprogress'), self.onSearchProgressHide)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'bible_nobook'), self.onNoBookFound)
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
@@ -350,6 +352,14 @@ class BibleMediaItem(MediaManagerItem):
 
     def onSearchProgressHide(self):
         self.SearchProgress.setVisible(False)
+
+    def onNoBookFound(self):
+        QtGui.QMessageBox.critical(self,
+            self.trUtf8('No Book Found'),
+            self.trUtf8('No matching Book could be found in this Bible.'),
+            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
+            QtGui.QMessageBox.Ok
+        )
 
     def onAdvancedVersionComboBox(self):
         self.initialiseBible(

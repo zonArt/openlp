@@ -28,6 +28,7 @@ import urllib2
 
 from BeautifulSoup import BeautifulSoup
 
+from openlp.core.lib import Receiver
 from common import BibleCommon, SearchResults
 from db import BibleDB
 from openlp.plugins.bibles.lib.models import Book
@@ -208,12 +209,17 @@ class HTTPBible(BibleDB):
                 [(u'Genesis', 1, 1, 1), (u'Genesis', 2, 2, 3)]
         """
         Receiver.send_message(u'bible_showprogress')
+        Receiver.send_message(u'process_events')
         for reference in reference_list:
             log.debug('Reference: %s', reference)
             book = reference[0]
             db_book = self.get_book(book)
             if not db_book:
                 book_details = self.lookup_book(book)
+                if not book_details:
+                    Receiver.send_message(u'bible_hideprogress')
+                    Receiver.send_message(u'bible_nobook')
+                    return []
                 db_book = self.create_book(book_details[u'name'],
                     book_details[u'abbr'], book_details[u'test'])
             book = db_book.name
@@ -266,7 +272,7 @@ class HTTPBible(BibleDB):
             return self.books[book]
         else:
             for details in self.books:
-                if details[u'abbr'] == book:
-                    return details
+                if self.books[details][u'abbr'] == book:
+                    return self.books[details]
             return None
 
