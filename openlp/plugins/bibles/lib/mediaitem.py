@@ -348,7 +348,8 @@ class BibleMediaItem(MediaManagerItem):
     def onSearchProgressShow(self):
         self.SearchProgress.setVisible(True)
         self.SearchProgress.setMinimum(0)
-        self.SearchProgress.setMaximum(0)
+        self.SearchProgress.setMaximum(2)
+        self.SearchProgress.setValue(1)
 
     def onSearchProgressHide(self):
         self.SearchProgress.setVisible(False)

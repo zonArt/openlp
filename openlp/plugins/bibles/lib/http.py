@@ -128,6 +128,7 @@ class CWExtract(BibleCommon):
         htmlverses = soup.findAll(u'span', u'versetext')
         verses = {}
         for verse in htmlverses:
+            Receiver.send_message(u'process_events')
             versenumber = int(verse.contents[0].contents[0])
             versetext = u''
             for part in verse.contents:
@@ -235,6 +236,7 @@ class HTTPBible(BibleDB):
                     db_book = self.get_book(bookname)
                     self.create_chapter(db_book.id, search_results.get_chapter(),
                         search_results.get_verselist())
+            Receiver.send_message(u'process_events')
         Receiver.send_message(u'bible_hideprogress')
         return BibleDB.get_verses(self, reference_list)
 
