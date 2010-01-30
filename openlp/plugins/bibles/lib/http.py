@@ -209,8 +209,6 @@ class HTTPBible(BibleDB):
 
                 [(u'Genesis', 1, 1, 1), (u'Genesis', 2, 2, 3)]
         """
-        Receiver.send_message(u'bible_showprogress')
-        Receiver.send_message(u'process_events')
         for reference in reference_list:
             log.debug('Reference: %s', reference)
             book = reference[0]
@@ -218,13 +216,14 @@ class HTTPBible(BibleDB):
             if not db_book:
                 book_details = self.lookup_book(book)
                 if not book_details:
-                    Receiver.send_message(u'bible_hideprogress')
                     Receiver.send_message(u'bible_nobook')
                     return []
                 db_book = self.create_book(book_details[u'name'],
                     book_details[u'abbr'], book_details[u'test'])
             book = db_book.name
             if self.get_verse_count(book, reference[1]) == 0:
+                Receiver.send_message(u'bible_showprogress')
+                Receiver.send_message(u'process_events')
                 search_results = self.get_chapter(self.name, book, reference[1])
                 if search_results and search_results.has_verselist():
                     ## We have found a book of the bible lets check to see
@@ -236,8 +235,8 @@ class HTTPBible(BibleDB):
                     db_book = self.get_book(bookname)
                     self.create_chapter(db_book.id, search_results.get_chapter(),
                         search_results.get_verselist())
+                Receiver.send_message(u'bible_hideprogress')
             Receiver.send_message(u'process_events')
-        Receiver.send_message(u'bible_hideprogress')
         return BibleDB.get_verses(self, reference_list)
 
     def get_chapter(self, version, book, chapter):
