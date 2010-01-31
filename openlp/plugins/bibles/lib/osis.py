@@ -43,13 +43,13 @@ class OSISBible(BibleDB):
     log = logging.getLogger(u'BibleOSISImpl')
     log.info(u'BibleOSISImpl loaded')
 
-    def __init__(self, **kwargs):
+    def __init__(self, parent, **kwargs):
         """
         Constructor to create and set up an instance of the OpenSongBible
         class. This class is used to import Bibles from OpenSong's XML format.
         """
         log.debug(__name__)
-        BibleDB.__init__(self, **kwargs)
+        BibleDB.__init__(self, parent, **kwargs)
         if u'filename' not in kwargs:
             raise KeyError(u'You have to supply a file name to import from.')
         self.filename = kwargs[u'filename']

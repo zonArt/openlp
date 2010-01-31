@@ -37,13 +37,13 @@ class CSVBible(BibleDB):
     This class provides a specialisation for importing of CSV Bibles.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, parent, **kwargs):
         """
         Loads a Bible from a pair of CVS files passed in
         This class assumes the files contain all the information and
         a clean bible is being loaded.
         """
-        BibleDB.__init__(self, **kwargs)
+        BibleDB.__init__(self, parent, **kwargs)
         log.info(self.__class__.__name__)
         if u'booksfile' not in kwargs:
             raise KeyError(u'You have to supply a file to import books from.')

@@ -90,7 +90,7 @@ class BibleManager(object):
     log = logging.getLogger(u'BibleManager')
     log.info(u'Bible manager loaded')
 
-    def __init__(self, config):
+    def __init__(self, parent, config):
         """
         Finds all the bibles defined for the system and creates an interface
         object for each bible containing connection information. Throws
@@ -101,8 +101,9 @@ class BibleManager(object):
         ``config``
             The plugin's configuration object.
         """
-        self.config = config
         log.debug(u'Bible Initialising')
+        self.config = config
+        self.parent = parent
         self.web = u'Web'
         self.db_cache = None
         self.http_cache = None
@@ -120,18 +121,19 @@ class BibleManager(object):
             filepath, u'..', u'resources', u'httpbooks.csv'))
         books_file = None
         try:
-            self.http_books = {}
+            self.http_books = []
             books_file = open(filepath, u'r')
             dialect = csv.Sniffer().sniff(books_file.read(1024))
             books_file.seek(0)
             books_reader = csv.reader(books_file, dialect)
             for line in books_reader:
-                self.http_books[line[0]] = {
-                    u'name': line[0],
-                    u'abbr': line[1],
+                self.http_books.append({
+                    u'name': unicode(line[0]),
+                    u'abbr': unicode(line[1]),
                     u'test': line[2],
-                    u'chap': line[3]
-                }
+                    u'chap': line[3],
+                    u'ordr': order
+                })
         except:
             log.exception(u'Failed to load http books.')
         finally:
@@ -148,13 +150,13 @@ class BibleManager(object):
         self.web_bibles_present = False
         for filename in files:
             name, extension = os.path.splitext(filename)
-            self.db_cache[name] = BibleDB(path=self.path, name=name, config=self.config)
+            self.db_cache[name] = BibleDB(self.parent, path=self.path, name=name, config=self.config)
             # look to see if lazy load bible exists and get create getter.
             source = self.db_cache[name].get_meta(u'download source')
             if source:
                 self.web_bibles_present = True
                 download_name = self.db_cache[name].get_meta(u'download name').value
-                web_bible = HTTPBible(path=self.path, name=name,
+                web_bible = HTTPBible(self.parent, path=self.path, name=name,
                     config=self.config, download_source=source.value,
                     download_name=download_name)
                 meta_proxy = self.db_cache[name].get_meta(u'proxy url')
@@ -187,7 +189,7 @@ class BibleManager(object):
         class_ = BibleFormat.get_class(type)
         kwargs['path'] = self.path
         kwargs['config'] = self.config
-        importer = class_(**kwargs)
+        importer = class_(self.parent, **kwargs)
         name = importer.register(self.import_wizard)
         self.db_cache[name] = importer
         return importer.do_import()
@@ -381,8 +383,12 @@ class BibleManager(object):
         """
         Check cache to see if new bible
         """
+        if not isinstance(name, unicode):
+            name = unicode(name, u'utf8')
         for bible, db_object in self.db_cache.iteritems():
             log.debug(u'Bible from cache in is_new_bible %s', bible)
+            if not isinstance(bible, unicode):
+                bible = unicode(bible, u'utf8')
             if bible == name:
                 return True
         return False

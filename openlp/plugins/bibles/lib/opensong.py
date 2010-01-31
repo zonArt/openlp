@@ -42,18 +42,18 @@ class OpenSongBible(BibleDB):
     OpenSong Bible format importer class.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, parent, **kwargs):
         """
         Constructor to create and set up an instance of the OpenSongBible
         class. This class is used to import Bibles from OpenSong's XML format.
         """
         log.debug(__name__)
-        BibleDB.__init__(self, **kwargs)
+        BibleDB.__init__(self, parent, **kwargs)
         if 'filename' not in kwargs:
             raise KeyError(u'You have to supply a file name to import from.')
         self.filename = kwargs['filename']
-        #QtCore.QObject.connect(Receiver.get_receiver(),
-        #    QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
 
     def stop_import(self):
         """
@@ -69,27 +69,20 @@ class OpenSongBible(BibleDB):
         log.debug(u'Starting OpenSong import from "%s"' % self.filename)
         self.filename = unicode(self.filename, u'utf-8')
         self.wizard.incrementProgressBar(u'Preparing for import...')
-        detect_file = None
-        try:
-            detect_file = open(self.filename, u'r')
-            details = chardet.detect(detect_file.read())
-        except:
-            log.exception(u'Failed to detect OpenSong file encoding')
-            return False
-        finally:
-            if detect_file:
-                detect_file.close()
         file = None
         success = True
         try:
-            file = codecs.open(self.filename, u'r', details['encoding'])
+            # NOTE: We don't need to do any of the normal encoding detection
+            # here, because lxml does it's own encoding detection, and the two
+            # mechanisms together interfere with each other.
+            file = open(self.filename, u'r')
             opensong = objectify.parse(file)
             bible = opensong.getroot()
             for book in bible.b:
                 if self.stop_import:
                     break
-                db_book = self.create_book(book.attrib[u'n'],
-                                           book.attrib[u'n'][:4])
+                db_book = self.create_book(unicode(book.attrib[u'n']),
+                    unicode(book.attrib[u'n'][:4]))
                 for chapter in book.c:
                     if self.stop_import:
                         break
@@ -100,12 +93,12 @@ class OpenSongBible(BibleDB):
                             db_book.id,
                             int(chapter.attrib[u'n']),
                             int(verse.attrib[u'n']),
-                            verse.text
+                            unicode(verse.text)
                         )
                         Receiver.send_message(u'process_events')
                     self.wizard.incrementProgressBar(
-                        QtCore.QString('Importing %s %s' % \
-                                       (db_book.name, chapter.attrib[u'n'])))
+                        QtCore.QString('%s %s %s' % (self.trUtf8('Importing'),\
+                            db_book.name, chapter.attrib[u'n'])))
                     self.commit()
         except:
             log.exception(u'Loading bible from OpenSong file failed')

@@ -27,6 +27,7 @@ import logging
 import os
 import os.path
 from time import sleep
+import csv
 
 from PyQt4 import QtCore, QtGui
 
@@ -107,14 +108,6 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         elif self.currentId() == 1:
             # Select page
             if self.field(u'source_format').toInt()[0] == BibleFormat.OSIS:
-                if self.field(u'osis_biblename').toString() == u'':
-                    QtGui.QMessageBox.critical(self,
-                        self.trUtf8('Invalid Bible Name'),
-                        self.trUtf8('You need to specify a name for your '
-                            'Bible!'),
-                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-                    self.OsisBibleNameEdit.setFocus()
-                    return False
                 if self.field(u'osis_location').toString() == u'':
                     QtGui.QMessageBox.critical(self,
                         self.trUtf8('Invalid Bible Location'),
@@ -219,8 +212,6 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.SelectPage.registerField(
             u'source_format', self.FormatComboBox)
         self.SelectPage.registerField(
-            u'osis_biblename', self.OsisBibleNameEdit)
-        self.SelectPage.registerField(
             u'osis_location', self.OSISLocationEdit)
         self.SelectPage.registerField(
             u'csv_booksfile', self.BooksLocationEdit)
@@ -247,7 +238,6 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
 
     def setDefaults(self):
         self.setField(u'source_format', 0)
-        self.setField(u'osis_biblename', u'')
         self.setField(u'osis_location', u'')
         self.setField(u'csv_booksfile', u'')
         self.setField(u'csv_versefile', u'')
@@ -276,29 +266,33 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         fbibles = None
         try:
             self.web_bible_list[DownloadLocation.Crosswalk] = {}
-            fbibles = open(os.path.join(filepath, u'crosswalkbooks.csv'), 'r')
-            for line in fbibles:
-                parts = line.split(u',')
-                self.web_bible_list[DownloadLocation.Crosswalk][parts[0]] = \
-                    parts[1].rstrip()
+            books_file = open(os.path.join(filepath, u'crosswalkbooks.csv'), 'r')
+            dialect = csv.Sniffer().sniff(books_file.read(1024))
+            books_file.seek(0)
+            books_reader = csv.reader(books_file, dialect)
+            for line in books_reader:
+                self.web_bible_list[DownloadLocation.Crosswalk][line[0]] = \
+                    unicode(line[1], u'utf-8').strip()
         except:
             log.exception(u'Crosswalk resources missing')
         finally:
-            if fbibles:
-                fbibles.close()
+            if books_file:
+                books_file.close()
         #Load and store BibleGateway Bibles
         try:
             self.web_bible_list[DownloadLocation.BibleGateway] = {}
-            fbibles = open(os.path.join(filepath, u'biblegateway.csv'), 'r')
-            for line in fbibles:
-                parts = line.split(u',')
-                self.web_bible_list[DownloadLocation.BibleGateway][parts[0]] = \
-                    parts[1].rstrip()
+            books_file = open(os.path.join(filepath, u'biblegateway.csv'), 'r')
+            dialect = csv.Sniffer().sniff(books_file.read(1024))
+            books_file.seek(0)
+            books_reader = csv.reader(books_file, dialect)
+            for line in books_reader:
+                self.web_bible_list[DownloadLocation.BibleGateway][line[0]] = \
+                    unicode(line[1], u'utf-8').strip()
         except:
             log.exception(u'Biblegateway resources missing')
         finally:
-            if fbibles:
-                fbibles.close()
+            if books_file:
+                books_file.close()
 
     def getFileName(self, title, editbox):
         filename = QtGui.QFileDialog.getOpenFileName(self, title,

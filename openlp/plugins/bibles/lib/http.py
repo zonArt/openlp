@@ -142,7 +142,7 @@ class CWExtract(BibleCommon):
 class HTTPBible(BibleDB):
     log.info(u'%s loaded', __name__)
 
-    def __init__(self, **kwargs):
+    def __init__(self, parent, **kwargs):
         """
         Finds all the bibles defined for the system
         Creates an Interface Object for each bible containing connection
@@ -152,7 +152,7 @@ class HTTPBible(BibleDB):
 
         Init confirms the bible exists and stores the database path.
         """
-        BibleDB.__init__(self, **kwargs)
+        BibleDB.__init__(self, parent, **kwargs)
         if u'download_source' not in kwargs:
             raise KeyError(u'Missing keyword argument "download_source"')
         if u'download_name' not in kwargs:
@@ -267,13 +267,10 @@ class HTTPBible(BibleDB):
     def set_books(self, books):
         self.books = books
 
-    def lookup_book(self, book):
-        log.debug('Looking up "%s" in %s', (book, self.books))
-        if book in self.books:
-            return self.books[book]
-        else:
-            for details in self.books:
-                if self.books[details][u'abbr'] == book:
-                    return self.books[details]
-            return None
+    def lookup_book(self, name):
+        log.debug('Looking up "%s" in %s', (name, self.books))
+        for book in self.books:
+            if book[u'name'] == name or book[u'abbr'] == name:
+                return book
+        return None
 

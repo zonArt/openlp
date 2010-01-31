@@ -42,7 +42,7 @@ class BibleDB(QtCore.QObject):
     rather than depending on yet another object.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, parent, **kwargs):
         """
         The constructor loads up the database and creates and initialises the
         tables if the database doesn't exist.
@@ -60,6 +60,7 @@ class BibleDB(QtCore.QObject):
             The configuration object, passed in from the plugin.
         """
         log.info(u'BibleDBimpl loaded')
+        QtCore.QObject.__init__(self)
         if u'path' not in kwargs:
             raise KeyError(u'Missing keyword argument "path".')
         if u'name' not in kwargs:
