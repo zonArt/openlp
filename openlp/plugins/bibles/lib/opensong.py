@@ -52,8 +52,8 @@ class OpenSongBible(BibleDB):
         if 'filename' not in kwargs:
             raise KeyError(u'You have to supply a file name to import from.')
         self.filename = kwargs['filename']
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
+        #QtCore.QObject.connect(Receiver.get_receiver(),
+        #    QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
 
     def stop_import(self):
         """

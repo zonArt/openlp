@@ -81,8 +81,8 @@ class OSISBible(BibleDB):
         finally:
             if fbibles:
                 fbibles.close()
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
+        #QtCore.QObject.connect(Receiver.get_receiver(),
+        #    QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
 
     def stop_import(self):
         """
