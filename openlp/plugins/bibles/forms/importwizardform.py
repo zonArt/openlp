@@ -97,9 +97,9 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             QtCore.SIGNAL(u'currentIdChanged(int)'),
             self.onCurrentIdChanged)
 
-    def show(self):
+    def exec_(self):
         self.setDefaults()
-        return QtGui.QWizard.show()
+        return QtGui.QWizard.exec_(self)
 
     def validateCurrentPage(self):
         if self.currentId() == 0:
@@ -238,22 +238,22 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
 
     def setDefaults(self):
         self.setField(u'source_format', 0)
-        self.setField(u'osis_location', u'')
-        self.setField(u'csv_booksfile', u'')
-        self.setField(u'csv_versefile', u'')
-        self.setField(u'opensong_file', u'')
-        self.setField(u'web_location', 0)
+        self.setField(u'osis_location', '')
+        self.setField(u'csv_booksfile', '')
+        self.setField(u'csv_versefile', '')
+        self.setField(u'opensong_file', '')
+        self.setField(u'web_location', DownloadLocation.Crosswalk)
         self.setField(u'web_biblename', self.BibleComboBox)
         self.setField(u'proxy_server',
-            self.config.get_config(u'proxy address', u''))
+            self.config.get_config(u'proxy address', ''))
         self.setField(u'proxy_username',
-            self.config.get_config(u'proxy username',u''))
+            self.config.get_config(u'proxy username',''))
         self.setField(u'proxy_password',
-            self.config.get_config(u'proxy password',u''))
+            self.config.get_config(u'proxy password',''))
         self.setField(u'license_version', self.VersionNameEdit)
         self.setField(u'license_copyright', self.CopyrightEdit)
         self.setField(u'license_permission', self.PermissionEdit)
-        self.onLocationComboBoxChanged(0)
+        self.onLocationComboBoxChanged(DownloadLocation.Crosswalk)
 
     def loadWebBibles(self):
         """

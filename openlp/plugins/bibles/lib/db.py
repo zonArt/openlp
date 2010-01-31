@@ -109,7 +109,7 @@ class BibleDB(QtCore.QObject):
         self.create_testament(u'Apocrypha')
 
     def create_testament(self, testament):
-        log.debug(u'%s: %s', __name__, testament)
+        log.debug(u'BibleDB.create_testament("%s")', testament)
         self.session.add(Testament.populate(name=testament))
         self.commit()
 
@@ -153,11 +153,11 @@ class BibleDB(QtCore.QObject):
         self.commit()
 
     def get_books(self):
-        log.debug(__name__)
+        log.debug(u'BibleDB.get_books()')
         return self.session.query(Book).order_by(Book.id).all()
 
     def get_book(self, book):
-        log.debug(u'%s: %s', __name__, book)
+        log.debug(u'BibleDb.get_book("%s")', __name__, book)
         db_book = self.session.query(Book)\
             .filter(Book.name.like(book + u'%'))\
             .first()
@@ -168,7 +168,7 @@ class BibleDB(QtCore.QObject):
         return db_book
 
     def get_chapter(self, id, chapter):
-        log.debug(u'%s: %s, %s', __name__, id, chapter)
+        log.debug(u'BibleDB.get_chapter("%s", %s)', id, chapter)
         return self.session.query(Verse)\
             .filter_by(chapter=chapter)\
             .filter_by(book_id=id)\
@@ -192,7 +192,7 @@ class BibleDB(QtCore.QObject):
 
                 [(u'Genesis', 1, 1, 1), (u'Genesis', 2, 2, 3)]
         """
-        log.debug(u'%s: %s', __name__, reference_list)
+        log.debug(u'BibleDB.get_verses: %s', reference_list)
         verse_list = []
         for book, chapter, start_verse, end_verse in reference_list:
             db_book = self.get_book(book)
@@ -221,7 +221,7 @@ class BibleDB(QtCore.QObject):
             contains spaces, it will split apart and AND'd on the list of
             values.
         """
-        log.debug(u'%s: %s', __name__, text)
+        log.debug(u'BibleDB.verse_search("%s")', text)
         verses = self.session.query(Verse)
         if text.find(u',') > -1:
             or_clause = []
@@ -237,7 +237,7 @@ class BibleDB(QtCore.QObject):
         return verses
 
     def get_chapter_count(self, book):
-        log.debug(u'%s: %s', __name__, book)
+        log.debug(u'BibleDB.get_chapter_count("%s")', book)
         count = self.session.query(Verse.chapter).join(Book)\
             .filter(Book.name==book)\
             .distinct().count()
@@ -249,7 +249,7 @@ class BibleDB(QtCore.QObject):
             return count
 
     def get_verse_count(self, book, chapter):
-        log.debug(u'%s: %s, %s', __name__, book, chapter)
+        log.debug(u'BibleDB.get_verse_count("%s", %s)', book, chapter)
         count = self.session.query(Verse).join(Book)\
             .filter(Book.name==book)\
             .filter(Verse.chapter==chapter)\

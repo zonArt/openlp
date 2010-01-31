@@ -42,7 +42,7 @@ class BGExtract(BibleCommon):
         log.debug(u'init %s', proxyurl)
         self.proxyurl = proxyurl
 
-    def get_chapter(self, version, bookname, chapter) :
+    def get_bible_chapter(self, version, bookname, chapter) :
         """
         Access and decode bibles via the BibleGateway website
 
@@ -256,10 +256,10 @@ class HTTPBible(BibleDB):
             return None
 
     def get_books(self):
-        return [Book.populate(name=self.books[book]['name']) for book in self.books]
+        return [Book.populate(name=book['name']) for book in self.books]
 
     def get_chapter_count(self, book):
-        return self.books[book][u'chap']
+        return self.lookup_book(book)[u'chap']
 
     def set_proxy_server(self, server):
         self.proxy_server = server
@@ -268,7 +268,7 @@ class HTTPBible(BibleDB):
         self.books = books
 
     def lookup_book(self, name):
-        log.debug('Looking up "%s" in %s', (name, self.books))
+        log.debug('Looking up "%s" in %s', name, self.books)
         for book in self.books:
             if book[u'name'] == name or book[u'abbr'] == name:
                 return book

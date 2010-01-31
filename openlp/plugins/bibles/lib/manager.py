@@ -131,8 +131,7 @@ class BibleManager(object):
                     u'name': unicode(line[0]),
                     u'abbr': unicode(line[1]),
                     u'test': line[2],
-                    u'chap': line[3],
-                    u'ordr': order
+                    u'chap': line[3]
                 })
         except:
             log.exception(u'Failed to load http books.')
