@@ -118,7 +118,7 @@ class PresentationController(object):
     """
     global log
     log = logging.getLogger(u'PresentationController')
-    log.info(u'loaded')
+    log.info(u'PresentationController loaded')
 
     def __init__(self, plugin=None, name=u'PresentationController'):
         """
