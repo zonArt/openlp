@@ -125,7 +125,7 @@ class ImpressController(PresentationController):
         """
         log.debug(u'Load Presentation OpenOffice')
         self.store_filename(presentation)
-        print "s.dsk1 ", self.desktop
+        #print "s.dsk1 ", self.desktop
         if os.name == u'nt':
             desktop = self.get_com_desktop()
             if desktop is None:
@@ -138,7 +138,7 @@ class ImpressController(PresentationController):
         if desktop is None:
             return
         self.desktop = desktop
-        print "s.dsk2 ", self.desktop
+        #print "s.dsk2 ", self.desktop
         properties = []
         properties.append(self.create_property(u'Minimized', True))
         properties = tuple(properties)
@@ -250,13 +250,13 @@ class ImpressController(PresentationController):
 
     def is_loaded(self):
         log.debug(u'is loaded OpenOffice')
-        print "is_loaded "
+        #print "is_loaded "
         if self.presentation is None or self.document is None:
-            print "no present or document"
+            #print "no present or document"
             return False
         try:
             if self.document.getPresentation() is None:
-                print "no getPresentation"
+                #print "no getPresentation"
                 return False
         except:
             return False
@@ -264,11 +264,11 @@ class ImpressController(PresentationController):
 
     def is_active(self):
         log.debug(u'is active OpenOffice')
-        print "is_active "
+        #print "is_active "
         if not self.is_loaded():
-            print "False "
+            #print "False "
             return False
-        print "self.con ", self.controller
+        #print "self.con ", self.controller
         if self.controller is None:
             return False
         return True

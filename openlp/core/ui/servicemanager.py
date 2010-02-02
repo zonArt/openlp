@@ -523,11 +523,11 @@ class ServiceManager(QtGui.QWidget):
         self.parent.serviceChanged(True, self.serviceName)
 
     def validateItem(self, serviceItem):
-        print "---"
-        print serviceItem.name
-        print serviceItem.title
-        print serviceItem.service_item_path
-        print serviceItem.service_item_type
+#        print "---"
+#        print serviceItem.name
+#        print serviceItem.title
+#        print serviceItem.service_item_path
+#        print serviceItem.service_item_type
         return True
 
     def cleanUp(self):
