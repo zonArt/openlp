@@ -118,7 +118,7 @@ class PresentationController(object):
     """
     global log
     log = logging.getLogger(u'PresentationController')
-    log.info(u'loaded')
+    log.info(u'PresentationController loaded')
 
     def __init__(self, plugin=None, name=u'PresentationController'):
         """
@@ -136,6 +136,7 @@ class PresentationController(object):
         ``name``
             Name of the application, to appear in the application
         """
+        self.supports = []
         self.plugin = plugin
         self.name = name
         self.available = self.check_available()
