@@ -227,6 +227,8 @@ class ServiceManager(QtGui.QWidget):
             QtCore.SIGNAL(u'remote_edit_clear'), self.onRemoteEditClear)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'presentation types'), self.onPresentationTypes)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'servicemanager_next_item'), self.nextItem)
         # Last little bits of setting up
         self.config = PluginConfig(u'ServiceManager')
         self.servicePath = self.config.get_data_path()
@@ -236,12 +238,29 @@ class ServiceManager(QtGui.QWidget):
     def onPresentationTypes(self, presentation_types):
         self.presentation_types = presentation_types
 
+    def nextItem(self):
+        """
+        Called by the SlideController to select the
+        next service item
+        """
+        selected = self.ServiceManagerList.selectedItems()[0]
+        lookFor = 0
+        serviceIterator = QtGui.QTreeWidgetItemIterator(self.ServiceManagerList)
+        while serviceIterator.value():
+            if lookFor == 1 and serviceIterator.value().parent() is None:
+                self.ServiceManagerList.setCurrentItem(serviceIterator.value())
+                self.makeLive()
+                return
+            if serviceIterator.value() == selected:
+                lookFor = 1
+            serviceIterator += 1
+
     def onMoveSelectionUp(self):
         """
         Moves the selection up the window
         Called by the up arrow
         """
-        serviceIterator = QTreeWidgetItemIterator(self.ServiceManagerList)
+        serviceIterator = QtGui.QTreeWidgetItemIterator(self.ServiceManagerList)
         tempItem = None
         setLastItem = False
         while serviceIterator:
@@ -266,7 +285,7 @@ class ServiceManager(QtGui.QWidget):
         Moves the selection down the window
         Called by the down arrow
         """
-        serviceIterator = QTreeWidgetItemIterator(self.ServiceManagerList)
+        serviceIterator = QtGui.QTreeWidgetItemIterator(self.ServiceManagerList)
         firstItem = serviceIterator
         setSelected = False
         while serviceIterator:

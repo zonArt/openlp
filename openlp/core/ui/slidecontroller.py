@@ -41,6 +41,11 @@ class SlideList(QtGui.QTableWidget):
     def __init__(self, parent=None, name=None):
         QtGui.QTableWidget.__init__(self, parent.Controller)
         self.parent = parent
+        self.hotkey_map = {QtCore.Qt.Key_Return: 'servicemanager_next_item',
+                           QtCore.Qt.Key_Space: 'live_slidecontroller_next_noloop',
+                           QtCore.Qt.Key_Enter: 'live_slidecontroller_next_noloop',
+                           QtCore.Qt.Key_0: 'servicemanager_next_item',
+                           QtCore.Qt.Key_Backspace: 'live_slidecontroller_previous_noloop'}
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
@@ -56,6 +61,9 @@ class SlideList(QtGui.QTableWidget):
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageDown:
                 self.parent.onSlideSelectedLast()
+                event.accept()
+            elif event.key() in self.hotkey_map:
+                Receiver.send_message(self.hotkey_map[event.key()]);
                 event.accept()
             event.ignore()
         else:
@@ -277,6 +285,11 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'%s_next' % prefix), self.onSlideSelectedNext)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_previous' % prefix), self.onSlideSelectedPrevious)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_next_noloop' % prefix), self.onSlideSelectedNextNoloop)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_previous_noloop' % prefix),
+            self.onSlideSelectedPreviousNoloop)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_last' % prefix), self.onSlideSelectedLast)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -561,7 +574,10 @@ class SlideController(QtGui.QWidget):
             rect.y(), rect.width(), rect.height())
         self.SlidePreview.setPixmap(winimg)
 
-    def onSlideSelectedNext(self):
+    def onSlideSelectedNextNoloop(self):
+        self.onSlideSelectedNext(False)
+
+    def onSlideSelectedNext(self, loop=True):
         """
         Go to the next slide.
         """
@@ -574,11 +590,18 @@ class SlideController(QtGui.QWidget):
         else:
             row = self.PreviewListWidget.currentRow() + 1
             if row == self.PreviewListWidget.rowCount():
-                row = 0
+                if loop:
+                    row = 0
+                else:
+                    Receiver.send_message('servicemanager_next_item')
+                    return
             self.PreviewListWidget.selectRow(row)
             self.onSlideSelected()
 
-    def onSlideSelectedPrevious(self):
+    def onSlideSelectedPreviousNoloop(self):
+        self.onSlideSelectedPrevious(False)
+
+    def onSlideSelectedPrevious(self, loop=True):
         """
         Go to the previous slide.
         """
@@ -591,7 +614,10 @@ class SlideController(QtGui.QWidget):
         else:
             row = self.PreviewListWidget.currentRow() - 1
             if row == -1:
-                row = self.PreviewListWidget.rowCount() - 1
+                if loop:
+                    row = self.PreviewListWidget.rowCount() - 1
+                else:
+                    row = 0
             self.PreviewListWidget.selectRow(row)
             self.onSlideSelected()
 
