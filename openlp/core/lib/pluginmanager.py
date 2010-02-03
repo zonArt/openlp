@@ -54,7 +54,7 @@ class PluginManager(object):
         log.debug(u'Base path %s ', self.basepath)
         self.plugins = []
         # this has to happen after the UI is sorted self.find_plugins(dir)
-        log.info(u'Plugin manager done init')
+        log.warn(u'Plugin manager Initialised')
 
     def find_plugins(self, dir, plugin_helpers):
         """
@@ -200,6 +200,7 @@ class PluginManager(object):
                 % (plugin.name, plugin.is_active()))
             if plugin.is_active():
                 plugin.initialise()
+                log.warn(u'Initialisation Complete for %s ' % plugin.name)
             if not plugin.is_active():
                 plugin.remove_toolbox_item()
 
@@ -212,3 +213,4 @@ class PluginManager(object):
         for plugin in self.plugins:
             if plugin.is_active():
                 plugin.finalise()
+                log.warn(u'Finalisation Complete for %s ' % plugin.name)

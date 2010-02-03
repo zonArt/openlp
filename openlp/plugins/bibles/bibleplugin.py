@@ -50,6 +50,7 @@ class BiblePlugin(Plugin):
         self.insert_toolbox_item()
         self.ImportBibleItem.setVisible(True)
         self.ExportBibleItem.setVisible(True)
+        log.warn(u'Bibles Initialised')
 
     def finalise(self):
         log.info(u'Plugin Finalise')

@@ -91,7 +91,7 @@ class OpenLP(QtGui.QApplication):
                     u'version': bits[0],
                     u'build': bits[1]
                 }
-            log.info(u'Openlp version %s build %s' % (
+            log.warn(u'Openlp version %s build %s' % (
                 app_version[u'version'], app_version[u'build']))
         except:
                 app_version = {
@@ -148,7 +148,7 @@ def main():
     usage = u'Usage: %prog [options] [qt-options]'
     parser = OptionParser(usage=usage)
     parser.add_option("-l", "--log-level", dest="loglevel",
-                      default="info", metavar="LEVEL",
+                      default="warning", metavar="LEVEL",
                       help="Set logging to LEVEL level. Valid values are "
                            "\"debug\", \"info\", \"warning\".")
     parser.add_option("-p", "--portable", dest="portable",
