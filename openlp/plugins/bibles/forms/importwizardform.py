@@ -60,7 +60,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
     log = logging.getLogger(u'BibleImportForm')
     log.info(u'BibleImportForm loaded')
 
-    def __init__(self, parent, config, biblemanager, bibleplugin):
+    def __init__(self, parent, config, manager, bibleplugin):
         '''
         Constructor
         '''
@@ -69,10 +69,10 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.registerFields()
         self.finishButton = self.button(QtGui.QWizard.FinishButton)
         self.cancelButton = self.button(QtGui.QWizard.CancelButton)
-        self.biblemanager = biblemanager
+        self.manager = manager
         self.config = config
         self.bibleplugin = bibleplugin
-        self.biblemanager.set_process_dialog(self)
+        self.manager.set_process_dialog(self)
         self.web_bible_list = {}
         self.loadWebBibles()
         QtCore.QObject.connect(self.LocationComboBox,
@@ -162,7 +162,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                 self.CopyrightEdit.setFocus()
                 return False
-            elif self.biblemanager.exists(
+            elif self.manager.exists(
                      self.field(u'license_version').toString()):
                 QtGui.QMessageBox.critical(self,
                     self.trUtf8('Bible Exists'),
@@ -320,20 +320,20 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         success = False
         if bible_type == BibleFormat.OSIS:
             # Import an OSIS bible
-            success = self.biblemanager.import_bible(BibleFormat.OSIS,
+            success = self.manager.import_bible(BibleFormat.OSIS,
                 name=unicode(self.field(u'license_version').toString()),
                 filename=unicode(self.field(u'osis_location').toString())
             )
         elif bible_type == BibleFormat.CSV:
             # Import a CSV bible
-            success = self.biblemanager.import_bible(BibleFormat.CSV,
+            success = self.manager.import_bible(BibleFormat.CSV,
                 name=unicode(self.field(u'license_version').toString()),
                 booksfile=self.field(u'csv_booksfile').toString(),
                 versefile=self.field(u'csv_versefile').toString()
             )
         elif bible_type == BibleFormat.OpenSong:
             # Import an OpenSong bible
-            success = self.biblemanager.import_bible(BibleFormat.OpenSong,
+            success = self.manager.import_bible(BibleFormat.OpenSong,
                 name=unicode(self.field(u'license_version').toString()),
                 filename=self.field(u'opensong_file').toString()
             )
@@ -347,7 +347,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             elif download_location == DownloadLocation.BibleGateway:
                 bible = self.web_bible_list[DownloadLocation.BibleGateway][
                     unicode(self.BibleComboBox.currentText())]
-            success = self.biblemanager.import_bible(BibleFormat.WebDownload,
+            success = self.manager.import_bible(BibleFormat.WebDownload,
                 name=unicode(self.field(u'license_version').toString()),
                 download_source=unicode(DownloadLocation.get_name(download_location)),
                 download_name=unicode(bible),
@@ -356,13 +356,13 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                 proxy_password=unicode(self.field(u'proxy_password').toString())
             )
         if success:
-            self.biblemanager.save_meta_data(
+            self.manager.save_meta_data(
                 unicode(self.field(u'license_version').toString()),
                 unicode(self.field(u'license_version').toString()),
                 unicode(self.field(u'license_copyright').toString()),
                 unicode(self.field(u'license_permission').toString())
             )
-            self.biblemanager.reload_bibles()
+            self.manager.reload_bibles()
             self.ImportProgressLabel.setText(self.trUtf8('Finished import.'))
         else:
             self.ImportProgressLabel.setText(

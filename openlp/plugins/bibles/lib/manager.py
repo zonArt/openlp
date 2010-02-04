@@ -383,11 +383,11 @@ class BibleManager(object):
         Check cache to see if new bible
         """
         if not isinstance(name, unicode):
-            name = unicode(name, u'utf8')
+            name = unicode(name)
         for bible, db_object in self.db_cache.iteritems():
             log.debug(u'Bible from cache in is_new_bible %s', bible)
             if not isinstance(bible, unicode):
-                bible = unicode(bible, u'utf8')
+                bible = unicode(bible)
             if bible == name:
                 return True
         return False

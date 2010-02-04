@@ -303,7 +303,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def initialise(self):
         log.debug(u'bible manager initialise')
-        self.parent.biblemanager.media = self
+        self.parent.manager.media = self
         self.loadBibles()
         self.configUpdated()
         log.debug(u'bible manager initialise complete')
@@ -323,13 +323,13 @@ class BibleMediaItem(MediaManagerItem):
         self.AdvancedSecondBibleComboBox.clear()
         self.QuickSecondBibleComboBox.addItem(u'')
         self.AdvancedSecondBibleComboBox.addItem(u'')
-        bibles = self.parent.biblemanager.get_bibles(BibleMode.Full)
+        bibles = self.parent.manager.get_bibles(BibleMode.Full)
         # load bibles into the combo boxes
         for bible in bibles:
             self.QuickVersionComboBox.addItem(bible)
             self.QuickSecondBibleComboBox.addItem(bible)
         # Without HTTP
-        #bibles = self.parent.biblemanager.get_bibles(BibleMode.Partial)
+        #bibles = self.parent.manager.get_bibles(BibleMode.Partial)
         first = True
         # load bibles into the combo boxes
         for bible in bibles:
@@ -375,10 +375,10 @@ class BibleMediaItem(MediaManagerItem):
 
     def onNewClick(self):
         #self.bibleimportform = BibleImportForm(
-        #    self.parent.config, self.parent.biblemanager, self)
+        #    self.parent.config, self.parent.manager, self)
         #self.bibleimportform.exec_()
         self.bibleimportform = ImportWizardForm(self, self.parent.config,
-            self.parent.biblemanager, self.parent)
+            self.parent.manager, self.parent)
         self.bibleimportform.exec_()
         self.reloadBibles()
 
@@ -393,7 +393,7 @@ class BibleMediaItem(MediaManagerItem):
             bible = unicode(self.AdvancedVersionComboBox.currentText())
             book = unicode(self.AdvancedBookComboBox.currentText())
             # get the verse count for new chapter
-            verses = self.parent.biblemanager.get_book_verse_count(
+            verses = self.parent.manager.get_book_verse_count(
                 bible, book, int(text2))
             self.adjustComboBox(1, verses, self.AdvancedToVerse)
 
@@ -418,7 +418,7 @@ class BibleMediaItem(MediaManagerItem):
         cf = int(self.AdvancedFromChapter.currentText())
         self.adjustComboBox(cf, self.chapters_from, self.AdvancedToChapter)
         # get the verse count for new chapter
-        vse = self.parent.biblemanager.get_book_verse_count(bible, book, cf)
+        vse = self.parent.manager.get_book_verse_count(bible, book, cf)
         self.adjustComboBox(1, vse, self.AdvancedFromVerse)
         self.adjustComboBox(1, vse, self.AdvancedToVerse)
 
@@ -430,10 +430,10 @@ class BibleMediaItem(MediaManagerItem):
             self.ListView.clear()
         #if self.QuickSearchComboBox.currentIndex() == 1:
         #    self.search_results = \
-        #        self.parent.biblemanager.get_verses(bible, text)
+        #        self.parent.manager.get_verses(bible, text)
         #else:
         #    self.searchByReference(bible, text)
-        self.search_results = self.parent.biblemanager.get_verses(bible, text)
+        self.search_results = self.parent.manager.get_verses(bible, text)
         if self.search_results:
             self.displayResults(bible)
 
@@ -524,12 +524,12 @@ class BibleMediaItem(MediaManagerItem):
 
     def reloadBibles(self):
         log.debug(u'Reloading Bibles')
-        self.parent.biblemanager.reload_bibles()
+        self.parent.manager.reload_bibles()
         self.loadBibles()
 
     def initialiseBible(self, bible):
         log.debug(u'initialiseBible %s', bible)
-        book_data = self.parent.biblemanager.get_bible_books(bible)
+        book_data = self.parent.manager.get_bible_books(bible)
         self.AdvancedBookComboBox.clear()
         first = True
         for book in book_data:
@@ -545,7 +545,7 @@ class BibleMediaItem(MediaManagerItem):
     def initialiseChapterVerse(self, bible, book, chapters):
         log.debug(u'initialiseChapterVerse %s, %s', bible, book)
         self.chapters_from = chapters
-        self.verses = self.parent.biblemanager.get_book_verse_count(bible,
+        self.verses = self.parent.manager.get_book_verse_count(bible,
             book, 1)
         if self.verses == 0:
             self.AdvancedSearchButton.setEnabled(False)
@@ -578,12 +578,12 @@ class BibleMediaItem(MediaManagerItem):
 
     def searchByReference(self, bible, search):
         log.debug(u'searchByReference %s, %s', bible, search)
-        self.search_results = self.parent.biblemanager.get_verses(bible, search)
-        self.copyright = unicode(self.parent.biblemanager.get_meta_data(
+        self.search_results = self.parent.manager.get_verses(bible, search)
+        self.copyright = unicode(self.parent.manager.get_meta_data(
             bible, u'Copyright').value)
-        self.permissions = unicode(self.parent.biblemanager.get_meta_data(
+        self.permissions = unicode(self.parent.manager.get_meta_data(
             bible, u'Permissions').value)
-        self.version = unicode(self.parent.biblemanager.get_meta_data(
+        self.version = unicode(self.parent.manager.get_meta_data(
             bible, u'Version').value)
 
 #    def searchByReference(self, bible, search):
@@ -658,14 +658,14 @@ class BibleMediaItem(MediaManagerItem):
 #            unicode(start_verse), unicode(end_verse)))
 #        if message is None:
 #            self.search_results = None
-#            self.search_results = self.parent.biblemanager.get_verse_text(
+#            self.search_results = self.parent.manager.get_verse_text(
 #                bible, book, int(start_chapter), int(end_chapter),
 #                int(start_verse), int(end_verse))
-#            self.copyright = unicode(self.parent.biblemanager.get_meta_data(
+#            self.copyright = unicode(self.parent.manager.get_meta_data(
 #                bible, u'Copyright').value)
-#            self.permissions = unicode(self.parent.biblemanager.get_meta_data(
+#            self.permissions = unicode(self.parent.manager.get_meta_data(
 #                bible, u'Permissions').value)
-#            self.version = unicode(self.parent.biblemanager.get_meta_data(
+#            self.version = unicode(self.parent.manager.get_meta_data(
 #                bible, u'Version').value)
 #        else:
 #            QtGui.QMessageBox.information(
