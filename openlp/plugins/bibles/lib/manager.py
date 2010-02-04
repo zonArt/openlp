@@ -250,12 +250,12 @@ class BibleManager(object):
         Returns all the number of verses for a given
         book and chapterMaxBibleBookVerses
         """
-        log.debug(u'get_verses_from_text %s,%s', bible, versetext)
+        log.debug(u'get_verses_from_text %s, %s', bible, versetext)
         reflist = parse_reference(versetext)
-        web_index = bible.find('(%s)' % self.web)
-        if web_index >= 0:
-            bible = bible[:web_index - 1]
-            log.debug('Updated bible name: %s', bible)
+        #web_index = bible.find('(%s)' % self.web)
+        #if web_index >= 0:
+        #    bible = bible[:web_index - 1]
+        #    log.debug('Updated bible name: %s', bible)
         #web, bible = self.is_bible_web(bible)
         #if web:
         #    return self.http_cache[bible].get_verses(reflist)

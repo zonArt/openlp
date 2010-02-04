@@ -28,12 +28,14 @@ import chardet
 import logging
 import re
 
-only_verses = re.compile(r'([a-zA-Z0-9 ]+)[ ]+([0-9]+)[ ]*[:|v|V][ ]*([0-9]+)'
+only_verses = re.compile(r'([\w .]+)[ ]+([0-9]+)[ ]*[:|v|V][ ]*([0-9]+)'
     r'(?:[ ]*-[ ]*([0-9]+|end))?(?:[ ]*,[ ]*([0-9]+)(?:[ ]*-[ ]*([0-9]+|end))?)?',
     re.UNICODE)
-chapter_range = re.compile(r'([a-zA-Z0-9 ]+)[ ]+([0-9]+)[ ]*[:|v|V][ ]*'
+chapter_range = re.compile(r'([\w .]+)[ ]+([0-9]+)[ ]*[:|v|V][ ]*'
     r'([0-9]+)[ ]*-[ ]*([0-9]+)[ ]*[:|v|V][ ]*([0-9]+)',
     re.UNICODE)
+
+log = logging.getLogger(__name__)
 
 def parse_reference(reference):
     """
@@ -47,11 +49,13 @@ def parse_reference(reference):
         (book, chapter, start_verse, end_verse)
     """
     reference = reference.strip()
+    log.debug('parse_reference("%s")', reference)
     reference_list = []
     # We start with the most "complicated" match first, so that they are found
     # first, and we don't have any "false positives".
     match = chapter_range.match(reference)
     if match:
+        log.debug('Found a chapter range.')
         reference_list.extend([
             (match.group(1), match.group(2), match.group(3), -1),
             (match.group(1), match.group(4), 1, match.group(5))
@@ -59,6 +63,7 @@ def parse_reference(reference):
     else:
         match = only_verses.match(reference)
         if match:
+            log.debug('Found a verse range.')
             book = match.group(1)
             chapter = match.group(2)
             verse = match.group(3)
@@ -82,6 +87,8 @@ def parse_reference(reference):
                     (book, chapter, verse, match.group(4)),
                     (book, chapter, match.group(5), end_verse)
                 ])
+        else:
+            log.debug('Didn\'t find anything.')
     return reference_list
 
 class SearchResults:

@@ -157,7 +157,7 @@ class BibleDB(QtCore.QObject):
         return self.session.query(Book).order_by(Book.id).all()
 
     def get_book(self, book):
-        log.debug(u'BibleDb.get_book("%s")', __name__, book)
+        log.debug(u'BibleDb.get_book("%s")', book)
         db_book = self.session.query(Book)\
             .filter(Book.name.like(book + u'%'))\
             .first()
@@ -200,7 +200,7 @@ class BibleDB(QtCore.QObject):
                 end_verse = self.get_chapter_count(book)
             if db_book:
                 book = db_book.name
-                log.debug(u'Book name corrected to "%s"' % book)
+                log.debug(u'Book name corrected to "%s"', book)
             verses = self.session.query(Verse)\
                 .filter_by(book_id=db_book.id)\
                 .filter_by(chapter=chapter)\
@@ -276,11 +276,11 @@ class BibleDB(QtCore.QObject):
             return False
 
     def dump_bible(self):
-        log.debug( u'.........Dumping Bible Database')
-        log.debug( '...............................Books ')
+        log.debug(u'.........Dumping Bible Database')
+        log.debug('...............................Books ')
         books = self.session.query(Book).all()
         log.debug(books)
-        log.debug( u'...............................Verses ')
+        log.debug(u'...............................Verses ')
         verses = self.session.query(Verse).all()
         log.debug(verses)
 
