@@ -62,7 +62,7 @@ class SlideList(QtGui.QTableWidget):
             elif event.key() == QtCore.Qt.Key_PageDown:
                 self.parent.onSlideSelectedLast()
                 event.accept()
-            elif event.key() in self.hotkey_map:
+            elif event.key() in self.hotkey_map and self.parent.isLive:
                 Receiver.send_message(self.hotkey_map[event.key()]);
                 event.accept()
             event.ignore()

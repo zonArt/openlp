@@ -243,6 +243,8 @@ class ServiceManager(QtGui.QWidget):
         Called by the SlideController to select the
         next service item
         """
+        if len(self.ServiceManagerList.selectedItems()) == 0:
+            return
         selected = self.ServiceManagerList.selectedItems()[0]
         lookFor = 0
         serviceIterator = QtGui.QTreeWidgetItemIterator(self.ServiceManagerList)
