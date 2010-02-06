@@ -202,22 +202,21 @@ class MainDisplay(DisplayWidget):
             self.showFullScreen()
 
     def hideDisplay(self):
+        self.mediaLoaded = True
         self.setVisible(False)
 
     def showDisplay(self):
+        self.mediaLoaded = False
         if not self.primary:
             self.setVisible(True)
             self.showFullScreen()
+        self.generateAlert()
 
     def addImageWithText(self, frame):
         frame = resize_image(frame,
                     self.screen[u'size'].width(),
                     self.screen[u'size'].height() )
         self.display_image.setPixmap(QtGui.QPixmap.fromImage(frame))
-#        self.display_image.show()
-#        if not self.isVisible():
-#            self.setVisible(True)
-#            self.showFullScreen()
 
     def frameView(self, frame, transition=False):
         """

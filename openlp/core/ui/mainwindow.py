@@ -56,7 +56,7 @@ class versionThread(QtCore.QThread):
         QtCore.QThread.__init__(self, parent)
         self.parent = parent
     def run (self):
-        time.sleep(5)
+        time.sleep(2)
         Receiver.send_message(u'version_check')
 
 
