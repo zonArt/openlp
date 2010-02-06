@@ -200,7 +200,7 @@ class PluginManager(object):
                 % (plugin.name, plugin.is_active()))
             if plugin.is_active():
                 plugin.initialise()
-                log.warn(u'Initialisation Complete for %s ' % plugin.name)
+                log.info(u'Initialisation Complete for %s ' % plugin.name)
             if not plugin.is_active():
                 plugin.remove_toolbox_item()
 
@@ -213,4 +213,4 @@ class PluginManager(object):
         for plugin in self.plugins:
             if plugin.is_active():
                 plugin.finalise()
-                log.warn(u'Finalisation Complete for %s ' % plugin.name)
+                log.info(u'Finalisation Complete for %s ' % plugin.name)

@@ -91,7 +91,7 @@ class OpenLP(QtGui.QApplication):
                     u'version': bits[0],
                     u'build': bits[1]
                 }
-            log.warn(u'Openlp version %s build %s' % (
+            log.info(u'Openlp version %s build %s' % (
                 app_version[u'version'], app_version[u'build']))
         except:
                 app_version = {
