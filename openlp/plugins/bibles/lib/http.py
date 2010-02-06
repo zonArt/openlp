@@ -207,8 +207,12 @@ class CWExtract(BibleCommon):
         log.debug(u'get_bible_chapter %s,%s,%s',
             version, bookname, chapter)
         bookname = bookname.replace(u' ', u'')
-        page = urllib2.urlopen(u'http://www.biblestudytools.com/%s/%s/%s.html' % \
-            (version, bookname.lower(), chapter))
+        chapter_url = u'http://www.biblestudytools.com/%s/%s/%s.html' % \
+            (version, bookname.lower(), chapter)
+        log.debug(u'URL: %s', chapter_url)
+        page = urllib2.urlopen(chapter_url)
+        if not page:
+            return None
         soup = BeautifulSoup(page)
         htmlverses = soup.findAll(u'span', u'versetext')
         verses = {}
@@ -306,7 +310,7 @@ class HTTPBible(BibleDB):
                 db_book = self.create_book(book_details[u'name'],
                     book_details[u'abbreviation'], book_details[u'testament_id'])
             book = db_book.name
-            if self.get_verse_count(book, reference[1]) == 0:
+            if BibleDB.get_verse_count(self, book, reference[1]) == 0:
                 Receiver.send_message(u'bible_showprogress')
                 Receiver.send_message(u'process_events')
                 search_results = self.get_chapter(self.name, book, reference[1])
