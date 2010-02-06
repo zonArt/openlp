@@ -185,8 +185,13 @@ class SongMediaItem(MediaManagerItem):
                 if author_list != u'':
                     author_list = author_list + u', '
                 author_list = author_list + author.display_name
-            song_detail = unicode(self.trUtf8('%s (%s)' % \
-                (unicode(song.title), unicode(author_list))))
+            if not isinstance(author_list, unicode):
+                author_list = unicode(author_list, u'utf8')
+            if isinstance(song.title, unicode):
+                song_title = song.title
+            else:
+                song_title = unicode(song.title, u'utf8')
+            song_detail = u'%s (%s)' % (song_title, author_list)
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
             self.ListView.addItem(song_name)
