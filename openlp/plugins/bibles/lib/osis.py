@@ -137,8 +137,7 @@ class OSISBible(BibleDB):
                             self.wizard.ImportProgressBar.setMaximum(260)
                     if last_chapter != chapter:
                         if last_chapter != 0:
-                            pass
-                            #self.save_verses()
+                            self.commit()
                         self.wizard.incrementProgressBar(
                             u'Importing %s %s...' % \
                             (self.books[match.group(1)][0], chapter))
