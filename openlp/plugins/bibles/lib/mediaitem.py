@@ -423,7 +423,7 @@ class BibleMediaItem(MediaManagerItem):
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
             self.ListView.clear()
             self.lastReference = []
-        self.lastReference.append(versetext)
+        self.lastReference.append(text)
         self.search_results = self.parent.manager.get_verses(bible, text)
         if self.search_results:
             self.displayResults(bible)
