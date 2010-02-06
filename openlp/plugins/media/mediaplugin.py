@@ -25,7 +25,7 @@
 
 import logging
 
-from openlp.core.lib import Plugin, build_icon
+from openlp.core.lib import Plugin, build_icon, PluginStatus
 from openlp.plugins.media.lib import MediaMediaItem
 
 class MediaPlugin(Plugin):
@@ -34,11 +34,12 @@ class MediaPlugin(Plugin):
     log.info(u'Media Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Media', u'1.9.0', plugin_helpers)
+        Plugin.__init__(self, u'Media', u'1.9.1', plugin_helpers)
         self.weight = -6
         self.icon = build_icon(u':/media/media_video.png')
         # passed with drag and drop messages
         self.dnd_id = u'Media'
+        self.status = PluginStatus.Active
 
     def initialise(self):
         log.info(u'Plugin Initialising')

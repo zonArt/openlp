@@ -136,7 +136,7 @@ class OpenLP(QtGui.QApplication):
             # now kill the splashscreen
             self.splash.finish(self.mainWindow)
         self.mainWindow.repaint()
-        self.mainWindow.versionCheck()
+        self.mainWindow.versionThread()
         return self.exec_()
 
 def main():

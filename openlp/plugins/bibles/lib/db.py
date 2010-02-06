@@ -67,7 +67,7 @@ class BibleDB(QtCore.QObject):
             raise KeyError(u'Missing keyword argument "name".')
         if u'config' not in kwargs:
             raise KeyError(u'Missing keyword argument "config".')
-        self.stop_import = False
+        self.stop_import_flag = False
         self.name = kwargs[u'name']
         self.config = kwargs[u'config']
         self.db_file = os.path.join(kwargs[u'path'],

@@ -81,15 +81,15 @@ class OSISBible(BibleDB):
         finally:
             if fbibles:
                 fbibles.close()
-        #QtCore.QObject.connect(Receiver.get_receiver(),
-        #    QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
 
     def stop_import(self):
         """
         Stops the import of the Bible.
         """
         log.debug('Stopping import!')
-        self.stop_import = True
+        self.stop_import_flag = True
 
     def do_import(self):
         """
@@ -114,7 +114,7 @@ class OSISBible(BibleDB):
             testament = 1
             db_book = None
             for file_record in osis:
-                if self.stop_import:
+                if self.stop_import_flag:
                     break
                 match = self.verse_regex.search(file_record)
                 if match:
@@ -126,7 +126,7 @@ class OSISBible(BibleDB):
                         log.debug('New book: "%s"', self.books[book][0])
                         if book == u'Matt':
                             testament += 1
-                        db_book = self.bibledb.create_book(
+                        db_book = self.create_book(
                             unicode(self.books[book][0]),
                             unicode(self.books[book][1]),
                             testament)
@@ -137,7 +137,7 @@ class OSISBible(BibleDB):
                             self.wizard.ImportProgressBar.setMaximum(260)
                     if last_chapter != chapter:
                         if last_chapter != 0:
-                            self.bibledb.save_verses()
+                            self.commit()
                         self.wizard.incrementProgressBar(
                             u'Importing %s %s...' % \
                             (self.books[match.group(1)][0], chapter))
@@ -170,9 +170,8 @@ class OSISBible(BibleDB):
         finally:
             if osis:
                 osis.close()
-        if self.stop_import:
+        if self.stop_import_flag:
             self.wizard.incrementProgressBar(u'Import canceled!')
             return False
         else:
             return success
-

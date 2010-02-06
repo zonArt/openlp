@@ -27,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon
+from openlp.core.lib import Plugin, build_icon, PluginStatus
 from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab
 from openlp.plugins.songs.forms import OpenLPImportForm, OpenSongExportForm, \
     OpenSongImportForm, OpenLPExportForm
@@ -49,7 +49,7 @@ class SongsPlugin(Plugin):
         """
         Create and set up the Songs plugin.
         """
-        Plugin.__init__(self, u'Songs', u'1.9.0', plugin_helpers)
+        Plugin.__init__(self, u'Songs', u'1.9.1', plugin_helpers)
         self.weight = -10
         self.songmanager = SongManager(self.config)
         self.openlp_import_form = OpenLPImportForm()
@@ -57,6 +57,7 @@ class SongsPlugin(Plugin):
         self.openlp_export_form = OpenLPExportForm()
         self.opensong_export_form = OpenSongExportForm()
         self.icon = build_icon(u':/media/media_song.png')
+        self.status = PluginStatus.Active
 
     def get_settings_tab(self):
         return SongsTab(self.name)

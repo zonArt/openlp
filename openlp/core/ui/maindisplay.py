@@ -44,6 +44,11 @@ class DisplayWidget(QtGui.QWidget):
     def __init__(self, parent=None, name=None):
         QtGui.QWidget.__init__(self, parent)
         self.parent = parent
+        self.hotkey_map = {QtCore.Qt.Key_Return: 'servicemanager_next_item',
+                           QtCore.Qt.Key_Space: 'live_slidecontroller_next_noloop',
+                           QtCore.Qt.Key_Enter: 'live_slidecontroller_next_noloop',
+                           QtCore.Qt.Key_0: 'servicemanager_next_item',
+                           QtCore.Qt.Key_Backspace: 'live_slidecontroller_previous_noloop'}
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
@@ -59,6 +64,9 @@ class DisplayWidget(QtGui.QWidget):
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageDown:
                 Receiver.send_message(u'live_slidecontroller_last')
+                event.accept()
+            elif event.key() in self.hotkey_map:
+                Receiver.send_message(self.hotkey_map[event.key()]);
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Escape:
                 self.resetDisplay()
@@ -194,22 +202,21 @@ class MainDisplay(DisplayWidget):
             self.showFullScreen()
 
     def hideDisplay(self):
+        self.mediaLoaded = True
         self.setVisible(False)
 
     def showDisplay(self):
+        self.mediaLoaded = False
         if not self.primary:
             self.setVisible(True)
             self.showFullScreen()
+        self.generateAlert()
 
     def addImageWithText(self, frame):
         frame = resize_image(frame,
                     self.screen[u'size'].width(),
                     self.screen[u'size'].height() )
         self.display_image.setPixmap(QtGui.QPixmap.fromImage(frame))
-#        self.display_image.show()
-#        if not self.isVisible():
-#            self.setVisible(True)
-#            self.showFullScreen()
 
     def frameView(self, frame, transition=False):
         """

@@ -26,7 +26,7 @@
 import os
 import logging
 
-from openlp.core.lib import Plugin, build_icon, Receiver
+from openlp.core.lib import Plugin, build_icon, Receiver, PluginStatus
 from openlp.plugins.presentations.lib import *
 
 class PresentationPlugin(Plugin):
@@ -37,9 +37,10 @@ class PresentationPlugin(Plugin):
     def __init__(self, plugin_helpers):
         log.debug(u'Initialised')
         self.controllers = {}
-        Plugin.__init__(self, u'Presentations', u'1.9.0', plugin_helpers)
+        Plugin.__init__(self, u'Presentations', u'1.9.1', plugin_helpers)
         self.weight = -8
         self.icon = build_icon(u':/media/media_presentation.png')
+        self.status = PluginStatus.Active
 
     def get_settings_tab(self):
         """

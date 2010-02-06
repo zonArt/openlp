@@ -42,4 +42,4 @@ from mainwindow import MainWindow
 
 __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainWindow',
     'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
-    'AmendThemeForm', 'MediaDockManager', 'ThemeLevel']
+    'AmendThemeForm', 'MediaDockManager']
