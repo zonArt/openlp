@@ -50,7 +50,6 @@ media_manager_style = """
     border-color: palette(light);
   }
 """
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         """

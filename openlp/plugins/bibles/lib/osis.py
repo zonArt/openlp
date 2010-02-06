@@ -30,11 +30,10 @@ import chardet
 import codecs
 import re
 
-from PyQt4 import QtCore
-
 from openlp.core.lib import Receiver
+from db import BibleDB
 
-class BibleOSISImpl():
+class OSISBible(BibleDB):
     """
     OSIS Bible format importer class.
     """
@@ -42,18 +41,16 @@ class BibleOSISImpl():
     log = logging.getLogger(u'BibleOSISImpl')
     log.info(u'BibleOSISImpl loaded')
 
-    def __init__(self, biblepath, bibledb):
+    def __init__(self, parent, **kwargs):
         """
-        Constructor to create and set up an instance of the
-        BibleOSISImpl class.
-
-        ``biblepath``
-            This does not seem to be used.
-
-        ``bibledb``
-            A reference to a Bible database object.
+        Constructor to create and set up an instance of the OpenSongBible
+        class. This class is used to import Bibles from OpenSong's XML format.
         """
-        log.info(u'BibleOSISImpl Initialising')
+        log.debug(__name__)
+        BibleDB.__init__(self, parent, **kwargs)
+        if u'filename' not in kwargs:
+            raise KeyError(u'You have to supply a file name to import from.')
+        self.filename = kwargs[u'filename']
         self.verse_regex = re.compile(
             r'<verse osisID="([a-zA-Z0-9 ]*).([0-9]*).([0-9]*)">(.*?)</verse>')
         self.note_regex = re.compile(r'<note(.*?)>(.*?)</note>')
@@ -66,13 +63,11 @@ class BibleOSISImpl():
         self.w_regex = re.compile(r'<w (.*?)>')
         self.q_regex = re.compile(r'<q (.*?)>')
         self.spaces_regex = re.compile(r'([ ]{2,})')
-        self.bibledb = bibledb
         self.books = {}
         filepath = os.path.split(os.path.abspath(__file__))[0]
         filepath = os.path.abspath(os.path.join(
             filepath, u'..', u'resources', u'osisbooks.csv'))
         fbibles = None
-        self.loadbible = True
         try:
             fbibles = open(filepath, u'r')
             for line in fbibles:
@@ -84,31 +79,24 @@ class BibleOSISImpl():
         finally:
             if fbibles:
                 fbibles.close()
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
+        #QtCore.QObject.connect(Receiver.get_receiver(),
+        #    QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
 
     def stop_import(self):
         """
         Stops the import of the Bible.
         """
         log.debug('Stopping import!')
-        self.loadbible = False
+        self.stop_import = True
 
-    def load_data(self, osisfile_record, dialogobject=None):
+    def do_import(self):
         """
         Loads a Bible from file.
-
-        ``osisfile_record``
-            The file to import from.
-
-        ``dialogobject``
-            The Import dialog, so that we can increase the counter on
-            the progress bar.
         """
-        log.info(u'Load data for %s' % osisfile_record)
+        log.debug(u'Starting OSIS import from "%s"' % self.filename)
         detect_file = None
         try:
-            detect_file = open(osisfile_record, u'r')
+            detect_file = open(self.filename, u'r')
             details = chardet.detect(detect_file.read(3000))
         except:
             log.exception(u'Failed to detect OSIS file encoding')
@@ -119,12 +107,12 @@ class BibleOSISImpl():
         osis = None
         success = True
         try:
-            osis = codecs.open(osisfile_record, u'r', details['encoding'])
+            osis = codecs.open(self.filename, u'r', details['encoding'])
             last_chapter = 0
             testament = 1
             db_book = None
             for file_record in osis:
-                if not self.loadbible:
+                if self.stop_import:
                     break
                 match = self.verse_regex.search(file_record)
                 if match:
@@ -142,13 +130,13 @@ class BibleOSISImpl():
                             testament)
                     if last_chapter == 0:
                         if book == u'Gen':
-                            dialogobject.ImportProgressBar.setMaximum(1188)
+                            self.wizard.ImportProgressBar.setMaximum(1188)
                         else:
-                            dialogobject.ImportProgressBar.setMaximum(260)
+                            self.wizard.ImportProgressBar.setMaximum(260)
                     if last_chapter != chapter:
                         if last_chapter != 0:
                             self.bibledb.save_verses()
-                        dialogobject.incrementProgressBar(
+                        self.wizard.incrementProgressBar(
                             u'Importing %s %s...' % \
                             (self.books[match.group(1)][0], chapter))
                         last_chapter = chapter
@@ -170,20 +158,19 @@ class BibleOSISImpl():
                         .replace(u'</lg>', u'').replace(u'</q>', u'')\
                         .replace(u'</div>', u'')
                     verse_text = self.spaces_regex.sub(u' ', verse_text)
-                    self.bibledb.add_verse(db_book.id, chapter, verse, verse_text)
+                    self.create_verse(db_book.id, chapter, verse, verse_text)
                     Receiver.send_message(u'process_events')
-            self.bibledb.save_verses()
-            dialogobject.incrementProgressBar(u'Finishing import...')
+            self.commit()
+            self.wizard.incrementProgressBar(u'Finishing import...')
         except:
             log.exception(u'Loading bible from OSIS file failed')
             success = False
         finally:
             if osis:
                 osis.close()
-        if not self.loadbible:
-            dialogobject.incrementProgressBar(u'Import canceled!')
-            dialogobject.ImportProgressBar.setValue(
-                dialogobject.ImportProgressBar.maximum())
+        if self.stop_import:
+            self.wizard.incrementProgressBar(u'Import canceled!')
             return False
         else:
             return success
+

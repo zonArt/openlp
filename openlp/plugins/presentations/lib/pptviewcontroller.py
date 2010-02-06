@@ -49,6 +49,7 @@ class PptviewController(PresentationController):
         log.debug(u'Initialising')
         self.process = None
         PresentationController.__init__(self, plugin, u'Powerpoint Viewer')
+        self.supports= [u'.ppt', u'.pps']
         self.pptid = None
 
     def check_available(self):

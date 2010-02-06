@@ -68,6 +68,10 @@ class OpenLP(QtGui.QApplication):
     global log
     log.info(u'OpenLP Application Loaded')
 
+    def notify(self, obj, evt):
+        #TODO needed for presentation exceptions
+        return QtGui.QApplication.notify(self, obj, evt)
+
     def run(self):
         """
         Run the OpenLP application.
@@ -131,6 +135,7 @@ class OpenLP(QtGui.QApplication):
         if show_splash:
             # now kill the splashscreen
             self.splash.finish(self.mainWindow)
+        self.mainWindow.repaint()
         self.mainWindow.versionCheck()
         return self.exec_()
 
@@ -143,7 +148,7 @@ def main():
     usage = u'Usage: %prog [options] [qt-options]'
     parser = OptionParser(usage=usage)
     parser.add_option("-l", "--log-level", dest="loglevel",
-                      default="info", metavar="LEVEL",
+                      default="warning", metavar="LEVEL",
                       help="Set logging to LEVEL level. Valid values are "
                            "\"debug\", \"info\", \"warning\".")
     parser.add_option("-p", "--portable", dest="portable",
@@ -154,7 +159,7 @@ def main():
                       help="Set the Qt4 style (passed directly to Qt4).")
     # Set up logging
     filename = u'openlp.log'
-    logfile = FileHandler(filename)
+    logfile = FileHandler(filename, u'w')
     logfile.setFormatter(logging.Formatter(
         u'%(asctime)s %(name)-15s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)

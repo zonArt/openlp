@@ -26,8 +26,97 @@
 import urllib2
 import chardet
 import logging
+import re
 
-class SearchResults:
+only_verses = re.compile(r'([\w .]+)[ ]+([0-9]+)[ ]*[:|v|V][ ]*([0-9]+)'
+    r'(?:[ ]*-[ ]*([0-9]+|end))?(?:[ ]*,[ ]*([0-9]+)(?:[ ]*-[ ]*([0-9]+|end))?)?',
+    re.UNICODE)
+chapter_range = re.compile(r'([\w .]+)[ ]+([0-9]+)[ ]*[:|v|V][ ]*'
+    r'([0-9]+)[ ]*-[ ]*([0-9]+)[ ]*[:|v|V][ ]*([0-9]+)',
+    re.UNICODE)
+
+log = logging.getLogger(__name__)
+
+def parse_reference(reference):
+    """
+    This is the über-awesome function that takes a person's typed in string
+    and converts it to a reference list, a list of references to be queried
+    from the Bible database files.
+
+    The reference list is a list of tuples, with each tuple structured like
+    this::
+
+        (book, chapter, start_verse, end_verse)
+    """
+    reference = reference.strip()
+    log.debug('parse_reference("%s")', reference)
+    reference_list = []
+    # We start with the most "complicated" match first, so that they are found
+    # first, and we don't have any "false positives".
+    match = chapter_range.match(reference)
+    if match:
+        log.debug('Found a chapter range.')
+        book = match.group(1)
+        from_verse = match.group(3)
+        to_verse = match.group(5)
+        if int(match.group(2)) == int(match.group(4)):
+            reference_list.append(
+                (match.group(1), int(match.group(2)), from_verse, to_verse)
+            )
+        else:
+            if int(match.group(2)) > int(match.group(4)):
+                from_chapter = int(match.group(4))
+                to_chapter = int(match.group(2))
+            else:
+                from_chapter = int(match.group(2))
+                to_chapter = int(match.group(4))
+            for chapter in xrange(from_chapter, to_chapter + 1):
+                if chapter == from_chapter:
+                    reference_list.append(
+                        (match.group(1), chapter, from_verse, -1)
+                    )
+                elif chapter == to_chapter:
+                    reference_list.append(
+                        (match.group(1), chapter, 1, to_verse)
+                    )
+                else:
+                    reference_list.append(
+                        (match.group(1), chapter, 1, -1)
+                    )
+    else:
+        match = only_verses.match(reference)
+        if match:
+            log.debug('Found a verse range.')
+            book = match.group(1)
+            chapter = match.group(2)
+            verse = match.group(3)
+            if match.group(4) is None:
+                reference_list.append((book, chapter, verse, verse))
+            elif match.group(5) is None:
+                end_verse = match.group(4)
+                if end_verse == u'end':
+                    end_verse = -1
+                reference_list.append((book, chapter, verse, end_verse))
+            elif match.group(6) is None:
+                reference_list.extend([
+                    (book, chapter, verse, match.group(4)),
+                    (book, chapter, match.group(5), match.group(5))
+                ])
+            else:
+                end_verse = match.group(6)
+                if end_verse == u'end':
+                    end_verse = -1
+                reference_list.extend([
+                    (book, chapter, verse, match.group(4)),
+                    (book, chapter, match.group(5), end_verse)
+                ])
+        else:
+            log.debug('Didn\'t find anything.')
+    log.debug(reference_list)
+    return reference_list
+
+
+class SearchResults(object):
     """
     Encapsulate a set of search results. This is Bible-type independant.
     """
@@ -80,12 +169,6 @@ class BibleCommon(object):
     global log
     log = logging.getLogger(u'BibleCommon')
     log.info(u'BibleCommon')
-
-    def __init__(self):
-        """
-        An empty constructor... not sure why I'm here.
-        """
-        pass
 
     def _get_web_text(self, urlstring, proxyurl):
         """

@@ -33,11 +33,11 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
     """
     Class documentation goes here.
     """
-    def __init__(self, auditmanager, parent=None):
+    def __init__(self, songusagemanager, parent=None):
         """
         Constructor
         """
-        self.auditmanager = auditmanager
+        self.songusagemanager = songusagemanager
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
 
@@ -52,5 +52,5 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
         if ret == QtGui.QMessageBox.Ok:
             qDeleteDate = self.DeleteCalendar.selectedDate()
             deleteDate = date(qDeleteDate.year(), qDeleteDate.month(), qDeleteDate.day())
-            self.auditmanager.delete_to_date(deleteDate)
+            self.songusagemanager.delete_to_date(deleteDate)
         self.close()

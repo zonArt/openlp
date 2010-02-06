@@ -91,15 +91,6 @@ class Ui_BibleImportWizard(object):
         self.OsisLayout.setMargin(0)
         self.OsisLayout.setSpacing(8)
         self.OsisLayout.setObjectName(u'OsisLayout')
-        self.OsisBibleNameLabel = QtGui.QLabel(self.OsisPage)
-        self.OsisBibleNameLabel.setIndent(0)
-        self.OsisBibleNameLabel.setObjectName(u'OsisBibleNameLabel')
-        self.OsisLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
-            self.OsisBibleNameLabel)
-        self.OsisBibleNameEdit = QtGui.QLineEdit(self.OsisPage)
-        self.OsisBibleNameEdit.setObjectName(u'OsisBibleNameEdit')
-        self.OsisLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
-            self.OsisBibleNameEdit)
         self.OsisLocationLabel = QtGui.QLabel(self.OsisPage)
         self.OsisLocationLabel.setObjectName(u'OsisLocationLabel')
         self.OsisLayout.setWidget(1, QtGui.QFormLayout.LabelRole,
@@ -302,12 +293,10 @@ class Ui_BibleImportWizard(object):
         self.ImportProgressLabel.setObjectName(u'ImportProgressLabel')
         self.ImportLayout.addWidget(self.ImportProgressLabel)
         self.ImportProgressBar = QtGui.QProgressBar(self.ImportPage)
-        self.ImportProgressBar.setProperty(u'value', 0)
-        self.ImportProgressBar.setInvertedAppearance(False)
+        self.ImportProgressBar.setValue(0)
         self.ImportProgressBar.setObjectName(u'ImportProgressBar')
         self.ImportLayout.addWidget(self.ImportProgressBar)
         BibleImportWizard.addPage(self.ImportPage)
-
 
         self.retranslateUi(BibleImportWizard)
         self.FormatWidget.setCurrentIndex(0)
@@ -334,7 +323,6 @@ class Ui_BibleImportWizard(object):
         self.FormatComboBox.setItemText(1, self.trUtf8('CSV'))
         self.FormatComboBox.setItemText(2, self.trUtf8('OpenSong'))
         self.FormatComboBox.setItemText(3, self.trUtf8('Web Download'))
-        self.OsisBibleNameLabel.setText(self.trUtf8('Bible Name:'))
         self.OsisLocationLabel.setText(self.trUtf8('File Location:'))
         self.BooksLocationLabel.setText(self.trUtf8('Books Location:'))
         self.VerseLocationLabel.setText(self.trUtf8('Verse Location:'))
@@ -362,4 +350,4 @@ class Ui_BibleImportWizard(object):
         self.ImportPage.setSubTitle(
             self.trUtf8('Please wait while your Bible is imported.'))
         self.ImportProgressLabel.setText(self.trUtf8('Ready.'))
-        #self.ImportProgressBar.setFormat(u'%p')
+        self.ImportProgressBar.setFormat(u'%p%')

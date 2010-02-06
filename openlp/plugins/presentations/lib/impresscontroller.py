@@ -62,10 +62,12 @@ class ImpressController(PresentationController):
         """
         log.debug(u'Initialising')
         PresentationController.__init__(self, plugin, u'Impress')
+        self.supports= [u'.odp', u'.ppt', u'.pps', u'.pptx', u'.ppsx']
         self.process = None
         self.document = None
         self.presentation = None
         self.controller = None
+        self.desktop = None
 
     def check_available(self):
         """
@@ -85,7 +87,7 @@ class ImpressController(PresentationController):
         It is not displayed to the user but is available to the UNO interface
         when required.
         """
-        log.debug(u'start Openoffice')
+        log.debug(u'start process Openoffice')
         if os.name == u'nt':
             self.manager = self.get_com_servicemanager()
             self.manager._FlagAsMethod(u'Bridge_GetStruct')
@@ -101,7 +103,7 @@ class ImpressController(PresentationController):
         """
         Called at system exit to clean up any running presentations
         """
-        log.debug(u'Kill')
+        log.debug(u'Kill OpenOffice')
         self.close_presentation()
         if os.name != u'nt':
             desktop = self.get_uno_desktop()
@@ -121,8 +123,9 @@ class ImpressController(PresentationController):
         ``presentation``
         The file name of the presentatios to the run.
         """
-        log.debug(u'LoadPresentation')
+        log.debug(u'Load Presentation OpenOffice')
         self.store_filename(presentation)
+        #print "s.dsk1 ", self.desktop
         if os.name == u'nt':
             desktop = self.get_com_desktop()
             if desktop is None:
@@ -135,6 +138,7 @@ class ImpressController(PresentationController):
         if desktop is None:
             return
         self.desktop = desktop
+        #print "s.dsk2 ", self.desktop
         properties = []
         properties.append(self.create_property(u'Minimized', True))
         properties = tuple(properties)
@@ -153,9 +157,9 @@ class ImpressController(PresentationController):
         """
         Create thumbnail images for presentation
         """
+        log.debug(u'create thumbnails OpenOffice')
         if self.check_thumbnails():
             return
-
         if os.name == u'nt':
             thumbdir = u'file:///' + self.thumbnailpath.replace(
                 u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
@@ -170,13 +174,14 @@ class ImpressController(PresentationController):
             page = pages.getByIndex(idx)
             doc.getCurrentController().setCurrentPage(page)
             path = u'%s/%s%s.png'% (thumbdir, self.thumbnailprefix,
-                    unicode(idx+1))
+                    unicode(idx + 1))
             try:
                 doc.storeToURL(path , props)
             except:
                 log.exception(u'%s\nUnable to store preview' % path)
 
     def create_property(self, name, value):
+        log.debug(u'create property OpenOffice')
         if os.name == u'nt':
             prop = self.manager.Bridge_GetStruct(u'com.sun.star.beans.PropertyValue')
         else:
@@ -186,7 +191,7 @@ class ImpressController(PresentationController):
         return prop
 
     def get_uno_desktop(self):
-        log.debug(u'getUNODesktop')
+        log.debug(u'get UNO Desktop Openoffice')
         ctx = None
         loop = 0
         context = uno.getComponentContext()
@@ -196,6 +201,7 @@ class ImpressController(PresentationController):
             try:
                 ctx = resolver.resolve(u'uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
             except:
+                log.exception(u'Unable to fine running instance ')
                 self.start_process()
                 loop += 1
         try:
@@ -208,7 +214,7 @@ class ImpressController(PresentationController):
             return None
 
     def get_com_desktop(self):
-        log.debug(u'getCOMDesktop')
+        log.debug(u'get COM Desktop OpenOffice')
         try:
             desktop = self.manager.createInstance(u'com.sun.star.frame.Desktop')
             return desktop
@@ -217,7 +223,7 @@ class ImpressController(PresentationController):
         return None
 
     def get_com_servicemanager(self):
-        log.debug(u'get_com_servicemanager')
+        log.debug(u'get_com_servicemanager openoffice')
         try:
             return Dispatch(u'com.sun.star.ServiceManager')
         except:
@@ -230,6 +236,7 @@ class ImpressController(PresentationController):
         Triggerent by new object being added to SlideController orOpenLP
         being shut down
         """
+        log.debug(u'close Presentation OpenOffice')
         if self.document:
             if self.presentation:
                 try:
@@ -242,32 +249,44 @@ class ImpressController(PresentationController):
             self.document = None
 
     def is_loaded(self):
+        log.debug(u'is loaded OpenOffice')
+        #print "is_loaded "
         if self.presentation is None or self.document is None:
+            #print "no present or document"
             return False
         try:
             if self.document.getPresentation() is None:
+                #print "no getPresentation"
                 return False
         except:
             return False
         return True
 
     def is_active(self):
+        log.debug(u'is active OpenOffice')
+        #print "is_active "
         if not self.is_loaded():
+            #print "False "
             return False
+        #print "self.con ", self.controller
         if self.controller is None:
             return False
-        return self.controller.isRunning() and self.controller.isActive()
+        return True
 
     def unblank_screen(self):
+        log.debug(u'unblank screen OpenOffice')
         return self.controller.resume()
 
     def blank_screen(self):
+        log.debug(u'blank screen OpenOffice')
         self.controller.blankScreen(0)
 
     def stop_presentation(self):
+        log.debug(u'stop presentation OpenOffice')
         self.controller.deactivate()
 
     def start_presentation(self):
+        log.debug(u'start presentation OpenOffice')
         if self.controller is None or not self.controller.isRunning():
             self.presentation.start()
             # start() returns before the getCurrentComponent is ready. Try for 5 seconds

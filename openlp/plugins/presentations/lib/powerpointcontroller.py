@@ -52,6 +52,7 @@ class PowerpointController(PresentationController):
         """
         log.debug(u'Initialising')
         PresentationController.__init__(self, plugin, u'Powerpoint')
+        self.supports= [u'.ppt', u'.pps']
         self.process = None
         self.presentation = None
 

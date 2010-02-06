@@ -28,7 +28,7 @@ import logging
 from PyQt4 import QtCore
 
 from renderer import Renderer
-from openlp.core.lib import ThemeLevel, resize_image
+from openlp.core.lib import ThemeLevel
 
 class RenderManager(object):
     """
@@ -64,8 +64,6 @@ class RenderManager(object):
         self.theme_level = u''
         self.override_background = None
         self.themedata = None
-        self.save_bg_frame = None
-        self.override_background_changed = False
 
     def update_display(self, screen_number):
         """
@@ -134,22 +132,6 @@ class RenderManager(object):
             self.calculate_default(self.screens.current[u'size'])
             self.renderer.set_theme(self.themedata)
             self.build_text_rectangle(self.themedata)
-        #Replace the background image from renderer with one from image
-        if self.override_background:
-            if self.save_bg_frame is None:
-                self.save_bg_frame = self.renderer.bg_frame
-            if self.override_background_changed:
-                self.renderer.bg_frame = resize_image(
-                    self.override_background, self.width, self.height)
-                self.override_background_changed = False
-        else:
-            if self.override_background_changed:
-                self.renderer.bg_frame = resize_image(
-                    self.override_background, self.width, self.height)
-                self.override_background_changed = False
-            if self.save_bg_frame:
-                self.renderer.bg_frame = self.save_bg_frame
-                self.save_bg_frame = None
 
     def build_text_rectangle(self, theme):
         """
