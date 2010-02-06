@@ -54,7 +54,7 @@ class PluginManager(object):
         log.debug(u'Base path %s ', self.basepath)
         self.plugins = []
         # this has to happen after the UI is sorted self.find_plugins(dir)
-        log.warn(u'Plugin manager Initialised')
+        log.info(u'Plugin manager Initialised')
 
     def find_plugins(self, dir, plugin_helpers):
         """
