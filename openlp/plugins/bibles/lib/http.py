@@ -25,6 +25,8 @@
 
 import logging
 import urllib2
+import os
+import sqlite3
 
 from BeautifulSoup import BeautifulSoup
 
@@ -32,6 +34,89 @@ from openlp.core.lib import Receiver
 from common import BibleCommon, SearchResults
 from db import BibleDB
 from openlp.plugins.bibles.lib.models import Book
+
+class HTTPBooks(object):
+    cursor = None
+
+    @staticmethod
+    def get_cursor():
+        if HTTPBooks.cursor is None:
+            filepath = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                u'..', u'resources', u'httpbooks.sqlite')
+            conn = sqlite3.connect(filepath)
+            HTTPBooks.cursor = conn.cursor()
+        return HTTPBooks.cursor
+
+    @staticmethod
+    def run_sql(query, parameters=()):
+        cursor = HTTPBooks.get_cursor()
+        cursor.execute(query, parameters)
+        return cursor.fetchall()
+
+    @staticmethod
+    def get_books():
+        books = HTTPBooks.run_sql(u'SELECT id, testament_id, name, '
+                u'abbreviation, chapters FROM books ORDER BY id')
+        book_list = []
+        for book in books:
+            book_list.append({
+                u'id': book[0],
+                u'testament_id': book[1],
+                u'name': unicode(book[2]),
+                u'abbreviation': unicode(book[3]),
+                u'chapters': book[4]
+            })
+        return book_list
+
+    @staticmethod
+    def get_book(name):
+        if not isinstance(name, unicode):
+            name = unicode(name)
+        books = HTTPBooks.run_sql(u'SELECT id, testament_id, name, '
+                u'abbreviation, chapters FROM books WHERE name = ? OR '
+                u'abbreviation = ?', (name, name))
+        if len(books) > 0:
+            return {
+                u'id': books[0][0],
+                u'testament_id': books[0][1],
+                u'name': unicode(books[0][2]),
+                u'abbreviation': unicode(books[0][3]),
+                u'chapters': books[0][4]
+            }
+        else:
+            return None
+
+    @staticmethod
+    def get_chapter(name, chapter):
+        if not isinstance(name, int):
+            chapter = int(chapter)
+        book = HTTPBooks.get_book(name)
+        chapters = HTTPBooks.run_sql(u'SELECT id, book_id, chapter, '
+            u'verses FROM chapters WHERE book_id = ?', (book[u'id'],))
+        if len(chapters) > 0:
+            return {
+                u'id': chapters[0][0],
+                u'book_id': chapters[0][1],
+                u'chapter': chapters[0][2],
+                u'verses': chapters[0][3]
+            }
+        else:
+            return None
+
+    @staticmethod
+    def get_chapter_count(book):
+        details = HTTPBooks.get_book(book)
+        if details:
+            return details[u'chapters']
+        return 0
+
+    @staticmethod
+    def get_verse_count(book, chapter):
+        details = HTTPBooks.get_chapter(book, chapter)
+        if details:
+            return details[u'verses']
+        return 0
+
 
 class BGExtract(BibleCommon):
     global log
@@ -219,7 +304,7 @@ class HTTPBible(BibleDB):
                     Receiver.send_message(u'bible_nobook')
                     return []
                 db_book = self.create_book(book_details[u'name'],
-                    book_details[u'abbr'], book_details[u'test'])
+                    book_details[u'abbreviation'], book_details[u'testament_id'])
             book = db_book.name
             if self.get_verse_count(book, reference[1]) == 0:
                 Receiver.send_message(u'bible_showprogress')
@@ -256,21 +341,17 @@ class HTTPBible(BibleDB):
             return None
 
     def get_books(self):
-        return [Book.populate(name=book['name']) for book in self.books]
+        return [Book.populate(name=book['name']) for book in HTTPBooks.get_books()]
+
+    def lookup_book(self, book):
+        return HTTPBooks.get_book(book)
 
     def get_chapter_count(self, book):
-        return self.lookup_book(book)[u'chap']
+        return HTTPBooks.get_chapter_count(book)
+
+    def get_verse_count(self, book, chapter):
+        return HTTPBooks.get_verse_count(book, chapter)
 
     def set_proxy_server(self, server):
         self.proxy_server = server
-
-    def set_books(self, books):
-        self.books = books
-
-    def lookup_book(self, name):
-        log.debug('Looking up "%s" in %s', name, self.books)
-        for book in self.books:
-            if book[u'name'] == name or book[u'abbr'] == name:
-                return book
-        return None
 

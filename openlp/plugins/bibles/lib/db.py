@@ -197,7 +197,7 @@ class BibleDB(QtCore.QObject):
         for book, chapter, start_verse, end_verse in reference_list:
             db_book = self.get_book(book)
             if end_verse == -1:
-                end_verse = self.get_chapter_count(book)
+                end_verse = self.get_verse_count(book, chapter)
             if db_book:
                 book = db_book.name
                 log.debug(u'Book name corrected to "%s"', book)

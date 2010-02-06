@@ -27,6 +27,7 @@ import urllib2
 import chardet
 import logging
 import re
+import sqlite3
 
 only_verses = re.compile(r'([\w .]+)[ ]+([0-9]+)[ ]*[:|v|V][ ]*([0-9]+)'
     r'(?:[ ]*-[ ]*([0-9]+|end))?(?:[ ]*,[ ]*([0-9]+)(?:[ ]*-[ ]*([0-9]+|end))?)?',
@@ -56,10 +57,33 @@ def parse_reference(reference):
     match = chapter_range.match(reference)
     if match:
         log.debug('Found a chapter range.')
-        reference_list.extend([
-            (match.group(1), match.group(2), match.group(3), -1),
-            (match.group(1), match.group(4), 1, match.group(5))
-        ])
+        book = match.group(1)
+        from_verse = match.group(3)
+        to_verse = match.group(5)
+        if int(match.group(2)) == int(match.group(4)):
+            reference_list.append(
+                (match.group(1), int(match.group(2)), from_verse, to_verse)
+            )
+        else:
+            if int(match.group(2)) > int(match.group(4)):
+                from_chapter = int(match.group(4))
+                to_chapter = int(match.group(2))
+            else:
+                from_chapter = int(match.group(2))
+                to_chapter = int(match.group(4))
+            for chapter in xrange(from_chapter, to_chapter + 1):
+                if chapter == from_chapter:
+                    reference_list.append(
+                        (match.group(1), chapter, from_verse, -1)
+                    )
+                elif chapter == to_chapter:
+                    reference_list.append(
+                        (match.group(1), chapter, 1, to_verse)
+                    )
+                else:
+                    reference_list.append(
+                        (match.group(1), chapter, 1, -1)
+                    )
     else:
         match = only_verses.match(reference)
         if match:
@@ -89,9 +113,11 @@ def parse_reference(reference):
                 ])
         else:
             log.debug('Didn\'t find anything.')
+    log.debug(reference_list)
     return reference_list
 
-class SearchResults:
+
+class SearchResults(object):
     """
     Encapsulate a set of search results. This is Bible-type independant.
     """
