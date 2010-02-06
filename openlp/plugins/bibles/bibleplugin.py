@@ -40,13 +40,13 @@ class BiblePlugin(Plugin):
         self.weight = -9
         self.icon = build_icon(u':/media/media_bible.png')
         #Register the bible Manager
-        self.biblemanager = None
         self.status = PluginStatus.Active
+        self.manager = None
 
     def initialise(self):
         log.info(u'bibles Initialising')
-        if self.biblemanager is None:
-            self.biblemanager = BibleManager(self.config)
+        if self.manager is None:
+            self.manager = BibleManager(self, self.config)
         Plugin.initialise(self)
         self.insert_toolbox_item()
         self.ImportBibleItem.setVisible(True)
