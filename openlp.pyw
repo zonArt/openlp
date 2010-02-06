@@ -159,7 +159,7 @@ def main():
                       help="Set the Qt4 style (passed directly to Qt4).")
     # Set up logging
     filename = u'openlp.log'
-    logfile = FileHandler(filename)
+    logfile = FileHandler(filename, u'w')
     logfile.setFormatter(logging.Formatter(
         u'%(asctime)s %(name)-15s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)

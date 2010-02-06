@@ -104,6 +104,9 @@ class EventReceiver(QtCore.QObject):
     ``remote_edit_clear``
         Informs all components that remote edit has been aborted.
 
+    ``presentation types``
+        Informs all components of the presentation types supported.
+
     """
     global log
     log = logging.getLogger(u'EventReceiver')
