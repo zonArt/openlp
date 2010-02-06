@@ -60,7 +60,7 @@ class BibleMediaItem(MediaManagerItem):
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = BibleListView
         self.servicePath = None
-        self.lastReference = u''
+        self.lastReference = []
         MediaManagerItem.__init__(self, parent, icon, title)
         # place to store the search results
         self.search_results = {}
@@ -400,9 +400,10 @@ class BibleMediaItem(MediaManagerItem):
         versetext = u'%s %s:%s-%s:%s' % (book, chapter_from, verse_from, \
                                          chapter_to, verse_to)
         self.search_results = self.parent.manager.get_verses(bible, versetext)
-        self.lastReference = versetext
         if self.ClearAdvancedSearchComboBox.currentIndex() == 0:
             self.ListView.clear()
+            self.lastReference = []
+        self.lastReference.append(versetext)
         self.displayResults(bible)
 
     def onAdvancedFromChapter(self):
@@ -421,8 +422,9 @@ class BibleMediaItem(MediaManagerItem):
         text = unicode(self.QuickSearchEdit.displayText())
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
             self.ListView.clear()
+            self.lastReference = []
+        self.lastReference.append(versetext)
         self.search_results = self.parent.manager.get_verses(bible, text)
-        self.lastReference = text
         if self.search_results:
             self.displayResults(bible)
 
@@ -442,8 +444,9 @@ class BibleMediaItem(MediaManagerItem):
         else:
             bible2 = unicode(self.AdvancedSecondBibleComboBox.currentText())
         if bible2:
-            self.searchByReference(bible2, self.lastReference)
-            bible2_verses = self.search_results
+            bible2_verses = []
+            for scripture in self.lastReference:
+                bible2_verses.extend(self.parent.manager.get_verses(bible2, scripture))
             bible2_version = self.parent.manager.get_meta_data(bible2, u'Version')
             bible2_copyright = self.parent.manager.get_meta_data(bible2, u'Copyright')
             bible2_permission = self.parent.manager.get_meta_data(bible2, u'Permission')
@@ -477,7 +480,7 @@ class BibleMediaItem(MediaManagerItem):
                 #If not found throws and error so add.s
                 if footer not in raw_footer:
                     raw_footer.append(footer)
-                bible_text = u'%s %s \n\n %s %s)' % \
+                bible_text = u'%s %s \n\n %s %s' % \
                     (verse_text, text, verse_text, bible2_verses[item.row()].text)
                 raw_slides.append(bible_text)
                 bible_text = u''
