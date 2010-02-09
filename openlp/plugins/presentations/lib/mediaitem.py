@@ -67,9 +67,8 @@ class PresentationMediaItem(MediaManagerItem):
         for controller in self.controllers:
             if self.controllers[controller].enabled:
                 for type in self.controllers[controller].supports:
-                    type = u'*%s' % type
                     if fileType.find(type) == -1:
-                        fileType += type + u' '
+                        fileType += u'*%s ' % type
         self.OnNewFileMasks = self.trUtf8('Presentations (%s)' % fileType)
 
     def requiredIcons(self):
