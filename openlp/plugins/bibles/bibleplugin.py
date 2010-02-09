@@ -27,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon
+from openlp.core.lib import Plugin, build_icon, PluginStatus
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 
 class BiblePlugin(Plugin):
@@ -36,10 +36,11 @@ class BiblePlugin(Plugin):
     log.info(u'Bible Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Bibles', u'1.9.0', plugin_helpers)
+        Plugin.__init__(self, u'Bibles', u'1.9.1', plugin_helpers)
         self.weight = -9
         self.icon = build_icon(u':/media/media_bible.png')
         #Register the bible Manager
+        self.status = PluginStatus.Active
         self.manager = None
 
     def initialise(self):
@@ -91,4 +92,3 @@ class BiblePlugin(Plugin):
             'plugin allows bible verses from different sources to be '
             'displayed on the screen during the service.')
         return about_text
-

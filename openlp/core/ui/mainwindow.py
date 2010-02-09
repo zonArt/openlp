@@ -25,6 +25,7 @@
 
 import os
 import logging
+import time
 
 from PyQt4 import QtCore, QtGui
 
@@ -50,6 +51,15 @@ media_manager_style = """
     border-color: palette(light);
   }
 """
+class versionThread(QtCore.QThread):
+    def __init__(self, parent):
+        QtCore.QThread.__init__(self, parent)
+        self.parent = parent
+    def run (self):
+        time.sleep(2)
+        Receiver.send_message(u'version_check')
+
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         """
@@ -483,6 +493,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'), self.onOptionsSettingsItemClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'update_global_theme'), self.defaultThemeChanged)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'version_check'), self.versionCheck)
         QtCore.QObject.connect(self.FileNewItem,
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onNewService)
@@ -581,6 +593,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 self.trUtf8('The Main Display has been blanked out'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
+
+    def versionThread(self):
+        vT = versionThread(self)
+        vT.start()
 
     def onHelpAboutItemClicked(self):
         """

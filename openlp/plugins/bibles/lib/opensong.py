@@ -48,15 +48,15 @@ class OpenSongBible(BibleDB):
         if 'filename' not in kwargs:
             raise KeyError(u'You have to supply a file name to import from.')
         self.filename = kwargs['filename']
-        #QtCore.QObject.connect(Receiver.get_receiver(),
-        #    QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
 
     def stop_import(self):
         """
         Stops the import of the Bible.
         """
         log.debug('Stopping import!')
-        self.stop_import = True
+        self.stop_import_flag = True
 
     def do_import(self):
         """
@@ -75,15 +75,15 @@ class OpenSongBible(BibleDB):
             opensong = objectify.parse(file)
             bible = opensong.getroot()
             for book in bible.b:
-                if self.stop_import:
+                if self.stop_import_flag:
                     break
                 db_book = self.create_book(unicode(book.attrib[u'n']),
                     unicode(book.attrib[u'n'][:4]))
                 for chapter in book.c:
-                    if self.stop_import:
+                    if self.stop_import_flag:
                         break
                     for verse in chapter.v:
-                        if self.stop_import:
+                        if self.stop_import_flag:
                             break
                         self.create_verse(
                             db_book.id,
