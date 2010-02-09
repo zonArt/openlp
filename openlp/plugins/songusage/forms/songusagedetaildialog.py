@@ -67,5 +67,3 @@ class Ui_AuditDetailDialog(object):
         self.DateRangeGroupBox.setTitle(QtGui.QApplication.translate("AuditDetailDialog", "Select Date Range", None, QtGui.QApplication.UnicodeUTF8))
         self.ToLabel.setText(QtGui.QApplication.translate("AuditDetailDialog", "to", None, QtGui.QApplication.UnicodeUTF8))
         self.FileGroupBox.setTitle(QtGui.QApplication.translate("AuditDetailDialog", "Report Location", None, QtGui.QApplication.UnicodeUTF8))
-
-import openlp-2_rc

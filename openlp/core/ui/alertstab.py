@@ -126,6 +126,8 @@ class AlertsTab(SettingsTab):
         self.LocationLabel.setObjectName(u'LocationLabel')
         self.LocationLayout.addWidget(self.LocationLabel)
         self.LocationComboBox = QtGui.QComboBox(self.LocationWidget)
+        self.LocationComboBox.addItem(QtCore.QString())
+        self.LocationComboBox.addItem(QtCore.QString())
         self.LocationComboBox.setObjectName(u'LocationComboBox')
         self.LocationLayout.addWidget(self.LocationComboBox)
         self.LocationSpacer = QtGui.QSpacerItem(147, 20,
@@ -178,6 +180,8 @@ class AlertsTab(SettingsTab):
             QtCore.SIGNAL(u'activated(int)'), self.onFontComboBoxClicked)
         QtCore.QObject.connect(self.TimeoutSpinBox,
             QtCore.SIGNAL(u'valueChanged(int)'), self.onTimeoutSpinBoxChanged)
+        QtCore.QObject.connect(self.FontSizeSpinBox,
+            QtCore.SIGNAL(u'valueChanged(int)'), self.onFontSizeSpinBoxChanged)
 
     def retranslateUi(self):
         self.FontGroupBox.setTitle(self.trUtf8('Font'))
@@ -190,9 +194,9 @@ class AlertsTab(SettingsTab):
         self.TimeoutSpinBox.setSuffix(self.trUtf8('s'))
         self.LocationLabel.setText(self.trUtf8('Location:'))
         self.PreviewGroupBox.setTitle(self.trUtf8('Preview'))
-        self.FontPreview.setText(self.trUtf8('openlp.org 2.0 rocks!'))
-        self.LocationComboBox.addItem(self.trUtf8('Top'))
-        self.LocationComboBox.addItem(self.trUtf8('Bottom'))
+        self.FontPreview.setText(self.trUtf8('openlp.org'))
+        self.LocationComboBox.setItemText(0, self.trUtf8('Top'))
+        self.LocationComboBox.setItemText(1, self.trUtf8('Bottom'))
 
     def onBackgroundColorButtonClicked(self):
         self.bg_color = QtGui.QColorDialog.getColor(
@@ -213,6 +217,10 @@ class AlertsTab(SettingsTab):
 
     def onTimeoutSpinBoxChanged(self):
         self.timeout = self.TimeoutSpinBox.value()
+
+    def onFontSizeSpinBoxChanged(self):
+        self.font_size = self.FontSizeSpinBox.value()
+        self.updateDisplay()
 
     def load(self):
         self.timeout = int(self.config.get_config(u'timeout', 5))
@@ -243,13 +251,13 @@ class AlertsTab(SettingsTab):
         self.config.set_config(u'font size', unicode(self.font_size))
         self.config.set_config(u'font face', unicode(self.font_face))
         self.config.set_config(u'timeout', unicode(self.timeout))
-        self.config.set_config(u'location', unicode(self.FontComboBox.currentIndex()))
+        self.config.set_config(u'location', unicode(self.LocationComboBox.currentIndex()))
 
     def updateDisplay(self):
         font = QtGui.QFont()
         font.setFamily(self.FontComboBox.currentFont().family())
         font.setBold(True)
-        font.setPointSize(16)
+        font.setPointSize(self.font_size)
         self.FontPreview.setFont(font)
         self.FontPreview.setStyleSheet(u'background-color: %s; color: %s' % \
             (self.bg_color, self.font_color))
