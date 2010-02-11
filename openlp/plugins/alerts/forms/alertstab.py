@@ -31,10 +31,8 @@ class AlertsTab(SettingsTab):
     """
     AlertsTab is the alerts settings tab in the settings dialog.
     """
-    def __init__(self):
-        SettingsTab.__init__(self, u'Alerts')
-        self.font_color = '#ffffff'
-        self.bg_color = '#660000'
+    def __init__(self, title, section=None):
+        SettingsTab.__init__(self, title, section)
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
@@ -159,7 +157,7 @@ class AlertsTab(SettingsTab):
         self.PreviewLayout.setMargin(8)
         self.PreviewLayout.setObjectName(u'PreviewLayout')
         self.FontPreview = QtGui.QLineEdit(self.PreviewGroupBox)
-        self.FontPreview.setMinimumSize(QtCore.QSize(280, 100))
+        self.FontPreview.setFixedSize(QtCore.QSize(350, 100))
         self.FontPreview.setReadOnly(True)
         self.FontPreview.setFocusPolicy(QtCore.Qt.NoFocus)
         self.FontPreview.setAlignment(

@@ -31,11 +31,11 @@ class AlertForm(QtGui.QDialog):
     global log
     log = logging.getLogger(u'AlertForm')
 
-    def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+    def __init__(self, parent):
+        QtGui.QDialog.__init__(self, None)
         self.parent = parent
         self.setupUi(self)
-        log.debug(u'Defined')
+        log.debug(u'AlertForm Defined')
 
     def setupUi(self, AlertForm):
         AlertForm.setObjectName(u'AlertForm')
@@ -85,9 +85,7 @@ class AlertForm(QtGui.QDialog):
         self.CancelButton.setObjectName(u'CancelButton')
         self.horizontalLayout.addWidget(self.CancelButton)
         self.AlertFormLayout.addWidget(self.ButtonBoxWidget)
-
         self.retranslateUi(AlertForm)
-
         QtCore.QObject.connect(self.CancelButton, QtCore.SIGNAL(u'clicked()'), AlertForm.close)
         QtCore.QObject.connect(self.DisplayButton, QtCore.SIGNAL(u'clicked()'), self.onDisplayClicked)
         QtCore.QMetaObject.connectSlotsByName(AlertForm)

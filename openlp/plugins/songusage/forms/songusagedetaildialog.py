@@ -9,7 +9,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-class Ui_AuditDetailDialog(object):
+class Ui_SongUsageDetailDialog(object):
     def setupUi(self, AuditDetailDialog):
         AuditDetailDialog.setObjectName("AuditDetailDialog")
         AuditDetailDialog.resize(609, 413)

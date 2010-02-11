@@ -60,12 +60,14 @@ class SongUsageManager():
 
         log.debug(u'SongUsage Initialised')
 
-    def get_all_songusage(self):
+    def get_all_songusage(self, start_date, end_date):
         """
         Returns the details of SongUsage
         """
-        return self.session.query(SongUsageItem).\
-            order_by(SongUsageItem.usagedate, SongUsageItem.usagetime ).all()
+        return self.session.query(SongUsageItem) \
+            .filter(SongUsageItem.usagedate >= start_date.toPyDate()) \
+            .filter(SongUsageItem.usagedate < end_date.toPyDate()) \
+            .order_by(SongUsageItem.usagedate, SongUsageItem.usagetime ).all()
 
     def insert_songusage(self, songusageitem):
         """
