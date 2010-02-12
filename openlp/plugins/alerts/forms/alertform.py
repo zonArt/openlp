@@ -26,6 +26,7 @@
 import logging
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import build_icon
+from openlp.plugins.alerts.lib import alertmanager
 
 class AlertForm(QtGui.QDialog):
     global log
@@ -97,4 +98,4 @@ class AlertForm(QtGui.QDialog):
         self.CancelButton.setText(self.trUtf8('Cancel'))
 
     def onDisplayClicked(self):
-        self.parent.mainDisplay.displayAlert(unicode(self.AlertEntryEditItem.text()))
+        self.parent.alertsmanager.displayAlert(unicode(self.AlertEntryEditItem.text()))

@@ -6,7 +6,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import str_to_bool, Receiver
 from openlp.core.lib import SettingsTab
 
-class AlertManager(self):
+class AlertsManager(QtCore.QObject):
     """
     BiblesTab is the Bibles settings tab in the settings dialog.
     """
@@ -14,7 +14,11 @@ class AlertManager(self):
     log = logging.getLogger(u'AlertManager')
     log.info(u'Alert Manager loaded')
 
-    def __init__(self):
+    def __init__(self, parent):
+        QtCore.QObject.__init__(self)
+        self.parent = parent
+        self.timer_id = 0
+        self.alertList = []
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'alert_text'), self.displayAlert)
 
@@ -26,9 +30,10 @@ class AlertManager(self):
             display text
         """
         log.debug(u'display alert called %s' % text)
-        self.parent.StatusBar.showMessage(self.trUtf8(u''))
+        self.screen = self.parent.maindisplay.screen
+        self.parent.maindisplay.parent.StatusBar.showMessage(self.trUtf8(u''))
         self.alertList.append(text)
-        if self.timer_id != 0 or self.mediaLoaded:
+        if self.timer_id != 0 or self.parent.maindisplay.mediaLoaded:
             self.parent.StatusBar.showMessage(\
                     self.trUtf8(u'Alert message created and delayed'))
             return
@@ -39,9 +44,9 @@ class AlertManager(self):
         if len(self.alertList) == 0:
             return
         text = self.alertList.pop(0)
-        alertTab = self.parent.settingsForm.AlertsTab
+        alertTab = self.parent.alertsTab
         alertframe = \
-            QtGui.QPixmap(self.screen[u'size'].width(), self.alertHeight)
+            QtGui.QPixmap(self.screen[u'size'].width(), self.parent.maindisplay.alertHeight)
         alertframe.fill(QtCore.Qt.transparent)
         painter = QtGui.QPainter(alertframe)
         painter.fillRect(alertframe.rect(), QtCore.Qt.transparent)
@@ -62,14 +67,14 @@ class AlertManager(self):
         painter.drawText(
             x, y + metrics.height() - metrics.descent() - 1, text)
         painter.end()
-        self.display_alert.setPixmap(alertframe)
+        self.parent.maindisplay.display_alert.setPixmap(alertframe)
         # check to see if we have a timer running
         if self.timer_id == 0:
             self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
 
     def timerEvent(self, event):
         if event.timerId() == self.timer_id:
-            self.display_alert.setPixmap(self.transparent)
+            self.parent.maindisplay.display_alert.setPixmap(self.parent.maindisplay.transparent)
         self.killTimer(self.timer_id)
         self.timer_id = 0
         self.generateAlert()

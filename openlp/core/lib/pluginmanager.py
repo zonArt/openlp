@@ -101,7 +101,7 @@ class PluginManager(object):
                 log.debug(u'Loaded plugin %s with helpers', unicode(p))
                 plugin_objects.append(plugin)
             except TypeError:
-                log.error(u'loaded plugin %s has no helpers', unicode(p))
+                log.exception(u'loaded plugin %s has no helpers', unicode(p))
         plugins_list = sorted(plugin_objects, self.order_by_weight)
         for plugin in plugins_list:
             if plugin.check_pre_conditions():

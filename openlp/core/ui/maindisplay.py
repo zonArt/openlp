@@ -114,11 +114,9 @@ class MainDisplay(DisplayWidget):
         self.displayBlank = False
         self.blankFrame = None
         self.frame = None
-        self.timer_id = 0
         self.firstTime = True
         self.mediaLoaded = False
         self.hasTransition = False
-        self.alertList = []
         self.mediaBackground = False
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'live_slide_hide'), self.hideDisplay)
