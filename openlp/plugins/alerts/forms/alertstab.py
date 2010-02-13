@@ -176,6 +176,8 @@ class AlertsTab(SettingsTab):
             QtCore.SIGNAL(u'pressed()'), self.onFontColorButtonClicked)
         QtCore.QObject.connect(self.FontComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onFontComboBoxClicked)
+        QtCore.QObject.connect(self.LocationComboBox,
+            QtCore.SIGNAL(u'activated(int)'), self.onLocationComboBoxClicked)
         QtCore.QObject.connect(self.TimeoutSpinBox,
             QtCore.SIGNAL(u'valueChanged(int)'), self.onTimeoutSpinBoxChanged)
         QtCore.QObject.connect(self.FontSizeSpinBox,
@@ -205,6 +207,9 @@ class AlertsTab(SettingsTab):
 
     def onFontComboBoxClicked(self):
         self.updateDisplay()
+
+    def onLocationComboBoxClicked(self, location):
+        self.location = location
 
     def onFontColorButtonClicked(self):
         self.font_color = QtGui.QColorDialog.getColor(

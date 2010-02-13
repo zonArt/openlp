@@ -143,11 +143,7 @@ class MainDisplay(DisplayWidget):
         self.screen = self.screens.current
         #Sort out screen locations and sizes
         self.setGeometry(self.screen[u'size'])
-        self.alertScreenPosition = self.screen[u'size'].height() * 0.9
-        self.alertHeight = self.screen[u'size'].height() - self.alertScreenPosition
-        self.display_alert.setGeometry(
-            QtCore.QRect(0, self.alertScreenPosition,
-                        self.screen[u'size'].width(),self.alertHeight))
+        self.display_alert.setGeometry(self.screen[u'size'])
         self.video.setGeometry(self.screen[u'size'])
         self.display_image.resize(self.screen[u'size'].width(),
                             self.screen[u'size'].height())
