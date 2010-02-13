@@ -190,6 +190,7 @@ class MainDisplay(DisplayWidget):
         else:
             self.setVisible(False)
             self.primary = True
+        Receiver.send_message(u'screen_changed')
 
     def resetDisplay(self):
         if self.primary:
@@ -213,6 +214,11 @@ class MainDisplay(DisplayWidget):
                     self.screen[u'size'].width(),
                     self.screen[u'size'].height() )
         self.display_image.setPixmap(QtGui.QPixmap.fromImage(frame))
+
+    def setAlertSize(self, top, height):
+        self.display_alert.setGeometry(
+            QtCore.QRect(0, top,
+                        self.screen[u'size'].width(), height))
 
     def addAlertImage(self, frame, blank=False):
         if blank:
