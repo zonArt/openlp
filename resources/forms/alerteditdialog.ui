@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>AlertList</class>
- <widget class="QWidget" name="AlertList">
+ <class>AlertEditDialog</class>
+ <widget class="QWidget" name="AlertEditDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Maintain Alerts</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
@@ -26,7 +26,7 @@
     <set>QDialogButtonBox::Cancel</set>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -39,21 +39,14 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QLineEdit" name="lineEdit"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="SaveButton">
-        <property name="text">
-         <string>Save</string>
-        </property>
-       </widget>
+       <widget class="QLineEdit" name="AlertLineEdit"/>
       </item>
      </layout>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QListWidget" name="listWidget">
+       <widget class="QListWidget" name="AlertListWidget">
         <property name="alternatingRowColors">
          <bool>true</bool>
         </property>
@@ -61,6 +54,20 @@
       </item>
       <item>
        <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QPushButton" name="SaveButton">
+          <property name="text">
+           <string>Save</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="ClearButton">
+          <property name="text">
+           <string>Clear</string>
+          </property>
+         </widget>
+        </item>
         <item>
          <widget class="QPushButton" name="AddButton">
           <property name="text">

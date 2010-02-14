@@ -78,10 +78,10 @@ class DBManager():
             return True
         except:
             self.session.rollback()
-            log.excertion(u'Alert save failed')
+            log.exception(u'Alert save failed')
             return False
 
-    def get_alerts(self, id=None):
+    def get_alert(self, id=None):
         """
         Returns the details of a Alert
         """
@@ -94,15 +94,15 @@ class DBManager():
         """
         Delete a Alert show
         """
-        if id !=0:
-            Alerts = self.get_Alert(id)
+        if id != 0:
+            AlertItem = self.get_alert(id)
             try:
                 self.session.delete(AlertItem)
                 self.session.commit()
                 return True
             except:
                 self.session.rollback()
-                log.excertion(u'Alert deleton failed')
+                log.exception(u'Alert deleton failed')
                 return False
         else:
             return True

@@ -52,7 +52,11 @@
          <widget class="QLineEdit" name="AlertEntryEditItem"/>
         </item>
         <item>
-         <widget class="QListWidget" name="AlertListWidget"/>
+         <widget class="QListWidget" name="AlertListWidget">
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>

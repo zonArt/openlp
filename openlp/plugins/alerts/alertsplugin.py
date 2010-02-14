@@ -30,7 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, Receiver, str_to_bool, build_icon, PluginStatus
 from openlp.plugins.alerts.lib import AlertsManager, DBManager
-from openlp.plugins.alerts.forms import AlertsTab, AlertForm
+from openlp.plugins.alerts.forms import AlertsTab, AlertForm, AlertEditForm
 
 class alertsPlugin(Plugin):
     global log
@@ -44,10 +44,11 @@ class alertsPlugin(Plugin):
         self.alertsmanager = AlertsManager(self)
         self.manager = DBManager(self.config)
         self.alertForm = AlertForm(self.manager, self)
+        self.alertEditForm = AlertEditForm(self.manager, self)
         self.status = PluginStatus.Active
 
     def get_settings_tab(self):
-        self.alertsTab = AlertsTab(self.name)
+        self.alertsTab = AlertsTab(self)
         return self.alertsTab
 
     def add_tools_menu_item(self, tools_menu):
@@ -90,9 +91,9 @@ class alertsPlugin(Plugin):
         self.alertForm.loadList()
         self.alertForm.exec_()
 
-    def onalertsReport(self):
-        self.alertsdetailform.initialise()
-        self.alertsdetailform.exec_()
+    def onAlertsEdit(self):
+        self.alertEditForm.loadList()
+        self.alertEditForm.exec_()
 
     def about(self):
         about_text = self.trUtf8('<b>Alerts Plugin</b><br>This plugin '

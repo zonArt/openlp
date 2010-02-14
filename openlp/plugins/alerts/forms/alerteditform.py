@@ -28,9 +28,9 @@ from datetime import date
 from PyQt4 import QtGui, QtCore
 from openlp.plugins.alerts.lib.models import AlertItem
 
-from alertdialog import Ui_AlertDialog
+from alerteditdialog import Ui_AlertEditDialog
 
-class AlertForm(QtGui.QDialog, Ui_AlertDialog):
+class AlertEditForm(QtGui.QDialog, Ui_AlertEditDialog):
     """
     Class documentation goes here.
     """
@@ -40,41 +40,110 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         """
         self.manager = manager
         self.parent = parent
-        self.history_required = True
         QtGui.QDialog.__init__(self, None)
         self.setupUi(self)
-        QtCore.QObject.connect(self.DisplayButton,
+        QtCore.QObject.connect(self.DeleteButton,
                                QtCore.SIGNAL(u'clicked()'),
-                               self.onDisplayClicked)
-        QtCore.QObject.connect(self.AlertEntryEditItem,
+                               self.onDeleteClick)
+        QtCore.QObject.connect(self.ClearButton,
+                               QtCore.SIGNAL(u'clicked()'),
+                               self.onClearClick)
+        QtCore.QObject.connect(self.EditButton,
+                               QtCore.SIGNAL(u'clicked()'),
+                               self.onEditClick)
+        QtCore.QObject.connect(self.AddButton,
+                               QtCore.SIGNAL(u'clicked()'),
+                               self.onAddClick)
+        QtCore.QObject.connect(self.SaveButton,
+                               QtCore.SIGNAL(u'clicked()'),
+                               self.onSaveClick)
+        QtCore.QObject.connect(self.buttonBox,
+                               QtCore.SIGNAL(u'rejected()'), self.close)
+        QtCore.QObject.connect(self.AlertLineEdit,
             QtCore.SIGNAL(u'textChanged(const QString&)'),
             self.onTextChanged)
         QtCore.QObject.connect(self.AlertListWidget,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
-            self.onDoubleClick)
+            self.onItemSelected)
         QtCore.QObject.connect(self.AlertListWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'),
-            self.onSingleClick)
+            self.onItemSelected)
 
     def loadList(self):
         self.AlertListWidget.clear()
         alerts = self.manager.get_all_alerts()
         for alert in alerts:
             item_name = QtGui.QListWidgetItem(alert.text)
+            item_name.setData(
+                QtCore.Qt.UserRole, QtCore.QVariant(alert.id))
             self.AlertListWidget.addItem(item_name)
+        self.AddButton.setEnabled(True)
+        self.ClearButton.setEnabled(False)
+        self.SaveButton.setEnabled(False)
+        self.EditButton.setEnabled(False)
+        self.DeleteButton.setEnabled(False)
 
-    def onDisplayClicked(self):
-        self.triggerAlert(unicode(self.AlertEntryEditItem.text()))
-        if self.parent.alertsTab.save_history and self.history_required:
+    def onItemSelected(self):
+        if len(self.AlertLineEdit.text()) > 0:
+            QtGui.QMessageBox.information(self,
+                self.trUtf8('Item selected to Edit'),
+                self.trUtf8('Please Save or Clear seletced item'))
+        else:
+            self.EditButton.setEnabled(True)
+            self.DeleteButton.setEnabled(True)
+
+    def onDeleteClick(self):
+        item = self.AlertListWidget.currentItem()
+        if item:
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            self.parent.manager.delete_alert(item_id)
+            row = self.AlertListWidget.row(item)
+            self.AlertListWidget.takeItem(row)
+        self.AddButton.setEnabled(True)
+        self.SaveButton.setEnabled(False)
+        self.DeleteButton.setEnabled(False)
+        self.EditButton.setEnabled(False)
+
+    def onEditClick(self):
+        item = self.AlertListWidget.currentItem()
+        if item:
+            self.item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            self.AlertLineEdit.setText(unicode(item.text()))
+        self.AddButton.setEnabled(True)
+        self.ClearButton.setEnabled(True)
+        self.SaveButton.setEnabled(True)
+        self.DeleteButton.setEnabled(True)
+        self.EditButton.setEnabled(False)
+
+    def onClearClick(self):
+        self.AlertLineEdit.setText(u'')
+        self.AddButton.setEnabled(False)
+        self.ClearButton.setEnabled(True)
+        self.SaveButton.setEnabled(False)
+        self.DeleteButton.setEnabled(False)
+        self.EditButton.setEnabled(False)
+
+    def onAddClick(self):
+        if len(self.AlertLineEdit.text()) == 0:
+            QtGui.QMessageBox.information(self,
+                self.trUtf8('Item selected to Add'),
+                self.trUtf8('Missing data'))
+        else:
             alert = AlertItem()
-            alert.text = unicode(self.AlertEntryEditItem.text())
+            alert.text = unicode(self.AlertLineEdit.text())
             self.manager.save_alert(alert)
-        self.history_required = False
+        self.onClearClick()
+        self.loadList()
+
+    def onSaveClick(self):
+        alert = self.manager.get_alert(self.item_id)
+        alert.text = unicode(self.AlertLineEdit.text())
+        self.manager.save_alert(alert)
+        self.onClearClick()
         self.loadList()
 
     def onTextChanged(self):
-        #Data has changed by editing it so potential storage
-        self.history_required = True
+        self.AddButton.setEnabled(True)
 
     def onDoubleClick(self):
         """
@@ -84,7 +153,6 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         for item in items:
             bitem = self.AlertListWidget.item(item.row())
             self.triggerAlert(bitem.text())
-        self.history_required = False
 
     def onSingleClick(self):
         """
@@ -95,7 +163,6 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         for item in items:
             bitem = self.AlertListWidget.item(item.row())
             self.AlertEntryEditItem.setText(bitem.text())
-        self.history_required = False
 
     def triggerAlert(self, text):
         self.parent.alertsmanager.displayAlert(text)

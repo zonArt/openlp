@@ -96,7 +96,7 @@ class SongUsageManager():
         """
         Delete a SongUsage record
         """
-        if id !=0:
+        if id != 0:
             songusageitem = self.get_songusage(id)
             try:
                 self.session.delete(songusageitem)

@@ -43,6 +43,7 @@ class Ui_AlertDialog(object):
         self.AlertEntryEditItem.setObjectName("AlertEntryEditItem")
         self.verticalLayout.addWidget(self.AlertEntryEditItem)
         self.AlertListWidget = QtGui.QListWidget(self.AlertEntryWidget)
+        self.AlertListWidget.setAlternatingRowColors(True)
         self.AlertListWidget.setObjectName("AlertListWidget")
         self.verticalLayout.addWidget(self.AlertListWidget)
         self.verticalLayout_2.addLayout(self.verticalLayout)
@@ -60,7 +61,7 @@ class Ui_AlertDialog(object):
         self.AlertFormLayout.addWidget(self.AlertEntryWidget)
 
         self.retranslateUi(AlertForm)
-        QtCore.QObject.connect(self.CancelButton, QtCore.SIGNAL("clicked()"), AlertForm.close)
+        QtCore.QObject.connect(self.CancelButton, QtCore.SIGNAL("clicked()"), self.close)
         QtCore.QMetaObject.connectSlotsByName(AlertForm)
 
     def retranslateUi(self, AlertForm):

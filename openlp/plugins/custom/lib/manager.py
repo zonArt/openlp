@@ -78,7 +78,7 @@ class CustomManager():
             return True
         except:
             self.session.rollback()
-            log.excertion(u'Custom Slide save failed')
+            log.exceptiontion(u'Custom Slide save failed')
             return False
 
     def get_custom(self, id=None):
@@ -94,7 +94,7 @@ class CustomManager():
         """
         Delete a Custom slide show
         """
-        if id !=0:
+        if id != 0:
             customslide = self.get_custom(id)
             try:
                 self.session.delete(customslide)
@@ -102,7 +102,7 @@ class CustomManager():
                 return True
             except:
                 self.session.rollback()
-                log.excertion(u'Custom Slide deleton failed')
+                log.exception(u'Custom Slide deleton failed')
                 return False
         else:
             return True

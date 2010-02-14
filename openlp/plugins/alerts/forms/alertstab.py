@@ -31,8 +31,9 @@ class AlertsTab(SettingsTab):
     """
     AlertsTab is the alerts settings tab in the settings dialog.
     """
-    def __init__(self, title, section=None):
-        SettingsTab.__init__(self, title, section)
+    def __init__(self, parent, section=None):
+        self.parent = parent
+        SettingsTab.__init__(self, parent.name, section)
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
@@ -209,6 +210,8 @@ class AlertsTab(SettingsTab):
             QtCore.SIGNAL(u'pressed()'), self.onBackgroundColorButtonClicked)
         QtCore.QObject.connect(self.FontColorButton,
             QtCore.SIGNAL(u'pressed()'), self.onFontColorButtonClicked)
+        QtCore.QObject.connect(self.HistoryEditPushButton,
+            QtCore.SIGNAL(u'pressed()'), self.onHistoryEditButtonClicked)
         QtCore.QObject.connect(self.FontComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onFontComboBoxClicked)
         QtCore.QObject.connect(self.LocationComboBox,
@@ -267,6 +270,9 @@ class AlertsTab(SettingsTab):
     def onFontSizeSpinBoxChanged(self):
         self.font_size = self.FontSizeSpinBox.value()
         self.updateDisplay()
+
+    def onHistoryEditButtonClicked(self):
+        self.parent.onAlertsEdit()
 
     def load(self):
         self.timeout = int(self.config.get_config(u'timeout', 5))
