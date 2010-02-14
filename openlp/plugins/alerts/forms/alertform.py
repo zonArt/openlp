@@ -23,79 +23,82 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import logging
-from PyQt4 import QtCore, QtGui
-from openlp.core.lib import build_icon
-from openlp.plugins.alerts.lib import alertmanager
+from datetime import date
 
-class AlertForm(QtGui.QDialog):
-    global log
-    log = logging.getLogger(u'AlertForm')
+from PyQt4 import QtGui, QtCore
+from openlp.plugins.alerts.lib.models import AlertItem
 
-    def __init__(self, parent):
-        QtGui.QDialog.__init__(self, None)
+from alertdialog import Ui_AlertDialog
+
+class AlertForm(QtGui.QDialog, Ui_AlertDialog):
+    """
+    Class documentation goes here.
+    """
+    def __init__(self, manager, parent):
+        """
+        Constructor
+        """
+        self.manager = manager
         self.parent = parent
+        self.history_required = True
+        QtGui.QDialog.__init__(self, None)
         self.setupUi(self)
-        log.debug(u'AlertForm Defined')
+        QtCore.QObject.connect(self.CancelButton,
+                               QtCore.SIGNAL(u'clicked()'),
+                               AlertForm.close)
+        QtCore.QObject.connect(self.DisplayButton,
+                               QtCore.SIGNAL(u'clicked()'),
+                               self.onDisplayClicked)
+        QtCore.QObject.connect(self.AlertEntryEditItem,
+            QtCore.SIGNAL(u'textChanged(const QString&)'),
+            self.onTextChanged)
+        QtCore.QObject.connect(self.AlertListWidget,
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
+            self.onDoubleClick)
+        QtCore.QObject.connect(self.AlertListWidget,
+            QtCore.SIGNAL(u'clicked(QModelIndex)'),
+            self.onSingleClick)
 
-    def setupUi(self, AlertForm):
-        AlertForm.setObjectName(u'AlertForm')
-        AlertForm.resize(370, 110)
-        icon = build_icon(u':/icon/openlp-logo-16x16.png')
-        AlertForm.setWindowIcon(icon)
-        self.AlertFormLayout = QtGui.QVBoxLayout(AlertForm)
-        self.AlertFormLayout.setSpacing(8)
-        self.AlertFormLayout.setMargin(8)
-        self.AlertFormLayout.setObjectName(u'AlertFormLayout')
-        self.AlertEntryWidget = QtGui.QWidget(AlertForm)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.AlertEntryWidget.sizePolicy().hasHeightForWidth())
-        self.AlertEntryWidget.setSizePolicy(sizePolicy)
-        self.AlertEntryWidget.setObjectName(u'AlertEntryWidget')
-        self.AlertEntryLabel = QtGui.QLabel(self.AlertEntryWidget)
-        self.AlertEntryLabel.setGeometry(QtCore.QRect(0, 0, 353, 16))
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.AlertEntryLabel.sizePolicy().hasHeightForWidth())
-        self.AlertEntryLabel.setSizePolicy(sizePolicy)
-        self.AlertEntryLabel.setObjectName(u'AlertEntryLabel')
-        self.AlertEntryEditItem = QtGui.QLineEdit(self.AlertEntryWidget)
-        self.AlertEntryEditItem.setGeometry(QtCore.QRect(0, 20, 353, 26))
-        self.AlertEntryEditItem.setObjectName(u'AlertEntryEditItem')
-        self.AlertFormLayout.addWidget(self.AlertEntryWidget)
-        self.ButtonBoxWidget = QtGui.QWidget(AlertForm)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.ButtonBoxWidget.sizePolicy().hasHeightForWidth())
-        self.ButtonBoxWidget.setSizePolicy(sizePolicy)
-        self.ButtonBoxWidget.setObjectName(u'ButtonBoxWidget')
-        self.horizontalLayout = QtGui.QHBoxLayout(self.ButtonBoxWidget)
-        self.horizontalLayout.setSpacing(8)
-        self.horizontalLayout.setMargin(0)
-        self.horizontalLayout.setObjectName(u'horizontalLayout')
-        spacerItem = QtGui.QSpacerItem(267, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.horizontalLayout.addItem(spacerItem)
-        self.DisplayButton = QtGui.QPushButton(self.ButtonBoxWidget)
-        self.DisplayButton.setObjectName(u'DisplayButton')
-        self.horizontalLayout.addWidget(self.DisplayButton)
-        self.CancelButton = QtGui.QPushButton(self.ButtonBoxWidget)
-        self.CancelButton.setObjectName(u'CancelButton')
-        self.horizontalLayout.addWidget(self.CancelButton)
-        self.AlertFormLayout.addWidget(self.ButtonBoxWidget)
-        self.retranslateUi(AlertForm)
-        QtCore.QObject.connect(self.CancelButton, QtCore.SIGNAL(u'clicked()'), AlertForm.close)
-        QtCore.QObject.connect(self.DisplayButton, QtCore.SIGNAL(u'clicked()'), self.onDisplayClicked)
-        QtCore.QMetaObject.connectSlotsByName(AlertForm)
-
-    def retranslateUi(self, AlertForm):
-        AlertForm.setWindowTitle(self.trUtf8('Alert Message'))
-        self.AlertEntryLabel.setText(self.trUtf8('Alert Text:'))
-        self.DisplayButton.setText(self.trUtf8('Display'))
-        self.CancelButton.setText(self.trUtf8('Cancel'))
+    def loadList(self):
+        self.AlertListWidget.clear()
+        alerts = self.manager.get_all_alerts()
+        for alert in alerts:
+            item_name = QtGui.QListWidgetItem(alert.text)
+            self.AlertListWidget.addItem(item_name)
 
     def onDisplayClicked(self):
-        self.parent.alertsmanager.displayAlert(unicode(self.AlertEntryEditItem.text()))
+        self.triggerAlert(unicode(self.AlertEntryEditItem.text()))
+        if self.parent.alertsTab.save_history and self.history_required:
+            alert = AlertItem()
+            alert.text = unicode(self.AlertEntryEditItem.text())
+            self.manager.save_alert(alert)
+        self.history_required = False
+        self.loadList()
+
+    def onTextChanged(self):
+        #Data has changed by editing it so potential storage
+        self.history_required = True
+
+    def onDoubleClick(self):
+        """
+        List item has been double clicked to display it
+        """
+        items = self.AlertListWidget.selectedIndexes()
+        for item in items:
+            bitem = self.AlertListWidget.item(item.row())
+            self.triggerAlert(bitem.text())
+        self.history_required = False
+
+    def onSingleClick(self):
+        """
+        List item has been single clicked to add it to
+        the edit field so it can be changed.
+        """
+        items = self.AlertListWidget.selectedIndexes()
+        for item in items:
+            bitem = self.AlertListWidget.item(item.row())
+            self.AlertEntryEditItem.setText(bitem.text())
+        self.history_required = False
+
+    def triggerAlert(self, text):
+        self.parent.alertsmanager.displayAlert(text)

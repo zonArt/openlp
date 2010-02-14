@@ -23,15 +23,17 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from sqlalchemy import Column, Table, types
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker, mapper
 
-from openlp.plugins.custom.lib.meta import metadata
+from openlp.plugins.alerts.lib.meta import metadata
+from openlp.plugins.alerts.lib.tables import *
+from openlp.plugins.alerts.lib.classes import *
 
-# Definition of the "custom slide" table
-custom_slide_table = Table(u'custom_slide', metadata,
-    Column(u'id', types.Integer(), primary_key=True),
-    Column(u'title', types.Unicode(255), nullable=False),
-    Column(u'text', types.UnicodeText, nullable=False),
-    Column(u'credits', types.UnicodeText),
-    Column(u'theme_name', types.Unicode(128))
-)
+def init_models(url):
+    engine = create_engine(url)
+    metadata.bind = engine
+    session = scoped_session(sessionmaker(autoflush=True, autocommit=False,
+                                          bind=engine))
+    mapper(AlertItem, alerts_table)
+    return session

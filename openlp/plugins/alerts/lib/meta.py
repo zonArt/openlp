@@ -23,15 +23,16 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from sqlalchemy import Column, Table, types
+from sqlalchemy import MetaData
 
-from openlp.plugins.custom.lib.meta import metadata
+__all__ = ['session', 'metadata', 'engine']
 
-# Definition of the "custom slide" table
-custom_slide_table = Table(u'custom_slide', metadata,
-    Column(u'id', types.Integer(), primary_key=True),
-    Column(u'title', types.Unicode(255), nullable=False),
-    Column(u'text', types.UnicodeText, nullable=False),
-    Column(u'credits', types.UnicodeText),
-    Column(u'theme_name', types.Unicode(128))
-)
+# SQLAlchemy database engine.  Updated by model.init_model()
+engine = None
+
+# SQLAlchemy session manager.  Updated by model.init_model()
+session = None
+
+# Global metadata. If you have multiple databases with overlapping table
+# names, you'll need a metadata for each database
+metadata = MetaData()
