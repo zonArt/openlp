@@ -1,38 +1,41 @@
-# -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+from setuptools import setup, find_packages
+import sys, os
 
-###############################################################################
-# OpenLP - Open Source Lyrics Projection                                      #
-# --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
-# --------------------------------------------------------------------------- #
-# This program is free software; you can redistribute it and/or modify it     #
-# under the terms of the GNU General Public License as published by the Free  #
-# Software Foundation; version 2 of the License.                              #
-#                                                                             #
-# This program is distributed in the hope that it will be useful, but WITHOUT #
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
-# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
-# more details.                                                               #
-#                                                                             #
-# You should have received a copy of the GNU General Public License along     #
-# with this program; if not, write to the Free Software Foundation, Inc., 59  #
-# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
-###############################################################################
+VERSION_FILE = 'openlp/.version'
 
-from setuptools import setup
+try:
+    from bzrlib.branch import Branch
+    b = Branch.open_containing('.')[0]
+    b.lock_read()
+    try:
+        revno = b.revno()
+        # Add the latest tag in here too
+    finally:
+        b.unlock()
+except:
+    revno = 0
 
-APP = ['openlp.pyw']
-OPTIONS = {'argv_emulation': True, 'includes': ['sip', 'PyQt4']}
+version = '1.9.1-bzr%s' % revno
 
 setup(
-    name='openlp.org',
-    version='1.9.0',
-    url='http://www.openlp.org/',
-    app=APP,
-    options={'py2app': OPTIONS},
-    setup_requires=['py2app'],
+    name='OpenLP',
+    version=version,
+    description="Open source Church presentation and lyrics projection application.",
+    long_description="""\
+OpenLP (previously openlp.org) is free church presentation software, or lyrics projection software, used to display slides of songs, Bible verses, videos, images, and even presentations (if PowerPoint is installed) for church worship using a computer and a data projector.""",
+    classifiers=[], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+    keywords='open source church presentation lyrics projection song bible display project',
+    author='Raoul Snyman',
+    author_email='raoulsnyman@openlp.org',
+    url='http://openlp.org/',
+    license='GNU General Public License',
+    packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
+    include_package_data=True,
+    zip_safe=False,
+    install_requires=[
+        # -*- Extra requirements: -*-
+    ],
+    entry_points="""
+    # -*- Entry points: -*-
+    """
 )
