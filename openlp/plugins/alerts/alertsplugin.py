@@ -34,11 +34,11 @@ from openlp.plugins.alerts.forms import AlertsTab, AlertForm, AlertEditForm
 
 class alertsPlugin(Plugin):
     global log
-    log = logging.getLogger(u'alertsPlugin')
-    log.info(u'alerts Plugin loaded')
+    log = logging.getLogger(u'AlertsPlugin')
+    log.info(u'Alerts Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'alerts', u'1.9.1', plugin_helpers)
+        Plugin.__init__(self, u'Alerts', u'1.9.1', plugin_helpers)
         self.weight = -3
         self.icon = build_icon(u':/media/media_image.png')
         self.alertsmanager = AlertsManager(self)
@@ -74,7 +74,7 @@ class alertsPlugin(Plugin):
         self.toolsAlertItem.setVisible(False)
 
     def initialise(self):
-        log.info(u'alerts Initialising')
+        log.info(u'Alerts Initialising')
         Plugin.initialise(self)
         self.toolsAlertItem.setVisible(True)
 

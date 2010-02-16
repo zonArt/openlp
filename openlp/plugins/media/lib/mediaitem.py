@@ -54,7 +54,7 @@ class MediaMediaItem(MediaManagerItem):
         self.PreviewFunction = self.video_get_preview
         MediaManagerItem.__init__(self, parent, icon, title)
         self.ServiceItemIconName = u':/media/media_video.png'
-        self.MainDisplay = self.parent.live_controller.parent.mainDisplay
+        self.MainDisplay = self.parent.mainDisplay
 
     def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8('Media')

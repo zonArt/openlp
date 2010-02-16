@@ -78,7 +78,7 @@ class CustomManager():
             return True
         except:
             self.session.rollback()
-            log.exceptiontion(u'Custom Slide save failed')
+            log.exception(u'Custom Slide save failed')
             return False
 
     def get_custom(self, id=None):
