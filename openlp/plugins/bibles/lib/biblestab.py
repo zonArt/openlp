@@ -27,8 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import str_to_bool, Receiver
-from openlp.core.lib import SettingsTab
+from openlp.core.lib import str_to_bool, Receiver, SettingsTab
 
 class BiblesTab(SettingsTab):
     """

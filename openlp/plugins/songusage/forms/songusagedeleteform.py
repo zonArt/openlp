@@ -50,7 +50,6 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
                 QtGui.QMessageBox.Cancel),
             QtGui.QMessageBox.Cancel)
         if ret == QtGui.QMessageBox.Ok:
-            qDeleteDate = self.DeleteCalendar.selectedDate()
-            deleteDate = date(qDeleteDate.year(), qDeleteDate.month(), qDeleteDate.day())
+            deleteDate = self.DeleteCalendar.selectedDate().toPyDate()
             self.songusagemanager.delete_to_date(deleteDate)
         self.close()

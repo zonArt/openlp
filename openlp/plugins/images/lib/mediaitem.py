@@ -172,6 +172,6 @@ class ImageMediaItem(MediaManagerItem):
                 filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
                 self.OverrideLabel.setText(bitem.text())
                 frame = QtGui.QImage(unicode(filename))
-                self.parent.live_controller.parent.mainDisplay.addImageWithText(frame)
+                self.parent.maindisplay.addImageWithText(frame)
         else:
             MediaManagerItem.onPreviewClick(self)

@@ -28,11 +28,9 @@ from maindisplay import MainDisplay
 from amendthemeform import AmendThemeForm
 from slidecontroller import SlideController
 from splashscreen import SplashScreen
-from alertstab import AlertsTab
 from generaltab import GeneralTab
 from themestab import ThemesTab
 from aboutform import AboutForm
-from alertform import AlertForm
 from pluginform import PluginForm
 from settingsform import SettingsForm
 from mediadockmanager import MediaDockManager

@@ -22,16 +22,5 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
-from sqlalchemy import Column, Table, types
-
-from openlp.plugins.custom.lib.meta import metadata
-
-# Definition of the "custom slide" table
-custom_slide_table = Table(u'custom_slide', metadata,
-    Column(u'id', types.Integer(), primary_key=True),
-    Column(u'title', types.Unicode(255), nullable=False),
-    Column(u'text', types.UnicodeText, nullable=False),
-    Column(u'credits', types.UnicodeText),
-    Column(u'theme_name', types.Unicode(128))
-)
+from alertsmanager import AlertsManager
+from manager import DBManager
