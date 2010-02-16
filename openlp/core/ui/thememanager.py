@@ -236,7 +236,7 @@ class ThemeManager(QtGui.QWidget):
         log.info(u'New Themes %s', unicode(files))
         if len(files) > 0:
             for file in files:
-                self.config.set_last_dir(filename)
+                self.config.set_last_dir(unicode(file))
                 self.unzipTheme(file, self.path)
         self.loadThemes()
 
@@ -343,7 +343,7 @@ class ThemeManager(QtGui.QWidget):
                 self, self.trUtf8('Error'),
                 self.trUtf8('File is not a valid theme!'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-            log.exception(u'Importing theme from zip file failed')
+            log.exception(u'Importing theme from zip file failed %s' % filename)
         finally:
             if zip:
                 zip.close()
@@ -400,7 +400,7 @@ class ThemeManager(QtGui.QWidget):
         newtheme.add_display(unicode(shadow), unicode(theme.ShadowColor.name()),
             unicode(outline), unicode(theme.OutlineColor.name()),
             unicode(theme.HorizontalAlign), unicode(theme.VerticalAlign),
-            unicode(theme.WrapStyle), 0)
+            unicode(theme.WrapStyle), unicode(0))
         return newtheme.extract_xml()
 
     def saveTheme(self, name, theme_xml, theme_pretty_xml, image_from,
