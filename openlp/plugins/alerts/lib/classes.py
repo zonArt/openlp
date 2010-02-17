@@ -23,15 +23,24 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from sqlalchemy import Column, Table, types
+class BaseModel(object):
+    """
+    BaseModel provides a base object with a set of generic functions
+    """
 
-from openlp.plugins.custom.lib.meta import metadata
+    @classmethod
+    def populate(cls, **kwargs):
+        """
+        Creates an instance of a class and populates it, returning the instance
+        """
+        me = cls()
+        keys = kwargs.keys()
+        for key in keys:
+            me.__setattr__(key, kwargs[key])
+        return me
 
-# Definition of the "custom slide" table
-custom_slide_table = Table(u'custom_slide', metadata,
-    Column(u'id', types.Integer(), primary_key=True),
-    Column(u'title', types.Unicode(255), nullable=False),
-    Column(u'text', types.UnicodeText, nullable=False),
-    Column(u'credits', types.UnicodeText),
-    Column(u'theme_name', types.Unicode(128))
-)
+class AlertItem(BaseModel):
+    """
+    Custom Slide model
+    """
+    pass

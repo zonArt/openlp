@@ -113,14 +113,10 @@ class MainDisplay(DisplayWidget):
         self.displayBlank = False
         self.blankFrame = None
         self.frame = None
-        self.timer_id = 0
         self.firstTime = True
         self.mediaLoaded = False
         self.hasTransition = False
-        self.alertList = []
         self.mediaBackground = False
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'alert_text'), self.displayAlert)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'live_slide_hide'), self.hideDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -146,11 +142,7 @@ class MainDisplay(DisplayWidget):
         self.screen = self.screens.current
         #Sort out screen locations and sizes
         self.setGeometry(self.screen[u'size'])
-        self.alertScreenPosition = self.screen[u'size'].height() * 0.9
-        self.alertHeight = self.screen[u'size'].height() - self.alertScreenPosition
-        self.display_alert.setGeometry(
-            QtCore.QRect(0, self.alertScreenPosition,
-                        self.screen[u'size'].width(),self.alertHeight))
+        self.display_alert.setGeometry(self.screen[u'size'])
         self.video.setGeometry(self.screen[u'size'])
         self.display_image.resize(self.screen[u'size'].width(),
                             self.screen[u'size'].height())
@@ -193,6 +185,7 @@ class MainDisplay(DisplayWidget):
         else:
             self.setVisible(False)
             self.primary = True
+        Receiver.send_message(u'screen_changed')
 
     def resetDisplay(self):
         if self.primary:
@@ -216,6 +209,17 @@ class MainDisplay(DisplayWidget):
                     self.screen[u'size'].width(),
                     self.screen[u'size'].height() )
         self.display_image.setPixmap(QtGui.QPixmap.fromImage(frame))
+
+    def setAlertSize(self, top, height):
+        self.display_alert.setGeometry(
+            QtCore.QRect(0, top,
+                        self.screen[u'size'].width(), height))
+
+    def addAlertImage(self, frame, blank=False):
+        if blank:
+            self.display_alert.setPixmap(self.transparent)
+        else:
+            self.display_alert.setPixmap(frame)
 
     def frameView(self, frame, transition=False):
         """
@@ -255,64 +259,6 @@ class MainDisplay(DisplayWidget):
             self.displayBlank = False
             if self.display_frame:
                 self.frameView(self.display_frame)
-
-
-    def displayAlert(self, text=u''):
-        """
-        Called from the Alert Tab to display an alert
-
-        ``text``
-            display text
-        """
-        log.debug(u'display alert called %s' % text)
-        self.parent.StatusBar.showMessage(self.trUtf8(u''))
-        self.alertList.append(text)
-        if self.timer_id != 0 or self.mediaLoaded:
-            self.parent.StatusBar.showMessage(\
-                    self.trUtf8(u'Alert message created and delayed'))
-            return
-        self.generateAlert()
-
-    def generateAlert(self):
-        log.debug(u'Generate Alert called')
-        if len(self.alertList) == 0:
-            return
-        text = self.alertList.pop(0)
-        alertTab = self.parent.settingsForm.AlertsTab
-        alertframe = \
-            QtGui.QPixmap(self.screen[u'size'].width(), self.alertHeight)
-        alertframe.fill(QtCore.Qt.transparent)
-        painter = QtGui.QPainter(alertframe)
-        painter.fillRect(alertframe.rect(), QtCore.Qt.transparent)
-        painter.setRenderHint(QtGui.QPainter.Antialiasing)
-        painter.fillRect(
-            QtCore.QRect(
-                0, 0, alertframe.rect().width(),
-                alertframe.rect().height()),
-            QtGui.QColor(alertTab.bg_color))
-        font = QtGui.QFont()
-        font.setFamily(alertTab.font_face)
-        font.setBold(True)
-        font.setPointSize(40)
-        painter.setFont(font)
-        painter.setPen(QtGui.QColor(alertTab.font_color))
-        x, y = (0, 0)
-        metrics = QtGui.QFontMetrics(font)
-        painter.drawText(
-            x, y + metrics.height() - metrics.descent() - 1, text)
-        painter.end()
-        self.display_alert.setPixmap(alertframe)
-        self.display_alert.setVisible(True)
-        # check to see if we have a timer running
-        if self.timer_id == 0:
-            self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
-
-    def timerEvent(self, event):
-        if event.timerId() == self.timer_id:
-            self.display_alert.setPixmap(self.transparent)
-        self.killTimer(self.timer_id)
-        self.timer_id = 0
-        self.generateAlert()
 
     def onMediaQueue(self, message):
         log.debug(u'Queue new media message %s' % message)

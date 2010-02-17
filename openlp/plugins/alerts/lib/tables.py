@@ -25,13 +25,9 @@
 
 from sqlalchemy import Column, Table, types
 
-from openlp.plugins.custom.lib.meta import metadata
+from openlp.plugins.alerts.lib.meta import metadata
 
-# Definition of the "custom slide" table
-custom_slide_table = Table(u'custom_slide', metadata,
+# Definition of the "alerts" table
+alerts_table = Table(u'alerts', metadata,
     Column(u'id', types.Integer(), primary_key=True),
-    Column(u'title', types.Unicode(255), nullable=False),
-    Column(u'text', types.UnicodeText, nullable=False),
-    Column(u'credits', types.UnicodeText),
-    Column(u'theme_name', types.Unicode(128))
-)
+    Column(u'text', types.UnicodeText, nullable=False))
