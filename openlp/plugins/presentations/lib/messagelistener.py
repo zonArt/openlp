@@ -67,8 +67,8 @@ class Controller(object):
 
     def slide(self, slide, live):
         log.debug(u'Live = %s, slide' % live)
-#        if not isLive:
-#            return
+        if not live:
+            return
         self.activate()
         self.controller.goto_slide(int(slide) + 1)
         self.controller.poll_slidenumber(live)
@@ -136,11 +136,13 @@ class Controller(object):
         self.controller.blank_screen()
 
     def unblank(self):
-        if not self.is_live:
+        if not self.isLive:
             return
         self.activate()
         self.controller.unblank_screen()
 
+    def poll(self):
+        self.controller.poll_slidenumber(self.isLive)
 
 class MessageListener(object):
     """
@@ -229,16 +231,10 @@ class MessageListener(object):
             self.previewHandler.shutdown()
 
     def blank(self):
-        if self.isLive:
-            self.liveHandler.blank()
-        else:
-            self.previewHandler.blank()
+        self.liveHandler.blank()
 
     def unblank(self):
-        if self.isLive:
-            self.liveHandler.unblank()
-        else:
-            self.previewHandler.unblank()
+        self.liveHandler.unblank()
 
     def splitMessage(self, message):
         """
@@ -263,4 +259,4 @@ class MessageListener(object):
         return message[0], file, message[4]
 
     def timeout(self):
-        self.controller.poll_slidenumber(self.is_live)
+        self.liveHandler.poll()

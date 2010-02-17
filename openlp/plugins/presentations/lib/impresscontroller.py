@@ -201,7 +201,7 @@ class ImpressController(PresentationController):
             try:
                 ctx = resolver.resolve(u'uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
             except:
-                log.exception(u'Unable to fine running instance ')
+                log.exception(u'Unable to find running instance ')
                 self.start_process()
                 loop += 1
         try:
@@ -233,8 +233,8 @@ class ImpressController(PresentationController):
     def close_presentation(self):
         """
         Close presentation and clean up objects
-        Triggerent by new object being added to SlideController orOpenLP
-        being shut down
+        Triggered by new object being added to SlideController or OpenLP
+        being shutdown
         """
         log.debug(u'close Presentation OpenOffice')
         if self.document:
