@@ -208,7 +208,7 @@ class PowerpointController(PresentationController):
             self.presentation.SlideShowSettings.Run()
             self.presentation.SlideShowWindow.View.GotoSlide(1)
             rendermanager = self.plugin.render_manager
-            rect = rendermanager.screen_list[rendermanager.current_display][u'size']
+            rect = rendermanager.screens.current[u'size']
             self.presentation.SlideShowWindow.Top = rect.y() * 72 / dpi
             self.presentation.SlideShowWindow.Height = rect.height() * 72 / dpi
             self.presentation.SlideShowWindow.Left = rect.x() * 72 / dpi
