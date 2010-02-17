@@ -410,7 +410,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.AuthorsListView.setFocus()
         #split the verse list by space and mark lower case for testing
         for verse in unicode(self.VerseOrderEdit.text()).lower().split(u' '):
-            if len(verse) == 2:
+            if len(verse) > 1:
                 if verse[0:1] == u'v' and verse[1:].isdigit():
                     pass
                 else:
