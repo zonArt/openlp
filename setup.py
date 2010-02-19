@@ -8,15 +8,15 @@ try:
     b = Branch.open_containing('.')[0]
     b.lock_read()
     try:
-        revno = b.revno()
-        # Add the latest tag in here too
         verno = b.tags.get_tag_dict().keys()[0]
+        revno = b.revno()
     finally:
         b.unlock()
 except:
+    verno = '1.9.0'
     revno = 0
 
-version = '1.9.1-bzr%s' % revno
+version = '%s-bzr%s' % (verno, revno)
 
 setup(
     name='OpenLP',
