@@ -10,6 +10,7 @@ try:
     try:
         revno = b.revno()
         # Add the latest tag in here too
+        verno = b.tags.get_tag_dict().keys()[0]
     finally:
         b.unlock()
 except:
