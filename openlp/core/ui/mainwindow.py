@@ -34,7 +34,7 @@ from openlp.core.ui import AboutForm, SettingsForm,  \
     PluginForm, MediaDockManager
 from openlp.core.lib import RenderManager, PluginConfig, build_icon, \
     OpenLPDockWidget, SettingsManager, PluginManager, Receiver, str_to_bool
-from openlp.core.utils import check_latest_version
+from openlp.core.utils import check_latest_version, AppLocation
 
 media_manager_style = """
   QToolBox::tab {
@@ -434,9 +434,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
         # Set up the path with plugins
-        pluginpath = os.path.split(os.path.abspath(__file__))[0]
-        pluginpath = os.path.abspath(
-            os.path.join(pluginpath, u'..', u'..', u'plugins'))
+        pluginpath = AppLocation.get_directory(AppLocation.PluginsDir)
         self.plugin_manager = PluginManager(pluginpath)
         self.plugin_helpers = {}
         # Set up the interface

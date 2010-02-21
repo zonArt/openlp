@@ -77,7 +77,7 @@ class PluginManager(object):
                 if name.endswith(u'.py') and not name.startswith(u'__'):
                     path = os.path.abspath(os.path.join(root, name))
                     thisdepth = len(path.split(os.sep))
-                    if thisdepth-startdepth > 2:
+                    if thisdepth - startdepth > 2:
                         # skip anything lower down
                         continue
                     modulename, pyext = os.path.splitext(path)

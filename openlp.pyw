@@ -35,7 +35,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver, str_to_bool
 from openlp.core.resources import qInitResources
 from openlp.core.ui import MainWindow, SplashScreen, ScreenList
-from openlp.core.utils import get_config_directory, ConfigHelper
+from openlp.core.utils import AppLocation, ConfigHelper
 
 log = logging.getLogger()
 
@@ -160,7 +160,8 @@ def main():
     parser.add_option("-s", "--style", dest="style",
                       help="Set the Qt4 style (passed directly to Qt4).")
     # Set up logging
-    filename = os.path.join(get_config_directory(), u'openlp.log')
+    filename = os.path.join(AppLocation.get_directory(AppLocation.ConfigDir),
+        u'openlp.log')
     logfile = FileHandler(filename, u'w')
     logfile.setFormatter(logging.Formatter(
         u'%(asctime)s %(name)-15s %(levelname)-8s %(message)s'))
