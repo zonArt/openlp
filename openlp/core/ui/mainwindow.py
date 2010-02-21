@@ -39,16 +39,16 @@ from openlp.core.utils import check_latest_version
 media_manager_style = """
   QToolBox::tab {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-        stop: 0 palette(midlight), stop: 1.0 palette(mid));
+        stop: 0 palette(button), stop: 1.0 palette(dark));
     border-width: 1px;
     border-style: outset;
-    border-color: palette(midlight);
+    border-color: palette(dark);
     border-radius: 5px;
   }
   QToolBox::tab:selected {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-        stop: 0 palette(light), stop: 1.0 palette(mid));
-    border-color: palette(light);
+        stop: 0 palette(light), stop: 1.0 palette(button));
+    border-color: palette(dark);
   }
 """
 class versionThread(QtCore.QThread):

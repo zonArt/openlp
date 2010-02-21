@@ -47,9 +47,11 @@ QMainWindow::separator
 
 QDockWidget::title
 {
-  border: none;
+  /*background: palette(dark);*/
+  border: 1px solid palette(dark);
   padding-left: 5px;
-  padding-top: 3px;
+  padding-top: 2px;
+  margin: 1px 0;
 }
 
 QToolBar
@@ -169,6 +171,7 @@ def main():
     qt_args = []
     if options.loglevel.lower() in ['d', 'debug']:
         log.setLevel(logging.DEBUG)
+        print 'Logging to:', filename
     elif options.loglevel.lower() in ['w', 'warning']:
         log.setLevel(logging.WARNING)
     else:
