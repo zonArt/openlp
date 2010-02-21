@@ -43,6 +43,8 @@ class AlertsManager(QtCore.QObject):
         self.timer_id = 0
         self.alertList = []
         QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'flush_alert'), self.generateAlert)
+        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'alert_text'), self.displayAlert)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'screen_changed'), self.screenChanged)

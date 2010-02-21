@@ -237,6 +237,8 @@ class ThemeManager(QtGui.QWidget):
         if len(files) > 0:
             for file in files:
                 self.config.set_last_dir(unicode(file))
+                print file
+                print self.path
                 self.unzipTheme(file, self.path)
         self.loadThemes()
 
@@ -313,13 +315,14 @@ class ThemeManager(QtGui.QWidget):
             filexml = None
             themename = None
             for file in zip.namelist():
-                if file.endswith(os.path.sep):
-                    theme_dir = os.path.join(dir, file)
+                osfile = unicode(QtCore.QDir.toNativeSeparators(file))
+                if osfile.endswith(os.path.sep):
+                    theme_dir = os.path.join(dir, osfile)
                     if not os.path.exists(theme_dir):
-                        os.mkdir(os.path.join(dir, file))
+                        os.mkdir(os.path.join(dir, osfile))
                 else:
-                    fullpath = os.path.join(dir, file)
-                    names = file.split(os.path.sep)
+                    fullpath = os.path.join(dir, osfile)
+                    names = osfile.split(os.path.sep)
                     if len(names) > 1:
                         # not preview file
                         if themename is None:
