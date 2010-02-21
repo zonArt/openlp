@@ -314,6 +314,7 @@ class ThemeManager(QtGui.QWidget):
             themename = None
             for file in zip.namelist():
                 osfile = unicode(QtCore.QDir.toNativeSeparators(file))
+                theme_dir = None
                 if osfile.endswith(os.path.sep):
                     theme_dir = os.path.join(dir, osfile)
                     if not os.path.exists(theme_dir):
@@ -325,6 +326,10 @@ class ThemeManager(QtGui.QWidget):
                         # not preview file
                         if themename is None:
                             themename = names[0]
+                        if theme_dir is None:
+                            theme_dir = os.path.join(dir, names[0])
+                            if not os.path.exists(theme_dir):
+                                os.mkdir(os.path.join(dir, names[0]))
                         xml_data = zip.read(file)
                         if os.path.splitext(file)[1].lower() in [u'.xml']:
                             if self.checkVersion1(xml_data):
