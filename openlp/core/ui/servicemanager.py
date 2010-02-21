@@ -570,11 +570,11 @@ class ServiceManager(QtGui.QWidget):
         self.service_theme = unicode(self.ThemeComboBox.currentText())
         self.parent.RenderManager.set_service_theme(self.service_theme)
         self.config.set_config(u'service theme', self.service_theme)
-        #force reset of renderer.
-        self.parent.RenderManager.themesata = None
         self.regenerateServiceItems()
 
     def regenerateServiceItems(self):
+        #force reset of renderer as theme data has changed
+        self.parent.RenderManager.themesata = None
         if len(self.serviceItems) > 0:
             tempServiceItems = self.serviceItems
             self.onNewService()
