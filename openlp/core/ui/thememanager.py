@@ -237,8 +237,6 @@ class ThemeManager(QtGui.QWidget):
         if len(files) > 0:
             for file in files:
                 self.config.set_last_dir(unicode(file))
-                print file
-                print self.path
                 self.unzipTheme(file, self.path)
         self.loadThemes()
 
