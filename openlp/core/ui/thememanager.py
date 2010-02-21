@@ -390,7 +390,6 @@ class ThemeManager(QtGui.QWidget):
                 unicode(theme.BackgroundParameter2.name()), direction)
         else:
             newtheme.add_background_image(unicode(theme.BackgroundParameter1))
-
         newtheme.add_font(unicode(theme.FontName),
             unicode(theme.FontColor.name()),
             unicode(theme.FontProportion * 3), u'False')

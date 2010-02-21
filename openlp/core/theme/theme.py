@@ -136,7 +136,7 @@ class Theme(object):
                 if (element.tag.find(u'Color') > 0 or
                     (element.tag.find(u'BackgroundParameter') == 0 and type(val) == type(0))):
                     # convert to a wx.Colour
-                    val = QtGui.QColor((val>>16) & 0xFF, (val>>8)&0xFF, val&0xFF)
+                    val = QtGui.QColor(val&0xFF, (val>>8)&0xFF, (val>>16)&0xFF)
                 setattr(self, element.tag, val)
 
     def __str__(self):
