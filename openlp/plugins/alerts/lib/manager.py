@@ -25,17 +25,17 @@
 
 import logging
 
-from openlp.plugins.songusage.lib.models import init_models, metadata, SongUsageItem
+from openlp.plugins.alerts.lib.models import init_models, metadata, AlertItem
 
-class SongUsageManager():
+class DBManager():
     """
     The Song Manager provides a central location for all database code. This
     class takes care of connecting to the database and running all the queries.
     """
 
     global log
-    log = logging.getLogger(u'SongUsageManager')
-    log.info(u'SongUsage manager loaded')
+    log = logging.getLogger(u'AlertsDBManager')
+    log.info(u'Alerts DB loaded')
 
     def __init__(self, config):
         """
@@ -43,11 +43,11 @@ class SongUsageManager():
         don't exist.
         """
         self.config = config
-        log.debug(u'SongUsage Initialising')
+        log.debug(u'Alerts Initialising')
         self.db_url = u''
         db_type = self.config.get_config(u'db type', u'sqlite')
         if db_type == u'sqlite':
-            self.db_url = u'sqlite:///%s/songusage.sqlite' % \
+            self.db_url = u'sqlite:///%s/alerts.sqlite' % \
                 self.config.get_data_path()
         else:
             self.db_url = u'%s://%s:%s@%s/%s' % \
@@ -58,81 +58,51 @@ class SongUsageManager():
         self.session = init_models(self.db_url)
         metadata.create_all(checkfirst=True)
 
-        log.debug(u'SongUsage Initialised')
+        log.debug(u'Alerts Initialised')
 
-    def get_all_songusage(self, start_date, end_date):
+    def get_all_alerts(self):
         """
-        Returns the details of SongUsage
+        Returns the details of a Alert Show
         """
-        return self.session.query(SongUsageItem) \
-            .filter(SongUsageItem.usagedate >= start_date.toPyDate()) \
-            .filter(SongUsageItem.usagedate < end_date.toPyDate()) \
-            .order_by(SongUsageItem.usagedate, SongUsageItem.usagetime ).all()
+        return self.session.query(AlertItem).order_by(AlertItem.text).all()
 
-    def insert_songusage(self, songusageitem):
+    def save_alert(self, AlertItem):
         """
-        Saves an SongUsage to the database
+        Saves a Alert show to the database
         """
-        log.debug(u'SongUsage added')
+        log.debug(u'Alert added')
         try:
-            self.session.add(songusageitem)
+            self.session.add(AlertItem)
             self.session.commit()
+            log.debug(u'Alert saved')
             return True
         except:
             self.session.rollback()
-            log.exception(u'SongUsage item failed to save')
+            log.exception(u'Alert save failed')
             return False
 
-    def get_songusage(self, id=None):
+    def get_alert(self, id=None):
         """
-        Returns the details of a SongUsage
+        Returns the details of a Alert
         """
         if id is None:
-            return SongUsageItem()
+            return AlertItem()
         else:
-            return self.session.query(SongUsageItem).get(id)
+            return self.session.query(AlertItem).get(id)
 
-    def delete_songusage(self, id):
+    def delete_alert(self, id):
         """
-        Delete a SongUsage record
+        Delete a Alert show
         """
         if id != 0:
-            songusageitem = self.get_songusage(id)
+            AlertItem = self.get_alert(id)
             try:
-                self.session.delete(songusageitem)
+                self.session.delete(AlertItem)
                 self.session.commit()
                 return True
             except:
                 self.session.rollback()
-                log.exception(u'SongUsage Item failed to delete')
+                log.exception(u'Alert deleton failed')
                 return False
         else:
             return True
-
-    def delete_all(self):
-        """
-        Delete all Song Usage records
-        """
-        try:
-            self.session.query(SongUsageItem).delete(synchronize_session=False)
-            self.session.commit()
-            return True
-        except:
-            self.session.rollback()
-            log.exception(u'Failed to delete all Song Usage items')
-            return False
-
-    def delete_to_date(self, date):
-        """
-        Delete SongUsage records before given date
-        """
-        try:
-            self.session.query(SongUsageItem)\
-                .filter(SongUsageItem.usagedate <= date)\
-                .delete(synchronize_session=False)
-            self.session.commit()
-            return True
-        except:
-            self.session.rollback()
-            log.exception(u'Failed to delete all Song Usage items to %s' % date)
-            return False

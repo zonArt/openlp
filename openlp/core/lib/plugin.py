@@ -127,6 +127,7 @@ class Plugin(QtCore.QObject):
         self.service_manager = plugin_helpers[u'service']
         self.settings = plugin_helpers[u'settings']
         self.mediadock = plugin_helpers[u'toolbox']
+        self.maindisplay = plugin_helpers[u'maindisplay']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.process_add_service_event)

@@ -29,7 +29,7 @@ import time
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
+from openlp.core.ui import AboutForm, SettingsForm,  \
     ServiceManager, ThemeManager, MainDisplay, SlideController, \
     PluginForm, MediaDockManager
 from openlp.core.lib import RenderManager, PluginConfig, build_icon, \
@@ -227,13 +227,8 @@ class Ui_MainWindow(object):
             self.settingsmanager.showServiceManager)
         self.ViewServiceManagerItem.setIcon(ServiceManagerIcon)
         self.ViewServiceManagerItem.setObjectName(u'ViewServiceManagerItem')
-        self.ToolsAlertItem = QtGui.QAction(MainWindow)
-        AlertIcon = build_icon(u':/tools/tools_alert.png')
-        self.ToolsAlertItem.setIcon(AlertIcon)
-        self.ToolsAlertItem.setObjectName(u'ToolsAlertItem')
         self.PluginItem = QtGui.QAction(MainWindow)
-        #PluginIcon = build_icon(u':/tools/tools_alert.png')
-        self.PluginItem.setIcon(AlertIcon)
+        #self.PluginItem.setIcon(AlertIcon)
         self.PluginItem.setObjectName(u'PluginItem')
         self.HelpDocumentationItem = QtGui.QAction(MainWindow)
         ContentsIcon = build_icon(u':/system/system_help_contents.png')
@@ -292,7 +287,6 @@ class Ui_MainWindow(object):
         self.OptionsMenu.addAction(self.OptionsViewMenu.menuAction())
         self.OptionsMenu.addSeparator()
         self.OptionsMenu.addAction(self.OptionsSettingsItem)
-        self.ToolsMenu.addAction(self.ToolsAlertItem)
         self.ToolsMenu.addAction(self.PluginItem)
         self.ToolsMenu.addSeparator()
         self.ToolsMenu.addAction(self.ToolsAddToolItem)
@@ -394,9 +388,6 @@ class Ui_MainWindow(object):
         self.action_Preview_Panel.setStatusTip(
             self.trUtf8('Toggle the visibility of the Preview Panel'))
         self.action_Preview_Panel.setShortcut(self.trUtf8('F11'))
-        self.ToolsAlertItem.setText(self.trUtf8('&Alert'))
-        self.ToolsAlertItem.setStatusTip(self.trUtf8('Show an alert message'))
-        self.ToolsAlertItem.setShortcut(self.trUtf8('F7'))
         self.PluginItem.setText(self.trUtf8('&Plugin List'))
         self.PluginItem.setStatusTip(self.trUtf8('List the Plugins'))
         self.PluginItem.setShortcut(self.trUtf8('Alt+F7'))
@@ -440,7 +431,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.settingsmanager = SettingsManager(screens)
         self.generalConfig = PluginConfig(u'General')
         self.mainDisplay = MainDisplay(self, screens)
-        self.alertForm = AlertForm(self)
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
         # Set up the path with plugins
@@ -485,8 +475,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.action_Preview_Panel.setChecked)
         QtCore.QObject.connect(self.HelpAboutItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpAboutItemClicked)
-        QtCore.QObject.connect(self.ToolsAlertItem,
-            QtCore.SIGNAL(u'triggered()'), self.onToolsAlertItemClicked)
         QtCore.QObject.connect(self.PluginItem,
             QtCore.SIGNAL(u'triggered()'), self.onPluginItemClicked)
         QtCore.QObject.connect(self.OptionsSettingsItem,
@@ -522,6 +510,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
         self.plugin_helpers[u'settings'] = self.settingsForm
         self.plugin_helpers[u'toolbox'] = self.mediaDockManager
+        self.plugin_helpers[u'maindisplay'] = self.mainDisplay
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers)
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here
@@ -604,12 +593,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.aboutForm.applicationVersion = self.applicationVersion
         self.aboutForm.exec_()
-
-    def onToolsAlertItemClicked(self):
-        """
-        Show the Alert form
-        """
-        self.alertForm.exec_()
 
     def onPluginItemClicked(self):
         """

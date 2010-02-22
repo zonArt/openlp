@@ -108,7 +108,7 @@ class PptviewController(PresentationController):
             if self.pptid >= 0:
                 self.close_presentation()
             rendermanager = self.plugin.render_manager
-            rect = rendermanager.screen_list[rendermanager.current_display][u'size']
+            rect = rendermanager.screens.current[u'size']
             rect = RECT(rect.x(), rect.y(), rect.right(), rect.bottom())
             filepath = str(presentation.replace(u'/', u'\\'));
             try:

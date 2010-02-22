@@ -34,8 +34,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.ui import AmendThemeForm
 from openlp.core.theme import Theme
 from openlp.core.lib import PluginConfig, OpenLPToolbar, contextMenuAction, \
-    ThemeXML, ThemeLevel, str_to_bool, get_text_file_string, build_icon, \
-    Receiver, contextMenuSeparator
+    ThemeXML, str_to_bool, get_text_file_string, build_icon, Receiver, \
+    contextMenuSeparator
 from openlp.core.utils import ConfigHelper
 
 class ThemeManager(QtGui.QWidget):
@@ -236,7 +236,7 @@ class ThemeManager(QtGui.QWidget):
         log.info(u'New Themes %s', unicode(files))
         if len(files) > 0:
             for file in files:
-                self.config.set_last_dir(filename)
+                self.config.set_last_dir(unicode(file))
                 self.unzipTheme(file, self.path)
         self.loadThemes()
 
@@ -313,17 +313,23 @@ class ThemeManager(QtGui.QWidget):
             filexml = None
             themename = None
             for file in zip.namelist():
-                if file.endswith(os.path.sep):
-                    theme_dir = os.path.join(dir, file)
+                osfile = unicode(QtCore.QDir.toNativeSeparators(file))
+                theme_dir = None
+                if osfile.endswith(os.path.sep):
+                    theme_dir = os.path.join(dir, osfile)
                     if not os.path.exists(theme_dir):
-                        os.mkdir(os.path.join(dir, file))
+                        os.mkdir(os.path.join(dir, osfile))
                 else:
-                    fullpath = os.path.join(dir, file)
-                    names = file.split(os.path.sep)
+                    fullpath = os.path.join(dir, osfile)
+                    names = osfile.split(os.path.sep)
                     if len(names) > 1:
                         # not preview file
                         if themename is None:
                             themename = names[0]
+                        if theme_dir is None:
+                            theme_dir = os.path.join(dir, names[0])
+                            if not os.path.exists(theme_dir):
+                                os.mkdir(os.path.join(dir, names[0]))
                         xml_data = zip.read(file)
                         if os.path.splitext(file)[1].lower() in [u'.xml']:
                             if self.checkVersion1(xml_data):
@@ -335,7 +341,7 @@ class ThemeManager(QtGui.QWidget):
                             outfile = open(fullpath, u'w')
                             outfile.write(filexml)
                         else:
-                            outfile = open(fullpath, u'w')
+                            outfile = open(fullpath, u'wb')
                             outfile.write(zip.read(file))
             self.generateAndSaveImage(dir, themename, filexml)
         except:
@@ -343,7 +349,7 @@ class ThemeManager(QtGui.QWidget):
                 self, self.trUtf8('Error'),
                 self.trUtf8('File is not a valid theme!'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-            log.exception(u'Importing theme from zip file failed')
+            log.exception(u'Importing theme from zip file failed %s' % filename)
         finally:
             if zip:
                 zip.close()
@@ -384,7 +390,6 @@ class ThemeManager(QtGui.QWidget):
                 unicode(theme.BackgroundParameter2.name()), direction)
         else:
             newtheme.add_background_image(unicode(theme.BackgroundParameter1))
-
         newtheme.add_font(unicode(theme.FontName),
             unicode(theme.FontColor.name()),
             unicode(theme.FontProportion * 3), u'False')
@@ -397,10 +402,15 @@ class ThemeManager(QtGui.QWidget):
             shadow = True
         if theme.Outline == 1:
             outline = True
+        vAlignCorrection = 0
+        if theme.VerticalAlign == 2:
+            vAlignCorrection = 1
+        elif theme.VerticalAlign == 1:
+            vAlignCorrection = 2
         newtheme.add_display(unicode(shadow), unicode(theme.ShadowColor.name()),
             unicode(outline), unicode(theme.OutlineColor.name()),
-            unicode(theme.HorizontalAlign), unicode(theme.VerticalAlign),
-            unicode(theme.WrapStyle), 0)
+            unicode(theme.HorizontalAlign), unicode(vAlignCorrection),
+            unicode(theme.WrapStyle), unicode(0))
         return newtheme.extract_xml()
 
     def saveTheme(self, name, theme_xml, theme_pretty_xml, image_from,
