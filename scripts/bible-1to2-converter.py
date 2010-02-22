@@ -28,7 +28,7 @@ import sys
 import os
 import sqlite
 import sqlite3
-import re
+
 from optparse import OptionParser
 from traceback import format_tb as get_traceback
 

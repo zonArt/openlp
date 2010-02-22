@@ -25,7 +25,6 @@
 
 import logging
 import os
-import time
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon

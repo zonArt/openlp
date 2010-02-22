@@ -23,11 +23,10 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import csv
 import logging
 import os
 import os.path
-from time import sleep
-import csv
 
 from PyQt4 import QtCore, QtGui
 
@@ -46,8 +45,8 @@ class DownloadLocation(object):
     }
 
     @classmethod
-    def get_name(class_, id):
-        return class_.Names[id]
+    def get_name(cls, id):
+        return cls.Names[id]
 
 
 class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
