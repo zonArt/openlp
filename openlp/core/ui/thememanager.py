@@ -402,9 +402,14 @@ class ThemeManager(QtGui.QWidget):
             shadow = True
         if theme.Outline == 1:
             outline = True
+        vAlignCorrection = 0
+        if theme.VerticalAlign == 2:
+            vAlignCorrection = 1
+        elif theme.VerticalAlign == 1:
+            vAlignCorrection = 2
         newtheme.add_display(unicode(shadow), unicode(theme.ShadowColor.name()),
             unicode(outline), unicode(theme.OutlineColor.name()),
-            unicode(theme.HorizontalAlign), unicode(theme.VerticalAlign),
+            unicode(theme.HorizontalAlign), unicode(vAlignCorrection),
             unicode(theme.WrapStyle), unicode(0))
         return newtheme.extract_xml()
 
