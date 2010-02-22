@@ -341,7 +341,7 @@ class ThemeManager(QtGui.QWidget):
                             outfile = open(fullpath, u'w')
                             outfile.write(filexml)
                         else:
-                            outfile = open(fullpath, u'w')
+                            outfile = open(fullpath, u'wb')
                             outfile.write(zip.read(file))
             self.generateAndSaveImage(dir, themename, filexml)
         except:
