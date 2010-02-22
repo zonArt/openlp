@@ -51,17 +51,10 @@ class PresentationTab(SettingsTab):
         self.PresentationLeftLayout.setMargin(0)
         self.VerseDisplayGroupBox = QtGui.QGroupBox(self)
         self.VerseDisplayGroupBox.setObjectName(u'VerseDisplayGroupBox')
-        self.VerseDisplayLayout = QtGui.QGridLayout(self.VerseDisplayGroupBox)
+        self.VerseDisplayLayout = QtGui.QVBoxLayout(self.VerseDisplayGroupBox)
         self.VerseDisplayLayout.setMargin(8)
         self.VerseDisplayLayout.setObjectName(u'VerseDisplayLayout')
-        self.VerseTypeWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
-        self.VerseTypeWidget.setObjectName(u'VerseTypeWidget')
-        self.VerseTypeLayout = QtGui.QHBoxLayout(self.VerseTypeWidget)
-        self.VerseTypeLayout.setSpacing(8)
-        self.VerseTypeLayout.setMargin(0)
-        self.VerseTypeLayout.setObjectName(u'VerseTypeLayout')
         self.PresenterCheckboxes = {}
-        index = 0
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = QtGui.QCheckBox(self.VerseDisplayGroupBox)
@@ -69,8 +62,7 @@ class PresentationTab(SettingsTab):
             checkbox.setEnabled(controller.available)
             checkbox.setObjectName(controller.name + u'CheckBox')
             self.PresenterCheckboxes[controller.name] = checkbox
-            index = index + 1
-            self.VerseDisplayLayout.addWidget(checkbox, index, 0, 1, 1)
+            self.VerseDisplayLayout.addWidget(checkbox)
         self.PresentationThemeWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
         self.PresentationThemeWidget.setObjectName(u'PresentationThemeWidget')
         self.PresentationThemeLayout = QtGui.QHBoxLayout(
@@ -96,6 +88,7 @@ class PresentationTab(SettingsTab):
         self.PresentationLayout.addWidget(self.PresentationRightWidget)
 
     def retranslateUi(self):
+        self.VerseDisplayGroupBox.setTitle(self.trUtf8('Avaliable Controllers'))
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]

@@ -579,9 +579,9 @@ class ServiceManager(QtGui.QWidget):
             tempServiceItems = self.serviceItems
             self.onNewService()
             for item in tempServiceItems:
-                self.addServiceItem(item[u'service_item'])
+                self.addServiceItem(item[u'service_item'], True)
 
-    def addServiceItem(self, item):
+    def addServiceItem(self, item, rebuild=False):
         """
         Add a Service item to the list
 
@@ -608,6 +608,9 @@ class ServiceManager(QtGui.QWidget):
                     u'order': len(self.serviceItems)+1,
                     u'expanded':True})
                 self.repaintServiceList(sitem + 1, 0)
+            #if rebuilding list make sure live is fixed.
+            if rebuild:
+                self.parent.LiveController.replaceServiceManagerItem(item)
         self.parent.serviceChanged(False, self.serviceName)
 
     def makePreview(self):
