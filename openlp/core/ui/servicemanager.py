@@ -30,8 +30,8 @@ import zipfile
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
-    ServiceItemType, contextMenuAction, contextMenuSeparator, contextMenu, \
-    Receiver, contextMenu, str_to_bool
+    contextMenuAction, contextMenuSeparator, contextMenu, Receiver, \
+    contextMenu, str_to_bool
 
 class ServiceManagerList(QtGui.QTreeWidget):
 

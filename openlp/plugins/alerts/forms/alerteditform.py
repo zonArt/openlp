@@ -23,8 +23,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from datetime import date
-
 from PyQt4 import QtGui, QtCore
 from openlp.plugins.alerts.lib.models import AlertItem
 

@@ -25,7 +25,6 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon
 from aboutdialog import Ui_AboutDialog
 
 class AboutForm(QtGui.QDialog, Ui_AboutDialog):
