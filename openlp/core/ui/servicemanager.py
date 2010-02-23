@@ -574,7 +574,7 @@ class ServiceManager(QtGui.QWidget):
 
     def regenerateServiceItems(self):
         #force reset of renderer as theme data has changed
-        self.parent.RenderManager.themesata = None
+        self.parent.RenderManager.themedata = None
         if len(self.serviceItems) > 0:
             tempServiceItems = self.serviceItems
             self.onNewService()
