@@ -25,7 +25,7 @@ try:
     finally:
         b.unlock()
 except:
-    ver_file = open(VERSION_FILE, u'w')
+    ver_file = open(VERSION_FILE, u'r')
     version = ver_file.read().strip()
     ver_file.close()
 

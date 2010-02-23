@@ -8,4 +8,4 @@ recursive-include resources/images *
 recursive-include scripts *.py
 include copyright.txt
 include LICENSE
-include version.txt
+include openlp/.version
