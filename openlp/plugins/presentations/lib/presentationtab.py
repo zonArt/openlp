@@ -88,7 +88,7 @@ class PresentationTab(SettingsTab):
         self.PresentationLayout.addWidget(self.PresentationRightWidget)
 
     def retranslateUi(self):
-        self.VerseDisplayGroupBox.setTitle(self.trUtf8('Avaliable Controllers'))
+        self.VerseDisplayGroupBox.setTitle(self.trUtf8('Available Controllers'))
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
