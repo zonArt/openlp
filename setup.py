@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from setuptools import setup, find_packages
 import sys, os
 
@@ -25,7 +27,7 @@ try:
     finally:
         b.unlock()
 except:
-    ver_file = open(VERSION_FILE, u'w')
+    ver_file = open(VERSION_FILE, u'r')
     version = ver_file.read().strip()
     ver_file.close()
 
@@ -43,6 +45,7 @@ OpenLP (previously openlp.org) is free church presentation software, or lyrics p
     url='http://openlp.org/',
     license='GNU General Public License',
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
+    scripts=['openlp.pyw', 'scripts/openlp-1to2-converter.py', 'scripts/bible-1to2-converter.py'],
     include_package_data=True,
     zip_safe=False,
     install_requires=[

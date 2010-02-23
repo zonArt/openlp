@@ -6,6 +6,7 @@ recursive-include resources/forms *
 recursive-include resources/i18n *
 recursive-include resources/images *
 recursive-include scripts *.py
+include resources/*.desktop
 include copyright.txt
 include LICENSE
-include version.txt
+include openlp/.version
