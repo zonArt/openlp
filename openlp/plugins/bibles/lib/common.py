@@ -26,7 +26,6 @@
 import urllib2
 import logging
 import re
-import sqlite3
 import chardet
 
 only_verses = re.compile(r'([\w .]+)[ ]+([0-9]+)[ ]*[:|v|V][ ]*([0-9]+)'

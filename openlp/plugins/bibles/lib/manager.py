@@ -25,7 +25,6 @@
 
 import logging
 import os
-import csv
 
 from common import parse_reference
 from opensong import OpenSongBible

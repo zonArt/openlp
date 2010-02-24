@@ -30,8 +30,8 @@ import zipfile
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
-    ServiceItemType, contextMenuAction, contextMenuSeparator, contextMenu, \
-    Receiver, contextMenu, str_to_bool
+    contextMenuAction, contextMenuSeparator, contextMenu, Receiver, \
+    contextMenu, str_to_bool
 
 class ServiceManagerList(QtGui.QTreeWidget):
 
@@ -573,13 +573,15 @@ class ServiceManager(QtGui.QWidget):
         self.regenerateServiceItems()
 
     def regenerateServiceItems(self):
+        #force reset of renderer as theme data has changed
+        self.parent.RenderManager.themedata = None
         if len(self.serviceItems) > 0:
             tempServiceItems = self.serviceItems
             self.onNewService()
             for item in tempServiceItems:
-                self.addServiceItem(item[u'service_item'])
+                self.addServiceItem(item[u'service_item'], True)
 
-    def addServiceItem(self, item):
+    def addServiceItem(self, item, rebuild=False):
         """
         Add a Service item to the list
 
@@ -606,6 +608,9 @@ class ServiceManager(QtGui.QWidget):
                     u'order': len(self.serviceItems)+1,
                     u'expanded':True})
                 self.repaintServiceList(sitem + 1, 0)
+            #if rebuilding list make sure live is fixed.
+            if rebuild:
+                self.parent.LiveController.replaceServiceManagerItem(item)
         self.parent.serviceChanged(False, self.serviceName)
 
     def makePreview(self):

@@ -1,0 +1,12 @@
+recursive-include openlp *.py
+recursive-include openlp *.sqlite
+recursive-include openlp *.csv
+recursive-include documentation *
+recursive-include resources/forms *
+recursive-include resources/i18n *
+recursive-include resources/images *
+recursive-include scripts *.py
+include resources/*.desktop
+include copyright.txt
+include LICENSE
+include openlp/.version
