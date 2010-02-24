@@ -1,0 +1,1 @@
+﻿hiddenimports = ['chardet']
