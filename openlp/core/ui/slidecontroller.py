@@ -108,15 +108,14 @@ class SlideController(QtGui.QWidget):
         # Type label for the top of the slide controller
         self.TypeLabel = QtGui.QLabel(self.Panel)
         if self.isLive:
-            self.TypeLabel.setText(u'<strong>%s</strong>' %
-                self.trUtf8('Live'))
+            self.TypeLabel.setText(self.trUtf8('Live'))
             self.split = 1
             prefix = u'live_slidecontroller'
         else:
-            self.TypeLabel.setText(u'<strong>%s</strong>' %
-                self.trUtf8('Preview'))
+            self.TypeLabel.setText(self.trUtf8('Preview'))
             self.split = 0
             prefix = u'preview_slidecontroller'
+        self.TypeLabel.setStyleSheet(u'font-weight: bold; font-size: 12pt;')
         self.TypeLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.PanelLayout.addWidget(self.TypeLabel)
         # Splitter
