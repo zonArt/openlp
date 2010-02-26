@@ -110,7 +110,7 @@ class PptviewController(PresentationController):
             rendermanager = self.plugin.render_manager
             rect = rendermanager.screens.current[u'size']
             rect = RECT(rect.x(), rect.y(), rect.right(), rect.bottom())
-            filepath = str(presentation.replace(u'/', u'\\'));
+            filepath = str(presentation.replace(u'/', u'\\'))
             try:
                 self.pptid = self.process.OpenPPT(filepath, None, rect,
                     str(os.path.join(self.thumbnailpath, self.thumbnailprefix)))

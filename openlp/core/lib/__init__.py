@@ -146,7 +146,7 @@ def resize_image(image, width, height):
     preview = QtGui.QImage(image)
     preview = preview.scaled(width, height, QtCore.Qt.KeepAspectRatio,
         QtCore.Qt.SmoothTransformation)
-    realw = preview.width();
+    realw = preview.width()
     realh = preview.height()
     # and move it to the centre of the preview space
     newImage = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32_Premultiplied)

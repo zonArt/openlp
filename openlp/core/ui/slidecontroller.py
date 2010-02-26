@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import OpenLPToolbar, Receiver, str_to_bool, \
-PluginConfig, resize_image
+    PluginConfig, resize_image
 
 class SlideList(QtGui.QTableWidget):
     """
@@ -63,7 +63,7 @@ class SlideList(QtGui.QTableWidget):
                 self.parent.onSlideSelectedLast()
                 event.accept()
             elif event.key() in self.hotkey_map and self.parent.isLive:
-                Receiver.send_message(self.hotkey_map[event.key()]);
+                Receiver.send_message(self.hotkey_map[event.key()])
                 event.accept()
             event.ignore()
         else:

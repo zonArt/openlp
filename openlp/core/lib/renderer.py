@@ -406,8 +406,8 @@ class Renderer(object):
             Defaults to *False*. Whether or not this is a live screen.
         """
         x, y = tlcorner
-        maxx = self._rect.width();
-        maxy = self._rect.height();
+        maxx = self._rect.width()
+        maxy = self._rect.height()
         lines = []
         lines.append(line)
         startx = x
@@ -415,11 +415,11 @@ class Renderer(object):
         rightextent = None
         self.painter = QtGui.QPainter()
         self.painter.begin(self._frame)
-        self.painter.setRenderHint(QtGui.QPainter.Antialiasing);
+        self.painter.setRenderHint(QtGui.QPainter.Antialiasing)
         if self._theme.display_slideTransition:
             self.painter2 = QtGui.QPainter()
             self.painter2.begin(self._frameOp)
-            self.painter2.setRenderHint(QtGui.QPainter.Antialiasing);
+            self.painter2.setRenderHint(QtGui.QPainter.Antialiasing)
             self.painter2.setOpacity(0.7)
         # dont allow alignment messing with footers
         if footer:
@@ -458,7 +458,7 @@ class Renderer(object):
                 x = maxx - w
             # centre
             elif align == 2:
-                x = (maxx - w) / 2;
+                x = (maxx - w) / 2
                 rightextent = x + w
             if live:
                 # now draw the text, and any outlines/shadows
