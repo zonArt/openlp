@@ -435,6 +435,7 @@ class BibleMediaItem(MediaManagerItem):
         raw_slides = []
         raw_footer = []
         bible_text = u''
+        self.service_item.autoPreviewAllowed = True
         #If we want to use a 2nd translation / version
         bible2 = u''
         if self.SearchTabWidget.currentIndex() == 0:

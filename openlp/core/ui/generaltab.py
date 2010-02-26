@@ -87,6 +87,10 @@ class GeneralTab(SettingsTab):
         self.SaveCheckServiceCheckBox.setObjectName(u'SaveCheckServiceCheckBox')
         self.SettingsLayout.addWidget(self.SaveCheckServiceCheckBox)
         self.GeneralLeftLayout.addWidget(self.SettingsGroupBox)
+        self.AutoPreviewCheckBox = QtGui.QCheckBox(self.SettingsGroupBox)
+        self.AutoPreviewCheckBox.setObjectName(u'AutoPreviewCheckBox')
+        self.SettingsLayout.addWidget(self.AutoPreviewCheckBox)
+        self.GeneralLeftLayout.addWidget(self.SettingsGroupBox)
         self.GeneralLeftSpacer = QtGui.QSpacerItem(20, 40,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.GeneralLeftLayout.addItem(self.GeneralLeftSpacer)
@@ -137,6 +141,8 @@ class GeneralTab(SettingsTab):
             QtCore.SIGNAL(u'stateChanged(int)'), self.onShowSplashCheckBoxChanged)
         QtCore.QObject.connect(self.SaveCheckServiceCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'), self.onSaveCheckServiceCheckBox)
+        QtCore.QObject.connect(self.AutoPreviewCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'), self.onAutoPreviewCheckBox)
         QtCore.QObject.connect(self.NumberEdit,
             QtCore.SIGNAL(u'editingFinished()'), self.onNumberEditLostFocus)
         QtCore.QObject.connect(self.UsernameEdit,
@@ -153,6 +159,7 @@ class GeneralTab(SettingsTab):
         self.ShowSplashCheckBox.setText(self.trUtf8('Show the splash screen'))
         self.SettingsGroupBox.setTitle(self.trUtf8('Application Settings'))
         self.SaveCheckServiceCheckBox.setText(self.trUtf8('Prompt to save Service before starting New'))
+        self.AutoPreviewCheckBox.setText(self.trUtf8('Preview Next Song from Service Manager'))
         self.CCLIGroupBox.setTitle(self.trUtf8('CCLI Details'))
         self.NumberLabel.setText(self.trUtf8('CCLI Number:'))
         self.UsernameLabel.setText(self.trUtf8('SongSelect Username:'))
@@ -172,6 +179,9 @@ class GeneralTab(SettingsTab):
 
     def onSaveCheckServiceCheckBox(self, value):
         self.PromptSaveService = (value == QtCore.Qt.Checked)
+
+    def onAutoPreviewCheckBox(self, value):
+        self.AutoPreview = (value == QtCore.Qt.Checked)
 
     def onNumberEditLostFocus(self):
         self.CCLINumber = self.NumberEdit.displayText()
@@ -194,6 +204,7 @@ class GeneralTab(SettingsTab):
         self.AutoOpen = str_to_bool(self.config.get_config(u'auto open', u'False'))
         self.ShowSplash = str_to_bool(self.config.get_config(u'show splash', u'True'))
         self.PromptSaveService = str_to_bool(self.config.get_config(u'save prompt', u'False'))
+        self.AutoPreview = str_to_bool(self.config.get_config(u'auto preview', u'False'))
         self.CCLINumber = unicode(self.config.get_config(u'ccli number', u''))
         self.Username = unicode(self.config.get_config(u'songselect username', u''))
         self.Password = unicode(self.config.get_config(u'songselect password', u''))
@@ -203,6 +214,7 @@ class GeneralTab(SettingsTab):
         self.WarningCheckBox.setChecked(self.Warning)
         self.AutoOpenCheckBox.setChecked(self.AutoOpen)
         self.ShowSplashCheckBox.setChecked(self.ShowSplash)
+        self.AutoPreviewCheckBox.setChecked(self.AutoPreview)
         self.NumberEdit.setText(self.CCLINumber)
         self.UsernameEdit.setText(self.Username)
         self.PasswordEdit.setText(self.Password)
@@ -213,6 +225,7 @@ class GeneralTab(SettingsTab):
         self.config.set_config(u'auto open', self.AutoOpen)
         self.config.set_config(u'show splash', self.ShowSplash)
         self.config.set_config(u'save prompt', self.PromptSaveService)
+        self.config.set_config(u'auto preview', self.AutoPreview)
         self.config.set_config(u'ccli number', self.CCLINumber)
         self.config.set_config(u'songselect username', self.Username)
         self.config.set_config(u'songselect password', self.Password)

@@ -290,6 +290,7 @@ class SongMediaItem(MediaManagerItem):
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         else:
             item_id = self.remoteSong
+        service_item.autoPreviewAllowed = True
         song = self.parent.songmanager.get_song(item_id)
         service_item.theme = song.theme_name
         service_item.edit_enabled = True
