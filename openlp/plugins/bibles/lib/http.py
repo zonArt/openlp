@@ -35,6 +35,8 @@ from common import BibleCommon, SearchResults
 from db import BibleDB
 from openlp.plugins.bibles.lib.models import Book
 
+log = logging.getLogger(__name__)
+
 class HTTPBooks(object):
     cursor = None
 
@@ -119,9 +121,7 @@ class HTTPBooks(object):
 
 
 class BGExtract(BibleCommon):
-    global log
-    log = logging.getLogger(u'BibleHTTPMgr(BG_extract)')
-    log.info(u'BG_extract loaded')
+    log.info(u'%s BGExtract loaded', __name__)
 
     def __init__(self, proxyurl=None):
         log.debug(u'init %s', proxyurl)
@@ -184,7 +184,7 @@ class BGExtract(BibleCommon):
         return SearchResults(bookname, chapter, bible)
 
 class CWExtract(BibleCommon):
-    log.info(u'%s loaded', __name__)
+    log.info(u'%s CWExtract loaded', __name__)
 
     def __init__(self, proxyurl=None):
         log.debug(u'init %s', proxyurl)
@@ -229,7 +229,7 @@ class CWExtract(BibleCommon):
 
 
 class HTTPBible(BibleDB):
-    log.info(u'%s loaded', __name__)
+    log.info(u'%s HTTPBible loaded' , __name__)
 
     def __init__(self, parent, **kwargs):
         """

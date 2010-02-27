@@ -30,8 +30,6 @@ import chardet
 import codecs
 import re
 
-from PyQt4 import QtCore
-
 from openlp.core.lib import Receiver
 from db import BibleDB
 

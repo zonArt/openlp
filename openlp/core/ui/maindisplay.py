@@ -25,7 +25,6 @@
 
 import logging
 import os
-import time
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
@@ -203,7 +202,7 @@ class MainDisplay(DisplayWidget):
         if not self.primary:
             self.setVisible(True)
             self.showFullScreen()
-        self.generateAlert()
+        Receiver.send_message(u'flush_alert')
 
     def addImageWithText(self, frame):
         frame = resize_image(frame,

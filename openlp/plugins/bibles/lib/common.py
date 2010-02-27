@@ -27,7 +27,6 @@ import urllib2
 import chardet
 import logging
 import re
-import sqlite3
 
 only_verses = re.compile(r'([\w .]+)[ ]+([0-9]+)[ ]*[:|v|V][ ]*([0-9]+)'
     r'(?:[ ]*-[ ]*([0-9]+|end))?(?:[ ]*,[ ]*([0-9]+)(?:[ ]*-[ ]*([0-9]+|end))?)?',
@@ -167,8 +166,6 @@ class BibleCommon(object):
     """
     A common ancestor for bible download sites.
     """
-    global log
-    log = logging.getLogger(u'BibleCommon')
     log.info(u'BibleCommon')
 
     def _get_web_text(self, urlstring, proxyurl):

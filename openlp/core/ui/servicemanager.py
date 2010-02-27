@@ -30,8 +30,8 @@ import zipfile
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
-    ServiceItemType, contextMenuAction, contextMenuSeparator, contextMenu, \
-    Receiver, contextMenu, str_to_bool
+    contextMenuAction, contextMenuSeparator, contextMenu, Receiver, \
+    contextMenu, str_to_bool
 
 class ServiceManagerList(QtGui.QTreeWidget):
 
@@ -573,13 +573,15 @@ class ServiceManager(QtGui.QWidget):
         self.regenerateServiceItems()
 
     def regenerateServiceItems(self):
+        #force reset of renderer as theme data has changed
+        self.parent.RenderManager.themedata = None
         if len(self.serviceItems) > 0:
             tempServiceItems = self.serviceItems
             self.onNewService()
             for item in tempServiceItems:
-                self.addServiceItem(item[u'service_item'])
+                self.addServiceItem(item[u'service_item'], True)
 
-    def addServiceItem(self, item):
+    def addServiceItem(self, item, rebuild=False):
         """
         Add a Service item to the list
 
@@ -606,6 +608,9 @@ class ServiceManager(QtGui.QWidget):
                     u'order': len(self.serviceItems)+1,
                     u'expanded':True})
                 self.repaintServiceList(sitem + 1, 0)
+            #if rebuilding list make sure live is fixed.
+            if rebuild:
+                self.parent.LiveController.replaceServiceManagerItem(item)
         self.parent.serviceChanged(False, self.serviceName)
 
     def makePreview(self):
@@ -616,6 +621,7 @@ class ServiceManager(QtGui.QWidget):
         self.parent.PreviewController.addServiceManagerItem(
             self.serviceItems[item][u'service_item'], count)
 
+
     def makeLive(self):
         """
         Send the current item to the Live slide controller
@@ -623,6 +629,13 @@ class ServiceManager(QtGui.QWidget):
         item, count = self.findServiceItem()
         self.parent.LiveController.addServiceManagerItem(
             self.serviceItems[item][u'service_item'], count)
+        if str_to_bool(PluginConfig(u'General').
+                        get_config(u'auto preview', u'False')):
+            item += 1
+            if len(self.serviceItems) > 0 and item < len(self.serviceItems) and \
+                self.serviceItems[item][u'service_item'].autoPreviewAllowed:
+                    self.parent.PreviewController.addServiceManagerItem(
+                        self.serviceItems[item][u'service_item'], 0)
 
     def remoteEdit(self):
         """
