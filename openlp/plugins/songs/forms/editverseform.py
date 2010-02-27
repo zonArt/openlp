@@ -78,7 +78,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         posVerse = 0
         posSub = 0
         if len(text) == 0:
-            text = u'---[Verse:1]---'
+            text = u'---[Verse:1]---\n'
         if single:
             id = tag.split(u':')
             posVerse = self.VerseListComboBox.findText(id[0], QtCore.Qt.MatchExactly)
@@ -114,6 +114,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         self.VerseTextEdit.setPlainText(text)
         self.VerseTextEdit.setFocus(QtCore.Qt.OtherFocusReason)
         self.onVerseComboChanged(0)
+        self.VerseTextEdit.moveCursor(QtGui.QTextCursor.Down)
 
     def getVerse(self):
        return self.VerseTextEdit.toPlainText(), \
