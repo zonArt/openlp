@@ -32,6 +32,8 @@ from openlp.core.lib.toolbar import *
 from openlp.core.lib import contextMenuAction, contextMenuSeparator
 from serviceitem import ServiceItem
 
+log = logging.getLogger(__name__)
+
 class MediaManagerItem(QtGui.QWidget):
     """
     MediaManagerItem is a helper widget for plugins.
@@ -92,9 +94,6 @@ class MediaManagerItem(QtGui.QWidget):
         method is not defined, a default will be used (treat the
         filename as an image).
     """
-
-    global log
-    log = logging.getLogger(u'MediaManagerItem')
     log.info(u'Media Item loaded')
 
     def __init__(self, parent=None, icon=None, title=None):

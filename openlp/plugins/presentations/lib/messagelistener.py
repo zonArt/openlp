@@ -30,13 +30,13 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
 
+log = logging.getLogger(__name__)
+
 class Controller(object):
     """
     This is the Presentation listener who acts on events from the slide
     controller and passes the messages on the the correct presentation handlers
     """
-    global log
-    log = logging.getLogger(u'Controller')
     log.info(u'Controller loaded')
 
     def __init__(self, live):
@@ -149,8 +149,6 @@ class MessageListener(object):
     This is the Presentation listener who acts on events from the slide
     controller and passes the messages on the the correct presentation handlers
     """
-    global log
-    log = logging.getLogger(u'MessageListener')
     log.info(u'Message Listener loaded')
 
     def __init__(self, controllers):

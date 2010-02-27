@@ -38,13 +38,12 @@ from openlp.core.lib import PluginConfig, OpenLPToolbar, contextMenuAction, \
     contextMenuSeparator
 from openlp.core.utils import ConfigHelper
 
+log = logging.getLogger(__name__)
+
 class ThemeManager(QtGui.QWidget):
     """
     Manages the orders of Theme.
     """
-    global log
-    log = logging.getLogger(u'ThemeManager')
-
     def __init__(self, parent):
         QtGui.QWidget.__init__(self, parent)
         self.parent = parent

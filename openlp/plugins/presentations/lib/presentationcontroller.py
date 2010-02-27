@@ -31,6 +31,8 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
 
+log = logging.getLogger(__name__)
+
 class PresentationController(object):
     """
     Base class for presentation controllers to inherit from
@@ -116,8 +118,6 @@ class PresentationController(object):
         Returns a path to an image containing a preview for the requested slide
 
     """
-    global log
-    log = logging.getLogger(u'PresentationController')
     log.info(u'PresentationController loaded')
 
     def __init__(self, plugin=None, name=u'PresentationController'):

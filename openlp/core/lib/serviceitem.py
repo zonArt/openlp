@@ -32,6 +32,8 @@ from PyQt4 import QtGui
 
 from openlp.core.lib import build_icon, Receiver, resize_image
 
+log = logging.getLogger(__name__)
+
 class ServiceItemType(object):
     """
     Defines the type of service item
@@ -46,8 +48,6 @@ class ServiceItem(object):
     the service manager, the slide controller, and the projection screen
     compositor.
     """
-    global log
-    log = logging.getLogger(u'ServiceItem')
     log.info(u'Service Item created')
 
     def __init__(self, plugin=None):

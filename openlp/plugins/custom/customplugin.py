@@ -29,6 +29,7 @@ from forms import EditCustomForm
 from openlp.core.lib import Plugin, build_icon, PluginStatus
 from openlp.plugins.custom.lib import CustomManager, CustomMediaItem, CustomTab
 
+log = logging.getLogger(__name__)
 
 class CustomPlugin(Plugin):
     """
@@ -39,9 +40,6 @@ class CustomPlugin(Plugin):
     the songs plugin has become restrictive. Examples could be
     Welcome slides, Bible Reading information, Orders of service.
     """
-
-    global log
-    log = logging.getLogger(u'CustomPlugin')
     log.info(u'Custom Plugin loaded')
 
     def __init__(self, plugin_helpers):

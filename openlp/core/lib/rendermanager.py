@@ -30,6 +30,8 @@ from PyQt4 import QtCore
 from renderer import Renderer
 from openlp.core.lib import ThemeLevel
 
+log = logging.getLogger(__name__)
+
 class RenderManager(object):
     """
     Class to pull all Renderer interactions into one place. The plugins will
@@ -45,8 +47,6 @@ class RenderManager(object):
     ``screen_number``
         Defaults to *0*. The index of the output/display screen.
     """
-    global log
-    log = logging.getLogger(u'RenderManager')
     log.info(u'RenderManager Loaded')
 
     def __init__(self, theme_manager, screens, screen_number=0):

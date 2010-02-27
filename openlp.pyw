@@ -59,13 +59,13 @@ QToolBar
   padding: 0;
 }
 """
+log = logging.getLogger(__name__)
 
 class OpenLP(QtGui.QApplication):
     """
     The core application class. This class inherits from Qt's QApplication
     class in order to provide the core of the application.
     """
-    global log
     log.info(u'OpenLP Application Loaded')
 
     def notify(self, obj, evt):

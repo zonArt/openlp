@@ -28,6 +28,8 @@ import logging
 import cPickle
 import zipfile
 
+log = logging.getLogger(__name__)
+
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
     contextMenuAction, contextMenuSeparator, contextMenu, Receiver, \
@@ -105,9 +107,6 @@ class ServiceManager(QtGui.QWidget):
     the resources used into one OSZ file for use on any OpenLP v2 installation.
     Also handles the UI tasks of moving things up and down etc.
     """
-    global log
-    log = logging.getLogger(u'ServiceManager')
-
     def __init__(self, parent):
         """
         Sets up the service manager, toolbars, list view, et al.

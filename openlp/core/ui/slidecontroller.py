@@ -33,6 +33,8 @@ from PyQt4.phonon import Phonon
 from openlp.core.lib import OpenLPToolbar, Receiver, str_to_bool, \
 PluginConfig, resize_image
 
+log = logging.getLogger(__name__)
+
 class SlideList(QtGui.QTableWidget):
     """
     Customised version of QTableWidget which can respond to keyboard
@@ -74,9 +76,6 @@ class SlideController(QtGui.QWidget):
     SlideController is the slide controller widget. This widget is what the
     user uses to control the displaying of verses/slides/etc on the screen.
     """
-    global log
-    log = logging.getLogger(u'SlideController')
-
     def __init__(self, parent, settingsmanager, isLive=False):
         """
         Set up the Slide Controller.

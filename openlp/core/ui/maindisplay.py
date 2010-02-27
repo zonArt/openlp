@@ -31,13 +31,13 @@ from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, resize_image
 
+log = logging.getLogger(__name__)
+
 class DisplayWidget(QtGui.QWidget):
     """
     Customised version of QTableWidget which can respond to keyboard
     events.
     """
-    global log
-    log = logging.getLogger(u'MainDisplay')
     log.info(u'MainDisplay loaded')
 
     def __init__(self, parent=None, name=None):
@@ -78,8 +78,6 @@ class MainDisplay(DisplayWidget):
     """
     This is the form that is used to display things on the projector.
     """
-    global log
-    log = logging.getLogger(u'MainDisplay')
     log.info(u'MainDisplay Loaded')
 
     def __init__(self, parent, screens):

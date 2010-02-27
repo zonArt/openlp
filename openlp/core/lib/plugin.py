@@ -28,6 +28,8 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import PluginConfig, Receiver
 
+log = logging.getLogger(__name__)
+
 class PluginStatus(object):
     """
     Defines the status of the plugin
@@ -88,8 +90,6 @@ class Plugin(QtCore.QObject):
         Used in the plugin manager, when a person clicks on the 'About' button.
 
     """
-    global log
-    log = logging.getLogger(u'Plugin')
     log.info(u'loaded')
 
     def __init__(self, name, version=None, plugin_helpers=None):
