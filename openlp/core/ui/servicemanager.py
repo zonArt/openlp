@@ -694,7 +694,7 @@ class ServiceManager(QtGui.QWidget):
             if plugin == u'ServiceManager':
                 startpos,  startCount = self.findServiceItem()
                 item = self.ServiceManagerList.itemAt(event.pos())
-                if item == None:
+                if item is None:
                     endpos = len(self.serviceItems)
                 else:
                     parentitem = item.parent()
