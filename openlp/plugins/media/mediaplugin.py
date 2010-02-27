@@ -27,6 +27,7 @@ import logging
 
 from openlp.core.lib import Plugin, build_icon, PluginStatus
 from openlp.plugins.media.lib import MediaMediaItem
+from PyQt4.phonon import Phonon
 
 class MediaPlugin(Plugin):
     global log
