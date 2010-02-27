@@ -166,8 +166,6 @@ class BibleCommon(object):
     """
     A common ancestor for bible download sites.
     """
-    global log
-    log = logging.getLogger(u'BibleCommon')
     log.info(u'BibleCommon')
 
     def _get_web_text(self, urlstring, proxyurl):

@@ -27,11 +27,12 @@ import logging
 
 from openlp.core.lib import Plugin, build_icon, PluginStatus
 from openlp.plugins.media.lib import MediaMediaItem
+from PyQt4.phonon import Phonon
+
+log = logging.getLogger(__name__)
 
 class MediaPlugin(Plugin):
-    global log
-    log = logging.getLogger(u'MediaPlugin')
-    log.info(u'Media Plugin loaded')
+    log.info(u'%s MediaPlugin loaded', __name__)
 
     def __init__(self, plugin_helpers):
         Plugin.__init__(self, u'Media', u'1.9.1', plugin_helpers)
@@ -40,6 +41,9 @@ class MediaPlugin(Plugin):
         # passed with drag and drop messages
         self.dnd_id = u'Media'
         self.status = PluginStatus.Active
+#        print Phonon.BackendCapabilities.availableMimeTypes()
+#        for mimetype in Phonon.BackendCapabilities.availableMimeTypes():
+#            print mimetype
 
     def initialise(self):
         log.info(u'Plugin Initialising')
