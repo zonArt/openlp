@@ -33,13 +33,13 @@ from openlp.plugins.songs.forms import EditVerseForm
 from openlp.plugins.songs.lib.models import Song
 from editsongdialog import Ui_EditSongDialog
 
+log = logging.getLogger(__name__)
+
 class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     """
     Class to manage the editing of a song
     """
-    global log
-    log = logging.getLogger(u'EditSongForm')
-    log.info(u'Song Editor loaded')
+    log.info(u'%s EditSongForm loaded', __name__)
 
     def __init__(self, songmanager, parent=None):
         """

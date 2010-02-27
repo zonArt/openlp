@@ -30,6 +30,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon
 
+log = logging.getLogger(__name__)
+
 class MediaListView(BaseListWithDnD):
     def __init__(self, parent=None):
         self.PluginName = u'Media'
@@ -39,9 +41,7 @@ class MediaMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Media Slides.
     """
-    global log
-    log = logging.getLogger(u'MediaMediaItem')
-    log.info(u'Media Media Item loaded')
+    log.info(u'%s MediaMediaItem loaded', __name__)
 
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Media'

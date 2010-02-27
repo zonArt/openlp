@@ -59,7 +59,7 @@ class BibleDB(QtCore.QObject):
         ``config``
             The configuration object, passed in from the plugin.
         """
-        log.info(u'BibleDBimpl loaded')
+        log.info(u'BibleDB loaded')
         QtCore.QObject.__init__(self)
         if u'path' not in kwargs:
             raise KeyError(u'Missing keyword argument "path".')
