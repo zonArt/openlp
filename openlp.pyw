@@ -32,6 +32,7 @@ from logging import FileHandler
 from optparse import OptionParser
 from PyQt4 import QtCore, QtGui
 
+import openlp
 from openlp.core.lib import Receiver, str_to_bool
 from openlp.core.resources import qInitResources
 from openlp.core.ui import MainWindow, SplashScreen, ScreenList
@@ -79,8 +80,10 @@ class OpenLP(QtGui.QApplication):
         Run the OpenLP application.
         """
         #Load and store current Application Version
-        filepath = os.path.split(os.path.abspath(__file__))[0]
-        filepath = os.path.abspath(os.path.join(filepath, u'version.txt'))
+        filepath = AppLocation.get_directory(AppLocation.AppDir)
+        if not hasattr(sys, u'frozen'):
+            filepath = os.path.join(filepath, u'openlp')
+        filepath = os.path.join(filepath, u'.version')
         fversion = None
         try:
             fversion = open(filepath, u'r')
@@ -97,9 +100,9 @@ class OpenLP(QtGui.QApplication):
                 app_version[u'version'], app_version[u'build']))
         except:
                 app_version = {
-                    u'full': u'1.9.0-000',
+                    u'full': u'1.9.0-bzr000',
                     u'version': u'1.9.0',
-                    u'build': u'000'
+                    u'build': u'bzr000'
                 }
         finally:
             if fversion:
