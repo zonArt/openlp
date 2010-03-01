@@ -52,12 +52,17 @@ media_manager_style = """
   }
 """
 class versionThread(QtCore.QThread):
-    def __init__(self, parent):
+    def __init__(self, parent, app_version, generalConfig):
         QtCore.QThread.__init__(self, parent)
         self.parent = parent
+        self.app_version = app_version
+        self.generalConfig = generalConfig
     def run (self):
         time.sleep(2)
-        Receiver.send_message(u'version_check')
+        version = check_latest_version(self.generalConfig, self.app_version)
+        #new version has arrived
+        if version != self.app_version:
+            Receiver.send_message(u'version_check', u'%s' % version)
 
 
 class Ui_MainWindow(object):
@@ -534,20 +539,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         log.info(u'Load data from Settings')
         self.settingsForm.postSetUp()
 
-    def versionCheck(self):
+    def versionCheck(self, version):
         """
         Checks the version of the Application called from openlp.pyw
         """
         app_version = self.applicationVersion[u'full']
-        version = check_latest_version(self.generalConfig, app_version)
-        if app_version != version:
-            version_text = unicode(self.trUtf8('OpenLP version %s has been updated '
-                'to version %s\n\nYou can obtain the latest version from http://openlp.org'))
-            QtGui.QMessageBox.question(self,
-                self.trUtf8('OpenLP Version Updated'),
-                version_text % (app_version, version),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
-                QtGui.QMessageBox.Ok)
+        version_text = unicode(self.trUtf8('OpenLP version %s has been updated '
+            'to version %s\n\nYou can obtain the latest version from http://openlp.org'))
+        QtGui.QMessageBox.question(self,
+            self.trUtf8('OpenLP Version Updated'),
+            version_text % (app_version, version),
+            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
+            QtGui.QMessageBox.Ok)
 
     def getMonitorNumber(self):
         """
@@ -582,7 +585,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 QtGui.QMessageBox.Ok)
 
     def versionThread(self):
-        vT = versionThread(self)
+        app_version = self.applicationVersion[u'full']
+        vT = versionThread(self, app_version, self.generalConfig)
         vT.start()
 
     def onHelpAboutItemClicked(self):

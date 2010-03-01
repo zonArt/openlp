@@ -43,7 +43,6 @@ class BibleListView(BaseListWithDnD):
     def resizeEvent(self, event):
         self.parent.onListViewResize(event.size().width(), event.size().width())
 
-
 class BibleMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Bibles.
@@ -435,6 +434,7 @@ class BibleMediaItem(MediaManagerItem):
         raw_slides = []
         raw_footer = []
         bible_text = u''
+        service_item.autoPreviewAllowed = True
         #If we want to use a 2nd translation / version
         bible2 = u''
         if self.SearchTabWidget.currentIndex() == 0:
@@ -470,12 +470,12 @@ class BibleMediaItem(MediaManagerItem):
                 verse_text = self.formatVerse(old_chapter, chapter, verse, u'', u'')
             old_chapter = chapter
             footer = u'%s (%s %s)' % (book, version, copyright)
-            #If not found throws and error so add.s
+            #If not found add to footer
             if footer not in raw_footer:
                 raw_footer.append(footer)
             if bible2:
                 footer = u'%s (%s %s)' % (book, version, copyright)
-                #If not found throws and error so add.s
+                #If not found add to footer
                 if footer not in raw_footer:
                     raw_footer.append(footer)
                 bible_text = u'%s %s \n\n %s %s' % \

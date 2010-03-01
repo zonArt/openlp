@@ -143,6 +143,7 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.setEditTriggers(
             QtGui.QAbstractItemView.NoEditTriggers)
         self.PreviewListWidget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.PreviewListWidget.setAlternatingRowColors(True)
         self.ControllerLayout.addWidget(self.PreviewListWidget)
         # Build the full toolbar
         self.Toolbar = OpenLPToolbar(self)

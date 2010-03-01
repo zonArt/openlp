@@ -621,6 +621,7 @@ class ServiceManager(QtGui.QWidget):
         self.parent.PreviewController.addServiceManagerItem(
             self.serviceItems[item][u'service_item'], count)
 
+
     def makeLive(self):
         """
         Send the current item to the Live slide controller
@@ -628,6 +629,13 @@ class ServiceManager(QtGui.QWidget):
         item, count = self.findServiceItem()
         self.parent.LiveController.addServiceManagerItem(
             self.serviceItems[item][u'service_item'], count)
+        if str_to_bool(PluginConfig(u'General').
+                        get_config(u'auto preview', u'False')):
+            item += 1
+            if len(self.serviceItems) > 0 and item < len(self.serviceItems) and \
+                self.serviceItems[item][u'service_item'].autoPreviewAllowed:
+                    self.parent.PreviewController.addServiceManagerItem(
+                        self.serviceItems[item][u'service_item'], 0)
 
     def remoteEdit(self):
         """
