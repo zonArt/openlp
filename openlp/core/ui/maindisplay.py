@@ -186,6 +186,7 @@ class MainDisplay(DisplayWidget):
         Receiver.send_message(u'screen_changed')
 
     def resetDisplay(self):
+        Receiver.send_message(u'stop_display_loop')
         if self.primary:
             self.setVisible(False)
         else:

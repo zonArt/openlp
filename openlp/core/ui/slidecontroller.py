@@ -193,6 +193,8 @@ class SlideController(QtGui.QWidget):
                 u'Stop Loop', u':/media/media_stop.png',
                 self.trUtf8('Stop continuous loop'), self.onStopLoop)
             self.DelaySpinBox = QtGui.QSpinBox()
+            self.DelaySpinBox.setMinimum(1)
+            self.DelaySpinBox.setMaximum(180)
             self.Toolbar.addToolbarWidget(
                 u'Image SpinBox', self.DelaySpinBox)
             self.DelaySpinBox.setSuffix(self.trUtf8('s'))
@@ -279,6 +281,8 @@ class SlideController(QtGui.QWidget):
         else:
             self.Toolbar.makeWidgetsInvisible(self.song_edit_list)
         self.Mediabar.setVisible(False)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'stop_display_loop'), self.onStopLoop)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_first' % prefix), self.onSlideSelectedFirst)
         QtCore.QObject.connect(Receiver.get_receiver(),

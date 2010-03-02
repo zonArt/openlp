@@ -41,24 +41,31 @@ class ServiceManagerList(QtGui.QTreeWidget):
         QtGui.QTreeWidget.__init__(self,parent)
         self.parent = parent
 
-#    def mousePressEvent(self, event):
-#        if event.button() == QtCore.Qt.RightButton:
-#            item = self.itemAt(event.pos())
-#            parentitem = item.parent()
-#            if parentitem is None:
-#                pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-#            else:
-#                pos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
-#            serviceItem = self.parent.serviceItems[pos - 1]
-#            if serviceItem[u'data'].edit_enabled:
-#                self.parent.editAction.setVisible(True)
-#            else:
-#                self.parent.editAction.setVisible(False)
-#            event.accept()
-#        else:
-#            event.ignore()
+    def mouseDoubleClickEvent(self, event):
+        self.parent.makeLive()
+        event.ignore()
+
+    def mousePressEvent(self, event):
+        if event.button() == QtCore.Qt.RightButton:
+            item = self.itemAt(event.pos())
+            parentitem = item.parent()
+            self.parent.noteAction.setVisible(False)
+            if parentitem is None:
+                pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
+                self.parent.noteAction.setVisible(True)
+            else:
+                pos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
+            serviceItem = self.parent.serviceItems[pos - 1]
+            if serviceItem[u'service_item'].edit_enabled:
+                self.parent.editAction.setVisible(True)
+            else:
+                self.parent.editAction.setVisible(False)
+            event.accept()
+        else:
+            event.ignore()
 
     def keyPressEvent(self, event):
+        print event.isAutoRepeat()
         if type(event) == QtGui.QKeyEvent:
             #here accept the event and do something
             if event.key() == QtCore.Qt.Key_Enter:
@@ -93,6 +100,7 @@ class ServiceManagerList(QtGui.QTreeWidget):
         just tell it what plugin to call
         """
         if event.buttons() != QtCore.Qt.LeftButton:
+            event.ignore()
             return
         drag = QtGui.QDrag(self)
         mimeData = QtCore.QMimeData()
@@ -171,7 +179,11 @@ class ServiceManager(QtGui.QWidget):
         self.editAction = contextMenuAction(
             self.ServiceManagerList, ':/system/system_live.png',
             self.trUtf8('&Edit Item'), self.remoteEdit)
+        self.noteAction = contextMenuAction(
+            self.ServiceManagerList, ':/system/system_live.png',
+            self.trUtf8('&Notes'), self.remoteEdit)
         self.ServiceManagerList.addAction(self.editAction)
+        self.ServiceManagerList.addAction(self.noteAction)
         self.ServiceManagerList.addAction(contextMenuSeparator(
             self.ServiceManagerList))
         self.ServiceManagerList.addAction(contextMenuAction(
@@ -625,6 +637,7 @@ class ServiceManager(QtGui.QWidget):
         """
         Send the current item to the Live slide controller
         """
+        print "ml"
         item, count = self.findServiceItem()
         self.parent.LiveController.addServiceManagerItem(
             self.serviceItems[item][u'service_item'], count)
