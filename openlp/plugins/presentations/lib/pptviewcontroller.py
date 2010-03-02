@@ -98,128 +98,128 @@ class PptviewController(PresentationController):
             self.docs.append(doc)
             return doc
 
-    class PptViewDocument(PresentationDocument):
+class PptviewDocument(PresentationDocument):
 
-        def __init__(self,  controller,  presentation):
-            log.debug(u'Init Presentation PowerPoint')
-            self.presentation = None
-            self.pptid = None
-            self.controller = controller
-            self.store_filename(presentation)
+    def __init__(self,  controller,  presentation):
+        log.debug(u'Init Presentation PowerPoint')
+        self.presentation = None
+        self.pptid = None
+        self.controller = controller
+        self.store_filename(presentation)
 
-        def load_presentation(self):
-            """
-            Called when a presentation is added to the SlideController.
-            It builds the environment, starts communcations with the background
-            PptView task started earlier.  
+    def load_presentation(self):
+        """
+        Called when a presentation is added to the SlideController.
+        It builds the environment, starts communcations with the background
+        PptView task started earlier.  
 
-            ``presentation``
-            The file name of the presentations to run.
-            """
-            log.debug(u'LoadPresentation')
-            #if self.pptid >= 0:
-            #    self.close_presentation()
-            rendermanager = self.plugin.render_manager
-            rect = rendermanager.screens.current[u'size']
-            rect = RECT(rect.x(), rect.y(), rect.right(), rect.bottom())
-            filepath = str(self.filepath.replace(u'/', u'\\'));
-            try:
-                self.pptid = self.controller.process.OpenPPT(filepath, None, rect,
-                    str(os.path.join(self.thumbnailpath, self.thumbnailprefix)))
-                self.stop_presentation()
-            except:
-                log.exception(u'Failed to load presentation')
+        ``presentation``
+        The file name of the presentations to run.
+        """
+        log.debug(u'LoadPresentation')
+        #if self.pptid >= 0:
+        #    self.close_presentation()
+        rendermanager = self.controller.plugin.render_manager
+        rect = rendermanager.screens.current[u'size']
+        rect = RECT(rect.x(), rect.y(), rect.right(), rect.bottom())
+        filepath = str(self.filepath.replace(u'/', u'\\'));
+        try:
+            self.pptid = self.controller.process.OpenPPT(filepath, None, rect,
+                str(os.path.join(self.thumbnailpath, self.controller.thumbnailprefix)))
+            self.stop_presentation()
+        except:
+            log.exception(u'Failed to load presentation')
 
-        def close_presentation(self):
-            """
-            Close presentation and clean up objects
-            Triggerent by new object being added to SlideController orOpenLP
-            being shut down
-            """
-            self.process.ClosePPT(self.pptid)
-            self.pptid = -1
-            self.controller.remove_doc(self)
+    def close_presentation(self):
+        """
+        Close presentation and clean up objects
+        Triggerent by new object being added to SlideController orOpenLP
+        being shut down
+        """
+        self.controller.process.ClosePPT(self.pptid)
+        self.pptid = -1
+        self.controller.remove_doc(self)
 
-        def is_loaded(self):
-            """
-            Returns true if a presentation is loaded
-            """
-            if self.pptid < 0:
-                return False
-            if self.get_slide_count() < 0:
-                return False
-            return True
+    def is_loaded(self):
+        """
+        Returns true if a presentation is loaded
+        """
+        if self.pptid < 0:
+            return False
+        if self.get_slide_count() < 0:
+            return False
+        return True
 
-        def is_active(self):
-            """
-            Returns true if a presentation is currently active
-            """
-            return self.is_loaded()
+    def is_active(self):
+        """
+        Returns true if a presentation is currently active
+        """
+        return self.is_loaded()
 
-        def blank_screen(self):
-            """
-            Blanks the screen
-            """
-            self.process.Blank(self.pptid)
+    def blank_screen(self):
+        """
+        Blanks the screen
+        """
+        self.controller.process.Blank(self.pptid)
 
-        def unblank_screen(self):
-            """
-            Unblanks (restores) the presentationn
-            """
-            self.process.Unblank(self.pptid)
+    def unblank_screen(self):
+        """
+        Unblanks (restores) the presentationn
+        """
+        self.controller.process.Unblank(self.pptid)
 
-        def stop_presentation(self):
-            """
-            Stops the current presentation and hides the output
-            """
-            self.process.Stop(self.pptid)
+    def stop_presentation(self):
+        """
+        Stops the current presentation and hides the output
+        """
+        self.controller.process.Stop(self.pptid)
 
-        def start_presentation(self):
-            """
-            Starts a presentation from the beginning
-            """
-            self.process.RestartShow(self.pptid)
+    def start_presentation(self):
+        """
+        Starts a presentation from the beginning
+        """
+        self.controller.process.RestartShow(self.pptid)
 
-        def get_slide_number(self):
-            """
-            Returns the current slide number
-            """
-            return self.process.GetCurrentSlide(self.pptid)
+    def get_slide_number(self):
+        """
+        Returns the current slide number
+        """
+        return self.controller.process.GetCurrentSlide(self.pptid)
 
-        def get_slide_count(self):
-            """
-            Returns total number of slides
-            """
-            return self.process.GetSlideCount(self.pptid)
+    def get_slide_count(self):
+        """
+        Returns total number of slides
+        """
+        return self.controller.process.GetSlideCount(self.pptid)
 
-        def goto_slide(self, slideno):
-            """
-            Moves to a specific slide in the presentation
-            """
-            self.process.GotoSlide(self.pptid, slideno)
+    def goto_slide(self, slideno):
+        """
+        Moves to a specific slide in the presentation
+        """
+        self.controller.process.GotoSlide(self.pptid, slideno)
 
-        def next_step(self):
-            """
-            Triggers the next effect of slide on the running presentation
-            """
-            self.process.NextStep(self.pptid)
+    def next_step(self):
+        """
+        Triggers the next effect of slide on the running presentation
+        """
+        self.controller.process.NextStep(self.pptid)
 
-        def previous_step(self):
-            """
-            Triggers the previous slide on the running presentation
-            """
-            self.process.PrevStep(self.pptid)
+    def previous_step(self):
+        """
+        Triggers the previous slide on the running presentation
+        """
+        self.controller.process.PrevStep(self.pptid)
 
-        def get_slide_preview_file(self, slide_no):
-            """
-            Returns an image path containing a preview for the requested slide
+    def get_slide_preview_file(self, slide_no):
+        """
+        Returns an image path containing a preview for the requested slide
 
-            ``slide_no``
-                The slide an image is required for, starting at 1
-            """
-            path = os.path.join(self.thumbnailpath,
-                self.controller.thumbnailprefix + unicode(slide_no) + u'.bmp')
-            if os.path.isfile(path):
-                return path
-            else:
-                return None
+        ``slide_no``
+            The slide an image is required for, starting at 1
+        """
+        path = os.path.join(self.thumbnailpath,
+            self.controller.thumbnailprefix + unicode(slide_no) + u'.bmp')
+        if os.path.isfile(path):
+            return path
+        else:
+            return None

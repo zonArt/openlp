@@ -180,7 +180,7 @@ class ImpressDocument(PresentationDocument):
         log.debug(u'Load Presentation OpenOffice')
         #print "s.dsk1 ", self.desktop
         if os.name == u'nt':
-            desktop = self.get_com_desktop()
+            desktop = self.controller.get_com_desktop()
             if desktop is None:
                 self.controller.start_process()
                 desktop = self.controller.get_com_desktop()
@@ -226,7 +226,7 @@ class ImpressDocument(PresentationDocument):
         for idx in range(pages.getCount()):
             page = pages.getByIndex(idx)
             doc.getCurrentController().setCurrentPage(page)
-            path = u'%s/%s%s.png'% (thumbdir, self.thumbnailprefix,
+            path = u'%s/%s%s.png'% (thumbdir, self.controller.thumbnailprefix,
                     unicode(idx + 1))
             try:
                 doc.storeToURL(path , props)
@@ -236,7 +236,7 @@ class ImpressDocument(PresentationDocument):
     def create_property(self, name, value):
         log.debug(u'create property OpenOffice')
         if os.name == u'nt':
-            prop = self.manager.Bridge_GetStruct(u'com.sun.star.beans.PropertyValue')
+            prop = self.controller.manager.Bridge_GetStruct(u'com.sun.star.beans.PropertyValue')
         else:
             prop = PropertyValue()
         prop.Name = name

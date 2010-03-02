@@ -94,7 +94,7 @@ class Controller(object):
         if not self.isLive:
             return
         self.activate()
-        self.doc.goto_slide(self.controller.get_slide_count())
+        self.doc.goto_slide(self.doc.get_slide_count())
         self.doc.poll_slidenumber(self.isLive)
 
     def next(self):
