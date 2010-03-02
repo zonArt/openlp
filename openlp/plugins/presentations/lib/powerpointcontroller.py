@@ -31,7 +31,7 @@ if os.name == u'nt':
     import _winreg
     import win32ui
 
-from presentationcontroller import PresentationController
+from presentationcontroller import PresentationController,  PresentationDocument
 
 # PPT API documentation:
 # http://msdn.microsoft.com/en-us/library/aa269321(office.10).aspx
@@ -52,9 +52,8 @@ class PowerpointController(PresentationController):
         """
         log.debug(u'Initialising')
         PresentationController.__init__(self, plugin, u'Powerpoint')
-        self.supports= [u'.ppt', u'.pps']
+        self.supports = [u'.ppt', u'.pps']
         self.process = None
-        self.presentation = None
 
     def check_available(self):
         """
@@ -97,6 +96,8 @@ class PowerpointController(PresentationController):
             """
             Called at system exit to clean up any running presentations
             """
+            for doc in self.docs:
+                doc.close_presentation()
             if self.process is None:
                 return
             try:
@@ -105,7 +106,21 @@ class PowerpointController(PresentationController):
                 pass
             self.process = None
 
-        def load_presentation(self, presentation):
+        def add_doc(self, name):
+            log.debug(u'Add Doc PowerPoint')
+            doc = PowerPointDocument(self,  name)
+            self.docs.append(doc)
+            return doc
+
+    class PowerPointDocument(PresentationDocument):
+
+        def __init__(self,  controller,  presentation):
+            log.debug(u'Init Presentation PowerPoint')
+            self.presentation = None
+            self.controller = controller
+            self.store_filename(presentation)
+
+        def load_presentation(self):
             """
             Called when a presentation is added to the SlideController.
             It builds the environment, starts communcations with the background
@@ -117,17 +132,16 @@ class PowerpointController(PresentationController):
             The file name of the presentations to run.
             """
             log.debug(u'LoadPresentation')
-            self.store_filename(presentation)
             try:
-                if not self.process.Visible:
-                    self.start_process()
+                if not self.controller.process.Visible:
+                    self.controller.start_process()
             except:
-                self.start_process()
+                self.controller.start_process()
             try:
-                self.process.Presentations.Open(presentation, False, False, True)
+                self.controller.process.Presentations.Open(self.filepath, False, False, True)
             except:
                 return
-            self.presentation = self.process.Presentations(self.process.Presentations.Count)
+            self.presentation = self.controller.process.Presentations(self.process.Presentations.Count)
             self.create_thumbnails()
 
         def create_thumbnails(self):
@@ -157,6 +171,7 @@ class PowerpointController(PresentationController):
             except:
                 pass
             self.presentation = None
+            self.controller.remove_doc(self)
 
         def is_active(self):
             """
@@ -252,7 +267,7 @@ class PowerpointController(PresentationController):
             The slide an image is required for, starting at 1
             """
             path = os.path.join(self.thumbnailpath,
-                self.thumbnailprefix + unicode(slide_no) + u'.png')
+                self.controller.thumbnailprefix + unicode(slide_no) + u'.png')
             if os.path.isfile(path):
                 return path
             else:

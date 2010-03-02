@@ -30,7 +30,7 @@ if os.name == u'nt':
     from ctypes import *
     from ctypes.wintypes import RECT
 
-from presentationcontroller import PresentationController
+from presentationcontroller import PresentationController,  PresentationDocument
 
 class PptviewController(PresentationController):
     """
@@ -49,8 +49,7 @@ class PptviewController(PresentationController):
         log.debug(u'Initialising')
         self.process = None
         PresentationController.__init__(self, plugin, u'Powerpoint Viewer')
-        self.supports= [u'.ppt', u'.pps']
-        self.pptid = None
+        self.supports = [u'.ppt', u'.pps']
 
     def check_available(self):
         """
@@ -90,29 +89,42 @@ class PptviewController(PresentationController):
             Called at system exit to clean up any running presentations
             """
             log.debug(u'Kill')
-            self.close_presentation()
+            for doc in self.docs:
+                doc.close_presentation()
 
-        def load_presentation(self, presentation):
+        def add_doc(self, name):
+            log.debug(u'Add Doc PPTView')
+            doc = PptviewDocument(self,  name)
+            self.docs.append(doc)
+            return doc
+
+    class PptViewDocument(PresentationDocument):
+
+        def __init__(self,  controller,  presentation):
+            log.debug(u'Init Presentation PowerPoint')
+            self.presentation = None
+            self.pptid = None
+            self.controller = controller
+            self.store_filename(presentation)
+
+        def load_presentation(self):
             """
             Called when a presentation is added to the SlideController.
             It builds the environment, starts communcations with the background
-            OpenOffice task started earlier.  If OpenOffice is not present is is
-            started.  Once the environment is available the presentation is loaded
-            and started.
+            PptView task started earlier.  
 
             ``presentation``
             The file name of the presentations to run.
             """
             log.debug(u'LoadPresentation')
-            self.store_filename(presentation)
-            if self.pptid >= 0:
-                self.close_presentation()
+            #if self.pptid >= 0:
+            #    self.close_presentation()
             rendermanager = self.plugin.render_manager
             rect = rendermanager.screens.current[u'size']
             rect = RECT(rect.x(), rect.y(), rect.right(), rect.bottom())
-            filepath = str(presentation.replace(u'/', u'\\'));
+            filepath = str(self.filepath.replace(u'/', u'\\'));
             try:
-                self.pptid = self.process.OpenPPT(filepath, None, rect,
+                self.pptid = self.controller.process.OpenPPT(filepath, None, rect,
                     str(os.path.join(self.thumbnailpath, self.thumbnailprefix)))
                 self.stop_presentation()
             except:
@@ -126,6 +138,7 @@ class PptviewController(PresentationController):
             """
             self.process.ClosePPT(self.pptid)
             self.pptid = -1
+            self.controller.remove_doc(self)
 
         def is_loaded(self):
             """
@@ -205,7 +218,7 @@ class PptviewController(PresentationController):
                 The slide an image is required for, starting at 1
             """
             path = os.path.join(self.thumbnailpath,
-                self.thumbnailprefix + unicode(slide_no) + u'.bmp')
+                self.controller.thumbnailprefix + unicode(slide_no) + u'.bmp')
             if os.path.isfile(path):
                 return path
             else:

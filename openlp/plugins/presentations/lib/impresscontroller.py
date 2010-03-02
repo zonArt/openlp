@@ -44,7 +44,7 @@ else:
 
 from PyQt4 import QtCore
 
-from presentationcontroller import PresentationController
+from presentationcontroller import PresentationController,  PresentationDocument
 
 class ImpressController(PresentationController):
     """
@@ -62,11 +62,8 @@ class ImpressController(PresentationController):
         """
         log.debug(u'Initialising')
         PresentationController.__init__(self, plugin, u'Impress')
-        self.supports= [u'.odp', u'.ppt', u'.pps', u'.pptx', u'.ppsx']
+        self.supports = [u'.odp', u'.ppt', u'.pps', u'.pptx', u'.ppsx']
         self.process = None
-        self.document = None
-        self.presentation = None
-        self.controller = None
         self.desktop = None
 
     def check_available(self):
@@ -98,97 +95,6 @@ class ImpressController(PresentationController):
             self.process = QtCore.QProcess()
             self.process.startDetached(cmd)
             self.process.waitForStarted()
-
-    def kill(self):
-        """
-        Called at system exit to clean up any running presentations
-        """
-        log.debug(u'Kill OpenOffice')
-        self.close_presentation()
-        if os.name != u'nt':
-            desktop = self.get_uno_desktop()
-            try:
-                desktop.terminate()
-            except:
-                pass
-
-    def load_presentation(self, presentation):
-        """
-        Called when a presentation is added to the SlideController.
-        It builds the environment, starts communcations with the background
-        OpenOffice task started earlier.  If OpenOffice is not present is is
-        started.  Once the environment is available the presentation is loaded
-        and started.
-
-        ``presentation``
-        The file name of the presentatios to the run.
-        """
-        log.debug(u'Load Presentation OpenOffice')
-        self.store_filename(presentation)
-        #print "s.dsk1 ", self.desktop
-        if os.name == u'nt':
-            desktop = self.get_com_desktop()
-            if desktop is None:
-                self.start_process()
-                desktop = self.get_com_desktop()
-            url = u'file:///' + presentation.replace(u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
-        else:
-            desktop = self.get_uno_desktop()
-            url = uno.systemPathToFileUrl(presentation)
-        if desktop is None:
-            return
-        self.desktop = desktop
-        #print "s.dsk2 ", self.desktop
-        properties = []
-        properties.append(self.create_property(u'Minimized', True))
-        properties = tuple(properties)
-        try:
-            self.document = desktop.loadComponentFromURL(url, u'_blank',
-                0, properties)
-        except:
-            log.exception(u'Failed to load presentation')
-            return
-        self.presentation = self.document.getPresentation()
-        self.presentation.Display = self.plugin.render_manager.screens.current_display + 1
-        self.controller = None
-        self.create_thumbnails()
-
-    def create_thumbnails(self):
-        """
-        Create thumbnail images for presentation
-        """
-        log.debug(u'create thumbnails OpenOffice')
-        if self.check_thumbnails():
-            return
-        if os.name == u'nt':
-            thumbdir = u'file:///' + self.thumbnailpath.replace(
-                u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
-        else:
-            thumbdir = uno.systemPathToFileUrl(self.thumbnailpath)
-        props = []
-        props.append(self.create_property(u'FilterName', u'impress_png_Export'))
-        props = tuple(props)
-        doc = self.document
-        pages = doc.getDrawPages()
-        for idx in range(pages.getCount()):
-            page = pages.getByIndex(idx)
-            doc.getCurrentController().setCurrentPage(page)
-            path = u'%s/%s%s.png'% (thumbdir, self.thumbnailprefix,
-                    unicode(idx + 1))
-            try:
-                doc.storeToURL(path , props)
-            except:
-                log.exception(u'%s\nUnable to store preview' % path)
-
-    def create_property(self, name, value):
-        log.debug(u'create property OpenOffice')
-        if os.name == u'nt':
-            prop = self.manager.Bridge_GetStruct(u'com.sun.star.beans.PropertyValue')
-        else:
-            prop = PropertyValue()
-        prop.Name = name
-        prop.Value = value
-        return prop
 
     def get_uno_desktop(self):
         log.debug(u'get UNO Desktop Openoffice')
@@ -230,6 +136,113 @@ class ImpressController(PresentationController):
             log.exception(u'Failed to get COM service manager')
             return None
 
+    def kill(self):
+        """
+        Called at system exit to clean up any running presentations
+        """
+        log.debug(u'Kill OpenOffice')
+        for doc in self.docs:
+            doc.close_presentation()
+        if os.name != u'nt':
+            desktop = self.get_uno_desktop()
+            try:
+                desktop.terminate()
+            except:
+                pass
+
+    def add_doc(self, name):
+        log.debug(u'Add Doc OpenOffice')
+        doc = ImpressDocument(self,  name)
+        self.docs.append(doc)
+        return doc
+
+class ImpressDocument(PresentationDocument):
+
+    def __init__(self,  controller,  presentation):
+        log.debug(u'Init Presentation OpenOffice')
+        self.controller = controller
+        self.document = None
+        self.presentation = None
+        self.control = None
+        self.store_filename(presentation)
+        
+    def load_presentation(self):
+        """
+        Called when a presentation is added to the SlideController.
+        It builds the environment, starts communcations with the background
+        OpenOffice task started earlier.  If OpenOffice is not present is is
+        started.  Once the environment is available the presentation is loaded
+        and started.
+
+        ``presentation``
+        The file name of the presentatios to the run.
+        """
+        log.debug(u'Load Presentation OpenOffice')
+        #print "s.dsk1 ", self.desktop
+        if os.name == u'nt':
+            desktop = self.get_com_desktop()
+            if desktop is None:
+                self.controller.start_process()
+                desktop = self.controller.get_com_desktop()
+            url = u'file:///' + self.filepath.replace(u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
+        else:
+            desktop = self.controller.get_uno_desktop()
+            url = uno.systemPathToFileUrl(self.filepath)
+        if desktop is None:
+            return
+        self.desktop = desktop
+        #print "s.dsk2 ", self.desktop
+        properties = []
+        properties.append(self.create_property(u'Minimized', True))
+        properties = tuple(properties)
+        try:
+            self.document = desktop.loadComponentFromURL(url, u'_blank',
+                0, properties)
+        except:
+            log.exception(u'Failed to load presentation')
+            return
+        self.presentation = self.document.getPresentation()
+        self.presentation.Display = self.controller.plugin.render_manager.screens.current_display + 1
+        self.control = None
+        self.create_thumbnails()
+
+    def create_thumbnails(self):
+        """
+        Create thumbnail images for presentation
+        """
+        log.debug(u'create thumbnails OpenOffice')
+        if self.check_thumbnails():
+            return
+        if os.name == u'nt':
+            thumbdir = u'file:///' + self.thumbnailpath.replace(
+                u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
+        else:
+            thumbdir = uno.systemPathToFileUrl(self.thumbnailpath)
+        props = []
+        props.append(self.create_property(u'FilterName', u'impress_png_Export'))
+        props = tuple(props)
+        doc = self.document
+        pages = doc.getDrawPages()
+        for idx in range(pages.getCount()):
+            page = pages.getByIndex(idx)
+            doc.getCurrentController().setCurrentPage(page)
+            path = u'%s/%s%s.png'% (thumbdir, self.thumbnailprefix,
+                    unicode(idx + 1))
+            try:
+                doc.storeToURL(path , props)
+            except:
+                log.exception(u'%s\nUnable to store preview' % path)
+
+    def create_property(self, name, value):
+        log.debug(u'create property OpenOffice')
+        if os.name == u'nt':
+            prop = self.manager.Bridge_GetStruct(u'com.sun.star.beans.PropertyValue')
+        else:
+            prop = PropertyValue()
+        prop.Name = name
+        prop.Value = value
+        return prop
+
     def close_presentation(self):
         """
         Close presentation and clean up objects
@@ -247,6 +260,7 @@ class ImpressController(PresentationController):
                     #We tried!
                     pass
             self.document = None
+        self.controller.remove_doc(self)
 
     def is_loaded(self):
         log.debug(u'is loaded OpenOffice')
@@ -268,57 +282,57 @@ class ImpressController(PresentationController):
         if not self.is_loaded():
             #print "False "
             return False
-        #print "self.con ", self.controller
-        if self.controller is None:
+        #print "self.con ", self.control
+        if self.control is None:
             return False
         return True
 
     def unblank_screen(self):
         log.debug(u'unblank screen OpenOffice')
-        return self.controller.resume()
+        return self.control.resume()
 
     def blank_screen(self):
         log.debug(u'blank screen OpenOffice')
-        self.controller.blankScreen(0)
+        self.control.blankScreen(0)
 
     def stop_presentation(self):
         log.debug(u'stop presentation OpenOffice')
-        self.controller.deactivate()
+        self.control.deactivate()
 
     def start_presentation(self):
         log.debug(u'start presentation OpenOffice')
-        if self.controller is None or not self.controller.isRunning():
+        if self.control is None or not self.control.isRunning():
             self.presentation.start()
             # start() returns before the getCurrentComponent is ready. Try for 5 seconds
             i = 1
             while self.desktop.getCurrentComponent() is None and i < 50:
                 time.sleep(0.1)
                 i = i + 1
-            self.controller = self.desktop.getCurrentComponent().Presentation.getController()
+            self.control = self.desktop.getCurrentComponent().Presentation.getController()
         else:
-            self.controller.activate()
+            self.control.activate()
             self.goto_slide(1)
 
     def get_slide_number(self):
-        return self.controller.getCurrentSlideIndex() + 1
+        return self.control.getCurrentSlideIndex() + 1
 
     def get_slide_count(self):
         return self.document.getDrawPages().getCount()
 
     def goto_slide(self, slideno):
-        self.controller.gotoSlideIndex(slideno-1)
+        self.control.gotoSlideIndex(slideno-1)
 
     def next_step(self):
        """
        Triggers the next effect of slide on the running presentation
        """
-       self.controller.gotoNextEffect()
+       self.control.gotoNextEffect()
 
     def previous_step(self):
         """
         Triggers the previous slide on the running presentation
         """
-        self.controller.gotoPreviousSlide()
+        self.control.gotoPreviousSlide()
 
     def get_slide_preview_file(self, slide_no):
         """
@@ -328,7 +342,7 @@ class ImpressController(PresentationController):
         The slide an image is required for, starting at 1
         """
         path = os.path.join(self.thumbnailpath,
-            self.thumbnailprefix + unicode(slide_no) + u'.png')
+            self.controller.thumbnailprefix + unicode(slide_no) + u'.png')
         if os.path.isfile(path):
             return path
         else:
