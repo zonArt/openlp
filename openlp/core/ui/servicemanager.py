@@ -177,7 +177,7 @@ class ServiceManager(QtGui.QWidget):
         self.ServiceManagerList.setContextMenuPolicy(
             QtCore.Qt.ActionsContextMenu)
         self.editAction = contextMenuAction(
-            self.ServiceManagerList, ':/system/system_live.png',
+            self.ServiceManagerList, ':/services/service_edit.png',
             self.trUtf8('&Edit Item'), self.remoteEdit)
         self.noteAction = contextMenuAction(
             self.ServiceManagerList, ':/system/system_live.png',
