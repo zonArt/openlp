@@ -158,7 +158,10 @@ def main():
     parser.add_option("-s", "--style", dest="style",
                       help="Set the Qt4 style (passed directly to Qt4).")
     # Set up logging
-    filename = os.path.join(get_config_directory(), u'openlp.log')
+    log_path = get_config_directory()
+    if not os.path.exists(log_path):
+        os.makedirs(log_path)
+    filename = os.path.join(log_path, u'openlp.log')
     logfile = FileHandler(filename, u'w')
     logfile.setFormatter(logging.Formatter(
         u'%(asctime)s %(name)-15s %(levelname)-8s %(message)s'))
