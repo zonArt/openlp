@@ -182,7 +182,7 @@ class SlideController(QtGui.QWidget):
                 self.trUtf8('Move to live'), self.onGoLive)
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
-                u'Edit Song', u':/songs/song_edit.png',
+                u'Edit Song', u':/services/service_edit.png',
                 self.trUtf8('Edit and re-preview Song'), self.onEditSong)
         if isLive:
             self.Toolbar.addToolbarSeparator(u'Loop Separator')

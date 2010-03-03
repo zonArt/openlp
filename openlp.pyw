@@ -32,12 +32,12 @@ from logging import FileHandler
 from optparse import OptionParser
 from PyQt4 import QtCore, QtGui
 
+log = logging.getLogger()
+
 from openlp.core.lib import Receiver, str_to_bool
 from openlp.core.resources import qInitResources
 from openlp.core.ui import MainWindow, SplashScreen, ScreenList
 from openlp.core.utils import get_config_directory, ConfigHelper
-
-log = logging.getLogger()
 
 application_stylesheet = u"""
 QMainWindow::separator

@@ -31,9 +31,11 @@ import zipfile
 log = logging.getLogger(__name__)
 
 from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
     contextMenuAction, contextMenuSeparator, contextMenu, Receiver, \
     contextMenu, str_to_bool
+from openlp.core.ui import ServiceItemNoteForm
 
 class ServiceManagerList(QtGui.QTreeWidget):
 
@@ -56,6 +58,11 @@ class ServiceManagerList(QtGui.QTreeWidget):
             else:
                 pos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
             serviceItem = self.parent.serviceItems[pos - 1]
+            self.parent.menuServiceItem = serviceItem
+            if serviceItem[u'service_item'].is_text():
+                self.parent.themeMenu.menuAction().setVisible(True)
+            else:
+                self.parent.themeMenu.menuAction().setVisible(False)
             if serviceItem[u'service_item'].edit_enabled:
                 self.parent.editAction.setVisible(True)
             else:
@@ -128,6 +135,7 @@ class ServiceManager(QtGui.QWidget):
         #Indicates if remoteTriggering is active.  If it is the next addServiceItem call
         #will replace the currently selected one.
         self.remoteEditTriggered = False
+        self.serviceItemNoteForm = ServiceItemNoteForm()
         #start with the layout
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
@@ -180,8 +188,8 @@ class ServiceManager(QtGui.QWidget):
             self.ServiceManagerList, ':/services/service_edit.png',
             self.trUtf8('&Edit Item'), self.remoteEdit)
         self.noteAction = contextMenuAction(
-            self.ServiceManagerList, ':/system/system_live.png',
-            self.trUtf8('&Notes'), self.remoteEdit)
+            self.ServiceManagerList, ':/services/service_notes.png',
+            self.trUtf8('&Notes'), self.onServiceItemNoteForm)
         self.ServiceManagerList.addAction(self.editAction)
         self.ServiceManagerList.addAction(self.noteAction)
         self.ServiceManagerList.addAction(contextMenuSeparator(
@@ -199,10 +207,10 @@ class ServiceManager(QtGui.QWidget):
             self.trUtf8('&Remove from Service'), self.onDeleteFromService))
         self.ServiceManagerList.addAction(contextMenuSeparator(
             self.ServiceManagerList))
-        self.ThemeMenu = contextMenu(
+        self.themeMenu = contextMenu(
             self.ServiceManagerList, '',
             self.trUtf8('&Change Item Theme'))
-        self.ServiceManagerList.addAction(self.ThemeMenu.menuAction())
+        self.ServiceManagerList.addAction(self.themeMenu.menuAction())
         self.Layout.addWidget(self.ServiceManagerList)
         # Add the bottom toolbar
         self.OrderToolbar = OpenLPToolbar(self)
@@ -227,8 +235,6 @@ class ServiceManager(QtGui.QWidget):
         QtCore.QObject.connect(self.ThemeComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onThemeComboBoxSelected)
         QtCore.QObject.connect(self.ServiceManagerList,
-           QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.makeLive)
-        QtCore.QObject.connect(self.ServiceManagerList,
            QtCore.SIGNAL(u'itemCollapsed(QTreeWidgetItem*)'), self.collapsed)
         QtCore.QObject.connect(self.ServiceManagerList,
            QtCore.SIGNAL(u'itemExpanded(QTreeWidgetItem*)'), self.expanded)
@@ -248,6 +254,14 @@ class ServiceManager(QtGui.QWidget):
 
     def onPresentationTypes(self, presentation_types):
         self.presentation_types = presentation_types
+
+    def onServiceItemNoteForm(self):
+        item, count = self.findServiceItem()
+        self.serviceItemNoteForm.textEdit.setPlainText(
+            self.menuServiceItem[u'service_item'].notes)
+        if self.serviceItemNoteForm.exec_():
+            self.menuServiceItem[u'service_item'].notes = \
+                self.serviceItemNoteForm.textEdit.toPlainText()
 
     def nextItem(self):
         """
@@ -734,7 +748,7 @@ class ServiceManager(QtGui.QWidget):
             A list of current themes to be displayed
         """
         self.ThemeComboBox.clear()
-        self.ThemeMenu.clear()
+        self.themeMenu.clear()
         self.ThemeComboBox.addItem(u'')
         for theme in theme_list:
             self.ThemeComboBox.addItem(theme)
@@ -742,7 +756,7 @@ class ServiceManager(QtGui.QWidget):
                 self.ServiceManagerList,
                 None,
                 theme , self.onThemeChangeAction)
-            self.ThemeMenu.addAction(action)
+            self.themeMenu.addAction(action)
         id = self.ThemeComboBox.findText(self.service_theme,
             QtCore.Qt.MatchExactly)
         # Not Found
