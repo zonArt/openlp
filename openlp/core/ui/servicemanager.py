@@ -256,7 +256,6 @@ class ServiceManager(QtGui.QWidget):
         self.presentation_types = presentation_types
 
     def onServiceItemNoteForm(self):
-        item, count = self.findServiceItem()
         self.serviceItemNoteForm.textEdit.setPlainText(
             self.menuServiceItem[u'service_item'].notes)
         if self.serviceItemNoteForm.exec_():
