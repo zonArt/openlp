@@ -161,7 +161,7 @@ def main():
     filename = os.path.join(get_config_directory(), u'openlp.log')
     logfile = FileHandler(filename, u'w')
     logfile.setFormatter(logging.Formatter(
-        u'%(asctime)s %(name)-15s %(levelname)-8s %(message)s'))
+        u'%(asctime)s %(name)-20s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
     logging.addLevelName(15, u'Timer')
     # Parse command line options and deal with them.
