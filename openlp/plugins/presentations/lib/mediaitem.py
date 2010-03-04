@@ -135,7 +135,9 @@ class PresentationMediaItem(MediaManagerItem):
                 self.ConfigSection, self.getFileList())
             filepath = unicode((item.data(QtCore.Qt.UserRole)).toString())
             for cidx in self.controllers:
-                self.controllers[cidx].presentation_deleted(filepath)
+                doc = self.controllers[cidx].add_doc(filepath)
+                doc.presentation_deleted()
+                self.controllers[cidx].remove_doc(doc)
 
     def generateSlideData(self, service_item):
         items = self.ListView.selectedIndexes()
@@ -148,13 +150,14 @@ class PresentationMediaItem(MediaManagerItem):
             bitem = self.ListView.item(item.row())
             filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
             (path, name) = os.path.split(filename)
-            controller.store_filename(filename)
-            if controller.get_slide_preview_file(1) is None:
-                controller.load_presentation(filename)
+            doc = controller.add_doc(filename)
+            if doc.get_slide_preview_file(1) is None:
+                doc.load_presentation()
             i = 1
-            img = controller.get_slide_preview_file(i)
+            img = doc.get_slide_preview_file(i)
             while img:
                 service_item.add_from_command(path, name, img)
                 i = i + 1
-                img = controller.get_slide_preview_file(i)
+                img = doc.get_slide_preview_file(i)
+        controller.remove_doc(doc)
         return True
