@@ -60,7 +60,6 @@ QToolBar
   padding: 0;
 }
 """
-log = logging.getLogger(__name__)
 
 class OpenLP(QtGui.QApplication):
     """

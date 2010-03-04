@@ -42,37 +42,47 @@ class ServiceManagerList(QtGui.QTreeWidget):
     def __init__(self, parent=None, name=None):
         QtGui.QTreeWidget.__init__(self,parent)
         self.parent = parent
+        self.setExpandsOnDoubleClick(False)
+
+    def mousePressEvent(self, event):
+        #Implement item selection
+        item = self.itemAt(event.pos())
+        if item is not None:
+            self.setCurrentItem(item)
+            parentitem = item.parent()
+            if event.button() == QtCore.Qt.RightButton:
+                self.parent.noteAction.setVisible(False)
+                if parentitem is None:
+                    pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
+                    self.parent.noteAction.setVisible(True)
+                else:
+                    pos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
+                serviceItem = self.parent.serviceItems[pos - 1]
+                if serviceItem[u'service_item'].is_text():
+                    self.parent.themeMenu.menuAction().setVisible(True)
+                else:
+                    self.parent.themeMenu.menuAction().setVisible(False)
+                if serviceItem[u'service_item'].edit_enabled:
+                    self.parent.editAction.setVisible(True)
+                else:
+                    self.parent.editAction.setVisible(False)
+                event.accept()
+            elif event.button() == QtCore.Qt.LeftButton:
+                if parentitem is None:
+                    if self.isItemExpanded(item):
+                        self.collapseItem(item)
+                    else:
+                        self.expandItem(item)
+            else:
+                event.accept()
+        else:
+            event.accept()
 
     def mouseDoubleClickEvent(self, event):
         self.parent.makeLive()
-        event.ignore()
-
-    def mousePressEvent(self, event):
-        if event.button() == QtCore.Qt.RightButton:
-            item = self.itemAt(event.pos())
-            parentitem = item.parent()
-            self.parent.noteAction.setVisible(False)
-            if parentitem is None:
-                pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-                self.parent.noteAction.setVisible(True)
-            else:
-                pos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
-            serviceItem = self.parent.serviceItems[pos - 1]
-            self.parent.menuServiceItem = serviceItem
-            if serviceItem[u'service_item'].is_text():
-                self.parent.themeMenu.menuAction().setVisible(True)
-            else:
-                self.parent.themeMenu.menuAction().setVisible(False)
-            if serviceItem[u'service_item'].edit_enabled:
-                self.parent.editAction.setVisible(True)
-            else:
-                self.parent.editAction.setVisible(False)
-            event.accept()
-        else:
-            event.ignore()
+        event.accept()
 
     def keyPressEvent(self, event):
-        print event.isAutoRepeat()
         if type(event) == QtGui.QKeyEvent:
             #here accept the event and do something
             if event.key() == QtCore.Qt.Key_Enter:
@@ -256,10 +266,11 @@ class ServiceManager(QtGui.QWidget):
         self.presentation_types = presentation_types
 
     def onServiceItemNoteForm(self):
+        item, count = self.findServiceItem()
         self.serviceItemNoteForm.textEdit.setPlainText(
-            self.menuServiceItem[u'service_item'].notes)
+            self.serviceItems[item][u'service_item'].notes)
         if self.serviceItemNoteForm.exec_():
-            self.menuServiceItem[u'service_item'].notes = \
+            self.serviceItems[item][u'service_item'].notes = \
                 self.serviceItemNoteForm.textEdit.toPlainText()
 
     def nextItem(self):
@@ -650,7 +661,6 @@ class ServiceManager(QtGui.QWidget):
         """
         Send the current item to the Live slide controller
         """
-        print "ml"
         item, count = self.findServiceItem()
         self.parent.LiveController.addServiceManagerItem(
             self.serviceItems[item][u'service_item'], count)
