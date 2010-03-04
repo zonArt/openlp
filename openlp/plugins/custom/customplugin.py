@@ -72,3 +72,8 @@ class CustomPlugin(Plugin):
             'songs are.  This plugin provides greater freedom over the '
             'songs plugin.<br>')
         return about_text
+
+    def can_delete_theme(self, theme):
+        if len(self.custommanager.get_customs_for_theme(theme)) == 0:
+            return True
+        return False

@@ -254,3 +254,9 @@ class Plugin(QtCore.QObject):
             self.mediadock.insert_dock(self.media_item, self.icon, self.weight)
         if self.settings_tab:
             self.settings.insertTab(self.settings_tab, self.weight)
+
+    def can_delete_theme(self, theme):
+        """
+        Called to ask the plugin if a theme can be deleted
+        """
+        return True

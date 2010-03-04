@@ -105,3 +105,6 @@ class CustomManager():
                 return False
         else:
             return True
+
+    def get_customs_for_theme(self, theme):
+        return self.session.query(CustomSlide).filter(CustomSlide.theme_name == theme).all()

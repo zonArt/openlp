@@ -237,3 +237,6 @@ class SongManager():
             self.session.rollback()
             log.exception(u'Could not delete book from song database')
             return False
+
+    def get_songs_for_theme(self, theme):
+        return self.session.query(Song).filter(Song.theme_name == theme).all()
