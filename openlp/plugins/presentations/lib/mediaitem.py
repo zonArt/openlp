@@ -107,7 +107,7 @@ class PresentationMediaItem(MediaManagerItem):
             #load the drop down selection
             if self.controllers[item].enabled:
                 self.DisplayTypeComboBox.addItem(item)
-        if self.DisplayTypeComboBox.count > 1:
+        if self.DisplayTypeComboBox.count() > 1:
             self.DisplayTypeComboBox.insertItem(0, u'Automatic')
             self.DisplayTypeComboBox.setCurrentIndex(0)
 
