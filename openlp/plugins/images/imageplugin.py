@@ -28,9 +28,9 @@ import logging
 from openlp.core.lib import Plugin, build_icon, PluginStatus
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
+log = logging.getLogger(__name__)
+
 class ImagePlugin(Plugin):
-    global log
-    log = logging.getLogger(u'ImagePlugin')
     log.info(u'Image Plugin loaded')
 
     def __init__(self, plugin_helpers):

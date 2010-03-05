@@ -27,6 +27,8 @@ import logging
 
 from PyQt4 import QtCore
 
+log = logging.getLogger(__name__)
+
 class EventReceiver(QtCore.QObject):
     """
     Class to allow events to be passed from different parts of the
@@ -108,9 +110,6 @@ class EventReceiver(QtCore.QObject):
         Informs all components of the presentation types supported.
 
     """
-    global log
-    log = logging.getLogger(u'EventReceiver')
-
     def __init__(self):
         """
         Initialise the event receiver, calling the parent constructor.

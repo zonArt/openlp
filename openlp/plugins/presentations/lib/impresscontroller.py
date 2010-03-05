@@ -46,15 +46,15 @@ from PyQt4 import QtCore
 
 from presentationcontroller import PresentationController,  PresentationDocument
 
+log = logging.getLogger(__name__)
+
 class ImpressController(PresentationController):
     """
     Class to control interactions with Impress presentations.
     It creates the runtime environment, loads and closes the presentation as
     well as triggering the correct activities based on the users input
     """
-    global log
-    log = logging.getLogger(u'ImpressController')
-    log.info(u'loaded')
+    log.info(u'ImpressController loaded')
 
     def __init__(self, plugin):
         """

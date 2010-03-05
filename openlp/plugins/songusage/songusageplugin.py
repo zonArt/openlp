@@ -33,9 +33,9 @@ from openlp.plugins.songusage.lib import SongUsageManager
 from openlp.plugins.songusage.forms import SongUsageDetailForm, SongUsageDeleteForm
 from openlp.plugins.songusage.lib.models import SongUsageItem
 
+log = logging.getLogger(__name__)
+
 class SongUsagePlugin(Plugin):
-    global log
-    log = logging.getLogger(u'SongUsagePlugin')
     log.info(u'SongUsage Plugin loaded')
 
     def __init__(self, plugin_helpers):

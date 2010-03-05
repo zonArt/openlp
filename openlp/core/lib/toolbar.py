@@ -29,6 +29,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon
 
+log = logging.getLogger(__name__)
+
 class OpenLPToolbar(QtGui.QToolBar):
     """
     Lots of toolbars around the place, so it makes sense to have a common way
@@ -43,8 +45,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         self.icons = {}
         self.setIconSize(QtCore.QSize(20, 20))
         self.actions = {}
-        self.log = logging.getLogger(u'OpenLPToolbar')
-        self.log.debug(u'Init done')
+        log.debug(u'Init done')
 
     def addToolbarButton(self, title, icon, tooltip=None, slot=None,
         checkable=False):
@@ -119,7 +120,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         if self.icons[title]:
             return self.icons[title]
         else:
-            self.log.error(u'getIconFromTitle - no icon for %s' % title)
+            log.error(u'getIconFromTitle - no icon for %s' % title)
             return QtGui.QIcon()
 
     def makeWidgetsInvisible(self, widgets):

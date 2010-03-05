@@ -30,6 +30,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, SongXMLParser, BaseListWithDnD,\
 Receiver, str_to_bool
 
+log = logging.getLogger(__name__)
+
 class CustomListView(BaseListWithDnD):
     def __init__(self, parent=None):
         self.PluginName = u'Custom'
@@ -39,8 +41,6 @@ class CustomMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Custom Slides.
     """
-    global log
-    log = logging.getLogger(u'CustomMediaItem')
     log.info(u'Custom Media Item loaded')
 
     def __init__(self, parent, icon, title):

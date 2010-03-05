@@ -33,6 +33,8 @@ from PyQt4.phonon import Phonon
 from openlp.core.lib import OpenLPToolbar, Receiver, str_to_bool, \
 PluginConfig, resize_image
 
+log = logging.getLogger(__name__)
+
 class SlideList(QtGui.QTableWidget):
     """
     Customised version of QTableWidget which can respond to keyboard
@@ -74,9 +76,6 @@ class SlideController(QtGui.QWidget):
     SlideController is the slide controller widget. This widget is what the
     user uses to control the displaying of verses/slides/etc on the screen.
     """
-    global log
-    log = logging.getLogger(u'SlideController')
-
     def __init__(self, parent, settingsmanager, isLive=False):
         """
         Set up the Slide Controller.
@@ -183,7 +182,7 @@ class SlideController(QtGui.QWidget):
                 self.trUtf8('Move to live'), self.onGoLive)
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
-                u'Edit Song', u':/songs/song_edit.png',
+                u'Edit Song', u':/services/service_edit.png',
                 self.trUtf8('Edit and re-preview Song'), self.onEditSong)
         if isLive:
             self.Toolbar.addToolbarSeparator(u'Loop Separator')
@@ -194,6 +193,8 @@ class SlideController(QtGui.QWidget):
                 u'Stop Loop', u':/media/media_stop.png',
                 self.trUtf8('Stop continuous loop'), self.onStopLoop)
             self.DelaySpinBox = QtGui.QSpinBox()
+            self.DelaySpinBox.setMinimum(1)
+            self.DelaySpinBox.setMaximum(180)
             self.Toolbar.addToolbarWidget(
                 u'Image SpinBox', self.DelaySpinBox)
             self.DelaySpinBox.setSuffix(self.trUtf8('s'))
@@ -280,6 +281,8 @@ class SlideController(QtGui.QWidget):
         else:
             self.Toolbar.makeWidgetsInvisible(self.song_edit_list)
         self.Mediabar.setVisible(False)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'stop_display_loop'), self.onStopLoop)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_first' % prefix), self.onSlideSelectedFirst)
         QtCore.QObject.connect(Receiver.get_receiver(),

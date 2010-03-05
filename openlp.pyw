@@ -32,13 +32,13 @@ from logging import FileHandler
 from optparse import OptionParser
 from PyQt4 import QtCore, QtGui
 
+log = logging.getLogger()
+
 import openlp
 from openlp.core.lib import Receiver, str_to_bool
 from openlp.core.resources import qInitResources
 from openlp.core.ui import MainWindow, SplashScreen, ScreenList
 from openlp.core.utils import get_config_directory, ConfigHelper
-
-log = logging.getLogger()
 
 application_stylesheet = u"""
 QMainWindow::separator
@@ -66,7 +66,6 @@ class OpenLP(QtGui.QApplication):
     The core application class. This class inherits from Qt's QApplication
     class in order to provide the core of the application.
     """
-    global log
     log.info(u'OpenLP Application Loaded')
 
     def notify(self, obj, evt):
@@ -165,7 +164,7 @@ def main():
     filename = os.path.join(log_path, u'openlp.log')
     logfile = FileHandler(filename, u'w')
     logfile.setFormatter(logging.Formatter(
-        u'%(asctime)s %(name)-15s %(levelname)-8s %(message)s'))
+        u'%(asctime)s %(name)-20s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
     logging.addLevelName(15, u'Timer')
     # Parse command line options and deal with them.

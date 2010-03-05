@@ -30,10 +30,9 @@ from PyQt4 import QtNetwork, QtCore
 from openlp.core.lib import Plugin, Receiver
 from openlp.plugins.remotes.lib import RemoteTab
 
-class RemotesPlugin(Plugin):
+log = logging.getLogger(__name__)
 
-    global log
-    log = logging.getLogger(u'RemotesPlugin')
+class RemotesPlugin(Plugin):
     log.info(u'Remote Plugin loaded')
 
     def __init__(self, plugin_helpers):

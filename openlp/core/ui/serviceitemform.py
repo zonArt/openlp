@@ -14,7 +14,7 @@
 # Software Foundation; version 2 of the License.                              #
 #                                                                             #
 # This program is distributed in the hope that it will be useful, but WITHOUT #
-# ANY WARRANTY; without even the implied warranty of MERCHANdockILITY or       #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
 # FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
 # more details.                                                               #
 #                                                                             #
@@ -23,39 +23,22 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import logging
+from PyQt4 import QtCore, QtGui
+from serviceitemdialog import Ui_ServiceNoteEdit
 
-log = logging.getLogger(__name__)
-
-class MediaDockManager(object):
-
-    def __init__(self, media_dock):
-        self.media_dock = media_dock
-
-    def add_dock(self, media_item, icon, weight):
-        log.info(u'Adding %s dock' % media_item.title)
-        self.media_dock.addItem(media_item, icon, media_item.title)
-
-    def insert_dock(self, media_item, icon, weight):
+class ServiceItemNoteForm(QtGui.QDialog, Ui_ServiceNoteEdit):
+    """
+    This is the form that is used to edit the verses of the song.
+    """
+    def __init__(self, parent=None):
         """
-        This should insert a dock item at a given location
-        This does not work as it gives a Segmentation error.
-        For now add at end of stack if not present
+        Constructor
         """
-        log.debug(u'Inserting %s dock' % media_item.title)
-        match = False
-        for dock_index in range(0, self.media_dock.count()):
-            if self.media_dock.widget(dock_index).ConfigSection == media_item.title.lower():
-                match = True
-                break
-        if not match:
-            self.media_dock.addItem(media_item, icon, media_item.title)
-
-
-    def remove_dock(self, name):
-        log.debug(u'remove %s dock' % name)
-        for dock_index in range(0, self.media_dock.count()):
-            if self.media_dock.widget(dock_index):
-                if self.media_dock.widget(dock_index).ConfigSection == name:
-                    self.media_dock.widget(dock_index).hide()
-                    self.media_dock.removeItem(dock_index)
+        QtGui.QDialog.__init__(self, parent)
+        self.setupUi(self)
+        QtCore.QObject.connect(self.buttonBox,
+                               QtCore.SIGNAL(u'accepted()'),
+                               self.accept)
+        QtCore.QObject.connect(self.buttonBox,
+                               QtCore.SIGNAL(u'rejected()'),
+                               self.reject)

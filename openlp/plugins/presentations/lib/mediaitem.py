@@ -31,6 +31,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD
 from openlp.plugins.presentations.lib import MessageListener
 
+log = logging.getLogger(__name__)
+
 # We have to explicitly create separate classes for each plugin
 # in order for DnD to the Service manager to work correctly.
 class PresentationListView(BaseListWithDnD):
@@ -43,8 +45,6 @@ class PresentationMediaItem(MediaManagerItem):
     This is the Presentation media manager item for Presentation Items.
     It can present files using Openoffice
     """
-    global log
-    log = logging.getLogger(u'PresentationsMediaItem')
     log.info(u'Presentations Media Item loaded')
 
     def __init__(self, parent, icon, title, controllers):

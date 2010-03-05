@@ -49,6 +49,7 @@ class ImageTab(SettingsTab):
         self.TimeoutLabel.setObjectName(u'TimeoutLabel')
         self.TimeoutLayout.addWidget(self.TimeoutLabel)
         self.TimeoutSpinBox = QtGui.QSpinBox(self.ImageSettingsGroupBox)
+        self.TimeoutSpinBox.setMinimum(1)
         self.TimeoutSpinBox.setMaximum(180)
         self.TimeoutSpinBox.setObjectName(u'TimeoutSpinBox')
         self.TimeoutLayout.addWidget(self.TimeoutSpinBox)

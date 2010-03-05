@@ -29,13 +29,13 @@ import logging
 
 from openlp.core.lib import Plugin, PluginStatus
 
+log = logging.getLogger(__name__)
+
 class PluginManager(object):
     """
     This is the Plugin manager, which loads all the plugins,
     and executes all the hooks, as and when necessary.
     """
-    global log
-    log = logging.getLogger(u'PluginMgr')
     log.info(u'Plugin manager loaded')
 
     def __init__(self, dir):
