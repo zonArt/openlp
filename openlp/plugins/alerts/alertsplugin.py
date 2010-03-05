@@ -31,9 +31,9 @@ from openlp.core.lib import Plugin, build_icon, PluginStatus
 from openlp.plugins.alerts.lib import AlertsManager, DBManager
 from openlp.plugins.alerts.forms import AlertsTab, AlertForm, AlertEditForm
 
+log = logging.getLogger(__name__)
+
 class alertsPlugin(Plugin):
-    global log
-    log = logging.getLogger(u'AlertsPlugin')
     log.info(u'Alerts Plugin loaded')
 
     def __init__(self, plugin_helpers):

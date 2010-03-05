@@ -29,9 +29,9 @@ import logging
 
 from songusagedetaildialog import Ui_SongUsageDetailDialog
 
+log = logging.getLogger(__name__)
+
 class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
-    global log
-    log = logging.getLogger(u'SongUsageDetailForm')
     log.info(u'SongUsage Detail Form loaded')
     """
     Class documentation goes here.

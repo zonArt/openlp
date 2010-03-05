@@ -36,6 +36,8 @@ from openlp.core.lib import RenderManager, PluginConfig, build_icon, \
     OpenLPDockWidget, SettingsManager, PluginManager, Receiver, str_to_bool
 from openlp.core.utils import check_latest_version
 
+log = logging.getLogger(__name__)
+
 media_manager_style = """
   QToolBox::tab {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
@@ -420,8 +422,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     """
     The main window.
     """
-    global log
-    log = logging.getLogger(u'MainWindow')
     log.info(u'MainWindow loaded')
 
     def __init__(self, screens, applicationVersion):

@@ -28,13 +28,13 @@ import logging
 from PyQt4 import QtGui, QtCore
 from openlp.core.lib import resize_image
 
+log = logging.getLogger(__name__)
+
 class Renderer(object):
     """
     Genarates a pixmap image of a array of text. The Text is formatted to
     make sure it fits on the screen and if not extra frames are generated.
     """
-    global log
-    log = logging.getLogger(u'Renderer')
     log.info(u'Renderer Loaded')
 
     def __init__(self):

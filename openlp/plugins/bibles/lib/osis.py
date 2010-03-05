@@ -35,12 +35,12 @@ from PyQt4 import QtCore
 from openlp.core.lib import Receiver
 from db import BibleDB
 
+log = logging.getLogger(__name__)
+
 class OSISBible(BibleDB):
     """
     OSIS Bible format importer class.
     """
-    global log
-    log = logging.getLogger(u'BibleOSISImpl')
     log.info(u'BibleOSISImpl loaded')
 
     def __init__(self, parent, **kwargs):

@@ -25,6 +25,7 @@
 
 # OOo API documentation:
 # http://api.openoffice.org/docs/common/ref/com/sun/star/presentation/XSlideShowController.html
+# http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/ProUNO/Basic/Getting_Information_about_UNO_Objects#Inspecting_interfaces_during_debugging
 # http://docs.go-oo.org/sd/html/classsd_1_1SlideShow.html
 # http://www.oooforum.org/forum/viewtopic.phtml?t=5252
 # http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/Working_with_Presentations
@@ -46,15 +47,15 @@ from PyQt4 import QtCore
 
 from presentationcontroller import PresentationController,  PresentationDocument
 
+log = logging.getLogger(__name__)
+
 class ImpressController(PresentationController):
     """
     Class to control interactions with Impress presentations.
     It creates the runtime environment, loads and closes the presentation as
     well as triggering the correct activities based on the users input
     """
-    global log
-    log = logging.getLogger(u'ImpressController')
-    log.info(u'loaded')
+    log.info(u'ImpressController loaded')
 
     def __init__(self, plugin):
         """
@@ -62,7 +63,8 @@ class ImpressController(PresentationController):
         """
         log.debug(u'Initialising')
         PresentationController.__init__(self, plugin, u'Impress')
-        self.supports = [u'.odp', u'.ppt', u'.pps', u'.pptx', u'.ppsx']
+        self.supports = [u'.odp']
+        self.alsosupports = [u'.ppt', u'.pps', u'.pptx', u'.ppsx']
         self.process = None
         self.desktop = None
 
@@ -145,10 +147,17 @@ class ImpressController(PresentationController):
             doc.close_presentation()
         if os.name != u'nt':
             desktop = self.get_uno_desktop()
+        else:
+            desktop = self.get_com_desktop()
+        docs = desktop.getComponents()
+        if docs.hasElements():
+            log.debug(u'OpenOffice not terminated')
+        else:
             try:
                 desktop.terminate()
+                log.debug(u'OpenOffice killed')
             except:
-                pass
+                log.exception(u'Failed to terminate OpenOffice')
 
     def add_doc(self, name):
         log.debug(u'Add Doc OpenOffice')

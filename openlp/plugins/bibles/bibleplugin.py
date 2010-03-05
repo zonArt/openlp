@@ -30,9 +30,9 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Plugin, build_icon, PluginStatus
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 
+log = logging.getLogger(__name__)
+
 class BiblePlugin(Plugin):
-    global log
-    log = logging.getLogger(u'BiblePlugin')
     log.info(u'Bible Plugin loaded')
 
     def __init__(self, plugin_helpers):
@@ -92,3 +92,9 @@ class BiblePlugin(Plugin):
             'plugin allows bible verses from different sources to be '
             'displayed on the screen during the service.')
         return about_text
+
+
+    def can_delete_theme(self, theme):
+        if self.settings_tab.bible_theme == theme:
+            return False
+        return True

@@ -30,12 +30,12 @@ from editcustomdialog import Ui_customEditDialog
 from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver
 from openlp.plugins.custom.lib.models import CustomSlide
 
+log = logging.getLogger(__name__)
+
 class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
     """
     Class documentation goes here.
     """
-    global log
-    log = logging.getLogger(u'EditCustomForm')
     log.info(u'Custom Editor loaded')
     def __init__(self, custommanager, parent = None):
         """

@@ -33,6 +33,8 @@ if os.name == u'nt':
 
 from presentationcontroller import PresentationController,  PresentationDocument
 
+log = logging.getLogger(__name__)
+
 # PPT API documentation:
 # http://msdn.microsoft.com/en-us/library/aa269321(office.10).aspx
 
@@ -42,9 +44,7 @@ class PowerpointController(PresentationController):
     It creates the runtime Environment , Loads the and Closes the Presentation
     As well as triggering the correct activities based on the users input
     """
-    global log
-    log = logging.getLogger(u'PowerpointController')
-    log.info(u'loaded')
+    log.info(u'PowerpointController loaded')
 
     def __init__(self, plugin):
         """
@@ -52,7 +52,7 @@ class PowerpointController(PresentationController):
         """
         log.debug(u'Initialising')
         PresentationController.__init__(self, plugin, u'Powerpoint')
-        self.supports = [u'.ppt', u'.pps']
+        self.supports = [u'.ppt', u'.pps', u'.pptx', u'.ppsx']
         self.process = None
 
     def check_available(self):
@@ -99,6 +99,8 @@ class PowerpointController(PresentationController):
             for doc in self.docs:
                 doc.close_presentation()
             if self.process is None:
+                return
+            if self.process.Presentations.Count > 0:
                 return
             try:
                 self.process.Quit()

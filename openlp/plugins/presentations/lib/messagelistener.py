@@ -30,13 +30,13 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
 
+log = logging.getLogger(__name__)
+
 class Controller(object):
     """
     This is the Presentation listener who acts on events from the slide
     controller and passes the messages on the the correct presentation handlers
     """
-    global log
-    log = logging.getLogger(u'Controller')
     log.info(u'Controller loaded')
 
     def __init__(self, live):
@@ -152,12 +152,11 @@ class MessageListener(object):
     This is the Presentation listener who acts on events from the slide
     controller and passes the messages on the the correct presentation handlers
     """
-    global log
-    log = logging.getLogger(u'MessageListener')
     log.info(u'Message Listener loaded')
 
-    def __init__(self, controllers):
-        self.controllers = controllers
+    def __init__(self, mediaitem):
+        self.controllers = mediaitem.controllers
+        self.mediaitem = mediaitem
         self.previewHandler = Controller(False)
         self.liveHandler = Controller(True)
         # messages are sent from core.ui.slidecontroller
@@ -190,6 +189,12 @@ class MessageListener(object):
         """
         log.debug(u'Startup called with message %s' % message)
         self.handler, file, isLive = self.decodeMessage(message)
+        filetype = os.path.splitext(file)[1][1:]
+        if self.handler==u'Automatic':
+            self.handler = self.mediaitem.findControllerByType(file)
+            if not self.handler:
+                return
+
         if isLive:
             self.liveHandler.addHandler(self.controllers[self.handler], file)
         else:

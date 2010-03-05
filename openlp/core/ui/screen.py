@@ -24,12 +24,12 @@
 ###############################################################################
 import logging
 
+log = logging.getLogger(__name__)
+
 class ScreenList(object):
     """
     Wrapper to handle the parameters of the display screen
     """
-    global log
-    log = logging.getLogger(u'Screen')
     log.info(u'Screen loaded')
 
     def __init__(self):

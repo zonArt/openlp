@@ -32,15 +32,15 @@ if os.name == u'nt':
 
 from presentationcontroller import PresentationController,  PresentationDocument
 
+log = logging.getLogger(__name__)
+
 class PptviewController(PresentationController):
     """
     Class to control interactions with PowerPOint Viewer Presentations
     It creates the runtime Environment , Loads the and Closes the Presentation
     As well as triggering the correct activities based on the users input
     """
-    global log
-    log = logging.getLogger(u'PptviewController')
-    log.info(u'loaded')
+    log.info(u'PPTViewController loaded')
 
     def __init__(self, plugin):
         """
@@ -49,7 +49,7 @@ class PptviewController(PresentationController):
         log.debug(u'Initialising')
         self.process = None
         PresentationController.__init__(self, plugin, u'Powerpoint Viewer')
-        self.supports = [u'.ppt', u'.pps']
+        self.supports = [u'.ppt', u'.pps', u'.pptx', u'.ppsx']
 
     def check_available(self):
         """

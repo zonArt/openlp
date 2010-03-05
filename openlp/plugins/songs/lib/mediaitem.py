@@ -31,6 +31,8 @@ from openlp.core.lib import MediaManagerItem, SongXMLParser, \
     BaseListWithDnD, Receiver,  str_to_bool
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm
 
+log = logging.getLogger(__name__)
+
 class SongListView(BaseListWithDnD):
     def __init__(self, parent=None):
         self.PluginName = u'Songs'
@@ -40,8 +42,6 @@ class SongMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Songs.
     """
-    global log
-    log = logging.getLogger(u'SongMediaItem')
     log.info(u'Song Media Item loaded')
 
     def __init__(self, parent, icon, title):

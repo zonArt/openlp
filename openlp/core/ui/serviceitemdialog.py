@@ -14,7 +14,7 @@
 # Software Foundation; version 2 of the License.                              #
 #                                                                             #
 # This program is distributed in the hope that it will be useful, but WITHOUT #
-# ANY WARRANTY; without even the implied warranty of MERCHANdockILITY or       #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
 # FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
 # more details.                                                               #
 #                                                                             #
@@ -23,39 +23,27 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import logging
+from PyQt4 import QtCore, QtGui
 
-log = logging.getLogger(__name__)
+class Ui_ServiceNoteEdit(object):
+    def setupUi(self, ServiceNoteEdit):
+        ServiceNoteEdit.setObjectName(u'ServiceNoteEdit')
+        ServiceNoteEdit.resize(400, 243)
+        self.widget = QtGui.QWidget(ServiceNoteEdit)
+        self.widget.setGeometry(QtCore.QRect(20, 10, 361, 223))
+        self.widget.setObjectName(u'widget')
+        self.verticalLayout = QtGui.QVBoxLayout(self.widget)
+        self.verticalLayout.setObjectName(u'verticalLayout')
+        self.textEdit = QtGui.QTextEdit(self.widget)
+        self.textEdit.setObjectName(u'textEdit')
+        self.verticalLayout.addWidget(self.textEdit)
+        self.buttonBox = QtGui.QDialogButtonBox(self.widget)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Save)
+        self.buttonBox.setObjectName(u'buttonBox')
+        self.verticalLayout.addWidget(self.buttonBox)
 
-class MediaDockManager(object):
+        self.retranslateUi(ServiceNoteEdit)
+        QtCore.QMetaObject.connectSlotsByName(ServiceNoteEdit)
 
-    def __init__(self, media_dock):
-        self.media_dock = media_dock
-
-    def add_dock(self, media_item, icon, weight):
-        log.info(u'Adding %s dock' % media_item.title)
-        self.media_dock.addItem(media_item, icon, media_item.title)
-
-    def insert_dock(self, media_item, icon, weight):
-        """
-        This should insert a dock item at a given location
-        This does not work as it gives a Segmentation error.
-        For now add at end of stack if not present
-        """
-        log.debug(u'Inserting %s dock' % media_item.title)
-        match = False
-        for dock_index in range(0, self.media_dock.count()):
-            if self.media_dock.widget(dock_index).ConfigSection == media_item.title.lower():
-                match = True
-                break
-        if not match:
-            self.media_dock.addItem(media_item, icon, media_item.title)
-
-
-    def remove_dock(self, name):
-        log.debug(u'remove %s dock' % name)
-        for dock_index in range(0, self.media_dock.count()):
-            if self.media_dock.widget(dock_index):
-                if self.media_dock.widget(dock_index).ConfigSection == name:
-                    self.media_dock.widget(dock_index).hide()
-                    self.media_dock.removeItem(dock_index)
+    def retranslateUi(self, ServiceNoteEdit):
+        ServiceNoteEdit.setWindowTitle(self.trUtf8('Service Item Notes'))

@@ -31,6 +31,8 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
 
+log = logging.getLogger(__name__)
+
 class PresentationController(object):
     """
     Base class for presentation controllers to inherit from
@@ -72,8 +74,6 @@ class PresentationController(object):
         Deletes presentation specific files, e.g. thumbnails
 
     """
-    global log
-    log = logging.getLogger(u'PresentationController')
     log.info(u'PresentationController loaded')
 
     def __init__(self, plugin=None, name=u'PresentationController'):
@@ -93,6 +93,7 @@ class PresentationController(object):
             Name of the application, to appear in the application
         """
         self.supports = []
+        self.alsosupports = []
         self.docs = []
         self.plugin = plugin
         self.name = name

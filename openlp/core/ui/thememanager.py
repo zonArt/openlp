@@ -38,13 +38,12 @@ from openlp.core.lib import PluginConfig, OpenLPToolbar, contextMenuAction, \
     contextMenuSeparator
 from openlp.core.utils import ConfigHelper
 
+log = logging.getLogger(__name__)
+
 class ThemeManager(QtGui.QWidget):
     """
     Manages the orders of Theme.
     """
-    global log
-    log = logging.getLogger(u'ThemeManager')
-
     def __init__(self, parent):
         QtGui.QWidget.__init__(self, parent)
         self.parent = parent
@@ -181,6 +180,19 @@ class ThemeManager(QtGui.QWidget):
                     self.trUtf8('You are unable to delete the default theme!'),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             else:
+                for plugin in self.parent.plugin_manager.plugins:
+                    if not plugin.can_delete_theme(theme):
+                        QtGui.QMessageBox.critical(
+                            self, self.trUtf8('Error'),
+                            self.trUtf8('theme %s is use in %s plugin' % (theme, plugin.name)),
+                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                        return
+                if unicode(self.parent.ServiceManagerContents.ThemeComboBox.currentText()) == theme:
+                    QtGui.QMessageBox.critical(
+                        self, self.trUtf8('Error'),
+                        self.trUtf8('theme %s is use Service Manager' % theme),
+                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                    return
                 self.themelist.remove(theme)
                 th = theme + u'.png'
                 row = self.ThemeListWidget.row(item)

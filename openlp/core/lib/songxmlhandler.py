@@ -27,6 +27,8 @@ import logging
 from xml.dom.minidom import Document
 from xml.etree.ElementTree import ElementTree, XML, dump
 
+log = logging.getLogger(__name__)
+
 class SongXMLBuilder(object):
     """
     This class builds the XML used to describe songs.
@@ -42,8 +44,6 @@ class SongXMLBuilder(object):
           </lyrics>
         </song>
     """
-    global log
-    log = logging.getLogger(u'SongXMLBuilder')
     log.info(u'SongXMLBuilder Loaded')
 
     def __init__(self):
@@ -123,8 +123,6 @@ class SongXMLParser(object):
           </lyrics>
         </song>
     """
-    global log
-    log = logging.getLogger(u'SongXMLParser')
     log.info(u'SongXMLParser Loaded')
 
     def __init__(self, xml):
