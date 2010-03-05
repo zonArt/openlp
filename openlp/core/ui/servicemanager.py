@@ -590,9 +590,14 @@ class ServiceManager(QtGui.QWidget):
         self.parent.RenderManager.themedata = None
         if len(self.serviceItems) > 0:
             tempServiceItems = self.serviceItems
-            self.onNewService()
+            self.ServiceManagerList.clear()
+            self.serviceItems = []
+            self.isNew = True
             for item in tempServiceItems:
                 self.addServiceItem(item[u'service_item'], True)
+            #Set to False as items may have changed rendering
+            #does not impact the saved song so True may aslo be valid
+            self.parent.serviceChanged(False, self.serviceName)
 
     def addServiceItem(self, item, rebuild=False):
         """
