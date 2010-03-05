@@ -34,7 +34,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
     contextMenuAction, contextMenuSeparator, contextMenu, Receiver, \
-    contextMenu, str_to_bool
+    contextMenu, str_to_bool, build_icon
 from openlp.core.ui import ServiceItemNoteForm
 
 class ServiceManagerList(QtGui.QTreeWidget):
@@ -43,44 +43,6 @@ class ServiceManagerList(QtGui.QTreeWidget):
         QtGui.QTreeWidget.__init__(self,parent)
         self.parent = parent
         self.setExpandsOnDoubleClick(False)
-
-    def mousePressEvent(self, event):
-        #Implement item selection
-        item = self.itemAt(event.pos())
-        if item is not None:
-            self.setCurrentItem(item)
-            parentitem = item.parent()
-            if event.button() == QtCore.Qt.RightButton:
-                self.parent.noteAction.setVisible(False)
-                if parentitem is None:
-                    pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-                    self.parent.noteAction.setVisible(True)
-                else:
-                    pos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
-                serviceItem = self.parent.serviceItems[pos - 1]
-                if serviceItem[u'service_item'].is_text():
-                    self.parent.themeMenu.menuAction().setVisible(True)
-                else:
-                    self.parent.themeMenu.menuAction().setVisible(False)
-                if serviceItem[u'service_item'].edit_enabled:
-                    self.parent.editAction.setVisible(True)
-                else:
-                    self.parent.editAction.setVisible(False)
-                event.accept()
-            elif event.button() == QtCore.Qt.LeftButton:
-                if parentitem is None:
-                    if self.isItemExpanded(item):
-                        self.collapseItem(item)
-                    else:
-                        self.expandItem(item)
-            else:
-                event.accept()
-        else:
-            event.accept()
-
-    def mouseDoubleClickEvent(self, event):
-        self.parent.makeLive()
-        event.accept()
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
@@ -186,41 +148,13 @@ class ServiceManager(QtGui.QWidget):
         self.ServiceManagerList.setAlternatingRowColors(True)
         self.ServiceManagerList.setHeaderHidden(True)
         self.ServiceManagerList.setExpandsOnDoubleClick(False)
+        self.ServiceManagerList.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ServiceManagerList.customContextMenuRequested.connect(self.contextMenu)
         self.ServiceManagerList.setObjectName(u'ServiceManagerList')
         # enable drop
         self.ServiceManagerList.__class__.dragEnterEvent = self.dragEnterEvent
         self.ServiceManagerList.__class__.dragMoveEvent = self.dragEnterEvent
         self.ServiceManagerList.__class__.dropEvent = self.dropEvent
-        # Add a context menu to the service manager list
-        self.ServiceManagerList.setContextMenuPolicy(
-            QtCore.Qt.ActionsContextMenu)
-        self.editAction = contextMenuAction(
-            self.ServiceManagerList, ':/services/service_edit.png',
-            self.trUtf8('&Edit Item'), self.remoteEdit)
-        self.noteAction = contextMenuAction(
-            self.ServiceManagerList, ':/services/service_notes.png',
-            self.trUtf8('&Notes'), self.onServiceItemNoteForm)
-        self.ServiceManagerList.addAction(self.editAction)
-        self.ServiceManagerList.addAction(self.noteAction)
-        self.ServiceManagerList.addAction(contextMenuSeparator(
-            self.ServiceManagerList))
-        self.ServiceManagerList.addAction(contextMenuAction(
-            self.ServiceManagerList, ':/system/system_preview.png',
-            self.trUtf8('&Preview Verse'), self.makePreview))
-        self.ServiceManagerList.addAction(contextMenuAction(
-            self.ServiceManagerList, ':/system/system_live.png',
-            self.trUtf8('&Show Live'), self.makeLive))
-        self.ServiceManagerList.addAction(contextMenuSeparator(
-            self.ServiceManagerList))
-        self.ServiceManagerList.addAction(contextMenuAction(
-            self.ServiceManagerList, ':/services/service_delete',
-            self.trUtf8('&Remove from Service'), self.onDeleteFromService))
-        self.ServiceManagerList.addAction(contextMenuSeparator(
-            self.ServiceManagerList))
-        self.themeMenu = contextMenu(
-            self.ServiceManagerList, '',
-            self.trUtf8('&Change Item Theme'))
-        self.ServiceManagerList.addAction(self.themeMenu.menuAction())
         self.Layout.addWidget(self.ServiceManagerList)
         # Add the bottom toolbar
         self.OrderToolbar = OpenLPToolbar(self)
@@ -245,6 +179,8 @@ class ServiceManager(QtGui.QWidget):
         QtCore.QObject.connect(self.ThemeComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onThemeComboBoxSelected)
         QtCore.QObject.connect(self.ServiceManagerList,
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.makeLive)
+        QtCore.QObject.connect(self.ServiceManagerList,
            QtCore.SIGNAL(u'itemCollapsed(QTreeWidgetItem*)'), self.collapsed)
         QtCore.QObject.connect(self.ServiceManagerList,
            QtCore.SIGNAL(u'itemExpanded(QTreeWidgetItem*)'), self.expanded)
@@ -261,6 +197,48 @@ class ServiceManager(QtGui.QWidget):
         self.servicePath = self.config.get_data_path()
         self.service_theme = unicode(
             self.config.get_config(u'service theme', u''))
+        #build the context menu
+        self.menu = QtGui.QMenu()
+        self.editAction = self.menu.addAction(self.trUtf8('&Edit Item'))
+        self.editAction.setIcon(build_icon(':/services/service_edit.png'))
+        self.notesAction = self.menu.addAction(self.trUtf8('&Notes'))
+        self.notesAction.setIcon(build_icon(':/services/service_notes.png'))
+        self.sep1 = self.menu.addAction(u'')
+        self.sep1.setSeparator(True)
+        self.previewAction = self.menu.addAction(self.trUtf8('&Preview Verse'))
+        self.previewAction.setIcon(build_icon(':/system/system_preview.png'))
+        self.liveAction = self.menu.addAction(self.trUtf8('&Live Verse'))
+        self.liveAction.setIcon(build_icon(':/system/system_live.png'))
+        self.sep2 = self.menu.addAction(u'')
+        self.sep2.setSeparator(True)
+        self.themeMenu = QtGui.QMenu(self.trUtf8('&Change Item Theme'))
+        self.menu.addMenu(self.themeMenu)
+
+    def contextMenu(self, point):
+        item = self.ServiceManagerList.itemAt(point)
+        if item.parent() is None:
+            pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
+        else:
+            pos = item.parent().data(0, QtCore.Qt.UserRole).toInt()[0]
+        serviceItem = self.serviceItems[pos - 1]
+        self.editAction.setVisible(False)
+        self.notesAction.setVisible(False)
+        if serviceItem[u'service_item'].edit_enabled:
+            self.editAction.setVisible(True)
+        if item.parent() is None:
+            self.notesAction.setVisible(True)
+        self.themeMenu.menuAction().setVisible(False)
+        if serviceItem[u'service_item'].is_text():
+            self.themeMenu.menuAction().setVisible(True)
+        action = self.menu.exec_(self.ServiceManagerList.mapToGlobal(point))
+        if action == self.editAction:
+            self.remoteEdit()
+        if action == self.notesAction:
+            self.onServiceItemNoteForm()
+        if action == self.previewAction:
+            self.makePreview()
+        if action == self.liveAction:
+            self.makeLive()
 
     def onPresentationTypes(self, presentation_types):
         self.presentation_types = presentation_types
