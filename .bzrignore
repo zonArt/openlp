@@ -12,3 +12,5 @@ documentation/build/doctrees
 *.log*
 dist
 OpenLP.egg-info
+build
+resources/innosetup/Output
