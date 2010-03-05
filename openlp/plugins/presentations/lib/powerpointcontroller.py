@@ -52,7 +52,7 @@ class PowerpointController(PresentationController):
         """
         log.debug(u'Initialising')
         PresentationController.__init__(self, plugin, u'Powerpoint')
-        self.supports = [u'.ppt', u'.pps']
+        self.supports = [u'.ppt', u'.pps', u'.pptx', u'.ppsx']
         self.process = None
 
     def check_available(self):
@@ -99,6 +99,8 @@ class PowerpointController(PresentationController):
             for doc in self.docs:
                 doc.close_presentation()
             if self.process is None:
+                return
+            if self.process.Presentations.Count > 0:
                 return
             try:
                 self.process.Quit()

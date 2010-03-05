@@ -93,6 +93,7 @@ class PresentationController(object):
             Name of the application, to appear in the application
         """
         self.supports = []
+        self.alsosupports = []
         self.docs = []
         self.plugin = plugin
         self.name = name

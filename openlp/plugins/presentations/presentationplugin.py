@@ -114,3 +114,17 @@ class PresentationPlugin(Plugin):
             'programs.  The choice of available presentation programs is '
             'available to the user in a drop down box.')
         return about_text
+
+    def find_controller_by_type(self, filename):
+        filetype = os.path.splitext(filename)[1][1:]
+        if not filetype:
+            return None
+        for controller in self.controllers:
+            if self.controllers[controller].enabled:
+                if filetype in self.controllers[controller].supports:
+                    return controller
+        for controller in self.controllers:
+            if self.controllers[controller].enabled:
+                if filetype in self.controllers[self.handler].alsosupports:
+                    return controller
+        return None
