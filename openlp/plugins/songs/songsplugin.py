@@ -32,6 +32,8 @@ from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab
 from openlp.plugins.songs.forms import OpenLPImportForm, OpenSongExportForm, \
     OpenSongImportForm, OpenLPExportForm
 
+log = logging.getLogger(__name__)
+
 class SongsPlugin(Plugin):
     """
     This is the number 1 plugin, if importance were placed on any
@@ -40,9 +42,6 @@ class SongsPlugin(Plugin):
     specified. Authors, topics and song books can be assigned to songs
     as well.
     """
-
-    global log
-    log = logging.getLogger(u'SongsPlugin')
     log.info(u'Song Plugin loaded')
 
     def __init__(self, plugin_helpers):
@@ -180,3 +179,8 @@ class SongsPlugin(Plugin):
         about_text = self.trUtf8('<b>Song Plugin</b> <br>This plugin allows '
             'Songs to be managed and displayed.<br>')
         return about_text
+
+    def can_delete_theme(self, theme):
+        if len(self.songmanager.get_songs_for_theme(theme)) == 0:
+            return True
+        return False

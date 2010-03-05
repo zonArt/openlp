@@ -30,15 +30,17 @@ import chardet
 import codecs
 import re
 
+from PyQt4 import QtCore
+
 from openlp.core.lib import Receiver
 from db import BibleDB
+
+log = logging.getLogger(__name__)
 
 class OSISBible(BibleDB):
     """
     OSIS Bible format importer class.
     """
-    global log
-    log = logging.getLogger(u'BibleOSISImpl')
     log.info(u'BibleOSISImpl loaded')
 
     def __init__(self, parent, **kwargs):
@@ -94,10 +96,11 @@ class OSISBible(BibleDB):
         Loads a Bible from file.
         """
         log.debug(u'Starting OSIS import from "%s"' % self.filename)
+        self.wizard.incrementProgressBar(u'Detecting encoding (this may take a few minutes)...')
         detect_file = None
         try:
             detect_file = open(self.filename, u'r')
-            details = chardet.detect(detect_file.read(3000))
+            details = chardet.detect(detect_file.read())
         except:
             log.exception(u'Failed to detect OSIS file encoding')
             return

@@ -34,6 +34,8 @@ from bibleimportwizard import Ui_BibleImportWizard
 from openlp.core.lib import Receiver
 from openlp.plugins.bibles.lib.manager import BibleFormat
 
+log = logging.getLogger(__name__)
+
 class DownloadLocation(object):
     Unknown = -1
     Crosswalk = 0
@@ -54,9 +56,6 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
     This is the Bible Import Wizard, which allows easy importing of Bibles
     into OpenLP from other formats like OSIS, CSV and OpenSong.
     """
-
-    global log
-    log = logging.getLogger(u'BibleImportForm')
     log.info(u'BibleImportForm loaded')
 
     def __init__(self, parent, config, manager, bibleplugin):

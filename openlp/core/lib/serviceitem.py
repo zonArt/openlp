@@ -32,6 +32,8 @@ from PyQt4 import QtGui
 
 from openlp.core.lib import build_icon, Receiver, resize_image
 
+log = logging.getLogger(__name__)
+
 class ServiceItemType(object):
     """
     Defines the type of service item
@@ -46,8 +48,6 @@ class ServiceItem(object):
     the service manager, the slide controller, and the projection screen
     compositor.
     """
-    global log
-    log = logging.getLogger(u'ServiceItem')
     log.info(u'Service Item created')
 
     def __init__(self, plugin=None):
@@ -73,6 +73,7 @@ class ServiceItem(object):
         self._display_frames = []
         self._uuid = unicode(uuid.uuid1())
         self.autoPreviewAllowed = False
+        self.notes = u''
 
     def addIcon(self, icon):
         """
@@ -202,6 +203,7 @@ class ServiceItem(object):
             u'footer':self.raw_footer,
             u'type':self.service_item_type,
             u'audit':self.audit,
+            u'notes':self.notes,
             u'preview':self.autoPreviewAllowed
         }
         service_data = []
@@ -237,6 +239,7 @@ class ServiceItem(object):
         self.raw_footer = header[u'footer']
         self.audit = header[u'audit']
         self.autoPreviewAllowed = header[u'preview']
+        self.notes = header[u'notes']
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)

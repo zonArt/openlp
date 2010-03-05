@@ -27,6 +27,8 @@ import logging
 
 from PyQt4 import QtGui
 
+log = logging.getLogger(__name__)
+
 class OpenLPDockWidget(QtGui.QDockWidget):
     """
     Custom DockWidget class to handle events
@@ -40,8 +42,7 @@ class OpenLPDockWidget(QtGui.QDockWidget):
         if name:
             self.setObjectName(name)
         self.setFloating(False)
-        self.log = logging.getLogger(u'OpenLPDockWidget')
-        self.log.debug(u'Init done')
+        log.debug(u'Init done')
 
     def closeEvent(self, event):
         self.parent.settingsmanager.setUIItemVisibility(

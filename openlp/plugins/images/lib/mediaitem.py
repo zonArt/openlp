@@ -29,6 +29,8 @@ import os
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon
 
+log = logging.getLogger(__name__)
+
 # We have to explicitly create separate classes for each plugin
 # in order for DnD to the Service manager to work correctly.
 class ImageListView(BaseListWithDnD):
@@ -40,8 +42,6 @@ class ImageMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for images.
     """
-    global log
-    log = logging.getLogger(u'ImageMediaItem')
     log.info(u'Image Media Item loaded')
 
     def __init__(self, parent, icon, title):

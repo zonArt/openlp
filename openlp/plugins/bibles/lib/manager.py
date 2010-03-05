@@ -33,6 +33,8 @@ from csvbible import CSVBible
 from db import BibleDB
 from http import HTTPBible
 
+log = logging.getLogger(__name__)
+
 class BibleMode(object):
     """
     This is basically an enumeration class which specifies the mode of a Bible.
@@ -85,8 +87,6 @@ class BibleManager(object):
     """
     The Bible manager which holds and manages all the Bibles.
     """
-    global log
-    log = logging.getLogger(u'BibleManager')
     log.info(u'Bible manager loaded')
 
     def __init__(self, parent, config):
