@@ -29,12 +29,12 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver
 
+log = logging.getLogger(__name__)
+
 class AlertsManager(QtCore.QObject):
     """
-    BiblesTab is the Bibles settings tab in the settings dialog.
+    AlertsTab is the Alerts settings tab in the settings dialog.
     """
-    global log
-    log = logging.getLogger(u'AlertManager')
     log.info(u'Alert Manager loaded')
 
     def __init__(self, parent):

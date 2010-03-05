@@ -32,6 +32,8 @@ from openlp.core.lib import MediaManagerItem, Receiver, str_to_bool, \
     BaseListWithDnD
 from openlp.plugins.bibles.forms import ImportWizardForm
 
+log = logging.getLogger(__name__)
+
 class BibleListView(BaseListWithDnD):
     """
     Drag and drop capable list for Bibles.
@@ -47,8 +49,6 @@ class BibleMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Bibles.
     """
-    global log
-    log = logging.getLogger(u'BibleMediaItem')
     log.info(u'Bible Media Item loaded')
 
     def __init__(self, parent, icon, title):

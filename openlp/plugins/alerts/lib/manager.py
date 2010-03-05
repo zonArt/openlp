@@ -27,14 +27,13 @@ import logging
 
 from openlp.plugins.alerts.lib.models import init_models, metadata, AlertItem
 
+log = logging.getLogger(__name__)
+
 class DBManager():
     """
     The Song Manager provides a central location for all database code. This
     class takes care of connecting to the database and running all the queries.
     """
-
-    global log
-    log = logging.getLogger(u'AlertsDBManager')
     log.info(u'Alerts DB loaded')
 
     def __init__(self, config):

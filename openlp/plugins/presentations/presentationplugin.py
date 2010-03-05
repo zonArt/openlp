@@ -29,9 +29,9 @@ import logging
 from openlp.core.lib import Plugin, build_icon, Receiver, PluginStatus
 from openlp.plugins.presentations.lib import *
 
-class PresentationPlugin(Plugin):
+log = logging.getLogger(__name__)
 
-    global log
+class PresentationPlugin(Plugin):
     log = logging.getLogger(u'PresentationPlugin')
 
     def __init__(self, plugin_helpers):
