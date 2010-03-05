@@ -189,8 +189,7 @@ class MessageListener(object):
         """
         log.debug(u'Startup called with message %s' % message)
         self.handler, file, isLive = self.decodeMessage(message)
-        filetype = os.path.splitext(file)[1][1:]
-        if self.handler==u'Automatic':
+        if self.handler == u'Automatic':
             self.handler = self.mediaitem.findControllerByType(file)
             if not self.handler:
                 return
