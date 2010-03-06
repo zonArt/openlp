@@ -214,7 +214,7 @@ class ImpressDocument(PresentationDocument):
         self.presentation.Display = self.controller.plugin.render_manager.screens.current_display + 1
         self.control = None
         self.create_thumbnails()
-
+        
     def create_thumbnails(self):
         """
         Create thumbnail images for presentation
@@ -356,3 +356,38 @@ class ImpressDocument(PresentationDocument):
             return path
         else:
             return None
+
+    def get_slide_text(self, slide_no):
+        """
+        Returns the text on the slide
+
+        ``slide_no``
+        The slide the text  is required for, starting at 1
+        """
+        doc = self.document
+        pages = doc.getDrawPages()
+        text = ''
+        page = pages.getByIndex(slide_no - 1)
+        for idx in range(page.getCount()):
+            shape = page.getByIndex(idx)
+            if shape.supportsService("com.sun.star.drawing.Text"):
+                text += shape.getString() + '\n'
+        return text
+        
+    def get_slide_notes(self, slide_no):
+        """
+        Returns the text on the slide
+
+        ``slide_no``
+        The slide the notes are required for, starting at 1
+        """
+        doc = self.document
+        pages = doc.getDrawPages()
+        text = ''
+        page = pages.getByIndex(slide_no - 1)
+        notes = page.getNotesPage()
+        for idx in range(notes.getCount()):
+            shape = notes.getByIndex(idx)
+            if shape.supportsService("com.sun.star.drawing.Text"):
+                text += shape.getString() + '\n'
+        return text

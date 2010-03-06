@@ -44,7 +44,7 @@ class Controller(object):
         self.doc = None
         log.info(u'%s controller loaded' % live)
 
-    def addHandler(self, controller, file):
+    def addHandler(self, controller, file,  isBlank):
         log.debug(u'Live = %s, addHandler %s' % (self.isLive, file))
         self.controller = controller
         if self.doc is not None:
@@ -53,6 +53,8 @@ class Controller(object):
         self.doc.load_presentation()
         if self.isLive:
             self.doc.start_presentation()
+            if isBlank:
+                self.blank()
             Receiver.send_message(u'live_slide_hide')
         self.doc.slidenumber = 0
 
@@ -130,6 +132,7 @@ class Controller(object):
         #self.timer.stop()
 
     def blank(self):
+        log.debug(u'Live = %s, blank' % self.isLive)        
         if not self.isLive:
             return
         if not self.doc.is_loaded():
@@ -139,6 +142,7 @@ class Controller(object):
         self.doc.blank_screen()
 
     def unblank(self):
+        log.debug(u'Live = %s, unblank' % self.isLive)        
         if not self.isLive:
             return
         self.activate()
@@ -188,14 +192,14 @@ class MessageListener(object):
         Save the handler as any new presentations start here
         """
         log.debug(u'Startup called with message %s' % message)
-        self.handler, file, isLive = self.decodeMessage(message)
-        if self.handler == u'Automatic':
+        self.handler, file, isLive, isBlank = self.decodeMessage(message)
+        if self.handler == self.mediaitem.Automatic:
             self.handler = self.mediaitem.findControllerByType(file)
             if not self.handler:
                 return
 
         if isLive:
-            self.liveHandler.addHandler(self.controllers[self.handler], file)
+            self.liveHandler.addHandler(self.controllers[self.handler], file,  isBlank)
         else:
             self.previewHandler.addHandler(self.controllers[self.handler], file)
 
@@ -263,7 +267,7 @@ class MessageListener(object):
         Message containing Presentaion handler name and file to be presented.
         """
         file = os.path.join(message[1], message[2])
-        return message[0], file, message[4]
+        return message[0], file, message[4],  message[5]
 
     def timeout(self):
         self.liveHandler.poll()

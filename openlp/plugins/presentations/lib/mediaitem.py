@@ -52,17 +52,19 @@ class PresentationMediaItem(MediaManagerItem):
         self.PluginNameShort = u'Presentation'
         self.ConfigSection = title
         self.IconPath = u'presentations/presentation'
+        self.Automatic = u''
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = PresentationListView
         MediaManagerItem.__init__(self, parent, icon, title)
         self.message_listener = MessageListener(self)
-
+    
     def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8('Presentation')
 
     def retranslateUi(self):
         self.OnNewPrompt = self.trUtf8('Select Presentation(s)')
+        self.Automatic = self.trUtf8('Automatic')
         fileType = u''
         for controller in self.controllers:
             if self.controllers[controller].enabled:
@@ -108,7 +110,7 @@ class PresentationMediaItem(MediaManagerItem):
             if self.controllers[item].enabled:
                 self.DisplayTypeComboBox.addItem(item)
         if self.DisplayTypeComboBox.count() > 1:
-            self.DisplayTypeComboBox.insertItem(0, u'Automatic')
+            self.DisplayTypeComboBox.insertItem(0, self.Automatic)
             self.DisplayTypeComboBox.setCurrentIndex(0)
 
     def loadList(self, list):
@@ -154,7 +156,7 @@ class PresentationMediaItem(MediaManagerItem):
         for item in items:
             bitem = self.ListView.item(item.row())
             filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
-            if shortname==u'Automatic':
+            if shortname == self.Automatic:
                 service_item.shortname = self.findControllerByType(filename)
                 if not service_item.shortname:
                     return False

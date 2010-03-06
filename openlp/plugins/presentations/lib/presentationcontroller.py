@@ -350,3 +350,21 @@ class PresentationDocument(object):
             prefix = u'preview'
         Receiver.send_message(u'%s_slidecontroller_change' % prefix,
             self.slidenumber - 1)
+
+    def get_slide_text(self, slide_no):
+        """
+        Returns the text on the slide
+
+        ``slide_no``
+        The slide the text  is required for, starting at 1
+        """
+        return ''
+        
+    def get_slide_notes(self, slide_no):
+        """
+        Returns the text on the slide
+
+        ``slide_no``
+        The slide the notes are required for, starting at 1
+        """
+        return ''
