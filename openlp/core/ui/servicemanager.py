@@ -430,7 +430,7 @@ class ServiceManager(QtGui.QWidget):
             serviceitem = item[u'service_item']
             treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
             if len(serviceitem.notes) > 0:
-                title = self.trUtf8(u'(N) - %s' % serviceitem.title)
+                title = u'%s - %s' % (self.trUtf8('(N)'), serviceitem.title)
             else:
                 title = serviceitem.title
             treewidgetitem.setText(0, title)
