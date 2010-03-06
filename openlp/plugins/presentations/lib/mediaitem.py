@@ -56,7 +56,7 @@ class PresentationMediaItem(MediaManagerItem):
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = PresentationListView
         MediaManagerItem.__init__(self, parent, icon, title)
-        self.message_listener = MessageListener(controllers)
+        self.message_listener = MessageListener(self)
 
     def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8('Presentation')
@@ -66,7 +66,8 @@ class PresentationMediaItem(MediaManagerItem):
         fileType = u''
         for controller in self.controllers:
             if self.controllers[controller].enabled:
-                for type in self.controllers[controller].supports:
+                types = self.controllers[controller].supports + self.controllers[controller].alsosupports
+                for type in types:
                     if fileType.find(type) == -1:
                         fileType += u'*%s ' % type
         self.OnNewFileMasks = self.trUtf8('Presentations (%s)' % fileType)
@@ -106,6 +107,9 @@ class PresentationMediaItem(MediaManagerItem):
             #load the drop down selection
             if self.controllers[item].enabled:
                 self.DisplayTypeComboBox.addItem(item)
+        if self.DisplayTypeComboBox.count() > 1:
+            self.DisplayTypeComboBox.insertItem(0, u'Automatic')
+            self.DisplayTypeComboBox.setCurrentIndex(0)
 
     def loadList(self, list):
         currlist = self.getFileList()
@@ -145,10 +149,16 @@ class PresentationMediaItem(MediaManagerItem):
             return False
         service_item.title = unicode(self.DisplayTypeComboBox.currentText())
         service_item.shortname = unicode(self.DisplayTypeComboBox.currentText())
-        controller = self.controllers[service_item.shortname]
+        shortname = service_item.shortname
+
         for item in items:
             bitem = self.ListView.item(item.row())
             filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+            if shortname==u'Automatic':
+                service_item.shortname = self.findControllerByType(filename)
+                if not service_item.shortname:
+                    return False
+            controller = self.controllers[service_item.shortname]
             (path, name) = os.path.split(filename)
             doc = controller.add_doc(filename)
             if doc.get_slide_preview_file(1) is None:
@@ -159,5 +169,19 @@ class PresentationMediaItem(MediaManagerItem):
                 service_item.add_from_command(path, name, img)
                 i = i + 1
                 img = doc.get_slide_preview_file(i)
-        controller.remove_doc(doc)
+            controller.remove_doc(doc)
         return True
+
+    def findControllerByType(self, filename):
+        filetype = os.path.splitext(filename)[1]
+        if not filetype:
+            return None
+        for controller in self.controllers:
+            if self.controllers[controller].enabled:
+                if filetype in self.controllers[controller].supports:
+                    return controller
+        for controller in self.controllers:
+            if self.controllers[controller].enabled:
+                if filetype in self.controllers[controller].alsosupports:
+                    return controller
+        return None

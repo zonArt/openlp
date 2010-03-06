@@ -154,8 +154,9 @@ class MessageListener(object):
     """
     log.info(u'Message Listener loaded')
 
-    def __init__(self, controllers):
-        self.controllers = controllers
+    def __init__(self, mediaitem):
+        self.controllers = mediaitem.controllers
+        self.mediaitem = mediaitem
         self.previewHandler = Controller(False)
         self.liveHandler = Controller(True)
         # messages are sent from core.ui.slidecontroller
@@ -188,6 +189,12 @@ class MessageListener(object):
         """
         log.debug(u'Startup called with message %s' % message)
         self.handler, file, isLive = self.decodeMessage(message)
+        filetype = os.path.splitext(file)[1][1:]
+        if self.handler==u'Automatic':
+            self.handler = self.mediaitem.findControllerByType(file)
+            if not self.handler:
+                return
+
         if isLive:
             self.liveHandler.addHandler(self.controllers[self.handler], file)
         else:
