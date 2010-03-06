@@ -42,7 +42,6 @@ class ServiceManagerList(QtGui.QTreeWidget):
     def __init__(self, parent=None, name=None):
         QtGui.QTreeWidget.__init__(self,parent)
         self.parent = parent
-        self.setExpandsOnDoubleClick(False)
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
@@ -250,6 +249,7 @@ class ServiceManager(QtGui.QWidget):
         if self.serviceItemNoteForm.exec_():
             self.serviceItems[item][u'service_item'].notes = \
                 self.serviceItemNoteForm.textEdit.toPlainText()
+            self.repaintServiceList(item, 0)
 
     def nextItem(self):
         """
@@ -429,15 +429,20 @@ class ServiceManager(QtGui.QWidget):
         for itemcount, item in enumerate(self.serviceItems):
             serviceitem = item[u'service_item']
             treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
-            treewidgetitem.setText(0,serviceitem.title)
-            treewidgetitem.setIcon(0,serviceitem.iconic_representation)
+            if len(serviceitem.notes) > 0:
+                title = u'%s - %s' % (self.trUtf8('(N)'), serviceitem.title)
+            else:
+                title = serviceitem.title
+            treewidgetitem.setText(0, title)
+            treewidgetitem.setToolTip(0, serviceitem.notes)
+            treewidgetitem.setIcon(0, serviceitem.iconic_representation)
             treewidgetitem.setData(0, QtCore.Qt.UserRole,
                 QtCore.QVariant(item[u'order']))
             treewidgetitem.setExpanded(item[u'expanded'])
             for count, frame in enumerate(serviceitem.get_frames()):
                 treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
                 text = frame[u'title']
-                treewidgetitem1.setText(0,text[:40])
+                treewidgetitem1.setText(0, text[:40])
                 treewidgetitem1.setData(0, QtCore.Qt.UserRole,
                     QtCore.QVariant(count))
                 if serviceItem == itemcount and serviceItemCount == count:
