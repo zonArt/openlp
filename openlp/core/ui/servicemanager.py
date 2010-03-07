@@ -430,12 +430,21 @@ class ServiceManager(QtGui.QWidget):
             serviceitem = item[u'service_item']
             treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
             if len(serviceitem.notes) > 0:
-                title = u'%s - %s' % (self.trUtf8('(N)'), serviceitem.title)
+                icon = QtGui.QImage(serviceitem.icon)
+                icon = icon.scaled(80, 80, QtCore.Qt.KeepAspectRatio,
+                                    QtCore.Qt.SmoothTransformation)
+
+                overlay = QtGui.QImage(':/services/service_item_notes.png')
+                overlay = overlay.scaled(80, 80, QtCore.Qt.KeepAspectRatio,
+                                          QtCore.Qt.SmoothTransformation)
+                painter = QtGui.QPainter(icon)
+                painter.drawImage(0, 0, overlay)
+                painter.end()
+                treewidgetitem.setIcon(0, build_icon(icon))
             else:
-                title = serviceitem.title
-            treewidgetitem.setText(0, title)
+                treewidgetitem.setIcon(0, serviceitem.iconic_representation)
+            treewidgetitem.setText(0, serviceitem.title)
             treewidgetitem.setToolTip(0, serviceitem.notes)
-            treewidgetitem.setIcon(0, serviceitem.iconic_representation)
             treewidgetitem.setData(0, QtCore.Qt.UserRole,
                 QtCore.QVariant(item[u'order']))
             treewidgetitem.setExpanded(item[u'expanded'])

@@ -61,7 +61,7 @@ class ImageMediaItem(MediaManagerItem):
     def retranslateUi(self):
         self.OnNewPrompt = self.trUtf8('Select Image(s)')
         self.OnNewFileMasks = \
-            self.trUtf8('Images (*.jpg *jpeg *.gif *.png *.bmp)')
+            self.trUtf8('Images (*.jpg *jpeg *.gif *.png *.bmp);; All files (*)')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
