@@ -33,13 +33,12 @@ log = logging.getLogger(__name__)
 def check_latest_version(config, current_version):
     version_string = current_version
     #set to prod in the distribution confif file.
-    environment = config.get_config(u'run environment', u'dev')
     last_test = config.get_config(u'last version test', datetime.now().date())
     this_test = unicode(datetime.now().date())
     config.set_config(u'last version test', this_test)
     if last_test != this_test:
         version_string = u''
-        req = urllib2.Request(u'http://www.openlp.org/files/%s_version.txt' % environment)
+        req = urllib2.Request(u'http://www.openlp.org/files/version.txt')
         req.add_header(u'User-Agent', u'OpenLP/%s' % current_version)
         try:
             handle = urllib2.urlopen(req, None)
