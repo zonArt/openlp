@@ -599,12 +599,12 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems = []
             self.isNew = True
             for item in tempServiceItems:
-                self.addServiceItem(item[u'service_item'], True)
+                self.addServiceItem(item[u'service_item'], False, item[u'expanded'])
             #Set to False as items may have changed rendering
             #does not impact the saved song so True may aslo be valid
             self.parent.serviceChanged(False, self.serviceName)
 
-    def addServiceItem(self, item, rebuild=False):
+    def addServiceItem(self, item, rebuild=False, expand=True):
         """
         Add a Service item to the list
 
@@ -624,12 +624,12 @@ class ServiceManager(QtGui.QWidget):
             if sitem == -1:
                 self.serviceItems.append({u'service_item': item,
                     u'order': len(self.serviceItems) + 1,
-                    u'expanded':True})
+                    u'expanded':expand})
                 self.repaintServiceList(len(self.serviceItems) + 1, 0)
             else:
                 self.serviceItems.insert(sitem + 1, {u'service_item': item,
                     u'order': len(self.serviceItems)+1,
-                    u'expanded':True})
+                    u'expanded':expand})
                 self.repaintServiceList(sitem + 1, 0)
             #if rebuilding list make sure live is fixed.
             if rebuild:
