@@ -41,7 +41,6 @@ class ServiceManagerList(QtGui.QTreeWidget):
     def __init__(self, parent=None, name=None):
         QtGui.QTreeWidget.__init__(self,parent)
         self.parent = parent
-        self.setExpandsOnDoubleClick(False)
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
@@ -249,6 +248,7 @@ class ServiceManager(QtGui.QWidget):
         if self.serviceItemNoteForm.exec_():
             self.serviceItems[item][u'service_item'].notes = \
                 self.serviceItemNoteForm.textEdit.toPlainText()
+            self.repaintServiceList(item, 0)
 
     def nextItem(self):
         """
@@ -428,15 +428,29 @@ class ServiceManager(QtGui.QWidget):
         for itemcount, item in enumerate(self.serviceItems):
             serviceitem = item[u'service_item']
             treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
-            treewidgetitem.setText(0,serviceitem.title)
-            treewidgetitem.setIcon(0,serviceitem.iconic_representation)
+            if len(serviceitem.notes) > 0:
+                icon = QtGui.QImage(serviceitem.icon)
+                icon = icon.scaled(80, 80, QtCore.Qt.KeepAspectRatio,
+                                    QtCore.Qt.SmoothTransformation)
+
+                overlay = QtGui.QImage(':/services/service_item_notes.png')
+                overlay = overlay.scaled(80, 80, QtCore.Qt.KeepAspectRatio,
+                                          QtCore.Qt.SmoothTransformation)
+                painter = QtGui.QPainter(icon)
+                painter.drawImage(0, 0, overlay)
+                painter.end()
+                treewidgetitem.setIcon(0, build_icon(icon))
+            else:
+                treewidgetitem.setIcon(0, serviceitem.iconic_representation)
+            treewidgetitem.setText(0, serviceitem.title)
+            treewidgetitem.setToolTip(0, serviceitem.notes)
             treewidgetitem.setData(0, QtCore.Qt.UserRole,
                 QtCore.QVariant(item[u'order']))
             treewidgetitem.setExpanded(item[u'expanded'])
             for count, frame in enumerate(serviceitem.get_frames()):
                 treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
                 text = frame[u'title']
-                treewidgetitem1.setText(0,text[:40])
+                treewidgetitem1.setText(0, text[:40])
                 treewidgetitem1.setData(0, QtCore.Qt.UserRole,
                     QtCore.QVariant(count))
                 if serviceItem == itemcount and serviceItemCount == count:
@@ -593,12 +607,12 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems = []
             self.isNew = True
             for item in tempServiceItems:
-                self.addServiceItem(item[u'service_item'], True)
+                self.addServiceItem(item[u'service_item'], False, item[u'expanded'])
             #Set to False as items may have changed rendering
             #does not impact the saved song so True may aslo be valid
             self.parent.serviceChanged(False, self.serviceName)
 
-    def addServiceItem(self, item, rebuild=False):
+    def addServiceItem(self, item, rebuild=False, expand=True):
         """
         Add a Service item to the list
 
@@ -618,12 +632,12 @@ class ServiceManager(QtGui.QWidget):
             if sitem == -1:
                 self.serviceItems.append({u'service_item': item,
                     u'order': len(self.serviceItems) + 1,
-                    u'expanded':True})
+                    u'expanded':expand})
                 self.repaintServiceList(len(self.serviceItems) + 1, 0)
             else:
                 self.serviceItems.insert(sitem + 1, {u'service_item': item,
                     u'order': len(self.serviceItems)+1,
-                    u'expanded':True})
+                    u'expanded':expand})
                 self.repaintServiceList(sitem + 1, 0)
             #if rebuilding list make sure live is fixed.
             if rebuild:
