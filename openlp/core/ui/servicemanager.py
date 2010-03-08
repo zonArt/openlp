@@ -331,7 +331,6 @@ class ServiceManager(QtGui.QWidget):
         Record if an item is collapsed
         Used when repainting the list to get the correct state
         """
-        print "expand"
         pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
         self.serviceItems[pos -1 ][u'expanded'] = True
 
@@ -433,7 +432,6 @@ class ServiceManager(QtGui.QWidget):
         self.ServiceManagerList.clear()
         for itemcount, item in enumerate(self.serviceItems):
             serviceitem = item[u'service_item']
-            print item[u'expanded']
             treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
             if len(serviceitem.notes) > 0:
                 icon = QtGui.QImage(serviceitem.icon)
