@@ -54,7 +54,7 @@ def main():
                       help="Message to be passed for the action")
 
     (options, args) = parser.parse_args()
-    if len(args) > 0:
+    if args:
         parser.print_help()
         parser.error("incorrect number of arguments")
     elif options.address is None:

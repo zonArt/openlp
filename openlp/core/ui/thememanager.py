@@ -246,7 +246,7 @@ class ThemeManager(QtGui.QWidget):
             self, self.trUtf8('Select Theme Import File'),
             self.config.get_last_dir(), u'Theme (*.*)')
         log.info(u'New Themes %s', unicode(files))
-        if len(files) > 0:
+        if files:
             for file in files:
                 self.config.set_last_dir(unicode(file))
                 self.unzipTheme(file, self.path)

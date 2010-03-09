@@ -254,7 +254,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         if self.VerseListView.count() == 0:
             self.VerseTextEdit.setFocus()
             return False, self.trUtf8('You need to enter a slide')
-        if len(self.VerseTextEdit.toPlainText()) > 0:
+        if self.VerseTextEdit.toPlainText():
             self.VerseTextEdit.setFocus()
             return False, self.trUtf8('You have unsaved data')
         return True,  u''
