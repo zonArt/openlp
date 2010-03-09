@@ -50,7 +50,7 @@ media_manager_style = """
   QToolBox::tab:selected {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         stop: 0 palette(light), stop: 1.0 palette(button));
-    border-color: palette(dark);
+    border-color: palette(button);
   }
 """
 class versionThread(QtCore.QThread):
