@@ -50,16 +50,24 @@ media_manager_style = """
   QToolBox::tab:selected {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         stop: 0 palette(light), stop: 1.0 palette(button));
-    border-color: palette(dark);
+    border-color: palette(button);
   }
 """
-class versionThread(QtCore.QThread):
+class VersionThread(QtCore.QThread):
+    """
+    A special Qt thread class to fetch the version of OpenLP from the website.
+    This is threaded so that it doesn't affect the loading time of OpenLP.
+    """
     def __init__(self, parent, app_version, generalConfig):
         QtCore.QThread.__init__(self, parent)
         self.parent = parent
         self.app_version = app_version
         self.generalConfig = generalConfig
-    def run (self):
+
+    def run(self):
+        """
+        Run the thread.
+        """
         time.sleep(2)
         version = check_latest_version(self.generalConfig, self.app_version)
         #new version has arrived
@@ -586,7 +594,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def versionThread(self):
         app_version = self.applicationVersion[u'full']
-        vT = versionThread(self, app_version, self.generalConfig)
+        vT = VersionThread(self, app_version, self.generalConfig)
         vT.start()
 
     def onHelpAboutItemClicked(self):
