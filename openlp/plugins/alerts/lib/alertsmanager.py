@@ -76,7 +76,7 @@ class AlertsManager(QtCore.QObject):
             display text
         """
         log.debug(u'display alert called %s' % text)
-        self.parent.maindisplay.parent.StatusBar.showMessage(self.trUtf8(u''))
+        self.parent.maindisplay.parent.StatusBar.showMessage(u'')
         self.alertList.append(text)
         if self.timer_id != 0 or self.parent.maindisplay.mediaLoaded:
             self.parent.maindisplay.parent.StatusBar.showMessage(\
