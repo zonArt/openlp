@@ -78,6 +78,7 @@
   <qresource prefix="services">
     <file>service_edit.png</file>
     <file>service_notes.png</file>
+    <file>service_item_notes.png</file>
     <file>service_bottom.png</file>
     <file>service_down.png</file>
     <file>service_top.png</file>
