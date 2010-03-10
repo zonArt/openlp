@@ -151,7 +151,7 @@ class CustomMediaItem(MediaManagerItem):
         service_item.edit_enabled = True
         service_item.editId = item_id
         theme = customSlide.theme_name
-        if len(theme) is not 0 :
+        if theme:
             service_item.theme = theme
         songXML = SongXMLParser(customSlide.text)
         verseList = songXML.get_verses()
@@ -160,9 +160,9 @@ class CustomMediaItem(MediaManagerItem):
         service_item.title = title
         for slide in raw_slides:
             service_item.add_from_text(slide[:30], slide)
-        if str_to_bool(self.parent.config.get_config(u'display footer', True)) or \
-            len(credit) > 0:
-            raw_footer.append(title + u' '+ credit)
+        if str_to_bool(self.parent.config.get_config(u'display footer', True)) \
+            or credit:
+            raw_footer.append(title + u' ' + credit)
         else:
             raw_footer.append(u'')
         service_item.raw_footer = raw_footer

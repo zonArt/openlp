@@ -314,7 +314,7 @@ class MediaManagerItem(QtGui.QWidget):
             self, self.OnNewPrompt,
             self.parent.config.get_last_dir(), self.OnNewFileMasks)
         log.info(u'New files(s)%s', unicode(files))
-        if len(files) > 0:
+        if files:
             self.loadList(files)
             dir, filename = os.path.split(unicode(files[0]))
             self.parent.config.set_last_dir(dir)

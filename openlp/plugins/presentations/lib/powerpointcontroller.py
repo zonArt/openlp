@@ -167,7 +167,7 @@ class PowerpointDocument(PresentationDocument):
         Triggerent by new object being added to SlideController orOpenLP
         being shut down
         """
-        if self.presentation == None:
+        if self.presentation is None:
             return
         try:
             self.presentation.Close()
@@ -183,9 +183,9 @@ class PowerpointDocument(PresentationDocument):
         if not self.controller.is_loaded():
             return False
         try:
-            if self.presentation.SlideShowWindow == None:
+            if self.presentation.SlideShowWindow is None:
                 return False
-            if self.presentation.SlideShowWindow.View == None:
+            if self.presentation.SlideShowWindow.View is None:
                 return False
         except:
             return False

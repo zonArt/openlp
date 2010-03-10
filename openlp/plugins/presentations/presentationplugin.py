@@ -103,7 +103,7 @@ class PresentationPlugin(Plugin):
             self.registerControllers(controller)
             if controller.enabled:
                 controller.start_process()
-        if len(self.controllers) > 0:
+        if self.controllers:
             return True
         else:
             return False
