@@ -178,7 +178,7 @@ class PowerpointDocument(PresentationDocument):
         """
         Returns true if a presentation is currently active
         """
-        if not self.controller.is_loaded():
+        if not self.is_loaded():
             return False
         try:
             if self.presentation.SlideShowWindow == None:
@@ -202,6 +202,12 @@ class PowerpointDocument(PresentationDocument):
         Blanks the screen
         """
         self.presentation.SlideShowWindow.View.State = 3
+
+    def is_blank(self):
+        """
+        Returns true if screen is blank
+        """
+        return self.presentation.SlideShowWindow.View.State == 3
 
     def stop_presentation(self):
         """

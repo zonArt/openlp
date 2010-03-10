@@ -172,6 +172,9 @@ class PresentationDocument(object):
     ``unblank_screen()``
         Unblanks the screen, restoring the output
 
+    ``is_blank``
+        Returns true if screen is blank
+
     ``stop_presentation()``
         Stops the presentation, removing it from the output display
 
@@ -279,6 +282,12 @@ class PresentationDocument(object):
         """
         pass
 
+    def is_blank(self):
+        """
+        Returns true if screen is blank
+        """
+        return False
+        
     def stop_presentation(self):
         """
         Stops the presentation, removing it from the output display

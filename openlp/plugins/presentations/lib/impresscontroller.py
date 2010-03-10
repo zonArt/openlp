@@ -102,11 +102,14 @@ class ImpressController(PresentationController):
         log.debug(u'get UNO Desktop Openoffice')
         ctx = None
         loop = 0
+        log.debug(u'get UNO Desktop Openoffice - getComponentContext')
         context = uno.getComponentContext()
+        log.debug(u'get UNO Desktop Openoffice - createInstaneWithContext - UnoUrlResolver')
         resolver = context.ServiceManager.createInstanceWithContext(
             u'com.sun.star.bridge.UnoUrlResolver', context)
         while ctx is None and loop < 3:
             try:
+                log.debug(u'get UNO Desktop Openoffice - resolve')
                 ctx = resolver.resolve(u'uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
             except:
                 log.exception(u'Unable to find running instance ')
@@ -114,6 +117,7 @@ class ImpressController(PresentationController):
                 loop += 1
         try:
             self.manager = ctx.ServiceManager
+            log.debug(u'get UNO Desktop Openoffice - createInstanceWithContext - Desktop')
             desktop = self.manager.createInstanceWithContext(
                 "com.sun.star.frame.Desktop", ctx )
             return desktop
@@ -303,6 +307,13 @@ class ImpressDocument(PresentationDocument):
     def blank_screen(self):
         log.debug(u'blank screen OpenOffice')
         self.control.blankScreen(0)
+        
+    def is_blank(self):
+        """
+        Returns true if screen is blank
+        """
+        log.debug(u'is blank OpenOffice')
+        return self.control.isPaused()
 
     def stop_presentation(self):
         log.debug(u'stop presentation OpenOffice')

@@ -73,6 +73,9 @@ class Controller(object):
         log.debug(u'Live = %s, slide' % live)
         if not live:
             return
+        if self.doc.is_blank():
+            self.doc.slidenumber = int(slide) + 1
+            return
         self.activate()
         self.doc.goto_slide(int(slide) + 1)
         self.doc.poll_slidenumber(live)
@@ -83,6 +86,9 @@ class Controller(object):
         """
         log.debug(u'Live = %s, first' % self.isLive)
         if not self.isLive:
+            return
+        if self.doc.is_blank():
+            self.doc.slidenumber = 1
             return
         self.activate()
         self.doc.start_presentation()
@@ -95,6 +101,9 @@ class Controller(object):
         log.debug(u'Live = %s, last' % self.isLive)
         if not self.isLive:
             return
+        if self.doc.is_blank():
+            self.doc.slidenumber = self.doc.get_slide_count()
+            return
         self.activate()
         self.doc.goto_slide(self.doc.get_slide_count())
         self.doc.poll_slidenumber(self.isLive)
@@ -105,6 +114,10 @@ class Controller(object):
         """
         log.debug(u'Live = %s, next' % self.isLive)
         if not self.isLive:
+            return
+        if self.doc.is_blank():
+            if self.doc.slidenumber < self.doc.get_slide_count():
+                self.doc.slidenumber = self.doc.slidenumber + 1
             return
         self.activate()
         self.doc.next_step()
@@ -117,6 +130,10 @@ class Controller(object):
         log.debug(u'Live = %s, previous' % self.isLive)
         if not self.isLive:
             return
+        if self.doc.is_blank():
+            if self.doc.slidenumber > 1:
+                self.doc.slidenumber = self.doc.slidenumber - 1
+            return
         self.activate()
         self.doc.previous_step()
         self.doc.poll_slidenumber(self.isLive)
@@ -126,6 +143,8 @@ class Controller(object):
         Based on the handler passed at startup triggers slide show to shut down
         """
         log.debug(u'Live = %s, shutdown' % self.isLive)
+        if self.isLive:
+            Receiver.send_message(u'live_slide_show')
         self.doc.close_presentation()
         self.doc = None
         #self.doc.slidenumber = 0
@@ -146,6 +165,8 @@ class Controller(object):
         if not self.isLive:
             return
         self.activate()
+        if self.doc.slidenumber and self.doc.slidenumber != self.doc.get_slide_number():
+            self.doc.goto_slide(self.doc.slidenumber)
         self.doc.unblank_screen()
 
     def poll(self):
