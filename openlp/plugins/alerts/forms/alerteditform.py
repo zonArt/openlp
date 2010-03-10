@@ -82,7 +82,7 @@ class AlertEditForm(QtGui.QDialog, Ui_AlertEditDialog):
         self.DeleteButton.setEnabled(False)
 
     def onItemSelected(self):
-        if len(self.AlertLineEdit.text()) > 0:
+        if self.AlertLineEdit.text():
             QtGui.QMessageBox.information(self,
                 self.trUtf8('Item selected to Edit'),
                 self.trUtf8('Please Save or Clear seletced item'))

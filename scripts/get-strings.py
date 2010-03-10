@@ -24,6 +24,7 @@
 ###############################################################################
 
 import os
+from cgi import escape
 from ast import parse, NodeVisitor, Str
 
 ts_file = u"""<?xml version="1.0" encoding="utf-8"?>
@@ -45,7 +46,8 @@ ts_message = u"""    <message>
 
 class StringExtractor(NodeVisitor):
 
-    def __init__(self, strings, filename):
+    def __init__(self, strings, filename, base_path):
+        self.base_path = base_path
         self.filename = filename
         self.strings = strings
         self.classname = 'unknown'
@@ -58,10 +60,10 @@ class StringExtractor(NodeVisitor):
         if hasattr(node.func, 'attr') and node.func.attr == 'trUtf8' and isinstance(node.args[0], Str):
             string = node.args[0].s
             key = '%s-%s' % (self.classname, string)
-            self.strings[key] = [self.classname, self.filename, node.lineno, string]
+            self.strings[key] = [self.classname, self.filename[len(self.base_path) + 1:], node.lineno, escape(string)]
         self.generic_visit(node)
 
-def parse_file(filename, strings):
+def parse_file(base_path, filename, strings):
     file = open(filename, u'r')
     try:
         ast = parse(file.read())
@@ -70,7 +72,7 @@ def parse_file(filename, strings):
         return
     file.close()
 
-    StringExtractor(strings, filename).visit(ast)
+    StringExtractor(strings, filename, base_path).visit(ast)
 
 def write_file(filename, strings):
     translation_file = u''
@@ -94,15 +96,18 @@ def write_file(filename, strings):
 
 def main():
     strings = {}
-    start_dir = os.path.abspath(u'.')
+    start_dir = os.path.abspath(u'..')
     for root, dirs, files in os.walk(start_dir):
         for file in files:
             if file.endswith(u'.py'):
                 print u'Parsing "%s"' % file
-                parse_file(os.path.join(root, file), strings)
+                parse_file(start_dir, os.path.join(root, file), strings)
     print u'Generating TS file...',
-    write_file(os.path.join(start_dir, u'i18n', u'openlp_en.ts'), strings)
+    write_file(os.path.join(start_dir, u'resources', u'i18n', u'openlp_en.ts'), strings)
     print u'done.'
 
 if __name__ == u'__main__':
-    main()
+    if os.path.split(os.path.abspath(u'.'))[1] != u'scripts':
+        print u'You need to run this script from the scripts directory.'
+    else:
+        main()

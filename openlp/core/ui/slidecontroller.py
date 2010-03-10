@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import OpenLPToolbar, Receiver, str_to_bool, \
-PluginConfig, resize_image
+    PluginConfig, resize_image
 
 log = logging.getLogger(__name__)
 
@@ -65,7 +65,7 @@ class SlideList(QtGui.QTableWidget):
                 self.parent.onSlideSelectedLast()
                 event.accept()
             elif event.key() in self.hotkey_map and self.parent.isLive:
-                Receiver.send_message(self.hotkey_map[event.key()]);
+                Receiver.send_message(self.hotkey_map[event.key()])
                 event.accept()
             event.ignore()
         else:
@@ -107,15 +107,14 @@ class SlideController(QtGui.QWidget):
         # Type label for the top of the slide controller
         self.TypeLabel = QtGui.QLabel(self.Panel)
         if self.isLive:
-            self.TypeLabel.setText(u'<strong>%s</strong>' %
-                self.trUtf8('Live'))
+            self.TypeLabel.setText(self.trUtf8('Live'))
             self.split = 1
             prefix = u'live_slidecontroller'
         else:
-            self.TypeLabel.setText(u'<strong>%s</strong>' %
-                self.trUtf8('Preview'))
+            self.TypeLabel.setText(self.trUtf8('Preview'))
             self.split = 0
             prefix = u'preview_slidecontroller'
+        self.TypeLabel.setStyleSheet(u'font-weight: bold; font-size: 12pt;')
         self.TypeLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.PanelLayout.addWidget(self.TypeLabel)
         # Splitter

@@ -30,7 +30,7 @@ if os.name == u'nt':
     from ctypes import *
     from ctypes.wintypes import RECT
 
-from presentationcontroller import PresentationController,  PresentationDocument
+from presentationcontroller import PresentationController, PresentationDocument
 
 log = logging.getLogger(__name__)
 
@@ -123,7 +123,7 @@ class PptviewDocument(PresentationDocument):
         rendermanager = self.controller.plugin.render_manager
         rect = rendermanager.screens.current[u'size']
         rect = RECT(rect.x(), rect.y(), rect.right(), rect.bottom())
-        filepath = str(self.filepath.replace(u'/', u'\\'));
+        filepath = str(self.filepath.replace(u'/', u'\\'))
         try:
             self.pptid = self.controller.process.OpenPPT(filepath, None, rect,
                 str(os.path.join(self.thumbnailpath, self.controller.thumbnailprefix)))

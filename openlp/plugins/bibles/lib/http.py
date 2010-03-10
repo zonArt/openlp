@@ -77,7 +77,7 @@ class HTTPBooks(object):
         books = HTTPBooks.run_sql(u'SELECT id, testament_id, name, '
                 u'abbreviation, chapters FROM books WHERE name = ? OR '
                 u'abbreviation = ?', (name, name))
-        if len(books) > 0:
+        if books:
             return {
                 u'id': books[0][0],
                 u'testament_id': books[0][1],
@@ -95,7 +95,7 @@ class HTTPBooks(object):
         book = HTTPBooks.get_book(name)
         chapters = HTTPBooks.run_sql(u'SELECT id, book_id, chapter, '
             u'verses FROM chapters WHERE book_id = ?', (book[u'id'],))
-        if len(chapters) > 0:
+        if chapters:
             return {
                 u'id': chapters[0][0],
                 u'book_id': chapters[0][1],

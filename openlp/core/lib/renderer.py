@@ -174,7 +174,7 @@ class Renderer(object):
             #Must be a blank line so keep it.
             if len(line) == 0:
                 line = u' '
-            while len(line) > 0:
+            while line:
                 pos = char_per_line
                 split_text = line[:pos]
                 #line needs splitting
@@ -199,7 +199,7 @@ class Renderer(object):
                 split_lines.append(split_text)
                 line = line[pos:].lstrip()
                 #if we have more text add up to 10 spaces on the front.
-                if len(line) > 0 and self._theme.font_main_indentation > 0:
+                if line and self._theme.font_main_indentation > 0:
                     line = u'%s%s' % \
                         (u'          '[:int(self._theme.font_main_indentation)], line)
                 #Text fits in a line now
@@ -210,7 +210,7 @@ class Renderer(object):
                 len(page) == page_length:
                 split_pages.append(page)
                 page = []
-        if len(page) > 0 and page != u' ':
+        if page and page != u' ':
             split_pages.append(page)
         return split_pages
 
@@ -406,8 +406,8 @@ class Renderer(object):
             Defaults to *False*. Whether or not this is a live screen.
         """
         x, y = tlcorner
-        maxx = self._rect.width();
-        maxy = self._rect.height();
+        maxx = self._rect.width()
+        maxy = self._rect.height()
         lines = []
         lines.append(line)
         startx = x
@@ -415,11 +415,11 @@ class Renderer(object):
         rightextent = None
         self.painter = QtGui.QPainter()
         self.painter.begin(self._frame)
-        self.painter.setRenderHint(QtGui.QPainter.Antialiasing);
+        self.painter.setRenderHint(QtGui.QPainter.Antialiasing)
         if self._theme.display_slideTransition:
             self.painter2 = QtGui.QPainter()
             self.painter2.begin(self._frameOp)
-            self.painter2.setRenderHint(QtGui.QPainter.Antialiasing);
+            self.painter2.setRenderHint(QtGui.QPainter.Antialiasing)
             self.painter2.setOpacity(0.7)
         # dont allow alignment messing with footers
         if footer:
@@ -458,7 +458,7 @@ class Renderer(object):
                 x = maxx - w
             # centre
             elif align == 2:
-                x = (maxx - w) / 2;
+                x = (maxx - w) / 2
                 rightextent = x + w
             if live:
                 # now draw the text, and any outlines/shadows

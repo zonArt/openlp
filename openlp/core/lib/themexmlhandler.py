@@ -171,7 +171,8 @@ class ThemeXML(object):
         self.child_element(background, u'filename', filename)
 
     def add_font(self, name, color, proportion, override, fonttype=u'main',
-        weight=u'Normal', italics=u'False', indentation=0, xpos=0, ypos=0, width=0, height=0):
+        weight=u'Normal', italics=u'False', indentation=0, xpos=0, ypos=0,
+        width=0, height=0):
         """
         Add a Font.
 
@@ -363,14 +364,14 @@ class ThemeXML(object):
         master = u''
         for element in iter:
             element.text = unicode(element.text).decode('unicode-escape')
-            if len(element.getchildren()) > 0:
+            if element.getchildren():
                 master = element.tag + u'_'
             else:
                 #background transparent tags have no children so special case
                 if element.tag == u'background':
                     for e in element.attrib.iteritems():
                         setattr(self, element.tag + u'_' + e[0], e[1])
-            if len(element.attrib) > 0:
+            if element.attrib:
                 for e in element.attrib.iteritems():
                     if master == u'font_' and e[0] == u'type':
                         master += e[1] + u'_'
