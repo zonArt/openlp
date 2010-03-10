@@ -310,4 +310,3 @@ class PowerpointDocument(PresentationDocument):
             if shape.HasTextFrame:
                 text += shape.TextFrame.TextRange.Text + '\n'
         return text
-s
