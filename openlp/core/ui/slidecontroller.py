@@ -449,8 +449,10 @@ class SlideController(QtGui.QWidget):
                     #If verse handle verse number else tag only
                     if bits[0] == self.trUtf8('Verse'):
                         tag = u'%s%s' % (bits[0][0], bits[1][0:] )
+                        row = bits[1][0:]
                     else:
                         tag = bits[0]
+                        row = bits[0][0:1]
                     try:
                         test = self.slideList[tag]
                     except:
@@ -469,6 +471,7 @@ class SlideController(QtGui.QWidget):
                 self.PreviewListWidget.setCellWidget(framenumber, 0, label)
                 slide_height = width * self.parent.RenderManager.screen_ratio
             self.PreviewListWidget.setItem(framenumber, 0, item)
+            print row
             if slide_height != 0:
                 self.PreviewListWidget.setRowHeight(framenumber, slide_height)
         if self.serviceItem.is_text():

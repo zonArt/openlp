@@ -466,38 +466,9 @@ class Renderer(object):
                     self._get_extent_and_render(line, footer,
                         tlcorner=(x + display_shadow_size, y + display_shadow_size),
                         draw=True, color = self._theme.display_shadow_color)
-                if self._theme.display_outline:
-                    self._get_extent_and_render(line, footer,
-                        (x + display_outline_size, y), draw=True,
-                        color = self._theme.display_outline_color)
-                    self._get_extent_and_render(line, footer,
-                        (x, y + display_outline_size), draw=True,
-                        color = self._theme.display_outline_color)
-                    self._get_extent_and_render(line, footer,
-                        (x, y - display_outline_size), draw=True,
-                        color = self._theme.display_outline_color)
-                    self._get_extent_and_render(line, footer,
-                        (x - display_outline_size, y), draw=True,
-                        color = self._theme.display_outline_color)
-                    if display_outline_size > 1:
-                        self._get_extent_and_render(line, footer,
-                            (x + display_outline_size, y + display_outline_size),
-                            draw=True,
-                            color = self._theme.display_outline_color)
-                        self._get_extent_and_render(line, footer,
-                            (x - display_outline_size, y + display_outline_size),
-                            draw=True,
-                            color = self._theme.display_outline_color)
-                        self._get_extent_and_render(line, footer,
-                            (x + display_outline_size, y - display_outline_size),
-                            draw=True,
-                            color = self._theme.display_outline_color)
-                        self._get_extent_and_render(line, footer,
-                            (x - display_outline_size, y - display_outline_size),
-                            draw=True,
-                            color = self._theme.display_outline_color)
-                self._get_extent_and_render(line, footer,tlcorner=(x, y),
-                    draw=True)
+                self._get_extent_and_render(line, footer, tlcorner=(x, y), draw=True,
+                        outline_size=display_outline_size,
+                        outline_color=self._theme.display_outline_color)
             y += h
             if linenum == 0:
                 self._first_line_right_extent = rightextent
@@ -535,7 +506,7 @@ class Renderer(object):
         self.mainFont.setPixelSize(self._theme.font_main_proportion)
 
     def _get_extent_and_render(self, line, footer, tlcorner=(0, 0), draw=False,
-        color=None):
+        color=None, outline_size=0, outline_color=None):
         """
         Find bounding box of text - as render_single_line. If draw is set,
         actually draw the text to the current DC as well return width and
