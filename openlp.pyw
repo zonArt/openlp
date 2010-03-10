@@ -38,7 +38,7 @@ import openlp
 from openlp.core.lib import Receiver, str_to_bool
 from openlp.core.resources import qInitResources
 from openlp.core.ui import MainWindow, SplashScreen, ScreenList
-from openlp.core.utils import get_config_directory, ConfigHelper
+from openlp.core.utils import AppLocation, ConfigHelper
 
 application_stylesheet = u"""
 QMainWindow::separator
@@ -48,9 +48,11 @@ QMainWindow::separator
 
 QDockWidget::title
 {
-  border: none;
+  /*background: palette(dark);*/
+  border: 1px solid palette(dark);
   padding-left: 5px;
-  padding-top: 3px;
+  padding-top: 2px;
+  margin: 1px 0;
 }
 
 QToolBar
@@ -77,8 +79,10 @@ class OpenLP(QtGui.QApplication):
         Run the OpenLP application.
         """
         #Load and store current Application Version
-        filepath = os.path.split(os.path.abspath(openlp.__file__))[0]
-        filepath = os.path.abspath(os.path.join(filepath, u'.version'))
+        filepath = AppLocation.get_directory(AppLocation.AppDir)
+        if not hasattr(sys, u'frozen'):
+            filepath = os.path.join(filepath, u'openlp')
+        filepath = os.path.join(filepath, u'.version')
         fversion = None
         try:
             fversion = open(filepath, u'r')
@@ -95,9 +99,9 @@ class OpenLP(QtGui.QApplication):
                 app_version[u'version'], app_version[u'build']))
         except:
                 app_version = {
-                    u'full': u'1.9.0-000',
+                    u'full': u'1.9.0-bzr000',
                     u'version': u'1.9.0',
-                    u'build': u'000'
+                    u'build': u'bzr000'
                 }
         finally:
             if fversion:
@@ -158,7 +162,7 @@ def main():
     parser.add_option("-s", "--style", dest="style",
                       help="Set the Qt4 style (passed directly to Qt4).")
     # Set up logging
-    log_path = get_config_directory()
+    log_path = AppLocation.get_directory(AppLocation.ConfigDir)
     if not os.path.exists(log_path):
         os.makedirs(log_path)
     filename = os.path.join(log_path, u'openlp.log')
@@ -172,6 +176,7 @@ def main():
     qt_args = []
     if options.loglevel.lower() in ['d', 'debug']:
         log.setLevel(logging.DEBUG)
+        print 'Logging to:', filename
     elif options.loglevel.lower() in ['w', 'warning']:
         log.setLevel(logging.WARNING)
     else:

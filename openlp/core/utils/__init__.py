@@ -24,11 +24,59 @@
 ###############################################################################
 
 import os
+import sys
 import logging
 import urllib2
 from datetime import datetime
 
 log = logging.getLogger(__name__)
+
+class AppLocation(object):
+    """
+    Retrieve a directory based on the directory type.
+    """
+    AppDir = 1
+    ConfigDir = 2
+    DataDir = 3
+    PluginsDir = 4
+
+    @staticmethod
+    def get_directory(dir_type):
+        if dir_type == AppLocation.AppDir:
+           return os.path.abspath(os.path.split(sys.argv[0])[0])
+        elif dir_type == AppLocation.ConfigDir:
+            if os.name == u'nt':
+                path = os.path.join(os.getenv(u'APPDATA'), u'openlp')
+            elif os.name == u'mac':
+                path = os.path.join(os.getenv(u'HOME'), u'Library',
+                    u'Application Support', u'openlp')
+            else:
+                try:
+                    from xdg import BaseDirectory
+                    path = os.path.join(BaseDirectory.xdg_config_home, u'openlp')
+                except ImportError:
+                    path = os.path.join(os.getenv(u'HOME'), u'.openlp')
+            return path
+        elif dir_type == AppLocation.DataDir:
+            if os.name == u'nt':
+                path = os.path.join(os.getenv(u'APPDATA'), u'openlp', u'data')
+            elif os.name == u'mac':
+                path = os.path.join(os.getenv(u'HOME'), u'Library',
+                    u'Application Support', u'openlp', u'Data')
+            else:
+                try:
+                    from xdg import BaseDirectory
+                    path = os.path.join(BaseDirectory.xdg_data_home, u'openlp')
+                except ImportError:
+                    path = os.path.join(os.getenv(u'HOME'), u'.openlp', u'data')
+            return path
+        elif dir_type == AppLocation.PluginsDir:
+            app_path = os.path.abspath(os.path.split(sys.argv[0])[0])
+            if hasattr(sys, u'frozen') and sys.frozen == 1:
+                return os.path.join(app_path, u'plugins')
+            else:
+                return os.path.join(app_path, u'openlp', u'plugins')
+
 
 def check_latest_version(config, current_version):
     version_string = current_version
@@ -49,39 +97,7 @@ def check_latest_version(config, current_version):
                 log.exception(u'Reason for failure: %s', e.reason)
     return version_string
 
-def get_config_directory():
-    path = u''
-    if os.name == u'nt':
-        path = os.path.join(os.getenv(u'APPDATA'), u'openlp')
-    elif os.name == u'mac':
-        path = os.path.join(os.getenv(u'HOME'), u'Library',
-            u'Application Support', u'openlp')
-    else:
-        try:
-            from xdg import BaseDirectory
-            path = os.path.join(BaseDirectory.xdg_config_home, u'openlp')
-        except ImportError:
-            path = os.path.join(os.getenv(u'HOME'), u'.openlp')
-    return path
-
-def get_data_directory():
-    path = u''
-    if os.name == u'nt':
-        # ask OS for path to application data, set on Windows XP and Vista
-        path = os.path.join(os.getenv(u'APPDATA'), u'openlp', u'data')
-    elif os.name == u'mac':
-        path = os.path.join(os.getenv(u'HOME'), u'Library',
-            u'Application Support', u'openlp', u'Data')
-    else:
-        try:
-            from xdg import BaseDirectory
-            path = os.path.join(BaseDirectory.xdg_data_home, u'openlp')
-        except ImportError:
-            path = os.path.join(os.getenv(u'HOME'), u'.openlp', u'data')
-    return path
-
 from registry import Registry
 from confighelper import ConfigHelper
 
-__all__ = [u'Registry', u'ConfigHelper', u'get_config_directory',
-           u'get_data_directory', u'check_latest_version']
+__all__ = [u'Registry', u'ConfigHelper', u'AppLocations', u'check_latest_version']

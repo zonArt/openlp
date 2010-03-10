@@ -25,7 +25,7 @@
 
 import os
 
-from openlp.core.utils import get_data_directory, get_config_directory
+from openlp.core.utils import AppLocation
 from openlp.core.utils.registry import Registry
 
 class ConfigHelper(object):
@@ -36,7 +36,7 @@ class ConfigHelper(object):
 
     @staticmethod
     def get_data_path():
-        path = get_data_directory()
+        path = AppLocation.get_directory(AppLocation.DataDir)
         if not os.path.exists(path):
             os.makedirs(path)
         return path
@@ -70,7 +70,7 @@ class ConfigHelper(object):
         current operating system, and returns an instantiation of that class.
         """
         if ConfigHelper.__registry__ is None:
-            config_path = get_config_directory()
+            config_path = AppLocation.get_directory(AppLocation.ConfigDir)
             ConfigHelper.__registry__ = Registry(config_path)
         return ConfigHelper.__registry__
 

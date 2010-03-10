@@ -235,22 +235,22 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             u'license_permission', self.PermissionEdit)
 
     def setDefaults(self):
-        self.setField(u'source_format', 0)
-        self.setField(u'osis_location', '')
-        self.setField(u'csv_booksfile', '')
-        self.setField(u'csv_versefile', '')
-        self.setField(u'opensong_file', '')
-        self.setField(u'web_location', DownloadLocation.Crosswalk)
-        self.setField(u'web_biblename', self.BibleComboBox)
+        self.setField(u'source_format', QtCore.QVariant(0))
+        self.setField(u'osis_location', QtCore.QVariant(''))
+        self.setField(u'csv_booksfile', QtCore.QVariant(''))
+        self.setField(u'csv_versefile', QtCore.QVariant(''))
+        self.setField(u'opensong_file', QtCore.QVariant(''))
+        self.setField(u'web_location', QtCore.QVariant(DownloadLocation.Crosswalk))
+        self.setField(u'web_biblename', QtCore.QVariant(self.BibleComboBox))
         self.setField(u'proxy_server',
-            self.config.get_config(u'proxy address', ''))
+            QtCore.QVariant(self.config.get_config(u'proxy address', '')))
         self.setField(u'proxy_username',
-            self.config.get_config(u'proxy username',''))
+            QtCore.QVariant(self.config.get_config(u'proxy username','')))
         self.setField(u'proxy_password',
-            self.config.get_config(u'proxy password',''))
-        self.setField(u'license_version', self.VersionNameEdit)
-        self.setField(u'license_copyright', self.CopyrightEdit)
-        self.setField(u'license_permission', self.PermissionEdit)
+            QtCore.QVariant(self.config.get_config(u'proxy password','')))
+        self.setField(u'license_version', QtCore.QVariant(self.VersionNameEdit))
+        self.setField(u'license_copyright', QtCore.QVariant(self.CopyrightEdit))
+        self.setField(u'license_permission', QtCore.QVariant(self.PermissionEdit))
         self.onLocationComboBoxChanged(DownloadLocation.Crosswalk)
 
     def loadWebBibles(self):
