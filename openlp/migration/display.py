@@ -32,11 +32,11 @@ class Display():
 
     @staticmethod
     def output(string):
-        log.debug(string);
-        print (string)
+        log.debug(string)
+        #print (string)
 
     @staticmethod
     def sub_output(string):
         if not string is None:
-            log.debug(u'   '+string);
-            print (u'   '+string)
+            log.debug(u'   '+string)
+            #print (u'   '+string)

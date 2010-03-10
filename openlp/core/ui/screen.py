@@ -40,7 +40,7 @@ class ScreenList(object):
         self.current_display = 0
 
     def add_screen(self, screen):
-        if screen[u'primary'] == True:
+        if screen[u'primary']:
             self.current = screen
         self.screen_list.append(screen)
         self.count += 1
@@ -70,4 +70,3 @@ class ScreenList(object):
 #                if scrn[u'number'] == screenNumber:
 #                    self.screen = scrn
 #                    break
-

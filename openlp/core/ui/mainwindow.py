@@ -34,32 +34,40 @@ from openlp.core.ui import AboutForm, SettingsForm,  \
     PluginForm, MediaDockManager
 from openlp.core.lib import RenderManager, PluginConfig, build_icon, \
     OpenLPDockWidget, SettingsManager, PluginManager, Receiver, str_to_bool
-from openlp.core.utils import check_latest_version
+from openlp.core.utils import check_latest_version, AppLocation
 
 log = logging.getLogger(__name__)
 
 media_manager_style = """
   QToolBox::tab {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-        stop: 0 palette(midlight), stop: 1.0 palette(mid));
+        stop: 0 palette(button), stop: 1.0 palette(dark));
     border-width: 1px;
     border-style: outset;
-    border-color: palette(midlight);
+    border-color: palette(dark);
     border-radius: 5px;
   }
   QToolBox::tab:selected {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-        stop: 0 palette(light), stop: 1.0 palette(mid));
-    border-color: palette(light);
+        stop: 0 palette(light), stop: 1.0 palette(button));
+    border-color: palette(button);
   }
 """
-class versionThread(QtCore.QThread):
+class VersionThread(QtCore.QThread):
+    """
+    A special Qt thread class to fetch the version of OpenLP from the website.
+    This is threaded so that it doesn't affect the loading time of OpenLP.
+    """
     def __init__(self, parent, app_version, generalConfig):
         QtCore.QThread.__init__(self, parent)
         self.parent = parent
         self.app_version = app_version
         self.generalConfig = generalConfig
-    def run (self):
+
+    def run(self):
+        """
+        Run the thread.
+        """
         time.sleep(2)
         version = check_latest_version(self.generalConfig, self.app_version)
         #new version has arrived
@@ -439,9 +447,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
         # Set up the path with plugins
-        pluginpath = os.path.split(os.path.abspath(__file__))[0]
-        pluginpath = os.path.abspath(
-            os.path.join(pluginpath, u'..', u'..', u'plugins'))
+        pluginpath = AppLocation.get_directory(AppLocation.PluginsDir)
         self.plugin_manager = PluginManager(pluginpath)
         self.plugin_helpers = {}
         # Set up the interface
@@ -588,7 +594,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def versionThread(self):
         app_version = self.applicationVersion[u'full']
-        vT = versionThread(self, app_version, self.generalConfig)
+        vT = VersionThread(self, app_version, self.generalConfig)
         vT.start()
 
     def onHelpAboutItemClicked(self):

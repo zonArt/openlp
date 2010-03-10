@@ -33,8 +33,7 @@ log = logging.getLogger(__name__)
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
-    contextMenuAction, contextMenuSeparator, contextMenu, Receiver, \
-    contextMenu, str_to_bool, build_icon
+    contextMenuAction, Receiver, str_to_bool, build_icon
 from openlp.core.ui import ServiceItemNoteForm
 
 class ServiceManagerList(QtGui.QTreeWidget):
@@ -433,7 +432,7 @@ class ServiceManager(QtGui.QWidget):
         for itemcount, item in enumerate(self.serviceItems):
             serviceitem = item[u'service_item']
             treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
-            if len(serviceitem.notes) > 0:
+            if serviceitem.notes:
                 icon = QtGui.QImage(serviceitem.icon)
                 icon = icon.scaled(80, 80, QtCore.Qt.KeepAspectRatio,
                                     QtCore.Qt.SmoothTransformation)
@@ -608,7 +607,7 @@ class ServiceManager(QtGui.QWidget):
     def regenerateServiceItems(self):
         #force reset of renderer as theme data has changed
         self.parent.RenderManager.themedata = None
-        if len(self.serviceItems) > 0:
+        if self.serviceItems:
             tempServiceItems = self.serviceItems
             self.ServiceManagerList.clear()
             self.serviceItems = []
@@ -670,7 +669,7 @@ class ServiceManager(QtGui.QWidget):
         if str_to_bool(PluginConfig(u'General').
                         get_config(u'auto preview', u'False')):
             item += 1
-            if len(self.serviceItems) > 0 and item < len(self.serviceItems) and \
+            if self.serviceItems and item < len(self.serviceItems) and \
                 self.serviceItems[item][u'service_item'].autoPreviewAllowed:
                     self.parent.PreviewController.addServiceManagerItem(
                         self.serviceItems[item][u'service_item'], 0)
@@ -732,7 +731,7 @@ class ServiceManager(QtGui.QWidget):
             if plugin == u'ServiceManager':
                 startpos,  startCount = self.findServiceItem()
                 item = self.ServiceManagerList.itemAt(event.pos())
-                if item == None:
+                if item is None:
                     endpos = len(self.serviceItems)
                 else:
                     parentitem = item.parent()

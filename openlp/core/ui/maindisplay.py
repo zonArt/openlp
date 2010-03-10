@@ -65,7 +65,7 @@ class DisplayWidget(QtGui.QWidget):
                 Receiver.send_message(u'live_slidecontroller_last')
                 event.accept()
             elif event.key() in self.hotkey_map:
-                Receiver.send_message(self.hotkey_map[event.key()]);
+                Receiver.send_message(self.hotkey_map[event.key()])
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Escape:
                 self.resetDisplay()

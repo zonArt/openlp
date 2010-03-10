@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from setuptools import setup, find_packages
-import sys, os
 
 VERSION_FILE = 'openlp/.version'
 
