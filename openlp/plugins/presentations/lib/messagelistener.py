@@ -218,11 +218,12 @@ class MessageListener(object):
             self.handler = self.mediaitem.findControllerByType(file)
             if not self.handler:
                 return
-
+        
         if isLive:
-            self.liveHandler.addHandler(self.controllers[self.handler], file,  isBlank)
+            controller = self.liveHandler
         else:
-            self.previewHandler.addHandler(self.controllers[self.handler], file)
+            controller = self.previewHandler
+        controller.addHandler(self.controllers[self.handler], file, isBlank)
 
     def slide(self, message):
         slide, live = self.splitMessage(message)
