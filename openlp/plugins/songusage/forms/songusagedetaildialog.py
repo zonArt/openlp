@@ -85,7 +85,7 @@ class Ui_SongUsageDetailDialog(object):
         QtCore.QMetaObject.connectSlotsByName(AuditDetailDialog)
 
     def retranslateUi(self, AuditDetailDialog):
-        AuditDetailDialog.setWindowTitle(self.trUtf8('Audit Detail Extraction'))
-        self.DateRangeGroupBox.setTitle(self.trUtf8('ASelect Date Range'))
+        AuditDetailDialog.setWindowTitle(self.trUtf8('Song Usage Extraction'))
+        self.DateRangeGroupBox.setTitle(self.trUtf8('Select Date Range'))
         self.ToLabel.setText(self.trUtf8('to'))
         self.FileGroupBox.setTitle(self.trUtf8('Report Location'))
