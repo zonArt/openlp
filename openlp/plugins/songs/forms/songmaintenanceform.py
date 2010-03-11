@@ -139,7 +139,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             else:
                 QtGui.QMessageBox.critical(
                     self, self.trUtf8('Error'),
-                    self.trUtf8('Couldn\'t add your author!'),
+                    self.trUtf8('Couldn\'t add your author'),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
 
     def onTopicAddButtonClick(self):
@@ -150,7 +150,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             else:
                 QtGui.QMessageBox.critical(
                     self, self.trUtf8('Error'),
-                    self.trUtf8('Couldn\'t add your topic!'),
+                    self.trUtf8('Couldn\'t add your topic'),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
 
     def onBookAddButtonClick(self):
@@ -162,7 +162,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             else:
                 QtGui.QMessageBox.critical(
                     self, self.trUtf8('Error'),
-                    self.trUtf8('Couldn\'t add your book!'),
+                    self.trUtf8('Couldn\'t add your book'),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
 
     def onAuthorEditButtonClick(self):
@@ -182,7 +182,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 else:
                     QtGui.QMessageBox.critical(
                         self, self.trUtf8('Error'),
-                        self.trUtf8('Couldn\'t save your author!'),
+                        self.trUtf8('Couldn\'t save your author'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
 
     def onTopicEditButtonClick(self):
@@ -197,7 +197,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 else:
                     QtGui.QMessageBox.critical(
                         self, self.trUtf8('Error'),
-                        self.trUtf8('Couldn\'t save your topic!'),
+                        self.trUtf8('Couldn\'t save your topic'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
 
     def onBookEditButtonClick(self):
@@ -214,7 +214,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 else:
                     QtGui.QMessageBox.critical(
                         self, self.trUtf8('Error'),
-                        self.trUtf8('Couldn\'t save your book!'),
+                        self.trUtf8('Couldn\'t save your book'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
 
     def onAuthorDeleteButtonClick(self):
@@ -227,7 +227,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             self.trUtf8('Delete Author'),
             self.trUtf8('Are you sure you want to delete the selected author?'),
             self.trUtf8('This author can\'t be deleted, they are currently '
-                'assigned to at least one song!'),
+                'assigned to at least one song'),
             self.trUtf8('No author selected!'))
 
     def onTopicDeleteButtonClick(self):
@@ -240,7 +240,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             self.trUtf8('Delete Topic'),
             self.trUtf8('Are you sure you want to delete the selected topic?'),
             self.trUtf8('This topic can\'t be deleted, it is currently '
-                'assigned to at least one song!'),
+                'assigned to at least one song'),
             self.trUtf8('No topic selected!'))
 
     def onBookDeleteButtonClick(self):
@@ -253,5 +253,5 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             self.trUtf8('Delete Book'),
             self.trUtf8('Are you sure you want to delete the selected book?'),
             self.trUtf8('This book can\'t be deleted, it is currently '
-                'assigned to at least one song!'),
+                'assigned to at least one song'),
             self.trUtf8('No book selected!'))
