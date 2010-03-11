@@ -134,6 +134,7 @@ class ServiceItem(object):
         else:
             self.RenderManager.set_override_theme(self.theme)
         format = self._display_frames[row][u'text'].split(u'\n')
+        #if screen blank then do not display footer
         if format[0]:
             frame = self.RenderManager.generate_slide(format,
                             self.raw_footer)
