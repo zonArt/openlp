@@ -100,4 +100,4 @@ def check_latest_version(config, current_version):
 from registry import Registry
 from confighelper import ConfigHelper
 
-__all__ = [u'Registry', u'ConfigHelper', u'AppLocations', u'check_latest_version']
+__all__ = [u'Registry', u'ConfigHelper', u'AppLocation', u'check_latest_version']

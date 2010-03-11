@@ -34,7 +34,6 @@ from PyQt4 import QtCore, QtGui
 
 log = logging.getLogger()
 
-import openlp
 from openlp.core.lib import Receiver, str_to_bool
 from openlp.core.resources import qInitResources
 from openlp.core.ui import MainWindow, SplashScreen, ScreenList
