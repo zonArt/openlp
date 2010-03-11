@@ -104,6 +104,7 @@ class PptviewDocument(PresentationDocument):
         log.debug(u'Init Presentation PowerPoint')
         self.presentation = None
         self.pptid = None
+        self.blanked = False
         self.controller = controller
         self.store_filename(presentation)
 
@@ -161,12 +162,21 @@ class PptviewDocument(PresentationDocument):
         Blanks the screen
         """
         self.controller.process.Blank(self.pptid)
+        self.blanked = True
 
     def unblank_screen(self):
         """
         Unblanks (restores) the presentationn
         """
         self.controller.process.Unblank(self.pptid)
+        self.blanked = False
+
+    def is_blank(self):
+        """
+        Returns true if screen is blank
+        """
+        log.debug(u'is blank OpenOffice')
+        return self.blanked
 
     def stop_presentation(self):
         """

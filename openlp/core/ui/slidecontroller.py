@@ -412,9 +412,13 @@ class SlideController(QtGui.QWidget):
         if item.is_media():
             self.onMediaStart(item)
         elif item.is_command():
+            if self.isLive:
+                blanked = self.blankButton.isChecked()
+            else:
+                blanked = False
             Receiver.send_message(u'%s_start' % item.name.lower(), \
                 [item.title, item.service_item_path,
-                item.get_frame_title(), slideno, self.isLive])
+                item.get_frame_title(), slideno, self.isLive, blanked])
         self.displayServiceManagerItems(item, slideno)
 
     def displayServiceManagerItems(self, serviceItem, slideno):
@@ -677,7 +681,7 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             Receiver.send_message(u'%s_start' % item.name.lower(), \
                 [item.title, item.service_item_path,
-                item.get_frame_title(), self.isLive])
+                item.get_frame_title(), self.isLive, self.blankButton.isChecked()])
         else:
             self.mediaObject.stop()
             self.mediaObject.clearQueue()

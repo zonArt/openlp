@@ -44,7 +44,7 @@ class Controller(object):
         self.doc = None
         log.info(u'%s controller loaded' % live)
 
-    def addHandler(self, controller, file):
+    def addHandler(self, controller, file,  isBlank):
         log.debug(u'Live = %s, addHandler %s' % (self.isLive, file))
         self.controller = controller
         if self.doc is not None:
@@ -53,6 +53,8 @@ class Controller(object):
         self.doc.load_presentation()
         if self.isLive:
             self.doc.start_presentation()
+            if isBlank:
+                self.blank()
             Receiver.send_message(u'live_slide_hide')
         self.doc.slidenumber = 0
 
@@ -71,6 +73,9 @@ class Controller(object):
         log.debug(u'Live = %s, slide' % live)
         if not live:
             return
+        if self.doc.is_blank():
+            self.doc.slidenumber = int(slide) + 1
+            return
         self.activate()
         self.doc.goto_slide(int(slide) + 1)
         self.doc.poll_slidenumber(live)
@@ -81,6 +86,9 @@ class Controller(object):
         """
         log.debug(u'Live = %s, first' % self.isLive)
         if not self.isLive:
+            return
+        if self.doc.is_blank():
+            self.doc.slidenumber = 1
             return
         self.activate()
         self.doc.start_presentation()
@@ -93,6 +101,9 @@ class Controller(object):
         log.debug(u'Live = %s, last' % self.isLive)
         if not self.isLive:
             return
+        if self.doc.is_blank():
+            self.doc.slidenumber = self.doc.get_slide_count()
+            return
         self.activate()
         self.doc.goto_slide(self.doc.get_slide_count())
         self.doc.poll_slidenumber(self.isLive)
@@ -103,6 +114,10 @@ class Controller(object):
         """
         log.debug(u'Live = %s, next' % self.isLive)
         if not self.isLive:
+            return
+        if self.doc.is_blank():
+            if self.doc.slidenumber < self.doc.get_slide_count():
+                self.doc.slidenumber = self.doc.slidenumber + 1
             return
         self.activate()
         self.doc.next_step()
@@ -115,6 +130,10 @@ class Controller(object):
         log.debug(u'Live = %s, previous' % self.isLive)
         if not self.isLive:
             return
+        if self.doc.is_blank():
+            if self.doc.slidenumber > 1:
+                self.doc.slidenumber = self.doc.slidenumber - 1
+            return
         self.activate()
         self.doc.previous_step()
         self.doc.poll_slidenumber(self.isLive)
@@ -124,12 +143,15 @@ class Controller(object):
         Based on the handler passed at startup triggers slide show to shut down
         """
         log.debug(u'Live = %s, shutdown' % self.isLive)
+        if self.isLive:
+            Receiver.send_message(u'live_slide_show')
         self.doc.close_presentation()
         self.doc = None
         #self.doc.slidenumber = 0
         #self.timer.stop()
 
     def blank(self):
+        log.debug(u'Live = %s, blank' % self.isLive)        
         if not self.isLive:
             return
         if not self.doc.is_loaded():
@@ -139,9 +161,12 @@ class Controller(object):
         self.doc.blank_screen()
 
     def unblank(self):
+        log.debug(u'Live = %s, unblank' % self.isLive)        
         if not self.isLive:
             return
         self.activate()
+        if self.doc.slidenumber and self.doc.slidenumber != self.doc.get_slide_number():
+            self.doc.goto_slide(self.doc.slidenumber)
         self.doc.unblank_screen()
 
     def poll(self):
@@ -188,17 +213,17 @@ class MessageListener(object):
         Save the handler as any new presentations start here
         """
         log.debug(u'Startup called with message %s' % message)
-        self.handler, file, isLive = self.decodeMessage(message)
-        filetype = os.path.splitext(file)[1][1:]
-        if self.handler==u'Automatic':
+        self.handler, file, isLive, isBlank = self.decodeMessage(message)
+        if self.handler == self.mediaitem.Automatic:
             self.handler = self.mediaitem.findControllerByType(file)
             if not self.handler:
                 return
-
+        
         if isLive:
-            self.liveHandler.addHandler(self.controllers[self.handler], file)
+            controller = self.liveHandler
         else:
-            self.previewHandler.addHandler(self.controllers[self.handler], file)
+            controller = self.previewHandler
+        controller.addHandler(self.controllers[self.handler], file, isBlank)
 
     def slide(self, message):
         slide, live = self.splitMessage(message)
@@ -264,7 +289,7 @@ class MessageListener(object):
         Message containing Presentaion handler name and file to be presented.
         """
         file = os.path.join(message[1], message[2])
-        return message[0], file, message[4]
+        return message[0], file, message[4],  message[5]
 
     def timeout(self):
         self.liveHandler.poll()
