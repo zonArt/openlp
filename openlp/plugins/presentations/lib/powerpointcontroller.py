@@ -77,21 +77,6 @@ class PowerpointController(PresentationController):
             self.process.Visible = True
             self.process.WindowState = 2
 
-        def is_loaded(self):
-            """
-            Returns true if a presentation is loaded
-            """
-            try:
-                if not self.process.Visible:
-                    return False
-                if self.process.Windows.Count == 0:
-                    return False
-                if self.process.Presentations.Count == 0:
-                    return False
-            except:
-                return False
-            return True
-
         def kill(self):
             """
             Called at system exit to clean up any running presentations
@@ -134,11 +119,8 @@ class PowerpointDocument(PresentationDocument):
         The file name of the presentations to run.
         """
         log.debug(u'LoadPresentation')
-        #try:
         if not self.controller.process.Visible:
             self.controller.start_process()
-        #except:
-        #   self.controller.start_process()
         #try:
         self.controller.process.Presentations.Open(self.filepath, False, False, True)
         #except:
@@ -159,7 +141,7 @@ class PowerpointDocument(PresentationDocument):
         if self.check_thumbnails():
             return
         self.presentation.Export(os.path.join(self.thumbnailpath, '')
-                                 , 'png', 600, 480)
+                                 , 'png', 640, 480)
 
     def close_presentation(self):
         """
@@ -176,11 +158,27 @@ class PowerpointDocument(PresentationDocument):
         self.presentation = None
         self.controller.remove_doc(self)
 
+    def is_loaded(self):
+        """
+        Returns true if a presentation is loaded
+        """
+        try:
+            if not self.controller.process.Visible:
+                return False
+            if self.controller.process.Windows.Count == 0:
+                return False
+            if self.controller.process.Presentations.Count == 0:
+                return False
+        except:
+            return False
+        return True
+
+
     def is_active(self):
         """
         Returns true if a presentation is currently active
         """
-        if not self.controller.is_loaded():
+        if not self.is_loaded():
             return False
         try:
             if self.presentation.SlideShowWindow is None:
@@ -204,6 +202,12 @@ class PowerpointDocument(PresentationDocument):
         Blanks the screen
         """
         self.presentation.SlideShowWindow.View.State = 3
+
+    def is_blank(self):
+        """
+        Returns true if screen is blank
+        """
+        return self.presentation.SlideShowWindow.View.State == 3
 
     def stop_presentation(self):
         """
@@ -276,3 +280,33 @@ class PowerpointDocument(PresentationDocument):
             return path
         else:
             return None
+
+    def get_slide_text(self, slide_no):
+        """
+        Returns the text on the slide
+
+        ``slide_no``
+        The slide the text  is required for, starting at 1
+        """
+        text = ''
+        shapes = self.presentation.Slides(slide_no).Shapes
+        for idx in range(shapes.Count):
+            shape = shapes(idx + 1)
+            if shape.HasTextFrame:
+                text += shape.TextFrame.TextRange.Text + '\n'
+        return text 
+
+    def get_slide_notes(self, slide_no):
+        """
+        Returns the text on the slide
+
+        ``slide_no``
+        The slide the notes are required for, starting at 1
+        """
+        text = ''
+        shapes = self.presentation.Slides(slide_no).NotesPage.Shapes
+        for idx in range(shapes.Count):
+            shape = shapes(idx + 1)
+            if shape.HasTextFrame:
+                text += shape.TextFrame.TextRange.Text + '\n'
+        return text

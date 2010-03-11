@@ -223,6 +223,10 @@ class CWExtract(BibleCommon):
             for part in verse.contents:
                 if str(part)[0] != u'<':
                     versetext = versetext + part
+                elif part and part.attrMap and part.attrMap[u'class'] == u'WordsOfChrist':
+                    for subpart in part.contents:
+                        if str(subpart)[0] != '<':
+                            versetext = versetext + subpart
             versetext = versetext.strip(u'\n\r\t ')
             verses[versenumber] = versetext
         return SearchResults(bookname, chapter, verses)
