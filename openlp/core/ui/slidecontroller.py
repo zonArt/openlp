@@ -470,7 +470,6 @@ class SlideController(QtGui.QWidget):
                 self.PreviewListWidget.setCellWidget(framenumber, 0, label)
                 slide_height = width * self.parent.RenderManager.screen_ratio
             self.PreviewListWidget.setItem(framenumber, 0, item)
-            print row
             if slide_height != 0:
                 self.PreviewListWidget.setRowHeight(framenumber, slide_height)
         if self.serviceItem.is_text():
