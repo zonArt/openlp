@@ -169,6 +169,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.loadAuthors()
         self.loadTopics()
         self.loadBooks()
+        #it's a new song to preview is not possible
+        self.previewButton.setVisible(False)
 
     def loadSong(self, id, preview):
         log.debug(u'Load Song')
