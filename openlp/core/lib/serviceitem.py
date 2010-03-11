@@ -134,8 +134,11 @@ class ServiceItem(object):
         else:
             self.RenderManager.set_override_theme(self.theme)
         format = self._display_frames[row][u'text'].split(u'\n')
-        frame = self.RenderManager.generate_slide(format,
-                        self.raw_footer)
+        if format[0]:
+            frame = self.RenderManager.generate_slide(format,
+                            self.raw_footer)
+        else:
+            frame = self.RenderManager.generate_slide(format,u'')
         return frame
 
     def add_from_image(self, path, title, image):
