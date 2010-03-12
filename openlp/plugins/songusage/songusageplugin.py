@@ -33,13 +33,13 @@ from openlp.plugins.songusage.lib import SongUsageManager
 from openlp.plugins.songusage.forms import SongUsageDetailForm, SongUsageDeleteForm
 from openlp.plugins.songusage.lib.models import SongUsageItem
 
+log = logging.getLogger(__name__)
+
 class SongUsagePlugin(Plugin):
-    global log
-    log = logging.getLogger(u'SongUsagePlugin')
     log.info(u'SongUsage Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'SongUsage', u'1.9.0', plugin_helpers)
+        Plugin.__init__(self, u'SongUsage', u'1.9.1', plugin_helpers)
         self.weight = -4
         self.icon = build_icon(u':/media/media_image.png')
         self.songusagemanager = None
@@ -141,7 +141,7 @@ class SongUsagePlugin(Plugin):
             SongUsageitem.authors = u''
             for author in SongUsageData[1]:
                 SongUsageitem.authors += author + u' '
-            self.songusagemanager.insert_SongUsage(SongUsageitem)
+            self.songusagemanager.insert_songusage(SongUsageitem)
 
     def onSongUsageDelete(self):
         self.SongUsagedeleteform.exec_()

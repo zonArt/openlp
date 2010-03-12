@@ -27,14 +27,13 @@ import logging
 
 from openlp.plugins.songusage.lib.models import init_models, metadata, SongUsageItem
 
+log = logging.getLogger(__name__)
+
 class SongUsageManager():
     """
     The Song Manager provides a central location for all database code. This
     class takes care of connecting to the database and running all the queries.
     """
-
-    global log
-    log = logging.getLogger(u'SongUsageManager')
     log.info(u'SongUsage manager loaded')
 
     def __init__(self, config):
@@ -60,12 +59,14 @@ class SongUsageManager():
 
         log.debug(u'SongUsage Initialised')
 
-    def get_all_songusage(self):
+    def get_all_songusage(self, start_date, end_date):
         """
         Returns the details of SongUsage
         """
-        return self.session.query(SongUsageItem).\
-            order_by(SongUsageItem.usagedate, SongUsageItem.usagetime ).all()
+        return self.session.query(SongUsageItem) \
+            .filter(SongUsageItem.usagedate >= start_date.toPyDate()) \
+            .filter(SongUsageItem.usagedate < end_date.toPyDate()) \
+            .order_by(SongUsageItem.usagedate, SongUsageItem.usagetime ).all()
 
     def insert_songusage(self, songusageitem):
         """
@@ -94,7 +95,7 @@ class SongUsageManager():
         """
         Delete a SongUsage record
         """
-        if id !=0:
+        if id != 0:
             songusageitem = self.get_songusage(id)
             try:
                 self.session.delete(songusageitem)

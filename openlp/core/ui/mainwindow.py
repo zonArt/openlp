@@ -25,31 +25,55 @@
 
 import os
 import logging
+import time
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
+from openlp.core.ui import AboutForm, SettingsForm,  \
     ServiceManager, ThemeManager, MainDisplay, SlideController, \
     PluginForm, MediaDockManager
 from openlp.core.lib import RenderManager, PluginConfig, build_icon, \
     OpenLPDockWidget, SettingsManager, PluginManager, Receiver, str_to_bool
-from openlp.core.utils import check_latest_version
+from openlp.core.utils import check_latest_version, AppLocation
+
+log = logging.getLogger(__name__)
 
 media_manager_style = """
   QToolBox::tab {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-        stop: 0 palette(midlight), stop: 1.0 palette(mid));
+        stop: 0 palette(button), stop: 1.0 palette(dark));
     border-width: 1px;
     border-style: outset;
-    border-color: palette(midlight);
+    border-color: palette(dark);
     border-radius: 5px;
   }
   QToolBox::tab:selected {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-        stop: 0 palette(light), stop: 1.0 palette(mid));
-    border-color: palette(light);
+        stop: 0 palette(light), stop: 1.0 palette(button));
+    border-color: palette(button);
   }
 """
+class VersionThread(QtCore.QThread):
+    """
+    A special Qt thread class to fetch the version of OpenLP from the website.
+    This is threaded so that it doesn't affect the loading time of OpenLP.
+    """
+    def __init__(self, parent, app_version, generalConfig):
+        QtCore.QThread.__init__(self, parent)
+        self.parent = parent
+        self.app_version = app_version
+        self.generalConfig = generalConfig
+
+    def run(self):
+        """
+        Run the thread.
+        """
+        time.sleep(2)
+        version = check_latest_version(self.generalConfig, self.app_version)
+        #new version has arrived
+        if version != self.app_version:
+            Receiver.send_message(u'version_check', u'%s' % version)
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -218,13 +242,8 @@ class Ui_MainWindow(object):
             self.settingsmanager.showServiceManager)
         self.ViewServiceManagerItem.setIcon(ServiceManagerIcon)
         self.ViewServiceManagerItem.setObjectName(u'ViewServiceManagerItem')
-        self.ToolsAlertItem = QtGui.QAction(MainWindow)
-        AlertIcon = build_icon(u':/tools/tools_alert.png')
-        self.ToolsAlertItem.setIcon(AlertIcon)
-        self.ToolsAlertItem.setObjectName(u'ToolsAlertItem')
         self.PluginItem = QtGui.QAction(MainWindow)
-        #PluginIcon = build_icon(u':/tools/tools_alert.png')
-        self.PluginItem.setIcon(AlertIcon)
+        #self.PluginItem.setIcon(AlertIcon)
         self.PluginItem.setObjectName(u'PluginItem')
         self.HelpDocumentationItem = QtGui.QAction(MainWindow)
         ContentsIcon = build_icon(u':/system/system_help_contents.png')
@@ -283,7 +302,6 @@ class Ui_MainWindow(object):
         self.OptionsMenu.addAction(self.OptionsViewMenu.menuAction())
         self.OptionsMenu.addSeparator()
         self.OptionsMenu.addAction(self.OptionsSettingsItem)
-        self.ToolsMenu.addAction(self.ToolsAlertItem)
         self.ToolsMenu.addAction(self.PluginItem)
         self.ToolsMenu.addSeparator()
         self.ToolsMenu.addAction(self.ToolsAddToolItem)
@@ -385,9 +403,6 @@ class Ui_MainWindow(object):
         self.action_Preview_Panel.setStatusTip(
             self.trUtf8('Toggle the visibility of the Preview Panel'))
         self.action_Preview_Panel.setShortcut(self.trUtf8('F11'))
-        self.ToolsAlertItem.setText(self.trUtf8('&Alert'))
-        self.ToolsAlertItem.setStatusTip(self.trUtf8('Show an alert message'))
-        self.ToolsAlertItem.setShortcut(self.trUtf8('F7'))
         self.PluginItem.setText(self.trUtf8('&Plugin List'))
         self.PluginItem.setStatusTip(self.trUtf8('List the Plugins'))
         self.PluginItem.setShortcut(self.trUtf8('Alt+F7'))
@@ -415,8 +430,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     """
     The main window.
     """
-    global log
-    log = logging.getLogger(u'MainWindow')
     log.info(u'MainWindow loaded')
 
     def __init__(self, screens, applicationVersion):
@@ -425,19 +438,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
-        self.screenList = screens
+        self.screens = screens
         self.applicationVersion = applicationVersion
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
         self.generalConfig = PluginConfig(u'General')
         self.mainDisplay = MainDisplay(self, screens)
-        self.alertForm = AlertForm(self)
         self.aboutForm = AboutForm(self, applicationVersion)
-        self.settingsForm = SettingsForm(self.screenList, self, self)
+        self.settingsForm = SettingsForm(self.screens, self, self)
         # Set up the path with plugins
-        pluginpath = os.path.split(os.path.abspath(__file__))[0]
-        pluginpath = os.path.abspath(
-            os.path.join(pluginpath, u'..', u'..', u'plugins'))
+        pluginpath = AppLocation.get_directory(AppLocation.PluginsDir)
         self.plugin_manager = PluginManager(pluginpath)
         self.plugin_helpers = {}
         # Set up the interface
@@ -476,14 +486,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.action_Preview_Panel.setChecked)
         QtCore.QObject.connect(self.HelpAboutItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpAboutItemClicked)
-        QtCore.QObject.connect(self.ToolsAlertItem,
-            QtCore.SIGNAL(u'triggered()'), self.onToolsAlertItemClicked)
         QtCore.QObject.connect(self.PluginItem,
             QtCore.SIGNAL(u'triggered()'), self.onPluginItemClicked)
         QtCore.QObject.connect(self.OptionsSettingsItem,
             QtCore.SIGNAL(u'triggered()'), self.onOptionsSettingsItemClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'update_global_theme'), self.defaultThemeChanged)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'version_check'), self.versionCheck)
         QtCore.QObject.connect(self.FileNewItem,
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onNewService)
@@ -500,7 +510,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         #RenderManager needs to call ThemeManager and
         #ThemeManager needs to call RenderManager
         self.RenderManager = RenderManager(self.ThemeManagerContents,
-            self.screenList, self.getMonitorNumber())
+            self.screens, self.getMonitorNumber())
         #Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
@@ -511,6 +521,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
         self.plugin_helpers[u'settings'] = self.settingsForm
         self.plugin_helpers[u'toolbox'] = self.mediaDockManager
+        self.plugin_helpers[u'maindisplay'] = self.mainDisplay
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers)
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here
@@ -536,20 +547,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         log.info(u'Load data from Settings')
         self.settingsForm.postSetUp()
 
-    def versionCheck(self):
+    def versionCheck(self, version):
         """
         Checks the version of the Application called from openlp.pyw
         """
         app_version = self.applicationVersion[u'full']
-        version = check_latest_version(self.generalConfig, app_version)
-        if app_version != version:
-            version_text = unicode(self.trUtf8('OpenLP version %s has been updated '
-                'to version %s\n\nYou can obtain the latest version from http://openlp.org'))
-            QtGui.QMessageBox.question(None,
-                self.trUtf8('OpenLP Version Updated'),
-                version_text % (app_version, version),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
-                QtGui.QMessageBox.Ok)
+        version_text = unicode(self.trUtf8('OpenLP version %s has been updated '
+            'to version %s\n\nYou can obtain the latest version from http://openlp.org'))
+        QtGui.QMessageBox.question(self,
+            self.trUtf8('OpenLP Version Updated'),
+            version_text % (app_version, version),
+            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
+            QtGui.QMessageBox.Ok)
 
     def getMonitorNumber(self):
         """
@@ -558,11 +567,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         monitor number does not exist.
         """
         screen_number = int(self.generalConfig.get_config(u'monitor', 0))
-        monitor_exists = False
-        for screen in self.screenList:
-            if screen[u'number'] == screen_number:
-                monitor_exists = True
-        if not monitor_exists:
+        if not self.screens.screen_exists(screen_number):
             screen_number = 0
         return screen_number
 
@@ -580,12 +585,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.ServiceManagerContents.onLoadService(True)
         if str_to_bool(self.generalConfig.get_config(u'screen blank', False)) \
         and str_to_bool(self.generalConfig.get_config(u'blank warning', False)):
-            QtGui.QMessageBox.question(None,
+            self.LiveController.onBlankDisplay(True)
+            QtGui.QMessageBox.question(self,
                 self.trUtf8('OpenLP Main Display Blanked'),
                 self.trUtf8('The Main Display has been blanked out'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
-            self.LiveController.blankButton.setChecked(True)
+
+    def versionThread(self):
+        app_version = self.applicationVersion[u'full']
+        vT = VersionThread(self, app_version, self.generalConfig)
+        vT.start()
 
     def onHelpAboutItemClicked(self):
         """
@@ -593,12 +603,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.aboutForm.applicationVersion = self.applicationVersion
         self.aboutForm.exec_()
-
-    def onToolsAlertItemClicked(self):
-        """
-        Show the Alert form
-        """
-        self.alertForm.exec_()
 
     def onPluginItemClicked(self):
         """
@@ -613,7 +617,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.settingsForm.exec_()
         updated_display = self.getMonitorNumber()
-        if updated_display != self.RenderManager.current_display:
+        if updated_display != self.screens.current_display:
+            self.screens.set_current_display(updated_display)
             self.RenderManager.update_display(updated_display)
             self.mainDisplay.setup(updated_display)
         self.activateWindow()
@@ -623,7 +628,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Hook to close the main window and display windows on exit
         """
         if self.serviceNotSaved:
-            ret = QtGui.QMessageBox.question(None,
+            ret = QtGui.QMessageBox.question(self,
                 self.trUtf8('Save Changes to Service?'),
                 self.trUtf8('Your service has changed, do you want to save those changes?'),
                 QtGui.QMessageBox.StandardButtons(

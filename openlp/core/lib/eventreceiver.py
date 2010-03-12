@@ -27,6 +27,8 @@ import logging
 
 from PyQt4 import QtCore
 
+log = logging.getLogger(__name__)
+
 class EventReceiver(QtCore.QObject):
     """
     Class to allow events to be passed from different parts of the
@@ -104,10 +106,10 @@ class EventReceiver(QtCore.QObject):
     ``remote_edit_clear``
         Informs all components that remote edit has been aborted.
 
-    """
-    global log
-    log = logging.getLogger(u'EventReceiver')
+    ``presentation types``
+        Informs all components of the presentation types supported.
 
+    """
     def __init__(self):
         """
         Initialise the event receiver, calling the parent constructor.
@@ -162,3 +164,4 @@ class Receiver():
         Get the global ``eventreceiver`` instance.
         """
         return Receiver.eventreceiver
+

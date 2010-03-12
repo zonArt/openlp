@@ -28,16 +28,17 @@ import os
 import sys
 import logging
 
-from logging.handlers import RotatingFileHandler
+from logging import FileHandler
 from optparse import OptionParser
 from PyQt4 import QtCore, QtGui
 
+log = logging.getLogger()
+
+import openlp
 from openlp.core.lib import Receiver, str_to_bool
 from openlp.core.resources import qInitResources
-from openlp.core.ui import MainWindow, SplashScreen
-from openlp.core.utils import ConfigHelper
-
-log = logging.getLogger()
+from openlp.core.ui import MainWindow, SplashScreen, ScreenList
+from openlp.core.utils import AppLocation, ConfigHelper
 
 application_stylesheet = u"""
 QMainWindow::separator
@@ -47,9 +48,11 @@ QMainWindow::separator
 
 QDockWidget::title
 {
-  border: none;
+  /*background: palette(dark);*/
+  border: 1px solid palette(dark);
   padding-left: 5px;
-  padding-top: 3px;
+  padding-top: 2px;
+  margin: 1px 0;
 }
 
 QToolBar
@@ -65,16 +68,21 @@ class OpenLP(QtGui.QApplication):
     The core application class. This class inherits from Qt's QApplication
     class in order to provide the core of the application.
     """
-    global log
     log.info(u'OpenLP Application Loaded')
+
+    def notify(self, obj, evt):
+        #TODO needed for presentation exceptions
+        return QtGui.QApplication.notify(self, obj, evt)
 
     def run(self):
         """
         Run the OpenLP application.
         """
         #Load and store current Application Version
-        filepath = os.path.split(os.path.abspath(__file__))[0]
-        filepath = os.path.abspath(os.path.join(filepath, u'version.txt'))
+        filepath = AppLocation.get_directory(AppLocation.AppDir)
+        if not hasattr(sys, u'frozen'):
+            filepath = os.path.join(filepath, u'openlp')
+        filepath = os.path.join(filepath, u'.version')
         fversion = None
         try:
             fversion = open(filepath, u'r')
@@ -91,9 +99,9 @@ class OpenLP(QtGui.QApplication):
                 app_version[u'version'], app_version[u'build']))
         except:
                 app_version = {
-                    u'full': u'1.9.0-000',
+                    u'full': u'1.9.0-bzr000',
                     u'version': u'1.9.0',
-                    u'build': u'000'
+                    u'build': u'bzr000'
                 }
         finally:
             if fversion:
@@ -117,10 +125,10 @@ class OpenLP(QtGui.QApplication):
             self.splash.show()
         # make sure Qt really display the splash screen
         self.processEvents()
-        screens = []
+        screens = ScreenList()
         # Decide how many screens we have and their size
         for screen in xrange(0, self.desktop().numScreens()):
-            screens.append({u'number': screen,
+            screens.add_screen({u'number': screen,
                             u'size': self.desktop().availableGeometry(screen),
                             u'primary': (self.desktop().primaryScreen() == screen)})
             log.info(u'Screen %d found with resolution %s',
@@ -131,7 +139,8 @@ class OpenLP(QtGui.QApplication):
         if show_splash:
             # now kill the splashscreen
             self.splash.finish(self.mainWindow)
-        self.mainWindow.versionCheck()
+        self.mainWindow.repaint()
+        self.mainWindow.versionThread()
         return self.exec_()
 
 def main():
@@ -143,7 +152,7 @@ def main():
     usage = u'Usage: %prog [options] [qt-options]'
     parser = OptionParser(usage=usage)
     parser.add_option("-l", "--log-level", dest="loglevel",
-                      default="info", metavar="LEVEL",
+                      default="warning", metavar="LEVEL",
                       help="Set logging to LEVEL level. Valid values are "
                            "\"debug\", \"info\", \"warning\".")
     parser.add_option("-p", "--portable", dest="portable",
@@ -153,10 +162,13 @@ def main():
     parser.add_option("-s", "--style", dest="style",
                       help="Set the Qt4 style (passed directly to Qt4).")
     # Set up logging
-    filename = u'openlp.log'
-    logfile = RotatingFileHandler(filename, maxBytes=200000, backupCount=5)
+    log_path = AppLocation.get_directory(AppLocation.ConfigDir)
+    if not os.path.exists(log_path):
+        os.makedirs(log_path)
+    filename = os.path.join(log_path, u'openlp.log')
+    logfile = FileHandler(filename, u'w')
     logfile.setFormatter(logging.Formatter(
-        u'%(asctime)s %(name)-15s %(levelname)-8s %(message)s'))
+        u'%(asctime)s %(name)-20s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
     logging.addLevelName(15, u'Timer')
     # Parse command line options and deal with them.
@@ -164,6 +176,7 @@ def main():
     qt_args = []
     if options.loglevel.lower() in ['d', 'debug']:
         log.setLevel(logging.DEBUG)
+        print 'Logging to:', filename
     elif options.loglevel.lower() in ['w', 'warning']:
         log.setLevel(logging.WARNING)
     else:

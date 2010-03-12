@@ -30,9 +30,9 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib.plugin import PluginStatus
 from plugindialog import Ui_PluginViewDialog
 
+log = logging.getLogger(__name__)
+
 class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
-    global log
-    log = logging.getLogger(u'PluginForm')
 
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)

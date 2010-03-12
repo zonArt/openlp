@@ -27,10 +27,12 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon
+from openlp.core.lib import Plugin, build_icon, PluginStatus
 from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab
 from openlp.plugins.songs.forms import OpenLPImportForm, OpenSongExportForm, \
     OpenSongImportForm, OpenLPExportForm
+
+log = logging.getLogger(__name__)
 
 class SongsPlugin(Plugin):
     """
@@ -40,16 +42,13 @@ class SongsPlugin(Plugin):
     specified. Authors, topics and song books can be assigned to songs
     as well.
     """
-
-    global log
-    log = logging.getLogger(u'SongsPlugin')
     log.info(u'Song Plugin loaded')
 
     def __init__(self, plugin_helpers):
         """
         Create and set up the Songs plugin.
         """
-        Plugin.__init__(self, u'Songs', u'1.9.0', plugin_helpers)
+        Plugin.__init__(self, u'Songs', u'1.9.1', plugin_helpers)
         self.weight = -10
         self.songmanager = SongManager(self.config)
         self.openlp_import_form = OpenLPImportForm()
@@ -57,6 +56,7 @@ class SongsPlugin(Plugin):
         self.openlp_export_form = OpenLPExportForm()
         self.opensong_export_form = OpenSongExportForm()
         self.icon = build_icon(u':/media/media_song.png')
+        self.status = PluginStatus.Active
 
     def get_settings_tab(self):
         return SongsTab(self.name)
@@ -179,3 +179,8 @@ class SongsPlugin(Plugin):
         about_text = self.trUtf8('<b>Song Plugin</b> <br>This plugin allows '
             'Songs to be managed and displayed.<br>')
         return about_text
+
+    def can_delete_theme(self, theme):
+        if len(self.songmanager.get_songs_for_theme(theme)) == 0:
+            return True
+        return False

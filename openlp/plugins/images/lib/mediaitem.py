@@ -29,6 +29,8 @@ import os
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon
 
+log = logging.getLogger(__name__)
+
 # We have to explicitly create separate classes for each plugin
 # in order for DnD to the Service manager to work correctly.
 class ImageListView(BaseListWithDnD):
@@ -40,8 +42,6 @@ class ImageMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for images.
     """
-    global log
-    log = logging.getLogger(u'ImageMediaItem')
     log.info(u'Image Media Item loaded')
 
     def __init__(self, parent, icon, title):
@@ -61,7 +61,7 @@ class ImageMediaItem(MediaManagerItem):
     def retranslateUi(self):
         self.OnNewPrompt = self.trUtf8('Select Image(s)')
         self.OnNewFileMasks = \
-            self.trUtf8('Images (*.jpg *jpeg *.gif *.png *.bmp)')
+            self.trUtf8('Images (*.jpg *jpeg *.gif *.png *.bmp);; All files (*)')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -144,6 +144,7 @@ class ImageMediaItem(MediaManagerItem):
         items = self.ListView.selectedIndexes()
         if items:
             service_item.title = self.trUtf8('Image(s)')
+            service_item.autoPreviewAllowed = True
             for item in items:
                 bitem = self.ListView.item(item.row())
                 filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
@@ -172,7 +173,6 @@ class ImageMediaItem(MediaManagerItem):
                 filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
                 self.OverrideLabel.setText(bitem.text())
                 frame = QtGui.QImage(unicode(filename))
-                self.parent.render_manager.override_background = frame
-                self.parent.render_manager.override_background_changed = True
+                self.parent.maindisplay.addImageWithText(frame)
         else:
             MediaManagerItem.onPreviewClick(self)

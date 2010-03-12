@@ -32,6 +32,8 @@ from openlp.core.lib.toolbar import *
 from openlp.core.lib import contextMenuAction, contextMenuSeparator
 from serviceitem import ServiceItem
 
+log = logging.getLogger(__name__)
+
 class MediaManagerItem(QtGui.QWidget):
     """
     MediaManagerItem is a helper widget for plugins.
@@ -92,9 +94,6 @@ class MediaManagerItem(QtGui.QWidget):
         method is not defined, a default will be used (treat the
         filename as an image).
     """
-
-    global log
-    log = logging.getLogger(u'MediaManagerItem')
     log.info(u'Media Item loaded')
 
     def __init__(self, parent=None, icon=None, title=None):
@@ -253,7 +252,7 @@ class MediaManagerItem(QtGui.QWidget):
 
     def addListViewToToolBar(self):
         #Add the List widget
-        self.ListView = self.ListViewWithDnD_class()
+        self.ListView = self.ListViewWithDnD_class(self)
         self.ListView.uniformItemSizes = True
         self.ListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.ListView.setSpacing(1)
@@ -315,7 +314,7 @@ class MediaManagerItem(QtGui.QWidget):
             self, self.OnNewPrompt,
             self.parent.config.get_last_dir(), self.OnNewFileMasks)
         log.info(u'New files(s)%s', unicode(files))
-        if len(files) > 0:
+        if files:
             self.loadList(files)
             dir, filename = os.path.split(unicode(files[0]))
             self.parent.config.set_last_dir(dir)

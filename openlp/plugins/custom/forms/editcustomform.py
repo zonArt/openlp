@@ -30,12 +30,12 @@ from editcustomdialog import Ui_customEditDialog
 from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver
 from openlp.plugins.custom.lib.models import CustomSlide
 
+log = logging.getLogger(__name__)
+
 class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
     """
     Class documentation goes here.
     """
-    global log
-    log = logging.getLogger(u'EditCustomForm')
     log.info(u'Custom Editor loaded')
     def __init__(self, custommanager, parent = None):
         """
@@ -153,10 +153,10 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             sxml.add_verse_to_lyrics(u'custom', unicode(count),
                 unicode(self.VerseListView.item(i).text()))
             count += 1
-        self.customSlide.title = unicode(self.TitleEdit.displayText())
-        self.customSlide.text = unicode(sxml.extract_xml())
-        self.customSlide.credits = unicode(self.CreditEdit.displayText())
-        self.customSlide.theme_name = unicode(self.ThemeComboBox.currentText())
+        self.customSlide.title = unicode(self.TitleEdit.displayText(), u'utf-8')
+        self.customSlide.text = unicode(sxml.extract_xml(), u'utf-8')
+        self.customSlide.credits = unicode(self.CreditEdit.displayText(), u'utf-8')
+        self.customSlide.theme_name = unicode(self.ThemeComboBox.currentText(), u'utf-8')
         self.custommanager.save_slide(self.customSlide)
         return True
 
@@ -254,7 +254,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         if self.VerseListView.count() == 0:
             self.VerseTextEdit.setFocus()
             return False, self.trUtf8('You need to enter a slide')
-        if len(self.VerseTextEdit.toPlainText()) > 0:
+        if self.VerseTextEdit.toPlainText():
             self.VerseTextEdit.setFocus()
             return False, self.trUtf8('You have unsaved data')
         return True,  u''

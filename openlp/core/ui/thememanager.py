@@ -34,17 +34,16 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.ui import AmendThemeForm
 from openlp.core.theme import Theme
 from openlp.core.lib import PluginConfig, OpenLPToolbar, contextMenuAction, \
-    ThemeXML, ThemeLevel, str_to_bool, get_text_file_string, build_icon, \
-    Receiver, contextMenuSeparator
+    ThemeXML, str_to_bool, get_text_file_string, build_icon, Receiver, \
+    contextMenuSeparator
 from openlp.core.utils import ConfigHelper
+
+log = logging.getLogger(__name__)
 
 class ThemeManager(QtGui.QWidget):
     """
     Manages the orders of Theme.
     """
-    global log
-    log = logging.getLogger(u'ThemeManager')
-
     def __init__(self, parent):
         QtGui.QWidget.__init__(self, parent)
         self.parent = parent
@@ -108,6 +107,8 @@ class ThemeManager(QtGui.QWidget):
         self.themelist = []
         self.path = os.path.join(ConfigHelper.get_data_path(), u'themes')
         self.checkThemesExists(self.path)
+        self.thumbPath = os.path.join(self.path, u'.thumbnails')
+        self.checkThemesExists(self.thumbPath)
         self.amendThemeForm.path = self.path
         # Last little bits of setting up
         self.config = PluginConfig(u'themes')
@@ -179,12 +180,26 @@ class ThemeManager(QtGui.QWidget):
                     self.trUtf8('You are unable to delete the default theme!'),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             else:
+                for plugin in self.parent.plugin_manager.plugins:
+                    if not plugin.can_delete_theme(theme):
+                        QtGui.QMessageBox.critical(
+                            self, self.trUtf8('Error'),
+                            self.trUtf8('theme %s is use in %s plugin' % (theme, plugin.name)),
+                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                        return
+                if unicode(self.parent.ServiceManagerContents.ThemeComboBox.currentText()) == theme:
+                    QtGui.QMessageBox.critical(
+                        self, self.trUtf8('Error'),
+                        self.trUtf8('theme %s is use Service Manager' % theme),
+                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                    return
                 self.themelist.remove(theme)
                 th = theme + u'.png'
                 row = self.ThemeListWidget.row(item)
                 self.ThemeListWidget.takeItem(row)
                 try:
                     os.remove(os.path.join(self.path, th))
+                    os.remove(os.path.join(self.thumbPath, th))
                     shutil.rmtree(os.path.join(self.path, theme))
                 except:
                     #if not present do not worry
@@ -231,9 +246,9 @@ class ThemeManager(QtGui.QWidget):
             self, self.trUtf8('Select Theme Import File'),
             self.config.get_last_dir(), u'Theme (*.*)')
         log.info(u'New Themes %s', unicode(files))
-        if len(files) > 0:
+        if files:
             for file in files:
-                self.config.set_last_dir(filename)
+                self.config.set_last_dir(unicode(file))
                 self.unzipTheme(file, self.path)
         self.loadThemes()
 
@@ -246,25 +261,33 @@ class ThemeManager(QtGui.QWidget):
         log.debug(u'Load themes from dir')
         self.themelist = []
         self.ThemeListWidget.clear()
-        for root, dirs, files in os.walk(self.path):
-            for name in files:
-                if name.endswith(u'.png'):
-                    #check to see file is in theme root directory
-                    theme = os.path.join(self.path, name)
-                    if os.path.exists(theme):
-                        (path, filename) = os.path.split(unicode(file))
-                        textName = os.path.splitext(name)[0]
-                        if textName == self.global_theme:
-                            name = u'%s (%s)' % (textName,
-                                self.trUtf8('default'))
-                        else:
-                            name = textName
-                        item_name = QtGui.QListWidgetItem(name)
-                        item_name.setIcon(build_icon(theme))
-                        item_name.setData(QtCore.Qt.UserRole,
-                            QtCore.QVariant(textName))
-                        self.ThemeListWidget.addItem(item_name)
-                        self.themelist.append(textName)
+        #root, dirs, files = os.walk(self.path)
+        dirList = os.listdir(self.path)
+        for name in dirList:
+            if name.endswith(u'.png'):
+                #check to see file is in theme root directory
+                theme = os.path.join(self.path, name)
+                if os.path.exists(theme):
+                    (path, filename) = os.path.split(unicode(file))
+                    textName = os.path.splitext(name)[0]
+                    if textName == self.global_theme:
+                        name = u'%s (%s)' % (textName,
+                            self.trUtf8('default'))
+                    else:
+                        name = textName
+                    thumb = os.path.join(self.thumbPath, u'%s.png' % textName)
+                    item_name = QtGui.QListWidgetItem(name)
+                    if os.path.exists(thumb):
+                        icon = build_icon(thumb)
+                    else:
+                        icon = build_icon(theme)
+                        pixmap = icon.pixmap(QtCore.QSize(88,50))
+                        pixmap.save(thumb, u'png')
+                    item_name.setIcon(icon)
+                    item_name.setData(QtCore.Qt.UserRole,
+                        QtCore.QVariant(textName))
+                    self.ThemeListWidget.addItem(item_name)
+                    self.themelist.append(textName)
         self.pushThemes()
 
     def pushThemes(self):
@@ -302,17 +325,23 @@ class ThemeManager(QtGui.QWidget):
             filexml = None
             themename = None
             for file in zip.namelist():
-                if file.endswith(os.path.sep):
-                    theme_dir = os.path.join(dir, file)
+                osfile = unicode(QtCore.QDir.toNativeSeparators(file))
+                theme_dir = None
+                if osfile.endswith(os.path.sep):
+                    theme_dir = os.path.join(dir, osfile)
                     if not os.path.exists(theme_dir):
-                        os.mkdir(os.path.join(dir, file))
+                        os.mkdir(os.path.join(dir, osfile))
                 else:
-                    fullpath = os.path.join(dir, file)
-                    names = file.split(os.path.sep)
+                    fullpath = os.path.join(dir, osfile)
+                    names = osfile.split(os.path.sep)
                     if len(names) > 1:
                         # not preview file
                         if themename is None:
                             themename = names[0]
+                        if theme_dir is None:
+                            theme_dir = os.path.join(dir, names[0])
+                            if not os.path.exists(theme_dir):
+                                os.mkdir(os.path.join(dir, names[0]))
                         xml_data = zip.read(file)
                         if os.path.splitext(file)[1].lower() in [u'.xml']:
                             if self.checkVersion1(xml_data):
@@ -324,7 +353,7 @@ class ThemeManager(QtGui.QWidget):
                             outfile = open(fullpath, u'w')
                             outfile.write(filexml)
                         else:
-                            outfile = open(fullpath, u'w')
+                            outfile = open(fullpath, u'wb')
                             outfile.write(zip.read(file))
             self.generateAndSaveImage(dir, themename, filexml)
         except:
@@ -332,7 +361,7 @@ class ThemeManager(QtGui.QWidget):
                 self, self.trUtf8('Error'),
                 self.trUtf8('File is not a valid theme!'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-            log.exception(u'Importing theme from zip file failed')
+            log.exception(u'Importing theme from zip file failed %s' % filename)
         finally:
             if zip:
                 zip.close()
@@ -373,7 +402,6 @@ class ThemeManager(QtGui.QWidget):
                 unicode(theme.BackgroundParameter2.name()), direction)
         else:
             newtheme.add_background_image(unicode(theme.BackgroundParameter1))
-
         newtheme.add_font(unicode(theme.FontName),
             unicode(theme.FontColor.name()),
             unicode(theme.FontProportion * 3), u'False')
@@ -386,10 +414,15 @@ class ThemeManager(QtGui.QWidget):
             shadow = True
         if theme.Outline == 1:
             outline = True
+        vAlignCorrection = 0
+        if theme.VerticalAlign == 2:
+            vAlignCorrection = 1
+        elif theme.VerticalAlign == 1:
+            vAlignCorrection = 2
         newtheme.add_display(unicode(shadow), unicode(theme.ShadowColor.name()),
             unicode(outline), unicode(theme.OutlineColor.name()),
-            unicode(theme.HorizontalAlign), unicode(theme.VerticalAlign),
-            unicode(theme.WrapStyle), 0)
+            unicode(theme.HorizontalAlign), unicode(vAlignCorrection),
+            unicode(theme.WrapStyle), unicode(0))
         return newtheme.extract_xml()
 
     def saveTheme(self, name, theme_xml, theme_pretty_xml, image_from,
@@ -427,8 +460,6 @@ class ThemeManager(QtGui.QWidget):
                 if outfile:
                     outfile.close()
             if image_from and image_from != image_to:
-                print "if", image_from
-                print "it", image_to
                 try:
                     shutil.copyfile(image_from, image_to)
                 except:
@@ -448,6 +479,10 @@ class ThemeManager(QtGui.QWidget):
         if os.path.exists(samplepathname):
             os.unlink(samplepathname)
         frame.save(samplepathname, u'png')
+        thumb = os.path.join(self.thumbPath, u'%s.png' % name)
+        icon = build_icon(frame)
+        pixmap = icon.pixmap(QtCore.QSize(88,50))
+        pixmap.save(thumb, u'png')
         log.debug(u'Theme image written to %s', samplepathname)
 
     def generateImage(self, themedata):

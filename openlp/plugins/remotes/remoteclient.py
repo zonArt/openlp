@@ -28,7 +28,6 @@ import socket
 import sys
 from optparse import OptionParser
 
-
 def sendData(options, message):
     addr = (options.address, options.port)
     try:
@@ -47,34 +46,23 @@ def main():
     parser.add_option("-v", "--verbose",
                       action="store_true", dest="verbose", default=True,
                       help="make lots of noise [%default]")
-    parser.add_option("-p", "--port",
-                      default=4316,
+    parser.add_option("-p", "--port", default=4316,
                       help="IP Port number %default ")
     parser.add_option("-a", "--address",
                       help="Recipient address ")
-    parser.add_option("-e", "--event",
-                      default=u'Alert',
-                      help="Action to be undertaken")
     parser.add_option("-m", "--message",
                       help="Message to be passed for the action")
-    parser.add_option("-n", "--slidenext",
-                      help="Trigger the next slide")
 
     (options, args) = parser.parse_args()
-    if len(args) > 0:
+    if args:
         parser.print_help()
         parser.error("incorrect number of arguments")
-    elif options.message is None:
-        parser.print_help()
-        parser.error("No message passed")
     elif options.address is None:
         parser.print_help()
         parser.error("IP address missing")
-    elif options.slidenext:
-        options.event = u'next_slide'
-        options.message = u''
-        text = format_message(options)
-        sendData(options, text)
+    elif options.message is None:
+        parser.print_help()
+        parser.error("No message passed")
     else:
         text = format_message(options)
         sendData(options, text)

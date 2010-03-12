@@ -23,8 +23,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from datetime import date
-
 from PyQt4 import QtGui
 
 from songusagedeletedialog import Ui_SongUsageDeleteDialog
@@ -33,11 +31,11 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
     """
     Class documentation goes here.
     """
-    def __init__(self, auditmanager, parent=None):
+    def __init__(self, songusagemanager, parent=None):
         """
         Constructor
         """
-        self.auditmanager = auditmanager
+        self.songusagemanager = songusagemanager
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
 
@@ -50,7 +48,6 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
                 QtGui.QMessageBox.Cancel),
             QtGui.QMessageBox.Cancel)
         if ret == QtGui.QMessageBox.Ok:
-            qDeleteDate = self.DeleteCalendar.selectedDate()
-            deleteDate = date(qDeleteDate.year(), qDeleteDate.month(), qDeleteDate.day())
-            self.auditmanager.delete_to_date(deleteDate)
+            deleteDate = self.DeleteCalendar.selectedDate().toPyDate()
+            self.songusagemanager.delete_to_date(deleteDate)
         self.close()

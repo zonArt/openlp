@@ -27,15 +27,14 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import str_to_bool, Receiver
-from openlp.core.lib import SettingsTab
+from openlp.core.lib import str_to_bool, Receiver, SettingsTab
+
+log = logging.getLogger(__name__)
 
 class BiblesTab(SettingsTab):
     """
     BiblesTab is the Bibles settings tab in the settings dialog.
     """
-    global log
-    log = logging.getLogger(u'BibleTab')
     log.info(u'Bible Tab loaded')
 
     def __init__(self, title, section=None):

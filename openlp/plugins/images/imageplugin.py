@@ -25,18 +25,19 @@
 
 import logging
 
-from openlp.core.lib import Plugin, build_icon
+from openlp.core.lib import Plugin, build_icon, PluginStatus
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
+log = logging.getLogger(__name__)
+
 class ImagePlugin(Plugin):
-    global log
-    log = logging.getLogger(u'ImagePlugin')
     log.info(u'Image Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Images', u'1.9.0', plugin_helpers)
+        Plugin.__init__(self, u'Images', u'1.9.1', plugin_helpers)
         self.weight = -7
         self.icon = build_icon(u':/media/media_image.png')
+        self.status = PluginStatus.Active
 
     def initialise(self):
         log.info(u'Plugin Initialising')
@@ -60,6 +61,6 @@ class ImagePlugin(Plugin):
             'together and presented on the live controller it is possible '
             'to turn them into a timed loop.<br<br>From the plugin if the '
             '<i>Override background</i> is chosen and an image is selected '
-            'any somgs which are rendered will use the selected image from '
+            'any songs which are rendered will use the selected image from '
             'the background instead of the one provied by the theme.<br>')
         return about_text

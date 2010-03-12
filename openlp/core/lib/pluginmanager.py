@@ -29,13 +29,13 @@ import logging
 
 from openlp.core.lib import Plugin, PluginStatus
 
+log = logging.getLogger(__name__)
+
 class PluginManager(object):
     """
     This is the Plugin manager, which loads all the plugins,
     and executes all the hooks, as and when necessary.
     """
-    global log
-    log = logging.getLogger(u'PluginMgr')
     log.info(u'Plugin manager loaded')
 
     def __init__(self, dir):
@@ -54,7 +54,7 @@ class PluginManager(object):
         log.debug(u'Base path %s ', self.basepath)
         self.plugins = []
         # this has to happen after the UI is sorted self.find_plugins(dir)
-        log.info(u'Plugin manager done init')
+        log.info(u'Plugin manager Initialised')
 
     def find_plugins(self, dir, plugin_helpers):
         """
@@ -77,7 +77,7 @@ class PluginManager(object):
                 if name.endswith(u'.py') and not name.startswith(u'__'):
                     path = os.path.abspath(os.path.join(root, name))
                     thisdepth = len(path.split(os.sep))
-                    if thisdepth-startdepth > 2:
+                    if thisdepth - startdepth > 2:
                         # skip anything lower down
                         continue
                     modulename, pyext = os.path.splitext(path)
@@ -101,7 +101,7 @@ class PluginManager(object):
                 log.debug(u'Loaded plugin %s with helpers', unicode(p))
                 plugin_objects.append(plugin)
             except TypeError:
-                log.error(u'loaded plugin %s has no helpers', unicode(p))
+                log.exception(u'loaded plugin %s has no helpers', unicode(p))
         plugins_list = sorted(plugin_objects, self.order_by_weight)
         for plugin in plugins_list:
             if plugin.check_pre_conditions():
@@ -200,6 +200,7 @@ class PluginManager(object):
                 % (plugin.name, plugin.is_active()))
             if plugin.is_active():
                 plugin.initialise()
+                log.info(u'Initialisation Complete for %s ' % plugin.name)
             if not plugin.is_active():
                 plugin.remove_toolbox_item()
 
@@ -212,3 +213,4 @@ class PluginManager(object):
         for plugin in self.plugins:
             if plugin.is_active():
                 plugin.finalise()
+                log.info(u'Finalisation Complete for %s ' % plugin.name)

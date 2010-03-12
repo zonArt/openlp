@@ -30,6 +30,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, SongXMLParser, BaseListWithDnD,\
 Receiver, str_to_bool
 
+log = logging.getLogger(__name__)
+
 class CustomListView(BaseListWithDnD):
     def __init__(self, parent=None):
         self.PluginName = u'Custom'
@@ -39,8 +41,6 @@ class CustomMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Custom Slides.
     """
-    global log
-    log = logging.getLogger(u'CustomMediaItem')
     log.info(u'Custom Media Item loaded')
 
     def __init__(self, parent, icon, title):
@@ -144,13 +144,14 @@ class CustomMediaItem(MediaManagerItem):
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         else:
             item_id = self.remoteCustom
+        service_item.autoPreviewAllowed = True
         customSlide = self.parent.custommanager.get_custom(item_id)
         title = customSlide.title
         credit = customSlide.credits
         service_item.edit_enabled = True
         service_item.editId = item_id
         theme = customSlide.theme_name
-        if len(theme) is not 0 :
+        if theme:
             service_item.theme = theme
         songXML = SongXMLParser(customSlide.text)
         verseList = songXML.get_verses()
@@ -159,9 +160,9 @@ class CustomMediaItem(MediaManagerItem):
         service_item.title = title
         for slide in raw_slides:
             service_item.add_from_text(slide[:30], slide)
-        if str_to_bool(self.parent.config.get_config(u'display footer', True)) or \
-            len(credit) > 0:
-            raw_footer.append(title + u' '+ credit)
+        if str_to_bool(self.parent.config.get_config(u'display footer', True)) \
+            or credit:
+            raw_footer.append(title + u' ' + credit)
         else:
             raw_footer.append(u'')
         service_item.raw_footer = raw_footer

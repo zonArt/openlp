@@ -28,33 +28,19 @@ import logging
 import cPickle
 import zipfile
 
+log = logging.getLogger(__name__)
+
 from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
-    ServiceItemType, contextMenuAction, contextMenuSeparator, contextMenu, \
-    Receiver, contextMenu, str_to_bool
+    contextMenuAction, Receiver, str_to_bool, build_icon
+from openlp.core.ui import ServiceItemNoteForm
 
 class ServiceManagerList(QtGui.QTreeWidget):
 
     def __init__(self, parent=None, name=None):
         QtGui.QTreeWidget.__init__(self,parent)
         self.parent = parent
-
-#    def mousePressEvent(self, event):
-#        if event.button() == QtCore.Qt.RightButton:
-#            item = self.itemAt(event.pos())
-#            parentitem = item.parent()
-#            if parentitem is None:
-#                pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-#            else:
-#                pos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
-#            serviceItem = self.parent.serviceItems[pos - 1]
-#            if serviceItem[u'data'].edit_enabled:
-#                self.parent.editAction.setVisible(True)
-#            else:
-#                self.parent.editAction.setVisible(False)
-#            event.accept()
-#        else:
-#            event.ignore()
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
@@ -91,6 +77,7 @@ class ServiceManagerList(QtGui.QTreeWidget):
         just tell it what plugin to call
         """
         if event.buttons() != QtCore.Qt.LeftButton:
+            event.ignore()
             return
         drag = QtGui.QDrag(self)
         mimeData = QtCore.QMimeData()
@@ -105,9 +92,6 @@ class ServiceManager(QtGui.QWidget):
     the resources used into one OSZ file for use on any OpenLP v2 installation.
     Also handles the UI tasks of moving things up and down etc.
     """
-    global log
-    log = logging.getLogger(u'ServiceManager')
-
     def __init__(self, parent):
         """
         Sets up the service manager, toolbars, list view, et al.
@@ -121,6 +105,7 @@ class ServiceManager(QtGui.QWidget):
         #Indicates if remoteTriggering is active.  If it is the next addServiceItem call
         #will replace the currently selected one.
         self.remoteEditTriggered = False
+        self.serviceItemNoteForm = ServiceItemNoteForm()
         #start with the layout
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
@@ -161,62 +146,38 @@ class ServiceManager(QtGui.QWidget):
         self.ServiceManagerList.setAlternatingRowColors(True)
         self.ServiceManagerList.setHeaderHidden(True)
         self.ServiceManagerList.setExpandsOnDoubleClick(False)
+        self.ServiceManagerList.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ServiceManagerList.customContextMenuRequested.connect(self.contextMenu)
         self.ServiceManagerList.setObjectName(u'ServiceManagerList')
         # enable drop
         self.ServiceManagerList.__class__.dragEnterEvent = self.dragEnterEvent
         self.ServiceManagerList.__class__.dragMoveEvent = self.dragEnterEvent
         self.ServiceManagerList.__class__.dropEvent = self.dropEvent
-        # Add a context menu to the service manager list
-        self.ServiceManagerList.setContextMenuPolicy(
-            QtCore.Qt.ActionsContextMenu)
-        self.editAction = contextMenuAction(
-            self.ServiceManagerList, ':/system/system_live.png',
-            self.trUtf8('&Edit Item'), self.remoteEdit)
-        self.ServiceManagerList.addAction(self.editAction)
-        self.ServiceManagerList.addAction(contextMenuSeparator(
-            self.ServiceManagerList))
-        self.ServiceManagerList.addAction(contextMenuAction(
-            self.ServiceManagerList, ':/system/system_preview.png',
-            self.trUtf8('&Preview Verse'), self.makePreview))
-        self.ServiceManagerList.addAction(contextMenuAction(
-            self.ServiceManagerList, ':/system/system_live.png',
-            self.trUtf8('&Show Live'), self.makeLive))
-        self.ServiceManagerList.addAction(contextMenuSeparator(
-            self.ServiceManagerList))
-        self.ServiceManagerList.addAction(contextMenuAction(
-            self.ServiceManagerList, ':/services/service_delete',
-            self.trUtf8('&Remove from Service'), self.onDeleteFromService))
-        self.ServiceManagerList.addAction(contextMenuSeparator(
-            self.ServiceManagerList))
-        self.ThemeMenu = contextMenu(
-            self.ServiceManagerList, '',
-            self.trUtf8('&Change Item Theme'))
-        self.ServiceManagerList.addAction(self.ThemeMenu.menuAction())
         self.Layout.addWidget(self.ServiceManagerList)
         # Add the bottom toolbar
         self.OrderToolbar = OpenLPToolbar(self)
         self.OrderToolbar.addToolbarButton(
-            self.trUtf8('Move to top'), u':/services/service_top.png',
+            self.trUtf8('Move to &top'), u':/services/service_top.png',
             self.trUtf8('Move to top'), self.onServiceTop)
         self.OrderToolbar.addToolbarButton(
-            self.trUtf8('Move up'), u':/services/service_up.png',
+            self.trUtf8('Move &up'), u':/services/service_up.png',
             self.trUtf8('Move up order'), self.onServiceUp)
         self.OrderToolbar.addToolbarButton(
-            self.trUtf8('Move down'), u':/services/service_down.png',
+            self.trUtf8('Move &down'), u':/services/service_down.png',
             self.trUtf8('Move down order'), self.onServiceDown)
         self.OrderToolbar.addToolbarButton(
-            self.trUtf8('Move to bottom'), u':/services/service_bottom.png',
+            self.trUtf8('Move to &bottom'), u':/services/service_bottom.png',
             self.trUtf8('Move to end'), self.onServiceEnd)
         self.OrderToolbar.addSeparator()
         self.OrderToolbar.addToolbarButton(
-            self.trUtf8('Delete From Service'), u':/services/service_delete.png',
+            self.trUtf8('&Delete From Service'), u':/services/service_delete.png',
             self.trUtf8('Delete From Service'), self.onDeleteFromService)
         self.Layout.addWidget(self.OrderToolbar)
         # Connect up our signals and slots
         QtCore.QObject.connect(self.ThemeComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onThemeComboBoxSelected)
         QtCore.QObject.connect(self.ServiceManagerList,
-           QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.makeLive)
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.makeLive)
         QtCore.QObject.connect(self.ServiceManagerList,
            QtCore.SIGNAL(u'itemCollapsed(QTreeWidgetItem*)'), self.collapsed)
         QtCore.QObject.connect(self.ServiceManagerList,
@@ -225,18 +186,99 @@ class ServiceManager(QtGui.QWidget):
             QtCore.SIGNAL(u'update_themes'), self.updateThemeList)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'remote_edit_clear'), self.onRemoteEditClear)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'presentation types'), self.onPresentationTypes)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'servicemanager_next_item'), self.nextItem)
         # Last little bits of setting up
         self.config = PluginConfig(u'ServiceManager')
         self.servicePath = self.config.get_data_path()
         self.service_theme = unicode(
             self.config.get_config(u'service theme', u''))
+        #build the context menu
+        self.menu = QtGui.QMenu()
+        self.editAction = self.menu.addAction(self.trUtf8('&Edit Item'))
+        self.editAction.setIcon(build_icon(u':/services/service_edit.png'))
+        self.notesAction = self.menu.addAction(self.trUtf8('&Notes'))
+        self.notesAction.setIcon(build_icon(u':/services/service_notes.png'))
+        self.deleteAction = self.menu.addAction(self.trUtf8('&Delete From Service'))
+        self.deleteAction.setIcon(build_icon(u':/services/service_delete.png'))
+        self.sep1 = self.menu.addAction(u'')
+        self.sep1.setSeparator(True)
+        self.previewAction = self.menu.addAction(self.trUtf8('&Preview Verse'))
+        self.previewAction.setIcon(build_icon(u':/system/system_preview.png'))
+        self.liveAction = self.menu.addAction(self.trUtf8('&Live Verse'))
+        self.liveAction.setIcon(build_icon(u':/system/system_live.png'))
+        self.sep2 = self.menu.addAction(u'')
+        self.sep2.setSeparator(True)
+        self.themeMenu = QtGui.QMenu(self.trUtf8(u'&Change Item Theme'))
+        self.menu.addMenu(self.themeMenu)
+
+    def contextMenu(self, point):
+        item = self.ServiceManagerList.itemAt(point)
+        if item.parent() is None:
+            pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
+        else:
+            pos = item.parent().data(0, QtCore.Qt.UserRole).toInt()[0]
+        serviceItem = self.serviceItems[pos - 1]
+        self.editAction.setVisible(False)
+        self.notesAction.setVisible(False)
+        if serviceItem[u'service_item'].edit_enabled:
+            self.editAction.setVisible(True)
+        if item.parent() is None:
+            self.notesAction.setVisible(True)
+        self.themeMenu.menuAction().setVisible(False)
+        if serviceItem[u'service_item'].is_text():
+            self.themeMenu.menuAction().setVisible(True)
+        action = self.menu.exec_(self.ServiceManagerList.mapToGlobal(point))
+        if action == self.editAction:
+            self.remoteEdit()
+        if action == self.deleteAction:
+            self.onDeleteFromService()
+        if action == self.notesAction:
+            self.onServiceItemNoteForm()
+        if action == self.previewAction:
+            self.makePreview()
+        if action == self.liveAction:
+            self.makeLive()
+
+    def onPresentationTypes(self, presentation_types):
+        self.presentation_types = presentation_types
+
+    def onServiceItemNoteForm(self):
+        item, count = self.findServiceItem()
+        self.serviceItemNoteForm.textEdit.setPlainText(
+            self.serviceItems[item][u'service_item'].notes)
+        if self.serviceItemNoteForm.exec_():
+            self.serviceItems[item][u'service_item'].notes = \
+                self.serviceItemNoteForm.textEdit.toPlainText()
+            self.repaintServiceList(item, 0)
+
+    def nextItem(self):
+        """
+        Called by the SlideController to select the
+        next service item
+        """
+        if len(self.ServiceManagerList.selectedItems()) == 0:
+            return
+        selected = self.ServiceManagerList.selectedItems()[0]
+        lookFor = 0
+        serviceIterator = QtGui.QTreeWidgetItemIterator(self.ServiceManagerList)
+        while serviceIterator.value():
+            if lookFor == 1 and serviceIterator.value().parent() is None:
+                self.ServiceManagerList.setCurrentItem(serviceIterator.value())
+                self.makeLive()
+                return
+            if serviceIterator.value() == selected:
+                lookFor = 1
+            serviceIterator += 1
 
     def onMoveSelectionUp(self):
         """
         Moves the selection up the window
         Called by the up arrow
         """
-        serviceIterator = QTreeWidgetItemIterator(self.ServiceManagerList)
+        serviceIterator = QtGui.QTreeWidgetItemIterator(self.ServiceManagerList)
         tempItem = None
         setLastItem = False
         while serviceIterator:
@@ -261,7 +303,7 @@ class ServiceManager(QtGui.QWidget):
         Moves the selection down the window
         Called by the down arrow
         """
-        serviceIterator = QTreeWidgetItemIterator(self.ServiceManagerList)
+        serviceIterator = QtGui.QTreeWidgetItemIterator(self.ServiceManagerList)
         firstItem = serviceIterator
         setSelected = False
         while serviceIterator:
@@ -348,7 +390,7 @@ class ServiceManager(QtGui.QWidget):
         if self.parent.serviceNotSaved and \
             str_to_bool(PluginConfig(u'General').
                         get_config(u'save prompt', u'False')):
-            ret = QtGui.QMessageBox.question(None,
+            ret = QtGui.QMessageBox.question(self,
                 self.trUtf8('Save Changes to Service?'),
                 self.trUtf8('Your service is unsaved, do you want to save those '
                             'changes before creating a new one ?'),
@@ -390,19 +432,35 @@ class ServiceManager(QtGui.QWidget):
         for itemcount, item in enumerate(self.serviceItems):
             serviceitem = item[u'service_item']
             treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
-            treewidgetitem.setText(0,serviceitem.title)
-            treewidgetitem.setIcon(0,serviceitem.iconic_representation)
+            if serviceitem.notes:
+                icon = QtGui.QImage(serviceitem.icon)
+                icon = icon.scaled(80, 80, QtCore.Qt.KeepAspectRatio,
+                                    QtCore.Qt.SmoothTransformation)
+                overlay = QtGui.QImage(':/services/service_item_notes.png')
+                overlay = overlay.scaled(80, 80, QtCore.Qt.KeepAspectRatio,
+                                          QtCore.Qt.SmoothTransformation)
+                painter = QtGui.QPainter(icon)
+                painter.drawImage(0, 0, overlay)
+                painter.end()
+                treewidgetitem.setIcon(0, build_icon(icon))
+            else:
+                treewidgetitem.setIcon(0, serviceitem.iconic_representation)
+            treewidgetitem.setText(0, serviceitem.title)
+            treewidgetitem.setToolTip(0, serviceitem.notes)
             treewidgetitem.setData(0, QtCore.Qt.UserRole,
                 QtCore.QVariant(item[u'order']))
-            treewidgetitem.setExpanded(item[u'expanded'])
             for count, frame in enumerate(serviceitem.get_frames()):
                 treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
                 text = frame[u'title']
-                treewidgetitem1.setText(0,text[:40])
+                treewidgetitem1.setText(0, text[:40])
                 treewidgetitem1.setData(0, QtCore.Qt.UserRole,
                     QtCore.QVariant(count))
                 if serviceItem == itemcount and serviceItemCount == count:
-                   self.ServiceManagerList.setCurrentItem(treewidgetitem1)
+                    #preserve expanding status as setCurrentItem sets it to True
+                    temp = item[u'expanded']
+                    self.ServiceManagerList.setCurrentItem(treewidgetitem1)
+                    item[u'expanded'] = temp
+            treewidgetitem.setExpanded(item[u'expanded'])
 
     def onSaveService(self, quick=False):
         """
@@ -433,10 +491,10 @@ class ServiceManager(QtGui.QWidget):
                 for item in self.serviceItems:
                     service.append({u'serviceitem':item[u'service_item'].get_service_repr()})
                     if item[u'service_item'].uses_file():
-                        for frame in item[u'service_item'].get_frames:
+                        for frame in item[u'service_item'].get_frames():
                             path_from = unicode(os.path.join(
                                 item[u'service_item'].service_item_path,
-                                frame.get_frame_title()))
+                                frame[u'title']))
                             zip.write(path_from)
                 file = open(servicefile, u'wb')
                 cPickle.dump(service, file)
@@ -499,7 +557,8 @@ class ServiceManager(QtGui.QWidget):
                     serviceitem = ServiceItem()
                     serviceitem.RenderManager = self.parent.RenderManager
                     serviceitem.set_from_service(item, self.servicePath)
-                    self.addServiceItem(serviceitem)
+                    if self.validateItem(serviceitem):
+                        self.addServiceItem(serviceitem)
                 try:
                     if os.path.isfile(p_file):
                         os.remove(p_file)
@@ -515,6 +574,14 @@ class ServiceManager(QtGui.QWidget):
         self.isNew = False
         self.serviceName = name[len(name) - 1]
         self.parent.serviceChanged(True, self.serviceName)
+
+    def validateItem(self, serviceItem):
+#        print "---"
+#        print serviceItem.name
+#        print serviceItem.title
+#        print serviceItem.service_item_path
+#        print serviceItem.service_item_type
+        return True
 
     def cleanUp(self):
         """
@@ -538,13 +605,20 @@ class ServiceManager(QtGui.QWidget):
         self.regenerateServiceItems()
 
     def regenerateServiceItems(self):
-        if len(self.serviceItems) > 0:
+        #force reset of renderer as theme data has changed
+        self.parent.RenderManager.themedata = None
+        if self.serviceItems:
             tempServiceItems = self.serviceItems
-            self.onNewService()
+            self.ServiceManagerList.clear()
+            self.serviceItems = []
+            self.isNew = True
             for item in tempServiceItems:
-                self.addServiceItem(item[u'service_item'])
+                self.addServiceItem(item[u'service_item'], False, item[u'expanded'])
+            #Set to False as items may have changed rendering
+            #does not impact the saved song so True may aslo be valid
+            self.parent.serviceChanged(False, self.serviceName)
 
-    def addServiceItem(self, item):
+    def addServiceItem(self, item, rebuild=False, expand=True):
         """
         Add a Service item to the list
 
@@ -564,13 +638,16 @@ class ServiceManager(QtGui.QWidget):
             if sitem == -1:
                 self.serviceItems.append({u'service_item': item,
                     u'order': len(self.serviceItems) + 1,
-                    u'expanded':True})
+                    u'expanded':expand})
                 self.repaintServiceList(len(self.serviceItems) + 1, 0)
             else:
                 self.serviceItems.insert(sitem + 1, {u'service_item': item,
                     u'order': len(self.serviceItems)+1,
-                    u'expanded':True})
+                    u'expanded':expand})
                 self.repaintServiceList(sitem + 1, 0)
+            #if rebuilding list make sure live is fixed.
+            if rebuild:
+                self.parent.LiveController.replaceServiceManagerItem(item)
         self.parent.serviceChanged(False, self.serviceName)
 
     def makePreview(self):
@@ -581,6 +658,7 @@ class ServiceManager(QtGui.QWidget):
         self.parent.PreviewController.addServiceManagerItem(
             self.serviceItems[item][u'service_item'], count)
 
+
     def makeLive(self):
         """
         Send the current item to the Live slide controller
@@ -588,6 +666,13 @@ class ServiceManager(QtGui.QWidget):
         item, count = self.findServiceItem()
         self.parent.LiveController.addServiceManagerItem(
             self.serviceItems[item][u'service_item'], count)
+        if str_to_bool(PluginConfig(u'General').
+                        get_config(u'auto preview', u'False')):
+            item += 1
+            if self.serviceItems and item < len(self.serviceItems) and \
+                self.serviceItems[item][u'service_item'].autoPreviewAllowed:
+                    self.parent.PreviewController.addServiceManagerItem(
+                        self.serviceItems[item][u'service_item'], 0)
 
     def remoteEdit(self):
         """
@@ -617,7 +702,7 @@ class ServiceManager(QtGui.QWidget):
             else:
                 pos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
                 count = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-        #adjuest for zero based arrays
+        #adjust for zero based arrays
         pos = pos - 1
         return pos, count
 
@@ -646,7 +731,7 @@ class ServiceManager(QtGui.QWidget):
             if plugin == u'ServiceManager':
                 startpos,  startCount = self.findServiceItem()
                 item = self.ServiceManagerList.itemAt(event.pos())
-                if item == None:
+                if item is None:
                     endpos = len(self.serviceItems)
                 else:
                     parentitem = item.parent()
@@ -674,7 +759,7 @@ class ServiceManager(QtGui.QWidget):
             A list of current themes to be displayed
         """
         self.ThemeComboBox.clear()
-        self.ThemeMenu.clear()
+        self.themeMenu.clear()
         self.ThemeComboBox.addItem(u'')
         for theme in theme_list:
             self.ThemeComboBox.addItem(theme)
@@ -682,7 +767,7 @@ class ServiceManager(QtGui.QWidget):
                 self.ServiceManagerList,
                 None,
                 theme , self.onThemeChangeAction)
-            self.ThemeMenu.addAction(action)
+            self.themeMenu.addAction(action)
         id = self.ThemeComboBox.findText(self.service_theme,
             QtCore.Qt.MatchExactly)
         # Not Found

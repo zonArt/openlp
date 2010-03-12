@@ -31,6 +31,8 @@ from openlp.core.lib import MediaManagerItem, SongXMLParser, \
     BaseListWithDnD, Receiver,  str_to_bool
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm
 
+log = logging.getLogger(__name__)
+
 class SongListView(BaseListWithDnD):
     def __init__(self, parent=None):
         self.PluginName = u'Songs'
@@ -40,8 +42,6 @@ class SongMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Songs.
     """
-    global log
-    log = logging.getLogger(u'SongMediaItem')
     log.info(u'Song Media Item loaded')
 
     def __init__(self, parent, icon, title):
@@ -185,8 +185,13 @@ class SongMediaItem(MediaManagerItem):
                 if author_list != u'':
                     author_list = author_list + u', '
                 author_list = author_list + author.display_name
-            song_detail = unicode(self.trUtf8('%s (%s)' % \
-                (unicode(song.title), unicode(author_list))))
+            if not isinstance(author_list, unicode):
+                author_list = unicode(author_list, u'utf8')
+            if isinstance(song.title, unicode):
+                song_title = song.title
+            else:
+                song_title = unicode(song.title, u'utf8')
+            song_detail = u'%s (%s)' % (song_title, author_list)
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
             self.ListView.addItem(song_name)
@@ -285,6 +290,7 @@ class SongMediaItem(MediaManagerItem):
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         else:
             item_id = self.remoteSong
+        service_item.autoPreviewAllowed = True
         song = self.parent.songmanager.get_song(item_id)
         service_item.theme = song.theme_name
         service_item.edit_enabled = True
@@ -305,7 +311,7 @@ class SongMediaItem(MediaManagerItem):
                     for verse in verseList:
                         if verse[1]:
                             if verse[0][u'type'] == "Verse":
-                                if verse[0][u'label'][0] == order[1:]:
+                                if verse[0][u'label'] == order[1:]:
                                     verseTag = u'%s:%s' % \
                                         (verse[0][u'type'], verse[0][u'label'])
                                     service_item.add_from_text\

@@ -31,16 +31,16 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
 
+log = logging.getLogger(__name__)
+
 class PresentationController(object):
     """
     Base class for presentation controllers to inherit from
     Class to control interactions with presentations.
-    It creates the runtime environment, loads and closes the presentation as
-    well as triggering the correct activities based on the users input
-
+    It creates the runtime environment
     To create a new controller, take a copy of this file and name it
     so it ends in controller.py, i.e. foobarcontroller.py
-    Make sure it inhetits PresentationController
+    Make sure it inherits PresentationController
     Then fill in the blanks. If possible try and make sure it loads
     on all platforms, using for example os.name checks, although
     __init__, check_available and presentation_deleted should always work.
@@ -73,6 +73,87 @@ class PresentationController(object):
     ``presentation_deleted()``
         Deletes presentation specific files, e.g. thumbnails
 
+    """
+    log.info(u'PresentationController loaded')
+
+    def __init__(self, plugin=None, name=u'PresentationController'):
+        """
+        This is the constructor for the presentationcontroller object.
+        This provides an easy way for descendent plugins to populate common data.
+        This method *must* be overridden, like so::
+
+            class MyPresentationController(PresentationController):
+                def __init__(self, plugin):
+                    PresentationController.__init(self, plugin, u'My Presenter App')
+
+        ``plugin``
+            Defaults to *None*. The presentationplugin object
+
+        ``name``
+            Name of the application, to appear in the application
+        """
+        self.supports = []
+        self.alsosupports = []
+        self.docs = []
+        self.plugin = plugin
+        self.name = name
+        self.available = self.check_available()
+        if self.available:
+            self.enabled = int(plugin.config.get_config(
+                name, QtCore.Qt.Unchecked)) == QtCore.Qt.Checked
+        else:
+            self.enabled = False
+        self.thumbnailroot = os.path.join(plugin.config.get_data_path(),
+            name, u'thumbnails')
+        self.thumbnailprefix = u'slide'
+        if not os.path.isdir(self.thumbnailroot):
+            os.makedirs(self.thumbnailroot)
+
+    def check_available(self):
+        """
+        Presentation app is able to run on this machine
+        """
+        return False
+
+
+    def start_process(self):
+        """
+        Loads a running version of the presentation application in the background.
+        """
+        pass
+
+    def kill(self):
+        """
+        Called at system exit to clean up any running presentations and
+        close the application
+        """
+        log.debug(u'Kill')
+        self.close_presentation()
+
+    def add_doc(self, name):
+        """
+        Called when a new presentation document is opened
+        """
+        doc = PresentationDocument(self, name)
+        self.docs.append(doc)
+        return doc
+
+    def remove_doc(self, doc):
+        """
+        Called to remove an open document from the collection
+        """
+        log.debug(u'remove_doc Presentation')
+        self.docs.remove(doc)
+  
+
+class PresentationDocument(object):
+    """
+    Base class for presentation documents to inherit from.
+    Loads and closes the presentation as well as triggering the correct 
+    activities based on the users input
+
+    **Hook Functions**
+
     ``load_presentation(presentation)``
         Load a presentation file
 
@@ -90,6 +171,9 @@ class PresentationController(object):
 
     ``unblank_screen()``
         Unblanks the screen, restoring the output
+
+    ``is_blank``
+        Returns true if screen is blank
 
     ``stop_presentation()``
         Stops the presentation, removing it from the output display
@@ -116,70 +200,12 @@ class PresentationController(object):
         Returns a path to an image containing a preview for the requested slide
 
     """
-    global log
-    log = logging.getLogger(u'PresentationController')
-    log.info(u'loaded')
-
-    def __init__(self, plugin=None, name=u'PresentationController'):
-        """
-        This is the constructor for the presentationcontroller object.
-        This provides an easy way for descendent plugins to populate common data.
-        This method *must* be overridden, like so::
-
-            class MyPresentationController(PresentationController):
-                def __init__(self, plugin):
-                    PresentationController.__init(self, plugin, u'My Presenter App')
-
-        ``plugin``
-            Defaults to *None*. The presentationplugin object
-
-        ``name``
-            Name of the application, to appear in the application
-        """
-        self.plugin = plugin
-        self.name = name
-        self.available = self.check_available()
+    def __init__(self,  controller,  name):
         self.slidenumber = 0
-        if self.available:
-            self.enabled = int(plugin.config.get_config(
-                name, QtCore.Qt.Unchecked)) == QtCore.Qt.Checked
-        else:
-            self.enabled = False
-        self.thumbnailroot = os.path.join(plugin.config.get_data_path(),
-            name, u'thumbnails')
-        self.thumbnailprefix = u'slide'
-        if not os.path.isdir(self.thumbnailroot):
-            os.makedirs(self.thumbnailroot)
+        self.controller = controller
+        self.store_filename(name)
 
-    def check_available(self):
-        """
-        Presentation app is able to run on this machine
-        """
-        return False
-
-    def presentation_deleted(self, presentation):
-        """
-        Cleans up/deletes any controller specific files created for
-        a file, e.g. thumbnails
-        """
-        self.store_filename(presentation)
-        shutil.rmtree(self.thumbnailpath)
-
-    def start_process(self):
-        """
-        Loads a running version of the presentation application in the background.
-        """
-        pass
-
-    def kill(self):
-        """
-        Called at system exit to clean up any running presentations and
-        close the application
-        """
-        log.debug(u'Kill')
-        self.close_presentation()
-
-    def load_presentation(self, presentation):
+    def load_presentation(self):
         """
         Called when a presentation is added to the SlideController.
         Loads the presentation and starts it
@@ -190,15 +216,28 @@ class PresentationController(object):
         """
         pass
 
+    def presentation_deleted(self):
+        """
+        Cleans up/deletes any controller specific files created for
+        a file, e.g. thumbnails
+        """
+        shutil.rmtree(self.thumbnailpath)
+
     def store_filename(self, presentation):
         """
         Set properties for the filename and thumbnail paths
         """
         self.filepath = presentation
-        self.filename = os.path.split(presentation)[1]
-        self.thumbnailpath = os.path.join(self.thumbnailroot, self.filename)
+        self.filename = self.get_file_name(presentation)
+        self.thumbnailpath = self.get_thumbnail_path(presentation)
         if not os.path.isdir(self.thumbnailpath):
             os.mkdir(self.thumbnailpath)
+
+    def get_file_name(self,  presentation):
+        return os.path.split(presentation)[1]
+        
+    def get_thumbnail_path(self,  presentation):
+        return os.path.join(self.controller.thumbnailroot, self.get_file_name(presentation))
 
     def check_thumbnails(self):
         """
@@ -217,10 +256,10 @@ class PresentationController(object):
         Close presentation and clean up objects
         Triggered by new object being added to SlideController
         """
-        pass
+        self.controller.delete_doc(self)
 
     def is_active(self):
-        """
+        """ 
         Returns True if a presentation is currently running
         """
         return False
@@ -243,6 +282,12 @@ class PresentationController(object):
         """
         pass
 
+    def is_blank(self):
+        """
+        Returns true if screen is blank
+        """
+        return False
+        
     def stop_presentation(self):
         """
         Stops the presentation, removing it from the output display
@@ -314,3 +359,21 @@ class PresentationController(object):
             prefix = u'preview'
         Receiver.send_message(u'%s_slidecontroller_change' % prefix,
             self.slidenumber - 1)
+
+    def get_slide_text(self, slide_no):
+        """
+        Returns the text on the slide
+
+        ``slide_no``
+        The slide the text  is required for, starting at 1
+        """
+        return ''
+        
+    def get_slide_notes(self, slide_no):
+        """
+        Returns the text on the slide
+
+        ``slide_no``
+        The slide the notes are required for, starting at 1
+        """
+        return ''

@@ -153,12 +153,12 @@ class _OpenSong(XmlRootClass):
         tmpVerse = []
         finalLyrics = []
         tag = ""
-        for l in lyrics:
-            line = l.rstrip()
+        for lyric in lyrics:
+            line = lyric.rstrip()
             if not line.startswith(u'.'):
                 # drop all chords
                 tmpVerse.append(line)
-                if len(line) > 0:
+                if line:
                     if line.startswith(u'['):
                         tag = line
                 else:
@@ -298,9 +298,9 @@ class Song(object):
         chars are: .,:;!?&%#/\@`$'|"^~*-
         """
         punctuation = ".,:;!?&%#'\"/\\@`$|^~*-"
-        s = title
-        for c in punctuation:
-            s = s.replace(c, '')
+        string = title
+        for char in punctuation:
+            string = string.replace(char, '')
         return s
 
     def set_title(self, title):
@@ -582,17 +582,16 @@ class Song(object):
         self.slideList = []
         tmpSlide = []
         metContent = False
-        for l in self.lyrics:
-            if len(l) > 0:
+        for lyric in self.lyrics:
+            if lyric:
                 metContent = True
-                tmpSlide.append(l)
+                tmpSlide.append(lyric)
             else:
                 if metContent:
                     metContent = False
                     self.slideList.append(tmpSlide)
                     tmpSlide = []
-        #
-        if len(tmpSlide) > 0:
+        if tmpSlide:
             self.slideList.append(tmpSlide)
 
     def get_number_of_slides(self):

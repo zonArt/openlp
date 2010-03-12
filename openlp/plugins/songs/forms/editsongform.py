@@ -33,13 +33,13 @@ from openlp.plugins.songs.forms import EditVerseForm
 from openlp.plugins.songs.lib.models import Song
 from editsongdialog import Ui_EditSongDialog
 
+log = logging.getLogger(__name__)
+
 class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     """
     Class to manage the editing of a song
     """
-    global log
-    log = logging.getLogger(u'EditSongForm')
-    log.info(u'Song Editor loaded')
+    log.info(u'%s EditSongForm loaded', __name__)
 
     def __init__(self, songmanager, parent=None):
         """
@@ -169,6 +169,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.loadAuthors()
         self.loadTopics()
         self.loadBooks()
+        #it's a new song to preview is not possible
+        self.previewButton.setVisible(False)
 
     def loadSong(self, id, preview):
         log.debug(u'Load Song')
@@ -316,13 +318,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def onVerseAddButtonClicked(self):
         self.verse_form.setVerse(u'', self.VerseListWidget.count() + 1, True)
-        self.verse_form.exec_()
-        afterText, verse, subVerse = self.verse_form.getVerse()
-        data = u'%s:%s' %(verse, subVerse)
-        item = QtGui.QListWidgetItem(afterText)
-        item.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
-        item.setText(afterText)
-        self.VerseListWidget.addItem(item)
+        if self.verse_form.exec_():
+            afterText, verse, subVerse = self.verse_form.getVerse()
+            data = u'%s:%s' %(verse, subVerse)
+            item = QtGui.QListWidgetItem(afterText)
+            item.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
+            item.setText(afterText)
+            self.VerseListWidget.addItem(item)
 
     def onVerseEditButtonClicked(self):
         item = self.VerseListWidget.currentItem()
@@ -331,25 +333,25 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             verseId = unicode((item.data(QtCore.Qt.UserRole)).toString())
             self.verse_form.setVerse(tempText, \
                 self.VerseListWidget.count(), True, verseId)
-            self.verse_form.exec_()
-            afterText, verse, subVerse = self.verse_form.getVerse()
-            data = u'%s:%s' %(verse, subVerse)
-            item.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
-            item.setText(afterText)
-            #number of lines has change so repaint the list moving the data
-            if len(tempText.split(u'\n')) != len(afterText.split(u'\n')):
-                tempList = {}
-                tempId = {}
-                for row in range(0, self.VerseListWidget.count()):
-                    tempList[row] = self.VerseListWidget.item(row).text()
-                    tempId[row] = self.VerseListWidget.item(row).\
-                        data(QtCore.Qt.UserRole)
-                self.VerseListWidget.clear()
-                for row in range (0, len(tempList)):
-                    item = QtGui.QListWidgetItem(tempList[row])
-                    item.setData(QtCore.Qt.UserRole, tempId[row])
-                    self.VerseListWidget.addItem(item)
-                self.VerseListWidget.repaint()
+            if self.verse_form.exec_():
+                afterText, verse, subVerse = self.verse_form.getVerse()
+                data = u'%s:%s' %(verse, subVerse)
+                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
+                item.setText(afterText)
+                #number of lines has change so repaint the list moving the data
+                if len(tempText.split(u'\n')) != len(afterText.split(u'\n')):
+                    tempList = {}
+                    tempId = {}
+                    for row in range(0, self.VerseListWidget.count()):
+                        tempList[row] = self.VerseListWidget.item(row).text()
+                        tempId[row] = self.VerseListWidget.item(row).\
+                            data(QtCore.Qt.UserRole)
+                    self.VerseListWidget.clear()
+                    for row in range (0, len(tempList)):
+                        item = QtGui.QListWidgetItem(tempList[row])
+                        item.setData(QtCore.Qt.UserRole, tempId[row])
+                        self.VerseListWidget.addItem(item)
+                    self.VerseListWidget.repaint()
         self.VerseEditButton.setEnabled(False)
         self.VerseDeleteButton.setEnabled(False)
 
@@ -410,7 +412,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.AuthorsListView.setFocus()
         #split the verse list by space and mark lower case for testing
         for verse in unicode(self.VerseOrderEdit.text()).lower().split(u' '):
-            if len(verse) == 2:
+            if len(verse) > 1:
                 if verse[0:1] == u'v' and verse[1:].isdigit():
                     pass
                 else:

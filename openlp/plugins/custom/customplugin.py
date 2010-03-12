@@ -26,9 +26,10 @@
 import logging
 
 from forms import EditCustomForm
-from openlp.core.lib import Plugin, build_icon
+from openlp.core.lib import Plugin, build_icon, PluginStatus
 from openlp.plugins.custom.lib import CustomManager, CustomMediaItem, CustomTab
 
+log = logging.getLogger(__name__)
 
 class CustomPlugin(Plugin):
     """
@@ -39,17 +40,15 @@ class CustomPlugin(Plugin):
     the songs plugin has become restrictive. Examples could be
     Welcome slides, Bible Reading information, Orders of service.
     """
-
-    global log
-    log = logging.getLogger(u'CustomPlugin')
     log.info(u'Custom Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Custom', u'1.9.0', plugin_helpers)
+        Plugin.__init__(self, u'Custom', u'1.9.1', plugin_helpers)
         self.weight = -5
         self.custommanager = CustomManager(self.config)
         self.edit_custom_form = EditCustomForm(self.custommanager)
         self.icon = build_icon(u':/media/media_custom.png')
+        self.status = PluginStatus.Active
 
     def get_settings_tab(self):
         return CustomTab(self.name)
@@ -73,3 +72,8 @@ class CustomPlugin(Plugin):
             'songs are.  This plugin provides greater freedom over the '
             'songs plugin.<br>')
         return about_text
+
+    def can_delete_theme(self, theme):
+        if len(self.custommanager.get_customs_for_theme(theme)) == 0:
+            return True
+        return False

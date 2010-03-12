@@ -25,10 +25,14 @@
 import os
 
 from PyQt4 import QtCore, QtGui
+import logging
 
 from songusagedetaildialog import Ui_SongUsageDetailDialog
 
+log = logging.getLogger(__name__)
+
 class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
+    log.info(u'SongUsage Detail Form loaded')
     """
     Class documentation goes here.
     """
@@ -41,33 +45,14 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         self.setupUi(self)
 
     def initialise(self):
-        self.FirstCheckBox.setCheckState(
-            int(self.parent.config.get_config(u'first service', QtCore.Qt.Checked)))
-        self.SecondCheckBox.setCheckState(
-            int(self.parent.config.get_config(u'second service', QtCore.Qt.Checked)))
-        self.ThirdCheckBox.setCheckState(
-            int(self.parent.config.get_config(u'third service', QtCore.Qt.Checked)))
         year = QtCore.QDate().currentDate().year()
         if QtCore.QDate().currentDate().month() < 9:
             year -= 1
         toDate = QtCore.QDate(year, 8, 31)
         fromDate = QtCore.QDate(year - 1, 9, 1)
-        self.FromDateEdit.setDate(fromDate)
-        self.ToDateEdit.setDate(toDate)
+        self.FromDate.setSelectedDate(fromDate)
+        self.ToDate.setSelectedDate(toDate)
         self.FileLineEdit.setText(self.parent.config.get_last_dir(1))
-        self.resetWindow()
-
-    def changeFirstService(self, value):
-        self.parent.config.set_config(u'first service', value)
-        self.resetWindow()
-
-    def changeSecondService(self, value):
-        self.parent.config.set_config(u'second service', value)
-        self.resetWindow()
-
-    def changeThirdService(self, value):
-        self.parent.config.set_config(u'third service', value)
-        self.resetWindow()
 
     def defineOutputLocation(self):
         path = QtGui.QFileDialog.getExistingDirectory(self,
@@ -78,47 +63,22 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
             self.parent.config.set_last_dir(path, 1)
             self.FileLineEdit.setText(path)
 
-    def resetWindow(self):
-        if self.FirstCheckBox.checkState() == QtCore.Qt.Unchecked:
-            self.FirstFromTimeEdit.setEnabled(False)
-            self.FirstToTimeEdit.setEnabled(False)
-        else:
-            self.FirstFromTimeEdit.setEnabled(True)
-            self.FirstToTimeEdit.setEnabled(True)
-        if self.SecondCheckBox.checkState() == QtCore.Qt.Unchecked:
-            self.SecondFromTimeEdit.setEnabled(False)
-            self.SecondToTimeEdit.setEnabled(False)
-        else:
-            self.SecondFromTimeEdit.setEnabled(True)
-            self.SecondToTimeEdit.setEnabled(True)
-        if self.ThirdCheckBox.checkState() == QtCore.Qt.Unchecked:
-            self.ThirdFromTimeEdit.setEnabled(False)
-            self.ThirdToTimeEdit.setEnabled(False)
-        else:
-            self.ThirdFromTimeEdit.setEnabled(True)
-            self.ThirdToTimeEdit.setEnabled(True)
-
     def accept(self):
-        if self.DetailedReport.isChecked():
-            self.detailedReport()
-        else:
-            self.summaryReport()
-        self.close()
-
-    def detailedReport(self):
-        print "detailed"
-        filename = u'audit_det_%s_%s.txt' % \
-            (self.FromDateEdit.date().toString(u'ddMMyyyy'),
-             self.ToDateEdit.date().toString(u'ddMMyyyy'))
-        audits = self.parent.auditmanager.get_all_audits()
+        log.debug(u'Detailed report generated')
+        filename = u'usage_detail_%s_%s.txt' % \
+            (self.FromDate.selectedDate().toString(u'ddMMyyyy'),
+             self.ToDate.selectedDate().toString(u'ddMMyyyy'))
+        usage = self.parent.songusagemanager.get_all_songusage(\
+                                    self.FromDate.selectedDate(), \
+                                    self.ToDate.selectedDate())
         outname = os.path.join(unicode(self.FileLineEdit.text()), filename)
         file = None
         try:
             file = open(outname, u'w')
-            for audit in audits:
+            for instance in usage:
                 record = u'\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n' % \
-                    (audit.auditdate,audit.audittime, audit.title,
-                    audit.copyright, audit.ccl_number , audit.authors)
+                    (instance.usagedate,instance.usagetime, instance.title,
+                    instance.copyright, instance.ccl_number , instance.authors)
                 file.write(record)
         except:
             log.exception(u'Failed to write out audit records')
@@ -126,9 +86,3 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
             if file:
                 file.close()
 
-    def summaryReport(self):
-        print "summary"
-        filename = u'audit_sum_%s_%s.txt' % \
-            (self.FromDateEdit.date().toString(u'ddMMyyyy'),
-             self.ToDateEdit.date().toString(u'ddMMyyyy'))
-        print filename

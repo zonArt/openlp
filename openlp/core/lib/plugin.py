@@ -28,6 +28,8 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import PluginConfig, Receiver
 
+log = logging.getLogger(__name__)
+
 class PluginStatus(object):
     """
     Defines the status of the plugin
@@ -88,8 +90,6 @@ class Plugin(QtCore.QObject):
         Used in the plugin manager, when a person clicks on the 'About' button.
 
     """
-    global log
-    log = logging.getLogger(u'Plugin')
     log.info(u'loaded')
 
     def __init__(self, name, version=None, plugin_helpers=None):
@@ -127,6 +127,7 @@ class Plugin(QtCore.QObject):
         self.service_manager = plugin_helpers[u'service']
         self.settings = plugin_helpers[u'settings']
         self.mediadock = plugin_helpers[u'toolbox']
+        self.maindisplay = plugin_helpers[u'maindisplay']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.process_add_service_event)
@@ -253,3 +254,9 @@ class Plugin(QtCore.QObject):
             self.mediadock.insert_dock(self.media_item, self.icon, self.weight)
         if self.settings_tab:
             self.settings.insertTab(self.settings_tab, self.weight)
+
+    def can_delete_theme(self, theme):
+        """
+        Called to ask the plugin if a theme can be deleted
+        """
+        return True

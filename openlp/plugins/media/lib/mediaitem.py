@@ -30,6 +30,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon
 
+log = logging.getLogger(__name__)
+
 class MediaListView(BaseListWithDnD):
     def __init__(self, parent=None):
         self.PluginName = u'Media'
@@ -39,9 +41,7 @@ class MediaMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Media Slides.
     """
-    global log
-    log = logging.getLogger(u'MediaMediaItem')
-    log.info(u'Media Media Item loaded')
+    log.info(u'%s MediaMediaItem loaded', __name__)
 
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Media'
@@ -54,15 +54,16 @@ class MediaMediaItem(MediaManagerItem):
         self.PreviewFunction = self.video_get_preview
         MediaManagerItem.__init__(self, parent, icon, title)
         self.ServiceItemIconName = u':/media/media_video.png'
-        self.MainDisplay = self.parent.live_controller.parent.mainDisplay
+        self.MainDisplay = self.parent.maindisplay
 
     def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8('Media')
 
     def retranslateUi(self):
         self.OnNewPrompt = self.trUtf8('Select Media')
-        self.OnNewFileMasks = self.trUtf8('Videos (*.avi *.mpeg *.mpg'
-            '*.mp4);;Audio (*.ogg *.mp3 *.wma);;All files (*)')
+        self.OnNewFileMasks = self.trUtf8('Videos (%s);;'
+            'Audio (%s);;'
+            'All files (*)' % (self.parent.video_list, self.parent.audio_list))
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -84,7 +85,7 @@ class MediaMediaItem(MediaManagerItem):
         for item in items:
             bitem = self.ListView.item(item.row())
             filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
-            frame = u':/media/media_video.png'
+            frame = u':/media/image_clapperboard.png'
             (path, name) = os.path.split(filename)
             service_item.add_from_command(path, name, frame)
         return True

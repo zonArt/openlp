@@ -23,16 +23,15 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-#from slidecontroller import MasterToolbar
+from serviceitemform import ServiceItemNoteForm
+from screen import ScreenList
 from maindisplay import MainDisplay
 from amendthemeform import AmendThemeForm
 from slidecontroller import SlideController
 from splashscreen import SplashScreen
-from alertstab import AlertsTab
 from generaltab import GeneralTab
 from themestab import ThemesTab
 from aboutform import AboutForm
-from alertform import AlertForm
 from pluginform import PluginForm
 from settingsform import SettingsForm
 from mediadockmanager import MediaDockManager
@@ -42,4 +41,4 @@ from mainwindow import MainWindow
 
 __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainWindow',
     'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
-    'AmendThemeForm', 'MediaDockManager', 'ThemeLevel']
+    'AmendThemeForm', 'MediaDockManager', 'ServiceItemNoteForm']

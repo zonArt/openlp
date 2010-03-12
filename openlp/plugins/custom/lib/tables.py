@@ -27,7 +27,7 @@ from sqlalchemy import Column, Table, types
 
 from openlp.plugins.custom.lib.meta import metadata
 
-# Definition of the "songs" table
+# Definition of the "custom slide" table
 custom_slide_table = Table(u'custom_slide', metadata,
     Column(u'id', types.Integer(), primary_key=True),
     Column(u'title', types.Unicode(255), nullable=False),

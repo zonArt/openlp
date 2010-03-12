@@ -33,7 +33,7 @@ class SettingsManager(object):
     individual components.
     """
     def __init__(self, screen):
-        self.screen = screen[0]
+        self.screen = screen.current
         self.width = self.screen[u'size'].width()
         self.height = self.screen[u'size'].height()
         self.mainwindow_height = self.height * 0.8

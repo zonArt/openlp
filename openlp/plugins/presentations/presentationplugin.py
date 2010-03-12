@@ -26,20 +26,21 @@
 import os
 import logging
 
-from openlp.core.lib import Plugin, build_icon
+from openlp.core.lib import Plugin, build_icon, Receiver, PluginStatus
 from openlp.plugins.presentations.lib import *
 
-class PresentationPlugin(Plugin):
+log = logging.getLogger(__name__)
 
-    global log
+class PresentationPlugin(Plugin):
     log = logging.getLogger(u'PresentationPlugin')
 
     def __init__(self, plugin_helpers):
         log.debug(u'Initialised')
         self.controllers = {}
-        Plugin.__init__(self, u'Presentations', u'1.9.0', plugin_helpers)
+        Plugin.__init__(self, u'Presentations', u'1.9.1', plugin_helpers)
         self.weight = -8
         self.icon = build_icon(u':/media/media_presentation.png')
+        self.status = PluginStatus.Active
 
     def get_settings_tab(self):
         """
@@ -51,6 +52,12 @@ class PresentationPlugin(Plugin):
         log.info(u'Presentations Initialising')
         Plugin.initialise(self)
         self.insert_toolbox_item()
+        presentation_types = []
+        for controller in self.controllers:
+            if self.controllers[controller].enabled:
+                presentation_types.append({u'%s' % controller : self.controllers[controller].supports})
+        Receiver.send_message(
+                    u'presentation types', presentation_types)
 
     def finalise(self):
         log.info(u'Plugin Finalise')
@@ -96,7 +103,7 @@ class PresentationPlugin(Plugin):
             self.registerControllers(controller)
             if controller.enabled:
                 controller.start_process()
-        if len(self.controllers) > 0:
+        if self.controllers:
             return True
         else:
             return False

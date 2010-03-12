@@ -27,14 +27,13 @@ import logging
 
 from openlp.plugins.custom.lib.models import init_models, metadata, CustomSlide
 
+log = logging.getLogger(__name__)
+
 class CustomManager():
     """
     The Song Manager provides a central location for all database code. This
     class takes care of connecting to the database and running all the queries.
     """
-
-    global log
-    log = logging.getLogger(u'CustomManager')
     log.info(u'Custom manager loaded')
 
     def __init__(self, config):
@@ -78,7 +77,7 @@ class CustomManager():
             return True
         except:
             self.session.rollback()
-            log.excertion(u'Custom Slide save failed')
+            log.exception(u'Custom Slide save failed')
             return False
 
     def get_custom(self, id=None):
@@ -94,7 +93,7 @@ class CustomManager():
         """
         Delete a Custom slide show
         """
-        if id !=0:
+        if id != 0:
             customslide = self.get_custom(id)
             try:
                 self.session.delete(customslide)
@@ -102,7 +101,10 @@ class CustomManager():
                 return True
             except:
                 self.session.rollback()
-                log.excertion(u'Custom Slide deleton failed')
+                log.exception(u'Custom Slide deleton failed')
                 return False
         else:
             return True
+
+    def get_customs_for_theme(self, theme):
+        return self.session.query(CustomSlide).filter(CustomSlide.theme_name == theme).all()
