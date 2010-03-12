@@ -177,20 +177,20 @@ class ThemeManager(QtGui.QWidget):
             if theme != unicode(item.data(QtCore.Qt.UserRole).toString()):
                 QtGui.QMessageBox.critical(
                     self, self.trUtf8('Error'),
-                    self.trUtf8('You are unable to delete the default theme!'),
+                    self.trUtf8('You are unable to delete the Default Theme.'),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             else:
                 for plugin in self.parent.plugin_manager.plugins:
                     if not plugin.can_delete_theme(theme):
                         QtGui.QMessageBox.critical(
                             self, self.trUtf8('Error'),
-                            self.trUtf8('theme %s is use in %s plugin' % (theme, plugin.name)),
+                            self.trUtf8('Theme %s is use in %s plugin' % (theme, plugin.name)),
                             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                         return
                 if unicode(self.parent.ServiceManagerContents.ThemeComboBox.currentText()) == theme:
                     QtGui.QMessageBox.critical(
                         self, self.trUtf8('Error'),
-                        self.trUtf8('theme %s is use Service Manager' % theme),
+                        self.trUtf8('Theme %s is use by Service Manager' % theme),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                     return
                 self.themelist.remove(theme)
@@ -216,7 +216,7 @@ class ThemeManager(QtGui.QWidget):
         item = self.ThemeListWidget.currentItem()
         if item is None:
             QtGui.QMessageBox.critical(self, self.trUtf8('Error'),
-                self.trUtf8('You have not selected a theme!'),
+                self.trUtf8('You have not selected a theme.'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             return
         theme = unicode(item.data(QtCore.Qt.UserRole).toString())
@@ -359,7 +359,7 @@ class ThemeManager(QtGui.QWidget):
         except:
             QtGui.QMessageBox.critical(
                 self, self.trUtf8('Error'),
-                self.trUtf8('File is not a valid theme!'),
+                self.trUtf8('File is not a valid theme.'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             log.exception(u'Importing theme from zip file failed %s' % filename)
         finally:

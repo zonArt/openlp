@@ -101,7 +101,7 @@ class ImageMediaItem(MediaManagerItem):
         self.OverrideCheckBox.setChecked(False)
         self.OverrideCheckBox.setText(self.trUtf8('Override background'))
         self.OverrideCheckBox.setStatusTip(
-            self.trUtf8('Allow background of live slide to be overridden'))
+            self.trUtf8('Allow the background of live slide to be overridden'))
         self.OverrideLayout.addWidget(self.OverrideCheckBox)
         self.OverrideLabel = QtGui.QLabel(self.ImageWidget)
         self.OverrideLabel.setObjectName(u'OverrideLabel')
