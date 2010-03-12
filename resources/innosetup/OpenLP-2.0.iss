@@ -5,7 +5,7 @@
 #define MyAppVerName "OpenLP 2.0"
 #define MyAppPublisher "OpenLP Developers"
 #define MyAppURL "http://openlp.org/"
-#define MyAppExeName "openlp.exe"
+#define MyAppExeName "OpenLP.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -22,7 +22,7 @@ DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName=OpenLP 2.0
 AllowNoIcons=yes
 LicenseFile=LICENSE.txt
-OutputBaseFilename=OpenLP-2.0-setup
+OutputBaseFilename=OpenLP-1.9.0-bzr737-setup
 Compression=lzma
 SolidCompression=true
 SetupIconFile=OpenLP.ico
@@ -55,10 +55,11 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
 
 [Files]
-Source: C:\Documents and Settings\raoul\My Documents\My Projects\openlp\pyinstaller\dist\openlp\*; DestDir: {app}; Flags: ignoreversion
-Source: C:\Documents and Settings\raoul\My Documents\My Projects\openlp\pyinstaller\dist\openlp\plugins\*; DestDir: {app}\plugins; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: C:\Documents and Settings\raoul\My Documents\My Projects\openlp\pyinstaller\dist\openlp\Microsoft.VC90.CRT\*; DestDir: {app}\Microsoft.VC90.CRT; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: C:\Documents and Settings\raoul\My Documents\My Projects\openlp\pyinstaller\dist\openlp\qt4_plugins\*; DestDir: {app}\qt4_plugins; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: ..\..\dist\OpenLP\*; DestDir: {app}; Flags: ignoreversion
+Source: ..\..\dist\OpenLP\plugins\*; DestDir: {app}\plugins; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: ..\..\dist\OpenLP\Microsoft.VC90.CRT\*; DestDir: {app}\Microsoft.VC90.CRT; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: ..\..\dist\OpenLP\qt4_plugins\*; DestDir: {app}\qt4_plugins; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: ..\..\dist\OpenLP\eggs\*; DestDir: {app}\eggs; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
