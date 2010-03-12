@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -58,11 +59,11 @@ class PresentationMediaItem(MediaManagerItem):
         self.message_listener = MessageListener(controllers)
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = self.trUtf8(u'Presentation')
+        self.PluginNameVisible = self.trUtf8('Presentation')
 
     def retranslateUi(self):
-        self.OnNewPrompt = self.trUtf8(u'Select Presentation(s)')
-        self.OnNewFileMasks = self.trUtf8(u'Presentations (*.ppt *.pps *.odp)')
+        self.OnNewPrompt = self.trUtf8('Select Presentation(s)')
+        self.OnNewFileMasks = self.trUtf8('Presentations (*.ppt *.pps *.odp)')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -88,7 +89,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.DisplayTypeLabel = QtGui.QLabel(self.PresentationWidget)
         self.DisplayTypeLabel.setObjectName(u'SearchTypeLabel')
         self.DisplayLayout.addWidget(self.DisplayTypeLabel, 0, 0, 1, 1)
-        self.DisplayTypeLabel.setText(self.trUtf8(u'Present using:'))
+        self.DisplayTypeLabel.setText(self.trUtf8('Present using:'))
         # Add the Presentation widget to the page layout
         self.PageLayout.addWidget(self.PresentationWidget)
 
@@ -111,8 +112,8 @@ class PresentationMediaItem(MediaManagerItem):
             (path, filename) = os.path.split(unicode(file))
             if titles.count(filename) > 0:
                 QtGui.QMessageBox.critical(
-                    self, self.trUtf8(u'File exists'), self.trUtf8(
-                        u'A presentation with that filename already exists.'),
+                    self, self.trUtf8('File exists'), self.trUtf8(
+                        'A presentation with that filename already exists.'),
                     QtGui.QMessageBox.Ok)
             else:
                 item_name = QtGui.QListWidgetItem(filename)
@@ -136,18 +137,18 @@ class PresentationMediaItem(MediaManagerItem):
             return False
         service_item.title = unicode(self.DisplayTypeComboBox.currentText())
         service_item.shortname = unicode(self.DisplayTypeComboBox.currentText())
-        cont = self.controllers[service_item.shortname]
+        controller = self.controllers[service_item.shortname]
         for item in items:
             bitem = self.ListView.item(item.row())
             filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
             (path, name) = os.path.split(filename)
-            cont.store_filename(filename)
-            if cont.get_slide_preview_file(1) is None:
-                cont.load_presentation(filename)
+            controller.store_filename(filename)
+            if controller.get_slide_preview_file(1) is None:
+                controller.load_presentation(filename)
             i = 1
-            img = cont.get_slide_preview_file(i)
+            img = controller.get_slide_preview_file(i)
             while img:
                 service_item.add_from_command(path, name, img)
                 i = i + 1
-                img = cont.get_slide_preview_file(i)
+                img = controller.get_slide_preview_file(i)
         return True

@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -99,10 +100,9 @@ class Ui_OpenSongImportDialog(object):
         QtCore.QMetaObject.connectSlotsByName(OpenSongImportDialog)
 
     def retranslateUi(self, OpenSongImportDialog):
-        OpenSongImportDialog.setWindowTitle(self.trUtf8(u'OpenSong Song Importer'))
-        self.ImportFileLabel.setText(self.trUtf8(u'OpenSong Folder:'))
-        self.ProgressGroupBox.setTitle(self.trUtf8(u'Progress:'))
-        self.ProgressLabel.setText(self.trUtf8(u'Ready to import'))
-        self.ImportPushButton.setText(self.trUtf8(u'Import'))
-        self.ClosePushButton.setText(self.trUtf8(u'Close'))
-
+        OpenSongImportDialog.setWindowTitle(self.trUtf8('OpenSong Song Importer'))
+        self.ImportFileLabel.setText(self.trUtf8('OpenSong Folder:'))
+        self.ProgressGroupBox.setTitle(self.trUtf8('Progress:'))
+        self.ProgressLabel.setText(self.trUtf8('Ready to import'))
+        self.ImportPushButton.setText(self.trUtf8('Import'))
+        self.ClosePushButton.setText(self.trUtf8('Close'))

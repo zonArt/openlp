@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -45,7 +46,7 @@ class BiblesTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'BiblesTab')
-        self.tabTitleVisible = self.trUtf8(u'Bibles')
+        self.tabTitleVisible = self.trUtf8('Bibles')
         self.BibleLayout = QtGui.QHBoxLayout(self)
         self.BibleLayout.setSpacing(8)
         self.BibleLayout.setMargin(8)
@@ -149,21 +150,21 @@ class BiblesTab(SettingsTab):
             QtCore.SIGNAL(u'update_themes'), self.updateThemeList)
 
     def retranslateUi(self):
-        self.VerseDisplayGroupBox.setTitle(self.trUtf8(u'Verse Display'))
-        self.NewChaptersCheckBox.setText(self.trUtf8(u'Only show new chapter numbers'))
-        self.LayoutStyleLabel.setText(self.trUtf8(u'Layout Style:'))
-        self.DisplayStyleLabel.setText(self.trUtf8(u'Display Style:'))
-        self.BibleThemeLabel.setText(self.trUtf8(u'Bible Theme:'))
-        self.LayoutStyleComboBox.setItemText(0, self.trUtf8(u'verse per slide'))
-        self.LayoutStyleComboBox.setItemText(1, self.trUtf8(u'verse per line'))
-        self.LayoutStyleComboBox.setItemText(2, self.trUtf8(u'continuous'))
-        self.DisplayStyleComboBox.setItemText(0, self.trUtf8(u'No brackets'))
-        self.DisplayStyleComboBox.setItemText(1, self.trUtf8(u'( and )'))
-        self.DisplayStyleComboBox.setItemText(2, self.trUtf8(u'{ and }'))
-        self.DisplayStyleComboBox.setItemText(3, self.trUtf8(u'[ and ]'))
+        self.VerseDisplayGroupBox.setTitle(self.trUtf8('Verse Display'))
+        self.NewChaptersCheckBox.setText(self.trUtf8('Only show new chapter numbers'))
+        self.LayoutStyleLabel.setText(self.trUtf8('Layout Style:'))
+        self.DisplayStyleLabel.setText(self.trUtf8('Display Style:'))
+        self.BibleThemeLabel.setText(self.trUtf8('Bible Theme:'))
+        self.LayoutStyleComboBox.setItemText(0, self.trUtf8('verse per slide'))
+        self.LayoutStyleComboBox.setItemText(1, self.trUtf8('verse per line'))
+        self.LayoutStyleComboBox.setItemText(2, self.trUtf8('continuous'))
+        self.DisplayStyleComboBox.setItemText(0, self.trUtf8('No brackets'))
+        self.DisplayStyleComboBox.setItemText(1, self.trUtf8('( and )'))
+        self.DisplayStyleComboBox.setItemText(2, self.trUtf8('{ and }'))
+        self.DisplayStyleComboBox.setItemText(3, self.trUtf8('[ and ]'))
         self.ChangeNoteLabel.setText(
-            self.trUtf8(u'Note:\nChanges don\'t affect verses already in the service'))
-        self.BibleDualCheckBox.setText(self.trUtf8(u'Display Dual Bible Verses'))
+            self.trUtf8('Note:\nChanges don\'t affect verses already in the service'))
+        self.BibleDualCheckBox.setText(self.trUtf8('Display Dual Bible Verses'))
 
     def onBibleThemeComboBoxChanged(self):
         self.bible_theme = self.BibleThemeComboBox.currentText()

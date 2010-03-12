@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -40,7 +41,7 @@ class BibleCSVImpl(BibleCommon):
         """
         self.bibledb = bibledb
         self.loadbible = True
-        QtCore.QObject.connect(Receiver().get_receiver(),
+        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
 
     def stop_import(self):
@@ -48,6 +49,7 @@ class BibleCSVImpl(BibleCommon):
 
     def load_data(self, booksfile, versesfile, dialogobject):
         #Populate the Tables
+        success = True
         fbooks = None
         try:
             fbooks = open(booksfile, 'r')
@@ -66,14 +68,16 @@ class BibleCSVImpl(BibleCommon):
                 count += 1
                 #Flush the screen events
                 if count % 3 == 0:
-                    Receiver().send_message(u'process_events')
+                    Receiver.send_message(u'process_events')
                     count = 0
         except:
             log.exception(u'Loading books from file failed')
+            success = False
         finally:
             if fbooks:
                 fbooks.close()
-
+        if not success:
+            return False
         fverse = None
         try:
             fverse = open(versesfile, 'r')
@@ -87,20 +91,30 @@ class BibleCSVImpl(BibleCommon):
                 # split into 3 units and leave the rest as a single field
                 p = line.split(u',', 3)
                 p0 = p[0].replace(u'"', u'')
-                p3 = p[3].replace(u'"',u'')
+                p3 = p[3].replace(u'"', u'')
                 if book_ptr is not p0:
                     book = self.bibledb.get_bible_book(p0)
                     book_ptr = book.name
                     # increament the progress bar
-                    dialogobject.incrementProgressBar(book.name)
+                    dialogobject.incrementProgressBar(u'Importing %s %s' % \
+                        book.name)
                 self.bibledb.add_verse(book.id, p[1], p[2], p3)
                 count += 1
                 #Every x verses repaint the screen
                 if count % 3 == 0:
-                    Receiver().send_message(u'process_events')
+                    Receiver.send_message(u'process_events')
                     count = 0
+            self.bibledb.save_verses()
         except:
             log.exception(u'Loading verses from file failed')
+            success = False
         finally:
             if fverse:
                 fverse.close()
+        if not self.loadbible:
+            dialogobject.incrementProgressBar(u'Import canceled!')
+            dialogobject.ImportProgressBar.setValue(
+                dialogobject.ImportProgressBar.maximum())
+            return False
+        else:
+            return success

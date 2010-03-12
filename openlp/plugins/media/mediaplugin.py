@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,8 +25,8 @@
 
 import logging
 
-from openlp.core.lib import Plugin, buildIcon
-from openlp.plugins.media.lib import MediaTab, MediaMediaItem
+from openlp.core.lib import Plugin, build_icon
+from openlp.plugins.media.lib import MediaMediaItem
 
 class MediaPlugin(Plugin):
     global log
@@ -35,12 +36,9 @@ class MediaPlugin(Plugin):
     def __init__(self, plugin_helpers):
         Plugin.__init__(self, u'Media', u'1.9.0', plugin_helpers)
         self.weight = -6
-        self.icon = buildIcon(u':/media/media_video.png')
+        self.icon = build_icon(u':/media/media_video.png')
         # passed with drag and drop messages
         self.dnd_id = u'Media'
-
-    def get_settings_tab(self):
-        return MediaTab(self.name)
 
     def initialise(self):
         log.info(u'Plugin Initialising')
@@ -56,6 +54,6 @@ class MediaPlugin(Plugin):
         return MediaMediaItem(self, self.icon, self.name)
 
     def about(self):
-        about_text = self.trUtf8(u'<b>Media Plugin</b><br>This plugin '
-            u'allows the playing of audio and video media')
+        about_text = self.trUtf8('<b>Media Plugin</b><br>This plugin '
+            'allows the playing of audio and video media')
         return about_text

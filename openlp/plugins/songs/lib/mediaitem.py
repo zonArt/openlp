@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -58,7 +59,7 @@ class SongMediaItem(MediaManagerItem):
         self.remoteSong = -1
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = self.trUtf8(u'Song')
+        self.PluginNameVisible = self.trUtf8('Song')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -67,10 +68,9 @@ class SongMediaItem(MediaManagerItem):
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
         ## Song Maintenance Button ##
-        self.addToolbarButton(self.trUtf8(u'Song Maintenance'),
-            self.trUtf8(u'Maintain the lists of authors, topics and books'),
-            ':/songs/song_maintenance.png', self.onSongMaintenanceClick,
-            'SongMaintenanceItem')
+        self.addToolbarButton(self.trUtf8('Song Maintenance'),
+            self.trUtf8('Maintain the lists of authors, topics and books'),
+            ':/songs/song_maintenance.png', self.onSongMaintenanceClick)
         self.PageLayout.setSpacing(4)
         self.SearchLayout = QtGui.QFormLayout()
         self.SearchLayout.setMargin(0)
@@ -137,15 +137,15 @@ class SongMediaItem(MediaManagerItem):
             self.parent.config.get_config(u'search as type', u'False'))
 
     def retranslateUi(self):
-        self.SearchTextLabel.setText(self.trUtf8(u'Search:'))
-        self.SearchTypeLabel.setText(self.trUtf8(u'Type:'))
-        self.ClearTextButton.setText(self.trUtf8(u'Clear'))
-        self.SearchTextButton.setText(self.trUtf8(u'Search'))
+        self.SearchTextLabel.setText(self.trUtf8('Search:'))
+        self.SearchTypeLabel.setText(self.trUtf8('Type:'))
+        self.ClearTextButton.setText(self.trUtf8('Clear'))
+        self.SearchTextButton.setText(self.trUtf8('Search'))
 
     def initialise(self):
-        self.SearchTypeComboBox.addItem(self.trUtf8(u'Titles'))
-        self.SearchTypeComboBox.addItem(self.trUtf8(u'Lyrics'))
-        self.SearchTypeComboBox.addItem(self.trUtf8(u'Authors'))
+        self.SearchTypeComboBox.addItem(self.trUtf8('Titles'))
+        self.SearchTypeComboBox.addItem(self.trUtf8('Lyrics'))
+        self.SearchTypeComboBox.addItem(self.trUtf8('Authors'))
         self.configUpdated()
 
     def onSearchTextButtonClick(self):
@@ -185,7 +185,7 @@ class SongMediaItem(MediaManagerItem):
                 if author_list != u'':
                     author_list = author_list + u', '
                 author_list = author_list + author.display_name
-            song_detail = unicode(self.trUtf8(u'%s (%s)' % \
+            song_detail = unicode(self.trUtf8('%s (%s)' % \
                 (unicode(song.title), unicode(author_list))))
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
@@ -196,7 +196,7 @@ class SongMediaItem(MediaManagerItem):
         self.ListView.clear()
         for author in searchresults:
             for song in author.songs:
-                song_detail = unicode(self.trUtf8(u'%s (%s)' % \
+                song_detail = unicode(self.trUtf8('%s (%s)' % \
                     (unicode(author.display_name), unicode(song.title))))
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
@@ -287,15 +287,35 @@ class SongMediaItem(MediaManagerItem):
             item_id = self.remoteSong
         song = self.parent.songmanager.get_song(item_id)
         service_item.theme = song.theme_name
-        service_item.editEnabled = True
+        service_item.edit_enabled = True
         service_item.editId = item_id
-        service_item.verse_order = song.verse_order
         if song.lyrics.startswith(u'<?xml version='):
-            songXML=SongXMLParser(song.lyrics)
+            songXML = SongXMLParser(song.lyrics)
             verseList = songXML.get_verses()
-            for verse in verseList:
-                if verse[1]:
-                    service_item.add_from_text(verse[1][:30], verse[1])
+            #no verse list or only 1 space (in error)
+            if song.verse_order is None or \
+                song.verse_order == u'' or song.verse_order == u' ':
+                for verse in verseList:
+                    service_item.add_from_text(verse[1][:30], unicode(verse[1]))
+            else:
+                #Loop through the verse list and expand the song accordingly.
+                for order in song.verse_order.upper().split(u' '):
+                    if len(order) == 0:
+                        break
+                    for verse in verseList:
+                        if verse[1]:
+                            if verse[0][u'type'] == "Verse":
+                                if verse[0][u'label'][0] == order[1:]:
+                                    verseTag = u'%s:%s' % \
+                                        (verse[0][u'type'], verse[0][u'label'])
+                                    service_item.add_from_text\
+                                        (verse[1][:30], verse[1], verseTag)
+                            else:
+                                if verse[0][u'type'][0] == order[0]:
+                                    verseTag = u'%s:%s' % \
+                                        (verse[0][u'type'], verse[0][u'label'])
+                                    service_item.add_from_text\
+                                        (verse[1][:30], verse[1], verseTag)
         else:
             verses = song.lyrics.split(u'\n\n')
             for slide in verses:
@@ -307,17 +327,16 @@ class SongMediaItem(MediaManagerItem):
             author_list = author_list + unicode(author.display_name)
             author_audit.append(unicode(author.display_name))
         if song.ccli_number is None or len(song.ccli_number) == 0:
-            ccl = self.parent.settings.GeneralTab.CCLNumber
+            ccli = self.parent.settings.GeneralTab.CCLINumber
         else:
-            ccl = unicode(song.ccli_number)
+            ccli = unicode(song.ccli_number)
         raw_footer.append(song.title)
         raw_footer.append(author_list)
         raw_footer.append(song.copyright )
         raw_footer.append(unicode(
-            self.trUtf8(u'CCL Licence: ') + ccl))
+            self.trUtf8('CCLI Licence: ') + ccli))
         service_item.raw_footer = raw_footer
         service_item.audit = [
             song.title, author_audit, song.copyright, song.ccli_number
         ]
         return True
-

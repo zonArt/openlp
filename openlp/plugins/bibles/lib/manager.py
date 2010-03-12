@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,6 +26,7 @@
 import logging
 import os
 
+from bibleOpenSongimpl import BibleOpenSongImpl
 from bibleOSISimpl import BibleOSISImpl
 from bibleCSVimpl import BibleCSVImpl
 from bibleDBimpl import BibleDBImpl
@@ -33,6 +35,28 @@ from bibleHTTPimpl import BibleHTTPImpl
 class BibleMode(object):
     Full = 1
     Partial = 2
+
+
+class BibleFormat(object):
+    Unknown = -1
+    OSIS = 0
+    CSV = 1
+    OpenSong = 2
+    WebDownload = 3
+
+    @classmethod
+    def get_handler(class_, id):
+        if id == class_.OSIS:
+            return BibleOSISImpl
+        elif id == class_.CSV:
+            return BibleCSVImpl
+        elif id == class_.OpenSong:
+            return BibleOpenSongImpl
+        elif id == class_.WebDownload:
+            return BibleHTTPImpl
+        else:
+            return None
+
 
 class BibleManager(object):
     """
@@ -131,7 +155,7 @@ class BibleManager(object):
                         fbibles.close()
         log.debug(u'Bible Initialised')
 
-    def process_dialog(self, dialogobject):
+    def set_process_dialog(self, dialogobject):
         """
         Sets the reference to the dialog with the progress bar on it.
 
@@ -139,6 +163,15 @@ class BibleManager(object):
             The reference to the dialog.
         """
         self.dialogobject = dialogobject
+
+    def import_bible(self, type, **kwargs):
+        """
+        Register a bible in the bible cache, and then import the verses.
+
+        ``type``
+            What type of Bible,
+        """
+        pass
 
     def register_http_bible(self, biblename, biblesource, bibleid,
                             proxyurl=None, proxyid=None, proxypass=None):
@@ -175,7 +208,7 @@ class BibleManager(object):
             self.bible_db_cache[biblename] = nbible
             nhttp = BibleHTTPImpl()
             nhttp.set_bible_source(biblesource)
-            self.bible_http_cache [biblename] = nhttp
+            self.bible_http_cache[biblename] = nhttp
             # register a lazy loading interest
             nbible.save_meta(u'WEB', biblesource)
             # store the web id of the bible
@@ -213,8 +246,7 @@ class BibleManager(object):
             self.bible_db_cache[biblename] = nbible
             # Create the loader and pass in the database
             bcsv = BibleCSVImpl(nbible)
-            bcsv.load_data(booksfile, versefile, self.dialogobject)
-            return True
+            return bcsv.load_data(booksfile, versefile, self.dialogobject)
         else:
             log.debug(u'register_csv_file_bible %s not created already exists',
                 biblename)
@@ -235,13 +267,34 @@ class BibleManager(object):
             # Cache the database for use later
             self.bible_db_cache[biblename] = nbible
             # Create the loader and pass in the database
-            bcsv = BibleOSISImpl(self.biblePath, nbible)
-            bcsv.load_data(osisfile, self.dialogobject)
-            return True
+            bosis = BibleOSISImpl(self.biblePath, nbible)
+            return bosis.load_data(osisfile, self.dialogobject)
         else:
             log.debug(
                 u'register_OSIS_file_bible %s, %s not created already exists',
                 biblename, osisfile)
+            return False
+
+    def register_opensong_bible(self, biblename, opensongfile):
+        """
+        Method to load a bible from an OpenSong xml file. If the database
+        exists it is deleted and the database is reloaded from scratch.
+        """
+        log.debug(u'register_opensong_file_bible %s, %s', biblename, opensongfile)
+        if self._is_new_bible(biblename):
+            # Create new Bible
+            nbible = BibleDBImpl(self.biblePath, biblename, self.config)
+            # Create Database
+            nbible.create_tables()
+            # Cache the database for use later
+            self.bible_db_cache[biblename] = nbible
+            # Create the loader and pass in the database
+            bcsv = BibleOpenSongImpl(self.biblePath, nbible)
+            bcsv.load_data(opensongfile, self.dialogobject)
+            return True
+        else:
+            log.debug(u'register_opensong_file_bible %s, %s not created '
+                u'already exists', biblename, opensongfile)
             return False
 
     def get_bibles(self, mode=BibleMode.Full):
@@ -351,7 +404,7 @@ class BibleManager(object):
                 log.debug(u'get_verse_text : new book')
                 for chapter in range(schapter, echapter + 1):
                     self.media.setQuickMessage(
-                        unicode(self.media.trUtf8(u'Downloading %s: %s')) %
+                        unicode(self.media.trUtf8('Downloading %s: %s')) %
                             (bookname, chapter))
                     search_results = \
                         self.bible_http_cache[bible].get_bible_chapter(
@@ -381,7 +434,7 @@ class BibleManager(object):
                                 book.id, chapter)
                             if v is None:
                                 self.media.setQuickMessage(
-                                    unicode(self.media.trUtf8(u'%Downloading %s: %s'))\
+                                    unicode(self.media.trUtf8('%Downloading %s: %s'))\
                                         % (bookname, chapter))
                                 self.bible_db_cache[bible].create_chapter(
                                     book.id, chapter,
@@ -394,7 +447,7 @@ class BibleManager(object):
                     if v is None:
                         try:
                             self.media.setQuickMessage(\
-                                 unicode(self.media.trUtf8(u'Downloading %s: %s'))
+                                 unicode(self.media.trUtf8('Downloading %s: %s'))
                                          % (bookname, chapter))
                             search_results = \
                                 self.bible_http_cache[bible].get_bible_chapter(

@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -44,7 +45,7 @@ class PowerpointController(PresentationController):
     global log
     log = logging.getLogger(u'PowerpointController')
     log.info(u'loaded')
-    
+
     def __init__(self, plugin):
         """
         Initialise the class
@@ -53,7 +54,7 @@ class PowerpointController(PresentationController):
         PresentationController.__init__(self, plugin, u'Powerpoint')
         self.process = None
         self.presentation = None
- 
+
     def check_available(self):
         """
         PowerPoint is able to run on this machine
@@ -90,7 +91,7 @@ class PowerpointController(PresentationController):
             except:
                 return False
             return True
-        
+
         def kill(self):
             """
             Called at system exit to clean up any running presentations
@@ -113,7 +114,7 @@ class PowerpointController(PresentationController):
 
             ``presentation``
             The file name of the presentations to run.
-            """            
+            """
             log.debug(u'LoadPresentation')
             self.store_filename(presentation)
             try:
@@ -141,7 +142,7 @@ class PowerpointController(PresentationController):
                 return
             self.presentation.Export(os.path.join(self.thumbnailpath, '')
                                      , 'png', 600, 480)
-            
+
         def close_presentation(self):
             """
             Close presentation and clean up objects
@@ -194,7 +195,7 @@ class PowerpointController(PresentationController):
         def start_presentation(self):
             """
             Starts a presentation from the beginning
-            """            
+            """
             #SlideShowWindow measures its size/position by points, not pixels
             try:
                 dpi = win32ui.GetActiveWindow().GetDC().GetDeviceCaps(88)
@@ -223,7 +224,7 @@ class PowerpointController(PresentationController):
             Returns total number of slides
             """
             return self.presentation.Slides.Count
-        
+
         def goto_slide(self, slideno):
             """
             Moves to a specific slide in the presentation

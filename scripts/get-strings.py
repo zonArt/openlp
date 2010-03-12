@@ -5,8 +5,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Martin Thompson, Tim Bentley, Carsten      #
 # Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -24,7 +24,7 @@
 ###############################################################################
 
 import os
-import re
+from ast import parse, NodeVisitor, Str
 
 ts_file = u"""<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
@@ -42,27 +42,37 @@ ts_message = u"""    <message>
       <translation type="unfinished"></translation>
     </message>
 """
-find_trUtf8 = re.compile(r"trUtf8\(u'([\.:;\\&\w]+)'\)", re.UNICODE)
-strings = {}
 
-def parse_file(filename):
-    global strings
+class StringExtractor(NodeVisitor):
+
+    def __init__(self, strings, filename):
+        self.filename = filename
+        self.strings = strings
+        self.classname = 'unknown'
+
+    def visit_ClassDef(self, node):
+        self.classname = node.name
+        self.generic_visit(node)
+
+    def visit_Call(self, node):
+        if hasattr(node.func, 'attr') and node.func.attr == 'trUtf8' and isinstance(node.args[0], Str):
+            string = node.args[0].s
+            key = '%s-%s' % (self.classname, string)
+            self.strings[key] = [self.classname, self.filename, node.lineno, string]
+        self.generic_visit(node)
+
+def parse_file(filename, strings):
     file = open(filename, u'r')
-    class_name = u''
-    line_number = 0
-    for line in file:
-        line_number += 1
-        if line[:5] == u'class':
-            class_name = line[6:line.find(u'(')]
-            continue
-        for match in find_trUtf8.finditer(line):
-            key = u'%s-%s' % (class_name, match.group(1))
-            if not key in strings:
-                strings[key] = [class_name, filename, line_number, match.group(1)]
+    try:
+        ast = parse(file.read())
+    except SyntaxError, e:
+        print "Unable to parse %s: %s" % (filename, e)
+        return
     file.close()
 
-def write_file(filename):
-    global strings
+    StringExtractor(strings, filename).visit(ast)
+
+def write_file(filename, strings):
     translation_file = u''
     translation_contexts = []
     translation_messages = []
@@ -79,18 +89,19 @@ def write_file(filename):
     translation_contexts.append(current_context)
     translation_file = ts_file % (u''.join(translation_contexts))
     file = open(filename, u'w')
-    file.write(translation_file)
+    file.write(translation_file.encode('utf8'))
     file.close()
 
 def main():
-    start_dir = u'.'
+    strings = {}
+    start_dir = os.path.abspath(u'.')
     for root, dirs, files in os.walk(start_dir):
         for file in files:
             if file.endswith(u'.py'):
                 print u'Parsing "%s"' % file
-                parse_file(os.path.join(root, file))
+                parse_file(os.path.join(root, file), strings)
     print u'Generating TS file...',
-    write_file(os.path.join(start_dir, u'i18n', u'openlp_en.ts'))
+    write_file(os.path.join(start_dir, u'i18n', u'openlp_en.ts'), strings)
     print u'done.'
 
 if __name__ == u'__main__':

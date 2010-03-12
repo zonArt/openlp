@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -120,13 +121,21 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.onFontFooterHeightSpinBoxChanged)
         QtCore.QObject.connect(self.OutlineCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'), self.onOutlineCheckBoxChanged)
+        QtCore.QObject.connect(self.ShadowSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.onShadowSpinBoxChanged)
         QtCore.QObject.connect(self.ShadowCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'), self.onShadowCheckBoxChanged)
+        QtCore.QObject.connect(self.OutlineSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.onOutlineSpinBoxChanged)
+        QtCore.QObject.connect(self.SlideTransitionCheckedBox,
+            QtCore.SIGNAL(u'stateChanged(int)'), self.onSlideTransitionCheckedBoxChanged)
 
     def accept(self):
         new_theme = ThemeXML()
         theme_name = unicode(self.ThemeNameEdit.displayText())
-        new_theme.new_document(theme_name)
+        new_theme.new_document(theme_name.encode('unicode-escape'))
         save_from = None
         save_to = None
         if self.theme.background_mode == u'transparent':
@@ -144,7 +153,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 (path, filename) = \
                     os.path.split(unicode(self.theme.background_filename))
                 new_theme.add_background_image(filename)
-                save_to= os.path.join(self.path, theme_name, filename )
+                save_to = os.path.join(self.path, theme_name, filename)
                 save_from = self.theme.background_filename
 
         new_theme.add_font(unicode(self.theme.font_main_name),
@@ -175,7 +184,10 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 unicode(self.theme.display_outline_color),
                 unicode(self.theme.display_horizontalAlign),
                 unicode(self.theme.display_verticalAlign),
-                unicode(self.theme.display_wrapStyle))
+                unicode(self.theme.display_wrapStyle),
+                unicode(self.theme.display_slideTransition),
+                unicode(self.theme.display_shadow_size),
+                unicode(self.theme.display_outline_size))
         theme = new_theme.extract_xml()
         pretty_theme = new_theme.extract_formatted_xml()
         if self.thememanager.saveTheme(theme_name, theme, pretty_theme,
@@ -184,26 +196,26 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
     def loadTheme(self, theme):
         log.debug(u'LoadTheme %s', theme)
-        self.theme = self.thememanager.getThemeData(theme)
+        self.theme = theme
         # Stop the initial screen setup generating 1 preview per field!
         self.allowPreview = False
         self.paintUi(self.theme)
         self.allowPreview = True
-        self.previewTheme(self.theme)
+        self.previewTheme()
 
     def onImageToolButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(
-            self, self.trUtf8('Open file'))
+            self, self.trUtf8(u'Open file'))
         if filename:
             self.ImageLineEdit.setText(filename)
             self.theme.background_filename = filename
-            self.previewTheme(self.theme)
+            self.previewTheme()
     #
     #Main Font Tab
     #
     def onFontMainComboBoxSelected(self):
         self.theme.font_main_name = self.FontMainComboBox.currentFont().family()
-        self.previewTheme(self.theme)
+        self.previewTheme()
 
     def onFontMainWeightComboBoxSelected(self, value):
         if value == 0:
@@ -218,7 +230,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         else:
             self.theme.font_main_weight = u'Bold'
             self.theme.font_main_italics = True
-        self.previewTheme(self.theme)
+        self.previewTheme()
 
     def onFontMainColorPushButtonClicked(self):
         self.theme.font_main_color = QtGui.QColorDialog.getColor(
@@ -226,12 +238,12 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
         self.FontMainColorPushButton.setStyleSheet(
             u'background-color: %s' % unicode(self.theme.font_main_color))
-        self.previewTheme(self.theme)
+        self.previewTheme()
 
     def onFontMainSizeSpinBoxChanged(self):
         if self.theme.font_main_proportion != self.FontMainSizeSpinBox.value():
             self.theme.font_main_proportion = self.FontMainSizeSpinBox.value()
-            self.previewTheme(self.theme)
+            self.previewTheme()
 
     def onFontMainDefaultCheckBoxChanged(self, value):
         if value == 2:  # checked
@@ -252,41 +264,41 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.FontMainLineSpacingSpinBox.setValue(
                 self.theme.font_main_indentation)
         self.stateChanging(self.theme)
-        self.previewTheme(self.theme)
+        self.previewTheme()
 
     def onFontMainXSpinBoxChanged(self):
         if self.theme.font_main_x != self.FontMainXSpinBox.value():
             self.theme.font_main_x = self.FontMainXSpinBox.value()
-            self.previewTheme(self.theme)
+            self.previewTheme()
 
     def onFontMainYSpinBoxChanged(self):
         if self.theme.font_main_y != self.FontMainYSpinBox.value():
             self.theme.font_main_y = self.FontMainYSpinBox.value()
-            self.previewTheme(self.theme)
+            self.previewTheme()
 
     def onFontMainWidthSpinBoxChanged(self):
         if self.theme.font_main_width != self.FontMainWidthSpinBox.value():
             self.theme.font_main_width = self.FontMainWidthSpinBox.value()
-            self.previewTheme(self.theme)
+            self.previewTheme()
 
     def onFontMainLineSpacingSpinBoxChanged(self):
         if self.theme.font_main_indentation != \
             self.FontMainLineSpacingSpinBox.value():
             self.theme.font_main_indentation = \
                 self.FontMainLineSpacingSpinBox.value()
-            self.previewTheme(self.theme)
+            self.previewTheme()
 
     def onFontMainHeightSpinBoxChanged(self):
         if self.theme.font_main_height != self.FontMainHeightSpinBox.value():
             self.theme.font_main_height = self.FontMainHeightSpinBox.value()
-            self.previewTheme(self.theme)
+            self.previewTheme()
     #
     #Footer Font Tab
     #
     def onFontFooterComboBoxSelected(self):
         self.theme.font_footer_name = \
             self.FontFooterComboBox.currentFont().family()
-        self.previewTheme(self.theme)
+        self.previewTheme()
 
     def onFontFooterWeightComboBoxSelected(self, value):
         if value == 0:
@@ -301,22 +313,21 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         else:
             self.theme.font_footer_weight = u'Bold'
             self.theme.font_footer_italics = True
-        self.previewTheme(self.theme)
+        self.previewTheme()
 
     def onFontFooterColorPushButtonClicked(self):
         self.theme.font_footer_color = QtGui.QColorDialog.getColor(
             QtGui.QColor(self.theme.font_footer_color), self).name()
-
         self.FontFooterColorPushButton.setStyleSheet(
             'background-color: %s' % unicode(self.theme.font_footer_color))
-        self.previewTheme(self.theme)
+        self.previewTheme()
 
     def onFontFooterSizeSpinBoxChanged(self):
         if self.theme.font_footer_proportion != \
             self.FontFooterSizeSpinBox.value():
             self.theme.font_footer_proportion = \
                 self.FontFooterSizeSpinBox.value()
-            self.previewTheme(self.theme)
+            self.previewTheme()
 
     def onFontFooterDefaultCheckBoxChanged(self, value):
         if value == 2:  # checked
@@ -336,29 +347,29 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.FontFooterHeightSpinBox.setValue(
                 self.theme.font_footer_height)
         self.stateChanging(self.theme)
-        self.previewTheme(self.theme)
+        self.previewTheme()
 
     def onFontFooterXSpinBoxChanged(self):
         if self.theme.font_footer_x != self.FontFooterXSpinBox.value():
             self.theme.font_footer_x = self.FontFooterXSpinBox.value()
-            self.previewTheme(self.theme)
+            self.previewTheme()
 
     def onFontFooterYSpinBoxChanged(self):
         if self.theme.font_footer_y != self.FontFooterYSpinBox.value():
             self.theme.font_footer_y = self.FontFooterYSpinBox.value()
-            self.previewTheme(self.theme)
+            self.previewTheme()
 
     def onFontFooterWidthSpinBoxChanged(self):
         if self.theme.font_footer_width != self.FontFooterWidthSpinBox.value():
             self.theme.font_footer_width = self.FontFooterWidthSpinBox.value()
-            self.previewTheme(self.theme)
+            self.previewTheme()
 
     def onFontFooterHeightSpinBoxChanged(self):
         if self.theme.font_footer_height != \
             self.FontFooterHeightSpinBox.value():
             self.theme.font_footer_height = \
                 self.FontFooterHeightSpinBox.value()
-            self.previewTheme(self.theme)
+            self.previewTheme()
     #
     #Background Tab
     #
@@ -372,7 +383,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         else:
             self.theme.background_mode = u'transparent'
         self.stateChanging(self.theme)
-        self.previewTheme(self.theme)
+        self.previewTheme()
 
     def onBackgroundTypeComboBoxSelected(self, currentIndex):
         self.setBackground(currentIndex, self.GradientComboBox.currentIndex())
@@ -397,7 +408,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         else:
             self.theme.background_type = u'image'
         self.stateChanging(self.theme)
-        self.previewTheme(self.theme)
+        self.previewTheme()
 
     def onColor1PushButtonClicked(self):
         if self.theme.background_type == u'solid':
@@ -412,14 +423,14 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 u'background-color: %s' % \
                     unicode(self.theme.background_startColor))
 
-        self.previewTheme(self.theme)
+        self.previewTheme()
 
     def onColor2PushButtonClicked(self):
         self.theme.background_endColor = QtGui.QColorDialog.getColor(
             QtGui.QColor(self.theme.background_endColor), self).name()
         self.Color2PushButton.setStyleSheet(
             u'background-color: %s' % unicode(self.theme.background_endColor))
-        self.previewTheme(self.theme)
+        self.previewTheme()
     #
     #Other Tab
     #
@@ -429,14 +440,24 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         else:
             self.theme.display_outline = False
         self.stateChanging(self.theme)
-        self.previewTheme(self.theme)
+        self.previewTheme()
+
+    def onOutlineSpinBoxChanged(self):
+        if self.theme.display_outline_size != self.OutlineSpinBox.value():
+            self.theme.display_outline_size = self.OutlineSpinBox.value()
+            self.previewTheme()
+
+    def onShadowSpinBoxChanged(self):
+        if self.theme.display_shadow_size != self.ShadowSpinBox.value():
+            self.theme.display_shadow_size = self.ShadowSpinBox.value()
+            self.previewTheme()
 
     def onOutlineColorPushButtonClicked(self):
         self.theme.display_outline_color = QtGui.QColorDialog.getColor(
             QtGui.QColor(self.theme.display_outline_color), self).name()
         self.OutlineColorPushButton.setStyleSheet(
             u'background-color: %s' % unicode(self.theme.display_outline_color))
-        self.previewTheme(self.theme)
+        self.previewTheme()
 
     def onShadowCheckBoxChanged(self, value):
         if value == 2:  # checked
@@ -444,24 +465,32 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         else:
             self.theme.display_shadow = False
         self.stateChanging(self.theme)
-        self.previewTheme(self.theme)
+        self.previewTheme()
+
+    def onSlideTransitionCheckedBoxChanged(self, value):
+        if value == 2:  # checked
+            self.theme.display_slideTransition = True
+        else:
+            self.theme.display_slideTransition = False
+        self.stateChanging(self.theme)
+        self.previewTheme()
 
     def onShadowColorPushButtonClicked(self):
         self.theme.display_shadow_color = QtGui.QColorDialog.getColor(
             QtGui.QColor(self.theme.display_shadow_color), self).name()
         self.ShadowColorPushButton.setStyleSheet(
             u'background-color: %s' % unicode(self.theme.display_shadow_color))
-        self.previewTheme(self.theme)
+        self.previewTheme()
 
     def onHorizontalComboBoxSelected(self, currentIndex):
         self.theme.display_horizontalAlign = currentIndex
         self.stateChanging(self.theme)
-        self.previewTheme(self.theme)
+        self.previewTheme()
 
     def onVerticalComboBoxSelected(self, currentIndex):
         self.theme.display_verticalAlign = currentIndex
         self.stateChanging(self.theme)
-        self.previewTheme(self.theme)
+        self.previewTheme()
     #
     #Local Methods
     #
@@ -554,6 +583,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         else:
             self.OutlineCheckBox.setChecked(False)
             self.OutlineColorPushButton.setEnabled(False)
+        self.OutlineSpinBox.setValue(int(self.theme.display_outline_size))
 
         if self.theme.display_shadow:
             self.ShadowCheckBox.setChecked(True)
@@ -561,6 +591,12 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         else:
             self.ShadowCheckBox.setChecked(False)
             self.ShadowColorPushButton.setEnabled(False)
+        self.ShadowSpinBox.setValue(int(self.theme.display_shadow_size))
+
+        if self.theme.display_slideTransition:
+            self.SlideTransitionCheckedBox.setCheckState(QtCore.Qt.Checked)
+        else:
+            self.SlideTransitionCheckedBox.setCheckState(QtCore.Qt.Unchecked)
 
         self.HorizontalComboBox.setCurrentIndex(
             self.theme.display_horizontalAlign)
@@ -585,7 +621,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             if theme.background_type == u'solid':
                 self.Color1PushButton.setStyleSheet(
                     u'background-color: %s' % unicode(theme.background_color))
-                self.Color1Label.setText(self.trUtf8(u'Background Color:'))
+                self.Color1Label.setText(self.trUtf8('Background Color:'))
                 self.Color1Label.setVisible(True)
                 self.Color1PushButton.setVisible(True)
                 self.Color2Label.setVisible(False)
@@ -600,8 +636,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                     % unicode(theme.background_startColor))
                 self.Color2PushButton.setStyleSheet(u'background-color: %s' \
                     % unicode(theme.background_endColor))
-                self.Color1Label.setText(self.trUtf8(u'First  Color:'))
-                self.Color2Label.setText(self.trUtf8(u'Second Color:'))
+                self.Color1Label.setText(self.trUtf8('First  Color:'))
+                self.Color2Label.setText(self.trUtf8('Second Color:'))
                 self.Color1Label.setVisible(True)
                 self.Color1PushButton.setVisible(True)
                 self.Color2Label.setVisible(True)
@@ -654,25 +690,33 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         else:
             self.ShadowColorPushButton.setEnabled(False)
 
-    def previewTheme(self, theme):
+    def previewTheme(self):
         if self.allowPreview:
             #calculate main number of rows
-            main_weight = 50
-            if self.theme.font_main_weight == u'Bold':
-                main_weight = 75
-            mainFont = QtGui.QFont(self.theme.font_main_name,
-                         self.theme.font_main_proportion, # size
-                         main_weight, # weight
-                         self.theme.font_main_italics)# italic
-            mainFont.setPixelSize(self.theme.font_main_proportion)
-            metrics = QtGui.QFontMetrics(mainFont)
+            metrics = self._getThemeMetrics()
             page_length = \
                 (self.FontMainHeightSpinBox.value() / metrics.height() - 2) - 1
             log.debug(u'Page Length area height %s, metrics %s, lines %s' %
                 (self.FontMainHeightSpinBox.value(), metrics.height(),
                 page_length))
-            page_length_text = unicode(self.trUtf8(u'Slide Height is %s rows'))
+            page_length_text = unicode(self.trUtf8('Slide Height is %s rows'))
             self.FontMainLinesPageLabel.setText(page_length_text % page_length)
-            frame = self.thememanager.generateImage(theme)
+            #a=c
+            frame = self.thememanager.generateImage(self.theme)
             self.ThemePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
 
+    def _getThemeMetrics(self):
+        main_weight = 50
+        if self.theme.font_main_weight == u'Bold':
+            main_weight = 75
+        mainFont = QtGui.QFont(self.theme.font_main_name,
+                     self.theme.font_main_proportion, # size
+                     main_weight, # weight
+                     self.theme.font_main_italics)# italic
+        mainFont.setPixelSize(self.theme.font_main_proportion)
+        metrics = QtGui.QFontMetrics(mainFont)
+        #Validate that the screen width is big enough to display the text
+        if self.theme.font_main_width < metrics.maxWidth() * 2 + 64:
+            self.theme.font_main_width = metrics.maxWidth() * 2 + 64
+            self.FontMainWidthSpinBox.setValue(self.theme.font_main_width)
+        return metrics

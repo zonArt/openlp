@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -284,22 +285,21 @@ class Ui_OpenLPExportDialog(object):
         QtCore.QMetaObject.connectSlotsByName(OpenLPExportDialog)
 
     def retranslateUi(self, OpenLPExportDialog):
-        OpenLPExportDialog.setWindowTitle(self.trUtf8(u'openlp.org Song Exporter'))
-        self.ExportFileLabel.setText(self.trUtf8(u'Select openlp.org export filename:'))
-        self.ExportListLabel.setText(self.trUtf8(u'Full Song List'))
-        self.ExportListTable.horizontalHeaderItem(0).setText(self.trUtf8(u'Song Title'))
-        self.ExportListTable.horizontalHeaderItem(1).setText(self.trUtf8(u'Author'))
-        self.ExportSelectAllPushButton.setText(self.trUtf8(u'Select All'))
-        self.ExportFilterComboBox.setItemText(0, self.trUtf8(u'Lyrics'))
-        self.ExportFilterComboBox.setItemText(1, self.trUtf8(u'Title'))
-        self.ExportFilterComboBox.setItemText(2, self.trUtf8(u'Author'))
-        self.SelectedListLabel.setText(self.trUtf8(u'Song Export List'))
-        self.SelectedListTable.horizontalHeaderItem(0).setText(self.trUtf8(u'Song Title'))
-        self.SelectedListTable.horizontalHeaderItem(1).setText(self.trUtf8(u'Author'))
-        self.SelectedSelectAllPushButton.setText(self.trUtf8(u'Select All'))
-        self.SelectedRemoveSelectedButton.setText(self.trUtf8(u'Remove Selected'))
-        self.ProgressGroupBox.setTitle(self.trUtf8(u'Progress:'))
-        self.ProgressLabel.setText(self.trUtf8(u'Ready to export'))
-        self.ExportPushButton.setText(self.trUtf8(u'Export'))
-        self.ClosePushButton.setText(self.trUtf8(u'Close'))
-
+        OpenLPExportDialog.setWindowTitle(self.trUtf8('openlp.org Song Exporter'))
+        self.ExportFileLabel.setText(self.trUtf8('Select openlp.org export filename:'))
+        self.ExportListLabel.setText(self.trUtf8('Full Song List'))
+        self.ExportListTable.horizontalHeaderItem(0).setText(self.trUtf8('Song Title'))
+        self.ExportListTable.horizontalHeaderItem(1).setText(self.trUtf8('Author'))
+        self.ExportSelectAllPushButton.setText(self.trUtf8('Select All'))
+        self.ExportFilterComboBox.setItemText(0, self.trUtf8('Lyrics'))
+        self.ExportFilterComboBox.setItemText(1, self.trUtf8('Title'))
+        self.ExportFilterComboBox.setItemText(2, self.trUtf8('Author'))
+        self.SelectedListLabel.setText(self.trUtf8('Song Export List'))
+        self.SelectedListTable.horizontalHeaderItem(0).setText(self.trUtf8('Song Title'))
+        self.SelectedListTable.horizontalHeaderItem(1).setText(self.trUtf8('Author'))
+        self.SelectedSelectAllPushButton.setText(self.trUtf8('Select All'))
+        self.SelectedRemoveSelectedButton.setText(self.trUtf8('Remove Selected'))
+        self.ProgressGroupBox.setTitle(self.trUtf8('Progress:'))
+        self.ProgressLabel.setText(self.trUtf8('Ready to export'))
+        self.ExportPushButton.setText(self.trUtf8('Export'))
+        self.ClosePushButton.setText(self.trUtf8('Close'))

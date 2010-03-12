@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,13 +24,13 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import buildIcon
+from openlp.core.lib import build_icon
 
 class Ui_customEditDialog(object):
     def setupUi(self, customEditDialog):
         customEditDialog.setObjectName(u'customEditDialog')
         customEditDialog.resize(590, 541)
-        icon = buildIcon(u':/icon/openlp.org-icon-32.bmp')
+        icon = build_icon(u':/icon/openlp.org-icon-32.bmp')
         customEditDialog.setWindowIcon(icon)
         self.gridLayout = QtGui.QGridLayout(customEditDialog)
         self.gridLayout.setObjectName(u'gridLayout')
@@ -50,7 +52,7 @@ class Ui_customEditDialog(object):
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setObjectName(u'verticalLayout')
         self.UpButton = QtGui.QPushButton(customEditDialog)
-        icon1 = buildIcon(u':/services/service_up.png')
+        icon1 = build_icon(u':/services/service_up.png')
         self.UpButton.setIcon(icon1)
         self.UpButton.setObjectName(u'UpButton')
         self.verticalLayout.addWidget(self.UpButton)
@@ -58,7 +60,7 @@ class Ui_customEditDialog(object):
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem)
         self.DownButton = QtGui.QPushButton(customEditDialog)
-        icon2 = buildIcon(u':/services/service_down.png')
+        icon2 = build_icon(u':/services/service_down.png')
         self.DownButton.setIcon(icon2)
         self.DownButton.setObjectName(u'DownButton')
         self.verticalLayout.addWidget(self.DownButton)
@@ -144,22 +146,22 @@ class Ui_customEditDialog(object):
         customEditDialog.setTabOrder(self.ThemeComboBox, self.buttonBox)
 
     def retranslateUi(self, customEditDialog):
-        self.UpButton.setToolTip(self.trUtf8(u'Move slide Up 1'))
-        self.DownButton.setToolTip(self.trUtf8(u'Move slide down 1'))
-        customEditDialog.setWindowTitle(self.trUtf8(u'Edit Custom Slides'))
-        self.TitleLabel.setText(self.trUtf8(u'Title:'))
-        self.AddButton.setText(self.trUtf8(u'Add New'))
-        self.AddButton.setToolTip(self.trUtf8(u'Add new slide at bottom'))
-        self.EditButton.setText(self.trUtf8(u'Edit'))
-        self.EditButton.setToolTip(self.trUtf8(u'Edit selected slide'))
-        self.EditAllButton.setText(self.trUtf8(u'Edit All'))
-        self.EditAllButton.setToolTip(self.trUtf8(u'Edit all slides'))
-        self.SaveButton.setText(self.trUtf8(u'Save'))
-        self.SaveButton.setToolTip(self.trUtf8(u'Replace edited slide'))
-        self.DeleteButton.setText(self.trUtf8(u'Delete'))
-        self.DeleteButton.setToolTip(self.trUtf8(u'Delete selected slide'))
-        self.ClearButton.setText(self.trUtf8(u'Clear'))
-        self.ClearButton.setToolTip(self.trUtf8(u'Clear edit area'))
-        self.ThemeLabel.setText(self.trUtf8(u'Theme:'))
-        self.ThemeComboBox.setToolTip(self.trUtf8(u'Set Theme for Slides'))
-        self.CreditLabel.setText(self.trUtf8(u'Credits:'))
+        self.UpButton.setToolTip(self.trUtf8('Move slide Up 1'))
+        self.DownButton.setToolTip(self.trUtf8('Move slide down 1'))
+        customEditDialog.setWindowTitle(self.trUtf8('Edit Custom Slides'))
+        self.TitleLabel.setText(self.trUtf8('Title:'))
+        self.AddButton.setText(self.trUtf8('Add New'))
+        self.AddButton.setToolTip(self.trUtf8('Add new slide at bottom'))
+        self.EditButton.setText(self.trUtf8('Edit'))
+        self.EditButton.setToolTip(self.trUtf8('Edit selected slide'))
+        self.EditAllButton.setText(self.trUtf8('Edit All'))
+        self.EditAllButton.setToolTip(self.trUtf8('Edit all slides'))
+        self.SaveButton.setText(self.trUtf8('Save'))
+        self.SaveButton.setToolTip(self.trUtf8('Replace edited slide'))
+        self.DeleteButton.setText(self.trUtf8('Delete'))
+        self.DeleteButton.setToolTip(self.trUtf8('Delete selected slide'))
+        self.ClearButton.setText(self.trUtf8('Clear'))
+        self.ClearButton.setToolTip(self.trUtf8('Clear edit area'))
+        self.ThemeLabel.setText(self.trUtf8('Theme:'))
+        self.ThemeComboBox.setToolTip(self.trUtf8('Set Theme for Slides'))
+        self.CreditLabel.setText(self.trUtf8('Credits:'))

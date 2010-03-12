@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,6 +28,7 @@ The :mod:`lib` module contains most of the components and libraries that make
 OpenLP work.
 """
 import logging
+import os.path
 import types
 
 from PyQt4 import QtCore, QtGui
@@ -49,26 +51,28 @@ def translate(context, text):
     return QtGui.QApplication.translate(
         context, text, None, QtGui.QApplication.UnicodeUTF8)
 
-def file_to_xml(xmlfile):
+def get_text_file_string(text_file):
     """
-    Open a file and return the contents of the file.
+    Open a file and return the contents of the file.  If the supplied file name
+    is not a file then the function returns False.  If there is an error
+    loading the file then the function will return None.
 
-    ``xmlfile``
+    ``textfile``
         The name of the file.
     """
-    file = None
-    xml = None
+    if not os.path.isfile(text_file):
+        return False
+    file_handle = None
+    content_string = None
     try:
-        file = open(xmlfile, u'r')
-        xml = file.read()
+        file_handle = open(text_file, u'r')
+        content_string = file_handle.read()
     except IOError:
-        #This may not be an error as this is also used to check
-        #that a file exist
-        log.error(u'Failed to open XML file %s' % xmlfile)
+        log.error(u'Failed to open text file %s' % text_file)
     finally:
-        if file:
-            file.close()
-    return xml
+        if file_handle:
+            file_handle.close()
+    return content_string
 
 def str_to_bool(stringvalue):
     """
@@ -81,7 +85,7 @@ def str_to_bool(stringvalue):
         return stringvalue
     return stringvalue.strip().lower() in (u'true', u'yes', u'y')
 
-def buildIcon(icon):
+def build_icon(icon):
     """
     Build a QIcon instance from an existing QIcon, a resource location, or a
     physical file location. If the icon is a QIcon instance, that icon is
@@ -93,9 +97,9 @@ def buildIcon(icon):
         ``:/resource/file.png``, or a file location like ``/path/to/file.png``.
     """
     ButtonIcon = None
-    if type(icon) is QtGui.QIcon:
+    if isinstance(icon, QtGui.QIcon):
         ButtonIcon = icon
-    elif type(icon) is types.StringType or type(icon) is types.UnicodeType:
+    elif isinstance(icon, basestring):
         ButtonIcon = QtGui.QIcon()
         if icon.startswith(u':/'):
             ButtonIcon.addPixmap(
@@ -103,7 +107,7 @@ def buildIcon(icon):
         else:
             ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
                 QtGui.QIcon.Normal, QtGui.QIcon.Off)
-    elif type(icon) is QtGui.QImage:
+    elif isinstance(icon, QtGui.QImage):
         ButtonIcon = QtGui.QIcon()
         ButtonIcon.addPixmap(
             QtGui.QPixmap.fromImage(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -115,7 +119,7 @@ def contextMenuAction(base, icon, text, slot):
     """
     action = QtGui.QAction(text, base)
     if icon:
-        action.setIcon(buildIcon(icon))
+        action.setIcon(build_icon(icon))
     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
     return action
 
@@ -124,13 +128,18 @@ def contextMenu(base, icon, text):
     Utility method to help build context menus for plugins
     """
     action = QtGui.QMenu(text, base)
-    action.setIcon(buildIcon(icon))
+    action.setIcon(build_icon(icon))
     return action
 
 def contextMenuSeparator(base):
     action = QtGui.QAction(u'', base)
     action.setSeparator(True)
     return action
+
+class ThemeLevel(object):
+    Global = 1
+    Service = 2
+    Song = 3
 
 from eventreceiver import Receiver
 from settingsmanager import SettingsManager
@@ -152,5 +161,5 @@ from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem
 from baselistwithdnd import BaseListWithDnD
 
-__all__ = [ 'translate', 'file_to_xml', 'str_to_bool',
-            'contextMenuAction', 'contextMenuSeparator','ServiceItem']
+#__all__ = [ 'translate', 'get_text_file_string', 'str_to_bool',
+#            'contextMenuAction', 'contextMenuSeparator', 'ServiceItem']

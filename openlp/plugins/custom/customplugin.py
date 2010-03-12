@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,8 +26,8 @@
 import logging
 
 from forms import EditCustomForm
-from openlp.core.lib import Plugin, buildIcon
-from openlp.plugins.custom.lib import CustomManager, CustomMediaItem
+from openlp.core.lib import Plugin, build_icon
+from openlp.plugins.custom.lib import CustomManager, CustomMediaItem, CustomTab
 
 
 class CustomPlugin(Plugin):
@@ -48,7 +49,10 @@ class CustomPlugin(Plugin):
         self.weight = -5
         self.custommanager = CustomManager(self.config)
         self.edit_custom_form = EditCustomForm(self.custommanager)
-        self.icon = buildIcon(u':/media/media_custom.png')
+        self.icon = build_icon(u':/media/media_custom.png')
+
+    def get_settings_tab(self):
+        return CustomTab(self.name)
 
     def get_media_manager_item(self):
         # Create the CustomManagerItem object
@@ -64,8 +68,8 @@ class CustomPlugin(Plugin):
         self.remove_toolbox_item()
 
     def about(self):
-        about_text = self.trUtf8(u'<b>Custom Plugin</b><br>This plugin '
-            u'allows slides to be displayed on the screen in the same way '
-            u'songs are.  This plugin provides greater freedom over the '
-            u'songs plugin.<br>')
+        about_text = self.trUtf8('<b>Custom Plugin</b><br>This plugin '
+            'allows slides to be displayed on the screen in the same way '
+            'songs are.  This plugin provides greater freedom over the '
+            'songs plugin.<br>')
         return about_text

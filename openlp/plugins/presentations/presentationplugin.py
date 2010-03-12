@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,7 +26,7 @@
 import os
 import logging
 
-from openlp.core.lib import Plugin, buildIcon
+from openlp.core.lib import Plugin, build_icon
 from openlp.plugins.presentations.lib import *
 
 class PresentationPlugin(Plugin):
@@ -38,7 +39,7 @@ class PresentationPlugin(Plugin):
         self.controllers = {}
         Plugin.__init__(self, u'Presentations', u'1.9.0', plugin_helpers)
         self.weight = -8
-        self.icon = buildIcon(u':/media/media_presentation.png')
+        self.icon = build_icon(u':/media/media_presentation.png')
 
     def get_settings_tab(self):
         """
@@ -101,8 +102,8 @@ class PresentationPlugin(Plugin):
             return False
 
     def about(self):
-        about_text = self.trUtf8(u'<b>Presentation Plugin</b> <br> Delivers '
-            u'the ability to show presentations using a number of different '
-            u'programs.  The choice of available presentation programs is '
-            u'available to the user in a drop down box.')
+        about_text = self.trUtf8('<b>Presentation Plugin</b> <br> Delivers '
+            'the ability to show presentations using a number of different '
+            'programs.  The choice of available presentation programs is '
+            'available to the user in a drop down box.')
         return about_text

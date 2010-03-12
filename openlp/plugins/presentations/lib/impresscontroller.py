@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -77,7 +78,7 @@ class ImpressController(PresentationController):
             # If not windows, and we've got this far then probably
             # installed else the import uno would likely have failed
             return True
-        
+
     def start_process(self):
         """
         Loads a running version of OpenOffice in the background.
@@ -136,7 +137,7 @@ class ImpressController(PresentationController):
         self.desktop = desktop
         properties = []
         properties.append(self.create_property(u'Minimized', True))
-        properties = tuple(properties)            
+        properties = tuple(properties)
         try:
             self.document = desktop.loadComponentFromURL(url, u'_blank',
                 0, properties)
@@ -168,7 +169,7 @@ class ImpressController(PresentationController):
         for idx in range(pages.getCount()):
             page = pages.getByIndex(idx)
             doc.getCurrentController().setCurrentPage(page)
-            doc.storeToURL(thumbdir + u'/' + self.thumbnailprefix + 
+            doc.storeToURL(thumbdir + u'/' + self.thumbnailprefix +
                 unicode(idx+1) + u'.png', props)
 
     def create_property(self, name, value):

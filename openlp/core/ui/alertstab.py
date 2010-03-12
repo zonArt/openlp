@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -37,7 +38,7 @@ class AlertsTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
-        self.tabTitleVisible = self.trUtf8(u'Alerts')
+        self.tabTitleVisible = self.trUtf8('Alerts')
         self.AlertsLayout = QtGui.QHBoxLayout(self)
         self.AlertsLayout.setSpacing(8)
         self.AlertsLayout.setMargin(8)
@@ -147,14 +148,14 @@ class AlertsTab(SettingsTab):
             QtCore.SIGNAL(u'valueChanged(int)'), self.onTimeoutSpinBoxChanged)
 
     def retranslateUi(self):
-        self.FontGroupBox.setTitle(self.trUtf8(u'Font'))
-        self.FontLabel.setText(self.trUtf8(u'Font Name:'))
-        self.FontColorLabel.setText(self.trUtf8(u'Font Color:'))
-        self.BackgroundColorLabel.setText(self.trUtf8(u'Background Color:'))
-        self.TimeoutLabel.setText(self.trUtf8(u'Alert timeout:'))
-        self.TimeoutSpinBox.setSuffix(self.trUtf8(u's'))
-        self.PreviewGroupBox.setTitle(self.trUtf8(u'Preview'))
-        self.FontPreview.setText(self.trUtf8(u'openlp.org 2.0 rocks!'))
+        self.FontGroupBox.setTitle(self.trUtf8('Font'))
+        self.FontLabel.setText(self.trUtf8('Font Name:'))
+        self.FontColorLabel.setText(self.trUtf8('Font Color:'))
+        self.BackgroundColorLabel.setText(self.trUtf8('Background Color:'))
+        self.TimeoutLabel.setText(self.trUtf8('Alert timeout:'))
+        self.TimeoutSpinBox.setSuffix(self.trUtf8('s'))
+        self.PreviewGroupBox.setTitle(self.trUtf8('Preview'))
+        self.FontPreview.setText(self.trUtf8('openlp.org 2.0 rocks!'))
 
     def onBackgroundColorButtonClicked(self):
         self.bg_color = QtGui.QColorDialog.getColor(

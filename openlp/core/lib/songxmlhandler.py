@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -133,8 +134,10 @@ class SongXMLParser(object):
         ``xml``
             The XML of the song to be parsed.
         """
+        self.song_xml = None
         try:
-            self.song_xml = ElementTree(element=XML(xml))
+            self.song_xml = ElementTree(
+                element=XML(unicode(xml).encode('unicode-escape')))
         except:
             log.exception(u'Invalid xml %s', xml)
 
@@ -147,7 +150,8 @@ class SongXMLParser(object):
         verse_list = []
         for element in iter:
             if element.tag == u'verse':
-                verse_list.append([element.attrib, element.text])
+                verse_list.append([element.attrib,
+                    unicode(element.text).decode('unicode-escape')])
         return verse_list
 
     def dump_xml(self):

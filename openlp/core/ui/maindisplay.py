@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,11 +25,12 @@
 
 import logging
 import os
+import time
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver, str_to_bool
+from openlp.core.lib import Receiver
 
 class DisplayWidget(QtGui.QWidget):
     """
@@ -47,16 +49,16 @@ class DisplayWidget(QtGui.QWidget):
         if type(event) == QtGui.QKeyEvent:
             #here accept the event and do something
             if event.key() == QtCore.Qt.Key_Up:
-                Receiver().send_message(u'live_slidecontroller_previous')
+                Receiver.send_message(u'live_slidecontroller_previous')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Down:
-                Receiver().send_message(u'live_slidecontroller_next')
+                Receiver.send_message(u'live_slidecontroller_next')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageUp:
-                Receiver().send_message(u'live_slidecontroller_first')
+                Receiver.send_message(u'live_slidecontroller_first')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageDown:
-                Receiver().send_message(u'live_slidecontroller_last')
+                Receiver.send_message(u'live_slidecontroller_last')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Escape:
                 self.resetDisplay()
@@ -107,12 +109,10 @@ class MainDisplay(DisplayWidget):
         self.blankFrame = None
         self.frame = None
         self.alertactive = False
-        self.alertTab = None
         self.timer_id = 0
         self.firstTime = True
         self.mediaLoaded = False
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'live_slide_blank'), self.blankDisplay)
+        self.hasTransition = False
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'alert_text'), self.displayAlert)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -187,35 +187,45 @@ class MainDisplay(DisplayWidget):
         if not self.primary:
             self.setVisible(True)
 
-    def frameView(self, frame):
+    def frameView(self, frame, transition=False):
         """
         Called from a slide controller to display a frame
         if the alert is in progress the alert is added on top
         ``frame``
             Image frame to be rendered
         """
-        self.frame = frame
         if self.timer_id != 0 :
             self.displayAlert()
         elif not self.displayBlank:
-            self.display.setPixmap(QtGui.QPixmap.fromImage(frame))
+            if transition:
+                if self.hasTransition:
+                    if self.frame[u'trans'] is not None:
+                        self.display.setPixmap(QtGui.QPixmap.fromImage(self.frame[u'trans']))
+                        self.repaint()
+                    if frame[u'trans'] is not None:
+                        self.display.setPixmap(QtGui.QPixmap.fromImage(frame[u'trans']))
+                        self.repaint()
+                self.hasTransition = True
+                self.display.setPixmap(QtGui.QPixmap.fromImage(frame[u'main']))
+                self.repaint()
+            else:
+                self.display.setPixmap(QtGui.QPixmap.fromImage(frame))
             if not self.isVisible():
                 self.setVisible(True)
                 self.showFullScreen()
+        self.frame = frame
 
-    def blankDisplay(self):
-        if not self.displayBlank:
+    def blankDisplay(self, blanked=True):
+        if blanked:
             self.displayBlank = True
             self.display.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
         else:
             self.displayBlank = False
             if self.frame:
                 self.frameView(self.frame)
-        if self.parent.LiveController.blackPushButton.isChecked() != \
-            self.displayBlank:
-            self.parent.LiveController.blackPushButton.setChecked(
-                self.displayBlank)
-        self.parent.generalConfig.set_config(u'Screen Blank',self.displayBlank)
+        if blanked != self.parent.LiveController.blankButton.isChecked():
+            self.parent.LiveController.blankButton.setChecked(self.displayBlank)
+        self.parent.generalConfig.set_config(u'screen blank', self.displayBlank)
 
     def displayAlert(self, text=u''):
         """
@@ -224,8 +234,12 @@ class MainDisplay(DisplayWidget):
         ``text``
             display text
         """
+        log.debug(u'display alert called %s' % text)
         alertTab = self.parent.settingsForm.AlertsTab
-        alertframe = QtGui.QPixmap.fromImage(self.frame)
+        if isinstance(self.frame, QtGui.QImage):
+            alertframe = QtGui.QPixmap.fromImage(self.frame)
+        else:
+            alertframe = QtGui.QPixmap.fromImage(self.frame[u'main'])
         painter = QtGui.QPainter(alertframe)
         top = alertframe.rect().height() * 0.9
         painter.fillRect(
@@ -251,7 +265,10 @@ class MainDisplay(DisplayWidget):
 
     def timerEvent(self, event):
         if event.timerId() == self.timer_id:
-            self.display.setPixmap(QtGui.QPixmap.fromImage(self.frame))
+            if isinstance(self.frame, QtGui.QImage):
+                self.display.setPixmap(QtGui.QPixmap.fromImage(self.frame))
+            else:
+                self.display.setPixmap(QtGui.QPixmap.fromImage(self.frame[u'main']))
             self.killTimer(self.timer_id)
             self.timer_id = 0
 
@@ -267,13 +284,14 @@ class MainDisplay(DisplayWidget):
         self.onMediaPlay()
 
     def onMediaPlay(self):
-        log.debug(u'Play the new media')
+        log.debug(u'Play the new media, Live ')
         if not self.mediaLoaded and not self.displayBlank:
             self.blankDisplay()
         self.firstTime = True
         self.mediaLoaded = True
         self.display.hide()
         self.video.setFullScreen(True)
+        self.video.setVisible(True)
         self.mediaObject.play()
         if self.primary:
             self.setVisible(True)
@@ -285,7 +303,6 @@ class MainDisplay(DisplayWidget):
     def onMediaStop(self):
         log.debug(u'Media stopped by user')
         self.mediaObject.stop()
-        self.display.show()
 
     def onMediaFinish(self):
         log.debug(u'Reached end of media playlist')

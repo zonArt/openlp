@@ -1,12 +1,13 @@
-# -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -42,13 +43,13 @@ class Renderer(object):
         self._rect = None
         self._debug = 0
         self._right_margin = 64 # the amount of right indent
-        self._shadow_offset = 5
-        self._shadow_offset_footer = 3
-        self._outline_offset = 2
+        self._display_shadow_size_footer = 0
+        self._display_outline_size_footer = 0
         self.theme_name = None
         self._theme = None
         self._bg_image_filename = None
         self._frame = None
+        self._frameOp = None
         self.bg_frame = None
         self.bg_image = None
 
@@ -134,6 +135,8 @@ class Renderer(object):
             frame_height)
         self._frame = QtGui.QImage(frame_width, frame_height,
             QtGui.QImage.Format_ARGB32_Premultiplied)
+        self._frameOp = QtGui.QImage(frame_width, frame_height,
+            QtGui.QImage.Format_ARGB32_Premultiplied)
         if self._bg_image_filename and not self.bg_image:
             self.scale_bg_image()
         if self.bg_frame is None:
@@ -168,35 +171,45 @@ class Renderer(object):
         line_width = self._rect.width() - self._right_margin
         #number of lines on a page - adjust for rounding up.
         page_length = int(self._rect.height() / metrics.height() - 2 ) - 1
+        #Average number of characters in line
         ave_line_width = line_width / metrics.averageCharWidth()
-        ave_line_width = int(ave_line_width + (ave_line_width * 1))
+        #Maximum size of a character
+        max_char_width = metrics.maxWidth()
+        #Min size of a character
+        min_char_width = metrics.width(u'i')
+        char_per_line = line_width / min_char_width
         log.debug(u'Page Length  area height %s , metrics %s , lines %s' %
                   (int(self._rect.height()), metrics.height(), page_length ))
         split_pages = []
         page = []
         split_lines = []
+        count = 0
         for line in text:
             #Must be a blank line so keep it.
             if len(line) == 0:
                 line = u' '
             while len(line) > 0:
-                if len(line) > ave_line_width:
-                    pos = line.find(u' ', ave_line_width)
-                    split_text = line[:pos]
-                else:
-                    pos = len(line)
-                    split_text = line
-                while metrics.width(split_text, -1) > line_width:
-                    #Find the next space to the left
-                    pos = line[:pos].rfind(u' ')
-                    #no more spaces found
-                    if pos == 0:
-                        split_text = line
+                pos = char_per_line
+                split_text = line[:pos]
+                #line needs splitting
+                if metrics.width(split_text, -1) > line_width:
+                    #We have no spaces
+                    if split_text.find(u' ') == -1:
+                        #Move back 1 char at a time till it fits
                         while metrics.width(split_text, -1) > line_width:
                             split_text = split_text[:-1]
-                        pos = len(split_text)
+                            pos = len(split_text)
                     else:
-                        split_text = line[:pos]
+                        #We have spaces so split at previous one
+                        while metrics.width(split_text, -1) > line_width:
+                            pos = split_text.rfind(u' ')
+                            #no more spaces and we are still too long
+                            if pos == -1:
+                                while metrics.width(split_text, -1) > line_width:
+                                    split_text = split_text[:-1]
+                                    pos = len(split_text)
+                            else:
+                                split_text = line[:pos]
                 split_lines.append(split_text)
                 line = line[pos:].lstrip()
                 #if we have more text add up to 10 spaces on the front.
@@ -245,13 +258,17 @@ class Renderer(object):
             bbox1 = self._render_lines_unaligned(footer_lines, True)
         # reset the frame. first time do not worry about what you paint on.
         self._frame = QtGui.QImage(self.bg_frame)
+        self._frameOp = QtGui.QImage(self.bg_frame)
         x, y = self._correctAlignment(self._rect, bbox)
         bbox = self._render_lines_unaligned(lines, False, (x, y), True)
         if footer_lines:
             bbox = self._render_lines_unaligned(footer_lines, True,
                 (self._rect_footer.left(), self._rect_footer.top()), True)
         log.debug(u'generate_frame_from_lines - Finish')
-        return self._frame
+        if self._theme.display_slideTransition:
+            return {u'main':self._frame, u'trans':self._frameOp}
+        else:
+            return {u'main':self._frame, u'trans':None}
 
     def _generate_background_frame(self):
         """
@@ -408,23 +425,25 @@ class Renderer(object):
         # dont allow alignment messing with footers
         if footer:
             align = 0
-            shadow_offset = self._shadow_offset_footer
+            display_shadow_size = self._display_shadow_size_footer
+            display_outline_size = self._display_outline_size_footer
         else:
             align = self._theme.display_horizontalAlign
-            shadow_offset = self._shadow_offset
+            display_shadow_size = int(self._theme.display_shadow_size)
+            display_outline_size = int(self._theme.display_outline_size)
         for linenum in range(len(lines)):
             line = lines[linenum]
             #find out how wide line is
             w, h = self._get_extent_and_render(line, footer, tlcorner=(x, y),
                 draw=False)
             if self._theme.display_shadow:
-                w += shadow_offset
-                h += shadow_offset
+                w += display_shadow_size
+                h += display_shadow_size
             if self._theme.display_outline:
                 # pixels either side
-                w += 2 * self._outline_offset
+                w += 2 * display_outline_size
                 #  pixels top/bottom
-                h += 2 * self._outline_offset
+                h += 2 * display_outline_size
             if align == 0: # left align
                 rightextent = x + w
                 # shift right from last line's rh edge
@@ -446,36 +465,36 @@ class Renderer(object):
                 # now draw the text, and any outlines/shadows
                 if self._theme.display_shadow:
                     self._get_extent_and_render(line, footer,
-                        tlcorner=(x + shadow_offset, y + shadow_offset),
+                        tlcorner=(x + display_shadow_size, y + display_shadow_size),
                         draw=True, color = self._theme.display_shadow_color)
                 if self._theme.display_outline:
                     self._get_extent_and_render(line, footer,
-                        (x+self._outline_offset, y), draw=True,
+                        (x + display_outline_size, y), draw=True,
                         color = self._theme.display_outline_color)
                     self._get_extent_and_render(line, footer,
-                        (x, y+self._outline_offset), draw=True,
+                        (x, y + display_outline_size), draw=True,
                         color = self._theme.display_outline_color)
                     self._get_extent_and_render(line, footer,
-                        (x, y-self._outline_offset), draw=True,
+                        (x, y - display_outline_size), draw=True,
                         color = self._theme.display_outline_color)
                     self._get_extent_and_render(line, footer,
-                        (x-self._outline_offset, y), draw=True,
+                        (x - display_outline_size, y), draw=True,
                         color = self._theme.display_outline_color)
-                    if self._outline_offset > 1:
+                    if display_outline_size > 1:
                         self._get_extent_and_render(line, footer,
-                            (x+self._outline_offset, y+self._outline_offset),
+                            (x + display_outline_size, y + display_outline_size),
                             draw=True,
                             color = self._theme.display_outline_color)
                         self._get_extent_and_render(line, footer,
-                            (x-self._outline_offset, y+self._outline_offset),
+                            (x - display_outline_size, y + display_outline_size),
                             draw=True,
                             color = self._theme.display_outline_color)
                         self._get_extent_and_render(line, footer,
-                            (x+self._outline_offset, y-self._outline_offset),
+                            (x + display_outline_size, y - display_outline_size),
                             draw=True,
                             color = self._theme.display_outline_color)
                         self._get_extent_and_render(line, footer,
-                            (x-self._outline_offset, y-self._outline_offset),
+                            (x - display_outline_size, y - display_outline_size),
                             draw=True,
                             color = self._theme.display_outline_color)
                 self._get_extent_and_render(line, footer,tlcorner=(x, y),
@@ -539,6 +558,7 @@ class Renderer(object):
         # setup defaults
         painter = QtGui.QPainter()
         painter.begin(self._frame)
+        painter.setRenderHint(QtGui.QPainter.Antialiasing);
         if footer :
             font = self.footerFont
         else:
@@ -558,6 +578,23 @@ class Renderer(object):
         if draw:
             painter.drawText(x, y + metrics.ascent(), line)
         painter.end()
+        if self._theme.display_slideTransition:
+            # Print 2nd image with 70% weight
+            painter = QtGui.QPainter()
+            painter.begin(self._frameOp)
+            painter.setRenderHint(QtGui.QPainter.Antialiasing);
+            painter.setOpacity(0.7)
+            painter.setFont(font)
+            if color is None:
+                if footer:
+                    painter.setPen(QtGui.QColor(self._theme.font_footer_color))
+                else:
+                    painter.setPen(QtGui.QColor(self._theme.font_main_color))
+            else:
+                painter.setPen(QtGui.QColor(color))
+            if draw:
+                painter.drawText(x, y + metrics.ascent(), line)
+            painter.end()
         return (w, h)
 
     def snoop_Image(self, image, image2=None):

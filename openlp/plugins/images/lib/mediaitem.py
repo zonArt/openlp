@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,7 +27,7 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, buildIcon
+from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon
 
 # We have to explicitly create separate classes for each plugin
 # in order for DnD to the Service manager to work correctly.
@@ -55,12 +56,12 @@ class ImageMediaItem(MediaManagerItem):
         self.overrideActive = False
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = self.trUtf8(u'Image')
+        self.PluginNameVisible = self.trUtf8('Image')
 
     def retranslateUi(self):
-        self.OnNewPrompt = self.trUtf8(u'Select Image(s)')
+        self.OnNewPrompt = self.trUtf8('Select Image(s)')
         self.OnNewFileMasks = \
-            self.trUtf8(u'Images (*.jpg *jpeg *.gif *.png *.bmp)')
+            self.trUtf8('Images (*.jpg *jpeg *.gif *.png *.bmp)')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -98,9 +99,9 @@ class ImageMediaItem(MediaManagerItem):
         self.OverrideCheckBox.setObjectName(u'OverrideCheckBox')
         self.OverrideCheckBox.setCheckable(True)
         self.OverrideCheckBox.setChecked(False)
-        self.OverrideCheckBox.setText(self.trUtf8(u'Override background'))
+        self.OverrideCheckBox.setText(self.trUtf8('Override background'))
         self.OverrideCheckBox.setStatusTip(
-            self.trUtf8(u'Allow background of live slide to be overridden'))
+            self.trUtf8('Allow background of live slide to be overridden'))
         self.OverrideLayout.addWidget(self.OverrideCheckBox)
         self.OverrideLabel = QtGui.QLabel(self.ImageWidget)
         self.OverrideLabel.setObjectName(u'OverrideLabel')
@@ -128,9 +129,9 @@ class ImageMediaItem(MediaManagerItem):
             (path, filename) = os.path.split(unicode(file))
             thumb = os.path.join(self.servicePath, filename)
             if os.path.exists(thumb):
-                icon = buildIcon(thumb)
+                icon = build_icon(thumb)
             else:
-                icon = buildIcon(unicode(file))
+                icon = build_icon(unicode(file))
                 pixmap = icon.pixmap(QtCore.QSize(88,50))
                 ext = os.path.splitext(thumb)[1].lower()
                 pixmap.save(thumb, ext[1:])
@@ -142,7 +143,7 @@ class ImageMediaItem(MediaManagerItem):
     def generateSlideData(self, service_item):
         items = self.ListView.selectedIndexes()
         if items:
-            service_item.title = self.trUtf8(u'Image(s)')
+            service_item.title = self.trUtf8('Image(s)')
             for item in items:
                 bitem = self.ListView.item(item.row())
                 filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
@@ -163,8 +164,8 @@ class ImageMediaItem(MediaManagerItem):
         if self.overrideActive:
             if not self.ListView.selectedIndexes():
                 QtGui.QMessageBox.information(self,
-                    self.trUtf8(u'No items selected...'),
-                    self.trUtf8(u'You must select one or more items'))
+                    self.trUtf8('No items selected...'),
+                    self.trUtf8('You must select one or more items'))
             items = self.ListView.selectedIndexes()
             for item in items:
                 bitem = self.ListView.item(item.row())

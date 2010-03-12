@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -73,7 +74,7 @@ class PptviewController(PresentationController):
                 return self.process.CheckInstalled()
             except:
                return False
-            
+
         def start_process(self):
             """
             Loads the PPTVIEWLIB library
@@ -107,7 +108,7 @@ class PptviewController(PresentationController):
                 self.close_presentation()
             rendermanager = self.plugin.render_manager
             rect = rendermanager.screen_list[rendermanager.current_display][u'size']
-            rect = RECT(rect.x(), rect.y(), rect.right(), rect.bottom())        
+            rect = RECT(rect.x(), rect.y(), rect.right(), rect.bottom())
             filepath = str(presentation.replace(u'/', u'\\'));
             try:
                 self.pptid = self.process.OpenPPT(filepath, None, rect,
@@ -134,7 +135,7 @@ class PptviewController(PresentationController):
             if self.get_slide_count() < 0:
                 return False
             return True
-        
+
         def is_active(self):
             """
             Returns true if a presentation is currently active
@@ -208,4 +209,3 @@ class PptviewController(PresentationController):
                 return path
             else:
                 return None
-

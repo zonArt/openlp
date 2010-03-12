@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +25,7 @@
 
 import logging
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import buildIcon
+from openlp.core.lib import build_icon
 
 class AlertForm(QtGui.QDialog):
     global log
@@ -39,7 +40,7 @@ class AlertForm(QtGui.QDialog):
     def setupUi(self, AlertForm):
         AlertForm.setObjectName(u'AlertForm')
         AlertForm.resize(370, 110)
-        icon = buildIcon(u':/icon/openlp-logo-16x16.png')
+        icon = build_icon(u':/icon/openlp-logo-16x16.png')
         AlertForm.setWindowIcon(icon)
         self.AlertFormLayout = QtGui.QVBoxLayout(AlertForm)
         self.AlertFormLayout.setSpacing(8)
@@ -92,10 +93,10 @@ class AlertForm(QtGui.QDialog):
         QtCore.QMetaObject.connectSlotsByName(AlertForm)
 
     def retranslateUi(self, AlertForm):
-        AlertForm.setWindowTitle(self.trUtf8(u'Alert Message'))
-        self.AlertEntryLabel.setText(self.trUtf8(u'Alert Text:'))
-        self.DisplayButton.setText(self.trUtf8(u'Display'))
-        self.CancelButton.setText(self.trUtf8(u'Cancel'))
+        AlertForm.setWindowTitle(self.trUtf8('Alert Message'))
+        self.AlertEntryLabel.setText(self.trUtf8('Alert Text:'))
+        self.DisplayButton.setText(self.trUtf8('Display'))
+        self.CancelButton.setText(self.trUtf8('Cancel'))
 
     def onDisplayClicked(self):
-        self.parent.mainDisplay.displayAlert(self.AlertEntryEditItem.text())
+        self.parent.mainDisplay.displayAlert(unicode(self.AlertEntryEditItem.text()))

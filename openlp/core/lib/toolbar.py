@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import buildIcon
+from openlp.core.lib import build_icon
 
 class OpenLPToolbar(QtGui.QToolBar):
     """
@@ -46,7 +47,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         self.log.debug(u'Init done')
 
     def addToolbarButton(self, title, icon, tooltip=None, slot=None,
-        objectname=None):
+        checkable=False):
         """
         A method to help developers easily add a button to the toolbar.
 
@@ -67,16 +68,30 @@ class OpenLPToolbar(QtGui.QToolBar):
         ``objectname``
             The name of the object, as used in `<button>.setObjectName()`.
         """
-        ButtonIcon = buildIcon(icon)
+        ToolbarButton = None
+        if icon:
+            ButtonIcon = build_icon(icon)
+        else:
+            ButtonIcon = None
         if ButtonIcon:
-            if slot:
+            if slot and not checkable:
                 ToolbarButton = self.addAction(ButtonIcon, title, slot)
             else:
                 ToolbarButton = self.addAction(ButtonIcon, title)
-            if tooltip:
-                ToolbarButton.setToolTip(tooltip)
             self.icons[title] = ButtonIcon
-            self.actions[title] = ToolbarButton
+        else:
+            ToolbarButton = QtGui.QAction(title, ToolbarButton)
+            self.addAction(ToolbarButton)
+            QtCore.QObject.connect(ToolbarButton,
+                QtCore.SIGNAL(u'triggered()'), slot)
+        if tooltip:
+            ToolbarButton.setToolTip(tooltip)
+        if checkable:
+            ToolbarButton.setCheckable(True)
+            QtCore.QObject.connect(ToolbarButton,
+                QtCore.SIGNAL(u'toggled(bool)'), slot)
+        self.actions[title] = ToolbarButton
+        return ToolbarButton
 
     def addToolbarSeparator(self, handle):
         """
@@ -100,7 +115,8 @@ class OpenLPToolbar(QtGui.QToolBar):
         ``title``
             The title of the icon to search for.
         """
-        if self.icons.has_key(title):
+        title = QtCore.QString(title)
+        if self.icons[title]:
             return self.icons[title]
         else:
             self.log.error(u'getIconFromTitle - no icon for %s' % title)
@@ -126,14 +142,14 @@ class OpenLPToolbar(QtGui.QToolBar):
         for widget in widgets:
             self.actions[widget].setVisible(True)
 
-    def addPushButton(self, imageFile=None, text=u''):
+    def addPushButton(self, image_file=None, text=u''):
         """
         Adds a push button to the toolbar.
 
         Returns the push button
         """
-        pushButton = QtGui.QPushButton(buildIcon(imageFile), text)
-        pushButton.setCheckable(True)
-        pushButton.setFlat(True)
-        self.addWidget(pushButton)
-        return pushButton
+        push_button = QtGui.QPushButton(build_icon(image_file), text)
+        push_button.setCheckable(True)
+        push_button.setFlat(True)
+        self.addWidget(push_button)
+        return push_button

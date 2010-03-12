@@ -1,11 +1,27 @@
 # -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
-# Form implementation generated from reading ui file 'auditdetaildialog.ui'
-#
-# Created: Sun Oct 11 11:40:02 2009
-#      by: PyQt4 UI code generator 4.5.4
-#
-# WARNING! All changes made in this file will be lost!
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 
 from PyQt4 import QtCore, QtGui
 
@@ -157,25 +173,25 @@ class Ui_SongUsageDetailDialog(object):
         QtCore.QMetaObject.connectSlotsByName(AuditDetailDialog)
 
     def retranslateUi(self, AuditDetailDialog):
-        AuditDetailDialog.setWindowTitle(self.trUtf8(u'Audit Detail Extraction'))
-        self.FileGroupBox.setTitle(self.trUtf8(u'Report Location'))
-        self.ReportTypeGroup.setTitle(self.trUtf8(u'Report Type'))
-        self.SummaryReport.setText(self.trUtf8(u'Summary'))
-        self.DetailedReport.setText(self.trUtf8(u'Detailed'))
-        self.DateRangeGroupBox.setTitle(self.trUtf8(u'Select Date Range'))
-        self.FromDateEdit.setDisplayFormat(self.trUtf8(u'dd/MM/yyyy'))
-        self.To.setText(self.trUtf8(u'to'))
-        self.ToDateEdit.setDisplayFormat(self.trUtf8(u'dd/MM/yyyy'))
-        self.TimePeriodGroupBox.setTitle(self.trUtf8(u'Select Time Periods'))
-        self.FirstCheckBox.setText(self.trUtf8(u'First Service'))
-        self.FirstFromTimeEdit.setDisplayFormat(self.trUtf8(u'hh:mm AP'))
-        self.FirstTo.setText(self.trUtf8(u'to'))
-        self.FirstToTimeEdit.setDisplayFormat(self.trUtf8(u'hh:mm AP'))
-        self.SecondCheckBox.setText(self.trUtf8(u'Second Service'))
-        self.SecondFromTimeEdit.setDisplayFormat(self.trUtf8(u'hh:mm AP'))
-        self.SecondTo.setText(self.trUtf8(u'to'))
-        self.SecondToTimeEdit.setDisplayFormat(self.trUtf8(u'hh:mm AP'))
-        self.ThirdCheckBox.setText(self.trUtf8(u'Third Service'))
-        self.ThirdFromTimeEdit.setDisplayFormat(self.trUtf8(u'hh:mm AP'))
-        self.ThirdTo.setText(self.trUtf8(u'to'))
-        self.ThirdToTimeEdit.setDisplayFormat(self.trUtf8(u'hh:mm AP'))
+        AuditDetailDialog.setWindowTitle(self.trUtf8('Audit Detail Extraction'))
+        self.FileGroupBox.setTitle(self.trUtf8('Report Location'))
+        self.ReportTypeGroup.setTitle(self.trUtf8('Report Type'))
+        self.SummaryReport.setText(self.trUtf8('Summary'))
+        self.DetailedReport.setText(self.trUtf8('Detailed'))
+        self.DateRangeGroupBox.setTitle(self.trUtf8('Select Date Range'))
+        self.FromDateEdit.setDisplayFormat(self.trUtf8('dd/MM/yyyy'))
+        self.To.setText(self.trUtf8('to'))
+        self.ToDateEdit.setDisplayFormat(self.trUtf8('dd/MM/yyyy'))
+        self.TimePeriodGroupBox.setTitle(self.trUtf8('Select Time Periods'))
+        self.FirstCheckBox.setText(self.trUtf8('First Service'))
+        self.FirstFromTimeEdit.setDisplayFormat(self.trUtf8('hh:mm AP'))
+        self.FirstTo.setText(self.trUtf8('to'))
+        self.FirstToTimeEdit.setDisplayFormat(self.trUtf8('hh:mm AP'))
+        self.SecondCheckBox.setText(self.trUtf8('Second Service'))
+        self.SecondFromTimeEdit.setDisplayFormat(self.trUtf8('hh:mm AP'))
+        self.SecondTo.setText(self.trUtf8('to'))
+        self.SecondToTimeEdit.setDisplayFormat(self.trUtf8('hh:mm AP'))
+        self.ThirdCheckBox.setText(self.trUtf8('Third Service'))
+        self.ThirdFromTimeEdit.setDisplayFormat(self.trUtf8('hh:mm AP'))
+        self.ThirdTo.setText(self.trUtf8('to'))
+        self.ThirdToTimeEdit.setDisplayFormat(self.trUtf8('hh:mm AP'))

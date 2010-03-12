@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,7 +28,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, Receiver, str_to_bool, buildIcon
+from openlp.core.lib import Plugin, Receiver, str_to_bool, build_icon
 from openlp.plugins.songusage.lib import SongUsageManager
 from openlp.plugins.songusage.forms import SongUsageDetailForm, SongUsageDeleteForm
 from openlp.plugins.songusage.lib.models import SongUsageItem
@@ -40,7 +41,7 @@ class SongUsagePlugin(Plugin):
     def __init__(self, plugin_helpers):
         Plugin.__init__(self, u'SongUsage', u'1.9.0', plugin_helpers)
         self.weight = -4
-        self.icon = buildIcon(u':/media/media_image.png')
+        self.icon = build_icon(u':/media/media_image.png')
         self.songusagemanager = None
         self.songusageActive = False
 
@@ -57,30 +58,30 @@ class SongUsagePlugin(Plugin):
         self.toolsMenu = tools_menu
         self.SongUsageMenu = QtGui.QMenu(tools_menu)
         self.SongUsageMenu.setObjectName(u'SongUsageMenu')
-        self.SongUsageMenu.setTitle(tools_menu.trUtf8(u'&Song Usage'))
+        self.SongUsageMenu.setTitle(tools_menu.trUtf8('&Song Usage'))
         #SongUsage Delete
         self.SongUsageDelete = QtGui.QAction(tools_menu)
         self.SongUsageDelete.setText(
-            tools_menu.trUtf8(u'&Delete recorded data'))
+            tools_menu.trUtf8('&Delete recorded data'))
         self.SongUsageDelete.setStatusTip(
-            tools_menu.trUtf8(u'Delete song usage to specified date'))
+            tools_menu.trUtf8('Delete song usage to specified date'))
         self.SongUsageDelete.setObjectName(u'SongUsageDelete')
         #SongUsage Report
         self.SongUsageReport = QtGui.QAction(tools_menu)
         self.SongUsageReport.setText(
-            tools_menu.trUtf8(u'&Extract recorded data'))
+            tools_menu.trUtf8('&Extract recorded data'))
         self.SongUsageReport.setStatusTip(
-            tools_menu.trUtf8(u'Generate report on Song Usage'))
+            tools_menu.trUtf8('Generate report on Song Usage'))
         self.SongUsageReport.setObjectName(u'SongUsageReport')
         #SongUsage activation
-        SongUsageIcon = buildIcon(u':/tools/tools_alert.png')
+        SongUsageIcon = build_icon(u':/tools/tools_alert.png')
         self.SongUsageStatus = QtGui.QAction(tools_menu)
         self.SongUsageStatus.setIcon(SongUsageIcon)
         self.SongUsageStatus.setCheckable(True)
         self.SongUsageStatus.setChecked(False)
-        self.SongUsageStatus.setText(tools_menu.trUtf8(u'Song Usage Status'))
+        self.SongUsageStatus.setText(tools_menu.trUtf8('Song Usage Status'))
         self.SongUsageStatus.setStatusTip(
-            tools_menu.trUtf8(u'Start/Stop live song usage recording'))
+            tools_menu.trUtf8('Start/Stop live song usage recording'))
         self.SongUsageStatus.setShortcut(u'F4')
         self.SongUsageStatus.setObjectName(u'SongUsageStatus')
         #Add Menus together
@@ -108,7 +109,7 @@ class SongUsagePlugin(Plugin):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'songusage_live'), self.onReceiveSongUsage)
         self.SongUsageActive = str_to_bool(
-            self.config.get_config(u'audit active', False))
+            self.config.get_config(u'active', False))
         self.SongUsageStatus.setChecked(self.SongUsageActive)
         if self.songusagemanager is None:
             self.songusagemanager = SongUsageManager(self.config)
@@ -124,7 +125,7 @@ class SongUsagePlugin(Plugin):
 
     def toggleSongUsageState(self):
         self.SongUsageActive = not self.SongUsageActive
-        self.config.set_config(u'SongUsage active', self.SongUsageActive)
+        self.config.set_config(u'active', self.SongUsageActive)
 
     def onReceiveSongUsage(self, SongUsageData):
         """
@@ -150,7 +151,7 @@ class SongUsagePlugin(Plugin):
         self.SongUsagedetailform.exec_()
 
     def about(self):
-        about_text = self.trUtf8(u'<b>SongUsage Plugin</b><br>This plugin '
-            u'records the use of songs and when they have been used during '
-            u'a live service')
+        about_text = self.trUtf8('<b>SongUsage Plugin</b><br>This plugin '
+            'records the use of songs and when they have been used during '
+            'a live service')
         return about_text
