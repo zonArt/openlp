@@ -20,12 +20,14 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName=OpenLP 2.0
-AllowNoIcons=yes
+AllowNoIcons=true
 LicenseFile=LICENSE.txt
 OutputBaseFilename=OpenLP-1.9.0-bzr737-setup
 Compression=lzma
 SolidCompression=true
-SetupIconFile=OpenLP.ico
+SetupIconFile=C:\Program Files\Inno Setup 5\Examples\Setup.ico
+WizardImageFile=C:\Program Files\Inno Setup 5\WizModernImage-IS.bmp
+WizardSmallImageFile=C:\Program Files\Inno Setup 5\WizModernSmallImage-IS.bmp
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl
@@ -51,8 +53,8 @@ Name: slovenian; MessagesFile: compiler:Languages\Slovenian.isl
 Name: spanish; MessagesFile: compiler:Languages\Spanish.isl
 
 [Tasks]
-Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
-Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
+Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}
+Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription: {cm:AdditionalIcons}
 
 [Files]
 Source: ..\..\dist\OpenLP\*; DestDir: {app}; Flags: ignoreversion
@@ -60,6 +62,7 @@ Source: ..\..\dist\OpenLP\plugins\*; DestDir: {app}\plugins; Flags: ignoreversio
 Source: ..\..\dist\OpenLP\Microsoft.VC90.CRT\*; DestDir: {app}\Microsoft.VC90.CRT; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: ..\..\dist\OpenLP\qt4_plugins\*; DestDir: {app}\qt4_plugins; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: ..\..\dist\OpenLP\eggs\*; DestDir: {app}\eggs; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: openlp.conf; DestDir: {userappdata}\openlp; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
