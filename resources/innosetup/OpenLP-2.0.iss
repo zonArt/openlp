@@ -62,7 +62,7 @@ Source: ..\..\dist\OpenLP\plugins\*; DestDir: {app}\plugins; Flags: ignoreversio
 Source: ..\..\dist\OpenLP\Microsoft.VC90.CRT\*; DestDir: {app}\Microsoft.VC90.CRT; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: ..\..\dist\OpenLP\qt4_plugins\*; DestDir: {app}\qt4_plugins; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: ..\..\dist\OpenLP\eggs\*; DestDir: {app}\eggs; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: openlp.conf; DestDir: {userappdata}\openlp; Flags: ignoreversion
+Source: openlp.conf; DestDir: {userappdata}\openlp; Flags: ignoreversion onlyifdoesntexist
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
