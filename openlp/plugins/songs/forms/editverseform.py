@@ -77,7 +77,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
     def setVerse(self, text, verseCount=0, single=False, tag=u'Verse:1'):
         posVerse = 0
         posSub = 0
-        if len(text) == 0:
+        if len(text) == 0 and not single:
             text = u'---[Verse:1]---\n'
         if single:
             id = tag.split(u':')
