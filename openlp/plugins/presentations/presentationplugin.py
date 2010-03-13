@@ -27,6 +27,7 @@ import os
 import logging
 
 from openlp.core.lib import Plugin, build_icon, Receiver, PluginStatus
+from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import *
 
 log = logging.getLogger(__name__)
@@ -84,11 +85,13 @@ class PresentationPlugin(Plugin):
         If Not do not install the plugin.
         """
         log.debug(u'check_pre_conditions')
-        dir = os.path.join(os.path.dirname(__file__), u'lib')
-        for filename in os.listdir(dir):
+        controller_dir = os.path.join(
+            AppLocation.get_directory(AppLocation.PluginsDir),
+            u'presentations', u'lib')
+        for filename in os.listdir(controller_dir):
             if filename.endswith(u'controller.py') and \
                 not filename == 'presentationcontroller.py':
-                path = os.path.join(dir, filename)
+                path = os.path.join(controller_dir, filename)
                 if os.path.isfile(path):
                     modulename = u'openlp.plugins.presentations.lib.' + \
                         os.path.splitext(filename)[0]
@@ -111,6 +114,6 @@ class PresentationPlugin(Plugin):
     def about(self):
         about_text = self.trUtf8('<b>Presentation Plugin</b> <br> Delivers '
             'the ability to show presentations using a number of different '
-            'programs.  The choice of available presentation programs is '
+            'programs. The choice of available presentation programs is '
             'available to the user in a drop down box.')
         return about_text

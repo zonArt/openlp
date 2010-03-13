@@ -32,6 +32,7 @@ from PyQt4 import QtCore, QtGui
 
 from bibleimportwizard import Ui_BibleImportWizard
 from openlp.core.lib import Receiver
+from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.manager import BibleFormat
 
 log = logging.getLogger(__name__)
@@ -110,7 +111,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     QtGui.QMessageBox.critical(self,
                         self.trUtf8('Invalid Bible Location'),
                         self.trUtf8('You need to specify a file to import your '
-                            'Bible from!'),
+                            'Bible from.'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                     self.OSISLocationEdit.setFocus()
                     return False
@@ -119,7 +120,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     QtGui.QMessageBox.critical(self,
                         self.trUtf8('Invalid Books File'),
                         self.trUtf8('You need to specify a file with books of '
-                            'the Bible to use in the import!'),
+                            'the Bible to use in the import.'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                     self.BooksLocationEdit.setFocus()
                     return False
@@ -127,7 +128,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     QtGui.QMessageBox.critical(self,
                         self.trUtf8('Invalid Verse File'),
                         self.trUtf8('You need to specify a file of Bible '
-                            'verses to import!'),
+                            'verses to import.'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                     self.CsvVerseLocationEdit.setFocus()
                     return False
@@ -136,7 +137,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     QtGui.QMessageBox.critical(self,
                         self.trUtf8('Invalid OpenSong Bible'),
                         self.trUtf8('You need to specify an OpenSong Bible '
-                            'file to import!'),
+                            'file to import.'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                     self.OpenSongFileEdit.setFocus()
                     return False
@@ -147,7 +148,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                 QtGui.QMessageBox.critical(self,
                     self.trUtf8('Empty Version Name'),
                     self.trUtf8('You need to specify a version name for your '
-                        'Bible!'),
+                        'Bible.'),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                 self.VersionNameEdit.setFocus()
                 return False
@@ -258,9 +259,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         Load the list of Crosswalk and BibleGateway bibles.
         """
         #Load and store Crosswalk Bibles
-        filepath = os.path.abspath(os.path.join(
-            os.path.split(os.path.abspath(__file__))[0],
-            u'..', u'resources'))
+        filepath = AppLocation.get_directory(AppLocation.PluginsDir)
+        filepath = os.path.join(filepath, u'bibles', u'resources')
         fbibles = None
         try:
             self.web_bible_list[DownloadLocation.Crosswalk] = {}
