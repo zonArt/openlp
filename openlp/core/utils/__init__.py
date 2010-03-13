@@ -45,9 +45,9 @@ class AppLocation(object):
         if dir_type == AppLocation.AppDir:
            return os.path.abspath(os.path.split(sys.argv[0])[0])
         elif dir_type == AppLocation.ConfigDir:
-            if os.name == u'nt':
+            if sys.platform == u'win32':
                 path = os.path.join(os.getenv(u'APPDATA'), u'openlp')
-            elif os.name == u'mac':
+            elif sys.platform == u'darwin':
                 path = os.path.join(os.getenv(u'HOME'), u'Library',
                     u'Application Support', u'openlp')
             else:
@@ -58,9 +58,9 @@ class AppLocation(object):
                     path = os.path.join(os.getenv(u'HOME'), u'.openlp')
             return path
         elif dir_type == AppLocation.DataDir:
-            if os.name == u'nt':
+            if sys.platform == u'win32':
                 path = os.path.join(os.getenv(u'APPDATA'), u'openlp', u'data')
-            elif os.name == u'mac':
+            elif sys.platform == u'darwin':
                 path = os.path.join(os.getenv(u'HOME'), u'Library',
                     u'Application Support', u'openlp', u'Data')
             else:
