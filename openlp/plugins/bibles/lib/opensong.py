@@ -102,7 +102,7 @@ class OpenSongBible(BibleDB):
         finally:
             if file:
                 file.close()
-        if self.stop_import:
+        if self.stop_import_flag:
             self.wizard.incrementProgressBar(u'Import canceled!')
             return False
         else:
