@@ -31,6 +31,7 @@ import sqlite3
 from BeautifulSoup import BeautifulSoup
 
 from openlp.core.lib import Receiver
+from openlp.core.utils import AppLocation
 from common import BibleCommon, SearchResults
 from db import BibleDB
 from openlp.plugins.bibles.lib.models import Book
@@ -43,8 +44,9 @@ class HTTPBooks(object):
     @staticmethod
     def get_cursor():
         if HTTPBooks.cursor is None:
-            filepath = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                u'..', u'resources', u'httpbooks.sqlite')
+            filepath = os.path.join(
+                AppLocation.get_directory(AppLocation.PluginsDir), u'bibles',
+                u'resources', u'httpbooks.sqlite')
             conn = sqlite3.connect(filepath)
             HTTPBooks.cursor = conn.cursor()
         return HTTPBooks.cursor
