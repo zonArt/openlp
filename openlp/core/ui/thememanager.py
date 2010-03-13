@@ -177,7 +177,7 @@ class ThemeManager(QtGui.QWidget):
             if theme != unicode(item.data(QtCore.Qt.UserRole).toString()):
                 QtGui.QMessageBox.critical(
                     self, self.trUtf8('Error'),
-                    self.trUtf8('You are unable to delete the Default Theme.'),
+                    self.trUtf8('You are unable to delete the default theme.'),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             else:
                 for plugin in self.parent.plugin_manager.plugins:
