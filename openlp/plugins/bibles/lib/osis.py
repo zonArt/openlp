@@ -33,6 +33,7 @@ import re
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
+from openlp.core.utils import AppLocation
 from db import BibleDB
 
 log = logging.getLogger(__name__)
@@ -66,9 +67,9 @@ class OSISBible(BibleDB):
         self.q_regex = re.compile(r'<q (.*?)>')
         self.spaces_regex = re.compile(r'([ ]{2,})')
         self.books = {}
-        filepath = os.path.split(os.path.abspath(__file__))[0]
-        filepath = os.path.abspath(os.path.join(
-            filepath, u'..', u'resources', u'osisbooks.csv'))
+        filepath = os.path.join(
+            AppLocation.get_directory(AppLocation.PluginsDir), u'bibles',
+            u'resources', u'osisbooks.csv')
         fbibles = None
         try:
             fbibles = open(filepath, u'r')

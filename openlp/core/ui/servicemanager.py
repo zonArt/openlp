@@ -190,6 +190,8 @@ class ServiceManager(QtGui.QWidget):
             QtCore.SIGNAL(u'presentation types'), self.onPresentationTypes)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'servicemanager_next_item'), self.nextItem)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'config_updated'), self.regenerateServiceItems)
         # Last little bits of setting up
         self.config = PluginConfig(u'ServiceManager')
         self.servicePath = self.config.get_data_path()
@@ -617,7 +619,7 @@ class ServiceManager(QtGui.QWidget):
             for item in tempServiceItems:
                 self.addServiceItem(item[u'service_item'], False, item[u'expanded'])
             #Set to False as items may have changed rendering
-            #does not impact the saved song so True may aslo be valid
+            #does not impact the saved song so True may also be valid
             self.parent.serviceChanged(False, self.serviceName)
 
     def addServiceItem(self, item, rebuild=False, expand=True):

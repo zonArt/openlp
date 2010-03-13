@@ -299,6 +299,8 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'%s_change' % prefix), self.onSlideChange)
         QtCore.QObject.connect(self.Splitter,
             QtCore.SIGNAL(u'splitterMoved(int, int)'), self.trackSplitter)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'config_updated'), self.refreshServiceItem)
 
     def widthChanged(self):
         """
@@ -376,6 +378,17 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.setVisible(False)
             self.Mediabar.setVisible(True)
             self.volumeSlider.setAudioOutput(self.audio)
+
+    def refreshServiceItem(self):
+        """
+        Method to update the service item if the screen has changed
+        """
+        log.debug(u'refreshServiceItem')
+        if self.serviceItem:
+            if self.serviceItem.is_text() or self.serviceItem.is_image():
+                item = self.serviceItem
+                item.render()
+                self.addServiceManagerItem(item, self.selectedRow)
 
     def addServiceItem(self, item):
         """

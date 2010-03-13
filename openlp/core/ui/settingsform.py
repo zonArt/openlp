@@ -65,7 +65,6 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
     def accept(self):
         for tab_index in range(0, self.SettingsTabWidget.count()):
             self.SettingsTabWidget.widget(tab_index).save()
-        Receiver.send_message(u'config_updated')
         return QtGui.QDialog.accept(self)
 
     def postSetUp(self):
