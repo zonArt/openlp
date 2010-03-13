@@ -216,6 +216,8 @@ class ServiceManager(QtGui.QWidget):
 
     def contextMenu(self, point):
         item = self.ServiceManagerList.itemAt(point)
+        if item is None:
+            return
         if item.parent() is None:
             pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
         else:

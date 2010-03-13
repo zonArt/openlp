@@ -69,7 +69,7 @@ class CustomPlugin(Plugin):
     def about(self):
         about_text = self.trUtf8('<b>Custom Plugin</b><br>This plugin '
             'allows slides to be displayed on the screen in the same way '
-            'songs are.  This plugin provides greater freedom over the '
+            'songs are. This plugin provides greater freedom over the '
             'songs plugin.<br>')
         return about_text
 

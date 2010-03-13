@@ -111,7 +111,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     QtGui.QMessageBox.critical(self,
                         self.trUtf8('Invalid Bible Location'),
                         self.trUtf8('You need to specify a file to import your '
-                            'Bible from!'),
+                            'Bible from.'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                     self.OSISLocationEdit.setFocus()
                     return False
@@ -120,7 +120,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     QtGui.QMessageBox.critical(self,
                         self.trUtf8('Invalid Books File'),
                         self.trUtf8('You need to specify a file with books of '
-                            'the Bible to use in the import!'),
+                            'the Bible to use in the import.'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                     self.BooksLocationEdit.setFocus()
                     return False
@@ -128,7 +128,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     QtGui.QMessageBox.critical(self,
                         self.trUtf8('Invalid Verse File'),
                         self.trUtf8('You need to specify a file of Bible '
-                            'verses to import!'),
+                            'verses to import.'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                     self.CsvVerseLocationEdit.setFocus()
                     return False
@@ -137,7 +137,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     QtGui.QMessageBox.critical(self,
                         self.trUtf8('Invalid OpenSong Bible'),
                         self.trUtf8('You need to specify an OpenSong Bible '
-                            'file to import!'),
+                            'file to import.'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                     self.OpenSongFileEdit.setFocus()
                     return False
@@ -148,7 +148,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                 QtGui.QMessageBox.critical(self,
                     self.trUtf8('Empty Version Name'),
                     self.trUtf8('You need to specify a version name for your '
-                        'Bible!'),
+                        'Bible.'),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                 self.VersionNameEdit.setFocus()
                 return False
