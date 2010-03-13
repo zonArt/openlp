@@ -32,6 +32,7 @@ from PyQt4 import QtCore, QtGui
 
 from bibleimportwizard import Ui_BibleImportWizard
 from openlp.core.lib import Receiver
+from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.manager import BibleFormat
 
 log = logging.getLogger(__name__)
@@ -258,9 +259,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         Load the list of Crosswalk and BibleGateway bibles.
         """
         #Load and store Crosswalk Bibles
-        filepath = os.path.abspath(os.path.join(
-            os.path.split(os.path.abspath(__file__))[0],
-            u'..', u'resources'))
+        filepath = AppLocation.get_directory(AppLocation.PluginsDir)
+        filepath = os.path.join(filepath, u'bibles', u'resources')
         fbibles = None
         try:
             self.web_bible_list[DownloadLocation.Crosswalk] = {}
