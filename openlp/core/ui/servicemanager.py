@@ -477,7 +477,8 @@ class ServiceManager(QtGui.QWidget):
         log.debug(u'onSaveService')
         if not quick or self.isNew:
             filename = QtGui.QFileDialog.getSaveFileName(self,
-            u'Save Service', self.config.get_last_dir())
+            self.trUtf8(u'Save Service'), self.config.get_last_dir(),
+            self.trUtf8(u'OpenLP Service Files (*.osz)'))
         else:
             filename = self.config.get_last_dir()
         if filename:
