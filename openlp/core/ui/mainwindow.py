@@ -621,6 +621,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.screens.set_current_display(updated_display)
             self.RenderManager.update_display(updated_display)
             self.mainDisplay.setup(updated_display)
+        #Trigger after changes have been made
+        Receiver.send_message(u'config_updated')
         self.activateWindow()
 
     def closeEvent(self, event):

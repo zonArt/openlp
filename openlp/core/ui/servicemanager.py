@@ -100,6 +100,7 @@ class ServiceManager(QtGui.QWidget):
         self.parent = parent
         self.serviceItems = []
         self.serviceName = u''
+        self.droppos = 0
         #is a new service and has not been saved
         self.isNew = True
         #Indicates if remoteTriggering is active.  If it is the next addServiceItem call
@@ -190,6 +191,8 @@ class ServiceManager(QtGui.QWidget):
             QtCore.SIGNAL(u'presentation types'), self.onPresentationTypes)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'servicemanager_next_item'), self.nextItem)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'config_updated'), self.regenerateServiceItems)
         # Last little bits of setting up
         self.config = PluginConfig(u'ServiceManager')
         self.servicePath = self.config.get_data_path()
@@ -617,7 +620,7 @@ class ServiceManager(QtGui.QWidget):
             for item in tempServiceItems:
                 self.addServiceItem(item[u'service_item'], False, item[u'expanded'])
             #Set to False as items may have changed rendering
-            #does not impact the saved song so True may aslo be valid
+            #does not impact the saved song so True may also be valid
             self.parent.serviceChanged(False, self.serviceName)
 
     def addServiceItem(self, item, rebuild=False, expand=True):
@@ -637,19 +640,21 @@ class ServiceManager(QtGui.QWidget):
             self.repaintServiceList(sitem + 1, 0)
             self.parent.LiveController.replaceServiceManagerItem(item)
         else:
-            if sitem == -1:
+            #nothing selected or dnd
+            if self.droppos == 0:
                 self.serviceItems.append({u'service_item': item,
                     u'order': len(self.serviceItems) + 1,
                     u'expanded':expand})
                 self.repaintServiceList(len(self.serviceItems) + 1, 0)
             else:
-                self.serviceItems.insert(sitem + 1, {u'service_item': item,
-                    u'order': len(self.serviceItems)+1,
+                self.serviceItems.insert(self.droppos, {u'service_item': item,
+                    u'order': self.droppos,
                     u'expanded':expand})
-                self.repaintServiceList(sitem + 1, 0)
+                self.repaintServiceList(self.droppos, 0)
             #if rebuilding list make sure live is fixed.
             if rebuild:
                 self.parent.LiveController.replaceServiceManagerItem(item)
+        self.droppos = 0
         self.parent.serviceChanged(False, self.serviceName)
 
     def makePreview(self):
@@ -730,9 +735,9 @@ class ServiceManager(QtGui.QWidget):
         link = event.mimeData()
         if link.hasText():
             plugin = event.mimeData().text()
+            item = self.ServiceManagerList.itemAt(event.pos())
             if plugin == u'ServiceManager':
                 startpos,  startCount = self.findServiceItem()
-                item = self.ServiceManagerList.itemAt(event.pos())
                 if item is None:
                     endpos = len(self.serviceItems)
                 else:
@@ -751,6 +756,14 @@ class ServiceManager(QtGui.QWidget):
                 self.serviceItems.insert(newpos, serviceItem)
                 self.repaintServiceList(endpos, startCount)
             else:
+                if item == None:
+                    self.droppos = len(self.serviceItems)
+                else:
+                    parentitem = item.parent()
+                    if parentitem is None:
+                        self.droppos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
+                    else:
+                        self.droppos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
                 Receiver.send_message(u'%s_add_service_item' % plugin)
 
     def updateThemeList(self, theme_list):
