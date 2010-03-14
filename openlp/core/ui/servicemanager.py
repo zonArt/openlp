@@ -478,7 +478,6 @@ class ServiceManager(QtGui.QWidget):
         if not quick or self.isNew:
             filename = QtGui.QFileDialog.getSaveFileName(self,
             u'Save Service', self.config.get_last_dir())
-            print filename
         else:
             filename = self.config.get_last_dir()
         if filename:
