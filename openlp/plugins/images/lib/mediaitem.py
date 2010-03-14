@@ -61,7 +61,7 @@ class ImageMediaItem(MediaManagerItem):
     def retranslateUi(self):
         self.OnNewPrompt = self.trUtf8('Select Image(s)')
         self.OnNewFileMasks = \
-            self.trUtf8('Images (*.jpg *jpeg *.gif *.png *.bmp);; All files (*)')
+            self.trUtf8('Images (*.jpg *.jpeg *.gif *.png *.bmp);; All files (*)')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -101,7 +101,7 @@ class ImageMediaItem(MediaManagerItem):
         self.OverrideCheckBox.setChecked(False)
         self.OverrideCheckBox.setText(self.trUtf8('Override background'))
         self.OverrideCheckBox.setStatusTip(
-            self.trUtf8('Allow background of live slide to be overridden'))
+            self.trUtf8('Allow the background of live slide to be overridden'))
         self.OverrideLayout.addWidget(self.OverrideCheckBox)
         self.OverrideLabel = QtGui.QLabel(self.ImageWidget)
         self.OverrideLabel.setObjectName(u'OverrideLabel')

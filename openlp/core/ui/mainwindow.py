@@ -418,7 +418,7 @@ class Ui_MainWindow(object):
         self.LanguageEnglishItem.setText(self.trUtf8('English'))
         self.LanguageEnglishItem.setStatusTip(
             self.trUtf8('Set the interface language to English'))
-        self.ToolsAddToolItem.setText(self.trUtf8('&Add Tool...'))
+        self.ToolsAddToolItem.setText(self.trUtf8('Add &Tool...'))
         self.ToolsAddToolItem.setStatusTip(
             self.trUtf8('Add an application to the list of tools'))
         self.action_Preview_Panel.setText(self.trUtf8('&Preview Pane'))
@@ -620,6 +620,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.screens.set_current_display(updated_display)
             self.RenderManager.update_display(updated_display)
             self.mainDisplay.setup(updated_display)
+        #Trigger after changes have been made
+        Receiver.send_message(u'config_updated')
         self.activateWindow()
 
     def closeEvent(self, event):

@@ -114,6 +114,6 @@ class PresentationPlugin(Plugin):
     def about(self):
         about_text = self.trUtf8('<b>Presentation Plugin</b> <br> Delivers '
             'the ability to show presentations using a number of different '
-            'programs.  The choice of available presentation programs is '
+            'programs. The choice of available presentation programs is '
             'available to the user in a drop down box.')
         return about_text
