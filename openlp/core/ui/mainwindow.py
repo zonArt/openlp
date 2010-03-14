@@ -419,7 +419,7 @@ class Ui_MainWindow(object):
         self.LanguageEnglishItem.setText(self.trUtf8('English'))
         self.LanguageEnglishItem.setStatusTip(
             self.trUtf8('Set the interface language to English'))
-        self.ToolsAddToolItem.setText(self.trUtf8('&Add Tool...'))
+        self.ToolsAddToolItem.setText(self.trUtf8('Add &Tool...'))
         self.ToolsAddToolItem.setStatusTip(
             self.trUtf8('Add an application to the list of tools'))
         self.action_Preview_Panel.setText(self.trUtf8('&Preview Pane'))

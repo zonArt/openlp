@@ -478,6 +478,7 @@ class ServiceManager(QtGui.QWidget):
         if not quick or self.isNew:
             filename = QtGui.QFileDialog.getSaveFileName(self,
             u'Save Service', self.config.get_last_dir())
+            print filename
         else:
             filename = self.config.get_last_dir()
         if filename:
@@ -516,9 +517,9 @@ class ServiceManager(QtGui.QWidget):
                 os.remove(servicefile)
             except:
                 pass #if not present do not worry
-        name = filename.split(os.path.sep)
-        self.serviceName = name[-1]
-        self.parent.serviceChanged(True, self.serviceName)
+            name = filename.split(os.path.sep)
+            self.serviceName = name[-1]
+            self.parent.serviceChanged(True, self.serviceName)
 
     def onQuickSaveService(self):
         self.onSaveService(True)
@@ -741,12 +742,7 @@ class ServiceManager(QtGui.QWidget):
                 if item is None:
                     endpos = len(self.serviceItems)
                 else:
-                    parentitem = item.parent()
-                    if parentitem is None:
-                        endpos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-                    else:
-                        endpos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
-                    endpos -= 1
+                    endpos = self._getParentItemData(item) - 1
                 if endpos < startpos:
                     newpos = endpos
                 else:
@@ -759,11 +755,7 @@ class ServiceManager(QtGui.QWidget):
                 if item == None:
                     self.droppos = len(self.serviceItems)
                 else:
-                    parentitem = item.parent()
-                    if parentitem is None:
-                        self.droppos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-                    else:
-                        self.droppos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
+                    self.droppos = self._getParentItemData(item)
                 Receiver.send_message(u'%s_add_service_item' % plugin)
 
     def updateThemeList(self, theme_list):
@@ -798,3 +790,10 @@ class ServiceManager(QtGui.QWidget):
         item, count = self.findServiceItem()
         self.serviceItems[item][u'service_item'].theme = theme
         self.regenerateServiceItems()
+
+    def _getParentItemData(self, item):
+        parentitem = item.parent()
+        if parentitem is None:
+            return item.data(0, QtCore.Qt.UserRole).toInt()[0]
+        else:
+            return parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
