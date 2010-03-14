@@ -124,7 +124,8 @@ class BibleManager(object):
         self.db_cache = {}
         for filename in files:
             name, extension = os.path.splitext(filename)
-            self.db_cache[name] = BibleDB(self.parent, path=self.path, name=name, config=self.config)
+            self.db_cache[name] = BibleDB(self.parent, path=self.path,
+                name=name, config=self.config)
             # look to see if lazy load bible exists and get create getter.
             source = self.db_cache[name].get_meta(u'download source')
             if source:

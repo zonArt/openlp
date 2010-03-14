@@ -45,6 +45,7 @@ class BibleListView(BaseListWithDnD):
     def resizeEvent(self, event):
         self.parent.onListViewResize(event.size().width(), event.size().width())
 
+
 class BibleMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Bibles.
@@ -452,14 +453,14 @@ class BibleMediaItem(MediaManagerItem):
         for item in items:
             bitem = self.ListView.item(item.row())
             reference = bitem.data(QtCore.Qt.UserRole).toPyObject()
-            bible = unicode(reference[QtCore.QString('bible')])
-            book = unicode(reference[QtCore.QString('book')])
-            chapter = unicode(reference[QtCore.QString('chapter')])
-            verse = unicode(reference[QtCore.QString('verse')])
-            text = unicode(reference[QtCore.QString('text')])
-            version = unicode(reference[QtCore.QString('version')])
-            copyright = unicode(reference[QtCore.QString('copyright')])
-            permission = unicode(reference[QtCore.QString('permission')])
+            bible = unicode(reference[QtCore.QString('bible')].toPyObject())
+            book = unicode(reference[QtCore.QString('book')].toPyObject())
+            chapter = unicode(reference[QtCore.QString('chapter')].toPyObject())
+            verse = unicode(reference[QtCore.QString('verse')].toPyObject())
+            text = unicode(reference[QtCore.QString('text')].toPyObject())
+            version = unicode(reference[QtCore.QString('version')].toPyObject())
+            copyright = unicode(reference[QtCore.QString('copyright')].toPyObject())
+            permission = unicode(reference[QtCore.QString('permission')].toPyObject())
             if self.parent.settings_tab.display_style == 1:
                 verse_text = self.formatVerse(old_chapter, chapter, verse, u'(u', u')')
             elif  self.parent.settings_tab.display_style == 2:
@@ -563,7 +564,7 @@ class BibleMediaItem(MediaManagerItem):
             permission = u''
         else:
             permission = permission.value
-        for count, verse  in enumerate(self.search_results):
+        for count, verse in enumerate(self.search_results):
             bible_text = u' %s %d:%d (%s)' % \
                 (verse.book.name, verse.chapter, verse.verse, bible)
             bible_verse = QtGui.QListWidgetItem(bible_text)
