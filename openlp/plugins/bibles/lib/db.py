@@ -64,17 +64,17 @@ class BibleDB(QtCore.QObject):
         QtCore.QObject.__init__(self)
         if u'path' not in kwargs:
             raise KeyError(u'Missing keyword argument "path".')
-        if u'name' not in kwargs:
-            raise KeyError(u'Missing keyword argument "name".')
         if u'config' not in kwargs:
             raise KeyError(u'Missing keyword argument "config".')
+        if u'name' not in kwargs:
+            raise KeyError(u'Missing keyword argument "name".')
         self.stop_import_flag = False
-        self.name = kwargs[u'name']
-        self.filename = self.clean_filename(kwargs[u'name'])
         self.config = kwargs[u'config']
+        self.name = kwargs[u'name']
+        #self.filename = self.clean_filename(kwargs[u'name'])
         self.db_file = os.path.join(kwargs[u'path'],
-            u'%s.sqlite' % self.filename)
-        log.debug(u'Load bible %s on path %s', self.filename, self.db_file)
+            u'%s.sqlite' % self.name)
+        log.debug(u'Load bible %s on path %s', self.name, self.db_file)
         db_type = self.config.get_config(u'db type', u'sqlite')
         db_url = u''
         if db_type == u'sqlite':
