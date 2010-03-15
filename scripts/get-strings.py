@@ -99,6 +99,8 @@ def main():
     start_dir = os.path.abspath(u'..')
     for root, dirs, files in os.walk(start_dir):
         for file in files:
+            if file.startswith(u'hook-') or file.startswith(u'test_'):
+               continue
             if file.endswith(u'.py'):
                 print u'Parsing "%s"' % file
                 parse_file(start_dir, os.path.join(root, file), strings)
