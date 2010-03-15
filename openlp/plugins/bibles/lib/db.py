@@ -26,6 +26,7 @@
 import os
 import logging
 import chardet
+import re
 
 from sqlalchemy import or_
 from PyQt4 import QtCore
@@ -69,10 +70,11 @@ class BibleDB(QtCore.QObject):
             raise KeyError(u'Missing keyword argument "config".')
         self.stop_import_flag = False
         self.name = kwargs[u'name']
+        self.filename = self.clean_filename(kwargs[u'name'])
         self.config = kwargs[u'config']
         self.db_file = os.path.join(kwargs[u'path'],
-            u'%s.sqlite' % kwargs[u'name'])
-        log.debug(u'Load bible %s on path %s', kwargs[u'name'], self.db_file)
+            u'%s.sqlite' % self.filename)
+        log.debug(u'Load bible %s on path %s', self.filename, self.db_file)
         db_type = self.config.get_config(u'db type', u'sqlite')
         db_url = u''
         if db_type == u'sqlite':
@@ -85,6 +87,12 @@ class BibleDB(QtCore.QObject):
                     self.config.get_config(u'db database'))
         self.metadata, self.session = init_models(db_url)
         self.metadata.create_all(checkfirst=True)
+
+    def clean_filename(self, old_filename):
+        for char in [u'\\', u'/', u':', u'*', u'?', u'"', u'<', u'>', u'|', u' ']:
+            old_filename = old_filename.replace(char, u'_')
+        old_filename = re.sub(r'[_]+', u'_', old_filename).strip(u'_')
+        return old_filename
 
     def register(self, wizard):
         """
