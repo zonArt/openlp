@@ -123,20 +123,21 @@ class BibleManager(object):
         log.debug(u'Bible Files %s', files)
         self.db_cache = {}
         for filename in files:
-            name, extension = os.path.splitext(filename)
-            self.db_cache[name] = BibleDB(self.parent, path=self.path,
-                name=name, config=self.config)
+            bible = BibleDB(self.parent, path=self.path, file=filename,
+                            config=self.config)
+            name = bible.get_name()
+            log.debug(u'Bible Name: "%s"', name)
+            self.db_cache[name] = bible
             # look to see if lazy load bible exists and get create getter.
             source = self.db_cache[name].get_meta(u'download source')
             if source:
                 download_name = self.db_cache[name].get_meta(u'download name').value
                 meta_proxy = self.db_cache[name].get_meta(u'proxy url')
-                web_bible = HTTPBible(self.parent, path=self.path, name=name,
-                    config=self.config, download_source=source.value,
-                    download_name=download_name)
+                web_bible = HTTPBible(self.parent, path=self.path,
+                    file=filename, config=self.config,
+                    download_source=source.value, download_name=download_name)
                 if meta_proxy:
                     web_bible.set_proxy_server(meta_proxy.value)
-                #del self.db_cache[name]
                 self.db_cache[name] = web_bible
         log.debug(u'Bibles reloaded')
 
