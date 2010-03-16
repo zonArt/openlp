@@ -4,7 +4,7 @@
   <context>
     <name>BibleMediaItem</name>
     <message>
-      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="141"/>
+      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="142"/>
       <source>Quick</source>
       <translation type="unfinished"></translation>
     </message>
@@ -34,10 +34,10 @@
     </message>
   </context>
   <context>
-    <name>ServiceManager</name>
+    <name>Ui_EditSongDialog</name>
     <message>
-      <location filename="openlp/core/ui/servicemanager.py" line="123"/>
-      <source>Save Service</source>
+      <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="432"/>
+      <source>&amp;Remove</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -74,10 +74,10 @@
     </message>
   </context>
   <context>
-    <name>ImportWizardForm</name>
+    <name>SongMaintenanceForm</name>
     <message>
-      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="166"/>
-      <source>Bible Exists</source>
+      <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="254"/>
+      <source>Are you sure you want to delete the selected book?</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -92,7 +92,7 @@
   <context>
     <name>BibleMediaItem</name>
     <message>
-      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="68"/>
+      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="69"/>
       <source>Bible</source>
       <translation type="unfinished"></translation>
     </message>
@@ -100,7 +100,7 @@
   <context>
     <name>ServiceManager</name>
     <message>
-      <location filename="openlp/core/ui/servicemanager.py" line="391"/>
+      <location filename="openlp/core/ui/servicemanager.py" line="399"/>
       <source>Save Changes to Service?</source>
       <translation type="unfinished"></translation>
     </message>
@@ -138,22 +138,6 @@
     </message>
   </context>
   <context>
-    <name>Ui_SongUsageDeleteDialog</name>
-    <message>
-      <location filename="openlp/plugins/songusage/forms/songusagedeletedialog.py" line="60"/>
-      <source>Audit Delete</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
-    <name>BibleMediaItem</name>
-    <message>
-      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="299"/>
-      <source>Clear</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
     <name>Ui_BibleImportWizard</name>
     <message>
       <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="310"/>
@@ -170,6 +154,14 @@
     </message>
   </context>
   <context>
+    <name>SongMaintenanceForm</name>
+    <message>
+      <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="185"/>
+      <source>Couldn't save your author.</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
     <name>Ui_ServiceNoteEdit</name>
     <message>
       <location filename="openlp/core/ui/serviceitemdialog.py" line="49"/>
@@ -178,15 +170,12 @@
     </message>
   </context>
   <context>
-    <name>SongMaintenanceForm</name>
+    <name>Ui_customEditDialog</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="185"/>
-      <source>Couldn't save your author!</source>
+      <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="154"/>
+      <source>Add new slide at bottom</source>
       <translation type="unfinished"></translation>
     </message>
-  </context>
-  <context>
-    <name>Ui_customEditDialog</name>
     <message>
       <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="163"/>
       <source>Clear</source>
@@ -202,6 +191,14 @@
     </message>
   </context>
   <context>
+    <name>PresentationPlugin</name>
+    <message>
+      <location filename="openlp/plugins/presentations/presentationplugin.py" line="115"/>
+      <source>&lt;b&gt;Presentation Plugin&lt;/b&gt; &lt;br&gt; Delivers the ability to show presentations using a number of different programs. The choice of available presentation programs is available to the user in a drop down box.</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
     <name>SongUsagePlugin</name>
     <message>
       <location filename="openlp/plugins/songusage/songusageplugin.py" line="84"/>
@@ -212,7 +209,7 @@
   <context>
     <name>MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="585"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="591"/>
       <source>The Main Display has been blanked out</source>
       <translation type="unfinished"></translation>
     </message>
@@ -234,6 +231,14 @@
     </message>
   </context>
   <context>
+    <name>SongMaintenanceForm</name>
+    <message>
+      <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="229"/>
+      <source>This author can't be deleted, they are currently assigned to at least one song.</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
     <name>Ui_customEditDialog</name>
     <message>
       <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="161"/>
@@ -242,10 +247,18 @@
     </message>
   </context>
   <context>
-    <name>SongMaintenanceForm</name>
+    <name>Ui_EditVerseDialog</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="229"/>
-      <source>This author can't be deleted, they are currently assigned to at least one song!</source>
+      <location filename="openlp/plugins/songs/forms/editversedialog.py" line="123"/>
+      <source>Verse</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>Ui_OpenSongImportDialog</name>
+    <message>
+      <location filename="openlp/plugins/songs/forms/opensongimportdialog.py" line="104"/>
+      <source>OpenSong Folder:</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -260,7 +273,7 @@
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="356"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="364"/>
       <source>Open an existing service</source>
       <translation type="unfinished"></translation>
     </message>
@@ -268,13 +281,16 @@
   <context>
     <name>SlideController</name>
     <message>
-      <location filename="openlp/core/ui/slidecontroller.py" line="163"/>
+      <location filename="openlp/core/ui/slidecontroller.py" line="162"/>
       <source>Move to previous</source>
       <translation type="unfinished"></translation>
     </message>
+  </context>
+  <context>
+    <name>SongsPlugin</name>
     <message>
-      <location filename="openlp/core/ui/slidecontroller.py" line="186"/>
-      <source>Edit and re-preview Song</source>
+      <location filename="openlp/plugins/songs/songsplugin.py" line="155"/>
+      <source>&amp;Song</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -287,12 +303,15 @@
     </message>
   </context>
   <context>
-    <name>AlertsTab</name>
+    <name>ImportWizardForm</name>
     <message>
-      <location filename="openlp/plugins/alerts/forms/alertstab.py" line="230"/>
-      <source>pt</source>
+      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="122"/>
+      <source>You need to specify a file with books of the Bible to use in the import.</source>
       <translation type="unfinished"></translation>
     </message>
+  </context>
+  <context>
+    <name>AlertsTab</name>
     <message>
       <location filename="openlp/plugins/alerts/forms/alertstab.py" line="235"/>
       <source>Edit History:</source>
@@ -300,18 +319,10 @@
     </message>
   </context>
   <context>
-    <name>SlideController</name>
+    <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/slidecontroller.py" line="201"/>
-      <source>Delay between slides in seconds</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
-    <name>SongMaintenanceForm</name>
-    <message>
-      <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="165"/>
-      <source>Couldn't add your book!</source>
+      <location filename="openlp/core/ui/mainwindow.py" line="342"/>
+      <source>&amp;File</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -334,6 +345,11 @@
   <context>
     <name>SongMaintenanceForm</name>
     <message>
+      <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="165"/>
+      <source>Couldn't add your book.</source>
+      <translation type="unfinished"></translation>
+    </message>
+    <message>
       <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="216"/>
       <source>Error</source>
       <translation type="unfinished"></translation>
@@ -344,14 +360,6 @@
     <message>
       <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="333"/>
       <source>Bible:</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
-    <name>ImportWizardForm</name>
-    <message>
-      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="121"/>
-      <source>You need to specify a file with books of the Bible to use in the import!</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -380,14 +388,6 @@
     </message>
   </context>
   <context>
-    <name>SongUsageDeleteForm</name>
-    <message>
-      <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="44"/>
-      <source>Delete Selected Audit Events?</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
     <name>Ui_OpenSongExportDialog</name>
     <message>
       <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="298"/>
@@ -396,17 +396,17 @@
     </message>
   </context>
   <context>
-    <name>BibleMediaItem</name>
+    <name>Ui_AmendThemeDialog</name>
     <message>
-      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="294"/>
-      <source>Search</source>
+      <location filename="openlp/core/ui/amendthemedialog.py" line="682"/>
+      <source>Bottom</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="399"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="407"/>
       <source>List the Plugins</source>
       <translation type="unfinished"></translation>
     </message>
@@ -416,6 +416,14 @@
     <message>
       <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="231"/>
       <source>No author selected!</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>SongUsageDeleteForm</name>
+    <message>
+      <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="44"/>
+      <source>Delete Selected Song Usage Events?</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -462,7 +470,7 @@
   <context>
     <name>ServiceManager</name>
     <message>
-      <location filename="openlp/core/ui/servicemanager.py" line="526"/>
+      <location filename="openlp/core/ui/servicemanager.py" line="537"/>
       <source>Open Service</source>
       <translation type="unfinished"></translation>
     </message>
@@ -486,7 +494,7 @@
   <context>
     <name>EditSongForm</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/editsongform.py" line="403"/>
+      <location filename="openlp/plugins/songs/forms/editsongform.py" line="405"/>
       <source>You need to enter a song title.</source>
       <translation type="unfinished"></translation>
     </message>
@@ -500,18 +508,26 @@
     </message>
   </context>
   <context>
+    <name>Ui_SongUsageDeleteDialog</name>
+    <message>
+      <location filename="openlp/plugins/songusage/forms/songusagedeletedialog.py" line="60"/>
+      <source>Song Usage Delete</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
     <name>ImportWizardForm</name>
     <message>
-      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="111"/>
+      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="112"/>
       <source>Invalid Bible Location</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>ThemesTab</name>
+    <name>BibleMediaItem</name>
     <message>
-      <location filename="openlp/core/ui/themestab.py" line="120"/>
-      <source>Global level</source>
+      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="289"/>
+      <source>Book:</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -526,7 +542,7 @@
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="387"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="395"/>
       <source>&amp;Service Manager</source>
       <translation type="unfinished"></translation>
     </message>
@@ -544,14 +560,6 @@
     <message>
       <location filename="openlp/core/ui/amendthemedialog.py" line="656"/>
       <source>Height:</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
-    <name>Ui_BibleImportWizard</name>
-    <message>
-      <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="327"/>
-      <source>Books Location:</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -588,6 +596,14 @@
     </message>
   </context>
   <context>
+    <name>ThemesTab</name>
+    <message>
+      <location filename="openlp/core/ui/themestab.py" line="121"/>
+      <source>Use the global theme, overriding any themes associated with either the service or the songs.</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
     <name>Ui_customEditDialog</name>
     <message>
       <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="152"/>
@@ -598,7 +614,7 @@
   <context>
     <name>ImportWizardForm</name>
     <message>
-      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="157"/>
+      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="158"/>
       <source>You need to set a copyright for your Bible! Bibles in the Public Domain need to be marked as such.</source>
       <translation type="unfinished"></translation>
     </message>
@@ -628,14 +644,6 @@
     </message>
   </context>
   <context>
-    <name>BibleMediaItem</name>
-    <message>
-      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="292"/>
-      <source>To:</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
     <name>Ui_AmendThemeDialog</name>
     <message>
       <location filename="openlp/core/ui/amendthemedialog.py" line="664"/>
@@ -646,16 +654,16 @@
   <context>
     <name>BibleMediaItem</name>
     <message>
-      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="296"/>
+      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="297"/>
       <source>Text Search</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>Ui_OpenLPExportDialog</name>
+    <name>Ui_BibleImportWizard</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/openlpexportdialog.py" line="288"/>
-      <source>openlp.org Song Exporter</source>
+      <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="323"/>
+      <source>CSV</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -686,16 +694,16 @@
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="355"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="363"/>
       <source>Open Service</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>SongMediaItem</name>
+    <name>BibleMediaItem</name>
     <message>
-      <location filename="openlp/plugins/songs/lib/mediaitem.py" line="146"/>
-      <source>Titles</source>
+      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="284"/>
+      <source>Find:</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -710,7 +718,7 @@
   <context>
     <name>BibleMediaItem</name>
     <message>
-      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="282"/>
+      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="283"/>
       <source>Search Type:</source>
       <translation type="unfinished"></translation>
     </message>
@@ -718,23 +726,12 @@
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="345"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="353"/>
       <source>Media Manager</source>
       <translation type="unfinished"></translation>
     </message>
-  </context>
-  <context>
-    <name>ImageMediaItem</name>
     <message>
-      <location filename="openlp/plugins/images/lib/mediaitem.py" line="64"/>
-      <source>Images (*.jpg *jpeg *.gif *.png *.bmp);; All files (*)</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
-    <name>Ui_MainWindow</name>
-    <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="370"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="378"/>
       <source>Alt+F4</source>
       <translation type="unfinished"></translation>
     </message>
@@ -754,48 +751,51 @@
       <source>CCLI Details</source>
       <translation type="unfinished"></translation>
     </message>
+  </context>
+  <context>
+    <name>BibleMediaItem</name>
     <message>
-      <location filename="openlp/core/ui/generaltab.py" line="166"/>
-      <source>SongSelect Password:</source>
+      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="544"/>
+      <source>Bible not fully loaded</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="396"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="404"/>
       <source>Toggle the visibility of the Preview Panel</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>SongMaintenanceForm</name>
+    <name>ImportWizardForm</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="254"/>
-      <source>Are you sure you want to delete the selected book?</source>
+      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="167"/>
+      <source>Bible Exists</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="401"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="409"/>
       <source>&amp;User Guide</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>SongUsageDeleteForm</name>
+    <name>AlertsTab</name>
     <message>
-      <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="45"/>
-      <source>Are you sure you want to delete selected Audit Data?</source>
+      <location filename="openlp/plugins/alerts/forms/alertstab.py" line="230"/>
+      <source>pt</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="413"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="421"/>
       <source>Set the interface language to English</source>
       <translation type="unfinished"></translation>
     </message>
@@ -811,16 +811,8 @@
   <context>
     <name>ImportWizardForm</name>
     <message>
-      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="156"/>
+      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="157"/>
       <source>Empty Copyright</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
-    <name>CustomPlugin</name>
-    <message>
-      <location filename="openlp/plugins/custom/customplugin.py" line="70"/>
-      <source>&lt;b&gt;Custom Plugin&lt;/b&gt;&lt;br&gt;This plugin allows slides to be displayed on the screen in the same way songs are.  This plugin provides greater freedom over the songs plugin.&lt;br&gt;</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -883,7 +875,7 @@
   <context>
     <name>PresentationMediaItem</name>
     <message>
-      <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="62"/>
+      <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="63"/>
       <source>Presentation</source>
       <translation type="unfinished"></translation>
     </message>
@@ -915,7 +907,7 @@
   <context>
     <name>MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="549"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="555"/>
       <source>OpenLP version %s has been updated to version %s
 
 You can obtain the latest version from http://openlp.org</source>
@@ -933,20 +925,28 @@ You can obtain the latest version from http://openlp.org</source>
   <context>
     <name>SlideController</name>
     <message>
-      <location filename="openlp/core/ui/slidecontroller.py" line="226"/>
+      <location filename="openlp/core/ui/slidecontroller.py" line="225"/>
       <source>Go to Verse</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>SongMaintenanceForm</name>
+    <message>
+      <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="153"/>
+      <source>Couldn't add your topic.</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="335"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="343"/>
       <source>&amp;Import</source>
       <translation type="unfinished"></translation>
     </message>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="369"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="377"/>
       <source>Quit OpenLP</source>
       <translation type="unfinished"></translation>
     </message>
@@ -970,7 +970,7 @@ You can obtain the latest version from http://openlp.org</source>
   <context>
     <name>ImportWizardForm</name>
     <message>
-      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="148"/>
+      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="149"/>
       <source>Empty Version Name</source>
       <translation type="unfinished"></translation>
     </message>
@@ -978,7 +978,7 @@ You can obtain the latest version from http://openlp.org</source>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="393"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="401"/>
       <source>&amp;Preview Panel</source>
       <translation type="unfinished"></translation>
     </message>
@@ -986,16 +986,8 @@ You can obtain the latest version from http://openlp.org</source>
   <context>
     <name>SlideController</name>
     <message>
-      <location filename="openlp/core/ui/slidecontroller.py" line="191"/>
+      <location filename="openlp/core/ui/slidecontroller.py" line="190"/>
       <source>Start continuous loop</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
-    <name>Ui_AboutDialog</name>
-    <message>
-      <location filename="openlp/core/ui/aboutdialog.py" line="548"/>
-      <source>License</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -1018,7 +1010,7 @@ You can obtain the latest version from http://openlp.org</source>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="350"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="358"/>
       <source>&amp;New</source>
       <translation type="unfinished"></translation>
     </message>
@@ -1032,18 +1024,26 @@ You can obtain the latest version from http://openlp.org</source>
     </message>
   </context>
   <context>
+    <name>Ui_EditSongDialog</name>
+    <message>
+      <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="437"/>
+      <source>R&amp;emove</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
     <name>SlideController</name>
     <message>
-      <location filename="openlp/core/ui/slidecontroller.py" line="111"/>
+      <location filename="openlp/core/ui/slidecontroller.py" line="110"/>
       <source>Live</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>ImportWizardForm</name>
+    <name>Ui_AmendThemeDialog</name>
     <message>
-      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="129"/>
-      <source>You need to specify a file of Bible verses to import!</source>
+      <location filename="openlp/core/ui/amendthemedialog.py" line="640"/>
+      <source>Font Main</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -1056,10 +1056,10 @@ You can obtain the latest version from http://openlp.org</source>
     </message>
   </context>
   <context>
-    <name>Ui_EditVerseDialog</name>
+    <name>ThemeManager</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/editversedialog.py" line="121"/>
-      <source>Number</source>
+      <location filename="openlp/core/ui/thememanager.py" line="362"/>
+      <source>File is not a valid theme.</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -1088,10 +1088,10 @@ You can obtain the latest version from http://openlp.org</source>
     </message>
   </context>
   <context>
-    <name>Ui_MainWindow</name>
+    <name>Ui_AmendThemeDialog</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="353"/>
-      <source>Ctrl+N</source>
+      <location filename="openlp/core/ui/amendthemedialog.py" line="687"/>
+      <source>Other Options</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -1104,22 +1104,14 @@ You can obtain the latest version from http://openlp.org</source>
     </message>
   </context>
   <context>
-    <name>Ui_SongUsageDetailDialog</name>
-    <message>
-      <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="89"/>
-      <source>ASelect Date Range</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="331"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="339"/>
       <source>Default Theme: </source>
       <translation type="unfinished"></translation>
     </message>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="394"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="402"/>
       <source>Toggle Preview Panel</source>
       <translation type="unfinished"></translation>
     </message>
@@ -1153,6 +1145,22 @@ You can obtain the latest version from http://openlp.org</source>
     <message>
       <location filename="openlp/core/ui/generaltab.py" line="155"/>
       <source>Select monitor for output display:</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>Ui_MainWindow</name>
+    <message>
+      <location filename="openlp/core/ui/mainwindow.py" line="384"/>
+      <source>&amp;Settings</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>EditSongForm</name>
+    <message>
+      <location filename="openlp/plugins/songs/forms/editsongform.py" line="430"/>
+      <source>Invalid verse entry - values must be Numeric, I,B,C,T,P,E,O</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -1213,10 +1221,10 @@ You can obtain the latest version from http://openlp.org</source>
     </message>
   </context>
   <context>
-    <name>Ui_customEditDialog</name>
+    <name>Ui_BibleImportWizard</name>
     <message>
-      <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="159"/>
-      <source>Save</source>
+      <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="328"/>
+      <source>Verse Location:</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -1247,7 +1255,7 @@ You can obtain the latest version from http://openlp.org</source>
   <context>
     <name>ImportWizardForm</name>
     <message>
-      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="187"/>
+      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="188"/>
       <source>Open Books CSV file</source>
       <translation type="unfinished"></translation>
     </message>
@@ -1271,7 +1279,7 @@ You can obtain the latest version from http://openlp.org</source>
   <context>
     <name>BibleMediaItem</name>
     <message>
-      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="353"/>
+      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="354"/>
       <source>No matching book could be found in this Bible.</source>
       <translation type="unfinished"></translation>
     </message>
@@ -1283,16 +1291,27 @@ You can obtain the latest version from http://openlp.org</source>
       <source>Server:</source>
       <translation type="unfinished"></translation>
     </message>
+  </context>
+  <context>
+    <name>Ui_EditVerseDialog</name>
     <message>
-      <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="336"/>
-      <source>Download Options</source>
+      <location filename="openlp/plugins/songs/forms/editversedialog.py" line="128"/>
+      <source>Ending</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>CustomTab</name>
+    <message>
+      <location filename="openlp/plugins/custom/lib/customtab.py" line="60"/>
+      <source>Display Footer:</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
     <name>ImportWizardForm</name>
     <message>
-      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="137"/>
+      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="138"/>
       <source>Invalid OpenSong Bible</source>
       <translation type="unfinished"></translation>
     </message>
@@ -1322,25 +1341,33 @@ You can obtain the latest version from http://openlp.org</source>
     </message>
   </context>
   <context>
+    <name>AlertEditForm</name>
+    <message>
+      <location filename="openlp/plugins/alerts/forms/alerteditform.py" line="88"/>
+      <source>Please save or clear selected item</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="418"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="426"/>
       <source>&amp;Live</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>SongMaintenanceForm</name>
+    <name>Ui_AmendThemeDialog</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="240"/>
-      <source>Delete Topic</source>
+      <location filename="openlp/core/ui/amendthemedialog.py" line="608"/>
+      <source>&lt;Color2&gt;</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="411"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="419"/>
       <source>English</source>
       <translation type="unfinished"></translation>
     </message>
@@ -1362,6 +1389,14 @@ You can obtain the latest version from http://openlp.org</source>
     </message>
   </context>
   <context>
+    <name>Ui_OpenLPExportDialog</name>
+    <message>
+      <location filename="openlp/plugins/songs/forms/openlpexportdialog.py" line="289"/>
+      <source>Select openlp.org export filename:</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
     <name>Ui_BibleImportWizard</name>
     <message>
       <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="348"/>
@@ -1378,18 +1413,18 @@ You can obtain the latest version from http://openlp.org</source>
     </message>
   </context>
   <context>
-    <name>Ui_AmendThemeDialog</name>
+    <name>Ui_SongUsageDetailDialog</name>
     <message>
-      <location filename="openlp/core/ui/amendthemedialog.py" line="601"/>
-      <source>Opaque</source>
+      <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="88"/>
+      <source>Song Usage Extraction</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>SongMaintenanceForm</name>
+    <name>Ui_AmendThemeDialog</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="255"/>
-      <source>This book can't be deleted, it is currently assigned to at least one song!</source>
+      <location filename="openlp/core/ui/amendthemedialog.py" line="601"/>
+      <source>Opaque</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -1404,7 +1439,7 @@ You can obtain the latest version from http://openlp.org</source>
   <context>
     <name>SlideController</name>
     <message>
-      <location filename="openlp/core/ui/slidecontroller.py" line="213"/>
+      <location filename="openlp/core/ui/slidecontroller.py" line="212"/>
       <source>Start playing media</source>
       <translation type="unfinished"></translation>
     </message>
@@ -1414,6 +1449,14 @@ You can obtain the latest version from http://openlp.org</source>
     <message>
       <location filename="openlp/plugins/songs/lib/mediaitem.py" line="141"/>
       <source>Type:</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>SongMaintenanceForm</name>
+    <message>
+      <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="255"/>
+      <source>This book can't be deleted, it is currently assigned to at least one song.</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -1444,7 +1487,7 @@ You can obtain the latest version from http://openlp.org</source>
   <context>
     <name>BibleMediaItem</name>
     <message>
-      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="287"/>
+      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="288"/>
       <source>Dual:</source>
       <translation type="unfinished"></translation>
     </message>
@@ -1508,12 +1551,12 @@ You can obtain the latest version from http://openlp.org</source>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="392"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="400"/>
       <source>F9</source>
       <translation type="unfinished"></translation>
     </message>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="381"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="389"/>
       <source>F8</source>
       <translation type="unfinished"></translation>
     </message>
@@ -1521,7 +1564,7 @@ You can obtain the latest version from http://openlp.org</source>
   <context>
     <name>ServiceManager</name>
     <message>
-      <location filename="openlp/core/ui/servicemanager.py" line="213"/>
+      <location filename="openlp/core/ui/servicemanager.py" line="217"/>
       <source>&amp;Change Item Theme</source>
       <translation type="unfinished"></translation>
     </message>
@@ -1551,18 +1594,18 @@ You can obtain the latest version from http://openlp.org</source>
     </message>
   </context>
   <context>
-    <name>Ui_EditSongDialog</name>
-    <message>
-      <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="432"/>
-      <source>&amp;Remove</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
     <name>Ui_BibleImportWizard</name>
     <message>
       <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="345"/>
       <source>Set up the Bible's license details.</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>Ui_EditVerseDialog</name>
+    <message>
+      <location filename="openlp/plugins/songs/forms/editversedialog.py" line="121"/>
+      <source>Number</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -1625,7 +1668,7 @@ You can obtain the latest version from http://openlp.org</source>
   <context>
     <name>SlideController</name>
     <message>
-      <location filename="openlp/core/ui/slidecontroller.py" line="182"/>
+      <location filename="openlp/core/ui/slidecontroller.py" line="181"/>
       <source>Move to live</source>
       <translation type="unfinished"></translation>
     </message>
@@ -1647,17 +1690,25 @@ You can obtain the latest version from http://openlp.org</source>
     </message>
   </context>
   <context>
-    <name>Ui_EditVerseDialog</name>
+    <name>ServiceManager</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/editversedialog.py" line="123"/>
-      <source>Verse</source>
+      <location filename="openlp/core/ui/servicemanager.py" line="480"/>
+      <source>Save Service</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>Ui_SongUsageDetailDialog</name>
+    <message>
+      <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="89"/>
+      <source>Select Date Range</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="361"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="369"/>
       <source>Save the current service to disk</source>
       <translation type="unfinished"></translation>
     </message>
@@ -1665,16 +1716,13 @@ You can obtain the latest version from http://openlp.org</source>
   <context>
     <name>BibleMediaItem</name>
     <message>
-      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="289"/>
+      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="290"/>
       <source>Chapter:</source>
       <translation type="unfinished"></translation>
     </message>
-  </context>
-  <context>
-    <name>Ui_AmendThemeDialog</name>
     <message>
-      <location filename="openlp/core/ui/amendthemedialog.py" line="682"/>
-      <source>Bottom</source>
+      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="295"/>
+      <source>Search</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -1687,10 +1735,10 @@ You can obtain the latest version from http://openlp.org</source>
     </message>
   </context>
   <context>
-    <name>ImportWizardForm</name>
+    <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="191"/>
-      <source>Open Verses CSV file</source>
+      <location filename="openlp/core/ui/mainwindow.py" line="422"/>
+      <source>Add &amp;Tool...</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -1713,7 +1761,7 @@ You can obtain the latest version from http://openlp.org</source>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="338"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="346"/>
       <source>&amp;View</source>
       <translation type="unfinished"></translation>
     </message>
@@ -1751,10 +1799,10 @@ You can obtain the latest version from http://openlp.org</source>
     </message>
   </context>
   <context>
-    <name>ServiceManager</name>
+    <name>SlideController</name>
     <message>
-      <location filename="openlp/core/ui/servicemanager.py" line="207"/>
-      <source>&amp;Preview Verse</source>
+      <location filename="openlp/core/ui/slidecontroller.py" line="114"/>
+      <source>Preview</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -1783,6 +1831,14 @@ You can obtain the latest version from http://openlp.org</source>
     </message>
   </context>
   <context>
+    <name>ImportWizardForm</name>
+    <message>
+      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="130"/>
+      <source>You need to specify a file of Bible verses to import.</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
     <name>AlertsTab</name>
     <message>
       <location filename="openlp/plugins/alerts/forms/alertstab.py" line="233"/>
@@ -1801,24 +1857,16 @@ You can obtain the latest version from http://openlp.org</source>
   <context>
     <name>EditSongForm</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/editsongform.py" line="407"/>
+      <location filename="openlp/plugins/songs/forms/editsongform.py" line="409"/>
       <source>You need to enter some verses.</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>BibleMediaItem</name>
+    <name>Ui_BibleImportWizard</name>
     <message>
-      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="543"/>
-      <source>Bible not fully loaded</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
-    <name>CustomTab</name>
-    <message>
-      <location filename="openlp/plugins/custom/lib/customtab.py" line="60"/>
-      <source>Display Footer:</source>
+      <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="336"/>
+      <source>Download Options</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -1841,7 +1889,7 @@ You can obtain the latest version from http://openlp.org</source>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="336"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="344"/>
       <source>&amp;Export</source>
       <translation type="unfinished"></translation>
     </message>
@@ -1897,16 +1945,24 @@ You can obtain the latest version from http://openlp.org</source>
   <context>
     <name>EditSongForm</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/editsongform.py" line="420"/>
+      <location filename="openlp/plugins/songs/forms/editsongform.py" line="422"/>
       <source>Invalid verse entry - vX</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>BibleMediaItem</name>
+    <name>ServiceManager</name>
     <message>
-      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="352"/>
-      <source>No Book Found</source>
+      <location filename="openlp/core/ui/servicemanager.py" line="481"/>
+      <source>OpenLP Service Files (*.osz)</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>MediaManagerItem</name>
+    <message>
+      <location filename="openlp/core/lib/mediamanageritem.py" line="233"/>
+      <source>Delete the selected item</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -1929,7 +1985,7 @@ You can obtain the latest version from http://openlp.org</source>
   <context>
     <name>BibleMediaItem</name>
     <message>
-      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="300"/>
+      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="301"/>
       <source>Keep</source>
       <translation type="unfinished"></translation>
     </message>
@@ -1953,32 +2009,24 @@ You can obtain the latest version from http://openlp.org</source>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="354"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="362"/>
       <source>&amp;Open</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>PresentationMediaItem</name>
+    <name>AuthorsForm</name>
     <message>
-      <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="99"/>
-      <source>Present using:</source>
+      <location filename="openlp/plugins/songs/forms/authorsform.py" line="94"/>
+      <source>You haven't set a display name for the author, would you like me to combine the first and last names for you?</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>ServiceManager</name>
+    <name>AmendThemeForm</name>
     <message>
-      <location filename="openlp/core/ui/servicemanager.py" line="209"/>
-      <source>&amp;Live Verse</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
-    <name>Ui_EditVerseDialog</name>
-    <message>
-      <location filename="openlp/plugins/songs/forms/editversedialog.py" line="125"/>
-      <source>Pre-Chorus</source>
+      <location filename="openlp/core/ui/amendthemeform.py" line="708"/>
+      <source>Slide Height is %s rows</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -2014,6 +2062,14 @@ Testers
     </message>
   </context>
   <context>
+    <name>SongMediaItem</name>
+    <message>
+      <location filename="openlp/plugins/songs/lib/mediaitem.py" line="146"/>
+      <source>Titles</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
     <name>Ui_OpenLPExportDialog</name>
     <message>
       <location filename="openlp/plugins/songs/forms/openlpexportdialog.py" line="294"/>
@@ -2022,10 +2078,10 @@ Testers
     </message>
   </context>
   <context>
-    <name>AuthorsForm</name>
+    <name>PresentationMediaItem</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/authorsform.py" line="94"/>
-      <source>You haven't set a display name for the author, would you like me to combine the first and last names for you?</source>
+      <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="101"/>
+      <source>Present using:</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -2038,10 +2094,10 @@ Testers
     </message>
   </context>
   <context>
-    <name>AmendThemeForm</name>
+    <name>ServiceManager</name>
     <message>
-      <location filename="openlp/core/ui/amendthemeform.py" line="708"/>
-      <source>Slide Height is %s rows</source>
+      <location filename="openlp/core/ui/servicemanager.py" line="213"/>
+      <source>&amp;Live Verse</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -2056,7 +2112,7 @@ Testers
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="383"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="391"/>
       <source>Toggle Theme Manager</source>
       <translation type="unfinished"></translation>
     </message>
@@ -2166,14 +2222,17 @@ Testers
     </message>
   </context>
   <context>
-    <name>Ui_MainWindow</name>
+    <name>BiblesTab</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="376"/>
-      <source>&amp;Settings</source>
+      <location filename="openlp/plugins/bibles/lib/biblestab.py" line="152"/>
+      <source>Verse Display</source>
       <translation type="unfinished"></translation>
     </message>
+  </context>
+  <context>
+    <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="337"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="345"/>
       <source>&amp;Options</source>
       <translation type="unfinished"></translation>
     </message>
@@ -2181,7 +2240,7 @@ Testers
   <context>
     <name>BibleMediaItem</name>
     <message>
-      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="293"/>
+      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="294"/>
       <source>Results:</source>
       <translation type="unfinished"></translation>
     </message>
@@ -2195,17 +2254,17 @@ Testers
     </message>
   </context>
   <context>
-    <name>Ui_OpenSongImportDialog</name>
+    <name>ServiceManager</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/opensongimportdialog.py" line="104"/>
-      <source>OpenSong Folder:</source>
+      <location filename="openlp/core/ui/servicemanager.py" line="161"/>
+      <source>Move to &amp;top</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
     <name>SlideController</name>
     <message>
-      <location filename="openlp/core/ui/slidecontroller.py" line="170"/>
+      <location filename="openlp/core/ui/slidecontroller.py" line="169"/>
       <source>Move to last</source>
       <translation type="unfinished"></translation>
     </message>
@@ -2245,7 +2304,7 @@ Testers
   <context>
     <name>BibleMediaItem</name>
     <message>
-      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="295"/>
+      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="296"/>
       <source>Verse Search</source>
       <translation type="unfinished"></translation>
     </message>
@@ -2261,7 +2320,7 @@ Testers
   <context>
     <name>EditSongForm</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/editsongform.py" line="460"/>
+      <location filename="openlp/plugins/songs/forms/editsongform.py" line="462"/>
       <source>Save &amp;&amp; Preview</source>
       <translation type="unfinished"></translation>
     </message>
@@ -2339,18 +2398,18 @@ Testers
     </message>
   </context>
   <context>
-    <name>MediaMediaItem</name>
+    <name>SongsTab</name>
     <message>
-      <location filename="openlp/plugins/media/lib/mediaitem.py" line="63"/>
-      <source>Select Media</source>
+      <location filename="openlp/plugins/songs/lib/songstab.py" line="66"/>
+      <source>Enable search as you type:</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>PresentationMediaItem</name>
+    <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="65"/>
-      <source>Select Presentation(s)</source>
+      <location filename="openlp/core/ui/mainwindow.py" line="370"/>
+      <source>Ctrl+S</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -2371,31 +2430,23 @@ Testers
     </message>
   </context>
   <context>
-    <name>Ui_MainWindow</name>
-    <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="366"/>
-      <source>Save the current service under a new name</source>
-      <translation type="unfinished"></translation>
-    </message>
-    <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="357"/>
-      <source>Ctrl+O</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
-    <name>Ui_AmendThemeDialog</name>
-    <message>
-      <location filename="openlp/core/ui/amendthemedialog.py" line="687"/>
-      <source>Other Options</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
     <name>SongMaintenanceForm</name>
     <message>
       <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="142"/>
-      <source>Couldn't add your author!</source>
+      <source>Couldn't add your author.</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>Ui_MainWindow</name>
+    <message>
+      <location filename="openlp/core/ui/mainwindow.py" line="365"/>
+      <source>Ctrl+O</source>
+      <translation type="unfinished"></translation>
+    </message>
+    <message>
+      <location filename="openlp/core/ui/mainwindow.py" line="361"/>
+      <source>Ctrl+N</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -2424,18 +2475,15 @@ Testers
     </message>
   </context>
   <context>
-    <name>SongsPlugin</name>
+    <name>SlideController</name>
     <message>
-      <location filename="openlp/plugins/songs/songsplugin.py" line="155"/>
-      <source>&amp;Song</source>
+      <location filename="openlp/core/ui/slidecontroller.py" line="185"/>
+      <source>Edit and re-preview Song</source>
       <translation type="unfinished"></translation>
     </message>
-  </context>
-  <context>
-    <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="334"/>
-      <source>&amp;File</source>
+      <location filename="openlp/core/ui/slidecontroller.py" line="200"/>
+      <source>Delay between slides in seconds</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -2461,25 +2509,25 @@ Testers
     </message>
   </context>
   <context>
-    <name>ThemeManager</name>
+    <name>ThemesTab</name>
     <message>
-      <location filename="openlp/core/ui/thememanager.py" line="180"/>
-      <source>You are unable to delete the default theme!</source>
+      <location filename="openlp/core/ui/themestab.py" line="120"/>
+      <source>Global level</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>ThemesTab</name>
+    <name>ThemeManager</name>
     <message>
-      <location filename="openlp/core/ui/themestab.py" line="121"/>
-      <source>Use the global theme, overriding any themes associated with either the service or the songs.</source>
+      <location filename="openlp/core/ui/thememanager.py" line="180"/>
+      <source>You are unable to delete the default theme.</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
     <name>BibleMediaItem</name>
     <message>
-      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="286"/>
+      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="287"/>
       <source>Version:</source>
       <translation type="unfinished"></translation>
     </message>
@@ -2523,14 +2571,6 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
     </message>
   </context>
   <context>
-    <name>ThemeManager</name>
-    <message>
-      <location filename="openlp/core/ui/thememanager.py" line="362"/>
-      <source>File is not a valid theme!</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
     <name>Ui_BibleImportWizard</name>
     <message>
       <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="343"/>
@@ -2539,18 +2579,18 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
     </message>
   </context>
   <context>
-    <name>ServiceManager</name>
+    <name>Ui_AboutDialog</name>
     <message>
-      <location filename="openlp/core/ui/servicemanager.py" line="167"/>
-      <source>Move down</source>
+      <location filename="openlp/core/ui/aboutdialog.py" line="548"/>
+      <source>License</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>Ui_EditSongDialog</name>
+    <name>OpenSongBible</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="437"/>
-      <source>R&amp;emove</source>
+      <location filename="openlp/plugins/bibles/lib/opensong.py" line="96"/>
+      <source>Importing</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -2563,10 +2603,10 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
     </message>
   </context>
   <context>
-    <name>Ui_BibleImportWizard</name>
+    <name>Ui_customEditDialog</name>
     <message>
-      <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="328"/>
-      <source>Verse Location:</source>
+      <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="159"/>
+      <source>Save</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -2581,7 +2621,7 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
   <context>
     <name>BibleMediaItem</name>
     <message>
-      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="291"/>
+      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="292"/>
       <source>From:</source>
       <translation type="unfinished"></translation>
     </message>
@@ -2597,7 +2637,7 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
   <context>
     <name>ServiceManager</name>
     <message>
-      <location filename="openlp/core/ui/servicemanager.py" line="203"/>
+      <location filename="openlp/core/ui/servicemanager.py" line="205"/>
       <source>&amp;Notes</source>
       <translation type="unfinished"></translation>
     </message>
@@ -2605,7 +2645,7 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="368"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="376"/>
       <source>E&amp;xit</source>
       <translation type="unfinished"></translation>
     </message>
@@ -2621,7 +2661,7 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
   <context>
     <name>MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="552"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="558"/>
       <source>OpenLP Version Updated</source>
       <translation type="unfinished"></translation>
     </message>
@@ -2631,11 +2671,6 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
     <message>
       <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="160"/>
       <source>Replace edited slide</source>
-      <translation type="unfinished"></translation>
-    </message>
-    <message>
-      <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="154"/>
-      <source>Add new slide at bottom</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -2658,8 +2693,16 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="343"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="351"/>
       <source>&amp;Help</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>Ui_EditVerseDialog</name>
+    <message>
+      <location filename="openlp/plugins/songs/forms/editversedialog.py" line="122"/>
+      <source>Bridge</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -2680,15 +2723,10 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
     </message>
   </context>
   <context>
-    <name>TestMediaManager</name>
+    <name>Ui_EditVerseDialog</name>
     <message>
-      <location filename="openlp/core/test/test_mediamanageritem.py" line="74"/>
-      <source>Item2</source>
-      <translation type="unfinished"></translation>
-    </message>
-    <message>
-      <location filename="openlp/core/test/test_mediamanageritem.py" line="72"/>
-      <source>Item1</source>
+      <location filename="openlp/plugins/songs/forms/editversedialog.py" line="125"/>
+      <source>Pre-Chorus</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -2711,8 +2749,16 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="389"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="397"/>
       <source>Toggle Service Manager</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>Ui_EditSongDialog</name>
+    <message>
+      <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="426"/>
+      <source>Delete</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -2751,7 +2797,7 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="405"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="413"/>
       <source>Ctrl+F1</source>
       <translation type="unfinished"></translation>
     </message>
@@ -2760,7 +2806,15 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
     <name>SongMaintenanceForm</name>
     <message>
       <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="200"/>
-      <source>Couldn't save your topic!</source>
+      <source>Couldn't save your topic.</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>Ui_MainWindow</name>
+    <message>
+      <location filename="openlp/core/ui/mainwindow.py" line="374"/>
+      <source>Save the current service under a new name</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -2797,14 +2851,6 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
     </message>
   </context>
   <context>
-    <name>BiblesTab</name>
-    <message>
-      <location filename="openlp/plugins/bibles/lib/biblestab.py" line="48"/>
-      <source>Bibles</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
     <name>SongUsagePlugin</name>
     <message>
       <location filename="openlp/plugins/songusage/songusageplugin.py" line="72"/>
@@ -2823,7 +2869,7 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="407"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="415"/>
       <source>&amp;Web Site</source>
       <translation type="unfinished"></translation>
     </message>
@@ -2839,17 +2885,17 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="339"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="347"/>
       <source>M&amp;ode</source>
       <translation type="unfinished"></translation>
     </message>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="410"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="418"/>
       <source>Translate the interface to your language</source>
       <translation type="unfinished"></translation>
     </message>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="347"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="355"/>
       <source>Service Manager</source>
       <translation type="unfinished"></translation>
     </message>
@@ -2881,7 +2927,7 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="373"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="381"/>
       <source>&amp;Theme</source>
       <translation type="unfinished"></translation>
     </message>
@@ -2897,31 +2943,20 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="374"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="382"/>
       <source>&amp;Language</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
-    <name>SlideController</name>
-    <message>
-      <location filename="openlp/core/ui/slidecontroller.py" line="450"/>
-      <source>Verse</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
-    <name>ImportWizardForm</name>
-    <message>
-      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="138"/>
-      <source>You need to specify an OpenSong Bible file to import!</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
     <name>ServiceManager</name>
     <message>
-      <location filename="openlp/core/ui/servicemanager.py" line="392"/>
+      <location filename="openlp/core/ui/servicemanager.py" line="171"/>
+      <source>Move to end</source>
+      <translation type="unfinished"></translation>
+    </message>
+    <message>
+      <location filename="openlp/core/ui/servicemanager.py" line="400"/>
       <source>Your service is unsaved, do you want to save those changes before creating a new one ?</source>
       <translation type="unfinished"></translation>
     </message>
@@ -2945,21 +2980,21 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
   <context>
     <name>MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="626"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="634"/>
       <source>Save Changes to Service?</source>
       <translation type="unfinished"></translation>
     </message>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="627"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="635"/>
       <source>Your service has changed, do you want to save those changes?</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>EditSongForm</name>
+    <name>ServiceManager</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/editsongform.py" line="428"/>
-      <source>Invalid verse entry - values must be Numeric, I,B,C,T,P,E,O</source>
+      <location filename="openlp/core/ui/servicemanager.py" line="207"/>
+      <source>&amp;Delete From Service</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -2974,8 +3009,16 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="402"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="410"/>
       <source>&amp;About</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>ImportWizardForm</name>
+    <message>
+      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="150"/>
+      <source>You need to specify a version name for your Bible.</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -2984,14 +3027,6 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
     <message>
       <location filename="openlp/plugins/bibles/lib/biblestab.py" line="153"/>
       <source>Only show new chapter numbers</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
-    <name>ImportWizardForm</name>
-    <message>
-      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="149"/>
-      <source>You need to specify a version name for your Bible!</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -3012,26 +3047,10 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
     </message>
   </context>
   <context>
-    <name>RemotesPlugin</name>
+    <name>ThemesTab</name>
     <message>
-      <location filename="openlp/plugins/remotes/remoteplugin.py" line="81"/>
-      <source>&lt;b&gt;Remote Plugin&lt;/b&gt;&lt;br&gt;This plugin provides the ability to send messages to a running version of openlp on a different computer.&lt;br&gt;The Primary use for this would be to send alerts from a creche</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
-    <name>SongMaintenanceForm</name>
-    <message>
-      <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="242"/>
-      <source>This topic can't be deleted, it is currently assigned to at least one song!</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
-    <name>BibleMediaItem</name>
-    <message>
-      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="283"/>
-      <source>Find:</source>
+      <location filename="openlp/core/ui/themestab.py" line="117"/>
+      <source>Use the theme from the service, overriding any of the individual songs' themes. If the service doesn't have a theme, then use the global theme.</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -3060,14 +3079,6 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
     </message>
   </context>
   <context>
-    <name>ImageMediaItem</name>
-    <message>
-      <location filename="openlp/plugins/images/lib/mediaitem.py" line="104"/>
-      <source>Allow background of live slide to be overridden</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
     <name>MediaManagerItem</name>
     <message>
       <location filename="openlp/core/lib/mediamanageritem.py" line="250"/>
@@ -3084,14 +3095,6 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
     </message>
   </context>
   <context>
-    <name>BibleMediaItem</name>
-    <message>
-      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="288"/>
-      <source>Book:</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
     <name>Ui_AmendThemeDialog</name>
     <message>
       <location filename="openlp/core/ui/amendthemedialog.py" line="643"/>
@@ -3100,10 +3103,10 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
     </message>
   </context>
   <context>
-    <name>Ui_OpenLPExportDialog</name>
+    <name>Ui_OpenLPImportDialog</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/openlpexportdialog.py" line="289"/>
-      <source>Select openlp.org export filename:</source>
+      <location filename="openlp/plugins/songs/forms/openlpimportdialog.py" line="289"/>
+      <source>Select openlp.org songfile to import:</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -3118,8 +3121,8 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
   <context>
     <name>BiblesTab</name>
     <message>
-      <location filename="openlp/plugins/bibles/lib/biblestab.py" line="152"/>
-      <source>Verse Display</source>
+      <location filename="openlp/plugins/bibles/lib/biblestab.py" line="154"/>
+      <source>Layout Style:</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -3134,7 +3137,7 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
   <context>
     <name>SlideController</name>
     <message>
-      <location filename="openlp/core/ui/slidecontroller.py" line="166"/>
+      <location filename="openlp/core/ui/slidecontroller.py" line="165"/>
       <source>Move to next</source>
       <translation type="unfinished"></translation>
     </message>
@@ -3142,7 +3145,7 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="398"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="406"/>
       <source>&amp;Plugin List</source>
       <translation type="unfinished"></translation>
     </message>
@@ -3174,8 +3177,24 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
   <context>
     <name>ImportWizardForm</name>
     <message>
-      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="183"/>
+      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="184"/>
       <source>Open OSIS file</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>Ui_AmendThemeDialog</name>
+    <message>
+      <location filename="openlp/core/ui/amendthemedialog.py" line="613"/>
+      <source>Circular</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>PresentationMediaItem</name>
+    <message>
+      <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="67"/>
+      <source>Automatic</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -3183,12 +3202,7 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
     <name>SongMaintenanceForm</name>
     <message>
       <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="217"/>
-      <source>Couldn't save your book!</source>
-      <translation type="unfinished"></translation>
-    </message>
-    <message>
-      <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="153"/>
-      <source>Couldn't add your topic!</source>
+      <source>Couldn't save your book.</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -3201,26 +3215,10 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
     </message>
   </context>
   <context>
-    <name>Ui_MainWindow</name>
+    <name>SongMaintenanceForm</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="414"/>
-      <source>&amp;Add Tool...</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
-    <name>Ui_AmendThemeDialog</name>
-    <message>
-      <location filename="openlp/core/ui/amendthemedialog.py" line="608"/>
-      <source>&lt;Color2&gt;</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
-    <name>ServiceManager</name>
-    <message>
-      <location filename="openlp/core/ui/servicemanager.py" line="164"/>
-      <source>Move up</source>
+      <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="240"/>
+      <source>Delete Topic</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -3273,14 +3271,6 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
     </message>
   </context>
   <context>
-    <name>ServiceManager</name>
-    <message>
-      <location filename="openlp/core/ui/servicemanager.py" line="170"/>
-      <source>Move to bottom</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
     <name>Ui_PluginViewDialog</name>
     <message>
       <location filename="openlp/core/ui/plugindialog.py" line="106"/>
@@ -3299,7 +3289,7 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
   <context>
     <name>ImportWizardForm</name>
     <message>
-      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="167"/>
+      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="168"/>
       <source>This Bible already exists! Please import a different Bible or first delete the existing one.</source>
       <translation type="unfinished"></translation>
     </message>
@@ -3307,24 +3297,16 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="408"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="416"/>
       <source>&amp;Translate</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>AlertEditForm</name>
+    <name>BiblesTab</name>
     <message>
-      <location filename="openlp/plugins/alerts/forms/alerteditform.py" line="88"/>
-      <source>Please Save or Clear seletced item</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
-    <name>Ui_MainWindow</name>
-    <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="364"/>
-      <source>Save Service As</source>
+      <location filename="openlp/plugins/bibles/lib/biblestab.py" line="48"/>
+      <source>Bibles</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -3474,14 +3456,6 @@ Changes don't affect verses already in the service</source>
     </message>
   </context>
   <context>
-    <name>Ui_BibleImportWizard</name>
-    <message>
-      <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="313"/>
-      <source>Welcome to the Bible Import Wizard</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
     <name>Ui_AmendThemeDialog</name>
     <message>
       <location filename="openlp/core/ui/amendthemedialog.py" line="673"/>
@@ -3516,7 +3490,7 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="351"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="359"/>
       <source>New Service</source>
       <translation type="unfinished"></translation>
     </message>
@@ -3524,7 +3498,7 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>SlideController</name>
     <message>
-      <location filename="openlp/core/ui/slidecontroller.py" line="160"/>
+      <location filename="openlp/core/ui/slidecontroller.py" line="159"/>
       <source>Move to first</source>
       <translation type="unfinished"></translation>
     </message>
@@ -3532,7 +3506,7 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="406"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="414"/>
       <source>&amp;Online Help</source>
       <translation type="unfinished"></translation>
     </message>
@@ -3540,7 +3514,7 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>SlideController</name>
     <message>
-      <location filename="openlp/core/ui/slidecontroller.py" line="175"/>
+      <location filename="openlp/core/ui/slidecontroller.py" line="174"/>
       <source>Blank Screen</source>
       <translation type="unfinished"></translation>
     </message>
@@ -3548,26 +3522,26 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="359"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="367"/>
       <source>Save Service</source>
       <translation type="unfinished"></translation>
     </message>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="363"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="371"/>
       <source>Save &amp;As...</source>
       <translation type="unfinished"></translation>
     </message>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="380"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="388"/>
       <source>Toggle the visibility of the Media Manager</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>MediaManagerItem</name>
+    <name>BibleMediaItem</name>
     <message>
-      <location filename="openlp/core/lib/mediamanageritem.py" line="233"/>
-      <source>Delete the selected item</source>
+      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="353"/>
+      <source>No Book Found</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -3590,7 +3564,7 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>BibleMediaItem</name>
     <message>
-      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="225"/>
+      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="226"/>
       <source>Advanced</source>
       <translation type="unfinished"></translation>
     </message>
@@ -3606,38 +3580,38 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="397"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="405"/>
       <source>F11</source>
       <translation type="unfinished"></translation>
     </message>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="386"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="394"/>
       <source>F10</source>
       <translation type="unfinished"></translation>
     </message>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="367"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="375"/>
       <source>F12</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>Ui_BibleImportWizard</name>
+    <name>CustomPlugin</name>
     <message>
-      <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="320"/>
-      <source>Select the import format, and where to import from.</source>
+      <location filename="openlp/plugins/custom/customplugin.py" line="70"/>
+      <source>&lt;b&gt;Custom Plugin&lt;/b&gt;&lt;br&gt;This plugin allows slides to be displayed on the screen in the same way songs are. This plugin provides greater freedom over the songs plugin.&lt;br&gt;</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="400"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="408"/>
       <source>Alt+F7</source>
       <translation type="unfinished"></translation>
     </message>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="416"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="424"/>
       <source>Add an application to the list of tools</source>
       <translation type="unfinished"></translation>
     </message>
@@ -3647,6 +3621,14 @@ Changes don't affect verses already in the service</source>
     <message>
       <location filename="openlp/plugins/media/mediaplugin.py" line="78"/>
       <source>&lt;b&gt;Media Plugin&lt;/b&gt;&lt;br&gt;This plugin allows the playing of audio and video media</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>ServiceManager</name>
+    <message>
+      <location filename="openlp/core/ui/servicemanager.py" line="167"/>
+      <source>Move &amp;down</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -3669,7 +3651,7 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="349"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="357"/>
       <source>Theme Manager</source>
       <translation type="unfinished"></translation>
     </message>
@@ -3709,7 +3691,7 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="385"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="393"/>
       <source>Toggle the visibility of the Theme Manager</source>
       <translation type="unfinished"></translation>
     </message>
@@ -3739,10 +3721,10 @@ Changes don't affect verses already in the service</source>
     </message>
   </context>
   <context>
-    <name>ServiceManager</name>
+    <name>SlideController</name>
     <message>
-      <location filename="openlp/core/ui/servicemanager.py" line="171"/>
-      <source>Move to end</source>
+      <location filename="openlp/core/ui/slidecontroller.py" line="466"/>
+      <source>Verse</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -3757,7 +3739,7 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="417"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="425"/>
       <source>&amp;Preview Pane</source>
       <translation type="unfinished"></translation>
     </message>
@@ -3792,15 +3774,12 @@ Changes don't affect verses already in the service</source>
     </message>
   </context>
   <context>
-    <name>Ui_BibleImportWizard</name>
+    <name>Ui_AmendThemeDialog</name>
     <message>
-      <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="339"/>
-      <source>Password:</source>
+      <location filename="openlp/core/ui/amendthemedialog.py" line="688"/>
+      <source>Preview</source>
       <translation type="unfinished"></translation>
     </message>
-  </context>
-  <context>
-    <name>Ui_AmendThemeDialog</name>
     <message>
       <location filename="openlp/core/ui/amendthemedialog.py" line="665"/>
       <source>Outline Size:</source>
@@ -3832,18 +3811,18 @@ Changes don't affect verses already in the service</source>
     </message>
   </context>
   <context>
-    <name>Ui_MainWindow</name>
+    <name>Ui_AboutDialog</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="382"/>
-      <source>&amp;Theme Manager</source>
+      <location filename="openlp/core/ui/aboutdialog.py" line="155"/>
+      <source>Credits</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>Ui_OpenLPImportDialog</name>
+    <name>BibleMediaItem</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/openlpimportdialog.py" line="289"/>
-      <source>Select openlp.org songfile to import:</source>
+      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="293"/>
+      <source>To:</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -3852,14 +3831,6 @@ Changes don't affect verses already in the service</source>
     <message>
       <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="438"/>
       <source>Song Book</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
-    <name>alertsPlugin</name>
-    <message>
-      <location filename="openlp/plugins/alerts/alertsplugin.py" line="69"/>
-      <source>F7</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -3888,14 +3859,6 @@ Changes don't affect verses already in the service</source>
     </message>
   </context>
   <context>
-    <name>PresentationPlugin</name>
-    <message>
-      <location filename="openlp/plugins/presentations/presentationplugin.py" line="112"/>
-      <source>&lt;b&gt;Presentation Plugin&lt;/b&gt; &lt;br&gt; Delivers the ability to show presentations using a number of different programs.  The choice of available presentation programs is available to the user in a drop down box.</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
     <name>ImageMediaItem</name>
     <message>
       <location filename="openlp/plugins/images/lib/mediaitem.py" line="59"/>
@@ -3904,10 +3867,18 @@ Changes don't affect verses already in the service</source>
     </message>
   </context>
   <context>
-    <name>SongsTab</name>
+    <name>BibleMediaItem</name>
     <message>
-      <location filename="openlp/plugins/songs/lib/songstab.py" line="66"/>
-      <source>Enable search as you type:</source>
+      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="300"/>
+      <source>Clear</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>Ui_MainWindow</name>
+    <message>
+      <location filename="openlp/core/ui/mainwindow.py" line="372"/>
+      <source>Save Service As</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -3968,10 +3939,10 @@ Changes don't affect verses already in the service</source>
     </message>
   </context>
   <context>
-    <name>ThemesTab</name>
+    <name>RemotesPlugin</name>
     <message>
-      <location filename="openlp/core/ui/themestab.py" line="117"/>
-      <source>Use the theme from the service, overriding any of the individual songs' themes. If the service doesn't have a theme, then use the global theme.</source>
+      <location filename="openlp/plugins/remotes/remoteplugin.py" line="81"/>
+      <source>&lt;b&gt;Remote Plugin&lt;/b&gt;&lt;br&gt;This plugin provides the ability to send messages to a running version of openlp on a different computer.&lt;br&gt;The Primary use for this would be to send alerts from a creche</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -3986,21 +3957,18 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>BibleMediaItem</name>
     <message>
-      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="290"/>
+      <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="291"/>
       <source>Verse:</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>Ui_BibleImportWizard</name>
+    <name>Ui_OpenLPExportDialog</name>
     <message>
-      <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="323"/>
-      <source>CSV</source>
+      <location filename="openlp/plugins/songs/forms/openlpexportdialog.py" line="288"/>
+      <source>openlp.org Song Exporter</source>
       <translation type="unfinished"></translation>
     </message>
-  </context>
-  <context>
-    <name>Ui_OpenLPExportDialog</name>
     <message>
       <location filename="openlp/plugins/songs/forms/openlpexportdialog.py" line="297"/>
       <source>Song Export List</source>
@@ -4042,7 +4010,7 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="391"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="399"/>
       <source>Toggle the visibility of the Service Manager</source>
       <translation type="unfinished"></translation>
     </message>
@@ -4050,8 +4018,24 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>PresentationMediaItem</name>
     <message>
-      <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="125"/>
+      <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="127"/>
       <source>A presentation with that filename already exists.</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>ImageMediaItem</name>
+    <message>
+      <location filename="openlp/plugins/images/lib/mediaitem.py" line="104"/>
+      <source>Allow the background of live slide to be overridden</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>SongUsageDeleteForm</name>
+    <message>
+      <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="45"/>
+      <source>Are you sure you want to delete selected Song Usage data?</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -4066,7 +4050,7 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>ImportWizardForm</name>
     <message>
-      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="120"/>
+      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="121"/>
       <source>Invalid Books File</source>
       <translation type="unfinished"></translation>
     </message>
@@ -4104,6 +4088,14 @@ Changes don't affect verses already in the service</source>
     </message>
   </context>
   <context>
+    <name>ImportWizardForm</name>
+    <message>
+      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="192"/>
+      <source>Open Verses CSV file</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
     <name>Ui_customEditDialog</name>
     <message>
       <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="166"/>
@@ -4114,7 +4106,7 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="404"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="412"/>
       <source>More information about OpenLP</source>
       <translation type="unfinished"></translation>
     </message>
@@ -4138,12 +4130,12 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="377"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="385"/>
       <source>&amp;Media Manager</source>
       <translation type="unfinished"></translation>
     </message>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="342"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="350"/>
       <source>&amp;Tools</source>
       <translation type="unfinished"></translation>
     </message>
@@ -4178,18 +4170,18 @@ Changes don't affect verses already in the service</source>
     </message>
   </context>
   <context>
-    <name>AlertsTab</name>
+    <name>SongMaintenanceForm</name>
     <message>
-      <location filename="openlp/plugins/alerts/forms/alertstab.py" line="232"/>
-      <source>s</source>
+      <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="242"/>
+      <source>This topic can't be deleted, it is currently assigned to at least one song.</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>ImagePlugin</name>
+    <name>AlertsTab</name>
     <message>
-      <location filename="openlp/plugins/images/imageplugin.py" line="59"/>
-      <source>&lt;b&gt;Image Plugin&lt;/b&gt;&lt;br&gt;Allows images of all types to be displayed.  If a number of images are selected together and presented on the live controller it is possible to turn them into a timed loop.&lt;br&lt;br&gt;From the plugin if the &lt;i&gt;Override background&lt;/i&gt; is chosen and an image is selected any somgs which are rendered will use the selected image from the background instead of the one provied by the theme.&lt;br&gt;</source>
+      <location filename="openlp/plugins/alerts/forms/alertstab.py" line="232"/>
+      <source>s</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -4226,10 +4218,10 @@ Changes don't affect verses already in the service</source>
     </message>
   </context>
   <context>
-    <name>Ui_AmendThemeDialog</name>
+    <name>Ui_BibleImportWizard</name>
     <message>
-      <location filename="openlp/core/ui/amendthemedialog.py" line="640"/>
-      <source>Font Main</source>
+      <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="320"/>
+      <source>Select the import format, and where to import from.</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -4252,7 +4244,7 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="378"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="386"/>
       <source>Toggle Media Manager</source>
       <translation type="unfinished"></translation>
     </message>
@@ -4282,10 +4274,10 @@ Changes don't affect verses already in the service</source>
     </message>
   </context>
   <context>
-    <name>ImportWizardForm</name>
+    <name>ThemeManager</name>
     <message>
-      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="112"/>
-      <source>You need to specify a file to import your Bible from!</source>
+      <location filename="openlp/core/ui/thememanager.py" line="219"/>
+      <source>You have not selected a theme.</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -4298,10 +4290,10 @@ Changes don't affect verses already in the service</source>
     </message>
   </context>
   <context>
-    <name>ThemeManager</name>
+    <name>ImportWizardForm</name>
     <message>
-      <location filename="openlp/core/ui/thememanager.py" line="219"/>
-      <source>You have not selected a theme!</source>
+      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="113"/>
+      <source>You need to specify a file to import your Bible from.</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -4324,7 +4316,7 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="352"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="360"/>
       <source>Create a new Service</source>
       <translation type="unfinished"></translation>
     </message>
@@ -4338,10 +4330,10 @@ Changes don't affect verses already in the service</source>
     </message>
   </context>
   <context>
-    <name>SlideController</name>
+    <name>ServiceManager</name>
     <message>
-      <location filename="openlp/core/ui/slidecontroller.py" line="116"/>
-      <source>Preview</source>
+      <location filename="openlp/core/ui/servicemanager.py" line="211"/>
+      <source>&amp;Preview Verse</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -4352,6 +4344,17 @@ Changes don't affect verses already in the service</source>
       <source>TextLabel</source>
       <translation type="unfinished"></translation>
     </message>
+  </context>
+  <context>
+    <name>AlertsTab</name>
+    <message>
+      <location filename="openlp/plugins/alerts/forms/alertstab.py" line="229"/>
+      <source>Font Size:</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>Ui_PluginViewDialog</name>
     <message>
       <location filename="openlp/core/ui/plugindialog.py" line="105"/>
       <source>About:</source>
@@ -4409,18 +4412,18 @@ Changes don't affect verses already in the service</source>
     </message>
   </context>
   <context>
-    <name>Ui_SongUsageDetailDialog</name>
-    <message>
-      <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="88"/>
-      <source>Audit Detail Extraction</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
     <name>Ui_OpenLPExportDialog</name>
     <message>
       <location filename="openlp/plugins/songs/forms/openlpexportdialog.py" line="303"/>
       <source>Ready to export</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>ImageMediaItem</name>
+    <message>
+      <location filename="openlp/plugins/images/lib/mediaitem.py" line="64"/>
+      <source>Images (*.jpg *.jpeg *.gif *.png *.bmp);; All files (*)</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -4459,7 +4462,7 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="584"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="590"/>
       <source>OpenLP Main Display Blanked</source>
       <translation type="unfinished"></translation>
     </message>
@@ -4473,33 +4476,30 @@ Changes don't affect verses already in the service</source>
     </message>
   </context>
   <context>
-    <name>OpenSongBible</name>
+    <name>ServiceManager</name>
     <message>
-      <location filename="openlp/plugins/bibles/lib/opensong.py" line="96"/>
-      <source>Importing</source>
+      <location filename="openlp/core/ui/servicemanager.py" line="164"/>
+      <source>Move &amp;up</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>Ui_EditSongDialog</name>
+    <name>ImportWizardForm</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="426"/>
-      <source>Delete</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
-    <name>Ui_MainWindow</name>
-    <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="362"/>
-      <source>Ctrl+S</source>
+      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="139"/>
+      <source>You need to specify an OpenSong Bible file to import.</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
     <name>PresentationMediaItem</name>
     <message>
-      <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="125"/>
+      <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="66"/>
+      <source>Select Presentation(s)</source>
+      <translation type="unfinished"></translation>
+    </message>
+    <message>
+      <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="127"/>
       <source>File exists</source>
       <translation type="unfinished"></translation>
     </message>
@@ -4515,13 +4515,21 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>SlideController</name>
     <message>
-      <location filename="openlp/core/ui/slidecontroller.py" line="194"/>
+      <location filename="openlp/core/ui/slidecontroller.py" line="193"/>
       <source>Stop continuous loop</source>
       <translation type="unfinished"></translation>
     </message>
     <message>
-      <location filename="openlp/core/ui/slidecontroller.py" line="200"/>
+      <location filename="openlp/core/ui/slidecontroller.py" line="199"/>
       <source>s</source>
+      <translation type="unfinished"></translation>
+    </message>
+  </context>
+  <context>
+    <name>ImagePlugin</name>
+    <message>
+      <location filename="openlp/plugins/images/imageplugin.py" line="59"/>
+      <source>&lt;b&gt;Image Plugin&lt;/b&gt;&lt;br&gt;Allows images of all types to be displayed.  If a number of images are selected together and presented on the live controller it is possible to turn them into a timed loop.&lt;br&lt;br&gt;From the plugin if the &lt;i&gt;Override background&lt;/i&gt; is chosen and an image is selected any songs which are rendered will use the selected image from the background instead of the one provied by the theme.&lt;br&gt;</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -4550,17 +4558,9 @@ Changes don't affect verses already in the service</source>
     </message>
   </context>
   <context>
-    <name>BiblesTab</name>
-    <message>
-      <location filename="openlp/plugins/bibles/lib/biblestab.py" line="154"/>
-      <source>Layout Style:</source>
-      <translation type="unfinished"></translation>
-    </message>
-  </context>
-  <context>
     <name>ImportWizardForm</name>
     <message>
-      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="128"/>
+      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="129"/>
       <source>Invalid Verse File</source>
       <translation type="unfinished"></translation>
     </message>
@@ -4568,7 +4568,7 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>EditSongForm</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/editsongform.py" line="478"/>
+      <location filename="openlp/plugins/songs/forms/editsongform.py" line="480"/>
       <source>Error</source>
       <translation type="unfinished"></translation>
     </message>
@@ -4614,10 +4614,10 @@ Changes don't affect verses already in the service</source>
     </message>
   </context>
   <context>
-    <name>Ui_EditVerseDialog</name>
+    <name>Ui_BibleImportWizard</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/editversedialog.py" line="122"/>
-      <source>Bridge</source>
+      <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="313"/>
+      <source>Welcome to the Bible Import Wizard</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -4630,18 +4630,18 @@ Changes don't affect verses already in the service</source>
     </message>
   </context>
   <context>
-    <name>Ui_AmendThemeDialog</name>
+    <name>Ui_BibleImportWizard</name>
     <message>
-      <location filename="openlp/core/ui/amendthemedialog.py" line="688"/>
-      <source>Preview</source>
+      <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="339"/>
+      <source>Password:</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>Ui_AboutDialog</name>
+    <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/aboutdialog.py" line="155"/>
-      <source>Credits</source>
+      <location filename="openlp/core/ui/mainwindow.py" line="390"/>
+      <source>&amp;Theme Manager</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -4670,10 +4670,10 @@ Changes don't affect verses already in the service</source>
     </message>
   </context>
   <context>
-    <name>Ui_EditVerseDialog</name>
+    <name>MediaMediaItem</name>
     <message>
-      <location filename="openlp/plugins/songs/forms/editversedialog.py" line="128"/>
-      <source>Ending</source>
+      <location filename="openlp/plugins/media/lib/mediaitem.py" line="63"/>
+      <source>Select Media</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -4688,7 +4688,7 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>ServiceManager</name>
     <message>
-      <location filename="openlp/core/ui/servicemanager.py" line="201"/>
+      <location filename="openlp/core/ui/servicemanager.py" line="203"/>
       <source>&amp;Edit Item</source>
       <translation type="unfinished"></translation>
     </message>
@@ -4704,12 +4704,12 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="358"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="366"/>
       <source>&amp;Save</source>
       <translation type="unfinished"></translation>
     </message>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="330"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="338"/>
       <source>OpenLP 2.0</source>
       <translation type="unfinished"></translation>
     </message>
@@ -4758,6 +4758,11 @@ Changes don't affect verses already in the service</source>
       <source>Show Outline:</source>
       <translation type="unfinished"></translation>
     </message>
+    <message>
+      <location filename="openlp/core/ui/amendthemedialog.py" line="605"/>
+      <source>Gradient</source>
+      <translation type="unfinished"></translation>
+    </message>
   </context>
   <context>
     <name>SongBookForm</name>
@@ -4770,7 +4775,7 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>ImportWizardForm</name>
     <message>
-      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="195"/>
+      <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="196"/>
       <source>Open OpenSong Bible</source>
       <translation type="unfinished"></translation>
     </message>
@@ -4778,7 +4783,7 @@ Changes don't affect verses already in the service</source>
   <context>
     <name>Ui_MainWindow</name>
     <message>
-      <location filename="openlp/core/ui/mainwindow.py" line="375"/>
+      <location filename="openlp/core/ui/mainwindow.py" line="383"/>
       <source>Look &amp;&amp; &amp;Feel</source>
       <translation type="unfinished"></translation>
     </message>
@@ -4808,18 +4813,18 @@ Changes don't affect verses already in the service</source>
     </message>
   </context>
   <context>
-    <name>Ui_AmendThemeDialog</name>
+    <name>ServiceManager</name>
     <message>
-      <location filename="openlp/core/ui/amendthemedialog.py" line="605"/>
-      <source>Gradient</source>
+      <location filename="openlp/core/ui/servicemanager.py" line="170"/>
+      <source>Move to &amp;bottom</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
   <context>
-    <name>AlertsTab</name>
+    <name>Ui_BibleImportWizard</name>
     <message>
-      <location filename="openlp/plugins/alerts/forms/alertstab.py" line="229"/>
-      <source>Font Size:</source>
+      <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="327"/>
+      <source>Books Location:</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
@@ -4832,10 +4837,10 @@ Changes don't affect verses already in the service</source>
     </message>
   </context>
   <context>
-    <name>Ui_AmendThemeDialog</name>
+    <name>GeneralTab</name>
     <message>
-      <location filename="openlp/core/ui/amendthemedialog.py" line="613"/>
-      <source>Circular</source>
+      <location filename="openlp/core/ui/generaltab.py" line="166"/>
+      <source>SongSelect Password:</source>
       <translation type="unfinished"></translation>
     </message>
   </context>
