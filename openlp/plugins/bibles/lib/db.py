@@ -106,9 +106,7 @@ class BibleDB(QtCore.QObject):
     def clean_filename(self, old_filename):
         if not isinstance(old_filename,  unicode):
             old_filename = unicode(old_filename, u'utf-8')
-        for char in [u'\\', u'/', u':', u'*', u'?', u'"', u'<', u'>', u'|', u' ']:
-            old_filename = old_filename.replace(char, u'_')
-        old_filename = re.sub(r'[_]+', u'_', old_filename).strip(u'_')
+        old_filename = re.sub(r'[^\w]+', u'_', old_filename).strip(u'_')
         return old_filename + u'.sqlite'
 
     def register(self, wizard):
@@ -266,8 +264,6 @@ class BibleDB(QtCore.QObject):
         count = self.session.query(Verse.chapter).join(Book)\
             .filter(Book.name==book)\
             .distinct().count()
-        #verse = self.session.query(Verse).join(Book).filter(
-        #    Book.name == bookname).order_by(Verse.chapter.desc()).first()
         if not count:
             return 0
         else:
@@ -279,9 +275,6 @@ class BibleDB(QtCore.QObject):
             .filter(Book.name==book)\
             .filter(Verse.chapter==chapter)\
             .count()
-        #verse = self.session.query(Verse).join(Book).filter(
-        #    Book.name == bookname).filter(
-        #    Verse.chapter == chapter).order_by(Verse.verse.desc()).first()
         if not count:
             return 0
         else:

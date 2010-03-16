@@ -125,8 +125,6 @@ class BibleManager(object):
         for filename in files:
             bible = BibleDB(self.parent, path=self.path, file=filename,
                             config=self.config)
-            #self.db_cache[name] = BibleDB(self.parent, path=self.path,
-            #    name=name, config=self.config)
             name = bible.get_name()
             log.debug(u'Bible Name: "%s"', name)
             self.db_cache[name] = bible
@@ -140,7 +138,6 @@ class BibleManager(object):
                     download_source=source.value, download_name=download_name)
                 if meta_proxy:
                     web_bible.set_proxy_server(meta_proxy.value)
-                #del self.db_cache[name]
                 self.db_cache[name] = web_bible
         log.debug(u'Bibles reloaded')
 
