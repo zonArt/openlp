@@ -65,6 +65,12 @@ class BibleMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlpreloadbibles'), self.reloadBibles)
 
+    def _decodeQtObject(self, listobj, key):
+        obj = listobj[QtCore.QString(key)]
+        if isinstance(obj, QtCore.QVariant):
+            obj = obj.toPyObject()
+        return unicode(obj)
+
     def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8('Bible')
 
@@ -452,15 +458,17 @@ class BibleMediaItem(MediaManagerItem):
         # Let's loop through the main lot, and assemble our verses
         for item in items:
             bitem = self.ListView.item(item.row())
-            reference = bitem.data(QtCore.Qt.UserRole).toPyObject()
-            bible = unicode(reference[QtCore.QString('bible')].toPyObject())
-            book = unicode(reference[QtCore.QString('book')].toPyObject())
-            chapter = unicode(reference[QtCore.QString('chapter')].toPyObject())
-            verse = unicode(reference[QtCore.QString('verse')].toPyObject())
-            text = unicode(reference[QtCore.QString('text')].toPyObject())
-            version = unicode(reference[QtCore.QString('version')].toPyObject())
-            copyright = unicode(reference[QtCore.QString('copyright')].toPyObject())
-            permission = unicode(reference[QtCore.QString('permission')].toPyObject())
+            reference = bitem.data(QtCore.Qt.UserRole)
+            if isinstance(reference, QtCore.QVariant):
+                reference = reference.toPyObject()
+            bible = self._decodeQtObject(reference, 'bible')
+            book = self._decodeQtObject(reference, 'book')
+            chapter = self._decodeQtObject(reference, 'chapter')
+            verse = self._decodeQtObject(reference, 'verse')
+            text = self._decodeQtObject(reference, 'text')
+            version = self._decodeQtObject(reference, 'version')
+            copyright = self._decodeQtObject(reference, 'copyright')
+            permission = self._decodeQtObject(reference, 'permission')
             if self.parent.settings_tab.display_style == 1:
                 verse_text = self.formatVerse(old_chapter, chapter, verse, u'(u', u')')
             elif  self.parent.settings_tab.display_style == 2:

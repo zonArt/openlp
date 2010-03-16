@@ -26,6 +26,7 @@
 import os
 import logging
 import chardet
+import re
 
 from sqlalchemy import or_
 from PyQt4 import QtCore
@@ -63,16 +64,22 @@ class BibleDB(QtCore.QObject):
         QtCore.QObject.__init__(self)
         if u'path' not in kwargs:
             raise KeyError(u'Missing keyword argument "path".')
-        if u'name' not in kwargs:
-            raise KeyError(u'Missing keyword argument "name".')
         if u'config' not in kwargs:
             raise KeyError(u'Missing keyword argument "config".')
+        if u'name' not in kwargs and u'file' not in kwargs:
+            raise KeyError(u'Missing keyword argument "name" or "file".')
         self.stop_import_flag = False
-        self.name = kwargs[u'name']
         self.config = kwargs[u'config']
-        self.db_file = os.path.join(kwargs[u'path'],
-            u'%s.sqlite' % kwargs[u'name'])
-        log.debug(u'Load bible %s on path %s', kwargs[u'name'], self.db_file)
+        if u'name' in kwargs:
+            self.name = kwargs[u'name']
+            if not isinstance(self.name, unicode):
+                self.name = unicode(self.name, u'utf-8')
+            self.file = self.clean_filename(self.name)
+        if u'file' in kwargs:
+            self.file = kwargs[u'file']
+
+        self.db_file = os.path.join(kwargs[u'path'], self.file)
+        log.debug(u'Load bible %s on path %s', self.file, self.db_file)
         db_type = self.config.get_config(u'db type', u'sqlite')
         db_url = u''
         if db_type == u'sqlite':
@@ -85,12 +92,28 @@ class BibleDB(QtCore.QObject):
                     self.config.get_config(u'db database'))
         self.metadata, self.session = init_models(db_url)
         self.metadata.create_all(checkfirst=True)
+        if u'file' in kwargs:
+            self.get_name()
+
+    def get_name(self):
+        version_name = self.get_meta(u'Version')
+        if version_name:
+            self.name = version_name.value
+        else:
+            self.name = None
+        return self.name
+
+    def clean_filename(self, old_filename):
+        if not isinstance(old_filename,  unicode):
+            old_filename = unicode(old_filename, u'utf-8')
+        old_filename = re.sub(r'[^\w]+', u'_', old_filename).strip(u'_')
+        return old_filename + u'.sqlite'
 
     def register(self, wizard):
         """
         This method basically just initialialises the database. It is called
         from the Bible Manager when a Bible is imported. Descendant classes
-        may want to override this method to supply their own custom
+        may want to override this method to suVersionpply their own custom
         initialisation as well.
         """
         self.wizard = wizard
@@ -241,8 +264,6 @@ class BibleDB(QtCore.QObject):
         count = self.session.query(Verse.chapter).join(Book)\
             .filter(Book.name==book)\
             .distinct().count()
-        #verse = self.session.query(Verse).join(Book).filter(
-        #    Book.name == bookname).order_by(Verse.chapter.desc()).first()
         if not count:
             return 0
         else:
@@ -254,9 +275,6 @@ class BibleDB(QtCore.QObject):
             .filter(Book.name==book)\
             .filter(Verse.chapter==chapter)\
             .count()
-        #verse = self.session.query(Verse).join(Book).filter(
-        #    Book.name == bookname).filter(
-        #    Verse.chapter == chapter).order_by(Verse.verse.desc()).first()
         if not count:
             return 0
         else:
