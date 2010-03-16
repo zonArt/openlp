@@ -69,6 +69,7 @@ class ServiceItem(object):
         self.service_item_path = None
         self.service_item_type = None
         self.edit_enabled = False
+        self.maintain_allowed = False
         self._raw_frames = []
         self._display_frames = []
         self._uuid = unicode(uuid.uuid1())

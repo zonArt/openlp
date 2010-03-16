@@ -146,6 +146,7 @@ class ImageMediaItem(MediaManagerItem):
         if items:
             service_item.title = self.trUtf8('Image(s)')
             service_item.autoPreviewAllowed = True
+            service_item.maintain_allowed = True
             for item in items:
                 bitem = self.ListView.item(item.row())
                 filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())

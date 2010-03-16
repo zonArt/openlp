@@ -202,6 +202,8 @@ class ServiceManager(QtGui.QWidget):
         self.menu = QtGui.QMenu()
         self.editAction = self.menu.addAction(self.trUtf8('&Edit Item'))
         self.editAction.setIcon(build_icon(u':/services/service_edit.png'))
+        self.maintainAction = self.menu.addAction(self.trUtf8('&Maintain Item'))
+        self.maintainAction.setIcon(build_icon(u':/services/service_edit.png'))
         self.notesAction = self.menu.addAction(self.trUtf8('&Notes'))
         self.notesAction.setIcon(build_icon(u':/services/service_notes.png'))
         self.deleteAction = self.menu.addAction(self.trUtf8('&Delete From Service'))
@@ -227,9 +229,12 @@ class ServiceManager(QtGui.QWidget):
             pos = item.parent().data(0, QtCore.Qt.UserRole).toInt()[0]
         serviceItem = self.serviceItems[pos - 1]
         self.editAction.setVisible(False)
+        self.maintainAction.setVisible(False)
         self.notesAction.setVisible(False)
         if serviceItem[u'service_item'].edit_enabled:
             self.editAction.setVisible(True)
+        if serviceItem[u'service_item'].maintain_allowed:
+            self.maintainAction.setVisible(True)
         if item.parent() is None:
             self.notesAction.setVisible(True)
         self.themeMenu.menuAction().setVisible(False)
