@@ -52,6 +52,7 @@ class ImageMediaItem(MediaManagerItem):
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
         self.servicePath = None
+        self.addToServiceItem = True
         MediaManagerItem.__init__(self, parent, icon, title)
         self.overrideActive = False
 

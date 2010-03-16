@@ -114,6 +114,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.Toolbar = None
         self.remoteTriggered = None
         self.ServiceItemIconName = None
+        self.addToServiceItem = True
         self.PageLayout = QtGui.QVBoxLayout(self)
         self.PageLayout.setSpacing(0)
         self.PageLayout.setContentsMargins(4, 0, 4, 0)
@@ -285,6 +286,11 @@ class MediaManagerItem(QtGui.QWidget):
             contextMenuAction(
                 self.ListView, u':/system/system_add.png',
                 self.trUtf8('&Add to Service'), self.onAddClick))
+        if self.addToServiceItem:
+            self.ListView.addAction(
+                contextMenuAction(
+                    self.ListView, u':/system/system_add.png',
+                    self.trUtf8('&Add to Service Item'), self.onAddEditClick))
         QtCore.QObject.connect(
             self.ListView, QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
             self.onPreviewClick)
@@ -384,6 +390,22 @@ class MediaManagerItem(QtGui.QWidget):
             service_item = self.buildServiceItem()
             if service_item:
                 service_item.fromPlugin = False
+                self.parent.service_manager.addServiceItem(service_item)
+
+    def onAddEditClick(self):
+        if not self.ListView.selectedIndexes() and not self.remoteTriggered:
+            QtGui.QMessageBox.information(self,
+                self.trUtf8('No items selected...'),
+                self.trUtf8('You must select one or more items'))
+        else:
+            log.debug(self.PluginNameShort + u' Add requested')
+            service_item = self.parent.service_manager.getServiceItem()
+            if not service_item:
+                QtGui.QMessageBox.information(self,
+                    self.trUtf8('No Servive item selected'),
+                    self.trUtf8('You must select a existing Service Item to add to.'))
+            else:
+                self.generateSlideData(service_item)
                 self.parent.service_manager.addServiceItem(service_item)
 
     def buildServiceItem(self):

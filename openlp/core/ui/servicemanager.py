@@ -666,6 +666,16 @@ class ServiceManager(QtGui.QWidget):
         self.parent.PreviewController.addServiceManagerItem(
             self.serviceItems[item][u'service_item'], count)
 
+    def getServiceItem(self):
+        """
+        Send the current item to the Preview slide controller
+        """
+        item, count = self.findServiceItem()
+        if item == -1:
+            return False
+        else:
+            self.remoteEditTriggered = True
+            return self.serviceItems[item][u'service_item']
 
     def makeLive(self):
         """
