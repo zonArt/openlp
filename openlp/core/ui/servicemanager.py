@@ -34,7 +34,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
     contextMenuAction, Receiver, str_to_bool, build_icon
-from openlp.core.ui import ServiceItemNoteForm
+from openlp.core.ui import ServiceNoteForm,  ServiceItemEditForm
 
 class ServiceManagerList(QtGui.QTreeWidget):
 
@@ -106,7 +106,7 @@ class ServiceManager(QtGui.QWidget):
         #Indicates if remoteTriggering is active.  If it is the next addServiceItem call
         #will replace the currently selected one.
         self.remoteEditTriggered = False
-        self.serviceItemNoteForm = ServiceItemNoteForm()
+        self.serviceNoteForm = ServiceNoteForm()
         #start with the layout
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
@@ -257,11 +257,11 @@ class ServiceManager(QtGui.QWidget):
 
     def onServiceItemNoteForm(self):
         item, count = self.findServiceItem()
-        self.serviceItemNoteForm.textEdit.setPlainText(
+        self.serviceNoteForm.textEdit.setPlainText(
             self.serviceItems[item][u'service_item'].notes)
-        if self.serviceItemNoteForm.exec_():
+        if self.serviceNoteForm.exec_():
             self.serviceItems[item][u'service_item'].notes = \
-                self.serviceItemNoteForm.textEdit.toPlainText()
+                self.serviceNoteForm.textEdit.toPlainText()
             self.repaintServiceList(item, 0)
 
     def nextItem(self):

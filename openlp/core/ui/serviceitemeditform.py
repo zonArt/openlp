@@ -23,23 +23,22 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from servicenoteform import ServiceNoteForm
-from serviceitemeditform import ServiceItemEditForm
-from screen import ScreenList
-from maindisplay import MainDisplay
-from amendthemeform import AmendThemeForm
-from slidecontroller import SlideController
-from splashscreen import SplashScreen
-from generaltab import GeneralTab
-from themestab import ThemesTab
-from aboutform import AboutForm
-from pluginform import PluginForm
-from settingsform import SettingsForm
-from mediadockmanager import MediaDockManager
-from servicemanager import ServiceManager
-from thememanager import ThemeManager
-from mainwindow import MainWindow
+from PyQt4 import QtCore, QtGui
+from serviceitemeditdialog import Ui_ServiceItemEditDialog
 
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainWindow',
-    'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
-    'AmendThemeForm', 'MediaDockManager', 'ServiceItemNoteForm']
+class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
+    """
+    This is the form that is used to edit the verses of the song.
+    """
+    def __init__(self, parent=None):
+        """
+        Constructor
+        """
+        QtGui.QDialog.__init__(self, parent)
+        self.setupUi(self)
+        QtCore.QObject.connect(self.buttonBox,
+                               QtCore.SIGNAL(u'accepted()'),
+                               self.accept)
+        QtCore.QObject.connect(self.buttonBox,
+                               QtCore.SIGNAL(u'rejected()'),
+                               self.reject)
