@@ -58,6 +58,7 @@ class BibleMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = BibleListView
         self.servicePath = None
         self.lastReference = []
+        self.addToServiceItem = True
         MediaManagerItem.__init__(self, parent, icon, title)
         # place to store the search results
         self.search_results = {}
