@@ -107,6 +107,7 @@ class ServiceManager(QtGui.QWidget):
         #will replace the currently selected one.
         self.remoteEditTriggered = False
         self.serviceNoteForm = ServiceNoteForm()
+        self.serviceItemEditForm = ServiceItemEditForm()
         #start with the layout
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
@@ -243,6 +244,8 @@ class ServiceManager(QtGui.QWidget):
         action = self.menu.exec_(self.ServiceManagerList.mapToGlobal(point))
         if action == self.editAction:
             self.remoteEdit()
+        if action == self.maintainAction:
+            self.onServiceItemEditForm()
         if action == self.deleteAction:
             self.onDeleteFromService()
         if action == self.notesAction:
@@ -263,6 +266,12 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems[item][u'service_item'].notes = \
                 self.serviceNoteForm.textEdit.toPlainText()
             self.repaintServiceList(item, 0)
+
+    def onServiceItemEditForm(self):
+        item, count = self.findServiceItem()
+        if self.serviceItemEditForm.exec_():
+            pass
+
 
     def nextItem(self):
         """
