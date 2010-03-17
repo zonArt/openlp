@@ -89,10 +89,6 @@ class alertsPlugin(Plugin):
         self.alertForm.loadList()
         self.alertForm.exec_()
 
-    def onAlertsEdit(self):
-        self.alertEditForm.loadList()
-        self.alertEditForm.exec_()
-
     def about(self):
         about_text = self.trUtf8('<b>Alerts Plugin</b><br>This plugin '
             'controls the displaying of alerts on the presentations screen')
