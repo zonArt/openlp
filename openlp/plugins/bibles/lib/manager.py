@@ -24,7 +24,6 @@
 ###############################################################################
 
 import logging
-import os
 
 from common import parse_reference
 from opensong import OpenSongBible

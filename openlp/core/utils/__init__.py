@@ -23,6 +23,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import openlp
 import os
 import sys
 import logging
@@ -43,7 +44,7 @@ class AppLocation(object):
     @staticmethod
     def get_directory(dir_type):
         if dir_type == AppLocation.AppDir:
-           return os.path.abspath(os.path.split(sys.argv[0])[0])
+            return os.path.abspath(os.path.split(sys.argv[0])[0])
         elif dir_type == AppLocation.ConfigDir:
             if sys.platform == u'win32':
                 path = os.path.join(os.getenv(u'APPDATA'), u'openlp')
@@ -71,11 +72,19 @@ class AppLocation(object):
                     path = os.path.join(os.getenv(u'HOME'), u'.openlp', u'data')
             return path
         elif dir_type == AppLocation.PluginsDir:
+            plugin_path = None
             app_path = os.path.abspath(os.path.split(sys.argv[0])[0])
-            if hasattr(sys, u'frozen') and sys.frozen == 1:
-                return os.path.join(app_path, u'plugins')
+            if sys.platform == u'win32':
+                if hasattr(sys, u'frozen') and sys.frozen == 1:
+                    plugin_path = os.path.join(app_path, u'plugins')
+                else:
+                    plugin_path = os.path.join(app_path, u'openlp', u'plugins')
+            elif sys.platform == u'darwin':
+                plugin_path = os.path.join(app_path, u'plugins')
             else:
-                return os.path.join(app_path, u'openlp', u'plugins')
+                plugin_path = os.path.join(
+                    os.path.split(openlp.__file__)[0], u'plugins')
+            return plugin_path
 
 
 def check_latest_version(config, current_version):
