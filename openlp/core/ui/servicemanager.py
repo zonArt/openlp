@@ -269,9 +269,12 @@ class ServiceManager(QtGui.QWidget):
 
     def onServiceItemEditForm(self):
         item, count = self.findServiceItem()
+        self.serviceItemEditForm.setServiceItem(
+            self.serviceItems[item][u'service_item'])
         if self.serviceItemEditForm.exec_():
-            pass
-
+            self.serviceItems[item][u'service_item'] = \
+                self.serviceItemEditForm.getServiceItem()
+            self.repaintServiceList(item, 0)
 
     def nextItem(self):
         """
@@ -367,7 +370,7 @@ class ServiceManager(QtGui.QWidget):
     def onServiceUp(self):
         """
         Move the current ServiceItem up in the list
-        Note move up means move to top of area  ie 0.
+        Note move up means move to top of area ie 0.
         """
         item, count = self.findServiceItem()
         if item > 0:
@@ -513,7 +516,7 @@ class ServiceManager(QtGui.QWidget):
                     if item[u'service_item'].uses_file():
                         for frame in item[u'service_item'].get_frames():
                             path_from = unicode(os.path.join(
-                                item[u'service_item'].service_item_path,
+                                frame[u'path'],
                                 frame[u'title']))
                             zip.write(path_from)
                 file = open(servicefile, u'wb')

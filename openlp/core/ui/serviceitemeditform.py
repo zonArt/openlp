@@ -36,9 +36,85 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
+        self.itemList = []
+        # enable drop
+        QtCore.QObject.connect(self.upButton,
+                               QtCore.SIGNAL(u'clicked()'),
+                               self.onItemUp)
+        QtCore.QObject.connect(self.downButton,
+                               QtCore.SIGNAL(u'clicked()'),
+                               self.onItemDown)
+        QtCore.QObject.connect(self.deleteButton,
+                               QtCore.SIGNAL(u'clicked()'),
+                               self.onItemDelete)
         QtCore.QObject.connect(self.buttonBox,
                                QtCore.SIGNAL(u'accepted()'),
                                self.accept)
         QtCore.QObject.connect(self.buttonBox,
                                QtCore.SIGNAL(u'rejected()'),
                                self.reject)
+
+    def setServiceItem(self, item):
+        self.item = item
+        self.itemList = []
+        if self.item.is_image():
+            self.data = True
+            for frame in self.item._raw_frames:
+                self.itemList.append(frame)
+        self.loadData()
+
+    def getServiceItem(self):
+        if self.data:
+            self.item._raw_frames = []
+            if self.item.is_image():
+                for item in self.itemList:
+                    self.item.add_from_image(item[u'path'],
+                                             item[u'title'], item[u'image'])
+            self.item.render()
+        return self.item
+
+    def loadData(self):
+        self.listWidget.clear()
+        for frame in self.itemList:
+            item_name = QtGui.QListWidgetItem(frame[u'title'])
+            self.listWidget.addItem(item_name)
+
+    def onItemDelete(self):
+        """
+        Move the current ServiceItem up in the list
+        Note move up means move to top of area  ie 0.
+        """
+        items = self.listWidget.selectedItems()
+        for item in items:
+            row =  self.listWidget.row(item)
+            if row > 0:
+                self.itemList.remove(self.itemList[row])
+                self.loadData()
+
+    def onItemUp(self):
+        """
+        Move the current ServiceItem up in the list
+        Note move up means move to top of area  ie 0.
+        """
+        items = self.listWidget.selectedItems()
+        for item in items:
+            row =  self.listWidget.row(item)
+            if row > 0:
+                temp = self.itemList[row]
+                self.itemList.remove(self.itemList[row])
+                self.itemList.insert(row - 1, temp)
+                self.loadData()
+
+    def onItemDown(self):
+        """
+        Move the current ServiceItem down in the list
+        Note move down means move to bottom of area i.e len().
+        """
+        items = self.listWidget.selectedItems()
+        for item in items:
+            row =  self.listWidget.row(item)
+            if row < len(self.itemList) and row is not -1:
+                temp = self.itemList[row]
+                self.itemList.remove(self.itemList[row])
+                self.itemList.insert(row + 1, temp)
+                self.loadData()

@@ -66,7 +66,6 @@ class ServiceItem(object):
         self.iconic_representation = None
         self.raw_footer = None
         self.theme = None
-        self.service_item_path = None
         self.service_item_type = None
         self.edit_enabled = False
         self.maintain_allowed = False
@@ -157,9 +156,8 @@ class ServiceItem(object):
             The actual image file name.
         """
         self.service_item_type = ServiceItemType.Image
-        self.service_item_path = path
         self._raw_frames.append(
-            {u'title': title, u'image': image})
+            {u'title': title, u'image': image, u'path': path})
 
     def add_from_text(self, title, raw_slide, verseTag=None):
         """
@@ -190,9 +188,8 @@ class ServiceItem(object):
             The command of/for the slide.
         """
         self.service_item_type = ServiceItemType.Command
-        self.service_item_path = path
         self._raw_frames.append(
-            {u'title': file_name, u'image': image})
+            {u'title': file_name, u'image': image, u'path': path})
 
     def get_service_repr(self):
         """
@@ -209,7 +206,9 @@ class ServiceItem(object):
             u'type':self.service_item_type,
             u'audit':self.audit,
             u'notes':self.notes,
-            u'preview':self.autoPreviewAllowed
+            u'preview':self.autoPreviewAllowed,
+            u'edit':self.edit_enabled,
+            u'maintain':self.maintain_allowed
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
@@ -245,6 +244,8 @@ class ServiceItem(object):
         self.audit = header[u'audit']
         self.autoPreviewAllowed = header[u'preview']
         self.notes = header[u'notes']
+        self.edit_enabled = header[u'edit']
+        self.maintain_allowed = header[u'maintain']
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)
