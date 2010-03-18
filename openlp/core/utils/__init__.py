@@ -81,7 +81,8 @@ class AppLocation(object):
             elif sys.platform == u'darwin':
                 plugin_path = os.path.join(app_path, u'plugins')
             else:
-                plugin_path = os.path.join(openlp.__file__, u'plugins')
+                plugin_path = os.path.join(
+                    os.path.split(openlp.__file__)[0], u'plugins')
             return plugin_path
 
 
