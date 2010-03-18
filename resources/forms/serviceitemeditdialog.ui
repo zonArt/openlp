@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>287</height>
+    <width>386</width>
+    <height>272</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Service Item Maintenance</string>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -22,9 +22,9 @@
      <height>241</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <layout class="QVBoxLayout" name="outerLayout">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QHBoxLayout" name="topLayout">
       <item>
        <widget class="QListWidget" name="listWidget">
         <property name="alternatingRowColors">
@@ -33,7 +33,7 @@
        </widget>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout">
+       <layout class="QVBoxLayout" name="buttonLayout">
         <item>
          <widget class="QPushButton" name="upButton">
           <property name="text">
@@ -42,16 +42,29 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="downButton">
-          <property name="text">
-           <string>Down</string>
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
           </property>
-         </widget>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
         <item>
          <widget class="QPushButton" name="deleteButton">
           <property name="text">
            <string>Delete</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="downButton">
+          <property name="text">
+           <string>Down</string>
           </property>
          </widget>
         </item>
