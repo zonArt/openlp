@@ -114,12 +114,14 @@ class OSISBible(BibleDB):
             osis = codecs.open(self.filename, u'r', details['encoding'])
             last_chapter = 0
             testament = 1
+            match_count = 0
             db_book = None
             for file_record in osis:
                 if self.stop_import_flag:
                     break
                 match = self.verse_regex.search(file_record)
                 if match:
+                    match_count += 1
                     book = match.group(1)
                     chapter = int(match.group(2))
                     verse = int(match.group(3))
@@ -166,6 +168,8 @@ class OSISBible(BibleDB):
                     Receiver.send_message(u'process_events')
             self.commit()
             self.wizard.incrementProgressBar(u'Finishing import...')
+            if match_count == 0:
+                success = False
         except:
             log.exception(u'Loading bible from OSIS file failed')
             success = False

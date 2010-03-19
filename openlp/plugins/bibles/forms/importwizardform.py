@@ -315,23 +315,23 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
 
     def performImport(self):
         bible_type = self.field(u'source_format').toInt()[0]
-        success = False
+        importer = None
         if bible_type == BibleFormat.OSIS:
             # Import an OSIS bible
-            success = self.manager.import_bible(BibleFormat.OSIS,
+            importer = self.manager.import_bible(BibleFormat.OSIS,
                 name=unicode(self.field(u'license_version').toString()),
                 filename=unicode(self.field(u'osis_location').toString())
             )
         elif bible_type == BibleFormat.CSV:
             # Import a CSV bible
-            success = self.manager.import_bible(BibleFormat.CSV,
+            importer = self.manager.import_bible(BibleFormat.CSV,
                 name=unicode(self.field(u'license_version').toString()),
                 booksfile=self.field(u'csv_booksfile').toString(),
                 versefile=self.field(u'csv_versefile').toString()
             )
         elif bible_type == BibleFormat.OpenSong:
             # Import an OpenSong bible
-            success = self.manager.import_bible(BibleFormat.OpenSong,
+            importer = self.manager.import_bible(BibleFormat.OpenSong,
                 name=unicode(self.field(u'license_version').toString()),
                 filename=self.field(u'opensong_file').toString()
             )
@@ -345,7 +345,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             elif download_location == DownloadLocation.BibleGateway:
                 bible = self.web_bible_list[DownloadLocation.BibleGateway][
                     unicode(self.BibleComboBox.currentText())]
-            success = self.manager.import_bible(BibleFormat.WebDownload,
+            importer = self.manager.import_bible(BibleFormat.WebDownload,
                 name=unicode(self.field(u'license_version').toString()),
                 download_source=unicode(DownloadLocation.get_name(download_location)),
                 download_name=unicode(bible),
@@ -353,6 +353,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                 proxy_username=unicode(self.field(u'proxy_username').toString()),
                 proxy_password=unicode(self.field(u'proxy_password').toString())
             )
+        success = importer.do_import()
         if success:
             self.manager.save_meta_data(
                 unicode(self.field(u'license_version').toString()),
@@ -365,6 +366,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         else:
             self.ImportProgressLabel.setText(
                 self.trUtf8('Your Bible import failed.'))
+            importer.delete()
 
     def postImport(self):
         self.ImportProgressBar.setValue(self.ImportProgressBar.maximum())
