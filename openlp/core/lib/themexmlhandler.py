@@ -53,7 +53,7 @@ blankthemexml=\
       <weight>Normal</weight>
       <italics>False</italics>
       <indentation>0</indentation>
-      <location override="False" x="10" y="10" width="1024" height="730"/>
+      <location override="False" x="10" y="10" width="1004" height="730"/>
    </font>
    <font type="footer">
       <name>Arial</name>
@@ -62,7 +62,7 @@ blankthemexml=\
       <weight>Normal</weight>
       <italics>False</italics>
       <indentation>0</indentation>
-      <location override="False" x="10" y="730" width="1024" height="38"/>
+      <location override="False" x="10" y="730" width="1004" height="38"/>
    </font>
    <display>
       <shadow color="#000000" size="5">True</shadow>

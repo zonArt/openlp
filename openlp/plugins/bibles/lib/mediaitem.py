@@ -45,6 +45,7 @@ class BibleListView(BaseListWithDnD):
     def resizeEvent(self, event):
         self.parent.onListViewResize(event.size().width(), event.size().width())
 
+
 class BibleMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Bibles.
@@ -63,6 +64,12 @@ class BibleMediaItem(MediaManagerItem):
         self.search_results = {}
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlpreloadbibles'), self.reloadBibles)
+
+    def _decodeQtObject(self, listobj, key):
+        obj = listobj[QtCore.QString(key)]
+        if isinstance(obj, QtCore.QVariant):
+            obj = obj.toPyObject()
+        return unicode(obj)
 
     def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8('Bible')
@@ -451,15 +458,17 @@ class BibleMediaItem(MediaManagerItem):
         # Let's loop through the main lot, and assemble our verses
         for item in items:
             bitem = self.ListView.item(item.row())
-            reference = bitem.data(QtCore.Qt.UserRole).toPyObject()
-            bible = unicode(reference[QtCore.QString('bible')])
-            book = unicode(reference[QtCore.QString('book')])
-            chapter = unicode(reference[QtCore.QString('chapter')])
-            verse = unicode(reference[QtCore.QString('verse')])
-            text = unicode(reference[QtCore.QString('text')])
-            version = unicode(reference[QtCore.QString('version')])
-            copyright = unicode(reference[QtCore.QString('copyright')])
-            permission = unicode(reference[QtCore.QString('permission')])
+            reference = bitem.data(QtCore.Qt.UserRole)
+            if isinstance(reference, QtCore.QVariant):
+                reference = reference.toPyObject()
+            bible = self._decodeQtObject(reference, 'bible')
+            book = self._decodeQtObject(reference, 'book')
+            chapter = self._decodeQtObject(reference, 'chapter')
+            verse = self._decodeQtObject(reference, 'verse')
+            text = self._decodeQtObject(reference, 'text')
+            version = self._decodeQtObject(reference, 'version')
+            copyright = self._decodeQtObject(reference, 'copyright')
+            permission = self._decodeQtObject(reference, 'permission')
             if self.parent.settings_tab.display_style == 1:
                 verse_text = self.formatVerse(old_chapter, chapter, verse, u'(u', u')')
             elif  self.parent.settings_tab.display_style == 2:
@@ -563,7 +572,7 @@ class BibleMediaItem(MediaManagerItem):
             permission = u''
         else:
             permission = permission.value
-        for count, verse  in enumerate(self.search_results):
+        for count, verse in enumerate(self.search_results):
             bible_text = u' %s %d:%d (%s)' % \
                 (verse.book.name, verse.chapter, verse.verse, bible)
             bible_verse = QtGui.QListWidgetItem(bible_text)

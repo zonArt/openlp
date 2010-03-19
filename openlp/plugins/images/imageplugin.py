@@ -61,6 +61,6 @@ class ImagePlugin(Plugin):
             'together and presented on the live controller it is possible '
             'to turn them into a timed loop.<br<br>From the plugin if the '
             '<i>Override background</i> is chosen and an image is selected '
-            'any somgs which are rendered will use the selected image from '
+            'any songs which are rendered will use the selected image from '
             'the background instead of the one provied by the theme.<br>')
         return about_text

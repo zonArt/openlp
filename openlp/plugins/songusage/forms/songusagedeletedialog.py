@@ -57,4 +57,4 @@ class Ui_SongUsageDeleteDialog(object):
         QtCore.QMetaObject.connectSlotsByName(AuditDeleteDialog)
 
     def retranslateUi(self, AuditDeleteDialog):
-        AuditDeleteDialog.setWindowTitle(self.trUtf8('Audit Delete'))
+        AuditDeleteDialog.setWindowTitle(self.trUtf8('Song Usage Delete'))

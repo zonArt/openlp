@@ -168,8 +168,7 @@ class MainDisplay(DisplayWidget):
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
         painter.begin(self.blankFrame)
-        #TODO make black when testing finished
-        painter.fillRect(self.blankFrame.rect(), QtCore.Qt.red)
+        painter.fillRect(self.blankFrame.rect(), QtCore.Qt.black)
         #build a blank transparent image
         self.transparent = QtGui.QPixmap(self.screen[u'size'].width(),
                                          self.screen[u'size'].height())

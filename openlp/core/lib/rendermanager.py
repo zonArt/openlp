@@ -146,13 +146,13 @@ class RenderManager(object):
         footer_rect = None
         if not theme.font_main_override:
             main_rect = QtCore.QRect(10, 0,
-                            self.width - 1, self.footer_start)
+                            self.width - 20, self.footer_start)
         else:
             main_rect = QtCore.QRect(theme.font_main_x, theme.font_main_y,
                 theme.font_main_width - 1, theme.font_main_height - 1)
         if not theme.font_footer_override:
             footer_rect = QtCore.QRect(10, self.footer_start,
-                            self.width - 1, self.height - self.footer_start)
+                            self.width - 20, self.height - self.footer_start)
         else:
             footer_rect = QtCore.QRect(theme.font_footer_x,
                 theme.font_footer_y, theme.font_footer_width - 1,
