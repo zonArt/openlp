@@ -28,7 +28,7 @@ import urllib2
 import os
 import sqlite3
 
-from BeautifulSoup import BeautifulSoup
+from BeautifulSoup import BeautifulSoup, Tag, NavigableString
 
 from openlp.core.lib import Receiver
 from openlp.core.utils import AppLocation
@@ -146,44 +146,62 @@ class BGExtract(BibleCommon):
         urlstring = u'http://www.biblegateway.com/passage/?search=%s+%s' \
             u'&version=%s' % (bookname, chapter, version)
         log.debug(u'BibleGateway url = %s' % urlstring)
-        xml_string = self._get_web_text(urlstring, self.proxyurl)
-        verseSearch = u'<sup class=\"versenum'
-        verseFootnote = u'<sup class=\'footnote'
-        verse = 1
-        i = xml_string.find(u'result-text-style-normal') + 26
-        xml_string = xml_string[i:len(xml_string)]
-        versePos = xml_string.find(verseSearch)
-        bible = {}
-        while versePos > -1:
-            # clear out string
-            verseText = u''
-            versePos = xml_string.find(u'</sup>', versePos) + 6
-            i = xml_string.find(verseSearch, versePos + 1)
-            # Not sure if this is needed now
-            if i == -1:
-                i = xml_string.find(u'</div', versePos + 1)
-                j = xml_string.find(u'<strong', versePos + 1)
-                if j > 0 and j < i:
-                    i = j
-                verseText = xml_string[versePos + 7 : i ]
-                # store the verse
-                bible[verse] = self._clean_text(verseText)
-                versePos = -1
-            else:
-                verseText = xml_string[versePos: i]
-                start_tag = verseText.find(verseFootnote)
-                while start_tag > -1:
-                    end_tag = verseText.find(u'</sup>')
-                    verseText = verseText[:start_tag] + verseText[end_tag + 6:len(verseText)]
-                    start_tag = verseText.find(verseFootnote)
-                # Chop off verse and start again
-                xml_string = xml_string[i:]
-                #look for the next verse
-                versePos = xml_string.find(verseSearch)
-                # store the verse
-                bible[verse] = self._clean_text(verseText)
-                verse += 1
-        return SearchResults(bookname, chapter, bible)
+        # Let's get the page, and then open it in BeautifulSoup, so as to
+        # attempt to make "easy" work of bad HTML.
+        page = urllib2.urlopen(urlstring)
+        soup = BeautifulSoup(page)
+        verses = soup.find(u'div', u'result-text-style-normal')
+        verse_number = 0
+        verse_list = {0: u''}
+        # http://www.codinghorror.com/blog/2009/11/parsing-html-the-cthulhu-way.html
+        # This is a PERFECT example of opening the Cthulu tag!
+        # O Bible Gateway, why doth ye such horrific HTML produce?
+        for verse in verses:
+            if isinstance(verse, Tag) and verse.name == u'div' and filter(lambda a: a[0] == u'class', verse.attrs)[0][1] == u'footnotes':
+                break
+            if isinstance(verse, Tag) and verse.name == u'sup' and filter(lambda a: a[0] == u'class', verse.attrs)[0][1] != u'versenum':
+                continue
+            if isinstance(verse, Tag) and verse.name == u'p' and not verse.contents:
+                continue
+            if isinstance(verse, Tag) and (verse.name == u'p' or verse.name == u'font') and verse.contents:
+                for item in verse.contents:
+                    if isinstance(item, Tag) and (item.name == u'h4' or item.name == u'h5'):
+                        continue
+                    if isinstance(item, Tag) and item.name == u'sup' and filter(lambda a: a[0] == u'class', item.attrs)[0][1] != u'versenum':
+                        continue
+                    if isinstance(item, Tag) and item.name == u'p' and not item.contents:
+                        continue
+                    if isinstance(item, Tag) and item.name == u'sup':
+                        verse_number = int(str(item.contents[0]))
+                        verse_list[verse_number] = u''
+                        continue
+                    if isinstance(item, Tag) and item.name == u'font':
+                        for subitem in item.contents:
+                            if isinstance(subitem, Tag) and subitem.name == u'sup' and filter(lambda a: a[0] == u'class', subitem.attrs)[0][1] != u'versenum':
+                                continue
+                            if isinstance(subitem, Tag) and subitem.name == u'p' and not subitem.contents:
+                                continue
+                            if isinstance(subitem, Tag) and subitem.name == u'sup':
+                                verse_number = int(str(subitem.contents[0]))
+                                verse_list[verse_number] = u''
+                                continue
+                            if isinstance(subitem, NavigableString):
+                                verse_list[verse_number] = verse_list[verse_number] + subitem.replace(u'&nbsp;', u' ')
+                        continue
+                    if isinstance(item, NavigableString):
+                        verse_list[verse_number] = verse_list[verse_number] + item.replace(u'&nbsp;', u' ')
+                continue
+            if isinstance(verse, Tag) and verse.name == u'sup':
+                verse_number = int(str(verse.contents[0]))
+                verse_list[verse_number] = u''
+                continue
+            if isinstance(verse, NavigableString):
+                verse_list[verse_number] = verse_list[verse_number] + verse.replace(u'&nbsp;', u' ')
+        # Delete the "0" element, since we don't need it, it's just there for
+        # some stupid initial whitespace, courtesy of Bible Gateway.
+        del verse_list[0]
+        # Finally, return the list of verses in a "SearchResults" object.
+        return SearchResults(bookname, chapter, verse_list)
 
 class CWExtract(BibleCommon):
     log.info(u'%s CWExtract loaded', __name__)
