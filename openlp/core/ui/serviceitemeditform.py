@@ -81,20 +81,17 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
 
     def onItemDelete(self):
         """
-        Move the current ServiceItem up in the list
-        Note move up means move to top of area  ie 0.
+        Delete the selected row
         """
         items = self.listWidget.selectedItems()
         for item in items:
             row =  self.listWidget.row(item)
-            if row > 0:
-                self.itemList.remove(self.itemList[row])
-                self.loadData()
+            self.itemList.remove(self.itemList[row])
+            self.loadData()
 
     def onItemUp(self):
         """
-        Move the current ServiceItem up in the list
-        Note move up means move to top of area  ie 0.
+        Move the selected row up in the list
         """
         items = self.listWidget.selectedItems()
         for item in items:
@@ -107,8 +104,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
 
     def onItemDown(self):
         """
-        Move the current ServiceItem down in the list
-        Note move down means move to bottom of area i.e len().
+        Move the selected row down in the list
         """
         items = self.listWidget.selectedItems()
         for item in items:
