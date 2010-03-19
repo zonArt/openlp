@@ -93,7 +93,6 @@ class BiblePlugin(Plugin):
             'displayed on the screen during the service.')
         return about_text
 
-
     def can_delete_theme(self, theme):
         if self.settings_tab.bible_theme == theme:
             return False
