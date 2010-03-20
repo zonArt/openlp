@@ -524,6 +524,7 @@ class SlideController(QtGui.QWidget):
         """
         Handle the blank screen button
         """
+        log.debug(u'onBlankDisplay %d' % force)
         if force:
             self.blankButton.setChecked(True)
         self.blankScreen(self.blankButton.isChecked())
@@ -540,6 +541,8 @@ class SlideController(QtGui.QWidget):
                     Receiver.send_message(u'%s_blank'% self.serviceItem.name.lower())
                 else:
                     Receiver.send_message(u'%s_unblank'% self.serviceItem.name.lower())
+            else:
+                self.parent.mainDisplay.blankDisplay(blanked)
         else:
             self.parent.mainDisplay.blankDisplay(blanked)
 
