@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,14 +28,13 @@ import logging
 from openlp.plugins.songs.lib.models import init_models, metadata, Song, \
     Author, Topic, Book
 
+log = logging.getLogger(__name__)
+
 class SongManager():
     """
     The Song Manager provides a central location for all database code. This
     class takes care of connecting to the database and running all the queries.
     """
-
-    global log
-    log = logging.getLogger(u'SongManager')
     log.info(u'Song manager loaded')
 
     def __init__(self, config):
@@ -106,8 +106,8 @@ class SongManager():
             self.session.commit()
             return True
         except:
-            self.session.rollback()
             log.exception(u'Could not save song to song database')
+            self.session.rollback()
             return False
 
     def delete_song(self, songid):
@@ -238,3 +238,5 @@ class SongManager():
             log.exception(u'Could not delete book from song database')
             return False
 
+    def get_songs_for_theme(self, theme):
+        return self.session.query(Song).filter(Song.theme_name == theme).all()

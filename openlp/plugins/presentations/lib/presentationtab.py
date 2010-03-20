@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,19 +25,19 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import SettingsTab, translate
+from openlp.core.lib import SettingsTab
 
 class PresentationTab(SettingsTab):
     """
     PresentationsTab is the Presentations settings tab in the settings dialog.
     """
-    def __init__(self, controllers):
+    def __init__(self, title, controllers, section=None):
         self.controllers = controllers
-        SettingsTab.__init__(self,
-            translate(u'PresentationTab', u'Presentation'), u'Presentations')
+        SettingsTab.__init__(self, title, section)
 
     def setupUi(self):
         self.setObjectName(u'PresentationTab')
+        self.tabTitleVisible = self.trUtf8('Presentations')
         self.PresentationLayout = QtGui.QHBoxLayout(self)
         self.PresentationLayout.setSpacing(8)
         self.PresentationLayout.setMargin(8)
@@ -50,17 +51,10 @@ class PresentationTab(SettingsTab):
         self.PresentationLeftLayout.setMargin(0)
         self.VerseDisplayGroupBox = QtGui.QGroupBox(self)
         self.VerseDisplayGroupBox.setObjectName(u'VerseDisplayGroupBox')
-        self.VerseDisplayLayout = QtGui.QGridLayout(self.VerseDisplayGroupBox)
+        self.VerseDisplayLayout = QtGui.QVBoxLayout(self.VerseDisplayGroupBox)
         self.VerseDisplayLayout.setMargin(8)
         self.VerseDisplayLayout.setObjectName(u'VerseDisplayLayout')
-        self.VerseTypeWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
-        self.VerseTypeWidget.setObjectName(u'VerseTypeWidget')
-        self.VerseTypeLayout = QtGui.QHBoxLayout(self.VerseTypeWidget)
-        self.VerseTypeLayout.setSpacing(8)
-        self.VerseTypeLayout.setMargin(0)
-        self.VerseTypeLayout.setObjectName(u'VerseTypeLayout')
         self.PresenterCheckboxes = {}
-        index = 0
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = QtGui.QCheckBox(self.VerseDisplayGroupBox)
@@ -68,8 +62,7 @@ class PresentationTab(SettingsTab):
             checkbox.setEnabled(controller.available)
             checkbox.setObjectName(controller.name + u'CheckBox')
             self.PresenterCheckboxes[controller.name] = checkbox
-            index = index + 1
-            self.VerseDisplayLayout.addWidget(checkbox, index, 0, 1, 1)
+            self.VerseDisplayLayout.addWidget(checkbox)
         self.PresentationThemeWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
         self.PresentationThemeWidget.setObjectName(u'PresentationThemeWidget')
         self.PresentationThemeLayout = QtGui.QHBoxLayout(
@@ -95,11 +88,12 @@ class PresentationTab(SettingsTab):
         self.PresentationLayout.addWidget(self.PresentationRightWidget)
 
     def retranslateUi(self):
+        self.VerseDisplayGroupBox.setTitle(self.trUtf8('Available Controllers'))
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
-            checkbox.setText(translate(u'PresentationTab',
-                controller.name + u' available:'))
+            checkbox.setText(
+                u'%s %s:' % (controller.name, self.trUtf8('available')))
 
     def load(self):
         for key in self.controllers:

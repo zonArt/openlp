@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,29 +25,31 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, Receiver
+from openlp.core.lib import SettingsTab, Receiver
 
 class ImageTab(SettingsTab):
     """
     ImageTab is the Image settings tab in the settings dialog.
     """
-    def __init__(self):
-        SettingsTab.__init__(self, translate(u'ImageTab', u'Images'), u'Image')
+    def __init__(self, title, section=None):
+        SettingsTab.__init__(self, title, section)
 
     def setupUi(self):
         self.setObjectName(u'ImageTab')
+        self.tabTitleVisible = self.trUtf8('Images')
         self.ImageLayout = QtGui.QFormLayout(self)
         self.ImageLayout.setObjectName(u'ImageLayout')
         self.ImageSettingsGroupBox = QtGui.QGroupBox(self)
         self.ImageSettingsGroupBox.setObjectName(u'ImageSettingsGroupBox')
         self.TimeoutLayout = QtGui.QHBoxLayout(self.ImageSettingsGroupBox)
         self.TimeoutLayout.setSpacing(8)
-        self.TimeoutLayout.setMargin(0)
+        self.TimeoutLayout.setMargin(8)
         self.TimeoutLayout.setObjectName(u'TimeoutLayout')
         self.TimeoutLabel = QtGui.QLabel(self.ImageSettingsGroupBox)
         self.TimeoutLabel.setObjectName(u'TimeoutLabel')
         self.TimeoutLayout.addWidget(self.TimeoutLabel)
         self.TimeoutSpinBox = QtGui.QSpinBox(self.ImageSettingsGroupBox)
+        self.TimeoutSpinBox.setMinimum(1)
         self.TimeoutSpinBox.setMaximum(180)
         self.TimeoutSpinBox.setObjectName(u'TimeoutSpinBox')
         self.TimeoutLayout.addWidget(self.TimeoutSpinBox)
@@ -60,9 +63,9 @@ class ImageTab(SettingsTab):
             QtCore.SIGNAL(u'valueChanged(int)'), self.onTimeoutSpinBoxChanged)
 
     def retranslateUi(self):
-        self.ImageSettingsGroupBox.setTitle(translate(u'ImageTab', u'Image Settings'))
-        self.TimeoutLabel.setText(translate(u'ImageTab', u'Slide Loop Delay:'))
-        self.TimeoutSpinBox.setSuffix(translate(u'ImageTab', u's'))
+        self.ImageSettingsGroupBox.setTitle(self.trUtf8('Image Settings'))
+        self.TimeoutLabel.setText(self.trUtf8('Slide Loop Delay:'))
+        self.TimeoutSpinBox.setSuffix(self.trUtf8('sec'))
 
     def onTimeoutSpinBoxChanged(self):
         self.loop_delay = self.TimeoutSpinBox.value()
@@ -73,7 +76,7 @@ class ImageTab(SettingsTab):
 
     def save(self):
         self.config.set_config(u'loop delay', self.loop_delay)
-        Receiver().send_message(u'update_spin_delay', self.loop_delay )
+        Receiver.send_message(u'update_spin_delay', self.loop_delay)
 
     def postSetUp(self):
-        Receiver().send_message(u'update_spin_delay', self.loop_delay )
+        Receiver.send_message(u'update_spin_delay', self.loop_delay)

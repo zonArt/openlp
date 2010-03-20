@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,15 +28,17 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import PluginConfig, Receiver
 
+log = logging.getLogger(__name__)
+
 class PluginStatus(object):
     """
     Defines the status of the plugin
     """
-    Active = 0
-    Inactive = 1
-    Disabled = 2
+    Active = 1
+    Inactive = 0
+    Disabled = -1
 
-class Plugin(object):
+class Plugin(QtCore.QObject):
     """
     Base class for openlp plugins to inherit from.
 
@@ -87,11 +90,9 @@ class Plugin(object):
         Used in the plugin manager, when a person clicks on the 'About' button.
 
     """
-    global log
-    log = logging.getLogger(u'Plugin')
     log.info(u'loaded')
 
-    def __init__(self, name=None, version=None, plugin_helpers=None):
+    def __init__(self, name, version=None, plugin_helpers=None):
         """
         This is the constructor for the plugin object. This provides an easy
         way for descendent plugins to populate common data. This method *must*
@@ -110,11 +111,9 @@ class Plugin(object):
         ``plugin_helpers``
             Defaults to *None*. A list of helper objects.
         """
-        if name is not None:
-            self.name = name
-        else:
-            self.name = u'Plugin'
-        if version is not None:
+        QtCore.QObject.__init__(self)
+        self.name = name
+        if version:
             self.version = version
         self.icon = None
         self.config = PluginConfig(self.name)
@@ -128,8 +127,10 @@ class Plugin(object):
         self.service_manager = plugin_helpers[u'service']
         self.settings = plugin_helpers[u'settings']
         self.mediadock = plugin_helpers[u'toolbox']
+        self.maindisplay = plugin_helpers[u'maindisplay']
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_add_service_item'% self.name), self.process_add_service_event)
+            QtCore.SIGNAL(u'%s_add_service_item' % self.name),
+            self.process_add_service_event)
 
     def check_pre_conditions(self):
         """
@@ -140,27 +141,19 @@ class Plugin(object):
         """
         return True
 
-    def can_be_disabled(self):
-        """
-        Indicates whether the plugin can be disabled by the plugin list.
-
-        Returns True or False.
-        """
-        return False
-
     def set_status(self):
         """
         Sets the status of the plugin
         """
-        self.status = int(self.config.get_config(\
-            u'%s_status' % self.name, PluginStatus.Inactive))
+        self.status = int(self.config.get_config(u'status',
+            PluginStatus.Inactive))
 
     def toggle_status(self, new_status):
         """
         Changes the status of the plugin and remembers it
         """
         self.status = new_status
-        self.config.set_config(u'%s_status' % self.name, self.status)
+        self.config.set_config(u'status', self.status)
 
     def is_active(self):
         """
@@ -237,7 +230,7 @@ class Plugin(object):
         """
         Called by the plugin Manager to initialise anything it needs.
         """
-        if self.media_item is not None:
+        if self.media_item:
             self.media_item.initialise()
 
     def finalise(self):
@@ -250,14 +243,20 @@ class Plugin(object):
         """
         Called by the plugin to remove toolbar
         """
-        self.mediadock.removeDock(self.name)
+        self.mediadock.remove_dock(self.name)
         self.settings.removeTab(self.name)
 
     def insert_toolbox_item(self):
         """
         Called by plugin to replace toolbar
         """
-        if self.media_item is not None:
-            self.mediadock.insertDock(self.media_item, self.icon, self.weight)
-        if self.settings_tab is not None:
+        if self.media_item:
+            self.mediadock.insert_dock(self.media_item, self.icon, self.weight)
+        if self.settings_tab:
             self.settings.insertTab(self.settings_tab, self.weight)
+
+    def can_delete_theme(self, theme):
+        """
+        Called to ask the plugin if a theme can be deleted
+        """
+        return True

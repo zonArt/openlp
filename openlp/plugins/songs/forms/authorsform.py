@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,7 +24,7 @@
 ###############################################################################
 
 from PyQt4 import QtGui, QtCore
-from openlp.core.lib import translate
+
 from openlp.plugins.songs.forms.authorsdialog import Ui_AuthorsDialog
 
 class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
@@ -74,23 +75,25 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
 
     def accept(self):
         if not self.FirstNameEdit.text():
-            QtGui.QMessageBox.critical(self,
-                translate(u'AuthorsDialog', u'Error'),
-                translate(u'AuthorsDialog', u'You need to type in the first name of the author.'),
+            QtGui.QMessageBox.critical(
+                self, self.trUtf8('Error'),
+                self.trUtf8('You need to type in the first name of the author.'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             self.FirstNameEdit.setFocus()
             return False
         elif not self.LastNameEdit.text():
-            QtGui.QMessageBox.critical(self,
-                translate(u'AuthorsDialog', u'Error'),
-                translate(u'AuthorsDialog', u'You need to type in the last name of the author.'),
+            QtGui.QMessageBox.critical(
+                self, self.trUtf8('Error'),
+                self.trUtf8('You need to type in the last name of the author.'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             self.LastNameEdit.setFocus()
             return False
         elif not self.DisplayEdit.text():
-            if QtGui.QMessageBox.critical(self,
-                    translate(u'AuthorsDialog', u'Error'),
-                    translate(u'AuthorsDialog', u'You haven\'t set a display name for the author, would you like me to combine the first and last names for you?'),
+            if QtGui.QMessageBox.critical(
+                    self, self.trUtf8('Error'),
+                    self.trUtf8('You haven\'t set a display name for the '
+                        'author, would you like me to combine the first and '
+                        'last names for you?'),
                     QtGui.QMessageBox.StandardButtons(
                         QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
                     ) == QtGui.QMessageBox.Yes:
@@ -102,4 +105,3 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
                 return False
         else:
             return QtGui.QDialog.accept(self)
-

@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -85,7 +86,7 @@ class _OpenSong(XmlRootClass):
     def from_buffer(self, xmlContent):
         """Initialize from buffer(string) with xml content"""
         self._reset()
-        if xmlContent is not None:
+        if xmlContent:
             self._setFromXml(xmlContent, 'song')
 
     def get_author_list(self):
@@ -94,13 +95,10 @@ class _OpenSong(XmlRootClass):
         in OpenSong an author list may be separated by '/'
         return as a string
         """
-        res = []
-        if self.author is not None:
-            lst = self.author.split(u' and ')
-            for l in lst:
-                res.append(l.strip())
-        s = u', '.join(res)
-        return s
+        if self.author:
+            list = self.author.split(u' and ')
+            res = [item.strip() for item in list]
+            return u', '.join(res)
 
     def get_category_array(self):
         """Convert theme and alttheme into category_array
@@ -108,16 +106,16 @@ class _OpenSong(XmlRootClass):
         return as a string
         """
         res = []
-        if self.theme is not None:
+        if self.theme:
             res.append(self.theme)
-        if self.alttheme is not None:
+        if self.alttheme:
             res.append(self.alttheme)
         s = u', u'.join(res)
         return s
 
     def _reorder_verse(self, tag, tmpVerse):
-        """Reorder the verse in case of first char is a number
-
+        """
+        Reorder the verse in case of first char is a number
         tag -- the tag of this verse / verse group
         tmpVerse -- list of strings
         """
@@ -147,20 +145,20 @@ class _OpenSong(XmlRootClass):
         return res
 
     def get_lyrics(self):
-        """Convert the lyrics to openlp lyrics format
-
+        """
+        Convert the lyrics to openlp lyrics format
         return as list of strings
         """
         lyrics = self.lyrics.split(u'\n')
         tmpVerse = []
         finalLyrics = []
         tag = ""
-        for l in lyrics:
-            line = l.rstrip()
+        for lyric in lyrics:
+            line = lyric.rstrip()
             if not line.startswith(u'.'):
                 # drop all chords
                 tmpVerse.append(line)
-                if len(line) > 0:
+                if line:
                     if line.startswith(u'['):
                         tag = line
                 else:
@@ -264,30 +262,35 @@ class Song(object):
         """Initialize from buffer(string) of xml lines in opensong format"""
         self._reset()
         opensong = _OpenSong(xmlcontent)
-        if opensong.title is not None:
+        if opensong.title:
             self.set_title(opensong.title)
-        if opensong.copyright is not None:
+        if opensong.copyright:
             self.set_copyright(opensong.copyright)
-        if opensong.presentation is not None:
+        if opensong.presentation:
             self.set_verse_order(opensong.presentation)
-        if opensong.ccli is not None:
+        if opensong.ccli:
             self.set_song_cclino(opensong.ccli)
         self.set_author_list(opensong.get_author_list())
         self.set_category_array(opensong.get_category_array())
         self.set_lyrics(opensong.get_lyrics())
 
     def from_opensong_file(self, xmlfilename):
-        """Initialize from file containing xml
-
+        """
+        Initialize from file containing xml
         xmlfilename -- path to xml file
         """
-        lst = []
-        f = open(xmlfilename, 'r')
-        for line in f:
-            lst.append(line)
-        f.close()
-        xml = "".join(lst)
-        self.from_opensong_buffer(xml)
+        osfile = None
+        try:
+            osfile = open(xmlfilename, 'r')
+            list = [line for line in osfile]
+            osfile.close()
+            xml = "".join(list)
+            self.from_opensong_buffer(xml)
+        except:
+            log.exception(u'Failed to load opensong xml file')
+        finally:
+            if osfile:
+                osfile.close()
 
     def _remove_punctuation(self, title):
         """Remove the puntuation chars from title
@@ -295,9 +298,9 @@ class Song(object):
         chars are: .,:;!?&%#/\@`$'|"^~*-
         """
         punctuation = ".,:;!?&%#'\"/\\@`$|^~*-"
-        s = title
-        for c in punctuation:
-            s = s.replace(c, '')
+        string = title
+        for char in punctuation:
+            string = string.replace(char, '')
         return s
 
     def set_title(self, title):
@@ -380,16 +383,20 @@ class Song(object):
         self.set_lyrics(lyrics)
 
     def from_ccli_text_file(self, textFileName):
-        """Create song from a list of texts read from given file
-
+        """
+        Create song from a list of texts read from given file
         textFileName -- path to text file
         """
-        lines = []
-        f = open(textFileName, 'r')
-        for orgline in f:
-            lines.append(orgline.rstrip())
-        f.close()
-        self.from_ccli_text_buffer(lines)
+        ccli_file = None
+        try:
+            ccli_file = open(textFileName, 'r')
+            lines = [orgline.rstrip() for orgline in ccli_file]
+            self.from_ccli_text_buffer(lines)
+        except:
+            log.exception(u'Failed to load CCLI text file')
+        finally:
+            if ccli_file:
+                ccli_file.close()
 
     def _assure_string(self, string_in):
         """Force a string is returned"""
@@ -401,13 +408,10 @@ class Song(object):
 
     def _split_to_list(self, aString):
         """Split a string into a list - comma separated"""
-        res = []
-        if aString is not None:
-            lst = aString.split(u',')
-            for l in lst:
-                # remove whitespace
-                res.append(l.strip())
-        return res
+        if aString:
+            list = aString.split(u',')
+            res = [item.strip() for item in list]
+            return res
 
     def _list_to_string(self, strOrList):
         """Force a possibly list into a string"""
@@ -419,8 +423,8 @@ class Song(object):
             lst = []
         else:
             raise SongTypeError(u'Variable not String or List')
-        s = u', '.join(lst)
-        return s
+        string = u', '.join(lst)
+        return string
 
     def get_copyright(self):
         """Return copyright info string"""
@@ -578,17 +582,16 @@ class Song(object):
         self.slideList = []
         tmpSlide = []
         metContent = False
-        for l in self.lyrics:
-            if len(l) > 0:
+        for lyric in self.lyrics:
+            if lyric:
                 metContent = True
-                tmpSlide.append(l)
+                tmpSlide.append(lyric)
             else:
                 if metContent:
                     metContent = False
                     self.slideList.append(tmpSlide)
                     tmpSlide = []
-        #
-        if len(tmpSlide) > 0:
+        if tmpSlide:
             self.slideList.append(tmpSlide)
 
     def get_number_of_slides(self):

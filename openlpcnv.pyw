@@ -5,9 +5,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,8 +29,7 @@ import logging
 import time
 import subprocess
 import codecs
-import sys
-from datetime import date
+
 if os.name == u'nt':
     import win32api
     import win32con
@@ -102,6 +102,7 @@ class Migration(object):
 
     def convert_sqlite2_to_3(self, olddb, newdb):
         if os.name == u'nt':
+            # we can't make this a raw unicode string as the \U within it causes much confusion
             hKey = win32api.RegOpenKey(win32con.HKEY_LOCAL_MACHINE, u'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\SQLite ODBC Driver')
             value, type = win32api.RegQueryValueEx (hKey, u'UninstallString')
             sqlitepath, temp = os.path.split(value)
@@ -110,9 +111,9 @@ class Migration(object):
             sqliteexe = u'sqlite'
         cmd = u'%s "%s" .dump' % (sqliteexe, olddb)
         if os.name == u'nt':
-            subprocess.call(cmd, stdout=open(u'./sqlite.dmp', u'w'))
+            subprocess.call(cmd, stdout=open(u'sqlite.dmp', u'w'))
         else:
-            subprocess.call(cmd, stdout=open(u'./sqlite.dmp', u'w'), shell=True)
+            subprocess.call(cmd, stdout=open(u'sqlite.dmp', u'w'), shell=True)
         self.convert_file(u'sqlite.dmp', u'sqlite3.dmp')
         if os.name == u'nt':
             sqlite3exe = os.path.join(sqlitepath, u'sqlite3.exe')

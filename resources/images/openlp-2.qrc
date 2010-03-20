@@ -26,7 +26,13 @@
     <file>slide_first.png</file>
     <file>slide_last.png</file>
     <file>slide_next.png</file>
+    <file>slide_blank.png</file>
+    <file>slide_desktop.png</file>
+    <file>slide_theme.png</file>
     <file>slide_previous.png</file>
+    <file>media_playback_start.png</file>
+    <file>media_playback_stop.png</file>
+    <file>media_playback_pause.png</file>
   </qresource>
   <qresource prefix="icon" >
     <file>openlp-logo-16x16.png</file>
@@ -37,11 +43,8 @@
     <file>openlp-logo-256x256.png</file>
   </qresource>
   <qresource prefix="graphics" >
-    <file>splash-screen-new.bmp</file>
-    <file>about-new.bmp</file>
     <file>openlp-about-logo.png</file>
     <file>openlp-splash-screen.png</file>
-    <file>openlp-splash-screen.svg</file>
   </qresource>
   <qresource prefix="imports" >
     <file>import_selectall.png</file>
@@ -76,6 +79,9 @@
     <file>image_load.png</file>
   </qresource>
   <qresource prefix="services" >
+    <file>service_edit.png</file>
+    <file>service_notes.png</file>
+    <file>service_item_notes.png</file>
     <file>service_bottom.png</file>
     <file>service_down.png</file>
     <file>service_top.png</file>
@@ -86,12 +92,14 @@
     <file>service_save.png</file>
   </qresource>
   <qresource prefix="system" >
+    <file>system_close.png</file>
     <file>system_about.png</file>
     <file>system_help_contents.png</file>
     <file>system_add.png</file>
     <file>system_live.png</file>
     <file>system_preview.png</file>
     <file>system_mediamanager.png</file>
+    <file>system_contribute.png</file>
     <file>system_servicemanager.png</file>
     <file>system_thememanager.png</file>
     <file>system_exit.png</file>
@@ -106,6 +114,7 @@
     <file>media_video.png</file>
     <file>media_time.png</file>
     <file>media_stop.png</file>
+    <file>image_clapperboard.png</file>
   </qresource>
   <qresource prefix="messagebox" >
     <file>messagebox_critical.png</file>

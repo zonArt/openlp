@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -30,7 +31,7 @@ from xml.etree.ElementTree import ElementTree, XML
 from openlp.core.lib import str_to_bool
 
 blankthemexml=\
-'''<?xml version="1.0" encoding="iso-8859-1"?>
+'''<?xml version="1.0" encoding="utf-8"?>
  <theme version="1.0">
    <name>BlankStyle</name>
    <background mode="transparent"/>
@@ -51,7 +52,8 @@ blankthemexml=\
       <proportion>30</proportion>
       <weight>Normal</weight>
       <italics>False</italics>
-      <location override="False" x="0" y="0" width="0" height="0"/>
+      <indentation>0</indentation>
+      <location override="False" x="10" y="10" width="1004" height="730"/>
    </font>
    <font type="footer">
       <name>Arial</name>
@@ -59,14 +61,16 @@ blankthemexml=\
       <proportion>12</proportion>
       <weight>Normal</weight>
       <italics>False</italics>
-      <location override="False" x="0" y="0" width="0" height="0"/>
+      <indentation>0</indentation>
+      <location override="False" x="10" y="730" width="1004" height="38"/>
    </font>
    <display>
-      <shadow color="#000000">True</shadow>
-      <outline color="#000000">False</outline>
-       <horizontalAlign>0</horizontalAlign>
-       <verticalAlign>0</verticalAlign>
-       <wrapStyle>0</wrapStyle>
+      <shadow color="#000000" size="5">True</shadow>
+      <outline color="#000000" size="2">False</outline>
+      <horizontalAlign>0</horizontalAlign>
+      <verticalAlign>0</verticalAlign>
+      <wrapStyle>0</wrapStyle>
+      <slideTransition>False</slideTransition>
    </display>
  </theme>
 '''
@@ -89,7 +93,9 @@ class ThemeXML(object):
         ``path``
             The path name to be added.
         """
-        if self.background_filename is not None and path is not None:
+        if self.background_filename and path:
+            self.theme_name = self.theme_name.rstrip().lstrip()
+            self.background_filename = self.background_filename.rstrip().lstrip()
             self.background_filename = os.path.join(path, self.theme_name,
                 self.background_filename)
 
@@ -165,7 +171,8 @@ class ThemeXML(object):
         self.child_element(background, u'filename', filename)
 
     def add_font(self, name, color, proportion, override, fonttype=u'main',
-        weight=u'Normal', italics=u'False', xpos=0, ypos=0, width=0, height=0):
+        weight=u'Normal', italics=u'False', indentation=0, xpos=0, ypos=0,
+        width=0, height=0):
         """
         Add a Font.
 
@@ -189,6 +196,9 @@ class ThemeXML(object):
 
         ``italics``
             Does the font render to italics Defaults to 0 Normal
+
+        ``indentation``
+            Number of characters the wrap line is indented
 
         ``xpos``
             The X position of the text block.
@@ -215,6 +225,9 @@ class ThemeXML(object):
         self.child_element(background, u'weight', weight)
         #Create italics name element
         self.child_element(background, u'italics', italics)
+        #Create indentation name element
+        self.child_element(background, u'indentation', unicode(indentation))
+
         #Create Location element
         element = self.theme_xml.createElement(u'location')
         element.setAttribute(u'override',override)
@@ -226,7 +239,7 @@ class ThemeXML(object):
         background.appendChild(element)
 
     def add_display(self, shadow, shadow_color, outline, outline_color,
-        horizontal, vertical, wrap):
+        horizontal, vertical, wrap, transition, shadow_pixel=5, outline_pixel=2):
         """
         Add a Display options.
 
@@ -250,18 +263,24 @@ class ThemeXML(object):
 
         ``wrap``
             Wrap style.
+
+        ``transition``
+            Whether the slide transition is active.
+
         """
         background = self.theme_xml.createElement(u'display')
         self.theme.appendChild(background)
         # Shadow
         element = self.theme_xml.createElement(u'shadow')
         element.setAttribute(u'color', shadow_color)
+        element.setAttribute(u'size', unicode(shadow_pixel))
         value = self.theme_xml.createTextNode(shadow)
         element.appendChild(value)
         background.appendChild(element)
         # Outline
         element = self.theme_xml.createElement(u'outline')
         element.setAttribute(u'color', outline_color)
+        element.setAttribute(u'size', unicode(outline_pixel))
         value = self.theme_xml.createTextNode(outline)
         element.appendChild(value)
         background.appendChild(element)
@@ -280,6 +299,12 @@ class ThemeXML(object):
         value = self.theme_xml.createTextNode(wrap)
         element.appendChild(value)
         background.appendChild(element)
+        # Slide Transition
+        element = self.theme_xml.createElement(u'slideTransition')
+        value = self.theme_xml.createTextNode(transition)
+        element.appendChild(value)
+        background.appendChild(element)
+
 
     def child_element(self, element, tag, value):
         """
@@ -338,19 +363,20 @@ class ThemeXML(object):
         iter = theme_xml.getiterator()
         master = u''
         for element in iter:
-            if len(element.getchildren()) > 0:
+            element.text = unicode(element.text).decode('unicode-escape')
+            if element.getchildren():
                 master = element.tag + u'_'
             else:
                 #background transparent tags have no children so special case
                 if element.tag == u'background':
                     for e in element.attrib.iteritems():
                         setattr(self, element.tag + u'_' + e[0], e[1])
-            if len(element.attrib) > 0:
+            if element.attrib:
                 for e in element.attrib.iteritems():
                     if master == u'font_' and e[0] == u'type':
                         master += e[1] + u'_'
                     elif master == u'display_' and (element.tag == u'shadow' \
-                        or element.tag == u'outline'):
+                        or element.tag == u'outline' ):
                         et = str_to_bool(element.text)
                         setattr(self, master + element.tag, et)
                         setattr(self, master + element.tag + u'_'+ e[0], e[1])
@@ -361,8 +387,9 @@ class ThemeXML(object):
                         else:
                             setattr(self, field, e[1])
             else:
-                if element.tag is not None:
+                if element.tag:
                     field = master + element.tag
+                    element.text = element.text.strip().lstrip()
                     if element.text == u'True' or element.text == u'False':
                         setattr(self, field, str_to_bool(element.text))
                     else:

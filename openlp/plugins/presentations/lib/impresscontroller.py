@@ -1,24 +1,31 @@
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
-"""
-OpenLP - Open Source Lyrics Projection
-Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley
 
-This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation; version 2 of the License.
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-Place, Suite 330, Boston, MA 02111-1307 USA
-"""
 # OOo API documentation:
 # http://api.openoffice.org/docs/common/ref/com/sun/star/presentation/XSlideShowController.html
+# http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/ProUNO/Basic/Getting_Information_about_UNO_Objects#Inspecting_interfaces_during_debugging
 # http://docs.go-oo.org/sd/html/classsd_1_1SlideShow.html
 # http://www.oooforum.org/forum/viewtopic.phtml?t=5252
 # http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/Working_with_Presentations
@@ -28,6 +35,7 @@ Place, Suite 330, Boston, MA 02111-1307 USA
 
 import logging
 import os
+import time
 
 if os.name == u'nt':
     from win32com.client import Dispatch
@@ -37,7 +45,9 @@ else:
 
 from PyQt4 import QtCore
 
-from presentationcontroller import PresentationController
+from presentationcontroller import PresentationController,  PresentationDocument
+
+log = logging.getLogger(__name__)
 
 class ImpressController(PresentationController):
     """
@@ -45,9 +55,7 @@ class ImpressController(PresentationController):
     It creates the runtime environment, loads and closes the presentation as
     well as triggering the correct activities based on the users input
     """
-    global log
-    log = logging.getLogger(u'ImpressController')
-    log.info(u'loaded')
+    log.info(u'ImpressController loaded')
 
     def __init__(self, plugin):
         """
@@ -55,10 +63,10 @@ class ImpressController(PresentationController):
         """
         log.debug(u'Initialising')
         PresentationController.__init__(self, plugin, u'Impress')
+        self.supports = [u'.odp']
+        self.alsosupports = [u'.ppt', u'.pps', u'.pptx', u'.ppsx']
         self.process = None
-        self.document = None
-        self.presentation = None
-        self.controller = None
+        self.desktop = None
 
     def check_available(self):
         """
@@ -71,33 +79,107 @@ class ImpressController(PresentationController):
             # If not windows, and we've got this far then probably
             # installed else the import uno would likely have failed
             return True
-        
+
     def start_process(self):
         """
         Loads a running version of OpenOffice in the background.
         It is not displayed to the user but is available to the UNO interface
         when required.
         """
-        log.debug(u'start Openoffice')
+        log.debug(u'start process Openoffice')
         if os.name == u'nt':
             self.manager = self.get_com_servicemanager()
             self.manager._FlagAsMethod(u'Bridge_GetStruct')
             self.manager._FlagAsMethod(u'Bridge_GetValueObject')
         else:
             # -headless
-            cmd = u'openoffice.org -nologo -norestore -minimized -invisible ' + u'"' + u'-accept=socket,host=localhost,port=2002;urp;'+ u'"'
+            cmd = u'openoffice.org -nologo -norestore -minimized -invisible -nofirststartwizard -accept="socket,host=localhost,port=2002;urp;"'
             self.process = QtCore.QProcess()
             self.process.startDetached(cmd)
             self.process.waitForStarted()
+
+    def get_uno_desktop(self):
+        log.debug(u'get UNO Desktop Openoffice')
+        ctx = None
+        loop = 0
+        log.debug(u'get UNO Desktop Openoffice - getComponentContext')
+        context = uno.getComponentContext()
+        log.debug(u'get UNO Desktop Openoffice - createInstaneWithContext - UnoUrlResolver')
+        resolver = context.ServiceManager.createInstanceWithContext(
+            u'com.sun.star.bridge.UnoUrlResolver', context)
+        while ctx is None and loop < 3:
+            try:
+                log.debug(u'get UNO Desktop Openoffice - resolve')
+                ctx = resolver.resolve(u'uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
+            except:
+                log.exception(u'Unable to find running instance ')
+                self.start_process()
+                loop += 1
+        try:
+            self.manager = ctx.ServiceManager
+            log.debug(u'get UNO Desktop Openoffice - createInstanceWithContext - Desktop')
+            desktop = self.manager.createInstanceWithContext(
+                "com.sun.star.frame.Desktop", ctx )
+            return desktop
+        except:
+            log.exception(u'Failed to get UNO desktop')
+            return None
+
+    def get_com_desktop(self):
+        log.debug(u'get COM Desktop OpenOffice')
+        try:
+            desktop = self.manager.createInstance(u'com.sun.star.frame.Desktop')
+            return desktop
+        except:
+            log.exception(u'Failed to get COM desktop')
+        return None
+
+    def get_com_servicemanager(self):
+        log.debug(u'get_com_servicemanager openoffice')
+        try:
+            return Dispatch(u'com.sun.star.ServiceManager')
+        except:
+            log.exception(u'Failed to get COM service manager')
+            return None
 
     def kill(self):
         """
         Called at system exit to clean up any running presentations
         """
-        log.debug(u'Kill')
-        self.close_presentation()
+        log.debug(u'Kill OpenOffice')
+        for doc in self.docs:
+            doc.close_presentation()
+        if os.name != u'nt':
+            desktop = self.get_uno_desktop()
+        else:
+            desktop = self.get_com_desktop()
+        docs = desktop.getComponents()
+        if docs.hasElements():
+            log.debug(u'OpenOffice not terminated')
+        else:
+            try:
+                desktop.terminate()
+                log.debug(u'OpenOffice killed')
+            except:
+                log.exception(u'Failed to terminate OpenOffice')
 
-    def load_presentation(self, presentation):
+    def add_doc(self, name):
+        log.debug(u'Add Doc OpenOffice')
+        doc = ImpressDocument(self,  name)
+        self.docs.append(doc)
+        return doc
+
+class ImpressDocument(PresentationDocument):
+
+    def __init__(self,  controller,  presentation):
+        log.debug(u'Init Presentation OpenOffice')
+        self.controller = controller
+        self.document = None
+        self.presentation = None
+        self.control = None
+        self.store_filename(presentation)
+        
+    def load_presentation(self):
         """
         Called when a presentation is added to the SlideController.
         It builds the environment, starts communcations with the background
@@ -108,169 +190,169 @@ class ImpressController(PresentationController):
         ``presentation``
         The file name of the presentatios to the run.
         """
-        log.debug(u'LoadPresentation')
-        self.store_filename(presentation)
+        log.debug(u'Load Presentation OpenOffice')
+        #print "s.dsk1 ", self.desktop
         if os.name == u'nt':
-            desktop = self.get_com_desktop()
+            desktop = self.controller.get_com_desktop()
             if desktop is None:
-                self.start_process()
-                desktop = self.get_com_desktop()
-            url = u'file:///' + presentation.replace(u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
+                self.controller.start_process()
+                desktop = self.controller.get_com_desktop()
+            url = u'file:///' + self.filepath.replace(u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
         else:
-            desktop = self.get_uno_desktop()
-            url = uno.systemPathToFileUrl(presentation)
+            desktop = self.controller.get_uno_desktop()
+            url = uno.systemPathToFileUrl(self.filepath)
         if desktop is None:
             return
+        self.desktop = desktop
+        #print "s.dsk2 ", self.desktop
+        properties = []
+        properties.append(self.create_property(u'Minimized', True))
+        properties = tuple(properties)
         try:
-            self.desktop = desktop
-            properties = []
-            properties = tuple(properties)            
             self.document = desktop.loadComponentFromURL(url, u'_blank',
                 0, properties)
-            self.presentation = self.document.getPresentation()
-            self.presentation.Display = self.plugin.render_manager.current_display + 1
-            self.presentation.start()
-            self.controller = \
-                desktop.getCurrentComponent().Presentation.getController()
         except:
             log.exception(u'Failed to load presentation')
             return
+        self.presentation = self.document.getPresentation()
+        self.presentation.Display = self.controller.plugin.render_manager.screens.current_display + 1
+        self.control = None
         self.create_thumbnails()
-
+        
     def create_thumbnails(self):
         """
         Create thumbnail images for presentation
         """
+        log.debug(u'create thumbnails OpenOffice')
         if self.check_thumbnails():
             return
-
         if os.name == u'nt':
             thumbdir = u'file:///' + self.thumbnailpath.replace(
                 u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
         else:
             thumbdir = uno.systemPathToFileUrl(self.thumbnailpath)
         props = []
-        if os.name == u'nt':
-            prop = self.manager.Bridge_GetStruct(u'com.sun.star.beans.PropertyValue')
-        else:
-            prop = PropertyValue()
-        prop.Name = u'FilterName'
-        prop.Value = u'impress_png_Export'
-        props.append(prop)
+        props.append(self.create_property(u'FilterName', u'impress_png_Export'))
         props = tuple(props)
         doc = self.document
         pages = doc.getDrawPages()
         for idx in range(pages.getCount()):
             page = pages.getByIndex(idx)
             doc.getCurrentController().setCurrentPage(page)
-            doc.storeToURL(thumbdir + u'/' + self.thumbnailprefix + 
-                unicode(idx+1) + u'.png', props)
-
-    def get_uno_desktop(self):
-        log.debug(u'getUNODesktop')
-        ctx = None
-        loop = 0
-        context = uno.getComponentContext()
-        resolver = context.ServiceManager.createInstanceWithContext(
-            u'com.sun.star.bridge.UnoUrlResolver', context)
-        while ctx is None and loop < 3:
+            path = u'%s/%s%s.png'% (thumbdir, self.controller.thumbnailprefix,
+                    unicode(idx + 1))
             try:
-                ctx = resolver.resolve(u'uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
+                doc.storeToURL(path , props)
             except:
-                self.start_process()
-                loop += 1
-        try:
-            self.manager = ctx.ServiceManager
-            desktop = self.manager.createInstanceWithContext(
-                "com.sun.star.frame.Desktop", ctx )
-            return desktop
-        except:
-            log.exception(u'Failed to get UNO desktop')
-            return None
+                log.exception(u'%s\nUnable to store preview' % path)
 
-    def get_com_desktop(self):
-        log.debug(u'getCOMDesktop')
-        try:
-            desktop = self.manager.createInstance(u'com.sun.star.frame.Desktop')
-            return desktop
-        except:
-            log.exception(u'Failed to get COM desktop')
-        return None
-
-    def get_com_servicemanager(self):
-        log.debug(u'get_com_servicemanager')
-        try:
-            return Dispatch(u'com.sun.star.ServiceManager')
-        except:
-            log.exception(u'Failed to get COM service manager')
-            return None
+    def create_property(self, name, value):
+        log.debug(u'create property OpenOffice')
+        if os.name == u'nt':
+            prop = self.controller.manager.Bridge_GetStruct(u'com.sun.star.beans.PropertyValue')
+        else:
+            prop = PropertyValue()
+        prop.Name = name
+        prop.Value = value
+        return prop
 
     def close_presentation(self):
         """
         Close presentation and clean up objects
-        Triggerent by new object being added to SlideController orOpenLP
-        being shut down
+        Triggered by new object being added to SlideController or OpenLP
+        being shutdown
         """
-        if self.document is not None:
-            if self.presentation is not None:
-                self.presentation.end()
-                self.presentation = None
-            self.document.dispose()
+        log.debug(u'close Presentation OpenOffice')
+        if self.document:
+            if self.presentation:
+                try:
+                    self.presentation.end()
+                    self.presentation = None
+                    self.document.dispose()
+                except:
+                    #We tried!
+                    pass
             self.document = None
+        self.controller.remove_doc(self)
 
     def is_loaded(self):
-        if self.presentation is None or self.document is None \
-            or self.controller is None:
+        log.debug(u'is loaded OpenOffice')
+        #print "is_loaded "
+        if self.presentation is None or self.document is None:
+            #print "no present or document"
             return False
         try:
             if self.document.getPresentation() is None:
+                #print "no getPresentation"
                 return False
         except:
             return False
         return True
 
     def is_active(self):
+        log.debug(u'is active OpenOffice')
+        #print "is_active "
         if not self.is_loaded():
+            #print "False "
             return False
-        return self.controller.isRunning() and self.controller.isActive()
+        #print "self.con ", self.control
+        if self.control is None:
+            return False
+        return True
 
     def unblank_screen(self):
-        return self.controller.resume()
+        log.debug(u'unblank screen OpenOffice')
+        return self.control.resume()
 
     def blank_screen(self):
-        self.controller.blankScreen(0)
+        log.debug(u'blank screen OpenOffice')
+        self.control.blankScreen(0)
+        
+    def is_blank(self):
+        """
+        Returns true if screen is blank
+        """
+        log.debug(u'is blank OpenOffice')
+        return self.control.isPaused()
 
     def stop_presentation(self):
-        self.controller.deactivate()
+        log.debug(u'stop presentation OpenOffice')
+        self.control.deactivate()
 
     def start_presentation(self):
-        if not self.controller.isRunning():
+        log.debug(u'start presentation OpenOffice')
+        if self.control is None or not self.control.isRunning():
             self.presentation.start()
-            self.controller = self.desktop.getCurrentComponent().Presentation.getController()
+            # start() returns before the getCurrentComponent is ready. Try for 5 seconds
+            i = 1
+            while self.desktop.getCurrentComponent() is None and i < 50:
+                time.sleep(0.1)
+                i = i + 1
+            self.control = self.desktop.getCurrentComponent().Presentation.getController()
         else:
-            self.controller.activate()
+            self.control.activate()
             self.goto_slide(1)
 
     def get_slide_number(self):
-        return self.controller.getCurrentSlideIndex()
+        return self.control.getCurrentSlideIndex() + 1
 
     def get_slide_count(self):
-        return self.controller.getSlideCount()
+        return self.document.getDrawPages().getCount()
 
     def goto_slide(self, slideno):
-        self.controller.gotoSlideIndex(slideno-1)
+        self.control.gotoSlideIndex(slideno-1)
 
     def next_step(self):
        """
        Triggers the next effect of slide on the running presentation
        """
-       self.controller.gotoNextEffect()
+       self.control.gotoNextEffect()
 
     def previous_step(self):
         """
         Triggers the previous slide on the running presentation
         """
-        self.controller.gotoPreviousSlide()
+        self.control.gotoPreviousSlide()
 
     def get_slide_preview_file(self, slide_no):
         """
@@ -279,5 +361,44 @@ class ImpressController(PresentationController):
         ``slide_no``
         The slide an image is required for, starting at 1
         """
-        return os.path.join(self.thumbnailpath,
-            self.thumbnailprefix + unicode(slide_no) + u'.png')
+        path = os.path.join(self.thumbnailpath,
+            self.controller.thumbnailprefix + unicode(slide_no) + u'.png')
+        if os.path.isfile(path):
+            return path
+        else:
+            return None
+
+    def get_slide_text(self, slide_no):
+        """
+        Returns the text on the slide
+
+        ``slide_no``
+        The slide the text  is required for, starting at 1
+        """
+        doc = self.document
+        pages = doc.getDrawPages()
+        text = ''
+        page = pages.getByIndex(slide_no - 1)
+        for idx in range(page.getCount()):
+            shape = page.getByIndex(idx)
+            if shape.supportsService("com.sun.star.drawing.Text"):
+                text += shape.getString() + '\n'
+        return text
+        
+    def get_slide_notes(self, slide_no):
+        """
+        Returns the text on the slide
+
+        ``slide_no``
+        The slide the notes are required for, starting at 1
+        """
+        doc = self.document
+        pages = doc.getDrawPages()
+        text = ''
+        page = pages.getByIndex(slide_no - 1)
+        notes = page.getNotesPage()
+        for idx in range(notes.getCount()):
+            shape = notes.getByIndex(idx)
+            if shape.supportsService("com.sun.star.drawing.Text"):
+                text += shape.getString() + '\n'
+        return text

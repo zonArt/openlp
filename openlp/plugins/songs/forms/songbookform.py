@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +25,6 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import translate
 from openlp.plugins.songs.forms.songbookdialog import Ui_SongBookDialog
 
 class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
@@ -47,12 +47,11 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
 
     def accept(self):
         if not self.NameEdit.text():
-            QtGui.QMessageBox.critical(self,
-                translate(u'SongBookDialog', u'Error'),
-                translate(u'SongBookDialog', u'You need to type in a book name!'),
+            QtGui.QMessageBox.critical(
+                self, self.trUtf8('Error'),
+                self.trUtf8('You need to type in a book name!'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             self.NameEdit.setFocus()
             return False
         else:
             return QtGui.QDialog.accept(self)
-

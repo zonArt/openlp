@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,10 +27,12 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, translate, buildIcon
-from openlp.plugins.songs.lib import SongManager, SongMediaItem
+from openlp.core.lib import Plugin, build_icon, PluginStatus
+from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab
 from openlp.plugins.songs.forms import OpenLPImportForm, OpenSongExportForm, \
     OpenSongImportForm, OpenLPExportForm
+
+log = logging.getLogger(__name__)
 
 class SongsPlugin(Plugin):
     """
@@ -39,28 +42,24 @@ class SongsPlugin(Plugin):
     specified. Authors, topics and song books can be assigned to songs
     as well.
     """
-
-    global log
-    log = logging.getLogger(u'SongsPlugin')
     log.info(u'Song Plugin loaded')
 
     def __init__(self, plugin_helpers):
         """
         Create and set up the Songs plugin.
         """
-        # Call the parent constructor
-        Plugin.__init__(self, u'Songs', u'1.9.0', plugin_helpers)
+        Plugin.__init__(self, u'Songs', u'1.9.1', plugin_helpers)
         self.weight = -10
         self.songmanager = SongManager(self.config)
         self.openlp_import_form = OpenLPImportForm()
         self.opensong_import_form = OpenSongImportForm()
         self.openlp_export_form = OpenLPExportForm()
         self.opensong_export_form = OpenSongExportForm()
-        # Create the plugin icon
-        self.icon = buildIcon(u':/media/media_song.png')
+        self.icon = build_icon(u':/media/media_song.png')
+        self.status = PluginStatus.Active
 
-    def can_be_disabled(self):
-        return True
+    def get_settings_tab(self):
+        return SongsTab(self.name)
 
     def initialise(self):
         log.info(u'Songs Initialising')
@@ -84,7 +83,7 @@ class SongsPlugin(Plugin):
         Create the MediaManagerItem object, which is displaed in the
         Media Manager.
         """
-        return SongMediaItem(self, self.icon, 'Songs')
+        return SongMediaItem(self, self.icon, self.name)
 
     def add_import_menu_item(self, import_menu):
         """
@@ -109,19 +108,18 @@ class SongsPlugin(Plugin):
         self.ImportSongMenu.addAction(self.ImportOpenSongItem)
         import_menu.addAction(self.ImportSongMenu.menuAction())
         # Translations...
-        self.ImportSongMenu.setTitle(translate(u'main_window', u'&Song'))
-        self.ImportOpenSongItem.setText(translate(u'main_window', u'OpenSong'))
-        self.ImportOpenlp1Item.setText(
-            translate(u'main_window', u'openlp.org 1.0'))
+        self.ImportSongMenu.setTitle(import_menu.trUtf8('&Song'))
+        self.ImportOpenSongItem.setText(import_menu.trUtf8('OpenSong'))
+        self.ImportOpenlp1Item.setText(import_menu.trUtf8('openlp.org 1.0'))
         self.ImportOpenlp1Item.setToolTip(
-            translate(u'main_window', u'Export songs in openlp.org 1.0 format'))
+            import_menu.trUtf8('Export songs in openlp.org 1.0 format'))
         self.ImportOpenlp1Item.setStatusTip(
-            translate(u'main_window', u'Export songs in openlp.org 1.0 format'))
-        self.ImportOpenlp2Item.setText(translate(u'main_window', u'OpenLP 2.0'))
+            import_menu.trUtf8('Export songs in openlp.org 1.0 format'))
+        self.ImportOpenlp2Item.setText(import_menu.trUtf8('OpenLP 2.0'))
         self.ImportOpenlp2Item.setToolTip(
-            translate(u'main_window', u'Export songs in OpenLP 2.0 format'))
+            import_menu.trUtf8('Export songs in OpenLP 2.0 format'))
         self.ImportOpenlp2Item.setStatusTip(
-            translate(u'main_window', u'Export songs in OpenLP 2.0 format'))
+            import_menu.trUtf8('Export songs in OpenLP 2.0 format'))
         # Signals and slots
         QtCore.QObject.connect(self.ImportOpenlp1Item,
             QtCore.SIGNAL(u'triggered()'), self.onImportOpenlp1ItemClick)
@@ -154,11 +152,10 @@ class SongsPlugin(Plugin):
         self.ExportSongMenu.addAction(self.ExportOpenSongItem)
         export_menu.addAction(self.ExportSongMenu.menuAction())
         # Translations...
-        self.ExportSongMenu.setTitle(translate(u'main_window', u'&Song'))
-        self.ExportOpenSongItem.setText(translate(u'main_window', u'OpenSong'))
-        self.ExportOpenlp1Item.setText(
-            translate(u'main_window', u'openlp.org 1.0'))
-        self.ExportOpenlp2Item.setText(translate(u'main_window', u'OpenLP 2.0'))
+        self.ExportSongMenu.setTitle(export_menu.trUtf8('&Song'))
+        self.ExportOpenSongItem.setText(export_menu.trUtf8('OpenSong'))
+        self.ExportOpenlp1Item.setText(export_menu.trUtf8('openlp.org 1.0'))
+        self.ExportOpenlp2Item.setText(export_menu.trUtf8('OpenLP 2.0'))
         # Signals and slots
         QtCore.QObject.connect(self.ExportOpenlp1Item,
             QtCore.SIGNAL(u'triggered()'), self.onExportOpenlp1ItemClicked)
@@ -179,4 +176,11 @@ class SongsPlugin(Plugin):
         self.opensong_export_form.show()
 
     def about(self):
-        return u'<b>Song Plugin</b> <br>This plugin allows Songs to be managed and displayed.<br><br>This is a core plugin and cannot be made inactive</b>'
+        about_text = self.trUtf8('<b>Song Plugin</b> <br>This plugin allows '
+            'Songs to be managed and displayed.<br>')
+        return about_text
+
+    def can_delete_theme(self, theme):
+        if len(self.songmanager.get_songs_for_theme(theme)) == 0:
+            return True
+        return False

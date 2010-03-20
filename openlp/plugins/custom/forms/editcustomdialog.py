@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,13 +24,13 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate, buildIcon
+from openlp.core.lib import build_icon
 
 class Ui_customEditDialog(object):
     def setupUi(self, customEditDialog):
         customEditDialog.setObjectName(u'customEditDialog')
         customEditDialog.resize(590, 541)
-        icon = buildIcon(u':/icon/openlp.org-icon-32.bmp')
+        icon = build_icon(u':/icon/openlp.org-icon-32.bmp')
         customEditDialog.setWindowIcon(icon)
         self.gridLayout = QtGui.QGridLayout(customEditDialog)
         self.gridLayout.setObjectName(u'gridLayout')
@@ -50,14 +52,15 @@ class Ui_customEditDialog(object):
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setObjectName(u'verticalLayout')
         self.UpButton = QtGui.QPushButton(customEditDialog)
-        icon1 = buildIcon(u':/services/service_up.png')
+        icon1 = build_icon(u':/services/service_up.png')
         self.UpButton.setIcon(icon1)
         self.UpButton.setObjectName(u'UpButton')
         self.verticalLayout.addWidget(self.UpButton)
-        spacerItem = QtGui.QSpacerItem(20, 128, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem = QtGui.QSpacerItem(20, 128,
+            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem)
         self.DownButton = QtGui.QPushButton(customEditDialog)
-        icon2 = buildIcon(u':/services/service_down.png')
+        icon2 = build_icon(u':/services/service_down.png')
         self.DownButton.setIcon(icon2)
         self.DownButton.setObjectName(u'DownButton')
         self.verticalLayout.addWidget(self.DownButton)
@@ -78,7 +81,6 @@ class Ui_customEditDialog(object):
         self.verticalLayout_2.setObjectName(u'verticalLayout_2')
         self.AddButton = QtGui.QPushButton(self.ButtonWidge)
         self.AddButton.setObjectName(u'AddButton')
-        self.AddButton.setToolTip(translate(u'customEditDialog', u'Add new slide at bottom'))
         self.verticalLayout_2.addWidget(self.AddButton)
         self.EditButton = QtGui.QPushButton(self.ButtonWidge)
         self.EditButton.setObjectName(u'EditButton')
@@ -95,7 +97,8 @@ class Ui_customEditDialog(object):
         self.ClearButton = QtGui.QPushButton(self.ButtonWidge)
         self.ClearButton.setObjectName(u'ClearButton')
         self.verticalLayout_2.addWidget(self.ClearButton)
-        spacerItem1 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem1 = QtGui.QSpacerItem(20, 40,
+            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout_2.addItem(spacerItem1)
         self.EditLayout_3.addWidget(self.ButtonWidge)
         self.gridLayout.addWidget(self.EditWidget, 2, 0, 1, 1)
@@ -118,11 +121,16 @@ class Ui_customEditDialog(object):
         self.horizontalLayout_2.addWidget(self.CreditEdit)
         self.gridLayout.addLayout(self.horizontalLayout_2, 4, 0, 1, 1)
         self.buttonBox = QtGui.QDialogButtonBox(customEditDialog)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setStandardButtons(
+            QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Save)
         self.buttonBox.setObjectName(u'buttonBox')
         self.gridLayout.addWidget(self.buttonBox, 5, 0, 1, 1)
 
         self.retranslateUi(customEditDialog)
+        QtCore.QObject.connect(self.buttonBox,
+            QtCore.SIGNAL(u'rejected()'), customEditDialog.closePressed)
+        QtCore.QObject.connect(self.buttonBox,
+            QtCore.SIGNAL(u'accepted()'), customEditDialog.accept)
         QtCore.QMetaObject.connectSlotsByName(customEditDialog)
         customEditDialog.setTabOrder(self.TitleEdit, self.VerseTextEdit)
         customEditDialog.setTabOrder(self.VerseTextEdit, self.AddButton)
@@ -138,22 +146,22 @@ class Ui_customEditDialog(object):
         customEditDialog.setTabOrder(self.ThemeComboBox, self.buttonBox)
 
     def retranslateUi(self, customEditDialog):
-        self.UpButton.setToolTip(translate(u'customEditDialog', u'Move slide Up 1'))
-        self.DownButton.setToolTip(translate(u'customEditDialog', u'Move slide down 1'))
-        customEditDialog.setWindowTitle(translate(u'customEditDialog', 'Edit Custom Slides'))
-        self.TitleLabel.setText(translate(u'customEditDialog', 'Title:'))
-        self.AddButton.setText(translate(u'customEditDialog', 'Add New'))
-        self.AddButton.setToolTip(translate(u'customEditDialog', u'Add new slide at bottom'))
-        self.EditButton.setText(translate(u'customEditDialog', 'Edit'))
-        self.EditButton.setToolTip(translate(u'customEditDialog', u'Edit selected slide'))
-        self.EditAllButton.setText(translate(u'customEditDialog', 'Edit All'))
-        self.EditAllButton.setToolTip(translate(u'customEditDialog', u'Edit all slides'))
-        self.SaveButton.setText(translate(u'customEditDialog', 'Save'))
-        self.SaveButton.setToolTip(translate(u'customEditDialog', u'Replace edited slide'))
-        self.DeleteButton.setText(translate(u'customEditDialog', 'Delete'))
-        self.DeleteButton.setToolTip(translate(u'customEditDialog', u'Delete selected slide'))
-        self.ClearButton.setText(translate(u'customEditDialog', 'Clear'))
-        self.ClearButton.setToolTip(translate(u'customEditDialog', u'Clear edit area'))
-        self.ThemeLabel.setText(translate(u'customEditDialog', 'Theme:'))
-        self.ThemeComboBox.setToolTip(translate(u'customEditDialog', u'Set Theme for Slides'))
-        self.CreditLabel.setText(translate(u'customEditDialog', 'Credits:'))
+        self.UpButton.setToolTip(self.trUtf8('Move slide Up 1'))
+        self.DownButton.setToolTip(self.trUtf8('Move slide down 1'))
+        customEditDialog.setWindowTitle(self.trUtf8('Edit Custom Slides'))
+        self.TitleLabel.setText(self.trUtf8('Title:'))
+        self.AddButton.setText(self.trUtf8('Add New'))
+        self.AddButton.setToolTip(self.trUtf8('Add new slide at bottom'))
+        self.EditButton.setText(self.trUtf8('Edit'))
+        self.EditButton.setToolTip(self.trUtf8('Edit selected slide'))
+        self.EditAllButton.setText(self.trUtf8('Edit All'))
+        self.EditAllButton.setToolTip(self.trUtf8('Edit all slides'))
+        self.SaveButton.setText(self.trUtf8('Save'))
+        self.SaveButton.setToolTip(self.trUtf8('Replace edited slide'))
+        self.DeleteButton.setText(self.trUtf8('Delete'))
+        self.DeleteButton.setToolTip(self.trUtf8('Delete selected slide'))
+        self.ClearButton.setText(self.trUtf8('Clear'))
+        self.ClearButton.setToolTip(self.trUtf8('Clear edit area'))
+        self.ThemeLabel.setText(self.trUtf8('Theme:'))
+        self.ThemeComboBox.setToolTip(self.trUtf8('Set Theme for Slides'))
+        self.CreditLabel.setText(self.trUtf8('Credits:'))

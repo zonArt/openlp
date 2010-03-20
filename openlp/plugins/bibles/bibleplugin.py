@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,30 +27,26 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, translate, buildIcon
+from openlp.core.lib import Plugin, build_icon, PluginStatus
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 
+log = logging.getLogger(__name__)
+
 class BiblePlugin(Plugin):
-    global log
-    log = logging.getLogger(u'BiblePlugin')
     log.info(u'Bible Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        # Call the parent constructor
-        Plugin.__init__(self, u'Bibles', u'1.9.0', plugin_helpers)
+        Plugin.__init__(self, u'Bibles', u'1.9.1', plugin_helpers)
         self.weight = -9
-        # Create the plugin icon
-        self.icon = buildIcon(u':/media/media_bible.png')
+        self.icon = build_icon(u':/media/media_bible.png')
         #Register the bible Manager
-        self.biblemanager = None
-
-    def can_be_disabled(self):
-        return True
+        self.status = PluginStatus.Active
+        self.manager = None
 
     def initialise(self):
         log.info(u'bibles Initialising')
-        if self.biblemanager is None:
-            self.biblemanager = BibleManager(self.config)
+        if self.manager is None:
+            self.manager = BibleManager(self, self.config)
         Plugin.initialise(self)
         self.insert_toolbox_item()
         self.ImportBibleItem.setVisible(True)
@@ -63,17 +60,17 @@ class BiblePlugin(Plugin):
         self.ExportBibleItem.setVisible(False)
 
     def get_settings_tab(self):
-        return BiblesTab()
+        return BiblesTab(self.name)
 
     def get_media_manager_item(self):
         # Create the BibleManagerItem object
-        return BibleMediaItem(self, self.icon, u'Bibles')
+        return BibleMediaItem(self, self.icon, self.name)
 
     def add_import_menu_item(self, import_menu):
         self.ImportBibleItem = QtGui.QAction(import_menu)
         self.ImportBibleItem.setObjectName(u'ImportBibleItem')
         import_menu.addAction(self.ImportBibleItem)
-        self.ImportBibleItem.setText(translate(u'BiblePlugin', u'&Bible'))
+        self.ImportBibleItem.setText(import_menu.trUtf8('&Bible'))
         # Signals and slots
         QtCore.QObject.connect(self.ImportBibleItem,
             QtCore.SIGNAL(u'triggered()'), self.onBibleNewClick)
@@ -83,12 +80,20 @@ class BiblePlugin(Plugin):
         self.ExportBibleItem = QtGui.QAction(export_menu)
         self.ExportBibleItem.setObjectName(u'ExportBibleItem')
         export_menu.addAction(self.ExportBibleItem)
-        self.ExportBibleItem.setText(translate(u'BiblePlugin', u'&Bible'))
+        self.ExportBibleItem.setText(export_menu.trUtf8('&Bible'))
         self.ExportBibleItem.setVisible(False)
 
     def onBibleNewClick(self):
-        if self.media_item is not None:
+        if self.media_item:
             self.media_item.onNewClick()
 
     def about(self):
-        return u'<b>Bible Plugin</b> <br>This plugin allows bible verse from different sources to be displayed on the screen during the service.<br><br>This is a core plugin and cannot be made inactive</b>'
+        about_text = self.trUtf8('<strong>Bible Plugin</strong><br />This '
+            'plugin allows bible verses from different sources to be '
+            'displayed on the screen during the service.')
+        return about_text
+
+    def can_delete_theme(self, theme):
+        if self.settings_tab.bible_theme == theme:
+            return False
+        return True

@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,14 +30,15 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib.plugin import PluginStatus
 from plugindialog import Ui_PluginViewDialog
 
+log = logging.getLogger(__name__)
+
 class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
-    global log
-    log = logging.getLogger(u'PluginForm')
 
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.parent = parent
         self.activePlugin = None
+        self.programaticChange = False
         self.setupUi(self)
         self.load()
         self._clearDetails()
@@ -70,7 +72,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
                 status_text = 'Disabled'
             item.setText(u'%s (%s)' % (plugin.name, status_text))
             # If the plugin has an icon, set it!
-            if plugin.icon is not None:
+            if plugin.icon:
                 item.setIcon(plugin.icon)
             self.PluginListWidget.addItem(item)
 
@@ -78,16 +80,19 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         self.StatusComboBox.setCurrentIndex(-1)
         self.VersionNumberLabel.setText(u'')
         self.AboutTextBrowser.setHtml(u'')
+        self.StatusComboBox.setEnabled(False)
 
     def _setDetails(self):
         log.debug('PluginStatus: %s', str(self.activePlugin.status))
         self.VersionNumberLabel.setText(self.activePlugin.version)
         self.AboutTextBrowser.setHtml(self.activePlugin.about())
-        if self.activePlugin.can_be_disabled():
-            self.StatusComboBox.setCurrentIndex(int(self.activePlugin.status))
-            self.StatusComboBox.setEnabled(True)
-        else:
-            self.StatusComboBox.setEnabled(False)
+        self.programaticChange = True
+        status = 1
+        if self.activePlugin.status == PluginStatus.Active:
+            status = 0
+        self.StatusComboBox.setCurrentIndex(status)
+        self.StatusComboBox.setEnabled(True)
+        self.programaticChange = False
 
     def onPluginListWidgetSelectionChanged(self):
         if self.PluginListWidget.currentItem() is None:
@@ -99,16 +104,19 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             if plugin.name == plugin_name:
                 self.activePlugin = plugin
                 break
-        if self.activePlugin is not None:
+        if self.activePlugin:
             self._setDetails()
         else:
             self._clearDetails()
 
     def onStatusComboBoxChanged(self, status):
-        self.activePlugin.toggle_status(status)
-        if status == PluginStatus.Active:
+        if self.programaticChange:
+            return
+        if status == 0:
+            self.activePlugin.toggle_status(PluginStatus.Active)
             self.activePlugin.initialise()
         else:
+            self.activePlugin.toggle_status(PluginStatus.Inactive)
             self.activePlugin.finalise()
         status_text = 'Inactive'
         if self.activePlugin.status == PluginStatus.Active:
@@ -119,4 +127,3 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             status_text = 'Disabled'
         self.PluginListWidget.currentItem().setText(
             u'%s (%s)' % (self.activePlugin.name, status_text))
-

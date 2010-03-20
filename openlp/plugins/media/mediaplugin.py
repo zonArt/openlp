@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,28 +25,41 @@
 
 import logging
 
-from openlp.core.lib import Plugin, buildIcon
-from openlp.plugins.media.lib import MediaTab, MediaMediaItem
+from openlp.core.lib import Plugin, build_icon, PluginStatus
+from openlp.plugins.media.lib import MediaMediaItem
+from PyQt4.phonon import Phonon
+
+log = logging.getLogger(__name__)
 
 class MediaPlugin(Plugin):
-    global log
-    log = logging.getLogger(u'MediaPlugin')
-    log.info(u'Media Plugin loaded')
+    log.info(u'%s MediaPlugin loaded', __name__)
 
     def __init__(self, plugin_helpers):
-        # Call the parent constructor
-        Plugin.__init__(self, u'Media', u'1.9.0', plugin_helpers)
+        Plugin.__init__(self, u'Media', u'1.9.1', plugin_helpers)
         self.weight = -6
-        # Create the plugin icon
-        self.icon = buildIcon(u':/media/media_video.png')
+        self.icon = build_icon(u':/media/media_video.png')
         # passed with drag and drop messages
         self.dnd_id = u'Media'
+        self.status = PluginStatus.Active
+        self.audio_list = u''
+        self.video_list = u''
+        for mimetype in Phonon.BackendCapabilities.availableMimeTypes():
+            mimetype = unicode(mimetype)
+            type = mimetype.split(u'audio/x-')
+            self.audio_list, mimetype = self._add_to_list(self.audio_list, type, mimetype)
+            type = mimetype.split(u'audio/')
+            self.audio_list, mimetype = self._add_to_list(self.audio_list, type, mimetype)
+            type = mimetype.split(u'video/x-')
+            self.video_list, mimetype = self._add_to_list(self.video_list, type, mimetype)
+            type = mimetype.split(u'video/')
+            self.video_list, mimetype = self._add_to_list(self.video_list, type, mimetype)
 
-    def get_settings_tab(self):
-        return MediaTab()
-
-    def can_be_disabled(self):
-        return True
+    def _add_to_list(self, list, value, type):
+        if len(value) == 2:
+            if list.find(value[1]) == -1:
+                list += u'*.%s ' % value[1]
+            type = u''
+        return list, type
 
     def initialise(self):
         log.info(u'Plugin Initialising')
@@ -58,7 +72,9 @@ class MediaPlugin(Plugin):
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
-        return MediaMediaItem(self, self.icon, u'Media')
+        return MediaMediaItem(self, self.icon, self.name)
 
     def about(self):
-        return u'<b>Media Plugin</b> <br> One day this may provide access to video and audio clips'
+        about_text = self.trUtf8('<b>Media Plugin</b><br>This plugin '
+            'allows the playing of audio and video media')
+        return about_text

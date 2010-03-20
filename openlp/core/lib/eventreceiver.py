@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,6 +26,8 @@
 import logging
 
 from PyQt4 import QtCore
+
+log = logging.getLogger(__name__)
 
 class EventReceiver(QtCore.QObject):
     """
@@ -53,6 +56,9 @@ class EventReceiver(QtCore.QObject):
     ``load_song_list``
         Tells the the song plugin to reload the song list
 
+    ``load_custom_list``
+        Tells the the custom plugin to reload the custom list
+
     ``update_spin_delay``
         Pushes out the Image loop delay
 
@@ -78,15 +84,32 @@ class EventReceiver(QtCore.QObject):
     ``{plugin}_stop``
         Requests a plugin to handle a stop event
 
-    ``audit_live``
+    ``{plugin}_edit``
+        Requests a plugin edit a database item with the key as the payload
+
+    ``songusage_live``
         Sends live song audit requests to the audit component
 
     ``audit_changed``
         Audit information may have changed
-    """
-    global log
-    log = logging.getLogger(u'EventReceiver')
 
+    ``config_updated``
+        Informs components the config has changed
+
+    ``preview_song``
+        Tells the song plugin the edit has finished and the song can be previewed
+        Only available if the edit was triggered by the Preview button.
+
+    ``slidecontroller_change``
+        Informs the slidecontroller that a slide change has occurred
+
+    ``remote_edit_clear``
+        Informs all components that remote edit has been aborted.
+
+    ``presentation types``
+        Informs all components of the presentation types supported.
+
+    """
     def __init__(self):
         """
         Initialise the event receiver, calling the parent constructor.
@@ -109,16 +132,16 @@ class EventReceiver(QtCore.QObject):
 
 class Receiver():
     """
-    Class to allow events to be passed from different parts of the
-    system. This is a static wrapper around the ``EventReceiver``
-    class. As there is only one instance of it in the system the QT
-    signal/slot architecture can send messages across the system.
+    Class to allow events to be passed from different parts of the system. This
+    is a static wrapper around the ``EventReceiver`` class. As there is only
+    one instance of it in the system the Qt4 signal/slot architecture can send
+    messages across the system.
 
     To send a message:
-       ``Receiver().send_message(u'<<Message ID>>', data)``
+       ``Receiver.send_message(u'<<Message ID>>', data)``
 
     To receive a Message
-        ``QtCore.QObject.connect(Receiver().get_receiver(), QtCore.SIGNAL(u'<<Message ID>>'), <<ACTION>>)``
+        ``QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'<<Message ID>>'), <<ACTION>>)``
     """
     eventreceiver = EventReceiver()
 
@@ -141,3 +164,4 @@ class Receiver():
         Get the global ``eventreceiver`` instance.
         """
         return Receiver.eventreceiver
+

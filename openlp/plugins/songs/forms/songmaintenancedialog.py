@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +25,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, buildIcon
+from openlp.core.lib import build_icon
 
 class Ui_SongMaintenanceDialog(object):
     def setupUi(self, SongMaintenanceDialog):
@@ -50,20 +51,20 @@ class Ui_SongMaintenanceDialog(object):
             self.TypeListWidget.sizePolicy().hasHeightForWidth())
         self.TypeListWidget.setSizePolicy(sizePolicy)
         self.TypeListWidget.setViewMode(QtGui.QListView.IconMode)
-        self.TypeListWidget.setIconSize(QtCore.QSize(112, 100));
-        self.TypeListWidget.setMovement(QtGui.QListView.Static);
-        self.TypeListWidget.setMaximumWidth(118);
-        self.TypeListWidget.setSpacing(0);
+        self.TypeListWidget.setIconSize(QtCore.QSize(112, 100))
+        self.TypeListWidget.setMovement(QtGui.QListView.Static)
+        self.TypeListWidget.setMaximumWidth(118)
+        self.TypeListWidget.setSpacing(0)
         self.TypeListWidget.setSortingEnabled(False)
         self.TypeListWidget.setUniformItemSizes(True)
         self.TypeListWidget.setObjectName(u'TypeListWidget')
-        icon = buildIcon(u':/songs/author_maintenance.png')
+        icon = build_icon(u':/songs/author_maintenance.png')
         item = QtGui.QListWidgetItem(self.TypeListWidget)
         item.setIcon(icon)
-        icon1 = buildIcon(u':/songs/topic_maintenance.png')
+        icon1 = build_icon(u':/songs/topic_maintenance.png')
         item = QtGui.QListWidgetItem(self.TypeListWidget)
         item.setIcon(icon1)
-        icon2 = buildIcon(u':/songs/book_maintenance.png')
+        icon2 = build_icon(u':/songs/book_maintenance.png')
         item = QtGui.QListWidgetItem(self.TypeListWidget)
         item.setIcon(icon2)
         self.ContentLayout.addWidget(self.TypeListWidget)
@@ -88,17 +89,17 @@ class Ui_SongMaintenanceDialog(object):
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.AuthorButtonsLayout.addItem(spacerItem)
         self.AuthorAddButton = QtGui.QPushButton(self.AuthorButtonWidget)
-        icon3 = buildIcon(u':/songs/author_add.png')
+        icon3 = build_icon(u':/songs/author_add.png')
         self.AuthorAddButton.setIcon(icon3)
         self.AuthorAddButton.setObjectName(u'AuthorAddButton')
         self.AuthorButtonsLayout.addWidget(self.AuthorAddButton)
         self.AuthorEditButton = QtGui.QPushButton(self.AuthorButtonWidget)
-        icon4 = buildIcon(u':/songs/author_edit.png')
+        icon4 = build_icon(u':/songs/author_edit.png')
         self.AuthorEditButton.setIcon(icon4)
         self.AuthorEditButton.setObjectName(u'AuthorEditButton')
         self.AuthorButtonsLayout.addWidget(self.AuthorEditButton)
         self.AuthorDeleteButton = QtGui.QPushButton(self.AuthorButtonWidget)
-        icon5 = buildIcon(u':/songs/author_delete.png')
+        icon5 = build_icon(u':/songs/author_delete.png')
         self.AuthorDeleteButton.setIcon(icon5)
         self.AuthorDeleteButton.setObjectName(u'AuthorDeleteButton')
         self.AuthorButtonsLayout.addWidget(self.AuthorDeleteButton)
@@ -128,17 +129,17 @@ class Ui_SongMaintenanceDialog(object):
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.TopicButtonLayout.addItem(TopicSpacerItem)
         self.TopicAddButton = QtGui.QPushButton(self.TopicButtonWidget)
-        icon6 = buildIcon(u':/songs/topic_add.png')
+        icon6 = build_icon(u':/songs/topic_add.png')
         self.TopicAddButton.setIcon(icon6)
         self.TopicAddButton.setObjectName(u'TopicAddButton')
         self.TopicButtonLayout.addWidget(self.TopicAddButton)
         self.TopicEditButton = QtGui.QPushButton(self.TopicButtonWidget)
-        icon7 = buildIcon(u':/songs/topic_edit.png')
+        icon7 = build_icon(u':/songs/topic_edit.png')
         self.TopicEditButton.setIcon(icon7)
         self.TopicEditButton.setObjectName(u'TopicEditButton')
         self.TopicButtonLayout.addWidget(self.TopicEditButton)
         self.TopicDeleteButton = QtGui.QPushButton(self.TopicButtonWidget)
-        icon8 = buildIcon(u':/songs/topic_delete.png')
+        icon8 = build_icon(u':/songs/topic_delete.png')
         self.TopicDeleteButton.setIcon(icon8)
         self.TopicDeleteButton.setObjectName(u'TopicDeleteButton')
         self.TopicButtonLayout.addWidget(self.TopicDeleteButton)
@@ -168,17 +169,17 @@ class Ui_SongMaintenanceDialog(object):
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.BookButtonLayout.addItem(spacerItem2)
         self.BookAddButton = QtGui.QPushButton(self.BookButtonWidget)
-        icon9 = buildIcon(u':/songs/book_add.png')
+        icon9 = build_icon(u':/songs/book_add.png')
         self.BookAddButton.setIcon(icon9)
         self.BookAddButton.setObjectName(u'BookAddButton')
         self.BookButtonLayout.addWidget(self.BookAddButton)
         self.BookEditButton = QtGui.QPushButton(self.BookButtonWidget)
-        icon10 = buildIcon(u':/songs/book_edit.png')
+        icon10 = build_icon(u':/songs/book_edit.png')
         self.BookEditButton.setIcon(icon10)
         self.BookEditButton.setObjectName(u'BookEditButton')
         self.BookButtonLayout.addWidget(self.BookEditButton)
         self.BookDeleteButton = QtGui.QPushButton(self.BookButtonWidget)
-        icon11 = buildIcon(u':/songs/book_delete.png')
+        icon11 = build_icon(u':/songs/book_delete.png')
         self.BookDeleteButton.setIcon(icon11)
         self.BookDeleteButton.setObjectName(u'BookDeleteButton')
         self.BookButtonLayout.addWidget(self.BookDeleteButton)
@@ -207,30 +208,16 @@ class Ui_SongMaintenanceDialog(object):
         QtCore.QMetaObject.connectSlotsByName(SongMaintenanceDialog)
 
     def retranslateUi(self, SongMaintenanceDialog):
-        SongMaintenanceDialog.setWindowTitle(
-            translate(u'SongMaintenanceDialog', u'Song Maintenance'))
-        self.TypeListWidget.item(0).setText(
-            translate(u'SongMaintenanceDialog', u'Authors'))
-        self.TypeListWidget.item(1).setText(
-            translate(u'SongMaintenanceDialog', u'Topics'))
-        self.TypeListWidget.item(2).setText(
-            translate(u'SongMaintenanceDialog', u'Books/Hymnals'))
-        self.AuthorAddButton.setText(
-            translate(u'SongMaintenanceDialog', u'Add'))
-        self.AuthorEditButton.setText(
-            translate(u'SongMaintenanceDialog', u'Edit'))
-        self.AuthorDeleteButton.setText(
-            translate(u'SongMaintenanceDialog', u'Delete'))
-        self.TopicAddButton.setText(
-            translate(u'SongMaintenanceDialog', u'Add'))
-        self.TopicEditButton.setText(
-            translate(u'SongMaintenanceDialog', u'Edit'))
-        self.TopicDeleteButton.setText(
-            translate(u'SongMaintenanceDialog', u'Delete'))
-        self.BookAddButton.setText(
-            translate(u'SongMaintenanceDialog', u'Add'))
-        self.BookEditButton.setText(
-            translate(u'SongMaintenanceDialog', u'Edit'))
-        self.BookDeleteButton.setText(
-            translate(u'SongMaintenanceDialog', u'Delete'))
-
+        SongMaintenanceDialog.setWindowTitle(self.trUtf8('Song Maintenance'))
+        self.TypeListWidget.item(0).setText(self.trUtf8('Authors'))
+        self.TypeListWidget.item(1).setText(self.trUtf8('Topics'))
+        self.TypeListWidget.item(2).setText(self.trUtf8('Books/Hymnals'))
+        self.AuthorAddButton.setText(self.trUtf8('Add'))
+        self.AuthorEditButton.setText(self.trUtf8('Edit'))
+        self.AuthorDeleteButton.setText(self.trUtf8('Delete'))
+        self.TopicAddButton.setText(self.trUtf8('Add'))
+        self.TopicEditButton.setText(self.trUtf8('Edit'))
+        self.TopicDeleteButton.setText(self.trUtf8('Delete'))
+        self.BookAddButton.setText(self.trUtf8('Add'))
+        self.BookEditButton.setText(self.trUtf8('Edit'))
+        self.BookDeleteButton.setText(self.trUtf8('Delete'))

@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,15 +27,15 @@ import logging
 
 from PyQt4 import QtGui
 
-from openlp.core.ui import GeneralTab, ThemesTab, AlertsTab
+from openlp.core.ui import GeneralTab, ThemesTab
 from settingsdialog import Ui_SettingsDialog
 
-log = logging.getLogger(u'SettingsForm')
+log = logging.getLogger(__name__)
 
 class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
 
     def __init__(self, screen_list, mainWindow, parent=None):
-        QtGui.QDialog.__init__(self, None)
+        QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # General tab
         self.GeneralTab = GeneralTab(screen_list)
@@ -42,23 +43,22 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         # Themes tab
         self.ThemesTab = ThemesTab(mainWindow)
         self.addTab(u'Themes', self.ThemesTab)
-        # Alert tab
-        self.AlertsTab = AlertsTab()
-        self.addTab(u'Alerts', self.AlertsTab)
 
-    def addTab(self, name,  tab):
-        log.info(u'Adding %s tab' % tab.title())
-        self.SettingsTabWidget.addTab(tab, tab.title())
+    def addTab(self, name, tab):
+        log.info(u'Adding %s tab' % tab.tabTitle)
+        self.SettingsTabWidget.addTab(tab, tab.tabTitleVisible)
 
     def insertTab(self, tab, location):
-        log.debug(u'Inserting %s tab' % tab.title())
-        self.SettingsTabWidget.insertTab(location + 13, tab, tab.title())
+        log.debug(u'Inserting %s tab' % tab.tabTitle)
+        #13 : There are 3 tables currently and locations starts at -10
+        self.SettingsTabWidget.insertTab(
+            location + 13, tab, tab.tabTitleVisible)
 
     def removeTab(self, name):
         log.debug(u'remove %s tab' % name)
         for tab_index in range(0, self.SettingsTabWidget.count()):
-            if self.SettingsTabWidget.widget(tab_index) is not None:
-                if self.SettingsTabWidget.widget(tab_index).title() == name:
+            if self.SettingsTabWidget.widget(tab_index):
+                if self.SettingsTabWidget.widget(tab_index).tabTitle == name:
                     self.SettingsTabWidget.removeTab(tab_index)
 
     def accept(self):

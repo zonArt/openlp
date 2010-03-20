@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,6 +24,8 @@
 ###############################################################################
 
 import os
+
+from openlp.core.utils import AppLocation
 from openlp.core.utils.registry import Registry
 
 class ConfigHelper(object):
@@ -33,20 +36,7 @@ class ConfigHelper(object):
 
     @staticmethod
     def get_data_path():
-        if os.name == u'nt':
-            # ask OS for path to application data, set on Windows XP and Vista
-            path = os.path.join(os.getenv(u'APPDATA'), u'openlp', u'data')
-        elif os.name == u'mac':
-            path = os.path.join(os.getenv(u'HOME'), u'Library',
-                u'Application Support', u'openlp', u'Data')
-        else:
-            try:
-                from xdg import BaseDirectory
-                path = os.path.join(BaseDirectory.xdg_data_home, u'openlp')
-            except ImportError:
-                path = os.path.join(os.getenv(u'HOME'), u'.openlp', u'data')
-        #reg = ConfigHelper.get_registry()
-        #path = ConfigHelper.get_config(u'main', 'data path', path)
+        path = AppLocation.get_directory(AppLocation.DataDir)
         if not os.path.exists(path):
             os.makedirs(path)
         return path
@@ -57,7 +47,7 @@ class ConfigHelper(object):
         if reg.has_value(section, key):
             return reg.get_value(section, key, default)
         else:
-            if default is not None:
+            if default:
                 ConfigHelper.set_config(section, key, default)
             return default
 
@@ -80,17 +70,7 @@ class ConfigHelper(object):
         current operating system, and returns an instantiation of that class.
         """
         if ConfigHelper.__registry__ is None:
-            config_path = u''
-            if os.name == u'nt':
-                config_path = os.path.join(os.getenv(u'APPDATA'), u'openlp')
-            elif os.name == u'mac':
-                config_path = os.path.join(os.getenv(u'HOME'), u'Library',
-                    u'Application Support', u'openlp')
-            else:
-                try:
-                    from xdg import BaseDirectory
-                    config_path = os.path.join(BaseDirectory.xdg_config_home, u'openlp')
-                except ImportError:
-                    config_path = os.path.join(os.getenv(u'HOME'), u'.openlp')
+            config_path = AppLocation.get_directory(AppLocation.ConfigDir)
             ConfigHelper.__registry__ = Registry(config_path)
         return ConfigHelper.__registry__
+

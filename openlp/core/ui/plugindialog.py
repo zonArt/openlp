@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
+# Carsten Tinggaard                                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,7 +24,6 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
 
 class Ui_PluginViewDialog(object):
     def setupUi(self, PluginViewDialog):
@@ -93,25 +93,16 @@ class Ui_PluginViewDialog(object):
         self.PluginLayout.addWidget(self.PluginListButtonBox)
 
         self.retranslateUi(PluginViewDialog)
-        QtCore.QObject.connect(
-            self.PluginListButtonBox,
-            QtCore.SIGNAL(u'accepted()'),
-            PluginViewDialog.close)
+        QtCore.QObject.connect(self.PluginListButtonBox,
+            QtCore.SIGNAL(u'accepted()'), PluginViewDialog.close)
         QtCore.QMetaObject.connectSlotsByName(PluginViewDialog)
 
     def retranslateUi(self, PluginViewDialog):
-        PluginViewDialog.setWindowTitle(
-            translate(u'PluginViewDialog', u'Plugin List'))
-        self.PluginInfoGroupBox.setTitle(
-            translate(u'PluginViewDialog', u'Plugin Details'))
-        self.VersionLabel.setText(
-            translate(u'PluginViewDialog', u'Version:'))
-        self.VersionNumberLabel.setText(
-            translate(u'PluginViewDialog', u'TextLabel'))
-        self.AboutLabel.setText(translate(u'PluginViewDialog', u'About:'))
-        self.StatusLabel.setText(translate(u'PluginViewDialog', u'Status:'))
-        self.StatusComboBox.setItemText(
-            0, translate(u'PluginViewDialog', u'Active'))
-        self.StatusComboBox.setItemText(
-            1, translate(u'PluginViewDialog', u'Inactive'))
-
+        PluginViewDialog.setWindowTitle(self.trUtf8('Plugin List'))
+        self.PluginInfoGroupBox.setTitle(self.trUtf8('Plugin Details'))
+        self.VersionLabel.setText(self.trUtf8('Version:'))
+        self.VersionNumberLabel.setText(self.trUtf8('TextLabel'))
+        self.AboutLabel.setText(self.trUtf8('About:'))
+        self.StatusLabel.setText(self.trUtf8('Status:'))
+        self.StatusComboBox.setItemText(0, self.trUtf8('Active'))
+        self.StatusComboBox.setItemText(1, self.trUtf8('Inactive'))
