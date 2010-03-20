@@ -165,7 +165,7 @@ class BibleManager(object):
         importer = class_(self.parent, **kwargs)
         name = importer.register(self.import_wizard)
         self.db_cache[name] = importer
-        return importer.do_import()
+        return importer
 
     def get_bibles(self):
         """
