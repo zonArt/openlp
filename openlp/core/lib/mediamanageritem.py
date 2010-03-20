@@ -290,7 +290,8 @@ class MediaManagerItem(QtGui.QWidget):
             self.ListView.addAction(
                 contextMenuAction(
                     self.ListView, u':/system/system_add.png',
-                    self.trUtf8('&Add to Service Item'), self.onAddEditClick))
+                    self.trUtf8('&Add to selected Service Item'),
+                    self.onAddEditClick))
         QtCore.QObject.connect(
             self.ListView, QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
             self.onPreviewClick)
@@ -404,9 +405,15 @@ class MediaManagerItem(QtGui.QWidget):
                 QtGui.QMessageBox.information(self,
                     self.trUtf8('No Servive item selected'),
                     self.trUtf8('You must select a existing Service Item to add to.'))
-            else:
+            elif self.title == service_item.name:
                 self.generateSlideData(service_item)
                 self.parent.service_manager.addServiceItem(service_item)
+            else:
+                #Turn off the remote edit update message indicator
+                self.parent.service_manager.remoteEditTriggered = False
+                QtGui.QMessageBox.information(self,
+                    self.trUtf8('Invalid Service Item'),
+                    self.trUtf8(unicode('You must select a %s service item.' % self.title)))
 
     def buildServiceItem(self):
         """

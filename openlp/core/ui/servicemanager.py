@@ -691,6 +691,7 @@ class ServiceManager(QtGui.QWidget):
         if item == -1:
             return False
         else:
+            #Switch on remote edit update functionality.
             self.remoteEditTriggered = True
             return self.serviceItems[item][u'service_item']
 
