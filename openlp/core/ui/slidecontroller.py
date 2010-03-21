@@ -403,14 +403,14 @@ class SlideController(QtGui.QWidget):
         if self.songEdit:
             slideno = self.selectedRow
         self.songEdit = False
-        self.addServiceManagerItem(item, slideno)
+        self._processItem(item, slideno)
 
     def replaceServiceManagerItem(self, item):
         """
         Replacement item following a remote edit
         """
         if item.__eq__(self.serviceItem):
-            self.addServiceManagerItem(item, self.PreviewListWidget.currentRow())
+            self._processItem(item, self.PreviewListWidget.currentRow())
 
     def addServiceManagerItem(self, item, slideno):
         """
@@ -424,27 +424,27 @@ class SlideController(QtGui.QWidget):
             self.PreviewListWidget.selectRow(slideno)
             self.onSlideSelected()
             return
-        #If old item was a command tell it to stop
-        if self.serviceItem and self.serviceItem.is_command():
-            self.onMediaStop()
-        if item.is_media():
-            self.onMediaStart(item)
-        elif item.is_command():
-            if self.isLive:
-                blanked = self.blankButton.isChecked()
-            else:
-                blanked = False
-            Receiver.send_message(u'%s_start' % item.name.lower(), \
-                [item.title, item.service_item_path,
-                item.get_frame_title(), slideno, self.isLive, blanked])
-        self.displayServiceManagerItems(item, slideno)
+        self._processItem(item, slideno)
 
-    def displayServiceManagerItems(self, serviceItem, slideno):
+    def _processItem(self, serviceItem, slideno):
         """
         Loads a ServiceItem into the system from ServiceManager
         Display the slide number passed
         """
-        log.debug(u'displayServiceManagerItems Start')
+        log.debug(u'processsManagerItem')
+        #If old item was a command tell it to stop
+        if self.serviceItem and self.serviceItem.is_command():
+            self.onMediaStop()
+        if serviceItem.is_media():
+            self.onMediaStart(serviceItem)
+        elif serviceItem.is_command():
+            if self.isLive:
+                blanked = self.blankButton.isChecked()
+            else:
+                blanked = False
+            Receiver.send_message(u'%s_start' % serviceItem.name.lower(), \
+                [serviceItem.title, serviceItem.service_item_path,
+                serviceItem.get_frame_title(), slideno, self.isLive, blanked])
         self.slideList = {}
         width = self.parent.ControlSplitter.sizes()[self.split]
         #Set pointing cursor when we have somthing to point at
@@ -508,7 +508,6 @@ class SlideController(QtGui.QWidget):
         log.log(15, u'Display Rendering took %4s' % (time.time() - before))
         if self.isLive:
             self.serviceItem.request_audit()
-        log.debug(u'displayServiceManagerItems End')
 
     #Screen event methods
     def onSlideSelectedFirst(self):
