@@ -226,6 +226,7 @@ class MainDisplay(DisplayWidget):
         ``frame``
             Image frame to be rendered
         """
+        log.debug(u'frameView %d' % (self.displayBlank))
         if not self.displayBlank:
             if transition:
                 if self.frame is not None:
@@ -248,14 +249,22 @@ class MainDisplay(DisplayWidget):
             if not self.isVisible():
                 self.setVisible(True)
                 self.showFullScreen()
+        else:
+            self.waitingFrame = frame
+            self.waitingFrameTrans = transition
 
     def blankDisplay(self, blanked=True):
+        log.debug(u'Blank main Display %d' % blanked)
         if blanked:
             self.displayBlank = True
             self.display_text.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
+            self.waitingFrame = None
+            self.waitingFrameTrans = False
         else:
             self.displayBlank = False
-            if self.display_frame:
+            if self.waitingFrame:
+                self.frameView(self.waitingFrame, self.waitingFrameTrans)
+            elif self.display_frame:
                 self.frameView(self.display_frame)
 
     def onMediaQueue(self, message):
