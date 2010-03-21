@@ -498,7 +498,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             sxml = SongXMLBuilder()
             sxml.new_document()
             sxml.add_lyrics_to_song()
-            count = 1
             text = u' '
             for i in range (0, self.VerseListWidget.count()):
                 item = self.VerseListWidget.item(i)
@@ -506,7 +505,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 bits = verseId.split(u':')
                 sxml.add_verse_to_lyrics(bits[0], bits[1], unicode(item.text()))
                 text = text + unicode(self.VerseListWidget.item(i).text()) + u' '
-                count += 1
             text = text.replace(u'\'', u'')
             text = text.replace(u',', u'')
             text = text.replace(u';', u'')

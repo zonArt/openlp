@@ -282,7 +282,7 @@ class SongMediaItem(MediaManagerItem):
         raw_footer = []
         author_list = u''
         author_audit = []
-        ccl = u''
+        ccli = u''
         if self.remoteTriggered is None:
             item = self.ListView.currentItem()
             if item is None:
