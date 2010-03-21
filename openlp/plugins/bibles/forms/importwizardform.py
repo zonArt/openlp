@@ -341,17 +341,17 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             download_location = self.field(u'web_location').toInt()[0]
             if download_location == DownloadLocation.Crosswalk:
                 bible = self.web_bible_list[DownloadLocation.Crosswalk][
-                    unicode(self.BibleComboBox.currentText())]
+                    unicode(self.BibleComboBox.currentText(), u'utf8')]
             elif download_location == DownloadLocation.BibleGateway:
                 bible = self.web_bible_list[DownloadLocation.BibleGateway][
-                    unicode(self.BibleComboBox.currentText())]
+                    self.BibleComboBox.currentText()]
             importer = self.manager.import_bible(BibleFormat.WebDownload,
-                name=unicode(self.field(u'license_version').toString()),
-                download_source=unicode(DownloadLocation.get_name(download_location)),
-                download_name=unicode(bible),
-                proxy_server=unicode(self.field(u'proxy_server').toString()),
-                proxy_username=unicode(self.field(u'proxy_username').toString()),
-                proxy_password=unicode(self.field(u'proxy_password').toString())
+                name=unicode(self.field(u'license_version').toString(), u'utf8'),
+                download_source=DownloadLocation.get_name(download_location),
+                download_name=bible,
+                proxy_server=unicode(self.field(u'proxy_server').toString(), u'utf8'),
+                proxy_username=unicode(self.field(u'proxy_username').toString(), u'utf8'),
+                proxy_password=unicode(self.field(u'proxy_password').toString(), u'utf8')
             )
         success = importer.do_import()
         if success:
