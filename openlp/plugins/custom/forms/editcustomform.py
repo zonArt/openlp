@@ -87,6 +87,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
 
     def initialise(self):
         self.editAll = False
+        self.AddButton.setEnabled(True)
         self.DeleteButton.setEnabled(False)
         self.EditButton.setEnabled(False)
         self.EditAllButton.setEnabled(True)
