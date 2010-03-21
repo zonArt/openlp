@@ -147,13 +147,11 @@ class SongXMLParser(object):
         iter = self.song_xml.getiterator()
         verse_list = []
         for element in iter:
-            print element.tag, element.text
             if element.tag == u'verse':
                 if element.text is None:
                     element.text = u''
                 verse_list.append([element.attrib,
                     unicode(element.text).decode('unicode-escape')])
-        print verse_list
         return verse_list
 
     def dump_xml(self):
