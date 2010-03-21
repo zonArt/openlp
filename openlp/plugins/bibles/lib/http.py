@@ -32,7 +32,7 @@ from BeautifulSoup import BeautifulSoup, Tag, NavigableString
 
 from openlp.core.lib import Receiver
 from openlp.core.utils import AppLocation
-from common import BibleCommon, SearchResults
+from common import BibleCommon, SearchResults, unescape
 from db import BibleDB
 from openlp.plugins.bibles.lib.models import Book
 
@@ -196,7 +196,8 @@ class BGExtract(BibleCommon):
                 verse_list[verse_number] = u''
                 continue
             if isinstance(verse, NavigableString):
-                verse_list[verse_number] = verse_list[verse_number] + verse.replace(u'&nbsp;', u' ')
+                verse_list[verse_number] = verse_list[verse_number] + \
+                    unescape(unicode(verse, u'utf-8').replace(u'&nbsp;', u' '))
         # Delete the "0" element, since we don't need it, it's just there for
         # some stupid initial whitespace, courtesy of Bible Gateway.
         del verse_list[0]
