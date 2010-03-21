@@ -347,8 +347,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     self.BibleComboBox.currentText()]
             importer = self.manager.import_bible(BibleFormat.WebDownload,
                 name=unicode(self.field(u'license_version').toString(), u'utf8'),
-                download_source=unicode(DownloadLocation.get_name(download_location)),
-                download_name=unicode(bible, u'utf8'),
+                download_source=DownloadLocation.get_name(download_location),
+                download_name=bible,
                 proxy_server=unicode(self.field(u'proxy_server').toString(), u'utf8'),
                 proxy_username=unicode(self.field(u'proxy_username').toString(), u'utf8'),
                 proxy_password=unicode(self.field(u'proxy_password').toString(), u'utf8')
