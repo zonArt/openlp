@@ -419,6 +419,11 @@ class SlideController(QtGui.QWidget):
         Called by ServiceManager
         """
         log.debug(u'addServiceManagerItem')
+        #If service item is the same as the current on only change slide
+        if item.__eq__(self.serviceItem):
+            self.PreviewListWidget.selectRow(slideno)
+            self.onSlideSelected()
+            return
         #If old item was a command tell it to stop
         if self.serviceItem and self.serviceItem.is_command():
             self.onMediaStop()
