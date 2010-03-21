@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -294,7 +294,7 @@ class PowerpointDocument(PresentationDocument):
             shape = shapes(idx + 1)
             if shape.HasTextFrame:
                 text += shape.TextFrame.TextRange.Text + '\n'
-        return text 
+        return text
 
     def get_slide_notes(self, slide_no):
         """
