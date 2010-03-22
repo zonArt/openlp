@@ -135,7 +135,7 @@ class MigrateBibles():
 
     def _v1_9_0_old(self, database):
         self.progress(u'Rename Tables ' + database)
-        conn = sqlite3.connect(self.data_path + os.sep + database)
+        conn = sqlite3.connect(os.path.join(self.data_path, database))
         conn.execute(u'alter table book rename to book_temp;')
         conn.commit()
         conn.execute(u'alter table testament rename to testament_temp;')
@@ -178,33 +178,24 @@ class MigrateBibles():
                 self.session.rollback()
                 print u'Error thrown = ', sys.exc_info()[1]
         self.progress(u'Create verse table')
-        #----
-        #results = self.session.query(TVerse).order_by(TVerse.id).all()
-        #for verse_temp in results:
-        #    verse = Verse()
-        #    verse.id = verse_temp.id
-        #    verse.book_id = verse_temp.book_id
-        #    verse.chapter = verse_temp.chapter
-        #    verse.verse = verse_temp.verse
-        #    verse.text = verse_temp.text
-        #    try:
-        #        self.session.add(verse)
-        #        self.session.commit()
-        #    except:
-        #        self.session.rollback()
-        #        print u'Error thrown = ', sys.exc_info()[1]
-        #
-        # The above is too slow, took hours to not finish one bible
-        # For now, just do it the old fashioned way
-        #---
+        results = self.session.query(TVerse).order_by(TVerse.id).all()
+        for verse_temp in results:
+            verse = Verse()
+            verse.id = verse_temp.id
+            verse.book_id = verse_temp.book_id
+            verse.chapter = verse_temp.chapter
+            verse.verse = verse_temp.verse
+            verse.text = verse_temp.text
+            try:
+                self.session.add(verse)
+            except:
+                self.session.rollback()
+                print u'Error thrown = ', sys.exc_info()[1]
         try:
-            conn = sqlite3.connect(self.data_path + os.sep + database)
-            conn.execute(u'insert into verse select * from verse_temp;')
-            conn.commit()
+            self.session.commit()
         except:
             self.session.rollback()
             print u'Error thrown = ', sys.exc_info()[1]
-        #---
         self.progress(u'Create metadata table')
         results = self.session.query(TBibleMeta).order_by(TBibleMeta.key).all()
         for biblemeta_temp in results:
@@ -220,7 +211,7 @@ class MigrateBibles():
 
     def _v1_9_0_cleanup(self, database):
         self.progress(u'Update Internal Data ' + database)
-        conn = sqlite3.connect(self.data_path + os.sep + database)
+        conn = sqlite3.connect(os.path.join(self.data_path, database))
         conn.commit()
         conn.execute(u'drop table book_temp;')
         conn.commit()
