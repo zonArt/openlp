@@ -63,7 +63,8 @@ class OpenSongBible(BibleDB):
         Loads a Bible from file.
         """
         log.debug(u'Starting OpenSong import from "%s"' % self.filename)
-        self.filename = unicode(self.filename, u'utf-8')
+        if not isinstance(self.filename, unicode):
+            self.filename = unicode(self.filename, u'utf8')
         self.wizard.incrementProgressBar(u'Preparing for import...')
         file = None
         success = True
