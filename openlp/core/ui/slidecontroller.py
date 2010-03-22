@@ -144,6 +144,7 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.setColumnWidth(1, self.Controller.width() - self.labelWidth)
         self.PreviewListWidget.isLive = self.isLive
         self.PreviewListWidget.setObjectName(u'PreviewListWidget')
+        self.PreviewListWidget.setSelectionBehavior(1)
         self.PreviewListWidget.setEditTriggers(
             QtGui.QAbstractItemView.NoEditTriggers)
         self.PreviewListWidget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
@@ -561,7 +562,6 @@ class SlideController(QtGui.QWidget):
         if this is the Live Controller also display on the screen
         """
         row = self.PreviewListWidget.currentRow()
-        self.PreviewListWidget.selectRow(row)
         self.selectedRow = 0
         if row > -1 and row < self.PreviewListWidget.rowCount():
             if self.serviceItem.is_command() and self.isLive:
