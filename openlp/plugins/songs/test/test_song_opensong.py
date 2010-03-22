@@ -1,22 +1,28 @@
-# -*- coding:iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
-"""
-OpenLP - Open Source Lyrics Projection
-Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley, Carsten Tinggaard
 
-This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation; version 2 of the License.
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-Place, Suite 330, Boston, MA 02111-1307 USA
-"""
 import os
 import sys
 
@@ -108,7 +114,7 @@ _sample3 = \
  pre-chorus line 1
  pre-chorus line 2
  pre-chorus line 3
- 
+
 [B]
  bridge line 1
  bridge line 2
@@ -118,7 +124,7 @@ _sample3 = \
 
 class Test_OpenSong(object):
     """Test cases for converting from OpenSong xml format to Song"""
-    
+
     def test_sample1(self):
         """OpenSong: handwritten sample1"""
         s = Song()
@@ -126,7 +132,7 @@ class Test_OpenSong(object):
         l = s.get_lyrics()
         assert(len(l) == (4*3+3))
         assert(s.get_number_of_slides() == 4)
-        
+
     def test_sample2(self):
         """OpenSong: handwritten sample2 - with verses and chorus"""
         s = Song()
@@ -134,7 +140,7 @@ class Test_OpenSong(object):
         l = s.get_lyrics()
         assert(len(l) == (4*3+3))
         assert(s.get_number_of_slides() == 4)
-        
+
     def test_sample3(self):
         """OpenSong: handwritten sample3 - with verses, chorus, bridge and pre-chorus"""
         s = Song()
@@ -142,7 +148,7 @@ class Test_OpenSong(object):
         l = s.get_lyrics()
         assert(len(l) == (4*3+4+5+4))
         assert(s.get_number_of_slides() == 6)
-        
+
     def test_file1(self):
         """OpenSong: parse Amazing Grace"""
         global __ThisDir__
@@ -155,7 +161,7 @@ class Test_OpenSong(object):
         assert(s.get_author_list(True) == 'John Newton')
         assert(s.get_verse_order() == '')
         assert(s.get_number_of_slides() == 4)
-        
+
     def test_file2(self):
         """OpenSong: parse The Solid Rock"""
         s = Song()
@@ -167,20 +173,20 @@ class Test_OpenSong(object):
         assert(s.get_author_list(True) == 'Edward Mote, John B. Dykes')
         assert(s.get_verse_order() == 'V1 C V2 C V3 C V4 C')
         assert(s.get_number_of_slides() == 5)
-        
+
     def test_file3(self):
-        """OpenSong: parse 'På en fjern ensom høj' (danish)"""
+        """OpenSong: parse 'PÃ¥ en fjern ensom hÃ¸j' (danish)"""
         #FIXME: problem with XML convert and danish characters
         s = Song()
-        s.from_opensong_file(u'%s/data_opensong/På en fjern ensom høj'%(__ThisDir__))
-        assert(s.get_title() == u'På en fjern ensom høj')
+        s.from_opensong_file(u'%s/data_opensong/PÃ¥ en fjern ensom hÃ¸j'%(__ThisDir__))
+        assert(s.get_title() == u'PÃ¥ en fjern ensom hÃ¸j')
         assert(s.get_copyright() == '')
         assert(s.get_song_cclino() == '')
         assert(s.get_category_array(True) == '')
         assert(s.get_author_list(True) == '')
         assert(s.get_verse_order() == 'V1 C1 V2 C2 V3 C3 V4 C4')
         assert(s.get_number_of_slides() == 8)
-        
+
 if '__main__' == __name__:
     r = Test_OpenSong()
     r.test_file3()

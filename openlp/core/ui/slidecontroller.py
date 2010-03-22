@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -410,14 +410,14 @@ class SlideController(QtGui.QWidget):
         if self.songEdit:
             slideno = self.selectedRow
         self.songEdit = False
-        self.addServiceManagerItem(item, slideno)
+        self._processItem(item, slideno)
 
     def replaceServiceManagerItem(self, item):
         """
         Replacement item following a remote edit
         """
         if item.__eq__(self.serviceItem):
-            self.addServiceManagerItem(item, self.PreviewListWidget.currentRow())
+            self._processItem(item, self.PreviewListWidget.currentRow())
 
     def addServiceManagerItem(self, item, slideno):
         """
@@ -426,27 +426,32 @@ class SlideController(QtGui.QWidget):
         Called by ServiceManager
         """
         log.debug(u'addServiceManagerItem')
-        #If old item was a command tell it to stop
-        if self.serviceItem and self.serviceItem.is_command():
-            self.onMediaStop()
-        if item.is_media():
-            self.onMediaStart(item)
-        elif item.is_command():
-            if self.isLive:
-                blanked = self.blankButton.isChecked()
-            else:
-                blanked = False
-            Receiver.send_message(u'%s_start' % item.name.lower(), \
-                [item.title, item.service_item_path,
-                item.get_frame_title(), slideno, self.isLive, blanked])
-        self.displayServiceManagerItems(item, slideno)
+        #If service item is the same as the current on only change slide
+        if item.__eq__(self.serviceItem):
+            self.PreviewListWidget.selectRow(slideno)
+            self.onSlideSelected()
+            return
+        self._processItem(item, slideno)
 
-    def displayServiceManagerItems(self, serviceItem, slideno):
+    def _processItem(self, serviceItem, slideno):
         """
         Loads a ServiceItem into the system from ServiceManager
         Display the slide number passed
         """
-        log.debug(u'displayServiceManagerItems Start')
+        log.debug(u'processsManagerItem')
+        #If old item was a command tell it to stop
+        if self.serviceItem and self.serviceItem.is_command():
+            self.onMediaStop()
+        if serviceItem.is_media():
+            self.onMediaStart(serviceItem)
+        elif serviceItem.is_command():
+            if self.isLive:
+                blanked = self.blankButton.isChecked()
+            else:
+                blanked = False
+            Receiver.send_message(u'%s_start' % serviceItem.name.lower(), \
+                [serviceItem.title, serviceItem.service_item_path,
+                serviceItem.get_frame_title(), slideno, self.isLive, blanked])
         self.slideList = {}
         width = self.parent.ControlSplitter.sizes()[self.split]
         #Set pointing cursor when we have somthing to point at
@@ -516,7 +521,6 @@ class SlideController(QtGui.QWidget):
         log.log(15, u'Display Rendering took %4s' % (time.time() - before))
         if self.isLive:
             self.serviceItem.request_audit()
-        log.debug(u'displayServiceManagerItems End')
 
     #Screen event methods
     def onSlideSelectedFirst(self):
@@ -537,6 +541,7 @@ class SlideController(QtGui.QWidget):
         """
         Handle the blank screen button
         """
+        log.debug(u'onBlankDisplay %d' % force)
         if force:
             self.blankButton.setChecked(True)
         self.blankScreen(self.blankButton.isChecked())
@@ -553,6 +558,8 @@ class SlideController(QtGui.QWidget):
                     Receiver.send_message(u'%s_blank'% self.serviceItem.name.lower())
                 else:
                     Receiver.send_message(u'%s_unblank'% self.serviceItem.name.lower())
+            else:
+                self.parent.mainDisplay.blankDisplay(blanked)
         else:
             self.parent.mainDisplay.blankDisplay(blanked)
 

@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -77,7 +77,6 @@ class BibleDB(QtCore.QObject):
             self.file = self.clean_filename(self.name)
         if u'file' in kwargs:
             self.file = kwargs[u'file']
-
         self.db_file = os.path.join(kwargs[u'path'], self.file)
         log.debug(u'Load bible %s on path %s', self.file, self.db_file)
         db_type = self.config.get_config(u'db type', u'sqlite')
@@ -108,6 +107,13 @@ class BibleDB(QtCore.QObject):
             old_filename = unicode(old_filename, u'utf-8')
         old_filename = re.sub(r'[^\w]+', u'_', old_filename).strip(u'_')
         return old_filename + u'.sqlite'
+
+    def delete(self):
+        try:
+            os.remove(self.db_file)
+            return True
+        except:
+            return False
 
     def register(self, wizard):
         """

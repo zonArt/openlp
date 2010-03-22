@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -44,6 +44,12 @@ class AppLocation(object):
 
     @staticmethod
     def get_directory(dir_type):
+        """
+        Return the appropriate directory according to the directory type.
+
+        ``dir_type``
+            The directory type you want, for instance the data directory.
+        """
         if dir_type == AppLocation.AppDir:
             return os.path.abspath(os.path.split(sys.argv[0])[0])
         elif dir_type == AppLocation.ConfigDir:
@@ -89,6 +95,16 @@ class AppLocation(object):
 
 
 def check_latest_version(config, current_version):
+    """
+    Check the latest version of OpenLP against the version file on the OpenLP
+    site.
+
+    ``config``
+        The OpenLP config object.
+
+    ``current_version``
+        The current version of OpenLP.
+    """
     version_string = current_version
     #set to prod in the distribution confif file.
     last_test = config.get_config(u'last version test', datetime.now().date())
@@ -106,6 +122,18 @@ def check_latest_version(config, current_version):
             if hasattr(e, u'reason'):
                 log.exception(u'Reason for failure: %s', e.reason)
     return version_string
+
+def variant_to_unicode(variant):
+    """
+    Converts a QVariant to a unicode string.
+
+    ``variant``
+        The QVariant instance to convert to unicode.
+    """
+    string = variant.toString()
+    if not isinstance(string, unicode):
+        string = unicode(string, u'utf8')
+    return string
 
 from registry import Registry
 from confighelper import ConfigHelper

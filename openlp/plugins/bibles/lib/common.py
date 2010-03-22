@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,6 +27,7 @@ import urllib2
 import logging
 import re
 import chardet
+import htmlentitydefs
 
 only_verses = re.compile(r'([\w .]+)[ ]+([0-9]+)[ ]*[:|v|V][ ]*([0-9]+)'
     r'(?:[ ]*-[ ]*([0-9]+|end))?(?:[ ]*,[ ]*([0-9]+)(?:[ ]*-[ ]*([0-9]+|end))?)?',
@@ -114,7 +115,6 @@ def parse_reference(reference):
             log.debug('Didn\'t find anything.')
     log.debug(reference_list)
     return reference_list
-
 
 class SearchResults(object):
     """
@@ -247,3 +247,33 @@ class BibleCommon(object):
             start_tag = text.find(u'<')
         text = text.replace(u'>', u'')
         return text.rstrip().lstrip()
+
+
+def unescape(text):
+    """
+    Removes HTML or XML character references and entities from a text string.
+    Courtesy of Fredrik Lundh, http://effbot.org/zone/re-sub.htm#unescape-html
+
+    @param text The HTML (or XML) source text.
+    @return The plain text, as a Unicode string, if necessary.
+    """
+    def fixup(m):
+        text = m.group(0)
+        if text[:2] == u'&#':
+            # character reference
+            try:
+                if text[:3] == u'&#x':
+                    return unichr(int(text[3:-1], 16))
+                else:
+                    return unichr(int(text[2:-1]))
+            except ValueError:
+                pass
+        else:
+            # named entity
+            try:
+                text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
+            except KeyError:
+                pass
+        return text # leave as is
+    return re.sub(u'&#?\w+;', fixup, text)
+
