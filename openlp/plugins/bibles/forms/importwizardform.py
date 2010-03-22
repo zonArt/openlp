@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,7 +32,7 @@ from PyQt4 import QtCore, QtGui
 
 from bibleimportwizard import Ui_BibleImportWizard
 from openlp.core.lib import Receiver
-from openlp.core.utils import AppLocation
+from openlp.core.utils import AppLocation, variant_to_unicode
 from openlp.plugins.bibles.lib.manager import BibleFormat
 
 log = logging.getLogger(__name__)
@@ -60,9 +60,21 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
     log.info(u'BibleImportForm loaded')
 
     def __init__(self, parent, config, manager, bibleplugin):
-        '''
-        Constructor
-        '''
+        """
+        Instantiate the wizard, and run any extra setup we need to.
+
+        ``parent``
+            The QWidget-derived parent of the wizard.
+
+        ``config``
+            The configuration object for storing and retrieving settings.
+
+        ``manager``
+            The Bible manager.
+
+        ``bibleplugin``
+            The Bible plugin.
+        """
         QtGui.QWizard.__init__(self, parent)
         self.setupUi(self)
         self.registerFields()
@@ -97,10 +109,16 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             self.onCurrentIdChanged)
 
     def exec_(self):
+        """
+        Run the wizard.
+        """
         self.setDefaults()
         return QtGui.QWizard.exec_(self)
 
     def validateCurrentPage(self):
+        """
+        Validate the current page before moving on to the next page.
+        """
         if self.currentId() == 0:
             # Welcome page
             return True
@@ -144,7 +162,9 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             return True
         elif self.currentId() == 2:
             # License details
-            if self.field(u'license_version').toString() == u'':
+            license_version = variant_to_unicode(self.field(u'license_version'))
+            license_copyright = variant_to_unicode(self.field(u'license_copyright'))
+            if license_version == u'':
                 QtGui.QMessageBox.critical(self,
                     self.trUtf8('Empty Version Name'),
                     self.trUtf8('You need to specify a version name for your '
@@ -152,7 +172,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                 self.VersionNameEdit.setFocus()
                 return False
-            elif self.field(u'license_copyright').toString() == u'':
+            elif license_copyright == u'':
                 QtGui.QMessageBox.critical(self,
                     self.trUtf8('Empty Copyright'),
                     self.trUtf8('You need to set a copyright for your Bible! '
@@ -161,8 +181,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                 self.CopyrightEdit.setFocus()
                 return False
-            elif self.manager.exists(
-                     self.field(u'license_version').toString()):
+            elif self.manager.exists(license_version):
                 QtGui.QMessageBox.critical(self,
                     self.trUtf8('Bible Exists'),
                     self.trUtf8('This Bible already exists! Please import '
@@ -176,27 +195,49 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             return True
 
     def onLocationComboBoxChanged(self, index):
+        """
+        Setup the list of Bibles when you select a different source on the web
+        download page.
+
+        ``index``
+            The index of the combo box.
+        """
         self.BibleComboBox.clear()
-        for bible, abbreviation in self.web_bible_list[index].iteritems():
+        for bible in self.web_bible_list[index].keys():
             self.BibleComboBox.addItem(unicode(self.trUtf8(bible)))
 
     def onOsisFileButtonClicked(self):
-        self.getFileName(self.trUtf8('Open OSIS file'),
+        """
+        Show the file open dialog for the OSIS file.
+        """
+        self.getFileName(self.trUtf8('Open OSIS File'),
             self.OSISLocationEdit)
 
     def onBooksFileButtonClicked(self):
-        self.getFileName(self.trUtf8('Open Books CSV file'),
+        """
+        Show the file open dialog for the books CSV file.
+        """
+        self.getFileName(self.trUtf8('Open Books CSV File'),
             self.BooksLocationEdit)
 
     def onCsvVersesFileButtonClicked(self):
-        self.getFileName(self.trUtf8('Open Verses CSV file'),
+        """
+        Show the file open dialog for the verses CSV file.
+        """
+        self.getFileName(self.trUtf8('Open Verses CSV File'),
             self.CsvVerseLocationEdit)
 
     def onOpenSongBrowseButtonClicked(self):
+        """
+        Show the file open dialog for the OpenSong file.
+        """
         self.getFileName(self.trUtf8('Open OpenSong Bible'),
             self.OpenSongFileEdit)
 
     def onCancelButtonClicked(self, checked):
+        """
+        Stop the import on pressing the cancel button.
+        """
         log.debug('Cancel button pressed!')
         if self.currentId() == 3:
             Receiver.send_message(u'openlpstopimport')
@@ -270,7 +311,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             books_reader = csv.reader(books_file, dialect)
             for line in books_reader:
                 self.web_bible_list[DownloadLocation.Crosswalk][line[0]] = \
-                    unicode(line[1], u'utf-8').strip()
+                    unicode(line[1], u'utf8').strip()
         except:
             log.exception(u'Crosswalk resources missing')
         finally:
@@ -315,25 +356,28 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
 
     def performImport(self):
         bible_type = self.field(u'source_format').toInt()[0]
-        success = False
+        license_version = variant_to_unicode(self.field(u'license_version'))
+        license_copyright = variant_to_unicode(self.field(u'license_copyright'))
+        license_permission = variant_to_unicode(self.field(u'license_permission'))
+        importer = None
         if bible_type == BibleFormat.OSIS:
             # Import an OSIS bible
-            success = self.manager.import_bible(BibleFormat.OSIS,
-                name=unicode(self.field(u'license_version').toString()),
-                filename=unicode(self.field(u'osis_location').toString())
+            importer = self.manager.import_bible(BibleFormat.OSIS,
+                name=license_version,
+                filename=variant_to_unicode(self.field(u'osis_location'))
             )
         elif bible_type == BibleFormat.CSV:
             # Import a CSV bible
-            success = self.manager.import_bible(BibleFormat.CSV,
-                name=unicode(self.field(u'license_version').toString()),
-                booksfile=self.field(u'csv_booksfile').toString(),
-                versefile=self.field(u'csv_versefile').toString()
+            importer = self.manager.import_bible(BibleFormat.CSV,
+                name=license_version,
+                booksfile=variant_to_unicode(self.field(u'csv_booksfile')),
+                versefile=variant_to_unicode(self.field(u'csv_versefile'))
             )
         elif bible_type == BibleFormat.OpenSong:
             # Import an OpenSong bible
-            success = self.manager.import_bible(BibleFormat.OpenSong,
-                name=unicode(self.field(u'license_version').toString()),
-                filename=self.field(u'opensong_file').toString()
+            importer = self.manager.import_bible(BibleFormat.OpenSong,
+                name=license_version,
+                filename=variant_to_unicode(self.field(u'opensong_file'))
             )
         elif bible_type == BibleFormat.WebDownload:
             # Import a bible from the web
@@ -341,30 +385,29 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             download_location = self.field(u'web_location').toInt()[0]
             if download_location == DownloadLocation.Crosswalk:
                 bible = self.web_bible_list[DownloadLocation.Crosswalk][
-                    unicode(self.BibleComboBox.currentText())]
+                    unicode(self.BibleComboBox.currentText(), u'utf8')]
             elif download_location == DownloadLocation.BibleGateway:
                 bible = self.web_bible_list[DownloadLocation.BibleGateway][
-                    unicode(self.BibleComboBox.currentText())]
-            success = self.manager.import_bible(BibleFormat.WebDownload,
-                name=unicode(self.field(u'license_version').toString()),
-                download_source=unicode(DownloadLocation.get_name(download_location)),
-                download_name=unicode(bible),
-                proxy_server=unicode(self.field(u'proxy_server').toString()),
-                proxy_username=unicode(self.field(u'proxy_username').toString()),
-                proxy_password=unicode(self.field(u'proxy_password').toString())
+                    unicode(self.BibleComboBox.currentText(), u'utf8')]
+            importer = self.manager.import_bible(
+                BibleFormat.WebDownload,
+                name=license_version,
+                download_source=DownloadLocation.get_name(download_location),
+                download_name=bible,
+                proxy_server=variant_to_unicode(self.field(u'proxy_server')),
+                proxy_username=variant_to_unicode(self.field(u'proxy_username')),
+                proxy_password=variant_to_unicode(self.field(u'proxy_password'))
             )
+        success = importer.do_import()
         if success:
-            self.manager.save_meta_data(
-                unicode(self.field(u'license_version').toString()),
-                unicode(self.field(u'license_version').toString()),
-                unicode(self.field(u'license_copyright').toString()),
-                unicode(self.field(u'license_permission').toString())
-            )
+            self.manager.save_meta_data(license_version, license_version,
+                license_copyright, license_permission)
             self.manager.reload_bibles()
             self.ImportProgressLabel.setText(self.trUtf8('Finished import.'))
         else:
             self.ImportProgressLabel.setText(
                 self.trUtf8('Your Bible import failed.'))
+            importer.delete()
 
     def postImport(self):
         self.ImportProgressBar.setValue(self.ImportProgressBar.maximum())

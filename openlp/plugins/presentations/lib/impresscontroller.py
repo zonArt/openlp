@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -178,7 +178,7 @@ class ImpressDocument(PresentationDocument):
         self.presentation = None
         self.control = None
         self.store_filename(presentation)
-        
+
     def load_presentation(self):
         """
         Called when a presentation is added to the SlideController.
@@ -218,7 +218,7 @@ class ImpressDocument(PresentationDocument):
         self.presentation.Display = self.controller.plugin.render_manager.screens.current_display + 1
         self.control = None
         self.create_thumbnails()
-        
+
     def create_thumbnails(self):
         """
         Create thumbnail images for presentation
@@ -307,7 +307,7 @@ class ImpressDocument(PresentationDocument):
     def blank_screen(self):
         log.debug(u'blank screen OpenOffice')
         self.control.blankScreen(0)
-        
+
     def is_blank(self):
         """
         Returns true if screen is blank
@@ -384,7 +384,7 @@ class ImpressDocument(PresentationDocument):
             if shape.supportsService("com.sun.star.drawing.Text"):
                 text += shape.getString() + '\n'
         return text
-        
+
     def get_slide_notes(self, slide_no):
         """
         Returns the text on the slide

@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,7 +23,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import os
 import logging
 import time
 
@@ -68,7 +67,8 @@ class VersionThread(QtCore.QThread):
         """
         Run the thread.
         """
-        time.sleep(2)
+        time.sleep(1)
+        Receiver.send_message(u'blank_check')
         version = check_latest_version(self.generalConfig, self.app_version)
         #new version has arrived
         if version != self.app_version:
@@ -419,7 +419,7 @@ class Ui_MainWindow(object):
         self.LanguageEnglishItem.setText(self.trUtf8('English'))
         self.LanguageEnglishItem.setStatusTip(
             self.trUtf8('Set the interface language to English'))
-        self.ToolsAddToolItem.setText(self.trUtf8('&Add Tool...'))
+        self.ToolsAddToolItem.setText(self.trUtf8('Add &Tool...'))
         self.ToolsAddToolItem.setStatusTip(
             self.trUtf8('Add an application to the list of tools'))
         self.action_Preview_Panel.setText(self.trUtf8('&Preview Pane'))
@@ -494,6 +494,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'update_global_theme'), self.defaultThemeChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'version_check'), self.versionCheck)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'blank_check'), self.blankCheck)
         QtCore.QObject.connect(self.FileNewItem,
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onNewService)
@@ -583,6 +585,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.activateWindow()
         if str_to_bool(self.generalConfig.get_config(u'auto open', False)):
             self.ServiceManagerContents.onLoadService(True)
+
+    def blankCheck(self):
         if str_to_bool(self.generalConfig.get_config(u'screen blank', False)) \
         and str_to_bool(self.generalConfig.get_config(u'blank warning', False)):
             self.LiveController.onBlankDisplay(True)
@@ -621,6 +625,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.screens.set_current_display(updated_display)
             self.RenderManager.update_display(updated_display)
             self.mainDisplay.setup(updated_display)
+        #Trigger after changes have been made
+        Receiver.send_message(u'config_updated')
         self.activateWindow()
 
     def closeEvent(self, event):

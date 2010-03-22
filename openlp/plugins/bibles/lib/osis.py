@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -65,6 +65,7 @@ class OSISBible(BibleDB):
         self.l_regex = re.compile(r'<l (.*?)>')
         self.w_regex = re.compile(r'<w (.*?)>')
         self.q_regex = re.compile(r'<q (.*?)>')
+        self.trans_regex = re.compile(r'<transChange(.*?)>(.*?)</transChange>')
         self.spaces_regex = re.compile(r'([ ]{2,})')
         self.books = {}
         filepath = os.path.join(
@@ -114,12 +115,14 @@ class OSISBible(BibleDB):
             osis = codecs.open(self.filename, u'r', details['encoding'])
             last_chapter = 0
             testament = 1
+            match_count = 0
             db_book = None
             for file_record in osis:
                 if self.stop_import_flag:
                     break
                 match = self.verse_regex.search(file_record)
                 if match:
+                    match_count += 1
                     book = match.group(1)
                     chapter = int(match.group(2))
                     verse = int(match.group(3))
@@ -157,15 +160,18 @@ class OSISBible(BibleDB):
                     verse_text = self.l_regex.sub(u'', verse_text)
                     verse_text = self.w_regex.sub(u'', verse_text)
                     verse_text = self.q_regex.sub(u'', verse_text)
+                    verse_text = self.trans_regex.sub(u'', verse_text)
                     verse_text = verse_text.replace(u'</lb>', u'')\
                         .replace(u'</l>', u'').replace(u'<lg>', u'')\
                         .replace(u'</lg>', u'').replace(u'</q>', u'')\
-                        .replace(u'</div>', u'')
+                        .replace(u'</div>', u'').replace(u'</w>',  u'')
                     verse_text = self.spaces_regex.sub(u' ', verse_text)
                     self.create_verse(db_book.id, chapter, verse, verse_text)
                     Receiver.send_message(u'process_events')
             self.commit()
             self.wizard.incrementProgressBar(u'Finishing import...')
+            if match_count == 0:
+                success = False
         except:
             log.exception(u'Loading bible from OSIS file failed')
             success = False

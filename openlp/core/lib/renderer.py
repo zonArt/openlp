@@ -1,4 +1,4 @@
-    # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
 ###############################################################################
@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -43,7 +43,6 @@ class Renderer(object):
         """
         self._rect = None
         self._debug = False
-        self._right_margin = 64 # the amount of right indent
         self._display_shadow_size_footer = 0
         self._display_outline_size_footer = 0
         self.theme_name = None
@@ -149,7 +148,7 @@ class Renderer(object):
     def pre_render_text(self, text):
         metrics = QtGui.QFontMetrics(self.mainFont)
         #work out line width
-        line_width = self._rect.width() - self._right_margin
+        line_width = self._rect.width()
         #number of lines on a page - adjust for rounding up.
         line_height = metrics.height()
         if self._theme.display_shadow:
@@ -224,6 +223,7 @@ class Renderer(object):
         ``rect_footer``
             The footer text block.
         """
+        log.debug(u'set_text_rectangle %s , %s' %(rect_main, rect_footer) )
         self._rect = rect_main
         self._rect_footer = rect_footer
 
@@ -447,8 +447,7 @@ class Renderer(object):
                 rightextent = x + w
                 # shift right from last line's rh edge
                 if self._theme.display_wrapStyle == 1 and linenum != 0:
-                    rightextent = self._first_line_right_extent + \
-                        self._right_margin
+                    rightextent = self._first_line_right_extent
                     if rightextent > maxx:
                         rightextent = maxx
                     x = rightextent - w

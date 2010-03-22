@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -168,8 +168,7 @@ class MainDisplay(DisplayWidget):
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
         painter.begin(self.blankFrame)
-        #TODO make black when testing finished
-        painter.fillRect(self.blankFrame.rect(), QtCore.Qt.red)
+        painter.fillRect(self.blankFrame.rect(), QtCore.Qt.black)
         #build a blank transparent image
         self.transparent = QtGui.QPixmap(self.screen[u'size'].width(),
                                          self.screen[u'size'].height())
@@ -227,6 +226,7 @@ class MainDisplay(DisplayWidget):
         ``frame``
             Image frame to be rendered
         """
+        log.debug(u'frameView %d' % (self.displayBlank))
         if not self.displayBlank:
             if transition:
                 if self.frame is not None:
@@ -249,14 +249,22 @@ class MainDisplay(DisplayWidget):
             if not self.isVisible():
                 self.setVisible(True)
                 self.showFullScreen()
+        else:
+            self.waitingFrame = frame
+            self.waitingFrameTrans = transition
 
     def blankDisplay(self, blanked=True):
+        log.debug(u'Blank main Display %d' % blanked)
         if blanked:
             self.displayBlank = True
             self.display_text.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
+            self.waitingFrame = None
+            self.waitingFrameTrans = False
         else:
             self.displayBlank = False
-            if self.display_frame:
+            if self.waitingFrame:
+                self.frameView(self.waitingFrame, self.waitingFrameTrans)
+            elif self.display_frame:
                 self.frameView(self.display_frame)
 
     def onMediaQueue(self, message):

@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,7 +28,6 @@ import logging
 from PyQt4 import QtGui
 
 from openlp.core.ui import GeneralTab, ThemesTab
-from openlp.core.lib import Receiver
 from settingsdialog import Ui_SettingsDialog
 
 log = logging.getLogger(__name__)
@@ -45,7 +44,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.ThemesTab = ThemesTab(mainWindow)
         self.addTab(u'Themes', self.ThemesTab)
 
-    def addTab(self, name,  tab):
+    def addTab(self, name, tab):
         log.info(u'Adding %s tab' % tab.tabTitle)
         self.SettingsTabWidget.addTab(tab, tab.tabTitleVisible)
 
@@ -65,7 +64,6 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
     def accept(self):
         for tab_index in range(0, self.SettingsTabWidget.count()):
             self.SettingsTabWidget.widget(tab_index).save()
-        Receiver.send_message(u'config_updated')
         return QtGui.QDialog.accept(self)
 
     def postSetUp(self):

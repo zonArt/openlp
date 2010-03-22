@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,6 +29,8 @@ import logging
 import urllib2
 from datetime import datetime
 
+import openlp
+
 log = logging.getLogger(__name__)
 
 class AppLocation(object):
@@ -42,8 +44,14 @@ class AppLocation(object):
 
     @staticmethod
     def get_directory(dir_type):
+        """
+        Return the appropriate directory according to the directory type.
+
+        ``dir_type``
+            The directory type you want, for instance the data directory.
+        """
         if dir_type == AppLocation.AppDir:
-           return os.path.abspath(os.path.split(sys.argv[0])[0])
+            return os.path.abspath(os.path.split(sys.argv[0])[0])
         elif dir_type == AppLocation.ConfigDir:
             if sys.platform == u'win32':
                 path = os.path.join(os.getenv(u'APPDATA'), u'openlp')
@@ -71,14 +79,32 @@ class AppLocation(object):
                     path = os.path.join(os.getenv(u'HOME'), u'.openlp', u'data')
             return path
         elif dir_type == AppLocation.PluginsDir:
+            plugin_path = None
             app_path = os.path.abspath(os.path.split(sys.argv[0])[0])
-            if hasattr(sys, u'frozen') and sys.frozen == 1:
-                return os.path.join(app_path, u'plugins')
+            if sys.platform == u'win32':
+                if hasattr(sys, u'frozen') and sys.frozen == 1:
+                    plugin_path = os.path.join(app_path, u'plugins')
+                else:
+                    plugin_path = os.path.join(app_path, u'openlp', u'plugins')
+            elif sys.platform == u'darwin':
+                plugin_path = os.path.join(app_path, u'plugins')
             else:
-                return os.path.join(app_path, u'openlp', u'plugins')
+                plugin_path = os.path.join(
+                    os.path.split(openlp.__file__)[0], u'plugins')
+            return plugin_path
 
 
 def check_latest_version(config, current_version):
+    """
+    Check the latest version of OpenLP against the version file on the OpenLP
+    site.
+
+    ``config``
+        The OpenLP config object.
+
+    ``current_version``
+        The current version of OpenLP.
+    """
     version_string = current_version
     #set to prod in the distribution confif file.
     last_test = config.get_config(u'last version test', datetime.now().date())
@@ -96,6 +122,18 @@ def check_latest_version(config, current_version):
             if hasattr(e, u'reason'):
                 log.exception(u'Reason for failure: %s', e.reason)
     return version_string
+
+def variant_to_unicode(variant):
+    """
+    Converts a QVariant to a unicode string.
+
+    ``variant``
+        The QVariant instance to convert to unicode.
+    """
+    string = variant.toString()
+    if not isinstance(string, unicode):
+        string = unicode(string, u'utf8')
+    return string
 
 from registry import Registry
 from confighelper import ConfigHelper

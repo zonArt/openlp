@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -53,7 +53,7 @@ blankthemexml=\
       <weight>Normal</weight>
       <italics>False</italics>
       <indentation>0</indentation>
-      <location override="False" x="10" y="10" width="1024" height="730"/>
+      <location override="False" x="10" y="10" width="1004" height="730"/>
    </font>
    <font type="footer">
       <name>Arial</name>
@@ -62,7 +62,7 @@ blankthemexml=\
       <weight>Normal</weight>
       <italics>False</italics>
       <indentation>0</indentation>
-      <location override="False" x="10" y="730" width="1024" height="38"/>
+      <location override="False" x="10" y="730" width="1004" height="38"/>
    </font>
    <display>
       <shadow color="#000000" size="5">True</shadow>

@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,21 +28,30 @@ import urllib2
 import os
 import sqlite3
 
-from BeautifulSoup import BeautifulSoup
+from BeautifulSoup import BeautifulSoup, Tag, NavigableString
 
 from openlp.core.lib import Receiver
 from openlp.core.utils import AppLocation
-from common import BibleCommon, SearchResults
+from common import BibleCommon, SearchResults, unescape
 from db import BibleDB
 from openlp.plugins.bibles.lib.models import Book
 
 log = logging.getLogger(__name__)
 
 class HTTPBooks(object):
+    """
+    A wrapper class around a small SQLite database which contains the books,
+    chapter counts and verse counts for the web download Bibles. This class
+    contains a singleton "cursor" so that only one connection to the SQLite
+    database is ever used.
+    """
     cursor = None
 
     @staticmethod
     def get_cursor():
+        """
+        Return the cursor object. Instantiate one if it doesn't exist yet.
+        """
         if HTTPBooks.cursor is None:
             filepath = os.path.join(
                 AppLocation.get_directory(AppLocation.PluginsDir), u'bibles',
@@ -53,12 +62,24 @@ class HTTPBooks(object):
 
     @staticmethod
     def run_sql(query, parameters=()):
+        """
+        Run an SQL query on the database, returning the results.
+
+        ``query``
+            The actual SQL query to run.
+
+        ``parameters``
+            Any variable parameters to add to the query.
+        """
         cursor = HTTPBooks.get_cursor()
         cursor.execute(query, parameters)
         return cursor.fetchall()
 
     @staticmethod
     def get_books():
+        """
+        Return a list of all the books of the Bible.
+        """
         books = HTTPBooks.run_sql(u'SELECT id, testament_id, name, '
                 u'abbreviation, chapters FROM books ORDER BY id')
         book_list = []
@@ -74,6 +95,12 @@ class HTTPBooks(object):
 
     @staticmethod
     def get_book(name):
+        """
+        Return a book by name or abbreviation.
+
+        ``name``
+            The name or abbreviation of the book.
+        """
         if not isinstance(name, unicode):
             name = unicode(name)
         books = HTTPBooks.run_sql(u'SELECT id, testament_id, name, '
@@ -92,6 +119,15 @@ class HTTPBooks(object):
 
     @staticmethod
     def get_chapter(name, chapter):
+        """
+        Return the chapter details for a specific chapter of a book.
+
+        ``name``
+            The name or abbreviation of a book.
+
+        ``chapter``
+            The chapter number.
+        """
         if not isinstance(name, int):
             chapter = int(chapter)
         book = HTTPBooks.get_book(name)
@@ -109,6 +145,12 @@ class HTTPBooks(object):
 
     @staticmethod
     def get_chapter_count(book):
+        """
+        Return the number of chapters in a book.
+
+        ``book``
+            The name or abbreviation of the book.
+        """
         details = HTTPBooks.get_book(book)
         if details:
             return details[u'chapters']
@@ -116,6 +158,15 @@ class HTTPBooks(object):
 
     @staticmethod
     def get_verse_count(book, chapter):
+        """
+        Return the number of verses in a chapter.
+
+        ``book``
+            The name or abbreviation of the book.
+
+        ``chapter``
+            The number of the chapter.
+        """
         details = HTTPBooks.get_chapter(book, chapter)
         if details:
             return details[u'verses']
@@ -123,7 +174,9 @@ class HTTPBooks(object):
 
 
 class BGExtract(BibleCommon):
-    log.info(u'%s BGExtract loaded', __name__)
+    """
+    Extract verses from BibleGateway
+    """
 
     def __init__(self, proxyurl=None):
         log.debug(u'init %s', proxyurl)
@@ -133,7 +186,7 @@ class BGExtract(BibleCommon):
         """
         Access and decode bibles via the BibleGateway website
 
-        ``Version``
+        ``version``
             The version of the bible like 31 for New International version
 
         ``bookname``
@@ -146,54 +199,76 @@ class BGExtract(BibleCommon):
         urlstring = u'http://www.biblegateway.com/passage/?search=%s+%s' \
             u'&version=%s' % (bookname, chapter, version)
         log.debug(u'BibleGateway url = %s' % urlstring)
-        xml_string = self._get_web_text(urlstring, self.proxyurl)
-        verseSearch = u'<sup class=\"versenum'
-        verseFootnote = u'<sup class=\'footnote'
-        verse = 1
-        i = xml_string.find(u'result-text-style-normal') + 26
-        xml_string = xml_string[i:len(xml_string)]
-        versePos = xml_string.find(verseSearch)
-        bible = {}
-        while versePos > -1:
-            # clear out string
-            verseText = u''
-            versePos = xml_string.find(u'</sup>', versePos) + 6
-            i = xml_string.find(verseSearch, versePos + 1)
-            # Not sure if this is needed now
-            if i == -1:
-                i = xml_string.find(u'</div', versePos + 1)
-                j = xml_string.find(u'<strong', versePos + 1)
-                if j > 0 and j < i:
-                    i = j
-                verseText = xml_string[versePos + 7 : i ]
-                # store the verse
-                bible[verse] = self._clean_text(verseText)
-                versePos = -1
-            else:
-                verseText = xml_string[versePos: i]
-                start_tag = verseText.find(verseFootnote)
-                while start_tag > -1:
-                    end_tag = verseText.find(u'</sup>')
-                    verseText = verseText[:start_tag] + verseText[end_tag + 6:len(verseText)]
-                    start_tag = verseText.find(verseFootnote)
-                # Chop off verse and start again
-                xml_string = xml_string[i:]
-                #look for the next verse
-                versePos = xml_string.find(verseSearch)
-                # store the verse
-                bible[verse] = self._clean_text(verseText)
-                verse += 1
-        return SearchResults(bookname, chapter, bible)
+        # Let's get the page, and then open it in BeautifulSoup, so as to
+        # attempt to make "easy" work of bad HTML.
+        page = urllib2.urlopen(urlstring)
+        soup = BeautifulSoup(page)
+        verses = soup.find(u'div', u'result-text-style-normal')
+        verse_number = 0
+        verse_list = {0: u''}
+        # http://www.codinghorror.com/blog/2009/11/parsing-html-the-cthulhu-way.html
+        # This is a PERFECT example of opening the Cthulu tag!
+        # O Bible Gateway, why doth ye such horrific HTML produce?
+        for verse in verses:
+            if isinstance(verse, Tag) and verse.name == u'div' and filter(lambda a: a[0] == u'class', verse.attrs)[0][1] == u'footnotes':
+                break
+            if isinstance(verse, Tag) and verse.name == u'sup' and filter(lambda a: a[0] == u'class', verse.attrs)[0][1] != u'versenum':
+                continue
+            if isinstance(verse, Tag) and verse.name == u'p' and not verse.contents:
+                continue
+            if isinstance(verse, Tag) and (verse.name == u'p' or verse.name == u'font') and verse.contents:
+                for item in verse.contents:
+                    if isinstance(item, Tag) and (item.name == u'h4' or item.name == u'h5'):
+                        continue
+                    if isinstance(item, Tag) and item.name == u'sup' and filter(lambda a: a[0] == u'class', item.attrs)[0][1] != u'versenum':
+                        continue
+                    if isinstance(item, Tag) and item.name == u'p' and not item.contents:
+                        continue
+                    if isinstance(item, Tag) and item.name == u'sup':
+                        verse_number = int(str(item.contents[0]))
+                        verse_list[verse_number] = u''
+                        continue
+                    if isinstance(item, Tag) and item.name == u'font':
+                        for subitem in item.contents:
+                            if isinstance(subitem, Tag) and subitem.name == u'sup' and filter(lambda a: a[0] == u'class', subitem.attrs)[0][1] != u'versenum':
+                                continue
+                            if isinstance(subitem, Tag) and subitem.name == u'p' and not subitem.contents:
+                                continue
+                            if isinstance(subitem, Tag) and subitem.name == u'sup':
+                                verse_number = int(str(subitem.contents[0]))
+                                verse_list[verse_number] = u''
+                                continue
+                            if isinstance(subitem, NavigableString):
+                                verse_list[verse_number] = verse_list[verse_number] + subitem.replace(u'&nbsp;', u' ')
+                        continue
+                    if isinstance(item, NavigableString):
+                        verse_list[verse_number] = verse_list[verse_number] + item.replace(u'&nbsp;', u' ')
+                continue
+            if isinstance(verse, Tag) and verse.name == u'sup':
+                verse_number = int(str(verse.contents[0]))
+                verse_list[verse_number] = u''
+                continue
+            if isinstance(verse, NavigableString):
+                if not isinstance(verse, unicode):
+                    verse = unicode(verse, u'utf8')
+                verse_list[verse_number] = verse_list[verse_number] + \
+                    unescape(verse.replace(u'&nbsp;', u' '))
+        # Delete the "0" element, since we don't need it, it's just there for
+        # some stupid initial whitespace, courtesy of Bible Gateway.
+        del verse_list[0]
+        # Finally, return the list of verses in a "SearchResults" object.
+        return SearchResults(bookname, chapter, verse_list)
 
 class CWExtract(BibleCommon):
-    log.info(u'%s CWExtract loaded', __name__)
+    """
+    Extract verses from CrossWalk/BibleStudyTools
+    """
 
     def __init__(self, proxyurl=None):
         log.debug(u'init %s', proxyurl)
         self.proxyurl = proxyurl
 
     def get_bible_chapter(self, version, bookname, chapter):
-        log.debug(u'%s %s, %s, %s', __name__, version, bookname, chapter)
         """
         Access and decode bibles via the Crosswalk website
 
@@ -208,9 +283,9 @@ class CWExtract(BibleCommon):
         """
         log.debug(u'get_bible_chapter %s,%s,%s',
             version, bookname, chapter)
-        bookname = bookname.replace(u' ', u'')
+        urlbookname = bookname.replace(u' ', u'-')
         chapter_url = u'http://www.biblestudytools.com/%s/%s/%s.html' % \
-            (version, bookname.lower(), chapter)
+            (version, urlbookname.lower(), chapter)
         log.debug(u'URL: %s', chapter_url)
         page = urllib2.urlopen(chapter_url)
         if not page:
@@ -268,6 +343,10 @@ class HTTPBible(BibleDB):
             self.proxy_password = None
 
     def do_import(self):
+        """
+        Run the import. This method overrides the parent class method. Returns
+        ``True`` on success, ``False`` on failure.
+        """
         self.wizard.ImportProgressBar.setMaximum(2)
         self.wizard.incrementProgressBar('Registering bible...')
         self.create_meta(u'download source', self.download_source)
@@ -351,17 +430,43 @@ class HTTPBible(BibleDB):
             return None
 
     def get_books(self):
+        """
+        Return the list of books.
+        """
         return [Book.populate(name=book['name']) for book in HTTPBooks.get_books()]
 
     def lookup_book(self, book):
+        """
+        Look up the name of a book.
+        """
         return HTTPBooks.get_book(book)
 
     def get_chapter_count(self, book):
+        """
+        Return the number of chapters in a particular book.
+        """
         return HTTPBooks.get_chapter_count(book)
 
     def get_verse_count(self, book, chapter):
+        """
+        Return the number of verses for the specified chapter and book.
+
+        ``book``
+            The name of the book.
+
+        ``chapter``
+            The chapter whose verses are being counted.
+        """
         return HTTPBooks.get_verse_count(book, chapter)
 
     def set_proxy_server(self, server):
+        """
+        Sets the proxy server.
+
+        **Note: This is not actually used.**
+
+        ``server``
+            The hostname or IP address of the proxy server.
+        """
         self.proxy_server = server
 
