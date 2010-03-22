@@ -128,8 +128,8 @@ class Migration(object):
             subprocess.call(cmd, stdin=open(u'sqlite3.dmp', u'r'))
         else:
             subprocess.call(cmd, stdin=open(u'sqlite3.dmp', u'r'), shell=True)
-#        os.remove(u'sqlite.dmp')
-#        os.remove(u'sqlite3.dmp')
+        os.remove(u'sqlite.dmp')
+        os.remove(u'sqlite3.dmp')
 
 if __name__ == u'__main__':
     mig = Migration()
