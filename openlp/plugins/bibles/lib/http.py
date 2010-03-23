@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -39,10 +39,19 @@ from openlp.plugins.bibles.lib.models import Book
 log = logging.getLogger(__name__)
 
 class HTTPBooks(object):
+    """
+    A wrapper class around a small SQLite database which contains the books,
+    chapter counts and verse counts for the web download Bibles. This class
+    contains a singleton "cursor" so that only one connection to the SQLite
+    database is ever used.
+    """
     cursor = None
 
     @staticmethod
     def get_cursor():
+        """
+        Return the cursor object. Instantiate one if it doesn't exist yet.
+        """
         if HTTPBooks.cursor is None:
             filepath = os.path.join(
                 AppLocation.get_directory(AppLocation.PluginsDir), u'bibles',
@@ -53,12 +62,24 @@ class HTTPBooks(object):
 
     @staticmethod
     def run_sql(query, parameters=()):
+        """
+        Run an SQL query on the database, returning the results.
+
+        ``query``
+            The actual SQL query to run.
+
+        ``parameters``
+            Any variable parameters to add to the query.
+        """
         cursor = HTTPBooks.get_cursor()
         cursor.execute(query, parameters)
         return cursor.fetchall()
 
     @staticmethod
     def get_books():
+        """
+        Return a list of all the books of the Bible.
+        """
         books = HTTPBooks.run_sql(u'SELECT id, testament_id, name, '
                 u'abbreviation, chapters FROM books ORDER BY id')
         book_list = []
@@ -74,6 +95,12 @@ class HTTPBooks(object):
 
     @staticmethod
     def get_book(name):
+        """
+        Return a book by name or abbreviation.
+
+        ``name``
+            The name or abbreviation of the book.
+        """
         if not isinstance(name, unicode):
             name = unicode(name)
         books = HTTPBooks.run_sql(u'SELECT id, testament_id, name, '
@@ -92,6 +119,15 @@ class HTTPBooks(object):
 
     @staticmethod
     def get_chapter(name, chapter):
+        """
+        Return the chapter details for a specific chapter of a book.
+
+        ``name``
+            The name or abbreviation of a book.
+
+        ``chapter``
+            The chapter number.
+        """
         if not isinstance(name, int):
             chapter = int(chapter)
         book = HTTPBooks.get_book(name)
@@ -109,6 +145,12 @@ class HTTPBooks(object):
 
     @staticmethod
     def get_chapter_count(book):
+        """
+        Return the number of chapters in a book.
+
+        ``book``
+            The name or abbreviation of the book.
+        """
         details = HTTPBooks.get_book(book)
         if details:
             return details[u'chapters']
@@ -116,6 +158,15 @@ class HTTPBooks(object):
 
     @staticmethod
     def get_verse_count(book, chapter):
+        """
+        Return the number of verses in a chapter.
+
+        ``book``
+            The name or abbreviation of the book.
+
+        ``chapter``
+            The number of the chapter.
+        """
         details = HTTPBooks.get_chapter(book, chapter)
         if details:
             return details[u'verses']
@@ -123,7 +174,9 @@ class HTTPBooks(object):
 
 
 class BGExtract(BibleCommon):
-    log.info(u'%s BGExtract loaded', __name__)
+    """
+    Extract verses from BibleGateway
+    """
 
     def __init__(self, proxyurl=None):
         log.debug(u'init %s', proxyurl)
@@ -133,7 +186,7 @@ class BGExtract(BibleCommon):
         """
         Access and decode bibles via the BibleGateway website
 
-        ``Version``
+        ``version``
             The version of the bible like 31 for New International version
 
         ``bookname``
@@ -196,8 +249,10 @@ class BGExtract(BibleCommon):
                 verse_list[verse_number] = u''
                 continue
             if isinstance(verse, NavigableString):
+                if not isinstance(verse, unicode):
+                    verse = unicode(verse, u'utf8')
                 verse_list[verse_number] = verse_list[verse_number] + \
-                    unescape(unicode(verse, u'utf-8').replace(u'&nbsp;', u' '))
+                    unescape(verse.replace(u'&nbsp;', u' '))
         # Delete the "0" element, since we don't need it, it's just there for
         # some stupid initial whitespace, courtesy of Bible Gateway.
         del verse_list[0]
@@ -205,14 +260,15 @@ class BGExtract(BibleCommon):
         return SearchResults(bookname, chapter, verse_list)
 
 class CWExtract(BibleCommon):
-    log.info(u'%s CWExtract loaded', __name__)
+    """
+    Extract verses from CrossWalk/BibleStudyTools
+    """
 
     def __init__(self, proxyurl=None):
         log.debug(u'init %s', proxyurl)
         self.proxyurl = proxyurl
 
     def get_bible_chapter(self, version, bookname, chapter):
-        log.debug(u'%s %s, %s, %s', __name__, version, bookname, chapter)
         """
         Access and decode bibles via the Crosswalk website
 
@@ -227,9 +283,9 @@ class CWExtract(BibleCommon):
         """
         log.debug(u'get_bible_chapter %s,%s,%s',
             version, bookname, chapter)
-        bookname = bookname.replace(u' ', u'')
+        urlbookname = bookname.replace(u' ', u'-')
         chapter_url = u'http://www.biblestudytools.com/%s/%s/%s.html' % \
-            (version, bookname.lower(), chapter)
+            (version, urlbookname.lower(), chapter)
         log.debug(u'URL: %s', chapter_url)
         page = urllib2.urlopen(chapter_url)
         if not page:
@@ -287,6 +343,10 @@ class HTTPBible(BibleDB):
             self.proxy_password = None
 
     def do_import(self):
+        """
+        Run the import. This method overrides the parent class method. Returns
+        ``True`` on success, ``False`` on failure.
+        """
         self.wizard.ImportProgressBar.setMaximum(2)
         self.wizard.incrementProgressBar('Registering bible...')
         self.create_meta(u'download source', self.download_source)
@@ -370,17 +430,43 @@ class HTTPBible(BibleDB):
             return None
 
     def get_books(self):
+        """
+        Return the list of books.
+        """
         return [Book.populate(name=book['name']) for book in HTTPBooks.get_books()]
 
     def lookup_book(self, book):
+        """
+        Look up the name of a book.
+        """
         return HTTPBooks.get_book(book)
 
     def get_chapter_count(self, book):
+        """
+        Return the number of chapters in a particular book.
+        """
         return HTTPBooks.get_chapter_count(book)
 
     def get_verse_count(self, book, chapter):
+        """
+        Return the number of verses for the specified chapter and book.
+
+        ``book``
+            The name of the book.
+
+        ``chapter``
+            The chapter whose verses are being counted.
+        """
         return HTTPBooks.get_verse_count(book, chapter)
 
     def set_proxy_server(self, server):
+        """
+        Sets the proxy server.
+
+        **Note: This is not actually used.**
+
+        ``server``
+            The hostname or IP address of the proxy server.
+        """
         self.proxy_server = server
 

@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -142,13 +142,17 @@ class Ui_AboutDialog(object):
             '    Michael "cocooncrash" Gorven\n'
             '    Scott "sguerrieri" Guerrieri\n'
             '    Raoul "superfly" Snyman\n'
-            '    Maikel Stuivenberg\n'
             '    Martin "mijiti" Thompson\n'
             '    Jon "Meths" Tibble\n'
+            '\n'
+            'Contributors\n'
+            '    Christian "crichter" Richter\n'
+            '    Maikel Stuivenberg\n'
             '    Carsten "catini" Tingaard\n'
             '\n'
             'Testers\n'
-            '    Wesley "wrst" Stout'
+            '    Wesley "wrst" Stout\n'
+            '    Philip "Phill" Ridout'
         ))
         self.AboutNotebook.setTabText(
             self.AboutNotebook.indexOf(self.CreditsTab),
@@ -158,8 +162,8 @@ class Ui_AboutDialog(object):
             'Snyman\n'
             'Portions copyright ' + u'\u00a9'.encode('utf8') + ' 2004-2009 '
             'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri, '
-            'Maikel Stuivenberg, Martin Thompson, Jon Tibble, Carsten '
-            'Tinggaard\n'
+            'Christian Richter, Maikel Stuivenberg, Martin Thompson, Jon '
+            'Tibble, Carsten Tinggaard\n'
             '\n'
             'This program is free software; you can redistribute it and/or '
             'modify it under the terms of the GNU General Public License as '
