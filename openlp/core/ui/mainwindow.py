@@ -23,7 +23,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import os
 import logging
 import time
 
@@ -68,7 +67,8 @@ class VersionThread(QtCore.QThread):
         """
         Run the thread.
         """
-        time.sleep(2)
+        time.sleep(1)
+        Receiver.send_message(u'blank_check')
         version = check_latest_version(self.generalConfig, self.app_version)
         #new version has arrived
         if version != self.app_version:
@@ -494,6 +494,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'update_global_theme'), self.defaultThemeChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'version_check'), self.versionCheck)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'blank_check'), self.blankCheck)
         QtCore.QObject.connect(self.FileNewItem,
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onNewService)
@@ -583,6 +585,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.activateWindow()
         if str_to_bool(self.generalConfig.get_config(u'auto open', False)):
             self.ServiceManagerContents.onLoadService(True)
+
+    def blankCheck(self):
         if str_to_bool(self.generalConfig.get_config(u'screen blank', False)) \
         and str_to_bool(self.generalConfig.get_config(u'blank warning', False)):
             self.LiveController.onBlankDisplay(True)

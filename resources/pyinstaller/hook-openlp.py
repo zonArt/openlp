@@ -1,4 +1,4 @@
-﻿hiddenimports = ['plugins.songs.songsplugin',
+hiddenimports = ['plugins.songs.songsplugin',
                  'plugins.bibles.bibleplugin',
                  'plugins.presentations.presentationplugin',
                  'plugins.media.mediaplugin',

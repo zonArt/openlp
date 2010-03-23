@@ -148,6 +148,8 @@ class SongXMLParser(object):
         verse_list = []
         for element in iter:
             if element.tag == u'verse':
+                if element.text is None:
+                    element.text = u''
                 verse_list.append([element.attrib,
                     unicode(element.text).decode('unicode-escape')])
         return verse_list
