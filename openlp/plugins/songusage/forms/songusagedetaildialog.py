@@ -60,7 +60,8 @@ class Ui_SongUsageDetailDialog(object):
         self.horizontalLayout.addWidget(self.FileLineEdit)
         self.SaveFilePushButton = QtGui.QPushButton(self.FileGroupBox)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/exports/export_load.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(u':/general/general_load.png'),
+            QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.SaveFilePushButton.setIcon(icon)
         self.SaveFilePushButton.setObjectName(u'SaveFilePushButton')
         self.horizontalLayout.addWidget(self.SaveFilePushButton)

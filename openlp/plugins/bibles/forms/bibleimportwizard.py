@@ -104,7 +104,7 @@ class Ui_BibleImportWizard(object):
         self.OsisFileButton = QtGui.QToolButton(self.OsisPage)
         self.OsisFileButton.setMaximumSize(QtCore.QSize(32, 16777215))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/imports/import_load.png'),
+        icon.addPixmap(QtGui.QPixmap(u':/general/general_open.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.OsisFileButton.setIcon(icon)
         self.OsisFileButton.setObjectName(u'OsisFileButton')
