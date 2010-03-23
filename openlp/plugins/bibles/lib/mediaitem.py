@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -76,6 +76,8 @@ class BibleMediaItem(MediaManagerItem):
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
+        self.hasImportIcon = True
+        self.hasNewIcon = False
         self.hasEditIcon = False
         self.hasDeleteIcon = False
 
@@ -373,7 +375,7 @@ class BibleMediaItem(MediaManagerItem):
             unicode(self.AdvancedBookComboBox.currentText()),
             self.AdvancedBookComboBox.itemData(item).toInt()[0])
 
-    def onNewClick(self):
+    def onImportClick(self):
         self.bibleimportform = ImportWizardForm(self, self.parent.config,
             self.parent.manager, self.parent)
         self.bibleimportform.exec_()

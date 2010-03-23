@@ -1,20 +1,27 @@
-"""
-OpenLP - Open Source Lyrics Projection
-Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
-This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation; version 2 of the License.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-Place, Suite 330, Boston, MA 02111-1307 USA
-"""
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 
 import logging
 import os
@@ -52,25 +59,25 @@ class TestBibleManager:
         # Register a bible from files
         log.debug(u'\n.......testRegisterBibleFiles')
         self.bm.registerFileBible(u'TheMessage','biblebooks_msg_short.csv','bibleverses_msg_short.csv')
-        self.bm.registerFileBible(u'NIV','biblebooks_niv_short.csv','bibleverses_niv_short.csv')        
+        self.bm.registerFileBible(u'NIV','biblebooks_niv_short.csv','bibleverses_niv_short.csv')
         b = self.bm.get_bibles()
         for b1 in b:
             log.debug( b1)
-            assert(b1 in b)    
-            
+            assert(b1 in b)
+
     def testRegisterHTTPBible(self):
         # Register a bible from files
         log.debug( '\n.......testRegisterBibleHTTP')
         self.bm.registerHTTPBible(u'asv', u'Crosswalk', u'', u'', u'')
         self.bm.registerHTTPBible(u'nasb', u'Biblegateway', u'', u'', u'')
         self.bm.registerHTTPBible(u'nkj', u'Biblegateway',
-	    u'http://tigger2:3128/', u'', u'')                
+        u'http://tigger2:3128/', u'', u'')
         b = self.bm.get_bibles()
         for b1 in b:
             log.debug( b1)
-            assert(b1 in b)    
+            assert(b1 in b)
 
-            
+
     def testGetBibles(self):
         log.debug(u'\n.......testGetBibles')
         # make sure the shuffled sequence does not lose any elements
@@ -85,33 +92,33 @@ class TestBibleManager:
         for c1 in c:
             log.debug( c1)
             assert(c1 in c)
-            
+
     def testGetBookChapterCount(self):
-        log.debug(u'\n.......testGetBookChapterCount')       
+        log.debug(u'\n.......testGetBookChapterCount')
         assert(self.bm.get_book_chapter_count(u'Matthew') == '28')
 
     def testGetBookVerseCount(self):
-        log.debug(u'\n.......testGetBookVerseCount')    
+        log.debug(u'\n.......testGetBookVerseCount')
         assert(self.bm.get_book_verse_count(u'Genesis', 1) == '31')
         assert(self.bm.get_book_verse_count(u'Genesis', 2) == '25')
         assert(self.bm.get_book_verse_count(u'Matthew', 1) == '25')
-        assert(self.bm.get_book_verse_count(u'Revelation', 1) == '20')        
+        assert(self.bm.get_book_verse_count(u'Revelation', 1) == '20')
 
     def testGetVerseText(self):
         log.debug(u'\n.......testGetVerseText')
         #c = self.bm.get_verse_text(u'TheMessage",'Genesis',1,2,1)
         #log.debug( c )
         #c = self.bm.get_verse_text(u'NIV','Genesis',1,1,2)
-        #log.debug( c ) 
+        #log.debug( c )
         c = self.bm.get_verse_text(u'asv','Genesis',10,1,20)
         log.debug( c )
         c = self.bm.get_verse_text(u'nasb','Genesis',10,1,20)
-        log.debug( c )       
+        log.debug( c )
         c = self.bm.get_verse_text(u'nkj','Revelation',10,1,20)
-        log.debug( c ) 
-        
+        log.debug( c )
+
     def testLoadBible(self):
         log.debug(u'\n.......testLoadBible')
         #self.bm.loadBible(u'asv')
-        #self.bm.loadBible(u'nasb')        
-        #self.bm.loadBible(u'nkj') 
+        #self.bm.loadBible(u'nasb')
+        #self.bm.loadBible(u'nkj')

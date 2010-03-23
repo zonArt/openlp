@@ -7,8 +7,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -70,7 +70,7 @@ class Migration(object):
         """
         #MigrateFiles(self.display).process()
         MigrateSongs(self.display).process()
-        #MigrateBibles(self.display).process()
+        MigrateBibles(self.display).process()
 
     def move_log_file(self):
         """
@@ -101,6 +101,7 @@ class Migration(object):
         writefile.close()
 
     def convert_sqlite2_to_3(self, olddb, newdb):
+        print u'Converting sqlite2 ' + olddb + ' to sqlite3 ' + newdb
         if os.name == u'nt':
             # we can't make this a raw unicode string as the \U within it causes much confusion
             hKey = win32api.RegOpenKey(win32con.HKEY_LOCAL_MACHINE, u'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\SQLite ODBC Driver')
@@ -132,19 +133,30 @@ class Migration(object):
 
 if __name__ == u'__main__':
     mig = Migration()
-    config = PluginConfig(u'Songs')
-    newpath = config.get_data_path()
+    songconfig = PluginConfig(u'Songs')
+    newsongpath = songconfig.get_data_path()
+    bibleconfig = PluginConfig(u'Bibles')
+    newbiblepath = bibleconfig.get_data_path()
     if os.name == u'nt':
-        if not os.path.isdir(newpath):
-            os.makedirs(newpath)
+        if not os.path.isdir(newsongpath):
+            os.makedirs(newsongpath)
+        if not os.path.isdir(newbiblepath):
+            os.makedirs(newbiblepath)
         ALL_USERS_APPLICATION_DATA = 35
         shell = Dispatch(u'Shell.Application')
         folder = shell.Namespace(ALL_USERS_APPLICATION_DATA)
         folderitem = folder.Self
-        olddb = os.path.join(folderitem.path, u'openlp.org', u'Data', u'songs.olp')
+        oldsongdb = os.path.join(folderitem.path, u'openlp.org', u'Data', u'songs.olp')
+        oldbiblepath = os.path.join(folderitem.path, u'openlp.org', u'Data', u'Bibles')
     else:
-        olddb = os.path.join(newpath, u'songs.olp')
-    newdb = os.path.join(newpath, u'songs.sqlite')
-    mig.convert_sqlite2_to_3(olddb, newdb)
+        oldsongdb = os.path.join(newsongpath, u'songs.olp')
+    newsongdb = os.path.join(newsongpath, u'songs.sqlite')
+    mig.convert_sqlite2_to_3(oldsongdb, newsongdb)
+    files = os.listdir(oldbiblepath)
+    for file in files:
+        f = os.path.splitext(os.path.basename(file))[0]
+        if f != 'kjv':   #kjv bible has an autoincrement key not supported in sqlite3
+            mig.convert_sqlite2_to_3(os.path.join(oldbiblepath, file),
+                os.path.join(newbiblepath, f + u'.sqlite'))
     mig.process()
     #mig.move_log_file()

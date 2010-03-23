@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -159,9 +159,10 @@ class ThemesTab(SettingsTab):
         image = self.parent.ThemeManagerContents.getPreviewImage(
             self.global_theme)
         preview = QtGui.QPixmap(unicode(image))
-        display = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
-            QtCore.Qt.SmoothTransformation)
-        self.DefaultListView.setPixmap(display)
+        if not preview.isNull():
+            preview = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
+                QtCore.Qt.SmoothTransformation)
+        self.DefaultListView.setPixmap(preview)
 
     def updateThemeList(self, theme_list):
         """
@@ -184,6 +185,7 @@ class ThemesTab(SettingsTab):
             image = self.parent.ThemeManagerContents.getPreviewImage(
                 self.global_theme)
             preview = QtGui.QPixmap(unicode(image))
-            display = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
-                QtCore.Qt.SmoothTransformation)
-            self.DefaultListView.setPixmap(display)
+            if not preview.isNull():
+                preview = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
+                    QtCore.Qt.SmoothTransformation)
+            self.DefaultListView.setPixmap(preview)

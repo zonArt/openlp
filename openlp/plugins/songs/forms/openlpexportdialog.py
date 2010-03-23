@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -54,7 +54,7 @@ class Ui_OpenLPExportDialog(object):
         self.horizontalLayout.addWidget(self.ExportFileLineEdit)
         self.ExportFileSelectPushButton = QtGui.QPushButton(self.ExportFileWidget)
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(u':/exports/export_load.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(u':/general/general_load.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.ExportFileSelectPushButton.setIcon(icon1)
         self.ExportFileSelectPushButton.setObjectName(u'ExportFileSelectPushButton')
         self.horizontalLayout.addWidget(self.ExportFileSelectPushButton)

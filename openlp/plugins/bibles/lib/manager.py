@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -60,6 +60,9 @@ class BibleFormat(object):
     def get_class(id):
         """
         Return the appropriate imeplementation class.
+
+        ``id``
+            The Bible format.
         """
         if id == BibleFormat.OSIS:
             return OSISBible
@@ -74,6 +77,9 @@ class BibleFormat(object):
 
     @staticmethod
     def list():
+        """
+        Return a list of the supported Bible formats.
+        """
         return [
             BibleFormat.OSIS,
             BibleFormat.CSV,
@@ -247,7 +253,7 @@ class BibleManager(object):
         """
         if not isinstance(name, unicode):
             name = unicode(name)
-        for bible, db_object in self.db_cache.iteritems():
+        for bible in self.db_cache.keys():
             log.debug(u'Bible from cache in is_new_bible %s', bible)
             if not isinstance(bible, unicode):
                 bible = unicode(bible)
