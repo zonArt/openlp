@@ -81,8 +81,10 @@ class PowerpointController(PresentationController):
             """
             Called at system exit to clean up any running presentations
             """
-            for doc in self.docs:
-                doc.close_presentation()
+            log.debug(u'Kill powerpoint')
+            for i in range(len(self.docs)):
+               self.docs[0].close_presentation()  # Yes, always the zeroth one
+                                                   # as close removes item from array
             if self.process is None:
                 return
             if self.process.Presentations.Count > 0:
@@ -149,12 +151,12 @@ class PowerpointDocument(PresentationDocument):
         Triggerent by new object being added to SlideController orOpenLP
         being shut down
         """
-        if self.presentation is None:
-            return
-        try:
-            self.presentation.Close()
-        except:
-            pass
+        log.debug(u'ClosePresentation')
+        if self.presentation:
+            try:
+                self.presentation.Close()
+            except:
+                pass
         self.presentation = None
         self.controller.remove_doc(self)
 
