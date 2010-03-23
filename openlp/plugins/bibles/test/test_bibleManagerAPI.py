@@ -1,20 +1,27 @@
-"""
-OpenLP - Open Source Lyrics Projection
-Copyright (c) 2008 Raoul Snyman
-Portions copyright (c) 2008 Martin Thompson, Tim Bentley
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
-This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation; version 2 of the License.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-Place, Suite 330, Boston, MA 02111-1307 USA
-"""
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 
 import logging
 import os
@@ -47,7 +54,7 @@ class TestBibleManager:
     def setup_class(self):
         log.debug(u'\n.......Register BM')
         self.bm = BibleManager()
-           
+
     def testGetBibles(self):
         log.debug(u'\n.......testGetBibles')
         # make sure the shuffled sequence does not lose any elements
@@ -62,32 +69,32 @@ class TestBibleManager:
         for c1 in c:
             log.debug( c1)
             assert(c1 in c)
-            
+
     def testGetBookChapterCount(self):
-        log.debug(u'\n.......testGetBookChapterCount')       
+        log.debug(u'\n.......testGetBookChapterCount')
         assert(self.bm.getBookChapterCount(u'asv', u'Matthew')[0] == 28)
 
     def testGetBookVerseCount(self):
-        log.debug(u'\n.......testGetBookVerseCount')    
+        log.debug(u'\n.......testGetBookVerseCount')
         assert(self.bm.getBookVerseCount(u'asv', u'Genesis', 1)[0] == 31)
         assert(self.bm.getBookVerseCount(u'TheMessage', u'Genesis', 2)[0] == 25)
         assert(self.bm.getBookVerseCount(u'asv', u'Matthew', 1)[0] == 25)
         assert(self.bm.getBookVerseCount(u'TheMessage', u'Revelation',
-	    1)[0] == 20)        
+        1)[0] == 20)
 
     def testGetVerseText(self):
         log.debug(u'\n.......testGetVerseText')
         #c = self.bm.getVerseText(u'TheMessage",'Genesis',1,2,1)
         #log.debug( c )
         #c = self.bm.getVerseText(u'NIV','Genesis',1,1,2)
-        #log.debug( c ) 
+        #log.debug( c )
         c = self.bm.getVerseText(u'asv', u'Genesis', 10, 1, 20)
         log.debug( c )
         c = self.bm.getVerseText(u'TheMessage', u'Genesis', 10, 1, 20)
-        log.debug( c )       
+        log.debug( c )
         c = self.bm.getVerseText(u'asv', u'Revelation', 10, 1, 20)
-        log.debug( c ) 
+        log.debug( c )
         c = self.bm.getVersesFromText(u'asv', u'Jesus wept')
-        log.debug( c )   
+        log.debug( c )
         c = self.bm.getVersesFromText(u'TheMessage', u'Jesus wept')
-        log.debug( c )          
+        log.debug( c )
