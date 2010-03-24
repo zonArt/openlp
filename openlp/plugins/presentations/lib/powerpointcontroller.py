@@ -82,9 +82,8 @@ class PowerpointController(PresentationController):
             Called at system exit to clean up any running presentations
             """
             log.debug(u'Kill powerpoint')
-            for i in range(len(self.docs)):
-               self.docs[0].close_presentation()  # Yes, always the zeroth one
-                                                   # as close removes item from array
+            while self.docs:
+                self.docs[0].close_presentation()
             if self.process is None:
                 return
             if self.process.Presentations.Count > 0:
