@@ -27,9 +27,9 @@ import os
 import sys
 import sqlite3
 
-from sqlalchemy import  *
+from sqlalchemy import *
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation
+from sqlalchemy.orm import scoped_session, sessionmaker, mapper
 
 from openlp.core.lib import PluginConfig
 from openlp.plugins.bibles.lib.models import *
@@ -223,4 +223,3 @@ class MigrateBibles():
         conn.commit()
         conn.execute(u'vacuum;')
         conn.commit()
-
