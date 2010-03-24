@@ -361,7 +361,8 @@ class SlideController(QtGui.QWidget):
         if item.is_text():
             self.Toolbar.makeWidgetsInvisible(self.image_list)
             if item.is_song() and \
-                str_to_bool(self.songsconfig.get_config(u'show songbar', True)):
+                str_to_bool(self.songsconfig.get_config(u'show songbar', True)) \
+                and len(self.slideList) > 0:
                 self.Toolbar.makeWidgetsVisible([u'Song Menu'])
         elif item.is_image():
             #Not sensible to allow loops with 1 frame
