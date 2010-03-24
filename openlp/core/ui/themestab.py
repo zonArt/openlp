@@ -159,9 +159,10 @@ class ThemesTab(SettingsTab):
         image = self.parent.ThemeManagerContents.getPreviewImage(
             self.global_theme)
         preview = QtGui.QPixmap(unicode(image))
-        display = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
-            QtCore.Qt.SmoothTransformation)
-        self.DefaultListView.setPixmap(display)
+        if not preview.isNull():
+            preview = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
+                QtCore.Qt.SmoothTransformation)
+        self.DefaultListView.setPixmap(preview)
 
     def updateThemeList(self, theme_list):
         """
@@ -184,6 +185,7 @@ class ThemesTab(SettingsTab):
             image = self.parent.ThemeManagerContents.getPreviewImage(
                 self.global_theme)
             preview = QtGui.QPixmap(unicode(image))
-            display = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
-                QtCore.Qt.SmoothTransformation)
-            self.DefaultListView.setPixmap(display)
+            if not preview.isNull():
+                preview = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
+                    QtCore.Qt.SmoothTransformation)
+            self.DefaultListView.setPixmap(preview)

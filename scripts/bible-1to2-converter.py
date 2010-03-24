@@ -206,7 +206,6 @@ def import_bible():
     rows = old_cursor.fetchall()
     if debug or verbose:
         print 'done.'
-    song_map = {}
     for row in rows:
         book_id = int(row[1])
         chapter = int(row[2])

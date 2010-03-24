@@ -147,8 +147,8 @@ class ImpressController(PresentationController):
         Called at system exit to clean up any running presentations
         """
         log.debug(u'Kill OpenOffice')
-        for doc in self.docs:
-            doc.close_presentation()
+        while self.docs:
+            self.docs[0].close_presentation()
         if os.name != u'nt':
             desktop = self.get_uno_desktop()
         else:

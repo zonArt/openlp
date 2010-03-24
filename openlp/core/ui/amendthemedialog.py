@@ -116,7 +116,7 @@ class Ui_AmendThemeDialog(object):
         self.ImageLineEdit.setObjectName(u'ImageLineEdit')
         self.horizontalLayout_2.addWidget(self.ImageLineEdit)
         self.ImageToolButton = QtGui.QToolButton(self.ImageFilenameWidget)
-        icon1 = build_icon(u':/images/image_load.png')
+        icon1 = build_icon(u':/general/general_open.png')
         self.ImageToolButton.setIcon(icon1)
         self.ImageToolButton.setObjectName(u'ImageToolButton')
         self.horizontalLayout_2.addWidget(self.ImageToolButton)
