@@ -143,7 +143,7 @@ class PresentationMediaItem(MediaManagerItem):
             for cidx in self.controllers:
                 doc = self.controllers[cidx].add_doc(filepath)
                 doc.presentation_deleted()
-                self.controllers[cidx].remove_doc(doc)
+                doc.close_presentation()
 
     def generateSlideData(self, service_item):
         items = self.ListView.selectedIndexes()
@@ -171,7 +171,7 @@ class PresentationMediaItem(MediaManagerItem):
                 service_item.add_from_command(path, name, img)
                 i = i + 1
                 img = doc.get_slide_preview_file(i)
-            controller.remove_doc(doc)
+            doc.close_presentation()
         return True
 
     def findControllerByType(self, filename):

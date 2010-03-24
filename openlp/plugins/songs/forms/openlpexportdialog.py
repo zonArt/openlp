@@ -54,7 +54,7 @@ class Ui_OpenLPExportDialog(object):
         self.horizontalLayout.addWidget(self.ExportFileLineEdit)
         self.ExportFileSelectPushButton = QtGui.QPushButton(self.ExportFileWidget)
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(u':/exports/export_load.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(u':/general/general_load.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.ExportFileSelectPushButton.setIcon(icon1)
         self.ExportFileSelectPushButton.setObjectName(u'ExportFileSelectPushButton')
         self.horizontalLayout.addWidget(self.ExportFileSelectPushButton)

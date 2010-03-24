@@ -88,9 +88,10 @@ class PptviewController(PresentationController):
             """
             Called at system exit to clean up any running presentations
             """
-            log.debug(u'Kill')
-            for doc in self.docs:
-                doc.close_presentation()
+            log.debug(u'Kill pptviewer')
+            for i in range(len(self.docs)):
+               self.docs[0].close_presentation()  # Yes, always the zeroth one
+                                                   # as close removes item from array
 
         def add_doc(self, name):
             log.debug(u'Add Doc PPTView')
@@ -137,6 +138,7 @@ class PptviewDocument(PresentationDocument):
         Triggerent by new object being added to SlideController orOpenLP
         being shut down
         """
+        log.debug(u'ClosePresentation')
         self.controller.process.ClosePPT(self.pptid)
         self.pptid = -1
         self.controller.remove_doc(self)
