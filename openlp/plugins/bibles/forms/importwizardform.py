@@ -310,8 +310,13 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             books_file.seek(0)
             books_reader = csv.reader(books_file, dialect)
             for line in books_reader:
-                self.web_bible_list[WebDownload.Crosswalk][line[0]] = \
-                    unicode(line[1], u'utf8').strip()
+                ver = line[0]
+                name = line[1]
+                if not isinstance(ver, unicode):
+                    ver = unicode(ver, u'utf8')
+                if not isinstance(name, unicode):
+                    name = unicode(name, u'utf8')
+                self.web_bible_list[WebDownload.Crosswalk][ver] = name.strip()
         except:
             log.exception(u'Crosswalk resources missing')
         finally:
