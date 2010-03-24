@@ -460,17 +460,17 @@ class SlideController(QtGui.QWidget):
         self.serviceItem = serviceItem
         self.PreviewListWidget.clear()
         self.PreviewListWidget.setRowCount(0)
-        self.PreviewListWidget.setColumnWidth(1, self.labelWidth)
+        self.PreviewListWidget.setColumnWidth(0, self.labelWidth)
         self.PreviewListWidget.setColumnWidth(1, width - self.labelWidth)
         if self.isLive:
             self.SongMenu.menu().clear()
+        row = 0
         for framenumber, frame in enumerate(self.serviceItem.get_frames()):
             self.PreviewListWidget.setRowCount(
                 self.PreviewListWidget.rowCount() + 1)
             rowitem = QtGui.QTableWidgetItem()
             item = QtGui.QTableWidgetItem()
             slide_height = 0
-            row = u''
             #It is a based Text Render
             if self.serviceItem.is_text():
                 if self.isLive and frame[u'verseTag'] is not None:
@@ -484,12 +484,12 @@ class SlideController(QtGui.QWidget):
                     else:
                         tag = bits[0]
                         row = bits[0][0:1]
-                    try:
-                        test = self.slideList[tag]
-                    except:
+                    if tag not in self.slideList:
                         self.slideList[tag] = framenumber
                         self.SongMenu.menu().addAction(self.trUtf8(u'%s'%tag),
                             self.onSongBarHandler)
+                else:
+                    row += 1
                 item.setText(frame[u'text'])
             else:
                 label = QtGui.QLabel()
@@ -501,7 +501,7 @@ class SlideController(QtGui.QWidget):
                 label.setPixmap(QtGui.QPixmap.fromImage(pixmap))
                 self.PreviewListWidget.setCellWidget(framenumber, 1, label)
                 slide_height = width * self.parent.RenderManager.screen_ratio
-            rowitem.setText(row)
+            rowitem.setText(unicode(row))
             self.PreviewListWidget.setItem(framenumber, 0, rowitem)
             self.PreviewListWidget.setItem(framenumber, 1, item)
             if slide_height != 0:
