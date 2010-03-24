@@ -77,6 +77,8 @@ class BibleMediaItem(MediaManagerItem):
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
+        self.hasImportIcon = True
+        self.hasNewIcon = False
         self.hasEditIcon = False
         self.hasDeleteIcon = False
 
@@ -374,7 +376,7 @@ class BibleMediaItem(MediaManagerItem):
             unicode(self.AdvancedBookComboBox.currentText()),
             self.AdvancedBookComboBox.itemData(item).toInt()[0])
 
-    def onNewClick(self):
+    def onImportClick(self):
         self.bibleimportform = ImportWizardForm(self, self.parent.config,
             self.parent.manager, self.parent)
         self.bibleimportform.exec_()

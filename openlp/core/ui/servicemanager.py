@@ -115,13 +115,13 @@ class ServiceManager(QtGui.QWidget):
         # Create the top toolbar
         self.Toolbar = OpenLPToolbar(self)
         self.Toolbar.addToolbarButton(
-            self.trUtf8('New Service'), u':/services/service_new.png',
+            self.trUtf8('New Service'), u':/general/general_new.png',
             self.trUtf8('Create a new service'), self.onNewService)
         self.Toolbar.addToolbarButton(
-            self.trUtf8('Open Service'), u':/services/service_open.png',
+            self.trUtf8('Open Service'), u':/general/general_open.png',
             self.trUtf8('Load an existing service'), self.onLoadService)
         self.Toolbar.addToolbarButton(
-            self.trUtf8('Save Service'), u':/services/service_save.png',
+            self.trUtf8('Save Service'), u':/general/general_save.png',
             self.trUtf8('Save this service'), self.onSaveService)
         self.Toolbar.addSeparator()
         self.ThemeLabel = QtGui.QLabel(self.trUtf8('Theme:'),
@@ -172,7 +172,7 @@ class ServiceManager(QtGui.QWidget):
             self.trUtf8('Move to end'), self.onServiceEnd)
         self.OrderToolbar.addSeparator()
         self.OrderToolbar.addToolbarButton(
-            self.trUtf8('&Delete From Service'), u':/services/service_delete.png',
+            self.trUtf8('&Delete From Service'), u':/general/general_delete.png',
             self.trUtf8('Delete From Service'), self.onDeleteFromService)
         self.Layout.addWidget(self.OrderToolbar)
         # Connect up our signals and slots
@@ -202,19 +202,19 @@ class ServiceManager(QtGui.QWidget):
         #build the context menu
         self.menu = QtGui.QMenu()
         self.editAction = self.menu.addAction(self.trUtf8('&Edit Item'))
-        self.editAction.setIcon(build_icon(u':/services/service_edit.png'))
+        self.editAction.setIcon(build_icon(u':/general/general_edit.png'))
         self.maintainAction = self.menu.addAction(self.trUtf8('&Maintain Item'))
-        self.maintainAction.setIcon(build_icon(u':/services/service_edit.png'))
+        self.editAction.setIcon(build_icon(u':/general/general_edit.png'))
         self.notesAction = self.menu.addAction(self.trUtf8('&Notes'))
         self.notesAction.setIcon(build_icon(u':/services/service_notes.png'))
         self.deleteAction = self.menu.addAction(self.trUtf8('&Delete From Service'))
-        self.deleteAction.setIcon(build_icon(u':/services/service_delete.png'))
+        self.deleteAction.setIcon(build_icon(u':/general/general_delete.png'))
         self.sep1 = self.menu.addAction(u'')
         self.sep1.setSeparator(True)
         self.previewAction = self.menu.addAction(self.trUtf8('&Preview Verse'))
-        self.previewAction.setIcon(build_icon(u':/system/system_preview.png'))
+        self.previewAction.setIcon(build_icon(u':/general/general_preview.png'))
         self.liveAction = self.menu.addAction(self.trUtf8('&Live Verse'))
-        self.liveAction.setIcon(build_icon(u':/system/system_live.png'))
+        self.liveAction.setIcon(build_icon(u':/general/general_live.png'))
         self.sep2 = self.menu.addAction(u'')
         self.sep2.setSeparator(True)
         self.themeMenu = QtGui.QMenu(self.trUtf8(u'&Change Item Theme'))
