@@ -178,6 +178,12 @@ class SlideController(QtGui.QWidget):
             self.blankButton = self.Toolbar.addToolbarButton(
                 u'Blank Screen', u':/slides/slide_blank.png',
                 self.trUtf8('Blank Screen'), self.onBlankDisplay, True)
+            self.themeButton = self.Toolbar.addToolbarButton(
+                u'Display Theme', u':/slides/slide_theme.png',
+                self.trUtf8('Blank Screen'), self.onBlankDisplay, True)
+            self.hideButton = self.Toolbar.addToolbarButton(
+                u'Hide screen', u':/slides/slide_desktop.png',
+                self.trUtf8('Blank Screen'), self.onBlankDisplay, True)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'live_slide_blank'), self.blankScreen)
         if not self.isLive:
