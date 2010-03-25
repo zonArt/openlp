@@ -280,6 +280,13 @@ class MediaManagerItem(QtGui.QWidget):
                     u'%s %s' % (self.trUtf8('&Edit'), self.PluginNameVisible),
                     self.onEditClick))
             self.ListView.addAction(contextMenuSeparator(self.ListView))
+        if self.hasDeleteIcon:
+            self.ListView.addAction(
+                contextMenuAction(
+                    self.ListView, u':/general/general_delete.png',
+                    u'%s %s' % (self.trUtf8('&Delete'), self.PluginNameVisible),
+                    self.onDeleteClick))
+            self.ListView.addAction(contextMenuSeparator(self.ListView))
         self.ListView.addAction(
             contextMenuAction(
                 self.ListView, u':/general/general_preview.png',
