@@ -114,16 +114,17 @@ class ImageMediaItem(MediaManagerItem):
             self.toggleOverrideState)
 
     def onDeleteClick(self):
-        item = self.ListView.currentItem()
-        if item:
-            try:
-                os.remove(os.path.join(self.servicePath, unicode(item.text())))
-            except:
-                #if not present do not worry
-                pass
-            row = self.ListView.row(item)
-            self.ListView.takeItem(row)
-            self.parent.config.set_list(self.ConfigSection, self.getFileList())
+        items = self.ListView.selectedIndexes()
+        if items:
+            for item in items:
+                text = self.ListView.item(item.row())
+                try:
+                    os.remove(os.path.join(self.servicePath, unicode(text.text())))
+                except:
+                    #if not present do not worry
+                    pass
+                self.ListView.takeItem(item.row())
+                self.parent.config.set_list(self.ConfigSection, self.getFileList())
 
     def loadList(self, list):
         for file in list:
