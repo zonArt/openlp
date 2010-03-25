@@ -30,6 +30,15 @@ import os
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
+class DisplayHideMode(object):
+    """
+    This is basically an enumeration class which specifies the mode of a Bible.
+    Mode refers to whether or not a Bible in OpenLP is a full Bible or needs to
+    be downloaded from the Internet on an as-needed basis.
+    """
+    Blank = 1
+    Theme = 2
+
 from openlp.core.lib import OpenLPToolbar, Receiver, str_to_bool, \
     PluginConfig, resize_image
 
@@ -180,10 +189,10 @@ class SlideController(QtGui.QWidget):
                 self.trUtf8('Blank Screen'), self.onBlankDisplay, True)
             self.themeButton = self.Toolbar.addToolbarButton(
                 u'Display Theme', u':/slides/slide_theme.png',
-                self.trUtf8('Blank Screen'), self.onBlankDisplay, True)
+                self.trUtf8('Theme Screen'), self.onThemeDisplay, True)
             self.hideButton = self.Toolbar.addToolbarButton(
                 u'Hide screen', u':/slides/slide_desktop.png',
-                self.trUtf8('Blank Screen'), self.onBlankDisplay, True)
+                self.trUtf8('Hide Screen'), self.onHideDisplay, True)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'live_slide_blank'), self.blankScreen)
         if not self.isLive:
@@ -551,11 +560,32 @@ class SlideController(QtGui.QWidget):
         log.debug(u'onBlankDisplay %d' % force)
         if force:
             self.blankButton.setChecked(True)
-        self.blankScreen(self.blankButton.isChecked())
+        self.blankScreen(DisplayHideMode.Blank, self.blankButton.isChecked())
         self.parent.generalConfig.set_config(u'screen blank',
                                             self.blankButton.isChecked())
 
-    def blankScreen(self, blanked=False):
+    def onThemeDisplay(self, force=False):
+        """
+        Handle the Theme screen button
+        """
+        log.debug(u'onThemeDisplay %d' % force)
+        if force:
+            self.themeButton.setChecked(True)
+        self.blankScreen(DisplayHideMode.Theme, self.themeButton.isChecked())
+
+    def onHideDisplay(self, force=False):
+        """
+        Handle the Hide screen button
+        """
+        log.debug(u'onHideDisplay %d' % force)
+        if force:
+            self.themeButton.setChecked(True)
+        if self.hideButton.isChecked():
+            self.parent.mainDisplay.hide1Display()
+        else:
+            self.parent.mainDisplay.showDisplay()
+
+    def blankScreen(self, blankType,  blanked=False):
         """
         Blank the display screen.
         """
@@ -566,9 +596,9 @@ class SlideController(QtGui.QWidget):
                 else:
                     Receiver.send_message(u'%s_unblank'% self.serviceItem.name.lower())
             else:
-                self.parent.mainDisplay.blankDisplay(blanked)
+                self.parent.mainDisplay.blankDisplay(blankType, blanked)
         else:
-            self.parent.mainDisplay.blankDisplay(blanked)
+            self.parent.mainDisplay.blankDisplay(blankType, blanked)
 
     def onSlideSelected(self):
         """
