@@ -54,25 +54,46 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             QtCore.SIGNAL(u'activated(int)'), self.onVerseComboChanged)
 
     def onAddIntro(self):
-        self.VerseTextEdit.insertPlainText(u'---[Intro:1]---')
+        self.VerseTextEdit.insertPlainText(u'---[%s:1]---\n'
+                                           % self.trUtf8('Intro'))
+        self.VerseTextEdit.moveCursor(QtGui.QTextCursor.Down)
+        self.VerseTextEdit.setFocus()
 
     def onAddEnding(self):
-        self.VerseTextEdit.insertPlainText(u'---[Ending:1]---')
+        self.VerseTextEdit.insertPlainText(u'---[%s:1]---\n'
+                                           % self.trUtf8('Ending'))
+        self.VerseTextEdit.moveCursor(QtGui.QTextCursor.Down)
+        self.VerseTextEdit.setFocus()
 
     def onAddOther(self):
-        self.VerseTextEdit.insertPlainText(u'---[Other:1]---')
+        self.VerseTextEdit.insertPlainText(u'---[%s:1]---\n'
+                                           % self.trUtf8('Other'))
+        self.VerseTextEdit.moveCursor(QtGui.QTextCursor.Down)
+        self.VerseTextEdit.setFocus()
 
     def onAddPreChorus(self):
-        self.VerseTextEdit.insertPlainText(u'---[PreChorus:1]---')
+        self.VerseTextEdit.insertPlainText(u'---[%s:1]---\n'
+                                           % self.trUtf8('Pre-Chorus'))
+        self.VerseTextEdit.moveCursor(QtGui.QTextCursor.Down)
+        self.VerseTextEdit.setFocus()
 
     def onAddBridge(self):
-        self.VerseTextEdit.insertPlainText(u'---[Bridge:1]---')
+        self.VerseTextEdit.insertPlainText(u'---[%s:1]---\n'
+                                           % self.trUtf8('Bridge'))
+        self.VerseTextEdit.moveCursor(QtGui.QTextCursor.Down)
+        self.VerseTextEdit.setFocus()
 
     def onAddChorus(self):
-        self.VerseTextEdit.insertPlainText(u'---[Chorus:1]---')
+        self.VerseTextEdit.insertPlainText(u'---[%s:1]---\n'
+                                           % self.trUtf8('Chorus'))
+        self.VerseTextEdit.moveCursor(QtGui.QTextCursor.Down)
+        self.VerseTextEdit.setFocus()
 
     def onAddVerse(self):
-        self.VerseTextEdit.insertPlainText(u'---[Verse:1]---')
+        self.VerseTextEdit.insertPlainText(u'---[%s:1]---\n'
+                                           % self.trUtf8('Verse'))
+        self.VerseTextEdit.moveCursor(QtGui.QTextCursor.Down)
+        self.VerseTextEdit.setFocus()
 
     def setVerse(self, text, verseCount=0, single=False, tag=u'Verse:1'):
         posVerse = 0
