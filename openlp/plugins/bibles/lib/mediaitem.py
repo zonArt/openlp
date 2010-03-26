@@ -76,6 +76,8 @@ class BibleMediaItem(MediaManagerItem):
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
+        self.hasImportIcon = True
+        self.hasNewIcon = False
         self.hasEditIcon = False
         self.hasDeleteIcon = False
 
@@ -251,6 +253,8 @@ class BibleMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.configUpdated)
         # Other stuff
+        QtCore.QObject.connect(self.QuickSearchEdit,
+            QtCore.SIGNAL(u'returnPressed()'), self.onQuickSearchButton)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bible_showprogress'), self.onSearchProgressShow)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -373,7 +377,7 @@ class BibleMediaItem(MediaManagerItem):
             unicode(self.AdvancedBookComboBox.currentText()),
             self.AdvancedBookComboBox.itemData(item).toInt()[0])
 
-    def onNewClick(self):
+    def onImportClick(self):
         self.bibleimportform = ImportWizardForm(self, self.parent.config,
             self.parent.manager, self.parent)
         self.bibleimportform.exec_()
