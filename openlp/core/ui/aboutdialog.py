@@ -146,13 +146,21 @@ class Ui_AboutDialog(object):
             '    Jon "Meths" Tibble\n'
             '\n'
             'Contributors\n'
+            '    Meinert "m2j" Jordan\n'
             '    Christian "crichter" Richter\n'
             '    Maikel Stuivenberg\n'
             '    Carsten "catini" Tingaard\n'
             '\n'
             'Testers\n'
-            '    Wesley "wrst" Stout\n'
-            '    Philip "Phill" Ridout'
+            '    Philip "Phill" Ridout\n'
+            '    Wesley "wrst" Stout (lead)\n'
+            '\n'
+            'Packagers\n'
+            '    Thomas "tabthorpe" Abthorpe (FreeBSD)\n'
+            '    Tim "TRB143" Bentley (Fedora)\n'
+            '    Michael "cocooncrash" Gorven (Ubuntu)\n'
+            '    Matthias "matthub" Hub (Mac OS X)\n'
+            '    Raoul "superfly" Snyman (Windows)\n'
         ))
         self.AboutNotebook.setTabText(
             self.AboutNotebook.indexOf(self.CreditsTab),
