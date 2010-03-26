@@ -254,6 +254,8 @@ class BibleMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.configUpdated)
         # Other stuff
+        QtCore.QObject.connect(self.QuickSearchEdit,
+            QtCore.SIGNAL(u'returnPressed()'), self.onQuickSearchButton)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bible_showprogress'), self.onSearchProgressShow)
         QtCore.QObject.connect(Receiver.get_receiver(),

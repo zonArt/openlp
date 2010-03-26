@@ -149,7 +149,8 @@ class ServiceManager(QtGui.QWidget):
         self.ServiceManagerList.setHeaderHidden(True)
         self.ServiceManagerList.setExpandsOnDoubleClick(False)
         self.ServiceManagerList.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.ServiceManagerList.customContextMenuRequested.connect(self.contextMenu)
+        QtCore.QObject.connect(self.ServiceManagerList,
+            QtCore.SIGNAL('customContextMenuRequested(QPoint)'), self.contextMenu)
         self.ServiceManagerList.setObjectName(u'ServiceManagerList')
         # enable drop
         self.ServiceManagerList.__class__.dragEnterEvent = self.dragEnterEvent

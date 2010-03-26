@@ -37,7 +37,7 @@ from openlp.plugins.bibles.lib.manager import BibleFormat
 
 log = logging.getLogger(__name__)
 
-class DownloadLocation(object):
+class WebDownload(object):
     Unknown = -1
     Crosswalk = 0
     BibleGateway = 1
@@ -282,7 +282,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.setField(u'csv_booksfile', QtCore.QVariant(''))
         self.setField(u'csv_versefile', QtCore.QVariant(''))
         self.setField(u'opensong_file', QtCore.QVariant(''))
-        self.setField(u'web_location', QtCore.QVariant(DownloadLocation.Crosswalk))
+        self.setField(u'web_location', QtCore.QVariant(WebDownload.Crosswalk))
         self.setField(u'web_biblename', QtCore.QVariant(self.BibleComboBox))
         self.setField(u'proxy_server',
             QtCore.QVariant(self.config.get_config(u'proxy address', '')))
@@ -293,7 +293,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.setField(u'license_version', QtCore.QVariant(self.VersionNameEdit))
         self.setField(u'license_copyright', QtCore.QVariant(self.CopyrightEdit))
         self.setField(u'license_permission', QtCore.QVariant(self.PermissionEdit))
-        self.onLocationComboBoxChanged(DownloadLocation.Crosswalk)
+        self.onLocationComboBoxChanged(WebDownload.Crosswalk)
 
     def loadWebBibles(self):
         """
@@ -304,14 +304,19 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         filepath = os.path.join(filepath, u'bibles', u'resources')
         fbibles = None
         try:
-            self.web_bible_list[DownloadLocation.Crosswalk] = {}
+            self.web_bible_list[WebDownload.Crosswalk] = {}
             books_file = open(os.path.join(filepath, u'crosswalkbooks.csv'), 'r')
             dialect = csv.Sniffer().sniff(books_file.read(1024))
             books_file.seek(0)
             books_reader = csv.reader(books_file, dialect)
             for line in books_reader:
-                self.web_bible_list[DownloadLocation.Crosswalk][line[0]] = \
-                    unicode(line[1], u'utf8').strip()
+                ver = line[0]
+                name = line[1]
+                if not isinstance(ver, unicode):
+                    ver = unicode(ver, u'utf8')
+                if not isinstance(name, unicode):
+                    name = unicode(name, u'utf8')
+                self.web_bible_list[WebDownload.Crosswalk][ver] = name.strip()
         except:
             log.exception(u'Crosswalk resources missing')
         finally:
@@ -319,14 +324,19 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                 books_file.close()
         #Load and store BibleGateway Bibles
         try:
-            self.web_bible_list[DownloadLocation.BibleGateway] = {}
+            self.web_bible_list[WebDownload.BibleGateway] = {}
             books_file = open(os.path.join(filepath, u'biblegateway.csv'), 'r')
             dialect = csv.Sniffer().sniff(books_file.read(1024))
             books_file.seek(0)
             books_reader = csv.reader(books_file, dialect)
             for line in books_reader:
-                self.web_bible_list[DownloadLocation.BibleGateway][line[0]] = \
-                    unicode(line[1], u'utf-8').strip()
+                ver = line[0]
+                name = line[1]
+                if not isinstance(ver, unicode):
+                    ver = unicode(ver, u'utf8')
+                if not isinstance(name, unicode):
+                    name = unicode(name, u'utf8')
+                self.web_bible_list[WebDownload.BibleGateway][ver] = name.strip()
         except:
             log.exception(u'Biblegateway resources missing')
         finally:
@@ -383,16 +393,17 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             # Import a bible from the web
             self.ImportProgressBar.setMaximum(1)
             download_location = self.field(u'web_location').toInt()[0]
-            if download_location == DownloadLocation.Crosswalk:
-                bible = self.web_bible_list[DownloadLocation.Crosswalk][
-                    unicode(self.BibleComboBox.currentText(), u'utf8')]
-            elif download_location == DownloadLocation.BibleGateway:
-                bible = self.web_bible_list[DownloadLocation.BibleGateway][
-                    unicode(self.BibleComboBox.currentText(), u'utf8')]
+            bible_version = self.BibleComboBox.currentText()
+            if not isinstance(bible_version, unicode):
+                bible_version = unicode(bible_version, u'utf8')
+            if download_location == WebDownload.Crosswalk:
+                bible = self.web_bible_list[WebDownload.Crosswalk][bible_version]
+            elif download_location == WebDownload.BibleGateway:
+                bible = self.web_bible_list[WebDownload.BibleGateway][bible_version]
             importer = self.manager.import_bible(
                 BibleFormat.WebDownload,
                 name=license_version,
-                download_source=DownloadLocation.get_name(download_location),
+                download_source=WebDownload.get_name(download_location),
                 download_name=bible,
                 proxy_server=variant_to_unicode(self.field(u'proxy_server')),
                 proxy_username=variant_to_unicode(self.field(u'proxy_username')),
