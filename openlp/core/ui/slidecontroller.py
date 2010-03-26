@@ -581,7 +581,7 @@ class SlideController(QtGui.QWidget):
         if force:
             self.themeButton.setChecked(True)
         if self.hideButton.isChecked():
-            self.parent.mainDisplay.hide1Display()
+            self.parent.mainDisplay.hideDisplay()
         else:
             self.parent.mainDisplay.showDisplay()
 

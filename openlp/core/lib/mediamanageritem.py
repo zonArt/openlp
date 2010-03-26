@@ -114,7 +114,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.Toolbar = None
         self.remoteTriggered = None
         self.ServiceItemIconName = None
-        self.addToServiceItem = True
+        self.addToServiceItem = False
         self.PageLayout = QtGui.QVBoxLayout(self)
         self.PageLayout.setSpacing(0)
         self.PageLayout.setContentsMargins(4, 0, 4, 0)
@@ -303,7 +303,7 @@ class MediaManagerItem(QtGui.QWidget):
         if self.addToServiceItem:
             self.ListView.addAction(
                 contextMenuAction(
-                    self.ListView, u':/system/system_add.png',
+                    self.ListView, u':/general/general_add.png',
                     self.trUtf8('&Add to selected Service Item'),
                     self.onAddEditClick))
         QtCore.QObject.connect(

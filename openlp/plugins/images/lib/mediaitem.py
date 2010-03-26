@@ -27,7 +27,8 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon
+from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
+contextMenuAction, contextMenuSeparator
 
 log = logging.getLogger(__name__)
 
@@ -52,7 +53,6 @@ class ImageMediaItem(MediaManagerItem):
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
         self.servicePath = None
-        self.addToServiceItem = True
         MediaManagerItem.__init__(self, parent, icon, title)
 
     def initPluginNameVisible(self):
@@ -68,6 +68,7 @@ class ImageMediaItem(MediaManagerItem):
         self.hasFileIcon = True
         self.hasNewIcon = False
         self.hasEditIcon = False
+        self.addToServiceItem = True
 
     def initialise(self):
         log.debug(u'initialise')
@@ -81,6 +82,15 @@ class ImageMediaItem(MediaManagerItem):
             os.mkdir(self.servicePath)
         self.loadList(self.parent.config.load_list(self.ConfigSection))
 
+    def addListViewToToolBar(self):
+        MediaManagerItem.addListViewToToolBar(self)
+        self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.ListView.addAction(
+            contextMenuAction(
+                self.ListView, u':/slides/slide_blank.png',
+                self.trUtf8('Replace Live Background'),
+                self.onReplaceClick))
+
     def addEndHeaderBar(self):
         self.ImageWidget = QtGui.QWidget(self)
         sizePolicy = QtGui.QSizePolicy(
@@ -93,7 +103,7 @@ class ImageMediaItem(MediaManagerItem):
         self.ImageWidget.setObjectName(u'ImageWidget')
         self.blankButton = self.Toolbar.addToolbarButton(
             u'Replace Background', u':/slides/slide_blank.png',
-            self.trUtf8('Replace Background'), self.onReplaceClick, False)
+            self.trUtf8('Replace Live Background'), self.onReplaceClick, False)
         # Add the song widget to the page layout
         self.PageLayout.addWidget(self.ImageWidget)
 
@@ -155,4 +165,4 @@ class ImageMediaItem(MediaManagerItem):
             self.parent.maindisplay.addImageWithText(frame)
 
     def onPreviewClick(self):
-            MediaManagerItem.onPreviewClick(self)
+        MediaManagerItem.onPreviewClick(self)

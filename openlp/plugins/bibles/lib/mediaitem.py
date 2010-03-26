@@ -81,6 +81,7 @@ class BibleMediaItem(MediaManagerItem):
         self.hasNewIcon = False
         self.hasEditIcon = False
         self.hasDeleteIcon = False
+        self.addToServiceItem = True
 
     def addEndHeaderBar(self):
         self.SearchTabWidget = QtGui.QTabWidget(self)
