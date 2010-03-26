@@ -57,6 +57,8 @@ class PresentationPlugin(Plugin):
         for controller in self.controllers:
             if self.controllers[controller].enabled:
                 presentation_types.append({u'%s' % controller : self.controllers[controller].supports})
+                self.controllers[controller].start_process()
+
         Receiver.send_message(
                     u'presentation types', presentation_types)
 
@@ -104,8 +106,6 @@ class PresentationPlugin(Plugin):
         for controller_class in controller_classes:
             controller = controller_class(self)
             self.registerControllers(controller)
-            if controller.enabled:
-                controller.start_process()
         if self.controllers:
             return True
         else:
