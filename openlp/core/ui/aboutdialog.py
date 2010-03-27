@@ -115,7 +115,7 @@ class Ui_AboutDialog(object):
     def retranslateUi(self, AboutDialog):
         AboutDialog.setWindowTitle(self.trUtf8('About OpenLP'))
         self.AboutTextEdit.setPlainText(self.trUtf8(
-            'OpenLP <version> build <revision> - Open Source Lyrics '
+            'OpenLP <version><revision> - Open Source Lyrics '
             'Projection\n'
             '\n'
             'OpenLP is free church presentation software, or lyrics '
@@ -166,9 +166,9 @@ class Ui_AboutDialog(object):
             self.AboutNotebook.indexOf(self.CreditsTab),
             self.trUtf8('Credits'))
         self.LicenseTextEdit.setPlainText(self.trUtf8(
-            'Copyright ' + u'\u00a9'.encode('utf8') + ' 2004-2009 Raoul '
+            'Copyright ' + u'\u00a9'.encode('utf8') + ' 2004-2010 Raoul '
             'Snyman\n'
-            'Portions copyright ' + u'\u00a9'.encode('utf8') + ' 2004-2009 '
+            'Portions copyright ' + u'\u00a9'.encode('utf8') + ' 2004-2010 '
             'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri, '
             'Christian Richter, Maikel Stuivenberg, Martin Thompson, Jon '
             'Tibble, Carsten Tinggaard\n'

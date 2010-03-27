@@ -268,8 +268,9 @@ class BibleMediaItem(MediaManagerItem):
         MediaManagerItem.addListViewToToolBar(self)
         # Progress Bar
         self.SearchProgress = QtGui.QProgressBar(self)
-        self.SearchProgress.setFormat('%p%')
-        self.SearchProgress.setMaximum(3)
+        self.SearchProgress.setFormat('')
+        self.SearchProgress.setMinimum(0)
+        self.SearchProgress.setMaximum(0)
         self.SearchProgress.setGeometry(self.ListView.geometry().left(),
             self.ListView.geometry().top(), 81, 23)
         self.SearchProgress.setVisible(False)
@@ -353,9 +354,10 @@ class BibleMediaItem(MediaManagerItem):
 
     def onSearchProgressShow(self):
         self.SearchProgress.setVisible(True)
-        self.SearchProgress.setMinimum(0)
-        self.SearchProgress.setMaximum(2)
-        self.SearchProgress.setValue(1)
+        Receiver.send_message(u'process_events')
+        #self.SearchProgress.setMinimum(0)
+        #self.SearchProgress.setMaximum(2)
+        #self.SearchProgress.setValue(1)
 
     def onSearchProgressHide(self):
         self.SearchProgress.setVisible(False)
