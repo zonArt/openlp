@@ -659,11 +659,17 @@ class ServiceManager(QtGui.QWidget):
             self.repaintServiceList(sitem + 1, 0)
             self.parent.LiveController.replaceServiceManagerItem(item)
         else:
-            #nothing selected or dnd
+            #nothing selected for dnd
             if self.droppos == 0:
-                self.serviceItems.append({u'service_item': item,
-                    u'order': len(self.serviceItems) + 1,
-                    u'expanded':expand})
+                if isinstance(item, list):
+                    for inditem in item:
+                        self.serviceItems.append({u'service_item': inditem,
+                            u'order': len(self.serviceItems) + 1,
+                            u'expanded':expand})
+                else:
+                    self.serviceItems.append({u'service_item': item,
+                        u'order': len(self.serviceItems) + 1,
+                        u'expanded':expand})
                 self.repaintServiceList(len(self.serviceItems) + 1, 0)
             else:
                 self.serviceItems.insert(self.droppos, {u'service_item': item,

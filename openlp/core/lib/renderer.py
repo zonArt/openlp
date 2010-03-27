@@ -543,7 +543,7 @@ class Renderer(object):
             else:
                 pen = QtGui.QColor(color)
             x, y = tlcorner
-            if self._theme.display_outline and outline_size != 0:
+            if self._theme.display_outline and outline_size != 0 and not footer:
                 path = QtGui.QPainterPath()
                 path.addText(QtCore.QPointF(x, y + metrics.ascent()), font, line)
                 self.painter.setBrush(self.painter.pen().brush())
@@ -554,7 +554,7 @@ class Renderer(object):
             self.painter.drawText(x, y + metrics.ascent(), line)
             if self._theme.display_slideTransition:
                 # Print 2nd image with 70% weight
-                if self._theme.display_outline and outline_size != 0:
+                if self._theme.display_outline and outline_size != 0 and not footer:
                     path = QtGui.QPainterPath()
                     path.addText(QtCore.QPointF(x, y + metrics.ascent()), font, line)
                     self.painter2.setBrush(self.painter2.pen().brush())
