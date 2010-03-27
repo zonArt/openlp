@@ -95,8 +95,10 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
 
     def onAddVerse(self):
         self.startNewLine()
-        self.VerseTextEdit.insertPlainText(u'---[%s:1]---\n'
-                                           % self.trUtf8('Verse'))
+        count = self.VerseTextEdit.toPlainText().\
+                        count(u'---[%s' % self.trUtf8('Verse'))
+        self.VerseTextEdit.insertPlainText(u'---[%s:%s]---\n'
+                                           % (self.trUtf8('Verse'), count + 1))
         self.VerseTextEdit.setFocus()
 
     def setVerse(self, text, verseCount=0, single=False, tag=u'Verse:1'):
