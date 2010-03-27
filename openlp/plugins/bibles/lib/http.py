@@ -203,7 +203,9 @@ class BGExtract(BibleCommon):
         # Let's get the page, and then open it in BeautifulSoup, so as to
         # attempt to make "easy" work of bad HTML.
         page = urllib2.urlopen(urlstring)
+        Receiver.send_message(u'process_events')
         soup = BeautifulSoup(page)
+        Receiver.send_message(u'process_events')
         verses = soup.find(u'div', u'result-text-style-normal')
         verse_number = 0
         verse_list = {0: u''}
@@ -211,6 +213,7 @@ class BGExtract(BibleCommon):
         # This is a PERFECT example of opening the Cthulu tag!
         # O Bible Gateway, why doth ye such horrific HTML produce?
         for verse in verses:
+            Receiver.send_message(u'process_events')
             if isinstance(verse, Tag) and verse.name == u'div' and filter(lambda a: a[0] == u'class', verse.attrs)[0][1] == u'footnotes':
                 break
             if isinstance(verse, Tag) and verse.name == u'sup' and filter(lambda a: a[0] == u'class', verse.attrs)[0][1] != u'versenum':
@@ -219,6 +222,7 @@ class BGExtract(BibleCommon):
                 continue
             if isinstance(verse, Tag) and (verse.name == u'p' or verse.name == u'font') and verse.contents:
                 for item in verse.contents:
+                    Receiver.send_message(u'process_events')
                     if isinstance(item, Tag) and (item.name == u'h4' or item.name == u'h5'):
                         continue
                     if isinstance(item, Tag) and item.name == u'sup' and filter(lambda a: a[0] == u'class', item.attrs)[0][1] != u'versenum':
@@ -231,6 +235,7 @@ class BGExtract(BibleCommon):
                         continue
                     if isinstance(item, Tag) and item.name == u'font':
                         for subitem in item.contents:
+                            Receiver.send_message(u'process_events')
                             if isinstance(subitem, Tag) and subitem.name == u'sup' and filter(lambda a: a[0] == u'class', subitem.attrs)[0][1] != u'versenum':
                                 continue
                             if isinstance(subitem, Tag) and subitem.name == u'p' and not subitem.contents:
@@ -289,27 +294,42 @@ class CWExtract(BibleCommon):
             (version, urlbookname.lower(), chapter)
         log.debug(u'URL: %s', chapter_url)
         page = urllib2.urlopen(chapter_url)
+        Receiver.send_message(u'process_events')
         if not page:
             return None
         soup = BeautifulSoup(page)
+        Receiver.send_message(u'process_events')
         htmlverses = soup.findAll(u'span', u'versetext')
         verses = {}
         reduce_spaces = re.compile(r'[ ]{2,}')
+        fix_punctuation = re.compile(r'[ ]+([.,;])')
         for verse in htmlverses:
             Receiver.send_message(u'process_events')
             versenumber = int(verse.contents[0].contents[0])
             versetext = u''
             for part in verse.contents:
+                Receiver.send_message(u'process_events')
                 if isinstance(part, NavigableString):
                     versetext = versetext + part
                 elif part and part.attrMap and \
                     (part.attrMap[u'class'] == u'WordsOfChrist' or \
                      part.attrMap[u'class'] == u'strongs'):
                     for subpart in part.contents:
+                        Receiver.send_message(u'process_events')
                         if isinstance(subpart, NavigableString):
                             versetext = versetext + subpart
+                        elif subpart and subpart.attrMap and \
+                             subpart.attrMap[u'class'] == u'strongs':
+                            for subsub in subpart.contents:
+                                Receiver.send_message(u'process_events')
+                                if isinstance(subsub, NavigableString):
+                                    versetext = versetext + subsub
+            Receiver.send_message(u'process_events')
+            # Fix up leading and trailing spaces, multiple spaces, and spaces
+            # between text and , and .
             versetext = versetext.strip(u'\n\r\t ')
             versetext = reduce_spaces.sub(u' ', versetext)
+            versetext = fix_punctuation.sub(r'\1', versetext)
             verses[versenumber] = versetext
         return SearchResults(bookname, chapter, verses)
 
@@ -410,10 +430,12 @@ class HTTPBible(BibleDB):
                     ## we get a correct book.  For example it is possible
                     ## to request ac and get Acts back.
                     bookname = search_results.get_book()
+                    Receiver.send_message(u'process_events')
                     # check to see if book/chapter exists
                     db_book = self.get_book(bookname)
                     self.create_chapter(db_book.id, search_results.get_chapter(),
                         search_results.get_verselist())
+                    Receiver.send_message(u'process_events')
                 Receiver.send_message(u'bible_hideprogress')
             Receiver.send_message(u'process_events')
         return BibleDB.get_verses(self, reference_list)

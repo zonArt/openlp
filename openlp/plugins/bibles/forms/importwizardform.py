@@ -32,7 +32,7 @@ from PyQt4 import QtCore, QtGui
 
 from bibleimportwizard import Ui_BibleImportWizard
 from openlp.core.lib import Receiver
-from openlp.core.utils import AppLocation, variant_to_unicode
+from openlp.core.utils import AppLocation, variant_to_unicode, string_to_unicode
 from openlp.plugins.bibles.lib.manager import BibleFormat
 
 log = logging.getLogger(__name__)
@@ -425,3 +425,4 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.finishButton.setVisible(True)
         self.cancelButton.setVisible(False)
         Receiver.send_message(u'process_events')
+
