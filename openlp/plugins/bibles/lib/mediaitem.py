@@ -509,7 +509,8 @@ class BibleMediaItem(MediaManagerItem):
             if not service_item.title:
                 service_item.title = u'%s %s' % (book, verse_text)
             elif service_item.title.find(self.trUtf8(u'etc')) == -1:
-                service_item.title = u'%s, %s' % (service_item.title, self.trUtf8(u'etc'))
+                service_item.title = u'%s, %s' \
+                    % (service_item.title, self.trUtf8(u'etc'))
         if  len(self.parent.settings_tab.bible_theme) == 0:
             service_item.theme = None
         else:
