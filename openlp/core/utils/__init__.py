@@ -105,19 +105,20 @@ def check_latest_version(config, current_version):
     ``current_version``
         The current version of OpenLP.
     """
-    version_string = current_version
+    version_string = current_version[u'full']
     #set to prod in the distribution confif file.
     last_test = config.get_config(u'last version test', datetime.now().date())
     this_test = unicode(datetime.now().date())
     config.set_config(u'last version test', this_test)
     if last_test != this_test:
         version_string = u''
-        req = urllib2.Request(u'http://www.openlp.org/files/version.txt')
-        req.add_header(u'User-Agent', u'OpenLP/%s' % current_version)
+        if current_version[u'build']:
+            req = urllib2.Request(u'http://www.openlp.org/files/dev_version.txt')
+        else:
+            req = urllib2.Request(u'http://www.openlp.org/files/version.txt')
+        req.add_header(u'User-Agent', u'OpenLP/%s' % current_version[u'full'])
         try:
-            handle = urllib2.urlopen(req, None)
-            html = handle.read()
-            version_string = unicode(html).rstrip()
+            version_string = unicode(urllib2.urlopen(req, None).read()).strip()
         except IOError, e:
             if hasattr(e, u'reason'):
                 log.exception(u'Reason for failure: %s', e.reason)

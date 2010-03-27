@@ -115,7 +115,7 @@ class Ui_AboutDialog(object):
     def retranslateUi(self, AboutDialog):
         AboutDialog.setWindowTitle(self.trUtf8('About OpenLP'))
         self.AboutTextEdit.setPlainText(self.trUtf8(
-            'OpenLP <version> build <revision> - Open Source Lyrics '
+            'OpenLP <version><revision> - Open Source Lyrics '
             'Projection\n'
             '\n'
             'OpenLP is free church presentation software, or lyrics '
