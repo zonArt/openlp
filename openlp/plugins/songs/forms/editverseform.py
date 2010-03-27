@@ -53,53 +53,57 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         QtCore.QObject.connect(self.VerseListComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onVerseComboChanged)
 
+    def startNewLine(self):
+        if self.VerseTextEdit.textCursor().columnNumber() != 0:
+            self.VerseTextEdit.insertPlainText(u'\n')
+
     def onAddIntro(self):
+        self.startNewLine()
         self.VerseTextEdit.insertPlainText(u'---[%s:1]---\n'
                                            % self.trUtf8('Intro'))
-        self.VerseTextEdit.moveCursor(QtGui.QTextCursor.Down)
         self.VerseTextEdit.setFocus()
 
     def onAddEnding(self):
+        self.startNewLine()
         self.VerseTextEdit.insertPlainText(u'---[%s:1]---\n'
                                            % self.trUtf8('Ending'))
-        self.VerseTextEdit.moveCursor(QtGui.QTextCursor.Down)
         self.VerseTextEdit.setFocus()
 
     def onAddOther(self):
+        self.startNewLine()
         self.VerseTextEdit.insertPlainText(u'---[%s:1]---\n'
                                            % self.trUtf8('Other'))
-        self.VerseTextEdit.moveCursor(QtGui.QTextCursor.Down)
         self.VerseTextEdit.setFocus()
 
     def onAddPreChorus(self):
+        self.startNewLine()
         self.VerseTextEdit.insertPlainText(u'---[%s:1]---\n'
                                            % self.trUtf8('Pre-Chorus'))
-        self.VerseTextEdit.moveCursor(QtGui.QTextCursor.Down)
         self.VerseTextEdit.setFocus()
 
     def onAddBridge(self):
+        self.startNewLine()
         self.VerseTextEdit.insertPlainText(u'---[%s:1]---\n'
                                            % self.trUtf8('Bridge'))
-        self.VerseTextEdit.moveCursor(QtGui.QTextCursor.Down)
         self.VerseTextEdit.setFocus()
 
     def onAddChorus(self):
+        self.startNewLine()
         self.VerseTextEdit.insertPlainText(u'---[%s:1]---\n'
                                            % self.trUtf8('Chorus'))
-        self.VerseTextEdit.moveCursor(QtGui.QTextCursor.Down)
         self.VerseTextEdit.setFocus()
 
     def onAddVerse(self):
+        self.startNewLine()
         self.VerseTextEdit.insertPlainText(u'---[%s:1]---\n'
                                            % self.trUtf8('Verse'))
-        self.VerseTextEdit.moveCursor(QtGui.QTextCursor.Down)
         self.VerseTextEdit.setFocus()
 
     def setVerse(self, text, verseCount=0, single=False, tag=u'Verse:1'):
         posVerse = 0
         posSub = 0
         if len(text) == 0 and not single:
-            text = u'---[Verse:1]---\n'
+            text = u'---[%s:1]---\n' % self.trUtf8('Verse')
         if single:
             id = tag.split(u':')
             posVerse = self.VerseListComboBox.findText(id[0], QtCore.Qt.MatchExactly)
@@ -145,11 +149,11 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
     def getVerseAll(self):
         text = self.VerseTextEdit.toPlainText()
         if not text.startsWith(u'---['):
-            text = u'---[Verse:1]---\n%s' % text
+            text = u'---[%s:1]---\n%s' % (self.trUtf8('Verse'),  text)
         return text
 
     def onVerseComboChanged(self, id):
-        if unicode(self.VerseListComboBox.currentText()) == u'Verse':
+        if unicode(self.VerseListComboBox.currentText()) == self.trUtf8('Verse'):
             self.SubVerseListComboBox.setEnabled(True)
         else:
             self.SubVerseListComboBox.setEnabled(False)
