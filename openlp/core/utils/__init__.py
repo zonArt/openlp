@@ -29,6 +29,8 @@ import logging
 import urllib2
 from datetime import datetime
 
+from PyQt4 import QtCore
+
 import openlp
 
 log = logging.getLogger(__name__)
@@ -123,16 +125,25 @@ def check_latest_version(config, current_version):
                 log.exception(u'Reason for failure: %s', e.reason)
     return version_string
 
+def string_to_unicode(string):
+    """
+    Converts a QString to a Python unicode object.
+    """
+    if isinstance(string, QtCore.QString):
+        string = unicode(string.toUtf8(), u'utf8')
+    return string
+
 def variant_to_unicode(variant):
     """
-    Converts a QVariant to a unicode string.
+    Converts a QVariant to a Python unicode object.
 
     ``variant``
         The QVariant instance to convert to unicode.
     """
-    string = variant.toString()
+    if isinstance(variant, QtCore.QVariant):
+        string = variant.toString()
     if not isinstance(string, unicode):
-        string = unicode(string, u'utf8')
+        string = string_to_unicode(string)
     return string
 
 from registry import Registry
