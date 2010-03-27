@@ -27,6 +27,7 @@ import logging
 import urllib2
 import os
 import sqlite3
+import re
 
 from BeautifulSoup import BeautifulSoup, Tag, NavigableString
 
@@ -293,18 +294,22 @@ class CWExtract(BibleCommon):
         soup = BeautifulSoup(page)
         htmlverses = soup.findAll(u'span', u'versetext')
         verses = {}
+        reduce_spaces = re.compile(r'[ ]{2,}')
         for verse in htmlverses:
             Receiver.send_message(u'process_events')
             versenumber = int(verse.contents[0].contents[0])
             versetext = u''
             for part in verse.contents:
-                if str(part)[0] != u'<':
+                if isinstance(part, NavigableString):
                     versetext = versetext + part
-                elif part and part.attrMap and part.attrMap[u'class'] == u'WordsOfChrist':
+                elif part and part.attrMap and \
+                    (part.attrMap[u'class'] == u'WordsOfChrist' or \
+                     part.attrMap[u'class'] == u'strongs'):
                     for subpart in part.contents:
-                        if str(subpart)[0] != '<':
+                        if isinstance(subpart, NavigableString):
                             versetext = versetext + subpart
             versetext = versetext.strip(u'\n\r\t ')
+            versetext = reduce_spaces.sub(u' ', versetext)
             verses[versenumber] = versetext
         return SearchResults(bookname, chapter, verses)
 

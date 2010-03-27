@@ -71,7 +71,7 @@ class VersionThread(QtCore.QThread):
         Receiver.send_message(u'blank_check')
         version = check_latest_version(self.generalConfig, self.app_version)
         #new version has arrived
-        if version != self.app_version:
+        if version != self.app_version[u'full']:
             Receiver.send_message(u'version_check', u'%s' % version)
 
 
@@ -554,11 +554,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Checks the version of the Application called from openlp.pyw
         """
         app_version = self.applicationVersion[u'full']
-        version_text = unicode(self.trUtf8('OpenLP version %s has been updated '
-            'to version %s\n\nYou can obtain the latest version from http://openlp.org'))
+        version_text = unicode(self.trUtf8('Version %s of OpenLP is now '
+            'available for download (you are currently running version %s).'
+            '\n\nYou can download the latest version from http://openlp.org'))
         QtGui.QMessageBox.question(self,
             self.trUtf8('OpenLP Version Updated'),
-            version_text % (app_version, version),
+            version_text % (version, app_version),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
             QtGui.QMessageBox.Ok)
 
@@ -597,8 +598,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 QtGui.QMessageBox.Ok)
 
     def versionThread(self):
-        app_version = self.applicationVersion[u'full']
-        vT = VersionThread(self, app_version, self.generalConfig)
+        #app_version = self.applicationVersion[u'full']
+        vT = VersionThread(self, self.applicationVersion, self.generalConfig)
         vT.start()
 
     def onHelpAboutItemClicked(self):
