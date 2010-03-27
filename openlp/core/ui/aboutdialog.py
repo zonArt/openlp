@@ -166,9 +166,9 @@ class Ui_AboutDialog(object):
             self.AboutNotebook.indexOf(self.CreditsTab),
             self.trUtf8('Credits'))
         self.LicenseTextEdit.setPlainText(self.trUtf8(
-            'Copyright ' + u'\u00a9'.encode('utf8') + ' 2004-2009 Raoul '
+            'Copyright ' + u'\u00a9'.encode('utf8') + ' 2004-2010 Raoul '
             'Snyman\n'
-            'Portions copyright ' + u'\u00a9'.encode('utf8') + ' 2004-2009 '
+            'Portions copyright ' + u'\u00a9'.encode('utf8') + ' 2004-2010 '
             'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri, '
             'Christian Richter, Maikel Stuivenberg, Martin Thompson, Jon '
             'Tibble, Carsten Tinggaard\n'
