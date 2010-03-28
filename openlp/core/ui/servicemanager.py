@@ -34,7 +34,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
     contextMenuAction, Receiver, str_to_bool, build_icon
-from openlp.core.ui import ServiceNoteForm,  ServiceItemEditForm
+from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm
 
 class ServiceManagerList(QtGui.QTreeWidget):
 
@@ -713,7 +713,7 @@ class ServiceManager(QtGui.QWidget):
                         get_config(u'auto preview', u'False')):
             item += 1
             if self.serviceItems and item < len(self.serviceItems) and \
-                self.serviceItems[item][u'service_item'].autoPreviewAllowed:
+                self.serviceItems[item][u'service_item'].auto_preview_allowed:
                     self.parent.PreviewController.addServiceManagerItem(
                         self.serviceItems[item][u'service_item'], 0)
 

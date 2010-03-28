@@ -30,7 +30,7 @@ import os
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
-class DisplayHideMode(object):
+class HideMode(object):
     """
     This is basically an enumeration class which specifies the mode of a Bible.
     Mode refers to whether or not a Bible in OpenLP is a full Bible or needs to
@@ -395,7 +395,7 @@ class SlideController(QtGui.QWidget):
         self.Toolbar.setVisible(True)
         self.Mediabar.setVisible(False)
         self.Toolbar.makeWidgetsInvisible(self.song_edit_list)
-        if item.edit_enabled and item.fromPlugin:
+        if item.edit_enabled and item.from_plugin:
             self.Toolbar.makeWidgetsVisible(self.song_edit_list)
         elif item.is_media():
             self.Toolbar.setVisible(False)
@@ -560,7 +560,7 @@ class SlideController(QtGui.QWidget):
         log.debug(u'onBlankDisplay %d' % force)
         if force:
             self.blankButton.setChecked(True)
-        self.blankScreen(DisplayHideMode.Blank, self.blankButton.isChecked())
+        self.blankScreen(HideMode.Blank, self.blankButton.isChecked())
         self.parent.generalConfig.set_config(u'screen blank',
                                             self.blankButton.isChecked())
 
@@ -571,7 +571,7 @@ class SlideController(QtGui.QWidget):
         log.debug(u'onThemeDisplay %d' % force)
         if force:
             self.themeButton.setChecked(True)
-        self.blankScreen(DisplayHideMode.Theme, self.themeButton.isChecked())
+        self.blankScreen(HideMode.Theme, self.themeButton.isChecked())
 
     def onHideDisplay(self, force=False):
         """
@@ -585,7 +585,7 @@ class SlideController(QtGui.QWidget):
         else:
             self.parent.mainDisplay.showDisplay()
 
-    def blankScreen(self, blankType,  blanked=False):
+    def blankScreen(self, blankType, blanked=False):
         """
         Blank the display screen.
         """

@@ -30,7 +30,7 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, resize_image
-from openlp.core.ui import DisplayHideMode
+from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
 
@@ -254,13 +254,13 @@ class MainDisplay(DisplayWidget):
             self.waitingFrame = frame
             self.waitingFrameTrans = transition
 
-    def blankDisplay(self, blankType=DisplayHideMode.Blank, blanked=True):
+    def blankDisplay(self, blankType=HideMode.Blank, blanked=True):
         log.debug(u'Blank main Display %d' % blanked)
         if blanked:
             self.displayBlank = True
-            if blankType == DisplayHideMode.Blank:
+            if blankType == HideMode.Blank:
                 self.display_text.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
-            elif blankType == DisplayHideMode.Theme:
+            elif blankType == HideMode.Theme:
                 theme = self.parent.RenderManager.renderer.bg_frame
                 if not theme:
                     theme = self.blankFrame

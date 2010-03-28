@@ -72,9 +72,9 @@ class ServiceItem(object):
         self._raw_frames = []
         self._display_frames = []
         self._uuid = unicode(uuid.uuid1())
-        self.autoPreviewAllowed = False
+        self.auto_preview_allowed = False
         self.notes = u''
-        self.fromPlugin = False
+        self.from_plugin = False
 
     def addIcon(self, icon):
         """
@@ -207,10 +207,10 @@ class ServiceItem(object):
             u'type':self.service_item_type,
             u'audit':self.audit,
             u'notes':self.notes,
-            u'preview':self.autoPreviewAllowed,
+            u'preview':self.auto_preview_allowed,
             u'edit':self.edit_enabled,
             u'maintain':self.maintain_allowed,
-            u'fromPlugin':self.fromPlugin
+            u'from_plugin':self.from_plugin
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
@@ -244,11 +244,11 @@ class ServiceItem(object):
         self.addIcon(header[u'icon'])
         self.raw_footer = header[u'footer']
         self.audit = header[u'audit']
-        self.autoPreviewAllowed = header[u'preview']
+        self.auto_preview_allowed = header[u'preview']
         self.notes = header[u'notes']
         self.edit_enabled = header[u'edit']
         self.maintain_allowed = header[u'maintain']
-        self.fromPlugin = header[u'fromPlugin']
+        self.from_plugin = header[u'from_plugin']
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)

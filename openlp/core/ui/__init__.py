@@ -23,7 +23,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from slidecontroller import DisplayHideMode
+from slidecontroller import HideMode
 from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm
 from screen import ScreenList
