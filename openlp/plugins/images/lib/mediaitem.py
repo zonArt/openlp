@@ -155,7 +155,7 @@ class ImageMediaItem(MediaManagerItem):
     def onReplaceClick(self):
         if not self.ListView.selectedIndexes():
             QtGui.QMessageBox.information(self,
-                self.trUtf8('No item selected...'),
+                self.trUtf8('No item selected'),
                 self.trUtf8('You must select one item'))
         items = self.ListView.selectedIndexes()
         for item in items:

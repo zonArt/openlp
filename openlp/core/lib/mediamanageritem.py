@@ -410,7 +410,7 @@ class MediaManagerItem(QtGui.QWidget):
     def onAddEditClick(self):
         if not self.ListView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self,
-                self.trUtf8('No items selected...'),
+                self.trUtf8('No items selected'),
                 self.trUtf8('You must select one or more items'))
         else:
             log.debug(self.PluginNameShort + u' Add requested')
