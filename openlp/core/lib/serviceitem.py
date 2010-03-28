@@ -74,6 +74,7 @@ class ServiceItem(object):
         self._uuid = unicode(uuid.uuid1())
         self.autoPreviewAllowed = False
         self.notes = u''
+        self.fromPlugin = False
 
     def addIcon(self, icon):
         """
@@ -208,7 +209,8 @@ class ServiceItem(object):
             u'notes':self.notes,
             u'preview':self.autoPreviewAllowed,
             u'edit':self.edit_enabled,
-            u'maintain':self.maintain_allowed
+            u'maintain':self.maintain_allowed,
+            u'fromPlugin':self.fromPlugin
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
@@ -246,6 +248,7 @@ class ServiceItem(object):
         self.notes = header[u'notes']
         self.edit_enabled = header[u'edit']
         self.maintain_allowed = header[u'maintain']
+        self.fromPlugin = header[u'fromPlugin']
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)
@@ -282,7 +285,7 @@ class ServiceItem(object):
         return self._uuid != other._uuid
 
     def is_song(self):
-        return self.name == u'Songs'
+        return self.name.lower() == u'songs'
 
     def is_media(self):
         return self.name.lower() == u'media'
