@@ -466,8 +466,7 @@ class Renderer(object):
                         tlcorner=(x + display_shadow_size, y + display_shadow_size),
                         draw=True, color = self._theme.display_shadow_color)
                 self._get_extent_and_render(line, footer, tlcorner=(x, y), draw=True,
-                        outline_size=display_outline_size,
-                        outline_color=self._theme.display_outline_color)
+                        outline_size=display_outline_size)
             y += h
             if linenum == 0:
                 self._first_line_right_extent = rightextent
@@ -505,7 +504,7 @@ class Renderer(object):
         self.mainFont.setPixelSize(self._theme.font_main_proportion)
 
     def _get_extent_and_render(self, line, footer, tlcorner=(0, 0), draw=False,
-        color=None, outline_size=None, outline_color=None):
+        color=None, outline_size=0):
         """
         Find bounding box of text - as render_single_line. If draw is set,
         actually draw the text to the current DC as well return width and
@@ -544,21 +543,23 @@ class Renderer(object):
             else:
                 pen = QtGui.QColor(color)
             x, y = tlcorner
-            if outline_size:
+            if self._theme.display_outline and outline_size != 0 and not footer:
                 path = QtGui.QPainterPath()
                 path.addText(QtCore.QPointF(x, y + metrics.ascent()), font, line)
                 self.painter.setBrush(self.painter.pen().brush())
-                self.painter.setPen(QtGui.QPen(QtGui.QColor(outline_color), outline_size))
+                self.painter.setPen(QtGui.QPen(
+                        QtGui.QColor(self._theme.display_outline_color), outline_size))
                 self.painter.drawPath(path)
             self.painter.setPen(pen)
             self.painter.drawText(x, y + metrics.ascent(), line)
             if self._theme.display_slideTransition:
                 # Print 2nd image with 70% weight
-                if outline_size:
+                if self._theme.display_outline and outline_size != 0 and not footer:
                     path = QtGui.QPainterPath()
                     path.addText(QtCore.QPointF(x, y + metrics.ascent()), font, line)
                     self.painter2.setBrush(self.painter2.pen().brush())
-                    self.painter2.setPen(QtGui.QPen(QtGui.QColor(outline_color), outline_size))
+                    self.painter2.setPen(QtGui.QPen(
+                            QtGui.QColor(self._theme.display_outline_color), outline_size))
                     self.painter2.drawPath(path)
                 self.painter2.setFont(font)
                 self.painter2.setPen(pen)

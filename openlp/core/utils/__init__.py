@@ -29,6 +29,8 @@ import logging
 import urllib2
 from datetime import datetime
 
+from PyQt4 import QtCore
+
 import openlp
 
 log = logging.getLogger(__name__)
@@ -111,34 +113,44 @@ def check_latest_version(config, current_version):
     ``current_version``
         The current version of OpenLP.
     """
-    version_string = current_version
+    version_string = current_version[u'full']
     #set to prod in the distribution confif file.
     last_test = config.get_config(u'last version test', datetime.now().date())
     this_test = unicode(datetime.now().date())
     config.set_config(u'last version test', this_test)
     if last_test != this_test:
         version_string = u''
-        req = urllib2.Request(u'http://www.openlp.org/files/version.txt')
-        req.add_header(u'User-Agent', u'OpenLP/%s' % current_version)
+        if current_version[u'build']:
+            req = urllib2.Request(u'http://www.openlp.org/files/dev_version.txt')
+        else:
+            req = urllib2.Request(u'http://www.openlp.org/files/version.txt')
+        req.add_header(u'User-Agent', u'OpenLP/%s' % current_version[u'full'])
         try:
-            handle = urllib2.urlopen(req, None)
-            html = handle.read()
-            version_string = unicode(html).rstrip()
+            version_string = unicode(urllib2.urlopen(req, None).read()).strip()
         except IOError, e:
             if hasattr(e, u'reason'):
                 log.exception(u'Reason for failure: %s', e.reason)
     return version_string
 
+def string_to_unicode(string):
+    """
+    Converts a QString to a Python unicode object.
+    """
+    if isinstance(string, QtCore.QString):
+        string = unicode(string.toUtf8(), u'utf8')
+    return string
+
 def variant_to_unicode(variant):
     """
-    Converts a QVariant to a unicode string.
+    Converts a QVariant to a Python unicode object.
 
     ``variant``
         The QVariant instance to convert to unicode.
     """
-    string = variant.toString()
+    if isinstance(variant, QtCore.QVariant):
+        string = variant.toString()
     if not isinstance(string, unicode):
-        string = unicode(string, u'utf8')
+        string = string_to_unicode(string)
     return string
 
 from registry import Registry
