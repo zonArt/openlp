@@ -28,7 +28,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-contextMenuAction, contextMenuSeparator
+    contextMenuAction
 
 log = logging.getLogger(__name__)
 
