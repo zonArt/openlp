@@ -24,9 +24,9 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from serviceitemdialog import Ui_ServiceNoteEdit
+from servicenotedialog import Ui_ServiceNoteEdit
 
-class ServiceItemNoteForm(QtGui.QDialog, Ui_ServiceNoteEdit):
+class ServiceNoteForm(QtGui.QDialog, Ui_ServiceNoteEdit):
     """
     This is the form that is used to edit the verses of the song.
     """

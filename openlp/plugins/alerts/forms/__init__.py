@@ -25,4 +25,3 @@
 
 from alertstab import AlertsTab
 from alertform import AlertForm
-from alerteditform import AlertEditForm
