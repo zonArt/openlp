@@ -466,7 +466,7 @@ class SlideController(QtGui.QWidget):
             else:
                 blanked = False
             Receiver.send_message(u'%s_start' % serviceItem.name.lower(), \
-                [serviceItem.title, serviceItem.service_item_path,
+                [serviceItem.title, serviceItem.get_frame_path(),
                 serviceItem.get_frame_title(), slideno, self.isLive, blanked])
         self.slideList = {}
         width = self.parent.ControlSplitter.sizes()[self.split]
@@ -517,6 +517,7 @@ class SlideController(QtGui.QWidget):
                 label.setPixmap(QtGui.QPixmap.fromImage(pixmap))
                 self.PreviewListWidget.setCellWidget(framenumber, 1, label)
                 slide_height = width * self.parent.RenderManager.screen_ratio
+                row += 1
             rowitem.setText(unicode(row))
             self.PreviewListWidget.setItem(framenumber, 0, rowitem)
             self.PreviewListWidget.setItem(framenumber, 1, item)
@@ -753,7 +754,7 @@ class SlideController(QtGui.QWidget):
     def onMediaStart(self, item):
         if self.isLive:
             Receiver.send_message(u'%s_start' % item.name.lower(), \
-                [item.title, item.service_item_path,
+                [item.title, item.get_frame_path(),
                 item.get_frame_title(), self.isLive, self.blankButton.isChecked()])
         else:
             self.mediaObject.stop()
