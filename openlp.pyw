@@ -195,6 +195,18 @@ def main():
     qInitResources()
     # Now create and actually run the application.
     app = OpenLP(qt_args)
+    lang_Path = AppLocation.get_directory(AppLocation.AppDir)
+    if hasattr(sys, u'frozen'):
+        lang_Path = os.path.join(lang_Path, u'..')
+    lang_Path = os.path.join(lang_Path, u'resources', u'i18n')
+    locale = QtCore.QLocale.system().name()
+    qtTranslator = QtCore.QTranslator()
+    if qtTranslator.load("openlp_" + locale, lang_Path):
+        app.installTranslator(qtTranslator)
+    appTranslator = QtCore.QTranslator()
+    if appTranslator.load("openlp_" + locale, lang_Path):
+        app.installTranslator(appTranslator)
+
     sys.exit(app.run())
 
 if __name__ == u'__main__':
