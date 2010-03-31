@@ -24,7 +24,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from serviceitemdialog import Ui_ServiceNoteEdit
+from servicenotedialog import Ui_ServiceNoteEdit
 
 class ServiceNoteForm(QtGui.QDialog, Ui_ServiceNoteEdit):
     """
