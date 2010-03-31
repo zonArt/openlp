@@ -325,6 +325,12 @@ class ServiceItem(object):
         """
         return self._raw_frames[row][u'title']
 
+    def get_frame_path(self, row=0):
+        """
+        Returns the title of the raw frame
+        """
+        return self._raw_frames[row][u'path']
+
     def request_audit(self):
         if self.audit:
             Receiver.send_message(u'songusage_live', self.audit)
