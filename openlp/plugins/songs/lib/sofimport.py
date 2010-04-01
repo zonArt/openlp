@@ -81,7 +81,8 @@ class sofimport:
             
     def open_sof_file(self, filepath):
         if os.name == u'nt':
-            url = u'file:///' + filepath.replace(u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
+            url = u'file:///' + filepath.replace(u'\\', u'/')
+            url = url.replace(u':', u'|').replace(u' ', u'%20')
         else:
             url = uno.systemPathToFileUrl(filepath)
         properties = []
@@ -104,84 +105,85 @@ class sofimport:
             self.song = None
 
     def process_paragraph(self, paragraph):
-        text = ''
+        text = u''
         textportions = paragraph.createEnumeration()
         while textportions.hasMoreElements():
             textportion = textportions.nextElement()
             if textportion.BreakType in (PAGE_BEFORE, PAGE_BOTH):
                 self.process_paragraph_text(text)
                 self.new_song()
-                text = ''
+                text = u''
             text += self.process_textportion(textportion)
             if textportion.BreakType in (PAGE_AFTER, PAGE_BOTH):
                 self.process_paragraph_text(text)
                 self.new_song()
-                text = ''
+                text = u''
         self.process_paragraph_text(text)
         
     def process_paragraph_text(self, text):
-        for line in text.split('\n'):
+        for line in text.split(u'\n'):
             self.process_paragraph_line(line)
         if self.blanklines > 2:
             self.new_song()
 
     def process_paragraph_line(self, text):
         text = text.strip()        
-        if text == '':
+        if text == u'':
             self.blanklines += 1
             if self.blanklines > 1:
                 return
-            if self.song.title != '':
+            if self.song.title != u'':
                 self.song.finish_verse()
             return
         #print ">" + text + "<"
         self.blanklines = 0
         if self.skip_to_close_bracket:
-            if text.endswith(')'):
+            if text.endswith(u')'):
                 self.skip_to_close_bracket = False
             return 
-        if text.startswith('CCL Licence'):
+        if text.startswith(u'CCL Licence'):
             self.in_chorus = False
             return
-        if text == 'A Songs of Fellowship Worship Resource':
+        if text == u'A Songs of Fellowship Worship Resource':
             return
-        if text.startswith('(NB.') or text.startswith('(Regrettably') or text.startswith('(From'):
+        if text.startswith(u'(NB.') or text.startswith(u'(Regrettably') \
+            or text.startswith(u'(From'):
             self.skip_to_close_bracket = True
             return
-        if text.startswith('Copyright'):
+        if text.startswith(u'Copyright'):
             self.song.copyright = text
             return
-        if text == '(Repeat)':
+        if text == u'(Repeat)':
             self.song.repeat_verse()
             return
-        if self.song.title == '':
-            if self.song.copyright == '':
+        if self.song.title == u'':
+            if self.song.copyright == u'':
                 self.song.add_author(text)
             else:
-                self.song.copyright += ' ' + text
+                self.song.copyright += u' ' + text
             return
         self.song.add_verse_line(text, self.in_chorus)
 
     def process_textportion(self, textportion):
         text = textportion.getString()
         text = self.tidy_text(text)
-        if text.strip() == '':
+        if text.strip() == u'':
             return text
         if textportion.CharWeight == BOLD:
             boldtext = text.strip()
             if boldtext.isdigit() and self.song.songnumber == 0:
                 self.song.songnumber = int(boldtext)
-                return ''
-            if self.song.title == '':
+                return u''
+            if self.song.title == u'':
                 text = self.uncap_text(text)
                 title = text.strip()
-                if title.startswith('\''):
+                if title.startswith(u'\''):
                     title = title[1:]
-                if title.endswith(','):
+                if title.endswith(u','):
                     title = title[:-1]
                 self.song.title = title
             return text
-        if text.strip().startswith('('):
+        if text.strip().startswith(u'('):
             return text
         self.in_chorus = (textportion.CharPosture == ITALIC)
         return text
@@ -195,48 +197,51 @@ class sofimport:
         self.in_chorus = False
 
     def tidy_text(self, text):
-        text = text.replace('\t', ' ')
-        text = text.replace('\r', '\n')
-        text = text.replace(u'\u2018', '\'')
-        text = text.replace(u'\u2019', '\'')
-        text = text.replace(u'\u201c', '"')
-        text = text.replace(u'\u201d', '"')
-        text = text.replace(u'\u2026', '...')
-        text = text.replace(u'\u2013', '-')
-        text = text.replace(u'\u2014', '-')
+        text = text.replace(u'\t', u' ')
+        text = text.replace(u'\r', u'\n')
+        text = text.replace(u'\u2018', u'\'')
+        text = text.replace(u'\u2019', u'\'')
+        text = text.replace(u'\u201c', u'"')
+        text = text.replace(u'\u201d', u'"')
+        text = text.replace(u'\u2026', u'...')
+        text = text.replace(u'\u2013', u'-')
+        text = text.replace(u'\u2014', u'-')
         return text
 
     def uncap_text(self, text):
-        textarr = re.split('(\W+)', text)
+        textarr = re.split(u'(\W+)', text)
         textarr[0] = textarr[0].capitalize()
         for i in range(1, len(textarr)):
-            if textarr[i] in ('JESUS', 'CHRIST', 'KING', 'ALMIGHTY', 'REDEEMER', 'SHEPHERD', 
-                'SON', 'GOD', 'LORD', 'FATHER', 'HOLY', 'SPIRIT', 'LAMB', 'YOU', 
-                'YOUR', 'I', 'I\'VE', 'I\'M', 'I\'LL', 'SAVIOUR', 'O', 'YOU\'RE', 'HE', 'HIS', 'HIM', 'ZION', 
-                'EMMANUEL', 'MAJESTY', 'JESUS\'', 'JIREH', 'JUDAH', 'LION', 'LORD\'S', 'ABRAHAM', 'GOD\'S', 
-                'FATHER\'S', 'ELIJAH'):
+            # Do not translate these. Fixed strings in SOF song file
+            if textarr[i] in (u'JESUS', u'CHRIST', u'KING', u'ALMIGHTY', 
+                u'REDEEMER', u'SHEPHERD', u'SON', u'GOD', u'LORD', u'FATHER', 
+                u'HOLY', u'SPIRIT', u'LAMB', u'YOU', u'YOUR', u'I', u'I\'VE', 
+                u'I\'M', u'I\'LL', u'SAVIOUR', u'O', u'YOU\'RE', u'HE', u'HIS', 
+                u'HIM', u'ZION', u'EMMANUEL', u'MAJESTY', u'JESUS\'', u'JIREH', 
+                u'JUDAH', u'LION', u'LORD\'S', u'ABRAHAM', u'GOD\'S', 
+                u'FATHER\'S', u'ELIJAH'):
                 textarr[i] = textarr[i].capitalize()
             else:
                 textarr[i] = textarr[i].lower()
-        text = ''.join(textarr)
+        text = u''.join(textarr)
         return text
 
 class sofsong:
     def __init__(self):
         self.songnumber = 0
-        self.title = ""
+        self.title = u''
         self.ischorus = False
         self.versecount = 0
         self.choruscount = 0
         self.verses = []
         self.order = []
         self.authors = []
-        self.copyright = ""
-        self.book = ''
-        self.currentverse = ''
+        self.copyright = u''
+        self.book = u''
+        self.currentverse = u''
 
     def finish_verse(self):
-        if self.currentverse.strip() == '':
+        if self.currentverse.strip() == u'':
             return
         if self.ischorus:
             splitat = None
@@ -244,36 +249,36 @@ class sofsong:
             splitat = self.verse_splits()
         if splitat:
             ln = 0
-            verse = ''
-            for line in self.currentverse.split('\n'):
+            verse = u''
+            for line in self.currentverse.split(u'\n'):
                 ln += 1
-                if line == '' or ln > splitat:
+                if line == u'' or ln > splitat:
                     self.append_verse(verse)
                     ln = 0
                     if line:
-                        verse = line + '\n'
+                        verse = line + u'\n'
                     else:   
-                        verse = ''
+                        verse = u''
                 else:
-                    verse += line + '\n'
+                    verse += line + u'\n'
             if verse:
                 self.append_verse(verse)
         else:
             self.append_verse(self.currentverse)
-        self.currentverse = ''
+        self.currentverse = u''
         self.ischorus = False
 
     def append_verse(self, verse):
         if self.ischorus:
             self.choruscount += 1
-            versetag = 'C' + str(self.choruscount)
+            versetag = u'C' + unicode(self.choruscount)
         else:
             self.versecount += 1
-            versetag = 'V' + str(self.versecount)
+            versetag = u'V' + unicode(self.versecount)
         self.verses.append([versetag, verse])
         self.order.append(versetag)
         if self.choruscount > 0 and not self.ischorus:
-            self.order.append('C' + str(self.choruscount))
+            self.order.append(u'C' + unicode(self.choruscount))
 
     def repeat_verse(self):
         self.finish_verse()
@@ -281,46 +286,46 @@ class sofsong:
 
     def add_verse_line(self, text, inchorus):
         if inchorus != self.ischorus and ((len(self.verses) > 0) or 
-            (self.currentverse.count('\n') > 1)):
+            (self.currentverse.count(u'\n') > 1)):
             self.finish_verse()
         if inchorus:
             self.ischorus = True
-        self.currentverse += text + '\n'
+        self.currentverse += text + u'\n'
     
     def add_author(self, text):
-        text = text.replace(' and ', ' & ')
-        for author in text.split(','):
-            authors = author.split('&')
+        text = text.replace(u' and ', u' & ')
+        for author in text.split(u','):
+            authors = author.split(u'&')
             for i in range(len(authors)):
                 author2 = authors[i].strip()
-                if author2.find(' ') == -1 and i < len(authors) - 1:
-                    author2 = author2 + ' ' + authors[i+1].split(' ')[-1]
+                if author2.find(u' ') == -1 and i < len(authors) - 1:
+                    author2 = author2 + u' ' + authors[i + 1].split(u' ')[-1]
                 self.authors.append(author2)
         
     def finish(self):
         self.finish_verse()
         if self.songnumber == 0  \
-            or self.title == ''  \
+            or self.title == u''  \
             or len(self.verses) == 0:
             return False
         if len(self.authors) == 0:
-            self.authors.append('Author Unknown')
-        self.title = self.title + ' - ' + str(self.songnumber)
+            self.authors.append(u'Author Unknown')
         if self.songnumber <= 640:
-            self.book = 'Songs of Fellowship 1'
+            self.book = u'Songs of Fellowship 1'
         elif self.songnumber <= 1150:
-            self.book = 'Songs of Fellowship 2'
+            self.book = u'Songs of Fellowship 2'
         elif self.songnumber <= 1690:
-            self.book = 'Songs of Fellowship 3'
+            self.book = u'Songs of Fellowship 3'
         else:
-            self.book = 'Songs of Fellowship 4'
+            self.book = u'Songs of Fellowship 4'
         self.print_song()
         return True
         
     def print_song(self):
-        print '===== TITLE: ' + self.title + ' ====='
+        print u'===== TITLE: ' + self.title + u' ====='
+        print u'ALTTITLE: ' + unicode(self.songnumber)
         for (verselabel, verse) in self.verses:
-            print "VERSE " + verselabel + ": " + verse
+            print u'VERSE ' + verselabel + u': ' + verse
         print u'ORDER: ' + unicode(self.order)
         for author in self.authors:
             print u'AUTHORS: ' + author
@@ -436,69 +441,9 @@ class sofsong:
 
 sof = sofimport()
 sof.start_ooo()
-sof.open_sof_file("/home/jonathan/sof.rtf")
-#sof.open_sof_file("c:\users\jonathan\Desktop\sof3words.rtf")
-#sof.open_sof_file("c:\users\jonathan\Desktop\sof4words.rtf")
+sof.open_sof_file(u'/home/jonathan/sof.rtf')
+#sof.open_sof_file(u'c:\users\jonathan\Desktop\sof3words.rtf')
+#sof.open_sof_file(u'c:\users\jonathan\Desktop\sof4words.rtf')
 sof.process_doc()
 sof.close_ooo()
-
-"""
-
-    
-Sub FinishSong()
-
-    sql = "SELECT songid FROM songs where songtitle = '" & Title & "'"
-    set rs = db.Execute(sql)
-    If Not rs.EOF Then
-        rs.MoveFirst
-        sid = rs("songid")
-        sql = "UPDATE songs SET songtitle='" & title & "', lyrics='" & lyrics & "', copyrightinfo='" & _
-                        Copyright & "', settingsid=0 WHERE songid=" & sid
-        db.Execute(sql)
-    Else
-        sql = "INSERT INTO songs ('songtitle', 'lyrics', 'copyrightinfo', 'settingsid') VALUES ('" & _
-                    Title & "', '" & Lyrics & "', '" & Copyright & "',0)"
-        db.Execute(sql)
-        sql = "SELECT songid FROM songs where songtitle = '" & Title & "'"
-        set rs = db.Execute(sql)
-        db.Execute(sql)
-        rs.MoveFirst
-        sid = rs("songid")
-    End If
-    For aut = LBound(Authors) To UBound(Authors)
-        Authors(Aut) = Trim(Authors(aut))
-        If InStr(1, Authors(aut), " ") = 0 And aut < UBound(Authors) Then
-            temp = Split(Authors(aut+1), " ")
-            Authors(aut) = Authors(aut) + " " + temp(UBound(temp))
-        End If
-        If Right(Authors(aut), 1) = "." Then Authors(aut) = Left(Authors(aut), Len(Authors(aut)) - 1)
-        Authors(aut) = Replace(Authors(aut), "'", "''")
-        sql = "SELECT authorid FROM authors where authorname = '" & Authors(aut) & "'"
-        set rs = db.Execute(sql)
-        If Not rs.EOF Then
-            rs.MoveFirst
-            aid = rs("authorid")
-        Else
-            sql = "INSERT INTO authors ('authorname') VALUES ('" & Authors(aut) & "')"
-            db.Execute(sql)
-            sql = "SELECT authorid FROM authors where authorname = '" & Authors(aut) & "'"
-            set rs = db.Execute(sql)
-            rs.MoveFirst
-            aid = rs("authorid")
-        End If
-        ' REPLACE seemed to insert a second duplicate row, so need to do select/insert instead.
-        sql = "SELECT count(*) FROM songauthors where songid = " & sid & " and authorid = " & aid
-        set rs = db.Execute(sql)
-        rs.MoveFirst
-        If rs(0)=0 Then 
-            sql = "INSERT INTO songauthors VALUES (" & aid & "," & sid &")"
-            db.Execute(sql)
-        End If
-    Next
-    Exit Sub
-End Sub
-
-
-
-"""
 
