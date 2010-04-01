@@ -66,14 +66,15 @@ class ServiceItem(object):
         self.iconic_representation = None
         self.raw_footer = None
         self.theme = None
-        self.service_item_path = None
         self.service_item_type = None
         self.edit_enabled = False
+        self.maintain_allowed = False
         self._raw_frames = []
         self._display_frames = []
         self._uuid = unicode(uuid.uuid1())
-        self.autoPreviewAllowed = False
+        self.auto_preview_allowed = False
         self.notes = u''
+        self.from_plugin = False
 
     def addIcon(self, icon):
         """
@@ -156,9 +157,8 @@ class ServiceItem(object):
             The actual image file name.
         """
         self.service_item_type = ServiceItemType.Image
-        self.service_item_path = path
         self._raw_frames.append(
-            {u'title': title, u'image': image})
+            {u'title': title, u'image': image, u'path': path})
 
     def add_from_text(self, title, raw_slide, verseTag=None):
         """
@@ -189,9 +189,8 @@ class ServiceItem(object):
             The command of/for the slide.
         """
         self.service_item_type = ServiceItemType.Command
-        self.service_item_path = path
         self._raw_frames.append(
-            {u'title': file_name, u'image': image})
+            {u'title': file_name, u'image': image, u'path': path})
 
     def get_service_repr(self):
         """
@@ -208,7 +207,10 @@ class ServiceItem(object):
             u'type':self.service_item_type,
             u'audit':self.audit,
             u'notes':self.notes,
-            u'preview':self.autoPreviewAllowed
+            u'preview':self.auto_preview_allowed,
+            u'edit':self.edit_enabled,
+            u'maintain':self.maintain_allowed,
+            u'from_plugin':self.from_plugin
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
@@ -242,8 +244,11 @@ class ServiceItem(object):
         self.addIcon(header[u'icon'])
         self.raw_footer = header[u'footer']
         self.audit = header[u'audit']
-        self.autoPreviewAllowed = header[u'preview']
+        self.auto_preview_allowed = header[u'preview']
         self.notes = header[u'notes']
+        self.edit_enabled = header[u'edit']
+        self.maintain_allowed = header[u'maintain']
+        self.from_plugin = header[u'from_plugin']
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)
@@ -280,7 +285,7 @@ class ServiceItem(object):
         return self._uuid != other._uuid
 
     def is_song(self):
-        return self.name == u'Songs'
+        return self.name.lower() == u'songs'
 
     def is_media(self):
         return self.name.lower() == u'media'
@@ -319,6 +324,12 @@ class ServiceItem(object):
         Returns the title of the raw frame
         """
         return self._raw_frames[row][u'title']
+
+    def get_frame_path(self, row=0):
+        """
+        Returns the title of the raw frame
+        """
+        return self._raw_frames[row][u'path']
 
     def request_audit(self):
         if self.audit:

@@ -23,7 +23,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from serviceitemform import ServiceItemNoteForm
+from slidecontroller import HideMode
+from servicenoteform import ServiceNoteForm
+from serviceitemeditform import ServiceItemEditForm
 from screen import ScreenList
 from maindisplay import MainDisplay
 from amendthemeform import AmendThemeForm
@@ -41,4 +43,4 @@ from mainwindow import MainWindow
 
 __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainWindow',
     'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
-    'AmendThemeForm', 'MediaDockManager', 'ServiceItemNoteForm']
+    'AmendThemeForm', 'MediaDockManager', 'ServiceItemEditForm']

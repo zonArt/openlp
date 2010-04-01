@@ -114,6 +114,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.Toolbar = None
         self.remoteTriggered = None
         self.ServiceItemIconName = None
+        self.addToServiceItem = False
         self.PageLayout = QtGui.QVBoxLayout(self)
         self.PageLayout.setSpacing(0)
         self.PageLayout.setContentsMargins(4, 0, 4, 0)
@@ -279,6 +280,13 @@ class MediaManagerItem(QtGui.QWidget):
                     u'%s %s' % (self.trUtf8('&Edit'), self.PluginNameVisible),
                     self.onEditClick))
             self.ListView.addAction(contextMenuSeparator(self.ListView))
+        if self.hasDeleteIcon:
+            self.ListView.addAction(
+                contextMenuAction(
+                    self.ListView, u':/general/general_delete.png',
+                    u'%s %s' % (self.trUtf8('&Delete'), self.PluginNameVisible),
+                    self.onDeleteClick))
+            self.ListView.addAction(contextMenuSeparator(self.ListView))
         self.ListView.addAction(
             contextMenuAction(
                 self.ListView, u':/general/general_preview.png',
@@ -292,6 +300,12 @@ class MediaManagerItem(QtGui.QWidget):
             contextMenuAction(
                 self.ListView, u':/general/general_add.png',
                 self.trUtf8('&Add to Service'), self.onAddClick))
+        if self.addToServiceItem:
+            self.ListView.addAction(
+                contextMenuAction(
+                    self.ListView, u':/general/general_add.png',
+                    self.trUtf8('&Add to selected Service Item'),
+                    self.onAddEditClick))
         QtCore.QObject.connect(
             self.ListView, QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
             self.onPreviewClick)
@@ -366,7 +380,7 @@ class MediaManagerItem(QtGui.QWidget):
             log.debug(self.PluginNameShort + u' Preview requested')
             service_item = self.buildServiceItem()
             if service_item:
-                service_item.fromPlugin = True
+                service_item.from_plugin = True
                 self.parent.preview_controller.addServiceItem(service_item)
 
     def onLiveClick(self):
@@ -378,7 +392,7 @@ class MediaManagerItem(QtGui.QWidget):
             log.debug(self.PluginNameShort + u' Live requested')
             service_item = self.buildServiceItem()
             if service_item:
-                service_item.fromPlugin = True
+                service_item.from_plugin = True
                 self.parent.live_controller.addServiceItem(service_item)
 
     def onAddClick(self):
@@ -390,8 +404,30 @@ class MediaManagerItem(QtGui.QWidget):
             log.debug(self.PluginNameShort + u' Add requested')
             service_item = self.buildServiceItem()
             if service_item:
-                service_item.fromPlugin = False
+                service_item.from_plugin = False
                 self.parent.service_manager.addServiceItem(service_item)
+
+    def onAddEditClick(self):
+        if not self.ListView.selectedIndexes() and not self.remoteTriggered:
+            QtGui.QMessageBox.information(self,
+                self.trUtf8('No items selected'),
+                self.trUtf8('You must select one or more items'))
+        else:
+            log.debug(self.PluginNameShort + u' Add requested')
+            service_item = self.parent.service_manager.getServiceItem()
+            if not service_item:
+                QtGui.QMessageBox.information(self,
+                    self.trUtf8('No Service Item Selected'),
+                    self.trUtf8('You must select a existing service item to add to.'))
+            elif self.title == service_item.name:
+                self.generateSlideData(service_item)
+                self.parent.service_manager.addServiceItem(service_item)
+            else:
+                #Turn off the remote edit update message indicator
+                self.parent.service_manager.remoteEditTriggered = False
+                QtGui.QMessageBox.information(self,
+                    self.trUtf8('Invalid Service Item'),
+                    self.trUtf8(unicode('You must select a %s service item.' % self.title)))
 
     def buildServiceItem(self):
         """
