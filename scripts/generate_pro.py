@@ -73,11 +73,11 @@ def main():
             if cond == True:
                 continue
             
-            if file.endswith(u'.ui'):
-                line = "%s/%s" % (path, file)
-                print u'Parsing "%s"' % line
-                stringlist.append("FORMS        += %s" % line)
-            elif file.endswith(u'.py'):
+#            if file.endswith(u'.ui'):
+#                line = "%s/%s" % (path, file)
+#                print u'Parsing "%s"' % line
+#                stringlist.append("FORMS        += %s" % line)
+            if file.endswith(u'.py'):
                 line = "%s/%s" % (path, file)
                 print u'Parsing "%s"' % line
                 stringlist.append("SOURCES      += %s" % line)
