@@ -33,6 +33,7 @@ import re
 import os
 import time
 from PyQt4 import QtCore
+from songimport import SongImport
 
 if os.name == u'nt':
     from win32com.client import Dispatch
@@ -48,19 +49,44 @@ else:
     from com.sun.star.awt.FontSlant import ITALIC
     from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
 
-class sofimport:
-    def __init__(self):
+class SofImport(object):
+    """
+    Import songs provided on disks with the Songs of Fellowship music books
+    VOLS1_2.RTF, sof3words.rtf and sof4words.rtf
+    
+    Use OpenOffice.org Writer for processing the rtf file
+
+    The three books are not only inconsistant with each other, they are 
+    inconsistant in themselves too with their formatting. Not only this, but
+    the 1+2 book does not space out verses correctly. This script attempts
+    to sort it out, but doesn't get it 100% right. But better than having to 
+    type them all out!
+
+    It attempts to detect italiced verses, and treats these as choruses in
+    the verse ordering. Again not perfect, but a start.
+    """
+    def __init__(self, songmanager):
+        """
+        Initialise the class. Requires a songmanager class which is passed
+        to SongImport for writing song to disk
+        """
         self.song = None
-        self.new_song()
+        self.manager = songmanager
 
     def start_ooo(self):
+        """
+        Start OpenOffice.org process
+        TODO: The presentation/Impress plugin may already have it running
+        """
         if os.name == u'nt':
             manager = Dispatch(u'com.sun.star.ServiceManager')
             manager._FlagAsMethod(u'Bridge_GetStruct')
             manager._FlagAsMethod(u'Bridge_GetValueObject')
             self.desktop = manager.createInstance(u'com.sun.star.frame.Desktop')
         else:
-            cmd = u'openoffice.org -nologo -norestore -minimized -invisible -nofirststartwizard -accept="socket,host=localhost,port=2002;urp;"'
+            cmd = u'openoffice.org -nologo -norestore -minimized -invisible ' \
+                + u'-nofirststartwizard ' \
+                + '-accept="socket,host=localhost,port=2002;urp;"'
             process = QtCore.QProcess()
             process.startDetached(cmd)
             process.waitForStarted()
@@ -69,17 +95,22 @@ class sofimport:
                 u'com.sun.star.bridge.UnoUrlResolver', context)
             ctx = None
             loop = 0
-            while ctx is None and loop < 3:
+            while ctx is None and loop < 5:
                 try:
-                    ctx = resolver.resolve(u'uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
+                    ctx = resolver.resolve(u'uno:socket,host=localhost,' \
+                        + 'port=2002;urp;StarOffice.ComponentContext')
                 except:
-                    time.sleep(1)
-                    loop += 1
+                    pass
+                time.sleep(1)
+                loop += 1
             manager = ctx.ServiceManager
             self.desktop = manager.createInstanceWithContext(
                 "com.sun.star.frame.Desktop", ctx )
             
-    def open_sof_file(self, filepath):
+    def open_ooo_file(self, filepath):
+        """
+        Open the passed file in OpenOffice.org Writer
+        """
         if os.name == u'nt':
             url = u'file:///' + filepath.replace(u'\\', u'/')
             url = url.replace(u':', u'|').replace(u' ', u'%20')
@@ -91,10 +122,18 @@ class sofimport:
             0, properties)
 
     def close_ooo(self):
+        """
+        Close down OpenOffice.org.
+        TODO: Further checks that it have other docs open, e.g. Impress!
+        """
         self.desktop.terminate()
 
     def process_doc(self):
+        """
+        Process the RTF file, a paragraph at a time
+        """            
         self.blanklines = 0
+        self.new_song()
         paragraphs = self.document.getText().createEnumeration()
         while paragraphs.hasMoreElements():
             paragraph = paragraphs.nextElement()
@@ -105,6 +144,16 @@ class sofimport:
             self.song = None
 
     def process_paragraph(self, paragraph):
+        """
+        Process a paragraph. 
+        In the first book, a paragraph is a single line. In the latter ones
+        they may contain multiple lines.
+        Each paragraph contains textportions. Each textportion has it's own
+        styling, e.g. italics, bold etc. 
+        Also check for page breaks, which indicates a new song in books 1+2.
+        In later books, there may not be line breaks, so check for 3 or more
+        newlines
+        """
         text = u''
         textportions = paragraph.createEnumeration()
         while textportions.hasMoreElements():
@@ -121,28 +170,35 @@ class sofimport:
         self.process_paragraph_text(text)
         
     def process_paragraph_text(self, text):
+        """
+        Split the paragraph text into multiple lines and process
+        """
         for line in text.split(u'\n'):
             self.process_paragraph_line(line)
         if self.blanklines > 2:
             self.new_song()
 
     def process_paragraph_line(self, text):
+        """ 
+        Process a single line. Throw away that text which isn't relevant, i.e.
+        stuff that appears at the end of the song.
+        Anything that is OK, append to the current verse
+        """
         text = text.strip()        
         if text == u'':
             self.blanklines += 1
             if self.blanklines > 1:
                 return
-            if self.song.title != u'':
-                self.song.finish_verse()
+            if self.song.get_title() != u'':
+                self.finish_verse()
             return
-        #print ">" + text + "<"
         self.blanklines = 0
         if self.skip_to_close_bracket:
             if text.endswith(u')'):
                 self.skip_to_close_bracket = False
             return 
         if text.startswith(u'CCL Licence'):
-            self.in_chorus = False
+            self.italics = False
             return
         if text == u'A Songs of Fellowship Worship Resource':
             return
@@ -151,52 +207,162 @@ class sofimport:
             self.skip_to_close_bracket = True
             return
         if text.startswith(u'Copyright'):
-            self.song.copyright = text
+            self.song.add_copyright(text)
             return
         if text == u'(Repeat)':
+            self.finish_verse()
             self.song.repeat_verse()
             return
-        if self.song.title == u'':
-            if self.song.copyright == u'':
-                self.song.add_author(text)
+        if self.song.get_title() == u'':
+            if self.song.get_copyright() == u'':
+                self.add_author(text)
             else:
-                self.song.copyright += u' ' + text
+                self.song.add_copyright(text)
             return
-        self.song.add_verse_line(text, self.in_chorus)
+        self.add_verse_line(text)
 
     def process_textportion(self, textportion):
+        """
+        Process a text portion. Here we just get the text and detect if
+        it's bold or italics. If it's bold then its a song number or song title.
+        Song titles are in all capitals, so we must bring the capitalization
+        into line
+        """
         text = textportion.getString()
         text = self.tidy_text(text)
         if text.strip() == u'':
             return text
         if textportion.CharWeight == BOLD:
             boldtext = text.strip()
-            if boldtext.isdigit() and self.song.songnumber == 0:
-                self.song.songnumber = int(boldtext)
+            if boldtext.isdigit() and self.song.get_song_number() == '':
+                self.add_songnumber(boldtext)
                 return u''
-            if self.song.title == u'':
+            if self.song.get_title() == u'':
                 text = self.uncap_text(text)
-                title = text.strip()
-                if title.startswith(u'\''):
-                    title = title[1:]
-                if title.endswith(u','):
-                    title = title[:-1]
-                self.song.title = title
+                self.add_title(text)
             return text
         if text.strip().startswith(u'('):
             return text
-        self.in_chorus = (textportion.CharPosture == ITALIC)
+        self.italics = (textportion.CharPosture == ITALIC)
         return text
 
     def new_song(self):
+        """
+        A change of song. Store the old, create a new
+        ... but only if the last song was complete. If not, stick with it
+        """
         if self.song:
-            if not self.song.finish():
+            self.finish_verse()
+            if not self.song.check_complete():
                 return
-        self.song = sofsong()
+            self.song.finish()
+        self.song = SongImport(self.manager)
         self.skip_to_close_bracket = False
-        self.in_chorus = False
+        self.is_chorus = False
+        self.italics = False
+        self.currentverse = u''
+
+    def add_songnumber(self, song_no):
+        """
+        Add a song number, store as alternate title. Also use the song
+        number to work out which songbook we're in
+        """
+        self.song.set_song_number(song_no)
+        if int(song_no) <= 640:
+            self.song.set_song_book(u'Songs of Fellowship 1', 
+                'Kingsway\'s Thankyou Music')
+        elif int(song_no) <= 1150:
+            self.song.set_song_book(u'Songs of Fellowship 2', 
+                'Kingsway\'s Thankyou Music')
+        elif int(song_no) <= 1690:
+            self.song.set_song_book(u'Songs of Fellowship 3', 
+                'Kingsway\'s Thankyou Music')
+        else:
+            self.song.set_song_book(u'Songs of Fellowship 4', 
+                'Kingsway\'s Thankyou Music')
+
+    def add_title(self, text):
+        """
+        Add the title to the song. Strip some leading/trailing punctuation that
+        we don't want in a title
+        """
+        title = text.strip()
+        if title.startswith(u'\''):
+            title = title[1:]
+        if title.endswith(u','):
+            title = title[:-1]
+        self.song.set_title(title)
+
+    def add_author(self, text):
+        """
+        Add the author. OpenLP stores them individually so split by 'and', '&'
+        and comma.
+        However need to check for "Mr and Mrs Smith" and turn it to 
+        "Mr Smith" and "Mrs Smith".
+        """
+        text = text.replace(u' and ', u' & ')
+        for author in text.split(u','):
+            authors = author.split(u'&')
+            for i in range(len(authors)):
+                author2 = authors[i].strip()
+                if author2.find(u' ') == -1 and i < len(authors) - 1:
+                    author2 = author2 + u' ' \
+                        + authors[i + 1].strip().split(u' ')[-1]
+                self.song.add_author(author2)
+
+    def add_verse_line(self, text):
+        """
+        Add a line to the current verse. If the formatting has changed and
+        we're beyond the second line of first verse, then this indicates
+        a change of verse. Italics are a chorus
+        """
+        if self.italics != self.is_chorus and ((len(self.song.verses) > 0) or 
+            (self.currentverse.count(u'\n') > 1)):
+            self.finish_verse()
+        if self.italics:
+            self.is_chorus = True
+        self.currentverse += text + u'\n'
+
+    def finish_verse(self):
+        """
+        Verse is finished, store it. Note in book 1+2, some songs are formatted
+        incorrectly. Here we try and split songs with missing line breaks into
+        the correct number of verses.
+        """
+        if self.currentverse.strip() == u'':
+            return
+        if self.is_chorus:
+            versetag = 'C'
+            splitat = None
+        else:
+            versetag = 'V'
+            splitat = self.verse_splits(self.song.get_song_number())
+        if splitat:
+            ln = 0
+            verse = u''
+            for line in self.currentverse.split(u'\n'):
+                ln += 1
+                if line == u'' or ln > splitat:
+                    self.song.add_verse(verse, versetag)
+                    ln = 0
+                    if line:
+                        verse = line + u'\n'
+                    else:   
+                        verse = u''
+                else:
+                    verse += line + u'\n'
+            if verse:
+                self.song.add_verse(verse, versetag)
+        else:
+            self.song.add_verse(self.currentverse, versetag)
+        self.currentverse = u''
+        self.is_chorus = False
 
     def tidy_text(self, text):
+        """
+        Get rid of some dodgy unicode and formatting characters we're not
+        interested in. Some can be converted to ascii.
+        """
         text = text.replace(u'\t', u' ')
         text = text.replace(u'\r', u'\n')
         text = text.replace(u'\u2018', u'\'')
@@ -209,6 +375,14 @@ class sofimport:
         return text
 
     def uncap_text(self, text):
+        """ 
+        Words in the title are in all capitals, so we lowercase them.
+        However some of these words, e.g. referring to God need a leading 
+        capital letter.
+        
+        There is a complicated word "One", which is sometimes lower and 
+        sometimes upper depending on context. Never mind, keep it lower.
+        """
         textarr = re.split(u'(\W+)', text)
         textarr[0] = textarr[0].capitalize()
         for i in range(1, len(textarr)):
@@ -225,225 +399,123 @@ class sofimport:
                 textarr[i] = textarr[i].lower()
         text = u''.join(textarr)
         return text
-
-class sofsong:
-    def __init__(self):
-        self.songnumber = 0
-        self.title = u''
-        self.ischorus = False
-        self.versecount = 0
-        self.choruscount = 0
-        self.verses = []
-        self.order = []
-        self.authors = []
-        self.copyright = u''
-        self.book = u''
-        self.currentverse = u''
-
-    def finish_verse(self):
-        if self.currentverse.strip() == u'':
-            return
-        if self.ischorus:
-            splitat = None
-        else:
-            splitat = self.verse_splits()
-        if splitat:
-            ln = 0
-            verse = u''
-            for line in self.currentverse.split(u'\n'):
-                ln += 1
-                if line == u'' or ln > splitat:
-                    self.append_verse(verse)
-                    ln = 0
-                    if line:
-                        verse = line + u'\n'
-                    else:   
-                        verse = u''
-                else:
-                    verse += line + u'\n'
-            if verse:
-                self.append_verse(verse)
-        else:
-            self.append_verse(self.currentverse)
-        self.currentverse = u''
-        self.ischorus = False
-
-    def append_verse(self, verse):
-        if self.ischorus:
-            self.choruscount += 1
-            versetag = u'C' + unicode(self.choruscount)
-        else:
-            self.versecount += 1
-            versetag = u'V' + unicode(self.versecount)
-        self.verses.append([versetag, verse])
-        self.order.append(versetag)
-        if self.choruscount > 0 and not self.ischorus:
-            self.order.append(u'C' + unicode(self.choruscount))
-
-    def repeat_verse(self):
-        self.finish_verse()
-        self.order.append(self.order[-1])
-
-    def add_verse_line(self, text, inchorus):
-        if inchorus != self.ischorus and ((len(self.verses) > 0) or 
-            (self.currentverse.count(u'\n') > 1)):
-            self.finish_verse()
-        if inchorus:
-            self.ischorus = True
-        self.currentverse += text + u'\n'
-    
-    def add_author(self, text):
-        text = text.replace(u' and ', u' & ')
-        for author in text.split(u','):
-            authors = author.split(u'&')
-            for i in range(len(authors)):
-                author2 = authors[i].strip()
-                if author2.find(u' ') == -1 and i < len(authors) - 1:
-                    author2 = author2 + u' ' + authors[i + 1].split(u' ')[-1]
-                self.authors.append(author2)
         
-    def finish(self):
-        self.finish_verse()
-        if self.songnumber == 0  \
-            or self.title == u''  \
-            or len(self.verses) == 0:
-            return False
-        if len(self.authors) == 0:
-            self.authors.append(u'Author Unknown')
-        if self.songnumber <= 640:
-            self.book = u'Songs of Fellowship 1'
-        elif self.songnumber <= 1150:
-            self.book = u'Songs of Fellowship 2'
-        elif self.songnumber <= 1690:
-            self.book = u'Songs of Fellowship 3'
-        else:
-            self.book = u'Songs of Fellowship 4'
-        self.print_song()
-        return True
-        
-    def print_song(self):
-        print u'===== TITLE: ' + self.title + u' ====='
-        print u'ALTTITLE: ' + unicode(self.songnumber)
-        for (verselabel, verse) in self.verses:
-            print u'VERSE ' + verselabel + u': ' + verse
-        print u'ORDER: ' + unicode(self.order)
-        for author in self.authors:
-            print u'AUTHORS: ' + author
-        print u'COPYRIGHT: ' + self.copyright
-        print u'BOOK: ' + self.book
-
-    def verse_splits(self):
+    def verse_splits(self, song_number):
         """
         Because someone at Kingsway forgot to check the 1+2 RTF file, 
         some verses were not formatted correctly.
         """
-        if self.songnumber == 11: return 8
-        if self.songnumber == 18: return 5
-        if self.songnumber == 21: return 6
-        if self.songnumber == 23: return 4
-        if self.songnumber == 24: return 7
-        if self.songnumber == 27: return 4
-        if self.songnumber == 31: return 6
-        if self.songnumber == 49: return 4
-        if self.songnumber == 50: return 8
-        if self.songnumber == 70: return 4	
-        if self.songnumber == 75: return 8
-        if self.songnumber == 79: return 6
-        if self.songnumber == 97: return 7
-        if self.songnumber == 107: return 4
-        if self.songnumber == 109: return 4
-        if self.songnumber == 133: return 4
-        if self.songnumber == 155: return 10
-        if self.songnumber == 156: return 8
-        if self.songnumber == 171: return 4
-        if self.songnumber == 188: return 7
-        if self.songnumber == 192: return 4
-        if self.songnumber == 208: return 8
-        if self.songnumber == 215: return 8
-        if self.songnumber == 220: return 4
-        if self.songnumber == 247: return 6
-        if self.songnumber == 248: return 6
-        if self.songnumber == 251: return 8
-        if self.songnumber == 295: return 8
-        if self.songnumber == 307: return 5
-        if self.songnumber == 314: return 6
-        if self.songnumber == 325: return 8
-        if self.songnumber == 386: return 6
-        if self.songnumber == 415: return 4
-        if self.songnumber == 426: return 4
-        if self.songnumber == 434: return 5
-        if self.songnumber == 437: return 4
-        if self.songnumber == 438: return 6
-        if self.songnumber == 456: return 8
-        if self.songnumber == 461: return 4
-        if self.songnumber == 469: return 4
-        if self.songnumber == 470: return 5
-        if self.songnumber == 476: return 6
-        if self.songnumber == 477: return 7
-        if self.songnumber == 480: return 8
-        if self.songnumber == 482: return 4
-        if self.songnumber == 512: return 4
-        if self.songnumber == 513: return 8
-        if self.songnumber == 518: return 5
-        if self.songnumber == 520: return 4
-        if self.songnumber == 523: return 6
-        if self.songnumber == 526: return 8
-        if self.songnumber == 527: return 4
-        if self.songnumber == 529: return 4
-        if self.songnumber == 537: return 4
-        if self.songnumber == 555: return 6
-        if self.songnumber == 581: return 4
-        if self.songnumber == 589: return 6
-        if self.songnumber == 590: return 4
-        if self.songnumber == 593: return 8
-        if self.songnumber == 596: return 4
-        if self.songnumber == 610: return 6
-        if self.songnumber == 611: return 6
-        if self.songnumber == 619: return 8
-        if self.songnumber == 645: return 5
-        if self.songnumber == 653: return 6
-        if self.songnumber == 683: return 7
-        if self.songnumber == 686: return 4
-        if self.songnumber == 697: return 8
-        if self.songnumber == 698: return 4
-        if self.songnumber == 704: return 6
-        if self.songnumber == 716: return 4
-        if self.songnumber == 717: return 6
-        if self.songnumber == 730: return 4
-        if self.songnumber == 731: return 8
-        if self.songnumber == 732: return 8
-        if self.songnumber == 738: return 4
-        if self.songnumber == 756: return 9
-        if self.songnumber == 815: return 6
-        if self.songnumber == 830: return 8
-        if self.songnumber == 831: return 4
-        if self.songnumber == 876: return 6
-        if self.songnumber == 877: return 6
-        if self.songnumber == 892: return 4
-        if self.songnumber == 894: return 6
-        if self.songnumber == 902: return 8
-        if self.songnumber == 905: return 8
-        if self.songnumber == 921: return 6
-        if self.songnumber == 940: return 7
-        if self.songnumber == 955: return 9
-        if self.songnumber == 968: return 8		
-        if self.songnumber == 972: return 7
-        if self.songnumber == 974: return 4
-        if self.songnumber == 988: return 6
-        if self.songnumber == 991: return 5
-        if self.songnumber == 1002: return 8
-        if self.songnumber == 1024: return 8
-        if self.songnumber == 1044: return 9
-        if self.songnumber == 1088: return 6
-        if self.songnumber == 1117: return 6
-        if self.songnumber == 1119: return 7
+        if song_number == 11: return 8
+        if song_number == 18: return 5
+        if song_number == 21: return 6
+        if song_number == 23: return 4
+        if song_number == 24: return 7
+        if song_number == 27: return 4
+        if song_number == 31: return 6
+        if song_number == 49: return 4
+        if song_number == 50: return 8
+        if song_number == 70: return 4	
+        if song_number == 75: return 8
+        if song_number == 79: return 6
+        if song_number == 97: return 7
+        if song_number == 107: return 4
+        if song_number == 109: return 4
+        if song_number == 133: return 4
+        if song_number == 155: return 10
+        if song_number == 156: return 8
+        if song_number == 171: return 4
+        if song_number == 188: return 7
+        if song_number == 192: return 4
+        if song_number == 208: return 8
+        if song_number == 215: return 8
+        if song_number == 220: return 4
+        if song_number == 247: return 6
+        if song_number == 248: return 6
+        if song_number == 251: return 8
+        if song_number == 295: return 8
+        if song_number == 307: return 5
+        if song_number == 314: return 6
+        if song_number == 325: return 8
+        if song_number == 386: return 6
+        if song_number == 415: return 4
+        if song_number == 426: return 4
+        if song_number == 434: return 5
+        if song_number == 437: return 4
+        if song_number == 438: return 6
+        if song_number == 456: return 8
+        if song_number == 461: return 4
+        if song_number == 469: return 4
+        if song_number == 470: return 5
+        if song_number == 476: return 6
+        if song_number == 477: return 7
+        if song_number == 480: return 8
+        if song_number == 482: return 4
+        if song_number == 512: return 4
+        if song_number == 513: return 8
+        if song_number == 518: return 5
+        if song_number == 520: return 4
+        if song_number == 523: return 6
+        if song_number == 526: return 8
+        if song_number == 527: return 4
+        if song_number == 529: return 4
+        if song_number == 537: return 4
+        if song_number == 555: return 6
+        if song_number == 581: return 4
+        if song_number == 589: return 6
+        if song_number == 590: return 4
+        if song_number == 593: return 8
+        if song_number == 596: return 4
+        if song_number == 610: return 6
+        if song_number == 611: return 6
+        if song_number == 619: return 8
+        if song_number == 645: return 5
+        if song_number == 653: return 6
+        if song_number == 683: return 7
+        if song_number == 686: return 4
+        if song_number == 697: return 8
+        if song_number == 698: return 4
+        if song_number == 704: return 6
+        if song_number == 716: return 4
+        if song_number == 717: return 6
+        if song_number == 730: return 4
+        if song_number == 731: return 8
+        if song_number == 732: return 8
+        if song_number == 738: return 4
+        if song_number == 756: return 9
+        if song_number == 815: return 6
+        if song_number == 830: return 8
+        if song_number == 831: return 4
+        if song_number == 876: return 6
+        if song_number == 877: return 6
+        if song_number == 892: return 4
+        if song_number == 894: return 6
+        if song_number == 902: return 8
+        if song_number == 905: return 8
+        if song_number == 921: return 6
+        if song_number == 940: return 7
+        if song_number == 955: return 9
+        if song_number == 968: return 8		
+        if song_number == 972: return 7
+        if song_number == 974: return 4
+        if song_number == 988: return 6
+        if song_number == 991: return 5
+        if song_number == 1002: return 8
+        if song_number == 1024: return 8
+        if song_number == 1044: return 9
+        if song_number == 1088: return 6
+        if song_number == 1117: return 6
+        if song_number == 1119: return 7
         return None
-
-sof = sofimport()
+                    
+#config = None
+man = None
+#man = SongManager(config)
+sof = SofImport(man)
 sof.start_ooo()
-sof.open_sof_file(u'/home/jonathan/sof.rtf')
-#sof.open_sof_file(u'c:\users\jonathan\Desktop\sof3words.rtf')
-#sof.open_sof_file(u'c:\users\jonathan\Desktop\sof4words.rtf')
+#sof.open_ooo_file(u'/home/jonathan/sof.rtf')
+sof.open_ooo_file(u'/home/jonathan/Documents/VOLS1_2.RTF')
+#sof.open_ooo_file(u'c:\users\jonathan\Desktop\sof3words.rtf')
+#sof.open_ooo_file(u'c:\users\jonathan\Desktop\sof4words.rtf')
 sof.process_doc()
 sof.close_ooo()
 
