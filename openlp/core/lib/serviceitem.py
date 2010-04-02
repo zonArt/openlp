@@ -87,7 +87,9 @@ class ServiceItem(object):
         self.capability_state[capability] = State
 
     def getCapability(self, capability):
-        return self.capability_state[capability]
+        if capability in self.capability_state:
+            return self.capability_state[capability]
+        return False
 
     def addIcon(self, icon):
         """
