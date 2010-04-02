@@ -130,13 +130,15 @@ class MainDisplay(DisplayWidget):
             QtCore.SIGNAL(u'media_pause'), self.onMediaPause)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_stop'), self.onMediaStop)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'update_config'), self.setup)
 
-    def setup(self, screenNumber):
+    def setup(self):
         """
         Sets up the screen on a particular screen.
-        @param (integer) screen This is the screen number.
         """
-        log.debug(u'Setup %s for %s ' %(self.screens, screenNumber))
+        log.debug(u'Setup %s for %s ' %(self.screens,
+                                         self.screens.monitor_number))
         self.setVisible(False)
         self.screen = self.screens.current
         #Sort out screen locations and sizes
@@ -183,7 +185,6 @@ class MainDisplay(DisplayWidget):
         else:
             self.setVisible(False)
             self.primary = True
-        Receiver.send_message(u'screen_changed')
 
     def resetDisplay(self):
         Receiver.send_message(u'stop_display_loop')
@@ -247,7 +248,7 @@ class MainDisplay(DisplayWidget):
                 else:
                     self.display_text.setPixmap(QtGui.QPixmap.fromImage(frame))
                 self.display_frame = frame
-            if not self.isVisible():
+            if not self.isVisible() and not self.screens.display:
                 self.setVisible(True)
                 self.showFullScreen()
         else:
