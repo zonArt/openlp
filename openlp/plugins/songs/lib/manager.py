@@ -30,7 +30,51 @@ from openlp.plugins.songs.lib.models import init_models, metadata, Song, \
 
 log = logging.getLogger(__name__)
 
-class SongManager():
+class SongFormat(object):
+    """
+    This is a special enumeration class that holds the various types of songs,
+    plus a few helper functions to facilitate generic handling of song types
+    for importing.
+    """
+    Unknown = -1
+    OpenLyrics = 0
+    OpenSongFile = 1
+    OpenSongDirectory = 2
+    CSV = 3
+
+    @staticmethod
+    def get_class(id):
+        """
+        Return the appropriate imeplementation class.
+
+        ``id``
+            The Bible format.
+        """
+        if id == BibleFormat.OSIS:
+            return OSISBible
+        elif id == BibleFormat.CSV:
+            return CSVBible
+        elif id == BibleFormat.OpenSong:
+            return OpenSongBible
+        elif id == BibleFormat.WebDownload:
+            return HTTPBible
+        else:
+            return None
+
+    @staticmethod
+    def list():
+        """
+        Return a list of the supported Bible formats.
+        """
+        return [
+            BibleFormat.OSIS,
+            BibleFormat.CSV,
+            BibleFormat.OpenSong,
+            BibleFormat.WebDownload
+        ]
+
+
+class SongManager(object):
     """
     The Song Manager provides a central location for all database code. This
     class takes care of connecting to the database and running all the queries.

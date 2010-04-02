@@ -193,39 +193,41 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
 #            self.preImport()
 #            self.performImport()
 #            self.postImport()
-#
-#    def registerFields(self):
-#        self.SelectPage.registerField(
+
+    def registerFields(self):
+        pass
+#        self.SourcePage.registerField(
 #            u'source_format', self.FormatComboBox)
-#        self.SelectPage.registerField(
-#            u'osis_location', self.OSISLocationEdit)
-#        self.SelectPage.registerField(
-#            u'csv_booksfile', self.BooksLocationEdit)
-#        self.SelectPage.registerField(
+#        self.SourcePage.registerField(
+#            u'openlyrics_filename', self.OpenLyricsFilenameEdit)
+#        self.SourcePage.registerField(
+#            u'openlyrics_directory', self.OpenLyricsDirectoryEdit)
+#        self.SourcePage.registerField(
+#            u'opensong_filename', self.OpenSongFilenameEdit)
+#        self.SourcePage.registerField(
+#            u'opensong_directory', self.OpenSongDirectoryEdit)
+#        self.SourcePage.registerField(
 #            u'csv_versefile', self.CsvVerseLocationEdit)
-#        self.SelectPage.registerField(
+#        self.SourcePage.registerField(
 #            u'opensong_file', self.OpenSongFileEdit)
-#        self.SelectPage.registerField(
+#        self.SourcePage.registerField(
 #            u'web_location', self.LocationComboBox)
-#        self.SelectPage.registerField(
+#        self.SourcePage.registerField(
 #            u'web_biblename', self.BibleComboBox)
-#        self.SelectPage.registerField(
+#        self.SourcePage.registerField(
 #            u'proxy_server', self.AddressEdit)
-#        self.SelectPage.registerField(
+#        self.SourcePage.registerField(
 #            u'proxy_username', self.UsernameEdit)
-#        self.SelectPage.registerField(
+#        self.SourcePage.registerField(
 #            u'proxy_password', self.PasswordEdit)
-#        self.LicenseDetailsPage.registerField(
-#            u'license_version', self.VersionNameEdit)
-#        self.LicenseDetailsPage.registerField(
-#            u'license_copyright', self.CopyrightEdit)
-#        self.LicenseDetailsPage.registerField(
-#            u'license_permission', self.PermissionEdit)
-#
-#    def setDefaults(self):
+
+    def setDefaults(self):
+        pass
 #        self.setField(u'source_format', QtCore.QVariant(0))
-#        self.setField(u'osis_location', QtCore.QVariant(''))
-#        self.setField(u'csv_booksfile', QtCore.QVariant(''))
+#        self.setField(u'openlyrics_filename', QtCore.QVariant(''))
+#        self.setField(u'openlyrics_directory', QtCore.QVariant(''))
+#        self.setField(u'opensong_filename', QtCore.QVariant(''))
+#        self.setField(u'opensong_directory', QtCore.QVariant(''))
 #        self.setField(u'csv_versefile', QtCore.QVariant(''))
 #        self.setField(u'opensong_file', QtCore.QVariant(''))
 #        self.setField(u'web_location', QtCore.QVariant(WebDownload.Crosswalk))
@@ -240,7 +242,6 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
 #        self.setField(u'license_copyright', QtCore.QVariant(self.CopyrightEdit))
 #        self.setField(u'license_permission', QtCore.QVariant(self.PermissionEdit))
 #        self.onLocationComboBoxChanged(WebDownload.Crosswalk)
-
 
     def getFileName(self, title, editbox):
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
