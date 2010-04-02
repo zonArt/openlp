@@ -25,7 +25,7 @@
 
 import string
 from openlp.core.lib import SongXMLBuilder
-from openlp.plugins.songs.lib.models import Song
+from openlp.plugins.songs.lib.models import Song, Author, Topic, Book
         
 class SongImport(object):
     """
@@ -43,7 +43,7 @@ class SongImport(object):
         song_manager is an instance of a SongManager, through which all
         database access is performed
         """
-        self.song_manager = song_manager
+        self.manager = song_manager
         self.title = u''
         self.song_number = u''
         self.copyright = u''
@@ -154,7 +154,9 @@ class SongImport(object):
         """
         Remove punctuation from the string for searchable fields
         """
-        return text.translate(string.maketrans(u'',u''), string.punctuation)
+        for c in string.punctuation:
+            text = text.replace(c, u'')
+        return text
             
     def finish(self):
         """
@@ -162,10 +164,10 @@ class SongImport(object):
         """
         if len(self.authors) == 0:
             self.authors.append(u'Author unknown')
-        #self.commit_song()
-        self.print_song()
+        self.commit_song()
+        #self.print_song()
         
-    def commit_song():
+    def commit_song(self):
         """
         Write the song and it's fields to disk
         """
@@ -201,33 +203,30 @@ class SongImport(object):
         song.theme_name = self.theme_name 
         song.ccli_number = self.ccli_number 
         for authortext in self.authors:
-            author = None
-            # read the author here
+            author = self.manager.get_author_by_name(authortext)
             if author is None:
                 author = Author()
                 author.display_name = authortext
                 author.last_name = authortext.split(u' ')[-1]
                 author.first_name = u' '.join(authortext.split(u' ')[:-1])
-                # write the author here
+                self.manager.save_author(author)
             song.authors.append(author)
         if self.song_book_name:
-            song_book = None
-            # read the book here
+            song_book = self.manager.get_book_by_name(self.song_book_name)
             if song_book is None:
                 song_book = Book()
                 song_book.name = self.song_book_name
                 song_book.publisher = self.song_book_pub
-                # write the song book here
+                self.manager.save_book(song_book)
             song.song_book_id = song_book.id
         for topictext in self.topics:
-            topic = None
-            # read the topic here 
+            topic = self.manager.get_topic_by_name(topictext)
             if topic is None:
                 topic = Topic()
                 topic.name = topictext
-                # write the topic here
+                self.manager.save_topic(topic)
             song.topics.append(topictext)
-        # write the song here
+        self.manager.save_song(song)
         
     def print_song(self):
         """ 
@@ -245,6 +244,8 @@ class SongImport(object):
             print u'COPYRIGHT: ' + self.copyright
         if self.song_book_name:
             print u'BOOK: ' + self.song_book_name
+        if self.song_book_pub:
+            print u'BOOK PUBLISHER: ' + self.song_book_pub
         if self.song_number:
             print u'NUMBER: ' + self.song_number
         for topictext in self.topics:        

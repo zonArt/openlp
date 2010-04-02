@@ -28,7 +28,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, build_icon, PluginStatus
-from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab
+from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab, \
+    SofImport
 from openlp.plugins.songs.forms import OpenLPImportForm, OpenSongExportForm, \
     OpenSongImportForm, OpenLPExportForm
 
@@ -102,24 +103,35 @@ class SongsPlugin(Plugin):
         self.ImportOpenlp1Item.setObjectName(u'ImportOpenlp1Item')
         self.ImportOpenlp2Item = QtGui.QAction(import_menu)
         self.ImportOpenlp2Item.setObjectName(u'ImportOpenlp2Item')
+        self.ImportSofItem = QtGui.QAction(import_menu)
+        self.ImportSofItem.setObjectName(u'ImportSofItem')
         # Add to menus
         self.ImportSongMenu.addAction(self.ImportOpenlp1Item)
         self.ImportSongMenu.addAction(self.ImportOpenlp2Item)
         self.ImportSongMenu.addAction(self.ImportOpenSongItem)
+        self.ImportSongMenu.addAction(self.ImportSofItem)
         import_menu.addAction(self.ImportSongMenu.menuAction())
         # Translations...
         self.ImportSongMenu.setTitle(import_menu.trUtf8('&Song'))
         self.ImportOpenSongItem.setText(import_menu.trUtf8('OpenSong'))
         self.ImportOpenlp1Item.setText(import_menu.trUtf8('openlp.org 1.0'))
         self.ImportOpenlp1Item.setToolTip(
-            import_menu.trUtf8('Export songs in openlp.org 1.0 format'))
+            import_menu.trUtf8('Import songs in openlp.org 1.0 format'))
         self.ImportOpenlp1Item.setStatusTip(
-            import_menu.trUtf8('Export songs in openlp.org 1.0 format'))
+            import_menu.trUtf8('Import songs in openlp.org 1.0 format'))
         self.ImportOpenlp2Item.setText(import_menu.trUtf8('OpenLP 2.0'))
         self.ImportOpenlp2Item.setToolTip(
-            import_menu.trUtf8('Export songs in OpenLP 2.0 format'))
+            import_menu.trUtf8('Import songs in OpenLP 2.0 format'))
         self.ImportOpenlp2Item.setStatusTip(
-            import_menu.trUtf8('Export songs in OpenLP 2.0 format'))
+            import_menu.trUtf8('Import songs in OpenLP 2.0 format'))
+        self.ImportSofItem.setText(
+            import_menu.trUtf8('Songs of Fellowship'))
+        self.ImportSofItem.setToolTip(
+            import_menu.trUtf8('Import songs from the VOLS1_2.RTF, sof3words' \
+                + '.rtf and sof4words.rtf supplied with the music books'))
+        self.ImportSofItem.setStatusTip(
+            import_menu.trUtf8('Import songs from the VOLS1_2.RTF, sof3words' \
+                + '.rtf and sof4words.rtf supplied with the music books'))
         # Signals and slots
         QtCore.QObject.connect(self.ImportOpenlp1Item,
             QtCore.SIGNAL(u'triggered()'), self.onImportOpenlp1ItemClick)
@@ -127,6 +139,8 @@ class SongsPlugin(Plugin):
             QtCore.SIGNAL(u'triggered()'), self.onImportOpenlp1ItemClick)
         QtCore.QObject.connect(self.ImportOpenSongItem,
             QtCore.SIGNAL(u'triggered()'), self.onImportOpenSongItemClick)
+        QtCore.QObject.connect(self.ImportSofItem,
+            QtCore.SIGNAL(u'triggered()'), self.onImportSofItemClick)
         self.ImportSongMenu.menuAction().setVisible(False)
 
     def add_export_menu_item(self, export_menu):
@@ -168,6 +182,13 @@ class SongsPlugin(Plugin):
 
     def onImportOpenSongItemClick(self):
         self.opensong_import_form.show()
+
+    def onImportSofItemClick(self):
+        filename = QtGui.QFileDialog.getOpenFileName(
+            None, self.trUtf8('Open Songs of Fellowship file'),
+            u'', u'Songs of Fellowship file (*.rtf *.RTF)')
+        sofimport = SofImport(self.songmanager)        
+        sofimport.import_sof(unicode(filename))
 
     def onExportOpenlp1ItemClicked(self):
         self.openlp_export_form.show()

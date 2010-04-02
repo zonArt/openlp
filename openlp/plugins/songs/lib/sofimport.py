@@ -73,6 +73,12 @@ class SofImport(object):
         self.song = None
         self.manager = songmanager
 
+    def import_sof(self, filename):
+        self.start_ooo()
+        self.open_ooo_file(filename)
+        self.process_doc()
+        self.close_ooo()
+
     def start_ooo(self):
         """
         Start OpenOffice.org process
@@ -270,16 +276,16 @@ class SofImport(object):
         self.song.set_song_number(song_no)
         if int(song_no) <= 640:
             self.song.set_song_book(u'Songs of Fellowship 1', 
-                'Kingsway\'s Thankyou Music')
+                u'Kingsway Publications')
         elif int(song_no) <= 1150:
             self.song.set_song_book(u'Songs of Fellowship 2', 
-                'Kingsway\'s Thankyou Music')
+                u'Kingsway Publications')
         elif int(song_no) <= 1690:
             self.song.set_song_book(u'Songs of Fellowship 3', 
-                'Kingsway\'s Thankyou Music')
+                u'Kingsway Publications')
         else:
             self.song.set_song_book(u'Songs of Fellowship 4', 
-                'Kingsway\'s Thankyou Music')
+                u'Kingsway Publications')
 
     def add_title(self, text):
         """
@@ -507,15 +513,3 @@ class SofImport(object):
         if song_number == 1119: return 7
         return None
                     
-#config = None
-man = None
-#man = SongManager(config)
-sof = SofImport(man)
-sof.start_ooo()
-#sof.open_ooo_file(u'/home/jonathan/sof.rtf')
-sof.open_ooo_file(u'/home/jonathan/Documents/VOLS1_2.RTF')
-#sof.open_ooo_file(u'c:\users\jonathan\Desktop\sof3words.rtf')
-#sof.open_ooo_file(u'c:\users\jonathan\Desktop\sof4words.rtf')
-sof.process_doc()
-sof.close_ooo()
-
