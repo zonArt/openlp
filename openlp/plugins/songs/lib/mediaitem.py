@@ -29,7 +29,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, SongXMLParser, \
     BaseListWithDnD, Receiver,  str_to_bool
-from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm
+from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
+    ImportWizardForm
 
 log = logging.getLogger(__name__)
 
@@ -51,9 +52,9 @@ class SongMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = SongListView
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
-        self.edit_song_form = EditSongForm(self.parent.songmanager, self)
+        self.edit_song_form = EditSongForm(self.parent.manager, self)
         self.song_maintenance_form = SongMaintenanceForm(
-            self.parent.songmanager, self)
+            self.parent.manager, self)
         # Holds information about whether the edit is remotly triggered and
         # which Song is required.
         self.remoteSong = -1
@@ -154,17 +155,17 @@ class SongMediaItem(MediaManagerItem):
         search_type = self.SearchTypeComboBox.currentIndex()
         if search_type == 0:
             log.debug(u'Titles Search')
-            search_results = self.parent.songmanager.search_song_title(
+            search_results = self.parent.manager.search_song_title(
                 search_keywords)
             self.displayResultsSong(search_results)
         elif search_type == 1:
             log.debug(u'Lyrics Search')
-            search_results = self.parent.songmanager.search_song_lyrics(
+            search_results = self.parent.manager.search_song_lyrics(
                 search_keywords)
             self.displayResultsSong(search_results)
         elif search_type == 2:
             log.debug(u'Authors Search')
-            search_results = self.parent.songmanager.get_song_from_author(
+            search_results = self.parent.manager.get_song_from_author(
                 search_keywords)
             self.displayResultsAuthor(search_results)
         #Called to redisplay the song list screen edith from a search
@@ -226,6 +227,11 @@ class SongMediaItem(MediaManagerItem):
             if len(text) > search_length:
                 self.onSearchTextButtonClick()
 
+    def onImportClick(self):
+        songimportform = ImportWizardForm(self, self.parent.config,
+            self.parent.manager, self.parent)
+        songimportform.exec_()
+
     def onNewClick(self):
         self.edit_song_form.newSong()
         self.edit_song_form.exec_()
@@ -256,7 +262,7 @@ class SongMediaItem(MediaManagerItem):
         type of display is required.
         """
         fields = songid.split(u':')
-        valid = self.parent.songmanager.get_song(fields[1])
+        valid = self.parent.manager.get_song(fields[1])
         if valid:
             self.remoteSong = fields[1]
             self.remoteTriggered = fields[0]
@@ -274,7 +280,7 @@ class SongMediaItem(MediaManagerItem):
         item = self.ListView.currentItem()
         if item:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.parent.songmanager.delete_song(item_id)
+            self.parent.manager.delete_song(item_id)
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
 
@@ -291,7 +297,7 @@ class SongMediaItem(MediaManagerItem):
         else:
             item_id = self.remoteSong
         service_item.auto_preview_allowed = True
-        song = self.parent.songmanager.get_song(item_id)
+        song = self.parent.manager.get_song(item_id)
         service_item.theme = song.theme_name
         service_item.edit_enabled = True
         service_item.editId = item_id

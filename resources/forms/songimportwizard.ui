@@ -69,8 +69,8 @@
          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body &gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Welcome to the Bible Import Wizard&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Welcome to the Song Import Wizard&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
       </item>
@@ -93,7 +93,7 @@ p, li { white-space: pre-wrap; }
       <item>
        <widget class="QLabel" name="InformationLabel">
         <property name="text">
-         <string>This wizard will help you to import Bibles from a variety of formats. Click the next button below to start the process by selecting a format to import from.</string>
+         <string>This wizard will help you to import songs from a variety of formats. Click the next button below to start the process by selecting a format to import from.</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
@@ -135,7 +135,10 @@ p, li { white-space: pre-wrap; }
      <number>20</number>
     </property>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QHBoxLayout" name="FormatLayout">
+      <property name="spacing">
+       <number>8</number>
+      </property>
       <item>
        <widget class="QLabel" name="FormatLabel">
         <property name="text">
@@ -144,10 +147,27 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox"/>
+       <widget class="QComboBox" name="FormatComboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <item>
+         <property name="text">
+          <string>OpenSong (Single File)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>OpenSong (Directory of Files)</string>
+         </property>
+        </item>
+       </widget>
       </item>
       <item>
-       <spacer name="horizontalSpacer">
+       <spacer name="FormatSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -162,9 +182,131 @@ p, li { white-space: pre-wrap; }
      </layout>
     </item>
     <item>
-     <widget class="QStackedWidget" name="stackedWidget">
-      <widget class="QWidget" name="page"/>
-      <widget class="QWidget" name="page_2"/>
+     <widget class="QStackedWidget" name="FormatStackedWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="OpenSongFilePage">
+       <layout class="QFormLayout" name="OpenSongFileLayout">
+        <property name="horizontalSpacing">
+         <number>8</number>
+        </property>
+        <property name="verticalSpacing">
+         <number>8</number>
+        </property>
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="OpenSongFileLabel">
+          <property name="text">
+           <string>Filename:</string>
+          </property>
+          <property name="buddy">
+           <cstring>OpenSongFilenameLineEdit</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <layout class="QHBoxLayout" name="OpenSongFilenameLayout">
+          <property name="spacing">
+           <number>8</number>
+          </property>
+          <item>
+           <widget class="QLineEdit" name="OpenSongFilenameLineEdit"/>
+          </item>
+          <item>
+           <widget class="QToolButton" name="OpenSongFilenameButton">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="../images/openlp-2.qrc">
+              <normaloff>:/imports/import_load.png</normaloff>:/imports/import_load.png</iconset>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="OpenSongDirectoryPage">
+       <layout class="QFormLayout" name="OpenSongDirectoryLayout">
+        <property name="horizontalSpacing">
+         <number>8</number>
+        </property>
+        <property name="verticalSpacing">
+         <number>8</number>
+        </property>
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="OpenSongDirectoryLabel">
+          <property name="text">
+           <string>Directory:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <layout class="QHBoxLayout" name="OpenSongDirLayout">
+          <property name="spacing">
+           <number>8</number>
+          </property>
+          <item>
+           <widget class="QLineEdit" name="OpenSongDirectoryLineEdit"/>
+          </item>
+          <item>
+           <widget class="QToolButton" name="OpenSongDirectoryButton">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="../images/openlp-2.qrc">
+              <normaloff>:/exports/export_load.png</normaloff>:/exports/export_load.png</iconset>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="ImportPage">
+   <property name="title">
+    <string>Importing</string>
+   </property>
+   <property name="subTitle">
+    <string>Please wait while your songs are imported.</string>
+   </property>
+   <layout class="QVBoxLayout" name="ImportLayout">
+    <property name="spacing">
+     <number>8</number>
+    </property>
+    <property name="margin">
+     <number>50</number>
+    </property>
+    <item>
+     <widget class="QLabel" name="ImportProgressLabel">
+      <property name="text">
+       <string>Ready.</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QProgressBar" name="ImportProgressBar">
+      <property name="value">
+       <number>0</number>
+      </property>
+      <property name="invertedAppearance">
+       <bool>false</bool>
+      </property>
+      <property name="format">
+       <string>%p</string>
+      </property>
      </widget>
     </item>
    </layout>
@@ -173,5 +315,22 @@ p, li { white-space: pre-wrap; }
  <resources>
   <include location="../images/openlp-2.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>FormatComboBox</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>FormatStackedWidget</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>122</x>
+     <y>92</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>274</x>
+     <y>222</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
