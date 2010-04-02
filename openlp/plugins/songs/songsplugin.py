@@ -187,8 +187,16 @@ class SongsPlugin(Plugin):
         filename = QtGui.QFileDialog.getOpenFileName(
             None, self.trUtf8('Open Songs of Fellowship file'),
             u'', u'Songs of Fellowship file (*.rtf *.RTF)')
-        sofimport = SofImport(self.songmanager)        
-        sofimport.import_sof(unicode(filename))
+        try:
+            sofimport = SofImport(self.songmanager)        
+            sofimport.import_sof(unicode(filename))
+        except:
+            log.exception('Could not import SoF file')
+            QtGui.QMessageBox.critical(None,
+                self.ImportSongMenu.trUtf8('Import Error'),
+                self.ImportSongMenu.trUtf8('Error importing Songs of Fellowship file'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
+                QtGui.QMessageBox.Ok)
 
     def onExportOpenlp1ItemClicked(self):
         self.openlp_export_form.show()

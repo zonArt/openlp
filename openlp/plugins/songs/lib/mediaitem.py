@@ -271,12 +271,21 @@ class SongMediaItem(MediaManagerItem):
             self.edit_song_form.exec_()
 
     def onDeleteClick(self):
-        item = self.ListView.currentItem()
-        if item:
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.parent.songmanager.delete_song(item_id)
-            row = self.ListView.row(item)
-            self.ListView.takeItem(row)
+        items = self.ListView.selectedIndexes()
+        if items:
+            if len(items) > 1:
+                ans = QtGui.QMessageBox.question(None,
+                    self.trUtf8('Delete Confirmation'),
+                    self.trUtf8('Delete %d songs?' % len(items)),
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok|
+                         QtGui.QMessageBox.Cancel),
+                    QtGui.QMessageBox.Ok)
+                if ans == QtGui.QMessageBox.Cancel:
+                    return                
+            for item in items[:]:
+                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+                self.parent.songmanager.delete_song(item_id)
+                self.ListView.takeItem(item.row())
 
     def generateSlideData(self, service_item):
         raw_footer = []

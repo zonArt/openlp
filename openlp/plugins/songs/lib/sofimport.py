@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+property# -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
 ###############################################################################
@@ -32,7 +32,7 @@
 import re
 import os
 import time
-from PyQt4 import QtCore
+from PyQt4 import QtCore, QtGui
 from songimport import SongImport
 
 if os.name == u'nt':
@@ -44,7 +44,6 @@ if os.name == u'nt':
     PAGE_BOTH = 6
 else:
     import uno
-    from com.sun.star.beans import PropertyValue
     from com.sun.star.awt.FontWeight import BOLD
     from com.sun.star.awt.FontSlant import ITALIC
     from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
@@ -274,6 +273,7 @@ class SofImport(object):
         number to work out which songbook we're in
         """
         self.song.set_song_number(song_no)
+        self.song.set_alternate_title(song_no + u'.')
         if int(song_no) <= 640:
             self.song.set_song_book(u'Songs of Fellowship 1', 
                 u'Kingsway Publications')
@@ -314,6 +314,8 @@ class SofImport(object):
                 if author2.find(u' ') == -1 and i < len(authors) - 1:
                     author2 = author2 + u' ' \
                         + authors[i + 1].strip().split(u' ')[-1]
+                if author2.endswith(u'.'):
+                    author2 = author2[:-1]
                 self.song.add_author(author2)
 
     def add_verse_line(self, text):
@@ -338,7 +340,14 @@ class SofImport(object):
         if self.currentverse.strip() == u'':
             return
         if self.is_chorus:
-            versetag = 'C'
+            if not self.song.contains_verse('C'):
+                versetag = 'C'
+            elif not self.song.contains_verse('B'):
+                versetag = 'B'
+            elif not self.song.contains_verse('E'):
+                versetag = 'E'
+            else:
+                versetag = 'O'
             splitat = None
         else:
             versetag = 'V'
