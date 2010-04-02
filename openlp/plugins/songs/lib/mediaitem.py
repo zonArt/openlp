@@ -290,10 +290,10 @@ class SongMediaItem(MediaManagerItem):
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         else:
             item_id = self.remoteSong
-        service_item.auto_preview_allowed = True
+        service_item.updateCapability(u'allows_preview', True)
+        service_item.updateCapability(u'allows_edit', True)
         song = self.parent.songmanager.get_song(item_id)
         service_item.theme = song.theme_name
-        service_item.edit_enabled = True
         service_item.editId = item_id
         if song.lyrics.startswith(u'<?xml version='):
             songXML = SongXMLParser(song.lyrics)

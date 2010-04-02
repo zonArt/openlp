@@ -42,6 +42,13 @@ class ServiceItemType(object):
     Image = 2
     Command = 3
 
+capabilities = [
+    u'allows_preview',
+    u'allows_edit',
+    u'allows_maintain',
+    u'requires_media'
+]
+
 class ServiceItem(object):
     """
     The service item is a base class for the plugins to use to interact with
@@ -67,14 +74,20 @@ class ServiceItem(object):
         self.raw_footer = None
         self.theme = None
         self.service_item_type = None
-        self.edit_enabled = False
-        self.maintain_allowed = False
         self._raw_frames = []
         self._display_frames = []
         self._uuid = unicode(uuid.uuid1())
-        self.auto_preview_allowed = False
         self.notes = u''
         self.from_plugin = False
+        self.capability_state = {}
+        for capability in capabilities:
+            self.updateCapability(capability)
+
+    def updateCapability(self, capability, State=False):
+        self.capability_state[capability] = State
+
+    def getCapability(self, capability):
+        return self.capability_state[capability]
 
     def addIcon(self, icon):
         """
@@ -207,10 +220,8 @@ class ServiceItem(object):
             u'type':self.service_item_type,
             u'audit':self.audit,
             u'notes':self.notes,
-            u'preview':self.auto_preview_allowed,
-            u'edit':self.edit_enabled,
-            u'maintain':self.maintain_allowed,
-            u'from_plugin':self.from_plugin
+            u'from_plugin':self.from_plugin,
+            u'capabilities':self.capability_state
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
@@ -244,11 +255,9 @@ class ServiceItem(object):
         self.addIcon(header[u'icon'])
         self.raw_footer = header[u'footer']
         self.audit = header[u'audit']
-        self.auto_preview_allowed = header[u'preview']
         self.notes = header[u'notes']
-        self.edit_enabled = header[u'edit']
-        self.maintain_allowed = header[u'maintain']
         self.from_plugin = header[u'from_plugin']
+        self.capability_state = header[u'capabilities']
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)
@@ -288,7 +297,7 @@ class ServiceItem(object):
         return self.name.lower() == u'songs'
 
     def is_media(self):
-        return self.name.lower() == u'media'
+        return self.getCapability(u'requires_media')
 
     def is_command(self):
         return self.service_item_type == ServiceItemType.Command

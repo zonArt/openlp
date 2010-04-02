@@ -395,7 +395,7 @@ class SlideController(QtGui.QWidget):
         self.Toolbar.setVisible(True)
         self.Mediabar.setVisible(False)
         self.Toolbar.makeWidgetsInvisible(self.song_edit_list)
-        if item.edit_enabled and item.from_plugin:
+        if item.getCapability(u'allows_edit') and item.from_plugin:
             self.Toolbar.makeWidgetsVisible(self.song_edit_list)
         elif item.is_media():
             self.Toolbar.setVisible(False)
@@ -759,7 +759,7 @@ class SlideController(QtGui.QWidget):
         else:
             self.mediaObject.stop()
             self.mediaObject.clearQueue()
-            file = os.path.join(item.service_item_path, item.get_frame_title())
+            file = os.path.join(item.get_frame_path(), item.get_frame_title())
             self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
             self.onMediaPlay()
 
