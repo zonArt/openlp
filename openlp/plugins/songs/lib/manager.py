@@ -111,12 +111,16 @@ class SongManager():
             return False
 
     def delete_song(self, songid):
+        print songid
         song = self.get_song(songid)
+        print song.title
         try:
             self.session.delete(song)
             self.session.commit()
+            print "ok"
             return True
         except:
+            print "error"
             self.session.rollback()
             log.exception(u'Could not delete song from song database')
             return False

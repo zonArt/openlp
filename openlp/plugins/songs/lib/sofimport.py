@@ -32,7 +32,7 @@ property# -*- coding: utf-8 -*-
 import re
 import os
 import time
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
 from songimport import SongImport
 
 if os.name == u'nt':
@@ -316,7 +316,8 @@ class SofImport(object):
                         + authors[i + 1].strip().split(u' ')[-1]
                 if author2.endswith(u'.'):
                     author2 = author2[:-1]
-                self.song.add_author(author2)
+                if author2:
+                    self.song.add_author(author2)
 
     def add_verse_line(self, text):
         """
@@ -340,17 +341,10 @@ class SofImport(object):
         if self.currentverse.strip() == u'':
             return
         if self.is_chorus:
-            if not self.song.contains_verse('C'):
-                versetag = 'C'
-            elif not self.song.contains_verse('B'):
-                versetag = 'B'
-            elif not self.song.contains_verse('E'):
-                versetag = 'E'
-            else:
-                versetag = 'O'
+            versetag = u'C'
             splitat = None
         else:
-            versetag = 'V'
+            versetag = u'V'
             splitat = self.verse_splits(self.song.get_song_number())
         if splitat:
             ln = 0

@@ -120,8 +120,8 @@ class SongImport(object):
     def add_verse(self, verse, versetag):
         """
         Add a verse. This is the whole verse, lines split by \n
-        Verse tag can be V1/C/B etc, or 'V' (will count the verses/
-        itself) or None, where it will assume verse
+        Verse tag can be V1/C1/B etc, or 'V' and 'C' (will count the verses/
+        choruses itself) or None, where it will assume verse
         It will also attempt to detect duplicates. In this case it will just
         add to the verse order
         """        
@@ -129,13 +129,17 @@ class SongImport(object):
             if oldverse.strip() == verse.strip():
                 self.verse_order_list.append(oldversetag)
                 return
+        if versetag.startswith(u'C'):
+            self.choruscount += 1
+        if versetag == u'C':
+            versetag += unicode(self.choruscount)
         if versetag == u'V' or not versetag:
             self.versecount += 1
             versetag = u'V' + unicode(self.versecount)
         self.verses.append([versetag, verse.rstrip()])
         self.verse_order_list.append(versetag)
-        if versetag.startswith(u'V') and self.contains_verse(u'C'):
-            self.verse_order_list.append(u'C')
+        if versetag.startswith(u'V') and self.contains_verse(u'C1'):
+            self.verse_order_list.append(u'C1')
 
     def repeat_verse(self):
         """

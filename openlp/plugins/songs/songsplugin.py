@@ -194,7 +194,10 @@ class SongsPlugin(Plugin):
             log.exception('Could not import SoF file')
             QtGui.QMessageBox.critical(None,
                 self.ImportSongMenu.trUtf8('Import Error'),
-                self.ImportSongMenu.trUtf8('Error importing Songs of Fellowship file'),
+                self.ImportSongMenu.trUtf8('Error importing Songs of ' 
+                    + 'Fellowship file.\nOpenOffice.org must be installed' 
+                    + ' and you must be using an unedited copy of the RTF'
+                    + ' included with the Songs of Fellowship Music Editions'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
 
