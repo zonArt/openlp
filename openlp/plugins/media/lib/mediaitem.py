@@ -28,7 +28,8 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon
+from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
+ItemCapabilities
 
 log = logging.getLogger(__name__)
 
@@ -82,6 +83,7 @@ class MediaMediaItem(MediaManagerItem):
         if len(items) > 1:
             return False
         service_item.title = unicode(self.trUtf8('Media'))
+        service_item.add_capability(ItemCapabilities.Requires_media)
         for item in items:
             bitem = self.ListView.item(item.row())
             filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())

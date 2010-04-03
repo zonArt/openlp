@@ -54,9 +54,16 @@ class SettingsTab(QtGui.QWidget):
             self.config = PluginConfig(title)
         else:
             self.config = PluginConfig(section)
+        self.preLoad()
         self.load()
 
     def setupUi(self):
+        """
+        Setup the tab's interface.
+        """
+        pass
+
+    def preLoad(self):
         """
         Setup the tab's interface.
         """
