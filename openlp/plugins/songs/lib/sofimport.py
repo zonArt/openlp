@@ -71,6 +71,7 @@ class SofImport(object):
         """
         self.song = None
         self.manager = songmanager
+        self.process_started = False
 
     def import_sof(self, filename):
         self.start_ooo()
@@ -84,17 +85,9 @@ class SofImport(object):
         TODO: The presentation/Impress plugin may already have it running
         """
         if os.name == u'nt':
-            manager = Dispatch(u'com.sun.star.ServiceManager')
-            manager._FlagAsMethod(u'Bridge_GetStruct')
-            manager._FlagAsMethod(u'Bridge_GetValueObject')
-            self.desktop = manager.createInstance(u'com.sun.star.frame.Desktop')
+            self.start_ooo_process()
+            self.desktop = self.manager.createInstance(u'com.sun.star.frame.Desktop')
         else:
-            cmd = u'openoffice.org -nologo -norestore -minimized -invisible ' \
-                + u'-nofirststartwizard ' \
-                + '-accept="socket,host=localhost,port=2002;urp;"'
-            process = QtCore.QProcess()
-            process.startDetached(cmd)
-            process.waitForStarted()
             context = uno.getComponentContext()
             resolver = context.ServiceManager.createInstanceWithContext(
                 u'com.sun.star.bridge.UnoUrlResolver', context)
@@ -106,12 +99,29 @@ class SofImport(object):
                         + 'port=2002;urp;StarOffice.ComponentContext')
                 except:
                     pass
-                time.sleep(1)
+                self.start_ooo_process()
                 loop += 1
             manager = ctx.ServiceManager
             self.desktop = manager.createInstanceWithContext(
                 "com.sun.star.frame.Desktop", ctx )
             
+    def start_ooo_process(self):
+        try:
+            if os.name == u'nt':
+                self.manager = Dispatch(u'com.sun.star.ServiceManager')
+                self.manager._FlagAsMethod(u'Bridge_GetStruct')
+                self.manager._FlagAsMethod(u'Bridge_GetValueObject')
+            else:
+                cmd = u'openoffice.org -nologo -norestore -minimized -invisible ' \
+                    + u'-nofirststartwizard ' \
+                    + '-accept="socket,host=localhost,port=2002;urp;"'
+                process = QtCore.QProcess()
+                process.startDetached(cmd)
+                process.waitForStarted()
+            self.process_started = True
+        except:
+            pass
+
     def open_ooo_file(self, filepath):
         """
         Open the passed file in OpenOffice.org Writer
@@ -128,10 +138,12 @@ class SofImport(object):
 
     def close_ooo(self):
         """
-        Close down OpenOffice.org.
-        TODO: Further checks that it have other docs open, e.g. Impress!
+        Close RTF file. Note, on Windows we'll leave OOo running
+        Leave running on Windows
         """
-        self.desktop.terminate()
+        self.document.close(True)
+        if self.process_started:
+            self.desktop.terminate()
 
     def process_doc(self):
         """

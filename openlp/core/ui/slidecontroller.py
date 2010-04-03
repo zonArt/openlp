@@ -30,6 +30,8 @@ import os
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
+from openlp.core.lib import ItemCapabilities
+
 class HideMode(object):
     """
     This is basically an enumeration class which specifies the mode of a Bible.
@@ -375,8 +377,7 @@ class SlideController(QtGui.QWidget):
         self.Toolbar.makeWidgetsInvisible(self.image_list)
         if item.is_text():
             self.Toolbar.makeWidgetsInvisible(self.image_list)
-            if item.is_song() and \
-                str_to_bool(self.songsconfig.get_config(u'show songbar', True)) \
+            if str_to_bool(self.songsconfig.get_config(u'show songbar', True)) \
                 and len(self.slideList) > 0:
                 self.Toolbar.makeWidgetsVisible([u'Song Menu'])
         elif item.is_image():
@@ -395,7 +396,7 @@ class SlideController(QtGui.QWidget):
         self.Toolbar.setVisible(True)
         self.Mediabar.setVisible(False)
         self.Toolbar.makeWidgetsInvisible(self.song_edit_list)
-        if item.edit_enabled and item.from_plugin:
+        if item.is_capable(ItemCapabilities.AllowsEdit) and item.from_plugin:
             self.Toolbar.makeWidgetsVisible(self.song_edit_list)
         elif item.is_media():
             self.Toolbar.setVisible(False)
@@ -494,15 +495,18 @@ class SlideController(QtGui.QWidget):
                     bits = frame[u'verseTag'].split(u':')
                     tag = None
                     #If verse handle verse number else tag only
-                    if bits[0] == self.trUtf8('Verse'):
-                        tag = u'%s%s' % (bits[0][0], bits[1][0:] )
-                        row = bits[1][0:]
+                    if bits[0] == self.trUtf8('Verse') or \
+                        bits[0] == self.trUtf8('Chorus'):
+                        tag = u'%s\n%s' % (bits[0][0], bits[1][0:] )
+                        tag1 = u'%s%s' % (bits[0][0], bits[1][0:] )
+                        row = tag
                     else:
                         tag = bits[0]
+                        tag1 = tag
                         row = bits[0][0:1]
-                    if tag not in self.slideList:
-                        self.slideList[tag] = framenumber
-                        self.SongMenu.menu().addAction(self.trUtf8(u'%s'%tag),
+                    if tag1 not in self.slideList:
+                        self.slideList[tag1] = framenumber
+                        self.SongMenu.menu().addAction(self.trUtf8(u'%s'%tag1),
                             self.onSongBarHandler)
                 else:
                     row += 1
@@ -519,6 +523,7 @@ class SlideController(QtGui.QWidget):
                 slide_height = width * self.parent.RenderManager.screen_ratio
                 row += 1
             rowitem.setText(unicode(row))
+            rowitem.setTextAlignment(QtCore.Qt.AlignVCenter)
             self.PreviewListWidget.setItem(framenumber, 0, rowitem)
             self.PreviewListWidget.setItem(framenumber, 1, item)
             if slide_height != 0:
@@ -759,7 +764,7 @@ class SlideController(QtGui.QWidget):
         else:
             self.mediaObject.stop()
             self.mediaObject.clearQueue()
-            file = os.path.join(item.service_item_path, item.get_frame_title())
+            file = os.path.join(item.get_frame_path(), item.get_frame_title())
             self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
             self.onMediaPlay()
 

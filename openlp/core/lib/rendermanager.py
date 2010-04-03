@@ -49,7 +49,7 @@ class RenderManager(object):
     """
     log.info(u'RenderManager Loaded')
 
-    def __init__(self, theme_manager, screens, screen_number=0):
+    def __init__(self, theme_manager, screens):
         """
         Initialise the render manager.
         """
@@ -57,7 +57,6 @@ class RenderManager(object):
         self.screens = screens
         self.theme_manager = theme_manager
         self.renderer = Renderer()
-        self.screens.set_current_display(screen_number)
         self.calculate_default(self.screens.current[u'size'])
         self.theme = u''
         self.service_theme = u''
@@ -65,12 +64,9 @@ class RenderManager(object):
         self.override_background = None
         self.themedata = None
 
-    def update_display(self, screen_number):
+    def update_display(self):
         """
         Updates the render manager's information about the current screen.
-
-        ``screen_number``
-            The updated index of the output/display screen.
         """
         log.debug(u'Update Display')
         self.calculate_default(self.screens.current[u'size'])

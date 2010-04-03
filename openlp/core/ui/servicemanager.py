@@ -33,7 +33,7 @@ log = logging.getLogger(__name__)
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
-    contextMenuAction, Receiver, str_to_bool, build_icon
+    contextMenuAction, Receiver, str_to_bool, build_icon, ItemCapabilities
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm
 
 class ServiceManagerList(QtGui.QTreeWidget):
@@ -233,9 +233,9 @@ class ServiceManager(QtGui.QWidget):
         self.editAction.setVisible(False)
         self.maintainAction.setVisible(False)
         self.notesAction.setVisible(False)
-        if serviceItem[u'service_item'].edit_enabled:
+        if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsEdit):
             self.editAction.setVisible(True)
-        if serviceItem[u'service_item'].maintain_allowed:
+        if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsMaintain):
             self.maintainAction.setVisible(True)
         if item.parent() is None:
             self.notesAction.setVisible(True)
@@ -713,7 +713,7 @@ class ServiceManager(QtGui.QWidget):
                         get_config(u'auto preview', u'False')):
             item += 1
             if self.serviceItems and item < len(self.serviceItems) and \
-                self.serviceItems[item][u'service_item'].auto_preview_allowed:
+                serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsPreview):
                     self.parent.PreviewController.addServiceManagerItem(
                         self.serviceItems[item][u'service_item'], 0)
 
@@ -722,7 +722,8 @@ class ServiceManager(QtGui.QWidget):
         Posts a remote edit message to a plugin to allow item to be edited.
         """
         item, count = self.findServiceItem()
-        if self.serviceItems[item][u'service_item'].edit_enabled:
+        if self.serviceItems[item][u'service_item'].\
+                            is_capable(ItemCapabilities.AllowsEdit):
             self.remoteEditTriggered = True
             Receiver.send_message(u'%s_edit' %
                 self.serviceItems[item][u'service_item'].name, u'L:%s' %

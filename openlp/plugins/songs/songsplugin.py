@@ -27,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus
+from openlp.core.lib import Plugin, build_icon, PluginStatus, Receiver
 from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab, \
     SofImport
 from openlp.plugins.songs.forms import OpenLPImportForm, OpenSongExportForm, \
@@ -200,6 +200,7 @@ class SongsPlugin(Plugin):
                     + ' included with the Songs of Fellowship Music Editions'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
+        Receiver.send_message(u'load_song_list')
 
     def onExportOpenlp1ItemClicked(self):
         self.openlp_export_form.show()

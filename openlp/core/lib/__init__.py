@@ -172,7 +172,7 @@ from mediamanageritem import MediaManagerItem
 from xmlrootclass import XmlRootClass
 from serviceitem import ServiceItem
 from serviceitem import ServiceItemType
-from serviceitem import ServiceItem
+from serviceitem import ItemCapabilities
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
 from songxmlhandler import SongXMLBuilder, SongXMLParser
