@@ -722,7 +722,8 @@ class ServiceManager(QtGui.QWidget):
         Posts a remote edit message to a plugin to allow item to be edited.
         """
         item, count = self.findServiceItem()
-        if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsEdit):
+        if self.serviceItems[item][u'service_item'].\
+                            is_capable(ItemCapabilities.AllowsEdit):
             self.remoteEditTriggered = True
             Receiver.send_message(u'%s_edit' %
                 self.serviceItems[item][u'service_item'].name, u'L:%s' %

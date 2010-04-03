@@ -83,7 +83,7 @@ class MediaMediaItem(MediaManagerItem):
         if len(items) > 1:
             return False
         service_item.title = unicode(self.trUtf8('Media'))
-        service_item.add_capability(ItemCapabilities.Requires_media)
+        service_item.add_capability(ItemCapabilities.RequiresMedia)
         for item in items:
             bitem = self.ListView.item(item.row())
             filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())

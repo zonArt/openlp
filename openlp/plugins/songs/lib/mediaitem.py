@@ -312,7 +312,8 @@ class SongMediaItem(MediaManagerItem):
                         if verse[1]:
                             if verse[0][u'type'] == "Verse" \
                                 or verse[0][u'type'] == "Chorus":
-                                if verse[0][u'label'] == order[1:]:
+                                if verse[0][u'label'] == order[1:] and \
+                                    verse[0][u'type'][0] == order[0]:
                                     verseTag = u'%s:%s' % \
                                         (verse[0][u'type'], verse[0][u'label'])
                                     service_item.add_from_text\

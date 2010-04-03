@@ -419,7 +419,7 @@ class MediaManagerItem(QtGui.QWidget):
                 QtGui.QMessageBox.information(self,
                     self.trUtf8('No Service Item Selected'),
                     self.trUtf8('You must select a existing service item to add to.'))
-            elif self.title == service_item.name:
+            elif self.title.lower() == service_item.name.lower():
                 self.generateSlideData(service_item)
                 self.parent.service_manager.addServiceItem(service_item)
             else:
