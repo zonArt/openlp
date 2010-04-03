@@ -52,7 +52,7 @@ class SongMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = SongListView
         self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
-        self.edit_song_form = EditSongForm(self.parent.manager, self)
+        self.edit_song_form = EditSongForm(self, self.parent.manager)
         self.song_maintenance_form = SongMaintenanceForm(
             self.parent.manager, self)
         # Holds information about whether the edit is remotly triggered and
@@ -305,8 +305,7 @@ class SongMediaItem(MediaManagerItem):
             songXML = SongXMLParser(song.lyrics)
             verseList = songXML.get_verses()
             #no verse list or only 1 space (in error)
-            if song.verse_order is None or \
-                song.verse_order == u'' or song.verse_order == u' ':
+            if not song.verse_order or not song.verse_order.strip():
                 for verse in verseList:
                     service_item.add_from_text(verse[1][:30], unicode(verse[1]))
             else:

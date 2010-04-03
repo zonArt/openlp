@@ -23,8 +23,59 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import re
+import logging
+
 from PyQt4 import QtCore, QtGui
+
 from editversedialog import Ui_EditVerseDialog
+
+log = logging.getLogger(__name__)
+
+class VerseType(object):
+    Verse = 0
+    Chorus = 1
+    Bridge = 2
+    PreChorus = 3
+    Intro = 4
+    Ending = 5
+    Other = 6
+
+    @staticmethod
+    def to_string(verse_type):
+        if verse_type == VerseType.Verse:
+            return u'Verse'
+        elif verse_type == VerseType.Chorus:
+            return u'Chorus'
+        elif verse_type == VerseType.Bridge:
+            return u'Bridge'
+        elif verse_type == VerseType.PreChorus:
+            return u'Pre-Chorus'
+        elif verse_type == VerseType.Intro:
+            return u'Intro'
+        elif verse_type == VerseType.Ending:
+            return u'Ending'
+        elif verse_type == VerseType.Other:
+            return u'Other'
+
+    @staticmethod
+    def from_string(verse_type):
+        verse_type = verse_type.lower()
+        if verse_type == u'verse':
+            return VerseType.Verse
+        elif verse_type == u'chorus':
+            return VerseType.Chorus
+        elif verse_type == u'bridge':
+            return VerseType.Bridge
+        elif verse_type == u'pre-chorus':
+            return VerseType.PreChorus
+        elif verse_type == u'intro':
+            return VerseType.Intro
+        elif verse_type == u'ending':
+            return VerseType.Ending
+        elif verse_type == u'other':
+            return VerseType.Other
+
 
 class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
     """
@@ -36,127 +87,91 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        QtCore.QObject.connect(self.addVerse,
-            QtCore.SIGNAL(u'clicked()'), self.onAddVerse)
-        QtCore.QObject.connect(self.addChorus,
-            QtCore.SIGNAL(u'clicked()'), self.onAddChorus)
-        QtCore.QObject.connect(self.addBridge,
-            QtCore.SIGNAL(u'clicked()'), self.onAddBridge)
-        QtCore.QObject.connect(self.addIntro,
-            QtCore.SIGNAL(u'clicked()'), self.onAddIntro)
-        QtCore.QObject.connect(self.addOther,
-            QtCore.SIGNAL(u'clicked()'), self.onAddOther)
-        QtCore.QObject.connect(self.addPreChorus,
-            QtCore.SIGNAL(u'clicked()'), self.onAddPreChorus)
-        QtCore.QObject.connect(self.addEnding,
-            QtCore.SIGNAL(u'clicked()'), self.onAddEnding)
-        QtCore.QObject.connect(self.VerseListComboBox,
-            QtCore.SIGNAL(u'activated(int)'), self.onVerseComboChanged)
+        QtCore.QObject.connect(
+            self.InsertButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onInsertButtonClicked
+        )
+        QtCore.QObject.connect(
+            self.VerseTextEdit,
+            QtCore.SIGNAL(u'cursorPositionChanged()'),
+            self.onCursorPositionChanged
+        )
+#        QtCore.QObject.connect(self.VerseListComboBox,
+#            QtCore.SIGNAL(u'activated(int)'), self.onVerseComboChanged)
+        self.verse_regex = re.compile(r'---\[([-\w]+):([\d]+)\]---')
 
-    def startNewLine(self):
+    def insertVerse(self, title, num=1):
         if self.VerseTextEdit.textCursor().columnNumber() != 0:
             self.VerseTextEdit.insertPlainText(u'\n')
-
-    def onAddIntro(self):
-        self.startNewLine()
-        self.VerseTextEdit.insertPlainText(u'---[%s:1]---\n'
-                                           % self.trUtf8('Intro'))
+        self.VerseTextEdit.insertPlainText(u'---[%s:%s]---\n' % (title, num))
         self.VerseTextEdit.setFocus()
 
-    def onAddEnding(self):
-        self.startNewLine()
-        self.VerseTextEdit.insertPlainText(u'---[%s:1]---\n'
-                                           % self.trUtf8('Ending'))
-        self.VerseTextEdit.setFocus()
+    def onInsertButtonClicked(self):
+        if self.VerseTextEdit.textCursor().columnNumber() != 0:
+            self.VerseTextEdit.insertPlainText(u'\n')
+        verse_type = self.VerseTypeComboBox.currentIndex()
+        if verse_type == VerseType.Verse:
+            self.insertVerse('Verse', self.VerseNumberBox.value())
+        elif verse_type == VerseType.Chorus:
+            self.insertVerse('Chorus', self.VerseNumberBox.value())
+        elif verse_type == VerseType.Bridge:
+            self.insertVerse('Bridge')
+        elif verse_type == VerseType.PreChorus:
+            self.insertVerse('Pre-Chorus')
+        elif verse_type == VerseType.Intro:
+            self.insertVerse('Intro')
+        elif verse_type == VerseType.Ending:
+            self.insertVerse('Ending')
+        elif verse_type == VerseType.Other:
+            self.insertVerse('Other')
 
-    def onAddOther(self):
-        self.startNewLine()
-        self.VerseTextEdit.insertPlainText(u'---[%s:1]---\n'
-                                           % self.trUtf8('Other'))
-        self.VerseTextEdit.setFocus()
+    def onCursorPositionChanged(self):
+        position = self.VerseTextEdit.textCursor().position()
+        text = unicode(self.VerseTextEdit.toPlainText())
+        if not text:
+            return
+        if text.rfind(u'[', 0, position) > text.rfind(u']', 0, position) and \
+           text.find(u']', position) < text.find(u'[', position):
+            return
+        position = text.rfind(u'---[', 0, position)
+        if position == -1:
+            return
+        text = text[position:]
+        position = text.find(u']---')
+        if position == -1:
+            return
+        text = text[:position + 4]
+        match = self.verse_regex.match(text)
+        if match:
+            verse_type = match.group(1)
+            verse_number = int(match.group(2))
+            self.VerseTypeComboBox.setCurrentIndex(VerseType.from_string(verse_type))
+            self.VerseNumberBox.setValue(verse_number)
 
-    def onAddPreChorus(self):
-        self.startNewLine()
-        self.VerseTextEdit.insertPlainText(u'---[%s:1]---\n'
-                                           % self.trUtf8('Pre-Chorus'))
-        self.VerseTextEdit.setFocus()
-
-    def onAddBridge(self):
-        self.startNewLine()
-        self.VerseTextEdit.insertPlainText(u'---[%s:1]---\n'
-                                           % self.trUtf8('Bridge'))
-        self.VerseTextEdit.setFocus()
-
-    def onAddChorus(self):
-        self.startNewLine()
-        self.VerseTextEdit.insertPlainText(u'---[%s:1]---\n'
-                                           % self.trUtf8('Chorus'))
-        self.VerseTextEdit.setFocus()
-
-    def onAddVerse(self):
-        self.startNewLine()
-        count = self.VerseTextEdit.toPlainText().\
-                        count(u'---[%s' % self.trUtf8('Verse'))
-        self.VerseTextEdit.insertPlainText(u'---[%s:%s]---\n'
-                                           % (self.trUtf8('Verse'), count + 1))
-        self.VerseTextEdit.setFocus()
-
-    def setVerse(self, text, verseCount=0, single=False, tag=u'Verse:1'):
-        posVerse = 0
-        posSub = 0
-        if len(text) == 0 and not single:
-            text = u'---[%s:1]---\n' % self.trUtf8('Verse')
+    def setVerse(self, text, single=False, tag=u'Verse:1'):
         if single:
-            id = tag.split(u':')
-            posVerse = self.VerseListComboBox.findText(id[0], QtCore.Qt.MatchExactly)
-            posSub = self.SubVerseListComboBox.findText(id[1], QtCore.Qt.MatchExactly)
-            if posVerse == -1:
-                posVerse = 0
-            if posSub == -1:
-                posSub = 0
-            self.VerseListComboBox.setEnabled(True)
-            self.SubVerseListComboBox.setEnabled(True)
-            self.SubVerseListComboBox.clear()
-            for i in range(1, verseCount + 1):
-                self.SubVerseListComboBox.addItem(u'%s'% i)
-            self.addBridge.setEnabled(False)
-            self.addChorus.setEnabled(False)
-            self.addVerse.setEnabled(False)
-            self.addIntro.setEnabled(False)
-            self.addPreChorus.setEnabled(False)
-            self.addOther.setEnabled(False)
-            self.addEnding.setEnabled(False)
+            verse_type, verse_number = tag.split(u':')
+            self.VerseTypeComboBox.setCurrentIndex(VerseType.from_string(verse_type))
+            self.VerseNumberBox.setValue(int(verse_number))
+            self.InsertButton.setVisible(False)
         else:
-            self.VerseListComboBox.setEnabled(False)
-            self.SubVerseListComboBox.setEnabled(False)
-            self.addBridge.setEnabled(True)
-            self.addChorus.setEnabled(True)
-            self.addVerse.setEnabled(True)
-            self.addIntro.setEnabled(True)
-            self.addPreChorus.setEnabled(True)
-            self.addOther.setEnabled(True)
-            self.addEnding.setEnabled(True)
-        self.VerseListComboBox.setCurrentIndex(posVerse)
-        self.SubVerseListComboBox.setCurrentIndex(posSub)
+            if not text:
+                text = u'---[Verse:1]---\n'
+            self.VerseTypeComboBox.setCurrentIndex(0)
+            self.VerseNumberBox.setValue(1)
+            self.InsertButton.setVisible(True)
         self.VerseTextEdit.setPlainText(text)
         self.VerseTextEdit.setFocus(QtCore.Qt.OtherFocusReason)
-        self.onVerseComboChanged(0)
-        self.VerseTextEdit.moveCursor(QtGui.QTextCursor.Down)
 
     def getVerse(self):
-       return self.VerseTextEdit.toPlainText(), \
-            unicode(self.VerseListComboBox.currentText()), \
-            unicode(self.SubVerseListComboBox.currentText())
+        return self.VerseTextEdit.toPlainText(), \
+            VerseType.to_string(self.VerseTypeComboBox.currentIndex()), \
+            unicode(self.VerseNumberBox.value())
 
     def getVerseAll(self):
         text = self.VerseTextEdit.toPlainText()
         if not text.startsWith(u'---['):
-            text = u'---[%s:1]---\n%s' % (self.trUtf8('Verse'),  text)
+            text = u'---[Verse:1]---\n%s' % text
         return text
 
-    def onVerseComboChanged(self, id):
-        if unicode(self.VerseListComboBox.currentText()) == self.trUtf8('Verse'):
-            self.SubVerseListComboBox.setEnabled(True)
-        else:
-            self.SubVerseListComboBox.setEnabled(False)
-            self.SubVerseListComboBox.setCurrentIndex(0)
