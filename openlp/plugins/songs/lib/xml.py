@@ -25,7 +25,7 @@
 
 from lxml import objectify
 
-class SongXML(object):
+class LyricsXML(object):
     """
     This class represents the XML in the ``lyrics`` field of a song.
 
@@ -47,7 +47,7 @@ class SongXML(object):
             else:
                 self.extract(song.lyrics)
         else:
-            self.lyrics = []
+            self.languages = []
 
     def parse(self, xml):
         """
@@ -58,20 +58,20 @@ class SongXML(object):
             The XML to parse.
         """
         try:
-            self.lyrics = []
+            self.languages = []
             song = objectify.fromstring(xml)
             for lyrics in song.lyrics:
-                lyrlang = {
+                language = {
                     u'language': lyrics.attrib[u'language'],
                     u'verses': []
                 }
                 for verse in lyrics.verse:
-                    lyrlang[u'verses'].append({
+                    language[u'verses'].append({
                         u'type': verse.attrib[u'type'],
                         u'label': verse.attrib[u'label'],
                         u'text': unicode(verse.text)
                     })
-                self.lyrics.append(lyrlang)
+                self.lyrics.append(language)
             return True
         except:
             return False
@@ -87,11 +87,11 @@ class SongXML(object):
         """
         text = text.replace('\r\n', '\n')
         verses = text.split('\n\n')
-        self.lyrics = [{u'language': u'en', u'verses': []}]
+        self.languages = [{u'language': u'en', u'verses': []}]
         counter = 0
         for verse in verses:
             counter = counter + 1
-            self.lyrics[0][u'verses'].append({
+            self.languages[0][u'verses'].append({
                 u'type': u'verse',
                 u'label': unicode(counter),
                 u'text': verse
@@ -123,15 +123,15 @@ class SongXML(object):
         Build up the XML for the verse structure.
         """
         lyrics_output = u''
-        for lyrics in self.lyrics:
+        for language in self.languages:
             verse_output = u''
-            for verse in lyrics[u'verses']:
+            for verse in language[u'verses']:
                 verse_output = verse_output + \
                     u'<verse type="%s" label="%s"><![CDATA[%s]]></verse>' % \
                     (verse[u'type'], verse[u'label'], verse[u'text'])
             lyrics_output = lyrics_output + \
                 u'<lyrics language="%s">%s</lyrics>' % \
-                (lyrics[u'language'], verse_output)
+                (language[u'language'], verse_output)
         song_output = u'<?xml version="1.0" encoding="UTF-8"?>' + \
             u'<song version="1.0">%s</song>' % lyrics_output
         return song_output
