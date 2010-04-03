@@ -240,7 +240,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         """
         log.debug('Cancel button pressed!')
         if self.currentId() == 3:
-            Receiver.send_message(u'openlpstopimport')
+            Receiver.send_message(u'openlp_stop_bible_import')
 
     def onCurrentIdChanged(self, id):
         if id == 3:

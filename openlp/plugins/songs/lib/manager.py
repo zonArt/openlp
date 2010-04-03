@@ -27,6 +27,8 @@ import logging
 
 from openlp.plugins.songs.lib.models import init_models, metadata, Song, \
     Author, Topic, Book
+#from openlp.plugins.songs.lib import OpenLyricsSong, OpenSongSong, CCLISong, \
+#    CSVSong
 
 log = logging.getLogger(__name__)
 
@@ -38,8 +40,8 @@ class SongFormat(object):
     """
     Unknown = -1
     OpenLyrics = 0
-    OpenSongFile = 1
-    OpenSongDirectory = 2
+    OpenSong = 1
+    CCLI = 2
     CSV = 3
 
     @staticmethod
@@ -48,29 +50,29 @@ class SongFormat(object):
         Return the appropriate imeplementation class.
 
         ``id``
-            The Bible format.
+            The song format.
         """
-        if id == BibleFormat.OSIS:
-            return OSISBible
-        elif id == BibleFormat.CSV:
-            return CSVBible
-        elif id == BibleFormat.OpenSong:
-            return OpenSongBible
-        elif id == BibleFormat.WebDownload:
-            return HTTPBible
-        else:
-            return None
+#        if id == SongFormat.OpenLyrics:
+#            return OpenLyricsSong
+#        elif id == SongFormat.OpenSong:
+#            return OpenSongSong
+#        elif id == SongFormat.CCLI:
+#            return CCLISong
+#        elif id == SongFormat.CSV:
+#            return CSVSong
+#        else:
+        return None
 
     @staticmethod
     def list():
         """
-        Return a list of the supported Bible formats.
+        Return a list of the supported song formats.
         """
         return [
-            BibleFormat.OSIS,
-            BibleFormat.CSV,
-            BibleFormat.OpenSong,
-            BibleFormat.WebDownload
+            SongFormat.OpenLyrics,
+            SongFormat.OpenSong,
+            SongFormat.CCLI,
+            SongFormat.CSV
         ]
 
 

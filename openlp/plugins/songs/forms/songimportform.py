@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 from songimportwizard import Ui_SongImportWizard
 #from openlp.core.lib import Receiver
 #from openlp.core.utils import AppLocation, variant_to_unicode
-#from openlp.plugins.bibles.lib.manager import BibleFormat
+from openlp.plugins.songs.lib.manager import SongFormat
 
 log = logging.getLogger(__name__)
 
@@ -62,18 +62,13 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         """
         QtGui.QWizard.__init__(self, parent)
         self.setupUi(self)
-        #self.registerFields()
+        self.registerFields()
         self.finishButton = self.button(QtGui.QWizard.FinishButton)
         self.cancelButton = self.button(QtGui.QWizard.CancelButton)
         self.manager = manager
         self.config = config
         self.songsplugin = songsplugin
         #self.manager.set_process_dialog(self)
-        #self.web_bible_list = {}
-        #self.loadWebBibles()
-        #QtCore.QObject.connect(self.LocationComboBox,
-#            QtCore.SIGNAL(u'currentIndexChanged(int)'),
-#            self.onLocationComboBoxChanged)
 #        QtCore.QObject.connect(self.OsisFileButton,
 #            QtCore.SIGNAL(u'clicked()'),
 #            self.onOsisFileButtonClicked)
@@ -89,96 +84,67 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         QtCore.QObject.connect(self.cancelButton,
             QtCore.SIGNAL(u'clicked(bool)'),
             self.onCancelButtonClicked)
-#        QtCore.QObject.connect(self,
-#            QtCore.SIGNAL(u'currentIdChanged(int)'),
-#            self.onCurrentIdChanged)
+        QtCore.QObject.connect(self,
+            QtCore.SIGNAL(u'currentIdChanged(int)'),
+            self.onCurrentIdChanged)
 
     def exec_(self):
         """
         Run the wizard.
         """
-        #self.setDefaults()
+        self.setDefaults()
         return QtGui.QWizard.exec_(self)
 
     def validateCurrentPage(self):
         """
         Validate the current page before moving on to the next page.
         """
-        return True
-#        if self.currentId() == 0:
-#            # Welcome page
-#            return True
-#        elif self.currentId() == 1:
-#            # Select page
-#            if self.field(u'source_format').toInt()[0] == BibleFormat.OSIS:
-#                if self.field(u'osis_location').toString() == u'':
-#                    QtGui.QMessageBox.critical(self,
-#                        self.trUtf8('Invalid Bible Location'),
-#                        self.trUtf8('You need to specify a file to import your '
-#                            'Bible from.'),
-#                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-#                    self.OSISLocationEdit.setFocus()
-#                    return False
-#            elif self.field(u'source_format').toInt()[0] == BibleFormat.CSV:
-#                if self.field(u'csv_booksfile').toString() == u'':
-#                    QtGui.QMessageBox.critical(self,
-#                        self.trUtf8('Invalid Books File'),
-#                        self.trUtf8('You need to specify a file with books of '
-#                            'the Bible to use in the import.'),
-#                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-#                    self.BooksLocationEdit.setFocus()
-#                    return False
-#                elif self.field(u'csv_versefile').toString() == u'':
-#                    QtGui.QMessageBox.critical(self,
-#                        self.trUtf8('Invalid Verse File'),
-#                        self.trUtf8('You need to specify a file of Bible '
-#                            'verses to import.'),
-#                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-#                    self.CsvVerseLocationEdit.setFocus()
-#                    return False
-#            elif self.field(u'source_format').toInt()[0] == BibleFormat.OpenSong:
-#                if self.field(u'opensong_file').toString() == u'':
-#                    QtGui.QMessageBox.critical(self,
-#                        self.trUtf8('Invalid OpenSong Bible'),
-#                        self.trUtf8('You need to specify an OpenSong Bible '
-#                            'file to import.'),
-#                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-#                    self.OpenSongFileEdit.setFocus()
-#                    return False
-#            return True
-#        elif self.currentId() == 2:
-#            # License details
-#            license_version = variant_to_unicode(self.field(u'license_version'))
-#            license_copyright = variant_to_unicode(self.field(u'license_copyright'))
-#            if license_version == u'':
-#                QtGui.QMessageBox.critical(self,
-#                    self.trUtf8('Empty Version Name'),
-#                    self.trUtf8('You need to specify a version name for your '
-#                        'Bible.'),
-#                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-#                self.VersionNameEdit.setFocus()
-#                return False
-#            elif license_copyright == u'':
-#                QtGui.QMessageBox.critical(self,
-#                    self.trUtf8('Empty Copyright'),
-#                    self.trUtf8('You need to set a copyright for your Bible! '
-#                        'Bibles in the Public Domain need to be marked as '
-#                        'such.'),
-#                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-#                self.CopyrightEdit.setFocus()
-#                return False
-#            elif self.manager.exists(license_version):
-#                QtGui.QMessageBox.critical(self,
-#                    self.trUtf8('Bible Exists'),
-#                    self.trUtf8('This Bible already exists! Please import '
-#                        'a different Bible or first delete the existing one.'),
-#                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-#                self.VersionNameEdit.setFocus()
-#                return False
-#            return True
-#        if self.currentId() == 3:
-#            # Progress page
-#            return True
+        if self.currentId() == 0:
+            # Welcome page
+            return True
+        elif self.currentId() == 1:
+            # Select page
+            source_format = self.field(u'source_format').toInt()[0]
+            if source_format == SongFormat.OpenLyrics:
+                if self.OpenLyricsFileListWidget.count() == 0:
+                    QtGui.QMessageBox.critical(self,
+                        self.trUtf8('No OpenLyrics Files Selected'),
+                        self.trUtf8('You need to add at least one OpenLyrics '
+                            'song file to import from.'),
+                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                    self.OpenLyricsAddButton.setFocus()
+                    return False
+            elif source_format == SongFormat.OpenSong:
+                if self.OpenSongFileListWidget.count() == 0:
+                    QtGui.QMessageBox.critical(self,
+                        self.trUtf8('No OpenSong Files Selected'),
+                        self.trUtf8('You need to add at least one OpenSong '
+                            'song file to import from.'),
+                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                    self.OpenSongAddButton.setFocus()
+                    return False
+            elif source_format == SongFormat.CCLI:
+                if self.CCLIFileListWidget.count() == 0:
+                    QtGui.QMessageBox.critical(self,
+                        self.trUtf8('No CCLI Files Selected'),
+                        self.trUtf8('You need to add at least one CCLI file '
+                            'to import from.'),
+                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                    self.CCLIAddButton.setFocus()
+                    return False
+            elif source_format == SongFormat.CSV:
+                if self.CSVFilenameEdit.text().isEmpty():
+                    QtGui.QMessageBox.critical(self,
+                        self.trUtf8('No CSV File Selected'),
+                        self.trUtf8('You need to specify a CSV file to import '
+                            'from.'),
+                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                    self.CSVFilenameEdit.setFocus()
+                    return False
+            return True
+        elif self.currentId() == 2:
+            # Progress page
+            return True
 
     def onCancelButtonClicked(self, checked):
         """
@@ -186,62 +152,23 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         """
         log.debug('Cancel button pressed!')
         if self.currentId() == 3:
-            Receiver.send_message(u'openlpstopimport')
+            Receiver.send_message(u'openlp_stop_song_import')
 
-#    def onCurrentIdChanged(self, id):
-#        if id == 3:
-#            self.preImport()
-#            self.performImport()
-#            self.postImport()
+    def onCurrentIdChanged(self, id):
+        if id == 3:
+            self.preImport()
+            self.performImport()
+            self.postImport()
 
     def registerFields(self):
-        pass
-#        self.SourcePage.registerField(
-#            u'source_format', self.FormatComboBox)
-#        self.SourcePage.registerField(
-#            u'openlyrics_filename', self.OpenLyricsFilenameEdit)
-#        self.SourcePage.registerField(
-#            u'openlyrics_directory', self.OpenLyricsDirectoryEdit)
-#        self.SourcePage.registerField(
-#            u'opensong_filename', self.OpenSongFilenameEdit)
-#        self.SourcePage.registerField(
-#            u'opensong_directory', self.OpenSongDirectoryEdit)
-#        self.SourcePage.registerField(
-#            u'csv_versefile', self.CsvVerseLocationEdit)
-#        self.SourcePage.registerField(
-#            u'opensong_file', self.OpenSongFileEdit)
-#        self.SourcePage.registerField(
-#            u'web_location', self.LocationComboBox)
-#        self.SourcePage.registerField(
-#            u'web_biblename', self.BibleComboBox)
-#        self.SourcePage.registerField(
-#            u'proxy_server', self.AddressEdit)
-#        self.SourcePage.registerField(
-#            u'proxy_username', self.UsernameEdit)
-#        self.SourcePage.registerField(
-#            u'proxy_password', self.PasswordEdit)
+        self.SourcePage.registerField(u'source_format', self.FormatComboBox)
 
     def setDefaults(self):
-        pass
-#        self.setField(u'source_format', QtCore.QVariant(0))
-#        self.setField(u'openlyrics_filename', QtCore.QVariant(''))
-#        self.setField(u'openlyrics_directory', QtCore.QVariant(''))
-#        self.setField(u'opensong_filename', QtCore.QVariant(''))
-#        self.setField(u'opensong_directory', QtCore.QVariant(''))
-#        self.setField(u'csv_versefile', QtCore.QVariant(''))
-#        self.setField(u'opensong_file', QtCore.QVariant(''))
-#        self.setField(u'web_location', QtCore.QVariant(WebDownload.Crosswalk))
-#        self.setField(u'web_biblename', QtCore.QVariant(self.BibleComboBox))
-#        self.setField(u'proxy_server',
-#            QtCore.QVariant(self.config.get_config(u'proxy address', '')))
-#        self.setField(u'proxy_username',
-#            QtCore.QVariant(self.config.get_config(u'proxy username','')))
-#        self.setField(u'proxy_password',
-#            QtCore.QVariant(self.config.get_config(u'proxy password','')))
-#        self.setField(u'license_version', QtCore.QVariant(self.VersionNameEdit))
-#        self.setField(u'license_copyright', QtCore.QVariant(self.CopyrightEdit))
-#        self.setField(u'license_permission', QtCore.QVariant(self.PermissionEdit))
-#        self.onLocationComboBoxChanged(WebDownload.Crosswalk)
+        self.setField(u'source_format', QtCore.QVariant(0))
+        self.OpenLyricsFileListWidget.clear()
+        self.OpenSongFileListWidget.clear()
+        self.CCLIFileListWidget.clear()
+        self.CSVFilenameEdit.setText(u'')
 
     def getFileName(self, title, editbox):
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
@@ -266,10 +193,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
 
     def performImport(self):
         pass
-#        bible_type = self.field(u'source_format').toInt()[0]
-#        license_version = variant_to_unicode(self.field(u'license_version'))
-#        license_copyright = variant_to_unicode(self.field(u'license_copyright'))
-#        license_permission = variant_to_unicode(self.field(u'license_permission'))
+#        source_format = self.field(u'source_format').toInt()[0]
 #        importer = None
 #        if bible_type == BibleFormat.OSIS:
 #            # Import an OSIS bible

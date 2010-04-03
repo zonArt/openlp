@@ -52,7 +52,7 @@ class CSVBible(BibleDB):
             raise KeyError(u'You have to supply a file to import verses from.')
         self.versesfile = kwargs[u'versesfile']
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
+            QtCore.SIGNAL(u'openlp_stop_bible_import'), self.stop_import)
 
     def stop_import(self):
         """
