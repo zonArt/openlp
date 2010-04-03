@@ -494,8 +494,8 @@ class SlideController(QtGui.QWidget):
                     bits = frame[u'verseTag'].split(u':')
                     tag = None
                     #If verse handle verse number else tag only
-                    if bits[0] == self.trUtf8('Verse') or \
-                        bits[0] == self.trUtf8('Chorus'):
+                    if bits[0] == self.trUtf8('Verse'): #or \
+                        #bits[0] == self.trUtf8('Chorus'):
                         tag = u'%s%s' % (bits[0][0], bits[1][0:] )
                         row = bits[1][0:]
                     else:
