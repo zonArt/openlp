@@ -29,6 +29,7 @@ from PyQt4 import QtCore
 
 from renderer import Renderer
 from openlp.core.lib import ThemeLevel
+
 log = logging.getLogger(__name__)
 
 class RenderManager(object):

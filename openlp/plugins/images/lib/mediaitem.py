@@ -28,7 +28,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    contextMenuAction
+    contextMenuAction, ItemCapabilities
 
 log = logging.getLogger(__name__)
 
@@ -140,8 +140,8 @@ class ImageMediaItem(MediaManagerItem):
         items = self.ListView.selectedIndexes()
         if items:
             service_item.title = self.trUtf8('Image(s)')
-            service_item.updateCapability(u'allows_preview', True)
-            service_item.updateCapability(u'allows_maintain', True)
+            service_item.add_capability(ItemCapabilities.AllowsMaintain)
+            service_item.add_capability(ItemCapabilities.AllowsPreview)
             for item in items:
                 bitem = self.ListView.item(item.row())
                 filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())

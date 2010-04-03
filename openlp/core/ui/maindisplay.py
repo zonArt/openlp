@@ -248,7 +248,7 @@ class MainDisplay(DisplayWidget):
                 else:
                     self.display_text.setPixmap(QtGui.QPixmap.fromImage(frame))
                 self.display_frame = frame
-            if not self.isVisible() and not self.screens.display:
+            if not self.isVisible() and self.screens.display:
                 self.setVisible(True)
                 self.showFullScreen()
         else:

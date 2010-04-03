@@ -42,12 +42,12 @@ class ServiceItemType(object):
     Image = 2
     Command = 3
 
-capabilities = [
-    u'allows_preview',
-    u'allows_edit',
-    u'allows_maintain',
-    u'requires_media'
-]
+class ItemCapabilities(object):
+   AllowsPreview = 1
+   AllowsEdit = 2
+   AllowsMaintain = 3
+   RequiresMedia = 4
+
 
 class ServiceItem(object):
     """
@@ -79,17 +79,13 @@ class ServiceItem(object):
         self._uuid = unicode(uuid.uuid1())
         self.notes = u''
         self.from_plugin = False
-        self.capability_state = {}
-        for capability in capabilities:
-            self.updateCapability(capability)
+        self.capabilities = []
 
-    def updateCapability(self, capability, State=False):
-        self.capability_state[capability] = State
+    def add_capability(self, capability):
+        self.capabilities.append(capability)
 
-    def getCapability(self, capability):
-        if capability in self.capability_state:
-            return self.capability_state[capability]
-        return False
+    def is_capable(self, capability):
+        return capability in self.capabilities
 
     def addIcon(self, icon):
         """
@@ -223,7 +219,7 @@ class ServiceItem(object):
             u'audit':self.audit,
             u'notes':self.notes,
             u'from_plugin':self.from_plugin,
-            u'capabilities':self.capability_state
+            u'capabilities':self.capabilities
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
@@ -259,7 +255,7 @@ class ServiceItem(object):
         self.audit = header[u'audit']
         self.notes = header[u'notes']
         self.from_plugin = header[u'from_plugin']
-        self.capability_state = header[u'capabilities']
+        self.capabilities = header[u'capabilities']
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)
@@ -295,11 +291,8 @@ class ServiceItem(object):
         """
         return self._uuid != other._uuid
 
-    def is_song(self):
-        return self.name.lower() == u'songs'
-
     def is_media(self):
-        return self.getCapability(u'requires_media')
+        return ItemCapabilities.RequiresMedia in self.capabilities
 
     def is_command(self):
         return self.service_item_type == ServiceItemType.Command

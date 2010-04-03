@@ -28,7 +28,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, SongXMLParser, \
-    BaseListWithDnD, Receiver,  str_to_bool
+    BaseListWithDnD, Receiver,  str_to_bool, ItemCapabilities
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm
 
 log = logging.getLogger(__name__)
@@ -290,8 +290,8 @@ class SongMediaItem(MediaManagerItem):
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         else:
             item_id = self.remoteSong
-        service_item.updateCapability(u'allows_preview', True)
-        service_item.updateCapability(u'allows_edit', True)
+        service_item.add_capability(ItemCapabilities.AllowsEdit)
+        service_item.add_capability(ItemCapabilities.AllowsPreview)
         song = self.parent.songmanager.get_song(item_id)
         service_item.theme = song.theme_name
         service_item.editId = item_id
@@ -310,7 +310,8 @@ class SongMediaItem(MediaManagerItem):
                         break
                     for verse in verseList:
                         if verse[1]:
-                            if verse[0][u'type'] == "Verse":
+                            if verse[0][u'type'] == "Verse" \
+                                or verse[0][u'type'] == "Chorus":
                                 if verse[0][u'label'] == order[1:]:
                                     verseTag = u'%s:%s' % \
                                         (verse[0][u'type'], verse[0][u'label'])

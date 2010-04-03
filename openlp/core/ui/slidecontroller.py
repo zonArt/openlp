@@ -375,8 +375,7 @@ class SlideController(QtGui.QWidget):
         self.Toolbar.makeWidgetsInvisible(self.image_list)
         if item.is_text():
             self.Toolbar.makeWidgetsInvisible(self.image_list)
-            if item.is_song() and \
-                str_to_bool(self.songsconfig.get_config(u'show songbar', True)) \
+            if str_to_bool(self.songsconfig.get_config(u'show songbar', True)) \
                 and len(self.slideList) > 0:
                 self.Toolbar.makeWidgetsVisible([u'Song Menu'])
         elif item.is_image():
@@ -395,7 +394,8 @@ class SlideController(QtGui.QWidget):
         self.Toolbar.setVisible(True)
         self.Mediabar.setVisible(False)
         self.Toolbar.makeWidgetsInvisible(self.song_edit_list)
-        if item.getCapability(u'allows_edit') and item.from_plugin:
+        if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsEdit)\
+                            and item.from_plugin:
             self.Toolbar.makeWidgetsVisible(self.song_edit_list)
         elif item.is_media():
             self.Toolbar.setVisible(False)
@@ -494,7 +494,8 @@ class SlideController(QtGui.QWidget):
                     bits = frame[u'verseTag'].split(u':')
                     tag = None
                     #If verse handle verse number else tag only
-                    if bits[0] == self.trUtf8('Verse'):
+                    if bits[0] == self.trUtf8('Verse') or \
+                        bits[0] == self.trUtf8('Chorus'):
                         tag = u'%s%s' % (bits[0][0], bits[1][0:] )
                         row = bits[1][0:]
                     else:
