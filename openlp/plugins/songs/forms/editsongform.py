@@ -422,7 +422,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     self.SongTabWidget.setCurrentIndex(0)
                     self.VerseOrderEdit.setFocus()
                     return False, \
-                        self.trUtf8('Invalid verse entry - vX or cX')
+                        self.trUtf8('Invalid verse entry - Vx or Cx')
             else:
                 if taglist.find(verse) > -1:
                     pass
@@ -431,7 +431,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     self.VerseOrderEdit.setFocus()
                     return False, \
                         self.trUtf8(\
-                        'Invalid verse entry, values must be I,B,T,P,E,O,vX,Cx')
+                        'Invalid verse entry, values must be I,B,T,P,E,O,Vx,Cx')
         return True, u''
 
     def onTitleEditItemLostFocus(self):
