@@ -440,7 +440,7 @@ class BibleMediaItem(MediaManagerItem):
         if self.search_results:
             self.displayResults(bible)
 
-    def generateSlideData(self, service_item):
+    def generateSlideData(self, service_item, item_id=0):
         log.debug(u'generating slide data')
         items = self.ListView.selectedIndexes()
         if len(items) == 0:

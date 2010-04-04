@@ -114,6 +114,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.Toolbar = None
         self.remoteTriggered = None
         self.ServiceItemIconName = None
+        self.single_service_item = True
         self.addToServiceItem = False
         self.PageLayout = QtGui.QVBoxLayout(self)
         self.PageLayout.setSpacing(0)
@@ -401,11 +402,19 @@ class MediaManagerItem(QtGui.QWidget):
                 self.trUtf8('No Items Selected'),
                 self.trUtf8('You must select one or more items.'))
         else:
-            log.debug(self.PluginNameShort + u' Add requested')
-            service_item = self.buildServiceItem()
-            if service_item:
-                service_item.from_plugin = False
-                self.parent.service_manager.addServiceItem(service_item)
+            if self.single_service_item:
+                log.debug(self.PluginNameShort + u' Add requested')
+                service_item = self.buildServiceItem()
+                if service_item:
+                    service_item.from_plugin = False
+                    self.parent.service_manager.addServiceItem(service_item)
+            else:
+                items = self.ListView.selectedIndexes()
+                for item in items:
+                    service_item = self.buildServiceItem(item)
+                    if service_item:
+                        service_item.from_plugin = False
+                        self.parent.service_manager.addServiceItem(service_item)
 
     def onAddEditClick(self):
         if not self.ListView.selectedIndexes() and not self.remoteTriggered:
@@ -429,7 +438,7 @@ class MediaManagerItem(QtGui.QWidget):
                     self.trUtf8('Invalid Service Item'),
                     self.trUtf8(unicode('You must select a %s service item.' % self.title)))
 
-    def buildServiceItem(self):
+    def buildServiceItem(self, item=0):
         """
         Common method for generating a service item
         """
@@ -439,7 +448,7 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             service_item.addIcon(
                 u':/media/media_' + self.PluginNameShort.lower() + u'.png')
-        if self.generateSlideData(service_item):
+        if self.generateSlideData(service_item, item):
             return service_item
         else:
             return None

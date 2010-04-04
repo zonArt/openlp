@@ -714,7 +714,7 @@ class ServiceManager(QtGui.QWidget):
                         get_config(u'auto preview', u'False')):
             item += 1
             if self.serviceItems and item < len(self.serviceItems) and \
-                serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsPreview):
+                self.serviceItems[item][u'service_item'].is_capable(ItemCapabilities.AllowsPreview):
                     self.parent.PreviewController.addServiceManagerItem(
                         self.serviceItems[item][u'service_item'], 0)
 
