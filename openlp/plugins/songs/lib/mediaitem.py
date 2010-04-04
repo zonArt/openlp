@@ -276,8 +276,8 @@ class SongMediaItem(MediaManagerItem):
             if len(items) == 1:
                 del_message = self.trUtf8('Delete song?')
             else:
-                del_message = self.trUtf8('Delete %d song?' % len(items))
-            ans = QtGui.QMessageBox.question(None,
+                del_message = unicode(self.trUtf8('Delete %d song?')) % len(items)
+            ans = QtGui.QMessageBox.question(self,
                 self.trUtf8('Delete Confirmation'), del_message,
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok|
                      QtGui.QMessageBox.Cancel),

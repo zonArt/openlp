@@ -1,4 +1,4 @@
-property# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
 ###############################################################################
