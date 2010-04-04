@@ -235,7 +235,8 @@ class ServiceManager(QtGui.QWidget):
         self.notesAction.setVisible(False)
         if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsEdit):
             self.editAction.setVisible(True)
-        if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsMaintain):
+        if serviceItem[u'service_item'].\
+            is_capable(ItemCapabilities.AllowsMaintain):
             self.maintainAction.setVisible(True)
         if item.parent() is None:
             self.notesAction.setVisible(True)

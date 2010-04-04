@@ -59,27 +59,27 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
 
     def onAddIntro(self):
         self.startNewLine()
-        self.VerseTextEdit.insertPlainText(u'---[Intro:1]---\n')
+        self.VerseTextEdit.insertPlainText(u'---[Intro]---\n')
         self.VerseTextEdit.setFocus()
 
     def onAddEnding(self):
         self.startNewLine()
-        self.VerseTextEdit.insertPlainText(u'---[Ending:1]---\n')
+        self.VerseTextEdit.insertPlainText(u'---[Ending]---\n')
         self.VerseTextEdit.setFocus()
 
     def onAddOther(self):
         self.startNewLine()
-        self.VerseTextEdit.insertPlainText(u'---[Other:1]---\n')
+        self.VerseTextEdit.insertPlainText(u'---[Other]---\n')
         self.VerseTextEdit.setFocus()
 
     def onAddPreChorus(self):
         self.startNewLine()
-        self.VerseTextEdit.insertPlainText(u'---[Pre-Chorus:1]---\n')
+        self.VerseTextEdit.insertPlainText(u'---[Pre-Chorus]---\n')
         self.VerseTextEdit.setFocus()
 
     def onAddBridge(self):
         self.startNewLine()
-        self.VerseTextEdit.insertPlainText(u'---[Bridge:1]---\n')
+        self.VerseTextEdit.insertPlainText(u'---[Bridge]---\n')
         self.VerseTextEdit.setFocus()
 
     def onAddChorus(self):
@@ -148,7 +148,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
     def getVerseAll(self):
         text = self.VerseTextEdit.toPlainText()
         if not text.startsWith(u'---['):
-            text = u'---[%s:1]---\n%s' % (self.trUtf8('Verse'),  text)
+            text = u'---[Verse:1]---\n%s' % text
         return text
 
     def onVerseComboChanged(self, id):
