@@ -27,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus
+from openlp.core.lib import Plugin, build_icon, PluginStatus, Receiver
 from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab, \
     SofImport
 from openlp.plugins.songs.forms import OpenLPImportForm, OpenSongExportForm, \
@@ -187,8 +187,20 @@ class SongsPlugin(Plugin):
         filename = QtGui.QFileDialog.getOpenFileName(
             None, self.trUtf8('Open Songs of Fellowship file'),
             u'', u'Songs of Fellowship file (*.rtf *.RTF)')
-        sofimport = SofImport(self.songmanager)        
-        sofimport.import_sof(unicode(filename))
+        try:
+            sofimport = SofImport(self.songmanager)        
+            sofimport.import_sof(unicode(filename))
+        except:
+            log.exception('Could not import SoF file')
+            QtGui.QMessageBox.critical(None,
+                self.ImportSongMenu.trUtf8('Import Error'),
+                self.ImportSongMenu.trUtf8('Error importing Songs of ' 
+                    + 'Fellowship file.\nOpenOffice.org must be installed' 
+                    + ' and you must be using an unedited copy of the RTF'
+                    + ' included with the Songs of Fellowship Music Editions'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
+                QtGui.QMessageBox.Ok)
+        Receiver.send_message(u'load_song_list')
 
     def onExportOpenlp1ItemClicked(self):
         self.openlp_export_form.show()
