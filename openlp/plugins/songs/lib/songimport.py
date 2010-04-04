@@ -46,6 +46,7 @@ class SongImport(object):
         self.manager = song_manager
         self.title = u''
         self.song_number = u''
+        self.alternate_title = u''
         self.copyright = u''
         self.comment = u''
         self.theme_name = u''
@@ -73,7 +74,7 @@ class SongImport(object):
         
     def get_song_number(self):
         """ 
-        Return the song number (also known as alternate title)
+        Return the song number 
         """
         return self.song_number
         
@@ -83,9 +84,15 @@ class SongImport(object):
         """
         self.title = title
  
+    def set_alternate_title(self, title):
+        """
+        Set the alternate title
+        """
+        self.alternate_title = title
+
     def set_song_number(self, song_number):
         """ 
-        Set the song number/alternate title
+        Set the song number
         """
         self.song_number = song_number
         
@@ -113,7 +120,7 @@ class SongImport(object):
     def add_verse(self, verse, versetag):
         """
         Add a verse. This is the whole verse, lines split by \n
-        Verse tag can be V1/C1/B1 etc, or 'V' and 'C' (will count the verses/
+        Verse tag can be V1/C1/B etc, or 'V' and 'C' (will count the verses/
         choruses itself) or None, where it will assume verse
         It will also attempt to detect duplicates. In this case it will just
         add to the verse order
@@ -122,15 +129,16 @@ class SongImport(object):
             if oldverse.strip() == verse.strip():
                 self.verse_order_list.append(oldversetag)
                 return
-        if versetag == u'C':
+        if versetag.startswith(u'C'):
             self.choruscount += 1
+        if versetag == u'C':
             versetag += unicode(self.choruscount)
         if versetag == u'V' or not versetag:
             self.versecount += 1
             versetag = u'V' + unicode(self.versecount)
-        self.verses.append([versetag, verse])
+        self.verses.append([versetag, verse.rstrip()])
         self.verse_order_list.append(versetag)
-        if self.choruscount > 0 and not versetag.startswith(u'C'):
+        if versetag.startswith(u'V') and self.contains_verse(u'C1'):
             self.verse_order_list.append(u'C1')
 
     def repeat_verse(self):
@@ -138,7 +146,10 @@ class SongImport(object):
         Repeat the previous verse in the verse order
         """
         self.verse_order_list.append(self.verse_order_list[-1])
-    
+
+    def contains_verse(self, versetag):
+        return versetag in self.verse_order_list
+
     def check_complete(self):
         """
         Check the mandatory fields are entered (i.e. title and a verse)
@@ -173,7 +184,8 @@ class SongImport(object):
         """
         song = Song()
         song.title = self.title
-        song.search_title = self.remove_punctuation(self.title)
+        song.search_title = self.remove_punctuation(self.title) \
+            + '@' + self.alternate_title
         song.song_number = self.song_number
         song.search_lyrics = u''
         sxml = SongXMLBuilder()
@@ -235,6 +247,7 @@ class SongImport(object):
         print u'========================================'   \
             + u'========================================'
         print u'TITLE: ' + self.title 
+        print u'ALT TITLE: ' + self.alternate_title 
         for (versetag, versetext) in self.verses:
             print u'VERSE ' + versetag + u': ' + versetext
         print u'ORDER: ' + u' '.join(self.verse_order_list)
