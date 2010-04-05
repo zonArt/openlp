@@ -121,15 +121,14 @@ class ImageMediaItem(MediaManagerItem):
 
     def loadList(self, list):
         for file in list:
+            print file
             (path, filename) = os.path.split(unicode(file))
             thumb = os.path.join(self.servicePath, filename)
             if os.path.exists(thumb):
+                self.validate(file, thumb)
                 icon = build_icon(thumb)
             else:
-                icon = build_icon(unicode(file))
-                pixmap = icon.pixmap(QtCore.QSize(88,50))
-                ext = os.path.splitext(thumb)[1].lower()
-                pixmap.save(thumb, ext[1:])
+                icon = self.icon_from_file(file, thumb)
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setIcon(icon)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))

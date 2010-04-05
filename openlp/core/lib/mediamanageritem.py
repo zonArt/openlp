@@ -352,6 +352,25 @@ class MediaManagerItem(QtGui.QWidget):
             count += 1
         return filelist
 
+    def validate(self, file, thumb):
+        """
+        Validates to see if the file still exists or
+        thumbnail is up to date
+        """
+        filedate = os.stat(file).st_mtime
+        thumbdate = os.stat(thumb).st_mtime
+        #if file updated rebuild icon
+        if filedate > thumbdate:
+            print "rebuild"
+            self.icon_from_file(file, thumb)
+
+    def icon_from_file(self, file, thumb):
+        icon = build_icon(unicode(file))
+        pixmap = icon.pixmap(QtCore.QSize(88,50))
+        ext = os.path.splitext(thumb)[1].lower()
+        pixmap.save(thumb, ext[1:])
+        return icon
+
     def loadList(self, list):
         raise NotImplementedError(u'MediaManagerItem.loadList needs to be '
             u'defined by the plugin')
