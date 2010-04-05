@@ -49,7 +49,6 @@ class SongMediaItem(MediaManagerItem):
         self.ConfigSection = title
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = SongListView
-        #self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
         self.single_service_item = False
         self.edit_song_form = EditSongForm(self.parent.songmanager, self)
@@ -290,13 +289,12 @@ class SongMediaItem(MediaManagerItem):
                 self.parent.songmanager.delete_song(item_id)
             self.onSearchTextButtonClick()
 
-    def generateSlideData(self, service_item, item=0):
+    def generateSlideData(self, service_item, item=None):
         raw_footer = []
         author_list = u''
         author_audit = []
         ccli = u''
-        #Part of a loop so do not work out
-        if item == 0:
+        if item is None:
             if self.remoteTriggered is None:
                 item = self.ListView.currentItem()
                 if item is None:

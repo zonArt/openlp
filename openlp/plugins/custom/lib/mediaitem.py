@@ -50,8 +50,8 @@ class CustomMediaItem(MediaManagerItem):
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = CustomListView
-        self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
+        self.single_service_item = False
         # Holds information about whether the edit is remotly triggered and
         # which Custom is required.
         self.remoteCustom = -1
@@ -132,18 +132,21 @@ class CustomMediaItem(MediaManagerItem):
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
 
-    def generateSlideData(self, service_item):
+    def generateSlideData(self, service_item, item=None):
         raw_slides =[]
         raw_footer = []
         slide = None
         theme = None
-        if self.remoteTriggered is None:
-            item = self.ListView.currentItem()
-            if item is None:
-                return False
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        if item is None:
+            if self.remoteTriggered is None:
+                item = self.ListView.currentItem()
+                if item is None:
+                    return False
+                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            else:
+                item_id = self.remoteCustom
         else:
-            item_id = self.remoteCustom
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         customSlide = self.parent.custommanager.get_custom(item_id)

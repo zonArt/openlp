@@ -145,7 +145,7 @@ class PresentationMediaItem(MediaManagerItem):
                 doc.presentation_deleted()
                 doc.close_presentation()
 
-    def generateSlideData(self, service_item):
+    def generateSlideData(self, service_item, item=None):
         items = self.ListView.selectedIndexes()
         if len(items) > 1:
             return False

@@ -52,7 +52,6 @@ class ImageMediaItem(MediaManagerItem):
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
-        self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
 
     def initPluginNameVisible(self):
@@ -136,7 +135,7 @@ class ImageMediaItem(MediaManagerItem):
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.ListView.addItem(item_name)
 
-    def generateSlideData(self, service_item):
+    def generateSlideData(self, service_item, item=None):
         items = self.ListView.selectedIndexes()
         if items:
             service_item.title = self.trUtf8('Image(s)')

@@ -52,7 +52,7 @@ class MediaMediaItem(MediaManagerItem):
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = MediaListView
-        self.PreviewFunction = self.video_get_preview
+        self.PreviewFunction = QtGui.QPixmap(u':/media/media_video.png').toImage()
         MediaManagerItem.__init__(self, parent, icon, title)
         self.ServiceItemIconName = u':/media/media_video.png'
         self.MainDisplay = self.parent.maindisplay
@@ -72,13 +72,7 @@ class MediaMediaItem(MediaManagerItem):
         self.hasNewIcon = False
         self.hasEditIcon = False
 
-    def video_get_preview(self):
-        # For now cross platform is an icon.  Phonon does not support
-        # individual frame access (yet?) and GStreamer is not available
-        # on Windows
-        return QtGui.QPixmap(u':/media/media_video.png').toImage()
-
-    def generateSlideData(self, service_item):
+    def generateSlideData(self, service_item, item=None):
         items = self.ListView.selectedIndexes()
         if len(items) > 1:
             return False
@@ -110,7 +104,7 @@ class MediaMediaItem(MediaManagerItem):
         for file in list:
             (path, filename) = os.path.split(unicode(file))
             item_name = QtGui.QListWidgetItem(filename)
-            img = self.video_get_preview()
+            img = QtGui.QPixmap(u':/media/media_video.png').toImage()
             item_name.setIcon(build_icon(img))
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.ListView.addItem(item_name)
