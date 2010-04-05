@@ -54,8 +54,8 @@ class MediaMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = MediaListView
         self.PreviewFunction = QtGui.QPixmap(u':/media/media_video.png').toImage()
         MediaManagerItem.__init__(self, parent, icon, title)
+        self.single_service_item = False
         self.ServiceItemIconName = u':/media/media_video.png'
-        self.MainDisplay = self.parent.maindisplay
 
     def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8('Media')
@@ -73,17 +73,16 @@ class MediaMediaItem(MediaManagerItem):
         self.hasEditIcon = False
 
     def generateSlideData(self, service_item, item=None):
-        items = self.ListView.selectedIndexes()
-        if len(items) > 1:
-            return False
+        if item is None:
+            item = self.ListView.currentItem()
+            if item is None:
+                return False
+        filename = unicode((item.data(QtCore.Qt.UserRole)).toString())
         service_item.title = unicode(self.trUtf8('Media'))
         service_item.add_capability(ItemCapabilities.RequiresMedia)
-        for item in items:
-            bitem = self.ListView.item(item.row())
-            filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
-            frame = u':/media/image_clapperboard.png'
-            (path, name) = os.path.split(filename)
-            service_item.add_from_command(path, name, frame)
+        frame = u':/media/image_clapperboard.png'
+        (path, name) = os.path.split(filename)
+        service_item.add_from_command(path, name, frame)
         return True
 
     def initialise(self):
