@@ -140,10 +140,13 @@ class PresentationMediaItem(MediaManagerItem):
             self.parent.config.set_list(
                 self.ConfigSection, self.getFileList())
             filepath = unicode((item.data(QtCore.Qt.UserRole)).toString())
+            #not sure of this has errors
+            #John please can you look at .
             for cidx in self.controllers:
-                doc = self.controllers[cidx].add_doc(filepath)
-                doc.presentation_deleted()
-                doc.close_presentation()
+                if self.controllers[cidx].enabled:
+                    self.controllers[cidx].remove_doc(filepath)
+                    self.controllers[cidx].presentation_deleted()
+                    self.controllers[cidx].close_presentation()
 
     def generateSlideData(self, service_item, item=None):
         items = self.ListView.selectedIndexes()

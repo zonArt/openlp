@@ -121,7 +121,6 @@ class ImageMediaItem(MediaManagerItem):
 
     def loadList(self, list):
         for file in list:
-            print file
             (path, filename) = os.path.split(unicode(file))
             thumb = os.path.join(self.servicePath, filename)
             if os.path.exists(thumb):

@@ -138,13 +138,15 @@ class PresentationController(object):
         self.docs.append(doc)
         return doc
 
-    def remove_doc(self, doc):
+    def remove_doc(self, doc=None):
         """
         Called to remove an open document from the collection
         """
         log.debug(u'remove_doc Presentation')
-        self.docs.remove(doc)
-
+        if doc is None:
+            return
+        if doc in self.docs:
+           self.docs.remove(doc)
 
 class PresentationDocument(object):
     """
