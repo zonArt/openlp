@@ -115,7 +115,6 @@ class PresentationController(object):
         """
         return False
 
-
     def start_process(self):
         """
         Loads a running version of the presentation application in the background.
@@ -147,6 +146,9 @@ class PresentationController(object):
             return
         if doc in self.docs:
            self.docs.remove(doc)
+
+    def close_presentation(self):
+        pass
 
 class PresentationDocument(object):
     """
@@ -258,7 +260,7 @@ class PresentationDocument(object):
         Close presentation and clean up objects
         Triggered by new object being added to SlideController
         """
-        self.controller.delete_doc(self)
+        self.controller.close_presentation()
 
     def is_active(self):
         """

@@ -363,7 +363,7 @@ class ImpressDocument(PresentationDocument):
 
     def get_slide_preview_file(self, slide_no):
         """
-        Returns an image path containing a preview for theimpresscontroller.py
+        Returns an image path containing a preview for the
         requested slide
 
         ``slide_no``
