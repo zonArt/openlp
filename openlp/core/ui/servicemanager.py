@@ -235,8 +235,8 @@ class ServiceManager(QtGui.QWidget):
         self.notesAction.setVisible(False)
         if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsEdit):
             self.editAction.setVisible(True)
-        if serviceItem[u'service_item'].\
-            is_capable(ItemCapabilities.AllowsMaintain):
+        if serviceItem[u'service_item']\
+            .is_capable(ItemCapabilities.AllowsMaintain):
             self.maintainAction.setVisible(True)
         if item.parent() is None:
             self.notesAction.setVisible(True)
@@ -723,8 +723,8 @@ class ServiceManager(QtGui.QWidget):
         Posts a remote edit message to a plugin to allow item to be edited.
         """
         item, count = self.findServiceItem()
-        if self.serviceItems[item][u'service_item'].\
-                            is_capable(ItemCapabilities.AllowsEdit):
+        if self.serviceItems[item][u'service_item']\
+            .is_capable(ItemCapabilities.AllowsEdit):
             self.remoteEditTriggered = True
             Receiver.send_message(u'%s_edit' %
                 self.serviceItems[item][u'service_item'].name, u'L:%s' %

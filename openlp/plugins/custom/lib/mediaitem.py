@@ -51,7 +51,7 @@ class CustomMediaItem(MediaManagerItem):
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = CustomListView
         MediaManagerItem.__init__(self, parent, icon, title)
-        self.single_service_item = False
+        self.singleServiceItem = False
         # Holds information about whether the edit is remotly triggered and
         # which Custom is required.
         self.remoteCustom = -1

@@ -54,7 +54,7 @@ class MediaMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = MediaListView
         self.PreviewFunction = QtGui.QPixmap(u':/media/media_video.png').toImage()
         MediaManagerItem.__init__(self, parent, icon, title)
-        self.single_service_item = False
+        self.singleServiceItem = False
         self.ServiceItemIconName = u':/media/media_video.png'
 
     def initPluginNameVisible(self):

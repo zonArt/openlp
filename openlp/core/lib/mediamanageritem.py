@@ -114,7 +114,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.Toolbar = None
         self.remoteTriggered = None
         self.ServiceItemIconName = None
-        self.single_service_item = True
+        self.singleServiceItem = True
         self.addToServiceItem = False
         self.PageLayout = QtGui.QVBoxLayout(self)
         self.PageLayout.setSpacing(0)
@@ -422,7 +422,7 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             #Is it posssible to process multiple list items to generate multiple
             #service items?
-            if self.single_service_item:
+            if self.singleServiceItem:
                 log.debug(self.PluginNameShort + u' Add requested')
                 service_item = self.buildServiceItem()
                 if service_item:
