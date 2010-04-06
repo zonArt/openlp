@@ -248,7 +248,7 @@ class ImpressDocument(PresentationDocument):
                 preview = resize_image(path, 640, 480)
                 if os.path.exists(path):
                     os.remove(path)
-                preview.save(path, u'png')
+                preview.save(patha, u'png')
             except:
                 log.exception(u'%s - Unable to store openoffice preview' % path)
 
