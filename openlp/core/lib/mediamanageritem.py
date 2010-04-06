@@ -361,7 +361,6 @@ class MediaManagerItem(QtGui.QWidget):
         thumbdate = os.stat(thumb).st_mtime
         #if file updated rebuild icon
         if filedate > thumbdate:
-            print "rebuild"
             self.icon_from_file(file, thumb)
 
     def icon_from_file(self, file, thumb):
