@@ -127,7 +127,7 @@ class ImageMediaItem(MediaManagerItem):
                 self.validate(file, thumb)
                 icon = build_icon(thumb)
             else:
-                icon = self.icon_from_file(file, thumb)
+                icon = self.IconFromFile(file, thumb)
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setIcon(icon)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))

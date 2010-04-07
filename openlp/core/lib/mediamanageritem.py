@@ -361,9 +361,9 @@ class MediaManagerItem(QtGui.QWidget):
         thumbdate = os.stat(thumb).st_mtime
         #if file updated rebuild icon
         if filedate > thumbdate:
-            self.icon_from_file(file, thumb)
+            self.IconFromFile(file, thumb)
 
-    def icon_from_file(self, file, thumb):
+    def IconFromFile(self, file, thumb):
         icon = build_icon(unicode(file))
         pixmap = icon.pixmap(QtCore.QSize(88,50))
         ext = os.path.splitext(thumb)[1].lower()
