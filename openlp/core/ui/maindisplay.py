@@ -94,6 +94,8 @@ class MainDisplay(DisplayWidget):
         DisplayWidget.__init__(self, None)
         self.parent = parent
         self.setWindowTitle(u'OpenLP Display')
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.screens = screens
         self.mediaObject = Phonon.MediaObject(self)
         self.video = Phonon.VideoWidget()
@@ -226,6 +228,7 @@ class MainDisplay(DisplayWidget):
         ``frame``
             Image frame to be rendered
         """
+        self.display_image.setPixmap(self.transparent)
         if not self.displayBlank:
             if transition:
                 if self.frame is not None:
