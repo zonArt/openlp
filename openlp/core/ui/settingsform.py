@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -34,11 +34,11 @@ log = logging.getLogger(__name__)
 
 class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
 
-    def __init__(self, screen_list, mainWindow, parent=None):
+    def __init__(self, screens, mainWindow, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # General tab
-        self.GeneralTab = GeneralTab(screen_list)
+        self.GeneralTab = GeneralTab(screens)
         self.addTab(u'General', self.GeneralTab)
         # Themes tab
         self.ThemesTab = ThemesTab(mainWindow)

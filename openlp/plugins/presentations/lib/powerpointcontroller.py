@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -81,8 +81,9 @@ class PowerpointController(PresentationController):
             """
             Called at system exit to clean up any running presentations
             """
-            for doc in self.docs:
-                doc.close_presentation()
+            log.debug(u'Kill powerpoint')
+            while self.docs:
+                self.docs[0].close_presentation()
             if self.process is None:
                 return
             if self.process.Presentations.Count > 0:
@@ -149,12 +150,12 @@ class PowerpointDocument(PresentationDocument):
         Triggerent by new object being added to SlideController orOpenLP
         being shut down
         """
-        if self.presentation is None:
-            return
-        try:
-            self.presentation.Close()
-        except:
-            pass
+        log.debug(u'ClosePresentation')
+        if self.presentation:
+            try:
+                self.presentation.Close()
+            except:
+                pass
         self.presentation = None
         self.controller.remove_doc(self)
 
@@ -294,7 +295,7 @@ class PowerpointDocument(PresentationDocument):
             shape = shapes(idx + 1)
             if shape.HasTextFrame:
                 text += shape.TextFrame.TextRange.Text + '\n'
-        return text 
+        return text
 
     def get_slide_notes(self, slide_no):
         """

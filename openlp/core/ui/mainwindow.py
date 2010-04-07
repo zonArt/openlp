@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -67,10 +67,11 @@ class VersionThread(QtCore.QThread):
         """
         Run the thread.
         """
-        time.sleep(2)
+        time.sleep(1)
+        Receiver.send_message(u'blank_check')
         version = check_latest_version(self.generalConfig, self.app_version)
         #new version has arrived
-        if version != self.app_version:
+        if version != self.app_version[u'full']:
             Receiver.send_message(u'version_check', u'%s' % version)
 
 
@@ -493,6 +494,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'update_global_theme'), self.defaultThemeChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'version_check'), self.versionCheck)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'blank_check'), self.blankCheck)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'screen_changed'), self.screenChanged)
         QtCore.QObject.connect(self.FileNewItem,
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onNewService)
@@ -509,7 +514,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         #RenderManager needs to call ThemeManager and
         #ThemeManager needs to call RenderManager
         self.RenderManager = RenderManager(self.ThemeManagerContents,
-            self.screens, self.getMonitorNumber())
+                                            self.screens)
         #Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
@@ -551,37 +556,29 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Checks the version of the Application called from openlp.pyw
         """
         app_version = self.applicationVersion[u'full']
-        version_text = unicode(self.trUtf8('OpenLP version %s has been updated '
-            'to version %s\n\nYou can obtain the latest version from http://openlp.org'))
+        version_text = unicode(self.trUtf8('Version %s of OpenLP is now '
+            'available for download (you are currently running version %s).'
+            '\n\nYou can download the latest version from http://openlp.org'))
         QtGui.QMessageBox.question(self,
             self.trUtf8('OpenLP Version Updated'),
-            version_text % (app_version, version),
+            version_text % (version, app_version),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
             QtGui.QMessageBox.Ok)
-
-    def getMonitorNumber(self):
-        """
-        Set up the default behaviour of the monitor configuration in
-        here. Currently it is set to default to monitor 0 if the saved
-        monitor number does not exist.
-        """
-        screen_number = int(self.generalConfig.get_config(u'monitor', 0))
-        if not self.screens.screen_exists(screen_number):
-            screen_number = 0
-        return screen_number
 
     def show(self):
         """
         Show the main form, as well as the display form
         """
         self.showMaximized()
-        screen_number = self.getMonitorNumber()
-        self.mainDisplay.setup(screen_number)
+        #screen_number = self.getMonitorNumber()
+        self.mainDisplay.setup()
         if self.mainDisplay.isVisible():
             self.mainDisplay.setFocus()
         self.activateWindow()
         if str_to_bool(self.generalConfig.get_config(u'auto open', False)):
             self.ServiceManagerContents.onLoadService(True)
+
+    def blankCheck(self):
         if str_to_bool(self.generalConfig.get_config(u'screen blank', False)) \
         and str_to_bool(self.generalConfig.get_config(u'blank warning', False)):
             self.LiveController.onBlankDisplay(True)
@@ -592,8 +589,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 QtGui.QMessageBox.Ok)
 
     def versionThread(self):
-        app_version = self.applicationVersion[u'full']
-        vT = VersionThread(self, app_version, self.generalConfig)
+        vT = VersionThread(self, self.applicationVersion, self.generalConfig)
         vT.start()
 
     def onHelpAboutItemClicked(self):
@@ -615,13 +611,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Show the Settings dialog
         """
         self.settingsForm.exec_()
-        updated_display = self.getMonitorNumber()
-        if updated_display != self.screens.current_display:
-            self.screens.set_current_display(updated_display)
-            self.RenderManager.update_display(updated_display)
-            self.mainDisplay.setup(updated_display)
-        #Trigger after changes have been made
-        Receiver.send_message(u'config_updated')
+
+    def screenChanged(self):
+        self.RenderManager.update_display()
+        self.mainDisplay.setup()
         self.activateWindow()
 
     def closeEvent(self, event):

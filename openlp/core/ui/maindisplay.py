@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -30,6 +30,7 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, resize_image
+from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
 
@@ -131,13 +132,15 @@ class MainDisplay(DisplayWidget):
             QtCore.SIGNAL(u'media_pause'), self.onMediaPause)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_stop'), self.onMediaStop)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'update_config'), self.setup)
 
-    def setup(self, screenNumber):
+    def setup(self):
         """
         Sets up the screen on a particular screen.
-        @param (integer) screen This is the screen number.
         """
-        log.debug(u'Setup %s for %s ' %(self.screens, screenNumber))
+        log.debug(u'Setup %s for %s ' %(self.screens,
+                                         self.screens.monitor_number))
         self.setVisible(False)
         self.screen = self.screens.current
         #Sort out screen locations and sizes
@@ -184,7 +187,6 @@ class MainDisplay(DisplayWidget):
         else:
             self.setVisible(False)
             self.primary = True
-        Receiver.send_message(u'screen_changed')
 
     def resetDisplay(self):
         Receiver.send_message(u'stop_display_loop')
@@ -229,6 +231,7 @@ class MainDisplay(DisplayWidget):
             Image frame to be rendered
         """
         self.display_image.setPixmap(self.transparent)
+        log.debug(u'frameView %d' % (self.displayBlank))
         if not self.displayBlank:
             if transition:
                 if self.frame is not None:
@@ -248,17 +251,31 @@ class MainDisplay(DisplayWidget):
                 else:
                     self.display_text.setPixmap(QtGui.QPixmap.fromImage(frame))
                 self.display_frame = frame
-            if not self.isVisible():
+            if not self.isVisible() and self.screens.display:
                 self.setVisible(True)
                 self.showFullScreen()
+        else:
+            self.waitingFrame = frame
+            self.waitingFrameTrans = transition
 
-    def blankDisplay(self, blanked=True):
+    def blankDisplay(self, blankType=HideMode.Blank, blanked=True):
+        log.debug(u'Blank main Display %d' % blanked)
         if blanked:
             self.displayBlank = True
-            self.display_text.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
+            if blankType == HideMode.Blank:
+                self.display_text.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
+            elif blankType == HideMode.Theme:
+                theme = self.parent.RenderManager.renderer.bg_frame
+                if not theme:
+                    theme = self.blankFrame
+                self.display_text.setPixmap(QtGui.QPixmap.fromImage(theme))
+            self.waitingFrame = None
+            self.waitingFrameTrans = False
         else:
             self.displayBlank = False
-            if self.display_frame:
+            if self.waitingFrame:
+                self.frameView(self.waitingFrame, self.waitingFrameTrans)
+            elif self.display_frame:
                 self.frameView(self.display_frame)
 
     def onMediaQueue(self, message):
@@ -307,4 +324,4 @@ class MainDisplay(DisplayWidget):
         self.video.setVisible(False)
         self.display_text.show()
         self.display_image.show()
-        self.blankDisplay(False)
+        self.blankDisplay(False, False)

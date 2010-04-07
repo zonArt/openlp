@@ -7,8 +7,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -92,16 +92,23 @@ class OpenLP(QtGui.QApplication):
                 app_version = {
                     u'full': full_version,
                     u'version': bits[0],
-                    u'build': bits[1]
+                    u'build': bits[1] if len(bits) > 1 else None
                 }
-            log.info(u'Openlp version %s build %s' % (
-                app_version[u'version'], app_version[u'build']))
+            if app_version[u'build']:
+                log.info(
+                    u'Openlp version %s build %s',
+                    app_version[u'version'],
+                    app_version[u'build']
+                )
+            else:
+                log.info(u'Openlp version %s' % app_version[u'version'])
         except:
-                app_version = {
-                    u'full': u'1.9.0-bzr000',
-                    u'version': u'1.9.0',
-                    u'build': u'bzr000'
-                }
+            log.exception('Error in version file.')
+            app_version = {
+                u'full': u'1.9.0-bzr000',
+                u'version': u'1.9.0',
+                u'build': u'bzr000'
+            }
         finally:
             if fversion:
                 fversion.close()

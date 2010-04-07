@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -393,6 +393,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.theme.background_type = u'solid'
             if self.theme.background_color is None :
                 self.theme.background_color = u'#000000'
+            self.ImageLineEdit.setText(u'')
         elif background == 1: # Gradient
             self.theme.background_type = u'gradient'
             if gradient == 0: # Horizontal
@@ -405,6 +406,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 self.theme.background_startColor = u'#000000'
             if self.theme.background_endColor is None :
                 self.theme.background_endColor = u'#ff0000'
+            self.ImageLineEdit.setText(u'')
         else:
             self.theme.background_type = u'image'
         self.stateChanging(self.theme)
@@ -422,7 +424,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.Color1PushButton.setStyleSheet(
                 u'background-color: %s' % \
                     unicode(self.theme.background_startColor))
-
         self.previewTheme()
 
     def onColor2PushButtonClicked(self):
@@ -561,22 +562,18 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             u'background-color: %s' % unicode(theme.font_main_color))
         self.FontFooterColorPushButton.setStyleSheet(
             u'background-color: %s' % unicode(theme.font_footer_color))
-
         if not self.theme.font_main_override:
             self.FontMainDefaultCheckBox.setChecked(True)
         else:
             self.FontMainDefaultCheckBox.setChecked(False)
-
         if not self.theme.font_footer_override:
             self.FontFooterDefaultCheckBox.setChecked(True)
         else:
             self.FontFooterDefaultCheckBox.setChecked(False)
-
         self.OutlineColorPushButton.setStyleSheet(
             u'background-color: %s' % unicode(theme.display_outline_color))
         self.ShadowColorPushButton.setStyleSheet(
             u'background-color: %s' % unicode(theme.display_shadow_color))
-
         if self.theme.display_outline:
             self.OutlineCheckBox.setChecked(True)
             self.OutlineColorPushButton.setEnabled(True)
@@ -584,7 +581,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.OutlineCheckBox.setChecked(False)
             self.OutlineColorPushButton.setEnabled(False)
         self.OutlineSpinBox.setValue(int(self.theme.display_outline_size))
-
         if self.theme.display_shadow:
             self.ShadowCheckBox.setChecked(True)
             self.ShadowColorPushButton.setEnabled(True)
@@ -592,12 +588,10 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.ShadowCheckBox.setChecked(False)
             self.ShadowColorPushButton.setEnabled(False)
         self.ShadowSpinBox.setValue(int(self.theme.display_shadow_size))
-
         if self.theme.display_slideTransition:
             self.SlideTransitionCheckedBox.setCheckState(QtCore.Qt.Checked)
         else:
             self.SlideTransitionCheckedBox.setCheckState(QtCore.Qt.Unchecked)
-
         self.HorizontalComboBox.setCurrentIndex(
             self.theme.display_horizontalAlign)
         self.VerticalComboBox.setCurrentIndex(self.theme.display_verticalAlign)
@@ -657,7 +651,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 self.ImageFilenameWidget.setVisible(True)
                 self.GradientLabel.setVisible(False)
                 self.GradientComboBox.setVisible(False)
-
         if not theme.font_main_override:
             self.FontMainXSpinBox.setEnabled(False)
             self.FontMainYSpinBox.setEnabled(False)

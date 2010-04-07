@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -144,8 +144,9 @@ def resize_image(image, width, height):
         The image to resize.
     """
     preview = QtGui.QImage(image)
-    preview = preview.scaled(width, height, QtCore.Qt.KeepAspectRatio,
-        QtCore.Qt.SmoothTransformation)
+    if not preview.isNull():
+        preview = preview.scaled(width, height, QtCore.Qt.KeepAspectRatio,
+            QtCore.Qt.SmoothTransformation)
     realw = preview.width()
     realh = preview.height()
     # and move it to the centre of the preview space
@@ -171,7 +172,7 @@ from mediamanageritem import MediaManagerItem
 from xmlrootclass import XmlRootClass
 from serviceitem import ServiceItem
 from serviceitem import ServiceItemType
-from serviceitem import ServiceItem
+from serviceitem import ItemCapabilities
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
 from songxmlhandler import SongXMLBuilder, SongXMLParser

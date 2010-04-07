@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -133,6 +133,12 @@ class SongManager():
         """
         return self.session.query(Author).get(id)
 
+    def get_author_by_name(self, name):
+        """
+        Get author by display name
+        """
+        return self.session.query(Author).filter_by(display_name=name).first() 
+
     def save_author(self, author):
         """
         Save the Author and refresh the cache
@@ -172,6 +178,12 @@ class SongManager():
         """
         return self.session.query(Topic).get(id)
 
+    def get_topic_by_name(self, name):
+        """
+        Get topic by name
+        """
+        return self.session.query(Topic).filter_by(name=name).first() 
+
     def save_topic(self, topic):
         """
         Save the Topic
@@ -210,6 +222,12 @@ class SongManager():
         Details of the Books
         """
         return self.session.query(Book).get(id)
+
+    def get_book_by_name(self, name):
+        """
+        Get book by name
+        """
+        return self.session.query(Book).filter_by(name=name).first() 
 
     def save_book(self, book):
         """

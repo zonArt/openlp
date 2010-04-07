@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -59,14 +59,14 @@ class ThemeManager(QtGui.QWidget):
             self.trUtf8('Edit Theme'), u':/themes/theme_edit.png',
             self.trUtf8('Edit a theme'), self.onEditTheme)
         self.Toolbar.addToolbarButton(
-            self.trUtf8('Delete Theme'), u':/themes/theme_delete.png',
+            self.trUtf8('Delete Theme'), u':/general/general_delete.png',
             self.trUtf8('Delete a theme'), self.onDeleteTheme)
         self.Toolbar.addSeparator()
         self.Toolbar.addToolbarButton(
-            self.trUtf8('Import Theme'), u':/themes/theme_import.png',
+            self.trUtf8('Import Theme'), u':/general/general_import.png',
             self.trUtf8('Import a theme'), self.onImportTheme)
         self.Toolbar.addToolbarButton(
-            self.trUtf8('Export Theme'), u':/themes/theme_export.png',
+            self.trUtf8('Export Theme'), u':/general/general_export.png',
             self.trUtf8('Export a theme'), self.onExportTheme)
         self.ThemeWidget = QtGui.QWidgetAction(self.Toolbar)
         self.Layout.addWidget(self.Toolbar)
@@ -82,17 +82,17 @@ class ThemeManager(QtGui.QWidget):
             contextMenuSeparator(self.ThemeListWidget))
         self.ThemeListWidget.addAction(
             contextMenuAction(self.ThemeListWidget,
-                u':/themes/theme_delete.png',
+                u':/general/general_delete.png',
                 self.trUtf8('Delete theme'),
             self.onDeleteTheme))
         self.ThemeListWidget.addAction(
             contextMenuAction(self.ThemeListWidget,
-                u':/themes/theme_export.png',
+                u':/general/general_export.png',
                 self.trUtf8('Make Global'),
             self.changeGlobalFromScreen))
         self.ThemeListWidget.addAction(
             contextMenuAction(self.ThemeListWidget,
-                u':/themes/theme_export.png',
+                u':/general/general_export.png',
                 self.trUtf8('Export theme'),
             self.onExportTheme))
         self.ThemeListWidget.addAction(

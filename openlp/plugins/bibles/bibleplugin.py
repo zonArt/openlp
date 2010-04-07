@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -73,7 +73,7 @@ class BiblePlugin(Plugin):
         self.ImportBibleItem.setText(import_menu.trUtf8('&Bible'))
         # Signals and slots
         QtCore.QObject.connect(self.ImportBibleItem,
-            QtCore.SIGNAL(u'triggered()'), self.onBibleNewClick)
+            QtCore.SIGNAL(u'triggered()'), self.onBibleImportClick)
         self.ImportBibleItem.setVisible(False)
 
     def add_export_menu_item(self, export_menu):
@@ -83,9 +83,9 @@ class BiblePlugin(Plugin):
         self.ExportBibleItem.setText(export_menu.trUtf8('&Bible'))
         self.ExportBibleItem.setVisible(False)
 
-    def onBibleNewClick(self):
+    def onBibleImportClick(self):
         if self.media_item:
-            self.media_item.onNewClick()
+            self.media_item.onImportClick()
 
     def about(self):
         about_text = self.trUtf8('<strong>Bible Plugin</strong><br />This '

@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -116,7 +116,7 @@ class Ui_AmendThemeDialog(object):
         self.ImageLineEdit.setObjectName(u'ImageLineEdit')
         self.horizontalLayout_2.addWidget(self.ImageLineEdit)
         self.ImageToolButton = QtGui.QToolButton(self.ImageFilenameWidget)
-        icon1 = build_icon(u':/images/image_load.png')
+        icon1 = build_icon(u':/general/general_open.png')
         self.ImageToolButton.setIcon(icon1)
         self.ImageToolButton.setObjectName(u'ImageToolButton')
         self.horizontalLayout_2.addWidget(self.ImageToolButton)

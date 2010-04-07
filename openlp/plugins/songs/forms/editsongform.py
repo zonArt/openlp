@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -411,24 +411,27 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.SongTabWidget.setCurrentIndex(2)
             self.AuthorsListView.setFocus()
         #split the verse list by space and mark lower case for testing
+        taglist = unicode(self.trUtf8(' bitped'))
         for verse in unicode(self.VerseOrderEdit.text()).lower().split(u' '):
             if len(verse) > 1:
-                if verse[0:1] == u'v' and verse[1:].isdigit():
+                if (verse[0:1] == u'%s' % self.trUtf8('v') or
+                    verse[0:1] == u'%s' % self.trUtf8('c')) \
+                    and verse[1:].isdigit():
                     pass
                 else:
                     self.SongTabWidget.setCurrentIndex(0)
                     self.VerseOrderEdit.setFocus()
                     return False, \
-                        self.trUtf8('Invalid verse entry - vX')
+                        self.trUtf8('Invalid verse entry - Vx or Cx')
             else:
-                if u' bcitped'.find(verse) > -1:
+                if taglist.find(verse) > -1:
                     pass
                 else:
                     self.SongTabWidget.setCurrentIndex(0)
                     self.VerseOrderEdit.setFocus()
                     return False, \
                         self.trUtf8(\
-                        'Invalid verse entry - values must be Numeric, I,B,C,T,P,E,O')
+                        'Invalid verse entry, values must be I,B,T,P,E,O,Vx,Cx')
         return True, u''
 
     def onTitleEditItemLostFocus(self):
@@ -498,7 +501,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             sxml = SongXMLBuilder()
             sxml.new_document()
             sxml.add_lyrics_to_song()
-            count = 1
             text = u' '
             for i in range (0, self.VerseListWidget.count()):
                 item = self.VerseListWidget.item(i)
@@ -506,7 +508,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 bits = verseId.split(u':')
                 sxml.add_verse_to_lyrics(bits[0], bits[1], unicode(item.text()))
                 text = text + unicode(self.VerseListWidget.item(i).text()) + u' '
-                count += 1
             text = text.replace(u'\'', u'')
             text = text.replace(u',', u'')
             text = text.replace(u';', u'')

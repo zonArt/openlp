@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -60,7 +60,8 @@ class Ui_SongUsageDetailDialog(object):
         self.horizontalLayout.addWidget(self.FileLineEdit)
         self.SaveFilePushButton = QtGui.QPushButton(self.FileGroupBox)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/exports/export_load.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(u':/general/general_load.png'),
+            QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.SaveFilePushButton.setIcon(icon)
         self.SaveFilePushButton.setObjectName(u'SaveFilePushButton')
         self.horizontalLayout.addWidget(self.SaveFilePushButton)

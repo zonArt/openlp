@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -88,9 +88,9 @@ class PptviewController(PresentationController):
             """
             Called at system exit to clean up any running presentations
             """
-            log.debug(u'Kill')
-            for doc in self.docs:
-                doc.close_presentation()
+            log.debug(u'Kill pptviewer')
+            while self.docs:
+                self.docs[0].close_presentation()
 
         def add_doc(self, name):
             log.debug(u'Add Doc PPTView')
@@ -112,7 +112,7 @@ class PptviewDocument(PresentationDocument):
         """
         Called when a presentation is added to the SlideController.
         It builds the environment, starts communcations with the background
-        PptView task started earlier.  
+        PptView task started earlier.
 
         ``presentation``
         The file name of the presentations to run.
@@ -137,6 +137,7 @@ class PptviewDocument(PresentationDocument):
         Triggerent by new object being added to SlideController orOpenLP
         being shut down
         """
+        log.debug(u'ClosePresentation')
         self.controller.process.ClosePPT(self.pptid)
         self.pptid = -1
         self.controller.remove_doc(self)

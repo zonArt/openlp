@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -39,11 +39,16 @@ class AboutForm(QtGui.QDialog, Ui_AboutDialog):
         QtGui.QDialog.__init__(self, parent)
         self.applicationVersion = applicationVersion
         self.setupUi(self)
-        self.AboutTextEdit.setPlainText(
-            self.AboutTextEdit.toPlainText()\
-                .replace(u'<version>', self.applicationVersion[u'version'])\
-                .replace(u'<revision>', self.applicationVersion[u'build'])
-        )
+        about_text = self.AboutTextEdit.toPlainText()
+        about_text = about_text.replace(u'<version>',
+            self.applicationVersion[u'version'])
+        if self.applicationVersion[u'build']:
+            build_text = u' %s %s' % (self.trUtf8('build'),
+                self.applicationVersion[u'build'])
+        else:
+            build_text = u''
+        about_text = about_text.replace(u'<revision>', build_text)
+        self.AboutTextEdit.setPlainText(about_text)
         QtCore.QObject.connect(self.ContributeButton,
             QtCore.SIGNAL(u'clicked()'), self.onContributeButtonClicked)
 

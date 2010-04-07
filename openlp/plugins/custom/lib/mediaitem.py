@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,7 +28,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, SongXMLParser, BaseListWithDnD,\
-Receiver, str_to_bool
+Receiver, str_to_bool, ItemCapabilities
 
 log = logging.getLogger(__name__)
 
@@ -144,11 +144,11 @@ class CustomMediaItem(MediaManagerItem):
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         else:
             item_id = self.remoteCustom
-        service_item.autoPreviewAllowed = True
+        service_item.add_capability(ItemCapabilities.AllowsEdit)
+        service_item.add_capability(ItemCapabilities.AllowsPreview)
         customSlide = self.parent.custommanager.get_custom(item_id)
         title = customSlide.title
         credit = customSlide.credits
-        service_item.edit_enabled = True
         service_item.editId = item_id
         theme = customSlide.theme_name
         if theme:

@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -63,7 +63,8 @@ class OpenSongBible(BibleDB):
         Loads a Bible from file.
         """
         log.debug(u'Starting OpenSong import from "%s"' % self.filename)
-        self.filename = unicode(self.filename, u'utf-8')
+        if not isinstance(self.filename, unicode):
+            self.filename = unicode(self.filename, u'utf8')
         self.wizard.incrementProgressBar(u'Preparing for import...')
         file = None
         success = True
