@@ -148,7 +148,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
     def getVerseAll(self):
         text = self.VerseTextEdit.toPlainText()
         if not text.startsWith(u'---['):
-            text = u'---[%s:1]---\n%s' % (self.trUtf8('Verse'),  text)
+            text = u'---[Verse:1]---\n%s' % text
         return text
 
     def onVerseComboChanged(self, id):
