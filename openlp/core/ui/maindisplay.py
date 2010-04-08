@@ -110,7 +110,6 @@ class MainDisplay(DisplayWidget):
         self.blankFrame = None
         self.frame = None
         self.firstTime = True
-        self.mediaLoaded = False
         self.hasTransition = False
         self.mediaBackground = False
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -185,12 +184,12 @@ class MainDisplay(DisplayWidget):
 
     def hideDisplay(self):
         log.debug(u'hideDisplay')
-        self.mediaLoaded = True
-        self.setVisible(False)
+        self.display_image.setPixmap(self.transparent)
+        self.display_alert.setPixmap(self.transparent)
+        self.display_text.setPixmap(self.transparent)
 
     def showDisplay(self):
         log.debug(u'showDisplay')
-        self.mediaLoaded = False
         if not self.primary:
             self.setVisible(True)
             self.showFullScreen()
@@ -272,9 +271,8 @@ class MainDisplay(DisplayWidget):
 
     def onMediaQueue(self, message):
         log.debug(u'Queue new media message %s' % message)
-        self.display_image.setPixmap(self.transparent)
-        self.display_alert.setPixmap(self.transparent)
-        self.display_text.setPixmap(self.transparent)
+        self.hideDisplay()
+        self.activateWindow()
 
 class VideoWidget(QtGui.QWidget):
     """
@@ -338,6 +336,8 @@ class VideoDisplay(VideoWidget):
         self.setWindowTitle(u'OpenLP Video Display')
         self.parent = parent
         self.screens = screens
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.mediaObject = Phonon.MediaObject(self)
         self.video = Phonon.VideoWidget()
         self.video.setVisible(False)
@@ -400,6 +400,5 @@ class VideoDisplay(VideoWidget):
         log.debug(u'VideoDisplay Reached end of media playlist')
         self.mediaObject.stop()
         self.mediaObject.clearQueue()
-        self.mediaLoaded = False
         self.video.setVisible(False)
         self.setVisible(False)

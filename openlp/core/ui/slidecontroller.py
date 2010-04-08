@@ -386,11 +386,10 @@ class SlideController(QtGui.QWidget):
             if str_to_bool(self.songsconfig.get_config(u'show songbar', True)) \
                 and len(self.slideList) > 0:
                 self.Toolbar.makeWidgetsVisible([u'Song Menu'])
-        elif item.is_image():
-            #Not sensible to allow loops with 1 frame
-            if len(item.get_frames()) > 1:
+        if item.is_capable(ItemCapabilities.AllowsLoop) and \
+            len(item.get_frames()) > 1:
                 self.Toolbar.makeWidgetsVisible(self.loop_list)
-        elif item.is_media():
+        if item.is_media():
             self.Toolbar.setVisible(False)
             self.Mediabar.setVisible(True)
             self.volumeSlider.setAudioOutput(self.parent.mainDisplay.videoDisplay.audio)

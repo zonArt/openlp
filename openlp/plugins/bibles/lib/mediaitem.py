@@ -449,6 +449,7 @@ class BibleMediaItem(MediaManagerItem):
         raw_footer = []
         bible_text = u''
         service_item.add_capability(ItemCapabilities.AllowsPreview)
+        service_item.add_capability(ItemCapabilities.AllowsLoop)
         #If we want to use a 2nd translation / version
         bible2 = u''
         if self.SearchTabWidget.currentIndex() == 0:
