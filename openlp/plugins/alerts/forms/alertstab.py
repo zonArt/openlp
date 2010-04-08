@@ -27,6 +27,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, str_to_bool
 from openlp.plugins.alerts.lib.models import AlertItem
+from openlp.plugins.alerts.lib import alertsmanager
 
 class AlertsTab(SettingsTab):
     """
@@ -35,6 +36,7 @@ class AlertsTab(SettingsTab):
     def __init__(self, parent, section=None):
         self.parent = parent
         self.manager = parent.manager
+        self.alertsmanager = parent.alertsmanager
         SettingsTab.__init__(self, parent.name, section)
 
     def setupUi(self):

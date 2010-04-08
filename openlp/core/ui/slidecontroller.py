@@ -387,7 +387,7 @@ class SlideController(QtGui.QWidget):
         elif item.is_media():
             self.Toolbar.setVisible(False)
             self.Mediabar.setVisible(True)
-            self.volumeSlider.setAudioOutput(self.parent.mainDisplay.audio)
+            self.volumeSlider.setAudioOutput(self.parent.mainDisplay.videoDisplay.audio)
 
     def enablePreviewToolBar(self, item):
         """
@@ -585,7 +585,7 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'onHideDisplay %d' % force)
         if force:
-            self.themeButton.setChecked(True)
+            self.hideButton.setChecked(True)
         if self.hideButton.isChecked():
             self.parent.mainDisplay.hideDisplay()
         else:

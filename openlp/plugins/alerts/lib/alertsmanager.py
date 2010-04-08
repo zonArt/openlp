@@ -21,7 +21,7 @@
 # You should have received a copy of the GNU General Public License along     #
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
-###############################################################################
+##################################################################alertsmanager.py#############
 
 import logging
 
@@ -40,6 +40,7 @@ class AlertsManager(QtCore.QObject):
     def __init__(self, parent):
         QtCore.QObject.__init__(self)
         self.parent = parent
+        self.screen = None
         self.timer_id = 0
         self.alertList = []
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -53,8 +54,8 @@ class AlertsManager(QtCore.QObject):
 
     def screenChanged(self):
         log.debug(u'screen changed')
-        self.screen = self.parent.maindisplay.screen
         self.alertTab = self.parent.alertsTab
+        self.screen = self.parent.maindisplay.screens.current
         self.font = QtGui.QFont()
         self.font.setFamily(self.alertTab.font_face)
         self.font.setBold(True)
@@ -76,9 +77,11 @@ class AlertsManager(QtCore.QObject):
             display text
         """
         log.debug(u'display alert called %s' % text)
+        if not self.screen:
+            self.screenChanged()
         self.parent.maindisplay.parent.StatusBar.showMessage(u'')
         self.alertList.append(text)
-        if self.timer_id != 0 or self.parent.maindisplay.mediaLoaded:
+        if self.timer_id != 0: # or self.parent.maindisplay.mediaLoaded:
             self.parent.maindisplay.parent.StatusBar.showMessage(\
                     self.trUtf8(u'Alert message created and delayed'))
             return
