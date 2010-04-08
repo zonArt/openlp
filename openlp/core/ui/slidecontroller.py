@@ -96,7 +96,7 @@ class SlideController(QtGui.QWidget):
         self.isLive = isLive
         self.parent = parent
         self.songsconfig = PluginConfig(u'Songs')
-        self.image_list = [
+        self.loop_list = [
             u'Start Loop',
             u'Stop Loop',
             u'Loop Separator',
@@ -233,6 +233,12 @@ class SlideController(QtGui.QWidget):
         self.Mediabar.addToolbarButton(
             u'Media Stop',  u':/slides/media_playback_stop.png',
             self.trUtf8('Start playing media'), self.onMediaStop)
+        if not self.isLive:
+            self.seekSlider = Phonon.SeekSlider()
+            self.seekSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
+            self.seekSlider.setObjectName(u'seekSlider')
+            self.Mediabar.addToolbarWidget(
+                u'Seek Slider', self.seekSlider)
         self.volumeSlider = Phonon.VolumeSlider()
         self.volumeSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
         self.volumeSlider.setObjectName(u'volumeSlider')
@@ -299,7 +305,7 @@ class SlideController(QtGui.QWidget):
                 QtCore.SIGNAL(u'update_spin_delay'), self.receiveSpinDelay)
             Receiver.send_message(u'request_spin_delay')
         if isLive:
-            self.Toolbar.makeWidgetsInvisible(self.image_list)
+            self.Toolbar.makeWidgetsInvisible(self.loop_list)
         else:
             self.Toolbar.makeWidgetsInvisible(self.song_edit_list)
         self.Mediabar.setVisible(False)
@@ -374,16 +380,16 @@ class SlideController(QtGui.QWidget):
         self.Toolbar.setVisible(True)
         self.Mediabar.setVisible(False)
         self.Toolbar.makeWidgetsInvisible([u'Song Menu'])
-        self.Toolbar.makeWidgetsInvisible(self.image_list)
+        self.Toolbar.makeWidgetsInvisible(self.loop_list)
         if item.is_text():
-            self.Toolbar.makeWidgetsInvisible(self.image_list)
+            self.Toolbar.makeWidgetsInvisible(self.loop_list)
             if str_to_bool(self.songsconfig.get_config(u'show songbar', True)) \
                 and len(self.slideList) > 0:
                 self.Toolbar.makeWidgetsVisible([u'Song Menu'])
         elif item.is_image():
             #Not sensible to allow loops with 1 frame
             if len(item.get_frames()) > 1:
-                self.Toolbar.makeWidgetsVisible(self.image_list)
+                self.Toolbar.makeWidgetsVisible(self.loop_list)
         elif item.is_media():
             self.Toolbar.setVisible(False)
             self.Mediabar.setVisible(True)
@@ -766,6 +772,8 @@ class SlideController(QtGui.QWidget):
             self.mediaObject.clearQueue()
             file = os.path.join(item.get_frame_path(), item.get_frame_title())
             self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
+            self.seekSlider.setMediaObject(self.mediaObject)
+            self.seekSlider.show()
             self.onMediaPlay()
 
     def onMediaPause(self):

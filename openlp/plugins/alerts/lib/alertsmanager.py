@@ -82,6 +82,7 @@ class AlertsManager(QtCore.QObject):
         self.parent.maindisplay.parent.StatusBar.showMessage(u'')
         self.alertList.append(text)
         if self.timer_id != 0: # or self.parent.maindisplay.mediaLoaded:
+            print self.timer_id, self.alertList, len(self.alertList)
             self.parent.maindisplay.parent.StatusBar.showMessage(\
                     self.trUtf8(u'Alert message created and delayed'))
             return
@@ -91,7 +92,9 @@ class AlertsManager(QtCore.QObject):
         log.debug(u'Generate Alert called')
         if len(self.alertList) == 0:
             return
+        print len(self.alertList)
         text = self.alertList.pop(0)
+        print text
         alertTab = self.parent.alertsTab
         alertframe = \
             QtGui.QPixmap(self.screen[u'size'].width(), self.alertHeight)
@@ -113,6 +116,7 @@ class AlertsManager(QtCore.QObject):
         self.parent.maindisplay.addAlertImage(alertframe)
         # check to see if we have a timer running
         if self.timer_id == 0:
+            print "timer tripped"
             self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
 
     def timerEvent(self, event):

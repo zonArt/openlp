@@ -276,7 +276,48 @@ class MainDisplay(DisplayWidget):
         self.display_alert.setPixmap(self.transparent)
         self.display_text.setPixmap(self.transparent)
 
-class VideoDisplay(QtGui.QWidget):
+class VideoWidget(QtGui.QWidget):
+    """
+    Customised version of QTableWidget which can respond to keyboard
+    events.
+    """
+    log.info(u'MainDisplay loaded')
+
+    def __init__(self, parent=None, name=None):
+        QtGui.QWidget.__init__(self, None)
+        self.parent = parent
+        self.hotkey_map = {QtCore.Qt.Key_Return: 'servicemanager_next_item',
+                           QtCore.Qt.Key_Space: 'live_slidecontroller_next_noloop',
+                           QtCore.Qt.Key_Enter: 'live_slidecontroller_next_noloop',
+                           QtCore.Qt.Key_0: 'servicemanager_next_item',
+                           QtCore.Qt.Key_Backspace: 'live_slidecontroller_previous_noloop'}
+
+    def keyPressEvent(self, event):
+        if type(event) == QtGui.QKeyEvent:
+            #here accept the event and do something
+            if event.key() == QtCore.Qt.Key_Up:
+                Receiver.send_message(u'live_slidecontroller_previous')
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_Down:
+                Receiver.send_message(u'live_slidecontroller_next')
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_PageUp:
+                Receiver.send_message(u'live_slidecontroller_first')
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_PageDown:
+                Receiver.send_message(u'live_slidecontroller_last')
+                event.accept()
+            elif event.key() in self.hotkey_map:
+                Receiver.send_message(self.hotkey_map[event.key()])
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_Escape:
+                self.resetDisplay()
+                event.accept()
+            event.ignore()
+        else:
+            event.ignore()
+
+class VideoDisplay(VideoWidget):
     """
     This is the form that is used to display videos on the projector.
     """
@@ -293,7 +334,7 @@ class VideoDisplay(QtGui.QWidget):
             The list of screens.
         """
         log.debug(u'VideoDisplay Initilisation started')
-        QtGui.QWidget.__init__(self, None)
+        VideoWidget.__init__(self, parent)
         self.setWindowTitle(u'OpenLP Video Display')
         self.parent = parent
         self.screens = screens
@@ -331,7 +372,7 @@ class VideoDisplay(QtGui.QWidget):
         log.debug(u'VideoDisplay Queue new media message %s' % message)
         file = os.path.join(message[1], message[2])
         if self.firstTime:
-            self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
+            source = self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
             self.firstTime = False
         else:
             self.mediaObject.enqueue(Phonon.MediaSource(file))
