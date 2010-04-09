@@ -58,6 +58,7 @@ create_statements = [
         id INTEGER NOT NULL,
         song_book_id INTEGER,
         title VARCHAR(255) NOT NULL,
+        alternate_title VARCHAR(255),
         lyrics TEXT NOT NULL,
         verse_order VARCHAR(128),
         copyright VARCHAR(255),
@@ -183,16 +184,18 @@ def import_songs():
     xml_verse_template = u'<verse label="%d" type="Verse"><![CDATA[%s]]></verse>'
     for row in rows:
         clean_title = unicode(row[1], u'cp1252')
-        clean_lyrics = unicode(row[2], u'cp1252')
+        clean_lyrics = unicode(row[2], u'cp1252').replace(u'\r\n', u'\n')
         clean_copyright = unicode(row[3], u'cp1252')
         verse_order = u''
         text_lyrics = clean_lyrics.split(u'\n\n')
         xml_verse = u''
+        verses = []
         for line, verse in enumerate(text_lyrics):
             if not verse:
                 continue
             xml_verse += (xml_verse_template % (line + 1, verse))
-            verse_order += '%d ' % (line + 1)
+            verses.append(u'V%d' % (line + 1))
+        verse_order = u' '.join(verses)
         xml_lyrics = xml_lyrics_template % xml_verse
         search_title = prepare_string(clean_title)
         search_lyrics = prepare_string(clean_lyrics)
