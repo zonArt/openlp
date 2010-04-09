@@ -29,7 +29,7 @@ import time
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, Receiver, str_to_bool, \
-    BaseListWithDnD
+    BaseListWithDnD, ItemCapabilities
 from openlp.plugins.bibles.forms import ImportWizardForm
 
 log = logging.getLogger(__name__)
@@ -449,7 +449,7 @@ class BibleMediaItem(MediaManagerItem):
         raw_slides = []
         raw_footer = []
         bible_text = u''
-        service_item.auto_preview_allowed = True
+        service_item.add_capability(ItemCapabilities.AllowsPreview)
         #If we want to use a 2nd translation / version
         bible2 = u''
         if self.SearchTabWidget.currentIndex() == 0:
