@@ -49,8 +49,8 @@ class SongMediaItem(MediaManagerItem):
         self.ConfigSection = title
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = SongListView
-        self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
+        self.singleServiceItem = False
         self.edit_song_form = EditSongForm(self.parent.songmanager, self)
         self.song_maintenance_form = SongMaintenanceForm(
             self.parent.songmanager, self)
@@ -276,31 +276,34 @@ class SongMediaItem(MediaManagerItem):
             if len(items) == 1:
                 del_message = self.trUtf8('Delete song?')
             else:
-                del_message = unicode(self.trUtf8('Delete %d song?')) % len(items)
+                del_message = unicode(self.trUtf8('Delete %d songs?')) % len(items)
             ans = QtGui.QMessageBox.question(self,
                 self.trUtf8('Delete Confirmation'), del_message,
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok|
                      QtGui.QMessageBox.Cancel),
                 QtGui.QMessageBox.Ok)
             if ans == QtGui.QMessageBox.Cancel:
-                return                
+                return
             for item in items:
                 item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
                 self.parent.songmanager.delete_song(item_id)
             self.onSearchTextButtonClick()
 
-    def generateSlideData(self, service_item):
+    def generateSlideData(self, service_item, item=None):
         raw_footer = []
         author_list = u''
         author_audit = []
         ccli = u''
-        if self.remoteTriggered is None:
-            item = self.ListView.currentItem()
-            if item is None:
-                return False
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        if item is None:
+            if self.remoteTriggered is None:
+                item = self.ListView.currentItem()
+                if item is None:
+                    return False
+                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            else:
+                item_id = self.remoteSong
         else:
-            item_id = self.remoteSong
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         song = self.parent.songmanager.get_song(item_id)

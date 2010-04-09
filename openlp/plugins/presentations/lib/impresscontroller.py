@@ -37,6 +37,8 @@ import logging
 import os
 import time
 
+from openlp.core.lib import resize_image
+
 if os.name == u'nt':
     from win32com.client import Dispatch
 else:
@@ -239,17 +241,22 @@ class ImpressDocument(PresentationDocument):
         for idx in range(pages.getCount()):
             page = pages.getByIndex(idx)
             doc.getCurrentController().setCurrentPage(page)
-            path = u'%s/%s%s.png'% (thumbdir, self.controller.thumbnailprefix,
+            path = u'%s/%s%s.png' % (thumbdir, self.controller.thumbnailprefix,
                     unicode(idx + 1))
             try:
                 doc.storeToURL(path , props)
+                preview = resize_image(path, 640, 480)
+                if os.path.exists(path):
+                    os.remove(path)
+                preview.save(path, u'png')
             except:
-                log.exception(u'%s\nUnable to store preview' % path)
+                log.exception(u'%s - Unable to store openoffice preview' % path)
 
     def create_property(self, name, value):
         log.debug(u'create property OpenOffice')
         if os.name == u'nt':
-            prop = self.controller.manager.Bridge_GetStruct(u'com.sun.star.beans.PropertyValue')
+            prop = self.controller.manager.\
+                Bridge_GetStruct(u'com.sun.star.beans.PropertyValue')
         else:
             prop = PropertyValue()
         prop.Name = name
@@ -356,7 +363,8 @@ class ImpressDocument(PresentationDocument):
 
     def get_slide_preview_file(self, slide_no):
         """
-        Returns an image path containing a preview for the requested slide
+        Returns an image path containing a preview for the
+        requested slide
 
         ``slide_no``
         The slide an image is required for, starting at 1
