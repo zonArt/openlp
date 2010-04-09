@@ -58,6 +58,7 @@ create_statements = [
         id INTEGER NOT NULL,
         song_book_id INTEGER,
         title VARCHAR(255) NOT NULL,
+        alternate_title VARCHAR(255),
         lyrics TEXT NOT NULL,
         verse_order VARCHAR(128),
         copyright VARCHAR(255),
