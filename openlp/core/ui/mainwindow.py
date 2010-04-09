@@ -190,19 +190,19 @@ class Ui_MainWindow(object):
         self.ThemeManagerDock.setVisible(self.settingsmanager.showThemeManager)
         # Create the menu items
         self.FileNewItem = QtGui.QAction(MainWindow)
-        self.FileNewItem.setIcon(
-            self.ServiceManagerContents.Toolbar.getIconFromTitle(
-            u'New Service'))
+        #self.FileNewItem.setIcon(
+        #    self.ServiceManagerContents.Toolbar.getIconFromTitle(
+        #    u'New Service'))
         self.FileNewItem.setObjectName(u'FileNewItem')
         self.FileOpenItem = QtGui.QAction(MainWindow)
-        self.FileOpenItem.setIcon(
-            self.ServiceManagerContents.Toolbar.getIconFromTitle(
-            u'Open Service'))
+        #self.FileOpenItem.setIcon(
+        #    self.ServiceManagerContents.Toolbar.getIconFromTitle(
+        #    u'Open Service'))
         self.FileOpenItem.setObjectName(u'FileOpenItem')
         self.FileSaveItem = QtGui.QAction(MainWindow)
-        self.FileSaveItem.setIcon(
-            self.ServiceManagerContents.Toolbar.getIconFromTitle(
-            u'Save Service'))
+        #self.FileSaveItem.setIcon(
+        #    self.ServiceManagerContents.Toolbar.getIconFromTitle(
+        #    u'Save Service'))
         self.FileSaveItem.setObjectName(u'FileSaveItem')
         self.FileSaveAsItem = QtGui.QAction(MainWindow)
         self.FileSaveAsItem.setObjectName(u'FileSaveAsItem')
@@ -496,6 +496,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'version_check'), self.versionCheck)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'blank_check'), self.blankCheck)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'screen_changed'), self.screenChanged)
         QtCore.QObject.connect(self.FileNewItem,
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onNewService)
@@ -512,7 +514,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         #RenderManager needs to call ThemeManager and
         #ThemeManager needs to call RenderManager
         self.RenderManager = RenderManager(self.ThemeManagerContents,
-            self.screens, self.getMonitorNumber())
+                                            self.screens)
         #Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
@@ -563,24 +565,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
             QtGui.QMessageBox.Ok)
 
-    def getMonitorNumber(self):
-        """
-        Set up the default behaviour of the monitor configuration in
-        here. Currently it is set to default to monitor 0 if the saved
-        monitor number does not exist.
-        """
-        screen_number = int(self.generalConfig.get_config(u'monitor', 0))
-        if not self.screens.screen_exists(screen_number):
-            screen_number = 0
-        return screen_number
-
     def show(self):
         """
         Show the main form, as well as the display form
         """
         self.showMaximized()
-        screen_number = self.getMonitorNumber()
-        self.mainDisplay.setup(screen_number)
+        #screen_number = self.getMonitorNumber()
+        self.mainDisplay.setup()
         if self.mainDisplay.isVisible():
             self.mainDisplay.setFocus()
         self.activateWindow()
@@ -598,7 +589,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 QtGui.QMessageBox.Ok)
 
     def versionThread(self):
-        #app_version = self.applicationVersion[u'full']
         vT = VersionThread(self, self.applicationVersion, self.generalConfig)
         vT.start()
 
@@ -621,13 +611,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Show the Settings dialog
         """
         self.settingsForm.exec_()
-        updated_display = self.getMonitorNumber()
-        if updated_display != self.screens.current_display:
-            self.screens.set_current_display(updated_display)
-            self.RenderManager.update_display(updated_display)
-            self.mainDisplay.setup(updated_display)
-        #Trigger after changes have been made
-        Receiver.send_message(u'config_updated')
+
+    def screenChanged(self):
+        self.RenderManager.update_display()
+        self.mainDisplay.setup()
         self.activateWindow()
 
     def closeEvent(self, event):

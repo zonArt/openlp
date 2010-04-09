@@ -109,6 +109,12 @@ class EventReceiver(QtCore.QObject):
     ``presentation types``
         Informs all components of the presentation types supported.
 
+    ``blank_check``
+        Check to see if th eblank display message is required
+
+    ``version_check``
+        Version has changed so pop up window.
+
     """
     def __init__(self):
         """
