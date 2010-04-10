@@ -306,6 +306,7 @@ class SongMediaItem(MediaManagerItem):
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
+        service_item.add_capability(ItemCapabilities.AllowsLoop)
         song = self.parent.songmanager.get_song(item_id)
         service_item.theme = song.theme_name
         service_item.editId = item_id
