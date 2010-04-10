@@ -113,7 +113,6 @@ class AlertsManager(QtCore.QObject):
         self.parent.maindisplay.addAlertImage(alertframe)
         # check to see if we have a timer running
         if self.timer_id == 0:
-            print "timer tripped"
             self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
 
     def timerEvent(self, event):

@@ -582,8 +582,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.videoDisplay.lower()
         self.mainDisplay.raise_()
 
-        print self.children()
-
     def blankCheck(self):
         if str_to_bool(self.generalConfig.get_config(u'screen blank', False)) \
         and str_to_bool(self.generalConfig.get_config(u'blank warning', False)):
