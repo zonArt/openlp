@@ -93,7 +93,6 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'Initilisation started')
         DisplayWidget.__init__(self, None)
-        self.videoDisplay = VideoDisplay(parent, screens)
         self.parent = parent
         self.setWindowTitle(u'OpenLP Display')
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
@@ -171,8 +170,6 @@ class MainDisplay(DisplayWidget):
         else:
             self.setVisible(False)
             self.primary = True
-        self.videoDisplay.setup()
-        self.raise_()
 
     def resetDisplay(self):
         log.debug(u'resetDisplay')

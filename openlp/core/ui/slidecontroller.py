@@ -392,7 +392,7 @@ class SlideController(QtGui.QWidget):
         if item.is_media():
             self.Toolbar.setVisible(False)
             self.Mediabar.setVisible(True)
-            self.volumeSlider.setAudioOutput(self.parent.mainDisplay.videoDisplay.audio)
+            #self.volumeSlider.setAudioOutput(self.parent.mainDisplay.videoDisplay.audio)
 
     def enablePreviewToolBar(self, item):
         """
