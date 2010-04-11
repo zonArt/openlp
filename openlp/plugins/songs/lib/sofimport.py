@@ -29,10 +29,11 @@
 # http://www.oooforum.org/forum/viewtopic.phtml?t=14409
 # http://wiki.services.openoffice.org/wiki/Python
 
-import re
 import os
-import time
+import re
+
 from PyQt4 import QtCore
+
 from songimport import SongImport
 
 if os.name == u'nt':
