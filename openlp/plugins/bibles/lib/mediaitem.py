@@ -57,7 +57,6 @@ class BibleMediaItem(MediaManagerItem):
         self.ConfigSection = title
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = BibleListView
-        self.servicePath = None
         self.lastReference = []
         self.addToServiceItem = True
         MediaManagerItem.__init__(self, parent, icon, title)
@@ -440,7 +439,7 @@ class BibleMediaItem(MediaManagerItem):
         if self.search_results:
             self.displayResults(bible)
 
-    def generateSlideData(self, service_item):
+    def generateSlideData(self, service_item, item=None):
         log.debug(u'generating slide data')
         items = self.ListView.selectedIndexes()
         if len(items) == 0:
@@ -450,6 +449,7 @@ class BibleMediaItem(MediaManagerItem):
         raw_footer = []
         bible_text = u''
         service_item.add_capability(ItemCapabilities.AllowsPreview)
+        service_item.add_capability(ItemCapabilities.AllowsLoop)
         #If we want to use a 2nd translation / version
         bible2 = u''
         if self.SearchTabWidget.currentIndex() == 0:
