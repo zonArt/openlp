@@ -68,12 +68,16 @@ class SongImport(object):
     @staticmethod
     def process_songs_text(manager, text):
         songs = []
-        songtexts = SongImport.tidy_text(text).split(u'\n\n\n')
+        songtexts = SongImport.tidy_text(text).split(u'\f')
+        song = SongImport(manager)
         for songtext in songtexts:
-            if songtext.strip() != u'':
-                song = SongImport(manager)
+            if songtext.strip():
                 song.process_song_text(songtext.strip())
-                songs.append(song)
+                if song.check_complete():
+                    songs.append(song)
+                    song = SongImport(manager)
+        if song.check_complete():
+            songs.append(song)
         return songs
 
     @staticmethod
@@ -83,7 +87,6 @@ class SongImport(object):
         interested in. Some can be converted to ascii.
         """
         text = text.replace(u'\t', u' ')
-        text = text.replace(u'\f', u'\n\n\n')
         text = text.replace(u'\r\n', u'\n')
         text = text.replace(u'\r', u'\n')
         text = text.replace(u'\u2018', u'\'')
@@ -96,12 +99,13 @@ class SongImport(object):
         # Remove surplus blank lines, spaces, trailing/leading spaces
         while text.find(u'  ') >= 0:
             text = text.replace(u'  ', u' ')
-        while text.find(u'\n ') >= 0:
-            text = text.replace(u'\n ', u'\n')
-        while text.find(u' \n') >= 0:
-            text = text.replace(u' \n', u'\n')
-        while text.find(u'\n\n\n\n') >= 0:
-            text = text.replace(u'\n\n\n\n', u'\n\n\n')
+        text = text.replace(u'\n ', u'\n')
+        text = text.replace(u' \n', u'\n')
+        text = text.replace(u'\n\n\n\n\n', u'\f')
+        text = text.replace(u'\f ', u'\f')
+        text = text.replace(u' \f', u'\f')
+        while text.find(u'\f\f') >= 0:
+            text = text.replace(u'\f\f', u'\f')
         return text
 
     def process_song_text(self, text):
@@ -190,7 +194,6 @@ class SongImport(object):
         However need to check for "Mr and Mrs Smith" and turn it to 
         "Mr Smith" and "Mrs Smith".
         """
-        text = text.replace(u' and ', u' & ')
         for author in text.split(u','):
             authors = author.split(u'&')
             for i in range(len(authors)):
