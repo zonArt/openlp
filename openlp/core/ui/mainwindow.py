@@ -432,7 +432,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     """
     log.info(u'MainWindow loaded')
 
-    def __init__(self, screens, applicationVersion):
+    def __init__(self, screens, applicationVersion, application):
         """
         This constructor sets up the interface, the various managers, and the
         plugins.
@@ -444,7 +444,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.settingsmanager = SettingsManager(screens)
         self.generalConfig = PluginConfig(u'General')
         self.videoDisplay = VideoDisplay(self, screens)
-        self.mainDisplay = MainDisplay(self, screens)
+        self.mainDisplay = MainDisplay(self, screens, application)
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
         # Set up the path with plugins
@@ -555,6 +555,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def versionCheck(self, version):
         """
         Checks the version of the Application called from openlp.pyw
+        Triggered by delay thread.
         """
         app_version = self.applicationVersion[u'full']
         version_text = unicode(self.trUtf8('Version %s of OpenLP is now '
@@ -583,6 +584,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.mainDisplay.raise_()
 
     def blankCheck(self):
+        """
+        Check and display message if screen blank on setup.
+        Triggered by delay thread.
+        """
         if str_to_bool(self.generalConfig.get_config(u'screen blank', False)) \
         and str_to_bool(self.generalConfig.get_config(u'blank warning', False)):
             self.LiveController.onBlankDisplay(True)
@@ -593,6 +598,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 QtGui.QMessageBox.Ok)
 
     def versionThread(self):
+        """
+        Start an initial setup thread to delay notifications
+        """
         vT = VersionThread(self, self.applicationVersion, self.generalConfig)
         vT.start()
 
@@ -617,8 +625,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.settingsForm.exec_()
 
     def screenChanged(self):
+        """
+        The screen has changed to so tell the displays to update_display
+        their locations
+        """
         self.RenderManager.update_display()
         self.mainDisplay.setup()
+        self.videoDisplay.setup()
+        self.setFocus()
         self.activateWindow()
 
     def closeEvent(self, event):
@@ -636,20 +650,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 QtGui.QMessageBox.Save)
             if ret == QtGui.QMessageBox.Save:
                 self.ServiceManagerContents.onSaveService()
-                self.mainDisplay.close()
-                self.videoDisplay.close()
                 self.cleanUp()
                 event.accept()
             elif ret == QtGui.QMessageBox.Discard:
-                self.mainDisplay.close()
-                self.videoDisplay.close()
                 self.cleanUp()
                 event.accept()
             else:
                 event.ignore()
         else:
-            self.mainDisplay.close()
-            self.videoDisplay.close()
             self.cleanUp()
             event.accept()
 
@@ -662,6 +670,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Call the cleanup method to shutdown plugins.
         log.info(u'cleanup plugins')
         self.plugin_manager.finalise_plugins()
+        #Close down the displays
+        self.mainDisplay.close()
+        self.videoDisplay.close()
 
     def serviceChanged(self, reset=False, serviceName=None):
         """
