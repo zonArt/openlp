@@ -29,7 +29,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, build_icon, PluginStatus, Receiver
 from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab, \
-    SofImport
+    SofImport, OooImport
 from openlp.plugins.songs.forms import OpenLPImportForm, OpenSongExportForm, \
     OpenSongImportForm, OpenLPExportForm
 
@@ -105,11 +105,14 @@ class SongsPlugin(Plugin):
         self.ImportOpenlp2Item.setObjectName(u'ImportOpenlp2Item')
         self.ImportSofItem = QtGui.QAction(import_menu)
         self.ImportSofItem.setObjectName(u'ImportSofItem')
+        self.ImportOooItem = QtGui.QAction(import_menu)
+        self.ImportOooItem.setObjectName(u'ImportOooItem')
         # Add to menus
         self.ImportSongMenu.addAction(self.ImportOpenlp1Item)
         self.ImportSongMenu.addAction(self.ImportOpenlp2Item)
         self.ImportSongMenu.addAction(self.ImportOpenSongItem)
         self.ImportSongMenu.addAction(self.ImportSofItem)
+        self.ImportSongMenu.addAction(self.ImportOooItem)
         import_menu.addAction(self.ImportSongMenu.menuAction())
         # Translations...
         self.ImportSongMenu.setTitle(import_menu.trUtf8('&Song'))
@@ -132,6 +135,12 @@ class SongsPlugin(Plugin):
         self.ImportSofItem.setStatusTip(
             import_menu.trUtf8('Import songs from the VOLS1_2.RTF, sof3words' \
                 + '.rtf and sof4words.rtf supplied with the music books'))
+        self.ImportOooItem.setText(
+            import_menu.trUtf8('Generic Document/Presentation Import'))
+        self.ImportOooItem.setToolTip(
+            import_menu.trUtf8('Import songs from Word/Writer/Powerpoint/Impress'))
+        self.ImportOooItem.setStatusTip(
+            import_menu.trUtf8('Import songs from Word/Writer/Powerpoint/Impress'))
         # Signals and slots
         QtCore.QObject.connect(self.ImportOpenlp1Item,
             QtCore.SIGNAL(u'triggered()'), self.onImportOpenlp1ItemClick)
@@ -141,6 +150,8 @@ class SongsPlugin(Plugin):
             QtCore.SIGNAL(u'triggered()'), self.onImportOpenSongItemClick)
         QtCore.QObject.connect(self.ImportSofItem,
             QtCore.SIGNAL(u'triggered()'), self.onImportSofItemClick)
+        QtCore.QObject.connect(self.ImportOooItem,
+            QtCore.SIGNAL(u'triggered()'), self.onImportOooItemClick)
         self.ImportSongMenu.menuAction().setVisible(False)
 
     def add_export_menu_item(self, export_menu):
@@ -184,12 +195,13 @@ class SongsPlugin(Plugin):
         self.opensong_import_form.show()
 
     def onImportSofItemClick(self):
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filenames = QtGui.QFileDialog.getOpenFileNames(
             None, self.trUtf8('Open Songs of Fellowship file'),
             u'', u'Songs of Fellowship file (*.rtf *.RTF)')
         try:
-            sofimport = SofImport(self.songmanager)        
-            sofimport.import_sof(unicode(filename))
+            for filename in filenames:
+                sofimport = SofImport(self.songmanager)        
+                sofimport.import_sof(unicode(filename))
         except:
             log.exception('Could not import SoF file')
             QtGui.QMessageBox.critical(None,
@@ -200,6 +212,14 @@ class SongsPlugin(Plugin):
                     + ' included with the Songs of Fellowship Music Editions'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
+        Receiver.send_message(u'load_song_list')
+
+    def onImportOooItemClick(self):
+        filenames = QtGui.QFileDialog.getOpenFileNames(
+            None, self.trUtf8('Open documents or presentations'),
+            u'', u'All Files(*.*)')
+        oooimport = OooImport(self.songmanager)        
+        oooimport.import_docs(filenames)
         Receiver.send_message(u'load_song_list')
 
     def onExportOpenlp1ItemClicked(self):

@@ -24,6 +24,7 @@
 ###############################################################################
 
 import string
+from PyQt4 import QtGui, QtCore
 from openlp.core.lib import SongXMLBuilder
 from openlp.plugins.songs.lib.models import Song, Author, Topic, Book
         
@@ -59,6 +60,75 @@ class SongImport(object):
         self.verses = []            
         self.versecount = 0
         self.choruscount = 0
+        self.copyright_string = unicode(QtGui.QApplication.translate( \
+            u'SongImport', u'copyright'))
+        self.copyright_symbol = unicode(QtGui.QApplication.translate( \
+            u'SongImport', u'©'))
+
+    @staticmethod
+    def process_songs_text(manager, text):
+        songs = []
+        songtexts = SongImport.tidy_text(text).split(u'\n\n\n')
+        for songtext in songtexts:
+            if songtext.strip() != u'':
+                song = SongImport(manager)
+                song.process_song_text(songtext.strip())
+                songs.append(song)
+        return songs
+
+    @staticmethod
+    def tidy_text(text):
+        """
+        Get rid of some dodgy unicode and formatting characters we're not
+        interested in. Some can be converted to ascii.
+        """
+        text = text.replace(u'\t', u' ')
+        text = text.replace(u'\f', u'\n\n\n')
+        text = text.replace(u'\r\n', u'\n')
+        text = text.replace(u'\r', u'\n')
+        text = text.replace(u'\u2018', u'\'')
+        text = text.replace(u'\u2019', u'\'')
+        text = text.replace(u'\u201c', u'"')
+        text = text.replace(u'\u201d', u'"')
+        text = text.replace(u'\u2026', u'...')
+        text = text.replace(u'\u2013', u'-')
+        text = text.replace(u'\u2014', u'-')
+        # Remove surplus blank lines, spaces, trailing/leading spaces
+        while text.find(u'  ') >= 0:
+            text = text.replace(u'  ', u' ')
+        while text.find(u'\n ') >= 0:
+            text = text.replace(u'\n ', u'\n')
+        while text.find(u' \n') >= 0:
+            text = text.replace(u' \n', u'\n')
+        while text.find(u'\n\n\n\n') >= 0:
+            text = text.replace(u'\n\n\n\n', u'\n\n\n')
+        return text
+
+    def process_song_text(self, text):
+        versetexts = text.split(u'\n\n')
+        for versetext in versetexts:
+            if versetext.strip() != u'':
+                self.process_verse_text(versetext.strip())
+
+    def process_verse_text(self, text):
+        lines = text.split(u'\n')
+        if text.lower().find(self.copyright_string) >= 0 \
+            or text.lower().find(self.copyright_symbol) >= 0:
+            copyright_found = False
+            for line in lines:
+                if copyright_found or line.lower().find(self.copyright_string) >= 0\
+                    or line.lower().find(self.copyright_symbol) >= 0:
+                    copyright_found = True
+                    self.add_copyright(line)
+                else:
+                    self.parse_author(line)   
+            return                                             
+        if len(lines) == 1:
+            self.parse_author(lines[0])
+            return
+        if not self.get_title():
+            self.set_title(lines[0])
+        self.add_verse(text)
        
     def get_title(self):
         """
@@ -107,17 +177,41 @@ class SongImport(object):
         """ 
         Build the copyright field
         """
+        if self.copyright.find(copyright) >= 0:
+            return
         if self.copyright != u'':
             self.copyright += ' '
         self.copyright += copyright
 
-    def add_author(self, text):
+    def parse_author(self, text):
+        """
+        Add the author. OpenLP stores them individually so split by 'and', '&'
+        and comma.
+        However need to check for "Mr and Mrs Smith" and turn it to 
+        "Mr Smith" and "Mrs Smith".
+        """
+        text = text.replace(u' and ', u' & ')
+        for author in text.split(u','):
+            authors = author.split(u'&')
+            for i in range(len(authors)):
+                author2 = authors[i].strip()
+                if author2.find(u' ') == -1 and i < len(authors) - 1:
+                    author2 = author2 + u' ' \
+                        + authors[i + 1].strip().split(u' ')[-1]
+                if author2.endswith(u'.'):
+                    author2 = author2[:-1]
+                if author2:
+                    self.add_author(author2)
+
+    def add_author(self, author):
         """ 
         Add an author to the list
         """
-        self.authors.append(text)
+        if author in self.authors:
+            return
+        self.authors.append(author)
         
-    def add_verse(self, verse, versetag):
+    def add_verse(self, verse, versetag=None):
         """
         Add a verse. This is the whole verse, lines split by \n
         Verse tag can be V1/C1/B etc, or 'V' and 'C' (will count the verses/
@@ -129,13 +223,13 @@ class SongImport(object):
             if oldverse.strip() == verse.strip():
                 self.verse_order_list.append(oldversetag)
                 return
+        if versetag == u'V' or not versetag:
+            self.versecount += 1
+            versetag = u'V' + unicode(self.versecount)
         if versetag.startswith(u'C'):
             self.choruscount += 1
         if versetag == u'C':
             versetag += unicode(self.choruscount)
-        if versetag == u'V' or not versetag:
-            self.versecount += 1
-            versetag = u'V' + unicode(self.versecount)
         self.verses.append([versetag, verse.rstrip()])
         self.verse_order_list.append(versetag)
         if versetag.startswith(u'V') and self.contains_verse(u'C1'):
