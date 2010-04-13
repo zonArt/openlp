@@ -34,6 +34,15 @@ from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
 
+
+class DisplayManager(QtGui.QWidget):
+    def __init__(self, screens):
+        QtGui.QWidget.__init__(self)
+        self.screens = screens
+        self.videoDisplay = VideoDisplay(self, screens)
+        self.mainDisplay = MainDisplay(self, screens)
+
+
 class DisplayWidget(QtGui.QWidget):
     """
     Customised version of QTableWidget which can respond to keyboard
@@ -42,8 +51,8 @@ class DisplayWidget(QtGui.QWidget):
     log.info(u'MainDisplay loaded')
 
     def __init__(self, parent=None, name=None):
-        QtGui.QWidget.__init__(self, parent, QtCore.Qt.WindowStaysOnTopHint)# \
-            #| QtCore.Qt.FramelessWindowHint)
+        QtGui.QWidget.__init__(self, None, QtCore.Qt.WindowStaysOnTopHint \
+            | QtCore.Qt.FramelessWindowHint)
         self.parent = parent
         self.hotkey_map = {QtCore.Qt.Key_Return: 'servicemanager_next_item',
                            QtCore.Qt.Key_Space: 'live_slidecontroller_next_noloop',
@@ -82,7 +91,7 @@ class MainDisplay(DisplayWidget):
     """
     log.info(u'MainDisplay Loaded')
 
-    def __init__(self, parent, screens, application):
+    def __init__(self, parent, screens):
         """
         The constructor for the display form.
 
@@ -93,9 +102,8 @@ class MainDisplay(DisplayWidget):
             The list of screens.
         """
         log.debug(u'Initilisation started')
-        DisplayWidget.__init__(self, None)
+        DisplayWidget.__init__(self, parent)
         self.parent = parent
-        self.application = application
         self.setWindowTitle(u'OpenLP Display')
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         self.screens = screens
@@ -185,8 +193,6 @@ class MainDisplay(DisplayWidget):
         self.display_image.setPixmap(self.transparent)
         self.display_alert.setPixmap(self.transparent)
         self.display_text.setPixmap(self.transparent)
-        self.raise_()
-        self.setFocus()
 
     def showDisplay(self):
         log.debug(u'showDisplay')
@@ -271,7 +277,6 @@ class MainDisplay(DisplayWidget):
 
     def onMediaQueue(self, message):
         log.debug(u'Queue new media message %s' % message)
-        self.application.setActiveWindow(self)
         self.activateWindow()
         self.hideDisplay()
 
@@ -283,9 +288,9 @@ class VideoWidget(QtGui.QWidget):
     log.info(u'MainDisplay loaded')
 
     def __init__(self, parent=None, name=None):
-        QtGui.QWidget.__init__(self, None, QtCore.Qt.WindowStaysOnBottomHint)
+        QtGui.QWidget.__init__(self, None, QtCore.Qt.WindowStaysOnBottomHint \
+            | QtCore.Qt.FramelessWindowHint)
         self.parent = parent
-        # QtCore.Qt.FramelessWindowHint \
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
@@ -320,7 +325,7 @@ class VideoDisplay(VideoWidget):
         self.screens = screens
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         self.mediaObject = Phonon.MediaObject(self)
-        self.video = Phonon.VideoWidget()
+        self.video = Phonon.VideoWidget(parent)
         self.video.setVisible(False)
         self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
         Phonon.createPath(self.mediaObject, self.video)
@@ -366,6 +371,7 @@ class VideoDisplay(VideoWidget):
         self.video.setFullScreen(True)
         self.mediaObject.play()
         self.setVisible(True)
+        self.video.lower()
 
     def onMediaPause(self):
         log.debug(u'VideoDisplay Media paused by user')

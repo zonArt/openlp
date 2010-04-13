@@ -79,11 +79,11 @@ class AlertsManager(QtCore.QObject):
         log.debug(u'display alert called %s' % text)
         if not self.screen:
             self.screenChanged()
-        self.parent.maindisplay.parent.StatusBar.showMessage(u'')
+        #self.parent.maindisplay.parent.StatusBar.showMessage(u'')
         self.alertList.append(text)
         if self.timer_id != 0:
-            self.parent.maindisplay.parent.StatusBar.showMessage(\
-                    self.trUtf8(u'Alert message created and delayed'))
+#            self.parent.maindisplay.parent.StatusBar.showMessage(\
+#                    self.trUtf8(u'Alert message created and delayed'))
             return
         self.generateAlert()
 

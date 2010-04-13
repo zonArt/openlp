@@ -30,7 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AboutForm, SettingsForm,  \
     ServiceManager, ThemeManager, MainDisplay, SlideController, \
-    PluginForm, MediaDockManager, VideoDisplay
+    PluginForm, MediaDockManager, VideoDisplay, DisplayManager
 from openlp.core.lib import RenderManager, PluginConfig, build_icon, \
     OpenLPDockWidget, SettingsManager, PluginManager, Receiver, str_to_bool
 from openlp.core.utils import check_latest_version, AppLocation
@@ -443,8 +443,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
         self.generalConfig = PluginConfig(u'General')
-        self.videoDisplay = VideoDisplay(self, screens)
-        self.mainDisplay = MainDisplay(self, screens, application)
+        #self.videoDisplay = VideoDisplay(self, screens)
+        #self.mainDisplay = MainDisplay(self, screens)
+        self.displayManager = DisplayManager(screens)
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
         # Set up the path with plugins
@@ -526,7 +527,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
         self.plugin_helpers[u'settings'] = self.settingsForm
         self.plugin_helpers[u'toolbox'] = self.mediaDockManager
-        self.plugin_helpers[u'maindisplay'] = self.mainDisplay
+        self.plugin_helpers[u'maindisplay'] = self.displayManager.mainDisplay
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers)
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here
@@ -573,15 +574,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.showMaximized()
         #screen_number = self.getMonitorNumber()
-        self.mainDisplay.setup()
-        self.videoDisplay.setup()
-        if self.mainDisplay.isVisible():
-            self.mainDisplay.setFocus()
+        self.displayManager.mainDisplay.setup()
+        self.displayManager.videoDisplay.setup()
+        if self.displayManager.mainDisplay.isVisible():
+            self.displayManager.mainDisplay.setFocus()
         self.activateWindow()
         if str_to_bool(self.generalConfig.get_config(u'auto open', False)):
             self.ServiceManagerContents.onLoadService(True)
-        self.videoDisplay.lower()
-        self.mainDisplay.raise_()
+        self.displayManager.videoDisplay.lower()
+        self.displayManager.mainDisplay.raise_()
 
     def blankCheck(self):
         """
@@ -671,8 +672,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         log.info(u'cleanup plugins')
         self.plugin_manager.finalise_plugins()
         #Close down the displays
-        self.mainDisplay.close()
-        self.videoDisplay.close()
+        self.displayManager.mainDisplay.close()
+        self.displayManager.videoDisplay.close()
 
     def serviceChanged(self, reset=False, serviceName=None):
         """
