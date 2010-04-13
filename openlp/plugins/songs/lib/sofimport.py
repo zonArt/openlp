@@ -29,12 +29,12 @@
 # http://www.oooforum.org/forum/viewtopic.phtml?t=14409
 # http://wiki.services.openoffice.org/wiki/Python
 
-import os
 import re
-
+import os
+import time
 from PyQt4 import QtCore
-
 from songimport import SongImport
+from oooimport import OooImport
 
 if os.name == u'nt':
     from win32com.client import Dispatch
@@ -49,7 +49,7 @@ else:
     from com.sun.star.awt.FontSlant import ITALIC
     from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
 
-class SofImport(object):
+class SofImport(OooImport):
     """
     Import songs provided on disks with the Songs of Fellowship music books
     VOLS1_2.RTF, sof3words.rtf and sof4words.rtf
@@ -70,83 +70,16 @@ class SofImport(object):
         Initialise the class. Requires a songmanager class which is passed
         to SongImport for writing song to disk
         """
-        self.song = None
-        self.manager = songmanager
-        self.process_started = False
+        OooImport.__init__(self,songmanager)
 
     def import_sof(self, filename):
         self.start_ooo()
         self.open_ooo_file(filename)
-        self.process_doc()
+        self.process_sof_file()
+        self.close_ooo_file()
         self.close_ooo()
 
-    def start_ooo(self):
-        """
-        Start OpenOffice.org process
-        TODO: The presentation/Impress plugin may already have it running
-        """
-        if os.name == u'nt':
-            self.start_ooo_process()
-            self.desktop = self.manager.createInstance(u'com.sun.star.frame.Desktop')
-        else:
-            context = uno.getComponentContext()
-            resolver = context.ServiceManager.createInstanceWithContext(
-                u'com.sun.star.bridge.UnoUrlResolver', context)
-            ctx = None
-            loop = 0
-            while ctx is None and loop < 5:
-                try:
-                    ctx = resolver.resolve(u'uno:socket,host=localhost,' \
-                        + 'port=2002;urp;StarOffice.ComponentContext')
-                except:
-                    pass
-                self.start_ooo_process()
-                loop += 1
-            manager = ctx.ServiceManager
-            self.desktop = manager.createInstanceWithContext(
-                "com.sun.star.frame.Desktop", ctx )
-            
-    def start_ooo_process(self):
-        try:
-            if os.name == u'nt':
-                self.manager = Dispatch(u'com.sun.star.ServiceManager')
-                self.manager._FlagAsMethod(u'Bridge_GetStruct')
-                self.manager._FlagAsMethod(u'Bridge_GetValueObject')
-            else:
-                cmd = u'openoffice.org -nologo -norestore -minimized -invisible ' \
-                    + u'-nofirststartwizard ' \
-                    + '-accept="socket,host=localhost,port=2002;urp;"'
-                process = QtCore.QProcess()
-                process.startDetached(cmd)
-                process.waitForStarted()
-            self.process_started = True
-        except:
-            pass
-
-    def open_ooo_file(self, filepath):
-        """
-        Open the passed file in OpenOffice.org Writer
-        """
-        if os.name == u'nt':
-            url = u'file:///' + filepath.replace(u'\\', u'/')
-            url = url.replace(u':', u'|').replace(u' ', u'%20')
-        else:
-            url = uno.systemPathToFileUrl(filepath)
-        properties = []
-        properties = tuple(properties)
-        self.document = self.desktop.loadComponentFromURL(url, u'_blank',
-            0, properties)
-
-    def close_ooo(self):
-        """
-        Close RTF file. Note, on Windows we'll leave OOo running
-        Leave running on Windows
-        """
-        self.document.close(True)
-        if self.process_started:
-            self.desktop.terminate()
-
-    def process_doc(self):
+    def process_sof_file(self):
         """
         Process the RTF file, a paragraph at a time
         """            
@@ -247,7 +180,7 @@ class SofImport(object):
         into line
         """
         text = textportion.getString()
-        text = self.tidy_text(text)
+        text = SongImport.tidy_text(text)
         if text.strip() == u'':
             return text
         if textportion.CharWeight == BOLD:
@@ -320,17 +253,7 @@ class SofImport(object):
         "Mr Smith" and "Mrs Smith".
         """
         text = text.replace(u' and ', u' & ')
-        for author in text.split(u','):
-            authors = author.split(u'&')
-            for i in range(len(authors)):
-                author2 = authors[i].strip()
-                if author2.find(u' ') == -1 and i < len(authors) - 1:
-                    author2 = author2 + u' ' \
-                        + authors[i + 1].strip().split(u' ')[-1]
-                if author2.endswith(u'.'):
-                    author2 = author2[:-1]
-                if author2:
-                    self.song.add_author(author2)
+        self.song.parse_author(text)
 
     def add_verse_line(self, text):
         """
@@ -380,21 +303,6 @@ class SofImport(object):
         self.currentverse = u''
         self.is_chorus = False
 
-    def tidy_text(self, text):
-        """
-        Get rid of some dodgy unicode and formatting characters we're not
-        interested in. Some can be converted to ascii.
-        """
-        text = text.replace(u'\t', u' ')
-        text = text.replace(u'\r', u'\n')
-        text = text.replace(u'\u2018', u'\'')
-        text = text.replace(u'\u2019', u'\'')
-        text = text.replace(u'\u201c', u'"')
-        text = text.replace(u'\u201d', u'"')
-        text = text.replace(u'\u2026', u'...')
-        text = text.replace(u'\u2013', u'-')
-        text = text.replace(u'\u2014', u'-')
-        return text
 
     def uncap_text(self, text):
         """ 
