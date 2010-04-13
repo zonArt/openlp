@@ -33,9 +33,11 @@ if os.name == u'nt':
     PAGE_AFTER = 5
     PAGE_BOTH = 6
 else:
-    import uno
-    from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
-
+    try:
+        import uno
+        from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
+    except:
+        pass
 class OooImport(object):
     """
     Import songs from Impress/Powerpoint docs using Impress 
