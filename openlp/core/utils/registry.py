@@ -42,7 +42,7 @@ class Registry(object):
         Check if a value exists.
         """
         return self.config.has_option(section.encode('utf-8'), 
-                key.encode('utf-8'))
+            key.encode('utf-8'))
 
     def get_value(self, section, key, default=None):
         """
@@ -51,7 +51,7 @@ class Registry(object):
         try:
             if self.config.get(section.encode('utf-8'), key.encode('utf-8')):
                 return self.config.get(section.encode('utf-8'), 
-                        key.encode('utf-8')).decode('utf-8')
+                    key.encode('utf-8')).decode('utf-8')
             else:
                 return default
         except:
@@ -63,7 +63,7 @@ class Registry(object):
         """
         try :
             self.config.set(section.encode('utf-8'), key.encode('utf-8'), 
-                    unicode(value).encode('utf-8'))
+                unicode(value).encode('utf-8'))
             return self._save()
         except:
             return False
@@ -74,7 +74,7 @@ class Registry(object):
         """
         try:
             self.config.remove_option(section.encode('utf-8'), 
-                    key.encode('utf-8'))
+                key.encode('utf-8'))
             return self._save()
         except:
             return False
