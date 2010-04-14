@@ -139,8 +139,9 @@ class PluginConfig(object):
         list = []
         if list_count > 0:
             for counter in range(0, list_count):
-                item = unicode(self.get_config(u'%s %d' % (name, counter)))
-                list.append(item)
+                item = self.get_config(u'%s %d' % (name, counter))
+                if item:
+                    list.append(item)
         return list
 
     def set_list(self, name, list):
