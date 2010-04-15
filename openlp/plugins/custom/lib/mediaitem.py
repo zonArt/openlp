@@ -149,6 +149,7 @@ class CustomMediaItem(MediaManagerItem):
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
+        service_item.add_capability(ItemCapabilities.AllowsLoop)
         customSlide = self.parent.custommanager.get_custom(item_id)
         title = customSlide.title
         credit = customSlide.credits

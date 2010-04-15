@@ -47,6 +47,7 @@ class ItemCapabilities(object):
    AllowsEdit = 2
    AllowsMaintain = 3
    RequiresMedia = 4
+   AllowsLoop = 5
 
 
 class ServiceItem(object):

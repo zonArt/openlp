@@ -78,9 +78,7 @@ class OpenLP(QtGui.QApplication):
         Run the OpenLP application.
         """
         #Load and store current Application Version
-        filepath = AppLocation.get_directory(AppLocation.AppDir)
-        if not hasattr(sys, u'frozen'):
-            filepath = os.path.join(filepath, u'openlp')
+        filepath = AppLocation.get_directory(AppLocation.VersionDir)
         filepath = os.path.join(filepath, u'.version')
         fversion = None
         try:

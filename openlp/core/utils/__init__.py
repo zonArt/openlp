@@ -43,9 +43,10 @@ class AppLocation(object):
     ConfigDir = 2
     DataDir = 3
     PluginsDir = 4
+    VersionDir = 5
 
     @staticmethod
-    def get_directory(dir_type):
+    def get_directory(dir_type=1):
         """
         Return the appropriate directory according to the directory type.
 
@@ -89,16 +90,17 @@ class AppLocation(object):
         elif dir_type == AppLocation.PluginsDir:
             plugin_path = None
             app_path = os.path.abspath(os.path.split(sys.argv[0])[0])
-            if sys.platform == u'win32':
-                if hasattr(sys, u'frozen') and sys.frozen == 1:
-                    plugin_path = os.path.join(app_path, u'plugins')
-                else:
-                    plugin_path = os.path.join(app_path, u'openlp', u'plugins')
-            elif sys.platform == u'darwin':
+            if hasattr(sys, u'frozen') and sys.frozen == 1:
                 plugin_path = os.path.join(app_path, u'plugins')
             else:
                 plugin_path = os.path.join(
                     os.path.split(openlp.__file__)[0], u'plugins')
+            return plugin_path
+        elif dir_type == AppLocation.VersionDir:
+            if hasattr(sys, u'frozen') and sys.frozen == 1:
+                plugin_path = os.path.abspath(os.path.split(sys.argv[0])[0])
+            else:
+                plugin_path = os.path.split(openlp.__file__)[0]
             return plugin_path
 
 
