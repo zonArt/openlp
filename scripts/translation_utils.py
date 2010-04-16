@@ -36,10 +36,26 @@
 ###############################################################################
 
 import os
+from optparse import OptionParser
+import urllib
+from PyQt4 import QtCore
 
 ignore_pathes = ["./scripts", "./openlp/core/test"]
 ignore_files = ["setup.py"]
-
+translation_path = "http://pootle.projecthq.biz/export/openlp/"
+translations = [  "af"
+                , "en_ZA"
+                , "en_GB"
+                , "de"
+                , "hu"
+                , "ko"
+                , "nb"
+                , "pt_BR"
+                , "es"
+                , "sv"]
+                
+                
+                
 def write_file(filename, stringlist):
     content = u''
     for line in stringlist:
@@ -49,6 +65,48 @@ def write_file(filename, stringlist):
     file.close()
 
 def main():
+    # Set up command line options.
+    usage = u'Usage: %prog [options]'
+    parser = OptionParser(usage=usage)
+    parser.add_option("-d", "--download-ts", action="store_true", dest="download",
+                      help="Load languages from Pootle Server")
+    parser.add_option("-p", "--prepare", action="store_true", dest="prepare",
+                      help="preparation (generate pro file)")
+    parser.add_option("-u", "--update", action="store_true", dest="update",
+                      help="update translation files")
+    parser.add_option("-g", "--generate", action="store_true", dest="generate",
+                      help="generate qm files")
+    parser.add_option("-a", "--all", action="store_true", dest="all",
+                      help="proceed all options")
+
+    (options, args) = parser.parse_args()
+    qt_args = []
+    if options.download:
+        downloadTranslations()
+    elif options.prepare:
+        preparation()
+    elif options.update:
+        update()
+    elif options.generate:
+        generate()
+    elif options.all:
+        all()
+    else:
+        pass
+
+def downloadTranslations():
+    print "download()"
+    for language in translations:
+        filename = os.path.join('..','resources', 'i18n', "openlp_%s.ts" % language)
+        print filename
+        page = urllib.urlopen("%s%s.ts" % (translation_path, language))
+        content = page.read().decode("utf8")
+        page.close()
+        file = open(filename, u'w')
+        file.write(content.encode('utf8'))
+        file.close()
+
+def preparation():
     stringlist = []
     start_dir = os.path.join(u'..')
     for root, dirs, files in os.walk(start_dir):
@@ -73,10 +131,6 @@ def main():
             if cond == True:
                 continue
             
-#            if file.endswith(u'.ui'):
-#                line = "%s/%s" % (path, file)
-#                print u'Parsing "%s"' % line
-#                stringlist.append("FORMS        += %s" % line)
             if file.endswith(u'.py'):
                 line = "%s/%s" % (path, file)
                 print u'Parsing "%s"' % line
@@ -95,6 +149,27 @@ def main():
     write_file(os.path.join(start_dir, u'openlp.pro'), stringlist)
     print u'done.'
 
+    
+def update():
+    print "update()"
+    updateProcess = QtCore.QProcess()
+    updateProcess.start("pylupdate4 -noobsolete ../openlp.pro")
+    updateProcess.waitForFinished(60000)
+
+def generate():
+    print "generate()"
+    generateProcess = QtCore.QProcess()
+    generateProcess.start("lrelease ../openlp.pro")
+    generateProcess.waitForFinished(60000)
+
+def all():
+    print "all()"
+    downloadTranslations()
+    preparation()
+    update()
+    generate()
+
+    
 if __name__ == u'__main__':
     if os.path.split(os.path.abspath(u'.'))[1] != u'scripts':
         print u'You need to run this script from the scripts directory.'

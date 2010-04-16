@@ -151,5 +151,6 @@ def variant_to_unicode(variant):
 
 from registry import Registry
 from confighelper import ConfigHelper
+from languagemanager import LanguageManager
 
-__all__ = [u'Registry', u'ConfigHelper', u'AppLocation', u'check_latest_version']
+__all__ = [u'Registry', u'ConfigHelper', u'AppLocation', u'LanguageManager',  u'check_latest_version']
