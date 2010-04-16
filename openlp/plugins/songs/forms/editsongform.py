@@ -93,7 +93,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.CCLNumberEdit,
             QtCore.SIGNAL(u'lostFocus()'), self.onCCLNumberEditLostFocus)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'update_themes'), self.loadThemes)
+            QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         QtCore.QObject.connect(self.CommentsEdit,
             QtCore.SIGNAL(u'lostFocus()'), self.onCommentsEditLostFocus)
         QtCore.QObject.connect(self.VerseOrderEdit,
@@ -464,16 +464,16 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         log.debug(u'onPreview')
         if button.text() == unicode(self.trUtf8('Save && Preview')) \
             and self.saveSong():
-            Receiver.send_message(u'preview_song')
+            Receiver.send_message(u'songs_preview')
 
     def closePressed(self):
-        Receiver.send_message(u'remote_edit_clear')
+        Receiver.send_message(u'servicemanager_edit_clear')
         self.close()
 
     def accept(self):
         log.debug(u'accept')
         if self.saveSong():
-            Receiver.send_message(u'load_song_list')
+            Receiver.send_message(u'songs_load_list')
             self.close()
 
     def saveSong(self):

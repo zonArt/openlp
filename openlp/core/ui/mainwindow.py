@@ -30,7 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AboutForm, SettingsForm,  \
     ServiceManager, ThemeManager, MainDisplay, SlideController, \
-    PluginForm, MediaDockManager
+    PluginForm, MediaDockManager, VideoDisplay
 from openlp.core.lib import RenderManager, PluginConfig, build_icon, \
     OpenLPDockWidget, SettingsManager, PluginManager, Receiver, str_to_bool
 from openlp.core.utils import check_latest_version, AppLocation
@@ -68,11 +68,11 @@ class VersionThread(QtCore.QThread):
         Run the thread.
         """
         time.sleep(1)
-        Receiver.send_message(u'blank_check')
+        Receiver.send_message(u'maindisplay_blank_check')
         version = check_latest_version(self.generalConfig, self.app_version)
         #new version has arrived
         if version != self.app_version[u'full']:
-            Receiver.send_message(u'version_check', u'%s' % version)
+            Receiver.send_message(u'openlp_version_check', u'%s' % version)
 
 
 class Ui_MainWindow(object):
@@ -443,6 +443,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
         self.generalConfig = PluginConfig(u'General')
+        self.videoDisplay = VideoDisplay(self, screens)
         self.mainDisplay = MainDisplay(self, screens)
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
@@ -491,13 +492,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.OptionsSettingsItem,
             QtCore.SIGNAL(u'triggered()'), self.onOptionsSettingsItemClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'update_global_theme'), self.defaultThemeChanged)
+            QtCore.SIGNAL(u'theme_update_global'), self.defaultThemeChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'version_check'), self.versionCheck)
+            QtCore.SIGNAL(u'openlp_version_check'), self.versionCheck)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'blank_check'), self.blankCheck)
+            QtCore.SIGNAL(u'maindisplay_blank_check'), self.blankCheck)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'screen_changed'), self.screenChanged)
+            QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
         QtCore.QObject.connect(self.FileNewItem,
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onNewService)
@@ -572,11 +573,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.showMaximized()
         #screen_number = self.getMonitorNumber()
         self.mainDisplay.setup()
+        self.videoDisplay.setup()
         if self.mainDisplay.isVisible():
             self.mainDisplay.setFocus()
         self.activateWindow()
         if str_to_bool(self.generalConfig.get_config(u'auto open', False)):
             self.ServiceManagerContents.onLoadService(True)
+        self.videoDisplay.lower()
+        self.mainDisplay.raise_()
 
     def blankCheck(self):
         if str_to_bool(self.generalConfig.get_config(u'screen blank', False)) \
@@ -633,16 +637,19 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if ret == QtGui.QMessageBox.Save:
                 self.ServiceManagerContents.onSaveService()
                 self.mainDisplay.close()
+                self.videoDisplay.close()
                 self.cleanUp()
                 event.accept()
             elif ret == QtGui.QMessageBox.Discard:
                 self.mainDisplay.close()
+                self.videoDisplay.close()
                 self.cleanUp()
                 event.accept()
             else:
                 event.ignore()
         else:
             self.mainDisplay.close()
+            self.videoDisplay.close()
             self.cleanUp()
             event.accept()
 

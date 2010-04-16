@@ -58,13 +58,13 @@ class CustomMediaItem(MediaManagerItem):
 
     def addEndHeaderBar(self):
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_edit' % self.parent.name), self.onRemoteEdit)
+            QtCore.SIGNAL(u'custom_edit'), self.onRemoteEdit)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'remote_edit_clear' ), self.onRemoteEditClear)
+            QtCore.SIGNAL(u'servicemanager_edit_clear' ), self.onRemoteEditClear)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'load_custom_list'), self.initialise)
+            QtCore.SIGNAL(u'custom_load_list'), self.initialise)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'preview_custom'), self.onPreviewClick)
+            QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
 
     def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8('Custom')
@@ -149,6 +149,7 @@ class CustomMediaItem(MediaManagerItem):
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
+        service_item.add_capability(ItemCapabilities.AllowsLoop)
         customSlide = self.parent.custommanager.get_custom(item_id)
         title = customSlide.title
         credit = customSlide.credits

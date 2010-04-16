@@ -47,6 +47,7 @@ class ItemCapabilities(object):
    AllowsEdit = 2
    AllowsMaintain = 3
    RequiresMedia = 4
+   AllowsLoop = 5
 
 
 class ServiceItem(object):
@@ -335,6 +336,3 @@ class ServiceItem(object):
         """
         return self._raw_frames[row][u'path']
 
-    def request_audit(self):
-        if self.audit:
-            Receiver.send_message(u'songusage_live', self.audit)

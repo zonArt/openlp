@@ -47,10 +47,10 @@ class EventReceiver(QtCore.QObject):
     ``{plugin}_add_service_item``
         ask the plugin to push the selected items to the service item
 
-    ``update_themes``
+    ``theme_update_list``
         send out message with new themes
 
-    ``update_global_theme``
+    ``theme_update_global``
         Tell the components we have a new global theme
 
     ``load_song_list``
@@ -170,4 +170,3 @@ class Receiver():
         Get the global ``eventreceiver`` instance.
         """
         return Receiver.eventreceiver
-

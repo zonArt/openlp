@@ -102,7 +102,7 @@ class ThemeManager(QtGui.QWidget):
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
             self.changeGlobalFromScreen)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'update_global_theme'), self.changeGlobalFromTab)
+            QtCore.SIGNAL(u'theme_update_global'), self.changeGlobalFromTab)
         #Variables
         self.themelist = []
         self.path = os.path.join(ConfigHelper.get_data_path(), u'themes')
@@ -148,7 +148,7 @@ class ThemeManager(QtGui.QWidget):
                 self.ThemeListWidget.item(count).setText(name)
                 self.config.set_config(u'global theme', self.global_theme)
                 Receiver.send_message(
-                    u'update_global_theme', self.global_theme)
+                    u'theme_update_global', self.global_theme)
                 self.pushThemes()
 
     def onAddTheme(self):
@@ -291,7 +291,7 @@ class ThemeManager(QtGui.QWidget):
         self.pushThemes()
 
     def pushThemes(self):
-        Receiver.send_message(u'update_themes', self.getThemes() )
+        Receiver.send_message(u'theme_update_list', self.getThemes() )
 
     def getThemes(self):
         return self.themelist

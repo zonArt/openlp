@@ -35,6 +35,7 @@ class AlertsTab(SettingsTab):
     def __init__(self, parent, section=None):
         self.parent = parent
         self.manager = parent.manager
+        self.alertsmanager = parent.alertsmanager
         SettingsTab.__init__(self, parent.name, section)
 
     def setupUi(self):

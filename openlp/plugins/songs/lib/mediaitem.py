@@ -122,15 +122,15 @@ class SongMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'textChanged(const QString&)'),
             self.onSearchTextEditChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'load_song_list'), self.onSearchTextButtonClick)
+            QtCore.SIGNAL(u'songs_load_list'), self.onSearchTextButtonClick)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.configUpdated)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'preview_song'), self.onPreviewClick)
+            QtCore.SIGNAL(u'songs_preview'), self.onPreviewClick)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_edit' % self.parent.name), self.onRemoteEdit)
+            QtCore.SIGNAL(u'songs_edit'), self.onRemoteEdit)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'remote_edit_clear'), self.onRemoteEditClear)
+            QtCore.SIGNAL(u'servicemanager_edit_clear'), self.onRemoteEditClear)
 
     def configUpdated(self):
         self.searchAsYouType = str_to_bool(
@@ -306,6 +306,7 @@ class SongMediaItem(MediaManagerItem):
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
+        service_item.add_capability(ItemCapabilities.AllowsLoop)
         song = self.parent.songmanager.get_song(item_id)
         service_item.theme = song.theme_name
         service_item.editId = item_id

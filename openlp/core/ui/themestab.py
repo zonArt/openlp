@@ -103,7 +103,7 @@ class ThemesTab(SettingsTab):
         QtCore.QObject.connect(self.DefaultComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onDefaultComboBoxChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'update_themes'), self.updateThemeList)
+            QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
 
     def retranslateUi(self):
         self.GlobalGroupBox.setTitle(self.trUtf8('Global theme'))
@@ -136,12 +136,12 @@ class ThemesTab(SettingsTab):
     def save(self):
         self.config.set_config(u'theme level', self.theme_level)
         self.config.set_config(u'global theme',self.global_theme)
-        Receiver.send_message(u'update_global_theme', self.global_theme)
+        Receiver.send_message(u'theme_update_global', self.global_theme)
         self.parent.RenderManager.set_global_theme(
             self.global_theme, self.theme_level)
 
     def postSetUp(self):
-        Receiver.send_message(u'update_global_theme', self.global_theme)
+        Receiver.send_message(u'theme_update_global', self.global_theme)
 
     def onSongLevelButtonPressed(self):
         self.theme_level = ThemeLevel.Song

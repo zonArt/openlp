@@ -186,11 +186,9 @@ class ServiceManager(QtGui.QWidget):
         QtCore.QObject.connect(self.ServiceManagerList,
            QtCore.SIGNAL(u'itemExpanded(QTreeWidgetItem*)'), self.expanded)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'update_themes'), self.updateThemeList)
+            QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'remote_edit_clear'), self.onRemoteEditClear)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentation types'), self.onPresentationTypes)
+            QtCore.SIGNAL(u'servicemanager_edit_clear'), self.onRemoteEditClear)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'servicemanager_next_item'), self.nextItem)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -256,9 +254,6 @@ class ServiceManager(QtGui.QWidget):
             self.makePreview()
         if action == self.liveAction:
             self.makeLive()
-
-    def onPresentationTypes(self, presentation_types):
-        self.presentation_types = presentation_types
 
     def onServiceItemNoteForm(self):
         item, count = self.findServiceItem()
