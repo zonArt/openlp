@@ -51,8 +51,7 @@ class DisplayWidget(QtGui.QWidget):
     log.info(u'MainDisplay loaded')
 
     def __init__(self, parent=None, name=None):
-        QtGui.QWidget.__init__(self, None, QtCore.Qt.WindowStaysOnTopHint \
-            | QtCore.Qt.FramelessWindowHint)
+        QtGui.QWidget.__init__(self, None)
         self.parent = parent
         self.hotkey_map = {QtCore.Qt.Key_Return: 'servicemanager_next_item',
                            QtCore.Qt.Key_Space: 'live_slidecontroller_next_noloop',
@@ -193,6 +192,13 @@ class MainDisplay(DisplayWidget):
         self.display_image.setPixmap(self.transparent)
         self.display_alert.setPixmap(self.transparent)
         self.display_text.setPixmap(self.transparent)
+        self.moveToTop()
+
+    def moveToTop(self):
+        log.debug(u'moveToTop')
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint \
+            | QtCore.Qt.FramelessWindowHint | QtCore.Qt.Dialog)
+        self.show()
 
     def showDisplay(self):
         log.debug(u'showDisplay')
@@ -207,6 +213,7 @@ class MainDisplay(DisplayWidget):
                     self.screen[u'size'].width(),
                     self.screen[u'size'].height() )
         self.display_image.setPixmap(QtGui.QPixmap.fromImage(frame))
+        self.moveToTop()
 
     def setAlertSize(self, top, height):
         log.debug(u'setAlertSize')
@@ -220,6 +227,7 @@ class MainDisplay(DisplayWidget):
             self.display_alert.setPixmap(self.transparent)
         else:
             self.display_alert.setPixmap(frame)
+        self.moveToTop()
 
     def frameView(self, frame, transition=False):
         """
@@ -277,7 +285,7 @@ class MainDisplay(DisplayWidget):
 
     def onMediaQueue(self, message):
         log.debug(u'Queue new media message %s' % message)
-        self.activateWindow()
+        #self.activateWindow()
         self.hideDisplay()
 
 class VideoWidget(QtGui.QWidget):
@@ -288,8 +296,7 @@ class VideoWidget(QtGui.QWidget):
     log.info(u'MainDisplay loaded')
 
     def __init__(self, parent=None, name=None):
-        QtGui.QWidget.__init__(self, None, QtCore.Qt.WindowStaysOnBottomHint \
-            | QtCore.Qt.FramelessWindowHint)
+        QtGui.QWidget.__init__(self, None)
         self.parent = parent
 
     def keyPressEvent(self, event):
@@ -330,7 +337,6 @@ class VideoDisplay(VideoWidget):
         self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
         Phonon.createPath(self.mediaObject, self.video)
         Phonon.createPath(self.mediaObject, self.audio)
-        self.firstTime = True
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_start'), self.onMediaQueue)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -357,30 +363,27 @@ class VideoDisplay(VideoWidget):
     def onMediaQueue(self, message):
         log.debug(u'VideoDisplay Queue new media message %s' % message)
         file = os.path.join(message[1], message[2])
-        if self.firstTime:
-            source = self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
-            self.firstTime = False
-        else:
-            self.mediaObject.enqueue(Phonon.MediaSource(file))
+        source = self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
         self.onMediaPlay()
 
     def onMediaPlay(self):
         log.debug(u'VideoDisplay Play the new media, Live ')
-        self.firstTime = True
         self.setWindowState(QtCore.Qt.WindowMinimized)
         self.video.setFullScreen(True)
         self.mediaObject.play()
         self.setVisible(True)
-        self.video.lower()
+        self.show()
 
     def onMediaPause(self):
         log.debug(u'VideoDisplay Media paused by user')
         self.mediaObject.pause()
+        self.show()
 
     def onMediaStop(self):
         log.debug(u'VideoDisplay Media stopped by user')
         self.mediaObject.stop()
         self.onMediaFinish()
+        self.show()
 
     def onMediaFinish(self):
         log.debug(u'VideoDisplay Reached end of media playlist')
@@ -388,3 +391,4 @@ class VideoDisplay(VideoWidget):
         self.mediaObject.clearQueue()
         self.video.setVisible(False)
         self.setVisible(False)
+

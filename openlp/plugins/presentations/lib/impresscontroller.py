@@ -157,7 +157,6 @@ class ImpressController(PresentationController):
             desktop = self.get_com_desktop()
         #Sometimes we get a failure and desktop is None
         if not desktop:
-            desktop.terminate()
             log.exception(u'Failed to terminate OpenOffice')
             return
         docs = desktop.getComponents()

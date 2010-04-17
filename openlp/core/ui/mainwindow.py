@@ -500,6 +500,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'blank_check'), self.blankCheck)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'screen_changed'), self.screenChanged)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'status_message'), self.showStatusMessage)
         QtCore.QObject.connect(self.FileNewItem,
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onNewService)
@@ -581,8 +583,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.activateWindow()
         if str_to_bool(self.generalConfig.get_config(u'auto open', False)):
             self.ServiceManagerContents.onLoadService(True)
-        self.displayManager.videoDisplay.lower()
-        self.displayManager.mainDisplay.raise_()
 
     def blankCheck(self):
         """
@@ -631,8 +631,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         their locations
         """
         self.RenderManager.update_display()
-        self.mainDisplay.setup()
-        self.videoDisplay.setup()
+        self.displayManager.mainDisplay.setup()
+        self.displayManager.videoDisplay.setup()
         self.setFocus()
         self.activateWindow()
 
@@ -677,7 +677,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def serviceChanged(self, reset=False, serviceName=None):
         """
-        Hook to change the main window title when the service changes
+        Hook to change the main window title when the service chmainwindow.pyanges
 
         ``reset``
             Shows if the service has been cleared or saved
@@ -696,6 +696,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.serviceNotSaved = True
             title = u'%s - %s*' % (self.mainTitle, service_name)
         self.setWindowTitle(title)
+
+    def showStatusMessage(self, message):
+        self.StatusBar.showMessage(message)
 
     def defaultThemeChanged(self, theme):
         self.DefaultThemeLabel.setText(
