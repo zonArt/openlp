@@ -29,8 +29,8 @@ import time
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AboutForm, SettingsForm,  \
-    ServiceManager, ThemeManager, MainDisplay, SlideController, \
-    PluginForm, MediaDockManager, VideoDisplay, DisplayManager
+    ServiceManager, ThemeManager, SlideController, \
+    PluginForm, MediaDockManager, DisplayManager
 from openlp.core.lib import RenderManager, PluginConfig, build_icon, \
     OpenLPDockWidget, SettingsManager, PluginManager, Receiver, str_to_bool
 from openlp.core.utils import check_latest_version, AppLocation
@@ -443,8 +443,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
         self.generalConfig = PluginConfig(u'General')
-        #self.videoDisplay = VideoDisplay(self, screens)
-        #self.mainDisplay = MainDisplay(self, screens)
         self.displayManager = DisplayManager(screens)
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
@@ -576,8 +574,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.showMaximized()
         #screen_number = self.getMonitorNumber()
-        self.displayManager.mainDisplay.setup()
-        self.displayManager.videoDisplay.setup()
+        self.displayManager.setup()
         if self.displayManager.mainDisplay.isVisible():
             self.displayManager.mainDisplay.setFocus()
         self.activateWindow()
@@ -631,8 +628,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         their locations
         """
         self.RenderManager.update_display()
-        self.displayManager.mainDisplay.setup()
-        self.displayManager.videoDisplay.setup()
+        self.displayManager.setup()
         self.setFocus()
         self.activateWindow()
 
@@ -672,8 +668,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         log.info(u'cleanup plugins')
         self.plugin_manager.finalise_plugins()
         #Close down the displays
-        self.displayManager.mainDisplay.close()
-        self.displayManager.videoDisplay.close()
+        self.displayManager.close()
 
     def serviceChanged(self, reset=False, serviceName=None):
         """

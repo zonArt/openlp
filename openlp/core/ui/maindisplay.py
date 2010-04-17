@@ -42,6 +42,14 @@ class DisplayManager(QtGui.QWidget):
         self.videoDisplay = VideoDisplay(self, screens)
         self.mainDisplay = MainDisplay(self, screens)
 
+    def setup(self):
+        self.videoDisplay.setup()
+        self.mainDisplay.setup()
+
+    def close(self):
+        self.videoDisplay.close()
+        self.mainDisplay.close()
+
 
 class DisplayWidget(QtGui.QWidget):
     """
