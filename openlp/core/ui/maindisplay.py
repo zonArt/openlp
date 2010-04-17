@@ -36,6 +36,11 @@ log = logging.getLogger(__name__)
 
 
 class DisplayManager(QtGui.QWidget):
+    """
+    Wrapper class to hold the display widgets.
+    I will provide API's in future to access the screens allow for
+    extra displays to be added.
+    """
     def __init__(self, screens):
         QtGui.QWidget.__init__(self)
         self.screens = screens
@@ -132,7 +137,7 @@ class MainDisplay(DisplayWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'live_slide_show'), self.showDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_start'), self.onMediaQueue)
+            QtCore.SIGNAL(u'media_start'), self.hideDisplay)
 
     def setup(self):
         """
@@ -291,11 +296,6 @@ class MainDisplay(DisplayWidget):
             elif self.display_frame:
                 self.frameView(self.display_frame)
 
-    def onMediaQueue(self, message):
-        log.debug(u'Queue new media message %s' % message)
-        #self.activateWindow()
-        self.hideDisplay()
-
 class VideoWidget(QtGui.QWidget):
     """
     Customised version of QTableWidget which can respond to keyboard
@@ -399,4 +399,3 @@ class VideoDisplay(VideoWidget):
         self.mediaObject.clearQueue()
         self.video.setVisible(False)
         self.setVisible(False)
-

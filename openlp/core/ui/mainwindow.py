@@ -74,7 +74,6 @@ class VersionThread(QtCore.QThread):
         if version != self.app_version[u'full']:
             Receiver.send_message(u'version_check', u'%s' % version)
 
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         """
