@@ -296,34 +296,15 @@ class MainDisplay(DisplayWidget):
             elif self.display_frame:
                 self.frameView(self.display_frame)
 
-class VideoWidget(QtGui.QWidget):
-    """
-    Customised version of QTableWidget which can respond to keyboard
-    events.
-    """
-    log.info(u'MainDisplay loaded')
 
-    def __init__(self, parent=None, name=None):
-        QtGui.QWidget.__init__(self, None)
-        self.parent = parent
-
-    def keyPressEvent(self, event):
-        if type(event) == QtGui.QKeyEvent:
-            #here accept the event and do something
-            if event.key() == QtCore.Qt.Key_Escape:
-                self.resetDisplay()
-                event.accept()
-            event.ignore()
-        else:
-            event.ignore()
-
-class VideoDisplay(VideoWidget):
+class VideoDisplay(Phonon.VideoWidget):
     """
     This is the form that is used to display videos on the projector.
     """
     log.info(u'VideoDisplay Loaded')
 
-    def __init__(self, parent, screens):
+    def __init__(self, parent, screens,
+        aspect=Phonon.VideoWidget.AspectRatioWidget):
         """
         The constructor for the display form.
 
@@ -334,17 +315,15 @@ class VideoDisplay(VideoWidget):
             The list of screens.
         """
         log.debug(u'VideoDisplay Initilisation started')
-        VideoWidget.__init__(self, parent)
+        Phonon.VideoWidget.__init__(self)
         self.setWindowTitle(u'OpenLP Video Display')
         self.parent = parent
         self.screens = screens
-        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
-        self.mediaObject = Phonon.MediaObject(self)
-        self.video = Phonon.VideoWidget(parent)
-        self.video.setVisible(False)
-        self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
-        Phonon.createPath(self.mediaObject, self.video)
-        Phonon.createPath(self.mediaObject, self.audio)
+        self.mediaObject = Phonon.MediaObject()
+        self.setAspectRatio(aspect)
+        self.audioObject = Phonon.AudioOutput(Phonon.VideoCategory)
+        Phonon.createPath(self.mediaObject, self)
+        Phonon.createPath(self.mediaObject, self.audioObject)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_start'), self.onMediaQueue)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -356,6 +335,16 @@ class VideoDisplay(VideoWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'update_config'), self.setup)
 
+    def keyPressEvent(self, event):
+        if type(event) == QtGui.QKeyEvent:
+            #here accept the event and do something
+            if event.key() == QtCore.Qt.Key_Escape:
+                self.onMediaStop()
+                event.accept()
+            event.ignore()
+        else:
+            event.ignore()
+
     def setup(self):
         """
         Sets up the screen on a particular screen.
@@ -366,7 +355,13 @@ class VideoDisplay(VideoWidget):
         self.screen = self.screens.current
         #Sort out screen locations and sizes
         self.setGeometry(self.screen[u'size'])
-        self.video.setGeometry(self.screen[u'size'])
+        # To display or not to display?
+        if not self.screen[u'primary']:
+            self.showFullScreen()
+            self.primary = False
+        else:
+            self.setVisible(False)
+            self.primary = True
 
     def onMediaQueue(self, message):
         log.debug(u'VideoDisplay Queue new media message %s' % message)
@@ -376,11 +371,9 @@ class VideoDisplay(VideoWidget):
 
     def onMediaPlay(self):
         log.debug(u'VideoDisplay Play the new media, Live ')
-        self.setWindowState(QtCore.Qt.WindowMinimized)
-        self.video.setFullScreen(True)
         self.mediaObject.play()
         self.setVisible(True)
-        self.show()
+        self.showFullScreen()
 
     def onMediaPause(self):
         log.debug(u'VideoDisplay Media paused by user')
@@ -391,11 +384,8 @@ class VideoDisplay(VideoWidget):
         log.debug(u'VideoDisplay Media stopped by user')
         self.mediaObject.stop()
         self.onMediaFinish()
-        self.show()
 
     def onMediaFinish(self):
         log.debug(u'VideoDisplay Reached end of media playlist')
-        self.mediaObject.stop()
         self.mediaObject.clearQueue()
-        self.video.setVisible(False)
         self.setVisible(False)

@@ -431,7 +431,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     """
     log.info(u'MainWindow loaded')
 
-    def __init__(self, screens, applicationVersion, application):
+    def __init__(self, screens, applicationVersion):
         """
         This constructor sets up the interface, the various managers, and the
         plugins.
