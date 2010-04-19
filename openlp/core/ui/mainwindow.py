@@ -262,14 +262,14 @@ class Ui_MainWindow(object):
         self.AutoLanguageItem.setObjectName(u'AutoLanguageItem')
         self.AutoLanguageItem.setCheckable(True)
         self.LanguageGroup = QtGui.QActionGroup(MainWindow)
-        qmList = LanguageManager.getQmList()
-        savedLanguage = LanguageManager.getLanguage()
+        qmList = LanguageManager.get_qm_list()
+        savedLanguage = LanguageManager.get_language()
         self.LanguageItem = {}
         for key in qmList.keys():
             self.LanguageItem[key] = QtGui.QAction(MainWindow)
             self.LanguageItem[key].setObjectName(key)
             self.LanguageItem[key].setCheckable(True)
-            if LanguageManager.__AutoLanguage__ == True:
+            if LanguageManager.AutoLanguage:
                 self.AutoLanguageItem.setChecked(True)
                 self.LanguageGroup.setEnabled(False)
             else:
@@ -537,7 +537,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.AutoLanguageItem, 
                 QtCore.SIGNAL(u'toggled(bool)'),
                 self.setAutoLanguage)
-        self.LanguageGroup.triggered.connect(LanguageManager.setLanguage)
+        self.LanguageGroup.triggered.connect(LanguageManager.set_language)
         #warning cyclic dependency
         #RenderManager needs to call ThemeManager and
         #ThemeManager needs to call RenderManager
@@ -582,8 +582,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     #i18n
     def setAutoLanguage(self, value):
         self.LanguageGroup.setEnabled(not value)
-        LanguageManager.__AutoLanguage__ = value
-        LanguageManager.setLanguage(self.LanguageGroup.checkedAction())
+        LanguageManager.AutoLanguage = value
+        LanguageManager.set_language(self.LanguageGroup.checkedAction())
 
     def versionCheck(self, version):
         """

@@ -194,8 +194,8 @@ def main():
     # Now create and actually run the application.
     app = OpenLP(qt_args)
     #i18n Set Language
-    language = LanguageManager.getLanguage()
-    appTranslator = LanguageManager.getTranslator(language)
+    language = LanguageManager.get_language()
+    appTranslator = LanguageManager.get_translator(language)
     app.installTranslator(appTranslator)
 
     sys.exit(app.run())

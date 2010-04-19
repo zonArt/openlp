@@ -25,22 +25,23 @@
 
 import logging
 
+from logging import FileHandler
 from PyQt4 import QtCore, QtGui
 import os
 from openlp.core.utils import AppLocation, ConfigHelper
-#from openlp.core.ui import MainWindow
-#import i18n_rc
+
+log = logging.getLogger()
 
 class LanguageManager(object):
     """
         Helper for Language selection
     """
     __qmList__ = None
-    __AutoLanguage__ = None
+    AutoLanguage = False
     
     @staticmethod
-    def getTranslator(language):
-        if LanguageManager.__AutoLanguage__ is True:
+    def get_translator(language):
+        if LanguageManager.AutoLanguage :
             language = QtCore.QLocale.system().name()
         lang_Path = AppLocation.get_directory(AppLocation.AppDir)
         lang_Path = os.path.join(lang_Path, u'resources', u'i18n')
@@ -49,7 +50,7 @@ class LanguageManager(object):
             return appTranslator
 
     @staticmethod
-    def findQmFiles():
+    def find_qm_files():
         trans_dir = AppLocation.get_directory(AppLocation.AppDir)
         trans_dir = QtCore.QDir(os.path.join(trans_dir, u'resources', u'i18n'))
         fileNames = trans_dir.entryList(QtCore.QStringList("*.qm"),
@@ -59,48 +60,49 @@ class LanguageManager(object):
         return fileNames
 
     @staticmethod
-    def languageName(qmFile):
+    def language_name(qmFile):
         translator = QtCore.QTranslator() 
         translator.load(qmFile)
-
         return translator.translate(u'MainWindow', u'English')
 
     @staticmethod
-    def getLanguage():
-        language = ConfigHelper.get_registry().get_value(u'general', u'language', u'[en]')
-        print "getLanguage %s" % language
+    def get_language():
+        language = ConfigHelper.get_registry().get_value(u'general', 
+                                u'language', u'[en]')
+        log.info(u'Language file: \'%s\' Loaded from conf file' % language)
         regEx = QtCore.QRegExp("^\[(.*)\]")
         if regEx.exactMatch(language):
-            LanguageManager.__AutoLanguage__ = True
+            LanguageManager.AutoLanguage = True
             language = regEx.cap(1)
         return language
 
     @staticmethod
-    def setLanguage(action):
+    def set_language(action):
         actionName = u'%s' % action.objectName()
-        qmList = LanguageManager.getQmList()
-        if LanguageManager.__AutoLanguage__ == True:
+        qmList = LanguageManager.get_qm_list()
+        if LanguageManager.AutoLanguage :
             language = u'[%s]' % qmList[actionName]
         else:
             language = u'%s' % qmList[actionName]
-        print "setLanguage: %s" % language
+        log.info(u'Language file: \'%s\' written to conf file' % language)
         ConfigHelper.set_config(u'general', u'language', language)
         QtGui.QMessageBox.information(None, 
-                    u'Language', u'After restart new Language settings will be used.')
+                    u'Language', 
+                    u'After restart new Language settings will be used.')
 
     @staticmethod
-    def initQmList():
+    def init_qm_list():
         LanguageManager.__qmList__ = {}
-        qmFiles = LanguageManager.findQmFiles()
+        qmFiles = LanguageManager.find_qm_files()
         for i, qmf in enumerate(qmFiles):
             regEx = QtCore.QRegExp("^.*openlp_(.*).qm")
             if regEx.exactMatch(qmf):
                 langName = regEx.cap(1)
-                LanguageManager.__qmList__[u'%i %s' % (i, LanguageManager.languageName(qmf))] = langName 
+                LanguageManager.__qmList__[u'%i %s' % (i, 
+                            LanguageManager.language_name(qmf))] = langName 
 
     @staticmethod
-    def getQmList():
+    def get_qm_list():
         if LanguageManager.__qmList__ == None:
-            LanguageManager.initQmList()
+            LanguageManager.init_qm_list()
         return LanguageManager.__qmList__
-
