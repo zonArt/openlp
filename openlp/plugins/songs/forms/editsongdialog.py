@@ -212,6 +212,7 @@ class Ui_EditSongDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
             self.SongTopicCombo.sizePolicy().hasHeightForWidth())
+        self.SongTopicCombo.setEditable(True)
         self.SongTopicCombo.setSizePolicy(sizePolicy)
         self.SongTopicCombo.setObjectName(u'SongTopicCombo')
         self.TopicAddLayout.addWidget(self.SongTopicCombo)
@@ -256,6 +257,7 @@ class Ui_EditSongDialog(object):
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.SongbookCombo.sizePolicy().hasHeightForWidth())
+        self.SongbookCombo.setEditable(True)
         self.SongbookCombo.setSizePolicy(sizePolicy)
         self.SongbookCombo.setObjectName(u'SongbookCombo')
         self.SongbookLayout.addWidget(self.SongbookCombo, 0, 0, 1, 1)
@@ -293,6 +295,7 @@ class Ui_EditSongDialog(object):
         self.ThemeLayout.setMargin(8)
         self.ThemeLayout.setObjectName(u'ThemeLayout')
         self.ThemeSelectionComboItem = QtGui.QComboBox(self.ThemeGroupBox)
+        self.ThemeSelectionComboItem.setEditable(True)
         self.ThemeSelectionComboItem.setObjectName(u'ThemeSelectionComboItem')
         self.ThemeLayout.addWidget(self.ThemeSelectionComboItem)
         self.ThemeAddButton = QtGui.QPushButton(self.ThemeGroupBox)
