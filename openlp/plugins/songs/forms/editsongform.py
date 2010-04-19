@@ -122,6 +122,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def loadAuthors(self):
         authors = self.songmanager.get_authors()
+        authorsCompleter = QtGui.QCompleter(
+            [author.display_name for author in authors],
+            self.AuthorsSelectionComboItem)
+        authorsCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive);
+        self.AuthorsSelectionComboItem.setCompleter(authorsCompleter);
         self.AuthorsSelectionComboItem.clear()
         for author in authors:
             row = self.AuthorsSelectionComboItem.count()

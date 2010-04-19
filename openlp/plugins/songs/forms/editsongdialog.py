@@ -135,7 +135,7 @@ class Ui_EditSongDialog(object):
         sizePolicy.setHeightForWidth(
             self.AuthorsSelectionComboItem.sizePolicy().hasHeightForWidth())
         self.AuthorsSelectionComboItem.setSizePolicy(sizePolicy)
-        self.AuthorsSelectionComboItem.setEditable(False)
+        self.AuthorsSelectionComboItem.setEditable(True)
         self.AuthorsSelectionComboItem.setInsertPolicy(
             QtGui.QComboBox.InsertAlphabetically)
         self.AuthorsSelectionComboItem.setSizeAdjustPolicy(
