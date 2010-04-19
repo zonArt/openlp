@@ -362,6 +362,9 @@ class MediaManagerItem(QtGui.QWidget):
         #if file updated rebuild icon
         if filedate > thumbdate:
             self.IconFromFile(file, thumb)
+        if os.path.exists(file):
+            return True
+        return False
 
     def IconFromFile(self, file, thumb):
         icon = build_icon(unicode(file))
