@@ -55,7 +55,7 @@ class Controller(object):
             self.doc.start_presentation()
             if isBlank:
                 self.blank()
-            Receiver.send_message(u'live_slide_hide')
+            Receiver.send_message(u'maindisplay_hide')
         self.doc.slidenumber = 0
 
     def activate(self):
@@ -144,7 +144,7 @@ class Controller(object):
         """
         log.debug(u'Live = %s, shutdown' % self.isLive)
         if self.isLive:
-            Receiver.send_message(u'live_slide_show')
+            Receiver.send_message(u'maindisplay_show')
         self.doc.close_presentation()
         self.doc = None
         #self.doc.slidenumber = 0
@@ -283,7 +283,7 @@ class MessageListener(object):
         if name != u'presentation':
             return
         if isLive:
-            Receiver.send_message(u'slide_live_show')
+            Receiver.send_message(u'maindisplay_show')
             self.liveHandler.shutdown()
         else:
             self.previewHandler.shutdown()

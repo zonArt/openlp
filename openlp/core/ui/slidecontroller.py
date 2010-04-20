@@ -197,7 +197,7 @@ class SlideController(QtGui.QWidget):
                 u'Hide screen', u':/slides/slide_desktop.png',
                 self.trUtf8('Hide Screen'), self.onHideDisplay, True)
             QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'slide_live_blank'), self.blankScreen)
+                QtCore.SIGNAL(u'maindisplay_blank'), self.blankScreen)
         if not self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
@@ -318,7 +318,7 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'slidecontroller_%s_go_first' % self.type_prefix), 
             self.onSlideSelectedFirst)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%slidecontroller_s_go_next' % self.type_prefix), 
+            QtCore.SIGNAL(u'slidecontroller_%s_go_next' % self.type_prefix), 
             self.onSlideSelectedNext)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_%s_go_previous' % self.type_prefix), 
@@ -562,10 +562,9 @@ class SlideController(QtGui.QWidget):
         """
         if not self.serviceItem:
             return
+        Receiver.send_message(u'slidecontroller_first', 
+            [self.serviceItem, self.isLive])
         if self.serviceItem.is_command():
-            Receiver.send_message(u'slidecontroller_%s_first' % 
-                self.type_prefix, 
-                self.serviceItem.name.lower(), self.isLive)
             self.updatePreview()
         else:
             self.PreviewListWidget.selectRow(0)
@@ -704,8 +703,8 @@ class SlideController(QtGui.QWidget):
         """
         if not self.serviceItem:
             return
-        Receiver.send_message(u'slidecontroller_%s_previous' % 
-            self.type_prefix, [self.serviceItem])
+        Receiver.send_message(u'slidecontroller_previous', 
+            [self.serviceItem,  self.isLive])
         if self.serviceItem.is_command():
             self.updatePreview()
         else:
@@ -756,8 +755,9 @@ class SlideController(QtGui.QWidget):
 
     def onEditSong(self):
         self.songEdit = True
-        Receiver.send_message(u'slidecontroller_edit', 
-            [self.serviceItem])
+        Receiver.send_message(u'%s_edit' %
+            self.serviceItem.name.lower(),  u'L:%s' %
+            self.serviceItem.editId)
 
     def onGoLive(self):
         """

@@ -105,7 +105,6 @@ class ServiceManager(QtGui.QWidget):
         self.isNew = True
         #Indicates if remoteTriggering is active.  If it is the next addServiceItem call
         #will replace the currently selected one.
-        self.remoteEditTriggered = False
         self.serviceNoteForm = ServiceNoteForm()
         self.serviceItemEditForm = ServiceItemEditForm()
         #start with the layout
@@ -187,8 +186,6 @@ class ServiceManager(QtGui.QWidget):
            QtCore.SIGNAL(u'itemExpanded(QTreeWidgetItem*)'), self.expanded)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'servicemanager_edit_clear'), self.onRemoteEditClear)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'servicemanager_next_item'), self.nextItem)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -638,7 +635,7 @@ class ServiceManager(QtGui.QWidget):
             #does not impact the saved song so True may also be valid
             self.parent.serviceChanged(False, self.serviceName)
 
-    def addServiceItem(self, item, rebuild=False, expand=True):
+    def addServiceItem(self, item, rebuild=False, expand=True, replace=False):
         """
         Add a Service item to the list
 
@@ -648,10 +645,9 @@ class ServiceManager(QtGui.QWidget):
         """
         sitem, count = self.findServiceItem()
         item.render()
-        if self.remoteEditTriggered:
+        if replace:
             item.merge(self.serviceItems[sitem][u'service_item'])
             self.serviceItems[sitem][u'service_item'] = item
-            self.remoteEditTriggered = False
             self.repaintServiceList(sitem + 1, 0)
             self.parent.LiveController.replaceServiceManagerItem(item)
         else:
@@ -694,8 +690,6 @@ class ServiceManager(QtGui.QWidget):
         if item == -1:
             return False
         else:
-            #Switch on remote edit update functionality.
-            self.remoteEditTriggered = True
             return self.serviceItems[item][u'service_item']
 
     def makeLive(self):
@@ -724,9 +718,6 @@ class ServiceManager(QtGui.QWidget):
             Receiver.send_message(u'%s_edit' %
                 self.serviceItems[item][u'service_item'].name, u'L:%s' %
                 self.serviceItems[item][u'service_item'].editId )
-
-    def onRemoteEditClear(self):
-        self.remoteEditTriggered = False
 
     def findServiceItem(self):
         """

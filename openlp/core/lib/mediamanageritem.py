@@ -450,10 +450,10 @@ class MediaManagerItem(QtGui.QWidget):
                     self.trUtf8('You must select a existing service item to add to.'))
             elif self.title.lower() == service_item.name.lower():
                 self.generateSlideData(service_item)
-                self.parent.service_manager.addServiceItem(service_item)
+                self.parent.service_manager.addServiceItem(service_item, 
+                    replace=True)
             else:
                 #Turn off the remote edit update message indicator
-                self.parent.service_manager.remoteEditTriggered = False
                 QtGui.QMessageBox.information(self,
                     self.trUtf8('Invalid Service Item'),
                     self.trUtf8(unicode('You must select a %s service item.' % self.title)))

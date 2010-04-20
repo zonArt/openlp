@@ -46,25 +46,25 @@ class DisplayWidget(QtGui.QWidget):
         self.parent = parent
         self.hotkey_map = {
             QtCore.Qt.Key_Return: 'servicemanager_next_item',
-            QtCore.Qt.Key_Space: 'slidecontroller_live_next_noloop',
-            QtCore.Qt.Key_Enter: 'slidecontroller_live_next_noloop',
+            QtCore.Qt.Key_Space: 'slidecontroller_live_go_next_noloop',
+            QtCore.Qt.Key_Enter: 'slidecontroller_live_go_next_noloop',
             QtCore.Qt.Key_0: 'servicemanager_next_item',
-            QtCore.Qt.Key_Backspace: 'slidecontroller_live_previous_noloop'}
+            QtCore.Qt.Key_Backspace: 'slidecontroller_live_go_previous_noloop'}
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
             #here accept the event and do something
             if event.key() == QtCore.Qt.Key_Up:
-                Receiver.send_message(u'slidecontroller_live_previous')
+                Receiver.send_message(u'slidecontroller_go_live_previous')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Down:
-                Receiver.send_message(u'slidecontroller_live_next')
+                Receiver.send_message(u'slidecontroller_go_live_next')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageUp:
-                Receiver.send_message(u'slidecontroller_live_first')
+                Receiver.send_message(u'slidecontroller_go_live_first')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageDown:
-                Receiver.send_message(u'slidecontroller_live_last')
+                Receiver.send_message(u'slidecontroller_go_live_last')
                 event.accept()
             elif event.key() in self.hotkey_map:
                 Receiver.send_message(self.hotkey_map[event.key()])
@@ -113,9 +113,9 @@ class MainDisplay(DisplayWidget):
         self.hasTransition = False
         self.mediaBackground = False
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slide_live_hide'), self.hideDisplay)
+            QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slide_live_show'), self.showDisplay)
+            QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_live_mediastart'), self.onMediaQueue)
 
@@ -191,7 +191,7 @@ class MainDisplay(DisplayWidget):
         if not self.primary:
             self.setVisible(True)
             self.showFullScreen()
-        Receiver.send_message(u'slide_live_active')
+        Receiver.send_message(u'maindisplay_active')
 
     def addImageWithText(self, frame):
         log.debug(u'addImageWithText')
@@ -284,25 +284,25 @@ class VideoWidget(QtGui.QWidget):
         self.parent = parent
         self.hotkey_map = {
             QtCore.Qt.Key_Return: 'servicemanager_next_item',
-            QtCore.Qt.Key_Space: 'slidecontroller_live_next_noloop',
-            QtCore.Qt.Key_Enter: 'slidecontroller_live_next_noloop',
+            QtCore.Qt.Key_Space: 'slidecontroller_live_go_next_noloop',
+            QtCore.Qt.Key_Enter: 'slidecontroller_live_go_next_noloop',
             QtCore.Qt.Key_0: 'servicemanager_next_item',
-            QtCore.Qt.Key_Backspace: 'slidecontroller_live_previous_noloop'}
+            QtCore.Qt.Key_Backspace: 'slidecontroller_live_go_previous_noloop'}
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
             #here accept the event and do something
             if event.key() == QtCore.Qt.Key_Up:
-                Receiver.send_message(u'slidecontroller_live_previous')
+                Receiver.send_message(u'slidecontroller_live_go_previous')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Down:
-                Receiver.send_message(u'slidecontroller_live_next')
+                Receiver.send_message(u'slidecontroller_live_go_next')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageUp:
-                Receiver.send_message(u'slidecontroller_live_first')
+                Receiver.send_message(u'slidecontroller_live_go_first')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageDown:
-                Receiver.send_message(u'slidecontroller_live_last')
+                Receiver.send_message(u'slidecontroller_live_go_last')
                 event.accept()
             elif event.key() in self.hotkey_map:
                 Receiver.send_message(self.hotkey_map[event.key()])

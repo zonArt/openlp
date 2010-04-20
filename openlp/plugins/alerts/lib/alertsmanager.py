@@ -44,9 +44,9 @@ class AlertsManager(QtCore.QObject):
         self.timer_id = 0
         self.alertList = []
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slide_live_active'), self.generateAlert)
+            QtCore.SIGNAL(u'maindisplay_active'), self.generateAlert)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'alert_text'), self.displayAlert)
+            QtCore.SIGNAL(u'alerts_text'), self.displayAlert)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
 

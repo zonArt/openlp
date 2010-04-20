@@ -467,7 +467,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             Receiver.send_message(u'songs_preview')
 
     def closePressed(self):
-        Receiver.send_message(u'servicemanager_edit_clear')
+        Receiver.send_message(u'songs_edit_clear')
         self.close()
 
     def accept(self):
