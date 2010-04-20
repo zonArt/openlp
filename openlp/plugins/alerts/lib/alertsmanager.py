@@ -65,9 +65,12 @@ class AlertsManager(QtCore.QObject):
         if self.alertTab.location == 0:
             self.alertScreenPosition = 0
         else:
-            self.alertScreenPosition = self.screen[u'size'].height() - self.alertHeight
-            self.alertHeight = self.screen[u'size'].height() - self.alertScreenPosition
-        self.parent.maindisplay.setAlertSize(self.alertScreenPosition, self.alertHeight)
+            self.alertScreenPosition = self.screen[u'size'].height() \
+                - self.alertHeight
+            self.alertHeight = self.screen[u'size'].height() \
+                - self.alertScreenPosition
+        self.parent.maindisplay.setAlertSize(self.alertScreenPosition,\
+            self.alertHeight)
 
     def displayAlert(self, text=u''):
         """
@@ -79,12 +82,12 @@ class AlertsManager(QtCore.QObject):
         log.debug(u'display alert called %s' % text)
         if not self.screen:
             self.screenChanged()
-        self.parent.maindisplay.parent.StatusBar.showMessage(u'')
         self.alertList.append(text)
         if self.timer_id != 0:
-            self.parent.maindisplay.parent.StatusBar.showMessage(\
-                    self.trUtf8(u'Alert message created and delayed'))
+            Receiver.send_message(u'status_message',
+                self.trUtf8(u'Alert message created and delayed'))
             return
+        Receiver.send_message(u'status_message', u'')
         self.generateAlert()
 
     def generateAlert(self):
@@ -116,6 +119,7 @@ class AlertsManager(QtCore.QObject):
             self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
 
     def timerEvent(self, event):
+        log.debug(u'timer event')
         if event.timerId() == self.timer_id:
             self.parent.maindisplay.addAlertImage(None, True)
         self.killTimer(self.timer_id)

@@ -29,6 +29,7 @@ from serviceitemeditform import ServiceItemEditForm
 from screen import ScreenList
 from maindisplay import MainDisplay
 from maindisplay import VideoDisplay
+from maindisplay import DisplayManager
 from amendthemeform import AmendThemeForm
 from slidecontroller import SlideController
 from splashscreen import SplashScreen

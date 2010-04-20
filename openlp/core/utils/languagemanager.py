@@ -29,6 +29,7 @@ from logging import FileHandler
 from PyQt4 import QtCore, QtGui
 import os
 from openlp.core.utils import AppLocation, ConfigHelper
+from openlp.core.lib import translate
 
 log = logging.getLogger()
 
@@ -86,9 +87,10 @@ class LanguageManager(object):
             language = u'%s' % qmList[actionName]
         log.info(u'Language file: \'%s\' written to conf file' % language)
         ConfigHelper.set_config(u'general', u'language', language)
-        QtGui.QMessageBox.information(None, 
-                    u'Language', 
-                    u'After restart new Language settings will be used.')
+        QtGui.QMessageBox.information(None,  
+                    translate('LanguageManager', 'Language'), 
+                    translate('LanguageManager', 
+                        'After restart new Language settings will be used.'))
 
     @staticmethod
     def init_qm_list():

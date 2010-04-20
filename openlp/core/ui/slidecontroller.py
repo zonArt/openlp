@@ -635,7 +635,7 @@ class SlideController(QtGui.QWidget):
                         self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame[u'main']))
                 log.log(15, u'Slide Rendering took %4s' % (time.time() - before))
                 if self.isLive:
-                    self.parent.mainDisplay.frameView(frame, True)
+                    self.parent.displayManager.mainDisplay.frameView(frame, True)
             self.selectedRow = row
 
     def onSlideChange(self, row):

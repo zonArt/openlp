@@ -188,43 +188,6 @@ class AlertsTab(SettingsTab):
         self.SlideRightSpacer = QtGui.QSpacerItem(20, 40,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.SlideRightLayout.addItem(self.SlideRightSpacer)
-        self.layoutWidget = QtGui.QWidget(self)
-        self.layoutWidget.setGeometry(QtCore.QRect(20, 10, 361, 251))
-        self.layoutWidget.setObjectName(u'layoutWidget')
-        self.verticalLayout_2 = QtGui.QVBoxLayout(self.layoutWidget)
-        self.verticalLayout_2.setObjectName(u'verticalLayout_2')
-        self.horizontalLayout_2 = QtGui.QHBoxLayout()
-        self.horizontalLayout_2.setObjectName(u'horizontalLayout_2')
-        self.AlertLineEdit = QtGui.QLineEdit(self.layoutWidget)
-        self.AlertLineEdit.setObjectName(u'AlertLineEdit')
-        self.horizontalLayout_2.addWidget(self.AlertLineEdit)
-        self.verticalLayout_2.addLayout(self.horizontalLayout_2)
-        self.horizontalLayout = QtGui.QHBoxLayout()
-        self.horizontalLayout.setObjectName(u'horizontalLayout')
-        self.AlertListWidget = QtGui.QListWidget(self.layoutWidget)
-        self.AlertListWidget.setAlternatingRowColors(True)
-        self.AlertListWidget.setObjectName(u'AlertListWidget')
-        self.horizontalLayout.addWidget(self.AlertListWidget)
-        self.verticalLayout = QtGui.QVBoxLayout()
-        self.verticalLayout.setObjectName(u'verticalLayout')
-        self.SaveButton = QtGui.QPushButton(self.layoutWidget)
-        self.SaveButton.setObjectName(u'SaveButton')
-        self.verticalLayout.addWidget(self.SaveButton)
-        self.ClearButton = QtGui.QPushButton(self.layoutWidget)
-        self.ClearButton.setObjectName(u'ClearButton')
-        self.verticalLayout.addWidget(self.ClearButton)
-        self.AddButton = QtGui.QPushButton(self.layoutWidget)
-        self.AddButton.setObjectName(u'AddButton')
-        self.verticalLayout.addWidget(self.AddButton)
-        self.EditButton = QtGui.QPushButton(self.layoutWidget)
-        self.EditButton.setObjectName(u'EditButton')
-        self.verticalLayout.addWidget(self.EditButton)
-        self.DeleteButton = QtGui.QPushButton(self.layoutWidget)
-        self.DeleteButton.setObjectName(u'DeleteButton')
-        self.verticalLayout.addWidget(self.DeleteButton)
-        self.horizontalLayout.addLayout(self.verticalLayout)
-        self.verticalLayout_2.addLayout(self.horizontalLayout)
-        self.SlideRightLayout.addWidget(self.layoutWidget)
         self.AlertsLayout.addWidget(self.AlertRightColumn)
         # Signals and slots
         QtCore.QObject.connect(self.HistoryCheckBox,
@@ -242,27 +205,6 @@ class AlertsTab(SettingsTab):
             QtCore.SIGNAL(u'valueChanged(int)'), self.onTimeoutSpinBoxChanged)
         QtCore.QObject.connect(self.FontSizeSpinBox,
             QtCore.SIGNAL(u'valueChanged(int)'), self.onFontSizeSpinBoxChanged)
-        QtCore.QObject.connect(self.DeleteButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onDeleteClick)
-        QtCore.QObject.connect(self.ClearButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onClearClick)
-        QtCore.QObject.connect(self.EditButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onEditClick)
-        QtCore.QObject.connect(self.AddButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onAddClick)
-        QtCore.QObject.connect(self.SaveButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onSaveClick)
-        QtCore.QObject.connect(self.AlertListWidget,
-            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
-            self.onItemSelected)
-        QtCore.QObject.connect(self.AlertListWidget,
-            QtCore.SIGNAL(u'clicked(QModelIndex)'),
-            self.onItemSelected)
 
     def retranslateUi(self):
         self.FontGroupBox.setTitle(self.trUtf8('Font'))
@@ -279,11 +221,6 @@ class AlertsTab(SettingsTab):
         self.FontPreview.setText(self.trUtf8('openlp.org'))
         self.LocationComboBox.setItemText(0, self.trUtf8('Top'))
         self.LocationComboBox.setItemText(1, self.trUtf8('Bottom'))
-        self.SaveButton.setText(self.trUtf8('Save'))
-        self.ClearButton.setText(self.trUtf8('Clear'))
-        self.AddButton.setText(self.trUtf8('Add'))
-        self.EditButton.setText(self.trUtf8('Edit'))
-        self.DeleteButton.setText(self.trUtf8('Delete'))
 
     def onBackgroundColorButtonClicked(self):
         self.bg_color = QtGui.QColorDialog.getColor(
@@ -342,75 +279,10 @@ class AlertsTab(SettingsTab):
         font.setFamily(self.font_face)
         self.FontComboBox.setCurrentFont(font)
         self.updateDisplay()
-        self.loadList()
-
-    def loadList(self):
-        self.AlertListWidget.clear()
-        alerts = self.manager.get_all_alerts()
-        for alert in alerts:
-            item_name = QtGui.QListWidgetItem(alert.text)
-            item_name.setData(
-                QtCore.Qt.UserRole, QtCore.QVariant(alert.id))
-            self.AlertListWidget.addItem(item_name)
-        self.AddButton.setEnabled(True)
-        self.ClearButton.setEnabled(False)
-        self.SaveButton.setEnabled(False)
-        self.EditButton.setEnabled(False)
-        self.DeleteButton.setEnabled(False)
 
     def onItemSelected(self):
         self.EditButton.setEnabled(True)
         self.DeleteButton.setEnabled(True)
-
-    def onDeleteClick(self):
-        item = self.AlertListWidget.currentItem()
-        if item:
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.parent.manager.delete_alert(item_id)
-            row = self.AlertListWidget.row(item)
-            self.AlertListWidget.takeItem(row)
-        self.AddButton.setEnabled(True)
-        self.SaveButton.setEnabled(False)
-        self.DeleteButton.setEnabled(False)
-        self.EditButton.setEnabled(False)
-
-    def onEditClick(self):
-        item = self.AlertListWidget.currentItem()
-        if item:
-            self.item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.AlertLineEdit.setText(unicode(item.text()))
-        self.AddButton.setEnabled(True)
-        self.ClearButton.setEnabled(True)
-        self.SaveButton.setEnabled(True)
-        self.DeleteButton.setEnabled(True)
-        self.EditButton.setEnabled(False)
-
-    def onClearClick(self):
-        self.AlertLineEdit.setText(u'')
-        self.AddButton.setEnabled(False)
-        self.ClearButton.setEnabled(True)
-        self.SaveButton.setEnabled(False)
-        self.DeleteButton.setEnabled(False)
-        self.EditButton.setEnabled(False)
-
-    def onAddClick(self):
-        if len(self.AlertLineEdit.text()) == 0:
-            QtGui.QMessageBox.information(self,
-                self.trUtf8('Item selected to Add'),
-                self.trUtf8('Missing data'))
-        else:
-            alert = AlertItem()
-            alert.text = unicode(self.AlertLineEdit.text())
-            self.manager.save_alert(alert)
-        self.onClearClick()
-        self.loadList()
-
-    def onSaveClick(self):
-        alert = self.manager.get_alert(self.item_id)
-        alert.text = unicode(self.AlertLineEdit.text())
-        self.manager.save_alert(alert)
-        self.onClearClick()
-        self.loadList()
 
     def save(self):
         self.font_face = self.FontComboBox.currentFont().family()
