@@ -29,8 +29,8 @@ import time
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AboutForm, SettingsForm,  \
-    ServiceManager, ThemeManager, MainDisplay, SlideController, \
-    PluginForm, MediaDockManager, VideoDisplay
+    ServiceManager, ThemeManager, SlideController, \
+    PluginForm, MediaDockManager, DisplayManager
 from openlp.core.lib import RenderManager, PluginConfig, build_icon, \
     OpenLPDockWidget, SettingsManager, PluginManager, Receiver, str_to_bool
 from openlp.core.utils import check_latest_version, AppLocation
@@ -73,7 +73,6 @@ class VersionThread(QtCore.QThread):
         #new version has arrived
         if version != self.app_version[u'full']:
             Receiver.send_message(u'openlp_version_check', u'%s' % version)
-
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -443,8 +442,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
         self.generalConfig = PluginConfig(u'General')
-        self.videoDisplay = VideoDisplay(self, screens)
-        self.mainDisplay = MainDisplay(self, screens)
+        self.displayManager = DisplayManager(screens)
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
         # Set up the path with plugins
@@ -499,6 +497,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'maindisplay_blank_check'), self.blankCheck)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'status_message'), self.showStatusMessage)
         QtCore.QObject.connect(self.FileNewItem,
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onNewService)
@@ -526,7 +526,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
         self.plugin_helpers[u'settings'] = self.settingsForm
         self.plugin_helpers[u'toolbox'] = self.mediaDockManager
-        self.plugin_helpers[u'maindisplay'] = self.mainDisplay
+        self.plugin_helpers[u'maindisplay'] = self.displayManager.mainDisplay
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers)
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here
@@ -555,6 +555,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def versionCheck(self, version):
         """
         Checks the version of the Application called from openlp.pyw
+        Triggered by delay thread.
         """
         app_version = self.applicationVersion[u'full']
         version_text = unicode(self.trUtf8('Version %s of OpenLP is now '
@@ -572,17 +573,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.showMaximized()
         #screen_number = self.getMonitorNumber()
-        self.mainDisplay.setup()
-        self.videoDisplay.setup()
-        if self.mainDisplay.isVisible():
-            self.mainDisplay.setFocus()
+        self.displayManager.setup()
+        if self.displayManager.mainDisplay.isVisible():
+            self.displayManager.mainDisplay.setFocus()
         self.activateWindow()
         if str_to_bool(self.generalConfig.get_config(u'auto open', False)):
             self.ServiceManagerContents.onLoadService(True)
-        self.videoDisplay.lower()
-        self.mainDisplay.raise_()
 
     def blankCheck(self):
+        """
+        Check and display message if screen blank on setup.
+        Triggered by delay thread.
+        """
         if str_to_bool(self.generalConfig.get_config(u'screen blank', False)) \
         and str_to_bool(self.generalConfig.get_config(u'blank warning', False)):
             self.LiveController.onBlankDisplay(True)
@@ -593,6 +595,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 QtGui.QMessageBox.Ok)
 
     def versionThread(self):
+        """
+        Start an initial setup thread to delay notifications
+        """
         vT = VersionThread(self, self.applicationVersion, self.generalConfig)
         vT.start()
 
@@ -617,8 +622,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.settingsForm.exec_()
 
     def screenChanged(self):
+        """
+        The screen has changed to so tell the displays to update_display
+        their locations
+        """
         self.RenderManager.update_display()
-        self.mainDisplay.setup()
+        self.displayManager.setup()
+        self.setFocus()
         self.activateWindow()
 
     def closeEvent(self, event):
@@ -636,20 +646,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 QtGui.QMessageBox.Save)
             if ret == QtGui.QMessageBox.Save:
                 self.ServiceManagerContents.onSaveService()
-                self.mainDisplay.close()
-                self.videoDisplay.close()
                 self.cleanUp()
                 event.accept()
             elif ret == QtGui.QMessageBox.Discard:
-                self.mainDisplay.close()
-                self.videoDisplay.close()
                 self.cleanUp()
                 event.accept()
             else:
                 event.ignore()
         else:
-            self.mainDisplay.close()
-            self.videoDisplay.close()
             self.cleanUp()
             event.accept()
 
@@ -662,10 +666,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Call the cleanup method to shutdown plugins.
         log.info(u'cleanup plugins')
         self.plugin_manager.finalise_plugins()
+        #Close down the displays
+        self.displayManager.close()
 
     def serviceChanged(self, reset=False, serviceName=None):
         """
-        Hook to change the main window title when the service changes
+        Hook to change the main window title when the service chmainwindow.pyanges
 
         ``reset``
             Shows if the service has been cleared or saved
@@ -684,6 +690,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.serviceNotSaved = True
             title = u'%s - %s*' % (self.mainTitle, service_name)
         self.setWindowTitle(title)
+
+    def showStatusMessage(self, message):
+        self.StatusBar.showMessage(message)
 
     def defaultThemeChanged(self, theme):
         self.DefaultThemeLabel.setText(

@@ -115,6 +115,9 @@ class EventReceiver(QtCore.QObject):
     ``version_check``
         Version has changed so pop up window.
 
+    ``mainDisplay_active``
+        Version has changed so pop up window.
+
     """
     def __init__(self):
         """
