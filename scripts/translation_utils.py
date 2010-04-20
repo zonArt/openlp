@@ -25,14 +25,9 @@
 ###############################################################################
 # Short description
 # Steps for creating languages:
-# 1. create an empty ts file for the wished translation in ./resources/i18n folder
+# 1. make shure that the openlp_en.ts file exist
 # 2. go to scripts folder and start:
-#     python generate_pro.py
-# 3. go to main folder and start:
-#     pylupdate4 openlp.pro
-# 4. do all the translation stuff at the related *.ts files (install first qt3-dev-tools)
-# 5. at main folder start:
-#     lrelease -verbose openlp.pro
+#     python translation_utils.py -a
 ###############################################################################
 
 import os
