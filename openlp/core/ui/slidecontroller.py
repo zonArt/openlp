@@ -448,11 +448,9 @@ class SlideController(QtGui.QWidget):
         if self.commandItem is not None and \
             self.commandItem.service_item_type == ServiceItemType.Command:
             if blanked:
-                Receiver().send_message(
-                    u'%s_blank' % self.commandItem.name.lower())
+                Receiver().send_message(u'%s_blank'% self.commandItem.name.lower())
             else:
-                Receiver().send_message(
-                    u'%s_unblank' % self.commandItem.name.lower())
+                Receiver().send_message(u'%s_unblank'% self.commandItem.name.lower())
         else:
             self.parent.mainDisplay.blankDisplay()
 
@@ -465,8 +463,7 @@ class SlideController(QtGui.QWidget):
         self.row = 0
         if row > -1 and row < self.PreviewListWidget.rowCount():
             if self.commandItem.service_item_type == ServiceItemType.Command:
-                Receiver().send_message(
-                    u'%s_slide'% self.commandItem.name.lower(), [row])
+                Receiver().send_message(u'%s_slide'% self.commandItem.name.lower(), [row])
                 if self.isLive:
                     QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
             else:
@@ -492,12 +489,10 @@ class SlideController(QtGui.QWidget):
         if not rm.screen_list[rm.current_display][u'primary']:
             winid = QtGui.QApplication.desktop().winId()
             rect = rm.screen_list[rm.current_display][u'size']
-            winimg = QtGui.QPixmap.grabWindow(
-                winid, rect.x(), rect.y(), rect.width(), rect.height())
+            winimg = QtGui.QPixmap.grabWindow(winid, rect.x(), rect.y(), rect.width(), rect.height())
             self.SlidePreview.setPixmap(winimg)
         else:
-            label = self.PreviewListWidget.cellWidget(
-                self.PreviewListWidget.currentRow(), 0)
+            label = self.PreviewListWidget.cellWidget(self.PreviewListWidget.currentRow(), 0)
             self.SlidePreview.setPixmap(label.pixmap())
 
     def onSlideSelectedNext(self):

@@ -78,25 +78,17 @@ class ThemeManager(QtGui.QWidget):
         self.ThemeListWidget.addAction(
             contextMenuAction(self.ThemeListWidget, u':/themes/theme_edit.png',
             self.trUtf8(u'Edit a theme'), self.onEditTheme))
+        self.ThemeListWidget.addAction(contextMenuSeparator(self.ThemeListWidget))
         self.ThemeListWidget.addAction(
-            contextMenuSeparator(self.ThemeListWidget))
+            contextMenuAction(self.ThemeListWidget, u':/themes/theme_delete.png',
+            self.trUtf8(u'Delete theme'), self.onDeleteTheme))
         self.ThemeListWidget.addAction(
-            contextMenuAction(self.ThemeListWidget,
-                u':/themes/theme_delete.png',
-                self.trUtf8(u'Delete theme'),
-            self.onDeleteTheme))
+            contextMenuAction(self.ThemeListWidget, u':/themes/theme_export.png',
+            self.trUtf8(u'Make Global'), self.changeGlobalFromScreen))
         self.ThemeListWidget.addAction(
-            contextMenuAction(self.ThemeListWidget,
-                u':/themes/theme_export.png',
-                self.trUtf8(u'Make Global'),
-            self.changeGlobalFromScreen))
-        self.ThemeListWidget.addAction(
-            contextMenuAction(self.ThemeListWidget,
-                u':/themes/theme_export.png',
-                self.trUtf8(u'Export theme'),
-            self.onExportTheme))
-        self.ThemeListWidget.addAction(
-            contextMenuSeparator(self.ThemeListWidget))
+            contextMenuAction(self.ThemeListWidget, u':/themes/theme_export.png',
+            self.trUtf8(u'Export theme'), self.onExportTheme))
+        self.ThemeListWidget.addAction(contextMenuSeparator(self.ThemeListWidget))
         #Signals
         QtCore.QObject.connect(self.ThemeListWidget,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
@@ -159,8 +151,7 @@ class ThemeManager(QtGui.QWidget):
         if item is not None:
             self.amendThemeForm.loadTheme(
                 unicode(item.data(QtCore.Qt.UserRole).toString()))
-            self.saveThemeName = unicode(
-                item.data(QtCore.Qt.UserRole).toString())
+            self.saveThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
             self.amendThemeForm.exec_()
 
     def onDeleteTheme(self):
