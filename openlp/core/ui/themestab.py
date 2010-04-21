@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +25,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, Receiver
+from openlp.core.lib import SettingsTab, Receiver, ThemeLevel
 
 class ThemesTab(SettingsTab):
     """
@@ -36,7 +37,7 @@ class ThemesTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'ThemesTab')
-        self.tabTitleVisible = self.trUtf8(u'Themes')
+        self.tabTitleVisible = self.trUtf8('Themes')
         self.ThemesTabLayout = QtGui.QHBoxLayout(self)
         self.ThemesTabLayout.setSpacing(8)
         self.ThemesTabLayout.setMargin(8)
@@ -105,73 +106,70 @@ class ThemesTab(SettingsTab):
             QtCore.SIGNAL(u'update_themes'), self.updateThemeList)
 
     def retranslateUi(self):
-        self.GlobalGroupBox.setTitle(self.trUtf8(u'Global theme'))
-        self.LevelGroupBox.setTitle(self.trUtf8(u'Theme level'))
-        self.SongLevelRadioButton.setText(self.trUtf8(u'Song level'))
-        self.SongLevelLabel.setText(self.trUtf8(u'Use the theme from each song '
-            u'in the database. If a song doesn\'t have a theme associated with '
-            u'it, then use the service\'s theme. If the service doesn\'t have '
-            u'a theme, then use the global theme.'))
-        self.ServiceLevelRadioButton.setText(self.trUtf8(u'Service level'))
-        self.ServiceLevelLabel.setText(self.trUtf8(u'Use the theme from the '
-            u'service, overriding any of the individual songs\' themes. If the '
-            u'service doesn\'t have a theme, then use the global theme.'))
-        self.GlobalLevelRadioButton.setText(self.trUtf8(u'Global level'))
-        self.GlobalLevelLabel.setText(self.trUtf8(u'Use the global theme, '
-            u'overriding any themes associated with either the service or the '
-            u'songs.'))
+        self.GlobalGroupBox.setTitle(self.trUtf8('Global theme'))
+        self.LevelGroupBox.setTitle(self.trUtf8('Theme level'))
+        self.SongLevelRadioButton.setText(self.trUtf8('Song level'))
+        self.SongLevelLabel.setText(self.trUtf8('Use the theme from each song '
+            'in the database. If a song doesn\'t have a theme associated with '
+            'it, then use the service\'s theme. If the service doesn\'t have '
+            'a theme, then use the global theme.'))
+        self.ServiceLevelRadioButton.setText(self.trUtf8('Service level'))
+        self.ServiceLevelLabel.setText(self.trUtf8('Use the theme from the '
+            'service, overriding any of the individual songs\' themes. If the '
+            'service doesn\'t have a theme, then use the global theme.'))
+        self.GlobalLevelRadioButton.setText(self.trUtf8('Global level'))
+        self.GlobalLevelLabel.setText(self.trUtf8('Use the global theme, '
+            'overriding any themes associated with either the service or the '
+            'songs.'))
 
     def load(self):
-        self.global_style = self.config.get_config(
-            u'theme global style', u'Global')
-        self.global_theme = self.config.get_config(u'theme global theme', u'')
-        if self.global_style == u'Global':
+        self.theme_level = int(self.config.get_config(u'theme level',
+            ThemeLevel.Global))
+        self.global_theme = self.config.get_config(u'global theme', u'')
+        if self.theme_level == ThemeLevel.Global:
             self.GlobalLevelRadioButton.setChecked(True)
-        elif self.global_style == u'Service':
+        elif self.theme_level == ThemeLevel.Service:
             self.ServiceLevelRadioButton.setChecked(True)
         else:
             self.SongLevelRadioButton.setChecked(True)
 
     def save(self):
-        self.config.set_config(u'theme global style', self.global_style )
-        self.config.set_config(u'theme global theme',self.global_theme)
-        Receiver().send_message(u'update_global_theme', self.global_theme )
+        self.config.set_config(u'theme level', self.theme_level)
+        self.config.set_config(u'global theme',self.global_theme)
+        Receiver.send_message(u'update_global_theme', self.global_theme)
+        self.parent.RenderManager.set_global_theme(
+            self.global_theme, self.theme_level)
 
     def postSetUp(self):
-        Receiver().send_message(u'update_global_theme', self.global_theme )
+        Receiver.send_message(u'update_global_theme', self.global_theme)
 
     def onSongLevelButtonPressed(self):
-        self.global_style = u'Song'
-        self.parent.RenderManager.set_global_theme(
-            self.global_theme, self.global_style)
+        self.theme_level = ThemeLevel.Song
 
     def onServiceLevelButtonPressed(self):
-        self.global_style = u'Service'
-        self.parent.RenderManager.set_global_theme(
-            self.global_theme, self.global_style)
+        self.theme_level = ThemeLevel.Service
 
     def onGlobalLevelButtonPressed(self):
-        self.global_style = u'Global'
-        self.parent.RenderManager.set_global_theme(
-            self.global_theme, self.global_style)
+        self.theme_level = ThemeLevel.Global
 
     def onDefaultComboBoxChanged(self, value):
         self.global_theme = unicode(self.DefaultComboBox.currentText())
         self.parent.RenderManager.set_global_theme(
-            self.global_theme, self.global_style)
+            self.global_theme, self.theme_level)
         image = self.parent.ThemeManagerContents.getPreviewImage(
             self.global_theme)
         preview = QtGui.QPixmap(unicode(image))
-        display = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
-            QtCore.Qt.SmoothTransformation)
-        self.DefaultListView.setPixmap(display)
+        if not preview.isNull():
+            preview = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
+                QtCore.Qt.SmoothTransformation)
+        self.DefaultListView.setPixmap(preview)
 
     def updateThemeList(self, theme_list):
         """
         Called from ThemeManager when the Themes have changed
         """
         #reload as may have been triggered by the ThemeManager
-        self.global_theme = self.config.get_config(u'theme global theme', u'')
+        self.global_theme = self.config.get_config(u'global theme', u'')
         self.DefaultComboBox.clear()
         for theme in theme_list:
             self.DefaultComboBox.addItem(theme)
@@ -182,11 +180,12 @@ class ThemesTab(SettingsTab):
             self.global_theme = u''
         self.DefaultComboBox.setCurrentIndex(id)
         self.parent.RenderManager.set_global_theme(
-            self.global_theme, self.global_style)
+            self.global_theme, self.theme_level)
         if self.global_theme is not u'':
             image = self.parent.ThemeManagerContents.getPreviewImage(
                 self.global_theme)
             preview = QtGui.QPixmap(unicode(image))
-            display = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
-                QtCore.Qt.SmoothTransformation)
-            self.DefaultListView.setPixmap(display)
+            if not preview.isNull():
+                preview = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
+                    QtCore.Qt.SmoothTransformation)
+            self.DefaultListView.setPixmap(preview)

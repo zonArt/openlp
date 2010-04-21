@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,7 +27,10 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, buildIcon
+from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
+    contextMenuAction, ItemCapabilities
+
+log = logging.getLogger(__name__)
 
 # We have to explicitly create separate classes for each plugin
 # in order for DnD to the Service manager to work correctly.
@@ -39,8 +43,6 @@ class ImageMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for images.
     """
-    global log
-    log = logging.getLogger(u'ImageMediaItem')
     log.info(u'Image Media Item loaded')
 
     def __init__(self, parent, icon, title):
@@ -50,23 +52,22 @@ class ImageMediaItem(MediaManagerItem):
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
-        self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
-        self.overrideActive = False
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = self.trUtf8(u'Image')
+        self.PluginNameVisible = self.trUtf8('Image')
 
     def retranslateUi(self):
-        self.OnNewPrompt = self.trUtf8(u'Select Image(s)')
+        self.OnNewPrompt = self.trUtf8('Select Image(s)')
         self.OnNewFileMasks = \
-            self.trUtf8(u'Images (*.jpg *jpeg *.gif *.png *.bmp)')
+            self.trUtf8('Images (*.jpg *.jpeg *.gif *.png *.bmp);; All files (*)')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
         self.hasFileIcon = True
         self.hasNewIcon = False
         self.hasEditIcon = False
+        self.addToServiceItem = True
 
     def initialise(self):
         log.debug(u'initialise')
@@ -76,9 +77,18 @@ class ImageMediaItem(MediaManagerItem):
         self.ListView.setIconSize(QtCore.QSize(88,50))
         self.servicePath = os.path.join(
             self.parent.config.get_data_path(), u'.thumbnails')
-        if os.path.exists(self.servicePath) == False:
+        if not os.path.exists(self.servicePath):
             os.mkdir(self.servicePath)
         self.loadList(self.parent.config.load_list(self.ConfigSection))
+
+    def addListViewToToolBar(self):
+        MediaManagerItem.addListViewToToolBar(self)
+        self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.ListView.addAction(
+            contextMenuAction(
+                self.ListView, u':/slides/slide_blank.png',
+                self.trUtf8('Replace Live Background'),
+                self.onReplaceClick))
 
     def addEndHeaderBar(self):
         self.ImageWidget = QtGui.QWidget(self)
@@ -90,87 +100,67 @@ class ImageMediaItem(MediaManagerItem):
             self.ImageWidget.sizePolicy().hasHeightForWidth())
         self.ImageWidget.setSizePolicy(sizePolicy)
         self.ImageWidget.setObjectName(u'ImageWidget')
-        self.OverrideLayout = QtGui.QVBoxLayout(self.ImageWidget)
-        self.OverrideLayout.setMargin(5)
-        self.OverrideLayout.setSpacing(4)
-        self.OverrideLayout.setObjectName(u'OverrideLayout')
-        self.OverrideCheckBox = QtGui.QCheckBox(self.ImageWidget)
-        self.OverrideCheckBox.setObjectName(u'OverrideCheckBox')
-        self.OverrideCheckBox.setCheckable(True)
-        self.OverrideCheckBox.setChecked(False)
-        self.OverrideCheckBox.setText(self.trUtf8(u'Override background'))
-        self.OverrideCheckBox.setStatusTip(
-            self.trUtf8(u'Allow background of live slide to be overridden'))
-        self.OverrideLayout.addWidget(self.OverrideCheckBox)
-        self.OverrideLabel = QtGui.QLabel(self.ImageWidget)
-        self.OverrideLabel.setObjectName(u'OverrideLabel')
-        self.OverrideLayout.addWidget(self.OverrideLabel)
+        self.blankButton = self.Toolbar.addToolbarButton(
+            u'Replace Background', u':/slides/slide_blank.png',
+            self.trUtf8('Replace Live Background'), self.onReplaceClick, False)
         # Add the song widget to the page layout
         self.PageLayout.addWidget(self.ImageWidget)
-        QtCore.QObject.connect(self.OverrideCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'),
-            self.toggleOverrideState)
 
     def onDeleteClick(self):
-        item = self.ListView.currentItem()
-        if item is not None:
-            try:
-                os.remove(os.path.join(self.servicePath, unicode(item.text())))
-            except:
-                #if not present do not worry
-                pass
-            row = self.ListView.row(item)
-            self.ListView.takeItem(row)
-            self.parent.config.set_list(self.ConfigSection, self.getFileList())
+        items = self.ListView.selectedIndexes()
+        if items:
+            for item in items:
+                text = self.ListView.item(item.row())
+                try:
+                    os.remove(os.path.join(self.servicePath, unicode(text.text())))
+                except:
+                    #if not present do not worry
+                    pass
+                self.ListView.takeItem(item.row())
+                self.parent.config.set_list(self.ConfigSection, self.getFileList())
 
     def loadList(self, list):
         for file in list:
             (path, filename) = os.path.split(unicode(file))
             thumb = os.path.join(self.servicePath, filename)
             if os.path.exists(thumb):
-                icon = buildIcon(thumb)
+                self.validate(file, thumb)
+                icon = build_icon(thumb)
             else:
-                icon = buildIcon(unicode(file))
-                pixmap = icon.pixmap(QtCore.QSize(88,50))
-                ext = os.path.splitext(thumb)[1].lower()
-                pixmap.save(thumb, ext[1:])
+                icon = self.IconFromFile(file, thumb)
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setIcon(icon)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.ListView.addItem(item_name)
 
-    def generateSlideData(self, service_item):
+    def generateSlideData(self, service_item, item=None):
         items = self.ListView.selectedIndexes()
-        if len(items) == 0:
+        if items:
+            service_item.title = self.trUtf8('Image(s)')
+            service_item.add_capability(ItemCapabilities.AllowsMaintain)
+            service_item.add_capability(ItemCapabilities.AllowsPreview)
+            service_item.add_capability(ItemCapabilities.AllowsLoop)
+            for item in items:
+                bitem = self.ListView.item(item.row())
+                filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+                frame = QtGui.QImage(unicode(filename))
+                (path, name) = os.path.split(filename)
+                service_item.add_from_image(path, name, frame)
+            return True
+        else:
             return False
-        service_item.title = self.trUtf8(u'Image(s)')
+
+    def onReplaceClick(self):
+        if not self.ListView.selectedIndexes():
+            QtGui.QMessageBox.information(self,
+                self.trUtf8('No item selected'),
+                self.trUtf8('You must select one item'))
+        items = self.ListView.selectedIndexes()
         for item in items:
             bitem = self.ListView.item(item.row())
             filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
             frame = QtGui.QImage(unicode(filename))
-            (path, name) = os.path.split(filename)
-            service_item.add_from_image(path, name, frame)
-        return True
-
-    def toggleOverrideState(self):
-        self.overrideActive = not self.overrideActive
-        if not self.overrideActive:
-            self.OverrideLabel.setText(u'')
-            self.parent.render_manager.override_background = None
+            self.parent.maindisplay.addImageWithText(frame)
 
     def onPreviewClick(self):
-        if self.overrideActive:
-            if not self.ListView.selectedIndexes():
-                QtGui.QMessageBox.information(self,
-                    self.trUtf8(u'No items selected...'),
-                    self.trUtf8(u'You must select one or more items'))
-            items = self.ListView.selectedIndexes()
-            for item in items:
-                bitem = self.ListView.item(item.row())
-                filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
-                self.OverrideLabel.setText(bitem.text())
-                frame = QtGui.QImage(unicode(filename))
-                self.parent.render_manager.override_background = frame
-                self.parent.render_manager.override_background_changed = True
-        else:
-            MediaManagerItem.onPreviewClick(self)
+        MediaManagerItem.onPreviewClick(self)

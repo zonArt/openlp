@@ -10,3 +10,7 @@ openlp.org 2.0.e4*
 documentation/build/html
 documentation/build/doctrees
 *.log*
+dist
+OpenLP.egg-info
+build
+resources/innosetup/Output

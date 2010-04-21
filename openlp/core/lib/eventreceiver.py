@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,6 +26,8 @@
 import logging
 
 from PyQt4 import QtCore
+
+log = logging.getLogger(__name__)
 
 class EventReceiver(QtCore.QObject):
     """
@@ -103,10 +106,19 @@ class EventReceiver(QtCore.QObject):
     ``remote_edit_clear``
         Informs all components that remote edit has been aborted.
 
-    """
-    global log
-    log = logging.getLogger(u'EventReceiver')
+    ``presentation types``
+        Informs all components of the presentation types supported.
 
+    ``blank_check``
+        Check to see if th eblank display message is required
+
+    ``version_check``
+        Version has changed so pop up window.
+
+    ``mainDisplay_active``
+        Version has changed so pop up window.
+
+    """
     def __init__(self):
         """
         Initialise the event receiver, calling the parent constructor.
@@ -129,16 +141,16 @@ class EventReceiver(QtCore.QObject):
 
 class Receiver():
     """
-    Class to allow events to be passed from different parts of the
-    system. This is a static wrapper around the ``EventReceiver``
-    class. As there is only one instance of it in the system the QT
-    signal/slot architecture can send messages across the system.
+    Class to allow events to be passed from different parts of the system. This
+    is a static wrapper around the ``EventReceiver`` class. As there is only
+    one instance of it in the system the Qt4 signal/slot architecture can send
+    messages across the system.
 
     To send a message:
-       ``Receiver().send_message(u'<<Message ID>>', data)``
+       ``Receiver.send_message(u'<<Message ID>>', data)``
 
     To receive a Message
-        ``QtCore.QObject.connect(Receiver().get_receiver(), QtCore.SIGNAL(u'<<Message ID>>'), <<ACTION>>)``
+        ``QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'<<Message ID>>'), <<ACTION>>)``
     """
     eventreceiver = EventReceiver()
 
@@ -161,3 +173,4 @@ class Receiver():
         Get the global ``eventreceiver`` instance.
         """
         return Receiver.eventreceiver
+

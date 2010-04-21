@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -35,7 +36,7 @@ class RemoteTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'RemoteTab')
-        self.tabTitleVisible = self.trUtf8(u'Remotes')
+        self.tabTitleVisible = self.trUtf8('Remotes')
         self.RemoteLayout = QtGui.QFormLayout(self)
         self.RemoteLayout.setObjectName(u'RemoteLayout')
         self.RemoteModeGroupBox = QtGui.QGroupBox(self)
@@ -52,7 +53,7 @@ class RemoteTab(SettingsTab):
             0, QtGui.QFormLayout.LabelRole, self.RemoteModeGroupBox)
 
     def retranslateUi(self):
-        self.RemoteModeGroupBox.setTitle(self.trUtf8(u'Remotes Receiver Port'))
+        self.RemoteModeGroupBox.setTitle(self.trUtf8('Remotes Receiver Port'))
 
     def load(self):
         self.RemotePortSpinBox.setValue(

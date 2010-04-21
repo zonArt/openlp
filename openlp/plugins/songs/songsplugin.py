@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,10 +27,13 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, buildIcon
-from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab
+from openlp.core.lib import Plugin, build_icon, PluginStatus, Receiver
+from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab, \
+    SofImport, OooImport
 from openlp.plugins.songs.forms import OpenLPImportForm, OpenSongExportForm, \
     OpenSongImportForm, OpenLPExportForm
+
+log = logging.getLogger(__name__)
 
 class SongsPlugin(Plugin):
     """
@@ -39,26 +43,21 @@ class SongsPlugin(Plugin):
     specified. Authors, topics and song books can be assigned to songs
     as well.
     """
-
-    global log
-    log = logging.getLogger(u'SongsPlugin')
     log.info(u'Song Plugin loaded')
 
     def __init__(self, plugin_helpers):
         """
         Create and set up the Songs plugin.
         """
-        Plugin.__init__(self, u'Songs', u'1.9.0', plugin_helpers)
+        Plugin.__init__(self, u'Songs', u'1.9.1', plugin_helpers)
         self.weight = -10
         self.songmanager = SongManager(self.config)
         self.openlp_import_form = OpenLPImportForm()
         self.opensong_import_form = OpenSongImportForm()
         self.openlp_export_form = OpenLPExportForm()
         self.opensong_export_form = OpenSongExportForm()
-        self.icon = buildIcon(u':/media/media_song.png')
-
-    def can_be_disabled(self):
-        return True
+        self.icon = build_icon(u':/media/media_song.png')
+        self.status = PluginStatus.Active
 
     def get_settings_tab(self):
         return SongsTab(self.name)
@@ -104,24 +103,44 @@ class SongsPlugin(Plugin):
         self.ImportOpenlp1Item.setObjectName(u'ImportOpenlp1Item')
         self.ImportOpenlp2Item = QtGui.QAction(import_menu)
         self.ImportOpenlp2Item.setObjectName(u'ImportOpenlp2Item')
+        self.ImportSofItem = QtGui.QAction(import_menu)
+        self.ImportSofItem.setObjectName(u'ImportSofItem')
+        self.ImportOooItem = QtGui.QAction(import_menu)
+        self.ImportOooItem.setObjectName(u'ImportOooItem')
         # Add to menus
         self.ImportSongMenu.addAction(self.ImportOpenlp1Item)
         self.ImportSongMenu.addAction(self.ImportOpenlp2Item)
         self.ImportSongMenu.addAction(self.ImportOpenSongItem)
+        self.ImportSongMenu.addAction(self.ImportSofItem)
+        self.ImportSongMenu.addAction(self.ImportOooItem)
         import_menu.addAction(self.ImportSongMenu.menuAction())
         # Translations...
-        self.ImportSongMenu.setTitle(import_menu.trUtf8(u'&Song'))
-        self.ImportOpenSongItem.setText(import_menu.trUtf8(u'OpenSong'))
-        self.ImportOpenlp1Item.setText(import_menu.trUtf8(u'openlp.org 1.0'))
+        self.ImportSongMenu.setTitle(import_menu.trUtf8('&Song'))
+        self.ImportOpenSongItem.setText(import_menu.trUtf8('OpenSong'))
+        self.ImportOpenlp1Item.setText(import_menu.trUtf8('openlp.org 1.0'))
         self.ImportOpenlp1Item.setToolTip(
-            import_menu.trUtf8(u'Export songs in openlp.org 1.0 format'))
+            import_menu.trUtf8('Import songs in openlp.org 1.0 format'))
         self.ImportOpenlp1Item.setStatusTip(
-            import_menu.trUtf8(u'Export songs in openlp.org 1.0 format'))
-        self.ImportOpenlp2Item.setText(import_menu.trUtf8(u'OpenLP 2.0'))
+            import_menu.trUtf8('Import songs in openlp.org 1.0 format'))
+        self.ImportOpenlp2Item.setText(import_menu.trUtf8('OpenLP 2.0'))
         self.ImportOpenlp2Item.setToolTip(
-            import_menu.trUtf8(u'Export songs in OpenLP 2.0 format'))
+            import_menu.trUtf8('Import songs in OpenLP 2.0 format'))
         self.ImportOpenlp2Item.setStatusTip(
-            import_menu.trUtf8(u'Export songs in OpenLP 2.0 format'))
+            import_menu.trUtf8('Import songs in OpenLP 2.0 format'))
+        self.ImportSofItem.setText(
+            import_menu.trUtf8('Songs of Fellowship'))
+        self.ImportSofItem.setToolTip(
+            import_menu.trUtf8('Import songs from the VOLS1_2.RTF, sof3words' \
+                + '.rtf and sof4words.rtf supplied with the music books'))
+        self.ImportSofItem.setStatusTip(
+            import_menu.trUtf8('Import songs from the VOLS1_2.RTF, sof3words' \
+                + '.rtf and sof4words.rtf supplied with the music books'))
+        self.ImportOooItem.setText(
+            import_menu.trUtf8('Generic Document/Presentation Import'))
+        self.ImportOooItem.setToolTip(
+            import_menu.trUtf8('Import songs from Word/Writer/Powerpoint/Impress'))
+        self.ImportOooItem.setStatusTip(
+            import_menu.trUtf8('Import songs from Word/Writer/Powerpoint/Impress'))
         # Signals and slots
         QtCore.QObject.connect(self.ImportOpenlp1Item,
             QtCore.SIGNAL(u'triggered()'), self.onImportOpenlp1ItemClick)
@@ -129,6 +148,10 @@ class SongsPlugin(Plugin):
             QtCore.SIGNAL(u'triggered()'), self.onImportOpenlp1ItemClick)
         QtCore.QObject.connect(self.ImportOpenSongItem,
             QtCore.SIGNAL(u'triggered()'), self.onImportOpenSongItemClick)
+        QtCore.QObject.connect(self.ImportSofItem,
+            QtCore.SIGNAL(u'triggered()'), self.onImportSofItemClick)
+        QtCore.QObject.connect(self.ImportOooItem,
+            QtCore.SIGNAL(u'triggered()'), self.onImportOooItemClick)
         self.ImportSongMenu.menuAction().setVisible(False)
 
     def add_export_menu_item(self, export_menu):
@@ -154,10 +177,10 @@ class SongsPlugin(Plugin):
         self.ExportSongMenu.addAction(self.ExportOpenSongItem)
         export_menu.addAction(self.ExportSongMenu.menuAction())
         # Translations...
-        self.ExportSongMenu.setTitle(export_menu.trUtf8(u'&Song'))
-        self.ExportOpenSongItem.setText(export_menu.trUtf8(u'OpenSong'))
-        self.ExportOpenlp1Item.setText(export_menu.trUtf8(u'openlp.org 1.0'))
-        self.ExportOpenlp2Item.setText(export_menu.trUtf8(u'OpenLP 2.0'))
+        self.ExportSongMenu.setTitle(export_menu.trUtf8('&Song'))
+        self.ExportOpenSongItem.setText(export_menu.trUtf8('OpenSong'))
+        self.ExportOpenlp1Item.setText(export_menu.trUtf8('openlp.org 1.0'))
+        self.ExportOpenlp2Item.setText(export_menu.trUtf8('OpenLP 2.0'))
         # Signals and slots
         QtCore.QObject.connect(self.ExportOpenlp1Item,
             QtCore.SIGNAL(u'triggered()'), self.onExportOpenlp1ItemClicked)
@@ -171,6 +194,34 @@ class SongsPlugin(Plugin):
     def onImportOpenSongItemClick(self):
         self.opensong_import_form.show()
 
+    def onImportSofItemClick(self):
+        filenames = QtGui.QFileDialog.getOpenFileNames(
+            None, self.trUtf8('Open Songs of Fellowship file'),
+            u'', u'Songs of Fellowship file (*.rtf *.RTF)')
+        try:
+            for filename in filenames:
+                sofimport = SofImport(self.songmanager)        
+                sofimport.import_sof(unicode(filename))
+        except:
+            log.exception('Could not import SoF file')
+            QtGui.QMessageBox.critical(None,
+                self.ImportSongMenu.trUtf8('Import Error'),
+                self.ImportSongMenu.trUtf8('Error importing Songs of ' 
+                    + 'Fellowship file.\nOpenOffice.org must be installed' 
+                    + ' and you must be using an unedited copy of the RTF'
+                    + ' included with the Songs of Fellowship Music Editions'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
+                QtGui.QMessageBox.Ok)
+        Receiver.send_message(u'load_song_list')
+
+    def onImportOooItemClick(self):
+        filenames = QtGui.QFileDialog.getOpenFileNames(
+            None, self.trUtf8('Open documents or presentations'),
+            u'', u'All Files(*.*)')
+        oooimport = OooImport(self.songmanager)        
+        oooimport.import_docs(filenames)
+        Receiver.send_message(u'load_song_list')
+
     def onExportOpenlp1ItemClicked(self):
         self.openlp_export_form.show()
 
@@ -178,6 +229,11 @@ class SongsPlugin(Plugin):
         self.opensong_export_form.show()
 
     def about(self):
-        about_text = self.trUtf8(u'<b>Song Plugin</b> <br>This plugin allows '
-            u'Songs to be managed and displayed.<br>')
+        about_text = self.trUtf8('<b>Song Plugin</b> <br>This plugin allows '
+            'Songs to be managed and displayed.<br>')
         return about_text
+
+    def can_delete_theme(self, theme):
+        if len(self.songmanager.get_songs_for_theme(theme)) == 0:
+            return True
+        return False

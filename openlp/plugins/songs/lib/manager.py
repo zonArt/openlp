@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,14 +28,13 @@ import logging
 from openlp.plugins.songs.lib.models import init_models, metadata, Song, \
     Author, Topic, Book
 
+log = logging.getLogger(__name__)
+
 class SongManager():
     """
     The Song Manager provides a central location for all database code. This
     class takes care of connecting to the database and running all the queries.
     """
-
-    global log
-    log = logging.getLogger(u'SongManager')
     log.info(u'Song manager loaded')
 
     def __init__(self, config):
@@ -133,6 +133,12 @@ class SongManager():
         """
         return self.session.query(Author).get(id)
 
+    def get_author_by_name(self, name):
+        """
+        Get author by display name
+        """
+        return self.session.query(Author).filter_by(display_name=name).first() 
+
     def save_author(self, author):
         """
         Save the Author and refresh the cache
@@ -171,6 +177,12 @@ class SongManager():
         Details of the Topic
         """
         return self.session.query(Topic).get(id)
+
+    def get_topic_by_name(self, name):
+        """
+        Get topic by name
+        """
+        return self.session.query(Topic).filter_by(name=name).first() 
 
     def save_topic(self, topic):
         """
@@ -211,6 +223,12 @@ class SongManager():
         """
         return self.session.query(Book).get(id)
 
+    def get_book_by_name(self, name):
+        """
+        Get book by name
+        """
+        return self.session.query(Book).filter_by(name=name).first() 
+
     def save_book(self, book):
         """
         Save the Book
@@ -238,3 +256,5 @@ class SongManager():
             log.exception(u'Could not delete book from song database')
             return False
 
+    def get_songs_for_theme(self, theme):
+        return self.session.query(Song).filter(Song.theme_name == theme).all()

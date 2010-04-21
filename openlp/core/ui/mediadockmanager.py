@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expanddock textwidth=80 dockstop=4 softdockstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
 # Software Foundation; version 2 of the License.                              #
 #                                                                             #
 # This program is distributed in the hope that it will be useful, but WITHOUT #
-# ANY WARRANTY; without even the implied warranty of MERCHANdockILITY or       #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
 # FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
 # more details.                                                               #
 #                                                                             #
@@ -24,7 +25,7 @@
 
 import logging
 
-log = logging.getLogger(u'MediaDockManager')
+log = logging.getLogger(__name__)
 
 class MediaDockManager(object):
 
@@ -54,7 +55,7 @@ class MediaDockManager(object):
     def remove_dock(self, name):
         log.debug(u'remove %s dock' % name)
         for dock_index in range(0, self.media_dock.count()):
-            if self.media_dock.widget(dock_index) is not None:
+            if self.media_dock.widget(dock_index):
                 if self.media_dock.widget(dock_index).ConfigSection == name:
                     self.media_dock.widget(dock_index).hide()
                     self.media_dock.removeItem(dock_index)

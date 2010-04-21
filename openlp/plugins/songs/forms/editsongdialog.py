@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,13 +25,13 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import buildIcon
+from openlp.core.lib import build_icon
 
 class Ui_EditSongDialog(object):
     def setupUi(self, EditSongDialog):
         EditSongDialog.setObjectName(u'EditSongDialog')
         EditSongDialog.resize(645, 417)
-        icon = buildIcon(u':/icon/openlp.org-icon-32.bmp')
+        icon = build_icon(u':/icon/openlp.org-icon-32.bmp')
         EditSongDialog.setWindowIcon(icon)
         EditSongDialog.setModal(True)
         self.verticalLayout = QtGui.QVBoxLayout(EditSongDialog)
@@ -134,7 +135,7 @@ class Ui_EditSongDialog(object):
         sizePolicy.setHeightForWidth(
             self.AuthorsSelectionComboItem.sizePolicy().hasHeightForWidth())
         self.AuthorsSelectionComboItem.setSizePolicy(sizePolicy)
-        self.AuthorsSelectionComboItem.setEditable(False)
+        self.AuthorsSelectionComboItem.setEditable(True)
         self.AuthorsSelectionComboItem.setInsertPolicy(
             QtGui.QComboBox.InsertAlphabetically)
         self.AuthorsSelectionComboItem.setSizeAdjustPolicy(
@@ -211,6 +212,7 @@ class Ui_EditSongDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
             self.SongTopicCombo.sizePolicy().hasHeightForWidth())
+        self.SongTopicCombo.setEditable(True)
         self.SongTopicCombo.setSizePolicy(sizePolicy)
         self.SongTopicCombo.setObjectName(u'SongTopicCombo')
         self.TopicAddLayout.addWidget(self.SongTopicCombo)
@@ -255,6 +257,7 @@ class Ui_EditSongDialog(object):
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.SongbookCombo.sizePolicy().hasHeightForWidth())
+        self.SongbookCombo.setEditable(True)
         self.SongbookCombo.setSizePolicy(sizePolicy)
         self.SongbookCombo.setObjectName(u'SongbookCombo')
         self.SongbookLayout.addWidget(self.SongbookCombo, 0, 0, 1, 1)
@@ -292,6 +295,7 @@ class Ui_EditSongDialog(object):
         self.ThemeLayout.setMargin(8)
         self.ThemeLayout.setObjectName(u'ThemeLayout')
         self.ThemeSelectionComboItem = QtGui.QComboBox(self.ThemeGroupBox)
+        self.ThemeSelectionComboItem.setEditable(True)
         self.ThemeSelectionComboItem.setObjectName(u'ThemeSelectionComboItem')
         self.ThemeLayout.addWidget(self.ThemeSelectionComboItem)
         self.ThemeAddButton = QtGui.QPushButton(self.ThemeGroupBox)
@@ -414,36 +418,36 @@ class Ui_EditSongDialog(object):
         EditSongDialog.setTabOrder(self.CommentsEdit, self.ButtonBox)
 
     def retranslateUi(self, EditSongDialog):
-        EditSongDialog.setWindowTitle(self.trUtf8(u'Song Editor'))
-        self.TitleLabel.setText(self.trUtf8(u'Title:'))
-        self.AlternativeTitleLabel.setText(self.trUtf8(u'Alternative Title:'))
-        self.LyricsLabel.setText(self.trUtf8(u'Lyrics:'))
-        self.VerseOrderLabel.setText(self.trUtf8(u'Verse Order:'))
-        self.VerseAddButton.setText(self.trUtf8(u'Add'))
-        self.VerseEditButton.setText(self.trUtf8(u'Edit'))
-        self.VerseEditAllButton.setText(self.trUtf8(u'Edit All'))
-        self.VerseDeleteButton.setText(self.trUtf8(u'Delete'))
+        EditSongDialog.setWindowTitle(self.trUtf8('Song Editor'))
+        self.TitleLabel.setText(self.trUtf8('Title:'))
+        self.AlternativeTitleLabel.setText(self.trUtf8('Alternative Title:'))
+        self.LyricsLabel.setText(self.trUtf8('Lyrics:'))
+        self.VerseOrderLabel.setText(self.trUtf8('Verse Order:'))
+        self.VerseAddButton.setText(self.trUtf8('Add'))
+        self.VerseEditButton.setText(self.trUtf8('Edit'))
+        self.VerseEditAllButton.setText(self.trUtf8('Edit All'))
+        self.VerseDeleteButton.setText(self.trUtf8('Delete'))
         self.SongTabWidget.setTabText(
             self.SongTabWidget.indexOf(self.LyricsTab),
-            self.trUtf8(u'Title && Lyrics'))
-        self.AuthorsGroupBox.setTitle(self.trUtf8(u'Authors'))
-        self.AuthorAddButton.setText(self.trUtf8(u'&Add to Song'))
-        self.AuthorRemoveButton.setText(self.trUtf8(u'&Remove'))
+            self.trUtf8('Title && Lyrics'))
+        self.AuthorsGroupBox.setTitle(self.trUtf8('Authors'))
+        self.AuthorAddButton.setText(self.trUtf8('&Add to Song'))
+        self.AuthorRemoveButton.setText(self.trUtf8('&Remove'))
         self.MaintenanceButton.setText(
-            self.trUtf8(u'&Manage Authors, Topics, Books'))
-        self.TopicGroupBox.setTitle(self.trUtf8(u'Topic'))
-        self.TopicAddButton.setText(self.trUtf8(u'A&dd to Song'))
-        self.TopicRemoveButton.setText(self.trUtf8(u'R&emove'))
-        self.SongBookGroup.setTitle(self.trUtf8(u'Song Book'))
+            self.trUtf8('&Manage Authors, Topics, Books'))
+        self.TopicGroupBox.setTitle(self.trUtf8('Topic'))
+        self.TopicAddButton.setText(self.trUtf8('A&dd to Song'))
+        self.TopicRemoveButton.setText(self.trUtf8('R&emove'))
+        self.SongBookGroup.setTitle(self.trUtf8('Song Book'))
         self.SongTabWidget.setTabText(
             self.SongTabWidget.indexOf(self.AuthorsTab),
-            self.trUtf8(u'Authors, Topics && Book'))
-        self.ThemeGroupBox.setTitle(self.trUtf8(u'Theme'))
-        self.ThemeAddButton.setText(self.trUtf8(u'Add a Theme'))
-        self.CopyrightGroupBox.setTitle(self.trUtf8(u'Copyright Information'))
-        self.CopyrightInsertButton.setText(self.trUtf8(u'\xa9'))
-        self.CCLILabel.setText(self.trUtf8(u'CCLI Number:'))
-        self.CommentsGroupBox.setTitle(self.trUtf8(u'Comments'))
+            self.trUtf8('Authors, Topics && Book'))
+        self.ThemeGroupBox.setTitle(self.trUtf8('Theme'))
+        self.ThemeAddButton.setText(self.trUtf8('Add a Theme'))
+        self.CopyrightGroupBox.setTitle(self.trUtf8('Copyright Information'))
+        self.CopyrightInsertButton.setText(self.trUtf8(u'\u00a9'.encode('utf8')))
+        self.CCLILabel.setText(self.trUtf8('CCLI Number:'))
+        self.CommentsGroupBox.setTitle(self.trUtf8('Comments'))
         self.SongTabWidget.setTabText(
             self.SongTabWidget.indexOf(self.ThemeTab),
-            self.trUtf8(u'Theme, Copyright Info && Comments'))
+            self.trUtf8('Theme, Copyright Info && Comments'))

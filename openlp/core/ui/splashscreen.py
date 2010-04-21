@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,14 +24,14 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import buildIcon
+from openlp.core.lib import build_icon
 
 class SplashScreen(object):
     def __init__(self, version):
         self.splash_screen = QtGui.QSplashScreen()
         self.setupUi()
-        self.message = self.splash_screen.trUtf8(u'Starting')\
-            + u'..... ' + version
+        self.message = self.splash_screen.trUtf8('Starting')\
+            + '..... ' + version
 
     def setupUi(self):
         self.splash_screen.setObjectName(u'splash_screen')
@@ -45,7 +46,7 @@ class SplashScreen(object):
             self.splash_screen.sizePolicy().hasHeightForWidth())
         self.splash_screen.setSizePolicy(sizePolicy)
         self.splash_screen.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
-        icon = buildIcon(u':/icon/openlp-logo-16x16.png')
+        icon = build_icon(u':/icon/openlp-logo-16x16.png')
         self.splash_screen.setWindowIcon(icon)
         splash_image = QtGui.QPixmap(u':/graphics/openlp-splash-screen.png')
         self.splash_screen.setPixmap(splash_image)
@@ -57,7 +58,7 @@ class SplashScreen(object):
 
     def retranslateUi(self):
         self.splash_screen.setWindowTitle(
-            self.splash_screen.trUtf8(u'Splash Screen'))
+            self.splash_screen.trUtf8('Splash Screen'))
 
     def show(self):
         self.splash_screen.show()

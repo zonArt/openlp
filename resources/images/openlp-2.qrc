@@ -13,19 +13,30 @@
     <file>book_maintenance.png</file>
     <file>author_maintenance.png</file>
     <file>topic_maintenance.png</file>
-    <file>song_delete.png</file>
-    <file>song_edit.png</file>
-    <file>song_export.png</file>
-    <file>song_new.png</file>
     <file>song_author_edit.png</file>
     <file>song_topic_edit.png</file>
     <file>song_book_edit.png</file>
+  </qresource>
+  <qresource prefix="general" >
+    <file>general_preview.png</file>
+    <file>general_live.png</file>
+    <file>general_add.png</file>
+    <file>general_delete.png</file>
+    <file>general_edit.png</file>
+    <file>general_export.png</file>
+    <file>general_import.png</file>
+    <file>general_new.png</file>
+    <file>general_open.png</file>
+    <file>general_save.png</file>
   </qresource>
   <qresource prefix="slides" >
     <file>slide_close.png</file>
     <file>slide_first.png</file>
     <file>slide_last.png</file>
     <file>slide_next.png</file>
+    <file>slide_blank.png</file>
+    <file>slide_desktop.png</file>
+    <file>slide_theme.png</file>
     <file>slide_previous.png</file>
     <file>media_playback_start.png</file>
     <file>media_playback_stop.png</file>
@@ -40,11 +51,8 @@
     <file>openlp-logo-256x256.png</file>
   </qresource>
   <qresource prefix="graphics" >
-    <file>splash-screen-new.bmp</file>
-    <file>about-new.bmp</file>
     <file>openlp-about-logo.png</file>
     <file>openlp-splash-screen.png</file>
-    <file>openlp-splash-screen.svg</file>
   </qresource>
   <qresource prefix="imports" >
     <file>import_selectall.png</file>
@@ -58,43 +66,23 @@
     <file>export_load.png</file>
     <file>export_move_to_list.png</file>
   </qresource>
-  <qresource prefix="custom" >
-    <file>custom_new.png</file>
-    <file>custom_edit.png</file>
-    <file>custom_delete.png</file>
-  </qresource>
   <qresource prefix="wizards" >
     <file>wizard_importbible.bmp</file>
   </qresource>
-  <qresource prefix="presentations" >
-    <file>presentation_delete.png</file>
-    <file>presentation_load.png</file>
-  </qresource>
-  <qresource prefix="videos" >
-    <file>video_delete.png</file>
-    <file>video_load.png</file>
-  </qresource>
-  <qresource prefix="images" >
-    <file>image_delete.png</file>
-    <file>image_load.png</file>
-  </qresource>
   <qresource prefix="services" >
+    <file>service_notes.png</file>
+    <file>service_item_notes.png</file>
     <file>service_bottom.png</file>
     <file>service_down.png</file>
     <file>service_top.png</file>
     <file>service_up.png</file>
-    <file>service_delete.png</file>
-    <file>service_new.png</file>
-    <file>service_open.png</file>
-    <file>service_save.png</file>
   </qresource>
   <qresource prefix="system" >
+    <file>system_close.png</file>
     <file>system_about.png</file>
     <file>system_help_contents.png</file>
-    <file>system_add.png</file>
-    <file>system_live.png</file>
-    <file>system_preview.png</file>
     <file>system_mediamanager.png</file>
+    <file>system_contribute.png</file>
     <file>system_servicemanager.png</file>
     <file>system_thememanager.png</file>
     <file>system_exit.png</file>
@@ -109,6 +97,7 @@
     <file>media_video.png</file>
     <file>media_time.png</file>
     <file>media_stop.png</file>
+    <file>image_clapperboard.png</file>
   </qresource>
   <qresource prefix="messagebox" >
     <file>messagebox_critical.png</file>
@@ -123,7 +112,5 @@
     <file>theme_delete.png</file>
     <file>theme_new.png</file>
     <file>theme_edit.png</file>
-    <file>theme_export.png</file>
-    <file>theme_import.png</file>
   </qresource>
 </RCC>

@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,7 +30,7 @@ from PyQt4 import QtGui
 
 DelphiColors={"clRed":0xFF0000,
                 "clBlue":0x0000FF,
-                "clYellow":0x0FFFF00,
+                "clYellow":0xFFFF00,
                "clBlack":0x000000,
                "clWhite":0xFFFFFF}
 
@@ -112,6 +113,7 @@ class Theme(object):
         root = ElementTree(element=XML(xml))
         iter = root.getiterator()
         for element in iter:
+            delphiColorChange = False
             if element.tag != u'Theme':
                 t = element.text
                 val = 0
@@ -127,6 +129,7 @@ class Theme(object):
                             pass
                     elif DelphiColors.has_key(t):
                         val = DelphiColors[t]
+                        delphiColorChange = True
                     else:
                         try:
                             val = int(t)
@@ -135,7 +138,10 @@ class Theme(object):
                 if (element.tag.find(u'Color') > 0 or
                     (element.tag.find(u'BackgroundParameter') == 0 and type(val) == type(0))):
                     # convert to a wx.Colour
-                    val = QtGui.QColor((val>>16) & 0xFF, (val>>8)&0xFF, val&0xFF)
+                        if not delphiColorChange:
+                            val = QtGui.QColor(val&0xFF, (val>>8)&0xFF, (val>>16)&0xFF)
+                        else:
+                            val = QtGui.QColor((val>>16)&0xFF, (val>>8)&0xFF, val&0xFF)
                 setattr(self, element.tag, val)
 
     def __str__(self):

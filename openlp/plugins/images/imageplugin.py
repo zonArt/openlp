@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,21 +25,19 @@
 
 import logging
 
-from openlp.core.lib import Plugin, buildIcon
+from openlp.core.lib import Plugin, build_icon, PluginStatus
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
+log = logging.getLogger(__name__)
+
 class ImagePlugin(Plugin):
-    global log
-    log = logging.getLogger(u'ImagePlugin')
     log.info(u'Image Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Images', u'1.9.0', plugin_helpers)
+        Plugin.__init__(self, u'Images', u'1.9.1', plugin_helpers)
         self.weight = -7
-        self.icon = buildIcon(u':/media/media_image.png')
-
-    def can_be_disabled(self):
-        return True
+        self.icon = build_icon(u':/media/media_image.png')
+        self.status = PluginStatus.Active
 
     def initialise(self):
         log.info(u'Plugin Initialising')
@@ -57,11 +56,11 @@ class ImagePlugin(Plugin):
         return ImageMediaItem(self, self.icon, self.name)
 
     def about(self):
-        about_text = self.trUtf8(u'<b>Image Plugin</b><br>Allows images of '
-            u'all types to be displayed.  If a number of images are selected '
-            u'together and presented on the live controller it is possible '
-            u'to turn them into a timed loop.<br>From the plugin if the '
-            u'<i>Override background</i> is chosen and an image is selected '
-            u'any somgs which are rendered will use the selected image from '
-            u'the background instead of the one provied by the theme.<br>')
+        about_text = self.trUtf8('<b>Image Plugin</b><br>Allows images of '
+            'all types to be displayed.  If a number of images are selected '
+            'together and presented on the live controller it is possible '
+            'to turn them into a timed loop.<br<br>From the plugin if the '
+            '<i>Override background</i> is chosen and an image is selected '
+            'any songs which are rendered will use the selected image from '
+            'the background instead of the one provied by the theme.<br>')
         return about_text

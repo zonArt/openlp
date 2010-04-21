@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,20 +26,22 @@
 import os
 import logging
 
-from openlp.core.lib import Plugin, buildIcon
+from openlp.core.lib import Plugin, build_icon, Receiver, PluginStatus
+from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import *
 
-class PresentationPlugin(Plugin):
+log = logging.getLogger(__name__)
 
-    global log
+class PresentationPlugin(Plugin):
     log = logging.getLogger(u'PresentationPlugin')
 
     def __init__(self, plugin_helpers):
         log.debug(u'Initialised')
         self.controllers = {}
-        Plugin.__init__(self, u'Presentations', u'1.9.0', plugin_helpers)
+        Plugin.__init__(self, u'Presentations', u'1.9.1', plugin_helpers)
         self.weight = -8
-        self.icon = buildIcon(u':/media/media_presentation.png')
+        self.icon = build_icon(u':/media/media_presentation.png')
+        self.status = PluginStatus.Active
 
     def get_settings_tab(self):
         """
@@ -46,13 +49,18 @@ class PresentationPlugin(Plugin):
         """
         return PresentationTab(self.name, self.controllers)
 
-    def can_be_disabled(self):
-        return True
-
     def initialise(self):
         log.info(u'Presentations Initialising')
         Plugin.initialise(self)
         self.insert_toolbox_item()
+        presentation_types = []
+        for controller in self.controllers:
+            if self.controllers[controller].enabled:
+                presentation_types.append({u'%s' % controller : self.controllers[controller].supports})
+                self.controllers[controller].start_process()
+
+        Receiver.send_message(
+                    u'presentation types', presentation_types)
 
     def finalise(self):
         log.info(u'Plugin Finalise')
@@ -79,11 +87,13 @@ class PresentationPlugin(Plugin):
         If Not do not install the plugin.
         """
         log.debug(u'check_pre_conditions')
-        dir = os.path.join(os.path.dirname(__file__), u'lib')
-        for filename in os.listdir(dir):
+        controller_dir = os.path.join(
+            AppLocation.get_directory(AppLocation.PluginsDir),
+            u'presentations', u'lib')
+        for filename in os.listdir(controller_dir):
             if filename.endswith(u'controller.py') and \
                 not filename == 'presentationcontroller.py':
-                path = os.path.join(dir, filename)
+                path = os.path.join(controller_dir, filename)
                 if os.path.isfile(path):
                     modulename = u'openlp.plugins.presentations.lib.' + \
                         os.path.splitext(filename)[0]
@@ -96,16 +106,14 @@ class PresentationPlugin(Plugin):
         for controller_class in controller_classes:
             controller = controller_class(self)
             self.registerControllers(controller)
-            if controller.enabled:
-                controller.start_process()
-        if len(self.controllers) > 0:
+        if self.controllers:
             return True
         else:
             return False
 
     def about(self):
-        about_text = self.trUtf8(u'<b>Presentation Plugin</b> <br> Delivers '
-            u'the ability to show presentations using a number of different '
-            u'programs.  The choice of available presentation programs is '
-            u'available to the user in a drop down box.')
+        about_text = self.trUtf8('<b>Presentation Plugin</b> <br> Delivers '
+            'the ability to show presentations using a number of different '
+            'programs. The choice of available presentation programs is '
+            'available to the user in a drop down box.')
         return about_text

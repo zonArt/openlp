@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,33 +23,56 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import os
 import logging
+import time
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.ui import AboutForm, SettingsForm, AlertForm, \
-    ServiceManager, ThemeManager, MainDisplay, SlideController, \
-    PluginForm, MediaDockManager
-from openlp.core.lib import RenderManager, PluginConfig, buildIcon, \
+from openlp.core.ui import AboutForm, SettingsForm,  \
+    ServiceManager, ThemeManager, SlideController, \
+    PluginForm, MediaDockManager, DisplayManager
+from openlp.core.lib import RenderManager, PluginConfig, build_icon, \
     OpenLPDockWidget, SettingsManager, PluginManager, Receiver, str_to_bool
-from openlp.core.utils import check_latest_version
+from openlp.core.utils import check_latest_version, AppLocation
+
+log = logging.getLogger(__name__)
 
 media_manager_style = """
   QToolBox::tab {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-        stop: 0 palette(midlight), stop: 1.0 palette(mid));
+        stop: 0 palette(button), stop: 1.0 palette(dark));
     border-width: 1px;
     border-style: outset;
-    border-color: palette(midlight);
+    border-color: palette(dark);
     border-radius: 5px;
   }
   QToolBox::tab:selected {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-        stop: 0 palette(light), stop: 1.0 palette(mid));
-    border-color: palette(light);
+        stop: 0 palette(light), stop: 1.0 palette(button));
+    border-color: palette(button);
   }
 """
+class VersionThread(QtCore.QThread):
+    """
+    A special Qt thread class to fetch the version of OpenLP from the website.
+    This is threaded so that it doesn't affect the loading time of OpenLP.
+    """
+    def __init__(self, parent, app_version, generalConfig):
+        QtCore.QThread.__init__(self, parent)
+        self.parent = parent
+        self.app_version = app_version
+        self.generalConfig = generalConfig
+
+    def run(self):
+        """
+        Run the thread.
+        """
+        time.sleep(1)
+        Receiver.send_message(u'blank_check')
+        version = check_latest_version(self.generalConfig, self.app_version)
+        #new version has arrived
+        if version != self.app_version[u'full']:
+            Receiver.send_message(u'version_check', u'%s' % version)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -65,7 +89,7 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(
             MainWindow.sizePolicy().hasHeightForWidth())
         MainWindow.setSizePolicy(sizePolicy)
-        MainIcon = buildIcon(u':/icon/openlp-logo-16x16.png')
+        MainIcon = build_icon(u':/icon/openlp-logo-16x16.png')
         MainWindow.setWindowIcon(MainIcon)
         # Set up the main container, which contains all the other form widgets
         self.MainContent = QtGui.QWidget(MainWindow)
@@ -84,6 +108,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.MainContent)
         self.ControlSplitter = QtGui.QSplitter(self.MainContent)
         self.ControlSplitter.setOrientation(QtCore.Qt.Horizontal)
+        self.ControlSplitter.setOpaqueResize(False)
         self.ControlSplitter.setObjectName(u'ControlSplitter')
         self.MainContentLayout.addWidget(self.ControlSplitter)
         # Create slide controllers
@@ -120,7 +145,7 @@ class Ui_MainWindow(object):
         self.StatusBar.addPermanentWidget(self.DefaultThemeLabel)
         # Create the MediaManager
         self.MediaManagerDock = OpenLPDockWidget(MainWindow)
-        MediaManagerIcon = buildIcon(u':/system/system_mediamanager.png')
+        MediaManagerIcon = build_icon(u':/system/system_mediamanager.png')
         self.MediaManagerDock.setWindowIcon(MediaManagerIcon)
         self.MediaManagerDock.setStyleSheet(media_manager_style)
         self.MediaManagerDock.setMinimumWidth(
@@ -141,7 +166,7 @@ class Ui_MainWindow(object):
         self.MediaManagerDock.setVisible(self.settingsmanager.showMediaManager)
         # Create the service manager
         self.ServiceManagerDock = OpenLPDockWidget(MainWindow)
-        ServiceManagerIcon = buildIcon(u':/system/system_servicemanager.png')
+        ServiceManagerIcon = build_icon(u':/system/system_servicemanager.png')
         self.ServiceManagerDock.setWindowIcon(ServiceManagerIcon)
         self.ServiceManagerDock.setObjectName(u'ServiceManagerDock')
         self.ServiceManagerDock.setMinimumWidth(
@@ -154,7 +179,7 @@ class Ui_MainWindow(object):
             self.settingsmanager.showServiceManager)
         # Create the theme manager
         self.ThemeManagerDock = OpenLPDockWidget(MainWindow)
-        ThemeManagerIcon = buildIcon(u':/system/system_thememanager.png')
+        ThemeManagerIcon = build_icon(u':/system/system_thememanager.png')
         self.ThemeManagerDock.setWindowIcon(ThemeManagerIcon)
         self.ThemeManagerDock.setObjectName(u'ThemeManagerDock')
         self.ThemeManagerContents = ThemeManager(self)
@@ -181,7 +206,7 @@ class Ui_MainWindow(object):
         self.FileSaveAsItem = QtGui.QAction(MainWindow)
         self.FileSaveAsItem.setObjectName(u'FileSaveAsItem')
         self.FileExitItem = QtGui.QAction(MainWindow)
-        ExitIcon = buildIcon(u':/system/system_exit.png')
+        ExitIcon = build_icon(u':/system/system_exit.png')
         self.FileExitItem.setIcon(ExitIcon)
         self.FileExitItem.setObjectName(u'FileExitItem')
         self.ImportThemeItem = QtGui.QAction(MainWindow)
@@ -195,7 +220,7 @@ class Ui_MainWindow(object):
         self.actionLook_Feel = QtGui.QAction(MainWindow)
         self.actionLook_Feel.setObjectName(u'actionLook_Feel')
         self.OptionsSettingsItem = QtGui.QAction(MainWindow)
-        SettingsIcon = buildIcon(u':/system/system_settings.png')
+        SettingsIcon = build_icon(u':/system/system_settings.png')
         self.OptionsSettingsItem.setIcon(SettingsIcon)
         self.OptionsSettingsItem.setObjectName(u'OptionsSettingsItem')
         self.ViewMediaManagerItem = QtGui.QAction(MainWindow)
@@ -216,20 +241,15 @@ class Ui_MainWindow(object):
             self.settingsmanager.showServiceManager)
         self.ViewServiceManagerItem.setIcon(ServiceManagerIcon)
         self.ViewServiceManagerItem.setObjectName(u'ViewServiceManagerItem')
-        self.ToolsAlertItem = QtGui.QAction(MainWindow)
-        AlertIcon = buildIcon(u':/tools/tools_alert.png')
-        self.ToolsAlertItem.setIcon(AlertIcon)
-        self.ToolsAlertItem.setObjectName(u'ToolsAlertItem')
         self.PluginItem = QtGui.QAction(MainWindow)
-        #PluginIcon = buildIcon(u':/tools/tools_alert.png')
-        self.PluginItem.setIcon(AlertIcon)
+        #self.PluginItem.setIcon(AlertIcon)
         self.PluginItem.setObjectName(u'PluginItem')
         self.HelpDocumentationItem = QtGui.QAction(MainWindow)
-        ContentsIcon = buildIcon(u':/system/system_help_contents.png')
+        ContentsIcon = build_icon(u':/system/system_help_contents.png')
         self.HelpDocumentationItem.setIcon(ContentsIcon)
         self.HelpDocumentationItem.setObjectName(u'HelpDocumentationItem')
         self.HelpAboutItem = QtGui.QAction(MainWindow)
-        AboutIcon = buildIcon(u':/system/system_about.png')
+        AboutIcon = build_icon(u':/system/system_about.png')
         self.HelpAboutItem.setIcon(AboutIcon)
         self.HelpAboutItem.setObjectName(u'HelpAboutItem')
         self.HelpOnlineHelpItem = QtGui.QAction(MainWindow)
@@ -241,7 +261,7 @@ class Ui_MainWindow(object):
         self.LanguageEnglishItem = QtGui.QAction(MainWindow)
         self.LanguageEnglishItem.setObjectName(u'LanguageEnglishItem')
         self.ToolsAddToolItem = QtGui.QAction(MainWindow)
-        AddToolIcon = buildIcon(u':/tools/tools_add.png')
+        AddToolIcon = build_icon(u':/tools/tools_add.png')
         self.ToolsAddToolItem.setIcon(AddToolIcon)
         self.ToolsAddToolItem.setObjectName(u'ToolsAddToolItem')
         self.action_Preview_Panel = QtGui.QAction(MainWindow)
@@ -281,7 +301,6 @@ class Ui_MainWindow(object):
         self.OptionsMenu.addAction(self.OptionsViewMenu.menuAction())
         self.OptionsMenu.addSeparator()
         self.OptionsMenu.addAction(self.OptionsSettingsItem)
-        self.ToolsMenu.addAction(self.ToolsAlertItem)
         self.ToolsMenu.addAction(self.PluginItem)
         self.ToolsMenu.addSeparator()
         self.ToolsMenu.addAction(self.ToolsAddToolItem)
@@ -300,112 +319,116 @@ class Ui_MainWindow(object):
         # Connect up some signals and slots
         QtCore.QObject.connect(self.FileExitItem,
             QtCore.SIGNAL(u'triggered()'), MainWindow.close)
+        QtCore.QObject.connect(self.ControlSplitter,
+            QtCore.SIGNAL(u'splitterMoved(int, int)'), self.trackSplitter)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def trackSplitter(self, tab, pos):
+        """
+        Splitter between the Preview and Live Controllers.
+        """
+        self.LiveController.widthChanged()
+        self.PreviewController.widthChanged()
 
     def retranslateUi(self, MainWindow):
         """
         Set up the translation system
         """
-        MainWindow.mainTitle = self.trUtf8(u'OpenLP 2.0')
+        MainWindow.mainTitle = self.trUtf8('OpenLP 2.0')
         MainWindow.defaultThemeText = self.trUtf8(
             'Default Theme: ')
         MainWindow.setWindowTitle(MainWindow.mainTitle)
-        self.FileMenu.setTitle(self.trUtf8(u'&File'))
-        self.FileImportMenu.setTitle(self.trUtf8(u'&Import'))
-        self.FileExportMenu.setTitle(self.trUtf8(u'&Export'))
-        self.OptionsMenu.setTitle(self.trUtf8(u'&Options'))
-        self.OptionsViewMenu.setTitle(self.trUtf8(u'&View'))
-        self.ViewModeMenu.setTitle(self.trUtf8(u'M&ode'))
+        self.FileMenu.setTitle(self.trUtf8('&File'))
+        self.FileImportMenu.setTitle(self.trUtf8('&Import'))
+        self.FileExportMenu.setTitle(self.trUtf8('&Export'))
+        self.OptionsMenu.setTitle(self.trUtf8('&Options'))
+        self.OptionsViewMenu.setTitle(self.trUtf8('&View'))
+        self.ViewModeMenu.setTitle(self.trUtf8('M&ode'))
         self.OptionsLanguageMenu.setTitle(self.trUtf8(
             u'&Language'))
-        self.ToolsMenu.setTitle(self.trUtf8(u'&Tools'))
-        self.HelpMenu.setTitle(self.trUtf8(u'&Help'))
+        self.ToolsMenu.setTitle(self.trUtf8('&Tools'))
+        self.HelpMenu.setTitle(self.trUtf8('&Help'))
         self.MediaManagerDock.setWindowTitle(
-            self.trUtf8(u'Media Manager'))
+            self.trUtf8('Media Manager'))
         self.ServiceManagerDock.setWindowTitle(
-            self.trUtf8(u'Service Manager'))
+            self.trUtf8('Service Manager'))
         self.ThemeManagerDock.setWindowTitle(
-            self.trUtf8(u'Theme Manager'))
-        self.FileNewItem.setText(self.trUtf8(u'&New'))
-        self.FileNewItem.setToolTip(self.trUtf8(u'New Service'))
-        self.FileNewItem.setStatusTip(self.trUtf8(u'Create a new Service'))
-        self.FileNewItem.setShortcut(self.trUtf8(u'Ctrl+N'))
-        self.FileOpenItem.setText(self.trUtf8(u'&Open'))
-        self.FileOpenItem.setToolTip(self.trUtf8(u'Open Service'))
-        self.FileOpenItem.setStatusTip(self.trUtf8(u'Open an existing service'))
-        self.FileOpenItem.setShortcut(self.trUtf8(u'Ctrl+O'))
-        self.FileSaveItem.setText(self.trUtf8(u'&Save'))
-        self.FileSaveItem.setToolTip(self.trUtf8(u'Save Service'))
+            self.trUtf8('Theme Manager'))
+        self.FileNewItem.setText(self.trUtf8('&New'))
+        self.FileNewItem.setToolTip(self.trUtf8('New Service'))
+        self.FileNewItem.setStatusTip(self.trUtf8('Create a new Service'))
+        self.FileNewItem.setShortcut(self.trUtf8('Ctrl+N'))
+        self.FileOpenItem.setText(self.trUtf8('&Open'))
+        self.FileOpenItem.setToolTip(self.trUtf8('Open Service'))
+        self.FileOpenItem.setStatusTip(self.trUtf8('Open an existing service'))
+        self.FileOpenItem.setShortcut(self.trUtf8('Ctrl+O'))
+        self.FileSaveItem.setText(self.trUtf8('&Save'))
+        self.FileSaveItem.setToolTip(self.trUtf8('Save Service'))
         self.FileSaveItem.setStatusTip(
-            self.trUtf8(u'Save the current service to disk'))
-        self.FileSaveItem.setShortcut(self.trUtf8(u'Ctrl+S'))
-        self.FileSaveAsItem.setText(self.trUtf8(u'Save &As...'))
-        self.FileSaveAsItem.setToolTip(self.trUtf8(u'Save Service As'))
+            self.trUtf8('Save the current service to disk'))
+        self.FileSaveItem.setShortcut(self.trUtf8('Ctrl+S'))
+        self.FileSaveAsItem.setText(self.trUtf8('Save &As...'))
+        self.FileSaveAsItem.setToolTip(self.trUtf8('Save Service As'))
         self.FileSaveAsItem.setStatusTip(
-            self.trUtf8(u'Save the current service under a new name'))
-        self.FileSaveAsItem.setShortcut(self.trUtf8(u'F12'))
-        self.FileExitItem.setText(self.trUtf8(u'E&xit'))
-        self.FileExitItem.setStatusTip(self.trUtf8(u'Quit OpenLP'))
-        self.FileExitItem.setShortcut(self.trUtf8(u'Alt+F4'))
-        self.ImportThemeItem.setText(self.trUtf8(u'&Theme'))
-        self.ImportLanguageItem.setText(self.trUtf8(u'&Language'))
-        self.ExportThemeItem.setText(self.trUtf8(u'&Theme'))
-        self.ExportLanguageItem.setText(self.trUtf8(u'&Language'))
-        self.actionLook_Feel.setText(self.trUtf8(u'Look && &Feel'))
-        self.OptionsSettingsItem.setText(self.trUtf8(u'&Settings'))
-        self.ViewMediaManagerItem.setText(self.trUtf8(u'&Media Manager'))
-        self.ViewMediaManagerItem.setToolTip(self.trUtf8(u'Toggle Media Manager'))
+            self.trUtf8('Save the current service under a new name'))
+        self.FileSaveAsItem.setShortcut(self.trUtf8('F12'))
+        self.FileExitItem.setText(self.trUtf8('E&xit'))
+        self.FileExitItem.setStatusTip(self.trUtf8('Quit OpenLP'))
+        self.FileExitItem.setShortcut(self.trUtf8('Alt+F4'))
+        self.ImportThemeItem.setText(self.trUtf8('&Theme'))
+        self.ImportLanguageItem.setText(self.trUtf8('&Language'))
+        self.ExportThemeItem.setText(self.trUtf8('&Theme'))
+        self.ExportLanguageItem.setText(self.trUtf8('&Language'))
+        self.actionLook_Feel.setText(self.trUtf8('Look && &Feel'))
+        self.OptionsSettingsItem.setText(self.trUtf8('&Settings'))
+        self.ViewMediaManagerItem.setText(self.trUtf8('&Media Manager'))
+        self.ViewMediaManagerItem.setToolTip(self.trUtf8('Toggle Media Manager'))
         self.ViewMediaManagerItem.setStatusTip(
-            self.trUtf8(u'Toggle the visibility of the Media Manager'))
-        self.ViewMediaManagerItem.setShortcut(self.trUtf8(u'F8'))
-        self.ViewThemeManagerItem.setText(self.trUtf8(u'&Theme Manager'))
-        self.ViewThemeManagerItem.setToolTip(self.trUtf8(u'Toggle Theme Manager'))
+            self.trUtf8('Toggle the visibility of the Media Manager'))
+        self.ViewMediaManagerItem.setShortcut(self.trUtf8('F8'))
+        self.ViewThemeManagerItem.setText(self.trUtf8('&Theme Manager'))
+        self.ViewThemeManagerItem.setToolTip(self.trUtf8('Toggle Theme Manager'))
         self.ViewThemeManagerItem.setStatusTip(
-            self.trUtf8(u'Toggle the visibility of the Theme Manager'))
-        self.ViewThemeManagerItem.setShortcut(self.trUtf8(u'F10'))
-        self.ViewServiceManagerItem.setText(self.trUtf8(u'&Service Manager'))
+            self.trUtf8('Toggle the visibility of the Theme Manager'))
+        self.ViewThemeManagerItem.setShortcut(self.trUtf8('F10'))
+        self.ViewServiceManagerItem.setText(self.trUtf8('&Service Manager'))
         self.ViewServiceManagerItem.setToolTip(
-            self.trUtf8(u'Toggle Service Manager'))
+            self.trUtf8('Toggle Service Manager'))
         self.ViewServiceManagerItem.setStatusTip(
-            self.trUtf8(u'Toggle the visibility of the Service Manager'))
-        self.ViewServiceManagerItem.setShortcut(self.trUtf8(u'F9'))
-        self.action_Preview_Panel.setText(self.trUtf8(u'&Preview Panel'))
-        self.action_Preview_Panel.setToolTip(self.trUtf8(u'Toggle Preview Panel'))
+            self.trUtf8('Toggle the visibility of the Service Manager'))
+        self.ViewServiceManagerItem.setShortcut(self.trUtf8('F9'))
+        self.action_Preview_Panel.setText(self.trUtf8('&Preview Panel'))
+        self.action_Preview_Panel.setToolTip(self.trUtf8('Toggle Preview Panel'))
         self.action_Preview_Panel.setStatusTip(
-            self.trUtf8(u'Toggle the visibility of the Preview Panel'))
-        self.action_Preview_Panel.setShortcut(self.trUtf8(u'F11'))
-        self.ToolsAlertItem.setText(self.trUtf8(u'&Alert'))
-        self.ToolsAlertItem.setStatusTip(self.trUtf8(u'Show an alert message'))
-        self.ToolsAlertItem.setShortcut(self.trUtf8(u'F7'))
-        self.PluginItem.setText(self.trUtf8(u'&Plugin List'))
-        self.PluginItem.setStatusTip(self.trUtf8(u'List the Plugins'))
-        self.PluginItem.setShortcut(self.trUtf8(u'Alt+F7'))
-        self.HelpDocumentationItem.setText(self.trUtf8(u'&User Guide'))
-        self.HelpAboutItem.setText(self.trUtf8(u'&About'))
+            self.trUtf8('Toggle the visibility of the Preview Panel'))
+        self.action_Preview_Panel.setShortcut(self.trUtf8('F11'))
+        self.PluginItem.setText(self.trUtf8('&Plugin List'))
+        self.PluginItem.setStatusTip(self.trUtf8('List the Plugins'))
+        self.PluginItem.setShortcut(self.trUtf8('Alt+F7'))
+        self.HelpDocumentationItem.setText(self.trUtf8('&User Guide'))
+        self.HelpAboutItem.setText(self.trUtf8('&About'))
         self.HelpAboutItem.setStatusTip(
-            self.trUtf8(u'More information about OpenLP'))
-        self.HelpAboutItem.setShortcut(self.trUtf8(u'Ctrl+F1'))
-        self.HelpOnlineHelpItem.setText(self.trUtf8(u'&Online Help'))
-        self.HelpWebSiteItem.setText(self.trUtf8(u'&Web Site'))
-        self.LanguageTranslateItem.setText(self.trUtf8(u'&Translate'))
+            self.trUtf8('More information about OpenLP'))
+        self.HelpAboutItem.setShortcut(self.trUtf8('Ctrl+F1'))
+        self.HelpOnlineHelpItem.setText(self.trUtf8('&Online Help'))
+        self.HelpWebSiteItem.setText(self.trUtf8('&Web Site'))
+        self.LanguageTranslateItem.setText(self.trUtf8('&Translate'))
         self.LanguageTranslateItem.setStatusTip(
-            self.trUtf8(u'Translate the interface to your language'))
-        self.LanguageEnglishItem.setText(self.trUtf8(u'English'))
+            self.trUtf8('Translate the interface to your language'))
+        self.LanguageEnglishItem.setText(self.trUtf8('English'))
         self.LanguageEnglishItem.setStatusTip(
-            self.trUtf8(u'Set the interface language to English'))
-        self.ToolsAddToolItem.setText(self.trUtf8(u'&Add Tool...'))
+            self.trUtf8('Set the interface language to English'))
+        self.ToolsAddToolItem.setText(self.trUtf8('Add &Tool...'))
         self.ToolsAddToolItem.setStatusTip(
-            self.trUtf8(u'Add an application to the list of tools'))
-        self.action_Preview_Panel.setText(self.trUtf8(u'&Preview Pane'))
-        self.ModeLiveItem.setText(self.trUtf8(u'&Live'))
+            self.trUtf8('Add an application to the list of tools'))
+        self.action_Preview_Panel.setText(self.trUtf8('&Preview Pane'))
+        self.ModeLiveItem.setText(self.trUtf8('&Live'))
 
 
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     """
     The main window.
     """
-    global log
-    log = logging.getLogger(u'MainWindow')
     log.info(u'MainWindow loaded')
 
     def __init__(self, screens, applicationVersion):
@@ -414,19 +437,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
-        self.screenList = screens
+        self.screens = screens
         self.applicationVersion = applicationVersion
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
         self.generalConfig = PluginConfig(u'General')
-        self.mainDisplay = MainDisplay(self, screens)
-        self.alertForm = AlertForm(self)
+        self.displayManager = DisplayManager(screens)
         self.aboutForm = AboutForm(self, applicationVersion)
-        self.settingsForm = SettingsForm(self.screenList, self, self)
+        self.settingsForm = SettingsForm(self.screens, self, self)
         # Set up the path with plugins
-        pluginpath = os.path.split(os.path.abspath(__file__))[0]
-        pluginpath = os.path.abspath(
-            os.path.join(pluginpath, u'..', u'..', u'plugins'))
+        pluginpath = AppLocation.get_directory(AppLocation.PluginsDir)
         self.plugin_manager = PluginManager(pluginpath)
         self.plugin_helpers = {}
         # Set up the interface
@@ -465,14 +485,20 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.action_Preview_Panel.setChecked)
         QtCore.QObject.connect(self.HelpAboutItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpAboutItemClicked)
-        QtCore.QObject.connect(self.ToolsAlertItem,
-            QtCore.SIGNAL(u'triggered()'), self.onToolsAlertItemClicked)
         QtCore.QObject.connect(self.PluginItem,
             QtCore.SIGNAL(u'triggered()'), self.onPluginItemClicked)
         QtCore.QObject.connect(self.OptionsSettingsItem,
             QtCore.SIGNAL(u'triggered()'), self.onOptionsSettingsItemClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'update_global_theme'), self.defaultThemeChanged)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'version_check'), self.versionCheck)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'blank_check'), self.blankCheck)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'screen_changed'), self.screenChanged)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'status_message'), self.showStatusMessage)
         QtCore.QObject.connect(self.FileNewItem,
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onNewService)
@@ -489,7 +515,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         #RenderManager needs to call ThemeManager and
         #ThemeManager needs to call RenderManager
         self.RenderManager = RenderManager(self.ThemeManagerContents,
-            self.screenList, self.getMonitorNumber())
+                                            self.screens)
         #Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
@@ -500,6 +526,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
         self.plugin_helpers[u'settings'] = self.settingsForm
         self.plugin_helpers[u'toolbox'] = self.mediaDockManager
+        self.plugin_helpers[u'maindisplay'] = self.displayManager.mainDisplay
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers)
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here
@@ -525,52 +552,54 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         log.info(u'Load data from Settings')
         self.settingsForm.postSetUp()
 
-    def versionCheck(self):
-        applicationVersion = self.applicationVersion[u'Full']
-        version = check_latest_version(self.generalConfig, applicationVersion)
-        if applicationVersion != version:
-            version_text = unicode(self.trUtf8(u'OpenLP version %s has been updated '
-                u'to version %s\n\nYou can obtain the latest version from http://openlp.org'))
-            QtGui.QMessageBox.question(None,
-                self.trUtf8(u'OpenLP Version Updated'),
-                version_text % (applicationVersion, version),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
-                QtGui.QMessageBox.Ok)
-
-    def getMonitorNumber(self):
+    def versionCheck(self, version):
         """
-        Set up the default behaviour of the monitor configuration in
-        here. Currently it is set to default to monitor 0 if the saved
-        monitor number does not exist.
+        Checks the version of the Application called from openlp.pyw
+        Triggered by delay thread.
         """
-        screen_number = int(self.generalConfig.get_config(u'Monitor', 0))
-
-        monitor_exists = False
-        for screen in self.screenList:
-            if screen[u'number'] == screen_number:
-                monitor_exists = True
-        if not monitor_exists:
-            screen_number = 0
-        return screen_number
+        app_version = self.applicationVersion[u'full']
+        version_text = unicode(self.trUtf8('Version %s of OpenLP is now '
+            'available for download (you are currently running version %s).'
+            '\n\nYou can download the latest version from http://openlp.org'))
+        QtGui.QMessageBox.question(self,
+            self.trUtf8('OpenLP Version Updated'),
+            version_text % (version, app_version),
+            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
+            QtGui.QMessageBox.Ok)
 
     def show(self):
         """
         Show the main form, as well as the display form
         """
         self.showMaximized()
-        screen_number = self.getMonitorNumber()
-        self.mainDisplay.setup(screen_number)
-        self.setFocus()
-        if str_to_bool(self.generalConfig.get_config(u'Auto Open', False)):
+        #screen_number = self.getMonitorNumber()
+        self.displayManager.setup()
+        if self.displayManager.mainDisplay.isVisible():
+            self.displayManager.mainDisplay.setFocus()
+        self.activateWindow()
+        if str_to_bool(self.generalConfig.get_config(u'auto open', False)):
             self.ServiceManagerContents.onLoadService(True)
-        if str_to_bool(self.generalConfig.get_config(u'Screen Blank', False)) \
-        and str_to_bool(self.generalConfig.get_config(u'Blank Warning', False)):
-            QtGui.QMessageBox.question(None,
-                self.trUtf8(u'OpenLP Main Display Blanked'),
-                self.trUtf8(u'The Main Display has been blanked out'),
+
+    def blankCheck(self):
+        """
+        Check and display message if screen blank on setup.
+        Triggered by delay thread.
+        """
+        if str_to_bool(self.generalConfig.get_config(u'screen blank', False)) \
+        and str_to_bool(self.generalConfig.get_config(u'blank warning', False)):
+            self.LiveController.onBlankDisplay(True)
+            QtGui.QMessageBox.question(self,
+                self.trUtf8('OpenLP Main Display Blanked'),
+                self.trUtf8('The Main Display has been blanked out'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
-            self.LiveController.blackPushButton.setChecked(True)
+
+    def versionThread(self):
+        """
+        Start an initial setup thread to delay notifications
+        """
+        vT = VersionThread(self, self.applicationVersion, self.generalConfig)
+        vT.start()
 
     def onHelpAboutItemClicked(self):
         """
@@ -578,12 +607,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.aboutForm.applicationVersion = self.applicationVersion
         self.aboutForm.exec_()
-
-    def onToolsAlertItemClicked(self):
-        """
-        Show the Alert form
-        """
-        self.alertForm.exec_()
 
     def onPluginItemClicked(self):
         """
@@ -597,19 +620,25 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Show the Settings dialog
         """
         self.settingsForm.exec_()
-        updated_display = self.getMonitorNumber()
-        if updated_display != self.RenderManager.current_display:
-            self.RenderManager.update_display(updated_display)
-            self.mainDisplay.setup(updated_display)
+
+    def screenChanged(self):
+        """
+        The screen has changed to so tell the displays to update_display
+        their locations
+        """
+        self.RenderManager.update_display()
+        self.displayManager.setup()
+        self.setFocus()
+        self.activateWindow()
 
     def closeEvent(self, event):
         """
         Hook to close the main window and display windows on exit
         """
-        if self.serviceNotSaved == True:
-            ret = QtGui.QMessageBox.question(None,
-                self.trUtf8(u'Save Changes to Service?'),
-                self.trUtf8(u'Your service has changed, do you want to save those changes?'),
+        if self.serviceNotSaved:
+            ret = QtGui.QMessageBox.question(self,
+                self.trUtf8('Save Changes to Service?'),
+                self.trUtf8('Your service has changed, do you want to save those changes?'),
                 QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Cancel |
                     QtGui.QMessageBox.Discard |
@@ -617,17 +646,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 QtGui.QMessageBox.Save)
             if ret == QtGui.QMessageBox.Save:
                 self.ServiceManagerContents.onSaveService()
-                self.mainDisplay.close()
                 self.cleanUp()
                 event.accept()
             elif ret == QtGui.QMessageBox.Discard:
-                self.mainDisplay.close()
                 self.cleanUp()
                 event.accept()
             else:
                 event.ignore()
         else:
-            self.mainDisplay.close()
             self.cleanUp()
             event.accept()
 
@@ -640,10 +666,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Call the cleanup method to shutdown plugins.
         log.info(u'cleanup plugins')
         self.plugin_manager.finalise_plugins()
+        #Close down the displays
+        self.displayManager.close()
 
     def serviceChanged(self, reset=False, serviceName=None):
         """
-        Hook to change the main window title when the service changes
+        Hook to change the main window title when the service chmainwindow.pyanges
 
         ``reset``
             Shows if the service has been cleared or saved
@@ -655,7 +683,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             service_name = u'(unsaved service)'
         else:
             service_name = serviceName
-        if reset == True:
+        if reset:
             self.serviceNotSaved = False
             title = u'%s - %s' % (self.mainTitle, service_name)
         else:
@@ -663,8 +691,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             title = u'%s - %s*' % (self.mainTitle, service_name)
         self.setWindowTitle(title)
 
+    def showStatusMessage(self, message):
+        self.StatusBar.showMessage(message)
+
     def defaultThemeChanged(self, theme):
-        self.DefaultThemeLabel.setText(self.defaultThemeText + theme)
+        self.DefaultThemeLabel.setText(
+            u'%s %s' % (self.defaultThemeText, theme))
 
     def toggleMediaManager(self, visible):
         if self.MediaManagerDock.isVisible() != visible:

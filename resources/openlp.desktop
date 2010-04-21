@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=OpenLP
+GenericName=Church lyrics projection
+Exec=openlp
+Icon=openlp
+StartupNotify=true
+Terminal=false
+Type=Application
+Categories=AudioVideo;

@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,9 +25,12 @@
 
 import logging
 
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtCore
 
 from renderer import Renderer
+from openlp.core.lib import ThemeLevel
+
+log = logging.getLogger(__name__)
 
 class RenderManager(object):
     """
@@ -37,64 +41,51 @@ class RenderManager(object):
     ``theme_manager``
         The ThemeManager instance, used to get the current theme details.
 
-    ``screen_list``
-        The list of screens available.
+    ``screens``
+        Contains information about the Screens.
 
     ``screen_number``
         Defaults to *0*. The index of the output/display screen.
     """
-    global log
-    log = logging.getLogger(u'RenderManager')
     log.info(u'RenderManager Loaded')
 
-    def __init__(self, theme_manager, screen_list, screen_number=0):
+    def __init__(self, theme_manager, screens):
         """
         Initialise the render manager.
         """
         log.debug(u'Initilisation started')
-        self.screen_list = screen_list
+        self.screens = screens
         self.theme_manager = theme_manager
-        self.displays = len(screen_list)
-        if (screen_number + 1) > len(screen_list):
-            self.current_display = 0
-        else:
-            self.current_display = screen_number
         self.renderer = Renderer()
-        self.calculate_default(self.screen_list[self.current_display][u'size'])
+        self.calculate_default(self.screens.current[u'size'])
         self.theme = u''
         self.service_theme = u''
-        self.global_style = u''
+        self.theme_level = u''
         self.override_background = None
         self.themedata = None
-        self.save_bg_frame = None
-        self.override_background_changed = False
 
-    def update_display(self, screen_number):
+    def update_display(self):
         """
         Updates the render manager's information about the current screen.
-
-        ``screen_number``
-            The updated index of the output/display screen.
         """
         log.debug(u'Update Display')
-        if self.current_display != screen_number:
-            self.current_display = screen_number
-            self.calculate_default(
-                self.screen_list[self.current_display][u'size'])
+        self.calculate_default(self.screens.current[u'size'])
+        self.renderer.bg_frame = None
 
-    def set_global_theme(self, global_theme, global_style=u'Global'):
+    def set_global_theme(self, global_theme, theme_level=ThemeLevel.Global):
         """
         Set the global-level theme and the theme level.
 
         ``global_theme``
             The global-level theme to be set.
 
-        ``global_style``
-            Defaults to *"Global"*. The theme level, can be "Global",
-            "Service" or "Song".
+        ``theme_level``
+            Defaults to *``ThemeLevel.Global``*. The theme level, can be
+            ``ThemeLevel.Global``, ``ThemeLevel.Service`` or
+            ``ThemeLevel.Song``.
         """
         self.global_theme = global_theme
-        self.global_style = global_style
+        self.theme_level = theme_level
 
     def set_service_theme(self, service_theme):
         """
@@ -113,18 +104,18 @@ class RenderManager(object):
             The name of the song-level theme.
         """
         log.debug(u'set override theme to %s', theme)
-        if self.global_style == u'Global':
+        if self.theme_level == ThemeLevel.Global:
             self.theme = self.global_theme
-        elif self.global_style == u'Service':
+        elif self.theme_level == ThemeLevel.Service:
             if self.service_theme == u'':
                 self.theme = self.global_theme
             else:
                 self.theme = self.service_theme
         else:
-            if theme is not None:
+            if theme:
                 self.theme = theme
-            elif self.global_style == u'Song' or \
-                self.global_style == u'Service':
+            elif self.theme_level == ThemeLevel.Song or \
+                self.theme_level == ThemeLevel.Service:
                 if self.service_theme == u'':
                     self.theme = self.global_theme
                 else:
@@ -134,29 +125,14 @@ class RenderManager(object):
         if self.theme != self.renderer.theme_name or self.themedata is None:
             log.debug(u'theme is now %s', self.theme)
             self.themedata = self.theme_manager.getThemeData(self.theme)
-            self.calculate_default(
-                self.screen_list[self.current_display][u'size'])
+            self.calculate_default(self.screens.current[u'size'])
             self.renderer.set_theme(self.themedata)
             self.build_text_rectangle(self.themedata)
-        #Replace the backgrount image from renderer with one from image
-        if self.override_background is not None:
-            if self.save_bg_frame is None:
-                self.save_bg_frame = self.renderer.bg_frame
-            if self.override_background_changed:
-                self.renderer.bg_frame = self.resize_image(self.override_background)
-                self.override_background_changed = False
-        else:
-            if self.override_background_changed:
-                self.renderer.bg_frame = self.resize_image(self.override_background)
-                self.override_background_changed = False
-            if self.save_bg_frame is not None:
-                self.renderer.bg_frame = self.save_bg_frame
-                self.save_bg_frame = None
 
     def build_text_rectangle(self, theme):
         """
-        Builds a text block using the settings in ``theme``.
-        One is needed per slide
+        Builds a text block using the settings in ``theme``
+        and the size of the display screen.height.
 
         ``theme``
             The theme to build a text block for.
@@ -164,20 +140,19 @@ class RenderManager(object):
         log.debug(u'build_text_rectangle')
         main_rect = None
         footer_rect = None
-        if theme.font_main_override == False:
-            main_rect = QtCore.QRect(10, 0, self.width - 1,
-                self.footer_start - 20)
+        if not theme.font_main_override:
+            main_rect = QtCore.QRect(10, 0,
+                            self.width - 20, self.footer_start)
         else:
-            main_rect = QtCore.QRect(int(theme.font_main_x),
-                int(theme.font_main_y), int(theme.font_main_width)-1,
-                int(theme.font_main_height) - 1)
-        if theme.font_footer_override == False:
-            footer_rect = QtCore.QRect(10,self.footer_start, self.width - 1,
-                self.height-self.footer_start)
+            main_rect = QtCore.QRect(theme.font_main_x, theme.font_main_y,
+                theme.font_main_width - 1, theme.font_main_height - 1)
+        if not theme.font_footer_override:
+            footer_rect = QtCore.QRect(10, self.footer_start,
+                            self.width - 20, self.height - self.footer_start)
         else:
-            footer_rect = QtCore.QRect(int(theme.font_footer_x),
-                int(theme.font_footer_y), int(theme.font_footer_width)-1,
-                int(theme.font_footer_height) - 1)
+            footer_rect = QtCore.QRect(theme.font_footer_x,
+                theme.font_footer_y, theme.font_footer_width - 1,
+                theme.font_footer_height - 1)
         self.renderer.set_text_rectangle(main_rect, footer_rect)
 
     def generate_preview(self, themedata):
@@ -188,21 +163,25 @@ class RenderManager(object):
             The theme to generated a preview for.
         """
         log.debug(u'generate preview')
-        self.calculate_default(QtCore.QSize(1024, 768))
+        #set the default image size for previews
+        self.calculate_default(self.screens.preview[u'size'])
         self.renderer.set_theme(themedata)
         self.build_text_rectangle(themedata)
         self.renderer.set_frame_dest(self.width, self.height, True)
-        verse = []
-        verse.append(u'Amazing Grace!')
-        verse.append(u'How sweet the sound')
-        verse.append(u'To save a wretch like me;')
-        verse.append(u'I once was lost but now am found,')
-        verse.append(u'Was blind, but now I see.')
+        #Reset the real screen size for subsequent render requests
+        self.calculate_default(self.screens.current[u'size'])
+        verse = u'Amazing Grace!\n'\
+        'How sweet the sound\n'\
+        'To save a wretch like me;\n'\
+        'I once was lost but now am found,\n'\
+        'Was blind, but now I see.'
         footer = []
         footer.append(u'Amazing Grace (John Newton)' )
         footer.append(u'Public Domain')
-        footer.append(u'CCLI xxx')
-        return self.renderer.generate_frame_from_lines(verse, footer)
+        footer.append(u'CCLI 123456')
+        formatted = self.renderer.format_slide(verse, False)
+        #Only Render the first slide page returned
+        return self.renderer.generate_frame_from_lines(formatted[0], footer)[u'main']
 
     def format_slide(self, words):
         """
@@ -230,46 +209,16 @@ class RenderManager(object):
         self.renderer.set_frame_dest(self.width, self.height)
         return self.renderer.generate_frame_from_lines(main_text, footer_text)
 
-    def resize_image(self, image, width=0, height=0):
-        """
-        Resize an image to fit on the current screen.
-
-        ``image``
-            The image to resize.
-        """
-        preview = QtGui.QImage(image)
-        if width == 0:
-            w = self.width
-            h = self.height
-        else:
-            w = width
-            h = height
-        preview = preview.scaled(w, h, QtCore.Qt.KeepAspectRatio,
-            QtCore.Qt.SmoothTransformation)
-        realw = preview.width();
-        realh = preview.height()
-        # and move it to the centre of the preview space
-        newImage = QtGui.QImage(w, h, QtGui.QImage.Format_ARGB32_Premultiplied)
-        newImage.fill(QtCore.Qt.black)
-        painter = QtGui.QPainter(newImage)
-        painter.drawImage((w-realw) / 2, (h-realh) / 2, preview)
-        return newImage
-
     def calculate_default(self, screen):
         """
         Calculate the default dimentions of the screen.
 
         ``screen``
-            The QWidget instance of the screen.
+            The QSize of the screen.
         """
         log.debug(u'calculate default %s', screen)
-        #size fixed so reflects the preview size.
-        if self.current_display == 0:
-            self.width = 1024
-            self.height = 768
-        else:
-            self.width = screen.width()
-            self.height = screen.height()
+        self.width = screen.width()
+        self.height = screen.height()
         self.screen_ratio = float(self.height) / float(self.width)
         log.debug(u'calculate default %d, %d, %f',
             self.width, self.height, self.screen_ratio )

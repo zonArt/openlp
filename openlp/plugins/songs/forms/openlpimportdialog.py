@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -284,22 +285,21 @@ class Ui_OpenLPImportDialog(object):
         QtCore.QMetaObject.connectSlotsByName(OpenLPImportDialog)
 
     def retranslateUi(self, OpenLPImportDialog):
-        OpenLPImportDialog.setWindowTitle(self.trUtf8(u'openlp.org Song Importer'))
-        self.ImportFileLabel.setText(self.trUtf8(u'Select openlp.org songfile to import:'))
-        self.ImportListLabel.setText(self.trUtf8(u'Import File Song List'))
-        self.ImportListTable.horizontalHeaderItem(0).setText(self.trUtf8(u'Song Title'))
-        self.ImportListTable.horizontalHeaderItem(1).setText(self.trUtf8(u'Author'))
-        self.ImportSelectAllPushButton.setText(self.trUtf8(u'Select All'))
-        self.ImportFilterComboBox.setItemText(0, self.trUtf8(u'Lyrics'))
-        self.ImportFilterComboBox.setItemText(1, self.trUtf8(u'Title'))
-        self.ImportFilterComboBox.setItemText(2, self.trUtf8(u'Author'))
-        self.SelectedListLabel.setText(self.trUtf8(u'Song Import List'))
-        self.SelectedListTable.horizontalHeaderItem(0).setText(self.trUtf8(u'Song Title'))
-        self.SelectedListTable.horizontalHeaderItem(1).setText(self.trUtf8(u'Author'))
-        self.SelectedSelectAllPushButton.setText(self.trUtf8(u'Select All'))
-        self.SelectedRemoveSelectedButton.setText(self.trUtf8(u'Remove Selected'))
-        self.ProgressGroupBox.setTitle(self.trUtf8(u'Progress:'))
-        self.ProgressLabel.setText(self.trUtf8(u'Ready to import'))
-        self.ImportPushButton.setText(self.trUtf8(u'Import'))
-        self.ClosePushButton.setText(self.trUtf8(u'Close'))
-
+        OpenLPImportDialog.setWindowTitle(self.trUtf8('openlp.org Song Importer'))
+        self.ImportFileLabel.setText(self.trUtf8('Select openlp.org songfile to import:'))
+        self.ImportListLabel.setText(self.trUtf8('Import File Song List'))
+        self.ImportListTable.horizontalHeaderItem(0).setText(self.trUtf8('Song Title'))
+        self.ImportListTable.horizontalHeaderItem(1).setText(self.trUtf8('Author'))
+        self.ImportSelectAllPushButton.setText(self.trUtf8('Select All'))
+        self.ImportFilterComboBox.setItemText(0, self.trUtf8('Lyrics'))
+        self.ImportFilterComboBox.setItemText(1, self.trUtf8('Title'))
+        self.ImportFilterComboBox.setItemText(2, self.trUtf8('Author'))
+        self.SelectedListLabel.setText(self.trUtf8('Song Import List'))
+        self.SelectedListTable.horizontalHeaderItem(0).setText(self.trUtf8('Song Title'))
+        self.SelectedListTable.horizontalHeaderItem(1).setText(self.trUtf8('Author'))
+        self.SelectedSelectAllPushButton.setText(self.trUtf8('Select All'))
+        self.SelectedRemoveSelectedButton.setText(self.trUtf8('Remove Selected'))
+        self.ProgressGroupBox.setTitle(self.trUtf8('Progress:'))
+        self.ProgressLabel.setText(self.trUtf8('Ready to import'))
+        self.ImportPushButton.setText(self.trUtf8('Import'))
+        self.ClosePushButton.setText(self.trUtf8('Close'))

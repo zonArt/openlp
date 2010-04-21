@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,19 +30,15 @@ from PyQt4 import QtNetwork, QtCore
 from openlp.core.lib import Plugin, Receiver
 from openlp.plugins.remotes.lib import RemoteTab
 
-class RemotesPlugin(Plugin):
+log = logging.getLogger(__name__)
 
-    global log
-    log = logging.getLogger(u'RemotesPlugin')
+class RemotesPlugin(Plugin):
     log.info(u'Remote Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Remotes', u'1.9.0', plugin_helpers)
+        Plugin.__init__(self, u'Remotes', u'1.9.1', plugin_helpers)
         self.weight = -1
         self.server = None
-
-    def can_be_disabled(self):
-        return True
 
     def initialise(self):
         log.debug(u'initialise')
@@ -55,7 +52,7 @@ class RemotesPlugin(Plugin):
     def finalise(self):
         log.debug(u'finalise')
         self.remove_toolbox_item()
-        if self.server is not None:
+        if self.server:
             self.server.close()
 
     def get_settings_tab(self):
@@ -76,13 +73,13 @@ class RemotesPlugin(Plugin):
         pos = datagram.find(u':')
         event = unicode(datagram[:pos].lower())
         if event == u'alert':
-            Receiver().send_message(u'alert_text', unicode(datagram[pos + 1:]))
+            Receiver.send_message(u'alert_text', unicode(datagram[pos + 1:]))
         if event == u'next_slide':
-            Receiver().send_message(u'live_slide_next')
+            Receiver.send_message(u'live_slide_next')
 
     def about(self):
-        about_text = self.trUtf8(u'<b>Remote Plugin</b><br>This plugin '
-            u'provides the ability to send messages to a running version of '
-            u'openlp on a different computer.<br>The Primary use for this '
-            u'would be to send alerts from a creche')
+        about_text = self.trUtf8('<b>Remote Plugin</b><br>This plugin '
+            'provides the ability to send messages to a running version of '
+            'openlp on a different computer.<br>The Primary use for this '
+            'would be to send alerts from a creche')
         return about_text

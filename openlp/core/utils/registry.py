@@ -4,9 +4,10 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2009 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2009 Martin Thompson, Tim Bentley, Carsten      #
-# Tinggaard, Jon Tibble, Jonathan Corwin, Maikel Stuivenberg, Scott Guerrieri #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -40,15 +41,17 @@ class Registry(object):
         """
         Check if a value exists.
         """
-        return self.config.has_option(section, key)
+        return self.config.has_option(section.encode('utf-8'), 
+            key.encode('utf-8'))
 
     def get_value(self, section, key, default=None):
         """
         Get a single value from the registry.
         """
         try:
-            if self.config.get(section, key):
-                return self.config.get(section, key)
+            if self.config.get(section.encode('utf-8'), key.encode('utf-8')):
+                return self.config.get(section.encode('utf-8'), 
+                    key.encode('utf-8')).decode('utf-8')
             else:
                 return default
         except:
@@ -59,7 +62,8 @@ class Registry(object):
         Set a single value in the registry.
         """
         try :
-            self.config.set(section, key, unicode(value))
+            self.config.set(section.encode('utf-8'), key.encode('utf-8'), 
+                unicode(value).encode('utf-8'))
             return self._save()
         except:
             return False
@@ -69,7 +73,8 @@ class Registry(object):
         Delete a single value from the registry.
         """
         try:
-            self.config.remove_option(section, key)
+            self.config.remove_option(section.encode('utf-8'), 
+                key.encode('utf-8'))
             return self._save()
         except:
             return False
@@ -78,14 +83,14 @@ class Registry(object):
         """
         Check if a section exists.
         """
-        return self.config.has_section(section)
+        return self.config.has_section(section.encode('utf-8'))
 
     def create_section(self, section):
         """
         Create a new section in the registry.
         """
         try:
-            self.config.add_section(section)
+            self.config.add_section(section.encode('utf-8'))
             return self._save()
         except:
             return False
@@ -95,29 +100,35 @@ class Registry(object):
         Delete a section (including all values).
         """
         try:
-            self.config.remove_section(section)
+            self.config.remove_section(section.encode('utf-8'))
             return self._save()
         except:
             return False
 
     def _load(self):
+        if not os.path.isfile(self.file_name):
+            return False
+        file_handle = None
         try:
-            if not os.path.isfile(self.file_name):
-                return False
             file_handle = open(self.file_name, u'r')
             self.config.readfp(file_handle)
-            file_handle.close()
             return True
         except:
             return False
+        finally:
+            if file_handle:
+                file_handle.close()
 
     def _save(self):
+        file_handle = None
         try:
             if not os.path.exists(os.path.dirname(self.file_name)):
                 os.makedirs(os.path.dirname(self.file_name))
             file_handle = open(self.file_name, u'w')
             self.config.write(file_handle)
-            file_handle.close()
             return self._load()
         except:
             return False
+        finally:
+            if file_handle:
+                file_handle.close()
