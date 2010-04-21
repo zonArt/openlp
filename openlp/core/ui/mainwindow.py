@@ -671,7 +671,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def serviceChanged(self, reset=False, serviceName=None):
         """
-        Hook to change the main window title when the service chmainwindow.pyanges
+        Hook to change the main window title when the service changes
 
         ``reset``
             Shows if the service has been cleared or saved
