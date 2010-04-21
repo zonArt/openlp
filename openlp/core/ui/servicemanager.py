@@ -714,9 +714,8 @@ class ServiceManager(QtGui.QWidget):
         item, count = self.findServiceItem()
         if self.serviceItems[item][u'service_item']\
             .is_capable(ItemCapabilities.AllowsEdit):
-            self.remoteEditTriggered = True
             Receiver.send_message(u'%s_edit' %
-                self.serviceItems[item][u'service_item'].name, u'L:%s' %
+                self.serviceItems[item][u'service_item'].name.lower(), u'L:%s' %
                 self.serviceItems[item][u'service_item'].editId )
 
     def findServiceItem(self):

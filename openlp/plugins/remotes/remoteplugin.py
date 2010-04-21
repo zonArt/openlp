@@ -75,7 +75,7 @@ class RemotesPlugin(Plugin):
         if event == u'alert':
             Receiver.send_message(u'alerts_text', unicode(datagram[pos + 1:]))
         elif event == u'next_slide':
-            Receiver.send_message(u'slidecontroller_live_go_next')
+            Receiver.send_message(u'slidecontroller_live_next')
         else:
             Receiver.send_message(event, unicode(datagram[pos + 1:]))
             

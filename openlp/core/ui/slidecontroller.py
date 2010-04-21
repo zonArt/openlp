@@ -315,23 +315,23 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_stop_loop'), self.onStopLoop)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_go_first' % self.type_prefix), 
+            QtCore.SIGNAL(u'slidecontroller_%s_first' % self.type_prefix), 
             self.onSlideSelectedFirst)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_go_next' % self.type_prefix), 
+            QtCore.SIGNAL(u'slidecontroller_%s_next' % self.type_prefix), 
             self.onSlideSelectedNext)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_go_previous' % self.type_prefix), 
+            QtCore.SIGNAL(u'slidecontroller_%s_previous' % self.type_prefix), 
             self.onSlideSelectedPrevious)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_go_next_noloop' % self.type_prefix), 
+            QtCore.SIGNAL(u'slidecontroller_%s_next_noloop' % self.type_prefix), 
             self.onSlideSelectedNextNoloop)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_go_previous_noloop' % 
+            QtCore.SIGNAL(u'slidecontroller_%s_previous_noloop' % 
             self.type_prefix),
             self.onSlideSelectedPreviousNoloop)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_go_last' % self.type_prefix), 
+            QtCore.SIGNAL(u'slidecontroller_%s_last' % self.type_prefix), 
             self.onSlideSelectedLast)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_%s_change' % self.type_prefix), 
@@ -608,10 +608,10 @@ class SlideController(QtGui.QWidget):
         """
         if self.serviceItem is not None:
             if blanked:
-                Receiver.send_message(u'slidecontroller_blank' % 
+                Receiver.send_message(u'slidecontroller_blank', 
                     [self.serviceItem, self.isLive])
             else:
-                Receiver.send_message(u'slidecontroller_unblank' % 
+                Receiver.send_message(u'slidecontroller_unblank', 
                     [self.serviceItem, self.isLive])
             self.parent.mainDisplay.blankDisplay(blankType, blanked)
         else:
@@ -756,7 +756,7 @@ class SlideController(QtGui.QWidget):
     def onEditSong(self):
         self.songEdit = True
         Receiver.send_message(u'%s_edit' %
-            self.serviceItem.name.lower(),  u'L:%s' %
+            self.serviceItem.name.lower(),  u'P:%s' %
             self.serviceItem.editId)
 
     def onGoLive(self):
@@ -773,7 +773,7 @@ class SlideController(QtGui.QWidget):
             blanked = self.blankButton.isChecked()
         else:
             blanked = False
-        Receiver.send_message(u'slidecontroller_media_start', 
+        Receiver.send_message(u'mediacontroller_start', 
             [item, self.isLive, blanked])
         if not self.isLive:
             self.mediaObject.stop()
@@ -785,13 +785,13 @@ class SlideController(QtGui.QWidget):
             self.onMediaPlay()
 
     def onMediaPause(self):
-        Receiver.send_message(u'slidecontroller_media_pause', 
+        Receiver.send_message(u'mediacontroller_pause', 
             [item, self.isLive])
         if not self.isLive:
             self.mediaObject.pause()
 
     def onMediaPlay(self):
-        Receiver.send_message(u'slidecontroller_media_play', 
+        Receiver.send_message(u'mediacontroller_play', 
             [item, self.isLive])
         if not self.isLive:
             self.SlidePreview.hide()
@@ -799,7 +799,7 @@ class SlideController(QtGui.QWidget):
             self.mediaObject.play()
 
     def onMediaStop(self):
-        Receiver.send_message(u'slidecontroller_media_stop', 
+        Receiver.send_message(u'mediacontroller_stop', 
             [item, self.isLive])
         if not self.isLive:
             self.mediaObject.stop()

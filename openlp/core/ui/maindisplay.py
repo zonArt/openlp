@@ -68,25 +68,25 @@ class DisplayWidget(QtGui.QWidget):
         self.parent = parent
         self.hotkey_map = {
             QtCore.Qt.Key_Return: 'servicemanager_next_item',
-            QtCore.Qt.Key_Space: 'slidecontroller_live_go_next_noloop',
-            QtCore.Qt.Key_Enter: 'slidecontroller_live_go_next_noloop',
+            QtCore.Qt.Key_Space: 'slidecontroller_live_next_noloop',
+            QtCore.Qt.Key_Enter: 'slidecontroller_live_next_noloop',
             QtCore.Qt.Key_0: 'servicemanager_next_item',
-            QtCore.Qt.Key_Backspace: 'slidecontroller_live_go_previous_noloop'}
+            QtCore.Qt.Key_Backspace: 'slidecontroller_live_previous_noloop'}
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
             #here accept the event and do something
             if event.key() == QtCore.Qt.Key_Up:
-                Receiver.send_message(u'slidecontroller_go_live_previous')
+                Receiver.send_message(u'slidecontroller_live_previous')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Down:
-                Receiver.send_message(u'slidecontroller_go_live_next')
+                Receiver.send_message(u'slidecontroller_live_next')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageUp:
-                Receiver.send_message(u'slidecontroller_go_live_first')
+                Receiver.send_message(u'slidecontroller_live_first')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageDown:
-                Receiver.send_message(u'slidecontroller_go_live_last')
+                Receiver.send_message(u'slidecontroller_live_last')
                 event.accept()
             elif event.key() in self.hotkey_map:
                 Receiver.send_message(self.hotkey_map[event.key()])
@@ -325,13 +325,13 @@ class VideoDisplay(Phonon.VideoWidget):
         Phonon.createPath(self.mediaObject, self)
         Phonon.createPath(self.mediaObject, self.audioObject)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_media_start'), self.onMediaQueue)
+            QtCore.SIGNAL(u'mediacontroller_start'), self.onMediaQueue)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_media_play'), self.onMediaPlay)
+            QtCore.SIGNAL(u'mediacontroller_play'), self.onMediaPlay)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_media_pause'), self.onMediaPause)
+            QtCore.SIGNAL(u'mediacontroller_pause'), self.onMediaPause)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_media_stop'), self.onMediaStop)
+            QtCore.SIGNAL(u'mediacontroller_stop'), self.onMediaStop)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.setup)
 

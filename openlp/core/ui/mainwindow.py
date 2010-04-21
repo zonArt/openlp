@@ -498,7 +498,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'status_message'), self.showStatusMessage)
+            QtCore.SIGNAL(u'maindisplay_status_text'), self.showStatusMessage)
         QtCore.QObject.connect(self.FileNewItem,
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onNewService)
