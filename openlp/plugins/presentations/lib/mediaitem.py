@@ -134,8 +134,10 @@ class PresentationMediaItem(MediaManagerItem):
             else:
                 icon = None
                 for controller in self.controllers:
-                    thumb = os.path.join(self.parent.config.get_data_path(), controller, filename, u'slide1.png')
-                    preview = os.path.join(self.parent.config.get_data_path(), controller, u'thumbnails', filename, u'slide1.png')
+                    thumb = os.path.join(self.parent.config.get_data_path(), \
+                        controller, filename, u'slide1.png')
+                    preview = os.path.join(self.parent.config.get_data_path(), \
+                        controller, u'thumbnails', filename, u'slide1.png')
                     if os.path.exists(preview):
                         if os.path.exists(thumb):
                             if self.validate(preview, thumb):
