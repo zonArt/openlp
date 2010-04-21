@@ -24,7 +24,9 @@
 ###############################################################################
 
 import string
-from PyQt4 import QtGui, QtCore
+
+from PyQt4 import QtGui
+
 from openlp.core.lib import SongXMLBuilder
 from openlp.plugins.songs.lib.models import Song, Author, Topic, Book
         
