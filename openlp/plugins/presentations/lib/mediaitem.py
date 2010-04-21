@@ -104,7 +104,7 @@ class PresentationMediaItem(MediaManagerItem):
 
     def initialise(self):
         self.servicePath = os.path.join(
-            self.parent.config.get_data_path(), u'.thumbnails')
+            self.parent.config.get_data_path(), u'thumbnails')
         if not os.path.exists(self.servicePath):
             os.mkdir(self.servicePath)
         list = self.parent.config.load_list(u'presentations')
@@ -134,8 +134,9 @@ class PresentationMediaItem(MediaManagerItem):
             else:
                 icon = None
                 for controller in self.controllers:
-                    thumb = os.path.join(self.parent.config.get_data_path(), \
-                        controller, filename, u'slide1.png')
+                    thumbPath = os.path.join(self.parent.config.get_data_path(), \
+                        u'thumbnails', controller, filename)
+                    thumb = os.path.join(thumbPath, u'slide1.png')
                     preview = os.path.join(self.parent.config.get_data_path(), \
                         controller, u'thumbnails', filename, u'slide1.png')
                     if os.path.exists(preview):
@@ -145,6 +146,7 @@ class PresentationMediaItem(MediaManagerItem):
                             else:
                                 icon = build_icon(u':/general/general_delete.png')
                         else:
+                            os.makedirs(thumbPath)
                             icon = self.IconFromFile(preview, thumb)
                 if not icon:
                     icon = build_icon(u':/general/general_delete.png')
