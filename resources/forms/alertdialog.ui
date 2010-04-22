@@ -98,7 +98,7 @@
           <string>&amp;New</string>
          </property>
          <property name="icon">
-          <iconset resource="../Projects/OpenLP/trunk/resources/images/openlp-2.qrc">
+          <iconset>
            <normaloff>:/general/general_new.png</normaloff>:/general/general_new.png</iconset>
          </property>
         </widget>
@@ -112,19 +112,8 @@
           <string>&amp;Save</string>
          </property>
          <property name="icon">
-          <iconset resource="../Projects/OpenLP/trunk/resources/images/openlp-2.qrc">
+          <iconset>
            <normaloff>:/general/general_save.png</normaloff>:/general/general_save.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="EditButton">
-         <property name="text">
-          <string>&amp;Edit</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../Projects/OpenLP/trunk/resources/images/openlp-2.qrc">
-           <normaloff>:/general/general_edit.png</normaloff>:/general/general_edit.png</iconset>
          </property>
         </widget>
        </item>
@@ -134,7 +123,7 @@
           <string>&amp;Delete</string>
          </property>
          <property name="icon">
-          <iconset resource="../Projects/OpenLP/trunk/resources/images/openlp-2.qrc">
+          <iconset>
            <normaloff>:/general/general_delete.png</normaloff>:/general/general_delete.png</iconset>
          </property>
         </widget>
@@ -180,7 +169,7 @@
         <string>Displ&amp;ay</string>
        </property>
        <property name="icon">
-        <iconset resource="../Projects/OpenLP/trunk/resources/images/openlp-2.qrc">
+        <iconset>
          <normaloff>:/general/general_live.png</normaloff>:/general/general_live.png</iconset>
        </property>
       </widget>
@@ -191,7 +180,7 @@
         <string>Display &amp;&amp; Cl&amp;ose</string>
        </property>
        <property name="icon">
-        <iconset resource="../Projects/OpenLP/trunk/resources/images/openlp-2.qrc">
+        <iconset>
          <normaloff>:/general/general_live.png</normaloff>:/general/general_live.png</iconset>
        </property>
       </widget>
@@ -202,7 +191,7 @@
         <string>&amp;Close</string>
        </property>
        <property name="icon">
-        <iconset resource="../Projects/OpenLP/trunk/resources/images/openlp-2.qrc">
+        <iconset>
          <normaloff>:/system/system_close.png</normaloff>:/system/system_close.png</iconset>
        </property>
       </widget>
@@ -217,15 +206,12 @@
   <tabstop>AlertListWidget</tabstop>
   <tabstop>NewButton</tabstop>
   <tabstop>SaveButton</tabstop>
-  <tabstop>EditButton</tabstop>
   <tabstop>DeleteButton</tabstop>
   <tabstop>DisplayButton</tabstop>
   <tabstop>DisplayCloseButton</tabstop>
   <tabstop>CloseButton</tabstop>
  </tabstops>
- <resources>
-  <include location="../Projects/OpenLP/trunk/resources/images/openlp-2.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>CloseButton</sender>
