@@ -357,11 +357,14 @@ class MediaManagerItem(QtGui.QWidget):
         Validates to see if the file still exists or
         thumbnail is up to date
         """
-        filedate = os.stat(file).st_mtime
-        thumbdate = os.stat(thumb).st_mtime
-        #if file updated rebuild icon
-        if filedate > thumbdate:
-            self.IconFromFile(file, thumb)
+        if os.path.exists(file):
+            filedate = os.stat(file).st_mtime
+            thumbdate = os.stat(thumb).st_mtime
+            #if file updated rebuild icon
+            if filedate > thumbdate:
+                self.IconFromFile(file, thumb)
+            return True
+        return False
 
     def IconFromFile(self, file, thumb):
         icon = build_icon(unicode(file))
