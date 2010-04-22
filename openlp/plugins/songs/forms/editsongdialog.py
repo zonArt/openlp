@@ -445,7 +445,7 @@ class Ui_EditSongDialog(object):
         self.ThemeGroupBox.setTitle(self.trUtf8('Theme'))
         self.ThemeAddButton.setText(self.trUtf8('Add a Theme'))
         self.CopyrightGroupBox.setTitle(self.trUtf8('Copyright Information'))
-        self.CopyrightInsertButton.setText(self.trUtf8(u'\u00a9'.encode('utf8')))
+        self.CopyrightInsertButton.setText(self.trUtf8(u'\xa9'))
         self.CCLILabel.setText(self.trUtf8('CCLI Number:'))
         self.CommentsGroupBox.setTitle(self.trUtf8('Comments'))
         self.SongTabWidget.setTabText(

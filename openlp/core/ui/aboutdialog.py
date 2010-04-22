@@ -24,27 +24,28 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_AboutDialog(object):
-    def setupUi(self, AboutDialog):
-        AboutDialog.setObjectName(u'AboutDialog')
-        AboutDialog.resize(516, 481)
+    def setupUi(self, AboutForm):
+        AboutForm.setObjectName(u'AboutDialog')
+        AboutForm.resize(516, 481)
         LogoIcon = QtGui.QIcon()
         LogoIcon.addPixmap(QtGui.QPixmap(u':/icon/openlp-logo-16x16.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        AboutDialog.setWindowIcon(LogoIcon)
-        self.AboutDialogLayout = QtGui.QVBoxLayout(AboutDialog)
-        self.AboutDialogLayout.setSpacing(8)
-        self.AboutDialogLayout.setMargin(8)
-        self.AboutDialogLayout.setObjectName(u'AboutDialogLayout')
-        self.LogoLabel = QtGui.QLabel(AboutDialog)
+        AboutForm.setWindowIcon(LogoIcon)
+        self.AboutFormLayout = QtGui.QVBoxLayout(AboutForm)
+        self.AboutFormLayout.setSpacing(8)
+        self.AboutFormLayout.setMargin(8)
+        self.AboutFormLayout.setObjectName(u'AboutFormLayout')
+        self.LogoLabel = QtGui.QLabel(AboutForm)
         self.LogoLabel.setPixmap(
             QtGui.QPixmap(u':/graphics/openlp-about-logo.png'))
         self.LogoLabel.setScaledContents(False)
         self.LogoLabel.setIndent(0)
         self.LogoLabel.setObjectName(u'LogoLabel')
-        self.AboutDialogLayout.addWidget(self.LogoLabel)
-        self.AboutNotebook = QtGui.QTabWidget(AboutDialog)
+        self.AboutFormLayout.addWidget(self.LogoLabel)
+        self.AboutNotebook = QtGui.QTabWidget(AboutForm)
         self.AboutNotebook.setObjectName(u'AboutNotebook')
         self.AboutTab = QtGui.QWidget()
         self.AboutTab.setObjectName(u'AboutTab')
@@ -79,8 +80,8 @@ class Ui_AboutDialog(object):
         self.LicenseTextEdit.setObjectName(u'LicenseTextEdit')
         self.LicenseTabLayout.addWidget(self.LicenseTextEdit)
         self.AboutNotebook.addTab(self.LicenseTab, '')
-        self.AboutDialogLayout.addWidget(self.AboutNotebook)
-        self.ButtonWidget = QtGui.QWidget(AboutDialog)
+        self.AboutFormLayout.addWidget(self.AboutNotebook)
+        self.ButtonWidget = QtGui.QWidget(AboutForm)
         self.ButtonWidget.setObjectName(u'ButtonWidget')
         self.ButtonWidgetLayout = QtGui.QHBoxLayout(self.ButtonWidget)
         self.ButtonWidgetLayout.setSpacing(8)
@@ -104,17 +105,17 @@ class Ui_AboutDialog(object):
         self.CloseButton.setIcon(CloseIcon)
         self.CloseButton.setObjectName(u'CloseButton')
         self.ButtonWidgetLayout.addWidget(self.CloseButton)
-        self.AboutDialogLayout.addWidget(self.ButtonWidget)
+        self.AboutFormLayout.addWidget(self.ButtonWidget)
 
-        self.retranslateUi(AboutDialog)
+        self.retranslateUi(AboutForm)
         self.AboutNotebook.setCurrentIndex(0)
         QtCore.QObject.connect(self.CloseButton, QtCore.SIGNAL(u'clicked()'),
-            AboutDialog.close)
-        QtCore.QMetaObject.connectSlotsByName(AboutDialog)
+            AboutForm.close)
+        QtCore.QMetaObject.connectSlotsByName(AboutForm)
 
-    def retranslateUi(self, AboutDialog):
-        AboutDialog.setWindowTitle(self.trUtf8('About OpenLP'))
-        self.AboutTextEdit.setPlainText(self.trUtf8(
+    def retranslateUi(self, AboutForm):
+        AboutForm.setWindowTitle(translate('AboutForm', 'About OpenLP'))
+        self.AboutTextEdit.setPlainText(translate('AboutForm', 
             'OpenLP <version><revision> - Open Source Lyrics '
             'Projection\n'
             '\n'
@@ -131,8 +132,8 @@ class Ui_AboutDialog(object):
             'consider contributing by using the button below.'
         ))
         self.AboutNotebook.setTabText(
-            self.AboutNotebook.indexOf(self.AboutTab), self.trUtf8('About'))
-        self.CreditsTextEdit.setPlainText(self.trUtf8(
+            self.AboutNotebook.indexOf(self.AboutTab), translate('AboutForm', 'About'))
+        self.CreditsTextEdit.setPlainText(translate('AboutForm', 
             'Project Lead\n'
             '    Raoul "superfly" Snyman\n'
             '\n'
@@ -164,11 +165,11 @@ class Ui_AboutDialog(object):
         ))
         self.AboutNotebook.setTabText(
             self.AboutNotebook.indexOf(self.CreditsTab),
-            self.trUtf8('Credits'))
-        self.LicenseTextEdit.setPlainText(self.trUtf8(
-            'Copyright ' + u'\u00a9'.encode('utf8') + ' 2004-2010 Raoul '
+            translate('AboutForm', 'Credits'))
+        self.LicenseTextEdit.setPlainText(translate('AboutForm', 
+            'Copyright \xa9 2004-2010 Raoul '
             'Snyman\n'
-            'Portions copyright ' + u'\u00a9'.encode('utf8') + ' 2004-2010 '
+            'Portions copyright \xa9 2004-2010 '
             'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri, '
             'Christian Richter, Maikel Stuivenberg, Martin Thompson, Jon '
             'Tibble, Carsten Tinggaard\n'
@@ -557,6 +558,6 @@ class Ui_AboutDialog(object):
             'instead of this License.'))
         self.AboutNotebook.setTabText(
             self.AboutNotebook.indexOf(self.LicenseTab),
-            self.trUtf8('License'))
-        self.ContributeButton.setText(self.trUtf8('Contribute'))
-        self.CloseButton.setText(self.trUtf8('Close'))
+            translate('AboutForm', 'License'))
+        self.ContributeButton.setText(translate('AboutForm', 'Contribute'))
+        self.CloseButton.setText(translate('AboutForm', 'Close'))
