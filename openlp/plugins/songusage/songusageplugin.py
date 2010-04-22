@@ -107,7 +107,7 @@ class SongUsagePlugin(Plugin):
         log.info(u'SongUsage Initialising')
         Plugin.initialise(self)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_start'), self.onReceiveSongUsage)
+            QtCore.SIGNAL(u'slidecontroller_live_started'), self.onReceiveSongUsage)
         self.SongUsageActive = str_to_bool(
             self.config.get_config(u'active', False))
         self.SongUsageStatus.setChecked(self.SongUsageActive)
@@ -132,8 +132,7 @@ class SongUsagePlugin(Plugin):
         SongUsage a live song from SlideController
         """
         audit = items[0].audit
-        live = items[1]
-        if self.SongUsageActive and audit and live:
+        if self.SongUsageActive and audit:
             song_usage_item = SongUsageItem()
             song_usage_item.usagedate = datetime.today()
             song_usage_item.usagetime = datetime.now().time()

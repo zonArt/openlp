@@ -103,8 +103,6 @@ class ServiceManager(QtGui.QWidget):
         self.droppos = 0
         #is a new service and has not been saved
         self.isNew = True
-        #Indicates if remoteTriggering is active.  If it is the next addServiceItem call
-        #will replace the currently selected one.
         self.serviceNoteForm = ServiceNoteForm()
         self.serviceItemEditForm = ServiceItemEditForm()
         #start with the layout

@@ -186,23 +186,23 @@ class MessageListener(object):
         self.liveHandler = Controller(True)
         # messages are sent from core.ui.slidecontroller
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_start'), self.startup)
+            QtCore.SIGNAL(u'presentation_start'), self.startup)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_stop'), self.shutdown)
+            QtCore.SIGNAL(u'presentation_stop'), self.shutdown)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_first'), self.first)
+            QtCore.SIGNAL(u'presentation_first'), self.first)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_previous'), self.previous)
+            QtCore.SIGNAL(u'presentation_previous'), self.previous)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_next'), self.next)
+            QtCore.SIGNAL(u'presentation_next'), self.next)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_last'), self.last)
+            QtCore.SIGNAL(u'presentation_last'), self.last)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_slide'), self.slide)
+            QtCore.SIGNAL(u'presentation_slide'), self.slide)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_blank'), self.blank)
+            QtCore.SIGNAL(u'presentation_blank'), self.blank)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_unblank'), self.unblank)
+            QtCore.SIGNAL(u'presentation_unblank'), self.unblank)
         self.timer = QtCore.QTimer()
         self.timer.setInterval(500)
         QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.timeout)
@@ -212,9 +212,7 @@ class MessageListener(object):
         Start of new presentation
         Save the handler as any new presentations start here
         """
-        name, isLive, item = self.decode_message(message)
-        if name != u'presentation':
-            return
+        isLive, item = self.decode_message(message)
         log.debug(u'Startup called with message %s' % message)
         isBlank = message[2]
         file = os.path.join(item.get_frame_path(), 
@@ -231,57 +229,45 @@ class MessageListener(object):
         controller.addHandler(self.controllers[self.handler], file, isBlank)
 
     def decode_message(self, message):
-        return message[0].name.lower(), message[1], message[0]
+        return message[1], message[0]
         
     def slide(self, message):
-        name, isLive, item = self.decode_message(message)
-        if name != u'presentation':
-            return
+        isLive, item = self.decode_message(message)
         if isLive:
             self.liveHandler.slide(slide, live)
         else:
             self.previewHandler.slide(slide, live)
 
     def first(self, message):
-        name, isLive, item = self.decode_message(message)
-        if name != u'presentation':
-            return
+        isLive, item = self.decode_message(message)
         if isLive:
             self.liveHandler.first()
         else:
             self.previewHandler.first()
 
     def last(self, message):
-        name, isLive, item = self.decode_message(message)
-        if name != u'presentation':
-            return
+        isLive, item = self.decode_message(message)
         if isLive:
             self.liveHandler.last()
         else:
             self.previewHandler.last()
 
     def next(self, message):
-        name, isLive, item = self.decode_message(message)
-        if name != u'presentation':
-            return
+        isLive, item = self.decode_message(message)
         if isLive:
             self.liveHandler.next()
         else:
             self.previewHandler.next()
 
     def previous(self, message):
-        name, isLive, item = self.decode_message(message)
-        if name != u'presentation':
-            return
+        isLive, item = self.decode_message(message)
         if isLive:
             self.liveHandler.previous()
         else:
             self.previewHandler.previous()
 
     def shutdown(self, message):
-        name, isLive, item = self.decode_message(message)
-        if name != u'presentation':
-            return
+        isLive, item = self.decode_message(message)
         if isLive:
             Receiver.send_message(u'maindisplay_show')
             self.liveHandler.shutdown()
@@ -289,16 +275,12 @@ class MessageListener(object):
             self.previewHandler.shutdown()
 
     def blank(self, message):
-        name, isLive, item = self.decode_message(message)
-        if name != u'presentation':
-            return
+        isLive, item = self.decode_message(message)
         if isLive:
             self.liveHandler.blank()
 
     def unblank(self,  message):
-        name, isLive, item = self.decode_message(message)
-        if name != u'presentation':
-            return
+        isLive, item = self.decode_message(message)
         if isLive:
             self.liveHandler.unblank()
         

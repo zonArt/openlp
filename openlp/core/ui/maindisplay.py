@@ -138,7 +138,7 @@ class MainDisplay(DisplayWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_live_mediastart'), self.hideDisplay)
+            QtCore.SIGNAL(u'videodisplay_start'), self.hideDisplay)
 
     def setup(self):
         """
@@ -195,7 +195,7 @@ class MainDisplay(DisplayWidget):
 
     def resetDisplay(self):
         log.debug(u'resetDisplay')
-        Receiver.send_message(u'maindisplay_stop_loop')
+        Receiver.send_message(u'slidecontroller_live_stop_loop')
         if self.primary:
             self.setVisible(False)
         else:
@@ -325,13 +325,13 @@ class VideoDisplay(Phonon.VideoWidget):
         Phonon.createPath(self.mediaObject, self)
         Phonon.createPath(self.mediaObject, self.audioObject)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'mediacontroller_start'), self.onMediaQueue)
+            QtCore.SIGNAL(u'videodisplay_start'), self.onMediaQueue)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'mediacontroller_play'), self.onMediaPlay)
+            QtCore.SIGNAL(u'videodisplay_play'), self.onMediaPlay)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'mediacontroller_pause'), self.onMediaPause)
+            QtCore.SIGNAL(u'videodisplay_pause'), self.onMediaPause)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'mediacontroller_stop'), self.onMediaStop)
+            QtCore.SIGNAL(u'videodisplay_stop'), self.onMediaStop)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.setup)
 
@@ -364,40 +364,29 @@ class VideoDisplay(Phonon.VideoWidget):
             self.primary = True
 
     def onMediaQueue(self, message):
-        if not message[1]:
-            return
         log.debug(u'VideoDisplay Queue new media message %s' % message)
         file = os.path.join(message[0].get_frame_path(), 
             message[0].get_frame_title())
-        #file = os.path.join(message[1], message[2])
         source = self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
         self.onMediaPlay()
 
     def onMediaPlay(self):
-        if not message[1]:
-            return
         log.debug(u'VideoDisplay Play the new media, Live ')
         self.mediaObject.play()
         self.setVisible(True)
         self.showFullScreen()
 
     def onMediaPause(self):
-        if not message[1]:
-            return
         log.debug(u'VideoDisplay Media paused by user')
         self.mediaObject.pause()
         self.show()
 
     def onMediaStop(self):
-        if not message[1]:
-            return
         log.debug(u'VideoDisplay Media stopped by user')
         self.mediaObject.stop()
         self.onMediaFinish()
 
     def onMediaFinish(self):
-        if not message[1]:
-            return
         log.debug(u'VideoDisplay Reached end of media playlist')
         self.mediaObject.clearQueue()
         self.setVisible(False)
