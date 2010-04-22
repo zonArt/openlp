@@ -1,82 +1,92 @@
 # -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
-# Form implementation generated from reading ui file 'alertdialog.ui'
-#
-# Created: Sat Apr 17 08:07:40 2010
-#      by: PyQt4 UI code generator 4.7
-#
-# WARNING! All changes made in this file will be lost!
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 
 from PyQt4 import QtCore, QtGui
 
 class Ui_AlertDialog(object):
     def setupUi(self, AlertDialog):
-        AlertDialog.setObjectName("AlertDialog")
+        AlertDialog.setObjectName(u'AlertDialog')
         AlertDialog.resize(567, 440)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/icon/openlp.org-icon-32.bmp"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(u':/icon/openlp.org-icon-32.bmp'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         AlertDialog.setWindowIcon(icon)
         self.AlertFormLayout = QtGui.QVBoxLayout(AlertDialog)
         self.AlertFormLayout.setSpacing(8)
         self.AlertFormLayout.setMargin(8)
-        self.AlertFormLayout.setObjectName("AlertFormLayout")
+        self.AlertFormLayout.setObjectName(u'AlertFormLayout')
         self.AlertTextLayout = QtGui.QFormLayout()
         self.AlertTextLayout.setContentsMargins(0, 0, -1, -1)
         self.AlertTextLayout.setSpacing(8)
-        self.AlertTextLayout.setObjectName("AlertTextLayout")
+        self.AlertTextLayout.setObjectName(u'AlertTextLayout')
         self.AlertEntryLabel = QtGui.QLabel(AlertDialog)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.AlertEntryLabel.sizePolicy().hasHeightForWidth())
         self.AlertEntryLabel.setSizePolicy(sizePolicy)
-        self.AlertEntryLabel.setObjectName("AlertEntryLabel")
+        self.AlertEntryLabel.setObjectName(u'AlertEntryLabel')
         self.AlertTextLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.AlertEntryLabel)
         self.AlertParameter = QtGui.QLabel(AlertDialog)
-        self.AlertParameter.setObjectName("AlertParameter")
+        self.AlertParameter.setObjectName(u'AlertParameter')
         self.AlertTextLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.AlertParameter)
         self.ParameterEdit = QtGui.QLineEdit(AlertDialog)
-        self.ParameterEdit.setObjectName("ParameterEdit")
+        self.ParameterEdit.setObjectName(u'ParameterEdit')
         self.AlertTextLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.ParameterEdit)
         self.AlertTextEdit = QtGui.QLineEdit(AlertDialog)
-        self.AlertTextEdit.setObjectName("AlertTextEdit")
+        self.AlertTextEdit.setObjectName(u'AlertTextEdit')
         self.AlertTextLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.AlertTextEdit)
         self.AlertFormLayout.addLayout(self.AlertTextLayout)
         self.ManagementLayout = QtGui.QHBoxLayout()
         self.ManagementLayout.setSpacing(8)
         self.ManagementLayout.setContentsMargins(-1, -1, -1, 0)
-        self.ManagementLayout.setObjectName("ManagementLayout")
+        self.ManagementLayout.setObjectName(u'ManagementLayout')
         self.AlertListWidget = QtGui.QListWidget(AlertDialog)
         self.AlertListWidget.setAlternatingRowColors(True)
-        self.AlertListWidget.setObjectName("AlertListWidget")
+        self.AlertListWidget.setObjectName(u'AlertListWidget')
         self.ManagementLayout.addWidget(self.AlertListWidget)
         self.ManageButtonLayout = QtGui.QVBoxLayout()
         self.ManageButtonLayout.setSpacing(8)
-        self.ManageButtonLayout.setObjectName("ManageButtonLayout")
+        self.ManageButtonLayout.setObjectName(u'ManageButtonLayout')
         self.NewButton = QtGui.QPushButton(AlertDialog)
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(":/general/general_new.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(u':/general/general_new.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.NewButton.setIcon(icon1)
-        self.NewButton.setObjectName("NewButton")
+        self.NewButton.setObjectName(u'NewButton')
         self.ManageButtonLayout.addWidget(self.NewButton)
         self.SaveButton = QtGui.QPushButton(AlertDialog)
         self.SaveButton.setEnabled(False)
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(":/general/general_save.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap(u':/general/general_save.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.SaveButton.setIcon(icon2)
-        self.SaveButton.setObjectName("SaveButton")
+        self.SaveButton.setObjectName(u'SaveButton')
         self.ManageButtonLayout.addWidget(self.SaveButton)
-        self.EditButton = QtGui.QPushButton(AlertDialog)
-        icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(":/general/general_edit.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.EditButton.setIcon(icon3)
-        self.EditButton.setObjectName("EditButton")
-        self.ManageButtonLayout.addWidget(self.EditButton)
         self.DeleteButton = QtGui.QPushButton(AlertDialog)
-        icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap(":/general/general_delete.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.DeleteButton.setIcon(icon4)
-        self.DeleteButton.setObjectName("DeleteButton")
+        icon3 = QtGui.QIcon()
+        icon3.addPixmap(QtGui.QPixmap(u':/general/general_delete.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.DeleteButton.setIcon(icon3)
+        self.DeleteButton.setObjectName(u'DeleteButton')
         self.ManageButtonLayout.addWidget(self.DeleteButton)
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.ManageButtonLayout.addItem(spacerItem)
@@ -84,51 +94,52 @@ class Ui_AlertDialog(object):
         self.AlertFormLayout.addLayout(self.ManagementLayout)
         self.AlertButtonLayout = QtGui.QHBoxLayout()
         self.AlertButtonLayout.setSpacing(8)
-        self.AlertButtonLayout.setObjectName("AlertButtonLayout")
-        spacerItem1 = QtGui.QSpacerItem(181, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.AlertButtonLayout.setObjectName(u'AlertButtonLayout')
+        spacerItem1 = QtGui.QSpacerItem(181, 0, QtGui.QSizePolicy.Expanding,
+            QtGui.QSizePolicy.Minimum)
         self.AlertButtonLayout.addItem(spacerItem1)
         self.DisplayButton = QtGui.QPushButton(AlertDialog)
-        icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap(":/general/general_live.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.DisplayButton.setIcon(icon5)
-        self.DisplayButton.setObjectName("DisplayButton")
+        icon4 = QtGui.QIcon()
+        icon4.addPixmap(QtGui.QPixmap(u':/general/general_live.png'),
+            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.DisplayButton.setIcon(icon4)
+        self.DisplayButton.setObjectName(u'DisplayButton')
         self.AlertButtonLayout.addWidget(self.DisplayButton)
         self.DisplayCloseButton = QtGui.QPushButton(AlertDialog)
-        self.DisplayCloseButton.setIcon(icon5)
-        self.DisplayCloseButton.setObjectName("DisplayCloseButton")
+        self.DisplayCloseButton.setIcon(icon4)
+        self.DisplayCloseButton.setObjectName(u'DisplayCloseButton')
         self.AlertButtonLayout.addWidget(self.DisplayCloseButton)
         self.CloseButton = QtGui.QPushButton(AlertDialog)
-        icon6 = QtGui.QIcon()
-        icon6.addPixmap(QtGui.QPixmap(":/system/system_close.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.CloseButton.setIcon(icon6)
-        self.CloseButton.setObjectName("CloseButton")
+        icon5 = QtGui.QIcon()
+        icon5.addPixmap(QtGui.QPixmap(u':/system/system_close.png'),
+            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.CloseButton.setIcon(icon5)
+        self.CloseButton.setObjectName(u'CloseButton')
         self.AlertButtonLayout.addWidget(self.CloseButton)
         self.AlertFormLayout.addLayout(self.AlertButtonLayout)
         self.AlertEntryLabel.setBuddy(self.AlertTextEdit)
         self.AlertParameter.setBuddy(self.ParameterEdit)
 
         self.retranslateUi(AlertDialog)
-        QtCore.QObject.connect(self.CloseButton, QtCore.SIGNAL("clicked()"), AlertDialog.close)
+        QtCore.QObject.connect(self.CloseButton, QtCore.SIGNAL(u'clicked()'), AlertDialog.close)
         QtCore.QMetaObject.connectSlotsByName(AlertDialog)
         AlertDialog.setTabOrder(self.AlertTextEdit, self.ParameterEdit)
         AlertDialog.setTabOrder(self.ParameterEdit, self.AlertListWidget)
         AlertDialog.setTabOrder(self.AlertListWidget, self.NewButton)
         AlertDialog.setTabOrder(self.NewButton, self.SaveButton)
-        AlertDialog.setTabOrder(self.SaveButton, self.EditButton)
-        AlertDialog.setTabOrder(self.EditButton, self.DeleteButton)
+        AlertDialog.setTabOrder(self.SaveButton, self.DeleteButton)
         AlertDialog.setTabOrder(self.DeleteButton, self.DisplayButton)
         AlertDialog.setTabOrder(self.DisplayButton, self.DisplayCloseButton)
         AlertDialog.setTabOrder(self.DisplayCloseButton, self.CloseButton)
 
     def retranslateUi(self, AlertDialog):
-        AlertDialog.setWindowTitle(QtGui.QApplication.translate("AlertDialog", "Alert Message", None, QtGui.QApplication.UnicodeUTF8))
-        self.AlertEntryLabel.setText(QtGui.QApplication.translate("AlertDialog", "Alert &text:", None, QtGui.QApplication.UnicodeUTF8))
-        self.AlertParameter.setText(QtGui.QApplication.translate("AlertDialog", "&Parameter(s):", None, QtGui.QApplication.UnicodeUTF8))
-        self.NewButton.setText(QtGui.QApplication.translate("AlertDialog", "&New", None, QtGui.QApplication.UnicodeUTF8))
-        self.SaveButton.setText(QtGui.QApplication.translate("AlertDialog", "&Save", None, QtGui.QApplication.UnicodeUTF8))
-        self.EditButton.setText(QtGui.QApplication.translate("AlertDialog", "&Edit", None, QtGui.QApplication.UnicodeUTF8))
-        self.DeleteButton.setText(QtGui.QApplication.translate("AlertDialog", "&Delete", None, QtGui.QApplication.UnicodeUTF8))
-        self.DisplayButton.setText(QtGui.QApplication.translate("AlertDialog", "Displ&ay", None, QtGui.QApplication.UnicodeUTF8))
-        self.DisplayCloseButton.setText(QtGui.QApplication.translate("AlertDialog", "Display && Cl&ose", None, QtGui.QApplication.UnicodeUTF8))
-        self.CloseButton.setText(QtGui.QApplication.translate("AlertDialog", "&Close", None, QtGui.QApplication.UnicodeUTF8))
+        AlertDialog.setWindowTitle(self.trUtf8('Alert Message'))
+        self.AlertEntryLabel.setText(self.trUtf8('Alert &text:'))
+        self.AlertParameter.setText(self.trUtf8('&Parameter(s):'))
+        self.NewButton.setText(self.trUtf8('&New'))
+        self.SaveButton.setText(self.trUtf8('&Save'))
+        self.DeleteButton.setText(self.trUtf8('&Delete'))
+        self.DisplayButton.setText(self.trUtf8('Displ&ay'))
+        self.DisplayCloseButton.setText(self.trUtf8('Display && Cl&ose'))
+        self.CloseButton.setText(self.trUtf8('&Close'))
 
