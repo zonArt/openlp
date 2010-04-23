@@ -25,7 +25,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, str_to_bool
+from openlp.core.lib import SettingsTab
 
 class AlertsTab(SettingsTab):
     """
