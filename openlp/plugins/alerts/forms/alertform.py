@@ -39,7 +39,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         """
         self.manager = manager
         self.parent = parent
-        self.history_required = True
+        self.item_id = None
         QtGui.QDialog.__init__(self, None)
         self.setupUi(self)
         QtCore.QObject.connect(self.DisplayButton,
@@ -57,9 +57,6 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         QtCore.QObject.connect(self.DeleteButton,
                                QtCore.SIGNAL(u'clicked()'),
                                self.onDeleteClick)
-        QtCore.QObject.connect(self.EditButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onEditClick)
         QtCore.QObject.connect(self.SaveButton,
                                QtCore.SIGNAL(u'clicked()'),
                                self.onSaveClick)
@@ -79,12 +76,10 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
                 QtCore.Qt.UserRole, QtCore.QVariant(alert.id))
             self.AlertListWidget.addItem(item_name)
         self.SaveButton.setEnabled(False)
-        self.EditButton.setEnabled(False)
         self.DeleteButton.setEnabled(False)
 
     def onDisplayClicked(self):
         if self.triggerAlert(unicode(self.AlertTextEdit.text())):
-            self.history_required = False
             self.loadList()
 
     def onDisplayCloseClicked(self):
@@ -103,15 +98,6 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         self.DeleteButton.setEnabled(False)
         self.EditButton.setEnabled(False)
 
-    def onEditClick(self):
-        item = self.AlertListWidget.currentItem()
-        if item:
-            self.item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.AlertTextEdit.setText(unicode(item.text()))
-        self.SaveButton.setEnabled(True)
-        self.DeleteButton.setEnabled(True)
-        self.EditButton.setEnabled(False)
-
     def onNewClick(self):
         if len(self.AlertTextEdit.text()) == 0:
             QtGui.QMessageBox.information(self,
@@ -121,19 +107,22 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             alert = AlertItem()
             alert.text = unicode(self.AlertTextEdit.text())
             self.manager.save_alert(alert)
-        self.onClearClick()
+        self.AlertTextEdit.setText(u'')
         self.loadList()
 
     def onSaveClick(self):
-        alert = self.manager.get_alert(self.item_id)
-        alert.text = unicode(self.AlertTextEdit.text())
-        self.manager.save_alert(alert)
-        self.onClearClick()
-        self.loadList()
+        if self.item_id:
+            alert = self.manager.get_alert(self.item_id)
+            alert.text = unicode(self.AlertTextEdit.text())
+            self.manager.save_alert(alert)
+            self.item_id = None
+            self.loadList()
+        else:
+            self.onNewClick()
 
     def onTextChanged(self):
         #Data has changed by editing it so potential storage required
-        self.history_required = True
+        self.SaveButton.setEnabled(True)
 
     def onDoubleClick(self):
         """
@@ -143,7 +132,10 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         for item in items:
             bitem = self.AlertListWidget.item(item.row())
             self.triggerAlert(bitem.text())
-        self.history_required = False
+            self.AlertTextEdit.setText(bitem.text())
+            self.item_id = (bitem.data(QtCore.Qt.UserRole)).toInt()[0]
+        self.SaveButton.setEnabled(False)
+        self.DeleteButton.setEnabled(True)
 
     def onSingleClick(self):
         """
@@ -154,16 +146,13 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         for item in items:
             bitem = self.AlertListWidget.item(item.row())
             self.AlertTextEdit.setText(bitem.text())
-        self.history_required = False
-        self.EditButton.setEnabled(True)
+            self.item_id = (bitem.data(QtCore.Qt.UserRole)).toInt()[0]
+        self.SaveButton.setEnabled(False)
         self.DeleteButton.setEnabled(True)
 
     def triggerAlert(self, text):
         if text:
+            text = text.replace(u'<>', unicode(self.ParameterEdit.text()))
             self.parent.alertsmanager.displayAlert(text)
-            if self.parent.alertsTab.save_history and self.history_required:
-                alert = AlertItem()
-                alert.text = unicode(self.AlertTextEdit.text())
-                self.manager.save_alert(alert)
             return True
         return False

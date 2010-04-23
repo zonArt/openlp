@@ -361,7 +361,7 @@ class PresentationDocument(object):
             prefix = u'live'
         else:
             prefix = u'preview'
-        Receiver.send_message(u'%s_slidecontroller_change' % prefix,
+        Receiver.send_message(u'slidecontroller_%s_change' % prefix,
             self.slidenumber - 1)
 
     def get_slide_text(self, slide_no):

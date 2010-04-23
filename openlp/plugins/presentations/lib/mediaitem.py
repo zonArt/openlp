@@ -28,7 +28,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD
+from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
@@ -103,6 +103,10 @@ class PresentationMediaItem(MediaManagerItem):
         self.PageLayout.addWidget(self.PresentationWidget)
 
     def initialise(self):
+        self.servicePath = os.path.join(
+            self.parent.config.get_data_path(), u'thumbnails')
+        if not os.path.exists(self.servicePath):
+            os.mkdir(self.servicePath)
         list = self.parent.config.load_list(u'presentations')
         self.loadList(list)
         for item in self.controllers:
@@ -128,8 +132,27 @@ class PresentationMediaItem(MediaManagerItem):
                         'A presentation with that filename already exists.'),
                     QtGui.QMessageBox.Ok)
             else:
+                icon = None
+                for controller in self.controllers:
+                    thumbPath = os.path.join(self.parent.config.get_data_path(), \
+                        u'thumbnails', controller, filename)
+                    thumb = os.path.join(thumbPath, u'slide1.png')
+                    preview = os.path.join(self.parent.config.get_data_path(), \
+                        controller, u'thumbnails', filename, u'slide1.png')
+                    if os.path.exists(preview):
+                        if os.path.exists(thumb):
+                            if self.validate(preview, thumb):
+                                icon = build_icon(thumb)
+                            else:
+                                icon = build_icon(u':/general/general_delete.png')
+                        else:
+                            os.makedirs(thumbPath)
+                            icon = self.IconFromFile(preview, thumb)
+                if not icon:
+                    icon = build_icon(u':/general/general_delete.png')
                 item_name = QtGui.QListWidgetItem(filename)
                 item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
+                item_name.setIcon(icon)
                 self.ListView.addItem(item_name)
 
     def onDeleteClick(self):

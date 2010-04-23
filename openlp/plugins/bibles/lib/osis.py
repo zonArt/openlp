@@ -84,7 +84,7 @@ class OSISBible(BibleDB):
             if fbibles:
                 fbibles.close()
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
+            QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
 
     def stop_import(self):
         """
@@ -167,7 +167,7 @@ class OSISBible(BibleDB):
                         .replace(u'</div>', u'').replace(u'</w>',  u'')
                     verse_text = self.spaces_regex.sub(u' ', verse_text)
                     self.create_verse(db_book.id, chapter, verse, verse_text)
-                    Receiver.send_message(u'process_events')
+                    Receiver.send_message(u'openlp_process_events')
             self.commit()
             self.wizard.incrementProgressBar(u'Finishing import...')
             if match_count == 0:

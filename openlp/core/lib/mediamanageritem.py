@@ -357,11 +357,14 @@ class MediaManagerItem(QtGui.QWidget):
         Validates to see if the file still exists or
         thumbnail is up to date
         """
-        filedate = os.stat(file).st_mtime
-        thumbdate = os.stat(thumb).st_mtime
-        #if file updated rebuild icon
-        if filedate > thumbdate:
-            self.IconFromFile(file, thumb)
+        if os.path.exists(file):
+            filedate = os.stat(file).st_mtime
+            thumbdate = os.stat(thumb).st_mtime
+            #if file updated rebuild icon
+            if filedate > thumbdate:
+                self.IconFromFile(file, thumb)
+            return True
+        return False
 
     def IconFromFile(self, file, thumb):
         icon = build_icon(unicode(file))
@@ -422,12 +425,13 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             #Is it posssible to process multiple list items to generate multiple
             #service items?
-            if self.singleServiceItem:
+            if self.singleServiceItem or self.remoteTriggered:
                 log.debug(self.PluginNameShort + u' Add requested')
                 service_item = self.buildServiceItem()
                 if service_item:
                     service_item.from_plugin = False
-                    self.parent.service_manager.addServiceItem(service_item)
+                    self.parent.service_manager.addServiceItem(service_item, 
+                        replace=self.remoteTriggered)
             else:
                 items = self.ListView.selectedIndexes()
                 for item in items:
@@ -450,10 +454,10 @@ class MediaManagerItem(QtGui.QWidget):
                     self.trUtf8('You must select a existing service item to add to.'))
             elif self.title.lower() == service_item.name.lower():
                 self.generateSlideData(service_item)
-                self.parent.service_manager.addServiceItem(service_item)
+                self.parent.service_manager.addServiceItem(service_item, 
+                    replace=True)
             else:
                 #Turn off the remote edit update message indicator
-                self.parent.service_manager.remoteEditTriggered = False
                 QtGui.QMessageBox.information(self,
                     self.trUtf8('Invalid Service Item'),
                     self.trUtf8(unicode('You must select a %s service item.' % self.title)))

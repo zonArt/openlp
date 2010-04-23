@@ -124,8 +124,10 @@ class ImageMediaItem(MediaManagerItem):
             (path, filename) = os.path.split(unicode(file))
             thumb = os.path.join(self.servicePath, filename)
             if os.path.exists(thumb):
-                self.validate(file, thumb)
-                icon = build_icon(thumb)
+                if self.validate(file, thumb):
+                    icon = build_icon(thumb)
+                else:
+                    icon = build_icon(u':/general/general_delete.png')
             else:
                 icon = self.IconFromFile(file, thumb)
             item_name = QtGui.QListWidgetItem(filename)

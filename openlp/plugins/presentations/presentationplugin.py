@@ -53,14 +53,9 @@ class PresentationPlugin(Plugin):
         log.info(u'Presentations Initialising')
         Plugin.initialise(self)
         self.insert_toolbox_item()
-        presentation_types = []
         for controller in self.controllers:
             if self.controllers[controller].enabled:
-                presentation_types.append({u'%s' % controller : self.controllers[controller].supports})
                 self.controllers[controller].start_process()
-
-        Receiver.send_message(
-                    u'presentation types', presentation_types)
 
     def finalise(self):
         log.info(u'Plugin Finalise')

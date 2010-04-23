@@ -122,15 +122,15 @@ class SongMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'textChanged(const QString&)'),
             self.onSearchTextEditChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'load_song_list'), self.onSearchTextButtonClick)
+            QtCore.SIGNAL(u'songs_load_list'), self.onSearchTextButtonClick)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.configUpdated)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'preview_song'), self.onPreviewClick)
+            QtCore.SIGNAL(u'songs_preview'), self.onPreviewClick)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_edit' % self.parent.name), self.onRemoteEdit)
+            QtCore.SIGNAL(u'songs_edit'), self.onRemoteEdit)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'remote_edit_clear'), self.onRemoteEditClear)
+            QtCore.SIGNAL(u'songs_edit_clear'), self.onRemoteEditClear)
 
     def configUpdated(self):
         self.searchAsYouType = str_to_bool(
