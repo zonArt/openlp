@@ -64,7 +64,8 @@ class AppLocation(object):
             else:
                 try:
                     from xdg import BaseDirectory
-                    path = os.path.join(BaseDirectory.xdg_config_home, u'openlp')
+                    path = os.path.join(
+                        BaseDirectory.xdg_config_home, u'openlp')
                 except ImportError:
                     path = os.path.join(os.getenv(u'HOME'), u'.openlp')
             return path
@@ -117,7 +118,8 @@ def check_latest_version(config, current_version):
     if last_test != this_test:
         version_string = u''
         if current_version[u'build']:
-            req = urllib2.Request(u'http://www.openlp.org/files/dev_version.txt')
+            req = urllib2.Request(
+                u'http://www.openlp.org/files/dev_version.txt')
         else:
             req = urllib2.Request(u'http://www.openlp.org/files/version.txt')
         req.add_header(u'User-Agent', u'OpenLP/%s' % current_version[u'full'])
@@ -149,7 +151,24 @@ def variant_to_unicode(variant):
         string = string_to_unicode(string)
     return string
 
+def add_actions(target, actions):
+    """
+    Adds multiple actions to a menu or toolbar in one command.
+
+    ``target``
+        The menu or toolbar to add actions to.
+
+    ``actions``
+        The actions to be added.
+    """
+    for action in actions:
+        if action is None:
+            target.addSeparator()
+        else:
+            target.addAction(action)
+
 from registry import Registry
 from confighelper import ConfigHelper
 
-__all__ = [u'Registry', u'ConfigHelper', u'AppLocation', u'check_latest_version']
+__all__ = [u'Registry', u'ConfigHelper', u'AppLocation',
+    u'check_latest_version', u'add_actions']
