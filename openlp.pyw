@@ -113,6 +113,8 @@ class OpenLP(QtGui.QApplication):
         #provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'process_events'), self.processEvents)
+        self.setOrganizationName(u'OpenLP')
+        self.setOrganizationDomain(u'openlp.org')
         self.setApplicationName(u'OpenLP')
         self.setApplicationVersion(app_version[u'version'])
         if os.name == u'nt':

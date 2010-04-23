@@ -538,23 +538,33 @@ class ServiceManager(QtGui.QWidget):
                 pass #if not present do not worry
             name = filename.split(os.path.sep)
             self.serviceName = name[-1]
+            self.parent.addRecentFile(filename)
             self.parent.serviceChanged(True, self.serviceName)
 
     def onQuickSaveService(self):
         self.onSaveService(True)
 
     def onLoadService(self, lastService=False):
-        """
-        Load an existing service from disk and rebuild the serviceitems.  All
-        files retrieved from the zip file are placed in a temporary directory
-        and will only be used for this service.
-        """
         if lastService:
             filename = self.config.get_last_dir()
         else:
             filename = QtGui.QFileDialog.getOpenFileName(
                 self, self.trUtf8('Open Service'),
                 self.config.get_last_dir(), u'Services (*.osz)')
+        self.loadService(filename)
+
+    def loadService(self, filename=None):
+        """
+        Load an existing service from disk and rebuild the serviceitems.  All
+        files retrieved from the zip file are placed in a temporary directory
+        and will only be used for this service.
+        """
+        if filename is None:
+            action = self.sender()
+            if isinstance(action, QtGui.QAction):
+                filename = action.data().toString()
+            else:
+                return
         filename = unicode(filename)
         name = filename.split(os.path.sep)
         if filename:
@@ -598,6 +608,7 @@ class ServiceManager(QtGui.QWidget):
                     zip.close()
         self.isNew = False
         self.serviceName = name[len(name) - 1]
+        self.parent.addRecentFile(filename)
         self.parent.serviceChanged(True, self.serviceName)
 
     def validateItem(self, serviceItem):

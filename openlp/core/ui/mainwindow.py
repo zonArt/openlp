@@ -28,12 +28,11 @@ import time
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.ui import AboutForm, SettingsForm,  \
-    ServiceManager, ThemeManager, SlideController, \
-    PluginForm, MediaDockManager, DisplayManager
+from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
+    ThemeManager, SlideController, PluginForm, MediaDockManager, DisplayManager
 from openlp.core.lib import RenderManager, PluginConfig, build_icon, \
     OpenLPDockWidget, SettingsManager, PluginManager, Receiver, str_to_bool
-from openlp.core.utils import check_latest_version, AppLocation
+from openlp.core.utils import check_latest_version, AppLocation, add_actions
 
 log = logging.getLogger(__name__)
 
@@ -273,50 +272,36 @@ class Ui_MainWindow(object):
             self.settingsmanager.showPreviewPanel)
         self.ModeLiveItem = QtGui.QAction(MainWindow)
         self.ModeLiveItem.setObjectName(u'ModeLiveItem')
-        self.FileImportMenu.addAction(self.ImportThemeItem)
-        self.FileImportMenu.addAction(self.ImportLanguageItem)
-        self.FileExportMenu.addAction(self.ExportThemeItem)
-        self.FileExportMenu.addAction(self.ExportLanguageItem)
-        self.FileMenu.addAction(self.FileNewItem)
-        self.FileMenu.addAction(self.FileOpenItem)
-        self.FileMenu.addAction(self.FileSaveItem)
-        self.FileMenu.addAction(self.FileSaveAsItem)
-        self.FileMenu.addSeparator()
-        self.FileMenu.addAction(self.FileImportMenu.menuAction())
-        self.FileMenu.addAction(self.FileExportMenu.menuAction())
-        self.FileMenu.addSeparator()
-        self.FileMenu.addAction(self.FileExitItem)
-        self.ViewModeMenu.addAction(self.ModeLiveItem)
-        self.OptionsViewMenu.addAction(self.ViewModeMenu.menuAction())
-        self.OptionsViewMenu.addSeparator()
-        self.OptionsViewMenu.addAction(self.ViewMediaManagerItem)
-        self.OptionsViewMenu.addAction(self.ViewServiceManagerItem)
-        self.OptionsViewMenu.addAction(self.ViewThemeManagerItem)
-        self.OptionsViewMenu.addSeparator()
-        self.OptionsViewMenu.addAction(self.action_Preview_Panel)
-        self.OptionsLanguageMenu.addAction(self.LanguageEnglishItem)
-        self.OptionsLanguageMenu.addSeparator()
-        self.OptionsLanguageMenu.addAction(self.LanguageTranslateItem)
-        self.OptionsMenu.addAction(self.OptionsLanguageMenu.menuAction())
-        self.OptionsMenu.addAction(self.OptionsViewMenu.menuAction())
-        self.OptionsMenu.addSeparator()
-        self.OptionsMenu.addAction(self.OptionsSettingsItem)
-        self.ToolsMenu.addAction(self.PluginItem)
-        self.ToolsMenu.addSeparator()
-        self.ToolsMenu.addAction(self.ToolsAddToolItem)
-        self.HelpMenu.addAction(self.HelpDocumentationItem)
-        self.HelpMenu.addAction(self.HelpOnlineHelpItem)
-        self.HelpMenu.addSeparator()
-        self.HelpMenu.addAction(self.HelpWebSiteItem)
-        self.HelpMenu.addAction(self.HelpAboutItem)
-        self.MenuBar.addAction(self.FileMenu.menuAction())
-        self.MenuBar.addAction(self.OptionsMenu.menuAction())
-        self.MenuBar.addAction(self.ToolsMenu.menuAction())
-        self.MenuBar.addAction(self.HelpMenu.menuAction())
+        add_actions(self.FileImportMenu,
+            (self.ImportThemeItem, self.ImportLanguageItem))
+        add_actions(self.FileExportMenu,
+            (self.ExportThemeItem, self.ExportLanguageItem))
+        self.FileMenuActions = (self.FileNewItem, self.FileOpenItem,
+            self.FileSaveItem, self.FileSaveAsItem, None,
+            self.FileImportMenu.menuAction(), self.FileExportMenu.menuAction(),
+            self.FileExitItem)
+        add_actions(self.ViewModeMenu, [self.ModeLiveItem])
+        add_actions(self.OptionsViewMenu, (self.ViewModeMenu.menuAction(),
+            None, self.ViewMediaManagerItem, self.ViewServiceManagerItem,
+            self.ViewThemeManagerItem, None, self.action_Preview_Panel))
+        add_actions(self.OptionsLanguageMenu, (self.LanguageEnglishItem, None,
+            self.LanguageTranslateItem))
+        add_actions(self.OptionsMenu, (self.OptionsLanguageMenu.menuAction(),
+            self.OptionsViewMenu.menuAction(), None, self.OptionsSettingsItem))
+        add_actions(self.ToolsMenu,
+            (self.PluginItem, None, self.ToolsAddToolItem))
+        add_actions(self.HelpMenu,
+            (self.HelpDocumentationItem, self.HelpOnlineHelpItem, None,
+            self.HelpWebSiteItem, self.HelpAboutItem))
+        add_actions(self.MenuBar,
+            (self.FileMenu.menuAction(), self.OptionsMenu.menuAction(),
+            self.ToolsMenu.menuAction(), self.HelpMenu.menuAction()))
         # Initialise the translation
         self.retranslateUi(MainWindow)
         self.MediaToolBox.setCurrentIndex(0)
         # Connect up some signals and slots
+        QtCore.QObject.connect(self.FileMenu,
+            QtCore.SIGNAL(u'aboutToShow()'), self.updateFileMenu)
         QtCore.QObject.connect(self.FileExitItem,
             QtCore.SIGNAL(u'triggered()'), MainWindow.close)
         QtCore.QObject.connect(self.ControlSplitter,
@@ -445,12 +430,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.displayManager = DisplayManager(screens)
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
+        self.recentFiles = []
         # Set up the path with plugins
         pluginpath = AppLocation.get_directory(AppLocation.PluginsDir)
         self.plugin_manager = PluginManager(pluginpath)
         self.plugin_helpers = {}
         # Set up the interface
         self.setupUi(self)
+        # Load settings after setupUi so defaults UI sizes are overwritten
+        self.loadSettings()
+        # Once settings are loaded update FileMenu with recentFiles
+        self.updateFileMenu()
         self.pluginForm = PluginForm(self)
         # Set up signals and slots
         QtCore.QObject.connect(self.ImportThemeItem,
@@ -666,6 +656,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Call the cleanup method to shutdown plugins.
         log.info(u'cleanup plugins')
         self.plugin_manager.finalise_plugins()
+        # Save settings
+        self.saveSettings()
         #Close down the displays
         self.displayManager.close()
 
@@ -720,3 +712,42 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         previewBool = self.PreviewController.Panel.isVisible()
         self.PreviewController.Panel.setVisible(not previewBool)
         self.settingsmanager.togglePreviewPanel(not previewBool)
+
+    def loadSettings(self):
+        log.debug(u'Loading QSettings')
+        settings = QtCore.QSettings()
+        self.recentFiles = settings.value(u'RecentFiles').toStringList()
+
+    def saveSettings(self):
+        log.debug(u'Saving QSettings')
+        settings = QtCore.QSettings()
+        recentFiles = QtCore.QVariant(self.recentFiles) \
+            if self.recentFiles else QtCore.QVariant()
+        settings.setValue(u'RecentFiles', recentFiles)
+
+    def updateFileMenu(self):
+        self.FileMenu.clear()
+        add_actions(self.FileMenu, self.FileMenuActions[:-1])
+        existingRecentFiles = []
+        for file in self.recentFiles:
+            if QtCore.QFile.exists(file):
+                existingRecentFiles.append(file)
+        if existingRecentFiles:
+            self.FileMenu.addSeparator()
+            for fileId, filename in enumerate(existingRecentFiles):
+                action = QtGui.QAction(u'&%d %s' % (fileId +1,
+                    QtCore.QFileInfo(filename).fileName()), self)
+                action.setData(QtCore.QVariant(filename))
+                self.connect(action, QtCore.SIGNAL(u'triggered()'),
+                    self.ServiceManagerContents.loadService)
+                self.FileMenu.addAction(action)
+        self.FileMenu.addSeparator()
+        self.FileMenu.addAction(self.FileMenuActions[-1])
+
+    def addRecentFile(self, filename):
+        recentFileCount = int(PluginConfig(u'General').
+            get_config(u'max recent files', 4))
+        if filename and not self.recentFiles.contains(filename):
+            self.recentFiles.prepend(QtCore.QString(filename))
+            while self.recentFiles.count() > recentFileCount:
+                self.recentFiles.takeLast()
