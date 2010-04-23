@@ -244,7 +244,8 @@ class Renderer(object):
             bbox1 = self._render_lines_unaligned(footer_lines, True)
         # reset the frame. first time do not worry about what you paint on.
         self._frame = QtGui.QImage(self.bg_frame)
-        self._frameOp = QtGui.QImage(self.bg_frame)
+        if self._theme.display_slideTransition:
+            self._frameOp = QtGui.QImage(self.bg_frame)
         x, y = self._correctAlignment(self._rect, bbox)
         bbox = self._render_lines_unaligned(lines, False, (x, y), True)
         if footer_lines:

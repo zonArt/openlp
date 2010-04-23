@@ -193,7 +193,13 @@ def main():
     qInitResources()
     # Now create and actually run the application.
     app = OpenLP(qt_args)
-    sys.exit(app.run())
+    try:
+        a = app.run()
+        print a
+    except:
+        log.exception(u'it went bang')
+
+    sys.exit(a)
 
 if __name__ == u'__main__':
     """

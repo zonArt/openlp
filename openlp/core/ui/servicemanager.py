@@ -653,6 +653,7 @@ class ServiceManager(QtGui.QWidget):
         """
         sitem, count = self.findServiceItem()
         item.render()
+        print self.remoteEditTriggered
         if self.remoteEditTriggered:
             item.merge(self.serviceItems[sitem][u'service_item'])
             self.serviceItems[sitem][u'service_item'] = item

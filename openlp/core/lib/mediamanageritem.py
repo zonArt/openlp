@@ -425,7 +425,7 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             #Is it posssible to process multiple list items to generate multiple
             #service items?
-            if self.singleServiceItem:
+            if self.singleServiceItem or self.remoteTriggered:
                 log.debug(self.PluginNameShort + u' Add requested')
                 service_item = self.buildServiceItem()
                 if service_item:
