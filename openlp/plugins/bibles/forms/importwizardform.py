@@ -240,7 +240,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         """
         log.debug('Cancel button pressed!')
         if self.currentId() == 3:
-            Receiver.send_message(u'openlpstopimport')
+            Receiver.send_message(u'bibles_stop_import')
 
     def onCurrentIdChanged(self, id):
         if id == 3:
@@ -354,7 +354,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         log.debug(u'IncrementBar %s', status_text)
         self.ImportProgressLabel.setText(status_text)
         self.ImportProgressBar.setValue(self.ImportProgressBar.value() + 1)
-        Receiver.send_message(u'process_events')
+        Receiver.send_message(u'openlp_process_events')
 
     def preImport(self):
         self.finishButton.setVisible(False)
@@ -362,7 +362,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.ImportProgressBar.setMaximum(1188)
         self.ImportProgressBar.setValue(0)
         self.ImportProgressLabel.setText(self.trUtf8('Starting import...'))
-        Receiver.send_message(u'process_events')
+        Receiver.send_message(u'openlp_process_events')
 
     def performImport(self):
         bible_type = self.field(u'source_format').toInt()[0]
@@ -424,4 +424,4 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.ImportProgressBar.setValue(self.ImportProgressBar.maximum())
         self.finishButton.setVisible(True)
         self.cancelButton.setVisible(False)
-        Receiver.send_message(u'process_events')
+        Receiver.send_message(u'openlp_process_events')

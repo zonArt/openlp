@@ -66,26 +66,27 @@ class DisplayWidget(QtGui.QWidget):
     def __init__(self, parent=None, name=None):
         QtGui.QWidget.__init__(self, None)
         self.parent = parent
-        self.hotkey_map = {QtCore.Qt.Key_Return: 'servicemanager_next_item',
-                           QtCore.Qt.Key_Space: 'live_slidecontroller_next_noloop',
-                           QtCore.Qt.Key_Enter: 'live_slidecontroller_next_noloop',
-                           QtCore.Qt.Key_0: 'servicemanager_next_item',
-                           QtCore.Qt.Key_Backspace: 'live_slidecontroller_previous_noloop'}
+        self.hotkey_map = {
+            QtCore.Qt.Key_Return: 'servicemanager_next_item',
+            QtCore.Qt.Key_Space: 'slidecontroller_live_next_noloop',
+            QtCore.Qt.Key_Enter: 'slidecontroller_live_next_noloop',
+            QtCore.Qt.Key_0: 'servicemanager_next_item',
+            QtCore.Qt.Key_Backspace: 'slidecontroller_live_previous_noloop'}
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
             #here accept the event and do something
             if event.key() == QtCore.Qt.Key_Up:
-                Receiver.send_message(u'live_slidecontroller_previous')
+                Receiver.send_message(u'slidecontroller_live_previous')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Down:
-                Receiver.send_message(u'live_slidecontroller_next')
+                Receiver.send_message(u'slidecontroller_live_next')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageUp:
-                Receiver.send_message(u'live_slidecontroller_first')
+                Receiver.send_message(u'slidecontroller_live_first')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageDown:
-                Receiver.send_message(u'live_slidecontroller_last')
+                Receiver.send_message(u'slidecontroller_live_last')
                 event.accept()
             elif event.key() in self.hotkey_map:
                 Receiver.send_message(self.hotkey_map[event.key()])
@@ -113,7 +114,7 @@ class MainDisplay(DisplayWidget):
         ``screens``
             The list of screens.
         """
-        log.debug(u'Initilisation started')
+        log.debug(u'Initialisation started')
         DisplayWidget.__init__(self, parent)
         self.parent = parent
         self.setWindowTitle(u'OpenLP Display')
@@ -133,11 +134,11 @@ class MainDisplay(DisplayWidget):
         self.hasTransition = False
         self.mediaBackground = False
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'live_slide_hide'), self.hideDisplay)
+            QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'live_slide_show'), self.showDisplay)
+            QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_start'), self.hideDisplay)
+            QtCore.SIGNAL(u'videodisplay_start'), self.hideDisplay)
 
     def setup(self):
         """
@@ -194,7 +195,7 @@ class MainDisplay(DisplayWidget):
 
     def resetDisplay(self):
         log.debug(u'resetDisplay')
-        Receiver.send_message(u'stop_display_loop')
+        Receiver.send_message(u'slidecontroller_live_stop_loop')
         if self.primary:
             self.setVisible(False)
         else:
@@ -218,7 +219,7 @@ class MainDisplay(DisplayWidget):
         if not self.primary:
             self.setVisible(True)
             self.showFullScreen()
-        Receiver.send_message(u'flush_alert')
+        Receiver.send_message(u'maindisplay_active')
 
     def addImageWithText(self, frame):
         log.debug(u'addImageWithText')
@@ -296,7 +297,6 @@ class MainDisplay(DisplayWidget):
             elif self.display_frame:
                 self.frameView(self.display_frame)
 
-
 class VideoDisplay(Phonon.VideoWidget):
     """
     This is the form that is used to display videos on the projector.
@@ -314,7 +314,7 @@ class VideoDisplay(Phonon.VideoWidget):
         ``screens``
             The list of screens.
         """
-        log.debug(u'VideoDisplay Initilisation started')
+        log.debug(u'VideoDisplay Initialisation started')
         Phonon.VideoWidget.__init__(self)
         self.setWindowTitle(u'OpenLP Video Display')
         self.parent = parent
@@ -325,15 +325,15 @@ class VideoDisplay(Phonon.VideoWidget):
         Phonon.createPath(self.mediaObject, self)
         Phonon.createPath(self.mediaObject, self.audioObject)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_start'), self.onMediaQueue)
+            QtCore.SIGNAL(u'videodisplay_start'), self.onMediaQueue)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_play'), self.onMediaPlay)
+            QtCore.SIGNAL(u'videodisplay_play'), self.onMediaPlay)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_pause'), self.onMediaPause)
+            QtCore.SIGNAL(u'videodisplay_pause'), self.onMediaPause)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_stop'), self.onMediaStop)
+            QtCore.SIGNAL(u'videodisplay_stop'), self.onMediaStop)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'update_config'), self.setup)
+            QtCore.SIGNAL(u'config_updated'), self.setup)
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
@@ -350,7 +350,7 @@ class VideoDisplay(Phonon.VideoWidget):
         Sets up the screen on a particular screen.
         """
         log.debug(u'VideoDisplay Setup %s for %s ' %(self.screens,
-                                         self.screens.monitor_number))
+             self.screens.monitor_number))
         self.setVisible(False)
         self.screen = self.screens.current
         #Sort out screen locations and sizes
@@ -365,7 +365,8 @@ class VideoDisplay(Phonon.VideoWidget):
 
     def onMediaQueue(self, message):
         log.debug(u'VideoDisplay Queue new media message %s' % message)
-        file = os.path.join(message[1], message[2])
+        file = os.path.join(message[0].get_frame_path(), 
+            message[0].get_frame_title())
         source = self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
         self.onMediaPlay()
 

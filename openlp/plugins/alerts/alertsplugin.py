@@ -88,7 +88,6 @@ class alertsPlugin(Plugin):
     def onAlertsTrigger(self):
         self.alertForm.loadList()
         self.alertForm.exec_()
-        Receiver.send_message(u'text_onTop')
 
     def about(self):
         about_text = self.trUtf8('<b>Alerts Plugin</b><br>This plugin '
