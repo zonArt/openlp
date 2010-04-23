@@ -111,7 +111,7 @@ def check_latest_version(config, current_version):
         The current version of OpenLP.
     """
     version_string = current_version[u'full']
-    #set to prod in the distribution confif file.
+    #set to prod in the distribution config file.
     last_test = config.get_config(u'last version test', datetime.now().date())
     this_test = unicode(datetime.now().date())
     config.set_config(u'last version test', this_test)
@@ -159,7 +159,8 @@ def add_actions(target, actions):
         The menu or toolbar to add actions to.
 
     ``actions``
-        The actions to be added.
+        The actions to be added.  An action consisting of the keyword 'None'
+        will result in a separator being inserted into the target.
     """
     for action in actions:
         if action is None:
