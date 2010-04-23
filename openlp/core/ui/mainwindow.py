@@ -561,7 +561,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Show the main form, as well as the display form
         """
-        self.showMaximized()
+        QtGui.QWidget.show(self)
         #screen_number = self.getMonitorNumber()
         self.displayManager.setup()
         if self.displayManager.mainDisplay.isVisible():
@@ -717,6 +717,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         log.debug(u'Loading QSettings')
         settings = QtCore.QSettings()
         self.recentFiles = settings.value(u'RecentFiles').toStringList()
+        self.move(settings.value(u'MainWindow/Position',
+            QtCore.QVariant(QtCore.QPoint(0, 0))).toPoint())
         self.restoreGeometry(
             settings.value(u'MainWindow/Geometry').toByteArray())
         self.restoreState(
@@ -728,6 +730,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         recentFiles = QtCore.QVariant(self.recentFiles) \
             if self.recentFiles else QtCore.QVariant()
         settings.setValue(u'RecentFiles', recentFiles)
+        settings.setValue(u'MainWindow/Position', QtCore.QVariant(self.pos()))
         settings.setValue(
             u'MainWindow/State', QtCore.QVariant(self.saveState()))
         settings.setValue(
