@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,6 +22,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+
 import logging
 
 log = logging.getLogger(__name__)
@@ -36,14 +37,17 @@ class ScreenList(object):
         self.preview = None
         self.current = None
         self.screen_list = []
-        self.count = 0
+        self.display_count = 0
+        #actual display number
         self.current_display = 0
+        #save config display number
+        self.monitor_number = 0
 
     def add_screen(self, screen):
         if screen[u'primary']:
             self.current = screen
         self.screen_list.append(screen)
-        self.count += 1
+        self.display_count += 1
 
     def screen_exists(self, number):
         for screen in self.screen_list:
@@ -52,21 +56,15 @@ class ScreenList(object):
         return False
 
     def set_current_display(self, number):
-        if number + 1 > self.count:
+        """
+        Set up the current screen dimensions
+        """
+        if number + 1 > self.display_count:
             self.current = self.screen_list[0]
             self.current_display = 0
         else:
             self.current = self.screen_list[number]
             self.preview = self.current
             self.current_display = number
-        if self.count == 1:
+        if self.display_count == 1:
             self.preview = self.screen_list[0]
-
-#        if self.screen[u'number'] != screenNumber:
-#            # We will most probably never actually hit this bit, but just in
-#            # case the index in the list doesn't match the screen number, we
-#            # search for it.
-#            for scrn in self.screens:
-#                if scrn[u'number'] == screenNumber:
-#                    self.screen = scrn
-#                    break

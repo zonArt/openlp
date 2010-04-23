@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -139,8 +139,9 @@ class PluginConfig(object):
         list = []
         if list_count > 0:
             for counter in range(0, list_count):
-                item = unicode(self.get_config(u'%s %d' % (name, counter)))
-                list.append(item)
+                item = self.get_config(u'%s %d' % (name, counter))
+                if item:
+                    list.append(item)
         return list
 
     def set_list(self, name, list):

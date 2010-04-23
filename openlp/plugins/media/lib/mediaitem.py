@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,7 +28,8 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon
+from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
+ItemCapabilities
 
 log = logging.getLogger(__name__)
 
@@ -51,10 +52,10 @@ class MediaMediaItem(MediaManagerItem):
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = MediaListView
-        self.PreviewFunction = self.video_get_preview
+        self.PreviewFunction = QtGui.QPixmap(u':/media/media_video.png').toImage()
         MediaManagerItem.__init__(self, parent, icon, title)
+        self.singleServiceItem = False
         self.ServiceItemIconName = u':/media/media_video.png'
-        self.MainDisplay = self.parent.maindisplay
 
     def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8('Media')
@@ -71,23 +72,17 @@ class MediaMediaItem(MediaManagerItem):
         self.hasNewIcon = False
         self.hasEditIcon = False
 
-    def video_get_preview(self):
-        # For now cross platform is an icon.  Phonon does not support
-        # individual frame access (yet?) and GStreamer is not available
-        # on Windows
-        return QtGui.QPixmap(u':/media/media_video.png').toImage()
-
-    def generateSlideData(self, service_item):
-        items = self.ListView.selectedIndexes()
-        if len(items) > 1:
-            return False
+    def generateSlideData(self, service_item, item=None):
+        if item is None:
+            item = self.ListView.currentItem()
+            if item is None:
+                return False
+        filename = unicode((item.data(QtCore.Qt.UserRole)).toString())
         service_item.title = unicode(self.trUtf8('Media'))
-        for item in items:
-            bitem = self.ListView.item(item.row())
-            filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
-            frame = u':/media/image_clapperboard.png'
-            (path, name) = os.path.split(filename)
-            service_item.add_from_command(path, name, frame)
+        service_item.add_capability(ItemCapabilities.RequiresMedia)
+        frame = u':/media/image_clapperboard.png'
+        (path, name) = os.path.split(filename)
+        service_item.add_from_command(path, name, frame)
         return True
 
     def initialise(self):
@@ -108,7 +103,7 @@ class MediaMediaItem(MediaManagerItem):
         for file in list:
             (path, filename) = os.path.split(unicode(file))
             item_name = QtGui.QListWidgetItem(filename)
-            img = self.video_get_preview()
+            img = QtGui.QPixmap(u':/media/media_video.png').toImage()
             item_name.setIcon(build_icon(img))
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.ListView.addItem(item_name)

@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -58,7 +58,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = PresentationListView
         MediaManagerItem.__init__(self, parent, icon, title)
         self.message_listener = MessageListener(self)
-    
+
     def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8('Presentation')
 
@@ -140,19 +140,20 @@ class PresentationMediaItem(MediaManagerItem):
             self.parent.config.set_list(
                 self.ConfigSection, self.getFileList())
             filepath = unicode((item.data(QtCore.Qt.UserRole)).toString())
+            #not sure of this has errors
+            #John please can you look at .
             for cidx in self.controllers:
                 doc = self.controllers[cidx].add_doc(filepath)
                 doc.presentation_deleted()
-                self.controllers[cidx].remove_doc(doc)
+                doc.close_presentation()
 
-    def generateSlideData(self, service_item):
+    def generateSlideData(self, service_item, item=None):
         items = self.ListView.selectedIndexes()
         if len(items) > 1:
             return False
         service_item.title = unicode(self.DisplayTypeComboBox.currentText())
         service_item.shortname = unicode(self.DisplayTypeComboBox.currentText())
         shortname = service_item.shortname
-
         for item in items:
             bitem = self.ListView.item(item.row())
             filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
@@ -171,7 +172,7 @@ class PresentationMediaItem(MediaManagerItem):
                 service_item.add_from_command(path, name, img)
                 i = i + 1
                 img = doc.get_slide_preview_file(i)
-            controller.remove_doc(doc)
+            doc.close_presentation()
         return True
 
     def findControllerByType(self, filename):

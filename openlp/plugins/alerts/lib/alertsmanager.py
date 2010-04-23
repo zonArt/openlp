@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -40,6 +40,7 @@ class AlertsManager(QtCore.QObject):
     def __init__(self, parent):
         QtCore.QObject.__init__(self)
         self.parent = parent
+        self.screen = None
         self.timer_id = 0
         self.alertList = []
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -53,8 +54,8 @@ class AlertsManager(QtCore.QObject):
 
     def screenChanged(self):
         log.debug(u'screen changed')
-        self.screen = self.parent.maindisplay.screen
         self.alertTab = self.parent.alertsTab
+        self.screen = self.parent.maindisplay.screens.current
         self.font = QtGui.QFont()
         self.font.setFamily(self.alertTab.font_face)
         self.font.setBold(True)
@@ -64,9 +65,12 @@ class AlertsManager(QtCore.QObject):
         if self.alertTab.location == 0:
             self.alertScreenPosition = 0
         else:
-            self.alertScreenPosition = self.screen[u'size'].height() - self.alertHeight
-            self.alertHeight = self.screen[u'size'].height() - self.alertScreenPosition
-        self.parent.maindisplay.setAlertSize(self.alertScreenPosition, self.alertHeight)
+            self.alertScreenPosition = self.screen[u'size'].height() \
+                - self.alertHeight
+            self.alertHeight = self.screen[u'size'].height() \
+                - self.alertScreenPosition
+        self.parent.maindisplay.setAlertSize(self.alertScreenPosition,\
+            self.alertHeight)
 
     def displayAlert(self, text=u''):
         """
@@ -76,12 +80,14 @@ class AlertsManager(QtCore.QObject):
             display text
         """
         log.debug(u'display alert called %s' % text)
-        self.parent.maindisplay.parent.StatusBar.showMessage(u'')
+        if not self.screen:
+            self.screenChanged()
         self.alertList.append(text)
-        if self.timer_id != 0 or self.parent.maindisplay.mediaLoaded:
-            self.parent.maindisplay.parent.StatusBar.showMessage(\
-                    self.trUtf8(u'Alert message created and delayed'))
+        if self.timer_id != 0:
+            Receiver.send_message(u'status_message',
+                self.trUtf8(u'Alert message created and delayed'))
             return
+        Receiver.send_message(u'status_message', u'')
         self.generateAlert()
 
     def generateAlert(self):
@@ -113,6 +119,7 @@ class AlertsManager(QtCore.QObject):
             self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
 
     def timerEvent(self, event):
+        log.debug(u'timer event')
         if event.timerId() == self.timer_id:
             self.parent.maindisplay.addAlertImage(None, True)
         self.killTimer(self.timer_id)

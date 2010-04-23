@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -151,7 +151,7 @@ class Controller(object):
         #self.timer.stop()
 
     def blank(self):
-        log.debug(u'Live = %s, blank' % self.isLive)        
+        log.debug(u'Live = %s, blank' % self.isLive)
         if not self.isLive:
             return
         if not self.doc.is_loaded():
@@ -161,7 +161,7 @@ class Controller(object):
         self.doc.blank_screen()
 
     def unblank(self):
-        log.debug(u'Live = %s, unblank' % self.isLive)        
+        log.debug(u'Live = %s, unblank' % self.isLive)
         if not self.isLive:
             return
         self.activate()
@@ -218,7 +218,7 @@ class MessageListener(object):
             self.handler = self.mediaitem.findControllerByType(file)
             if not self.handler:
                 return
-        
+
         if isLive:
             controller = self.liveHandler
         else:

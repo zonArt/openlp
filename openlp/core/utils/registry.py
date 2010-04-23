@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -41,15 +41,17 @@ class Registry(object):
         """
         Check if a value exists.
         """
-        return self.config.has_option(section, key)
+        return self.config.has_option(section.encode('utf-8'), 
+            key.encode('utf-8'))
 
     def get_value(self, section, key, default=None):
         """
         Get a single value from the registry.
         """
         try:
-            if self.config.get(section, key):
-                return self.config.get(section, key)
+            if self.config.get(section.encode('utf-8'), key.encode('utf-8')):
+                return self.config.get(section.encode('utf-8'), 
+                    key.encode('utf-8')).decode('utf-8')
             else:
                 return default
         except:
@@ -60,7 +62,8 @@ class Registry(object):
         Set a single value in the registry.
         """
         try :
-            self.config.set(section, key, unicode(value))
+            self.config.set(section.encode('utf-8'), key.encode('utf-8'), 
+                unicode(value).encode('utf-8'))
             return self._save()
         except:
             return False
@@ -70,7 +73,8 @@ class Registry(object):
         Delete a single value from the registry.
         """
         try:
-            self.config.remove_option(section, key)
+            self.config.remove_option(section.encode('utf-8'), 
+                key.encode('utf-8'))
             return self._save()
         except:
             return False
@@ -79,14 +83,14 @@ class Registry(object):
         """
         Check if a section exists.
         """
-        return self.config.has_section(section)
+        return self.config.has_section(section.encode('utf-8'))
 
     def create_section(self, section):
         """
         Create a new section in the registry.
         """
         try:
-            self.config.add_section(section)
+            self.config.add_section(section.encode('utf-8'))
             return self._save()
         except:
             return False
@@ -96,7 +100,7 @@ class Registry(object):
         Delete a section (including all values).
         """
         try:
-            self.config.remove_section(section)
+            self.config.remove_section(section.encode('utf-8'))
             return self._save()
         except:
             return False

@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,6 +26,7 @@
 import os
 import logging
 import chardet
+import re
 
 from sqlalchemy import or_
 from PyQt4 import QtCore
@@ -63,16 +64,21 @@ class BibleDB(QtCore.QObject):
         QtCore.QObject.__init__(self)
         if u'path' not in kwargs:
             raise KeyError(u'Missing keyword argument "path".')
-        if u'name' not in kwargs:
-            raise KeyError(u'Missing keyword argument "name".')
         if u'config' not in kwargs:
             raise KeyError(u'Missing keyword argument "config".')
+        if u'name' not in kwargs and u'file' not in kwargs:
+            raise KeyError(u'Missing keyword argument "name" or "file".')
         self.stop_import_flag = False
-        self.name = kwargs[u'name']
         self.config = kwargs[u'config']
-        self.db_file = os.path.join(kwargs[u'path'],
-            u'%s.sqlite' % kwargs[u'name'])
-        log.debug(u'Load bible %s on path %s', kwargs[u'name'], self.db_file)
+        if u'name' in kwargs:
+            self.name = kwargs[u'name']
+            if not isinstance(self.name, unicode):
+                self.name = unicode(self.name, u'utf-8')
+            self.file = self.clean_filename(self.name)
+        if u'file' in kwargs:
+            self.file = kwargs[u'file']
+        self.db_file = os.path.join(kwargs[u'path'], self.file)
+        log.debug(u'Load bible %s on path %s', self.file, self.db_file)
         db_type = self.config.get_config(u'db type', u'sqlite')
         db_url = u''
         if db_type == u'sqlite':
@@ -85,6 +91,42 @@ class BibleDB(QtCore.QObject):
                     self.config.get_config(u'db database'))
         self.metadata, self.session = init_models(db_url)
         self.metadata.create_all(checkfirst=True)
+        if u'file' in kwargs:
+            self.get_name()
+
+    def get_name(self):
+        """
+        Returns the version name of the Bible.
+        """
+        version_name = self.get_meta(u'Version')
+        if version_name:
+            self.name = version_name.value
+        else:
+            self.name = None
+        return self.name
+
+    def clean_filename(self, old_filename):
+        """
+        Clean up the version name of the Bible and convert it into a valid
+        file name.
+
+        ``old_filename``
+            The "dirty" file name or version name.
+        """
+        if not isinstance(old_filename,  unicode):
+            old_filename = unicode(old_filename, u'utf-8')
+        old_filename = re.sub(r'[^\w]+', u'_', old_filename).strip(u'_')
+        return old_filename + u'.sqlite'
+
+    def delete(self):
+        """
+        Remove the Bible database file. Used when a Bible import fails.
+        """
+        try:
+            os.remove(self.db_file)
+            return True
+        except:
+            return False
 
     def register(self, wizard):
         """
@@ -92,16 +134,25 @@ class BibleDB(QtCore.QObject):
         from the Bible Manager when a Bible is imported. Descendant classes
         may want to override this method to supply their own custom
         initialisation as well.
+
+        ``wizard``
+            The actual Qt wizard form.
         """
         self.wizard = wizard
         self.create_tables()
         return self.name
 
     def commit(self):
+        """
+        Perform a database commit.
+        """
         log.debug('Committing...')
         self.session.commit()
 
     def create_tables(self):
+        """
+        Create some initial metadata.
+        """
         log.debug(u'createTables')
         self.create_meta(u'dbversion', u'2')
         self.create_testament(u'Old Testament')
@@ -109,11 +160,29 @@ class BibleDB(QtCore.QObject):
         self.create_testament(u'Apocrypha')
 
     def create_testament(self, testament):
+        """
+        Add a testament to the database.
+
+        ``testament``
+            The testament name.
+        """
         log.debug(u'BibleDB.create_testament("%s")', testament)
         self.session.add(Testament.populate(name=testament))
         self.commit()
 
     def create_book(self, name, abbrev, testament=1):
+        """
+        Add a book to the database.
+
+        ``name``
+            The name of the book.
+
+        ``abbrev``
+            The abbreviation of the book.
+
+        ``testament``
+            *Defaults to 1.* The id of the testament this book belongs to.
+        """
         log.debug(u'create_book %s,%s', name, abbrev)
         book = Book.populate(name=name, abbreviation=abbrev,
             testament_id=testament)
@@ -122,6 +191,19 @@ class BibleDB(QtCore.QObject):
         return book
 
     def create_chapter(self, book_id, chapter, textlist):
+        """
+        Add a chapter and it's verses to a book.
+
+        ``book_id``
+            The id of the book being appended.
+
+        ``chapter``
+            The chapter number.
+
+        ``textlist``
+            A dict of the verses to be inserted. The key is the verse number,
+            and the value is the verse text.
+        """
         log.debug(u'create_chapter %s,%s', book_id, chapter)
         #text list has book and chapter as first two elements of the array
         for verse_number, verse_text in textlist.iteritems():
@@ -135,6 +217,21 @@ class BibleDB(QtCore.QObject):
         self.commit()
 
     def create_verse(self, book_id, chapter, verse, text):
+        """
+        Add a single verse to a chapter.
+
+        ``book_id``
+            The id of the book being appended.
+
+        ``chapter``
+            The chapter number.
+
+        ``verse``
+            The verse number.
+
+        ``text``
+            The verse text.
+        """
         if not isinstance(text, unicode):
             details = chardet.detect(text)
             text = unicode(text, details[u'encoding'])
@@ -241,8 +338,6 @@ class BibleDB(QtCore.QObject):
         count = self.session.query(Verse.chapter).join(Book)\
             .filter(Book.name==book)\
             .distinct().count()
-        #verse = self.session.query(Verse).join(Book).filter(
-        #    Book.name == bookname).order_by(Verse.chapter.desc()).first()
         if not count:
             return 0
         else:
@@ -254,9 +349,6 @@ class BibleDB(QtCore.QObject):
             .filter(Book.name==book)\
             .filter(Verse.chapter==chapter)\
             .count()
-        #verse = self.session.query(Verse).join(Book).filter(
-        #    Book.name == bookname).filter(
-        #    Verse.chapter == chapter).order_by(Verse.verse.desc()).first()
         if not count:
             return 0
         else:

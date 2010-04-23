@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,15 +23,14 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import os
 import logging
 import time
 
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AboutForm, SettingsForm,  \
-    ServiceManager, ThemeManager, MainDisplay, SlideController, \
-    PluginForm, MediaDockManager
+    ServiceManager, ThemeManager, SlideController, \
+    PluginForm, MediaDockManager, DisplayManager
 from openlp.core.lib import RenderManager, PluginConfig, build_icon, \
     OpenLPDockWidget, SettingsManager, PluginManager, Receiver, str_to_bool
 from openlp.core.utils import check_latest_version, AppLocation
@@ -68,12 +67,12 @@ class VersionThread(QtCore.QThread):
         """
         Run the thread.
         """
-        time.sleep(2)
+        time.sleep(1)
+        Receiver.send_message(u'blank_check')
         version = check_latest_version(self.generalConfig, self.app_version)
         #new version has arrived
-        if version != self.app_version:
+        if version != self.app_version[u'full']:
             Receiver.send_message(u'version_check', u'%s' % version)
-
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -419,7 +418,7 @@ class Ui_MainWindow(object):
         self.LanguageEnglishItem.setText(self.trUtf8('English'))
         self.LanguageEnglishItem.setStatusTip(
             self.trUtf8('Set the interface language to English'))
-        self.ToolsAddToolItem.setText(self.trUtf8('&Add Tool...'))
+        self.ToolsAddToolItem.setText(self.trUtf8('Add &Tool...'))
         self.ToolsAddToolItem.setStatusTip(
             self.trUtf8('Add an application to the list of tools'))
         self.action_Preview_Panel.setText(self.trUtf8('&Preview Pane'))
@@ -443,7 +442,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
         self.generalConfig = PluginConfig(u'General')
-        self.mainDisplay = MainDisplay(self, screens)
+        self.displayManager = DisplayManager(screens)
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
         # Set up the path with plugins
@@ -494,6 +493,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'update_global_theme'), self.defaultThemeChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'version_check'), self.versionCheck)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'blank_check'), self.blankCheck)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'screen_changed'), self.screenChanged)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'status_message'), self.showStatusMessage)
         QtCore.QObject.connect(self.FileNewItem,
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onNewService)
@@ -510,7 +515,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         #RenderManager needs to call ThemeManager and
         #ThemeManager needs to call RenderManager
         self.RenderManager = RenderManager(self.ThemeManagerContents,
-            self.screens, self.getMonitorNumber())
+                                            self.screens)
         #Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
@@ -521,7 +526,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
         self.plugin_helpers[u'settings'] = self.settingsForm
         self.plugin_helpers[u'toolbox'] = self.mediaDockManager
-        self.plugin_helpers[u'maindisplay'] = self.mainDisplay
+        self.plugin_helpers[u'maindisplay'] = self.displayManager.mainDisplay
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers)
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here
@@ -550,39 +555,36 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def versionCheck(self, version):
         """
         Checks the version of the Application called from openlp.pyw
+        Triggered by delay thread.
         """
         app_version = self.applicationVersion[u'full']
-        version_text = unicode(self.trUtf8('OpenLP version %s has been updated '
-            'to version %s\n\nYou can obtain the latest version from http://openlp.org'))
+        version_text = unicode(self.trUtf8('Version %s of OpenLP is now '
+            'available for download (you are currently running version %s).'
+            '\n\nYou can download the latest version from http://openlp.org'))
         QtGui.QMessageBox.question(self,
             self.trUtf8('OpenLP Version Updated'),
-            version_text % (app_version, version),
+            version_text % (version, app_version),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
             QtGui.QMessageBox.Ok)
-
-    def getMonitorNumber(self):
-        """
-        Set up the default behaviour of the monitor configuration in
-        here. Currently it is set to default to monitor 0 if the saved
-        monitor number does not exist.
-        """
-        screen_number = int(self.generalConfig.get_config(u'monitor', 0))
-        if not self.screens.screen_exists(screen_number):
-            screen_number = 0
-        return screen_number
 
     def show(self):
         """
         Show the main form, as well as the display form
         """
         self.showMaximized()
-        screen_number = self.getMonitorNumber()
-        self.mainDisplay.setup(screen_number)
-        if self.mainDisplay.isVisible():
-            self.mainDisplay.setFocus()
+        #screen_number = self.getMonitorNumber()
+        self.displayManager.setup()
+        if self.displayManager.mainDisplay.isVisible():
+            self.displayManager.mainDisplay.setFocus()
         self.activateWindow()
         if str_to_bool(self.generalConfig.get_config(u'auto open', False)):
             self.ServiceManagerContents.onLoadService(True)
+
+    def blankCheck(self):
+        """
+        Check and display message if screen blank on setup.
+        Triggered by delay thread.
+        """
         if str_to_bool(self.generalConfig.get_config(u'screen blank', False)) \
         and str_to_bool(self.generalConfig.get_config(u'blank warning', False)):
             self.LiveController.onBlankDisplay(True)
@@ -593,8 +595,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 QtGui.QMessageBox.Ok)
 
     def versionThread(self):
-        app_version = self.applicationVersion[u'full']
-        vT = VersionThread(self, app_version, self.generalConfig)
+        """
+        Start an initial setup thread to delay notifications
+        """
+        vT = VersionThread(self, self.applicationVersion, self.generalConfig)
         vT.start()
 
     def onHelpAboutItemClicked(self):
@@ -616,11 +620,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Show the Settings dialog
         """
         self.settingsForm.exec_()
-        updated_display = self.getMonitorNumber()
-        if updated_display != self.screens.current_display:
-            self.screens.set_current_display(updated_display)
-            self.RenderManager.update_display(updated_display)
-            self.mainDisplay.setup(updated_display)
+
+    def screenChanged(self):
+        """
+        The screen has changed to so tell the displays to update_display
+        their locations
+        """
+        self.RenderManager.update_display()
+        self.displayManager.setup()
+        self.setFocus()
         self.activateWindow()
 
     def closeEvent(self, event):
@@ -638,17 +646,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 QtGui.QMessageBox.Save)
             if ret == QtGui.QMessageBox.Save:
                 self.ServiceManagerContents.onSaveService()
-                self.mainDisplay.close()
                 self.cleanUp()
                 event.accept()
             elif ret == QtGui.QMessageBox.Discard:
-                self.mainDisplay.close()
                 self.cleanUp()
                 event.accept()
             else:
                 event.ignore()
         else:
-            self.mainDisplay.close()
             self.cleanUp()
             event.accept()
 
@@ -661,10 +666,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Call the cleanup method to shutdown plugins.
         log.info(u'cleanup plugins')
         self.plugin_manager.finalise_plugins()
+        #Close down the displays
+        self.displayManager.close()
 
     def serviceChanged(self, reset=False, serviceName=None):
         """
-        Hook to change the main window title when the service changes
+        Hook to change the main window title when the service chmainwindow.pyanges
 
         ``reset``
             Shows if the service has been cleared or saved
@@ -683,6 +690,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.serviceNotSaved = True
             title = u'%s - %s*' % (self.mainTitle, service_name)
         self.setWindowTitle(title)
+
+    def showStatusMessage(self, message):
+        self.StatusBar.showMessage(message)
 
     def defaultThemeChanged(self, theme):
         self.DefaultThemeLabel.setText(

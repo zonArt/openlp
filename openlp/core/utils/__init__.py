@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,6 +29,10 @@ import logging
 import urllib2
 from datetime import datetime
 
+from PyQt4 import QtCore
+
+import openlp
+
 log = logging.getLogger(__name__)
 
 class AppLocation(object):
@@ -39,15 +43,22 @@ class AppLocation(object):
     ConfigDir = 2
     DataDir = 3
     PluginsDir = 4
+    VersionDir = 5
 
     @staticmethod
-    def get_directory(dir_type):
+    def get_directory(dir_type=1):
+        """
+        Return the appropriate directory according to the directory type.
+
+        ``dir_type``
+            The directory type you want, for instance the data directory.
+        """
         if dir_type == AppLocation.AppDir:
-           return os.path.abspath(os.path.split(sys.argv[0])[0])
+            return os.path.abspath(os.path.split(sys.argv[0])[0])
         elif dir_type == AppLocation.ConfigDir:
-            if os.name == u'nt':
+            if sys.platform == u'win32':
                 path = os.path.join(os.getenv(u'APPDATA'), u'openlp')
-            elif os.name == u'mac':
+            elif sys.platform == u'darwin':
                 path = os.path.join(os.getenv(u'HOME'), u'Library',
                     u'Application Support', u'openlp')
             else:
@@ -58,9 +69,9 @@ class AppLocation(object):
                     path = os.path.join(os.getenv(u'HOME'), u'.openlp')
             return path
         elif dir_type == AppLocation.DataDir:
-            if os.name == u'nt':
+            if sys.platform == u'win32':
                 path = os.path.join(os.getenv(u'APPDATA'), u'openlp', u'data')
-            elif os.name == u'mac':
+            elif sys.platform == u'darwin':
                 path = os.path.join(os.getenv(u'HOME'), u'Library',
                     u'Application Support', u'openlp', u'Data')
             else:
@@ -71,33 +82,74 @@ class AppLocation(object):
                     path = os.path.join(os.getenv(u'HOME'), u'.openlp', u'data')
             return path
         elif dir_type == AppLocation.PluginsDir:
+            plugin_path = None
             app_path = os.path.abspath(os.path.split(sys.argv[0])[0])
             if hasattr(sys, u'frozen') and sys.frozen == 1:
-                return os.path.join(app_path, u'plugins')
+                plugin_path = os.path.join(app_path, u'plugins')
             else:
-                return os.path.join(app_path, u'openlp', u'plugins')
+                plugin_path = os.path.join(
+                    os.path.split(openlp.__file__)[0], u'plugins')
+            return plugin_path
+        elif dir_type == AppLocation.VersionDir:
+            if hasattr(sys, u'frozen') and sys.frozen == 1:
+                plugin_path = os.path.abspath(os.path.split(sys.argv[0])[0])
+            else:
+                plugin_path = os.path.split(openlp.__file__)[0]
+            return plugin_path
 
 
 def check_latest_version(config, current_version):
-    version_string = current_version
+    """
+    Check the latest version of OpenLP against the version file on the OpenLP
+    site.
+
+    ``config``
+        The OpenLP config object.
+
+    ``current_version``
+        The current version of OpenLP.
+    """
+    version_string = current_version[u'full']
     #set to prod in the distribution confif file.
     last_test = config.get_config(u'last version test', datetime.now().date())
     this_test = unicode(datetime.now().date())
     config.set_config(u'last version test', this_test)
     if last_test != this_test:
         version_string = u''
-        req = urllib2.Request(u'http://www.openlp.org/files/version.txt')
-        req.add_header(u'User-Agent', u'OpenLP/%s' % current_version)
+        if current_version[u'build']:
+            req = urllib2.Request(u'http://www.openlp.org/files/dev_version.txt')
+        else:
+            req = urllib2.Request(u'http://www.openlp.org/files/version.txt')
+        req.add_header(u'User-Agent', u'OpenLP/%s' % current_version[u'full'])
         try:
-            handle = urllib2.urlopen(req, None)
-            html = handle.read()
-            version_string = unicode(html).rstrip()
+            version_string = unicode(urllib2.urlopen(req, None).read()).strip()
         except IOError, e:
             if hasattr(e, u'reason'):
                 log.exception(u'Reason for failure: %s', e.reason)
     return version_string
 
+def string_to_unicode(string):
+    """
+    Converts a QString to a Python unicode object.
+    """
+    if isinstance(string, QtCore.QString):
+        string = unicode(string.toUtf8(), u'utf8')
+    return string
+
+def variant_to_unicode(variant):
+    """
+    Converts a QVariant to a Python unicode object.
+
+    ``variant``
+        The QVariant instance to convert to unicode.
+    """
+    if isinstance(variant, QtCore.QVariant):
+        string = variant.toString()
+    if not isinstance(string, unicode):
+        string = string_to_unicode(string)
+    return string
+
 from registry import Registry
 from confighelper import ConfigHelper
 
-__all__ = [u'Registry', u'ConfigHelper', u'AppLocations', u'check_latest_version']
+__all__ = [u'Registry', u'ConfigHelper', u'AppLocation', u'check_latest_version']

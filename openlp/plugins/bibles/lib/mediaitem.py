@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,7 +29,7 @@ import time
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, Receiver, str_to_bool, \
-    BaseListWithDnD
+    BaseListWithDnD, ItemCapabilities
 from openlp.plugins.bibles.forms import ImportWizardForm
 
 log = logging.getLogger(__name__)
@@ -45,6 +45,7 @@ class BibleListView(BaseListWithDnD):
     def resizeEvent(self, event):
         self.parent.onListViewResize(event.size().width(), event.size().width())
 
+
 class BibleMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Bibles.
@@ -56,21 +57,30 @@ class BibleMediaItem(MediaManagerItem):
         self.ConfigSection = title
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = BibleListView
-        self.servicePath = None
         self.lastReference = []
+        self.addToServiceItem = True
         MediaManagerItem.__init__(self, parent, icon, title)
         # place to store the search results
         self.search_results = {}
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlpreloadbibles'), self.reloadBibles)
 
+    def _decodeQtObject(self, listobj, key):
+        obj = listobj[QtCore.QString(key)]
+        if isinstance(obj, QtCore.QVariant):
+            obj = obj.toPyObject()
+        return unicode(obj)
+
     def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8('Bible')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
+        self.hasImportIcon = True
+        self.hasNewIcon = False
         self.hasEditIcon = False
         self.hasDeleteIcon = False
+        self.addToServiceItem = True
 
     def addEndHeaderBar(self):
         self.SearchTabWidget = QtGui.QTabWidget(self)
@@ -244,6 +254,8 @@ class BibleMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.configUpdated)
         # Other stuff
+        QtCore.QObject.connect(self.QuickSearchEdit,
+            QtCore.SIGNAL(u'returnPressed()'), self.onQuickSearchButton)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bible_showprogress'), self.onSearchProgressShow)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -255,8 +267,9 @@ class BibleMediaItem(MediaManagerItem):
         MediaManagerItem.addListViewToToolBar(self)
         # Progress Bar
         self.SearchProgress = QtGui.QProgressBar(self)
-        self.SearchProgress.setFormat('%p%')
-        self.SearchProgress.setMaximum(3)
+        self.SearchProgress.setFormat('')
+        self.SearchProgress.setMinimum(0)
+        self.SearchProgress.setMaximum(0)
         self.SearchProgress.setGeometry(self.ListView.geometry().left(),
             self.ListView.geometry().top(), 81, 23)
         self.SearchProgress.setVisible(False)
@@ -340,9 +353,10 @@ class BibleMediaItem(MediaManagerItem):
 
     def onSearchProgressShow(self):
         self.SearchProgress.setVisible(True)
-        self.SearchProgress.setMinimum(0)
-        self.SearchProgress.setMaximum(2)
-        self.SearchProgress.setValue(1)
+        Receiver.send_message(u'process_events')
+        #self.SearchProgress.setMinimum(0)
+        #self.SearchProgress.setMaximum(2)
+        #self.SearchProgress.setValue(1)
 
     def onSearchProgressHide(self):
         self.SearchProgress.setVisible(False)
@@ -366,7 +380,7 @@ class BibleMediaItem(MediaManagerItem):
             unicode(self.AdvancedBookComboBox.currentText()),
             self.AdvancedBookComboBox.itemData(item).toInt()[0])
 
-    def onNewClick(self):
+    def onImportClick(self):
         self.bibleimportform = ImportWizardForm(self, self.parent.config,
             self.parent.manager, self.parent)
         self.bibleimportform.exec_()
@@ -425,7 +439,7 @@ class BibleMediaItem(MediaManagerItem):
         if self.search_results:
             self.displayResults(bible)
 
-    def generateSlideData(self, service_item):
+    def generateSlideData(self, service_item, item=None):
         log.debug(u'generating slide data')
         items = self.ListView.selectedIndexes()
         if len(items) == 0:
@@ -434,7 +448,8 @@ class BibleMediaItem(MediaManagerItem):
         raw_slides = []
         raw_footer = []
         bible_text = u''
-        service_item.autoPreviewAllowed = True
+        service_item.add_capability(ItemCapabilities.AllowsPreview)
+        service_item.add_capability(ItemCapabilities.AllowsLoop)
         #If we want to use a 2nd translation / version
         bible2 = u''
         if self.SearchTabWidget.currentIndex() == 0:
@@ -451,15 +466,17 @@ class BibleMediaItem(MediaManagerItem):
         # Let's loop through the main lot, and assemble our verses
         for item in items:
             bitem = self.ListView.item(item.row())
-            reference = bitem.data(QtCore.Qt.UserRole).toPyObject()
-            bible = unicode(reference[QtCore.QString('bible')])
-            book = unicode(reference[QtCore.QString('book')])
-            chapter = unicode(reference[QtCore.QString('chapter')])
-            verse = unicode(reference[QtCore.QString('verse')])
-            text = unicode(reference[QtCore.QString('text')])
-            version = unicode(reference[QtCore.QString('version')])
-            copyright = unicode(reference[QtCore.QString('copyright')])
-            permission = unicode(reference[QtCore.QString('permission')])
+            reference = bitem.data(QtCore.Qt.UserRole)
+            if isinstance(reference, QtCore.QVariant):
+                reference = reference.toPyObject()
+            bible = self._decodeQtObject(reference, 'bible')
+            book = self._decodeQtObject(reference, 'book')
+            chapter = self._decodeQtObject(reference, 'chapter')
+            verse = self._decodeQtObject(reference, 'verse')
+            text = self._decodeQtObject(reference, 'text')
+            version = self._decodeQtObject(reference, 'version')
+            copyright = self._decodeQtObject(reference, 'copyright')
+            permission = self._decodeQtObject(reference, 'permission')
             if self.parent.settings_tab.display_style == 1:
                 verse_text = self.formatVerse(old_chapter, chapter, verse, u'(u', u')')
             elif  self.parent.settings_tab.display_style == 2:
@@ -491,7 +508,11 @@ class BibleMediaItem(MediaManagerItem):
                 if self.parent.settings_tab.layout_style == 0:
                     raw_slides.append(bible_text)
                     bible_text = u''
-            service_item.title = u'%s %s' % (book, verse_text)
+            if not service_item.title:
+                service_item.title = u'%s %s' % (book, verse_text)
+            elif service_item.title.find(self.trUtf8(u'etc')) == -1:
+                service_item.title = u'%s, %s' \
+                    % (service_item.title, self.trUtf8(u'etc'))
         if  len(self.parent.settings_tab.bible_theme) == 0:
             service_item.theme = None
         else:
@@ -563,7 +584,7 @@ class BibleMediaItem(MediaManagerItem):
             permission = u''
         else:
             permission = permission.value
-        for count, verse  in enumerate(self.search_results):
+        for count, verse in enumerate(self.search_results):
             bible_text = u' %s %d:%d (%s)' % \
                 (verse.book.name, verse.chapter, verse.verse, bible)
             bible_verse = QtGui.QListWidgetItem(bible_text)

@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -49,7 +49,7 @@ class RenderManager(object):
     """
     log.info(u'RenderManager Loaded')
 
-    def __init__(self, theme_manager, screens, screen_number=0):
+    def __init__(self, theme_manager, screens):
         """
         Initialise the render manager.
         """
@@ -57,7 +57,6 @@ class RenderManager(object):
         self.screens = screens
         self.theme_manager = theme_manager
         self.renderer = Renderer()
-        self.screens.set_current_display(screen_number)
         self.calculate_default(self.screens.current[u'size'])
         self.theme = u''
         self.service_theme = u''
@@ -65,12 +64,9 @@ class RenderManager(object):
         self.override_background = None
         self.themedata = None
 
-    def update_display(self, screen_number):
+    def update_display(self):
         """
         Updates the render manager's information about the current screen.
-
-        ``screen_number``
-            The updated index of the output/display screen.
         """
         log.debug(u'Update Display')
         self.calculate_default(self.screens.current[u'size'])
@@ -146,13 +142,13 @@ class RenderManager(object):
         footer_rect = None
         if not theme.font_main_override:
             main_rect = QtCore.QRect(10, 0,
-                            self.width - 1, self.footer_start)
+                            self.width - 20, self.footer_start)
         else:
             main_rect = QtCore.QRect(theme.font_main_x, theme.font_main_y,
                 theme.font_main_width - 1, theme.font_main_height - 1)
         if not theme.font_footer_override:
             footer_rect = QtCore.QRect(10, self.footer_start,
-                            self.width - 1, self.height - self.footer_start)
+                            self.width - 20, self.height - self.footer_start)
         else:
             footer_rect = QtCore.QRect(theme.font_footer_x,
                 theme.font_footer_y, theme.font_footer_width - 1,

@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,9 +23,13 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from serviceitemform import ServiceItemNoteForm
+from slidecontroller import HideMode
+from servicenoteform import ServiceNoteForm
+from serviceitemeditform import ServiceItemEditForm
 from screen import ScreenList
 from maindisplay import MainDisplay
+from maindisplay import VideoDisplay
+from maindisplay import DisplayManager
 from amendthemeform import AmendThemeForm
 from slidecontroller import SlideController
 from splashscreen import SplashScreen
@@ -41,4 +45,4 @@ from mainwindow import MainWindow
 
 __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainWindow',
     'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
-    'AmendThemeForm', 'MediaDockManager', 'ServiceItemNoteForm']
+    'AmendThemeForm', 'MediaDockManager', 'ServiceItemEditForm']

@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +24,6 @@
 ###############################################################################
 
 import logging
-import os
 
 from common import parse_reference
 from opensong import OpenSongBible
@@ -61,6 +60,9 @@ class BibleFormat(object):
     def get_class(id):
         """
         Return the appropriate imeplementation class.
+
+        ``id``
+            The Bible format.
         """
         if id == BibleFormat.OSIS:
             return OSISBible
@@ -75,6 +77,9 @@ class BibleFormat(object):
 
     @staticmethod
     def list():
+        """
+        Return a list of the supported Bible formats.
+        """
         return [
             BibleFormat.OSIS,
             BibleFormat.CSV,
@@ -123,19 +128,21 @@ class BibleManager(object):
         log.debug(u'Bible Files %s', files)
         self.db_cache = {}
         for filename in files:
-            name, extension = os.path.splitext(filename)
-            self.db_cache[name] = BibleDB(self.parent, path=self.path, name=name, config=self.config)
+            bible = BibleDB(self.parent, path=self.path, file=filename,
+                            config=self.config)
+            name = bible.get_name()
+            log.debug(u'Bible Name: "%s"', name)
+            self.db_cache[name] = bible
             # look to see if lazy load bible exists and get create getter.
             source = self.db_cache[name].get_meta(u'download source')
             if source:
                 download_name = self.db_cache[name].get_meta(u'download name').value
                 meta_proxy = self.db_cache[name].get_meta(u'proxy url')
-                web_bible = HTTPBible(self.parent, path=self.path, name=name,
-                    config=self.config, download_source=source.value,
-                    download_name=download_name)
+                web_bible = HTTPBible(self.parent, path=self.path,
+                    file=filename, config=self.config,
+                    download_source=source.value, download_name=download_name)
                 if meta_proxy:
                     web_bible.set_proxy_server(meta_proxy.value)
-                #del self.db_cache[name]
                 self.db_cache[name] = web_bible
         log.debug(u'Bibles reloaded')
 
@@ -164,7 +171,7 @@ class BibleManager(object):
         importer = class_(self.parent, **kwargs)
         name = importer.register(self.import_wizard)
         self.db_cache[name] = importer
-        return importer.do_import()
+        return importer
 
     def get_bibles(self):
         """
@@ -246,7 +253,7 @@ class BibleManager(object):
         """
         if not isinstance(name, unicode):
             name = unicode(name)
-        for bible, db_object in self.db_cache.iteritems():
+        for bible in self.db_cache.keys():
             log.debug(u'Bible from cache in is_new_bible %s', bible)
             if not isinstance(bible, unicode):
                 bible = unicode(bible)

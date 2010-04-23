@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -135,7 +135,7 @@ class Ui_EditSongDialog(object):
         sizePolicy.setHeightForWidth(
             self.AuthorsSelectionComboItem.sizePolicy().hasHeightForWidth())
         self.AuthorsSelectionComboItem.setSizePolicy(sizePolicy)
-        self.AuthorsSelectionComboItem.setEditable(False)
+        self.AuthorsSelectionComboItem.setEditable(True)
         self.AuthorsSelectionComboItem.setInsertPolicy(
             QtGui.QComboBox.InsertAlphabetically)
         self.AuthorsSelectionComboItem.setSizeAdjustPolicy(
@@ -212,6 +212,7 @@ class Ui_EditSongDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
             self.SongTopicCombo.sizePolicy().hasHeightForWidth())
+        self.SongTopicCombo.setEditable(True)
         self.SongTopicCombo.setSizePolicy(sizePolicy)
         self.SongTopicCombo.setObjectName(u'SongTopicCombo')
         self.TopicAddLayout.addWidget(self.SongTopicCombo)
@@ -256,6 +257,7 @@ class Ui_EditSongDialog(object):
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.SongbookCombo.sizePolicy().hasHeightForWidth())
+        self.SongbookCombo.setEditable(True)
         self.SongbookCombo.setSizePolicy(sizePolicy)
         self.SongbookCombo.setObjectName(u'SongbookCombo')
         self.SongbookLayout.addWidget(self.SongbookCombo, 0, 0, 1, 1)
@@ -293,6 +295,7 @@ class Ui_EditSongDialog(object):
         self.ThemeLayout.setMargin(8)
         self.ThemeLayout.setObjectName(u'ThemeLayout')
         self.ThemeSelectionComboItem = QtGui.QComboBox(self.ThemeGroupBox)
+        self.ThemeSelectionComboItem.setEditable(True)
         self.ThemeSelectionComboItem.setObjectName(u'ThemeSelectionComboItem')
         self.ThemeLayout.addWidget(self.ThemeSelectionComboItem)
         self.ThemeAddButton = QtGui.QPushButton(self.ThemeGroupBox)

@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -41,8 +41,8 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
 
     def accept(self):
         ret = QtGui.QMessageBox.question(self,
-            self.trUtf8('Delete Selected Audit Events?'),
-            self.trUtf8('Are you sure you want to delete selected Audit Data?'),
+            self.trUtf8('Delete Selected Song Usage Events?'),
+            self.trUtf8('Are you sure you want to delete selected Song Usage data?'),
             QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Ok |
                 QtGui.QMessageBox.Cancel),

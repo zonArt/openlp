@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -69,7 +69,7 @@ class CustomPlugin(Plugin):
     def about(self):
         about_text = self.trUtf8('<b>Custom Plugin</b><br>This plugin '
             'allows slides to be displayed on the screen in the same way '
-            'songs are.  This plugin provides greater freedom over the '
+            'songs are. This plugin provides greater freedom over the '
             'songs plugin.<br>')
         return about_text
 

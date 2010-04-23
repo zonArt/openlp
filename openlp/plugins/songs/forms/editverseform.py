@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -53,32 +53,56 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         QtCore.QObject.connect(self.VerseListComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onVerseComboChanged)
 
+    def startNewLine(self):
+        if self.VerseTextEdit.textCursor().columnNumber() != 0:
+            self.VerseTextEdit.insertPlainText(u'\n')
+
     def onAddIntro(self):
-        self.VerseTextEdit.insertPlainText(u'---[Intro:1]---')
+        self.startNewLine()
+        self.VerseTextEdit.insertPlainText(u'---[Intro:1]---\n')
+        self.VerseTextEdit.setFocus()
 
     def onAddEnding(self):
-        self.VerseTextEdit.insertPlainText(u'---[Ending:1]---')
+        self.startNewLine()
+        self.VerseTextEdit.insertPlainText(u'---[Ending:1]---\n')
+        self.VerseTextEdit.setFocus()
 
     def onAddOther(self):
-        self.VerseTextEdit.insertPlainText(u'---[Other:1]---')
+        self.startNewLine()
+        self.VerseTextEdit.insertPlainText(u'---[Other:1]---\n')
+        self.VerseTextEdit.setFocus()
 
     def onAddPreChorus(self):
-        self.VerseTextEdit.insertPlainText(u'---[PreChorus:1]---')
+        self.startNewLine()
+        self.VerseTextEdit.insertPlainText(u'---[Pre-Chorus:1]---\n')
+        self.VerseTextEdit.setFocus()
 
     def onAddBridge(self):
-        self.VerseTextEdit.insertPlainText(u'---[Bridge:1]---')
+        self.startNewLine()
+        self.VerseTextEdit.insertPlainText(u'---[Bridge:1]---\n')
+        self.VerseTextEdit.setFocus()
 
     def onAddChorus(self):
-        self.VerseTextEdit.insertPlainText(u'---[Chorus:1]---')
+        self.startNewLine()
+        count = self.VerseTextEdit.toPlainText().\
+                        count(u'---[Chorus')
+        self.VerseTextEdit.insertPlainText(u'---[Chorus:%s]---\n'
+                                           % unicode(count + 1))
+        self.VerseTextEdit.setFocus()
 
     def onAddVerse(self):
-        self.VerseTextEdit.insertPlainText(u'---[Verse:1]---')
+        self.startNewLine()
+        count = self.VerseTextEdit.toPlainText().\
+                        count(u'---[Verse')
+        self.VerseTextEdit.insertPlainText(u'---[Verse:%s]---\n'
+                                           % unicode(count + 1))
+        self.VerseTextEdit.setFocus()
 
     def setVerse(self, text, verseCount=0, single=False, tag=u'Verse:1'):
         posVerse = 0
         posSub = 0
         if len(text) == 0 and not single:
-            text = u'---[Verse:1]---\n'
+            text = u'---[%s:1]---\n' % self.trUtf8('Verse')
         if single:
             id = tag.split(u':')
             posVerse = self.VerseListComboBox.findText(id[0], QtCore.Qt.MatchExactly)
@@ -128,7 +152,8 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         return text
 
     def onVerseComboChanged(self, id):
-        if unicode(self.VerseListComboBox.currentText()) == u'Verse':
+        if unicode(self.VerseListComboBox.currentText()) == self.trUtf8('Verse') or \
+            unicode(self.VerseListComboBox.currentText()) == self.trUtf8('Chrous'):
             self.SubVerseListComboBox.setEnabled(True)
         else:
             self.SubVerseListComboBox.setEnabled(False)

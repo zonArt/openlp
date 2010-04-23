@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -115,7 +115,6 @@ class PresentationController(object):
         """
         return False
 
-
     def start_process(self):
         """
         Loads a running version of the presentation application in the background.
@@ -138,18 +137,23 @@ class PresentationController(object):
         self.docs.append(doc)
         return doc
 
-    def remove_doc(self, doc):
+    def remove_doc(self, doc=None):
         """
         Called to remove an open document from the collection
         """
         log.debug(u'remove_doc Presentation')
-        self.docs.remove(doc)
-  
+        if doc is None:
+            return
+        if doc in self.docs:
+           self.docs.remove(doc)
+
+    def close_presentation(self):
+        pass
 
 class PresentationDocument(object):
     """
     Base class for presentation documents to inherit from.
-    Loads and closes the presentation as well as triggering the correct 
+    Loads and closes the presentation as well as triggering the correct
     activities based on the users input
 
     **Hook Functions**
@@ -235,7 +239,7 @@ class PresentationDocument(object):
 
     def get_file_name(self,  presentation):
         return os.path.split(presentation)[1]
-        
+
     def get_thumbnail_path(self,  presentation):
         return os.path.join(self.controller.thumbnailroot, self.get_file_name(presentation))
 
@@ -256,10 +260,10 @@ class PresentationDocument(object):
         Close presentation and clean up objects
         Triggered by new object being added to SlideController
         """
-        self.controller.delete_doc(self)
+        self.controller.close_presentation()
 
     def is_active(self):
-        """ 
+        """
         Returns True if a presentation is currently running
         """
         return False
@@ -287,7 +291,7 @@ class PresentationDocument(object):
         Returns true if screen is blank
         """
         return False
-        
+
     def stop_presentation(self):
         """
         Stops the presentation, removing it from the output display
@@ -368,7 +372,7 @@ class PresentationDocument(object):
         The slide the text  is required for, starting at 1
         """
         return ''
-        
+
     def get_slide_notes(self, slide_no):
         """
         Returns the text on the slide

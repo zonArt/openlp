@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,9 +27,9 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus
+from openlp.core.lib import Plugin, build_icon, PluginStatus, Receiver
 from openlp.plugins.alerts.lib import AlertsManager, DBManager
-from openlp.plugins.alerts.forms import AlertsTab, AlertForm, AlertEditForm
+from openlp.plugins.alerts.forms import AlertsTab, AlertForm
 
 log = logging.getLogger(__name__)
 
@@ -43,7 +43,6 @@ class alertsPlugin(Plugin):
         self.alertsmanager = AlertsManager(self)
         self.manager = DBManager(self.config)
         self.alertForm = AlertForm(self.manager, self)
-        self.alertEditForm = AlertEditForm(self.manager, self)
         self.status = PluginStatus.Active
 
     def get_settings_tab(self):
@@ -89,10 +88,7 @@ class alertsPlugin(Plugin):
     def onAlertsTrigger(self):
         self.alertForm.loadList()
         self.alertForm.exec_()
-
-    def onAlertsEdit(self):
-        self.alertEditForm.loadList()
-        self.alertEditForm.exec_()
+        Receiver.send_message(u'text_onTop')
 
     def about(self):
         about_text = self.trUtf8('<b>Alerts Plugin</b><br>This plugin '

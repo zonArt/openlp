@@ -6,8 +6,8 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Maikel Stuivenberg, Martin Thompson, Jon Tibble,   #
-# Carsten Tinggaard                                                           #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,6 +27,7 @@ import os
 import logging
 
 from openlp.core.lib import Plugin, build_icon, Receiver, PluginStatus
+from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import *
 
 log = logging.getLogger(__name__)
@@ -56,6 +57,8 @@ class PresentationPlugin(Plugin):
         for controller in self.controllers:
             if self.controllers[controller].enabled:
                 presentation_types.append({u'%s' % controller : self.controllers[controller].supports})
+                self.controllers[controller].start_process()
+
         Receiver.send_message(
                     u'presentation types', presentation_types)
 
@@ -84,11 +87,13 @@ class PresentationPlugin(Plugin):
         If Not do not install the plugin.
         """
         log.debug(u'check_pre_conditions')
-        dir = os.path.join(os.path.dirname(__file__), u'lib')
-        for filename in os.listdir(dir):
+        controller_dir = os.path.join(
+            AppLocation.get_directory(AppLocation.PluginsDir),
+            u'presentations', u'lib')
+        for filename in os.listdir(controller_dir):
             if filename.endswith(u'controller.py') and \
                 not filename == 'presentationcontroller.py':
-                path = os.path.join(dir, filename)
+                path = os.path.join(controller_dir, filename)
                 if os.path.isfile(path):
                     modulename = u'openlp.plugins.presentations.lib.' + \
                         os.path.splitext(filename)[0]
@@ -101,8 +106,6 @@ class PresentationPlugin(Plugin):
         for controller_class in controller_classes:
             controller = controller_class(self)
             self.registerControllers(controller)
-            if controller.enabled:
-                controller.start_process()
         if self.controllers:
             return True
         else:
@@ -111,6 +114,6 @@ class PresentationPlugin(Plugin):
     def about(self):
         about_text = self.trUtf8('<b>Presentation Plugin</b> <br> Delivers '
             'the ability to show presentations using a number of different '
-            'programs.  The choice of available presentation programs is '
+            'programs. The choice of available presentation programs is '
             'available to the user in a drop down box.')
         return about_text
