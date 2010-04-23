@@ -717,6 +717,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         log.debug(u'Loading QSettings')
         settings = QtCore.QSettings()
         self.recentFiles = settings.value(u'RecentFiles').toStringList()
+        self.restoreGeometry(
+            settings.value(u'MainWindow/Geometry').toByteArray())
+        self.restoreState(
+            settings.value(u'MainWindow/State').toByteArray())
 
     def saveSettings(self):
         log.debug(u'Saving QSettings')
@@ -724,6 +728,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         recentFiles = QtCore.QVariant(self.recentFiles) \
             if self.recentFiles else QtCore.QVariant()
         settings.setValue(u'RecentFiles', recentFiles)
+        settings.setValue(
+            u'MainWindow/State', QtCore.QVariant(self.saveState()))
+        settings.setValue(
+            u'MainWindow/Geometry', QtCore.QVariant(self.saveGeometry()))
 
     def updateFileMenu(self):
         self.FileMenu.clear()
