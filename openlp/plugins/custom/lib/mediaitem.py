@@ -58,13 +58,13 @@ class CustomMediaItem(MediaManagerItem):
 
     def addEndHeaderBar(self):
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_edit' % self.parent.name), self.onRemoteEdit)
+            QtCore.SIGNAL(u'custom_edit'), self.onRemoteEdit)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'remote_edit_clear' ), self.onRemoteEditClear)
+            QtCore.SIGNAL(u'custom_edit_clear' ), self.onRemoteEditClear)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'load_custom_list'), self.initialise)
+            QtCore.SIGNAL(u'custom_load_list'), self.initialise)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'preview_custom'), self.onPreviewClick)
+            QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
 
     def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8('Custom')

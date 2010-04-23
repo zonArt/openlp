@@ -212,7 +212,7 @@ class SongsPlugin(Plugin):
                     + ' included with the Songs of Fellowship Music Editions'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
-        Receiver.send_message(u'load_song_list')
+        Receiver.send_message(u'songs_load_list')
 
     def onImportOooItemClick(self):
         filenames = QtGui.QFileDialog.getOpenFileNames(
@@ -220,7 +220,7 @@ class SongsPlugin(Plugin):
             u'', u'All Files(*.*)')
         oooimport = OooImport(self.songmanager)        
         oooimport.import_docs(filenames)
-        Receiver.send_message(u'load_song_list')
+        Receiver.send_message(u'songs_load_list')
 
     def onExportOpenlp1ItemClicked(self):
         self.openlp_export_form.show()
