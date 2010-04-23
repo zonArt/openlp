@@ -416,8 +416,8 @@ class ServiceManager(QtGui.QWidget):
                         get_config(u'save prompt', u'False')):
             ret = QtGui.QMessageBox.question(self,
                 self.trUtf8('Save Changes to Service?'),
-                self.trUtf8('Your service is unsaved, do you want to save those '
-                            'changes before creating a new one ?'),
+                self.trUtf8('Your service is unsaved, do you want to save '
+                            'those changes before creating a new one?'),
                 QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Cancel |
                     QtGui.QMessageBox.Save),
@@ -514,7 +514,8 @@ class ServiceManager(QtGui.QWidget):
             try:
                 zip = zipfile.ZipFile(unicode(filename), 'w')
                 for item in self.serviceItems:
-                    service.append({u'serviceitem':item[u'service_item'].get_service_repr()})
+                    service.append({u'serviceitem':item[u'service_item']
+                        .get_service_repr()})
                     if item[u'service_item'].uses_file():
                         for frame in item[u'service_item'].get_frames():
                             path_from = unicode(os.path.join(
@@ -559,6 +560,17 @@ class ServiceManager(QtGui.QWidget):
         files retrieved from the zip file are placed in a temporary directory
         and will only be used for this service.
         """
+        if self.parent.serviceNotSaved:
+            ret = QtGui.QMessageBox.question(self,
+                self.trUtf8('Save Changes to Service?'),
+                self.trUtf8('Your current service is unsaved, do you want to '
+                            'save the changes before opening a new one?'),
+                QtGui.QMessageBox.StandardButtons(
+                    QtGui.QMessageBox.Discard |
+                    QtGui.QMessageBox.Save),
+                QtGui.QMessageBox.Save)
+            if ret == QtGui.QMessageBox.Save:
+                self.onSaveService()
         if filename is None:
             action = self.sender()
             if isinstance(action, QtGui.QAction):
