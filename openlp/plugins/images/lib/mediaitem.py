@@ -76,7 +76,7 @@ class ImageMediaItem(MediaManagerItem):
             QtGui.QAbstractItemView.ExtendedSelection)
         self.ListView.setIconSize(QtCore.QSize(88,50))
         self.servicePath = os.path.join(
-            self.parent.config.get_data_path(), u'.thumbnails')
+            self.parent.config.get_data_path(), u'thumbnails')
         if not os.path.exists(self.servicePath):
             os.mkdir(self.servicePath)
         self.loadList(self.parent.config.load_list(self.ConfigSection))

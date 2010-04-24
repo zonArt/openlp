@@ -107,7 +107,7 @@ class ThemeManager(QtGui.QWidget):
         self.themelist = []
         self.path = os.path.join(ConfigHelper.get_data_path(), u'themes')
         self.checkThemesExists(self.path)
-        self.thumbPath = os.path.join(self.path, u'.thumbnails')
+        self.thumbPath = os.path.join(self.path, u'thumbnails')
         self.checkThemesExists(self.thumbPath)
         self.amendThemeForm.path = self.path
         # Last little bits of setting up

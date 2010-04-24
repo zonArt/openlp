@@ -53,6 +53,7 @@ blankthemexml=\
       <weight>Normal</weight>
       <italics>False</italics>
       <indentation>0</indentation>
+      <line_adjustment>0</line_adjustment>
       <location override="False" x="10" y="10" width="1004" height="730"/>
    </font>
    <font type="footer">
@@ -62,6 +63,7 @@ blankthemexml=\
       <weight>Normal</weight>
       <italics>False</italics>
       <indentation>0</indentation>
+      <line_adjustment>0</line_adjustment>
       <location override="False" x="10" y="730" width="1004" height="38"/>
    </font>
    <display>
@@ -171,8 +173,8 @@ class ThemeXML(object):
         self.child_element(background, u'filename', filename)
 
     def add_font(self, name, color, proportion, override, fonttype=u'main',
-        weight=u'Normal', italics=u'False', indentation=0, xpos=0, ypos=0,
-        width=0, height=0):
+        weight=u'Normal', italics=u'False', indentation=0, line_adjustment=0,
+        xpos=0, ypos=0, width=0, height=0):
         """
         Add a Font.
 
@@ -227,6 +229,8 @@ class ThemeXML(object):
         self.child_element(background, u'italics', italics)
         #Create indentation name element
         self.child_element(background, u'indentation', unicode(indentation))
+        #Create indentation name element
+        self.child_element(background, u'line_adjustment', unicode(line_adjustment))
 
         #Create Location element
         element = self.theme_xml.createElement(u'location')
