@@ -102,6 +102,11 @@ class DisplayPlugin(Plugin):
         self.DisplayMenu.menuAction().setVisible(False)
 
     def toggleDisplayState(self):
+        log.info(u'toggleDisplayState')
+        if self.DisplayStatus.isChecked():
+            self.screens.set_override_display()
+        else:
+            self.screens.reset_current_display()
         Receiver.send_message(u'config_screen_changed')
 
     def onDisplayOverride(self):

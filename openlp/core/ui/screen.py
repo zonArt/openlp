@@ -24,6 +24,7 @@
 ###############################################################################
 
 import logging
+import copy
 
 log = logging.getLogger(__name__)
 
@@ -36,6 +37,7 @@ class ScreenList(object):
     def __init__(self):
         self.preview = None
         self.current = None
+        self.override = None
         self.screen_list = []
         self.display_count = 0
         #actual display number
@@ -59,13 +61,14 @@ class ScreenList(object):
         """
         Set up the current screen dimensions
         """
+        log.debug(u'set_override_display %s', number, )
         if number + 1 > self.display_count:
             self.current = self.screen_list[0]
             self.current_display = 0
         else:
             self.current = self.screen_list[number]
-            self.override = self.current
-            self.preview = self.current
+            self.override = copy.deepcopy(self.current)
+            self.preview = copy.deepcopy(self.current)
             self.current_display = number
         if self.display_count == 1:
             self.preview = self.screen_list[0]
@@ -75,12 +78,14 @@ class ScreenList(object):
         replace the current size with the override values
         user wants to have their own screen attributes
         """
-        self.current = self.override
-        self.preview = self.current
+        log.debug(u'set_override_display')
+        self.current = copy.deepcopy(self.override)
+        self.preview = copy.deepcopy(self.current)
 
-    def reset_current(self):
+    def reset_current_display(self):
         """
         replace the current values with the correct values
         user wants to use the correct screen attributes
         """
+        log.debug(u'reset_current_display')
         self.set_current_display(self.current_display)
