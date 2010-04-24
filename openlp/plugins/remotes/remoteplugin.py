@@ -28,7 +28,7 @@ import logging
 from PyQt4 import QtNetwork, QtCore
 
 from openlp.core.lib import Plugin, Receiver
-from openlp.plugins.remotes.lib import RemoteTab
+from openlp.plugins.remotes.lib import RemoteTab, HttpServer
 
 log = logging.getLogger(__name__)
 
@@ -44,10 +44,7 @@ class RemotesPlugin(Plugin):
         log.debug(u'initialise')
         Plugin.initialise(self)
         self.insert_toolbox_item()
-        self.server = QtNetwork.QUdpSocket()
-        self.server.bind(int(self.config.get_config(u'remote port', 4316)))
-        QtCore.QObject.connect(self.server,
-            QtCore.SIGNAL(u'readyRead()'), self.readData)
+        self.server = HttpServer(self)
 
     def finalise(self):
         log.debug(u'finalise')
@@ -60,24 +57,6 @@ class RemotesPlugin(Plugin):
         Create the settings Tab
         """
         return RemoteTab(self.name)
-
-    def readData(self):
-        log.info(u'Remoted data has arrived')
-        while self.server.hasPendingDatagrams():
-            datagram, host, port = self.server.readDatagram(
-                self.server.pendingDatagramSize())
-            self.handle_datagram(datagram)
-
-    def handle_datagram(self, datagram):
-        log.info(u'Sending event %s ', datagram)
-        pos = datagram.find(u':')
-        event = unicode(datagram[:pos].lower())
-        if event == u'alert':
-            Receiver.send_message(u'alerts_text', unicode(datagram[pos + 1:]))
-        elif event == u'next_slide':
-            Receiver.send_message(u'slidecontroller_live_next')
-        else:
-            Receiver.send_message(event, unicode(datagram[pos + 1:]))
             
     def about(self):
         about_text = self.trUtf8('<b>Remote Plugin</b><br>This plugin '
