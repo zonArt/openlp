@@ -234,6 +234,16 @@ class SlideController(QtGui.QWidget):
         self.Mediabar.addToolbarButton(
             u'Media Stop',  u':/slides/media_playback_stop.png',
             self.trUtf8('Start playing media'), self.onMediaStop)
+        if self.isLive:
+            self.blankButton = self.Mediabar.addToolbarButton(
+                u'Blank Screen', u':/slides/slide_blank.png',
+                self.trUtf8('Blank Screen'), self.onBlankDisplay, True)
+            self.themeButton = self.Mediabar.addToolbarButton(
+                u'Display Theme', u':/slides/slide_theme.png',
+                self.trUtf8('Theme Screen'), self.onThemeDisplay, True)
+            self.hideButton = self.Mediabar.addToolbarButton(
+                u'Hide screen', u':/slides/slide_desktop.png',
+                self.trUtf8('Hide Screen'), self.onHideDisplay, True)
         if not self.isLive:
             self.seekSlider = Phonon.SeekSlider()
             self.seekSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
@@ -259,7 +269,7 @@ class SlideController(QtGui.QWidget):
         self.PreviewFrame = QtGui.QFrame(self.Splitter)
         self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, 300, 225))
         self.PreviewFrame.setSizePolicy(QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Minimum, 
+            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Minimum,
             QtGui.QSizePolicy.Label))
         self.PreviewFrame.setFrameShape(QtGui.QFrame.StyledPanel)
         self.PreviewFrame.setFrameShadow(QtGui.QFrame.Sunken)
@@ -316,26 +326,26 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'slidecontroller_%s_stop_loop' % self.type_prefix),
             self.onStopLoop)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_first' % self.type_prefix), 
+            QtCore.SIGNAL(u'slidecontroller_%s_first' % self.type_prefix),
             self.onSlideSelectedFirst)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_next' % self.type_prefix), 
+            QtCore.SIGNAL(u'slidecontroller_%s_next' % self.type_prefix),
             self.onSlideSelectedNext)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_previous' % self.type_prefix), 
+            QtCore.SIGNAL(u'slidecontroller_%s_previous' % self.type_prefix),
             self.onSlideSelectedPrevious)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_next_noloop' % self.type_prefix), 
+            QtCore.SIGNAL(u'slidecontroller_%s_next_noloop' % self.type_prefix),
             self.onSlideSelectedNextNoloop)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_previous_noloop' % 
+            QtCore.SIGNAL(u'slidecontroller_%s_previous_noloop' %
             self.type_prefix),
             self.onSlideSelectedPreviousNoloop)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_last' % self.type_prefix), 
+            QtCore.SIGNAL(u'slidecontroller_%s_last' % self.type_prefix),
             self.onSlideSelectedLast)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_change' % self.type_prefix), 
+            QtCore.SIGNAL(u'slidecontroller_%s_change' % self.type_prefix),
             self.onSlideChange)
         QtCore.QObject.connect(self.Splitter,
             QtCore.SIGNAL(u'splitterMoved(int, int)'), self.trackSplitter)
@@ -481,7 +491,7 @@ class SlideController(QtGui.QWidget):
             blanked = self.blankButton.isChecked()
         else:
             blanked = False
-        Receiver.send_message(u'%s_start' % serviceItem.name.lower(), 
+        Receiver.send_message(u'%s_start' % serviceItem.name.lower(),
             [serviceItem, self.isLive, blanked, slideno])
         self.slideList = {}
         width = self.parent.ControlSplitter.sizes()[self.split]
@@ -554,9 +564,9 @@ class SlideController(QtGui.QWidget):
         self.enableToolBar(serviceItem)
         self.onSlideSelected()
         self.PreviewListWidget.setFocus()
-        Receiver.send_message(u'%s_%s_started' % 
-            (self.serviceItem.name.lower(), 
-            'live' if self.isLive else 'preview'), 
+        Receiver.send_message(u'%s_%s_started' %
+            (self.serviceItem.name.lower(),
+            'live' if self.isLive else 'preview'),
             [serviceItem])
         log.log(15, u'Display Rendering took %4s' % (time.time() - before))
 
@@ -567,7 +577,7 @@ class SlideController(QtGui.QWidget):
         """
         if not self.serviceItem:
             return
-        Receiver.send_message(u'%s_first' % self.serviceItem.name.lower(), 
+        Receiver.send_message(u'%s_first' % self.serviceItem.name.lower(),
             [self.serviceItem, self.isLive])
         if self.serviceItem.is_command():
             self.updatePreview()
@@ -593,7 +603,10 @@ class SlideController(QtGui.QWidget):
         log.debug(u'onThemeDisplay %d' % force)
         if force:
             self.themeButton.setChecked(True)
-        self.blankScreen(HideMode.Theme, self.themeButton.isChecked())
+        if self.themeButton.isChecked():
+            Receiver.send_message(u'maindisplay_show_theme')
+        else:
+            Receiver.send_message(u'maindisplay_hide_theme')
 
     def onHideDisplay(self, force=False):
         """
@@ -603,9 +616,9 @@ class SlideController(QtGui.QWidget):
         if force:
             self.hideButton.setChecked(True)
         if self.hideButton.isChecked():
-            self.parent.mainDisplay.hideDisplay()
+            Receiver.send_message(u'maindisplay_hide')
         else:
-            self.parent.mainDisplay.showDisplay()
+            Receiver.send_message(u'maindisplay_show')
 
     def blankScreen(self, blankType, blanked=False):
         """
@@ -613,15 +626,15 @@ class SlideController(QtGui.QWidget):
         """
         if self.serviceItem is not None:
             if blanked:
-                Receiver.send_message(u'%s_blank' % self.serviceItem.name.lower(), 
+                Receiver.send_message(u'%s_blank' % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive])
             else:
-                Receiver.send_message(u'%s_unblank' 
-                    % self.serviceItem.name.lower(), 
+                Receiver.send_message(u'%s_unblank'
+                    % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive])
-            self.parent.mainDisplay.blankDisplay(blankType, blanked)
+            self.parent.displayManager.mainDisplay.blankDisplay(blankType, blanked)
         else:
-            self.parent.mainDisplay.blankDisplay(blankType, blanked)
+            self.parent.displayManager.mainDisplay.blankDisplay(blankType, blanked)
 
     def onSlideSelected(self):
         """
@@ -685,7 +698,7 @@ class SlideController(QtGui.QWidget):
         """
         if not self.serviceItem:
             return
-        Receiver.send_message(u'%s_next' % self.serviceItem.name.lower(), 
+        Receiver.send_message(u'%s_next' % self.serviceItem.name.lower(),
             [self.serviceItem, self.isLive])
         if self.serviceItem.is_command():
             self.updatePreview()
@@ -709,7 +722,7 @@ class SlideController(QtGui.QWidget):
         """
         if not self.serviceItem:
             return
-        Receiver.send_message(u'%s_previous' % self.serviceItem.name.lower(), 
+        Receiver.send_message(u'%s_previous' % self.serviceItem.name.lower(),
             [self.serviceItem,  self.isLive])
         if self.serviceItem.is_command():
             self.updatePreview()
@@ -729,7 +742,7 @@ class SlideController(QtGui.QWidget):
         """
         if not self.serviceItem:
             return
-        Receiver.send_message(u'%s_last' % self.serviceItem.name.lower(), 
+        Receiver.send_message(u'%s_last' % self.serviceItem.name.lower(),
             [self.serviceItem, self.isLive])
         if self.serviceItem.is_command():
             self.updatePreview()
@@ -775,7 +788,7 @@ class SlideController(QtGui.QWidget):
 
     def onMediaStart(self, item):
         if self.isLive:
-            Receiver.send_message(u'videodisplay_start', 
+            Receiver.send_message(u'videodisplay_start',
                 [item, self.blankButton.isChecked()])
         else:
             self.mediaObject.stop()

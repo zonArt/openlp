@@ -183,8 +183,6 @@ class Ui_AmendThemeDialog(object):
         self.MainFontLayout.setWidget(4, QtGui.QFormLayout.LabelRole, self.FontMainWrapLineAdjustmentLabel)
         self.FontMainLineAdjustmentSpinBox = QtGui.QSpinBox(self.FontMainGroupBox)
         self.FontMainLineAdjustmentSpinBox.setObjectName("FontMainLineAdjustmentSpinBox")
-        self.FontMainLineAdjustmentSpinBox.setMaximum(30)
-        self.FontMainLineAdjustmentSpinBox.setMinimum(-30)
         self.MainFontLayout.setWidget(4, QtGui.QFormLayout.FieldRole, self.FontMainLineAdjustmentSpinBox)
         self.FontMainWrapIndentationLabel = QtGui.QLabel(self.FontMainGroupBox)
         self.FontMainWrapIndentationLabel.setObjectName("FontMainWrapIndentationLabel")

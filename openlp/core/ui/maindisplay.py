@@ -138,6 +138,10 @@ class MainDisplay(DisplayWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'maindisplay_hide_theme'), self.hideThemeDisplay)
+#        QtCore.QObject.connect(Receiver.get_receiver(),
+#            QtCore.SIGNAL(u'maindisplay_show_theme'), self.showThemeDisplay)
+        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'videodisplay_start'), self.hideDisplay)
 
     def setup(self):
@@ -203,6 +207,14 @@ class MainDisplay(DisplayWidget):
 
     def hideDisplay(self):
         log.debug(u'hideDisplay')
+        self.display_image.setPixmap(self.transparent)
+        self.display_alert.setPixmap(self.transparent)
+        self.display_text.setPixmap(self.transparent)
+        self.moveToTop()
+
+    def hideThemeDisplay(self):
+        log.debug(u'hideDisplay')
+        a=c
         self.display_image.setPixmap(self.transparent)
         self.display_alert.setPixmap(self.transparent)
         self.display_text.setPixmap(self.transparent)
@@ -365,7 +377,7 @@ class VideoDisplay(Phonon.VideoWidget):
 
     def onMediaQueue(self, message):
         log.debug(u'VideoDisplay Queue new media message %s' % message)
-        file = os.path.join(message[0].get_frame_path(), 
+        file = os.path.join(message[0].get_frame_path(),
             message[0].get_frame_title())
         source = self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
         self.onMediaPlay()
