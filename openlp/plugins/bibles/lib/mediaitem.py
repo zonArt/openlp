@@ -63,7 +63,7 @@ class BibleMediaItem(MediaManagerItem):
         # place to store the search results
         self.search_results = {}
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlpreloadbibles'), self.reloadBibles)
+            QtCore.SIGNAL(u'bibles_load_list'), self.reloadBibles)
 
     def _decodeQtObject(self, listobj, key):
         obj = listobj[QtCore.QString(key)]
@@ -257,11 +257,11 @@ class BibleMediaItem(MediaManagerItem):
         QtCore.QObject.connect(self.QuickSearchEdit,
             QtCore.SIGNAL(u'returnPressed()'), self.onQuickSearchButton)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'bible_showprogress'), self.onSearchProgressShow)
+            QtCore.SIGNAL(u'bibles_showprogress'), self.onSearchProgressShow)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'bible_hideprogress'), self.onSearchProgressHide)
+            QtCore.SIGNAL(u'bibles_hideprogress'), self.onSearchProgressHide)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'bible_nobook'), self.onNoBookFound)
+            QtCore.SIGNAL(u'bibles_nobook'), self.onNoBookFound)
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
@@ -322,7 +322,7 @@ class BibleMediaItem(MediaManagerItem):
     def setQuickMessage(self, text):
         self.QuickMessage.setText(text)
         self.AdvancedMessage.setText(text)
-        Receiver.send_message(u'process_events')
+        Receiver.send_message(u'openlp_process_events')
         #minor delay to get the events processed
         time.sleep(0.1)
 
@@ -353,7 +353,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def onSearchProgressShow(self):
         self.SearchProgress.setVisible(True)
-        Receiver.send_message(u'process_events')
+        Receiver.send_message(u'openlp_process_events')
         #self.SearchProgress.setMinimum(0)
         #self.SearchProgress.setMaximum(2)
         #self.SearchProgress.setValue(1)

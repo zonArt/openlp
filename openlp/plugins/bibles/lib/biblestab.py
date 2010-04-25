@@ -146,7 +146,7 @@ class BiblesTab(SettingsTab):
             self.BibleDualCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
             self.onBibleDualCheckBox)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'update_themes'), self.updateThemeList)
+            QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
 
     def retranslateUi(self):
         self.VerseDisplayGroupBox.setTitle(self.trUtf8('Verse Display'))

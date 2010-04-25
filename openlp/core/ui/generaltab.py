@@ -258,4 +258,5 @@ class GeneralTab(SettingsTab):
         if self.screens.monitor_number != self.MonitorNumber:
             self.screens.monitor_number = self.MonitorNumber
             self.screens.set_current_display(self.MonitorNumber)
-            Receiver.send_message(u'screen_changed')
+            Receiver.send_message(u'config_screen_changed')
+        Receiver.send_message(u'config_updated')

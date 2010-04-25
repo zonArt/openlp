@@ -49,7 +49,7 @@ class OpenSongBible(BibleDB):
             raise KeyError(u'You have to supply a file name to import from.')
         self.filename = kwargs['filename']
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
+            QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
 
     def stop_import(self):
         """
@@ -92,7 +92,7 @@ class OpenSongBible(BibleDB):
                             int(verse.attrib[u'n']),
                             unicode(verse.text)
                         )
-                        Receiver.send_message(u'process_events')
+                        Receiver.send_message(u'openlp_process_events')
                     self.wizard.incrementProgressBar(
                         QtCore.QString('%s %s %s' % (self.trUtf8('Importing'),\
                             db_book.name, chapter.attrib[u'n'])))

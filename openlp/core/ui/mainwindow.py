@@ -68,11 +68,11 @@ class VersionThread(QtCore.QThread):
         Run the thread.
         """
         time.sleep(1)
-        Receiver.send_message(u'blank_check')
+        Receiver.send_message(u'maindisplay_blank_check')
         version = check_latest_version(self.generalConfig, self.app_version)
         #new version has arrived
         if version != self.app_version[u'full']:
-            Receiver.send_message(u'version_check', u'%s' % version)
+            Receiver.send_message(u'openlp_version_check', u'%s' % version)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -512,15 +512,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.OptionsSettingsItem,
             QtCore.SIGNAL(u'triggered()'), self.onOptionsSettingsItemClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'update_global_theme'), self.defaultThemeChanged)
+            QtCore.SIGNAL(u'theme_update_global'), self.defaultThemeChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'version_check'), self.versionCheck)
+            QtCore.SIGNAL(u'openlp_version_check'), self.versionCheck)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'blank_check'), self.blankCheck)
+            QtCore.SIGNAL(u'maindisplay_blank_check'), self.blankCheck)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'screen_changed'), self.screenChanged)
+            QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'status_message'), self.showStatusMessage)
+            QtCore.SIGNAL(u'maindisplay_status_text'), self.showStatusMessage)
         QtCore.QObject.connect(self.FileNewItem,
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onNewService)

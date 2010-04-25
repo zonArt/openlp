@@ -107,7 +107,7 @@ class SongUsagePlugin(Plugin):
         log.info(u'SongUsage Initialising')
         Plugin.initialise(self)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'songusage_live'), self.onReceiveSongUsage)
+            QtCore.SIGNAL(u'slidecontroller_live_started'), self.onReceiveSongUsage)
         self.SongUsageActive = str_to_bool(
             self.config.get_config(u'active', False))
         self.SongUsageStatus.setChecked(self.SongUsageActive)
@@ -127,21 +127,22 @@ class SongUsagePlugin(Plugin):
         self.SongUsageActive = not self.SongUsageActive
         self.config.set_config(u'active', self.SongUsageActive)
 
-    def onReceiveSongUsage(self, SongUsageData):
+    def onReceiveSongUsage(self, items):
         """
         SongUsage a live song from SlideController
         """
-        if self.SongUsageActive:
-            SongUsageitem = SongUsageItem()
-            SongUsageitem.usagedate = datetime.today()
-            SongUsageitem.usagetime = datetime.now().time()
-            SongUsageitem.title = SongUsageData[0]
-            SongUsageitem.copyright = SongUsageData[2]
-            SongUsageitem.ccl_number = SongUsageData[3]
-            SongUsageitem.authors = u''
-            for author in SongUsageData[1]:
-                SongUsageitem.authors += author + u' '
-            self.songusagemanager.insert_songusage(SongUsageitem)
+        audit = items[0].audit
+        if self.SongUsageActive and audit:
+            song_usage_item = SongUsageItem()
+            song_usage_item.usagedate = datetime.today()
+            song_usage_item.usagetime = datetime.now().time()
+            song_usage_item.title = audit[0]
+            song_usage_item.copyright = audit[2]
+            song_usage_item.ccl_number = audit[3]
+            song_usage_item.authors = u''
+            for author in audit[1]:
+                song_usage_item.authors += author + u' '
+            self.songusagemanager.insert_songusage(song_usage_item)
 
     def onSongUsageDelete(self):
         self.SongUsagedeleteform.exec_()
