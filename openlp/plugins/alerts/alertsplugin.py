@@ -27,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus, Receiver
+from openlp.core.lib import Plugin, build_icon, PluginStatus
 from openlp.plugins.alerts.lib import AlertsManager, DBManager
 from openlp.plugins.alerts.forms import AlertsTab, AlertForm
 

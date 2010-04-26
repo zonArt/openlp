@@ -26,7 +26,7 @@
 import os
 import logging
 
-from openlp.core.lib import Plugin, build_icon, Receiver, PluginStatus
+from openlp.core.lib import Plugin, build_icon, PluginStatus
 from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import *
 
