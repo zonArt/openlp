@@ -187,6 +187,10 @@ class ServiceManager(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'servicemanager_next_item'), self.nextItem)
         QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'servicemanager_previous_item'), self.previousItem)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'servicemanager_list_request'), self.listRequest)
+        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.regenerateServiceItems)
         # Last little bits of setting up
         self.config = PluginConfig(u'ServiceManager')
@@ -285,6 +289,26 @@ class ServiceManager(QtGui.QWidget):
                 return
             if serviceIterator.value() == selected:
                 lookFor = 1
+            serviceIterator += 1
+
+    def previousItem(self):
+        """
+        Called by the SlideController to select the
+        previous service item
+        """
+        if len(self.ServiceManagerList.selectedItems()) == 0:
+            return
+        selected = self.ServiceManagerList.selectedItems()[0]
+        prevItem = None
+        serviceIterator = QtGui.QTreeWidgetItemIterator(self.ServiceManagerList)
+        while serviceIterator.value():
+            if serviceIterator.value() == selected:
+                if prevItem:
+                    self.ServiceManagerList.setCurrentItem(prevItem)
+                    self.makeLive()
+                return
+            if serviceIterator.value().parent() is None:
+                prevItem = serviceIterator.value()
             serviceIterator += 1
 
     def onMoveSelectionUp(self):
@@ -817,3 +841,10 @@ class ServiceManager(QtGui.QWidget):
             return item.data(0, QtCore.Qt.UserRole).toInt()[0]
         else:
             return parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
+            
+    def listRequest(self, message=None):
+        data = []
+        for item in self.serviceItems:
+            service_item = item[u'service_item']
+            data.append([service_item.title])
+        Receiver.send_message(u'servicemanager_list_response', data)
