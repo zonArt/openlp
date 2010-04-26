@@ -43,8 +43,3 @@ class OpenLPDockWidget(QtGui.QDockWidget):
             self.setObjectName(name)
         self.setFloating(False)
         log.debug(u'Init done')
-
-    def closeEvent(self, event):
-        self.parent.settingsmanager.setUIItemVisibility(
-            self.objectName(), False)
-        event.accept()

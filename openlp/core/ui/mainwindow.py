@@ -162,7 +162,6 @@ class Ui_MainWindow(object):
         self.MediaManagerDock.setWidget(self.MediaManagerContents)
         MainWindow.addDockWidget(
             QtCore.Qt.DockWidgetArea(1), self.MediaManagerDock)
-        self.MediaManagerDock.setVisible(self.settingsmanager.showMediaManager)
         # Create the service manager
         self.ServiceManagerDock = OpenLPDockWidget(MainWindow)
         ServiceManagerIcon = build_icon(u':/system/system_servicemanager.png')
@@ -174,18 +173,17 @@ class Ui_MainWindow(object):
         self.ServiceManagerDock.setWidget(self.ServiceManagerContents)
         MainWindow.addDockWidget(
             QtCore.Qt.DockWidgetArea(2), self.ServiceManagerDock)
-        self.ServiceManagerDock.setVisible(
-            self.settingsmanager.showServiceManager)
         # Create the theme manager
         self.ThemeManagerDock = OpenLPDockWidget(MainWindow)
         ThemeManagerIcon = build_icon(u':/system/system_thememanager.png')
         self.ThemeManagerDock.setWindowIcon(ThemeManagerIcon)
         self.ThemeManagerDock.setObjectName(u'ThemeManagerDock')
+        self.ThemeManagerDock.setMinimumWidth(
+            self.settingsmanager.mainwindow_right)
         self.ThemeManagerContents = ThemeManager(self)
         self.ThemeManagerDock.setWidget(self.ThemeManagerContents)
         MainWindow.addDockWidget(
             QtCore.Qt.DockWidgetArea(2), self.ThemeManagerDock)
-        self.ThemeManagerDock.setVisible(self.settingsmanager.showThemeManager)
         # Create the menu items
         self.FileNewItem = QtGui.QAction(MainWindow)
         self.FileNewItem.setIcon(
@@ -224,20 +222,18 @@ class Ui_MainWindow(object):
         self.OptionsSettingsItem.setObjectName(u'OptionsSettingsItem')
         self.ViewMediaManagerItem = QtGui.QAction(MainWindow)
         self.ViewMediaManagerItem.setCheckable(True)
-        self.ViewMediaManagerItem.setChecked(
-            self.settingsmanager.showMediaManager)
+        self.ViewMediaManagerItem.setChecked(self.MediaManagerDock.isVisible())
         self.ViewMediaManagerItem.setIcon(MediaManagerIcon)
         self.ViewMediaManagerItem.setObjectName(u'ViewMediaManagerItem')
         self.ViewThemeManagerItem = QtGui.QAction(MainWindow)
         self.ViewThemeManagerItem.setCheckable(True)
-        self.ViewThemeManagerItem.setChecked(
-            self.settingsmanager.showThemeManager)
+        self.ViewThemeManagerItem.setChecked(self.ThemeManagerDock.isVisible())
         self.ViewThemeManagerItem.setIcon(ThemeManagerIcon)
         self.ViewThemeManagerItem.setObjectName(u'ViewThemeManagerItem')
         self.ViewServiceManagerItem = QtGui.QAction(MainWindow)
         self.ViewServiceManagerItem.setCheckable(True)
         self.ViewServiceManagerItem.setChecked(
-            self.settingsmanager.showServiceManager)
+            self.ServiceManagerDock.isVisible())
         self.ViewServiceManagerItem.setIcon(ServiceManagerIcon)
         self.ViewServiceManagerItem.setObjectName(u'ViewServiceManagerItem')
         self.PluginItem = QtGui.QAction(MainWindow)
@@ -693,20 +689,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def toggleMediaManager(self, visible):
         if self.MediaManagerDock.isVisible() != visible:
             self.MediaManagerDock.setVisible(visible)
-            self.settingsmanager.setUIItemVisibility(
-                self.MediaManagerDock.objectName(), visible)
 
     def toggleServiceManager(self, visible):
         if self.ServiceManagerDock.isVisible() != visible:
             self.ServiceManagerDock.setVisible(visible)
-            self.settingsmanager.setUIItemVisibility(
-                self.ServiceManagerDock.objectName(), visible)
 
     def toggleThemeManager(self, visible):
         if self.ThemeManagerDock.isVisible() != visible:
             self.ThemeManagerDock.setVisible(visible)
-            self.settingsmanager.setUIItemVisibility(
-                self.ThemeManagerDock.objectName(), visible)
 
     def togglePreviewPanel(self):
         previewBool = self.PreviewController.Panel.isVisible()
@@ -716,25 +706,27 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def loadSettings(self):
         log.debug(u'Loading QSettings')
         settings = QtCore.QSettings()
-        self.recentFiles = settings.value(u'RecentFiles').toStringList()
-        self.move(settings.value(u'MainWindow/Position',
+        self.recentFiles = settings.value(
+            u'general/recent files').toStringList()
+        self.move(settings.value(u'user interface/main window position',
             QtCore.QVariant(QtCore.QPoint(0, 0))).toPoint())
-        self.restoreGeometry(
-            settings.value(u'MainWindow/Geometry').toByteArray())
+        self.restoreGeometry(settings.value(
+            u'user interface/main window geometry').toByteArray())
         self.restoreState(
-            settings.value(u'MainWindow/State').toByteArray())
+            settings.value(u'user interface/main window state').toByteArray())
 
     def saveSettings(self):
         log.debug(u'Saving QSettings')
         settings = QtCore.QSettings()
         recentFiles = QtCore.QVariant(self.recentFiles) \
             if self.recentFiles else QtCore.QVariant()
-        settings.setValue(u'RecentFiles', recentFiles)
-        settings.setValue(u'MainWindow/Position', QtCore.QVariant(self.pos()))
-        settings.setValue(
-            u'MainWindow/State', QtCore.QVariant(self.saveState()))
-        settings.setValue(
-            u'MainWindow/Geometry', QtCore.QVariant(self.saveGeometry()))
+        settings.setValue(u'general/recent files', recentFiles)
+        settings.setValue(u'user interface/main window position',
+            QtCore.QVariant(self.pos()))
+        settings.setValue(u'user interface/main window state',
+            QtCore.QVariant(self.saveState()))
+        settings.setValue(u'user interface/main window geometry',
+            QtCore.QVariant(self.saveGeometry()))
 
     def updateFileMenu(self):
         self.FileMenu.clear()

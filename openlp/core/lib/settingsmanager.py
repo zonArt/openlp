@@ -23,8 +23,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from openlp.core.lib import str_to_bool
-from openlp.core.utils import ConfigHelper
+from PyQt4 import QtCore
 
 class SettingsManager(object):
     """
@@ -33,6 +32,7 @@ class SettingsManager(object):
     individual components.
     """
     def __init__(self, screen):
+        self.settings = QtCore.QSettings()
         self.screen = screen.current
         self.width = self.screen[u'size'].width()
         self.height = self.screen[u'size'].height()
@@ -50,26 +50,9 @@ class SettingsManager(object):
             self.mainwindow_left + self.mainwindow_right) - 100 ) / 2
         self.slidecontroller_image = self.slidecontroller - 50
 
-        self.showMediaManager = str_to_bool(ConfigHelper.get_config(
-            u'user interface', u'media manager', True))
-        self.showServiceManager = str_to_bool(ConfigHelper.get_config(
-            u'user interface', u'service manager', True))
-        self.showThemeManager = str_to_bool(ConfigHelper.get_config(
-            u'user interface', u'theme manager', True))
-        self.showPreviewPanel = str_to_bool(ConfigHelper.get_config(
-            u'user interface', u'preview panel', True))
-
-    def setUIItemVisibility(self, item=u'', isVisible=True):
-        if item:
-            if item == u'ThemeManagerDock':
-                ConfigHelper.set_config(u'user interface',
-                    u'theme manager', isVisible)
-            elif item == u'ServiceManagerDock':
-                ConfigHelper.set_config(u'user interface',
-                    u'service manager', isVisible)
-            elif item == u'MediaManagerDock':
-                ConfigHelper.set_config(u'user interface',
-                    u'media manager', isVisible)
+        self.showPreviewPanel = self.settings.value(
+            u'user interface/preview panel', True).toBool()
 
     def togglePreviewPanel(self, isVisible):
-        ConfigHelper.set_config(u'user interface', u'preview panel', isVisible)
+        self.settings.setValue(u'user interface/preview panel',
+            QtCore.QVariant(isVisible))
