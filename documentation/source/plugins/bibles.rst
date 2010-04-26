@@ -45,10 +45,10 @@
 :mod:`csv`
 ^^^^^^^^^^
 
-.. automodule:: openlp.plugins.bibles.lib.csv
+.. automodule:: openlp.plugins.bibles.lib.csvbible
    :members:
 
-.. autoclass:: openlp.plugins.bibles.lib.csv.CSVBible
+.. autoclass:: openlp.plugins.bibles.lib.csvbible.CSVBible
    :members:
 
 :mod:`http`
@@ -63,7 +63,10 @@
 :mod:`bibleOSISimpl`
 ^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: openlp.plugins.bibles.lib.bibleOSISimpl
+.. automodule:: openlp.plugins.bibles.lib.osis
+   :members:
+
+.. autoclass:: openlp.plugins.bibles.lib.osis.OSISBible
    :members:
 
 :mod:`biblestab`
