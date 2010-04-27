@@ -126,7 +126,7 @@ class BibleManager(object):
         BibleDB class.
         """
         log.debug(u'Reload bibles')
-        files = SettingsManager.get_files(self.suffix)
+        files = SettingsManager.get_files(u'bibles', self.suffix)
         log.debug(u'Bible Files %s', files)
         self.db_cache = {}
         for filename in files:

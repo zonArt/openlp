@@ -23,6 +23,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import os
+
 from PyQt4 import QtCore
 
 from openlp.core.utils import AppLocation
@@ -151,15 +153,22 @@ class SettingsManager(object):
         return list
 
     @staticmethod
-    def get_files(suffix=None):
+    def get_files(section=None, suffix=None):
         """
         Get a list of files from the data files path.
+
+        ``section``
+            Defaults to *None*.  The section of code getting the files - used
+            to load from section directory.
 
         ``suffix``
             Defaults to *None*. The extension to search for.
         """
+        path = AppLocation.get_data_path()
+        if section:
+            path = os.path.join(path, section)
         try:
-            files = os.listdir(AppLocation.get_data_path())
+            files = os.listdir(path)
         except:
             return []
         if suffix:
