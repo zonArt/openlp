@@ -26,6 +26,7 @@
 from PyQt4 import QtCore, QtGui
 
 from aboutdialog import Ui_AboutDialog
+from openlp.core.lib import translate
 
 class AboutForm(QtGui.QDialog, Ui_AboutDialog):
     """

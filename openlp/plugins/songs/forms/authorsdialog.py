@@ -24,40 +24,41 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_AuthorsDialog(object):
-    def setupUi(self, AuthorsDialog):
-        AuthorsDialog.setObjectName(u'AuthorsDialog')
-        AuthorsDialog.resize(393, 147)
-        self.AuthorsLayout = QtGui.QFormLayout(AuthorsDialog)
+    def setupUi(self, AuthorsForm):
+        AuthorsForm.setObjectName(u'AuthorsDialog')
+        AuthorsForm.resize(393, 147)
+        self.AuthorsLayout = QtGui.QFormLayout(AuthorsForm)
         self.AuthorsLayout.setMargin(8)
         self.AuthorsLayout.setSpacing(8)
         self.AuthorsLayout.setObjectName(u'AuthorsLayout')
-        self.FirstNameLabel = QtGui.QLabel(AuthorsDialog)
+        self.FirstNameLabel = QtGui.QLabel(AuthorsForm)
         self.FirstNameLabel.setObjectName(u'FirstNameLabel')
         self.AuthorsLayout.setWidget(0,
             QtGui.QFormLayout.LabelRole, self.FirstNameLabel)
-        self.FirstNameEdit = QtGui.QLineEdit(AuthorsDialog)
+        self.FirstNameEdit = QtGui.QLineEdit(AuthorsForm)
         self.FirstNameEdit.setObjectName(u'FirstNameEdit')
         self.AuthorsLayout.setWidget(0,
             QtGui.QFormLayout.FieldRole, self.FirstNameEdit)
-        self.LastNameLabel = QtGui.QLabel(AuthorsDialog)
+        self.LastNameLabel = QtGui.QLabel(AuthorsForm)
         self.LastNameLabel.setObjectName(u'LastNameLabel')
         self.AuthorsLayout.setWidget(1,
             QtGui.QFormLayout.LabelRole, self.LastNameLabel)
-        self.LastNameEdit = QtGui.QLineEdit(AuthorsDialog)
+        self.LastNameEdit = QtGui.QLineEdit(AuthorsForm)
         self.LastNameEdit.setObjectName(u'LastNameEdit')
         self.AuthorsLayout.setWidget(1,
             QtGui.QFormLayout.FieldRole, self.LastNameEdit)
-        self.DisplayLabel = QtGui.QLabel(AuthorsDialog)
+        self.DisplayLabel = QtGui.QLabel(AuthorsForm)
         self.DisplayLabel.setObjectName(u'DisplayLabel')
         self.AuthorsLayout.setWidget(2,
             QtGui.QFormLayout.LabelRole, self.DisplayLabel)
-        self.DisplayEdit = QtGui.QLineEdit(AuthorsDialog)
+        self.DisplayEdit = QtGui.QLineEdit(AuthorsForm)
         self.DisplayEdit.setObjectName(u'DisplayEdit')
         self.AuthorsLayout.setWidget(2,
             QtGui.QFormLayout.FieldRole, self.DisplayEdit)
-        self.AuthorButtonBox = QtGui.QDialogButtonBox(AuthorsDialog)
+        self.AuthorButtonBox = QtGui.QDialogButtonBox(AuthorsForm)
         self.AuthorButtonBox.setOrientation(QtCore.Qt.Horizontal)
         self.AuthorButtonBox.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Save)
@@ -65,15 +66,15 @@ class Ui_AuthorsDialog(object):
         self.AuthorsLayout.setWidget(3,
             QtGui.QFormLayout.FieldRole, self.AuthorButtonBox)
 
-        self.retranslateUi(AuthorsDialog)
+        self.retranslateUi(AuthorsForm)
         QtCore.QObject.connect(self.AuthorButtonBox,
-            QtCore.SIGNAL(u'accepted()'), AuthorsDialog.accept)
+            QtCore.SIGNAL(u'accepted()'), AuthorsForm.accept)
         QtCore.QObject.connect(self.AuthorButtonBox,
-            QtCore.SIGNAL(u'rejected()'), AuthorsDialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(AuthorsDialog)
+            QtCore.SIGNAL(u'rejected()'), AuthorsForm.reject)
+        QtCore.QMetaObject.connectSlotsByName(AuthorsForm)
 
-    def retranslateUi(self, AuthorsDialog):
-        AuthorsDialog.setWindowTitle(self.trUtf8('Author Maintenance'))
-        self.DisplayLabel.setText(self.trUtf8('Display name:'))
-        self.FirstNameLabel.setText(self.trUtf8('First name:'))
-        self.LastNameLabel.setText(self.trUtf8('Last name:'))
+    def retranslateUi(self, AuthorsForm):
+        AuthorsForm.setWindowTitle(translate('AuthorsForm', 'Author Maintenance'))
+        self.DisplayLabel.setText(translate('AuthorsForm', 'Display name:'))
+        self.FirstNameLabel.setText(translate('AuthorsForm', 'First name:'))
+        self.LastNameLabel.setText(translate('AuthorsForm', 'Last name:'))

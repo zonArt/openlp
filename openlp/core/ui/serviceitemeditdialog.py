@@ -24,12 +24,13 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_ServiceItemEditDialog(object):
-    def setupUi(self, ServiceItemEditDialog):
-        ServiceItemEditDialog.setObjectName(u'ServiceItemEditDialog')
-        ServiceItemEditDialog.resize(386, 272)
-        self.layoutWidget = QtGui.QWidget(ServiceItemEditDialog)
+    def setupUi(self, ServiceItemEditForm):
+        ServiceItemEditForm.setObjectName(u'ServiceItemEditDialog')
+        ServiceItemEditForm.resize(386, 272)
+        self.layoutWidget = QtGui.QWidget(ServiceItemEditForm)
         self.layoutWidget.setGeometry(QtCore.QRect(20, 20, 351, 241))
         self.layoutWidget.setObjectName(u'layoutWidget')
         self.outerLayout = QtGui.QVBoxLayout(self.layoutWidget)
@@ -62,12 +63,12 @@ class Ui_ServiceItemEditDialog(object):
         self.buttonBox.setObjectName(u'buttonBox')
         self.outerLayout.addWidget(self.buttonBox)
 
-        self.retranslateUi(ServiceItemEditDialog)
-        QtCore.QMetaObject.connectSlotsByName(ServiceItemEditDialog)
+        self.retranslateUi(ServiceItemEditForm)
+        QtCore.QMetaObject.connectSlotsByName(ServiceItemEditForm)
 
-    def retranslateUi(self, ServiceItemEditDialog):
-        ServiceItemEditDialog.setWindowTitle(self.trUtf8('Service Item Maintenance'))
-        self.upButton.setText(self.trUtf8('Up'))
-        self.deleteButton.setText(self.trUtf8('Delete'))
-        self.downButton.setText(self.trUtf8('Down'))
+    def retranslateUi(self, ServiceItemEditForm):
+        ServiceItemEditForm.setWindowTitle(translate('ServiceItemEditForm', 'Service Item Maintenance'))
+        self.upButton.setText(translate('ServiceItemEditForm', 'Up'))
+        self.deleteButton.setText(translate('ServiceItemEditForm', 'Delete'))
+        self.downButton.setText(translate('ServiceItemEditForm', 'Down'))
 

@@ -24,20 +24,21 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_PluginViewDialog(object):
-    def setupUi(self, PluginViewDialog):
-        PluginViewDialog.setObjectName(u'PluginViewDialog')
-        PluginViewDialog.setWindowModality(QtCore.Qt.ApplicationModal)
-        PluginViewDialog.resize(554, 344)
-        self.PluginLayout = QtGui.QVBoxLayout(PluginViewDialog)
+    def setupUi(self, PluginForm):
+        PluginForm.setObjectName(u'PluginViewDialog')
+        PluginForm.setWindowModality(QtCore.Qt.ApplicationModal)
+        PluginForm.resize(554, 344)
+        self.PluginLayout = QtGui.QVBoxLayout(PluginForm)
         self.PluginLayout.setSpacing(8)
         self.PluginLayout.setMargin(8)
         self.PluginLayout.setObjectName(u'PluginLayout')
         self.ListLayout = QtGui.QHBoxLayout()
         self.ListLayout.setSpacing(8)
         self.ListLayout.setObjectName(u'ListLayout')
-        self.PluginListWidget = QtGui.QListWidget(PluginViewDialog)
+        self.PluginListWidget = QtGui.QListWidget(PluginForm)
         sizePolicy = QtGui.QSizePolicy(
             QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -48,7 +49,7 @@ class Ui_PluginViewDialog(object):
         self.PluginListWidget.setMaximumSize(QtCore.QSize(192, 16777215))
         self.PluginListWidget.setObjectName(u'PluginListWidget')
         self.ListLayout.addWidget(self.PluginListWidget)
-        self.PluginInfoGroupBox = QtGui.QGroupBox(PluginViewDialog)
+        self.PluginInfoGroupBox = QtGui.QGroupBox(PluginForm)
         self.PluginInfoGroupBox.setAlignment(
             QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.PluginInfoGroupBox.setFlat(False)
@@ -87,22 +88,22 @@ class Ui_PluginViewDialog(object):
             2, QtGui.QFormLayout.FieldRole, self.AboutTextBrowser)
         self.ListLayout.addWidget(self.PluginInfoGroupBox)
         self.PluginLayout.addLayout(self.ListLayout)
-        self.PluginListButtonBox = QtGui.QDialogButtonBox(PluginViewDialog)
+        self.PluginListButtonBox = QtGui.QDialogButtonBox(PluginForm)
         self.PluginListButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
         self.PluginListButtonBox.setObjectName(u'PluginListButtonBox')
         self.PluginLayout.addWidget(self.PluginListButtonBox)
 
-        self.retranslateUi(PluginViewDialog)
+        self.retranslateUi(PluginForm)
         QtCore.QObject.connect(self.PluginListButtonBox,
-            QtCore.SIGNAL(u'accepted()'), PluginViewDialog.close)
-        QtCore.QMetaObject.connectSlotsByName(PluginViewDialog)
+            QtCore.SIGNAL(u'accepted()'), PluginForm.close)
+        QtCore.QMetaObject.connectSlotsByName(PluginForm)
 
-    def retranslateUi(self, PluginViewDialog):
-        PluginViewDialog.setWindowTitle(self.trUtf8('Plugin List'))
-        self.PluginInfoGroupBox.setTitle(self.trUtf8('Plugin Details'))
-        self.VersionLabel.setText(self.trUtf8('Version:'))
-        self.VersionNumberLabel.setText(self.trUtf8('TextLabel'))
-        self.AboutLabel.setText(self.trUtf8('About:'))
-        self.StatusLabel.setText(self.trUtf8('Status:'))
-        self.StatusComboBox.setItemText(0, self.trUtf8('Active'))
-        self.StatusComboBox.setItemText(1, self.trUtf8('Inactive'))
+    def retranslateUi(self, PluginForm):
+        PluginForm.setWindowTitle(translate('PluginForm', 'Plugin List'))
+        self.PluginInfoGroupBox.setTitle(translate('PluginForm', 'Plugin Details'))
+        self.VersionLabel.setText(translate('PluginForm', 'Version:'))
+        self.VersionNumberLabel.setText(translate('PluginForm', 'TextLabel'))
+        self.AboutLabel.setText(translate('PluginForm', 'About:'))
+        self.StatusLabel.setText(translate('PluginForm', 'Status:'))
+        self.StatusComboBox.setItemText(0, translate('PluginForm', 'Active'))
+        self.StatusComboBox.setItemText(1, translate('PluginForm', 'Inactive'))

@@ -24,13 +24,14 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_EditVerseDialog(object):
-    def setupUi(self, EditVerseDialog):
-        EditVerseDialog.setObjectName(u'EditVerseDialog')
-        EditVerseDialog.resize(500, 521)
-        EditVerseDialog.setModal(True)
-        self.layoutWidget = QtGui.QWidget(EditVerseDialog)
+    def setupUi(self, EditVerseForm):
+        EditVerseForm.setObjectName(u'EditVerseDialog')
+        EditVerseForm.resize(500, 521)
+        EditVerseForm.setModal(True)
+        self.layoutWidget = QtGui.QWidget(EditVerseForm)
         self.layoutWidget.setGeometry(QtCore.QRect(11, 1, 471, 491))
         self.layoutWidget.setObjectName(u'layoutWidget')
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.layoutWidget)
@@ -103,27 +104,27 @@ class Ui_EditVerseDialog(object):
         self.ButtonBox.setObjectName(u'ButtonBox')
         self.verticalLayout_3.addWidget(self.ButtonBox)
 
-        self.retranslateUi(EditVerseDialog)
-        QtCore.QObject.connect(self.ButtonBox, QtCore.SIGNAL(u'accepted()'), EditVerseDialog.accept)
-        QtCore.QObject.connect(self.ButtonBox, QtCore.SIGNAL(u'rejected()'), EditVerseDialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(EditVerseDialog)
+        self.retranslateUi(EditVerseForm)
+        QtCore.QObject.connect(self.ButtonBox, QtCore.SIGNAL(u'accepted()'), EditVerseForm.accept)
+        QtCore.QObject.connect(self.ButtonBox, QtCore.SIGNAL(u'rejected()'), EditVerseForm.reject)
+        QtCore.QMetaObject.connectSlotsByName(EditVerseForm)
 
-    def retranslateUi(self, EditVerseDialog):
-        EditVerseDialog.setWindowTitle(self.trUtf8('Edit Verse'))
-        self.VerseTypeLabel.setText(self.trUtf8('Verse Type'))
-        self.VerseListComboBox.setItemText(0, self.trUtf8('Intro'))
-        self.VerseListComboBox.setItemText(1, self.trUtf8('Verse'))
-        self.VerseListComboBox.setItemText(2, self.trUtf8('Pre-Chorus'))
-        self.VerseListComboBox.setItemText(3, self.trUtf8('Chorus'))
-        self.VerseListComboBox.setItemText(4, self.trUtf8('Bridge'))
-        self.VerseListComboBox.setItemText(5, self.trUtf8('Ending'))
-        self.VerseListComboBox.setItemText(6, self.trUtf8('Other'))
-        self.VerseNumberLabel.setText(self.trUtf8('Number'))
-        self.addBridge.setText(self.trUtf8('Bridge'))
-        self.addVerse.setText(self.trUtf8('Verse'))
-        self.addChorus.setText(self.trUtf8('Chorus'))
-        self.addPreChorus.setText(self.trUtf8('Pre-Chorus'))
-        self.addIntro.setText(self.trUtf8('Intro'))
-        self.addOther.setText(self.trUtf8('Other'))
-        self.addEnding.setText(self.trUtf8('Ending'))
+    def retranslateUi(self, EditVerseForm):
+        EditVerseForm.setWindowTitle(translate('EditVerseForm', 'Edit Verse'))
+        self.VerseTypeLabel.setText(translate('EditVerseForm', 'Verse Type'))
+        self.VerseListComboBox.setItemText(0, translate('EditVerseForm', 'Intro'))
+        self.VerseListComboBox.setItemText(1, translate('EditVerseForm', 'Verse'))
+        self.VerseListComboBox.setItemText(2, translate('EditVerseForm', 'Pre-Chorus'))
+        self.VerseListComboBox.setItemText(3, translate('EditVerseForm', 'Chorus'))
+        self.VerseListComboBox.setItemText(4, translate('EditVerseForm', 'Bridge'))
+        self.VerseListComboBox.setItemText(5, translate('EditVerseForm', 'Ending'))
+        self.VerseListComboBox.setItemText(6, translate('EditVerseForm', 'Other'))
+        self.VerseNumberLabel.setText(translate('EditVerseForm', 'Number'))
+        self.addBridge.setText(translate('EditVerseForm', 'Bridge'))
+        self.addVerse.setText(translate('EditVerseForm', 'Verse'))
+        self.addChorus.setText(translate('EditVerseForm', 'Chorus'))
+        self.addPreChorus.setText(translate('EditVerseForm', 'Pre-Chorus'))
+        self.addIntro.setText(translate('EditVerseForm', 'Intro'))
+        self.addOther.setText(translate('EditVerseForm', 'Other'))
+        self.addEnding.setText(translate('EditVerseForm', 'Ending'))
 
