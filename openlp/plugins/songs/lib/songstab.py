@@ -25,14 +25,14 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, str_to_bool
+from openlp.core.lib import SettingsTab
 
 class SongsTab(SettingsTab):
     """
     SongsTab is the Songs settings tab in the settings dialog.
     """
-    def __init__(self, title, section=None):
-        SettingsTab.__init__(self, title, section)
+    def __init__(self, title):
+        SettingsTab.__init__(self, title)
 
     def setupUi(self):
         self.setObjectName(u'SongsTab')
@@ -80,13 +80,16 @@ class SongsTab(SettingsTab):
             self.song_bar = True
 
     def load(self):
-        self.song_search = str_to_bool(
-            self.config.get_config(u'search as type', False))
-        self.song_bar = str_to_bool(
-            self.config.get_config(u'display songbar', True))
+        settings = QtCore.QSettings()
+        self.song_search = settings.value(
+            u'songs/search as type', False).toBool()
+        self.song_bar = settings.value(u'songs/display songbar', True).toBool()
         self.SearchAsTypeCheckBox.setChecked(self.song_search)
         self.SongBarActiveCheckBox.setChecked(self.song_bar)
 
     def save(self):
-        self.config.set_config(u'search as type', unicode(self.song_search))
-        self.config.set_config(u'display songbar', unicode(self.song_bar))
+        settings = QtCore.QSettings()
+        settings.setValue(
+            u'songs/search as type', QtCore.QVariant(self.song_search))
+        settings.setValue(
+            u'songs/display songbar', QtCore.QVariant(self.song_bar))

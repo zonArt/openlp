@@ -23,7 +23,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab
 
@@ -31,8 +31,8 @@ class RemoteTab(SettingsTab):
     """
     RemoteTab is the Remotes settings tab in the settings dialog.
     """
-    def __init__(self, title, section=None):
-        SettingsTab.__init__(self, title, section)
+    def __init__(self, title):
+        SettingsTab.__init__(self, title)
 
     def setupUi(self):
         self.setObjectName(u'RemoteTab')
@@ -57,8 +57,8 @@ class RemoteTab(SettingsTab):
 
     def load(self):
         self.RemotePortSpinBox.setValue(
-            int(self.config.get_config(u'remote port', 4316)))
+            QtCore.QSettings().value(u'remotes/remote port', 4316).toInt()[0])
 
     def save(self):
-        self.config.set_config(
-            u'remote port', unicode(self.RemotePortSpinBox.value()))
+        QtCore.QSettings().setValue(u'remotes/remote port',
+            QtCore.QVariant(self.RemotePortSpinBox.value()))

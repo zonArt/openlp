@@ -25,6 +25,9 @@
 
 import logging
 
+from PyQt4 import QtCore
+
+from openlp.core.utils import AppLocation
 from openlp.plugins.songs.lib.models import init_models, metadata, Song, \
     Author, Topic, Book
 
@@ -37,24 +40,25 @@ class SongManager():
     """
     log.info(u'Song manager loaded')
 
-    def __init__(self, config):
+    def __init__(self):
         """
         Creates the connection to the database, and creates the tables if they
         don't exist.
         """
-        self.config = config
         log.debug(u'Song Initialising')
+        settings = QtCore.QSettings()
         self.db_url = u''
-        db_type = self.config.get_config(u'db type', u'sqlite')
+        db_type = unicode(
+            settings.value(u'songs/db type', u'sqlite').toString())
         if db_type == u'sqlite':
             self.db_url = u'sqlite:///%s/songs.sqlite' % \
-                self.config.get_data_path()
+                AppLocation.get_section_data_path(u'songs')
         else:
             self.db_url = db_type + 'u://' + \
-                self.config.get_config(u'db username') + u':' + \
-                self.config.get_config(u'db password') + u'@' + \
-                self.config.get_config(u'db hostname') + u'/' + \
-                self.config.get_config(u'db database')
+                unicode(settings.value(u'songs/db username', u'').toString()) + u':' + \
+                unicode(settings.value(u'songs/db password', u'').toString()) + u'@' + \
+                unicode(settings.value(u'songs/db hostname', u'').toString()) + u'/' + \
+                unicode(settings.value(u'songs/db database', u'').toString())
         self.session = init_models(self.db_url)
         metadata.create_all(checkfirst=True)
         log.debug(u'Song Initialised')

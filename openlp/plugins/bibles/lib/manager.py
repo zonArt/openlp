@@ -25,6 +25,11 @@
 
 import logging
 
+from PyQt4 import QtCore
+
+from openlp.core.lib import SettingsManager
+from openlp.core.utils import AppLocation
+
 from common import parse_reference
 from opensong import OpenSongBible
 from osis import OSISBible
@@ -94,24 +99,21 @@ class BibleManager(object):
     """
     log.info(u'Bible manager loaded')
 
-    def __init__(self, parent, config):
+    def __init__(self, parent):
         """
         Finds all the bibles defined for the system and creates an interface
         object for each bible containing connection information. Throws
         Exception if no Bibles are found.
 
         Init confirms the bible exists and stores the database path.
-
-        ``config``
-            The plugin's configuration object.
         """
         log.debug(u'Bible Initialising')
-        self.config = config
         self.parent = parent
         self.web = u'Web'
         self.db_cache = None
-        self.path = self.config.get_data_path()
-        self.proxy_name = self.config.get_config(u'proxy name')
+        self.path = AppLocation.get_section_data_path(u'bibles')
+        self.proxy_name = unicode(
+            QtCore.QSettings().value(u'bibles/proxy name', u'').toString())
         self.suffix = u'sqlite'
         self.import_wizard = None
         self.reload_bibles()
@@ -124,12 +126,11 @@ class BibleManager(object):
         BibleDB class.
         """
         log.debug(u'Reload bibles')
-        files = self.config.get_files(self.suffix)
+        files = SettingsManager.get_files(self.suffix)
         log.debug(u'Bible Files %s', files)
         self.db_cache = {}
         for filename in files:
-            bible = BibleDB(self.parent, path=self.path, file=filename,
-                            config=self.config)
+            bible = BibleDB(self.parent, path=self.path, file=filename)
             name = bible.get_name()
             log.debug(u'Bible Name: "%s"', name)
             self.db_cache[name] = bible
@@ -139,8 +140,8 @@ class BibleManager(object):
                 download_name = self.db_cache[name].get_meta(u'download name').value
                 meta_proxy = self.db_cache[name].get_meta(u'proxy url')
                 web_bible = HTTPBible(self.parent, path=self.path,
-                    file=filename, config=self.config,
-                    download_source=source.value, download_name=download_name)
+                    file=filename, download_source=source.value,
+                    download_name=download_name)
                 if meta_proxy:
                     web_bible.set_proxy_server(meta_proxy.value)
                 self.db_cache[name] = web_bible
@@ -167,7 +168,6 @@ class BibleManager(object):
         """
         class_ = BibleFormat.get_class(type)
         kwargs['path'] = self.path
-        kwargs['config'] = self.config
         importer = class_(self.parent, **kwargs)
         name = importer.register(self.import_wizard)
         self.db_cache[name] = importer
@@ -260,4 +260,3 @@ class BibleManager(object):
             if bible == name:
                 return True
         return False
-

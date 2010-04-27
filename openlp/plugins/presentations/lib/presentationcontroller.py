@@ -30,6 +30,7 @@ import shutil
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
+from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
 
@@ -68,7 +69,8 @@ class PresentationController(object):
         Called at system exit to clean up any running presentations
 
     ``check_available()``
-        Returns True if presentation application is installed/can run on this machine
+        Returns True if presentation application is installed/can run on this
+        machine
 
     ``presentation_deleted()``
         Deletes presentation specific files, e.g. thumbnails
@@ -78,13 +80,14 @@ class PresentationController(object):
 
     def __init__(self, plugin=None, name=u'PresentationController'):
         """
-        This is the constructor for the presentationcontroller object.
-        This provides an easy way for descendent plugins to populate common data.
+        This is the constructor for the presentationcontroller object.  This
+        provides an easy way for descendent plugins to populate common data.
         This method *must* be overridden, like so::
 
             class MyPresentationController(PresentationController):
                 def __init__(self, plugin):
-                    PresentationController.__init(self, plugin, u'My Presenter App')
+                    PresentationController.__init(
+                        self, plugin, u'My Presenter App')
 
         ``plugin``
             Defaults to *None*. The presentationplugin object
@@ -99,11 +102,12 @@ class PresentationController(object):
         self.name = name
         self.available = self.check_available()
         if self.available:
-            self.enabled = int(plugin.config.get_config(
-                name, QtCore.Qt.Unchecked)) == QtCore.Qt.Checked
+            self.enabled = QtCore.QSettings().value(
+                name, QtCore.Qt.Unchecked).toInt()[0] == QtCore.Qt.Checked
         else:
             self.enabled = False
-        self.thumbnailroot = os.path.join(plugin.config.get_data_path(),
+        self.thumbnailroot = os.path.join(
+            AppLocation.get_section_data_path(u'presentations'),
             name, u'thumbnails')
         self.thumbnailprefix = u'slide'
         if not os.path.isdir(self.thumbnailroot):
@@ -241,7 +245,8 @@ class PresentationDocument(object):
         return os.path.split(presentation)[1]
 
     def get_thumbnail_path(self,  presentation):
-        return os.path.join(self.controller.thumbnailroot, self.get_file_name(presentation))
+        return os.path.join(
+            self.controller.thumbnailroot, self.get_file_name(presentation))
 
     def check_thumbnails(self):
         """

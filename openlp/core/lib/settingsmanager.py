@@ -25,14 +25,14 @@
 
 from PyQt4 import QtCore
 
+from openlp.core.utils import AppLocation
+
 class SettingsManager(object):
     """
-    Class to control the size of the UI components so they size correctly.
-    This class is created by the main window and then calculates the size of
-    individual components.
+    Class to control the initial settings for the UI and provide helper
+    functions for the loading and saving of application settings.
     """
     def __init__(self, screen):
-        self.settings = QtCore.QSettings()
         self.screen = screen.current
         self.width = self.screen[u'size'].width()
         self.height = self.screen[u'size'].height()
@@ -50,9 +50,129 @@ class SettingsManager(object):
             self.mainwindow_left + self.mainwindow_right) - 100 ) / 2
         self.slidecontroller_image = self.slidecontroller - 50
 
-        self.showPreviewPanel = self.settings.value(
+        self.showPreviewPanel = QtCore.QSettings().value(
             u'user interface/preview panel', True).toBool()
 
     def togglePreviewPanel(self, isVisible):
-        self.settings.setValue(u'user interface/preview panel',
+        QtCore.QSettings().setValue(u'user interface/preview panel',
             QtCore.QVariant(isVisible))
+
+    @staticmethod
+    def get_last_dir(section, num=None):
+        """
+        Read the last directory used for plugin.
+
+        ``section``
+            The section of code calling the method.  This is used in the
+            settings key.
+
+        ``num``
+            Defaults to *None*. A further qualifier.
+        """
+        if num:
+            name = u'last directory %d' % num
+        else:
+            name = u'last directory'
+        last_dir = unicode(QtCore.QSettings().value(
+            section + u'/' + name, u'').toString())
+        return last_dir
+
+    @staticmethod
+    def set_last_dir(section, directory, num=None):
+        """
+        Save the last directory used for plugin.
+
+        ``section``
+            The section of code calling the method.  This is used in the
+            settings key.
+
+        ``directory``
+            The directory being stored in the settings.
+
+        ``num``
+            Defaults to *None*. A further qualifier.
+        """
+        if num:
+            name = u'last directory %d' % num
+        else:
+            name = u'last directory'
+        QtCore.QSettings().setValue(
+            section + u'/' + name, QtCore.QVariant(directory))
+
+    @staticmethod
+    def set_list(section, name, list):
+        """
+        Save a list to application settings.
+
+        ``section``
+            The section of the settings to store this list.
+
+        ``name``
+            The name of the list to save.
+
+        ``list``
+            The list of values to save.
+        """
+        settings = QtCore.QSettings()
+        old_count = settings.value(
+            u'%s/%s count' % (section, name), 0).toInt()[0]
+        new_count = len(list)
+        settings.setValue(
+            u'%s/%s count' % (section, name), QtCore.QVariant(new_count))
+        for counter in range (0, new_count):
+            settings.setValue(
+                u'%s/%s %d' % (section, name, counter), list[counter-1])
+        if old_count > new_count:
+            # Tidy up any old list itrms if list is smaller now
+            for counter in range(new_count, old_count):
+                settings.remove(u'%s/%s %d' % (section, name, counter))
+
+    @staticmethod
+    def load_list(section, name):
+        """
+        Load a list from the config file.
+
+        ``section``
+            The section of the settings to load the list from.
+
+        ``name``
+            The name of the list.
+        """
+        settings = QtCore.QSettings()
+        list_count = settings.value(
+            u'%s/%s count' % (section, name), 0).toInt()[0]
+        list = []
+        if list_count:
+            for counter in range(0, list_count):
+                item = unicode(settings.value(
+                    u'%s/%s %d' % (section, name, counter)).toString())
+                if item:
+                    list.append(item)
+        return list
+
+    @staticmethod
+    def get_files(suffix=None):
+        """
+        Get a list of files from the data files path.
+
+        ``suffix``
+            Defaults to *None*. The extension to search for.
+        """
+        try:
+            files = os.listdir(AppLocation.get_data_path())
+        except:
+            return []
+        if suffix:
+            return_files = []
+            for file in files:
+                if file.find(u'.') != -1:
+                    filename = file.split(u'.')
+                    filesuffix = filename[1].lower()
+                    filesuffix = filesuffix.lower()
+                    # only load files with the correct suffix
+                    if suffix.find(filesuffix) > -1 :
+                        return_files.append(file)
+            return return_files
+        else:
+            # no filtering required
+            return files

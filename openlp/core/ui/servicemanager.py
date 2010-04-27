@@ -32,9 +32,10 @@ log = logging.getLogger(__name__)
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import PluginConfig, OpenLPToolbar, ServiceItem, \
-    contextMenuAction, Receiver, str_to_bool, build_icon, ItemCapabilities
+from openlp.core.lib import OpenLPToolbar, ServiceItem, contextMenuAction, \
+    Receiver, build_icon, ItemCapabilities, SettingsManager
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm
+from openlp.core.utils import AppLocation
 
 class ServiceManagerList(QtGui.QTreeWidget):
 
@@ -189,10 +190,9 @@ class ServiceManager(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.regenerateServiceItems)
         # Last little bits of setting up
-        self.config = PluginConfig(u'ServiceManager')
-        self.servicePath = self.config.get_data_path()
-        self.service_theme = unicode(
-            self.config.get_config(u'service theme', u''))
+        self.service_theme = unicode(QtCore.QSettings().value(
+            u'service manager/service theme', u'').toString())
+        self.servicePath = AppLocation.get_section_data_path(u'servicemanager')
         #build the context menu
         self.menu = QtGui.QMenu()
         self.editAction = self.menu.addAction(self.trUtf8('&Edit Item'))
@@ -201,7 +201,8 @@ class ServiceManager(QtGui.QWidget):
         self.editAction.setIcon(build_icon(u':/general/general_edit.png'))
         self.notesAction = self.menu.addAction(self.trUtf8('&Notes'))
         self.notesAction.setIcon(build_icon(u':/services/service_notes.png'))
-        self.deleteAction = self.menu.addAction(self.trUtf8('&Delete From Service'))
+        self.deleteAction = self.menu.addAction(
+            self.trUtf8('&Delete From Service'))
         self.deleteAction.setIcon(build_icon(u':/general/general_delete.png'))
         self.sep1 = self.menu.addAction(u'')
         self.sep1.setSeparator(True)
@@ -402,8 +403,7 @@ class ServiceManager(QtGui.QWidget):
         Clear the list to create a new service
         """
         if self.parent.serviceNotSaved and \
-            str_to_bool(PluginConfig(u'General').
-                        get_config(u'save prompt', u'False')):
+            QtCore.QSettings().value(u'general/save prompt', False).toBool():
             ret = QtGui.QMessageBox.question(self,
                 self.trUtf8('Save Changes to Service?'),
                 self.trUtf8('Your service is unsaved, do you want to save '
@@ -486,17 +486,18 @@ class ServiceManager(QtGui.QWidget):
         log.debug(u'onSaveService')
         if not quick or self.isNew:
             filename = QtGui.QFileDialog.getSaveFileName(self,
-            self.trUtf8(u'Save Service'), self.config.get_last_dir(),
+            self.trUtf8(u'Save Service'),
+            SettingsManager.get_last_dir(u'servicemanager'),
             self.trUtf8(u'OpenLP Service Files (*.osz)'))
         else:
-            filename = self.config.get_last_dir()
+            filename = SettingsManager.get_last_dir(u'servicemanager')
         if filename:
             splittedFile = filename.split(u'.')
             if splittedFile[-1] != u'osz':
                 filename = filename + u'.osz'
             filename = unicode(filename)
             self.isNew = False
-            self.config.set_last_dir(filename)
+            SettingsManager.set_last_dir(u'servicemanager', filename)
             service = []
             servicefile = filename + u'.osd'
             zip = None
@@ -537,11 +538,12 @@ class ServiceManager(QtGui.QWidget):
 
     def onLoadService(self, lastService=False):
         if lastService:
-            filename = self.config.get_last_dir()
+            filename = SettingsManager.get_last_dir(u'servicemanager')
         else:
             filename = QtGui.QFileDialog.getOpenFileName(
                 self, self.trUtf8('Open Service'),
-                self.config.get_last_dir(), u'Services (*.osz)')
+                SettingsManager.get_last_dir(u'servicemanager'),
+                u'Services (*.osz)')
         self.loadService(filename)
 
     def loadService(self, filename=None):
@@ -570,7 +572,7 @@ class ServiceManager(QtGui.QWidget):
         filename = unicode(filename)
         name = filename.split(os.path.sep)
         if filename:
-            self.config.set_last_dir(filename)
+            SettingsManager.set_last_dir(u'servicemanager', filename)
             zip = None
             f = None
             try:
@@ -639,7 +641,8 @@ class ServiceManager(QtGui.QWidget):
         """
         self.service_theme = unicode(self.ThemeComboBox.currentText())
         self.parent.RenderManager.set_service_theme(self.service_theme)
-        self.config.set_config(u'service theme', self.service_theme)
+        QtCore.QSettings().setValue(u'service manager/service theme',
+            QtCore.QVariant(self.service_theme))
         self.regenerateServiceItems()
 
     def regenerateServiceItems(self):
@@ -651,7 +654,8 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems = []
             self.isNew = True
             for item in tempServiceItems:
-                self.addServiceItem(item[u'service_item'], False, item[u'expanded'])
+                self.addServiceItem(
+                    item[u'service_item'], False, item[u'expanded'])
             #Set to False as items may have changed rendering
             #does not impact the saved song so True may also be valid
             self.parent.serviceChanged(False, self.serviceName)
@@ -720,11 +724,11 @@ class ServiceManager(QtGui.QWidget):
         item, count = self.findServiceItem()
         self.parent.LiveController.addServiceManagerItem(
             self.serviceItems[item][u'service_item'], count)
-        if str_to_bool(PluginConfig(u'General').
-                        get_config(u'auto preview', u'False')):
+        if QtCore.QSettings().value(u'general/auto preview', False).toBool():
             item += 1
             if self.serviceItems and item < len(self.serviceItems) and \
-                self.serviceItems[item][u'service_item'].is_capable(ItemCapabilities.AllowsPreview):
+                self.serviceItems[item][u'service_item'].is_capable(
+                ItemCapabilities.AllowsPreview):
                     self.parent.PreviewController.addServiceManagerItem(
                         self.serviceItems[item][u'service_item'], 0)
 

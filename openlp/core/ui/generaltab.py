@@ -25,7 +25,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, str_to_bool, Receiver
+from openlp.core.lib import SettingsTab, Receiver
 
 class GeneralTab(SettingsTab):
     """
@@ -41,11 +41,13 @@ class GeneralTab(SettingsTab):
         values.
         If not set before default to last screen.
         """
-        self.MonitorNumber = int(self.config.get_config(u'monitor',
-                                                self.screens.monitor_number))
+        settings = QtCore.QSettings()
+        self.MonitorNumber = settings.value(
+            u'general/monitor', self.screens.monitor_number).toInt()[0]
         self.screens.set_current_display(self.MonitorNumber)
         self.screens.monitor_number = self.MonitorNumber
-        self.DisplayOnMonitor = str_to_bool(self.config.get_config(u'display on monitor', u'True'))
+        self.DisplayOnMonitor = settings.value(
+            u'general/display on monitor', True).toBool()
         self.screens.display = self.DisplayOnMonitor
 
     def setupUi(self):
@@ -151,15 +153,18 @@ class GeneralTab(SettingsTab):
         QtCore.QObject.connect(self.MonitorComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onMonitorComboBoxChanged)
         QtCore.QObject.connect(self.DisplayOnMonitorCheck,
-            QtCore.SIGNAL(u'stateChanged(int)'), self.onDisplayOnMonitorCheckChanged)
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onDisplayOnMonitorCheckChanged)
         QtCore.QObject.connect(self.WarningCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'), self.onWarningCheckBoxChanged)
         QtCore.QObject.connect(self.AutoOpenCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'), self.onAutoOpenCheckBoxChanged)
         QtCore.QObject.connect(self.ShowSplashCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'), self.onShowSplashCheckBoxChanged)
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onShowSplashCheckBoxChanged)
         QtCore.QObject.connect(self.SaveCheckServiceCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'), self.onSaveCheckServiceCheckBox)
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onSaveCheckServiceCheckBox)
         QtCore.QObject.connect(self.AutoPreviewCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'), self.onAutoPreviewCheckBox)
         QtCore.QObject.connect(self.NumberEdit,
@@ -171,15 +176,20 @@ class GeneralTab(SettingsTab):
 
     def retranslateUi(self):
         self.MonitorGroupBox.setTitle(self.trUtf8('Monitors'))
-        self.MonitorLabel.setText(self.trUtf8('Select monitor for output display:'))
-        self.DisplayOnMonitorCheck.setText(self.trUtf8('Display if in single screen'))
+        self.MonitorLabel.setText(
+            self.trUtf8('Select monitor for output display:'))
+        self.DisplayOnMonitorCheck.setText(
+            self.trUtf8('Display if in single screen'))
         self.StartupGroupBox.setTitle(self.trUtf8('Application Startup'))
         self.WarningCheckBox.setText(self.trUtf8('Show blank screen warning'))
-        self.AutoOpenCheckBox.setText(self.trUtf8('Automatically open the last service'))
+        self.AutoOpenCheckBox.setText(
+            self.trUtf8('Automatically open the last service'))
         self.ShowSplashCheckBox.setText(self.trUtf8('Show the splash screen'))
         self.SettingsGroupBox.setTitle(self.trUtf8('Application Settings'))
-        self.SaveCheckServiceCheckBox.setText(self.trUtf8('Prompt to save Service before starting New'))
-        self.AutoPreviewCheckBox.setText(self.trUtf8('Preview Next Song from Service Manager'))
+        self.SaveCheckServiceCheckBox.setText(
+            self.trUtf8('Prompt to save Service before starting New'))
+        self.AutoPreviewCheckBox.setText(
+            self.trUtf8('Preview Next Song from Service Manager'))
         self.CCLIGroupBox.setTitle(self.trUtf8('CCLI Details'))
         self.NumberLabel.setText(self.trUtf8('CCLI Number:'))
         self.UsernameLabel.setText(self.trUtf8('SongSelect Username:'))
@@ -216,20 +226,30 @@ class GeneralTab(SettingsTab):
         self.Password = self.PasswordEdit.displayText()
 
     def load(self):
+        settings = QtCore.QSettings()
         for screen in self.screens.screen_list:
-            screen_name = u'%s %d' % (self.trUtf8('Screen'), screen[u'number'] + 1)
+            screen_name = u'%s %d' % (self.trUtf8('Screen'),
+                screen[u'number'] + 1)
             if screen[u'primary']:
                 screen_name = u'%s (%s)' % (screen_name, self.trUtf8('primary'))
             self.MonitorComboBox.addItem(screen_name)
         # Get the configs
-        self.Warning = str_to_bool(self.config.get_config(u'blank warning', u'False'))
-        self.AutoOpen = str_to_bool(self.config.get_config(u'auto open', u'False'))
-        self.ShowSplash = str_to_bool(self.config.get_config(u'show splash', u'True'))
-        self.PromptSaveService = str_to_bool(self.config.get_config(u'save prompt', u'False'))
-        self.AutoPreview = str_to_bool(self.config.get_config(u'auto preview', u'False'))
-        self.CCLINumber = unicode(self.config.get_config(u'ccli number', u''))
-        self.Username = unicode(self.config.get_config(u'songselect username', u''))
-        self.Password = unicode(self.config.get_config(u'songselect password', u''))
+        self.Warning = settings.value(
+            u'general/blank warning', QtCore.QVariant(False)).toBool()
+        self.AutoOpen = settings.value(
+            u'general/auto open', QtCore.QVariant(False)).toBool()
+        self.ShowSplash = settings.value(
+            u'general/show splash', QtCore.QVariant(True)).toBool()
+        self.PromptSaveService = settings.value(
+            u'general/save prompt', QtCore.QVariant(False)).toBool()
+        self.AutoPreview = settings.value(
+            u'general/auto preview', QtCore.QVariant(False)).toBool()
+        self.CCLINumber = unicode(settings.value(
+            u'general/ccli number', QtCore.QVariant(u'')).toString())
+        self.Username = unicode(settings.value(
+            u'general/songselect username', QtCore.QVariant(u'')).toString())
+        self.Password = unicode(settings.value(
+            u'general/songselect password', QtCore.QVariant(u'')).toString())
         self.SaveCheckServiceCheckBox.setChecked(self.PromptSaveService)
         # Set a few things up
         self.MonitorComboBox.setCurrentIndex(self.MonitorNumber)
@@ -243,16 +263,18 @@ class GeneralTab(SettingsTab):
         self.PasswordEdit.setText(self.Password)
 
     def save(self):
-        self.config.set_config(u'monitor', self.MonitorNumber)
-        self.config.set_config(u'display on monitor', self.DisplayOnMonitor)
-        self.config.set_config(u'blank warning', self.Warning)
-        self.config.set_config(u'auto open', self.AutoOpen)
-        self.config.set_config(u'show splash', self.ShowSplash)
-        self.config.set_config(u'save prompt', self.PromptSaveService)
-        self.config.set_config(u'auto preview', self.AutoPreview)
-        self.config.set_config(u'ccli number', self.CCLINumber)
-        self.config.set_config(u'songselect username', self.Username)
-        self.config.set_config(u'songselect password', self.Password)
+        settings = QtCore.QSettings()
+        settings.setValue(u'general/monitor', self.MonitorNumber)
+        settings.setValue(
+            u'general/display on monitor', self.DisplayOnMonitor)
+        settings.setValue(u'general/blank warning', self.Warning)
+        settings.setValue(u'general/auto open', self.AutoOpen)
+        settings.setValue(u'general/show splash', self.ShowSplash)
+        settings.setValue(u'general/save prompt', self.PromptSaveService)
+        settings.setValue(u'general/auto preview', self.AutoPreview)
+        settings.setValue(u'general/ccli number', self.CCLINumber)
+        settings.setValue(u'general/songselect username', self.Username)
+        settings.setValue(u'general/songselect password', self.Password)
         self.screens.display = self.DisplayOnMonitor
         #Monitor Number has changed.
         if self.screens.monitor_number != self.MonitorNumber:

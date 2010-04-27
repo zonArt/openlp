@@ -27,8 +27,10 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    contextMenuAction, ItemCapabilities
+    contextMenuAction, ItemCapabilities, SettingsManager
+from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
 
@@ -76,10 +78,12 @@ class ImageMediaItem(MediaManagerItem):
             QtGui.QAbstractItemView.ExtendedSelection)
         self.ListView.setIconSize(QtCore.QSize(88,50))
         self.servicePath = os.path.join(
-            self.parent.config.get_data_path(), u'.thumbnails')
+            AppLocation.get_section_data_path(self.ConfigSection),
+            u'.thumbnails')
         if not os.path.exists(self.servicePath):
             os.mkdir(self.servicePath)
-        self.loadList(self.parent.config.load_list(self.ConfigSection))
+        self.loadList(SettingsManager.load_list(
+            self.ConfigSection, self.ConfigSection))
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
@@ -112,12 +116,13 @@ class ImageMediaItem(MediaManagerItem):
             for item in items:
                 text = self.ListView.item(item.row())
                 try:
-                    os.remove(os.path.join(self.servicePath, unicode(text.text())))
+                    os.remove(
+                        os.path.join(self.servicePath, unicode(text.text())))
                 except:
                     #if not present do not worry
                     pass
                 self.ListView.takeItem(item.row())
-                self.parent.config.set_list(self.ConfigSection, self.getFileList())
+                SettingsManager.set_list(self.ConfigSection, self.getFileList())
 
     def loadList(self, list):
         for file in list:

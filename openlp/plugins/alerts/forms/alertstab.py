@@ -31,10 +31,10 @@ class AlertsTab(SettingsTab):
     """
     AlertsTab is the alerts settings tab in the settings dialog.
     """
-    def __init__(self, parent, section=None):
+    def __init__(self, parent):
         self.parent = parent
         self.manager = parent.manager
-        SettingsTab.__init__(self, parent.name, section)
+        SettingsTab.__init__(self, parent.name)
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
@@ -228,15 +228,16 @@ class AlertsTab(SettingsTab):
         self.updateDisplay()
 
     def load(self):
-        self.timeout = int(self.config.get_config(u'timeout', 5))
-        self.font_color = unicode(
-            self.config.get_config(u'font color', u'#ffffff'))
-        self.font_size = int(self.config.get_config(u'font size', 40))
-        self.bg_color = unicode(
-            self.config.get_config(u'background color', u'#660000'))
-        self.font_face = unicode(
-            self.config.get_config(u'font face', QtGui.QFont().family()))
-        self.location = int(self.config.get_config(u'location', 0))
+        settings = QtCore.QSettings()
+        self.timeout = settings.value(u'alerts/timeout', 5).toInt()[0]
+        self.font_color = unicode(settings.value(
+            u'alerts/font color', u'#ffffff').toString())
+        self.font_size = settings.value(u'alerts/font size', 40).toInt()[0]
+        self.bg_color = unicode(settings.value(
+            u'alerts/background color', u'#660000').toString())
+        self.font_face = unicode(settings.value(
+            u'alerts/font face', QtGui.QFont().family()).toString())
+        self.location = settings.value(u'alerts/location', 0).toInt()[0]
         self.FontSizeSpinBox.setValue(self.font_size)
         self.TimeoutSpinBox.setValue(self.timeout)
         self.FontColorButton.setStyleSheet(
@@ -254,14 +255,17 @@ class AlertsTab(SettingsTab):
         self.DeleteButton.setEnabled(True)
 
     def save(self):
+        settings = QtCore.QSettings()
         self.font_face = self.FontComboBox.currentFont().family()
-        self.config.set_config(u'background color', unicode(self.bg_color))
-        self.config.set_config(u'font color', unicode(self.font_color))
-        self.config.set_config(u'font size', unicode(self.font_size))
-        self.config.set_config(u'font face', unicode(self.font_face))
-        self.config.set_config(u'timeout', unicode(self.timeout))
-        self.config.set_config(u'location',
-                        unicode(self.LocationComboBox.currentIndex()))
+        settings.setValue(
+            u'alerts/background color', QtCore.QVariant(self.bg_color))
+        settings.setValue(
+            u'alerts/font color', QtCore.QVariant(self.font_color))
+        settings.setValue(u'alerts/font size', QtCore.QVariant(self.font_size))
+        settings.setValue(u'alerts/font face', QtCore.QVariant(self.font_face))
+        settings.setValue(u'alerts/timeout', QtCore.QVariant(self.timeout))
+        settings.setValue(u'alerts/location',
+            QtCore.QVariant(self.LocationComboBox.currentIndex()))
 
     def updateDisplay(self):
         font = QtGui.QFont()

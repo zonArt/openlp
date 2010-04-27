@@ -30,8 +30,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, DisplayManager
-from openlp.core.lib import RenderManager, PluginConfig, build_icon, \
-    OpenLPDockWidget, SettingsManager, PluginManager, Receiver, str_to_bool
+from openlp.core.lib import RenderManager, build_icon, OpenLPDockWidget, \
+    SettingsManager, PluginManager, Receiver
 from openlp.core.utils import check_latest_version, AppLocation, add_actions
 
 log = logging.getLogger(__name__)
@@ -56,11 +56,10 @@ class VersionThread(QtCore.QThread):
     A special Qt thread class to fetch the version of OpenLP from the website.
     This is threaded so that it doesn't affect the loading time of OpenLP.
     """
-    def __init__(self, parent, app_version, generalConfig):
+    def __init__(self, parent, app_version):
         QtCore.QThread.__init__(self, parent)
         self.parent = parent
         self.app_version = app_version
-        self.generalConfig = generalConfig
 
     def run(self):
         """
@@ -68,7 +67,7 @@ class VersionThread(QtCore.QThread):
         """
         time.sleep(1)
         Receiver.send_message(u'maindisplay_blank_check')
-        version = check_latest_version(self.generalConfig, self.app_version)
+        version = check_latest_version(self.app_version)
         #new version has arrived
         if version != self.app_version[u'full']:
             Receiver.send_message(u'openlp_version_check', u'%s' % version)
@@ -422,7 +421,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.applicationVersion = applicationVersion
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
-        self.generalConfig = PluginConfig(u'General')
         self.displayManager = DisplayManager(screens)
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
@@ -510,7 +508,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_helpers[u'live'] = self.LiveController
         self.plugin_helpers[u'render'] = self.RenderManager
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
-        self.plugin_helpers[u'settings'] = self.settingsForm
+        self.plugin_helpers[u'settings form'] = self.settingsForm
         self.plugin_helpers[u'toolbox'] = self.mediaDockManager
         self.plugin_helpers[u'maindisplay'] = self.displayManager.mainDisplay
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers)
@@ -563,7 +561,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.displayManager.mainDisplay.isVisible():
             self.displayManager.mainDisplay.setFocus()
         self.activateWindow()
-        if str_to_bool(self.generalConfig.get_config(u'auto open', False)):
+        if QtCore.QSettings().value(u'general/auto open', False).toBool():
             self.ServiceManagerContents.onLoadService(True)
 
     def blankCheck(self):
@@ -571,8 +569,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Check and display message if screen blank on setup.
         Triggered by delay thread.
         """
-        if str_to_bool(self.generalConfig.get_config(u'screen blank', False)) \
-        and str_to_bool(self.generalConfig.get_config(u'blank warning', False)):
+        if QtCore.QSettings().value(u'general/screen blank', False).toBool() \
+        and QtCore.QSettings().value(u'general/blank warning', False).toBool():
             self.LiveController.onBlankDisplay(True)
             QtGui.QMessageBox.question(self,
                 self.trUtf8('OpenLP Main Display Blanked'),
@@ -584,7 +582,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Start an initial setup thread to delay notifications
         """
-        vT = VersionThread(self, self.applicationVersion, self.generalConfig)
+        vT = VersionThread(self, self.applicationVersion)
         vT.start()
 
     def onHelpAboutItemClicked(self):
@@ -748,8 +746,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.FileMenu.addAction(self.FileMenuActions[-1])
 
     def addRecentFile(self, filename):
-        recentFileCount = int(PluginConfig(u'General').
-            get_config(u'max recent files', 4))
+        recentFileCount = QtCore.QSettings().value(
+            u'general/max recent files', 4).toInt()[0]
         if filename and not self.recentFiles.contains(filename):
             self.recentFiles.prepend(QtCore.QString(filename))
             while self.recentFiles.count() > recentFileCount:

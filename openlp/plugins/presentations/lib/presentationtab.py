@@ -23,7 +23,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab
 
@@ -31,9 +31,9 @@ class PresentationTab(SettingsTab):
     """
     PresentationsTab is the Presentations settings tab in the settings dialog.
     """
-    def __init__(self, title, controllers, section=None):
+    def __init__(self, title, controllers):
         self.controllers = controllers
-        SettingsTab.__init__(self, title, section)
+        SettingsTab.__init__(self, title)
 
     def setupUi(self):
         self.setObjectName(u'PresentationTab')
@@ -100,12 +100,12 @@ class PresentationTab(SettingsTab):
             controller = self.controllers[key]
             if controller.available:
                 checkbox = self.PresenterCheckboxes[controller.name]
-                checkbox.setChecked(
-                    int(self.config.get_config(controller.name, 0)))
+                checkbox.setChecked(QtCore.QSettings().value(
+                    u'presentations/' + controller.name, 0).toInt()[0])
 
     def save(self):
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
-            self.config.set_config(
-                controller.name, unicode(checkbox.checkState()))
+            QtCore.QSettings().setValue(u'presentations/' + controller.name,
+                QtCore.QVariant(checkbox.checkState()))

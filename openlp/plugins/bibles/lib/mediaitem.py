@@ -28,8 +28,8 @@ import time
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, Receiver, str_to_bool, \
-    BaseListWithDnD, ItemCapabilities
+from openlp.core.lib import MediaManagerItem, Receiver, BaseListWithDnD, \
+    ItemCapabilities
 from openlp.plugins.bibles.forms import ImportWizardForm
 
 log = logging.getLogger(__name__)
@@ -276,8 +276,7 @@ class BibleMediaItem(MediaManagerItem):
         self.SearchProgress.setObjectName(u'SearchProgress')
 
     def configUpdated(self):
-        if str_to_bool(
-            self.parent.config.get_config(u'dual bibles', u'False')):
+        if QtCore.QSettings().value(u'bibles/dual bibles', False).toBool():
             self.AdvancedSecondBibleLabel.setVisible(True)
             self.AdvancedSecondBibleComboBox.setVisible(True)
             self.QuickSecondVersionLabel.setVisible(True)
@@ -381,7 +380,7 @@ class BibleMediaItem(MediaManagerItem):
             self.AdvancedBookComboBox.itemData(item).toInt()[0])
 
     def onImportClick(self):
-        self.bibleimportform = ImportWizardForm(self, self.parent.config,
+        self.bibleimportform = ImportWizardForm(self,
             self.parent.manager, self.parent)
         self.bibleimportform.exec_()
         self.reloadBibles()

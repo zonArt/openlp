@@ -56,20 +56,14 @@ class BibleDB(QtCore.QObject):
         ``name``
             The name of the database. This is also used as the file name for
             SQLite databases.
-
-        ``config``
-            The configuration object, passed in from the plugin.
         """
         log.info(u'BibleDB loaded')
         QtCore.QObject.__init__(self)
         if u'path' not in kwargs:
             raise KeyError(u'Missing keyword argument "path".')
-        if u'config' not in kwargs:
-            raise KeyError(u'Missing keyword argument "config".')
         if u'name' not in kwargs and u'file' not in kwargs:
             raise KeyError(u'Missing keyword argument "name" or "file".')
         self.stop_import_flag = False
-        self.config = kwargs[u'config']
         if u'name' in kwargs:
             self.name = kwargs[u'name']
             if not isinstance(self.name, unicode):
@@ -79,16 +73,18 @@ class BibleDB(QtCore.QObject):
             self.file = kwargs[u'file']
         self.db_file = os.path.join(kwargs[u'path'], self.file)
         log.debug(u'Load bible %s on path %s', self.file, self.db_file)
-        db_type = self.config.get_config(u'db type', u'sqlite')
+        settings = QtCore.QSettings()
+        db_type = unicode(
+            settings.value(u'bibles/db type', u'sqlite').toString())
         db_url = u''
         if db_type == u'sqlite':
             db_url = u'sqlite:///' + self.db_file
         else:
             db_url = u'%s://%s:%s@%s/%s' % \
-                (db_type, self.config.get_config(u'db username'),
-                    self.config.get_config(u'db password'),
-                    self.config.get_config(u'db hostname'),
-                    self.config.get_config(u'db database'))
+                (db_type, unicode(settings.value(u'bibles/db username')),
+                    unicode(settings.value(u'bibles/db password')),
+                    unicode(settings.value(u'bibles/db hostname')),
+                    unicode(settings.value(u'bibles/db database')))
         self.metadata, self.session = init_models(db_url)
         self.metadata.create_all(checkfirst=True)
         if u'file' in kwargs:

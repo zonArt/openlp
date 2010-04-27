@@ -46,7 +46,7 @@ class BiblePlugin(Plugin):
     def initialise(self):
         log.info(u'bibles Initialising')
         if self.manager is None:
-            self.manager = BibleManager(self, self.config)
+            self.manager = BibleManager(self)
         Plugin.initialise(self)
         self.insert_toolbox_item()
         self.ImportBibleItem.setVisible(True)

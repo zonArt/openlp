@@ -29,7 +29,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-ItemCapabilities
+    ItemCapabilities, SettingsManager
 
 log = logging.getLogger(__name__)
 
@@ -47,12 +47,12 @@ class MediaMediaItem(MediaManagerItem):
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Media'
         self.IconPath = u'images/image'
-        self.ConfigSection = u'media'
         self.ConfigSection = title
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = MediaListView
-        self.PreviewFunction = QtGui.QPixmap(u':/media/media_video.png').toImage()
+        self.PreviewFunction = QtGui.QPixmap(
+            u':/media/media_video.png').toImage()
         MediaManagerItem.__init__(self, parent, icon, title)
         self.singleServiceItem = False
         self.ServiceItemIconName = u':/media/media_video.png'
@@ -89,15 +89,15 @@ class MediaMediaItem(MediaManagerItem):
         self.ListView.setSelectionMode(
             QtGui.QAbstractItemView.ExtendedSelection)
         self.ListView.setIconSize(QtCore.QSize(88,50))
-        self.loadList(self.parent.config.load_list(self.ConfigSection))
+        self.loadList(SettingsManager.load_list(
+            self.ConfigSection, self.ConfigSection))
 
     def onDeleteClick(self):
         item = self.ListView.currentItem()
         if item:
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
-            self.parent.config.set_list(
-                self.ConfigSection, self.getFileList())
+            SettingsManager.set_list(self.ConfigSection, self.getFileList())
 
     def loadList(self, list):
         for file in list:

@@ -27,8 +27,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, SongXMLParser, BaseListWithDnD,\
-Receiver, str_to_bool, ItemCapabilities
+from openlp.core.lib import MediaManagerItem, SongXMLParser, BaseListWithDnD, \
+    Receiver, ItemCapabilities
 
 log = logging.getLogger(__name__)
 
@@ -164,7 +164,7 @@ class CustomMediaItem(MediaManagerItem):
         service_item.title = title
         for slide in raw_slides:
             service_item.add_from_text(slide[:30], slide)
-        if str_to_bool(self.parent.config.get_config(u'display footer', True)) \
+        if QtCore.QSettings().value(u'custom/display footer', True).toBool() \
             or credit:
             raw_footer.append(title + u' ' + credit)
         else:

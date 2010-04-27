@@ -29,7 +29,8 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib.toolbar import *
-from openlp.core.lib import contextMenuAction, contextMenuSeparator
+from openlp.core.lib import contextMenuAction, contextMenuSeparator, \
+    SettingsManager
 from serviceitem import ServiceItem
 
 log = logging.getLogger(__name__)
@@ -334,13 +335,15 @@ class MediaManagerItem(QtGui.QWidget):
     def onFileClick(self):
         files = QtGui.QFileDialog.getOpenFileNames(
             self, self.OnNewPrompt,
-            self.parent.config.get_last_dir(), self.OnNewFileMasks)
+            SettingsManager.get_last_dir(self.ConfigSection),
+            self.OnNewFileMasks)
         log.info(u'New files(s) %s', unicode(files))
         if files:
             self.loadList(files)
             dir, filename = os.path.split(unicode(files[0]))
-            self.parent.config.set_last_dir(dir)
-            self.parent.config.set_list(self.ConfigSection, self.getFileList())
+            SettingsManager.set_last_dir(self.ConfigSection, dir)
+            SettingsManager.set_list(
+                self.ConfigSection, self.ConfigSection, self.getFileList())
 
     def getFileList(self):
         count = 0

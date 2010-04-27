@@ -98,23 +98,37 @@ class AppLocation(object):
                 plugin_path = os.path.split(openlp.__file__)[0]
             return plugin_path
 
+    @staticmethod
+    def get_data_path():
+        path = AppLocation.get_directory(AppLocation.DataDir)
+        if not os.path.exists(path):
+            os.makedirs(path)
+        return path
 
-def check_latest_version(config, current_version):
+    @staticmethod
+    def get_section_data_path(section):
+        data_path = AppLocation.get_data_path()
+        path = os.path.join(data_path, section)
+        if not os.path.exists(path):
+            os.makedirs(path)
+        return path
+
+
+def check_latest_version(current_version):
     """
     Check the latest version of OpenLP against the version file on the OpenLP
     site.
-
-    ``config``
-        The OpenLP config object.
 
     ``current_version``
         The current version of OpenLP.
     """
     version_string = current_version[u'full']
     #set to prod in the distribution config file.
-    last_test = config.get_config(u'last version test', datetime.now().date())
+    last_test = unicode(QtCore.QSettings().value(u'general/last version test',
+        datetime.now().date()).toString())
     this_test = unicode(datetime.now().date())
-    config.set_config(u'last version test', this_test)
+    QtCore.QSettings().setValue(
+        u'general/last version test', QtCore.QVariant(this_test))
     if last_test != this_test:
         version_string = u''
         if current_version[u'build']:
@@ -168,8 +182,4 @@ def add_actions(target, actions):
         else:
             target.addAction(action)
 
-from registry import Registry
-from confighelper import ConfigHelper
-
-__all__ = [u'Registry', u'ConfigHelper', u'AppLocation',
-    u'check_latest_version', u'add_actions']
+__all__ = [u'AppLocation', u'check_latest_version', u'add_actions']

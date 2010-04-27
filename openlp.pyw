@@ -34,10 +34,10 @@ from PyQt4 import QtCore, QtGui
 
 log = logging.getLogger()
 
-from openlp.core.lib import Receiver, str_to_bool
+from openlp.core.lib import Receiver
 from openlp.core.resources import qInitResources
 from openlp.core.ui import MainWindow, SplashScreen, ScreenList
-from openlp.core.utils import AppLocation, ConfigHelper
+from openlp.core.utils import AppLocation
 
 application_stylesheet = u"""
 QMainWindow::separator
@@ -119,8 +119,8 @@ class OpenLP(QtGui.QApplication):
         self.setApplicationVersion(app_version[u'version'])
         if os.name == u'nt':
             self.setStyleSheet(application_stylesheet)
-        show_splash = str_to_bool(ConfigHelper.get_registry().get_value(
-            u'general', u'show splash', True))
+        show_splash = QtCore.QSettings().value(
+            u'general/show splash', True).toBool()
         if show_splash:
             self.splash = SplashScreen(self.applicationVersion())
             self.splash.show()

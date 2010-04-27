@@ -41,7 +41,7 @@ class alertsPlugin(Plugin):
         self.weight = -3
         self.icon = build_icon(u':/media/media_image.png')
         self.alertsmanager = AlertsManager(self)
-        self.manager = DBManager(self.config)
+        self.manager = DBManager()
         self.alertForm = AlertForm(self.manager, self)
         self.status = PluginStatus.Active
 
@@ -83,7 +83,8 @@ class alertsPlugin(Plugin):
 
     def togglealertsState(self):
         self.alertsActive = not self.alertsActive
-        self.config.set_config(u'active', self.alertsActive)
+        QtCore.QSettings().setValue(
+            u'alerts/active', QtCore.QVariant(self.alertsActive))
 
     def onAlertsTrigger(self):
         self.alertForm.loadList()

@@ -41,8 +41,7 @@ class HideMode(object):
     Blank = 1
     Theme = 2
 
-from openlp.core.lib import OpenLPToolbar, Receiver, str_to_bool, \
-    PluginConfig, resize_image
+from openlp.core.lib import OpenLPToolbar, Receiver, resize_image
 
 log = logging.getLogger(__name__)
 
@@ -96,7 +95,7 @@ class SlideController(QtGui.QWidget):
         self.settingsmanager = settingsmanager
         self.isLive = isLive
         self.parent = parent
-        self.songsconfig = PluginConfig(u'Songs')
+        self.mainDisplay = self.parent.displayManager.mainDisplay
         self.loop_list = [
             u'Start Loop',
             u'Stop Loop',
@@ -394,7 +393,7 @@ class SlideController(QtGui.QWidget):
         self.Toolbar.makeWidgetsInvisible(self.loop_list)
         if item.is_text():
             self.Toolbar.makeWidgetsInvisible(self.loop_list)
-            if str_to_bool(self.songsconfig.get_config(u'show songbar', True)) \
+            if QtCore.QSettings().value(u'songs/show songbar', True) \
                 and len(self.slideList) > 0:
                 self.Toolbar.makeWidgetsVisible([u'Song Menu'])
         if item.is_capable(ItemCapabilities.AllowsLoop) and \
@@ -403,7 +402,7 @@ class SlideController(QtGui.QWidget):
         if item.is_media():
             self.Toolbar.setVisible(False)
             self.Mediabar.setVisible(True)
-            #self.volumeSlider.setAudioOutput(self.parent.mainDisplay.videoDisplay.audio)
+            #self.volumeSlider.setAudioOutput(self.mainDisplay.videoDisplay.audio)
 
     def enablePreviewToolBar(self, item):
         """
@@ -583,8 +582,8 @@ class SlideController(QtGui.QWidget):
         if force:
             self.blankButton.setChecked(True)
         self.blankScreen(HideMode.Blank, self.blankButton.isChecked())
-        self.parent.generalConfig.set_config(u'screen blank',
-            self.blankButton.isChecked())
+        QtCore.QSettings().setValue(u'general/screen blank',
+            QtCore.QVariant(self.blankButton.isChecked()))
 
     def onThemeDisplay(self, force=False):
         """
@@ -603,9 +602,9 @@ class SlideController(QtGui.QWidget):
         if force:
             self.hideButton.setChecked(True)
         if self.hideButton.isChecked():
-            self.parent.mainDisplay.hideDisplay()
+            self.mainDisplay.hideDisplay()
         else:
-            self.parent.mainDisplay.showDisplay()
+            self.mainDisplay.showDisplay()
 
     def blankScreen(self, blankType, blanked=False):
         """
@@ -619,9 +618,9 @@ class SlideController(QtGui.QWidget):
                 Receiver.send_message(u'%s_unblank' 
                     % self.serviceItem.name.lower(), 
                     [self.serviceItem, self.isLive])
-            self.parent.mainDisplay.blankDisplay(blankType, blanked)
+            self.mainDisplay.blankDisplay(blankType, blanked)
         else:
-            self.parent.mainDisplay.blankDisplay(blankType, blanked)
+            self.mainDisplay.blankDisplay(blankType, blanked)
 
     def onSlideSelected(self):
         """
@@ -642,12 +641,15 @@ class SlideController(QtGui.QWidget):
                     self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
                 else:
                     if isinstance(frame[u'main'], basestring):
-                        self.SlidePreview.setPixmap(QtGui.QPixmap(frame[u'main']))
+                        self.SlidePreview.setPixmap(
+                            QtGui.QPixmap(frame[u'main']))
                     else:
-                        self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame[u'main']))
-                log.log(15, u'Slide Rendering took %4s' % (time.time() - before))
+                        self.SlidePreview.setPixmap(
+                            QtGui.QPixmap.fromImage(frame[u'main']))
+                log.log(
+                    15, u'Slide Rendering took %4s' % (time.time() - before))
                 if self.isLive:
-                    self.parent.displayManager.mainDisplay.frameView(frame, True)
+                    self.mainDisplay.frameView(frame, True)
             self.selectedRow = row
 
     def onSlideChange(self, row):
