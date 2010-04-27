@@ -172,7 +172,7 @@ class GeneralTab(SettingsTab):
     def retranslateUi(self):
         self.MonitorGroupBox.setTitle(self.trUtf8('Monitors'))
         self.MonitorLabel.setText(self.trUtf8('Select monitor for output display:'))
-        self.DisplayOnMonitorCheck.setText(self.trUtf8('Display if in single screen'))
+        self.DisplayOnMonitorCheck.setText(self.trUtf8('Display if a single screen'))
         self.StartupGroupBox.setTitle(self.trUtf8('Application Startup'))
         self.WarningCheckBox.setText(self.trUtf8('Show blank screen warning'))
         self.AutoOpenCheckBox.setText(self.trUtf8('Automatically open the last service'))

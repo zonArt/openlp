@@ -44,7 +44,8 @@ class DisplayForm(QtGui.QDialog, Ui_DisplaysDialog):
         self.setupUi(self)
 
     def initialise(self):
-        self.Xpos.setText(unicode(self.screens.current[u'size'].x()))
+        xpos = int(self.config.get_config(u'x position', unicode(self.screens.current[u'size'].x())))
+        self.Xpos.setText(xpos)
         self.Ypos.setText(unicode(self.screens.current[u'size'].y()))
         self.Height.setText(unicode(self.screens.current[u'size'].height()))
         self.Width.setText(unicode(self.screens.current[u'size'].width()))

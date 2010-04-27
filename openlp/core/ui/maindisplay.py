@@ -214,7 +214,6 @@ class MainDisplay(DisplayWidget):
 
     def hideThemeDisplay(self):
         log.debug(u'hideDisplay')
-        a=c
         self.display_image.setPixmap(self.transparent)
         self.display_alert.setPixmap(self.transparent)
         self.display_text.setPixmap(self.transparent)
@@ -336,6 +335,8 @@ class VideoDisplay(Phonon.VideoWidget):
         self.audioObject = Phonon.AudioOutput(Phonon.VideoCategory)
         Phonon.createPath(self.mediaObject, self)
         Phonon.createPath(self.mediaObject, self.audioObject)
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint \
+            | QtCore.Qt.FramelessWindowHint | QtCore.Qt.Dialog)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'videodisplay_start'), self.onMediaQueue)
         QtCore.QObject.connect(Receiver.get_receiver(),

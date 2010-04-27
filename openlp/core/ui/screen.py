@@ -80,6 +80,10 @@ class ScreenList(object):
         """
         log.debug(u'set_override_display')
         self.current = copy.deepcopy(self.override)
+        print self.screen_list
+        print self.current
+        self.current[u'primary'] = True
+        print self.current
         self.preview = copy.deepcopy(self.current)
 
     def reset_current_display(self):
