@@ -331,11 +331,11 @@ class PresentationDocument(object):
         pass
 
     def next_step(self):
-       """
-       Triggers the next effect of slide on the running presentation
-       This might be the next animation on the current slide, or the next slide
-       """
-       pass
+        """
+        Triggers the next effect of slide on the running presentation
+        This might be the next animation on the current slide, or the next slide
+        """
+        pass
 
     def previous_step(self):
         """

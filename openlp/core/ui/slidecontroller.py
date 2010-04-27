@@ -152,13 +152,15 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.horizontalHeader().setVisible(False)
         self.PreviewListWidget.verticalHeader().setVisible(False)
         self.PreviewListWidget.setColumnWidth(1, self.labelWidth)
-        self.PreviewListWidget.setColumnWidth(1, self.Controller.width() - self.labelWidth)
+        self.PreviewListWidget.setColumnWidth(
+            1, self.Controller.width() - self.labelWidth)
         self.PreviewListWidget.isLive = self.isLive
         self.PreviewListWidget.setObjectName(u'PreviewListWidget')
         self.PreviewListWidget.setSelectionBehavior(1)
         self.PreviewListWidget.setEditTriggers(
             QtGui.QAbstractItemView.NoEditTriggers)
-        self.PreviewListWidget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.PreviewListWidget.setHorizontalScrollBarPolicy(
+            QtCore.Qt.ScrollBarAlwaysOff)
         self.PreviewListWidget.setAlternatingRowColors(True)
         self.ControllerLayout.addWidget(self.PreviewListWidget)
         # Build the full toolbar
@@ -220,7 +222,8 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.addToolbarWidget(
                 u'Image SpinBox', self.DelaySpinBox)
             self.DelaySpinBox.setSuffix(self.trUtf8('s'))
-            self.DelaySpinBox.setToolTip(self.trUtf8('Delay between slides in seconds'))
+            self.DelaySpinBox.setToolTip(
+                self.trUtf8('Delay between slides in seconds'))
         self.ControllerLayout.addWidget(self.Toolbar)
         #Build a Media ToolBar
         self.Mediabar = OpenLPToolbar(self)
@@ -612,7 +615,8 @@ class SlideController(QtGui.QWidget):
         """
         if self.serviceItem is not None:
             if blanked:
-                Receiver.send_message(u'%s_blank' % self.serviceItem.name.lower(), 
+                Receiver.send_message(
+                    u'%s_blank' % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive])
             else:
                 Receiver.send_message(u'%s_unblank' 
