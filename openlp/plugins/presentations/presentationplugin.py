@@ -96,7 +96,9 @@ class PresentationPlugin(Plugin):
                     try:
                         __import__(modulename, globals(), locals(), [])
                     except ImportError, e:
-                        log.error(u'Failed to import %s on path %s for reason %s', modulename, path, e.args[0])
+                        log.error(
+                            u'Failed to import %s on path %s for reason %s',
+                            modulename, path, e.args[0])
         controller_classes = PresentationController.__subclasses__()
         for controller_class in controller_classes:
             controller = controller_class(self)

@@ -102,8 +102,8 @@ class PresentationController(object):
         self.name = name
         self.available = self.check_available()
         if self.available:
-            self.enabled = QtCore.QSettings().value(
-                name, QtCore.Qt.Unchecked).toInt()[0] == QtCore.Qt.Checked
+            self.enabled = QtCore.QSettings().value(u'presentations/' + name,
+                QtCore.Qt.Unchecked).toInt()[0] == QtCore.Qt.Checked
         else:
             self.enabled = False
         self.thumbnailroot = os.path.join(
