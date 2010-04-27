@@ -1,3 +1,4 @@
+import os.path
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
@@ -153,16 +154,16 @@ class SettingsManager(object):
         return list
 
     @staticmethod
-    def get_files(section=None, suffix=None):
+    def get_files(section=None, extension=None):
         """
         Get a list of files from the data files path.
 
         ``section``
             Defaults to *None*.  The section of code getting the files - used
-            to load from section directory.
+            to load from a section's data subdirectory.
 
-        ``suffix``
-            Defaults to *None*. The extension to search for.
+        ``extension``
+            Defaults to *None*.  The extension to search for.
         """
         path = AppLocation.get_data_path()
         if section:
@@ -171,17 +172,9 @@ class SettingsManager(object):
             files = os.listdir(path)
         except:
             return []
-        if suffix:
-            return_files = []
-            for file in files:
-                if file.find(u'.') != -1:
-                    filename = file.split(u'.')
-                    filesuffix = filename[1].lower()
-                    filesuffix = filesuffix.lower()
-                    # only load files with the correct suffix
-                    if suffix.find(filesuffix) > -1 :
-                        return_files.append(file)
-            return return_files
+        if extension:
+            return [file for file in files
+                if extension == os.path.splitext(file)[1]]
         else:
             # no filtering required
             return files

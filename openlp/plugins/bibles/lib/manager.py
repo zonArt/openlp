@@ -114,7 +114,7 @@ class BibleManager(object):
         self.path = AppLocation.get_section_data_path(u'bibles')
         self.proxy_name = unicode(
             QtCore.QSettings().value(u'bibles/proxy name', u'').toString())
-        self.suffix = u'sqlite'
+        self.suffix = u'.sqlite'
         self.import_wizard = None
         self.reload_bibles()
         self.media = None
