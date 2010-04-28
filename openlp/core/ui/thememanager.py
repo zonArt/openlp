@@ -33,10 +33,10 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AmendThemeForm
 from openlp.core.theme import Theme
-from openlp.core.lib import PluginConfig, OpenLPToolbar, contextMenuAction, \
+from openlp.core.lib import OpenLPToolbar, contextMenuAction, \
     ThemeXML, str_to_bool, get_text_file_string, build_icon, Receiver, \
-    contextMenuSeparator
-from openlp.core.utils import ConfigHelper
+    contextMenuSeparator, SettingsManager
+from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
 
@@ -47,6 +47,7 @@ class ThemeManager(QtGui.QWidget):
     def __init__(self, parent):
         QtGui.QWidget.__init__(self, parent)
         self.parent = parent
+        self.settingsSection = u'themes'
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
         self.Layout.setMargin(0)
@@ -105,16 +106,15 @@ class ThemeManager(QtGui.QWidget):
             QtCore.SIGNAL(u'theme_update_global'), self.changeGlobalFromTab)
         #Variables
         self.themelist = []
-        self.path = os.path.join(ConfigHelper.get_data_path(), u'themes')
+        self.path = AppLocation.get_section_data_path(self.settingsSection)
         self.checkThemesExists(self.path)
         self.thumbPath = os.path.join(self.path, u'thumbnails')
         self.checkThemesExists(self.thumbPath)
         self.amendThemeForm.path = self.path
         # Last little bits of setting up
-        self.config = PluginConfig(u'themes')
-        self.servicePath = self.config.get_data_path()
-        self.global_theme = unicode(
-            self.config.get_config(u'global theme', u''))
+        self.global_theme = unicode(QtCore.QSettings().value(
+            self.settingsSection + u'/global theme',
+            QtCore.QVariant(u'')).toString())
 
     def changeGlobalFromTab(self, themeName):
         log.debug(u'changeGlobalFromTab %s', themeName)
@@ -146,7 +146,9 @@ class ThemeManager(QtGui.QWidget):
                     self.ThemeListWidget.item(count).text())
                 name = u'%s (%s)' % (self.global_theme, self.trUtf8('default'))
                 self.ThemeListWidget.item(count).setText(name)
-                self.config.set_config(u'global theme', self.global_theme)
+                QtCore.QSettings().setValue(
+                    self.settingsSection + u'/global theme',
+                    QtCore.QVariant(self.global_theme))
                 Receiver.send_message(u'theme_update_global', self.global_theme)
                 self.pushThemes()
 
@@ -167,8 +169,9 @@ class ThemeManager(QtGui.QWidget):
             self.amendThemeForm.exec_()
 
     def onDeleteTheme(self):
-        self.global_theme = unicode(
-            self.config.get_config(u'global theme', u''))
+        self.global_theme = unicode(QtCore.QSettings().value(
+            self.settingsSection + u'/global theme',
+            QtCore.QVariant(u'')).toString())
         item = self.ThemeListWidget.currentItem()
         if item:
             theme = unicode(item.text())
@@ -221,10 +224,10 @@ class ThemeManager(QtGui.QWidget):
         theme = unicode(item.data(QtCore.Qt.UserRole).toString())
         path = QtGui.QFileDialog.getExistingDirectory(self,
             unicode(self.trUtf8('Save Theme - (%s)')) %  theme,
-            self.config.get_last_dir(1) )
+            SettingsManager.get_last_dir(self.settingsSection, 1))
         path = unicode(path)
         if path:
-            self.config.set_last_dir(path, 1)
+            SettingsManager.set_last_dir(self.settingsSection, path, 1)
             themePath = os.path.join(path, theme + u'.theme')
             zip = None
             try:
@@ -233,7 +236,8 @@ class ThemeManager(QtGui.QWidget):
                 for root, dirs, files in os.walk(source):
                     for name in files:
                         zip.write(
-                            os.path.join(source, name), os.path.join(theme, name))
+                            os.path.join(source, name),
+                            os.path.join(theme, name))
             except:
                 log.exception(u'Export Theme Failed')
             finally:
@@ -243,11 +247,12 @@ class ThemeManager(QtGui.QWidget):
     def onImportTheme(self):
         files = QtGui.QFileDialog.getOpenFileNames(
             self, self.trUtf8('Select Theme Import File'),
-            self.config.get_last_dir(), u'Theme (*.*)')
+            SettingsManager.get_last_dir(self.settingsSection), u'Theme (*.*)')
         log.info(u'New Themes %s', unicode(files))
         if files:
             for file in files:
-                self.config.set_last_dir(unicode(file))
+                SettingsManager.set_last_dir(
+                    self.settingsSection, unicode(file))
                 self.unzipTheme(file, self.path)
         self.loadThemes()
 

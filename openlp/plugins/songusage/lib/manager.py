@@ -25,7 +25,11 @@
 
 import logging
 
-from openlp.plugins.songusage.lib.models import init_models, metadata, SongUsageItem
+from PyQt4 import QtCore
+
+from openlp.core.utils import AppLocation
+from openlp.plugins.songusage.lib.models import init_models, metadata, \
+    SongUsageItem
 
 log = logging.getLogger(__name__)
 
@@ -36,27 +40,33 @@ class SongUsageManager():
     """
     log.info(u'SongUsage manager loaded')
 
-    def __init__(self, config):
+    def __init__(self):
         """
         Creates the connection to the database, and creates the tables if they
         don't exist.
         """
-        self.config = config
         log.debug(u'SongUsage Initialising')
+        settings = QtCore.QSettings()
+        settings.beginGroup(u'songusage')
         self.db_url = u''
-        db_type = self.config.get_config(u'db type', u'sqlite')
+        db_type = unicode(
+            settings.value(u'db type', QtCore.QVariant(u'sqlite')).toString())
         if db_type == u'sqlite':
             self.db_url = u'sqlite:///%s/songusage.sqlite' % \
-                self.config.get_data_path()
+                AppLocation.get_section_data_path(u'songusage')
         else:
-            self.db_url = u'%s://%s:%s@%s/%s' % \
-                (db_type, self.config.get_config(u'db username'),
-                    self.config.get_config(u'db password'),
-                    self.config.get_config(u'db hostname'),
-                    self.config.get_config(u'db database'))
+            self.db_url = u'%s://%s:%s@%s/%s' % (db_type,
+                unicode(settings.value(u'db username',
+                    QtCore.QVariant(u'')).toString()),
+                unicode(settings.value(u'db password',
+                    QtCore.QVariant(u'')).toString()),
+                unicode(settings.value(u'db hostname',
+                    QtCore.QVariant(u'')).toString()),
+                unicode(settings.value(u'db database',
+                    QtCore.QVariant(u'')).toString()))
         self.session = init_models(self.db_url)
         metadata.create_all(checkfirst=True)
-
+        settings.endGroup()
         log.debug(u'SongUsage Initialised')
 
     def get_all_songusage(self, start_date, end_date):

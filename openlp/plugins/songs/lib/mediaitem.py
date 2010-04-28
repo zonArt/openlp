@@ -28,7 +28,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, SongXMLParser, \
-    BaseListWithDnD, Receiver,  str_to_bool, ItemCapabilities
+    BaseListWithDnD, Receiver, ItemCapabilities
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm
 
 log = logging.getLogger(__name__)
@@ -46,7 +46,7 @@ class SongMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Song'
-        self.ConfigSection = title
+        self.SettingsSection = title.lower()
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = SongListView
         MediaManagerItem.__init__(self, parent, icon, title)
@@ -133,8 +133,9 @@ class SongMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'songs_edit_clear'), self.onRemoteEditClear)
 
     def configUpdated(self):
-        self.searchAsYouType = str_to_bool(
-            self.parent.config.get_config(u'search as type', u'False'))
+        self.searchAsYouType = QtCore.QSettings().value(
+            self.SettingsSection + u'/search as type',
+            QtCore.QVariant(u'False')).toBool()
 
     def retranslateUi(self):
         self.SearchTextLabel.setText(self.trUtf8('Search:'))
@@ -350,7 +351,7 @@ class SongMediaItem(MediaManagerItem):
             author_list = author_list + unicode(author.display_name)
             author_audit.append(unicode(author.display_name))
         if song.ccli_number is None or len(song.ccli_number) == 0:
-            ccli = self.parent.settings.GeneralTab.CCLINumber
+            ccli = self.parent.settings_form.GeneralTab.CCLINumber
         else:
             ccli = unicode(song.ccli_number)
         raw_footer.append(song.title)

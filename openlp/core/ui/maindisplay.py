@@ -265,14 +265,17 @@ class MainDisplay(DisplayWidget):
         if not self.displayBlank:
             if transition:
                 if self.frame is not None:
-                    self.display_text.setPixmap(QtGui.QPixmap.fromImage(self.frame))
+                    self.display_text.setPixmap(
+                        QtGui.QPixmap.fromImage(self.frame))
                     self.repaint()
                 self.frame = None
                 if frame[u'trans'] is not None:
-                    self.display_text.setPixmap(QtGui.QPixmap.fromImage(frame[u'trans']))
+                    self.display_text.setPixmap(
+                        QtGui.QPixmap.fromImage(frame[u'trans']))
                     self.repaint()
                     self.frame = frame[u'trans']
-                self.display_text.setPixmap(QtGui.QPixmap.fromImage(frame[u'main']))
+                self.display_text.setPixmap(
+                    QtGui.QPixmap.fromImage(frame[u'main']))
                 self.display_frame = frame[u'main']
                 self.repaint()
             else:
@@ -293,7 +296,8 @@ class MainDisplay(DisplayWidget):
         if blanked:
             self.displayBlank = True
             if blankType == HideMode.Blank:
-                self.display_text.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
+                self.display_text.setPixmap(
+                    QtGui.QPixmap.fromImage(self.blankFrame))
             elif blankType == HideMode.Theme:
                 theme = self.parent.RenderManager.renderer.bg_frame
                 if not theme:

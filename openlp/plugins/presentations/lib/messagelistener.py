@@ -165,7 +165,8 @@ class Controller(object):
         if not self.isLive:
             return
         self.activate()
-        if self.doc.slidenumber and self.doc.slidenumber != self.doc.get_slide_number():
+        if self.doc.slidenumber and \
+            self.doc.slidenumber != self.doc.get_slide_number():
             self.doc.goto_slide(self.doc.slidenumber)
         self.doc.unblank_screen()
 
@@ -186,26 +187,27 @@ class MessageListener(object):
         self.liveHandler = Controller(True)
         # messages are sent from core.ui.slidecontroller
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentation_start'), self.startup)
+            QtCore.SIGNAL(u'presentations_start'), self.startup)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentation_stop'), self.shutdown)
+            QtCore.SIGNAL(u'presentations_stop'), self.shutdown)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentation_first'), self.first)
+            QtCore.SIGNAL(u'presentations_first'), self.first)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentation_previous'), self.previous)
+            QtCore.SIGNAL(u'presentations_previous'), self.previous)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentation_next'), self.next)
+            QtCore.SIGNAL(u'presentations_next'), self.next)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentation_last'), self.last)
+            QtCore.SIGNAL(u'presentations_last'), self.last)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentation_slide'), self.slide)
+            QtCore.SIGNAL(u'presentations_slide'), self.slide)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentation_blank'), self.blank)
+            QtCore.SIGNAL(u'presentations_blank'), self.blank)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentation_unblank'), self.unblank)
+            QtCore.SIGNAL(u'presentations_unblank'), self.unblank)
         self.timer = QtCore.QTimer()
         self.timer.setInterval(500)
-        QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.timeout)
+        QtCore.QObject.connect(
+            self.timer, QtCore.SIGNAL("timeout()"), self.timeout)
 
     def startup(self, message):
         """
@@ -279,11 +281,10 @@ class MessageListener(object):
         if isLive:
             self.liveHandler.blank()
 
-    def unblank(self,  message):
+    def unblank(self, message):
         isLive, item = self.decode_message(message)
         if isLive:
             self.liveHandler.unblank()
         
     def timeout(self):
         self.liveHandler.poll()
-        
