@@ -31,7 +31,7 @@ import os.path
 from PyQt4 import QtCore, QtGui
 
 from bibleimportwizard import Ui_BibleImportWizard
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, SettingsManager
 from openlp.core.utils import AppLocation, variant_to_unicode
 from openlp.plugins.bibles.lib.manager import BibleFormat
 
@@ -59,15 +59,12 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
     """
     log.info(u'BibleImportForm loaded')
 
-    def __init__(self, parent, config, manager, bibleplugin):
+    def __init__(self, parent, manager, bibleplugin):
         """
         Instantiate the wizard, and run any extra setup we need to.
 
         ``parent``
             The QWidget-derived parent of the wizard.
-
-        ``config``
-            The configuration object for storing and retrieving settings.
 
         ``manager``
             The Bible manager.
@@ -81,7 +78,6 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.finishButton = self.button(QtGui.QWizard.FinishButton)
         self.cancelButton = self.button(QtGui.QWizard.CancelButton)
         self.manager = manager
-        self.config = config
         self.bibleplugin = bibleplugin
         self.manager.set_process_dialog(self)
         self.web_bible_list = {}
@@ -277,6 +273,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             u'license_permission', self.PermissionEdit)
 
     def setDefaults(self):
+        settings = QtCore.QSettings()
+        settings.beginGroup(self.bibleplugin.settings_section)
         self.setField(u'source_format', QtCore.QVariant(0))
         self.setField(u'osis_location', QtCore.QVariant(''))
         self.setField(u'csv_booksfile', QtCore.QVariant(''))
@@ -285,15 +283,17 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.setField(u'web_location', QtCore.QVariant(WebDownload.Crosswalk))
         self.setField(u'web_biblename', QtCore.QVariant(self.BibleComboBox))
         self.setField(u'proxy_server',
-            QtCore.QVariant(self.config.get_config(u'proxy address', '')))
+            settings.value(u'proxy address', QtCore.QVariant(u'')))
         self.setField(u'proxy_username',
-            QtCore.QVariant(self.config.get_config(u'proxy username','')))
+            settings.value(u'proxy username', QtCore.QVariant(u'')))
         self.setField(u'proxy_password',
-            QtCore.QVariant(self.config.get_config(u'proxy password','')))
+            settings.value(u'proxy password', QtCore.QVariant(u'')))
         self.setField(u'license_version', QtCore.QVariant(self.VersionNameEdit))
         self.setField(u'license_copyright', QtCore.QVariant(self.CopyrightEdit))
-        self.setField(u'license_permission', QtCore.QVariant(self.PermissionEdit))
+        self.setField(u'license_permission',
+            QtCore.QVariant(self.PermissionEdit))
         self.onLocationComboBoxChanged(WebDownload.Crosswalk)
+        settings.endGroup()
 
     def loadWebBibles(self):
         """
@@ -302,10 +302,10 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         #Load and store Crosswalk Bibles
         filepath = AppLocation.get_directory(AppLocation.PluginsDir)
         filepath = os.path.join(filepath, u'bibles', u'resources')
-        fbibles = None
         try:
             self.web_bible_list[WebDownload.Crosswalk] = {}
-            books_file = open(os.path.join(filepath, u'crosswalkbooks.csv'), 'r')
+            books_file = open(
+                os.path.join(filepath, u'crosswalkbooks.csv'), 'r')
             dialect = csv.Sniffer().sniff(books_file.read(1024))
             books_file.seek(0)
             books_reader = csv.reader(books_file, dialect)
@@ -345,10 +345,11 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
 
     def getFileName(self, title, editbox):
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
-            self.config.get_last_dir(1))
+            SettingsManager.get_last_dir(self.bibleplugin.settings_section, 1))
         if filename:
             editbox.setText(filename)
-            self.config.set_last_dir(filename, 1)
+            SettingsManager.set_last_dir(
+                self.bibleplugin.settings_section, filename, 1)
 
     def incrementProgressBar(self, status_text):
         log.debug(u'IncrementBar %s', status_text)
@@ -368,7 +369,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         bible_type = self.field(u'source_format').toInt()[0]
         license_version = variant_to_unicode(self.field(u'license_version'))
         license_copyright = variant_to_unicode(self.field(u'license_copyright'))
-        license_permission = variant_to_unicode(self.field(u'license_permission'))
+        license_permission = variant_to_unicode(
+            self.field(u'license_permission'))
         importer = None
         if bible_type == BibleFormat.OSIS:
             # Import an OSIS bible

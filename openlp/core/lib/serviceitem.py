@@ -30,7 +30,7 @@ import uuid
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import build_icon, Receiver, resize_image
+from openlp.core.lib import build_icon, resize_image
 
 log = logging.getLogger(__name__)
 

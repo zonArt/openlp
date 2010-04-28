@@ -25,16 +25,16 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, str_to_bool
+from openlp.core.lib import SettingsTab
 
 class AlertsTab(SettingsTab):
     """
     AlertsTab is the alerts settings tab in the settings dialog.
     """
-    def __init__(self, parent, section=None):
+    def __init__(self, parent):
         self.parent = parent
         self.manager = parent.manager
-        SettingsTab.__init__(self, parent.name, section)
+        SettingsTab.__init__(self, parent.name)
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
@@ -228,15 +228,20 @@ class AlertsTab(SettingsTab):
         self.updateDisplay()
 
     def load(self):
-        self.timeout = int(self.config.get_config(u'timeout', 5))
-        self.font_color = unicode(
-            self.config.get_config(u'font color', u'#ffffff'))
-        self.font_size = int(self.config.get_config(u'font size', 40))
-        self.bg_color = unicode(
-            self.config.get_config(u'background color', u'#660000'))
-        self.font_face = unicode(
-            self.config.get_config(u'font face', QtGui.QFont().family()))
-        self.location = int(self.config.get_config(u'location', 0))
+        settings = QtCore.QSettings()
+        settings.beginGroup(self.settingsSection)
+        self.timeout = settings.value(u'timeout', QtCore.QVariant(5)).toInt()[0]
+        self.font_color = unicode(settings.value(
+            u'font color', QtCore.QVariant(u'#ffffff')).toString())
+        self.font_size = settings.value(
+            u'font size', QtCore.QVariant(40)).toInt()[0]
+        self.bg_color = unicode(settings.value(
+            u'background color', QtCore.QVariant(u'#660000')).toString())
+        self.font_face = unicode(settings.value(
+            u'font face', QtCore.QVariant(QtGui.QFont().family())).toString())
+        self.location = settings.value(
+            u'location', QtCore.QVariant(0)).toInt()[0]
+        settings.endGroup()
         self.FontSizeSpinBox.setValue(self.font_size)
         self.TimeoutSpinBox.setValue(self.timeout)
         self.FontColorButton.setStyleSheet(
@@ -254,14 +259,17 @@ class AlertsTab(SettingsTab):
         self.DeleteButton.setEnabled(True)
 
     def save(self):
+        settings = QtCore.QSettings()
+        settings.beginGroup(self.settingsSection)
         self.font_face = self.FontComboBox.currentFont().family()
-        self.config.set_config(u'background color', unicode(self.bg_color))
-        self.config.set_config(u'font color', unicode(self.font_color))
-        self.config.set_config(u'font size', unicode(self.font_size))
-        self.config.set_config(u'font face', unicode(self.font_face))
-        self.config.set_config(u'timeout', unicode(self.timeout))
-        self.config.set_config(u'location',
-                        unicode(self.LocationComboBox.currentIndex()))
+        settings.setValue(u'background color', QtCore.QVariant(self.bg_color))
+        settings.setValue(u'font color', QtCore.QVariant(self.font_color))
+        settings.setValue(u'font size', QtCore.QVariant(self.font_size))
+        settings.setValue(u'font face', QtCore.QVariant(self.font_face))
+        settings.setValue(u'timeout', QtCore.QVariant(self.timeout))
+        settings.setValue(u'location',
+            QtCore.QVariant(self.LocationComboBox.currentIndex()))
+        settings.endGroup()
 
     def updateDisplay(self):
         font = QtGui.QFont()

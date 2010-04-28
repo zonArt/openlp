@@ -31,7 +31,8 @@ from sqlalchemy import  *
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation
 
-from openlp.core.lib import PluginConfig
+from openlp.core.lib import SettingsManager
+from openlp.core.utils import AppLocation
 from openlp.plugins.songs.lib.models import metadata, songs_table, Song, \
     Author, Topic, Book
 from openlp.plugins.songs.lib.tables import *
@@ -111,9 +112,8 @@ class TSongAuthor(BaseModel):
 class MigrateSongs():
     def __init__(self, display):
         self.display = display
-        self.config = PluginConfig(u'Songs')
-        self.data_path = self.config.get_data_path()
-        self.database_files = self.config.get_files(u'sqlite')
+        self.data_path = AppLocation.get_section_data_path(u'songs')
+        self.database_files = SettingsManager.get_files(u'songs', u'.sqlite')
         print self.database_files
 
     def process(self):

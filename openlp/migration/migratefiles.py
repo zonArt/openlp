@@ -23,7 +23,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from openlp.core.utils import ConfigHelper
+from openlp.core.utils import AppLocation
 
 class MigrateFiles():
     def __init__(self, display):
@@ -36,14 +36,19 @@ class MigrateFiles():
 
     def _initial_setup(self):
         self.display.output(u'Initial Setup started')
-        ConfigHelper.get_data_path()
+        data_path = AppLocation.get_data_path()
+        print data_path
         self.display.sub_output(u'Config created')
-        ConfigHelper.get_config(u'bible', u'data path')
+        bibles_path = AppLocation.get_section_data_path(u'bibles')
+        print bibles_path
         self.display.sub_output(u'Config created')
-        ConfigHelper.get_config(u'videos', u'data path')
-        self.display.sub_output(u'videos created')
-        ConfigHelper.get_config(u'images', u'data path')
+        # Media doesn't use a directory like the other plugins.
+        #media_path = AppLocation.get_section_data_path(u'media')
+        #self.display.sub_output(u'videos created')
+        images_path = AppLocation.get_section_data_path(u'images')
+        print images_path
         self.display.sub_output(u'images created')
-        ConfigHelper.get_config(u'presentations', u'data path')
+        presentations_path = AppLocation.get_section_data_path(u'presentations')
+        print presentations_path
         self.display.sub_output(u'presentations created')
         self.display.output(u'Initial Setup finished')
