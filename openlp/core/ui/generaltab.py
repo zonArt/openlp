@@ -264,17 +264,26 @@ class GeneralTab(SettingsTab):
 
     def save(self):
         settings = QtCore.QSettings()
-        settings.setValue(u'general/monitor', self.MonitorNumber)
-        settings.setValue(
-            u'general/display on monitor', self.DisplayOnMonitor)
-        settings.setValue(u'general/blank warning', self.Warning)
-        settings.setValue(u'general/auto open', self.AutoOpen)
-        settings.setValue(u'general/show splash', self.ShowSplash)
-        settings.setValue(u'general/save prompt', self.PromptSaveService)
-        settings.setValue(u'general/auto preview', self.AutoPreview)
-        settings.setValue(u'general/ccli number', self.CCLINumber)
-        settings.setValue(u'general/songselect username', self.Username)
-        settings.setValue(u'general/songselect password', self.Password)
+        settings.setValue(u'general/monitor',
+            QtCore.QVariant(self.MonitorNumber))
+        settings.setValue(u'general/display on monitor',
+            QtCore.QVariant(self.DisplayOnMonitor))
+        settings.setValue(u'general/blank warning',
+            QtCore.QVariant(self.Warning))
+        settings.setValue(u'general/auto open',
+            QtCore.QVariant(self.AutoOpen))
+        settings.setValue(u'general/show splash',
+            QtCore.QVariant(self.ShowSplash))
+        settings.setValue(u'general/save prompt',
+            QtCore.QVariant(self.PromptSaveService))
+        settings.setValue(u'general/auto preview',
+            QtCore.QVariant(self.AutoPreview))
+        settings.setValue(u'general/ccli number',
+            QtCore.QVariant(self.CCLINumber))
+        settings.setValue(u'general/songselect username',
+            QtCore.QVariant(self.Username))
+        settings.setValue(u'general/songselect password',
+            QtCore.QVariant(self.Password))
         self.screens.display = self.DisplayOnMonitor
         #Monitor Number has changed.
         if self.screens.monitor_number != self.MonitorNumber:

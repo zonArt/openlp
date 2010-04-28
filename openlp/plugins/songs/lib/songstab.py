@@ -63,9 +63,9 @@ class SongsTab(SettingsTab):
     def retranslateUi(self):
         self.SongsModeGroupBox.setTitle(self.trUtf8('Songs Mode'))
         self.SearchAsTypeCheckBox.setText(
-            self.trUtf8('Enable search as you type:'))
+            self.trUtf8('Enable search as you type'))
         self.SongBarActiveCheckBox.setText(
-            self.trUtf8('Display Verses on Live Tool bar:'))
+            self.trUtf8('Display Verses on Live Tool bar'))
 
     def onSearchAsTypeCheckBoxChanged(self, check_state):
         self.song_search = False

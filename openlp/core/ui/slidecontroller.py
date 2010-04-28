@@ -396,7 +396,7 @@ class SlideController(QtGui.QWidget):
         self.Toolbar.makeWidgetsInvisible(self.loop_list)
         if item.is_text():
             self.Toolbar.makeWidgetsInvisible(self.loop_list)
-            if QtCore.QSettings().value(u'songs/show songbar', True) \
+            if QtCore.QSettings().value(u'songs/show songbar', True).toBool() \
                 and len(self.slideList) > 0:
                 self.Toolbar.makeWidgetsVisible([u'Song Menu'])
         if item.is_capable(ItemCapabilities.AllowsLoop) and \

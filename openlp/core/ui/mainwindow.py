@@ -431,7 +431,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_helpers = {}
         # Set up the interface
         self.setupUi(self)
-        # Load settings after setupUi so defaults UI sizes are overwritten
+        # Load settings after setupUi so default UI sizes are overwritten
         self.loadSettings()
         # Once settings are loaded update FileMenu with recentFiles
         self.updateFileMenu()

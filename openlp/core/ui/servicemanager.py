@@ -641,7 +641,7 @@ class ServiceManager(QtGui.QWidget):
         """
         self.service_theme = unicode(self.ThemeComboBox.currentText())
         self.parent.RenderManager.set_service_theme(self.service_theme)
-        QtCore.QSettings().setValue(u'service manager/service theme',
+        QtCore.QSettings().setValue(u'servicemanager/service theme',
             QtCore.QVariant(self.service_theme))
         self.regenerateServiceItems()
 

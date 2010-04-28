@@ -145,7 +145,7 @@ class ThemeManager(QtGui.QWidget):
                 name = u'%s (%s)' % (self.global_theme, self.trUtf8('default'))
                 self.ThemeListWidget.item(count).setText(name)
                 QtCore.QSettings().setValue(u'themes/global theme',
-                    self.global_theme)
+                    QtCore.QVariant(self.global_theme))
                 Receiver.send_message(u'theme_update_global', self.global_theme)
                 self.pushThemes()
 

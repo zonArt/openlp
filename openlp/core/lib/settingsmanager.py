@@ -1,4 +1,3 @@
-import os.path
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
@@ -126,7 +125,7 @@ class SettingsManager(object):
             settings.setValue(
                 u'%s/%s %d' % (section, name, counter), list[counter-1])
         if old_count > new_count:
-            # Tidy up any old list itrms if list is smaller now
+            # Tidy up any old list items
             for counter in range(new_count, old_count):
                 settings.remove(u'%s/%s %d' % (section, name, counter))
 

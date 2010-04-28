@@ -55,10 +55,14 @@ class SongUsageManager():
                 AppLocation.get_section_data_path(u'songusage')
         else:
             self.db_url = u'%s://%s:%s@%s/%s' % (db_type,
-                unicode(settings.value(u'songusage/db username', u'')),
-                unicode(settings.value(u'songusage/db password', u'')),
-                unicode(settings.value(u'songusage/db hostname', u'')),
-                unicode(settings.value(u'songusage/db database', u'')))
+                unicode(
+                    settings.value(u'songusage/db username', u'').toString()),
+                unicode(
+                    settings.value(u'songusage/db password', u'').toString()),
+                unicode(
+                    settings.value(u'songusage/db hostname', u'').toString()),
+                unicode(
+                    settings.value(u'songusage/db database', u'').toString()))
         self.session = init_models(self.db_url)
         metadata.create_all(checkfirst=True)
 

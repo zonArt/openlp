@@ -54,10 +54,10 @@ class CustomManager():
                 AppLocation.get_section_data_path(u'custom')
         else:
             self.db_url = u'%s://%s:%s@%s/%s' % (db_type,
-                unicode(settings.value(u'custom/db username')),
-                unicode(settings.value(u'custom/db password')),
-                unicode(settings.value(u'custom/db hostname')),
-                unicode(settings.value(u'custom/db database')))
+                unicode(settings.value(u'custom/db username').toString()),
+                unicode(settings.value(u'custom/db password').toString()),
+                unicode(settings.value(u'custom/db hostname').toString()),
+                unicode(settings.value(u'custom/db database').toString()))
         self.session = init_models(self.db_url)
         metadata.create_all(checkfirst=True)
 
