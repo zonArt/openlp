@@ -98,7 +98,8 @@ class OSISBible(BibleDB):
         Loads a Bible from file.
         """
         log.debug(u'Starting OSIS import from "%s"' % self.filename)
-        self.wizard.incrementProgressBar(u'Detecting encoding (this may take a few minutes)...')
+        self.wizard.incrementProgressBar(
+            u'Detecting encoding (this may take a few minutes)...')
         detect_file = None
         try:
             detect_file = open(self.filename, u'r')

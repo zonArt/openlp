@@ -28,9 +28,10 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, Receiver, str_to_bool, build_icon
+from openlp.core.lib import Plugin, Receiver, build_icon
 from openlp.plugins.songusage.lib import SongUsageManager
-from openlp.plugins.songusage.forms import SongUsageDetailForm, SongUsageDeleteForm
+from openlp.plugins.songusage.forms import SongUsageDetailForm, \
+    SongUsageDeleteForm
 from openlp.plugins.songusage.lib.models import SongUsageItem
 
 log = logging.getLogger(__name__)
@@ -107,12 +108,14 @@ class SongUsagePlugin(Plugin):
         log.info(u'SongUsage Initialising')
         Plugin.initialise(self)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_live_started'), self.onReceiveSongUsage)
-        self.SongUsageActive = str_to_bool(
-            self.config.get_config(u'active', False))
+            QtCore.SIGNAL(u'slidecontroller_live_started'),
+            self.onReceiveSongUsage)
+        self.SongUsageActive = QtCore.QSettings().value(
+            self.settings_section + u'/active',
+            QtCore.QVariant(False)).toBool()
         self.SongUsageStatus.setChecked(self.SongUsageActive)
         if self.songusagemanager is None:
-            self.songusagemanager = SongUsageManager(self.config)
+            self.songusagemanager = SongUsageManager()
         self.SongUsagedeleteform = SongUsageDeleteForm(self.songusagemanager)
         self.SongUsagedetailform = SongUsageDetailForm(self)
         self.SongUsageMenu.menuAction().setVisible(True)
@@ -125,7 +128,8 @@ class SongUsagePlugin(Plugin):
 
     def toggleSongUsageState(self):
         self.SongUsageActive = not self.SongUsageActive
-        self.config.set_config(u'active', self.SongUsageActive)
+        QtCore.QSettings().setValue(self.settings_section + u'/active',
+            QtCore.QVariant(self.SongUsageActive))
 
     def onReceiveSongUsage(self, items):
         """

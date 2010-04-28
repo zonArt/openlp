@@ -45,7 +45,7 @@ class CustomPlugin(Plugin):
     def __init__(self, plugin_helpers):
         Plugin.__init__(self, u'Custom', u'1.9.1', plugin_helpers)
         self.weight = -5
-        self.custommanager = CustomManager(self.config)
+        self.custommanager = CustomManager()
         self.edit_custom_form = EditCustomForm(self.custommanager)
         self.icon = build_icon(u':/media/media_custom.png')
         self.status = PluginStatus.Active

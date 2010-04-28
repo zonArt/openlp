@@ -36,12 +36,6 @@
 .. autoclass:: openlp.core.lib.plugin.Plugin
    :members:
 
-:mod:`PluginConfig`
--------------------
-
-.. autoclass:: openlp.core.lib.pluginconfig.PluginConfig
-   :members:
-
 :mod:`PluginManager`
 --------------------
 
