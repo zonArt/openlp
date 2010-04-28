@@ -109,11 +109,13 @@ class BibleManager(object):
         """
         log.debug(u'Bible Initialising')
         self.parent = parent
+        self.settings_section = u'bibles'
         self.web = u'Web'
         self.db_cache = None
-        self.path = AppLocation.get_section_data_path(u'bibles')
+        self.path = AppLocation.get_section_data_path(self.settings_section)
         self.proxy_name = unicode(
-            QtCore.QSettings().value(u'bibles/proxy name', u'').toString())
+            QtCore.QSettings().value(self.settings_section + u'/proxy name',
+            QtCore.QVariant(u'')).toString())
         self.suffix = u'.sqlite'
         self.import_wizard = None
         self.reload_bibles()
@@ -126,7 +128,7 @@ class BibleManager(object):
         BibleDB class.
         """
         log.debug(u'Reload bibles')
-        files = SettingsManager.get_files(u'bibles', self.suffix)
+        files = SettingsManager.get_files(self.settings_section, self.suffix)
         log.debug(u'Bible Files %s', files)
         self.db_cache = {}
         for filename in files:
@@ -137,7 +139,8 @@ class BibleManager(object):
             # look to see if lazy load bible exists and get create getter.
             source = self.db_cache[name].get_meta(u'download source')
             if source:
-                download_name = self.db_cache[name].get_meta(u'download name').value
+                download_name = \
+                    self.db_cache[name].get_meta(u'download name').value
                 meta_proxy = self.db_cache[name].get_meta(u'proxy url')
                 web_bible = HTTPBible(self.parent, path=self.path,
                     file=filename, download_source=source.value,
@@ -208,7 +211,8 @@ class BibleManager(object):
         Returns all the number of verses for a given
         book and chapterMaxBibleBookVerses
         """
-        log.debug(u'BibleManager.get_verse_count("%s", "%s", %s)', bible, book, chapter)
+        log.debug(u'BibleManager.get_verse_count("%s", "%s", %s)',
+            bible, book, chapter)
         return self.db_cache[bible].get_verse_count(book, chapter)
 
     def get_verses(self, bible, versetext):

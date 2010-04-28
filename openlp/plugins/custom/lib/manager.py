@@ -46,21 +46,22 @@ class CustomManager():
         """
         log.debug(u'Custom Initialising')
         settings = QtCore.QSettings()
+        settings.beginGroup(u'custom')
         self.db_url = u''
         db_type = unicode(
-            settings.value(u'custom/db type', u'sqlite').toString())
+            settings.value(u'db type', QtCore.QVariant(u'sqlite')).toString())
         if db_type == u'sqlite':
             self.db_url = u'sqlite:///%s/custom.sqlite' % \
                 AppLocation.get_section_data_path(u'custom')
         else:
             self.db_url = u'%s://%s:%s@%s/%s' % (db_type,
-                unicode(settings.value(u'custom/db username').toString()),
-                unicode(settings.value(u'custom/db password').toString()),
-                unicode(settings.value(u'custom/db hostname').toString()),
-                unicode(settings.value(u'custom/db database').toString()))
+                unicode(settings.value(u'db username').toString()),
+                unicode(settings.value(u'db password').toString()),
+                unicode(settings.value(u'db hostname').toString()),
+                unicode(settings.value(u'db database').toString()))
         self.session = init_models(self.db_url)
         metadata.create_all(checkfirst=True)
-
+        settings.endGroup()
         log.debug(u'Custom Initialised')
 
     def get_all_slides(self):

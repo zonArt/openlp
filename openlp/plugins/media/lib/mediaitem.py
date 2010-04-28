@@ -47,7 +47,7 @@ class MediaMediaItem(MediaManagerItem):
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Media'
         self.IconPath = u'images/image'
-        self.ConfigSection = title
+        self.SettingsSection = title.lower()
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = MediaListView
@@ -90,14 +90,14 @@ class MediaMediaItem(MediaManagerItem):
             QtGui.QAbstractItemView.ExtendedSelection)
         self.ListView.setIconSize(QtCore.QSize(88,50))
         self.loadList(SettingsManager.load_list(
-            self.ConfigSection, self.ConfigSection))
+            self.SettingsSection, self.SettingsSection))
 
     def onDeleteClick(self):
         item = self.ListView.currentItem()
         if item:
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
-            SettingsManager.set_list(self.ConfigSection, self.getFileList())
+            SettingsManager.set_list(self.SettingsSection, self.getFileList())
 
     def loadList(self, list):
         for file in list:

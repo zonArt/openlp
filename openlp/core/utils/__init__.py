@@ -124,11 +124,13 @@ def check_latest_version(current_version):
     """
     version_string = current_version[u'full']
     #set to prod in the distribution config file.
-    last_test = unicode(QtCore.QSettings().value(u'general/last version test',
-        datetime.now().date()).toString())
+    settings = QtCore.QSettings()
+    settings.beginGroup(u'general')
+    last_test = unicode(settings.value(u'last version test',
+        QtCore.QVariant(datetime.now().date())).toString())
     this_test = unicode(datetime.now().date())
-    QtCore.QSettings().setValue(
-        u'general/last version test', QtCore.QVariant(this_test))
+    settings.setValue(u'last version test', QtCore.QVariant(this_test))
+    settings.endGroup()
     if last_test != this_test:
         version_string = u''
         if current_version[u'build']:

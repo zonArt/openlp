@@ -111,7 +111,8 @@ class SongUsagePlugin(Plugin):
             QtCore.SIGNAL(u'slidecontroller_live_started'),
             self.onReceiveSongUsage)
         self.SongUsageActive = QtCore.QSettings().value(
-            u'songusage/active', False).toBool()
+            self.settings_section + u'/active',
+            QtCore.QVariant(False)).toBool()
         self.SongUsageStatus.setChecked(self.SongUsageActive)
         if self.songusagemanager is None:
             self.songusagemanager = SongUsageManager()
@@ -127,8 +128,8 @@ class SongUsagePlugin(Plugin):
 
     def toggleSongUsageState(self):
         self.SongUsageActive = not self.SongUsageActive
-        QtCore.QSettings().setValue(
-            u'songusage/active', QtCore.QVariant(self.SongUsageActive))
+        QtCore.QSettings().setValue(self.settings_section + u'/active',
+            QtCore.QVariant(self.SongUsageActive))
 
     def onReceiveSongUsage(self, items):
         """

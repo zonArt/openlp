@@ -74,17 +74,19 @@ class BibleDB(QtCore.QObject):
         self.db_file = os.path.join(kwargs[u'path'], self.file)
         log.debug(u'Load bible %s on path %s', self.file, self.db_file)
         settings = QtCore.QSettings()
+        settings.beginGroup(u'bibles')
         db_type = unicode(
-            settings.value(u'bibles/db type', u'sqlite').toString())
+            settings.value(u'db type', QtCore.QVariant(u'sqlite')).toString())
         db_url = u''
         if db_type == u'sqlite':
             db_url = u'sqlite:///' + self.db_file
         else:
             db_url = u'%s://%s:%s@%s/%s' % (db_type,
-                unicode(settings.value(u'bibles/db username').toString()),
-                unicode(settings.value(u'bibles/db password').toString()),
-                unicode(settings.value(u'bibles/db hostname').toString()),
-                unicode(settings.value(u'bibles/db database').toString()))
+                unicode(settings.value(u'db username').toString()),
+                unicode(settings.value(u'db password').toString()),
+                unicode(settings.value(u'db hostname').toString()),
+                unicode(settings.value(u'db database').toString()))
+        settings.endGroup()
         self.metadata, self.session = init_models(db_url)
         self.metadata.create_all(checkfirst=True)
         if u'file' in kwargs:

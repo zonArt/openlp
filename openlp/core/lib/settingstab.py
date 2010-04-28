@@ -40,6 +40,7 @@ class SettingsTab(QtGui.QWidget):
         QtGui.QWidget.__init__(self)
         self.tabTitle = title
         self.tabTitleVisible = None
+        self.settingsSection = self.tabTitle.lower()
         self.setupUi()
         self.retranslateUi()
         self.initialise()

@@ -54,7 +54,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Bible'
-        self.ConfigSection = title
+        self.SettingsSection = title.lower()
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = BibleListView
         self.lastReference = []
@@ -276,7 +276,8 @@ class BibleMediaItem(MediaManagerItem):
         self.SearchProgress.setObjectName(u'SearchProgress')
 
     def configUpdated(self):
-        if QtCore.QSettings().value(u'bibles/dual bibles', False).toBool():
+        if QtCore.QSettings().value(self.SettingsSection + u'/dual bibles',
+            QtCore.QVariant(False)).toBool():
             self.AdvancedSecondBibleLabel.setVisible(True)
             self.AdvancedSecondBibleComboBox.setVisible(True)
             self.QuickSecondVersionLabel.setVisible(True)

@@ -81,15 +81,18 @@ class SongsTab(SettingsTab):
 
     def load(self):
         settings = QtCore.QSettings()
+        settings.beginGroup(self.settingsSection)
         self.song_search = settings.value(
-            u'songs/search as type', False).toBool()
-        self.song_bar = settings.value(u'songs/display songbar', True).toBool()
+            u'search as type', QtCore.QVariant(False)).toBool()
+        self.song_bar = settings.value(
+            u'display songbar', QtCore.QVariant(True)).toBool()
         self.SearchAsTypeCheckBox.setChecked(self.song_search)
         self.SongBarActiveCheckBox.setChecked(self.song_bar)
+        settings.endGroup()
 
     def save(self):
         settings = QtCore.QSettings()
-        settings.setValue(
-            u'songs/search as type', QtCore.QVariant(self.song_search))
-        settings.setValue(
-            u'songs/display songbar', QtCore.QVariant(self.song_bar))
+        settings.beginGroup(self.settingsSection)
+        settings.setValue(u'search as type', QtCore.QVariant(self.song_search))
+        settings.setValue(u'display songbar', QtCore.QVariant(self.song_bar))
+        settings.endGroup()

@@ -229,15 +229,19 @@ class AlertsTab(SettingsTab):
 
     def load(self):
         settings = QtCore.QSettings()
-        self.timeout = settings.value(u'alerts/timeout', 5).toInt()[0]
+        settings.beginGroup(self.settingsSection)
+        self.timeout = settings.value(u'timeout', QtCore.QVariant(5)).toInt()[0]
         self.font_color = unicode(settings.value(
-            u'alerts/font color', u'#ffffff').toString())
-        self.font_size = settings.value(u'alerts/font size', 40).toInt()[0]
+            u'font color', QtCore.QVariant(u'#ffffff')).toString())
+        self.font_size = settings.value(
+            u'font size', QtCore.QVariant(40)).toInt()[0]
         self.bg_color = unicode(settings.value(
-            u'alerts/background color', u'#660000').toString())
+            u'background color', QtCore.QVariant(u'#660000')).toString())
         self.font_face = unicode(settings.value(
-            u'alerts/font face', QtGui.QFont().family()).toString())
-        self.location = settings.value(u'alerts/location', 0).toInt()[0]
+            u'font face', QtCore.QVariant(QtGui.QFont().family())).toString())
+        self.location = settings.value(
+            u'location', QtCore.QVariant(0)).toInt()[0]
+        settings.endGroup()
         self.FontSizeSpinBox.setValue(self.font_size)
         self.TimeoutSpinBox.setValue(self.timeout)
         self.FontColorButton.setStyleSheet(
@@ -256,16 +260,16 @@ class AlertsTab(SettingsTab):
 
     def save(self):
         settings = QtCore.QSettings()
+        settings.beginGroup(self.settingsSection)
         self.font_face = self.FontComboBox.currentFont().family()
-        settings.setValue(
-            u'alerts/background color', QtCore.QVariant(self.bg_color))
-        settings.setValue(
-            u'alerts/font color', QtCore.QVariant(self.font_color))
-        settings.setValue(u'alerts/font size', QtCore.QVariant(self.font_size))
-        settings.setValue(u'alerts/font face', QtCore.QVariant(self.font_face))
-        settings.setValue(u'alerts/timeout', QtCore.QVariant(self.timeout))
-        settings.setValue(u'alerts/location',
+        settings.setValue(u'background color', QtCore.QVariant(self.bg_color))
+        settings.setValue(u'font color', QtCore.QVariant(self.font_color))
+        settings.setValue(u'font size', QtCore.QVariant(self.font_size))
+        settings.setValue(u'font face', QtCore.QVariant(self.font_face))
+        settings.setValue(u'timeout', QtCore.QVariant(self.timeout))
+        settings.setValue(u'location',
             QtCore.QVariant(self.LocationComboBox.currentIndex()))
+        settings.endGroup()
 
     def updateDisplay(self):
         font = QtGui.QFont()

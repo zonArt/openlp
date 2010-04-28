@@ -46,7 +46,8 @@ class RemotesPlugin(Plugin):
         self.insert_toolbox_item()
         self.server = QtNetwork.QUdpSocket()
         self.server.bind(
-            QtCore.QSettings().value(u'remotes/remote port', 4316).toInt()[0])
+            QtCore.QSettings().value(self.settings_section + u'/remote port',
+            QtCore.QVariant(4316)).toInt()[0])
         QtCore.QObject.connect(self.server,
             QtCore.SIGNAL(u'readyRead()'), self.readData)
 

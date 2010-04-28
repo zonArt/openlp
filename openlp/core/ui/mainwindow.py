@@ -362,12 +362,14 @@ class Ui_MainWindow(object):
         self.actionLook_Feel.setText(self.trUtf8('Look && &Feel'))
         self.OptionsSettingsItem.setText(self.trUtf8('&Settings'))
         self.ViewMediaManagerItem.setText(self.trUtf8('&Media Manager'))
-        self.ViewMediaManagerItem.setToolTip(self.trUtf8('Toggle Media Manager'))
+        self.ViewMediaManagerItem.setToolTip(
+            self.trUtf8('Toggle Media Manager'))
         self.ViewMediaManagerItem.setStatusTip(
             self.trUtf8('Toggle the visibility of the Media Manager'))
         self.ViewMediaManagerItem.setShortcut(self.trUtf8('F8'))
         self.ViewThemeManagerItem.setText(self.trUtf8('&Theme Manager'))
-        self.ViewThemeManagerItem.setToolTip(self.trUtf8('Toggle Theme Manager'))
+        self.ViewThemeManagerItem.setToolTip(
+            self.trUtf8('Toggle Theme Manager'))
         self.ViewThemeManagerItem.setStatusTip(
             self.trUtf8('Toggle the visibility of the Theme Manager'))
         self.ViewThemeManagerItem.setShortcut(self.trUtf8('F10'))
@@ -378,7 +380,8 @@ class Ui_MainWindow(object):
             self.trUtf8('Toggle the visibility of the Service Manager'))
         self.ViewServiceManagerItem.setShortcut(self.trUtf8('F9'))
         self.action_Preview_Panel.setText(self.trUtf8('&Preview Panel'))
-        self.action_Preview_Panel.setToolTip(self.trUtf8('Toggle Preview Panel'))
+        self.action_Preview_Panel.setToolTip(
+            self.trUtf8('Toggle Preview Panel'))
         self.action_Preview_Panel.setStatusTip(
             self.trUtf8('Toggle the visibility of the Preview Panel'))
         self.action_Preview_Panel.setShortcut(self.trUtf8('F11'))
@@ -419,6 +422,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtGui.QMainWindow.__init__(self)
         self.screens = screens
         self.applicationVersion = applicationVersion
+        self.generalSettingsSection = u'general'
+        self.uiSettingsSection = u'user interface'
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
         self.displayManager = DisplayManager(screens)
@@ -498,8 +503,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         #warning cyclic dependency
         #RenderManager needs to call ThemeManager and
         #ThemeManager needs to call RenderManager
-        self.RenderManager = RenderManager(self.ThemeManagerContents,
-                                            self.screens)
+        self.RenderManager = RenderManager(
+            self.ThemeManagerContents, self.screens)
         #Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
@@ -561,7 +566,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.displayManager.mainDisplay.isVisible():
             self.displayManager.mainDisplay.setFocus()
         self.activateWindow()
-        if QtCore.QSettings().value(u'general/auto open', False).toBool():
+        if QtCore.QSettings().value(self.generalSettingsSection + u'/auto open',
+            QtCore.QVariant(False)).toBool():
             self.ServiceManagerContents.onLoadService(True)
 
     def blankCheck(self):
@@ -569,14 +575,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Check and display message if screen blank on setup.
         Triggered by delay thread.
         """
-        if QtCore.QSettings().value(u'general/screen blank', False).toBool() \
-        and QtCore.QSettings().value(u'general/blank warning', False).toBool():
+        settings = QtCore.QSettings()
+        settings.beginGroup(self.generalSettingsSection)
+        if settings.value(u'screen blank', QtCore.QVariant(False)).toBool() \
+        and settings.value(u'blank warning', QtCore.QVariant(False)).toBool():
             self.LiveController.onBlankDisplay(True)
             QtGui.QMessageBox.question(self,
                 self.trUtf8('OpenLP Main Display Blanked'),
                 self.trUtf8('The Main Display has been blanked out'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
+        settings.endGroup()
 
     def versionThread(self):
         """
@@ -622,7 +631,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.serviceNotSaved:
             ret = QtGui.QMessageBox.question(self,
                 self.trUtf8('Save Changes to Service?'),
-                self.trUtf8('Your service has changed, do you want to save those changes?'),
+                self.trUtf8('Your service has changed.  '
+                    'Do you want to save those changes?'),
                 QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Cancel |
                     QtGui.QMessageBox.Discard |
@@ -705,26 +715,30 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         log.debug(u'Loading QSettings')
         settings = QtCore.QSettings()
         self.recentFiles = settings.value(
-            u'general/recent files').toStringList()
-        self.move(settings.value(u'user interface/main window position',
+            self.generalSettingsSection + u'/recent files').toStringList()
+        settings.beginGroup(self.uiSettingsSection)
+        self.move(settings.value(u'main window position',
             QtCore.QVariant(QtCore.QPoint(0, 0))).toPoint())
-        self.restoreGeometry(settings.value(
-            u'user interface/main window geometry').toByteArray())
-        self.restoreState(
-            settings.value(u'user interface/main window state').toByteArray())
+        self.restoreGeometry(
+            settings.value(u'main window geometry').toByteArray())
+        self.restoreState(settings.value(u'main window state').toByteArray())
+        settings.endGroup()
 
     def saveSettings(self):
         log.debug(u'Saving QSettings')
         settings = QtCore.QSettings()
         recentFiles = QtCore.QVariant(self.recentFiles) \
             if self.recentFiles else QtCore.QVariant()
-        settings.setValue(u'general/recent files', recentFiles)
-        settings.setValue(u'user interface/main window position',
+        settings.setValue(
+            self.generalSettingsSection + u'/recent files', recentFiles)
+        settings.beginGroup(self.uiSettingsSection)
+        settings.setValue(u'main window position',
             QtCore.QVariant(self.pos()))
-        settings.setValue(u'user interface/main window state',
+        settings.setValue(u'main window state',
             QtCore.QVariant(self.saveState()))
-        settings.setValue(u'user interface/main window geometry',
+        settings.setValue(u'main window geometry',
             QtCore.QVariant(self.saveGeometry()))
+        settings.endGroup()
 
     def updateFileMenu(self):
         self.FileMenu.clear()
@@ -747,7 +761,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def addRecentFile(self, filename):
         recentFileCount = QtCore.QSettings().value(
-            u'general/max recent files', 4).toInt()[0]
+            self.generalSettingsSection + u'/max recent files',
+            QtCore.QVariant(4)).toInt()[0]
         if filename and not self.recentFiles.contains(filename):
             self.recentFiles.prepend(QtCore.QString(filename))
             while self.recentFiles.count() > recentFileCount:

@@ -45,7 +45,7 @@ class CustomMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Custom'
-        self.ConfigSection = title
+        self.SettingsSection = title.lower()
         self.IconPath = u'custom/custom'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
@@ -133,7 +133,7 @@ class CustomMediaItem(MediaManagerItem):
             self.ListView.takeItem(row)
 
     def generateSlideData(self, service_item, item=None):
-        raw_slides =[]
+        raw_slides = []
         raw_footer = []
         slide = None
         theme = None
@@ -164,8 +164,8 @@ class CustomMediaItem(MediaManagerItem):
         service_item.title = title
         for slide in raw_slides:
             service_item.add_from_text(slide[:30], slide)
-        if QtCore.QSettings().value(u'custom/display footer', True).toBool() \
-            or credit:
+        if QtCore.QSettings().value(self.SettingsSection + u'/display footer',
+            QtCore.QVariant(True)).toBool() or credit:
             raw_footer.append(title + u' ' + credit)
         else:
             raw_footer.append(u'')

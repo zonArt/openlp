@@ -45,6 +45,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         """
         QtGui.QDialog.__init__(self, None)
         self.parent = parent
+        self.settingsSection = u'songusage'
         self.setupUi(self)
 
     def initialise(self):
@@ -55,15 +56,16 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         fromDate = QtCore.QDate(year - 1, 9, 1)
         self.FromDate.setSelectedDate(fromDate)
         self.ToDate.setSelectedDate(toDate)
-        self.FileLineEdit.setText(SettingsManager.get_last_dir(u'songusage', 1))
+        self.FileLineEdit.setText(
+            SettingsManager.get_last_dir(self.settingsSection, 1))
 
     def defineOutputLocation(self):
         path = QtGui.QFileDialog.getExistingDirectory(self,
             self.trUtf8('Output File Location'),
-            SettingsManager.get_last_dir(u'songusage', 1))
+            SettingsManager.get_last_dir(self.settingsSection, 1))
         path = unicode(path)
         if path != u'':
-            SettingsManager.set_last_dir(u'songusage', path, 1)
+            SettingsManager.set_last_dir(self.settingsSection, path, 1)
             self.FileLineEdit.setText(path)
 
     def accept(self):
@@ -88,4 +90,3 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         finally:
             if file:
                 file.close()
-

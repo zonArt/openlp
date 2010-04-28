@@ -124,10 +124,12 @@ class ThemesTab(SettingsTab):
 
     def load(self):
         settings = QtCore.QSettings()
+        settings.beginGroup(self.settingsSection)
         self.theme_level = settings.value(
-            u'themes/theme level', ThemeLevel.Global).toInt()[0]
+            u'theme level', QtCore.QVariant(ThemeLevel.Global)).toInt()[0]
         self.global_theme = unicode(settings.value(
-            u'themes/global theme', u'').toString())
+            u'global theme', QtCore.QVariant(u'')).toString())
+        settings.endGroup()
         if self.theme_level == ThemeLevel.Global:
             self.GlobalLevelRadioButton.setChecked(True)
         elif self.theme_level == ThemeLevel.Service:
@@ -137,10 +139,12 @@ class ThemesTab(SettingsTab):
 
     def save(self):
         settings = QtCore.QSettings()
-        settings.setValue(u'themes/theme level',
+        settings.beginGroup(self.settingsSection)
+        settings.setValue(u'theme level',
             QtCore.QVariant(self.theme_level))
-        settings.setValue(u'themes/global theme',
+        settings.setValue(u'global theme',
             QtCore.QVariant(self.global_theme))
+        settings.endGroup()
         Receiver.send_message(u'theme_update_global', self.global_theme)
         self.parent.RenderManager.set_global_theme(
             self.global_theme, self.theme_level)
@@ -175,7 +179,8 @@ class ThemesTab(SettingsTab):
         """
         #reload as may have been triggered by the ThemeManager
         self.global_theme = unicode(QtCore.QSettings().value(
-            u'themes/global theme', u'').toString())
+            self.settingsSection + u'/global theme',
+            QtCore.QVariant(u'')).toString())
         self.DefaultComboBox.clear()
         for theme in theme_list:
             self.DefaultComboBox.addItem(theme)

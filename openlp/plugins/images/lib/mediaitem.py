@@ -49,7 +49,7 @@ class ImageMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Image'
-        self.ConfigSection = title
+        self.SettingsSection = title.lower()
         self.IconPath = u'images/image'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
@@ -61,8 +61,8 @@ class ImageMediaItem(MediaManagerItem):
 
     def retranslateUi(self):
         self.OnNewPrompt = self.trUtf8('Select Image(s)')
-        self.OnNewFileMasks = \
-            self.trUtf8('Images (*.jpg *.jpeg *.gif *.png *.bmp);; All files (*)')
+        self.OnNewFileMasks = self.trUtf8(
+            'Images (*.jpg *.jpeg *.gif *.png *.bmp);; All files (*)')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -78,12 +78,12 @@ class ImageMediaItem(MediaManagerItem):
             QtGui.QAbstractItemView.ExtendedSelection)
         self.ListView.setIconSize(QtCore.QSize(88,50))
         self.servicePath = os.path.join(
-            AppLocation.get_section_data_path(self.ConfigSection),
+            AppLocation.get_section_data_path(self.SettingsSection),
             u'.thumbnails')
         if not os.path.exists(self.servicePath):
             os.mkdir(self.servicePath)
         self.loadList(SettingsManager.load_list(
-            self.ConfigSection, self.ConfigSection))
+            self.SettingsSection, self.SettingsSection))
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
@@ -122,7 +122,8 @@ class ImageMediaItem(MediaManagerItem):
                     #if not present do not worry
                     pass
                 self.ListView.takeItem(item.row())
-                SettingsManager.set_list(self.ConfigSection, self.getFileList())
+                SettingsManager.set_list(
+                    self.SettingsSection, self.getFileList())
 
     def loadList(self, list):
         for file in list:

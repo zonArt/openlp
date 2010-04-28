@@ -72,12 +72,13 @@ class ImageTab(SettingsTab):
 
     def load(self):
         self.loop_delay = QtCore.QSettings().value(
-            u'images/loop delay', 5).toInt()[0]
+            self.settingsSection + u'/loop delay',
+            QtCore.QVariant(5)).toInt()[0]
         self.TimeoutSpinBox.setValue(self.loop_delay)
 
     def save(self):
-        QtCore.QSettings().setValue(
-            u'images/loop delay', QtCore.QVariant(self.loop_delay))
+        QtCore.QSettings().setValue(self.settingsSection + u'/loop delay',
+            QtCore.QVariant(self.loop_delay))
         Receiver.send_message(u'slidecontroller_live_spin_delay', 
             self.loop_delay)
 

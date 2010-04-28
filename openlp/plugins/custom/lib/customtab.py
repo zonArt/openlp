@@ -67,9 +67,10 @@ class CustomTab(SettingsTab):
 
     def load(self):
         self.displayFooter = QtCore.QSettings().value(
-            u'custom/display footer', True).toBool()
+            self.settingsSection + u'/display footer',
+            QtCore.QVariant(True)).toBool()
         self.DisplayFooterCheckBox.setChecked(self.displayFooter)
 
     def save(self):
-        QtCore.QSettings().setValue(
-            u'custom/display footer', QtCore.QVariant(self.displayFooter))
+        QtCore.QSettings().setValue(self.settingsSection + u'/display footer',
+            QtCore.QVariant(self.displayFooter))

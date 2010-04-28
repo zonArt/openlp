@@ -52,7 +52,7 @@ class PresentationMediaItem(MediaManagerItem):
     def __init__(self, parent, icon, title, controllers):
         self.controllers = controllers
         self.PluginNameShort = u'Presentation'
-        self.ConfigSection = title
+        self.SettingsSection = title.lower()
         self.IconPath = u'presentations/presentation'
         self.Automatic = u''
         # this next is a class, not an instance of a class - it will
@@ -107,11 +107,11 @@ class PresentationMediaItem(MediaManagerItem):
 
     def initialise(self):
         self.servicePath = os.path.join(
-            AppLocation.get_section_data_path(self.ConfigSection),
+            AppLocation.get_section_data_path(self.SettingsSection),
             u'thumbnails')
         if not os.path.exists(self.servicePath):
             os.mkdir(self.servicePath)
-        list = SettingsManager.load_list(self.ConfigSection, u'presentations')
+        list = SettingsManager.load_list(self.SettingsSection, u'presentations')
         self.loadList(list)
         for item in self.controllers:
             #load the drop down selection
@@ -139,11 +139,11 @@ class PresentationMediaItem(MediaManagerItem):
                 icon = None
                 for controller in self.controllers:
                     thumbPath = os.path.join(
-                        AppLocation.get_section_data_path(self.ConfigSection),
+                        AppLocation.get_section_data_path(self.SettingsSection),
                         u'thumbnails', controller, filename)
                     thumb = os.path.join(thumbPath, u'slide1.png')
                     preview = os.path.join(
-                        AppLocation.get_section_data_path(self.ConfigSection),
+                        AppLocation.get_section_data_path(self.SettingsSection),
                         controller, u'thumbnails', filename, u'slide1.png')
                     if os.path.exists(preview):
                         if os.path.exists(thumb):
@@ -167,7 +167,7 @@ class PresentationMediaItem(MediaManagerItem):
         if item:
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
-            SettingsManager.set_list(self.ConfigSection, self.getFileList())
+            SettingsManager.set_list(self.SettingsSection, self.getFileList())
             filepath = unicode((item.data(QtCore.Qt.UserRole)).toString())
             #not sure of this has errors
             #John please can you look at .

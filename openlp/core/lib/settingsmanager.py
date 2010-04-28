@@ -76,7 +76,7 @@ class SettingsManager(object):
         else:
             name = u'last directory'
         last_dir = unicode(QtCore.QSettings().value(
-            section + u'/' + name, u'').toString())
+            section + u'/' + name, QtCore.QVariant(u'')).toString())
         return last_dir
 
     @staticmethod
@@ -116,18 +116,19 @@ class SettingsManager(object):
             The list of values to save.
         """
         settings = QtCore.QSettings()
+        settings.beginGroup(section)
         old_count = settings.value(
-            u'%s/%s count' % (section, name), 0).toInt()[0]
+            u'%s count' % name, QtCore.QVariant(0)).toInt()[0]
         new_count = len(list)
-        settings.setValue(
-            u'%s/%s count' % (section, name), QtCore.QVariant(new_count))
+        settings.setValue(u'%s count' % name, QtCore.QVariant(new_count))
         for counter in range (0, new_count):
             settings.setValue(
-                u'%s/%s %d' % (section, name, counter), list[counter-1])
+                u'%s %d' % (name, counter), QtCore.QVariant(list[counter-1]))
         if old_count > new_count:
             # Tidy up any old list items
             for counter in range(new_count, old_count):
-                settings.remove(u'%s/%s %d' % (section, name, counter))
+                settings.remove(u'%s %d' % (name, counter))
+        settings.endGroup()
 
     @staticmethod
     def load_list(section, name):
@@ -141,15 +142,17 @@ class SettingsManager(object):
             The name of the list.
         """
         settings = QtCore.QSettings()
+        settings.beginGroup(section)
         list_count = settings.value(
-            u'%s/%s count' % (section, name), 0).toInt()[0]
+            u'%s count' % name, QtCore.QVariant(0)).toInt()[0]
         list = []
         if list_count:
             for counter in range(0, list_count):
-                item = unicode(settings.value(
-                    u'%s/%s %d' % (section, name, counter)).toString())
+                item = unicode(
+                    settings.value(u'%s %d' % (name, counter)).toString())
                 if item:
                     list.append(item)
+        settings.endGroup()
         return list
 
     @staticmethod

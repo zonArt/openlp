@@ -100,14 +100,16 @@ class PresentationController(object):
         self.docs = []
         self.plugin = plugin
         self.name = name
+        self.settings_section = self.plugin.settings_section
         self.available = self.check_available()
         if self.available:
-            self.enabled = QtCore.QSettings().value(u'presentations/' + name,
+            self.enabled = QtCore.QSettings().value(
+                self.settings_section + u'/' + name,
                 QtCore.Qt.Unchecked).toInt()[0] == QtCore.Qt.Checked
         else:
             self.enabled = False
         self.thumbnailroot = os.path.join(
-            AppLocation.get_section_data_path(u'presentations'),
+            AppLocation.get_section_data_path(self.settings_section),
             name, u'thumbnails')
         self.thumbnailprefix = u'slide'
         if not os.path.isdir(self.thumbnailroot):

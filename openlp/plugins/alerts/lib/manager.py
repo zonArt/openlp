@@ -44,23 +44,24 @@ class DBManager():
         Creates the connection to the database, and creates the tables if they
         don't exist.
         """
-        settings = QtCore.QSettings()
         log.debug(u'Alerts Initialising')
+        settings = QtCore.QSettings()
+        settings.beginGroup(u'alerts')
         self.db_url = u''
         db_type = unicode(
-            settings.value(u'alerts/db type', u'sqlite').toString())
+            settings.value(u'db type', QtCore.QVariant(u'sqlite')).toString())
         if db_type == u'sqlite':
             self.db_url = u'sqlite:///%s/alerts.sqlite' % \
                 AppLocation.get_section_data_path(u'alerts')
         else:
-            self.db_url = u'%s://%s:%s@%s/%s' % \
-                (db_type, settings.value(u'alerts/db username'),
-                    settings.value(u'alerts/db password'),
-                    settings.value(u'alerts/db hostname'),
-                    settings.value(u'alerts/db database'))
+            self.db_url = u'%s://%s:%s@%s/%s' % (db_type,
+                unicode(settings.value(u'db username').toString()),
+                unicode(settings.value(u'db password').toString()),
+                unicode(settings.value(u'db hostname').toString()),
+                unicode(settings.value(u'db database').toString()))
+        settings.endGroup()
         self.session = init_models(self.db_url)
         metadata.create_all(checkfirst=True)
-
         log.debug(u'Alerts Initialised')
 
     def get_all_alerts(self):

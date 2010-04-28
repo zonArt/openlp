@@ -40,7 +40,7 @@ from openlp.core.utils import AppLocation
 class ServiceManagerList(QtGui.QTreeWidget):
 
     def __init__(self, parent=None, name=None):
-        QtGui.QTreeWidget.__init__(self,parent)
+        QtGui.QTreeWidget.__init__(self, parent)
         self.parent = parent
 
     def keyPressEvent(self, event):
@@ -99,6 +99,8 @@ class ServiceManager(QtGui.QWidget):
         """
         QtGui.QWidget.__init__(self)
         self.parent = parent
+        self.settingsSection = u'servicemanager'
+        self.generalSettingsSection = self.parent.generalSettingsSection
         self.serviceItems = []
         self.serviceName = u''
         self.droppos = 0
@@ -191,7 +193,8 @@ class ServiceManager(QtGui.QWidget):
             QtCore.SIGNAL(u'config_updated'), self.regenerateServiceItems)
         # Last little bits of setting up
         self.service_theme = unicode(QtCore.QSettings().value(
-            u'service manager/service theme', u'').toString())
+            self.settingsSection + u'/service theme',
+            QtCore.QVariant(u'')).toString())
         self.servicePath = AppLocation.get_section_data_path(u'servicemanager')
         #build the context menu
         self.menu = QtGui.QMenu()
@@ -402,8 +405,9 @@ class ServiceManager(QtGui.QWidget):
         """
         Clear the list to create a new service
         """
-        if self.parent.serviceNotSaved and \
-            QtCore.QSettings().value(u'general/save prompt', False).toBool():
+        if self.parent.serviceNotSaved and QtCore.QSettings().value(
+            self.generalSettingsSection + u'/save prompt',
+            QtCore.QVariant(False)).toBool():
             ret = QtGui.QMessageBox.question(self,
                 self.trUtf8('Save Changes to Service?'),
                 self.trUtf8('Your service is unsaved, do you want to save '
@@ -487,17 +491,17 @@ class ServiceManager(QtGui.QWidget):
         if not quick or self.isNew:
             filename = QtGui.QFileDialog.getSaveFileName(self,
             self.trUtf8(u'Save Service'),
-            SettingsManager.get_last_dir(u'servicemanager'),
+            SettingsManager.get_last_dir(self.settingsSection),
             self.trUtf8(u'OpenLP Service Files (*.osz)'))
         else:
-            filename = SettingsManager.get_last_dir(u'servicemanager')
+            filename = SettingsManager.get_last_dir(self.settingsSection)
         if filename:
             splittedFile = filename.split(u'.')
             if splittedFile[-1] != u'osz':
                 filename = filename + u'.osz'
             filename = unicode(filename)
             self.isNew = False
-            SettingsManager.set_last_dir(u'servicemanager', filename)
+            SettingsManager.set_last_dir(self.settingsSection, filename)
             service = []
             servicefile = filename + u'.osd'
             zip = None
@@ -538,11 +542,11 @@ class ServiceManager(QtGui.QWidget):
 
     def onLoadService(self, lastService=False):
         if lastService:
-            filename = SettingsManager.get_last_dir(u'servicemanager')
+            filename = SettingsManager.get_last_dir(self.settingsSection)
         else:
             filename = QtGui.QFileDialog.getOpenFileName(
                 self, self.trUtf8('Open Service'),
-                SettingsManager.get_last_dir(u'servicemanager'),
+                SettingsManager.get_last_dir(self.settingsSection),
                 u'Services (*.osz)')
         self.loadService(filename)
 
@@ -572,7 +576,7 @@ class ServiceManager(QtGui.QWidget):
         filename = unicode(filename)
         name = filename.split(os.path.sep)
         if filename:
-            SettingsManager.set_last_dir(u'servicemanager', filename)
+            SettingsManager.set_last_dir(self.settingsSection, filename)
             zip = None
             f = None
             try:
@@ -641,7 +645,7 @@ class ServiceManager(QtGui.QWidget):
         """
         self.service_theme = unicode(self.ThemeComboBox.currentText())
         self.parent.RenderManager.set_service_theme(self.service_theme)
-        QtCore.QSettings().setValue(u'servicemanager/service theme',
+        QtCore.QSettings().setValue(self.settingsSection + u'/service theme',
             QtCore.QVariant(self.service_theme))
         self.regenerateServiceItems()
 
@@ -724,7 +728,9 @@ class ServiceManager(QtGui.QWidget):
         item, count = self.findServiceItem()
         self.parent.LiveController.addServiceManagerItem(
             self.serviceItems[item][u'service_item'], count)
-        if QtCore.QSettings().value(u'general/auto preview', False).toBool():
+        if QtCore.QSettings().value(
+            self.generalSettingsSection + u'/auto preview',
+            QtCore.QVariant(False)).toBool():
             item += 1
             if self.serviceItems and item < len(self.serviceItems) and \
                 self.serviceItems[item][u'service_item'].is_capable(

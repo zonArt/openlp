@@ -274,6 +274,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
 
     def setDefaults(self):
         settings = QtCore.QSettings()
+        settings.beginGroup(self.bibleplugin.settings_section)
         self.setField(u'source_format', QtCore.QVariant(0))
         self.setField(u'osis_location', QtCore.QVariant(''))
         self.setField(u'csv_booksfile', QtCore.QVariant(''))
@@ -282,16 +283,17 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.setField(u'web_location', QtCore.QVariant(WebDownload.Crosswalk))
         self.setField(u'web_biblename', QtCore.QVariant(self.BibleComboBox))
         self.setField(u'proxy_server',
-            settings.value(u'bibles/proxy address', u''))
+            settings.value(u'proxy address', QtCore.QVariant(u'')))
         self.setField(u'proxy_username',
-            settings.value(u'bibles/proxy username', u''))
+            settings.value(u'proxy username', QtCore.QVariant(u'')))
         self.setField(u'proxy_password',
-            settings.value(u'proxy password', u''))
+            settings.value(u'proxy password', QtCore.QVariant(u'')))
         self.setField(u'license_version', QtCore.QVariant(self.VersionNameEdit))
         self.setField(u'license_copyright', QtCore.QVariant(self.CopyrightEdit))
         self.setField(u'license_permission',
             QtCore.QVariant(self.PermissionEdit))
         self.onLocationComboBoxChanged(WebDownload.Crosswalk)
+        settings.endGroup()
 
     def loadWebBibles(self):
         """
@@ -343,10 +345,11 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
 
     def getFileName(self, title, editbox):
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
-            SettingsManager.get_last_dir(bibles, 1))
+            SettingsManager.get_last_dir(self.bibleplugin.settings_section, 1))
         if filename:
             editbox.setText(filename)
-            SettingsManager.set_last_dir(bibles, filename, 1)
+            SettingsManager.set_last_dir(
+                self.bibleplugin.settings_section, filename, 1)
 
     def incrementProgressBar(self, status_text):
         log.debug(u'IncrementBar %s', status_text)

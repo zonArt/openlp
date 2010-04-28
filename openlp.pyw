@@ -120,7 +120,7 @@ class OpenLP(QtGui.QApplication):
         if os.name == u'nt':
             self.setStyleSheet(application_stylesheet)
         show_splash = QtCore.QSettings().value(
-            u'general/show splash', True).toBool()
+            u'general/show splash', QtCore.QVariant(True)).toBool()
         if show_splash:
             self.splash = SplashScreen(self.applicationVersion())
             self.splash.show()
@@ -130,8 +130,8 @@ class OpenLP(QtGui.QApplication):
         # Decide how many screens we have and their size
         for screen in xrange(0, self.desktop().numScreens()):
             screens.add_screen({u'number': screen,
-                            u'size': self.desktop().availableGeometry(screen),
-                            u'primary': (self.desktop().primaryScreen() == screen)})
+                u'size': self.desktop().availableGeometry(screen),
+                u'primary': (self.desktop().primaryScreen() == screen)})
             log.info(u'Screen %d found with resolution %s',
                 screen, self.desktop().availableGeometry(screen))
         # start the main app window

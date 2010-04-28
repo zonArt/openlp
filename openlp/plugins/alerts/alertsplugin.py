@@ -84,7 +84,8 @@ class alertsPlugin(Plugin):
     def togglealertsState(self):
         self.alertsActive = not self.alertsActive
         QtCore.QSettings().setValue(
-            u'alerts/active', QtCore.QVariant(self.alertsActive))
+            self.settings_section + u'/active',
+            QtCore.QVariant(self.alertsActive))
 
     def onAlertsTrigger(self):
         self.alertForm.loadList()

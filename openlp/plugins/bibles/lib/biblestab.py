@@ -150,7 +150,8 @@ class BiblesTab(SettingsTab):
 
     def retranslateUi(self):
         self.VerseDisplayGroupBox.setTitle(self.trUtf8('Verse Display'))
-        self.NewChaptersCheckBox.setText(self.trUtf8('Only show new chapter numbers'))
+        self.NewChaptersCheckBox.setText(
+            self.trUtf8('Only show new chapter numbers'))
         self.LayoutStyleLabel.setText(self.trUtf8('Layout Style:'))
         self.DisplayStyleLabel.setText(self.trUtf8('Display Style:'))
         self.BibleThemeLabel.setText(self.trUtf8('Bible Theme:'))
@@ -188,32 +189,35 @@ class BiblesTab(SettingsTab):
 
     def load(self):
         settings = QtCore.QSettings()
+        settings.beginGroup(self.settingsSection)
         self.show_new_chapters = settings.value(
-            u'bibles/display new chapter', False).toBool()
+            u'display new chapter', QtCore.QVariant(False)).toBool()
         self.display_style = settings.value(
-            u'bibles/display brackets', 0).toInt()[0]
+            u'display brackets', QtCore.QVariant(0)).toInt()[0]
         self.layout_style = settings.value(
-            u'bibles/verse layout style', 0).toInt()[0]
+            u'verse layout style', QtCore.QVariant(0)).toInt()[0]
         self.bible_theme = unicode(
-            settings.value(u'bibles/bible theme', u'').toString())
-        self.duel_bibles = settings.value(u'bibles/dual bibles', True).toBool()
+            settings.value(u'bible theme', QtCore.QVariant(u'')).toString())
+        self.duel_bibles = settings.value(
+            u'dual bibles', QtCore.QVariant(True)).toBool()
         self.NewChaptersCheckBox.setChecked(self.show_new_chapters)
         self.DisplayStyleComboBox.setCurrentIndex(self.display_style)
         self.LayoutStyleComboBox.setCurrentIndex(self.layout_style)
         self.BibleDualCheckBox.setChecked(self.duel_bibles)
+        settings.endGroup()
 
     def save(self):
         settings = QtCore.QSettings()
-        settings.setValue(u'bibles/display new chapter',
+        settings.beginGroup(self.settingsSection)
+        settings.setValue(u'display new chapter',
             QtCore.QVariant(self.show_new_chapters))
-        settings.setValue(u'bibles/display brackets',
+        settings.setValue(u'display brackets',
             QtCore.QVariant(self.display_style))
-        settings.setValue(u'bibles/verse layout style',
+        settings.setValue(u'verse layout style',
             QtCore.QVariant(self.layout_style))
-        settings.setValue(u'bibles/dual bibles',
-            QtCore.QVariant(self.duel_bibles))
-        settings.setValue(u'bibles/bible theme',
-            QtCore.QVariant(self.bible_theme))
+        settings.setValue(u'dual bibles', QtCore.QVariant(self.duel_bibles))
+        settings.setValue(u'bible theme', QtCore.QVariant(self.bible_theme))
+        settings.endGroup()
 
     def updateThemeList(self, theme_list):
         """

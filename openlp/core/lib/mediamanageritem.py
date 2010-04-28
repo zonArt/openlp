@@ -70,7 +70,7 @@ class MediaManagerItem(QtGui.QWidget):
         The user visible name for a plugin which should use a suitable
         translation function.
 
-     ``self.ConfigSection``
+     ``self.SettingsSection``
         The section in the configuration where the items in the media
         manager are stored. This could potentially be
         ``self.PluginNameShort.lower()``.
@@ -335,15 +335,15 @@ class MediaManagerItem(QtGui.QWidget):
     def onFileClick(self):
         files = QtGui.QFileDialog.getOpenFileNames(
             self, self.OnNewPrompt,
-            SettingsManager.get_last_dir(self.ConfigSection),
+            SettingsManager.get_last_dir(self.SettingsSection),
             self.OnNewFileMasks)
         log.info(u'New files(s) %s', unicode(files))
         if files:
             self.loadList(files)
             dir, filename = os.path.split(unicode(files[0]))
-            SettingsManager.set_last_dir(self.ConfigSection, dir)
+            SettingsManager.set_last_dir(self.SettingsSection, dir)
             SettingsManager.set_list(
-                self.ConfigSection, self.ConfigSection, self.getFileList())
+                self.SettingsSection, self.SettingsSection, self.getFileList())
 
     def getFileList(self):
         count = 0
@@ -454,7 +454,8 @@ class MediaManagerItem(QtGui.QWidget):
             if not service_item:
                 QtGui.QMessageBox.information(self,
                     self.trUtf8('No Service Item Selected'),
-                    self.trUtf8('You must select a existing service item to add to.'))
+                    self.trUtf8(
+                        'You must select an existing service item to add to.'))
             elif self.title.lower() == service_item.name.lower():
                 self.generateSlideData(service_item)
                 self.parent.service_manager.addServiceItem(service_item, 
@@ -463,7 +464,8 @@ class MediaManagerItem(QtGui.QWidget):
                 #Turn off the remote edit update message indicator
                 QtGui.QMessageBox.information(self,
                     self.trUtf8('Invalid Service Item'),
-                    self.trUtf8(unicode('You must select a %s service item.' % self.title)))
+                    self.trUtf8(unicode(
+                        'You must select a %s service item.' % self.title)))
 
     def buildServiceItem(self, item=None):
         """

@@ -101,11 +101,13 @@ class PresentationTab(SettingsTab):
             if controller.available:
                 checkbox = self.PresenterCheckboxes[controller.name]
                 checkbox.setChecked(QtCore.QSettings().value(
-                    u'presentations/' + controller.name, 0).toInt()[0])
+                    self.settingsSection + u'/' + controller.name,
+                    QtCore.QVariant(0)).toInt()[0])
 
     def save(self):
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
-            QtCore.QSettings().setValue(u'presentations/' + controller.name,
+            QtCore.QSettings().setValue(
+                self.settingsSection + u'/' + controller.name,
                 QtCore.QVariant(checkbox.checkState()))
