@@ -47,13 +47,15 @@ class HttpServer(object):
 
     def start_tcp(self):
         log.debug(u'Start TCP server')
-        port = self.parent.config.get_config(u'remote port', 4316)
+        port = QtCore.QSettings().value(
+            self.parent.settings_section + u'/remote port',
+            QtCore.QVariant(4316)).toInt()[0]
         self.server = QtNetwork.QTcpServer()
         self.server.listen(QtNetwork.QHostAddress(QtNetwork.QHostAddress.Any), 
-            int(port))
+            port)
         QtCore.QObject.connect(self.server,
             QtCore.SIGNAL(u'newConnection()'), self.new_connection)
-        log.debug(u'TCP listening on port %s' % port)
+        log.debug(u'TCP listening on port %d' % port)
             
     def new_connection(self):
         log.debug(u'new http connection')
@@ -70,7 +72,10 @@ class HttpServer(object):
         self.server.close()
         
 class HttpConnection(object):
-
+    """ 
+    A single connection, this handles communication between the server
+    and the client
+    """
     def __init__(self, parent, socket):
         log.debug(u'Initialise HttpConnection: %s' % 
             socket.peerAddress().toString())
@@ -115,47 +120,96 @@ class HttpConnection(object):
 
 function send_event(eventname, data){
     var req = new XMLHttpRequest();
-    url = 'send/' + eventname;
+    req.onreadystatechange = function() {
+        if(req.readyState==4 && req.status==200)
+            response(eventname, req.responseText);
+    }
+    var url = '';
+    if(eventname.substr(-8) == '_request')
+        url = 'request';
+    else 
+        url = 'send';
+    url += '/' + eventname;
     if(data!=null)
         url += '?q=' + escape(data);
     req.open('GET', url, true);
     req.send();
 }
-function get_service(){
-    var req = new XMLHttpRequest();
-    req.onreadystatechange = function() {
-        if(req.readyState==4 && req.status==200){
-            data = eval('(' + req.responseText + ')');
-            html = '<table>';
+function response(eventname, text){
+    switch(eventname){
+        case 'servicemanager_list_request':
+            var data = eval('(' + text + ')');
+            var html = '<table>';
             for(row in data){
-                html += '<tr><td>' + data[row][0] + '</td></tr>';
+                html += '<tr onclick="send_event('
+                html += "'servicemanager_set_item', " + row + ')"';
+                if(data[row]['selected'])
+                    html += ' style="font-weight: bold"';
+                html += '>'
+                html += '<td>' + (parseInt(row)+1) + '</td>'
+                html += '<td>' + data[row]['title'] + '</td>'
+                html += '<td>' + data[row]['plugin'] + '</td>'
+                html += '<td>' + data[row]['notes'] + '</td>'
+                html += '</tr>';
             }
             html += '</table>';
-            service = document.getElementById('service');
-            service.innerHTML = html;        
-        }        
+            document.getElementById('service').innerHTML = html;        
+            break;
+        case 'servicemanager_previous_item':
+        case 'servicemanager_next_item':
+        case 'servicemanager_set_item':
+            send_event("servicemanager_list_request");
+            break;
+        case 'slidecontroller_live_text_request':
+            var data = eval('(' + text + ')');
+            var html = '<table>';
+            for(row in data){
+                html += '<tr onclick="send_event('
+                html += "'slidecontroller_live_set', " + row + ')"';
+                if(data[row]['selected'])
+                    html += ' style="font-weight: bold"';
+                html += '>'
+                html += '<td>' + data[row]['tag'] + '</td>'
+                html += '<td>' + data[row]['text'] + '</td>'
+                html += '</tr>';
+            }
+            html += '</table>';
+            document.getElementById('currentitem').innerHTML = html;        
+            break;
+        case 'slidecontroller_live_next':
+        case 'slidecontroller_live_previous':
+        case 'slidecontroller_live_set':
+            send_event("slidecontroller_live_text_request");
+            break;
+        
     }
-    req.open('GET', 'request/servicemanager_list_request', true);
-    req.send();
 }
+send_event("servicemanager_list_request");
 </script>
 </head>
 <body>
     <h1>OpenLP Controller</h1>
-    <input type='button' value='<- Previous Slide' onclick='send_event("slidecontroller_live_previous");'>
-    <input type='button' value='Next Slide ->' onclick='send_event("slidecontroller_live_next");'>
+    <input type='button' value='<- Previous Slide' 
+        onclick='send_event("slidecontroller_live_previous");' />
+    <input type='button' value='Next Slide ->' 
+        onclick='send_event("slidecontroller_live_next");' />
     <br>
-    <input type='button' value='<- Previous Item' onclick='send_event("servicemanager_previous_item");'>
-    <input type='button' value='Next Item ->' onclick='send_event("servicemanager_next_item");'>
-    <br>
-    <label>Alert text</label><input id='alert' type='text'>
+    <input type='button' value='<- Previous Item' 
+        onclick='send_event("servicemanager_previous_item");' />
+    <input type='button' value='Next Item ->' 
+        onclick='send_event("servicemanager_next_item");' />
+    <br/>
+    <label>Alert text</label><input id='alert' type='text' />
     <input type='button' value='Send' 
         onclick='send_event("alerts_text", 
-        document.getElementById("alert").value);'>
-    <br>
-    <input type='button' value='Order of service' onclick='get_service();'>
-    <div id='service'>
-    </div>
+        document.getElementById("alert").value);' />
+    <br/>
+    <input type='button' value='Order of service' 
+        onclick='send_event("servicemanager_list_request");'>
+    <div id='service'></div>
+    <input type='button' value='Current item' 
+        onclick='send_event("slidecontroller_live_text_request");'>
+    <div id='currentitem'></div>
 </body>
 </html>
 """

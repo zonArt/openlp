@@ -235,6 +235,7 @@ class MessageListener(object):
         
     def slide(self, message):
         isLive, item = self.decode_message(message)
+        slide = message[2]
         if isLive:
             self.liveHandler.slide(slide, live)
         else:

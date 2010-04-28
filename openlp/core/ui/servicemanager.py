@@ -192,6 +192,8 @@ class ServiceManager(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'servicemanager_previous_item'), self.previousItem)
         QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'servicemanager_set_item'), self.onSetItem)
+        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'servicemanager_list_request'), self.listRequest)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.regenerateServiceItems)
@@ -314,6 +316,21 @@ class ServiceManager(QtGui.QWidget):
             if serviceIterator.value().parent() is None:
                 prevItem = serviceIterator.value()
             serviceIterator += 1
+
+    def onSetItem(self, message):
+        """
+        Called by a signal to select a specific item
+        """
+        self.setItem(int(message[0]))
+        
+    def setItem(self, index):
+        """
+        Makes a specific item in the service live
+        """
+        if index >= 0 and index < self.ServiceManagerList.topLevelItemCount:
+            item = self.ServiceManagerList.topLevelItem(index)
+            self.ServiceManagerList.setCurrentItem(item)
+            self.makeLive()
 
     def onMoveSelectionUp(self):
         """
@@ -877,7 +894,17 @@ class ServiceManager(QtGui.QWidget):
             
     def listRequest(self, message=None):
         data = []
+        curindex, count = self.findServiceItem()
+        if curindex >= 0 and curindex < len(self.serviceItems):
+            curitem = self.serviceItems[curindex]
+        else:
+            curitem = None
         for item in self.serviceItems:
             service_item = item[u'service_item']
-            data.append([service_item.title])
+            data_item = {}
+            data_item[u'title'] = unicode(service_item.title)
+            data_item[u'plugin'] = unicode(service_item.name)
+            data_item[u'notes'] = unicode(service_item.notes)
+            data_item[u'selected'] = (item == curitem)
+            data.append(data_item)
         Receiver.send_message(u'servicemanager_list_response', data)

@@ -341,6 +341,12 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_%s_change' % self.type_prefix), 
             self.onSlideChange)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'slidecontroller_%s_set' % self.type_prefix), 
+            self.onSlideSelectedIndex)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'slidecontroller_%s_text_request' % self.type_prefix), 
+            self.onTextRequest)
         QtCore.QObject.connect(self.Splitter,
             QtCore.SIGNAL(u'splitterMoved(int, int)'), self.trackSplitter)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -565,6 +571,25 @@ class SlideController(QtGui.QWidget):
             [serviceItem])
         log.log(15, u'Display Rendering took %4s' % (time.time() - before))
 
+    def onTextRequest(self):
+        """
+        Return the text for the current item in controller
+        """
+        data = []
+        for framenumber, frame in enumerate(self.serviceItem.get_frames()):
+            data_item = {}
+            if self.serviceItem.is_text():
+                data_item[u'tag'] = unicode(frame[u'verseTag'])
+                data_item[u'text'] = unicode(frame[u'text'])
+            else:
+                data_item[u'tag'] = unicode(framenumber)
+                data_item[u'text'] = u''
+            data_item[u'selected'] = \
+                (self.PreviewListWidget.currentRow() == framenumber)
+            data.append(data_item)
+        Receiver.send_message(u'slidecontroller_%s_text_response' % self.type_prefix,
+            data)            
+
     #Screen event methods
     def onSlideSelectedFirst(self):
         """
@@ -578,6 +603,21 @@ class SlideController(QtGui.QWidget):
             self.updatePreview()
         else:
             self.PreviewListWidget.selectRow(0)
+            self.onSlideSelected()
+
+    def onSlideSelectedIndex(self, message):
+        """
+        Go to the requested slide
+        """
+        index = int(message[0])
+        if not self.serviceItem:
+            return
+        Receiver.send_message(u'%s_slide' % self.serviceItem.name.lower(), 
+            [self.serviceItem, self.isLive, index])
+        if self.serviceItem.is_command():
+            self.updatePreview()
+        else:
+            self.PreviewListWidget.selectRow(index)
             self.onSlideSelected()
 
     def onBlankDisplay(self, force=False):
