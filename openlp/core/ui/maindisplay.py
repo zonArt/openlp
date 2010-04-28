@@ -335,7 +335,7 @@ class VideoDisplay(Phonon.VideoWidget):
         self.audioObject = Phonon.AudioOutput(Phonon.VideoCategory)
         Phonon.createPath(self.mediaObject, self)
         Phonon.createPath(self.mediaObject, self.audioObject)
-        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint \
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnBottomHint \
             | QtCore.Qt.FramelessWindowHint | QtCore.Qt.Dialog)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'videodisplay_start'), self.onMediaQueue)
@@ -347,6 +347,7 @@ class VideoDisplay(Phonon.VideoWidget):
             QtCore.SIGNAL(u'videodisplay_stop'), self.onMediaStop)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.setup)
+        self.setVisible(False)
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
@@ -364,12 +365,11 @@ class VideoDisplay(Phonon.VideoWidget):
         """
         log.debug(u'VideoDisplay Setup %s for %s ' %(self.screens,
              self.screens.monitor_number))
-        self.setVisible(False)
         self.screen = self.screens.current
         #Sort out screen locations and sizes
         self.setGeometry(self.screen[u'size'])
         # To display or not to display?
-        if not self.screen[u'primary']:
+        if not self.screen[u'primary'] and self.isVisible():
             self.showFullScreen()
             self.primary = False
         else:
@@ -403,3 +403,4 @@ class VideoDisplay(Phonon.VideoWidget):
         log.debug(u'VideoDisplay Reached end of media playlist')
         self.mediaObject.clearQueue()
         self.setVisible(False)
+
