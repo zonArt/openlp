@@ -43,6 +43,8 @@ class HttpServer(object):
         log.debug(u'Initialise httpserver')
         self.parent = parent
         self.connections = []
+        self.current_item = None
+        self.current_slide = None
         self.start_tcp()
 
     def start_tcp(self):
@@ -53,10 +55,29 @@ class HttpServer(object):
         self.server = QtNetwork.QTcpServer()
         self.server.listen(QtNetwork.QHostAddress(QtNetwork.QHostAddress.Any), 
             port)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'slidecontroller_live_changed'), 
+            self.slide_change)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'slidecontroller_live_started'), 
+            self.item_change)
         QtCore.QObject.connect(self.server,
             QtCore.SIGNAL(u'newConnection()'), self.new_connection)
         log.debug(u'TCP listening on port %d' % port)
-            
+
+    def slide_change(self, row):
+        self.current_slide = row
+        self.send_poll()
+
+    def item_change(self, items):
+        self.current_item = items[0].title
+        self.send_poll()
+                        
+    def send_poll(self):
+        Receiver.send_message(u'remote_poll_response',
+            {'slide': self.current_slide,
+             'item': self.current_item})
+        
     def new_connection(self):
         log.debug(u'new http connection')
         socket = self.server.nextPendingConnection()
@@ -121,8 +142,8 @@ class HttpConnection(object):
 function send_event(eventname, data){
     var req = new XMLHttpRequest();
     req.onreadystatechange = function() {
-        if(req.readyState==4 && req.status==200)
-            response(eventname, req.responseText);
+        if(req.readyState==4)
+            response(eventname, req);
     }
     var url = '';
     if(eventname.substr(-8) == '_request')
@@ -135,7 +156,20 @@ function send_event(eventname, data){
     req.open('GET', url, true);
     req.send();
 }
-function response(eventname, text){
+function failed_response(eventname, req){
+    switch(eventname){
+        case 'remote_poll_request':
+            if(req.status==408)
+                send_event("remote_poll_request");
+            break;
+    }
+}
+function response(eventname, req){
+    if(req.status!=200){
+        failed_response(eventname, req);
+        return;
+    }
+    text = req.responseText;
     switch(eventname){
         case 'servicemanager_list_request':
             var data = eval('(' + text + ')');
@@ -155,11 +189,6 @@ function response(eventname, text){
             html += '</table>';
             document.getElementById('service').innerHTML = html;        
             break;
-        case 'servicemanager_previous_item':
-        case 'servicemanager_next_item':
-        case 'servicemanager_set_item':
-            send_event("servicemanager_list_request");
-            break;
         case 'slidecontroller_live_text_request':
             var data = eval('(' + text + ')');
             var html = '<table>';
@@ -168,23 +197,24 @@ function response(eventname, text){
                 html += "'slidecontroller_live_set', " + row + ')"';
                 if(data[row]['selected'])
                     html += ' style="font-weight: bold"';
-                html += '>'
-                html += '<td>' + data[row]['tag'] + '</td>'
-                html += '<td>' + data[row]['text'] + '</td>'
-                html += '</tr>';
+                html += '>';
+                html += '<td>' + data[row]['tag'] + '</td>';
+                html += '<td>' + data[row]['text'].replace(/\\n/g, '<br>');
+                html += '</td></tr>';
             }
             html += '</table>';
             document.getElementById('currentitem').innerHTML = html;        
             break;
-        case 'slidecontroller_live_next':
-        case 'slidecontroller_live_previous':
-        case 'slidecontroller_live_set':
+        case 'remote_poll_request':
+            send_event("remote_poll_request");
+            send_event("servicemanager_list_request");
             send_event("slidecontroller_live_text_request");
             break;
-        
     }
 }
 send_event("servicemanager_list_request");
+send_event("slidecontroller_live_text_request");
+send_event("remote_poll_request");
 </script>
 </head>
 <body>
@@ -239,7 +269,10 @@ send_event("servicemanager_list_request");
         self.timer.setSingleShot(True)
         QtCore.QObject.connect(self.timer,
             QtCore.SIGNAL(u'timeout()'), self.timeout)
-        self.timer.start(10000)
+        if event == 'remote_poll_request':
+            self.timer.start(60000)
+        else:
+            self.timer.start(10000)
         if params:
             Receiver.send_message(event, params)    
         else:                  

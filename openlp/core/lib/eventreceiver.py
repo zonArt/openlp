@@ -65,11 +65,23 @@ class EventReceiver(QtCore.QObject):
     ``slidecontroller_{live|preview}_last``
         Moves to the last slide
 
+    ``slidecontroller_{live|preview}_set``
+        Moves to a specific slide, by index
+
     ``slidecontroller_{live|preview}_started``
         Broadcasts that an item has been made live/previewed
 
     ``slidecontroller_{live|preview}_change``
-        Informs the slidecontroller that a slide change has occurred
+        Informs the slidecontroller that a slide change has occurred and to 
+        update itself
+
+    ``slidecontroller_{live|preview}_changed``
+        Broadcasts that the slidecontroller has changed the current slide
+
+    ``slidecontroller_{live|preview}_text_request``
+        Request the text for the current item in the controller
+        Returns a slidecontroller_{live|preview}_text_response with an 
+        array of dictionaries with the tag and verse text
 
     ``slidecontroller_live_spin_delay``
         Pushes out the loop delay
@@ -77,8 +89,18 @@ class EventReceiver(QtCore.QObject):
     ``slidecontroller_live_stop_loop``
         Stop the loop on the main display
 
-    ``servicecontroller_next_item``
+    ``servicemanager_previous_item``
+        Display the previous item in the service
+
+    ``servicemanager_next_item``
         Display the next item in the service
+
+    ``servicemanager_set_item``
+        Go live on a specific item, by index
+        
+    ``servicemanager_list_request``
+        Request the service list. Responds with servicemanager_list_response
+        containing a array of dictionaries
 
     ``maindisplay_blank``
         Blank the maindisplay window 

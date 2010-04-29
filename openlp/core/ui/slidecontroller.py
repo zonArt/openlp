@@ -565,9 +565,7 @@ class SlideController(QtGui.QWidget):
         self.enableToolBar(serviceItem)
         self.onSlideSelected()
         self.PreviewListWidget.setFocus()
-        Receiver.send_message(u'%s_%s_started' % 
-            (self.serviceItem.name.lower(), 
-            'live' if self.isLive else 'preview'), 
+        Receiver.send_message(u'slidecontroller_%s_started' % self.type_prefix,
             [serviceItem])
         log.log(15, u'Display Rendering took %4s' % (time.time() - before))
 
@@ -576,19 +574,20 @@ class SlideController(QtGui.QWidget):
         Return the text for the current item in controller
         """
         data = []
-        for framenumber, frame in enumerate(self.serviceItem.get_frames()):
-            data_item = {}
-            if self.serviceItem.is_text():
-                data_item[u'tag'] = unicode(frame[u'verseTag'])
-                data_item[u'text'] = unicode(frame[u'text'])
-            else:
-                data_item[u'tag'] = unicode(framenumber)
-                data_item[u'text'] = u''
-            data_item[u'selected'] = \
-                (self.PreviewListWidget.currentRow() == framenumber)
-            data.append(data_item)
-        Receiver.send_message(u'slidecontroller_%s_text_response' % self.type_prefix,
-            data)            
+        if self.serviceItem:
+            for framenumber, frame in enumerate(self.serviceItem.get_frames()):
+                data_item = {}
+                if self.serviceItem.is_text():
+                    data_item[u'tag'] = unicode(frame[u'verseTag'])
+                    data_item[u'text'] = unicode(frame[u'text'])
+                else:
+                    data_item[u'tag'] = unicode(framenumber)
+                    data_item[u'text'] = u''
+                data_item[u'selected'] = \
+                    (self.PreviewListWidget.currentRow() == framenumber)
+                data.append(data_item)
+        Receiver.send_message(u'slidecontroller_%s_text_response' 
+            % self.type_prefix, data)            
 
     #Screen event methods
     def onSlideSelectedFirst(self):
@@ -699,6 +698,8 @@ class SlideController(QtGui.QWidget):
                 if self.isLive:
                     self.mainDisplay.frameView(frame, True)
             self.selectedRow = row
+        Receiver.send_message(u'slidecontroller_%s_changed' % self.type_prefix,
+            row)
 
     def onSlideChange(self, row):
         """
@@ -706,6 +707,8 @@ class SlideController(QtGui.QWidget):
         """
         self.PreviewListWidget.selectRow(row)
         self.updatePreview()
+        Receiver.send_message(u'slidecontroller_%s_changed' % self.type_prefix,
+            row)
 
     def updatePreview(self):
         rm = self.parent.RenderManager
