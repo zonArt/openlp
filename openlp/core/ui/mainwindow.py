@@ -242,12 +242,14 @@ class Ui_MainWindow(object):
         ContentsIcon = build_icon(u':/system/system_help_contents.png')
         self.HelpDocumentationItem.setIcon(ContentsIcon)
         self.HelpDocumentationItem.setObjectName(u'HelpDocumentationItem')
+        self.HelpDocumentationItem.setEnabled(False)
         self.HelpAboutItem = QtGui.QAction(MainWindow)
         AboutIcon = build_icon(u':/system/system_about.png')
         self.HelpAboutItem.setIcon(AboutIcon)
         self.HelpAboutItem.setObjectName(u'HelpAboutItem')
         self.HelpOnlineHelpItem = QtGui.QAction(MainWindow)
         self.HelpOnlineHelpItem.setObjectName(u'HelpOnlineHelpItem')
+        self.HelpOnlineHelpItem.setEnabled(False)
         self.HelpWebSiteItem = QtGui.QAction(MainWindow)
         self.HelpWebSiteItem.setObjectName(u'HelpWebSiteItem')
         self.LanguageTranslateItem = QtGui.QAction(MainWindow)
@@ -472,6 +474,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.PreviewController.Panel,
             QtCore.SIGNAL(u'visibilityChanged(bool)'),
             self.action_Preview_Panel.setChecked)
+        QtCore.QObject.connect(self.HelpWebSiteItem,
+            QtCore.SIGNAL(u'triggered()'), self.onHelpWebSiteClicked)
         QtCore.QObject.connect(self.HelpAboutItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpAboutItemClicked)
         QtCore.QObject.connect(self.PluginItem,
@@ -593,6 +597,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         vT = VersionThread(self, self.applicationVersion)
         vT.start()
+
+    def onHelpWebSiteClicked(self):
+        """
+        Load the OpenLP website
+        """
+        import webbrowser
+        webbrowser.open_new(u'http://openlp.org/')
 
     def onHelpAboutItemClicked(self):
         """
