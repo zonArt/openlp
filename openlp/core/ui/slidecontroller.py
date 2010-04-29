@@ -30,18 +30,9 @@ import os
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import ItemCapabilities
-
-class HideMode(object):
-    """
-    This is basically an enumeration class which specifies the mode of a Bible.
-    Mode refers to whether or not a Bible in OpenLP is a full Bible or needs to
-    be downloaded from the Internet on an as-needed basis.
-    """
-    Blank = 1
-    Theme = 2
-
-from openlp.core.lib import OpenLPToolbar, Receiver, resize_image
+from openlp.core.ui import HideMode
+from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
+ItemCapabilities
 
 log = logging.getLogger(__name__)
 
@@ -599,7 +590,7 @@ class SlideController(QtGui.QWidget):
             self.generalSettingsSection + u'/screen blank',
             QtCore.QVariant(checked))
         if checked:
-            Receiver.send_message(u'maindisplay_blank')
+            Receiver.send_message(u'maindisplay_hide', HideMode.Blank)
         else:
             Receiver.send_message(u'maindisplay_show')
 
@@ -611,7 +602,7 @@ class SlideController(QtGui.QWidget):
         self.blankButton.setChecked(False)
         self.hideButton.setChecked(False)
         if checked:
-            Receiver.send_message(u'maindisplay_hide_theme')
+            Receiver.send_message(u'maindisplay_hide', HideMode.Theme)
         else:
             Receiver.send_message(u'maindisplay_show')
 
@@ -623,29 +614,9 @@ class SlideController(QtGui.QWidget):
         self.blankButton.setChecked(False)
         self.themeButton.setChecked(False)
         if checked:
-            Receiver.send_message(u'maindisplay_hide')
+            Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
         else:
             Receiver.send_message(u'maindisplay_show')
-
-    def blankScreen(self, checked):
-        """
-        Blank the display screen.
-        """
-        self.hideButton.setChecked(False)
-        self.themeButton.setChecked(False)
-#        if self.serviceItem is not None:
-#            if checked:
-#                Receiver.send_message(
-#                    u'%s_blank' % self.serviceItem.name.lower(),
-#                    [self.serviceItem, self.isLive])
-#            else:
-#                Receiver.send_message(u'%s_unblank'
-#                    % self.serviceItem.name.lower(),
-#                    [self.serviceItem, self.isLive])
-        if checked:
-            Receiver.send_message(u'maindisplay_blank')
-        else:
-            Receiver.send_message(u'maindisplay_show4')
 
     def onSlideSelected(self):
         """
@@ -787,6 +758,9 @@ class SlideController(QtGui.QWidget):
             self.onSlideSelectedNext()
 
     def onEditSong(self):
+        """
+        From the preview display requires the service Item to be editied
+        """
         self.songEdit = True
         Receiver.send_message(u'%s_edit' % self.serviceItem.name.lower(),
             u'P:%s' % self.serviceItem.editId)
@@ -801,9 +775,14 @@ class SlideController(QtGui.QWidget):
                 self.serviceItem, row)
 
     def onMediaStart(self, item):
+        """
+        Respond to the arrival of a media service item
+        """
+        log.debug(u'SlideController onMediaStart')
         if self.isLive:
             Receiver.send_message(u'videodisplay_start',
                 [item, self.blankButton.isChecked()])
+            Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
         else:
             self.mediaObject.stop()
             self.mediaObject.clearQueue()
@@ -814,12 +793,20 @@ class SlideController(QtGui.QWidget):
             self.onMediaPlay()
 
     def onMediaPause(self):
+        """
+        Respond to the Pause from the media Toolbar
+        """
+        log.debug(u'SlideController onMediaPause')
         if self.isLive:
             Receiver.send_message(u'videodisplay_pause')
         else:
             self.mediaObject.pause()
 
     def onMediaPlay(self):
+        """
+        Respond to the Play from the media Toolbar
+        """
+        log.debug(u'SlideController onMediaPlay')
         if self.isLive:
             Receiver.send_message(u'videodisplay_play')
         else:
@@ -828,6 +815,10 @@ class SlideController(QtGui.QWidget):
             self.mediaObject.play()
 
     def onMediaStop(self):
+        """
+        Respond to the Stop from the media Toolbar
+        """
+        log.debug(u'SlideController onMediaStop')
         if self.isLive:
             Receiver.send_message(u'videodisplay_stop')
         else:

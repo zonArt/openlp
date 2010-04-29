@@ -23,6 +23,16 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+class HideMode(object):
+    """
+    This is basically an enumeration class which specifies the mode of a Bible.
+    Mode refers to whether or not a Bible in OpenLP is a full Bible or needs to
+    be downloaded from the Internet on an as-needed basis.
+    """
+    Blank = 1
+    Theme = 2
+    Screen = 3
+
 from slidecontroller import HideMode
 from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm

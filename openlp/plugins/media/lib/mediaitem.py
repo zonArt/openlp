@@ -97,7 +97,8 @@ class MediaMediaItem(MediaManagerItem):
         if item:
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
-            SettingsManager.set_list(self.SettingsSection, self.getFileList())
+            SettingsManager.set_list(self.SettingsSection, \
+                self.SettingsSection, self.getFileList())
 
     def loadList(self, list):
         for file in list:

@@ -167,7 +167,8 @@ class PresentationMediaItem(MediaManagerItem):
         if item:
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
-            SettingsManager.set_list(self.SettingsSection, self.getFileList())
+            SettingsManager.set_list(self.SettingsSection,\
+                self.SettingsSection, self.getFileList())
             filepath = unicode((item.data(QtCore.Qt.UserRole)).toString())
             #not sure of this has errors
             #John please can you look at .

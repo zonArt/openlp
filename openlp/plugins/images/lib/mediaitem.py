@@ -122,7 +122,7 @@ class ImageMediaItem(MediaManagerItem):
                     #if not present do not worry
                     pass
                 self.ListView.takeItem(item.row())
-                SettingsManager.set_list(
+                SettingsManager.set_list(self.SettingsSection,\
                     self.SettingsSection, self.getFileList())
 
     def loadList(self, list):
