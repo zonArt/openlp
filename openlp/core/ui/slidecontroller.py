@@ -199,8 +199,6 @@ class SlideController(QtGui.QWidget):
             self.hideButton = self.Toolbar.addToolbarButton(
                 u'Hide screen', u':/slides/slide_desktop.png',
                 self.trUtf8('Hide Screen'), self.onHideDisplay, True)
-            QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'maindisplay_blank'), self.blankScreen)
         if not self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
@@ -590,58 +588,64 @@ class SlideController(QtGui.QWidget):
             self.PreviewListWidget.selectRow(0)
             self.onSlideSelected()
 
-    def onBlankDisplay(self, force=False):
+    def onBlankDisplay(self, checked):
         """
         Handle the blank screen button
         """
-        log.debug(u'onBlankDisplay %d' % force)
-        if force:
-            self.blankButton.setChecked(True)
-        self.blankScreen(HideMode.Blank, self.blankButton.isChecked())
+        log.debug(u'onBlankDisplay %d' % checked)
+        self.hideButton.setChecked(False)
+        self.themeButton.setChecked(False)
         QtCore.QSettings().setValue(
             self.generalSettingsSection + u'/screen blank',
-            QtCore.QVariant(self.blankButton.isChecked()))
+            QtCore.QVariant(checked))
+        if checked:
+            Receiver.send_message(u'maindisplay_blank')
+        else:
+            Receiver.send_message(u'maindisplay_show')
 
-    def onThemeDisplay(self, force=False):
+    def onThemeDisplay(self, checked):
         """
         Handle the Theme screen button
         """
-        log.debug(u'onThemeDisplay %d' % force)
-        if force:
-            self.themeButton.setChecked(True)
-        if self.themeButton.isChecked():
-            Receiver.send_message(u'maindisplay_show_theme')
-        else:
+        log.debug(u'onThemeDisplay %d' % checked)
+        self.blankButton.setChecked(False)
+        self.hideButton.setChecked(False)
+        if checked:
             Receiver.send_message(u'maindisplay_hide_theme')
+        else:
+            Receiver.send_message(u'maindisplay_show')
 
-    def onHideDisplay(self, force=False):
+    def onHideDisplay(self, checked):
         """
         Handle the Hide screen button
         """
-        log.debug(u'onHideDisplay %d' % force)
-        if force:
-            self.hideButton.setChecked(True)
-        if self.hideButton.isChecked():
+        log.debug(u'onHideDisplay %d' % checked)
+        self.blankButton.setChecked(False)
+        self.themeButton.setChecked(False)
+        if checked:
             Receiver.send_message(u'maindisplay_hide')
         else:
             Receiver.send_message(u'maindisplay_show')
 
-    def blankScreen(self, blankType, blanked=False):
+    def blankScreen(self, checked):
         """
         Blank the display screen.
         """
-        if self.serviceItem is not None:
-            if blanked:
-                Receiver.send_message(
-                    u'%s_blank' % self.serviceItem.name.lower(),
-                    [self.serviceItem, self.isLive])
-            else:
-                Receiver.send_message(u'%s_unblank'
-                    % self.serviceItem.name.lower(),
-                    [self.serviceItem, self.isLive])
-            self.parent.displayManager.mainDisplay.blankDisplay(blankType, blanked)
+        self.hideButton.setChecked(False)
+        self.themeButton.setChecked(False)
+#        if self.serviceItem is not None:
+#            if checked:
+#                Receiver.send_message(
+#                    u'%s_blank' % self.serviceItem.name.lower(),
+#                    [self.serviceItem, self.isLive])
+#            else:
+#                Receiver.send_message(u'%s_unblank'
+#                    % self.serviceItem.name.lower(),
+#                    [self.serviceItem, self.isLive])
+        if checked:
+            Receiver.send_message(u'maindisplay_blank')
         else:
-            self.parent.displayManager.mainDisplay.blankDisplay(blankType, blanked)
+            Receiver.send_message(u'maindisplay_show4')
 
     def onSlideSelected(self):
         """

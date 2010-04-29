@@ -40,6 +40,7 @@ class DisplayManager(QtGui.QWidget):
     Wrapper class to hold the display widgets.
     I will provide API's in future to access the screens allow for
     extra displays to be added.
+    RenderManager is poked in by MainWindow
     """
     def __init__(self, screens):
         QtGui.QWidget.__init__(self)
@@ -130,17 +131,14 @@ class MainDisplay(DisplayWidget):
         self.displayBlank = False
         self.blankFrame = None
         self.frame = None
-        self.firstTime = True
-        self.hasTransition = False
-        self.mediaBackground = False
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'maindisplay_blank'), self.blankDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_hide_theme'), self.hideThemeDisplay)
-#        QtCore.QObject.connect(Receiver.get_receiver(),
-#            QtCore.SIGNAL(u'maindisplay_show_theme'), self.showThemeDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'videodisplay_start'), self.hideDisplay)
 
@@ -153,12 +151,12 @@ class MainDisplay(DisplayWidget):
         self.setVisible(False)
         self.screen = self.screens.current
         #Sort out screen locations and sizes
-        self.setGeometry(self.screen[u'size'])
         self.display_alert.setGeometry(self.screen[u'size'])
         self.display_image.resize(self.screen[u'size'].width(),
                             self.screen[u'size'].height())
         self.display_text.resize(self.screen[u'size'].width(),
                             self.screen[u'size'].height())
+        self.setGeometry(self.screen[u'size'])
         #Build a custom splash screen
         self.InitialFrame = QtGui.QImage(
             self.screen[u'size'].width(),
@@ -205,16 +203,65 @@ class MainDisplay(DisplayWidget):
         else:
             self.showFullScreen()
 
+    def blankDisplay(self):#, blankType=HideMode.Blank, blanked=True):
+        log.debug(u'Blank main Display ')
+        """
+        Hide the display by making all layers transparent
+        Store the images so they can be replaced when required
+        """
+        self.storeImage = QtGui.QPixmap(self.display_image.pixmap())
+        self.storeText = QtGui.QPixmap(self.display_text.pixmap())
+        self.display_image.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
+        self.display_alert.setPixmap(self.transparent)
+        self.display_text.setPixmap(self.transparent)
+        self.moveToTop()
+#        if blanked:
+#            self.displayBlank = True
+#            if blankType == HideMode.Blank:
+#                self.display_text.setPixmap(
+#                    QtGui.QPixmap.fromImage(self.blankFrame))
+#            elif blankType == HideMode.Theme:
+#                theme = self.parent.RenderManager.renderer.bg_frame
+#                if not theme:
+#                    theme = self.blankFrame
+#                self.display_text.setPixmap(QtGui.QPixmap.fromImage(theme))
+#            self.waitingFrame = None
+#            self.waitingFrameTrans = False
+#        else:
+#            self.displayBlank = False
+#            if self.waitingFrame:
+#                self.frameView(self.waitingFrame, self.waitingFrameTrans)
+#            elif self.display_frame:
+#                self.frameView(self.display_frame)
+
     def hideDisplay(self):
+        """
+        Hide the display by making all layers transparent
+        Store the images so they can be replaced when required
+        """
         log.debug(u'hideDisplay')
+        self.storeImage = QtGui.QPixmap(self.display_image.pixmap())
+        self.storeText = QtGui.QPixmap(self.display_text.pixmap())
         self.display_image.setPixmap(self.transparent)
         self.display_alert.setPixmap(self.transparent)
         self.display_text.setPixmap(self.transparent)
         self.moveToTop()
 
     def hideThemeDisplay(self):
+        """
+        Hide the display by making all layers transparent
+        Add the theme background to the image layer unless it has
+        not been generated in which case make it black.
+        Store the images so they can be replaced when required
+        """
         log.debug(u'hideDisplay')
-        self.display_image.setPixmap(self.transparent)
+        self.storeImage = QtGui.QPixmap(self.display_image.pixmap())
+        self.storeText = QtGui.QPixmap(self.display_text.pixmap())
+        if self.parent.renderManager.renderer.bg_frame:
+            self.display_image.setPixmap(QtGui.QPixmap.fromImage(\
+                self.parent.renderManager.renderer.bg_frame))
+        else:
+            self.display_image.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
         self.display_alert.setPixmap(self.transparent)
         self.display_text.setPixmap(self.transparent)
         self.moveToTop()
@@ -226,10 +273,20 @@ class MainDisplay(DisplayWidget):
         self.show()
 
     def showDisplay(self):
+        """
+        Show the stored layers so the screen reappears as it was
+        originally.
+        Make the stored images None to release memory.
+        """
         log.debug(u'showDisplay')
-        if not self.primary:
-            self.setVisible(True)
-            self.showFullScreen()
+        if self.storeImage:
+            self.display_image.setPixmap(self.storeImage)
+        self.display_alert.setPixmap(self.transparent)
+        if self.storeText:
+            self.display_text.setPixmap(self.storeText)
+        self.storeImage = None
+        self.store = None
+        self.moveToTop()
         Receiver.send_message(u'maindisplay_active')
 
     def addImageWithText(self, frame):
@@ -290,27 +347,6 @@ class MainDisplay(DisplayWidget):
         else:
             self.waitingFrame = frame
             self.waitingFrameTrans = transition
-
-    def blankDisplay(self, blankType=HideMode.Blank, blanked=True):
-        log.debug(u'Blank main Display %d' % blanked)
-        if blanked:
-            self.displayBlank = True
-            if blankType == HideMode.Blank:
-                self.display_text.setPixmap(
-                    QtGui.QPixmap.fromImage(self.blankFrame))
-            elif blankType == HideMode.Theme:
-                theme = self.parent.RenderManager.renderer.bg_frame
-                if not theme:
-                    theme = self.blankFrame
-                self.display_text.setPixmap(QtGui.QPixmap.fromImage(theme))
-            self.waitingFrame = None
-            self.waitingFrameTrans = False
-        else:
-            self.displayBlank = False
-            if self.waitingFrame:
-                self.frameView(self.waitingFrame, self.waitingFrameTrans)
-            elif self.display_frame:
-                self.frameView(self.display_frame)
 
 class VideoDisplay(Phonon.VideoWidget):
     """
