@@ -35,19 +35,19 @@ from optparse import OptionParser
 import urllib
 from PyQt4 import QtCore
 
-ignore_pathes = ["./scripts", "./openlp/core/test"]
-ignore_files = ["setup.py"]
-translation_path = "http://pootle.projecthq.biz/export/openlp/"
-translations = [  "af"
-                , "en_ZA"
-                , "en_GB"
-                , "de"
-                , "hu"
-                , "ko"
-                , "nb"
-                , "pt_BR"
-                , "es"
-                , "sv"]
+ignore_pathes = [u"./scripts", u"./openlp/core/test"]
+ignore_files = [u"setup.py"]
+translation_path = u"http://pootle.projecthq.biz/export/openlp/"
+translations = [  u"af"
+                , u"en_ZA"
+                , u"en_GB"
+                , u"de"
+                , u"hu"
+                , u"ko"
+                , u"nb"
+                , u"pt_BR"
+                , u"es"
+                , u"sv"]
                 
                 
                 
@@ -92,9 +92,9 @@ def main():
 def downloadTranslations():
     print "download()"
     for language in translations:
-        filename = os.path.join('..','resources', 'i18n', "openlp_%s.ts" % language)
+        filename = os.path.join(u'..',u'resources', u'i18n', u"openlp_%s.ts" % language)
         print filename
-        page = urllib.urlopen("%s%s.ts" % (translation_path, language))
+        page = urllib.urlopen(u"%s%s.ts" % (translation_path, language))
         content = page.read().decode("utf8")
         page.close()
         file = open(filename, u'w')
@@ -106,7 +106,7 @@ def preparation():
     start_dir = os.path.join(u'..')
     for root, dirs, files in os.walk(start_dir):
         for file in files:
-            path = "%s" % root
+            path = u"%s" % root
             path = path.replace("\\","/")
             path = path.replace("..",".")
             
@@ -127,17 +127,17 @@ def preparation():
                 continue
             
             if file.endswith(u'.py'):
-                line = "%s/%s" % (path, file)
+                line = u"%s/%s" % (path, file)
                 print u'Parsing "%s"' % line
-                stringlist.append("SOURCES      += %s" % line)
+                stringlist.append(u"SOURCES      += %s" % line)
             elif file.endswith(u'.pyw'):
-                line = "%s/%s" % (path, file)
+                line = u"%s/%s" % (path, file)
                 print u'Parsing "%s"' % line
-                stringlist.append("SOURCES      += %s" % line)
+                stringlist.append(u"SOURCES      += %s" % line)
             elif file.endswith(u'.ts'):
-                line = "%s/%s" % (path, file)
+                line = u"%s/%s" % (path, file)
                 print u'Parsing "%s"' % line
-                stringlist.append("TRANSLATIONS += %s" % line)
+                stringlist.append(u"TRANSLATIONS += %s" % line)
             
     print u'Generating PRO file...',
     stringlist.sort()
@@ -148,13 +148,13 @@ def preparation():
 def update():
     print "update()"
     updateProcess = QtCore.QProcess()
-    updateProcess.start("pylupdate4 -noobsolete ../openlp.pro")
+    updateProcess.start(u"pylupdate4 -noobsolete ../openlp.pro")
     updateProcess.waitForFinished(60000)
 
 def generate():
     print "generate()"
     generateProcess = QtCore.QProcess()
-    generateProcess.start("lrelease ../openlp.pro")
+    generateProcess.start(u"lrelease ../openlp.pro")
     generateProcess.waitForFinished(60000)
 
 def all():

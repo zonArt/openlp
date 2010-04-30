@@ -124,6 +124,7 @@ class OpenLPToolbar(QtGui.QToolBar):
                 log.error(u'getIconFromTitle - no icon for %s' % title)
                 return QtGui.QIcon()
         except:
+            log.exception(u'getIconFromTitle - title %s not found' % title)
             return QtGui.QIcon()
 
     def makeWidgetsInvisible(self, widgets):

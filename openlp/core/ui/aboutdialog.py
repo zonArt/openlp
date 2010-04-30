@@ -167,8 +167,7 @@ class Ui_AboutDialog(object):
             self.AboutNotebook.indexOf(self.CreditsTab),
             translate('AboutForm', 'Credits'))
         self.LicenseTextEdit.setPlainText(translate('AboutForm', 
-            'Copyright \xa9 2004-2010 Raoul '
-            'Snyman\n'
+            'Copyright \xa9 2004-2010 Raoul Snyman\n'
             'Portions copyright \xa9 2004-2010 '
             'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri, '
             'Christian Richter, Maikel Stuivenberg, Martin Thompson, Jon '

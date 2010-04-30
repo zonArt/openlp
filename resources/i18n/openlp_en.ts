@@ -202,17 +202,17 @@ This General Public License does not permit incorporating your program into prop
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="559"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="558"/>
         <source>License</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="562"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="561"/>
         <source>Contribute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="563"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="562"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
