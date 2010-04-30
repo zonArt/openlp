@@ -78,7 +78,7 @@ class ImageMediaItem(MediaManagerItem):
         self.ListView.setIconSize(QtCore.QSize(88,50))
         self.servicePath = os.path.join(
             AppLocation.get_section_data_path(self.settings_section),
-            u'.thumbnails')
+            u'thumbnails')
         if not os.path.exists(self.servicePath):
             os.mkdir(self.servicePath)
         self.loadList(SettingsManager.load_list(
