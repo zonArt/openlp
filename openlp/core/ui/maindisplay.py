@@ -334,7 +334,7 @@ class VideoDisplay(Phonon.VideoWidget):
         self.parent = parent
         self.screens = screens
         self.hidden = False
-        self.background = False
+        self.message = None
         self.mediaObject = Phonon.MediaObject()
         self.setAspectRatio(aspect)
         self.audioObject = Phonon.AudioOutput(Phonon.VideoCategory)
@@ -389,16 +389,28 @@ class VideoDisplay(Phonon.VideoWidget):
             self.setVisible(False)
             self.primary = True
 
-    def onMediaBackground(self, message):
+    def onMediaBackground(self, message=None):
+        """
+        Play a video triggered from the video plugin with the
+        file name passed in on the event.
+        Also triggered from the Finish event so the video will loop
+        if it is triggered from the plugin
+        """
+        log.debug(u'VideoDisplay Queue new media message %s' % message)
+        #If not file take the stored one
         if not message:
             message = self.message
-        log.debug(u'VideoDisplay Queue new media message %s' % message)
-        source = self.mediaObject.setCurrentSource(Phonon.MediaSource(message))
-        self.message = message
-        self.background = True
-        self._play()
+        # still no file name then stop as it was a normal video stopping
+        if not message:
+            log.debug(u'VideoDisplay Queue new media message %s' % message)
+            source = self.mediaObject.setCurrentSource(Phonon.MediaSource(message))
+            self.message = message
+            self._play()
 
     def onMediaQueue(self, message):
+        """
+        Set up a video to play from the serviceitem.
+        """
         log.debug(u'VideoDisplay Queue new media message %s' % message)
         file = os.path.join(message[0].get_frame_path(),
             message[0].get_frame_title())
@@ -406,39 +418,60 @@ class VideoDisplay(Phonon.VideoWidget):
         self._play()
 
     def onMediaPlay(self):
+        """
+        Respond to the Play button on the slide controller unless the display
+        has been hidden by the slidecontroller
+        """
         if not self.hidden:
             log.debug(u'VideoDisplay Play the new media, Live ')
             self._play()
 
     def _play(self):
+        """
+        We want to play the video so start it and display the screen
+        """
         log.debug(u'VideoDisplay _play called')
         self.mediaObject.play()
         self.setVisible(True)
         self.showFullScreen()
 
     def onMediaPause(self):
+        """
+        Pause the video and refresh the screen
+        """
         log.debug(u'VideoDisplay Media paused by user')
         self.mediaObject.pause()
         self.show()
 
     def onMediaStop(self):
+        """
+        Stop the video and clean up
+        """
         log.debug(u'VideoDisplay Media stopped by user')
-        self.background = False
         self.message = None
         self.mediaObject.stop()
         self.onMediaFinish()
 
     def onMediaFinish(self):
+        """
+        Clean up the Object queue
+        """
         log.debug(u'VideoDisplay Reached end of media playlist')
         self.mediaObject.clearQueue()
         self.setVisible(False)
 
     def mediaHide(self):
+        """
+        Hide the video display
+        """
         self.mediaObject.pause()
         self.hidden = True
         self.setVisible(False)
 
     def mediaShow(self):
+        """
+        Show the video disaply if it was already hidden
+        """
         if self.hidden:
             self.hidden = False
             self._play()
