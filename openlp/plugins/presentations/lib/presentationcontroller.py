@@ -210,7 +210,7 @@ class PresentationDocument(object):
         Returns a path to an image containing a preview for the requested slide
 
     """
-    def __init__(self,  controller,  name):
+    def __init__(self, controller, name):
         self.slidenumber = 0
         self.controller = controller
         self.store_filename(name)
@@ -243,10 +243,10 @@ class PresentationDocument(object):
         if not os.path.isdir(self.thumbnailpath):
             os.mkdir(self.thumbnailpath)
 
-    def get_file_name(self,  presentation):
+    def get_file_name(self, presentation):
         return os.path.split(presentation)[1]
 
-    def get_thumbnail_path(self,  presentation):
+    def get_thumbnail_path(self, presentation):
         return os.path.join(
             self.controller.thumbnailroot, self.get_file_name(presentation))
 

@@ -200,7 +200,7 @@ class SlideController(QtGui.QWidget):
         if isLive:
             self.Toolbar.addToolbarSeparator(u'Loop Separator')
             self.Toolbar.addToolbarButton(
-                u'Start Loop',  u':/media/media_time.png',
+                u'Start Loop', u':/media/media_time.png',
                 self.trUtf8('Start continuous loop'), self.onStartLoop)
             self.Toolbar.addToolbarButton(
                 u'Stop Loop', u':/media/media_stop.png',
@@ -217,13 +217,13 @@ class SlideController(QtGui.QWidget):
         #Build a Media ToolBar
         self.Mediabar = OpenLPToolbar(self)
         self.Mediabar.addToolbarButton(
-            u'Media Start',  u':/slides/media_playback_start.png',
+            u'Media Start', u':/slides/media_playback_start.png',
             self.trUtf8('Start playing media'), self.onMediaPlay)
         self.Mediabar.addToolbarButton(
-            u'Media Pause',  u':/slides/media_playback_pause.png',
+            u'Media Pause', u':/slides/media_playback_pause.png',
             self.trUtf8('Start playing media'), self.onMediaPause)
         self.Mediabar.addToolbarButton(
-            u'Media Stop',  u':/slides/media_playback_stop.png',
+            u'Media Stop', u':/slides/media_playback_stop.png',
             self.trUtf8('Start playing media'), self.onMediaStop)
         if self.isLive:
             self.blankButton = self.Mediabar.addToolbarButton(
@@ -636,7 +636,6 @@ class SlideController(QtGui.QWidget):
                     % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive])
 
-
     def onSlideSelected(self):
         """
         Generate the preview when you click on a slide.
@@ -727,7 +726,7 @@ class SlideController(QtGui.QWidget):
         if not self.serviceItem:
             return
         Receiver.send_message(u'%s_previous' % self.serviceItem.name.lower(),
-            [self.serviceItem,  self.isLive])
+            [self.serviceItem, self.isLive])
         if self.serviceItem.is_command():
             self.updatePreview()
         else:

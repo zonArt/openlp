@@ -117,8 +117,7 @@ class Renderer(object):
             QtGui.QImage.Format_ARGB32_Premultiplied)
         if self._bg_image_filename and not self.bg_image:
             self.bg_image = resize_image(self._bg_image_filename,
-                                         self._frame.width(),
-                                         self._frame.height())
+                self._frame.width(), self._frame.height())
         if self.bg_frame is None:
             self._generate_background_frame()
 
@@ -223,7 +222,7 @@ class Renderer(object):
         ``rect_footer``
             The footer text block.
         """
-        log.debug(u'set_text_rectangle %s , %s' %(rect_main, rect_footer) )
+        log.debug(u'set_text_rectangle %s , %s' % (rect_main, rect_footer))
         self._rect = rect_main
         self._rect_footer = rect_footer
 
@@ -268,8 +267,8 @@ class Renderer(object):
                 QtGui.QPixmap(self._frame.width(), self._frame.height())
             self.bg_frame.fill(QtCore.Qt.transparent)
         else:
-            self.bg_frame = QtGui.QImage(self._frame.width(), self._frame.height(),
-                QtGui.QImage.Format_ARGB32_Premultiplied)
+            self.bg_frame = QtGui.QImage(self._frame.width(),
+                self._frame.height(), QtGui.QImage.Format_ARGB32_Premultiplied)
         log.debug(u'render background %s start', self._theme.background_type)
         painter = QtGui.QPainter()
         painter.begin(self.bg_frame)
@@ -550,8 +549,8 @@ class Renderer(object):
                 path = QtGui.QPainterPath()
                 path.addText(QtCore.QPointF(x, rowpos), font, line)
                 self.painter.setBrush(self.painter.pen().brush())
-                self.painter.setPen(QtGui.QPen(
-                        QtGui.QColor(self._theme.display_outline_color), outline_size))
+                self.painter.setPen(QtGui.QPen(QtGui.QColor(
+                    self._theme.display_outline_color), outline_size))
                 self.painter.drawPath(path)
             self.painter.setPen(pen)
             self.painter.drawText(x, rowpos, line)

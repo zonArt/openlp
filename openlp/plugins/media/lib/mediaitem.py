@@ -113,7 +113,6 @@ class MediaMediaItem(MediaManagerItem):
                 filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
                 Receiver.send_message(u'videodisplay_background', filename)
 
-
     def generateSlideData(self, service_item, item=None):
         if item is None:
             item = self.ListView.currentItem()

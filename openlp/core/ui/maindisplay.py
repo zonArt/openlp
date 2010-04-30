@@ -34,7 +34,6 @@ from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
 
-
 class DisplayManager(QtGui.QWidget):
     """
     Wrapper class to hold the display widgets.
@@ -144,16 +143,16 @@ class MainDisplay(DisplayWidget):
         """
         Sets up the screen on a particular screen.
         """
-        log.debug(u'Setup %s for %s ' %(self.screens,
-                                         self.screens.monitor_number))
+        log.debug(u'Setup %s for %s ' % (
+            self.screens, self.screens.monitor_number))
         self.setVisible(False)
         self.screen = self.screens.current
         #Sort out screen locations and sizes
         self.display_alert.setGeometry(self.screen[u'size'])
-        self.display_image.resize(self.screen[u'size'].width(),
-                            self.screen[u'size'].height())
-        self.display_text.resize(self.screen[u'size'].width(),
-                            self.screen[u'size'].height())
+        self.display_image.resize(
+            self.screen[u'size'].width(), self.screen[u'size'].height())
+        self.display_text.resize(
+            self.screen[u'size'].width(), self.screen[u'size'].height())
         self.setGeometry(self.screen[u'size'])
         #Build a custom splash screen
         self.InitialFrame = QtGui.QImage(
@@ -179,8 +178,8 @@ class MainDisplay(DisplayWidget):
         painter.begin(self.blankFrame)
         painter.fillRect(self.blankFrame.rect(), QtCore.Qt.black)
         #build a blank transparent image
-        self.transparent = QtGui.QPixmap(self.screen[u'size'].width(),
-                                         self.screen[u'size'].height())
+        self.transparent = QtGui.QPixmap(
+            self.screen[u'size'].width(), self.screen[u'size'].height())
         self.transparent.fill(QtCore.Qt.transparent)
         self.display_alert.setPixmap(self.transparent)
         self.display_text.setPixmap(self.transparent)
@@ -220,19 +219,21 @@ class MainDisplay(DisplayWidget):
         if mode == HideMode.Screen:
             self.display_image.setPixmap(self.transparent)
         elif mode == HideMode.Blank:
-            self.display_image.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
+            self.display_image.setPixmap(
+                QtGui.QPixmap.fromImage(self.blankFrame))
         else:
             if self.parent.renderManager.renderer.bg_frame:
-                self.display_image.setPixmap(QtGui.QPixmap.fromImage(\
+                self.display_image.setPixmap(QtGui.QPixmap.fromImage(
                     self.parent.renderManager.renderer.bg_frame))
             else:
-                self.display_image.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
+                self.display_image.setPixmap(
+                    QtGui.QPixmap.fromImage(self.blankFrame))
         self.moveToTop()
 
     def moveToTop(self):
         log.debug(u'moveToTop')
-        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint \
-            | QtCore.Qt.FramelessWindowHint | QtCore.Qt.Dialog)
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint |
+            QtCore.Qt.FramelessWindowHint | QtCore.Qt.Dialog)
         self.show()
 
     def showDisplay(self):
@@ -254,9 +255,8 @@ class MainDisplay(DisplayWidget):
 
     def addImageWithText(self, frame):
         log.debug(u'addImageWithText')
-        frame = resize_image(frame,
-                    self.screen[u'size'].width(),
-                    self.screen[u'size'].height() )
+        frame = resize_image(
+            frame, self.screen[u'size'].width(), self.screen[u'size'].height())
         self.display_image.setPixmap(QtGui.QPixmap.fromImage(frame))
         self.moveToTop()
 
@@ -340,8 +340,8 @@ class VideoDisplay(Phonon.VideoWidget):
         self.audioObject = Phonon.AudioOutput(Phonon.VideoCategory)
         Phonon.createPath(self.mediaObject, self)
         Phonon.createPath(self.mediaObject, self.audioObject)
-        self.setWindowFlags(QtCore.Qt.WindowStaysOnBottomHint \
-            | QtCore.Qt.FramelessWindowHint | QtCore.Qt.Dialog)
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnBottomHint |
+            QtCore.Qt.FramelessWindowHint | QtCore.Qt.Dialog)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_hide'), self.mediaHide)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -376,7 +376,7 @@ class VideoDisplay(Phonon.VideoWidget):
         """
         Sets up the screen on a particular screen.
         """
-        log.debug(u'VideoDisplay Setup %s for %s ' %(self.screens,
+        log.debug(u'VideoDisplay Setup %s for %s ' % (self.screens,
              self.screens.monitor_number))
         self.screen = self.screens.current
         #Sort out screen locations and sizes
@@ -393,7 +393,7 @@ class VideoDisplay(Phonon.VideoWidget):
         if not message:
             message = self.message
         log.debug(u'VideoDisplay Queue new media message %s' % message)
-        source = self.mediaObject.setCurrentSource(Phonon.MediaSource(message))
+        self.mediaObject.setCurrentSource(Phonon.MediaSource(message))
         self.message = message
         self.background = True
         self._play()
@@ -402,7 +402,7 @@ class VideoDisplay(Phonon.VideoWidget):
         log.debug(u'VideoDisplay Queue new media message %s' % message)
         file = os.path.join(message[0].get_frame_path(),
             message[0].get_frame_title())
-        source = self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
+        self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
         self._play()
 
     def onMediaPlay(self):
@@ -442,4 +442,3 @@ class VideoDisplay(Phonon.VideoWidget):
         if self.hidden:
             self.hidden = False
             self._play()
-

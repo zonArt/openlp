@@ -1,4 +1,3 @@
-import os.path
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
@@ -85,7 +84,7 @@ class ServiceManagerList(QtGui.QTreeWidget):
         mimeData = QtCore.QMimeData()
         drag.setMimeData(mimeData)
         mimeData.setText(u'ServiceManager')
-        dropAction = drag.start(QtCore.Qt.CopyAction)
+        drag.start(QtCore.Qt.CopyAction)
 
 class ServiceManager(QtGui.QWidget):
     """
@@ -797,7 +796,7 @@ class ServiceManager(QtGui.QWidget):
             plugin = event.mimeData().text()
             item = self.ServiceManagerList.itemAt(event.pos())
             if plugin == u'ServiceManager':
-                startpos,  startCount = self.findServiceItem()
+                startpos, startCount = self.findServiceItem()
                 if item is None:
                     endpos = len(self.serviceItems)
                 else:

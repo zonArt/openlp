@@ -295,7 +295,7 @@ class ThemeManager(QtGui.QWidget):
         self.pushThemes()
 
     def pushThemes(self):
-        Receiver.send_message(u'theme_update_list', self.getThemes() )
+        Receiver.send_message(u'theme_update_list', self.getThemes())
 
     def getThemes(self):
         return self.themelist

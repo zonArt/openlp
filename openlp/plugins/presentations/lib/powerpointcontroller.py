@@ -31,7 +31,7 @@ if os.name == u'nt':
     import _winreg
     import win32ui
 
-from presentationcontroller import PresentationController,  PresentationDocument
+from presentationcontroller import PresentationController, PresentationDocument
 
 log = logging.getLogger(__name__)
 
@@ -62,7 +62,8 @@ class PowerpointController(PresentationController):
         log.debug(u'check_available')
         if os.name == u'nt':
             try:
-                _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT, u'PowerPoint.Application').Close()
+                _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT,
+                    u'PowerPoint.Application').Close()
                 return True
             except:
                 pass
@@ -96,13 +97,13 @@ class PowerpointController(PresentationController):
 
         def add_doc(self, name):
             log.debug(u'Add Doc PowerPoint')
-            doc = PowerpointDocument(self,  name)
+            doc = PowerpointDocument(self, name)
             self.docs.append(doc)
             return doc
 
 class PowerpointDocument(PresentationDocument):
 
-    def __init__(self,  controller,  presentation):
+    def __init__(self, controller, presentation):
         log.debug(u'Init Presentation Powerpoint')
         self.presentation = None
         self.controller = controller

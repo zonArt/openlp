@@ -111,7 +111,7 @@ class BibleDB(QtCore.QObject):
         ``old_filename``
             The "dirty" file name or version name.
         """
-        if not isinstance(old_filename,  unicode):
+        if not isinstance(old_filename, unicode):
             old_filename = unicode(old_filename, u'utf-8')
         old_filename = re.sub(r'[^\w]+', u'_', old_filename).strip(u'_')
         return old_filename + u'.sqlite'

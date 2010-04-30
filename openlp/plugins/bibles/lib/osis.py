@@ -165,7 +165,7 @@ class OSISBible(BibleDB):
                     verse_text = verse_text.replace(u'</lb>', u'')\
                         .replace(u'</l>', u'').replace(u'<lg>', u'')\
                         .replace(u'</lg>', u'').replace(u'</q>', u'')\
-                        .replace(u'</div>', u'').replace(u'</w>',  u'')
+                        .replace(u'</div>', u'').replace(u'</w>', u'')
                     verse_text = self.spaces_regex.sub(u' ', verse_text)
                     self.create_verse(db_book.id, chapter, verse, verse_text)
                     Receiver.send_message(u'openlp_process_events')
