@@ -137,6 +137,8 @@ class MainDisplay(DisplayWidget):
             QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'videodisplay_background'), self.hideDisplayForVideo)
 
     def setup(self):
         """
@@ -352,6 +354,8 @@ class VideoDisplay(Phonon.VideoWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'videodisplay_stop'), self.onMediaStop)
         QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'videodisplay_background'), self.onMediaBackground)
+        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.setup)
         self.setVisible(False)
 
@@ -381,6 +385,11 @@ class VideoDisplay(Phonon.VideoWidget):
         else:
             self.setVisible(False)
             self.primary = True
+
+    def onMediaBackground(self, message):
+        log.debug(u'VideoDisplay Queue new media message %s' % message)
+        source = self.mediaObject.setCurrentSource(Phonon.MediaSource(message))
+        self._play()
 
     def onMediaQueue(self, message):
         log.debug(u'VideoDisplay Queue new media message %s' % message)
