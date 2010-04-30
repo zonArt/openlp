@@ -585,7 +585,7 @@ class SlideController(QtGui.QWidget):
         self.hideButton.setChecked(False)
         self.themeButton.setChecked(False)
         QtCore.QSettings().setValue(
-            self.parent.generalSettingsSection + u'/screen blank',
+            self.parent.general_settings_section + u'/screen blank',
             QtCore.QVariant(checked))
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Blank)
