@@ -24,6 +24,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_SongUsageDetailDialog(object):
     def setupUi(self, AuditDetailDialog):
@@ -86,7 +87,7 @@ class Ui_SongUsageDetailDialog(object):
         QtCore.QMetaObject.connectSlotsByName(AuditDetailDialog)
 
     def retranslateUi(self, AuditDetailDialog):
-        AuditDetailDialog.setWindowTitle(self.trUtf8('Song Usage Extraction'))
-        self.DateRangeGroupBox.setTitle(self.trUtf8('Select Date Range'))
-        self.ToLabel.setText(self.trUtf8('to'))
-        self.FileGroupBox.setTitle(self.trUtf8('Report Location'))
+        AuditDetailDialog.setWindowTitle(translate('AuditDetailDialog', 'Song Usage Extraction'))
+        self.DateRangeGroupBox.setTitle(translate('AuditDetailDialog', 'Select Date Range'))
+        self.ToLabel.setText(translate('AuditDetailDialog', 'to'))
+        self.FileGroupBox.setTitle(translate('AuditDetailDialog', 'Report Location'))

@@ -599,6 +599,37 @@ This General Public License does not permit incorporating your program into prop
     </message>
 </context>
 <context>
+    <name>AuditDeleteDialog</name>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedeletedialog.py" line="61"/>
+        <source>Song Usage Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AuditDetailDialog</name>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="90"/>
+        <source>Song Usage Extraction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="91"/>
+        <source>Select Date Range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="92"/>
+        <source>to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="93"/>
+        <source>Report Location</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>AuthorsForm</name>
     <message>
         <location filename="openlp/plugins/songs/forms/authorsform.py" line="78"/>
@@ -2346,6 +2377,107 @@ You can download the latest version from http://openlp.org</source>
     </message>
 </context>
 <context>
+    <name>OpenSongExportForm</name>
+    <message>
+        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="290"/>
+        <source>Select OpenSong song folder:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="291"/>
+        <source>Full Song List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="299"/>
+        <source>Song Title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="300"/>
+        <source>Author</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="301"/>
+        <source>Select All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="295"/>
+        <source>Lyrics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="296"/>
+        <source>Title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="298"/>
+        <source>Song Export List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="302"/>
+        <source>Remove Selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="303"/>
+        <source>Progress:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="304"/>
+        <source>Ready to export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="305"/>
+        <source>Export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="306"/>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OpenSongImportForm</name>
+    <message>
+        <location filename="openlp/plugins/songs/forms/opensongimportdialog.py" line="104"/>
+        <source>OpenSong Song Importer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/opensongimportdialog.py" line="105"/>
+        <source>OpenSong Folder:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/opensongimportdialog.py" line="106"/>
+        <source>Progress:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/opensongimportdialog.py" line="107"/>
+        <source>Ready to import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/opensongimportdialog.py" line="108"/>
+        <source>Import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/opensongimportdialog.py" line="109"/>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>PluginForm</name>
     <message>
         <location filename="openlp/core/ui/plugindialog.py" line="102"/>
@@ -2750,6 +2882,21 @@ You can download the latest version from http://openlp.org</source>
         <source>You need to type in a book name!</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songbookdialog.py" line="69"/>
+        <source>Edit Book</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songbookdialog.py" line="70"/>
+        <source>Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songbookdialog.py" line="71"/>
+        <source>Publisher:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SongMaintenanceForm</name>
@@ -2846,6 +2993,41 @@ You can download the latest version from http://openlp.org</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="237"/>
         <source>Are you sure you want to delete the selected topic?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="211"/>
+        <source>Song Maintenance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="212"/>
+        <source>Authors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="213"/>
+        <source>Topics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="214"/>
+        <source>Books/Hymnals</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="221"/>
+        <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="222"/>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="223"/>
+        <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3180,210 +3362,14 @@ You can download the latest version from http://openlp.org</source>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>Ui_OpenSongExportDialog</name>
-    <message>
-        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="305"/>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="294"/>
-        <source>Lyrics</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="298"/>
-        <source>Song Title</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="300"/>
-        <source>Select All</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="297"/>
-        <source>Song Export List</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="299"/>
-        <source>Author</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="295"/>
-        <source>Title</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="288"/>
-        <source>OpenSong Song Exporter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="301"/>
-        <source>Remove Selected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="302"/>
-        <source>Progress:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="289"/>
-        <source>Select OpenSong song folder:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="303"/>
-        <source>Ready to export</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="304"/>
-        <source>Export</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="290"/>
-        <source>Full Song List</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Ui_OpenSongImportDialog</name>
-    <message>
-        <location filename="openlp/plugins/songs/forms/opensongimportdialog.py" line="104"/>
-        <source>OpenSong Folder:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/opensongimportdialog.py" line="107"/>
-        <source>Import</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/opensongimportdialog.py" line="108"/>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/opensongimportdialog.py" line="105"/>
-        <source>Progress:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/opensongimportdialog.py" line="103"/>
-        <source>OpenSong Song Importer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/opensongimportdialog.py" line="106"/>
-        <source>Ready to import</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Ui_SongBookDialog</name>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songbookdialog.py" line="69"/>
-        <source>Name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songbookdialog.py" line="68"/>
-        <source>Edit Book</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songbookdialog.py" line="70"/>
-        <source>Publisher:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Ui_SongMaintenanceDialog</name>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="222"/>
-        <source>Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="213"/>
-        <source>Topics</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="221"/>
-        <source>Add</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="212"/>
-        <source>Authors</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="223"/>
-        <source>Delete</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="211"/>
-        <source>Song Maintenance</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="214"/>
-        <source>Books/Hymnals</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Ui_SongUsageDeleteDialog</name>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedeletedialog.py" line="60"/>
-        <source>Song Usage Delete</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Ui_SongUsageDetailDialog</name>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="92"/>
-        <source>Report Location</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="89"/>
-        <source>Song Usage Extraction</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="90"/>
-        <source>Select Date Range</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="91"/>
-        <source>to</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Ui_TopicsDialog</name>
     <message>
         <location filename="openlp/plugins/songs/forms/topicsdialog.py" line="63"/>
-        <source>Topic name:</source>
+        <source>Topic Maintenance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/topicsdialog.py" line="62"/>
-        <source>Topic Maintenance</source>
+        <location filename="openlp/plugins/songs/forms/topicsdialog.py" line="64"/>
+        <source>Topic name:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

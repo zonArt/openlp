@@ -24,6 +24,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_SongUsageDeleteDialog(object):
     def setupUi(self, AuditDeleteDialog):
@@ -57,4 +58,4 @@ class Ui_SongUsageDeleteDialog(object):
         QtCore.QMetaObject.connectSlotsByName(AuditDeleteDialog)
 
     def retranslateUi(self, AuditDeleteDialog):
-        AuditDeleteDialog.setWindowTitle(self.trUtf8('Song Usage Delete'))
+        AuditDeleteDialog.setWindowTitle(translate('AuditDeleteDialog', 'Song Usage Delete'))

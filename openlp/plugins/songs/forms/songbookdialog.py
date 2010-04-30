@@ -24,32 +24,33 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_SongBookDialog(object):
-    def setupUi(self, SongBookDialog):
-        SongBookDialog.setObjectName(u'SongBookDialog')
-        SongBookDialog.resize(367, 120)
-        self.SongBookLayout = QtGui.QFormLayout(SongBookDialog)
+    def setupUi(self, SongBookForm):
+        SongBookForm.setObjectName(u'SongBookDialog')
+        SongBookForm.resize(367, 120)
+        self.SongBookLayout = QtGui.QFormLayout(SongBookForm)
         self.SongBookLayout.setMargin(8)
         self.SongBookLayout.setSpacing(8)
         self.SongBookLayout.setObjectName(u'SongBookLayout')
-        self.NameLabel = QtGui.QLabel(SongBookDialog)
+        self.NameLabel = QtGui.QLabel(SongBookForm)
         self.NameLabel.setObjectName(u'NameLabel')
         self.SongBookLayout.setWidget(0,
             QtGui.QFormLayout.LabelRole, self.NameLabel)
-        self.NameEdit = QtGui.QLineEdit(SongBookDialog)
+        self.NameEdit = QtGui.QLineEdit(SongBookForm)
         self.NameEdit.setObjectName(u'NameEdit')
         self.SongBookLayout.setWidget(0,
             QtGui.QFormLayout.FieldRole, self.NameEdit)
-        self.PublisherLabel = QtGui.QLabel(SongBookDialog)
+        self.PublisherLabel = QtGui.QLabel(SongBookForm)
         self.PublisherLabel.setObjectName(u'PublisherLabel')
         self.SongBookLayout.setWidget(1,
             QtGui.QFormLayout.LabelRole, self.PublisherLabel)
-        self.PublisherEdit = QtGui.QLineEdit(SongBookDialog)
+        self.PublisherEdit = QtGui.QLineEdit(SongBookForm)
         self.PublisherEdit.setObjectName(u'PublisherEdit')
         self.SongBookLayout.setWidget(1,
             QtGui.QFormLayout.FieldRole, self.PublisherEdit)
-        self.ButtonBox = QtGui.QDialogButtonBox(SongBookDialog)
+        self.ButtonBox = QtGui.QDialogButtonBox(SongBookForm)
         self.ButtonBox.setOrientation(QtCore.Qt.Horizontal)
         self.ButtonBox.setStandardButtons(
             QtGui.QDialogButtonBox.Save | QtGui.QDialogButtonBox.Cancel)
@@ -57,14 +58,14 @@ class Ui_SongBookDialog(object):
         self.SongBookLayout.setWidget(2,
             QtGui.QFormLayout.FieldRole, self.ButtonBox)
 
-        self.retranslateUi(SongBookDialog)
+        self.retranslateUi(SongBookForm)
         QtCore.QObject.connect(self.ButtonBox,
-            QtCore.SIGNAL(u'accepted()'), SongBookDialog.accept)
+            QtCore.SIGNAL(u'accepted()'), SongBookForm.accept)
         QtCore.QObject.connect(self.ButtonBox,
-            QtCore.SIGNAL(u'rejected()'), SongBookDialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(SongBookDialog)
+            QtCore.SIGNAL(u'rejected()'), SongBookForm.reject)
+        QtCore.QMetaObject.connectSlotsByName(SongBookForm)
 
-    def retranslateUi(self, SongBookDialog):
-        SongBookDialog.setWindowTitle(self.trUtf8('Edit Book'))
-        self.NameLabel.setText(self.trUtf8('Name:'))
-        self.PublisherLabel.setText(self.trUtf8('Publisher:'))
+    def retranslateUi(self, SongBookForm):
+        SongBookForm.setWindowTitle(translate('SongBookForm', 'Edit Book'))
+        self.NameLabel.setText(translate('SongBookForm', 'Name:'))
+        self.PublisherLabel.setText(translate('SongBookForm', 'Publisher:'))
