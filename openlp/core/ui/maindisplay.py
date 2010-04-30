@@ -334,6 +334,7 @@ class VideoDisplay(Phonon.VideoWidget):
         self.parent = parent
         self.screens = screens
         self.hidden = False
+        self.background = False
         self.mediaObject = Phonon.MediaObject()
         self.setAspectRatio(aspect)
         self.audioObject = Phonon.AudioOutput(Phonon.VideoCategory)
@@ -357,6 +358,8 @@ class VideoDisplay(Phonon.VideoWidget):
             QtCore.SIGNAL(u'videodisplay_background'), self.onMediaBackground)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.setup)
+        QtCore.QObject.connect(self.mediaObject,
+            QtCore.SIGNAL(u'finished()'), self.onMediaBackground)
         self.setVisible(False)
 
     def keyPressEvent(self, event):
@@ -387,8 +390,12 @@ class VideoDisplay(Phonon.VideoWidget):
             self.primary = True
 
     def onMediaBackground(self, message):
+        if not message:
+            message = self.message
         log.debug(u'VideoDisplay Queue new media message %s' % message)
         source = self.mediaObject.setCurrentSource(Phonon.MediaSource(message))
+        self.message = message
+        self.background = True
         self._play()
 
     def onMediaQueue(self, message):
@@ -416,6 +423,8 @@ class VideoDisplay(Phonon.VideoWidget):
 
     def onMediaStop(self):
         log.debug(u'VideoDisplay Media stopped by user')
+        self.background = False
+        self.message = None
         self.mediaObject.stop()
         self.onMediaFinish()
 
