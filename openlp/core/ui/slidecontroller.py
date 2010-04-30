@@ -93,8 +93,6 @@ class SlideController(QtGui.QWidget):
         """
         QtGui.QWidget.__init__(self, parent)
         self.settingsmanager = settingsmanager
-        self.generalSettingsSection = u'general'
-        self.songsSettingsSection = u'songs'
         self.isLive = isLive
         self.parent = parent
         self.mainDisplay = self.parent.displayManager.mainDisplay
@@ -399,7 +397,7 @@ class SlideController(QtGui.QWidget):
         if item.is_text():
             self.Toolbar.makeWidgetsInvisible(self.loop_list)
             if QtCore.QSettings().value(
-                self.songsSettingsSection + u'/show songbar',
+                self.parent.songs_settings_section + u'/show songbar',
                 QtCore.QVariant(True)).toBool() and len(self.slideList) > 0:
                 self.Toolbar.makeWidgetsVisible([u'Song Menu'])
         if item.is_capable(ItemCapabilities.AllowsLoop) and \
@@ -589,7 +587,7 @@ class SlideController(QtGui.QWidget):
             self.blankButton.setChecked(True)
         self.blankScreen(HideMode.Blank, self.blankButton.isChecked())
         QtCore.QSettings().setValue(
-            self.generalSettingsSection + u'/screen blank',
+            self.parent.general_settings_section + u'/screen blank',
             QtCore.QVariant(self.blankButton.isChecked()))
 
     def onThemeDisplay(self, force=False):

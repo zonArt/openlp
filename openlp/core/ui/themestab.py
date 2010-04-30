@@ -124,7 +124,7 @@ class ThemesTab(SettingsTab):
 
     def load(self):
         settings = QtCore.QSettings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         self.theme_level = settings.value(
             u'theme level', QtCore.QVariant(ThemeLevel.Global)).toInt()[0]
         self.global_theme = unicode(settings.value(
@@ -139,7 +139,7 @@ class ThemesTab(SettingsTab):
 
     def save(self):
         settings = QtCore.QSettings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         settings.setValue(u'theme level',
             QtCore.QVariant(self.theme_level))
         settings.setValue(u'global theme',
@@ -179,7 +179,7 @@ class ThemesTab(SettingsTab):
         """
         #reload as may have been triggered by the ThemeManager
         self.global_theme = unicode(QtCore.QSettings().value(
-            self.settingsSection + u'/global theme',
+            self.settings_section + u'/global theme',
             QtCore.QVariant(u'')).toString())
         self.DefaultComboBox.clear()
         for theme in theme_list:
