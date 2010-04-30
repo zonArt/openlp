@@ -591,8 +591,10 @@ class SlideController(QtGui.QWidget):
             QtCore.QVariant(checked))
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Blank)
+            Receiver.send_message(u'presentation_blank')
         else:
             Receiver.send_message(u'maindisplay_show')
+            Receiver.send_message(u'presentation_unblank')
 
     def onThemeDisplay(self, checked):
         """
