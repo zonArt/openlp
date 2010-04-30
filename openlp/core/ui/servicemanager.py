@@ -1,3 +1,4 @@
+import os.path
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
@@ -501,7 +502,8 @@ class ServiceManager(QtGui.QWidget):
             filename = unicode(filename)
             self.isNew = False
             SettingsManager.set_last_dir(
-                self.parent.service_settings_section, filename)
+                self.parent.service_settings_section,
+                os.path.split(filename)[0])
             service = []
             servicefile = filename + u'.osd'
             zip = None
@@ -578,7 +580,8 @@ class ServiceManager(QtGui.QWidget):
         name = filename.split(os.path.sep)
         if filename:
             SettingsManager.set_last_dir(
-                self.parent.service_settings_section, filename)
+                self.parent.service_settings_section,
+                os.path.split(filename)[0])
             zip = None
             f = None
             try:
