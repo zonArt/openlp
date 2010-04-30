@@ -396,7 +396,7 @@ class SlideController(QtGui.QWidget):
         if item.is_text():
             self.Toolbar.makeWidgetsInvisible(self.loop_list)
             if QtCore.QSettings().value(
-                self.parent.songs_settings_section + u'/show songbar',
+                self.parent.songsSettingsSection + u'/show songbar',
                 QtCore.QVariant(True)).toBool() and len(self.slideList) > 0:
                 self.Toolbar.makeWidgetsVisible([u'Song Menu'])
         if item.is_capable(ItemCapabilities.AllowsLoop) and \
@@ -585,7 +585,7 @@ class SlideController(QtGui.QWidget):
         self.hideButton.setChecked(False)
         self.themeButton.setChecked(False)
         QtCore.QSettings().setValue(
-            self.parent.general_settings_section + u'/screen blank',
+            self.parent.generalSettingsSection + u'/screen blank',
             QtCore.QVariant(checked))
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Blank)

@@ -426,10 +426,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.applicationVersion = applicationVersion
         # Set up settings sections for the main application
         # (not for use by plugins)
-        self.ui_settings_section = u'user interface'
-        self.general_settings_section = u'general'
-        self.service_settings_section = u'servicemanager'
-        self.songs_settings_section = u'songs'
+        self.uiSettingsSection = u'user interface'
+        self.generalSettingsSection = u'general'
+        self.serviceSettingsSection = u'servicemanager'
+        self.songsSettingsSection = u'songs'
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
         self.displayManager = DisplayManager(screens)
@@ -576,7 +576,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.displayManager.mainDisplay.setFocus()
         self.activateWindow()
         if QtCore.QSettings().value(
-            self.general_settings_section + u'/auto open',
+            self.generalSettingsSection + u'/auto open',
             QtCore.QVariant(False)).toBool():
             self.ServiceManagerContents.onLoadService(True)
 
@@ -586,7 +586,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Triggered by delay thread.
         """
         settings = QtCore.QSettings()
-        settings.beginGroup(self.general_settings_section)
+        settings.beginGroup(self.generalSettingsSection)
         if settings.value(u'screen blank', QtCore.QVariant(False)).toBool() \
         and settings.value(u'blank warning', QtCore.QVariant(False)).toBool():
             self.LiveController.onBlankDisplay(True)
@@ -731,10 +731,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def loadSettings(self):
         log.debug(u'Loading QSettings')
         settings = QtCore.QSettings()
-        settings.beginGroup(self.general_settings_section)
+        settings.beginGroup(self.generalSettingsSection)
         self.recentFiles = settings.value(u'recent files').toStringList()
         settings.endGroup()
-        settings.beginGroup(self.ui_settings_section)
+        settings.beginGroup(self.uiSettingsSection)
         self.move(settings.value(u'main window position',
             QtCore.QVariant(QtCore.QPoint(0, 0))).toPoint())
         self.restoreGeometry(
@@ -745,12 +745,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def saveSettings(self):
         log.debug(u'Saving QSettings')
         settings = QtCore.QSettings()
-        settings.beginGroup(self.general_settings_section)
+        settings.beginGroup(self.generalSettingsSection)
         recentFiles = QtCore.QVariant(self.recentFiles) \
             if self.recentFiles else QtCore.QVariant()
         settings.setValue(u'recent files', recentFiles)
         settings.endGroup()
-        settings.beginGroup(self.ui_settings_section)
+        settings.beginGroup(self.uiSettingsSection)
         settings.setValue(u'main window position',
             QtCore.QVariant(self.pos()))
         settings.setValue(u'main window state',
@@ -780,7 +780,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def addRecentFile(self, filename):
         recentFileCount = QtCore.QSettings().value(
-            self.general_settings_section + u'/max recent files',
+            self.generalSettingsSection + u'/max recent files',
             QtCore.QVariant(4)).toInt()[0]
         if filename and not self.recentFiles.contains(filename):
             self.recentFiles.prepend(QtCore.QString(filename))

@@ -275,7 +275,7 @@ class BibleMediaItem(MediaManagerItem):
         self.SearchProgress.setObjectName(u'SearchProgress')
 
     def configUpdated(self):
-        if QtCore.QSettings().value(self.settings_section + u'/dual bibles',
+        if QtCore.QSettings().value(self.settingsSection + u'/dual bibles',
             QtCore.QVariant(False)).toBool():
             self.AdvancedSecondBibleLabel.setVisible(True)
             self.AdvancedSecondBibleComboBox.setVisible(True)

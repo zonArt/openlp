@@ -133,7 +133,7 @@ class SongMediaItem(MediaManagerItem):
 
     def configUpdated(self):
         self.searchAsYouType = QtCore.QSettings().value(
-            self.settings_section + u'/search as type',
+            self.settingsSection + u'/search as type',
             QtCore.QVariant(u'False')).toBool()
 
     def retranslateUi(self):

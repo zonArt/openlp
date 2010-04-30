@@ -77,12 +77,12 @@ class ImageMediaItem(MediaManagerItem):
             QtGui.QAbstractItemView.ExtendedSelection)
         self.ListView.setIconSize(QtCore.QSize(88,50))
         self.servicePath = os.path.join(
-            AppLocation.get_section_data_path(self.settings_section),
+            AppLocation.get_section_data_path(self.settingsSection),
             u'thumbnails')
         if not os.path.exists(self.servicePath):
             os.mkdir(self.servicePath)
         self.loadList(SettingsManager.load_list(
-            self.settings_section, self.settings_section))
+            self.settingsSection, self.settingsSection))
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
@@ -121,8 +121,8 @@ class ImageMediaItem(MediaManagerItem):
                     #if not present do not worry
                     pass
                 self.ListView.takeItem(item.row())
-                SettingsManager.set_list(self.settings_section,
-                    self.settings_section, self.getFileList())
+                SettingsManager.set_list(self.settingsSection,
+                    self.settingsSection, self.getFileList())
 
     def loadList(self, list):
         for file in list:
