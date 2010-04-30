@@ -49,7 +49,6 @@ class ItemCapabilities(object):
    RequiresMedia = 4
    AllowsLoop = 5
 
-
 class ServiceItem(object):
     """
     The service item is a base class for the plugins to use to interact with

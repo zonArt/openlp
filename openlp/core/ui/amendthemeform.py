@@ -101,6 +101,9 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         QtCore.QObject.connect(self.FontMainHeightSpinBox,
             QtCore.SIGNAL(u'editingFinished()'),
             self.onFontMainHeightSpinBoxChanged)
+        QtCore.QObject.connect(self.FontMainLineAdjustmentSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.onFontMainLineAdjustmentSpinBoxChanged)
         QtCore.QObject.connect(self.FontMainLineSpacingSpinBox,
             QtCore.SIGNAL(u'editingFinished()'),
             self.onFontMainLineSpacingSpinBoxChanged)
@@ -163,6 +166,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 unicode(self.theme.font_main_weight),
                 unicode(self.theme.font_main_italics),
                 unicode(self.theme.font_main_indentation),
+                unicode(self.theme.font_main_line_adjustment),
                 unicode(self.theme.font_main_x),
                 unicode(self.theme.font_main_y),
                 unicode(self.theme.font_main_width),
@@ -173,7 +177,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 unicode(self.theme.font_footer_override), u'footer',
                 unicode(self.theme.font_footer_weight),
                 unicode(self.theme.font_footer_italics),
-                0,
+                0, # indentation
+                0, # line adjustment
                 unicode(self.theme.font_footer_x),
                 unicode(self.theme.font_footer_y),
                 unicode(self.theme.font_footer_width),
@@ -261,6 +266,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.FontMainYSpinBox.setValue(self.theme.font_main_y)
             self.FontMainWidthSpinBox.setValue(self.theme.font_main_width)
             self.FontMainHeightSpinBox.setValue(self.theme.font_main_height)
+            self.FontMainLineAdjustmentSpinBox.setValue(
+                self.theme.font_main_line_adjustment)
             self.FontMainLineSpacingSpinBox.setValue(
                 self.theme.font_main_indentation)
         self.stateChanging(self.theme)
@@ -279,6 +286,13 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
     def onFontMainWidthSpinBoxChanged(self):
         if self.theme.font_main_width != self.FontMainWidthSpinBox.value():
             self.theme.font_main_width = self.FontMainWidthSpinBox.value()
+            self.previewTheme()
+
+    def onFontMainLineAdjustmentSpinBoxChanged(self):
+        if self.theme.font_main_line_adjustment != \
+            self.FontMainLineAdjustmentSpinBox.value():
+            self.theme.font_main_line_adjustment = \
+                self.FontMainLineAdjustmentSpinBox.value()
             self.previewTheme()
 
     def onFontMainLineSpacingSpinBoxChanged(self):
@@ -687,7 +701,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         if self.allowPreview:
             #calculate main number of rows
             metrics = self._getThemeMetrics()
-            line_height = metrics.height()
+            line_height = metrics.height() \
+                + int(self.theme.font_main_line_adjustment)
             if self.theme.display_shadow:
                 line_height += int(self.theme.display_shadow_size)
             if self.theme.display_outline:
@@ -700,7 +715,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 page_length))
             page_length_text = unicode(self.trUtf8('Slide Height is %s rows'))
             self.FontMainLinesPageLabel.setText(page_length_text % page_length)
-            #a=c
             frame = self.thememanager.generateImage(self.theme)
             self.ThemePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
 

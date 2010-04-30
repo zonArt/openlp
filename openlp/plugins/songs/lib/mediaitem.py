@@ -46,7 +46,6 @@ class SongMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Song'
-        self.SettingsSection = title.lower()
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = SongListView
         MediaManagerItem.__init__(self, parent, icon, title)
@@ -134,7 +133,7 @@ class SongMediaItem(MediaManagerItem):
 
     def configUpdated(self):
         self.searchAsYouType = QtCore.QSettings().value(
-            self.SettingsSection + u'/search as type',
+            self.settings_section + u'/search as type',
             QtCore.QVariant(u'False')).toBool()
 
     def retranslateUi(self):

@@ -42,7 +42,7 @@ class GeneralTab(SettingsTab):
         If not set before default to last screen.
         """
         settings = QtCore.QSettings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         self.MonitorNumber = settings.value(u'monitor',
             QtCore.QVariant(self.screens.monitor_number)).toInt()[0]
         self.screens.set_current_display(self.MonitorNumber)
@@ -181,7 +181,7 @@ class GeneralTab(SettingsTab):
         self.MonitorLabel.setText(
             self.trUtf8('Select monitor for output display:'))
         self.DisplayOnMonitorCheck.setText(
-            self.trUtf8('Display if in single screen'))
+            self.trUtf8('Display if a single screen'))
         self.StartupGroupBox.setTitle(self.trUtf8('Application Startup'))
         self.WarningCheckBox.setText(self.trUtf8('Show blank screen warning'))
         self.AutoOpenCheckBox.setText(
@@ -229,7 +229,7 @@ class GeneralTab(SettingsTab):
 
     def load(self):
         settings = QtCore.QSettings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         for screen in self.screens.screen_list:
             screen_name = u'%s %d' % (self.trUtf8('Screen'),
                 screen[u'number'] + 1)
@@ -268,7 +268,7 @@ class GeneralTab(SettingsTab):
 
     def save(self):
         settings = QtCore.QSettings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         settings.setValue(u'monitor', QtCore.QVariant(self.MonitorNumber))
         settings.setValue(u'display on monitor',
             QtCore.QVariant(self.DisplayOnMonitor))

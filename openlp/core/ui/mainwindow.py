@@ -242,12 +242,14 @@ class Ui_MainWindow(object):
         ContentsIcon = build_icon(u':/system/system_help_contents.png')
         self.HelpDocumentationItem.setIcon(ContentsIcon)
         self.HelpDocumentationItem.setObjectName(u'HelpDocumentationItem')
+        self.HelpDocumentationItem.setEnabled(False)
         self.HelpAboutItem = QtGui.QAction(MainWindow)
         AboutIcon = build_icon(u':/system/system_about.png')
         self.HelpAboutItem.setIcon(AboutIcon)
         self.HelpAboutItem.setObjectName(u'HelpAboutItem')
         self.HelpOnlineHelpItem = QtGui.QAction(MainWindow)
         self.HelpOnlineHelpItem.setObjectName(u'HelpOnlineHelpItem')
+        self.HelpOnlineHelpItem.setEnabled(False)
         self.HelpWebSiteItem = QtGui.QAction(MainWindow)
         self.HelpWebSiteItem.setObjectName(u'HelpWebSiteItem')
         #i18n Language Items
@@ -440,8 +442,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtGui.QMainWindow.__init__(self)
         self.screens = screens
         self.applicationVersion = applicationVersion
-        self.generalSettingsSection = u'general'
-        self.uiSettingsSection = u'user interface'
+        # Set up settings sections for the main application
+        # (not for use by plugins)
+        self.ui_settings_section = u'user interface'
+        self.general_settings_section = u'general'
+        self.service_settings_section = u'servicemanager'
+        self.songs_settings_section = u'songs'
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
         self.displayManager = DisplayManager(screens)
@@ -490,6 +496,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.PreviewController.Panel,
             QtCore.SIGNAL(u'visibilityChanged(bool)'),
             self.action_Preview_Panel.setChecked)
+        QtCore.QObject.connect(self.HelpWebSiteItem,
+            QtCore.SIGNAL(u'triggered()'), self.onHelpWebSiteClicked)
         QtCore.QObject.connect(self.HelpAboutItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpAboutItemClicked)
         QtCore.QObject.connect(self.PluginItem,
@@ -528,6 +536,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         #ThemeManager needs to call RenderManager
         self.RenderManager = RenderManager(
             self.ThemeManagerContents, self.screens)
+        self.displayManager.renderManager = self.RenderManager
         #Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
@@ -596,7 +605,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.displayManager.mainDisplay.isVisible():
             self.displayManager.mainDisplay.setFocus()
         self.activateWindow()
-        if QtCore.QSettings().value(self.generalSettingsSection + u'/auto open',
+        if QtCore.QSettings().value(
+            self.general_settings_section + u'/auto open',
             QtCore.QVariant(False)).toBool():
             self.ServiceManagerContents.onLoadService(True)
 
@@ -606,7 +616,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Triggered by delay thread.
         """
         settings = QtCore.QSettings()
-        settings.beginGroup(self.generalSettingsSection)
+        settings.beginGroup(self.general_settings_section)
         if settings.value(u'screen blank', QtCore.QVariant(False)).toBool() \
         and settings.value(u'blank warning', QtCore.QVariant(False)).toBool():
             self.LiveController.onBlankDisplay(True)
@@ -623,6 +633,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         vT = VersionThread(self, self.applicationVersion)
         vT.start()
+
+    def onHelpWebSiteClicked(self):
+        """
+        Load the OpenLP website
+        """
+        import webbrowser
+        webbrowser.open_new(u'http://openlp.org/')
 
     def onHelpAboutItemClicked(self):
         """
@@ -744,9 +761,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def loadSettings(self):
         log.debug(u'Loading QSettings')
         settings = QtCore.QSettings()
-        self.recentFiles = settings.value(
-            self.generalSettingsSection + u'/recent files').toStringList()
-        settings.beginGroup(self.uiSettingsSection)
+        settings.beginGroup(self.general_settings_section)
+        self.recentFiles = settings.value(u'recent files').toStringList()
+        settings.endGroup()
+        settings.beginGroup(self.ui_settings_section)
         self.move(settings.value(u'main window position',
             QtCore.QVariant(QtCore.QPoint(0, 0))).toPoint())
         self.restoreGeometry(
@@ -757,11 +775,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def saveSettings(self):
         log.debug(u'Saving QSettings')
         settings = QtCore.QSettings()
+        settings.beginGroup(self.general_settings_section)
         recentFiles = QtCore.QVariant(self.recentFiles) \
             if self.recentFiles else QtCore.QVariant()
-        settings.setValue(
-            self.generalSettingsSection + u'/recent files', recentFiles)
-        settings.beginGroup(self.uiSettingsSection)
+        settings.setValue(u'recent files', recentFiles)
+        settings.endGroup()
+        settings.beginGroup(self.ui_settings_section)
         settings.setValue(u'main window position',
             QtCore.QVariant(self.pos()))
         settings.setValue(u'main window state',
@@ -791,7 +810,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def addRecentFile(self, filename):
         recentFileCount = QtCore.QSettings().value(
-            self.generalSettingsSection + u'/max recent files',
+            self.general_settings_section + u'/max recent files',
             QtCore.QVariant(4)).toInt()[0]
         if filename and not self.recentFiles.contains(filename):
             self.recentFiles.prepend(QtCore.QString(filename))
