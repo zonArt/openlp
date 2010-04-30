@@ -589,10 +589,10 @@ class SlideController(QtGui.QWidget):
             QtCore.QVariant(checked))
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Blank)
-            Receiver.send_message(u'presentation_blank')
+            self.blankPlugin(True)
         else:
             Receiver.send_message(u'maindisplay_show')
-            Receiver.send_message(u'presentation_unblank')
+            self.blankPlugin(False)
 
     def onThemeDisplay(self, checked):
         """
@@ -603,8 +603,10 @@ class SlideController(QtGui.QWidget):
         self.hideButton.setChecked(False)
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Theme)
+            self.blankPlugin(True)
         else:
             Receiver.send_message(u'maindisplay_show')
+            self.blankPlugin(False)
 
     def onHideDisplay(self, checked):
         """
@@ -615,8 +617,25 @@ class SlideController(QtGui.QWidget):
         self.themeButton.setChecked(False)
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
+            self.blankPlugin(True)
         else:
             Receiver.send_message(u'maindisplay_show')
+            self.blankPlugin(False)
+
+    def blankPlugin(self, blank):
+        """
+        Blank the display screen.
+        """
+        if self.serviceItem is not None:
+            if blank:
+                Receiver.send_message(u'%s_blank'
+                    % self.serviceItem.name.lower(),
+                    [self.serviceItem, self.isLive])
+            else:
+                Receiver.send_message(u'%s_unblank'
+                    % self.serviceItem.name.lower(),
+                    [self.serviceItem, self.isLive])
+
 
     def onSlideSelected(self):
         """

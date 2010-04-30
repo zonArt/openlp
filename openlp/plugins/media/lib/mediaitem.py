@@ -29,7 +29,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    ItemCapabilities, SettingsManager
+    ItemCapabilities, SettingsManager, contextMenuAction,  Receiver
 
 log = logging.getLogger(__name__)
 
@@ -47,6 +47,7 @@ class MediaMediaItem(MediaManagerItem):
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Media'
         self.IconPath = u'images/image'
+        self.background = False
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = MediaListView
@@ -70,6 +71,48 @@ class MediaMediaItem(MediaManagerItem):
         self.hasFileIcon = True
         self.hasNewIcon = False
         self.hasEditIcon = False
+
+    def addListViewToToolBar(self):
+        MediaManagerItem.addListViewToToolBar(self)
+        self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.ListView.addAction(
+            contextMenuAction(
+                self.ListView, u':/slides/slide_blank.png',
+                self.trUtf8('Replace Live Background'),
+                self.onReplaceClick))
+
+    def addEndHeaderBar(self):
+        self.ImageWidget = QtGui.QWidget(self)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.ImageWidget.sizePolicy().hasHeightForWidth())
+        self.ImageWidget.setSizePolicy(sizePolicy)
+        self.ImageWidget.setObjectName(u'ImageWidget')
+        self.blankButton = self.Toolbar.addToolbarButton(
+            u'Replace Background', u':/slides/slide_blank.png',
+            self.trUtf8('Replace Live Background'), self.onReplaceClick, False)
+        # Add the song widget to the page layout
+        self.PageLayout.addWidget(self.ImageWidget)
+
+    def onReplaceClick(self):
+        if self.background:
+            self.background = False
+            Receiver.send_message(u'videodisplay_stop')
+        else:
+            self.background = True
+            if not self.ListView.selectedIndexes():
+                QtGui.QMessageBox.information(self,
+                    self.trUtf8('No item selected'),
+                    self.trUtf8('You must select one item'))
+            items = self.ListView.selectedIndexes()
+            for item in items:
+                bitem = self.ListView.item(item.row())
+                filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+                Receiver.send_message(u'videodisplay_background', filename)
+
 
     def generateSlideData(self, service_item, item=None):
         if item is None:
