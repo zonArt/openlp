@@ -164,7 +164,6 @@ class ThemeLevel(object):
 
 from eventreceiver import Receiver
 from settingsmanager import SettingsManager
-from pluginconfig import PluginConfig
 from plugin import PluginStatus, Plugin
 from pluginmanager import PluginManager
 from settingstab import SettingsTab

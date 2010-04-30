@@ -28,7 +28,7 @@ import logging
 from logging import FileHandler
 from PyQt4 import QtCore, QtGui
 import os
-from openlp.core.utils import AppLocation, ConfigHelper
+from openlp.core.utils import AppLocation
 from openlp.core.lib import translate
 
 log = logging.getLogger()
@@ -68,8 +68,8 @@ class LanguageManager(object):
 
     @staticmethod
     def get_language():
-        language = ConfigHelper.get_registry().get_value(u'general', 
-                                u'language', u'[en]')
+        language = unicode(QtCore.QSettings().value(
+            u'general/language', QtCore.QVariant(u'[en]')).toString())
         log.info(u'Language file: \'%s\' Loaded from conf file' % language)
         regEx = QtCore.QRegExp("^\[(.*)\]")
         if regEx.exactMatch(language):
@@ -85,8 +85,9 @@ class LanguageManager(object):
             language = u'[%s]' % qmList[actionName]
         else:
             language = u'%s' % qmList[actionName]
+        QtCore.QSettings().setValue(
+            u'general/language', QtCore.QVariant(language))
         log.info(u'Language file: \'%s\' written to conf file' % language)
-        ConfigHelper.set_config(u'general', u'language', language)
         QtGui.QMessageBox.information(None,  
                     translate('LanguageManager', 'Language'), 
                     translate('LanguageManager', 
@@ -100,7 +101,7 @@ class LanguageManager(object):
             regEx = QtCore.QRegExp("^.*openlp_(.*).qm")
             if regEx.exactMatch(qmf):
                 langName = regEx.cap(1)
-                LanguageManager.__qmList__[u'%i %s' % (i, 
+                LanguageManager.__qmList__[u'%#2i %s' % (i+1, 
                             LanguageManager.language_name(qmf))] = langName 
 
     @staticmethod
