@@ -782,7 +782,6 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             Receiver.send_message(u'videodisplay_start',
                 [item, self.blankButton.isChecked()])
-            Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
         else:
             self.mediaObject.stop()
             self.mediaObject.clearQueue()

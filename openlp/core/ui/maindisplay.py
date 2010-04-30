@@ -132,6 +132,8 @@ class MainDisplay(DisplayWidget):
         self.blankFrame = None
         self.frame = None
         QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'videodisplay_start'), self.hideDisplayForVideo)
+        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
@@ -196,6 +198,12 @@ class MainDisplay(DisplayWidget):
             self.setVisible(False)
         else:
             self.showFullScreen()
+
+    def hideDisplayForVideo(self):
+        """
+        Hides the main display if for the video to be played
+        """
+        self.hideDisplay(HideMode.Screen)
 
     def hideDisplay(self, mode=HideMode.Screen):
         """
