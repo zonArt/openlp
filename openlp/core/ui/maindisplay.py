@@ -401,8 +401,7 @@ class VideoDisplay(Phonon.VideoWidget):
         if not message:
             message = self.message
         # still no file name then stop as it was a normal video stopping
-        if not message:
-            log.debug(u'VideoDisplay Queue new media message %s' % message)
+        if message:
             source = self.mediaObject.setCurrentSource(Phonon.MediaSource(message))
             self.message = message
             self._play()
