@@ -229,7 +229,7 @@ class AlertsTab(SettingsTab):
 
     def load(self):
         settings = QtCore.QSettings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         self.timeout = settings.value(u'timeout', QtCore.QVariant(5)).toInt()[0]
         self.font_color = unicode(settings.value(
             u'font color', QtCore.QVariant(u'#ffffff')).toString())
@@ -260,7 +260,7 @@ class AlertsTab(SettingsTab):
 
     def save(self):
         settings = QtCore.QSettings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         self.font_face = self.FontComboBox.currentFont().family()
         settings.setValue(u'background color', QtCore.QVariant(self.bg_color))
         settings.setValue(u'font color', QtCore.QVariant(self.font_color))
