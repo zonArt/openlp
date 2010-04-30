@@ -215,7 +215,7 @@ class MessageListener(object):
         Save the handler as any new presentations start here
         """
         isLive, item = self.decode_message(message)
-        log.debug(u'Startup called with message ' % message)
+        log.debug(u'Startup called with message %s' % message)
         isBlank = message[2]
         file = os.path.join(item.get_frame_path(),
             item.get_frame_title())
