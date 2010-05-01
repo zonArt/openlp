@@ -1,0 +1,117 @@
+<html>
+<head>
+<title>OpenLP Controller</title>
+<script type='text/javascript'>
+
+function send_event(eventname, data){
+    var req = new XMLHttpRequest();
+    req.onreadystatechange = function() {
+        if(req.readyState==4)
+            response(eventname, req);
+    }
+    var url = '';
+    if(eventname.substr(-8) == '_request')
+        url = 'request';
+    else 
+        url = 'send';
+    url += '/' + eventname;
+    if(data!=null)
+        url += '?q=' + escape(data);
+    req.open('GET', url, true);
+    req.send();
+}
+function failed_response(eventname, req){
+    switch(eventname){
+        case 'remotes_poll_request':
+            if(req.status==408)
+                send_event("remotes_poll_request");
+            break;
+    }
+}
+function response(eventname, req){
+    if(req.status!=200){
+        failed_response(eventname, req);
+        return;
+    }
+    text = req.responseText;
+    switch(eventname){
+        case 'servicemanager_list_request':
+            var data = eval('(' + text + ')');
+            var html = '<table>';
+            for(row in data){
+                html += '<tr onclick="send_event('
+                html += "'servicemanager_set_item', " + row + ')"';
+                if(data[row]['selected'])
+                    html += ' style="font-weight: bold"';
+                html += '>'
+                html += '<td>' + (parseInt(row)+1) + '</td>'
+                html += '<td>' + data[row]['title'] + '</td>'
+                html += '<td>' + data[row]['plugin'] + '</td>'
+                html += '<td>' + data[row]['notes'] + '</td>'
+                html += '</tr>';
+            }
+            html += '</table>';
+            document.getElementById('service').innerHTML = html;        
+            break;
+        case 'slidecontroller_live_text_request':
+            var data = eval('(' + text + ')');
+            var html = '<table>';
+            for(row in data){
+                html += '<tr onclick="send_event('
+                html += "'slidecontroller_live_set', " + row + ')"';
+                if(data[row]['selected'])
+                    html += ' style="font-weight: bold"';
+                html += '>';
+                html += '<td>' + data[row]['tag'] + '</td>';
+                html += '<td>' + data[row]['text'].replace(/\\n/g, '<br>');
+                html += '</td></tr>';
+            }
+            html += '</table>';
+            document.getElementById('currentitem').innerHTML = html;        
+            break;
+        case 'remotes_poll_request':
+            send_event("remotes_poll_request");
+            send_event("servicemanager_list_request");
+            send_event("slidecontroller_live_text_request");
+            break;
+    }
+}
+send_event("servicemanager_list_request");
+send_event("slidecontroller_live_text_request");
+send_event("remotes_poll_request");
+</script>
+</head>
+<body>
+    <h1>OpenLP Controller</h1>
+    <input type='button' value='<- Previous Slide' 
+        onclick='send_event("slidecontroller_live_previous");' />
+    <input type='button' value='Next Slide ->' 
+        onclick='send_event("slidecontroller_live_next");' />
+    <br/>
+    <input type='button' value='<- Previous Item' 
+        onclick='send_event("servicemanager_previous_item");' />
+    <input type='button' value='Next Item ->' 
+        onclick='send_event("servicemanager_next_item");' />
+    <br/>
+    <input type='button' value='Blank' 
+        onclick='send_event("slidecontroller_live_blank");' />
+    <input type='button' value='Unblank' 
+        onclick='send_event("slidecontroller_live_unblank");' />
+    <br/>
+    <label>Alert text</label><input id='alert' type='text' />
+    <input type='button' value='Send' 
+        onclick='send_event("alerts_text", 
+        document.getElementById("alert").value);' />
+    <hr>
+    <input type='button' value='Order of service' 
+        onclick='send_event("servicemanager_list_request");'>
+    <div id='service'></div>
+    <hr>
+    <input type='button' value='Current item' 
+        onclick='send_event("slidecontroller_live_text_request");'>
+    <div id='currentitem'></div>
+    <hr>
+    <a href="http://www.openlp.org/">OpenLP website</a>
+</body>
+</html>
+

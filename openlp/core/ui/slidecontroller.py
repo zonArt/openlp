@@ -342,6 +342,12 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'slidecontroller_%s_set' % self.type_prefix), 
             self.onSlideSelectedIndex)
         QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'slidecontroller_%s_blank' % self.type_prefix), 
+            self.onSlideBlank)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'slidecontroller_%s_unblank' % self.type_prefix), 
+            self.onSlideUnblank)
+        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_%s_text_request' % self.type_prefix), 
             self.onTextRequest)
         QtCore.QObject.connect(self.Splitter,
@@ -615,6 +621,18 @@ class SlideController(QtGui.QWidget):
         else:
             self.PreviewListWidget.selectRow(index)
             self.onSlideSelected()
+
+    def onSlideBlank(self):
+        """
+        Handle the slidecontroller blank event
+        """
+        self.onBlankDisplay(True)
+
+    def onSlideUnblank(self):
+        """
+        Handle the slidecontroller unblank event
+        """
+        self.onBlankDisplay(False)
 
     def onBlankDisplay(self, checked):
         """

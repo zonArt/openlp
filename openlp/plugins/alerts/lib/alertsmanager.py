@@ -75,8 +75,11 @@ class AlertsManager(QtCore.QObject):
         Called via a alerts_text event. Message is single element array
         containing text
         """
-        self.displayAlert(message[0])
-        
+        if message:
+            self.displayAlert(message[0])
+        else:
+            self.displayAlert(u'')
+            
     def displayAlert(self, text=u''):
         """
         Called from the Alert Tab to display an alert

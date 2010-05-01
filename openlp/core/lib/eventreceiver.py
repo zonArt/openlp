@@ -83,6 +83,12 @@ class EventReceiver(QtCore.QObject):
         Returns a slidecontroller_{live|preview}_text_response with an 
         array of dictionaries with the tag and verse text
 
+    ``slidecontroller_{live|preview}_blank``
+        Request that the output screen is blanked
+
+    ``slidecontroller_{live|preview}_unblank``
+        Request that the output screen is unblanked
+
     ``slidecontroller_live_spin_delay``
         Pushes out the loop delay
 
@@ -131,6 +137,9 @@ class EventReceiver(QtCore.QObject):
 
     ``videodisplay_stop``
         Stop playing a media item
+
+    ``videodisplay_background``
+        Replace the background video
 
     ``theme_update_list``
         send out message with new themes
@@ -195,6 +204,10 @@ class EventReceiver(QtCore.QObject):
 
     ``bibles_stop_import``
         Stops the Bible Import
+
+    ``remotes_poll_request``
+        Waits for openlp to do something "interesting" and sends a
+        remotes_poll_response signal when it does
 
     """
     def __init__(self):

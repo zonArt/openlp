@@ -36,17 +36,26 @@ class RemotesPlugin(Plugin):
     log.info(u'Remote Plugin loaded')
 
     def __init__(self, plugin_helpers):
+        """
+        remotes constructor
+        """
         Plugin.__init__(self, u'Remotes', u'1.9.1', plugin_helpers)
         self.weight = -1
         self.server = None
 
     def initialise(self):
+        """
+        Initialise the remotes plugin, and start the http server
+        """
         log.debug(u'initialise')
         Plugin.initialise(self)
         self.insert_toolbox_item()
         self.server = HttpServer(self)
 
     def finalise(self):
+        """
+        Tidy up and close down the http server
+        """
         log.debug(u'finalise')
         self.remove_toolbox_item()
         if self.server:
@@ -59,8 +68,11 @@ class RemotesPlugin(Plugin):
         return RemoteTab(self.name)
             
     def about(self):
+        """
+        Information about this plugin
+        """
         about_text = self.trUtf8('<b>Remote Plugin</b><br>This plugin '
             'provides the ability to send messages to a running version of '
-            'openlp on a different computer.<br>The Primary use for this '
-            'would be to send alerts from a creche')
+            'openlp on a different computer via a web browser or other app<br>'
+            'The Primary use for this would be to send alerts from a creche')
         return about_text
