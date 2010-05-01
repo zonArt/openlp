@@ -150,8 +150,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def loadBooks(self):
         books = self.songmanager.get_books()
         booksCompleter = QtGui.QCompleter(
-            [book.name for book in books],
-            self.SongbookCombo)
+            [book.name for book in books], self.SongbookCombo)
         booksCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive);
         self.SongbookCombo.setCompleter(booksCompleter);
         self.SongbookCombo.clear()
@@ -340,7 +339,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.verse_form.setVerse(u'', self.VerseListWidget.count() + 1, True)
         if self.verse_form.exec_():
             afterText, verse, subVerse = self.verse_form.getVerse()
-            data = u'%s:%s' %(verse, subVerse)
+            data = u'%s:%s' % (verse, subVerse)
             item = QtGui.QListWidgetItem(afterText)
             item.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
             item.setText(afterText)
@@ -351,11 +350,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if item:
             tempText = item.text()
             verseId = unicode((item.data(QtCore.Qt.UserRole)).toString())
-            self.verse_form.setVerse(tempText, \
-                self.VerseListWidget.count(), True, verseId)
+            self.verse_form.setVerse(
+                tempText, self.VerseListWidget.count(), True, verseId)
             if self.verse_form.exec_():
                 afterText, verse, subVerse = self.verse_form.getVerse()
-                data = u'%s:%s' %(verse, subVerse)
+                data = u'%s:%s' % (verse, subVerse)
                 item.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
                 item.setText(afterText)
                 #number of lines has change so repaint the list moving the data

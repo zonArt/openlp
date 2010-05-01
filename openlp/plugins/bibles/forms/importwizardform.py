@@ -274,7 +274,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
 
     def setDefaults(self):
         settings = QtCore.QSettings()
-        settings.beginGroup(self.bibleplugin.settings_section)
+        settings.beginGroup(self.bibleplugin.settingsSection)
         self.setField(u'source_format', QtCore.QVariant(0))
         self.setField(u'osis_location', QtCore.QVariant(''))
         self.setField(u'csv_booksfile', QtCore.QVariant(''))
@@ -345,11 +345,11 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
 
     def getFileName(self, title, editbox):
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
-            SettingsManager.get_last_dir(self.bibleplugin.settings_section, 1))
+            SettingsManager.get_last_dir(self.bibleplugin.settingsSection, 1))
         if filename:
             editbox.setText(filename)
             SettingsManager.set_last_dir(
-                self.bibleplugin.settings_section, filename, 1)
+                self.bibleplugin.settingsSection, filename, 1)
 
     def incrementProgressBar(self, status_text):
         log.debug(u'IncrementBar %s', status_text)

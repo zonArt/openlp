@@ -113,7 +113,6 @@ class MediaMediaItem(MediaManagerItem):
                 filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
                 Receiver.send_message(u'videodisplay_background', filename)
 
-
     def generateSlideData(self, service_item, item=None):
         if item is None:
             item = self.ListView.currentItem()
@@ -132,15 +131,15 @@ class MediaMediaItem(MediaManagerItem):
             QtGui.QAbstractItemView.ExtendedSelection)
         self.ListView.setIconSize(QtCore.QSize(88,50))
         self.loadList(SettingsManager.load_list(
-            self.settings_section, self.settings_section))
+            self.settingsSection, self.settingsSection))
 
     def onDeleteClick(self):
         item = self.ListView.currentItem()
         if item:
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
-            SettingsManager.set_list(self.settings_section,
-                self.settings_section, self.getFileList())
+            SettingsManager.set_list(self.settingsSection,
+                self.settingsSection, self.getFileList())
 
     def loadList(self, list):
         for file in list:

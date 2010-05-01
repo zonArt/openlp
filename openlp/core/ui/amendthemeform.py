@@ -133,7 +133,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             QtCore.SIGNAL(u'editingFinished()'),
             self.onOutlineSpinBoxChanged)
         QtCore.QObject.connect(self.SlideTransitionCheckedBox,
-            QtCore.SIGNAL(u'stateChanged(int)'), self.onSlideTransitionCheckedBoxChanged)
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onSlideTransitionCheckedBoxChanged)
 
     def accept(self):
         new_theme = ThemeXML()
@@ -145,10 +146,10 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             new_theme.add_background_transparent()
         else:
             if self.theme.background_type == u'solid':
-                new_theme.add_background_solid( \
+                new_theme.add_background_solid(
                     unicode(self.theme.background_color))
             elif self.theme.background_type == u'gradient':
-                new_theme.add_background_gradient( \
+                new_theme.add_background_gradient(
                     unicode(self.theme.background_startColor),
                     unicode(self.theme.background_endColor),
                     self.theme.background_direction)
@@ -158,7 +159,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 new_theme.add_background_image(filename)
                 save_to = os.path.join(self.path, theme_name, filename)
                 save_from = self.theme.background_filename
-
         new_theme.add_font(unicode(self.theme.font_main_name),
                 unicode(self.theme.font_main_color),
                 unicode(self.theme.font_main_proportion),
@@ -182,7 +182,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 unicode(self.theme.font_footer_x),
                 unicode(self.theme.font_footer_y),
                 unicode(self.theme.font_footer_width),
-                unicode(self.theme.font_footer_height) )
+                unicode(self.theme.font_footer_height))
         new_theme.add_display(unicode(self.theme.display_shadow),
                 unicode(self.theme.display_shadow_color),
                 unicode(self.theme.display_outline),

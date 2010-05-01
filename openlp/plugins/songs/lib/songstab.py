@@ -81,7 +81,7 @@ class SongsTab(SettingsTab):
 
     def load(self):
         settings = QtCore.QSettings()
-        settings.beginGroup(self.settings_section)
+        settings.beginGroup(self.settingsSection)
         self.song_search = settings.value(
             u'search as type', QtCore.QVariant(False)).toBool()
         self.song_bar = settings.value(
@@ -92,7 +92,7 @@ class SongsTab(SettingsTab):
 
     def save(self):
         settings = QtCore.QSettings()
-        settings.beginGroup(self.settings_section)
+        settings.beginGroup(self.settingsSection)
         settings.setValue(u'search as type', QtCore.QVariant(self.song_search))
         settings.setValue(u'display songbar', QtCore.QVariant(self.song_bar))
         settings.endGroup()

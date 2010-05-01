@@ -271,4 +271,4 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         if self.VerseTextEdit.toPlainText():
             self.VerseTextEdit.setFocus()
             return False, self.trUtf8('You have unsaved data, please save or clear')
-        return True,  u''
+        return True, u''
