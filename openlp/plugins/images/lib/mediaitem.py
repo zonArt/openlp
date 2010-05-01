@@ -143,10 +143,11 @@ class ImageMediaItem(MediaManagerItem):
     def generateSlideData(self, service_item, item=None):
         items = self.ListView.selectedIndexes()
         if items:
-            service_item.title = self.trUtf8('Image(s)')
+            service_item.title = unicode(self.trUtf8('Image(s)'))
             service_item.add_capability(ItemCapabilities.AllowsMaintain)
             service_item.add_capability(ItemCapabilities.AllowsPreview)
             service_item.add_capability(ItemCapabilities.AllowsLoop)
+            service_item.add_capability(ItemCapabilities.AllowsAdditions)
             for item in items:
                 bitem = self.ListView.item(item.row())
                 filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())

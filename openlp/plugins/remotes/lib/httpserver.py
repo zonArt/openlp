@@ -204,6 +204,7 @@ class HttpConnection(object):
         """
         Decode the query string parameters sent from the browser
         """
+        log.debug(u'loading params %s' % query)
         params = urlparse.parse_qs(query)
         if not params:
             return None
@@ -216,6 +217,7 @@ class HttpConnection(object):
         Currently lets anything through. Later we should restrict and perform
         basic parameter checking, otherwise rogue clients could crash openlp
         """
+        log.debug(u'Processing event %s' % event)
         if params:
             Receiver.send_message(event, params)    
         else:                  
@@ -233,6 +235,7 @@ class HttpConnection(object):
         is just waiting for slide change/song change activity. This can wait
         longer (one minute)
         """
+        log.debug(u'Processing request %s' % event)
         if not event.endswith(u'_request'):
             return False
         self.event = event
@@ -258,6 +261,7 @@ class HttpConnection(object):
         The recipient of a _request signal has sent data. Convert this to 
         json and return it to client
         """
+        log.debug(u'Processing response for %s' % self.event)
         if not self.socket:
             return
         self.timer.stop()
