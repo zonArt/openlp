@@ -45,7 +45,6 @@ class CustomMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Custom'
-        self.SettingsSection = title.lower()
         self.IconPath = u'custom/custom'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
@@ -164,7 +163,7 @@ class CustomMediaItem(MediaManagerItem):
         service_item.title = title
         for slide in raw_slides:
             service_item.add_from_text(slide[:30], slide)
-        if QtCore.QSettings().value(self.SettingsSection + u'/display footer',
+        if QtCore.QSettings().value(self.settingsSection + u'/display footer',
             QtCore.QVariant(True)).toBool() or credit:
             raw_footer.append(title + u' ' + credit)
         else:

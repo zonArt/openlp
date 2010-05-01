@@ -47,7 +47,7 @@ def init_models(url):
     mapper(TAuthor, temp_authors_table)
     mapper(Book, song_books_table)
     mapper(Song, songs_table,
-       properties={'authors': relation(Author, backref='songs',
+        properties={'authors': relation(Author, backref='songs',
                                        secondary=authors_songs_table),
                    'book': relation(Book, backref='songs'),
                    'topics': relation(Topic, backref='songs',
@@ -156,13 +156,13 @@ class MigrateSongs():
             print songs_temp.songtitle
             aa = self.session.execute(
                 u'select * from songauthors_temp where songid =' + \
-                unicode(songs_temp.songid) )
+                unicode(songs_temp.songid))
             for row in aa:
                 a = row['authorid']
                 authors_temp = self.session.query(TAuthor).get(a)
                 bb = self.session.execute(
                     u'select * from authors where display_name = \"%s\"' % \
-                    unicode(authors_temp.authorname) ).fetchone()
+                    unicode(authors_temp.authorname)).fetchone()
                 if bb is None:
                     author = Author()
                     author.display_name = authors_temp.authorname

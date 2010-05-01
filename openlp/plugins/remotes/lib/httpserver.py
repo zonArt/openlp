@@ -50,7 +50,7 @@ class HttpServer(object):
     def start_tcp(self):
         log.debug(u'Start TCP server')
         port = QtCore.QSettings().value(
-            self.parent.settings_section + u'/remote port',
+            self.parent.settingsSection + u'/remote port',
             QtCore.QVariant(4316)).toInt()[0]
         self.server = QtNetwork.QTcpServer()
         self.server.listen(QtNetwork.QHostAddress(QtNetwork.QHostAddress.Any), 

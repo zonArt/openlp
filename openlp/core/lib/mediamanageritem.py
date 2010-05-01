@@ -70,11 +70,6 @@ class MediaManagerItem(QtGui.QWidget):
         The user visible name for a plugin which should use a suitable
         translation function.
 
-     ``self.SettingsSection``
-        The section in the configuration where the items in the media
-        manager are stored. This could potentially be
-        ``self.PluginNameShort.lower()``.
-
      ``self.OnNewPrompt``
         Defaults to *'Select Image(s)'*.
 
@@ -103,6 +98,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         QtGui.QWidget.__init__(self)
         self.parent = parent
+        self.settingsSection = title.lower()
         if type(icon) is QtGui.QIcon:
             self.icon = icon
         elif type(icon) is types.StringType:
@@ -335,20 +331,20 @@ class MediaManagerItem(QtGui.QWidget):
     def onFileClick(self):
         files = QtGui.QFileDialog.getOpenFileNames(
             self, self.OnNewPrompt,
-            SettingsManager.get_last_dir(self.SettingsSection),
+            SettingsManager.get_last_dir(self.settingsSection),
             self.OnNewFileMasks)
         log.info(u'New files(s) %s', unicode(files))
         if files:
             self.loadList(files)
-            dir, filename = os.path.split(unicode(files[0]))
-            SettingsManager.set_last_dir(self.SettingsSection, dir)
-            SettingsManager.set_list(
-                self.SettingsSection, self.SettingsSection, self.getFileList())
+            dir = os.path.split(unicode(files[0]))[0]
+            SettingsManager.set_last_dir(self.settingsSection, dir)
+            SettingsManager.set_list(self.settingsSection,
+                self.settingsSection, self.getFileList())
 
     def getFileList(self):
         count = 0
         filelist = []
-        while  count < self.ListView.count():
+        while count < self.ListView.count():
             bitem = self.ListView.item(count)
             filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
             filelist.append(filename)

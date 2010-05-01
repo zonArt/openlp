@@ -117,8 +117,7 @@ class Renderer(object):
             QtGui.QImage.Format_ARGB32_Premultiplied)
         if self._bg_image_filename and not self.bg_image:
             self.bg_image = resize_image(self._bg_image_filename,
-                                         self._frame.width(),
-                                         self._frame.height())
+                self._frame.width(), self._frame.height())
         if self.bg_frame is None:
             self._generate_background_frame()
 
@@ -223,7 +222,7 @@ class Renderer(object):
         ``rect_footer``
             The footer text block.
         """
-        log.debug(u'set_text_rectangle %s , %s' %(rect_main, rect_footer) )
+        log.debug(u'set_text_rectangle %s , %s' % (rect_main, rect_footer))
         self._rect = rect_main
         self._rect_footer = rect_footer
 
@@ -244,7 +243,8 @@ class Renderer(object):
             bbox1 = self._render_lines_unaligned(footer_lines, True)
         # reset the frame. first time do not worry about what you paint on.
         self._frame = QtGui.QImage(self.bg_frame)
-        self._frameOp = QtGui.QImage(self.bg_frame)
+        if self._theme.display_slideTransition:
+            self._frameOp = QtGui.QImage(self.bg_frame)
         x, y = self._correctAlignment(self._rect, bbox)
         bbox = self._render_lines_unaligned(lines, False, (x, y), True)
         if footer_lines:
@@ -267,8 +267,8 @@ class Renderer(object):
                 QtGui.QPixmap(self._frame.width(), self._frame.height())
             self.bg_frame.fill(QtCore.Qt.transparent)
         else:
-            self.bg_frame = QtGui.QImage(self._frame.width(), self._frame.height(),
-                QtGui.QImage.Format_ARGB32_Premultiplied)
+            self.bg_frame = QtGui.QImage(self._frame.width(),
+                self._frame.height(), QtGui.QImage.Format_ARGB32_Premultiplied)
         log.debug(u'render background %s start', self._theme.background_type)
         painter = QtGui.QPainter()
         painter.begin(self.bg_frame)
@@ -463,10 +463,11 @@ class Renderer(object):
                 # now draw the text, and any outlines/shadows
                 if self._theme.display_shadow:
                     self._get_extent_and_render(line, footer,
-                        tlcorner=(x + display_shadow_size, y + display_shadow_size),
-                        draw=True, color = self._theme.display_shadow_color)
-                self._get_extent_and_render(line, footer, tlcorner=(x, y), draw=True,
-                        outline_size=display_outline_size)
+                        tlcorner=(x + display_shadow_size,
+                            y + display_shadow_size),
+                            draw=True, color = self._theme.display_shadow_color)
+                self._get_extent_and_render(line, footer, tlcorner=(x, y),
+                        draw=True, outline_size=display_outline_size)
             y += h
             if linenum == 0:
                 self._first_line_right_extent = rightextent
@@ -532,7 +533,7 @@ class Renderer(object):
             font = self.mainFont
         metrics = QtGui.QFontMetrics(font)
         w = metrics.width(line)
-        h = metrics.height()
+        h = metrics.height() + int(self._theme.font_main_line_adjustment)
         if draw:
             self.painter.setFont(font)
             if color is None:
@@ -543,27 +544,29 @@ class Renderer(object):
             else:
                 pen = QtGui.QColor(color)
             x, y = tlcorner
+            rowpos = y + metrics.ascent()
             if self._theme.display_outline and outline_size != 0 and not footer:
                 path = QtGui.QPainterPath()
-                path.addText(QtCore.QPointF(x, y + metrics.ascent()), font, line)
+                path.addText(QtCore.QPointF(x, rowpos), font, line)
                 self.painter.setBrush(self.painter.pen().brush())
-                self.painter.setPen(QtGui.QPen(
-                        QtGui.QColor(self._theme.display_outline_color), outline_size))
+                self.painter.setPen(QtGui.QPen(QtGui.QColor(
+                    self._theme.display_outline_color), outline_size))
                 self.painter.drawPath(path)
             self.painter.setPen(pen)
-            self.painter.drawText(x, y + metrics.ascent(), line)
+            self.painter.drawText(x, rowpos, line)
             if self._theme.display_slideTransition:
                 # Print 2nd image with 70% weight
                 if self._theme.display_outline and outline_size != 0 and not footer:
                     path = QtGui.QPainterPath()
-                    path.addText(QtCore.QPointF(x, y + metrics.ascent()), font, line)
+                    path.addText(QtCore.QPointF(x, rowpos), font, line)
                     self.painter2.setBrush(self.painter2.pen().brush())
                     self.painter2.setPen(QtGui.QPen(
-                            QtGui.QColor(self._theme.display_outline_color), outline_size))
+                            QtGui.QColor(self._theme.display_outline_color),
+                            outline_size))
                     self.painter2.drawPath(path)
                 self.painter2.setFont(font)
                 self.painter2.setPen(pen)
-                self.painter2.drawText(x, y + metrics.ascent(), line)
+                self.painter2.drawText(x, rowpos, line)
         return (w, h)
 
     def snoop_Image(self, image, image2=None):

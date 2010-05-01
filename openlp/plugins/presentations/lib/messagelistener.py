@@ -44,7 +44,7 @@ class Controller(object):
         self.doc = None
         log.info(u'%s controller loaded' % live)
 
-    def addHandler(self, controller, file,  isBlank):
+    def addHandler(self, controller, file, isBlank):
         log.debug(u'Live = %s, addHandler %s' % (self.isLive, file))
         self.controller = controller
         if self.doc is not None:
@@ -217,7 +217,7 @@ class MessageListener(object):
         isLive, item = self.decode_message(message)
         log.debug(u'Startup called with message %s' % message)
         isBlank = message[2]
-        file = os.path.join(item.get_frame_path(), 
+        file = os.path.join(item.get_frame_path(),
             item.get_frame_title())
         self.handler = item.title
         if self.handler == self.mediaitem.Automatic:
@@ -231,15 +231,17 @@ class MessageListener(object):
         controller.addHandler(self.controllers[self.handler], file, isBlank)
 
     def decode_message(self, message):
-        return message[1], message[0]
-        
-    def slide(self, message):
-        isLive, item = self.decode_message(message)
-        slide = message[2]
-        if isLive:
-            self.liveHandler.slide(slide, live)
+        if len(message) == 3:
+            return message[1], message[0], message[2]
         else:
-            self.previewHandler.slide(slide, live)
+            return message[1], message[0]
+
+    def slide(self, message):
+        isLive, item, slide = self.decode_message(message)
+        if isLive:
+            self.liveHandler.slide(slide, isLive)
+        else:
+            self.previewHandler.slide(slide, isLive)
 
     def first(self, message):
         isLive, item = self.decode_message(message)
@@ -286,6 +288,6 @@ class MessageListener(object):
         isLive, item = self.decode_message(message)
         if isLive:
             self.liveHandler.unblank()
-        
+
     def timeout(self):
         self.liveHandler.poll()

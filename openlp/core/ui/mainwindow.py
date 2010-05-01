@@ -424,8 +424,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtGui.QMainWindow.__init__(self)
         self.screens = screens
         self.applicationVersion = applicationVersion
-        self.generalSettingsSection = u'general'
+        # Set up settings sections for the main application
+        # (not for use by plugins)
         self.uiSettingsSection = u'user interface'
+        self.generalSettingsSection = u'general'
+        self.serviceSettingsSection = u'servicemanager'
+        self.songsSettingsSection = u'songs'
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
         self.displayManager = DisplayManager(screens)
@@ -509,6 +513,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         #ThemeManager needs to call RenderManager
         self.RenderManager = RenderManager(
             self.ThemeManagerContents, self.screens)
+        self.displayManager.renderManager = self.RenderManager
         #Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
@@ -570,7 +575,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.displayManager.mainDisplay.isVisible():
             self.displayManager.mainDisplay.setFocus()
         self.activateWindow()
-        if QtCore.QSettings().value(self.generalSettingsSection + u'/auto open',
+        if QtCore.QSettings().value(
+            self.generalSettingsSection + u'/auto open',
             QtCore.QVariant(False)).toBool():
             self.ServiceManagerContents.onLoadService(True)
 
@@ -725,8 +731,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def loadSettings(self):
         log.debug(u'Loading QSettings')
         settings = QtCore.QSettings()
-        self.recentFiles = settings.value(
-            self.generalSettingsSection + u'/recent files').toStringList()
+        settings.beginGroup(self.generalSettingsSection)
+        self.recentFiles = settings.value(u'recent files').toStringList()
+        settings.endGroup()
         settings.beginGroup(self.uiSettingsSection)
         self.move(settings.value(u'main window position',
             QtCore.QVariant(QtCore.QPoint(0, 0))).toPoint())
@@ -738,10 +745,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def saveSettings(self):
         log.debug(u'Saving QSettings')
         settings = QtCore.QSettings()
+        settings.beginGroup(self.generalSettingsSection)
         recentFiles = QtCore.QVariant(self.recentFiles) \
             if self.recentFiles else QtCore.QVariant()
-        settings.setValue(
-            self.generalSettingsSection + u'/recent files', recentFiles)
+        settings.setValue(u'recent files', recentFiles)
+        settings.endGroup()
         settings.beginGroup(self.uiSettingsSection)
         settings.setValue(u'main window position',
             QtCore.QVariant(self.pos()))

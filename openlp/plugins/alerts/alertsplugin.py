@@ -28,8 +28,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, build_icon, PluginStatus
-from openlp.plugins.alerts.lib import AlertsManager, DBManager
-from openlp.plugins.alerts.forms import AlertsTab, AlertForm
+from openlp.plugins.alerts.lib import AlertsManager, AlertsTab, DBManager
+from openlp.plugins.alerts.forms import AlertForm
 
 log = logging.getLogger(__name__)
 
@@ -84,7 +84,7 @@ class alertsPlugin(Plugin):
     def togglealertsState(self):
         self.alertsActive = not self.alertsActive
         QtCore.QSettings().setValue(
-            self.settings_section + u'/active',
+            self.settingsSection + u'/active',
             QtCore.QVariant(self.alertsActive))
 
     def onAlertsTrigger(self):
