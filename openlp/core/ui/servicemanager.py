@@ -194,12 +194,18 @@ class ServiceManager(QtGui.QWidget):
             self.parent.serviceSettingsSection + u'/service theme',
             QtCore.QVariant(u'')).toString())
         self.servicePath = AppLocation.get_section_data_path(u'servicemanager')
+        #build the drag and drop context menu
+        self.dndMenu = QtGui.QMenu()
+        self.newAction = self.dndMenu.addAction(self.trUtf8('&Add New Item'))
+        self.newAction.setIcon(build_icon(u':/general/general_edit.png'))
+        self.addToAction = self.dndMenu.addAction(self.trUtf8('&Add to Selected Item'))
+        self.addToAction.setIcon(build_icon(u':/general/general_edit.png'))
         #build the context menu
         self.menu = QtGui.QMenu()
         self.editAction = self.menu.addAction(self.trUtf8('&Edit Item'))
         self.editAction.setIcon(build_icon(u':/general/general_edit.png'))
         self.maintainAction = self.menu.addAction(self.trUtf8('&Maintain Item'))
-        self.editAction.setIcon(build_icon(u':/general/general_edit.png'))
+        self.maintainAction.setIcon(build_icon(u':/general/general_edit.png'))
         self.notesAction = self.menu.addAction(self.trUtf8('&Notes'))
         self.notesAction.setIcon(build_icon(u':/services/service_notes.png'))
         self.deleteAction = self.menu.addAction(
@@ -795,6 +801,7 @@ class ServiceManager(QtGui.QWidget):
         if link.hasText():
             plugin = event.mimeData().text()
             item = self.ServiceManagerList.itemAt(event.pos())
+            #ServiceManager started the drag and drop
             if plugin == u'ServiceManager':
                 startpos, startCount = self.findServiceItem()
                 if item is None:
@@ -810,11 +817,28 @@ class ServiceManager(QtGui.QWidget):
                 self.serviceItems.insert(newpos, serviceItem)
                 self.repaintServiceList(endpos, startCount)
             else:
+                #we are not over anything so drop
+                replace = False
                 if item == None:
                     self.droppos = len(self.serviceItems)
                 else:
-                    self.droppos = self._getParentItemData(item)
-                Receiver.send_message(u'%s_add_service_item' % plugin)
+                    #we are over somthing so lets investigate
+                    pos = self._getParentItemData(item) - 1
+                    serviceItem = self.serviceItems[pos]
+                    if plugin == serviceItem[u'service_item'].name \
+                        and serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsAdditions):
+                            action = self.dndMenu.exec_(QtGui.QCursor.pos())
+                            #New action required
+                            if action == self.newAction:
+                                self.droppos = self._getParentItemData(item)
+                            #Append to existing action
+                            if action == self.addToAction:
+                                self.droppos = self._getParentItemData(item)
+                                item.setSelected(True)
+                                replace = True
+                    else:
+                        self.droppos = self._getParentItemData(item)
+                Receiver.send_message(u'%s_add_service_item' % plugin, replace)
 
     def updateThemeList(self, theme_list):
         """
