@@ -93,7 +93,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.CCLNumberEdit,
             QtCore.SIGNAL(u'lostFocus()'), self.onCCLNumberEditLostFocus)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'update_themes'), self.loadThemes)
+            QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         QtCore.QObject.connect(self.CommentsEdit,
             QtCore.SIGNAL(u'lostFocus()'), self.onCommentsEditLostFocus)
         QtCore.QObject.connect(self.VerseOrderEdit,
@@ -150,8 +150,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def loadBooks(self):
         books = self.songmanager.get_books()
         booksCompleter = QtGui.QCompleter(
-            [book.name for book in books],
-            self.SongbookCombo)
+            [book.name for book in books], self.SongbookCombo)
         booksCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive);
         self.SongbookCombo.setCompleter(booksCompleter);
         self.SongbookCombo.clear()
@@ -340,7 +339,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.verse_form.setVerse(u'', self.VerseListWidget.count() + 1, True)
         if self.verse_form.exec_():
             afterText, verse, subVerse = self.verse_form.getVerse()
-            data = u'%s:%s' %(verse, subVerse)
+            data = u'%s:%s' % (verse, subVerse)
             item = QtGui.QListWidgetItem(afterText)
             item.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
             item.setText(afterText)
@@ -351,11 +350,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if item:
             tempText = item.text()
             verseId = unicode((item.data(QtCore.Qt.UserRole)).toString())
-            self.verse_form.setVerse(tempText, \
-                self.VerseListWidget.count(), True, verseId)
+            self.verse_form.setVerse(
+                tempText, self.VerseListWidget.count(), True, verseId)
             if self.verse_form.exec_():
                 afterText, verse, subVerse = self.verse_form.getVerse()
-                data = u'%s:%s' %(verse, subVerse)
+                data = u'%s:%s' % (verse, subVerse)
                 item.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
                 item.setText(afterText)
                 #number of lines has change so repaint the list moving the data
@@ -484,16 +483,16 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         log.debug(u'onPreview')
         if button.text() == unicode(self.trUtf8('Save && Preview')) \
             and self.saveSong():
-            Receiver.send_message(u'preview_song')
+            Receiver.send_message(u'songs_preview')
 
     def closePressed(self):
-        Receiver.send_message(u'remote_edit_clear')
+        Receiver.send_message(u'songs_edit_clear')
         self.close()
 
     def accept(self):
         log.debug(u'accept')
         if self.saveSong():
-            Receiver.send_message(u'load_song_list')
+            Receiver.send_message(u'songs_load_list')
             self.close()
 
     def saveSong(self):

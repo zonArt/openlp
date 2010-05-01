@@ -23,10 +23,12 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import logging
 import os
 
 from PyQt4 import QtCore, QtGui
-import logging
+
+from openlp.core.lib import SettingsManager
 
 from songusagedetaildialog import Ui_SongUsageDetailDialog
 
@@ -53,15 +55,16 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         fromDate = QtCore.QDate(year - 1, 9, 1)
         self.FromDate.setSelectedDate(fromDate)
         self.ToDate.setSelectedDate(toDate)
-        self.FileLineEdit.setText(self.parent.config.get_last_dir(1))
+        self.FileLineEdit.setText(
+            SettingsManager.get_last_dir(self.parent.settingsSection, 1))
 
     def defineOutputLocation(self):
         path = QtGui.QFileDialog.getExistingDirectory(self,
             self.trUtf8('Output File Location'),
-            self.parent.config.get_last_dir(1) )
+            SettingsManager.get_last_dir(self.parent.settingsSection, 1))
         path = unicode(path)
         if path != u'':
-            self.parent.config.set_last_dir(path, 1)
+            SettingsManager.set_last_dir(self.parent.settingsSection, path, 1)
             self.FileLineEdit.setText(path)
 
     def accept(self):
@@ -86,4 +89,3 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         finally:
             if file:
                 file.close()
-

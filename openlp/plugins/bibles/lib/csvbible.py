@@ -52,7 +52,7 @@ class CSVBible(BibleDB):
             raise KeyError(u'You have to supply a file to import verses from.')
         self.versesfile = kwargs[u'versesfile']
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
+            QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
 
     def stop_import(self):
         """
@@ -77,7 +77,7 @@ class CSVBible(BibleDB):
                 details = chardet.detect(line[1])
                 self.create_book(unicode(line[1], details['encoding']),
                     line[2], int(line[0]))
-                Receiver.send_message(u'process_events')
+                Receiver.send_message(u'openlp_process_events')
         except:
             log.exception(u'Loading books from file failed')
             success = False
@@ -105,7 +105,7 @@ class CSVBible(BibleDB):
                     self.commit()
                 self.create_verse(book.id, line[1], line[2],
                                   unicode(line[3], details['encoding']))
-                Receiver.send_message(u'process_events')
+                Receiver.send_message(u'openlp_process_events')
             self.commit()
         except:
             log.exception(u'Loading verses from file failed')
@@ -118,4 +118,3 @@ class CSVBible(BibleDB):
             return False
         else:
             return success
-

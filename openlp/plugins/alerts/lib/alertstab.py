@@ -25,18 +25,16 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, str_to_bool
-from openlp.plugins.alerts.lib.models import AlertItem
+from openlp.core.lib import SettingsTab
 
 class AlertsTab(SettingsTab):
     """
     AlertsTab is the alerts settings tab in the settings dialog.
     """
-    def __init__(self, parent, section=None):
+    def __init__(self, parent):
         self.parent = parent
         self.manager = parent.manager
-        self.alertsmanager = parent.alertsmanager
-        SettingsTab.__init__(self, parent.name, section)
+        SettingsTab.__init__(self, parent.name)
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
@@ -136,22 +134,6 @@ class AlertsTab(SettingsTab):
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.LocationLayout.addItem(self.LocationSpacer)
         self.FontLayout.addWidget(self.LocationWidget)
-        self.HistoryWidget = QtGui.QWidget(self.FontGroupBox)
-        self.HistoryWidget.setObjectName(u'HistoryWidget')
-        self.HistoryLayout = QtGui.QHBoxLayout(self.HistoryWidget)
-        self.HistoryLayout.setSpacing(8)
-        self.HistoryLayout.setMargin(0)
-        self.HistoryLayout.setObjectName(u'HistoryLayout')
-        self.HistoryLabel = QtGui.QLabel(self.HistoryWidget)
-        self.HistoryLabel.setObjectName(u'HistoryLabel')
-        self.HistoryLayout.addWidget(self.HistoryLabel)
-        self.HistoryCheckBox = QtGui.QCheckBox(self.HistoryWidget)
-        self.HistoryCheckBox.setObjectName(u'HistoryCheckBox')
-        self.HistoryLayout.addWidget(self.HistoryCheckBox)
-        self.HistorySpacer = QtGui.QSpacerItem(147, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.HistoryLayout.addItem(self.HistorySpacer)
-        self.FontLayout.addWidget(self.HistoryWidget)
         self.SlideLeftLayout.addWidget(self.FontGroupBox)
         self.SlideLeftSpacer = QtGui.QSpacerItem(20, 94,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
@@ -190,9 +172,6 @@ class AlertsTab(SettingsTab):
         self.SlideRightLayout.addItem(self.SlideRightSpacer)
         self.AlertsLayout.addWidget(self.AlertRightColumn)
         # Signals and slots
-        QtCore.QObject.connect(self.HistoryCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onHistoryCheckBoxChanged)
         QtCore.QObject.connect(self.BackgroundColorButton,
             QtCore.SIGNAL(u'pressed()'), self.onBackgroundColorButtonClicked)
         QtCore.QObject.connect(self.FontColorButton,
@@ -216,7 +195,6 @@ class AlertsTab(SettingsTab):
         self.TimeoutLabel.setText(self.trUtf8('Alert timeout:'))
         self.TimeoutSpinBox.setSuffix(self.trUtf8('s'))
         self.LocationLabel.setText(self.trUtf8('Location:'))
-        self.HistoryLabel.setText(self.trUtf8('Keep History:'))
         self.PreviewGroupBox.setTitle(self.trUtf8('Preview'))
         self.FontPreview.setText(self.trUtf8('openlp.org'))
         self.LocationComboBox.setItemText(0, self.trUtf8('Top'))
@@ -235,12 +213,6 @@ class AlertsTab(SettingsTab):
     def onLocationComboBoxClicked(self, location):
         self.location = location
 
-    def onHistoryCheckBoxChanged(self, check_state):
-        self.save_history = False
-        # we have a set value convert to True/False
-        if check_state == QtCore.Qt.Checked:
-            self.save_history = True
-
     def onFontColorButtonClicked(self):
         self.font_color = QtGui.QColorDialog.getColor(
             QtGui.QColor(self.font_color), self).name()
@@ -256,17 +228,20 @@ class AlertsTab(SettingsTab):
         self.updateDisplay()
 
     def load(self):
-        self.timeout = int(self.config.get_config(u'timeout', 5))
-        self.font_color = unicode(
-            self.config.get_config(u'font color', u'#ffffff'))
-        self.font_size = int(self.config.get_config(u'font size', 40))
-        self.bg_color = unicode(
-            self.config.get_config(u'background color', u'#660000'))
-        self.font_face = unicode(
-            self.config.get_config(u'font face', QtGui.QFont().family()))
-        self.location = int(self.config.get_config(u'location', 0))
-        self.save_history = str_to_bool(
-            self.config.get_config(u'save history', u'False'))
+        settings = QtCore.QSettings()
+        settings.beginGroup(self.settingsSection)
+        self.timeout = settings.value(u'timeout', QtCore.QVariant(5)).toInt()[0]
+        self.font_color = unicode(settings.value(
+            u'font color', QtCore.QVariant(u'#ffffff')).toString())
+        self.font_size = settings.value(
+            u'font size', QtCore.QVariant(40)).toInt()[0]
+        self.bg_color = unicode(settings.value(
+            u'background color', QtCore.QVariant(u'#660000')).toString())
+        self.font_face = unicode(settings.value(
+            u'font face', QtCore.QVariant(QtGui.QFont().family())).toString())
+        self.location = settings.value(
+            u'location', QtCore.QVariant(0)).toInt()[0]
+        settings.endGroup()
         self.FontSizeSpinBox.setValue(self.font_size)
         self.TimeoutSpinBox.setValue(self.timeout)
         self.FontColorButton.setStyleSheet(
@@ -274,7 +249,6 @@ class AlertsTab(SettingsTab):
         self.BackgroundColorButton.setStyleSheet(
             u'background-color: %s' % self.bg_color)
         self.LocationComboBox.setCurrentIndex(self.location)
-        self.HistoryCheckBox.setChecked(self.save_history)
         font = QtGui.QFont()
         font.setFamily(self.font_face)
         self.FontComboBox.setCurrentFont(font)
@@ -285,15 +259,17 @@ class AlertsTab(SettingsTab):
         self.DeleteButton.setEnabled(True)
 
     def save(self):
+        settings = QtCore.QSettings()
+        settings.beginGroup(self.settingsSection)
         self.font_face = self.FontComboBox.currentFont().family()
-        self.config.set_config(u'background color', unicode(self.bg_color))
-        self.config.set_config(u'font color', unicode(self.font_color))
-        self.config.set_config(u'font size', unicode(self.font_size))
-        self.config.set_config(u'font face', unicode(self.font_face))
-        self.config.set_config(u'timeout', unicode(self.timeout))
-        self.config.set_config(u'location',
-                        unicode(self.LocationComboBox.currentIndex()))
-        self.config.set_config(u'save history', unicode(self.save_history))
+        settings.setValue(u'background color', QtCore.QVariant(self.bg_color))
+        settings.setValue(u'font color', QtCore.QVariant(self.font_color))
+        settings.setValue(u'font size', QtCore.QVariant(self.font_size))
+        settings.setValue(u'font face', QtCore.QVariant(self.font_face))
+        settings.setValue(u'timeout', QtCore.QVariant(self.timeout))
+        settings.setValue(u'location',
+            QtCore.QVariant(self.LocationComboBox.currentIndex()))
+        settings.endGroup()
 
     def updateDisplay(self):
         font = QtGui.QFont()

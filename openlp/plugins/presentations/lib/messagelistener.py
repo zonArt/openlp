@@ -44,7 +44,7 @@ class Controller(object):
         self.doc = None
         log.info(u'%s controller loaded' % live)
 
-    def addHandler(self, controller, file,  isBlank):
+    def addHandler(self, controller, file, isBlank):
         log.debug(u'Live = %s, addHandler %s' % (self.isLive, file))
         self.controller = controller
         if self.doc is not None:
@@ -55,7 +55,7 @@ class Controller(object):
             self.doc.start_presentation()
             if isBlank:
                 self.blank()
-            Receiver.send_message(u'live_slide_hide')
+            Receiver.send_message(u'maindisplay_hide')
         self.doc.slidenumber = 0
 
     def activate(self):
@@ -144,7 +144,7 @@ class Controller(object):
         """
         log.debug(u'Live = %s, shutdown' % self.isLive)
         if self.isLive:
-            Receiver.send_message(u'live_slide_show')
+            Receiver.send_message(u'maindisplay_show')
         self.doc.close_presentation()
         self.doc = None
         #self.doc.slidenumber = 0
@@ -165,7 +165,8 @@ class Controller(object):
         if not self.isLive:
             return
         self.activate()
-        if self.doc.slidenumber and self.doc.slidenumber != self.doc.get_slide_number():
+        if self.doc.slidenumber and \
+            self.doc.slidenumber != self.doc.get_slide_number():
             self.doc.goto_slide(self.doc.slidenumber)
         self.doc.unblank_screen()
 
@@ -205,91 +206,88 @@ class MessageListener(object):
             QtCore.SIGNAL(u'presentations_unblank'), self.unblank)
         self.timer = QtCore.QTimer()
         self.timer.setInterval(500)
-        QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.timeout)
+        QtCore.QObject.connect(
+            self.timer, QtCore.SIGNAL("timeout()"), self.timeout)
 
     def startup(self, message):
         """
         Start of new presentation
         Save the handler as any new presentations start here
         """
+        isLive, item = self.decode_message(message)
         log.debug(u'Startup called with message %s' % message)
-        self.handler, file, isLive, isBlank = self.decodeMessage(message)
+        isBlank = message[2]
+        file = os.path.join(item.get_frame_path(),
+            item.get_frame_title())
+        self.handler = item.title
         if self.handler == self.mediaitem.Automatic:
             self.handler = self.mediaitem.findControllerByType(file)
             if not self.handler:
                 return
-
         if isLive:
             controller = self.liveHandler
         else:
             controller = self.previewHandler
         controller.addHandler(self.controllers[self.handler], file, isBlank)
 
-    def slide(self, message):
-        slide, live = self.splitMessage(message)
-        if live:
-            self.liveHandler.slide(slide, live)
+    def decode_message(self, message):
+        if len(message) == 3:
+            return message[1], message[0], message[2]
         else:
-            self.previewHandler.slide(slide, live)
+            return message[1], message[0]
 
-    def first(self, isLive):
+    def slide(self, message):
+        isLive, item, slide = self.decode_message(message)
+        if isLive:
+            self.liveHandler.slide(slide, isLive)
+        else:
+            self.previewHandler.slide(slide, isLive)
+
+    def first(self, message):
+        isLive, item = self.decode_message(message)
         if isLive:
             self.liveHandler.first()
         else:
             self.previewHandler.first()
 
-    def last(self, isLive):
+    def last(self, message):
+        isLive, item = self.decode_message(message)
         if isLive:
             self.liveHandler.last()
         else:
             self.previewHandler.last()
 
-    def next(self, isLive):
+    def next(self, message):
+        isLive, item = self.decode_message(message)
         if isLive:
             self.liveHandler.next()
         else:
             self.previewHandler.next()
 
-    def previous(self, isLive):
+    def previous(self, message):
+        isLive, item = self.decode_message(message)
         if isLive:
             self.liveHandler.previous()
         else:
             self.previewHandler.previous()
 
-    def shutdown(self, isLive):
+    def shutdown(self, message):
+        isLive, item = self.decode_message(message)
         if isLive:
+            Receiver.send_message(u'maindisplay_show')
             self.liveHandler.shutdown()
-            Receiver.send_message(u'live_slide_show')
         else:
             self.previewHandler.shutdown()
 
-    def blank(self):
-        self.liveHandler.blank()
+    def blank(self, message):
+        isLive, item = self.decode_message(message)
+        if isLive:
+            self.liveHandler.blank()
 
-    def unblank(self):
-        self.liveHandler.unblank()
-
-    def splitMessage(self, message):
-        """
-        Splits the selection messages
-        into it's component parts
-
-        ``message``
-        Message containing Presentaion handler name and file to be presented.
-        """
-        bits = message.split(u':')
-        return bits[0], bits[1]
-
-    def decodeMessage(self, message):
-        """
-        Splits the initial message from the SlideController
-        into it's component parts
-
-        ``message``
-        Message containing Presentaion handler name and file to be presented.
-        """
-        file = os.path.join(message[1], message[2])
-        return message[0], file, message[4],  message[5]
+    def unblank(self, message):
+        isLive, item = self.decode_message(message)
+        if isLive:
+            self.liveHandler.unblank()
 
     def timeout(self):
         self.liveHandler.poll()

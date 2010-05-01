@@ -29,7 +29,8 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib.toolbar import *
-from openlp.core.lib import contextMenuAction, contextMenuSeparator
+from openlp.core.lib import contextMenuAction, contextMenuSeparator, \
+    SettingsManager
 from serviceitem import ServiceItem
 
 log = logging.getLogger(__name__)
@@ -69,11 +70,6 @@ class MediaManagerItem(QtGui.QWidget):
         The user visible name for a plugin which should use a suitable
         translation function.
 
-     ``self.ConfigSection``
-        The section in the configuration where the items in the media
-        manager are stored. This could potentially be
-        ``self.PluginNameShort.lower()``.
-
      ``self.OnNewPrompt``
         Defaults to *'Select Image(s)'*.
 
@@ -102,6 +98,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         QtGui.QWidget.__init__(self)
         self.parent = parent
+        self.settingsSection = title.lower()
         if type(icon) is QtGui.QIcon:
             self.icon = icon
         elif type(icon) is types.StringType:
@@ -334,18 +331,20 @@ class MediaManagerItem(QtGui.QWidget):
     def onFileClick(self):
         files = QtGui.QFileDialog.getOpenFileNames(
             self, self.OnNewPrompt,
-            self.parent.config.get_last_dir(), self.OnNewFileMasks)
+            SettingsManager.get_last_dir(self.settingsSection),
+            self.OnNewFileMasks)
         log.info(u'New files(s) %s', unicode(files))
         if files:
             self.loadList(files)
-            dir, filename = os.path.split(unicode(files[0]))
-            self.parent.config.set_last_dir(dir)
-            self.parent.config.set_list(self.ConfigSection, self.getFileList())
+            dir = os.path.split(unicode(files[0]))[0]
+            SettingsManager.set_last_dir(self.settingsSection, dir)
+            SettingsManager.set_list(self.settingsSection,
+                self.settingsSection, self.getFileList())
 
     def getFileList(self):
         count = 0
         filelist = []
-        while  count < self.ListView.count():
+        while count < self.ListView.count():
             bitem = self.ListView.item(count)
             filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
             filelist.append(filename)
@@ -357,11 +356,14 @@ class MediaManagerItem(QtGui.QWidget):
         Validates to see if the file still exists or
         thumbnail is up to date
         """
-        filedate = os.stat(file).st_mtime
-        thumbdate = os.stat(thumb).st_mtime
-        #if file updated rebuild icon
-        if filedate > thumbdate:
-            self.IconFromFile(file, thumb)
+        if os.path.exists(file):
+            filedate = os.stat(file).st_mtime
+            thumbdate = os.stat(thumb).st_mtime
+            #if file updated rebuild icon
+            if filedate > thumbdate:
+                self.IconFromFile(file, thumb)
+            return True
+        return False
 
     def IconFromFile(self, file, thumb):
         icon = build_icon(unicode(file))
@@ -422,12 +424,13 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             #Is it posssible to process multiple list items to generate multiple
             #service items?
-            if self.singleServiceItem:
+            if self.singleServiceItem or self.remoteTriggered:
                 log.debug(self.PluginNameShort + u' Add requested')
                 service_item = self.buildServiceItem()
                 if service_item:
                     service_item.from_plugin = False
-                    self.parent.service_manager.addServiceItem(service_item)
+                    self.parent.service_manager.addServiceItem(service_item,
+                        replace=self.remoteTriggered)
             else:
                 items = self.ListView.selectedIndexes()
                 for item in items:
@@ -447,16 +450,18 @@ class MediaManagerItem(QtGui.QWidget):
             if not service_item:
                 QtGui.QMessageBox.information(self,
                     self.trUtf8('No Service Item Selected'),
-                    self.trUtf8('You must select a existing service item to add to.'))
+                    self.trUtf8(
+                        'You must select an existing service item to add to.'))
             elif self.title.lower() == service_item.name.lower():
                 self.generateSlideData(service_item)
-                self.parent.service_manager.addServiceItem(service_item)
+                self.parent.service_manager.addServiceItem(service_item,
+                    replace=True)
             else:
                 #Turn off the remote edit update message indicator
-                self.parent.service_manager.remoteEditTriggered = False
                 QtGui.QMessageBox.information(self,
                     self.trUtf8('Invalid Service Item'),
-                    self.trUtf8(unicode('You must select a %s service item.' % self.title)))
+                    self.trUtf8(unicode(
+                        'You must select a %s service item.' % self.title)))
 
     def buildServiceItem(self, item=None):
         """

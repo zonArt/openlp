@@ -31,8 +31,8 @@ class ImageTab(SettingsTab):
     """
     ImageTab is the Image settings tab in the settings dialog.
     """
-    def __init__(self, title, section=None):
-        SettingsTab.__init__(self, title, section)
+    def __init__(self, title):
+        SettingsTab.__init__(self, title)
 
     def setupUi(self):
         self.setObjectName(u'ImageTab')
@@ -71,12 +71,17 @@ class ImageTab(SettingsTab):
         self.loop_delay = self.TimeoutSpinBox.value()
 
     def load(self):
-        self.loop_delay = int(self.config.get_config(u'loop delay', 5))
+        self.loop_delay = QtCore.QSettings().value(
+            self.settingsSection + u'/loop delay',
+            QtCore.QVariant(5)).toInt()[0]
         self.TimeoutSpinBox.setValue(self.loop_delay)
 
     def save(self):
-        self.config.set_config(u'loop delay', self.loop_delay)
-        Receiver.send_message(u'update_spin_delay', self.loop_delay)
+        QtCore.QSettings().setValue(self.settingsSection + u'/loop delay',
+            QtCore.QVariant(self.loop_delay))
+        Receiver.send_message(u'slidecontroller_live_spin_delay', 
+            self.loop_delay)
 
     def postSetUp(self):
-        Receiver.send_message(u'update_spin_delay', self.loop_delay)
+        Receiver.send_message(u'slidecontroller_live_spin_delay', 
+            self.loop_delay)
