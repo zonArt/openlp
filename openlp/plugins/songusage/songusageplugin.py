@@ -108,7 +108,7 @@ class SongUsagePlugin(Plugin):
         log.info(u'SongUsage Initialising')
         Plugin.initialise(self)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_live_started'),
+            QtCore.SIGNAL(u'songs_live_started'),
             self.onReceiveSongUsage)
         self.SongUsageActive = QtCore.QSettings().value(
             self.settingsSection + u'/active',
