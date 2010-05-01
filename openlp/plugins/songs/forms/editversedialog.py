@@ -27,11 +27,11 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate
 
 class Ui_EditVerseDialog(object):
-    def setupUi(self, EditVerseForm):
-        EditVerseForm.setObjectName(u'EditVerseDialog')
-        EditVerseForm.resize(500, 521)
-        EditVerseForm.setModal(True)
-        self.layoutWidget = QtGui.QWidget(EditVerseForm)
+    def setupUi(self, EditVerseDialog):
+        EditVerseDialog.setObjectName(u'EditVerseDialog')
+        EditVerseDialog.resize(500, 521)
+        EditVerseDialog.setModal(True)
+        self.layoutWidget = QtGui.QWidget(EditVerseDialog)
         self.layoutWidget.setGeometry(QtCore.QRect(11, 1, 471, 491))
         self.layoutWidget.setObjectName(u'layoutWidget')
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.layoutWidget)
@@ -104,13 +104,13 @@ class Ui_EditVerseDialog(object):
         self.ButtonBox.setObjectName(u'ButtonBox')
         self.verticalLayout_3.addWidget(self.ButtonBox)
 
-        self.retranslateUi(EditVerseForm)
-        QtCore.QObject.connect(self.ButtonBox, QtCore.SIGNAL(u'accepted()'), EditVerseForm.accept)
-        QtCore.QObject.connect(self.ButtonBox, QtCore.SIGNAL(u'rejected()'), EditVerseForm.reject)
-        QtCore.QMetaObject.connectSlotsByName(EditVerseForm)
+        self.retranslateUi(EditVerseDialog)
+        QtCore.QObject.connect(self.ButtonBox, QtCore.SIGNAL(u'accepted()'), EditVerseDialog.accept)
+        QtCore.QObject.connect(self.ButtonBox, QtCore.SIGNAL(u'rejected()'), EditVerseDialog.reject)
+        QtCore.QMetaObject.connectSlotsByName(EditVerseDialog)
 
-    def retranslateUi(self, EditVerseForm):
-        EditVerseForm.setWindowTitle(translate('EditVerseForm', 'Edit Verse'))
+    def retranslateUi(self, EditVerseDialog):
+        EditVerseDialog.setWindowTitle(translate('EditVerseForm', 'Edit Verse'))
         self.VerseTypeLabel.setText(translate('EditVerseForm', 'Verse Type'))
         self.VerseListComboBox.setItemText(0, translate('EditVerseForm', 'Intro'))
         self.VerseListComboBox.setItemText(1, translate('EditVerseForm', 'Verse'))

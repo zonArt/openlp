@@ -27,25 +27,25 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate
 
 class Ui_AboutDialog(object):
-    def setupUi(self, AboutForm):
-        AboutForm.setObjectName(u'AboutDialog')
-        AboutForm.resize(516, 481)
+    def setupUi(self, AboutDialog):
+        AboutDialog.setObjectName(u'AboutDialog')
+        AboutDialog.resize(516, 481)
         LogoIcon = QtGui.QIcon()
         LogoIcon.addPixmap(QtGui.QPixmap(u':/icon/openlp-logo-16x16.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        AboutForm.setWindowIcon(LogoIcon)
-        self.AboutFormLayout = QtGui.QVBoxLayout(AboutForm)
-        self.AboutFormLayout.setSpacing(8)
-        self.AboutFormLayout.setMargin(8)
-        self.AboutFormLayout.setObjectName(u'AboutFormLayout')
-        self.LogoLabel = QtGui.QLabel(AboutForm)
+        AboutDialog.setWindowIcon(LogoIcon)
+        self.AboutDialogLayout = QtGui.QVBoxLayout(AboutDialog)
+        self.AboutDialogLayout.setSpacing(8)
+        self.AboutDialogLayout.setMargin(8)
+        self.AboutDialogLayout.setObjectName(u'AboutDialogLayout')
+        self.LogoLabel = QtGui.QLabel(AboutDialog)
         self.LogoLabel.setPixmap(
             QtGui.QPixmap(u':/graphics/openlp-about-logo.png'))
         self.LogoLabel.setScaledContents(False)
         self.LogoLabel.setIndent(0)
         self.LogoLabel.setObjectName(u'LogoLabel')
-        self.AboutFormLayout.addWidget(self.LogoLabel)
-        self.AboutNotebook = QtGui.QTabWidget(AboutForm)
+        self.AboutDialogLayout.addWidget(self.LogoLabel)
+        self.AboutNotebook = QtGui.QTabWidget(AboutDialog)
         self.AboutNotebook.setObjectName(u'AboutNotebook')
         self.AboutTab = QtGui.QWidget()
         self.AboutTab.setObjectName(u'AboutTab')
@@ -80,8 +80,8 @@ class Ui_AboutDialog(object):
         self.LicenseTextEdit.setObjectName(u'LicenseTextEdit')
         self.LicenseTabLayout.addWidget(self.LicenseTextEdit)
         self.AboutNotebook.addTab(self.LicenseTab, '')
-        self.AboutFormLayout.addWidget(self.AboutNotebook)
-        self.ButtonWidget = QtGui.QWidget(AboutForm)
+        self.AboutDialogLayout.addWidget(self.AboutNotebook)
+        self.ButtonWidget = QtGui.QWidget(AboutDialog)
         self.ButtonWidget.setObjectName(u'ButtonWidget')
         self.ButtonWidgetLayout = QtGui.QHBoxLayout(self.ButtonWidget)
         self.ButtonWidgetLayout.setSpacing(8)
@@ -105,16 +105,16 @@ class Ui_AboutDialog(object):
         self.CloseButton.setIcon(CloseIcon)
         self.CloseButton.setObjectName(u'CloseButton')
         self.ButtonWidgetLayout.addWidget(self.CloseButton)
-        self.AboutFormLayout.addWidget(self.ButtonWidget)
+        self.AboutDialogLayout.addWidget(self.ButtonWidget)
 
-        self.retranslateUi(AboutForm)
+        self.retranslateUi(AboutDialog)
         self.AboutNotebook.setCurrentIndex(0)
         QtCore.QObject.connect(self.CloseButton, QtCore.SIGNAL(u'clicked()'),
-            AboutForm.close)
-        QtCore.QMetaObject.connectSlotsByName(AboutForm)
+            AboutDialog.close)
+        QtCore.QMetaObject.connectSlotsByName(AboutDialog)
 
-    def retranslateUi(self, AboutForm):
-        AboutForm.setWindowTitle(translate('AboutForm', 'About OpenLP'))
+    def retranslateUi(self, AboutDialog):
+        AboutDialog.setWindowTitle(translate('AboutForm', 'About OpenLP'))
         self.AboutTextEdit.setPlainText(translate('AboutForm', 
             'OpenLP <version><revision> - Open Source Lyrics '
             'Projection\n'

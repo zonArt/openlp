@@ -27,16 +27,16 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate
 
 class Ui_OpenLPExportDialog(object):
-    def setupUi(self, OpenLPExportForm):
-        OpenLPExportForm.setObjectName(u'OpenLPExportDialog')
-        OpenLPExportForm.resize(473, 459)
+    def setupUi(self, OpenLPExportDialog):
+        OpenLPExportDialog.setObjectName(u'OpenLPExportDialog')
+        OpenLPExportDialog.resize(473, 459)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(u':/icon/openlp.org-icon-32.bmp'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        OpenLPExportForm.setWindowIcon(icon)
-        self.verticalLayout_5 = QtGui.QVBoxLayout(OpenLPExportForm)
+        OpenLPExportDialog.setWindowIcon(icon)
+        self.verticalLayout_5 = QtGui.QVBoxLayout(OpenLPExportDialog)
         self.verticalLayout_5.setMargin(8)
         self.verticalLayout_5.setObjectName(u'verticalLayout_5')
-        self.ExportFileWidget = QtGui.QWidget(OpenLPExportForm)
+        self.ExportFileWidget = QtGui.QWidget(OpenLPExportDialog)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -60,7 +60,7 @@ class Ui_OpenLPExportDialog(object):
         self.ExportFileSelectPushButton.setObjectName(u'ExportFileSelectPushButton')
         self.horizontalLayout.addWidget(self.ExportFileSelectPushButton)
         self.verticalLayout_5.addWidget(self.ExportFileWidget)
-        self.SongListFrame = QtGui.QFrame(OpenLPExportForm)
+        self.SongListFrame = QtGui.QFrame(OpenLPExportDialog)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -243,7 +243,7 @@ class Ui_OpenLPExportDialog(object):
         self.verticalLayout_2.addWidget(self.SelectedRemoveSelectedWidget)
         self.horizontalLayout_6.addWidget(self.SelectedFileListWidget)
         self.verticalLayout_5.addWidget(self.SongListFrame)
-        self.ProgressGroupBox = QtGui.QGroupBox(OpenLPExportForm)
+        self.ProgressGroupBox = QtGui.QGroupBox(OpenLPExportDialog)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -262,7 +262,7 @@ class Ui_OpenLPExportDialog(object):
         self.ProgressBar.setObjectName(u'ProgressBar')
         self.verticalLayout_4.addWidget(self.ProgressBar)
         self.verticalLayout_5.addWidget(self.ProgressGroupBox)
-        self.ButtonBarWidget = QtGui.QWidget(OpenLPExportForm)
+        self.ButtonBarWidget = QtGui.QWidget(OpenLPExportDialog)
         self.ButtonBarWidget.setObjectName(u'ButtonBarWidget')
         self.horizontalLayout_7 = QtGui.QHBoxLayout(self.ButtonBarWidget)
         self.horizontalLayout_7.setSpacing(8)
@@ -278,15 +278,15 @@ class Ui_OpenLPExportDialog(object):
         self.horizontalLayout_7.addWidget(self.ClosePushButton)
         self.verticalLayout_5.addWidget(self.ButtonBarWidget)
 
-        self.retranslateUi(OpenLPExportForm)
-        QtCore.QObject.connect(self.ClosePushButton, QtCore.SIGNAL(u'clicked()'), OpenLPExportForm.close)
+        self.retranslateUi(OpenLPExportDialog)
+        QtCore.QObject.connect(self.ClosePushButton, QtCore.SIGNAL(u'clicked()'), OpenLPExportDialog.close)
         QtCore.QObject.connect(self.ExportSelectAllPushButton, QtCore.SIGNAL(u'clicked()'), self.ExportListTable.selectAll)
         QtCore.QObject.connect(self.SelectedSelectAllPushButton, QtCore.SIGNAL(u'clicked()'), self.SelectedListTable.selectAll)
         QtCore.QObject.connect(self.SelectedRemoveSelectedButton, QtCore.SIGNAL(u'clicked()'), self.SelectedListTable.clear)
-        QtCore.QMetaObject.connectSlotsByName(OpenLPExportForm)
+        QtCore.QMetaObject.connectSlotsByName(OpenLPExportDialog)
 
-    def retranslateUi(self, OpenLPExportForm):
-        OpenLPExportForm.setWindowTitle(translate('OpenLPExportForm', 'openlp.org Song Exporter'))
+    def retranslateUi(self, OpenLPExportDialog):
+        OpenLPExportDialog.setWindowTitle(translate('OpenLPExportForm', 'openlp.org Song Exporter'))
         self.ExportFileLabel.setText(translate('OpenLPExportForm', 'Select openlp.org export filename:'))
         self.ExportListLabel.setText(translate('OpenLPExportForm', 'Full Song List'))
         self.ExportListTable.horizontalHeaderItem(0).setText(translate('OpenLPExportForm', 'Song Title'))

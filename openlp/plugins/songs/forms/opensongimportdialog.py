@@ -27,17 +27,17 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate
 
 class Ui_OpenSongImportDialog(object):
-    def setupUi(self, OpenSongImportForm):
-        OpenSongImportForm.setObjectName(u'OpenSongImportDialog')
-        OpenSongImportForm.resize(481, 172)
+    def setupUi(self, OpenSongImportDialog):
+        OpenSongImportDialog.setObjectName(u'OpenSongImportDialog')
+        OpenSongImportDialog.resize(481, 172)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(u':/icon/openlp.org-icon-32.bmp'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        OpenSongImportForm.setWindowIcon(icon)
-        self.verticalLayout = QtGui.QVBoxLayout(OpenSongImportForm)
+        OpenSongImportDialog.setWindowIcon(icon)
+        self.verticalLayout = QtGui.QVBoxLayout(OpenSongImportDialog)
         self.verticalLayout.setSpacing(6)
         self.verticalLayout.setMargin(8)
         self.verticalLayout.setObjectName(u'verticalLayout')
-        self.ImportFileWidget = QtGui.QWidget(OpenSongImportForm)
+        self.ImportFileWidget = QtGui.QWidget(OpenSongImportDialog)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -61,7 +61,7 @@ class Ui_OpenSongImportDialog(object):
         self.ImportFileSelectPushButton.setObjectName(u'ImportFileSelectPushButton')
         self.horizontalLayout.addWidget(self.ImportFileSelectPushButton)
         self.verticalLayout.addWidget(self.ImportFileWidget)
-        self.ProgressGroupBox = QtGui.QGroupBox(OpenSongImportForm)
+        self.ProgressGroupBox = QtGui.QGroupBox(OpenSongImportDialog)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -80,7 +80,7 @@ class Ui_OpenSongImportDialog(object):
         self.ProgressBar.setObjectName(u'ProgressBar')
         self.verticalLayout_4.addWidget(self.ProgressBar)
         self.verticalLayout.addWidget(self.ProgressGroupBox)
-        self.ButtonBarWidget = QtGui.QWidget(OpenSongImportForm)
+        self.ButtonBarWidget = QtGui.QWidget(OpenSongImportDialog)
         self.ButtonBarWidget.setObjectName(u'ButtonBarWidget')
         self.horizontalLayout_7 = QtGui.QHBoxLayout(self.ButtonBarWidget)
         self.horizontalLayout_7.setSpacing(8)
@@ -96,12 +96,12 @@ class Ui_OpenSongImportDialog(object):
         self.horizontalLayout_7.addWidget(self.ClosePushButton)
         self.verticalLayout.addWidget(self.ButtonBarWidget)
 
-        self.retranslateUi(OpenSongImportForm)
-        QtCore.QObject.connect(self.ClosePushButton, QtCore.SIGNAL(u'clicked()'), OpenSongImportForm.close)
-        QtCore.QMetaObject.connectSlotsByName(OpenSongImportForm)
+        self.retranslateUi(OpenSongImportDialog)
+        QtCore.QObject.connect(self.ClosePushButton, QtCore.SIGNAL(u'clicked()'), OpenSongImportDialog.close)
+        QtCore.QMetaObject.connectSlotsByName(OpenSongImportDialog)
 
-    def retranslateUi(self, OpenSongImportForm):
-        OpenSongImportForm.setWindowTitle(translate('OpenSongImportForm', 'OpenSong Song Importer'))
+    def retranslateUi(self, OpenSongImportDialog):
+        OpenSongImportDialog.setWindowTitle(translate('OpenSongImportForm', 'OpenSong Song Importer'))
         self.ImportFileLabel.setText(translate('OpenSongImportForm', 'OpenSong Folder:'))
         self.ProgressGroupBox.setTitle(translate('OpenSongImportForm', 'Progress:'))
         self.ProgressLabel.setText(translate('OpenSongImportForm', 'Ready to import'))

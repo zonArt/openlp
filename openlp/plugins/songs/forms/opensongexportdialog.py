@@ -27,16 +27,16 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate
 
 class Ui_OpenSongExportDialog(object):
-    def setupUi(self, OpenSongExportForm):
-        OpenSongExportForm.setObjectName(u'OpenSongExportDialog')
-        OpenSongExportForm.resize(473, 459)
+    def setupUi(self, OpenSongExportDialog):
+        OpenSongExportDialog.setObjectName(u'OpenSongExportDialog')
+        OpenSongExportDialog.resize(473, 459)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(u':/icon/openlp.org-icon-32.bmp'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        OpenSongExportForm.setWindowIcon(icon)
-        self.verticalLayout_5 = QtGui.QVBoxLayout(OpenSongExportForm)
+        OpenSongExportDialog.setWindowIcon(icon)
+        self.verticalLayout_5 = QtGui.QVBoxLayout(OpenSongExportDialog)
         self.verticalLayout_5.setMargin(8)
         self.verticalLayout_5.setObjectName(u'verticalLayout_5')
-        self.ExportFileWidget = QtGui.QWidget(OpenSongExportForm)
+        self.ExportFileWidget = QtGui.QWidget(OpenSongExportDialog)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -60,7 +60,7 @@ class Ui_OpenSongExportDialog(object):
         self.ExportFileSelectPushButton.setObjectName(u'ExportFileSelectPushButton')
         self.horizontalLayout.addWidget(self.ExportFileSelectPushButton)
         self.verticalLayout_5.addWidget(self.ExportFileWidget)
-        self.SongListFrame = QtGui.QFrame(OpenSongExportForm)
+        self.SongListFrame = QtGui.QFrame(OpenSongExportDialog)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -243,7 +243,7 @@ class Ui_OpenSongExportDialog(object):
         self.verticalLayout_2.addWidget(self.SelectedRemoveSelectedWidget)
         self.horizontalLayout_6.addWidget(self.SelectedFileListWidget)
         self.verticalLayout_5.addWidget(self.SongListFrame)
-        self.ProgressGroupBox = QtGui.QGroupBox(OpenSongExportForm)
+        self.ProgressGroupBox = QtGui.QGroupBox(OpenSongExportDialog)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -262,7 +262,7 @@ class Ui_OpenSongExportDialog(object):
         self.ProgressBar.setObjectName(u'ProgressBar')
         self.verticalLayout_4.addWidget(self.ProgressBar)
         self.verticalLayout_5.addWidget(self.ProgressGroupBox)
-        self.ButtonBarWidget = QtGui.QWidget(OpenSongExportForm)
+        self.ButtonBarWidget = QtGui.QWidget(OpenSongExportDialog)
         self.ButtonBarWidget.setObjectName(u'ButtonBarWidget')
         self.horizontalLayout_7 = QtGui.QHBoxLayout(self.ButtonBarWidget)
         self.horizontalLayout_7.setSpacing(8)
@@ -278,15 +278,15 @@ class Ui_OpenSongExportDialog(object):
         self.horizontalLayout_7.addWidget(self.ClosePushButton)
         self.verticalLayout_5.addWidget(self.ButtonBarWidget)
 
-        self.retranslateUi(OpenSongExportForm)
-        QtCore.QObject.connect(self.ClosePushButton, QtCore.SIGNAL(u'clicked()'), OpenSongExportForm.close)
+        self.retranslateUi(OpenSongExportDialog)
+        QtCore.QObject.connect(self.ClosePushButton, QtCore.SIGNAL(u'clicked()'), OpenSongExportDialog.close)
         QtCore.QObject.connect(self.ExportSelectAllPushButton, QtCore.SIGNAL(u'clicked()'), self.ExportListTable.selectAll)
         QtCore.QObject.connect(self.SelectedSelectAllPushButton, QtCore.SIGNAL(u'clicked()'), self.SelectedListTable.selectAll)
         QtCore.QObject.connect(self.SelectedRemoveSelectedButton, QtCore.SIGNAL(u'clicked()'), self.SelectedListTable.clear)
-        QtCore.QMetaObject.connectSlotsByName(OpenSongExportForm)
+        QtCore.QMetaObject.connectSlotsByName(OpenSongExportDialog)
 
-    def retranslateUi(self, OpenSongExportForm):
-        OpenSongExportForm.setWindowTitle(translate('OpenSong Song Exporter'))
+    def retranslateUi(self, OpenSongExportDialog):
+        OpenSongExportDialog.setWindowTitle(translate('OpenSong Song Exporter'))
         self.ExportFileLabel.setText(translate('OpenSongExportForm', 'Select OpenSong song folder:'))
         self.ExportListLabel.setText(translate('OpenSongExportForm', 'Full Song List'))
         self.ExportListTable.horizontalHeaderItem(0).setText(translate('OpenSongExportForm', 'Song Title'))

@@ -28,15 +28,15 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import build_icon,  translate
 
 class Ui_SongMaintenanceDialog(object):
-    def setupUi(self, SongMaintenanceForm):
-        SongMaintenanceForm.setObjectName(u'SongMaintenanceDialog')
-        SongMaintenanceForm.setWindowModality(QtCore.Qt.ApplicationModal)
-        SongMaintenanceForm.resize(486, 361)
-        self.DialogLayout = QtGui.QVBoxLayout(SongMaintenanceForm)
+    def setupUi(self, SongMaintenanceDialog):
+        SongMaintenanceDialog.setObjectName(u'SongMaintenanceDialog')
+        SongMaintenanceDialog.setWindowModality(QtCore.Qt.ApplicationModal)
+        SongMaintenanceDialog.resize(486, 361)
+        self.DialogLayout = QtGui.QVBoxLayout(SongMaintenanceDialog)
         self.DialogLayout.setSpacing(8)
         self.DialogLayout.setMargin(8)
         self.DialogLayout.setObjectName(u'DialogLayout')
-        self.ContentWidget = QtGui.QWidget(SongMaintenanceForm)
+        self.ContentWidget = QtGui.QWidget(SongMaintenanceDialog)
         self.ContentWidget.setObjectName(u'ContentWidget')
         self.ContentLayout = QtGui.QHBoxLayout(self.ContentWidget)
         self.ContentLayout.setSpacing(8)
@@ -192,23 +192,23 @@ class Ui_SongMaintenanceDialog(object):
         self.TypeStackedWidget.addWidget(self.BooksPage)
         self.ContentLayout.addWidget(self.TypeStackedWidget)
         self.DialogLayout.addWidget(self.ContentWidget)
-        self.MaintenanceButtonBox = QtGui.QDialogButtonBox(SongMaintenanceForm)
+        self.MaintenanceButtonBox = QtGui.QDialogButtonBox(SongMaintenanceDialog)
         self.MaintenanceButtonBox.setOrientation(QtCore.Qt.Horizontal)
         self.MaintenanceButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Close)
         self.MaintenanceButtonBox.setObjectName(u'MaintenanceButtonBox')
         self.DialogLayout.addWidget(self.MaintenanceButtonBox)
 
-        self.retranslateUi(SongMaintenanceForm)
+        self.retranslateUi(SongMaintenanceDialog)
         self.TypeStackedWidget.setCurrentIndex(0)
         QtCore.QObject.connect(self.MaintenanceButtonBox,
-            QtCore.SIGNAL(u'rejected()'), SongMaintenanceForm.accept)
+            QtCore.SIGNAL(u'rejected()'), SongMaintenanceDialog.accept)
         QtCore.QObject.connect(self.TypeListWidget,
             QtCore.SIGNAL(u'currentRowChanged(int)'),
             self.TypeStackedWidget.setCurrentIndex)
-        QtCore.QMetaObject.connectSlotsByName(SongMaintenanceForm)
+        QtCore.QMetaObject.connectSlotsByName(SongMaintenanceDialog)
 
-    def retranslateUi(self, SongMaintenanceForm):
-        SongMaintenanceForm.setWindowTitle(translate('SongMaintenanceForm', 'Song Maintenance'))
+    def retranslateUi(self, SongMaintenanceDialog):
+        SongMaintenanceDialog.setWindowTitle(translate('SongMaintenanceForm', 'Song Maintenance'))
         self.TypeListWidget.item(0).setText(translate('SongMaintenanceForm', 'Authors'))
         self.TypeListWidget.item(1).setText(translate('SongMaintenanceForm', 'Topics'))
         self.TypeListWidget.item(2).setText(translate('SongMaintenanceForm', 'Books/Hymnals'))

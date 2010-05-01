@@ -27,12 +27,12 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate
 
 class Ui_BibleImportWizard(object):
-    def setupUi(self, ImportWizardForm):
-        ImportWizardForm.setObjectName(u'BibleImportWizard')
-        ImportWizardForm.resize(550, 386)
-        ImportWizardForm.setModal(True)
-        ImportWizardForm.setWizardStyle(QtGui.QWizard.ModernStyle)
-        ImportWizardForm.setOptions(
+    def setupUi(self, BibleImportWizard):
+        BibleImportWizard.setObjectName(u'BibleImportWizard')
+        BibleImportWizard.resize(550, 386)
+        BibleImportWizard.setModal(True)
+        BibleImportWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
+        BibleImportWizard.setOptions(
             QtGui.QWizard.IndependentPages | \
             QtGui.QWizard.NoBackButtonOnStartPage | \
             QtGui.QWizard.NoBackButtonOnLastPage)
@@ -58,7 +58,7 @@ class Ui_BibleImportWizard(object):
         spacerItem1 = QtGui.QSpacerItem(20, 40,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.WelcomeLayout.addItem(spacerItem1)
-        ImportWizardForm.addPage(self.WelcomePage)
+        BibleImportWizard.addPage(self.WelcomePage)
         self.SelectPage = QtGui.QWizardPage()
         self.SelectPage.setObjectName(u'SelectPage')
         self.SelectPageLayout = QtGui.QVBoxLayout(self.SelectPage)
@@ -252,7 +252,7 @@ class Ui_BibleImportWizard(object):
         self.WebDownloadLayout.addWidget(self.WebDownloadTabWidget)
         self.FormatWidget.addWidget(self.WebDownloadPage)
         self.SelectPageLayout.addWidget(self.FormatWidget)
-        ImportWizardForm.addPage(self.SelectPage)
+        BibleImportWizard.addPage(self.SelectPage)
         self.LicenseDetailsPage = QtGui.QWizardPage()
         self.LicenseDetailsPage.setObjectName(u'LicenseDetailsPage')
         self.LicenseDetailsLayout = QtGui.QFormLayout(self.LicenseDetailsPage)
@@ -283,7 +283,7 @@ class Ui_BibleImportWizard(object):
         self.PermissionEdit.setObjectName(u'PermissionEdit')
         self.LicenseDetailsLayout.setWidget(2, QtGui.QFormLayout.FieldRole,
             self.PermissionEdit)
-        ImportWizardForm.addPage(self.LicenseDetailsPage)
+        BibleImportWizard.addPage(self.LicenseDetailsPage)
         self.ImportPage = QtGui.QWizardPage()
         self.ImportPage.setObjectName(u'ImportPage')
         self.ImportLayout = QtGui.QVBoxLayout(self.ImportPage)
@@ -297,18 +297,18 @@ class Ui_BibleImportWizard(object):
         self.ImportProgressBar.setValue(0)
         self.ImportProgressBar.setObjectName(u'ImportProgressBar')
         self.ImportLayout.addWidget(self.ImportProgressBar)
-        ImportWizardForm.addPage(self.ImportPage)
+        BibleImportWizard.addPage(self.ImportPage)
 
-        self.retranslateUi(ImportWizardForm)
+        self.retranslateUi(BibleImportWizard)
         self.FormatWidget.setCurrentIndex(0)
         self.WebDownloadTabWidget.setCurrentIndex(0)
         QtCore.QObject.connect(self.FormatComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
             self.FormatWidget.setCurrentIndex)
-        QtCore.QMetaObject.connectSlotsByName(ImportWizardForm)
+        QtCore.QMetaObject.connectSlotsByName(BibleImportWizard)
 
-    def retranslateUi(self, ImportWizardForm):
-        ImportWizardForm.setWindowTitle(translate('ImportWizardForm', 'Bible Import Wizard'))
+    def retranslateUi(self, BibleImportWizard):
+        BibleImportWizard.setWindowTitle(translate('ImportWizardForm', 'Bible Import Wizard'))
         self.TitleLabel.setText(
             u'<span style=\" font-size:14pt; font-weight:600;\">' + \
             translate('ImportWizardForm', 'Welcome to the Bible Import Wizard') + u'</span>')

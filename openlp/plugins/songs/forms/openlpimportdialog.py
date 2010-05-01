@@ -27,16 +27,16 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate
 
 class Ui_OpenLPImportDialog(object):
-    def setupUi(self, OpenLPImportForm):
-        OpenLPImportForm.setObjectName(u'OpenLPImportDialog')
-        OpenLPImportForm.resize(473, 459)
+    def setupUi(self, OpenLPImportDialog):
+        OpenLPImportDialog.setObjectName(u'OpenLPImportDialog')
+        OpenLPImportDialog.resize(473, 459)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(u':/icon/openlp.org-icon-32.bmp'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        OpenLPImportForm.setWindowIcon(icon)
-        self.verticalLayout_5 = QtGui.QVBoxLayout(OpenLPImportForm)
+        OpenLPImportDialog.setWindowIcon(icon)
+        self.verticalLayout_5 = QtGui.QVBoxLayout(OpenLPImportDialog)
         self.verticalLayout_5.setMargin(8)
         self.verticalLayout_5.setObjectName(u'verticalLayout_5')
-        self.ImportFileWidget = QtGui.QWidget(OpenLPImportForm)
+        self.ImportFileWidget = QtGui.QWidget(OpenLPImportDialog)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -60,7 +60,7 @@ class Ui_OpenLPImportDialog(object):
         self.ImportFileSelectPushButton.setObjectName(u'ImportFileSelectPushButton')
         self.horizontalLayout.addWidget(self.ImportFileSelectPushButton)
         self.verticalLayout_5.addWidget(self.ImportFileWidget)
-        self.SongListFrame = QtGui.QFrame(OpenLPImportForm)
+        self.SongListFrame = QtGui.QFrame(OpenLPImportDialog)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -243,7 +243,7 @@ class Ui_OpenLPImportDialog(object):
         self.verticalLayout_2.addWidget(self.SelectedRemoveSelectedWidget)
         self.horizontalLayout_6.addWidget(self.SelectedFileListWidget)
         self.verticalLayout_5.addWidget(self.SongListFrame)
-        self.ProgressGroupBox = QtGui.QGroupBox(OpenLPImportForm)
+        self.ProgressGroupBox = QtGui.QGroupBox(OpenLPImportDialog)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -262,7 +262,7 @@ class Ui_OpenLPImportDialog(object):
         self.ProgressBar.setObjectName(u'ProgressBar')
         self.verticalLayout_4.addWidget(self.ProgressBar)
         self.verticalLayout_5.addWidget(self.ProgressGroupBox)
-        self.ButtonBarWidget = QtGui.QWidget(OpenLPImportForm)
+        self.ButtonBarWidget = QtGui.QWidget(OpenLPImportDialog)
         self.ButtonBarWidget.setObjectName(u'ButtonBarWidget')
         self.horizontalLayout_7 = QtGui.QHBoxLayout(self.ButtonBarWidget)
         self.horizontalLayout_7.setSpacing(8)
@@ -278,15 +278,15 @@ class Ui_OpenLPImportDialog(object):
         self.horizontalLayout_7.addWidget(self.ClosePushButton)
         self.verticalLayout_5.addWidget(self.ButtonBarWidget)
 
-        self.retranslateUi(OpenLPImportForm)
-        QtCore.QObject.connect(self.ClosePushButton, QtCore.SIGNAL(u'clicked()'), OpenLPImportForm.close)
+        self.retranslateUi(OpenLPImportDialog)
+        QtCore.QObject.connect(self.ClosePushButton, QtCore.SIGNAL(u'clicked()'), OpenLPImportDialog.close)
         QtCore.QObject.connect(self.ImportSelectAllPushButton, QtCore.SIGNAL(u'clicked()'), self.ImportListTable.selectAll)
         QtCore.QObject.connect(self.SelectedSelectAllPushButton, QtCore.SIGNAL(u'clicked()'), self.SelectedListTable.selectAll)
         QtCore.QObject.connect(self.SelectedRemoveSelectedButton, QtCore.SIGNAL(u'clicked()'), self.SelectedListTable.clear)
-        QtCore.QMetaObject.connectSlotsByName(OpenLPImportForm)
+        QtCore.QMetaObject.connectSlotsByName(OpenLPImportDialog)
 
-    def retranslateUi(self, OpenLPImportForm):
-        OpenLPImportForm.setWindowTitle(translate('OpenLPImportForm', 'openlp.org Song Importer'))
+    def retranslateUi(self, OpenLPImportDialog):
+        OpenLPImportDialog.setWindowTitle(translate('OpenLPImportForm', 'openlp.org Song Importer'))
         self.ImportFileLabel.setText(translate('OpenLPImportForm', 'Select openlp.org songfile to import:'))
         self.ImportListLabel.setText(translate('OpenLPImportForm', 'Import File Song List'))
         self.ImportListTable.horizontalHeaderItem(0).setText(translate('OpenLPImportForm', 'Song Title'))
