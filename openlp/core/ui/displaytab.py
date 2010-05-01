@@ -178,7 +178,7 @@ class DisplayTab(SettingsTab):
 
     def load(self):
         settings = QtCore.QSettings()
-        settings.beginGroup(self.settings_section)
+        settings.beginGroup(self.settingsSection)
         self.Xpos.setText(unicode(self.screens.current[u'size'].x()))
         self.Ypos.setText(unicode(self.screens.current[u'size'].y()))
         self.Height.setText(unicode(self.screens.current[u'size'].height()))
@@ -208,7 +208,7 @@ class DisplayTab(SettingsTab):
 
     def save(self):
         settings = QtCore.QSettings()
-        settings.beginGroup(self.settings_section)
+        settings.beginGroup(self.settingsSection)
         settings.setValue('x position',
             QtCore.QVariant(self.XposEdit.text()))
         settings.setValue('y position',

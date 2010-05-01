@@ -28,7 +28,7 @@ import logging
 from PyQt4 import QtNetwork, QtCore
 
 from openlp.core.lib import Plugin, Receiver
-from openlp.plugins.remotes.lib import RemoteTab
+from openlp.plugins.remotes.lib import RemoteTab, HttpServer
 
 log = logging.getLogger(__name__)
 
@@ -36,22 +36,26 @@ class RemotesPlugin(Plugin):
     log.info(u'Remote Plugin loaded')
 
     def __init__(self, plugin_helpers):
+        """
+        remotes constructor
+        """
         Plugin.__init__(self, u'Remotes', u'1.9.1', plugin_helpers)
         self.weight = -1
         self.server = None
 
     def initialise(self):
+        """
+        Initialise the remotes plugin, and start the http server
+        """
         log.debug(u'initialise')
         Plugin.initialise(self)
         self.insert_toolbox_item()
-        self.server = QtNetwork.QUdpSocket()
-        self.server.bind(
-            QtCore.QSettings().value(self.settings_section + u'/remote port',
-            QtCore.QVariant(4316)).toInt()[0])
-        QtCore.QObject.connect(self.server,
-            QtCore.SIGNAL(u'readyRead()'), self.readData)
+        self.server = HttpServer(self)
 
     def finalise(self):
+        """
+        Tidy up and close down the http server
+        """
         log.debug(u'finalise')
         self.remove_toolbox_item()
         if self.server:
@@ -62,28 +66,13 @@ class RemotesPlugin(Plugin):
         Create the settings Tab
         """
         return RemoteTab(self.name)
-
-    def readData(self):
-        log.info(u'Remoted data has arrived')
-        while self.server.hasPendingDatagrams():
-            datagram, host, port = self.server.readDatagram(
-                self.server.pendingDatagramSize())
-            self.handle_datagram(datagram)
-
-    def handle_datagram(self, datagram):
-        log.info(u'Sending event %s ', datagram)
-        pos = datagram.find(u':')
-        event = unicode(datagram[:pos].lower())
-        if event == u'alert':
-            Receiver.send_message(u'alerts_text', unicode(datagram[pos + 1:]))
-        elif event == u'next_slide':
-            Receiver.send_message(u'slidecontroller_live_next')
-        else:
-            Receiver.send_message(event, unicode(datagram[pos + 1:]))
             
     def about(self):
+        """
+        Information about this plugin
+        """
         about_text = self.trUtf8('<b>Remote Plugin</b><br>This plugin '
             'provides the ability to send messages to a running version of '
-            'openlp on a different computer.<br>The Primary use for this '
-            'would be to send alerts from a creche')
+            'openlp on a different computer via a web browser or other app<br>'
+            'The Primary use for this would be to send alerts from a creche')
         return about_text

@@ -46,7 +46,7 @@ class AlertsManager(QtCore.QObject):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_active'), self.generateAlert)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'alerts_text'), self.displayAlert)
+            QtCore.SIGNAL(u'alerts_text'), self.onAlertText)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
 
@@ -70,6 +70,16 @@ class AlertsManager(QtCore.QObject):
         self.parent.maindisplay.setAlertSize(self.alertScreenPosition,\
             self.alertHeight)
 
+    def onAlertText(self, message):
+        """
+        Called via a alerts_text event. Message is single element array
+        containing text
+        """
+        if message:
+            self.displayAlert(message[0])
+        else:
+            self.displayAlert(u'')
+            
     def displayAlert(self, text=u''):
         """
         Called from the Alert Tab to display an alert

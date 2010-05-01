@@ -48,8 +48,8 @@ class Renderer(object):
         self.theme_name = None
         self._theme = None
         self._bg_image_filename = None
-        self._frame = None
-        self._frameOp = None
+        self.frame = None
+        self.frame_opaque = None
         self.bg_frame = None
         self.bg_image = None
 
@@ -89,10 +89,10 @@ class Renderer(object):
         """
         log.debug(u'set bg image %s', filename)
         self._bg_image_filename = unicode(filename)
-        if self._frame:
+        if self.frame:
             self.bg_image = resize_image(self._bg_image_filename,
-                                         self._frame.width(),
-                                         self._frame.height())
+                                         self.frame.width(),
+                                         self.frame.height())
 
     def set_frame_dest(self, frame_width, frame_height, preview=False):
         """
@@ -111,14 +111,13 @@ class Renderer(object):
             self.bg_frame = None
         log.debug(u'set frame dest (frame) w %d h %d', frame_width,
             frame_height)
-        self._frame = QtGui.QImage(frame_width, frame_height,
+        self.frame = QtGui.QImage(frame_width, frame_height,
             QtGui.QImage.Format_ARGB32_Premultiplied)
-        self._frameOp = QtGui.QImage(frame_width, frame_height,
+        self.frame_opaque = QtGui.QImage(frame_width, frame_height,
             QtGui.QImage.Format_ARGB32_Premultiplied)
         if self._bg_image_filename and not self.bg_image:
             self.bg_image = resize_image(self._bg_image_filename,
-                                         self._frame.width(),
-                                         self._frame.height())
+                self.frame.width(), self.frame.height())
         if self.bg_frame is None:
             self._generate_background_frame()
 
@@ -223,7 +222,7 @@ class Renderer(object):
         ``rect_footer``
             The footer text block.
         """
-        log.debug(u'set_text_rectangle %s , %s' %(rect_main, rect_footer) )
+        log.debug(u'set_text_rectangle %s , %s' % (rect_main, rect_footer))
         self._rect = rect_main
         self._rect_footer = rect_footer
 
@@ -243,9 +242,9 @@ class Renderer(object):
         if footer_lines:
             bbox1 = self._render_lines_unaligned(footer_lines, True)
         # reset the frame. first time do not worry about what you paint on.
-        self._frame = QtGui.QImage(self.bg_frame)
+        self.frame = QtGui.QImage(self.bg_frame)
         if self._theme.display_slideTransition:
-            self._frameOp = QtGui.QImage(self.bg_frame)
+            self.frame_opaque = QtGui.QImage(self.bg_frame)
         x, y = self._correctAlignment(self._rect, bbox)
         bbox = self._render_lines_unaligned(lines, False, (x, y), True)
         if footer_lines:
@@ -253,9 +252,9 @@ class Renderer(object):
                 (self._rect_footer.left(), self._rect_footer.top()), True)
         log.debug(u'generate_frame_from_lines - Finish')
         if self._theme.display_slideTransition:
-            return {u'main':self._frame, u'trans':self._frameOp}
+            return {u'main':self.frame, u'trans':self.frame_opaque}
         else:
-            return {u'main':self._frame, u'trans':None}
+            return {u'main':self.frame, u'trans':None}
 
     def _generate_background_frame(self):
         """
@@ -265,36 +264,36 @@ class Renderer(object):
         assert(self._theme)
         if self._theme.background_mode == u'transparent':
             self.bg_frame = \
-                QtGui.QPixmap(self._frame.width(), self._frame.height())
+                QtGui.QPixmap(self.frame.width(), self.frame.height())
             self.bg_frame.fill(QtCore.Qt.transparent)
         else:
-            self.bg_frame = QtGui.QImage(self._frame.width(), self._frame.height(),
-                QtGui.QImage.Format_ARGB32_Premultiplied)
+            self.bg_frame = QtGui.QImage(self.frame.width(),
+                self.frame.height(), QtGui.QImage.Format_ARGB32_Premultiplied)
         log.debug(u'render background %s start', self._theme.background_type)
         painter = QtGui.QPainter()
         painter.begin(self.bg_frame)
         if self._theme.background_mode == u'transparent':
-            painter.fillRect(self._frame.rect(), QtCore.Qt.transparent)
+            painter.fillRect(self.frame.rect(), QtCore.Qt.transparent)
         else:
             if self._theme.background_type == u'solid':
-                painter.fillRect(self._frame.rect(),
+                painter.fillRect(self.frame.rect(),
                     QtGui.QColor(self._theme.background_color))
             elif self._theme.background_type == u'gradient':
                 # gradient
                 gradient = None
                 if self._theme.background_direction == u'horizontal':
-                    w = int(self._frame.width()) / 2
+                    w = int(self.frame.width()) / 2
                     # vertical
                     gradient = QtGui.QLinearGradient(w, 0, w,
-                        self._frame.height())
+                        self.frame.height())
                 elif self._theme.background_direction == u'vertical':
-                    h = int(self._frame.height()) / 2
+                    h = int(self.frame.height()) / 2
                     # Horizontal
-                    gradient = QtGui.QLinearGradient(0, h, self._frame.width(),
+                    gradient = QtGui.QLinearGradient(0, h, self.frame.width(),
                         h)
                 else:
-                    w = int(self._frame.width()) / 2
-                    h = int(self._frame.height()) / 2
+                    w = int(self.frame.width()) / 2
+                    h = int(self.frame.height()) / 2
                     # Circular
                     gradient = QtGui.QRadialGradient(w, h, w)
                 gradient.setColorAt(0,
@@ -303,8 +302,8 @@ class Renderer(object):
                     QtGui.QColor(self._theme.background_endColor))
                 painter.setBrush(QtGui.QBrush(gradient))
                 rectPath = QtGui.QPainterPath()
-                max_x = self._frame.width()
-                max_y = self._frame.height()
+                max_x = self.frame.width()
+                max_y = self.frame.height()
                 rectPath.moveTo(0, 0)
                 rectPath.lineTo(0, max_y)
                 rectPath.lineTo(max_x, max_y)
@@ -313,7 +312,7 @@ class Renderer(object):
                 painter.drawPath(rectPath)
             elif self._theme.background_type == u'image':
                 # image
-                painter.fillRect(self._frame.rect(), QtCore.Qt.black)
+                painter.fillRect(self.frame.rect(), QtCore.Qt.black)
                 if self.bg_image:
                     painter.drawImage(0, 0, self.bg_image)
         painter.end()
@@ -379,7 +378,7 @@ class Renderer(object):
         retval = QtCore.QRect(x, y, brx - x, bry - y)
         if self._debug:
             painter = QtGui.QPainter()
-            painter.begin(self._frame)
+            painter.begin(self.frame)
             painter.setPen(QtGui.QPen(QtGui.QColor(0, 0, 255)))
             painter.drawRect(retval)
             painter.end()
@@ -415,11 +414,11 @@ class Renderer(object):
         starty = y
         rightextent = None
         self.painter = QtGui.QPainter()
-        self.painter.begin(self._frame)
+        self.painter.begin(self.frame)
         self.painter.setRenderHint(QtGui.QPainter.Antialiasing)
         if self._theme.display_slideTransition:
             self.painter2 = QtGui.QPainter()
-            self.painter2.begin(self._frameOp)
+            self.painter2.begin(self.frame_opaque)
             self.painter2.setRenderHint(QtGui.QPainter.Antialiasing)
             self.painter2.setOpacity(0.7)
         # dont allow alignment messing with footers
@@ -550,8 +549,8 @@ class Renderer(object):
                 path = QtGui.QPainterPath()
                 path.addText(QtCore.QPointF(x, rowpos), font, line)
                 self.painter.setBrush(self.painter.pen().brush())
-                self.painter.setPen(QtGui.QPen(
-                        QtGui.QColor(self._theme.display_outline_color), outline_size))
+                self.painter.setPen(QtGui.QPen(QtGui.QColor(
+                    self._theme.display_outline_color), outline_size))
                 self.painter.drawPath(path)
             self.painter.setPen(pen)
             self.painter.drawText(x, rowpos, line)

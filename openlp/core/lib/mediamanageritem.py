@@ -98,7 +98,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         QtGui.QWidget.__init__(self)
         self.parent = parent
-        self.settings_section = title.lower()
+        self.settingsSection = title.lower()
         if type(icon) is QtGui.QIcon:
             self.icon = icon
         elif type(icon) is types.StringType:
@@ -331,15 +331,15 @@ class MediaManagerItem(QtGui.QWidget):
     def onFileClick(self):
         files = QtGui.QFileDialog.getOpenFileNames(
             self, self.OnNewPrompt,
-            SettingsManager.get_last_dir(self.settings_section),
+            SettingsManager.get_last_dir(self.settingsSection),
             self.OnNewFileMasks)
         log.info(u'New files(s) %s', unicode(files))
         if files:
             self.loadList(files)
             dir = os.path.split(unicode(files[0]))[0]
-            SettingsManager.set_last_dir(self.settings_section, dir)
-            SettingsManager.set_list(self.settings_section,
-                self.settings_section, self.getFileList())
+            SettingsManager.set_last_dir(self.settingsSection, dir)
+            SettingsManager.set_list(self.settingsSection,
+                self.settingsSection, self.getFileList())
 
     def getFileList(self):
         count = 0
@@ -429,7 +429,7 @@ class MediaManagerItem(QtGui.QWidget):
                 service_item = self.buildServiceItem()
                 if service_item:
                     service_item.from_plugin = False
-                    self.parent.service_manager.addServiceItem(service_item, 
+                    self.parent.service_manager.addServiceItem(service_item,
                         replace=self.remoteTriggered)
             else:
                 items = self.ListView.selectedIndexes()
@@ -454,7 +454,7 @@ class MediaManagerItem(QtGui.QWidget):
                         'You must select an existing service item to add to.'))
             elif self.title.lower() == service_item.name.lower():
                 self.generateSlideData(service_item)
-                self.parent.service_manager.addServiceItem(service_item, 
+                self.parent.service_manager.addServiceItem(service_item,
                     replace=True)
             else:
                 #Turn off the remote edit update message indicator

@@ -275,7 +275,7 @@ class BibleMediaItem(MediaManagerItem):
         self.SearchProgress.setObjectName(u'SearchProgress')
 
     def configUpdated(self):
-        if QtCore.QSettings().value(self.settings_section + u'/dual bibles',
+        if QtCore.QSettings().value(self.settingsSection + u'/dual bibles',
             QtCore.QVariant(False)).toBool():
             self.AdvancedSecondBibleLabel.setVisible(True)
             self.AdvancedSecondBibleComboBox.setVisible(True)
@@ -449,6 +449,7 @@ class BibleMediaItem(MediaManagerItem):
         bible_text = u''
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
+        service_item.add_capability(ItemCapabilities.AllowsAdditions)
         #If we want to use a 2nd translation / version
         bible2 = u''
         if self.SearchTabWidget.currentIndex() == 0:

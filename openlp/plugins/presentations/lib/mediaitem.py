@@ -106,13 +106,13 @@ class PresentationMediaItem(MediaManagerItem):
 
     def initialise(self):
         self.servicePath = os.path.join(
-            AppLocation.get_section_data_path(self.settings_section),
+            AppLocation.get_section_data_path(self.settingsSection),
             u'thumbnails')
         self.ListView.setIconSize(QtCore.QSize(88,50))
         if not os.path.exists(self.servicePath):
             os.mkdir(self.servicePath)
         list = SettingsManager.load_list(
-            self.settings_section, u'presentations')
+            self.settingsSection, u'presentations')
         self.loadList(list)
         for item in self.controllers:
             #load the drop down selection
@@ -141,12 +141,12 @@ class PresentationMediaItem(MediaManagerItem):
                 for controller in self.controllers:
                     thumbPath = os.path.join(
                         AppLocation.get_section_data_path(
-                            self.settings_section),
+                            self.settingsSection),
                         u'thumbnails', controller, filename)
                     thumb = os.path.join(thumbPath, u'slide1.png')
                     preview = os.path.join(
                         AppLocation.get_section_data_path(
-                            self.settings_section),
+                            self.settingsSection),
                         controller, u'thumbnails', filename, u'slide1.png')
                     if os.path.exists(preview):
                         if os.path.exists(thumb):
@@ -170,8 +170,8 @@ class PresentationMediaItem(MediaManagerItem):
         if item:
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
-            SettingsManager.set_list(self.settings_section,
-                self.settings_section, self.getFileList())
+            SettingsManager.set_list(self.settingsSection,
+                self.settingsSection, self.getFileList())
             filepath = unicode((item.data(QtCore.Qt.UserRole)).toString())
             #not sure of this has errors
             #John please can you look at .
@@ -187,26 +187,29 @@ class PresentationMediaItem(MediaManagerItem):
         service_item.title = unicode(self.DisplayTypeComboBox.currentText())
         service_item.shortname = unicode(self.DisplayTypeComboBox.currentText())
         shortname = service_item.shortname
-        for item in items:
-            bitem = self.ListView.item(item.row())
-            filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
-            if shortname == self.Automatic:
-                service_item.shortname = self.findControllerByType(filename)
-                if not service_item.shortname:
-                    return False
-            controller = self.controllers[service_item.shortname]
-            (path, name) = os.path.split(filename)
-            doc = controller.add_doc(filename)
-            if doc.get_slide_preview_file(1) is None:
-                doc.load_presentation()
-            i = 1
-            img = doc.get_slide_preview_file(i)
-            while img:
-                service_item.add_from_command(path, name, img)
-                i = i + 1
+        if shortname:
+            for item in items:
+                bitem = self.ListView.item(item.row())
+                filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+                if shortname == self.Automatic:
+                    service_item.shortname = self.findControllerByType(filename)
+                    if not service_item.shortname:
+                        return False
+                controller = self.controllers[service_item.shortname]
+                (path, name) = os.path.split(filename)
+                doc = controller.add_doc(filename)
+                if doc.get_slide_preview_file(1) is None:
+                    doc.load_presentation()
+                i = 1
                 img = doc.get_slide_preview_file(i)
-            doc.close_presentation()
-        return True
+                while img:
+                    service_item.add_from_command(path, name, img)
+                    i = i + 1
+                    img = doc.get_slide_preview_file(i)
+                doc.close_presentation()
+            return True
+        else:
+            return False
 
     def findControllerByType(self, filename):
         filetype = os.path.splitext(filename)[1]

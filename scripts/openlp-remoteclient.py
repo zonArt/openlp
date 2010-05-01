@@ -24,34 +24,33 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import socket
+import urllib
 import sys
 from optparse import OptionParser
 
-def sendData(options, message):
-    addr = (options.address, options.port)
+def sendData(options):
+    addr = 'http://%s:%s/send/%s?q=%s' % (options.address, options.port,
+        options.event, options.message)
     try:
-        UDPSock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-        UDPSock.sendto(message, addr)
-        print u'message sent ', message, addr
+        urllib.urlopen(addr)
+        print u'Message sent ', addr
     except:
-        print u'Errow thrown ', sys.exc_info()[1]
-
-def format_message(options):
-    return u'%s:%s' % (u'alert', options.message)
+        print u'Error thrown ', sys.exc_info()[1]
 
 def main():
-    usage = "usage: %prog [options] arg1 arg2"
+    usage = "usage: %prog [-a address] [-p port] [-e event] [-m message]"
     parser = OptionParser(usage=usage)
-    parser.add_option("-v", "--verbose",
-                      action="store_true", dest="verbose", default=True,
-                      help="make lots of noise [%default]")
     parser.add_option("-p", "--port", default=4316,
                       help="IP Port number %default ")
     parser.add_option("-a", "--address",
-                      help="Recipient address ")
+                      help="Recipient address ",
+                      default="localhost")
+    parser.add_option("-e", "--event",
+                      help="Action to be performed", 
+                      default="alerts_text")
     parser.add_option("-m", "--message",
-                      help="Message to be passed for the action")
+                      help="Message to be passed for the action",
+                      default="")
 
     (options, args) = parser.parse_args()
     if args:
@@ -60,12 +59,8 @@ def main():
     elif options.address is None:
         parser.print_help()
         parser.error("IP address missing")
-    elif options.message is None:
-        parser.print_help()
-        parser.error("No message passed")
     else:
-        text = format_message(options)
-        sendData(options, text)
+        sendData(options)
 
 if __name__ == u'__main__':
     main()

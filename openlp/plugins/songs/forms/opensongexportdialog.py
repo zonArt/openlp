@@ -286,7 +286,7 @@ class Ui_OpenSongExportDialog(object):
         QtCore.QMetaObject.connectSlotsByName(OpenSongExportDialog)
 
     def retranslateUi(self, OpenSongExportDialog):
-        OpenSongExportDialog.setWindowTitle(translate('OpenSong Song Exporter'))
+        OpenSongExportDialog.setWindowTitle(translate('OpenSongExportForm', 'OpenSong Song Exporter'))
         self.ExportFileLabel.setText(translate('OpenSongExportForm', 'Select OpenSong song folder:'))
         self.ExportListLabel.setText(translate('OpenSongExportForm', 'Full Song List'))
         self.ExportListTable.horizontalHeaderItem(0).setText(translate('OpenSongExportForm', 'Song Title'))
