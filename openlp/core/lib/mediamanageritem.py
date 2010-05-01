@@ -429,7 +429,7 @@ class MediaManagerItem(QtGui.QWidget):
                 service_item = self.buildServiceItem()
                 if service_item:
                     service_item.from_plugin = False
-                    self.parent.service_manager.addServiceItem(service_item, 
+                    self.parent.service_manager.addServiceItem(service_item,
                         replace=self.remoteTriggered)
             else:
                 items = self.ListView.selectedIndexes()
@@ -454,7 +454,7 @@ class MediaManagerItem(QtGui.QWidget):
                         'You must select an existing service item to add to.'))
             elif self.title.lower() == service_item.name.lower():
                 self.generateSlideData(service_item)
-                self.parent.service_manager.addServiceItem(service_item, 
+                self.parent.service_manager.addServiceItem(service_item,
                     replace=True)
             else:
                 #Turn off the remote edit update message indicator

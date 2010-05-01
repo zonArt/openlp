@@ -187,26 +187,29 @@ class PresentationMediaItem(MediaManagerItem):
         service_item.title = unicode(self.DisplayTypeComboBox.currentText())
         service_item.shortname = unicode(self.DisplayTypeComboBox.currentText())
         shortname = service_item.shortname
-        for item in items:
-            bitem = self.ListView.item(item.row())
-            filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
-            if shortname == self.Automatic:
-                service_item.shortname = self.findControllerByType(filename)
-                if not service_item.shortname:
-                    return False
-            controller = self.controllers[service_item.shortname]
-            (path, name) = os.path.split(filename)
-            doc = controller.add_doc(filename)
-            if doc.get_slide_preview_file(1) is None:
-                doc.load_presentation()
-            i = 1
-            img = doc.get_slide_preview_file(i)
-            while img:
-                service_item.add_from_command(path, name, img)
-                i = i + 1
+        if shortname:
+            for item in items:
+                bitem = self.ListView.item(item.row())
+                filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+                if shortname == self.Automatic:
+                    service_item.shortname = self.findControllerByType(filename)
+                    if not service_item.shortname:
+                        return False
+                controller = self.controllers[service_item.shortname]
+                (path, name) = os.path.split(filename)
+                doc = controller.add_doc(filename)
+                if doc.get_slide_preview_file(1) is None:
+                    doc.load_presentation()
+                i = 1
                 img = doc.get_slide_preview_file(i)
-            doc.close_presentation()
-        return True
+                while img:
+                    service_item.add_from_command(path, name, img)
+                    i = i + 1
+                    img = doc.get_slide_preview_file(i)
+                doc.close_presentation()
+            return True
+        else:
+            return False
 
     def findControllerByType(self, filename):
         filetype = os.path.splitext(filename)[1]

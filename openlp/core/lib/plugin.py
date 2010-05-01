@@ -215,13 +215,16 @@ class Plugin(QtCore.QObject):
         """
         pass
 
-    def process_add_service_event(self):
+    def process_add_service_event(self, replace=False):
         """
         Generic Drag and drop handler triggered from service_manager.
         """
         log.debug(u'process_add_service_event event called for plugin %s' %
             self.name)
-        self.media_item.onAddClick()
+        if replace:
+            self.media_item.onAddEditClick()
+        else:
+            self.media_item.onAddClick()
 
     def about(self):
         """
