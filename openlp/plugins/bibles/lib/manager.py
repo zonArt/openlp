@@ -109,12 +109,12 @@ class BibleManager(object):
         """
         log.debug(u'Bible Initialising')
         self.parent = parent
-        self.settings_section = u'bibles'
+        self.settingsSection = u'bibles'
         self.web = u'Web'
         self.db_cache = None
-        self.path = AppLocation.get_section_data_path(self.settings_section)
+        self.path = AppLocation.get_section_data_path(self.settingsSection)
         self.proxy_name = unicode(
-            QtCore.QSettings().value(self.settings_section + u'/proxy name',
+            QtCore.QSettings().value(self.settingsSection + u'/proxy name',
             QtCore.QVariant(u'')).toString())
         self.suffix = u'.sqlite'
         self.import_wizard = None
@@ -128,7 +128,7 @@ class BibleManager(object):
         BibleDB class.
         """
         log.debug(u'Reload bibles')
-        files = SettingsManager.get_files(self.settings_section, self.suffix)
+        files = SettingsManager.get_files(self.settingsSection, self.suffix)
         log.debug(u'Bible Files %s', files)
         self.db_cache = {}
         for filename in files:

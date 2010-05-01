@@ -51,7 +51,7 @@ class Plugin(QtCore.QObject):
     ``version``
         The version number of this iteration of the plugin.
 
-    ``settings_section``
+    ``settingsSection``
         The namespace to store settings for the plugin.
 
     ``icon``
@@ -116,7 +116,7 @@ class Plugin(QtCore.QObject):
         self.name = name
         if version:
             self.version = version
-        self.settings_section = self.name.lower()
+        self.settingsSection = self.name.lower()
         self.icon = None
         self.weight = 0
         self.status = PluginStatus.Inactive
@@ -147,7 +147,7 @@ class Plugin(QtCore.QObject):
         Sets the status of the plugin
         """
         self.status = QtCore.QSettings().value(
-            self.settings_section + u'/status',
+            self.settingsSection + u'/status',
             QtCore.QVariant(PluginStatus.Inactive)).toInt()[0]
 
     def toggle_status(self, new_status):
@@ -156,7 +156,7 @@ class Plugin(QtCore.QObject):
         """
         self.status = new_status
         QtCore.QSettings().setValue(
-            self.settings_section + u'/status', QtCore.QVariant(self.status))
+            self.settingsSection + u'/status', QtCore.QVariant(self.status))
 
     def is_active(self):
         """

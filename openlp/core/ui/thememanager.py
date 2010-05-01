@@ -47,7 +47,7 @@ class ThemeManager(QtGui.QWidget):
     def __init__(self, parent):
         QtGui.QWidget.__init__(self, parent)
         self.parent = parent
-        self.settings_section = u'themes'
+        self.settingsSection = u'themes'
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)
         self.Layout.setMargin(0)
@@ -106,14 +106,14 @@ class ThemeManager(QtGui.QWidget):
             QtCore.SIGNAL(u'theme_update_global'), self.changeGlobalFromTab)
         #Variables
         self.themelist = []
-        self.path = AppLocation.get_section_data_path(self.settings_section)
+        self.path = AppLocation.get_section_data_path(self.settingsSection)
         self.checkThemesExists(self.path)
         self.thumbPath = os.path.join(self.path, u'thumbnails')
         self.checkThemesExists(self.thumbPath)
         self.amendThemeForm.path = self.path
         # Last little bits of setting up
         self.global_theme = unicode(QtCore.QSettings().value(
-            self.settings_section + u'/global theme',
+            self.settingsSection + u'/global theme',
             QtCore.QVariant(u'')).toString())
 
     def changeGlobalFromTab(self, themeName):
@@ -147,7 +147,7 @@ class ThemeManager(QtGui.QWidget):
                 name = u'%s (%s)' % (self.global_theme, self.trUtf8('default'))
                 self.ThemeListWidget.item(count).setText(name)
                 QtCore.QSettings().setValue(
-                    self.settings_section + u'/global theme',
+                    self.settingsSection + u'/global theme',
                     QtCore.QVariant(self.global_theme))
                 Receiver.send_message(u'theme_update_global', self.global_theme)
                 self.pushThemes()
@@ -170,7 +170,7 @@ class ThemeManager(QtGui.QWidget):
 
     def onDeleteTheme(self):
         self.global_theme = unicode(QtCore.QSettings().value(
-            self.settings_section + u'/global theme',
+            self.settingsSection + u'/global theme',
             QtCore.QVariant(u'')).toString())
         item = self.ThemeListWidget.currentItem()
         if item:
@@ -224,10 +224,10 @@ class ThemeManager(QtGui.QWidget):
         theme = unicode(item.data(QtCore.Qt.UserRole).toString())
         path = QtGui.QFileDialog.getExistingDirectory(self,
             unicode(self.trUtf8('Save Theme - (%s)')) %  theme,
-            SettingsManager.get_last_dir(self.settings_section, 1))
+            SettingsManager.get_last_dir(self.settingsSection, 1))
         path = unicode(path)
         if path:
-            SettingsManager.set_last_dir(self.settings_section, path, 1)
+            SettingsManager.set_last_dir(self.settingsSection, path, 1)
             themePath = os.path.join(path, theme + u'.theme')
             zip = None
             try:
@@ -247,12 +247,12 @@ class ThemeManager(QtGui.QWidget):
     def onImportTheme(self):
         files = QtGui.QFileDialog.getOpenFileNames(
             self, self.trUtf8('Select Theme Import File'),
-            SettingsManager.get_last_dir(self.settings_section), u'Theme (*.*)')
+            SettingsManager.get_last_dir(self.settingsSection), u'Theme (*.*)')
         log.info(u'New Themes %s', unicode(files))
         if files:
             for file in files:
                 SettingsManager.set_last_dir(
-                    self.settings_section, unicode(file))
+                    self.settingsSection, unicode(file))
                 self.unzipTheme(file, self.path)
         self.loadThemes()
 
@@ -295,7 +295,7 @@ class ThemeManager(QtGui.QWidget):
         self.pushThemes()
 
     def pushThemes(self):
-        Receiver.send_message(u'theme_update_list', self.getThemes() )
+        Receiver.send_message(u'theme_update_list', self.getThemes())
 
     def getThemes(self):
         return self.themelist

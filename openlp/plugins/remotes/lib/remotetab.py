@@ -57,9 +57,9 @@ class RemoteTab(SettingsTab):
 
     def load(self):
         self.RemotePortSpinBox.setValue(
-            QtCore.QSettings().value(self.settings_section + u'/remote port',
+            QtCore.QSettings().value(self.settingsSection + u'/remote port',
                 QtCore.QVariant(4316)).toInt()[0])
 
     def save(self):
-        QtCore.QSettings().setValue(self.settings_section + u'/remote port',
+        QtCore.QSettings().setValue(self.settingsSection + u'/remote port',
             QtCore.QVariant(self.RemotePortSpinBox.value()))

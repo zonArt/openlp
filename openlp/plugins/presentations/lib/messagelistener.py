@@ -44,7 +44,7 @@ class Controller(object):
         self.doc = None
         log.info(u'%s controller loaded' % live)
 
-    def addHandler(self, controller, file,  isBlank):
+    def addHandler(self, controller, file, isBlank):
         log.debug(u'Live = %s, addHandler %s' % (self.isLive, file))
         self.controller = controller
         if self.doc is not None:

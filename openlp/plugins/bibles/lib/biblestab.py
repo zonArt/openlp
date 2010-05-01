@@ -189,7 +189,7 @@ class BiblesTab(SettingsTab):
 
     def load(self):
         settings = QtCore.QSettings()
-        settings.beginGroup(self.settings_section)
+        settings.beginGroup(self.settingsSection)
         self.show_new_chapters = settings.value(
             u'display new chapter', QtCore.QVariant(False)).toBool()
         self.display_style = settings.value(
@@ -208,7 +208,7 @@ class BiblesTab(SettingsTab):
 
     def save(self):
         settings = QtCore.QSettings()
-        settings.beginGroup(self.settings_section)
+        settings.beginGroup(self.settingsSection)
         settings.setValue(u'display new chapter',
             QtCore.QVariant(self.show_new_chapters))
         settings.setValue(u'display brackets',

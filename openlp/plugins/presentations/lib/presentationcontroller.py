@@ -100,16 +100,16 @@ class PresentationController(object):
         self.docs = []
         self.plugin = plugin
         self.name = name
-        self.settings_section = self.plugin.settings_section
+        self.settingsSection = self.plugin.settingsSection
         self.available = self.check_available()
         if self.available:
             self.enabled = QtCore.QSettings().value(
-                self.settings_section + u'/' + name,
+                self.settingsSection + u'/' + name,
                 QtCore.Qt.Unchecked).toInt()[0] == QtCore.Qt.Checked
         else:
             self.enabled = False
         self.thumbnailroot = os.path.join(
-            AppLocation.get_section_data_path(self.settings_section),
+            AppLocation.get_section_data_path(self.settingsSection),
             name, u'thumbnails')
         self.thumbnailprefix = u'slide'
         if not os.path.isdir(self.thumbnailroot):
@@ -210,7 +210,7 @@ class PresentationDocument(object):
         Returns a path to an image containing a preview for the requested slide
 
     """
-    def __init__(self,  controller,  name):
+    def __init__(self, controller, name):
         self.slidenumber = 0
         self.controller = controller
         self.store_filename(name)
@@ -243,10 +243,10 @@ class PresentationDocument(object):
         if not os.path.isdir(self.thumbnailpath):
             os.mkdir(self.thumbnailpath)
 
-    def get_file_name(self,  presentation):
+    def get_file_name(self, presentation):
         return os.path.split(presentation)[1]
 
-    def get_thumbnail_path(self,  presentation):
+    def get_thumbnail_path(self, presentation):
         return os.path.join(
             self.controller.thumbnailroot, self.get_file_name(presentation))
 
