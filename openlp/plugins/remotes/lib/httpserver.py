@@ -152,43 +152,59 @@ class HttpConnection(object):
             log.debug(u'received: ' + data)
             words = data.split(u' ')
             html = None
+            mimetype = None
             if words[0] == u'GET':
                 url = urlparse.urlparse(words[1])
                 params = self.load_params(url.query)
                 folders = url.path.split(u'/')
                 if folders[1] == u'':
-                    html = self.serve_file(u'')
+                    mimetype, html = self.serve_file(u'')
                 elif folders[1] == u'files':
-                    html = self.serve_file(folders[2])
+                    mimetype, html = self.serve_file(folders[2])
                 elif folders[1] == u'send':
                     html = self.process_event(folders[2], params)
                 elif folders[1] == u'request':
                     if self.process_request(folders[2], params):
                         return
             if html:
-                html = self.get_200_ok() + html + u'\n'
+                if mimetype:
+                    self.socket.write(self.get_200_ok(mimetype))
+                else:
+                    self.socket.write(self.get_200_ok())
+                self.socket.write(html)
             else:
-                html = self.get_404_not_found()
-            self.socket.write(html)
+                self.socket.write(self.get_404_not_found())
             self.close()
 
     def serve_file(self, filename):
         """
-        Send a file to the socket. For now, just .html files
+        Send a file to the socket. For now, just a subset of file types
         and must be top level inside the html folder. 
         If subfolders requested return 404, easier for security for the present.
 
         Ultimately for i18n, this could first look for xx/file.html before
         falling back to file.html... where xx is the language, e.g. 'en'
         """
-        log.debug(u'serve file request %s' % filename)
+        log.debug(u'serve file request %s' % filename)        
         if not filename:
             filename = u'index.html'
         if os.path.basename(filename) != filename:
             return None
         (fileroot, ext) = os.path.splitext(filename)
-        if ext != u'.html':
-            return None
+        if ext == u'.html':
+            mimetype = u'text/html'
+        elif ext == u'.css':
+            mimetype = u'text/css'
+        elif ext == u'.js':
+            mimetype = u'application/x-javascript'
+        elif ext == u'.jpg':
+            mimetype = u'image/jpeg'
+        elif ext == u'.gif':
+            mimetype = u'image/gif'
+        elif ext == u'.png':
+            mimetype = u'image/png'
+        else:
+            return (None, None)
         path = os.path.join(self.parent.html_dir, filename)
         try:
             f = open(path, u'rb')
@@ -198,8 +214,8 @@ class HttpConnection(object):
         log.debug(u'Opened %s' % path)
         html = f.read()
         f.close()
-        return html
-                               
+        return (mimetype, html)
+
     def load_params(self, query):
         """
         Decode the query string parameters sent from the browser
@@ -270,13 +286,12 @@ class HttpConnection(object):
         self.socket.write(html)
         self.close()
 
-    def get_200_ok(self):
+    def get_200_ok(self, mimetype='text/html; charset="utf-8"'):
         """
         Successful request. Send OK headers. Assume html for now. 
         """
         return u'HTTP/1.1 200 OK\r\n' + \
-            u'Content-Type: text/html; charset="utf-8"\r\n' + \
-            u'\r\n'
+            u'Content-Type: %s\r\n\r\n' % mimetype
 
     def get_404_not_found(self):
         """

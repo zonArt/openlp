@@ -160,6 +160,16 @@ class Controller(object):
             return
         self.doc.blank_screen()
 
+    def stop(self):
+        log.debug(u'Live = %s, stop' % self.isLive)
+        if not self.isLive:
+            return
+        if not self.doc.is_loaded():
+            return
+        if not self.doc.is_active():
+            return
+        self.doc.stop_presentation()
+
     def unblank(self):
         log.debug(u'Live = %s, unblank' % self.isLive)
         if not self.isLive:
@@ -190,6 +200,8 @@ class MessageListener(object):
             QtCore.SIGNAL(u'presentations_start'), self.startup)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'presentations_stop'), self.shutdown)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'presentations_hide'), self.hide)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'presentations_first'), self.first)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -278,6 +290,11 @@ class MessageListener(object):
             self.liveHandler.shutdown()
         else:
             self.previewHandler.shutdown()
+
+    def hide(self, message):
+        isLive, item = self.decode_message(message)
+        if isLive:
+            self.liveHandler.stop()
 
     def blank(self, message):
         isLive, item = self.decode_message(message)
