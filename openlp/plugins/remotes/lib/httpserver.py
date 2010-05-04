@@ -160,7 +160,7 @@ class HttpConnection(object):
                 if folders[1] == u'':
                     mimetype, html = self.serve_file(u'')
                 elif folders[1] == u'files':
-                    mimetype, html = self.serve_file(folders[2])
+                    mimetype, html = self.serve_file(os.sep.join(folders[2:]))
                 elif folders[1] == u'send':
                     html = self.process_event(folders[2], params)
                 elif folders[1] == u'request':
@@ -168,12 +168,12 @@ class HttpConnection(object):
                         return
             if html:
                 if mimetype:
-                    self.socket.write(self.get_200_ok(mimetype))
+                    self.send_200_ok(mimetype)
                 else:
-                    self.socket.write(self.get_200_ok())
+                    self.send_200_ok()
                 self.socket.write(html)
             else:
-                self.socket.write(self.get_404_not_found())
+                self.send_404_not_found()
             self.close()
 
     def serve_file(self, filename):
@@ -188,7 +188,8 @@ class HttpConnection(object):
         log.debug(u'serve file request %s' % filename)        
         if not filename:
             filename = u'index.html'
-        if os.path.basename(filename) != filename:
+        path = os.path.normpath(os.path.join(self.parent.html_dir, filename))
+        if not path.startswith(self.parent.html_dir):
             return None
         (fileroot, ext) = os.path.splitext(filename)
         if ext == u'.html':
@@ -205,7 +206,6 @@ class HttpConnection(object):
             mimetype = u'image/png'
         else:
             return (None, None)
-        path = os.path.join(self.parent.html_dir, filename)
         try:
             f = open(path, u'rb')
         except:
@@ -282,31 +282,31 @@ class HttpConnection(object):
             return
         self.timer.stop()
         html = json.dumps(data)
-        html = self.get_200_ok() + html + u'\n'
+        self.send_200_ok()
         self.socket.write(html)
         self.close()
 
-    def get_200_ok(self, mimetype='text/html; charset="utf-8"'):
+    def send_200_ok(self, mimetype='text/html; charset="utf-8"'):
         """
         Successful request. Send OK headers. Assume html for now. 
         """
-        return u'HTTP/1.1 200 OK\r\n' + \
-            u'Content-Type: %s\r\n\r\n' % mimetype
+        self.socket.write(u'HTTP/1.1 200 OK\r\n' + \
+            u'Content-Type: %s\r\n\r\n' % mimetype)
 
-    def get_404_not_found(self):
+    def send_404_not_found(self):
         """
         Invalid url. Say so
         """
-        return u'HTTP/1.1 404 Not Found\r\n'+ \
+        self.socket.write(u'HTTP/1.1 404 Not Found\r\n'+ \
             u'Content-Type: text/html; charset="utf-8"\r\n' + \
-            u'\r\n'
+            u'\r\n')
 
-    def get_408_timeout(self):
+    def send_408_timeout(self):
         """
         A _request hasn't returned anything in the timeout period. 
         Return timeout
         """
-        return u'HTTP/1.1 408 Request Timeout\r\n'
+        self.socket.write(u'HTTP/1.1 408 Request Timeout\r\n')
             
     def timeout(self):
         """
@@ -314,8 +314,7 @@ class HttpConnection(object):
         """
         if not self.socket:
             return
-        html = self.get_408_timeout()
-        self.socket.write(html)
+        html = self.send_408_timeout()
         self.close()
                 
     def disconnected(self):
