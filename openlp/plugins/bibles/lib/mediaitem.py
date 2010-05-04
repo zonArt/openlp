@@ -36,7 +36,7 @@ log = logging.getLogger(__name__)
 
 class BibleListView(BaseListWithDnD):
     """
-    Drag and drop capable list for Bibles.
+    Custom list view descendant, required for drag and drop.
     """
     def __init__(self, parent=None):
         self.PluginName = u'Bibles'
