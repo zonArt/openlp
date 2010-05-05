@@ -550,6 +550,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         log.info(u'Load data from Settings')
         self.settingsForm.postSetUp()
 
+
     def versionCheck(self, version):
         """
         Checks the version of the Application called from openlp.pyw

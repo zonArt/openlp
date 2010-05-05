@@ -102,6 +102,7 @@ class ServiceManager(QtGui.QWidget):
         self.serviceItems = []
         self.serviceName = u''
         self.suffixes = u''
+        self.viewers = u''
         self.droppos = 0
         #is a new service and has not been saved
         self.isNew = True
@@ -231,6 +232,9 @@ class ServiceManager(QtGui.QWidget):
 
     def supportedSuffixes(self, suffix):
         self.suffixes = u'%s %s' % (self.suffixes, suffix)
+
+    def supportedViewers(self, viewer):
+        self.viewers = u'%s %s' % (self.viewers, viewer)
 
     def contextMenu(self, point):
         item = self.ServiceManagerList.itemAt(point)
@@ -685,6 +689,8 @@ class ServiceManager(QtGui.QWidget):
         if serviceItem.is_command():
             type = serviceItem._raw_frames[0][u'title'].split(u'.')[1]
             if type not in self.suffixes:
+                serviceItem.isValid = False
+            if serviceItem.title not in self.viewers:
                 serviceItem.isValid = False
 
     def cleanUp(self):

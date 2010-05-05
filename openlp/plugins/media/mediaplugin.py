@@ -55,6 +55,7 @@ class MediaPlugin(Plugin):
             self.video_list, mimetype = self._add_to_list(self.video_list, type, mimetype)
         self.service_manager.supportedSuffixes(self.audio_list)
         self.service_manager.supportedSuffixes(self.video_list)
+        self.service_manager.supportedViewers(self.name)
 
     def _add_to_list(self, list, value, type):
         if len(value) == 2:
