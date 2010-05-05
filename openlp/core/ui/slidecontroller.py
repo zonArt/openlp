@@ -675,10 +675,10 @@ class SlideController(QtGui.QWidget):
         self.themeButton.setChecked(False)
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
-            self.blankPlugin(True)
+            self.hidePlugin(True)
         else:
             Receiver.send_message(u'maindisplay_show')
-            self.blankPlugin(False)
+            self.hidePlugin(False)
 
     def blankPlugin(self, blank):
         """
@@ -687,6 +687,20 @@ class SlideController(QtGui.QWidget):
         if self.serviceItem is not None:
             if blank:
                 Receiver.send_message(u'%s_blank'
+                    % self.serviceItem.name.lower(),
+                    [self.serviceItem, self.isLive])
+            else:
+                Receiver.send_message(u'%s_unblank'
+                    % self.serviceItem.name.lower(),
+                    [self.serviceItem, self.isLive])
+
+    def hidePlugin(self, hide):
+        """
+        Blank the display screen.
+        """
+        if self.serviceItem is not None:
+            if hide:
+                Receiver.send_message(u'%s_hide'
                     % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive])
             else:
