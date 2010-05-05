@@ -53,7 +53,6 @@ class PresentationPlugin(Plugin):
         log.info(u'Presentations Initialising')
         Plugin.initialise(self)
         self.insert_toolbox_item()
-        presentation_types = []
         for controller in self.controllers:
             if self.controllers[controller].enabled:
                 self.controllers[controller].start_process()
