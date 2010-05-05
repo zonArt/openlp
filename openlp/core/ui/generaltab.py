@@ -45,7 +45,6 @@ class GeneralTab(SettingsTab):
         settings.beginGroup(self.settingsSection)
         self.MonitorNumber = settings.value(u'monitor',
             QtCore.QVariant(self.screens.display_count - 1)).toInt()[0]
-        print self.MonitorNumber, self.screens.monitor_number, self.screens.display_count, self.screens.screen_list
         self.screens.set_current_display(self.MonitorNumber)
         self.screens.monitor_number = self.MonitorNumber
         self.DisplayOnMonitor = settings.value(

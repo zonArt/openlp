@@ -45,6 +45,7 @@ class MediaPlugin(Plugin):
         self.video_list = u''
         for mimetype in Phonon.BackendCapabilities.availableMimeTypes():
             mimetype = unicode(mimetype)
+            print mimetype
             type = mimetype.split(u'audio/x-')
             self.audio_list, mimetype = self._add_to_list(self.audio_list, type, mimetype)
             type = mimetype.split(u'audio/')
