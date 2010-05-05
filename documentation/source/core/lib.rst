@@ -18,12 +18,6 @@
 .. autoclass:: openlp.core.lib.eventreceiver.EventReceiver
    :members:
 
-:mod:`ListWithPreviews`
------------------------
-
-.. autoclass:: openlp.core.lib.listwithpreviews.ListWithPreviews
-   :members:
-
 :mod:`MediaManagerItem`
 -----------------------
 
