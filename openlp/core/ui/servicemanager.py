@@ -101,6 +101,7 @@ class ServiceManager(QtGui.QWidget):
         self.parent = parent
         self.serviceItems = []
         self.serviceName = u''
+        self.suffixes = u''
         self.droppos = 0
         #is a new service and has not been saved
         self.isNew = True
@@ -227,6 +228,9 @@ class ServiceManager(QtGui.QWidget):
         self.sep2.setSeparator(True)
         self.themeMenu = QtGui.QMenu(self.trUtf8(u'&Change Item Theme'))
         self.menu.addMenu(self.themeMenu)
+
+    def supportedSuffixes(self, suffix):
+        self.suffixes = u'%s %s' % (self.suffixes, suffix)
 
     def contextMenu(self, point):
         item = self.ServiceManagerList.itemAt(point)
@@ -678,10 +682,9 @@ class ServiceManager(QtGui.QWidget):
         Validates the service item and if the suffix matches an accepted
         one it allows the item to be displayed
         """
-        print serviceItem.title
         if serviceItem.is_command():
             type = serviceItem._raw_frames[0][u'title'].split(u'.')[1]
-            if type not in ['odp']:
+            if type not in self.suffixes:
                 serviceItem.isValid = False
 
     def cleanUp(self):
