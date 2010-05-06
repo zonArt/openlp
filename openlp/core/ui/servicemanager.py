@@ -101,8 +101,7 @@ class ServiceManager(QtGui.QWidget):
         self.parent = parent
         self.serviceItems = []
         self.serviceName = u''
-        self.suffixes = u''
-        self.viewers = u''
+        self.suffixes = []
         self.droppos = 0
         #is a new service and has not been saved
         self.isNew = True
@@ -231,10 +230,7 @@ class ServiceManager(QtGui.QWidget):
         self.menu.addMenu(self.themeMenu)
 
     def supportedSuffixes(self, suffix):
-        self.suffixes = u'%s %s' % (self.suffixes, suffix)
-
-    def supportedViewers(self, viewer):
-        self.viewers = u'%s %s' % (self.viewers, viewer)
+        self.suffixes.append(suffix)
 
     def contextMenu(self, point):
         item = self.ServiceManagerList.itemAt(point)
@@ -690,8 +686,6 @@ class ServiceManager(QtGui.QWidget):
             type = serviceItem._raw_frames[0][u'title'].split(u'.')[1]
             if type not in self.suffixes:
                 serviceItem.isValid = False
-            if serviceItem.title not in self.viewers:
-                serviceItem.isValid = False
 
     def cleanUp(self):
         """
@@ -775,8 +769,17 @@ class ServiceManager(QtGui.QWidget):
         Send the current item to the Preview slide controller
         """
         item, count = self.findServiceItem()
-        self.parent.PreviewController.addServiceManagerItem(
-            self.serviceItems[item][u'service_item'], count)
+        if self.serviceItems[item][u'service_item'].isValid:
+            self.parent.PreviewController.addServiceManagerItem(
+                self.serviceItems[item][u'service_item'], count)
+        else:
+            QtGui.QMessageBox.critical(self,
+                self.trUtf8('Missing Display Handler?'),
+                self.trUtf8('Your item cannot be displayed as '
+                            'there is no handler to display it'),
+                QtGui.QMessageBox.StandardButtons(
+                    QtGui.QMessageBox.Ok),
+                QtGui.QMessageBox.Ok)
 
     def getServiceItem(self):
         """
@@ -808,8 +811,8 @@ class ServiceManager(QtGui.QWidget):
         else:
             QtGui.QMessageBox.critical(self,
                 self.trUtf8('Missing Display Handler?'),
-                self.trUtf8('Your item cannot be display as '
-                            'there is no handler to display it?'),
+                self.trUtf8('Your item cannot be displayed as '
+                            'there is no handler to display it'),
                 QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)

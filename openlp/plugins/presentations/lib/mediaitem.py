@@ -71,13 +71,11 @@ class PresentationMediaItem(MediaManagerItem):
             if self.controllers[controller].enabled:
                 types = self.controllers[controller].supports + \
                     self.controllers[controller].alsosupports
-                self.parent.service_manager.supportedViewers(controller)
                 for type in types:
                     if fileType.find(type) == -1:
                         fileType += u'*%s ' % type
+                        self.parent.service_manager.supportedSuffixes(type)
         self.OnNewFileMasks = self.trUtf8('Presentations (%s)' % fileType)
-        self.parent.service_manager.supportedSuffixes(fileType)
-
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)

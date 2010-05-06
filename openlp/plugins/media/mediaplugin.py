@@ -53,14 +53,12 @@ class MediaPlugin(Plugin):
             self.video_list, mimetype = self._add_to_list(self.video_list, type, mimetype)
             type = mimetype.split(u'video/')
             self.video_list, mimetype = self._add_to_list(self.video_list, type, mimetype)
-        self.service_manager.supportedSuffixes(self.audio_list)
-        self.service_manager.supportedSuffixes(self.video_list)
-        self.service_manager.supportedViewers(self.name)
 
     def _add_to_list(self, list, value, type):
         if len(value) == 2:
             if list.find(value[1]) == -1:
                 list += u'*.%s ' % value[1]
+                self.service_manager.supportedSuffixes(value[1])
             type = u''
         return list, type
 

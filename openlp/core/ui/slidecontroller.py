@@ -846,7 +846,6 @@ class SlideController(QtGui.QWidget):
             self.killTimer(self.timer_id)
             self.timer_id = 0
 
-
     def timerEvent(self, event):
         """
         If the timer event is for this window select next slide
