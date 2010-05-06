@@ -774,7 +774,7 @@ class ServiceManager(QtGui.QWidget):
                 self.serviceItems[item][u'service_item'], count)
         else:
             QtGui.QMessageBox.critical(self,
-                self.trUtf8('Missing Display Handler?'),
+                self.trUtf8('Missing Display Handler'),
                 self.trUtf8('Your item cannot be displayed as '
                             'there is no handler to display it'),
                 QtGui.QMessageBox.StandardButtons(
@@ -810,7 +810,7 @@ class ServiceManager(QtGui.QWidget):
                             self.serviceItems[item][u'service_item'], 0)
         else:
             QtGui.QMessageBox.critical(self,
-                self.trUtf8('Missing Display Handler?'),
+                self.trUtf8('Missing Display Handler'),
                 self.trUtf8('Your item cannot be displayed as '
                             'there is no handler to display it'),
                 QtGui.QMessageBox.StandardButtons(
