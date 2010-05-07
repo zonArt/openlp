@@ -81,7 +81,7 @@ class ServiceItem(object):
         self.notes = u''
         self.from_plugin = False
         self.capabilities = []
-        self.isValid = True
+        self.is_valid = True
 
     def add_capability(self, capability):
         self.capabilities.append(capability)
@@ -336,4 +336,3 @@ class ServiceItem(object):
         Returns the title of the raw frame
         """
         return self._raw_frames[row][u'path']
-
