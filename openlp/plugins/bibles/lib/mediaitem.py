@@ -337,13 +337,14 @@ class BibleMediaItem(MediaManagerItem):
         # load bibles into the combo boxes
         first = True
         for bible in bibles:
-            self.QuickVersionComboBox.addItem(bible)
-            self.QuickSecondBibleComboBox.addItem(bible)
-            self.AdvancedVersionComboBox.addItem(bible)
-            self.AdvancedSecondBibleComboBox.addItem(bible)
-            if first:
-                first = False
-                self.initialiseBible(bible)
+            if bible is not None:
+                self.QuickVersionComboBox.addItem(bible)
+                self.QuickSecondBibleComboBox.addItem(bible)
+                self.AdvancedVersionComboBox.addItem(bible)
+                self.AdvancedSecondBibleComboBox.addItem(bible)
+                if first:
+                    first = False
+                    self.initialiseBible(bible)
 
     def onListViewResize(self, width, height):
         self.SearchProgress.setGeometry(self.ListView.geometry().x(),
