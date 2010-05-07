@@ -339,16 +339,16 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'slidecontroller_%s_change' % self.type_prefix),
             self.onSlideChange)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_set' % self.type_prefix), 
+            QtCore.SIGNAL(u'slidecontroller_%s_set' % self.type_prefix),
             self.onSlideSelectedIndex)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_blank' % self.type_prefix), 
+            QtCore.SIGNAL(u'slidecontroller_%s_blank' % self.type_prefix),
             self.onSlideBlank)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_unblank' % self.type_prefix), 
+            QtCore.SIGNAL(u'slidecontroller_%s_unblank' % self.type_prefix),
             self.onSlideUnblank)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_text_request' % self.type_prefix), 
+            QtCore.SIGNAL(u'slidecontroller_%s_text_request' % self.type_prefix),
             self.onTextRequest)
         QtCore.QObject.connect(self.Splitter,
             QtCore.SIGNAL(u'splitterMoved(int, int)'), self.trackSplitter)
@@ -486,6 +486,7 @@ class SlideController(QtGui.QWidget):
         Display the slide number passed
         """
         log.debug(u'processManagerItem')
+        self.onStopLoop()
         #If old item was a command tell it to stop
         if self.serviceItem and self.serviceItem.is_command():
             self.onMediaStop()
@@ -589,8 +590,8 @@ class SlideController(QtGui.QWidget):
                 data_item[u'selected'] = \
                     (self.PreviewListWidget.currentRow() == framenumber)
                 data.append(data_item)
-        Receiver.send_message(u'slidecontroller_%s_text_response' 
-            % self.type_prefix, data)            
+        Receiver.send_message(u'slidecontroller_%s_text_response'
+            % self.type_prefix, data)
 
     #Screen event methods
     def onSlideSelectedFirst(self):
@@ -614,7 +615,7 @@ class SlideController(QtGui.QWidget):
         index = int(message[0])
         if not self.serviceItem:
             return
-        Receiver.send_message(u'%s_slide' % self.serviceItem.name.lower(), 
+        Receiver.send_message(u'%s_slide' % self.serviceItem.name.lower(),
             [self.serviceItem, self.isLive, index])
         if self.serviceItem.is_command():
             self.updatePreview()
@@ -841,7 +842,9 @@ class SlideController(QtGui.QWidget):
         """
         Stop the timer loop running
         """
-        self.killTimer(self.timer_id)
+        if self.timer_id != 0:
+            self.killTimer(self.timer_id)
+            self.timer_id = 0
 
     def timerEvent(self, event):
         """

@@ -101,6 +101,7 @@ class ServiceManager(QtGui.QWidget):
         self.parent = parent
         self.serviceItems = []
         self.serviceName = u''
+        self.suffixes = []
         self.droppos = 0
         #is a new service and has not been saved
         self.isNew = True
@@ -228,6 +229,9 @@ class ServiceManager(QtGui.QWidget):
         self.themeMenu = QtGui.QMenu(self.trUtf8(u'&Change Item Theme'))
         self.menu.addMenu(self.themeMenu)
 
+    def supportedSuffixes(self, suffix):
+        self.suffixes.append(suffix)
+
     def contextMenu(self, point):
         item = self.ServiceManagerList.itemAt(point)
         if item is None:
@@ -326,7 +330,7 @@ class ServiceManager(QtGui.QWidget):
         Called by a signal to select a specific item
         """
         self.setItem(int(message[0]))
-        
+
     def setItem(self, index):
         """
         Makes a specific item in the service live
@@ -495,19 +499,22 @@ class ServiceManager(QtGui.QWidget):
         for itemcount, item in enumerate(self.serviceItems):
             serviceitem = item[u'service_item']
             treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
-            if serviceitem.notes:
-                icon = QtGui.QImage(serviceitem.icon)
-                icon = icon.scaled(80, 80, QtCore.Qt.KeepAspectRatio,
-                                    QtCore.Qt.SmoothTransformation)
-                overlay = QtGui.QImage(':/services/service_item_notes.png')
-                overlay = overlay.scaled(80, 80, QtCore.Qt.KeepAspectRatio,
-                                          QtCore.Qt.SmoothTransformation)
-                painter = QtGui.QPainter(icon)
-                painter.drawImage(0, 0, overlay)
-                painter.end()
-                treewidgetitem.setIcon(0, build_icon(icon))
+            if serviceitem.isValid:
+                if serviceitem.notes:
+                    icon = QtGui.QImage(serviceitem.icon)
+                    icon = icon.scaled(80, 80, QtCore.Qt.KeepAspectRatio,
+                                        QtCore.Qt.SmoothTransformation)
+                    overlay = QtGui.QImage(':/services/service_item_notes.png')
+                    overlay = overlay.scaled(80, 80, QtCore.Qt.KeepAspectRatio,
+                                              QtCore.Qt.SmoothTransformation)
+                    painter = QtGui.QPainter(icon)
+                    painter.drawImage(0, 0, overlay)
+                    painter.end()
+                    treewidgetitem.setIcon(0, build_icon(icon))
+                else:
+                    treewidgetitem.setIcon(0, serviceitem.iconic_representation)
             else:
-                treewidgetitem.setIcon(0, serviceitem.iconic_representation)
+                treewidgetitem.setIcon(0, build_icon(u':/general/general_delete.png'))
             treewidgetitem.setText(0, serviceitem.title)
             treewidgetitem.setToolTip(0, serviceitem.notes)
             treewidgetitem.setData(0, QtCore.Qt.UserRole,
@@ -651,8 +658,8 @@ class ServiceManager(QtGui.QWidget):
                     serviceitem = ServiceItem()
                     serviceitem.RenderManager = self.parent.RenderManager
                     serviceitem.set_from_service(item, self.servicePath)
-                    if self.validateItem(serviceitem):
-                        self.addServiceItem(serviceitem)
+                    self.validateItem(serviceitem)
+                    self.addServiceItem(serviceitem)
                 try:
                     if os.path.isfile(p_file):
                         os.remove(p_file)
@@ -671,12 +678,14 @@ class ServiceManager(QtGui.QWidget):
         self.parent.serviceChanged(True, self.serviceName)
 
     def validateItem(self, serviceItem):
-#        print "---"
-#        print serviceItem.name
-#        print serviceItem.title
-#        print serviceItem.service_item_path
-#        print serviceItem.service_item_type
-        return True
+        """
+        Validates the service item and if the suffix matches an accepted
+        one it allows the item to be displayed
+        """
+        if serviceItem.is_command():
+            type = serviceItem._raw_frames[0][u'title'].split(u'.')[1]
+            if type not in self.suffixes:
+                serviceItem.isValid = False
 
     def cleanUp(self):
         """
@@ -760,8 +769,17 @@ class ServiceManager(QtGui.QWidget):
         Send the current item to the Preview slide controller
         """
         item, count = self.findServiceItem()
-        self.parent.PreviewController.addServiceManagerItem(
-            self.serviceItems[item][u'service_item'], count)
+        if self.serviceItems[item][u'service_item'].isValid:
+            self.parent.PreviewController.addServiceManagerItem(
+                self.serviceItems[item][u'service_item'], count)
+        else:
+            QtGui.QMessageBox.critical(self,
+                self.trUtf8('Missing Display Handler'),
+                self.trUtf8('Your item cannot be displayed as '
+                            'there is no handler to display it'),
+                QtGui.QMessageBox.StandardButtons(
+                    QtGui.QMessageBox.Ok),
+                QtGui.QMessageBox.Ok)
 
     def getServiceItem(self):
         """
@@ -778,17 +796,26 @@ class ServiceManager(QtGui.QWidget):
         Send the current item to the Live slide controller
         """
         item, count = self.findServiceItem()
-        self.parent.LiveController.addServiceManagerItem(
-            self.serviceItems[item][u'service_item'], count)
-        if QtCore.QSettings().value(
-            self.parent.generalSettingsSection + u'/auto preview',
-            QtCore.QVariant(False)).toBool():
-            item += 1
-            if self.serviceItems and item < len(self.serviceItems) and \
-                self.serviceItems[item][u'service_item'].is_capable(
-                ItemCapabilities.AllowsPreview):
-                    self.parent.PreviewController.addServiceManagerItem(
-                        self.serviceItems[item][u'service_item'], 0)
+        if self.serviceItems[item][u'service_item'].isValid:
+            self.parent.LiveController.addServiceManagerItem(
+                self.serviceItems[item][u'service_item'], count)
+            if QtCore.QSettings().value(
+                self.parent.generalSettingsSection + u'/auto preview',
+                QtCore.QVariant(False)).toBool():
+                item += 1
+                if self.serviceItems and item < len(self.serviceItems) and \
+                    self.serviceItems[item][u'service_item'].is_capable(
+                    ItemCapabilities.AllowsPreview):
+                        self.parent.PreviewController.addServiceManagerItem(
+                            self.serviceItems[item][u'service_item'], 0)
+        else:
+            QtGui.QMessageBox.critical(self,
+                self.trUtf8('Missing Display Handler'),
+                self.trUtf8('Your item cannot be displayed as '
+                            'there is no handler to display it'),
+                QtGui.QMessageBox.StandardButtons(
+                    QtGui.QMessageBox.Ok),
+                QtGui.QMessageBox.Ok)
 
     def remoteEdit(self):
         """
@@ -920,7 +947,7 @@ class ServiceManager(QtGui.QWidget):
             return item.data(0, QtCore.Qt.UserRole).toInt()[0]
         else:
             return parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
-            
+
     def listRequest(self, message=None):
         data = []
         curindex, count = self.findServiceItem()

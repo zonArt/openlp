@@ -81,6 +81,7 @@ class ServiceItem(object):
         self.notes = u''
         self.from_plugin = False
         self.capabilities = []
+        self.isValid = True
 
     def add_capability(self, capability):
         self.capabilities.append(capability)
