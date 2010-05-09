@@ -58,6 +58,7 @@ class MediaPlugin(Plugin):
         if len(value) == 2:
             if list.find(value[1]) == -1:
                 list += u'*.%s ' % value[1]
+                self.service_manager.supportedSuffixes(value[1])
             type = u''
         return list, type
 

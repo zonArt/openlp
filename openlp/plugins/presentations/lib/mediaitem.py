@@ -74,6 +74,7 @@ class PresentationMediaItem(MediaManagerItem):
                 for type in types:
                     if fileType.find(type) == -1:
                         fileType += u'*%s ' % type
+                        self.parent.service_manager.supportedSuffixes(type)
         self.OnNewFileMasks = self.trUtf8('Presentations (%s)' % fileType)
 
     def requiredIcons(self):
