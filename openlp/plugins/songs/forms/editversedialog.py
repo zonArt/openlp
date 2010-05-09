@@ -24,6 +24,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_EditVerseDialog(object):
     def setupUi(self, EditVerseDialog):
@@ -109,21 +110,21 @@ class Ui_EditVerseDialog(object):
         QtCore.QMetaObject.connectSlotsByName(EditVerseDialog)
 
     def retranslateUi(self, EditVerseDialog):
-        EditVerseDialog.setWindowTitle(self.trUtf8('Edit Verse'))
-        self.VerseTypeLabel.setText(self.trUtf8('Verse Type'))
-        self.VerseListComboBox.setItemText(0, self.trUtf8('Intro'))
-        self.VerseListComboBox.setItemText(1, self.trUtf8('Verse'))
-        self.VerseListComboBox.setItemText(2, self.trUtf8('Pre-Chorus'))
-        self.VerseListComboBox.setItemText(3, self.trUtf8('Chorus'))
-        self.VerseListComboBox.setItemText(4, self.trUtf8('Bridge'))
-        self.VerseListComboBox.setItemText(5, self.trUtf8('Ending'))
-        self.VerseListComboBox.setItemText(6, self.trUtf8('Other'))
-        self.VerseNumberLabel.setText(self.trUtf8('Number'))
-        self.addBridge.setText(self.trUtf8('Bridge'))
-        self.addVerse.setText(self.trUtf8('Verse'))
-        self.addChorus.setText(self.trUtf8('Chorus'))
-        self.addPreChorus.setText(self.trUtf8('Pre-Chorus'))
-        self.addIntro.setText(self.trUtf8('Intro'))
-        self.addOther.setText(self.trUtf8('Other'))
-        self.addEnding.setText(self.trUtf8('Ending'))
+        EditVerseDialog.setWindowTitle(translate('EditVerseForm', 'Edit Verse'))
+        self.VerseTypeLabel.setText(translate('EditVerseForm', 'Verse Type'))
+        self.VerseListComboBox.setItemText(0, translate('EditVerseForm', 'Intro'))
+        self.VerseListComboBox.setItemText(1, translate('EditVerseForm', 'Verse'))
+        self.VerseListComboBox.setItemText(2, translate('EditVerseForm', 'Pre-Chorus'))
+        self.VerseListComboBox.setItemText(3, translate('EditVerseForm', 'Chorus'))
+        self.VerseListComboBox.setItemText(4, translate('EditVerseForm', 'Bridge'))
+        self.VerseListComboBox.setItemText(5, translate('EditVerseForm', 'Ending'))
+        self.VerseListComboBox.setItemText(6, translate('EditVerseForm', 'Other'))
+        self.VerseNumberLabel.setText(translate('EditVerseForm', 'Number'))
+        self.addBridge.setText(translate('EditVerseForm', 'Bridge'))
+        self.addVerse.setText(translate('EditVerseForm', 'Verse'))
+        self.addChorus.setText(translate('EditVerseForm', 'Chorus'))
+        self.addPreChorus.setText(translate('EditVerseForm', 'Pre-Chorus'))
+        self.addIntro.setText(translate('EditVerseForm', 'Intro'))
+        self.addOther.setText(translate('EditVerseForm', 'Other'))
+        self.addEnding.setText(translate('EditVerseForm', 'Ending'))
 

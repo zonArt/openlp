@@ -37,7 +37,7 @@ log = logging.getLogger()
 from openlp.core.lib import Receiver
 from openlp.core.resources import qInitResources
 from openlp.core.ui import MainWindow, SplashScreen, ScreenList
-from openlp.core.utils import AppLocation
+from openlp.core.utils import AppLocation, LanguageManager
 
 application_stylesheet = u"""
 QMainWindow::separator
@@ -194,6 +194,11 @@ def main():
     qInitResources()
     # Now create and actually run the application.
     app = OpenLP(qt_args)
+    #i18n Set Language
+    language = LanguageManager.get_language()
+    appTranslator = LanguageManager.get_translator(language)
+    app.installTranslator(appTranslator)
+
     sys.exit(app.run())
 
 if __name__ == u'__main__':

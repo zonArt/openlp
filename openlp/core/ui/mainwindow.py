@@ -31,8 +31,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, DisplayManager
 from openlp.core.lib import RenderManager, build_icon, OpenLPDockWidget, \
-    SettingsManager, PluginManager, Receiver
-from openlp.core.utils import check_latest_version, AppLocation, add_actions
+    SettingsManager, PluginManager, Receiver, translate
+from openlp.core.utils import check_latest_version, AppLocation, add_actions, LanguageManager
 
 log = logging.getLogger(__name__)
 
@@ -252,10 +252,23 @@ class Ui_MainWindow(object):
         self.HelpOnlineHelpItem.setEnabled(False)
         self.HelpWebSiteItem = QtGui.QAction(MainWindow)
         self.HelpWebSiteItem.setObjectName(u'HelpWebSiteItem')
-        self.LanguageTranslateItem = QtGui.QAction(MainWindow)
-        self.LanguageTranslateItem.setObjectName(u'LanguageTranslateItem')
-        self.LanguageEnglishItem = QtGui.QAction(MainWindow)
-        self.LanguageEnglishItem.setObjectName(u'LanguageEnglishItem')
+        #i18n Language Items
+        self.AutoLanguageItem = QtGui.QAction(MainWindow)
+        self.AutoLanguageItem.setObjectName(u'AutoLanguageItem')
+        self.AutoLanguageItem.setCheckable(True)
+        self.LanguageGroup = QtGui.QActionGroup(MainWindow)
+        qmList = LanguageManager.get_qm_list()
+        savedLanguage = LanguageManager.get_language()
+        self.AutoLanguageItem.setChecked(LanguageManager.AutoLanguage)
+        self.LanguageItem = {}
+        for key in qmList.keys():
+            self.LanguageItem[key] = QtGui.QAction(MainWindow)
+            self.LanguageItem[key].setObjectName(key)
+            self.LanguageItem[key].setCheckable(True)
+            self.LanguageItem[key].setDisabled(LanguageManager.AutoLanguage)
+            if qmList[key] == savedLanguage:
+                self.LanguageItem[key].setChecked(True)
+            add_actions(self.LanguageGroup, [self.LanguageItem[key]])
         self.ToolsAddToolItem = QtGui.QAction(MainWindow)
         AddToolIcon = build_icon(u':/tools/tools_add.png')
         self.ToolsAddToolItem.setIcon(AddToolIcon)
@@ -281,8 +294,10 @@ class Ui_MainWindow(object):
         add_actions(self.OptionsViewMenu, (self.ViewModeMenu.menuAction(),
             None, self.ViewMediaManagerItem, self.ViewServiceManagerItem,
             self.ViewThemeManagerItem, None, self.action_Preview_Panel))
-        add_actions(self.OptionsLanguageMenu, (self.LanguageEnglishItem, None,
-            self.LanguageTranslateItem))
+        #i18n add Language Actions
+        add_actions(self.OptionsLanguageMenu, (self.AutoLanguageItem, None))
+        for item in sorted(self.LanguageItem):
+            add_actions(self.OptionsLanguageMenu, [self.LanguageItem[item]])
         add_actions(self.OptionsMenu, (self.OptionsLanguageMenu.menuAction(),
             self.OptionsViewMenu.menuAction(), None, self.OptionsSettingsItem))
         add_actions(self.ToolsMenu,
@@ -316,98 +331,101 @@ class Ui_MainWindow(object):
         """
         Set up the translation system
         """
-        MainWindow.mainTitle = self.trUtf8('OpenLP 2.0')
-        MainWindow.defaultThemeText = self.trUtf8(
+        MainWindow.mainTitle = translate('MainWindow', 'OpenLP 2.0')
+        MainWindow.language = translate('MainWindow', 'English')
+        MainWindow.defaultThemeText = translate('MainWindow', 
             'Default Theme: ')
         MainWindow.setWindowTitle(MainWindow.mainTitle)
-        self.FileMenu.setTitle(self.trUtf8('&File'))
-        self.FileImportMenu.setTitle(self.trUtf8('&Import'))
-        self.FileExportMenu.setTitle(self.trUtf8('&Export'))
-        self.OptionsMenu.setTitle(self.trUtf8('&Options'))
-        self.OptionsViewMenu.setTitle(self.trUtf8('&View'))
-        self.ViewModeMenu.setTitle(self.trUtf8('M&ode'))
-        self.OptionsLanguageMenu.setTitle(self.trUtf8(
+        self.FileMenu.setTitle(translate('MainWindow', '&File'))
+        self.FileImportMenu.setTitle(translate('MainWindow', '&Import'))
+        self.FileExportMenu.setTitle(translate('MainWindow', '&Export'))
+        self.OptionsMenu.setTitle(translate('MainWindow', '&Options'))
+        self.OptionsViewMenu.setTitle(translate('MainWindow', '&View'))
+        self.ViewModeMenu.setTitle(translate('MainWindow', 'M&ode'))
+        self.OptionsLanguageMenu.setTitle(translate('MainWindow', 
             u'&Language'))
-        self.ToolsMenu.setTitle(self.trUtf8('&Tools'))
-        self.HelpMenu.setTitle(self.trUtf8('&Help'))
+        self.ToolsMenu.setTitle(translate('MainWindow', '&Tools'))
+        self.HelpMenu.setTitle(translate('MainWindow', '&Help'))
         self.MediaManagerDock.setWindowTitle(
-            self.trUtf8('Media Manager'))
+            translate('MainWindow', 'Media Manager'))
         self.ServiceManagerDock.setWindowTitle(
-            self.trUtf8('Service Manager'))
+            translate('MainWindow', 'Service Manager'))
         self.ThemeManagerDock.setWindowTitle(
-            self.trUtf8('Theme Manager'))
-        self.FileNewItem.setText(self.trUtf8('&New'))
-        self.FileNewItem.setToolTip(self.trUtf8('New Service'))
-        self.FileNewItem.setStatusTip(self.trUtf8('Create a new Service'))
-        self.FileNewItem.setShortcut(self.trUtf8('Ctrl+N'))
-        self.FileOpenItem.setText(self.trUtf8('&Open'))
-        self.FileOpenItem.setToolTip(self.trUtf8('Open Service'))
-        self.FileOpenItem.setStatusTip(self.trUtf8('Open an existing service'))
-        self.FileOpenItem.setShortcut(self.trUtf8('Ctrl+O'))
-        self.FileSaveItem.setText(self.trUtf8('&Save'))
-        self.FileSaveItem.setToolTip(self.trUtf8('Save Service'))
+            translate('MainWindow', 'Theme Manager'))
+        self.FileNewItem.setText(translate('MainWindow', '&New'))
+        self.FileNewItem.setToolTip(translate('MainWindow', 'New Service'))
+        self.FileNewItem.setStatusTip(translate('MainWindow', 'Create a new Service'))
+        self.FileNewItem.setShortcut(translate('MainWindow', 'Ctrl+N'))
+        self.FileOpenItem.setText(translate('MainWindow', '&Open'))
+        self.FileOpenItem.setToolTip(translate('MainWindow', 'Open Service'))
+        self.FileOpenItem.setStatusTip(translate('MainWindow', 'Open an existing service'))
+        self.FileOpenItem.setShortcut(translate('MainWindow', 'Ctrl+O'))
+        self.FileSaveItem.setText(translate('MainWindow', '&Save'))
+        self.FileSaveItem.setToolTip(translate('MainWindow', 'Save Service'))
         self.FileSaveItem.setStatusTip(
-            self.trUtf8('Save the current service to disk'))
-        self.FileSaveItem.setShortcut(self.trUtf8('Ctrl+S'))
-        self.FileSaveAsItem.setText(self.trUtf8('Save &As...'))
-        self.FileSaveAsItem.setToolTip(self.trUtf8('Save Service As'))
+            translate('MainWindow', 'Save the current service to disk'))
+        self.FileSaveItem.setShortcut(translate('MainWindow', 'Ctrl+S'))
+        self.FileSaveAsItem.setText(translate('MainWindow', 'Save &As...'))
+        self.FileSaveAsItem.setToolTip(translate('MainWindow', 'Save Service As'))
         self.FileSaveAsItem.setStatusTip(
-            self.trUtf8('Save the current service under a new name'))
-        self.FileSaveAsItem.setShortcut(self.trUtf8('F12'))
-        self.FileExitItem.setText(self.trUtf8('E&xit'))
-        self.FileExitItem.setStatusTip(self.trUtf8('Quit OpenLP'))
-        self.FileExitItem.setShortcut(self.trUtf8('Alt+F4'))
-        self.ImportThemeItem.setText(self.trUtf8('&Theme'))
-        self.ImportLanguageItem.setText(self.trUtf8('&Language'))
-        self.ExportThemeItem.setText(self.trUtf8('&Theme'))
-        self.ExportLanguageItem.setText(self.trUtf8('&Language'))
-        self.actionLook_Feel.setText(self.trUtf8('Look && &Feel'))
-        self.OptionsSettingsItem.setText(self.trUtf8('&Settings'))
-        self.ViewMediaManagerItem.setText(self.trUtf8('&Media Manager'))
+            translate('MainWindow', 'Save the current service under a new name'))
+        self.FileSaveAsItem.setShortcut(translate('MainWindow', 'F12'))
+        self.FileExitItem.setText(translate('MainWindow', 'E&xit'))
+        self.FileExitItem.setStatusTip(translate('MainWindow', 'Quit OpenLP'))
+        self.FileExitItem.setShortcut(translate('MainWindow', 'Alt+F4'))
+        self.ImportThemeItem.setText(translate('MainWindow', '&Theme'))
+        self.ImportLanguageItem.setText(translate('MainWindow', '&Language'))
+        self.ExportThemeItem.setText(translate('MainWindow', '&Theme'))
+        self.ExportLanguageItem.setText(translate('MainWindow', '&Language'))
+        self.actionLook_Feel.setText(translate('MainWindow', 'Look && &Feel'))
+        self.OptionsSettingsItem.setText(translate('MainWindow', '&Settings'))
+        self.ViewMediaManagerItem.setText(translate('MainWindow', '&Media Manager'))
         self.ViewMediaManagerItem.setToolTip(
-            self.trUtf8('Toggle Media Manager'))
+            translate('MainWindow', 'Toggle Media Manager'))
         self.ViewMediaManagerItem.setStatusTip(
-            self.trUtf8('Toggle the visibility of the Media Manager'))
-        self.ViewMediaManagerItem.setShortcut(self.trUtf8('F8'))
-        self.ViewThemeManagerItem.setText(self.trUtf8('&Theme Manager'))
+            translate('MainWindow', 'Toggle the visibility of the Media Manager'))
+        self.ViewMediaManagerItem.setShortcut(translate('MainWindow', 'F8'))
+        self.ViewThemeManagerItem.setText(translate('MainWindow', '&Theme Manager'))
         self.ViewThemeManagerItem.setToolTip(
-            self.trUtf8('Toggle Theme Manager'))
+            translate('MainWindow', 'Toggle Theme Manager'))
         self.ViewThemeManagerItem.setStatusTip(
-            self.trUtf8('Toggle the visibility of the Theme Manager'))
-        self.ViewThemeManagerItem.setShortcut(self.trUtf8('F10'))
-        self.ViewServiceManagerItem.setText(self.trUtf8('&Service Manager'))
+            translate('MainWindow', 'Toggle the visibility of the Theme Manager'))
+        self.ViewThemeManagerItem.setShortcut(translate('MainWindow', 'F10'))
+        self.ViewServiceManagerItem.setText(translate('MainWindow', '&Service Manager'))
         self.ViewServiceManagerItem.setToolTip(
-            self.trUtf8('Toggle Service Manager'))
+            translate('MainWindow', 'Toggle Service Manager'))
         self.ViewServiceManagerItem.setStatusTip(
-            self.trUtf8('Toggle the visibility of the Service Manager'))
-        self.ViewServiceManagerItem.setShortcut(self.trUtf8('F9'))
-        self.action_Preview_Panel.setText(self.trUtf8('&Preview Panel'))
+            translate('MainWindow', 'Toggle the visibility of the Service Manager'))
+        self.ViewServiceManagerItem.setShortcut(translate('MainWindow', 'F9'))
+        self.action_Preview_Panel.setText(translate('MainWindow', '&Preview Panel'))
         self.action_Preview_Panel.setToolTip(
-            self.trUtf8('Toggle Preview Panel'))
+            translate('MainWindow', 'Toggle Preview Panel'))
         self.action_Preview_Panel.setStatusTip(
-            self.trUtf8('Toggle the visibility of the Preview Panel'))
-        self.action_Preview_Panel.setShortcut(self.trUtf8('F11'))
-        self.PluginItem.setText(self.trUtf8('&Plugin List'))
-        self.PluginItem.setStatusTip(self.trUtf8('List the Plugins'))
-        self.PluginItem.setShortcut(self.trUtf8('Alt+F7'))
-        self.HelpDocumentationItem.setText(self.trUtf8('&User Guide'))
-        self.HelpAboutItem.setText(self.trUtf8('&About'))
+            translate('MainWindow', 'Toggle the visibility of the Preview Panel'))
+        self.action_Preview_Panel.setShortcut(translate('MainWindow', 'F11'))
+        self.PluginItem.setText(translate('MainWindow', '&Plugin List'))
+        self.PluginItem.setStatusTip(translate('MainWindow', 'List the Plugins'))
+        self.PluginItem.setShortcut(translate('MainWindow', 'Alt+F7'))
+        self.HelpDocumentationItem.setText(translate('MainWindow', '&User Guide'))
+        self.HelpAboutItem.setText(translate('MainWindow', '&About'))
         self.HelpAboutItem.setStatusTip(
-            self.trUtf8('More information about OpenLP'))
-        self.HelpAboutItem.setShortcut(self.trUtf8('Ctrl+F1'))
-        self.HelpOnlineHelpItem.setText(self.trUtf8('&Online Help'))
-        self.HelpWebSiteItem.setText(self.trUtf8('&Web Site'))
-        self.LanguageTranslateItem.setText(self.trUtf8('&Translate'))
-        self.LanguageTranslateItem.setStatusTip(
-            self.trUtf8('Translate the interface to your language'))
-        self.LanguageEnglishItem.setText(self.trUtf8('English'))
-        self.LanguageEnglishItem.setStatusTip(
-            self.trUtf8('Set the interface language to English'))
-        self.ToolsAddToolItem.setText(self.trUtf8('Add &Tool...'))
+            translate('MainWindow', 'More information about OpenLP'))
+        self.HelpAboutItem.setShortcut(translate('MainWindow', 'Ctrl+F1'))
+        self.HelpOnlineHelpItem.setText(translate('MainWindow', '&Online Help'))
+        self.HelpWebSiteItem.setText(translate('MainWindow', '&Web Site'))
+        #i18n
+        self.AutoLanguageItem.setText(translate('MainWindow', '&Auto Detect'))
+        self.AutoLanguageItem.setStatusTip(
+            translate('MainWindow', 'Choose System language, if available'))
+        for item in self.LanguageItem:
+            self.LanguageItem[item].setText(self.LanguageItem[item].objectName())
+            self.LanguageItem[item].setStatusTip(
+                translate('MainWindow', 'Set the interface language to %1').arg(self.LanguageItem[item].objectName()))
+        self.ToolsAddToolItem.setText(translate('MainWindow', 'Add &Tool...'))
         self.ToolsAddToolItem.setStatusTip(
-            self.trUtf8('Add an application to the list of tools'))
-        self.action_Preview_Panel.setText(self.trUtf8('&Preview Pane'))
-        self.ModeLiveItem.setText(self.trUtf8('&Live'))
+            translate('MainWindow', 'Add an application to the list of tools'))
+        self.action_Preview_Panel.setText(translate('MainWindow', '&Preview Pane'))
+        self.ModeLiveItem.setText(translate('MainWindow', '&Live'))
 
 
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
@@ -508,6 +526,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.FileSaveAsItem,
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onSaveService)
+        #i18n set signals for languages
+        QtCore.QObject.connect(self.AutoLanguageItem, 
+                QtCore.SIGNAL(u'toggled(bool)'),
+                self.setAutoLanguage)
+        self.LanguageGroup.triggered.connect(LanguageManager.set_language)
         #warning cyclic dependency
         #RenderManager needs to call ThemeManager and
         #ThemeManager needs to call RenderManager
@@ -549,6 +572,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.ThemeManagerContents.loadThemes()
         log.info(u'Load data from Settings')
         self.settingsForm.postSetUp()
+
+    #i18n
+    def setAutoLanguage(self, value):
+        for action in self.LanguageGroup.actions():
+            action.setDisabled(value)
+        LanguageManager.AutoLanguage = value
+        LanguageManager.set_language(self.LanguageGroup.checkedAction())
 
     def versionCheck(self, version):
         """

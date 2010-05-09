@@ -35,7 +35,7 @@ from PyQt4 import QtCore, QtGui
 
 log = logging.getLogger(__name__)
 
-def translate(context, text):
+def translate(context, text, comment=None):
     """
     A special shortcut method to wrap around the Qt4 translation functions.
     This abstracts the translation procedure so that we can change it if at a
@@ -48,8 +48,8 @@ def translate(context, text):
     ``text``
         The text to put into the translation tables for translation.
     """
-    return QtGui.QApplication.translate(
-        context, text, None, QtGui.QApplication.UnicodeUTF8)
+    return QtCore.QCoreApplication.translate(context, text,
+                                                     comment)
 
 def get_text_file_string(text_file):
     """

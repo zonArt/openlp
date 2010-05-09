@@ -24,6 +24,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_customEditDialog(object):
     def setupUi(self, customEditDialog):
@@ -152,23 +153,23 @@ class Ui_customEditDialog(object):
         customEditDialog.setTabOrder(self.DownButton, self.ThemeComboBox)
 
     def retranslateUi(self, customEditDialog):
-        customEditDialog.setWindowTitle(self.trUtf8('Edit Custom Slides'))
-        self.UpButton.setToolTip(self.trUtf8('Move slide Up 1'))
-        self.DownButton.setToolTip(self.trUtf8('Move slide down 1'))
-        self.TitleLabel.setText(self.trUtf8('Title:'))
-        self.AddButton.setText(self.trUtf8('Add New'))
-        self.AddButton.setToolTip(self.trUtf8('Add new slide at bottom'))
-        self.EditButton.setText(self.trUtf8('Edit'))
-        self.EditButton.setToolTip(self.trUtf8('Edit selected slide'))
-        self.EditAllButton.setText(self.trUtf8('Edit All'))
-        self.EditAllButton.setToolTip(self.trUtf8('Edit all slides'))
-        self.SaveButton.setText(self.trUtf8('Save'))
-        self.SaveButton.setToolTip(self.trUtf8('Replace edited slide'))
-        self.DeleteButton.setText(self.trUtf8('Delete'))
-        self.DeleteButton.setToolTip(self.trUtf8('Delete selected slide'))
-        self.ClearButton.setText(self.trUtf8('Clear'))
-        self.ClearButton.setToolTip(self.trUtf8('Clear edit area'))
-        self.SplitButton.setText(self.trUtf8('Split Slide'))
-        self.SplitButton.setToolTip(self.trUtf8('Add slide split'))
-        self.ThemeLabel.setText(self.trUtf8('Theme:'))
-        self.CreditLabel.setText(self.trUtf8('Credits:'))
+        customEditDialog.setWindowTitle(translate('EditCustomForm', 'Edit Custom Slides'))
+        self.UpButton.setToolTip(translate('EditCustomForm', 'Move slide Up 1'))
+        self.DownButton.setToolTip(translate('EditCustomForm', 'Move slide down 1'))
+        self.TitleLabel.setText(translate('EditCustomForm', 'Title:'))
+        self.AddButton.setText(translate('EditCustomForm', 'Add New'))
+        self.AddButton.setToolTip(translate('EditCustomForm', 'Add new slide at bottom'))
+        self.EditButton.setText(translate('EditCustomForm', 'Edit'))
+        self.EditButton.setToolTip(translate('EditCustomForm', 'Edit selected slide'))
+        self.EditAllButton.setText(translate('EditCustomForm', 'Edit All'))
+        self.EditAllButton.setToolTip(translate('EditCustomForm', 'Edit all slides'))
+        self.SaveButton.setText(translate('EditCustomForm', 'Save'))
+        self.SaveButton.setToolTip(translate('EditCustomForm', 'Replace edited slide'))
+        self.DeleteButton.setText(translate('EditCustomForm', 'Delete'))
+        self.DeleteButton.setToolTip(translate('EditCustomForm', 'Delete selected slide'))
+        self.ClearButton.setText(translate('EditCustomForm', 'Clear'))
+        self.ClearButton.setToolTip(translate('EditCustomForm', 'Clear edit area'))
+        self.SplitButton.setText(translate('EditCustomForm', 'Split Slide'))
+        self.SplitButton.setToolTip(translate('EditCustomForm', 'Add slide split'))
+        self.ThemeLabel.setText(translate('EditCustomForm', 'Theme:'))
+        self.CreditLabel.setText(translate('EditCustomForm', 'Credits:'))
