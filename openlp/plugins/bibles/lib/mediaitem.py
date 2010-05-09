@@ -337,7 +337,7 @@ class BibleMediaItem(MediaManagerItem):
         # load bibles into the combo boxes
         first = True
         for bible in bibles:
-            if bible is not None:
+            if bible:
                 self.QuickVersionComboBox.addItem(bible)
                 self.QuickSecondBibleComboBox.addItem(bible)
                 self.AdvancedVersionComboBox.addItem(bible)
