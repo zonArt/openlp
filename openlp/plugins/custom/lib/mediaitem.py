@@ -27,8 +27,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, SongXMLParser, BaseListWithDnD,\
-Receiver, str_to_bool, ItemCapabilities
+from openlp.core.lib import MediaManagerItem, SongXMLParser, BaseListWithDnD, \
+    Receiver, ItemCapabilities
 
 log = logging.getLogger(__name__)
 
@@ -45,7 +45,6 @@ class CustomMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Custom'
-        self.ConfigSection = title
         self.IconPath = u'custom/custom'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
@@ -58,13 +57,13 @@ class CustomMediaItem(MediaManagerItem):
 
     def addEndHeaderBar(self):
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_edit' % self.parent.name), self.onRemoteEdit)
+            QtCore.SIGNAL(u'custom_edit'), self.onRemoteEdit)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'remote_edit_clear' ), self.onRemoteEditClear)
+            QtCore.SIGNAL(u'custom_edit_clear' ), self.onRemoteEditClear)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'load_custom_list'), self.initialise)
+            QtCore.SIGNAL(u'custom_load_list'), self.initialise)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'preview_custom'), self.onPreviewClick)
+            QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
 
     def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8('Custom')
@@ -133,7 +132,7 @@ class CustomMediaItem(MediaManagerItem):
             self.ListView.takeItem(row)
 
     def generateSlideData(self, service_item, item=None):
-        raw_slides =[]
+        raw_slides = []
         raw_footer = []
         slide = None
         theme = None
@@ -164,8 +163,8 @@ class CustomMediaItem(MediaManagerItem):
         service_item.title = title
         for slide in raw_slides:
             service_item.add_from_text(slide[:30], slide)
-        if str_to_bool(self.parent.config.get_config(u'display footer', True)) \
-            or credit:
+        if QtCore.QSettings().value(self.settingsSection + u'/display footer',
+            QtCore.QVariant(True)).toBool() or credit:
             raw_footer.append(title + u' ' + credit)
         else:
             raw_footer.append(u'')

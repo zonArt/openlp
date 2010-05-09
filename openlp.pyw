@@ -34,10 +34,10 @@ from PyQt4 import QtCore, QtGui
 
 log = logging.getLogger()
 
-from openlp.core.lib import Receiver, str_to_bool
+from openlp.core.lib import Receiver
 from openlp.core.resources import qInitResources
 from openlp.core.ui import MainWindow, SplashScreen, ScreenList
-from openlp.core.utils import AppLocation, ConfigHelper
+from openlp.core.utils import AppLocation
 
 application_stylesheet = u"""
 QMainWindow::separator
@@ -110,20 +110,17 @@ class OpenLP(QtGui.QApplication):
         finally:
             if fversion:
                 fversion.close()
-        #set the default string encoding
-        try:
-            sys.setappdefaultencoding(u'utf-8')
-        except:
-            pass
         #provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'process_events'), self.processEvents)
+            QtCore.SIGNAL(u'openlp_process_events'), self.processEvents)
+        self.setOrganizationName(u'OpenLP')
+        self.setOrganizationDomain(u'openlp.org')
         self.setApplicationName(u'OpenLP')
         self.setApplicationVersion(app_version[u'version'])
         if os.name == u'nt':
             self.setStyleSheet(application_stylesheet)
-        show_splash = str_to_bool(ConfigHelper.get_registry().get_value(
-            u'general', u'show splash', True))
+        show_splash = QtCore.QSettings().value(
+            u'general/show splash', QtCore.QVariant(True)).toBool()
         if show_splash:
             self.splash = SplashScreen(self.applicationVersion())
             self.splash.show()
@@ -133,8 +130,8 @@ class OpenLP(QtGui.QApplication):
         # Decide how many screens we have and their size
         for screen in xrange(0, self.desktop().numScreens()):
             screens.add_screen({u'number': screen,
-                            u'size': self.desktop().availableGeometry(screen),
-                            u'primary': (self.desktop().primaryScreen() == screen)})
+                u'size': self.desktop().availableGeometry(screen),
+                u'primary': (self.desktop().primaryScreen() == screen)})
             log.info(u'Screen %d found with resolution %s',
                 screen, self.desktop().availableGeometry(screen))
         # start the main app window

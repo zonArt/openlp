@@ -51,7 +51,7 @@ class SongsPlugin(Plugin):
         """
         Plugin.__init__(self, u'Songs', u'1.9.1', plugin_helpers)
         self.weight = -10
-        self.songmanager = SongManager(self.config)
+        self.songmanager = SongManager()
         self.openlp_import_form = OpenLPImportForm()
         self.opensong_import_form = OpenSongImportForm()
         self.openlp_export_form = OpenLPExportForm()
@@ -65,7 +65,7 @@ class SongsPlugin(Plugin):
     def initialise(self):
         log.info(u'Songs Initialising')
         #if self.songmanager is None:
-        #    self.songmanager = SongManager(self.config)
+        #    self.songmanager = SongManager()
         Plugin.initialise(self)
         self.insert_toolbox_item()
         self.ImportSongMenu.menuAction().setVisible(True)
@@ -212,7 +212,7 @@ class SongsPlugin(Plugin):
                     + ' included with the Songs of Fellowship Music Editions'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
-        Receiver.send_message(u'load_song_list')
+        Receiver.send_message(u'songs_load_list')
 
     def onImportOooItemClick(self):
         filenames = QtGui.QFileDialog.getOpenFileNames(
@@ -220,7 +220,7 @@ class SongsPlugin(Plugin):
             u'', u'All Files(*.*)')
         oooimport = OooImport(self.songmanager)        
         oooimport.import_docs(filenames)
-        Receiver.send_message(u'load_song_list')
+        Receiver.send_message(u'songs_load_list')
 
     def onExportOpenlp1ItemClicked(self):
         self.openlp_export_form.show()

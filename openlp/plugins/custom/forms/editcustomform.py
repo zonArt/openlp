@@ -77,7 +77,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'),
             self.onVerseListViewPressed)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'update_themes'), self.loadThemes)
+            QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         # Create other objects and forms
         self.custommanager = custommanager
         self.initialise()
@@ -86,7 +86,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         log.debug(u'onPreview')
         if button.text() == unicode(self.trUtf8('Save && Preview')) \
             and self.saveCustom():
-            Receiver.send_message(u'preview_custom')
+            Receiver.send_message(u'custom_preview')
 
     def initialise(self):
         self.editAll = False
@@ -135,13 +135,13 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             self.previewButton.setVisible(True)
 
     def closePressed(self):
-        Receiver.send_message(u'remote_edit_clear')
+        Receiver.send_message(u'custom_edit_clear')
         self.close()
 
     def accept(self):
         log.debug(u'accept')
         if self.saveCustom():
-            Receiver.send_message(u'load_custom_list')
+            Receiver.send_message(u'custom_load_list')
             self.close()
 
     def saveCustom(self):
@@ -271,4 +271,4 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         if self.VerseTextEdit.toPlainText():
             self.VerseTextEdit.setFocus()
             return False, self.trUtf8('You have unsaved data, please save or clear')
-        return True,  u''
+        return True, u''

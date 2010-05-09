@@ -93,7 +93,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.CCLNumberEdit,
             QtCore.SIGNAL(u'lostFocus()'), self.onCCLNumberEditLostFocus)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'update_themes'), self.loadThemes)
+            QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         QtCore.QObject.connect(self.CommentsEdit,
             QtCore.SIGNAL(u'lostFocus()'), self.onCommentsEditLostFocus)
         QtCore.QObject.connect(self.VerseOrderEdit,
@@ -122,6 +122,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def loadAuthors(self):
         authors = self.songmanager.get_authors()
+        authorsCompleter = QtGui.QCompleter(
+            [author.display_name for author in authors],
+            self.AuthorsSelectionComboItem)
+        authorsCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive);
+        self.AuthorsSelectionComboItem.setCompleter(authorsCompleter);
         self.AuthorsSelectionComboItem.clear()
         for author in authors:
             row = self.AuthorsSelectionComboItem.count()
@@ -131,6 +136,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def loadTopics(self):
         topics = self.songmanager.get_topics()
+        topicsCompleter = QtGui.QCompleter(
+            [topic.name for topic in topics],
+            self.SongTopicCombo)
+        topicsCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive);
+        self.SongTopicCombo.setCompleter(topicsCompleter);
         self.SongTopicCombo.clear()
         for topic in topics:
             row = self.SongTopicCombo.count()
@@ -139,6 +149,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def loadBooks(self):
         books = self.songmanager.get_books()
+        booksCompleter = QtGui.QCompleter(
+            [book.name for book in books], self.SongbookCombo)
+        booksCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive);
+        self.SongbookCombo.setCompleter(booksCompleter);
         self.SongbookCombo.clear()
         self.SongbookCombo.addItem(u' ')
         for book in books:
@@ -147,6 +161,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.SongbookCombo.setItemData(row, QtCore.QVariant(book.id))
 
     def loadThemes(self, theme_list):
+        themesCompleter = QtGui.QCompleter(
+            [theme for theme in theme_list],
+            self.ThemeSelectionComboItem)
+        themesCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive);
+        self.ThemeSelectionComboItem.setCompleter(themesCompleter);
         self.ThemeSelectionComboItem.clear()
         self.ThemeSelectionComboItem.addItem(u' ')
         for theme in theme_list:
@@ -320,7 +339,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.verse_form.setVerse(u'', self.VerseListWidget.count() + 1, True)
         if self.verse_form.exec_():
             afterText, verse, subVerse = self.verse_form.getVerse()
-            data = u'%s:%s' %(verse, subVerse)
+            data = u'%s:%s' % (verse, subVerse)
             item = QtGui.QListWidgetItem(afterText)
             item.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
             item.setText(afterText)
@@ -331,11 +350,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if item:
             tempText = item.text()
             verseId = unicode((item.data(QtCore.Qt.UserRole)).toString())
-            self.verse_form.setVerse(tempText, \
-                self.VerseListWidget.count(), True, verseId)
+            self.verse_form.setVerse(
+                tempText, self.VerseListWidget.count(), True, verseId)
             if self.verse_form.exec_():
                 afterText, verse, subVerse = self.verse_form.getVerse()
-                data = u'%s:%s' %(verse, subVerse)
+                data = u'%s:%s' % (verse, subVerse)
                 item.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
                 item.setText(afterText)
                 #number of lines has change so repaint the list moving the data
@@ -464,16 +483,16 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         log.debug(u'onPreview')
         if button.text() == unicode(self.trUtf8('Save && Preview')) \
             and self.saveSong():
-            Receiver.send_message(u'preview_song')
+            Receiver.send_message(u'songs_preview')
 
     def closePressed(self):
-        Receiver.send_message(u'remote_edit_clear')
+        Receiver.send_message(u'songs_edit_clear')
         self.close()
 
     def accept(self):
         log.debug(u'accept')
         if self.saveSong():
-            Receiver.send_message(u'load_song_list')
+            Receiver.send_message(u'songs_load_list')
             self.close()
 
     def saveSong(self):

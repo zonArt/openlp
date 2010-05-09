@@ -44,13 +44,11 @@ class AlertsManager(QtCore.QObject):
         self.timer_id = 0
         self.alertList = []
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'flush_alert'), self.generateAlert)
+            QtCore.SIGNAL(u'maindisplay_active'), self.generateAlert)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'alert_text'), self.displayAlert)
+            QtCore.SIGNAL(u'alerts_text'), self.onAlertText)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'screen_changed'), self.screenChanged)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'config_updated'), self.screenChanged)
+            QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
 
     def screenChanged(self):
         log.debug(u'screen changed')
@@ -65,10 +63,23 @@ class AlertsManager(QtCore.QObject):
         if self.alertTab.location == 0:
             self.alertScreenPosition = 0
         else:
-            self.alertScreenPosition = self.screen[u'size'].height() - self.alertHeight
-            self.alertHeight = self.screen[u'size'].height() - self.alertScreenPosition
-        self.parent.maindisplay.setAlertSize(self.alertScreenPosition, self.alertHeight)
+            self.alertScreenPosition = self.screen[u'size'].height() \
+                - self.alertHeight
+            self.alertHeight = self.screen[u'size'].height() \
+                - self.alertScreenPosition
+        self.parent.maindisplay.setAlertSize(self.alertScreenPosition,\
+            self.alertHeight)
 
+    def onAlertText(self, message):
+        """
+        Called via a alerts_text event. Message is single element array
+        containing text
+        """
+        if message:
+            self.displayAlert(message[0])
+        else:
+            self.displayAlert(u'')
+            
     def displayAlert(self, text=u''):
         """
         Called from the Alert Tab to display an alert
@@ -79,12 +90,12 @@ class AlertsManager(QtCore.QObject):
         log.debug(u'display alert called %s' % text)
         if not self.screen:
             self.screenChanged()
-        self.parent.maindisplay.parent.StatusBar.showMessage(u'')
         self.alertList.append(text)
         if self.timer_id != 0:
-            self.parent.maindisplay.parent.StatusBar.showMessage(\
-                    self.trUtf8(u'Alert message created and delayed'))
+            Receiver.send_message(u'maindisplay_status_text',
+                self.trUtf8(u'Alert message created and delayed'))
             return
+        Receiver.send_message(u'maindisplay_status_text', u'')
         self.generateAlert()
 
     def generateAlert(self):
@@ -116,6 +127,7 @@ class AlertsManager(QtCore.QObject):
             self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
 
     def timerEvent(self, event):
+        log.debug(u'timer event')
         if event.timerId() == self.timer_id:
             self.parent.maindisplay.addAlertImage(None, True)
         self.killTimer(self.timer_id)

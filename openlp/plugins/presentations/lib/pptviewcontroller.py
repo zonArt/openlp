@@ -82,7 +82,8 @@ class PptviewController(PresentationController):
             if self.process:
                 return
             log.debug(u'start PPTView')
-            self.process = cdll.LoadLibrary(r'openlp\plugins\presentations\lib\pptviewlib\pptviewlib.dll')
+            self.process = cdll.LoadLibrary(
+                r'openlp\plugins\presentations\lib\pptviewlib\pptviewlib.dll')
 
         def kill(self):
             """
@@ -94,13 +95,12 @@ class PptviewController(PresentationController):
 
         def add_doc(self, name):
             log.debug(u'Add Doc PPTView')
-            doc = PptviewDocument(self,  name)
+            doc = PptviewDocument(self, name)
             self.docs.append(doc)
             return doc
 
 class PptviewDocument(PresentationDocument):
-
-    def __init__(self,  controller,  presentation):
+    def __init__(self, controller, presentation):
         log.debug(u'Init Presentation PowerPoint')
         self.presentation = None
         self.pptid = None

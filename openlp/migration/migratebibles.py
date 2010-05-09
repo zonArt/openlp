@@ -31,7 +31,8 @@ from sqlalchemy import *
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper
 
-from openlp.core.lib import PluginConfig
+from openlp.core.lib import SettingsManager
+from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.models import *
     
 class BaseModel(object):
@@ -111,9 +112,8 @@ def init_models(url):
 class MigrateBibles():
     def __init__(self, display):
         self.display = display
-        self.config = PluginConfig(u'Bibles')
-        self.data_path = self.config.get_data_path()
-        self.database_files = self.config.get_files(u'sqlite')
+        self.data_path = AppLocation.get_section_data_path(u'bibles')
+        self.database_files = SettingsManager.get_files(u'bibles', u'.sqlite')
         print self.database_files
 
     def progress(self, text):

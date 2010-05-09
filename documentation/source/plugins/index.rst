@@ -10,12 +10,7 @@
    :maxdepth: 2
 
    songs
-
-:mod:`bibles` Plugin
---------------------
-
-.. automodule:: openlp.plugins.bibles
-   :members:
+   bibles
 
 :mod:`presentations` Plugin
 ---------------------------
@@ -41,3 +36,8 @@
 .. automodule:: openlp.plugins.custom
    :members:
 
+:mod:`songusage` Plugin
+-----------------------
+
+.. automodule:: openlp.plugins.songusage
+   :members:

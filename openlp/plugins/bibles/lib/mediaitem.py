@@ -28,15 +28,15 @@ import time
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, Receiver, str_to_bool, \
-    BaseListWithDnD, ItemCapabilities
+from openlp.core.lib import MediaManagerItem, Receiver, BaseListWithDnD, \
+    ItemCapabilities
 from openlp.plugins.bibles.forms import ImportWizardForm
 
 log = logging.getLogger(__name__)
 
 class BibleListView(BaseListWithDnD):
     """
-    Drag and drop capable list for Bibles.
+    Custom list view descendant, required for drag and drop.
     """
     def __init__(self, parent=None):
         self.PluginName = u'Bibles'
@@ -54,7 +54,6 @@ class BibleMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Bible'
-        self.ConfigSection = title
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = BibleListView
         self.lastReference = []
@@ -63,7 +62,7 @@ class BibleMediaItem(MediaManagerItem):
         # place to store the search results
         self.search_results = {}
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlpreloadbibles'), self.reloadBibles)
+            QtCore.SIGNAL(u'bibles_load_list'), self.reloadBibles)
 
     def _decodeQtObject(self, listobj, key):
         obj = listobj[QtCore.QString(key)]
@@ -257,11 +256,11 @@ class BibleMediaItem(MediaManagerItem):
         QtCore.QObject.connect(self.QuickSearchEdit,
             QtCore.SIGNAL(u'returnPressed()'), self.onQuickSearchButton)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'bible_showprogress'), self.onSearchProgressShow)
+            QtCore.SIGNAL(u'bibles_showprogress'), self.onSearchProgressShow)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'bible_hideprogress'), self.onSearchProgressHide)
+            QtCore.SIGNAL(u'bibles_hideprogress'), self.onSearchProgressHide)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'bible_nobook'), self.onNoBookFound)
+            QtCore.SIGNAL(u'bibles_nobook'), self.onNoBookFound)
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
@@ -276,8 +275,8 @@ class BibleMediaItem(MediaManagerItem):
         self.SearchProgress.setObjectName(u'SearchProgress')
 
     def configUpdated(self):
-        if str_to_bool(
-            self.parent.config.get_config(u'dual bibles', u'False')):
+        if QtCore.QSettings().value(self.settingsSection + u'/dual bibles',
+            QtCore.QVariant(False)).toBool():
             self.AdvancedSecondBibleLabel.setVisible(True)
             self.AdvancedSecondBibleComboBox.setVisible(True)
             self.QuickSecondVersionLabel.setVisible(True)
@@ -322,7 +321,7 @@ class BibleMediaItem(MediaManagerItem):
     def setQuickMessage(self, text):
         self.QuickMessage.setText(text)
         self.AdvancedMessage.setText(text)
-        Receiver.send_message(u'process_events')
+        Receiver.send_message(u'openlp_process_events')
         #minor delay to get the events processed
         time.sleep(0.1)
 
@@ -353,7 +352,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def onSearchProgressShow(self):
         self.SearchProgress.setVisible(True)
-        Receiver.send_message(u'process_events')
+        Receiver.send_message(u'openlp_process_events')
         #self.SearchProgress.setMinimum(0)
         #self.SearchProgress.setMaximum(2)
         #self.SearchProgress.setValue(1)
@@ -381,7 +380,7 @@ class BibleMediaItem(MediaManagerItem):
             self.AdvancedBookComboBox.itemData(item).toInt()[0])
 
     def onImportClick(self):
-        self.bibleimportform = ImportWizardForm(self, self.parent.config,
+        self.bibleimportform = ImportWizardForm(self,
             self.parent.manager, self.parent)
         self.bibleimportform.exec_()
         self.reloadBibles()
@@ -450,6 +449,7 @@ class BibleMediaItem(MediaManagerItem):
         bible_text = u''
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
+        service_item.add_capability(ItemCapabilities.AllowsAdditions)
         #If we want to use a 2nd translation / version
         bible2 = u''
         if self.SearchTabWidget.currentIndex() == 0:

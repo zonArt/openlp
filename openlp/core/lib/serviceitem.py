@@ -30,7 +30,7 @@ import uuid
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import build_icon, Receiver, resize_image
+from openlp.core.lib import build_icon, resize_image
 
 log = logging.getLogger(__name__)
 
@@ -48,7 +48,7 @@ class ItemCapabilities(object):
    AllowsMaintain = 3
    RequiresMedia = 4
    AllowsLoop = 5
-
+   AllowsAdditions = 6
 
 class ServiceItem(object):
     """
@@ -81,6 +81,7 @@ class ServiceItem(object):
         self.notes = u''
         self.from_plugin = False
         self.capabilities = []
+        self.isValid = True
 
     def add_capability(self, capability):
         self.capabilities.append(capability)
@@ -336,6 +337,3 @@ class ServiceItem(object):
         """
         return self._raw_frames[row][u'path']
 
-    def request_audit(self):
-        if self.audit:
-            Receiver.send_message(u'songusage_live', self.audit)

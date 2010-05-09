@@ -25,14 +25,14 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, str_to_bool
+from openlp.core.lib import SettingsTab
 
 class CustomTab(SettingsTab):
     """
     CustomTab is the Custom settings tab in the settings dialog.
     """
-    def __init__(self, title, section=None):
-        SettingsTab.__init__(self, title, section)
+    def __init__(self, title):
+        SettingsTab.__init__(self, title)
 
     def setupUi(self):
         self.setObjectName(u'CustomTab')
@@ -57,7 +57,7 @@ class CustomTab(SettingsTab):
     def retranslateUi(self):
         self.CustomModeGroupBox.setTitle(self.trUtf8('Custom Display'))
         self.DisplayFooterCheckBox.setText(
-            self.trUtf8('Display Footer:'))
+            self.trUtf8('Display Footer'))
 
     def onDisplayFooterCheckBoxChanged(self, check_state):
         self.displayFooter = False
@@ -66,9 +66,11 @@ class CustomTab(SettingsTab):
             self.displayFooter = True
 
     def load(self):
-        self.displayFooter = str_to_bool(
-            self.config.get_config(u'display footer', True))
+        self.displayFooter = QtCore.QSettings().value(
+            self.settingsSection + u'/display footer',
+            QtCore.QVariant(True)).toBool()
         self.DisplayFooterCheckBox.setChecked(self.displayFooter)
 
     def save(self):
-        self.config.set_config(u'display footer', unicode(self.displayFooter))
+        QtCore.QSettings().setValue(self.settingsSection + u'/display footer',
+            QtCore.QVariant(self.displayFooter))

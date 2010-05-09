@@ -47,7 +47,7 @@ else:
 
 from PyQt4 import QtCore
 
-from presentationcontroller import PresentationController,  PresentationDocument
+from presentationcontroller import PresentationController, PresentationDocument
 
 log = logging.getLogger(__name__)
 
@@ -155,6 +155,10 @@ class ImpressController(PresentationController):
             desktop = self.get_uno_desktop()
         else:
             desktop = self.get_com_desktop()
+        #Sometimes we get a failure and desktop is None
+        if not desktop:
+            log.exception(u'Failed to terminate OpenOffice')
+            return
         docs = desktop.getComponents()
         if docs.hasElements():
             log.debug(u'OpenOffice not terminated')
@@ -167,13 +171,13 @@ class ImpressController(PresentationController):
 
     def add_doc(self, name):
         log.debug(u'Add Doc OpenOffice')
-        doc = ImpressDocument(self,  name)
+        doc = ImpressDocument(self, name)
         self.docs.append(doc)
         return doc
 
 class ImpressDocument(PresentationDocument):
 
-    def __init__(self,  controller,  presentation):
+    def __init__(self, controller, presentation):
         log.debug(u'Init Presentation OpenOffice')
         self.controller = controller
         self.document = None

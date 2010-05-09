@@ -29,22 +29,19 @@
 # http://www.oooforum.org/forum/viewtopic.phtml?t=14409
 # http://wiki.services.openoffice.org/wiki/Python
 
-import re
 import os
-import time
-from PyQt4 import QtCore
+import re
+
 from songimport import SongImport
 from oooimport import OooImport
 
 if os.name == u'nt':
-    from win32com.client import Dispatch
     BOLD = 150.0
     ITALIC = 2
     PAGE_BEFORE = 4
     PAGE_AFTER = 5
     PAGE_BOTH = 6
 else:
-    import uno
     from com.sun.star.awt.FontWeight import BOLD
     from com.sun.star.awt.FontSlant import ITALIC
     from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
