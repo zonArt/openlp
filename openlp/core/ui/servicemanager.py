@@ -499,7 +499,7 @@ class ServiceManager(QtGui.QWidget):
         for itemcount, item in enumerate(self.serviceItems):
             serviceitem = item[u'service_item']
             treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
-            if serviceitem.isValid:
+            if serviceitem.is_valid:
                 if serviceitem.notes:
                     icon = QtGui.QImage(serviceitem.icon)
                     icon = icon.scaled(80, 80, QtCore.Qt.KeepAspectRatio,
@@ -685,7 +685,7 @@ class ServiceManager(QtGui.QWidget):
         if serviceItem.is_command():
             type = serviceItem._raw_frames[0][u'title'].split(u'.')[1]
             if type not in self.suffixes:
-                serviceItem.isValid = False
+                serviceItem.is_valid = False
 
     def cleanUp(self):
         """
@@ -769,7 +769,7 @@ class ServiceManager(QtGui.QWidget):
         Send the current item to the Preview slide controller
         """
         item, count = self.findServiceItem()
-        if self.serviceItems[item][u'service_item'].isValid:
+        if self.serviceItems[item][u'service_item'].is_valid:
             self.parent.PreviewController.addServiceManagerItem(
                 self.serviceItems[item][u'service_item'], count)
         else:
@@ -796,7 +796,7 @@ class ServiceManager(QtGui.QWidget):
         Send the current item to the Live slide controller
         """
         item, count = self.findServiceItem()
-        if self.serviceItems[item][u'service_item'].isValid:
+        if self.serviceItems[item][u'service_item'].is_valid:
             self.parent.LiveController.addServiceManagerItem(
                 self.serviceItems[item][u'service_item'], count)
             if QtCore.QSettings().value(
