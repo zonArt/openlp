@@ -38,12 +38,12 @@ log = logging.getLogger(__name__)
 
 class SlideThread(QtCore.QThread):
     """
-    A special Qt thread class to fetch the version of OpenLP from the website.
-    This is threaded so that it doesn't affect the loading time of OpenLP.
+    A special Qt thread class to speed up the display of text based frames.
+    This is threaded so it loads the frames in background
     """
-    def __init__(self, parent, isLive, count):
+    def __init__(self, parent, prefix, count):
         QtCore.QThread.__init__(self, parent)
-        self.isLive = isLive
+        self.prefix = prefix
         self.count = count
 
     def run(self):
@@ -52,13 +52,7 @@ class SlideThread(QtCore.QThread):
         """
         time.sleep(1)
         for i in range(0, self.count):
-            if self.isLive:
-                Receiver.send_message(u'live_slide_cache', i)
-            else:
-                Receiver.send_message(u'preview_slide_cache', i)
-#        for framenumber, frame in enumerate(self.serviceItem.get_frames()):
-#            self.serviceItem.get_rendered_frame(framenumber)
-
+            Receiver.send_message(u'%s_slide_cache' % self.prefix, i)
 
 class SlideList(QtGui.QTableWidget):
     """
@@ -378,12 +372,8 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'splitterMoved(int, int)'), self.trackSplitter)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.refreshServiceItem)
-        if self.isLive:
-            QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'live_slide_cache'), self.slideCache)
-        else:
-            QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'preview_slide_cache'), self.slideCache)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_slide_cache' % self.typePrefix), self.slideCache)
 
     def widthChanged(self):
         """
@@ -603,7 +593,7 @@ class SlideController(QtGui.QWidget):
             [serviceItem])
         if self.serviceItem.is_text():
             st = SlideThread(
-                self, self.isLive, len(self.serviceItem.get_frames()))
+                self, self.typePrefix, len(self.serviceItem.get_frames()))
             st.start()
         log.log(15, u'Display Rendering took %4s' % (time.time() - before))
 
