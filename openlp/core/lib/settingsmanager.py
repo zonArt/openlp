@@ -53,7 +53,7 @@ class SettingsManager(object):
         self.slidecontroller_image = self.slidecontroller - 50
 
         self.showPreviewPanel = QtCore.QSettings().value(
-            u'user interface/preview panel', True).toBool()
+            u'user interface/preview panel', QtCore.QVariant(True)).toBool()
 
     def togglePreviewPanel(self, isVisible):
         QtCore.QSettings().setValue(u'user interface/preview panel',
