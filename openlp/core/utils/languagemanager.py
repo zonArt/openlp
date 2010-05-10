@@ -68,7 +68,8 @@ class LanguageManager(object):
 
     @staticmethod
     def get_language():
-        language = unicode(QtCore.QSettings().value(
+        settings = QtCore.QSettings(u'OpenLP', u'OpenLP')
+        language = unicode(settings.value(
             u'general/language', QtCore.QVariant(u'[en]')).toString())
         log.info(u'Language file: \'%s\' Loaded from conf file' % language)
         regEx = QtCore.QRegExp("^\[(.*)\]")
