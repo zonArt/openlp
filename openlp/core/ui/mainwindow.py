@@ -260,15 +260,14 @@ class Ui_MainWindow(object):
         qmList = LanguageManager.get_qm_list()
         savedLanguage = LanguageManager.get_language()
         self.AutoLanguageItem.setChecked(LanguageManager.AutoLanguage)
-        self.LanguageItem = {}
-        for key in qmList.keys():
-            self.LanguageItem[key] = QtGui.QAction(MainWindow)
-            self.LanguageItem[key].setObjectName(key)
-            self.LanguageItem[key].setCheckable(True)
-            self.LanguageItem[key].setDisabled(LanguageManager.AutoLanguage)
+        for key in sorted(qmList.keys()):
+            languageItem = QtGui.QAction(MainWindow)
+            languageItem.setObjectName(key)
+            languageItem.setCheckable(True)
             if qmList[key] == savedLanguage:
-                self.LanguageItem[key].setChecked(True)
-            add_actions(self.LanguageGroup, [self.LanguageItem[key]])
+                languageItem.setChecked(True)
+            add_actions(self.LanguageGroup, [languageItem])
+        self.LanguageGroup.setDisabled(LanguageManager.AutoLanguage)
         self.ToolsAddToolItem = QtGui.QAction(MainWindow)
         AddToolIcon = build_icon(u':/tools/tools_add.png')
         self.ToolsAddToolItem.setIcon(AddToolIcon)
@@ -296,8 +295,7 @@ class Ui_MainWindow(object):
             self.ViewThemeManagerItem, None, self.action_Preview_Panel))
         #i18n add Language Actions
         add_actions(self.OptionsLanguageMenu, (self.AutoLanguageItem, None))
-        for item in sorted(self.LanguageItem):
-            add_actions(self.OptionsLanguageMenu, [self.LanguageItem[item]])
+        add_actions(self.OptionsLanguageMenu, self.LanguageGroup.actions())
         add_actions(self.OptionsMenu, (self.OptionsLanguageMenu.menuAction(),
             self.OptionsViewMenu.menuAction(), None, self.OptionsSettingsItem))
         add_actions(self.ToolsMenu,
@@ -417,10 +415,10 @@ class Ui_MainWindow(object):
         self.AutoLanguageItem.setText(translate('MainWindow', '&Auto Detect'))
         self.AutoLanguageItem.setStatusTip(
             translate('MainWindow', 'Choose System language, if available'))
-        for item in self.LanguageItem:
-            self.LanguageItem[item].setText(self.LanguageItem[item].objectName())
-            self.LanguageItem[item].setStatusTip(
-                translate('MainWindow', 'Set the interface language to %1').arg(self.LanguageItem[item].objectName()))
+        for item in self.LanguageGroup.actions():
+            item.setText(item.objectName())
+            item.setStatusTip(
+                translate('MainWindow', 'Set the interface language to %1').arg(item.objectName()))
         self.ToolsAddToolItem.setText(translate('MainWindow', 'Add &Tool...'))
         self.ToolsAddToolItem.setStatusTip(
             translate('MainWindow', 'Add an application to the list of tools'))
@@ -575,8 +573,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     #i18n
     def setAutoLanguage(self, value):
-        for action in self.LanguageGroup.actions():
-            action.setDisabled(value)
+        self.LanguageGroup.setDisabled(value)
         LanguageManager.AutoLanguage = value
         LanguageManager.set_language(self.LanguageGroup.checkedAction())
 
