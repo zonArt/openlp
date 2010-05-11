@@ -24,10 +24,9 @@
 ###############################################################################
 
 import logging
-
-from logging import FileHandler
-from PyQt4 import QtCore, QtGui
 import os
+
+from PyQt4 import QtCore, QtGui
 from openlp.core.utils import AppLocation
 from openlp.core.lib import translate
 
