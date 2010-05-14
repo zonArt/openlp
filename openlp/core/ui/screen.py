@@ -61,9 +61,10 @@ class ScreenList(object):
         """
         Set up the current screen dimensions
         """
-        log.debug(u'set_override_display %s', number, )
+        log.debug(u'set_current_display %s', number, )
         if number + 1 > self.display_count:
             self.current = self.screen_list[0]
+            self.override = copy.deepcopy(self.current)
             self.current_display = 0
         else:
             self.current = self.screen_list[number]
