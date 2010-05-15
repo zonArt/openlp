@@ -730,6 +730,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def loadSettings(self):
         log.debug(u'Loading QSettings')
+        print self.geometry()
         settings = QtCore.QSettings()
         settings.beginGroup(self.generalSettingsSection)
         self.recentFiles = settings.value(u'recent files').toStringList()
@@ -741,6 +742,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             settings.value(u'main window geometry').toByteArray())
         self.restoreState(settings.value(u'main window state').toByteArray())
         settings.endGroup()
+        print self.geometry()
 
     def saveSettings(self):
         log.debug(u'Saving QSettings')
