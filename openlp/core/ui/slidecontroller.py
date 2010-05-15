@@ -114,10 +114,7 @@ class SlideController(QtGui.QWidget):
         self.songEditList = [
             u'Edit Song',
         ]
-        if isLive:
-            self.labelWidth = 20
-        else:
-            self.labelWidth = 0
+        self.labelWidth = 20
         self.timer_id = 0
         self.songEdit = False
         self.selectedRow = 0
@@ -160,7 +157,7 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.setColumnCount(2)
         self.PreviewListWidget.horizontalHeader().setVisible(False)
         self.PreviewListWidget.verticalHeader().setVisible(False)
-        self.PreviewListWidget.setColumnWidth(1, self.labelWidth)
+        self.PreviewListWidget.setColumnWidth(0, self.labelWidth)
         self.PreviewListWidget.setColumnWidth(
             1, self.Controller.width() - self.labelWidth)
         self.PreviewListWidget.isLive = self.isLive
@@ -536,7 +533,7 @@ class SlideController(QtGui.QWidget):
                 self.PreviewListWidget.rowCount() + 1)
             rowitem = QtGui.QTableWidgetItem()
             item = QtGui.QTableWidgetItem()
-            slide_height = 0
+            slideHeight = 0
             #It is a based Text Render
             if self.serviceItem.is_text():
                 if self.isLive and frame[u'verseTag'] is not None:
@@ -569,14 +566,14 @@ class SlideController(QtGui.QWidget):
                 label.setScaledContents(True)
                 label.setPixmap(QtGui.QPixmap.fromImage(pixmap))
                 self.PreviewListWidget.setCellWidget(framenumber, 1, label)
-                slide_height = width * self.parent.RenderManager.screen_ratio
+                slideHeight = width * self.parent.RenderManager.screen_ratio
                 row += 1
             rowitem.setText(unicode(row))
             rowitem.setTextAlignment(QtCore.Qt.AlignVCenter)
             self.PreviewListWidget.setItem(framenumber, 0, rowitem)
             self.PreviewListWidget.setItem(framenumber, 1, item)
-            if slide_height != 0:
-                self.PreviewListWidget.setRowHeight(framenumber, slide_height)
+            if slideHeight != 0:
+                self.PreviewListWidget.setRowHeight(framenumber, slideHeight)
         if self.serviceItem.is_text():
             self.PreviewListWidget.resizeRowsToContents()
         self.PreviewListWidget.setColumnWidth(0, self.labelWidth)
@@ -604,16 +601,16 @@ class SlideController(QtGui.QWidget):
         data = []
         if self.serviceItem:
             for framenumber, frame in enumerate(self.serviceItem.get_frames()):
-                data_item = {}
+                dataItem = {}
                 if self.serviceItem.is_text():
-                    data_item[u'tag'] = unicode(frame[u'verseTag'])
-                    data_item[u'text'] = unicode(frame[u'text'])
+                    dataItem[u'tag'] = unicode(frame[u'verseTag'])
+                    dataItem[u'text'] = unicode(frame[u'text'])
                 else:
-                    data_item[u'tag'] = unicode(framenumber)
-                    data_item[u'text'] = u''
-                data_item[u'selected'] = \
+                    dataItem[u'tag'] = unicode(framenumber)
+                    dataItem[u'text'] = u''
+                dataItem[u'selected'] = \
                     (self.PreviewListWidget.currentRow() == framenumber)
-                data.append(data_item)
+                data.append(dataItem)
         Receiver.send_message(u'slidecontroller_%s_text_response'
             % self.typePrefix, data)
 
