@@ -24,6 +24,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_OpenLPExportDialog(object):
     def setupUi(self, OpenLPExportDialog):
@@ -285,21 +286,21 @@ class Ui_OpenLPExportDialog(object):
         QtCore.QMetaObject.connectSlotsByName(OpenLPExportDialog)
 
     def retranslateUi(self, OpenLPExportDialog):
-        OpenLPExportDialog.setWindowTitle(self.trUtf8('openlp.org Song Exporter'))
-        self.ExportFileLabel.setText(self.trUtf8('Select openlp.org export filename:'))
-        self.ExportListLabel.setText(self.trUtf8('Full Song List'))
-        self.ExportListTable.horizontalHeaderItem(0).setText(self.trUtf8('Song Title'))
-        self.ExportListTable.horizontalHeaderItem(1).setText(self.trUtf8('Author'))
-        self.ExportSelectAllPushButton.setText(self.trUtf8('Select All'))
-        self.ExportFilterComboBox.setItemText(0, self.trUtf8('Lyrics'))
-        self.ExportFilterComboBox.setItemText(1, self.trUtf8('Title'))
-        self.ExportFilterComboBox.setItemText(2, self.trUtf8('Author'))
-        self.SelectedListLabel.setText(self.trUtf8('Song Export List'))
-        self.SelectedListTable.horizontalHeaderItem(0).setText(self.trUtf8('Song Title'))
-        self.SelectedListTable.horizontalHeaderItem(1).setText(self.trUtf8('Author'))
-        self.SelectedSelectAllPushButton.setText(self.trUtf8('Select All'))
-        self.SelectedRemoveSelectedButton.setText(self.trUtf8('Remove Selected'))
-        self.ProgressGroupBox.setTitle(self.trUtf8('Progress:'))
-        self.ProgressLabel.setText(self.trUtf8('Ready to export'))
-        self.ExportPushButton.setText(self.trUtf8('Export'))
-        self.ClosePushButton.setText(self.trUtf8('Close'))
+        OpenLPExportDialog.setWindowTitle(translate('OpenLPExportForm', 'openlp.org Song Exporter'))
+        self.ExportFileLabel.setText(translate('OpenLPExportForm', 'Select openlp.org export filename:'))
+        self.ExportListLabel.setText(translate('OpenLPExportForm', 'Full Song List'))
+        self.ExportListTable.horizontalHeaderItem(0).setText(translate('OpenLPExportForm', 'Song Title'))
+        self.ExportListTable.horizontalHeaderItem(1).setText(translate('OpenLPExportForm', 'Author'))
+        self.ExportSelectAllPushButton.setText(translate('OpenLPExportForm', 'Select All'))
+        self.ExportFilterComboBox.setItemText(0, translate('OpenLPExportForm', 'Lyrics'))
+        self.ExportFilterComboBox.setItemText(1, translate('OpenLPExportForm', 'Title'))
+        self.ExportFilterComboBox.setItemText(2, translate('OpenLPExportForm', 'Author'))
+        self.SelectedListLabel.setText(translate('OpenLPExportForm', 'Song Export List'))
+        self.SelectedListTable.horizontalHeaderItem(0).setText(translate('OpenLPExportForm', 'Song Title'))
+        self.SelectedListTable.horizontalHeaderItem(1).setText(translate('OpenLPExportForm', 'Author'))
+        self.SelectedSelectAllPushButton.setText(translate('OpenLPExportForm', 'Select All'))
+        self.SelectedRemoveSelectedButton.setText(translate('OpenLPExportForm', 'Remove Selected'))
+        self.ProgressGroupBox.setTitle(translate('OpenLPExportForm', 'Progress:'))
+        self.ProgressLabel.setText(translate('OpenLPExportForm', 'Ready to export'))
+        self.ExportPushButton.setText(translate('OpenLPExportForm', 'Export'))
+        self.ClosePushButton.setText(translate('OpenLPExportForm', 'Close'))
