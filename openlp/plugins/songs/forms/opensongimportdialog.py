@@ -24,6 +24,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_OpenSongImportDialog(object):
     def setupUi(self, OpenSongImportDialog):
@@ -100,9 +101,9 @@ class Ui_OpenSongImportDialog(object):
         QtCore.QMetaObject.connectSlotsByName(OpenSongImportDialog)
 
     def retranslateUi(self, OpenSongImportDialog):
-        OpenSongImportDialog.setWindowTitle(self.trUtf8('OpenSong Song Importer'))
-        self.ImportFileLabel.setText(self.trUtf8('OpenSong Folder:'))
-        self.ProgressGroupBox.setTitle(self.trUtf8('Progress:'))
-        self.ProgressLabel.setText(self.trUtf8('Ready to import'))
-        self.ImportPushButton.setText(self.trUtf8('Import'))
-        self.ClosePushButton.setText(self.trUtf8('Close'))
+        OpenSongImportDialog.setWindowTitle(translate('OpenSongImportForm', 'OpenSong Song Importer'))
+        self.ImportFileLabel.setText(translate('OpenSongImportForm', 'OpenSong Folder:'))
+        self.ProgressGroupBox.setTitle(translate('OpenSongImportForm', 'Progress:'))
+        self.ProgressLabel.setText(translate('OpenSongImportForm', 'Ready to import'))
+        self.ImportPushButton.setText(translate('OpenSongImportForm', 'Import'))
+        self.ClosePushButton.setText(translate('OpenSongImportForm', 'Close'))

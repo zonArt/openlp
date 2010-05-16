@@ -24,14 +24,15 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_SongUsageDetailDialog(object):
-    def setupUi(self, AuditDetailDialog):
-        AuditDetailDialog.setObjectName(u'AuditDetailDialog')
-        AuditDetailDialog.resize(609, 413)
-        self.verticalLayout = QtGui.QVBoxLayout(AuditDetailDialog)
+    def setupUi(self, SongUsageDetailDialog):
+        SongUsageDetailDialog.setObjectName(u'SongUsageDetailDialog')
+        SongUsageDetailDialog.resize(609, 413)
+        self.verticalLayout = QtGui.QVBoxLayout(SongUsageDetailDialog)
         self.verticalLayout.setObjectName(u'verticalLayout')
-        self.DateRangeGroupBox = QtGui.QGroupBox(AuditDetailDialog)
+        self.DateRangeGroupBox = QtGui.QGroupBox(SongUsageDetailDialog)
         self.DateRangeGroupBox.setObjectName(u'DateRangeGroupBox')
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.DateRangeGroupBox)
         self.verticalLayout_2.setObjectName(u'verticalLayout_2')
@@ -68,25 +69,25 @@ class Ui_SongUsageDetailDialog(object):
         self.verticalLayout_4.addLayout(self.horizontalLayout)
         self.verticalLayout_2.addWidget(self.FileGroupBox)
         self.verticalLayout.addWidget(self.DateRangeGroupBox)
-        self.buttonBox = QtGui.QDialogButtonBox(AuditDetailDialog)
+        self.buttonBox = QtGui.QDialogButtonBox(SongUsageDetailDialog)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(u'buttonBox')
         self.verticalLayout.addWidget(self.buttonBox)
 
-        self.retranslateUi(AuditDetailDialog)
+        self.retranslateUi(SongUsageDetailDialog)
         QtCore.QObject.connect(self.buttonBox,
                                 QtCore.SIGNAL(u'accepted()'),
-                                AuditDetailDialog.accept)
+                                SongUsageDetailDialog.accept)
         QtCore.QObject.connect(self.buttonBox,
                                QtCore.SIGNAL(u'rejected()'),
-                               AuditDetailDialog.close)
+                               SongUsageDetailDialog.close)
         QtCore.QObject.connect(self.SaveFilePushButton,
                                QtCore.SIGNAL(u'pressed()'),
-                               AuditDetailDialog.defineOutputLocation)
-        QtCore.QMetaObject.connectSlotsByName(AuditDetailDialog)
+                               SongUsageDetailDialog.defineOutputLocation)
+        QtCore.QMetaObject.connectSlotsByName(SongUsageDetailDialog)
 
-    def retranslateUi(self, AuditDetailDialog):
-        AuditDetailDialog.setWindowTitle(self.trUtf8('Song Usage Extraction'))
-        self.DateRangeGroupBox.setTitle(self.trUtf8('Select Date Range'))
-        self.ToLabel.setText(self.trUtf8('to'))
-        self.FileGroupBox.setTitle(self.trUtf8('Report Location'))
+    def retranslateUi(self, SongUsageDetailDialog):
+        SongUsageDetailDialog.setWindowTitle(translate('AuditDetailDialog', 'Song Usage Extraction'))
+        self.DateRangeGroupBox.setTitle(translate('AuditDetailDialog', 'Select Date Range'))
+        self.ToLabel.setText(translate('AuditDetailDialog', 'to'))
+        self.FileGroupBox.setTitle(translate('AuditDetailDialog', 'Report Location'))

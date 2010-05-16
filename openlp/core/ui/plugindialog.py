@@ -24,6 +24,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_PluginViewDialog(object):
     def setupUi(self, PluginViewDialog):
@@ -98,11 +99,11 @@ class Ui_PluginViewDialog(object):
         QtCore.QMetaObject.connectSlotsByName(PluginViewDialog)
 
     def retranslateUi(self, PluginViewDialog):
-        PluginViewDialog.setWindowTitle(self.trUtf8('Plugin List'))
-        self.PluginInfoGroupBox.setTitle(self.trUtf8('Plugin Details'))
-        self.VersionLabel.setText(self.trUtf8('Version:'))
-        self.VersionNumberLabel.setText(self.trUtf8('TextLabel'))
-        self.AboutLabel.setText(self.trUtf8('About:'))
-        self.StatusLabel.setText(self.trUtf8('Status:'))
-        self.StatusComboBox.setItemText(0, self.trUtf8('Active'))
-        self.StatusComboBox.setItemText(1, self.trUtf8('Inactive'))
+        PluginViewDialog.setWindowTitle(translate('PluginForm', 'Plugin List'))
+        self.PluginInfoGroupBox.setTitle(translate('PluginForm', 'Plugin Details'))
+        self.VersionLabel.setText(translate('PluginForm', 'Version:'))
+        self.VersionNumberLabel.setText(translate('PluginForm', 'TextLabel'))
+        self.AboutLabel.setText(translate('PluginForm', 'About:'))
+        self.StatusLabel.setText(translate('PluginForm', 'Status:'))
+        self.StatusComboBox.setItemText(0, translate('PluginForm', 'Active'))
+        self.StatusComboBox.setItemText(1, translate('PluginForm', 'Inactive'))
