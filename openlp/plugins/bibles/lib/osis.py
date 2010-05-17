@@ -84,7 +84,7 @@ class OSISBible(BibleDB):
             if fbibles:
                 fbibles.close()
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlp_stop_bible_import'), self.stop_import)
+            QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
 
     def stop_import(self):
         """
@@ -98,7 +98,8 @@ class OSISBible(BibleDB):
         Loads a Bible from file.
         """
         log.debug(u'Starting OSIS import from "%s"' % self.filename)
-        self.wizard.incrementProgressBar(u'Detecting encoding (this may take a few minutes)...')
+        self.wizard.incrementProgressBar(
+            u'Detecting encoding (this may take a few minutes)...')
         detect_file = None
         try:
             detect_file = open(self.filename, u'r')
@@ -164,10 +165,10 @@ class OSISBible(BibleDB):
                     verse_text = verse_text.replace(u'</lb>', u'')\
                         .replace(u'</l>', u'').replace(u'<lg>', u'')\
                         .replace(u'</lg>', u'').replace(u'</q>', u'')\
-                        .replace(u'</div>', u'').replace(u'</w>',  u'')
+                        .replace(u'</div>', u'').replace(u'</w>', u'')
                     verse_text = self.spaces_regex.sub(u' ', verse_text)
                     self.create_verse(db_book.id, chapter, verse, verse_text)
-                    Receiver.send_message(u'process_events')
+                    Receiver.send_message(u'openlp_process_events')
             self.commit()
             self.wizard.incrementProgressBar(u'Finishing import...')
             if match_count == 0:
@@ -183,3 +184,5 @@ class OSISBible(BibleDB):
             return False
         else:
             return success
+
+

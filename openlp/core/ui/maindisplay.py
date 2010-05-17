@@ -34,6 +34,28 @@ from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
 
+class DisplayManager(QtGui.QWidget):
+    """
+    Wrapper class to hold the display widgets.
+    I will provide API's in future to access the screens allow for
+    extra displays to be added.
+    RenderManager is poked in by MainWindow
+    """
+    def __init__(self, screens):
+        QtGui.QWidget.__init__(self)
+        self.screens = screens
+        self.videoDisplay = VideoDisplay(self, screens)
+        self.mainDisplay = MainDisplay(self, screens)
+
+    def setup(self):
+        self.videoDisplay.setup()
+        self.mainDisplay.setup()
+
+    def close(self):
+        self.videoDisplay.close()
+        self.mainDisplay.close()
+
+
 class DisplayWidget(QtGui.QWidget):
     """
     Customised version of QTableWidget which can respond to keyboard
@@ -42,28 +64,29 @@ class DisplayWidget(QtGui.QWidget):
     log.info(u'MainDisplay loaded')
 
     def __init__(self, parent=None, name=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtGui.QWidget.__init__(self, None)
         self.parent = parent
-        self.hotkey_map = {QtCore.Qt.Key_Return: 'servicemanager_next_item',
-                           QtCore.Qt.Key_Space: 'live_slidecontroller_next_noloop',
-                           QtCore.Qt.Key_Enter: 'live_slidecontroller_next_noloop',
-                           QtCore.Qt.Key_0: 'servicemanager_next_item',
-                           QtCore.Qt.Key_Backspace: 'live_slidecontroller_previous_noloop'}
+        self.hotkey_map = {
+            QtCore.Qt.Key_Return: 'servicemanager_next_item',
+            QtCore.Qt.Key_Space: 'slidecontroller_live_next_noloop',
+            QtCore.Qt.Key_Enter: 'slidecontroller_live_next_noloop',
+            QtCore.Qt.Key_0: 'servicemanager_next_item',
+            QtCore.Qt.Key_Backspace: 'slidecontroller_live_previous_noloop'}
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
             #here accept the event and do something
             if event.key() == QtCore.Qt.Key_Up:
-                Receiver.send_message(u'live_slidecontroller_previous')
+                Receiver.send_message(u'slidecontroller_live_previous')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Down:
-                Receiver.send_message(u'live_slidecontroller_next')
+                Receiver.send_message(u'slidecontroller_live_next')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageUp:
-                Receiver.send_message(u'live_slidecontroller_first')
+                Receiver.send_message(u'slidecontroller_live_first')
                 event.accept()
             elif event.key() == QtCore.Qt.Key_PageDown:
-                Receiver.send_message(u'live_slidecontroller_last')
+                Receiver.send_message(u'slidecontroller_live_last')
                 event.accept()
             elif event.key() in self.hotkey_map:
                 Receiver.send_message(self.hotkey_map[event.key()])
@@ -91,17 +114,18 @@ class MainDisplay(DisplayWidget):
         ``screens``
             The list of screens.
         """
-        log.debug(u'Initilisation started')
-        DisplayWidget.__init__(self, None)
+        log.debug(u'Initialisation started')
+        DisplayWidget.__init__(self, parent)
+        self.setWindowFlags(QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint)
+        self.setWindowState(QtCore.Qt.WindowFullScreen)
         self.parent = parent
         self.setWindowTitle(u'OpenLP Display')
+        # WA_TranslucentBackground is not available in QT4.4
+        try:
+            self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        except AttributeError:
+            pass
         self.screens = screens
-        self.mediaObject = Phonon.MediaObject(self)
-        self.video = Phonon.VideoWidget()
-        self.video.setVisible(False)
-        self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
-        Phonon.createPath(self.mediaObject, self.video)
-        Phonon.createPath(self.mediaObject, self.audio)
         self.display_image = QtGui.QLabel(self)
         self.display_image.setScaledContents(True)
         self.display_text = QtGui.QLabel(self)
@@ -112,41 +136,30 @@ class MainDisplay(DisplayWidget):
         self.displayBlank = False
         self.blankFrame = None
         self.frame = None
-        self.firstTime = True
-        self.mediaLoaded = False
-        self.hasTransition = False
-        self.mediaBackground = False
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'live_slide_hide'), self.hideDisplay)
+            QtCore.SIGNAL(u'videodisplay_start'), self.hideDisplayForVideo)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'live_slide_show'), self.showDisplay)
-        QtCore.QObject.connect(self.mediaObject,
-            QtCore.SIGNAL(u'finished()'), self.onMediaFinish)
+            QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_start'), self.onMediaQueue)
+            QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_play'), self.onMediaPlay)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_pause'), self.onMediaPause)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_stop'), self.onMediaStop)
+            QtCore.SIGNAL(u'videodisplay_background'), self.hideDisplayForVideo)
 
-    def setup(self, screenNumber):
+    def setup(self):
         """
         Sets up the screen on a particular screen.
-        @param (integer) screen This is the screen number.
         """
-        log.debug(u'Setup %s for %s ' %(self.screens, screenNumber))
+        log.debug(u'Setup %s for %s ' % (
+            self.screens, self.screens.monitor_number))
         self.setVisible(False)
         self.screen = self.screens.current
         #Sort out screen locations and sizes
-        self.setGeometry(self.screen[u'size'])
         self.display_alert.setGeometry(self.screen[u'size'])
-        self.video.setGeometry(self.screen[u'size'])
-        self.display_image.resize(self.screen[u'size'].width(),
-                            self.screen[u'size'].height())
-        self.display_text.resize(self.screen[u'size'].width(),
-                            self.screen[u'size'].height())
+        self.display_image.resize(
+            self.screen[u'size'].width(), self.screen[u'size'].height())
+        self.display_text.resize(
+            self.screen[u'size'].width(), self.screen[u'size'].height())
+        self.setGeometry(self.screen[u'size'])
         #Build a custom splash screen
         self.InitialFrame = QtGui.QImage(
             self.screen[u'size'].width(),
@@ -171,10 +184,11 @@ class MainDisplay(DisplayWidget):
         painter.begin(self.blankFrame)
         painter.fillRect(self.blankFrame.rect(), QtCore.Qt.black)
         #build a blank transparent image
-        self.transparent = QtGui.QPixmap(self.screen[u'size'].width(),
-                                         self.screen[u'size'].height())
+        self.transparent = QtGui.QPixmap(
+            self.screen[u'size'].width(), self.screen[u'size'].height())
         self.transparent.fill(QtCore.Qt.transparent)
         self.display_alert.setPixmap(self.transparent)
+        self.display_text.setPixmap(self.transparent)
         self.frameView(self.transparent)
         # To display or not to display?
         if not self.screen[u'primary']:
@@ -183,42 +197,88 @@ class MainDisplay(DisplayWidget):
         else:
             self.setVisible(False)
             self.primary = True
-        Receiver.send_message(u'screen_changed')
 
     def resetDisplay(self):
-        Receiver.send_message(u'stop_display_loop')
+        log.debug(u'resetDisplay')
+        Receiver.send_message(u'slidecontroller_live_stop_loop')
         if self.primary:
             self.setVisible(False)
         else:
             self.showFullScreen()
 
-    def hideDisplay(self):
-        self.mediaLoaded = True
-        self.setVisible(False)
+    def hideDisplayForVideo(self):
+        """
+        Hides the main display if for the video to be played
+        """
+        self.hideDisplay(HideMode.Screen)
+
+    def hideDisplay(self, mode=HideMode.Screen):
+        """
+        Hide the display by making all layers transparent
+        Store the images so they can be replaced when required
+        """
+        log.debug(u'hideDisplay mode = %d', mode)
+        self.storeImage = QtGui.QPixmap(self.display_image.pixmap())
+        self.storeText = QtGui.QPixmap(self.display_text.pixmap())
+        self.display_alert.setPixmap(self.transparent)
+        self.display_text.setPixmap(self.transparent)
+        if mode == HideMode.Screen:
+            self.display_image.setPixmap(self.transparent)
+        elif mode == HideMode.Blank:
+            self.display_image.setPixmap(
+                QtGui.QPixmap.fromImage(self.blankFrame))
+        else:
+            if self.parent.renderManager.renderer.bg_frame:
+                self.display_image.setPixmap(QtGui.QPixmap.fromImage(
+                    self.parent.renderManager.renderer.bg_frame))
+            else:
+                self.display_image.setPixmap(
+                    QtGui.QPixmap.fromImage(self.blankFrame))
+        self.moveToTop()
+
+    def moveToTop(self):
+        log.debug(u'moveToTop')
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint |
+            QtCore.Qt.FramelessWindowHint | QtCore.Qt.Dialog)
+        self.show()
 
     def showDisplay(self):
-        self.mediaLoaded = False
-        if not self.primary:
-            self.setVisible(True)
-            self.showFullScreen()
-        Receiver.send_message(u'flush_alert')
+        """
+        Show the stored layers so the screen reappears as it was
+        originally.
+        Make the stored images None to release memory.
+        """
+        log.debug(u'showDisplay')
+        if self.storeImage:
+            self.display_image.setPixmap(self.storeImage)
+        self.display_alert.setPixmap(self.transparent)
+        if self.storeText:
+            self.display_text.setPixmap(self.storeText)
+        self.storeImage = None
+        self.store = None
+        self.moveToTop()
+        Receiver.send_message(u'maindisplay_active')
 
     def addImageWithText(self, frame):
-        frame = resize_image(frame,
-                    self.screen[u'size'].width(),
-                    self.screen[u'size'].height() )
+        log.debug(u'addImageWithText')
+        frame = resize_image(
+            frame, self.screen[u'size'].width(), self.screen[u'size'].height())
         self.display_image.setPixmap(QtGui.QPixmap.fromImage(frame))
+        self.moveToTop()
 
     def setAlertSize(self, top, height):
+        log.debug(u'setAlertSize')
         self.display_alert.setGeometry(
             QtCore.QRect(0, top,
                         self.screen[u'size'].width(), height))
 
     def addAlertImage(self, frame, blank=False):
+        log.debug(u'addAlertImage')
         if blank:
             self.display_alert.setPixmap(self.transparent)
         else:
             self.display_alert.setPixmap(frame)
+        self.moveToTop()
 
     def frameView(self, frame, transition=False):
         """
@@ -231,14 +291,17 @@ class MainDisplay(DisplayWidget):
         if not self.displayBlank:
             if transition:
                 if self.frame is not None:
-                    self.display_text.setPixmap(QtGui.QPixmap.fromImage(self.frame))
+                    self.display_text.setPixmap(
+                        QtGui.QPixmap.fromImage(self.frame))
                     self.repaint()
                 self.frame = None
                 if frame[u'trans'] is not None:
-                    self.display_text.setPixmap(QtGui.QPixmap.fromImage(frame[u'trans']))
+                    self.display_text.setPixmap(
+                        QtGui.QPixmap.fromImage(frame[u'trans']))
                     self.repaint()
                     self.frame = frame[u'trans']
-                self.display_text.setPixmap(QtGui.QPixmap.fromImage(frame[u'main']))
+                self.display_text.setPixmap(
+                    QtGui.QPixmap.fromImage(frame[u'main']))
                 self.display_frame = frame[u'main']
                 self.repaint()
             else:
@@ -247,77 +310,179 @@ class MainDisplay(DisplayWidget):
                 else:
                     self.display_text.setPixmap(QtGui.QPixmap.fromImage(frame))
                 self.display_frame = frame
-            if not self.isVisible():
+            if not self.isVisible() and self.screens.display:
                 self.setVisible(True)
                 self.showFullScreen()
         else:
             self.waitingFrame = frame
             self.waitingFrameTrans = transition
 
-    def blankDisplay(self, blankType=HideMode.Blank, blanked=True):
-        log.debug(u'Blank main Display %d' % blanked)
-        if blanked:
-            self.displayBlank = True
-            if blankType == HideMode.Blank:
-                self.display_text.setPixmap(QtGui.QPixmap.fromImage(self.blankFrame))
-            elif blankType == HideMode.Theme:
-                theme = self.parent.RenderManager.renderer.bg_frame
-                if not theme:
-                    theme = self.blankFrame
-                self.display_text.setPixmap(QtGui.QPixmap.fromImage(theme))
-            self.waitingFrame = None
-            self.waitingFrameTrans = False
+class VideoDisplay(Phonon.VideoWidget):
+    """
+    This is the form that is used to display videos on the projector.
+    """
+    log.info(u'VideoDisplay Loaded')
+
+    def __init__(self, parent, screens,
+        aspect=Phonon.VideoWidget.AspectRatioWidget):
+        """
+        The constructor for the display form.
+
+        ``parent``
+            The parent widget.
+
+        ``screens``
+            The list of screens.
+        """
+        log.debug(u'VideoDisplay Initialisation started')
+        Phonon.VideoWidget.__init__(self)
+        self.setWindowTitle(u'OpenLP Video Display')
+        self.parent = parent
+        self.screens = screens
+        self.hidden = False
+        self.message = None
+        self.mediaObject = Phonon.MediaObject()
+        self.setAspectRatio(aspect)
+        self.audioObject = Phonon.AudioOutput(Phonon.VideoCategory)
+        Phonon.createPath(self.mediaObject, self)
+        Phonon.createPath(self.mediaObject, self.audioObject)
+        flags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Dialog
+        # WindowsStaysOnBottomHint is not available in QT4.4
+        try:
+            flags = flags | QtCore.Qt.WindowStaysOnBottomHint
+        except AttributeError:
+            pass
+        self.setWindowFlags(flags)
+
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'maindisplay_hide'), self.mediaHide)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'maindisplay_show'), self.mediaShow)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'videodisplay_start'), self.onMediaQueue)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'videodisplay_play'), self.onMediaPlay)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'videodisplay_pause'), self.onMediaPause)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'videodisplay_stop'), self.onMediaStop)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'videodisplay_background'), self.onMediaBackground)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'config_updated'), self.setup)
+        QtCore.QObject.connect(self.mediaObject,
+            QtCore.SIGNAL(u'finished()'), self.onMediaBackground)
+        self.setVisible(False)
+
+    def keyPressEvent(self, event):
+        if type(event) == QtGui.QKeyEvent:
+            #here accept the event and do something
+            if event.key() == QtCore.Qt.Key_Escape:
+                self.onMediaStop()
+                event.accept()
+            event.ignore()
         else:
-            self.displayBlank = False
-            if self.waitingFrame:
-                self.frameView(self.waitingFrame, self.waitingFrameTrans)
-            elif self.display_frame:
-                self.frameView(self.display_frame)
+            event.ignore()
+
+    def setup(self):
+        """
+        Sets up the screen on a particular screen.
+        """
+        log.debug(u'VideoDisplay Setup %s for %s ' % (self.screens,
+             self.screens.monitor_number))
+        self.screen = self.screens.current
+        #Sort out screen locations and sizes
+        self.setGeometry(self.screen[u'size'])
+        # To display or not to display?
+        if not self.screen[u'primary'] and self.isVisible():
+            self.showFullScreen()
+            self.primary = False
+        else:
+            self.setVisible(False)
+            self.primary = True
+
+    def onMediaBackground(self, message=None):
+        """
+        Play a video triggered from the video plugin with the
+        file name passed in on the event.
+        Also triggered from the Finish event so the video will loop
+        if it is triggered from the plugin
+        """
+        log.debug(u'VideoDisplay Queue new media message %s' % message)
+        #If not file take the stored one
+        if not message:
+            message = self.message
+        # still no file name then stop as it was a normal video stopping
+        if message:
+            self.mediaObject.setCurrentSource(Phonon.MediaSource(message))
+            self.message = message
+            self._play()
 
     def onMediaQueue(self, message):
-        log.debug(u'Queue new media message %s' % message)
-        self.display_image.close()
-        self.display_text.close()
-        self.display_alert.close()
-        file = os.path.join(message[1], message[2])
-        if self.firstTime:
-            self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
-            self.firstTime = False
-        else:
-            self.mediaObject.enqueue(Phonon.MediaSource(file))
-        self.onMediaPlay()
+        """
+        Set up a video to play from the serviceitem.
+        """
+        log.debug(u'VideoDisplay Queue new media message %s' % message)
+        file = os.path.join(message[0].get_frame_path(),
+            message[0].get_frame_title())
+        self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
+        self._play()
 
     def onMediaPlay(self):
-        log.debug(u'Play the new media, Live ')
-        if not self.mediaLoaded and not self.displayBlank:
-            self.blankDisplay()
-            self.display_frame = self.blankFrame
-        self.firstTime = True
-        self.mediaLoaded = True
-        self.display_image.hide()
-        self.display_text.hide()
-        self.display_alert.hide()
-        self.video.setFullScreen(True)
-        self.video.setVisible(True)
+        """
+        Respond to the Play button on the slide controller unless the display
+        has been hidden by the slidecontroller
+        """
+        if not self.hidden:
+            log.debug(u'VideoDisplay Play the new media, Live ')
+            self._play()
+
+    def _play(self):
+        """
+        We want to play the video so start it and display the screen
+        """
+        log.debug(u'VideoDisplay _play called')
         self.mediaObject.play()
         self.setVisible(True)
-        self.hide()
+        self.showFullScreen()
 
     def onMediaPause(self):
-        log.debug(u'Media paused by user')
+        """
+        Pause the video and refresh the screen
+        """
+        log.debug(u'VideoDisplay Media paused by user')
         self.mediaObject.pause()
+        self.show()
 
     def onMediaStop(self):
-        log.debug(u'Media stopped by user')
+        """
+        Stop the video and clean up
+        """
+        log.debug(u'VideoDisplay Media stopped by user')
+        self.message = None
         self.mediaObject.stop()
         self.onMediaFinish()
 
     def onMediaFinish(self):
-        log.debug(u'Reached end of media playlist')
-        self.mediaObject.stop()
+        """
+        Clean up the Object queue
+        """
+        log.debug(u'VideoDisplay Reached end of media playlist')
         self.mediaObject.clearQueue()
-        self.mediaLoaded = False
-        self.video.setVisible(False)
-        self.display_text.show()
-        self.display_image.show()
-        self.blankDisplay(False, False)
+        self.setVisible(False)
+
+    def mediaHide(self):
+        """
+        Hide the video display
+        """
+        self.mediaObject.pause()
+        self.hidden = True
+        self.setVisible(False)
+
+    def mediaShow(self):
+        """
+        Show the video disaply if it was already hidden
+        """
+        if self.hidden:
+            self.hidden = False
+            self._play()

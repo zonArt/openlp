@@ -31,7 +31,7 @@ import os.path
 from PyQt4 import QtCore, QtGui
 
 from songimportwizard import Ui_SongImportWizard
-#from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, SettingsManager
 #from openlp.core.utils import AppLocation, variant_to_unicode
 from openlp.plugins.songs.lib.manager import SongFormat
 
@@ -44,7 +44,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
     """
     log.info(u'BibleImportForm loaded')
 
-    def __init__(self, parent, config, manager, songsplugin):
+    def __init__(self, parent, manager, songsplugin):
         """
         Instantiate the wizard, and run any extra setup we need to.
 
@@ -66,7 +66,6 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.finishButton = self.button(QtGui.QWizard.FinishButton)
         self.cancelButton = self.button(QtGui.QWizard.CancelButton)
         self.manager = manager
-        self.config = config
         self.songsplugin = songsplugin
         #self.manager.set_process_dialog(self)
 #        QtCore.QObject.connect(self.OsisFileButton,
@@ -172,7 +171,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
 
     def getFileName(self, title, editbox):
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
-            self.config.get_last_dir(1))
+            SettingsManager.get_last_dir(self.songsplugin.settingsSection, 1))
         if filename:
             editbox.setText(filename)
             self.config.set_last_dir(filename, 1)

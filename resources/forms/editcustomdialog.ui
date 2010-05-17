@@ -46,7 +46,7 @@
        <item>
         <widget class="QPushButton" name="UpButton">
          <property name="toolTip">
-          <string extracomment="Move selected slide up one"/>
+          <string extracomment="Move slide up 1"/>
          </property>
          <property name="text">
           <string/>
@@ -73,7 +73,7 @@
        <item>
         <widget class="QPushButton" name="DownButton">
          <property name="toolTip">
-          <string extracomment="Move selected slide down one"/>
+          <string extracomment="Move slide down 1"/>
          </property>
          <property name="text">
           <string/>
@@ -106,7 +106,7 @@
          <item>
           <widget class="QPushButton" name="AddButton">
            <property name="toolTip">
-            <string extracomment="Adds a  new slide at bottom of list"/>
+            <string extracomment="Adds a new slide at bottom"/>
            </property>
            <property name="text">
             <string>Add New</string>
@@ -136,7 +136,7 @@
          <item>
           <widget class="QPushButton" name="SaveButton">
            <property name="toolTip">
-            <string extracomment="Save changed slide"/>
+            <string extracomment="Replace edited slide"/>
            </property>
            <property name="text">
             <string>Save</string>
@@ -160,6 +160,16 @@
            </property>
            <property name="text">
             <string>Clear</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="SplitButton">
+           <property name="toolTip">
+            <string extracomment="Add new slide split"/>
+           </property>
+           <property name="text">
+            <string>Split Slide</string>
            </property>
           </widget>
          </item>
@@ -216,8 +226,11 @@
    </item>
    <item row="5" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="toolTip">
+      <string extracomment="Edit dialog"/>
+     </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
      </property>
     </widget>
    </item>
@@ -236,12 +249,44 @@
   <tabstop>UpButton</tabstop>
   <tabstop>DownButton</tabstop>
   <tabstop>ThemeComboBox</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
   <include location="../images/openlp-2.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>customEditDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>294</x>
+     <y>524</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>294</x>
+     <y>270</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>customEditDialog</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>294</x>
+     <y>524</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>294</x>
+     <y>270</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
  <slots>
   <slot>accept()</slot>
   <slot>rejected()</slot>

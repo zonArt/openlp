@@ -137,7 +137,7 @@ class _OpenSong(XmlRootClass):
                             newtag = "Pre-chorus"
                         else:
                             newtag = t
-                        s = (u'# %s %s'%(newtag, c)).rstrip()
+                        s = (u'# %s %s' % (newtag, c)).rstrip()
                         res.append(s)
                     res.append(l[1:])
                 if (len(l) == 0) and (not tagPending):

@@ -31,7 +31,8 @@ from sqlalchemy import  *
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation
 
-from openlp.core.lib import PluginConfig
+from openlp.core.lib import SettingsManager
+from openlp.core.utils import AppLocation
 from openlp.plugins.songs.lib.models import metadata, songs_table, Song, \
     Author, Topic, Book
 from openlp.plugins.songs.lib.tables import *
@@ -46,7 +47,7 @@ def init_models(url):
     mapper(TAuthor, temp_authors_table)
     mapper(Book, song_books_table)
     mapper(Song, songs_table,
-       properties={'authors': relation(Author, backref='songs',
+        properties={'authors': relation(Author, backref='songs',
                                        secondary=authors_songs_table),
                    'book': relation(Book, backref='songs'),
                    'topics': relation(Topic, backref='songs',
@@ -111,9 +112,8 @@ class TSongAuthor(BaseModel):
 class MigrateSongs():
     def __init__(self, display):
         self.display = display
-        self.config = PluginConfig(u'Songs')
-        self.data_path = self.config.get_data_path()
-        self.database_files = self.config.get_files(u'sqlite')
+        self.data_path = AppLocation.get_section_data_path(u'songs')
+        self.database_files = SettingsManager.get_files(u'songs', u'.sqlite')
         print self.database_files
 
     def process(self):
@@ -156,13 +156,13 @@ class MigrateSongs():
             print songs_temp.songtitle
             aa = self.session.execute(
                 u'select * from songauthors_temp where songid =' + \
-                unicode(songs_temp.songid) )
+                unicode(songs_temp.songid))
             for row in aa:
                 a = row['authorid']
                 authors_temp = self.session.query(TAuthor).get(a)
                 bb = self.session.execute(
                     u'select * from authors where display_name = \"%s\"' % \
-                    unicode(authors_temp.authorname) ).fetchone()
+                    unicode(authors_temp.authorname)).fetchone()
                 if bb is None:
                     author = Author()
                     author.display_name = authors_temp.authorname

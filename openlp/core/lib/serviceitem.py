@@ -30,7 +30,7 @@ import uuid
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import build_icon, Receiver, resize_image
+from openlp.core.lib import build_icon, resize_image
 
 log = logging.getLogger(__name__)
 
@@ -41,6 +41,14 @@ class ServiceItemType(object):
     Text = 1
     Image = 2
     Command = 3
+
+class ItemCapabilities(object):
+   AllowsPreview = 1
+   AllowsEdit = 2
+   AllowsMaintain = 3
+   RequiresMedia = 4
+   AllowsLoop = 5
+   AllowsAdditions = 6
 
 class ServiceItem(object):
     """
@@ -67,14 +75,20 @@ class ServiceItem(object):
         self.raw_footer = None
         self.theme = None
         self.service_item_type = None
-        self.edit_enabled = False
-        self.maintain_allowed = False
         self._raw_frames = []
         self._display_frames = []
         self._uuid = unicode(uuid.uuid1())
-        self.auto_preview_allowed = False
         self.notes = u''
         self.from_plugin = False
+        self.capabilities = []
+        self.is_valid = True
+        self.cache = []
+
+    def add_capability(self, capability):
+        self.capabilities.append(capability)
+
+    def is_capable(self, capability):
+        return capability in self.capabilities
 
     def addIcon(self, icon):
         """
@@ -94,6 +108,7 @@ class ServiceItem(object):
         """
         log.debug(u'Render called')
         self._display_frames = []
+        self.cache = []
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
             if self.theme is None:
@@ -112,6 +127,7 @@ class ServiceItem(object):
                         lines += line + u'\n'
                     self._display_frames.append({u'title': title, \
                         u'text': lines.rstrip(), u'verseTag': slide[u'verseTag'] })
+                    self.cache.insert(len(self._display_frames), None)
                 log.log(15, u'Formatting took %4s' % (time.time() - before))
         elif self.service_item_type == ServiceItemType.Image:
             for slide in self._raw_frames:
@@ -136,11 +152,15 @@ class ServiceItem(object):
             self.RenderManager.set_override_theme(self.theme)
         format = self._display_frames[row][u'text'].split(u'\n')
         #if screen blank then do not display footer
-        if format[0]:
-            frame = self.RenderManager.generate_slide(format,
-                            self.raw_footer)
+        if self.cache[row] is not None:
+            frame = self.cache[row]
         else:
-            frame = self.RenderManager.generate_slide(format,u'')
+            if format[0]:
+                frame = self.RenderManager.generate_slide(format,
+                                self.raw_footer)
+            else:
+                frame = self.RenderManager.generate_slide(format,u'')
+            self.cache[row] = frame
         return frame
 
     def add_from_image(self, path, title, image):
@@ -207,10 +227,8 @@ class ServiceItem(object):
             u'type':self.service_item_type,
             u'audit':self.audit,
             u'notes':self.notes,
-            u'preview':self.auto_preview_allowed,
-            u'edit':self.edit_enabled,
-            u'maintain':self.maintain_allowed,
-            u'from_plugin':self.from_plugin
+            u'from_plugin':self.from_plugin,
+            u'capabilities':self.capabilities
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
@@ -244,11 +262,9 @@ class ServiceItem(object):
         self.addIcon(header[u'icon'])
         self.raw_footer = header[u'footer']
         self.audit = header[u'audit']
-        self.auto_preview_allowed = header[u'preview']
         self.notes = header[u'notes']
-        self.edit_enabled = header[u'edit']
-        self.maintain_allowed = header[u'maintain']
         self.from_plugin = header[u'from_plugin']
+        self.capabilities = header[u'capabilities']
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)
@@ -284,11 +300,8 @@ class ServiceItem(object):
         """
         return self._uuid != other._uuid
 
-    def is_song(self):
-        return self.name.lower() == u'songs'
-
     def is_media(self):
-        return self.name.lower() == u'media'
+        return ItemCapabilities.RequiresMedia in self.capabilities
 
     def is_command(self):
         return self.service_item_type == ServiceItemType.Command
@@ -330,7 +343,3 @@ class ServiceItem(object):
         Returns the title of the raw frame
         """
         return self._raw_frames[row][u'path']
-
-    def request_audit(self):
-        if self.audit:
-            Receiver.send_message(u'songusage_live', self.audit)

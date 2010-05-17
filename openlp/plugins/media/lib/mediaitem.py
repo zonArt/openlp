@@ -28,7 +28,8 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon
+from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
+    ItemCapabilities, SettingsManager, contextMenuAction,  Receiver
 
 log = logging.getLogger(__name__)
 
@@ -46,15 +47,15 @@ class MediaMediaItem(MediaManagerItem):
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Media'
         self.IconPath = u'images/image'
-        self.ConfigSection = u'media'
-        self.ConfigSection = title
+        self.background = False
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = MediaListView
-        self.PreviewFunction = self.video_get_preview
+        self.PreviewFunction = QtGui.QPixmap(
+            u':/media/media_video.png').toImage()
         MediaManagerItem.__init__(self, parent, icon, title)
+        self.singleServiceItem = False
         self.ServiceItemIconName = u':/media/media_video.png'
-        self.MainDisplay = self.parent.maindisplay
 
     def initPluginNameVisible(self):
         self.PluginNameVisible = self.trUtf8('Media')
@@ -71,44 +72,80 @@ class MediaMediaItem(MediaManagerItem):
         self.hasNewIcon = False
         self.hasEditIcon = False
 
-    def video_get_preview(self):
-        # For now cross platform is an icon.  Phonon does not support
-        # individual frame access (yet?) and GStreamer is not available
-        # on Windows
-        return QtGui.QPixmap(u':/media/media_video.png').toImage()
+    def addListViewToToolBar(self):
+        MediaManagerItem.addListViewToToolBar(self)
+        self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.ListView.addAction(
+            contextMenuAction(
+                self.ListView, u':/slides/slide_blank.png',
+                self.trUtf8('Replace Live Background'),
+                self.onReplaceClick))
 
-    def generateSlideData(self, service_item):
-        items = self.ListView.selectedIndexes()
-        if len(items) > 1:
-            return False
+    def addEndHeaderBar(self):
+        self.ImageWidget = QtGui.QWidget(self)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.ImageWidget.sizePolicy().hasHeightForWidth())
+        self.ImageWidget.setSizePolicy(sizePolicy)
+        self.ImageWidget.setObjectName(u'ImageWidget')
+        self.blankButton = self.Toolbar.addToolbarButton(
+            u'Replace Background', u':/slides/slide_blank.png',
+            self.trUtf8('Replace Live Background'), self.onReplaceClick, False)
+        # Add the song widget to the page layout
+        self.PageLayout.addWidget(self.ImageWidget)
+
+    def onReplaceClick(self):
+        if self.background:
+            self.background = False
+            Receiver.send_message(u'videodisplay_stop')
+        else:
+            self.background = True
+            if not self.ListView.selectedIndexes():
+                QtGui.QMessageBox.information(self,
+                    self.trUtf8('No item selected'),
+                    self.trUtf8('You must select one item'))
+            items = self.ListView.selectedIndexes()
+            for item in items:
+                bitem = self.ListView.item(item.row())
+                filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+                Receiver.send_message(u'videodisplay_background', filename)
+
+    def generateSlideData(self, service_item, item=None):
+        if item is None:
+            item = self.ListView.currentItem()
+            if item is None:
+                return False
+        filename = unicode((item.data(QtCore.Qt.UserRole)).toString())
         service_item.title = unicode(self.trUtf8('Media'))
-        for item in items:
-            bitem = self.ListView.item(item.row())
-            filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
-            frame = u':/media/image_clapperboard.png'
-            (path, name) = os.path.split(filename)
-            service_item.add_from_command(path, name, frame)
+        service_item.add_capability(ItemCapabilities.RequiresMedia)
+        frame = u':/media/image_clapperboard.png'
+        (path, name) = os.path.split(filename)
+        service_item.add_from_command(path, name, frame)
         return True
 
     def initialise(self):
         self.ListView.setSelectionMode(
             QtGui.QAbstractItemView.ExtendedSelection)
         self.ListView.setIconSize(QtCore.QSize(88,50))
-        self.loadList(self.parent.config.load_list(self.ConfigSection))
+        self.loadList(SettingsManager.load_list(
+            self.settingsSection, self.settingsSection))
 
     def onDeleteClick(self):
         item = self.ListView.currentItem()
         if item:
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
-            self.parent.config.set_list(
-                self.ConfigSection, self.getFileList())
+            SettingsManager.set_list(self.settingsSection,
+                self.settingsSection, self.getFileList())
 
     def loadList(self, list):
         for file in list:
             (path, filename) = os.path.split(unicode(file))
             item_name = QtGui.QListWidgetItem(filename)
-            img = self.video_get_preview()
+            img = QtGui.QPixmap(u':/media/media_video.png').toImage()
             item_name.setIcon(build_icon(img))
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.ListView.addItem(item_name)

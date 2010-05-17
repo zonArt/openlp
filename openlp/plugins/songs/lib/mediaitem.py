@@ -28,7 +28,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, SongXMLParser, \
-    BaseListWithDnD, Receiver,  str_to_bool
+    BaseListWithDnD, Receiver, ItemCapabilities
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     ImportWizardForm
 
@@ -47,12 +47,12 @@ class SongMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Song'
-        self.ConfigSection = title
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = SongListView
-        self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
         self.edit_song_form = EditSongForm(self, self.parent.manager)
+        self.singleServiceItem = False
+        #self.edit_song_form = EditSongForm(self.parent.songmanager, self)
         self.song_maintenance_form = SongMaintenanceForm(
             self.parent.manager, self)
         # Holds information about whether the edit is remotly triggered and
@@ -123,19 +123,20 @@ class SongMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'textChanged(const QString&)'),
             self.onSearchTextEditChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'load_song_list'), self.onSearchTextButtonClick)
+            QtCore.SIGNAL(u'songs_load_list'), self.onSearchTextButtonClick)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.configUpdated)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'preview_song'), self.onPreviewClick)
+            QtCore.SIGNAL(u'songs_preview'), self.onPreviewClick)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_edit' % self.parent.name), self.onRemoteEdit)
+            QtCore.SIGNAL(u'songs_edit'), self.onRemoteEdit)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'remote_edit_clear'), self.onRemoteEditClear)
+            QtCore.SIGNAL(u'songs_edit_clear'), self.onRemoteEditClear)
 
     def configUpdated(self):
-        self.searchAsYouType = str_to_bool(
-            self.parent.config.get_config(u'search as type', u'False'))
+        self.searchAsYouType = QtCore.QSettings().value(
+            self.settingsSection + u'/search as type',
+            QtCore.QVariant(u'False')).toBool()
 
     def retranslateUi(self):
         self.SearchTextLabel.setText(self.trUtf8('Search:'))
@@ -228,8 +229,8 @@ class SongMediaItem(MediaManagerItem):
                 self.onSearchTextButtonClick()
 
     def onImportClick(self):
-        songimportform = ImportWizardForm(self, self.parent.config,
-            self.parent.manager, self.parent)
+        songimportform = ImportWizardForm(self, self.parent.manager,
+            self.parent)
         songimportform.exec_()
 
     def onNewClick(self):
@@ -277,29 +278,44 @@ class SongMediaItem(MediaManagerItem):
             self.edit_song_form.exec_()
 
     def onDeleteClick(self):
-        item = self.ListView.currentItem()
-        if item:
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.parent.manager.delete_song(item_id)
-            row = self.ListView.row(item)
-            self.ListView.takeItem(row)
+        items = self.ListView.selectedIndexes()
+        if items:
+            if len(items) == 1:
+                del_message = self.trUtf8('Delete song?')
+            else:
+                del_message = unicode(self.trUtf8('Delete %d songs?')) % len(items)
+            ans = QtGui.QMessageBox.question(self,
+                self.trUtf8('Delete Confirmation'), del_message,
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok|
+                     QtGui.QMessageBox.Cancel),
+                QtGui.QMessageBox.Ok)
+            if ans == QtGui.QMessageBox.Cancel:
+                return
+            for item in items:
+                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+                self.parent.songmanager.delete_song(item_id)
+            self.onSearchTextButtonClick()
 
-    def generateSlideData(self, service_item):
+    def generateSlideData(self, service_item, item=None):
         raw_footer = []
         author_list = u''
         author_audit = []
         ccli = u''
-        if self.remoteTriggered is None:
-            item = self.ListView.currentItem()
-            if item is None:
-                return False
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        if item is None:
+            if self.remoteTriggered is None:
+                item = self.ListView.currentItem()
+                if item is None:
+                    return False
+                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            else:
+                item_id = self.remoteSong
         else:
-            item_id = self.remoteSong
-        service_item.auto_preview_allowed = True
-        song = self.parent.manager.get_song(item_id)
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        service_item.add_capability(ItemCapabilities.AllowsEdit)
+        service_item.add_capability(ItemCapabilities.AllowsPreview)
+        service_item.add_capability(ItemCapabilities.AllowsLoop)
+        song = self.parent.songmanager.get_song(item_id)
         service_item.theme = song.theme_name
-        service_item.edit_enabled = True
         service_item.editId = item_id
         if song.lyrics.startswith(u'<?xml version='):
             songXML = SongXMLParser(song.lyrics)
@@ -315,8 +331,10 @@ class SongMediaItem(MediaManagerItem):
                         break
                     for verse in verseList:
                         if verse[1]:
-                            if verse[0][u'type'] == "Verse":
-                                if verse[0][u'label'] == order[1:]:
+                            if verse[0][u'type'] == "Verse" \
+                                or verse[0][u'type'] == "Chorus":
+                                if verse[0][u'label'] == order[1:] and \
+                                    verse[0][u'type'][0] == order[0]:
                                     verseTag = u'%s:%s' % \
                                         (verse[0][u'type'], verse[0][u'label'])
                                     service_item.add_from_text\
@@ -338,7 +356,7 @@ class SongMediaItem(MediaManagerItem):
             author_list = author_list + unicode(author.display_name)
             author_audit.append(unicode(author.display_name))
         if song.ccli_number is None or len(song.ccli_number) == 0:
-            ccli = self.parent.settings.GeneralTab.CCLINumber
+            ccli = self.parent.settings_form.GeneralTab.CCLINumber
         else:
             ccli = unicode(song.ccli_number)
         raw_footer.append(song.title)
@@ -351,3 +369,5 @@ class SongMediaItem(MediaManagerItem):
             song.title, author_audit, song.copyright, song.ccli_number
         ]
         return True
+
+

@@ -35,35 +35,117 @@ class EventReceiver(QtCore.QObject):
     system. This is a private class and should not be used directly
     but rather via the Receiver class.
 
-    ``stop_import``
-        Stops the Bible Import
-
-    ``pre_load_bibles``
-        Triggers the plugin to relaod the bible lists
-
-    ``process_events``
+    ``openlp_process_events``
         Requests the Application to flush the events queue
 
-    ``{plugin}_add_service_item``
-        ask the plugin to push the selected items to the service item
+    ``openlp_version_check``
+        Version has changed so pop up window.
 
-    ``update_themes``
+    ``config_updated``
+        Informs components the config has changed
+
+    ``config_screen_changed``
+        The display monitor has been changed
+
+    ``slidecontroller_{live|preview}_first``
+        Moves to the first slide
+
+    ``slidecontroller_{live|preview}_next``
+        Moves to the next slide
+
+    ``slidecontroller_{live|preview}_next_noloop``
+        Moves to the next slide without auto advance
+
+    ``slidecontroller_{live|preview}_previous``
+        Moves to the previous slide
+
+    ``slidecontroller_{live|preview}_previous_noloop``
+        Moves to the previous slide, without auto advance
+
+    ``slidecontroller_{live|preview}_last``
+        Moves to the last slide
+
+    ``slidecontroller_{live|preview}_set``
+        Moves to a specific slide, by index
+
+    ``slidecontroller_{live|preview}_started``
+        Broadcasts that an item has been made live/previewed
+
+    ``slidecontroller_{live|preview}_change``
+        Informs the slidecontroller that a slide change has occurred and to 
+        update itself
+
+    ``slidecontroller_{live|preview}_changed``
+        Broadcasts that the slidecontroller has changed the current slide
+
+    ``slidecontroller_{live|preview}_text_request``
+        Request the text for the current item in the controller
+        Returns a slidecontroller_{live|preview}_text_response with an 
+        array of dictionaries with the tag and verse text
+
+    ``slidecontroller_{live|preview}_blank``
+        Request that the output screen is blanked
+
+    ``slidecontroller_{live|preview}_unblank``
+        Request that the output screen is unblanked
+
+    ``slidecontroller_live_spin_delay``
+        Pushes out the loop delay
+
+    ``slidecontroller_live_stop_loop``
+        Stop the loop on the main display
+
+    ``servicemanager_previous_item``
+        Display the previous item in the service
+
+    ``servicemanager_next_item``
+        Display the next item in the service
+
+    ``servicemanager_set_item``
+        Go live on a specific item, by index
+        
+    ``servicemanager_list_request``
+        Request the service list. Responds with servicemanager_list_response
+        containing a array of dictionaries
+
+    ``maindisplay_blank``
+        Blank the maindisplay window 
+
+    ``maindisplay_hide``
+        Hide the maindisplay window 
+
+    ``maindisplay_show``
+        Return the maindisplay window 
+
+    ``maindisplay_active``
+        The maindisplay has been made active
+    
+    ``maindisplay_status_text``
+        Changes the bottom status bar text on the maindisplay window
+
+    ``maindisplay_blank_check``
+        Check to see if the blank display message is required
+
+    ``videodisplay_start``
+        Open a media item and prepare for playing
+
+    ``videodisplay_play``
+        Start playing a media item
+
+    ``videodisplay_pause``
+        Pause a media item
+
+    ``videodisplay_stop``
+        Stop playing a media item
+
+    ``videodisplay_background``
+        Replace the background video
+
+    ``theme_update_list``
         send out message with new themes
 
-    ``update_global_theme``
+    ``theme_update_global``
         Tell the components we have a new global theme
-
-    ``load_song_list``
-        Tells the the song plugin to reload the song list
-
-    ``load_custom_list``
-        Tells the the custom plugin to reload the custom list
-
-    ``update_spin_delay``
-        Pushes out the Image loop delay
-
-    ``request_spin_delay``
-        Requests a spin delay
 
     ``{plugin}_start``
         Requests a plugin to start a external program
@@ -81,33 +163,51 @@ class EventReceiver(QtCore.QObject):
     ``{plugin}_last``
         Requests a plugin to handle a last event
 
+    ``{plugin}_slide``
+        Requests a plugin to handle a go to specific slide event
+
     ``{plugin}_stop``
         Requests a plugin to handle a stop event
+
+    ``{plugin}_blank``
+        Requests a plugin to handle a blank screen event
+
+    ``{plugin}_unblank``
+        Requests a plugin to handle an unblank screen event
 
     ``{plugin}_edit``
         Requests a plugin edit a database item with the key as the payload
 
-    ``songusage_live``
-        Sends live song audit requests to the audit component
+    ``{plugin}_edit_clear``
+        Editing has been completed
 
-    ``audit_changed``
-        Audit information may have changed
+    ``{plugin}_load_list``
+        Tells the the plugin to reload the media manager list
 
-    ``config_updated``
-        Informs components the config has changed
+    ``{plugin}_preview``
+        Tells the plugin it's item can be previewed
 
-    ``preview_song``
-        Tells the song plugin the edit has finished and the song can be previewed
-        Only available if the edit was triggered by the Preview button.
+    ``{plugin}_add_service_item``
+        Ask the plugin to push the selected items to the service item
 
-    ``slidecontroller_change``
-        Informs the slidecontroller that a slide change has occurred
+    ``alerts_text``
+        Displays an alert message
+    
+    ``bibles_nobook``
+        Attempt to find book resulted in no match
 
-    ``remote_edit_clear``
-        Informs all components that remote edit has been aborted.
+    ``bibles_showprogress``
+        Show progress of bible verse import
 
-    ``presentation types``
-        Informs all components of the presentation types supported.
+    ``bibles_hideprogress``
+        Hide progress of bible verse import
+
+    ``bibles_stop_import``
+        Stops the Bible Import
+
+    ``remotes_poll_request``
+        Waits for openlp to do something "interesting" and sends a
+        remotes_poll_response signal when it does
 
     """
     def __init__(self):
@@ -164,4 +264,3 @@ class Receiver():
         Get the global ``eventreceiver`` instance.
         """
         return Receiver.eventreceiver
-

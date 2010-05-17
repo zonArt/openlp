@@ -27,8 +27,10 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    contextMenuAction
+    contextMenuAction, ItemCapabilities, SettingsManager
+from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
 
@@ -47,12 +49,10 @@ class ImageMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Image'
-        self.ConfigSection = title
         self.IconPath = u'images/image'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
-        self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
 
     def initPluginNameVisible(self):
@@ -60,8 +60,8 @@ class ImageMediaItem(MediaManagerItem):
 
     def retranslateUi(self):
         self.OnNewPrompt = self.trUtf8('Select Image(s)')
-        self.OnNewFileMasks = \
-            self.trUtf8('Images (*.jpg *.jpeg *.gif *.png *.bmp);; All files (*)')
+        self.OnNewFileMasks = self.trUtf8(
+            'Images (*.jpg *.jpeg *.gif *.png *.bmp);; All files (*)')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -77,10 +77,12 @@ class ImageMediaItem(MediaManagerItem):
             QtGui.QAbstractItemView.ExtendedSelection)
         self.ListView.setIconSize(QtCore.QSize(88,50))
         self.servicePath = os.path.join(
-            self.parent.config.get_data_path(), u'.thumbnails')
+            AppLocation.get_section_data_path(self.settingsSection),
+            u'thumbnails')
         if not os.path.exists(self.servicePath):
             os.mkdir(self.servicePath)
-        self.loadList(self.parent.config.load_list(self.ConfigSection))
+        self.loadList(SettingsManager.load_list(
+            self.settingsSection, self.settingsSection))
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
@@ -113,35 +115,39 @@ class ImageMediaItem(MediaManagerItem):
             for item in items:
                 text = self.ListView.item(item.row())
                 try:
-                    os.remove(os.path.join(self.servicePath, unicode(text.text())))
+                    os.remove(
+                        os.path.join(self.servicePath, unicode(text.text())))
                 except:
                     #if not present do not worry
                     pass
                 self.ListView.takeItem(item.row())
-                self.parent.config.set_list(self.ConfigSection, self.getFileList())
+                SettingsManager.set_list(self.settingsSection,
+                    self.settingsSection, self.getFileList())
 
     def loadList(self, list):
         for file in list:
             (path, filename) = os.path.split(unicode(file))
             thumb = os.path.join(self.servicePath, filename)
             if os.path.exists(thumb):
-                icon = build_icon(thumb)
+                if self.validate(file, thumb):
+                    icon = build_icon(thumb)
+                else:
+                    icon = build_icon(u':/general/general_delete.png')
             else:
-                icon = build_icon(unicode(file))
-                pixmap = icon.pixmap(QtCore.QSize(88,50))
-                ext = os.path.splitext(thumb)[1].lower()
-                pixmap.save(thumb, ext[1:])
+                icon = self.IconFromFile(file, thumb)
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setIcon(icon)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.ListView.addItem(item_name)
 
-    def generateSlideData(self, service_item):
+    def generateSlideData(self, service_item, item=None):
         items = self.ListView.selectedIndexes()
         if items:
-            service_item.title = self.trUtf8('Image(s)')
-            service_item.auto_preview_allowed = True
-            service_item.maintain_allowed = True
+            service_item.title = unicode(self.trUtf8('Image(s)'))
+            service_item.add_capability(ItemCapabilities.AllowsMaintain)
+            service_item.add_capability(ItemCapabilities.AllowsPreview)
+            service_item.add_capability(ItemCapabilities.AllowsLoop)
+            service_item.add_capability(ItemCapabilities.AllowsAdditions)
             for item in items:
                 bitem = self.ListView.item(item.row())
                 filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())

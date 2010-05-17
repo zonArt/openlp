@@ -24,6 +24,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_EditVerseDialog(object):
     def setupUi(self, EditVerseDialog):
@@ -89,14 +90,15 @@ class Ui_EditVerseDialog(object):
         QtCore.QMetaObject.connectSlotsByName(EditVerseDialog)
 
     def retranslateUi(self, EditVerseDialog):
-        EditVerseDialog.setWindowTitle(self.trUtf8('Edit Verse'))
-        self.VerseTypeLabel.setText(self.trUtf8('Verse Type:'))
-        self.VerseTypeComboBox.setItemText(0, self.trUtf8('Verse'))
-        self.VerseTypeComboBox.setItemText(1, self.trUtf8('Chorus'))
-        self.VerseTypeComboBox.setItemText(2, self.trUtf8('Bridge'))
-        self.VerseTypeComboBox.setItemText(3, self.trUtf8('Pre-Chorus'))
-        self.VerseTypeComboBox.setItemText(4, self.trUtf8('Intro'))
-        self.VerseTypeComboBox.setItemText(5, self.trUtf8('Ending'))
-        self.VerseTypeComboBox.setItemText(6, self.trUtf8('Other'))
-        self.InsertButton.setText(self.trUtf8('Insert'))
+        EditVerseDialog.setWindowTitle(translate('EditVerseForm', 'Edit Verse'))
+        self.VerseTypeLabel.setText(translate('EditVerseForm', 'Verse Type:'))
+        self.VerseTypeComboBox.setItemText(0, translate('EditVerseForm', 'Verse'))
+        self.VerseTypeComboBox.setItemText(1, translate('EditVerseForm', 'Chorus'))
+        self.VerseTypeComboBox.setItemText(2, translate('EditVerseForm', 'Bridge'))
+        self.VerseTypeComboBox.setItemText(3, translate('EditVerseForm', 'Pre-Chorus'))
+        self.VerseTypeComboBox.setItemText(4, translate('EditVerseForm', 'Intro'))
+        self.VerseTypeComboBox.setItemText(5, translate('EditVerseForm', 'Ending'))
+        self.VerseTypeComboBox.setItemText(6, translate('EditVerseForm', 'Other'))
+        self.InsertButton.setText(translate('EditVerseForm', 'Insert'))
+
 

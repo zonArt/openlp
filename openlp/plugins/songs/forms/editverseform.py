@@ -175,3 +175,4 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             text = u'---[Verse:1]---\n%s' % text
         return text
 
+

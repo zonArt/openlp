@@ -24,6 +24,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 from openlp.core.lib import build_icon
 
@@ -135,7 +136,7 @@ class Ui_EditSongDialog(object):
         sizePolicy.setHeightForWidth(
             self.AuthorsSelectionComboItem.sizePolicy().hasHeightForWidth())
         self.AuthorsSelectionComboItem.setSizePolicy(sizePolicy)
-        self.AuthorsSelectionComboItem.setEditable(False)
+        self.AuthorsSelectionComboItem.setEditable(True)
         self.AuthorsSelectionComboItem.setInsertPolicy(
             QtGui.QComboBox.InsertAlphabetically)
         self.AuthorsSelectionComboItem.setSizeAdjustPolicy(
@@ -212,6 +213,7 @@ class Ui_EditSongDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
             self.SongTopicCombo.sizePolicy().hasHeightForWidth())
+        self.SongTopicCombo.setEditable(True)
         self.SongTopicCombo.setSizePolicy(sizePolicy)
         self.SongTopicCombo.setObjectName(u'SongTopicCombo')
         self.TopicAddLayout.addWidget(self.SongTopicCombo)
@@ -256,6 +258,7 @@ class Ui_EditSongDialog(object):
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.SongbookCombo.sizePolicy().hasHeightForWidth())
+        self.SongbookCombo.setEditable(True)
         self.SongbookCombo.setSizePolicy(sizePolicy)
         self.SongbookCombo.setObjectName(u'SongbookCombo')
         self.SongbookLayout.addWidget(self.SongbookCombo, 0, 0, 1, 1)
@@ -293,6 +296,7 @@ class Ui_EditSongDialog(object):
         self.ThemeLayout.setMargin(8)
         self.ThemeLayout.setObjectName(u'ThemeLayout')
         self.ThemeSelectionComboItem = QtGui.QComboBox(self.ThemeGroupBox)
+        self.ThemeSelectionComboItem.setEditable(True)
         self.ThemeSelectionComboItem.setObjectName(u'ThemeSelectionComboItem')
         self.ThemeLayout.addWidget(self.ThemeSelectionComboItem)
         self.ThemeAddButton = QtGui.QPushButton(self.ThemeGroupBox)
@@ -415,36 +419,36 @@ class Ui_EditSongDialog(object):
         EditSongDialog.setTabOrder(self.CommentsEdit, self.ButtonBox)
 
     def retranslateUi(self, EditSongDialog):
-        EditSongDialog.setWindowTitle(self.trUtf8('Song Editor'))
-        self.TitleLabel.setText(self.trUtf8('Title:'))
-        self.AlternativeTitleLabel.setText(self.trUtf8('Alternative Title:'))
-        self.LyricsLabel.setText(self.trUtf8('Lyrics:'))
-        self.VerseOrderLabel.setText(self.trUtf8('Verse Order:'))
-        self.VerseAddButton.setText(self.trUtf8('Add'))
-        self.VerseEditButton.setText(self.trUtf8('Edit'))
-        self.VerseEditAllButton.setText(self.trUtf8('Edit All'))
-        self.VerseDeleteButton.setText(self.trUtf8('Delete'))
+        EditSongDialog.setWindowTitle(translate('EditSongForm', 'Song Editor'))
+        self.TitleLabel.setText(translate('EditSongForm', 'Title:'))
+        self.AlternativeTitleLabel.setText(translate('EditSongForm', 'Alternative Title:'))
+        self.LyricsLabel.setText(translate('EditSongForm', 'Lyrics:'))
+        self.VerseOrderLabel.setText(translate('EditSongForm', 'Verse Order:'))
+        self.VerseAddButton.setText(translate('EditSongForm', 'Add'))
+        self.VerseEditButton.setText(translate('EditSongForm', 'Edit'))
+        self.VerseEditAllButton.setText(translate('EditSongForm', 'Edit All'))
+        self.VerseDeleteButton.setText(translate('EditSongForm', 'Delete'))
         self.SongTabWidget.setTabText(
             self.SongTabWidget.indexOf(self.LyricsTab),
-            self.trUtf8('Title && Lyrics'))
-        self.AuthorsGroupBox.setTitle(self.trUtf8('Authors'))
-        self.AuthorAddButton.setText(self.trUtf8('&Add to Song'))
-        self.AuthorRemoveButton.setText(self.trUtf8('&Remove'))
+            translate('EditSongForm', 'Title && Lyrics'))
+        self.AuthorsGroupBox.setTitle(translate('EditSongForm', 'Authors'))
+        self.AuthorAddButton.setText(translate('EditSongForm', '&Add to Song'))
+        self.AuthorRemoveButton.setText(translate('EditSongForm', '&Remove'))
         self.MaintenanceButton.setText(
-            self.trUtf8('&Manage Authors, Topics, Books'))
-        self.TopicGroupBox.setTitle(self.trUtf8('Topic'))
-        self.TopicAddButton.setText(self.trUtf8('A&dd to Song'))
-        self.TopicRemoveButton.setText(self.trUtf8('R&emove'))
-        self.SongBookGroup.setTitle(self.trUtf8('Song Book'))
+            translate('EditSongForm', '&Manage Authors, Topics, Books'))
+        self.TopicGroupBox.setTitle(translate('EditSongForm', 'Topic'))
+        self.TopicAddButton.setText(translate('EditSongForm', 'A&dd to Song'))
+        self.TopicRemoveButton.setText(translate('EditSongForm', 'R&emove'))
+        self.SongBookGroup.setTitle(translate('EditSongForm', 'Song Book'))
         self.SongTabWidget.setTabText(
             self.SongTabWidget.indexOf(self.AuthorsTab),
-            self.trUtf8('Authors, Topics && Book'))
-        self.ThemeGroupBox.setTitle(self.trUtf8('Theme'))
-        self.ThemeAddButton.setText(self.trUtf8('Add a Theme'))
-        self.CopyrightGroupBox.setTitle(self.trUtf8('Copyright Information'))
-        self.CopyrightInsertButton.setText(self.trUtf8(u'\u00a9'.encode('utf8')))
-        self.CCLILabel.setText(self.trUtf8('CCLI Number:'))
-        self.CommentsGroupBox.setTitle(self.trUtf8('Comments'))
+            translate('EditSongForm', 'Authors, Topics && Book'))
+        self.ThemeGroupBox.setTitle(translate('EditSongForm', 'Theme'))
+        self.ThemeAddButton.setText(translate('EditSongForm', 'Add a Theme'))
+        self.CopyrightGroupBox.setTitle(translate('EditSongForm', 'Copyright Information'))
+        self.CopyrightInsertButton.setText(translate('EditSongForm', u'\xa9'))
+        self.CCLILabel.setText(translate('EditSongForm', 'CCLI Number:'))
+        self.CommentsGroupBox.setTitle(translate('EditSongForm', 'Comments'))
         self.SongTabWidget.setTabText(
             self.SongTabWidget.indexOf(self.ThemeTab),
-            self.trUtf8('Theme, Copyright Info && Comments'))
+            translate('EditSongForm', 'Theme, Copyright Info && Comments'))

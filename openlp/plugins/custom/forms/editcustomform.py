@@ -68,6 +68,8 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             QtCore.SIGNAL(u'pressed()'), self.onUpButtonPressed)
         QtCore.QObject.connect(self.DownButton,
             QtCore.SIGNAL(u'pressed()'), self.onDownButtonPressed)
+        QtCore.QObject.connect(self.SplitButton,
+            QtCore.SIGNAL(u'pressed()'), self.onSplitButtonPressed)
         QtCore.QObject.connect(self.VerseListView,
             QtCore.SIGNAL(u'itemDoubleClicked(QListWidgetItem*)'),
             self.onVerseListViewSelected)
@@ -75,7 +77,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'),
             self.onVerseListViewPressed)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'update_themes'), self.loadThemes)
+            QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         # Create other objects and forms
         self.custommanager = custommanager
         self.initialise()
@@ -84,7 +86,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         log.debug(u'onPreview')
         if button.text() == unicode(self.trUtf8('Save && Preview')) \
             and self.saveCustom():
-            Receiver.send_message(u'preview_custom')
+            Receiver.send_message(u'custom_preview')
 
     def initialise(self):
         self.editAll = False
@@ -94,6 +96,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.EditAllButton.setEnabled(True)
         self.SaveButton.setEnabled(False)
         self.ClearButton.setEnabled(False)
+        self.SplitButton.setEnabled(False)
         self.TitleEdit.setText(u'')
         self.CreditEdit.setText(u'')
         self.VerseTextEdit.clear()
@@ -132,13 +135,13 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             self.previewButton.setVisible(True)
 
     def closePressed(self):
-        Receiver.send_message(u'remote_edit_clear')
+        Receiver.send_message(u'custom_edit_clear')
         self.close()
 
     def accept(self):
         log.debug(u'accept')
         if self.saveCustom():
-            Receiver.send_message(u'load_custom_list')
+            Receiver.send_message(u'custom_load_list')
             self.close()
 
     def saveCustom(self):
@@ -202,12 +205,14 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
     def onEditAllButtonPressed(self):
         self.editAll = True
         self.AddButton.setEnabled(False)
+        self.SplitButton.setEnabled(True)
         if self.VerseListView.count() > 0:
             verse_list = u''
             for row in range(0, self.VerseListView.count()):
                 item = self.VerseListView.item(row)
                 verse_list += item.text()
-                verse_list += u'\n---\n'
+            if row != self.VerseListView.count() - 1:
+                verse_list += u'\n[---]\n'
             self.editText(verse_list)
 
     def editText(self, text):
@@ -222,7 +227,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
     def onSaveButtonPressed(self):
         if self.editAll:
             self.VerseListView.clear()
-            for row in unicode(self.VerseTextEdit.toPlainText()).split(u'\n---\n'):
+            for row in unicode(self.VerseTextEdit.toPlainText()).split(u'\n[---]\n'):
                 self.VerseListView.addItem(row)
         else:
             self.VerseListView.currentItem().setText(
@@ -241,7 +246,14 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.SaveButton.setEnabled(False)
         self.EditButton.setEnabled(False)
         self.EditAllButton.setEnabled(True)
+        self.SplitButton.setEnabled(False)
         self.VerseTextEdit.clear()
+
+    def onSplitButtonPressed(self):
+        if self.VerseTextEdit.textCursor().columnNumber() != 0:
+            self.VerseTextEdit.insertPlainText(u'\n')
+        self.VerseTextEdit.insertPlainText(u'[---]\n' )
+        self.VerseTextEdit.setFocus()
 
     def onDeleteButtonPressed(self):
         self.VerseListView.takeItem(self.VerseListView.currentRow())
@@ -258,5 +270,5 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             return False, self.trUtf8('You need to enter a slide')
         if self.VerseTextEdit.toPlainText():
             self.VerseTextEdit.setFocus()
-            return False, self.trUtf8('You have unsaved data')
-        return True,  u''
+            return False, self.trUtf8('You have unsaved data, please save or clear')
+        return True, u''

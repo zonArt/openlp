@@ -28,9 +28,10 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, Receiver, str_to_bool, build_icon
+from openlp.core.lib import Plugin, Receiver, build_icon
 from openlp.plugins.songusage.lib import SongUsageManager
-from openlp.plugins.songusage.forms import SongUsageDetailForm, SongUsageDeleteForm
+from openlp.plugins.songusage.forms import SongUsageDetailForm, \
+    SongUsageDeleteForm
 from openlp.plugins.songusage.lib.models import SongUsageItem
 
 log = logging.getLogger(__name__)
@@ -107,12 +108,14 @@ class SongUsagePlugin(Plugin):
         log.info(u'SongUsage Initialising')
         Plugin.initialise(self)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'songusage_live'), self.onReceiveSongUsage)
-        self.SongUsageActive = str_to_bool(
-            self.config.get_config(u'active', False))
+            QtCore.SIGNAL(u'songs_live_started'),
+            self.onReceiveSongUsage)
+        self.SongUsageActive = QtCore.QSettings().value(
+            self.settingsSection + u'/active',
+            QtCore.QVariant(False)).toBool()
         self.SongUsageStatus.setChecked(self.SongUsageActive)
         if self.songusagemanager is None:
-            self.songusagemanager = SongUsageManager(self.config)
+            self.songusagemanager = SongUsageManager()
         self.SongUsagedeleteform = SongUsageDeleteForm(self.songusagemanager)
         self.SongUsagedetailform = SongUsageDetailForm(self)
         self.SongUsageMenu.menuAction().setVisible(True)
@@ -125,23 +128,25 @@ class SongUsagePlugin(Plugin):
 
     def toggleSongUsageState(self):
         self.SongUsageActive = not self.SongUsageActive
-        self.config.set_config(u'active', self.SongUsageActive)
+        QtCore.QSettings().setValue(self.settingsSection + u'/active',
+            QtCore.QVariant(self.SongUsageActive))
 
-    def onReceiveSongUsage(self, SongUsageData):
+    def onReceiveSongUsage(self, items):
         """
         SongUsage a live song from SlideController
         """
-        if self.SongUsageActive:
-            SongUsageitem = SongUsageItem()
-            SongUsageitem.usagedate = datetime.today()
-            SongUsageitem.usagetime = datetime.now().time()
-            SongUsageitem.title = SongUsageData[0]
-            SongUsageitem.copyright = SongUsageData[2]
-            SongUsageitem.ccl_number = SongUsageData[3]
-            SongUsageitem.authors = u''
-            for author in SongUsageData[1]:
-                SongUsageitem.authors += author + u' '
-            self.songusagemanager.insert_songusage(SongUsageitem)
+        audit = items[0].audit
+        if self.SongUsageActive and audit:
+            song_usage_item = SongUsageItem()
+            song_usage_item.usagedate = datetime.today()
+            song_usage_item.usagetime = datetime.now().time()
+            song_usage_item.title = audit[0]
+            song_usage_item.copyright = audit[2]
+            song_usage_item.ccl_number = audit[3]
+            song_usage_item.authors = u''
+            for author in audit[1]:
+                song_usage_item.authors += author + u' '
+            self.songusagemanager.insert_songusage(song_usage_item)
 
     def onSongUsageDelete(self):
         self.SongUsagedeleteform.exec_()

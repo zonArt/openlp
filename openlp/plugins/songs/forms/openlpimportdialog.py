@@ -24,6 +24,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_OpenLPImportDialog(object):
     def setupUi(self, OpenLPImportDialog):
@@ -285,21 +286,21 @@ class Ui_OpenLPImportDialog(object):
         QtCore.QMetaObject.connectSlotsByName(OpenLPImportDialog)
 
     def retranslateUi(self, OpenLPImportDialog):
-        OpenLPImportDialog.setWindowTitle(self.trUtf8('openlp.org Song Importer'))
-        self.ImportFileLabel.setText(self.trUtf8('Select openlp.org songfile to import:'))
-        self.ImportListLabel.setText(self.trUtf8('Import File Song List'))
-        self.ImportListTable.horizontalHeaderItem(0).setText(self.trUtf8('Song Title'))
-        self.ImportListTable.horizontalHeaderItem(1).setText(self.trUtf8('Author'))
-        self.ImportSelectAllPushButton.setText(self.trUtf8('Select All'))
-        self.ImportFilterComboBox.setItemText(0, self.trUtf8('Lyrics'))
-        self.ImportFilterComboBox.setItemText(1, self.trUtf8('Title'))
-        self.ImportFilterComboBox.setItemText(2, self.trUtf8('Author'))
-        self.SelectedListLabel.setText(self.trUtf8('Song Import List'))
-        self.SelectedListTable.horizontalHeaderItem(0).setText(self.trUtf8('Song Title'))
-        self.SelectedListTable.horizontalHeaderItem(1).setText(self.trUtf8('Author'))
-        self.SelectedSelectAllPushButton.setText(self.trUtf8('Select All'))
-        self.SelectedRemoveSelectedButton.setText(self.trUtf8('Remove Selected'))
-        self.ProgressGroupBox.setTitle(self.trUtf8('Progress:'))
-        self.ProgressLabel.setText(self.trUtf8('Ready to import'))
-        self.ImportPushButton.setText(self.trUtf8('Import'))
-        self.ClosePushButton.setText(self.trUtf8('Close'))
+        OpenLPImportDialog.setWindowTitle(translate('OpenLPImportForm', 'openlp.org Song Importer'))
+        self.ImportFileLabel.setText(translate('OpenLPImportForm', 'Select openlp.org songfile to import:'))
+        self.ImportListLabel.setText(translate('OpenLPImportForm', 'Import File Song List'))
+        self.ImportListTable.horizontalHeaderItem(0).setText(translate('OpenLPImportForm', 'Song Title'))
+        self.ImportListTable.horizontalHeaderItem(1).setText(translate('OpenLPImportForm', 'Author'))
+        self.ImportSelectAllPushButton.setText(translate('OpenLPImportForm', 'Select All'))
+        self.ImportFilterComboBox.setItemText(0, translate('OpenLPImportForm', 'Lyrics'))
+        self.ImportFilterComboBox.setItemText(1, translate('OpenLPImportForm', 'Title'))
+        self.ImportFilterComboBox.setItemText(2, translate('OpenLPImportForm', 'Author'))
+        self.SelectedListLabel.setText(translate('OpenLPImportForm', 'Song Import List'))
+        self.SelectedListTable.horizontalHeaderItem(0).setText(translate('OpenLPImportForm', 'Song Title'))
+        self.SelectedListTable.horizontalHeaderItem(1).setText(translate('OpenLPImportForm', 'Author'))
+        self.SelectedSelectAllPushButton.setText(translate('OpenLPImportForm', 'Select All'))
+        self.SelectedRemoveSelectedButton.setText(translate('OpenLPImportForm', 'Remove Selected'))
+        self.ProgressGroupBox.setTitle(translate('OpenLPImportForm', 'Progress:'))
+        self.ProgressLabel.setText(translate('OpenLPImportForm', 'Ready to import'))
+        self.ImportPushButton.setText(translate('OpenLPImportForm', 'Import'))
+        self.ClosePushButton.setText(translate('OpenLPImportForm', 'Close'))

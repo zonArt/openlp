@@ -35,6 +35,7 @@ if os.name == u'nt':
     import win32con
     from win32com.client import Dispatch
 
+from openlp.core.utils import AppLocation
 from openlp.migration.display import *
 from openlp.migration.migratefiles import *
 from openlp.migration.migratebibles import *
@@ -103,8 +104,10 @@ class Migration(object):
     def convert_sqlite2_to_3(self, olddb, newdb):
         print u'Converting sqlite2 ' + olddb + ' to sqlite3 ' + newdb
         if os.name == u'nt':
-            # we can't make this a raw unicode string as the \U within it causes much confusion
-            hKey = win32api.RegOpenKey(win32con.HKEY_LOCAL_MACHINE, u'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\SQLite ODBC Driver')
+            # we can't make this a raw unicode string as the \U within it
+            # causes much confusion
+            hKey = win32api.RegOpenKey(win32con.HKEY_LOCAL_MACHINE,
+                u'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\SQLite ODBC Driver')
             value, type = win32api.RegQueryValueEx (hKey, u'UninstallString')
             sqlitepath, temp = os.path.split(value)
             sqliteexe = os.path.join(sqlitepath, u'sqlite.exe')
@@ -133,10 +136,8 @@ class Migration(object):
 
 if __name__ == u'__main__':
     mig = Migration()
-    songconfig = PluginConfig(u'Songs')
-    newsongpath = songconfig.get_data_path()
-    bibleconfig = PluginConfig(u'Bibles')
-    newbiblepath = bibleconfig.get_data_path()
+    newsongpath = AppLocation.get_section_data_path(u'songs')
+    newbiblepath = AppLocation.get_section_data_path(u'bibles')
     if os.name == u'nt':
         if not os.path.isdir(newsongpath):
             os.makedirs(newsongpath)

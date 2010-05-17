@@ -93,7 +93,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.CCLNumberEdit,
             QtCore.SIGNAL(u'lostFocus()'), self.onCCLNumberEditLostFocus)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'update_themes'), self.loadThemes)
+            QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         QtCore.QObject.connect(self.CommentsEdit,
             QtCore.SIGNAL(u'lostFocus()'), self.onCommentsEditLostFocus)
         QtCore.QObject.connect(self.VerseOrderEdit,
@@ -122,6 +122,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def loadAuthors(self):
         authors = self.songmanager.get_authors()
+        authorsCompleter = QtGui.QCompleter(
+            [author.display_name for author in authors],
+            self.AuthorsSelectionComboItem)
+        authorsCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive);
+        self.AuthorsSelectionComboItem.setCompleter(authorsCompleter);
         self.AuthorsSelectionComboItem.clear()
         for author in authors:
             row = self.AuthorsSelectionComboItem.count()
@@ -131,6 +136,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def loadTopics(self):
         topics = self.songmanager.get_topics()
+        topicsCompleter = QtGui.QCompleter(
+            [topic.name for topic in topics],
+            self.SongTopicCombo)
+        topicsCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive);
+        self.SongTopicCombo.setCompleter(topicsCompleter);
         self.SongTopicCombo.clear()
         for topic in topics:
             row = self.SongTopicCombo.count()
@@ -139,6 +149,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def loadBooks(self):
         books = self.songmanager.get_books()
+        booksCompleter = QtGui.QCompleter(
+            [book.name for book in books], self.SongbookCombo)
+        booksCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive);
+        self.SongbookCombo.setCompleter(booksCompleter);
         self.SongbookCombo.clear()
         self.SongbookCombo.addItem(u' ')
         for book in books:
@@ -147,6 +161,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.SongbookCombo.setItemData(row, QtCore.QVariant(book.id))
 
     def loadThemes(self, theme_list):
+        themesCompleter = QtGui.QCompleter(
+            [theme for theme in theme_list],
+            self.ThemeSelectionComboItem)
+        themesCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive);
+        self.ThemeSelectionComboItem.setCompleter(themesCompleter);
         self.ThemeSelectionComboItem.clear()
         self.ThemeSelectionComboItem.addItem(u' ')
         for theme in theme_list:
@@ -320,7 +339,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.verse_form.setVerse(u'', True)
         if self.verse_form.exec_():
             afterText, verse, subVerse = self.verse_form.getVerse()
-            data = u'%s:%s' %(verse, subVerse)
+            data = u'%s:%s' % (verse, subVerse)
             item = QtGui.QListWidgetItem(afterText)
             item.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
             item.setText(afterText)
@@ -334,7 +353,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.verse_form.setVerse(tempText, True, verseId)
             if self.verse_form.exec_():
                 afterText, verse, subVerse = self.verse_form.getVerse()
-                data = u'%s:%s' %(verse, subVerse)
+                data = u'%s:%s' % (verse, subVerse)
                 item.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
                 item.setText(afterText)
                 #number of lines has change so repaint the list moving the data
@@ -410,16 +429,18 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.SongTabWidget.setCurrentIndex(2)
             self.AuthorsListView.setFocus()
         #split the verse list by space and mark lower case for testing
-        taglist = unicode(self.trUtf8(' bcitped'))
+        taglist = unicode(self.trUtf8(' bitped'))
         for verse in unicode(self.VerseOrderEdit.text()).lower().split(u' '):
             if len(verse) > 1:
-                if verse[0:1] == u'%s' % self.trUtf8('v') and verse[1:].isdigit():
+                if (verse[0:1] == u'%s' % self.trUtf8('v') or
+                    verse[0:1] == u'%s' % self.trUtf8('c')) \
+                    and verse[1:].isdigit():
                     pass
                 else:
                     self.SongTabWidget.setCurrentIndex(0)
                     self.VerseOrderEdit.setFocus()
                     return False, \
-                        self.trUtf8('Invalid verse entry - vX')
+                        self.trUtf8('Invalid verse entry - Vx or Cx')
             else:
                 if taglist.find(verse) > -1:
                     pass
@@ -428,7 +449,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     self.VerseOrderEdit.setFocus()
                     return False, \
                         self.trUtf8(\
-                        'Invalid verse entry - values must be Numeric, I,B,C,T,P,E,O')
+                        'Invalid verse entry, values must be I,B,T,P,E,O,Vx,Cx')
         return True, u''
 
     def onTitleEditItemLostFocus(self):
@@ -461,16 +482,16 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         log.debug(u'onPreview')
         if button.text() == unicode(self.trUtf8('Save && Preview')) \
             and self.saveSong():
-            Receiver.send_message(u'preview_song')
+            Receiver.send_message(u'songs_preview')
 
     def closePressed(self):
-        Receiver.send_message(u'remote_edit_clear')
+        Receiver.send_message(u'songs_edit_clear')
         self.close()
 
     def accept(self):
         log.debug(u'accept')
         if self.saveSong():
-            Receiver.send_message(u'load_song_list')
+            Receiver.send_message(u'songs_load_list')
             self.close()
 
     def saveSong(self):
@@ -534,3 +555,5 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.search_title = self.song.search_title.replace(u'}', u'')
         self.song.search_title = self.song.search_title.replace(u'?', u'')
         self.song.search_title = unicode(self.song.search_title)
+
+
