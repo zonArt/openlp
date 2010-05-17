@@ -116,10 +116,12 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'Initialisation started')
         DisplayWidget.__init__(self, parent)
+        self.setWindowFlags(QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint)
+        self.setWindowState(QtCore.Qt.WindowFullScreen)
         self.parent = parent
         self.setWindowTitle(u'OpenLP Display')
         # WA_TranslucentBackground is not available in QT4.4
-        try: 
+        try:
             self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         except AttributeError:
             pass
@@ -346,12 +348,12 @@ class VideoDisplay(Phonon.VideoWidget):
         Phonon.createPath(self.mediaObject, self.audioObject)
         flags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Dialog
         # WindowsStaysOnBottomHint is not available in QT4.4
-        try: 
+        try:
             flags = flags | QtCore.Qt.WindowStaysOnBottomHint
         except AttributeError:
             pass
         self.setWindowFlags(flags)
-            
+
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_hide'), self.mediaHide)
         QtCore.QObject.connect(Receiver.get_receiver(),
