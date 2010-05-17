@@ -155,7 +155,6 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget = SlideList(self)
         self.PreviewListWidget.setColumnCount(1)
         self.PreviewListWidget.horizontalHeader().setVisible(False)
-        #self.PreviewListWidget.verticalHeader().setVisible(False)
         self.PreviewListWidget.setColumnWidth(
             0, self.Controller.width())
         self.PreviewListWidget.isLive = self.isLive

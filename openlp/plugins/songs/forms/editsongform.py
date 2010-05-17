@@ -77,7 +77,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.VerseDeleteButton,
             QtCore.SIGNAL(u'clicked()'), self.onVerseDeleteButtonClicked)
         QtCore.QObject.connect(self.VerseListWidget,
-            QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'),
+            QtCore.SIGNAL(u'itemClicked(QTableWidgetItem*)'),
             self.onVerseListViewPressed)
         QtCore.QObject.connect(self.SongbookCombo,
             QtCore.SIGNAL(u'activated(int)'), self.onSongBookComboChanged)
@@ -182,6 +182,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.CommentsEdit.setText(u'')
         self.CCLNumberEdit.setText(u'')
         self.VerseListWidget.clear()
+        self.VerseListWidget.serRowCount(0)
         self.AuthorsListView.clear()
         self.TopicsListView.clear()
         self.TitleEditItem.setFocus(QtCore.Qt.OtherFocusReason)
@@ -223,6 +224,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         else:
             self.CopyrightEditItem.setText(u'')
         self.VerseListWidget.clear()
+        self.VerseListWidget.setRowCount(0)
         if self.song.verse_order:
             self.VerseOrderEdit.setText(self.song.verse_order)
         else:
@@ -236,21 +238,34 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         else:
             self.CCLNumberEdit.setText(u'')
         #lazy xml migration for now
+        self.VerseListWidget.clear()
+        self.VerseListWidget.setRowCount(0)
+        #can this be automated?
+        self.VerseListWidget.setColumnWidth(0, 400)
+        rowLabel = []
         if self.song.lyrics.startswith(u'<?xml version='):
             songXML = SongXMLParser(self.song.lyrics)
             verseList = songXML.get_verses()
-            for verse in verseList:
+            for count, verse in enumerate(verseList):
+                self.VerseListWidget.setRowCount(
+                    self.VerseListWidget.rowCount() + 1)
                 variant = u'%s:%s' % (verse[0][u'type'], verse[0][u'label'])
-                item = QtGui.QListWidgetItem(verse[1])
+                rowTag = u'%s\n%s' % (verse[0][u'type'][0:1], verse[0][u'label'])
+                rowLabel.append(rowTag)
+                item = QtGui.QTableWidgetItem(verse[1])
                 item.setData(QtCore.Qt.UserRole, QtCore.QVariant(variant))
-                self.VerseListWidget.addItem(item)
+                self.VerseListWidget.setItem(count, 0, item)
+            self.VerseListWidget.setVerticalHeaderLabels(rowLabel)
         else:
             verses = self.song.lyrics.split(u'\n\n')
             for count, verse in enumerate(verses):
-                item = QtGui.QListWidgetItem(verse)
+                self.VerseListWidget.setRowCount(
+                    self.VerseListWidget.rowCount() + 1)
+                item = QtGui.QTableWidgetItem(verse)
                 variant = u'Verse:%s' % unicode(count + 1)
                 item.setData(QtCore.Qt.UserRole, QtCore.QVariant(variant))
-                self.VerseListWidget.addItem(item)
+                self.VerseListWidget.setItem(count, 0, item)
+        self.VerseListWidget.resizeRowsToContents()
         # clear the results
         self.AuthorsListView.clear()
         for author in self.song.authors:
@@ -279,6 +294,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             author_item = QtGui.QListWidgetItem(unicode(author.display_name))
             author_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
             self.AuthorsListView.addItem(author_item)
+        self.VerseListWidget.resizeRowsToContents()
 
     def onAuthorsListViewPressed(self):
         if self.AuthorsListView.count() > 1:
@@ -343,7 +359,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             item = QtGui.QListWidgetItem(afterText)
             item.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
             item.setText(afterText)
-            self.VerseListWidget.addItem(item)
+            self.VerseListWidget.setRowCount(
+                self.VerseListWidget.rowCount() + 1)
+            self.VerseListWidget.setItem(count, 0, item)
 
     def onVerseEditButtonClicked(self):
         item = self.VerseListWidget.currentItem()
@@ -351,7 +369,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             tempText = item.text()
             verseId = unicode((item.data(QtCore.Qt.UserRole)).toString())
             self.verse_form.setVerse(
-                tempText, self.VerseListWidget.count(), True, verseId)
+                tempText, self.VerseListWidget.rowCount(), True, verseId)
             if self.verse_form.exec_():
                 afterText, verse, subVerse = self.verse_form.getVerse()
                 data = u'%s:%s' % (verse, subVerse)
@@ -376,9 +394,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def onVerseEditAllButtonClicked(self):
         verse_list = u''
-        if self.VerseListWidget.count() > 0:
-            for row in range(0, self.VerseListWidget.count()):
-                item = self.VerseListWidget.item(row)
+        if self.VerseListWidget.rowCount() > 0:
+            for row in range(0, self.VerseListWidget.rowCount()):
+                item = self.VerseListWidget.item(row, 0)
                 field = unicode((item.data(QtCore.Qt.UserRole)).toString())
                 verse_list += u'---[%s]---\n' % field
                 verse_list += item.text()
@@ -390,6 +408,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             verse_list = self.verse_form.getVerseAll()
             verse_list = unicode(verse_list.replace(u'\r\n', u'\n'))
             self.VerseListWidget.clear()
+            listRow = 0
             for row in self.findVerseSplit.split(verse_list):
                 for match in row.split(u'---['):
                     for count, parts in enumerate(match.split(u']---\n')):
@@ -403,11 +422,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                                     parts = parts.rstrip(u'\n')
                                 item = QtGui.QListWidgetItem(parts)
                                 item.setData(QtCore.Qt.UserRole, QtCore.QVariant(variant))
-                                self.VerseListWidget.addItem(item)
+                                self.VerseListWidget.setItem(listRow, 0, item)
         self.VerseListWidget.repaint()
 
     def onVerseDeleteButtonClicked(self):
-        self.VerseListWidget.takeItem(self.VerseListWidget.currentRow())
+        self.VerseListWidget.takeItem(self.VerseListWidget.currentRow(), 0)
+        self.VerseListWidget.setRowCount(
+            self.VerseListWidget.rowCount() - 1)
         self.VerseEditButton.setEnabled(False)
         self.VerseDeleteButton.setEnabled(False)
 
@@ -422,7 +443,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.SongTabWidget.setCurrentIndex(0)
             self.TitleEditItem.setFocus()
             return False, self.trUtf8('You need to enter a song title.')
-        if self.VerseListWidget.count() == 0:
+        if self.VerseListWidget.rowCount() == 0:
             self.SongTabWidget.setCurrentIndex(0)
             self.VerseListWidget.setFocus()
             return False, self.trUtf8('You need to enter some verses.')
@@ -521,7 +542,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             sxml.new_document()
             sxml.add_lyrics_to_song()
             text = u' '
-            for i in range (0, self.VerseListWidget.count()):
+            for i in range (0, self.VerseListWidget.rowCount()):
                 item = self.VerseListWidget.item(i)
                 verseId = unicode((item.data(QtCore.Qt.UserRole)).toString())
                 bits = verseId.split(u':')
