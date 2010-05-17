@@ -81,7 +81,8 @@ class ServiceItem(object):
         self.notes = u''
         self.from_plugin = False
         self.capabilities = []
-        self.isValid = True
+        self.is_valid = True
+        self.cache = []
 
     def add_capability(self, capability):
         self.capabilities.append(capability)
@@ -107,6 +108,7 @@ class ServiceItem(object):
         """
         log.debug(u'Render called')
         self._display_frames = []
+        self.cache = []
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
             if self.theme is None:
@@ -125,6 +127,7 @@ class ServiceItem(object):
                         lines += line + u'\n'
                     self._display_frames.append({u'title': title, \
                         u'text': lines.rstrip(), u'verseTag': slide[u'verseTag'] })
+                    self.cache.insert(len(self._display_frames), None)
                 log.log(15, u'Formatting took %4s' % (time.time() - before))
         elif self.service_item_type == ServiceItemType.Image:
             for slide in self._raw_frames:
@@ -149,11 +152,15 @@ class ServiceItem(object):
             self.RenderManager.set_override_theme(self.theme)
         format = self._display_frames[row][u'text'].split(u'\n')
         #if screen blank then do not display footer
-        if format[0]:
-            frame = self.RenderManager.generate_slide(format,
-                            self.raw_footer)
+        if self.cache[row] is not None:
+            frame = self.cache[row]
         else:
-            frame = self.RenderManager.generate_slide(format,u'')
+            if format[0]:
+                frame = self.RenderManager.generate_slide(format,
+                                self.raw_footer)
+            else:
+                frame = self.RenderManager.generate_slide(format,u'')
+            self.cache[row] = frame
         return frame
 
     def add_from_image(self, path, title, image):
@@ -336,4 +343,3 @@ class ServiceItem(object):
         Returns the title of the raw frame
         """
         return self._raw_frames[row][u'path']
-

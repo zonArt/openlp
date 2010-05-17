@@ -3,11 +3,6 @@
 <context>
     <name>AboutForm</name>
     <message>
-        <location filename="openlp/core/ui/aboutform.py" line="47"/>
-        <source>build</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="117"/>
         <source>About OpenLP</source>
         <translation type="unfinished"></translation>
@@ -216,19 +211,14 @@ This General Public License does not permit incorporating your program into prop
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="openlp/core/ui/aboutform.py" line="46"/>
+        <source>build</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>AlertForm</name>
-    <message>
-        <location filename="openlp/plugins/alerts/forms/alertform.py" line="103"/>
-        <source>Item selected to Add</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/forms/alertform.py" line="103"/>
-        <source>Missing data</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="137"/>
         <source>Alert Message</source>
@@ -272,6 +262,89 @@ This General Public License does not permit incorporating your program into prop
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="145"/>
         <source>&amp;Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/forms/alertform.py" line="103"/>
+        <source>Item selected to Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/forms/alertform.py" line="103"/>
+        <source>Missing data</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AlertsTab</name>
+    <message>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="194"/>
+        <source>pt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="197"/>
+        <source>Location:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="191"/>
+        <source>Font Color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="189"/>
+        <source>Font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="190"/>
+        <source>Font Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="198"/>
+        <source>Preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="41"/>
+        <source>Alerts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="195"/>
+        <source>Alert timeout:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="199"/>
+        <source>openlp.org</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="192"/>
+        <source>Background Color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="196"/>
+        <source>s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="201"/>
+        <source>Bottom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="200"/>
+        <source>Top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="193"/>
+        <source>Font Size:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -685,8 +758,18 @@ This General Public License does not permit incorporating your program into prop
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="300"/>
-        <source>Book:</source>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="311"/>
+        <source>Clear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="306"/>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="304"/>
+        <source>To:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -695,22 +778,12 @@ This General Public License does not permit incorporating your program into prop
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="295"/>
-        <source>Find:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="294"/>
         <source>Search Type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="564"/>
-        <source>Bible not fully loaded</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="364"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="365"/>
         <source>No matching book could be found in this Bible.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -725,8 +798,13 @@ This General Public License does not permit incorporating your program into prop
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="306"/>
-        <source>Search</source>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="565"/>
+        <source>Bible not fully loaded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="365"/>
+        <source>No Book Found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -755,23 +833,18 @@ This General Public License does not permit incorporating your program into prop
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="364"/>
-        <source>No Book Found</source>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="295"/>
+        <source>Find:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="300"/>
+        <source>Book:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="234"/>
         <source>Advanced</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="304"/>
-        <source>To:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="311"/>
-        <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -816,13 +889,13 @@ This General Public License does not permit incorporating your program into prop
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="152"/>
-        <source>Verse Display</source>
+        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="167"/>
+        <source>Display Dual Bible Verses</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="167"/>
-        <source>Display Dual Bible Verses</source>
+        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="48"/>
+        <source>Bibles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -831,18 +904,13 @@ This General Public License does not permit incorporating your program into prop
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="155"/>
-        <source>Layout Style:</source>
+        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="152"/>
+        <source>Verse Display</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="161"/>
         <source>No brackets</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="48"/>
-        <source>Bibles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -864,6 +932,11 @@ Changes don&apos;t affect verses already in the service</source>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="157"/>
         <source>Bible Theme:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="155"/>
+        <source>Layout Style:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -902,6 +975,14 @@ Changes don&apos;t affect verses already in the service</source>
     </message>
 </context>
 <context>
+    <name>DisplayTab</name>
+    <message>
+        <location filename="openlp/core/ui/displaytab.py" line="42"/>
+        <source>Displays</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>EditCustomForm</name>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomform.py" line="266"/>
@@ -921,11 +1002,6 @@ Changes don&apos;t affect verses already in the service</source>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomform.py" line="87"/>
         <source>Save &amp;&amp; Preview</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/forms/editcustomform.py" line="273"/>
-        <source>You have unsaved data, please save or clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1028,6 +1104,11 @@ Changes don&apos;t affect verses already in the service</source>
         <source>Credits:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="openlp/plugins/custom/forms/editcustomform.py" line="273"/>
+        <source>You have unsaved data, please save or clear</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>EditSongForm</name>
@@ -1049,31 +1130,6 @@ Changes don&apos;t affect verses already in the service</source>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="501"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="433"/>
-        <source> bitped</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="436"/>
-        <source>v</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="436"/>
-        <source>c</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="444"/>
-        <source>Invalid verse entry - Vx or Cx</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="452"/>
-        <source>Invalid verse entry, values must be I,B,T,P,E,O,Vx,Cx</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1201,19 +1257,34 @@ Changes don&apos;t affect verses already in the service</source>
         <source>Theme, Copyright Info &amp;&amp; Comments</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="433"/>
+        <source> bitped</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="436"/>
+        <source>v</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="436"/>
+        <source>c</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="444"/>
+        <source>Invalid verse entry - Vx or Cx</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="452"/>
+        <source>Invalid verse entry, values must be I,B,T,P,E,O,Vx,Cx</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>EditVerseForm</name>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editverseform.py" line="155"/>
-        <source>Verse</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editverseform.py" line="156"/>
-        <source>Chrous</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editversedialog.py" line="113"/>
         <source>Edit Verse</source>
@@ -1227,6 +1298,11 @@ Changes don&apos;t affect verses already in the service</source>
     <message>
         <location filename="openlp/plugins/songs/forms/editversedialog.py" line="127"/>
         <source>Intro</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editverseform.py" line="155"/>
+        <source>Verse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1259,12 +1335,22 @@ Changes don&apos;t affect verses already in the service</source>
         <source>Number</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editverseform.py" line="156"/>
+        <source>Chrous</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GeneralTab</name>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="195"/>
         <source>CCLI Details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/generaltab.py" line="198"/>
+        <source>SongSelect Password:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1335,11 +1421,6 @@ Changes don&apos;t affect verses already in the service</source>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="180"/>
         <source>Monitors</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/generaltab.py" line="198"/>
-        <source>SongSelect Password:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1420,8 +1501,8 @@ Changes don&apos;t affect verses already in the service</source>
 <context>
     <name>ImportWizardForm</name>
     <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="134"/>
-        <source>You need to specify a file with books of the Bible to use in the import.</source>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="181"/>
+        <source>Bible Exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1432,11 +1513,6 @@ Changes don&apos;t affect verses already in the service</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="172"/>
         <source>You need to set a copyright for your Bible! Bibles in the Public Domain need to be marked as such.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="181"/>
-        <source>Bible Exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1465,16 +1541,6 @@ Changes don&apos;t affect verses already in the service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="142"/>
-        <source>You need to specify a file of Bible verses to import.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="164"/>
-        <source>You need to specify a version name for your Bible.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="181"/>
         <source>This Bible already exists! Please import a different Bible or first delete the existing one.</source>
         <translation type="unfinished"></translation>
@@ -1490,16 +1556,6 @@ Changes don&apos;t affect verses already in the service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="125"/>
-        <source>You need to specify a file to import your Bible from.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="151"/>
-        <source>You need to specify an OpenSong Bible file to import.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="142"/>
         <source>Invalid Verse File</source>
         <translation type="unfinished"></translation>
@@ -1507,21 +1563,6 @@ Changes don&apos;t affect verses already in the service</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="230"/>
         <source>Open OpenSong Bible</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="209"/>
-        <source>Open OSIS File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="216"/>
-        <source>Open Books CSV File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="223"/>
-        <source>Open Verses CSV File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1679,6 +1720,46 @@ Changes don&apos;t affect verses already in the service</source>
         <source>Ready.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="125"/>
+        <source>You need to specify a file to import your Bible from.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="134"/>
+        <source>You need to specify a file with books of the Bible to use in the import.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="142"/>
+        <source>You need to specify a file of Bible verses to import.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="151"/>
+        <source>You need to specify an OpenSong Bible file to import.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="164"/>
+        <source>You need to specify a version name for your Bible.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="209"/>
+        <source>Open OSIS File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="216"/>
+        <source>Open Books CSV File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="223"/>
+        <source>Open Verses CSV File</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LanguageManager</name>
@@ -1696,379 +1777,379 @@ Changes don&apos;t affect verses already in the service</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="623"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="620"/>
         <source>The Main Display has been blanked out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="592"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="589"/>
         <source>OpenLP Version Updated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="679"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="676"/>
         <source>Save Changes to Service?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="623"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="620"/>
         <source>OpenLP Main Display Blanked</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="356"/>
-        <source>New Service</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="360"/>
-        <source>Open Service</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="364"/>
-        <source>Save Service</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="334"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="332"/>
         <source>OpenLP 2.0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="335"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="333"/>
         <source>English</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="336"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="334"/>
         <source>Default Theme: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="339"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="337"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="340"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="338"/>
         <source>&amp;Import</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="341"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="339"/>
         <source>&amp;Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="342"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="340"/>
         <source>&amp;Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="343"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="341"/>
         <source>&amp;View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="344"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="342"/>
         <source>M&amp;ode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="347"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="345"/>
         <source>&amp;Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="348"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="346"/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="349"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="347"/>
         <source>Media Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="351"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="349"/>
         <source>Service Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="353"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="351"/>
         <source>Theme Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="355"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="353"/>
         <source>&amp;New</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="357"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="354"/>
+        <source>New Service</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="355"/>
         <source>Create a new Service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="358"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="356"/>
         <source>Ctrl+N</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="359"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="357"/>
         <source>&amp;Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="361"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="358"/>
+        <source>Open Service</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="359"/>
         <source>Open an existing service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="362"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="360"/>
         <source>Ctrl+O</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="363"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="361"/>
         <source>&amp;Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="365"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="362"/>
+        <source>Save Service</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="363"/>
         <source>Save the current service to disk</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="367"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="365"/>
         <source>Ctrl+S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="368"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="366"/>
         <source>Save &amp;As...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="369"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="367"/>
         <source>Save Service As</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="370"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="368"/>
         <source>Save the current service under a new name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="372"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="370"/>
         <source>F12</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="373"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="371"/>
         <source>E&amp;xit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="374"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="372"/>
         <source>Quit OpenLP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="375"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="373"/>
         <source>Alt+F4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="378"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="376"/>
         <source>&amp;Theme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="379"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="377"/>
         <source>&amp;Language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="380"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="378"/>
         <source>Look &amp;&amp; &amp;Feel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="381"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="379"/>
         <source>&amp;Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="382"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="380"/>
         <source>&amp;Media Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="383"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="381"/>
         <source>Toggle Media Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="385"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="383"/>
         <source>Toggle the visibility of the Media Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="387"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="385"/>
         <source>F8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="388"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="386"/>
         <source>&amp;Theme Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="389"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="387"/>
         <source>Toggle Theme Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="391"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="389"/>
         <source>Toggle the visibility of the Theme Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="393"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="391"/>
         <source>F10</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="394"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="392"/>
         <source>&amp;Service Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="395"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="393"/>
         <source>Toggle Service Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="397"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="395"/>
         <source>Toggle the visibility of the Service Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="399"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="397"/>
         <source>F9</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="400"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="398"/>
         <source>&amp;Preview Panel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="401"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="399"/>
         <source>Toggle Preview Panel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="403"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="401"/>
         <source>Toggle the visibility of the Preview Panel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="405"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="403"/>
         <source>F11</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="406"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="404"/>
         <source>&amp;Plugin List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="407"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="405"/>
         <source>List the Plugins</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="408"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="406"/>
         <source>Alt+F7</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="409"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="407"/>
         <source>&amp;User Guide</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="410"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="408"/>
         <source>&amp;About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="411"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="409"/>
         <source>More information about OpenLP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="413"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="411"/>
         <source>Ctrl+F1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="414"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="412"/>
         <source>&amp;Online Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="415"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="413"/>
         <source>&amp;Web Site</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="417"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="415"/>
         <source>&amp;Auto Detect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="418"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="416"/>
         <source>Choose System language, if available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="422"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="420"/>
         <source>Set the interface language to %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="424"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="422"/>
         <source>Add &amp;Tool...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="425"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="423"/>
         <source>Add an application to the list of tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="427"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="425"/>
         <source>&amp;Preview Pane</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="428"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="426"/>
         <source>&amp;Live</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="589"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="586"/>
         <source>Version %s of OpenLP is now available for download (you are currently running version %s).
 
 You can download the latest version from http://openlp.org</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="679"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="676"/>
         <source>Your service has changed.  Do you want to save those changes?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2088,11 +2169,6 @@ You can download the latest version from http://openlp.org</source>
     <message>
         <location filename="openlp/core/lib/mediamanageritem.py" line="218"/>
         <source>Load a new</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="237"/>
-        <source>Delete the selected item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2118,6 +2194,11 @@ You can download the latest version from http://openlp.org</source>
     <message>
         <location filename="openlp/core/lib/mediamanageritem.py" line="230"/>
         <source>Edit the selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="237"/>
+        <source>Delete the selected item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2171,26 +2252,26 @@ You can download the latest version from http://openlp.org</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="461"/>
-        <source>Invalid Service Item</source>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="451"/>
+        <source>You must select an existing service item to add to.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="451"/>
-        <source>You must select an existing service item to add to.</source>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="461"/>
+        <source>Invalid Service Item</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>MediaMediaItem</name>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="122"/>
-        <source>Media</source>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="64"/>
+        <source>Select Media</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="64"/>
-        <source>Select Media</source>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="122"/>
+        <source>Media</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2217,7 +2298,7 @@ You can download the latest version from http://openlp.org</source>
 <context>
     <name>MediaPlugin</name>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="78"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="79"/>
         <source>&lt;b&gt;Media Plugin&lt;/b&gt;&lt;br&gt;This plugin allows the playing of audio and video media</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2379,6 +2460,11 @@ You can download the latest version from http://openlp.org</source>
 <context>
     <name>OpenSongExportForm</name>
     <message>
+        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="289"/>
+        <source>OpenSong Song Exporter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="290"/>
         <source>Select OpenSong song folder:</source>
         <translation type="unfinished"></translation>
@@ -2441,11 +2527,6 @@ You can download the latest version from http://openlp.org</source>
     <message>
         <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="306"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/opensongexportdialog.py" line="289"/>
-        <source>OpenSong Song Exporter</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2533,18 +2614,8 @@ You can download the latest version from http://openlp.org</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="103"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="104"/>
         <source>Present using:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="68"/>
-        <source>Automatic</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="135"/>
-        <source>A presentation with that filename already exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2553,12 +2624,22 @@ You can download the latest version from http://openlp.org</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="135"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="136"/>
+        <source>A presentation with that filename already exists.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="136"/>
         <source>File exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="77"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="68"/>
+        <source>Automatic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="78"/>
         <source>Presentations (%s)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2636,138 +2717,148 @@ You can download the latest version from http://openlp.org</source>
 <context>
     <name>ServiceManager</name>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="609"/>
-        <source>Save Changes to Service?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="596"/>
-        <source>Open Service</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="160"/>
-        <source>Move to top</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="115"/>
-        <source>Create a new service</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="121"/>
-        <source>Save this service</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="125"/>
-        <source>Theme:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="173"/>
-        <source>Delete From Service</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="121"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="122"/>
         <source>Save Service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="224"/>
-        <source>&amp;Live Verse</source>
+        <location filename="openlp/core/ui/servicemanager.py" line="616"/>
+        <source>Save Changes to Service?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="160"/>
-        <source>Move to &amp;top</source>
+        <location filename="openlp/core/ui/servicemanager.py" line="603"/>
+        <source>Open Service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="115"/>
-        <source>New Service</source>
+        <location filename="openlp/core/ui/servicemanager.py" line="161"/>
+        <source>Move to top</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="215"/>
-        <source>&amp;Notes</source>
+        <location filename="openlp/core/ui/servicemanager.py" line="116"/>
+        <source>Create a new service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="169"/>
-        <source>Move to end</source>
+        <location filename="openlp/core/ui/servicemanager.py" line="122"/>
+        <source>Save this service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="217"/>
-        <source>&amp;Delete From Service</source>
+        <location filename="openlp/core/ui/servicemanager.py" line="126"/>
+        <source>Theme:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="163"/>
-        <source>Move up order</source>
+        <location filename="openlp/core/ui/servicemanager.py" line="174"/>
+        <source>Delete From Service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="166"/>
-        <source>Move down order</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="166"/>
-        <source>Move &amp;down</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="118"/>
-        <source>Load an existing service</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="222"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="223"/>
         <source>&amp;Preview Verse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="163"/>
-        <source>Move &amp;up</source>
+        <location filename="openlp/core/ui/servicemanager.py" line="225"/>
+        <source>&amp;Live Verse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="211"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="116"/>
+        <source>New Service</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="216"/>
+        <source>&amp;Notes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="164"/>
+        <source>Move up order</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="167"/>
+        <source>Move down order</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="119"/>
+        <source>Load an existing service</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="170"/>
+        <source>Move to end</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="212"/>
         <source>&amp;Edit Item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="169"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="161"/>
+        <source>Move to &amp;top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="164"/>
+        <source>Move &amp;up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="167"/>
+        <source>Move &amp;down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="170"/>
         <source>Move to &amp;bottom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="213"/>
-        <source>&amp;Maintain Item</source>
+        <location filename="openlp/core/ui/servicemanager.py" line="218"/>
+        <source>&amp;Delete From Service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="456"/>
-        <source>Your service is unsaved, do you want to save those changes before creating a new one?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="609"/>
-        <source>Your current service is unsaved, do you want to save the changes before opening a new one?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="205"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="206"/>
         <source>&amp;Add New Item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="207"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="208"/>
         <source>&amp;Add to Selected Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="214"/>
+        <source>&amp;Maintain Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="460"/>
+        <source>Your service is unsaved, do you want to save those changes before creating a new one?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="616"/>
+        <source>Your current service is unsaved, do you want to save the changes before opening a new one?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="812"/>
+        <source>Missing Display Handler</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="812"/>
+        <source>Your item cannot be displayed as there is no handler to display it</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2790,97 +2881,97 @@ You can download the latest version from http://openlp.org</source>
 <context>
     <name>SlideController</name>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="170"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="188"/>
         <source>Move to previous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="256"/>
-        <source>Go to Verse</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="202"/>
-        <source>Start continuous loop</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="116"/>
-        <source>Live</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="225"/>
-        <source>Start playing media</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="193"/>
-        <source>Move to live</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="120"/>
-        <source>Preview</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="177"/>
-        <source>Move to last</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="197"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="215"/>
         <source>Edit and re-preview Song</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="214"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="232"/>
         <source>Delay between slides in seconds</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="173"/>
-        <source>Move to next</source>
+        <location filename="openlp/core/ui/slidecontroller.py" line="274"/>
+        <source>Go to Verse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="167"/>
-        <source>Move to first</source>
+        <location filename="openlp/core/ui/slidecontroller.py" line="220"/>
+        <source>Start continuous loop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="229"/>
-        <source>Blank Screen</source>
+        <location filename="openlp/core/ui/slidecontroller.py" line="134"/>
+        <source>Live</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="526"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="243"/>
+        <source>Start playing media</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="211"/>
+        <source>Move to live</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="195"/>
+        <source>Move to last</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="547"/>
         <source>Verse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="205"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="191"/>
+        <source>Move to next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="185"/>
+        <source>Move to first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="247"/>
+        <source>Blank Screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="138"/>
+        <source>Preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="223"/>
         <source>Stop continuous loop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="213"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="231"/>
         <source>s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="232"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="250"/>
         <source>Theme Screen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="235"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="253"/>
         <source>Hide Screen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="527"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="548"/>
         <source>Chorus</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2916,26 +3007,6 @@ You can download the latest version from http://openlp.org</source>
 <context>
     <name>SongMaintenanceForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="250"/>
-        <source>Are you sure you want to delete the selected book?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="183"/>
-        <source>Couldn&apos;t save your author.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="224"/>
-        <source>This author can&apos;t be deleted, they are currently assigned to at least one song.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="163"/>
-        <source>Couldn&apos;t add your book.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="215"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
@@ -2946,13 +3017,13 @@ You can download the latest version from http://openlp.org</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="151"/>
-        <source>Couldn&apos;t add your topic.</source>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="250"/>
+        <source>Are you sure you want to delete the selected book?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="250"/>
-        <source>This book can&apos;t be deleted, it is currently assigned to at least one song.</source>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="237"/>
+        <source>Delete Topic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2971,26 +3042,6 @@ You can download the latest version from http://openlp.org</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="140"/>
-        <source>Couldn&apos;t add your author.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="198"/>
-        <source>Couldn&apos;t save your topic.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="215"/>
-        <source>Couldn&apos;t save your book.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="237"/>
-        <source>Delete Topic</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="224"/>
         <source>Delete Author</source>
         <translation type="unfinished"></translation>
@@ -2998,11 +3049,6 @@ You can download the latest version from http://openlp.org</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="237"/>
         <source>No topic selected!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="237"/>
-        <source>This topic can&apos;t be deleted, it is currently assigned to at least one song.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3045,6 +3091,51 @@ You can download the latest version from http://openlp.org</source>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="140"/>
+        <source>Couldn&apos;t add your author.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="151"/>
+        <source>Couldn&apos;t add your topic.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="163"/>
+        <source>Couldn&apos;t add your book.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="183"/>
+        <source>Couldn&apos;t save your author.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="198"/>
+        <source>Couldn&apos;t save your topic.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="215"/>
+        <source>Couldn&apos;t save your book.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="224"/>
+        <source>This author can&apos;t be deleted, they are currently assigned to at least one song.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="237"/>
+        <source>This topic can&apos;t be deleted, it is currently assigned to at least one song.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="250"/>
+        <source>This book can&apos;t be deleted, it is currently assigned to at least one song.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SongMediaItem</name>
@@ -3064,6 +3155,11 @@ You can download the latest version from http://openlp.org</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="146"/>
+        <source>Titles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="147"/>
         <source>Lyrics</source>
         <translation type="unfinished"></translation>
@@ -3071,11 +3167,6 @@ You can download the latest version from http://openlp.org</source>
     <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="141"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="146"/>
-        <source>Titles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3227,11 +3318,6 @@ You can download the latest version from http://openlp.org</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="364"/>
-        <source>File is not a valid theme.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/thememanager.py" line="79"/>
         <source>Edit a theme</source>
         <translation type="unfinished"></translation>
@@ -3244,11 +3330,6 @@ You can download the latest version from http://openlp.org</source>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="69"/>
         <source>Export Theme</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="180"/>
-        <source>You are unable to delete the default theme.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3292,11 +3373,6 @@ You can download the latest version from http://openlp.org</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="220"/>
-        <source>You have not selected a theme.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/thememanager.py" line="447"/>
         <source>A theme with this name already exists, would you like to overwrite it?</source>
         <translation type="unfinished"></translation>
@@ -3307,6 +3383,11 @@ You can download the latest version from http://openlp.org</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="openlp/core/ui/thememanager.py" line="180"/>
+        <source>You are unable to delete the default theme.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/thememanager.py" line="187"/>
         <source>Theme %s is use in %s plugin</source>
         <translation type="unfinished"></translation>
@@ -3314,6 +3395,16 @@ You can download the latest version from http://openlp.org</source>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="193"/>
         <source>Theme %s is use by Service Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="220"/>
+        <source>You have not selected a theme.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="364"/>
+        <source>File is not a valid theme.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3330,8 +3421,8 @@ You can download the latest version from http://openlp.org</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themestab.py" line="121"/>
-        <source>Use the global theme, overriding any themes associated with either the service or the songs.</source>
+        <location filename="openlp/core/ui/themestab.py" line="120"/>
+        <source>Global level</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3345,8 +3436,8 @@ You can download the latest version from http://openlp.org</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themestab.py" line="120"/>
-        <source>Global level</source>
+        <location filename="openlp/core/ui/themestab.py" line="121"/>
+        <source>Use the global theme, overriding any themes associated with either the service or the songs.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3355,13 +3446,13 @@ You can download the latest version from http://openlp.org</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themestab.py" line="117"/>
-        <source>Use the theme from the service, overriding any of the individual songs&apos; themes. If the service doesn&apos;t have a theme, then use the global theme.</source>
+        <location filename="openlp/core/ui/themestab.py" line="40"/>
+        <source>Themes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themestab.py" line="40"/>
-        <source>Themes</source>
+        <location filename="openlp/core/ui/themestab.py" line="117"/>
+        <source>Use the theme from the service, overriding any of the individual songs&apos; themes. If the service doesn&apos;t have a theme, then use the global theme.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3489,6 +3580,54 @@ You can download the latest version from http://openlp.org</source>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="142"/>
         <source>Import songs from Word/Writer/Powerpoint/Impress</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>self</name>
+    <message>
+        <location filename="openlp/core/ui/displaytab.py" line="162"/>
+        <source>Amend Display Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/displaytab.py" line="163"/>
+        <source>Default Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/displaytab.py" line="173"/>
+        <source>X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/displaytab.py" line="171"/>
+        <source>0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/displaytab.py" line="174"/>
+        <source>Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/displaytab.py" line="175"/>
+        <source>Height</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/displaytab.py" line="176"/>
+        <source>Width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/displaytab.py" line="172"/>
+        <source>Amend Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/displaytab.py" line="177"/>
+        <source>Override Output Display</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

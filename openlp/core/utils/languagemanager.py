@@ -24,10 +24,9 @@
 ###############################################################################
 
 import logging
-
-from logging import FileHandler
-from PyQt4 import QtCore, QtGui
 import os
+
+from PyQt4 import QtCore, QtGui
 from openlp.core.utils import AppLocation
 from openlp.core.lib import translate
 
@@ -68,7 +67,8 @@ class LanguageManager(object):
 
     @staticmethod
     def get_language():
-        language = unicode(QtCore.QSettings().value(
+        settings = QtCore.QSettings(u'OpenLP', u'OpenLP')
+        language = unicode(settings.value(
             u'general/language', QtCore.QVariant(u'[en]')).toString())
         log.info(u'Language file: \'%s\' Loaded from conf file' % language)
         regEx = QtCore.QRegExp("^\[(.*)\]")

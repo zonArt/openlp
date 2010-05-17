@@ -337,13 +337,14 @@ class BibleMediaItem(MediaManagerItem):
         # load bibles into the combo boxes
         first = True
         for bible in bibles:
-            self.QuickVersionComboBox.addItem(bible)
-            self.QuickSecondBibleComboBox.addItem(bible)
-            self.AdvancedVersionComboBox.addItem(bible)
-            self.AdvancedSecondBibleComboBox.addItem(bible)
-            if first:
-                first = False
-                self.initialiseBible(bible)
+            if bible:
+                self.QuickVersionComboBox.addItem(bible)
+                self.QuickSecondBibleComboBox.addItem(bible)
+                self.AdvancedVersionComboBox.addItem(bible)
+                self.AdvancedSecondBibleComboBox.addItem(bible)
+                if first:
+                    first = False
+                    self.initialiseBible(bible)
 
     def onListViewResize(self, width, height):
         self.SearchProgress.setGeometry(self.ListView.geometry().x(),
@@ -518,7 +519,7 @@ class BibleMediaItem(MediaManagerItem):
         else:
             service_item.theme = self.parent.settings_tab.bible_theme
         #if we are verse per slide we have already been added
-        if self.parent.settings_tab.layout_style != 0:
+        if self.parent.settings_tab.layout_style != 0 and not bible2:
             raw_slides.append(bible_text)
         for slide in raw_slides:
             service_item.add_from_text(slide[:30], slide)

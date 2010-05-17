@@ -38,7 +38,8 @@ from PyQt4 import QtCore
 ignore_pathes = [u"./scripts", u"./openlp/core/test"]
 ignore_files = [u"setup.py"]
 translation_path = u"http://pootle.projecthq.biz/export/openlp/"
-translations = [  u"af"
+translations = [ u"en" 
+                , u"af"
                 , u"en_ZA"
                 , u"en_GB"
                 , u"de"
