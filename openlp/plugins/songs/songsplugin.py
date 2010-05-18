@@ -30,9 +30,9 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Plugin, build_icon, PluginStatus, Receiver
 from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab, \
     SofImport, OooImport
-from openlp.plugins.songs.forms import ImportWizardForm
 
 log = logging.getLogger(__name__)
+
 
 class SongsPlugin(Plugin):
     """
@@ -115,11 +115,14 @@ class SongsPlugin(Plugin):
         self.ImportOooItem = QtGui.QAction(import_menu)
         self.ImportOooItem.setObjectName(u'ImportOooItem')
         self.ImportOooItem.setText(
-            import_menu.trUtf8('Generic Document/Presentation Import (temp menu item)'))
+            import_menu.trUtf8('Generic Document/Presentation Import '
+                '(temp menu item)'))
         self.ImportOooItem.setToolTip(
-            import_menu.trUtf8('Import songs from Word/Writer/Powerpoint/Impress'))
+            import_menu.trUtf8('Import songs from '
+                'Word/Writer/Powerpoint/Impress'))
         self.ImportOooItem.setStatusTip(
-            import_menu.trUtf8('Import songs from Word/Writer/Powerpoint/Impress'))
+            import_menu.trUtf8('Import songs from '
+                'Word/Writer/Powerpoint/Impress'))
         import_menu.addAction(self.ImportOooItem)
         # Signals and slots
         QtCore.QObject.connect(self.SongImportItem,
@@ -151,16 +154,16 @@ class SongsPlugin(Plugin):
             u'', u'Songs of Fellowship file (*.rtf *.RTF)')
         try:
             for filename in filenames:
-                sofimport = SofImport(self.songmanager)        
+                sofimport = SofImport(self.manager)
                 sofimport.import_sof(unicode(filename))
         except:
             log.exception('Could not import SoF file')
             QtGui.QMessageBox.critical(None,
                 self.ImportSongMenu.trUtf8('Import Error'),
                 self.ImportSongMenu.trUtf8('Error importing Songs of ' 
-                    + 'Fellowship file.\nOpenOffice.org must be installed' 
-                    + ' and you must be using an unedited copy of the RTF'
-                    + ' included with the Songs of Fellowship Music Editions'),
+                    'Fellowship file.\nOpenOffice.org must be installed' 
+                    ' and you must be using an unedited copy of the RTF'
+                    ' included with the Songs of Fellowship Music Editions'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
         Receiver.send_message(u'songs_load_list')
@@ -169,18 +172,17 @@ class SongsPlugin(Plugin):
         filenames = QtGui.QFileDialog.getOpenFileNames(
             None, self.trUtf8('Open documents or presentations'),
             u'', u'All Files(*.*)')
-        oooimport = OooImport(self.songmanager)        
+        oooimport = OooImport(self.manager)        
         oooimport.import_docs(filenames)
         Receiver.send_message(u'songs_load_list')
 
     def about(self):
-        about_text = self.trUtf8('<strong>Song Plugin</strong><br />This plugin allows '
-            'Songs to be managed and displayed.')
+        about_text = self.trUtf8('<strong>Song Plugin</strong><br />'
+            'This plugin allows songs to be managed and displayed.')
         return about_text
 
     def can_delete_theme(self, theme):
         if len(self.manager.get_songs_for_theme(theme)) == 0:
             return True
         return False
-
 
