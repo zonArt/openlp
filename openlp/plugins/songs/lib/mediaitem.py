@@ -52,7 +52,7 @@ class SongMediaItem(MediaManagerItem):
         MediaManagerItem.__init__(self, parent, icon, title)
         self.edit_song_form = EditSongForm(self, self.parent.manager)
         self.singleServiceItem = False
-        #self.edit_song_form = EditSongForm(self.parent.songmanager, self)
+        #self.edit_song_form = EditSongForm(self.parent.manager, self)
         self.song_maintenance_form = SongMaintenanceForm(
             self.parent.manager, self)
         # Holds information about whether the edit is remotly triggered and
@@ -293,7 +293,7 @@ class SongMediaItem(MediaManagerItem):
                 return
             for item in items:
                 item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-                self.parent.songmanager.delete_song(item_id)
+                self.parent.manager.delete_song(item_id)
             self.onSearchTextButtonClick()
 
     def generateSlideData(self, service_item, item=None):
@@ -314,7 +314,7 @@ class SongMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
-        song = self.parent.songmanager.get_song(item_id)
+        song = self.parent.manager.get_song(item_id)
         service_item.theme = song.theme_name
         service_item.editId = item_id
         if song.lyrics.startswith(u'<?xml version='):
