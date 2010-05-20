@@ -41,7 +41,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     """
     log.info(u'%s EditSongForm loaded', __name__)
 
-    def __init__(self, songmanager, parent=None):
+    def __init__(self, parent, songmanager):
         """
         Constructor
         """
@@ -108,7 +108,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'clicked(QAbstractButton*)'), self.onPreview)
         # Create other objects and forms
         self.songmanager = songmanager
-        self.verse_form = EditVerseForm()
+        self.verse_form = EditVerseForm(self)
         self.initialise()
         self.AuthorsListView.setSortingEnabled(False)
         self.AuthorsListView.setAlternatingRowColors(True)
@@ -362,7 +362,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.VerseDeleteButton.setEnabled(True)
 
     def onVerseAddButtonClicked(self):
-        self.verse_form.setVerse(u'', self.VerseListWidget.rowCount() + 1, True)
+        self.verse_form.setVerse(u'', True)
         if self.verse_form.exec_():
             afterText, verse, subVerse = self.verse_form.getVerse()
             data = u'%s:%s' % (verse, subVerse)
@@ -381,8 +381,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if item:
             tempText = item.text()
             verseId = unicode((item.data(QtCore.Qt.UserRole)).toString())
-            self.verse_form.setVerse(
-                tempText, self.VerseListWidget.rowCount(), True, verseId)
+            self.verse_form.setVerse(tempText, True, verseId)
             if self.verse_form.exec_():
                 afterText, verse, subVerse = self.verse_form.getVerse()
                 data = u'%s:%s' % (verse, subVerse)
@@ -601,3 +600,5 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.search_title = self.song.search_title.replace(u'}', u'')
         self.song.search_title = self.song.search_title.replace(u'?', u'')
         self.song.search_title = unicode(self.song.search_title)
+
+
