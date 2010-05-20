@@ -33,8 +33,8 @@ class Ui_BibleImportWizard(object):
         BibleImportWizard.setModal(True)
         BibleImportWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
         BibleImportWizard.setOptions(
-            QtGui.QWizard.IndependentPages | \
-            QtGui.QWizard.NoBackButtonOnStartPage | \
+            QtGui.QWizard.IndependentPages |
+            QtGui.QWizard.NoBackButtonOnStartPage |
             QtGui.QWizard.NoBackButtonOnLastPage)
         self.WelcomePage = QtGui.QWizardPage()
         self.WelcomePage.setPixmap(QtGui.QWizard.WatermarkPixmap,
@@ -310,8 +310,8 @@ class Ui_BibleImportWizard(object):
     def retranslateUi(self, BibleImportWizard):
         BibleImportWizard.setWindowTitle(translate('ImportWizardForm', 'Bible Import Wizard'))
         self.TitleLabel.setText(
-            u'<span style=\" font-size:14pt; font-weight:600;\">' + \
-            translate('ImportWizardForm', 'Welcome to the Bible Import Wizard') + u'</span>')
+            u'<span style="font-size:14pt; font-weight:600;">%s</span>' % \
+            translate('ImportWizardForm', 'Welcome to the Bible Import Wizard'))
         self.InformationLabel.setText(
             translate('ImportWizardForm', 'This wizard will help you to import Bibles from a '
                 'variety of formats. Click the next button below to start the '
@@ -352,3 +352,5 @@ class Ui_BibleImportWizard(object):
             translate('ImportWizardForm', 'Please wait while your Bible is imported.'))
         self.ImportProgressLabel.setText(translate('ImportWizardForm', 'Ready.'))
         self.ImportProgressBar.setFormat(u'%p%')
+
+

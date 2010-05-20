@@ -427,3 +427,5 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.finishButton.setVisible(True)
         self.cancelButton.setVisible(False)
         Receiver.send_message(u'openlp_process_events')
+
+

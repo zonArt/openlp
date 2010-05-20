@@ -331,7 +331,7 @@ class Ui_MainWindow(object):
         """
         MainWindow.mainTitle = translate('MainWindow', 'OpenLP 2.0')
         MainWindow.language = translate('MainWindow', 'English')
-        MainWindow.defaultThemeText = translate('MainWindow', 
+        MainWindow.defaultThemeText = translate('MainWindow',
             'Default Theme: ')
         MainWindow.setWindowTitle(MainWindow.mainTitle)
         self.FileMenu.setTitle(translate('MainWindow', '&File'))
@@ -340,7 +340,7 @@ class Ui_MainWindow(object):
         self.OptionsMenu.setTitle(translate('MainWindow', '&Options'))
         self.OptionsViewMenu.setTitle(translate('MainWindow', '&View'))
         self.ViewModeMenu.setTitle(translate('MainWindow', 'M&ode'))
-        self.OptionsLanguageMenu.setTitle(translate('MainWindow', 
+        self.OptionsLanguageMenu.setTitle(translate('MainWindow',
             u'&Language'))
         self.ToolsMenu.setTitle(translate('MainWindow', '&Tools'))
         self.HelpMenu.setTitle(translate('MainWindow', '&Help'))
@@ -525,7 +525,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onSaveService)
         #i18n set signals for languages
-        QtCore.QObject.connect(self.AutoLanguageItem, 
+        QtCore.QObject.connect(self.AutoLanguageItem,
                 QtCore.SIGNAL(u'toggled(bool)'),
                 self.setAutoLanguage)
         self.LanguageGroup.triggered.connect(LanguageManager.set_language)

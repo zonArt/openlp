@@ -25,9 +25,7 @@
 
 import logging
 
-from PyQt4 import QtNetwork, QtCore
-
-from openlp.core.lib import Plugin, Receiver
+from openlp.core.lib import Plugin
 from openlp.plugins.remotes.lib import RemoteTab, HttpServer
 
 log = logging.getLogger(__name__)
