@@ -49,9 +49,7 @@ translations = [ u"en"
                 , u"pt_BR"
                 , u"es"
                 , u"sv"]
-                
-                
-                
+
 def write_file(filename, stringlist):
     content = u''
     for line in stringlist:
@@ -76,7 +74,6 @@ def main():
                       help="proceed all options")
 
     (options, args) = parser.parse_args()
-    qt_args = []
     if options.download:
         downloadTranslations()
     elif options.prepare:

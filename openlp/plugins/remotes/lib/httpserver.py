@@ -314,7 +314,7 @@ class HttpConnection(object):
         """
         if not self.socket:
             return
-        html = self.send_408_timeout()
+        self.send_408_timeout()
         self.close()
                 
     def disconnected(self):
@@ -334,4 +334,3 @@ class HttpConnection(object):
         self.socket.close()
         self.socket = None
         self.parent.close_connection(self)
-
