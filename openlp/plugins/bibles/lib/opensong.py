@@ -108,3 +108,5 @@ class OpenSongBible(BibleDB):
             return False
         else:
             return success
+
+
