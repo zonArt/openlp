@@ -98,6 +98,27 @@ class GeneralTab(SettingsTab):
         self.ShowSplashCheckBox.setObjectName(u'ShowSplashCheckBox')
         self.StartupLayout.addWidget(self.ShowSplashCheckBox)
         self.GeneralLeftLayout.addWidget(self.StartupGroupBox)
+        self.DataBaseGroupBox = QtGui.QGroupBox(self.GeneralLeftWidget)
+        self.DataBaseGroupBox.setObjectName("DataBaseGroupBox")
+        self.verticalLayout_2 = QtGui.QVBoxLayout(self.DataBaseGroupBox)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.DataBaseCheckBox = QtGui.QCheckBox(self.DataBaseGroupBox)
+        self.DataBaseCheckBox.setObjectName("DataBaseCheckBox")
+        self.verticalLayout_2.addWidget(self.DataBaseCheckBox)
+        self.horizontalLayout_2 = QtGui.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.DataBaseButton = QtGui.QPushButton(self.DataBaseGroupBox)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(":/general/general_open.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.DataBaseButton.setIcon(icon1)
+        self.DataBaseButton.setObjectName("DataBaseButton")
+        self.horizontalLayout_2.addWidget(self.DataBaseButton)
+        self.DataBasePath = QtGui.QLineEdit(self.DataBaseGroupBox)
+        self.DataBasePath.setReadOnly(True)
+        self.DataBasePath.setObjectName("DataBasePath")
+        self.horizontalLayout_2.addWidget(self.DataBasePath)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_2)
+        self.GeneralLeftLayout.addWidget(self.DataBaseGroupBox)
         self.SettingsGroupBox = QtGui.QGroupBox(self.GeneralLeftWidget)
         self.SettingsGroupBox.setObjectName(u'SettingsGroupBox')
         self.SettingsLayout = QtGui.QVBoxLayout(self.SettingsGroupBox)
@@ -164,6 +185,11 @@ class GeneralTab(SettingsTab):
         QtCore.QObject.connect(self.ShowSplashCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onShowSplashCheckBoxChanged)
+        QtCore.QObject.connect(self.DataBaseCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onDataBaseCheckBoxChanged)
+        QtCore.QObject.connect(self.DataBaseButton,
+            QtCore.SIGNAL(u'clicked()'), self.onDataBaseButtonClicked)
         QtCore.QObject.connect(self.SaveCheckServiceCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onSaveCheckServiceCheckBox)
@@ -188,6 +214,12 @@ class GeneralTab(SettingsTab):
             self.trUtf8('Automatically open the last service'))
         self.ShowSplashCheckBox.setText(self.trUtf8('Show the splash screen'))
         self.SettingsGroupBox.setTitle(self.trUtf8('Application Settings'))
+        self.DataBaseGroupBox.setTitle(QtGui.QApplication.translate(
+            "SettingsDialog", "DataBaseBox", 
+            None, QtGui.QApplication.UnicodeUTF8))
+        self.DataBaseCheckBox.setText(QtGui.QApplication.translate(
+            "SettingsDialog", "Use external Database", 
+            None, QtGui.QApplication.UnicodeUTF8))
         self.SaveCheckServiceCheckBox.setText(
             self.trUtf8('Prompt to save Service before starting New'))
         self.AutoPreviewCheckBox.setText(
@@ -215,6 +247,19 @@ class GeneralTab(SettingsTab):
     def onSaveCheckServiceCheckBox(self, value):
         self.PromptSaveService = (value == QtCore.Qt.Checked)
 
+    def onDataBaseCheckBoxChanged(self, value):
+        self.ExtDbUsage = (value == QtCore.Qt.Checked)
+        self.DataBasePath.setEnabled(value == QtCore.Qt.Checked)
+
+    def onDataBaseButtonClicked(self):
+        options = QtGui.QFileDialog.DontResolveSymlinks | QtGui.QFileDialog.ShowDirsOnly
+        directory = QtGui.QFileDialog.getExistingDirectory(self,
+                self.trUtf8('QFileDialog.getExistingDirectory()'),
+                self.DataBasePath.text(), options)
+        if not directory.isEmpty():
+            self.DataBasePath.setText(directory)
+            self.ExtDbPath = self.DataBasePath.text()
+
     def onAutoPreviewCheckBox(self, value):
         self.AutoPreview = (value == QtCore.Qt.Checked)
 
@@ -239,6 +284,10 @@ class GeneralTab(SettingsTab):
         # Get the configs
         self.Warning = settings.value(
             u'blank warning', QtCore.QVariant(False)).toBool()
+        self.ExtDbUsage = settings.value(
+            u'ext db usage',  QtCore.QVariant(False)).toBool()
+        self.ExtDbPath = unicode(settings.value(
+            u'ext db path',  QtCore.QVariant(u'')).toString())
         self.AutoOpen = settings.value(
             u'auto open', QtCore.QVariant(False)).toBool()
         self.ShowSplash = settings.value(
@@ -259,6 +308,9 @@ class GeneralTab(SettingsTab):
         self.MonitorComboBox.setCurrentIndex(self.MonitorNumber)
         self.DisplayOnMonitorCheck.setChecked(self.DisplayOnMonitor)
         self.WarningCheckBox.setChecked(self.Warning)
+        self.DataBaseCheckBox.setChecked(self.ExtDbUsage)
+        self.DataBasePath.setText(self.ExtDbPath)
+        self.DataBasePath.setEnabled(self.ExtDbUsage)
         self.AutoOpenCheckBox.setChecked(self.AutoOpen)
         self.ShowSplashCheckBox.setChecked(self.ShowSplash)
         self.AutoPreviewCheckBox.setChecked(self.AutoPreview)
@@ -273,6 +325,8 @@ class GeneralTab(SettingsTab):
         settings.setValue(u'display on monitor',
             QtCore.QVariant(self.DisplayOnMonitor))
         settings.setValue(u'blank warning', QtCore.QVariant(self.Warning))
+        settings.setValue(u'ext db usage',  QtCore.QVariant(self.ExtDbUsage))
+        settings.setValue(u'ext db path',  QtCore.QVariant(self.ExtDbPath))
         settings.setValue(u'auto open', QtCore.QVariant(self.AutoOpen))
         settings.setValue(u'show splash', QtCore.QVariant(self.ShowSplash))
         settings.setValue(u'save prompt',

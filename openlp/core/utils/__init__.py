@@ -70,7 +70,13 @@ class AppLocation(object):
                     path = os.path.join(os.getenv(u'HOME'), u'.openlp')
             return path
         elif dir_type == AppLocation.DataDir:
-            if sys.platform == u'win32':
+            settings = QtCore.QSettings()
+            settings.beginGroup(u'general')
+            extDbPath = settings.value(u'ext db path', QtCore.QVariant(u'')).toString()
+            if settings.value(u'ext db usage', QtCore.QVariant(False)).toBool()\
+                and QtCore.QDir(extDbPath).exists():
+                path = os.path.abspath(str(settings.value(u'ext db path', QtCore.QVariant(u'')).toString()))
+            elif sys.platform == u'win32':
                 path = os.path.join(os.getenv(u'APPDATA'), u'openlp', u'data')
             elif sys.platform == u'darwin':
                 path = os.path.join(os.getenv(u'HOME'), u'Library',
