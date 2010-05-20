@@ -56,10 +56,7 @@ class AppLocation(object):
         if dir_type == AppLocation.AppDir:
             return os.path.abspath(os.path.split(sys.argv[0])[0])
         elif dir_type == AppLocation.ConfigDir:
-            if os.getenv(u'PORTABLE')  is not None:
-              path = os.path.split(os.path.abspath(sys.argv[0]))[0]
-              path = os.path.join(path, os.getenv(u'PORTABLE'))
-            elif sys.platform == u'win32':
+            if sys.platform == u'win32':
                 path = os.path.join(os.getenv(u'APPDATA'), u'openlp')
             elif sys.platform == u'darwin':
                 path = os.path.join(os.getenv(u'HOME'), u'Library',
@@ -73,10 +70,7 @@ class AppLocation(object):
                     path = os.path.join(os.getenv(u'HOME'), u'.openlp')
             return path
         elif dir_type == AppLocation.DataDir:
-            if os.getenv(u'PORTABLE')  is not None:
-                path = os.path.split(os.path.abspath(sys.argv[0]))[0]
-                path = os.path.join(path, os.getenv(u'PORTABLE'),  u'data')
-            elif sys.platform == u'win32':
+            if sys.platform == u'win32':
                 path = os.path.join(os.getenv(u'APPDATA'), u'openlp', u'data')
             elif sys.platform == u'darwin':
                 path = os.path.join(os.getenv(u'HOME'), u'Library',

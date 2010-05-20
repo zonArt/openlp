@@ -157,28 +157,11 @@ def main():
                       help="Set logging to LEVEL level. Valid values are "
                            "\"debug\", \"info\", \"warning\".")
     parser.add_option("-p", "--portable", dest="portable",
-                      default="../openlp-data", metavar="APP_PATH",
-                      help="Specify relative Path where database should be located. E.g. ../openlp-data")
+                      action="store_true",
+                      help="Specify if this should be run as a portable app, "
+                           "off a USB flash drive.")
     parser.add_option("-s", "--style", dest="style",
                       help="Set the Qt4 style (passed directly to Qt4).")
-
-    # Parse command line options and deal with them.
-    (options, args) = parser.parse_args()
-    qt_args = []
-    if options.loglevel.lower() in ['d', 'debug']:
-        log.setLevel(logging.DEBUG)
-        #print 'Logging to:', filename
-    elif options.loglevel.lower() in ['w', 'warning']:
-        log.setLevel(logging.WARNING)
-    else:
-        log.setLevel(logging.INFO)
-    if options.style:
-        qt_args.extend(['-style', options.style])
-    if options.portable:
-        os.environ['PORTABLE'] = options.portable
-    # Throw the rest of the arguments at Qt, just in case.
-    qt_args.extend(args)
-
     # Set up logging
     log_path = AppLocation.get_directory(AppLocation.ConfigDir)
     if not os.path.exists(log_path):
@@ -186,10 +169,23 @@ def main():
     filename = os.path.join(log_path, u'openlp.log')
     logfile = FileHandler(filename, u'w')
     logfile.setFormatter(logging.Formatter(
-        u'%(asctime)s %(name)-20s %(levelname)-8s %(message)s'))
+        u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
     logging.addLevelName(15, u'Timer')
-
+    # Parse command line options and deal with them.
+    (options, args) = parser.parse_args()
+    qt_args = []
+    if options.loglevel.lower() in ['d', 'debug']:
+        log.setLevel(logging.DEBUG)
+        print 'Logging to:', filename
+    elif options.loglevel.lower() in ['w', 'warning']:
+        log.setLevel(logging.WARNING)
+    else:
+        log.setLevel(logging.INFO)
+    if options.style:
+        qt_args.extend(['-style', options.style])
+    # Throw the rest of the arguments at Qt, just in case.
+    qt_args.extend(args)
     # Initialise the resources
     qInitResources()
     # Now create and actually run the application.
