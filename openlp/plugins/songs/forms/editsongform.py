@@ -296,7 +296,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             rowLabel.append(rowTag)
         self.VerseListWidget.setVerticalHeaderLabels(rowLabel)
 
-
     def onAuthorAddButtonClicked(self):
         item = int(self.AuthorsSelectionComboItem.currentIndex())
         if item > -1:
