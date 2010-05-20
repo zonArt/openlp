@@ -24,6 +24,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_AboutDialog(object):
     def setupUi(self, AboutDialog):
@@ -113,8 +114,8 @@ class Ui_AboutDialog(object):
         QtCore.QMetaObject.connectSlotsByName(AboutDialog)
 
     def retranslateUi(self, AboutDialog):
-        AboutDialog.setWindowTitle(self.trUtf8('About OpenLP'))
-        self.AboutTextEdit.setPlainText(self.trUtf8(
+        AboutDialog.setWindowTitle(translate('AboutForm', 'About OpenLP'))
+        self.AboutTextEdit.setPlainText(translate('AboutForm', 
             'OpenLP <version><revision> - Open Source Lyrics '
             'Projection\n'
             '\n'
@@ -131,8 +132,8 @@ class Ui_AboutDialog(object):
             'consider contributing by using the button below.'
         ))
         self.AboutNotebook.setTabText(
-            self.AboutNotebook.indexOf(self.AboutTab), self.trUtf8('About'))
-        self.CreditsTextEdit.setPlainText(self.trUtf8(
+            self.AboutNotebook.indexOf(self.AboutTab), translate('AboutForm', 'About'))
+        self.CreditsTextEdit.setPlainText(translate('AboutForm', 
             'Project Lead\n'
             '    Raoul "superfly" Snyman\n'
             '\n'
@@ -164,11 +165,10 @@ class Ui_AboutDialog(object):
         ))
         self.AboutNotebook.setTabText(
             self.AboutNotebook.indexOf(self.CreditsTab),
-            self.trUtf8('Credits'))
-        self.LicenseTextEdit.setPlainText(self.trUtf8(
-            'Copyright ' + u'\u00a9'.encode('utf8') + ' 2004-2010 Raoul '
-            'Snyman\n'
-            'Portions copyright ' + u'\u00a9'.encode('utf8') + ' 2004-2010 '
+            translate('AboutForm', 'Credits'))
+        self.LicenseTextEdit.setPlainText(translate('AboutForm', 
+            'Copyright \xa9 2004-2010 Raoul Snyman\n'
+            'Portions copyright \xa9 2004-2010 '
             'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri, '
             'Christian Richter, Maikel Stuivenberg, Martin Thompson, Jon '
             'Tibble, Carsten Tinggaard\n'
@@ -557,6 +557,6 @@ class Ui_AboutDialog(object):
             'instead of this License.'))
         self.AboutNotebook.setTabText(
             self.AboutNotebook.indexOf(self.LicenseTab),
-            self.trUtf8('License'))
-        self.ContributeButton.setText(self.trUtf8('Contribute'))
-        self.CloseButton.setText(self.trUtf8('Close'))
+            translate('AboutForm', 'License'))
+        self.ContributeButton.setText(translate('AboutForm', 'Contribute'))
+        self.CloseButton.setText(translate('AboutForm', 'Close'))

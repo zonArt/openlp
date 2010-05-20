@@ -533,7 +533,10 @@ class Renderer(object):
             font = self.mainFont
         metrics = QtGui.QFontMetrics(font)
         w = metrics.width(line)
-        h = metrics.height() + int(self._theme.font_main_line_adjustment)
+        if footer:
+            h = metrics.height()
+        else:
+            h = metrics.height() + int(self._theme.font_main_line_adjustment)
         if draw:
             self.painter.setFont(font)
             if color is None:
