@@ -118,3 +118,5 @@ class CSVBible(BibleDB):
             return False
         else:
             return success
+
+

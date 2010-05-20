@@ -29,7 +29,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, SongXMLParser, \
     BaseListWithDnD, Receiver, ItemCapabilities
-from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm
+from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
+    ImportWizardForm
 
 log = logging.getLogger(__name__)
 
@@ -49,10 +50,11 @@ class SongMediaItem(MediaManagerItem):
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = SongListView
         MediaManagerItem.__init__(self, parent, icon, title)
+        self.edit_song_form = EditSongForm(self, self.parent.manager)
         self.singleServiceItem = False
-        self.edit_song_form = EditSongForm(self.parent.songmanager, self)
+        #self.edit_song_form = EditSongForm(self.parent.manager, self)
         self.song_maintenance_form = SongMaintenanceForm(
-            self.parent.songmanager, self)
+            self.parent.manager, self)
         # Holds information about whether the edit is remotly triggered and
         # which Song is required.
         self.remoteSong = -1
@@ -154,17 +156,17 @@ class SongMediaItem(MediaManagerItem):
         search_type = self.SearchTypeComboBox.currentIndex()
         if search_type == 0:
             log.debug(u'Titles Search')
-            search_results = self.parent.songmanager.search_song_title(
+            search_results = self.parent.manager.search_song_title(
                 search_keywords)
             self.displayResultsSong(search_results)
         elif search_type == 1:
             log.debug(u'Lyrics Search')
-            search_results = self.parent.songmanager.search_song_lyrics(
+            search_results = self.parent.manager.search_song_lyrics(
                 search_keywords)
             self.displayResultsSong(search_results)
         elif search_type == 2:
             log.debug(u'Authors Search')
-            search_results = self.parent.songmanager.get_song_from_author(
+            search_results = self.parent.manager.get_song_from_author(
                 search_keywords)
             self.displayResultsAuthor(search_results)
         #Called to redisplay the song list screen edith from a search
@@ -226,6 +228,11 @@ class SongMediaItem(MediaManagerItem):
             if len(text) > search_length:
                 self.onSearchTextButtonClick()
 
+    def onImportClick(self):
+        songimportform = ImportWizardForm(self, self.parent.manager,
+            self.parent)
+        songimportform.exec_()
+
     def onNewClick(self):
         self.edit_song_form.newSong()
         self.edit_song_form.exec_()
@@ -256,7 +263,7 @@ class SongMediaItem(MediaManagerItem):
         type of display is required.
         """
         fields = songid.split(u':')
-        valid = self.parent.songmanager.get_song(fields[1])
+        valid = self.parent.manager.get_song(fields[1])
         if valid:
             self.remoteSong = fields[1]
             self.remoteTriggered = fields[0]
@@ -286,7 +293,7 @@ class SongMediaItem(MediaManagerItem):
                 return
             for item in items:
                 item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-                self.parent.songmanager.delete_song(item_id)
+                self.parent.manager.delete_song(item_id)
             self.onSearchTextButtonClick()
 
     def generateSlideData(self, service_item, item=None):
@@ -307,15 +314,14 @@ class SongMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
-        song = self.parent.songmanager.get_song(item_id)
+        song = self.parent.manager.get_song(item_id)
         service_item.theme = song.theme_name
         service_item.editId = item_id
         if song.lyrics.startswith(u'<?xml version='):
             songXML = SongXMLParser(song.lyrics)
             verseList = songXML.get_verses()
             #no verse list or only 1 space (in error)
-            if song.verse_order is None or \
-                song.verse_order == u'' or song.verse_order == u' ':
+            if not song.verse_order or not song.verse_order.strip():
                 for verse in verseList:
                     service_item.add_from_text(verse[1][:30], unicode(verse[1]))
             else:
@@ -363,3 +369,5 @@ class SongMediaItem(MediaManagerItem):
             song.title, author_audit, song.copyright, song.ccli_number
         ]
         return True
+
+
