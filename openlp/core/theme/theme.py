@@ -136,12 +136,15 @@ class Theme(object):
                         except ValueError:
                             val = t
                 if (element.tag.find(u'Color') > 0 or
-                    (element.tag.find(u'BackgroundParameter') == 0 and type(val) == type(0))):
+                    (element.tag.find(u'BackgroundParameter') == 0 and
+                    type(val) == type(0))):
                     # convert to a wx.Colour
-                        if not delphiColorChange:
-                            val = QtGui.QColor(val&0xFF, (val>>8)&0xFF, (val>>16)&0xFF)
-                        else:
-                            val = QtGui.QColor((val>>16)&0xFF, (val>>8)&0xFF, val&0xFF)
+                    if not delphiColorChange:
+                        val = QtGui.QColor(
+                            val&0xFF, (val>>8)&0xFF, (val>>16)&0xFF)
+                    else:
+                        val = QtGui.QColor(
+                            (val>>16)&0xFF, (val>>8)&0xFF, val&0xFF)
                 setattr(self, element.tag, val)
 
     def __str__(self):

@@ -43,12 +43,12 @@ class ServiceItemType(object):
     Command = 3
 
 class ItemCapabilities(object):
-   AllowsPreview = 1
-   AllowsEdit = 2
-   AllowsMaintain = 3
-   RequiresMedia = 4
-   AllowsLoop = 5
-   AllowsAdditions = 6
+    AllowsPreview = 1
+    AllowsEdit = 2
+    AllowsMaintain = 3
+    RequiresMedia = 4
+    AllowsLoop = 5
+    AllowsAdditions = 6
 
 class ServiceItem(object):
     """
