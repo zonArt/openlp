@@ -97,7 +97,7 @@ create_statements = [
 ]
 
 def prepare_string(dirty):
-    return dirty_chars.sub(u'', dirty.replace(u'\r\n', ' ').replace(u'\n', ' '))
+    return dirty_chars.sub(u'', dirty.replace(u'\r\n', u' ').replace(u'\n', u' '))
 
 def display_sql(sql, params):
     prepared_params = []
