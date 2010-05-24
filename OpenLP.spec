@@ -1,6 +1,6 @@
 # -*- mode: python -*-
 a = Analysis([os.path.join(HOMEPATH,'support\\_mountzlib.py'), os.path.join(HOMEPATH,'support\\useUnicode.py'), 'openlp.pyw'],
-             pathex=['C:\\Documents and Settings\\raoul\\My Documents\\My Projects\\openlp\\trunk'])
+             pathex=[os.path.abspath('.')])
 pyz = PYZ(a.pure)
 exe = EXE(pyz,
           a.scripts,
