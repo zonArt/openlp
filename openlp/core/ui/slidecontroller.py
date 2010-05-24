@@ -516,6 +516,9 @@ class SlideController(QtGui.QWidget):
         #Set pointing cursor when we have somthing to point at
         self.PreviewListWidget.setCursor(QtCore.Qt.PointingHandCursor)
         before = time.time()
+        #Clear the old serviceItem cache to release memory
+        if self.serviceItem:
+            self.serviceItem.cache = []
         self.serviceItem = serviceItem
         self.PreviewListWidget.clear()
         self.PreviewListWidget.setRowCount(0)
@@ -531,8 +534,7 @@ class SlideController(QtGui.QWidget):
             slideHeight = 0
             #It is a based Text Render
             if self.serviceItem.is_text():
-                if frame[u'verseTag'] is not None:
-                    #only load the slot once
+                if frame[u'verseTag']:
                     bits = frame[u'verseTag'].split(u':')
                     tag = None
                     #If verse handle verse number else tag only
@@ -545,13 +547,13 @@ class SlideController(QtGui.QWidget):
                         tag = bits[0]
                         tag1 = tag
                         row = bits[0][0:1]
-                    if self.isLive:
-                        if tag1 not in self.slideList:
-                            self.slideList[tag1] = framenumber
-                            self.SongMenu.menu().addAction(self.trUtf8(u'%s'%tag1),
-                                self.onSongBarHandler)
                 else:
                     row += 1
+                if self.isLive and frame[u'verseTag'] is not None:
+                    if tag1 not in self.slideList:
+                        self.slideList[tag1] = framenumber
+                        self.SongMenu.menu().addAction(self.trUtf8(u'%s'%tag1),
+                            self.onSongBarHandler)
                 item.setText(frame[u'text'])
             else:
                 label = QtGui.QLabel()
