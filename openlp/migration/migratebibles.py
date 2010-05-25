@@ -27,7 +27,6 @@ import os
 import sys
 import sqlite3
 
-from sqlalchemy import *
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper
 
@@ -93,7 +92,7 @@ def init_models(url):
         autocommit=False, bind=engine))
     return session
 
-class MigrateBibles():
+class MigrateBibles(object):
     def __init__(self, display):
         self.display = display
         self.data_path = AppLocation.get_section_data_path(u'bibles')

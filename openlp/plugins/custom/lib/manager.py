@@ -32,7 +32,7 @@ from openlp.plugins.custom.lib.models import init_models, metadata, CustomSlide
 
 log = logging.getLogger(__name__)
 
-class CustomManager():
+class CustomManager(object):
     """
     The Song Manager provides a central location for all database code. This
     class takes care of connecting to the database and running all the queries.

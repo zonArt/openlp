@@ -94,7 +94,7 @@ class TSongAuthor(BaseModel):
     """
     pass
 
-class MigrateSongs():
+class MigrateSongs(object):
     def __init__(self, display):
         self.display = display
         self.data_path = AppLocation.get_section_data_path(u'songs')
