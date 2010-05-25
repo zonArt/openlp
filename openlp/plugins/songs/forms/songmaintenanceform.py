@@ -129,39 +129,41 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self.authorform.setAutoDisplayName(True)
         if self.authorform.exec_():
             author = Author.populate(
-                first_name=unicode(self.authorform.FirstNameEdit.text(), u'utf-8'),
-                last_name=unicode(self.authorform.LastNameEdit.text(), u'utf-8'),
-                display_name=unicode(self.authorform.DisplayEdit.text(), u'utf-8'))
+                first_name=unicode(
+                    self.authorform.FirstNameEdit.text(), u'utf-8'),
+                last_name=unicode(
+                    self.authorform.LastNameEdit.text(), u'utf-8'),
+                display_name=unicode(
+                    self.authorform.DisplayEdit.text(), u'utf-8'))
             if self.songmanager.save_author(author):
                 self.resetAuthors()
             else:
                 QtGui.QMessageBox.critical(
                     self, self.trUtf8('Error'),
-                    self.trUtf8('Couldn\'t add your author.'),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                    self.trUtf8('Couldn\'t add your author.'))
 
     def onTopicAddButtonClick(self):
         if self.topicform.exec_():
-            topic = Topic.populate(name=unicode(self.topicform.NameEdit.text(), u'utf-8'))
+            topic = Topic.populate(
+                name=unicode(self.topicform.NameEdit.text(), u'utf-8'))
             if self.songmanager.save_topic(topic):
                 self.resetTopics()
             else:
                 QtGui.QMessageBox.critical(
                     self, self.trUtf8('Error'),
-                    self.trUtf8('Couldn\'t add your topic.'),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                    self.trUtf8('Couldn\'t add your topic.'))
 
     def onBookAddButtonClick(self):
         if self.bookform.exec_():
-            book = Book.populate(name=unicode(self.bookform.NameEdit.text(), u'utf-8'),
+            book = Book.populate(
+                name=unicode(self.bookform.NameEdit.text(), u'utf-8'),
                 publisher=unicode(self.bookform.PublisherEdit.text(), u'utf-8'))
             if self.songmanager.save_book(book):
                 self.resetBooks()
             else:
                 QtGui.QMessageBox.critical(
                     self, self.trUtf8('Error'),
-                    self.trUtf8('Couldn\'t add your book.'),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                    self.trUtf8('Couldn\'t add your book.'))
 
     def onAuthorEditButtonClick(self):
         author_id = self._getCurrentItemId(self.AuthorsListWidget)
@@ -172,16 +174,18 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             self.authorform.LastNameEdit.setText(author.last_name)
             self.authorform.DisplayEdit.setText(author.display_name)
             if self.authorform.exec_(False):
-                author.first_name = unicode(self.authorform.FirstNameEdit.text(), u'utf-8')
-                author.last_name = unicode(self.authorform.LastNameEdit.text(), u'utf-8')
-                author.display_name = unicode(self.authorform.DisplayEdit.text(), u'utf-8')
+                author.first_name = unicode(
+                    self.authorform.FirstNameEdit.text(), u'utf-8')
+                author.last_name = unicode(
+                    self.authorform.LastNameEdit.text(), u'utf-8')
+                author.display_name = unicode(
+                    self.authorform.DisplayEdit.text(), u'utf-8')
                 if self.songmanager.save_author(author):
                     self.resetAuthors()
                 else:
                     QtGui.QMessageBox.critical(
                         self, self.trUtf8('Error'),
-                        self.trUtf8('Couldn\'t save your author.'),
-                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                        self.trUtf8('Couldn\'t save your author.'))
 
     def onTopicEditButtonClick(self):
         topic_id = self._getCurrentItemId(self.TopicsListWidget)
