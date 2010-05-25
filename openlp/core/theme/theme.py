@@ -28,13 +28,13 @@ import types
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtGui
 
-DelphiColors={"clRed":0xFF0000,
+DelphiColors = {"clRed":0xFF0000,
                 "clBlue":0x0000FF,
                 "clYellow":0xFFFF00,
-               "clBlack":0x000000,
-               "clWhite":0xFFFFFF}
+                "clBlack":0x000000,
+                "clWhite":0xFFFFFF}
 
-blankstylexml=\
+blankstylexml = \
 '''<?xml version="1.0" encoding="iso-8859-1"?>
 <Theme>
   <Name>BlankStyle</Name>

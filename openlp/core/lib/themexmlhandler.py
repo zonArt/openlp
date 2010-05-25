@@ -30,7 +30,7 @@ from xml.etree.ElementTree import ElementTree, XML
 
 from openlp.core.lib import str_to_bool
 
-blankthemexml=\
+blankthemexml = \
 '''<?xml version="1.0" encoding="utf-8"?>
  <theme version="1.0">
    <name>BlankStyle</name>
