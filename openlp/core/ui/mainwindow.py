@@ -87,12 +87,12 @@ class VersionThread(QtCore.QThread):
             if len(match.groups()) > 3:
                 local_version[u'revision'] = int(match.group(4))
         if remote_version[u'major'] > local_version[u'major'] or \
-           remote_version[u'minor'] > local_version[u'minor'] or \
-           remote_version[u'release'] > local_version[u'release']:
+            remote_version[u'minor'] > local_version[u'minor'] or \
+            remote_version[u'release'] > local_version[u'release']:
             Receiver.send_message(u'openlp_version_check', u'%s' % version)
         elif remote_version.get(u'revision') and \
-             local_version.get(u'revision') and \
-             remote_version[u'revision'] > local_version[u'revision']:
+            local_version.get(u'revision') and \
+            remote_version[u'revision'] > local_version[u'revision']:
             Receiver.send_message(u'openlp_version_check', u'%s' % version)
 
 class Ui_MainWindow(object):
