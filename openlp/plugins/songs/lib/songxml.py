@@ -23,6 +23,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import logging
 import sys
 import os
 
@@ -31,6 +32,9 @@ from types import StringType, ListType
 sys.path.append(os.path.abspath(u'./../../../..'))
 
 from openlp.core.lib import XmlRootClass
+
+log = logging.getLogger(__name__)
+
 
 class SongException(Exception):
     pass
@@ -80,7 +84,6 @@ class _OpenSong(XmlRootClass):
 
     def _reset(self):
         """Reset all song attributes"""
-        global _blankOpenSongXml
         self._setFromXml(_blankOpenSongXml, 'song')
 
     def from_buffer(self, xmlContent):
@@ -301,7 +304,7 @@ class Song(object):
         string = title
         for char in punctuation:
             string = string.replace(char, '')
-        return s
+        return string
 
     def set_title(self, title):
         """Set the song title
@@ -403,7 +406,7 @@ class Song(object):
         if string_in is None:
             string_out = ""
         else:
-            string_out = unicode(s)
+            string_out = unicode(string_in)
         return string_out
 
     def _split_to_list(self, aString):
