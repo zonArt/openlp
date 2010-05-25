@@ -75,7 +75,7 @@ class ImageMediaItem(MediaManagerItem):
         self.ListView.clear()
         self.ListView.setSelectionMode(
             QtGui.QAbstractItemView.ExtendedSelection)
-        self.ListView.setIconSize(QtCore.QSize(88,50))
+        self.ListView.setIconSize(QtCore.QSize(88, 50))
         self.servicePath = os.path.join(
             AppLocation.get_section_data_path(self.settingsSection),
             u'thumbnails')

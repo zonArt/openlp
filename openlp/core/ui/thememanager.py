@@ -73,7 +73,7 @@ class ThemeManager(QtGui.QWidget):
         self.Layout.addWidget(self.Toolbar)
         self.ThemeListWidget = QtGui.QListWidget(self)
         self.ThemeListWidget.setAlternatingRowColors(True)
-        self.ThemeListWidget.setIconSize(QtCore.QSize(88,50))
+        self.ThemeListWidget.setIconSize(QtCore.QSize(88, 50))
         self.Layout.addWidget(self.ThemeListWidget)
         self.ThemeListWidget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.ThemeListWidget.addAction(
@@ -285,7 +285,7 @@ class ThemeManager(QtGui.QWidget):
                         icon = build_icon(thumb)
                     else:
                         icon = build_icon(theme)
-                        pixmap = icon.pixmap(QtCore.QSize(88,50))
+                        pixmap = icon.pixmap(QtCore.QSize(88, 50))
                         pixmap.save(thumb, u'png')
                     item_name.setIcon(icon)
                     item_name.setData(QtCore.Qt.UserRole,
@@ -483,7 +483,7 @@ class ThemeManager(QtGui.QWidget):
         frame.save(samplepathname, u'png')
         thumb = os.path.join(self.thumbPath, u'%s.png' % name)
         icon = build_icon(frame)
-        pixmap = icon.pixmap(QtCore.QSize(88,50))
+        pixmap = icon.pixmap(QtCore.QSize(88, 50))
         pixmap.save(thumb, u'png')
         log.debug(u'Theme image written to %s', samplepathname)
 

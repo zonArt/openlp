@@ -352,11 +352,13 @@ class Ui_MainWindow(object):
             translate('MainWindow', 'Theme Manager'))
         self.FileNewItem.setText(translate('MainWindow', '&New'))
         self.FileNewItem.setToolTip(translate('MainWindow', 'New Service'))
-        self.FileNewItem.setStatusTip(translate('MainWindow', 'Create a new Service'))
+        self.FileNewItem.setStatusTip(
+            translate('MainWindow', 'Create a new Service'))
         self.FileNewItem.setShortcut(translate('MainWindow', 'Ctrl+N'))
         self.FileOpenItem.setText(translate('MainWindow', '&Open'))
         self.FileOpenItem.setToolTip(translate('MainWindow', 'Open Service'))
-        self.FileOpenItem.setStatusTip(translate('MainWindow', 'Open an existing service'))
+        self.FileOpenItem.setStatusTip(
+            translate('MainWindow', 'Open an existing service'))
         self.FileOpenItem.setShortcut(translate('MainWindow', 'Ctrl+O'))
         self.FileSaveItem.setText(translate('MainWindow', '&Save'))
         self.FileSaveItem.setToolTip(translate('MainWindow', 'Save Service'))
@@ -364,9 +366,10 @@ class Ui_MainWindow(object):
             translate('MainWindow', 'Save the current service to disk'))
         self.FileSaveItem.setShortcut(translate('MainWindow', 'Ctrl+S'))
         self.FileSaveAsItem.setText(translate('MainWindow', 'Save &As...'))
-        self.FileSaveAsItem.setToolTip(translate('MainWindow', 'Save Service As'))
-        self.FileSaveAsItem.setStatusTip(
-            translate('MainWindow', 'Save the current service under a new name'))
+        self.FileSaveAsItem.setToolTip(
+            translate('MainWindow', 'Save Service As'))
+        self.FileSaveAsItem.setStatusTip(translate('MainWindow',
+            'Save the current service under a new name'))
         self.FileSaveAsItem.setShortcut(translate('MainWindow', 'F12'))
         self.FileExitItem.setText(translate('MainWindow', 'E&xit'))
         self.FileExitItem.setStatusTip(translate('MainWindow', 'Quit OpenLP'))
@@ -377,34 +380,40 @@ class Ui_MainWindow(object):
         self.ExportLanguageItem.setText(translate('MainWindow', '&Language'))
         self.actionLook_Feel.setText(translate('MainWindow', 'Look && &Feel'))
         self.OptionsSettingsItem.setText(translate('MainWindow', '&Settings'))
-        self.ViewMediaManagerItem.setText(translate('MainWindow', '&Media Manager'))
+        self.ViewMediaManagerItem.setText(
+            translate('MainWindow', '&Media Manager'))
         self.ViewMediaManagerItem.setToolTip(
             translate('MainWindow', 'Toggle Media Manager'))
-        self.ViewMediaManagerItem.setStatusTip(
-            translate('MainWindow', 'Toggle the visibility of the Media Manager'))
+        self.ViewMediaManagerItem.setStatusTip(translate('MainWindow',
+            'Toggle the visibility of the Media Manager'))
         self.ViewMediaManagerItem.setShortcut(translate('MainWindow', 'F8'))
-        self.ViewThemeManagerItem.setText(translate('MainWindow', '&Theme Manager'))
+        self.ViewThemeManagerItem.setText(
+            translate('MainWindow', '&Theme Manager'))
         self.ViewThemeManagerItem.setToolTip(
             translate('MainWindow', 'Toggle Theme Manager'))
-        self.ViewThemeManagerItem.setStatusTip(
-            translate('MainWindow', 'Toggle the visibility of the Theme Manager'))
+        self.ViewThemeManagerItem.setStatusTip(translate('MainWindow',
+            'Toggle the visibility of the Theme Manager'))
         self.ViewThemeManagerItem.setShortcut(translate('MainWindow', 'F10'))
-        self.ViewServiceManagerItem.setText(translate('MainWindow', '&Service Manager'))
+        self.ViewServiceManagerItem.setText(
+            translate('MainWindow', '&Service Manager'))
         self.ViewServiceManagerItem.setToolTip(
             translate('MainWindow', 'Toggle Service Manager'))
-        self.ViewServiceManagerItem.setStatusTip(
-            translate('MainWindow', 'Toggle the visibility of the Service Manager'))
+        self.ViewServiceManagerItem.setStatusTip(translate('MainWindow',
+            'Toggle the visibility of the Service Manager'))
         self.ViewServiceManagerItem.setShortcut(translate('MainWindow', 'F9'))
-        self.action_Preview_Panel.setText(translate('MainWindow', '&Preview Panel'))
+        self.action_Preview_Panel.setText(
+            translate('MainWindow', '&Preview Panel'))
         self.action_Preview_Panel.setToolTip(
             translate('MainWindow', 'Toggle Preview Panel'))
-        self.action_Preview_Panel.setStatusTip(
-            translate('MainWindow', 'Toggle the visibility of the Preview Panel'))
+        self.action_Preview_Panel.setStatusTip(translate('MainWindow',
+            'Toggle the visibility of the Preview Panel'))
         self.action_Preview_Panel.setShortcut(translate('MainWindow', 'F11'))
         self.PluginItem.setText(translate('MainWindow', '&Plugin List'))
-        self.PluginItem.setStatusTip(translate('MainWindow', 'List the Plugins'))
+        self.PluginItem.setStatusTip(
+            translate('MainWindow', 'List the Plugins'))
         self.PluginItem.setShortcut(translate('MainWindow', 'Alt+F7'))
-        self.HelpDocumentationItem.setText(translate('MainWindow', '&User Guide'))
+        self.HelpDocumentationItem.setText(
+            translate('MainWindow', '&User Guide'))
         self.HelpAboutItem.setText(translate('MainWindow', '&About'))
         self.HelpAboutItem.setStatusTip(
             translate('MainWindow', 'More information about OpenLP'))
@@ -417,12 +426,13 @@ class Ui_MainWindow(object):
             translate('MainWindow', 'Choose System language, if available'))
         for item in self.LanguageGroup.actions():
             item.setText(item.objectName())
-            item.setStatusTip(
-                translate('MainWindow', 'Set the interface language to %1').arg(item.objectName()))
+            item.setStatusTip(translate('MainWindow',
+                'Set the interface language to %1').arg(item.objectName()))
         self.ToolsAddToolItem.setText(translate('MainWindow', 'Add &Tool...'))
         self.ToolsAddToolItem.setStatusTip(
             translate('MainWindow', 'Add an application to the list of tools'))
-        self.action_Preview_Panel.setText(translate('MainWindow', '&Preview Pane'))
+        self.action_Preview_Panel.setText(
+            translate('MainWindow', '&Preview Pane'))
         self.ModeLiveItem.setText(translate('MainWindow', '&Live'))
 
 

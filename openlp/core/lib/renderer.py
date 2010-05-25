@@ -474,7 +474,7 @@ class Renderer(object):
         # draw a box around the text - debug only
 
         if self._debug:
-            self.painter.setPen(QtGui.QPen(QtGui.QColor(0,255,0)))
+            self.painter.setPen(QtGui.QPen(QtGui.QColor(0, 255, 0)))
             self.painter.drawRect(startx, starty, rightextent-startx, y-starty)
         brcorner = (rightextent, y)
         self.painter.end()

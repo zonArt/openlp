@@ -215,7 +215,7 @@ class ThemeXML(object):
             The height of the text block.
         """
         background = self.theme_xml.createElement(u'font')
-        background.setAttribute(u'type',fonttype)
+        background.setAttribute(u'type', fonttype)
         self.theme.appendChild(background)
         #Create Font name element
         self.child_element(background, u'name', name)
@@ -230,11 +230,12 @@ class ThemeXML(object):
         #Create indentation name element
         self.child_element(background, u'indentation', unicode(indentation))
         #Create indentation name element
-        self.child_element(background, u'line_adjustment', unicode(line_adjustment))
+        self.child_element(
+            background, u'line_adjustment', unicode(line_adjustment))
 
         #Create Location element
         element = self.theme_xml.createElement(u'location')
-        element.setAttribute(u'override',override)
+        element.setAttribute(u'override', override)
         if override == u'True':
             element.setAttribute(u'x', xpos)
             element.setAttribute(u'y', ypos)

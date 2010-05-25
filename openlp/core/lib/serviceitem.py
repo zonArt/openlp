@@ -159,7 +159,7 @@ class ServiceItem(object):
                 frame = self.RenderManager.generate_slide(format,
                                 self.raw_footer)
             else:
-                frame = self.RenderManager.generate_slide(format,u'')
+                frame = self.RenderManager.generate_slide(format, u'')
             self.cache[row] = frame
         return frame
 
