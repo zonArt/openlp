@@ -450,8 +450,6 @@ class ThemeManager(QtGui.QWidget):
                         'would you like to overwrite it?'),
                     (QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
                     QtGui.QMessageBox.No)
-            else:
-                result == QtGui.QMessageBox.Yes
         if result == QtGui.QMessageBox.Yes:
             # Save the theme, overwriting the existing theme if necessary.
             outfile = None
