@@ -28,11 +28,29 @@ Windows Build Script
 --------------------
 
 This script is used to build the Windows binary and the accompanying installer.
+For this script to work out of the box, it depends on a number of things:
 
-For this script to work out of the box, it depends on being inside the
-"resources/pyinstaller" directory in the OpenLP source tree, it depends on
-OpenLP having it's own project directory which all the branches live in, and it
-depends on PyInstaller being
+windows-builder.py
+    This script, of course. It should be in the "scripts" directory of OpenLP.
+
+Bazaar
+    You need the command line "bzr" client installed.
+
+OpenLP
+    A checkout of the latest code, in a branch directory, which is in a Bazaar
+    shared repository directory. This means your code should be in a directory
+    structure like this: "openlp\branch-name".
+
+    You can
+
+PyInstaller
+    PyInstaller should be a checkout of trunk, and in a directory called,
+    "pyinstaller" on the same level as OpenLP's Bazaar shared repository
+    directory.
+
+Inno Setup 5
+    Inno Setup should be installed into "C:\%PROGRAMFILES%\Inno Setup 5"
+
 """
 
 import os
@@ -40,12 +58,12 @@ from shutil import copy
 from subprocess import Popen, PIPE
 
 script_path = os.path.split(os.path.abspath(__file__))[0]
-pyinstaller_path = os.path.abspath(os.path.join(script_path, u'..', u'..', u'..', u'..', u'pyinstaller'))
-innosetup_path = os.path.join(os.getenv(u'PROGRAMFILES'), 'Inno Setup 5')
-iss_path = os.path.abspath(os.path.join(script_path, u'..', u'innosetup'))
-branch_path = os.path.abspath(os.path.join(script_path, u'..', u'..'))
+branch_path = os.path.abspath(os.path.join(script_path, u'..'))
 source_path = os.path.join(branch_path, u'openlp')
 dist_path = os.path.join(branch_path, u'dist', u'OpenLP')
+pyinstaller_path = os.path.abspath(os.path.join(branch_path, u'..', u'pyinstaller'))
+innosetup_path = os.path.join(os.getenv(u'PROGRAMFILES'), 'Inno Setup 5')
+iss_path = os.path.join(branch_path, u'resources', u'innosetup')
 
 
 def run_pyinstaller():
@@ -113,17 +131,17 @@ def run_innosetup():
 
 def main():
     print "Script path:", script_path
-    print "PyInstaller path:", pyinstaller_path
-    print "Inno Setup path:", innosetup_path
-    print "ISS file path:", iss_path
     print "Branch path:", branch_path
     print "Source path:", source_path
     print "\"dist\" path:", dist_path
-    run_pyinstaller()
-    write_version_file()
-    copy_plugins()
-    copy_windows_files()
-    run_innosetup()
+    print "PyInstaller path:", pyinstaller_path
+    print "Inno Setup path:", innosetup_path
+    print "ISS file path:", iss_path
+    #run_pyinstaller()
+    #write_version_file()
+    #copy_plugins()
+    #copy_windows_files()
+    #run_innosetup()
     print "Done."
 
 if __name__ == u'__main__':
