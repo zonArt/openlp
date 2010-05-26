@@ -68,7 +68,7 @@ def get_text_file_string(text_file):
         file_handle = open(text_file, u'r')
         content_string = file_handle.read()
     except IOError:
-        log.error(u'Failed to open text file %s' % text_file)
+        log.exception(u'Failed to open text file %s' % text_file)
     finally:
         if file_handle:
             file_handle.close()

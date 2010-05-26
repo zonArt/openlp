@@ -125,8 +125,9 @@ class ServiceItem(object):
                         if title == u'':
                             title = line
                         lines += line + u'\n'
-                    self._display_frames.append({u'title': title, \
-                        u'text': lines.rstrip(), u'verseTag': slide[u'verseTag'] })
+                    self._display_frames.append({u'title': title,
+                        u'text': lines.rstrip(),
+                        u'verseTag': slide[u'verseTag'] })
                     self.cache.insert(len(self._display_frames), None)
                 log.log(15, u'Formatting took %4s' % (time.time() - before))
         elif self.service_item_type == ServiceItemType.Image:
@@ -239,7 +240,8 @@ class ServiceItem(object):
                 service_data.append(slide[u'title'])
         elif self.service_item_type == ServiceItemType.Command:
             for slide in self._raw_frames:
-                service_data.append({u'title':slide[u'title'], u'image':slide[u'image']})
+                service_data.append(
+                    {u'title':slide[u'title'], u'image':slide[u'image']})
         return {u'header': service_header, u'data': service_data}
 
     def set_from_service(self, serviceitem, path=None):
@@ -276,7 +278,8 @@ class ServiceItem(object):
         elif self.service_item_type == ServiceItemType.Command:
             for text_image in serviceitem[u'serviceitem'][u'data']:
                 filename = os.path.join(path, text_image[u'title'])
-                self.add_from_command(path, text_image[u'title'], text_image[u'image'] )
+                self.add_from_command(
+                    path, text_image[u'title'], text_image[u'image'] )
 
     def merge(self, other):
         """
@@ -343,3 +346,4 @@ class ServiceItem(object):
         Returns the title of the raw frame
         """
         return self._raw_frames[row][u'path']
+
