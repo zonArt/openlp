@@ -48,12 +48,12 @@ PyInstaller
     way is to install TortoiseSVN and then checkout the following URL to a
     directory called "pyinstaller"::
 
-    http://svn.pyinstaller.org/trunk
+        http://svn.pyinstaller.org/trunk
 
     Once you've done that, open a command prompt (DOS shell), navigate to the
     PyInstaller directory and run::
 
-    C:\Projects\pyinstaller>python Configure.py
+        C:\Projects\pyinstaller>python Configure.py
 
 Bazaar
     You need the command line "bzr" client installed.
