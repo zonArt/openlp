@@ -30,8 +30,30 @@ Windows Build Script
 This script is used to build the Windows binary and the accompanying installer.
 For this script to work out of the box, it depends on a number of things:
 
-windows-builder.py
-    This script, of course. It should be in the "scripts" directory of OpenLP.
+Inno Setup 5
+    Inno Setup should be installed into "C:\%PROGRAMFILES%\Inno Setup 5"
+
+UPX
+    This is used to compress DLLs and EXEs so that they take up less space, but
+    still function exactly the same. To install UPS, download it from
+    http://upx.sourceforge.net/, extract it into C:\%PROGRAMFILES%\UPX, and then
+    add that directory to your PATH environment variable.
+
+PyInstaller
+    PyInstaller should be a checkout of trunk, and in a directory called,
+    "pyinstaller" on the same level as OpenLP's Bazaar shared repository
+    directory.
+
+    To install PyInstaller, first checkout trunk from Subversion. The easiest
+    way is to install TortoiseSVN and then checkout the following URL to a
+    directory called "pyinstaller"::
+
+    http://svn.pyinstaller.org/trunk
+
+    Once you've done that, open a command prompt (DOS shell), navigate to the
+    PyInstaller directory and run::
+
+    C:\Projects\pyinstaller>python Configure.py
 
 Bazaar
     You need the command line "bzr" client installed.
@@ -41,15 +63,8 @@ OpenLP
     shared repository directory. This means your code should be in a directory
     structure like this: "openlp\branch-name".
 
-    You can
-
-PyInstaller
-    PyInstaller should be a checkout of trunk, and in a directory called,
-    "pyinstaller" on the same level as OpenLP's Bazaar shared repository
-    directory.
-
-Inno Setup 5
-    Inno Setup should be installed into "C:\%PROGRAMFILES%\Inno Setup 5"
+windows-builder.py
+    This script, of course. It should be in the "scripts" directory of OpenLP.
 
 """
 
@@ -61,7 +76,7 @@ script_path = os.path.split(os.path.abspath(__file__))[0]
 branch_path = os.path.abspath(os.path.join(script_path, u'..'))
 source_path = os.path.join(branch_path, u'openlp')
 dist_path = os.path.join(branch_path, u'dist', u'OpenLP')
-pyinstaller_path = os.path.abspath(os.path.join(branch_path, u'..', u'pyinstaller'))
+pyinstaller_path = os.path.abspath(os.path.join(branch_path, u'..', u'..', u'pyinstaller'))
 innosetup_path = os.path.join(os.getenv(u'PROGRAMFILES'), 'Inno Setup 5')
 iss_path = os.path.join(branch_path, u'resources', u'innosetup')
 
@@ -137,11 +152,11 @@ def main():
     print "PyInstaller path:", pyinstaller_path
     print "Inno Setup path:", innosetup_path
     print "ISS file path:", iss_path
-    #run_pyinstaller()
-    #write_version_file()
-    #copy_plugins()
-    #copy_windows_files()
-    #run_innosetup()
+    run_pyinstaller()
+    write_version_file()
+    copy_plugins()
+    copy_windows_files()
+    run_innosetup()
     print "Done."
 
 if __name__ == u'__main__':
