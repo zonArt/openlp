@@ -75,7 +75,7 @@ _blankOpenSongXml = \
 '''
 
 class _OpenSong(XmlRootClass):
-    """Class for import of OpenSogn"""
+    """Class for import of OpenSong"""
 
     def __init__(self, xmlContent = None):
         """Initialize from given xml content"""
@@ -113,8 +113,7 @@ class _OpenSong(XmlRootClass):
             res.append(self.theme)
         if self.alttheme:
             res.append(self.alttheme)
-        s = u', u'.join(res)
-        return s
+        return u', u'.join(res)
 
     def _reorder_verse(self, tag, tmpVerse):
         """
@@ -123,28 +122,28 @@ class _OpenSong(XmlRootClass):
         tmpVerse -- list of strings
         """
         res = []
-        for c in '1234567890 ':
+        for digit in '1234567890 ':
             tagPending = True
-            for l in tmpVerse:
-                if l.startswith(c):
+            for line in tmpVerse:
+                if line.startswith(digit):
                     if tagPending:
                         tagPending = False
-                        t = tag.strip(u'[]').lower()
-                        if 'v' == t:
+                        tagChar = tag.strip(u'[]').lower()
+                        if 'v' == tagChar:
                             newtag = "Verse"
-                        elif 'c' == t:
+                        elif 'c' == tagChar:
                             newtag = "Chorus"
-                        elif 'b' == t:
+                        elif 'b' == tagChar:
                             newtag = "Bridge"
-                        elif 'p' == t:
+                        elif 'p' == tagChar:
                             newtag = "Pre-chorus"
                         else:
-                            newtag = t
-                        s = (u'# %s %s' % (newtag, c)).rstrip()
-                        res.append(s)
-                    res.append(l[1:])
-                if (len(l) == 0) and (not tagPending):
-                    res.append(l)
+                            newtag = tagChar
+                        tagString = (u'# %s %s' % (newtag, digit)).rstrip()
+                        res.append(tagString)
+                    res.append(line[1:])
+                if (len(line) == 0) and (not tagPending):
+                    res.append(line)
         return res
 
     def get_lyrics(self):
@@ -165,13 +164,13 @@ class _OpenSong(XmlRootClass):
                     if line.startswith(u'['):
                         tag = line
                 else:
-                    r = self._reorder_verse(tag, tmpVerse)
-                    finalLyrics.extend(r)
+                    reorderedVerse = self._reorder_verse(tag, tmpVerse)
+                    finalLyrics.extend(reorderedVerse)
                     tag = ""
                     tmpVerse = []
         # catch up final verse
-        r = self._reorder_verse(tag, tmpVerse)
-        finalLyrics.extend(r)
+        reorderedVerse = self._reorder_verse(tag, tmpVerse)
+        finalLyrics.extend(reorderedVerse)
         return finalLyrics
 
 
@@ -344,36 +343,36 @@ class Song(object):
         sCopyright = ""
         sCcli = ""
         lastpart = 0
-        n = 0
+        lineCount = 0
         metMisc = False
         lyrics = []
-        for l in textList:
-            n += 1
+        for line in textList:
+            lineCount += 1
             if lastpart > 0:
                 lastpart += 1
                 if lastpart == 2:
-                    sCopyright = l[1:].strip()
+                    sCopyright = line[1:].strip()
                 if lastpart == 3:
-                    sAuthor = l
-            elif l.startswith(u'CCLI Song'):
-                sCcli = l[13:].strip()
+                    sAuthor = line
+            elif line.startswith(u'CCLI Song'):
+                sCcli = line[13:].strip()
                 lastpart = 1
             else:
                 if metMisc:
                     metMisc = False
-                    if l.upper().startswith(u'(BRIDGE)'):
+                    if line.upper().startswith(u'(BRIDGE)'):
                         lyrics.append(u'# Bridge')
                     # otherwise unknown misc keyword
-                elif l.startswith(u'Misc'):
+                elif line.startswith(u'Misc'):
                     metMisc = True
-                elif l.startswith(u'Verse') or l.startswith(u'Chorus'):
-                    lyrics.append(u'# %s'%l)
+                elif line.startswith(u'Verse') or line.startswith(u'Chorus'):
+                    lyrics.append(u'# %s' % line)
                 else:
                     # should we remove multiple blank lines?
-                    if n == 1:
-                        sName = l
+                    if lineCount == 1:
+                        sName = line
                     else:
-                        lyrics.append(l)
+                        lyrics.append(line)
         # split on known separators
         lst = sAuthor.split(u'/')
         if len(lst) < 2:

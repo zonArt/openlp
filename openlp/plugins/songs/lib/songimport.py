@@ -265,8 +265,8 @@ class SongImport(object):
         """
         Remove punctuation from the string for searchable fields
         """
-        for c in string.punctuation:
-            text = text.replace(c, u'')
+        for character in string.punctuation:
+            text = text.replace(character, u'')
         return text
             
     def finish(self):
