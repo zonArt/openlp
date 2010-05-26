@@ -48,8 +48,7 @@ def translate(context, text, comment=None):
     ``text``
         The text to put into the translation tables for translation.
     """
-    return QtCore.QCoreApplication.translate(context, text,
-                                                     comment)
+    return QtCore.QCoreApplication.translate(context, text, comment)
 
 def get_text_file_string(text_file):
     """
