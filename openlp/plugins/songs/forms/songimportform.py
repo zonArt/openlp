@@ -23,10 +23,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import csv
 import logging
-import os
-import os.path
 
 from PyQt4 import QtCore, QtGui
 
