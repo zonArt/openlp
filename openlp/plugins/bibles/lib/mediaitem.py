@@ -499,16 +499,12 @@ class BibleMediaItem(MediaManagerItem):
             else:
                 verse_text = self.formatVerse(old_chapter, chapter, verse, u'', u'')
             old_chapter = chapter
-            footer = u'%s' % (book)
-            #If not found add book to footer
-            if footer not in raw_footer:
-                raw_footer.append(footer)
-            footer = u'%s %s' % (version, copyright)
-            #If not found add version and copyright to footer
+            footer = u'%s (%s %s)' % (book, version, copyright)
+            #If not found add to footer
             if footer not in raw_footer:
                 raw_footer.append(footer)
             if bible2:
-                footer = u'%s %s' % (bible2_version, bible2_copyright)
+                footer = u'%s (%s %s)' % (book, bible2_version, bible2_copyright)
                 #If not found add second version and copyright to footer
                 if footer not in raw_footer:
                     raw_footer.append(footer)
