@@ -1,10 +1,14 @@
-<html>
-<head>
-<title>OpenLP Controller</title>
-<script type='text/javascript'>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>OpenLP Remote Controller</title>
+    <script type="text/javascript" src="/files/jquery.js"></script>
+    <script type='text/javascript'>
 
-function send_event(eventname, data){
-    var req = new XMLHttpRequest();
+function send_event(eventname, data) {
+    /*var req = new XMLHttpRequest();
     req.onreadystatechange = function() {
         if(req.readyState==4)
             response(eventname, req);
@@ -12,13 +16,41 @@ function send_event(eventname, data){
     var url = '';
     if(eventname.substr(-8) == '_request')
         url = 'request';
-    else 
+    else
         url = 'send';
     url += '/' + eventname;
     if(data!=null)
         url += '?q=' + escape(data);
     req.open('GET', url, true);
-    req.send();
+    req.send();*/
+    var url = "";
+    if (eventname.substr(-8) == "_request")
+    {
+        url = "request";
+    }
+    else
+    {
+        url = "send";
+    }
+    url += "/" + eventname;
+    var args = {};
+    if (data != null)
+    {
+        args.q = escape(data);
+    }
+    $.get(url, args, function (data, textStatus) {
+        if (textStatus != "success")
+        {
+            if (eventname == "remotes_poll_request")
+            {
+                send_event("remotes_poll_request");
+            }
+        }
+        else
+        {
+            new_response(eventname, data);
+        }
+    });
 }
 function failed_response(eventname, req){
     switch(eventname){
@@ -51,7 +83,7 @@ function response(eventname, req){
                 html += '</tr>';
             }
             html += '</table>';
-            document.getElementById('service').innerHTML = html;        
+            document.getElementById('service').innerHTML = html;
             break;
         case 'slidecontroller_live_text_request':
             var data = eval('(' + text + ')');
@@ -67,7 +99,51 @@ function response(eventname, req){
                 html += '</td></tr>';
             }
             html += '</table>';
-            document.getElementById('currentitem').innerHTML = html;        
+            document.getElementById('currentitem').innerHTML = html;
+            break;
+        case 'remotes_poll_request':
+            send_event("remotes_poll_request");
+            send_event("servicemanager_list_request");
+            send_event("slidecontroller_live_text_request");
+            break;
+    }
+}
+function new_response(eventname, text){
+    switch (eventname)
+    {
+        case 'servicemanager_list_request':
+            var data = eval('(' + text + ')');
+            var table = $("<table>");
+            for (row in data)
+            {
+                var trow = $("<tr>").click("send_event('servicemanager_set_item', '" + row + "')");
+                if (data[row]['selected'])
+                {
+                    trow.attr("style", "font-weight: bold");
+                }
+                trow.append($("<td>").text(parseInt(row)+1));
+                trow.append($("<td>").text(data[row]['title']));
+                trow.append($("<td>").text(data[row]['plugin']));
+                trow.append($("<td>").text(data[row]['notes']));
+                table.append(trow);
+            }
+            $("#service").html(table);
+            break;
+        case 'slidecontroller_live_text_request':
+            var data = eval('(' + text + ')');
+            var html = '<table>';
+            for(row in data){
+                html += '<tr onclick="send_event('
+                html += "'slidecontroller_live_set', " + row + ')"';
+                if(data[row]['selected'])
+                    html += ' style="font-weight: bold"';
+                html += '>';
+                html += '<td>' + data[row]['tag'] + '</td>';
+                html += '<td>' + data[row]['text'].replace(/\\n/g, '<br>');
+                html += '</td></tr>';
+            }
+            html += '</table>';
+            document.getElementById('currentitem').innerHTML = html;
             break;
         case 'remotes_poll_request':
             send_event("remotes_poll_request");
@@ -83,31 +159,31 @@ send_event("remotes_poll_request");
 </head>
 <body>
     <h1>OpenLP Controller</h1>
-    <input type='button' value='<- Previous Slide' 
+    <input type='button' value='<- Previous Slide'
         onclick='send_event("slidecontroller_live_previous");' />
-    <input type='button' value='Next Slide ->' 
+    <input type='button' value='Next Slide ->'
         onclick='send_event("slidecontroller_live_next");' />
     <br/>
-    <input type='button' value='<- Previous Item' 
+    <input type='button' value='<- Previous Item'
         onclick='send_event("servicemanager_previous_item");' />
-    <input type='button' value='Next Item ->' 
+    <input type='button' value='Next Item ->'
         onclick='send_event("servicemanager_next_item");' />
     <br/>
-    <input type='button' value='Blank' 
+    <input type='button' value='Blank'
         onclick='send_event("slidecontroller_live_blank");' />
-    <input type='button' value='Unblank' 
+    <input type='button' value='Unblank'
         onclick='send_event("slidecontroller_live_unblank");' />
     <br/>
     <label>Alert text</label><input id='alert' type='text' />
-    <input type='button' value='Send' 
-        onclick='send_event("alerts_text", 
+    <input type='button' value='Send'
+        onclick='send_event("alerts_text",
         document.getElementById("alert").value);' />
     <hr>
-    <input type='button' value='Order of service' 
+    <input type='button' value='Order of service'
         onclick='send_event("servicemanager_list_request");'>
     <div id='service'></div>
     <hr>
-    <input type='button' value='Current item' 
+    <input type='button' value='Current item'
         onclick='send_event("slidecontroller_live_text_request");'>
     <div id='currentitem'></div>
     <hr>
