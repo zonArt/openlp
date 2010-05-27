@@ -151,7 +151,7 @@ class PresentationController(object):
         if doc is None:
             return
         if doc in self.docs:
-           self.docs.remove(doc)
+            self.docs.remove(doc)
 
     def close_presentation(self):
         pass

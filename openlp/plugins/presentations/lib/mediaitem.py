@@ -109,7 +109,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.servicePath = os.path.join(
             AppLocation.get_section_data_path(self.settingsSection),
             u'thumbnails')
-        self.ListView.setIconSize(QtCore.QSize(88,50))
+        self.ListView.setIconSize(QtCore.QSize(88, 50))
         if not os.path.exists(self.servicePath):
             os.mkdir(self.servicePath)
         list = SettingsManager.load_list(

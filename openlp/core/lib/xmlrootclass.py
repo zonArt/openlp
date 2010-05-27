@@ -102,3 +102,4 @@ class XmlRootClass(object):
             if not attrib.startswith(u'_'):
                 result += u'_%s_' % getattr(self, attrib)
         return result
+

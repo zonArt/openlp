@@ -367,7 +367,7 @@ class MediaManagerItem(QtGui.QWidget):
 
     def IconFromFile(self, file, thumb):
         icon = build_icon(unicode(file))
-        pixmap = icon.pixmap(QtCore.QSize(88,50))
+        pixmap = icon.pixmap(QtCore.QSize(88, 50))
         ext = os.path.splitext(thumb)[1].lower()
         pixmap.save(thumb, ext[1:])
         return icon

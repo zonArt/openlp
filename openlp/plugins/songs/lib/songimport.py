@@ -122,8 +122,9 @@ class SongImport(object):
             or text.lower().find(self.copyright_symbol) >= 0:
             copyright_found = False
             for line in lines:
-                if copyright_found or line.lower().find(self.copyright_string) >= 0\
-                    or line.lower().find(self.copyright_symbol) >= 0:
+                if (copyright_found or
+                    line.lower().find(self.copyright_string) >= 0 or
+                    line.lower().find(self.copyright_symbol) >= 0):
                     copyright_found = True
                     self.add_copyright(line)
                 else:
@@ -264,8 +265,8 @@ class SongImport(object):
         """
         Remove punctuation from the string for searchable fields
         """
-        for c in string.punctuation:
-            text = text.replace(c, u'')
+        for character in string.punctuation:
+            text = text.replace(character, u'')
         return text
             
     def finish(self):
