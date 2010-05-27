@@ -233,7 +233,7 @@ class ThemeManager(QtGui.QWidget):
             try:
                 zip = zipfile.ZipFile(themePath, u'w')
                 source = os.path.join(self.path, theme)
-                for root, dirs, files in os.walk(source):
+                for files in os.walk(source)[2]:
                     for name in files:
                         zip.write(
                             os.path.join(source, name),
@@ -272,11 +272,9 @@ class ThemeManager(QtGui.QWidget):
                 #check to see file is in theme root directory
                 theme = os.path.join(self.path, name)
                 if os.path.exists(theme):
-                    (path, filename) = os.path.split(unicode(file))
                     textName = os.path.splitext(name)[0]
                     if textName == self.global_theme:
-                        name = u'%s (%s)' % (textName,
-                            self.trUtf8('default'))
+                        name = u'%s (%s)' % (textName, self.trUtf8('default'))
                     else:
                         name = textName
                     thumb = os.path.join(self.thumbPath, u'%s.png' % textName)
@@ -567,3 +565,4 @@ class ThemeManager(QtGui.QWidget):
         #theme.theme_mode
         theme.theme_name = theme.theme_name.strip()
         #theme.theme_version
+

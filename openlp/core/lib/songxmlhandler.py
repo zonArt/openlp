@@ -136,7 +136,7 @@ class SongXMLParser(object):
         try:
             self.song_xml = ElementTree(
                 element=XML(unicode(xml).encode('unicode-escape')))
-        except:
+        except ExpatError:
             log.exception(u'Invalid xml %s', xml)
 
     def get_verses(self):
@@ -144,9 +144,9 @@ class SongXMLParser(object):
         Iterates through the verses in the XML and returns a list of verses
         and their attributes.
         """
-        iter = self.song_xml.getiterator()
+        xml_iter = self.song_xml.getiterator()
         verse_list = []
-        for element in iter:
+        for element in xml_iter:
             if element.tag == u'verse':
                 if element.text is None:
                     element.text = u''

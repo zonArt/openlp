@@ -191,7 +191,7 @@ class HttpConnection(object):
         path = os.path.normpath(os.path.join(self.parent.html_dir, filename))
         if not path.startswith(self.parent.html_dir):
             return None
-        (fileroot, ext) = os.path.splitext(filename)
+        ext = os.path.splitext(filename)[1]
         if ext == u'.html':
             mimetype = u'text/html'
         elif ext == u'.css':

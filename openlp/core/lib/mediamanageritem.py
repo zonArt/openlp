@@ -28,10 +28,8 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib.toolbar import *
 from openlp.core.lib import contextMenuAction, contextMenuSeparator, \
-    SettingsManager
-from serviceitem import ServiceItem
+    SettingsManager, OpenLPToolbar, ServiceItem
 
 log = logging.getLogger(__name__)
 

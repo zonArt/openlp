@@ -115,26 +115,27 @@ class Theme(object):
         for element in iter:
             delphiColorChange = False
             if element.tag != u'Theme':
-                t = element.text
+                element_text = element.text
                 val = 0
                 # easy!
-                if type(t) == type(None):
-                    val = t
+                if element_text is None:
+                    val = element_text
                 # strings need special handling to sort the colours out
-                if type(t) is types.StringType or type(t) is types.UnicodeType:
-                    if t[0] == u'$': # might be a hex number
+                if type(element_text) is types.StringType or \
+                    type(element_text) is types.UnicodeType:
+                    if element_text[0] == u'$': # might be a hex number
                         try:
-                            val = int(t[1:], 16)
+                            val = int(element_text[1:], 16)
                         except ValueError: # nope
                             pass
-                    elif DelphiColors.has_key(t):
-                        val = DelphiColors[t]
+                    elif DelphiColors.has_key(element_text):
+                        val = DelphiColors[element_text]
                         delphiColorChange = True
                     else:
                         try:
-                            val = int(t)
+                            val = int(element_text)
                         except ValueError:
-                            val = t
+                            val = element_text
                 if (element.tag.find(u'Color') > 0 or
                     (element.tag.find(u'BackgroundParameter') == 0 and
                     type(val) == type(0))):

@@ -172,11 +172,12 @@ class SettingsManager(object):
             path = os.path.join(path, section)
         try:
             files = os.listdir(path)
-        except:
+        except OSError:
             return []
         if extension:
-            return [file for file in files
-                if extension == os.path.splitext(file)[1]]
+            return [filename for filename in files
+                if extension == os.path.splitext(filename)[1]]
         else:
             # no filtering required
             return files
+
