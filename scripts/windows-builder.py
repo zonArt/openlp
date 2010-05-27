@@ -50,6 +50,10 @@ PyInstaller
 
         http://svn.pyinstaller.org/trunk
 
+    Then you need to copy the two hook-*.py files from the "pyinstaller"
+    subdirectory in OpenLP's "resources" directory into PyInstaller's "hooks"
+    directory.
+
     Once you've done that, open a command prompt (DOS shell), navigate to the
     PyInstaller directory and run::
 
