@@ -203,7 +203,7 @@ class ThemeManager(QtGui.QWidget):
                     os.remove(os.path.join(self.path, th))
                     os.remove(os.path.join(self.thumbPath, th))
                     shutil.rmtree(os.path.join(self.path, theme))
-                except:
+                except OSError:
                     #if not present do not worry
                     pass
                 # As we do not reload the themes push out the change
@@ -238,7 +238,7 @@ class ThemeManager(QtGui.QWidget):
                         zip.write(
                             os.path.join(source, name),
                             os.path.join(theme, name))
-            except:
+            except (IOError, OSError):
                 log.exception(u'Export Theme Failed')
             finally:
                 if zip:
@@ -358,11 +358,10 @@ class ThemeManager(QtGui.QWidget):
                             outfile = open(fullpath, u'wb')
                             outfile.write(zip.read(file))
             self.generateAndSaveImage(dir, themename, filexml)
-        except:
+        except IOError:
             QtGui.QMessageBox.critical(
                 self, self.trUtf8('Error'),
-                self.trUtf8('File is not a valid theme.'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                self.trUtf8('File is not a valid theme.'))
             log.exception(u'Importing theme from zip file failed %s' % filename)
         finally:
             if zip:
@@ -454,7 +453,7 @@ class ThemeManager(QtGui.QWidget):
             try:
                 outfile = open(theme_file, u'w')
                 outfile.write(theme_pretty_xml)
-            except:
+            except IOError:
                 log.exception(u'Saving theme to file failed')
             finally:
                 if outfile:
@@ -462,7 +461,7 @@ class ThemeManager(QtGui.QWidget):
             if image_from and image_from != image_to:
                 try:
                     shutil.copyfile(image_from, image_to)
-                except:
+                except IOError:
                     log.exception(u'Failed to save theme image')
             self.generateAndSaveImage(self.path, name, theme_xml)
             self.loadThemes()

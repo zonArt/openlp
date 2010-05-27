@@ -159,7 +159,7 @@ class MigrateSongs(object):
             try:
                 self.session.add(song)
                 self.session.commit()
-            except:
+            except InvalidRequestError:
                 self.session.rollback()
                 print u'Error thrown = ', sys.exc_info()[1]
 

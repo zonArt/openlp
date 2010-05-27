@@ -590,7 +590,7 @@ class ServiceManager(QtGui.QWidget):
                     zip.close()
             try:
                 os.remove(servicefile)
-            except IOError:
+            except (IOError, OSError):
                 pass #if not present do not worry
             name = filename.split(os.path.sep)
             self.serviceName = name[-1]
@@ -668,7 +668,7 @@ class ServiceManager(QtGui.QWidget):
                 try:
                     if os.path.isfile(p_file):
                         os.remove(p_file)
-                except IOError:
+                except (IOError, OSError):
                     log.exception(u'Failed to remove osd file')
             except IOError:
                 log.exception(u'Problem loading a service file')
@@ -701,7 +701,7 @@ class ServiceManager(QtGui.QWidget):
             try:
                 if os.path.isfile(file_path):
                     os.remove(file_path)
-            except:
+            except OSError:
                 log.exception(u'Failed to clean up servicePath')
 
     def onThemeComboBoxSelected(self, currentIndex):

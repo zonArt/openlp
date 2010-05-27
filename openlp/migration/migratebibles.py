@@ -143,7 +143,7 @@ class MigrateBibles(object):
             try:
                 self.session.add(testament)
                 self.session.commit()
-            except:
+            except InvalidRequestError:
                 self.session.rollback()
                 print u'Error thrown = ', sys.exc_info()[1]
         self.progress(u'Create book table')
@@ -157,7 +157,7 @@ class MigrateBibles(object):
             try:
                 self.session.add(book)
                 self.session.commit()
-            except:
+            except InvalidRequestError:
                 self.session.rollback()
                 print u'Error thrown = ', sys.exc_info()[1]
         self.progress(u'Create verse table')
@@ -171,14 +171,10 @@ class MigrateBibles(object):
             verse.text = verse_temp.text
             try:
                 self.session.add(verse)
-            except:
+                self.session.commit()
+            except InvalidRequestError:
                 self.session.rollback()
                 print u'Error thrown = ', sys.exc_info()[1]
-        try:
-            self.session.commit()
-        except:
-            self.session.rollback()
-            print u'Error thrown = ', sys.exc_info()[1]
         self.progress(u'Create metadata table')
         results = self.session.query(TBibleMeta).order_by(TBibleMeta.key).all()
         for biblemeta_temp in results:
@@ -188,7 +184,7 @@ class MigrateBibles(object):
             try:
                 self.session.add(biblemeta)
                 self.session.commit()
-            except:
+            except InvalidRequestError:
                 self.session.rollback()
                 print u'Error thrown = ', sys.exc_info()[1]
 
@@ -206,3 +202,4 @@ class MigrateBibles(object):
         conn.commit()
         conn.execute(u'vacuum;')
         conn.commit()
+
