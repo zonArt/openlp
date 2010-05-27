@@ -24,8 +24,10 @@
 ###############################################################################
 
 import logging
+
 from xml.dom.minidom import Document
 from xml.etree.ElementTree import ElementTree, XML, dump
+from xml.parsers.expat import ExpatError
 
 log = logging.getLogger(__name__)
 

@@ -26,6 +26,7 @@
 import logging
 
 from PyQt4 import QtCore
+from sqlalchemy.exceptions import InvalidRequestError
 
 from openlp.core.utils import AppLocation
 from openlp.plugins.alerts.lib.models import init_models, metadata, AlertItem

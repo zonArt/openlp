@@ -23,13 +23,14 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import logging
 import types
 import os
 
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import contextMenuAction, contextMenuSeparator, \
-    SettingsManager, OpenLPToolbar, ServiceItem
+    SettingsManager, OpenLPToolbar, ServiceItem, build_icon
 
 log = logging.getLogger(__name__)
 

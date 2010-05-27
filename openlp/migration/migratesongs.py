@@ -27,8 +27,8 @@ import os
 import sys
 import sqlite3
 
-from sqlalchemy import  *
 from sqlalchemy import create_engine
+from sqlalchemy.exceptions import InvalidRequestError
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation
 
 from openlp.core.lib import SettingsManager
