@@ -211,8 +211,8 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             for row in range(0, self.VerseListView.count()):
                 item = self.VerseListView.item(row)
                 verse_list += item.text()
-            if row != self.VerseListView.count() - 1:
-                verse_list += u'\n[---]\n'
+                if row != self.VerseListView.count() - 1:
+                    verse_list += u'\n[---]\n'
             self.editText(verse_list)
 
     def editText(self, text):

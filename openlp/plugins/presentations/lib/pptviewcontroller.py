@@ -73,7 +73,7 @@ class PptviewController(PresentationController):
                 self.start_process()
                 return self.process.CheckInstalled()
             except:
-               return False
+                return False
 
         def start_process(self):
             """

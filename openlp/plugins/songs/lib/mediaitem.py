@@ -270,7 +270,7 @@ class SongMediaItem(MediaManagerItem):
             self.edit_song_form.loadSong(fields[1], (fields[0] == u'P'))
             self.edit_song_form.exec_()
 
-    def onEditClick(self, preview=False):
+    def onEditClick(self):
         item = self.ListView.currentItem()
         if item:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
@@ -283,7 +283,8 @@ class SongMediaItem(MediaManagerItem):
             if len(items) == 1:
                 del_message = self.trUtf8('Delete song?')
             else:
-                del_message = unicode(self.trUtf8('Delete %d songs?')) % len(items)
+                del_message = unicode(
+                    self.trUtf8('Delete %d songs?')) % len(items)
             ans = QtGui.QMessageBox.question(self,
                 self.trUtf8('Delete Confirmation'), del_message,
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok|
@@ -323,7 +324,8 @@ class SongMediaItem(MediaManagerItem):
             #no verse list or only 1 space (in error)
             if not song.verse_order or not song.verse_order.strip():
                 for verse in verseList:
-                    verse_tag = u'%s:%s' % (verse[0][u'type'], verse[0][u'label'])
+                    verse_tag = u'%s:%s' % (
+                        verse[0][u'type'], verse[0][u'label'])
                     service_item.add_from_text(\
                         verse[1][:30], unicode(verse[1]), verse_tag)
             else:
@@ -371,5 +373,4 @@ class SongMediaItem(MediaManagerItem):
             song.title, author_audit, song.copyright, song.ccli_number
         ]
         return True
-
 

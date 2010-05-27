@@ -222,8 +222,8 @@ class DisplayTab(SettingsTab):
         self.postSetUp()
 
     def postSetUp(self):
-        self.screens.override[u'size'] = QtCore.QRect(int(self.XposEdit.text()),\
-            int(self.YposEdit.text()), int(self.WidthEdit.text()),\
+        self.screens.override[u'size'] = QtCore.QRect(int(self.XposEdit.text()),
+            int(self.YposEdit.text()), int(self.WidthEdit.text()),
             int(self.HeightEdit.text()))
         if self.amend_display:
             self.screens.set_override_display()
@@ -233,3 +233,4 @@ class DisplayTab(SettingsTab):
         if self.amend_display_start != self.amend_display:
             self.amend_display_start = self.amend_display
             Receiver.send_message(u'config_screen_changed')
+

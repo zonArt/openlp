@@ -75,21 +75,6 @@ temp_authors_songs_table = Table(u'songauthors_temp', metadata,
     Column(u'authorid', types.Integer, primary_key=True),
     Column(u'songid', types.Integer)
 )
-class BaseModel(object):
-    """
-    BaseModel provides a base object with a set of generic functions
-    """
-
-    @classmethod
-    def populate(cls, **kwargs):
-        """
-        Creates an instance of a class and populates it, returning the instance
-        """
-        me = cls()
-        keys = kwargs.keys()
-        for key in keys:
-            me.__setattr__(key, kwargs[key])
-        return me
 
 class TAuthor(BaseModel):
     """
@@ -109,7 +94,7 @@ class TSongAuthor(BaseModel):
     """
     pass
 
-class MigrateSongs():
+class MigrateSongs(object):
     def __init__(self, display):
         self.display = display
         self.data_path = AppLocation.get_section_data_path(u'songs')

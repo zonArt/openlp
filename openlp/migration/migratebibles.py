@@ -27,7 +27,6 @@ import os
 import sys
 import sqlite3
 
-from sqlalchemy import *
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper
 
@@ -35,22 +34,6 @@ from openlp.core.lib import SettingsManager
 from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.models import *
     
-class BaseModel(object):
-    """
-    BaseModel provides a base object with a set of generic functions
-    """
-
-    @classmethod
-    def populate(cls, **kwargs):
-        """
-        Creates an instance of a class and populates it, returning the instance
-        """
-        me = cls()
-        keys = kwargs.keys()
-        for key in keys:
-            me.__setattr__(key, kwargs[key])
-        return me
-
 class TBibleMeta(BaseModel):
     """
     Bible Meta Data
@@ -109,7 +92,7 @@ def init_models(url):
         autocommit=False, bind=engine))
     return session
 
-class MigrateBibles():
+class MigrateBibles(object):
     def __init__(self, display):
         self.display = display
         self.data_path = AppLocation.get_section_data_path(u'bibles')

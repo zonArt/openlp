@@ -418,12 +418,13 @@ class HTTPBible(BibleDB):
                     Receiver.send_message(u'bibles_nobook')
                     return []
                 db_book = self.create_book(book_details[u'name'],
-                    book_details[u'abbreviation'], book_details[u'testament_id'])
+                    book_details[u'abbreviation'],
+                    book_details[u'testament_id'])
             book = db_book.name
             if BibleDB.get_verse_count(self, book, reference[1]) == 0:
                 Receiver.send_message(u'bibles_showprogress')
                 Receiver.send_message(u'openlp_process_events')
-                search_results = self.get_chapter(self.name, book, reference[1])
+                search_results = self.get_chapter(book, reference[1])
                 if search_results and search_results.has_verselist():
                     ## We have found a book of the bible lets check to see
                     ## if it was there.  By reusing the returned book name
@@ -433,18 +434,19 @@ class HTTPBible(BibleDB):
                     Receiver.send_message(u'openlp_process_events')
                     # check to see if book/chapter exists
                     db_book = self.get_book(bookname)
-                    self.create_chapter(db_book.id, search_results.get_chapter(),
+                    self.create_chapter(db_book.id,
+                        search_results.get_chapter(),
                         search_results.get_verselist())
                     Receiver.send_message(u'openlp_process_events')
                 Receiver.send_message(u'bibles_hideprogress')
             Receiver.send_message(u'openlp_process_events')
         return BibleDB.get_verses(self, reference_list)
 
-    def get_chapter(self, version, book, chapter):
+    def get_chapter(self, book, chapter):
         """
         Receive the request and call the relevant handler methods
         """
-        log.debug(u'get_chapter %s, %s, %s', version, book, chapter)
+        log.debug(u'get_chapter %s, %s', book, chapter)
         log.debug(u'source = %s', self.download_source)
         try:
             if self.download_source.lower() == u'crosswalk':

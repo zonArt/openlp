@@ -67,7 +67,7 @@ def get_text_file_string(text_file):
         file_handle = open(text_file, u'r')
         content_string = file_handle.read()
     except IOError:
-        log.error(u'Failed to open text file %s' % text_file)
+        log.exception(u'Failed to open text file %s' % text_file)
     finally:
         if file_handle:
             file_handle.close()
@@ -131,6 +131,9 @@ def contextMenu(base, icon, text):
     return action
 
 def contextMenuSeparator(base):
+    """
+    Add a separator to a context menu
+    """
     action = QtGui.QAction(u'', base)
     action.setSeparator(True)
     return action
@@ -149,7 +152,8 @@ def resize_image(image, width, height):
     realw = preview.width()
     realh = preview.height()
     # and move it to the centre of the preview space
-    newImage = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32_Premultiplied)
+    newImage = QtGui.QImage(width, height,
+        QtGui.QImage.Format_ARGB32_Premultiplied)
     newImage.fill(QtCore.Qt.black)
     painter = QtGui.QPainter(newImage)
     painter.drawImage((width - realw) / 2, (height - realh) / 2, preview)
@@ -157,6 +161,9 @@ def resize_image(image, width, height):
 
 
 class ThemeLevel(object):
+    """
+    Provides an enumeration for the level a theme applies to
+    """
     Global = 1
     Service = 2
     Song = 3
@@ -177,5 +184,4 @@ from songxmlhandler import SongXMLBuilder, SongXMLParser
 from themexmlhandler import ThemeXML
 from renderer import Renderer
 from rendermanager import RenderManager
-from mediamanageritem import MediaManagerItem
 from baselistwithdnd import BaseListWithDnD

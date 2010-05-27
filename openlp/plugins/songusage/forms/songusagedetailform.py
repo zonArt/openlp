@@ -35,10 +35,11 @@ from songusagedetaildialog import Ui_SongUsageDetailDialog
 log = logging.getLogger(__name__)
 
 class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
-    log.info(u'SongUsage Detail Form loaded')
     """
     Class documentation goes here.
     """
+    log.info(u'SongUsage Detail Form Loaded')
+
     def __init__(self, parent=None):
         """
         Constructor

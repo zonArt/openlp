@@ -810,8 +810,8 @@ class ServiceManager(QtGui.QWidget):
                 if self.serviceItems and item < len(self.serviceItems) and \
                     self.serviceItems[item][u'service_item'].is_capable(
                     ItemCapabilities.AllowsPreview):
-                        self.parent.PreviewController.addServiceManagerItem(
-                            self.serviceItems[item][u'service_item'], 0)
+                    self.parent.PreviewController.addServiceManagerItem(
+                        self.serviceItems[item][u'service_item'], 0)
         else:
             QtGui.QMessageBox.critical(self,
                 self.trUtf8('Missing Display Handler'),
@@ -897,17 +897,18 @@ class ServiceManager(QtGui.QWidget):
                     #we are over somthing so lets investigate
                     pos = self._getParentItemData(item) - 1
                     serviceItem = self.serviceItems[pos]
-                    if plugin == serviceItem[u'service_item'].name \
-                        and serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsAdditions):
-                            action = self.dndMenu.exec_(QtGui.QCursor.pos())
-                            #New action required
-                            if action == self.newAction:
-                                self.droppos = self._getParentItemData(item)
-                            #Append to existing action
-                            if action == self.addToAction:
-                                self.droppos = self._getParentItemData(item)
-                                item.setSelected(True)
-                                replace = True
+                    if (plugin == serviceItem[u'service_item'].name and
+                        serviceItem[u'service_item'].is_capable(
+                        ItemCapabilities.AllowsAdditions)):
+                        action = self.dndMenu.exec_(QtGui.QCursor.pos())
+                        #New action required
+                        if action == self.newAction:
+                            self.droppos = self._getParentItemData(item)
+                        #Append to existing action
+                        if action == self.addToAction:
+                            self.droppos = self._getParentItemData(item)
+                            item.setSelected(True)
+                            replace = True
                     else:
                         self.droppos = self._getParentItemData(item)
                 Receiver.send_message(u'%s_add_service_item' % plugin, replace)
