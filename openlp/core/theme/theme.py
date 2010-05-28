@@ -28,13 +28,13 @@ import types
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtGui
 
-DelphiColors = {"clRed":0xFF0000,
-                "clBlue":0x0000FF,
-                "clYellow":0xFFFF00,
-                "clBlack":0x000000,
-                "clWhite":0xFFFFFF}
+DELPHI_COLORS = {"clRed":0xFF0000,
+                 "clBlue":0x0000FF,
+                 "clYellow":0xFFFF00,
+                 "clBlack":0x000000,
+                 "clWhite":0xFFFFFF}
 
-blankstylexml = \
+BLANK_STYLE_XML = \
 '''<?xml version="1.0" encoding="iso-8859-1"?>
 <Theme>
   <Name>BlankStyle</Name>
@@ -97,7 +97,7 @@ class Theme(object):
                             1 - lyrics
         """
         # init to defaults
-        self._set_from_XML(blankstylexml)
+        self._set_from_XML(BLANK_STYLE_XML)
         self._set_from_XML(xml)
 
     def _get_as_string(self):
@@ -128,8 +128,8 @@ class Theme(object):
                             val = int(element_text[1:], 16)
                         except ValueError: # nope
                             pass
-                    elif DelphiColors.has_key(element_text):
-                        val = DelphiColors[element_text]
+                    elif DELPHI_COLORS.has_key(element_text):
+                        val = DELPHI_COLORS[element_text]
                         delphiColorChange = True
                     else:
                         try:

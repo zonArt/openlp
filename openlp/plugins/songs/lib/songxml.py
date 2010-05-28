@@ -60,7 +60,7 @@ class SongFeatureError(SongException):
 # TODO: Song: Import ChangingSong
 # TODO: Song: Export ChangingSong
 
-_blankOpenSongXml = \
+_BLANK_OPENSONG_XML = \
 '''<?xml version="1.0" encoding="UTF-8"?>
 <song>
   <title></title>
@@ -84,7 +84,7 @@ class _OpenSong(XmlRootClass):
 
     def _reset(self):
         """Reset all song attributes"""
-        self._setFromXml(_blankOpenSongXml, 'song')
+        self._setFromXml(_BLANK_OPENSONG_XML, 'song')
 
     def from_buffer(self, xmlContent):
         """Initialize from buffer(string) with xml content"""

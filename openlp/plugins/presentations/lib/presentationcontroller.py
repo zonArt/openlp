@@ -231,7 +231,10 @@ class PresentationDocument(object):
         Cleans up/deletes any controller specific files created for
         a file, e.g. thumbnails
         """
-        shutil.rmtree(self.thumbnailpath)
+        try:
+            shutil.rmtree(self.thumbnailpath)
+        except OSError:
+            log.exception(u'Failed to delete presentation controller files')
 
     def store_filename(self, presentation):
         """
@@ -388,3 +391,4 @@ class PresentationDocument(object):
         The slide the notes are required for, starting at 1
         """
         return ''
+

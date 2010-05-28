@@ -30,7 +30,7 @@ from xml.etree.ElementTree import ElementTree, XML
 
 from openlp.core.lib import str_to_bool
 
-blankthemexml = \
+BLANK_THEME_XML = \
 '''<?xml version="1.0" encoding="utf-8"?>
  <theme version="1.0">
    <name>BlankStyle</name>
@@ -356,7 +356,7 @@ class ThemeXML(object):
         """
         Pull in the blank theme XML as a starting point.
         """
-        self.parse_xml(blankthemexml)
+        self.parse_xml(BLANK_THEME_XML)
 
     def parse_xml(self, xml):
         """
