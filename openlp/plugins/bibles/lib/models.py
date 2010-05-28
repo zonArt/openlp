@@ -27,20 +27,7 @@ from sqlalchemy import Column, Table, MetaData, ForeignKey, types, \
     create_engine
 from sqlalchemy.orm import mapper, relation, sessionmaker, scoped_session
 
-class BaseModel(object):
-    """
-    BaseModel provides a base object with a set of generic functions
-    """
-    @classmethod
-    def populate(cls, **kwargs):
-        """
-        Creates an instance of a class and populates it, returning the instance
-        """
-        me = cls()
-        keys = kwargs.keys()
-        for key in keys:
-            me.__setattr__(key, kwargs[key])
-        return me
+from openlp.core.lib import BaseModel
 
 
 class BibleMeta(BaseModel):
