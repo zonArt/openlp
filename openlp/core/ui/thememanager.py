@@ -184,16 +184,14 @@ class ThemeManager(QtGui.QWidget):
             else:
                 for plugin in self.parent.plugin_manager.plugins:
                     if not plugin.can_delete_theme(theme):
-                        QtGui.QMessageBox.critical(
-                            self, self.trUtf8('Error'),
-                            self.trUtf8('Theme %s is use in %s plugin' % (theme, plugin.name)),
-                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                        QtGui.QMessageBox.critical(self, self.trUtf8('Error'),
+                            self.trUtf8('Theme %s is use in %s plugin' % (theme,
+                            plugin.name)))
                         return
                 if unicode(self.parent.ServiceManagerContents.ThemeComboBox.currentText()) == theme:
-                    QtGui.QMessageBox.critical(
-                        self, self.trUtf8('Error'),
-                        self.trUtf8('Theme %s is use by Service Manager' % theme),
-                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                    QtGui.QMessageBox.critical(self, self.trUtf8('Error'),
+                        self.trUtf8('Theme %s is use by Service Manager' %
+                        theme))
                     return
                 self.themelist.remove(theme)
                 th = theme + u'.png'

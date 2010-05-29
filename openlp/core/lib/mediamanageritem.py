@@ -335,8 +335,8 @@ class MediaManagerItem(QtGui.QWidget):
         log.info(u'New files(s) %s', unicode(files))
         if files:
             self.loadList(files)
-            dir = os.path.split(unicode(files[0]))[0]
-            SettingsManager.set_last_dir(self.settingsSection, dir)
+            lastDir = os.path.split(unicode(files[0]))[0]
+            SettingsManager.set_last_dir(self.settingsSection, lastDir)
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
 

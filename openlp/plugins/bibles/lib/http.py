@@ -462,7 +462,8 @@ class HTTPBible(BibleDB):
         """
         Return the list of books.
         """
-        return [Book.populate(name=book['name']) for book in HTTPBooks.get_books()]
+        return [Book.populate(name=book['name'])
+            for book in HTTPBooks.get_books()]
 
     def lookup_book(self, book):
         """

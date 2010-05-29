@@ -100,16 +100,17 @@ class PresentationController(object):
         self.docs = []
         self.plugin = plugin
         self.name = name
-        self.settingsSection = self.plugin.settingsSection
+        self.settings_section = self.plugin.settingsSection
         self.available = self.check_available()
         if self.available:
             self.enabled = QtCore.QSettings().value(
-                self.settingsSection + u'/' + name,
-                QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0] == QtCore.Qt.Checked
+                self.settings_section + u'/' + name,
+                QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0] == \
+                    QtCore.Qt.Checked
         else:
             self.enabled = False
         self.thumbnailroot = os.path.join(
-            AppLocation.get_section_data_path(self.settingsSection),
+            AppLocation.get_section_data_path(self.settings_section),
             name, u'thumbnails')
         self.thumbnailprefix = u'slide'
         if not os.path.isdir(self.thumbnailroot):
@@ -123,7 +124,8 @@ class PresentationController(object):
 
     def start_process(self):
         """
-        Loads a running version of the presentation application in the background.
+        Loads a running version of the presentation application in the
+        background.
         """
         pass
 

@@ -317,7 +317,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                 if not isinstance(name, unicode):
                     name = unicode(name, u'utf8')
                 self.web_bible_list[WebDownload.Crosswalk][ver] = name.strip()
-        except:
+        except IOError:
             log.exception(u'Crosswalk resources missing')
         finally:
             if books_file:
@@ -336,8 +336,9 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     ver = unicode(ver, u'utf8')
                 if not isinstance(name, unicode):
                     name = unicode(name, u'utf8')
-                self.web_bible_list[WebDownload.BibleGateway][ver] = name.strip()
-        except:
+                self.web_bible_list[WebDownload.BibleGateway][ver] = \
+                    name.strip()
+        except IOError:
             log.exception(u'Biblegateway resources missing')
         finally:
             if books_file:

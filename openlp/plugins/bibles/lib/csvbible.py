@@ -80,7 +80,7 @@ class CSVBible(BibleDB):
                 self.create_book(unicode(line[1], details['encoding']),
                     line[2], int(line[0]))
                 Receiver.send_message(u'openlp_process_events')
-        except:
+        except IOError:
             log.exception(u'Loading books from file failed')
             success = False
         finally:
@@ -109,7 +109,7 @@ class CSVBible(BibleDB):
                                   unicode(line[3], details['encoding']))
                 Receiver.send_message(u'openlp_process_events')
             self.commit()
-        except:
+        except IOError:
             log.exception(u'Loading verses from file failed')
             success = False
         finally:

@@ -366,9 +366,9 @@ class ThemeXML(object):
             The XML string to parse.
         """
         theme_xml = ElementTree(element=XML(xml))
-        iter = theme_xml.getiterator()
+        xml_iter = theme_xml.getiterator()
         master = u''
-        for element in iter:
+        for element in xml_iter:
             element.text = unicode(element.text).decode('unicode-escape')
             if element.getchildren():
                 master = element.tag + u'_'

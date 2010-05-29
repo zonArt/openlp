@@ -117,7 +117,7 @@ class ImageMediaItem(MediaManagerItem):
                 try:
                     os.remove(
                         os.path.join(self.servicePath, unicode(text.text())))
-                except:
+                except OSError:
                     #if not present do not worry
                     pass
                 self.ListView.takeItem(item.row())

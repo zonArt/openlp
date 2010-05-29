@@ -123,7 +123,7 @@ class BibleDB(QtCore.QObject):
         try:
             os.remove(self.db_file)
             return True
-        except:
+        except OSError:
             return False
 
     def register(self, wizard):
