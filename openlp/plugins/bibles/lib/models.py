@@ -73,10 +73,9 @@ class Verse(BaseModel):
 def init_models(db_url):
     engine = create_engine(db_url)
     metadata.bind = engine
-    session = scoped_session(sessionmaker(autoflush=True,
-                                          autocommit=False,
-                                          bind=engine))
-    return metadata, session
+    session = scoped_session(sessionmaker(autoflush=True, autocommit=False,
+        bind=engine))
+    return session
 
 metadata = MetaData()
 meta_table = Table(u'metadata', metadata,

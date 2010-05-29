@@ -87,8 +87,8 @@ class BibleDB(QtCore.QObject):
                 unicode(settings.value(u'db hostname').toString()),
                 unicode(settings.value(u'db database').toString()))
         settings.endGroup()
-        self.metadata, self.session = init_models(db_url)
-        self.metadata.create_all(checkfirst=True)
+        self.session = init_models(db_url)
+        metadata.create_all(checkfirst=True)
         if u'file' in kwargs:
             self.get_name()
 

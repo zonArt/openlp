@@ -86,13 +86,6 @@ mapper(TTestament, temp_testament_table)
 mapper(TBook, temp_book_table)
 mapper(TVerse, temp_verse_table)
 
-def init_models(url):
-    engine = create_engine(url)
-    metadata.bind = engine
-    session = scoped_session(sessionmaker(autoflush=False,
-        autocommit=False, bind=engine))
-    return session
-
 class MigrateBibles(object):
     def __init__(self, display):
         self.display = display
