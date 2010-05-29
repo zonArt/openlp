@@ -116,7 +116,7 @@ function new_response(eventname, text){
             var table = $("<table>");
             for (row in data)
             {
-                var trow = $("<tr>").click("send_event('servicemanager_set_item', '" + row + "')");
+                var trow = $("<tr>").click("send_event");
                 if (data[row]['selected'])
                 {
                     trow.attr("style", "font-weight: bold");

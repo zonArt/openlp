@@ -25,8 +25,12 @@
 
 import logging
 import os
-import json
 import urlparse
+
+try:
+    import json
+except ImportError:
+    import simplejson as json
 
 from PyQt4 import QtCore, QtNetwork
 
@@ -185,7 +189,7 @@ class HttpConnection(object):
         Ultimately for i18n, this could first look for xx/file.html before
         falling back to file.html... where xx is the language, e.g. 'en'
         """
-        log.debug(u'serve file request %s' % filename)        
+        log.debug(u'serve file request %s' % filename)
         if not filename:
             filename = u'index.html'
         path = os.path.normpath(os.path.join(self.parent.html_dir, filename))
