@@ -75,7 +75,7 @@ class ImageMediaItem(MediaManagerItem):
         self.ListView.clear()
         self.ListView.setSelectionMode(
             QtGui.QAbstractItemView.ExtendedSelection)
-        self.ListView.setIconSize(QtCore.QSize(88,50))
+        self.ListView.setIconSize(QtCore.QSize(88, 50))
         self.servicePath = os.path.join(
             AppLocation.get_section_data_path(self.settingsSection),
             u'thumbnails')
@@ -143,7 +143,7 @@ class ImageMediaItem(MediaManagerItem):
     def generateSlideData(self, service_item, item=None):
         items = self.ListView.selectedIndexes()
         if items:
-            service_item.title = self.trUtf8('Image(s)')
+            service_item.title = unicode(self.trUtf8('Image(s)'))
             service_item.add_capability(ItemCapabilities.AllowsMaintain)
             service_item.add_capability(ItemCapabilities.AllowsPreview)
             service_item.add_capability(ItemCapabilities.AllowsLoop)

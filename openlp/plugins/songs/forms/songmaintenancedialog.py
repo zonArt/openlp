@@ -25,7 +25,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon
+from openlp.core.lib import build_icon,  translate
 
 class Ui_SongMaintenanceDialog(object):
     def setupUi(self, SongMaintenanceDialog):
@@ -208,16 +208,16 @@ class Ui_SongMaintenanceDialog(object):
         QtCore.QMetaObject.connectSlotsByName(SongMaintenanceDialog)
 
     def retranslateUi(self, SongMaintenanceDialog):
-        SongMaintenanceDialog.setWindowTitle(self.trUtf8('Song Maintenance'))
-        self.TypeListWidget.item(0).setText(self.trUtf8('Authors'))
-        self.TypeListWidget.item(1).setText(self.trUtf8('Topics'))
-        self.TypeListWidget.item(2).setText(self.trUtf8('Books/Hymnals'))
-        self.AuthorAddButton.setText(self.trUtf8('Add'))
-        self.AuthorEditButton.setText(self.trUtf8('Edit'))
-        self.AuthorDeleteButton.setText(self.trUtf8('Delete'))
-        self.TopicAddButton.setText(self.trUtf8('Add'))
-        self.TopicEditButton.setText(self.trUtf8('Edit'))
-        self.TopicDeleteButton.setText(self.trUtf8('Delete'))
-        self.BookAddButton.setText(self.trUtf8('Add'))
-        self.BookEditButton.setText(self.trUtf8('Edit'))
-        self.BookDeleteButton.setText(self.trUtf8('Delete'))
+        SongMaintenanceDialog.setWindowTitle(translate('SongMaintenanceForm', 'Song Maintenance'))
+        self.TypeListWidget.item(0).setText(translate('SongMaintenanceForm', 'Authors'))
+        self.TypeListWidget.item(1).setText(translate('SongMaintenanceForm', 'Topics'))
+        self.TypeListWidget.item(2).setText(translate('SongMaintenanceForm', 'Books/Hymnals'))
+        self.AuthorAddButton.setText(translate('SongMaintenanceForm', 'Add'))
+        self.AuthorEditButton.setText(translate('SongMaintenanceForm', 'Edit'))
+        self.AuthorDeleteButton.setText(translate('SongMaintenanceForm', 'Delete'))
+        self.TopicAddButton.setText(translate('SongMaintenanceForm', 'Add'))
+        self.TopicEditButton.setText(translate('SongMaintenanceForm', 'Edit'))
+        self.TopicDeleteButton.setText(translate('SongMaintenanceForm', 'Delete'))
+        self.BookAddButton.setText(translate('SongMaintenanceForm', 'Add'))
+        self.BookEditButton.setText(translate('SongMaintenanceForm', 'Edit'))
+        self.BookDeleteButton.setText(translate('SongMaintenanceForm', 'Delete'))

@@ -36,7 +36,7 @@ log = logging.getLogger(__name__)
 
 class BibleListView(BaseListWithDnD):
     """
-    Drag and drop capable list for Bibles.
+    Custom list view descendant, required for drag and drop.
     """
     def __init__(self, parent=None):
         self.PluginName = u'Bibles'
@@ -337,13 +337,14 @@ class BibleMediaItem(MediaManagerItem):
         # load bibles into the combo boxes
         first = True
         for bible in bibles:
-            self.QuickVersionComboBox.addItem(bible)
-            self.QuickSecondBibleComboBox.addItem(bible)
-            self.AdvancedVersionComboBox.addItem(bible)
-            self.AdvancedSecondBibleComboBox.addItem(bible)
-            if first:
-                first = False
-                self.initialiseBible(bible)
+            if bible:
+                self.QuickVersionComboBox.addItem(bible)
+                self.QuickSecondBibleComboBox.addItem(bible)
+                self.AdvancedVersionComboBox.addItem(bible)
+                self.AdvancedSecondBibleComboBox.addItem(bible)
+                if first:
+                    first = False
+                    self.initialiseBible(bible)
 
     def onListViewResize(self, width, height):
         self.SearchProgress.setGeometry(self.ListView.geometry().x(),
@@ -462,7 +463,19 @@ class BibleMediaItem(MediaManagerItem):
                 bible2_verses.extend(self.parent.manager.get_verses(bible2, scripture))
             bible2_version = self.parent.manager.get_meta_data(bible2, u'Version')
             bible2_copyright = self.parent.manager.get_meta_data(bible2, u'Copyright')
-            bible2_permission = self.parent.manager.get_meta_data(bible2, u'Permission')
+            bible2_permission = self.parent.manager.get_meta_data(bible2, u'Permissions')
+            if bible2_version:
+                bible2_version = bible2_version.value
+            else:
+                bible2_version = u''            
+            if bible2_copyright:
+                bible2_copyright = bible2_copyright.value
+            else:
+                bible2_copyright = u''
+            if bible2_permission:
+                bible2_permission = bible2_permission.value
+            else:
+                bible2_permission = u''
         # Let's loop through the main lot, and assemble our verses
         for item in items:
             bitem = self.ListView.item(item.row())
@@ -491,8 +504,8 @@ class BibleMediaItem(MediaManagerItem):
             if footer not in raw_footer:
                 raw_footer.append(footer)
             if bible2:
-                footer = u'%s (%s %s)' % (book, version, copyright)
-                #If not found add to footer
+                footer = u'%s (%s %s)' % (book, bible2_version, bible2_copyright)
+                #If not found add second version and copyright to footer
                 if footer not in raw_footer:
                     raw_footer.append(footer)
                 bible_text = u'%s %s \n\n %s %s' % \
@@ -518,7 +531,7 @@ class BibleMediaItem(MediaManagerItem):
         else:
             service_item.theme = self.parent.settings_tab.bible_theme
         #if we are verse per slide we have already been added
-        if self.parent.settings_tab.layout_style != 0:
+        if self.parent.settings_tab.layout_style != 0 and not bible2:
             raw_slides.append(bible_text)
         for slide in raw_slides:
             service_item.add_from_text(slide[:30], slide)
@@ -579,7 +592,7 @@ class BibleMediaItem(MediaManagerItem):
     def displayResults(self, bible):
         version = self.parent.manager.get_meta_data(bible, u'Version')
         copyright = self.parent.manager.get_meta_data(bible, u'Copyright')
-        permission = self.parent.manager.get_meta_data(bible, u'Permission')
+        permission = self.parent.manager.get_meta_data(bible, u'Permissions')
         if not permission:
             permission = u''
         else:

@@ -50,7 +50,8 @@ class Book(BaseModel):
     Book model
     """
     def __repr__(self):
-        return u'<Book id="%s" name="%s" publisher="%s" />' % (str(self.id), self.name, self.publisher)
+        return u'<Book id="%s" name="%s" publisher="%s" />' % (
+            str(self.id), self.name, self.publisher)
 
 class Song(BaseModel):
     """

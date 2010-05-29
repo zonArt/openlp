@@ -25,7 +25,7 @@
 
 from openlp.core.utils import AppLocation
 
-class MigrateFiles():
+class MigrateFiles(object):
     def __init__(self, display):
         self.display = display
 

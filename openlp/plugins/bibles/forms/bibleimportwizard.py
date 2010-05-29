@@ -24,6 +24,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_BibleImportWizard(object):
     def setupUi(self, BibleImportWizard):
@@ -32,8 +33,8 @@ class Ui_BibleImportWizard(object):
         BibleImportWizard.setModal(True)
         BibleImportWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
         BibleImportWizard.setOptions(
-            QtGui.QWizard.IndependentPages | \
-            QtGui.QWizard.NoBackButtonOnStartPage | \
+            QtGui.QWizard.IndependentPages |
+            QtGui.QWizard.NoBackButtonOnStartPage |
             QtGui.QWizard.NoBackButtonOnLastPage)
         self.WelcomePage = QtGui.QWizardPage()
         self.WelcomePage.setPixmap(QtGui.QWizard.WatermarkPixmap,
@@ -276,7 +277,7 @@ class Ui_BibleImportWizard(object):
             self.CopyrightEdit)
         self.PermissionLabel = QtGui.QLabel(self.LicenseDetailsPage)
         self.PermissionLabel.setObjectName(u'PermissionLabel')
-        self.LicenseDetailsLayout.setWidget(2, QtGui.QFormLayout.LabelRole,\
+        self.LicenseDetailsLayout.setWidget(2, QtGui.QFormLayout.LabelRole,
             self.PermissionLabel)
         self.PermissionEdit = QtGui.QLineEdit(self.LicenseDetailsPage)
         self.PermissionEdit.setObjectName(u'PermissionEdit')
@@ -307,47 +308,49 @@ class Ui_BibleImportWizard(object):
         QtCore.QMetaObject.connectSlotsByName(BibleImportWizard)
 
     def retranslateUi(self, BibleImportWizard):
-        BibleImportWizard.setWindowTitle(self.trUtf8('Bible Import Wizard'))
+        BibleImportWizard.setWindowTitle(translate('ImportWizardForm', 'Bible Import Wizard'))
         self.TitleLabel.setText(
-            u'<span style=\" font-size:14pt; font-weight:600;\">' + \
-            self.trUtf8('Welcome to the Bible Import Wizard') + u'</span>')
+            u'<span style="font-size:14pt; font-weight:600;">%s</span>' % \
+            translate('ImportWizardForm', 'Welcome to the Bible Import Wizard'))
         self.InformationLabel.setText(
-            self.trUtf8('This wizard will help you to import Bibles from a '
+            translate('ImportWizardForm', 'This wizard will help you to import Bibles from a '
                 'variety of formats. Click the next button below to start the '
                 'process by selecting a format to import from.'))
-        self.SelectPage.setTitle(self.trUtf8('Select Import Source'))
+        self.SelectPage.setTitle(translate('ImportWizardForm', 'Select Import Source'))
         self.SelectPage.setSubTitle(
-            self.trUtf8('Select the import format, and where to import from.'))
-        self.FormatLabel.setText(self.trUtf8('Format:'))
-        self.FormatComboBox.setItemText(0, self.trUtf8('OSIS'))
-        self.FormatComboBox.setItemText(1, self.trUtf8('CSV'))
-        self.FormatComboBox.setItemText(2, self.trUtf8('OpenSong'))
-        self.FormatComboBox.setItemText(3, self.trUtf8('Web Download'))
-        self.OsisLocationLabel.setText(self.trUtf8('File Location:'))
-        self.BooksLocationLabel.setText(self.trUtf8('Books Location:'))
-        self.VerseLocationLabel.setText(self.trUtf8('Verse Location:'))
-        self.OpenSongFileLabel.setText(self.trUtf8('Bible Filename:'))
-        self.LocationLabel.setText(self.trUtf8('Location:'))
-        self.LocationComboBox.setItemText(0, self.trUtf8('Crosswalk'))
-        self.LocationComboBox.setItemText(1, self.trUtf8('BibleGateway'))
-        self.BibleLabel.setText(self.trUtf8('Bible:'))
+            translate('ImportWizardForm', 'Select the import format, and where to import from.'))
+        self.FormatLabel.setText(translate('ImportWizardForm', 'Format:'))
+        self.FormatComboBox.setItemText(0, translate('ImportWizardForm', 'OSIS'))
+        self.FormatComboBox.setItemText(1, translate('ImportWizardForm', 'CSV'))
+        self.FormatComboBox.setItemText(2, translate('ImportWizardForm', 'OpenSong'))
+        self.FormatComboBox.setItemText(3, translate('ImportWizardForm', 'Web Download'))
+        self.OsisLocationLabel.setText(translate('ImportWizardForm', 'File Location:'))
+        self.BooksLocationLabel.setText(translate('ImportWizardForm', 'Books Location:'))
+        self.VerseLocationLabel.setText(translate('ImportWizardForm', 'Verse Location:'))
+        self.OpenSongFileLabel.setText(translate('ImportWizardForm', 'Bible Filename:'))
+        self.LocationLabel.setText(translate('ImportWizardForm', 'Location:'))
+        self.LocationComboBox.setItemText(0, translate('ImportWizardForm', 'Crosswalk'))
+        self.LocationComboBox.setItemText(1, translate('ImportWizardForm', 'BibleGateway'))
+        self.BibleLabel.setText(translate('ImportWizardForm', 'Bible:'))
         self.WebDownloadTabWidget.setTabText(
             self.WebDownloadTabWidget.indexOf(self.DownloadOptionsTab),
-            self.trUtf8('Download Options'))
-        self.AddressLabel.setText(self.trUtf8('Server:'))
-        self.UsernameLabel.setText(self.trUtf8('Username:'))
-        self.PasswordLabel.setText(self.trUtf8('Password:'))
+            translate('ImportWizardForm', 'Download Options'))
+        self.AddressLabel.setText(translate('ImportWizardForm', 'Server:'))
+        self.UsernameLabel.setText(translate('ImportWizardForm', 'Username:'))
+        self.PasswordLabel.setText(translate('ImportWizardForm', 'Password:'))
         self.WebDownloadTabWidget.setTabText(
             self.WebDownloadTabWidget.indexOf(self.ProxyServerTab),
-            self.trUtf8('Proxy Server (Optional)'))
-        self.LicenseDetailsPage.setTitle(self.trUtf8('License Details'))
+            translate('ImportWizardForm', 'Proxy Server (Optional)'))
+        self.LicenseDetailsPage.setTitle(translate('ImportWizardForm', 'License Details'))
         self.LicenseDetailsPage.setSubTitle(
-            self.trUtf8('Set up the Bible\'s license details.'))
-        self.VersionNameLabel.setText(self.trUtf8('Version Name:'))
-        self.CopyrightLabel.setText(self.trUtf8('Copyright:'))
-        self.PermissionLabel.setText(self.trUtf8('Permission:'))
-        self.ImportPage.setTitle(self.trUtf8('Importing'))
+            translate('ImportWizardForm', 'Set up the Bible\'s license details.'))
+        self.VersionNameLabel.setText(translate('ImportWizardForm', 'Version Name:'))
+        self.CopyrightLabel.setText(translate('ImportWizardForm', 'Copyright:'))
+        self.PermissionLabel.setText(translate('ImportWizardForm', 'Permission:'))
+        self.ImportPage.setTitle(translate('ImportWizardForm', 'Importing'))
         self.ImportPage.setSubTitle(
-            self.trUtf8('Please wait while your Bible is imported.'))
-        self.ImportProgressLabel.setText(self.trUtf8('Ready.'))
+            translate('ImportWizardForm', 'Please wait while your Bible is imported.'))
+        self.ImportProgressLabel.setText(translate('ImportWizardForm', 'Ready.'))
         self.ImportProgressBar.setFormat(u'%p%')
+
+

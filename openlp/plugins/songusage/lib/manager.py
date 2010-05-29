@@ -33,7 +33,7 @@ from openlp.plugins.songusage.lib.models import init_models, metadata, \
 
 log = logging.getLogger(__name__)
 
-class SongUsageManager():
+class SongUsageManager(object):
     """
     The Song Manager provides a central location for all database code. This
     class takes care of connecting to the database and running all the queries.

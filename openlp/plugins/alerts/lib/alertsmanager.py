@@ -67,7 +67,7 @@ class AlertsManager(QtCore.QObject):
                 - self.alertHeight
             self.alertHeight = self.screen[u'size'].height() \
                 - self.alertScreenPosition
-        self.parent.maindisplay.setAlertSize(self.alertScreenPosition,\
+        self.parent.maindisplay.setAlertSize(self.alertScreenPosition,
             self.alertHeight)
 
     def onAlertText(self, message):

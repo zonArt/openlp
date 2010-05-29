@@ -36,6 +36,24 @@ ItemCapabilities
 
 log = logging.getLogger(__name__)
 
+class SlideThread(QtCore.QThread):
+    """
+    A special Qt thread class to speed up the display of text based frames.
+    This is threaded so it loads the frames in background
+    """
+    def __init__(self, parent, prefix, count):
+        QtCore.QThread.__init__(self, parent)
+        self.prefix = prefix
+        self.count = count
+
+    def run(self):
+        """
+        Run the thread.
+        """
+        time.sleep(1)
+        for i in range(0, self.count):
+            Receiver.send_message(u'%s_slide_cache' % self.prefix, i)
+
 class SlideList(QtGui.QTableWidget):
     """
     Customised version of QTableWidget which can respond to keyboard
@@ -44,7 +62,7 @@ class SlideList(QtGui.QTableWidget):
     def __init__(self, parent=None, name=None):
         QtGui.QTableWidget.__init__(self, parent.Controller)
         self.parent = parent
-        self.hotkey_map = {
+        self.hotkeyMap = {
            QtCore.Qt.Key_Return: 'servicemanager_next_item',
            QtCore.Qt.Key_Space: 'slidecontroller_live_next_noloop',
            QtCore.Qt.Key_Enter: 'slidecontroller_live_next_noloop',
@@ -66,8 +84,8 @@ class SlideList(QtGui.QTableWidget):
             elif event.key() == QtCore.Qt.Key_PageDown:
                 self.parent.onSlideSelectedLast()
                 event.accept()
-            elif event.key() in self.hotkey_map and self.parent.isLive:
-                Receiver.send_message(self.hotkey_map[event.key()])
+            elif event.key() in self.hotkeyMap and self.parent.isLive:
+                Receiver.send_message(self.hotkeyMap[event.key()])
                 event.accept()
             event.ignore()
         else:
@@ -87,19 +105,15 @@ class SlideController(QtGui.QWidget):
         self.isLive = isLive
         self.parent = parent
         self.mainDisplay = self.parent.displayManager.mainDisplay
-        self.loop_list = [
+        self.loopList = [
             u'Start Loop',
             u'Stop Loop',
             u'Loop Separator',
             u'Image SpinBox'
         ]
-        self.song_edit_list = [
+        self.songEditList = [
             u'Edit Song',
         ]
-        if isLive:
-            self.labelWidth = 20
-        else:
-            self.labelWidth = 0
         self.timer_id = 0
         self.songEdit = False
         self.selectedRow = 0
@@ -115,11 +129,11 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             self.TypeLabel.setText(self.trUtf8('Live'))
             self.split = 1
-            self.type_prefix = u'live'
+            self.typePrefix = u'live'
         else:
             self.TypeLabel.setText(self.trUtf8('Preview'))
             self.split = 0
-            self.type_prefix = u'preview'
+            self.typePrefix = u'preview'
         self.TypeLabel.setStyleSheet(u'font-weight: bold; font-size: 12pt;')
         self.TypeLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.PanelLayout.addWidget(self.TypeLabel)
@@ -139,12 +153,10 @@ class SlideController(QtGui.QWidget):
         self.ControllerLayout.setMargin(0)
         # Controller list view
         self.PreviewListWidget = SlideList(self)
-        self.PreviewListWidget.setColumnCount(2)
+        self.PreviewListWidget.setColumnCount(1)
         self.PreviewListWidget.horizontalHeader().setVisible(False)
-        self.PreviewListWidget.verticalHeader().setVisible(False)
-        self.PreviewListWidget.setColumnWidth(1, self.labelWidth)
         self.PreviewListWidget.setColumnWidth(
-            1, self.Controller.width() - self.labelWidth)
+            0, self.Controller.width())
         self.PreviewListWidget.isLive = self.isLive
         self.PreviewListWidget.setObjectName(u'PreviewListWidget')
         self.PreviewListWidget.setSelectionBehavior(1)
@@ -309,51 +321,53 @@ class SlideController(QtGui.QWidget):
                 QtCore.SIGNAL(u'slidecontroller_live_spin_delay'),
                     self.receiveSpinDelay)
         if isLive:
-            self.Toolbar.makeWidgetsInvisible(self.loop_list)
+            self.Toolbar.makeWidgetsInvisible(self.loopList)
         else:
-            self.Toolbar.makeWidgetsInvisible(self.song_edit_list)
+            self.Toolbar.makeWidgetsInvisible(self.songEditList)
         self.Mediabar.setVisible(False)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_stop_loop' % self.type_prefix),
+            QtCore.SIGNAL(u'slidecontroller_%s_stop_loop' % self.typePrefix),
             self.onStopLoop)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_first' % self.type_prefix),
+            QtCore.SIGNAL(u'slidecontroller_%s_first' % self.typePrefix),
             self.onSlideSelectedFirst)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_next' % self.type_prefix),
+            QtCore.SIGNAL(u'slidecontroller_%s_next' % self.typePrefix),
             self.onSlideSelectedNext)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_previous' % self.type_prefix),
+            QtCore.SIGNAL(u'slidecontroller_%s_previous' % self.typePrefix),
             self.onSlideSelectedPrevious)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_next_noloop' % self.type_prefix),
+            QtCore.SIGNAL(u'slidecontroller_%s_next_noloop' % self.typePrefix),
             self.onSlideSelectedNextNoloop)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_%s_previous_noloop' %
-            self.type_prefix),
+            self.typePrefix),
             self.onSlideSelectedPreviousNoloop)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_last' % self.type_prefix),
+            QtCore.SIGNAL(u'slidecontroller_%s_last' % self.typePrefix),
             self.onSlideSelectedLast)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_change' % self.type_prefix),
+            QtCore.SIGNAL(u'slidecontroller_%s_change' % self.typePrefix),
             self.onSlideChange)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_set' % self.type_prefix), 
+            QtCore.SIGNAL(u'slidecontroller_%s_set' % self.typePrefix),
             self.onSlideSelectedIndex)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_blank' % self.type_prefix), 
+            QtCore.SIGNAL(u'slidecontroller_%s_blank' % self.typePrefix),
             self.onSlideBlank)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_unblank' % self.type_prefix), 
+            QtCore.SIGNAL(u'slidecontroller_%s_unblank' % self.typePrefix),
             self.onSlideUnblank)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_text_request' % self.type_prefix), 
+            QtCore.SIGNAL(u'slidecontroller_%s_text_request' % self.typePrefix),
             self.onTextRequest)
         QtCore.QObject.connect(self.Splitter,
             QtCore.SIGNAL(u'splitterMoved(int, int)'), self.trackSplitter)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.refreshServiceItem)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_slide_cache' % self.typePrefix), self.slideCache)
 
     def widthChanged(self):
         """
@@ -362,8 +376,7 @@ class SlideController(QtGui.QWidget):
         """
         width = self.parent.ControlSplitter.sizes()[self.split]
         height = width * self.parent.RenderManager.screen_ratio
-        self.PreviewListWidget.setColumnWidth(0, self.labelWidth)
-        self.PreviewListWidget.setColumnWidth(1, width - self.labelWidth)
+        self.PreviewListWidget.setColumnWidth(0, width)
         #Sort out image hights (Songs , bibles excluded)
         if self.serviceItem and not self.serviceItem.is_text():
             for framenumber, frame in enumerate(self.serviceItem.get_frames()):
@@ -404,20 +417,21 @@ class SlideController(QtGui.QWidget):
         self.Toolbar.setVisible(True)
         self.Mediabar.setVisible(False)
         self.Toolbar.makeWidgetsInvisible([u'Song Menu'])
-        self.Toolbar.makeWidgetsInvisible(self.loop_list)
+        self.Toolbar.makeWidgetsInvisible(self.loopList)
         if item.is_text():
-            self.Toolbar.makeWidgetsInvisible(self.loop_list)
+            self.Toolbar.makeWidgetsInvisible(self.loopList)
             if QtCore.QSettings().value(
                 self.parent.songsSettingsSection + u'/show songbar',
                 QtCore.QVariant(True)).toBool() and len(self.slideList) > 0:
                 self.Toolbar.makeWidgetsVisible([u'Song Menu'])
         if item.is_capable(ItemCapabilities.AllowsLoop) and \
             len(item.get_frames()) > 1:
-                self.Toolbar.makeWidgetsVisible(self.loop_list)
+            self.Toolbar.makeWidgetsVisible(self.loopList)
         if item.is_media():
             self.Toolbar.setVisible(False)
             self.Mediabar.setVisible(True)
-            #self.volumeSlider.setAudioOutput(self.mainDisplay.videoDisplay.audio)
+            #self.volumeSlider.setAudioOutput(
+            #    self.mainDisplay.videoDisplay.audio)
 
     def enablePreviewToolBar(self, item):
         """
@@ -425,9 +439,9 @@ class SlideController(QtGui.QWidget):
         """
         self.Toolbar.setVisible(True)
         self.Mediabar.setVisible(False)
-        self.Toolbar.makeWidgetsInvisible(self.song_edit_list)
+        self.Toolbar.makeWidgetsInvisible(self.songEditList)
         if item.is_capable(ItemCapabilities.AllowsEdit) and item.from_plugin:
-            self.Toolbar.makeWidgetsVisible(self.song_edit_list)
+            self.Toolbar.makeWidgetsVisible(self.songEditList)
         elif item.is_media():
             self.Toolbar.setVisible(False)
             self.Mediabar.setVisible(True)
@@ -486,6 +500,7 @@ class SlideController(QtGui.QWidget):
         Display the slide number passed
         """
         log.debug(u'processManagerItem')
+        self.onStopLoop()
         #If old item was a command tell it to stop
         if self.serviceItem and self.serviceItem.is_command():
             self.onMediaStop()
@@ -502,24 +517,25 @@ class SlideController(QtGui.QWidget):
         #Set pointing cursor when we have somthing to point at
         self.PreviewListWidget.setCursor(QtCore.Qt.PointingHandCursor)
         before = time.time()
+        #Clear the old serviceItem cache to release memory
+        if self.serviceItem:
+            self.serviceItem.cache = []
         self.serviceItem = serviceItem
         self.PreviewListWidget.clear()
         self.PreviewListWidget.setRowCount(0)
-        self.PreviewListWidget.setColumnWidth(0, self.labelWidth)
-        self.PreviewListWidget.setColumnWidth(1, width - self.labelWidth)
+        self.PreviewListWidget.setColumnWidth(0, width)
         if self.isLive:
             self.SongMenu.menu().clear()
         row = 0
+        text = []
         for framenumber, frame in enumerate(self.serviceItem.get_frames()):
             self.PreviewListWidget.setRowCount(
                 self.PreviewListWidget.rowCount() + 1)
-            rowitem = QtGui.QTableWidgetItem()
             item = QtGui.QTableWidgetItem()
-            slide_height = 0
+            slideHeight = 0
             #It is a based Text Render
             if self.serviceItem.is_text():
-                if self.isLive and frame[u'verseTag'] is not None:
-                    #only load the slot once
+                if frame[u'verseTag']:
                     bits = frame[u'verseTag'].split(u':')
                     tag = None
                     #If verse handle verse number else tag only
@@ -532,12 +548,13 @@ class SlideController(QtGui.QWidget):
                         tag = bits[0]
                         tag1 = tag
                         row = bits[0][0:1]
+                else:
+                    row += 1
+                if self.isLive and frame[u'verseTag'] is not None:
                     if tag1 not in self.slideList:
                         self.slideList[tag1] = framenumber
                         self.SongMenu.menu().addAction(self.trUtf8(u'%s'%tag1),
                             self.onSongBarHandler)
-                else:
-                    row += 1
                 item.setText(frame[u'text'])
             else:
                 label = QtGui.QLabel()
@@ -547,20 +564,18 @@ class SlideController(QtGui.QWidget):
                                       self.parent.RenderManager.height)
                 label.setScaledContents(True)
                 label.setPixmap(QtGui.QPixmap.fromImage(pixmap))
-                self.PreviewListWidget.setCellWidget(framenumber, 1, label)
-                slide_height = width * self.parent.RenderManager.screen_ratio
+                self.PreviewListWidget.setCellWidget(framenumber, 0, label)
+                slideHeight = width * self.parent.RenderManager.screen_ratio
                 row += 1
-            rowitem.setText(unicode(row))
-            rowitem.setTextAlignment(QtCore.Qt.AlignVCenter)
-            self.PreviewListWidget.setItem(framenumber, 0, rowitem)
-            self.PreviewListWidget.setItem(framenumber, 1, item)
-            if slide_height != 0:
-                self.PreviewListWidget.setRowHeight(framenumber, slide_height)
+            text.append(unicode(row))
+            self.PreviewListWidget.setItem(framenumber, 0, item)
+            if slideHeight != 0:
+                self.PreviewListWidget.setRowHeight(framenumber, slideHeight)
+        self.PreviewListWidget.setVerticalHeaderLabels(text)
         if self.serviceItem.is_text():
             self.PreviewListWidget.resizeRowsToContents()
-        self.PreviewListWidget.setColumnWidth(0, self.labelWidth)
-        self.PreviewListWidget.setColumnWidth(1,
-            self.PreviewListWidget.viewport().size().width() - self.labelWidth)
+        self.PreviewListWidget.setColumnWidth(0,
+            self.PreviewListWidget.viewport().size().width())
         if slideno > self.PreviewListWidget.rowCount():
             self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount())
         else:
@@ -568,8 +583,12 @@ class SlideController(QtGui.QWidget):
         self.enableToolBar(serviceItem)
         self.onSlideSelected()
         self.PreviewListWidget.setFocus()
-        Receiver.send_message(u'slidecontroller_%s_started' % self.type_prefix,
+        Receiver.send_message(u'slidecontroller_%s_started' % self.typePrefix,
             [serviceItem])
+        if self.serviceItem.is_text():
+            st = SlideThread(
+                self, self.typePrefix, len(self.serviceItem.get_frames()))
+            st.start()
         log.log(15, u'Display Rendering took %4s' % (time.time() - before))
 
     def onTextRequest(self):
@@ -579,18 +598,18 @@ class SlideController(QtGui.QWidget):
         data = []
         if self.serviceItem:
             for framenumber, frame in enumerate(self.serviceItem.get_frames()):
-                data_item = {}
+                dataItem = {}
                 if self.serviceItem.is_text():
-                    data_item[u'tag'] = unicode(frame[u'verseTag'])
-                    data_item[u'text'] = unicode(frame[u'text'])
+                    dataItem[u'tag'] = unicode(frame[u'verseTag'])
+                    dataItem[u'text'] = unicode(frame[u'text'])
                 else:
-                    data_item[u'tag'] = unicode(framenumber)
-                    data_item[u'text'] = u''
-                data_item[u'selected'] = \
+                    dataItem[u'tag'] = unicode(framenumber)
+                    dataItem[u'text'] = u''
+                dataItem[u'selected'] = \
                     (self.PreviewListWidget.currentRow() == framenumber)
-                data.append(data_item)
-        Receiver.send_message(u'slidecontroller_%s_text_response' 
-            % self.type_prefix, data)            
+                data.append(dataItem)
+        Receiver.send_message(u'slidecontroller_%s_text_response'
+            % self.typePrefix, data)
 
     #Screen event methods
     def onSlideSelectedFirst(self):
@@ -614,7 +633,7 @@ class SlideController(QtGui.QWidget):
         index = int(message[0])
         if not self.serviceItem:
             return
-        Receiver.send_message(u'%s_slide' % self.serviceItem.name.lower(), 
+        Receiver.send_message(u'%s_slide' % self.serviceItem.name.lower(),
             [self.serviceItem, self.isLive, index])
         if self.serviceItem.is_command():
             self.updatePreview()
@@ -674,10 +693,10 @@ class SlideController(QtGui.QWidget):
         self.themeButton.setChecked(False)
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
-            self.blankPlugin(True)
+            self.hidePlugin(True)
         else:
             Receiver.send_message(u'maindisplay_show')
-            self.blankPlugin(False)
+            self.hidePlugin(False)
 
     def blankPlugin(self, blank):
         """
@@ -692,6 +711,27 @@ class SlideController(QtGui.QWidget):
                 Receiver.send_message(u'%s_unblank'
                     % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive])
+
+    def hidePlugin(self, hide):
+        """
+        Blank the display screen.
+        """
+        if self.serviceItem is not None:
+            if hide:
+                Receiver.send_message(u'%s_hide'
+                    % self.serviceItem.name.lower(),
+                    [self.serviceItem, self.isLive])
+            else:
+                Receiver.send_message(u'%s_unblank'
+                    % self.serviceItem.name.lower(),
+                    [self.serviceItem, self.isLive])
+
+    def slideCache(self, slide):
+        """
+        Generate a slide cache item rendered and ready for use
+        in the background.
+        """
+        self.serviceItem.get_rendered_frame(int(slide))
 
     def onSlideSelected(self):
         """
@@ -722,7 +762,7 @@ class SlideController(QtGui.QWidget):
                 if self.isLive:
                     self.mainDisplay.frameView(frame, True)
             self.selectedRow = row
-        Receiver.send_message(u'slidecontroller_%s_changed' % self.type_prefix,
+        Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix,
             row)
 
     def onSlideChange(self, row):
@@ -731,7 +771,7 @@ class SlideController(QtGui.QWidget):
         """
         self.PreviewListWidget.selectRow(row)
         self.updatePreview()
-        Receiver.send_message(u'slidecontroller_%s_changed' % self.type_prefix,
+        Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix,
             row)
 
     def updatePreview(self):
@@ -827,7 +867,9 @@ class SlideController(QtGui.QWidget):
         """
         Stop the timer loop running
         """
-        self.killTimer(self.timer_id)
+        if self.timer_id != 0:
+            self.killTimer(self.timer_id)
+            self.timer_id = 0
 
     def timerEvent(self, event):
         """

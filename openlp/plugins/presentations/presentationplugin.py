@@ -95,10 +95,9 @@ class PresentationPlugin(Plugin):
                     log.debug(u'Importing controller %s', modulename)
                     try:
                         __import__(modulename, globals(), locals(), [])
-                    except ImportError, e:
-                        log.error(
-                            u'Failed to import %s on path %s for reason %s',
-                            modulename, path, e.args[0])
+                    except ImportError:
+                        log.exception(u'Failed to import %s on path %s',
+                            modulename, path)
         controller_classes = PresentationController.__subclasses__()
         for controller_class in controller_classes:
             controller = controller_class(self)
@@ -114,3 +113,4 @@ class PresentationPlugin(Plugin):
             'programs. The choice of available presentation programs is '
             'available to the user in a drop down box.')
         return about_text
+

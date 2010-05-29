@@ -105,7 +105,7 @@ class PresentationController(object):
         if self.available:
             self.enabled = QtCore.QSettings().value(
                 self.settingsSection + u'/' + name,
-                QtCore.Qt.Unchecked).toInt()[0] == QtCore.Qt.Checked
+                QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0] == QtCore.Qt.Checked
         else:
             self.enabled = False
         self.thumbnailroot = os.path.join(
@@ -151,7 +151,7 @@ class PresentationController(object):
         if doc is None:
             return
         if doc in self.docs:
-           self.docs.remove(doc)
+            self.docs.remove(doc)
 
     def close_presentation(self):
         pass

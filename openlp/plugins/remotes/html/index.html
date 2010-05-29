@@ -95,7 +95,7 @@ function response(eventname, req){
                     html += ' style="font-weight: bold"';
                 html += '>';
                 html += '<td>' + data[row]['tag'] + '</td>';
-                html += '<td>' + data[row]['text'].replace(/\\n/g, '<br>');
+                html += '<td>' + data[row]['text'].replace(/\n/g, '<br>');
                 html += '</td></tr>';
             }
             html += '</table>';
@@ -181,10 +181,12 @@ send_event("remotes_poll_request");
     <hr>
     <input type='button' value='Order of service'
         onclick='send_event("servicemanager_list_request");'>
+    <i>(Click service item to go live.)</i>
     <div id='service'></div>
     <hr>
     <input type='button' value='Current item'
         onclick='send_event("slidecontroller_live_text_request");'>
+    <i>(Click verse to display.)</i>
     <div id='currentitem'></div>
     <hr>
     <a href="http://www.openlp.org/">OpenLP website</a>
