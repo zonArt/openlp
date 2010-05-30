@@ -23,10 +23,18 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from openlp.core.lib import BaseModel
+class BaseModel(object):
+    """
+    BaseModel provides a base object with a set of generic functions
+    """
 
-class SongUsageItem(BaseModel):
-    """
-    Audit model
-    """
-    pass
+    @classmethod
+    def populate(cls, **kwargs):
+        """
+        Creates an instance of a class and populates it, returning the instance
+        """
+        me = cls()
+        for key in kwargs:
+            me.__setattr__(key, kwargs[key])
+        return me
+
