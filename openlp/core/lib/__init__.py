@@ -184,4 +184,5 @@ from songxmlhandler import SongXMLBuilder, SongXMLParser
 from themexmlhandler import ThemeXML
 from renderer import Renderer
 from rendermanager import RenderManager
+from basemodel import BaseModel
 from baselistwithdnd import BaseListWithDnD

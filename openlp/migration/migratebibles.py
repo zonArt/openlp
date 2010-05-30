@@ -30,7 +30,7 @@ import sqlite3
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper
 
-from openlp.core.lib import SettingsManager
+from openlp.core.lib import BaseModel, SettingsManager
 from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.models import *
     
