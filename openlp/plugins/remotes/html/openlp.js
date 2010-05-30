@@ -63,32 +63,41 @@ OpenLP.Namespace.create("OpenLP.Events", {
   // Local variables
   onload_functions: Array(),
   // Functions
-  load: function (func) {
+  bindLoad: function (func) {
     this.onload_functions.append(func);
   },
-  click: function (selector, func) {
+  bindClick: function (selector, func) {
     $(selector).bind("click", func);
   },
-  change: function (selector, func) {
+  bindChange: function (selector, func) {
     $(selector).bind("change", func);
   },
-  submit: function (selector, func) {
+  bindSubmit: function (selector, func) {
     $(selector).bind("submit", func);
   },
-  blur: function (selector, func) {
+  bindBlur: function (selector, func) {
     $(selector).bind("blur", func);
   },
-  paste: function (selector, func) {
+  bindPaste: function (selector, func) {
     $(selector).bind("paste", func);
   },
-  keyup: function (selector, func) {
+  bindKeyUp: function (selector, func) {
     $(selector).bind("keyup", func);
   },
-  keydown: function (selector, func) {
+  bindKeyDown: function (selector, func) {
     $(selector).bind("keydown", func);
   },
-  keypress: function (selector, func) {
+  bindKeyPress: function (selector, func) {
     $(selector).bind("keypress", func);
+  },
+  bindMouseEnter: function (selector, func) {
+    $(selector).bind("mouseenter", func);
+  },
+  bindMouseLeave: function (selector, func) {
+    $(selector).bind("mouseleave", func);
+  },
+  liveClick: function (selector, func) {
+    $(selector).live("click", func);
   },
   getElement: function(event) {
     var targ;
@@ -116,8 +125,115 @@ OpenLP.Namespace.create("OpenLP.Events", {
 });
 
 OpenLP.Namespace.create("OpenLP.Remote", {
-    sendEvent: function (event_name, event_data)
+    sendEvent: function (eventName, eventData)
     {
+        var url = "/";
+        if (eventName.substr(-8) == "_request")
+        {
+            url += "request";
+        }
+        else
+        {
+            url += "send";
+        }
+        url += "/" + eventName;
+        var args = {};
+        if (eventData != null && eventData != "")
+        {
+            args.q = $.parseJSON(eventData);
+        }
+        $.ajax({
+            url: url,
+            dataType: "json",
+            data: args,
+            success: function (data)
+            {
+                OpenLP.Remote.handleEvent(eventName, data);
+            },
+            error: function (xhr, textStatus, errorThrown)
+            {
+                if (eventName == "remotes_poll_request")
+                {
+                    OpenLP.Remote.handleEvent("remotes_poll_request");
+                }
+            }
+        });
+    },
+    handleEvent: function (eventName, eventData)
+    {
+        switch (eventName)
+        {
+            case "servicemanager_list_request":
+                var table = $("<table>");
+                $.each(eventData, function (row, item) {
+                    var trow = $("<tr>")
+                        .attr("value", parseInt(row))
+                        .click(OpenLP.Remote.sendSetItem);
+                    if (item["selected"])
+                    {
+                        trow.addClass("selected");
+                    }
+                    trow.append($("<td>").text(parseInt(row) + 1));
+                    trow.append($("<td>").text(item["title"]));
+                    trow.append($("<td>").text(item["plugin"]));
+                    trow.append($("<td>").text("Notes: " + item["notes"]));
+                    table.append(trow);
+                });
+                $("#service").html(table);
+                break;
+            case "slidecontroller_live_text_request":
+                var table = $("<table>");
+                $.each(eventData, function (row, item) {
+                    var trow = $("<tr>")
+                        .attr("value", parseInt(row))
+                        .click(OpenLP.Remote.sendLiveSet);
+                    if (item["selected"])
+                    {
+                        trow.addClass("selected");
+                    }
+                    trow.append($("<td>").text(item["tag"]));
+                    trow.append($("<td>").text(item["text"] ? item["text"].replace(/\\n/g, '<br />') : ""));
+                    table.append(trow);
+                });
+                $("#current-item").html(table);
+                break;
+            case "remotes_poll_request":
+                OpenLP.Remote.sendEvent("remotes_poll_request");
+                OpenLP.Remote.sendEvent("servicemanager_list_request");
+                OpenLP.Remote.sendEvent("slidecontroller_live_text_request");
+                break;
+        }
+    },
+    sendLiveSet: function (e)
+    {
+        var id = OpenLP.Events.getElement(e).parent().attr("value");
+        OpenLP.Remote.sendEvent("slidecontroller_live_set", id);
+        return false;
+    },
+    sendSetItem: function (e)
+    {
+        var id = OpenLP.Events.getElement(e).parent().attr("value");
+        OpenLP.Remote.sendEvent("servicemanager_set_item", id);
+        return false;
+    },
+    sendAlert: function (e)
+    {
+        var alert_text = $("#alert-text").val();
+        OpenLP.Remote.sendEvent("alerts_text", alert_text);
+        return false;
+    },
+    buttonClick: function (e)
+    {
+        var id = OpenLP.Events.getElement(e).attr("id");
+        OpenLP.Remote.sendEvent(id);
         return false;
     }
+});
+
+OpenLP.Events.bindLoad(function () {
+    OpenLP.Events.bindClick("input[type=button][id!=alert-send]", OpenLP.Remote.buttonClick);
+    OpenLP.Events.bindClick("#alert-send", OpenLP.Remote.sendAlert);
+    OpenLP.Remote.sendEvent("servicemanager_list_request");
+    OpenLP.Remote.sendEvent("slidecontroller_live_text_request");
+    OpenLP.Remote.sendEvent("remotes_poll_request");
 });

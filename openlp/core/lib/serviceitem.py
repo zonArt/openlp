@@ -153,15 +153,16 @@ class ServiceItem(object):
             self.RenderManager.set_override_theme(self.theme)
         format = self._display_frames[row][u'text'].split(u'\n')
         #if screen blank then do not display footer
-        if self.cache[row] is not None:
+        if row in self.cache and self.cache[row]:
             frame = self.cache[row]
         else:
             if format[0]:
                 frame = self.RenderManager.generate_slide(format,
-                                self.raw_footer)
+                    self.raw_footer)
             else:
                 frame = self.RenderManager.generate_slide(format, u'')
-            self.cache[row] = frame
+            if frame:
+                self.cache.insert(row, frame)
         return frame
 
     def add_from_image(self, path, title, image):

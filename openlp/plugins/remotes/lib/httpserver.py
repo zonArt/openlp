@@ -245,7 +245,7 @@ class HttpConnection(object):
             Receiver.send_message(event, params)
         else:
             Receiver.send_message(event)
-        return u'OK'
+        return json.dumps([u'OK'])
 
     def process_request(self, event, params):
         """
