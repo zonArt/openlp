@@ -140,7 +140,7 @@ OpenLP.Namespace.create("OpenLP.Remote", {
         var args = {};
         if (eventData != null && eventData != "")
         {
-            args.q = $.parseJSON(eventData);
+            args.q = escape(eventData);
         }
         $.ajax({
             url: url,

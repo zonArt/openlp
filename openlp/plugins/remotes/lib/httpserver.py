@@ -250,13 +250,19 @@ class HttpConnection(object):
     def process_request(self, event, params):
         """
         Client has requested data. Send the signal and parameters for openlp
-        to handle, then listen out for a corresponding _request signal
+        to handle, then listen out for a corresponding ``_request`` signal
         which will have the data to return.
-        For most event timeout after 10 seconds (i.e. incase the signal
-        recipient isn't listening)
-        remotes_poll_request is a special case, this is a ajax long poll which
-        is just waiting for slide change/song change activity. This can wait
-        longer (one minute)
+
+        For most events, timeout after 10 seconds (i.e. in case the signal
+        recipient isn't listening). ``remotes_poll_request`` is a special case
+        however, this is a ajax long poll which is just waiting for slide
+        change/song change activity. This can wait longer (one minute).
+
+        ``event``
+            The event from the web page.
+
+        ``params``
+            Parameters sent with the event.
         """
         log.debug(u'Processing request %s' % event)
         if not event.endswith(u'_request'):
