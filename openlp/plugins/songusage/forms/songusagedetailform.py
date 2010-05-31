@@ -28,7 +28,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsManager
+from openlp.core.lib import SettingsManager, translate
 
 from songusagedetaildialog import Ui_SongUsageDetailDialog
 
@@ -61,7 +61,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
 
     def defineOutputLocation(self):
         path = QtGui.QFileDialog.getExistingDirectory(self,
-            self.trUtf8('Output File Location'),
+            translate('SongUsageDetailForm','Output File Location'),
             SettingsManager.get_last_dir(self.parent.settingsSection, 1))
         path = unicode(path)
         if path != u'':

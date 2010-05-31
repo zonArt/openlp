@@ -25,7 +25,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab
+from openlp.core.lib import SettingsTab, translate
 
 class RemoteTab(SettingsTab):
     """
@@ -36,7 +36,7 @@ class RemoteTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'RemoteTab')
-        self.tabTitleVisible = self.trUtf8('Remotes')
+        self.tabTitleVisible = translate('RemoteTab','Remotes')
         self.RemoteLayout = QtGui.QFormLayout(self)
         self.RemoteLayout.setObjectName(u'RemoteLayout')
         self.RemoteModeGroupBox = QtGui.QGroupBox(self)
@@ -53,7 +53,7 @@ class RemoteTab(SettingsTab):
             0, QtGui.QFormLayout.LabelRole, self.RemoteModeGroupBox)
 
     def retranslateUi(self):
-        self.RemoteModeGroupBox.setTitle(self.trUtf8('Remotes Receiver Port'))
+        self.RemoteModeGroupBox.setTitle(translate('RemoteTab','Remotes Receiver Port'))
 
     def load(self):
         self.RemotePortSpinBox.setValue(

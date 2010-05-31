@@ -25,7 +25,7 @@
 
 import logging
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus
+from openlp.core.lib import Plugin, build_icon, PluginStatus,  translate
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
 log = logging.getLogger(__name__)
@@ -56,7 +56,7 @@ class ImagePlugin(Plugin):
         return ImageMediaItem(self, self.icon, self.name)
 
     def about(self):
-        about_text = self.trUtf8('<b>Image Plugin</b><br>Allows images of '
+        about_text = translate('ImagePlugin','<b>Image Plugin</b><br>Allows images of '
             'all types to be displayed.  If a number of images are selected '
             'together and presented on the live controller it is possible '
             'to turn them into a timed loop.<br<br>From the plugin if the '

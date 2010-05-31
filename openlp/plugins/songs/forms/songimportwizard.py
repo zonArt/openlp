@@ -25,6 +25,8 @@
 
 from PyQt4 import QtCore, QtGui
 
+from openlp.core.lib import translate
+
 class Ui_SongImportWizard(object):
     def setupUi(self, SongImportWizard):
         SongImportWizard.setObjectName(u'SongImportWizard')
@@ -224,32 +226,32 @@ class Ui_SongImportWizard(object):
         QtCore.QMetaObject.connectSlotsByName(SongImportWizard)
 
     def retranslateUi(self, SongImportWizard):
-        SongImportWizard.setWindowTitle(self.trUtf8('Song Import Wizard'))
+        SongImportWizard.setWindowTitle(translate('SongImportWizard','Song Import Wizard'))
         self.TitleLabel.setText(
             '<span style="font-size:14pt; font-weight:600;">%s</span>' % \
-            self.trUtf8('Welcome to the Song Import Wizard'))
-        self.InformationLabel.setText(self.trUtf8('This wizard will help you '
+            translate('SongImportWizard','Welcome to the Song Import Wizard'))
+        self.InformationLabel.setText(translate('SongImportWizard','This wizard will help you '
             'to import songs from a variety of formats. Click the next button '
             'below to start the process by selecting a format to import from.'))
-        self.SourcePage.setTitle(self.trUtf8('Select Import Source'))
-        self.SourcePage.setSubTitle(self.trUtf8('Select the import format, '
+        self.SourcePage.setTitle(translate('SongImportWizard','Select Import Source'))
+        self.SourcePage.setSubTitle(translate('SongImportWizard','Select the import format, '
             'and where to import from.'))
-        self.FormatLabel.setText(self.trUtf8('Format:'))
-        self.FormatComboBox.setItemText(0, self.trUtf8('OpenLyrics'))
-        self.FormatComboBox.setItemText(1, self.trUtf8('OpenSong'))
-        self.FormatComboBox.setItemText(2, self.trUtf8('CCLI'))
-        self.FormatComboBox.setItemText(3, self.trUtf8('CSV'))
-        self.OpenLyricsAddButton.setText(self.trUtf8('Add Files...'))
-        self.OpenLyricsRemoveButton.setText(self.trUtf8('Remove File(s)'))
-        self.OpenSongAddButton.setText(self.trUtf8('Add Files...'))
-        self.OpenSongRemoveButton.setText(self.trUtf8('Remove File(s)'))
-        self.CCLIAddButton.setText(self.trUtf8('Add Files...'))
-        self.CCLIRemoveButton.setText(self.trUtf8('Remove File(s)'))
-        self.CSVFilenameLabel.setText(self.trUtf8('Filename:'))
-        self.CSVBrowseButton.setText(self.trUtf8('Browse...'))
-        self.ImportPage.setTitle(self.trUtf8('Importing'))
-        self.ImportPage.setSubTitle(self.trUtf8('Please wait while your songs '
+        self.FormatLabel.setText(translate('SongImportWizard','Format:'))
+        self.FormatComboBox.setItemText(0, translate('SongImportWizard','OpenLyrics'))
+        self.FormatComboBox.setItemText(1, translate('SongImportWizard','OpenSong'))
+        self.FormatComboBox.setItemText(2, translate('SongImportWizard','CCLI'))
+        self.FormatComboBox.setItemText(3, translate('SongImportWizard','CSV'))
+        self.OpenLyricsAddButton.setText(translate('SongImportWizard','Add Files...'))
+        self.OpenLyricsRemoveButton.setText(translate('SongImportWizard','Remove File(s)'))
+        self.OpenSongAddButton.setText(translate('SongImportWizard','Add Files...'))
+        self.OpenSongRemoveButton.setText(translate('SongImportWizard','Remove File(s)'))
+        self.CCLIAddButton.setText(translate('SongImportWizard','Add Files...'))
+        self.CCLIRemoveButton.setText(translate('SongImportWizard','Remove File(s)'))
+        self.CSVFilenameLabel.setText(translate('SongImportWizard','Filename:'))
+        self.CSVBrowseButton.setText(translate('SongImportWizard','Browse...'))
+        self.ImportPage.setTitle(translate('SongImportWizard','Importing'))
+        self.ImportPage.setSubTitle(translate('SongImportWizard','Please wait while your songs '
             'are imported.'))
-        self.ImportProgressLabel.setText(self.trUtf8('Ready.'))
-        self.ImportProgressBar.setFormat(self.trUtf8('%p%'))
+        self.ImportProgressLabel.setText(translate('SongImportWizard','Ready.'))
+        self.ImportProgressBar.setFormat(translate('SongImportWizard','%p%'))
 

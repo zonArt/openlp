@@ -616,11 +616,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Triggered by delay thread.
         """
         app_version = self.applicationVersion[u'full']
-        version_text = unicode(self.trUtf8('Version %s of OpenLP is now '
+        version_text = unicode(translate('MainWindow','Version %s of OpenLP is now '
             'available for download (you are currently running version %s).'
             '\n\nYou can download the latest version from http://openlp.org'))
         QtGui.QMessageBox.question(self,
-            self.trUtf8('OpenLP Version Updated'),
+            translate('MainWindow','OpenLP Version Updated'),
             version_text % (version, app_version),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
             QtGui.QMessageBox.Ok)
@@ -651,8 +651,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         and settings.value(u'blank warning', QtCore.QVariant(False)).toBool():
             self.LiveController.onBlankDisplay(True)
             QtGui.QMessageBox.question(self,
-                self.trUtf8('OpenLP Main Display Blanked'),
-                self.trUtf8('The Main Display has been blanked out'),
+                translate('MainWindow','OpenLP Main Display Blanked'),
+                translate('MainWindow','The Main Display has been blanked out'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
         settings.endGroup()
@@ -707,8 +707,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         if self.serviceNotSaved:
             ret = QtGui.QMessageBox.question(self,
-                self.trUtf8('Save Changes to Service?'),
-                self.trUtf8('Your service has changed.  '
+                translate('MainWindow','Save Changes to Service?'),
+                translate('MainWindow','Your service has changed.  '
                     'Do you want to save those changes?'),
                 QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Cancel |

@@ -25,7 +25,7 @@
 
 from PyQt4 import QtGui, QtCore
 
-from openlp.core.lib import SettingsTab, Receiver
+from openlp.core.lib import SettingsTab, Receiver, translate
 
 class DisplayTab(SettingsTab):
     """
@@ -39,7 +39,7 @@ class DisplayTab(SettingsTab):
         SettingsTab.__init__(self, u'Display')
 
     def setupUi(self):
-        self.tabTitleVisible = self.trUtf8('Displays')
+        self.tabTitleVisible = translate('DisplayTab','Displays')
         self.layoutWidget = QtGui.QWidget(self)
         self.layoutWidget.setGeometry(QtCore.QRect(0, 40, 241, 79))
         self.layoutWidget.setObjectName(u'layoutWidget')
@@ -159,22 +159,22 @@ class DisplayTab(SettingsTab):
             self.onOverrideCheckBoxChanged)
 
     def retranslateUi(self):
-        self.setWindowTitle( self.trUtf8(u'Amend Display Settings'))
-        self.CurrentGroupBox.setTitle( self.trUtf8(u'Default Settings'))
-        self.XLabel.setText(self.trUtf8(u'X'))
+        self.setWindowTitle( translate('DisplayTab',u'Amend Display Settings'))
+        self.CurrentGroupBox.setTitle( translate('DisplayTab',u'Default Settings'))
+        self.XLabel.setText(translate('DisplayTab',u'X'))
         self.Xpos.setText(u'0')
-        self.YLabel.setText( self.trUtf8(u'Y'))
+        self.YLabel.setText( translate('DisplayTab',u'Y'))
         self.Ypos.setText(u'0')
-        self.HeightLabel.setText( self.trUtf8(u'Height'))
+        self.HeightLabel.setText( translate('DisplayTab',u'Height'))
         self.Height.setText(u'0')
-        self.WidthLabel.setText( self.trUtf8(u'Width'))
+        self.WidthLabel.setText( translate('DisplayTab',u'Width'))
         self.Width.setText(u'0')
-        self.CurrentGroupBox_2.setTitle( self.trUtf8(u'Amend Settings'))
-        self.XAmendLabel.setText( self.trUtf8(u'X'))
-        self.YAmendLabel.setText( self.trUtf8(u'Y'))
-        self.HeightAmendLabel.setText( self.trUtf8(u'Height'))
-        self.WidthAmendLabel.setText( self.trUtf8(u'Width'))
-        self.OverrideCheckBox.setText( self.trUtf8(u'Override Output Display'))
+        self.CurrentGroupBox_2.setTitle( translate('DisplayTab',u'Amend Settings'))
+        self.XAmendLabel.setText( translate('DisplayTab',u'X'))
+        self.YAmendLabel.setText( translate('DisplayTab',u'Y'))
+        self.HeightAmendLabel.setText( translate('DisplayTab',u'Height'))
+        self.WidthAmendLabel.setText( translate('DisplayTab',u'Width'))
+        self.OverrideCheckBox.setText( translate('DisplayTab',u'Override Output Display'))
 
     def load(self):
         settings = QtCore.QSettings()

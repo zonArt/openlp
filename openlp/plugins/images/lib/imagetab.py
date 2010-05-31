@@ -25,7 +25,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, Receiver
+from openlp.core.lib import SettingsTab, Receiver,  translate
 
 class ImageTab(SettingsTab):
     """
@@ -36,7 +36,7 @@ class ImageTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'ImageTab')
-        self.tabTitleVisible = self.trUtf8('Images')
+        self.tabTitleVisible = translate('ImageTab','Images')
         self.ImageLayout = QtGui.QFormLayout(self)
         self.ImageLayout.setObjectName(u'ImageLayout')
         self.ImageSettingsGroupBox = QtGui.QGroupBox(self)
@@ -63,9 +63,9 @@ class ImageTab(SettingsTab):
             QtCore.SIGNAL(u'valueChanged(int)'), self.onTimeoutSpinBoxChanged)
 
     def retranslateUi(self):
-        self.ImageSettingsGroupBox.setTitle(self.trUtf8('Image Settings'))
-        self.TimeoutLabel.setText(self.trUtf8('Slide Loop Delay:'))
-        self.TimeoutSpinBox.setSuffix(self.trUtf8('sec'))
+        self.ImageSettingsGroupBox.setTitle(translate('ImageTab','Image Settings'))
+        self.TimeoutLabel.setText(translate('ImageTab','Slide Loop Delay:'))
+        self.TimeoutSpinBox.setSuffix(translate('ImageTab','sec'))
 
     def onTimeoutSpinBoxChanged(self):
         self.loop_delay = self.TimeoutSpinBox.value()

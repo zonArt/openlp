@@ -26,6 +26,7 @@
 from PyQt4 import QtGui
 
 from openlp.plugins.songs.forms.topicsdialog import Ui_TopicsDialog
+from openlp.core.lib import translate
 
 class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
     """
@@ -47,8 +48,8 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
     def accept(self):
         if not self.NameEdit.text():
             QtGui.QMessageBox.critical(
-                self, self.trUtf8('Error'),
-                self.trUtf8('You need to type in a topic name!'),
+                self, translate('TopicsForm','Error'),
+                translate('TopicsForm','You need to type in a topic name!'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             self.NameEdit.setFocus()
             return False

@@ -25,7 +25,7 @@
 
 import logging
 
-from openlp.core.lib import Plugin
+from openlp.core.lib import Plugin, translate
 from openlp.plugins.remotes.lib import RemoteTab, HttpServer
 
 log = logging.getLogger(__name__)
@@ -69,7 +69,7 @@ class RemotesPlugin(Plugin):
         """
         Information about this plugin
         """
-        about_text = self.trUtf8('<b>Remote Plugin</b><br>This plugin '
+        about_text = translate('RemotePlugin','<b>Remote Plugin</b><br>This plugin '
             'provides the ability to send messages to a running version of '
             'openlp on a different computer via a web browser or other app<br>'
             'The Primary use for this would be to send alerts from a creche')

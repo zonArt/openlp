@@ -27,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus
+from openlp.core.lib import Plugin, build_icon, PluginStatus,  translate
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 
 log = logging.getLogger(__name__)
@@ -88,7 +88,7 @@ class BiblePlugin(Plugin):
             self.media_item.onImportClick()
 
     def about(self):
-        about_text = self.trUtf8('<strong>Bible Plugin</strong><br />This '
+        about_text = translate('BiblePlugin','<strong>Bible Plugin</strong><br />This '
             'plugin allows bible verses from different sources to be '
             'displayed on the screen during the service.')
         return about_text

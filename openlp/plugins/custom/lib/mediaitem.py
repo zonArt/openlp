@@ -28,7 +28,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, SongXMLParser, BaseListWithDnD, \
-    Receiver, ItemCapabilities
+    Receiver, ItemCapabilities,  translate
 
 log = logging.getLogger(__name__)
 
@@ -66,7 +66,7 @@ class CustomMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = self.trUtf8('Custom')
+        self.PluginNameVisible = translate('mediaItem','Custom')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
