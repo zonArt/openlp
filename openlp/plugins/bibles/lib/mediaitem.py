@@ -460,10 +460,14 @@ class BibleMediaItem(MediaManagerItem):
         if bible2:
             bible2_verses = []
             for scripture in self.lastReference:
-                bible2_verses.extend(self.parent.manager.get_verses(bible2, scripture))
-            bible2_version = self.parent.manager.get_meta_data(bible2, u'Version')
-            bible2_copyright = self.parent.manager.get_meta_data(bible2, u'Copyright')
-            bible2_permission = self.parent.manager.get_meta_data(bible2, u'Permissions')
+                bible2_verses.extend(self.parent.manager.get_verses(bible2,
+                    scripture))
+            bible2_version = self.parent.manager.get_meta_data(bible2,
+                u'Version')
+            bible2_copyright = self.parent.manager.get_meta_data(bible2,
+                u'Copyright')
+            bible2_permission = self.parent.manager.get_meta_data(bible2,
+                u'Permissions')
             if bible2_version:
                 bible2_version = bible2_version.value
             else:
@@ -491,25 +495,30 @@ class BibleMediaItem(MediaManagerItem):
             copyright = self._decodeQtObject(reference, 'copyright')
             permission = self._decodeQtObject(reference, 'permission')
             if self.parent.settings_tab.display_style == 1:
-                verse_text = self.formatVerse(old_chapter, chapter, verse, u'(u', u')')
+                verse_text = self.formatVerse(old_chapter, chapter, verse,
+                    u'(u', u')')
             elif  self.parent.settings_tab.display_style == 2:
-                verse_text = self.formatVerse(old_chapter, chapter, verse, u'{', u'}')
+                verse_text = self.formatVerse(old_chapter, chapter, verse,
+                    u'{', u'}')
             elif  self.parent.settings_tab.display_style == 3:
-                verse_text = self.formatVerse(old_chapter, chapter, verse, u'[', u']')
+                verse_text = self.formatVerse(old_chapter, chapter, verse,
+                    u'[', u']')
             else:
-                verse_text = self.formatVerse(old_chapter, chapter, verse, u'', u'')
+                verse_text = self.formatVerse(old_chapter, chapter, verse,
+                    u'', u'')
             old_chapter = chapter
             footer = u'%s (%s %s)' % (book, version, copyright)
             #If not found add to footer
             if footer not in raw_footer:
                 raw_footer.append(footer)
             if bible2:
-                footer = u'%s (%s %s)' % (book, bible2_version, bible2_copyright)
+                footer = u'%s (%s %s)' % (book, bible2_version,
+                    bible2_copyright)
                 #If not found add second version and copyright to footer
                 if footer not in raw_footer:
                     raw_footer.append(footer)
-                bible_text = u'%s %s \n\n %s %s' % \
-                    (verse_text, text, verse_text, bible2_verses[item.row()].text)
+                bible_text = u'%s %s \n\n %s %s' % (verse_text, text,
+                    verse_text, bible2_verses[item.row()].text)
                 raw_slides.append(bible_text)
                 bible_text = u''
             else:
