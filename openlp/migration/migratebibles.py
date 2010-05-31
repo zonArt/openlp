@@ -27,9 +27,8 @@ import os
 import sys
 import sqlite3
 
-from sqlalchemy import create_engine
 from sqlalchemy.exceptions import InvalidRequestError
-from sqlalchemy.orm import scoped_session, sessionmaker, mapper
+from sqlalchemy.orm import mapper
 
 from openlp.core.lib import BaseModel, SettingsManager
 from openlp.core.utils import AppLocation
@@ -99,8 +98,8 @@ class MigrateBibles(object):
 
     def process(self):
         self.progress(u'Bibles processing started')
-        for f in self.database_files:
-            self.v_1_9_0(f)
+        for db_file in self.database_files:
+            self.v_1_9_0(db_file)
         self.progress(u'Bibles processing finished')
 
     def v_1_9_0(self, database):
