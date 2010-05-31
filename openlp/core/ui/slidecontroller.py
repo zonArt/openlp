@@ -426,11 +426,12 @@ class SlideController(QtGui.QWidget):
                 self.Toolbar.makeWidgetsVisible([u'Song Menu'])
         if item.is_capable(ItemCapabilities.AllowsLoop) and \
             len(item.get_frames()) > 1:
-                self.Toolbar.makeWidgetsVisible(self.loopList)
+            self.Toolbar.makeWidgetsVisible(self.loopList)
         if item.is_media():
             self.Toolbar.setVisible(False)
             self.Mediabar.setVisible(True)
-            #self.volumeSlider.setAudioOutput(self.mainDisplay.videoDisplay.audio)
+            #self.volumeSlider.setAudioOutput(
+            #    self.mainDisplay.videoDisplay.audio)
 
     def enablePreviewToolBar(self, item):
         """

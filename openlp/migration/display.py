@@ -27,7 +27,7 @@ import logging
 
 log = logging.getLogger(__name__)
 
-class Display():
+class Display(object):
     log.info(u'Display Class loaded')
 
     @staticmethod

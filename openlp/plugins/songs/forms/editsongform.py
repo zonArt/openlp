@@ -127,8 +127,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         authorsCompleter = QtGui.QCompleter(
             [author.display_name for author in authors],
             self.AuthorsSelectionComboItem)
-        authorsCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive);
-        self.AuthorsSelectionComboItem.setCompleter(authorsCompleter);
+        authorsCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        self.AuthorsSelectionComboItem.setCompleter(authorsCompleter)
         self.AuthorsSelectionComboItem.clear()
         for author in authors:
             row = self.AuthorsSelectionComboItem.count()
@@ -139,10 +139,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def loadTopics(self):
         topics = self.songmanager.get_topics()
         topicsCompleter = QtGui.QCompleter(
-            [topic.name for topic in topics],
-            self.SongTopicCombo)
-        topicsCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive);
-        self.SongTopicCombo.setCompleter(topicsCompleter);
+            [topic.name for topic in topics], self.SongTopicCombo)
+        topicsCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        self.SongTopicCombo.setCompleter(topicsCompleter)
         self.SongTopicCombo.clear()
         for topic in topics:
             row = self.SongTopicCombo.count()
@@ -153,8 +152,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         books = self.songmanager.get_books()
         booksCompleter = QtGui.QCompleter(
             [book.name for book in books], self.SongbookCombo)
-        booksCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive);
-        self.SongbookCombo.setCompleter(booksCompleter);
+        booksCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        self.SongbookCombo.setCompleter(booksCompleter)
         self.SongbookCombo.clear()
         self.SongbookCombo.addItem(u' ')
         for book in books:
@@ -166,8 +165,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         themesCompleter = QtGui.QCompleter(
             [theme for theme in theme_list],
             self.ThemeSelectionComboItem)
-        themesCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive);
-        self.ThemeSelectionComboItem.setCompleter(themesCompleter);
+        themesCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        self.ThemeSelectionComboItem.setCompleter(themesCompleter)
         self.ThemeSelectionComboItem.clear()
         self.ThemeSelectionComboItem.addItem(u' ')
         for theme in theme_list:

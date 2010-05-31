@@ -206,14 +206,17 @@ class HttpConnection(object):
             mimetype = u'image/png'
         else:
             return (None, None)
+        file_handle = None
         try:
-            f = open(path, u'rb')
-        except:
+            file_handle = open(path, u'rb')
+            log.debug(u'Opened %s' % path)
+            html = file_handle.read()
+        except IOError:
             log.exception(u'Failed to open %s' % path)
             return None
-        log.debug(u'Opened %s' % path)
-        html = f.read()
-        f.close()
+        finally:
+            if file_handle:
+                file_handle.close()
         return (mimetype, html)
 
     def load_params(self, query):

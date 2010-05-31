@@ -277,7 +277,7 @@ class Ui_BibleImportWizard(object):
             self.CopyrightEdit)
         self.PermissionLabel = QtGui.QLabel(self.LicenseDetailsPage)
         self.PermissionLabel.setObjectName(u'PermissionLabel')
-        self.LicenseDetailsLayout.setWidget(2, QtGui.QFormLayout.LabelRole,\
+        self.LicenseDetailsLayout.setWidget(2, QtGui.QFormLayout.LabelRole,
             self.PermissionLabel)
         self.PermissionEdit = QtGui.QLineEdit(self.LicenseDetailsPage)
         self.PermissionEdit.setObjectName(u'PermissionEdit')

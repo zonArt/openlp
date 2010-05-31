@@ -192,4 +192,5 @@ def add_actions(target, actions):
 
 from languagemanager import LanguageManager
 
-__all__ = [u'AppLocation', u'check_latest_version', u'add_actions',  u'LanguageManager']
+__all__ = [u'AppLocation', u'check_latest_version', u'add_actions',
+    u'LanguageManager']

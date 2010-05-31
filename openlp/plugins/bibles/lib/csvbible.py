@@ -27,6 +27,8 @@ import logging
 import chardet
 import csv
 
+from PyQt4 import QtCore
+
 from openlp.core.lib import Receiver
 from db import BibleDB
 
@@ -89,7 +91,7 @@ class CSVBible(BibleDB):
         verse_file = None
         try:
             book_ptr = None
-            verse_file = open(versesfile, 'r')
+            verse_file = open(self.versesfile, 'r')
             dialect = csv.Sniffer().sniff(verse_file.read(1024))
             verse_file.seek(0)
             verse_reader = csv.reader(verse_file, dialect)

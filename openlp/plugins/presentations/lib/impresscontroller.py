@@ -354,10 +354,10 @@ class ImpressDocument(PresentationDocument):
         self.control.gotoSlideIndex(slideno-1)
 
     def next_step(self):
-       """
-       Triggers the next effect of slide on the running presentation
-       """
-       self.control.gotoNextEffect()
+        """
+        Triggers the next effect of slide on the running presentation
+        """
+        self.control.gotoNextEffect()
 
     def previous_step(self):
         """

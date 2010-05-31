@@ -32,7 +32,7 @@ from openlp.plugins.alerts.lib.models import init_models, metadata, AlertItem
 
 log = logging.getLogger(__name__)
 
-class DBManager():
+class DBManager(object):
     """
     The Song Manager provides a central location for all database code. This
     class takes care of connecting to the database and running all the queries.
@@ -70,13 +70,13 @@ class DBManager():
         """
         return self.session.query(AlertItem).order_by(AlertItem.text).all()
 
-    def save_alert(self, AlertItem):
+    def save_alert(self, alert_item):
         """
         Saves a Alert show to the database
         """
         log.debug(u'Alert added')
         try:
-            self.session.add(AlertItem)
+            self.session.add(alert_item)
             self.session.commit()
             log.debug(u'Alert saved')
             return True
@@ -99,9 +99,9 @@ class DBManager():
         Delete a Alert show
         """
         if id != 0:
-            AlertItem = self.get_alert(id)
+            alert_item = self.get_alert(id)
             try:
-                self.session.delete(AlertItem)
+                self.session.delete(alert_item)
                 self.session.commit()
                 return True
             except:
@@ -110,3 +110,4 @@ class DBManager():
                 return False
         else:
             return True
+
