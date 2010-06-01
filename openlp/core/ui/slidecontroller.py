@@ -377,9 +377,9 @@ class SlideController(QtGui.QWidget):
         width = self.parent.ControlSplitter.sizes()[self.split]
         height = width * self.parent.RenderManager.screen_ratio
         self.PreviewListWidget.setColumnWidth(0, width)
-        #Sort out image hights (Songs , bibles excluded)
+        #Sort out image heights (Songs, bibles excluded)
         if self.serviceItem and not self.serviceItem.is_text():
-            for framenumber, frame in enumerate(self.serviceItem.get_frames()):
+            for framenumber in range(len(self.serviceItem.get_frames())):
                 self.PreviewListWidget.setRowHeight(framenumber, height)
 
     def trackSplitter(self, tab, pos):
