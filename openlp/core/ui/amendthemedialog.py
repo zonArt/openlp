@@ -24,8 +24,8 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import build_icon
-from openlp.core.lib import translate
+
+from openlp.core.lib import build_icon, translate
 
 class Ui_AmendThemeDialog(object):
     def setupUi(self, AmendThemeDialog):
@@ -68,56 +68,56 @@ class Ui_AmendThemeDialog(object):
         self.BackgroundLayout.setObjectName(u'BackgroundLayout')
         self.BackgroundLabel = QtGui.QLabel(self.BackgroundTab)
         self.BackgroundLabel.setObjectName(u'BackgroundLabel')
-        self.BackgroundLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.BackgroundLabel)
+        self.BackgroundLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
+            self.BackgroundLabel)
         self.BackgroundComboBox = QtGui.QComboBox(self.BackgroundTab)
         self.BackgroundComboBox.setObjectName(u'BackgroundComboBox')
         self.BackgroundComboBox.addItem(QtCore.QString())
         self.BackgroundComboBox.addItem(QtCore.QString())
-        self.BackgroundLayout.setWidget(
-            0, QtGui.QFormLayout.FieldRole, self.BackgroundComboBox)
+        self.BackgroundLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
+            self.BackgroundComboBox)
         self.BackgroundTypeLabel = QtGui.QLabel(self.BackgroundTab)
         self.BackgroundTypeLabel.setObjectName(u'BackgroundTypeLabel')
-        self.BackgroundLayout.setWidget(
-            1, QtGui.QFormLayout.LabelRole, self.BackgroundTypeLabel)
+        self.BackgroundLayout.setWidget(1, QtGui.QFormLayout.LabelRole,
+            self.BackgroundTypeLabel)
         self.BackgroundTypeComboBox = QtGui.QComboBox(self.BackgroundTab)
         self.BackgroundTypeComboBox.setObjectName(u'BackgroundTypeComboBox')
         self.BackgroundTypeComboBox.addItem(QtCore.QString())
         self.BackgroundTypeComboBox.addItem(QtCore.QString())
         self.BackgroundTypeComboBox.addItem(QtCore.QString())
-        self.BackgroundLayout.setWidget(
-            1, QtGui.QFormLayout.FieldRole, self.BackgroundTypeComboBox)
+        self.BackgroundLayout.setWidget(1, QtGui.QFormLayout.FieldRole,
+            self.BackgroundTypeComboBox)
         self.Color1Label = QtGui.QLabel(self.BackgroundTab)
         self.Color1Label.setObjectName(u'Color1Label')
-        self.BackgroundLayout.setWidget(
-            2, QtGui.QFormLayout.LabelRole, self.Color1Label)
+        self.BackgroundLayout.setWidget(2, QtGui.QFormLayout.LabelRole,
+            self.Color1Label)
         self.Color1PushButton = QtGui.QPushButton(self.BackgroundTab)
         self.Color1PushButton.setObjectName(u'Color1PushButton')
-        self.BackgroundLayout.setWidget(
-            2, QtGui.QFormLayout.FieldRole, self.Color1PushButton)
+        self.BackgroundLayout.setWidget(2, QtGui.QFormLayout.FieldRole,
+            self.Color1PushButton)
         self.Color2Label = QtGui.QLabel(self.BackgroundTab)
         self.Color2Label.setObjectName(u'Color2Label')
-        self.BackgroundLayout.setWidget(
-            3, QtGui.QFormLayout.LabelRole, self.Color2Label)
+        self.BackgroundLayout.setWidget(3, QtGui.QFormLayout.LabelRole,
+            self.Color2Label)
         self.Color2PushButton = QtGui.QPushButton(self.BackgroundTab)
         self.Color2PushButton.setObjectName(u'Color2PushButton')
-        self.BackgroundLayout.setWidget(
-            3, QtGui.QFormLayout.FieldRole, self.Color2PushButton)
+        self.BackgroundLayout.setWidget(3, QtGui.QFormLayout.FieldRole,
+            self.Color2PushButton)
         self.ImageLabel = QtGui.QLabel(self.BackgroundTab)
         self.ImageLabel.setObjectName(u'ImageLabel')
-        self.BackgroundLayout.setWidget(
-            4, QtGui.QFormLayout.LabelRole, self.ImageLabel)
+        self.BackgroundLayout.setWidget(4, QtGui.QFormLayout.LabelRole,
+            self.ImageLabel)
         self.GradientLabel = QtGui.QLabel(self.BackgroundTab)
         self.GradientLabel.setObjectName(u'GradientLabel')
-        self.BackgroundLayout.setWidget(
-            6, QtGui.QFormLayout.LabelRole, self.GradientLabel)
+        self.BackgroundLayout.setWidget(6, QtGui.QFormLayout.LabelRole,
+            self.GradientLabel)
         self.GradientComboBox = QtGui.QComboBox(self.BackgroundTab)
         self.GradientComboBox.setObjectName(u'GradientComboBox')
         self.GradientComboBox.addItem(QtCore.QString())
         self.GradientComboBox.addItem(QtCore.QString())
         self.GradientComboBox.addItem(QtCore.QString())
-        self.BackgroundLayout.setWidget(
-            6, QtGui.QFormLayout.FieldRole, self.GradientComboBox)
+        self.BackgroundLayout.setWidget(6, QtGui.QFormLayout.FieldRole,
+            self.GradientComboBox)
         self.ImageFilenameWidget = QtGui.QWidget(self.BackgroundTab)
         self.ImageFilenameWidget.setObjectName(u'ImageFilenameWidget')
         self.horizontalLayout_2 = QtGui.QHBoxLayout(self.ImageFilenameWidget)
@@ -132,8 +132,8 @@ class Ui_AmendThemeDialog(object):
         self.ImageToolButton.setIcon(icon1)
         self.ImageToolButton.setObjectName(u'ImageToolButton')
         self.horizontalLayout_2.addWidget(self.ImageToolButton)
-        self.BackgroundLayout.setWidget(
-            4, QtGui.QFormLayout.FieldRole, self.ImageFilenameWidget)
+        self.BackgroundLayout.setWidget(4, QtGui.QFormLayout.FieldRole,
+            self.ImageFilenameWidget)
         self.ThemeTabWidget.addTab(self.BackgroundTab, u'')
         self.FontMainTab = QtGui.QWidget()
         self.FontMainTab.setObjectName(u'FontMainTab')
@@ -150,34 +150,34 @@ class Ui_AmendThemeDialog(object):
         self.FontMainGroupBox = QtGui.QGroupBox(self.MainLeftWidget)
         self.FontMainGroupBox.setObjectName(u'FontMainGroupBox')
         self.MainFontLayout = QtGui.QFormLayout(self.FontMainGroupBox)
-        self.MainFontLayout.setFormAlignment(
-            QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.MainFontLayout.setFormAlignment(QtCore.Qt.AlignLeading |
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
         self.MainFontLayout.setMargin(8)
         self.MainFontLayout.setSpacing(8)
         self.MainFontLayout.setObjectName(u'MainFontLayout')
         self.FontMainlabel = QtGui.QLabel(self.FontMainGroupBox)
         self.FontMainlabel.setObjectName(u'FontMainlabel')
-        self.MainFontLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.FontMainlabel)
+        self.MainFontLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
+            self.FontMainlabel)
         self.FontMainComboBox = QtGui.QFontComboBox(self.FontMainGroupBox)
         self.FontMainComboBox.setObjectName(u'FontMainComboBox')
-        self.MainFontLayout.setWidget(
-            0, QtGui.QFormLayout.FieldRole, self.FontMainComboBox)
+        self.MainFontLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
+            self.FontMainComboBox)
         self.FontMainColorLabel = QtGui.QLabel(self.FontMainGroupBox)
         self.FontMainColorLabel.setObjectName(u'FontMainColorLabel')
-        self.MainFontLayout.setWidget(
-            1, QtGui.QFormLayout.LabelRole, self.FontMainColorLabel)
+        self.MainFontLayout.setWidget(1, QtGui.QFormLayout.LabelRole,
+            self.FontMainColorLabel)
         self.FontMainColorPushButton = QtGui.QPushButton(self.FontMainGroupBox)
         self.FontMainColorPushButton.setObjectName(u'FontMainColorPushButton')
-        self.MainFontLayout.setWidget(
-            1, QtGui.QFormLayout.FieldRole, self.FontMainColorPushButton)
+        self.MainFontLayout.setWidget(1, QtGui.QFormLayout.FieldRole,
+            self.FontMainColorPushButton)
         self.FontMainSize = QtGui.QLabel(self.FontMainGroupBox)
         self.FontMainSize.setObjectName(u'FontMainSize')
-        self.MainFontLayout.setWidget(
-            2, QtGui.QFormLayout.LabelRole, self.FontMainSize)
+        self.MainFontLayout.setWidget(2, QtGui.QFormLayout.LabelRole,
+            self.FontMainSize)
         self.FontMainSizeSpinBox = QtGui.QSpinBox(self.FontMainGroupBox)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
@@ -187,20 +187,20 @@ class Ui_AmendThemeDialog(object):
         self.FontMainSizeSpinBox.setProperty(u'value', QtCore.QVariant(16))
         self.FontMainSizeSpinBox.setMaximum(999)
         self.FontMainSizeSpinBox.setObjectName(u'FontMainSizeSpinBox')
-        self.MainFontLayout.setWidget(
-            2, QtGui.QFormLayout.FieldRole, self.FontMainSizeSpinBox)
+        self.MainFontLayout.setWidget(2, QtGui.QFormLayout.FieldRole,
+            self.FontMainSizeSpinBox)
         self.FontMainWeightComboBox = QtGui.QComboBox(self.FontMainGroupBox)
         self.FontMainWeightComboBox.setObjectName(u'FontMainWeightComboBox')
         self.FontMainWeightComboBox.addItem(QtCore.QString())
         self.FontMainWeightComboBox.addItem(QtCore.QString())
         self.FontMainWeightComboBox.addItem(QtCore.QString())
         self.FontMainWeightComboBox.addItem(QtCore.QString())
-        self.MainFontLayout.setWidget(
-            3, QtGui.QFormLayout.FieldRole, self.FontMainWeightComboBox)
+        self.MainFontLayout.setWidget(3, QtGui.QFormLayout.FieldRole,
+            self.FontMainWeightComboBox)
         self.FontMainWeightLabel = QtGui.QLabel(self.FontMainGroupBox)
         self.FontMainWeightLabel.setObjectName(u'FontMainWeightLabel')
-        self.MainFontLayout.setWidget(
-            3, QtGui.QFormLayout.LabelRole, self.FontMainWeightLabel)
+        self.MainFontLayout.setWidget(3, QtGui.QFormLayout.LabelRole,
+            self.FontMainWeightLabel)
         self.MainLeftLayout.addWidget(self.FontMainGroupBox)
         self.FontMainWrapLineAdjustmentLabel = QtGui.QLabel(
             self.FontMainGroupBox)
@@ -213,25 +213,25 @@ class Ui_AmendThemeDialog(object):
         self.FontMainLineAdjustmentSpinBox.setObjectName(
             u'FontMainLineAdjustmentSpinBox')
         self.FontMainLineAdjustmentSpinBox.setMinimum(-99)
-        self.MainFontLayout.setWidget(
-            4, QtGui.QFormLayout.FieldRole, self.FontMainLineAdjustmentSpinBox)
+        self.MainFontLayout.setWidget(4, QtGui.QFormLayout.FieldRole,
+            self.FontMainLineAdjustmentSpinBox)
         self.FontMainWrapIndentationLabel = QtGui.QLabel(self.FontMainGroupBox)
         self.FontMainWrapIndentationLabel.setObjectName(
             u'FontMainWrapIndentationLabel')
-        self.MainFontLayout.setWidget(
-            5, QtGui.QFormLayout.LabelRole, self.FontMainWrapIndentationLabel)
+        self.MainFontLayout.setWidget(5, QtGui.QFormLayout.LabelRole,
+            self.FontMainWrapIndentationLabel)
         self.FontMainLineSpacingSpinBox = QtGui.QSpinBox(self.FontMainGroupBox)
         self.FontMainLineSpacingSpinBox.setObjectName(
-            "FontMainLineSpacingSpinBox")
+            u'FontMainLineSpacingSpinBox')
         self.FontMainLineSpacingSpinBox.setMaximum(10)
-        self.MainFontLayout.setWidget(
-            5, QtGui.QFormLayout.FieldRole, self.FontMainLineSpacingSpinBox)
+        self.MainFontLayout.setWidget(5, QtGui.QFormLayout.FieldRole,
+            self.FontMainLineSpacingSpinBox)
         self.FontMainLinesPageLabel = QtGui.QLabel(self.FontMainGroupBox)
         self.FontMainLinesPageLabel.setObjectName(u'FontMainLinesPageLabel')
-        self.MainFontLayout.setWidget(
-            6, QtGui.QFormLayout.LabelRole, self.FontMainLinesPageLabel)
-        spacerItem1 = QtGui.QSpacerItem(
-            20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.MainFontLayout.setWidget(6, QtGui.QFormLayout.LabelRole,
+            self.FontMainLinesPageLabel)
+        spacerItem1 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Expanding)
         self.MainLeftLayout.addItem(spacerItem1)
         self.FontMainLayout.addWidget(self.MainLeftWidget)
         self.MainRightWidget = QtGui.QWidget(self.FontMainTab)
@@ -248,33 +248,33 @@ class Ui_AmendThemeDialog(object):
         self.MainLocationLayout.setObjectName(u'MainLocationLayout')
         self.DefaultLocationLabel = QtGui.QLabel(self.MainLocationGroupBox)
         self.DefaultLocationLabel.setObjectName(u'DefaultLocationLabel')
-        self.MainLocationLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.DefaultLocationLabel)
+        self.MainLocationLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
+            self.DefaultLocationLabel)
         self.FontMainDefaultCheckBox = QtGui.QCheckBox(
             self.MainLocationGroupBox)
         self.FontMainDefaultCheckBox.setTristate(False)
         self.FontMainDefaultCheckBox.setObjectName(u'FontMainDefaultCheckBox')
-        self.MainLocationLayout.setWidget(
-            0, QtGui.QFormLayout.FieldRole, self.FontMainDefaultCheckBox)
+        self.MainLocationLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
+            self.FontMainDefaultCheckBox)
         self.FontMainXLabel = QtGui.QLabel(self.MainLocationGroupBox)
         self.FontMainXLabel.setObjectName(u'FontMainXLabel')
-        self.MainLocationLayout.setWidget(
-            1, QtGui.QFormLayout.LabelRole, self.FontMainXLabel)
+        self.MainLocationLayout.setWidget(1, QtGui.QFormLayout.LabelRole,
+            self.FontMainXLabel)
         self.FontMainYLabel = QtGui.QLabel(self.MainLocationGroupBox)
         self.FontMainYLabel.setObjectName(u'FontMainYLabel')
-        self.MainLocationLayout.setWidget(
-            2, QtGui.QFormLayout.LabelRole, self.FontMainYLabel)
+        self.MainLocationLayout.setWidget(2, QtGui.QFormLayout.LabelRole,
+            self.FontMainYLabel)
         self.FontMainWidthLabel = QtGui.QLabel(self.MainLocationGroupBox)
         self.FontMainWidthLabel.setObjectName(u'FontMainWidthLabel')
-        self.MainLocationLayout.setWidget(
-            3, QtGui.QFormLayout.LabelRole, self.FontMainWidthLabel)
+        self.MainLocationLayout.setWidget(3, QtGui.QFormLayout.LabelRole,
+            self.FontMainWidthLabel)
         self.FontMainHeightLabel = QtGui.QLabel(self.MainLocationGroupBox)
         self.FontMainHeightLabel.setObjectName(u'FontMainHeightLabel')
-        self.MainLocationLayout.setWidget(
-            4, QtGui.QFormLayout.LabelRole, self.FontMainHeightLabel)
+        self.MainLocationLayout.setWidget(4, QtGui.QFormLayout.LabelRole,
+            self.FontMainHeightLabel)
         self.FontMainXSpinBox = QtGui.QSpinBox(self.MainLocationGroupBox)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
@@ -284,11 +284,11 @@ class Ui_AmendThemeDialog(object):
         self.FontMainXSpinBox.setProperty(u'value', QtCore.QVariant(0))
         self.FontMainXSpinBox.setMaximum(9999)
         self.FontMainXSpinBox.setObjectName(u'FontMainXSpinBox')
-        self.MainLocationLayout.setWidget(
-            1, QtGui.QFormLayout.FieldRole, self.FontMainXSpinBox)
+        self.MainLocationLayout.setWidget(1, QtGui.QFormLayout.FieldRole,
+            self.FontMainXSpinBox)
         self.FontMainYSpinBox = QtGui.QSpinBox(self.MainLocationGroupBox)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
@@ -297,11 +297,11 @@ class Ui_AmendThemeDialog(object):
         self.FontMainYSpinBox.setMinimumSize(QtCore.QSize(78, 0))
         self.FontMainYSpinBox.setMaximum(9999)
         self.FontMainYSpinBox.setObjectName(u'FontMainYSpinBox')
-        self.MainLocationLayout.setWidget(
-            2, QtGui.QFormLayout.FieldRole, self.FontMainYSpinBox)
+        self.MainLocationLayout.setWidget(2, QtGui.QFormLayout.FieldRole,
+            self.FontMainYSpinBox)
         self.FontMainWidthSpinBox = QtGui.QSpinBox(self.MainLocationGroupBox)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
@@ -310,11 +310,11 @@ class Ui_AmendThemeDialog(object):
         self.FontMainWidthSpinBox.setMinimumSize(QtCore.QSize(78, 0))
         self.FontMainWidthSpinBox.setMaximum(9999)
         self.FontMainWidthSpinBox.setObjectName(u'FontMainWidthSpinBox')
-        self.MainLocationLayout.setWidget(
-            3, QtGui.QFormLayout.FieldRole, self.FontMainWidthSpinBox)
+        self.MainLocationLayout.setWidget(3, QtGui.QFormLayout.FieldRole,
+            self.FontMainWidthSpinBox)
         self.FontMainHeightSpinBox = QtGui.QSpinBox(self.MainLocationGroupBox)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
@@ -323,11 +323,11 @@ class Ui_AmendThemeDialog(object):
         self.FontMainHeightSpinBox.setMinimumSize(QtCore.QSize(78, 0))
         self.FontMainHeightSpinBox.setMaximum(9999)
         self.FontMainHeightSpinBox.setObjectName(u'FontMainHeightSpinBox')
-        self.MainLocationLayout.setWidget(
-            4, QtGui.QFormLayout.FieldRole, self.FontMainHeightSpinBox)
+        self.MainLocationLayout.setWidget(4, QtGui.QFormLayout.FieldRole,
+            self.FontMainHeightSpinBox)
         self.MainRightLayout.addWidget(self.MainLocationGroupBox)
-        spacerItem2 = QtGui.QSpacerItem(
-            20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem2 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Expanding)
         self.MainRightLayout.addItem(spacerItem2)
         self.FontMainLayout.addWidget(self.MainRightWidget)
         self.ThemeTabWidget.addTab(self.FontMainTab, u'')
@@ -348,36 +348,36 @@ class Ui_AmendThemeDialog(object):
         self.FooterFontLayout = QtGui.QFormLayout(self.FooterFontGroupBox)
         self.FooterFontLayout.setFieldGrowthPolicy(
             QtGui.QFormLayout.ExpandingFieldsGrow)
-        self.FooterFontLayout.setFormAlignment(
-            QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.FooterFontLayout.setFormAlignment(QtCore.Qt.AlignLeading |
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
         self.FooterFontLayout.setMargin(8)
         self.FooterFontLayout.setSpacing(8)
         self.FooterFontLayout.setObjectName(u'FooterFontLayout')
         self.FontFooterLabel = QtGui.QLabel(self.FooterFontGroupBox)
         self.FontFooterLabel.setObjectName(u'FontFooterLabel')
-        self.FooterFontLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.FontFooterLabel)
+        self.FooterFontLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
+            self.FontFooterLabel)
         self.FontFooterComboBox = QtGui.QFontComboBox(self.FooterFontGroupBox)
         self.FontFooterComboBox.setObjectName(u'FontFooterComboBox')
-        self.FooterFontLayout.setWidget(
-            0, QtGui.QFormLayout.FieldRole, self.FontFooterComboBox)
+        self.FooterFontLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
+            self.FontFooterComboBox)
         self.FontFooterColorLabel = QtGui.QLabel(self.FooterFontGroupBox)
         self.FontFooterColorLabel.setObjectName(u'FontFooterColorLabel')
-        self.FooterFontLayout.setWidget(
-            1, QtGui.QFormLayout.LabelRole, self.FontFooterColorLabel)
+        self.FooterFontLayout.setWidget(1, QtGui.QFormLayout.LabelRole,
+            self.FontFooterColorLabel)
         self.FontFooterColorPushButton = QtGui.QPushButton(
             self.FooterFontGroupBox)
         self.FontFooterColorPushButton.setObjectName(
             u'FontFooterColorPushButton')
-        self.FooterFontLayout.setWidget(
-            1, QtGui.QFormLayout.FieldRole, self.FontFooterColorPushButton)
+        self.FooterFontLayout.setWidget(1, QtGui.QFormLayout.FieldRole,
+            self.FontFooterColorPushButton)
         self.FontFooterSizeLabel = QtGui.QLabel(self.FooterFontGroupBox)
         self.FontFooterSizeLabel.setObjectName(u'FontFooterSizeLabel')
-        self.FooterFontLayout.setWidget(
-            2, QtGui.QFormLayout.LabelRole, self.FontFooterSizeLabel)
+        self.FooterFontLayout.setWidget(2, QtGui.QFormLayout.LabelRole,
+            self.FontFooterSizeLabel)
         self.FontFooterSizeSpinBox = QtGui.QSpinBox(self.FooterFontGroupBox)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
@@ -387,23 +387,23 @@ class Ui_AmendThemeDialog(object):
         self.FontFooterSizeSpinBox.setProperty(u'value', QtCore.QVariant(10))
         self.FontFooterSizeSpinBox.setMaximum(999)
         self.FontFooterSizeSpinBox.setObjectName(u'FontFooterSizeSpinBox')
-        self.FooterFontLayout.setWidget(
-            2, QtGui.QFormLayout.FieldRole, self.FontFooterSizeSpinBox)
+        self.FooterFontLayout.setWidget(2, QtGui.QFormLayout.FieldRole,
+            self.FontFooterSizeSpinBox)
         self.FontFooterWeightComboBox = QtGui.QComboBox(self.FooterFontGroupBox)
         self.FontFooterWeightComboBox.setObjectName(u'FontFooterWeightComboBox')
         self.FontFooterWeightComboBox.addItem(QtCore.QString())
         self.FontFooterWeightComboBox.addItem(QtCore.QString())
         self.FontFooterWeightComboBox.addItem(QtCore.QString())
         self.FontFooterWeightComboBox.addItem(QtCore.QString())
-        self.FooterFontLayout.setWidget(
-            3, QtGui.QFormLayout.FieldRole, self.FontFooterWeightComboBox)
+        self.FooterFontLayout.setWidget(3, QtGui.QFormLayout.FieldRole,
+            self.FontFooterWeightComboBox)
         self.FontFooterWeightLabel = QtGui.QLabel(self.FooterFontGroupBox)
         self.FontFooterWeightLabel.setObjectName(u'FontFooterWeightLabel')
-        self.FooterFontLayout.setWidget(
-            3, QtGui.QFormLayout.LabelRole, self.FontFooterWeightLabel)
+        self.FooterFontLayout.setWidget(3, QtGui.QFormLayout.LabelRole,
+            self.FontFooterWeightLabel)
         self.FooterLeftLayout.addWidget(self.FooterFontGroupBox)
-        spacerItem3 = QtGui.QSpacerItem(
-            20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem3 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Expanding)
         self.FooterLeftLayout.addItem(spacerItem3)
         self.FontFooterLayout.addWidget(self.FooterLeftWidget)
         self.FooterRightWidget = QtGui.QWidget(self.FontFooterTab)
@@ -418,41 +418,41 @@ class Ui_AmendThemeDialog(object):
             self.LocationFooterGroupBox)
         self.LocationFooterLayout.setFieldGrowthPolicy(
             QtGui.QFormLayout.ExpandingFieldsGrow)
-        self.LocationFooterLayout.setFormAlignment(
-            QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.LocationFooterLayout.setFormAlignment(QtCore.Qt.AlignLeading |
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
         self.LocationFooterLayout.setMargin(8)
         self.LocationFooterLayout.setSpacing(8)
         self.LocationFooterLayout.setObjectName(u'LocationFooterLayout')
         self.FontFooterDefaultLabel = QtGui.QLabel(self.LocationFooterGroupBox)
         self.FontFooterDefaultLabel.setObjectName(u'FontFooterDefaultLabel')
-        self.LocationFooterLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.FontFooterDefaultLabel)
+        self.LocationFooterLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
+            self.FontFooterDefaultLabel)
         self.FontFooterDefaultCheckBox = QtGui.QCheckBox(
             self.LocationFooterGroupBox)
         self.FontFooterDefaultCheckBox.setTristate(False)
         self.FontFooterDefaultCheckBox.setObjectName(
             u'FontFooterDefaultCheckBox')
-        self.LocationFooterLayout.setWidget(
-            0, QtGui.QFormLayout.FieldRole, self.FontFooterDefaultCheckBox)
+        self.LocationFooterLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
+            self.FontFooterDefaultCheckBox)
         self.FontFooterXLabel = QtGui.QLabel(self.LocationFooterGroupBox)
         self.FontFooterXLabel.setObjectName(u'FontFooterXLabel')
-        self.LocationFooterLayout.setWidget(
-            1, QtGui.QFormLayout.LabelRole, self.FontFooterXLabel)
+        self.LocationFooterLayout.setWidget(1, QtGui.QFormLayout.LabelRole,
+            self.FontFooterXLabel)
         self.FontFooterYLabel = QtGui.QLabel(self.LocationFooterGroupBox)
         self.FontFooterYLabel.setObjectName(u'FontFooterYLabel')
-        self.LocationFooterLayout.setWidget(
-            2, QtGui.QFormLayout.LabelRole, self.FontFooterYLabel)
+        self.LocationFooterLayout.setWidget(2, QtGui.QFormLayout.LabelRole,
+            self.FontFooterYLabel)
         self.FontFooterWidthLabel = QtGui.QLabel(self.LocationFooterGroupBox)
         self.FontFooterWidthLabel.setObjectName(u'FontFooterWidthLabel')
-        self.LocationFooterLayout.setWidget(
-            3, QtGui.QFormLayout.LabelRole, self.FontFooterWidthLabel)
+        self.LocationFooterLayout.setWidget(3, QtGui.QFormLayout.LabelRole,
+            self.FontFooterWidthLabel)
         self.FontFooterHeightLabel = QtGui.QLabel(self.LocationFooterGroupBox)
         self.FontFooterHeightLabel.setObjectName(u'FontFooterHeightLabel')
-        self.LocationFooterLayout.setWidget(
-            4, QtGui.QFormLayout.LabelRole, self.FontFooterHeightLabel)
+        self.LocationFooterLayout.setWidget(4, QtGui.QFormLayout.LabelRole,
+            self.FontFooterHeightLabel)
         self.FontFooterXSpinBox = QtGui.QSpinBox(self.LocationFooterGroupBox)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
@@ -462,11 +462,11 @@ class Ui_AmendThemeDialog(object):
         self.FontFooterXSpinBox.setProperty(u'value', QtCore.QVariant(0))
         self.FontFooterXSpinBox.setMaximum(9999)
         self.FontFooterXSpinBox.setObjectName(u'FontFooterXSpinBox')
-        self.LocationFooterLayout.setWidget(
-            1, QtGui.QFormLayout.FieldRole, self.FontFooterXSpinBox)
+        self.LocationFooterLayout.setWidget(1, QtGui.QFormLayout.FieldRole,
+            self.FontFooterXSpinBox)
         self.FontFooterYSpinBox = QtGui.QSpinBox(self.LocationFooterGroupBox)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
@@ -476,25 +476,25 @@ class Ui_AmendThemeDialog(object):
         self.FontFooterYSpinBox.setProperty(u'value', QtCore.QVariant(0))
         self.FontFooterYSpinBox.setMaximum(9999)
         self.FontFooterYSpinBox.setObjectName(u'FontFooterYSpinBox')
-        self.LocationFooterLayout.setWidget(
-            2, QtGui.QFormLayout.FieldRole, self.FontFooterYSpinBox)
+        self.LocationFooterLayout.setWidget(2, QtGui.QFormLayout.FieldRole,
+            self.FontFooterYSpinBox)
         self.FontFooterWidthSpinBox = QtGui.QSpinBox(
             self.LocationFooterGroupBox)
         self.FontFooterWidthSpinBox.setMinimumSize(QtCore.QSize(78, 0))
         self.FontFooterWidthSpinBox.setMaximum(9999)
         self.FontFooterWidthSpinBox.setObjectName(u'FontFooterWidthSpinBox')
-        self.LocationFooterLayout.setWidget(
-            3, QtGui.QFormLayout.FieldRole, self.FontFooterWidthSpinBox)
+        self.LocationFooterLayout.setWidget(3, QtGui.QFormLayout.FieldRole,
+            self.FontFooterWidthSpinBox)
         self.FontFooterHeightSpinBox = QtGui.QSpinBox(
             self.LocationFooterGroupBox)
         self.FontFooterHeightSpinBox.setMinimumSize(QtCore.QSize(78, 0))
         self.FontFooterHeightSpinBox.setMaximum(9999)
         self.FontFooterHeightSpinBox.setObjectName(u'FontFooterHeightSpinBox')
-        self.LocationFooterLayout.setWidget(
-            4, QtGui.QFormLayout.FieldRole, self.FontFooterHeightSpinBox)
+        self.LocationFooterLayout.setWidget(4, QtGui.QFormLayout.FieldRole,
+            self.FontFooterHeightSpinBox)
         self.FooterRightLayout.addWidget(self.LocationFooterGroupBox)
-        spacerItem4 = QtGui.QSpacerItem(
-            20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem4 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Expanding)
         self.FooterRightLayout.addItem(spacerItem4)
         self.FontFooterLayout.addWidget(self.FooterRightWidget)
         self.ThemeTabWidget.addTab(self.FontFooterTab, u'')
@@ -524,29 +524,29 @@ class Ui_AmendThemeDialog(object):
         self.OutlineLayout.setObjectName(u'OutlineLayout')
         self.OutlineCheckBox = QtGui.QCheckBox(self.OutlineWidget)
         self.OutlineCheckBox.setObjectName(u'OutlineCheckBox')
-        self.OutlineLayout.setWidget(
-            0, QtGui.QFormLayout.FieldRole, self.OutlineCheckBox)
+        self.OutlineLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
+            self.OutlineCheckBox)
         self.OutlineSpinBox = QtGui.QSpinBox(self.OutlineWidget)
         self.OutlineSpinBox.setObjectName(u'OutlineSpinBox')
         self.OutlineSpinBox.setMaximum(10)
-        self.OutlineLayout.setWidget(
-            1, QtGui.QFormLayout.FieldRole, self.OutlineSpinBox)
+        self.OutlineLayout.setWidget(1, QtGui.QFormLayout.FieldRole,
+            self.OutlineSpinBox)
         self.OutlineSpinBoxLabel = QtGui.QLabel(self.OutlineWidget)
         self.OutlineSpinBoxLabel.setObjectName(u'OutlineSpinBoxLabel')
-        self.OutlineLayout.setWidget(
-            1, QtGui.QFormLayout.LabelRole, self.OutlineSpinBoxLabel)
+        self.OutlineLayout.setWidget(1, QtGui.QFormLayout.LabelRole,
+            self.OutlineSpinBoxLabel)
         self.OutlineColorLabel = QtGui.QLabel(self.OutlineWidget)
         self.OutlineColorLabel.setObjectName(u'OutlineColorLabel')
-        self.OutlineLayout.setWidget(
-            2, QtGui.QFormLayout.LabelRole, self.OutlineColorLabel)
+        self.OutlineLayout.setWidget(2, QtGui.QFormLayout.LabelRole,
+            self.OutlineColorLabel)
         self.OutlineColorPushButton = QtGui.QPushButton(self.OutlineWidget)
         self.OutlineColorPushButton.setObjectName(u'OutlineColorPushButton')
-        self.OutlineLayout.setWidget(
-            2, QtGui.QFormLayout.FieldRole, self.OutlineColorPushButton)
+        self.OutlineLayout.setWidget(2, QtGui.QFormLayout.FieldRole,
+            self.OutlineColorPushButton)
         self.OutlineEnabledLabel = QtGui.QLabel(self.OutlineWidget)
         self.OutlineEnabledLabel.setObjectName(u'OutlineEnabledLabel')
-        self.OutlineLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.OutlineEnabledLabel)
+        self.OutlineLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
+            self.OutlineEnabledLabel)
         self.verticalLayout.addWidget(self.OutlineWidget)
         self.OptionsLeftLayout.addWidget(self.OutlineGroupBox)
         self.ShadowGroupBox = QtGui.QGroupBox(self.OptionsLeftWidget)
@@ -563,33 +563,33 @@ class Ui_AmendThemeDialog(object):
         self.ShadowLayout.setObjectName(u'ShadowLayout')
         self.ShadowCheckBox = QtGui.QCheckBox(self.ShadowWidget)
         self.ShadowCheckBox.setObjectName(u'ShadowCheckBox')
-        self.ShadowLayout.setWidget(
-            0, QtGui.QFormLayout.FieldRole, self.ShadowCheckBox)
+        self.ShadowLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
+            self.ShadowCheckBox)
         self.ShadowSpinBox = QtGui.QSpinBox(self.OutlineWidget)
         self.ShadowSpinBox.setObjectName(u'ShadowSpinBox')
         self.ShadowSpinBox.setMaximum(10)
-        self.ShadowLayout.setWidget(
-            1, QtGui.QFormLayout.FieldRole, self.ShadowSpinBox)
+        self.ShadowLayout.setWidget(1, QtGui.QFormLayout.FieldRole,
+            self.ShadowSpinBox)
         self.ShadowSpinBoxLabel = QtGui.QLabel(self.OutlineWidget)
         self.ShadowSpinBoxLabel.setObjectName(u'ShadowSpinBoxLabel')
-        self.ShadowLayout.setWidget(
-            1, QtGui.QFormLayout.LabelRole, self.ShadowSpinBoxLabel)
+        self.ShadowLayout.setWidget(1, QtGui.QFormLayout.LabelRole,
+            self.ShadowSpinBoxLabel)
         self.ShadowColorLabel = QtGui.QLabel(self.ShadowWidget)
         self.ShadowColorLabel.setObjectName(u'ShadowColorLabel')
-        self.ShadowLayout.setWidget(
-            2, QtGui.QFormLayout.LabelRole, self.ShadowColorLabel)
+        self.ShadowLayout.setWidget(2, QtGui.QFormLayout.LabelRole,
+            self.ShadowColorLabel)
         self.ShadowColorPushButton = QtGui.QPushButton(self.ShadowWidget)
         self.ShadowColorPushButton.setObjectName(u'ShadowColorPushButton')
-        self.ShadowLayout.setWidget(
-            2, QtGui.QFormLayout.FieldRole, self.ShadowColorPushButton)
+        self.ShadowLayout.setWidget(2, QtGui.QFormLayout.FieldRole,
+            self.ShadowColorPushButton)
         self.ShadowEnabledLabel = QtGui.QLabel(self.ShadowWidget)
         self.ShadowEnabledLabel.setObjectName(u'ShadowEnabledLabel')
-        self.ShadowLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.ShadowEnabledLabel)
+        self.ShadowLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
+            self.ShadowEnabledLabel)
         self.verticalLayout.addWidget(self.ShadowWidget)
         self.OptionsLeftLayout.addWidget(self.ShadowGroupBox)
-        spacerItem5 = QtGui.QSpacerItem(
-            20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem5 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Expanding)
         self.OptionsLeftLayout.addItem(spacerItem5)
         self.OtherOptionsLayout.addWidget(self.OptionsLeftWidget)
         self.OptionsRightWidget = QtGui.QWidget(self.OtherOptionsTab)
@@ -635,8 +635,8 @@ class Ui_AmendThemeDialog(object):
         self.SlideTransitionCheckedBox.setTristate(False)
         self.gridLayout_5.addWidget(self.SlideTransitionCheckedBox, 0, 1, 1, 1)
         self.OptionsRightLayout.addWidget(self.TransitionGroupBox)
-        spacerItem6 = QtGui.QSpacerItem(
-            20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem6 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Expanding)
         self.OptionsRightLayout.addItem(spacerItem6)
         self.OtherOptionsLayout.addWidget(self.OptionsRightWidget)
         self.ThemeTabWidget.addTab(self.OtherOptionsTab, u'')
@@ -648,12 +648,12 @@ class Ui_AmendThemeDialog(object):
         self.ThemePreviewLayout.setSpacing(8)
         self.ThemePreviewLayout.setMargin(8)
         self.ThemePreviewLayout.setObjectName(u'ThemePreviewLayout')
-        spacerItem7 = QtGui.QSpacerItem(
-            40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        spacerItem7 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding,
+            QtGui.QSizePolicy.Expanding)
         self.ThemePreviewLayout.addItem(spacerItem7)
         self.ThemePreview = QtGui.QLabel(self.PreviewGroupBox)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
@@ -666,13 +666,13 @@ class Ui_AmendThemeDialog(object):
         self.ThemePreview.setScaledContents(True)
         self.ThemePreview.setObjectName(u'ThemePreview')
         self.ThemePreviewLayout.addWidget(self.ThemePreview)
-        spacerItem8 = QtGui.QSpacerItem(
-            40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        spacerItem8 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding,
+            QtGui.QSizePolicy.Expanding)
         self.ThemePreviewLayout.addItem(spacerItem8)
         self.AmendThemeLayout.addWidget(self.PreviewGroupBox)
         self.ThemeButtonBox = QtGui.QDialogButtonBox(AmendThemeDialog)
         self.ThemeButtonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
         self.ThemeButtonBox.setObjectName(u'ThemeButtonBox')
         self.AmendThemeLayout.addWidget(self.ThemeButtonBox)
 
@@ -685,68 +685,68 @@ class Ui_AmendThemeDialog(object):
         QtCore.QMetaObject.connectSlotsByName(AmendThemeDialog)
         AmendThemeDialog.setTabOrder(self.ThemeButtonBox, self.ThemeNameEdit)
         AmendThemeDialog.setTabOrder(self.ThemeNameEdit, self.ThemeTabWidget)
-        AmendThemeDialog.setTabOrder(
-            self.ThemeTabWidget, self.BackgroundComboBox)
-        AmendThemeDialog.setTabOrder(
-            self.BackgroundComboBox, self.BackgroundTypeComboBox)
-        AmendThemeDialog.setTabOrder(
-            self.BackgroundTypeComboBox, self.Color1PushButton)
-        AmendThemeDialog.setTabOrder(
-            self.Color1PushButton, self.Color2PushButton)
+        AmendThemeDialog.setTabOrder(self.ThemeTabWidget,
+            self.BackgroundComboBox)
+        AmendThemeDialog.setTabOrder(self.BackgroundComboBox,
+            self.BackgroundTypeComboBox)
+        AmendThemeDialog.setTabOrder(self.BackgroundTypeComboBox,
+            self.Color1PushButton)
+        AmendThemeDialog.setTabOrder(self.Color1PushButton,
+            self.Color2PushButton)
         AmendThemeDialog.setTabOrder(self.Color2PushButton, self.ImageLineEdit)
         AmendThemeDialog.setTabOrder(self.ImageLineEdit, self.ImageToolButton)
-        AmendThemeDialog.setTabOrder(
-            self.ImageToolButton, self.GradientComboBox)
-        AmendThemeDialog.setTabOrder(
-            self.GradientComboBox, self.FontMainComboBox)
-        AmendThemeDialog.setTabOrder(
-            self.FontMainComboBox, self.FontMainColorPushButton)
-        AmendThemeDialog.setTabOrder(
-            self.FontMainColorPushButton, self.FontMainSizeSpinBox)
-        AmendThemeDialog.setTabOrder(
-            self.FontMainSizeSpinBox, self.FontMainWeightComboBox)
-        AmendThemeDialog.setTabOrder(
-            self.FontMainWeightComboBox, self.FontMainLineSpacingSpinBox)
-        AmendThemeDialog.setTabOrder(
-            self.FontMainLineSpacingSpinBox, self.FontMainDefaultCheckBox)
-        AmendThemeDialog.setTabOrder(
-            self.FontMainDefaultCheckBox, self.FontMainXSpinBox)
-        AmendThemeDialog.setTabOrder(
-            self.FontMainXSpinBox, self.FontMainYSpinBox)
-        AmendThemeDialog.setTabOrder(
-            self.FontMainYSpinBox, self.FontMainWidthSpinBox)
-        AmendThemeDialog.setTabOrder(
-            self.FontMainWidthSpinBox, self.FontMainHeightSpinBox)
-        AmendThemeDialog.setTabOrder(
-            self.FontMainHeightSpinBox, self.FontFooterComboBox)
-        AmendThemeDialog.setTabOrder(
-            self.FontFooterComboBox, self.FontFooterColorPushButton)
-        AmendThemeDialog.setTabOrder(
-            self.FontFooterColorPushButton, self.FontFooterSizeSpinBox)
-        AmendThemeDialog.setTabOrder(
-            self.FontFooterSizeSpinBox, self.FontFooterWeightComboBox)
-        AmendThemeDialog.setTabOrder(
-            self.FontFooterWeightComboBox, self.FontFooterDefaultCheckBox)
-        AmendThemeDialog.setTabOrder(
-            self.FontFooterDefaultCheckBox, self.FontFooterXSpinBox)
-        AmendThemeDialog.setTabOrder(
-            self.FontFooterXSpinBox, self.FontFooterYSpinBox)
-        AmendThemeDialog.setTabOrder(
-            self.FontFooterYSpinBox, self.FontFooterWidthSpinBox)
-        AmendThemeDialog.setTabOrder(
-            self.FontFooterWidthSpinBox, self.FontFooterHeightSpinBox)
-        AmendThemeDialog.setTabOrder(
-            self.FontFooterHeightSpinBox, self.OutlineCheckBox)
-        AmendThemeDialog.setTabOrder(
-            self.OutlineCheckBox, self.OutlineColorPushButton)
-        AmendThemeDialog.setTabOrder(
-            self.OutlineColorPushButton, self.ShadowCheckBox)
-        AmendThemeDialog.setTabOrder(
-            self.ShadowCheckBox, self.ShadowColorPushButton)
-        AmendThemeDialog.setTabOrder(
-            self.ShadowColorPushButton, self.HorizontalComboBox)
-        AmendThemeDialog.setTabOrder(
-            self.HorizontalComboBox, self.VerticalComboBox)
+        AmendThemeDialog.setTabOrder(self.ImageToolButton,
+            self.GradientComboBox)
+        AmendThemeDialog.setTabOrder(self.GradientComboBox,
+            self.FontMainComboBox)
+        AmendThemeDialog.setTabOrder(self.FontMainComboBox,
+            self.FontMainColorPushButton)
+        AmendThemeDialog.setTabOrder(self.FontMainColorPushButton,
+            self.FontMainSizeSpinBox)
+        AmendThemeDialog.setTabOrder(self.FontMainSizeSpinBox,
+            self.FontMainWeightComboBox)
+        AmendThemeDialog.setTabOrder(self.FontMainWeightComboBox,
+            self.FontMainLineSpacingSpinBox)
+        AmendThemeDialog.setTabOrder(self.FontMainLineSpacingSpinBox,
+            self.FontMainDefaultCheckBox)
+        AmendThemeDialog.setTabOrder(self.FontMainDefaultCheckBox,
+            self.FontMainXSpinBox)
+        AmendThemeDialog.setTabOrder(self.FontMainXSpinBox,
+            self.FontMainYSpinBox)
+        AmendThemeDialog.setTabOrder(self.FontMainYSpinBox,
+            self.FontMainWidthSpinBox)
+        AmendThemeDialog.setTabOrder(self.FontMainWidthSpinBox,
+            self.FontMainHeightSpinBox)
+        AmendThemeDialog.setTabOrder(self.FontMainHeightSpinBox,
+            self.FontFooterComboBox)
+        AmendThemeDialog.setTabOrder(self.FontFooterComboBox,
+            self.FontFooterColorPushButton)
+        AmendThemeDialog.setTabOrder(self.FontFooterColorPushButton,
+            self.FontFooterSizeSpinBox)
+        AmendThemeDialog.setTabOrder(self.FontFooterSizeSpinBox,
+            self.FontFooterWeightComboBox)
+        AmendThemeDialog.setTabOrder(self.FontFooterWeightComboBox,
+            self.FontFooterDefaultCheckBox)
+        AmendThemeDialog.setTabOrder(self.FontFooterDefaultCheckBox,
+            self.FontFooterXSpinBox)
+        AmendThemeDialog.setTabOrder(self.FontFooterXSpinBox,
+            self.FontFooterYSpinBox)
+        AmendThemeDialog.setTabOrder(self.FontFooterYSpinBox,
+            self.FontFooterWidthSpinBox)
+        AmendThemeDialog.setTabOrder(self.FontFooterWidthSpinBox,
+            self.FontFooterHeightSpinBox)
+        AmendThemeDialog.setTabOrder(self.FontFooterHeightSpinBox,
+            self.OutlineCheckBox)
+        AmendThemeDialog.setTabOrder(self.OutlineCheckBox,
+            self.OutlineColorPushButton)
+        AmendThemeDialog.setTabOrder(self.OutlineColorPushButton,
+            self.ShadowCheckBox)
+        AmendThemeDialog.setTabOrder(self.ShadowCheckBox,
+            self.ShadowColorPushButton)
+        AmendThemeDialog.setTabOrder(self.ShadowColorPushButton,
+            self.HorizontalComboBox)
+        AmendThemeDialog.setTabOrder(self.HorizontalComboBox,
+            self.VerticalComboBox)
 
     def retranslateUi(self, AmendThemeDialog):
         AmendThemeDialog.setWindowTitle(

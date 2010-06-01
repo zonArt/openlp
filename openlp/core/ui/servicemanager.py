@@ -507,10 +507,10 @@ class ServiceManager(QtGui.QWidget):
                 if serviceitem.notes:
                     icon = QtGui.QImage(serviceitem.icon)
                     icon = icon.scaled(80, 80, QtCore.Qt.KeepAspectRatio,
-                                        QtCore.Qt.SmoothTransformation)
+                        QtCore.Qt.SmoothTransformation)
                     overlay = QtGui.QImage(':/services/service_item_notes.png')
                     overlay = overlay.scaled(80, 80, QtCore.Qt.KeepAspectRatio,
-                                              QtCore.Qt.SmoothTransformation)
+                        QtCore.Qt.SmoothTransformation)
                     painter = QtGui.QPainter(icon)
                     painter.drawImage(0, 0, overlay)
                     painter.end()
@@ -518,8 +518,8 @@ class ServiceManager(QtGui.QWidget):
                 else:
                     treewidgetitem.setIcon(0, serviceitem.iconic_representation)
             else:
-                treewidgetitem.setIcon(
-                    0, build_icon(u':/general/general_delete.png'))
+                treewidgetitem.setIcon(0,
+                    build_icon(u':/general/general_delete.png'))
             treewidgetitem.setText(0, serviceitem.title)
             treewidgetitem.setToolTip(0, serviceitem.notes)
             treewidgetitem.setData(0, QtCore.Qt.UserRole,
