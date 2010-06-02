@@ -184,16 +184,14 @@ class ThemeManager(QtGui.QWidget):
             else:
                 for plugin in self.parent.plugin_manager.plugins:
                     if not plugin.can_delete_theme(theme):
-                        QtGui.QMessageBox.critical(
-                            self, self.trUtf8('Error'),
-                            self.trUtf8('Theme %s is use in %s plugin' % (theme, plugin.name)),
-                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                        QtGui.QMessageBox.critical(self, self.trUtf8('Error'),
+                            self.trUtf8('Theme %s is use in %s plugin' % (theme,
+                            plugin.name)))
                         return
                 if unicode(self.parent.ServiceManagerContents.ThemeComboBox.currentText()) == theme:
-                    QtGui.QMessageBox.critical(
-                        self, self.trUtf8('Error'),
-                        self.trUtf8('Theme %s is use by Service Manager' % theme),
-                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                    QtGui.QMessageBox.critical(self, self.trUtf8('Error'),
+                        self.trUtf8('Theme %s is use by Service Manager' %
+                        theme))
                     return
                 self.themelist.remove(theme)
                 th = theme + u'.png'
@@ -203,7 +201,7 @@ class ThemeManager(QtGui.QWidget):
                     os.remove(os.path.join(self.path, th))
                     os.remove(os.path.join(self.thumbPath, th))
                     shutil.rmtree(os.path.join(self.path, theme))
-                except:
+                except OSError:
                     #if not present do not worry
                     pass
                 # As we do not reload the themes push out the change
@@ -233,12 +231,12 @@ class ThemeManager(QtGui.QWidget):
             try:
                 zip = zipfile.ZipFile(themePath, u'w')
                 source = os.path.join(self.path, theme)
-                for root, dirs, files in os.walk(source):
+                for files in os.walk(source)[2]:
                     for name in files:
                         zip.write(
                             os.path.join(source, name),
                             os.path.join(theme, name))
-            except:
+            except (IOError, OSError):
                 log.exception(u'Export Theme Failed')
             finally:
                 if zip:
@@ -272,11 +270,9 @@ class ThemeManager(QtGui.QWidget):
                 #check to see file is in theme root directory
                 theme = os.path.join(self.path, name)
                 if os.path.exists(theme):
-                    (path, filename) = os.path.split(unicode(file))
                     textName = os.path.splitext(name)[0]
                     if textName == self.global_theme:
-                        name = u'%s (%s)' % (textName,
-                            self.trUtf8('default'))
+                        name = u'%s (%s)' % (textName, self.trUtf8('default'))
                     else:
                         name = textName
                     thumb = os.path.join(self.thumbPath, u'%s.png' % textName)
@@ -360,11 +356,10 @@ class ThemeManager(QtGui.QWidget):
                             outfile = open(fullpath, u'wb')
                             outfile.write(zip.read(file))
             self.generateAndSaveImage(dir, themename, filexml)
-        except:
+        except IOError:
             QtGui.QMessageBox.critical(
                 self, self.trUtf8('Error'),
-                self.trUtf8('File is not a valid theme.'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                self.trUtf8('File is not a valid theme.'))
             log.exception(u'Importing theme from zip file failed %s' % filename)
         finally:
             if zip:
@@ -456,7 +451,7 @@ class ThemeManager(QtGui.QWidget):
             try:
                 outfile = open(theme_file, u'w')
                 outfile.write(theme_pretty_xml)
-            except:
+            except IOError:
                 log.exception(u'Saving theme to file failed')
             finally:
                 if outfile:
@@ -464,7 +459,7 @@ class ThemeManager(QtGui.QWidget):
             if image_from and image_from != image_to:
                 try:
                     shutil.copyfile(image_from, image_to)
-                except:
+                except IOError:
                     log.exception(u'Failed to save theme image')
             self.generateAndSaveImage(self.path, name, theme_xml)
             self.loadThemes()
@@ -567,3 +562,4 @@ class ThemeManager(QtGui.QWidget):
         #theme.theme_mode
         theme.theme_name = theme.theme_name.strip()
         #theme.theme_version
+

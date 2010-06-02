@@ -117,7 +117,7 @@ class ImageMediaItem(MediaManagerItem):
                 try:
                     os.remove(
                         os.path.join(self.servicePath, unicode(text.text())))
-                except:
+                except OSError:
                     #if not present do not worry
                     pass
                 self.ListView.takeItem(item.row())
@@ -126,7 +126,7 @@ class ImageMediaItem(MediaManagerItem):
 
     def loadList(self, list):
         for file in list:
-            (path, filename) = os.path.split(unicode(file))
+            filename = os.path.split(unicode(file))[1]
             thumb = os.path.join(self.servicePath, filename)
             if os.path.exists(thumb):
                 if self.validate(file, thumb):

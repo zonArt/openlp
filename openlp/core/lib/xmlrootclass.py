@@ -52,8 +52,8 @@ class XmlRootClass(object):
             The root tag of the xml.
         """
         root = ElementTree(element=XML(xml))
-        iter = root.getiterator()
-        for element in iter:
+        xml_iter = root.getiterator()
+        for element in xml_iter:
             if element.tag != root_tag:
                 text = element.text
                 if type(text) is NoneType:
@@ -76,7 +76,8 @@ class XmlRootClass(object):
                             # Ok, it seems to be a string.
                             val = text
                     if hasattr(self, u'post_tag_hook'):
-                        (element.tag, val) = self.post_tag_hook(element.tag, val)
+                        (element.tag, val) = \
+                            self.post_tag_hook(element.tag, val)
                 setattr(self, element.tag, val)
 
     def __str__(self):
@@ -90,7 +91,8 @@ class XmlRootClass(object):
         attributes = []
         for attrib in dir(self):
             if not attrib.startswith(u'_'):
-                attributes.append(u'%30s : %s' % (attrib, getattr(self, attrib)))
+                attributes.append(
+                    u'%30s : %s' % (attrib, getattr(self, attrib)))
         return u'\n'.join(attributes)
 
     def _get_as_string(self):

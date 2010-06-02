@@ -60,7 +60,7 @@ class SongFeatureError(SongException):
 # TODO: Song: Import ChangingSong
 # TODO: Song: Export ChangingSong
 
-_blankOpenSongXml = \
+_BLANK_OPENSONG_XML = \
 '''<?xml version="1.0" encoding="UTF-8"?>
 <song>
   <title></title>
@@ -84,7 +84,7 @@ class _OpenSong(XmlRootClass):
 
     def _reset(self):
         """Reset all song attributes"""
-        self._setFromXml(_blankOpenSongXml, 'song')
+        self._setFromXml(_BLANK_OPENSONG_XML, 'song')
 
     def from_buffer(self, xmlContent):
         """Initialize from buffer(string) with xml content"""
@@ -288,7 +288,7 @@ class Song(object):
             osfile.close()
             xml = "".join(list)
             self.from_opensong_buffer(xml)
-        except:
+        except IOError:
             log.exception(u'Failed to load opensong xml file')
         finally:
             if osfile:
@@ -394,7 +394,7 @@ class Song(object):
             ccli_file = open(textFileName, 'r')
             lines = [orgline.rstrip() for orgline in ccli_file]
             self.from_ccli_text_buffer(lines)
-        except:
+        except IOError:
             log.exception(u'Failed to load CCLI text file')
         finally:
             if ccli_file:

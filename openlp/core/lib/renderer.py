@@ -189,7 +189,8 @@ class Renderer(object):
                             pos = split_text.rfind(u' ')
                             #no more spaces and we are still too long
                             if pos == -1:
-                                while metrics.width(split_text, -1) > line_width:
+                                while \
+                                    metrics.width(split_text, -1) > line_width:
                                     split_text = split_text[:-1]
                                     pos = len(split_text)
                             else:
@@ -199,12 +200,14 @@ class Renderer(object):
                 #if we have more text add up to 10 spaces on the front.
                 if line and self._theme.font_main_indentation > 0:
                     line = u'%s%s' % \
-                        (u'          '[:int(self._theme.font_main_indentation)], line)
+                        (u'          '[:int(self._theme.font_main_indentation)],
+                        line)
                 #Text fits in a line now
         for count, line in enumerate(split_lines):
             page.append(line)
             #last but one line and only 2 lines to go or end of page
-            if (len(page) == page_length - 1 and len(split_lines) - 3 == count) or \
+            if (len(page) == page_length - 1 and
+                len(split_lines) - 3 == count) or \
                 len(page) == page_length:
                 split_pages.append(page)
                 page = []
@@ -559,7 +562,8 @@ class Renderer(object):
             self.painter.drawText(x, rowpos, line)
             if self._theme.display_slideTransition:
                 # Print 2nd image with 70% weight
-                if self._theme.display_outline and outline_size != 0 and not footer:
+                if self._theme.display_outline and outline_size != 0 and \
+                    not footer:
                     path = QtGui.QPainterPath()
                     path.addText(QtCore.QPointF(x, rowpos), font, line)
                     self.painter2.setBrush(self.painter2.pen().brush())

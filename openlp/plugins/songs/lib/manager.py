@@ -26,6 +26,7 @@
 import logging
 
 from PyQt4 import QtCore
+from sqlalchemy.exceptions import InvalidRequestError
 
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.lib.models import init_models, metadata, Song, \
@@ -161,7 +162,7 @@ class SongManager(object):
             self.session.add(song)
             self.session.commit()
             return True
-        except:
+        except InvalidRequestError:
             log.exception(u'Could not save song to song database')
             self.session.rollback()
             return False
@@ -172,7 +173,7 @@ class SongManager(object):
             self.session.delete(song)
             self.session.commit()
             return True
-        except:
+        except InvalidRequestError:
             self.session.rollback()
             log.exception(u'Could not delete song from song database')
             return False
@@ -203,7 +204,7 @@ class SongManager(object):
             self.session.add(author)
             self.session.commit()
             return True
-        except:
+        except InvalidRequestError:
             self.session.rollback()
             log.exception(u'Could not save author to song database')
             return False
@@ -217,7 +218,7 @@ class SongManager(object):
             self.session.delete(author)
             self.session.commit()
             return True
-        except:
+        except InvalidRequestError:
             self.session.rollback()
             log.exception(u'Could not delete author from song database')
             return False
@@ -248,7 +249,7 @@ class SongManager(object):
             self.session.add(topic)
             self.session.commit()
             return True
-        except:
+        except InvalidRequestError:
             self.session.rollback()
             log.exception(u'Could not save topic to song database')
             return False
@@ -262,7 +263,7 @@ class SongManager(object):
             self.session.delete(topic)
             self.session.commit()
             return True
-        except:
+        except InvalidRequestError:
             self.session.rollback()
             log.exception(u'Could not delete topic from song database')
             return False
@@ -293,7 +294,7 @@ class SongManager(object):
             self.session.add(book)
             self.session.commit()
             return True
-        except:
+        except InvalidRequestError:
             self.session.rollback()
             log.exception(u'Could not save book to song database')
             return False
@@ -307,10 +308,11 @@ class SongManager(object):
             self.session.delete(book)
             self.session.commit()
             return True
-        except:
+        except InvalidRequestError:
             self.session.rollback()
             log.exception(u'Could not delete book from song database')
             return False
 
     def get_songs_for_theme(self, theme):
         return self.session.query(Song).filter(Song.theme_name == theme).all()
+
