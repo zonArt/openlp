@@ -38,30 +38,32 @@ class PluginManager(object):
     """
     log.info(u'Plugin manager loaded')
 
-    def __init__(self, dir):
+    def __init__(self, plugin_dir):
         """
         The constructor for the plugin manager. Passes the controllers on to
         the plugins for them to interact with via their ServiceItems.
 
-        ``dir``
+        ``plugin_dir``
             The directory to search for plugins.
         """
         log.info(u'Plugin manager initing')
-        if not dir in sys.path:
-            log.debug(u'Inserting %s into sys.path', dir)
-            sys.path.insert(0, dir)
-        self.basepath = os.path.abspath(dir)
+        if not plugin_dir in sys.path:
+            log.debug(u'Inserting %s into sys.path', plugin_dir)
+            sys.path.insert(0, plugin_dir)
+        self.basepath = os.path.abspath(plugin_dir)
         log.debug(u'Base path %s ', self.basepath)
+        self.plugin_helpers = []
         self.plugins = []
-        # this has to happen after the UI is sorted self.find_plugins(dir)
+        # this has to happen after the UI is sorted
+        # self.find_plugins(plugin_dir)
         log.info(u'Plugin manager Initialised')
 
-    def find_plugins(self, dir, plugin_helpers):
+    def find_plugins(self, plugin_dir, plugin_helpers):
         """
-        Scan the directory ``dir`` for objects inheriting from the ``Plugin``
-        class.
+        Scan the directory ``plugin_dir`` for objects inheriting from the
+        ``Plugin`` class.
 
-        ``dir``
+        ``plugin_dir``
             The directory to scan.
 
         ``plugin_helpers``
@@ -69,10 +71,11 @@ class PluginManager(object):
 
         """
         self.plugin_helpers = plugin_helpers
-        startdepth = len(os.path.abspath(dir).split(os.sep))
-        log.debug(u'find plugins %s at depth %d', unicode(dir), startdepth)
+        startdepth = len(os.path.abspath(plugin_dir).split(os.sep))
+        log.debug(u'finding plugins in %s at depth %d',
+            unicode(plugin_dir), startdepth)
 
-        for root, dirs, files in os.walk(dir):
+        for root, dirs, files in os.walk(plugin_dir):
             for name in files:
                 if name.endswith(u'.py') and not name.startswith(u'__'):
                     path = os.path.abspath(os.path.join(root, name))
@@ -80,7 +83,7 @@ class PluginManager(object):
                     if thisdepth - startdepth > 2:
                         # skip anything lower down
                         continue
-                    modulename, pyext = os.path.splitext(path)
+                    modulename = os.path.splitext(path)[0]
                     prefix = os.path.commonprefix([self.basepath, path])
                     # hack off the plugin base path
                     modulename = modulename[len(prefix) + 1:]
@@ -91,8 +94,8 @@ class PluginManager(object):
                     try:
                         __import__(modulename, globals(), locals(), [])
                     except ImportError, e:
-                        log.exception(u'Failed to import module %s on path %s for reason %s',
-                                   modulename, path, e.args[0])
+                        log.exception(u'Failed to import module %s on path %s '
+                            'for reason %s', modulename, path, e.args[0])
         plugin_classes = Plugin.__subclasses__()
         plugin_objects = []
         for p in plugin_classes:
@@ -214,3 +217,4 @@ class PluginManager(object):
             if plugin.is_active():
                 plugin.finalise()
                 log.info(u'Finalisation Complete for %s ' % plugin.name)
+

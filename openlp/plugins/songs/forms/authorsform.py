@@ -37,11 +37,13 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.autoDisplayName = False
+        self._autoDisplayName = False
         QtCore.QObject.connect(self.FirstNameEdit,
-            QtCore.SIGNAL(u'textEdited(QString)'), self.onFirstNameEditTextEdited)
+            QtCore.SIGNAL(u'textEdited(QString)'),
+            self.onFirstNameEditTextEdited)
         QtCore.QObject.connect(self.LastNameEdit,
-            QtCore.SIGNAL(u'textEdited(QString)'), self.onLastNameEditTextEdited)
+            QtCore.SIGNAL(u'textEdited(QString)'),
+            self.onLastNameEditTextEdited)
 
     def exec_(self, clear=True):
         if clear:
@@ -52,7 +54,7 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         return QtGui.QDialog.exec_(self)
 
     def onFirstNameEditTextEdited(self, text):
-        if not self.autoDisplayName:
+        if not self._autoDisplayName:
             return
         display_name = text
         if self.LastNameEdit.text() != u'':
@@ -60,7 +62,7 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         self.DisplayEdit.setText(display_name)
 
     def onLastNameEditTextEdited(self, text):
-        if not self.autoDisplayName:
+        if not self._autoDisplayName:
             return
         display_name = text
         if self.FirstNameEdit.text() != u'':
@@ -68,24 +70,20 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         self.DisplayEdit.setText(display_name)
 
     def autoDisplayName(self):
-        return self.autoDisplayName
+        return self._autoDisplayName
 
     def setAutoDisplayName(self, on):
-        self.autoDisplayName = on
+        self._autoDisplayName = on
 
     def accept(self):
         if not self.FirstNameEdit.text():
-            QtGui.QMessageBox.critical(
-                self, self.trUtf8('Error'),
-                self.trUtf8('You need to type in the first name of the author.'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+            QtGui.QMessageBox.critical(self, self.trUtf8('Error'), self.trUtf8(
+                'You need to type in the first name of the author.'))
             self.FirstNameEdit.setFocus()
             return False
         elif not self.LastNameEdit.text():
-            QtGui.QMessageBox.critical(
-                self, self.trUtf8('Error'),
-                self.trUtf8('You need to type in the last name of the author.'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+            QtGui.QMessageBox.critical(self, self.trUtf8('Error'),
+                self.trUtf8('You need to type in the last name of the author.'))
             self.LastNameEdit.setFocus()
             return False
         elif not self.DisplayEdit.text():
@@ -105,3 +103,4 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
                 return False
         else:
             return QtGui.QDialog.accept(self)
+

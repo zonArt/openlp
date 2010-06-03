@@ -569,7 +569,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 verseId = unicode((item.data(QtCore.Qt.UserRole)).toString())
                 bits = verseId.split(u':')
                 sxml.add_verse_to_lyrics(bits[0], bits[1], unicode(item.text()))
-                text = text + unicode(self.VerseListWidget.item(i, 0).text()) + u' '
+                text = text + unicode(self.VerseListWidget.item(i, 0).text()) \
+                    + u' '
             text = text.replace(u'\'', u'')
             text = text.replace(u',', u'')
             text = text.replace(u';', u'')

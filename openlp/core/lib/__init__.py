@@ -173,7 +173,6 @@ from settingsmanager import SettingsManager
 from plugin import PluginStatus, Plugin
 from pluginmanager import PluginManager
 from settingstab import SettingsTab
-from mediamanageritem import MediaManagerItem
 from xmlrootclass import XmlRootClass
 from serviceitem import ServiceItem
 from serviceitem import ServiceItemType
@@ -184,5 +183,6 @@ from songxmlhandler import SongXMLBuilder, SongXMLParser
 from themexmlhandler import ThemeXML
 from renderer import Renderer
 from rendermanager import RenderManager
+from mediamanageritem import MediaManagerItem
 from basemodel import BaseModel
 from baselistwithdnd import BaseListWithDnD

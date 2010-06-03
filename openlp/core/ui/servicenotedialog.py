@@ -39,7 +39,8 @@ class Ui_ServiceNoteEdit(object):
         self.textEdit.setObjectName(u'textEdit')
         self.verticalLayout.addWidget(self.textEdit)
         self.buttonBox = QtGui.QDialogButtonBox(self.widget)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Save)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
+            QtGui.QDialogButtonBox.Save)
         self.buttonBox.setObjectName(u'buttonBox')
         self.verticalLayout.addWidget(self.buttonBox)
 
@@ -47,4 +48,6 @@ class Ui_ServiceNoteEdit(object):
         QtCore.QMetaObject.connectSlotsByName(ServiceNoteEdit)
 
     def retranslateUi(self, ServiceNoteEdit):
-        ServiceNoteEdit.setWindowTitle(translate('ServiceNoteForm', 'Service Item Notes'))
+        ServiceNoteEdit.setWindowTitle(
+            translate('ServiceNoteForm', 'Service Item Notes'))
+

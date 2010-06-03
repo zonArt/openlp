@@ -176,14 +176,12 @@ class ImpressController(PresentationController):
         return doc
 
 class ImpressDocument(PresentationDocument):
-
     def __init__(self, controller, presentation):
         log.debug(u'Init Presentation OpenOffice')
-        self.controller = controller
+        PresentationDocument.__init__(controller, presentation)
         self.document = None
         self.presentation = None
         self.control = None
-        self.store_filename(presentation)
 
     def load_presentation(self):
         """

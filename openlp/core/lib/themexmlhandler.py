@@ -30,7 +30,7 @@ from xml.etree.ElementTree import ElementTree, XML
 
 from openlp.core.lib import str_to_bool
 
-blankthemexml = \
+BLANK_THEME_XML = \
 '''<?xml version="1.0" encoding="utf-8"?>
  <theme version="1.0">
    <name>BlankStyle</name>
@@ -97,7 +97,8 @@ class ThemeXML(object):
         """
         if self.background_filename and path:
             self.theme_name = self.theme_name.rstrip().lstrip()
-            self.background_filename = self.background_filename.rstrip().lstrip()
+            self.background_filename = \
+                self.background_filename.rstrip().lstrip()
             self.background_filename = os.path.join(path, self.theme_name,
                 self.background_filename)
 
@@ -244,7 +245,8 @@ class ThemeXML(object):
         background.appendChild(element)
 
     def add_display(self, shadow, shadow_color, outline, outline_color,
-        horizontal, vertical, wrap, transition, shadow_pixel=5, outline_pixel=2):
+        horizontal, vertical, wrap, transition, shadow_pixel=5,
+        outline_pixel=2):
         """
         Add a Display options.
 
@@ -349,13 +351,12 @@ class ThemeXML(object):
         """
         self.base_parse_xml()
         self.parse_xml(xml)
-        self.theme_filename_extended = False
 
     def base_parse_xml(self):
         """
         Pull in the blank theme XML as a starting point.
         """
-        self.parse_xml(blankthemexml)
+        self.parse_xml(BLANK_THEME_XML)
 
     def parse_xml(self, xml):
         """
@@ -365,9 +366,9 @@ class ThemeXML(object):
             The XML string to parse.
         """
         theme_xml = ElementTree(element=XML(xml))
-        iter = theme_xml.getiterator()
+        xml_iter = theme_xml.getiterator()
         master = u''
-        for element in iter:
+        for element in xml_iter:
             element.text = unicode(element.text).decode('unicode-escape')
             if element.getchildren():
                 master = element.tag + u'_'
@@ -409,3 +410,4 @@ class ThemeXML(object):
             if key[0:1] != u'_':
                 theme_strings.append(u'%30s: %s' % (key, getattr(self, key)))
         return u'\n'.join(theme_strings)
+

@@ -28,13 +28,13 @@ import types
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtGui
 
-DelphiColors = {"clRed":0xFF0000,
-                "clBlue":0x0000FF,
-                "clYellow":0xFFFF00,
-                "clBlack":0x000000,
-                "clWhite":0xFFFFFF}
+DELPHI_COLORS = {"clRed":0xFF0000,
+                 "clBlue":0x0000FF,
+                 "clYellow":0xFFFF00,
+                 "clBlack":0x000000,
+                 "clWhite":0xFFFFFF}
 
-blankstylexml = \
+BLANK_STYLE_XML = \
 '''<?xml version="1.0" encoding="iso-8859-1"?>
 <Theme>
   <Name>BlankStyle</Name>
@@ -97,7 +97,7 @@ class Theme(object):
                             1 - lyrics
         """
         # init to defaults
-        self._set_from_XML(blankstylexml)
+        self._set_from_XML(BLANK_STYLE_XML)
         self._set_from_XML(xml)
 
     def _get_as_string(self):
@@ -115,26 +115,27 @@ class Theme(object):
         for element in iter:
             delphiColorChange = False
             if element.tag != u'Theme':
-                t = element.text
+                element_text = element.text
                 val = 0
                 # easy!
-                if type(t) == type(None):
-                    val = t
+                if element_text is None:
+                    val = element_text
                 # strings need special handling to sort the colours out
-                if type(t) is types.StringType or type(t) is types.UnicodeType:
-                    if t[0] == u'$': # might be a hex number
+                if type(element_text) is types.StringType or \
+                    type(element_text) is types.UnicodeType:
+                    if element_text[0] == u'$': # might be a hex number
                         try:
-                            val = int(t[1:], 16)
+                            val = int(element_text[1:], 16)
                         except ValueError: # nope
                             pass
-                    elif DelphiColors.has_key(t):
-                        val = DelphiColors[t]
+                    elif DELPHI_COLORS.has_key(element_text):
+                        val = DELPHI_COLORS[element_text]
                         delphiColorChange = True
                     else:
                         try:
-                            val = int(t)
+                            val = int(element_text)
                         except ValueError:
-                            val = t
+                            val = element_text
                 if (element.tag.find(u'Color') > 0 or
                     (element.tag.find(u'BackgroundParameter') == 0 and
                     type(val) == type(0))):

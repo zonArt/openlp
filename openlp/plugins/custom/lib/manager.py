@@ -26,6 +26,7 @@
 import logging
 
 from PyQt4 import QtCore
+from sqlalchemy.exceptions import InvalidRequestError
 
 from openlp.core.utils import AppLocation
 from openlp.plugins.custom.lib.models import init_models, metadata, CustomSlide
@@ -80,7 +81,7 @@ class CustomManager(object):
             self.session.commit()
             log.debug(u'Custom Slide saved')
             return True
-        except:
+        except InvalidRequestError:
             self.session.rollback()
             log.exception(u'Custom Slide save failed')
             return False
@@ -104,7 +105,7 @@ class CustomManager(object):
                 self.session.delete(customslide)
                 self.session.commit()
                 return True
-            except:
+            except InvalidRequestError:
                 self.session.rollback()
                 log.exception(u'Custom Slide deleton failed')
                 return False

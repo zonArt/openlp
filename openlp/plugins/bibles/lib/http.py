@@ -33,8 +33,9 @@ from BeautifulSoup import BeautifulSoup, Tag, NavigableString
 
 from openlp.core.lib import Receiver
 from openlp.core.utils import AppLocation
-from common import BibleCommon, SearchResults, unescape
-from db import BibleDB
+from openlp.plugins.bibles.lib.common import BibleCommon, SearchResults, \
+    unescape
+from openlp.plugins.bibles.lib.db import BibleDB
 from openlp.plugins.bibles.lib.models import Book
 
 log = logging.getLogger(__name__)
@@ -462,7 +463,8 @@ class HTTPBible(BibleDB):
         """
         Return the list of books.
         """
-        return [Book.populate(name=book['name']) for book in HTTPBooks.get_books()]
+        return [Book.populate(name=book['name'])
+            for book in HTTPBooks.get_books()]
 
     def lookup_book(self, book):
         """

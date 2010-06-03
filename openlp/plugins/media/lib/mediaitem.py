@@ -143,7 +143,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def loadList(self, list):
         for file in list:
-            (path, filename) = os.path.split(unicode(file))
+            filename = os.path.split(unicode(file))[1]
             item_name = QtGui.QListWidgetItem(filename)
             img = QtGui.QPixmap(u':/media/media_video.png').toImage()
             item_name.setIcon(build_icon(img))
