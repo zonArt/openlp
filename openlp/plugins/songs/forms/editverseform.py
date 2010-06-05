@@ -29,6 +29,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from editversedialog import Ui_EditVerseDialog
+from openlp.plugins.songs.lib import TagNames
 
 log = logging.getLogger(__name__)
 
@@ -44,9 +45,9 @@ class VerseType(object):
     @staticmethod
     def to_string(verse_type):
         if verse_type == VerseType.Verse:
-            return u'Verse'
+            return TagNames.verse
         elif verse_type == VerseType.Chorus:
-            return u'Chorus'
+            return TagNames.chorus
         elif verse_type == VerseType.Bridge:
             return u'Bridge'
         elif verse_type == VerseType.PreChorus:
@@ -61,9 +62,9 @@ class VerseType(object):
     @staticmethod
     def from_string(verse_type):
         verse_type = verse_type.lower()
-        if verse_type == u'verse':
+        if verse_type == TagNames.lower_verse:
             return VerseType.Verse
-        elif verse_type == u'chorus':
+        elif verse_type == TagNames.lower_chorus:
             return VerseType.Chorus
         elif verse_type == u'bridge':
             return VerseType.Bridge
