@@ -334,21 +334,12 @@ class SongMediaItem(MediaManagerItem):
                     if len(order) == 0:
                         break
                     for verse in verseList:
-                        if verse[1]:
-#                            if verse[0][u'type'] == "Verse" \
-#                                or verse[0][u'type'] == "Chorus":
-                            if verse[0][u'label'] == order[1:] and \
-                                verse[0][u'type'][0] == order[0]:
-                                verseTag = u'%s:%s' % \
-                                    (verse[0][u'type'], verse[0][u'label'])
-                                service_item.add_from_text\
-                                    (verse[1][:30], verse[1], verseTag)
-#                            else:
-#                                if verse[0][u'type'][0] == order[0]:
-#                                    verseTag = u'%s:%s' % \
-#                                        (verse[0][u'type'], verse[0][u'label'])
-#                                    service_item.add_from_text\
-#                                        (verse[1][:30], verse[1], verseTag)
+                        if verse[0][u'label'] == order[1:] and \
+                            verse[0][u'type'][0] == order[0]:
+                            verseTag = u'%s:%s' % \
+                                (verse[0][u'type'], verse[0][u'label'])
+                            service_item.add_from_text\
+                                (verse[1][:30], verse[1], verseTag)
         else:
             verses = song.lyrics.split(u'\n\n')
             for slide in verses:
