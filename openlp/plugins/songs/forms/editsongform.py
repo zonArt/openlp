@@ -469,27 +469,18 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.SongTabWidget.setCurrentIndex(1)
             self.AuthorsListView.setFocus()
         #split the verse list by space and mark lower case for testing
-        taglist = unicode(self.trUtf8(' bitped'))
+        taglist = unicode(self.trUtf8(' bitpedvc'))
         for verse in unicode(self.VerseOrderEdit.text()).lower().split(u' '):
             if len(verse) > 1:
-                if (verse[0:1] == u'%s' % self.trUtf8('v') or
-                    verse[0:1] == u'%s' % self.trUtf8('c')) \
+                if taglist.find(verse[0:1]) > -1 \
                     and verse[1:].isdigit():
                     pass
                 else:
                     self.SongTabWidget.setCurrentIndex(0)
                     self.VerseOrderEdit.setFocus()
                     return False, \
-                        self.trUtf8('Invalid verse entry - Vx or Cx')
-            else:
-                if taglist.find(verse) > -1:
-                    pass
-                else:
-                    self.SongTabWidget.setCurrentIndex(0)
-                    self.VerseOrderEdit.setFocus()
-                    return False, \
                         self.trUtf8(\
-                        'Invalid verse entry, values must be I,B,T,P,E,O,Vx,Cx')
+                        'Invalid verse entry, values must be I,B,T,P,E,O,V,C followed by a number')
         return True, u''
 
     def onTitleEditItemLostFocus(self):
