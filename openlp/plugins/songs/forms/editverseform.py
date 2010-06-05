@@ -97,8 +97,6 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             QtCore.SIGNAL(u'cursorPositionChanged()'),
             self.onCursorPositionChanged
         )
-#        QtCore.QObject.connect(self.VerseListComboBox,
-#            QtCore.SIGNAL(u'activated(int)'), self.onVerseComboChanged)
         self.verse_regex = re.compile(r'---\[([-\w]+):([\d]+)\]---')
 
     def insertVerse(self, title, num=1):

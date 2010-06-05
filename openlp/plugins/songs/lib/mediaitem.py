@@ -324,10 +324,10 @@ class SongMediaItem(MediaManagerItem):
             #no verse list or only 1 space (in error)
             if not song.verse_order or not song.verse_order.strip():
                 for verse in verseList:
-                    verse_tag = u'%s:%s' % (
+                    verseTag = u'%s:%s' % (
                         verse[0][u'type'], verse[0][u'label'])
                     service_item.add_from_text(\
-                        verse[1][:30], unicode(verse[1]), verse_tag)
+                        verse[1][:30], unicode(verse[1]), verseTag)
             else:
                 #Loop through the verse list and expand the song accordingly.
                 for order in song.verse_order.upper().split(u' '):
@@ -339,16 +339,16 @@ class SongMediaItem(MediaManagerItem):
                                 or verse[0][u'type'] == "Chorus":
                                 if verse[0][u'label'] == order[1:] and \
                                     verse[0][u'type'][0] == order[0]:
-                                    verse_tag = u'%s:%s' % \
+                                    verseTag = u'%s:%s' % \
                                         (verse[0][u'type'], verse[0][u'label'])
                                     service_item.add_from_text\
-                                        (verse[1][:30], verse[1], verse_tag)
+                                        (verse[1][:30], verse[1], verseTag)
                             else:
                                 if verse[0][u'type'][0] == order[0]:
-                                    verse_tag = u'%s:%s' % \
+                                    verseTag = u'%s:%s' % \
                                         (verse[0][u'type'], verse[0][u'label'])
                                     service_item.add_from_text\
-                                        (verse[1][:30], verse[1], verse_tag)
+                                        (verse[1][:30], verse[1], verseTag)
         else:
             verses = song.lyrics.split(u'\n\n')
             for slide in verses:
