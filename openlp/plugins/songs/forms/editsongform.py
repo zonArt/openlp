@@ -334,7 +334,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def onTopicRemoveButtonClicked(self):
         self.TopicRemoveButton.setEnabled(False)
         item = self.TopicsListView.currentItem()
-        topic_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        topic_id = item.data(QtCore.Qt.UserRole).toInt()[0]
         topic = self.songmanager.get_topic(topic_id)
         self.song.topics.remove(topic)
         row = self.TopicsListView.row(item)
@@ -370,7 +370,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             item.setText(afterText)
             self.VerseListWidget.setRowCount(
                 self.VerseListWidget.rowCount() + 1)
-            self.VerseListWidget.setItem(int(self.VerseListWidget.rowCount() - 1), 0, item)
+            self.VerseListWidget.setItem(
+                int(self.VerseListWidget.rowCount() - 1), 0, item)
         self.VerseListWidget.setColumnWidth(0, self.width)
         self.VerseListWidget.resizeRowsToContents()
         self.tagRows()
@@ -378,8 +379,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def onVerseEditButtonClicked(self):
         item = self.VerseListWidget.currentItem()
         if item:
-            tempText = item.text()
-            verseId = unicode((item.data(QtCore.Qt.UserRole)).toString())
+            tempText = unicode(item.text())
+            verseId = unicode(item.data(QtCore.Qt.UserRole).toString())
             self.verse_form.setVerse(tempText, True, verseId)
             if self.verse_form.exec_():
                 afterText, verse, subVerse = self.verse_form.getVerse()
@@ -410,16 +411,16 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if self.VerseListWidget.rowCount() > 0:
             for row in range(0, self.VerseListWidget.rowCount()):
                 item = self.VerseListWidget.item(row, 0)
-                field = unicode((item.data(QtCore.Qt.UserRole)).toString())
+                field = unicode(item.data(QtCore.Qt.UserRole).toString())
                 verse_list += u'---[%s]---\n' % field
-                verse_list += item.text()
+                verse_list += unicode(item.text())
                 verse_list += u'\n'
             self.verse_form.setVerse(verse_list)
         else:
             self.verse_form.setVerse(u'')
         if self.verse_form.exec_():
-            verse_list = self.verse_form.getVerseAll()
-            verse_list = unicode(verse_list.replace(u'\r\n', u'\n'))
+            verse_list = unicode(self.verse_form.getVerseAll())
+            verse_list = verse_list.replace(u'\r\n', u'\n')
             self.VerseListWidget.clear()
             self.VerseListWidget.setRowCount(0)
             for row in self.findVerseSplit.split(verse_list):
@@ -457,7 +458,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         log.debug(u'Validate Song')
         # Lets be nice and assume the data is correct.
-        if len(self.TitleEditItem.displayText()) == 0:
+        if self.TitleEditItem.text().isEmpty():
             self.SongTabWidget.setCurrentIndex(0)
             self.TitleEditItem.setFocus()
             return False, self.trUtf8('You need to enter a song title.')
@@ -469,11 +470,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.SongTabWidget.setCurrentIndex(1)
             self.AuthorsListView.setFocus()
         #split the verse list by space and mark lower case for testing
-        taglist = unicode(self.trUtf8(' bitpeovc'))
+        taglist = unicode(self.trUtf8(' bitpeo'))
         for verse in unicode(self.VerseOrderEdit.text()).lower().split(u' '):
             if len(verse) > 1:
-                if (verse[0:1] == u'%s' % self.trUtf8('v') or
-                    verse[0:1] == u'%s' % self.trUtf8('c')) \
+                if (verse[0:1] == unicode(self.trUtf8('v')) or
+                    verse[0:1] == unicode(self.trUtf8('c')) \
                     and verse[1:].isdigit():
                     pass
                 else:
@@ -493,19 +494,19 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         return True, u''
 
     def onTitleEditItemLostFocus(self):
-        self.song.title = self.TitleEditItem.text()
+        self.song.title = unicode(self.TitleEditItem.text())
 
     def onVerseOrderEditLostFocus(self):
-        self.song.verse_order = self.VerseOrderEdit.text()
+        self.song.verse_order = unicode(self.VerseOrderEdit.text())
 
     def onCommentsEditLostFocus(self):
-        self.song.comments = self.CommentsEdit.text()
+        self.song.comments = unicode(self.CommentsEdit.text())
 
     def onCCLNumberEditLostFocus(self):
-        self.song.ccli_number = self.CCLNumberEdit.text()
+        self.song.ccli_number = unicode(self.CCLNumberEdit.text())
 
     def onCopyrightInsertButtonTriggered(self):
-        text = self.CopyrightEditItem.displayText()
+        text = self.CopyrightEditItem.text()
         pos = self.CopyrightEditItem.cursorPosition()
         text = text[:pos] + u'©' + text[pos:]
         self.CopyrightEditItem.setText(text)
@@ -524,8 +525,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         The Song is valid so as the plugin to add it to preview to see.
         """
         log.debug(u'onPreview')
-        if button.text() == unicode(self.trUtf8('Save && Preview')) \
-            and self.saveSong():
+        if button.text() == self.trUtf8('Save && Preview') and self.saveSong():
             Receiver.send_message(u'songs_preview')
 
     def closePressed(self):
@@ -545,13 +545,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 self, self.trUtf8('Error'), message,
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             return False
-        self.song.title = unicode(self.TitleEditItem.displayText())
-        self.song.copyright = unicode(self.CopyrightEditItem.displayText())
-        self.song.search_title = unicode(self.TitleEditItem.displayText()) + \
-            u'@'+ unicode(self.AlternativeEdit.displayText())
+        self.song.title = unicode(self.TitleEditItem.text())
+        self.song.copyright = unicode(self.CopyrightEditItem.text())
+        self.song.search_title = unicode(self.TitleEditItem.text()) + \
+            u'@' + unicode(self.AlternativeEdit.text())
         self.song.comments = unicode(self.CommentsEdit.toPlainText())
         self.song.verse_order = unicode(self.VerseOrderEdit.text())
-        self.song.ccli_number = unicode(self.CCLNumberEdit.displayText())
+        self.song.ccli_number = unicode(self.CCLNumberEdit.text())
         self.processLyrics()
         self.processTitle()
         self.songmanager.save_song(self.song)
@@ -566,7 +566,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             text = u' '
             for i in range (0, self.VerseListWidget.rowCount()):
                 item = self.VerseListWidget.item(i, 0)
-                verseId = unicode((item.data(QtCore.Qt.UserRole)).toString())
+                verseId = unicode(item.data(QtCore.Qt.UserRole).toString())
                 bits = verseId.split(u':')
                 sxml.add_verse_to_lyrics(bits[0], bits[1], unicode(item.text()))
                 text = text + unicode(self.VerseListWidget.item(i, 0).text()) \
@@ -580,7 +580,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             text = text.replace(u'{', u'')
             text = text.replace(u'}', u'')
             text = text.replace(u'?', u'')
-            self.song.search_lyrics = unicode(text)
+            self.song.search_lyrics = text
             self.song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         except:
             log.exception(u'Problem processing song Lyrics \n%s',
@@ -588,6 +588,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def processTitle(self):
         log.debug(u'processTitle')
+        self.song.search_title = unicode(self.song.search_title)
         self.song.search_title = self.song.search_title.replace(u'\'', u'')
         self.song.search_title = self.song.search_title.replace(u'\"', u'')
         self.song.search_title = self.song.search_title.replace(u'`', u'')
@@ -599,6 +600,4 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.search_title = self.song.search_title.replace(u'{', u'')
         self.song.search_title = self.song.search_title.replace(u'}', u'')
         self.song.search_title = self.song.search_title.replace(u'?', u'')
-        self.song.search_title = unicode(self.song.search_title)
-
 

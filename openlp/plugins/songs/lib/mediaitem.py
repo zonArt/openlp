@@ -151,7 +151,7 @@ class SongMediaItem(MediaManagerItem):
         self.configUpdated()
 
     def onSearchTextButtonClick(self):
-        search_keywords = unicode(self.SearchTextEdit.displayText())
+        search_keywords = unicode(self.SearchTextEdit.text())
         search_results = []
         search_type = self.SearchTypeComboBox.currentIndex()
         if search_type == 0:
@@ -187,12 +187,7 @@ class SongMediaItem(MediaManagerItem):
                 if author_list != u'':
                     author_list = author_list + u', '
                 author_list = author_list + author.display_name
-            if not isinstance(author_list, unicode):
-                author_list = unicode(author_list, u'utf8')
-            if isinstance(song.title, unicode):
-                song_title = song.title
-            else:
-                song_title = unicode(song.title, u'utf8')
+            song_title = unicode(song.title)
             song_detail = u'%s (%s)' % (song_title, author_list)
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
@@ -203,8 +198,8 @@ class SongMediaItem(MediaManagerItem):
         self.ListView.clear()
         for author in searchresults:
             for song in author.songs:
-                song_detail = unicode(self.trUtf8('%s (%s)' % \
-                    (unicode(author.display_name), unicode(song.title))))
+                song_detail = unicode(self.trUtf8('%s (%s)')) % \
+                    (unicode(author.display_name), unicode(song.title))
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
                 self.ListView.addItem(song_name)
@@ -225,7 +220,7 @@ class SongMediaItem(MediaManagerItem):
             search_length = 1
             if self.SearchTypeComboBox.currentIndex() == 1:
                 search_length = 7
-            if len(text) > search_length:
+            if text.size() > search_length:
                 self.onSearchTextButtonClick()
 
     def onImportClick(self):
@@ -273,7 +268,7 @@ class SongMediaItem(MediaManagerItem):
     def onEditClick(self):
         item = self.ListView.currentItem()
         if item:
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            item_id = item.data(QtCore.Qt.UserRole).toInt()[0]
             self.edit_song_form.loadSong(item_id, False)
             self.edit_song_form.exec_()
 
@@ -293,7 +288,7 @@ class SongMediaItem(MediaManagerItem):
             if ans == QtGui.QMessageBox.Cancel:
                 return
             for item in items:
-                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+                item_id = item.data(QtCore.Qt.UserRole).toInt()[0]
                 self.parent.manager.delete_song(item_id)
             self.onSearchTextButtonClick()
 
@@ -307,11 +302,11 @@ class SongMediaItem(MediaManagerItem):
                 item = self.ListView.currentItem()
                 if item is None:
                     return False
-                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+                item_id = item.data(QtCore.Qt.UserRole).toInt()[0]
             else:
                 item_id = self.remoteSong
         else:
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            item_id = item.data(QtCore.Qt.UserRole).toInt()[0]
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
@@ -335,7 +330,8 @@ class SongMediaItem(MediaManagerItem):
                         break
                     for verse in verseList:
                         if verse[1]:
-                            if order[1:]:
+                            if verse[0][u'type'] == u'Verse' or \
+                                verse[0][u'type'] == u'Chorus':
                                 if verse[0][u'type'][0] == order[0] and \
                                     verse[0][u'label'] == order[1:]:
                                     verseTag = u'%s:%s' % \
@@ -343,8 +339,7 @@ class SongMediaItem(MediaManagerItem):
                                     service_item.add_from_text\
                                         (verse[1][:30], verse[1], verseTag)
                             else:
-                                if verse[0][u'type'][0] == order[0] and \
-                                    verse[0][u'label'] == u'1':
+                                if verse[0][u'type'][0] == order[0]:
                                     verseTag = u'%s:%s' % \
                                         (verse[0][u'type'], verse[0][u'label'])
                                     service_item.add_from_text\
