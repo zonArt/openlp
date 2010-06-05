@@ -161,6 +161,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             self.InsertButton.setVisible(True)
         self.VerseTextEdit.setPlainText(text)
         self.VerseTextEdit.setFocus(QtCore.Qt.OtherFocusReason)
+        self.VerseTextEdit.moveCursor(QtGui.QTextCursor.End)
 
     def getVerse(self):
         return self.VerseTextEdit.toPlainText(), \
@@ -172,5 +173,4 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         if not text.startsWith(u'---['):
             text = u'---[Verse:1]---\n%s' % text
         return text
-
 
