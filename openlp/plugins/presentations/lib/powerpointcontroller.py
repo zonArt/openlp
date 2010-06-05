@@ -102,12 +102,10 @@ class PowerpointController(PresentationController):
             return doc
 
 class PowerpointDocument(PresentationDocument):
-
     def __init__(self, controller, presentation):
         log.debug(u'Init Presentation Powerpoint')
+        PresentationDocument.__init__(controller, presentation)
         self.presentation = None
-        self.controller = controller
-        self.store_filename(presentation)
 
     def load_presentation(self):
         """

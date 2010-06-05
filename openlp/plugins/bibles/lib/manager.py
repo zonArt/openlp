@@ -181,7 +181,7 @@ class BibleManager(object):
         Returns a list of the names of available Bibles.
         """
         log.debug(u'get_bibles')
-        return [name for name, bible in self.db_cache.iteritems()]
+        return self.db_cache.keys()
 
     def get_books(self, bible):
         """

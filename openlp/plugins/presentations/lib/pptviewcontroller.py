@@ -102,11 +102,10 @@ class PptviewController(PresentationController):
 class PptviewDocument(PresentationDocument):
     def __init__(self, controller, presentation):
         log.debug(u'Init Presentation PowerPoint')
+        PresentationDocument.__init__(controller, presentation)
         self.presentation = None
         self.pptid = None
         self.blanked = False
-        self.controller = controller
-        self.store_filename(presentation)
 
     def load_presentation(self):
         """

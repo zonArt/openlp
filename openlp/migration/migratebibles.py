@@ -27,10 +27,10 @@ import os
 import sys
 import sqlite3
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker, mapper
+from sqlalchemy.exceptions import InvalidRequestError
+from sqlalchemy.orm import mapper
 
-from openlp.core.lib import SettingsManager
+from openlp.core.lib import BaseModel, SettingsManager
 from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.models import *
     
@@ -85,13 +85,6 @@ mapper(TTestament, temp_testament_table)
 mapper(TBook, temp_book_table)
 mapper(TVerse, temp_verse_table)
 
-def init_models(url):
-    engine = create_engine(url)
-    metadata.bind = engine
-    session = scoped_session(sessionmaker(autoflush=False,
-        autocommit=False, bind=engine))
-    return session
-
 class MigrateBibles(object):
     def __init__(self, display):
         self.display = display
@@ -105,8 +98,8 @@ class MigrateBibles(object):
 
     def process(self):
         self.progress(u'Bibles processing started')
-        for f in self.database_files:
-            self.v_1_9_0(f)
+        for db_file in self.database_files:
+            self.v_1_9_0(db_file)
         self.progress(u'Bibles processing finished')
 
     def v_1_9_0(self, database):
@@ -143,7 +136,7 @@ class MigrateBibles(object):
             try:
                 self.session.add(testament)
                 self.session.commit()
-            except:
+            except InvalidRequestError:
                 self.session.rollback()
                 print u'Error thrown = ', sys.exc_info()[1]
         self.progress(u'Create book table')
@@ -157,7 +150,7 @@ class MigrateBibles(object):
             try:
                 self.session.add(book)
                 self.session.commit()
-            except:
+            except InvalidRequestError:
                 self.session.rollback()
                 print u'Error thrown = ', sys.exc_info()[1]
         self.progress(u'Create verse table')
@@ -171,14 +164,10 @@ class MigrateBibles(object):
             verse.text = verse_temp.text
             try:
                 self.session.add(verse)
-            except:
+                self.session.commit()
+            except InvalidRequestError:
                 self.session.rollback()
                 print u'Error thrown = ', sys.exc_info()[1]
-        try:
-            self.session.commit()
-        except:
-            self.session.rollback()
-            print u'Error thrown = ', sys.exc_info()[1]
         self.progress(u'Create metadata table')
         results = self.session.query(TBibleMeta).order_by(TBibleMeta.key).all()
         for biblemeta_temp in results:
@@ -188,7 +177,7 @@ class MigrateBibles(object):
             try:
                 self.session.add(biblemeta)
                 self.session.commit()
-            except:
+            except InvalidRequestError:
                 self.session.rollback()
                 print u'Error thrown = ', sys.exc_info()[1]
 
@@ -206,3 +195,4 @@ class MigrateBibles(object):
         conn.commit()
         conn.execute(u'vacuum;')
         conn.commit()
+

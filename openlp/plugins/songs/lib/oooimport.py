@@ -24,7 +24,9 @@
 ###############################################################################
 
 import os
+
 from PyQt4 import QtCore
+
 from songimport import SongImport
 
 if os.name == u'nt':
@@ -35,9 +37,11 @@ if os.name == u'nt':
 else:
     try:
         import uno
-        from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
-    except:
+        from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, \
+            PAGE_BOTH
+    except ImportError:
         pass
+
 class OooImport(object):
     """
     Import songs from Impress/Powerpoint docs using Impress 
@@ -75,7 +79,8 @@ class OooImport(object):
         """
         if os.name == u'nt':
             self.start_ooo_process()
-            self.desktop = self.manager.createInstance(u'com.sun.star.frame.Desktop')
+            self.desktop = self.manager.createInstance(
+                u'com.sun.star.frame.Desktop')
         else:
             context = uno.getComponentContext()
             resolver = context.ServiceManager.createInstanceWithContext(
@@ -101,8 +106,8 @@ class OooImport(object):
                 self.manager._FlagAsMethod(u'Bridge_GetStruct')
                 self.manager._FlagAsMethod(u'Bridge_GetValueObject')
             else:
-                cmd = u'openoffice.org -nologo -norestore -minimized -invisible ' \
-                    + u'-nofirststartwizard ' \
+                cmd = u'openoffice.org -nologo -norestore -minimized ' \
+                    + u'-invisible -nofirststartwizard ' \
                     + '-accept="socket,host=localhost,port=2002;urp;"'
                 process = QtCore.QProcess()
                 process.startDetached(cmd)

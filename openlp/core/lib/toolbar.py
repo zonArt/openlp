@@ -120,7 +120,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         try:
             if self.icons[title]:
                 return self.icons[title]
-        except:
+        except NameError:
             log.exception(u'getIconFromTitle - no icon for %s' % title)
             return QtGui.QIcon()
 

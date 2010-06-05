@@ -87,8 +87,8 @@ class BibleDB(QtCore.QObject):
                 unicode(settings.value(u'db hostname').toString()),
                 unicode(settings.value(u'db database').toString()))
         settings.endGroup()
-        self.metadata, self.session = init_models(db_url)
-        self.metadata.create_all(checkfirst=True)
+        self.session = init_models(db_url)
+        metadata.create_all(checkfirst=True)
         if u'file' in kwargs:
             self.get_name()
 
@@ -123,7 +123,7 @@ class BibleDB(QtCore.QObject):
         try:
             os.remove(self.db_file)
             return True
-        except:
+        except OSError:
             return False
 
     def register(self, wizard):
@@ -320,12 +320,14 @@ class BibleDB(QtCore.QObject):
         verses = self.session.query(Verse)
         if text.find(u',') > -1:
             or_clause = []
-            keywords = [u'%%%s%%' % keyword.strip() for keyword in text.split(u',')]
+            keywords = [u'%%%s%%' % keyword.strip()
+                for keyword in text.split(u',')]
             for keyword in keywords:
                 or_clause.append(Verse.text.like(keyword))
             verses = verses.filter(or_(*or_clause))
         else:
-            keywords = [u'%%%s%%' % keyword.strip() for keyword in text.split(u' ')]
+            keywords = [u'%%%s%%' % keyword.strip()
+                for keyword in text.split(u' ')]
             for keyword in keywords:
                 verses = verses.filter(Verse.text.like(keyword))
         verses = verses.all()
