@@ -37,11 +37,11 @@ class VerseType(object):
     @staticmethod
     def to_string(verse_type):
         if verse_type == VerseType.Verse:
-            return translate('SongTags', 'Verse')
+            return translate('VerseType', 'Verse')
         elif verse_type == VerseType.Chorus:
-            return translate('SongTags', 'Chorus')
+            return translate('VerseType', 'Chorus')
         elif verse_type == VerseType.Bridge:
-            return translate('SongTags', 'Bridge')
+            return translate('VerseType', 'Bridge')
         elif verse_type == VerseType.PreChorus:
             return u'Pre-Chorus'
         elif verse_type == VerseType.Intro:
@@ -54,11 +54,11 @@ class VerseType(object):
     @staticmethod
     def from_string(verse_type):
         verse_type = verse_type.lower()
-        if verse_type == translate('SongTags', 'verse'):
+        if verse_type == translate('VerseType', 'verse'):
             return VerseType.Verse
-        elif verse_type == translate('SongTags', 'chorus'):
+        elif verse_type == translate('VerseType', 'chorus'):
             return VerseType.Chorus
-        elif verse_type == translate('SongTags', 'bridge'):
+        elif verse_type == translate('VerseType', 'bridge'):
             return VerseType.Bridge
         elif verse_type == u'pre-chorus':
             return VerseType.PreChorus
