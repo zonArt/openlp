@@ -28,55 +28,11 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
+from openlp.plugins.songs.forms import VerseType
+
 from editversedialog import Ui_EditVerseDialog
-from openlp.plugins.songs.lib import TagNames
 
 log = logging.getLogger(__name__)
-
-class VerseType(object):
-    Verse = 0
-    Chorus = 1
-    Bridge = 2
-    PreChorus = 3
-    Intro = 4
-    Ending = 5
-    Other = 6
-
-    @staticmethod
-    def to_string(verse_type):
-        if verse_type == VerseType.Verse:
-            return TagNames.verse
-        elif verse_type == VerseType.Chorus:
-            return TagNames.chorus
-        elif verse_type == VerseType.Bridge:
-            return u'Bridge'
-        elif verse_type == VerseType.PreChorus:
-            return u'Pre-Chorus'
-        elif verse_type == VerseType.Intro:
-            return u'Intro'
-        elif verse_type == VerseType.Ending:
-            return u'Ending'
-        elif verse_type == VerseType.Other:
-            return u'Other'
-
-    @staticmethod
-    def from_string(verse_type):
-        verse_type = verse_type.lower()
-        if verse_type == TagNames.lower_verse:
-            return VerseType.Verse
-        elif verse_type == TagNames.lower_chorus:
-            return VerseType.Chorus
-        elif verse_type == u'bridge':
-            return VerseType.Bridge
-        elif verse_type == u'pre-chorus':
-            return VerseType.PreChorus
-        elif verse_type == u'intro':
-            return VerseType.Intro
-        elif verse_type == u'ending':
-            return VerseType.Ending
-        elif verse_type == u'other':
-            return VerseType.Other
-
 
 class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
     """
@@ -111,11 +67,13 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             self.VerseTextEdit.insertPlainText(u'\n')
         verse_type = self.VerseTypeComboBox.currentIndex()
         if verse_type == VerseType.Verse:
-            self.insertVerse('Verse', self.VerseNumberBox.value())
+            self.insertVerse(VerseType.to_string(VerseType.Verse),
+                self.VerseNumberBox.value())
         elif verse_type == VerseType.Chorus:
-            self.insertVerse('Chorus', self.VerseNumberBox.value())
+            self.insertVerse(VerseType.to_string(VerseType.Chorus),
+                self.VerseNumberBox.value())
         elif verse_type == VerseType.Bridge:
-            self.insertVerse('Bridge')
+            self.insertVerse(VerseType.to_string(VerseType.Bridge))
         elif verse_type == VerseType.PreChorus:
             self.insertVerse('Pre-Chorus')
         elif verse_type == VerseType.Intro:
@@ -172,6 +130,6 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
     def getVerseAll(self):
         text = self.VerseTextEdit.toPlainText()
         if not text.startsWith(u'---['):
-            text = u'---[Verse:1]---\n%s' % text
+            text = u'---[%s:1]---\n%s' % (VerseType.to_string(VerseType.Verse), text)
         return text
 

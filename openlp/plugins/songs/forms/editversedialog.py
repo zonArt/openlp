@@ -24,8 +24,9 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib import translate
-from openlp.plugins.songs.lib import TagNames
+from openlp.plugins.songs.forms import VerseType
 
 class Ui_EditVerseDialog(object):
     def setupUi(self, EditVerseDialog):
@@ -93,9 +94,9 @@ class Ui_EditVerseDialog(object):
     def retranslateUi(self, EditVerseDialog):
         EditVerseDialog.setWindowTitle(translate('EditVerseForm', 'Edit Verse'))
         self.VerseTypeLabel.setText(translate('EditVerseForm', 'Verse Type:'))
-        self.VerseTypeComboBox.setItemText(0, TagNames.verse)
-        self.VerseTypeComboBox.setItemText(1, TagNames.chorus)
-        self.VerseTypeComboBox.setItemText(2, translate('EditVerseForm', 'Bridge'))
+        self.VerseTypeComboBox.setItemText(0, VerseType.to_string(VerseType.Verse))
+        self.VerseTypeComboBox.setItemText(1, VerseType.to_string(VerseType.Chorus))
+        self.VerseTypeComboBox.setItemText(2, VerseType.to_string(VerseType.Bridge))
         self.VerseTypeComboBox.setItemText(3, translate('EditVerseForm', 'Pre-Chorus'))
         self.VerseTypeComboBox.setItemText(4, translate('EditVerseForm', 'Intro'))
         self.VerseTypeComboBox.setItemText(5, translate('EditVerseForm', 'Ending'))

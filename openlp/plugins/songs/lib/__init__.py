@@ -23,22 +23,10 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from openlp.core.lib import translate
-
-class TagNames(object):
-    verse = translate('TagNames','Verse')
-    chorus = translate('TagNames','Chorus')
-    lower_verse = translate('TagNames','verse')
-    lower_chorus = translate('TagNames','chorus')
-
-
 from manager import SongManager
 from songstab import SongsTab
 from mediaitem import SongMediaItem
 from sofimport import SofImport
 from oooimport import OooImport
 from songimport import SongImport
-from openlp.core.lib import translate
-
-
 

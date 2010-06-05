@@ -23,6 +23,52 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+from openlp.core.lib import translate
+
+class VerseType(object):
+    Verse = 0
+    Chorus = 1
+    Bridge = 2
+    PreChorus = 3
+    Intro = 4
+    Ending = 5
+    Other = 6
+
+    @staticmethod
+    def to_string(verse_type):
+        if verse_type == VerseType.Verse:
+            return translate('SongTags', 'Verse')
+        elif verse_type == VerseType.Chorus:
+            return translate('SongTags', 'Chorus')
+        elif verse_type == VerseType.Bridge:
+            return translate('SongTags', 'Bridge')
+        elif verse_type == VerseType.PreChorus:
+            return u'Pre-Chorus'
+        elif verse_type == VerseType.Intro:
+            return u'Intro'
+        elif verse_type == VerseType.Ending:
+            return u'Ending'
+        elif verse_type == VerseType.Other:
+            return u'Other'
+
+    @staticmethod
+    def from_string(verse_type):
+        verse_type = verse_type.lower()
+        if verse_type == translate('SongTags', 'verse'):
+            return VerseType.Verse
+        elif verse_type == translate('SongTags', 'chorus'):
+            return VerseType.Chorus
+        elif verse_type == translate('SongTags', 'bridge'):
+            return VerseType.Bridge
+        elif verse_type == u'pre-chorus':
+            return VerseType.PreChorus
+        elif verse_type == u'intro':
+            return VerseType.Intro
+        elif verse_type == u'ending':
+            return VerseType.Ending
+        elif verse_type == u'other':
+            return VerseType.Other
+
 from authorsform import AuthorsForm
 from topicsform import TopicsForm
 from songbookform import SongBookForm
