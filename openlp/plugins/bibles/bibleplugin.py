@@ -88,9 +88,10 @@ class BiblePlugin(Plugin):
             self.media_item.onImportClick()
 
     def about(self):
-        about_text = translate('BiblePlugin','<strong>Bible Plugin</strong><br />This '
-            'plugin allows bible verses from different sources to be '
-            'displayed on the screen during the service.')
+        about_text = translate(u'BiblesPlugin.BiblePlugin',
+            u'<strong>Bible Plugin</strong><br />This '
+            u'plugin allows bible verses from different sources to be '
+            u'displayed on the screen during the service.')
         return about_text
 
     def can_delete_theme(self, theme):
