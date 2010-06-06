@@ -56,11 +56,12 @@ class ImagePlugin(Plugin):
         return ImageMediaItem(self, self.icon, self.name)
 
     def about(self):
-        about_text = translate('ImagePlugin','<b>Image Plugin</b><br>Allows images of '
-            'all types to be displayed.  If a number of images are selected '
-            'together and presented on the live controller it is possible '
-            'to turn them into a timed loop.<br<br>From the plugin if the '
-            '<i>Override background</i> is chosen and an image is selected '
-            'any songs which are rendered will use the selected image from '
-            'the background instead of the one provied by the theme.<br>')
+        about_text = translate(u'ImagePlugin.ImagePlugin', u'<b>Image Plugin'
+            u'</b><br>Allows images of all types to be displayed. If a number '
+            u'of images are selected together and presented on the live '
+            u'controller it is possible to turn them into a timed loop.<br<br>'
+            u'From the plugin if the <i>Override background</i> is chosen and '
+            u'an image is selected any songs which are rendered will use the '
+            u'selected image from the background instead of the one provied by '
+            u'the theme.<br>')
         return about_text

@@ -36,7 +36,7 @@ class ImageTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'ImageTab')
-        self.tabTitleVisible = translate('ImageTab','Images')
+        self.tabTitleVisible = translate(u'ImagePlugin.ImageTab', u'Images')
         self.ImageLayout = QtGui.QFormLayout(self)
         self.ImageLayout.setObjectName(u'ImageLayout')
         self.ImageSettingsGroupBox = QtGui.QGroupBox(self)
@@ -63,9 +63,12 @@ class ImageTab(SettingsTab):
             QtCore.SIGNAL(u'valueChanged(int)'), self.onTimeoutSpinBoxChanged)
 
     def retranslateUi(self):
-        self.ImageSettingsGroupBox.setTitle(translate('ImageTab','Image Settings'))
-        self.TimeoutLabel.setText(translate('ImageTab','Slide Loop Delay:'))
-        self.TimeoutSpinBox.setSuffix(translate('ImageTab','sec'))
+        self.ImageSettingsGroupBox.setTitle(
+            translate(u'ImagePlugin.ImageTab', u'Image Settings'))
+        self.TimeoutLabel.setText(
+            translate(u'ImagePlugin.ImageTab', u'Slide Loop Delay:'))
+        self.TimeoutSpinBox.setSuffix(
+            translate(u'ImagePlugin.ImageTab', u'sec'))
 
     def onTimeoutSpinBoxChanged(self):
         self.loop_delay = self.TimeoutSpinBox.value()
