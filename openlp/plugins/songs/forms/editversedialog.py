@@ -97,10 +97,9 @@ class Ui_EditVerseDialog(object):
         self.VerseTypeComboBox.setItemText(0, VerseType.to_string(VerseType.Verse))
         self.VerseTypeComboBox.setItemText(1, VerseType.to_string(VerseType.Chorus))
         self.VerseTypeComboBox.setItemText(2, VerseType.to_string(VerseType.Bridge))
-        self.VerseTypeComboBox.setItemText(3, translate('EditVerseForm', 'Pre-Chorus'))
-        self.VerseTypeComboBox.setItemText(4, translate('EditVerseForm', 'Intro'))
-        self.VerseTypeComboBox.setItemText(5, translate('EditVerseForm', 'Ending'))
-        self.VerseTypeComboBox.setItemText(6, translate('EditVerseForm', 'Other'))
+        self.VerseTypeComboBox.setItemText(3, VerseType.to_string(VerseType.PreChorus))
+        self.VerseTypeComboBox.setItemText(4, VerseType.to_string(VerseType.Intro))
+        self.VerseTypeComboBox.setItemText(5, VerseType.to_string(VerseType.Ending))
+        self.VerseTypeComboBox.setItemText(6, VerseType.to_string(VerseType.Other))
         self.InsertButton.setText(translate('EditVerseForm', 'Insert'))
-
 

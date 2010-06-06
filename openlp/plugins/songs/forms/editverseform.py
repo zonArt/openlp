@@ -75,13 +75,13 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         elif verse_type == VerseType.Bridge:
             self.insertVerse(VerseType.to_string(VerseType.Bridge))
         elif verse_type == VerseType.PreChorus:
-            self.insertVerse('Pre-Chorus')
+            self.insertVerse(VerseType.to_string(VerseType.PreChorus))
         elif verse_type == VerseType.Intro:
-            self.insertVerse('Intro')
+            self.insertVerse(VerseType.to_string(VerseType.Intro))
         elif verse_type == VerseType.Ending:
-            self.insertVerse('Ending')
+            self.insertVerse(VerseType.to_string(VerseType.Ending))
         elif verse_type == VerseType.Other:
-            self.insertVerse('Other')
+            self.insertVerse(VerseType.to_string(VerseType.Other))
 
     def onCursorPositionChanged(self):
         position = self.VerseTextEdit.textCursor().position()
@@ -106,7 +106,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             self.VerseTypeComboBox.setCurrentIndex(VerseType.from_string(verse_type))
             self.VerseNumberBox.setValue(verse_number)
 
-    def setVerse(self, text, single=False, tag=u'Verse:1'):
+    def setVerse(self, text, single=False, tag=u'%s:1' % VerseType.to_string(VerseType.Verse)):
         if single:
             verse_type, verse_number = tag.split(u':')
             self.VerseTypeComboBox.setCurrentIndex(VerseType.from_string(verse_type))
@@ -114,7 +114,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             self.InsertButton.setVisible(False)
         else:
             if not text:
-                text = u'---[Verse:1]---\n'
+                text = u'---[%s:1]---\n' % VerseType.to_string(VerseType.Verse)
             self.VerseTypeComboBox.setCurrentIndex(0)
             self.VerseNumberBox.setValue(1)
             self.InsertButton.setVisible(True)

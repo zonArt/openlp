@@ -43,13 +43,13 @@ class VerseType(object):
         elif verse_type == VerseType.Bridge:
             return translate('VerseType', 'Bridge')
         elif verse_type == VerseType.PreChorus:
-            return u'Pre-Chorus'
+            return translate('VerseType', 'Pre-Chorus')
         elif verse_type == VerseType.Intro:
-            return u'Intro'
+            return translate('VerseType', 'Intro')
         elif verse_type == VerseType.Ending:
-            return u'Ending'
+            return translate('VerseType', 'Ending')
         elif verse_type == VerseType.Other:
-            return u'Other'
+            return translate('VerseType', 'Other')
 
     @staticmethod
     def from_string(verse_type):
@@ -60,13 +60,13 @@ class VerseType(object):
             return VerseType.Chorus
         elif verse_type == translate('VerseType', 'bridge'):
             return VerseType.Bridge
-        elif verse_type == u'pre-chorus':
+        elif verse_type == translate('VerseType', 'pre-chorus'):
             return VerseType.PreChorus
-        elif verse_type == u'intro':
+        elif verse_type == translate('VerseType', 'intro'):
             return VerseType.Intro
-        elif verse_type == u'ending':
+        elif verse_type == translate('VerseType', 'ending'):
             return VerseType.Ending
-        elif verse_type == u'other':
+        elif verse_type == translate('VerseType', 'other'):
             return VerseType.Other
 
 from authorsform import AuthorsForm
