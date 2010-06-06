@@ -33,11 +33,12 @@ class VerseType(object):
     Intro = 4
     Ending = 5
     Other = 6
+    verse_string = u'verse'
 
     @staticmethod
     def to_string(verse_type):
         if verse_type == VerseType.Verse:
-            return translate('VerseType', 'Verse')
+            return translate('VerseType', VerseType.verse_string.title())
         elif verse_type == VerseType.Chorus:
             return translate('VerseType', 'Chorus')
         elif verse_type == VerseType.Bridge:
@@ -54,7 +55,7 @@ class VerseType(object):
     @staticmethod
     def from_string(verse_type):
         verse_type = verse_type.lower()
-        if verse_type == translate('VerseType', 'verse'):
+        if verse_type == translate('VerseType', VerseType.verse_string):
             return VerseType.Verse
         elif verse_type == translate('VerseType', 'chorus'):
             return VerseType.Chorus
