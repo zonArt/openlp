@@ -37,7 +37,7 @@ class ThemesTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'ThemesTab')
-        self.tabTitleVisible = translate('ThemesTab','Themes')
+        self.tabTitleVisible = translate(u'ThemesTab', u'Themes')
         self.ThemesTabLayout = QtGui.QHBoxLayout(self)
         self.ThemesTabLayout.setSpacing(8)
         self.ThemesTabLayout.setMargin(8)
@@ -106,21 +106,26 @@ class ThemesTab(SettingsTab):
             QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
 
     def retranslateUi(self):
-        self.GlobalGroupBox.setTitle(translate('ThemesTab','Global theme'))
-        self.LevelGroupBox.setTitle(translate('ThemesTab','Theme level'))
-        self.SongLevelRadioButton.setText(translate('ThemesTab','Song level'))
-        self.SongLevelLabel.setText(translate('ThemesTab','Use the theme from each song '
-            'in the database. If a song doesn\'t have a theme associated with '
-            'it, then use the service\'s theme. If the service doesn\'t have '
-            'a theme, then use the global theme.'))
-        self.ServiceLevelRadioButton.setText(translate('ThemesTab','Service level'))
-        self.ServiceLevelLabel.setText(translate('ThemesTab','Use the theme from the '
-            'service, overriding any of the individual songs\' themes. If the '
-            'service doesn\'t have a theme, then use the global theme.'))
-        self.GlobalLevelRadioButton.setText(translate('ThemesTab','Global level'))
-        self.GlobalLevelLabel.setText(translate('ThemesTab','Use the global theme, '
-            'overriding any themes associated with either the service or the '
-            'songs.'))
+        self.GlobalGroupBox.setTitle(translate(u'ThemesTab', u'Global theme'))
+        self.LevelGroupBox.setTitle(translate(u'ThemesTab', u'Theme level'))
+        self.SongLevelRadioButton.setText(
+            translate(u'ThemesTab', u'Song level'))
+        self.SongLevelLabel.setText(
+            translate(u'ThemesTab', u'Use the theme from each song '
+            u'in the database. If a song doesn\'t have a theme associated with '
+            u'it, then use the service\'s theme. If the service doesn\'t have '
+            u'a theme, then use the global theme.'))
+        self.ServiceLevelRadioButton.setText(
+            translate(u'ThemesTab', u'Service level'))
+        self.ServiceLevelLabel.setText(
+            translate(u'ThemesTab', u'Use the theme from the service, '
+            u'overriding any of the individual songs\' themes. If the '
+            u'service doesn\'t have a theme, then use the global theme.'))
+        self.GlobalLevelRadioButton.setText(
+            translate(u'ThemesTab', u'Global level'))
+        self.GlobalLevelLabel.setText(
+            translate(u'ThemesTab', u'Use the global theme, overriding any '
+            u'themes associated with either the service or the songs.'))
 
     def load(self):
         settings = QtCore.QSettings()

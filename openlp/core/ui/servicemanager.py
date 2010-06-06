@@ -114,21 +114,27 @@ class ServiceManager(QtGui.QWidget):
         # Create the top toolbar
         self.Toolbar = OpenLPToolbar(self)
         self.Toolbar.addToolbarButton(
-            translate('ServiceManager','New Service'), u':/general/general_new.png',
-            translate('ServiceManager','Create a new service'), self.onNewService)
+            translate(u'ServiceManager', u'New Service'),
+                u':/general/general_new.png',
+            translate(u'ServiceManager', u'Create a new service'),
+                self.onNewService)
         self.Toolbar.addToolbarButton(
-            translate('ServiceManager','Open Service'), u':/general/general_open.png',
-            translate('ServiceManager','Load an existing service'), self.onLoadService)
+            translate(u'ServiceManager', u'Open Service'),
+                u':/general/general_open.png',
+            translate(u'ServiceManager', u'Load an existing service'),
+                self.onLoadService)
         self.Toolbar.addToolbarButton(
-            translate('ServiceManager','Save Service'), u':/general/general_save.png',
-            translate('ServiceManager','Save this service'), self.onSaveService)
+            translate(u'ServiceManager', u'Save Service'),
+                u':/general/general_save.png',
+            translate(u'ServiceManager', u'Save this service'),
+                self.onSaveService)
         self.Toolbar.addSeparator()
-        self.ThemeLabel = QtGui.QLabel(translate('ServiceManager','Theme:'),
+        self.ThemeLabel = QtGui.QLabel(translate(u'ServiceManager', u'Theme:'),
             self)
         self.ThemeLabel.setMargin(3)
         self.Toolbar.addWidget(self.ThemeLabel)
         self.ThemeComboBox = QtGui.QComboBox(self.Toolbar)
-        self.ThemeComboBox.setToolTip(translate('ServiceManager',
+        self.ThemeComboBox.setToolTip(translate(u'ServiceManager',
             u'Select a theme for the service'))
         self.ThemeComboBox.setSizeAdjustPolicy(
             QtGui.QComboBox.AdjustToContents)
@@ -159,21 +165,29 @@ class ServiceManager(QtGui.QWidget):
         # Add the bottom toolbar
         self.OrderToolbar = OpenLPToolbar(self)
         self.OrderToolbar.addToolbarButton(
-            translate('ServiceManager','Move to &top'), u':/services/service_top.png',
-            translate('ServiceManager','Move to top'), self.onServiceTop)
+            translate(u'ServiceManager', u'Move to &top'),
+                u':/services/service_top.png',
+            translate(u'ServiceManager', u'Move to top'), self.onServiceTop)
         self.OrderToolbar.addToolbarButton(
-            translate('ServiceManager','Move &up'), u':/services/service_up.png',
-            translate('ServiceManager','Move up order'), self.onServiceUp)
+            translate(u'ServiceManager', u'Move &up'),
+                u':/services/service_up.png',
+            translate(u'ServiceManager', u'Move up order'), self.onServiceUp)
         self.OrderToolbar.addToolbarButton(
-            translate('ServiceManager','Move &down'), u':/services/service_down.png',
-            translate('ServiceManager','Move down order'), self.onServiceDown)
+            translate(u'ServiceManager', u'Move &down'),
+                u':/services/service_down.png',
+            translate(u'ServiceManager', u'Move down order'),
+                self.onServiceDown)
         self.OrderToolbar.addToolbarButton(
-            translate('ServiceManager','Move to &bottom'), u':/services/service_bottom.png',
-            translate('ServiceManager','Move to end'), self.onServiceEnd)
+            translate(u'ServiceManager', u'Move to &bottom'),
+                u':/services/service_bottom.png',
+            translate(u'ServiceManager', u'Move to end'),
+                self.onServiceEnd)
         self.OrderToolbar.addSeparator()
         self.OrderToolbar.addToolbarButton(
-            translate('ServiceManager','&Delete From Service'), u':/general/general_delete.png',
-            translate('ServiceManager','Delete From Service'), self.onDeleteFromService)
+            translate(u'ServiceManager', u'&Delete From Service'),
+                u':/general/general_delete.png',
+            translate(u'ServiceManager', u'Delete From Service'),
+                self.onDeleteFromService)
         self.Layout.addWidget(self.OrderToolbar)
         # Connect up our signals and slots
         QtCore.QObject.connect(self.ThemeComboBox,
@@ -203,30 +217,38 @@ class ServiceManager(QtGui.QWidget):
         self.servicePath = AppLocation.get_section_data_path(u'servicemanager')
         #build the drag and drop context menu
         self.dndMenu = QtGui.QMenu()
-        self.newAction = self.dndMenu.addAction(translate('ServiceManager','&Add New Item'))
+        self.newAction = self.dndMenu.addAction(
+            translate(u'ServiceManager', u'&Add New Item'))
         self.newAction.setIcon(build_icon(u':/general/general_edit.png'))
-        self.addToAction = self.dndMenu.addAction(translate('ServiceManager','&Add to Selected Item'))
+        self.addToAction = self.dndMenu.addAction(
+            translate(u'ServiceManager', u'&Add to Selected Item'))
         self.addToAction.setIcon(build_icon(u':/general/general_edit.png'))
         #build the context menu
         self.menu = QtGui.QMenu()
-        self.editAction = self.menu.addAction(translate('ServiceManager','&Edit Item'))
+        self.editAction = self.menu.addAction(
+            translate(u'ServiceManager', u'&Edit Item'))
         self.editAction.setIcon(build_icon(u':/general/general_edit.png'))
-        self.maintainAction = self.menu.addAction(translate('ServiceManager','&Maintain Item'))
+        self.maintainAction = self.menu.addAction(
+            translate(u'ServiceManager', u'&Maintain Item'))
         self.maintainAction.setIcon(build_icon(u':/general/general_edit.png'))
-        self.notesAction = self.menu.addAction(translate('ServiceManager','&Notes'))
+        self.notesAction = self.menu.addAction(
+            translate(u'ServiceManager', u'&Notes'))
         self.notesAction.setIcon(build_icon(u':/services/service_notes.png'))
         self.deleteAction = self.menu.addAction(
-            translate('ServiceManager','&Delete From Service'))
+            translate(u'ServiceManager', u'&Delete From Service'))
         self.deleteAction.setIcon(build_icon(u':/general/general_delete.png'))
         self.sep1 = self.menu.addAction(u'')
         self.sep1.setSeparator(True)
-        self.previewAction = self.menu.addAction(translate('ServiceManager','&Preview Verse'))
+        self.previewAction = self.menu.addAction(
+            translate(u'ServiceManager', u'&Preview Verse'))
         self.previewAction.setIcon(build_icon(u':/general/general_preview.png'))
-        self.liveAction = self.menu.addAction(translate('ServiceManager','&Live Verse'))
+        self.liveAction = self.menu.addAction(
+            translate(u'ServiceManager', u'&Live Verse'))
         self.liveAction.setIcon(build_icon(u':/general/general_live.png'))
         self.sep2 = self.menu.addAction(u'')
         self.sep2.setSeparator(True)
-        self.themeMenu = QtGui.QMenu(translate('ServiceManager',u'&Change Item Theme'))
+        self.themeMenu = QtGui.QMenu(
+            translate(u'ServiceManager', u'&Change Item Theme'))
         self.menu.addMenu(self.themeMenu)
 
     def supportedSuffixes(self, suffix):
@@ -458,9 +480,10 @@ class ServiceManager(QtGui.QWidget):
             self.parent.generalSettingsSection + u'/save prompt',
             QtCore.QVariant(False)).toBool():
             ret = QtGui.QMessageBox.question(self,
-                translate('ServiceManager','Save Changes to Service?'),
-                translate('ServiceManager','Your service is unsaved, do you want to save '
-                            'those changes before creating a new one?'),
+                translate(u'ServiceManager', u'Save Changes to Service?'),
+                translate(u'ServiceManager', 
+                    u'Your service is unsaved, do you want to save '
+                    u'those changes before creating a new one?'),
                 QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Cancel |
                     QtGui.QMessageBox.Save),
@@ -542,9 +565,9 @@ class ServiceManager(QtGui.QWidget):
         log.debug(u'onSaveService')
         if not quick or self.isNew:
             filename = QtGui.QFileDialog.getSaveFileName(self,
-            translate('ServiceManager',u'Save Service'),
+            translate(u'ServiceManager', u'Save Service'),
             SettingsManager.get_last_dir(self.parent.serviceSettingsSection),
-            translate('ServiceManager',u'OpenLP Service Files (*.osz)'))
+            translate(u'ServiceManager', u'OpenLP Service Files (*.osz)'))
         else:
             filename = SettingsManager.get_last_dir(
                 self.parent.serviceSettingsSection)
@@ -601,7 +624,7 @@ class ServiceManager(QtGui.QWidget):
                 self.parent.serviceSettingsSection)
         else:
             filename = QtGui.QFileDialog.getOpenFileName(
-                self, translate('ServiceManager','Open Service'),
+                self, translate(u'ServiceManager', u'Open Service'),
                 SettingsManager.get_last_dir(
                 self.parent.serviceSettingsSection), u'Services (*.osz)')
         self.loadService(filename)
@@ -614,9 +637,10 @@ class ServiceManager(QtGui.QWidget):
         """
         if self.parent.serviceNotSaved:
             ret = QtGui.QMessageBox.question(self,
-                translate('ServiceManager','Save Changes to Service?'),
-                translate('ServiceManager','Your current service is unsaved, do you want to '
-                            'save the changes before opening a new one?'),
+                translate(u'ServiceManager', u'Save Changes to Service?'),
+                translate(u'ServiceManager',
+                    u'Your current service is unsaved, do you want to '
+                    u'save the changes before opening a new one?'),
                 QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Discard |
                     QtGui.QMessageBox.Save),
@@ -778,9 +802,9 @@ class ServiceManager(QtGui.QWidget):
                 self.serviceItems[item][u'service_item'], count)
         else:
             QtGui.QMessageBox.critical(self,
-                translate('ServiceManager','Missing Display Handler'),
-                translate('ServiceManager','Your item cannot be displayed as '
-                            'there is no handler to display it'),
+                translate(u'ServiceManager', u'Missing Display Handler'),
+                translate(u'ServiceManager', u'Your item cannot be displayed '
+                    u'as there is no handler to display it'),
                 QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
@@ -814,9 +838,9 @@ class ServiceManager(QtGui.QWidget):
                         self.serviceItems[item][u'service_item'], 0)
         else:
             QtGui.QMessageBox.critical(self,
-                translate('ServiceManager','Missing Display Handler'),
-                translate('ServiceManager','Your item cannot be displayed as '
-                            'there is no handler to display it'),
+                translate(u'ServiceManager', u'Missing Display Handler'),
+                translate(u'ServiceManager', u'Your item cannot be displayed '
+                    u'as there is no handler to display it'),
                 QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)

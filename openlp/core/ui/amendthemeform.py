@@ -210,8 +210,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
     def onImageToolButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(
-            self, translate('AmendThemeForm',u'Open file'))
-        if filename:
+            self, translate(u'AmendThemeForm', u'Open file'))
+        if filename:0
             self.ImageLineEdit.setText(filename)
             self.theme.background_filename = filename
             self.previewTheme()
@@ -629,7 +629,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             if theme.background_type == u'solid':
                 self.Color1PushButton.setStyleSheet(
                     u'background-color: %s' % unicode(theme.background_color))
-                self.Color1Label.setText(translate('AmendThemeForm','Background Color:'))
+                self.Color1Label.setText(translate(u'AmendThemeForm', u'Background Color:'))
                 self.Color1Label.setVisible(True)
                 self.Color1PushButton.setVisible(True)
                 self.Color2Label.setVisible(False)
@@ -644,8 +644,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                     % unicode(theme.background_startColor))
                 self.Color2PushButton.setStyleSheet(u'background-color: %s' \
                     % unicode(theme.background_endColor))
-                self.Color1Label.setText(translate('AmendThemeForm','First  Color:'))
-                self.Color2Label.setText(translate('AmendThemeForm','Second Color:'))
+                self.Color1Label.setText(translate(u'AmendThemeForm', u'First Color:'))
+                self.Color2Label.setText(translate(u'AmendThemeForm', u'Second Color:'))
                 self.Color1Label.setVisible(True)
                 self.Color1PushButton.setVisible(True)
                 self.Color2Label.setVisible(True)
@@ -713,7 +713,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             log.debug(u'Page Length area height %s, metrics %s, lines %s' %
                 (self.FontMainHeightSpinBox.value(), metrics.height(),
                 page_length))
-            page_length_text = unicode(translate('AmendThemeForm','Slide Height is %s rows'))
+            page_length_text = unicode(translate(u'AmendThemeForm', u'Slide Height is %s rows'))
             self.FontMainLinesPageLabel.setText(page_length_text % page_length)
             frame = self.thememanager.generateImage(self.theme)
             self.ThemePreview.setPixmap(QtGui.QPixmap.fromImage(frame))

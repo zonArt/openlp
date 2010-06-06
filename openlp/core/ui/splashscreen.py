@@ -24,7 +24,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import build_icon, translate
+from openlp.core.lib import build_icon
 
 class SplashScreen(object):
     def __init__(self, version):
