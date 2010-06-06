@@ -372,7 +372,7 @@ class ThemeManager(QtGui.QWidget):
         except IOError:
             QtGui.QMessageBox.critical(
                 self, translate(u'ThemeManager', u'Error'),
-                translate(u'ThemeManager', u'File is not a valid theme.'),
+                translate(u'ThemeManager', u'File is not a valid theme.'))
             log.exception(u'Importing theme from zip file failed %s' % filename)
         finally:
             if zip:
