@@ -106,7 +106,8 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             self.VerseTypeComboBox.setCurrentIndex(VerseType.from_string(verse_type))
             self.VerseNumberBox.setValue(verse_number)
 
-    def setVerse(self, text, single=False, tag=u'%s:1' % VerseType.to_string(VerseType.Verse)):
+    def setVerse(self, text, single=False,
+        tag=u'%s:1' % VerseType.to_string(VerseType.Verse)):
         if single:
             verse_type, verse_number = tag.split(u':')
             self.VerseTypeComboBox.setCurrentIndex(VerseType.from_string(verse_type))
