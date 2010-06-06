@@ -93,7 +93,8 @@ class AlertsManager(QtCore.QObject):
         self.alertList.append(text)
         if self.timer_id != 0:
             Receiver.send_message(u'maindisplay_status_text',
-                translate('AlertsManager',u'Alert message created and delayed'))
+                translate(u'AlertsPlugin.AlertsManager',
+                u'Alert message created and delayed'))
             return
         Receiver.send_message(u'maindisplay_status_text', u'')
         self.generateAlert()
