@@ -36,7 +36,7 @@ class RemoteTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'RemoteTab')
-        self.tabTitleVisible = translate('RemoteTab','Remotes')
+        self.tabTitleVisible = translate(u'RemotePlugin.RemoteTab', u'Remotes')
         self.RemoteLayout = QtGui.QFormLayout(self)
         self.RemoteLayout.setObjectName(u'RemoteLayout')
         self.RemoteModeGroupBox = QtGui.QGroupBox(self)
@@ -53,7 +53,8 @@ class RemoteTab(SettingsTab):
             0, QtGui.QFormLayout.LabelRole, self.RemoteModeGroupBox)
 
     def retranslateUi(self):
-        self.RemoteModeGroupBox.setTitle(translate('RemoteTab','Remotes Receiver Port'))
+        self.RemoteModeGroupBox.setTitle(
+            translate(u'RemotePlugin.RemoteTab', u'Remotes Receiver Port'))
 
     def load(self):
         self.RemotePortSpinBox.setValue(
