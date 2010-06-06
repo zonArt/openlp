@@ -89,9 +89,9 @@ class LanguageManager(object):
             u'general/language', QtCore.QVariant(language))
         log.info(u'Language file: \'%s\' written to conf file' % language)
         QtGui.QMessageBox.information(None,  
-                    translate('LanguageManager', 'Language'), 
-                    translate('LanguageManager', 
-                        'After restart new Language settings will be used.'))
+                    translate(u'LanguageManager', u'Language'), 
+                    translate(u'LanguageManager', 
+                        u'After restart new Language settings will be used.'))
 
     @staticmethod
     def init_qm_list():

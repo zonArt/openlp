@@ -67,8 +67,9 @@ class Ui_ServiceItemEditDialog(object):
         QtCore.QMetaObject.connectSlotsByName(ServiceItemEditDialog)
 
     def retranslateUi(self, ServiceItemEditDialog):
-        ServiceItemEditDialog.setWindowTitle(translate('ServiceItemEditForm', 'Service Item Maintenance'))
-        self.upButton.setText(translate('ServiceItemEditForm', 'Up'))
-        self.deleteButton.setText(translate('ServiceItemEditForm', 'Delete'))
-        self.downButton.setText(translate('ServiceItemEditForm', 'Down'))
+        ServiceItemEditDialog.setWindowTitle(
+            translate(u'ServiceItemEditForm', u'Service Item Maintenance'))
+        self.upButton.setText(translate(u'ServiceItemEditForm', u'Up'))
+        self.deleteButton.setText(translate(u'ServiceItemEditForm', u'Delete'))
+        self.downButton.setText(translate(u'ServiceItemEditForm', u'Down'))
 

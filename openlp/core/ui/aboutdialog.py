@@ -114,8 +114,8 @@ class Ui_AboutDialog(object):
         QtCore.QMetaObject.connectSlotsByName(AboutDialog)
 
     def retranslateUi(self, AboutDialog):
-        AboutDialog.setWindowTitle(translate('AboutForm', 'About OpenLP'))
-        self.AboutTextEdit.setPlainText(translate('AboutForm', 
+        AboutDialog.setWindowTitle(translate(u'AboutForm', u'About OpenLP'))
+        self.AboutTextEdit.setPlainText(translate(u'AboutForm', u
             'OpenLP <version><revision> - Open Source Lyrics '
             'Projection\n'
             '\n'
@@ -132,9 +132,10 @@ class Ui_AboutDialog(object):
             'consider contributing by using the button below.'
         ))
         self.AboutNotebook.setTabText(
-            self.AboutNotebook.indexOf(self.AboutTab), translate('AboutForm', 'About'))
-        self.CreditsTextEdit.setPlainText(translate('AboutForm', 
-            'Project Lead\n'
+            self.AboutNotebook.indexOf(self.AboutTab), 
+            translate(u'AboutForm', u'About'))
+        self.CreditsTextEdit.setPlainText(translate(u'AboutForm', 
+            u'Project Lead\n'
             '    Raoul "superfly" Snyman\n'
             '\n'
             'Developers\n'
@@ -165,8 +166,8 @@ class Ui_AboutDialog(object):
         ))
         self.AboutNotebook.setTabText(
             self.AboutNotebook.indexOf(self.CreditsTab),
-            translate('AboutForm', 'Credits'))
-        self.LicenseTextEdit.setPlainText(translate('AboutForm', 
+            translate(u'AboutForm', u'Credits'))
+        self.LicenseTextEdit.setPlainText(translate(u'AboutForm', 
             'Copyright \xa9 2004-2010 Raoul Snyman\n'
             'Portions copyright \xa9 2004-2010 '
             'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri, '
@@ -557,6 +558,6 @@ class Ui_AboutDialog(object):
             'instead of this License.'))
         self.AboutNotebook.setTabText(
             self.AboutNotebook.indexOf(self.LicenseTab),
-            translate('AboutForm', 'License'))
-        self.ContributeButton.setText(translate('AboutForm', 'Contribute'))
-        self.CloseButton.setText(translate('AboutForm', 'Close'))
+            translate(u'AboutForm', u'License'))
+        self.ContributeButton.setText(translate(u'AboutForm', u'Contribute'))
+        self.CloseButton.setText(translate(u'AboutForm', u'Close'))
