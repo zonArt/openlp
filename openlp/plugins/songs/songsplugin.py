@@ -150,7 +150,8 @@ class SongsPlugin(Plugin):
 
     def onImportSofItemClick(self):
         filenames = QtGui.QFileDialog.getOpenFileNames(
-            None, translate('Songsplugin','Open Songs of Fellowship file'),
+            None, translate(u'SongsPlugin.Songsplugin',
+                u'Open Songs of Fellowship file'),
             u'', u'Songs of Fellowship file (*.rtf *.RTF)')
         try:
             for filename in filenames:
@@ -170,15 +171,17 @@ class SongsPlugin(Plugin):
 
     def onImportOooItemClick(self):
         filenames = QtGui.QFileDialog.getOpenFileNames(
-            None, translate('Songsplugin','Open documents or presentations'),
+            None, translate(u'SongsPlugin.Songsplugin',
+            u'Open documents or presentations'),
             u'', u'All Files(*.*)')
         oooimport = OooImport(self.manager)        
         oooimport.import_docs(filenames)
         Receiver.send_message(u'songs_load_list')
 
     def about(self):
-        about_text = translate('Songsplugin','<strong>Song Plugin</strong><br />'
-            'This plugin allows songs to be managed and displayed.')
+        about_text = translate(u'SongsPlugin.Songsplugin',
+            u'<strong>Song Plugin</strong><br />'
+            u'This plugin allows songs to be managed and displayed.')
         return about_text
 
     def can_delete_theme(self, theme):

@@ -286,21 +286,39 @@ class Ui_OpenSongExportDialog(object):
         QtCore.QMetaObject.connectSlotsByName(OpenSongExportDialog)
 
     def retranslateUi(self, OpenSongExportDialog):
-        OpenSongExportDialog.setWindowTitle(translate('OpenSongExportForm', 'OpenSong Song Exporter'))
-        self.ExportFileLabel.setText(translate('OpenSongExportForm', 'Select OpenSong song folder:'))
-        self.ExportListLabel.setText(translate('OpenSongExportForm', 'Full Song List'))
-        self.ExportListTable.horizontalHeaderItem(0).setText(translate('OpenSongExportForm', 'Song Title'))
-        self.ExportListTable.horizontalHeaderItem(1).setText(translate('OpenSongExportForm', 'Author'))
-        self.ExportSelectAllPushButton.setText(translate('OpenSongExportForm', 'Select All'))
-        self.ExportFilterComboBox.setItemText(0, translate('OpenSongExportForm', 'Lyrics'))
-        self.ExportFilterComboBox.setItemText(1, translate('OpenSongExportForm', 'Title'))
-        self.ExportFilterComboBox.setItemText(2, translate('OpenSongExportForm', 'Author'))
-        self.SelectedListLabel.setText(translate('OpenSongExportForm', 'Song Export List'))
-        self.SelectedListTable.horizontalHeaderItem(0).setText(translate('OpenSongExportForm', 'Song Title'))
-        self.SelectedListTable.horizontalHeaderItem(1).setText(translate('OpenSongExportForm', 'Author'))
-        self.SelectedSelectAllPushButton.setText(translate('OpenSongExportForm', 'Select All'))
-        self.SelectedRemoveSelectedButton.setText(translate('OpenSongExportForm', 'Remove Selected'))
-        self.ProgressGroupBox.setTitle(translate('OpenSongExportForm', 'Progress:'))
-        self.ProgressLabel.setText(translate('OpenSongExportForm', 'Ready to export'))
-        self.ExportPushButton.setText(translate('OpenSongExportForm', 'Export'))
-        self.ClosePushButton.setText(translate('OpenSongExportForm', 'Close'))
+        OpenSongExportDialog.setWindowTitle(
+            translate(u'SongsPlugin.OpenSongExportForm', u'OpenSong Song Exporter'))
+        self.ExportFileLabel.setText(
+            translate(u'SongsPlugin.OpenSongExportForm', u'Select OpenSong song folder:'))
+        self.ExportListLabel.setText(
+            translate(u'SongsPlugin.OpenSongExportForm', u'Full Song List'))
+        self.ExportListTable.horizontalHeaderItem(0).setText(
+            translate(u'SongsPlugin.OpenSongExportForm', u'Song Title'))
+        self.ExportListTable.horizontalHeaderItem(1).setText(
+            translate(u'SongsPlugin.OpenSongExportForm', u'Author'))
+        self.ExportSelectAllPushButton.setText(
+            translate(u'SongsPlugin.OpenSongExportForm', u'Select All'))
+        self.ExportFilterComboBox.setItemText(0, 
+            translate(u'SongsPlugin.OpenSongExportForm', u'Lyrics'))
+        self.ExportFilterComboBox.setItemText(1, 
+            translate(u'SongsPlugin.OpenSongExportForm', u'Title'))
+        self.ExportFilterComboBox.setItemText(2, 
+            translate(u'SongsPlugin.OpenSongExportForm', u'Author'))
+        self.SelectedListLabel.setText(
+            translate(u'SongsPlugin.OpenSongExportForm', u'Song Export List'))
+        self.SelectedListTable.horizontalHeaderItem(0).setText(
+            translate(u'SongsPlugin.OpenSongExportForm', u'Song Title'))
+        self.SelectedListTable.horizontalHeaderItem(1).setText(
+            translate(u'SongsPlugin.OpenSongExportForm', u'Author'))
+        self.SelectedSelectAllPushButton.setText(
+            translate(u'SongsPlugin.OpenSongExportForm', u'Select All'))
+        self.SelectedRemoveSelectedButton.setText(
+            translate(u'SongsPlugin.OpenSongExportForm', u'Remove Selected'))
+        self.ProgressGroupBox.setTitle(
+            translate(u'SongsPlugin.OpenSongExportForm', u'Progress:'))
+        self.ProgressLabel.setText(
+            translate(u'SongsPlugin.OpenSongExportForm', u'Ready to export'))
+        self.ExportPushButton.setText(
+            translate(u'SongsPlugin.OpenSongExportForm', u'Export'))
+        self.ClosePushButton.setText(
+            translate(u'SongsPlugin.OpenSongExportForm', u'Close'))

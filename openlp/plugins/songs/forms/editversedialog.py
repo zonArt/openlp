@@ -90,15 +90,25 @@ class Ui_EditVerseDialog(object):
         QtCore.QMetaObject.connectSlotsByName(EditVerseDialog)
 
     def retranslateUi(self, EditVerseDialog):
-        EditVerseDialog.setWindowTitle(translate('EditVerseForm', 'Edit Verse'))
-        self.VerseTypeLabel.setText(translate('EditVerseForm', 'Verse Type:'))
-        self.VerseTypeComboBox.setItemText(0, translate('EditVerseForm', 'Verse'))
-        self.VerseTypeComboBox.setItemText(1, translate('EditVerseForm', 'Chorus'))
-        self.VerseTypeComboBox.setItemText(2, translate('EditVerseForm', 'Bridge'))
-        self.VerseTypeComboBox.setItemText(3, translate('EditVerseForm', 'Pre-Chorus'))
-        self.VerseTypeComboBox.setItemText(4, translate('EditVerseForm', 'Intro'))
-        self.VerseTypeComboBox.setItemText(5, translate('EditVerseForm', 'Ending'))
-        self.VerseTypeComboBox.setItemText(6, translate('EditVerseForm', 'Other'))
-        self.InsertButton.setText(translate('EditVerseForm', 'Insert'))
+        EditVerseDialog.setWindowTitle(
+            translate(u'SongsPlugin.EditVerseForm', u'Edit Verse'))
+        self.VerseTypeLabel.setText(
+            translate(u'SongsPlugin.EditVerseForm', u'Verse Type:'))
+        self.VerseTypeComboBox.setItemText(0, 
+            translate(u'SongsPlugin.EditVerseForm', u'Verse'))
+        self.VerseTypeComboBox.setItemText(1, 
+            translate(u'SongsPlugin.EditVerseForm', u'Chorus'))
+        self.VerseTypeComboBox.setItemText(2, 
+            translate(u'SongsPlugin.EditVerseForm', u'Bridge'))
+        self.VerseTypeComboBox.setItemText(3, 
+            translate(u'SongsPlugin.EditVerseForm', u'Pre-Chorus'))
+        self.VerseTypeComboBox.setItemText(4, 
+            translate(u'SongsPlugin.EditVerseForm', u'Intro'))
+        self.VerseTypeComboBox.setItemText(5, 
+            translate(u'SongsPlugin.EditVerseForm', u'Ending'))
+        self.VerseTypeComboBox.setItemText(6, 
+            translate(u'SongsPlugin.EditVerseForm', u'Other'))
+        self.InsertButton.setText(
+            translate(u'SongsPlugin.EditVerseForm', u'Insert'))
 
 

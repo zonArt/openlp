@@ -156,7 +156,8 @@ class SongUsagePlugin(Plugin):
         self.SongUsagedetailform.exec_()
 
     def about(self):
-        about_text = translate('SongUsagePlugin','<b>SongUsage Plugin</b><br>This plugin '
-            'records the use of songs and when they have been used during '
-            'a live service')
+        about_text = translate(u'SongsPlugin.SongUsagePlugin',
+            u'<b>SongUsage Plugin</b><br>This plugin '
+            u'records the use of songs and when they have been used during '
+            u'a live service')
         return about_text

@@ -226,32 +226,55 @@ class Ui_SongImportWizard(object):
         QtCore.QMetaObject.connectSlotsByName(SongImportWizard)
 
     def retranslateUi(self, SongImportWizard):
-        SongImportWizard.setWindowTitle(translate('SongImportWizard','Song Import Wizard'))
+        SongImportWizard.setWindowTitle(
+            translate(u'SongsPlugin.SongImportWizard', u'Song Import Wizard'))
         self.TitleLabel.setText(
             '<span style="font-size:14pt; font-weight:600;">%s</span>' % \
-            translate('SongImportWizard','Welcome to the Song Import Wizard'))
-        self.InformationLabel.setText(translate('SongImportWizard','This wizard will help you '
-            'to import songs from a variety of formats. Click the next button '
-            'below to start the process by selecting a format to import from.'))
-        self.SourcePage.setTitle(translate('SongImportWizard','Select Import Source'))
-        self.SourcePage.setSubTitle(translate('SongImportWizard','Select the import format, '
-            'and where to import from.'))
-        self.FormatLabel.setText(translate('SongImportWizard','Format:'))
-        self.FormatComboBox.setItemText(0, translate('SongImportWizard','OpenLyrics'))
-        self.FormatComboBox.setItemText(1, translate('SongImportWizard','OpenSong'))
-        self.FormatComboBox.setItemText(2, translate('SongImportWizard','CCLI'))
-        self.FormatComboBox.setItemText(3, translate('SongImportWizard','CSV'))
-        self.OpenLyricsAddButton.setText(translate('SongImportWizard','Add Files...'))
-        self.OpenLyricsRemoveButton.setText(translate('SongImportWizard','Remove File(s)'))
-        self.OpenSongAddButton.setText(translate('SongImportWizard','Add Files...'))
-        self.OpenSongRemoveButton.setText(translate('SongImportWizard','Remove File(s)'))
-        self.CCLIAddButton.setText(translate('SongImportWizard','Add Files...'))
-        self.CCLIRemoveButton.setText(translate('SongImportWizard','Remove File(s)'))
-        self.CSVFilenameLabel.setText(translate('SongImportWizard','Filename:'))
-        self.CSVBrowseButton.setText(translate('SongImportWizard','Browse...'))
-        self.ImportPage.setTitle(translate('SongImportWizard','Importing'))
-        self.ImportPage.setSubTitle(translate('SongImportWizard','Please wait while your songs '
-            'are imported.'))
-        self.ImportProgressLabel.setText(translate('SongImportWizard','Ready.'))
-        self.ImportProgressBar.setFormat(translate('SongImportWizard','%p%'))
+            translate(u'SongsPlugin.SongImportWizard',
+                u'Welcome to the Song Import Wizard'))
+        self.InformationLabel.setText(
+            translate(u'SongsPlugin.SongImportWizard',
+                u'This wizard will help you to import songs from a variety of '
+                u'formats. Click the next button below to start the process by '
+                u'selecting a format to import from.'))
+        self.SourcePage.setTitle(
+            translate(u'SongsPlugin.SongImportWizard', u'Select Import Source'))
+        self.SourcePage.setSubTitle(
+            translate(u'SongsPlugin.SongImportWizard',
+            u'Select the import format, and where to import from.'))
+        self.FormatLabel.setText(
+            translate(u'SongsPlugin.SongImportWizard', u'Format:'))
+        self.FormatComboBox.setItemText(0, 
+            translate(u'SongsPlugin.SongImportWizard', u'OpenLyrics'))
+        self.FormatComboBox.setItemText(1, 
+            translate(u'SongsPlugin.SongImportWizard', u'OpenSong'))
+        self.FormatComboBox.setItemText(2, 
+            translate(u'SongsPlugin.SongImportWizard', u'CCLI'))
+        self.FormatComboBox.setItemText(3, 
+            translate(u'SongsPlugin.SongImportWizard', u'CSV'))
+        self.OpenLyricsAddButton.setText(
+            translate(u'SongsPlugin.SongImportWizard', u'Add Files...'))
+        self.OpenLyricsRemoveButton.setText(
+            translate(u'SongsPlugin.SongImportWizard', u'Remove File(s)'))
+        self.OpenSongAddButton.setText(
+            translate(u'SongsPlugin.SongImportWizard', u'Add Files...'))
+        self.OpenSongRemoveButton.setText(
+            translate(u'SongsPlugin.SongImportWizard', u'Remove File(s)'))
+        self.CCLIAddButton.setText(
+            translate(u'SongsPlugin.SongImportWizard', u'Add Files...'))
+        self.CCLIRemoveButton.setText(
+            translate(u'SongsPlugin.SongImportWizard', u'Remove File(s)'))
+        self.CSVFilenameLabel.setText(
+            translate(u'SongsPlugin.SongImportWizard', u'Filename:'))
+        self.CSVBrowseButton.setText(
+            translate(u'SongsPlugin.SongImportWizard', u'Browse...'))
+        self.ImportPage.setTitle(
+            translate(u'SongsPlugin.SongImportWizard', u'Importing'))
+        self.ImportPage.setSubTitle(
+            translate(u'SongsPlugin.SongImportWizard',
+                u'Please wait while your songs are imported.'))
+        self.ImportProgressLabel.setText(
+            translate(u'SongsPlugin.SongImportWizard', u'Ready.'))
+        self.ImportProgressBar.setFormat(
+            translate(u'SongsPlugin.SongImportWizard', u'%p%'))
 

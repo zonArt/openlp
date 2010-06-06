@@ -423,36 +423,60 @@ class Ui_EditSongDialog(object):
         EditSongDialog.setTabOrder(self.CommentsEdit, self.ButtonBox)
 
     def retranslateUi(self, EditSongDialog):
-        EditSongDialog.setWindowTitle(translate('EditSongForm', 'Song Editor'))
-        self.TitleLabel.setText(translate('EditSongForm', 'Title:'))
-        self.AlternativeTitleLabel.setText(translate('EditSongForm', 'Alternative Title:'))
-        self.LyricsLabel.setText(translate('EditSongForm', 'Lyrics:'))
-        self.VerseOrderLabel.setText(translate('EditSongForm', 'Verse Order:'))
-        self.VerseAddButton.setText(translate('EditSongForm', 'Add'))
-        self.VerseEditButton.setText(translate('EditSongForm', 'Edit'))
-        self.VerseEditAllButton.setText(translate('EditSongForm', 'Edit All'))
-        self.VerseDeleteButton.setText(translate('EditSongForm', 'Delete'))
+        EditSongDialog.setWindowTitle(
+            translate(u'SongsPlugin.EditSongForm', u'Song Editor'))
+        self.TitleLabel.setText(
+            translate(u'SongsPlugin.EditSongForm', u'Title:'))
+        self.AlternativeTitleLabel.setText(
+            translate(u'SongsPlugin.EditSongForm', u'Alternative Title:'))
+        self.LyricsLabel.setText(
+            translate(u'SongsPlugin.EditSongForm', u'Lyrics:'))
+        self.VerseOrderLabel.setText(
+            translate(u'SongsPlugin.EditSongForm', u'Verse Order:'))
+        self.VerseAddButton.setText(
+            translate(u'SongsPlugin.EditSongForm', u'Add'))
+        self.VerseEditButton.setText(
+            translate(u'SongsPlugin.EditSongForm', u'Edit'))
+        self.VerseEditAllButton.setText(
+            translate(u'SongsPlugin.EditSongForm', u'Edit All'))
+        self.VerseDeleteButton.setText(
+            translate(u'SongsPlugin.EditSongForm', u'Delete'))
         self.SongTabWidget.setTabText(
             self.SongTabWidget.indexOf(self.LyricsTab),
-            translate('EditSongForm', 'Title && Lyrics'))
-        self.AuthorsGroupBox.setTitle(translate('EditSongForm', 'Authors'))
-        self.AuthorAddButton.setText(translate('EditSongForm', '&Add to Song'))
-        self.AuthorRemoveButton.setText(translate('EditSongForm', '&Remove'))
+            translate(u'SongsPlugin.EditSongForm', u'Title && Lyrics'))
+        self.AuthorsGroupBox.setTitle(
+            translate(u'SongsPlugin.EditSongForm', u'Authors'))
+        self.AuthorAddButton.setText(
+            translate(u'SongsPlugin.EditSongForm', u'&Add to Song'))
+        self.AuthorRemoveButton.setText(
+            translate(u'SongsPlugin.EditSongForm', u'&Remove'))
         self.MaintenanceButton.setText(
-            translate('EditSongForm', '&Manage Authors, Topics, Books'))
-        self.TopicGroupBox.setTitle(translate('EditSongForm', 'Topic'))
-        self.TopicAddButton.setText(translate('EditSongForm', 'A&dd to Song'))
-        self.TopicRemoveButton.setText(translate('EditSongForm', 'R&emove'))
-        self.SongBookGroup.setTitle(translate('EditSongForm', 'Song Book'))
+            translate(u'SongsPlugin.EditSongForm',
+            u'&Manage Authors, Topics, Books'))
+        self.TopicGroupBox.setTitle(
+            translate(u'SongsPlugin.EditSongForm', u'Topic'))
+        self.TopicAddButton.setText(
+            translate(u'SongsPlugin.EditSongForm', u'A&dd to Song'))
+        self.TopicRemoveButton.setText(
+            translate(u'SongsPlugin.EditSongForm', u'R&emove'))
+        self.SongBookGroup.setTitle(
+            translate(u'SongsPlugin.EditSongForm', u'Song Book'))
         self.SongTabWidget.setTabText(
             self.SongTabWidget.indexOf(self.AuthorsTab),
-            translate('EditSongForm', 'Authors, Topics && Book'))
-        self.ThemeGroupBox.setTitle(translate('EditSongForm', 'Theme'))
-        self.ThemeAddButton.setText(translate('EditSongForm', 'Add a Theme'))
-        self.CopyrightGroupBox.setTitle(translate('EditSongForm', 'Copyright Information'))
-        self.CopyrightInsertButton.setText(translate('EditSongForm', u'\xa9'))
-        self.CCLILabel.setText(translate('EditSongForm', 'CCLI Number:'))
-        self.CommentsGroupBox.setTitle(translate('EditSongForm', 'Comments'))
+            translate(u'SongsPlugin.EditSongForm', u'Authors, Topics && Book'))
+        self.ThemeGroupBox.setTitle(
+            translate(u'SongsPlugin.EditSongForm', u'Theme'))
+        self.ThemeAddButton.setText(
+            translate(u'SongsPlugin.EditSongForm', u'Add a Theme'))
+        self.CopyrightGroupBox.setTitle(
+            translate(u'SongsPlugin.EditSongForm', u'Copyright Information'))
+        self.CopyrightInsertButton.setText(
+            translate('EditSongForm', u'\xa9'))
+        self.CCLILabel.setText(
+            translate(u'SongsPlugin.EditSongForm', u'CCLI Number:'))
+        self.CommentsGroupBox.setTitle(
+            translate(u'SongsPlugin.EditSongForm', u'Comments'))
         self.SongTabWidget.setTabText(
             self.SongTabWidget.indexOf(self.ThemeTab),
-            translate('EditSongForm', 'Theme, Copyright Info && Comments'))
+            translate(u'SongsPlugin.EditSongForm',
+            u'Theme, Copyright Info && Comments'))

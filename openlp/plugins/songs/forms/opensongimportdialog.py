@@ -101,9 +101,15 @@ class Ui_OpenSongImportDialog(object):
         QtCore.QMetaObject.connectSlotsByName(OpenSongImportDialog)
 
     def retranslateUi(self, OpenSongImportDialog):
-        OpenSongImportDialog.setWindowTitle(translate('OpenSongImportForm', 'OpenSong Song Importer'))
-        self.ImportFileLabel.setText(translate('OpenSongImportForm', 'OpenSong Folder:'))
-        self.ProgressGroupBox.setTitle(translate('OpenSongImportForm', 'Progress:'))
-        self.ProgressLabel.setText(translate('OpenSongImportForm', 'Ready to import'))
-        self.ImportPushButton.setText(translate('OpenSongImportForm', 'Import'))
-        self.ClosePushButton.setText(translate('OpenSongImportForm', 'Close'))
+        OpenSongImportDialog.setWindowTitle(
+            translate(u'SongsPlugin.OpenSongImportForm', u'OpenSong Song Importer'))
+        self.ImportFileLabel.setText(
+            translate(u'SongsPlugin.OpenSongImportForm', u'OpenSong Folder:'))
+        self.ProgressGroupBox.setTitle(
+            translate(u'SongsPlugin.OpenSongImportForm', u'Progress:'))
+        self.ProgressLabel.setText(
+            translate(u'SongsPlugin.OpenSongImportForm', u'Ready to import'))
+        self.ImportPushButton.setText(
+            translate(u'SongsPlugin.OpenSongImportForm', u'Import'))
+        self.ClosePushButton.setText(
+            translate(u'SongsPlugin.OpenSongImportForm', u'Close'))

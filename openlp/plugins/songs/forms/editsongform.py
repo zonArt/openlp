@@ -101,7 +101,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.VerseOrderEdit,
             QtCore.SIGNAL(u'lostFocus()'), self.onVerseOrderEditLostFocus)
         self.previewButton = QtGui.QPushButton()
-        self.previewButton.setText(translate('EditSongForm','Save && Preview'))
+        self.previewButton.setText(
+            translate(u'SongsPlugin.EditSongForm', u'Save && Preview'))
         self.ButtonBox.addButton(
             self.previewButton, QtGui.QDialogButtonBox.ActionRole)
         QtCore.QObject.connect(self.ButtonBox,
@@ -460,27 +461,32 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if len(self.TitleEditItem.displayText()) == 0:
             self.SongTabWidget.setCurrentIndex(0)
             self.TitleEditItem.setFocus()
-            return False, translate('EditSongForm','You need to enter a song title.')
+            return False, translate(u'SongsPlugin.EditSongForm',
+                u'You need to enter a song title.')
         if self.VerseListWidget.rowCount() == 0:
             self.SongTabWidget.setCurrentIndex(0)
             self.VerseListWidget.setFocus()
-            return False, translate('EditSongForm','You need to enter some verses.')
+            return False, translate(u'SongsPlugin.EditSongForm',
+                u'You need to enter some verses.')
         if self.AuthorsListView.count() == 0:
             self.SongTabWidget.setCurrentIndex(1)
             self.AuthorsListView.setFocus()
         #split the verse list by space and mark lower case for testing
-        taglist = unicode(translate('EditSongForm',' bitped'))
+        taglist = unicode(translate(u'SongsPlugin.EditSongForm', u' bitped'))
         for verse in unicode(self.VerseOrderEdit.text()).lower().split(u' '):
             if len(verse) > 1:
-                if (verse[0:1] == u'%s' % translate('EditSongForm','v') or
-                    verse[0:1] == u'%s' % translate('EditSongForm','c')) \
+                if (verse[0:1] == u'%s' % translate(u'SongsPlugin.EditSongForm',
+                        u'v') or
+                    verse[0:1] == u'%s' % translate(u'SongsPlugin.EditSongForm',
+                        u'c')) \
                     and verse[1:].isdigit():
                     pass
                 else:
                     self.SongTabWidget.setCurrentIndex(0)
                     self.VerseOrderEdit.setFocus()
                     return False, \
-                        translate('EditSongForm','Invalid verse entry - Vx or Cx')
+                        translate(u'SongsPlugin.EditSongForm',
+                            u'Invalid verse entry - Vx or Cx')
             else:
                 if taglist.find(verse) > -1:
                     pass
@@ -488,8 +494,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     self.SongTabWidget.setCurrentIndex(0)
                     self.VerseOrderEdit.setFocus()
                     return False, \
-                        translate('EditSongForm',\
-                        'Invalid verse entry, values must be I,B,T,P,E,O,Vx,Cx')
+                        translate(u'SongsPlugin.EditSongForm',\
+                        u'Invalid verse entry, values must be '
+                        u'I,B,T,P,E,O,Vx,Cx')
         return True, u''
 
     def onTitleEditItemLostFocus(self):
@@ -524,7 +531,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         The Song is valid so as the plugin to add it to preview to see.
         """
         log.debug(u'onPreview')
-        if button.text() == unicode(translate('EditSongForm','Save && Preview')) \
+        if button.text() == unicode(
+            translate(u'SongsPlugin.EditSongForm', u'Save && Preview')) \
             and self.saveSong():
             Receiver.send_message(u'songs_preview')
 
@@ -542,7 +550,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         valid, message = self._validate_song()
         if not valid:
             QtGui.QMessageBox.critical(
-                self, translate('EditSongForm','Error'), message,
+                self, translate(u'SongsPlugin.EditSongForm', u'Error'), message,
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             return False
         self.song.title = unicode(self.TitleEditItem.displayText())

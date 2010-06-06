@@ -49,8 +49,9 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
     def accept(self):
         if not self.NameEdit.text():
             QtGui.QMessageBox.critical(
-                self, translate('TopicsForm','Error'),
-                translate('TopicsForm','You need to type in a topic name!'),
+                self, translate(u'SongsPlugin.TopicsForm', u'Error'),
+                translate(u'SongsPlugin.TopicsForm',
+                u'You need to type in a topic name!'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             self.NameEdit.setFocus()
             return False

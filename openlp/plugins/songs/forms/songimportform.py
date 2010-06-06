@@ -104,36 +104,43 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
             if source_format == SongFormat.OpenLyrics:
                 if self.OpenLyricsFileListWidget.count() == 0:
                     QtGui.QMessageBox.critical(self,
-                        translate('SongImportForm','No OpenLyrics Files Selected'),
-                        translate('SongImportForm','You need to add at least one OpenLyrics '
-                            'song file to import from.'),
+                        translate(u'SongsPlugin.SongImportForm',
+                            u'No OpenLyrics Files Selected'),
+                        translate(u'SongsPlugin.SongImportForm',
+                            u'You need to add at least one OpenLyrics '
+                            u'song file to import from.'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                     self.OpenLyricsAddButton.setFocus()
                     return False
             elif source_format == SongFormat.OpenSong:
                 if self.OpenSongFileListWidget.count() == 0:
                     QtGui.QMessageBox.critical(self,
-                        translate('SongImportForm','No OpenSong Files Selected'),
-                        translate('SongImportForm','You need to add at least one OpenSong '
-                            'song file to import from.'),
+                        translate(u'SongsPlugin.SongImportForm',
+                            u'No OpenSong Files Selected'),
+                        translate(u'SongsPlugin.SongImportForm', 
+                            u'You need to add at least one OpenSong '
+                            u'song file to import from.'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                     self.OpenSongAddButton.setFocus()
                     return False
             elif source_format == SongFormat.CCLI:
                 if self.CCLIFileListWidget.count() == 0:
                     QtGui.QMessageBox.critical(self,
-                        translate('SongImportForm','No CCLI Files Selected'),
-                        translate('SongImportForm','You need to add at least one CCLI file '
-                            'to import from.'),
+                        translate(u'SongsPlugin.SongImportForm', 
+                            u'No CCLI Files Selected'),
+                        translate(u'SongsPlugin.SongImportForm', 
+                            u'You need to add at least one CCLI file '
+                            u'to import from.'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                     self.CCLIAddButton.setFocus()
                     return False
             elif source_format == SongFormat.CSV:
                 if self.CSVFilenameEdit.text().isEmpty():
                     QtGui.QMessageBox.critical(self,
-                        translate('SongImportForm','No CSV File Selected'),
-                        translate('SongImportForm','You need to specify a CSV file to import '
-                            'from.'),
+                        translate(u'SongsPlugin.SongImportForm', 
+                            u'No CSV File Selected'),
+                        translate(u'SongsPlugin.SongImportForm', 
+                            u'You need to specify a CSV file to import from.'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                     self.CSVFilenameEdit.setFocus()
                     return False
@@ -184,7 +191,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.ImportProgressBar.setMinimum(0)
         self.ImportProgressBar.setMaximum(1188)
         self.ImportProgressBar.setValue(0)
-        self.ImportProgressLabel.setText(translate('SongImportForm','Starting import...'))
+        self.ImportProgressLabel.setText(
+            translate(u'SongsPlugin.SongImportForm', u'Starting import...'))
         Receiver.send_message(u'process_events')
 
     def performImport(self):
@@ -235,10 +243,10 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
 #            self.manager.save_meta_data(license_version, license_version,
 #                license_copyright, license_permission)
 #            self.manager.reload_bibles()
-#            self.ImportProgressLabel.setText(translate('SongImportForm','Finished import.'))
+#            self.ImportProgressLabel.setText(translate(u'SongsPlugin.SongImportForm', u'Finished import.'))
 #        else:
 #            self.ImportProgressLabel.setText(
-#                translate('SongImportForm','Your Bible import failed.'))
+#                translate(u'SongsPlugin.SongImportForm', u'Your Bible import failed.'))
 #            importer.delete()
 
     def postImport(self):
