@@ -469,7 +469,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.SongTabWidget.setCurrentIndex(1)
             self.AuthorsListView.setFocus()
         #split the verse list by space and mark lower case for testing
-        taglist = unicode(self.trUtf8(' bitpedvc'))
+        taglist = unicode(self.trUtf8(' bitpeovc'))
         for verse in unicode(self.VerseOrderEdit.text()).lower().split(u' '):
             if len(verse) > 1:
                 if taglist.find(verse[0:1]) > -1 \
