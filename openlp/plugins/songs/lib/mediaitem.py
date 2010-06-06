@@ -151,7 +151,7 @@ class SongMediaItem(MediaManagerItem):
         self.configUpdated()
 
     def onSearchTextButtonClick(self):
-        search_keywords = unicode(self.SearchTextEdit.text())
+        search_keywords = unicode(self.SearchTextEdit.displayText())
         search_results = []
         search_type = self.SearchTypeComboBox.currentIndex()
         if search_type == 0:
@@ -198,8 +198,8 @@ class SongMediaItem(MediaManagerItem):
         self.ListView.clear()
         for author in searchresults:
             for song in author.songs:
-                song_detail = unicode(self.trUtf8('%s (%s)')) % \
-                    (unicode(author.display_name), unicode(song.title))
+                song_detail = unicode(self.trUtf8('%s (%s)') % \
+                    (author.display_name, song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
                 self.ListView.addItem(song_name)
@@ -220,7 +220,7 @@ class SongMediaItem(MediaManagerItem):
             search_length = 1
             if self.SearchTypeComboBox.currentIndex() == 1:
                 search_length = 7
-            if text.size() > search_length:
+            if len(text) > search_length:
                 self.onSearchTextButtonClick()
 
     def onImportClick(self):
@@ -268,7 +268,7 @@ class SongMediaItem(MediaManagerItem):
     def onEditClick(self):
         item = self.ListView.currentItem()
         if item:
-            item_id = item.data(QtCore.Qt.UserRole).toInt()[0]
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_song_form.loadSong(item_id, False)
             self.edit_song_form.exec_()
 
@@ -288,7 +288,7 @@ class SongMediaItem(MediaManagerItem):
             if ans == QtGui.QMessageBox.Cancel:
                 return
             for item in items:
-                item_id = item.data(QtCore.Qt.UserRole).toInt()[0]
+                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
                 self.parent.manager.delete_song(item_id)
             self.onSearchTextButtonClick()
 
@@ -302,11 +302,11 @@ class SongMediaItem(MediaManagerItem):
                 item = self.ListView.currentItem()
                 if item is None:
                     return False
-                item_id = item.data(QtCore.Qt.UserRole).toInt()[0]
+                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             else:
                 item_id = self.remoteSong
         else:
-            item_id = item.data(QtCore.Qt.UserRole).toInt()[0]
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
@@ -330,10 +330,10 @@ class SongMediaItem(MediaManagerItem):
                         break
                     for verse in verseList:
                         if verse[1]:
-                            if verse[0][u'type'] == u'Verse' or \
-                                verse[0][u'type'] == u'Chorus':
-                                if verse[0][u'type'][0] == order[0] and \
-                                    verse[0][u'label'] == order[1:]:
+                            if verse[0][u'type'] == "Verse" \
+                                or verse[0][u'type'] == "Chorus":
+                                if verse[0][u'label'] == order[1:] and \
+                                    verse[0][u'type'][0] == order[0]:
                                     verseTag = u'%s:%s' % \
                                         (verse[0][u'type'], verse[0][u'label'])
                                     service_item.add_from_text\
