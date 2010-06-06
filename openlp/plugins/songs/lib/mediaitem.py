@@ -198,8 +198,8 @@ class SongMediaItem(MediaManagerItem):
         self.ListView.clear()
         for author in searchresults:
             for song in author.songs:
-                song_detail = unicode(self.trUtf8('%s (%s)') %
-                    (author.display_name, song.title))
+                song_detail = unicode(self.trUtf8('%s (%s)')) % \
+                    (author.display_name, song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
                 self.ListView.addItem(song_name)
