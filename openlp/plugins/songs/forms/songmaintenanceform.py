@@ -129,12 +129,9 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self.authorform.setAutoDisplayName(True)
         if self.authorform.exec_():
             author = Author.populate(
-                first_name=unicode(
-                    self.authorform.FirstNameEdit.text(), u'utf-8'),
-                last_name=unicode(
-                    self.authorform.LastNameEdit.text(), u'utf-8'),
-                display_name=unicode(
-                    self.authorform.DisplayEdit.text(), u'utf-8'))
+                first_name=unicode(self.authorform.FirstNameEdit.text()),
+                last_name=unicode(self.authorform.LastNameEdit.text()),
+                display_name=unicode(self.authorform.DisplayEdit.text()))
             if self.songmanager.save_author(author):
                 self.resetAuthors()
             else:
@@ -144,8 +141,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
 
     def onTopicAddButtonClick(self):
         if self.topicform.exec_():
-            topic = Topic.populate(
-                name=unicode(self.topicform.NameEdit.text(), u'utf-8'))
+            topic = Topic.populate(name=unicode(self.topicform.NameEdit.text()))
             if self.songmanager.save_topic(topic):
                 self.resetTopics()
             else:
@@ -156,8 +152,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
     def onBookAddButtonClick(self):
         if self.bookform.exec_():
             book = Book.populate(
-                name=unicode(self.bookform.NameEdit.text(), u'utf-8'),
-                publisher=unicode(self.bookform.PublisherEdit.text(), u'utf-8'))
+                name=unicode(self.bookform.NameEdit.text()),
+                publisher=unicode(self.bookform.PublisherEdit.text()))
             if self.songmanager.save_book(book):
                 self.resetBooks()
             else:
@@ -174,12 +170,11 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             self.authorform.LastNameEdit.setText(author.last_name)
             self.authorform.DisplayEdit.setText(author.display_name)
             if self.authorform.exec_(False):
-                author.first_name = unicode(
-                    self.authorform.FirstNameEdit.text(), u'utf-8')
-                author.last_name = unicode(
-                    self.authorform.LastNameEdit.text(), u'utf-8')
-                author.display_name = unicode(
-                    self.authorform.DisplayEdit.text(), u'utf-8')
+                author.first_name = unicode( 
+                    self.authorform.FirstNameEdit.text())
+                author.last_name = unicode(self.authorform.LastNameEdit.text())
+                author.display_name = unicode( 
+                    self.authorform.DisplayEdit.text())
                 if self.songmanager.save_author(author):
                     self.resetAuthors()
                 else:
@@ -193,7 +188,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             topic = self.songmanager.get_topic(topic_id)
             self.topicform.NameEdit.setText(topic.name)
             if self.topicform.exec_(False):
-                topic.name = unicode(self.topicform.NameEdit.text(), u'utf-8')
+                topic.name = unicode(self.topicform.NameEdit.text())
                 if self.songmanager.save_topic(topic):
                     self.resetTopics()
                 else:
@@ -208,9 +203,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             self.bookform.NameEdit.setText(book.name)
             self.bookform.PublisherEdit.setText(book.publisher)
             if self.bookform.exec_(False):
-                book.name = unicode(self.bookform.NameEdit.text(), u'utf-8')
-                book.publisher = unicode(
-                    self.bookform.PublisherEdit.text(), u'utf-8')
+                book.name = unicode(self.bookform.NameEdit.text())
+                book.publisher = unicode(self.bookform.PublisherEdit.text())
                 if self.songmanager.save_book(book):
                     self.resetBooks()
                 else:
