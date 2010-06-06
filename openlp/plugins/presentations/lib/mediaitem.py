@@ -61,11 +61,14 @@ class PresentationMediaItem(MediaManagerItem):
         self.message_listener = MessageListener(self)
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = translate('MediaItem','Presentation')
+        self.PluginNameVisible = translate(u'PresentationPlugin.MediaItem',
+            u'Presentation')
 
     def retranslateUi(self):
-        self.OnNewPrompt = translate('MediaItem','Select Presentation(s)')
-        self.Automatic = translate('MediaItem','Automatic')
+        self.OnNewPrompt = translate(u'PresentationPlugin.MediaItem',
+            u'Select Presentation(s)')
+        self.Automatic = translate(u'PresentationPlugin.MediaItem',
+            u'Automatic')
         fileType = u''
         for controller in self.controllers:
             if self.controllers[controller].enabled:
@@ -75,7 +78,8 @@ class PresentationMediaItem(MediaManagerItem):
                     if fileType.find(type) == -1:
                         fileType += u'*%s ' % type
                         self.parent.service_manager.supportedSuffixes(type)
-        self.OnNewFileMasks = translate('MediaItem','Presentations (%s)' % fileType)
+        self.OnNewFileMasks = translate(u'PresentationPlugin.MediaItem',
+            u'Presentations (%s)' % fileType)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -101,7 +105,8 @@ class PresentationMediaItem(MediaManagerItem):
         self.DisplayTypeLabel = QtGui.QLabel(self.PresentationWidget)
         self.DisplayTypeLabel.setObjectName(u'SearchTypeLabel')
         self.DisplayLayout.addWidget(self.DisplayTypeLabel, 0, 0, 1, 1)
-        self.DisplayTypeLabel.setText(translate('MediaItem','Present using:'))
+        self.DisplayTypeLabel.setText(
+            translate(u'PresentationPlugin.MediaItem', u'Present using:'))
         # Add the Presentation widget to the page layout
         self.PageLayout.addWidget(self.PresentationWidget)
 
@@ -134,8 +139,10 @@ class PresentationMediaItem(MediaManagerItem):
             (path, filename) = os.path.split(unicode(file))
             if titles.count(filename) > 0:
                 QtGui.QMessageBox.critical(
-                    self, translate('MediaItem','File exists'), translate('MediaItem',
-                        'A presentation with that filename already exists.'),
+                    self, translate(u'PresentationPlugin.MediaItem',
+                    u'File exists'), 
+                        translate(u'PresentationPlugin.MediaItem',
+                        u'A presentation with that filename already exists.'),
                     QtGui.QMessageBox.Ok)
             else:
                 icon = None
