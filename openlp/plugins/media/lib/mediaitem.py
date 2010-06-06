@@ -58,13 +58,14 @@ class MediaMediaItem(MediaManagerItem):
         self.ServiceItemIconName = u':/media/media_video.png'
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = translate('MediaItem','Media')
+        self.PluginNameVisible = translate(u'MediaPlugin.MediaItem', u'Media')
 
     def retranslateUi(self):
-        self.OnNewPrompt = translate('MediaItem','Select Media')
-        self.OnNewFileMasks = translate('MediaItem','Videos (%s);;'
-            'Audio (%s);;'
-            'All files (*)' % (self.parent.video_list, self.parent.audio_list))
+        self.OnNewPrompt = translate(u'MediaPlugin.MediaItem', u'Select Media')
+        self.OnNewFileMasks = translate(u'MediaPlugin.MediaItem',
+            u'Videos (%s);;'
+            u'Audio (%s);;'
+            u'All files (*)' % (self.parent.video_list, self.parent.audio_list))
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -78,7 +79,7 @@ class MediaMediaItem(MediaManagerItem):
         self.ListView.addAction(
             contextMenuAction(
                 self.ListView, u':/slides/slide_blank.png',
-                translate('MediaItem','Replace Live Background'),
+                translate(u'MediaPlugin.MediaItem', u'Replace Live Background'),
                 self.onReplaceClick))
 
     def addEndHeaderBar(self):
@@ -93,7 +94,8 @@ class MediaMediaItem(MediaManagerItem):
         self.ImageWidget.setObjectName(u'ImageWidget')
         self.blankButton = self.Toolbar.addToolbarButton(
             u'Replace Background', u':/slides/slide_blank.png',
-            translate('MediaItem','Replace Live Background'), self.onReplaceClick, False)
+            translate(u'MediaPlugin.MediaItem', u'Replace Live Background'),
+                self.onReplaceClick, False)
         # Add the song widget to the page layout
         self.PageLayout.addWidget(self.ImageWidget)
 
@@ -105,8 +107,10 @@ class MediaMediaItem(MediaManagerItem):
             self.background = True
             if not self.ListView.selectedIndexes():
                 QtGui.QMessageBox.information(self,
-                    translate('MediaItem','No item selected'),
-                    translate('MediaItem','You must select one item'))
+                    translate(u'MediaPlugin.MediaItem',
+                        u'No item selected'),
+                    translate(u'MediaPlugin.MediaItem',
+                        u'You must select one item'))
             items = self.ListView.selectedIndexes()
             for item in items:
                 bitem = self.ListView.item(item.row())
@@ -119,7 +123,8 @@ class MediaMediaItem(MediaManagerItem):
             if item is None:
                 return False
         filename = unicode((item.data(QtCore.Qt.UserRole)).toString())
-        service_item.title = unicode(translate('MediaItem','Media'))
+        service_item.title = unicode(
+            translate(u'MediaPlugin.MediaItem', u'Media'))
         service_item.add_capability(ItemCapabilities.RequiresMedia)
         frame = u':/media/image_clapperboard.png'
         (path, name) = os.path.split(filename)
