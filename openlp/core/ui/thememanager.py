@@ -30,13 +30,12 @@ import logging
 
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
 
 from openlp.core.ui import AmendThemeForm
 from openlp.core.theme import Theme
 from openlp.core.lib import OpenLPToolbar, contextMenuAction, \
     ThemeXML, str_to_bool, get_text_file_string, build_icon, Receiver, \
-    contextMenuSeparator, SettingsManager
+    contextMenuSeparator, SettingsManager,  translate
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)

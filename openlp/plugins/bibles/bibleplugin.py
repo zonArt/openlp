@@ -27,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus,  translate
+from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 
 log = logging.getLogger(__name__)

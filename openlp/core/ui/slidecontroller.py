@@ -32,7 +32,7 @@ from PyQt4.phonon import Phonon
 
 from openlp.core.ui import HideMode
 from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
-ItemCapabilities, translate
+    ItemCapabilities, translate
 
 log = logging.getLogger(__name__)
 

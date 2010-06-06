@@ -25,8 +25,9 @@
 
 from PyQt4 import QtGui
 
-from openlp.plugins.songs.forms.topicsdialog import Ui_TopicsDialog
 from openlp.core.lib import translate
+from openlp.plugins.songs.forms.topicsdialog import Ui_TopicsDialog
+
 
 class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
     """
