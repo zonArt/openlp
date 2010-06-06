@@ -103,8 +103,10 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         if match:
             verse_type = match.group(1)
             verse_number = int(match.group(2))
-            self.VerseTypeComboBox.setCurrentIndex(VerseType.from_string(verse_type))
-            self.VerseNumberBox.setValue(verse_number)
+            verse_type_index = VerseType.from_string(verse_type)
+            if verse_type_index:
+                self.VerseTypeComboBox.setCurrentIndex(verse_type_index)
+                self.VerseNumberBox.setValue(verse_number)
 
     def setVerse(self, text, single=False,
         tag=u'%s:1' % VerseType.to_string(VerseType.Verse)):
