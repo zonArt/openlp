@@ -33,12 +33,11 @@ class VerseType(object):
     Intro = 4
     Ending = 5
     Other = 6
-    verse_string = u'verse'
 
     @staticmethod
     def to_string(verse_type):
         if verse_type == VerseType.Verse:
-            return translate('VerseType', VerseType.verse_string.title())
+            return translate('VerseType', 'Verse')
         elif verse_type == VerseType.Chorus:
             return translate('VerseType', 'Chorus')
         elif verse_type == VerseType.Bridge:
@@ -55,19 +54,19 @@ class VerseType(object):
     @staticmethod
     def from_string(verse_type):
         verse_type = verse_type.lower()
-        if verse_type == translate('VerseType', VerseType.verse_string):
+        if verse_type == unicode(VerseType.to_string(VerseType.Verse)).lower():
             return VerseType.Verse
-        elif verse_type == translate('VerseType', 'chorus'):
+        elif verse_type == unicode(VerseType.to_string(VerseType.Chorus)).lower():
             return VerseType.Chorus
-        elif verse_type == translate('VerseType', 'bridge'):
+        elif verse_type == unicode(VerseType.to_string(VerseType.Bridge)).lower():
             return VerseType.Bridge
-        elif verse_type == translate('VerseType', 'pre-chorus'):
+        elif verse_type == unicode(VerseType.to_string(VerseType.PreChorus)).lower():
             return VerseType.PreChorus
-        elif verse_type == translate('VerseType', 'intro'):
+        elif verse_type == unicode(VerseType.to_string(VerseType.Intro)).lower():
             return VerseType.Intro
-        elif verse_type == translate('VerseType', 'ending'):
+        elif verse_type == unicode(VerseType.to_string(VerseType.Ending)).lower():
             return VerseType.Ending
-        elif verse_type == translate('VerseType', 'other'):
+        elif verse_type == unicode(VerseType.to_string(VerseType.Other)).lower():
             return VerseType.Other
 
 from authorsform import AuthorsForm
