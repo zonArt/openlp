@@ -136,7 +136,7 @@ class PresentationMediaItem(MediaManagerItem):
         for file in list:
             if currlist.count(file) > 0:
                 continue
-            (path, filename) = os.path.split(unicode(file))
+            filename = os.path.split(unicode(file))[1]
             if titles.count(filename) > 0:
                 QtGui.QMessageBox.critical(
                     self, translate(u'PresentationPlugin.MediaItem',

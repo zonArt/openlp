@@ -86,7 +86,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
                     (instance.usagedate,instance.usagetime, instance.title,
                     instance.copyright, instance.ccl_number , instance.authors)
                 file.write(record)
-        except:
+        except IOError:
             log.exception(u'Failed to write out song usage records')
         finally:
             if file:

@@ -100,7 +100,7 @@ class OpenLP(QtGui.QApplication):
                 )
             else:
                 log.info(u'Openlp version %s' % app_version[u'version'])
-        except:
+        except IOError:
             log.exception('Error in version file.')
             app_version = {
                 u'full': u'1.9.0-bzr000',

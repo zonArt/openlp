@@ -26,6 +26,7 @@
 import logging
 
 from PyQt4 import QtCore
+from sqlalchemy.exceptions import InvalidRequestError
 
 from openlp.core.utils import AppLocation
 from openlp.plugins.alerts.lib.models import init_models, metadata, AlertItem
@@ -80,7 +81,7 @@ class DBManager(object):
             self.session.commit()
             log.debug(u'Alert saved')
             return True
-        except:
+        except InvalidRequestError:
             self.session.rollback()
             log.exception(u'Alert save failed')
             return False
@@ -104,7 +105,7 @@ class DBManager(object):
                 self.session.delete(alert_item)
                 self.session.commit()
                 return True
-            except:
+            except InvalidRequestError:
                 self.session.rollback()
                 log.exception(u'Alert deleton failed')
                 return False

@@ -23,15 +23,14 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import logging
 import types
 import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib.toolbar import *
 from openlp.core.lib import contextMenuAction, contextMenuSeparator, \
-    SettingsManager
-from serviceitem import ServiceItem
+    SettingsManager, OpenLPToolbar, ServiceItem, build_icon
 
 log = logging.getLogger(__name__)
 
@@ -336,8 +335,8 @@ class MediaManagerItem(QtGui.QWidget):
         log.info(u'New files(s) %s', unicode(files))
         if files:
             self.loadList(files)
-            dir = os.path.split(unicode(files[0]))[0]
-            SettingsManager.set_last_dir(self.settingsSection, dir)
+            lastDir = os.path.split(unicode(files[0]))[0]
+            SettingsManager.set_last_dir(self.settingsSection, lastDir)
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
 

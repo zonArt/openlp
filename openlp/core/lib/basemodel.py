@@ -23,26 +23,18 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation
+class BaseModel(object):
+    """
+    BaseModel provides a base object with a set of generic functions
+    """
 
-from openlp.plugins.songs.lib.meta import metadata
-from openlp.plugins.songs.lib.tables import *
-from openlp.plugins.songs.lib.classes import *
-
-def init_models(url):
-    engine = create_engine(url)
-    metadata.bind = engine
-    session = scoped_session(sessionmaker(autoflush=False, autocommit=False,
-        bind=engine))
-    mapper(Author, authors_table)
-    mapper(Book, song_books_table)
-    mapper(Song, songs_table,
-        properties={'authors': relation(Author, backref='songs',
-            secondary=authors_songs_table),
-            'book': relation(Book, backref='songs'),
-            'topics': relation(Topic, backref='songs',
-            secondary=songs_topics_table)})
-    mapper(Topic, topics_table)
-    return session
+    @classmethod
+    def populate(cls, **kwargs):
+        """
+        Creates an instance of a class and populates it, returning the instance
+        """
+        me = cls()
+        for key in kwargs:
+            me.__setattr__(key, kwargs[key])
+        return me
 

@@ -27,11 +27,11 @@ import os
 import sys
 import sqlite3
 
-from sqlalchemy import  *
 from sqlalchemy import create_engine
+from sqlalchemy.exceptions import InvalidRequestError
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation
 
-from openlp.core.lib import SettingsManager
+from openlp.core.lib import BaseModel, SettingsManager
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.lib.models import metadata, songs_table, Song, \
     Author, Topic, Book
@@ -159,7 +159,7 @@ class MigrateSongs(object):
             try:
                 self.session.add(song)
                 self.session.commit()
-            except:
+            except InvalidRequestError:
                 self.session.rollback()
                 print u'Error thrown = ', sys.exc_info()[1]
 

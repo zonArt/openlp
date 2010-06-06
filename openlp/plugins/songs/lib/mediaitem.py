@@ -196,12 +196,7 @@ class SongMediaItem(MediaManagerItem):
                 if author_list != u'':
                     author_list = author_list + u', '
                 author_list = author_list + author.display_name
-            if not isinstance(author_list, unicode):
-                author_list = unicode(author_list, u'utf8')
-            if isinstance(song.title, unicode):
-                song_title = song.title
-            else:
-                song_title = unicode(song.title, u'utf8')
+            song_title = unicode(song.title)
             song_detail = u'%s (%s)' % (song_title, author_list)
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
@@ -213,8 +208,8 @@ class SongMediaItem(MediaManagerItem):
         for author in searchresults:
             for song in author.songs:
                 song_detail = unicode(
-                    translate(u'SongsPlugin.MediaItem', u'%s (%s)' % \
-                    (unicode(author.display_name), unicode(song.title))))
+                    translate(u'SongsPlugin.MediaItem', u'%s (%s)') %
+                    (author.display_name, song.title))
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
                 self.ListView.addItem(song_name)
@@ -347,21 +342,12 @@ class SongMediaItem(MediaManagerItem):
                     if len(order) == 0:
                         break
                     for verse in verseList:
-                        if verse[1]:
-                            if verse[0][u'type'] == "Verse" \
-                                or verse[0][u'type'] == "Chorus":
-                                if verse[0][u'label'] == order[1:] and \
-                                    verse[0][u'type'][0] == order[0]:
-                                    verseTag = u'%s:%s' % \
-                                        (verse[0][u'type'], verse[0][u'label'])
-                                    service_item.add_from_text\
-                                        (verse[1][:30], verse[1], verseTag)
-                            else:
-                                if verse[0][u'type'][0] == order[0]:
-                                    verseTag = u'%s:%s' % \
-                                        (verse[0][u'type'], verse[0][u'label'])
-                                    service_item.add_from_text\
-                                        (verse[1][:30], verse[1], verseTag)
+                        if verse[0][u'label'] == order[1:] and \
+                            verse[0][u'type'][0] == order[0]:
+                            verseTag = u'%s:%s' % \
+                                (verse[0][u'type'], verse[0][u'label'])
+                            service_item.add_from_text\
+                                (verse[1][:30], verse[1], verseTag)
         else:
             verses = song.lyrics.split(u'\n\n')
             for slide in verses:

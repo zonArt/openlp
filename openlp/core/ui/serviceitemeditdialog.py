@@ -73,3 +73,4 @@ class Ui_ServiceItemEditDialog(object):
         self.deleteButton.setText(translate(u'ServiceItemEditForm', u'Delete'))
         self.downButton.setText(translate(u'ServiceItemEditForm', u'Down'))
 
+

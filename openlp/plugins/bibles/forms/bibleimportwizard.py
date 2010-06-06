@@ -383,4 +383,3 @@ class Ui_BibleImportWizard(object):
             translate(u'BiblesPlugin.ImportWizardForm', u'Ready.'))
         self.ImportProgressBar.setFormat(u'%p%')
 
-

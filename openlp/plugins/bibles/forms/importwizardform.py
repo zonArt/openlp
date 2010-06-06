@@ -146,7 +146,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                     self.CsvVerseLocationEdit.setFocus()
                     return False
-            elif self.field(u'source_format').toInt()[0] == BibleFormat.OpenSong:
+            elif self.field(u'source_format').toInt()[0] == \
+                BibleFormat.OpenSong:
                 if self.field(u'opensong_file').toString() == u'':
                     QtGui.QMessageBox.critical(self,
                         translate(u'BiblesPlugin.ImportWizardForm', u'Invalid OpenSong Bible'),
@@ -159,7 +160,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         elif self.currentId() == 2:
             # License details
             license_version = variant_to_unicode(self.field(u'license_version'))
-            license_copyright = variant_to_unicode(self.field(u'license_copyright'))
+            license_copyright = variant_to_unicode(
+                self.field(u'license_copyright'))
             if license_version == u'':
                 QtGui.QMessageBox.critical(self,
                     translate(u'BiblesPlugin.ImportWizardForm', u'Empty Version Name'),
@@ -323,7 +325,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                 if not isinstance(name, unicode):
                     name = unicode(name, u'utf8')
                 self.web_bible_list[WebDownload.Crosswalk][ver] = name.strip()
-        except:
+        except IOError:
             log.exception(u'Crosswalk resources missing')
         finally:
             if books_file:
@@ -342,8 +344,9 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     ver = unicode(ver, u'utf8')
                 if not isinstance(name, unicode):
                     name = unicode(name, u'utf8')
-                self.web_bible_list[WebDownload.BibleGateway][ver] = name.strip()
-        except:
+                self.web_bible_list[WebDownload.BibleGateway][ver] = \
+                    name.strip()
+        except IOError:
             log.exception(u'Biblegateway resources missing')
         finally:
             if books_file:
@@ -406,16 +409,19 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             if not isinstance(bible_version, unicode):
                 bible_version = unicode(bible_version, u'utf8')
             if download_location == WebDownload.Crosswalk:
-                bible = self.web_bible_list[WebDownload.Crosswalk][bible_version]
+                bible = \
+                    self.web_bible_list[WebDownload.Crosswalk][bible_version]
             elif download_location == WebDownload.BibleGateway:
-                bible = self.web_bible_list[WebDownload.BibleGateway][bible_version]
+                bible = \
+                    self.web_bible_list[WebDownload.BibleGateway][bible_version]
             importer = self.manager.import_bible(
                 BibleFormat.WebDownload,
                 name=license_version,
                 download_source=WebDownload.get_name(download_location),
                 download_name=bible,
                 proxy_server=variant_to_unicode(self.field(u'proxy_server')),
-                proxy_username=variant_to_unicode(self.field(u'proxy_username')),
+                proxy_username=variant_to_unicode(
+                    self.field(u'proxy_username')),
                 proxy_password=variant_to_unicode(self.field(u'proxy_password'))
             )
         success = importer.do_import()
@@ -437,5 +443,4 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.finishButton.setVisible(True)
         self.cancelButton.setVisible(False)
         Receiver.send_message(u'openlp_process_events')
-
 

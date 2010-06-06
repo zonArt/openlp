@@ -394,9 +394,9 @@ class SlideController(QtGui.QWidget):
         width = self.parent.ControlSplitter.sizes()[self.split]
         height = width * self.parent.RenderManager.screen_ratio
         self.PreviewListWidget.setColumnWidth(0, width)
-        #Sort out image hights (Songs , bibles excluded)
+        #Sort out image heights (Songs, bibles excluded)
         if self.serviceItem and not self.serviceItem.is_text():
-            for framenumber, frame in enumerate(self.serviceItem.get_frames()):
+            for framenumber in range(len(self.serviceItem.get_frames())):
                 self.PreviewListWidget.setRowHeight(framenumber, height)
 
     def trackSplitter(self, tab, pos):
@@ -554,17 +554,9 @@ class SlideController(QtGui.QWidget):
             if self.serviceItem.is_text():
                 if frame[u'verseTag']:
                     bits = frame[u'verseTag'].split(u':')
-                    tag = None
-                    #If verse handle verse number else tag only
-                    if bits[0] == translate(u'SlideController', u'Verse') or \
-                        bits[0] == translate(u'SlideController', u'Chorus'):
-                        tag = u'%s\n%s' % (bits[0][0], bits[1][0:] )
-                        tag1 = u'%s%s' % (bits[0][0], bits[1][0:] )
-                        row = tag
-                    else:
-                        tag = bits[0]
-                        tag1 = tag
-                        row = bits[0][0:1]
+                    tag = u'%s\n%s' % (bits[0][0], bits[1][0:] )
+                    tag1 = u'%s%s' % (bits[0][0], bits[1][0:] )
+                    row = tag
                 else:
                     row += 1
                 if self.isLive and frame[u'verseTag'] is not None:
@@ -795,7 +787,8 @@ class SlideController(QtGui.QWidget):
     def updatePreview(self):
         rm = self.parent.RenderManager
         if not rm.screens.current[u'primary']:
-            # Grab now, but try again in a couple of seconds if slide change is slow
+            # Grab now, but try again in a couple of seconds if slide change
+            # is slow
             QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
             QtCore.QTimer.singleShot(2.5, self.grabMainDisplay)
         else:

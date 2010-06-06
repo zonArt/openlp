@@ -24,6 +24,7 @@
 ###############################################################################
 
 from lxml import objectify
+from lxml.etree import XMLSyntaxError
 
 class LyricsXML(object):
     """
@@ -73,7 +74,7 @@ class LyricsXML(object):
                     })
                 self.lyrics.append(language)
             return True
-        except:
+        except XMLSyntaxError:
             return False
 
     def extract(self, text):

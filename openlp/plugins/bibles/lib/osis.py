@@ -78,7 +78,7 @@ class OSISBible(BibleDB):
                 book = line.split(u',')
                 self.books[book[0]] = (book[1].lstrip().rstrip(),
                     book[2].lstrip().rstrip())
-        except:
+        except IOError:
             log.exception(u'OSIS bible import failed')
         finally:
             if fbibles:
@@ -104,7 +104,7 @@ class OSISBible(BibleDB):
         try:
             detect_file = open(self.filename, u'r')
             details = chardet.detect(detect_file.read())
-        except:
+        except IOError:
             log.exception(u'Failed to detect OSIS file encoding')
             return
         finally:
@@ -173,7 +173,7 @@ class OSISBible(BibleDB):
             self.wizard.incrementProgressBar(u'Finishing import...')
             if match_count == 0:
                 success = False
-        except:
+        except (ValueError, IOError):
             log.exception(u'Loading bible from OSIS file failed')
             success = False
         finally:
@@ -184,5 +184,4 @@ class OSISBible(BibleDB):
             return False
         else:
             return success
-
 

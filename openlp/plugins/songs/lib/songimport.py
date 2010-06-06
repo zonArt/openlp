@@ -29,20 +29,21 @@ from PyQt4 import QtGui
 
 from openlp.core.lib import SongXMLBuilder
 from openlp.plugins.songs.lib.models import Song, Author, Topic, Book
-        
+from openlp.plugins.songs.forms import VerseType
+
 class SongImport(object):
     """
     Helper class for import a song from a third party source into OpenLP
 
     This class just takes the raw strings, and will work out for itself
-    whether the authors etc already exist and add them or refer to them 
+    whether the authors etc already exist and add them or refer to them
     as necessary
     """
 
     def __init__(self, song_manager):
         """
         Initialise and create defaults for properties
-        
+
         song_manager is an instance of a SongManager, through which all
         database access is performed
         """
@@ -53,13 +54,13 @@ class SongImport(object):
         self.copyright = u''
         self.comment = u''
         self.theme_name = u''
-        self.ccli_number = u''    
-        self.authors = []           
-        self.topics = []            
-        self.song_book_name = u''   
-        self.song_book_pub = u''   
-        self.verse_order_list = []  
-        self.verses = []            
+        self.ccli_number = u''
+        self.authors = []
+        self.topics = []
+        self.song_book_name = u''
+        self.song_book_pub = u''
+        self.verse_order_list = []
+        self.verses = []
         self.versecount = 0
         self.choruscount = 0
         self.copyright_string = unicode(QtGui.QApplication.translate( \
@@ -128,39 +129,39 @@ class SongImport(object):
                     copyright_found = True
                     self.add_copyright(line)
                 else:
-                    self.parse_author(line)   
-            return                                             
+                    self.parse_author(line)
+            return
         if len(lines) == 1:
             self.parse_author(lines[0])
             return
         if not self.get_title():
             self.set_title(lines[0])
         self.add_verse(text)
-       
+
     def get_title(self):
         """
         Return the title
         """
         return self.title
-        
+
     def get_copyright(self):
         """
         Return the copyright
         """
         return self.copyright
-        
+
     def get_song_number(self):
-        """ 
-        Return the song number 
+        """
+        Return the song number
         """
         return self.song_number
-        
+
     def set_title(self, title):
         """
         Set the title
         """
         self.title = title
- 
+
     def set_alternate_title(self, title):
         """
         Set the alternate title
@@ -168,11 +169,11 @@ class SongImport(object):
         self.alternate_title = title
 
     def set_song_number(self, song_number):
-        """ 
+        """
         Set the song number
         """
         self.song_number = song_number
-        
+
     def set_song_book(self, song_book, publisher):
         """
         Set the song book name and publisher
@@ -181,7 +182,7 @@ class SongImport(object):
         self.song_book_pub = publisher
 
     def add_copyright(self, copyright):
-        """ 
+        """
         Build the copyright field
         """
         if self.copyright.find(copyright) >= 0:
@@ -194,7 +195,7 @@ class SongImport(object):
         """
         Add the author. OpenLP stores them individually so split by 'and', '&'
         and comma.
-        However need to check for "Mr and Mrs Smith" and turn it to 
+        However need to check for "Mr and Mrs Smith" and turn it to
         "Mr Smith" and "Mrs Smith".
         """
         for author in text.split(u','):
@@ -210,13 +211,13 @@ class SongImport(object):
                     self.add_author(author2)
 
     def add_author(self, author):
-        """ 
+        """
         Add an author to the list
         """
         if author in self.authors:
             return
         self.authors.append(author)
-        
+
     def add_verse(self, verse, versetag=None):
         """
         Add a verse. This is the whole verse, lines split by \n
@@ -224,7 +225,7 @@ class SongImport(object):
         choruses itself) or None, where it will assume verse
         It will also attempt to detect duplicates. In this case it will just
         add to the verse order
-        """        
+        """
         for (oldversetag, oldverse) in self.verses:
             if oldverse.strip() == verse.strip():
                 self.verse_order_list.append(oldversetag)
@@ -253,22 +254,22 @@ class SongImport(object):
     def check_complete(self):
         """
         Check the mandatory fields are entered (i.e. title and a verse)
-        Author not checked here, if no author then "Author unknown" is 
+        Author not checked here, if no author then "Author unknown" is
         automatically added
         """
         if self.title == u'' or len(self.verses) == 0:
             return False
         else:
             return True
-            
-    def remove_punctuation(self, text):	
+
+    def remove_punctuation(self, text):
         """
         Remove punctuation from the string for searchable fields
         """
         for character in string.punctuation:
             text = text.replace(character, u'')
         return text
-            
+
     def finish(self):
         """
         All fields have been set to this song. Write it away
@@ -277,7 +278,7 @@ class SongImport(object):
             self.authors.append(u'Author unknown')
         self.commit_song()
         #self.print_song()
-        
+
     def commit_song(self):
         """
         Write the song and it's fields to disk
@@ -293,27 +294,27 @@ class SongImport(object):
         sxml.add_lyrics_to_song()
         for (versetag, versetext) in self.verses:
             if versetag[0] == u'C':
-                versetype = u'Chorus'
+                versetype = VerseType.to_string(VerseType.Chorus)
             elif versetag[0] == u'V':
-                versetype = u'Verse'
+                versetype = VerseType.to_string(VerseType.Verse)
             elif versetag[0] == u'B':
-                versetype = u'Bridge'
+                versetype = VerseType.to_string(VerseType.Bridge)
             elif versetag[0] == u'I':
-                versetype = u'Intro'
+                versetype = VerseType.to_string(VerseType.Intro)
             elif versetag[0] == u'P':
-                versetype = u'Prechorus'
+                versetype = VerseType.to_string(VerseType.PreChorus)
             elif versetag[0] == u'E':
-                versetype = u'Ending'
+                versetype = VerseType.to_string(VerseType.Ending)
             else:
-                versetype = u'Other'
+                versetype = VerseType.to_string(VerseType.Other)
             sxml.add_verse_to_lyrics(versetype, versetag[1:], versetext)
             song.search_lyrics += u' ' + self.remove_punctuation(versetext)
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         song.verse_order = u' '.join(self.verse_order_list)
         song.copyright = self.copyright
-        song.comment = self.comment 
-        song.theme_name = self.theme_name 
-        song.ccli_number = self.ccli_number 
+        song.comment = self.comment
+        song.theme_name = self.theme_name
+        song.ccli_number = self.ccli_number
         for authortext in self.authors:
             author = self.manager.get_author_by_name(authortext)
             if author is None:
@@ -339,15 +340,15 @@ class SongImport(object):
                 self.manager.save_topic(topic)
             song.topics.append(topictext)
         self.manager.save_song(song)
-        
+
     def print_song(self):
-        """ 
-        For debugging 
+        """
+        For debugging
         """
         print u'========================================'   \
             + u'========================================'
-        print u'TITLE: ' + self.title 
-        print u'ALT TITLE: ' + self.alternate_title 
+        print u'TITLE: ' + self.title
+        print u'ALT TITLE: ' + self.alternate_title
         for (versetag, versetext) in self.verses:
             print u'VERSE ' + versetag + u': ' + versetext
         print u'ORDER: ' + u' '.join(self.verse_order_list)
@@ -361,7 +362,7 @@ class SongImport(object):
             print u'BOOK PUBLISHER: ' + self.song_book_pub
         if self.song_number:
             print u'NUMBER: ' + self.song_number
-        for topictext in self.topics:        
+        for topictext in self.topics:
             print u'TOPIC: ' + topictext
         if self.comment:
             print u'COMMENT: ' + self.comment
@@ -369,5 +370,5 @@ class SongImport(object):
             print u'THEME: ' + self.theme_name
         if self.ccli_number:
             print u'CCLI: ' + self.ccli_number
-            
+
 

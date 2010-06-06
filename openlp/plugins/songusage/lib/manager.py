@@ -26,6 +26,7 @@
 import logging
 
 from PyQt4 import QtCore
+from sqlalchemy.exceptions import InvalidRequestError
 
 from openlp.core.utils import AppLocation
 from openlp.plugins.songusage.lib.models import init_models, metadata, \
@@ -87,7 +88,7 @@ class SongUsageManager(object):
             self.session.add(songusageitem)
             self.session.commit()
             return True
-        except:
+        except InvalidRequestError:
             self.session.rollback()
             log.exception(u'SongUsage item failed to save')
             return False
@@ -111,7 +112,7 @@ class SongUsageManager(object):
                 self.session.delete(songusageitem)
                 self.session.commit()
                 return True
-            except:
+            except InvalidRequestError:
                 self.session.rollback()
                 log.exception(u'SongUsage Item failed to delete')
                 return False
@@ -126,7 +127,7 @@ class SongUsageManager(object):
             self.session.query(SongUsageItem).delete(synchronize_session=False)
             self.session.commit()
             return True
-        except:
+        except InvalidRequestError:
             self.session.rollback()
             log.exception(u'Failed to delete all Song Usage items')
             return False
@@ -141,7 +142,8 @@ class SongUsageManager(object):
                 .delete(synchronize_session=False)
             self.session.commit()
             return True
-        except:
+        except InvalidRequestError:
             self.session.rollback()
             log.exception(u'Failed to delete all Song Usage items to %s' % date)
             return False
+

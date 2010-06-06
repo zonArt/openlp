@@ -132,7 +132,8 @@ class Ui_AboutDialog(object):
             u'consider contributing by using the button below.'
         ))
         self.AboutNotebook.setTabText(
-            self.AboutNotebook.indexOf(self.AboutTab), 
+
+            self.AboutNotebook.indexOf(self.AboutTab),
             translate(u'AboutForm', u'About'))
         self.CreditsTextEdit.setPlainText(translate(u'AboutForm', 
             u'Project Lead\n'

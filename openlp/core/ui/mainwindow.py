@@ -62,7 +62,8 @@ class VersionThread(QtCore.QThread):
         QtCore.QThread.__init__(self, parent)
         self.parent = parent
         self.app_version = app_version
-        self.version_splitter = re.compile(r'([0-9]+).([0-9]+).([0-9]+)(?:-bzr([0-9]+))')
+        self.version_splitter = re.compile(
+            r'([0-9]+).([0-9]+).([0-9]+)(?:-bzr([0-9]+))')
 
     def run(self):
         """
@@ -847,7 +848,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         recentFileCount = QtCore.QSettings().value(
             self.generalSettingsSection + u'/max recent files',
             QtCore.QVariant(4)).toInt()[0]
-        if filename and not self.recentFiles.contains(filename):
-            self.recentFiles.prepend(QtCore.QString(filename))
+        if filename and filename not in self.recentFiles:
+            self.recentFiles.insert(0, QtCore.QString(filename))
             while self.recentFiles.count() > recentFileCount:
-                self.recentFiles.takeLast()
+                self.recentFiles.pop()
+
