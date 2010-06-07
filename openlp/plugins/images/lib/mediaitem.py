@@ -60,8 +60,11 @@ class ImageMediaItem(MediaManagerItem):
 
     def retranslateUi(self):
         self.OnNewPrompt = self.trUtf8('Select Image(s)')
-        self.OnNewFileMasks = self.trUtf8(
-            'Images (*.jpg *.jpeg *.gif *.png *.bmp);; All files (*)')
+        file_formats = u''
+        for file_format in QtGui.QImageReader.supportedImageFormats():
+            file_formats += u'*.%s ' % file_format
+        self.OnNewFileMasks = unicode(
+            self.trUtf8('Images (%s);; All files (*)')) % file_formats
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
