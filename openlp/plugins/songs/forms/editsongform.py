@@ -485,8 +485,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     self.VerseOrderEdit.setFocus()
                     return False, \
                         translate(u'SongsPlugin.EditSongForm', 
-                        u'Invalid verse entry, values must be I,B,T,P,E,O,V,C '
-                        u'followed by a number')
+                            u'Invalid verse entry, values must be I,B,T,P,E,O,V,C '
+                            u'followed by a number')
         return True, u''
 
     def onTitleEditItemLostFocus(self):

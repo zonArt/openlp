@@ -71,7 +71,7 @@ class BibleMediaItem(MediaManagerItem):
         return unicode(obj)
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = translate(u'BiblesPlugin,MediaItem', u'Bible')
+        self.PluginNameVisible = translate(u'BiblesPlugin.MediaItem', u'Bible')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -147,7 +147,8 @@ class BibleMediaItem(MediaManagerItem):
         self.QuickMessage = QtGui.QLabel(self.QuickTab)
         self.QuickMessage.setObjectName(u'QuickMessage')
         self.QuickLayout.addWidget(self.QuickMessage, 6, 0, 1, 3)
-        self.SearchTabWidget.addTab(self.QuickTab, translate(u'BiblesPlugin,MediaItem', u'Quick'))
+        self.SearchTabWidget.addTab(self.QuickTab, 
+            translate(u'BiblesPlugin.MediaItem', u'Quick'))
         QuickSpacerItem = QtGui.QSpacerItem(20, 35, QtGui.QSizePolicy.Minimum,
             QtGui.QSizePolicy.Expanding)
         self.QuickLayout.addItem(QuickSpacerItem, 6, 2, 1, 1)
@@ -231,7 +232,8 @@ class BibleMediaItem(MediaManagerItem):
         self.AdvancedMessage = QtGui.QLabel(self.AdvancedTab)
         self.AdvancedMessage.setObjectName(u'AdvancedMessage')
         self.AdvancedLayout.addWidget(self.AdvancedMessage, 8, 0, 1, 3)
-        self.SearchTabWidget.addTab(self.AdvancedTab, translate(u'BiblesPlugin,MediaItem', u'Advanced'))
+        self.SearchTabWidget.addTab(self.AdvancedTab, 
+            translate(u'BiblesPlugin.MediaItem', u'Advanced'))
         # Add the search tab widget to the page layout
         self.PageLayout.addWidget(self.SearchTabWidget)
         # Combo Boxes
@@ -289,27 +291,48 @@ class BibleMediaItem(MediaManagerItem):
 
     def retranslateUi(self):
         log.debug(u'retranslateUi')
-        self.QuickVersionLabel.setText(translate(u'BiblesPlugin,MediaItem', u'Version:'))
-        self.QuickSecondVersionLabel.setText(translate(u'BiblesPlugin,MediaItem', u'Dual:'))
-        self.QuickSearchLabel.setText(translate(u'BiblesPlugin,MediaItem', u'Search Type:'))
-        self.QuickSearchLabel.setText(translate(u'BiblesPlugin,MediaItem', u'Find:'))
-        self.QuickSearchButton.setText(translate(u'BiblesPlugin,MediaItem', u'Search'))
-        self.QuickClearLabel.setText(translate(u'BiblesPlugin,MediaItem', u'Results:'))
-        self.AdvancedVersionLabel.setText(translate(u'BiblesPlugin,MediaItem', u'Version:'))
-        self.AdvancedSecondBibleLabel.setText(translate(u'BiblesPlugin,MediaItem', u'Dual:'))
-        self.AdvancedBookLabel.setText(translate(u'BiblesPlugin,MediaItem', u'Book:'))
-        self.AdvancedChapterLabel.setText(translate(u'BiblesPlugin,MediaItem', u'Chapter:'))
-        self.AdvancedVerseLabel.setText(translate(u'BiblesPlugin,MediaItem', u'Verse:'))
-        self.AdvancedFromLabel.setText(translate(u'BiblesPlugin,MediaItem', u'From:'))
-        self.AdvancedToLabel.setText(translate(u'BiblesPlugin,MediaItem', u'To:'))
-        self.AdvancedClearLabel.setText(translate(u'BiblesPlugin,MediaItem', u'Results:'))
-        self.AdvancedSearchButton.setText(translate(u'BiblesPlugin,MediaItem', u'Search'))
-        self.QuickSearchComboBox.addItem(translate(u'BiblesPlugin,MediaItem', u'Verse Search'))
-        self.QuickSearchComboBox.addItem(translate(u'BiblesPlugin,MediaItem', u'Text Search'))
-        self.ClearQuickSearchComboBox.addItem(translate(u'BiblesPlugin,MediaItem', u'Clear'))
-        self.ClearQuickSearchComboBox.addItem(translate(u'BiblesPlugin,MediaItem', u'Keep'))
-        self.ClearAdvancedSearchComboBox.addItem(translate(u'BiblesPlugin,MediaItem', u'Clear'))
-        self.ClearAdvancedSearchComboBox.addItem(translate(u'BiblesPlugin,MediaItem', u'Keep'))
+        self.QuickVersionLabel.setText(
+            translate(u'BiblesPlugin.MediaItem', u'Version:'))
+        self.QuickSecondVersionLabel.setText(
+            translate(u'BiblesPlugin.MediaItem', u'Dual:'))
+        self.QuickSearchLabel.setText(
+            translate(u'BiblesPlugin.MediaItem', u'Search Type:'))
+        self.QuickSearchLabel.setText(
+            translate(u'BiblesPlugin.MediaItem', u'Find:'))
+        self.QuickSearchButton.setText(
+            translate(u'BiblesPlugin.MediaItem', u'Search'))
+        self.QuickClearLabel.setText(
+            translate(u'BiblesPlugin.MediaItem', u'Results:'))
+        self.AdvancedVersionLabel.setText(
+            translate(u'BiblesPlugin.MediaItem', u'Version:'))
+        self.AdvancedSecondBibleLabel.setText(
+            translate(u'BiblesPlugin.MediaItem', u'Dual:'))
+        self.AdvancedBookLabel.setText(
+            translate(u'BiblesPlugin.MediaItem', u'Book:'))
+        self.AdvancedChapterLabel.setText(
+            translate(u'BiblesPlugin.MediaItem', u'Chapter:'))
+        self.AdvancedVerseLabel.setText(
+            translate(u'BiblesPlugin.MediaItem', u'Verse:'))
+        self.AdvancedFromLabel.setText(
+            translate(u'BiblesPlugin.MediaItem', u'From:'))
+        self.AdvancedToLabel.setText(
+            translate(u'BiblesPlugin.MediaItem', u'To:'))
+        self.AdvancedClearLabel.setText(
+            translate(u'BiblesPlugin.MediaItem', u'Results:'))
+        self.AdvancedSearchButton.setText(
+            translate(u'BiblesPlugin.MediaItem', u'Search'))
+        self.QuickSearchComboBox.addItem(
+            translate(u'BiblesPlugin.MediaItem', u'Verse Search'))
+        self.QuickSearchComboBox.addItem(
+            translate(u'BiblesPlugin.MediaItem', u'Text Search'))
+        self.ClearQuickSearchComboBox.addItem(
+            translate(u'BiblesPlugin.MediaItem', u'Clear'))
+        self.ClearQuickSearchComboBox.addItem(
+            translate(u'BiblesPlugin.MediaItem', u'Keep'))
+        self.ClearAdvancedSearchComboBox.addItem(
+            translate(u'BiblesPlugin.MediaItem', u'Clear'))
+        self.ClearAdvancedSearchComboBox.addItem(
+            translate(u'BiblesPlugin.MediaItem', u'Keep'))
 
     def initialise(self):
         log.debug(u'bible manager initialise')
@@ -363,8 +386,9 @@ class BibleMediaItem(MediaManagerItem):
 
     def onNoBookFound(self):
         QtGui.QMessageBox.critical(self,
-            translate(u'BiblesPlugin,MediaItem', u'No Book Found'),
-            translate(u'BiblesPlugin,MediaItem', u'No matching book could be found in this Bible.'),
+            translate(u'BiblesPlugin.MediaItem', u'No Book Found'),
+            translate(u'BiblesPlugin.MediaItem', 
+                u'No matching book could be found in this Bible.'),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
             QtGui.QMessageBox.Ok
         )
@@ -532,9 +556,11 @@ class BibleMediaItem(MediaManagerItem):
                     bible_text = u''
             if not service_item.title:
                 service_item.title = u'%s %s' % (book, verse_text)
-            elif service_item.title.find(translate('MediaItem',u'etc')) == -1:
+            elif service_item.title.find(
+                translate(u'BiblesPlugin.MediaItem', u'etc')) == -1:
                 service_item.title = u'%s, %s' \
-                    % (service_item.title, translate('MediaItem',u'etc'))
+                    % (service_item.title, 
+                       translate(u'BiblesPlugin.MediaItem', u'etc'))
         if  len(self.parent.settings_tab.bible_theme) == 0:
             service_item.theme = None
         else:
@@ -583,7 +609,8 @@ class BibleMediaItem(MediaManagerItem):
         self.verses = self.parent.manager.get_verse_count(bible, book, 1)
         if self.verses == 0:
             self.AdvancedSearchButton.setEnabled(False)
-            self.AdvancedMessage.setText(translate(u'BiblesPlugin,MediaItem', u'Bible not fully loaded'))
+            self.AdvancedMessage.setText(
+                translate(u'BiblesPlugin.MediaItem', u'Bible not fully loaded'))
         else:
             self.AdvancedSearchButton.setEnabled(True)
             self.AdvancedMessage.setText(u'')

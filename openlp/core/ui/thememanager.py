@@ -58,20 +58,20 @@ class ThemeManager(QtGui.QWidget):
             translate(u'ThemeManager', u'Create a new theme'), self.onAddTheme)
         self.Toolbar.addToolbarButton(
             translate(u'ThemeManager', u'Edit Theme'),
-                u':/themes/theme_edit.png',
+            u':/themes/theme_edit.png',
             translate(u'ThemeManager', u'Edit a theme'), self.onEditTheme)
         self.Toolbar.addToolbarButton(
             translate(u'ThemeManager', u'Delete Theme'),
-                u':/general/general_delete.png',
+            u':/general/general_delete.png',
             translate(u'ThemeManager', u'Delete a theme'), self.onDeleteTheme)
         self.Toolbar.addSeparator()
         self.Toolbar.addToolbarButton(
             translate(u'ThemeManager', u'Import Theme'), 
-                u':/general/general_import.png',
+            u':/general/general_import.png',
             translate(u'ThemeManager', u'Import a theme'), self.onImportTheme)
         self.Toolbar.addToolbarButton(
             translate(u'ThemeManager', u'Export Theme'),
-                u':/general/general_export.png',
+            u':/general/general_export.png',
             translate(u'ThemeManager', u'Export a theme'), self.onExportTheme)
         self.ThemeWidget = QtGui.QWidgetAction(self.Toolbar)
         self.Layout.addWidget(self.Toolbar)
@@ -192,9 +192,9 @@ class ThemeManager(QtGui.QWidget):
                 for plugin in self.parent.plugin_manager.plugins:
                     if not plugin.can_delete_theme(theme):
                         QtGui.QMessageBox.critical(self, 
-                                translate(u'ThemeManager', u'Error'),
+                            translate(u'ThemeManager', u'Error'),
                             translate(u'ThemeManager',  
-                            u'Theme %s is use in %s plugin' % (theme,
+                                u'Theme %s is use in %s plugin' % (theme,
                             plugin.name)))
                         return
                 if unicode(self.parent.ServiceManagerContents.ThemeComboBox.currentText()) == theme:

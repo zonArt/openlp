@@ -313,17 +313,17 @@ class Ui_BibleImportWizard(object):
         self.TitleLabel.setText(
             u'<span style="font-size:14pt; font-weight:600;">%s</span>' % \
             translate(u'BiblesPlugin.ImportWizardForm', 
-            u'Welcome to the Bible Import Wizard'))
+                u'Welcome to the Bible Import Wizard'))
         self.InformationLabel.setText(
             translate(u'BiblesPlugin.ImportWizardForm', 
-            u'This wizard will help you to import Bibles from a '
-            u'variety of formats. Click the next button below to start the '
-            u'process by selecting a format to import from.'))
+                u'This wizard will help you to import Bibles from a '
+                u'variety of formats. Click the next button below to start the '
+                u'process by selecting a format to import from.'))
         self.SelectPage.setTitle(translate(u'BiblesPlugin.ImportWizardForm', 
             u'Select Import Source'))
         self.SelectPage.setSubTitle(
             translate(u'BiblesPlugin.ImportWizardForm', 
-            u'Select the import format, and where to import from.'))
+                u'Select the import format, and where to import from.'))
         self.FormatLabel.setText(
             translate(u'BiblesPlugin.ImportWizardForm', u'Format:'))
         self.FormatComboBox.setItemText(0, 
@@ -362,12 +362,12 @@ class Ui_BibleImportWizard(object):
         self.WebDownloadTabWidget.setTabText(
             self.WebDownloadTabWidget.indexOf(self.ProxyServerTab),
             translate(u'BiblesPlugin.ImportWizardForm', 
-            u'Proxy Server (Optional)'))
+                u'Proxy Server (Optional)'))
         self.LicenseDetailsPage.setTitle(
             translate(u'BiblesPlugin.ImportWizardForm', u'License Details'))
         self.LicenseDetailsPage.setSubTitle(
             translate(u'BiblesPlugin.ImportWizardForm', 
-            u'Set up the Bible\'s license details.'))
+                u'Set up the Bible\'s license details.'))
         self.VersionNameLabel.setText(
             translate(u'BiblesPlugin.ImportWizardForm', u'Version Name:'))
         self.CopyrightLabel.setText(
@@ -378,7 +378,7 @@ class Ui_BibleImportWizard(object):
             translate(u'BiblesPlugin.ImportWizardForm', u'Importing'))
         self.ImportPage.setSubTitle(
             translate(u'BiblesPlugin.ImportWizardForm',
-            u'Please wait while your Bible is imported.'))
+                u'Please wait while your Bible is imported.'))
         self.ImportProgressLabel.setText(
             translate(u'BiblesPlugin.ImportWizardForm', u'Ready.'))
         self.ImportProgressBar.setFormat(u'%p%')

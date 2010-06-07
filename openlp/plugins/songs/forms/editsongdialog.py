@@ -471,7 +471,7 @@ class Ui_EditSongDialog(object):
         self.CopyrightGroupBox.setTitle(
             translate(u'SongsPlugin.EditSongForm', u'Copyright Information'))
         self.CopyrightInsertButton.setText(
-            translate('EditSongForm', u'\xa9'))
+            translate(u'SongsPlugin.EditSongForm', u'\xa9'))
         self.CCLILabel.setText(
             translate(u'SongsPlugin.EditSongForm', u'CCLI Number:'))
         self.CommentsGroupBox.setTitle(

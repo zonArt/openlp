@@ -89,7 +89,7 @@ class Ui_SongUsageDetailDialog(object):
     def retranslateUi(self, SongUsageDetailDialog):
         SongUsageDetailDialog.setWindowTitle(
             translate(u'SongsPlugin.AuditDetailDialog',
-            u'Song Usage Extraction'))
+                u'Song Usage Extraction'))
         self.DateRangeGroupBox.setTitle(
             translate(u'SongsPlugin.AuditDetailDialog', u'Select Date Range'))
         self.ToLabel.setText(

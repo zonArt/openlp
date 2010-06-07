@@ -64,9 +64,9 @@ class alertsPlugin(Plugin):
         self.toolsAlertItem.setIcon(AlertIcon)
         self.toolsAlertItem.setObjectName(u'toolsAlertItem')
         self.toolsAlertItem.setText(
-            translate('AlertsPlugin.AlertsPlugin', u'&Alert'))
+            translate(u'AlertsPlugin.AlertsPlugin', u'&Alert'))
         self.toolsAlertItem.setStatusTip(
-            translate('AlertsPlugin.AlertsPlugin', u'Show an alert message'))
+            translate(u'AlertsPlugin.AlertsPlugin', u'Show an alert message'))
         self.toolsAlertItem.setShortcut(u'F7')
         self.service_manager.parent.ToolsMenu.addAction(self.toolsAlertItem)
         QtCore.QObject.connect(self.toolsAlertItem,
@@ -94,7 +94,7 @@ class alertsPlugin(Plugin):
         self.alertForm.exec_()
 
     def about(self):
-        about_text = translate('AlertsPlugin.AlertsPlugin', 
+        about_text = translate(u'AlertsPlugin.AlertsPlugin', 
             u'<b>Alerts Plugin</b><br>This plugin '
-            'controls the displaying of alerts on the presentations screen')
+            u'controls the displaying of alerts on the presentations screen')
         return about_text

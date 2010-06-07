@@ -59,10 +59,14 @@ class ImageMediaItem(MediaManagerItem):
         self.PluginNameVisible = translate(u'ImagePlugin.MediaItem', u'Image')
 
     def retranslateUi(self):
-        self.OnNewPrompt = translate(u'ImagePlugin.MediaItem',
+        self.OnNewPrompt = translate(u'ImagePlugin.MediaItem', 
             u'Select Image(s)')
-        self.OnNewFileMasks = translate(u'ImagePlugin.MediaItem',
-            u'Images (*.jpg *.jpeg *.gif *.png *.bmp);; All files (*)')
+        file_formats = u''
+        for file_format in QtGui.QImageReader.supportedImageFormats():
+            file_formats += u'*.%s ' % file_format
+        self.OnNewFileMasks = unicode(
+            translate(u'ImagePlugin.MediaItem', 
+                u'Images (%s);; All files (*)')) % file_formats
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)

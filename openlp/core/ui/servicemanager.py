@@ -115,19 +115,19 @@ class ServiceManager(QtGui.QWidget):
         self.Toolbar = OpenLPToolbar(self)
         self.Toolbar.addToolbarButton(
             translate(u'ServiceManager', u'New Service'),
-                u':/general/general_new.png',
+            u':/general/general_new.png',
             translate(u'ServiceManager', u'Create a new service'),
-                self.onNewService)
+            self.onNewService)
         self.Toolbar.addToolbarButton(
             translate(u'ServiceManager', u'Open Service'),
-                u':/general/general_open.png',
+            u':/general/general_open.png',
             translate(u'ServiceManager', u'Load an existing service'),
-                self.onLoadService)
+            self.onLoadService)
         self.Toolbar.addToolbarButton(
             translate(u'ServiceManager', u'Save Service'),
-                u':/general/general_save.png',
+            u':/general/general_save.png',
             translate(u'ServiceManager', u'Save this service'),
-                self.onSaveService)
+            self.onSaveService)
         self.Toolbar.addSeparator()
         self.ThemeLabel = QtGui.QLabel(translate(u'ServiceManager', u'Theme:'),
             self)
@@ -168,28 +168,28 @@ class ServiceManager(QtGui.QWidget):
         self.OrderToolbar = OpenLPToolbar(self)
         self.OrderToolbar.addToolbarButton(
             translate(u'ServiceManager', u'Move to &top'),
-                u':/services/service_top.png',
+            u':/services/service_top.png',
             translate(u'ServiceManager', u'Move to top'), self.onServiceTop)
         self.OrderToolbar.addToolbarButton(
             translate(u'ServiceManager', u'Move &up'),
-                u':/services/service_up.png',
+            u':/services/service_up.png',
             translate(u'ServiceManager', u'Move up order'), self.onServiceUp)
         self.OrderToolbar.addToolbarButton(
             translate(u'ServiceManager', u'Move &down'),
-                u':/services/service_down.png',
+            u':/services/service_down.png',
             translate(u'ServiceManager', u'Move down order'),
-                self.onServiceDown)
+            self.onServiceDown)
         self.OrderToolbar.addToolbarButton(
             translate(u'ServiceManager', u'Move to &bottom'),
-                u':/services/service_bottom.png',
+            u':/services/service_bottom.png',
             translate(u'ServiceManager', u'Move to end'),
-                self.onServiceEnd)
+            self.onServiceEnd)
         self.OrderToolbar.addSeparator()
         self.OrderToolbar.addToolbarButton(
             translate(u'ServiceManager', u'&Delete From Service'),
-                u':/general/general_delete.png',
+            u':/general/general_delete.png',
             translate(u'ServiceManager', u'Delete From Service'),
-                self.onDeleteFromService)
+            self.onDeleteFromService)
         self.Layout.addWidget(self.OrderToolbar)
         # Connect up our signals and slots
         QtCore.QObject.connect(self.ThemeComboBox,
