@@ -117,12 +117,13 @@ class ImageMediaItem(MediaManagerItem):
         if items:
             for item in items:
                 text = self.ListView.item(item.row())
-                try:
-                    os.remove(
-                        os.path.join(self.servicePath, unicode(text.text())))
-                except OSError:
-                    #if not present do not worry
-                    pass
+                if text:
+                    try:
+                        os.remove(
+                            os.path.join(self.servicePath, unicode(text.text())))
+                    except OSError:
+                        #if not present do not worry
+                        pass
                 self.ListView.takeItem(item.row())
                 SettingsManager.set_list(self.settingsSection,
                     self.settingsSection, self.getFileList())
