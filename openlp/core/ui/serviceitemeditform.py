@@ -38,21 +38,16 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         self.setupUi(self)
         self.itemList = []
         # enable drop
-        QtCore.QObject.connect(self.upButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onItemUp)
-        QtCore.QObject.connect(self.downButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onItemDown)
-        QtCore.QObject.connect(self.deleteButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onItemDelete)
-        QtCore.QObject.connect(self.buttonBox,
-                               QtCore.SIGNAL(u'accepted()'),
-                               self.accept)
-        QtCore.QObject.connect(self.buttonBox,
-                               QtCore.SIGNAL(u'rejected()'),
-                               self.reject)
+        QtCore.QObject.connect(self.upButton, QtCore.SIGNAL(u'clicked()'),
+            self.onItemUp)
+        QtCore.QObject.connect(self.downButton, QtCore.SIGNAL(u'clicked()'),
+            self.onItemDown)
+        QtCore.QObject.connect(self.deleteButton, QtCore.SIGNAL(u'clicked()'),
+            self.onItemDelete)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
+            self.accept)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
+            self.reject)
 
     def setServiceItem(self, item):
         self.item = item
@@ -68,8 +63,8 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
             self.item._raw_frames = []
             if self.item.is_image():
                 for item in self.itemList:
-                    self.item.add_from_image(item[u'path'],
-                                             item[u'title'], item[u'image'])
+                    self.item.add_from_image(item[u'path'], item[u'title'],
+                        item[u'image'])
             self.item.render()
         return self.item
 

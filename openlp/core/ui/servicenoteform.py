@@ -24,6 +24,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+
 from servicenotedialog import Ui_ServiceNoteEdit
 
 class ServiceNoteForm(QtGui.QDialog, Ui_ServiceNoteEdit):
@@ -36,9 +37,7 @@ class ServiceNoteForm(QtGui.QDialog, Ui_ServiceNoteEdit):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        QtCore.QObject.connect(self.buttonBox,
-                               QtCore.SIGNAL(u'accepted()'),
-                               self.accept)
-        QtCore.QObject.connect(self.buttonBox,
-                               QtCore.SIGNAL(u'rejected()'),
-                               self.reject)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
+            self.accept)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
+            self.reject)
