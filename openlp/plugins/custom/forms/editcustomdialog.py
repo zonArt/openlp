@@ -24,6 +24,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib import translate
 
 class Ui_customEditDialog(object):
@@ -106,8 +107,8 @@ class Ui_customEditDialog(object):
         self.SplitButton = QtGui.QPushButton(self.ButtonWidge)
         self.SplitButton.setObjectName(u'SplitButton')
         self.verticalLayout_2.addWidget(self.SplitButton)
-        spacerItem1 = QtGui.QSpacerItem(20, 40,
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem1 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Expanding)
         self.verticalLayout_2.addItem(spacerItem1)
         self.EditLayout_3.addWidget(self.ButtonWidge)
         self.gridLayout.addWidget(self.EditWidget, 2, 0, 1, 1)
@@ -130,7 +131,8 @@ class Ui_customEditDialog(object):
         self.horizontalLayout_2.addWidget(self.CreditEdit)
         self.gridLayout.addLayout(self.horizontalLayout_2, 4, 0, 1, 1)
         self.buttonBox = QtGui.QDialogButtonBox(customEditDialog)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Save)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel | 
+            QtGui.QDialogButtonBox.Save)
         self.buttonBox.setObjectName(u'buttonBox')
         self.gridLayout.addWidget(self.buttonBox, 5, 0, 1, 1)
 
@@ -153,20 +155,17 @@ class Ui_customEditDialog(object):
         customEditDialog.setTabOrder(self.DownButton, self.ThemeComboBox)
 
     def retranslateUi(self, customEditDialog):
-        customEditDialog.setWindowTitle(translate(u'CustomPlugin.EditCustomForm',
-            u'Edit Custom Slides'))
-        self.UpButton.setToolTip(
-            translate(u'CustomPlugin.EditCustomForm'
-                u'CustomPlugin.EditCustomForm', 
-                u'Move slide Up 1'))
+        customEditDialog.setWindowTitle(
+            translate(u'CustomPlugin.EditCustomForm', u'Edit Custom Slides'))
+        self.UpButton.setToolTip(translate(u'CustomPlugin.EditCustomForm'
+            u'CustomPlugin.EditCustomForm', u'Move slide Up 1'))
         self.DownButton.setToolTip(
             translate(u'CustomPlugin.EditCustomForm', u'Move slide down 1'))
         self.TitleLabel.setText(
             translate(u'CustomPlugin.EditCustomForm', u'Title:'))
         self.AddButton.setText(
             translate(u'CustomPlugin.EditCustomForm', u'Add New'))
-        self.AddButton.setToolTip(
-            translate(u'CustomPlugin.EditCustomForm',
+        self.AddButton.setToolTip(translate(u'CustomPlugin.EditCustomForm',
             u'Add new slide at bottom'))
         self.EditButton.setText(
             translate(u'CustomPlugin.EditCustomForm', u'Edit'))
@@ -196,3 +195,4 @@ class Ui_customEditDialog(object):
             translate(u'CustomPlugin.EditCustomForm', u'Theme:'))
         self.CreditLabel.setText(
             translate(u'CustomPlugin.EditCustomForm', u'Credits:'))
+

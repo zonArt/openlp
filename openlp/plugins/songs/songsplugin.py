@@ -27,7 +27,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus, Receiver, translate
+from openlp.core.lib import Plugin, build_icon, PluginStatus, Receiver, \
+    translate
 from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab, \
     SofImport, OooImport
 

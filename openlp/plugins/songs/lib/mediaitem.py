@@ -64,7 +64,6 @@ class SongMediaItem(MediaManagerItem):
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
-        self.hasFileIcon = False
 
     def addEndHeaderBar(self):
         self.addToolbarSeparator()

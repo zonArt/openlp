@@ -27,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, SettingsTab,  translate
+from openlp.core.lib import Receiver, SettingsTab, translate
 
 log = logging.getLogger(__name__)
 

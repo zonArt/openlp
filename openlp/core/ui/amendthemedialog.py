@@ -671,8 +671,8 @@ class Ui_AmendThemeDialog(object):
         self.ThemePreviewLayout.addItem(spacerItem8)
         self.AmendThemeLayout.addWidget(self.PreviewGroupBox)
         self.ThemeButtonBox = QtGui.QDialogButtonBox(AmendThemeDialog)
-        self.ThemeButtonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+        self.ThemeButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
+            QtGui.QDialogButtonBox.Ok)
         self.ThemeButtonBox.setObjectName(u'ThemeButtonBox')
         self.AmendThemeLayout.addWidget(self.ThemeButtonBox)
 
@@ -813,12 +813,9 @@ class Ui_AmendThemeDialog(object):
             translate(u'AmendThemeForm', u'Width:'))
         self.FontMainHeightLabel.setText(
             translate(u'AmendThemeForm', u'Height:'))
-        self.FontMainXSpinBox.setSuffix(
-            translate(u'AmendThemeForm', u'px'))
-        self.FontMainYSpinBox.setSuffix(
-            translate(u'AmendThemeForm', u'px'))
-        self.FontMainWidthSpinBox.setSuffix(
-            translate(u'AmendThemeForm', u'px'))
+        self.FontMainXSpinBox.setSuffix(translate(u'AmendThemeForm', u'px'))
+        self.FontMainYSpinBox.setSuffix(translate(u'AmendThemeForm', u'px'))
+        self.FontMainWidthSpinBox.setSuffix(translate(u'AmendThemeForm', u'px'))
         self.FontMainHeightSpinBox.setSuffix(
             translate(u'AmendThemeForm', u'px'))
         self.ThemeTabWidget.setTabText(
@@ -830,7 +827,8 @@ class Ui_AmendThemeDialog(object):
         self.FontFooterColorLabel.setText(
             translate(u'AmendThemeForm', u'Font Color:'))
         self.FontFooterSizeLabel.setText(translate(u'AmendThemeForm', u'Size:'))
-        self.FontFooterSizeSpinBox.setSuffix(translate(u'AmendThemeForm', u'pt'))
+        self.FontFooterSizeSpinBox.setSuffix(
+            translate(u'AmendThemeForm', u'pt'))
         self.FontFooterWeightComboBox.setItemText(0,
             translate(u'AmendThemeForm', u'Normal'))
         self.FontFooterWeightComboBox.setItemText(1,
@@ -863,16 +861,16 @@ class Ui_AmendThemeDialog(object):
             translate(u'AmendThemeForm', u'px'))
         self.ThemeTabWidget.setTabText(
             self.ThemeTabWidget.indexOf(self.FontFooterTab),
-            translate('AmendThemeForm', 'Font Footer'))
-        self.OutlineGroupBox.setTitle(translate('AmendThemeForm', 'Outline'))
+            translate(u'AmendThemeForm', u'Font Footer'))
+        self.OutlineGroupBox.setTitle(translate(u'AmendThemeForm', u'Outline'))
         self.OutlineSpinBoxLabel.setText(
-            translate('AmendThemeForm', 'Outline Size:'))
-        self.OutlineSpinBox.setSuffix(translate('AmendThemeForm', 'px'))
+            translate(u'AmendThemeForm', u'Outline Size:'))
+        self.OutlineSpinBox.setSuffix(translate(u'AmendThemeForm', u'px'))
         self.OutlineColorLabel.setText(
             translate(u'AmendThemeForm', u'Outline Color:'))
         self.OutlineEnabledLabel.setText(
-            translate('AmendThemeForm', 'Show Outline:'))
-        self.ShadowGroupBox.setTitle(translate('AmendThemeForm', 'Shadow'))
+            translate(u'AmendThemeForm', u'Show Outline:'))
+        self.ShadowGroupBox.setTitle(translate(u'AmendThemeForm', u'Shadow'))
         self.ShadowSpinBoxLabel.setText(
             translate(u'AmendThemeForm', u'Shadow Size:'))
         self.ShadowSpinBox.setSuffix(translate(u'AmendThemeForm', u'px'))
@@ -906,3 +904,4 @@ class Ui_AmendThemeDialog(object):
             self.ThemeTabWidget.indexOf(self.OtherOptionsTab),
             translate(u'AmendThemeForm', u'Other Options'))
         self.PreviewGroupBox.setTitle(translate(u'AmendThemeForm', u'Preview'))
+

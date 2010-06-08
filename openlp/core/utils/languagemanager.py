@@ -34,7 +34,7 @@ log = logging.getLogger()
 
 class LanguageManager(object):
     """
-        Helper for Language selection
+    Helper for Language selection
     """
     __qmList__ = None
     AutoLanguage = False
@@ -55,8 +55,8 @@ class LanguageManager(object):
         trans_dir = QtCore.QDir(os.path.join(trans_dir, u'resources', u'i18n'))
         fileNames = trans_dir.entryList(QtCore.QStringList("*.qm"),
                 QtCore.QDir.Files, QtCore.QDir.Name)
-        for i in fileNames:
-            fileNames.replaceInStrings(i, trans_dir.filePath(i))
+        for name in fileNames:
+            fileNames.replaceInStrings(name, trans_dir.filePath(name))
         return fileNames
 
     @staticmethod
@@ -101,11 +101,12 @@ class LanguageManager(object):
             regEx = QtCore.QRegExp("^.*openlp_(.*).qm")
             if regEx.exactMatch(qmf):
                 langName = regEx.cap(1)
-                LanguageManager.__qmList__[u'%#2i %s' % (i+1, 
-                            LanguageManager.language_name(qmf))] = langName 
+                LanguageManager.__qmList__[u'%#2i %s' % (i+1,
+                    LanguageManager.language_name(qmf))] = langName 
 
     @staticmethod
     def get_qm_list():
         if LanguageManager.__qmList__ == None:
             LanguageManager.init_qm_list()
         return LanguageManager.__qmList__
+

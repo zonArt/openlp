@@ -26,7 +26,7 @@
 import logging
 
 from forms import EditCustomForm
-from openlp.core.lib import Plugin, build_icon, PluginStatus,  translate
+from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
 from openlp.plugins.custom.lib import CustomManager, CustomMediaItem, CustomTab
 
 log = logging.getLogger(__name__)

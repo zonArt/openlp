@@ -25,7 +25,7 @@
 
 import logging
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus,  translate
+from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
 log = logging.getLogger(__name__)

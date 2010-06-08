@@ -54,3 +54,4 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
             deleteDate = self.DeleteCalendar.selectedDate().toPyDate()
             self.songusagemanager.delete_to_date(deleteDate)
         self.close()
+

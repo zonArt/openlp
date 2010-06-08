@@ -31,7 +31,7 @@ import os.path
 from PyQt4 import QtCore, QtGui
 
 from bibleimportwizard import Ui_BibleImportWizard
-from openlp.core.lib import Receiver, SettingsManager,  translate
+from openlp.core.lib import Receiver, SettingsManager, translate
 from openlp.core.utils import AppLocation, variant_to_unicode
 from openlp.plugins.bibles.lib.manager import BibleFormat
 
