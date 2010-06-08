@@ -26,6 +26,7 @@
 from PyQt4 import QtGui, QtCore
 
 from openlp.plugins.alerts.lib.models import AlertItem
+from openlp.core.lib import translate
 
 from alertdialog import Ui_AlertDialog
 
@@ -101,8 +102,8 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
     def onNewClick(self):
         if len(self.AlertTextEdit.text()) == 0:
             QtGui.QMessageBox.information(self,
-                self.trUtf8('Item selected to Add'),
-                self.trUtf8('Missing data'))
+                translate(u'AlertsPlugin.AlertForm', u'Item selected to Add'),
+                translate(u'AlertsPlugin.AlertForm', u'Missing data'))
         else:
             alert = AlertItem()
             alert.text = unicode(self.AlertTextEdit.text())

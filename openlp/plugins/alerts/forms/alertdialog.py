@@ -147,14 +147,22 @@ class Ui_AlertDialog(object):
         AlertDialog.setTabOrder(self.DisplayCloseButton, self.CloseButton)
 
     def retranslateUi(self, AlertDialog):
-        AlertDialog.setWindowTitle(translate('AlertForm', 'Alert Message'))
-        self.AlertEntryLabel.setText(translate('AlertForm', 'Alert &text:'))
-        self.AlertParameter.setText(translate('AlertForm', '&Parameter(s):'))
-        self.NewButton.setText(translate('AlertForm', '&New'))
-        self.SaveButton.setText(translate('AlertForm', '&Save'))
-        self.DeleteButton.setText(translate('AlertForm', '&Delete'))
-        self.DisplayButton.setText(translate('AlertForm', 'Displ&ay'))
+        AlertDialog.setWindowTitle(
+            translate(u'AlertsPlugin.AlertForm', u'Alert Message'))
+        self.AlertEntryLabel.setText(
+            translate(u'AlertsPlugin.AlertForm', u'Alert &text:'))
+        self.AlertParameter.setText(
+            translate(u'AlertsPlugin.AlertForm', u'&Parameter(s):'))
+        self.NewButton.setText(
+            translate(u'AlertsPlugin.AlertForm', u'&New'))
+        self.SaveButton.setText(
+            translate(u'AlertsPlugin.AlertForm', u'&Save'))
+        self.DeleteButton.setText(
+            translate(u'AlertsPlugin.AlertForm', u'&Delete'))
+        self.DisplayButton.setText(
+            translate(u'AlertsPlugin.AlertForm', u'Displ&ay'))
         self.DisplayCloseButton.setText(
-            translate('AlertForm', 'Display && Cl&ose'))
-        self.CloseButton.setText(translate('AlertForm', '&Close'))
+            translate(u'AlertsPlugin.AlertForm', u'Display && Cl&ose'))
+        self.CloseButton.setText(
+            translate(u'AlertsPlugin.AlertForm', u'&Close'))
 

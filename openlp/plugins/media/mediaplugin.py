@@ -25,7 +25,7 @@
 
 import logging
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus
+from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
 from openlp.plugins.media.lib import MediaMediaItem
 from PyQt4.phonon import Phonon
 
@@ -76,6 +76,7 @@ class MediaPlugin(Plugin):
         return MediaMediaItem(self, self.icon, self.name)
 
     def about(self):
-        about_text = self.trUtf8('<b>Media Plugin</b><br>This plugin '
-            'allows the playing of audio and video media')
+        about_text = translate(u'MediaPlugin.MediaPlugin',
+            u'<b>Media Plugin</b><br>This plugin '
+            u'allows the playing of audio and video media')
         return about_text

@@ -92,8 +92,10 @@ class Ui_EditVerseDialog(object):
         QtCore.QMetaObject.connectSlotsByName(EditVerseDialog)
 
     def retranslateUi(self, EditVerseDialog):
-        EditVerseDialog.setWindowTitle(translate('EditVerseForm', 'Edit Verse'))
-        self.VerseTypeLabel.setText(translate('EditVerseForm', 'Verse Type:'))
+        EditVerseDialog.setWindowTitle(
+            translate(u'SongsPlugin.EditVerseForm', u'Edit Verse'))
+        self.VerseTypeLabel.setText(
+            translate(u'SongsPlugin.EditVerseForm', u'Verse Type:'))
         self.VerseTypeComboBox.setItemText(0, VerseType.to_string(VerseType.Verse))
         self.VerseTypeComboBox.setItemText(1, VerseType.to_string(VerseType.Chorus))
         self.VerseTypeComboBox.setItemText(2, VerseType.to_string(VerseType.Bridge))
@@ -101,5 +103,7 @@ class Ui_EditVerseDialog(object):
         self.VerseTypeComboBox.setItemText(4, VerseType.to_string(VerseType.Intro))
         self.VerseTypeComboBox.setItemText(5, VerseType.to_string(VerseType.Ending))
         self.VerseTypeComboBox.setItemText(6, VerseType.to_string(VerseType.Other))
-        self.InsertButton.setText(translate('EditVerseForm', 'Insert'))
+        self.InsertButton.setText(
+            translate(u'SongsPlugin.EditVerseForm', u'Insert'))
+
 

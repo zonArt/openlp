@@ -28,7 +28,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from editcustomdialog import Ui_customEditDialog
-from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver
+from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver,  translate
 from openlp.plugins.custom.lib.models import CustomSlide
 
 log = logging.getLogger(__name__)
@@ -47,7 +47,8 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.setupUi(self)
         # Connecting signals and slots
         self.previewButton = QtGui.QPushButton()
-        self.previewButton.setText(self.trUtf8('Save && Preview'))
+        self.previewButton.setText(translate(u'CustomPlugin.EditCustomForm',
+            u'Save && Preview'))
         self.buttonBox.addButton(
             self.previewButton, QtGui.QDialogButtonBox.ActionRole)
         QtCore.QObject.connect(self.buttonBox,
@@ -84,7 +85,8 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
 
     def onPreview(self, button):
         log.debug(u'onPreview')
-        if button.text() == unicode(self.trUtf8('Save && Preview')) \
+        if button.text() == unicode(translate(u'CustomPlugin.EditCustomForm',
+            u'Save && Preview')) \
             and self.saveCustom():
             Receiver.send_message(u'custom_preview')
 
@@ -147,7 +149,8 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
     def saveCustom(self):
         valid, message = self._validate()
         if not valid:
-            QtGui.QMessageBox.critical(self, self.trUtf8('Error'), message,
+            QtGui.QMessageBox.critical(self, 
+                translate(u'CustomPlugin.EditCustomForm', u'Error'), message,
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             return False
         sxml = SongXMLBuilder()
@@ -263,12 +266,15 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
     def _validate(self):
         if len(self.TitleEdit.displayText()) == 0:
             self.TitleEdit.setFocus()
-            return False, self.trUtf8('You need to enter a title')
+            return False, translate(u'CustomPlugin.EditCustomForm',
+                u'You need to enter a title')
         # must have 1 slide
         if self.VerseListView.count() == 0:
             self.VerseTextEdit.setFocus()
-            return False, self.trUtf8('You need to enter a slide')
+            return False, translate(u'CustomPlugin.EditCustomForm',
+                u'You need to enter a slide')
         if self.VerseTextEdit.toPlainText():
             self.VerseTextEdit.setFocus()
-            return False, self.trUtf8('You have unsaved data, please save or clear')
+            return False, translate(u'CustomPlugin.editCustomForm',
+                u'You have unsaved data, please save or clear')
         return True, u''
