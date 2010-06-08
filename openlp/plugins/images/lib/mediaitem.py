@@ -29,7 +29,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    contextMenuAction, ItemCapabilities, SettingsManager,  translate
+    contextMenuAction, ItemCapabilities, SettingsManager, translate
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
@@ -169,7 +169,8 @@ class ImageMediaItem(MediaManagerItem):
         if not self.ListView.selectedIndexes():
             QtGui.QMessageBox.information(self,
                 translate(u'ImagePlugin.MediaItem', u'No item selected'),
-                translate(u'ImagePlugin.MediaItem', u'You must select one item'))
+                translate(u'ImagePlugin.MediaItem',
+                    u'You must select one item'))
         items = self.ListView.selectedIndexes()
         for item in items:
             bitem = self.ListView.item(item.row())

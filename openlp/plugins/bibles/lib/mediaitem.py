@@ -29,7 +29,7 @@ import time
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, Receiver, BaseListWithDnD, \
-    ItemCapabilities,  translate
+    ItemCapabilities, translate
 from openlp.plugins.bibles.forms import ImportWizardForm
 
 log = logging.getLogger(__name__)
@@ -521,10 +521,10 @@ class BibleMediaItem(MediaManagerItem):
             if self.parent.settings_tab.display_style == 1:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
                     u'(u', u')')
-            elif  self.parent.settings_tab.display_style == 2:
+            elif self.parent.settings_tab.display_style == 2:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
                     u'{', u'}')
-            elif  self.parent.settings_tab.display_style == 3:
+            elif self.parent.settings_tab.display_style == 3:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
                     u'[', u']')
             else:
@@ -558,10 +558,9 @@ class BibleMediaItem(MediaManagerItem):
                 service_item.title = u'%s %s' % (book, verse_text)
             elif service_item.title.find(
                 translate(u'BiblesPlugin.MediaItem', u'etc')) == -1:
-                service_item.title = u'%s, %s' \
-                    % (service_item.title, 
+                service_item.title = u'%s, %s' % (service_item.title, 
                        translate(u'BiblesPlugin.MediaItem', u'etc'))
-        if  len(self.parent.settings_tab.bible_theme) == 0:
+        if len(self.parent.settings_tab.bible_theme) == 0:
             service_item.theme = None
         else:
             service_item.theme = self.parent.settings_tab.bible_theme
@@ -658,3 +657,4 @@ class BibleMediaItem(MediaManagerItem):
     def searchByReference(self, bible, search):
         log.debug(u'searchByReference %s, %s', bible, search)
         self.search_results = self.parent.manager.get_verses(bible, search)
+

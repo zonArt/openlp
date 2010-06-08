@@ -116,7 +116,8 @@ class Ui_EditSongDialog(object):
         self.AuthorsTabLayout.setObjectName(u'AuthorsTabLayout')
         self.AuthorsMaintenanceWidget = QtGui.QWidget(self.AuthorsTab)
         self.AuthorsMaintenanceWidget.setObjectName(u'AuthorsMaintenanceWidget')
-        self.AuthorsMaintenanceLayout = QtGui.QVBoxLayout(self.AuthorsMaintenanceWidget)
+        self.AuthorsMaintenanceLayout = QtGui.QVBoxLayout(
+            self.AuthorsMaintenanceWidget)
         self.AuthorsMaintenanceLayout.setSpacing(8)
         self.AuthorsMaintenanceLayout.setMargin(0)
         self.AuthorsMaintenanceLayout.setObjectName(u'AuthorsMaintenanceLayout')
@@ -146,7 +147,8 @@ class Ui_EditSongDialog(object):
         self.AuthorsSelectionComboItem.setSizeAdjustPolicy(
             QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.AuthorsSelectionComboItem.setMinimumContentsLength(8)
-        self.AuthorsSelectionComboItem.setObjectName(u'AuthorsSelectionComboItem')
+        self.AuthorsSelectionComboItem.setObjectName(
+            u'AuthorsSelectionComboItem')
         self.AuthorAddLayout.addWidget(self.AuthorsSelectionComboItem)
         self.AuthorAddButton = QtGui.QPushButton(self.AuthorAddWidget)
         self.AuthorAddButton.setMaximumSize(QtCore.QSize(110, 16777215))
@@ -261,7 +263,8 @@ class Ui_EditSongDialog(object):
             QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.SongbookCombo.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.SongbookCombo.sizePolicy().hasHeightForWidth())
         self.SongbookCombo.setEditable(True)
         self.SongbookCombo.setSizePolicy(sizePolicy)
         self.SongbookCombo.setObjectName(u'SongbookCombo')
@@ -277,7 +280,8 @@ class Ui_EditSongDialog(object):
         self.ThemeTabLayout.setObjectName(u'ThemeTabLayout')
         self.ThemeCopyCommentsWidget = QtGui.QWidget(self.ThemeTab)
         self.ThemeCopyCommentsWidget.setObjectName(u'ThemeCopyCommentsWidget')
-        self.ThemeCopyCommentsLayout = QtGui.QHBoxLayout(self.ThemeCopyCommentsWidget)
+        self.ThemeCopyCommentsLayout = QtGui.QHBoxLayout(
+            self.ThemeCopyCommentsWidget)
         self.ThemeCopyCommentsLayout.setSpacing(8)
         self.ThemeCopyCommentsLayout.setMargin(0)
         self.ThemeCopyCommentsLayout.setObjectName(u'ThemeCopyCommentsLayout')
@@ -286,7 +290,8 @@ class Ui_EditSongDialog(object):
             QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.TextWidget.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.TextWidget.sizePolicy().hasHeightForWidth())
         self.TextWidget.setSizePolicy(sizePolicy)
         self.TextWidget.setObjectName(u'TextWidget')
         self.DetailsLayout = QtGui.QVBoxLayout(self.TextWidget)
@@ -401,24 +406,34 @@ class Ui_EditSongDialog(object):
         EditSongDialog.setTabOrder(self.AlternativeEdit, self.VerseListWidget)
         EditSongDialog.setTabOrder(self.VerseListWidget, self.VerseAddButton)
         EditSongDialog.setTabOrder(self.VerseAddButton, self.VerseEditButton)
-        EditSongDialog.setTabOrder(self.VerseEditButton, self.VerseEditAllButton)
-        EditSongDialog.setTabOrder(self.VerseEditAllButton, self.VerseDeleteButton)
+        EditSongDialog.setTabOrder(self.VerseEditButton,
+            self.VerseEditAllButton)
+        EditSongDialog.setTabOrder(self.VerseEditAllButton,
+            self.VerseDeleteButton)
         EditSongDialog.setTabOrder(self.VerseDeleteButton, self.VerseOrderEdit)
-        EditSongDialog.setTabOrder(self.VerseOrderEdit, self.AuthorsSelectionComboItem)
-        EditSongDialog.setTabOrder(self.AuthorsSelectionComboItem, self.AuthorAddButton)
+        EditSongDialog.setTabOrder(self.VerseOrderEdit,
+            self.AuthorsSelectionComboItem)
+        EditSongDialog.setTabOrder(self.AuthorsSelectionComboItem,
+            self.AuthorAddButton)
         EditSongDialog.setTabOrder(self.AuthorAddButton, self.AuthorsListView)
-        EditSongDialog.setTabOrder(self.AuthorsListView, self.AuthorRemoveButton)
-        EditSongDialog.setTabOrder(self.AuthorRemoveButton, self.MaintenanceButton)
+        EditSongDialog.setTabOrder(self.AuthorsListView,
+            self.AuthorRemoveButton)
+        EditSongDialog.setTabOrder(self.AuthorRemoveButton,
+            self.MaintenanceButton)
         EditSongDialog.setTabOrder(self.MaintenanceButton, self.SongTopicCombo)
         EditSongDialog.setTabOrder(self.SongTopicCombo, self.TopicAddButton)
         EditSongDialog.setTabOrder(self.TopicAddButton, self.TopicsListView)
         EditSongDialog.setTabOrder(self.TopicsListView, self.TopicRemoveButton)
         EditSongDialog.setTabOrder(self.TopicRemoveButton, self.SongbookCombo)
-        EditSongDialog.setTabOrder(self.SongbookCombo, self.ThemeSelectionComboItem)
-        EditSongDialog.setTabOrder(self.ThemeSelectionComboItem, self.ThemeAddButton)
+        EditSongDialog.setTabOrder(self.SongbookCombo,
+            self.ThemeSelectionComboItem)
+        EditSongDialog.setTabOrder(self.ThemeSelectionComboItem,
+            self.ThemeAddButton)
         EditSongDialog.setTabOrder(self.ThemeAddButton, self.CopyrightEditItem)
-        EditSongDialog.setTabOrder(self.CopyrightEditItem, self.CopyrightInsertButton)
-        EditSongDialog.setTabOrder(self.CopyrightInsertButton, self.CCLNumberEdit)
+        EditSongDialog.setTabOrder(self.CopyrightEditItem,
+            self.CopyrightInsertButton)
+        EditSongDialog.setTabOrder(self.CopyrightInsertButton,
+            self.CCLNumberEdit)
         EditSongDialog.setTabOrder(self.CCLNumberEdit, self.CommentsEdit)
         EditSongDialog.setTabOrder(self.CommentsEdit, self.ButtonBox)
 
@@ -450,8 +465,7 @@ class Ui_EditSongDialog(object):
             translate(u'SongsPlugin.EditSongForm', u'&Add to Song'))
         self.AuthorRemoveButton.setText(
             translate(u'SongsPlugin.EditSongForm', u'&Remove'))
-        self.MaintenanceButton.setText(
-            translate(u'SongsPlugin.EditSongForm',
+        self.MaintenanceButton.setText(translate(u'SongsPlugin.EditSongForm',
             u'&Manage Authors, Topics, Books'))
         self.TopicGroupBox.setTitle(
             translate(u'SongsPlugin.EditSongForm', u'Topic'))

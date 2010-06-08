@@ -238,7 +238,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             translate(u'SongsPlugin.SongMaintenanceForm',
                 u'This author can\'t be deleted, they are currently '
                 u'assigned to at least one song.'),
-            translate(u'SongsPlugin.SongMaintenanceForm', u'No author selected!'))
+            translate(u'SongsPlugin.SongMaintenanceForm',
+                u'No author selected!'))
 
     def onTopicDeleteButtonClick(self):
         """
@@ -253,7 +254,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             translate(u'SongsPlugin.SongMaintenanceForm', 
                 u'This topic can\'t be deleted, it is currently '
                 u'assigned to at least one song.'),
-            translate(u'SongsPlugin.SongMaintenanceForm', u'No topic selected!'))
+            translate(u'SongsPlugin.SongMaintenanceForm',
+                u'No topic selected!'))
 
     def onBookDeleteButtonClick(self):
         """

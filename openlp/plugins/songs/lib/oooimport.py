@@ -97,7 +97,7 @@ class OooImport(object):
                 loop += 1
             manager = ctx.ServiceManager
             self.desktop = manager.createInstanceWithContext(
-                "com.sun.star.frame.Desktop", ctx )
+                "com.sun.star.frame.Desktop", ctx)
             
     def start_ooo_process(self):
         try:
@@ -130,10 +130,9 @@ class OooImport(object):
         try:
             self.document = self.desktop.loadComponentFromURL(url, u'_blank',
                 0, properties)
-            if not self.document.supportsService(                   
-                "com.sun.star.presentation.PresentationDocument")   \
-                and not self.document.supportsService(              
-                "com.sun.star.text.TextDocument"):
+            if not self.document.supportsService(
+                "com.sun.star.presentation.PresentationDocument") and not \
+                self.document.supportsService("com.sun.star.text.TextDocument"):
                 self.close_ooo_file()
         except:
             pass

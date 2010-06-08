@@ -25,7 +25,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon,  translate
+from openlp.core.lib import build_icon, translate
 
 class Ui_SongMaintenanceDialog(object):
     def setupUi(self, SongMaintenanceDialog):
@@ -192,9 +192,11 @@ class Ui_SongMaintenanceDialog(object):
         self.TypeStackedWidget.addWidget(self.BooksPage)
         self.ContentLayout.addWidget(self.TypeStackedWidget)
         self.DialogLayout.addWidget(self.ContentWidget)
-        self.MaintenanceButtonBox = QtGui.QDialogButtonBox(SongMaintenanceDialog)
+        self.MaintenanceButtonBox = QtGui.QDialogButtonBox(
+            SongMaintenanceDialog)
         self.MaintenanceButtonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.MaintenanceButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Close)
+        self.MaintenanceButtonBox.setStandardButtons(
+            QtGui.QDialogButtonBox.Close)
         self.MaintenanceButtonBox.setObjectName(u'MaintenanceButtonBox')
         self.DialogLayout.addWidget(self.MaintenanceButtonBox)
 

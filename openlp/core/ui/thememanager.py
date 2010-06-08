@@ -35,7 +35,7 @@ from openlp.core.ui import AmendThemeForm
 from openlp.core.theme import Theme
 from openlp.core.lib import OpenLPToolbar, contextMenuAction, \
     ThemeXML, str_to_bool, get_text_file_string, build_icon, Receiver, \
-    contextMenuSeparator, SettingsManager,  translate
+    contextMenuSeparator, SettingsManager, translate
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
@@ -99,7 +99,7 @@ class ThemeManager(QtGui.QWidget):
             contextMenuAction(self.ThemeListWidget,
                 u':/general/general_export.png',
                 translate(u'ThemeManager', u'Export theme'),
-            self.onExportTheme))
+                self.onExportTheme))
         self.ThemeListWidget.addAction(
             contextMenuSeparator(self.ThemeListWidget))
         #Signals
@@ -199,7 +199,7 @@ class ThemeManager(QtGui.QWidget):
                         return
                 if unicode(self.parent.ServiceManagerContents.ThemeComboBox.currentText()) == theme:
                     QtGui.QMessageBox.critical(
-                        self, translate('ThemeManager','Error'),
+                        self, translate(u'ThemeManager',u'Error'),
                         translate(u'ThemeManager',
                             u'Theme %s is use by Service Manager' % theme),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))

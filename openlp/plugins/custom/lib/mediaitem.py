@@ -28,7 +28,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, SongXMLParser, BaseListWithDnD, \
-    Receiver, ItemCapabilities,  translate
+    Receiver, ItemCapabilities, translate
 
 log = logging.getLogger(__name__)
 
@@ -70,7 +70,6 @@ class CustomMediaItem(MediaManagerItem):
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
-        self.hasFileIcon = False
 
     def initialise(self):
         self.loadCustomListView(self.parent.custommanager.get_all_slides())

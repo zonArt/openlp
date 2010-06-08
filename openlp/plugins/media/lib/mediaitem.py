@@ -29,7 +29,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    ItemCapabilities, SettingsManager, contextMenuAction,  Receiver,  translate
+    ItemCapabilities, SettingsManager, contextMenuAction, Receiver, translate
 
 log = logging.getLogger(__name__)
 
@@ -77,8 +77,7 @@ class MediaMediaItem(MediaManagerItem):
         MediaManagerItem.addListViewToToolBar(self)
         self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.ListView.addAction(
-            contextMenuAction(
-                self.ListView, u':/slides/slide_blank.png',
+            contextMenuAction(self.ListView, u':/slides/slide_blank.png',
                 translate(u'MediaPlugin.MediaItem', u'Replace Live Background'),
                 self.onReplaceClick))
 
@@ -107,8 +106,7 @@ class MediaMediaItem(MediaManagerItem):
             self.background = True
             if not self.ListView.selectedIndexes():
                 QtGui.QMessageBox.information(self,
-                    translate(u'MediaPlugin.MediaItem',
-                        u'No item selected'),
+                    translate(u'MediaPlugin.MediaItem', u'No item selected'),
                     translate(u'MediaPlugin.MediaItem',
                         u'You must select one item'))
             items = self.ListView.selectedIndexes()
@@ -135,8 +133,8 @@ class MediaMediaItem(MediaManagerItem):
         self.ListView.setSelectionMode(
             QtGui.QAbstractItemView.ExtendedSelection)
         self.ListView.setIconSize(QtCore.QSize(88, 50))
-        self.loadList(SettingsManager.load_list(
-            self.settingsSection, self.settingsSection))
+        self.loadList(SettingsManager.load_list(self.settingsSection,
+            self.settingsSection))
 
     def onDeleteClick(self):
         item = self.ListView.currentItem()
@@ -154,3 +152,4 @@ class MediaMediaItem(MediaManagerItem):
             item_name.setIcon(build_icon(img))
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.ListView.addItem(item_name)
+

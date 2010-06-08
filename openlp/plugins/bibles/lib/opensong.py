@@ -28,7 +28,7 @@ import logging
 from lxml import objectify
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver,  translate
+from openlp.core.lib import Receiver, translate
 from db import BibleDB
 
 log = logging.getLogger(__name__)
@@ -95,7 +95,7 @@ class OpenSongBible(BibleDB):
                         Receiver.send_message(u'openlp_process_events')
                     self.wizard.incrementProgressBar(
                         QtCore.QString('%s %s %s' % (
-                            translate(u'BiblesPlugin.Opensong',  u'Importing'),\
+                            translate(u'BiblesPlugin.Opensong', u'Importing'), \
                             db_book.name, chapter.attrib[u'n'])))
                     self.commit()
         except IOError:

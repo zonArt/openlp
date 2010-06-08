@@ -70,20 +70,19 @@ class Ui_SongUsageDetailDialog(object):
         self.verticalLayout_2.addWidget(self.FileGroupBox)
         self.verticalLayout.addWidget(self.DateRangeGroupBox)
         self.buttonBox = QtGui.QDialogButtonBox(SongUsageDetailDialog)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
+            QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(u'buttonBox')
         self.verticalLayout.addWidget(self.buttonBox)
 
         self.retranslateUi(SongUsageDetailDialog)
-        QtCore.QObject.connect(self.buttonBox,
-                                QtCore.SIGNAL(u'accepted()'),
-                                SongUsageDetailDialog.accept)
-        QtCore.QObject.connect(self.buttonBox,
-                               QtCore.SIGNAL(u'rejected()'),
-                               SongUsageDetailDialog.close)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
+            SongUsageDetailDialog.accept)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
+            SongUsageDetailDialog.close)
         QtCore.QObject.connect(self.SaveFilePushButton,
-                               QtCore.SIGNAL(u'pressed()'),
-                               SongUsageDetailDialog.defineOutputLocation)
+            QtCore.SIGNAL(u'pressed()'),
+            SongUsageDetailDialog.defineOutputLocation)
         QtCore.QMetaObject.connectSlotsByName(SongUsageDetailDialog)
 
     def retranslateUi(self, SongUsageDetailDialog):

@@ -437,12 +437,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                                 if parts.endswith(u'\n'):
                                     parts = parts.rstrip(u'\n')
                                 item = QtGui.QTableWidgetItem(parts)
-                                item.setData(
-                                    QtCore.Qt.UserRole, QtCore.QVariant(variant))
+                                item.setData(QtCore.Qt.UserRole,
+                                    QtCore.QVariant(variant))
                                 self.VerseListWidget.setRowCount(
                                     self.VerseListWidget.rowCount() + 1)
                                 self.VerseListWidget.setItem(
-                                    int(self.VerseListWidget.rowCount() - 1), 0, item)
+                                    int(self.VerseListWidget.rowCount() - 1),
+                                    0, item)
             self.VerseListWidget.setColumnWidth(0, self.width)
             self.VerseListWidget.resizeRowsToContents()
             self.VerseListWidget.repaint()
@@ -483,10 +484,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 else:
                     self.SongTabWidget.setCurrentIndex(0)
                     self.VerseOrderEdit.setFocus()
-                    return False, \
-                        translate(u'SongsPlugin.EditSongForm', 
-                            u'Invalid verse entry, values must be I,B,T,P,E,O,V,C '
-                            u'followed by a number')
+                    return False, translate(u'SongsPlugin.EditSongForm', 
+                        u'Invalid verse entry, values must be I,B,T,P,E,O,V,C '
+                        u'followed by a number')
         return True, u''
 
     def onTitleEditItemLostFocus(self):
@@ -596,5 +596,4 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.search_title = self.song.search_title.replace(u'{', u'')
         self.song.search_title = self.song.search_title.replace(u'}', u'')
         self.song.search_title = self.song.search_title.replace(u'?', u'')
-
 

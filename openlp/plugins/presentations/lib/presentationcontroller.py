@@ -381,7 +381,7 @@ class PresentationDocument(object):
         Returns the text on the slide
 
         ``slide_no``
-        The slide the text  is required for, starting at 1
+        The slide the text is required for, starting at 1
         """
         return ''
 

@@ -122,7 +122,8 @@ class PowerpointDocument(PresentationDocument):
         if not self.controller.process.Visible:
             self.controller.start_process()
         #try:
-        self.controller.process.Presentations.Open(self.filepath, False, False, True)
+        self.controller.process.Presentations.Open(self.filepath, False, False,
+            True)
         #except:
         #    return
         self.presentation = self.controller.process.Presentations(
@@ -140,8 +141,8 @@ class PowerpointDocument(PresentationDocument):
         """
         if self.check_thumbnails():
             return
-        self.presentation.Export(os.path.join(self.thumbnailpath, '')
-                                 , 'png', 640, 480)
+        self.presentation.Export(os.path.join(self.thumbnailpath, ''), 'png',
+            640, 480)
 
     def close_presentation(self):
         """
@@ -225,7 +226,8 @@ class PowerpointDocument(PresentationDocument):
                 dpi = win32ui.GetActiveWindow().GetDC().GetDeviceCaps(88)
             except:
                 try:
-                    dpi = win32ui.GetForegroundWindow().GetDC().GetDeviceCaps(88)
+                    dpi = \
+                        win32ui.GetForegroundWindow().GetDC().GetDeviceCaps(88)
                 except:
                     dpi = 96
             self.presentation.SlideShowSettings.Run()
@@ -286,7 +288,7 @@ class PowerpointDocument(PresentationDocument):
         Returns the text on the slide
 
         ``slide_no``
-        The slide the text  is required for, starting at 1
+        The slide the text is required for, starting at 1
         """
         text = ''
         shapes = self.presentation.Slides(slide_no).Shapes

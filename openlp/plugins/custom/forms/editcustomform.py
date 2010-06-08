@@ -28,7 +28,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from editcustomdialog import Ui_customEditDialog
-from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver,  translate
+from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver, translate
 from openlp.plugins.custom.lib.models import CustomSlide
 
 log = logging.getLogger(__name__)
@@ -163,8 +163,10 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             count += 1
         self.customSlide.title = unicode(self.TitleEdit.displayText(), u'utf-8')
         self.customSlide.text = unicode(sxml.extract_xml(), u'utf-8')
-        self.customSlide.credits = unicode(self.CreditEdit.displayText(), u'utf-8')
-        self.customSlide.theme_name = unicode(self.ThemeComboBox.currentText(), u'utf-8')
+        self.customSlide.credits = unicode(self.CreditEdit.displayText(),
+            u'utf-8')
+        self.customSlide.theme_name = unicode(self.ThemeComboBox.currentText(),
+            u'utf-8')
         self.custommanager.save_slide(self.customSlide)
         return True
 
@@ -230,7 +232,8 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
     def onSaveButtonPressed(self):
         if self.editAll:
             self.VerseListView.clear()
-            for row in unicode(self.VerseTextEdit.toPlainText()).split(u'\n[---]\n'):
+            for row in unicode(self.VerseTextEdit.toPlainText()).split(
+                u'\n[---]\n'):
                 self.VerseListView.addItem(row)
         else:
             self.VerseListView.currentItem().setText(
