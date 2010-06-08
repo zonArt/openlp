@@ -103,14 +103,17 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         if match:
             verse_type = match.group(1)
             verse_number = int(match.group(2))
-            self.VerseTypeComboBox.setCurrentIndex(VerseType.from_string(verse_type))
-            self.VerseNumberBox.setValue(verse_number)
+            verse_type_index = VerseType.from_string(verse_type)
+            if verse_type_index:
+                self.VerseTypeComboBox.setCurrentIndex(verse_type_index)
+                self.VerseNumberBox.setValue(verse_number)
 
     def setVerse(self, text, single=False,
         tag=u'%s:1' % VerseType.to_string(VerseType.Verse)):
         if single:
             verse_type, verse_number = tag.split(u':')
-            self.VerseTypeComboBox.setCurrentIndex(VerseType.from_string(verse_type))
+            self.VerseTypeComboBox.setCurrentIndex(
+                VerseType.from_string(verse_type))
             self.VerseNumberBox.setValue(int(verse_number))
             self.InsertButton.setVisible(False)
         else:
@@ -131,6 +134,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
     def getVerseAll(self):
         text = self.VerseTextEdit.toPlainText()
         if not text.startsWith(u'---['):
-            text = u'---[%s:1]---\n%s' % (VerseType.to_string(VerseType.Verse), text)
+            text = u'---[%s:1]---\n%s' % (VerseType.to_string(VerseType.Verse),
+                text)
         return text
 

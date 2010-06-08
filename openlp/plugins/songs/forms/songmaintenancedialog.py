@@ -25,7 +25,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon,  translate
+from openlp.core.lib import build_icon, translate
 
 class Ui_SongMaintenanceDialog(object):
     def setupUi(self, SongMaintenanceDialog):
@@ -192,9 +192,11 @@ class Ui_SongMaintenanceDialog(object):
         self.TypeStackedWidget.addWidget(self.BooksPage)
         self.ContentLayout.addWidget(self.TypeStackedWidget)
         self.DialogLayout.addWidget(self.ContentWidget)
-        self.MaintenanceButtonBox = QtGui.QDialogButtonBox(SongMaintenanceDialog)
+        self.MaintenanceButtonBox = QtGui.QDialogButtonBox(
+            SongMaintenanceDialog)
         self.MaintenanceButtonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.MaintenanceButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Close)
+        self.MaintenanceButtonBox.setStandardButtons(
+            QtGui.QDialogButtonBox.Close)
         self.MaintenanceButtonBox.setObjectName(u'MaintenanceButtonBox')
         self.DialogLayout.addWidget(self.MaintenanceButtonBox)
 
@@ -208,16 +210,29 @@ class Ui_SongMaintenanceDialog(object):
         QtCore.QMetaObject.connectSlotsByName(SongMaintenanceDialog)
 
     def retranslateUi(self, SongMaintenanceDialog):
-        SongMaintenanceDialog.setWindowTitle(translate('SongMaintenanceForm', 'Song Maintenance'))
-        self.TypeListWidget.item(0).setText(translate('SongMaintenanceForm', 'Authors'))
-        self.TypeListWidget.item(1).setText(translate('SongMaintenanceForm', 'Topics'))
-        self.TypeListWidget.item(2).setText(translate('SongMaintenanceForm', 'Books/Hymnals'))
-        self.AuthorAddButton.setText(translate('SongMaintenanceForm', 'Add'))
-        self.AuthorEditButton.setText(translate('SongMaintenanceForm', 'Edit'))
-        self.AuthorDeleteButton.setText(translate('SongMaintenanceForm', 'Delete'))
-        self.TopicAddButton.setText(translate('SongMaintenanceForm', 'Add'))
-        self.TopicEditButton.setText(translate('SongMaintenanceForm', 'Edit'))
-        self.TopicDeleteButton.setText(translate('SongMaintenanceForm', 'Delete'))
-        self.BookAddButton.setText(translate('SongMaintenanceForm', 'Add'))
-        self.BookEditButton.setText(translate('SongMaintenanceForm', 'Edit'))
-        self.BookDeleteButton.setText(translate('SongMaintenanceForm', 'Delete'))
+        SongMaintenanceDialog.setWindowTitle(
+            translate(u'SongsPlugin.SongMaintenanceForm', u'Song Maintenance'))
+        self.TypeListWidget.item(0).setText(
+            translate(u'SongsPlugin.SongMaintenanceForm', u'Authors'))
+        self.TypeListWidget.item(1).setText(
+            translate(u'SongsPlugin.SongMaintenanceForm', u'Topics'))
+        self.TypeListWidget.item(2).setText(
+            translate(u'SongsPlugin.SongMaintenanceForm', u'Books/Hymnals'))
+        self.AuthorAddButton.setText(
+            translate(u'SongsPlugin.SongMaintenanceForm', u'Add'))
+        self.AuthorEditButton.setText(
+            translate(u'SongsPlugin.SongMaintenanceForm', u'Edit'))
+        self.AuthorDeleteButton.setText(
+            translate(u'SongsPlugin.SongMaintenanceForm', u'Delete'))
+        self.TopicAddButton.setText(
+            translate(u'SongsPlugin.SongMaintenanceForm', u'Add'))
+        self.TopicEditButton.setText(
+            translate(u'SongsPlugin.SongMaintenanceForm', u'Edit'))
+        self.TopicDeleteButton.setText(
+            translate(u'SongsPlugin.SongMaintenanceForm', u'Delete'))
+        self.BookAddButton.setText(
+            translate(u'SongsPlugin.SongMaintenanceForm', u'Add'))
+        self.BookEditButton.setText(
+            translate(u'SongsPlugin.SongMaintenanceForm', u'Edit'))
+        self.BookDeleteButton.setText(
+            translate(u'SongsPlugin.SongMaintenanceForm', u'Delete'))

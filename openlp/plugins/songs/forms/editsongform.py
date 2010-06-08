@@ -28,7 +28,7 @@ import re
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver
+from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver, translate
 from openlp.plugins.songs.forms import EditVerseForm
 from openlp.plugins.songs.lib.models import Song
 from editsongdialog import Ui_EditSongDialog
@@ -102,7 +102,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'lostFocus()'), self.onVerseOrderEditLostFocus)
         self.previewButton = QtGui.QPushButton()
         self.previewButton.setObjectName(u'previewButton')
-        self.previewButton.setText(self.trUtf8('Save && Preview'))
+        self.previewButton.setText(
+            translate(u'SongsPlugin.EditSongForm', u'Save && Preview'))
         self.ButtonBox.addButton(
             self.previewButton, QtGui.QDialogButtonBox.ActionRole)
         QtCore.QObject.connect(self.ButtonBox,
@@ -436,12 +437,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                                 if parts.endswith(u'\n'):
                                     parts = parts.rstrip(u'\n')
                                 item = QtGui.QTableWidgetItem(parts)
-                                item.setData(
-                                    QtCore.Qt.UserRole, QtCore.QVariant(variant))
+                                item.setData(QtCore.Qt.UserRole,
+                                    QtCore.QVariant(variant))
                                 self.VerseListWidget.setRowCount(
                                     self.VerseListWidget.rowCount() + 1)
                                 self.VerseListWidget.setItem(
-                                    int(self.VerseListWidget.rowCount() - 1), 0, item)
+                                    int(self.VerseListWidget.rowCount() - 1),
+                                    0, item)
             self.VerseListWidget.setColumnWidth(0, self.width)
             self.VerseListWidget.resizeRowsToContents()
             self.VerseListWidget.repaint()
@@ -462,16 +464,18 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if len(self.TitleEditItem.displayText()) == 0:
             self.SongTabWidget.setCurrentIndex(0)
             self.TitleEditItem.setFocus()
-            return False, self.trUtf8('You need to enter a song title.')
+            return False, translate(u'SongsPlugin.EditSongForm',
+                u'You need to enter a song title.')
         if self.VerseListWidget.rowCount() == 0:
             self.SongTabWidget.setCurrentIndex(0)
             self.VerseListWidget.setFocus()
-            return False, self.trUtf8('You need to enter some verses.')
+            return False, translate(u'SongsPlugin.EditSongForm',
+                u'You need to enter some verses.')
         if self.AuthorsListView.count() == 0:
             self.SongTabWidget.setCurrentIndex(1)
             self.AuthorsListView.setFocus()
         #split the verse list by space and mark lower case for testing
-        taglist = unicode(self.trUtf8(' bitpeovc'))
+        taglist = unicode(translate(u'SongsPlugin.EditSongForm', u' bitpeovc'))
         for verse in unicode(self.VerseOrderEdit.text()).lower().split(u' '):
             if len(verse) > 1:
                 if taglist.find(verse[0:1]) > -1 \
@@ -480,9 +484,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 else:
                     self.SongTabWidget.setCurrentIndex(0)
                     self.VerseOrderEdit.setFocus()
-                    return False, \
-                        self.trUtf8(\
-                        'Invalid verse entry, values must be I,B,T,P,E,O,V,C followed by a number')
+                    return False, translate(u'SongsPlugin.EditSongForm', 
+                        u'Invalid verse entry, values must be I,B,T,P,E,O,V,C '
+                        u'followed by a number')
         return True, u''
 
     def onTitleEditItemLostFocus(self):
@@ -534,7 +538,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         valid, message = self._validate_song()
         if not valid:
             QtGui.QMessageBox.critical(
-                self, self.trUtf8('Error'), message,
+                self, translate(u'SongsPlugin.EditSongForm', u'Error'), message,
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             return False
         self.song.title = unicode(self.TitleEditItem.text())
@@ -592,5 +596,4 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.search_title = self.song.search_title.replace(u'{', u'')
         self.song.search_title = self.song.search_title.replace(u'}', u'')
         self.song.search_title = self.song.search_title.replace(u'?', u'')
-
 

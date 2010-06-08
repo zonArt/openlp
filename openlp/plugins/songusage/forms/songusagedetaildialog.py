@@ -70,24 +70,28 @@ class Ui_SongUsageDetailDialog(object):
         self.verticalLayout_2.addWidget(self.FileGroupBox)
         self.verticalLayout.addWidget(self.DateRangeGroupBox)
         self.buttonBox = QtGui.QDialogButtonBox(SongUsageDetailDialog)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
+            QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(u'buttonBox')
         self.verticalLayout.addWidget(self.buttonBox)
 
         self.retranslateUi(SongUsageDetailDialog)
-        QtCore.QObject.connect(self.buttonBox,
-                                QtCore.SIGNAL(u'accepted()'),
-                                SongUsageDetailDialog.accept)
-        QtCore.QObject.connect(self.buttonBox,
-                               QtCore.SIGNAL(u'rejected()'),
-                               SongUsageDetailDialog.close)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
+            SongUsageDetailDialog.accept)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
+            SongUsageDetailDialog.close)
         QtCore.QObject.connect(self.SaveFilePushButton,
-                               QtCore.SIGNAL(u'pressed()'),
-                               SongUsageDetailDialog.defineOutputLocation)
+            QtCore.SIGNAL(u'pressed()'),
+            SongUsageDetailDialog.defineOutputLocation)
         QtCore.QMetaObject.connectSlotsByName(SongUsageDetailDialog)
 
     def retranslateUi(self, SongUsageDetailDialog):
-        SongUsageDetailDialog.setWindowTitle(translate('AuditDetailDialog', 'Song Usage Extraction'))
-        self.DateRangeGroupBox.setTitle(translate('AuditDetailDialog', 'Select Date Range'))
-        self.ToLabel.setText(translate('AuditDetailDialog', 'to'))
-        self.FileGroupBox.setTitle(translate('AuditDetailDialog', 'Report Location'))
+        SongUsageDetailDialog.setWindowTitle(
+            translate(u'SongsPlugin.AuditDetailDialog',
+                u'Song Usage Extraction'))
+        self.DateRangeGroupBox.setTitle(
+            translate(u'SongsPlugin.AuditDetailDialog', u'Select Date Range'))
+        self.ToLabel.setText(
+            translate(u'SongsPlugin.AuditDetailDialog', u'to'))
+        self.FileGroupBox.setTitle(
+            translate(u'SongsPlugin.AuditDetailDialog', u'Report Location'))

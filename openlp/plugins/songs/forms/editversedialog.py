@@ -73,33 +73,37 @@ class Ui_EditVerseDialog(object):
         self.EditVerseLayout.addLayout(self.VerseTypeLayout)
         self.EditButtonBox = QtGui.QDialogButtonBox(EditVerseDialog)
         self.EditButtonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.EditButtonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Save)
+        self.EditButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
+            QtGui.QDialogButtonBox.Save)
         self.EditButtonBox.setObjectName(u'EditButtonBox')
         self.EditVerseLayout.addWidget(self.EditButtonBox)
 
         self.retranslateUi(EditVerseDialog)
-        QtCore.QObject.connect(
-            self.EditButtonBox,
-            QtCore.SIGNAL(u'accepted()'),
-            EditVerseDialog.accept
-        )
-        QtCore.QObject.connect(
-            self.EditButtonBox,
-            QtCore.SIGNAL(u'rejected()'),
-            EditVerseDialog.reject
-        )
+        QtCore.QObject.connect(self.EditButtonBox, QtCore.SIGNAL(u'accepted()'),
+            EditVerseDialog.accept)
+        QtCore.QObject.connect(self.EditButtonBox, QtCore.SIGNAL(u'rejected()'),
+            EditVerseDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(EditVerseDialog)
 
     def retranslateUi(self, EditVerseDialog):
-        EditVerseDialog.setWindowTitle(translate('EditVerseForm', 'Edit Verse'))
-        self.VerseTypeLabel.setText(translate('EditVerseForm', 'Verse Type:'))
-        self.VerseTypeComboBox.setItemText(0, VerseType.to_string(VerseType.Verse))
-        self.VerseTypeComboBox.setItemText(1, VerseType.to_string(VerseType.Chorus))
-        self.VerseTypeComboBox.setItemText(2, VerseType.to_string(VerseType.Bridge))
-        self.VerseTypeComboBox.setItemText(3, VerseType.to_string(VerseType.PreChorus))
-        self.VerseTypeComboBox.setItemText(4, VerseType.to_string(VerseType.Intro))
-        self.VerseTypeComboBox.setItemText(5, VerseType.to_string(VerseType.Ending))
-        self.VerseTypeComboBox.setItemText(6, VerseType.to_string(VerseType.Other))
-        self.InsertButton.setText(translate('EditVerseForm', 'Insert'))
+        EditVerseDialog.setWindowTitle(
+            translate(u'SongsPlugin.EditVerseForm', u'Edit Verse'))
+        self.VerseTypeLabel.setText(
+            translate(u'SongsPlugin.EditVerseForm', u'Verse Type:'))
+        self.VerseTypeComboBox.setItemText(0,
+            VerseType.to_string(VerseType.Verse))
+        self.VerseTypeComboBox.setItemText(1,
+            VerseType.to_string(VerseType.Chorus))
+        self.VerseTypeComboBox.setItemText(2,
+            VerseType.to_string(VerseType.Bridge))
+        self.VerseTypeComboBox.setItemText(3,
+            VerseType.to_string(VerseType.PreChorus))
+        self.VerseTypeComboBox.setItemText(4,
+            VerseType.to_string(VerseType.Intro))
+        self.VerseTypeComboBox.setItemText(5,
+            VerseType.to_string(VerseType.Ending))
+        self.VerseTypeComboBox.setItemText(6,
+            VerseType.to_string(VerseType.Other))
+        self.InsertButton.setText(
+            translate(u'SongsPlugin.EditVerseForm', u'Insert'))
 

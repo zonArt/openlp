@@ -60,4 +60,4 @@ class Ui_SettingsDialog(object):
         QtCore.QMetaObject.connectSlotsByName(SettingsDialog)
 
     def retranslateUi(self, SettingsDialog):
-        SettingsDialog.setWindowTitle(translate('SettingsForm', 'Settings'))
+        SettingsDialog.setWindowTitle(translate(u'SettingsForm', u'Settings'))

@@ -286,21 +286,41 @@ class Ui_OpenLPExportDialog(object):
         QtCore.QMetaObject.connectSlotsByName(OpenLPExportDialog)
 
     def retranslateUi(self, OpenLPExportDialog):
-        OpenLPExportDialog.setWindowTitle(translate('OpenLPExportForm', 'openlp.org Song Exporter'))
-        self.ExportFileLabel.setText(translate('OpenLPExportForm', 'Select openlp.org export filename:'))
-        self.ExportListLabel.setText(translate('OpenLPExportForm', 'Full Song List'))
-        self.ExportListTable.horizontalHeaderItem(0).setText(translate('OpenLPExportForm', 'Song Title'))
-        self.ExportListTable.horizontalHeaderItem(1).setText(translate('OpenLPExportForm', 'Author'))
-        self.ExportSelectAllPushButton.setText(translate('OpenLPExportForm', 'Select All'))
-        self.ExportFilterComboBox.setItemText(0, translate('OpenLPExportForm', 'Lyrics'))
-        self.ExportFilterComboBox.setItemText(1, translate('OpenLPExportForm', 'Title'))
-        self.ExportFilterComboBox.setItemText(2, translate('OpenLPExportForm', 'Author'))
-        self.SelectedListLabel.setText(translate('OpenLPExportForm', 'Song Export List'))
-        self.SelectedListTable.horizontalHeaderItem(0).setText(translate('OpenLPExportForm', 'Song Title'))
-        self.SelectedListTable.horizontalHeaderItem(1).setText(translate('OpenLPExportForm', 'Author'))
-        self.SelectedSelectAllPushButton.setText(translate('OpenLPExportForm', 'Select All'))
-        self.SelectedRemoveSelectedButton.setText(translate('OpenLPExportForm', 'Remove Selected'))
-        self.ProgressGroupBox.setTitle(translate('OpenLPExportForm', 'Progress:'))
-        self.ProgressLabel.setText(translate('OpenLPExportForm', 'Ready to export'))
-        self.ExportPushButton.setText(translate('OpenLPExportForm', 'Export'))
-        self.ClosePushButton.setText(translate('OpenLPExportForm', 'Close'))
+        OpenLPExportDialog.setWindowTitle(
+            translate(u'SongsPlugin.OpenLPExportForm',
+                u'openlp.org Song Exporter'))
+        self.ExportFileLabel.setText(
+            translate(u'SongsPlugin.OpenLPExportForm',
+                u'Select openlp.org export filename:'))
+        self.ExportListLabel.setText(
+            translate(u'SongsPlugin.OpenLPExportForm', u'Full Song List'))
+        self.ExportListTable.horizontalHeaderItem(0).setText(
+            translate(u'SongsPlugin.OpenLPExportForm', u'Song Title'))
+        self.ExportListTable.horizontalHeaderItem(1).setText(
+            translate(u'SongsPlugin.OpenLPExportForm', u'Author'))
+        self.ExportSelectAllPushButton.setText(
+            translate(u'SongsPlugin.OpenLPExportForm', u'Select All'))
+        self.ExportFilterComboBox.setItemText(0, 
+            translate(u'SongsPlugin.OpenLPExportForm', u'Lyrics'))
+        self.ExportFilterComboBox.setItemText(1, 
+            translate(u'SongsPlugin.OpenLPExportForm', u'Title'))
+        self.ExportFilterComboBox.setItemText(2, 
+            translate(u'SongsPlugin.OpenLPExportForm', u'Author'))
+        self.SelectedListLabel.setText(
+            translate(u'SongsPlugin.OpenLPExportForm', u'Song Export List'))
+        self.SelectedListTable.horizontalHeaderItem(0).setText(
+            translate(u'SongsPlugin.OpenLPExportForm', u'Song Title'))
+        self.SelectedListTable.horizontalHeaderItem(1).setText(
+            translate(u'SongsPlugin.OpenLPExportForm', u'Author'))
+        self.SelectedSelectAllPushButton.setText(
+            translate(u'SongsPlugin.OpenLPExportForm', u'Select All'))
+        self.SelectedRemoveSelectedButton.setText(
+            translate(u'SongsPlugin.OpenLPExportForm', u'Remove Selected'))
+        self.ProgressGroupBox.setTitle(
+            translate(u'SongsPlugin.OpenLPExportForm', u'Progress:'))
+        self.ProgressLabel.setText(
+            translate(u'SongsPlugin.OpenLPExportForm', u'Ready to export'))
+        self.ExportPushButton.setText(
+            translate(u'SongsPlugin.OpenLPExportForm', u'Export'))
+        self.ClosePushButton.setText(
+            translate(u'SongsPlugin.OpenLPExportForm', u'Close'))

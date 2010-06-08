@@ -26,6 +26,7 @@
 from PyQt4 import QtCore, QtGui
 
 from aboutdialog import Ui_AboutDialog
+from openlp.core.lib import translate
 
 class AboutForm(QtGui.QDialog, Ui_AboutDialog):
     """
@@ -43,7 +44,7 @@ class AboutForm(QtGui.QDialog, Ui_AboutDialog):
         about_text = about_text.replace(u'<version>',
             self.applicationVersion[u'version'])
         if self.applicationVersion[u'build']:
-            build_text = u' %s %s' % (self.trUtf8('build'),
+            build_text = u' %s %s' % (translate(u'AboutForm', u'build'),
                 self.applicationVersion[u'build'])
         else:
             build_text = u''

@@ -26,7 +26,7 @@
 import os
 import logging
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus
+from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
 from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import *
 
@@ -108,9 +108,10 @@ class PresentationPlugin(Plugin):
             return False
 
     def about(self):
-        about_text = self.trUtf8('<b>Presentation Plugin</b> <br> Delivers '
-            'the ability to show presentations using a number of different '
-            'programs. The choice of available presentation programs is '
-            'available to the user in a drop down box.')
+        about_text = translate(u'PresentationPlugin.PresentationPlugin', 
+            u'<b>Presentation Plugin</b> <br> Delivers '
+            u'the ability to show presentations using a number of different '
+            u'programs. The choice of available presentation programs is '
+            u'available to the user in a drop down box.')
         return about_text
 

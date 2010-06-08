@@ -29,7 +29,7 @@ import os.path
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import ThemeXML
+from openlp.core.lib import ThemeXML, translate
 from amendthemedialog import Ui_AmendThemeDialog
 
 log = logging.getLogger(u'AmendThemeForm')
@@ -210,11 +210,12 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
     def onImageToolButtonClicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(
-            self, self.trUtf8(u'Open file'))
+            self, translate(u'AmendThemeForm', u'Open file'))
         if filename:
             self.ImageLineEdit.setText(filename)
             self.theme.background_filename = filename
             self.previewTheme()
+
     #
     #Main Font Tab
     #
@@ -306,6 +307,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         if self.theme.font_main_height != self.FontMainHeightSpinBox.value():
             self.theme.font_main_height = self.FontMainHeightSpinBox.value()
             self.previewTheme()
+
     #
     #Footer Font Tab
     #
@@ -384,6 +386,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.theme.font_footer_height = \
                 self.FontFooterHeightSpinBox.value()
             self.previewTheme()
+
     #
     #Background Tab
     #
@@ -446,6 +449,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.Color2PushButton.setStyleSheet(
             u'background-color: %s' % unicode(self.theme.background_endColor))
         self.previewTheme()
+
     #
     #Other Tab
     #
@@ -506,6 +510,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.theme.display_verticalAlign = currentIndex
         self.stateChanging(self.theme)
         self.previewTheme()
+
     #
     #Local Methods
     #
@@ -629,7 +634,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             if theme.background_type == u'solid':
                 self.Color1PushButton.setStyleSheet(
                     u'background-color: %s' % unicode(theme.background_color))
-                self.Color1Label.setText(self.trUtf8('Background Color:'))
+                self.Color1Label.setText(
+                    translate(u'AmendThemeForm', u'Background Color:'))
                 self.Color1Label.setVisible(True)
                 self.Color1PushButton.setVisible(True)
                 self.Color2Label.setVisible(False)
@@ -644,8 +650,10 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                     % unicode(theme.background_startColor))
                 self.Color2PushButton.setStyleSheet(u'background-color: %s' \
                     % unicode(theme.background_endColor))
-                self.Color1Label.setText(self.trUtf8('First  Color:'))
-                self.Color2Label.setText(self.trUtf8('Second Color:'))
+                self.Color1Label.setText(
+                    translate(u'AmendThemeForm', u'First Color:'))
+                self.Color2Label.setText(
+                    translate(u'AmendThemeForm', u'Second Color:'))
                 self.Color1Label.setVisible(True)
                 self.Color1PushButton.setVisible(True)
                 self.Color2Label.setVisible(True)
@@ -713,7 +721,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             log.debug(u'Page Length area height %s, metrics %s, lines %s' %
                 (self.FontMainHeightSpinBox.value(), metrics.height(),
                 page_length))
-            page_length_text = unicode(self.trUtf8('Slide Height is %s rows'))
+            page_length_text = unicode(
+                translate(u'AmendThemeForm', u'Slide Height is %s rows'))
             self.FontMainLinesPageLabel.setText(page_length_text % page_length)
             frame = self.thememanager.generateImage(self.theme)
             self.ThemePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
@@ -728,8 +737,9 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                      self.theme.font_main_italics)# italic
         mainFont.setPixelSize(self.theme.font_main_proportion)
         metrics = QtGui.QFontMetrics(mainFont)
-        #Validate that the screen width is big enough to display the text
+        # Validate that the screen width is big enough to display the text
         if self.theme.font_main_width < metrics.maxWidth() * 2 + 64:
             self.theme.font_main_width = metrics.maxWidth() * 2 + 64
             self.FontMainWidthSpinBox.setValue(self.theme.font_main_width)
         return metrics
+

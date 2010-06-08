@@ -25,7 +25,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, Receiver
+from openlp.core.lib import SettingsTab, Receiver, translate
 
 class GeneralTab(SettingsTab):
     """
@@ -54,7 +54,7 @@ class GeneralTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'GeneralTab')
-        self.tabTitleVisible = self.trUtf8('General')
+        self.tabTitleVisible = translate(u'GeneralTab', u'General')
         self.GeneralLayout = QtGui.QHBoxLayout(self)
         self.GeneralLayout.setSpacing(8)
         self.GeneralLayout.setMargin(8)
@@ -177,25 +177,32 @@ class GeneralTab(SettingsTab):
             QtCore.SIGNAL(u'editingFinished()'), self.onPasswordEditLostFocus)
 
     def retranslateUi(self):
-        self.MonitorGroupBox.setTitle(self.trUtf8('Monitors'))
+        self.MonitorGroupBox.setTitle(translate(u'GeneralTab', u'Monitors'))
         self.MonitorLabel.setText(
-            self.trUtf8('Select monitor for output display:'))
+            translate(u'GeneralTab', u'Select monitor for output display:'))
         self.DisplayOnMonitorCheck.setText(
-            self.trUtf8('Display if a single screen'))
-        self.StartupGroupBox.setTitle(self.trUtf8('Application Startup'))
-        self.WarningCheckBox.setText(self.trUtf8('Show blank screen warning'))
+            translate(u'GeneralTab', u'Display if a single screen'))
+        self.StartupGroupBox.setTitle(
+            translate(u'GeneralTab', u'Application Startup'))
+        self.WarningCheckBox.setText(
+            translate(u'GeneralTab', u'Show blank screen warning'))
         self.AutoOpenCheckBox.setText(
-            self.trUtf8('Automatically open the last service'))
-        self.ShowSplashCheckBox.setText(self.trUtf8('Show the splash screen'))
-        self.SettingsGroupBox.setTitle(self.trUtf8('Application Settings'))
+            translate(u'GeneralTab', u'Automatically open the last service'))
+        self.ShowSplashCheckBox.setText(
+            translate(u'GeneralTab', u'Show the splash screen'))
+        self.SettingsGroupBox.setTitle(
+            translate(u'GeneralTab', u'Application Settings'))
         self.SaveCheckServiceCheckBox.setText(
-            self.trUtf8('Prompt to save Service before starting New'))
+            translate(u'GeneralTab', 
+            u'Prompt to save Service before starting New'))
         self.AutoPreviewCheckBox.setText(
-            self.trUtf8('Preview Next Song from Service Manager'))
-        self.CCLIGroupBox.setTitle(self.trUtf8('CCLI Details'))
-        self.NumberLabel.setText(self.trUtf8('CCLI Number:'))
-        self.UsernameLabel.setText(self.trUtf8('SongSelect Username:'))
-        self.PasswordLabel.setText(self.trUtf8('SongSelect Password:'))
+            translate(u'GeneralTab', u'Preview Next Song from Service Manager'))
+        self.CCLIGroupBox.setTitle(translate(u'GeneralTab', u'CCLI Details'))
+        self.NumberLabel.setText(translate(u'GeneralTab', u'CCLI Number:'))
+        self.UsernameLabel.setText(
+            translate(u'GeneralTab', u'SongSelect Username:'))
+        self.PasswordLabel.setText(
+            translate(u'GeneralTab', u'SongSelect Password:'))
 
     def onMonitorComboBoxChanged(self):
         self.MonitorNumber = self.MonitorComboBox.currentIndex()
@@ -231,10 +238,11 @@ class GeneralTab(SettingsTab):
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
         for screen in self.screens.screen_list:
-            screen_name = u'%s %d' % (self.trUtf8('Screen'),
+            screen_name = u'%s %d' % (translate(u'GeneralTab', u'Screen'),
                 screen[u'number'] + 1)
             if screen[u'primary']:
-                screen_name = u'%s (%s)' % (screen_name, self.trUtf8('primary'))
+                screen_name = u'%s (%s)' % (screen_name, 
+                    translate(u'GeneralTab', u'primary'))
             self.MonitorComboBox.addItem(screen_name)
         # Get the configs
         self.Warning = settings.value(
