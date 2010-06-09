@@ -243,13 +243,20 @@ class ThemeManager(QtGui.QWidget):
             try:
                 zip = zipfile.ZipFile(themePath, u'w')
                 source = os.path.join(self.path, theme)
-                for files in os.walk(source)[2]:
-                    for name in files:
-                        zip.write(
-                            os.path.join(source, name),
+                for files in os.walk(source):
+                    for name in files[2]:
+                        zip.write(os.path.join(source, name),
                             os.path.join(theme, name))
+                QtGui.QMessageBox.information(self,
+                    translate(u'ThemeManager', u'Theme Exported'),
+                    translate(u'ThemeManager',
+                        u'Your theme has been successfully exported.'))
             except (IOError, OSError):
                 log.exception(u'Export Theme Failed')
+                QtGui.QMessageBox.information(self,
+                    translate(u'ThemeManager', u'Theme Export Failed'),
+                    translate(u'ThemeManager',
+                        u'Your theme could not be exported due to an error.'))
             finally:
                 if zip:
                     zip.close()
