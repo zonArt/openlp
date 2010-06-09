@@ -27,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib.plugin import PluginStatus, translate
+from openlp.core.lib import PluginStatus, translate
 from plugindialog import Ui_PluginViewDialog
 
 log = logging.getLogger(__name__)
