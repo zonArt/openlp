@@ -74,6 +74,8 @@ class VerseType(object):
         elif verse_type == \
             unicode(VerseType.to_string(VerseType.Other)).lower():
             return VerseType.Other
+        else:
+            return -1
 
 from authorsform import AuthorsForm
 from topicsform import TopicsForm

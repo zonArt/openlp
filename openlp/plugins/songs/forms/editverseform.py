@@ -104,7 +104,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             verse_type = match.group(1)
             verse_number = int(match.group(2))
             verse_type_index = VerseType.from_string(verse_type)
-            if verse_type_index:
+            if verse_type_index >= 0:
                 self.VerseTypeComboBox.setCurrentIndex(verse_type_index)
                 self.VerseNumberBox.setValue(verse_number)
 
