@@ -438,7 +438,7 @@ class ThemeManager(QtGui.QWidget):
         return newtheme.extract_xml()
 
     def saveTheme(self, name, theme_xml, theme_pretty_xml, image_from,
-        image_to) :
+        image_to):
         """
         Called by thememaintenance Dialog to save the theme
         and to trigger the reload of the theme list

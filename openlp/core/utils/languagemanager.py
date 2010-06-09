@@ -27,6 +27,7 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
+
 from openlp.core.utils import AppLocation
 from openlp.core.lib import translate
 
@@ -41,7 +42,7 @@ class LanguageManager(object):
     
     @staticmethod
     def get_translator(language):
-        if LanguageManager.AutoLanguage :
+        if LanguageManager.AutoLanguage:
             language = QtCore.QLocale.system().name()
         lang_Path = AppLocation.get_directory(AppLocation.AppDir)
         lang_Path = os.path.join(lang_Path, u'resources', u'i18n')
@@ -81,7 +82,7 @@ class LanguageManager(object):
     def set_language(action):
         actionName = u'%s' % action.objectName()
         qmList = LanguageManager.get_qm_list()
-        if LanguageManager.AutoLanguage :
+        if LanguageManager.AutoLanguage:
             language = u'[%s]' % qmList[actionName]
         else:
             language = u'%s' % qmList[actionName]
@@ -89,9 +90,9 @@ class LanguageManager(object):
             u'general/language', QtCore.QVariant(language))
         log.info(u'Language file: \'%s\' written to conf file' % language)
         QtGui.QMessageBox.information(None,  
-                    translate(u'LanguageManager', u'Language'), 
-                    translate(u'LanguageManager', 
-                        u'After restart new Language settings will be used.'))
+            translate(u'LanguageManager', u'Language'), 
+            translate(u'LanguageManager', 
+                u'After restart new Language settings will be used.'))
 
     @staticmethod
     def init_qm_list():
@@ -106,7 +107,7 @@ class LanguageManager(object):
 
     @staticmethod
     def get_qm_list():
-        if LanguageManager.__qmList__ == None:
+        if LanguageManager.__qmList__ is None:
             LanguageManager.init_qm_list()
         return LanguageManager.__qmList__
 

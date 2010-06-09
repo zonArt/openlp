@@ -184,7 +184,7 @@ class BGExtract(BibleCommon):
         log.debug(u'init %s', proxyurl)
         self.proxyurl = proxyurl
 
-    def get_bible_chapter(self, version, bookname, chapter) :
+    def get_bible_chapter(self, version, bookname, chapter):
         """
         Access and decode bibles via the BibleGateway website
 
