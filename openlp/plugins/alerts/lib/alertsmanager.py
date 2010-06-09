@@ -27,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, translate
 
 log = logging.getLogger(__name__)
 
@@ -93,7 +93,8 @@ class AlertsManager(QtCore.QObject):
         self.alertList.append(text)
         if self.timer_id != 0:
             Receiver.send_message(u'maindisplay_status_text',
-                self.trUtf8(u'Alert message created and delayed'))
+                translate(u'AlertsPlugin.AlertsManager',
+                u'Alert message created and delayed'))
             return
         Receiver.send_message(u'maindisplay_status_text', u'')
         self.generateAlert()

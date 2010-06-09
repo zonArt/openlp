@@ -28,7 +28,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, Receiver, build_icon
+from openlp.core.lib import Plugin, Receiver, build_icon, translate
 from openlp.plugins.songusage.lib import SongUsageManager
 from openlp.plugins.songusage.forms import SongUsageDetailForm, \
     SongUsageDeleteForm
@@ -156,7 +156,8 @@ class SongUsagePlugin(Plugin):
         self.SongUsagedetailform.exec_()
 
     def about(self):
-        about_text = self.trUtf8('<b>SongUsage Plugin</b><br>This plugin '
-            'records the use of songs and when they have been used during '
-            'a live service')
+        about_text = translate(u'SongsPlugin.SongUsagePlugin',
+            u'<b>SongUsage Plugin</b><br>This plugin '
+            u'records the use of songs and when they have been used during '
+            u'a live service')
         return about_text

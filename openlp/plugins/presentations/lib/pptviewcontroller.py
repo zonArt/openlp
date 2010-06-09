@@ -125,7 +125,8 @@ class PptviewDocument(PresentationDocument):
         filepath = str(self.filepath.replace(u'/', u'\\'))
         try:
             self.pptid = self.controller.process.OpenPPT(filepath, None, rect,
-                str(os.path.join(self.thumbnailpath, self.controller.thumbnailprefix)))
+                str(os.path.join(self.thumbnailpath,
+                self.controller.thumbnailprefix)))
             self.stop_presentation()
         except:
             log.exception(u'Failed to load presentation')
@@ -233,3 +234,4 @@ class PptviewDocument(PresentationDocument):
             return path
         else:
             return None
+

@@ -29,7 +29,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    SettingsManager
+    SettingsManager, translate
 from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import MessageListener
 
@@ -61,11 +61,14 @@ class PresentationMediaItem(MediaManagerItem):
         self.message_listener = MessageListener(self)
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = self.trUtf8('Presentation')
+        self.PluginNameVisible = translate(u'PresentationPlugin.MediaItem',
+            u'Presentation')
 
     def retranslateUi(self):
-        self.OnNewPrompt = self.trUtf8('Select Presentation(s)')
-        self.Automatic = self.trUtf8('Automatic')
+        self.OnNewPrompt = translate(u'PresentationPlugin.MediaItem',
+            u'Select Presentation(s)')
+        self.Automatic = translate(u'PresentationPlugin.MediaItem',
+            u'Automatic')
         fileType = u''
         for controller in self.controllers:
             if self.controllers[controller].enabled:
@@ -75,7 +78,8 @@ class PresentationMediaItem(MediaManagerItem):
                     if fileType.find(type) == -1:
                         fileType += u'*%s ' % type
                         self.parent.service_manager.supportedSuffixes(type)
-        self.OnNewFileMasks = self.trUtf8('Presentations (%s)' % fileType)
+        self.OnNewFileMasks = translate(u'PresentationPlugin.MediaItem',
+            u'Presentations (%s)' % fileType)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -101,7 +105,8 @@ class PresentationMediaItem(MediaManagerItem):
         self.DisplayTypeLabel = QtGui.QLabel(self.PresentationWidget)
         self.DisplayTypeLabel.setObjectName(u'SearchTypeLabel')
         self.DisplayLayout.addWidget(self.DisplayTypeLabel, 0, 0, 1, 1)
-        self.DisplayTypeLabel.setText(self.trUtf8('Present using:'))
+        self.DisplayTypeLabel.setText(
+            translate(u'PresentationPlugin.MediaItem', u'Present using:'))
         # Add the Presentation widget to the page layout
         self.PageLayout.addWidget(self.PresentationWidget)
 
@@ -134,8 +139,10 @@ class PresentationMediaItem(MediaManagerItem):
             filename = os.path.split(unicode(file))[1]
             if titles.count(filename) > 0:
                 QtGui.QMessageBox.critical(
-                    self, self.trUtf8('File exists'), self.trUtf8(
-                        'A presentation with that filename already exists.'),
+                    self, translate(u'PresentationPlugin.MediaItem',
+                    u'File exists'), 
+                        translate(u'PresentationPlugin.MediaItem',
+                        u'A presentation with that filename already exists.'),
                     QtGui.QMessageBox.Ok)
             else:
                 icon = None

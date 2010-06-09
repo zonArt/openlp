@@ -286,21 +286,42 @@ class Ui_OpenLPImportDialog(object):
         QtCore.QMetaObject.connectSlotsByName(OpenLPImportDialog)
 
     def retranslateUi(self, OpenLPImportDialog):
-        OpenLPImportDialog.setWindowTitle(translate('OpenLPImportForm', 'openlp.org Song Importer'))
-        self.ImportFileLabel.setText(translate('OpenLPImportForm', 'Select openlp.org songfile to import:'))
-        self.ImportListLabel.setText(translate('OpenLPImportForm', 'Import File Song List'))
-        self.ImportListTable.horizontalHeaderItem(0).setText(translate('OpenLPImportForm', 'Song Title'))
-        self.ImportListTable.horizontalHeaderItem(1).setText(translate('OpenLPImportForm', 'Author'))
-        self.ImportSelectAllPushButton.setText(translate('OpenLPImportForm', 'Select All'))
-        self.ImportFilterComboBox.setItemText(0, translate('OpenLPImportForm', 'Lyrics'))
-        self.ImportFilterComboBox.setItemText(1, translate('OpenLPImportForm', 'Title'))
-        self.ImportFilterComboBox.setItemText(2, translate('OpenLPImportForm', 'Author'))
-        self.SelectedListLabel.setText(translate('OpenLPImportForm', 'Song Import List'))
-        self.SelectedListTable.horizontalHeaderItem(0).setText(translate('OpenLPImportForm', 'Song Title'))
-        self.SelectedListTable.horizontalHeaderItem(1).setText(translate('OpenLPImportForm', 'Author'))
-        self.SelectedSelectAllPushButton.setText(translate('OpenLPImportForm', 'Select All'))
-        self.SelectedRemoveSelectedButton.setText(translate('OpenLPImportForm', 'Remove Selected'))
-        self.ProgressGroupBox.setTitle(translate('OpenLPImportForm', 'Progress:'))
-        self.ProgressLabel.setText(translate('OpenLPImportForm', 'Ready to import'))
-        self.ImportPushButton.setText(translate('OpenLPImportForm', 'Import'))
-        self.ClosePushButton.setText(translate('OpenLPImportForm', 'Close'))
+        OpenLPImportDialog.setWindowTitle(
+            translate(u'SongsPlugin.OpenLPImportForm',
+                u'openlp.org Song Importer'))
+        self.ImportFileLabel.setText(
+            translate(u'SongsPlugin.OpenLPImportForm', 
+                u'Select openlp.org songfile to import:'))
+        self.ImportListLabel.setText(
+            translate(u'SongsPlugin.OpenLPImportForm',
+                u'Import File Song List'))
+        self.ImportListTable.horizontalHeaderItem(0).setText(
+            translate(u'SongsPlugin.OpenLPImportForm', u'Song Title'))
+        self.ImportListTable.horizontalHeaderItem(1).setText(
+            translate(u'SongsPlugin.OpenLPImportForm', u'Author'))
+        self.ImportSelectAllPushButton.setText(
+            translate(u'SongsPlugin.OpenLPImportForm', u'Select All'))
+        self.ImportFilterComboBox.setItemText(0, 
+            translate(u'SongsPlugin.OpenLPImportForm', u'Lyrics'))
+        self.ImportFilterComboBox.setItemText(1, 
+            translate(u'SongsPlugin.OpenLPImportForm', u'Title'))
+        self.ImportFilterComboBox.setItemText(2, 
+            translate(u'SongsPlugin.OpenLPImportForm', u'Author'))
+        self.SelectedListLabel.setText(
+            translate(u'SongsPlugin.OpenLPImportForm', u'Song Import List'))
+        self.SelectedListTable.horizontalHeaderItem(0).setText(
+            translate(u'SongsPlugin.OpenLPImportForm', u'Song Title'))
+        self.SelectedListTable.horizontalHeaderItem(1).setText(
+            translate(u'SongsPlugin.OpenLPImportForm', u'Author'))
+        self.SelectedSelectAllPushButton.setText(
+            translate(u'SongsPlugin.OpenLPImportForm', u'Select All'))
+        self.SelectedRemoveSelectedButton.setText(
+            translate(u'SongsPlugin.OpenLPImportForm', u'Remove Selected'))
+        self.ProgressGroupBox.setTitle(
+            translate(u'SongsPlugin.OpenLPImportForm', u'Progress:'))
+        self.ProgressLabel.setText(
+            translate(u'SongsPlugin.OpenLPImportForm', u'Ready to import'))
+        self.ImportPushButton.setText(
+            translate(u'SongsPlugin.OpenLPImportForm', u'Import'))
+        self.ClosePushButton.setText(
+            translate(u'SongsPlugin.OpenLPImportForm', u'Close'))

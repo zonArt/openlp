@@ -27,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus
+from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
 from openlp.plugins.alerts.lib import AlertsManager, AlertsTab, DBManager
 from openlp.plugins.alerts.forms import AlertForm
 
@@ -63,8 +63,10 @@ class alertsPlugin(Plugin):
         AlertIcon = build_icon(u':/tools/tools_alert.png')
         self.toolsAlertItem.setIcon(AlertIcon)
         self.toolsAlertItem.setObjectName(u'toolsAlertItem')
-        self.toolsAlertItem.setText(self.trUtf8('&Alert'))
-        self.toolsAlertItem.setStatusTip(self.trUtf8('Show an alert message'))
+        self.toolsAlertItem.setText(
+            translate(u'AlertsPlugin.AlertsPlugin', u'&Alert'))
+        self.toolsAlertItem.setStatusTip(
+            translate(u'AlertsPlugin.AlertsPlugin', u'Show an alert message'))
         self.toolsAlertItem.setShortcut(u'F7')
         self.service_manager.parent.ToolsMenu.addAction(self.toolsAlertItem)
         QtCore.QObject.connect(self.toolsAlertItem,
@@ -92,6 +94,7 @@ class alertsPlugin(Plugin):
         self.alertForm.exec_()
 
     def about(self):
-        about_text = self.trUtf8('<b>Alerts Plugin</b><br>This plugin '
-            'controls the displaying of alerts on the presentations screen')
+        about_text = translate(u'AlertsPlugin.AlertsPlugin', 
+            u'<b>Alerts Plugin</b><br>This plugin '
+            u'controls the displaying of alerts on the presentations screen')
         return about_text

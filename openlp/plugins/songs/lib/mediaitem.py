@@ -28,7 +28,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, SongXMLParser, \
-    BaseListWithDnD, Receiver, ItemCapabilities
+    BaseListWithDnD, Receiver, ItemCapabilities, translate
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     ImportWizardForm
 
@@ -60,17 +60,18 @@ class SongMediaItem(MediaManagerItem):
         self.remoteSong = -1
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = self.trUtf8('Song')
+        self.PluginNameVisible = translate(u'SongsPlugin.MediaItem', u'Song')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
-        self.hasFileIcon = False
 
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
         ## Song Maintenance Button ##
-        self.addToolbarButton(self.trUtf8('Song Maintenance'),
-            self.trUtf8('Maintain the lists of authors, topics and books'),
+        self.addToolbarButton(
+            translate(u'SongsPlugin.MediaItem', u'Song Maintenance'),
+            translate(u'SongsPlugin.MediaItem',
+            u'Maintain the lists of authors, topics and books'),
             ':/songs/song_maintenance.png', self.onSongMaintenanceClick)
         self.PageLayout.setSpacing(4)
         self.SearchLayout = QtGui.QFormLayout()
@@ -139,15 +140,22 @@ class SongMediaItem(MediaManagerItem):
             QtCore.QVariant(u'False')).toBool()
 
     def retranslateUi(self):
-        self.SearchTextLabel.setText(self.trUtf8('Search:'))
-        self.SearchTypeLabel.setText(self.trUtf8('Type:'))
-        self.ClearTextButton.setText(self.trUtf8('Clear'))
-        self.SearchTextButton.setText(self.trUtf8('Search'))
+        self.SearchTextLabel.setText(
+            translate(u'SongsPlugin.MediaItem', u'Search:'))
+        self.SearchTypeLabel.setText(
+            translate(u'SongsPlugin.MediaItem', u'Type:'))
+        self.ClearTextButton.setText(
+            translate(u'SongsPlugin.MediaItem', u'Clear'))
+        self.SearchTextButton.setText(
+            translate(u'SongsPlugin.MediaItem', u'Search'))
 
     def initialise(self):
-        self.SearchTypeComboBox.addItem(self.trUtf8('Titles'))
-        self.SearchTypeComboBox.addItem(self.trUtf8('Lyrics'))
-        self.SearchTypeComboBox.addItem(self.trUtf8('Authors'))
+        self.SearchTypeComboBox.addItem(
+            translate(u'SongsPlugin.MediaItem', u'Titles'))
+        self.SearchTypeComboBox.addItem(
+            translate(u'SongsPlugin.MediaItem', u'Lyrics'))
+        self.SearchTypeComboBox.addItem(
+            translate(u'SongsPlugin.MediaItem', u'Authors'))
         self.configUpdated()
 
     def onSearchTextButtonClick(self):
@@ -198,7 +206,8 @@ class SongMediaItem(MediaManagerItem):
         self.ListView.clear()
         for author in searchresults:
             for song in author.songs:
-                song_detail = unicode(self.trUtf8('%s (%s)')) % \
+                song_detail = unicode(
+                    translate(u'SongsPlugin.MediaItem', u'%s (%s)')) % \
                     (author.display_name, song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
@@ -276,12 +285,15 @@ class SongMediaItem(MediaManagerItem):
         items = self.ListView.selectedIndexes()
         if items:
             if len(items) == 1:
-                del_message = self.trUtf8('Delete song?')
+                del_message = translate(u'SongsPlugin.MediaItem',
+                    u'Delete song?')
             else:
                 del_message = unicode(
-                    self.trUtf8('Delete %d songs?')) % len(items)
+                    translate(u'SongsPlugin.MediaItem',
+                        u'Delete %d songs?'))  % len(items)
             ans = QtGui.QMessageBox.question(self,
-                self.trUtf8('Delete Confirmation'), del_message,
+                translate(u'SongsPlugin.MediaItem', u'Delete Confirmation'),
+                del_message,
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok|
                      QtGui.QMessageBox.Cancel),
                 QtGui.QMessageBox.Ok)
@@ -353,7 +365,7 @@ class SongMediaItem(MediaManagerItem):
         raw_footer.append(author_list)
         raw_footer.append(song.copyright )
         raw_footer.append(unicode(
-            self.trUtf8('CCLI Licence: ') + ccli))
+            translate(u'SongsPlugin.MediaItem', u'CCLI Licence: ') + ccli))
         service_item.raw_footer = raw_footer
         service_item.audit = [
             song.title, author_audit, song.copyright, song.ccli_number
