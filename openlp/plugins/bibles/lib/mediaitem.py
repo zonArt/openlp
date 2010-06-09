@@ -454,7 +454,7 @@ class BibleMediaItem(MediaManagerItem):
     def onQuickSearchButton(self):
         log.debug(u'Quick Search Button pressed')
         bible = unicode(self.QuickVersionComboBox.currentText())
-        text = unicode(self.QuickSearchEdit.displayText())
+        text = unicode(self.QuickSearchEdit.text())
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
             self.ListView.clear()
             self.lastReference = []

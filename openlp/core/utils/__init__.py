@@ -146,27 +146,6 @@ def check_latest_version(current_version):
                 log.exception(u'Reason for failure: %s', e.reason)
     return version_string
 
-def string_to_unicode(string):
-    """
-    Converts a QString to a Python unicode object.
-    """
-    if isinstance(string, QtCore.QString):
-        string = unicode(string.toUtf8(), u'utf8')
-    return string
-
-def variant_to_unicode(variant):
-    """
-    Converts a QVariant to a Python unicode object.
-
-    ``variant``
-        The QVariant instance to convert to unicode.
-    """
-    if isinstance(variant, QtCore.QVariant):
-        string = variant.toString()
-    if not isinstance(string, unicode):
-        string = string_to_unicode(string)
-    return string
-
 def add_actions(target, actions):
     """
     Adds multiple actions to a menu or toolbar in one command.

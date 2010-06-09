@@ -468,7 +468,7 @@ class Renderer(object):
                     self._get_extent_and_render(line, footer,
                         tlcorner=(x + display_shadow_size,
                             y + display_shadow_size),
-                            draw=True, color = self._theme.display_shadow_color)
+                            draw=True, color=self._theme.display_shadow_color)
                 self._get_extent_and_render(line, footer, tlcorner=(x, y),
                         draw=True, outline_size=display_outline_size)
             y += h

@@ -32,7 +32,7 @@ from PyQt4 import QtCore, QtGui
 
 from bibleimportwizard import Ui_BibleImportWizard
 from openlp.core.lib import Receiver, SettingsManager, translate
-from openlp.core.utils import AppLocation, variant_to_unicode
+from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.manager import BibleFormat
 
 log = logging.getLogger(__name__)
@@ -167,9 +167,9 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             return True
         elif self.currentId() == 2:
             # License details
-            license_version = variant_to_unicode(self.field(u'license_version'))
-            license_copyright = variant_to_unicode(
-                self.field(u'license_copyright'))
+            license_version = unicode(self.field(u'license_version').toString())
+            license_copyright = \
+                unicode(self.field(u'license_copyright').toString())
             if license_version == u'':
                 QtGui.QMessageBox.critical(self,
                     translate(u'BiblesPlugin.ImportWizardForm', 
@@ -391,29 +391,29 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
 
     def performImport(self):
         bible_type = self.field(u'source_format').toInt()[0]
-        license_version = variant_to_unicode(self.field(u'license_version'))
-        license_copyright = variant_to_unicode(self.field(u'license_copyright'))
-        license_permission = variant_to_unicode(
-            self.field(u'license_permission'))
+        license_version = unicode(self.field(u'license_version').toString())
+        license_copyright = unicode(self.field(u'license_copyright').toString())
+        license_permission = \
+            unicode(self.field(u'license_permission').toString())
         importer = None
         if bible_type == BibleFormat.OSIS:
             # Import an OSIS bible
             importer = self.manager.import_bible(BibleFormat.OSIS,
                 name=license_version,
-                filename=variant_to_unicode(self.field(u'osis_location'))
+                filename=unicode(self.field(u'osis_location').toString())
             )
         elif bible_type == BibleFormat.CSV:
             # Import a CSV bible
             importer = self.manager.import_bible(BibleFormat.CSV,
                 name=license_version,
-                booksfile=variant_to_unicode(self.field(u'csv_booksfile')),
-                versefile=variant_to_unicode(self.field(u'csv_versefile'))
+                booksfile=unicode(self.field(u'csv_booksfile').toString()),
+                versefile=unicode(self.field(u'csv_versefile').toString())
             )
         elif bible_type == BibleFormat.OpenSong:
             # Import an OpenSong bible
             importer = self.manager.import_bible(BibleFormat.OpenSong,
                 name=license_version,
-                filename=variant_to_unicode(self.field(u'opensong_file'))
+                filename=unicode(self.field(u'opensong_file').toString())
             )
         elif bible_type == BibleFormat.WebDownload:
             # Import a bible from the web
@@ -433,10 +433,10 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                 name=license_version,
                 download_source=WebDownload.get_name(download_location),
                 download_name=bible,
-                proxy_server=variant_to_unicode(self.field(u'proxy_server')),
-                proxy_username=variant_to_unicode(
-                    self.field(u'proxy_username')),
-                proxy_password=variant_to_unicode(self.field(u'proxy_password'))
+                proxy_server=unicode(self.field(u'proxy_server').toString()),
+                proxy_username=\
+                    unicode(self.field(u'proxy_username').toString()),
+                proxy_password=unicode(self.field(u'proxy_password').toString())
             )
         success = importer.do_import()
         if success:
