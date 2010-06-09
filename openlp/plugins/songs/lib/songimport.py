@@ -66,7 +66,7 @@ class SongImport(object):
         self.copyright_string = unicode(QtGui.QApplication.translate( \
             u'SongsPlugin.SongImport', u'copyright'))
         self.copyright_symbol = unicode(QtGui.QApplication.translate( \
-            u'SongsPlugin.SongImport', u'©'))
+            u'SongsPlugin.SongImport', u'\xa9'))
 
     @staticmethod
     def process_songs_text(manager, text):

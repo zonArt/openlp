@@ -131,8 +131,8 @@ class ThemeManager(QtGui.QWidget):
                 self.ThemeListWidget.item(count).setText(newName)
             #Set the new name
             if themeName == newName:
-                name = u'%s (%s)' % (newName,
-                    translate(u'ThemeManager', u'default'))
+                name = unicode(translate(u'ThemeManager', u'%s (default)')) % \
+                    newName
                 self.ThemeListWidget.item(count).setText(name)
 
     def changeGlobalFromScreen(self, index = -1):
@@ -149,8 +149,8 @@ class ThemeManager(QtGui.QWidget):
             if count == selected_row:
                 self.global_theme = unicode(
                     self.ThemeListWidget.item(count).text())
-                name = u'%s (%s)' % (self.global_theme, 
-                    translate(u'ThemeManager', u'default'))
+                name = unicode(translate(u'ThemeManager', u'%s (default)')) % \
+                    self.global_theme
                 self.ThemeListWidget.item(count).setText(name)
                 QtCore.QSettings().setValue(
                     self.settingsSection + u'/global theme',
@@ -246,8 +246,8 @@ class ThemeManager(QtGui.QWidget):
                 for files in os.walk(source)[2]:
                     for name in files:
                         zip.write(
-                            os.path.join(source, name),
-                            os.path.join(theme, name))
+                            os.path.join(source, name).encode(u'utf-8'),
+                            os.path.join(theme, name).encode(u'utf-8'))
             except (IOError, OSError):
                 log.exception(u'Export Theme Failed')
             finally:
@@ -284,8 +284,8 @@ class ThemeManager(QtGui.QWidget):
                 if os.path.exists(theme):
                     textName = os.path.splitext(name)[0]
                     if textName == self.global_theme:
-                        name = u'%s (%s)' % (textName,
-                            translate(u'ThemeManager', u'default'))
+                        name = unicode(translate(u'ThemeManager',
+                            u'%s (default)')) % textName
                     else:
                         name = textName
                     thumb = os.path.join(self.thumbPath, u'%s.png' % textName)
@@ -338,7 +338,17 @@ class ThemeManager(QtGui.QWidget):
             filexml = None
             themename = None
             for file in zip.namelist():
-                osfile = unicode(QtCore.QDir.toNativeSeparators(file))
+                try:
+                    ucsfile = file.decode(u'utf-8')
+                except UnicodeDecodeError:
+                    QtGui.QMessageBox.critical(
+                        self, translate(u'ThemeManager', u'Error'),
+                        translate(u'ThemeManager', u'File is not a valid '
+                            u'theme.\nThe content encoding is not UTF-8.'))
+                    log.exception(u'Filename "%s" is no valid UTF-8' % \
+                        file.decode(u'utf-8', u'replace'))
+                    continue
+                osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
                 theme_dir = None
                 if osfile.endswith(os.path.sep):
                     theme_dir = os.path.join(dir, osfile)
@@ -356,7 +366,7 @@ class ThemeManager(QtGui.QWidget):
                             if not os.path.exists(theme_dir):
                                 os.mkdir(os.path.join(dir, names[0]))
                         xml_data = zip.read(file)
-                        if os.path.splitext(file)[1].lower() in [u'.xml']:
+                        if os.path.splitext(ucsfile)[1].lower() in [u'.xml']:
                             if self.checkVersion1(xml_data):
                                 # upgrade theme xml
                                 filexml = self.migrateVersion122(filename,
@@ -368,7 +378,13 @@ class ThemeManager(QtGui.QWidget):
                         else:
                             outfile = open(fullpath, u'wb')
                             outfile.write(zip.read(file))
-            self.generateAndSaveImage(dir, themename, filexml)
+            if filexml:
+                self.generateAndSaveImage(dir, themename, filexml)
+            else:
+                QtGui.QMessageBox.critical(
+                    self, translate(u'ThemeManager', u'Error'),
+                    translate(u'ThemeManager', u'File is not a valid theme.'))
+                log.exception(u'Theme file dosen\'t contain XML data %s' % filename)
         except IOError:
             QtGui.QMessageBox.critical(
                 self, translate(u'ThemeManager', u'Error'),

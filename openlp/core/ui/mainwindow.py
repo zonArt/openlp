@@ -452,8 +452,8 @@ class Ui_MainWindow(object):
             translate(u'MainWindow', u'Choose System language, if available'))
         for item in self.LanguageGroup.actions():
             item.setText(item.objectName())
-            item.setStatusTip(translate(u'MainWindow',
-                u'Set the interface language to %1').arg(item.objectName()))
+            item.setStatusTip(unicode(translate(u'MainWindow',
+                u'Set the interface language to %s')) % item.objectName())
         self.ToolsAddToolItem.setText(translate(u'MainWindow', u'Add &Tool...'))
         self.ToolsAddToolItem.setStatusTip(
             translate(u'MainWindow', 
