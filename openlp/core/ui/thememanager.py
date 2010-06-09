@@ -243,7 +243,7 @@ class ThemeManager(QtGui.QWidget):
             try:
                 zip = zipfile.ZipFile(themePath, u'w')
                 source = os.path.join(self.path, theme)
-                for root, dirs, files in os.walk(source):
+                for files in os.walk(source)[2]:
                     for name in files:
                         zip.write(
                             os.path.join(source, name).encode(u'utf-8'),
