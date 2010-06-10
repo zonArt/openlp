@@ -36,7 +36,7 @@ from openlp.core.theme import Theme
 from openlp.core.lib import OpenLPToolbar, contextMenuAction, \
     ThemeXML, str_to_bool, get_text_file_string, build_icon, Receiver, \
     contextMenuSeparator, SettingsManager, translate
-from openlp.core.utils import AppLocation
+from openlp.core.utils import AppLocation, get_filesystem_encoding
 
 log = logging.getLogger(__name__)
 
@@ -211,7 +211,9 @@ class ThemeManager(QtGui.QWidget):
                 try:
                     os.remove(os.path.join(self.path, th))
                     os.remove(os.path.join(self.thumbPath, th))
-                    shutil.rmtree(os.path.join(self.path, theme))
+                    encoding = get_filesystem_encoding()
+                    shutil.rmtree(
+                        os.path.join(self.path, theme).encode(encoding))
                 except OSError:
                     #if not present do not worry
                     pass
@@ -495,7 +497,10 @@ class ThemeManager(QtGui.QWidget):
                     outfile.close()
             if image_from and image_from != image_to:
                 try:
-                    shutil.copyfile(image_from, image_to)
+                    encoding = get_filesystem_encoding()
+                    shutil.copyfile(
+                        unicode(image_from).encode(encoding),
+                        unicode(image_to).encode(encoding))
                 except IOError:
                     log.exception(u'Failed to save theme image')
             self.generateAndSaveImage(self.path, name, theme_xml)

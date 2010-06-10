@@ -163,7 +163,17 @@ def add_actions(target, actions):
         else:
             target.addAction(action)
 
+def get_filesystem_encoding():
+    """
+    Returns the name of the encoding used to convert Unicode filenames into
+    system file names.
+    """
+    encoding = sys.getfilesystemencoding()
+    if encoding is None:
+        encoding = sys.getdefaultencoding()
+    return encoding
+
 from languagemanager import LanguageManager
 
 __all__ = [u'AppLocation', u'check_latest_version', u'add_actions',
-    u'LanguageManager']
+    u'get_filesystem_encoding', u'LanguageManager']

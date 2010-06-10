@@ -419,9 +419,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             # Import a bible from the web
             self.ImportProgressBar.setMaximum(1)
             download_location = self.field(u'web_location').toInt()[0]
-            bible_version = self.BibleComboBox.currentText()
-            if not isinstance(bible_version, unicode):
-                bible_version = unicode(bible_version, u'utf8')
+            bible_version = unicode(self.BibleComboBox.currentText())
             if download_location == WebDownload.Crosswalk:
                 bible = \
                     self.web_bible_list[WebDownload.Crosswalk][bible_version]
