@@ -22,6 +22,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`serviceitem` provides the service item functionality including the
+type and capability of an item.
+"""
 
 import logging
 import os
@@ -43,6 +47,9 @@ class ServiceItemType(object):
     Command = 3
 
 class ItemCapabilities(object):
+    """
+    Provides an enumeration of a serviceitem's capabilities
+    """
     AllowsPreview = 1
     AllowsEdit = 2
     AllowsMaintain = 3
@@ -85,9 +92,21 @@ class ServiceItem(object):
         self.cache = []
 
     def add_capability(self, capability):
+        """
+        Add an ItemCapability to a ServiceItem
+
+        ``capability``
+            The capability to add
+        """
         self.capabilities.append(capability)
 
     def is_capable(self, capability):
+        """
+        Tell the caller if a ServiceItem has a capability
+
+        ``capability``
+            The capability to test for
+        """
         return capability in self.capabilities
 
     def addIcon(self, icon):
@@ -304,22 +323,40 @@ class ServiceItem(object):
         return self._uuid != other._uuid
 
     def is_media(self):
+        """
+        Confirms if the ServiceItem is media
+        """
         return ItemCapabilities.RequiresMedia in self.capabilities
 
     def is_command(self):
+        """
+        Confirms if the ServiceItem is a command
+        """
         return self.service_item_type == ServiceItemType.Command
 
     def is_image(self):
+        """
+        Confirms if the ServiceItem is an image
+        """
         return self.service_item_type == ServiceItemType.Image
 
     def uses_file(self):
+        """
+        Confirms if the ServiceItem uses a file
+        """
         return self.service_item_type == ServiceItemType.Image or \
             self.service_item_type == ServiceItemType.Command
 
     def is_text(self):
+        """
+        Confirms if the ServiceItem is text
+        """
         return self.service_item_type == ServiceItemType.Text
 
     def get_frames(self):
+        """
+        Returns the frames for the ServiceItem
+        """
         if self.service_item_type == ServiceItemType.Text:
             return self._display_frames
         else:
