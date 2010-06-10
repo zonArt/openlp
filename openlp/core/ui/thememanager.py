@@ -366,8 +366,7 @@ class ThemeManager(QtGui.QWidget):
                         if os.path.splitext(file)[1].lower() in [u'.xml']:
                             if self.checkVersion1(xml_data):
                                 # upgrade theme xml
-                                filexml = self.migrateVersion122(filename,
-                                    fullpath, xml_data)
+                                filexml = self.migrateVersion122(xml_data)
                             else:
                                 filexml = xml_data
                             outfile = open(fullpath, u'w')
@@ -399,13 +398,12 @@ class ThemeManager(QtGui.QWidget):
         else:
             return True
 
-    def migrateVersion122(self, filename, fullpath, xml_data):
+    def migrateVersion122(self, xml_data):
         """
         Called by convert the xml data from version 1 format
         to the current format.
         New fields are defaulted but the new theme is useable
         """
-        log.debug(u'migrateVersion122 %s %s', filename, fullpath)
         theme = Theme(xml_data)
         newtheme = ThemeXML()
         newtheme.new_document(theme.Name)
