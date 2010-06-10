@@ -851,5 +851,5 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if filename and filename not in self.recentFiles:
             self.recentFiles.insert(0, QtCore.QString(filename))
             while self.recentFiles.count() > recentFileCount:
-                self.recentFiles.pop()
+                self.recentFiles.removeLast()
 
