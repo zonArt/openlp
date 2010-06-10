@@ -168,8 +168,6 @@ class ThemeManager(QtGui.QWidget):
 
     def onAddTheme(self):
         """
-        Add a new theme
-
         Loads a new theme with the default settings and then launches the theme
         editing form for the user to make their customisations.
         """
@@ -180,8 +178,6 @@ class ThemeManager(QtGui.QWidget):
 
     def onEditTheme(self):
         """
-        Edit a theme
-
         Loads the settings for the theme that is to be edited and launches the
         theme editing form so the user can make their changes.
         """
@@ -286,8 +282,6 @@ class ThemeManager(QtGui.QWidget):
 
     def onImportTheme(self):
         """
-        Import a theme
-
         Opens a file dialog to select the theme file(s) to import before
         attempting to extract OpenLP themes from those files.  This process
         will load both OpenLP version 1 and version 2 themes.
@@ -565,11 +559,20 @@ class ThemeManager(QtGui.QWidget):
         return frame
 
     def getPreviewImage(self, theme):
+        """
+        Return an image representing the look of the theme
+
+        ``theme``
+            The theme to return the image for
+        """
         log.debug(u'getPreviewImage %s ', theme)
         image = os.path.join(self.path, theme + u'.png')
         return image
 
     def baseTheme(self):
+        """
+        Provide a base theme with sensible defaults
+        """
         log.debug(u'base theme created')
         newtheme = ThemeXML()
         newtheme.new_document(unicode(translate(u'ThemeManager', u'New Theme')))
@@ -583,6 +586,12 @@ class ThemeManager(QtGui.QWidget):
         return newtheme.extract_xml()
 
     def createThemeFromXml(self, theme_xml, path):
+        """
+        Return a theme object using information parsed from XML
+
+        ``theme_xml``
+            The XML data to load into the theme
+        """
         theme = ThemeXML()
         theme.parse(theme_xml)
         self.cleanTheme(theme)
@@ -590,6 +599,11 @@ class ThemeManager(QtGui.QWidget):
         return theme
 
     def cleanTheme(self, theme):
+        """
+        Clean a theme loaded from an XML file by removing stray whitespace and
+        making sure parameters are the correct type for the theme object
+        attributes
+        """
         theme.background_color = theme.background_color.strip()
         theme.background_direction = theme.background_direction.strip()
         theme.background_endColor = theme.background_endColor.strip()

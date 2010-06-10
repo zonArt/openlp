@@ -27,9 +27,7 @@ from openlp.core.lib import translate
 
 class VerseType(object):
     """
-    Provide a type definition for verses
-
-    VerseType provides the type definition for the tags that may be associated
+    VerseType provides an enumeration for the tags that may be associated
     with verses in songs.
     """
     Verse = 0
