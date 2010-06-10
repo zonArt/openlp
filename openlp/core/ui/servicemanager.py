@@ -675,7 +675,7 @@ class ServiceManager(QtGui.QWidget):
                             translate(u'ServiceManager',
                                 u'File is not a valid service.\n'
                                 u'The content encoding is not UTF-8.'))
-                        log.exception(u'Filename "%s" is no valid UTF-8' % \
+                        log.exception(u'Filename "%s" is not valid UTF-8' % \
                             file.decode(u'utf-8', u'replace'))
                         continue
                     osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
@@ -710,7 +710,7 @@ class ServiceManager(QtGui.QWidget):
                         translate(u'ServiceManager',
                             u'File is not a valid service.'))
                     log.exception(u'File contains no service data')
-            except IOError:
+            except (IOError, NameError):
                 log.exception(u'Problem loading a service file')
             finally:
                 if file_to:

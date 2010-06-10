@@ -345,7 +345,7 @@ class ThemeManager(QtGui.QWidget):
                         self, translate(u'ThemeManager', u'Error'),
                         translate(u'ThemeManager', u'File is not a valid '
                             u'theme.\nThe content encoding is not UTF-8.'))
-                    log.exception(u'Filename "%s" is no valid UTF-8' % \
+                    log.exception(u'Filename "%s" is not valid UTF-8' % \
                         file.decode(u'utf-8', u'replace'))
                     continue
                 osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
@@ -385,7 +385,7 @@ class ThemeManager(QtGui.QWidget):
                     self, translate(u'ThemeManager', u'Error'),
                     translate(u'ThemeManager', u'File is not a valid theme.'))
                 log.exception(u'Theme file dosen\'t contain XML data %s' % filename)
-        except IOError:
+        except (IOError, NameError):
             QtGui.QMessageBox.critical(
                 self, translate(u'ThemeManager', u'Error'),
                 translate(u'ThemeManager', u'File is not a valid theme.'))
