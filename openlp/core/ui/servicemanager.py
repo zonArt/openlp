@@ -38,7 +38,9 @@ from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm
 from openlp.core.utils import AppLocation
 
 class ServiceManagerList(QtGui.QTreeWidget):
-
+    """
+    Set up key bindings and mouse behaviour for the service list
+    """
     def __init__(self, parent=None, name=None):
         QtGui.QTreeWidget.__init__(self, parent)
         self.parent = parent

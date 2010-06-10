@@ -22,3 +22,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`lib` module provides all core application functions
+
+All the core functions of the OpenLP application including the GUI, settings,
+logging and a plugin framework are contained within the openlp.core module.
+"""

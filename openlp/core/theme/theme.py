@@ -22,7 +22,12 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+OpenLP version 1 theme handling
 
+Provides reference data, a default v1 XML theme and class wrapper for
+processing version 1 themes in OpenLP version 2.
+"""
 import types
 
 from xml.etree.ElementTree import ElementTree, XML
@@ -56,51 +61,59 @@ BLANK_STYLE_XML = \
 '''
 
 class Theme(object):
+    """
+    Provide a class wrapper storing data from an XML theme
+
+    Attributes:
+        name : theme name
+
+        BackgroundMode   : 1 - Transparent
+                           1 - Opaque
+
+        BackgroundType   : 0 - solid color
+                           1 - gradient color
+                           2 - image
+
+        BackgroundParameter1 : for image - filename
+                               for gradient - start color
+                               for solid - color
+        BackgroundParameter2 : for image - border colour
+                               for gradient - end color
+                               for solid - N/A
+        BackgroundParameter3 : for image - N/A
+                               for gradient - 0 -> vertical, 1 -> horizontal
+
+        FontName       : name of font to use
+        FontColor      : color for main font
+        FontProportion : size of font
+        FontUnits      : whether size of font is in <pixels> or <points>
+
+        Shadow       : 0 - no shadow, non-zero use shadow
+        ShadowColor  : color for drop shadow
+        Outline      : 0 - no outline, non-zero use outline
+        OutlineColor : color for outline (or None for no outline)
+
+        HorizontalAlign : 0 - left align
+                          1 - right align
+                          2 - centre align
+        VerticalAlign   : 0 - top align
+                          1 - bottom align
+                          2 - centre align
+        WrapStyle       : 0 - normal
+                          1 - lyrics
+    """
     def __init__(self, xml):
-        """ stores the info about a theme
-        attributes:
-          name : theme name
-
-           BackgroundMode   : 1 - Transparent
-                             1 - Opaque
-
-          BackgroundType   : 0 - solid color
-                             1 - gradient color
-                             2 - image
-
-          BackgroundParameter1 : for image - filename
-                                 for gradient - start color
-                                 for solid - color
-          BackgroundParameter2 : for image - border colour
-                                 for gradient - end color
-                                 for solid - N/A
-          BackgroundParameter3 : for image - N/A
-                                 for gradient - 0 -> vertical, 1 -> horizontal
-
-          FontName       : name of font to use
-          FontColor      : color for main font
-          FontProportion : size of font
-          FontUnits      : whether size of font is in <pixels> or <points>
-
-          Shadow       : 0 - no shadow, non-zero use shadow
-          ShadowColor  : color for drop shadow
-          Outline      : 0 - no outline, non-zero use outline
-          OutlineColor : color for outline (or None for no outline)
-
-          HorizontalAlign : 0 - left align
-                            1 - right align
-                            2 - centre align
-          VerticalAlign   : 0 - top align
-                            1 - bottom align
-                            2 - centre align
-          WrapStyle       : 0 - normal
-                            1 - lyrics
+        """
+        Initialise a theme with data from xml
         """
         # init to defaults
         self._set_from_XML(BLANK_STYLE_XML)
         self._set_from_XML(xml)
 
     def _get_as_string(self):
+        """
+        Return single line string representation of a theme
+        """
         theme_strings = []
         keys = dir(self)
         keys.sort()
@@ -110,6 +123,9 @@ class Theme(object):
         return u''.join(theme_strings)
 
     def _set_from_XML(self, xml):
+        """
+        Set theme class attributes with data from XML
+        """
         root = ElementTree(element=XML(xml))
         iter = root.getiterator()
         for element in iter:
@@ -149,8 +165,12 @@ class Theme(object):
                 setattr(self, element.tag, val)
 
     def __str__(self):
+        """
+        Provide Python string representation for the class (multiline output)
+        """
         theme_strings = []
         for key in dir(self):
             if key[0:1] != u'_':
                 theme_strings.append(u'%30s : %s' % (key, getattr(self, key)))
         return u'\n'.join(theme_strings)
+

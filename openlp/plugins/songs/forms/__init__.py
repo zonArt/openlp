@@ -26,6 +26,12 @@
 from openlp.core.lib import translate
 
 class VerseType(object):
+    """
+    Provide a type definition for verses
+
+    VerseType provides the type definition for the tags that may be associated
+    with verses in songs.
+    """
     Verse = 0
     Chorus = 1
     Bridge = 2
@@ -36,6 +42,12 @@ class VerseType(object):
 
     @staticmethod
     def to_string(verse_type):
+        """
+        Return a string for a given VerseType
+
+        ``verse_type``
+            The type to return a string for
+        """
         if verse_type == VerseType.Verse:
             return translate(u'VerseType', u'Verse')
         elif verse_type == VerseType.Chorus:
@@ -53,6 +65,12 @@ class VerseType(object):
 
     @staticmethod
     def from_string(verse_type):
+        """
+        Return the VerseType for a given string
+
+        ``verse_type``
+            The string to return a VerseType for
+        """
         verse_type = verse_type.lower()
         if verse_type == unicode(VerseType.to_string(VerseType.Verse)).lower():
             return VerseType.Verse

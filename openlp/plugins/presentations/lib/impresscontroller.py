@@ -372,11 +372,10 @@ class ImpressDocument(PresentationDocument):
 
     def get_slide_preview_file(self, slide_no):
         """
-        Returns an image path containing a preview for the
-        requested slide
+        Returns an image path containing a preview for the requested slide
 
         ``slide_no``
-        The slide an image is required for, starting at 1
+            The slide an image is required for, starting at 1
         """
         path = os.path.join(self.thumbnailpath,
             self.controller.thumbnailprefix + unicode(slide_no) + u'.png')
