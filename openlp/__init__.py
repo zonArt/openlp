@@ -23,5 +23,5 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`lib` module contains all the project produced OpenLP functionality
+The :mod:`openlp` module contains all the project produced OpenLP functionality
 """

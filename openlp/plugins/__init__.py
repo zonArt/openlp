@@ -23,5 +23,5 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`lib` module provides all the project produced plugins
+The :mod:`plugins` module provides all the project produced plugins
 """
