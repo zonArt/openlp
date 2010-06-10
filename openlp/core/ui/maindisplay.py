@@ -74,7 +74,7 @@ class DisplayWidget(QtGui.QWidget):
             QtCore.Qt.Key_Backspace: 'slidecontroller_live_previous_noloop'}
 
     def keyPressEvent(self, event):
-        if type(event) == QtGui.QKeyEvent:
+        if isinstance(event, QtGui.QKeyEvent):
             #here accept the event and do something
             if event.key() == QtCore.Qt.Key_Up:
                 Receiver.send_message(u'slidecontroller_live_previous')
@@ -375,7 +375,7 @@ class VideoDisplay(Phonon.VideoWidget):
         self.setVisible(False)
 
     def keyPressEvent(self, event):
-        if type(event) == QtGui.QKeyEvent:
+        if isinstance(event, QtGui.QKeyEvent):
             #here accept the event and do something
             if event.key() == QtCore.Qt.Key_Escape:
                 self.onMediaStop()

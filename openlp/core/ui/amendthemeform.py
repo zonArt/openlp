@@ -408,7 +408,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
     def setBackground(self, background, gradient):
         if background == 0: # Solid
             self.theme.background_type = u'solid'
-            if self.theme.background_color is None :
+            if self.theme.background_color is None:
                 self.theme.background_color = u'#000000'
             self.ImageLineEdit.setText(u'')
         elif background == 1: # Gradient
@@ -419,9 +419,9 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 self.theme.background_direction = u'vertical'
             else:
                 self.theme.background_direction = u'circular'
-            if self.theme.background_startColor is None :
+            if self.theme.background_startColor is None:
                 self.theme.background_startColor = u'#000000'
-            if self.theme.background_endColor is None :
+            if self.theme.background_endColor is None:
                 self.theme.background_endColor = u'#ff0000'
             self.ImageLineEdit.setText(u'')
         else:

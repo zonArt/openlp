@@ -23,8 +23,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import types
-
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtGui
 
@@ -121,8 +119,7 @@ class Theme(object):
                 if element_text is None:
                     val = element_text
                 # strings need special handling to sort the colours out
-                if type(element_text) is types.StringType or \
-                    type(element_text) is types.UnicodeType:
+                if isinstance(element_text, basestring):
                     if element_text[0] == u'$': # might be a hex number
                         try:
                             val = int(element_text[1:], 16)

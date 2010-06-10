@@ -31,8 +31,9 @@
 ###############################################################################
 
 import os
-from optparse import OptionParser
 import urllib
+
+from optparse import OptionParser
 from PyQt4 import QtCore
 
 ignore_pathes = [u"./scripts", u"./openlp/core/test"]
@@ -62,16 +63,16 @@ def main():
     # Set up command line options.
     usage = u'Usage: %prog [options]'
     parser = OptionParser(usage=usage)
-    parser.add_option("-d", "--download-ts", action="store_true", dest="download",
-                      help="Load languages from Pootle Server")
+    parser.add_option("-d", "--download-ts", action="store_true",
+        dest="download", help="Load languages from Pootle Server")
     parser.add_option("-p", "--prepare", action="store_true", dest="prepare",
-                      help="preparation (generate pro file)")
+        help="preparation (generate pro file)")
     parser.add_option("-u", "--update", action="store_true", dest="update",
-                      help="update translation files")
+        help="update translation files")
     parser.add_option("-g", "--generate", action="store_true", dest="generate",
-                      help="generate qm files")
+        help="generate qm files")
     parser.add_option("-a", "--all", action="store_true", dest="all",
-                      help="proceed all options")
+        help="proceed all options")
 
     (options, args) = parser.parse_args()
     if options.download:
@@ -90,7 +91,8 @@ def main():
 def downloadTranslations():
     print "download()"
     for language in translations:
-        filename = os.path.join(u'..',u'resources', u'i18n', u"openlp_%s.ts" % language)
+        filename = os.path.join(u'..', u'resources', u'i18n',
+            u"openlp_%s.ts" % language)
         print filename
         page = urllib.urlopen(u"%s%s.ts" % (translation_path, language))
         content = page.read().decode("utf8")
@@ -115,13 +117,13 @@ def preparation():
             for search in ignore_pathes:
                 if path.startswith(search):
                     cond = True
-            if cond == True:
+            if cond:
                 continue
             cond = False
             for search in ignore_files:
                 if search == file:
                     cond = True
-            if cond == True:
+            if cond:
                 continue
             
             if file.endswith(u'.py'):
@@ -142,7 +144,6 @@ def preparation():
     write_file(os.path.join(start_dir, u'openlp.pro'), stringlist)
     print u'done.'
 
-    
 def update():
     print "update()"
     updateProcess = QtCore.QProcess()
