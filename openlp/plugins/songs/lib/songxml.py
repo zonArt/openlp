@@ -27,7 +27,7 @@ import logging
 import sys
 import os
 
-from types import StringType, ListType
+from types import ListType
 
 sys.path.append(os.path.abspath(u'./../../../..'))
 
@@ -417,9 +417,9 @@ class Song(object):
 
     def _list_to_string(self, strOrList):
         """Force a possibly list into a string"""
-        if type(strOrList) == StringType:
+        if isinstance(strOrList, basestring):
             lst = self._split_to_list(strOrList)
-        elif type(strOrList) == ListType:
+        elif isinstance(strOrList, ListType):
             lst = strOrList
         elif strOrList is None:
             lst = []

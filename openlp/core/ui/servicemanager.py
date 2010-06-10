@@ -44,7 +44,7 @@ class ServiceManagerList(QtGui.QTreeWidget):
         self.parent = parent
 
     def keyPressEvent(self, event):
-        if type(event) == QtGui.QKeyEvent:
+        if isinstance(event, QtGui.QKeyEvent):
             #here accept the event and do something
             if event.key() == QtCore.Qt.Key_Enter:
                 self.parent.makeLive()
@@ -918,7 +918,7 @@ class ServiceManager(QtGui.QWidget):
             else:
                 #we are not over anything so drop
                 replace = False
-                if item == None:
+                if item is None:
                     self.droppos = len(self.serviceItems)
                 else:
                     #we are over somthing so lets investigate
