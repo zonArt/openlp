@@ -64,47 +64,94 @@ class Theme(object):
     """
     Provide a class wrapper storing data from an XML theme
 
-    Attributes:
-        name : theme name
+    ``name``
+        Theme name
 
-        BackgroundMode   : 1 - Transparent
-                           1 - Opaque
+    ``BackgroundMode``
+        The behaviour of the background.  Valid modes are:
+            - 0 - Transparent
+            - 1 - Opaque
 
-        BackgroundType   : 0 - solid color
-                           1 - gradient color
-                           2 - image
+    ``BackgroundType``
+        The content of the background.  Valid types are:
+            - 0 - solid color
+            - 1 - gradient color
+            - 2 - image
 
-        BackgroundParameter1 : for image - filename
-                               for gradient - start color
-                               for solid - color
-        BackgroundParameter2 : for image - border colour
-                               for gradient - end color
-                               for solid - N/A
-        BackgroundParameter3 : for image - N/A
-                               for gradient - 0 -> vertical, 1 -> horizontal
+    ``BackgroundParameter1``
+        Extra information about the background.  The contents of this attribute
+        depend on the BackgroundType:
+            - image: image filename
+            - gradient: start color
+            - solid: color
 
-        FontName       : name of font to use
-        FontColor      : color for main font
-        FontProportion : size of font
-        FontUnits      : whether size of font is in <pixels> or <points>
+    ``BackgroundParameter2``
+        Extra information about the background.  The contents of this attribute
+        depend on the BackgroundType:
+            - image: border color
+            - gradient: end color
+            - solid: N/A
 
-        Shadow       : 0 - no shadow, non-zero use shadow
-        ShadowColor  : color for drop shadow
-        Outline      : 0 - no outline, non-zero use outline
-        OutlineColor : color for outline (or None for no outline)
+    ``BackgroundParameter3``
+        Extra information about the background.  The contents of this attribute
+        depend on the BackgroundType:
+            - image: N/A
+            - gradient: The direction of the gradient. Valid entries are:
+                - 0 -> vertical
+                - 1 -> horizontal
+            - solid: N/A
 
-        HorizontalAlign : 0 - left align
-                          1 - right align
-                          2 - centre align
-        VerticalAlign   : 0 - top align
-                          1 - bottom align
-                          2 - centre align
-        WrapStyle       : 0 - normal
-                          1 - lyrics
+    ``FontName``
+        Name of the font to use for the main font.
+
+    ``FontColor``
+        The color for the main font
+
+    ``FontProportion``
+        The size of the main font
+
+    ``FontUnits``
+        The units for FontProportion, either <pixels> or <points>
+
+    ``Shadow``
+        The shadow type to apply to the main font.
+            - 0 - no shadow
+            - non-zero - use shadow
+
+    ``ShadowColor``
+        Color for the shadow
+
+    ``Outline``
+        The outline to apply to the main font
+            - 0 - no outline
+            - non-zero - use outline
+
+    ``OutlineColor``
+        Color for the outline (or None if Outline is 0)
+
+    ``HorizontalAlign``
+        The horizontal alignment to apply to text.  Valid alignments are:
+            - 0 - left align
+            - 1 - right align
+            - 2 - centre align
+
+    ``VerticalAlign``
+        The vertical alignment to apply to the text. Valid alignments are:
+            - 0 - top align
+            - 1 - bottom align
+            - 2 - centre align
+
+    ``WrapStyle``
+        The wrap style to apply to the text.  Valid styles are:
+            - 0 - normal
+            - 1 - lyrics
     """
     def __init__(self, xml):
         """
         Initialise a theme with data from xml
+
+        ``xml``
+            The data to initialise the theme with
         """
         # init to defaults
         self._set_from_XML(BLANK_STYLE_XML)
@@ -125,6 +172,9 @@ class Theme(object):
     def _set_from_XML(self, xml):
         """
         Set theme class attributes with data from XML
+
+        ``xml``
+            The data to apply to the theme
         """
         root = ElementTree(element=XML(xml))
         iter = root.getiterator()
