@@ -92,6 +92,13 @@ class BibleDB(QtCore.QObject):
         if u'file' in kwargs:
             self.get_name()
 
+    def stop_import(self):
+        """
+        Stops the import of the Bible.
+        """
+        log.debug('Stopping import')
+        self.stop_import_flag = True
+
     def get_name(self):
         """
         Returns the version name of the Bible.
