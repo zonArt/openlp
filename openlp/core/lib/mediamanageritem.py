@@ -24,7 +24,6 @@
 ###############################################################################
 
 import logging
-import types
 import os
 
 from PyQt4 import QtCore, QtGui
@@ -98,9 +97,9 @@ class MediaManagerItem(QtGui.QWidget):
         QtGui.QWidget.__init__(self)
         self.parent = parent
         self.settingsSection = title.lower()
-        if type(icon) is QtGui.QIcon:
+        if isinstance(icon, QtGui.QIcon):
             self.icon = icon
-        elif type(icon) is types.StringType:
+        elif isinstance(icon, basestring):
             self.icon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
                 QtGui.QIcon.Normal, QtGui.QIcon.Off)
         else:
