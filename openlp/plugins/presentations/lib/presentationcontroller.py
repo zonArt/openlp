@@ -357,7 +357,12 @@ class PresentationDocument(object):
         ``slide_no``
             The slide an image is required for, starting at 1
         """
-        return None
+        path = os.path.join(self.thumbnailpath,
+            self.controller.thumbnailprefix + unicode(slide_no) + u'.png')
+        if os.path.isfile(path):
+            return path
+        else:
+            return None
 
     def poll_slidenumber(self, is_live):
         """
