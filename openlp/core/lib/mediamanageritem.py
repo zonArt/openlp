@@ -30,7 +30,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import contextMenuAction, contextMenuSeparator, \
-    SettingsManager, OpenLPToolbar, ServiceItem, build_icon,  translate
+    SettingsManager, OpenLPToolbar, ServiceItem, build_icon, translate
 
 log = logging.getLogger(__name__)
 
