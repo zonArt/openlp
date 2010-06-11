@@ -341,8 +341,8 @@ class SongMediaItem(MediaManagerItem):
                     if len(order) == 0:
                         break
                     for verse in verseList:
-                        if verse[0][u'type'][0] == order[0] and \
-                            (verse[0][u'label'] == order[1:] or not order[1:]):
+                        if verse[0][u'label'] == order[1:] and \
+                            verse[0][u'type'][0] == order[0]:
                             verseTag = u'%s:%s' % \
                                 (verse[0][u'type'], verse[0][u'label'])
                             service_item.add_from_text\
