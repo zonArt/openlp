@@ -488,7 +488,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.displayManager = DisplayManager(screens)
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
-        self.recentFiles = []
+        self.recentFiles = QtCore.QStringList()
         # Set up the path with plugins
         pluginpath = AppLocation.get_directory(AppLocation.PluginsDir)
         self.plugin_manager = PluginManager(pluginpath)
@@ -851,8 +851,4 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if filename and filename not in self.recentFiles:
             self.recentFiles.insert(0, QtCore.QString(filename))
             while self.recentFiles.count() > recentFileCount:
-                if isinstance(self.recentFiles, QtCore.QStringList):
-                    self.recentFiles.removeLast()
-                else:
-                    self.recentFiles.pop()
-
+                self.recentFiles.removeLast()
