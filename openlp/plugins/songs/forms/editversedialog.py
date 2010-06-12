@@ -26,7 +26,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
-from openlp.plugins.songs.forms import VerseType
+from openlp.plugins.songs.lib import VerseType
 
 class Ui_EditVerseDialog(object):
     def setupUi(self, EditVerseDialog):
