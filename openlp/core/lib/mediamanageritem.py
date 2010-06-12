@@ -309,8 +309,7 @@ class MediaManagerItem(QtGui.QWidget):
     def initialise(self):
         """
         Implement this method in your descendent media manager item to
-        do any UI or other initialisation. This method is called
-        automatically.
+        do any UI or other initialisation. This method is called automatically.
         """
         pass
 
@@ -351,8 +350,7 @@ class MediaManagerItem(QtGui.QWidget):
 
     def validate(self, file, thumb):
         """
-        Validates to see if the file still exists or
-        thumbnail is up to date
+        Validates to see if the file still exists or thumbnail is up to date
         """
         if os.path.exists(file):
             filedate = os.stat(file).st_mtime
