@@ -31,6 +31,7 @@ from openlp.core.lib import Plugin, build_icon, PluginStatus, Receiver, \
     translate
 from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab, \
     SofImport, OooImport
+from openlp.plugins.songs.lib.db import Song
 
 log = logging.getLogger(__name__)
 
@@ -65,7 +66,8 @@ class SongsPlugin(Plugin):
         self.insert_toolbox_item()
         #self.ImportSongMenu.menuAction().setVisible(True)
         #self.ExportSongMenu.menuAction().setVisible(True)
-        self.media_item.displayResultsSong(self.manager.get_songs())
+        self.media_item.displayResultsSong(
+            self.manager.get_all_objects(Song, Song.title))
 
     def finalise(self):
         log.info(u'Plugin Finalise')

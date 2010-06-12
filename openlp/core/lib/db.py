@@ -25,9 +25,16 @@
 """
 The :mod:`db` module provides the core database functionality for OpenLP
 """
+import logging
 
+from PyQt4 import QtCore
 from sqlalchemy import create_engine, MetaData
+from sqlalchemy.exceptions import InvalidRequestError
 from sqlalchemy.orm import scoped_session, sessionmaker
+
+from openlp.core.utils import AppLocation
+
+log = logging.getLogger(__name__)
 
 def init_db(url, auto_flush=True, auto_commit=False):
     """
@@ -62,3 +69,117 @@ class BaseModel(object):
         for key in kwargs:
             me.__setattr__(key, kwargs[key])
         return me
+
+class Manager(object):
+    """
+    Provide generic object persistence management
+    """
+    def __init__(self, plugin_name, init_schema):
+        """
+        Runs the initialisation process that includes creating the connection
+        to the database and the tables if they don't exist.
+
+        ``plugin_name``
+            The name to setup paths and settings section names
+        """
+        settings = QtCore.QSettings()
+        settings.beginGroup(plugin_name)
+        self.db_url = u''
+        db_type = unicode(
+            settings.value(u'db type', QtCore.QVariant(u'sqlite')).toString())
+        if db_type == u'sqlite':
+            self.db_url = u'sqlite:///%s/%s.sqlite' % (
+                AppLocation.get_section_data_path(plugin_name), plugin_name)
+        else:
+            self.db_url = u'%s://%s:%s@%s/%s' % (db_type,
+                unicode(settings.value(u'db username').toString()),
+                unicode(settings.value(u'db password').toString()),
+                unicode(settings.value(u'db hostname').toString()),
+                unicode(settings.value(u'db database').toString()))
+        settings.endGroup()
+        self.session = init_schema(self.db_url)
+
+    def insert_object(self, object_instance):
+        """
+        Save an object to the database
+
+        ``object_instance``
+            The object to save
+        """
+        try:
+            self.session.add(object_instance)
+            self.session.commit()
+            return True
+        except InvalidRequestError:
+            self.session.rollback()
+            log.exception(u'Object save failed')
+            return False
+
+    def get_object(self, object_class, id=None):
+        """
+        Return the details of an object
+
+        ``object_class``
+            The type of object to return
+
+        ``id``
+            The unique reference for the class instance to return
+        """
+        if not id:
+            return object_class()
+        else:
+            return self.session.query(object_class).get(id)
+
+    def get_all_objects(self, object_class, order_by_ref=None):
+        """
+        Returns all the objects from the database
+
+        ``object_class``
+            The type of object to return
+
+        ``order_by_ref``
+            Any parameters to order the returned objects by.  Defaults to None.
+        """
+        if order_by_ref:
+            return self.session.query(object_class).order_by(order_by_ref).all()
+        return self.session.query(object_class).all()
+
+    def delete_object(self, object_class, id):
+        """
+        Delete an object from the database
+
+        ``object_class``
+            The type of object to delete
+
+        ``id``
+            The unique reference for the class instance to be deleted
+        """
+        if id != 0:
+            object = self.get_object(object_class, id)
+            try:
+                self.session.delete(object)
+                self.session.commit()
+                return True
+            except InvalidRequestError:
+                self.session.rollback()
+                log.exception(u'Failed to delete object')
+                return False
+        else:
+            return True
+
+    def delete_all_objects(self, object_class):
+        """
+        Delete all object records
+
+        ``object_class``
+            The type of object to delete
+        """
+        try:
+            self.session.query(object_class).delete(synchronize_session=False)
+            self.session.commit()
+            return True
+        except InvalidRequestError:
+            self.session.rollback()
+            log.exception(u'Failed to delete all %s records',
+                object_class.__name__)
+            return False

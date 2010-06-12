@@ -31,6 +31,7 @@ from openlp.core.lib import MediaManagerItem, SongXMLParser, \
     BaseListWithDnD, Receiver, ItemCapabilities, translate
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     ImportWizardForm
+from openlp.plugins.songs.lib.db import Song
 
 log = logging.getLogger(__name__)
 
@@ -267,7 +268,7 @@ class SongMediaItem(MediaManagerItem):
         type of display is required.
         """
         fields = songid.split(u':')
-        valid = self.parent.manager.get_song(fields[1])
+        valid = self.parent.manager.get_object(Song, fields[1])
         if valid:
             self.remoteSong = fields[1]
             self.remoteTriggered = fields[0]
@@ -301,7 +302,7 @@ class SongMediaItem(MediaManagerItem):
                 return
             for item in items:
                 item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-                self.parent.manager.delete_song(item_id)
+                self.parent.manager.delete_object(Song, item_id)
             self.onSearchTextButtonClick()
 
     def generateSlideData(self, service_item, item=None):
@@ -322,7 +323,7 @@ class SongMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
-        song = self.parent.manager.get_song(item_id)
+        song = self.parent.manager.get_object(Song, item_id)
         service_item.theme = song.theme_name
         service_item.editId = item_id
         if song.lyrics.startswith(u'<?xml version='):

@@ -28,7 +28,9 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
-from openlp.plugins.alerts.lib import AlertsManager, AlertsTab, DBManager
+from openlp.core.lib.db import Manager
+from openlp.plugins.alerts.lib import AlertsManager, AlertsTab
+from openlp.plugins.alerts.lib.db import init_schema
 from openlp.plugins.alerts.forms import AlertForm
 
 log = logging.getLogger(__name__)
@@ -41,7 +43,7 @@ class alertsPlugin(Plugin):
         self.weight = -3
         self.icon = build_icon(u':/media/media_image.png')
         self.alertsmanager = AlertsManager(self)
-        self.manager = DBManager()
+        self.manager = Manager(u'alerts', init_schema)
         self.alertForm = AlertForm(self.manager, self)
         self.status = PluginStatus.Active
 
