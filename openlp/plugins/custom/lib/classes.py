@@ -23,7 +23,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from openlp.core.lib import BaseModel
+from openlp.core.lib.db import BaseModel
 
 class CustomSlide(BaseModel):
     """

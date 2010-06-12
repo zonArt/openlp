@@ -29,7 +29,7 @@ from PyQt4 import QtCore
 from sqlalchemy.exceptions import InvalidRequestError
 
 from openlp.core.utils import AppLocation
-from openlp.plugins.alerts.lib.models import init_models, metadata, AlertItem
+from openlp.plugins.alerts.lib.db import init_schema, AlertItem
 
 log = logging.getLogger(__name__)
 
@@ -61,8 +61,8 @@ class DBManager(object):
                 unicode(settings.value(u'db hostname').toString()),
                 unicode(settings.value(u'db database').toString()))
         settings.endGroup()
-        self.session = init_models(self.db_url)
-        metadata.create_all(checkfirst=True)
+        self.session, self.metadata = init_schema(self.db_url)
+        self.metadata.create_all(checkfirst=True)
         log.debug(u'Alerts Initialised')
 
     def get_all_alerts(self):
@@ -111,4 +111,3 @@ class DBManager(object):
                 return False
         else:
             return True
-

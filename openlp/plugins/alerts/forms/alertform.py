@@ -25,8 +25,8 @@
 
 from PyQt4 import QtGui, QtCore
 
-from openlp.plugins.alerts.lib.models import AlertItem
 from openlp.core.lib import translate
+from openlp.plugins.alerts.lib.db import AlertItem
 
 from alertdialog import Ui_AlertDialog
 

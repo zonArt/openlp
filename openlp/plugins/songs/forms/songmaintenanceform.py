@@ -25,12 +25,12 @@
 
 from PyQt4 import QtGui, QtCore
 
-from openlp.plugins.songs.lib.classes import Author, Book, Topic
+from openlp.core.lib import translate
+from openlp.plugins.songs.lib.db import Author, Book, Topic
 from songmaintenancedialog import Ui_SongMaintenanceDialog
 from authorsform import AuthorsForm
 from topicsform import TopicsForm
 from songbookform import SongBookForm
-from openlp.core.lib import translate
 
 class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
     """

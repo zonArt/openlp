@@ -30,7 +30,8 @@ import sqlite3
 from sqlalchemy.exceptions import InvalidRequestError
 from sqlalchemy.orm import mapper
 
-from openlp.core.lib import BaseModel, SettingsManager
+from openlp.core.lib import SettingsManager
+from openlp.core.lib.db import BaseModel
 from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.models import *
     

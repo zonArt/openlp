@@ -28,7 +28,7 @@ import string
 from PyQt4 import QtGui
 
 from openlp.core.lib import SongXMLBuilder
-from openlp.plugins.songs.lib.models import Song, Author, Topic, Book
+from openlp.plugins.songs.lib.db import Song, Author, Topic, Book
 from openlp.plugins.songs.forms import VerseType
 
 class SongImport(object):

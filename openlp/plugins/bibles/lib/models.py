@@ -27,7 +27,7 @@ from sqlalchemy import Column, Table, MetaData, ForeignKey, types, \
     create_engine
 from sqlalchemy.orm import mapper, relation, sessionmaker, scoped_session
 
-from openlp.core.lib import BaseModel
+from openlp.core.lib.db import BaseModel
 
 
 class BibleMeta(BaseModel):

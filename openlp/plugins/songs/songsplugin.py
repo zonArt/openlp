@@ -34,7 +34,6 @@ from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab, \
 
 log = logging.getLogger(__name__)
 
-
 class SongsPlugin(Plugin):
     """
     This is the number 1 plugin, if importance were placed on any

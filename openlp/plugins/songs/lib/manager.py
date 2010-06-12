@@ -29,8 +29,7 @@ from PyQt4 import QtCore
 from sqlalchemy.exceptions import InvalidRequestError
 
 from openlp.core.utils import AppLocation
-from openlp.plugins.songs.lib.models import init_models, metadata, Song, \
-    Author, Topic, Book
+from openlp.plugins.songs.lib.db import init_schema, Song, Author, Topic, Book
 #from openlp.plugins.songs.lib import OpenLyricsSong, OpenSongSong, CCLISong, \
 #    CSVSong
 
@@ -111,8 +110,8 @@ class SongManager(object):
                     u'db hostname', QtCore.QVariant(u'')).toString()),
                 unicode(settings.value(
                     u'db database', QtCore.QVariant(u'')).toString()))
-        self.session = init_models(self.db_url)
-        metadata.create_all(checkfirst=True)
+        self.session, self.metadata = init_schema(self.db_url)
+        self.metadata.create_all(checkfirst=True)
         settings.endGroup()
         log.debug(u'Song Initialised')
 

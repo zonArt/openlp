@@ -30,7 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver, translate
 from openlp.plugins.songs.forms import EditVerseForm
-from openlp.plugins.songs.lib.models import Song
+from openlp.plugins.songs.lib.db import Song
 from editsongdialog import Ui_EditSongDialog
 
 log = logging.getLogger(__name__)

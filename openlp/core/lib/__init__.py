@@ -184,5 +184,4 @@ from themexmlhandler import ThemeXML
 from renderer import Renderer
 from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem
-from basemodel import BaseModel
 from baselistwithdnd import BaseListWithDnD
