@@ -53,4 +53,5 @@ def init_schema(url):
 
     mapper(AlertItem, alerts_table)
 
-    return session, metadata
+    metadata.create_all(checkfirst=True)
+    return session

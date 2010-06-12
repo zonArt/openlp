@@ -110,8 +110,7 @@ class SongManager(object):
                     u'db hostname', QtCore.QVariant(u'')).toString()),
                 unicode(settings.value(
                     u'db database', QtCore.QVariant(u'')).toString()))
-        self.session, self.metadata = init_schema(self.db_url)
-        self.metadata.create_all(checkfirst=True)
+        self.session = init_schema(self.db_url)
         settings.endGroup()
         log.debug(u'Song Initialised')
 

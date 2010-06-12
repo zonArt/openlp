@@ -61,8 +61,7 @@ class DBManager(object):
                 unicode(settings.value(u'db hostname').toString()),
                 unicode(settings.value(u'db database').toString()))
         settings.endGroup()
-        self.session, self.metadata = init_schema(self.db_url)
-        self.metadata.create_all(checkfirst=True)
+        self.session = init_schema(self.db_url)
         log.debug(u'Alerts Initialised')
 
     def get_all_alerts(self):

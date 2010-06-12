@@ -147,4 +147,5 @@ def init_schema(url):
             secondary=songs_topics_table)})
     mapper(Topic, topics_table)
 
-    return session, metadata
+    metadata.create_all(checkfirst=True)
+    return session
