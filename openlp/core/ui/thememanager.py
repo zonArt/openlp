@@ -33,9 +33,9 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AmendThemeForm
 from openlp.core.theme import Theme
-from openlp.core.lib import OpenLPToolbar, contextMenuAction, \
+from openlp.core.lib import OpenLPToolbar, context_menu_action, \
     ThemeXML, str_to_bool, get_text_file_string, build_icon, Receiver, \
-    contextMenuSeparator, SettingsManager, translate
+    context_menu_separator, SettingsManager, translate
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
@@ -81,27 +81,28 @@ class ThemeManager(QtGui.QWidget):
         self.Layout.addWidget(self.ThemeListWidget)
         self.ThemeListWidget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.ThemeListWidget.addAction(
-            contextMenuAction(self.ThemeListWidget, u':/themes/theme_edit.png',
+            context_menu_action(self.ThemeListWidget,
+            u':/themes/theme_edit.png',
             translate(u'ThemeManager', u'Edit a theme'), self.onEditTheme))
         self.ThemeListWidget.addAction(
-            contextMenuSeparator(self.ThemeListWidget))
+            context_menu_separator(self.ThemeListWidget))
         self.ThemeListWidget.addAction(
-            contextMenuAction(self.ThemeListWidget,
+            context_menu_action(self.ThemeListWidget,
                 u':/general/general_delete.png',
                 translate(u'ThemeManager', u'Delete theme'),
             self.onDeleteTheme))
         self.ThemeListWidget.addAction(
-            contextMenuAction(self.ThemeListWidget,
+            context_menu_action(self.ThemeListWidget,
                 u':/general/general_export.png',
                 translate(u'ThemeManager', u'Make Global'),
             self.changeGlobalFromScreen))
         self.ThemeListWidget.addAction(
-            contextMenuAction(self.ThemeListWidget,
+            context_menu_action(self.ThemeListWidget,
                 u':/general/general_export.png',
                 translate(u'ThemeManager', u'Export theme'),
                 self.onExportTheme))
         self.ThemeListWidget.addAction(
-            contextMenuSeparator(self.ThemeListWidget))
+            context_menu_separator(self.ThemeListWidget))
         #Signals
         QtCore.QObject.connect(self.ThemeListWidget,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
