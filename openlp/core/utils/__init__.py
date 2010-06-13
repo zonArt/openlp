@@ -22,13 +22,16 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`utils` module provides the utility libraries for OpenLP
+"""
 
 import os
 import sys
 import logging
 import urllib2
-from datetime import datetime
 
+from datetime import datetime
 from PyQt4 import QtCore
 
 import openlp
