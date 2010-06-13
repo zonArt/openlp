@@ -31,7 +31,7 @@ class Ui_SongMaintenanceDialog(object):
     def setupUi(self, SongMaintenanceDialog):
         SongMaintenanceDialog.setObjectName(u'SongMaintenanceDialog')
         SongMaintenanceDialog.setWindowModality(QtCore.Qt.ApplicationModal)
-        SongMaintenanceDialog.resize(486, 361)
+        SongMaintenanceDialog.resize(582, 361)
         self.DialogLayout = QtGui.QVBoxLayout(SongMaintenanceDialog)
         self.DialogLayout.setSpacing(8)
         self.DialogLayout.setMargin(8)
@@ -50,10 +50,10 @@ class Ui_SongMaintenanceDialog(object):
         sizePolicy.setHeightForWidth(
             self.TypeListWidget.sizePolicy().hasHeightForWidth())
         self.TypeListWidget.setSizePolicy(sizePolicy)
-        self.TypeListWidget.setViewMode(QtGui.QListView.IconMode)
-        self.TypeListWidget.setIconSize(QtCore.QSize(112, 100))
+        self.TypeListWidget.setViewMode(QtGui.QListView.ListMode)
+        self.TypeListWidget.setIconSize(QtCore.QSize(32, 32))
         self.TypeListWidget.setMovement(QtGui.QListView.Static)
-        self.TypeListWidget.setMaximumWidth(118)
+        self.TypeListWidget.setMaximumWidth(172)
         self.TypeListWidget.setSpacing(0)
         self.TypeListWidget.setSortingEnabled(False)
         self.TypeListWidget.setUniformItemSizes(True)
