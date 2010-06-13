@@ -652,7 +652,7 @@ class SlideController(QtGui.QWidget):
             self.PreviewListWidget.selectRow(index)
             self.onSlideSelected()
 
-    def maindDisplaySetBackground(self):
+    def mainDisplaySetBackground(self):
         """
         Allow the main display to blank the main display at startup time
         """

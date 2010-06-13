@@ -653,7 +653,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings = QtCore.QSettings()
         settings.beginGroup(self.generalSettingsSection)
         if settings.value(u'screen blank', QtCore.QVariant(False)).toBool():
-            self.LiveController.maindDisplaySetBackground()
+            self.LiveController.mainDisplaySetBackground()
             if settings.value(u'blank warning', QtCore.QVariant(False)).toBool():
                 QtGui.QMessageBox.question(self,
                     translate(u'MainWindow', u'OpenLP Main Display Blanked'),
