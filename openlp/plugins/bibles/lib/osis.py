@@ -78,32 +78,26 @@ class OSISBible(BibleDB):
                 book = line.split(u',')
                 self.books[book[0]] = (book[1].lstrip().rstrip(),
                     book[2].lstrip().rstrip())
-        except:
+        except IOError:
             log.exception(u'OSIS bible import failed')
         finally:
             if fbibles:
                 fbibles.close()
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
-
-    def stop_import(self):
-        """
-        Stops the import of the Bible.
-        """
-        log.debug('Stopping import!')
-        self.stop_import_flag = True
+            QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
 
     def do_import(self):
         """
         Loads a Bible from file.
         """
         log.debug(u'Starting OSIS import from "%s"' % self.filename)
-        self.wizard.incrementProgressBar(u'Detecting encoding (this may take a few minutes)...')
+        self.wizard.incrementProgressBar(
+            u'Detecting encoding (this may take a few minutes)...')
         detect_file = None
         try:
             detect_file = open(self.filename, u'r')
             details = chardet.detect(detect_file.read())
-        except:
+        except IOError:
             log.exception(u'Failed to detect OSIS file encoding')
             return
         finally:
@@ -164,15 +158,15 @@ class OSISBible(BibleDB):
                     verse_text = verse_text.replace(u'</lb>', u'')\
                         .replace(u'</l>', u'').replace(u'<lg>', u'')\
                         .replace(u'</lg>', u'').replace(u'</q>', u'')\
-                        .replace(u'</div>', u'').replace(u'</w>',  u'')
+                        .replace(u'</div>', u'').replace(u'</w>', u'')
                     verse_text = self.spaces_regex.sub(u' ', verse_text)
                     self.create_verse(db_book.id, chapter, verse, verse_text)
-                    Receiver.send_message(u'process_events')
+                    Receiver.send_message(u'openlp_process_events')
             self.commit()
             self.wizard.incrementProgressBar(u'Finishing import...')
             if match_count == 0:
                 success = False
-        except:
+        except (ValueError, IOError):
             log.exception(u'Loading bible from OSIS file failed')
             success = False
         finally:
@@ -183,3 +177,4 @@ class OSISBible(BibleDB):
             return False
         else:
             return success
+

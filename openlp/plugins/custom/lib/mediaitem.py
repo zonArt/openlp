@@ -27,8 +27,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, SongXMLParser, BaseListWithDnD,\
-Receiver, str_to_bool
+from openlp.core.lib import MediaManagerItem, SongXMLParser, BaseListWithDnD, \
+    Receiver, ItemCapabilities, translate
 
 log = logging.getLogger(__name__)
 
@@ -45,33 +45,31 @@ class CustomMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Custom'
-        self.ConfigSection = title
         self.IconPath = u'custom/custom'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = CustomListView
-        self.servicePath = None
         MediaManagerItem.__init__(self, parent, icon, title)
+        self.singleServiceItem = False
         # Holds information about whether the edit is remotly triggered and
         # which Custom is required.
         self.remoteCustom = -1
 
     def addEndHeaderBar(self):
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_edit' % self.parent.name), self.onRemoteEdit)
+            QtCore.SIGNAL(u'custom_edit'), self.onRemoteEdit)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'remote_edit_clear' ), self.onRemoteEditClear)
+            QtCore.SIGNAL(u'custom_edit_clear' ), self.onRemoteEditClear)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'load_custom_list'), self.initialise)
+            QtCore.SIGNAL(u'custom_load_list'), self.initialise)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'preview_custom'), self.onPreviewClick)
+            QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = self.trUtf8('Custom')
+        self.PluginNameVisible = translate(u'CustomPlugin.MediaItem', u'Custom')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
-        self.hasFileIcon = False
 
     def initialise(self):
         self.loadCustomListView(self.parent.custommanager.get_all_slides())
@@ -132,23 +130,27 @@ class CustomMediaItem(MediaManagerItem):
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
 
-    def generateSlideData(self, service_item):
-        raw_slides =[]
+    def generateSlideData(self, service_item, item=None):
+        raw_slides = []
         raw_footer = []
         slide = None
         theme = None
-        if self.remoteTriggered is None:
-            item = self.ListView.currentItem()
-            if item is None:
-                return False
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        if item is None:
+            if self.remoteTriggered is None:
+                item = self.ListView.currentItem()
+                if item is None:
+                    return False
+                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            else:
+                item_id = self.remoteCustom
         else:
-            item_id = self.remoteCustom
-        service_item.autoPreviewAllowed = True
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        service_item.add_capability(ItemCapabilities.AllowsEdit)
+        service_item.add_capability(ItemCapabilities.AllowsPreview)
+        service_item.add_capability(ItemCapabilities.AllowsLoop)
         customSlide = self.parent.custommanager.get_custom(item_id)
         title = customSlide.title
         credit = customSlide.credits
-        service_item.edit_enabled = True
         service_item.editId = item_id
         theme = customSlide.theme_name
         if theme:
@@ -160,8 +162,8 @@ class CustomMediaItem(MediaManagerItem):
         service_item.title = title
         for slide in raw_slides:
             service_item.add_from_text(slide[:30], slide)
-        if str_to_bool(self.parent.config.get_config(u'display footer', True)) \
-            or credit:
+        if QtCore.QSettings().value(self.settingsSection + u'/display footer',
+            QtCore.QVariant(True)).toBool() or credit:
             raw_footer.append(title + u' ' + credit)
         else:
             raw_footer.append(u'')

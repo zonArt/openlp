@@ -24,6 +24,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_SongBookDialog(object):
     def setupUi(self, SongBookDialog):
@@ -65,6 +66,8 @@ class Ui_SongBookDialog(object):
         QtCore.QMetaObject.connectSlotsByName(SongBookDialog)
 
     def retranslateUi(self, SongBookDialog):
-        SongBookDialog.setWindowTitle(self.trUtf8('Edit Book'))
-        self.NameLabel.setText(self.trUtf8('Name:'))
-        self.PublisherLabel.setText(self.trUtf8('Publisher:'))
+        SongBookDialog.setWindowTitle(
+            translate(u'SongsPlugin.SongBookForm', u'Edit Book'))
+        self.NameLabel.setText(translate(u'SongsPlugin.SongBookForm', u'Name:'))
+        self.PublisherLabel.setText(
+            translate(u'SongsPlugin.SongBookForm', u'Publisher:'))

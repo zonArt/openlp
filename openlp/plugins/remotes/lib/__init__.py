@@ -24,3 +24,4 @@
 ###############################################################################
 
 from remotetab import RemoteTab
+from httpserver import HttpServer

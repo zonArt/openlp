@@ -27,11 +27,12 @@ import os
 import sys
 import sqlite3
 
-from sqlalchemy import  *
 from sqlalchemy import create_engine
+from sqlalchemy.exceptions import InvalidRequestError
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation
 
-from openlp.core.lib import PluginConfig
+from openlp.core.lib import BaseModel, SettingsManager
+from openlp.core.utils import AppLocation
 from openlp.plugins.songs.lib.models import metadata, songs_table, Song, \
     Author, Topic, Book
 from openlp.plugins.songs.lib.tables import *
@@ -46,7 +47,7 @@ def init_models(url):
     mapper(TAuthor, temp_authors_table)
     mapper(Book, song_books_table)
     mapper(Song, songs_table,
-       properties={'authors': relation(Author, backref='songs',
+        properties={'authors': relation(Author, backref='songs',
                                        secondary=authors_songs_table),
                    'book': relation(Book, backref='songs'),
                    'topics': relation(Topic, backref='songs',
@@ -74,21 +75,6 @@ temp_authors_songs_table = Table(u'songauthors_temp', metadata,
     Column(u'authorid', types.Integer, primary_key=True),
     Column(u'songid', types.Integer)
 )
-class BaseModel(object):
-    """
-    BaseModel provides a base object with a set of generic functions
-    """
-
-    @classmethod
-    def populate(cls, **kwargs):
-        """
-        Creates an instance of a class and populates it, returning the instance
-        """
-        me = cls()
-        keys = kwargs.keys()
-        for key in keys:
-            me.__setattr__(key, kwargs[key])
-        return me
 
 class TAuthor(BaseModel):
     """
@@ -108,12 +94,11 @@ class TSongAuthor(BaseModel):
     """
     pass
 
-class MigrateSongs():
+class MigrateSongs(object):
     def __init__(self, display):
         self.display = display
-        self.config = PluginConfig(u'Songs')
-        self.data_path = self.config.get_data_path()
-        self.database_files = self.config.get_files(u'sqlite')
+        self.data_path = AppLocation.get_section_data_path(u'songs')
+        self.database_files = SettingsManager.get_files(u'songs', u'.sqlite')
         print self.database_files
 
     def process(self):
@@ -156,13 +141,13 @@ class MigrateSongs():
             print songs_temp.songtitle
             aa = self.session.execute(
                 u'select * from songauthors_temp where songid =' + \
-                unicode(songs_temp.songid) )
+                unicode(songs_temp.songid))
             for row in aa:
                 a = row['authorid']
                 authors_temp = self.session.query(TAuthor).get(a)
                 bb = self.session.execute(
                     u'select * from authors where display_name = \"%s\"' % \
-                    unicode(authors_temp.authorname) ).fetchone()
+                    unicode(authors_temp.authorname)).fetchone()
                 if bb is None:
                     author = Author()
                     author.display_name = authors_temp.authorname
@@ -174,7 +159,7 @@ class MigrateSongs():
             try:
                 self.session.add(song)
                 self.session.commit()
-            except:
+            except InvalidRequestError:
                 self.session.rollback()
                 print u'Error thrown = ', sys.exc_info()[1]
 

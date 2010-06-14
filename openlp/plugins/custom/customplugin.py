@@ -26,7 +26,7 @@
 import logging
 
 from forms import EditCustomForm
-from openlp.core.lib import Plugin, build_icon, PluginStatus
+from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
 from openlp.plugins.custom.lib import CustomManager, CustomMediaItem, CustomTab
 
 log = logging.getLogger(__name__)
@@ -45,7 +45,7 @@ class CustomPlugin(Plugin):
     def __init__(self, plugin_helpers):
         Plugin.__init__(self, u'Custom', u'1.9.1', plugin_helpers)
         self.weight = -5
-        self.custommanager = CustomManager(self.config)
+        self.custommanager = CustomManager()
         self.edit_custom_form = EditCustomForm(self.custommanager)
         self.icon = build_icon(u':/media/media_custom.png')
         self.status = PluginStatus.Active
@@ -67,10 +67,11 @@ class CustomPlugin(Plugin):
         self.remove_toolbox_item()
 
     def about(self):
-        about_text = self.trUtf8('<b>Custom Plugin</b><br>This plugin '
-            'allows slides to be displayed on the screen in the same way '
-            'songs are. This plugin provides greater freedom over the '
-            'songs plugin.<br>')
+        about_text = translate(u'CustomPlugin.CustomPlugin',
+            u'<b>Custom Plugin</b><br>This plugin '
+            u'allows slides to be displayed on the screen in the same way '
+            u'songs are. This plugin provides greater freedom over the '
+            u'songs plugin.<br>')
         return about_text
 
     def can_delete_theme(self, theme):

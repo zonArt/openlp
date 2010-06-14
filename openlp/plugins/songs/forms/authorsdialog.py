@@ -24,6 +24,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_AuthorsDialog(object):
     def setupUi(self, AuthorsDialog):
@@ -73,7 +74,11 @@ class Ui_AuthorsDialog(object):
         QtCore.QMetaObject.connectSlotsByName(AuthorsDialog)
 
     def retranslateUi(self, AuthorsDialog):
-        AuthorsDialog.setWindowTitle(self.trUtf8('Author Maintenance'))
-        self.DisplayLabel.setText(self.trUtf8('Display name:'))
-        self.FirstNameLabel.setText(self.trUtf8('First name:'))
-        self.LastNameLabel.setText(self.trUtf8('Last name:'))
+        AuthorsDialog.setWindowTitle(
+            translate(u'SongsPlugin.AuthorsForm', u'Author Maintenance'))
+        self.DisplayLabel.setText(
+            translate(u'SongsPlugin.AuthorsForm', u'Display name:'))
+        self.FirstNameLabel.setText(
+             translate(u'SongsPlugin.AuthorsForm', u'First name:'))
+        self.LastNameLabel.setText(
+            translate(u'SongsPlugin.AuthorsForm', u'Last name:'))

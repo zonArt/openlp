@@ -27,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus
+from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 
 log = logging.getLogger(__name__)
@@ -46,7 +46,7 @@ class BiblePlugin(Plugin):
     def initialise(self):
         log.info(u'bibles Initialising')
         if self.manager is None:
-            self.manager = BibleManager(self, self.config)
+            self.manager = BibleManager(self)
         Plugin.initialise(self)
         self.insert_toolbox_item()
         self.ImportBibleItem.setVisible(True)
@@ -73,7 +73,7 @@ class BiblePlugin(Plugin):
         self.ImportBibleItem.setText(import_menu.trUtf8('&Bible'))
         # Signals and slots
         QtCore.QObject.connect(self.ImportBibleItem,
-            QtCore.SIGNAL(u'triggered()'), self.onBibleNewClick)
+            QtCore.SIGNAL(u'triggered()'), self.onBibleImportClick)
         self.ImportBibleItem.setVisible(False)
 
     def add_export_menu_item(self, export_menu):
@@ -83,14 +83,15 @@ class BiblePlugin(Plugin):
         self.ExportBibleItem.setText(export_menu.trUtf8('&Bible'))
         self.ExportBibleItem.setVisible(False)
 
-    def onBibleNewClick(self):
+    def onBibleImportClick(self):
         if self.media_item:
-            self.media_item.onNewClick()
+            self.media_item.onImportClick()
 
     def about(self):
-        about_text = self.trUtf8('<strong>Bible Plugin</strong><br />This '
-            'plugin allows bible verses from different sources to be '
-            'displayed on the screen during the service.')
+        about_text = translate(u'BiblesPlugin.BiblePlugin',
+            u'<strong>Bible Plugin</strong><br />This '
+            u'plugin allows bible verses from different sources to be '
+            u'displayed on the screen during the service.')
         return about_text
 
     def can_delete_theme(self, theme):

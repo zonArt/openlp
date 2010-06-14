@@ -27,29 +27,13 @@ import os
 import sys
 import sqlite3
 
-from sqlalchemy import *
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker, mapper
+from sqlalchemy.exceptions import InvalidRequestError
+from sqlalchemy.orm import mapper
 
-from openlp.core.lib import PluginConfig
+from openlp.core.lib import BaseModel, SettingsManager
+from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.models import *
     
-class BaseModel(object):
-    """
-    BaseModel provides a base object with a set of generic functions
-    """
-
-    @classmethod
-    def populate(cls, **kwargs):
-        """
-        Creates an instance of a class and populates it, returning the instance
-        """
-        me = cls()
-        keys = kwargs.keys()
-        for key in keys:
-            me.__setattr__(key, kwargs[key])
-        return me
-
 class TBibleMeta(BaseModel):
     """
     Bible Meta Data
@@ -101,19 +85,11 @@ mapper(TTestament, temp_testament_table)
 mapper(TBook, temp_book_table)
 mapper(TVerse, temp_verse_table)
 
-def init_models(url):
-    engine = create_engine(url)
-    metadata.bind = engine
-    session = scoped_session(sessionmaker(autoflush=False,
-        autocommit=False, bind=engine))
-    return session
-
-class MigrateBibles():
+class MigrateBibles(object):
     def __init__(self, display):
         self.display = display
-        self.config = PluginConfig(u'Bibles')
-        self.data_path = self.config.get_data_path()
-        self.database_files = self.config.get_files(u'sqlite')
+        self.data_path = AppLocation.get_section_data_path(u'bibles')
+        self.database_files = SettingsManager.get_files(u'bibles', u'.sqlite')
         print self.database_files
 
     def progress(self, text):
@@ -122,8 +98,8 @@ class MigrateBibles():
 
     def process(self):
         self.progress(u'Bibles processing started')
-        for f in self.database_files:
-            self.v_1_9_0(f)
+        for db_file in self.database_files:
+            self.v_1_9_0(db_file)
         self.progress(u'Bibles processing finished')
 
     def v_1_9_0(self, database):
@@ -160,7 +136,7 @@ class MigrateBibles():
             try:
                 self.session.add(testament)
                 self.session.commit()
-            except:
+            except InvalidRequestError:
                 self.session.rollback()
                 print u'Error thrown = ', sys.exc_info()[1]
         self.progress(u'Create book table')
@@ -174,7 +150,7 @@ class MigrateBibles():
             try:
                 self.session.add(book)
                 self.session.commit()
-            except:
+            except InvalidRequestError:
                 self.session.rollback()
                 print u'Error thrown = ', sys.exc_info()[1]
         self.progress(u'Create verse table')
@@ -188,14 +164,10 @@ class MigrateBibles():
             verse.text = verse_temp.text
             try:
                 self.session.add(verse)
-            except:
+                self.session.commit()
+            except InvalidRequestError:
                 self.session.rollback()
                 print u'Error thrown = ', sys.exc_info()[1]
-        try:
-            self.session.commit()
-        except:
-            self.session.rollback()
-            print u'Error thrown = ', sys.exc_info()[1]
         self.progress(u'Create metadata table')
         results = self.session.query(TBibleMeta).order_by(TBibleMeta.key).all()
         for biblemeta_temp in results:
@@ -205,7 +177,7 @@ class MigrateBibles():
             try:
                 self.session.add(biblemeta)
                 self.session.commit()
-            except:
+            except InvalidRequestError:
                 self.session.rollback()
                 print u'Error thrown = ', sys.exc_info()[1]
 
@@ -223,3 +195,4 @@ class MigrateBibles():
         conn.commit()
         conn.execute(u'vacuum;')
         conn.commit()
+

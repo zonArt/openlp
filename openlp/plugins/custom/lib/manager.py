@@ -25,38 +25,44 @@
 
 import logging
 
+from PyQt4 import QtCore
+from sqlalchemy.exceptions import InvalidRequestError
+
+from openlp.core.utils import AppLocation
 from openlp.plugins.custom.lib.models import init_models, metadata, CustomSlide
 
 log = logging.getLogger(__name__)
 
-class CustomManager():
+class CustomManager(object):
     """
     The Song Manager provides a central location for all database code. This
     class takes care of connecting to the database and running all the queries.
     """
     log.info(u'Custom manager loaded')
 
-    def __init__(self, config):
+    def __init__(self):
         """
         Creates the connection to the database, and creates the tables if they
         don't exist.
         """
-        self.config = config
         log.debug(u'Custom Initialising')
+        settings = QtCore.QSettings()
+        settings.beginGroup(u'custom')
         self.db_url = u''
-        db_type = self.config.get_config(u'db type', u'sqlite')
+        db_type = unicode(
+            settings.value(u'db type', QtCore.QVariant(u'sqlite')).toString())
         if db_type == u'sqlite':
             self.db_url = u'sqlite:///%s/custom.sqlite' % \
-                self.config.get_data_path()
+                AppLocation.get_section_data_path(u'custom')
         else:
-            self.db_url = u'%s://%s:%s@%s/%s' % \
-                (db_type, self.config.get_config(u'db username'),
-                    self.config.get_config(u'db password'),
-                    self.config.get_config(u'db hostname'),
-                    self.config.get_config(u'db database'))
+            self.db_url = u'%s://%s:%s@%s/%s' % (db_type,
+                unicode(settings.value(u'db username').toString()),
+                unicode(settings.value(u'db password').toString()),
+                unicode(settings.value(u'db hostname').toString()),
+                unicode(settings.value(u'db database').toString()))
         self.session = init_models(self.db_url)
         metadata.create_all(checkfirst=True)
-
+        settings.endGroup()
         log.debug(u'Custom Initialised')
 
     def get_all_slides(self):
@@ -75,7 +81,7 @@ class CustomManager():
             self.session.commit()
             log.debug(u'Custom Slide saved')
             return True
-        except:
+        except InvalidRequestError:
             self.session.rollback()
             log.exception(u'Custom Slide save failed')
             return False
@@ -99,7 +105,7 @@ class CustomManager():
                 self.session.delete(customslide)
                 self.session.commit()
                 return True
-            except:
+            except InvalidRequestError:
                 self.session.rollback()
                 log.exception(u'Custom Slide deleton failed')
                 return False
@@ -107,4 +113,5 @@ class CustomManager():
             return True
 
     def get_customs_for_theme(self, theme):
-        return self.session.query(CustomSlide).filter(CustomSlide.theme_name == theme).all()
+        return self.session.query(
+            CustomSlide).filter(CustomSlide.theme_name == theme).all()

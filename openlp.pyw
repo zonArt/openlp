@@ -34,10 +34,10 @@ from PyQt4 import QtCore, QtGui
 
 log = logging.getLogger()
 
-from openlp.core.lib import Receiver, str_to_bool
+from openlp.core.lib import Receiver
 from openlp.core.resources import qInitResources
 from openlp.core.ui import MainWindow, SplashScreen, ScreenList
-from openlp.core.utils import AppLocation, ConfigHelper
+from openlp.core.utils import AppLocation, LanguageManager
 
 application_stylesheet = u"""
 QMainWindow::separator
@@ -78,9 +78,7 @@ class OpenLP(QtGui.QApplication):
         Run the OpenLP application.
         """
         #Load and store current Application Version
-        filepath = AppLocation.get_directory(AppLocation.AppDir)
-        if not hasattr(sys, u'frozen'):
-            filepath = os.path.join(filepath, u'openlp')
+        filepath = AppLocation.get_directory(AppLocation.VersionDir)
         filepath = os.path.join(filepath, u'.version')
         fversion = None
         try:
@@ -92,33 +90,37 @@ class OpenLP(QtGui.QApplication):
                 app_version = {
                     u'full': full_version,
                     u'version': bits[0],
-                    u'build': bits[1]
+                    u'build': bits[1] if len(bits) > 1 else None
                 }
-            log.info(u'Openlp version %s build %s' % (
-                app_version[u'version'], app_version[u'build']))
-        except:
-                app_version = {
-                    u'full': u'1.9.0-bzr000',
-                    u'version': u'1.9.0',
-                    u'build': u'bzr000'
-                }
+            if app_version[u'build']:
+                log.info(
+                    u'Openlp version %s build %s',
+                    app_version[u'version'],
+                    app_version[u'build']
+                )
+            else:
+                log.info(u'Openlp version %s' % app_version[u'version'])
+        except IOError:
+            log.exception('Error in version file.')
+            app_version = {
+                u'full': u'1.9.0-bzr000',
+                u'version': u'1.9.0',
+                u'build': u'bzr000'
+            }
         finally:
             if fversion:
                 fversion.close()
-        #set the default string encoding
-        try:
-            sys.setappdefaultencoding(u'utf-8')
-        except:
-            pass
         #provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'process_events'), self.processEvents)
+            QtCore.SIGNAL(u'openlp_process_events'), self.processEvents)
+        self.setOrganizationName(u'OpenLP')
+        self.setOrganizationDomain(u'openlp.org')
         self.setApplicationName(u'OpenLP')
         self.setApplicationVersion(app_version[u'version'])
         if os.name == u'nt':
             self.setStyleSheet(application_stylesheet)
-        show_splash = str_to_bool(ConfigHelper.get_registry().get_value(
-            u'general', u'show splash', True))
+        show_splash = QtCore.QSettings().value(
+            u'general/show splash', QtCore.QVariant(True)).toBool()
         if show_splash:
             self.splash = SplashScreen(self.applicationVersion())
             self.splash.show()
@@ -128,8 +130,8 @@ class OpenLP(QtGui.QApplication):
         # Decide how many screens we have and their size
         for screen in xrange(0, self.desktop().numScreens()):
             screens.add_screen({u'number': screen,
-                            u'size': self.desktop().availableGeometry(screen),
-                            u'primary': (self.desktop().primaryScreen() == screen)})
+                u'size': self.desktop().availableGeometry(screen),
+                u'primary': (self.desktop().primaryScreen() == screen)})
             log.info(u'Screen %d found with resolution %s',
                 screen, self.desktop().availableGeometry(screen))
         # start the main app window
@@ -167,7 +169,7 @@ def main():
     filename = os.path.join(log_path, u'openlp.log')
     logfile = FileHandler(filename, u'w')
     logfile.setFormatter(logging.Formatter(
-        u'%(asctime)s %(name)-20s %(levelname)-8s %(message)s'))
+        u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
     logging.addLevelName(15, u'Timer')
     # Parse command line options and deal with them.
@@ -188,6 +190,11 @@ def main():
     qInitResources()
     # Now create and actually run the application.
     app = OpenLP(qt_args)
+    #i18n Set Language
+    language = LanguageManager.get_language()
+    appTranslator = LanguageManager.get_translator(language)
+    app.installTranslator(appTranslator)
+
     sys.exit(app.run())
 
 if __name__ == u'__main__':

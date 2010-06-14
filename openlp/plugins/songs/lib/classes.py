@@ -23,21 +23,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-class BaseModel(object):
-    """
-    BaseModel provides a base object with a set of generic functions
-    """
-
-    @classmethod
-    def populate(cls, **kwargs):
-        """
-        Creates an instance of a class and populates it, returning the instance
-        """
-        me = cls()
-        keys = kwargs.keys()
-        for key in keys:
-            me.__setattr__(key, kwargs[key])
-        return me
+from openlp.core.lib import BaseModel
 
 class Author(BaseModel):
     """
@@ -50,7 +36,8 @@ class Book(BaseModel):
     Book model
     """
     def __repr__(self):
-        return u'<Book id="%s" name="%s" publisher="%s" />' % (str(self.id), self.name, self.publisher)
+        return u'<Book id="%s" name="%s" publisher="%s" />' % (
+            str(self.id), self.name, self.publisher)
 
 class Song(BaseModel):
     """

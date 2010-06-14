@@ -22,8 +22,12 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`screen` module provides management functionality for a machines'
+displays
+"""
 import logging
+import copy
 
 log = logging.getLogger(__name__)
 
@@ -36,38 +40,62 @@ class ScreenList(object):
     def __init__(self):
         self.preview = None
         self.current = None
+        self.override = None
         self.screen_list = []
-        self.count = 0
+        self.display_count = 0
+        #actual display number
         self.current_display = 0
+        #save config display number
+        self.monitor_number = 0
 
     def add_screen(self, screen):
+        """
+        Add a screen to the list of known screens
+        """
         if screen[u'primary']:
             self.current = screen
         self.screen_list.append(screen)
-        self.count += 1
+        self.display_count += 1
 
     def screen_exists(self, number):
+        """
+        Confirms a screen is known
+        """
         for screen in self.screen_list:
             if screen[u'number'] == number:
                 return True
         return False
 
     def set_current_display(self, number):
-        if number + 1 > self.count:
+        """
+        Set up the current screen dimensions
+        """
+        log.debug(u'set_current_display %s', number, )
+        if number + 1 > self.display_count:
             self.current = self.screen_list[0]
+            self.override = copy.deepcopy(self.current)
             self.current_display = 0
         else:
             self.current = self.screen_list[number]
-            self.preview = self.current
+            self.override = copy.deepcopy(self.current)
+            self.preview = copy.deepcopy(self.current)
             self.current_display = number
-        if self.count == 1:
+        if self.display_count == 1:
             self.preview = self.screen_list[0]
 
-#        if self.screen[u'number'] != screenNumber:
-#            # We will most probably never actually hit this bit, but just in
-#            # case the index in the list doesn't match the screen number, we
-#            # search for it.
-#            for scrn in self.screens:
-#                if scrn[u'number'] == screenNumber:
-#                    self.screen = scrn
-#                    break
+    def set_override_display(self):
+        """
+        replace the current size with the override values
+        user wants to have their own screen attributes
+        """
+        log.debug(u'set_override_display')
+        self.current = copy.deepcopy(self.override)
+        self.preview = copy.deepcopy(self.current)
+
+    def reset_current_display(self):
+        """
+        replace the current values with the correct values
+        user wants to use the correct screen attributes
+        """
+        log.debug(u'reset_current_display')
+        self.set_current_display(self.current_display)

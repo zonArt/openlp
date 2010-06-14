@@ -117,10 +117,11 @@ class OpenLPToolbar(QtGui.QToolBar):
             The title of the icon to search for.
         """
         title = QtCore.QString(title)
-        if self.icons[title]:
-            return self.icons[title]
-        else:
-            log.error(u'getIconFromTitle - no icon for %s' % title)
+        try:
+            if self.icons[title]:
+                return self.icons[title]
+        except KeyError:
+            log.exception(u'getIconFromTitle - no icon for %s' % title)
             return QtGui.QIcon()
 
     def makeWidgetsInvisible(self, widgets):

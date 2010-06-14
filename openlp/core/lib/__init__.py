@@ -35,7 +35,7 @@ from PyQt4 import QtCore, QtGui
 
 log = logging.getLogger(__name__)
 
-def translate(context, text):
+def translate(context, text, comment=None):
     """
     A special shortcut method to wrap around the Qt4 translation functions.
     This abstracts the translation procedure so that we can change it if at a
@@ -48,8 +48,7 @@ def translate(context, text):
     ``text``
         The text to put into the translation tables for translation.
     """
-    return QtGui.QApplication.translate(
-        context, text, None, QtGui.QApplication.UnicodeUTF8)
+    return QtCore.QCoreApplication.translate(context, text, comment)
 
 def get_text_file_string(text_file):
     """
@@ -68,7 +67,7 @@ def get_text_file_string(text_file):
         file_handle = open(text_file, u'r')
         content_string = file_handle.read()
     except IOError:
-        log.error(u'Failed to open text file %s' % text_file)
+        log.exception(u'Failed to open text file %s' % text_file)
     finally:
         if file_handle:
             file_handle.close()
@@ -96,24 +95,24 @@ def build_icon(icon):
         The icon to build. This can be a QIcon, a resource string in the form
         ``:/resource/file.png``, or a file location like ``/path/to/file.png``.
     """
-    ButtonIcon = None
+    button_icon = None
     if isinstance(icon, QtGui.QIcon):
-        ButtonIcon = icon
+        button_icon = icon
     elif isinstance(icon, basestring):
-        ButtonIcon = QtGui.QIcon()
+        button_icon = QtGui.QIcon()
         if icon.startswith(u':/'):
-            ButtonIcon.addPixmap(
-                QtGui.QPixmap(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            button_icon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
+                QtGui.QIcon.Off)
         else:
-            ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
+            button_icon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
                 QtGui.QIcon.Normal, QtGui.QIcon.Off)
     elif isinstance(icon, QtGui.QImage):
-        ButtonIcon = QtGui.QIcon()
-        ButtonIcon.addPixmap(
-            QtGui.QPixmap.fromImage(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-    return ButtonIcon
+        button_icon = QtGui.QIcon()
+        button_icon.addPixmap(QtGui.QPixmap.fromImage(icon),
+            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+    return button_icon
 
-def contextMenuAction(base, icon, text, slot):
+def context_menu_action(base, icon, text, slot):
     """
     Utility method to help build context menus for plugins
     """
@@ -123,7 +122,7 @@ def contextMenuAction(base, icon, text, slot):
     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
     return action
 
-def contextMenu(base, icon, text):
+def context_menu(base, icon, text):
     """
     Utility method to help build context menus for plugins
     """
@@ -131,7 +130,10 @@ def contextMenu(base, icon, text):
     action.setIcon(build_icon(icon))
     return action
 
-def contextMenuSeparator(base):
+def context_menu_separator(base):
+    """
+    Add a separator to a context menu
+    """
     action = QtGui.QAction(u'', base)
     action.setSeparator(True)
     return action
@@ -150,29 +152,31 @@ def resize_image(image, width, height):
     realw = preview.width()
     realh = preview.height()
     # and move it to the centre of the preview space
-    newImage = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32_Premultiplied)
-    newImage.fill(QtCore.Qt.black)
-    painter = QtGui.QPainter(newImage)
+    new_image = QtGui.QImage(width, height,
+        QtGui.QImage.Format_ARGB32_Premultiplied)
+    new_image.fill(QtCore.Qt.black)
+    painter = QtGui.QPainter(new_image)
     painter.drawImage((width - realw) / 2, (height - realh) / 2, preview)
-    return newImage
+    return new_image
 
 
 class ThemeLevel(object):
+    """
+    Provides an enumeration for the level a theme applies to
+    """
     Global = 1
     Service = 2
     Song = 3
 
 from eventreceiver import Receiver
 from settingsmanager import SettingsManager
-from pluginconfig import PluginConfig
 from plugin import PluginStatus, Plugin
 from pluginmanager import PluginManager
 from settingstab import SettingsTab
-from mediamanageritem import MediaManagerItem
 from xmlrootclass import XmlRootClass
 from serviceitem import ServiceItem
 from serviceitem import ServiceItemType
-from serviceitem import ServiceItem
+from serviceitem import ItemCapabilities
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
 from songxmlhandler import SongXMLBuilder, SongXMLParser
@@ -180,4 +184,5 @@ from themexmlhandler import ThemeXML
 from renderer import Renderer
 from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem
+from basemodel import BaseModel
 from baselistwithdnd import BaseListWithDnD

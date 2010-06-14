@@ -28,7 +28,9 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD
+from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
+    SettingsManager, translate
+from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
@@ -50,7 +52,6 @@ class PresentationMediaItem(MediaManagerItem):
     def __init__(self, parent, icon, title, controllers):
         self.controllers = controllers
         self.PluginNameShort = u'Presentation'
-        self.ConfigSection = title
         self.IconPath = u'presentations/presentation'
         self.Automatic = u''
         # this next is a class, not an instance of a class - it will
@@ -60,19 +61,25 @@ class PresentationMediaItem(MediaManagerItem):
         self.message_listener = MessageListener(self)
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = self.trUtf8('Presentation')
+        self.PluginNameVisible = translate(u'PresentationPlugin.MediaItem',
+            u'Presentation')
 
     def retranslateUi(self):
-        self.OnNewPrompt = self.trUtf8('Select Presentation(s)')
-        self.Automatic = self.trUtf8('Automatic')
+        self.OnNewPrompt = translate(u'PresentationPlugin.MediaItem',
+            u'Select Presentation(s)')
+        self.Automatic = translate(u'PresentationPlugin.MediaItem',
+            u'Automatic')
         fileType = u''
         for controller in self.controllers:
             if self.controllers[controller].enabled:
-                types = self.controllers[controller].supports + self.controllers[controller].alsosupports
+                types = self.controllers[controller].supports + \
+                    self.controllers[controller].alsosupports
                 for type in types:
                     if fileType.find(type) == -1:
                         fileType += u'*%s ' % type
-        self.OnNewFileMasks = self.trUtf8('Presentations (%s)' % fileType)
+                        self.parent.service_manager.supportedSuffixes(type)
+        self.OnNewFileMasks = translate(u'PresentationPlugin.MediaItem',
+            u'Presentations (%s)' % fileType)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -98,12 +105,20 @@ class PresentationMediaItem(MediaManagerItem):
         self.DisplayTypeLabel = QtGui.QLabel(self.PresentationWidget)
         self.DisplayTypeLabel.setObjectName(u'SearchTypeLabel')
         self.DisplayLayout.addWidget(self.DisplayTypeLabel, 0, 0, 1, 1)
-        self.DisplayTypeLabel.setText(self.trUtf8('Present using:'))
+        self.DisplayTypeLabel.setText(
+            translate(u'PresentationPlugin.MediaItem', u'Present using:'))
         # Add the Presentation widget to the page layout
         self.PageLayout.addWidget(self.PresentationWidget)
 
     def initialise(self):
-        list = self.parent.config.load_list(u'presentations')
+        self.servicePath = os.path.join(
+            AppLocation.get_section_data_path(self.settingsSection),
+            u'thumbnails')
+        self.ListView.setIconSize(QtCore.QSize(88, 50))
+        if not os.path.exists(self.servicePath):
+            os.mkdir(self.servicePath)
+        list = SettingsManager.load_list(
+            self.settingsSection, u'presentations')
         self.loadList(list)
         for item in self.controllers:
             #load the drop down selection
@@ -121,15 +136,41 @@ class PresentationMediaItem(MediaManagerItem):
         for file in list:
             if currlist.count(file) > 0:
                 continue
-            (path, filename) = os.path.split(unicode(file))
+            filename = os.path.split(unicode(file))[1]
             if titles.count(filename) > 0:
                 QtGui.QMessageBox.critical(
-                    self, self.trUtf8('File exists'), self.trUtf8(
-                        'A presentation with that filename already exists.'),
+                    self, translate(u'PresentationPlugin.MediaItem',
+                    u'File exists'), 
+                        translate(u'PresentationPlugin.MediaItem',
+                        u'A presentation with that filename already exists.'),
                     QtGui.QMessageBox.Ok)
             else:
+                icon = None
+                for controller in self.controllers:
+                    thumbPath = os.path.join(
+                        AppLocation.get_section_data_path(
+                            self.settingsSection),
+                        u'thumbnails', controller, filename)
+                    thumb = os.path.join(thumbPath, u'slide1.png')
+                    preview = os.path.join(
+                        AppLocation.get_section_data_path(
+                            self.settingsSection),
+                        controller, u'thumbnails', filename, u'slide1.png')
+                    if os.path.exists(preview):
+                        if os.path.exists(thumb):
+                            if self.validate(preview, thumb):
+                                icon = build_icon(thumb)
+                            else:
+                                icon = build_icon(
+                                    u':/general/general_delete.png')
+                        else:
+                            os.makedirs(thumbPath)
+                            icon = self.IconFromFile(preview, thumb)
+                if not icon:
+                    icon = build_icon(u':/general/general_delete.png')
                 item_name = QtGui.QListWidgetItem(filename)
                 item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
+                item_name.setIcon(icon)
                 self.ListView.addItem(item_name)
 
     def onDeleteClick(self):
@@ -137,42 +178,46 @@ class PresentationMediaItem(MediaManagerItem):
         if item:
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
-            self.parent.config.set_list(
-                self.ConfigSection, self.getFileList())
+            SettingsManager.set_list(self.settingsSection,
+                self.settingsSection, self.getFileList())
             filepath = unicode((item.data(QtCore.Qt.UserRole)).toString())
+            #not sure of this has errors
+            #John please can you look at .
             for cidx in self.controllers:
                 doc = self.controllers[cidx].add_doc(filepath)
                 doc.presentation_deleted()
                 doc.close_presentation()
 
-    def generateSlideData(self, service_item):
+    def generateSlideData(self, service_item, item=None):
         items = self.ListView.selectedIndexes()
         if len(items) > 1:
             return False
         service_item.title = unicode(self.DisplayTypeComboBox.currentText())
         service_item.shortname = unicode(self.DisplayTypeComboBox.currentText())
         shortname = service_item.shortname
-
-        for item in items:
-            bitem = self.ListView.item(item.row())
-            filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
-            if shortname == self.Automatic:
-                service_item.shortname = self.findControllerByType(filename)
-                if not service_item.shortname:
-                    return False
-            controller = self.controllers[service_item.shortname]
-            (path, name) = os.path.split(filename)
-            doc = controller.add_doc(filename)
-            if doc.get_slide_preview_file(1) is None:
-                doc.load_presentation()
-            i = 1
-            img = doc.get_slide_preview_file(i)
-            while img:
-                service_item.add_from_command(path, name, img)
-                i = i + 1
+        if shortname:
+            for item in items:
+                bitem = self.ListView.item(item.row())
+                filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+                if shortname == self.Automatic:
+                    service_item.shortname = self.findControllerByType(filename)
+                    if not service_item.shortname:
+                        return False
+                controller = self.controllers[service_item.shortname]
+                (path, name) = os.path.split(filename)
+                doc = controller.add_doc(filename)
+                if doc.get_slide_preview_file(1) is None:
+                    doc.load_presentation()
+                i = 1
                 img = doc.get_slide_preview_file(i)
-            doc.close_presentation()
-        return True
+                while img:
+                    service_item.add_from_command(path, name, img)
+                    i = i + 1
+                    img = doc.get_slide_preview_file(i)
+                doc.close_presentation()
+            return True
+        else:
+            return False
 
     def findControllerByType(self, filename):
         filetype = os.path.splitext(filename)[1]

@@ -30,6 +30,7 @@ import shutil
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
+from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
 
@@ -68,7 +69,8 @@ class PresentationController(object):
         Called at system exit to clean up any running presentations
 
     ``check_available()``
-        Returns True if presentation application is installed/can run on this machine
+        Returns True if presentation application is installed/can run on this
+        machine
 
     ``presentation_deleted()``
         Deletes presentation specific files, e.g. thumbnails
@@ -78,13 +80,14 @@ class PresentationController(object):
 
     def __init__(self, plugin=None, name=u'PresentationController'):
         """
-        This is the constructor for the presentationcontroller object.
-        This provides an easy way for descendent plugins to populate common data.
+        This is the constructor for the presentationcontroller object.  This
+        provides an easy way for descendent plugins to populate common data.
         This method *must* be overridden, like so::
 
             class MyPresentationController(PresentationController):
                 def __init__(self, plugin):
-                    PresentationController.__init(self, plugin, u'My Presenter App')
+                    PresentationController.__init(
+                        self, plugin, u'My Presenter App')
 
         ``plugin``
             Defaults to *None*. The presentationplugin object
@@ -97,13 +100,17 @@ class PresentationController(object):
         self.docs = []
         self.plugin = plugin
         self.name = name
+        self.settings_section = self.plugin.settingsSection
         self.available = self.check_available()
         if self.available:
-            self.enabled = int(plugin.config.get_config(
-                name, QtCore.Qt.Unchecked)) == QtCore.Qt.Checked
+            self.enabled = QtCore.QSettings().value(
+                self.settings_section + u'/' + name,
+                QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0] == \
+                    QtCore.Qt.Checked
         else:
             self.enabled = False
-        self.thumbnailroot = os.path.join(plugin.config.get_data_path(),
+        self.thumbnailroot = os.path.join(
+            AppLocation.get_section_data_path(self.settings_section),
             name, u'thumbnails')
         self.thumbnailprefix = u'slide'
         if not os.path.isdir(self.thumbnailroot):
@@ -115,10 +122,10 @@ class PresentationController(object):
         """
         return False
 
-
     def start_process(self):
         """
-        Loads a running version of the presentation application in the background.
+        Loads a running version of the presentation application in the
+        background.
         """
         pass
 
@@ -138,13 +145,18 @@ class PresentationController(object):
         self.docs.append(doc)
         return doc
 
-    def remove_doc(self, doc):
+    def remove_doc(self, doc=None):
         """
         Called to remove an open document from the collection
         """
         log.debug(u'remove_doc Presentation')
-        self.docs.remove(doc)
+        if doc is None:
+            return
+        if doc in self.docs:
+            self.docs.remove(doc)
 
+    def close_presentation(self):
+        pass
 
 class PresentationDocument(object):
     """
@@ -200,7 +212,7 @@ class PresentationDocument(object):
         Returns a path to an image containing a preview for the requested slide
 
     """
-    def __init__(self,  controller,  name):
+    def __init__(self, controller, name):
         self.slidenumber = 0
         self.controller = controller
         self.store_filename(name)
@@ -221,7 +233,10 @@ class PresentationDocument(object):
         Cleans up/deletes any controller specific files created for
         a file, e.g. thumbnails
         """
-        shutil.rmtree(self.thumbnailpath)
+        try:
+            shutil.rmtree(self.thumbnailpath)
+        except OSError:
+            log.exception(u'Failed to delete presentation controller files')
 
     def store_filename(self, presentation):
         """
@@ -233,11 +248,12 @@ class PresentationDocument(object):
         if not os.path.isdir(self.thumbnailpath):
             os.mkdir(self.thumbnailpath)
 
-    def get_file_name(self,  presentation):
+    def get_file_name(self, presentation):
         return os.path.split(presentation)[1]
 
-    def get_thumbnail_path(self,  presentation):
-        return os.path.join(self.controller.thumbnailroot, self.get_file_name(presentation))
+    def get_thumbnail_path(self, presentation):
+        return os.path.join(
+            self.controller.thumbnailroot, self.get_file_name(presentation))
 
     def check_thumbnails(self):
         """
@@ -256,7 +272,7 @@ class PresentationDocument(object):
         Close presentation and clean up objects
         Triggered by new object being added to SlideController
         """
-        self.controller.delete_doc(self)
+        self.controller.close_presentation()
 
     def is_active(self):
         """
@@ -322,11 +338,11 @@ class PresentationDocument(object):
         pass
 
     def next_step(self):
-       """
-       Triggers the next effect of slide on the running presentation
-       This might be the next animation on the current slide, or the next slide
-       """
-       pass
+        """
+        Triggers the next effect of slide on the running presentation
+        This might be the next animation on the current slide, or the next slide
+        """
+        pass
 
     def previous_step(self):
         """
@@ -341,7 +357,12 @@ class PresentationDocument(object):
         ``slide_no``
             The slide an image is required for, starting at 1
         """
-        return None
+        path = os.path.join(self.thumbnailpath,
+            self.controller.thumbnailprefix + unicode(slide_no) + u'.png')
+        if os.path.isfile(path):
+            return path
+        else:
+            return None
 
     def poll_slidenumber(self, is_live):
         """
@@ -357,7 +378,7 @@ class PresentationDocument(object):
             prefix = u'live'
         else:
             prefix = u'preview'
-        Receiver.send_message(u'%s_slidecontroller_change' % prefix,
+        Receiver.send_message(u'slidecontroller_%s_change' % prefix,
             self.slidenumber - 1)
 
     def get_slide_text(self, slide_no):
@@ -365,7 +386,7 @@ class PresentationDocument(object):
         Returns the text on the slide
 
         ``slide_no``
-        The slide the text  is required for, starting at 1
+        The slide the text is required for, starting at 1
         """
         return ''
 
@@ -377,3 +398,4 @@ class PresentationDocument(object):
         The slide the notes are required for, starting at 1
         """
         return ''
+

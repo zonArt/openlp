@@ -31,7 +31,7 @@ if os.name == u'nt':
     import _winreg
     import win32ui
 
-from presentationcontroller import PresentationController,  PresentationDocument
+from presentationcontroller import PresentationController, PresentationDocument
 
 log = logging.getLogger(__name__)
 
@@ -62,7 +62,8 @@ class PowerpointController(PresentationController):
         log.debug(u'check_available')
         if os.name == u'nt':
             try:
-                _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT, u'PowerPoint.Application').Close()
+                _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT,
+                    u'PowerPoint.Application').Close()
                 return True
             except:
                 pass
@@ -96,17 +97,15 @@ class PowerpointController(PresentationController):
 
         def add_doc(self, name):
             log.debug(u'Add Doc PowerPoint')
-            doc = PowerpointDocument(self,  name)
+            doc = PowerpointDocument(self, name)
             self.docs.append(doc)
             return doc
 
 class PowerpointDocument(PresentationDocument):
-
-    def __init__(self,  controller,  presentation):
+    def __init__(self, controller, presentation):
         log.debug(u'Init Presentation Powerpoint')
+        PresentationDocument.__init__(controller, presentation)
         self.presentation = None
-        self.controller = controller
-        self.store_filename(presentation)
 
     def load_presentation(self):
         """
@@ -123,7 +122,8 @@ class PowerpointDocument(PresentationDocument):
         if not self.controller.process.Visible:
             self.controller.start_process()
         #try:
-        self.controller.process.Presentations.Open(self.filepath, False, False, True)
+        self.controller.process.Presentations.Open(self.filepath, False, False,
+            True)
         #except:
         #    return
         self.presentation = self.controller.process.Presentations(
@@ -141,8 +141,8 @@ class PowerpointDocument(PresentationDocument):
         """
         if self.check_thumbnails():
             return
-        self.presentation.Export(os.path.join(self.thumbnailpath, '')
-                                 , 'png', 320, 240)
+        self.presentation.Export(os.path.join(self.thumbnailpath, ''), 'png',
+            320, 240)
 
     def close_presentation(self):
         """
@@ -226,7 +226,8 @@ class PowerpointDocument(PresentationDocument):
                 dpi = win32ui.GetActiveWindow().GetDC().GetDeviceCaps(88)
             except:
                 try:
-                    dpi = win32ui.GetForegroundWindow().GetDC().GetDeviceCaps(88)
+                    dpi = \
+                        win32ui.GetForegroundWindow().GetDC().GetDeviceCaps(88)
                 except:
                     dpi = 96
             self.presentation.SlideShowSettings.Run()
@@ -268,26 +269,12 @@ class PowerpointDocument(PresentationDocument):
         """
         self.presentation.SlideShowWindow.View.Previous()
 
-    def get_slide_preview_file(self, slide_no):
-        """
-        Returns an image path containing a preview for the requested slide
-
-        ``slide_no``
-        The slide an image is required for, starting at 1
-        """
-        path = os.path.join(self.thumbnailpath,
-            self.controller.thumbnailprefix + unicode(slide_no) + u'.png')
-        if os.path.isfile(path):
-            return path
-        else:
-            return None
-
     def get_slide_text(self, slide_no):
         """
         Returns the text on the slide
 
         ``slide_no``
-        The slide the text  is required for, starting at 1
+        The slide the text is required for, starting at 1
         """
         text = ''
         shapes = self.presentation.Slides(slide_no).Shapes
