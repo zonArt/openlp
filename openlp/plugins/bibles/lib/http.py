@@ -56,8 +56,8 @@ class HTTPBooks(object):
         """
         if HTTPBooks.cursor is None:
             filepath = os.path.join(
-                AppLocation.get_directory(AppLocation.PluginsDir), u'bibles',
-                u'resources', u'httpbooks.sqlite')
+                AppLocation.get_section_data_path(u'bibles'), u'resources',
+                u'httpbooks.sqlite')
             conn = sqlite3.connect(filepath)
             HTTPBooks.cursor = conn.cursor()
         return HTTPBooks.cursor
@@ -288,8 +288,7 @@ class CWExtract(BibleCommon):
         ``chapter``
             Chapter number
         """
-        log.debug(u'get_bible_chapter %s,%s,%s',
-            version, bookname, chapter)
+        log.debug(u'get_bible_chapter %s,%s,%s', version, bookname, chapter)
         urlbookname = bookname.replace(u' ', u'-')
         chapter_url = u'http://www.biblestudytools.com/%s/%s/%s.html' % \
             (version, urlbookname.lower(), chapter)

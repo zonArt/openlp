@@ -29,7 +29,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    ItemCapabilities, SettingsManager, contextMenuAction, Receiver, translate
+    ItemCapabilities, SettingsManager, context_menu_action, Receiver, translate
 
 log = logging.getLogger(__name__)
 
@@ -77,7 +77,7 @@ class MediaMediaItem(MediaManagerItem):
         MediaManagerItem.addListViewToToolBar(self)
         self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.ListView.addAction(
-            contextMenuAction(self.ListView, u':/slides/slide_blank.png',
+            context_menu_action(self.ListView, u':/slides/slide_blank.png',
                 translate(u'MediaPlugin.MediaItem', u'Replace Live Background'),
                 self.onReplaceClick))
 

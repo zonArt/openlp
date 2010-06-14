@@ -41,7 +41,7 @@ class XmlRootClass(object):
 
         (element.tag, val) = self.post_tag_hook(element.tag, val)
     """
-    def _setFromXml(self, xml, root_tag):
+    def _set_from_xml(self, xml, root_tag):
         """
         Set song properties from given xml content.
 
