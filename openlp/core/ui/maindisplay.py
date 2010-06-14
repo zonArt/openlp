@@ -133,7 +133,6 @@ class MainDisplay(DisplayWidget):
         self.display_alert = QtGui.QLabel(self)
         self.display_alert.setScaledContents(True)
         self.primary = True
-        self.displayBlank = False
         self.blankFrame = None
         self.frame = None
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -280,15 +279,15 @@ class MainDisplay(DisplayWidget):
             self.display_alert.setPixmap(frame)
         self.moveToTop()
 
-    def frameView(self, frame, transition=False):
+    def frameView(self, frame, transition=False, display=True):
         """
         Called from a slide controller to display a frame
         if the alert is in progress the alert is added on top
         ``frame``
             Image frame to be rendered
         """
-        log.debug(u'frameView %d' % (self.displayBlank))
-        if not self.displayBlank:
+        log.debug(u'frameView %d' % (display))
+        if display:
             if transition:
                 if self.frame is not None:
                     self.display_text.setPixmap(
@@ -314,8 +313,7 @@ class MainDisplay(DisplayWidget):
                 self.setVisible(True)
                 self.showFullScreen()
         else:
-            self.waitingFrame = frame
-            self.waitingFrameTrans = transition
+            self.storeText = QtGui.QPixmap.fromImage(frame[u'main'])
 
 class VideoDisplay(Phonon.VideoWidget):
     """

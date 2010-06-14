@@ -120,6 +120,7 @@ class SlideController(QtGui.QWidget):
         self.serviceItem = None
         self.Panel = QtGui.QWidget(parent.ControlSplitter)
         self.slideList = {}
+        self.canDisplay = True
         # Layout for holding panel
         self.PanelLayout = QtGui.QVBoxLayout(self.Panel)
         self.PanelLayout.setSpacing(0)
@@ -651,6 +652,12 @@ class SlideController(QtGui.QWidget):
             self.PreviewListWidget.selectRow(index)
             self.onSlideSelected()
 
+    def mainDisplaySetBackground(self):
+        """
+        Allow the main display to blank the main display at startup time
+        """
+        self.blankButton.setChecked(True)
+
     def onSlideBlank(self):
         """
         Handle the slidecontroller blank event
@@ -670,6 +677,7 @@ class SlideController(QtGui.QWidget):
         log.debug(u'onBlankDisplay %d' % checked)
         self.hideButton.setChecked(False)
         self.themeButton.setChecked(False)
+        self.canDisplay =  not checked
         QtCore.QSettings().setValue(
             self.parent.generalSettingsSection + u'/screen blank',
             QtCore.QVariant(checked))
@@ -687,6 +695,7 @@ class SlideController(QtGui.QWidget):
         log.debug(u'onThemeDisplay %d' % checked)
         self.blankButton.setChecked(False)
         self.hideButton.setChecked(False)
+        self.canDisplay = False
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Theme)
             self.blankPlugin(True)
@@ -701,6 +710,7 @@ class SlideController(QtGui.QWidget):
         log.debug(u'onHideDisplay %d' % checked)
         self.blankButton.setChecked(False)
         self.themeButton.setChecked(False)
+        self.canDisplay = False
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
             self.hidePlugin(True)
@@ -710,7 +720,7 @@ class SlideController(QtGui.QWidget):
 
     def blankPlugin(self, blank):
         """
-        Blank the display screen.
+        Blank the display screen within a plugin if required.
         """
         if self.serviceItem is not None:
             if blank:
@@ -770,7 +780,7 @@ class SlideController(QtGui.QWidget):
                 log.log(
                     15, u'Slide Rendering took %4s' % (time.time() - before))
                 if self.isLive:
-                    self.mainDisplay.frameView(frame, True)
+                    self.mainDisplay.frameView(frame, True, self.canDisplay)
             self.selectedRow = row
         Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix,
             row)
