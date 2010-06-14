@@ -68,8 +68,9 @@ class OSISBible(BibleDB):
         self.trans_regex = re.compile(r'<transChange(.*?)>(.*?)</transChange>')
         self.spaces_regex = re.compile(r'([ ]{2,})')
         self.books = {}
-        filepath = os.path.join(AppLocation.get_section_data_path(
-            self.bible_plugin.settingsSection), u'resources', u'osisbooks.csv')
+        filepath = os.path.join(
+            AppLocation.get_directory(AppLocation.PluginsDir), u'bibles',
+            u'resources', u'osisbooks.csv')
         fbibles = None
         try:
             fbibles = open(filepath, u'r')
