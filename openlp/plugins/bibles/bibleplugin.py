@@ -71,7 +71,7 @@ class BiblePlugin(Plugin):
         self.ImportBibleItem.setObjectName(u'ImportBibleItem')
         import_menu.addAction(self.ImportBibleItem)
         self.ImportBibleItem.setText(
-            import_menu.translate(u'BiblesPlugin.BiblePlugin', u'&Bible'))
+            translate(u'BiblesPlugin.BiblePlugin', u'&Bible'))
         # Signals and slots
         QtCore.QObject.connect(self.ImportBibleItem,
             QtCore.SIGNAL(u'triggered()'), self.onBibleImportClick)
@@ -81,7 +81,7 @@ class BiblePlugin(Plugin):
         self.ExportBibleItem = QtGui.QAction(export_menu)
         self.ExportBibleItem.setObjectName(u'ExportBibleItem')
         export_menu.addAction(self.ExportBibleItem)
-        self.ExportBibleItem.setText(export_menu.translate(
+        self.ExportBibleItem.setText(translate(
             u'BiblesPlugin.BiblePlugin', u'&Bible'))
         self.ExportBibleItem.setVisible(False)
 
