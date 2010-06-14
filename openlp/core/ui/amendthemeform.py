@@ -334,7 +334,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
     def onFontFooterColorPushButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.theme.background_color), self)
+            QtGui.QColor(self.theme.font_footer_color), self)
         if new_color.isValid():
             self.theme.font_footer_color = new_color.name()
             self.FontFooterColorPushButton.setStyleSheet(
@@ -442,7 +442,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                     unicode(self.theme.background_color))
         else:
             new_color = QtGui.QColorDialog.getColor(
-                QtGui.QColor(self.theme.background_color), self)
+                QtGui.QColor(self.theme.background_startColor), self)
             if new_color.isValid():
                 self.theme.background_startColor = new_color.name()
                 self.Color1PushButton.setStyleSheet(u'background-color: %s' %
@@ -451,7 +451,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
     def onColor2PushButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.theme.background_color), self)
+            QtGui.QColor(self.theme.background_endColor), self)
         if new_color.isValid():
             self.theme.background_endColor = new_color.name()
             self.Color2PushButton.setStyleSheet(u'background-color: %s' %
@@ -481,7 +481,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
     def onOutlineColorPushButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.theme.background_color), self)
+            QtGui.QColor(self.theme.display_outline_color), self)
         if new_color.isValid():
             self.theme.display_outline_color = new_color.name()
             self.OutlineColorPushButton.setStyleSheet(u'background-color: %s' %
@@ -506,7 +506,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
     def onShadowColorPushButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.theme.background_color), self)
+            QtGui.QColor(self.theme.display_shadow_color), self)
         if new_color.isValid():
             self.theme.display_shadow_color = new_color.name()
             self.ShadowColorPushButton.setStyleSheet(u'background-color: %s' %

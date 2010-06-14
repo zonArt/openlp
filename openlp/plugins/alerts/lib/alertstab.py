@@ -215,7 +215,7 @@ class AlertsTab(SettingsTab):
 
     def onBackgroundColorButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.theme.background_color), self)
+            QtGui.QColor(self.bg_color), self)
         if new_color.isValid():
             self.bg_color = new_color.name()
             self.BackgroundColorButton.setStyleSheet(
@@ -230,7 +230,7 @@ class AlertsTab(SettingsTab):
 
     def onFontColorButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.theme.background_color), self)
+            QtGui.QColor(self.font_color), self)
         if new_color.isValid():
             self.font_color = new_color.name()
             self.FontColorButton.setStyleSheet(
