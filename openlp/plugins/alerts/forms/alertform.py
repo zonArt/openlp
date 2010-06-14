@@ -32,11 +32,11 @@ from alertdialog import Ui_AlertDialog
 
 class AlertForm(QtGui.QDialog, Ui_AlertDialog):
     """
-    Class documentation goes here.
+    Provide UI for the alert system
     """
     def __init__(self, manager, parent):
         """
-        Constructor
+        Initialise the alert form
         """
         self.manager = manager
         self.parent = parent
@@ -103,6 +103,9 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         self.loadList()
 
     def onSaveClick(self):
+        """
+        Save an alert
+        """
         if self.item_id:
             alert = self.manager.get_object(AlertItem, self.item_id)
             alert.text = unicode(self.AlertTextEdit.text())
@@ -113,7 +116,9 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             self.onNewClick()
 
     def onTextChanged(self):
-        #Data has changed by editing it so potential storage required
+        """
+        Enable save button when data has been changed by editing the form
+        """
         self.SaveButton.setEnabled(True)
 
     def onDoubleClick(self):

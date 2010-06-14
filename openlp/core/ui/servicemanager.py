@@ -32,13 +32,15 @@ log = logging.getLogger(__name__)
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, ServiceItem, contextMenuAction, \
+from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
     Receiver, build_icon, ItemCapabilities, SettingsManager, translate
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm
 from openlp.core.utils import AppLocation
 
 class ServiceManagerList(QtGui.QTreeWidget):
-
+    """
+    Set up key bindings and mouse behaviour for the service list
+    """
     def __init__(self, parent=None, name=None):
         QtGui.QTreeWidget.__init__(self, parent)
         self.parent = parent
@@ -952,7 +954,7 @@ class ServiceManager(QtGui.QWidget):
         self.ThemeComboBox.addItem(u'')
         for theme in theme_list:
             self.ThemeComboBox.addItem(theme)
-            action = contextMenuAction(
+            action = context_menu_action(
                 self.ServiceManagerList,
                 None,
                 theme , self.onThemeChangeAction)

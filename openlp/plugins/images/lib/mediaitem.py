@@ -29,7 +29,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    contextMenuAction, ItemCapabilities, SettingsManager, translate
+    context_menu_action, ItemCapabilities, SettingsManager, translate
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
@@ -54,6 +54,7 @@ class ImageMediaItem(MediaManagerItem):
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
         MediaManagerItem.__init__(self, parent, icon, title)
+        self.addToServiceItem = True
 
     def initPluginNameVisible(self):
         self.PluginNameVisible = translate(u'ImagePlugin.MediaItem', u'Image')
@@ -73,7 +74,6 @@ class ImageMediaItem(MediaManagerItem):
         self.hasFileIcon = True
         self.hasNewIcon = False
         self.hasEditIcon = False
-        self.addToServiceItem = True
 
     def initialise(self):
         log.debug(u'initialise')
@@ -93,7 +93,7 @@ class ImageMediaItem(MediaManagerItem):
         MediaManagerItem.addListViewToToolBar(self)
         self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.ListView.addAction(
-            contextMenuAction(
+            context_menu_action(
                 self.ListView, u':/slides/slide_blank.png',
                 translate(u'ImagePlugin.MediaItem', u'Replace Live Background'),
                 self.onReplaceClick))
