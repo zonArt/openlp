@@ -322,8 +322,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         Load the list of Crosswalk and BibleGateway bibles.
         """
         #Load and store Crosswalk Bibles
-        filepath = AppLocation.get_directory(AppLocation.PluginsDir)
-        filepath = os.path.join(filepath, u'bibles', u'resources')
+        filepath = os.path.join(AppLocation.get_section_data_path(
+            self.bibleplugin.settingsSection), u'resources')
         try:
             self.web_bible_list[WebDownload.Crosswalk] = {}
             books_file = open(

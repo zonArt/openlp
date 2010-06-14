@@ -59,6 +59,7 @@ class BibleDB(QtCore.QObject):
         """
         log.info(u'BibleDB loaded')
         QtCore.QObject.__init__(self)
+        self.bible_plugin = parent
         if u'path' not in kwargs:
             raise KeyError(u'Missing keyword argument "path".')
         if u'name' not in kwargs and u'file' not in kwargs:
