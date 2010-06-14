@@ -142,7 +142,7 @@ class PowerpointDocument(PresentationDocument):
         if self.check_thumbnails():
             return
         self.presentation.Export(os.path.join(self.thumbnailpath, '')
-                                 , 'png', 640, 480)
+                                 , 'png', 320, 240)
 
     def close_presentation(self):
         """
