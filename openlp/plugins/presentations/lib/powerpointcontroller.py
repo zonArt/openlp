@@ -104,7 +104,7 @@ class PowerpointController(PresentationController):
 class PowerpointDocument(PresentationDocument):
     def __init__(self, controller, presentation):
         log.debug(u'Init Presentation Powerpoint')
-        PresentationDocument.__init__(controller, presentation)
+        PresentationDocument.__init__(self, controller, presentation)
         self.presentation = None
 
     def load_presentation(self):
