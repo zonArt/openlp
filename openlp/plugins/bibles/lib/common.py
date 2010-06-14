@@ -242,7 +242,7 @@ class BibleCommon(object):
         text = text.replace(u'&apos;', u'\'')
         # Remove some other tags
         start_tag = text.find(u'<')
-        while start_tag > -1 :
+        while start_tag > -1:
             end_tag = text.find(u'>', start_tag)
             text = text[:start_tag] + text[end_tag + 1:]
             start_tag = text.find(u'<')
@@ -260,10 +260,10 @@ def unescape(text):
     """
     def fixup(markup):
         text = markup.group(0)
-        if text[:2] == u'&#':
+        if text.startswith(u'&#'):
             # character reference
             try:
-                if text[:3] == u'&#x':
+                if text.startswith(u'&#x'):
                     return unichr(int(text[3:-1], 16))
                 else:
                     return unichr(int(text[2:-1]))

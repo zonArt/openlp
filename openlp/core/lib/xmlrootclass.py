@@ -25,7 +25,6 @@
 
 import os
 import sys
-from types import StringType, NoneType, UnicodeType
 
 from xml.etree.ElementTree import ElementTree, XML
 
@@ -56,11 +55,9 @@ class XmlRootClass(object):
         for element in xml_iter:
             if element.tag != root_tag:
                 text = element.text
-                if type(text) is NoneType:
+                if text is None:
                     val = text
-                elif type(text) is UnicodeType :
-                    val = text
-                elif type(text) is StringType:
+                elif isinstance(text, basestring):
                     # Strings need special handling to sort the colours out
                     if text[0] == u'$':
                         # This might be a hex number, let's try to convert it.

@@ -197,12 +197,12 @@ class ThemeManager(QtGui.QWidget):
                                 u'Theme %s is use in %s plugin' % (theme,
                             plugin.name)))
                         return
-                if unicode(self.parent.ServiceManagerContents.ThemeComboBox.currentText()) == theme:
-                    QtGui.QMessageBox.critical(
-                        self, translate(u'ThemeManager',u'Error'),
+                if unicode(self.parent.ServiceManagerContents.ThemeComboBox \
+                    .currentText()) == theme:
+                    QtGui.QMessageBox.critical(self,
+                        translate(u'ThemeManager', u'Error'),
                         translate(u'ThemeManager',
-                            u'Theme %s is use by Service Manager' % theme),
-                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                            u'Theme %s is use by Service Manager' % theme))
                     return
                 self.themelist.remove(theme)
                 th = theme + u'.png'
@@ -228,8 +228,7 @@ class ThemeManager(QtGui.QWidget):
         if item is None:
             QtGui.QMessageBox.critical(self, 
                 translate(u'ThemeManager', u'Error'),
-                translate(u'ThemeManager', u'You have not selected a theme.'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                translate(u'ThemeManager', u'You have not selected a theme.'))
             return
         theme = unicode(item.data(QtCore.Qt.UserRole).toString())
         path = QtGui.QFileDialog.getExistingDirectory(self,
@@ -243,13 +242,21 @@ class ThemeManager(QtGui.QWidget):
             try:
                 zip = zipfile.ZipFile(themePath, u'w')
                 source = os.path.join(self.path, theme)
-                for files in os.walk(source)[2]:
-                    for name in files:
+                for files in os.walk(source):
+                    for name in files[2]:
                         zip.write(
                             os.path.join(source, name),
                             os.path.join(theme, name))
+                QtGui.QMessageBox.information(self,
+                    translate(u'ThemeManager', u'Theme Exported'),
+                    translate(u'ThemeManager',
+                        u'Your theme has been successfully exported.'))
             except (IOError, OSError):
                 log.exception(u'Export Theme Failed')
+                QtGui.QMessageBox.critical(self,
+                    translate(u'ThemeManager', u'Theme Export Failed'),
+                    translate(u'ThemeManager',
+                        u'Your theme could not be exported due to an error.'))
             finally:
                 if zip:
                     zip.close()
@@ -359,8 +366,7 @@ class ThemeManager(QtGui.QWidget):
                         if os.path.splitext(file)[1].lower() in [u'.xml']:
                             if self.checkVersion1(xml_data):
                                 # upgrade theme xml
-                                filexml = self.migrateVersion122(filename,
-                                    fullpath, xml_data)
+                                filexml = self.migrateVersion122(xml_data)
                             else:
                                 filexml = xml_data
                             outfile = open(fullpath, u'w')
@@ -392,13 +398,12 @@ class ThemeManager(QtGui.QWidget):
         else:
             return True
 
-    def migrateVersion122(self, filename, fullpath, xml_data):
+    def migrateVersion122(self, xml_data):
         """
         Called by convert the xml data from version 1 format
         to the current format.
         New fields are defaulted but the new theme is useable
         """
-        log.debug(u'migrateVersion122 %s %s', filename, fullpath)
         theme = Theme(xml_data)
         newtheme = ThemeXML()
         newtheme.new_document(theme.Name)
@@ -438,7 +443,7 @@ class ThemeManager(QtGui.QWidget):
         return newtheme.extract_xml()
 
     def saveTheme(self, name, theme_xml, theme_pretty_xml, image_from,
-        image_to) :
+        image_to):
         """
         Called by thememaintenance Dialog to save the theme
         and to trigger the reload of the theme list
