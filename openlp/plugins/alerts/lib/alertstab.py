@@ -214,11 +214,13 @@ class AlertsTab(SettingsTab):
             translate(u'AlertsPlugin.AlertsTab', u'Bottom'))
 
     def onBackgroundColorButtonClicked(self):
-        self.bg_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.bg_color), self).name()
-        self.BackgroundColorButton.setStyleSheet(
-            u'background-color: %s' % self.bg_color)
-        self.updateDisplay()
+        new_color = QtGui.QColorDialog.getColor(
+            QtGui.QColor(self.theme.background_color), self)
+        if new_color.isValid():
+            self.bg_color = new_color.name()
+            self.BackgroundColorButton.setStyleSheet(
+                u'background-color: %s' % self.bg_color)
+            self.updateDisplay()
 
     def onFontComboBoxClicked(self):
         self.updateDisplay()
@@ -227,11 +229,13 @@ class AlertsTab(SettingsTab):
         self.location = location
 
     def onFontColorButtonClicked(self):
-        self.font_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.font_color), self).name()
-        self.FontColorButton.setStyleSheet(
-            u'background-color: %s' % self.font_color)
-        self.updateDisplay()
+        new_color = QtGui.QColorDialog.getColor(
+            QtGui.QColor(self.theme.background_color), self)
+        if new_color.isValid():
+            self.font_color = new_color.name()
+            self.FontColorButton.setStyleSheet(
+                u'background-color: %s' % self.font_color)
+            self.updateDisplay()
 
     def onTimeoutSpinBoxChanged(self):
         self.timeout = self.TimeoutSpinBox.value()
