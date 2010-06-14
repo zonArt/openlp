@@ -28,7 +28,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import contextMenuAction, contextMenuSeparator, \
+from openlp.core.lib import context_menu_action, context_menu_separator, \
     SettingsManager, OpenLPToolbar, ServiceItem, build_icon
 
 log = logging.getLogger(__name__)
@@ -271,34 +271,34 @@ class MediaManagerItem(QtGui.QWidget):
         self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         if self.hasEditIcon:
             self.ListView.addAction(
-                contextMenuAction(
+                context_menu_action(
                     self.ListView, u':/general/general_edit.png',
                     u'%s %s' % (self.trUtf8('&Edit'), self.PluginNameVisible),
                     self.onEditClick))
-            self.ListView.addAction(contextMenuSeparator(self.ListView))
+            self.ListView.addAction(context_menu_separator(self.ListView))
         if self.hasDeleteIcon:
             self.ListView.addAction(
-                contextMenuAction(
+                context_menu_action(
                     self.ListView, u':/general/general_delete.png',
                     u'%s %s' % (self.trUtf8('&Delete'), self.PluginNameVisible),
                     self.onDeleteClick))
-            self.ListView.addAction(contextMenuSeparator(self.ListView))
+            self.ListView.addAction(context_menu_separator(self.ListView))
         self.ListView.addAction(
-            contextMenuAction(
+            context_menu_action(
                 self.ListView, u':/general/general_preview.png',
                 u'%s %s' % (self.trUtf8('&Preview'), self.PluginNameVisible),
                 self.onPreviewClick))
         self.ListView.addAction(
-            contextMenuAction(
+            context_menu_action(
                 self.ListView, u':/general/general_live.png',
                 self.trUtf8('&Show Live'), self.onLiveClick))
         self.ListView.addAction(
-            contextMenuAction(
+            context_menu_action(
                 self.ListView, u':/general/general_add.png',
                 self.trUtf8('&Add to Service'), self.onAddClick))
         if self.addToServiceItem:
             self.ListView.addAction(
-                contextMenuAction(
+                context_menu_action(
                     self.ListView, u':/general/general_add.png',
                     self.trUtf8('&Add to selected Service Item'),
                     self.onAddEditClick))
@@ -465,9 +465,9 @@ class MediaManagerItem(QtGui.QWidget):
         """
         service_item = ServiceItem(self.parent)
         if self.ServiceItemIconName:
-            service_item.addIcon(self.ServiceItemIconName)
+            service_item.add_icon(self.ServiceItemIconName)
         else:
-            service_item.addIcon(
+            service_item.add_icon(
                 u':/media/media_' + self.PluginNameShort.lower() + u'.png')
         if self.generateSlideData(service_item, item):
             return service_item

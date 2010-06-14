@@ -96,7 +96,7 @@ class SongManager(object):
         settings = QtCore.QSettings()
         settings.beginGroup(u'songs')
         self.db_url = u''
-        db_type = unicode(settings.value(u'songs/db type',
+        db_type = unicode(settings.value(u'db type',
             QtCore.QVariant(u'sqlite')).toString())
         if db_type == u'sqlite':
             self.db_url = u'sqlite:///%s/songs.sqlite' % \
