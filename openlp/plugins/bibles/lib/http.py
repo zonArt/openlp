@@ -56,8 +56,8 @@ class HTTPBooks(object):
         """
         if HTTPBooks.cursor is None:
             filepath = os.path.join(
-                AppLocation.get_section_data_path(u'bibles'), u'resources',
-                u'httpbooks.sqlite')
+                AppLocation.get_directory(AppLocation.PluginsDir), u'bibles',
+                u'resources', u'httpbooks.sqlite')
             conn = sqlite3.connect(filepath)
             HTTPBooks.cursor = conn.cursor()
         return HTTPBooks.cursor
